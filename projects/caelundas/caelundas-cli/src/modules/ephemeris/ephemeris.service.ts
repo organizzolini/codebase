@@ -92,17 +92,8 @@ export class EphemerisService {
   // 🌎 Public Methods
 
   /**
-   * Computes all four ephemeris types for all bodies in a single pass, eliminating
-   * redundant calc() calls that would occur when each type is computed independently.
-   *
-   * Savings vs. Calling each get*EphemerisByBody function separately:
-   * - Distance: extracted from the coordinate calc() result (data[2]) instead of a
-   *   second calc() call — saves ~6,000 calc() calls/day for sun, mercury, venus, mars.
-   * - Azimuth/elevation: reuses ecliptic coords from coordinate calc() result instead
-   *   of a second calc() call before azalt() — saves ~3,000 calc() calls/day for sun, moon.
-   * - Illumination: one pheno_ut() per illuminated non-Sun body per minute; the Sun is
-   *   always 100% and needs none.
-   * - Swiss Ephemeris constant lookup hoisted outside the minute loop per body.
+   * Computes all four ephemeris types for all bodies in one pass, avoiding the
+   * redundant `calc()` calls separate passes would make.
    */
   public computeAllEphemerides(args: {
     azimuthElevationBodies: AzimuthElevationEphemerisBody[];
@@ -179,10 +170,8 @@ export class EphemerisService {
   }
 
   /**
-   * Safely extracts one field of a horizon position: azimuth, apparent or true
-   * elevation, topocentric ecliptic latitude or longitude, or semidiameter.
-   *
-   * @throws When timestamp or field is missing from ephemeris.
+   * Extracts one field of a horizon position: azimuth, elevation, ecliptic
+   * latitude or longitude, or semidiameter; throws when missing.
    */
   public getAzimuthElevationFromEphemeris(
     ephemeris: AzimuthElevationEphemeris,
@@ -379,13 +368,8 @@ export class EphemerisService {
   }
 
   /**
-   * Extracts the ecliptic longitude for a body at the previous, current, and next minute.
-   *
-   * Convenience wrapper around {@link getCoordinateFromEphemeris} that fetches all three
-   * minute-window positions in a single call, reducing the six individual calls required
-   * by aspect phase detection into two.
-   *
-   * @throws When any of the three timestamps are missing from the ephemeris.
+   * Ecliptic longitudes at the previous, current and next minute, in one call;
+   * throws when any timestamp is missing.
    */
   public getLongitudesWindow(args: {
     ephemeris: CoordinateEphemeris;
@@ -448,15 +432,8 @@ export class EphemerisService {
   }
 
   /**
-   * Throws unless the Swiss Ephemeris data files are present.
-   *
-   * Run this before any calculation. Without the files the library answers
-   * from a less precise built-in ephemeris and says nothing, so a run is
-   * stopped here, naming the command that downloads them. It is a method
-   * rather than a check in the constructor so that building the application
-   * never fails for want of the files.
-   *
-   * @throws EphemerisFilesMissingError - When any file is missing or empty.
+   * Throws unless the Swiss Ephemeris data files are present; run before any
+   * calculation, since the built-in fallback is silently less precise.
    */
   public verifyFiles(): void {
     assertEphemerisFilesPresent();

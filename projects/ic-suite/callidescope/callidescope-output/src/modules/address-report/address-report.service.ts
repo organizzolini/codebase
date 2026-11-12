@@ -19,10 +19,9 @@ import type { CallableReference, CallAddressStack } from "@callidescope/graph";
 /**
  * Renders `depth` and `breadth`'s findings for a terminal.
  *
- * Markdown by default and mermaid on request, the same two renderings
- * `callidescope` itself prints — a diagram at a prompt is source someone can
- * paste somewhere that draws it, and markdown is what reads well as terminal
- * text. JSON carries the same data with nothing rendered.
+ * Markdown by default, mermaid on request, as `callidescope` prints them.
+ * Mermaid is paste-ready source; markdown reads well as terminal text.
+ * JSON carries the same data unrendered.
  */
 @Injectable()
 export class AddressReportService {
@@ -183,12 +182,8 @@ export class AddressReportService {
   }
 
   /**
-   * Renders several callables' direct calls as one document.
-   *
-   * JSON is **always** an array, whatever the address count, so a script can
-   * `JSON.parse` a run's output without branching on how many addresses it
-   * asked about. Markdown and mermaid concatenate the per-callable renders,
-   * each of which already carries its own heading naming the address.
+   * Renders several callables' direct calls as one document. JSON is always an array,
+   * whatever the address count.
    */
   public renderBreadthReports(args: RenderBreadthReportsArguments): string {
     if (args.format === "json") {
@@ -248,10 +243,8 @@ export class AddressReportService {
   }
 
   /**
-   * Renders several callables' traced paths as one document.
-   *
-   * JSON is **always** an array, for the same reason `renderBreadthReports`
-   * does it: one run, one parseable document, regardless of address count.
+   * Renders several callables' traced paths as one document. JSON is always an array,
+   * whatever the address count.
    */
   public renderDepthReports(args: RenderDepthReportsArguments): string {
     if (args.format === "json") {

@@ -1,11 +1,12 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { FsTree } from "nx/src/generators/tree";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { useTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PathsModule } from "./paths.module";
 import { PathsService } from "./paths.service";
@@ -22,11 +23,7 @@ import type { Tree } from "@nx/devkit";
  * Builds a workspace whose modules sit under `src/modules`, plus one stray
  * directory elsewhere, so the "most common parent" rule has something to beat.
  */
-async function createWorkspace(): Promise<string> {
-  const workspaceRoot = await mkdtemp(
-    path.join(tmpdir(), "conformetry-nx-paths-"),
-  );
-
+async function populateWorkspace(workspaceRoot: string): Promise<void> {
   for (const moduleName of ["differences", "logger"]) {
     const modulePath = path.join(
       workspaceRoot,
@@ -70,24 +67,23 @@ async function createWorkspace(): Promise<string> {
     ]),
     "utf8",
   );
-
-  return workspaceRoot;
 }
 
 describe(PathsService, () => {
+  const readWorkspaceRoot = useTemporaryDirectory("nx-paths");
   let configurationPath: string;
   let service: PathsService;
   let tree: Tree;
   let workspaceRoot: string;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(PathsService, {
       imports: [PathsModule],
-      providers: [PathsService],
-    }).compile();
+    });
 
-    service = await module.resolve(PathsService);
-    workspaceRoot = await createWorkspace();
+    service = built.instance;
+    workspaceRoot = readWorkspaceRoot();
+    await populateWorkspace(workspaceRoot);
     configurationPath = path.join(workspaceRoot, "conformetry.config.json");
     // A real tree over the temporary workspace: `readProjectConfiguration`
     // walks the tree for `project.json` files rather than reading one path,
@@ -95,8 +91,12 @@ describe(PathsService, () => {
     tree = new FsTree(workspaceRoot, false);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PathsService, {
+      imports: [PathsModule],
+    });
+
+    expect(instance).toBeInstanceOf(PathsService);
   });
 
   describe("resolveGenerationPath", () => {
@@ -431,10 +431,7 @@ describe(PathsService, () => {
 
   describe("resolveGenerationPath with a crafted set of instances", () => {
     /**
-     * Builds a `PathsService` whose collaborators are stubbed, so the
-     * instances fed into it can be shaped by hand instead of by a real glob —
-     * what these tests exercise is the module-parent inference, not
-     * discovery.
+     * Builds a `PathsService` whose collaborators are stubbed, so instances can be shaped by hand.
      */
     function createIsolatedService(instances: Instance[]): PathsService {
       return new PathsService(

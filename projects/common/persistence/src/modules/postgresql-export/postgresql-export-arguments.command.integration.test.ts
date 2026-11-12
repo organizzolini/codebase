@@ -1,18 +1,23 @@
 import { execFile } from "node:child_process";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { createTemporaryDirectory } from "@codebase/testing";
+
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { INTEGRATION_TEST_TIMEOUT_MILLISECONDS } from "../../../testing/fixture-persistence";
+
+import type * as Testing from "@codebase/testing";
 
 // 🎯 The real execFile, wrapped so each test can see whether any client tool
 // was started at all.
 vi.mock("node:child_process", async (importOriginal) => {
-  const actual = await importOriginal<{ execFile: typeof execFile }>();
-  return { ...actual, execFile: vi.fn<typeof execFile>(actual.execFile) };
+  const { mockChildProcess } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
+
+  return mockChildProcess(await importOriginal());
 });
 
 /** Nothing listens on port 1, so any connection attempt would fail loudly. */
@@ -23,11 +28,8 @@ describe("postgresql-export with missing arguments", () => {
   let directory: string;
 
   beforeEach(() => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "fixture-arguments-"));
+    directory = createTemporaryDirectory("fixture-arguments");
     vi.mocked(execFile).mockClear();
-    return () => {
-      fs.rmSync(directory, { force: true, recursive: true });
-    };
   });
 
   async function runExport(

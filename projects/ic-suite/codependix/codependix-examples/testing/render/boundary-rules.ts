@@ -7,16 +7,7 @@ import type { CodependixBoundaryRule } from "@codependix/configuration";
 
 // ♟️ Constants
 
-/**
- * A four-project Nx graph with one edge every seeded rule shape can judge.
- *
- * Written as a `BoundaryGraph` directly rather than built from a real Nx
- * workspace: the adapters that flatten the four real graphs into this shape
- * live in `@codependix/cli` and are exercised by the `graph-levels` example.
- * What this example is about is the judging, which starts here. Each node
- * names the project that owns it, as the real adapter's do, because that is
- * who a finding is charged to.
- */
+/** A four-project graph with an edge every rule shape judges. */
 const ATLAS_PROJECTS: BoundaryGraph = {
   edges: [
     { implicit: false, source: "atlas-application", target: "atlas-service" },

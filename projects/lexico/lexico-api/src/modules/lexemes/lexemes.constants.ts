@@ -15,10 +15,7 @@ import { PrepositionInflectionType } from "./inflections/preposition-inflection.
 import { UninflectedInflectionType } from "./inflections/uninflected-inflection.entities";
 import { VerbInflectionType } from "./inflections/verb-inflection.entities";
 
-/**
- * Every concrete form and inflection, which no resolver names, so the schema
- * can resolve the `Form` and `Inflection` interfaces a lexeme returns.
- */
+/** Concrete types no resolver names, so `Form` interfaces resolve. */
 export const ORPHANED_GRAPHQL_TYPES = [
   NominalFormType,
   FiniteVerbFormType,

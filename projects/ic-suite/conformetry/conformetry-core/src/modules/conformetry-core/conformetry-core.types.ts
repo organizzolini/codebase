@@ -1,16 +1,6 @@
 // 🏷️ Types
 
-/**
- * A structured conformance error produced by any validator.
- *
- * Two discriminating fields identify the error category:
- * - `differenceType` — what kind of element is missing
- * - `language` — which validator / file format produced the error.
- *
- * All differences represent a *missing* or *mismatched* element; there is no
- * separate action field. Consumers render these through `ReportingService`
- * rather than formatting them ad hoc, so every validator reports identically.
- */
+/** A conformance error from any validator, rendered by `ReportingService`. */
 export interface ConformetryDifference {
   /** Actual value found in the instance (populated for value-mismatch differences). */
   readonly actual?: string;
@@ -40,24 +30,13 @@ export interface ConformetryDifference {
   /** JSON dot-notation path in the template document. */
   readonly templatePath?: string;
   /**
-   * How many template requirements this one finding accounts for.
-   *
-   * A validator reports a missing element once, however much of the template
-   * that element contained: deleting a class is one error, not one per member.
-   * The weight restores the proportion — a missing class stands in for its
-   * whole subtree, a missing import stands only for itself — so an instance's
-   * score reflects how much of the template is actually absent.
-   *
-   * Defaults to 1 when absent, which is right for any leaf requirement.
+   * Requirements this finding stands for: a missing class covers its whole
+   * subtree, a missing import only itself. Defaults to 1.
    */
   readonly weight?: number;
 }
 
-/**
- * The language / file format processed by the validator that produced the
- * error. Absent for `"file"` and `"directory"` differences, which are language
- * agnostic and raised by the file-existence pass.
- */
+/** Validator's language or format; absent for `"file"` and `"directory"` errors. */
 export type ConformetryDifferenceLanguage =
   | "javascript"
   | "json"
@@ -66,14 +45,7 @@ export type ConformetryDifferenceLanguage =
   | "text"
   | "typescript";
 
-/**
- * Category of the element that caused the conformance failure.
- *
- * `"instance"` is the odd one out: it does not name a missing element inside a
- * file but a directory or file the caller declared to be generated code, which
- * conformetry could not attribute to any single template. `"placeholder"`
- * names a template placeholder whose value no instance node revealed.
- */
+/** Failing element kind: `"instance"` is unexplained output, `"placeholder"` is unrevealed. */
 export type ConformetryDifferenceType =
   | "code"
   | "comment"
@@ -83,24 +55,12 @@ export type ConformetryDifferenceType =
   | "placeholder";
 // 🏷️ Types
 
-/**
- * A validator for one language or file format.
- *
- * Implementations supply only their descriptor and a single-document
- * comparison. Extension filtering, result grouping, and result assembly are
- * handled once by `RunnerService`, so no validator repeats that envelope.
- *
- * Not to be confused with an Nx plugin — this is the contract between
- * `conformetry-validation` and the Language modules in `conformetry-languages`,
- * such as its TypeScript module.
- */
+/** A validator for one format; supplies a descriptor and document comparison. */
 export interface ConformetryLanguageValidator {
   readonly descriptor: LanguageValidatorDescriptor;
   /**
-   * Compares one already-rendered template against its instance and returns
-   * every difference, plus how much was asked of the instance. Called only for
-   * documents whose extension this validator claims, so implementations never
-   * need to re-check the extension.
+   * Compares one rendered template with its instance, returning every difference
+   * and the weight asked of the instance. Only called for claimed extensions.
    */
   validateDocument(
     document: PreparedValidationDocument,
@@ -115,21 +75,11 @@ export interface DirectoryEntry {
   name: string;
 }
 
-/**
- * What comparing one document produced: the differences, and the size of the
- * requirement the comparison weighed them against.
- *
- * The total is reported even when nothing is wrong. A conforming document is
- * still evidence — it is the part of the instance that *did* honour its
- * template — and leaving it out of the denominator would score an instance
- * only against the files it got wrong.
- */
+/** One document's differences and the weight they were measured against. */
 export interface DocumentValidationResult {
   /**
-   * What each placeholder value in the rendered template stood for, keyed by
-   * the value: the text of the instance node the comparison aligned with the
-   * template node holding it, first occurrence first. Absent when a language
-   * captures nothing.
+   * The instance text each placeholder value stood for, keyed by that value.
+   * Absent when a language captures nothing.
    */
   readonly captures?: Readonly<Record<string, string>>;
   readonly differences: ConformetryDifference[];
@@ -137,13 +87,7 @@ export interface DocumentValidationResult {
   readonly totalWeight: number;
 }
 
-/**
- * Filesystem operations used by the generation runtime.
- *
- * Exists so a host with a virtual filesystem — an Nx generator `Tree`, for
- * instance — can run generation without touching disk. The default
- * implementation reads and writes directly.
- */
+/** Filesystem operations, letting a virtual host like Nx's `Tree` skip disk. */
 export interface FileSystemAdapter {
   listDirectory(directoryPath: string): Promise<DirectoryEntry[]>;
   makeDirectory(directoryPath: string): Promise<void>;
@@ -174,18 +118,13 @@ export type GeneratorHook = (
 export interface GeneratorHookContext {
   /**
    * Absolute directory of the configuration file that declared the generator.
-   *
-   * The anchor for any path a hook builds that belongs to the configuration
-   * rather than to the instance being generated.
+   * Hooks build paths belonging to the configuration here, not to the instance.
    */
   configurationDirectoryPath: string;
   definition: GeneratorDefinition;
   /**
-   * The adapter the run itself reads and writes through.
-   *
-   * Absolute paths only, exactly as the runtime uses it. A hook that writes
-   * here lands in whatever the host writes to — the disk under the command
-   * line, a virtual tree under Nx — instead of bypassing it.
+   * The adapter the run reads and writes through. A hook writing here lands
+   * wherever the host writes: disk, or a virtual tree under Nx.
    */
   filesystem: FileSystemAdapter;
   generatedFilePaths: string[];
@@ -202,13 +141,7 @@ export interface GeneratorHooks {
   preGenerate?: GeneratorHook;
 }
 
-/**
- * How well one matched instance honours the template it was matched to.
- *
- * Lives in core rather than beside the orchestrator because reporting renders
- * it and the orchestrator produces it, and a shape shared by two layers is
- * exactly what the leaf package is for.
- */
+/** How well a matched instance honours its template, shared across layers. */
 export interface InstanceScore {
   /** Combined weight of the requirements this instance failed. */
   readonly failedWeight: number;
@@ -225,12 +158,7 @@ export interface InstanceScore {
 }
 // 🏷️ Types
 
-/**
- * One instance found on disk, paired with the templates that explain it.
- *
- * Lives in core for the same reason [[InstanceScore]] does: discovery produces
- * it and the output layer renders it, so the shape belongs to neither side.
- */
+/** An instance on disk, with the templates that explain it. */
 export interface InventoriedInstance {
   /** Where the instance is, including its name stem. */
   readonly path: string;
@@ -238,12 +166,7 @@ export interface InventoriedInstance {
   readonly templates: InventoriedPairing[];
 }
 
-/**
- * How well one template and one instance fit each other.
- *
- * The ratio is file overlap, not conformance: it says how much of a template's
- * structure an instance has, never how faithfully those files honour it.
- */
+/** Fit between a template and instance: file overlap, not conformance. */
 export interface InventoriedPairing {
   readonly matchedFileCount: number;
   /** Share of the template's files the instance already has, 0 to 1. */
@@ -285,14 +208,7 @@ export interface LanguageValidatorResult {
   readonly totalWeight: number;
 }
 
-/**
- * A template file paired with the instance file it governs, with the template
- * already rendered against the project's substitutions. Producing these is
- * `conformetry-configuration`'s job; validators only compare them.
- *
- * A document exists only when both sides are present on disk — missing files
- * are reported by the file-existence pass before validators ever run.
- */
+/** A template and the instance file it governs, rendered with substitutions. */
 export interface PreparedValidationDocument {
   /** Basename of the instance file, used to pick a parser. */
   readonly filename: string;
@@ -313,10 +229,7 @@ export interface PreparedValidationPayload {
 }
 // 🏷️ Types
 
-/**
- * Every error found in one instance file, kept grouped by file so reports can
- * print a per-file heading with its originating template.
- */
+/** Errors found in one instance file, for a per-file report heading. */
 export interface ValidationFileResult {
   readonly differences: ConformetryDifference[];
   readonly filename: string;

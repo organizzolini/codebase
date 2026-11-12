@@ -6,13 +6,8 @@ import type { BoundaryNode } from "./boundaries.types";
 import type { CodependixBoundarySelector } from "@codependix/configuration";
 
 /**
- * Decides which nodes a rule's selector claims.
- *
- * Split out from `BoundariesService` because it is the one part of rule
- * evaluation with no opinion about rules at all: a selector and a node go in,
- * and a yes or no comes out. Both rule kinds ask it the same question, and so
- * does anything that later wants to know what a rule covers without running
- * it.
+ * Decides which nodes a rule's selector claims. Has no opinion about rules: a selector and a node
+ * go in, a yes or no comes out. Both rule kinds use it, and so could anything asking what a rule covers.
  */
 @Injectable()
 export class BoundarySelectorService {
@@ -27,12 +22,8 @@ export class BoundarySelectorService {
   // 🔏 Private Methods
 
   /**
-   * Whether one of a node's string attributes matches a list of globs.
-   *
-   * A selector naming an attribute the node's level does not carry matches
-   * nothing rather than everything — a `path` rule evaluated against a NestJS
-   * module graph, which carries no file paths, selects no module instead of
-   * silently selecting all of them.
+   * Whether a node attribute matches a list of globs. A selector naming an attribute the level lacks
+   * matches nothing, not everything.
    */
   private matchesGlobs(
     value: string | undefined,
@@ -50,11 +41,7 @@ export class BoundarySelectorService {
   }
 
   /**
-   * Whether a node carries a tag matching one of a list of globs.
-   *
-   * One tag matching is enough, which is what makes `tags: ["type:package"]`
-   * read the way an Nx tag list does — a project carries several, and a rule
-   * naming one is asking whether that one is among them.
+   * Whether a node tag matches a list of globs. One matching tag suffices, as in an Nx tag list.
    */
   private matchesTags(
     tags: readonly string[] | undefined,
@@ -76,12 +63,8 @@ export class BoundarySelectorService {
   // 🌎 Public Methods
 
   /**
-   * Whether a selector claims a node.
-   *
-   * Every field the selector states must match — the fields narrow each
-   * other, so `{ project: ["lexico"], path: ["src/**"] }` means a file in
-   * lexico's `src` rather than either of those. Within one field, one glob
-   * matching is enough.
+   * Whether a selector claims a node. Every stated field must match, so the fields narrow each other.
+   * Within a field, one glob suffices.
    */
   public matches(
     node: BoundaryNode,
@@ -96,12 +79,8 @@ export class BoundarySelectorService {
   }
 
   /**
-   * The ids of every node a selector claims.
-   *
-   * A selector of `undefined` claims every node, which is what an `acyclic`
-   * rule naming no scope means. An empty selector is a different thing and
-   * never reaches here: the configuration schema refuses one outright, since
-   * a selector stating nothing reads exactly like a typo.
+   * The ids of every node a selector claims. An undefined selector claims all nodes;
+   * the configuration schema refuses an empty one.
    */
   public selectIds(
     nodes: readonly BoundaryNode[],

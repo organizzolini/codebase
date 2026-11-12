@@ -1,3 +1,111 @@
+## 0.0.81 (2026-11-12)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.81
+- Updated codometer-measurement to 0.0.81
+- Updated codometer-core to 0.0.81
+
+## 0.0.80 (2026-11-12)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.80
+- Updated codometer-measurement to 0.0.80
+- Updated codometer-core to 0.0.80
+
+## 0.0.79 (2026-11-11)
+
+### 🚀 Features
+
+- **codometer:** ✨ tighten the comment budgets and shorten every comment over them ([#2262](https://github.com/organizzolini/codebase/pull/2262), [#2261](https://github.com/organizzolini/codebase/issues/2261))
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.79
+- Updated codometer-measurement to 0.0.79
+- Updated codometer-core to 0.0.79
+
+## 0.0.78 (2026-11-10)
+
+### 🚀 Features
+
+- **codometer:** ✨ gate JSDoc on every declaration kind and shorten long comments ([#2227](https://github.com/organizzolini/codebase/pull/2227), [#2226](https://github.com/organizzolini/codebase/issues/2226))
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.78
+- Updated codometer-measurement to 0.0.78
+- Updated codometer-core to 0.0.78
+
+## 0.0.77 (2026-11-10)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.77
+- Updated codometer-measurement to 0.0.77
+- Updated codometer-core to 0.0.77
+
+## 0.0.76 (2026-11-10)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.76
+- Updated codometer-measurement to 0.0.76
+- Updated codometer-core to 0.0.76
+
+## 0.0.75 (2026-11-10)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.75
+- Updated codometer-measurement to 0.0.75
+- Updated codometer-core to 0.0.75
+
+## 0.0.74 (2026-11-10)
+
+### 🚀 Features
+
+- **callidescope,codependix,codometer,coinagerie,configuration:** ✨ write tool markdown to adjacent files ([#2225](https://github.com/organizzolini/codebase/pull/2225), [#2224](https://github.com/organizzolini/codebase/issues/2224))
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.74
+- Updated codometer-measurement to 0.0.74
+- Updated codometer-core to 0.0.74
+
+## 0.0.73 (2026-11-09)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.73
+- Updated codometer-measurement to 0.0.73
+- Updated codometer-core to 0.0.73
+
+## 0.0.72 (2026-11-08)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.72
+- Updated codometer-measurement to 0.0.72
+- Updated codometer-core to 0.0.72
+
+## 0.0.71 (2026-11-08)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.71
+- Updated codometer-measurement to 0.0.71
+- Updated codometer-core to 0.0.71
+
+## 0.0.70 (2026-11-07)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.70
+- Updated codometer-measurement to 0.0.70
+- Updated codometer-core to 0.0.70
+
 ## 0.0.69 (2026-11-06)
 
 ### 🧱 Updated Dependencies

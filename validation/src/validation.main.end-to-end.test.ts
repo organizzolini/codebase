@@ -10,12 +10,7 @@ import type { SpawnSyncReturns } from "node:child_process";
 
 const COMMAND_PATH = path.resolve(import.meta.dirname, "validation.main.ts");
 
-/**
- * Where a spawned run's fixture workspace is rooted: inside this project, in
- * its gitignored `tmp`, never the operating system's temporary directory.
- * `@swc-node/register` resolves itself and this project's path aliases from
- * `cwd` upward, which a directory outside the workspace never reaches.
- */
+/** Fixtures live in gitignored `tmp`: swc-node resolves aliases only inside it. */
 const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../tmp");
 
 /** Git configuration a fixture commit needs, whatever the machine's is. */
@@ -78,11 +73,7 @@ describe("main end-to-end suite", () => {
       }
     };
 
-    /**
-     * `@swc-node/register` reads a `tsconfig.json` at `cwd` exactly, never an
-     * ancestor's, so every directory a command runs from extends this
-     * project's real one.
-     */
+    /** swc-node reads only the `tsconfig.json` at `cwd`, never an ancestor's. */
     const extendProjectTsconfig = (directory: string): void => {
       writeFileSync(
         path.join(directory, "tsconfig.json"),

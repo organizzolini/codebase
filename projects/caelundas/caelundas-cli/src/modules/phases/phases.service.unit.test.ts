@@ -1,15 +1,14 @@
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { MartianPhaseService } from "./martian-phase.service";
 import { MercurianPhaseService } from "./mercurian-phase.service";
 import { PhasesService } from "./phases.service";
 import { VenusianPhaseService } from "./venusian-phase.service";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { DetectPlanetaryEventsArguments } from "./phases.types";
 
 const createEvent = (
@@ -77,7 +76,6 @@ const createMockPhaseInputs = (): DetectPlanetaryEventsArguments => {
 
 describe(PhasesService, () => {
   let service: PhasesService;
-  const logger = new LoggerService();
 
   const venusianPhaseService = {
     getVenusianPhaseEvents:
@@ -100,38 +98,43 @@ describe(PhasesService, () => {
       vi.fn<MartianPhaseService["getMartianPhaseProgressiveEvents"]>(),
   };
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PhasesService,
-        {
-          provide: LoggerService,
-          useValue: logger,
-        },
-        {
-          provide: VenusianPhaseService,
-          useValue: venusianPhaseService,
-        },
-        {
-          provide: MercurianPhaseService,
-          useValue: mercurianPhaseService,
-        },
-        {
-          provide: MartianPhaseService,
-          useValue: martianPhaseService,
-        },
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    providers: [
+      {
+        provide: VenusianPhaseService,
+        useValue: venusianPhaseService,
+      },
+      {
+        provide: MercurianPhaseService,
+        useValue: mercurianPhaseService,
+      },
+      {
+        provide: MartianPhaseService,
+        useValue: martianPhaseService,
+      },
+    ],
+  };
 
-    service = await module.resolve(PhasesService);
+  beforeAll(async () => {
+    const { instance } = await buildTestingModule(
+      PhasesService,
+      testingModuleOptions,
+    );
+
+    service = instance;
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      PhasesService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(PhasesService);
   });
 
   describe("detect", () => {

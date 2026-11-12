@@ -265,9 +265,8 @@ export class EclipseGeometryService {
   }
 
   /**
-   * Lunar eclipse geometry: the Moon's distance from the axis of Earth's
-   * shadow, and the penumbral contact distance. The penumbra's radius is
-   * 1.01·π☾ + π☉ + s☉ (Danjon), so the Moon's limb touches it at that plus s☾.
+   * Lunar eclipse geometry: the Moon's distance from the shadow axis, and the
+   * penumbral contact limit (Danjon).
    */
   getLunarContactGeometry(
     coordinates: EclipseCoordinates,
@@ -292,9 +291,8 @@ export class EclipseGeometryService {
   }
 
   /**
-   * Solar eclipse geometry: the geocentric Sun–Moon separation, and the
-   * separation at which the Moon's penumbra first or last touches Earth
-   * (global P1/P4), π☾ − π☉ + s☉ + s☾.
+   * Solar eclipse geometry: the geocentric Sun–Moon separation, and the limit at
+   * which the penumbra first or last touches Earth.
    */
   getSolarContactGeometry(
     coordinates: EclipseCoordinates,
@@ -355,9 +353,8 @@ export class EclipseGeometryService {
   }
 
   /**
-   * Solar eclipse geometry as one observer sees it: the topocentric Moon's
-   * separation from the topocentric Sun, and the separation at which their
-   * limbs touch (C1/C4), s☉ + s☾. The discs overlap while it is below that.
+   * Solar eclipse geometry for one observer: the topocentric Sun–Moon
+   * separation, and its limb contact limit (s☉ + s☾).
    */
   getTopocentricSolarContactGeometry(
     sample: TopocentricSample,

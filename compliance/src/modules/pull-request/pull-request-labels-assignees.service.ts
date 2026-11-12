@@ -20,9 +20,8 @@ import type {
 /**
  * Reads a pull request's metadata and says whether it agrees with its title.
  *
- * Pure throughout: every method is a function of what it is handed, so the
- * whole rule set is testable without a pull request, a token, or a network.
- * Reading the metadata from GitHub is the command's job, not this one's.
+ * Pure, so the whole rule set is testable without a pull request, a token, or a
+ * network. Reading the metadata from GitHub is the command's job.
  */
 @Injectable()
 export class PullRequestLabelsAssigneesService {
@@ -37,14 +36,8 @@ export class PullRequestLabelsAssigneesService {
   // 🔏 Private Methods
 
   /**
-   * The scope labels must be exactly the title's scopes, in both directions.
-   *
-   * A title with no scope names no expected labels, which would make both
-   * loops vacuous: the forward one would find nothing missing and pass in
-   * silence, and the reverse one would denounce every scope label the pull
-   * request legitimately carries. So the missing scope is recorded as its own
-   * single failure and the comparison is skipped entirely — there is nothing
-   * to compare against until the title is fixed.
+   * Scope labels must match the title's scopes both ways. With no title scope, it is one
+   * failure and no comparison.
    */
   private checkScopeLabels(
     options: {
@@ -81,13 +74,8 @@ export class PullRequestLabelsAssigneesService {
   }
 
   /**
-   * Exactly one source label, and it is one of the two that exist.
-   *
-   * Unlike the type and scope labels there is nothing in the title to compare
-   * this against: the source declares who opened the pull request, so every
-   * other `source:` label is simply unexpected. A missing one gets two
-   * alternative commands rather than one command carrying a shell comment,
-   * because either is right and only a person can say which.
+   * Exactly one source label, one of the two that exist. A missing one gets two
+   * alternative commands.
    */
   private checkSourceLabel(
     pullRequestNumber: string,
@@ -155,10 +143,8 @@ export class PullRequestLabelsAssigneesService {
   // 🌎 Public Methods
 
   /**
-   * Every way this pull request's metadata disagrees with its title.
-   *
-   * The failures are collected rather than thrown one at a time, and each one
-   * that has a fix contributes the `gh pr edit` command that applies it.
+   * Every way the pull request's metadata disagrees with its title, with a
+   * `gh pr edit` fix where one exists.
    */
   public checkMetadata(options: {
     readonly metadata: PullRequestLabelsAssignees;
@@ -217,11 +203,8 @@ export class PullRequestLabelsAssigneesService {
   }
 
   /**
-   * Reads the type and scopes out of a conventional title.
-   *
-   * A title that does not parse at all returns `undefined`, which the caller
-   * reports; a title that parses with no scope group returns an empty scope
-   * list, which is a check failure rather than a parse failure.
+   * Reads the type and scopes of a conventional title. A title that cannot be parsed
+   * returns `undefined`; no scope gives an empty list.
    */
   public parseTitle(title: string): TitleConvention | undefined {
     const match = CONVENTIONAL_TITLE_PATTERN.exec(title.trim());

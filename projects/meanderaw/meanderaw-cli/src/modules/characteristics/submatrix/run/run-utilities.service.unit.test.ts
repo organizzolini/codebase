@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -12,17 +13,12 @@ describe(RunUtilitiesService, () => {
   let service: RunUtilitiesService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(RunUtilitiesService, {
       imports: [CodeModule, MatrixModule],
-      providers: [RunUtilitiesService],
-    }).compile();
+    });
 
-    matrixService = await module.resolve(MatrixService);
-    service = await module.resolve(RunUtilitiesService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    matrixService = await built.module.resolve(MatrixService);
+    service = built.instance;
   });
 
   describe("longestHorizontalRunLength", () => {
@@ -59,11 +55,9 @@ describe(RunUtilitiesService, () => {
     });
 
     it("never wraps a run across the band's own border rules", () => {
-      // A single-column south arm at row 0 and another at row 2, with a
-      // bare row 1 between them. If the last row's south arm wrapped
-      // around to row 0 the way an east arm wraps across columns, this
-      // would read as one continuous run of 2; since it does not, the
-      // longest run is the lone edge from row 0 to row 1.
+      // A south arm at row 0 and another at row 2, with a bare row 1
+      // between them. Vertical runs do not wrap the way east arms do, so
+      // the longest run is the lone edge from row 0 to row 1.
       const matrix = matrixService.fromCode({
         columns: 1,
         digits: "404",

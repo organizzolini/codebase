@@ -22,8 +22,7 @@ import type { ReactElement, ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The builder to open, the button that opens it, and whether the screen is
- * a tablet's.
+ * The builder's trigger element and whether this is a tablet.
  */
 export interface FilterSurfaceProperties {
   children?: ReactNode;
@@ -35,11 +34,7 @@ export interface FilterSurfaceProperties {
 // 🧩 Component
 
 /**
- * Opens the builder over the calendar from its trigger: a popover from 1024
- * pixels wide, a drawer from the side from 768, and a bottom sheet below
- * that, so it never keeps any of the calendar's space. Its root lays out as
- * its trigger alone and carries a `data-slot`, so a button group around it
- * still joins the trigger to the button after it.
+ * Opens the builder from its trigger as a popover, drawer or bottom sheet by width, never keeping calendar space.
  */
 export function FilterSurface(
   properties: Readonly<FilterSurfaceProperties>,

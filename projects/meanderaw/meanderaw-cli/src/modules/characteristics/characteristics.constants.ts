@@ -2,16 +2,7 @@ import { LETTER_ORIENTATION_NAMES } from "./submatrix/letter/letter.constants";
 
 // ♟️ Constants
 
-/**
- * The key of every letter glyph count, sixteen per letter: the letter's
- * transliteration, its positional form for an Arabic letter, one of its
- * sixteen orientation names, and its script —
- * `<letter>[<Form>]<Corner>[Quarter|Half|ThreeQuarter]<Script>Count`, such as
- * `aSoutheastLatinCount`, `daletSouthwestHalfHebrewCount`, or
- * `behIsolatedSouthwestArabicCount`. Letters run alphabetically, and each
- * letter's keys in `LETTER_ORIENTATION_NAMES` order.
- * Each is the `metadata.key` of one evaluator a letter service provides.
- */
+/** Each letter's sixteen count keys, in `LETTER_ORIENTATION_NAMES` order. */
 export const LETTER_CHARACTERISTIC_KEYS = [
   ...LETTER_ORIENTATION_NAMES.map((name) => `a${name}LatinCount` as const),
   ...LETTER_ORIENTATION_NAMES.map(
@@ -228,14 +219,7 @@ export const LETTER_CHARACTERISTIC_KEYS = [
   ...LETTER_ORIENTATION_NAMES.map((name) => `z${name}LatinCount` as const),
 ] as const;
 
-/**
- * The key of every numeric characteristic an evaluator under `submatrix/`,
- * `path/`, or `compound/` fills — each structural count listed here and every
- * letter key — in alphabetical order. Each is the `metadata.key` of exactly
- * one registered evaluator whose `valueType` is `"number"`, and
- * `CharacteristicsModule`'s own test holds the two sets equal in both
- * directions.
- */
+/** Every numeric key, letters included, pinned to the evaluators by a test. */
 export const NUMERIC_CHARACTERISTIC_KEYS = (
   [
     "bettiNumber0Count",
@@ -280,11 +264,7 @@ export const NUMERIC_CHARACTERISTIC_KEYS = (
   ] as const
 ).toSorted();
 
-/**
- * The key of every boolean characteristic, in alphabetical order — the
- * `metadata.key` of exactly one registered evaluator whose `valueType` is
- * `"boolean"`.
- */
+/** Every boolean characteristic key, alphabetical, one per boolean evaluator. */
 export const BOOLEAN_CHARACTERISTIC_KEYS = [
   "endsAreLatticeNeighbors",
   "endsOnBorderRules",
@@ -311,12 +291,7 @@ export const BOOLEAN_CHARACTERISTIC_KEYS = [
   "reversesAtItsTightestTurn",
 ] as const;
 
-/**
- * The key of every pattern characteristic, in alphabetical order — the
- * compound booleans under `compound/pattern/`, each a named combination of
- * other Characteristics a meander can be filtered by. The draw run writes
- * one page per key, listing every meander the pattern holds for.
- */
+/** Every pattern characteristic, alphabetical: the compound booleans under `compound/pattern/`. */
 export const PATTERN_CHARACTERISTIC_KEYS = [
   "isArcade",
   "isBars",
@@ -338,32 +313,19 @@ export const PATTERN_CHARACTERISTIC_KEYS = [
   "isWhirl",
 ] as const satisfies readonly (typeof BOOLEAN_CHARACTERISTIC_KEYS)[number][];
 
-/**
- * Every characteristic key, numeric keys first and boolean keys after, each
- * run alphabetical — the order `CharacteristicsService` lists
- * metadata in and fills a record in.
- */
+/** Every characteristic key: numeric first, then boolean, each run alphabetical. */
 export const CHARACTERISTIC_KEYS = [
   ...NUMERIC_CHARACTERISTIC_KEYS,
   ...BOOLEAN_CHARACTERISTIC_KEYS,
 ] as const;
 
-/**
- * Every key a meander row's `characteristics` map may hold `true` under, in
- * the order a caption lists them: each boolean characteristic, then
- * `isReducible`, which is a fact about the Code as filed rather than any
- * evaluator's value.
- */
+/** Boolean keys a row may set `true` under, and `isReducible`. */
 export const STORED_BOOLEAN_KEYS = [
   ...BOOLEAN_CHARACTERISTIC_KEYS,
   "isReducible",
 ] as const;
 
-/**
- * {@link BOOLEAN_CHARACTERISTIC_KEYS} as a set of plain strings, so an
- * unchecked key read off a discovered provider can be looked up without
- * first being narrowed to the key union it is being checked against.
- */
+/** {@link BOOLEAN_CHARACTERISTIC_KEYS} as plain strings, for lookups without narrowing. */
 export const BOOLEAN_CHARACTERISTIC_KEY_SET: ReadonlySet<string> = new Set(
   BOOLEAN_CHARACTERISTIC_KEYS,
 );

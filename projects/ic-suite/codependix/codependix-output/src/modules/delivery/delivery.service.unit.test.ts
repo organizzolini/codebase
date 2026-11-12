@@ -1,9 +1,10 @@
-import { mkdtemp, readFile, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AnchorNotFoundError } from "../anchors/anchors.constants";
 import { AnchorsService } from "../anchors/anchors.service";
@@ -17,19 +18,21 @@ describe(DeliveryService, () => {
   let projectRoot: string;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [AnchorsService, DeliveryService],
-    }).compile();
-
-    service = await module.resolve(DeliveryService);
+    ({ instance: service } = await buildTestingModule(DeliveryService, {
+      providers: [AnchorsService],
+    }));
   });
 
-  beforeEach(async () => {
-    projectRoot = await mkdtemp(path.join(tmpdir(), "codependix-delivery-"));
+  beforeEach(() => {
+    projectRoot = createTemporaryDirectory("codependix-delivery");
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(DeliveryService, {
+      providers: [AnchorsService],
+    });
+
+    expect(instance).toBeInstanceOf(DeliveryService);
   });
 
   describe("renderJson", () => {
@@ -243,6 +246,33 @@ describe(DeliveryService, () => {
         staleExports: [],
         stalePaths: [],
       });
+    });
+
+    it("creates the file when an anchor destination names one that does not exist and a markdownSection was given", async () => {
+      const resolvedOutput: ResolvedCodependixGraphOutput = {
+        json: undefined,
+        markdown: { anchor: "nx", path: "codependix.md" },
+        target: "markdown",
+      };
+
+      service.deliverGraphOutput({
+        jsonContent: undefined,
+        markdownContent: "```mermaid\ngraph LR\n```",
+        markdownSection: {
+          introLine: "Dependency graphs exported by codependix.",
+          subheading: "Nx Neighborhood",
+        },
+        mode: "write",
+        project: { absoluteRoot: projectRoot, name: "logger" },
+        resolvedOutput,
+      });
+
+      const written = await readFile(
+        path.join(projectRoot, "codependix.md"),
+        "utf8",
+      );
+
+      expect(written).toContain("graph LR");
     });
 
     it("throws when an anchor destination names a file that does not exist", () => {

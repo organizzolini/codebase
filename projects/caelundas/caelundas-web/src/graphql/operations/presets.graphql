@@ -1,0 +1,33 @@
+fragment PresetFields on Preset {
+  description
+  id
+  name
+  filter {
+    ...FilterGroupFields
+    groups {
+      ...FilterGroupFields
+      groups {
+        ...FilterGroupFields
+      }
+    }
+  }
+}
+
+fragment FilterGroupFields on EventFilterGroup {
+  combinator
+  rules {
+    negated
+    operator
+    path
+    values
+  }
+}
+
+query Presets {
+  defaultPreset {
+    ...PresetFields
+  }
+  presets {
+    ...PresetFields
+  }
+}

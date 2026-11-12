@@ -23,10 +23,9 @@ import {
 /**
  * Regenerates the OpenWiki pages under `documentation/openwiki`.
  *
- * Runs in the current working directory, which must be the workspace root:
- * OpenWiki treats that directory as the repository and writes to `openwiki`
- * beneath it. It refuses a symbolic link there, so for the length of a run the
- * root `openwiki` symlink gives way to the real directory it points at.
+ * Runs from the workspace root, since OpenWiki writes to `openwiki` beneath the
+ * working directory. It refuses a symlink there, so the root symlink gives way
+ * to its target for the run.
  */
 @Injectable()
 export class RefreshDocumentationService {
@@ -66,11 +65,8 @@ export class RefreshDocumentationService {
   // 🌎 Public Methods
 
   /**
-   * Updates the wiki from code, starting OpenWiki again after a growing wait
-   * when it fails, then puts the `openwiki` symlink back and deletes the
-   * instruction file OpenWiki leaves behind — whether or not it succeeded.
-   *
-   * @returns Whether OpenWiki started and exited with status zero.
+   * Runs OpenWiki, retrying with a growing wait, then restores the `openwiki` symlink.
+   * Always deletes the leftover instruction file.
    */
   public async refresh(): Promise<boolean> {
     const exposed = this.exposeWiki();

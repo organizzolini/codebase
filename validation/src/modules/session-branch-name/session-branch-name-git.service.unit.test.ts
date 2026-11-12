@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { SessionBranchNameGitService } from "./session-branch-name-git.service";
 
@@ -7,19 +8,21 @@ describe(SessionBranchNameGitService, () => {
   let service: SessionBranchNameGitService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [SessionBranchNameGitService],
-    }).compile();
+    const built = await buildTestingModule(SessionBranchNameGitService);
 
-    service = await module.resolve(SessionBranchNameGitService);
+    service = built.instance;
   });
 
   afterEach(() => {
     vi.unstubAllEnvs();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(SessionBranchNameGitService);
+
+    expect(instance).toBeInstanceOf(SessionBranchNameGitService);
   });
 
   it("reports what git printed and the status it exited with", () => {

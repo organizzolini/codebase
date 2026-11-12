@@ -8,8 +8,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * How to move the view, and whether the row is too narrow for a title of a
- * fixed width.
+ * The view's navigation, and whether the title may shrink.
  */
 export interface CalendarNavigationGroupProperties {
   className?: string;
@@ -24,10 +23,7 @@ export interface CalendarNavigationGroupProperties {
 // 🧩 Component
 
 /**
- * Renders Today, then the previous and next buttons around the title of the
- * period shown. Today is switched off while the period includes today. The title holds one width
- * for every view, however long the period's name runs, so nothing beside it
- * moves when the view changes.
+ * Renders Today, then previous and next buttons around the period's title; the title holds one width for every view.
  */
 export function CalendarNavigationGroup(
   properties: Readonly<CalendarNavigationGroupProperties>,

@@ -20,20 +20,10 @@ import type {
 /**
  * Runs the `gh` command-line client and reports what it produced.
  *
- * The `gh` client rather than an HTTP client on purpose: it already resolves
- * the repository from the checkout and the token from the environment, so a
- * workflow, a fork, and a developer's terminal all authenticate the same way
- * with nothing to configure.
+ * Uses `gh` rather than an HTTP client: it resolves the repository and token
+ * from the checkout, so every caller authenticates alike.
  *
- * Near-identical helpers live beside the pull request checks in this same
- * project and beside the label synchronizer in `synchronization`. That
- * duplication is deliberate: the Nx tag constraints and this repository's
- * preference for small self-contained modules make a shared abstraction with
- * a handful of callers a package to maintain in exchange for forty lines.
- *
- * Nothing here throws. This command reports on an issue rather than changing
- * one, so a `gh` that is missing, unauthorized, or rate-limited is a fact to
- * report, not an exception to propagate.
+ * Nothing here throws. A missing or rate-limited `gh` is reported, not raised.
  */
 @Injectable()
 export class IssueGithubService {
@@ -68,8 +58,7 @@ export class IssueGithubService {
   /**
    * Whatever `gh` said about why it could not do the thing.
    *
-   * Both streams, because which one carries the reason varies by subcommand,
-   * and a failure reported with nothing to read is worse than a clumsy line.
+   * Both streams, since `gh` varies which one carries the reason.
    */
   public describeFailure(result: GithubCliResult): string {
     const output = [result.standardError, result.standardOutput.trim()]

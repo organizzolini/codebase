@@ -22,16 +22,9 @@ import type {
 /**
  * Builds each project's one-hop Nx dependency neighborhood.
  *
- * Ported from `synchronization`'s `nx-project-graphs` command (see
- * issue #242), which this package replaces: the graph reading and mermaid
- * rendering are unchanged, but the file-writing side — deciding where and how
- * a neighborhood is exported — belongs to `codependix-cli` and its own anchor
- * mechanism instead of conformetry's marker-block sync.
- *
- * `collectEdges`, `compareEdges`, `renderEdge`, `renderNode`, and
- * `toNodeIdentifier` are kept public: `WorkspaceGraphService` renders the
- * whole-workspace graph with the same node and edge shapes, and reaches for
- * these rather than duplicating them.
+ * Ported from `synchronization`'s `nx-project-graphs` command. File writing belongs to
+ * `codependix-cli`, not this service. `collectEdges` and the rendering helpers are public
+ * so `WorkspaceGraphService` can reuse them.
  */
 @Injectable()
 export class NeighborhoodService {
@@ -46,10 +39,8 @@ export class NeighborhoodService {
   // 🔏 Private Methods
 
   /**
-   * Whether a parsed file looks like a project graph at all.
-   *
-   * Deliberately shallow — a supplied graph's contents are trusted, and this
-   * only separates "Nx wrote this" from "this is some other JSON".
+   * Whether a parsed file looks like a project graph at all. Deliberately shallow:
+   * it only separates Nx output from other JSON.
    */
   private isProjectGraph(value: unknown): value is NxProjectGraph {
     if (typeof value !== "object" || value === null) return false;
@@ -67,11 +58,8 @@ export class NeighborhoodService {
   // 🌎 Public Methods
 
   /**
-   * Builds every project's neighborhood from one read of the project graph.
-   *
-   * The workspace root project is left out by `readProjects`, so no
-   * neighborhood is built for it: it contains every other project rather than
-   * depending on them, so its neighborhood would say nothing.
+   * Builds every project's neighborhood from one read of the graph. The workspace root is
+   * left out, as it contains every project.
    */
   buildNeighborhoods(
     graph: NxProjectGraph,
@@ -105,13 +93,8 @@ export class NeighborhoodService {
   }
 
   /**
-   * Collects edges between known workspace projects, optionally narrowed to
-   * the ones touching one subject project.
-   *
-   * `subjectName` left undefined collects every edge among `knownNames` —
-   * what `WorkspaceGraphService` needs for the whole-workspace graph. Naming
-   * it narrows to only the edges where the subject is the source or the
-   * target — one project's neighborhood.
+   * Collects edges between known projects. Naming `subjectName` keeps only edges where it
+   * is the source or target.
    */
   collectEdges(
     graph: NxProjectGraph,
@@ -154,19 +137,8 @@ export class NeighborhoodService {
   }
 
   /**
-   * Reads a project graph — the workspace's own, or a supplied one.
-   *
-   * Nx resolves the project graph from the **process working directory** and
-   * takes no directory argument, so a run can only ever graph the workspace it
-   * stands in. `filePath` is the way out of that: point it at the JSON file
-   * that `nx graph --file=graph.json` writes, and codependix graphs whatever
-   * that describes — which is what lets a job graph a repository it merely
-   * checked out.
-   *
-   * A supplied graph is **trusted**, not validated: Nx wrote it, and restating
-   * `ProjectGraph` as a schema to re-check that buys little. The one exception
-   * is the shape check below, which turns an unreadable crash deep inside
-   * `readProjects` into a message naming the file.
+   * Reads the working directory's project graph, or a supplied `nx graph --file` output,
+   * which is only shape-checked.
    */
   async readProjectGraph(filePath?: string): Promise<NxProjectGraph> {
     if (filePath === undefined) {
@@ -235,14 +207,8 @@ export class NeighborhoodService {
   }
 
   /**
-   * Widens project names to everything they transitively depend on.
-   *
-   * Dependencies, never dependents, and every edge kind Nx draws — static,
-   * dynamic, and implicit alike: a boundary finding in a project the named
-   * one builds on is part of what that project is, while one in a project
-   * that merely uses it is not. Modelled on callidescope-nx's walk of the same
-   * name. A name or target the graph holds no node for — an `npm:` package,
-   * or a typo — is dropped rather than reached.
+   * Widens project names to their transitive dependencies, never dependents. Names with no
+   * graph node, such as `npm:` packages, are dropped.
    */
   resolveDependencyClosure(
     graph: NxProjectGraph,

@@ -9,18 +9,8 @@ import type { ObjectLiteral, QueryBuilder, Repository } from "typeorm";
 export const DEFAULT_TEST_DATE = new Date("2025-03-20T14:46:00Z");
 
 /**
- * Sets up fake timers with a fixed system time before each test
- * and restores real timers after each test.
- *
- * Usage in test files:
- * ```ts
- * import { mockDates } from '../testing/mocks'
- *
- * describe('my suite', () => {
- *   mockDates()
- *   // your tests here
- * })
- * ```
+ * Fakes timers at a fixed system time before each test and restores real
+ * timers after.
  */
 export function mockDates(date: Date = DEFAULT_TEST_DATE): void {
   beforeEach(() => {
@@ -34,13 +24,8 @@ export function mockDates(date: Date = DEFAULT_TEST_DATE): void {
 }
 
 /**
- * Creates a vitest mock for TypeORM's `Repository` with a fully configured
- * `createQueryBuilder` mock. Suitable for use as a provider value in NestJS tests.
- *
- * The `createQueryBuilder` mock includes all chainable methods that call
- * `.mockReturnThis()` so the full method chain stays on the same mock instance.
- * Terminal methods are typed via `Entity` and left unimplemented — configure
- * them per-test with `.mockResolvedValue`.
+ * Mocks TypeORM's `Repository` with a chainable `createQueryBuilder`; configure
+ * terminal methods per test with `.mockResolvedValue`.
  */
 export const createRepositoryMock = <
   Entity extends ObjectLiteral = ObjectLiteral,

@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-/** How many issues a knip report holds, by the workspace each is in. */
+/** Issue counts in a knip report, by workspace. */
 export interface AttributedIssues {
   readonly byRoot: ReadonlyMap<string, number>;
   /** Issues in a file that sits in none of the workspaces asked about. */
@@ -17,7 +17,7 @@ export interface BuildKnipArguments {
   readonly roots: readonly string[];
 }
 
-/** The arguments Nx calls a batch executor with, in the order it passes them. */
+/** Arguments Nx passes a batch executor, in order. */
 export type KnipBatchExecutorArguments = [
   taskGraph: {
     readonly tasks: Readonly<
@@ -29,12 +29,7 @@ export type KnipBatchExecutorArguments = [
   context: KnipExecutorContext,
 ];
 
-/**
- * The fields of Nx's executor context these executors read.
- *
- * Stated here rather than imported from `@nx/devkit`: this project does not
- * depend on it, and Nx passes real objects that satisfy this structurally.
- */
+/** Nx executor context fields read here, without depending on `@nx/devkit`. */
 export interface KnipExecutorContext {
   readonly projectGraph: {
     readonly nodes: Readonly<

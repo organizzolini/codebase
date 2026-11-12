@@ -6,8 +6,9 @@ import {
   Query,
   Resolver,
 } from "@nestjs/graphql";
-import { Test } from "@nestjs/testing";
 import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PageInfo } from "./{{nameKebabCase}}.entities";
 import {
@@ -124,10 +125,9 @@ describe("relay pagination helpers suite", () => {
     it("generates GraphQL schema with relay connection and page info types", async () => {
       expect.hasAssertions();
 
-      const module = await Test.createTestingModule({
+      const { module } = await buildTestingModule(TestRelayResolver, {
         imports: [GraphQLSchemaBuilderModule],
-        providers: [TestRelayResolver],
-      }).compile();
+      });
 
       const schemaFactory = module.get(GraphQLSchemaFactory);
       const schema = await schemaFactory.create([TestRelayResolver]);

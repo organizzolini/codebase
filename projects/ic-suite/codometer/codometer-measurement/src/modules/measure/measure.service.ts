@@ -32,12 +32,7 @@ import type {
 /**
  * Aggregates every analyzer's report into a single set of statistics.
  *
- * The one place the discovery, language, size, and customization analyzers
- * meet. None of the four imports another, so joining them has to happen
- * somewhere, and a call-stack trace reports that join as module spread against
- * `measureInput` and `analyzeFiles` — the two methods that personally name
- * three of the four. That is the arrangement working, not drifting: pushing the
- * join down into one of the analyzers is what would couple them to each other.
+ * The one place the analyzers meet. None imports another, so the join lives here.
  */
 @Injectable()
 export class MeasureService {
@@ -60,17 +55,7 @@ export class MeasureService {
   // 🔏 Private Methods
 
   /**
-   * Run every analyzer over one set of files and shape the result.
-   *
-   * Three analyzers, not one: the language analyzers, the size analyzer that
-   * produces the headline byte total, and the custom counters a configuration
-   * declares. Named for the file set rather than for any of the three, because
-   * this sits directly above `LanguagesService.analyze` in every measurement
-   * stack — named for a language it reads there as a forwarding layer instead
-   * of as the place all three are joined.
-   *
-   * Takes the files it is given rather than finding them, so the codebase and
-   * an input naming compiled output are counted by exactly the same analyzers.
+   * Runs every analyzer over one file set and shapes the result. Takes the files it is given, so codebase and input are counted identically.
    */
   private analyzeFiles(args: AnalyzeFilesArguments): CodeStatisticsResult {
     const directory = args.workingDirectory;
@@ -178,13 +163,7 @@ export class MeasureService {
   }
 
   /**
-   * Discovers one input's files, minus the ones codometer writes itself.
-   *
-   * The built-in `codebase` input is discovered by whatever its ignore files
-   * leave behind rather than by matching its own `include`/`exclude` globs —
-   * those stay placeholders for that one input, exactly as
-   * `@codometer/configuration` documents. Every other input's files are
-   * whatever its globs claim.
+   * Discovers one input's files, minus codometer's own outputs. The built-in `codebase` input uses its ignore files, not its globs.
    */
   private discoverInputFiles(
     input: ResolvedCodometerInput,
@@ -206,12 +185,7 @@ export class MeasureService {
   }
 
   /**
-   * Drops the files codometer writes from a list of measured ones.
-   *
-   * Codometer's reports are made of what it measured, so measuring them makes
-   * every report an input to the next one: a badge block changes the markdown
-   * counters, which changes the badges. Removing them is what makes a second
-   * run over an untouched tree produce the same bytes as the first.
+   * Drops codometer's own report files from measured ones, so a second run over an untouched tree yields the same bytes.
    */
   private excludeOutputPaths(
     files: string[],
@@ -244,11 +218,7 @@ export class MeasureService {
   }
 
   /**
-   * Measure one declared input with whichever analyses it asked for.
-   *
-   * An analysis nobody asked for is not run at all. Compressing a source tree
-   * to answer a question nobody put costs more than every other analysis put
-   * together.
+   * Measures one declared input with only the analyses it asked for. An analysis nobody requested is never run.
    */
   private measureInput(args: MeasureInputArguments): InputMeasurement {
     const { input } = args;
@@ -300,14 +270,7 @@ export class MeasureService {
   // 🌎 Public Methods
 
   /**
-   * Measure every input the configuration declares.
-   *
-   * The built-in `codebase` input is not special-cased here — resolution
-   * already prepends it unless a configuration replaces it by name, so this
-   * simply measures whichever inputs it was handed, in the order given. An
-   * input that cannot be measured — a glob pointing at a directory that
-   * vanished, a file that will not open — is recorded and stepped over, so one
-   * unreadable file never takes the whole run with it.
+   * Measures every declared input in declaration order. A failing input is recorded and skipped, so one bad file cannot end the run.
    */
   measure(args: MeasureArguments): MeasurementResult {
     // Every custom statistic the configuration declares, regardless of which
@@ -351,15 +314,8 @@ export class MeasureService {
       configuration: args.configuration,
       indexes,
     });
-    // The first input, in declaration order, that ran language analysis —
-    // never one looked up by the literal name `codebase`. `--inputs`
-    // replaces the built-in `codebase` input outright (see
-    // `MeasureCommand.applyInputsOverride`), so a name-based lookup always
-    // fell back to `EMPTY_CODE_STATISTICS_RESULT` under that flag even
-    // though the override's own input ran language analysis and had real
-    // numbers to report. A configuration naming more than one language-
-    // analyzed input is not disambiguated further than this: whichever one
-    // was declared first is the one the headline reports.
+    // The first input, in declaration order, that ran language analysis.
+    // Never looked up by the name `codebase`, since `--inputs` replaces that input. Where several ran, the first declared wins.
     const languageMeasured = inputs.find(
       (measured) => measured.language !== undefined,
     );

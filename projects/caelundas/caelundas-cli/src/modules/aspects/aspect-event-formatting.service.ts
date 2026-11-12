@@ -7,7 +7,7 @@ import { symbolByBody } from "../caelundas/symbol-caelundas.constants";
 import { PHASE_WORD_PATTERN } from "./aspects.constants";
 
 import type { AspectPhase, Body } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { LogData } from "@codebase/observability";
 import type { Moment } from "moment-timezone";
 
@@ -162,9 +162,8 @@ export class AspectEventFormattingService {
   }
 
   /**
-   * Turns a boundary title into its span's title. A boundary title already
-   * lacks the phase word, so the two read the same; this only guards a title
-   * that still carries one.
+   * Turns a boundary title into its span's title, stripping any phase word the
+   * boundary still carries.
    */
   spanTitle(boundarySummary: string): string {
     return boundarySummary.replace(PHASE_WORD_PATTERN, "");

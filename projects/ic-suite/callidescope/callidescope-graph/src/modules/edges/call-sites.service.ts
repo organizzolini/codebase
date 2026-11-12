@@ -5,12 +5,11 @@ import type { CallableDeclaration } from "../callables/callables.types";
 import type { CallSite } from "./edges.types";
 
 /**
- * Finds the calls one callable makes, without descending into nested bodies.
+ * Finds the calls one callable makes, skipping nested bodies.
  *
- * A function literal inside a body is its own frame, not part of the enclosing
- * one, so the walk stops at it. Descending would attribute a callback's calls
- * to whichever function happened to contain the callback's text, which is how
- * a shallow orchestrator ends up looking like the deepest thing in the file.
+ * A function literal is its own frame, so the walk stops at it. Descending
+ * would credit a callback's calls to whichever function contains its text,
+ * making a shallow orchestrator look like the deepest code.
  */
 @Injectable()
 export class CallSitesService {

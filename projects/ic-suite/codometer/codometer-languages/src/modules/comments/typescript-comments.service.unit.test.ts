@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { TypescriptCommentsService } from "./typescript-comments.service";
 
@@ -7,15 +8,15 @@ describe(TypescriptCommentsService, () => {
   let service: TypescriptCommentsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [TypescriptCommentsService],
-    }).compile();
+    const { instance } = await buildTestingModule(TypescriptCommentsService);
 
-    service = await module.resolve(TypescriptCommentsService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(TypescriptCommentsService);
+
+    expect(instance).toBeInstanceOf(TypescriptCommentsService);
   });
 
   it("reads a `//` comment's line, prose, and source", () => {
@@ -93,13 +94,8 @@ describe(TypescriptCommentsService, () => {
   });
 
   it("reads every comment even where a bare scanner would lose its place", () => {
-    // A bare `ts.createScanner` cannot tell a `/` that divides from one that
-    // opens a regular expression without the parser's own context, and a
-    // division early in a file can make it misread everything after as
-    // trivia inside a regular expression it never actually closes — silently
-    // dropping every real comment that follows. Parsing for real is what a
-    // reader has to do to avoid that, which this asserts against a file
-    // carrying exactly that shape: a division, then two ordinary comments.
+    // A bare `ts.createScanner` can misread a division as a regex opener and drop every real comment after it.
+    // Parsing for real avoids that, and this asserts against exactly that shape.
     const content = [
       "const ratio = a / b;",
       "// first note",

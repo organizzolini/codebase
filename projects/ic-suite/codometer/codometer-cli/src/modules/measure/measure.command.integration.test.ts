@@ -2,7 +2,9 @@ import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { Test } from "@nestjs/testing";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+
+import { captureOutput } from "@codebase/testing";
 
 import {
   createFixtureTree,
@@ -16,10 +18,7 @@ import type { CodometerReport } from "@codometer/core";
 
 const REPORT_FILE_NAME = "codometer-report.json";
 
-/**
- * A long comment codometer-configured (see below) to breach a
- * `comment`-selector custom statistic's word budget.
- */
+/** A long comment that breaches a `comment`-selector word budget. */
 const LONG_YAML_COMMENT = [
   "# This comment runs on for far more words than the configured budget",
   "# allows, so the comment-selector custom statistic below counts it as a",
@@ -267,19 +266,9 @@ describe("measure command over a fixture directory", () => {
     ).toBe(2);
   });
 
-  // The reviewer-found defect: `MeasureService.measure()` used to derive the
-  // headline `MeasurementResult.statistics` — what the console and markdown
-  // badges render from — by looking up an input literally named "codebase".
-  // `--inputs` never leaves an input by that name active, so every badge
-  // reported zero for a run that genuinely measured real files. The JSON
-  // report's own per-input metrics (asserted above) were never affected —
-  // they come from `MetricIndexService`, not from the headline field — so
-  // this has to be checked against what actually reads the headline: the
-  // markdown badge block printed to standard output.
+  // Regression: the headline statistics behind the console badges were looked up by an input named "codebase", which `--inputs` never leaves active, so every badge read zero. Check the markdown badge block printed to standard output, the consumer that reads the headline.
   it("--inputs produces real, non-zero headline statistics for the console badges, not a name lookup that misses", async () => {
-    const standardOutput = vi
-      .spyOn(process.stdout, "write")
-      .mockReturnValue(true);
+    const output = captureOutput();
 
     await run({
       format: "markdown",
@@ -296,13 +285,7 @@ describe("measure command over a fixture directory", () => {
 
     expect(linesOfCode).toBeGreaterThan(0);
 
-    const printed = standardOutput.mock.calls
-      .map(([chunk]) => String(chunk))
-      .join("");
-
-    expect(printed).toContain(`Lines_of_Code-${linesOfCode}-`);
-
-    standardOutput.mockRestore();
+    expect(output.stdout()).toContain(`Lines_of_Code-${linesOfCode}-`);
   });
 
   // The refusal a run has no way to have produced a destination for, before

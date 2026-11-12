@@ -1,20 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * How a size written as a string is read.
- *
- * The unit is **decimal** and its trailing `b` is required: `"8 KB"` is 8000
- * bytes and `"1 MB"` is 1000000, not 8192 and 1048576. The two limits below sit
- * either side of the input's real size, so one holds and one breaches — which
- * is what proves the numbers were read as claimed rather than merely accepted.
- *
- * A bare number means bytes and carries no unit at all.
- *
- * ```bash
- * cd projects/ic-suite/codometer/codometer-examples/examples/corpus
- * codometer --config ../limits/units.config.ts --check limits
- * ```
- */
+// See the [limits guide](./README.md).
+/** Size strings are decimal and need a trailing `b`. */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   inputs: [

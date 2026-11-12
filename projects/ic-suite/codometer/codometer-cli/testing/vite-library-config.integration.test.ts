@@ -1,22 +1,17 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 import { build } from "vite";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
+
+import { useTemporaryDirectory } from "@codebase/testing";
 
 import viteConfiguration from "../vite.config.ts";
 
 import type { LibraryOptions, UserConfig } from "vite";
 
-/**
- * Sources of a two-module library, keyed by path relative to its root.
- *
- * Both modules declare a class with the same name, so the bundler has to
- * rename one of them, and the minifier then mangles whatever is left. A NestJS
- * logger context is read from `.name`, which is exactly what both steps lose.
- */
+/** Library sources by path, with one shared class name. */
 const FIXTURE_FILES: Readonly<Record<string, string>> = {
   "src/index.ts": [
     'import { otherContext } from "./other";',
@@ -59,14 +54,7 @@ interface FixtureBundle {
 }
 
 /**
- * Builds the fixture with this package's own Vite configuration, pointed at
- * the fixture instead of `src/`.
- *
- * Declaration bundling needs a tsconfig the fixture does not have and says
- * nothing about the JavaScript under test, so the plugins are left out.
- *
- * @param fixtureDirectory - Where the fixture's sources were written.
- * @returns The built entry, imported.
+ * Builds the fixture with this package's Vite configuration. The plugins are left out, since declaration bundling needs a tsconfig the fixture lacks.
  */
 async function buildFixture(fixtureDirectory: string): Promise<FixtureBundle> {
   const outputDirectory = path.join(fixtureDirectory, "dist");
@@ -104,11 +92,11 @@ function readLibraryOptions(configuration: UserConfig): LibraryOptions {
 }
 
 describe("the published library build", () => {
-  let fixtureDirectory = "";
+  const readTemporaryDirectory = useTemporaryDirectory("vite-library-config");
   let bundle: FixtureBundle;
 
   beforeAll(async () => {
-    fixtureDirectory = mkdtempSync(path.join(tmpdir(), "vite-library-config-"));
+    const fixtureDirectory = readTemporaryDirectory();
     for (const [relativePath, contents] of Object.entries(FIXTURE_FILES)) {
       const absolutePath = path.join(fixtureDirectory, relativePath);
       mkdirSync(path.dirname(absolutePath), { recursive: true });
@@ -116,14 +104,6 @@ describe("the published library build", () => {
     }
     bundle = await buildFixture(fixtureDirectory);
   }, 120_000);
-
-  afterAll(() => {
-    // Left empty when the directory was never created, so a failure there
-    // surfaces as itself rather than as a cleanup error.
-    if (fixtureDirectory) {
-      rmSync(fixtureDirectory, { force: true, recursive: true });
-    }
-  });
 
   it("keeps the name of an exported class", () => {
     expect(bundle.ExportedService.name).toBe("ExportedService");

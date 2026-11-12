@@ -1,6 +1,6 @@
 import { createMock } from "@golevelup/ts-vitest";
 import moment, { type Moment } from "moment-timezone";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
 
@@ -14,12 +14,6 @@ import { MercurianPhaseService } from "./mercurian-phase.service";
 import { PhaseCalculationService } from "./phase-calculation.service";
 import { PhasesService } from "./phases.service";
 import { VenusianPhaseService } from "./venusian-phase.service";
-
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
 
 const mathService = new MathService();
 const ephemerisService = new EphemerisService(
@@ -61,20 +55,8 @@ const service = new PhasesService(
 
 describe("phases.events integration", () => {
   /**
-   * Creates mock ephemeris with a configurable longitude step rate.
-   *
-   * To trigger rise/set transitions the planet and Sun must move at DIFFERENT
-   * rates so the angular separation actually crosses the civil-twilight threshold
-   * (6°).  Use `step: 0.15` for the inner planet and the default `step: 0.1`
-   * for the Sun so the gap changes by 0.05° per minute.
-   *
-   * Concrete verification (RISE_SET_THRESHOLD = 6°):
-   *   Morning Set  – planet west of Sun, gap closing:
-   *     planet base=94.0 step=0.15, sun base=100.0 step=0.1
-   *     i=-1: |99.9 – 93.85| = 6.05 > 6  ✓   i=0: |100 – 94| = 6.0 ≤ 6  ✓
-   *   Evening Rise – planet east of Sun, gap opening:
-   *     planet base=106.0 step=0.15, sun base=100.0 step=0.1
-   *     i=-1: |105.85 – 99.9| = 5.95 < 6  ✓   i=0: |106 – 100| = 6.0 ≥ 6  ✓
+   * Mock ephemeris with a configurable longitude step; planet and Sun must move
+   * at different rates to cross the 6° rise and set threshold.
    */
   function createMockEphemeris(
     baseTime: Moment,

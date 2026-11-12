@@ -24,19 +24,9 @@ import type {
 } from "./combined-output.types";
 
 /**
- * Combines every active graph type's whole-workspace data, and a boundary
- * check's findings when one ran, into the single JSON object and single
- * Markdown document `--json-output`, `--markdown-output`, and `--format` each
- * read from, and delivers them.
- *
- * Kept apart from `DeliveryService`, which delivers one graph type's export
- * to its own per-project or per-workspace destination: this service instead
- * combines every active type's already-built data — see
- * `GraphRunService.run` and `WorkspaceGraphsService` for where that data comes
- * from — into one shared destination or one shared stdout write. Neither
- * output is checked for staleness the way a per-project export is:
- * `--json-output`/`--markdown-output` always write, matching
- * `codometer-cli`'s own `--output-json`/`--output-markdown` precedent.
+ * Prints and writes the combined output of a run: every active graph type's whole-workspace
+ * data, plus any boundary findings. Unlike a per-project export, these are always written,
+ * never checked for staleness.
  */
 @Injectable()
 export class CombinedOutputService {
@@ -136,10 +126,7 @@ export class CombinedOutputService {
   // 🌎 Public Methods
 
   /**
-   * Reads `--format` into what the run prints, falling back to
-   * `FORMAT_MARKDOWN` when the flag was left off entirely — codependix's
-   * configuration declares no `format` field of its own for this to read
-   * instead, unlike `codometer-cli`'s own `resolveFormat`.
+   * Reads `--format` into what the run prints, defaulting to `FORMAT_MARKDOWN` when absent.
    */
   resolveFormat(value: string | undefined): {
     errors: string[];
@@ -164,15 +151,8 @@ export class CombinedOutputService {
   }
 
   /**
-   * Produces every combined output a run asked for: the console print
-   * `--format` always names, and the `--json-output`/`--markdown-output`
-   * files when their paths were given.
-   *
-   * A run naming no active graph type at all — every `--no-*` flag given, or
-   * a `--check boundaries`-only run — still prints and writes, with an empty
-   * object or an empty document, or just the boundary report: the flags are
-   * independent of which graph types are active, exactly as
-   * `--check`/`--write` are.
+   * Produces the console print and any JSON or Markdown files a run asked for, even when no
+   * graph type is active.
    */
   run(args: CombinedOutputRunArguments): void {
     this.printConsole(args);

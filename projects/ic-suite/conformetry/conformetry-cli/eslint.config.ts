@@ -11,18 +11,20 @@ export default [
       "@nx/dependency-checks": [
         "error",
         {
-          // @codebase/observability: bundled directly into the build output via the Vite library build.
-          // @golevelup/ts-vitest: a devDependency used only in test files, which
-          // are outside the build dependency check's scope.
-          // pino: runtime dependency imported by the inlined @codebase/observability bundle.
-          // pino-pretty: runtime transport reached only via runtime string in pino configuration.
-          // vitest: referenced via tsconfig "types" array; it's a devDependency and
-          // the @nx/dependency-checks rule misidentifies it as a production dependency.
+          // @codebase/observability: bundled into the build by Vite.
+          // @golevelup/ts-vitest: test-only devDependency.
+          // pino: runtime dependency of the bundled observability.
+          // pino-pretty: runtime transport, named only in configuration.
+          // vitest: named in tsconfig "types"; the rule misreads it as production.
+          // @codebase/testing: test-only devDependency.
+          // reflect-metadata: Nest decorators need it at runtime.
           ignoredDependencies: [
             "@codebase/observability",
+            "@codebase/testing",
             "@golevelup/ts-vitest",
             "pino",
             "pino-pretty",
+            "reflect-metadata",
             "vitest",
           ],
           ignoredFiles: ["{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}"],

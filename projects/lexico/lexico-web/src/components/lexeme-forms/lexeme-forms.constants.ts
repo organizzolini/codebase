@@ -1,8 +1,6 @@
 // ♟️ Constants
 
-/**
- * The parts of speech that have a table of forms, and which kind of table.
- */
+/** Parts of speech with a forms table, and its kind. */
 export const TABLE_KINDS: Readonly<
   Record<string, "conjugation" | "declension">
 > = {

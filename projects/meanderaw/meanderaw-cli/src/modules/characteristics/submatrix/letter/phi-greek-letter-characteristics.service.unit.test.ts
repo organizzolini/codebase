@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -11,7 +10,7 @@ import type {
   LetterOrientationFixture,
 } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the Φ (Greek phi) as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** Each distinct orientation of Φ as a standalone Code. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "04x04y04006f50af900800",
@@ -59,10 +58,7 @@ const ALIASES: readonly LetterAliasFixture[] = [
 ];
 
 describe(PhiGreekLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    PhiGreekLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(PhiGreekLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

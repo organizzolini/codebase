@@ -1,9 +1,8 @@
-import { Test } from "@nestjs/testing";
 import _ from "lodash";
 import moment from "moment";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   ingressBodies as decanIngressBodies,
@@ -17,14 +16,8 @@ import { IngressesComposerService } from "./ingresses-composer.service";
 import { IngressesService } from "./ingresses.service";
 
 import type { Body } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
-
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
 
 interface ServicePrivate {
   getDecan: (longitude: number) => number;
@@ -47,23 +40,28 @@ describe(IngressesService, () => {
   let helperService: IngressesComposerService;
   let s: ServicePrivate;
 
+  const testingModuleOptions = {
+    imports: [EphemerisModule],
+    providers: [IngressesComposerService, MathService],
+  };
+
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [EphemerisModule],
-      providers: [
-        IngressesComposerService,
-        IngressesService,
-        LoggerService,
-        MathService,
-      ],
-    }).compile();
-    service = await module.resolve(IngressesService);
+    const { instance, module } = await buildTestingModule(
+      IngressesService,
+      testingModuleOptions,
+    );
+    service = instance;
     helperService = await module.resolve(IngressesComposerService);
     s = helperService;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      IngressesService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(IngressesService);
   });
 
   describe("getSignIngressEvent", () => {

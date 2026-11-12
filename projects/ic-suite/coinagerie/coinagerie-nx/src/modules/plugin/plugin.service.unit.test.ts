@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { afterEach, beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createFakeWorkspace } from "../../../testing/fake-workspace";
 import { OptionsService } from "../options/options.service";
@@ -7,6 +8,12 @@ import { OptionsService } from "../options/options.service";
 import { PluginService } from "./plugin.service";
 
 import type { FakeWorkspace } from "../../../testing/fake-workspace";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
+
+/** What the PluginService is built with. */
+const DEPENDENCIES = {
+  providers: [OptionsService],
+} satisfies TestingModuleOptions;
 
 describe(PluginService, () => {
   let service: PluginService;
@@ -20,11 +27,10 @@ describe(PluginService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PluginService, OptionsService],
-    }).compile();
-
-    service = await module.resolve(PluginService);
+    ({ instance: service } = await buildTestingModule(
+      PluginService,
+      DEPENDENCIES,
+    ));
   });
 
   afterEach(() => {
@@ -32,9 +38,10 @@ describe(PluginService, () => {
     workspace = undefined;
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PluginService, DEPENDENCIES);
+
+    expect(instance).toBeInstanceOf(PluginService);
   });
 
   describe("inferTargets", () => {

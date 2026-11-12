@@ -1,11 +1,6 @@
 // 🏷️ Types
 
-/**
- * Options accepted by the `changes` command.
- *
- * Typed loosely because commander skips an option's parser when the flag
- * arrives without a value, handing the command `true` instead of text.
- */
+/** Options for `changes`; a valueless flag arrives as `true`. */
 export interface ChangesCommandOptions {
   baseline?: unknown;
   baselineUrl?: unknown;

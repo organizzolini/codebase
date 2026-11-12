@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EphemerisConstantsService } from "./ephemeris-constants.service";
 
@@ -7,11 +8,9 @@ describe(EphemerisConstantsService, () => {
   let service: EphemerisConstantsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [EphemerisConstantsService],
-    }).compile();
+    const { instance } = await buildTestingModule(EphemerisConstantsService);
 
-    service = await module.resolve(EphemerisConstantsService);
+    service = instance;
   });
 
   describe("isHorizonBody", () => {
@@ -39,8 +38,10 @@ describe(EphemerisConstantsService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(EphemerisConstantsService);
+
+    expect(instance).toBeInstanceOf(EphemerisConstantsService);
   });
 
   describe("getSwissEphemerisConstantForBody", () => {

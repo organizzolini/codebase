@@ -11,7 +11,7 @@ import {
   paginationMatrix,
   summarize,
 } from "@codebase/interface/testing";
-import { Author, Line, Text, Token, Word } from "@codebase/lexico-entities";
+import { Author, Line, Text, Token, Word } from "@codebase/lexico-db";
 
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
@@ -24,7 +24,7 @@ import { createEmptyConnection } from "./literature.utilities";
 import type { Connection } from "@codebase/interface";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
-/** Each boundary matrix issues a few hundred statements, which a slow runner needs time for. */
+/** Boundary matrices run hundreds of statements, so they need time. */
 const MATRIX_TIMEOUT_MILLISECONDS = 120_000;
 
 /** Pages several parents' children in one call, as a loader batch does. */
@@ -99,9 +99,7 @@ describe("literature relations integration suite", () => {
   }
 
   /**
-   * Asserts that paging every parent at once gives each parent the page the
-   * original slicing gives it alone, for every argument combination built
-   * from one parent's children. Its cursors name no child of the others.
+   * Asserts that paging all parents at once gives each the page slicing gives it alone, for every argument combination. Cursors never cross parents.
    */
   async function expectMatrixAgreement(
     childIdsByParent: ReadonlyMap<string, readonly string[]>,

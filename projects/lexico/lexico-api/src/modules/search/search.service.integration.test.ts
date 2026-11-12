@@ -21,7 +21,7 @@ import {
   Word,
   WordForm,
   WordLexeme,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
@@ -45,7 +45,7 @@ interface SeededLexeme {
   readonly partOfSpeech: PartOfSpeech;
 }
 
-/** Each boundary matrix issues a few hundred statements, which a slow runner needs time for. */
+/** Boundary matrices run hundreds of statements, so they need time. */
 const MATRIX_TIMEOUT_MILLISECONDS = 120_000;
 
 /** A search connection as a GraphQL client observes it, with nodes reduced to ids. */
@@ -454,8 +454,7 @@ describe("search service integration suite", () => {
 
   describe("pagination", () => {
     /**
-     * Asserts every page of a search agrees with slicing its whole, ranked
-     * result list in memory, the way search paged before it paged in SQL.
+     * Asserts every search page agrees with slicing the whole ranked result in memory.
      */
     async function expectSearchMatrixAgreement(
       search: (

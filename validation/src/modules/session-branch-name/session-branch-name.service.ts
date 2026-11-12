@@ -62,10 +62,8 @@ export class SessionBranchNameService {
   }
 
   /**
-   * Reads the pattern and error text, wherever `cwd` is.
-   *
-   * Throws when either is missing: a broken repository invariant this check
-   * depends on, not a branch to report on.
+   * Reads the branch name pattern and error text from the repository, throwing
+   * when either is missing.
    */
   public readBranchNameRules(): BranchNameRules {
     const configuration = branchNameConfigSchema.parse(

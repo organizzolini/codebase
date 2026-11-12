@@ -1,8 +1,9 @@
 // Fragments of hexadecimal meander Codes used as test fixtures, not words.
 // cspell:ignore ccca ccffcccca
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -21,17 +22,12 @@ describe(IsSnakeCharacteristicService, () => {
     let service: IsSnakeCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const real = await buildTestingModule(CharacteristicContextService, {
         imports: [CodeModule, PatternCharacteristicsModule, MatrixModule],
-        providers: [CharacteristicContextService],
-      }).compile();
+      });
 
-      contextService = await module.resolve(CharacteristicContextService);
-      service = await module.resolve(IsSnakeCharacteristicService);
-    });
-
-    it("is defined", () => {
-      expect(service).toBeDefined();
+      contextService = real.instance;
+      service = await real.module.resolve(IsSnakeCharacteristicService);
     });
 
     it.each([
@@ -63,9 +59,8 @@ describe(IsSnakeCharacteristicService, () => {
     let service: IsSnakeCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(IsSnakeCharacteristicService, {
         providers: [
-          IsSnakeCharacteristicService,
           {
             provide: DoubleHorizontalEdgeCountCharacteristicService,
             useValue: {
@@ -77,9 +72,9 @@ describe(IsSnakeCharacteristicService, () => {
             useValue: { compute: (): boolean => values.isClosedLoop },
           },
         ],
-      }).compile();
+      });
 
-      service = await module.resolve(IsSnakeCharacteristicService);
+      service = built.instance;
     });
 
     beforeEach(() => {

@@ -24,15 +24,12 @@ import type {
 } from "@coinagerie/configuration";
 
 /**
- * The `coinagerie` command: collect the code's vocabulary, then print it,
- * check every glossary against it, or write it into every glossary.
+ * The `coinagerie` command: collect the vocabulary, then print, check, or write
+ * glossaries.
  *
- * With no flag it prints the glossary block to standard output and writes
- * nothing. `--check` exits 1 naming each destination's missing and stale
- * words; `--write` rewrites each destination, keeping every definition still
- * in use. A glossary that cannot be fully parsed stops the run before any file
- * is written. Diagnostics go to standard error, so standard output carries
- * only the glossary.
+ * With no flag, it prints and writes nothing. `--check` exits 1 naming missing
+ * and stale words; `--write` rewrites destinations, keeping definitions still
+ * in use. A glossary that cannot be parsed stops the run before any write.
  */
 @Command({
   description:
@@ -89,10 +86,7 @@ export class CollectCommand extends CommandRunner {
   }
 
   /**
-   * Collects the vocabulary, or reports the configuration's fault.
-   *
-   * `exclude.words` and `fold` are the configuration's own code, so a fault in
-   * one surfaces here, while the words are collected, naming the file.
+   * Collects the vocabulary. A fault in `exclude.words` or `fold`, which are configuration code, surfaces here, naming the file.
    */
   private async collectWords(
     configuration: ResolvedCoinagerieConfiguration,

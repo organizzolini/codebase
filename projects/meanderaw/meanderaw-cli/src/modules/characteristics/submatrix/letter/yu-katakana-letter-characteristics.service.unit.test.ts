@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -11,7 +10,7 @@ import type {
   LetterOrientationFixture,
 } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the ユ (katakana yu) as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** Each orientation of ユ, as one isolated copy. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   { fixture: "04x02y25002b10", names: ["Southeast", "NorthwestHalf"] },
   {
@@ -41,10 +40,7 @@ const ALIASES: readonly LetterAliasFixture[] = [
 ];
 
 describe(YuKatakanaLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    YuKatakanaLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(YuKatakanaLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

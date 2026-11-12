@@ -11,14 +11,13 @@ import { getEventLabel } from "../event-glyphs/calendar-glyphs.utilities";
 import { EventGlyphs } from "../event-glyphs/event-glyphs";
 import { EventTagPills } from "../event-tag-pills/event-tag-pills";
 
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The event to describe and what to draw for it, which the tooltip opens
- * over.
+ * The event and the trigger content its tooltip opens over.
  */
 export interface CalendarEventTooltipProperties {
   children?: ReactNode;
@@ -34,8 +33,7 @@ export interface CalendarEventTooltipProperties {
 // 🧩 Component
 
 /**
- * Wraps what is drawn for an event, its glyphs, in a tooltip that follows the pointer, with the event's
- * name in English, whatever the database says of it, and its tags as pills.
+ * Wraps an event's glyphs in a tooltip that follows the pointer, showing its name in English and its tags as pills.
  */
 export function CalendarEventTooltip(
   properties: Readonly<CalendarEventTooltipProperties>,

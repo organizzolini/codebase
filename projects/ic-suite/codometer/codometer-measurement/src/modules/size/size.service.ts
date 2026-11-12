@@ -31,11 +31,7 @@ export class SizeService {
   // 🔏 Private Methods
 
   /**
-   * Compresses one file's contents and reports the resulting byte count.
-   *
-   * Written as a lookup rather than a switch so that a compression added to
-   * the configuration without an implementation here fails to compile, instead
-   * of falling through to whichever branch happened to be last.
+   * Compresses one file's contents and returns the byte count. A lookup, not a switch, so a missing compressor fails to compile.
    */
   private compress(
     contents: Buffer,
@@ -51,12 +47,7 @@ export class SizeService {
   }
 
   /**
-   * Measures one file, or fails the run.
-   *
-   * A file can vanish between being matched and being read — a build running
-   * beside the measurement is enough. Skipping it would report a total short
-   * by that file while still counting it, which is a number that looks
-   * consistent and lets a real breach through. Failing is the lesser harm.
+   * Measures one file, or fails the run. Skipping a vanished file would understate the total, so failing is the lesser harm.
    */
   private measureFile(
     absolutePath: string,
@@ -76,11 +67,7 @@ export class SizeService {
   // 🌎 Public Methods
 
   /**
-   * Measures every file of a target and sums the results.
-   *
-   * Each file is compressed on its own. Compressing them together would let
-   * one file's dictionary shrink the next, reporting a total smaller than
-   * anything that will ever be transferred.
+   * Measures every file of a target and sums the results. Each file is compressed alone, since shared compression would shrink later files.
    */
   analyze(args: AnalyzeSizeArguments): SizeResult {
     let bytes = 0;

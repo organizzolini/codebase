@@ -43,15 +43,7 @@ export class PythonService {
   // 🌎 Public Methods
 
   /**
-   * Analyze the given Python files, resolved relative to the directory.
-   *
-   * The interpreter comes from the configuration because reaching Python is a
-   * property of the repository, not of the analysis: a managed environment is
-   * entered with `uv run python` or `poetry run python`, and a plain one with
-   * `python3`.
-   *
-   * The paths travel over stdin rather than argv so that a repository with
-   * thousands of Python files cannot overflow the command-line length limit.
+   * Analyzes Python files relative to the directory. The interpreter comes from configuration, since a managed environment needs `uv run python`.
    */
   analyze(args: AnalyzePythonArguments): PythonResult {
     if (args.pythonFiles.length === 0) {
@@ -76,13 +68,7 @@ export class PythonService {
   }
 
   /**
-   * Analyze Python source text that never came from a file of its own.
-   *
-   * The seam the jupyter analyzer reads through. The interpreter reads files,
-   * so the sources are staged in a temporary directory first — but the
-   * analysis still runs from the measured directory, because a command like
-   * `uv run python` resolves its environment from the working directory and
-   * would find no project under the system temp directory.
+   * Analyzes Python source with no file of its own. Sources are staged in a temp directory, but run from the measured one.
    */
   analyzeContents(args: AnalyzePythonContentsArguments): PythonResult {
     if (args.contents.length === 0) {

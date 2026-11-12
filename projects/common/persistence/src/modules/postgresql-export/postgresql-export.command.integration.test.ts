@@ -1,6 +1,5 @@
 import { execFile } from "node:child_process";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { DataSource } from "typeorm";
@@ -15,6 +14,9 @@ import {
   vi,
 } from "vitest";
 
+import { startPostgresContainer } from "@codebase/persistence/testing";
+import { createTemporaryDirectory } from "@codebase/testing";
+
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import {
   FIXTURE_DATABASE_TIMEOUT_MILLISECONDS,
@@ -22,18 +24,20 @@ import {
   startFixtureDatabase,
 } from "../../../testing/fixture-persistence";
 import { postgresProcessEnvironment } from "../postgresql-utilities/postgresql-utilities.utilities";
-import { startPostgresContainer } from "../postgresql/postgresql-container.utilities";
 
 import type { FixtureDatabase } from "../../../testing/fixture-persistence";
 import type { PostgresUriConnection } from "../postgresql-utilities/postgresql-utilities.types";
-import type { StartedPostgresContainer } from "../postgresql/postgresql-container.types";
 import type { PostgresConnection } from "../postgresql/postgresql.types";
+import type { StartedPostgresContainer } from "@codebase/persistence/testing";
+import type * as Testing from "@codebase/testing";
 
 // 🎯 The real execFile, wrapped so each test can read the arguments and
 // environment every client tool was started with.
 vi.mock("node:child_process", async (importOriginal) => {
-  const actual = await importOriginal<{ execFile: typeof execFile }>();
-  return { ...actual, execFile: vi.fn<typeof execFile>(actual.execFile) };
+  const { mockChildProcess } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
+
+  return mockChildProcess(await importOriginal());
 });
 
 /** The same connection in the shape the client tools are handed it. */
@@ -49,10 +53,8 @@ describe("postgresql-export", () => {
   let directory: string;
 
   /**
-   * Runs `postgresql-export` with `argv` through the real command line, unqualified
-   * `--table` names resolving in the `fixture` schema. Nothing points the
-   * command line at a database of its own: export names its database by
-   * URI and must never open any other.
+   * Runs `postgresql-export` through the real command line, resolving unqualified
+   * `--table` names in the `fixture` schema. It names its database by URI only.
    */
   async function runExport(
     argv: readonly string[],
@@ -131,7 +133,7 @@ describe("postgresql-export", () => {
   }, FIXTURE_DATABASE_TIMEOUT_MILLISECONDS);
 
   beforeEach(async () => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "fixture-export-"));
+    directory = createTemporaryDirectory("fixture-export");
     vi.mocked(execFile).mockClear();
     await targetDataSource.query(
       "DROP SCHEMA fixture CASCADE; CREATE SCHEMA fixture",

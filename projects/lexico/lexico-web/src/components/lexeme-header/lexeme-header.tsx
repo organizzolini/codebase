@@ -21,9 +21,7 @@ export interface LexemeHeaderProperties {
 // 🧩 Component
 
 /**
- * The top of a lexeme card: its principal parts, or its lemma when none were
- * ingested, over its part of speech and inflection, such as "noun, first
- * declension, feminine".
+ * A lexeme card's top: its principal parts, or lemma when none were ingested, over its part of speech and inflection.
  */
 export function LexemeHeader(
   properties: Readonly<LexemeHeaderProperties>,

@@ -19,11 +19,7 @@ import type {
   CodometerSymbolKind,
 } from "@codometer/core";
 
-/**
- * A resolved configuration and the file it was resolved from.
- *
- * `path` is the absolute path of the file the configuration was read from.
- */
+/** A resolved configuration and the absolute `path` it came from. */
 export interface LoadedConfiguration {
   configuration: ResolvedCodometerConfiguration;
   path: string;
@@ -39,12 +35,7 @@ export interface ResolvedCodometerCommentSelector {
   severity: CodometerSeverity;
 }
 
-/**
- * Configuration with every default applied.
- *
- * Consumers read this shape rather than the authored one, so no analyzer has
- * to know which fields a configuration file may omit.
- */
+/** Configuration with every default applied, so analyzers never see gaps. */
 export interface ResolvedCodometerConfiguration {
   /** Every counter this configuration measures, with defaults applied. */
   custom: ResolvedCodometerCustomStatistic[];
@@ -70,15 +61,7 @@ export interface ResolvedCodometerCustomStatistic {
   symbols?: CodometerSymbolMatcher | undefined;
 }
 
-/**
- * A named set of files with its compression filled in and its negations
- * collected.
- *
- * `include` holds only patterns that add files and `exclude` only patterns
- * that remove them, whichever list they were authored in. Order carries no
- * meaning in either: a file is in the input when some include glob claims it
- * and no exclude glob does.
- */
+/** A named file set: includes claim files, excludes remove them. */
 export interface ResolvedCodometerInput {
   analyses: CodometerAnalysis[];
   compression: CodometerCompression;
@@ -97,13 +80,7 @@ export interface ResolvedCodometerJsonOutput {
   type: "json";
 }
 
-/**
- * A limit with its severity filled in and its value read as a number.
- *
- * The unit is gone by this point: a limit written `"8 KB"` arrives here as
- * 8000, so nothing downstream has to know that limits can be written with
- * units at all.
- */
+/** A limit with severity set, its value a bare number. */
 export interface ResolvedCodometerLimit {
   /** Stays `undefined` when none was written; a report falls back to the path. */
   label: string | undefined;
@@ -112,13 +89,7 @@ export interface ResolvedCodometerLimit {
   value: number;
 }
 
-/**
- * Markdown output destination with defaults applied.
- *
- * `write` stays `undefined` when the configuration supplies none: the
- * built-in rendering and writing live in the CLI that calls it, so "unset" is
- * what selects it rather than a default named here.
- */
+/** Markdown destination with defaults applied; `write` picks the renderer. */
 export interface ResolvedCodometerMarkdownOutput {
   custom: ResolvedCodometerCustomStatistic[];
   description: string | undefined;

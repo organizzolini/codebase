@@ -12,22 +12,11 @@ import type {
   PipelineWindowRequest,
 } from "./pipeline-window.types";
 
-/** Sweeps already started in this process, so tests sharing a window pay for it once. */
+/** Sweeps started in this process, so shared windows run once. */
 const sweeps = new Map<string, Promise<PipelineWindow>>();
 
 /**
- * Runs the real perfective pass, then the real progressive pass, over a short
- * window of Swiss Ephemeris data, and returns what they detected.
- *
- * It stops where `CaelundasCommand` stores events: no database, no calendar
- * file, and no network. The ephemeris files must already be on disk, which
- * `nx run caelundas-cli:download-ephemeris` puts there.
- *
- * Results are cached per request for the life of the process, so a test file
- * can assert many reference cases against one sweep.
- *
- * Aspect detection and a few others dominate a sweep's cost, so a case that
- * checks one kind of event names just those `families` and skips the rest.
+ * Runs the real perfective and progressive passes over a short Swiss Ephemeris window, without storage; sweeps are cached per request.
  */
 export async function runPipelineWindow(
   request: PipelineWindowRequest,

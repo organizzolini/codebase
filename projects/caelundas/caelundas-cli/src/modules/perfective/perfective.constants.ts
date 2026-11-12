@@ -1,10 +1,6 @@
 // ♟️ Constants
 
-/**
- * The detector families a sweep runs. A caller that checks one kind of
- * event, such as a reference test of an eclipse, can name just that family
- * and skip the rest, which dominate a sweep's cost.
- */
+/** Detector families a sweep runs; naming one skips the rest. */
 export const detectorFamilies = [
   "aspects",
   "dailyCycles",

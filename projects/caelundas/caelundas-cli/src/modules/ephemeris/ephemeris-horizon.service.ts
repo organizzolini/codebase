@@ -37,11 +37,8 @@ export class EphemerisHorizonService {
   // 🌎 Public Methods
 
   /**
-   * Computes minute-by-minute horizontal coordinates (azimuth, apparent elevation)
-   * for a single body at the observer's location.
-   *
-   * Azimuth is measured from North clockwise (0° = North, 90° = East, 180° = South, 270° = West).
-   * Elevation is the angle above the horizon (0° = horizon, positive = above, negative = below).
+   * Minute-by-minute azimuth and apparent elevation for a body at the observer's
+   * location; azimuth runs clockwise from North.
    */
   public computeAzimuthElevationForBody(args: {
     body: AzimuthElevationEphemerisBody;
@@ -67,11 +64,8 @@ export class EphemerisHorizonService {
   }
 
   /**
-   * Computes horizontal coordinates for a single body at a specific moment, from its
-   * topocentric position: parallax is applied, so the Moon sits where the observer sees it.
-   * Returns azimuth, apparent and true elevation, the topocentric ecliptic position
-   * and the topocentric semidiameter. Swiss Ephemeris measures azimuth from South,
-   * so it is turned half a circle to measure from North.
+   * Horizontal coordinates for a body at one moment, with parallax applied;
+   * Swiss Ephemeris measures azimuth from South, so it is turned to North.
    */
   public computeAzimuthElevationForMinute(args: {
     body: AzimuthElevationEphemerisBody;

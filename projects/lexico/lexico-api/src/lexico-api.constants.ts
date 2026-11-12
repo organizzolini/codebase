@@ -21,10 +21,5 @@ export const environmentSchema = z.object({
   LEXICO_API_PORT: z.coerce.number().default(5003),
 });
 
-/**
- * Where GraphQLModule emits the code-first schema: beside the root module,
- * rather than under `process.cwd()`. Anything that boots the module from the
- * repository root, such as codependix exploring the container from the root
- * project's `codependix` target, otherwise wrote a stray `src/schema.gql` there.
- */
+/** Code-first schema, beside the root module, not in `src/`. */
 export const GRAPHQL_SCHEMA_FILE = path.join(import.meta.dirname, "schema.gql");

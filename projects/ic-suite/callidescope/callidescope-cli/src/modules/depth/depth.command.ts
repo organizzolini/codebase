@@ -45,12 +45,8 @@ export class DepthCommand extends CommandRunner {
   // 🔏 Private Methods
 
   /**
-   * Matches every address against the trace, or fails the run naming each one
-   * that did not match.
-   *
-   * All or nothing: a run that printed the addresses it understood and
-   * skipped the rest would put a partial report on the stream under an exit
-   * code that says it succeeded for the ones it did.
+   * Matches every address, or fails the run naming each one that did not match.
+   * All or nothing, so no partial report is printed.
    */
   private identifyAddresses(args: {
     addresses: readonly string[];
@@ -124,12 +120,8 @@ export class DepthCommand extends CommandRunner {
   }
 
   /**
-   * Logs one refusal under its own headline, and fails the run.
-   *
-   * One method for every refusal channel, because they are one act: a message
-   * rather than a stack trace, because each is about a file somebody wrote or
-   * a command line somebody typed. Nothing has been printed and no destination
-   * has been touched by the time any of them runs.
+   * Logs one refusal under its headline and fails the run.
+   * Shows a message, not a stack trace, since the cause is user input.
    */
   private reject(headline: string, data: LogData): void {
     this.logger.error(headline, undefined, data);
@@ -137,12 +129,8 @@ export class DepthCommand extends CommandRunner {
   }
 
   /**
-   * Reads `--addresses`, completing it against what the trace found when the
-   * flag was left off.
-   *
-   * The prompt refuses rather than draws itself when stdin is not a terminal,
-   * so a scripted run that forgot the flag fails loudly instead of exiting 0
-   * having rendered a menu nobody could answer.
+   * Reads `--addresses`, prompting with the traced callables when the flag is absent.
+   * Refuses rather than prompting when stdin is not a terminal.
    */
   private async resolveAddresses(args: {
     options: AddressCommandOptions;
@@ -234,11 +222,7 @@ export class DepthCommand extends CommandRunner {
   }
 
   /**
-   * Parses `--format`.
-   *
-   * Carried through as written: a value nobody recognizes is refused by the
-   * one resolver that knows which formats exist, rather than rewritten to
-   * markdown on the way there.
+   * Parses `--format`, carried through as written: the resolver that knows the formats refuses an unknown one.
    */
   @Option({
     description: "What to print: markdown, mermaid, or json",
@@ -249,10 +233,7 @@ export class DepthCommand extends CommandRunner {
   }
 
   /**
-   * Parses `--include-exported-functions`, overriding the entry-point rule.
-   *
-   * Carried through as written, like `--format`: the resolver that knows what
-   * a switch accepts is the one that refuses a value nobody recognizes.
+   * Parses `--include-exported-functions`, carried through as written like `--format`.
    */
   @Option({
     description: 'Treat every src/index.ts export as a root: "true" or "false"',
@@ -283,14 +264,8 @@ export class DepthCommand extends CommandRunner {
   }
 
   /**
-   * Resolves the addresses, traces every path above and below each, and
-   * prints them.
-   *
-   * Three failures are caught, all because they are a file a person wrote —
-   * or left unwritten — rather than a fault in callidescope: a refused
-   * command line, a project whose `tsconfig.json` is missing or will not
-   * parse, and a project configuration refused for a field it may not set or
-   * for not loading at all. Anything else propagates with its stack intact.
+   * Prints every path above and below each address. Catches refusals caused by
+   * user-written files or command lines; anything else propagates.
    */
   public async run(
     _passedParameters: string[],

@@ -13,11 +13,7 @@ import type {
 /**
  * Runs a language validator over a prepared document set.
  *
- * This is the shared envelope every language package used to reimplement:
- * select the documents this validator claims, compare each one, group the
- * differences under their file, and assemble the result. Centralizing it means a
- * language package contains only its comparison logic, and that every
- * validator reports its outcome identically.
+ * The shared envelope every language package used to reimplement: selects claimed documents, compares each, groups differences by file. Language packages supply only the comparison.
  */
 @Injectable()
 export class RunnerService {
@@ -65,12 +61,9 @@ export class RunnerService {
   // 🌎 Public Methods
 
   /**
-   * Compares every document with the validator claiming it and collects what
-   * the placeholder values captured, keyed by value.
+   * Collects the placeholder captures of every document, keyed by value.
    *
-   * Documents are visited in order and the first capture of a value is kept,
-   * so the value comes from the first file — and within it the first node —
-   * that revealed it.
+   * The first capture of a value wins.
    */
   public captureDocuments(args: {
     documents: PreparedValidationDocument[];
@@ -92,18 +85,9 @@ export class RunnerService {
   }
 
   /**
-   * Selects the documents a validator claims and returns its aggregated
-   * result.
+   * Compares the documents a validator claims and returns its aggregated result.
    *
-   * Documents the validator does not claim are skipped silently — several
-   * validators run over the same document set and each takes only its own
-   * extensions.
-   *
-   * Every claimed document contributes its weight, but only the failing ones
-   * are kept as file results. Reports should list faults, not files; scores
-   * need the whole denominator. Dropping clean documents before totalling
-   * would score an instance against only the parts of itself that are wrong,
-   * which reads as near-zero for an instance with one bad file among twenty.
+   * Every claimed document adds weight; only failing files are kept.
    */
   public runValidator(
     args: RunLanguageValidatorArguments,

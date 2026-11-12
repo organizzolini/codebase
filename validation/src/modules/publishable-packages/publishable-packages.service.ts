@@ -130,10 +130,7 @@ export class PublishablePackagesService {
   // 🌎 Public Methods
 
   /**
-   * Dynamically resolves all publishable packages in `projects/ic-suite`.
-   *
-   * @param workspaceRoot - Absolute path to the workspace root directory.
-   * @returns Array of publishable packages with names, tarball bases, and CLI binaries.
+   * Resolves every publishable package in `projects/ic-suite`, sorted by name.
    */
   public resolvePublishablePackages(
     workspaceRoot: string,
@@ -166,14 +163,8 @@ export class PublishablePackagesService {
   }
 
   /**
-   * Installs every packed publishable package into a consumer outside the
-   * workspace and exercises it: each package's import typechecks, each command
-   * line runs, the project graph builds with the Nx plugins registered, and
-   * one inferred target per plugin passes a healthy project and fails a
-   * broken one. Nothing is ever published.
-   *
-   * @param workspaceRoot - Absolute path to the workspace root directory.
-   * @returns Verification result including success status, counts, and error messages.
+   * Installs the packed packages into an outside consumer and exercises them.
+   * Never publishes.
    */
   public verifyPublishablePackages(
     workspaceRoot: string,

@@ -1,25 +1,20 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { getDataSourceToken } from "@nestjs/typeorm";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
-import { createSqliteDataSource } from "@codebase/persistence";
+import { Constellation, ConstellationLine, Star } from "@codebase/caelundas-db";
+import { useTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import {
-  DATABASE_ENTITIES,
-  DATABASE_MIGRATIONS,
-  DATABASE_PROJECT,
-} from "../database/database.constants";
+import { POSTGRES_MAXIMUM_PARAMETERS } from "../../caelundas-cli.constants";
 
 import { NightSkyService } from "./night-sky.service";
 
 import type { NightSkyFiles } from "./night-sky.types";
-import type { DataSource } from "typeorm";
+import type { EntityManager } from "typeorm";
 
 const CATALOG = [
   '"id","hip","proper","ra","dec","mag","ci"',
@@ -49,13 +44,26 @@ const LINES = JSON.stringify({
 });
 
 describe(NightSkyService, () => {
-  let dataSource: DataSource;
-  let directory: string;
+  const manager = createMock<EntityManager>();
+  const getDirectory = useTemporaryDirectory("night-sky");
   let files: NightSkyFiles;
   let service: NightSkyService;
 
+  const testingModuleOptions = {
+    providers: [
+      {
+        provide: getDataSourceToken(),
+        useValue: {
+          transaction: async (
+            work: (transaction: EntityManager) => Promise<unknown>,
+          ): Promise<unknown> => work(manager),
+        },
+      },
+    ],
+  };
+
   beforeAll(async () => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "night-sky-"));
+    const directory = getDirectory();
     files = {
       constellations: path.join(directory, "constellations.json"),
       lines: path.join(directory, "constellations.lines.json"),
@@ -65,67 +73,66 @@ describe(NightSkyService, () => {
     fs.writeFileSync(files.lines, LINES);
     fs.writeFileSync(files.stars, CATALOG);
 
-    dataSource = createSqliteDataSource(
-      {
-        entities: DATABASE_ENTITIES,
-        migrations: DATABASE_MIGRATIONS,
-        project: DATABASE_PROJECT,
-      },
-      { CAELUNDAS_SQLITE_DATABASE: ":memory:" },
+    ({ instance: service } = await buildTestingModule(
+      NightSkyService,
+      testingModuleOptions,
+    ));
+  });
+
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      NightSkyService,
+      testingModuleOptions,
     );
-    await dataSource.initialize();
-    await dataSource.runMigrations();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        NightSkyService,
-        { provide: getDataSourceToken(), useValue: dataSource },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(NightSkyService);
+    expect(instance).toBeInstanceOf(NightSkyService);
   });
 
-  afterAll(async () => {
-    await dataSource.destroy();
-    fs.rmSync(directory, { force: true, recursive: true });
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
-  });
-
-  it("writes the stars, the constellations and their segments", async () => {
-    await service.ingest(files);
-
-    await expect(
-      dataSource.query(`select hip, magnitude from star order by hip`),
-    ).resolves.toStrictEqual([
-      { hip: 53_910, magnitude: 2.3 },
-      { hip: 54_061, magnitude: 1.8 },
-    ]);
-    await expect(
-      dataSource.query(`select designation, name, zodiac from constellation`),
-    ).resolves.toStrictEqual([
-      { designation: "UMa", name: "Ursa Major", zodiac: 0 },
-    ]);
-    await expect(
-      dataSource.query(
-        `select constellation_designation, from_hip, to_hip from constellation_line`,
-      ),
-    ).resolves.toStrictEqual([
-      { constellation_designation: "UMa", from_hip: 54_061, to_hip: 53_910 },
-    ]);
-  });
-
-  it("replaces what an earlier run wrote rather than adding to it", async () => {
-    await service.ingest(files);
+  it("empties the tables segments first, then writes the stars before the segments that join them", async () => {
     const rows = await service.ingest(files);
+    const deletion = manager.createQueryBuilder().delete();
 
     expect(rows.stars).toHaveLength(2);
-    await expect(
-      dataSource.query(`select count(*) as count from star`),
-    ).resolves.toStrictEqual([{ count: 2 }]);
+    expect(deletion.from).toHaveBeenNthCalledWith(1, ConstellationLine);
+    expect(deletion.from).toHaveBeenNthCalledWith(2, Constellation);
+    expect(deletion.from).toHaveBeenNthCalledWith(3, Star);
+    expect(manager.insert).toHaveBeenNthCalledWith(1, Star, expect.any(Array));
+    expect(manager.insert).toHaveBeenNthCalledWith(
+      2,
+      Constellation,
+      expect.any(Array),
+    );
+    expect(manager.insert).toHaveBeenNthCalledWith(
+      3,
+      ConstellationLine,
+      expect.any(Array),
+    );
+  });
+
+  it("splits a catalog wider than one statement allows into batches under the parameter limit", async () => {
+    const count = 14_000;
+    const catalog = [
+      '"id","hip","proper","ra","dec","mag","ci"',
+      ...Array.from(
+        { length: count },
+        (_value, index) =>
+          `${String(index + 1)},${String(index + 1)},"",1.5,10,3,0.5`,
+      ),
+    ].join("\n");
+    fs.writeFileSync(files.stars, catalog);
+    vi.mocked(manager.insert).mockClear();
+
+    await service.ingest(files);
+    const starBatches = vi
+      .mocked(manager.insert)
+      .mock.calls.filter(([target]) => target === Star)
+      .map(([, rows]) => rows as readonly unknown[]);
+
+    expect(starBatches.length).toBeGreaterThan(1);
+    expect(starBatches.flat()).toHaveLength(count);
+
+    for (const rows of starBatches) {
+      expect(rows.length * 5).toBeLessThanOrEqual(POSTGRES_MAXIMUM_PARAMETERS);
+    }
   });
 });

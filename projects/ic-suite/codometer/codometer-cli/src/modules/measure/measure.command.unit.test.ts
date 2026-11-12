@@ -12,22 +12,19 @@ import {
 } from "@codometer/output";
 import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { captureExitCode, captureOutput } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { buildCodeStatistics, throwUnknown } from "../../../testing/mocks";
 
 import { MeasureCommand } from "./measure.command";
 
+import type { LoggerService } from "@codebase/observability";
+import type { CapturedOutput } from "@codebase/testing";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type {
   MeasureCommandOptions,
   ResolvedCodometerConfiguration,
@@ -39,7 +36,6 @@ import type {
   MarkdownService,
   ResolvedMarkdownDestination,
 } from "@codometer/output";
-import type { MockInstance } from "vitest";
 
 const statistics = buildCodeStatistics();
 
@@ -108,13 +104,7 @@ const customStatistic = {
 };
 
 /**
- * Resolves the real configuration service, whose flag reading these tests
- * exercise rather than mock.
- *
- * `ConfigurationModule` is the only way in: the flag reader behind
- * `selectMode` and `resolveFormat` is a provider of that module rather than a
- * public export, because the configuration layer has exactly one public
- * service. Reading a file is still stubbed per test.
+ * Resolves the real configuration service, since its flag reader is not exported.
  */
 async function buildConfigurationService(): Promise<ConfigurationService> {
   const module = await Test.createTestingModule({
@@ -124,14 +114,24 @@ async function buildConfigurationService(): Promise<ConfigurationService> {
   return module.resolve(ConfigurationService);
 }
 
+/** What the MeasureCommand is built with. */
+const DEPENDENCIES = {
+  mocks: [ConfigurationService, MeasureService, DeliveryService],
+  providers: [
+    { provide: ReportService, useValue: new ReportService() },
+    { provide: DestinationsService, useValue: new DestinationsService() },
+  ],
+} satisfies TestingModuleOptions;
+
 describe(MeasureCommand, () => {
-  let command: MeasureCommand;
   let configurationService: ConfigurationService;
   let measureService: MeasureService;
   let loggerService: LoggerService;
   let jsonService: JsonService;
   let markdownService: MarkdownService;
-  let stdoutWriteSpy: MockInstance<typeof process.stdout.write>;
+  let command: MeasureCommand;
+  let output: CapturedOutput;
+  let readExitCode: () => typeof process.exitCode;
 
   /** Builds a command whose measurement and output are mocked. */
   function buildCommand(): MeasureCommand {
@@ -162,32 +162,21 @@ describe(MeasureCommand, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        MeasureCommand,
-        {
-          provide: ConfigurationService,
-          useValue: createMock<ConfigurationService>(),
-        },
-        { provide: MeasureService, useValue: createMock<MeasureService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        { provide: DeliveryService, useValue: createMock<DeliveryService>() },
-        { provide: ReportService, useValue: new ReportService() },
-        { provide: DestinationsService, useValue: new DestinationsService() },
-      ],
-    }).compile();
-
-    command = await module.resolve(MeasureCommand);
+    ({ instance: command } = await buildTestingModule(
+      MeasureCommand,
+      DEPENDENCIES,
+    ));
   });
 
   beforeEach(async () => {
+    readExitCode = captureExitCode();
     process.exitCode = 0;
     configurationService = await buildConfigurationService();
     measureService = createMock<MeasureService>();
     loggerService = createMock<LoggerService>();
     jsonService = createMock<JsonService>();
     markdownService = createMock<MarkdownService>();
-    stdoutWriteSpy = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+    output = captureOutput();
     vi.spyOn(configurationService, "loadConfiguration").mockResolvedValue(
       buildConfiguration(),
     );
@@ -198,34 +187,105 @@ describe(MeasureCommand, () => {
     vi.mocked(markdownService.sync).mockReturnValue(true);
   });
 
-  afterEach(() => {
-    stdoutWriteSpy.mockRestore();
-    process.exitCode = 0;
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(MeasureCommand, DEPENDENCIES);
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+    expect(instance).toBeInstanceOf(MeasureCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        MeasureCommand,
-        {
-          provide: ConfigurationService,
-          useValue: createMock<ConfigurationService>(),
-        },
-        { provide: MeasureService, useValue: createMock<MeasureService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        { provide: DeliveryService, useValue: createMock<DeliveryService>() },
-        { provide: ReportService, useValue: new ReportService() },
-        { provide: DestinationsService, useValue: new DestinationsService() },
-      ],
-    }).compile();
+    await expectLoggerContext(MeasureCommand, DEPENDENCIES);
+  });
 
-    const logger = await module.resolve(LoggerService);
+  describe("named directories", () => {
+    it("measures each one from its own directory with the configuration read there", async () => {
+      await buildCommand().run(["/a", "/b"], {
+        config: "codometer.config.ts",
+      });
 
-    expect(logger.setContext).toHaveBeenCalledWith("MeasureCommand");
+      expect(configurationService.loadConfiguration).toHaveBeenNthCalledWith(
+        1,
+        { configurationPath: "/a/codometer.config.ts" },
+      );
+      expect(configurationService.loadConfiguration).toHaveBeenNthCalledWith(
+        2,
+        { configurationPath: "/b/codometer.config.ts" },
+      );
+      expect(measureService.measure).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({ workingDirectory: "/a" }),
+      );
+      expect(measureService.measure).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({ workingDirectory: "/b" }),
+      );
+      expect(readExitCode()).toBe(0);
+    });
+
+    it("fails the run when one directory breaches a limit but still measures the rest", async () => {
+      vi.mocked(measureService.measure)
+        .mockReturnValueOnce({
+          failures: [],
+          indexes: new Map(),
+          inputs: [],
+          limits: [buildBreach("fail")],
+          statistics,
+        })
+        .mockReturnValueOnce({
+          failures: [],
+          indexes: new Map(),
+          inputs: [],
+          limits: [],
+          statistics,
+        });
+
+      await buildCommand().run(["/a", "/b"], {
+        check: "limits",
+        config: "codometer.config.ts",
+      });
+
+      expect(measureService.measure).toHaveBeenCalledTimes(2);
+      expect(readExitCode()).toBe(1);
+    });
+
+    it("fails the run when a measurement throws and still measures the rest", async () => {
+      vi.mocked(measureService.measure).mockImplementationOnce(() => {
+        throw new Error("empty target");
+      });
+
+      await buildCommand().run(["/a", "/b"], {
+        config: "codometer.config.ts",
+      });
+
+      expect(measureService.measure).toHaveBeenCalledTimes(2);
+      expect(readExitCode()).toBe(1);
+      expect(loggerService.error).toHaveBeenCalledWith(
+        "📊 Failed to measure /a",
+        undefined,
+        { reason: "empty target" },
+      );
+    });
+
+    it("reports a thrown non-Error as a plain string", async () => {
+      vi.mocked(measureService.measure).mockImplementationOnce(() => {
+        throwUnknown("not an Error");
+      });
+
+      await buildCommand().run(["/a"], { config: "codometer.config.ts" });
+
+      expect(loggerService.error).toHaveBeenCalledWith(
+        "📊 Failed to measure /a",
+        undefined,
+        { reason: "not an Error" },
+      );
+    });
+
+    it("still refuses a run that names no --config", async () => {
+      await buildCommand().run(["/a"], {});
+
+      expect(measureService.measure).not.toHaveBeenCalled();
+      expect(readExitCode()).toBe(1);
+    });
   });
 
   describe("the command line", () => {
@@ -233,7 +293,7 @@ describe(MeasureCommand, () => {
       await run({ check: "bogus" });
 
       expect(measureService.measure).not.toHaveBeenCalled();
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
       expect(loggerService.error).toHaveBeenCalledWith(
         "📊 Rejected the command line",
         undefined,
@@ -247,7 +307,7 @@ describe(MeasureCommand, () => {
       await run({ check: "reports", outputJson: true });
 
       expect(measureService.measure).not.toHaveBeenCalled();
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
     });
 
     it("refuses a run that names no --config, naming the flag", async () => {
@@ -255,7 +315,7 @@ describe(MeasureCommand, () => {
 
       expect(configurationService.loadConfiguration).not.toHaveBeenCalled();
       expect(measureService.measure).not.toHaveBeenCalled();
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
       expect(loggerService.error).toHaveBeenCalledTimes(1);
       expect(
         JSON.stringify(vi.mocked(loggerService.error).mock.calls[0]),
@@ -278,7 +338,7 @@ describe(MeasureCommand, () => {
       await run();
 
       expect(measureService.measure).not.toHaveBeenCalled();
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
       expect(loggerService.error).toHaveBeenCalledWith(
         "📊 Rejected the configuration",
         undefined,
@@ -306,7 +366,7 @@ describe(MeasureCommand, () => {
       await run({ outputJson: true });
 
       expect(measureService.measure).not.toHaveBeenCalled();
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
       expect(loggerService.error).toHaveBeenCalledWith(
         "📊 Rejected the command line",
         undefined,
@@ -320,7 +380,7 @@ describe(MeasureCommand, () => {
       await run({ format: "yaml" });
 
       expect(measureService.measure).not.toHaveBeenCalled();
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
     });
   });
 
@@ -363,7 +423,7 @@ describe(MeasureCommand, () => {
     it("prints the badges when the run touches no file", async () => {
       await run();
 
-      expect(stdoutWriteSpy).toHaveBeenCalledWith("block\n");
+      expect(output.stdout()).toBe("block\n");
     });
 
     it("falls back to the resolved configuration's format when omitted", async () => {
@@ -388,7 +448,7 @@ describe(MeasureCommand, () => {
 
       await run({ format: "markdown" });
 
-      expect(stdoutWriteSpy).toHaveBeenCalledWith("block\n");
+      expect(output.stdout()).toBe("block\n");
       expect(jsonService.render).not.toHaveBeenCalled();
     });
   });
@@ -434,7 +494,7 @@ describe(MeasureCommand, () => {
 
       await run({ format: "json", outputJson: true });
 
-      expect(stdoutWriteSpy).toHaveBeenCalledWith("{}\n");
+      expect(output.stdout()).toBe("{}\n");
       expect(jsonService.sync).toHaveBeenCalledExactlyOnceWith(
         expect.objectContaining({ indentation: 2 }),
       );
@@ -473,7 +533,7 @@ describe(MeasureCommand, () => {
 
       await run({ check: "reports" });
 
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
       expect(loggerService.error).toHaveBeenCalledWith(
         "📊 Found stale reports",
         undefined,
@@ -528,7 +588,7 @@ describe(MeasureCommand, () => {
 
       await run({ check: "limits" });
 
-      expect(process.exitCode).toBe(0);
+      expect(readExitCode()).toBe(0);
       expect(loggerService.warn).toHaveBeenCalledWith(
         "📊 Breached a warning limit",
         undefined,
@@ -541,7 +601,7 @@ describe(MeasureCommand, () => {
 
       await run({ check: "limits" });
 
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
     });
 
     it("does not fail a run that gates nothing on a failing breach", async () => {
@@ -549,7 +609,7 @@ describe(MeasureCommand, () => {
 
       await run();
 
-      expect(process.exitCode).toBe(0);
+      expect(readExitCode()).toBe(0);
     });
 
     it("reports what it could not measure and fails a gating run", async () => {
@@ -563,7 +623,7 @@ describe(MeasureCommand, () => {
 
       await run({ check: "limits" });
 
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
       expect(loggerService.error).toHaveBeenCalledWith(
         "📊 Failed to measure part of the run",
         undefined,
@@ -582,7 +642,7 @@ describe(MeasureCommand, () => {
 
       await run();
 
-      expect(process.exitCode).toBe(0);
+      expect(readExitCode()).toBe(0);
     });
 
     it("logs completion with the input count and breach count", async () => {

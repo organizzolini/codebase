@@ -7,7 +7,7 @@ import {
   selectPostgresDumpEntries,
 } from "./postgresql-dump.utilities";
 
-/** `pg_restore --list --verbose` of a dump of two fixture tables and one archived one. */
+/** `pg_restore --list --verbose` output of two tables and an archived one. */
 const LISTING = [
   ";",
   "; Archive created at 2026-10-15 04:12:46 UTC",

@@ -1,6 +1,6 @@
 // ♟️ Constants
 
-/** A previous tip that names no commit: absent, or all zeros on a new branch. */
+/** A previous tip naming no commit: absent, or all zeros. */
 export const NO_PREVIOUS_TIP = /^0*$/v;
 
 export const REVISIONS_UNSET_MESSAGE =

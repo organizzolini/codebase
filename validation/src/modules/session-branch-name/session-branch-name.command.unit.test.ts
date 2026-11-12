@@ -1,34 +1,23 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import {
+  captureExitCode,
+  captureOutput,
+  createTemporaryDirectory,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { SessionBranchNameGitService } from "./session-branch-name-git.service";
 import { SessionBranchNameCommand } from "./session-branch-name.command";
 import { SessionBranchNameService } from "./session-branch-name.service";
 
 import type { GitResult } from "./session-branch-name.types";
-import type { MockInstance } from "vitest";
 
-/**
- * Fixtures live inside the workspace, in its gitignored `tmp`, never in the
- * operating system's temporary directory.
- */
-const FIXTURE_PARENT = path.resolve(import.meta.dirname, "../../../tmp");
-
-/** The repository this suite runs in, whose real branch rules are read too. */
+/** The repository this suite runs in, whose branch rules are read. */
 const REPOSITORY_ROOT = path.resolve(import.meta.dirname, "../../../..");
 
 const RENAME_DIRECTIVE =
@@ -46,38 +35,35 @@ const FIXTURE_CONFIGURATION = `module.exports = {
 };
 `;
 
-describe(SessionBranchNameCommand, () => {
-  let command: SessionBranchNameCommand;
-  let workspace: string;
-  let stdout: MockInstance<typeof process.stdout.write>;
-  let gitCalls: string[][];
+/** The command's real service, over a mocked `git`. */
+const moduleOptions = {
+  mocks: [SessionBranchNameGitService],
+  providers: [SessionBranchNameService],
+};
 
-  /** Everything the command wrote to standard output. */
-  const printed = (): string =>
-    stdout.mock.calls.map(([chunk]) => String(chunk)).join("");
+describe(SessionBranchNameCommand, () => {
+  let workspace: string;
+  let gitCalls: string[][];
+  let exitCode: ReturnType<typeof captureExitCode>;
+  let printed: () => string;
 
   /** Builds the command over the real service and a fake `git`. */
   const createCommand = async (
     answer: (args: readonly string[]) => GitResult,
   ): Promise<SessionBranchNameCommand> => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SessionBranchNameCommand,
-        SessionBranchNameService,
-        {
-          provide: SessionBranchNameGitService,
-          useValue: createMock<SessionBranchNameGitService>({
-            run: (args: readonly string[]): GitResult => {
-              gitCalls.push([...args]);
-              return answer(args);
-            },
-          }),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, mock } = await buildTestingModule(
+      SessionBranchNameCommand,
+      moduleOptions,
+    );
 
-    return module.resolve(SessionBranchNameCommand);
+    mock(SessionBranchNameGitService).run.mockImplementation(
+      (args: readonly string[]): GitResult => {
+        gitCalls.push([...args]);
+        return answer(args);
+      },
+    );
+
+    return instance;
   };
 
   /** A `git` whose current branch is this one. */
@@ -87,64 +73,37 @@ describe(SessionBranchNameCommand, () => {
     stdout: `${branch}\n`,
   });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SessionBranchNameCommand,
-        SessionBranchNameService,
-        {
-          provide: SessionBranchNameGitService,
-          useValue: createMock<SessionBranchNameGitService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(SessionBranchNameCommand);
-  });
-
   beforeEach(() => {
-    mkdirSync(FIXTURE_PARENT, { recursive: true });
-    workspace = mkdtempSync(path.join(FIXTURE_PARENT, "session-branch-name-"));
+    workspace = createTemporaryDirectory("session-branch-name");
     writeFileSync(
       path.join(workspace, "validate-branch-name.config.cjs"),
       FIXTURE_CONFIGURATION,
     );
     gitCalls = [];
-    process.exitCode = undefined;
+    exitCode = captureExitCode();
+    printed = captureOutput().stdout;
     vi.spyOn(process, "cwd").mockReturnValue(workspace);
-    stdout = vi.spyOn(process.stdout, "write").mockReturnValue(true);
   });
 
   afterEach(() => {
-    rmSync(workspace, { force: true, recursive: true });
-    process.exitCode = undefined;
     vi.restoreAllMocks();
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      SessionBranchNameCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(SessionBranchNameCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SessionBranchNameCommand,
-        SessionBranchNameService,
-        {
-          provide: SessionBranchNameGitService,
-          useValue: createMock<SessionBranchNameGitService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    expect.hasAssertions();
 
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("SessionBranchNameCommand");
+    await expectLoggerContext(SessionBranchNameCommand, moduleOptions);
   });
 
   it("asks git for the current branch", async () => {
@@ -161,7 +120,7 @@ describe(SessionBranchNameCommand, () => {
     await session.run();
 
     expect(printed()).toBe("");
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
   });
 
   it("prints the configured error and the rename directive, and exits 1, for one that does not", async () => {
@@ -179,7 +138,7 @@ describe(SessionBranchNameCommand, () => {
         RENAME_DIRECTIVE,
       ].join("\n"),
     );
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
   });
 
   it("prints nothing on a detached HEAD, which has no branch to judge", async () => {
@@ -188,7 +147,7 @@ describe(SessionBranchNameCommand, () => {
     await session.run();
 
     expect(printed()).toBe("");
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
   });
 
   it("prints nothing outside a git repository", async () => {
@@ -201,7 +160,7 @@ describe(SessionBranchNameCommand, () => {
     await session.run();
 
     expect(printed()).toBe("");
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
   });
 
   it("prints nothing when git cannot be started", async () => {
@@ -214,7 +173,7 @@ describe(SessionBranchNameCommand, () => {
     await session.run();
 
     expect(printed()).toBe("");
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
   });
 
   it("throws, printing nothing, when the configuration has no pattern", async () => {
@@ -238,7 +197,7 @@ describe(SessionBranchNameCommand, () => {
     expect(printed()).toMatch(/\n🏷️ Valid types: feat, fix, docs, /u);
     expect(printed()).toMatch(/\n🔭 Valid scopes: .*\bvalidation\b/u);
     expect(printed().endsWith(`\n\n${RENAME_DIRECTIVE}`)).toBe(true);
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
   });
 
   it("accepts the repository's main branch under its own configuration", async () => {
@@ -248,6 +207,6 @@ describe(SessionBranchNameCommand, () => {
     await session.run();
 
     expect(printed()).toBe("");
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
   });
 });

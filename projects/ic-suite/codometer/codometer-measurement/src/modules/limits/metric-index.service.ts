@@ -19,10 +19,9 @@ import type { CodeStatisticsResult } from "@codometer/core";
 /**
  * Makes every measured number addressable by a dotted path.
  *
- * The same index answers two questions that used to be one layer's private
- * business: which metric a limit is written against, and which metrics the
- * report has to list. Both need every number a target measured, named the same
- * way, so the naming lives here rather than in either caller.
+ * One index answers both which metric a limit targets and which metrics the
+ * report lists. Both need every number named the same way, so the naming lives
+ * here, not in either caller.
  */
 @Injectable()
 export class MetricIndexService {
@@ -37,12 +36,7 @@ export class MetricIndexService {
   // 🔏 Private Methods
 
   /**
-   * Records one metric, or marks its path as answered by more than one.
-   *
-   * Two counters sharing a path is a configuration mistake rather than a
-   * measurement one — two statistics with the same label — and it is caught
-   * here so that a limit addressing that path is refused instead of being
-   * given whichever counter was indexed first.
+   * Records one metric. A path already answered is marked ambiguous, so a limit addressing it is refused rather than given the first counter.
    */
   private addMetric(args: AddMetricArguments): void {
     if (args.index.metrics.has(args.metricPath)) {
@@ -58,11 +52,7 @@ export class MetricIndexService {
   }
 
   /**
-   * Indexes every metric one target measured, by its path within that target.
-   *
-   * An analysis the target never ran contributes nothing, so a limit written
-   * against it is refused rather than being compared against a zero the target
-   * never reported.
+   * Indexes every metric one target measured, by path. An analysis the target never ran is refused, not compared as zero.
    */
   private buildTargetIndex(target: MeasuredTarget): TargetMetricIndex {
     const index: TargetMetricIndex = {
@@ -94,11 +84,7 @@ export class MetricIndexService {
   }
 
   /**
-   * Explains a name two measured targets both answered to.
-   *
-   * Written where the collision is found rather than raised as an error: the
-   * run carries on with the first target of that name, and this is what the
-   * report says about the one it had to drop.
+   * Explains a name two measured targets both answered to. The second target is dropped; the run continues with the first.
    */
   private describeDuplicate(target: string): DuplicateTargetFinding {
     return {
@@ -126,11 +112,7 @@ export class MetricIndexService {
   }
 
   /**
-   * Indexes everything language analysis counted.
-   *
-   * Configured counters are indexed under a prefix rather than beside the
-   * built-in ones, so a counter labelled `files` cannot take the path the file
-   * count already answers to.
+   * Indexes everything language analysis counted. Configured counters sit under a prefix, so a counter named `files` cannot shadow the file count.
    */
   private indexLanguage(
     index: TargetMetricIndex,
@@ -158,12 +140,7 @@ export class MetricIndexService {
   // 🌎 Public Methods
 
   /**
-   * Indexes every measured target, by name.
-   *
-   * A repeated name is collected rather than thrown, so a run reports every
-   * naming collision it found instead of the first one. The later target is
-   * dropped: a metric is addressed by its target's name, so a name answering
-   * to two targets can address neither.
+   * Indexes every measured target by name. A repeated name is collected rather than thrown, and the later target is dropped.
    */
   index(targets: readonly MeasuredTarget[]): MetricIndexResult {
     const duplicates: DuplicateTargetFinding[] = [];

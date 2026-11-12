@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,17 +7,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the ك (final Arabic kaf) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- * ╷
- * │ ╷
- * └─┴╴
- * ```
- */
+/** One isolated Code per orientation of the ك (final form). */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [],
   orientations: [
@@ -58,16 +47,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "kafFinal",
 };
 
-/**
- * Each distinct orientation of the ك (initial Arabic kaf) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- * ╶──┐
- *   ╶┘
- * ```
- */
+/** One isolated Code per orientation of the ك (initial form). */
 const INITIAL_FORM: LetterFormFixture = {
   aliases: [],
   orientations: [
@@ -107,17 +87,7 @@ const INITIAL_FORM: LetterFormFixture = {
   prefix: "kafInitial",
 };
 
-/**
- * Each distinct orientation of the ك (isolated Arabic kaf) as a Code holding
- * one isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- * ╷
- * │ ╷
- * └─┘
- * ```
- */
+/** One isolated Code per orientation of the ك (isolated form). */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [],
   orientations: [
@@ -157,16 +127,7 @@ const ISOLATED_FORM: LetterFormFixture = {
   prefix: "kafIsolated",
 };
 
-/**
- * Each distinct orientation of the ك (medial Arabic kaf) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- * ╶──┐
- *   ╶┴╴
- * ```
- */
+/** One isolated Code per orientation of the ك (medial form). */
 const MEDIAL_FORM: LetterFormFixture = {
   aliases: [],
   orientations: [
@@ -215,10 +176,7 @@ const FORMS: readonly LetterFormFixture[] = [
 ];
 
 describe(KafArabicLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    KafArabicLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(KafArabicLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

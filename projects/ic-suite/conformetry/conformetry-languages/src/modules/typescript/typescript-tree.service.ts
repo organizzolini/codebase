@@ -13,17 +13,9 @@ import type {
 import type { Node } from "typescript";
 
 /**
- * Walks two syntax trees in parallel and reports what the template requires
- * but the instance does not contain.
+ * Walks two syntax trees in parallel and reports what the template requires but the instance lacks.
  *
- * The template is a **structural subset** requirement: every declaration it
- * makes must exist somewhere in the instance, but the instance may add
- * anything and may order its members freely.
- *
- * The walk also counts what it asked for. Every template node visited is one
- * requirement, and a node with no counterpart costs its whole subtree, so the
- * weight of a finding is proportional to how much of the template went
- * missing rather than to how many findings were printed.
+ * The template is a structural subset: the instance may add anything and order its members freely.
  */
 @Injectable()
 export class TypescriptTreeService {
@@ -56,15 +48,9 @@ export class TypescriptTreeService {
   }
 
   /**
-   * Descends into whichever candidate explains the template best.
+   * Descends into whichever candidate leaves the least of the template unaccounted for.
    *
-   * Several instance nodes can share a key or kind — two methods with the same
-   * name on different classes, say — so the one leaving the least of the
-   * template unaccounted for is taken as the intended match.
-   *
-   * Weighed by failed weight rather than by error count: one finding standing
-   * in for a whole missing class is a worse match than two missing imports,
-   * and counting findings would have picked the wrong one.
+   * Ranks by failed weight, not error count.
    */
   private compareBestCandidate(args: {
     candidates: { captures: Record<string, string>; node: Node }[];
@@ -134,12 +120,9 @@ export class TypescriptTreeService {
   }
 
   /**
-   * Matches a template node on its key, returning what any placeholder value
-   * in the key captured, or `undefined` when the instance node does not match.
+   * Matches a template node on its key, returning placeholder captures.
    *
-   * A key holding a placeholder value is a pattern, and is only tried against
-   * nodes of the same syntax kind: a bare value would otherwise match any key
-   * at all, the callee's own name included.
+   * A placeholder key only matches nodes of the same syntax kind.
    */
   private matchKey(args: {
     instanceChild: Node;

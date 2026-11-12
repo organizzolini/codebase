@@ -1,11 +1,12 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PullRequestLabelsService } from "./pull-request-labels.service";
 
 import type { ConventionalLabel } from "./pull-request-labels.types";
 
-/** What the mocked `require` hands back, or throws when it is an error. */
+/** What the mocked `require` returns, or throws when it errors. */
 let conventionalConfig: unknown = { scopes: [], types: [] };
 
 vi.mock("node:module", () => ({
@@ -29,11 +30,9 @@ describe(PullRequestLabelsService, () => {
   ): ConventionalLabel => ({ color, description, name });
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PullRequestLabelsService],
-    }).compile();
+    const built = await buildTestingModule(PullRequestLabelsService);
 
-    service = await module.resolve(PullRequestLabelsService);
+    service = built.instance;
   });
 
   beforeEach(() => {
@@ -43,8 +42,10 @@ describe(PullRequestLabelsService, () => {
     };
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PullRequestLabelsService);
+
+    expect(instance).toBeInstanceOf(PullRequestLabelsService);
   });
 
   describe("readExpectedLabels", () => {

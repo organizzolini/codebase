@@ -8,11 +8,10 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of each positional form of the ع
- * (Arabic ain) skeleton — final, initial, isolated, and medial — one per corner
- * and clockwise rotation, each counting that form's base template, which faces
- * Southwest, drawn that way. A letter sharing a form's skeleton, differing from
- * it only by dots or by other marks, is an alias of that form.
+ * Provides the sixteen orientation evaluators of each positional form of the ع skeleton: final, initial, isolated, and medial.
+ * Each counts that form's base template, drawn facing Southwest.
+ *
+ * A letter differing from a form only by dots or other marks is an alias of it.
  */
 @Injectable()
 export class AinArabicLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -71,50 +70,16 @@ export class AinArabicLetterCharacteristicsService implements CharacteristicEval
 
   // 🔐 Private Fields
 
-  /**
-   * The upright ع (final Arabic ain) glyph's points as hexadecimal Code digits,
-   * one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   *  ┌┐
-   * ┌┴┴╴
-   * └─╴
-   * ```
-   */
+  /** Upright ع (final form) as hexadecimal Code digits, facing Southwest. */
   private readonly finalTemplate: readonly string[] = [".65.", "6bb1", "a31."];
 
-  /**
-   * The upright ع (initial Arabic ain) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   *  ┌╴
-   * ╶┴╴
-   * ```
-   */
+  /** Upright ع (initial form) as hexadecimal Code digits, facing Southwest. */
   private readonly initialTemplate: readonly string[] = [".61", "2b1"];
 
-  /**
-   * The upright ع (isolated Arabic ain) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   *  ┌╴
-   * ┌┴╴
-   * └─╴
-   * ```
-   */
+  /** Upright ع (isolated form) as hexadecimal Code digits, facing Southwest. */
   private readonly isolatedTemplate: readonly string[] = [".61", "6b1", "a31"];
 
-  /**
-   * The upright ع (medial Arabic ain) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   *  ┌┬╴
-   * ╶┴┴╴
-   * ```
-   */
+  /** Upright ع (medial form) as hexadecimal Code digits, facing Southwest. */
   private readonly medialTemplate: readonly string[] = [".671", "2bb1"];
 
   // 🔑 Public Fields

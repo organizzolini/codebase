@@ -40,24 +40,8 @@ describe(CalendarFilters, () => {
     expect(group.lastElementChild).toBe(clear);
   });
 
-  describe("collections", () => {
-    // The seed-like facets the collection is resolved from: one ingress tag.
-    const FACETS = [
-      {
-        id: "tag-type",
-        name: "Type",
-        values: [
-          {
-            count: 3,
-            depth: 1,
-            id: "tag-ingress",
-            name: "Ingress",
-            path: "Ingress",
-          },
-        ],
-      },
-    ];
-    const COLLECTION = {
+  describe("presets", () => {
+    const PRESET = {
       description: "Every ingress.",
       filter: {
         combinator: "and" as const,
@@ -77,39 +61,37 @@ describe(CalendarFilters, () => {
       name: "Planet-sign events",
     };
 
-    it("offers the collections at the top of the filter panel", async () => {
+    it("offers the presets at the top of the filter panel", async () => {
       render(
         <CalendarFilters
-          facets={FACETS}
           fields={[]}
-          filter={COLLECTION.filter}
+          filter={PRESET.filter}
           onFilterChange={vi.fn<(filter: unknown) => void>()}
+          presets={[PRESET]}
         />,
       );
       fireEvent.click(screen.getByRole("button", { name: /^Filter/u }));
 
       const picker = await screen.findByRole("combobox", {
-        name: "Collection",
+        name: "Preset",
       });
 
       expect(picker.textContent).toContain("Planet-sign events");
     });
 
-    it("applies a collection picked in the filter panel", async () => {
+    it("applies a preset picked in the filter panel", async () => {
       const onFilterChange = vi.fn<(filter: unknown) => void>();
 
       render(
         <CalendarFilters
-          facets={FACETS}
           fields={[]}
-          filter={{ ...COLLECTION.filter, rules: [] }}
+          filter={{ ...PRESET.filter, rules: [] }}
           onFilterChange={onFilterChange}
+          presets={[PRESET]}
         />,
       );
       fireEvent.click(screen.getByRole("button", { name: /^Filter/u }));
-      fireEvent.click(
-        await screen.findByRole("combobox", { name: "Collection" }),
-      );
+      fireEvent.click(await screen.findByRole("combobox", { name: "Preset" }));
       fireEvent.keyDown(
         await screen.findByRole("option", { name: "Planet-sign events" }),
         {
@@ -117,7 +99,7 @@ describe(CalendarFilters, () => {
         },
       );
 
-      expect(onFilterChange).toHaveBeenCalledWith(COLLECTION.filter);
+      expect(onFilterChange).toHaveBeenCalledWith(PRESET.filter);
     });
 
     it("clears every filter with the Clear button", () => {
@@ -125,10 +107,10 @@ describe(CalendarFilters, () => {
 
       render(
         <CalendarFilters
-          facets={FACETS}
           fields={[]}
-          filter={COLLECTION.filter}
+          filter={PRESET.filter}
           onFilterChange={onFilterChange}
+          presets={[PRESET]}
         />,
       );
       fireEvent.click(screen.getByRole("button", { name: "Clear" }));
@@ -141,10 +123,10 @@ describe(CalendarFilters, () => {
     it("leaves Clear off while nothing is filtered", () => {
       render(
         <CalendarFilters
-          facets={FACETS}
           fields={[]}
-          filter={{ ...COLLECTION.filter, rules: [] }}
+          filter={{ ...PRESET.filter, rules: [] }}
           onFilterChange={vi.fn<(filter: unknown) => void>()}
+          presets={[PRESET]}
         />,
       );
 
@@ -154,16 +136,16 @@ describe(CalendarFilters, () => {
       );
     });
 
-    it("goes back to the default collection when the link's filter is dropped", () => {
+    it("goes back to the default preset when the link's filter is dropped", () => {
       const properties = {
-        facets: FACETS,
         fields: [],
         onFilterChange: vi.fn<(filter: unknown) => void>(),
+        presets: [PRESET],
       };
       const { rerender } = render(
         <CalendarFilters
           {...properties}
-          filter={COLLECTION.filter}
+          filter={PRESET.filter}
         />,
       );
 
@@ -174,8 +156,8 @@ describe(CalendarFilters, () => {
         />,
       );
 
-      // The default collection is the one the seed's tags cannot serve, so
-      // nothing is left filtered.
+      // The preset offered is not the default one, so nothing is left
+      // filtered.
       expect(screen.getByRole("button", { name: "Clear" })).toHaveProperty(
         "disabled",
         true,

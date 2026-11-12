@@ -13,10 +13,7 @@ import type { ConformetryPluginOptions } from "./options.types";
 /**
  * Narrows the untyped options object Nx hands a plugin.
  *
- * Nx passes whatever the consumer wrote in `nx.json` with no validation, so
- * every field is checked before use rather than cast. A bad value falls back
- * to its default: a typo in a target name should not stop the project graph
- * from being built.
+ * Nx passes unvalidated `nx.json` values, so each field is checked rather than cast. A bad value falls back to its default, so a typo cannot stop the graph from building.
  */
 @Injectable()
 export class OptionsService {
@@ -85,15 +82,7 @@ export class OptionsService {
   /**
    * Reads the configuration path the run was given, or refuses.
    *
-   * The `configuration` option, when the caller has one, wins over the
-   * workspace's registration. Whether a path is required, and what the refusal
-   * says, belongs to the configuration layer; this only says which option the
-   * person was meant to set.
-   *
-   * Nx passes plugin options to `createNodes` and to executors, but not to a
-   * global sync generator or to anything run outside Nx entirely, such as the
-   * install-time bootstrap. Those read the registration themselves. No path is
-   * assumed or searched for.
+   * The `configuration` option wins over the workspace's registration.
    */
   public resolveConfigurationPath(args: {
     configuration?: string | undefined;
@@ -110,10 +99,7 @@ export class OptionsService {
   /**
    * Extracts the generator inputs from an Nx options object.
    *
-   * Nx hands a generator every option the consumer passed, including the ones
-   * that configure this plugin rather than the generator. Those are dropped so
-   * a template placeholder is never accidentally filled with a config path,
-   * and non-string values are dropped because substitutions are text.
+   * Drops plugin options, so no placeholder takes a config path.
    */
   public resolveGeneratorInputs(
     options: unknown,
@@ -138,9 +124,7 @@ export class OptionsService {
   /**
    * Resolves the effective plugin options from an untrusted value.
    *
-   * `configurationPath` is required and has no default; a missing one is
-   * refused by the configuration layer, naming `surface`. `validateTargetName`
-   * falls back to its default.
+   * A missing `configurationPath` is refused by the configuration layer.
    */
   public resolvePluginOptions(
     options: unknown,

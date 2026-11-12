@@ -2,14 +2,7 @@
 
 import type { CodeStatisticsResult } from "@codometer/core";
 
-/**
- * What a run reports when the `codebase` input measured no language analysis.
- *
- * Falls back to zero rather than `undefined`: every consumer of
- * `MeasurementResult.statistics` reads a `CodeStatisticsResult` outright, so a
- * `codebase` input configured to run only `size` still hands them a shape
- * they can render, with nothing counted.
- */
+/** Language metrics when `codebase` ran no analysis: zero, not `undefined`. */
 export const EMPTY_CODE_STATISTICS_RESULT: CodeStatisticsResult = {
   css: {
     atRules: 0,

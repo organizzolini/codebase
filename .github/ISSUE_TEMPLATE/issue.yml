@@ -50,6 +50,7 @@ body:
         - persistence
         - interface
         - dependencies
+        - deployment
         - deployments
         - documentation
         - infrastructure
@@ -58,7 +59,7 @@ body:
         - JimmyPaolini
         - lexico
         - presentation
-        - lexico-entities
+        - lexico-db
         - lexico-cli
         - meanderaw
         - sempientor
@@ -67,7 +68,6 @@ body:
         - codometer
         - coinagerie
         - no-release
-        - publication
         - release
         - reporting
         - scripts

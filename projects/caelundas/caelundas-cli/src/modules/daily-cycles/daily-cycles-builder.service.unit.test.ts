@@ -1,8 +1,6 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CalendarService } from "../calendar/calendar.service";
 import { EphemerisService } from "../ephemeris/ephemeris.service";
@@ -12,21 +10,24 @@ import { DailyCyclesBuilderService } from "./daily-cycles-builder.service";
 describe(DailyCyclesBuilderService, () => {
   let service: DailyCyclesBuilderService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DailyCyclesBuilderService,
-        { provide: CalendarService, useValue: createMock<CalendarService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        { provide: EphemerisService, useValue: createMock<EphemerisService>() },
-      ],
-    }).compile();
+  const testingModuleOptions = { mocks: [CalendarService, EphemerisService] };
 
-    service = await module.resolve(DailyCyclesBuilderService);
+  beforeAll(async () => {
+    const { instance } = await buildTestingModule(
+      DailyCyclesBuilderService,
+      testingModuleOptions,
+    );
+
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      DailyCyclesBuilderService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(DailyCyclesBuilderService);
   });
 
   describe("rise and set rounding", () => {

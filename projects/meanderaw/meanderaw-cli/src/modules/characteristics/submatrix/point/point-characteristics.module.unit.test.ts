@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -14,7 +15,7 @@ import { WestEdgeCountCharacteristicService } from "./west-edge-count-characteri
 
 import type { CharacteristicContext } from "../../characteristics.types";
 
-/** Codes spanning single points of one to four arms, a closed rectangle, and a band with ink leaving its top border. */
+/** Codes of single points, a rectangle, and a band. */
 const CODES = ["06x01y8cef70", "04x01y7430", "04x02y6335a339", "03x02y6b5a39"];
 
 describe(PointCharacteristicsModule, () => {
@@ -26,12 +27,12 @@ describe(PointCharacteristicsModule, () => {
   let west: WestEdgeCountCharacteristicService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [CodeModule, MatrixModule, PointCharacteristicsModule],
-      providers: [CharacteristicContextService],
-    }).compile();
+    const { instance, module } = await buildTestingModule(
+      CharacteristicContextService,
+      { imports: [CodeModule, MatrixModule, PointCharacteristicsModule] },
+    );
 
-    contextService = await module.resolve(CharacteristicContextService);
+    contextService = instance;
     east = module.get(EastEdgeCountCharacteristicService);
     edges = module.get(EdgeCountCharacteristicService);
     north = module.get(NorthEdgeCountCharacteristicService);

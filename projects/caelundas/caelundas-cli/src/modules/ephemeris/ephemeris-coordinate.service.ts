@@ -143,10 +143,9 @@ export class EphemerisCoordinateService {
     return { latitude: coords.latitude, longitude: coords.longitude };
   }
 
-  /**   * Computes minute-by-minute geocentric distance for a single body.
-   * Distance is stored in astronomical units (AU) as extracted from calc() data[2].
-   *
-   * @throws When calc fails for the body.
+  /**
+   * Geocentric distance for a body per minute, in AU from calc() data[2]; throws
+   * when calc fails.
    */
   public computeDistanceForBody(args: {
     body: Exclude<Body, Node>;
@@ -209,17 +208,8 @@ export class EphemerisCoordinateService {
   }
 
   /**
-   * Computes a body's apparent ecliptic coordinates as seen from an observer
-   * on the Earth's surface (sea level), rather than from the Earth's center.
-   *
-   * @remarks
-   * The difference is parallax: up to about 1° for the Moon, under 9″ for the
-   * Sun. Rise, set, culmination and local eclipse work need this position.
-   * Longitude and latitude are degrees of date; distance is in AU, so it also
-   * yields the topocentric semidiameter. `set_topo` is global Swiss Ephemeris
-   * state, so it is set on every call rather than trusted from an earlier one.
-   *
-   * @throws When calc fails for the body.
+   * Apparent ecliptic position from sea level rather than Earth's center;
+   * `set_topo` is global state, so it is set on every call.
    */
   public getTopocentricBodyCoordinates(args: {
     body: Exclude<Body, Node>;

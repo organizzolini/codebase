@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { GraphService } from "./graph.service";
 
@@ -7,15 +8,7 @@ import type { InkAdjacency } from "./graph.types";
 
 // 🔧 Configuration
 
-/**
- * An adjacency over plain string nodes, built from undirected edges written
- * as `"a-b"`.
- *
- * Strings rather than either caller's own point type on purpose: what this
- * service knows about a graph is that its nodes can be enumerated, followed,
- * and told apart, and a test that reached for a lattice point or a Code
- * position would be asserting that alongside the walk.
- */
+/** String-node adjacency, so tests stay apart from lattice points. */
 const adjacency = (
   nodes: readonly string[],
   edges: readonly string[],
@@ -42,15 +35,15 @@ describe(GraphService, () => {
   let service: GraphService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [GraphService],
-    }).compile();
+    const built = await buildTestingModule(GraphService);
 
-    service = await module.resolve(GraphService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(GraphService);
+
+    expect(instance).toBeInstanceOf(GraphService);
   });
 
   describe("components", () => {

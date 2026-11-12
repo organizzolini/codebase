@@ -9,10 +9,7 @@ import type { GeneratorHook } from "@conformetry/core";
 /**
  * Raised when a run names no configuration file.
  *
- * There is no default file and no filename search: the path is the one thing a
- * run cannot infer, and a guessed file is a silently wrong configuration. The
- * surface is how the caller spells the thing the person left unset — a flag, an
- * option, a registration — so the message points at the fix where they are.
+ * There is no default file and no filename search, since a guessed file would be silently wrong.
  */
 export class ConfigurationPathRequiredError extends Error {
   constructor(surface: string) {
@@ -61,27 +58,14 @@ const jsonSchemaDefinitionSchema: z.ZodType = z.lazy(() => {
   ]);
 });
 
-/**
- * A hook as a config file declares it: a function, and nothing narrower.
- *
- * Zod cannot see a function's parameters or its return type, so the arity and
- * the promise are the hook author's to get right; what it can refuse is a
- * string or an object where a function was meant, and it names which hook.
- */
+/** A function hook; Zod can only check it is callable. */
 const generatorHookSchema = (hookName: string): z.ZodType<GeneratorHook> => {
   return z.custom<GeneratorHook>((value) => typeof value === "function", {
     message: `The ${hookName} hook must be a function`,
   });
 };
 
-/**
- * Validates the generator list loaded from a config file.
- *
- * Every field a generator needs is declared here deliberately, and the
- * generator object is strict: an undeclared key is rejected rather than
- * stripped, so a workspace is told rather than left believing it configured
- * something. `tags` is carried uninterpreted for whichever host reads it.
- */
+/** Generator list from a config file; undeclared keys are reported. */
 export const conformetryConfigurationSchema = z
   .array(
     z.strictObject({

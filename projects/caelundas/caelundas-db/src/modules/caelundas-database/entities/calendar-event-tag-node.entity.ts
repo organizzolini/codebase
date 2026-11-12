@@ -3,17 +3,7 @@ import { Column, Entity, Index, PrimaryColumn } from "typeorm";
 import { createBigintTransformer } from "../caelundas-database.utilities";
 
 /**
- * One row of the `calendar_event_tag_nodes` table: an event and a tag it
- * carries, either directly or through a descendant, so grouping or filtering
- * on a node also finds everything beneath it. The tag's depth, root, and path
- * are copied from {@link TagNode} so a reader needs no join.
- *
- * The table is derived: `CaelundasDatabaseService.refreshReadModel` rebuilds
- * it from the events' tags and the tag closure, so nothing else writes it.
- * The primary key leads with the event, which serves reading an event's tags;
- * `calendar_event_tag_nodes_event` serves grouping an event's tags by
- * dimension and depth, and `calendar_event_tag_nodes_tag` serves finding the
- * events under a tag.
+ * One row of the `calendar_event_tag_nodes` table: an event and a tag it carries, directly or through a descendant. Derived by `CaelundasDatabaseService.refreshReadModel`.
  */
 @Entity()
 @Index("calendar_event_tag_nodes_event", [
@@ -27,7 +17,7 @@ export class CalendarEventTagNode {
   @PrimaryColumn("uuid")
   calendarEventId!: string;
 
-  /** Whether the event was given this tag itself, rather than a descendant of it. */
+  /** Whether the event was tagged directly, not through a descendant. */
   @Column("boolean")
   isDirect!: boolean;
 

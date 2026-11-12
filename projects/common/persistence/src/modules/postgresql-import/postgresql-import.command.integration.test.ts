@@ -1,6 +1,4 @@
 import { execFile } from "node:child_process";
-import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { DataSource } from "typeorm";
@@ -15,6 +13,9 @@ import {
   vi,
 } from "vitest";
 
+import { startPostgresContainer } from "@codebase/persistence/testing";
+import { useTemporaryDirectory } from "@codebase/testing";
+
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import {
   FIXTURE_DATABASE_TIMEOUT_MILLISECONDS,
@@ -22,23 +23,25 @@ import {
   postgresUri,
   startFixtureDatabase,
 } from "../../../testing/fixture-persistence";
-import { startPostgresContainer } from "../postgresql/postgresql-container.utilities";
 
 import type { FixtureDatabase } from "../../../testing/fixture-persistence";
-import type { StartedPostgresContainer } from "../postgresql/postgresql-container.types";
+import type { StartedPostgresContainer } from "@codebase/persistence/testing";
+import type * as Testing from "@codebase/testing";
 
 // 🎯 The real execFile, wrapped so a test can read the arguments and
 // environment every client tool was started with.
 vi.mock("node:child_process", async (importOriginal) => {
-  const actual = await importOriginal<{ execFile: typeof execFile }>();
-  return { ...actual, execFile: vi.fn<typeof execFile>(actual.execFile) };
+  const { mockChildProcess } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
+
+  return mockChildProcess(await importOriginal());
 });
 
 /** Nothing listens on port 1, so any connection attempt would fail loudly. */
 const UNREACHABLE_TARGET_URI =
   "postgresql://fixture_username:hunter2-secret@127.0.0.1:1/fixture_testing";
 
-/** The dumps `postgresql-export` writes once for every test, keyed by what they hold. */
+/** Dumps `postgresql-export` writes once for all tests, keyed by content. */
 const DUMPS = {
   archive: ["--table", "archive.notes", "--data", "--ddl"],
   both: ["--table", "widgets", "--table", "fixture.parts", "--data", "--ddl"],
@@ -52,11 +55,11 @@ describe("postgresql-import", () => {
   let empty: StartedPostgresContainer;
   let emptyDataSource: DataSource;
   let emptyUri: string;
-  let directory: string;
+  const directory = useTemporaryDirectory("fixture-import");
 
   /** Where `postgresql-export` wrote the dump named `name`. */
   const dump = (name: keyof typeof DUMPS): string =>
-    path.join(directory, `${name}.dump`);
+    path.join(directory(), `${name}.dump`);
 
   /**
    * Runs `postgresql-import` with `argv` through the real command line, unqualified
@@ -119,7 +122,6 @@ describe("postgresql-import", () => {
       "CREATE SCHEMA archive; CREATE TABLE archive.notes (id serial PRIMARY KEY, body text NOT NULL UNIQUE); INSERT INTO archive.notes (body) VALUES ('first'), ('second')",
     );
 
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "fixture-import-"));
     for (const [name, argv] of Object.entries(DUMPS)) {
       const result = await runCliCommandLine({
         argv: [
@@ -130,7 +132,7 @@ describe("postgresql-import", () => {
           "fixture",
           ...argv,
           "--file",
-          path.join(directory, `${name}.dump`),
+          path.join(directory(), `${name}.dump`),
         ],
       });
       if (result.exitCode !== 0) throw new Error(result.stderr);
@@ -146,7 +148,6 @@ describe("postgresql-import", () => {
   }, INTEGRATION_TEST_TIMEOUT_MILLISECONDS);
 
   afterAll(async () => {
-    fs.rmSync(directory, { force: true, recursive: true });
     await emptyDataSource.destroy();
     await Promise.all([source.close(), target.close(), empty.stop()]);
   }, INTEGRATION_TEST_TIMEOUT_MILLISECONDS);

@@ -18,7 +18,7 @@ import { InputModule } from "../src/modules/input/input.module";
 import { PerfectiveService } from "../src/modules/perfective/perfective.service";
 import { ProgressiveService } from "../src/modules/progressive/progressive.service";
 
-import type { DetectedCalendarEvent } from "../src/modules/database/database.types";
+import type { DetectedCalendarEvent } from "../src/modules/calendar-events/calendar-events.types";
 import type { Input } from "../src/modules/input/input.types";
 import type {
   CalendarCommandOutput,
@@ -41,16 +41,7 @@ export function detectable(
 }
 
 /**
- * Runs the real `CaelundasCommand` once, against the SQLite file the caller
- * has already pointed `CAELUNDAS_SQLITE_DATABASE` at, and reads back the ICS
- * and JSON files it wrote.
- *
- * Only the two detectors are replaced, because Swiss Ephemeris detection is
- * minutes of computation, and the ephemeris is stood in for, because nothing
- * here reads its files; like a real detector, the stand-in reports the
- * events that start from the start date through the whole of the end date.
- * Each run boots its own application context, because `ConfigModule`
- * reads the run's variables once, when it is compiled.
+ * Runs the real command once and reads back its ICS and JSON files; each run boots a fresh context, since ConfigModule reads variables once.
  */
 export async function runCalendarCommand(
   run: CalendarCommandRun,

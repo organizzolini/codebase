@@ -27,13 +27,7 @@ export interface SchemaInput {
   readonly propertySchema: unknown;
 }
 
-/**
- * One template a picker can offer.
- *
- * Deliberately not `ConformetryGeneratorDefinition`: the picker needs only the
- * name it returns and the description it shows, and asking for the whole
- * definition would tie prompting to the configuration's shape.
- */
+/** A template a picker offers: its name and description only. */
 export interface TemplateChoice {
   readonly description?: string | undefined;
   readonly name: string;

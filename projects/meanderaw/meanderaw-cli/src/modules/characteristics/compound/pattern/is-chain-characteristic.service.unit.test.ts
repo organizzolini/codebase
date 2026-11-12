@@ -1,8 +1,9 @@
 // Fragments of hexadecimal meander Codes used as test fixtures, not words.
 // cspell:ignore ccca
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -22,17 +23,12 @@ describe(IsChainCharacteristicService, () => {
     let service: IsChainCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const real = await buildTestingModule(CharacteristicContextService, {
         imports: [CodeModule, PatternCharacteristicsModule, MatrixModule],
-        providers: [CharacteristicContextService],
-      }).compile();
+      });
 
-      contextService = await module.resolve(CharacteristicContextService);
-      service = await module.resolve(IsChainCharacteristicService);
-    });
-
-    it("is defined", () => {
-      expect(service).toBeDefined();
+      contextService = real.instance;
+      service = await real.module.resolve(IsChainCharacteristicService);
     });
 
     it.each([
@@ -63,9 +59,8 @@ describe(IsChainCharacteristicService, () => {
     let service: IsChainCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(IsChainCharacteristicService, {
         providers: [
-          IsChainCharacteristicService,
           {
             provide: MaxMonotonicTurnLengthCharacteristicService,
             useValue: { compute: (): number => values.maxMonotonicTurnLength },
@@ -81,9 +76,9 @@ describe(IsChainCharacteristicService, () => {
             },
           },
         ],
-      }).compile();
+      });
 
-      service = await module.resolve(IsChainCharacteristicService);
+      service = built.instance;
     });
 
     beforeEach(() => {

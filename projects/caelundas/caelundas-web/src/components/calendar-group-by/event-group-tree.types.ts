@@ -1,12 +1,11 @@
 import type {
   CalendarEventGroupKey,
   CalendarEventRecord,
-} from "../events-calendar/events-database.types";
+} from "../events-calendar/calendar-records.types";
 import type { EventGroupNode } from "./event-groups.types";
 
 /**
- * The events of one group at one level, gathered under the first key that
- * named it.
+ * Events of one group, under the first key that named it.
  */
 export interface GroupBucket {
   events: CalendarEventRecord[];
@@ -23,8 +22,7 @@ export interface GroupDescription {
 }
 
 /**
- * A group whose events are split at the next level, and the list its
- * sub-groups go in.
+ * A group split at the next level, with its sub-groups.
  */
 export interface GroupParent {
   children: EventGroupNode[];

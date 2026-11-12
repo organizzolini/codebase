@@ -8,11 +8,8 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of the Σ (Greek sigma) glyph — a
- * two-unit bar above and below, joined by a one-step staircase from each bar's
- * west end out to an east vertex between them, its diagonals drawn as
- * orthogonal zig-zags — one per corner and clockwise rotation, each counting
- * the base template drawn that way. The base faces Southeast, drawn:
+ * Provides the sixteen orientation evaluators of the Σ (Greek sigma) glyph, one per
+ * corner and clockwise rotation. The base faces Southeast:
  *
  * ```text
  * ┌─╴
@@ -41,7 +38,7 @@ export class SigmaGreekLetterCharacteristicsService implements CharacteristicEva
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** Upright glyph as hexadecimal Code digits, one string per row. */
   private readonly template: readonly string[] = ["631", "a5.", "69.", "a31"];
 
   // 🔑 Public Fields

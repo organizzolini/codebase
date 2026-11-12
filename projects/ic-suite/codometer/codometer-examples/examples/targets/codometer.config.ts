@@ -1,25 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * Every field an input carries, over files the codebase input cannot see.
- *
- * The two compiled samples sit in `examples/compiled/`, beside the corpus rather
- * than inside it — which is where build output really lives, and why the
- * inputs naming them carry a `directory` hop. The codebase input measures 28
- * files and none of them are those two, because it measures one directory and
- * they are not in it.
- *
- * The other half of the same story is `examples/corpus/.gitignore`, which names
- * `generated/`. Copy the compiled samples in there and the codebase input
- * still reports 28: discovery reads that ignore file itself. An input's globs
- * are the one place ignore rules do not reach, which is what lets a repository
- * gate the size of a build directory every `.gitignore` claims.
- *
- * ```bash
- * cd projects/ic-suite/codometer/codometer-examples/examples/corpus
- * codometer --config ../targets/codometer.config.ts
- * ```
- */
+// See the [targets guide](./README.md).
+/** Every input field, over files the codebase input cannot see. */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   inputs: [

@@ -1,16 +1,17 @@
-import { mkdir, mkdtemp, realpath, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import {
   GraphAssemblyService,
   ProgramConfigurationError,
 } from "@callidescope/graph";
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  createTemporaryDirectory,
+  useTemporaryDirectory,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 
@@ -18,18 +19,12 @@ import { CallidescopeService } from "./callidescope.service";
 
 import type { ResolvedCallidescopeConfiguration } from "@callidescope/configuration";
 import type { CallGraphResult } from "@callidescope/core";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
-/** A workspace file no traced project sits beside, so none is skipped as the run's own. */
+/** A workspace file beside no traced project, so none is skipped. */
 const WORKSPACE_CONFIGURATION_PATH = "/workspace/callidescope.config.ts";
 
-/**
- * The depth `ApplicationCommand` measures once the closure resolves its call
- * into the library: `run` → `Repository.find` → `Repository.open`.
- *
- * Written out rather than compared between two runs and left at that, so the
- * scoped-and-unscoped agreement this suite asserts is agreement on a number
- * somebody checked instead of on two absent lookups.
- */
+/** Depth `ApplicationCommand` measures after its library call resolves. */
 const SCOPED_COMMAND_DEPTH = 3;
 
 /** The configuration file name a project declares itself through. */
@@ -43,12 +38,8 @@ const LIBRARY_CONFIGURATION_PATH = path.join(
 );
 
 /**
- * Adds a second project whose `tsconfig.json` names a compiler target
- * TypeScript rejects.
- *
- * The shape of the one already committed in `codependix-examples`: a fixture
- * that exists to be unreadable and must stay that way, sitting in the same
- * workspace as every project a run is meant to trace.
+ * Adds a project whose tsconfig names a target TypeScript rejects, mirroring the unreadable
+ * fixture in `codependix-examples`, beside the projects a run must trace.
  */
 async function addUnreadableProject(workspaceRoot: string): Promise<void> {
   const root = path.join(workspaceRoot, "packages", "broken");
@@ -96,17 +87,13 @@ function buildConfiguration(): ResolvedCallidescopeConfiguration {
 }
 
 /**
- * Writes two projects, and gives the one nothing points the run at a
- * configuration file of its own.
- *
- * The shape criterion the per-project resolution has to satisfy: `library` is
- * reached only through `application`'s imports, so a run started anywhere else
- * still has to judge its callables by the rules it declared for itself.
+ * Writes two projects. `library` is reached only through `application`'s imports, so a run
+ * started elsewhere must judge it by its own configuration.
  */
 async function buildConfiguredWorkspace(
   libraryConfiguration: Record<string, unknown>,
 ): Promise<string> {
-  const workspaceRoot = await makeWorkspaceRoot("callidescope-project-");
+  const workspaceRoot = makeWorkspaceRoot("callidescope-project");
 
   await writeProject({
     name: "library",
@@ -144,16 +131,10 @@ async function buildConfiguredWorkspace(
 }
 
 /**
- * Writes four projects: one that calls into a second, one that calls into the
- * first, and one nothing touches.
- *
- * The shape a scoped run has to get right in three directions at once — down
- * into a dependency, not up into a dependent, and not sideways into a package
- * neither of them mentions.
+ * Writes a chain of dependencies (consumer, application, library) plus an untouched project.
+ * A scoped run must follow dependencies down, never up or sideways.
  */
-async function buildLayeredWorkspace(): Promise<string> {
-  const workspaceRoot = await makeWorkspaceRoot("callidescope-closure-");
-
+async function buildLayeredWorkspace(workspaceRoot: string): Promise<string> {
   await writeProject({
     name: "library",
     sources: {
@@ -221,8 +202,9 @@ async function buildLayeredWorkspace(): Promise<string> {
  * Writes a workspace to disk holding a command that reaches a repository
  * through an injected service — the shape this tool exists to follow.
  */
-async function buildWorkspace(): Promise<string> {
-  const workspaceRoot = await makeWorkspaceRoot("callidescope-trace-");
+async function buildWorkspace(
+  workspaceRoot = makeWorkspaceRoot("callidescope-trace"),
+): Promise<string> {
   const root = path.join(workspaceRoot, "packages", "example");
 
   await mkdir(path.join(root, "src", "modules", "example"), {
@@ -276,23 +258,11 @@ async function buildWorkspace(): Promise<string> {
 }
 
 /**
- * A temporary directory every fixture here roots its workspace at.
- *
- * Resolved through the symlink `mkdtemp` hands back on macOS, where the
- * temporary directory really lives under `/private`. A program's source files
- * come back under that real path, so an unresolved root leaves every
- * workspace-relative path a `../../…` climb out of the workspace — no project
- * root contains one, `resolveOwningProject` answers nothing, and a project's
- * own `exclude` silently applies to nothing. Files are still collected under a
- * different keying, so the only symptom is a fixture that cannot reproduce a
- * behavior the real workspace has: it misleads rather than failing.
- *
- * One helper rather than the two calls written out per builder, because a
- * fixture added without them is that defect back, and it has been back three
- * times.
+ * Temporary directory every fixture roots its workspace at, resolved because macOS temp
+ * directories are symlinks that break path-based ownership.
  */
-async function makeWorkspaceRoot(prefix: string): Promise<string> {
-  return realpath(await mkdtemp(path.join(tmpdir(), prefix)));
+function makeWorkspaceRoot(prefix: string): string {
+  return createTemporaryDirectory(prefix);
 }
 
 /** Reads the depth of the stack one project rooted at a named callable. */
@@ -309,11 +279,8 @@ function readStackDepth(args: {
 }
 
 /**
- * Writes one project into a workspace, with the fixture compiler options.
- *
- * A `package.json` comes with it unless `omitManifest` says otherwise — a
- * project root without one is a directory of shared settings rather than
- * something another project depends on, and no closure reaches it.
+ * Writes one project with the fixture compiler options. `omitManifest` skips its
+ * `package.json`, marking shared settings nothing depends on.
  */
 async function writeProject(args: {
   name: string;
@@ -350,12 +317,8 @@ async function writeProject(args: {
 }
 
 /**
- * Writes one project's own complete configuration file.
- *
- * Complete by construction, because an incomplete one is refused: a fixture
- * that wants to declare one field still has to say what it does with the rest,
- * and `undefined` is what says "nothing". Written as JavaScript rather than
- * JSON for exactly that reason — JSON cannot spell `undefined`.
+ * Writes one project's complete configuration file. It is JavaScript, not JSON, because JSON
+ * cannot spell `undefined`, which is how a fixture says "nothing".
  */
 async function writeProjectConfiguration(args: {
   overrides?: Record<string, unknown> | undefined;
@@ -407,26 +370,24 @@ async function writeTestFile(workspaceRoot: string): Promise<void> {
 describe(`${CallidescopeService.name} (integration)`, () => {
   let result: CallGraphResult;
   let frames: string[];
-  let logger: ReturnType<typeof createMock<LoggerService>>;
+  let logger: BuiltTestingModule<unknown>["logger"];
   let service: CallidescopeService;
   let tracedWorkspaceRoot: string;
 
+  const getTracedRoot = useTemporaryDirectory("callidescope-traced");
+
   beforeAll(async () => {
-    const workspaceRoot = await buildWorkspace();
+    const workspaceRoot = await buildWorkspace(getTracedRoot());
 
     tracedWorkspaceRoot = workspaceRoot;
-    logger = createMock<LoggerService>();
 
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(CallidescopeService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [
-        CallidescopeService,
-        GraphAssemblyService,
-        { provide: LoggerService, useValue: logger },
-      ],
-    }).compile();
+      providers: [GraphAssemblyService],
+    });
 
-    service = await module.resolve(CallidescopeService);
+    service = built.instance;
+    logger = built.logger;
 
     const outcome = await service.trace({
       configuration: buildConfiguration(),
@@ -625,11 +586,8 @@ describe(`${CallidescopeService.name} (integration)`, () => {
   // 📏 A limit the command line overrode
 
   it("judges a project by the limit the command line overrode", async () => {
-    // Through the real chain rather than against `resolveLimits` directly: a
-    // limit is enforced out of each project's own file, and the defect this
-    // covers was an override that reached the run's own configuration and
-    // stopped — every unit on either side of that hop passing while
-    // `--maximum-depth` gated nothing at all.
+    // Runs the real chain, not `resolveLimits` alone: the defect was an override that reached
+    // the run's configuration and stopped, so every unit passed while `--maximum-depth` gated nothing.
     const workspaceRoot = await buildWorkspace();
 
     await writeProjectConfiguration({
@@ -749,10 +707,9 @@ describe(`${CallidescopeService.name} (integration)`, () => {
   });
 
   it("traces the rest of a workspace whose broken project is excluded", async () => {
-    // The regression this exists for. Excluding the same project only from
-    // the collected files came too late — opening its configuration is the
-    // step that fails — so `.callidescopeignore` could not keep a run away
-    // from a fixture written to be broken, and the whole trace died on it.
+    // The regression this exists for: excluding the project from collected files came too late,
+    // since opening its configuration is the step that fails. So `.callidescopeignore` could not
+    // stop a run from dying on a fixture written to be broken.
     const workspaceRoot = await buildWorkspace();
 
     await addUnreadableProject(workspaceRoot);
@@ -808,8 +765,10 @@ describe(`${CallidescopeService.name} (integration)`, () => {
     let scoped: Awaited<ReturnType<CallidescopeService["trace"]>>;
     let unscoped: Awaited<ReturnType<CallidescopeService["trace"]>>;
 
+    const getLayeredRoot = useTemporaryDirectory("callidescope-closure");
+
     beforeAll(async () => {
-      layeredWorkspaceRoot = await buildLayeredWorkspace();
+      layeredWorkspaceRoot = await buildLayeredWorkspace(getLayeredRoot());
       scoped = await service.trace({
         configuration: buildConfiguration(),
         configurationPath: WORKSPACE_CONFIGURATION_PATH,

@@ -12,12 +12,7 @@ export const MARKDOWN_VALIDATOR_DESCRIPTOR: LanguageValidatorDescriptor = {
   name: "markdown",
 };
 
-/**
- * Node types whose children carry the meaning.
- *
- * These are matched by descending into them, so a heading nested inside a list
- * item is still required. Everything else is matched as a leaf on its own text.
- */
+/** Node types whose children carry the meaning, so nested headings still count. */
 export const CONTAINER_TYPES = new Set<string>([
   "blockquote",
   "document",
@@ -29,10 +24,5 @@ export const CONTAINER_TYPES = new Set<string>([
   "tableRow",
 ]);
 
-/**
- * Node types skipped entirely while walking.
- *
- * Bare text runs are compared as part of their parent's rendered text, so
- * matching them again on their own would double-report the same difference.
- */
+/** Node types skipped in the walk; text compares within parents. */
 export const SKIPPED_TYPES = new Set<string>(["text"]);

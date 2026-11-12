@@ -27,9 +27,7 @@ export class InvalidConfigurationError extends Error {
 /**
  * Raised when a limit's value cannot be read as a number of anything.
  *
- * Loud rather than lenient. A value nobody can read has no defensible reading:
- * taken as zero it gates every metric at nothing, and ignored it gates
- * nothing at all. Both look like a working limit from the outside.
+ * Loud rather than lenient: zero gates every metric at nothing, and ignoring it gates nothing at all.
  */
 export class InvalidLimitValueError extends Error {
   constructor(metric: string, value: string) {
@@ -55,12 +53,7 @@ export class UnknownConfigurationFileTypeError extends Error {
 }
 // ♟️ Constants
 
-/**
- * Badge groups a configured counter may be rendered into.
- *
- * Accepted by name rather than as free text so a misspelled group fails the
- * configuration instead of silently rendering the badge nowhere.
- */
+/** Badge groups a counter renders into; misspellings fail the configuration. */
 export const CODOMETER_STATISTIC_GROUPS = [
   "conventions",
   "css",
@@ -87,12 +80,16 @@ export const CODOMETER_SEVERITIES = [
 export const CODOMETER_SYMBOL_KINDS = [
   "class",
   "enum",
+  "file",
   "function",
   "getter",
   "interface",
   "method",
   "property",
   "setter",
+  "signature",
+  "type",
+  "variable",
 ] as const satisfies readonly CodometerSymbolKind[];
 
 /** Modifiers a symbol counter may require of a declaration. */

@@ -15,7 +15,7 @@ import {
   NominalForm,
   type PartOfSpeech,
   SupineForm,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import { FormsBuilderGuardsService } from "./forms-builder-guards.service";
 import { FormsBuilderVerbService } from "./forms-builder-verb.service";
@@ -54,10 +54,7 @@ export class FormsBuilderService {
   // 🔑 Public Methods
 
   /**
-   * Constructs adjectival Form entities from raw case and gender data.
-   *
-   * Processes gendered nominative, accusative, genitive, dative, ablative,
-   * and vocative forms for all three grammatical genders.
+   * Constructs adjectival Form entities from raw case and gender data, for all three genders.
    */
   private buildAdjectivalCaseForms(
     caseMap: Record<string, unknown>,
@@ -159,11 +156,7 @@ export class FormsBuilderService {
   }
 
   /**
-   * Builds one tense's forms, one per grammatical number.
-   *
-   * The last rung of the cascade this class owns: a number is the innermost
-   * axis whose data is still a record of records, so the person axis below it
-   * is the verb builder's to walk.
+   * Builds one tense's forms, one per grammatical number. The last rung this class owns; persons are the verb builder's to walk.
    */
   private buildFiniteNumberForms(args: {
     lexeme: Lexeme;
@@ -193,13 +186,7 @@ export class FormsBuilderService {
   }
 
   /**
-   * Builds one voice's forms, one per tense.
-   *
-   * Each rung of the finite cascade narrows its own axis with a guard and
-   * passes the narrowed value down, so no rung below re-checks what the one
-   * above already established. This used to widen every axis back to `string`
-   * on the way down, which forced a fourth rung underneath whose whole job was
-   * to re-run three guards before delegating.
+   * Builds one voice's forms, one per tense. Each rung narrows its own axis and passes the narrowed value down, so none re-checks.
    */
   private buildFiniteTenseForms(args: {
     lexeme: Lexeme;
@@ -229,11 +216,7 @@ export class FormsBuilderService {
   /**
    * Builds one mood's forms, one per voice.
    *
-   * Named for the axis it walks rather than the one it is handed, which is
-   * what its three siblings below do — a traced stack now reads
-   * voice → tense → number → person, matching the descent. Named
-   * `buildFiniteMoodForms` it claimed the mood axis, which
-   * `buildVerbFormsFromRaw` above actually walks.
+   * Named for the axis it walks, so the stack reads as the descent.
    */
   private buildFiniteVoiceForms(
     moodData: Record<string, unknown>,
@@ -475,10 +458,7 @@ export class FormsBuilderService {
   // 🌎 Public Methods
 
   /**
-   * Builds Form entities for a given part-of-speech category.
-   * Routes to specialized handlers based on morphological type.
-   *
-   * Returns an empty array for unsupported parts of speech or null inputs.
+   * Builds Form entities for a part of speech, routing by morphological type. Returns an empty array when unsupported.
    */
   buildFormsForPartOfSpeech(
     pos: PartOfSpeech,

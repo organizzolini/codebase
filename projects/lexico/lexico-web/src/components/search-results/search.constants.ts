@@ -12,11 +12,7 @@ import type { LexemeResult } from "../lexeme-card/lexeme-card.types";
  */
 export const searchSchema = z.object({ query: z.string().optional() });
 
-/**
- * Searches the dictionary in Latin and in English at once, since a query is
- * not labeled with the language it is written in, and merges what both find,
- * best match first. A lexeme both searches found keeps its higher score.
- */
+/** Searches Latin and English together; keeps the higher score. */
 export const getSearch = createServerFunction({ method: "GET" })
   .validator(z.object({ query: z.string() }))
   .handler(async ({ data }): Promise<LexemeResult[]> =>

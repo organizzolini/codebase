@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,16 +7,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the ڡ (final Arabic dotless feh) as a Code
- * holding one isolated copy, beside every orientation name drawing that ink.
- * The base, facing Southwest, draws:
- *
- * ```text
- * ╷ ┌┐
- * └─┴┴╴
- * ```
- */
+/** One isolated Code per orientation of the ڡ (final form). */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -62,17 +52,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "fehFinal",
 };
 
-/**
- * Each distinct orientation of the ڡ (initial Arabic dotless feh) as a Code
- * holding one isolated copy, beside every orientation name drawing that ink.
- * The base, facing Southwest, draws:
- *
- * ```text
- *  ┌┐
- *  └┤
- * ╶─┘
- * ```
- */
+/** One isolated Code per orientation of the ڡ (initial form). */
 const INITIAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -117,16 +97,7 @@ const INITIAL_FORM: LetterFormFixture = {
   prefix: "fehInitial",
 };
 
-/**
- * Each distinct orientation of the ڡ (isolated Arabic dotless feh) as a Code
- * holding one isolated copy, beside every orientation name drawing that ink.
- * The base, facing Southwest, draws:
- *
- * ```text
- * ╷ ┌┐
- * └─┴┘
- * ```
- */
+/** One isolated Code per orientation of the ڡ (isolated form). */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -171,17 +142,7 @@ const ISOLATED_FORM: LetterFormFixture = {
   prefix: "fehIsolated",
 };
 
-/**
- * Each distinct orientation of the ڡ (medial Arabic dotless feh) as a Code
- * holding one isolated copy, beside every orientation name drawing that ink.
- * The base, facing Southwest, draws:
- *
- * ```text
- *  ┌┐
- *  └┤
- * ╶─┴╴
- * ```
- */
+/** One isolated Code per orientation of the ڡ (medial form). */
 const MEDIAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -235,10 +196,7 @@ const FORMS: readonly LetterFormFixture[] = [
 ];
 
 describe(FehArabicLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    FehArabicLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(FehArabicLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

@@ -8,16 +8,9 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of the Ω (Greek omega) glyph — a
- * unit-wide arch on two-unit legs, each leg turning outward into a unit foot —
- * one per corner and clockwise rotation, each counting the base template drawn
- * that way. The base faces Southeast, drawn:
- *
- * ```text
- *  ┌┐
- *  ││
- * ╶┘└╴
- * ```
+ * Provides the sixteen orientation evaluators of the Ω glyph: a unit-wide arch on two-unit legs,
+ * each leg turning outward into a unit foot. One per corner and clockwise rotation, each counting
+ * the base template drawn that way. The base faces Southeast.
  */
 @Injectable()
 export class OmegaGreekLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -39,7 +32,7 @@ export class OmegaGreekLetterCharacteristicsService implements CharacteristicEva
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** Upright glyph as hexadecimal Code digits, one string per row. */
   private readonly template: readonly string[] = [".65.", ".cc.", "29a1"];
 
   // 🔑 Public Fields

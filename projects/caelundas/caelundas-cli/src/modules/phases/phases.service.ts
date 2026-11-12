@@ -12,7 +12,7 @@ import {
 } from "./phases.constants";
 import { VenusianPhaseService } from "./venusian-phase.service";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type {
   DetectPlanetaryEventsArguments,
   MartianPhaseEventArguments,
@@ -45,9 +45,8 @@ export class PhasesService {
   // 🌎 Public Methods
 
   /**
-   * Detects all planetary phase events for a given minute.
-   * Combines detection from all three planets (Venus, Mercury, Mars).
-   * @deprecated Use {@link getMartianPhaseEvents}, {@link getMercurianPhaseEvents}, or {@link getVenusianPhaseEvents} directly
+   * Detects planetary phase events at a minute for Venus, Mercury, and Mars.
+   * @deprecated Use the per-planet phase getters.
    */
   detect(args: DetectPlanetaryEventsArguments): DetectedCalendarEvent[] {
     const { coordinateEphemerisByBody, illuminationEphemerisByBody, minute } =
@@ -82,17 +81,8 @@ export class PhasesService {
   }
 
   /**
-   * Converts instantaneous planetary phase events into progressive events.
-   *
-   * Creates visibility period events by pairing:
-   * - Morning Rise → Morning Set (morning star period)
-   * - Evening Rise → Evening Set (evening star period).
-   *
-   * Progressive events span the entire time a planet is visible as a morning
-   * or evening star, useful for planning observations or understanding
-   * astrological timing.
-   *
-   * @see {@link pairProgressiveEvents} for rise/set pairing logic
+   * Pairs planetary rise and set events into visibility spans: morning-star and
+   * evening-star periods.
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     const progressiveEvents: DetectedCalendarEvent[] = [];

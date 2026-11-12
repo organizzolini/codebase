@@ -1,7 +1,8 @@
 import { LanguagesService } from "@codometer/languages";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { throwUnknown } from "../../../testing/mocks";
 import { CustomizationService } from "../customization/customization.service";
@@ -14,6 +15,7 @@ import { SizeService } from "../size/size.service";
 import { MeasureService } from "./measure.service";
 
 import type { DiscoveryResult } from "../discovery/discovery.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type {
   ResolvedCodometerConfiguration,
   ResolvedCodometerInput,
@@ -105,8 +107,22 @@ function buildLanguageResults(): LanguageResults {
   });
 }
 
+/** What the MeasureService is built with. */
+const DEPENDENCIES = {
+  mocks: [
+    CustomizationService,
+    DiscoveryService,
+    LanguagesService,
+    LimitsService,
+    SizeService,
+    InputsService,
+  ],
+  providers: [
+    { provide: MetricIndexService, useValue: new MetricIndexService() },
+  ],
+} satisfies TestingModuleOptions;
+
 describe(MeasureService, () => {
-  let service: MeasureService;
   let customizationService: CustomizationService;
   let discoveryService: DiscoveryService;
   let inputsService: InputsService;
@@ -127,32 +143,6 @@ describe(MeasureService, () => {
       metricIndexService,
     );
   }
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        MeasureService,
-        {
-          provide: CustomizationService,
-          useValue: createMock<CustomizationService>(),
-        },
-        {
-          provide: DiscoveryService,
-          useValue: createMock<DiscoveryService>(),
-        },
-        { provide: LanguagesService, useValue: createMock<LanguagesService>() },
-        { provide: LimitsService, useValue: createMock<LimitsService>() },
-        { provide: MetricIndexService, useValue: new MetricIndexService() },
-        {
-          provide: SizeService,
-          useValue: createMock<SizeService>(),
-        },
-        { provide: InputsService, useValue: createMock<InputsService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(MeasureService);
-  });
 
   beforeEach(() => {
     customizationService = createMock<CustomizationService>();
@@ -192,8 +182,10 @@ describe(MeasureService, () => {
     ]);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(MeasureService, DEPENDENCIES);
+
+    expect(instance).toBeInstanceOf(MeasureService);
   });
 
   it("discovers the codebase input by its ignore files, not its globs", () => {
@@ -385,12 +377,7 @@ describe(MeasureService, () => {
       "dist/index.js",
       "dist/nested/deep.js",
     ]);
-    // Language analysis measures its own byte-precise total the same way the
-    // codebase does — with no compression — rather than a declared input's
-    // own compressed `size` metric, which nothing here asked for. Exactly two
-    // calls: the codebase's own, then this input's — never a third, which is
-    // what a declared `size` analysis running alongside "language" here would
-    // look like.
+    // Language analysis measures its own uncompressed total, not a declared input's `size` metric. Exactly two sizeService.analyze calls: the codebase's, then this input's.
     expect(sizeService.analyze).toHaveBeenCalledTimes(2);
     expect(sizeService.analyze).toHaveBeenNthCalledWith(1, {
       compression: "none",

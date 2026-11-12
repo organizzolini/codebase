@@ -1,0 +1,19 @@
+query NightSky($input: NightSkyInput!) {
+  nightSky(input: $input) {
+    svg
+    measurements {
+      bottomAltitudeDegrees
+      fieldOfViewClamped
+      fieldOfViewLimitDegrees
+      periodSeconds
+      poleDistanceAboveScreen
+      realTimeMultiple
+      segmentsDrawn
+      starsDrawn
+      starsInCatalog
+      svgLength
+      topAltitudeDegrees
+      verticalFieldOfViewDegrees
+    }
+  }
+}

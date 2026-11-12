@@ -20,14 +20,9 @@ import {
 import { formatAllowedSigner, readSshPublicKey } from "./ssh-signing.utilities";
 
 /**
- * Makes SSH commit signatures verifiable on this machine.
- *
- * When git signs with SSH through a signer that keeps its private key out of
- * reach, the commit hooks cannot verify what it signs: they need `ssh-keygen`
- * and an allowed signers file listing the signer's public key. This installs
- * the first and writes the second, reading the key out of a signature the
- * signer just made. A step that cannot finish prints why and leaves the rest
- * alone, because the commit check names whatever is still missing.
+ * Makes SSH commit signatures verifiable. Reads the public key from a signature the signer just made,
+ * since its private key may be out of reach. Installs `ssh-keygen` and writes an allowed signers file.
+ * A step that cannot finish prints why and leaves the rest alone.
  */
 @Injectable()
 export class SshSigningService {

@@ -1,10 +1,11 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 import { ProgramConfigurationError } from "../program/program.constants";
@@ -23,15 +24,14 @@ const PROJECT: WorkspaceProject = {
 };
 
 /**
- * Writes a workspace holding a `tsconfig.json` at each relative path, and a
- * `package.json` beside it unless the root is named in `rootsWithoutManifest` —
- * which is what makes that root a project no closure may reach.
+ * Writes a workspace with a `tsconfig.json` per relative path, and a `package.json`
+ * unless `rootsWithoutManifest` names the root, which no closure can reach.
  */
 async function buildWorkspace(
   projectRoots: readonly string[],
   options: { rootsWithoutManifest?: readonly string[] } = {},
 ): Promise<string> {
-  const root = await mkdtemp(path.join(tmpdir(), "callidescope-workspace-"));
+  const root = createTemporaryDirectory("callidescope-workspace");
   const rootsWithoutManifest = options.rootsWithoutManifest ?? [];
 
   for (const projectRoot of projectRoots) {
@@ -84,10 +84,7 @@ const TRANSITIVE_PROJECT: WorkspaceProject = {
   root: "packages/transitive",
 };
 
-/**
- * The workspace root as a project: a manifest of its own, and a root that
- * contains every other project's.
- */
+/** The workspace root, as a project containing every other. */
 const WORKSPACE_ROOT_PROJECT: WorkspaceProject = {
   configurationPath: "",
   hasPackageManifest: true,
@@ -106,14 +103,8 @@ const CLOSURE_PROJECTS: readonly WorkspaceProject[] = [
 ];
 
 /**
- * Builds a fake `resolveProjectFiles` callback from a fixed project graph —
- * no TypeScript program anywhere, exactly what makes the traversal testable
- * on its own.
- *
- * `reached` records the projects the callback was asked about, in the order it
- * was asked, which is the same thing `ProgramService.buildPrograms` collects
- * in the real callback. The traversal returns nothing, so this is how a
- * closure is read here and in production alike.
+ * Builds a fake `resolveProjectFiles` callback from a fixed project graph, with no
+ * TypeScript program. `reached` records the projects asked about, in order.
  */
 function fakeProjectFiles(
   filesByProjectName: Readonly<Record<string, readonly string[]>>,
@@ -137,16 +128,17 @@ describe(WorkspaceService, () => {
   let service: WorkspaceService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(WorkspaceService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [WorkspaceService],
-    }).compile();
-
-    service = await module.resolve(WorkspaceService);
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(WorkspaceService, {
+      imports: [...ANALYSIS_MODULES],
+    });
+
+    expect(instance).toBeInstanceOf(WorkspaceService);
   });
 
   const subjectLogger: DeepMocked<LoggerService> = createMock<LoggerService>();
@@ -184,7 +176,7 @@ describe(WorkspaceService, () => {
     // Stepping over it was the old behavior, and it is how a run came to
     // report a workspace smaller than the one it was pointed at — a typo in a
     // `--directories` list passed every gate for having traced less.
-    const root = await mkdtemp(path.join(tmpdir(), "callidescope-untyped-"));
+    const root = createTemporaryDirectory("callidescope-untyped");
 
     await mkdir(path.join(root, "packages", "untyped"), { recursive: true });
 
@@ -197,7 +189,7 @@ describe(WorkspaceService, () => {
   });
 
   it("names the directory it found no tsconfig in", async () => {
-    const root = await mkdtemp(path.join(tmpdir(), "callidescope-untyped-"));
+    const root = createTemporaryDirectory("callidescope-untyped");
 
     await mkdir(path.join(root, "packages", "untyped"), { recursive: true });
 
@@ -324,8 +316,8 @@ describe(WorkspaceService, () => {
     ).toStrictEqual([]);
   });
 
-  it("finds nothing in an empty workspace", async () => {
-    const root = await mkdtemp(path.join(tmpdir(), "callidescope-empty-"));
+  it("finds nothing in an empty workspace", () => {
+    const root = createTemporaryDirectory("callidescope-empty");
 
     expect(
       subject.discoverProjects({ directories: [], workspaceRoot: root }),
@@ -553,11 +545,9 @@ describe(WorkspaceService, () => {
   });
 
   it("does not let a file the workspace root owns widen the closure", () => {
-    // A repository keeps files at its own root — a `codometer.config.ts`, a
-    // `scripts/` directory — and the root project's root contains every other
-    // project, so admitting it as a dependency puts the whole workspace in
-    // every closure. It holds a `package.json`, so the manifest rule alone
-    // would let it through.
+    // A repository's root holds files such as `codometer.config.ts` and `scripts/`. Its root
+    // contains every project, so as a dependency it would pull the workspace into every
+    // closure; it has a `package.json`, so the manifest rule alone would not stop it.
     const { reached, resolveProjectFiles } = fakeProjectFiles({
       "packages/starting": ["codometer.config.ts"],
     });

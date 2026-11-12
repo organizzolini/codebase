@@ -18,11 +18,9 @@ import type { ValidationFileResult } from "@conformetry/core";
 /**
  * Checks that every file a project's template declares actually exists.
  *
- * This runs before any language validator, and is the only check that covers
- * *every* template file regardless of extension. A language validator only
- * sees documents whose extension it claims, so files such as `.gitignore`,
- * `.env.default`, and `pyproject.toml` were previously never checked at all —
- * a project could delete them and still validate clean.
+ * Runs before any language validator, and is the only check covering every
+ * template file regardless of extension. Validators only see their own
+ * extensions, so `.gitignore` and `pyproject.toml` went unchecked.
  */
 @Injectable()
 /* v8 ignore stop */
@@ -43,11 +41,9 @@ export class FilesService {
   // 🌎 Public Methods
 
   /**
-   * Reports a path as a missing directory when the template entry lives under
-   * a directory that does not exist, and as a missing file otherwise.
+   * Reports an absent directory once, and a missing file otherwise.
    *
-   * Reporting the absent directory once is more useful than reporting each of
-   * the twenty files inside it.
+   * Reporting each file inside an absent directory would repeat the same finding.
    */
   private buildMissingDifference(args: {
     expectedFileCount: number;
@@ -87,11 +83,9 @@ export class FilesService {
   }
 
   /**
-   * Reports every file a matched instance's template requires but the instance
-   * lacks.
+   * Reports every file a matched instance's template requires but the instance lacks.
    *
-   * Missing directories are collapsed to one finding each, so deleting a whole
-   * module reports the directory rather than each file within it.
+   * Collapses a missing directory to one finding.
    */
   public checkInstanceFiles(
     args: CheckInstanceFilesArguments,

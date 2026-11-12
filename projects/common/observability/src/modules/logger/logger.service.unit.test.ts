@@ -1,6 +1,5 @@
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -10,6 +9,9 @@ import {
   it,
   vi,
 } from "vitest";
+
+import { mockDates, overrideEnvironment } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LoggerService } from "./logger.service";
 
@@ -26,10 +28,12 @@ vi.mock("node:fs", () => ({
   mkdirSync: mkdirSyncMock,
 }));
 
-describe(LoggerService, () => {
-  const originalLogLevel = process.env["LOG_LEVEL"];
-  const originalNodeEnvironment = process.env["NODE_ENV"];
+/** Builder mocks `LoggerService`; custom providers restore the real one. */
+const REAL_LOGGER = {
+  providers: [{ provide: LoggerService, useClass: LoggerService }],
+};
 
+describe(LoggerService, () => {
   interface LoggerChildMock {
     debug: ReturnType<typeof vi.fn>;
     error: ReturnType<typeof vi.fn>;
@@ -56,11 +60,10 @@ describe(LoggerService, () => {
   };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [LoggerService],
-    }).compile();
-
-    service = await module.resolve(LoggerService);
+    ({ instance: service } = await buildTestingModule(
+      LoggerService,
+      REAL_LOGGER,
+    ));
   });
 
   beforeEach(() => {
@@ -70,18 +73,6 @@ describe(LoggerService, () => {
 
   describe("environment initialization", () => {
     afterEach(() => {
-      if (originalNodeEnvironment === undefined) {
-        delete process.env["NODE_ENV"];
-      } else {
-        process.env["NODE_ENV"] = originalNodeEnvironment;
-      }
-
-      if (originalLogLevel === undefined) {
-        delete process.env["LOG_LEVEL"];
-      } else {
-        process.env["LOG_LEVEL"] = originalLogLevel;
-      }
-
       vi.resetModules();
     });
 
@@ -90,8 +81,10 @@ describe(LoggerService, () => {
     // process and reads the two streams apart. Here the branches are covered
     // and the destination is built without complaint.
     it("sends production output to standard error when asked to", async () => {
-      process.env["NODE_ENV"] = "production";
-      process.env["LOG_LEVEL"] = "silent";
+      overrideEnvironment({
+        LOG_LEVEL: "silent",
+        NODE_ENV: "production",
+      });
       vi.resetModules();
 
       const { LoggerService: LoggerServiceForEnvironment } =
@@ -108,8 +101,10 @@ describe(LoggerService, () => {
     });
 
     it("sends development output to standard error when asked to", async () => {
-      process.env["NODE_ENV"] = "development";
-      process.env["LOG_LEVEL"] = "silent";
+      overrideEnvironment({
+        LOG_LEVEL: "silent",
+        NODE_ENV: "development",
+      });
       vi.resetModules();
 
       const { LoggerService: LoggerServiceForEnvironment } =
@@ -129,8 +124,10 @@ describe(LoggerService, () => {
     // its first log line would otherwise get no signal and quietly corrupt its
     // own piped output.
     it("warns rather than pretending when asked too late", async () => {
-      process.env["NODE_ENV"] = "development";
-      process.env["LOG_LEVEL"] = "silent";
+      overrideEnvironment({
+        LOG_LEVEL: "silent",
+        NODE_ENV: "development",
+      });
       vi.resetModules();
 
       const { LoggerService: LoggerServiceForEnvironment } =
@@ -155,8 +152,10 @@ describe(LoggerService, () => {
     });
 
     it("initializes logger in production mode with explicit log level", async () => {
-      process.env["NODE_ENV"] = "production";
-      process.env["LOG_LEVEL"] = "debug";
+      overrideEnvironment({
+        LOG_LEVEL: "debug",
+        NODE_ENV: "production",
+      });
       vi.resetModules();
 
       const { LoggerService: LoggerServiceForEnvironment } =
@@ -170,8 +169,10 @@ describe(LoggerService, () => {
     });
 
     it("initializes logger in production mode with default log level", async () => {
-      process.env["NODE_ENV"] = "production";
-      delete process.env["LOG_LEVEL"];
+      overrideEnvironment({
+        LOG_LEVEL: undefined,
+        NODE_ENV: "production",
+      });
       vi.resetModules();
 
       const { LoggerService: LoggerServiceForEnvironment } =
@@ -185,8 +186,10 @@ describe(LoggerService, () => {
     });
 
     it("initializes logger in development mode", async () => {
-      process.env["NODE_ENV"] = "development";
-      delete process.env["LOG_LEVEL"];
+      overrideEnvironment({
+        LOG_LEVEL: undefined,
+        NODE_ENV: "development",
+      });
       vi.resetModules();
 
       const { LoggerService: LoggerServiceForEnvironment } =
@@ -200,7 +203,9 @@ describe(LoggerService, () => {
     });
 
     it("neither validates nor tags an emoji in production", async () => {
-      process.env["NODE_ENV"] = "production";
+      overrideEnvironment({
+        NODE_ENV: "production",
+      });
       vi.resetModules();
 
       const { LoggerService: ProductionLoggerService } =
@@ -224,8 +229,10 @@ describe(LoggerService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LoggerService, REAL_LOGGER);
+
+    expect(instance).toBeInstanceOf(LoggerService);
   });
 
   describe("message convention", () => {
@@ -298,17 +305,31 @@ describe(LoggerService, () => {
     });
 
     it("exempts @nestjs/core's uncaught bootstrap exception handler", () => {
-      // `ExceptionHandler` is @nestjs/core's catch-all for any unhandled
-      // exception during dependency initialization — a native module ABI
-      // mismatch, a database driver failing to load, anything. It logs the
-      // raw exception with no message convention of its own, and Nest's
-      // default `abortOnError` turns a throw here into a fatal
-      // `process.abort()`, so this path must never throw either.
+      // `ExceptionHandler` is @nestjs/core's catch-all for unhandled exceptions
+      // during dependency initialization. It logs with no message convention,
+      // and `abortOnError` turns a throw here into a fatal `process.abort()`,
+      // so this path must never throw either.
       expect(() => {
         service.error(
           new Error("The module was compiled against a different version"),
           undefined,
           "ExceptionHandler",
+        );
+      }).not.toThrow();
+    });
+  });
+
+  describe("request exception handler", () => {
+    it("exempts @nestjs/core's per-request exception handler", () => {
+      // `ExceptionsHandler` is the catch-all for an exception thrown while
+      // serving a request or a GraphQL resolver. It logs the raw error, so a
+      // throw here would replace the real failure (a missing table, say) with
+      // a complaint about message format.
+      expect(() => {
+        service.error(
+          'QueryFailedError: relation "calendar_events" does not exist',
+          "error stack",
+          "ExceptionsHandler",
         );
       }).not.toThrow();
     });
@@ -565,10 +586,9 @@ describe(LoggerService, () => {
   });
 
   describe("createTimestampedOutputLogFilePath", () => {
-    it("should create output directory when missing", () => {
-      vi.useFakeTimers();
-      vi.setSystemTime(new Date("2026-01-02T03:04:05.678Z"));
+    mockDates(new Date("2026-01-02T03:04:05.678Z"));
 
+    it("should create output directory when missing", () => {
       existsSyncMock.mockReturnValue(false);
       mkdirSyncMock.mockReturnValue(undefined);
 
@@ -589,9 +609,6 @@ describe(LoggerService, () => {
     });
 
     it("should skip directory creation when output directory already exists", () => {
-      vi.useFakeTimers();
-      vi.setSystemTime(new Date("2026-01-02T03:04:05.678Z"));
-
       existsSyncMock.mockReturnValue(true);
       mkdirSyncMock.mockReturnValue(undefined);
 

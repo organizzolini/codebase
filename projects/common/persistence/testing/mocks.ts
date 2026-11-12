@@ -2,6 +2,9 @@ import fs from "node:fs";
 
 import { afterEach, beforeEach, onTestFinished, vi } from "vitest";
 
+import { mockChildProcess } from "@codebase/testing";
+
+import type * as ChildProcess from "node:child_process";
 import type { ExecException, ExecFileOptions } from "node:child_process";
 
 /**
@@ -9,49 +12,44 @@ import type { ExecException, ExecFileOptions } from "node:child_process";
  */
 export const DEFAULT_TEST_DATE = new Date("2025-03-20T14:46:00Z");
 
-/** What the next process the mocked `execFile` starts does, and every start so far. */
+/** Next mocked `execFile` process's behavior, and every start so far. */
 const processes: { outcome: ProcessOutcome; spawned: SpawnedProcess[] } = {
   outcome: {},
   spawned: [],
 };
 
-/**
- * A stand-in for `node:child_process` whose `execFile` records each start
- * and exits as {@link mockProcesses} last said.
- */
-export const childProcessMock = {
-  execFile: vi.fn(
-    (
-      file: string,
-      args: readonly string[],
-      options: ExecFileOptions,
-      callback: ExecFileCallback,
-    ): void => {
-      const {
-        error = null,
-        stderr = "",
-        stdout = "",
-      } = outcomeFor(file, args, processes.outcome);
-      processes.spawned.push({
-        args,
-        environment: options.env,
-        file,
-        useList: useListOf(args),
-      });
-      // A pg_dump that succeeds has written the file it was given.
-      for (const argument of args) {
-        if (
-          error === null &&
-          file === "pg_dump" &&
-          argument.startsWith("--file=")
-        ) {
-          fs.writeFileSync(argument.slice("--file=".length), "dump");
-        }
+/** What the fake `execFile` does: record the start, then exit as staged. */
+const fakeExecFile = vi.fn(
+  (
+    file: string,
+    args: readonly string[],
+    options: ExecFileOptions,
+    callback: ExecFileCallback,
+  ): void => {
+    const {
+      error = null,
+      stderr = "",
+      stdout = "",
+    } = outcomeFor(file, args, processes.outcome);
+    processes.spawned.push({
+      args,
+      environment: options.env,
+      file,
+      useList: useListOf(args),
+    });
+    // A pg_dump that succeeds has written the file it was given.
+    for (const argument of args) {
+      if (
+        error === null &&
+        file === "pg_dump" &&
+        argument.startsWith("--file=")
+      ) {
+        fs.writeFileSync(argument.slice("--file=".length), "dump");
       }
-      callback(error, stdout, stderr);
-    },
-  ),
-};
+    }
+    callback(error, stdout, stderr);
+  },
+);
 
 /**
  * One process the mocked `execFile` was asked to start.
@@ -101,18 +99,8 @@ interface ProcessOutcome {
 type StepOutcome = Pick<ProcessOutcome, "error" | "stderr" | "stdout">;
 
 /**
- * Sets up fake timers with a fixed system time before each test
- * and restores real timers after each test.
- *
- * Usage in test files:
- * ```ts
- * import { mockDates } from '../testing/mocks'
- *
- * describe('my suite', () => {
- *   mockDates()
- *   // your tests here
- * })
- * ```
+ * Fakes timers at a fixed system time before each test and restores real
+ * timers after.
  */
 export function mockDates(date: Date = DEFAULT_TEST_DATE): void {
   beforeEach(() => {
@@ -125,20 +113,19 @@ export function mockDates(date: Date = DEFAULT_TEST_DATE): void {
   });
 }
 
+/** The shared `node:child_process` mock, its `execFile` replaced by a fake that follows {@link mockProcesses}. */
+export function mockPostgresChildProcess(actual: typeof ChildProcess): Omit<
+  ReturnType<typeof mockChildProcess>,
+  "execFile"
+> & {
+  readonly execFile: typeof fakeExecFile;
+} {
+  return { ...mockChildProcess(actual), execFile: fakeExecFile };
+}
+
 /**
- * Makes every process the mocked `execFile` starts exit as `outcome` says,
- * and returns the list each start is recorded into. The calling test file
- * replaces the module with {@link childProcessMock}:
- *
- * ```ts
- * vi.mock("node:child_process", async () => {
- *   const { childProcessMock } = await import("../../../testing/mocks")
- *   return childProcessMock
- * })
- *
- * const spawned = mockProcesses({ stderr: "pg_dump: error: …", error })
- * expect(spawned[0]?.args).not.toContain(password)
- * ```
+ * Makes each process the mocked `execFile` starts exit as `outcome` says; returns the recorded starts.
+ * Replace `node:child_process` with {@link mockPostgresChildProcess}.
  */
 export function mockProcesses(outcome: ProcessOutcome = {}): SpawnedProcess[] {
   const spawned: SpawnedProcess[] = [];
@@ -148,16 +135,8 @@ export function mockProcesses(outcome: ProcessOutcome = {}): SpawnedProcess[] {
 }
 
 /**
- * Lets a test decide whether `process.stdin` reads as a terminal. The setter
- * may be called from a test or its `beforeEach`; the real value captured here
- * is restored when that test finishes.
- *
- * Usage in test files:
- * ```ts
- * const setStandardInputTerminal = mockStandardInputTerminal()
- *
- * it('reads a terminal', () => { setStandardInputTerminal(true) })
- * ```
+ * Lets a test set whether `process.stdin` reads as a terminal, restoring the
+ * real value after that test.
  */
 export function mockStandardInputTerminal(): (isTerminal: boolean) => void {
   const original = Object.getOwnPropertyDescriptor(process.stdin, "isTTY");
@@ -191,9 +170,9 @@ export function processFailure(
 }
 
 /**
- * How `file` run with `args` exits: a `--version` check as
- * `outcome.version` says, else as version 18; a `--list` as `outcome.list`
- * says, else as the rest of the outcome; anything else as the outcome.
+ * The outcome of `file` run with `args`: a `--version` check as
+ * `outcome.version` says, a `--list` as `outcome.list`, and anything else as
+ * the outcome.
  */
 function outcomeFor(
   file: string,

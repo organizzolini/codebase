@@ -20,13 +20,10 @@ import type { LoadedConfigurationModule } from "./configuration-loader.types";
 import type { LoadConfigurationArguments } from "./configuration.types";
 
 /**
- * Reads the codometer configuration file at a given path.
+ * Reads the codometer configuration file at a path.
  *
- * Owns locating the file by its path and turning whatever it exports into a plain,
- * unvalidated configuration object — parsing JSON/JSONC by hand, everything
- * else through `jiti`. What the object means is `ConfigurationService`'s to
- * validate and resolve, kept apart so a file finding no configuration reads
- * exactly like one that found an empty object.
+ * Parses JSON or JSONC by hand and everything else through `jiti`, returning an unvalidated object.
+ * `ConfigurationService` validates and resolves it, so a file with no configuration is never mistaken for an empty one.
  */
 @Injectable()
 export class ConfigurationLoaderService {
@@ -41,12 +38,7 @@ export class ConfigurationLoaderService {
   // 🔏 Private Methods
 
   /**
-   * Walks upward from the process cwd looking for the repository root.
-   *
-   * Used to resolve a configuration path given relative to that root even when
-   * the command was invoked from a nested directory, which is what a task
-   * runner does whenever it sets the cwd to the project rather than the
-   * workspace.
+   * Walks upward from the working directory to the repository root, so paths resolve when run from a nested project.
    */
   private findRepositoryRoot(): string | undefined {
     let candidateDirectory = path.resolve(process.cwd());
@@ -100,13 +92,7 @@ export class ConfigurationLoaderService {
   }
 
   /**
-   * Reads what a configuration module exported, through either interop shape.
-   *
-   * Anything that is not a plain object — including a function, since a
-   * configuration file authored as one is no longer supported — falls back to
-   * an empty object, the same way a configuration file exporting `42` does:
-   * the schema then applies to that empty object exactly as it would to a
-   * genuinely empty configuration file.
+   * Reads a module's export through either interop shape. Non-objects, functions included, become an empty object.
    */
   private readDefaultExport(importedModule: unknown): unknown {
     if (typeof importedModule !== "object" || importedModule === null) {
@@ -151,13 +137,7 @@ export class ConfigurationLoaderService {
   // 🌎 Public Methods
 
   /**
-   * Loads the configuration file at a required path, unvalidated.
-   *
-   * There is no search and no default file: a path that names nothing fails
-   * with `ConfigurationFileNotFoundError` rather than measuring with defaults
-   * nobody asked for. Unvalidated on purpose: the caller runs the result
-   * through the schema before trusting any of it, so this service never has to
-   * know the shape a configuration is supposed to have.
+   * Loads the configuration file at a required path, unvalidated; the caller validates it. Never searches or falls back to defaults.
    */
   async load(
     args: LoadConfigurationArguments,

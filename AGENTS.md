@@ -60,7 +60,8 @@ inherit a larger session model.
    (see [Handoffs](#handoffs)) and **stop**.
 5. **Build**: Every pull request closes an issue, so use
    [link-issue](.agents/skills/link-issue/SKILL.md) first: use the planned ticket,
-   or file one before starting ad-hoc work. Set tickets to `status:in-progress` before testing (see
+   or file one before starting ad-hoc work. Set each ticket's board Status to In Progress, and its Effort, before testing
+   with [manage-project](.agents/skills/manage-project/SKILL.md) (see
    [`documentation/agents/issue-tracker.md`](documentation/agents/issue-tracker.md)).
    - **Multi-ticket spec**: Dispatch each parent issue to a fresh subagent
      ([subagent-driven-development](.agents/skills/subagent-driven-development/SKILL.md))
@@ -249,7 +250,7 @@ Tests must accompany code. Run tests via `nx run <project>:vitest:<unit|integrat
 
 ### Language Conventions & Size Limits
 
-For naming conventions, abbreviations, formatting, and language-specific rules, invoke the `write-typescript` or `write-python` skills. Strict size limits apply (e.g., max 512 lines per file, 128 words per comment block). Split files and refactor rather than ignoring limits.
+For naming conventions, abbreviations, formatting, and language-specific rules, invoke the `write-typescript` or `write-python` skills. Strict size limits apply (e.g., max 512 lines per file, 48 words per plain comment block and 24 per JSDoc: 12 for a type, interface, enum, property or constant, and 48 for a class or file header). Split files and refactor rather than ignoring limits.
 
 ## Git Workflow
 

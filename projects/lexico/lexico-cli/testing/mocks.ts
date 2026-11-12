@@ -5,62 +5,14 @@
 
 import { createMock } from "@golevelup/ts-vitest";
 import * as cheerio from "cheerio";
-import { afterEach, beforeEach, onTestFinished, vi } from "vitest";
+import { onTestFinished, vi } from "vitest";
 
 import type { AnyNode } from "domhandler";
 import type { ObjectLiteral, QueryBuilder, Repository } from "typeorm";
 
 /**
- * Default test date used across time-sensitive tests.
- */
-export const DEFAULT_TEST_DATE = new Date("2025-03-20T14:46:00Z");
-
-// 🧪 Prompts Helpers
-
-/**
- * A typed mock function for the `prompts` default export.
- * Use this type annotation in `vi.hoisted` declarations in test files.
- */
-export type PromptsMock<Response extends Record<string, unknown>> = ReturnType<
-  typeof vi.fn<() => Promise<Response>>
->;
-
-/**
- * Sets up fake timers with a fixed system time before each test
- * and restores real timers after each test.
- *
- * Usage in test files:
- * ```ts
- * import { mockDates } from '../testing/mocks'
- *
- * describe('my suite', () => {
- *   mockDates()
- *   // your tests here
- * })
- * ```
- */
-export function mockDates(date: Date = DEFAULT_TEST_DATE): void {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(date);
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-}
-
-/**
- * Lets a test decide whether `process.stdin` reads as a terminal. The setter
- * may be called from a test or its `beforeEach`; the real value captured here
- * is restored when that test finishes.
- *
- * Usage in test files:
- * ```ts
- * const setStandardInputTerminal = mockStandardInputTerminal()
- *
- * it('prompts', () => { setStandardInputTerminal(true) })
- * ```
+ * Returns a setter that makes `process.stdin.isTTY` read as `isTerminal` for the current test.
+ * The real value is restored when the test finishes.
  */
 export function mockStandardInputTerminal(): (isTerminal: boolean) => void {
   const original = Object.getOwnPropertyDescriptor(process.stdin, "isTTY");
@@ -82,33 +34,7 @@ export function mockStandardInputTerminal(): (isTerminal: boolean) => void {
   };
 }
 
-/**
- * Sets a default resolved value for a `prompts` mock function.
- */
-export function setPromptsMockResponse<
-  Response extends Record<string, unknown>,
->(promptsMock: PromptsMock<Response>, response: Awaited<Response>): void {
-  promptsMock.mockResolvedValue(response);
-}
-
-/**
- * Queues a one-time resolved value for a `prompts` mock function.
- */
-export function setPromptsMockResponseOnce<
-  Response extends Record<string, unknown>,
->(promptsMock: PromptsMock<Response>, response: Awaited<Response>): void {
-  promptsMock.mockResolvedValueOnce(response);
-}
-
-/**
- * Creates a vitest mock for TypeORM's `Repository` with a fully configured
- * `createQueryBuilder` mock. Suitable for use as a provider value in NestJS tests.
- *
- * The `createQueryBuilder` mock includes all chainable methods that call
- * `.mockReturnThis()` so the full method chain stays on the same mock instance.
- * Terminal methods are typed via `Entity` and left unimplemented — configure
- * them per-test with `.mockResolvedValue`.
- */
+/** TypeORM `Repository` mock: chain methods return it; terminals are per-test. */
 export const createRepositoryMock = <
   Entity extends ObjectLiteral = ObjectLiteral,
 >(
@@ -159,15 +85,8 @@ export const createRepositoryMock = <
 // 🧭 Cheerio Helpers
 
 /**
- * Load HTML and select a specific element by CSS selector.
- * Returns the CheerioAPI and the first matched element.
- * Throws if no element matches or the element cannot be extracted.
- *
- * Usage:
- * ```ts
- * const { $, element } = loadCheerioElement("<div><p id='entry'>text</p></div>", "p#entry");
- * service.process($, element);
- * ```
+ * Parses HTML and returns the first element matching `selector`, with its CheerioAPI.
+ * Throws when nothing matches.
  */
 export function loadCheerioElement(
   html: string,
@@ -186,14 +105,8 @@ export function loadCheerioElement(
 }
 
 /**
- * Load HTML and return both the CheerioAPI and the root element.
- * Throws if the root element cannot be extracted.
- *
- * Usage:
- * ```ts
- * const { $, rootElement } = loadCheerioWithRoot("<div>content</div>");
- * service.parse($, rootElement, "argument");
- * ```
+ * Parses HTML and returns the CheerioAPI with its root element.
+ * Throws when the root cannot be extracted.
  */
 export function loadCheerioWithRoot(html: string): {
   $: cheerio.CheerioAPI;
@@ -210,15 +123,8 @@ export function loadCheerioWithRoot(html: string): {
 }
 
 /**
- * Load XML and select a specific element by CSS selector.
- * Returns the CheerioAPI and the first matched element.
- * Throws if no element matches or the element cannot be extracted.
- *
- * Usage:
- * ```ts
- * const { $, element } = loadCheerioXmlElement("<TEI><div>text</div></TEI>", "div");
- * provider.process($, element);
- * ```
+ * Parses XML and returns the first element matching `selector`, with its CheerioAPI.
+ * Throws when nothing matches.
  */
 export function loadCheerioXmlElement(
   xml: string,
@@ -237,14 +143,8 @@ export function loadCheerioXmlElement(
 }
 
 /**
- * Load XML and return both the CheerioAPI and the root element.
- * Throws if the root element cannot be extracted.
- *
- * Usage:
- * ```ts
- * const { $, rootElement } = loadCheerioXmlWithRoot("<TEI></TEI>");
- * provider.parse($, rootElement);
- * ```
+ * Parses XML and returns the CheerioAPI with its root element.
+ * Throws when the root cannot be extracted.
  */
 export function loadCheerioXmlWithRoot(xml: string): {
   $: cheerio.CheerioAPI;

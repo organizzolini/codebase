@@ -21,26 +21,9 @@ import type {
 } from "./changes.types";
 
 /**
- * Reads what each project's codometer run measured and joins it to a baseline.
+ * Joins each project's current metrics to the baseline from `main`. Metrics the run did not rebuild keep their baseline value, flagged unmeasured.
  *
- * Codometer is stateless: it measures the tree in front of it and never looks
- * at another branch. Comparing two runs is this package's job, because a
- * baseline needs branches, workflow artifacts, and pull request context —
- * exactly the knowledge a measurement tool has to stay free of.
- *
- * The baseline is a snapshot downloaded from the latest successful `main` run
- * rather than a second build of the base branch, which used to cost a full
- * extra checkout, install, and build on every pull request.
- *
- * Because CI runs `nx affected`, a pull request measures only the projects it
- * touched. Metrics the baseline knows about but this run did not rebuild are
- * still collected — flagged as unmeasured, carrying their baseline value — so
- * a report can cover the whole workspace instead of only the change's blast
- * radius.
- *
- * Every metric a target produced is joined, not only the ones denominated in
- * bytes or the ones a limit was written against — a metric with no limit is
- * measured and reported, never gated, and that includes whether it changed.
+ * Every metric is joined, not only bytes, and metrics without a limit are reported, never gated.
  */
 @Injectable()
 export class ChangesService {
@@ -57,17 +40,7 @@ export class ChangesService {
   // 🔏 Private Methods
 
   /**
-   * Builds the row for a metric only the baseline knows about.
-   *
-   * Its numbers come from the baseline, so its verdicts are dropped: `breach`
-   * and `empty` are cleared rather than spread through. A pull request that
-   * never rebuilt a project must not be marked by what that project was doing
-   * on `main` — otherwise a limit breached there marks every unrelated pull
-   * request, and the row explaining it is not even on screen, because an
-   * unmeasured row is easy to miss and a removed one needs to say so plainly.
-   *
-   * The same reasoning drops the baseline's failures in `readBaseline`. Both
-   * exist to keep this change's status derived from this change.
+   * Builds the row for a metric only the baseline knows. Verdicts are dropped, so this change is judged by its own numbers.
    */
   private buildBaselineRow(
     metric: ReportMetric,
@@ -102,10 +75,7 @@ export class ChangesService {
   }
 
   /**
-   * Joins one project's current report to its baseline.
-   *
-   * A baseline metric with no current counterpart was removed when this run
-   * rebuilt the project, and merely skipped when it did not.
+   * Joins one project's current report to its baseline. A baseline metric is removed only if this run rebuilt the project.
    */
   private collectProjectRows(
     args: CollectProjectRowsArguments,
@@ -166,11 +136,7 @@ export class ChangesService {
   }
 
   /**
-   * The severity of the worst limit a metric breached, if it breached one.
-   *
-   * A failing breach outranks an advisory one, so a metric that went past
-   * its `fail` limit while also going past an advisory limit below it reads
-   * as failing rather than as merely advised.
+   * The worst severity a metric breached: `fail` outranks `warn`, so a metric past both reads as failing.
    */
   private readBreach(
     limits: readonly ReportLimit[],
@@ -185,12 +151,7 @@ export class ChangesService {
   }
 
   /**
-   * The limit a metric is actually held to.
-   *
-   * The lowest `fail` limit, because that is the one that stops a change, and
-   * the lowest of them when several are written because that is the one that
-   * binds first. A metric limited only by advice falls back to its lowest
-   * `warn` limit — the only limit it has — rather than reporting none.
+   * The limit a metric is held to: the lowest `fail` limit, or else its lowest `warn` limit, so advice still reports a limit.
    */
   private readGoverningLimit(
     limits: readonly ReportLimit[],
@@ -208,16 +169,7 @@ export class ChangesService {
   }
 
   /**
-   * Pulls every metric a target produced out of the report.
-   *
-   * A codometer report carries everything a project measures — files, symbols,
-   * lines, bytes — and every one of them is joined against its baseline, not
-   * only the ones denominated in bytes.
-   *
-   * The row is labelled with whatever the limit was written under, falling
-   * back to the metric's own dotted name rather than the target's — a target
-   * groups many metrics under one name, so labelling every one of them with
-   * that shared name would make them indistinguishable from each other.
+   * Pulls every metric a target produced out of the report, labelled by its limit's name, else its own dotted name.
    */
   private readMetrics(target: ReportTarget): ReportMetric[] {
     return target.metrics.map((metric) => ({

@@ -6,20 +6,10 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  // sqlite-wasm finds its `.wasm` file relative to its own module. Bundling it
-  // into the dependency cache in development would move the module away from
-  // that file, so it is served as is.
-  optimizeDeps: {
-    exclude: ["@sqlite.org/sqlite-wasm"],
-  },
   plugins: [
     tailwindcss(),
-    // The generated route tree lives under `src/`. Test files sit beside the
-    // routes they test, so the route generator is told to skip them rather than
-    // treat them as routes.
-    //
-    // The application is static: single-page mode renders one shell page at
-    // build time, and every route renders in the browser.
+    // Skip test files beside the routes, so the route generator does not treat
+    // them as routes.
     tanstackStart({
       router: {
         generatedRouteTree: "routeTree.gen.ts",
@@ -52,8 +42,5 @@ export default defineConfig({
   server: {
     host: "localhost",
     port: 8967,
-  },
-  worker: {
-    format: "es",
   },
 });

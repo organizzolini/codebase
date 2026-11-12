@@ -1,0 +1,102 @@
+import { Inject, Injectable } from "@nestjs/common";
+
+import { TAG_FIELD_PREFIX } from "../filters/event-filter-fields.constants";
+import { EventFilterParametersService } from "../filters/event-filter-parameters.service";
+import { UUID_PATTERN } from "../filters/event-filter-values.constants";
+
+import {
+  CALENDAR_GROUP_IDS,
+  CALENDAR_GROUP_KEY_SQL,
+  CALENDAR_GROUP_SQL,
+  eventGroupingSchema,
+  GROUP_COLUMN_SQL,
+  NO_GROUP_SQL,
+  PICKED_TAG_GROUP_SQL,
+  TAG_GROUP_SQL,
+} from "./event-grouping.constants";
+
+import type { EventFilterParameters } from "../filters/event-filter.types";
+import type {
+  CompiledEventGrouping,
+  EventGroupLevel,
+} from "./event-grouping.types";
+
+/**
+ * Validates the grouping a query was given and compiles it to SQL.
+ */
+@Injectable()
+export class EventGroupingService {
+  // 🏗 Dependency Injection
+
+  constructor(
+    @Inject(EventFilterParametersService)
+    private readonly parametersService: EventFilterParametersService,
+  ) {}
+
+  /**
+   * Compiles one level of a grouping to its source of keys.
+   */
+  private compileGroupLevel(
+    level: EventGroupLevel,
+    parameters: EventFilterParameters,
+  ): string {
+    if (level.field.startsWith(TAG_FIELD_PREFIX) && level.tags.length > 0) {
+      // A pick that is no tag id matches nothing, as a tag the data lacks
+      // would, rather than failing the cast.
+      const known = level.tags.filter((tag) => UUID_PATTERN.test(tag));
+
+      return PICKED_TAG_GROUP_SQL.replace("{tags}", () =>
+        this.parametersService.bind(parameters, known),
+      );
+    }
+
+    if (level.field.startsWith(TAG_FIELD_PREFIX)) {
+      const root = this.parametersService.bind(
+        parameters,
+        level.field.slice(TAG_FIELD_PREFIX.length),
+      );
+      const depth = this.parametersService.bind(parameters, level.depth ?? 1);
+
+      return TAG_GROUP_SQL.replaceAll("{depth}", depth).replace("{root}", root);
+    }
+
+    const id = CALENDAR_GROUP_IDS.find(
+      (candidate) => candidate === level.field,
+    );
+
+    return id === undefined
+      ? NO_GROUP_SQL
+      : CALENDAR_GROUP_SQL.replace("{key}", () => CALENDAR_GROUP_KEY_SQL[id]);
+  }
+
+  /**
+   * Compiles a grouping to one select-list column per level, numbering
+   * placeholders after offset.
+   */
+  public compile(
+    grouping: readonly EventGroupLevel[],
+    offset: number,
+  ): CompiledEventGrouping {
+    const parameters: EventFilterParameters = { offset, values: [] };
+    let sql = "";
+
+    // A loop rather than a mapping callback keeps the call stacks shallow.
+    for (const [index, level] of grouping.entries()) {
+      sql += GROUP_COLUMN_SQL.replace("{source}", () =>
+        this.compileGroupLevel(level, parameters),
+      ).replace("{column}", `group_${String(index)}`);
+    }
+
+    return { parameters: parameters.values, sql };
+  }
+
+  /**
+   * Validates a grouping and appends the color level last. Throws a `ZodError`
+   * for more than three levels.
+   */
+  public parse(grouping: unknown): EventGroupLevel[] {
+    const { colorBy, levels } = eventGroupingSchema.parse(grouping ?? {});
+
+    return colorBy === undefined ? levels : [...levels, colorBy];
+  }
+}

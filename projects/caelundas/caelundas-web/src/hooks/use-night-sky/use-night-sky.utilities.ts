@@ -4,21 +4,22 @@ import { normalizeHexadecimalColor } from "./night-sky-colors.utilities";
 import {
   COLOR_DIGITS_PATTERN,
   CONSTELLATION_WORDS,
+  CONSTELLATIONS,
   DEFAULT_CONSTELLATIONS,
   DEFAULT_OBSERVER,
   DEFAULT_OPTIONS,
   LINE_OPACITY_RANGE,
   LINE_WIDTH_RANGE,
   MINIMUM_BOTTOM_ALTITUDE_DEGREES,
+  OPACITY_RANGE,
   POLE_MARGIN_DEGREES,
   REDUCED_MOTION_QUERY,
 } from "./night-sky.constants";
 
-import type {
-  ConstellationSegment,
-  NightSkyMeasurements,
-} from "./night-sky.types";
-import type { NightSkyOverrides } from "./use-night-sky.types";
+import type { NightSkyInput } from "../../graphql/generated/operations";
+import type { FieldOfViewMeasurements } from "./night-sky.types";
+import type { NightSkyDrawing, NightSkyOverrides } from "./use-night-sky.types";
+import type { WindowSize } from "./use-window-size.types";
 
 // 🔏 Private Functions
 
@@ -45,26 +46,22 @@ export function describeNightSkyProblems(
  * a constellation with a figure.
  */
 export function findUnknownConstellationNames(
-  segments: readonly ConstellationSegment[],
   names: readonly string[],
 ): string[] {
-  const known = new Set([
-    ...CONSTELLATION_WORDS,
-    ...segments.map((segment) => normalizeConstellationName(segment.name)),
-  ]);
+  const known = new Set<string>(CONSTELLATION_WORDS);
+
+  for (const constellation of CONSTELLATIONS) {
+    known.add(normalizeConstellationName(constellation.name));
+  }
 
   return names.filter((name) => !known.has(name));
 }
 
 /**
- * Whether the window cut a field of view by more than the pole's own margin,
- * which is worth saying; the whole sky from the pole, the default, is cut by
- * only that degree.
+ * Whether the window cut the field of view by more than the pole's margin, which is worth saying.
  */
 export function isFieldOfViewCut(
-  measurements: Readonly<
-    Pick<NightSkyMeasurements, "fieldOfViewClamped" | "fieldOfViewLimitDegrees">
-  >,
+  measurements: Readonly<FieldOfViewMeasurements>,
   requestedDegrees: number,
 ): boolean {
   return (
@@ -95,8 +92,7 @@ export function normalizeConstellationName(name: string): string {
 }
 
 /**
- * Reads the backdrop's settings from the link. A key that does not parse
- * falls back to its default, so a stale or hand-edited link still opens.
+ * Reads the backdrop's settings from the link; a key that does not parse falls back to its default.
  */
 export function readNightSkyOverrides(
   search: Readonly<Record<string, unknown>>,
@@ -143,10 +139,20 @@ export function readNightSkyOverrides(
       z.number().positive().max(1000),
       DEFAULT_OPTIONS.pixelsPerSecond,
     ),
+    skyOpacity: clampNumber(
+      search["sky.opacity"],
+      OPACITY_RANGE,
+      DEFAULT_OPTIONS.skyOpacity,
+    ),
     starScale: readNumber(
       search["sky.starScale"],
       z.number().positive().max(10),
       DEFAULT_OPTIONS.starScale,
+    ),
+    surfaceOpacity: clampNumber(
+      search["sky.surfaceOpacity"],
+      OPACITY_RANGE,
+      DEFAULT_OPTIONS.surfaceOpacity,
     ),
     verticalFieldOfViewDegrees: readNumber(
       search["sky.vFov"],
@@ -154,24 +160,6 @@ export function readNightSkyOverrides(
       DEFAULT_OPTIONS.verticalFieldOfViewDegrees,
     ),
   };
-}
-
-/**
- * The figure segments the link asks for: every one for `all`, the twelve
- * zodiac constellations' for `zodiac`, and those of each constellation named.
- */
-export function selectConstellationSegments(
-  segments: readonly ConstellationSegment[],
-  names: readonly string[],
-): ConstellationSegment[] {
-  const wanted = new Set(names);
-
-  return segments.filter(
-    (segment) =>
-      wanted.has("all") ||
-      (segment.zodiac && wanted.has("zodiac")) ||
-      wanted.has(normalizeConstellationName(segment.name)),
-  );
 }
 
 /**
@@ -185,6 +173,52 @@ export function subscribeToReducedMotion(onChange: () => void): () => void {
 
   return () => {
     list.removeEventListener("change", onChange);
+  };
+}
+
+/**
+ * The link's settings but its opacities, which the page applies, so an opacity change leaves the sky as it is.
+ */
+export function toNightSkyDrawing(
+  overrides: NightSkyOverrides,
+): NightSkyDrawing {
+  const { skyOpacity: _sky, surfaceOpacity: _surface, ...drawing } = overrides;
+
+  return drawing;
+}
+
+/**
+ * Writes the backdrop's settings as the API's night sky input; no figure is `none`, and the moment is left out for now.
+ */
+export function toNightSkyInput(
+  overrides: NightSkyDrawing,
+  view: Readonly<{ size: WindowSize; still: boolean }>,
+): NightSkyInput {
+  return {
+    backgroundBottomColor: overrides.backgroundBottomColor,
+    backgroundTopColor: overrides.backgroundTopColor,
+    bottomAltitudeDegrees: overrides.bottomAltitudeDegrees,
+    constellations:
+      overrides.constellations.length === 0
+        ? ["none"]
+        : [...overrides.constellations],
+    debug: overrides.debug,
+    ecliptic: overrides.ecliptic,
+    eclipticColor: overrides.eclipticColor,
+    eclipticOpacity: overrides.eclipticOpacity,
+    eclipticWidth: overrides.eclipticWidth,
+    faintestMagnitude: overrides.faintestMagnitude,
+    height: Math.round(view.size.height),
+    latitudeDegrees: overrides.latitudeDegrees,
+    lineColor: overrides.lineColor,
+    lineOpacity: overrides.lineOpacity,
+    lineWidth: overrides.lineWidth,
+    longitudeDegrees: overrides.longitudeDegrees,
+    pixelsPerSecond: overrides.pixelsPerSecond,
+    starScale: overrides.starScale,
+    still: view.still,
+    verticalFieldOfViewDegrees: overrides.verticalFieldOfViewDegrees,
+    width: Math.round(view.size.width),
   };
 }
 
@@ -217,9 +251,7 @@ function isHexadecimalColor(value: unknown): boolean {
 }
 
 /**
- * Reads `sky.constellations`, a comma-separated list of names and the words
- * `all`, `zodiac` and `none`, each normalized. Absent, or anything but text,
- * is the zodiac; empty, or `none`, is no figure.
+ * Reads `sky.constellations`: a comma list of names, `all`, `zodiac` or `none`; absent means the zodiac, `none` or empty no figure.
  */
 function readConstellationNames(value: unknown): readonly string[] {
   if (typeof value !== "string") {
@@ -246,9 +278,7 @@ function readNumber(
 }
 
 /**
- * Reads one stroke from the link: `<prefix>Color` like the background's
- * colors, and `<prefix>Opacity` and `<prefix>Width` clamped to their ranges.
- * A key given a value it cannot read falls back, and is named as rejected.
+ * Reads one stroke from the link: `<prefix>Color`, `Opacity` and `Width`, clamped; an unreadable key falls back and is named as rejected.
  */
 function readStroke(
   search: Readonly<Record<string, unknown>>,

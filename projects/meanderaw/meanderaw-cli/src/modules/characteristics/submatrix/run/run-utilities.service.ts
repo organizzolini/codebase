@@ -59,10 +59,8 @@ export class RunUtilitiesService {
   // 🌎 Public Methods
 
   /**
-   * The longest straight horizontal run of ink anywhere in the Code,
-   * wrapping each row around its own column span so a run may continue
-   * across the tile crossing. Capped at `columns`, since a longer run would
-   * double back over ground it already covered.
+   * The longest horizontal run of ink, wrapping across the tile seam. Capped at
+   * `columns`, as a longer run would double back.
    */
   public longestHorizontalRunLength(matrix: Matrix): number {
     const columns = matrix[0]?.length ?? 0;
@@ -76,10 +74,8 @@ export class RunUtilitiesService {
   }
 
   /**
-   * The longest straight vertical run of ink anywhere in the Code. Rows do
-   * not wrap — the first and last rows sit against the band's own border
-   * rules — so no cap is needed here the way `longestHorizontalRunLength`
-   * needs one.
+   * The longest vertical run of ink in the Code. Rows do not wrap; the first
+   * and last sit against the border rules.
    */
   public longestVerticalRunLength(matrix: Matrix): number {
     const columns = matrix[0]?.length ?? 0;

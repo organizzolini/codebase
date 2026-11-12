@@ -1,6 +1,6 @@
 import { getTagColor } from "./calendar-tag-colors.utilities";
 
-import type { CalendarEventTag } from "../events-calendar/events-database.types";
+import type { CalendarEventTag } from "../events-calendar/calendar-records.types";
 import type { CSSProperties, ReactNode } from "react";
 
 // 🔖 Type
@@ -16,9 +16,7 @@ export interface EventTagPillsProperties {
 // 🧩 Component
 
 /**
- * Draws each tag as a pill, tinted in the color of its tree so that tags of
- * a kind read alike wherever they are shown. A pill names its tag, and its
- * title gives the tag's path from its root.
+ * Draws each tag as a pill tinted in its tree's color, with its path from the root as the title.
  */
 export function EventTagPills(
   properties: Readonly<EventTagPillsProperties>,

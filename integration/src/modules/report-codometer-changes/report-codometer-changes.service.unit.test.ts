@@ -1,10 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   failed,
@@ -26,34 +26,25 @@ const DOWNLOAD =
 const VIEW = "gh pr view 7 --json=body --jq=.body";
 
 describe(ReportCodometerChangesService, () => {
+  const moduleOptions = { mocks: [ConfigService, ProcessRunnerService] };
   const makeDirectory = useTemporaryDirectories();
-  let service: ReportCodometerChangesService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ReportCodometerChangesService,
-        { provide: ConfigService, useValue: createMock<ConfigService>() },
-        {
-          provide: ProcessRunnerService,
-          useValue: createMock<ProcessRunnerService>(),
-        },
-      ],
-    }).compile();
-
-    service = await module.resolve(ReportCodometerChangesService);
-  });
 
   afterEach(() => {
     vi.unstubAllEnvs();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      ReportCodometerChangesService,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(ReportCodometerChangesService);
   });
 
-  /** Reports over a scripted process runner, with the environment of a pull request run. */
+  /** Reports over a scripted runner, with a pull request's environment. */
   const report = async (
     script: Record<string, CapturedProcess>,
     streamStatus = 0,
@@ -77,13 +68,12 @@ describe(ReportCodometerChangesService, () => {
     }
 
     const runner = new FakeProcessRunner(script, streamStatus);
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(ReportCodometerChangesService, {
       providers: [
-        ReportCodometerChangesService,
         { provide: ConfigService, useValue: new ConfigService() },
         { provide: ProcessRunnerService, useValue: runner },
       ],
-    }).compile();
+    });
     const subject = await module.resolve(ReportCodometerChangesService);
 
     return {

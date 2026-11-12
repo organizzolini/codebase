@@ -128,8 +128,7 @@ export class LiteratureCommand extends CommandRunner {
   }
 
   /**
-   * Resolves one optional filter: given text must be one of `choices`, while a
-   * missing value is asked for on a terminal and otherwise means "All".
+   * Resolves an optional filter: a given value must be one of `choices`; a missing one is asked for, else means "All".
    */
   private async resolveFilter({
     choices,

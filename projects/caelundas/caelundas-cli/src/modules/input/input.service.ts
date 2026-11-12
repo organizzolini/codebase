@@ -34,13 +34,8 @@ export class InputService {
   // 🌎 Public Methods
 
   /**
-   * Parses the current environment into a validated {@link Input} domain object.
-   *
-   * Reads `LATITUDE`, `LONGITUDE`, `START_DATE`, and `END_DATE` from
-   * {@link ConfigService} and delegates to {@link inputSchema} for coercion,
-   * timezone derivation, and date range validation.
-   *
-   * @returns Validated input with coordinates, IANA timezone, and Moment date range.
+   * Validates the environment into an `Input`: coordinates, IANA timezone, and
+   * the date range.
    */
   parse(): Input {
     const input = inputSchema.parse({

@@ -20,13 +20,8 @@ import type { CodependixRunMode } from "@codependix/core";
 import type { NxProject, NxProjectGraph } from "@codependix/nx-projects";
 
 /**
- * Resolves everything one run reads, once, before any pass runs.
- *
- * Kept apart from the passes that read it because the two answer different
- * questions: what this workspace is, versus what to do about it. Every pass —
- * the four export passes, the Workspace Graph, and the boundary gate — is
- * handed the same resolved context rather than resolving its own, so a run
- * reads the project graph once and judges one workspace.
+ * Resolves everything one run reads, once, before any pass runs. Every pass shares this one
+ * resolved context, so a run reads the project graph once.
  */
 @Injectable()
 export class RunContextService {
@@ -44,12 +39,8 @@ export class RunContextService {
   // 🔏 Private Methods
 
   /**
-   * Whether the selection a configuration carries claims one project.
-   *
-   * The one place a project is read into the shape `isProjectSelected`
-   * matches against — its name, its root relative to the workspace, and its
-   * tags — so the run's selection and the probe for an entry that matched
-   * nothing cannot disagree about what a pattern matches.
+   * Whether a configuration's selection claims one project. Shared with the unmatched-entry probe,
+   * so the two cannot disagree.
    */
   private isSelectedBy(args: {
     configuration: ResolvedCodependixConfiguration;
@@ -89,12 +80,7 @@ export class RunContextService {
   }
 
   /**
-   * Loads every project's own `codependix.config.ts`, keyed by project name.
-   *
-   * Loaded once per run, up front, rather than once per graph-type pass: a
-   * project with no file of its own is a normal, expected outcome rather than
-   * a failure, so every project is attempted and the map simply holds
-   * `undefined` for the ones naming none.
+   * Loads each project's codependix.config.ts, keyed by name. A project with no file is normal, so it maps to `undefined` rather than failing.
    */
   private async loadProjectConfigurations(
     projects: NxProject[],
@@ -115,15 +101,8 @@ export class RunContextService {
   }
 
   /**
-   * Widens the selected projects to the set every boundary graph is built
-   * over: their dependency closure, or the selection alone under
-   * `--no-dependencies`.
-   *
-   * Only the selection is judged. The rest of the closure is built so a
-   * finding the selected projects inherit from a dependency can be reported
-   * against it as a note, and so an Nx edge leaving the selection is still
-   * drawn. With no selection every project is selected, and the closure of
-   * every project is every project.
+   * The projects every boundary graph is built over: the dependency closure, or the selection under
+   * `--no-dependencies`. Only the selection is judged.
    */
   private resolveBuildProjects(args: {
     configuration: ResolvedCodependixConfiguration;
@@ -146,13 +125,8 @@ export class RunContextService {
   }
 
   /**
-   * Reads the three graph-type toggle flags into the set of graph types this
-   * run builds, checks, and writes.
-   *
-   * A graph type is enabled unless its own `--no-*` flag disabled it —
-   * `--file-imports`/`--nestjs-modules`/`--nx-projects` exist only for
-   * symmetry with the negated form, matching every graph type's default of
-   * "on" when neither flag was given.
+   * The graph types this run builds, checks, and writes. Each is enabled unless its `--no-*` flag
+   * disabled it.
    */
   private resolveEnabledGraphTypes(
     options: MapCommandOptions,
@@ -165,11 +139,7 @@ export class RunContextService {
   }
 
   /**
-   * Resolves a supplied project graph's path against the workspace root.
-   *
-   * The same root every export path resolves against — `--directory` keeps
-   * its one meaning, and a supplied graph's workspace-relative node roots
-   * resolve underneath it too.
+   * Resolves a supplied project graph's path against the workspace root, as every export path does.
    */
   private resolveProjectGraphPath(
     projectGraph: string | undefined,
@@ -181,12 +151,8 @@ export class RunContextService {
   }
 
   /**
-   * Resolves the two project sets a run acts on: the selection it judges,
-   * and the build set every boundary graph is drawn over.
-   *
-   * A `--projects`/`--tags` selection matching no project is refused here,
-   * before any pass runs — see `emptySelectionError`. No selection at all
-   * selects every project, so only a named one can come back empty.
+   * Resolves the selection a run judges and the build set. A selection matching no project is refused
+   * here, before any pass runs.
    */
   private resolveProjectSets(args: {
     configuration: ResolvedCodependixConfiguration;
@@ -211,13 +177,8 @@ export class RunContextService {
   }
 
   /**
-   * Narrows every project to the set `--projects` and `--tags` named.
-   *
-   * A run naming neither selects every project, which is what keeps the
-   * Workspace Graph whole and the boundary gate judging the whole workspace by
-   * default. `include`/`exclude` deliberately do not reach this: they decide
-   * which projects have exports written for them, not which projects a graph
-   * is drawn over.
+   * Narrows every project to the `--projects` and `--tags` selection. A run naming neither selects
+   * all, and `include`/`exclude` never reach this.
    */
   private selectProjects(args: {
     configuration: ResolvedCodependixConfiguration;
@@ -236,12 +197,7 @@ export class RunContextService {
   // 🌎 Public Methods
 
   /**
-   * Reads the configuration and the project graph a run is about to act on.
-   *
-   * Called once per run, by the command — every pass takes the context it
-   * returns. `--check boundaries` reads exactly the same one, which is what
-   * lets a single run both export and gate without reading the workspace
-   * twice.
+   * Reads the configuration and project graph a run acts on. Called once per run, so every pass shares the one read.
    */
   async build(args: {
     /** The configuration file's path, already required by the caller. */
@@ -286,15 +242,7 @@ export class RunContextService {
   }
 
   /**
-   * The `--projects` patterns and `--tags` tags that matched no project.
-   *
-   * Each entry is probed alone, with the selection narrowed to it, so the
-   * answer is exactly what that entry would have selected had it been the
-   * only one given. Only meaningful for a context `build` returned: a
-   * selection in which *nothing* matched never gets that far, since `build`
-   * refuses it. What is left is the partial case — a misspelled name beside
-   * a correct one — which the run silently narrows past, judging fewer
-   * projects than were asked for.
+   * Patterns and tags that matched no project, each probed alone. A fully unmatched selection never gets here: `build` refuses it.
    */
   findUnmatchedSelection(
     context: Pick<

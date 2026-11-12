@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,18 +7,7 @@ import { WawArabicLetterCharacteristicsService } from "./waw-arabic-letter-chara
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the و (final Arabic waw) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- * ┌┐
- * └┼╴
- * ┌┘
- * ╵
- * ```
- */
+/** Each distinct orientation of final و as a standalone Code. */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -64,18 +52,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "wawFinal",
 };
 
-/**
- * Each distinct orientation of the و (isolated Arabic waw) as a Code holding
- * one isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- * ┌┐
- * └┤
- * ┌┘
- * ╵
- * ```
- */
+/** Each distinct orientation of isolated و as a standalone Code. */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -124,10 +101,7 @@ const ISOLATED_FORM: LetterFormFixture = {
 const FORMS: readonly LetterFormFixture[] = [FINAL_FORM, ISOLATED_FORM];
 
 describe(WawArabicLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    WawArabicLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(WawArabicLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

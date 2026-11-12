@@ -1,8 +1,9 @@
 // Fragments of hexadecimal meander Codes used as test fixtures, not words.
 // cspell:ignore fcfcfcf
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -21,17 +22,12 @@ describe(IsLinesCharacteristicService, () => {
     let service: IsLinesCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const real = await buildTestingModule(CharacteristicContextService, {
         imports: [CodeModule, PatternCharacteristicsModule, MatrixModule],
-        providers: [CharacteristicContextService],
-      }).compile();
+      });
 
-      contextService = await module.resolve(CharacteristicContextService);
-      service = await module.resolve(IsLinesCharacteristicService);
-    });
-
-    it("is defined", () => {
-      expect(service).toBeDefined();
+      contextService = real.instance;
+      service = await real.module.resolve(IsLinesCharacteristicService);
     });
 
     it.each([
@@ -64,9 +60,8 @@ describe(IsLinesCharacteristicService, () => {
     let service: IsLinesCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(IsLinesCharacteristicService, {
         providers: [
-          IsLinesCharacteristicService,
           {
             provide: BettiNumber1CountCharacteristicService,
             useValue: { compute: (): number => values.bettiNumber1Count },
@@ -76,9 +71,9 @@ describe(IsLinesCharacteristicService, () => {
             useValue: { compute: (): number => values.northEdgeCount },
           },
         ],
-      }).compile();
+      });
 
-      service = await module.resolve(IsLinesCharacteristicService);
+      service = built.instance;
     });
 
     beforeEach(() => {

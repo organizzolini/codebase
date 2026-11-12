@@ -11,7 +11,7 @@ import { EclipseTopocentricService } from "./eclipse-topocentric.service";
 import { MILLISECONDS_PER_MINUTE } from "./eclipses.constants";
 
 import type { EclipsePhase } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type {
   AzimuthElevationEphemeris,
   CoordinateEphemeris,
@@ -49,10 +49,7 @@ export class EclipseCalculationService {
   // 🔐 Private Fields
 
   /**
-   * The lunar and solar eclipses in progress. A sweep visits minutes in
-   * order, so each occurrence keeps the type estimated at its first minute
-   * and titles its begins, maximum, ends and span alike, even when later
-   * estimates near a type boundary would differ.
+   * Eclipses in progress, each keeping its first minute's type.
    */
   private lunarOccurrence: EclipseOccurrence<LunarEclipseType> | null = null;
 
@@ -63,9 +60,8 @@ export class EclipseCalculationService {
   // 🔏 Private Methods
 
   /**
-   * Carries an eclipse occurrence into `minute`: it keeps its type when it
-   * was seen the minute before, starts with `estimate` when it is new, and
-   * ends (null) when no eclipse is in progress.
+   * Carries an occurrence into `minute`, keeping its type if seen the minute
+   * before; null when no eclipse is in progress.
    */
   private static continueOccurrence<TType extends EclipseType>(
     occurrence: EclipseOccurrence<TType> | null,
@@ -85,9 +81,8 @@ export class EclipseCalculationService {
   }
 
   /**
-   * Creates geocentric event payloads for detected eclipse phases. A type
-   * the classifier could not settle (an eclipse grazing a boundary) falls
-   * back to the weakest: partial for the Sun, penumbral for the Moon.
+   * Builds geocentric event payloads; an unsettled type falls back to the
+   * weakest: partial for the Sun, penumbral for the Moon.
    */
   private buildGeocentricEclipseEvents(
     minute: Moment,
@@ -115,9 +110,8 @@ export class EclipseCalculationService {
   }
 
   /**
-   * Classifies the contacts of one eclipse at the current minute: it
-   * begins at the external contact on the way in (P1) and ends at the
-   * external contact on the way out (P4).
+   * Classifies one eclipse's contacts at the current minute: beginning at the
+   * external contact in (P1), ending at the one out (P4).
    */
   private getContactPhases(
     window: EclipseContactWindow,
@@ -171,9 +165,8 @@ export class EclipseCalculationService {
   }
 
   /**
-   * Builds geocentric eclipse events and returns their classified phases
-   * and eclipse types. Each eclipse keeps the type it had at its first
-   * minute; call this for consecutive minutes, as the sweep does.
+   * Builds geocentric eclipse events and their classified phases and types;
+   * call for consecutive minutes so each eclipse keeps its first-minute type.
    */
   getGeocentricEvents(args: {
     currentCoordinates: EclipseCoordinates;
@@ -228,9 +221,8 @@ export class EclipseCalculationService {
   }
 
   /**
-   * Classifies the lunar eclipse phases at the current minute, in time
-   * order: beginning at P1, maximum at greatest eclipse (the Moon nearest
-   * the shadow axis), ending at P4.
+   * Classifies lunar eclipse phases at the current minute, in time order:
+   * beginning at P1, maximum at greatest eclipse, ending at P4.
    */
   getLunarEclipsePhases(
     current: EclipseCoordinates,
@@ -252,9 +244,8 @@ export class EclipseCalculationService {
   }
 
   /**
-   * Classifies the solar eclipse phases at the current minute, in time
-   * order: beginning at global P1, maximum at greatest eclipse (the shadow
-   * axis nearest Earth's center), ending at global P4.
+   * Classifies solar eclipse phases at the current minute, in time order:
+   * beginning at global P1, maximum at greatest eclipse, ending at global P4.
    */
   getSolarEclipsePhases(
     current: EclipseCoordinates,
@@ -276,9 +267,8 @@ export class EclipseCalculationService {
   }
 
   /**
-   * Computes the observer's eclipse events, with the geocentric lunar type
-   * and maximum; an unsettled type falls back as for geocentric events.
-   * The observer's solar type is their own, judged from their sky.
+   * Computes the observer's eclipse events: the geocentric lunar type and
+   * maximum, with the observer's own solar type from their sky.
    */
   getTopocentricEventsForDetect(args: {
     coordinates: {

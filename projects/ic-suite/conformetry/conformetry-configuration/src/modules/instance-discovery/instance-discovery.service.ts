@@ -27,13 +27,11 @@ import type {
 } from "@conformetry/core";
 
 /**
- * Finds the generated code a workspace holds, and decides what explains it.
+ * Finds the generated code a workspace holds, and what explains it.
  *
- * This is the workspace-facing half of discovery: the template-discovery module
- * reads the templates root, and this one reads the tree those templates were
- * rendered into. Matching lives here because every answer it produces is
- * instance-shaped — a matched instance, an unmatched one, or a ranking of
- * templates against one path.
+ * The workspace-facing half of discovery. Template discovery reads the
+ * templates root; this reads the rendered tree, and every answer is
+ * instance-shaped.
  */
 @Injectable()
 export class InstanceDiscoveryService {
@@ -53,11 +51,9 @@ export class InstanceDiscoveryService {
   // 🔏 Private Methods
 
   /**
-   * The globs an inventory expands: the configured groups' patterns and
-   * exclusions, or an explicit pattern list replacing both.
+   * The globs an inventory expands.
    *
-   * One expansion rather than one per group, so an instance two groups locate
-   * is listed once; every group's exclusions therefore apply to all of them.
+   * One expansion covers all groups, so an instance two groups locate is listed once.
    */
   private readInventoryGlobs(
     args: ResolveInventoryArguments,
@@ -164,24 +160,9 @@ export class InstanceDiscoveryService {
   }
 
   /**
-   * Keeps the groups a host with no project graph can actually locate.
+   * Keeps the groups this host can locate: those without `tags`.
    *
-   * A group carrying `tags` reads its globs *inside each project the tags
-   * select*, so `src/modules/*` has no meaning until a project root is joined
-   * to it. This package has no notion of a project, so such a group is not
-   * addressed to it and is left out rather than expanded from the working
-   * directory — which would match whatever happened to sit at the same
-   * relative path and measure it against a template scoped to other projects.
-   * `@conformetry/nx` resolves those groups first, so what reaches discovery
-   * from there is already workspace-relative and untagged groups are all that
-   * is left to read.
-   *
-   * Dropping them is deliberately silent here and reported by the caller: this
-   * is a question about one group, and only a command knows whether the run it
-   * was asked for has been left with nothing.
-   *
-   * Which groups those are is `InstanceGroupService`'s to say, so that this and
-   * the set `@conformetry/nx` claims stay exact complements.
+   * Tagged groups need a project graph, which this host lacks.
    */
   public readWorkspaceGroups(
     groups: readonly ConformetryInstanceGroup[],
@@ -213,8 +194,7 @@ export class InstanceDiscoveryService {
   /**
    * Lists every instance found, paired with the templates that explain it.
    *
-   * `templateNames` narrows the pairing rather than the search, so an instance
-   * that no named template explains drops out entirely.
+   * `templateNames` narrows the pairing, dropping unexplained instances.
    */
   public resolveInventoriedInstances(
     args: ResolveInventoryArguments,
@@ -237,9 +217,7 @@ export class InstanceDiscoveryService {
   /**
    * Lists every template declared, paired with the instances it explains.
    *
-   * `instancePatterns` narrows which instances are considered, which is what
-   * turns this into "which templates explain this path". A path can legitimately
-   * belong to several templates, so every one that fits is reported.
+   * `instancePatterns` narrows which instances count.
    */
   public resolveInventoriedTemplates(
     args: ResolveInventoryArguments,

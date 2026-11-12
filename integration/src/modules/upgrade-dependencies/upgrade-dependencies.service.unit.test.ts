@@ -1,11 +1,8 @@
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -15,6 +12,9 @@ import {
   it,
   vi,
 } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { UpgradeNodeService } from "../upgrade-node/upgrade-node.service";
@@ -26,7 +26,7 @@ import { UpgradeDependenciesService } from "./upgrade-dependencies.service";
 import type { Command } from "../process-runner/process-runner.types";
 import type { UpgradeStep } from "./upgrade-dependencies.types";
 
-/** A command that runs some JavaScript, which is how a test writes a file. */
+/** A command running JavaScript, which writes a test file. */
 const node = (code: string): Command => ["node", "-e", code];
 
 /** A command that writes a file. */
@@ -35,7 +35,7 @@ const write = (file: string, text: string): Command =>
     `require("fs").writeFileSync(${JSON.stringify(file)}, ${JSON.stringify(text)})`,
   );
 
-/** Throws whatever it is given, which is how a test throws what is not an error. */
+/** Throws whatever it is given, even a non-Error. */
 const fail = (value: unknown): never => {
   throw value;
 };
@@ -47,6 +47,15 @@ const stepOf = (...commands: Command[]): UpgradeStep => ({
 });
 
 describe(UpgradeDependenciesService, () => {
+  const moduleOptions = {
+    mocks: [
+      ConfigService,
+      ProcessRunnerService,
+      UpgradeNodeService,
+      UpgradePnpmService,
+      UpgradePythonService,
+    ],
+  };
   let service: UpgradeDependenciesService;
   let pnpm: UpgradePnpmService;
   let repository: string;
@@ -62,35 +71,17 @@ describe(UpgradeDependenciesService, () => {
     fs.readFileSync(path.join(repository, name), "utf8");
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        UpgradeDependenciesService,
-        { provide: ConfigService, useValue: createMock<ConfigService>() },
-        {
-          provide: ProcessRunnerService,
-          useValue: createMock<ProcessRunnerService>(),
-        },
-        {
-          provide: UpgradeNodeService,
-          useValue: createMock<UpgradeNodeService>(),
-        },
-        {
-          provide: UpgradePnpmService,
-          useValue: createMock<UpgradePnpmService>(),
-        },
-        {
-          provide: UpgradePythonService,
-          useValue: createMock<UpgradePythonService>(),
-        },
-      ],
-    }).compile();
+    const { module } = await buildTestingModule(
+      UpgradeDependenciesService,
+      moduleOptions,
+    );
 
     service = await module.resolve(UpgradeDependenciesService);
   });
 
   beforeEach(async () => {
     originalDirectory = process.cwd();
-    temporary = fs.mkdtempSync(path.join(os.tmpdir(), "upgrade-test-"));
+    temporary = createTemporaryDirectory("upgrade");
     repository = path.join(temporary, "repository");
     fs.mkdirSync(repository);
     git("init", "-q");
@@ -106,25 +97,13 @@ describe(UpgradeDependenciesService, () => {
     vi.stubEnv("TMPDIR", temporary);
     vi.stubEnv("GITHUB_OUTPUT", path.join(temporary, "output"));
 
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(UpgradeDependenciesService, {
+      mocks: [UpgradeNodeService, UpgradePnpmService, UpgradePythonService],
       providers: [
-        UpgradeDependenciesService,
         ProcessRunnerService,
         { provide: ConfigService, useValue: new ConfigService() },
-        {
-          provide: UpgradeNodeService,
-          useValue: createMock<UpgradeNodeService>(),
-        },
-        {
-          provide: UpgradePnpmService,
-          useValue: createMock<UpgradePnpmService>(),
-        },
-        {
-          provide: UpgradePythonService,
-          useValue: createMock<UpgradePythonService>(),
-        },
       ],
-    }).compile();
+    });
 
     service = await module.resolve(UpgradeDependenciesService);
     pnpm = await module.resolve(UpgradePnpmService);
@@ -133,12 +112,17 @@ describe(UpgradeDependenciesService, () => {
   afterEach(() => {
     process.chdir(originalDirectory);
     vi.unstubAllEnvs();
-    fs.rmSync(temporary, { force: true, recursive: true });
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      UpgradeDependenciesService,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(UpgradeDependenciesService);
   });
 
   it("keeps what a successful step changed", async () => {

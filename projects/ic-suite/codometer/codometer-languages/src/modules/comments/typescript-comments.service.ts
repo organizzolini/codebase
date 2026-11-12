@@ -12,19 +12,7 @@ import type { CommentToken, TypescriptCommentScan } from "./comments.types";
 
 /* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
- * Reads TypeScript and JavaScript's `//` and non-JSDoc `/* ... *\/` comments
- * from the compiler's real parse, rather than its bare scanner.
- *
- * A bare `ts.createScanner` cannot tell a `/` that divides from one that opens
- * a regular expression without the parser's context, and gets it wrong on real
- * source — swallowing a long run of genuine comments as trivia inside a
- * misread token. Parsing for real and walking every leaf token's leading and
- * trailing trivia is what a full parse resolves correctly, at the cost of one
- * parse per file instead of one scan.
- *
- * A JSDoc `/**` block is skipped here — `DeclarationCommentsService`
- * already measures those — the same check it uses to find one: the
- * delimiter's first three characters.
+ * Reads TypeScript and JavaScript `//` and non-JSDoc block comments from the compiler's real parse. A bare scanner misreads `/` as a regex and loses comments, so a full parse is used. JSDoc blocks are left to `DeclarationCommentsService`.
  */
 @Injectable()
 /* v8 ignore stop */
@@ -40,13 +28,7 @@ export class TypescriptCommentsService {
   // 🔏 Private Methods
 
   /**
-   * Walks every leaf token, collecting the comments around it.
-   *
-   * Both sides of every leaf, because a comment sharing its line with the
-   * token before it is that token's *trailing* trivia rather than the next
-   * token's *leading* trivia — `getLeadingCommentRanges` at a token's start
-   * never finds it, only `getTrailingCommentRanges` at the previous token's
-   * end does.
+   * Walks every leaf token, collecting comments on both sides, since a same-line comment is trailing trivia.
    */
   private collectComments(
     node: tsCompiler.Node,

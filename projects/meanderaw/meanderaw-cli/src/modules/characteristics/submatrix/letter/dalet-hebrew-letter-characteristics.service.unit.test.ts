@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,7 +7,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the ד (Hebrew dalet) as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** One isolated Code per orientation of the ד (Hebrew dalet). */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   { fixture: "05x02y2731008000", names: ["Southeast", "NorthwestHalf"] },
   {
@@ -33,10 +32,7 @@ const ORIENTATIONS: readonly LetterOrientationFixture[] = [
 ];
 
 describe(DaletHebrewLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    DaletHebrewLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(DaletHebrewLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

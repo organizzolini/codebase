@@ -19,15 +19,10 @@ export interface JsonComparison {
   readonly totalWeight: number;
 }
 
-/**
- * Which validator is asking for the comparison.
- *
- * The walk is shared between JSON files and Jupyter notebooks, and the differences
- * it emits must be attributed to whichever one raised them.
- */
+/** Validator asking for the walk, shared by JSON and Jupyter. */
 export type JsonComparisonLanguage = "json" | "python";
 
-/** One step of a JSON path: an object key or an array index. */
+/** One JSON path step: an object key or array index. */
 export type JsonPathSegment = number | string;
 
 /** Any JSON value, used when structurally comparing two documents. */

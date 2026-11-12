@@ -1,10 +1,4 @@
 // 🏷️ Types
 
-/**
- * Placeholder values applied when rendering a template.
- *
- * Built from the generator name by `RenderingService.buildNameSubstitutions`
- * and then merged with the caller's own inputs, so an explicit input always
- * wins over a derived name variant.
- */
+/** Placeholder values for a render; caller inputs override derived names. */
 export type Substitutions = Record<string, string>;

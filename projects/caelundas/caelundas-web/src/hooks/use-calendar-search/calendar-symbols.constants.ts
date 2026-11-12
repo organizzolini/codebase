@@ -7,7 +7,7 @@ import type { CalendarSymbols } from "./calendar-symbols.types";
 export const DEFAULT_CALENDAR_SYMBOLS: CalendarSymbols = "glyphs";
 
 /**
- * Carries the symbols the calendar draws with to the chips that draw them.
+ * Passes the symbol style to the chips drawing them.
  */
 export const CalendarSymbolsContext = createContext<CalendarSymbols>(
   DEFAULT_CALENDAR_SYMBOLS,

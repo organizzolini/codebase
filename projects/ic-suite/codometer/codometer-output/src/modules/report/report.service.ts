@@ -15,11 +15,7 @@ import type { EvaluatedLimit, TargetMetricIndex } from "@codometer/measurement";
 /**
  * Writes out what a run measured, in codometer's own shape.
  *
- * Every metric is listed whether or not anything limits it, and a limit is
- * listed whether or not it was breached, so one document answers both "what is
- * this repository" and "what is it held to". Nothing is signalled by a missing
- * field: an empty match says so, and a metric nobody limited carries an
- * explicit `null` rather than no limit key at all.
+ * Every metric and every limit is listed, breached or not, so one document answers what a repository is and what it is held to.
  */
 @Injectable()
 export class ReportService {
@@ -75,15 +71,7 @@ export class ReportService {
   }
 
   /**
-   * Indexes the evaluated limits by the metric each one landed on.
-   *
-   * Keyed by the joined name rather than by the written path, because two
-   * limits may be written differently — one qualified, one leaning on the
-   * default target — and still address the same metric.
-   *
-   * Collected rather than overwritten. Several limits may land on one metric,
-   * and keeping only the last would report a limit the gate is not the only
-   * one enforcing.
+   * Indexes the evaluated limits by the metric each one lands on. Several limits may land on one metric, so all are kept.
    */
   private indexLimits(
     limits: readonly EvaluatedLimit[],
@@ -112,11 +100,7 @@ export class ReportService {
   // 🌎 Public Methods
 
   /**
-   * Builds the report for one measurement.
-   *
-   * Targets keep the order they were measured in and metrics the order they
-   * were counted in, so two runs over one tree produce byte-identical
-   * documents — which is the whole of what makes staleness meaningful.
+   * Builds the report for one measurement. Ordering is fixed, so two runs over one tree produce identical documents.
    */
   build(args: BuildReportArguments): CodometerReport {
     const limits = this.indexLimits(args.limits);

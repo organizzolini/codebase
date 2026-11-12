@@ -11,13 +11,9 @@ import { ENABLED_VALUE } from "./cleanup-codebase.constants";
 import type { Environment } from "../../integration.types";
 
 /**
- * CLI command that tidies a CI job's Nx task database before the workflow
- * saves it: discards any a cancellation left damaged, then keeps only the
- * newest.
- *
- * Reads `NX_CACHE` and the task database location. A job that did not restore
- * the Nx cache saves none, so it has nothing to tidy. Always exits 0: the
- * cache is an optimization, so a warning is printed, never a failure.
+ * Tidies the CI job's Nx task database before the job saves it: discards
+ * damaged databases, then keeps only the newest. Always exits 0, since the
+ * cache is an optimization and a problem is a warning, not a failure.
  */
 @Command({
   description:

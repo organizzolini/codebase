@@ -6,17 +6,12 @@ import {
   TIMELINE_UNIT_WIDTHS,
 } from "./calendar-timeline-clusters.constants";
 
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 import type { TimelineBar } from "./calendar-timeline.types";
 import type { GanttEvent, GanttScale } from "@codebase/presentation";
 
 /**
- * Gathers the markers of each row that would overlap into one bar counting
- * them, so thousands of crowded instants draw as a handful of counts. A
- * marker is an instant or a span too short to see at this scale; a run of
- * them starting within one marker's width of the run's first becomes a
- * cluster as long as that width, or as the run if longer. A lone marker and
- * every longer span are drawn as they are.
+ * Gathers markers that would overlap into bars counting them; a run starting within one marker's width of the first becomes a cluster.
  */
 export function clusterTimelineBars(
   bars: readonly GanttEvent<TimelineBar>[],
@@ -44,9 +39,7 @@ export function clusterTimelineBars(
 }
 
 /**
- * How much time one marker's width covers at a scale and zoom, in
- * milliseconds: markers closer together than this would overlap, so they
- * are clustered.
+ * How much time one marker's width covers at a scale and zoom, in milliseconds; closer markers would overlap, so they cluster.
  */
 export function getClusterSpan(scale: GanttScale, zoom: number): number {
   return (
@@ -120,9 +113,7 @@ function collectRun(run: readonly GanttEvent<TimelineBar>[]): TimelineBar {
 }
 
 /**
- * A cluster's title: its events' names, comma separated and cut short, with
- * how many more there are beyond those shown. The first name is always shown,
- * however long.
+ * A cluster's title: its names, comma separated and cut short, with how many more follow.
  */
 function previewEvents(names: readonly string[]): string {
   let preview = "";
@@ -150,9 +141,7 @@ function previewEvents(names: readonly string[]): string {
 }
 
 /**
- * One bar for a run of markers, whose first is given apart: the marker
- * itself when it is alone, or a bar counting them that lasts until the run
- * ends, in the color of the first.
+ * One bar for a run of markers: the marker itself when alone, or a count bar running until the run ends.
  */
 function toCluster(
   first: GanttEvent<TimelineBar>,

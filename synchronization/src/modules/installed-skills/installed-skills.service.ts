@@ -22,16 +22,10 @@ import type {
 
 /**
  * Compares the skills `skills-lock.json` declares against the ones on disk.
+ * A skill is installed only when its `SKILL.md` exists, since a restore can leave an empty folder.
  *
- * A skill counts as installed when its `SKILL.md` exists, not merely its
- * folder: an interrupted restore can leave an empty folder behind, and an
- * agent harness registers nothing from it.
- *
- * Restoring leaves tracked files alone. `skills experimental_install`
- * rewrites both the lockfile and every skill folder, and one absent folder
- * refreshes them all; left in place that dirties the tree on every CI job and
- * makes the dependency-upgrade workflow open an empty pull request. Moving the
- * pins forward is `skills update`, never a restore.
+ * A restore must leave tracked files alone: `skills experimental_install` rewrites every skill folder.
+ * Moving pins is `skills update`.
  */
 @Injectable()
 export class InstalledSkillsService {
@@ -85,14 +79,8 @@ export class InstalledSkillsService {
   }
 
   /**
-   * Returns what a restore rewrote to the content this repository pins.
-   *
-   * The lockfile is reverted only when it started clean, so a pin somebody
-   * is moving by hand survives. Only the locked skill folders that started
-   * clean are checked out, one by one: a skill the lockfile does not name, a
-   * folder with edits in progress, and a folder the repository has not
-   * committed yet all survive, while a committed one reappears even when the
-   * fetch failed outright.
+   * Reverts a restore's rewrites to tracked files; the lockfile only when it
+   * started clean. Folders with edits are kept.
    */
   private revertTrackedChanges(
     lockfileWasClean: boolean,
@@ -165,10 +153,8 @@ export class InstalledSkillsService {
   // 🌎 Public Methods
 
   /**
-   * Lists the locked skills whose `SKILL.md` is absent, in the workspace the
-   * process runs in.
-   *
-   * @returns The missing names, or why the lockfile could not be listed.
+   * Lists the locked skills whose `SKILL.md` is absent, or why the lockfile
+   * could not be read.
    */
   public findMissingSkills(): MissingSkillsResult {
     const workspaceRoot = process.cwd();
@@ -196,11 +182,8 @@ export class InstalledSkillsService {
   }
 
   /**
-   * Restores every locked skill from its source, then undoes whatever the
-   * restore rewrote in tracked files.
-   *
-   * Never throws and never fails: skills are agent context, not a build
-   * input, so an outage only warns with the command that retries it.
+   * Restores every locked skill, then undoes the restore's rewrites to tracked
+   * files. Never fails: an outage only warns.
    */
   public restoreSkills(): void {
     const inWorkTree =

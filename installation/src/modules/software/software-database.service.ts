@@ -45,8 +45,8 @@ export class SoftwareDatabaseService {
   // 🔏 Private Methods
 
   /**
-   * Adds the PostgreSQL apt source and its signing key. Both are made in a
-   * scratch location first and installed from there, because `/etc` is root's.
+   * Adds the PostgreSQL apt source and its signing key.
+   * Both are built in a scratch directory first, since `/etc` belongs to root.
    */
   private addAptRepository(codename: string): void {
     const scratch = path.join(os.tmpdir(), "postgresql-apt");
@@ -149,9 +149,8 @@ export class SoftwareDatabaseService {
   }
 
   /**
-   * Links 18's tools into `~/.local/bin`. A PostgreSQL server of another
-   * version on this machine steers the `pg_dump` wrapper in /usr/bin to its
-   * own version, so 18's are linked ahead of it.
+   * Links PostgreSQL 18's tools into `~/.local/bin`, ahead of any other server's.
+   * Another version's `pg_dump` wrapper in /usr/bin would otherwise win.
    */
   private linkPostgresTools(): void {
     const binaryDirectory = path.join(os.homedir(), ".local", "bin");

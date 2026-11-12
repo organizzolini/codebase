@@ -7,14 +7,7 @@ import type { LexicalGrammar } from "../scanner/scanner.types";
 /** The extensions SQL scripts are written with. */
 export const SQL_EXTENSIONS: readonly string[] = [".sql"];
 
-/**
- * How SQL is read: `--` and block comments, single quoted strings with a
- * doubled quote as the escape, and dollar quoted bodies.
- *
- * A double quoted or backtick quoted name is an identifier in SQL, not text, so it
- * contributes its content. SQL has no key separator, so no string is ever a
- * key.
- */
+/** Quoted names are identifiers; SQL strings are never keys. */
 export const SQL_GRAMMAR: LexicalGrammar = {
   identifier: /[\p{L}_][\p{L}\p{N}_$]*/uy,
   keys: [],
@@ -33,13 +26,7 @@ export const SQL_GRAMMAR: LexicalGrammar = {
   ],
 };
 
-/**
- * The reserved words of standard SQL and its common dialects, lowercased as
- * the vocabulary compares words.
- *
- * A plain array, so a configuration spreads it into `exclude.words` and the
- * tool excludes nothing it was not asked to.
- */
+/** Standard SQL and common dialect reserved words, lowercased. */
 export const SQL_KEYWORDS: string[] = [
   "add",
   "all",

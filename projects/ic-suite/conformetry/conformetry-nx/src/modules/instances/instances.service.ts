@@ -14,10 +14,7 @@ import type {
 /**
  * Turns Nx project knowledge into the instances conformetry validates.
  *
- * This is the whole reason the plugin exists: the generic packages take a list
- * of paths, and deciding which paths belong to which project — and which
- * projects a configured instance group applies to — is Nx-shaped knowledge
- * that would otherwise have to live inside them.
+ * Generic packages take plain paths, so the Nx-shaped mapping of paths and groups to projects lives here.
  */
 @Injectable()
 export class InstancesService {
@@ -35,13 +32,9 @@ export class InstancesService {
   // 🔏 Private Methods
 
   /**
-   * Expands one group's globs, reusing an earlier expansion of the same ones.
+   * Expands one group's globs, reusing an earlier expansion of the same request.
    *
-   * An untagged group is the same glob for every project, and a glob walks the
-   * whole workspace, so expanding it per project is what made inferring the
-   * targets of ~70 projects take half a minute. The key is the whole request,
-   * so a tagged group, whose globs differ by project root, never shares an
-   * entry with another project's.
+   * Caching saves a full workspace walk per untagged group.
    */
   private discoverGroup(args: {
     cache: Map<string, Instance[]> | undefined;
@@ -75,10 +68,7 @@ export class InstancesService {
   /**
    * Returns whether an instance belongs to a project.
    *
-   * Tested against the instance itself — the instance path joined with the
-   * name — not the instance path alone. A project-level instance's path is
-   * the directory *holding* projects, so testing that would place every
-   * project's own instance outside it.
+   * Tests the joined path, since the bare path holds every project.
    */
   private isInsideProject(args: {
     instance: Instance;
@@ -99,12 +89,9 @@ export class InstancesService {
   // 🌎 Public Methods
 
   /**
-   * Expands every instance group that applies to a project, keeping only the
-   * instances that live inside it.
+   * Expands the instance groups that apply to a project.
    *
-   * The globs stay workspace-relative rather than being rewritten per project:
-   * a pattern such as `packages/*` is the author describing the workspace, and
-   * rewriting it into a project-relative form would change what it means.
+   * Globs stay workspace-relative, since rewriting them per project would change what they mean.
    */
   public async findProjectInstances(
     args: FindProjectInstancesArguments,

@@ -966,10 +966,22 @@
         "name": "CHANGELOG.md"
       },
       {
+        "name": "callidescope.md"
+      },
+      {
         "name": "codependix-workspace-graph.json"
       },
       {
+        "name": "codependix.md"
+      },
+      {
+        "name": "codometer.md"
+      },
+      {
         "name": "coinagerie.config.ts"
+      },
+      {
+        "name": "coinagerie.md"
       },
       {
         "name": "compliance",
@@ -1151,7 +1163,7 @@
         "name": "projects"
       },
       {
-        "name": "publication",
+        "name": "deployment",
         "ruleId": "codebase-project"
       },
       {

@@ -1,35 +1,12 @@
 // ♟️ Constants
 
-/**
- * The module that registers the loader the codependix command line runs
- * under, as this package exports it.
- *
- * Booting a NestJS container imports the workspace's own TypeScript sources,
- * and constructor injection reads the decorator metadata only a compiler that
- * emits it provides. `@swc-node/register` does; `tsx` and esbuild silently do
- * not, and a container then boots with every injected dependency undefined.
- *
- * Resolved through this package's own exports, so the hook comes from this
- * plugin's dependencies wherever it is installed. The module is
- * `src/executors/gate/loader.mjs`, shipped as written in either place.
- */
+/** CLI loader: `tsx` and esbuild omit decorator metadata; use swc. */
 export const LOADER_SPECIFIER = "@codependix/nx/loader";
 
-/**
- * The codependix command line's entry, as `@codependix/cli` exports it.
- *
- * Resolved through the package's exports rather than a path into this
- * repository, so the same specifier reaches `src/codependix-cli.main.ts` in this workspace
- * and `dist/src/codependix-cli.main.js` in an installed copy.
- */
+/** CLI entry, via `@codependix/cli`'s exports, so its own build loads. */
 export const CLI_ENTRY_SPECIFIER = "@codependix/cli/main";
 
-/**
- * Filename this plugin's own registration is written in.
- *
- * Read for the `configurationPath` an executor was not given, because Nx hands
- * plugin options to `createNodes` and never to an executor.
- */
+/** Registration file for `configurationPath`; plugin options reach only `createNodes`. */
 export const NX_CONFIGURATION_FILENAME = "nx.json";
 
 /**
@@ -38,13 +15,6 @@ export const NX_CONFIGURATION_FILENAME = "nx.json";
  */
 export const EXECUTOR_OPTION_SURFACE = "`configuration` executor option";
 
-/**
- * Why a cached target may not judge anything but its own project.
- *
- * The target's inputs cover only its own project and that project's
- * dependencies, so Nx could replay a pass after an edit to a project the run
- * judges and they do not reach. `cache` is fixed per target, so the target
- * must opt out of it.
- */
+/** Cached targets judge only themselves, or Nx replays stale passes. */
 export const UNCACHEABLE_SELECTION_MESSAGE =
   "The codependix gate target judges projects its cache inputs do not cover, so it must set `cache: false`.";

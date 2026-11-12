@@ -2,16 +2,16 @@ import {
   ConfigurationModule,
   ConfigurationService,
 } from "@codometer/configuration";
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { useTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { createInputTree, removeInputTree } from "../../../testing/input-tree";
+import { createInputTree } from "../../../testing/input-tree";
 
 import { InputsService } from "./inputs.service";
 
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { ResolvedCodometerInput } from "@codometer/configuration";
 
 /** Builds a resolved input over the fixture tree's build directory. */
@@ -29,7 +29,13 @@ function buildInput(
   };
 }
 
+/** What the InputsService is built with. */
+const DEPENDENCIES = {
+  imports: [ConfigurationModule],
+} satisfies TestingModuleOptions;
+
 describe(`${InputsService.name} over a real directory`, () => {
+  const readTemporaryDirectory = useTemporaryDirectory("codometer-input");
   let configurationService: ConfigurationService;
   let service: InputsService;
   let workingDirectory: string;
@@ -40,21 +46,14 @@ describe(`${InputsService.name} over a real directory`, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [ConfigurationModule],
-      providers: [
-        InputsService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, module } = await buildTestingModule(
+      InputsService,
+      DEPENDENCIES,
+    );
 
     configurationService = await module.resolve(ConfigurationService);
-    service = await module.resolve(InputsService);
-    workingDirectory = createInputTree();
-  });
-
-  afterAll(() => {
-    removeInputTree(workingDirectory);
+    service = instance;
+    workingDirectory = createInputTree(readTemporaryDirectory());
   });
 
   it("holds every file its globs claim, sorted", () => {
@@ -77,11 +76,7 @@ describe(`${InputsService.name} over a real directory`, () => {
     ).not.toContain("dist/vendor/bundled.js");
   });
 
-  // The tool this replaced applied negations in the order they were written,
-  // so the same patterns rearranged could hold a different set of files. The
-  // globs go through the real resolution rather than being partitioned here,
-  // because partitioning them in the test is the very step an order-dependent
-  // implementation would need in order to pass anyway.
+  // The tool this replaced applied negations in written order, so the same patterns rearranged could hold different files. Globs go through real resolution, since partitioning them here would hide that order dependence.
   it.each([
     ["last", ["dist/**/*.js", "dist/nested/**/*.js", "!dist/**/*.min.js"]],
     ["first", ["!dist/**/*.min.js", "dist/**/*.js", "dist/nested/**/*.js"]],

@@ -13,19 +13,14 @@ export const MARKERS = {
 /** The marker of the block that once sourced the process helper functions. */
 export const LEGACY_PROCESSES_MARKER = "# codebase: shell utility functions";
 
-/** The script that block sourced, deleted since; its line is what is removed. */
+/** Deleted script the old block sourced; its line is removed. */
 export const LEGACY_PROCESSES_SCRIPT = "scripts/shell/processes.sh";
 
 /** Exports the Node.js memory limit, matching the dev container. */
 export const NODE_OPTIONS_BLOCK =
   'export NODE_OPTIONS="--max-old-space-size=2048"';
 
-/**
- * Exports the terminal gpg-agent shows its passphrase prompt on.
- *
- * Written as the shell text it is, so the `$(tty)` is evaluated when the
- * terminal starts rather than once, here.
- */
+/** Exports the prompt terminal; shell text, so `$(tty)` runs per terminal. */
 export const GPG_TTY_BLOCK = "export GPG_TTY=$(tty)";
 
 /** Puts pnpm's global bin directory on `PATH` once. */

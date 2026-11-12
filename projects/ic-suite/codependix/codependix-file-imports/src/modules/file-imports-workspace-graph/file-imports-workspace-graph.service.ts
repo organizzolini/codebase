@@ -14,23 +14,9 @@ import type {
 } from "./file-imports-workspace-graph.types";
 
 /**
- * Builds the whole-workspace file-level import graph — every TypeScript and
- * Python project's own internal import graph, combined into one — exported
- * once at the workspace root rather than once per project.
- *
- * Combines both languages into one graph rather than two, matching how
- * `fileImports` reads as one merged concept everywhere else in codependix:
- * `boundaries.fileImports` is the only place the two still separate, because
- * a Python file can never import a TypeScript file or vice versa and the rule
- * vocabularies differ — nothing like that applies to simply drawing both
- * languages' already-built graphs on one page.
- *
- * A file name alone is only unique within its own project, unlike an Nx
- * project name, which is unique workspace-wide — so every node is qualified
- * with the project it belongs to before the two languages' graphs are
- * combined, mirroring `codependix-nx-projects`'s `WorkspaceGraphService`
- * without reusing its code, since the two build genuinely different kinds of
- * graph from genuinely different sources.
+ * Builds the whole-workspace file-level import graph, combining every TypeScript and
+ * Python project's import graph into one. Each node is qualified with its project,
+ * since a file name alone is not unique across the workspace.
  */
 @Injectable()
 export class FileImportsWorkspaceGraphService {

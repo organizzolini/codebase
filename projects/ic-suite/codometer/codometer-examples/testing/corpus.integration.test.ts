@@ -24,15 +24,7 @@ import {
  * cares about.
  */
 
-/**
- * The corpus measured once, with the package's own configuration.
- *
- * Every bare run finds that configuration, and every test below reads the same
- * report from it — so it is measured once rather than once per assertion. Each
- * spawn bootstraps Nest and reaches a Python interpreter, and eight of them
- * for one unchanging directory is the difference between a suite that is slow
- * and one that is slow enough to fail on a loaded machine.
- */
+/** The corpus, measured once, since each spawn is slow. */
 let corpusReport: CodometerReport;
 
 describe("the sample corpus and the counts its guides quote", () => {
@@ -106,11 +98,8 @@ describe("the sample corpus and the counts its guides quote", () => {
     it("measures one directory, not the compiled output beside it", () => {
       const report = corpusReport;
 
-      // The two stand-ins for build output live in `compiled/`, a sibling of
-      // the corpus, so the codebase target never sees them and only the two
-      // JavaScript samples inside the corpus are counted. What happens when
-      // they are copied into the corpus's ignored `generated/` folder is
-      // asserted in examples.integration.test.ts, under "targets".
+      // The two build-output stand-ins live in `compiled/`, beside the corpus, so only the
+      // two corpus JavaScript samples are counted. Copies into the ignored `generated/` folder are asserted in examples.integration.test.ts, under "targets".
       expect(readMetric(report, "codebase", "javascript.files")).toBe(2);
     });
 

@@ -8,18 +8,9 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of the 申 (hanzi shen) glyph — a
- * two-by-two grid of unit squares whose middle vertical stroke runs a unit
- * past its top and bottom — one per corner and clockwise rotation, each
- * counting the base template drawn that way. The base faces Southeast, drawn:
- *
- * ```text
- *  ╷
- * ┌┼┐
- * ├┼┤
- * └┼┘
- *  ╵
- * ```
+ * Provides the sixteen orientation evaluators of the 申 glyph: a two-by-two grid of unit squares
+ * with a middle stroke a unit past top and bottom. One per corner and clockwise rotation, each
+ * counting the base template drawn that way. The base faces Southeast.
  */
 @Injectable()
 export class ShenHanziLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -41,7 +32,7 @@ export class ShenHanziLetterCharacteristicsService implements CharacteristicEval
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** Upright glyph as hexadecimal Code digits, one string per row. */
   private readonly template: readonly string[] = [
     ".4.",
     "6f5",

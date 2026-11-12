@@ -48,15 +48,7 @@ export interface ResolvedMarkdownDestination {
   write: undefined | WriteMarkdownOutput;
 }
 
-/**
- * Every file one run writes.
- *
- * Two independent sinks: `json` is the report, and `markdown` is the badge
- * block spliced between two markers in a file somebody else wrote the rest
- * of. Neither says anything about standard output — that is `format`'s job
- * alone, so no destination can print a second document over the one a
- * pipeline was reading.
- */
+/** Files a run writes: `json` report, `markdown` badges; never stdout. */
 export interface RunDestinations {
   json: ResolvedJsonDestination | undefined;
   markdown: ResolvedMarkdownDestination | undefined;

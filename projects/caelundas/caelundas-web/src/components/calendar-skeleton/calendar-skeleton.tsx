@@ -18,8 +18,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The skeleton takes a class name and the view it stands in for; without a
- * view it stands in for the one the page opens on at the width it has.
+ * The view it stands in for; the default view when absent.
  */
 export interface CalendarSkeletonProperties {
   className?: string;
@@ -29,10 +28,7 @@ export interface CalendarSkeletonProperties {
 // 🧩 Component
 
 /**
- * Renders the shape of the view the page opens on, a toolbar row over that
- * view's layout: a grid of days for the month, columns of hours for the week,
- * three days or one, the agenda's list, or the timeline's bars on rows, while
- * the events database loads.
+ * Renders the shape of the view the page opens on, shown while the events load.
  */
 export function CalendarSkeleton(
   properties: Readonly<CalendarSkeletonProperties>,

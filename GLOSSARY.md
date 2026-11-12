@@ -25,25 +25,29 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **dispatch**: Orchestration step where the main session hands each parent issue or ticket to a fresh subagent with its own brief.
 - **documentation**: Folder holding the ADRs of this repository, agent configuration, guides, and generated OpenWiki pages, reached through the docs link.
 - **documenter**: Impeccable subagent that records DESIGN.md and its sidecar from a finished build, deriving the design system from the shipped artifact.
+- **execa**: Child-process library behind the testing package's end-to-end runners, which run commands with a sanitized environment, a timeout, and captured output.
 - **fold**: Coinagerie configuration hook that maps a word to its canonical headword, merging families like plurals and spelling variants.
 - **guard**: Nx code-quality target run with typecheck, lint, format, and deprecate across affected projects, in the validate-code step.
 - **ic**: Five toolchains grouped as the suite, callidescope, codependix, codometer, coinagerie, and conformetry, that measure and gate this workspace.
 - **impeccable**: Design tooling suite whose agents and skills, such as asset producer and finish reviewer, drive approved visual builds.
 - **infrastructure**: Top-level folder of deployment projects such as Helm charts and Terraform, whose words the root glossary skips.
 - **installation**: Setup process that installs the toolchain and dependencies, run by scripts/installation.sh and the installation project.
+- **ip**: Prefix of the `ip-address` package name in a `pnpm-workspace.yaml` override that raises it to a patched release for a published security advisory.
 - **lexico**: The Latin dictionary product whose web app, ingestion CLI, and entity packages live under projects/lexico.
 - **lookup**: Read-only callidescope query that traces a callable, prints its callers or callees, and never applies a depth or breadth gate.
 - **map**: Wayfinder's planning artifact for a huge effort, a graph of linked decisions that collapses into a buildable spec when cleared.
 - **meander**: Greek key or fret border motif that the meanderaw project generates as SVG from composable motif and modifier definitions.
+- **minimatch**: Glob-matching package that a `pnpm-workspace.yaml` override raises to a patched major release across the whole dependency tree.
+- **mocker**: Last segment of the `@vitest/mocker` package name in a `pnpm-workspace.yaml` override that forces its patched release.
 - **modifier**: Composable transform in meanderaw's motif library that adjusts how a Greek meander motif is drawn.
+- **multer**: Multipart upload middleware package that a `pnpm-workspace.yaml` override raises to a patched release wherever it is pulled in transitively.
 - **notepad**: Scratch SQL file, notepads/notepad.sql, that the query-sql skill writes multiline queries into rather than inline -c flags.
 - **observability**: Shared package at projects/common/observability that provides the pino-backed LoggerService and telemetry used by services.
 - **phone**: Narrowest viewport size that web layouts and published artifacts must work at, with a 16px side gutter and no horizontal scroll.
 - **probe**: Diagnostic experiment in diagnosing-bugs, which must map to a prediction and change one variable at a time.
 - **producer**: Impeccable subagent role that turns approved mock references into clean reusable raster assets without redesigning them.
 - **prompt**: A Markdown instruction file under the prompts folders or an agent brief, handed to a model to drive one repeatable task.
-- **publication**: The CLI project that runs the CI release steps and enforces the publishable-packages gate, listed in the CONTRIBUTING project table.
-- **publishable**: A package the publication gate verifies and packs for release, including every publishable ic-suite package that CI tarballs and installs.
+- **publishable**: A package the deployment gate verifies and packs for release, including every publishable ic-suite package that CI tarballs and installs.
 - **refresh**: The Refresh Documentation workflow that regenerates the repository wiki on a schedule, and the reload step after instruction changes.
 - **relationship**: The link between an agent prompt and the chat mode whose tools it inherits, which prompt instructions must mention when it applies.
 - **reviewer**: The agent role that checks a finished change against its contract and returns an ordered list of fixes, such as the impeccable finish reviewer.
@@ -52,6 +56,7 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **suite**: A set of related toolchains or tests, such as the five ic-suite toolchains callidescope, codependix, codometer, coinagerie, and conformetry.
 - **synchronization**: The synchronization project and its Nx target family, which keep VS Code settings, extensions, and devcontainer config matched to their source.
 - **typecheck**: Nx target that runs type checking per project, driven by the typecheck-code gate in validate-code and CI.
+- **undici**: HTTP client package whose two supported major lines each get a `pnpm-workspace.yaml` override to their own patched release.
 - **validation**: Workspace package and CLI, such as validation.main.ts, that checks PR bodies, branch names, and worktree names locally.
 
 <!-- coinagerie:end -->

@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { OutsideDataset } from "./outside-dataset";
 
-import type { EventsDataset } from "../events-calendar/events-database.types";
+import type { EventsDataset } from "../events-calendar/calendar-records.types";
 
 const DATASET: EventsDataset = {
   count: 2,

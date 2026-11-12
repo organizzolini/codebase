@@ -1,6 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationFileService } from "../configuration/configuration-file.service";
 import { FlagResolutionService } from "../flag-resolution/flag-resolution.service";
@@ -50,22 +51,19 @@ describe(RunPlanService, () => {
   let service: RunPlanService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        RunPlanService,
-        FlagResolutionService,
-        {
-          provide: ConfigurationFileService,
-          useValue: createMock<ConfigurationFileService>(),
-        },
-      ],
-    }).compile();
-
-    service = await module.resolve(RunPlanService);
+    ({ instance: service } = await buildTestingModule(RunPlanService, {
+      mocks: [ConfigurationFileService],
+      providers: [FlagResolutionService],
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(RunPlanService, {
+      mocks: [ConfigurationFileService],
+      providers: [FlagResolutionService],
+    });
+
+    expect(instance).toBeInstanceOf(RunPlanService);
   });
 
   // 🎛️ Reading the check set
@@ -294,11 +292,8 @@ describe(RunPlanService, () => {
         configurationFileService,
       );
 
-      // Read off the call rather than matched with `objectContaining`, which
-      // returns `any` and would cost the project its type coverage.
-      // Every flag the command accepts is handed over, absent ones included:
-      // the resolver is the one place a flag meets the field it overrides, so
-      // a flag withheld here is a flag that silently does nothing.
+      // Read off the call, since `objectContaining` returns `any` and would cost type coverage.
+      // Every flag is handed over, absent ones included, because a withheld flag silently does nothing.
       expect(resolveRunFlags.mock.calls[0]?.[0].flags).toStrictEqual({
         check: "depth,reports",
         directories: undefined,

@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { buildCodeStatistics } from "../../../testing/mocks";
 
@@ -11,6 +12,7 @@ import type {
   MeasuredTarget,
   TargetMetricIndex,
 } from "./limits.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type {
   ResolvedCodometerConfiguration,
   ResolvedCodometerLimit,
@@ -19,7 +21,7 @@ import type { CodometerSeverity } from "@codometer/core";
 
 const zeroes = buildCodeStatistics();
 
-/** The repository's own metrics, with a counter in every shape a limit reads. */
+/** The repository's metrics, with a counter in every limit shape. */
 const codebaseTarget: MeasuredTarget = {
   files: 12,
   language: buildCodeStatistics({
@@ -74,6 +76,11 @@ function buildLimit(
   return { label: undefined, metric, severity, value };
 }
 
+/** What the LimitsService is built with. */
+const DEPENDENCIES = {
+  providers: [MetricIndexService],
+} satisfies TestingModuleOptions;
+
 describe(LimitsService, () => {
   let service: LimitsService;
   let metricIndexService: MetricIndexService;
@@ -98,16 +105,19 @@ describe(LimitsService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [LimitsService, MetricIndexService],
-    }).compile();
+    const { instance, module } = await buildTestingModule(
+      LimitsService,
+      DEPENDENCIES,
+    );
 
-    service = await module.resolve(LimitsService);
+    service = instance;
     metricIndexService = await module.resolve(MetricIndexService);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LimitsService, DEPENDENCIES);
+
+    expect(instance).toBeInstanceOf(LimitsService);
   });
 
   it.each([

@@ -14,10 +14,7 @@ import type { GlyphPart } from "./calendar-icons.types";
 // 🌎 Public Functions
 
 /**
- * Splits an event's symbols into the icons that stand for them and the text
- * of what has no icon, one icon for each symbol and in the symbols' order, so
- * that icons run together as the emoji do. An event named in
- * `FILE_BY_EVENT_NAME` whose symbols are one symbol is that icon alone.
+ * Splits an event's symbols into icons, one per symbol in order, and text for what has no icon.
  */
 export function toGlyphParts(glyphs: string, name = ""): GlyphPart[] {
   const chars = toCharacters(glyphs);
@@ -61,8 +58,7 @@ function appendSymbol(
 }
 
 /**
- * Adds text to the parts: a variation selector rides with the text before
- * it and is lost after an icon, and any other text joins the text before it.
+ * Adds text to the parts, joining the text before it; a variation selector is lost after an icon.
  */
 function appendText(parts: GlyphPart[], text: string): void {
   const last = parts.at(-1);
@@ -75,8 +71,7 @@ function appendText(parts: GlyphPart[], text: string): void {
 }
 
 /**
- * The files the symbol at an index is drawn with, and how many characters
- * it takes: a decan's digit with its keycap, or one character.
+ * The files a symbol at an index is drawn with, and how many characters it takes.
  */
 function findSymbolFiles(
   chars: readonly string[],
@@ -121,9 +116,7 @@ function readNamedIcon(
 }
 
 /**
- * Reads the symbol at an index: the icons it is drawn as and how many
- * characters it takes, or `undefined` when it has no icon, or one that is not
- * among the files. A decan's digit takes its keycap with it.
+ * Reads the symbol at an index: its icons and character count, or `undefined` when it has no icon among the files.
  */
 function readSymbol(
   chars: readonly string[],

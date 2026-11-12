@@ -21,10 +21,7 @@ import type { ReactNode } from "react";
 
 // 🧭 Route
 
-/**
- * Searches the dictionary in Latin and English at once, showing the lexemes a
- * query matched, best first.
- */
+/** Searches Latin and English at once, best match first. */
 export const Route = createFileRoute("/search")({
   component: SearchPage,
   errorComponent: SearchError,

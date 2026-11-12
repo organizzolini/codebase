@@ -14,17 +14,7 @@ import type { CodometerDocumentationUnit } from "@codometer/configuration";
 
 /* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
- * Measures comments against the maxima a configuration declares.
- *
- * Everything here is language-agnostic: it takes comments somebody else
- * already found and says how long they are. What counts as a comment differs
- * per language and lives with the reader that knows — `HashCommentsService`
- * for the `#` languages, `YamlCommentsService` for YAML's tokenizer, and the
- * TypeScript walk for a JSDoc block.
- *
- * That split is what keeps one definition of a word, a line, and a character
- * across every language, rather than four analyzers each counting slightly
- * differently.
+ * Measures comments against the maxima a configuration declares. Language-agnostic: it takes comments already found and says how long they are. One definition of a word, line, and character across every language.
  */
 @Injectable()
 /* v8 ignore stop */
@@ -40,26 +30,9 @@ export class CommentsService {
   // 🔏 Private Methods
 
   /**
-   * Counts the words in a comment's prose, markers already stripped.
-   *
-   * Splitting a trimmed string on whitespace runs never yields an empty
-   * token, so the empty case is the only one worth guarding — and guarding it
-   * rather than filtering keeps a callback frame off the deepest stack this
-   * package owns.
-   */
-  private countWords(prose: string): number {
-    const trimmed = prose.trim();
-
-    return trimmed === "" ? 0 : trimmed.split(/\s+/u).length;
-  }
-
-  /**
    * Every declared maximum, paired with what this comment measured.
    *
-   * Written as three guarded pushes rather than a table walked by `flatMap`,
-   * because the callback would be one more frame on the deepest stack this
-   * package owns — the JSDoc walk reaches here through eleven of them, and
-   * `callidescope.config.ts` gates that at what it measures.
+   * Three guarded pushes, not `flatMap`, to keep a frame off the deepest stack.
    */
   private declaredLimits(
     args: { prose: string; source: string },
@@ -88,9 +61,11 @@ export class CommentsService {
     }
 
     if (comments.maximumWords !== undefined) {
+      const trimmed = args.prose.trim();
+
       declared.push({
         limit: comments.maximumWords,
-        measured: this.countWords(args.prose),
+        measured: trimmed === "" ? 0 : trimmed.split(/\s+/u).length,
         unit: "words",
       });
     }
@@ -121,12 +96,7 @@ export class CommentsService {
   // 🌎 Public Methods
 
   /**
-   * Groups a file's comment lines into the blocks a reader perceives.
-   *
-   * A trailing comment never joins anything — it sits after a value and is
-   * read with that value, not with the prose above it — and neither does a
-   * comment separated from the previous one by a blank line, which is how a
-   * writer marks the end of a thought.
+   * Groups a file's comment lines into the blocks a reader perceives. Trailing comments and blank-line-separated ones never join.
    */
   groupIntoBlocks(tokens: readonly CommentToken[]): CommentBlock[] {
     const blocks: CommentBlock[] = [];
@@ -153,13 +123,7 @@ export class CommentsService {
   }
 
   /**
-   * Measures every block a file's comment tokens form, breached or not.
-   *
-   * Every block is reported rather than only the breaches, so a length is
-   * visible in the JSON report before it ever becomes a problem — the same
-   * bargain the TypeScript declaration-comment measurement makes. A block is
-   * reported once per declared maximum, because the maxima are not
-   * alternatives: one can hold while another breaks.
+   * Measures every block in a file, breached or not, so lengths show before they become problems. One result per maximum.
    */
   measure(args: MeasureCommentsArguments): CommentMeasurement[] {
     return this.groupIntoBlocks(args.tokens).flatMap((block) => {
@@ -178,11 +142,7 @@ export class CommentsService {
   }
 
   /**
-   * Measures one comment's text against every maximum declared for it.
-   *
-   * The seam a JSDoc block enters through: it is one comment already, found by
-   * the TypeScript walk rather than grouped from lines, so it needs the
-   * counting and none of the grouping.
+   * Measures one comment's text against every declared maximum. A JSDoc block enters here, already found by the TypeScript walk.
    */
   measureText(args: MeasureCommentTextArguments): CommentMeasurement[] {
     return this.declaredLimits(args, args.comments).map(

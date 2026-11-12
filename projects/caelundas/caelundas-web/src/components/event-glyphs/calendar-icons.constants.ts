@@ -1,8 +1,7 @@
 // ♟️ Constants
 
 /**
- * The icon file of each symbol an ingested event's name is written with,
- * keyed by its code point alone, without a variation selector.
+ * Icon file for each symbol, keyed without variation selectors.
  */
 export const FILE_BY_SYMBOL: Readonly<Record<string, string>> = {
   // Bodies
@@ -113,9 +112,7 @@ export const FILE_BY_SYMBOL: Readonly<Record<string, string>> = {
 };
 
 /**
- * The symbols drawn as more than one icon: the moon at its farthest and its
- * nearest, which are the moon with the apsis beside it, and the dragon of an
- * eclipse, which is the lunar nodes, its head and its tail.
+ * Symbols drawn as two icons: moon extremes and the dragon.
  */
 export const FILES_BY_COMPOSITE_SYMBOL: Readonly<
   Record<string, readonly string[]>
@@ -126,8 +123,7 @@ export const FILES_BY_COMPOSITE_SYMBOL: Readonly<
 };
 
 /**
- * The icons of a decan's number, which an ingress into the decan writes as
- * a keycap: the digit, then the keycap.
+ * Decan icons, keyed by the keycap digit an ingress writes.
  */
 export const FILE_BY_DECAN: Readonly<Record<string, string>> = {
   "1": "ingress-first-decan-icon.svg",
@@ -136,10 +132,7 @@ export const FILE_BY_DECAN: Readonly<Record<string, string>> = {
 };
 
 /**
- * The icon of an event that is nothing but its one symbol, by its name, where
- * the symbol alone is shared with another event: the day, the night, each of the
- * of the hexadecans, whose emoji are a season's, and the dawns, dusks and
- * twilights, whose emoji the inner planets' phases and the daily cycle share.
+ * Icons keyed by event name, where a symbol is shared.
  */
 export const FILE_BY_EVENT_NAME: Readonly<Record<string, string>> = {
   "Astronomical Dawn": "astronomical-dawn-icon.svg",
@@ -169,9 +162,7 @@ export const FILE_BY_EVENT_NAME: Readonly<Record<string, string>> = {
 export const KEYCAP = "\u20E3";
 
 /**
- * The icons of the arrows that open an aspect's name: forming and
- * dissolving. Elsewhere the same arrows mean east and west, which draw the
- * elongation's own.
+ * Arrow icons opening an aspect name: forming or dissolving.
  */
 export const FILE_BY_LEADING_SYMBOL: Readonly<Record<string, string>> = {
   "➡": "waxing-icon.png",
@@ -192,7 +183,6 @@ export const URL_BY_FILE: Readonly<Record<string, string>> = Object.fromEntries(
 );
 
 /**
- * The variation selectors that ask for a text or an emoji look; an icon is
- * the same for either.
+ * Variation selectors for text or emoji looks; icons ignore them.
  */
 export const VARIATION_SELECTORS = new Set(["\uFE0E", "\uFE0F"]);

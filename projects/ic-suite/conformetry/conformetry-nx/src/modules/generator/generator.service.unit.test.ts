@@ -1,9 +1,13 @@
-import { mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import {
+  createTemporaryDirectory,
+  useTemporaryDirectory,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { GeneratorModule } from "./generator.module";
 import { GeneratorService } from "./generator.service";
@@ -11,10 +15,7 @@ import { GeneratorService } from "./generator.service";
 import type { EmittedFile } from "./generator.types";
 
 /** Writes a config declaring one generator with one input. */
-async function createConfigurationPath(): Promise<string> {
-  const workspaceRoot = await mkdtemp(
-    path.join(tmpdir(), "conformetry-nx-generator-"),
-  );
+async function createConfigurationPath(workspaceRoot: string): Promise<string> {
   const configurationPath = path.join(workspaceRoot, "conformetry.config.json");
 
   await writeFile(
@@ -65,25 +66,29 @@ function parseEmittedJson(
 }
 
 describe(GeneratorService, () => {
+  const readWorkspaceRoot = useTemporaryDirectory("nx-generator");
   let files: EmittedFile[];
   let service: GeneratorService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(GeneratorService, {
       imports: [GeneratorModule],
-      providers: [GeneratorService],
-    }).compile();
+    });
 
-    service = await module.resolve(GeneratorService);
+    service = built.instance;
     files = await service.emitPlugin({
-      configurationPath: await createConfigurationPath(),
+      configurationPath: await createConfigurationPath(readWorkspaceRoot()),
       outputPath: "tools/generators",
       packageName: "@scope/generators",
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(GeneratorService, {
+      imports: [GeneratorModule],
+    });
+
+    expect(instance).toBeInstanceOf(GeneratorService);
   });
 
   describe("emitPlugin", () => {
@@ -158,7 +163,11 @@ describe(GeneratorService, () => {
 
     it("offers only the projects a tagged group selects", async () => {
       const scopedPath = path.join(
-        path.dirname(await createConfigurationPath()),
+        path.dirname(
+          await createConfigurationPath(
+            createTemporaryDirectory("nx-generator"),
+          ),
+        ),
         "scoped.config.json",
       );
 
@@ -214,7 +223,9 @@ describe(GeneratorService, () => {
     });
 
     it("emits the same bytes for the same configuration", async () => {
-      const configurationPath = await createConfigurationPath();
+      const configurationPath = await createConfigurationPath(
+        createTemporaryDirectory("nx-generator"),
+      );
 
       await expect(
         service.emitPlugin({

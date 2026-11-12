@@ -27,12 +27,11 @@ import type {
 } from "@callidescope/core";
 
 /**
- * Turns every callable's body into edges in the call graph.
+ * Turns every callable's body into call-graph edges.
  *
- * Only calls landing on traced code become edges. A call into a dependency is a
- * leaf: whether `Array.prototype.map` is deeply implemented is not a fact about
- * whether this repository's layering is too deep, and counting it would make
- * every reported number move on an unrelated upgrade.
+ * Only calls to traced code become edges. A call into a dependency is a leaf,
+ * since counting its depth would move every reported number on an unrelated
+ * upgrade.
  */
 @Injectable()
 export class EdgesService {
@@ -152,12 +151,8 @@ export class EdgesService {
   }
 
   /**
-   * Whether a callee's own display name matches a configured exclusion glob.
-   *
-   * Matched against `Type.member` rather than against a path: a
-   * cross-cutting callable like a logger
-   * has no single file worth naming, but every one of its call sites shares
-   * the same display name.
+   * Whether a callee's display name matches an exclusion glob. Matched as
+   * `Type.member`, not a path, since cross-cutting callables have no single file.
    */
   private isExcludedCallee(args: {
     callablesById: ReadonlyMap<CallableId, DiscoveredCallable>;
@@ -193,11 +188,8 @@ export class EdgesService {
   }
 
   /**
-   * Maps a resolved declaration to the callable it belongs to.
-   *
-   * A resolution can land on a property or variable declaration whose
-   * initializer is the real function, which is how this repository writes both
-   * arrow-typed class members and object-literal methods.
+   * Maps a resolved declaration to its callable. A resolution can land on a
+   * property whose initializer is the real function.
    */
   private resolveCallableId(args: {
     callablesById: ReadonlyMap<CallableId, DiscoveredCallable>;

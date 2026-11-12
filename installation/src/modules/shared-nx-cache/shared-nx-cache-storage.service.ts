@@ -21,13 +21,10 @@ import type {
 } from "./shared-nx-cache.types";
 
 /**
- * Keeps one file per task hash in a directory, and trims the directory.
+ * Keeps one file per task hash in a directory, and trims that directory.
  *
- * - Never overwrites: a hash that exists is left as it is.
- * - Never exposes a partial file: an upload goes to a temporary file in the
- *   same directory and is hard-linked into place once it is complete.
- * - A read marks the entry as used, so eviction by age and size keeps what is
- *   still being asked for.
+ * Never overwrites an existing hash. Uploads go to a temporary file that is hard-linked into place
+ * once complete, so a partial file is never exposed. A read marks the entry as used for eviction.
  */
 @Injectable()
 export class SharedNxCacheStorageService {
@@ -43,9 +40,7 @@ export class SharedNxCacheStorageService {
 
   /**
    * Removes an upload's temporary file once its write stream has closed.
-   *
-   * A stream destroyed before its file opened still creates the file, so
-   * removing it first can leave the temporary behind.
+   * Removing it earlier can leave the file behind.
    */
   private async discard(
     sink: fs.WriteStream,
@@ -61,11 +56,8 @@ export class SharedNxCacheStorageService {
   }
 
   /**
-   * Maps a failed upload to its outcome, or rethrows what is not one.
-   *
-   * A link that finds the entry already there lost the race to another upload
-   * of the same hash, and a body of the wrong length is the caller's to
-   * answer; anything else is a fault.
+   * Maps a failed upload to its outcome; rethrows any other fault.
+   * A link onto an existing entry lost a race.
    */
   private explainFailure(error: unknown, lengthMatches: boolean): WriteOutcome {
     if (error instanceof Error && "code" in error && error.code === "EEXIST") {
@@ -197,9 +189,7 @@ export class SharedNxCacheStorageService {
 
   /**
    * Stores a body of `length` bytes under `hash`.
-   *
-   * A body that is shorter or longer than `length` is discarded, and so is an
-   * upload that loses the race to another upload of the same hash.
+   * A wrong-length body, or one that loses a race, is dropped.
    */
   public async write(upload: Upload): Promise<WriteOutcome> {
     const { body, directory, hash, length } = upload;

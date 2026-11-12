@@ -1,36 +1,17 @@
-# Dependabot owns per-package version bumps for the npm workspace, the uv
-# Python workspace, GitHub Actions pins (workflows and composite actions),
-# the Terraform provider, devcontainer feature versions, and the devcontainer
-# base image. Each is its own entry below.
+# Dependabot bumps the npm and uv workspaces, GitHub Actions pins, Terraform providers,
+# and devcontainer features. Each is its own entry below.
 #
-# One pull request per dependency, or per group below, is what fixes the
-# actual failure mode this replaces: `pnpm update --latest --recursive`
-# bumped every dependency in one commit gated behind the full lint-codebase
-# pre-commit hook, so one breaking major anywhere silently blocked every
-# other update — eslint-plugin-unicorn did exactly that for sixteen weeks
-# (2026-05-31 through 2026-09-11). Isolating each update into its own pull
-# request means a breaking major fails that pull request's own checks,
-# visibly, instead of taking every other update down with it.
+# One pull request per dependency, or per group, keeps one breaking major from blocking
+# every other update, unlike a single `pnpm update` commit.
 
-# continuous-compliance.yml still checks dependabot's labels and release
-# significance, but exempts its pull request title and body (and the commit
-# subject the title becomes): there is no dependabot.yml field for body
-# content, and none that shortens the title's generated tail — "in <directory>
-# in the <group> group across N directories" — past commitlint's 128-character
-# header limit. Every entry below therefore carries the `type:`, `scope:`, and `source:agent` labels its
-# commit-message prefix implies, statically, since nothing derives them for
-# a pull request Dependabot itself opens. `type:chore` matches this
-# repository's own existing `chore(dependencies): ⬆️ upgrade` convention for
-# routine version bumps: `release.config.cjs` maps `chore` to no release
-# significance, so these pull requests don't trigger a version bump on
-# their own.
+# continuous-compliance.yml checks Dependabot's labels and release significance
+# but exempts its title and body: the generated title tail overflows commitlint's
+# 128-character limit, and no field here shortens it. Entries set labels statically,
+# and `chore` carries no release significance, so no version bump follows.
 
-# The `commit-message.prefix` on every entry makes the generated commit and
-# pull request title read like this repository's own `<type>(<scope>):
-# <gitmoji> <subject>` convention, so the labels and release significance
-# derive correctly. The generated subject itself ("Bump x from y to z") keeps
-# Dependabot's own wording and capitalization; there is no field that
-# reshapes that part, but commitlint's `subject-case` rule accepts it as is.
+# The `commit-message.prefix` on every entry makes generated titles follow this
+# repository's `<type>(<scope>): <gitmoji> <subject>` convention, so labels and
+# release significance derive correctly.
 version: 2
 updates:
   - package-ecosystem: npm
@@ -62,11 +43,9 @@ updates:
           - minor
           - patch
     ignore:
-      # typescript 7 is the native compiler: its entrypoint exports only a
-      # version string, so the JavaScript compiler API nx, typescript-eslint,
-      # knip, and type-coverage all read is gone. Crossing that major is a
-      # deliberate migration, never an unattended bump — see project.json's
-      # upgrade-dependencies target for the fuller history of this hold.
+      # typescript 7 is native and exports only a version string, so the JavaScript
+      # compiler API that nx, typescript-eslint, knip, and type-coverage use is gone.
+      # Crossing that major is a deliberate migration, never an unattended bump.
       - dependency-name: typescript
         update-types: [version-update:semver-major]
       # eslint-plugin-unicorn v68 renamed `prevent-abbreviations` to
@@ -77,19 +56,12 @@ updates:
       - dependency-name: eslint-plugin-unicorn
         update-types: [version-update:semver-major]
 
-  # One lockfile covers every uv workspace member
-  # (configuration plus projects/affirmancy), so a single entry
-  # rooted at configuration reaches both.
+  # One lockfile covers every uv workspace member.
   #
-  # This ecosystem is newer than the npm one above, and its workspace
-  # handling has an open upstream bug (dependabot/dependabot-core#14004:
-  # Dependabot trying to update the workspace itself rather than a
-  # dependency in it) that matches this repository's exact shape — one
-  # shared lockfile, multiple pyproject.toml members. Treat the first few
-  # pull requests this opens as a trial, not a proven mechanism: if it
-  # misbehaves, .github/workflows/upgrade-dependencies.yml's own
-  # `uv lock --upgrade` step is the fallback, kept running weekly rather
-  # than removed, until this entry has proven itself.
+  # Dependabot's uv support is newer and has an open upstream bug
+  # (dependabot-core#14004) matching this shape. Treat the first pull requests as
+  # a trial. If it misbehaves, the weekly `uv lock --upgrade` in
+  # upgrade-dependencies.yml is the fallback.
   - package-ecosystem: uv
     directory: /configuration
     schedule:

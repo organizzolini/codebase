@@ -1,18 +1,16 @@
 #!/bin/bash
 #
-# Stop whatever is listening on a TCP port. Succeeds when nothing is.
+# Stops whatever listens on a TCP port.
 #
 # Usage: stop-port.sh --port <port> [--timeout <seconds>]
 #
-#   --port     TCP port to free. Required.
-#   --timeout  Seconds to wait after SIGTERM before sending SIGKILL. Default 10.
+#   --port     Port to free. Required.
+#   --timeout  Seconds after SIGTERM before SIGKILL. Default 10.
 #
-# Only listeners are stopped, never clients connected to the port, so a browser
-# tab open on a dev server survives the dev server stopping. A listener run
-# under `node --watch` is a child of that watcher, which would otherwise outlive
-# it and restart the server on the next file change, so the watcher is stopped too.
+# Only listeners stop, never clients, so open browser tabs survive.
+# A `node --watch` parent stops too.
 #
-# An empty value counts as unset, so a caller can forward optional flags unconditionally.
+# Empty values count as unset.
 
 set -euo pipefail
 

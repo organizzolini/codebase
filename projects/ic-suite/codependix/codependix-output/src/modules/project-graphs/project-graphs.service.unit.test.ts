@@ -1,5 +1,4 @@
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { ConfigurationService } from "@codependix/configuration";
@@ -10,8 +9,10 @@ import {
 } from "@codependix/nestjs-modules";
 import { NeighborhoodService } from "@codependix/nx-projects";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AnchorsService } from "../anchors/anchors.service";
 import { DeliveryService } from "../delivery/delivery.service";
@@ -61,10 +62,7 @@ describe(ProjectGraphsService, () => {
   let projectRoot: string;
 
   /**
-   * Builds a `GraphRunContext` a test can override selected fields of.
-   *
-   * `selectedProjects` follows `projects` unless a test overrides it, which
-   * is what a run naming no `--projects`/`--tags` selection resolves to.
+   * Builds a `GraphRunContext` a test can override, with `selectedProjects` following `projects`.
    */
   function buildContext(
     overrides: Partial<GraphRunContext> = {},
@@ -110,10 +108,9 @@ describe(ProjectGraphsService, () => {
     nestjsProjectService = createMock<NestjsProjectService>();
     typescriptService = createMock<TypescriptService>();
 
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(ProjectGraphsService, {
       providers: [
         AnchorsService,
-        ProjectGraphsService,
         DeliveryService,
         {
           provide: ConfigurationService,
@@ -124,13 +121,11 @@ describe(ProjectGraphsService, () => {
         { provide: NestjsProjectService, useValue: nestjsProjectService },
         { provide: TypescriptService, useValue: typescriptService },
       ],
-    }).compile();
-
-    service = await module.resolve(ProjectGraphsService);
+    }));
   });
 
-  beforeEach(async () => {
-    projectRoot = await mkdtemp(path.join(tmpdir(), "project-graphs-service-"));
+  beforeEach(() => {
+    projectRoot = createTemporaryDirectory("project-graphs-service");
 
     vi.mocked(neighborhoodService.renderMermaid).mockReturnValue(
       "```mermaid\ngraph LR\n```",
@@ -166,8 +161,23 @@ describe(ProjectGraphsService, () => {
     );
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ProjectGraphsService, {
+      providers: [
+        AnchorsService,
+        DeliveryService,
+        {
+          provide: ConfigurationService,
+          useValue: configurationService,
+        },
+        { provide: ModuleGraphService, useValue: moduleGraphService },
+        { provide: NeighborhoodService, useValue: neighborhoodService },
+        { provide: NestjsProjectService, useValue: nestjsProjectService },
+        { provide: TypescriptService, useValue: typescriptService },
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(ProjectGraphsService);
   });
 
   describe("runNxProjectsGraphs", () => {
@@ -295,9 +305,7 @@ describe(ProjectGraphsService, () => {
 
       await mkdir(otherProjectRoot, { recursive: true });
       // No README.md is written for `codependix-nx`'s root here, on purpose:
-      // a missing anchor in a file that exists now auto-creates the section
-      // rather than failing, so the file itself must be absent to still
-      // exercise a hard failure — see `AnchorNotFoundError`'s updated JSDoc.
+      // writing creates an absent file, so only a check still fails on one.
       const twoNeighborhoods = new Map([
         ["codependix-nx", NEIGHBORHOOD],
         ["other-project", { ...NEIGHBORHOOD, projectName: "other-project" }],
@@ -320,6 +328,7 @@ describe(ProjectGraphsService, () => {
 
       const outcome = service.runNxProjectsGraphs({
         context: buildContext({
+          mode: "check",
           projects: [
             { absoluteRoot: projectRoot, name: "codependix-nx", tags: [] },
             { absoluteRoot: otherProjectRoot, name: "other-project", tags: [] },
@@ -336,21 +345,18 @@ describe(ProjectGraphsService, () => {
       ]);
       expect(outcome.results).toStrictEqual([
         {
-          isCurrent: true,
+          isCurrent: false,
           projectName: "other-project",
-          staleExports: [],
-          stalePaths: [],
+          staleExports: [
+            {
+              anchor: undefined,
+              difference: "graph",
+              path: "other-project.json",
+            },
+          ],
+          stalePaths: ["other-project.json"],
         },
       ]);
-
-      const written = JSON.parse(
-        await readFile(
-          path.join(otherProjectRoot, "other-project.json"),
-          "utf8",
-        ),
-      ) as unknown;
-
-      expect(written).toMatchObject({ projectName: "other-project" });
     });
   });
 

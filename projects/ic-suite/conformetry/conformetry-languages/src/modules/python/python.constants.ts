@@ -2,21 +2,10 @@
 
 import type { LanguageValidatorDescriptor } from "@conformetry/core";
 
-/**
- * Weight assumed for a bridge finding that declares none.
- *
- * Right for any leaf requirement, and the only safe assumption for a payload
- * that crossed a process boundary without one.
- */
+/** Weight for a bridge finding that declares none. */
 export const DEFAULT_BRIDGE_WEIGHT = 1;
 
-/**
- * Extensions the Python validator claims.
- *
- * Notebooks are deliberately absent — `.ipynb` is a JSON envelope containing
- * markdown and code cells, so the Jupyter module owns it and calls back into
- * this module for the code cells alone.
- */
+/** Extensions the Python validator claims; notebooks are absent. */
 export const PYTHON_VALIDATOR_FILE_EXTENSIONS = [".py"];
 
 /** Identifies the Python language to the orchestrator and the `--languages` filter. */

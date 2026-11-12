@@ -29,9 +29,7 @@ export interface LexemeCardProperties {
 // 🧩 Component
 
 /**
- * One dictionary entry: its principal parts and inflection, how it is
- * pronounced, what it means, where it comes from, and its declension or
- * conjugation. When the search matched an inflected form, it also says which.
+ * One dictionary entry: its parts, inflection, pronunciation, meaning, and origin, plus the matched inflected form, if any.
  */
 export function LexemeCard(
   properties: Readonly<LexemeCardProperties>,

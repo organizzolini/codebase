@@ -17,11 +17,10 @@ import {
 import type { ServerOptions } from "./shared-nx-cache.types";
 
 /**
- * CLI command that runs Nx's self-hosted remote cache on this machine, so
- * every git worktree shares the task outputs any of them produced.
+ * CLI command that runs Nx's self-hosted remote cache, so every git worktree shares task outputs.
  *
- * Runs in the foreground until SIGINT or SIGTERM, then closes the server.
- * Listens on 127.0.0.1 only. Keeping it running in the background is the calling shell's job.
+ * Runs in the foreground until SIGINT or SIGTERM, then closes the server. Listens on 127.0.0.1 only.
+ * Running it in the background is the calling shell's job.
  */
 @Command({
   description:

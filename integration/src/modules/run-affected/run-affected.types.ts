@@ -20,7 +20,7 @@ export interface RunAffectedInputs {
 /** Either the runs to make or the reason there is none. */
 export type RunAffectedOutcome = RunAffectedFailure | RunAffectedPlan;
 
-/** `nx affected` can run: the arguments to give `pnpm` for each run, in order. */
+/** `pnpm` arguments for each `nx affected` run, in order. */
 export interface RunAffectedPlan {
   kind: "run";
   /** One argument list per run, each beginning `exec nx affected`. */

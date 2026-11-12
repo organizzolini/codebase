@@ -23,10 +23,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/**
- * The sidebar reads the open page from the router and its state from the
- * surrounding `SidebarProvider`, so it takes nothing else.
- */
+/** Reads the open page and state from router and `SidebarProvider`. */
 export interface ApplicationSidebarProperties {
   className?: string;
 }
@@ -34,9 +31,7 @@ export interface ApplicationSidebarProperties {
 // 🧩 Component
 
 /**
- * Application sidebar: a rail that collapses to icons, with the brand in the
- * header, navigation in a labelled group, and the collapse toggle in the
- * footer, so the page needs no bar of its own.
+ * Collapsible rail with the brand in its header, labelled navigation, and a collapse toggle in its footer.
  */
 export function ApplicationSidebar(
   properties: Readonly<ApplicationSidebarProperties>,

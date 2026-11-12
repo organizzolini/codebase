@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment, { type Moment } from "moment-timezone";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectEphemerisService } from "../aspects/aspect-ephemeris.service";
 import { AspectsUtilitiesService } from "../aspects/aspects-utilities.service";
@@ -51,19 +50,11 @@ import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
  *   - Dissolving: current inside orb, next outside orb
  */
 
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
-
 let service: MajorAspectsService;
 
 /**
- * Builds a CoordinateEphemeris record for all majorAspectBodies across three timestamps.
- *
- * Every body defaults to longitude 100° so the baseline produces no aspect events.
- * Pass `overrides` to set different longitudes for specific bodies at each timestamp.
+ * Builds a `CoordinateEphemeris` for the major bodies across three minutes;
+ * each body defaults to 100° so no aspect forms.
  */
 function createAspectEphemeris(
   minute: Moment,
@@ -97,11 +88,9 @@ function createAspectEphemeris(
 
 describe("major-aspects.events integration", () => {
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const { instance } = await buildTestingModule(MajorAspectsService, {
       imports: [EphemerisModule],
       providers: [
-        LoggerService,
-        MajorAspectsService,
         MajorAspectEventService,
         MajorAspectProgressiveService,
         AspectEphemerisService,
@@ -110,8 +99,8 @@ describe("major-aspects.events integration", () => {
         ProgressiveAspectService,
         ProgressiveUtilitiesService,
       ],
-    }).compile();
-    service = await module.resolve(MajorAspectsService);
+    });
+    service = instance;
   });
 
   const minute = moment.utc("2024-03-21T12:00:00.000Z");

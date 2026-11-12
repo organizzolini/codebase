@@ -16,13 +16,10 @@ import type {
 import type { GraphRunOutcome } from "@codependix/core";
 
 /**
- * Logs what `MapCommand`'s passes found, and decides whether each pass
- * should fail the run.
+ * Logs what `MapCommand`'s passes found, and decides whether each pass should fail the run.
  *
- * Split out of `MapCommand` purely to keep that file under this
- * repository's per-file line limit: reporting a pass's own findings is a
- * concern of its own, separate from resolving the command line into a mode
- * and orchestrating the passes themselves.
+ * Split out of `MapCommand` to keep that file under the per-file line limit.
+ * Command-line parsing and pass orchestration stay there.
  */
 @Injectable()
 export class ReportingService {
@@ -58,9 +55,8 @@ export class ReportingService {
   }
 
   /**
-   * Warns about every finding charged only to a dependency of the judged
-   * projects. Reported rather than dropped — the judged projects are built on
-   * it — but never failing a run that named a different project.
+   * Warns about findings charged only to a dependency of the judged projects. They are reported,
+   * never failing the run.
    */
   private reportBoundaryNotes(notes: BoundaryCheckOutcome): void {
     if (notes.failures.length === 0 && notes.violations.length === 0) return;
@@ -81,17 +77,8 @@ export class ReportingService {
   // 🌎 Public Methods
 
   /**
-   * Logs a boundary pass's violations and failures, and reports whether the
-   * run as a whole should fail — which it does only for a finding charged to
-   * a project the run judges.
-   *
-   * Violations go to the console and the exit code and nowhere else: a list of
-   * things currently wrong is not a document worth publishing on the default
-   * branch, and not one worth checking for staleness either.
-   *
-   * `judgedProjects` lets a failure charged to every one of them be counted
-   * rather than listed. A note never is: its charge is the dependency it
-   * lives in.
+   * Logs a boundary pass's findings and reports whether the run should fail. Only a finding
+   * charged to a judged project fails it.
    */
   reportBoundaries(
     outcome: BoundaryCheckOutcome,
@@ -123,13 +110,8 @@ export class ReportingService {
   }
 
   /**
-   * Warns when nothing in the configuration selects a single project.
-   *
-   * `include` defaults to nothing, so a configuration naming only `defaults`
-   * exports for no project at all — a run that writes nothing and still exits
-   * zero. Nothing else catches it: `--check boundaries` judges every project
-   * regardless of `include`, so a workspace whose exports have gone silent
-   * still has a green gate.
+   * Warns when no project is selected. `include` defaults to nothing, so the run would write
+   * nothing and still exit zero.
    */
   reportEmptySelection(projectCount: number): void {
     if (projectCount > 0) return;
@@ -140,13 +122,8 @@ export class ReportingService {
   }
 
   /**
-   * Logs why a run ended before it started, and fails it.
-   *
-   * A command line the input service refused — two modes named, none named
-   * with no terminal to ask at, or a question walked away from — is reported
-   * as a rejected command line rather than as a crash. Nothing was
-   * attempted, and the reader's next move is to retype the flags, not to
-   * read a stack trace.
+   * Logs why a run ended before it started, and fails it. A rejected command line is reported as
+   * such, not as a crash.
    */
   reportFailure(error: unknown): void {
     this.logger.error(
@@ -161,12 +138,8 @@ export class ReportingService {
   }
 
   /**
-   * Logs an outcome's failures and stale exports, and reports whether the run
-   * as a whole should fail.
-   *
-   * Both are reported together rather than the first one short-circuiting the
-   * other, since `GraphRunService.run` already attempted every project
-   * regardless of an earlier one's failure.
+   * Logs an outcome's failures and stale exports, and reports whether the run should fail. Both
+   * are reported, not short-circuited.
    */
   reportOutcome(outcome: GraphRunOutcome): boolean {
     const staleResults = outcome.results.filter((result) => !result.isCurrent);
@@ -207,11 +180,7 @@ export class ReportingService {
   }
 
   /**
-   * Weighs what each pass that ran found, reporting neither over the other.
-   *
-   * Both are weighed independently rather than the first failure
-   * short-circuiting the second: a run gating both should report both, not
-   * only the one that happened to run first. `selectedProjects` are the
+   * Weighs what each pass found, reporting neither over the other. `selectedProjects` are the
    * projects the boundary pass judged.
    */
   reportPassOutcomes(args: {
@@ -251,13 +220,8 @@ export class ReportingService {
   }
 
   /**
-   * Warns about every `--projects` pattern and `--tags` tag that matched no
-   * project, when the rest of the selection matched at least one.
-   *
-   * A selection in which nothing matched never reaches here — the run is
-   * refused before it starts. This is the partial case: a typo beside a
-   * correct name, which the run narrows past, judging fewer projects than
-   * were named. Never failing, since what did match was still judged.
+   * Warns about `--projects` patterns and `--tags` tags that matched no project. The run still
+   * judges what did match, so this never fails.
    */
   reportUnmatchedSelection(unmatched: UnmatchedSelection): void {
     if (unmatched.projects.length + unmatched.tags.length === 0) return;

@@ -14,7 +14,7 @@ export interface DocumentMarkers {
   start: string;
 }
 
-/** Arguments for wrapping a rendered body and putting it where it was asked for. */
+/** Arguments for wrapping a rendered body and writing it. */
 export interface EmitArguments {
   /** The report's rendered body, without its markers. */
   body: string;

@@ -8,16 +8,7 @@ import { EphemerisService } from "./ephemeris.service";
 
 import type { AzimuthElevationEphemeris } from "./ephemeris.types";
 
-/**
- * The Moon seen from Philadelphia on 20 March 2026, checked against JPL
- * Horizons for a topocentric observer (site `coord@399`, geodetic
- * -75.17169, 39.949309, 0 km), retrieved 2026-10-07 from
- * https://ssd.jpl.nasa.gov/api/horizons.api with QUANTITIES='4,13', once
- * with APPARENT='REFRACTED' and once with APPARENT='AIRLESS'.
- *
- * A geocentric Moon sits about 0.47° higher at culmination and about 1°
- * higher on the horizon: the parallax a horizon event must not ignore.
- */
+/** Moon from Philadelphia, 20 March 2026, checked against JPL Horizons. */
 const philadelphia = { latitude: 39.949_309, longitude: -75.171_69 };
 const moonCulmination = "2026-03-20T18:26:00.000Z";
 const moonrise = "2026-03-20T11:38:00.000Z";
@@ -30,15 +21,9 @@ const horizonsMoonriseSemidiameter = 1941.923 / 2 / 3600;
 /** USNO's standard refraction at the horizon, 34′, in degrees. */
 const horizonRefraction = 34 / 60;
 
-/**
- * The Sun and the Moon seen from Philadelphia at greatest local eclipse,
- * 12 August 2026 17:54 UT, checked against JPL Horizons for the same
- * topocentric observer with APPARENT='AIRLESS' and QUANTITIES='2,4,13',
- * retrieved 2026-10-08 from https://ssd.jpl.nasa.gov/api/horizons.api.
- * Horizons measures azimuth from North, clockwise through East.
- */
+/** Sun and Moon at greatest eclipse, per JPL Horizons. */
 const greatestLocalEclipse = "2026-08-12T17:54:00.000Z";
-/** Horizons: separation of the apparent topocentric Moon (RA 142.737254662°, Dec 15.165666571°) from the Sun (142.451827633°, 14.798538952°). */
+/** Horizons RA/Dec of the topocentric Moon and Sun, in degrees. */
 const horizonsSunMoonSeparation = 0.459_136;
 /** Horizons azimuth of the Moon and the Sun at greatest local eclipse. */
 const horizonsAzimuths = { moon: 205.898_816, sun: 206.185_78 };

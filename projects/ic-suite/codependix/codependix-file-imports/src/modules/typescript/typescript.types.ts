@@ -2,15 +2,7 @@
 
 import type ts from "typescript";
 
-/**
- * A TypeScript project's internal file-level import Graph: which of its own
- * files import which other of its own files.
- *
- * Only edges resolving to a file inside the project are kept — an import of
- * an external package or of another workspace project resolves outside
- * `fileNames` and is left out, the same way `Neighborhood` only draws edges
- * between projects it already knows about.
- */
+/** TypeScript file import graph; edges leaving the project are omitted. */
 export interface TypescriptImportGraph {
   /** Every drawn import relationship, sorted so the diagram never churns. */
   readonly edges: TypescriptImportGraphEdge[];
@@ -28,13 +20,7 @@ export interface TypescriptImportGraphEdge {
   readonly target: string;
 }
 
-/**
- * A workspace project whose own `tsconfig.json` can be turned into a program.
- *
- * Every workspace project is a candidate, unlike `codependix-nestjs-modules`'s
- * `NestjsProject`, which is gated to projects tagged `framework:nestjs` — a
- * file-level import graph is meaningful for any TypeScript project.
- */
+/** A project with a `tsconfig.json`; no tag gates it. */
 export interface TypescriptProject {
   /** Absolute path of the project directory. */
   readonly absoluteRoot: string;
@@ -44,16 +30,7 @@ export interface TypescriptProject {
   readonly tsconfigPath: string;
 }
 
-/**
- * One project's program together with the compiler host and options that
- * built it.
- *
- * The host and options travel with the program rather than being rebuilt by
- * `TypescriptImportGraphService`: resolving an import specifier through
- * `ts.resolveModuleName` needs the exact same host and options the program
- * itself was built with, or module resolution could silently disagree with
- * what the program actually parsed.
- */
+/** Program, host, and options; import resolution must reuse them. */
 export interface TypescriptProjectProgram {
   readonly host: ts.CompilerHost;
   readonly options: ts.CompilerOptions;

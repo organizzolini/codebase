@@ -1,6 +1,8 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { captureOutput } from "@codebase/testing";
+
 import { OptionsService } from "../../modules/options/options.service";
 
 import traceExecutor from "./executor";
@@ -8,6 +10,7 @@ import traceExecutor from "./executor";
 import type { PluginService } from "../../modules/plugin/plugin.service";
 import type { ResolvedTraceScope } from "../../modules/plugin/plugin.types";
 import type { ConfigurationService } from "@callidescope/configuration";
+import type { CapturedOutput } from "@codebase/testing";
 import type { ExecutorContext } from "@nx/devkit";
 
 /** The workspace configuration every run must name. */
@@ -30,12 +33,8 @@ vi.mock("../../modules/plugin/plugin-context.utilities", () => ({
 }));
 
 /**
- * An executor context for a run against one project, or against none.
- *
- * Built literally rather than mocked: `createMock` fabricates every property
- * it is not handed, through a proxy that regenerates them on access, so the
- * one case that matters here — Nx omitting `projectName` when a target is not
- * run against a project — cannot be expressed with it at all.
+ * An executor context for a run against one project or none. Built literally, since
+ * `createMock` would fabricate the `projectName` Nx omits.
  */
 function buildContext(projectName?: string): ExecutorContext {
   return {
@@ -66,12 +65,14 @@ function buildScope(
 }
 
 describe(traceExecutor, () => {
+  let output: CapturedOutput;
+
   beforeEach(() => {
     vi.clearAllMocks();
     pluginService.resolveTraceScope.mockResolvedValue(buildScope());
     pluginService.describeRefusedScope.mockReturnValue("Unknown Nx projects.");
     pluginService.runTrace.mockResolvedValue({ ok: true, report: "# Report" });
-    vi.spyOn(process.stdout, "write").mockReturnValue(true);
+    output = captureOutput();
   });
 
   it("traces the project the target belongs to when nothing else is named", async () => {
@@ -122,7 +123,7 @@ describe(traceExecutor, () => {
       buildContext("alpha"),
     );
 
-    expect(process.stdout.write).toHaveBeenCalledWith("# Report\n");
+    expect(output.stdout()).toBe("# Report\n");
   });
 
   it("prefers a named selection over the target's own project", async () => {
@@ -264,6 +265,6 @@ describe(traceExecutor, () => {
     ).resolves.toStrictEqual({ success: false });
     // The report still reaches stdout: a failing gate is exactly when the
     // reader needs to see which stacks tripped it.
-    expect(process.stdout.write).toHaveBeenCalledWith("# Report\n");
+    expect(output.stdout()).toBe("# Report\n");
   });
 });

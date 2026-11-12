@@ -13,9 +13,7 @@ import type { Conjugation, Selection, VerbFormRow } from "./verb-forms.types";
 // 🌎 Public Functions
 
 /**
- * Narrows a conjugation down by the voice, mood and tense chosen. Each choice
- * holds only while the rows above it still have it, and otherwise falls back to
- * the first the rows do have.
+ * Narrows a conjugation by the chosen voice, mood, and tense, falling back to the first option the rows still offer.
  */
 export function narrow(rows: VerbFormRow[], selection: Selection): Conjugation {
   const finite = rows.filter((row) => row.kind === FINITE_KIND);

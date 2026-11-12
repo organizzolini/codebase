@@ -1,12 +1,10 @@
 /**
- * Starts every tag field's id, followed by the id of the tag root it
- * filters, so a rule's path alone says which root it is about.
+ * Prefix of every tag field's id, naming its tag root.
  */
 export const TAG_FIELD_PREFIX = "tag:";
 
 /**
- * The operators a tag field offers. A tag matches every node beneath it,
- * because the tag view carries each event's ancestors.
+ * Tag operators; a tag also matches every node beneath it.
  */
 export const TAG_OPERATORS = {
   hasAllOf: "has_all_of",
@@ -15,18 +13,7 @@ export const TAG_OPERATORS = {
 } as const;
 
 /**
- * The rows of the tag view that belong to the event under test and name one
- * of the tags bound in place of `{placeholders}`.
- */
-export const EVENT_TAGS_MATCHING_SQL = `
-  select t.tag_id
-  from calendar_event_tag_nodes t
-  where t.calendar_event_id = e.id and t.tag_id in ({placeholders})
-`;
-
-/**
- * The ids of the fields derived from each event's own columns rather than
- * from its tags.
+ * Ids of fields derived from event columns, not tags.
  */
 export const DERIVED_FIELD_IDS = {
   date: "date",
@@ -39,8 +26,7 @@ export const DERIVED_FIELD_IDS = {
 } as const;
 
 /**
- * The name the tag fields' editor is registered under with the builder: a
- * searchable list of checkboxes, one for each tag, indented by its depth.
+ * The builder's name for the tag editor.
  */
 export const TAG_OPTIONS_EDITOR = "tag-options";
 
@@ -84,7 +70,7 @@ export const DURATION_BUCKETS: readonly {
 ];
 
 /**
- * The days of the week, numbered from Sunday as SQLite numbers them.
+ * The days of the week, numbered from Sunday, the API's numbering.
  */
 export const WEEKDAY_LABELS: readonly string[] = [
   "Sunday",
@@ -102,23 +88,7 @@ export const WEEKDAY_LABELS: readonly string[] = [
 export const TEMPORALITIES: readonly string[] = ["Instant", "Duration"];
 
 /**
- * The SQL each derived field reads. Times are read in each event's own zone
- * through the local-time functions every executor registers.
- */
-export const DERIVED_FIELD_SQL = {
-  dateRange: `(event_local_date(e."end", e.timezone) >= ? and event_local_date(e."start", e.timezone) <= ?)`,
-  duration: "(e.duration_minutes between ? and ?)",
-  durationMinutes: "e.duration_minutes",
-  hour: `event_local_hour(e."start", e.timezone)`,
-  hourRange: `(event_local_hour(e."start", e.timezone) between ? and ?)`,
-  temporality: "e.temporality",
-  text: String.raw`(e."summary" like ? escape '\' or e.description like ? escape '\')`,
-  weekday: `event_local_weekday(e."start", e.timezone)`,
-} as const;
-
-/**
- * The operators a numeric field offers, mirroring the filter builder's own
- * number operators: equality, the four orderings, and a range.
+ * Numeric field operators: equality, orderings, and a range.
  */
 export const NUMBER_OPERATORS = {
   between: "between",
@@ -132,29 +102,7 @@ export const NUMBER_OPERATORS = {
 } as const;
 
 /**
- * The number a tag's name ends in, such as the 6 of "Harmonic 6": the name
- * with its non-digit prefix taken away. Only a name that ends in a digit is
- * numeric, so a root such as "Aspect Harmonic" itself never reads as 0.
- */
-export const TAG_NUMBER_SQL =
-  "cast(replace(t.tag_name, rtrim(t.tag_name, '0123456789'), '') as integer)";
-
-/**
- * The tag nodes of the event under test, beneath one root, whose name ends
- * in a number and meets a condition on that number.
- */
-export const EVENT_TAG_NUMBERS_SQL = `
-  select 1
-  from calendar_event_tag_nodes t
-  where t.calendar_event_id = e.id
-    and t.tag_root_id = ?
-    and t.tag_name glob '*[0-9]'
-    and {condition}
-`;
-
-/**
- * What each tag root the data has means, shown under its name in the list of
- * attributes. A root not named here is described by its name alone.
+ * What each tag root means; unlisted roots show their name.
  */
 export const TAG_ROOT_DESCRIPTIONS: Readonly<Record<string, string>> = {
   "Aspect Harmonic":

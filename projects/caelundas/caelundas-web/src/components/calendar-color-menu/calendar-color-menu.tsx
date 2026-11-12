@@ -17,14 +17,13 @@ import { keepKeysInPanel } from "../night-sky-menu/night-sky-menu.utilities";
 import { PANEL_CLASS_NAME } from "./calendar-color-menu.constants";
 
 import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
-import type { EventFacet } from "../events-calendar/events-database.types";
+import type { EventFacet } from "../events-calendar/calendar-records.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * Whether events are colored, what by, the tag roots the data has, and where
- * to send a change to either.
+ * Whether events are colored, the color level, and the change handlers.
  */
 export interface CalendarColorMenuProperties {
   className?: string;
@@ -38,8 +37,7 @@ export interface CalendarColorMenuProperties {
 // 🧩 Component
 
 /**
- * Renders the toolbar's Color menu, one panel like the Sky menu's: a switch
- * that colors the events, then what they are colored by with its legend.
+ * Renders the toolbar's Color menu: a switch that colors the events, then what they are colored by, with its legend.
  */
 export function CalendarColorMenu(
   properties: Readonly<CalendarColorMenuProperties>,

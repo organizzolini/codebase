@@ -72,9 +72,7 @@ export function describePreposition(
 }
 
 /**
- * A verb's conjugation and whatever the entry notes about it. The note, such
- * as "fourth, deponent", repeats the conjugation and then adds what is
- * notable about the verb.
+ * A verb's conjugation and the entry's note, which repeats the conjugation and adds what is notable.
  */
 export function describeVerb(
   inflection: LexemeInflection,

@@ -35,19 +35,9 @@ import type {
 /**
  * CLI entry point for the codependix dependency graph workflow.
  *
- * `--write` publishes every configured export; `--check` names which finding
- * fails the run — `boundaries` for an edge breaking a declared rule, `reports`
- * for a configured destination that has gone stale. No per-graph-type
- * subcommand: which graphs run, where each project's export lands, and which
- * rules judge them is entirely a function of `codependix.config.ts`, read by
- * `@codependix/configuration`.
- *
- * The two findings are named apart because they belong on opposite sides of a
- * pull request. An export moves with the workspace it describes, so gating
- * staleness on a branch fails every branch that touched a project graph; a
- * broken boundary is caused by the branch and fixed by it. This is the split
- * `callidescope` already made between `--check depth` and `--check reports`,
- * copied wholesale down to the spelling of `reports`.
+ * `--write` publishes every configured export. `--check` fails on `boundaries`
+ * (broken rules) and `reports` (stale destinations). Staleness moves with the
+ * workspace, so it gates apart from breakage.
  */
 @Command({
   description: "Map every configured dependency graph and export it",
@@ -77,14 +67,7 @@ export class MapCommand extends CommandRunner {
   // 🔏 Private Methods
 
   /**
-   * What a `--check boundaries` pass found, as the combined output carries it
-   * — but only when the command line asked for an output.
-   *
-   * Left out unless `--format`, `--json-output`, or `--markdown-output` was
-   * given: an export run prints its graphs to standard output by default, and
-   * a `--write --check boundaries` run that named no output keeps printing
-   * exactly those graphs. A `--check boundaries`-only run that named none
-   * prints nothing at all and logs to standard error alone.
+   * What a boundary pass found, added only when `--format` or an output path was given.
    */
   private buildBoundaryReport(args: {
     boundaryOutcome: BoundaryCheckOutcome | undefined;
@@ -106,12 +89,8 @@ export class MapCommand extends CommandRunner {
   }
 
   /**
-   * Resolves the context every pass reads, warning about any `--projects` or
-   * `--tags` entry that matched no project.
-   *
-   * The warning belongs before the first pass: a typo beside a correct name
-   * narrows the run silently, so it has to be named before the run judges
-   * fewer projects than were asked for.
+   * Resolves the context every pass reads and warns on unmatched `--projects` or `--tags` entries.
+   * Warned first, since a typo narrows silently.
    */
   private async resolveContext(args: {
     mode: CodependixRunMode;
@@ -134,9 +113,7 @@ export class MapCommand extends CommandRunner {
   }
 
   /**
-   * Prints and writes the combined output: every active graph type's data
-   * when the export pass ran, and the boundary pass's findings beside it when
-   * `buildBoundaryReport` carries them.
+   * Writes the combined output: every active graph's data, plus the boundary findings when `buildBoundaryReport` carries them.
    */
   private runCombinedOutput(args: {
     boundaryOutcome: BoundaryCheckOutcome | undefined;
@@ -165,11 +142,7 @@ export class MapCommand extends CommandRunner {
   }
 
   /**
-   * Runs the export pass, warning when nothing was selected.
-   *
-   * Returns both the usual delivery outcome and every active graph type's
-   * whole-workspace data, so `runMode` can hand the latter to
-   * `CombinedOutputService` without running the export pass a second time.
+   * Runs the export pass and warns when nothing was selected. Returns the whole-workspace graph data too, so combined output needs no second run.
    */
   private async runExports(context: GraphRunContext): Promise<MapRunResult> {
     const result = await this.graphRunService.run(context);
@@ -182,13 +155,8 @@ export class MapCommand extends CommandRunner {
   }
 
   /**
-   * Runs the passes a resolved mode selected, and reports what they found.
-   *
-   * Split from `run` so the command line's own rejection path stays a
-   * handful of lines: everything below here has a mode to act on. Both
-   * passes are run directly here, rather than through a further-nested
-   * helper, to keep `MapCommand.run`'s own call stack inside this project's
-   * callidescope depth limit — see `packages/codependix-cli/callidescope.config.ts`.
+   * Runs a resolved mode's passes and reports them. Both run directly to keep `run`'s call stack
+   * within the callidescope depth limit.
    */
   private async runMode(args: {
     format: CombinedOutputFormat;
@@ -235,12 +203,7 @@ export class MapCommand extends CommandRunner {
   // 🌎 Public Methods
 
   /**
-   * Parses the set of findings the run fails on.
-   *
-   * The parser runs only when `--check` carries a value, so anything reaching
-   * it is a written set. A `--check` with no value never arrives here and is
-   * refused later: a set with nothing in it is indistinguishable from the flag
-   * having been left off, which is how one flag came to gate two findings.
+   * Parses the findings the run fails on. Runs only when `--check` has a value; a bare `--check` is refused later.
    */
   @Option({
     description: `Fail on a comma-separated set drawn from ${CHECK_NAMES.map((name) => `"${name}"`).join(" and ")}`,
@@ -284,12 +247,7 @@ export class MapCommand extends CommandRunner {
   }
 
   /**
-   * Parses `--exclude`, a comma-separated list of globs overriding the
-   * configured `exclude`.
-   *
-   * Refused later, by `ConfigurationService.loadConfiguration`, when the
-   * configuration this run reads never declared `exclude` in the first
-   * place — matching callidescope's `--exclude` refusal exactly.
+   * Parses `--exclude`, overriding the configured `exclude`. Refused later when the configuration never declared `exclude`.
    */
   @Option({
     description:
@@ -310,10 +268,7 @@ export class MapCommand extends CommandRunner {
   }
 
   /**
-   * Parses what `--format` prints to standard output.
-   *
-   * Defaults to Markdown when the flag was left off entirely — see
-   * `MapCommand.resolveFormat`, which validates the value this returns.
+   * Parses what `--format` prints to standard output. Validated later by `CombinedOutputService.resolveFormat`.
    */
   @Option({
     description: `What to print to standard output, one of ${FORMAT_NAMES.join(" and ")} (default: ${FORMAT_MARKDOWN}). A graph type prints only when this run also configured a workspace destination for it, even if its own toggle flag enabled it. A --check boundaries run adds its findings, under a boundaries key in json and a Boundaries section in markdown`,
@@ -325,10 +280,8 @@ export class MapCommand extends CommandRunner {
 
   /**
    * Parses `--include`, a comma-separated list of globs overriding the
-   * configured `include`.
-   *
-   * Refused later, alongside `--exclude`, when the configuration this run
-   * reads never declared `include`.
+   * configured `include`. Refused later, alongside `--exclude`, when the
+   * configuration never declared `include`.
    */
   @Option({
     description:
@@ -375,10 +328,8 @@ export class MapCommand extends CommandRunner {
   }
 
   /**
-   * Builds `--projects`/`--tags` graphs over the named projects alone,
-   * without their dependencies — faster, but an Nx edge leaving the named
-   * set is no longer drawn, and a finding the named projects inherit from a
-   * dependency is no longer noted.
+   * Builds the `--projects`/`--tags` graphs over the named projects alone. Faster, but a finding
+   * they inherit from a dependency is no longer noted.
    */
   @Option({
     description:
@@ -426,14 +377,7 @@ export class MapCommand extends CommandRunner {
   }
 
   /**
-   * Parses the projects a run exports for beyond `include`.
-   *
-   * **Widening, and narrowing.** A named project is added to whatever
-   * `include` already selected, and `exclude` still wins over it. It also
-   * narrows the Workspace Graph to the named set, and `--check boundaries`
-   * to judging it: graphs are built over the named set's dependency closure,
-   * and only a finding charged to a named project fails the run — one in a
-   * dependency is reported as a note.
+   * Parses the projects a run exports for, beyond `include`. Also narrows the Workspace Graph and boundary gate to them.
    */
   @Option({
     description:
@@ -467,14 +411,8 @@ export class MapCommand extends CommandRunner {
   }
 
   /**
-   * Runs whatever the command line asked for: exports, boundaries, or both.
-   *
-   * Every project is attempted regardless of whether an earlier one failed —
-   * both passes isolate a project's failure to itself — so this only decides
-   * the exit code from what came back. The two passes are also weighed
-   * independently rather than the first failure short-circuiting the second:
-   * a run gating both should report both, not the one that happened to run
-   * first.
+   * Runs whatever the command line asked for: exports, boundaries, or both. Both passes are weighed
+   * independently, so one failure never hides the other's.
    */
   async run(
     _passedParameters: string[],

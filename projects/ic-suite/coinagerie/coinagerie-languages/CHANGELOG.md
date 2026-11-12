@@ -1,3 +1,57 @@
+## 0.0.20 (2026-11-12)
+
+This was a version bump only for coinagerie-languages to align it with other projects, there were no code changes.
+
+## 0.0.19 (2026-11-12)
+
+This was a version bump only for coinagerie-languages to align it with other projects, there were no code changes.
+
+## 0.0.18 (2026-11-11)
+
+### 🚀 Features
+
+- **codometer:** ✨ tighten the comment budgets and shorten every comment over them ([#2262](https://github.com/organizzolini/codebase/pull/2262), [#2261](https://github.com/organizzolini/codebase/issues/2261))
+
+## 0.0.17 (2026-11-10)
+
+### 🚀 Features
+
+- **codometer:** ✨ gate JSDoc on every declaration kind and shorten long comments ([#2227](https://github.com/organizzolini/codebase/pull/2227), [#2226](https://github.com/organizzolini/codebase/issues/2226))
+
+## 0.0.16 (2026-11-10)
+
+This was a version bump only for coinagerie-languages to align it with other projects, there were no code changes.
+
+## 0.0.15 (2026-11-10)
+
+This was a version bump only for coinagerie-languages to align it with other projects, there were no code changes.
+
+## 0.0.14 (2026-11-10)
+
+This was a version bump only for coinagerie-languages to align it with other projects, there were no code changes.
+
+## 0.0.13 (2026-11-10)
+
+### 🚀 Features
+
+- **callidescope,codependix,codometer,coinagerie,configuration:** ✨ write tool markdown to adjacent files ([#2225](https://github.com/organizzolini/codebase/pull/2225), [#2224](https://github.com/organizzolini/codebase/issues/2224))
+
+## 0.0.12 (2026-11-09)
+
+This was a version bump only for coinagerie-languages to align it with other projects, there were no code changes.
+
+## 0.0.11 (2026-11-08)
+
+This was a version bump only for coinagerie-languages to align it with other projects, there were no code changes.
+
+## 0.0.10 (2026-11-08)
+
+This was a version bump only for coinagerie-languages to align it with other projects, there were no code changes.
+
+## 0.0.9 (2026-11-07)
+
+This was a version bump only for coinagerie-languages to align it with other projects, there were no code changes.
+
 ## 0.0.8 (2026-11-06)
 
 This was a version bump only for coinagerie-languages to align it with other projects, there were no code changes.

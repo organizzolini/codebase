@@ -1,13 +1,8 @@
 # uv workspace root and shared Python tool configuration.
 #
-# This file has no `[project]` table on purpose. A virtual workspace root makes
-# `uv sync` install every member and its dev group into the shared `.venv`; a
-# root with `[project]` installs only the root package and silently skips the
-# members.
-#
-# Members are listed explicitly: a glob such as `projects/*` fails on the
-# TypeScript projects, which have no `pyproject.toml`. Add every new Python
-# project to this list.
+# No `[project]` table, on purpose: a virtual root makes `uv sync` install every member
+# into the shared `.venv`. Members are listed explicitly, since a glob would match
+# TypeScript projects, which have no `pyproject.toml`. Add new Python projects here.
 
 [tool.uv.workspace]
 members = ["../projects/affirmancy"]
@@ -16,7 +11,7 @@ members = ["../projects/affirmancy"]
 [dependency-groups]
 dev = [
     "shellcheck-py>=0.10",
-    "sqlfluff>=4.4.0",
+    "sqlfluff>=4.5.0",
     "vulture>=2.14",
     "yamllint>=1.35",
 ]

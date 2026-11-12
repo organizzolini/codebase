@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,17 +7,7 @@ import { OmegaGreekLetterCharacteristicsService } from "./omega-greek-letter-cha
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the Ω (Greek omega) as a Code holding one isolated
- * copy, beside every orientation name drawing that ink. The base, facing
- * Southeast, draws:
- *
- * ```text
- *  ┌┐
- *  ││
- * ╶┘└╴
- * ```
- */
+/** Each distinct orientation of Ω as a standalone Code. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "05x03y065000cc0029a10",
@@ -49,10 +38,7 @@ const ORIENTATIONS: readonly LetterOrientationFixture[] = [
 ];
 
 describe(OmegaGreekLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    OmegaGreekLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(OmegaGreekLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

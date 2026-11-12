@@ -11,10 +11,8 @@ export interface ValidateExecutorOptions {
   /** Language names to restrict the run to; every language when absent. */
   readonly languages?: string[];
   /**
-   * Lowest conformance score an instance may have, from 0 to 1.
-   *
-   * The weakest of the three levels: a generator's own threshold and an
-   * instance group's both override it.
+   * Lowest passing score, 0 to 1. The run-level value is the weakest: a
+   * generator's or group's threshold overrides it.
    */
   readonly threshold?: number;
 }

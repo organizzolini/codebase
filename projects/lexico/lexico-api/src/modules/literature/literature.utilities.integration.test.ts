@@ -9,7 +9,7 @@ import {
   paginationMatrix,
   summarize,
 } from "@codebase/interface/testing";
-import { Author, Line, Text, Token, Word } from "@codebase/lexico-entities";
+import { Author, Line, Text, Token, Word } from "@codebase/lexico-db";
 
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
@@ -21,7 +21,7 @@ import { LiteratureService } from "./literature.service";
 import type { Connection } from "@codebase/interface";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
-/** Each boundary matrix issues a few hundred queries, which a slow runner needs time for. */
+/** Boundary matrices run hundreds of queries, so they need time. */
 const MATRIX_TIMEOUT_MILLISECONDS = 120_000;
 
 /** Orders entities by a sort key and then id, the order every connection pages in. */

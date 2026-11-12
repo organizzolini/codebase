@@ -6,17 +6,7 @@ export const NESTJS_PROJECT_TAG = "framework:nestjs";
 /** File suffix that marks a NestJS module definition. */
 export const NESTJS_PROJECT_MODULE_FILE_SUFFIX = ".module.ts";
 
-/**
- * Modules NestJS creates to host a dynamic module's providers.
- *
- * These are implementation details of `forRoot`/`forRootAsync` rather than
- * anything a project declares — `TypeOrmModule` is in a project's design and
- * stays in the graph, while the `TypeOrmCoreModule` it builds underneath is
- * not. The synthetic root belongs here for the same reason: this package
- * created it, so it is not part of the project. So does `InternalCoreModule`,
- * which NestJS adds to every container and imports into every module. It is
- * matched by name because NestJS 11 and 12 export it from different paths.
- */
+/** Framework modules skipped by name, since NestJS versions differ. */
 export const NESTJS_PROJECT_IGNORED_MODULES: RegExp[] = [
   /^ConfigHostModule$/,
   /^InternalCoreModule$/,
@@ -24,14 +14,7 @@ export const NESTJS_PROJECT_IGNORED_MODULES: RegExp[] = [
   /^TypeOrmCoreModule$/,
 ];
 
-/**
- * Additionally ignored when the root is synthetic.
- *
- * The synthetic root supplies a global `ConfigModule` so that a package whose
- * modules read configuration in a `useFactory` can be scanned at all. That
- * scaffolding is this package's, not the project's, so it stays out of the
- * graph.
- */
+/** Also skipped for a synthetic root, which is scaffolding. */
 export const NESTJS_PROJECT_SYNTHETIC_IGNORED_MODULES: RegExp[] = [
   /^ConfigModule$/,
 ];

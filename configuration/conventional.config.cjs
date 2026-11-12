@@ -1,22 +1,13 @@
 /**
- * Shared conventional commit configuration
+ * Shared conventional commit configuration.
  *
- * This file is the single source of truth for types, scopes, and emoji mappings used across:
- * - commitlint.config.ts (commit message validation)
- * - validate-branch-name.config.js (branch name validation)
- * - release.config.cjs (release rules and changelog sections)
- * - .vscode/settings.json (scope autocomplete)
- * - .agents/skills/commit-code/SKILL.md (reference tables)
+ * Single source of truth for types, scopes, and emojis across commitlint, branch-name validation, releases, editor autocomplete, and commit-code.
  *
- * When adding/removing types, scopes, or emojis, update this file only.
+ * When adding or removing types, scopes, or emojis, update this file only.
  * Run `nx run synchronization:conventional-config:write` to propagate changes.
  */
 
-/**
- * Canonical gitmoji — one emoji per commit type.
- * Each entry is the source of truth for the type key, its description, and its canonical emoji.
- * See https://gitmoji.dev for the full list of available emojis.
- */
+/** Canonical gitmoji, one emoji per commit type. See gitmoji.dev. */
 const types = [
   {
     code: ":sparkles:",
@@ -139,6 +130,11 @@ const scopes = [
     name: "dependencies",
   },
   {
+    description:
+      "Deployment CLI: the CI release steps and the publishable-packages gate",
+    name: "deployment",
+  },
+  {
     description: "GitHub Actions workflows and CI/CD pipeline configuration",
     name: "deployments",
   },
@@ -173,7 +169,7 @@ const scopes = [
   },
   {
     description: "Shared TypeORM entities and GraphQL types",
-    name: "lexico-entities",
+    name: "lexico-db",
   },
   {
     description: "Data ingestion scripts for Lexico",
@@ -208,11 +204,6 @@ const scopes = [
   {
     description: "Escape hatch: suppress semantic-release for any commit type",
     name: "no-release",
-  },
-  {
-    description:
-      "Publication CLI: the CI release steps and the publishable-packages gate",
-    name: "publication",
   },
   {
     description:

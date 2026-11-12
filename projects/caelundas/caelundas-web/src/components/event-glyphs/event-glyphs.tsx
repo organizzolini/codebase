@@ -19,9 +19,7 @@ export interface EventGlyphsProperties {
 // 🧩 Component
 
 /**
- * Draws an event's symbols as icons, one for each symbol and in its order,
- * so that they read as the emoji they stand for do. A symbol with no icon is
- * drawn as it is written. The icons take the text's color.
+ * Draws an event's symbols as icons, one per symbol in order; a symbol with no icon is drawn as written.
  */
 export function EventGlyphs(
   properties: Readonly<EventGlyphsProperties>,

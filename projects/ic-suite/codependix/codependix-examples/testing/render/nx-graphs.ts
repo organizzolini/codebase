@@ -11,15 +11,7 @@ import type {
 
 // 🏷️ Types
 
-/**
- * A whole example workspace, as a description turned into a real project graph.
- *
- * Written as data rather than as a nested Nx workspace on disk because
- * `NeighborhoodService.readProjectGraph` resolves the project graph from the
- * process working directory unless a configuration names a `projectGraph`
- * file — and handing the builders a graph directly is what lets a guide be
- * rendered from the real ones. See this package's README.
- */
+/** A whole example workspace as data, not read from the cwd. */
 export interface ExampleWorkspace {
   readonly dependencies: ExampleDependency[];
   readonly projects: ExampleProject[];
@@ -50,13 +42,7 @@ const WORKSPACE_ROOT = "/atlas";
 /** The project every Neighborhood example is centered on. */
 export const SUBJECT_PROJECT_NAME = "atlas-service";
 
-/**
- * The example workspace's projects, including its root project.
- *
- * The root project is carried deliberately: `NeighborhoodService.readProjects`
- * drops every node whose root is `"."`, so its absence from every diagram is
- * something the examples show rather than assert.
- */
+/** The example projects; `readProjects` drops the root, which diagrams omit. */
 const ATLAS_PROJECTS: ExampleProject[] = [
   { name: "atlas-application", root: "applications/atlas-application" },
   { name: "atlas-core", root: "packages/atlas-core" },
@@ -117,12 +103,7 @@ const ATLAS_UNCONNECTED: ExampleWorkspace = {
   projects: ATLAS_PROJECTS,
 };
 
-/**
- * The chain after an edge is added somewhere else in the workspace.
- *
- * `atlas-core` is untouched by the change and its Neighborhood still moves,
- * which is why this repository gates no pull request on `codependix map --check`.
- */
+/** Chain after an edge elsewhere; untouched `atlas-core` still moves. */
 const ATLAS_CHAIN_AFTER_DRIFT: ExampleWorkspace = {
   dependencies: [
     { source: "atlas-application", target: "atlas-core", type: "static" },

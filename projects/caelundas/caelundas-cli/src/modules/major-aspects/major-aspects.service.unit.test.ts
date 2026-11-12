@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment, { type Moment } from "moment-timezone";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectEphemerisService } from "../aspects/aspect-ephemeris.service";
 import { AspectsUtilitiesService } from "../aspects/aspects-utilities.service";
@@ -19,32 +18,29 @@ import { MajorAspectsService } from "./major-aspects.service";
 import type { Body } from "../caelundas/caelundas.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
-
 describe(MajorAspectsService, () => {
   let service: MajorAspectsService;
   let aspectsUtilitiesService: AspectsUtilitiesService;
 
+  const testingModuleOptions = {
+    imports: [EphemerisModule],
+    providers: [
+      MajorAspectEventService,
+      MajorAspectProgressiveService,
+      AspectEphemerisService,
+      AspectsUtilitiesService,
+      MathService,
+      ProgressiveAspectService,
+      ProgressiveUtilitiesService,
+    ],
+  };
+
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [EphemerisModule],
-      providers: [
-        LoggerService,
-        MajorAspectsService,
-        MajorAspectEventService,
-        MajorAspectProgressiveService,
-        AspectEphemerisService,
-        AspectsUtilitiesService,
-        MathService,
-        ProgressiveAspectService,
-        ProgressiveUtilitiesService,
-      ],
-    }).compile();
-    service = await module.resolve(MajorAspectsService);
+    const { instance, module } = await buildTestingModule(
+      MajorAspectsService,
+      testingModuleOptions,
+    );
+    service = instance;
     aspectsUtilitiesService = await module.resolve(AspectsUtilitiesService);
   });
 
@@ -239,10 +235,7 @@ describe(MajorAspectsService, () => {
       const previousMinute = currentMinute.clone().subtract(1, "minute");
       const nextMinute = currentMinute.clone().add(1, "minute");
 
-      // Create ephemeris with all bodies clustered in a small range to avoid aspects
-      // Major aspects need specific angle differences: 0°, 60°, 90°, 120°, 180°
-      // If all bodies are within a ~35° range, no pairs will have angles matching major aspects
-      // Positions: 10° through 45° (35° span, all angles < 56° which is outside all aspect orbs)
+      // Bodies clustered within 10°–45° form no major aspect: every angle is under 56°.
       const safeLongitudes = [
         10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44,
         46,
@@ -308,8 +301,13 @@ describe(MajorAspectsService, () => {
   // - major-aspect-event.service.unit.test.ts
   // - major-aspect-progressive.service.unit.test.ts
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      MajorAspectsService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(MajorAspectsService);
   });
 
   describe("isAspect", () => {

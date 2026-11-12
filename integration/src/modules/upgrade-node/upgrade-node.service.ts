@@ -12,11 +12,11 @@ import {
 } from "./upgrade-node.constants";
 
 /**
- * Moves the Node version the workspace runs to the newest release of the major
- * it is on, in `.nvmrc` and in the `engines.node` it requires.
+ * Moves the Node version to the newest release of its current major, in
+ * `.nvmrc` and `engines.node`.
  *
- * A new major is a decision, so this never crosses one, and it never goes back
- * to an older release than the one in use.
+ * A new major is a decision, so this never crosses one, nor moves to an older
+ * release.
  */
 @Injectable()
 export class UpgradeNodeService {
@@ -49,12 +49,8 @@ export class UpgradeNodeService {
   // 🌎 Public Methods
 
   /**
-   * Writes the newest release of the current major, when it is newer than the
-   * one in use.
-   *
-   * @returns The version now in use, as a summary line.
-   * @throws When `.nvmrc` is not a version, or Node.js lists no release of its
-   *   major.
+   * Writes the newest release of the current major, if newer.
+   * @throws When `.nvmrc` is not a version or no release matches its major.
    */
   public async upgrade(): Promise<string> {
     const current = fs.readFileSync(NODE_VERSION_FILE, "utf8").trim();

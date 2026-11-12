@@ -18,7 +18,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * Why the calendar shows no events, and where to send it to find some.
+ * Why the calendar has no events, and where to find some.
  */
 export interface CalendarEmptyProperties {
   className?: string;
@@ -42,10 +42,7 @@ export interface CalendarEmptyProperties {
 // 🧩 Component
 
 /**
- * Renders why the calendar shows no events: an empty database, a month
- * outside the dates the data covers, which offers to jump to them, filters
- * that leave nothing, which offer to clear them, or a month inside the dates
- * that holds nothing. It is announced as a status, never as an alert.
+ * Renders why the calendar shows no events, offering a jump or a filter clear where that helps; announced as a status.
  */
 export function CalendarEmpty(
   properties: Readonly<CalendarEmptyProperties>,

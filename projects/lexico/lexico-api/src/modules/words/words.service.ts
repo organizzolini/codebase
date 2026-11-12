@@ -7,7 +7,7 @@ import {
   Word,
   WordForm,
   WordLexeme,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import { WORD_RELATIONS } from "./words.constants";
 
@@ -125,10 +125,7 @@ export class WordsService {
   }
 
   /**
-   * Finds every word-form link of the given lexemes in one query, each with
-   * its form and word joined and the form's lexeme reduced to its id, which is
-   * what groups the links back onto their lexemes. Links to a soft-deleted
-   * word or form are left out.
+   * Finds the word-form links of the given lexemes in one query, skipping soft-deleted words and forms. Each form's lexeme is reduced to its id.
    */
   public async findWordFormsByLexemeIds(
     lexemeIds: readonly string[],

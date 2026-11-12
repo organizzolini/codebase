@@ -39,14 +39,12 @@ import type {
 } from "./upgrade-dependencies.types";
 
 /**
- * Runs the weekly dependency upgrades, one step at a time, so that none of
- * them can fail the job or leave a half-applied change behind.
+ * Runs the weekly dependency upgrades step by step, so none leaves a
+ * half-applied change.
  *
- * Before each step it records the whole working tree as a git tree, files not
- * yet tracked included. A step that fails is undone by restoring that tree,
- * which is the state the previous step left, never the committed one, so a
- * later failure cannot undo an earlier success. Ignored files, such as
- * `node_modules`, are left alone.
+ * Before each step, the working tree is saved as a git tree, untracked files
+ * included. A failed step is undone by restoring that tree, so later failures
+ * cannot undo earlier successes.
  */
 @Injectable()
 export class UpgradeDependenciesService {
@@ -107,9 +105,8 @@ export class UpgradeDependenciesService {
   }
 
   /**
-   * Undoes a failed step: the working tree goes back to the snapshot, then its
-   * recovery commands put the environment right. Returns why that was
-   * impossible, or nothing when it was done.
+   * Restores the snapshot and runs recovery commands. Returns why that
+   * failed, or nothing when it succeeded.
    */
   private undo(
     tree: string,
@@ -137,10 +134,7 @@ export class UpgradeDependenciesService {
       : `recovery exited ${String(recovery.status)}: ${this.tail(recovery)}`;
   }
 
-  /**
-   * Carries a step out: its commands run in order until one fails, and its
-   * task runs in its service, which throws to say the upgrade failed.
-   */
+  /** Carries a step out: its commands in order, or its task, which throws on failure. */
   private async work(step: UpgradeStep): Promise<UpgradeWork> {
     if (!("task" in step)) {
       return this.processRunner.captureSequence(step.commands);
@@ -210,11 +204,9 @@ export class UpgradeDependenciesService {
   }
 
   /**
-   * Ends the run: when the upgrades changed anything, writes the pull request
-   * that reports them, and tells the workflow whether there is one to open and
-   * where its body is.
-   *
-   * @returns Whether anything changed, untracked files included.
+   * Writes the pull request body when anything changed, and sets the workflow
+   * outputs.
+   * @returns Whether anything changed.
    */
   public finish(reports: readonly StepReport[]): boolean {
     const changed = this.git(["status", "--porcelain"]).stdout.trim() !== "";

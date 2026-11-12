@@ -41,24 +41,12 @@ interface RunCliCommandLineOptions {
   readonly module?: DynamicModule | Type<unknown>;
 }
 
-/**
- * The `LoggerService` levels that write a line. `log` is not among them: it
- * hands its message to `info`, so a `log` call is recorded as `info: …`.
- */
+/** Writing levels. `log` is absent, since it forwards to `info`. */
 const LOGGER_LEVELS = ["debug", "error", "info", "verbose", "warn"] as const;
 
 /**
- * Runs `argv` through the real nest-commander runner and module graph, as
- * `persistence.main.ts` does, and reports what happened rather than exiting the
- * process.
- *
- * Standard output, standard error, and the application's `LoggerService` are
- * captured for the run and restored after, so nothing reaches the console.
- * Every message still passes through the real `LoggerService`, whose logging
- * convention fails the run as it fails `persistence.main.ts`; the vitest
- * configuration's `LOG_LEVEL=silent` keeps the lines themselves quiet.
- * Output a spawned process writes to its own descriptors is not captured:
- * the command must surface it through its logger or its error.
+ * Runs `argv` through the real nest-commander runner and module graph,
+ * reporting what happened rather than exiting. Output and logs are captured.
  */
 export async function runCliCommandLine({
   argv,

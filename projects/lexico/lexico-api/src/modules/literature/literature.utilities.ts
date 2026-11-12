@@ -31,7 +31,7 @@ import type {
   TokenRelationField,
 } from "./literature.types";
 import type { Connection, MappedFields } from "@codebase/interface";
-import type { Author, Line, Text, Token } from "@codebase/lexico-entities";
+import type { Author, Line, Text, Token } from "@codebase/lexico-db";
 
 /** Returns a connection holding no edges and counting nothing. */
 export function createEmptyConnection<T>(): Connection<T> {
@@ -44,12 +44,7 @@ export function createEmptyConnection<T>(): Connection<T> {
 }
 
 /**
- * Pages a filtered query into a Relay connection in SQL: the cursors become
- * keyset bounds on the sort key and id, `first` or `last` becomes a limit one
- * row past the page, and `totalCount` becomes a count of the filtered rows.
- * The page matches the original load-everything-then-slice behavior exactly:
- * a cursor naming no row of the filtered set is ignored, `first` is applied
- * before `last`, and a negative count is no limit at all.
+ * Pages a filtered query into a Relay connection in SQL, matching load-everything-then-slice results. Unknown cursors are ignored; `first` applies before `last`.
  */
 export async function paginateQuery<
   Node extends IdentifiedEntity,
@@ -92,8 +87,7 @@ export function readCount(count: null | number | undefined): null | number {
 }
 
 /**
- * Reads the entity id a cursor names, or null when it is absent, malformed,
- * or not the canonical encoding of that id, which no page ever hands out.
+ * Reads the entity id a cursor names, or null when absent, malformed, or not in canonical form.
  */
 export function readCursorId(cursor: null | string | undefined): null | string {
   const id = fromCursorSafe<null | { id?: unknown }>(cursor)?.id;
@@ -204,8 +198,7 @@ function encodeCursor<
 }
 
 /**
- * Loads a page's entities in chunks, so an unlimited page never binds more ids
- * than Postgres accepts in one statement, and returns them in the page's order.
+ * Loads a page's entities in chunks, keeping page order, so no statement binds too many ids for Postgres.
  */
 async function loadInOrder<
   Node extends IdentifiedEntity,
@@ -238,12 +231,7 @@ async function loadInOrder<
 }
 
 /**
- * Reads everything a page needs of a filtered query in one statement, so the
- * filter — which may rank every match — runs once: the filtered rows are
- * materialized, and their count, the rows the cursors name, whether a row
- * precedes the `before` cursor's, and the window between the cursors, at
- * most one row past the page, are all read from them. The window is read from
- * the front for `first`, or from the back for `last` alone.
+ * Reads a page's needs from a filtered query in one statement, so the filter runs once.
  */
 async function readPage<
   Node extends IdentifiedEntity,
@@ -298,9 +286,7 @@ async function readPage<
 }
 
 /**
- * Selects the filtered row a cursor claims, as a common table expression
- * holding that row or none: a row with the claimed id and, when the cursor
- * carries one, the claimed sort key.
+ * Selects the filtered row a cursor claims, as a CTE holding that row or none, matched by id and any claimed sort key.
  */
 function selectClaimedRow(
   name: "after" | "before",

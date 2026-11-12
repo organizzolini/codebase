@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { GeometryService } from "./geometry.service";
 
@@ -7,15 +8,15 @@ describe(GeometryService, () => {
   let service: GeometryService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [GeometryService],
-    }).compile();
+    const built = await buildTestingModule(GeometryService);
 
-    service = await module.resolve(GeometryService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(GeometryService);
+
+    expect(instance).toBeInstanceOf(GeometryService);
   });
 
   describe("compute", () => {
@@ -44,11 +45,9 @@ describe(GeometryService, () => {
   });
 
   describe("borderPath", () => {
-    // 🎯 The run every closed band shares. Each passes its own right edge and
-    // nothing else, so this is the whole of what they have in common — and
-    // the assertion is on the literal path data rather than on a parse of
-    // it, because the committed corpus is bytes and an extraction that
-    // reordered these two runs would rewrite every drawing in it.
+    // 🎯 The run every closed band shares. Each passes only its own right edge,
+    // so the assertion is on the literal path data: the committed corpus is
+    // bytes, and reordering these runs would rewrite every drawing.
     it("rules both border rows from the right edge back to the left", () => {
       expect(service.borderPath(service.compute(4), 123)).toBe(
         "M123 63H3M123 3H3",

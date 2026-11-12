@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { Lexeme, Translation } from "@codebase/lexico-entities";
+import { Lexeme, Translation } from "@codebase/lexico-db";
 import { LoggerModule } from "@codebase/observability";
 
 import { TranslationsService } from "./translations.service";

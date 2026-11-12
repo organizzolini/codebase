@@ -8,7 +8,7 @@ import {
   MINUTE_MILLISECONDS,
 } from "./calendar-clusters.constants";
 
-import type { CalendarEventRecord } from "../../components/events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../../components/events-calendar/calendar-records.types";
 import type {
   ClusteredEvents,
   ClusterOptions,
@@ -17,14 +17,7 @@ import type {
 // 🌎 Public Functions
 
 /**
- * Merges events of one kind that run together into a single stand-in with a
- * count, so a busy view stays legible: the events that run past a day, which
- * the calendar draws as bars above its hours, and those inside a day, which
- * it draws as chips on them. Events of one kind merge when they overlap, or
- * for those inside a day, start within the view's gap of the first of the
- * cluster; a kind
- * with one event in such a run keeps it as it is. Events outside the days
- * the view shows are left alone, so a count holds only what is on screen.
+ * Merges overlapping events of one kind into a stand-in with a count, so busy views stay legible.
  */
 export function clusterEvents(
   events: readonly CalendarEventRecord[],
@@ -65,9 +58,7 @@ export function clusterEvents(
 }
 
 /**
- * Stands one cluster in for its events: one event, titled with their count
- * and the name of their kind, over the span they cover and in their kind's
- * color.
+ * Stands one cluster in for its events: one event, titled with their count and kind, over their span in the kind's color.
  */
 function createStandIn(
   cluster: readonly CalendarEventRecord[],
@@ -110,10 +101,7 @@ function createStandIn(
 }
 
 /**
- * Names the run an event belongs to, one for each kind of aspect and each day
- * inside which events are merged, and one more for each kind's events that run
- * past a day, or says it belongs to none: an event of a kind that is never
- * merged, or one outside the days the view shows.
+ * Names the run an event belongs to, per kind and day, or null when it is never merged.
  */
 function getRunKey(
   event: CalendarEventRecord,
@@ -187,9 +175,7 @@ function mergeRuns(
 }
 
 /**
- * Splits events of one kind, already in order of start, into runs that
- * overlap, or for those inside a day, that start within the gap of the run's
- * end so far.
+ * Splits one kind's events, in start order, into runs that overlap, or that start within the gap for those inside a day.
  */
 function splitRuns(
   events: readonly CalendarEventRecord[],
@@ -204,10 +190,8 @@ function splitRuns(
     const start = event.start.getTime();
     const [first] = current;
 
-    // Events that run past a day join while they overlap, as a chain. Those
-    // inside a day join only while they start within the gap of the first of
-    // the cluster, never of one another, so a cluster cannot be stretched
-    // across the day by events each close to the next.
+    // Events past a day join while they overlap; those inside a day join while
+    // they start within the gap of the cluster's first, so a cluster cannot stretch.
     const joins =
       first === undefined ||
       (isLong

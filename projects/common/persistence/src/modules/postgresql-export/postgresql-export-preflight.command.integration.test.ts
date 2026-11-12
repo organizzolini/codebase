@@ -1,8 +1,9 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { beforeEach, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { INTEGRATION_TEST_TIMEOUT_MILLISECONDS } from "../../../testing/fixture-persistence";
@@ -17,16 +18,12 @@ describe("postgresql-export client-tool preflight", () => {
   let directory: string;
 
   beforeEach(() => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "fixture-preflight-"));
-    return () => {
-      fs.rmSync(directory, { force: true, recursive: true });
-    };
+    directory = createTemporaryDirectory("fixture-preflight");
   });
 
   /**
-   * Puts a `pg_dump` on a PATH of its own that reports `version` and records
-   * every argument list it was run with; the script creates `dumped` if it
-   * is ever run for anything but `--version`.
+   * Puts a fake `pg_dump` on a PATH, reporting `version` and recording each argument list.
+   * A run other than `--version` creates `dumped`.
    */
   function fakePgDump(version: string): {
     readonly dumped: string;

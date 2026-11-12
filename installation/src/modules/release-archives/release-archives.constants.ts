@@ -2,15 +2,7 @@
 
 import type { ReleaseArchiveTool } from "./release-archives.types";
 
-/**
- * The tools Linux installs from their release archives, with no Homebrew.
- *
- * Every version matches the pin the cloud devcontainer holds for the same
- * tool, in its features or in `remoteEnv`, and a test fails when one drifts.
- * Helm lints the charts in the pre-commit hook, kubectl and Terraform drive
- * the cluster, gitleaks and Trivy are the security gate's scanners, and uv runs
- * every Python-backed check.
- */
+/** Linux archive tools a test keeps level with the devcontainer. */
 export const RELEASE_ARCHIVE_TOOLS: readonly ReleaseArchiveTool[] = [
   {
     architectures: { arm64: "arm64", x64: "amd64" },

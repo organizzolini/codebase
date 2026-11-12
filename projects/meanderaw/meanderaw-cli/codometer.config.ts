@@ -11,12 +11,8 @@ export default {
       include: ["dist/**/*.js"],
     },
   ],
-  // 🎯 One rung up from 192 KB, where preserving the historical corpus as
-  // hardcoded Code constants (ticket #818 of spec #813) put it: the
-  // compiled output measured 205,350 bytes against the old ceiling. The
-  // ladder these limits sit on is roughly doubling — 6, 12, 32, 128, 192,
-  // 256, 384 — and 256 is the next step that leaves real headroom. This is
-  // expected to shrink again once ticket #819 retires the procedural motif
-  // modules the lattice-first pipeline replaces.
+  // 🎯 One rung above 192 KB, where the hardcoded historical corpus put it. The
+  // ladder roughly doubles (6, 12, 32, 128, 192, 256, 384) and 256 leaves real
+  // headroom; expected to shrink once ticket #819 retires the procedural motifs.
   limits: [{ metric: "Compiled JavaScript.size", value: "256 KB" }],
 };

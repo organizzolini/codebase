@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { Author, Line, Text, Token, Word } from "@codebase/lexico-entities";
+import { Author, Line, Text, Token, Word } from "@codebase/lexico-db";
 
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
@@ -23,7 +23,7 @@ import type { TokensArguments } from "./tokens-arguments.entities";
 import type { Connection } from "@codebase/interface";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
-/** A page of tokens, reduced to what a reader can observe of it. */
+/** A page of tokens, reduced to what a reader observes. */
 interface TokensPage {
   readonly data: string[];
   readonly endCursor: null | string;

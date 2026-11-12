@@ -9,11 +9,9 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Counts the horizontal rectangles of a Code — isolated rectangular rings of ink
- * wider than it is tall, measured in edges — as an M×N submatrix scan. A ring
- * is isolated when every point on it carries exactly its ring's arms, so a
- * divided or branched ring is not a rectangle; squares count toward neither
- * orientation.
+ * Counts horizontal rectangles of a Code: isolated rings of ink wider than tall.
+ * A ring is isolated when every point on it carries exactly its ring's arms.
+ * Squares count toward neither orientation.
  */
 @Injectable()
 export class HorizontalRectangleCountCharacteristicService implements CharacteristicEvaluator<number> {

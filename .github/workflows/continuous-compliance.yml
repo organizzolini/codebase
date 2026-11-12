@@ -1,15 +1,9 @@
 name: 🦹 Continuous Compliance
 
-# External and repository compliance checks:
-# 1. 🧑‍💼 Issue: Issue metadata, Issue Types (roots are Feature or Bug,
-#    sub-issues are Task), hierarchy, and release significance.
-# 2. 👮 Enforce: Repository governance and workflow security, on pull requests,
-#    the merge queue, and main.
-# 3. 🧑‍⚖️ Comply: Pull request metadata and commit message conventions, on
-#    pull requests and again on the merge queue group that will land them.
-#
-# All external-resource checks run through `compliance`. Checks execute directly via
-# Node.js without building an Nx project graph.
+# Compliance checks, run by `compliance` directly through Node.js:
+# 1. 🧑‍💼 Issue: issue metadata, types, hierarchy, and release significance.
+# 2. 👮 Enforce: repository governance and workflow security.
+# 3. 🧑‍⚖️ Comply: pull request metadata and commit message conventions.
 
 on:
   push:
@@ -101,12 +95,9 @@ jobs:
     name: 👮 Enforce
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # Runs before a change lands, not only after, so a governance break shows
-    # on its pull request instead of first on main. Dependabot's pull requests
-    # are audited too, since the action bumps it opens are workflow edits, and
-    # the audit reads only checked-out files, so it needs no secret. Every
-    # non-draft pull request event runs it, edits and labels included: a run
-    # skipped on a later event would replace an earlier failure on that commit.
+    # Runs before a change lands, so a governance break shows on its pull request.
+    # Every non-draft pull request event runs it, since a run skipped on a later
+    # event would replace an earlier failure on that commit.
     if: >-
       github.event_name == 'push' ||
       github.event_name == 'merge_group' ||
@@ -134,20 +125,17 @@ jobs:
             --ignore-scripts
 
       # Audits repository governance (CODEOWNERS rules and workflow security).
-      - name: 👮 Audit Repository Governance
+      - name: 👮 Audit Repository Files
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            compliance/src/compliance.main.ts audit-governance
+            compliance/src/compliance.main.ts audit-files
 
   comply:
     name: 🧑‍⚖️ Comply
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # Runs on Dependabot's pull requests too, so a label or release significance
-    # failure shows on the pull request rather than first in the merge queue.
-    # The title, body, and commit subject checks below exempt them: Dependabot
-    # writes both, and appends a directory and group tail to the title that no
-    # `dependabot.yml` field shortens past the 128-character header limit.
+    # Runs on Dependabot's pull requests too, so a label or release significance failure
+    # shows before the merge queue. The title and body checks exempt them, since Dependabot writes both.
     if: >-
       (github.event_name == 'push' ||
       github.event_name == 'merge_group' ||
@@ -172,13 +160,8 @@ jobs:
             --filter . --filter compliance... \
             --ignore-scripts
 
-      # One run covers a pull request event and a merge group alike. A merge
-      # group carries no pull request payload, only a synthetic ref, so the
-      # command resolves the number and reads live metadata itself. It writes
-      # parent references and labels only for pull request events, then
-      # validates title, body, labels, assignees, and release significance
-      # together. Dependabot's pull requests are exempt from the title and
-      # body checks inside the command.
+      # One run covers a pull request and a merge group. A merge group has no pull
+      # request payload, so the command resolves the number and reads live metadata.
       - name: 🧑‍⚖️ Comply Pull Request
         id: pull-request
         if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
@@ -208,11 +191,9 @@ jobs:
           git log -1 --pretty=%s | \
             npx commitlint --config configuration/commitlint.config.ts
 
-      # Validates the merge group's head commit, which is exactly what lands on
-      # main. GitHub does not document the subject a queued squash commit
-      # carries, so a generic "Merge pull request #…" subject is logged and
-      # passed; the live title check above is the guard in that case. Skipped
-      # for a pull request Dependabot authored, like that title check.
+      # Validates the merge group's head commit, which is what lands on main.
+      # GitHub does not document a queued squash commit's subject, so a generic
+      # "Merge pull request #…" subject is passed; the live title check guards it.
       - name: 🏷️ Validate Merge Group Commit Message
         if: >-
           github.event_name == 'merge_group' &&

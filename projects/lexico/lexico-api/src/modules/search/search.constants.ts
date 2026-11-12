@@ -57,23 +57,14 @@ export const SCORE_TRANSLATION_PREFIX = 0.8;
 export const SCORE_TRANSLATION_FULLTEXT = 0.6;
 export const SCORE_FUZZY = 0.4;
 
-/**
- * What each edit of distance takes off `SCORE_FUZZY`, so a closer fuzzy match
- * ranks higher and every fuzzy score stays below the prefix tier.
- */
+/** Score lost per edit from `SCORE_FUZZY`, keeping fuzzy below prefix. */
 export const SCORE_FUZZY_STEP = 0.1;
 
-/**
- * Shortest search term fuzzy matching applies to, and the shortest one allowed
- * two edits instead of one.
- */
+/** Shortest fuzzy term, and the length allowing two edits. */
 export const FUZZY_MINIMUM_LENGTH = 3;
 export const FUZZY_TWO_EDIT_LENGTH = 6;
 
-/**
- * The tier a Latin match's best score names. Every Latin tier scores
- * differently, so a lexeme's score alone says which tier ranked it highest.
- */
+/** The tier a Latin match's score names; tiers score distinctly. */
 export const LATIN_TIER_SOURCES: ReadonlyMap<number, SearchMatchSource> =
   new Map([
     [SCORE_ENCLITIC, SearchMatchSource.ENCLITIC],
@@ -82,32 +73,18 @@ export const LATIN_TIER_SOURCES: ReadonlyMap<number, SearchMatchSource> =
     [SCORE_WORD_EXACT, SearchMatchSource.WORD_EXACT],
   ]);
 
-/**
- * The tier an English match's best score names, where any score below a
- * prefix match is a full-text one.
- */
+/** The tier an English score names; below prefix means full-text. */
 export const ENGLISH_TIER_SOURCES: ReadonlyMap<number, SearchMatchSource> =
   new Map([
     [SCORE_TRANSLATION_EXACT, SearchMatchSource.TRANSLATION_EXACT],
     [SCORE_TRANSLATION_PREFIX, SearchMatchSource.TRANSLATION_PREFIX],
   ]);
 
-/**
- * Most lexemes a prefix headword match or fuzzy match ranks per search term,
- * the first by id, before translations are checked.
- */
+/** Most headword prefix or fuzzy lexemes ranked per search term. */
 export const LATIN_TIER_RESULT_LIMIT = 50;
 
-/**
- * Ranks one matched translation for an English search, given the `exactQuery`
- * and `prefixQuery` parameters: an exact translation outranks one the query
- * starts, which outranks any other substring or full-text match.
- */
+/** Ranks a translation match: exact, then prefix, then any other. */
 export const ENGLISH_MATCH_SCORE_EXPRESSION = `CASE WHEN LOWER(translation.data) = :exactQuery THEN ${SCORE_TRANSLATION_EXACT} WHEN translation.data ILIKE :prefixQuery THEN ${SCORE_TRANSLATION_PREFIX} ELSE ${SCORE_TRANSLATION_FULLTEXT} END`;
 
-/**
- * Most lexemes an English search ranks before paginating. A common word such
- * as "to" matches a large share of all translations, so the database ranks and
- * caps the matches instead of loading every one of them into memory.
- */
+/** Lexeme cap for English search, so common words stay cheap. */
 export const ENGLISH_SEARCH_RESULT_LIMIT = 200;

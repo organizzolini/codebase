@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeService } from "../code/code.service";
 import { GeometryService } from "../geometry/geometry.service";
@@ -10,25 +11,27 @@ import { TileService } from "../tile/tile.service";
 import { DrawingService } from "./drawing.service";
 
 import type { CodeObject } from "../code/code.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 // 🧪 Tests
 
-// 🎯 Every fixture below is drawn at 5 rows, the same row count
-// the retired per-tile motif computed its own geometry fixtures at —
-// `GeometryService.compute(5)` gives a unit of 10, an
-// offset of 2.5, and a stroke width of 5 — so a reader can check one
-// against the other rather than trusting a fresh set of numbers.
+// 🎯 Fixtures are drawn at 5 rows, where `GeometryService.compute(5)` gives a
+// unit of 10, an offset of 2.5 and a stroke width of 5, so numbers can be checked.
+/** What the class under test is built with. */
+const MODULE_OPTIONS: TestingModuleOptions = {
+  providers: [
+    CodeService,
+    SymmetryService,
+    TileService,
+    GeometryService,
+    SvgService,
+  ],
+};
+
 describe(DrawingService, () => {
   let service: DrawingService;
 
-  /**
-   * The Code `digits` spells, at the shape the fixtures are drawn at.
-   *
-   * Built directly rather than through `CodeService.parse`, because these
-   * fixtures deliberately carry fewer rows than a full 5-row meander:
-   * the renderer draws what it is given row by row, and one row is
-   * enough to assert where a segment lands.
-   */
+  /** Built directly, not parsed, so fixtures may be shorter. */
   const code = (digits: string, columns: number, repeats = 1): CodeObject => ({
     columns,
     digits,
@@ -37,22 +40,18 @@ describe(DrawingService, () => {
   });
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        CodeService,
-        SymmetryService,
-        TileService,
-        GeometryService,
-        DrawingService,
-        SvgService,
-      ],
-    }).compile();
+    const built = await buildTestingModule(DrawingService, MODULE_OPTIONS);
 
-    service = await module.resolve(DrawingService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      DrawingService,
+      MODULE_OPTIONS,
+    );
+
+    expect(instance).toBeInstanceOf(DrawingService);
   });
 
   describe("render", () => {

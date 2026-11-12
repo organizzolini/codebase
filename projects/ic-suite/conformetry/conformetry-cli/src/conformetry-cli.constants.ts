@@ -1,28 +1,12 @@
 import { z } from "zod";
 
-/**
- * Indent width for machine-readable output.
- *
- * Shared by every command with a `--json` mode, so the two listings are
- * parseable the same way.
- */
+/** Indent width for `--json` output, shared so every listing parses alike. */
 export const JSON_INDENT = 2;
 
-/**
- * How a refusal names the `--config` flag.
- *
- * Handed to the configuration layer, which owns the requirement and the words
- * of the refusal; this is only where the person was meant to set the path.
- */
+/** The `--config` flag's name, as refusals print it. */
 export const CONFIGURATION_FLAG_SURFACE = "the --config flag";
 
-/**
- * Names a template no configuration answers to.
- *
- * Shared by `generate` and `validate` so both refuse an unknown name the same
- * way: silently dropping it would narrow a run further than asked and, with
- * nothing left, report a vacuous pass.
- */
+/** Refuses an unknown template name, so `validate` cannot pass vacuously. */
 export const unknownTemplateError = (args: {
   availableTemplateNames: readonly string[];
   templateName: string;
@@ -31,15 +15,7 @@ export const unknownTemplateError = (args: {
     `Unknown template "${args.templateName}". Available: ${args.availableTemplateNames.join(", ")}`,
   );
 
-/**
- * Rejects the flag `--template` replaced.
- *
- * `allowUnknownOptions` is on so a template's own inputs can be passed as
- * flags, which means commander accepts `--generator` rather than rejecting it
- * — it would be read as an input nothing declares, and the run would go on to
- * prompt for a template or refuse for the wrong reason. Naming the rename is
- * the loud failure a stale script needs.
- */
+/** Rejects the retired `--generator` flag, which commander would accept silently. */
 export const removedGeneratorOptionError = (): Error =>
   new Error(
     "--generator was removed. Pass --template instead: it is the word the configuration, the templates command, and the conformance report already use.",

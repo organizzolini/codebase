@@ -1,9 +1,7 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   getTestContactLimit,
@@ -47,24 +45,30 @@ describe(EclipseGeometryService, () => {
       vi.fn<EphemerisService["getDistanceFromEphemeris"]>(),
   };
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        EclipseGeometryService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        { provide: EphemerisService, useValue: ephemerisService },
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    providers: [{ provide: EphemerisService, useValue: ephemerisService }],
+  };
 
-    service = await module.resolve(EclipseGeometryService);
+  beforeAll(async () => {
+    const { instance } = await buildTestingModule(
+      EclipseGeometryService,
+      testingModuleOptions,
+    );
+
+    service = instance;
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      EclipseGeometryService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(EclipseGeometryService);
   });
 
   it("samples coordinates and distances around the current minute", () => {
@@ -196,7 +200,7 @@ describe(EclipseGeometryService, () => {
   });
 
   describe("getTopocentricSolarContactGeometry", () => {
-    /** One body seen from the ground, with its upper limb well above the horizon. */
+    /** Body above the horizon, its upper limb well clear. */
     const disc = (
       longitude: number,
       latitude: number,

@@ -2,13 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
 
-import {
-  Form,
-  Lexeme,
-  Word,
-  WordForm,
-  WordLexeme,
-} from "@codebase/lexico-entities";
+import { Form, Lexeme, Word, WordForm, WordLexeme } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
 import { LEXICO_INGESTION_BY_ID } from "../lexico-ingestion/lexico-ingestion.constants";
@@ -121,9 +115,7 @@ export class WordsService {
     return words;
   }
 
-  /** Generates and persists a `Word` row for every inflected form and
-   * principal part that belongs to the given `Lexeme`.
-   * Upserts rows in bulk and creates junction records to avoid N+1 queries. */
+  /** Persists a `Word` row for every inflected form and principal part of the lexeme, upserted in bulk to avoid N+1 queries. */
   async ingestLexemeWords(lexeme: Lexeme): Promise<void> {
     this.logger.info("🔤 Ingesting words for lexeme", undefined, {
       lexemeId: lexeme.id,
@@ -170,8 +162,7 @@ export class WordsService {
     });
   }
 
-  /** Upserts an array of normalized word strings into the `Word` table, then
-   * ensures they are linked to the provided `Lexeme` via `WordLexeme` and to the Form via `WordForm` junctions. */
+  /** Upserts words into the `Word` table, then links them to the lexeme and their forms via junction rows. */
   async upsertWordsAndJunctions(
     formsByWord: Map<string, Set<Form>>,
     lexeme: Lexeme,

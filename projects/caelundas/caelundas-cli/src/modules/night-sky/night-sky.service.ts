@@ -4,21 +4,19 @@ import { Injectable } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 
+import { Constellation, ConstellationLine, Star } from "@codebase/caelundas-db";
 import { LoggerService } from "@codebase/observability";
 
-import { ConstellationLine } from "../database/entities/constellation-line.entity";
-import { Constellation } from "../database/entities/constellation.entity";
-import { Star } from "../database/entities/star.entity";
+import { POSTGRES_MAXIMUM_PARAMETERS } from "../../caelundas-cli.constants";
 
-import { INSERT_BATCH_SIZE } from "./night-sky.constants";
 import { buildNightSkyRows } from "./night-sky.utilities";
 
 import type { NightSkyFiles, NightSkyRows } from "./night-sky.types";
 import type { EntityManager, EntityTarget, ObjectLiteral } from "typeorm";
 
 /**
- * Rewrites the night sky's tables, `star`, `constellation` and
- * `constellation_line`, from the downloaded HYG catalog and d3-celestial's
+ * Rewrites the night sky's tables, `stars`, `constellations` and
+ * `constellation_lines`, from the downloaded HYG catalog and d3-celestial's
  * constellations and figures, in one transaction, so a reader never sees a
  * half-written sky.
  */
@@ -41,18 +39,26 @@ export class NightSkyService {
   // 🔏 Private Methods
 
   /**
-   * Inserts rows of one entity in batches under SQLite's parameter limit.
+   * Inserts rows in batches under Postgres's parameter limit; a wide row,
+   * binding more parameters, makes a smaller batch.
    */
   private async insertInBatches<Entity extends ObjectLiteral>(
     manager: EntityManager,
     target: EntityTarget<Entity>,
     rows: readonly Entity[],
   ): Promise<void> {
-    for (let start = 0; start < rows.length; start += INSERT_BATCH_SIZE) {
-      await manager.insert(
-        target,
-        rows.slice(start, start + INSERT_BATCH_SIZE),
-      );
+    const [first] = rows;
+
+    if (first === undefined) {
+      return;
+    }
+
+    const batchSize = Math.floor(
+      POSTGRES_MAXIMUM_PARAMETERS / Object.keys(first).length,
+    );
+
+    for (let start = 0; start < rows.length; start += batchSize) {
+      await manager.insert(target, rows.slice(start, start + batchSize));
     }
   }
 
@@ -64,9 +70,9 @@ export class NightSkyService {
     manager: EntityManager,
     rows: NightSkyRows,
   ): Promise<void> {
-    await manager.query<unknown>(`delete from "constellation_line"`);
-    await manager.query<unknown>(`delete from "constellation"`);
-    await manager.query<unknown>(`delete from "star"`);
+    for (const target of [ConstellationLine, Constellation, Star]) {
+      await manager.createQueryBuilder().delete().from(target).execute();
+    }
     await this.insertInBatches(manager, Star, rows.stars);
     await this.insertInBatches(manager, Constellation, rows.constellations);
     await this.insertInBatches(manager, ConstellationLine, rows.lines);

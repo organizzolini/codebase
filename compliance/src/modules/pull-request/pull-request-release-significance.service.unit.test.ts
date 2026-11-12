@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PullRequestReleaseSignificanceService } from "./pull-request-release-significance.service";
 
@@ -9,7 +10,7 @@ import type {
   ReleaseRule,
 } from "./pull-request-release-significance.types";
 
-/** What the mocked `require` hands back, or throws when it is an error. */
+/** What the mocked `require` returns, or throws when it errors. */
 let releaseConfig: unknown;
 
 vi.mock("node:module", () => ({
@@ -56,7 +57,7 @@ const commit = (
   subject,
 });
 
-/** A title, parsed the way the service itself would parse it — never undefined. */
+/** A title, parsed the way the service parses it. Never undefined. */
 const title = (
   service: PullRequestReleaseSignificanceService,
   subject: string,
@@ -74,20 +75,23 @@ describe(PullRequestReleaseSignificanceService, () => {
   let service: PullRequestReleaseSignificanceService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PullRequestReleaseSignificanceService],
-    }).compile();
+    const built = await buildTestingModule(
+      PullRequestReleaseSignificanceService,
+    );
 
-    service = await module.resolve(PullRequestReleaseSignificanceService);
+    service = built.instance;
   });
 
   beforeEach(() => {
     releaseConfig = releaseConfigDocument(RELEASE_RULES);
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      PullRequestReleaseSignificanceService,
+    );
+
+    expect(instance).toBeInstanceOf(PullRequestReleaseSignificanceService);
   });
 
   describe("parseConventionalSubject", () => {

@@ -9,7 +9,7 @@ import { LoggerService } from "@codebase/observability";
 
 import { CONTENT_LINE_OCTETS } from "./calendar.constants";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { Environment, Input } from "../input/input.types";
 import type {
   BuildCalendarFileContentParameters,
@@ -71,11 +71,8 @@ END:${kind}`;
   }
 
   /**
-   * Generates a VTIMEZONE definition from the IANA rules in moment-timezone.
-   *
-   * Emits an initial observance for the offset in force at the start of the
-   * covered years, followed by one explicit observance per transition within
-   * them, so every zone gets valid STANDARD and DAYLIGHT components.
+   * Generates a VTIMEZONE from moment-timezone rules, with an initial observance
+   * then one per transition in the covered years.
    */
   private buildTimezoneContent(
     timezone: string,
@@ -135,10 +132,8 @@ END:VTIMEZONE`;
   }
 
   /**
-   * Folds one content line into chunks of at most 75 octets (RFC 5545 §3.1).
-   *
-   * Each continuation chunk starts with a single space, which counts toward its
-   * 75 octets. Chunks break between code points, never inside a UTF-8 sequence.
+   * Folds a content line into chunks of at most 75 octets (RFC 5545 §3.1),
+   * breaking between code points, never inside a UTF-8 sequence.
    */
   private foldContentLine(line: string): string[] {
     const chunks: string[] = [];
@@ -159,11 +154,8 @@ END:VTIMEZONE`;
   }
 
   /**
-   * Formats an event instant for DTSTART or DTEND.
-   *
-   * Uses the zone's local time with a TZID, except in the repeated fall-back
-   * hour, where one local time names two instants and a UTC instant keeps the
-   * true one.
+   * Formats DTSTART or DTEND: a zoned local time, or UTC inside the repeated
+   * fall-back hour, where a local time names two instants.
    */
   private formatEventTime(
     name: "DTEND" | "DTSTART",
@@ -211,12 +203,8 @@ END:VTIMEZONE`;
   }
 
   /**
-   * Converts a single event to VEVENT format for iCalendar inclusion.
-   *
-   * Generates an RFC 5545-compliant VEVENT component. UIDs are deterministic based on
-   * event content to ensure idempotent imports.
-   *
-   * @see {@link buildFileContent} for VCALENDAR container generation
+   * Converts an event to a VEVENT for inclusion; UIDs are deterministic so
+   * re-imports are idempotent.
    */
   buildEventContent(
     event: DetectedCalendarEvent,
@@ -237,29 +225,7 @@ END:VEVENT`;
   }
 
   /**
-   * Generates a complete iCalendar (ICS) file from an array of events.
-   *
-   * Creates an RFC 5545-compliant VCALENDAR container with VTIMEZONE and VEVENT components.
-   *
-   *
-   * @see {@link buildEventContent} for individual VEVENT generation
-   *
-   * @example
-   * ```typescript
-   * const service = new CalendarService();
-   * const calendar = service.buildFileContent({
-   *   events: [{
-   *     start: moment.utc('2026-01-21T14:23:00'),
-   *     end: moment.utc('2026-01-21T14:23:00'),
-   *     summary: '☽☌♃ Moon Conjunction Jupiter',
-   *     description: 'Exact: 2026-01-21 14:23 EST',
-   *     tags: ['aspects', 'major', 'moon'],
-   *   }],
-   *   name: 'Astronomical Events',
-   *   description: 'Caelundas astronomical calendar',
-   *   timezone: 'America/New_York',
-   * });
-   * ```
+   * Generates an RFC 5545 VCALENDAR with its VTIMEZONE and VEVENT components.
    */
   buildFileContent(parameters: BuildCalendarFileContentParameters): string {
     const { description, events, name, timezone } = parameters;
@@ -307,12 +273,8 @@ END:VCALENDAR
   }
 
   /**
-   * Serializes calendar events to an ICS file and writes it to the output directory.
-   *
-   * The filename encodes the input date range as `caelundas_<start>_<end>.ics` with
-   * `YYYY-MM-DD` dates. The output directory is read from the `OUTPUT_DIRECTORY`
-   * environment variable, defaulting to `./output`, and is created when missing.
-   *
+   * Writes events to a `.ics` file named by the input's `YYYY-MM-DD` dates, in
+   * `OUTPUT_DIRECTORY` (default `./output`).
    */
   async write(events: DetectedCalendarEvent[], input: Input): Promise<void> {
     const calendarFilename = `caelundas_${input.start.format("YYYY-MM-DD")}_${input.end.format("YYYY-MM-DD")}.ics`;
@@ -345,10 +307,7 @@ END:VCALENDAR
   }
 
   /**
-   * Serializes calendar events to a JSON file beside the ICS file.
-   *
-   * The file is named like the ICS file, with a `.json` extension, and holds
-   * one object per event with its times in ISO 8601.
+   * Writes events to a JSON file beside the ICS file, with times in ISO 8601.
    */
   async writeJson(
     events: DetectedCalendarEvent[],

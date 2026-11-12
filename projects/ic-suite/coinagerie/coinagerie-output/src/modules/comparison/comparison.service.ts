@@ -35,9 +35,7 @@ export class ComparisonService {
   }
 
   /**
-   * The glossary as `--write` leaves it: exactly the vocabulary, sorted, each
-   * word keeping the definition it had and a new word starting empty. Stale
-   * words are dropped with their definitions.
+   * The glossary `--write` leaves: exactly the vocabulary, sorted, keeping each kept word's definition. Stale words go with theirs.
    */
   reconcile(words: string[], glossary: Glossary): Glossary {
     return new Map(

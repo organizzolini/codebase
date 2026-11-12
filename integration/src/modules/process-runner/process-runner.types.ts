@@ -8,5 +8,11 @@ export interface CapturedProcess {
   stdout: string;
 }
 
+/** Where a child process runs: its working directory and environment. */
+export interface CaptureLocation {
+  readonly cwd?: string;
+  readonly env?: NodeJS.ProcessEnv;
+}
+
 /** A program and its arguments, run with no shell between. */
 export type Command = readonly [executable: string, ...args: string[]];

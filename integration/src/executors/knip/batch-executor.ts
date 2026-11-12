@@ -9,21 +9,15 @@ import type {
   KnipTaskResult,
 } from "./knip.types";
 
-/** A task of a batch whose workspace is known, ready to be judged. */
+/** A batch task whose workspace is known, ready to judge. */
 interface BatchedTask {
   readonly id: string;
   readonly root: string;
 }
 
 /**
- * Judges every knip task Nx batched from one run per configuration.
- *
- * One `knip --workspace` per project loaded the whole repository's module
- * graph each time, which is most of what a run costs: about 7 to 15 seconds
- * each against 28 for every workspace together. Each task still passes, fails
- * and is cached by itself — Nx hashes and replays batched tasks one by one.
- * A task asked to fix is run on its own, and one whose project the graph does
- * not know fails alone.
+ * Judges the knip tasks Nx batched, with one knip run per configuration.
+ * Each task passes, fails and caches by itself; fixes run alone.
  */
 export default async function knipBatchExecutor(
   ...[taskGraph, options, overrides, context]: KnipBatchExecutorArguments
@@ -67,12 +61,8 @@ export default async function knipBatchExecutor(
 }
 
 /**
- * Gets a failed task's own report by running its workspace alone.
- *
- * A batch knows which workspace an issue is in but reads JSON, so the failing
- * workspace is run again by itself to get exactly what knip prints on the
- * command line. A second run that passes does not clear the task: the batch
- * found an issue there, so the disagreement is stated beside what was printed.
+ * Reruns a failed workspace alone for knip's own printed report.
+ * A batch that found an issue stays failed even if the rerun passes.
  */
 async function explain(args: {
   configuration: string;
@@ -108,13 +98,8 @@ function failAll(
 }
 
 /**
- * Judges one configuration's tasks from a single knip run over all of their
- * workspaces.
- *
- * A task fails when an issue sits in its own workspace, and only then. Nothing
- * is read as a pass it did not earn: output that is not a report, or a failing
- * exit with no issue in any workspace asked about, fails every task, since
- * nothing says which of them the run was about.
+ * Judges one configuration's tasks from one knip run. A task fails only
+ * for an issue in its own workspace; unreadable output fails all.
  */
 async function judgeGroup(args: {
   configuration: string;
@@ -159,11 +144,8 @@ async function judgeGroup(args: {
 }
 
 /**
- * Prints what each failed task found, under the task's id.
- *
- * Nx keeps a batch task's output for the cache but does not print it, where a
- * single task's output reaches the terminal. Without this a failed task is red
- * and silent. Passing tasks print nothing.
+ * Prints each failed task's output under its id. Nx stores batch output
+ * but never prints it, so a failure would otherwise be silent.
  */
 function printFailures(results: Record<string, KnipTaskResult>): void {
   for (const [taskId, result] of Object.entries(results)) {
@@ -174,10 +156,8 @@ function printFailures(results: Record<string, KnipTaskResult>): void {
 }
 
 /**
- * Runs one task that cannot be batched, on its own, keeping what knip printed.
- *
- * A fix rewrites files, so each workspace is fixed by itself and never inside
- * a run that is also being read as a verdict.
+ * Runs one task outside any batch, keeping knip's output. A fix rewrites
+ * files, so it never joins a verdict run.
  */
 async function runAlone(args: {
   options: KnipExecutorOptions;

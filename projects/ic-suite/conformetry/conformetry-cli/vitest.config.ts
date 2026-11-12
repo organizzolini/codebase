@@ -7,14 +7,9 @@ export default mergeConfig(
   defineConfig({
     test: {
       coverage: {
-        // The integration test compiles the whole application graph, so every
-        // workspace dependency is loaded from its own `src` rather than a
-        // build. Each of those packages owns its own coverage; this allowlist
-        // is what keeps them out. It is resolved against this project root, so
-        // a pattern without `../` cannot reach a sibling package — do not
-        // restate it as an exclude keyed on the package name, because
-        // `conformetry-*` also matches `conformetry-cli` and silently drops
-        // everything measured here.
+        // Workspace dependencies measure their own coverage, so this allowlist keeps them out.
+        // Patterns resolve against this root; do not exclude by package name, since
+        // `conformetry-*` also matches `conformetry-cli` and drops everything measured here.
         exclude: ["src/**/*.test.ts"],
         include: ["src/**/*.ts"],
       },

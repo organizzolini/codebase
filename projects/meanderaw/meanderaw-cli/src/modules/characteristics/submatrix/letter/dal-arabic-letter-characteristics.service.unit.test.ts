@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,16 +7,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the د (final Arabic dal) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *  ╶┐
- * ╶─┴╴
- * ```
- */
+/** One isolated Code per orientation of the د (final form). */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -62,16 +52,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "dalFinal",
 };
 
-/**
- * Each distinct orientation of the د (isolated Arabic dal) as a Code holding
- * one isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *  ╶┐
- * ╶─┘
- * ```
- */
+/** One isolated Code per orientation of the د (isolated form). */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -120,10 +101,7 @@ const ISOLATED_FORM: LetterFormFixture = {
 const FORMS: readonly LetterFormFixture[] = [FINAL_FORM, ISOLATED_FORM];
 
 describe(DalArabicLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    DalArabicLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(DalArabicLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

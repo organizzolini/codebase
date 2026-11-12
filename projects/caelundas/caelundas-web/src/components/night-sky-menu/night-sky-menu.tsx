@@ -20,6 +20,7 @@ import {
   ANGLE_SLIDERS,
   BACKGROUND_COLORS,
   COLUMN_CLASS_NAME,
+  OPACITY_SLIDERS,
   PANEL_CLASS_NAME,
   STAR_SLIDERS,
 } from "./night-sky-menu.constants";
@@ -47,11 +48,7 @@ export interface NightSkyMenuProperties {
 // 🧩 Component
 
 /**
- * Renders the toolbar's Sky menu: every setting of the night sky behind the
- * page, read from the link and written back to it as it changes, so the sky
- * follows a control live and a link reopens the same controls. Its sections
- * sit in three columns on a wide screen, so the menu fits without scrolling,
- * and in one on a phone; the constellation picker is last, closed at first.
+ * Renders the toolbar's Sky menu: each night sky setting, read from and written back to the link as it changes.
  */
 export function NightSkyMenu(
   properties: Readonly<NightSkyMenuProperties>,
@@ -134,6 +131,11 @@ export function NightSkyMenu(
                       value={settings[control.field]}
                     />
                   ))}
+                  <NightSkySliders
+                    controls={OPACITY_SLIDERS}
+                    onValueChange={handleSettingChange}
+                    settings={settings}
+                  />
                 </NightSkySection>
                 <NightSkySection title="Stars">
                   <NightSkySliders

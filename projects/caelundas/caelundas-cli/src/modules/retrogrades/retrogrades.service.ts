@@ -19,7 +19,7 @@ import type {
   OrbitalDirection,
   RetrogradeBody,
 } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 import type { Moment } from "moment-timezone";
 
@@ -209,34 +209,7 @@ export class RetrogradesService {
   // 🌎 Public Methods
 
   /**
-   * Creates a formatted calendar event for a retrograde or direct station.
-   *
-   * Generates a calendar event with Unicode symbols and descriptive text for a
-   * planetary stationary point. Events are tagged by direction to distinguish
-   * retrograde stations from direct stations.
-   *
-   * @remarks
-   * - Summary format: `[bodySymbol] [directionSymbol] [Body] Stationary [Direction]`
-   * - Example retrograde: "☿↩️ Mercury Stationary Retrograde"
-   * - Example direct: "☿➡️ Mercury Stationary Direct"
-   * - Adds "Retrograde" or "Direct" tag based on direction
-   * - Uses Unicode astronomical symbols: ☿ (Mercury), ♀ (Venus), ♂ (Mars), ♃ (Jupiter), etc.
-   * - Direction symbols: ↩️ (retrograde), ➡️ (direct)
-   * - Logs event to console with ISO timestamp
-   *
-   * @see {@link symbolByBody} for planetary Unicode symbols
-   * @see {@link symbolByOrbitalDirection} for direction symbols
-   * @see {@link DetectedCalendarEvent} for calendar event structure
-   *
-   * @example
-   * ```typescript
-   * const event = getRetrogradeEvent({
-   *   body: "mercury",
-   *   timestamp: new Date('2026-03-15T08:30:00Z'),
-   *   direction: "retrograde"
-   * });
-   * // Returns: { summary: "☿↩️ Mercury Stationary Retrograde", start: ..., ... }
-   * ```
+   * Creates a calendar event for a retrograde or direct station, tagged by direction.
    */
   buildRetrogradeEvent(args: {
     body: RetrogradeBody;
@@ -275,34 +248,8 @@ export class RetrogradesService {
   }
 
   /**
-   * Detects retrograde and direct station events at a specific time point.
-   *
-   * Analyzes planetary motion patterns to identify stationary points where planets
-   * transition between direct and retrograde motion. Uses a sliding window of
-   * {@link MARGIN_MINUTES} to detect direction reversals in ecliptic longitude.
-   *
-   *
-   * @remarks
-   * - Checks only {@link retrogradeBodies} (Mercury through Pluto, excluding Sun/Moon)
-   * - Uses ±{@link MARGIN_MINUTES} window for robust direction change detection
-   * - **Stationary Retrograde**: Planet stops moving forward and begins backward motion
-   * - **Stationary Direct**: Planet stops retrograde motion and resumes forward motion
-   * - Detection looks for local extrema (turning points) in longitude time series
-   * - Returns empty array if no stations detected at this time
-   *
-   * @see {@link isRetrograde} for retrograde station detection algorithm
-   * @see {@link isDirect} for direct station detection algorithm
-   * @see {@link buildRetrogradeEvent} for event formatting
-   * @see {@link retrogradeBodies} for list of bodies that can go retrograde
-   *
-   * @example
-   * ```typescript
-   * const events = getRetrogradeEvents({
-   *   coordinateEphemerisByBody: ephemerides,
-   *   currentMinute: moment('2026-03-15T08:30:00Z')
-   * });
-   * // Returns: [{ summary: "☿↩️ Mercury Stationary Retrograde", start: ..., ... }]
-   * ```
+   * Detects retrograde and direct station events at a time point from ecliptic longitude turning points.
+   * @see {@link retrogradeBodies} for the bodies checked
    */
   detect(args: {
     coordinateEphemerisByBody: Record<RetrogradeBody, CoordinateEphemeris>;
@@ -320,39 +267,8 @@ export class RetrogradesService {
   }
 
   /**
-   * Generates progressive events showing retrograde periods for each planet.
-   *
-   * Pairs "Stationary Retrograde" and "Stationary Direct" events for each planet
-   * to create progressive events spanning the retrograde period. This shows the full
-   * span of time when a planet appears to move backward.
-   *
-   *
-   * @remarks
-   * - Filters to events with "Direction" tag
-   * - Processes each planet separately (retrograde periods don't overlap between planets)
-   * - Pairs retrograde stations (beginnings) with direct stations (endings)
-   * - Skips unpaired events (e.g., retrograde still active at end of range)
-   * - Progressive events use "Retrogrades" tag (plural) vs "Retrograde" for stations
-   * - Summary format: `[bodySymbol] ↩️ [Body] Retrograde`
-   *
-   * @see {@link pairProgressiveEvents} for pairing algorithm
-   * @see {@link getRetrogradeDurationEvent} for event formatting
-   * @see {@link retrogradeBodies} for planets that can go retrograde
-   *
-   * @example
-   * ```typescript
-   * const allEvents = [
-   *   { description: "Mercury Stationary Retrograde", start: Mar 15, ... },
-   *   { description: "Mercury Stationary Direct", start: Apr 8, ... },
-   *   { description: "Venus Stationary Retrograde", start: Jul 22, ... },
-   *   { description: "Venus Stationary Direct", start: Sep 3, ... }
-   * ];
-   * const durations = getRetrogradeProgressiveEvents(allEvents);
-   * // Returns: [
-   * //   { summary: "☿↩️ Mercury Retrograde", start: Mar 15, end: Apr 8, ... },
-   * //   { summary: "♀↩️ Venus Retrograde", start: Jul 22, end: Sep 3, ... }
-   * // ]
-   * ```
+   * Pairs retrograde and direct stations per planet into progressive events spanning each retrograde period.
+   * @see {@link pairProgressiveEvents} for the pairing algorithm
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     const progressiveEvents: DetectedCalendarEvent[] = [];

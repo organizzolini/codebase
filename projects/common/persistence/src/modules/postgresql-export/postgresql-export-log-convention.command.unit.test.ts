@@ -1,17 +1,17 @@
-import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { useTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { mockProcesses } from "../../../testing/mocks";
 
 import type * as PostgresqlExportConstants from "./postgresql-export.constants";
 
-vi.mock("node:child_process", async () => {
-  const { childProcessMock } = await import("../../../testing/mocks");
-  return childProcessMock;
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockPostgresChildProcess } = await import("../../../testing/mocks");
+  return mockPostgresChildProcess(await importOriginal());
 });
 
 /** The plan with one line appended that breaks the logging convention. */
@@ -29,15 +29,9 @@ vi.mock("./postgresql-export.constants", async (importOriginal) => {
 });
 
 describe("postgresql-export logging convention", () => {
-  let directory: string;
+  const directory = useTemporaryDirectory("export-convention");
 
-  beforeAll(() => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "export-convention-"));
-  });
-
-  afterAll(() => {
-    fs.rmSync(directory, { force: true, recursive: true });
-  });
+  beforeAll(() => {});
 
   it("fails a run whose log message breaks the convention, as the shipped command line does", async () => {
     mockProcesses();
@@ -51,7 +45,7 @@ describe("postgresql-export logging convention", () => {
         "fixture.widgets",
         "--data",
         "--file",
-        path.join(directory, "fixture.dump"),
+        path.join(directory(), "fixture.dump"),
         "--dry-run",
       ],
     });

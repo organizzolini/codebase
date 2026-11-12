@@ -1,27 +1,7 @@
 import type { CallidescopeProjectConfiguration } from "@callidescope/configuration";
 
 /**
- * What this package says about itself, as opposed to what it runs.
- *
- * Two files at this root, two roles. `callidescope.workspace.config.ts` beside
- * this one is the *workspace* configuration a run of these fixtures is handed:
- * it names the output destinations and the default limits every project the
- * run reaches falls back to. This file is this *project's*
- * own, discovered the way every project's is — by name, at the root holding the
- * `tsconfig.json` that makes it a project — and it says all four of the things
- * a project is entitled to say about itself, completely: a traced project's
- * file is its whole statement, so a field left out is refused by name.
- *
- * ## Why five
- *
- * Six is what `callidescope.workspace.config.ts` supplies as the run's own
- * default. Five is one tighter, and the difference is the example:
- * `examples/project-depth-limit` is a six-frame chain that is a finding under
- * this package's five and would pass under the run's own six — nothing about
- * the code differs, only which file the number is written in.
- *
- * @see examples/project-depth-limit/README.md — the limit, and what it changed
- * @see examples/declared-entry-points/README.md — the address, and the kind
+ * Complete configuration. Five is one tighter than the workspace's six.
  */
 const callidescopeConfiguration: CallidescopeProjectConfiguration = {
   entryPoints: {

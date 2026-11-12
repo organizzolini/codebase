@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationFileService } from "../configuration/configuration-file.service";
 import { DEFAULT_EXCLUDE_GLOBS } from "../configuration/configuration.constants";
@@ -21,12 +22,13 @@ describe(FlagResolutionService, () => {
   let service: FlagResolutionService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [ConfigurationFileService, FlagResolutionService],
-    }).compile();
+    const { instance, module } = await buildTestingModule(
+      FlagResolutionService,
+      { providers: [ConfigurationFileService] },
+    );
 
     configurationService = await module.resolve(ConfigurationFileService);
-    service = await module.resolve(FlagResolutionService);
+    service = instance;
   });
 
   /** A configuration declaring every value a flag may override. */
@@ -72,8 +74,12 @@ describe(FlagResolutionService, () => {
       flags: args.flags,
     });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(FlagResolutionService, {
+      providers: [ConfigurationFileService],
+    });
+
+    expect(instance).toBeInstanceOf(FlagResolutionService);
   });
 
   // 🎛️ One case per flag, against the documented precedence rule

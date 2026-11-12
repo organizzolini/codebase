@@ -19,7 +19,7 @@ import type {
   Body,
   QuintupleAspect,
 } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type {
   BuildQuintupleEventParameters,
   ComposePentagramsArguments,
@@ -200,10 +200,7 @@ export class QuintupleAspectsComposerService {
   }
 
   /**
-   * Composes Pentagram patterns from stored 2-body aspects.
-   *
-   * A Pentagram is an extremely rare configuration of 5 bodies forming
-   * a 5-pointed star with 5 quintile aspects (72° each).
+   * Composes Pentagram patterns, five bodies joined by five quintile aspects, from stored 2-body aspects.
    */
   composePentagrams(args: ComposePentagramsArguments): DetectedCalendarEvent[] {
     const { currentAspectBodies, minute, previousAspectBodies } = args;
@@ -246,10 +243,7 @@ export class QuintupleAspectsComposerService {
   }
 
   /**
-   * Checks if 5 bodies form a valid pentagram pattern (5-pointed star).
-   *
-   * A pentagram consists of 5 bodies where each body connects to exactly
-   * 2 others via quintile aspects (72°), forming a 5-pointed star shape.
+   * Checks whether 5 bodies form a pentagram: each connects to exactly two others by quintile aspects.
    */
   findPentagramPattern(bodies: Body[], edges: AspectBodies[]): Body[] | null {
     const connections = this.buildQuintileConnections(bodies, edges);

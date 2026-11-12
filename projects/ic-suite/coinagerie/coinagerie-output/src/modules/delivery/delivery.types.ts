@@ -16,15 +16,7 @@ export interface DeliveryResult extends GlossaryDifference {
   written: boolean;
 }
 
-/**
- * What every glossary format provides to delivery: reading a glossary out of
- * a file's content, and writing one back into it.
- *
- * `read` is handed `undefined` for a file that does not exist, returns
- * `undefined` when the content holds no glossary yet, and throws
- * `MalformedGlossaryError` when it holds one it cannot fully parse. `write`
- * returns the file's whole new content, keeping whatever else the file held.
- */
+/** Reads and writes a glossary; `read` throws if content cannot be parsed. */
 export interface GlossaryFormatHandler {
   read(content: string | undefined, filePath: string): Glossary | undefined;
   write(args: WriteGlossaryArguments): string;

@@ -1,3 +1,5 @@
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
 import { CharacteristicContextService } from "../src/modules/characteristics/characteristic-context.service";
 import { LetterUtilitiesService } from "../src/modules/characteristics/submatrix/letter/letter-utilities.service";
 import { LETTER_ORIENTATION_NAMES } from "../src/modules/characteristics/submatrix/letter/letter.constants";
@@ -11,7 +13,7 @@ import type {
   SubmatrixWindow,
 } from "../src/modules/characteristics/characteristics.types";
 import type { LetterOrientationName } from "../src/modules/characteristics/submatrix/letter/letter.types";
-import type { ModuleMetadata, Type } from "@nestjs/common";
+import type { Type } from "@nestjs/common";
 
 /**
  * Compiles one letter service for its unit test and reads its sixteen
@@ -23,20 +25,20 @@ import type { ModuleMetadata, Type } from "@nestjs/common";
 
 // 🏷️ Types
 
-/** One alias of a letter, and every orientation name drawing the ink it reads as. */
+/** A letter alias and the orientations it reads as. */
 export interface LetterAliasFixture {
   readonly alias: string;
   readonly names: readonly LetterOrientationName[];
 }
 
-/** One positional form of a letter: the key prefix its evaluators share, each distinct orientation of its ink, and each of its aliases. */
+/** A positional form: key prefix, orientations, and aliases. */
 export interface LetterFormFixture {
   readonly aliases: readonly LetterAliasFixture[];
   readonly orientations: readonly LetterOrientationFixture[];
   readonly prefix: string;
 }
 
-/** A compiled letter service's evaluators, read by orientation name, with `form` narrowing them to one positional form's. */
+/** Evaluators read by orientation name, narrowed by `form`. */
 export interface LetterHarness extends LetterReadings {
   /** Compiles the letter service; the letter's test runs it in `beforeAll`. */
   compile(): Promise<void>;
@@ -44,21 +46,13 @@ export interface LetterHarness extends LetterReadings {
   form(prefix: string): LetterReadings;
 }
 
-/**
- * Compiles a testing module — `Test.createTestingModule(metadata).compile()`
- * — passed in by the letter's test, which owns the Nest testing dependency.
- */
-export type LetterModuleCompiler = (
-  metadata: ModuleMetadata,
-) => Promise<{ resolve<T>(type: Type<T>): Promise<T> }>;
-
-/** One distinct orientation of a letter: a Code holding one isolated copy of its ink, and every orientation name drawing that ink. */
+/** A distinct orientation, as one isolated copy's Code. */
 export interface LetterOrientationFixture {
   readonly fixture: string;
   readonly names: readonly LetterOrientationName[];
 }
 
-/** A set of sixteen orientation evaluators, read by orientation name; a reading by name throws unless exactly sixteen are selected. */
+/** Orientation evaluators read by name; exactly sixteen required. */
 export interface LetterReadings {
   /** Each orientation's count of a fixture's ink, in orientation-name order. */
   counts(
@@ -88,31 +82,28 @@ export function expectedCounts(
   ]);
 }
 
-/** Reads `service`'s evaluators back by orientation name once its `compile` — run by the test's `beforeAll` — has compiled it with `compileModule`. */
+/** Reads `service`'s evaluators back by orientation name once its `compile` — run by the test's `beforeAll` — has built its testing module. */
 export function letterHarness(
   service: Type<CharacteristicEvaluatorGroup<number>>,
-  compileModule: LetterModuleCompiler,
 ): LetterHarness {
   let contextService: CharacteristicContextService;
   let evaluators: readonly CharacteristicEvaluator<number>[] = [];
 
   const compile = async (): Promise<void> => {
-    const module = await compileModule({
+    const built = await buildTestingModule(service, {
       imports: [CodeModule, MatrixModule],
       providers: [
         CharacteristicContextService,
         LetterUtilitiesService,
         SubmatrixUtilitiesService,
-        service,
       ],
     });
 
-    contextService = await module.resolve(CharacteristicContextService);
-    const group = await module.resolve(service);
-    evaluators = group.evaluators;
+    contextService = await built.module.resolve(CharacteristicContextService);
+    evaluators = built.instance.evaluators;
   };
 
-  /** The readings of whichever evaluators `select` returns when a reading is taken, so a form narrowed before `compile` reads the compiled evaluators. */
+  /** Readings of `select`'s evaluators at read time, so compiles apply. */
   const readings = (
     select: () => readonly CharacteristicEvaluator<number>[],
   ): LetterReadings => {

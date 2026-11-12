@@ -1,6 +1,7 @@
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { environmentSchema } from "../../meanderaw-cli.constants";
 import { CodeService } from "../code/code.service";
@@ -11,29 +12,34 @@ import { EnumerationService } from "./enumeration.service";
 import { TileEnumerationService } from "./tile-enumeration.service";
 
 import type { Environment } from "./enumeration.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 /** Builds a fresh {@link EnumerationService} against a configured environment, defaulting to today's unconfigured values. */
 async function createService(
   overrides: Partial<Environment> = {},
 ): Promise<EnumerationService> {
   const environment = environmentSchema.parse(overrides);
-  const module = await Test.createTestingModule({
+  const { instance } = await buildTestingModule(
+    EnumerationService,
+    moduleOptions((key) => environment[key]),
+  );
+
+  return instance;
+}
+
+/** What the service is built with: its collaborators, and a configuration that answers `get` as `read` does. */
+function moduleOptions(
+  read: (key: keyof Environment) => unknown,
+): TestingModuleOptions {
+  return {
     providers: [
       CodeService,
-      EnumerationService,
       SymmetryService,
-      TileService,
       TileEnumerationService,
-      {
-        provide: ConfigService,
-        useValue: {
-          get: (key: keyof Environment) => environment[key],
-        },
-      },
+      TileService,
+      { provide: ConfigService, useValue: { get: read } },
     ],
-  }).compile();
-
-  return module.resolve(EnumerationService);
+  };
 }
 
 // 🧪 Tests
@@ -43,36 +49,28 @@ describe(EnumerationService, () => {
 
   beforeAll(async () => {
     const environment = environmentSchema.parse({});
-    const module = await Test.createTestingModule({
-      providers: [
-        CodeService,
-        EnumerationService,
-        SymmetryService,
-        TileService,
-        TileEnumerationService,
-        {
-          provide: ConfigService,
-          useValue: {
-            get: (key: keyof Environment) => environment[key],
-          },
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      EnumerationService,
+      moduleOptions((key) => environment[key]),
+    );
 
-    service = await module.resolve(EnumerationService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const environment = environmentSchema.parse({});
+    const { instance } = await buildTestingModule(
+      EnumerationService,
+      moduleOptions((key) => environment[key]),
+    );
+
+    expect(instance).toBeInstanceOf(EnumerationService);
   });
 
   describe("shapes", () => {
-    // 🎯 The whole draw run, as the two numbers that decide it: the edge budget,
+    // 🎯 The whole draw run, as the two numbers that decide it: the edge budget
     // and the shallowest repeat worth walking. Eleven of these twenty-five
-    // shapes are the ones the `mosaic` half of the corpus already commits;
-    // the rest are what a budget of twenty-four admits past that generator's own
-    // row and column ceilings — eight columns at two rows, and single
-    // columns down to twelve rows.
+    // shapes are the `mosaic` corpus's own; the rest are what the budget admits.
     it("draws every shape the edge budget admits, from the shallowest repeat upward", () => {
       expect(
         service.shapes().map(({ columns, rows }) => `${rows}r${columns}c`),
@@ -170,20 +168,10 @@ describe(EnumerationService, () => {
     // this exercises the `??` fallback in isolation, as defensive coding
     // against `ConfigService`'s own loosely-typed `get` signature.
     it("falls back to unbounded rows and columns when the environment leaves them unset", async () => {
-      const module = await Test.createTestingModule({
-        providers: [
-          CodeService,
-          EnumerationService,
-          SymmetryService,
-          TileService,
-          TileEnumerationService,
-          {
-            provide: ConfigService,
-            useValue: { get: () => undefined },
-          },
-        ],
-      }).compile();
-      const unset = await module.resolve(EnumerationService);
+      const { instance: unset } = await buildTestingModule(
+        EnumerationService,
+        moduleOptions(() => undefined),
+      );
 
       expect(unset.shapes()).toStrictEqual(service.shapes());
     });
@@ -208,12 +196,10 @@ describe(EnumerationService, () => {
       },
     );
 
-    // 🎯 The whole space at its smallest shape, spelled out: two inked dots,
-    // one vertical bar, one wrapped rule, a bar beside a rule, two rules —
-    // which is the `lines` region — and every edge there is, which is
-    // `mesh`. The order is the canonical edge key's, which is what makes the
-    // draw run stable across runs rather than dependent on which member of a
-    // symmetry class the walk happened to reach first.
+    // 🎯 The whole space at its smallest shape: two dots, a vertical bar, a
+    // wrapped rule, a bar beside a rule, and two rules (the `lines` region),
+    // and every edge there is (`mesh`). Canonical edge-key order keeps the
+    // draw run stable across runs.
     it("spells each one by its Code, at the shape it was enumerated at", () => {
       expect(service.enumerate({ columns: 1, rows: 2 })).toStrictEqual([
         { code: "01x02y00", columns: 1, rows: 2 },

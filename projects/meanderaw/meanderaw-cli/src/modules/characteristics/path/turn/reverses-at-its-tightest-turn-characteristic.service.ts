@@ -13,16 +13,8 @@ import type { CodeEdge } from "../../connectivity/connectivity.types";
 import type { TurnTraceMetrics } from "./reverses-at-its-tightest-turn.types";
 
 /**
- * Whether one repeat's ink reverses at its tightest possible turn: a turn
- * landing exactly one lattice step after the walk's start, or after its
- * previous turn — the verbatim port of the legacy path tracer's `hasTightU`
- * check. That elapsed-step rule, not a same-hand comparison, is what
- * "tightest" means here: two turns of *opposite* hands one step apart still
- * count, which is why this differs from `tightestTurnCountCharacteristic`'s
- * same-hand adjacency check. Always `false` when any point carries three or
- * four arms — read directly off its own digit, not off the graph
- * `ConnectivityService` builds — since a junction ends every strand before a
- * turn can be judged.
+ * Whether one repeat's ink reverses at its tightest turn, a turn one lattice step after the
+ * walk's start or its previous turn. Always `false` when any point has three or four arms.
  */
 @Injectable()
 export class ReversesAtItsTightestTurnCharacteristicService implements CharacteristicEvaluator<boolean> {
@@ -99,7 +91,7 @@ export class ReversesAtItsTightestTurnCharacteristicService implements Character
     return { currentNode, direction, nextNode, stepsSinceTurn };
   }
 
-  /** Records a turn against the metrics if it landed exactly one step after the last one, and resets the step count whenever a turn occurs. */
+  /** Records a turn against the metrics if it landed one step after the last, and resets the step count on every turn. */
   private applyTurn(
     turn: number,
     metrics: TurnTraceMetrics,

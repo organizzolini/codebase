@@ -1,9 +1,9 @@
 // ♟️ Constants
 
-/** How many times to ask whether the Docker daemon is up, a second apart. */
+/** Attempts to reach the Docker daemon, a second apart. */
 export const DOCKER_DAEMON_READINESS_ATTEMPTS = 30;
 
-/** Where the Docker daemon the setup starts writes its output, under the home directory. */
+/** Where the started Docker daemon writes its output, under home. */
 export const DOCKER_DAEMON_LOG_PATH = ".local/state/dockerd.log";
 
 /** The Nx target that starts the local Postgres container. */

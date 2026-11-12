@@ -1,8 +1,6 @@
 // ♟️ Constants
 
-/**
- * Generates the success message logged when all tarballs and CLI binaries pass verification.
- */
+/** Success message logged when every tarball and CLI binary verifies. */
 export const formatPublishablePackagesSuccessMessage = (
   packageCount: number,
   binaryCount: number,

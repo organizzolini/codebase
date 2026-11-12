@@ -1,16 +1,9 @@
+import { POSTGRES_MAXIMUM_PARAMETERS } from "../../caelundas-cli.constants";
+
 // ♟️ Constants
 
-/** The most bind parameters one SQLite statement accepts, as SQLite 3.32 and later set it. */
-export const SQLITE_MAXIMUM_PARAMETERS = 32_766;
-
-/**
- * The database columns an upsert writes, each one bind parameter per row:
- * the application generates the id and writes both audit stamps.
- */
+/** Columns an upsert binds; the database assigns id and stamps. */
 export const CALENDAR_EVENT_INSERT_COLUMNS = [
-  "id",
-  "createdAt",
-  "updatedAt",
   "color",
   "description",
   "end",
@@ -40,14 +33,14 @@ export const CALENDAR_EVENT_UPDATE_COLUMNS = [
   "timezone",
 ] as const;
 
-/** Rows per `INSERT`, sized so a batch stays under {@link SQLITE_MAXIMUM_PARAMETERS}. */
+/** Rows per `INSERT`, sized so a batch stays under {@link POSTGRES_MAXIMUM_PARAMETERS}. */
 export const CALENDAR_EVENT_BATCH_SIZE = Math.floor(
-  SQLITE_MAXIMUM_PARAMETERS / CALENDAR_EVENT_INSERT_COLUMNS.length,
+  POSTGRES_MAXIMUM_PARAMETERS / CALENDAR_EVENT_INSERT_COLUMNS.length,
 );
 
 /** Event-tag links per `INSERT`, two bind parameters each. */
 export const CALENDAR_EVENT_TAG_BATCH_SIZE = Math.floor(
-  SQLITE_MAXIMUM_PARAMETERS / 2,
+  POSTGRES_MAXIMUM_PARAMETERS / 2,
 );
 
 /** Decimal places the `latitude` and `longitude` columns store. */

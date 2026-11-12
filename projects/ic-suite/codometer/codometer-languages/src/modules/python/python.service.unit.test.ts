@@ -1,37 +1,34 @@
+import { execSync } from "node:child_process";
 import { existsSync } from "node:fs";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EMPTY_PYTHON_RESULT } from "./python.constants";
 import { PythonService } from "./python.service";
 
+import type * as Testing from "@codebase/testing";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
-const { execSyncMock } = vi.hoisted(() => ({
-  execSyncMock: vi.fn(),
-}));
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockChildProcess } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
 
-vi.mock("node:child_process", () => ({
-  execSync: execSyncMock,
-}));
+  return mockChildProcess(await importOriginal());
+});
+
+const execSyncMock = vi.mocked(execSync);
 
 describe(PythonService, () => {
   let service: PythonService;
   let loggerService: DeepMocked<LoggerService>;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PythonService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, module } = await buildTestingModule(PythonService);
 
-    service = await module.resolve(PythonService);
+    service = instance;
     loggerService = await module.resolve(LoggerService);
   });
 
@@ -39,8 +36,10 @@ describe(PythonService, () => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PythonService);
+
+    expect(instance).toBeInstanceOf(PythonService);
   });
 
   it("skips the interpreter when there are no python files", () => {

@@ -11,15 +11,7 @@ import type { ProjectGraph } from "@nx/devkit";
 /**
  * Resolves Nx project names to the directories a callidescope run traces.
  *
- * This is the whole of callidescope's Nx awareness. `callidescope-cli` and
- * `callidescope-graph` know nothing about Nx and never read a project graph;
- * they take directories. What an Nx workspace has that plain paths do not is
- * a stable name for each of those directories, and turning one into the other
- * is the only thing this package is for.
- *
- * The project graph is passed in rather than read here, so every resolution
- * rule below is testable without a workspace to build a graph from —
- * `readProjectGraph` is the one method that touches Nx at run time.
+ * Only this part of callidescope knows about Nx. The project graph is passed in, so resolution is testable without a workspace.
  */
 @Injectable()
 export class ProjectsService {
@@ -41,14 +33,8 @@ export class ProjectsService {
   }
 
   /**
-   * Collects the names of every project carrying any of the given tags, and
-   * the tags nothing carries.
-   *
-   * Any of them rather than all of them. Nx tags come in families whose
-   * members are mutually exclusive on one project — nothing is both
-   * `type:application` and `type:package` — so requiring every tag would make
-   * the common selection resolve to nothing. Any is also the reading that
-   * composes: each tag widens the set, the way naming another project does.
+   * Collects projects carrying any of the given tags, and the tags nothing carries. Any, not all,
+   * since tag families exclude each other.
    */
   private resolveTaggedNames(args: {
     projects: readonly NxProject[];
@@ -81,13 +67,8 @@ export class ProjectsService {
   }
 
   /**
-   * Lists every project the graph knows, sorted by name.
-   *
-   * A project rooted at the workspace root is kept rather than filtered out.
-   * It resolves to `.`, which `--directories` accepts, and naming it is a
-   * caller saying they mean the root program — a different thing from
-   * omitting `--directories`, which walks the workspace for every
-   * `tsconfig.json` there is.
+   * Lists every project the graph knows, sorted by name, keeping the root project,
+   * which resolves to `.`.
    */
   public readProjects(graph: ProjectGraph): NxProject[] {
     return Object.entries(graph.nodes)
@@ -100,24 +81,8 @@ export class ProjectsService {
   }
 
   /**
-   * Widens a set of project names to include everything they depend on.
-   *
-   * Dependencies, never dependents. A call stack runs downward — a command
-   * calls into the service it was injected with, which lives in a package it
-   * depends on — and those packages are what a trace of one project has to
-   * carry. Its dependents call *into* it and add no frames below it.
-   *
-   * This widens what the run is *scoped to*, not how far a stack runs:
-   * `WorkspaceService.walkImportedProjectClosure` already builds the program
-   * of every project the named directories transitively import. What the Nx
-   * graph adds is edges the compiler never read — an implicit dependency, or
-   * one that exists only at run time. Being scoped rather than merely reached
-   * costs nothing in this plugin, which writes nothing anywhere; it is the
-   * command-line host that acts on it, publishing a `README.md` section for a
-   * scoped project on a `--write` run.
-   *
-   * External `npm:` targets are dropped: they have no workspace directory to
-   * trace, and following them would mean tracing `node_modules`.
+   * Widens project names to their dependencies, not dependents, since stacks run downward.
+   * External `npm:` targets are dropped.
    */
   public resolveDependencyClosure(args: {
     graph: ProjectGraph;
@@ -156,17 +121,8 @@ export class ProjectsService {
   }
 
   /**
-   * Resolves Nx project names and tags to their workspace-relative roots.
-   *
-   * The two selections are unioned, not intersected: naming a project and
-   * naming a tag both widen what gets traced, and a project reached both ways
-   * is still one directory. Intersecting them would make `--tags` a filter on
-   * `--projects`, which would resolve to nothing whenever only one was given.
-   *
-   * Unknown names and unmatched tags are collected rather than dropped or
-   * thrown on, so one resolution reports every typo at once instead of one
-   * per run, and the caller decides whether a partial resolution is worth
-   * tracing.
+   * Resolves project names and tags to workspace-relative roots, merging them and collecting
+   * unknown names rather than throwing.
    */
   public resolveDirectories(args: {
     graph: ProjectGraph;
@@ -185,12 +141,8 @@ export class ProjectsService {
   }
 
   /**
-   * Resolves names and tags to the project names they stand for.
-   *
-   * Separate from `resolveDirectories` because a directory is the last step,
-   * not the only one: widening a selection along the Nx dependency graph
-   * happens between the two, and it happens in names, which is the only
-   * vocabulary the project graph speaks.
+   * Resolves names and tags to project names, kept separate from directories because widening
+   * happens in names.
    */
   public resolveProjectNames(args: {
     graph: ProjectGraph;

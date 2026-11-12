@@ -29,18 +29,11 @@ import type {
 } from "./import-pr-task-cache.types";
 
 /**
- * Imports the Nx task cache the pull request's own run uploaded, into a merge
- * group's run.
+ * Imports the Nx task cache a pull request's run uploaded into a merge group's
+ * run, since a merge group cannot read those caches.
  *
- * A merge group runs on a ref of its own, which can read `main`'s caches and
- * its own, never the pull request's, so without this its tasks run twice. A
- * workflow artifact is readable by any run in the repository, so the pull
- * request's run uploads its cache as one (see `cleanup-codebase`) and this
- * downloads it with `gh` and `unzip`.
- *
- * Only a pull request from this repository is trusted: a fork's artifact could
- * carry results crafted for any task hash. Any other outcome, a missing
- * artifact included, ends cleanly with a cold cache.
+ * Only this repository's pull requests are trusted: a fork's artifact could
+ * carry crafted results. Any other outcome leaves a cold cache.
  */
 @Injectable()
 export class ImportPrTaskCacheService {
@@ -172,7 +165,7 @@ export class ImportPrTaskCacheService {
 
   /**
    * Imports the pull request's cache when this run is a merge group's. Never
-   * throws: every failure is the warning that the run goes on cold.
+   * throws; a failure is only a warning.
    */
   public import(): TaskDatabaseReport {
     const runnerTemporary = this.read("RUNNER_TEMP");

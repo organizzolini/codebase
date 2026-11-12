@@ -1,5 +1,10 @@
-import { Test } from "@nestjs/testing";
+import { Injectable } from "@nestjs/common";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import {
+  buildTestingModule,
+  expectModuleExports,
+} from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -18,10 +23,16 @@ import type {
   LetterScript,
 } from "./letter.types";
 
-/** An L: a stem down three points with a foot east, 2 columns by 3 rows, unchanged by no flip or turn. */
+/** A consumer module's provider that injects the shared service, which only resolves when the module exports it. */
+@Injectable()
+class Consumer {
+  constructor(readonly utilities: LetterUtilitiesService) {}
+}
+
+/** L with a three-point stem and east foot; no symmetry. */
 const L: readonly string[] = ["4.", "c.", "a1"];
 
-/** A hook turning south at its east end, 3 columns by 2 rows, a second asymmetric shape so the laws are not tuned to one template. */
+/** Hook turning south; laws are not tuned to one shape. */
 const HOOK: readonly string[] = ["235", "..8"];
 
 /** The orientation named `name`, or undefined — which no expected template or window equals — when the enumeration lacks it. */
@@ -32,7 +43,7 @@ function named(
   return orientations.find((entry) => entry.name === name);
 }
 
-/** The L drawn as a Latin letter, keyed as the real L so its keys are registered ones, with one alias on its Southeast orientation and one on its SoutheastQuarter. */
+/** Real Latin L, keyed so its keys are registered. */
 const L_LETTER: LetterDefinition = {
   aliases: {
     Southeast: "the hangul ㄴ (nieun)",
@@ -50,35 +61,25 @@ describe(LetterUtilitiesService, () => {
   let contextService: CharacteristicContextService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(LetterUtilitiesService, {
       imports: [CodeModule, MatrixModule],
-      providers: [
-        CharacteristicContextService,
-        LetterUtilitiesService,
-        SubmatrixUtilitiesService,
-      ],
-    }).compile();
+      providers: [CharacteristicContextService, SubmatrixUtilitiesService],
+    });
 
-    contextService = await module.resolve(CharacteristicContextService);
-    service = await module.resolve(LetterUtilitiesService);
+    contextService = await built.module.resolve(CharacteristicContextService);
+    service = built.instance;
   });
 
-  it("is exported by LetterCharacteristicsModule for letter services to inject", async () => {
-    const shared = Symbol("shared");
-    const module = await Test.createTestingModule({
-      imports: [LetterCharacteristicsModule],
-      providers: [
-        {
-          inject: [LetterUtilitiesService],
-          provide: shared,
-          useFactory: (
-            utilities: LetterUtilitiesService,
-          ): LetterUtilitiesService => utilities,
-        },
-      ],
-    }).compile();
+  it("is exported by LetterCharacteristicsModule for letter services to inject", () => {
+    expectModuleExports(LetterCharacteristicsModule, LetterUtilitiesService);
+  });
 
-    expect(module.get(shared)).toBeInstanceOf(LetterUtilitiesService);
+  it("lets a consumer that imports LetterCharacteristicsModule inject it", async () => {
+    const { instance } = await buildTestingModule(Consumer, {
+      imports: [LetterCharacteristicsModule],
+    });
+
+    expect(instance.utilities).toBeInstanceOf(LetterUtilitiesService);
   });
 
   it("mirrors a template east to west, swapping east and west arms", () => {

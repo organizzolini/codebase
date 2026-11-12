@@ -7,12 +7,11 @@ import type { CallableDeclaration } from "./callables.types";
 import type { CallableKind, SourceLocation } from "@callidescope/core";
 
 /**
- * Gives every callable a stable identifier and a name a report can print.
+ * Gives every callable a stable identifier and a printable name.
  *
  * The identifier is the file path plus the declaration's start offset, not its
- * line. Two callables share a line often — an arrow property and the statement
- * holding it do — but exactly one declaration can begin at one offset, so an
- * offset cannot collide the way a line can.
+ * line. Two callables often share a line, but only one declaration begins at an
+ * offset, so offsets cannot collide.
  */
 @Injectable()
 export class CallableIdentityService {
@@ -27,10 +26,8 @@ export class CallableIdentityService {
   // 🔏 Private Methods
 
   /**
-   * Names a function literal by the call it was passed to.
-   *
-   * `ExampleService.load → map(…)` reads far better in a stack than
-   * `anonymous`, and it is the only name a callback ever really has.
+   * Names a function literal by the call it was passed to, such as
+   * `ExampleService.load → map(…)`.
    */
   private describeCallbackArgument(node: ts.Node): string | undefined {
     const { parent } = node;
@@ -63,10 +60,8 @@ export class CallableIdentityService {
   // 🌎 Public Methods
 
   /**
-   * Classifies a function literal by whatever binds it.
-   *
-   * A literal has no shape of its own worth naming — what it is depends
-   * entirely on where it was written down.
+   * Classifies a function literal by whatever binds it, since a literal has no
+   * worthwhile name of its own.
    */
   private readBoundKind(parent: ts.Node): CallableKind {
     if (ts.isPropertyDeclaration(parent)) {
@@ -99,14 +94,7 @@ export class CallableIdentityService {
 
   /**
    * True when a declaration is reachable from outside its own file.
-   *
-   * Three shapes carry the keyword, and only one of them carries it on the
-   * declaration the graph holds. A method's `export` sits on its class, and an
-   * arrow constant's sits on the variable statement above the arrow — the shape
-   * a React component, an anchor builder, and most barrel exports are written
-   * in. Reading the arrow's own modifiers alone leaves every one of them
-   * looking unexported, and so promoted as an orphan rather than classified as
-   * the barrel export it is.
+   * The keyword may sit on the variable statement, not the arrow.
    */
   public isExported(declaration: CallableDeclaration): boolean {
     const modifierFlags = ts.getCombinedModifierFlags(declaration);

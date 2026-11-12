@@ -5,51 +5,25 @@ import {
 import { ConfigurationService } from "@codependix/configuration";
 import { PathQueryService, ReportingService } from "@codependix/output";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { captureExitCode, captureOutput } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PathCommand } from "./path.command";
 import { PATH_MISSING_ARGUMENTS_ERROR } from "./path.constants";
 
+import type { LoggerService } from "@codebase/observability";
+
 describe(PathCommand, () => {
+  let readExitCode: () => typeof process.exitCode;
   let command: PathCommand;
   let configurationService: ConfigurationService;
   let loggerService: LoggerService;
   let pathQueryService: PathQueryService;
   let reportingService: ReportingService;
   let runContextService: RunContextService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PathCommand,
-        {
-          provide: ConfigurationService,
-          useValue: createMock<ConfigurationService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: PathQueryService,
-          useValue: createMock<PathQueryService>(),
-        },
-        {
-          provide: ReportingService,
-          useValue: createMock<ReportingService>(),
-        },
-        {
-          provide: RunContextService,
-          useValue: createMock<RunContextService>(),
-        },
-      ],
-    }).compile();
-
-    command = await module.resolve(PathCommand);
-  });
 
   beforeEach(() => {
     configurationService = createMock<ConfigurationService>();
@@ -95,43 +69,31 @@ describe(PathCommand, () => {
       runContextService,
     );
 
-    process.exitCode = 0;
+    readExitCode = captureExitCode();
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PathCommand, {
+      mocks: [
+        ConfigurationService,
+        PathQueryService,
+        ReportingService,
+        RunContextService,
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(PathCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PathCommand,
-        {
-          provide: ConfigurationService,
-          useValue: createMock<ConfigurationService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: PathQueryService,
-          useValue: createMock<PathQueryService>(),
-        },
-        {
-          provide: ReportingService,
-          useValue: createMock<ReportingService>(),
-        },
-        {
-          provide: RunContextService,
-          useValue: createMock<RunContextService>(),
-        },
+    await expectLoggerContext(PathCommand, {
+      mocks: [
+        ConfigurationService,
+        PathQueryService,
+        ReportingService,
+        RunContextService,
       ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("PathCommand");
+    });
   });
 
   describe("parsing options", () => {
@@ -189,7 +151,7 @@ describe(PathCommand, () => {
         undefined,
         { reasons: [PATH_MISSING_ARGUMENTS_ERROR] },
       );
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
     });
 
     it("rejects when format is invalid", async () => {
@@ -204,11 +166,11 @@ describe(PathCommand, () => {
           ],
         },
       );
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
     });
 
     it("executes query and prints report to stdout", async () => {
-      const writeSpy = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+      const output = captureOutput();
       const mockContext = createMock<GraphRunContext>();
       vi.mocked(runContextService.build).mockResolvedValue(mockContext);
       vi.mocked(pathQueryService.query).mockResolvedValue({
@@ -239,12 +201,8 @@ describe(PathCommand, () => {
         from: "app",
         to: "lib",
       });
-      expect(writeSpy).toHaveBeenCalledWith(
-        expect.stringContaining("`app` → `lib`"),
-      );
-      expect(process.exitCode).toBe(0);
-
-      writeSpy.mockRestore();
+      expect(output.stdout()).toContain("`app` → `lib`");
+      expect(readExitCode() ?? 0).toBe(0);
     });
 
     it("reports a refused configuration path without building a context", async () => {

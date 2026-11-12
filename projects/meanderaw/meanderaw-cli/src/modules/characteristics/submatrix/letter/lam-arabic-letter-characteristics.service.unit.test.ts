@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,18 +7,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the ل (final Arabic lam) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *   ╷
- *   │
- * ╷ │
- * └─┴╴
- * ```
- */
+/** One isolated Code per orientation of the ل (final form). */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [],
   orientations: [
@@ -59,18 +47,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "lamFinal",
 };
 
-/**
- * Each distinct orientation of the ل (initial Arabic lam) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *  ╷
- *  │
- *  │
- * ╶┘
- * ```
- */
+/** One isolated Code per orientation of the ل (initial form). */
 const INITIAL_FORM: LetterFormFixture = {
   aliases: [],
   orientations: [
@@ -110,18 +87,7 @@ const INITIAL_FORM: LetterFormFixture = {
   prefix: "lamInitial",
 };
 
-/**
- * Each distinct orientation of the ل (isolated Arabic lam) as a Code holding
- * one isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *   ╷
- *   │
- * ╷ │
- * └─┘
- * ```
- */
+/** One isolated Code per orientation of the ل (isolated form). */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [],
   orientations: [
@@ -161,18 +127,7 @@ const ISOLATED_FORM: LetterFormFixture = {
   prefix: "lamIsolated",
 };
 
-/**
- * Each distinct orientation of the ل (medial Arabic lam) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *  ╷
- *  │
- *  │
- * ╶┴╴
- * ```
- */
+/** One isolated Code per orientation of the ل (medial form). */
 const MEDIAL_FORM: LetterFormFixture = {
   aliases: [],
   orientations: [
@@ -215,10 +170,7 @@ const FORMS: readonly LetterFormFixture[] = [
 ];
 
 describe(LamArabicLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    LamArabicLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(LamArabicLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

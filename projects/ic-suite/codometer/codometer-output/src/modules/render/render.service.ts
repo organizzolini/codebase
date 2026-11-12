@@ -37,12 +37,7 @@ export class RenderService {
   }
 
   /**
-   * Whether a project's block should open expanded.
-   *
-   * A breach or a measurement failure must never sit behind a click, so those
-   * two are the only reasons a block starts open. Everything else — a metric
-   * that merely changed — is exactly the kind of thing a collapsed block
-   * exists to keep off the screen by default.
+   * Whether a project's block opens expanded. Only a breach or a failure opens it; a metric that merely changed stays collapsed.
    */
   private readIsOpen(
     rows: readonly MetricRow[],
@@ -61,8 +56,7 @@ export class RenderService {
   }
 
   /**
-   * Picks the icon for one row, in priority order: a row that disappeared or
-   * matched nothing outranks a breach, and a breach outranks plain growth.
+   * Picks the icon for one row: removed outranks empty, which outranks a breach, which outranks plain growth.
    */
   private readStatus(row: MetricRow): string {
     if (row.removed) return "🗑️";
@@ -79,12 +73,7 @@ export class RenderService {
   }
 
   /**
-   * Names everything the run could not do, above the table rather than below.
-   *
-   * A failed target produces no row at all, so without this a project's block
-   * can be empty of rows and still have something to say. A failure is
-   * neither a breach nor staleness — it is the run not having finished — so it
-   * is reported as its own thing and never folded into a metric's value.
+   * Names what the run could not do, above the table. A failed target has no row, so this is the only place it appears.
    */
   private renderFailures(failures: readonly ProjectFailure[]): string[] {
     if (failures.length === 0) return [];

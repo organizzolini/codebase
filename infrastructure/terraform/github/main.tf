@@ -4,7 +4,7 @@ terraform {
   # Same Linode Object Storage bucket and backend settings as the openrouter
   # root; see its main.tf. Only the state key differs.
   backend "s3" {
-    key    = "codebase/github.tfstate"
+    key    = "github.tfstate"
     region = "us-east-1"
 
     skip_credentials_validation = true
@@ -39,7 +39,7 @@ data "terraform_remote_state" "openrouter" {
 
   config = {
     bucket = var.state_bucket
-    key    = "codebase/terraform.tfstate"
+    key    = "openrouter.tfstate"
     region = "us-east-1"
 
     skip_credentials_validation = true
@@ -66,7 +66,7 @@ data "terraform_remote_state" "linode" {
 
   config = {
     bucket = var.state_bucket
-    key    = "codebase/linode.tfstate"
+    key    = "linode.tfstate"
     region = "us-east-1"
 
     skip_credentials_validation = true
@@ -77,10 +77,9 @@ data "terraform_remote_state" "linode" {
   }
 }
 
-# Where the shared Nx cache lives, read by CI as NX_SHARED_CACHE_REMOTE_*. The
-# region is the one the state backends already sign with. Every read of the
-# linode outputs is wrapped in `try`: a pull request plans before the linode
-# root has applied its new outputs, and an apply always runs linode first.
+# Where the shared Nx cache lives, read by CI as NX_SHARED_CACHE_REMOTE_*. Every read
+# of the linode outputs is wrapped in `try`, since a pull request can plan before the
+# linode root has applied its new outputs.
 resource "github_actions_variable" "nx_cache_bucket" {
   repository    = var.repository
   variable_name = "NX_CACHE_BUCKET"
@@ -196,13 +195,9 @@ resource "github_repository_vulnerability_alerts" "codebase" {
   enabled    = true
 }
 
-# The ruleset on the default branch, imported as it is configured.
-#
-# The provider cannot express two parts of it: the `code_quality` rule and
-# `require_extra_approval_for_unattributed_changes` on the pull request rule.
-# GitHub replaces a ruleset's rules whenever it is updated, so
-# `terraform_data.main_ruleset_unsupported_rules` patches both back through the
-# GitHub REST API whenever `github_repository_ruleset.main.rules` changes.
+# The ruleset on the default branch, imported as configured. The provider cannot express
+# two parts of it, so `terraform_data.main_ruleset_unsupported_rules` patches them back
+# through the REST API, since GitHub replaces the rules whenever the ruleset is updated.
 import {
   to = github_repository_ruleset.main
   id = "${var.repository}:12030459"
@@ -213,16 +208,13 @@ locals {
   github_actions_integration_id = 15368
 
   required_checks = [
-    "🧑‍🎨 Format",
-    "🧑‍🎓 Typecheck",
     "🕵️ Secure",
+    "🧑‍⚕️ Static",
     "💂 Guard",
     "🔭 Callidescope Restrict",
     "🕸️ Codependix Bound",
     "👔 Conformetry Validate",
     "👷 Build",
-    "🧑‍⚕️ Lint",
-    "🧟 Deprecate",
     "🤵 Publishable Packages",
     "🧑‍🚀 Infrastructure",
     "🧑‍🏭 Devcontainer",

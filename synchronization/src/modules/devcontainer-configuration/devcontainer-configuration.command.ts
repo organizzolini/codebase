@@ -102,13 +102,8 @@ export class DevcontainerConfigurationCommand
   }
 
   /**
-   * Whether the cloud file already holds the merged configuration.
-   *
-   * Compared as parsed values rather than as text, so how the formatter laid
-   * the JSON out never reads as drift. Write mode asks the same question before
-   * rewriting anything, which is what stops a write from producing a diff a
-   * check had already passed: `JSON.stringify` puts every array element on its
-   * own line, and the formatter then collapses the short ones back.
+   * Whether the cloud file already holds the merged configuration, compared as
+   * parsed values so formatting never reads as drift.
    */
   private isCurrent(
     expectedConfig: DevcontainerConfiguration,
@@ -232,12 +227,8 @@ export class DevcontainerConfigurationCommand
   }
 
   /**
-   * Rewrites the cloud file, unless it already holds what a write would put there.
-   *
-   * The same comparison check mode makes, asked before writing rather than
-   * instead of writing. A write that rewrote regardless produced a diff on
-   * every run that check had already passed, so the two modes disagreed about
-   * the same file.
+   * Rewrites the cloud file unless it already holds what a write would produce,
+   * so write and check agree.
    */
   private writeWhenDrifted(
     mergedConfig: DevcontainerConfiguration,

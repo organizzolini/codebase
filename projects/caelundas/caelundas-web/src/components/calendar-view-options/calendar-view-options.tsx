@@ -12,18 +12,17 @@ import { createEventGroupFields } from "../calendar-group-by/event-group-fields.
 import { CalendarScaleSelect } from "../calendar-scale-select/calendar-scale-select";
 
 import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
+import type { EventFacet } from "../events-calendar/calendar-records.types";
 import type {
   CalendarViewName,
   TimelineScale,
 } from "../events-calendar/calendar-views.types";
-import type { EventFacet } from "../events-calendar/events-database.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The view shown, which decides what can be arranged, and the grouping and
- * scale with where to send a changed one.
+ * The view, its grouping and scale, and the change handlers.
  */
 export interface CalendarViewOptionsProperties {
   className?: string;
@@ -38,11 +37,7 @@ export interface CalendarViewOptionsProperties {
 // 🧩 Component
 
 /**
- * Renders the View menu's arrangement of the view: a Group by submenu for
- * the agenda and the timeline, which group their events, and a Scale submenu
- * for the timeline, ahead of the menu's other sections. Every other view has
- * nothing to arrange, and this draws nothing for it. It belongs inside a
- * dropdown menu.
+ * Renders the View menu's arrangement of the view: Group by for agenda and timeline, and Scale for the timeline; nothing else draws.
  */
 export function CalendarViewOptions(
   properties: Readonly<CalendarViewOptionsProperties>,

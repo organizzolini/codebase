@@ -14,10 +14,8 @@ import type {
 /**
  * Resolves generator inputs from the command line, asking for what is missing.
  *
- * Nobody passes a "may I prompt" boolean any more. It used to be threaded
- * through every method here from a `--no-interactive` flag, which put the one
- * decision that can hang the process in the hands of each caller in turn;
- * `InputPromptingService` owns it now and refuses at the prompt itself.
+ * Prompting is not a boolean argument. `InputPromptingService` owns the
+ * decision and refuses at the prompt, so no caller can hang the process.
  */
 @Injectable()
 export class InputService {
@@ -86,10 +84,7 @@ export class InputService {
   /**
    * Obtains one missing value by prompting.
    *
-   * With nobody at a terminal the two kinds of input part ways: an optional
-   * one is left out, and a required one is refused. Prompting anyway is what
-   * used to hang the process, and refusing an optional input would fail runs
-   * that never needed the value at all.
+   * Without a terminal, a required input is refused and an optional one is skipped.
    */
   private async resolveMissingValue(
     input: SchemaInput,
@@ -154,9 +149,7 @@ export class InputService {
   /**
    * Parses a threshold option as a ratio from 0 to 1.
    *
-   * Rejected loudly rather than clamped: `--threshold 90` is someone meaning
-   * 90%, and silently reading it as "always passes" would turn a typo into a
-   * validation run that can never fail.
+   * Rejected rather than clamped: `--threshold 90` would otherwise read as always passing.
    */
   public parseThresholdOption(value: string | undefined): number | undefined {
     const trimmed = this.parseOptionalOption(value);

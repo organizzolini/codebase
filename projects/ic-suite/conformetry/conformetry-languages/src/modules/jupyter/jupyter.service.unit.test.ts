@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { DifferencesService } from "../differences/differences.service";
 import { JsonComparisonService } from "../json/json-comparison.service";
@@ -66,25 +67,37 @@ describe(JupyterService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(JupyterService, {
       providers: [
         DifferencesService,
         JsonComparisonService,
         JupyterNotebookService,
-        JupyterService,
         MarkdownNodesService,
         MarkdownService,
         MarkdownTreeService,
         PythonBridgeService,
         ScoringService,
       ],
-    }).compile();
+    });
 
-    service = await module.resolve(JupyterService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(JupyterService, {
+      providers: [
+        DifferencesService,
+        JsonComparisonService,
+        JupyterNotebookService,
+        MarkdownNodesService,
+        MarkdownService,
+        MarkdownTreeService,
+        PythonBridgeService,
+        ScoringService,
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(JupyterService);
   });
 
   it("claims notebooks", () => {

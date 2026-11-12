@@ -1,20 +1,13 @@
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectGraphService } from "./aspect-graph.service";
 
 describe(AspectGraphService, () => {
-  let service: AspectGraphService;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(AspectGraphService);
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [AspectGraphService],
-    }).compile();
-
-    service = await module.resolve(AspectGraphService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(AspectGraphService);
   });
 });

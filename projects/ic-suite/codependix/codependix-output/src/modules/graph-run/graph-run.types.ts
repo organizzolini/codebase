@@ -13,82 +13,35 @@ import type {
 } from "@codependix/nestjs-modules";
 import type { Neighborhood, WorkspaceGraph } from "@codependix/nx-projects";
 
-/**
- * One graph type's whole-workspace data, captured once per run for combined
- * output — see `CombinedOutputService`.
- *
- * `json` is the same exported shape a workspace-level JSON destination would
- * receive; `markdown` is the same rendered mermaid diagram a workspace-level
- * Markdown destination would receive. Both are captured unconditionally,
- * whether or not this run's configuration names a workspace destination for
- * that graph type, so `--format`/`--json-output`/`--markdown-output` work
- * even for a workspace that configured no destination of its own.
- */
+/** One graph type's whole-workspace data, kept even without a workspace destination. */
 export interface CombinedGraphEntry {
   json: unknown;
   markdown: string;
 }
 
-/**
- * Every active graph type's whole-workspace data from one run, keyed by
- * graph type — the structure `--json-output`/`--markdown-output`/`--format`
- * read from. A type absent from this map was not active for the run — see
- * `GraphRunContext.enabledGraphTypes`.
- */
+/** Each active graph type's workspace data; absent types were not active. */
 export type CombinedGraphExports = Partial<
   Record<CodependixGraphType, CombinedGraphEntry>
 >;
 
-/**
- * The JSON shape the whole-workspace file-level import graph export is
- * written as.
- *
- * Identical in shape to `FileImportsWorkspaceGraph` itself, kept as its own
- * named type for the same reason `NxWorkspaceGraphExport` is.
- */
+/** Written JSON shape of the file-import workspace export, same as `FileImportsWorkspaceGraph`. */
 export type FileImportsWorkspaceGraphExport = FileImportsWorkspaceGraph;
 
-/**
- * One graph-type pass's outcome: the usual per-project delivery outcome,
- * plus this type's whole-workspace data for combined output.
- *
- * `workspaceEntry` is `undefined` both when the pass built no whole-workspace
- * graph of its own (`fileImports`'s Python pass, folded into the TypeScript
- * pass's own `fileImports` entry — see `GraphRunService.runImportGraphs`) and
- * when the one it owns resolved to a `"none"` target — see
- * `WorkspaceGraphsService`.
- */
+/** One graph type's pass outcome; `workspaceEntry` is undefined if not built. */
 export interface GraphTypePassOutcome extends GraphRunOutcome {
   workspaceEntry: CombinedGraphEntry | undefined;
 }
 
-/**
- * What `GraphRunService.run` resolves: the usual delivery outcome, and every
- * active graph type's whole-workspace data for combined output — see
- * `CombinedGraphExports`.
- */
+/** What `GraphRunService.run` resolves: delivery outcome and combined-output data. */
 export interface MapRunResult {
   combinedGraphs: CombinedGraphExports;
   outcome: GraphRunOutcome;
 }
 
-/**
- * The JSON shape a single project's NestJS module graph export is written as.
- *
- * Identical in shape to `NestjsModuleGraph` itself — kept as its own named
- * type so the export's JSON shape can evolve independently of
- * `codependix-nestjs-modules`'s internal representation, the same reasoning
- * `NxWorkspaceGraphExport` follows for the Nx Workspace Graph.
- */
+/** One project's NestJS module graph export, kept apart from `NestjsModuleGraph`. */
 export type NestjsModuleGraphExport = NestjsModuleGraph;
 
-/**
- * The JSON shape the whole-workspace NestJS module graph export is written
- * as.
- *
- * Identical in shape to `NestjsModulesWorkspaceGraph` itself, kept as its own
- * named type for the same reason `NxWorkspaceGraphExport` is.
- */
+/** Whole-workspace NestJS module export, kept as its own named type. */
 export type NestjsModulesWorkspaceGraphExport = NestjsModulesWorkspaceGraph;
 
 /** The JSON shape a single project's Nx neighborhood export is written as. */
@@ -99,32 +52,11 @@ export interface NxNeighborhoodExport {
   projectName: string;
 }
 
-/**
- * The JSON shape the whole-workspace Nx Workspace Graph export is written as.
- *
- * Identical in shape to `WorkspaceGraph` itself — no extra field is added the
- * way `NxNeighborhoodExport` adds none beyond `Neighborhood` either — kept as
- * its own named type so the export's JSON shape can evolve independently of
- * `codependix-nx-projects`'s internal `WorkspaceGraph` representation.
- */
+/** Whole-workspace Nx project export, kept apart from `WorkspaceGraph`. */
 export type NxWorkspaceGraphExport = WorkspaceGraph;
 
-/**
- * The JSON shape a single project's Python file-level import graph export is
- * written as.
- *
- * Identical in shape to `PythonImportGraph` itself, kept as its own named
- * type for the same reason `TypescriptImportGraphExport` is.
- */
+/** One project's Python file-level import export, kept apart from `PythonImportGraph`. */
 export type PythonImportGraphExport = PythonImportGraph;
 
-/**
- * The JSON shape a single project's TypeScript file-level import graph
- * export is written as.
- *
- * Identical in shape to `TypescriptImportGraph` itself — kept as its own
- * named type for the same reason `NestjsModuleGraphExport` is: so the
- * export's JSON shape can evolve independently of `codependix-file-imports`'s
- * internal representation.
- */
+/** One project's TypeScript file import export, kept apart from `TypescriptImportGraph`. */
 export type TypescriptImportGraphExport = TypescriptImportGraph;

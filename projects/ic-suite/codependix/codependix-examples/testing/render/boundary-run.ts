@@ -97,13 +97,7 @@ export function renderBoundaryRun(run: BoundaryRun): string {
 }
 
 /**
- * Runs the real boundary check over an example workspace and judges it.
- *
- * Everything before the check is the real run: the workspace is written out as
- * the project graph file and configuration a workspace with no Nx would
- * supply, and `RunContextService.build` reads them with `--projects` and
- * `--no-dependencies` exactly as the command does. Which projects are judged,
- * and which are built, are therefore its answers rather than a copy of them.
+ * Runs the real boundary check over an example workspace, written out as the project graph and configuration a real run reads.
  */
 export async function runBoundaryCheck(
   args: BoundaryRunArguments,

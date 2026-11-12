@@ -1,34 +1,28 @@
 // 🏷️ Types
-import type { DetectedCalendarEvent } from "../database/database.types";
-import type { CalendarEventTag } from "../database/entities/calendar-event-tag.entity";
-import type { CalendarEvent } from "../database/entities/calendar-event.entity";
-import type { TagPath } from "../tags/tags.types";
+import type { CalendarEvent, CalendarEventTag } from "@codebase/caelundas-db";
 import type { PostgresqlUpdatableEntity } from "@codebase/persistence";
 import type { Moment } from "moment-timezone";
 
-/** The row an event becomes for one observer, before the database adds its own columns. */
+/** Event row for one observer, before the database adds columns. */
 export type CalendarEventRow = Omit<
   CalendarEvent,
   keyof PostgresqlUpdatableEntity
 >;
 
-/** One link an upsert writes between an event and a node of the tag tree. */
+/** Upsert link from an event to a tag node. */
 export type CalendarEventTagLink = Pick<
   CalendarEventTag,
   "calendarEventId" | "tagId"
 >;
 
-/** An event to write, with the tag paths it is classified under. */
-export interface ClassifiedCalendarEvent {
-  event: DetectedCalendarEvent;
-  paths: readonly TagPath[];
-}
-
-/** An observer location in decimal degrees. */
-export interface Coordinates {
-  latitude: number;
-  longitude: number;
-}
+/** Detected event with raw tag strings, before the upsert's columns. */
+export type DetectedCalendarEvent = Omit<
+  CalendarEvent,
+  "latitude" | "longitude" | "timezone" | keyof PostgresqlUpdatableEntity
+> & {
+  /** Raw tag strings, such as `aspects` and `moon`. */
+  tags: string[];
+};
 
 /** The range and location whose events {@link CalendarEventsService.findInRange} returns. */
 export interface FindInRangeParameters extends Coordinates {
@@ -42,4 +36,24 @@ export interface FindInRangeParameters extends Coordinates {
 /** An observer location and the IANA timezone derived from it. */
 export interface Observer extends Coordinates {
   timezone: string;
+}
+
+/** Stored event from `findInRange`, with its directly linked tag names. */
+export type StoredCalendarEvent = CalendarEvent &
+  Pick<DetectedCalendarEvent, "tags">;
+
+/**
+ * `RETURNING` row: database id, and summary, start and end.
+ */
+export interface WrittenCalendarEvent {
+  end: Date | Moment;
+  id: string;
+  start: Date | Moment;
+  summary: string;
+}
+
+/** An observer location in decimal degrees. */
+interface Coordinates {
+  latitude: number;
+  longitude: number;
 }

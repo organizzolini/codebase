@@ -1,24 +1,15 @@
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
-/**
- * Where the examples package keeps its fixtures.
- *
- * Read by path rather than imported, because a package may not depend on the
- * examples that exercise it; `vitest`'s inputs name the same folder so a
- * changed fixture re-runs this suite.
- */
+/** Example fixtures, read by path; this package cannot depend on them. */
 const EXAMPLES_DIRECTORY = path.resolve(
   import.meta.dirname,
   "../../coinagerie-examples/examples",
 );
 
 /**
- * The files of one example's `project/` folder, keyed by path relative to it,
- * ready to hand to `createFixtureTree`.
- *
- * `folder` narrows the read to a subfolder — the keys keep their prefix — for
- * a case that wants the example's source without its configurations.
+ * Lists an example's `project/` files, keyed by relative path. `folder` narrows
+ * the read to a subfolder, keeping its prefix in the keys.
  */
 export function readExample(
   exampleName: string,

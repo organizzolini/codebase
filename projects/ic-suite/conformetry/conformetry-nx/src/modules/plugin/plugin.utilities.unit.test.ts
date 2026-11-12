@@ -1,9 +1,10 @@
 import { execSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 
 import { buildTemplateHashCommand } from "./plugin.utilities";
 
@@ -11,16 +12,12 @@ describe(buildTemplateHashCommand, () => {
   let root: string;
 
   beforeEach(() => {
-    root = mkdtempSync(path.join(tmpdir(), "template-hash-"));
+    root = createTemporaryDirectory("template-hash");
     mkdirSync(path.join(root, "templates/widget/{{name}}"), {
       recursive: true,
     });
     writeFileSync(path.join(root, "templates/widget/{{name}}/a.ts"), "a");
     writeFileSync(path.join(root, "templates/widget/settings.json"), "{}");
-  });
-
-  afterEach(() => {
-    rmSync(root, { force: true, recursive: true });
   });
 
   function hash(templatePaths = ["templates/widget"]): string {

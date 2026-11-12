@@ -30,12 +30,7 @@ export const packageDirectory = path.resolve(
   "..",
 );
 
-/**
- * This package's own configuration, which the guides name with `--config`.
- *
- * Codometer never searches for a configuration, so every run that wants this
- * package's conventions and its `Corpus` target names the file.
- */
+/** This package's own configuration, passed with `--config`. */
 export const packageConfiguration = path.join(
   packageDirectory,
   "codometer.config.ts",
@@ -49,13 +44,7 @@ const workspaceDirectory = path.resolve(
   "..",
 );
 
-/**
- * Entry point of the codometer command line, resolved through the package.
- *
- * Resolved rather than written out as a path so the dependency is a real one:
- * `nx affected` connects this package to `@codometer/cli`, and a change to the
- * tool re-runs the tests that assert what the guides say about it.
- */
+/** Codometer command line, so `nx affected` sees tool changes. */
 const commandLineEntry = path.resolve(
   createRequire(import.meta.url).resolve("@codometer/cli/package.json"),
   "..",
@@ -63,24 +52,7 @@ const commandLineEntry = path.resolve(
   "codometer-cli.main.ts",
 );
 
-/**
- * Where a throwaway copy of the corpus is made, inside this package.
- *
- * Not `os.tmpdir()`, and the reason is the loader rather than tidiness. A
- * measurement spawns the command line with its `cwd` set to the copy, and
- * `@swc-node/register`'s ESM hook registers itself against that working
- * directory — so a copy outside the workspace leaves the hook resolving
- * `@swc-node/register` from a directory with no `node_modules` above it, and
- * every spawn dies with `ERR_MODULE_NOT_FOUND` before codometer runs. It
- * happened to work where the temporary directory sat beneath a
- * `node_modules`, and failed on every Linux runner, whose `os.tmpdir()` is
- * `/tmp`.
- *
- * `tmp/` is already ignored by `.gitignore` and by
- * `configuration/codebase-structure.json`, so nothing has to be taught about
- * it — the same arrangement `main.end-to-end.test.ts` uses for the same
- * reason.
- */
+/** Corpus copy inside this package, where `@swc-node/register` resolves. */
 const scratchDirectory = path.join(packageDirectory, "tmp");
 
 /** Everything this package ships to be run: one directory per example. */
@@ -93,20 +65,7 @@ export const corpusDirectory = path.join(examplesDirectory, "corpus");
 export const exampleConfiguration = (...segments: readonly string[]): string =>
   path.join(examplesDirectory, ...segments);
 
-/**
- * Where `swc-node` reads its own compiler configuration from.
- *
- * The command line has no `--directory` flag — a run always measures the
- * process's own working directory — so a test that wants to measure the
- * corpus spawns the command line **with its `cwd` set there** rather than
- * naming the directory on the command line. `swc-node`'s tsconfig discovery
- * would otherwise walk upward from that same `cwd` looking for a
- * `tsconfig.json`, and none of the example directories carries one. Pinning
- * `TS_NODE_PROJECT` decouples the two: the interpreter always finds the
- * workspace's own compiler configuration — the same one it would have found
- * by default when every spawn's `cwd` was the workspace root — regardless of
- * which directory the measurement itself runs against.
- */
+/** Pins `TS_NODE_PROJECT`, as examples have no tsconfig. */
 const typescriptConfigurationPath = path.resolve(
   workspaceDirectory,
   "tsconfig.json",
@@ -130,46 +89,21 @@ export interface CodometerRun {
   standardOutput: string;
 }
 
-/**
- * One breaching instance a `comment` selector's counter found.
- *
- * Derived from the report rather than imported on its own, because the report
- * type is what `@codometer/core` exports and this is the shape a comment-budget
- * counter's `instances` holds — a metric that only counts leaves this `null`,
- * so a comment-budget metric is the only one where indexing into it is safe.
- */
+/** One breaching `comment` block; null for other metrics. */
 export type ReportedDeclaration = NonNullable<
   ReportMetric["instances"]
 >[number];
 
 // 🏃 Running
 
-/**
- * Runs the command line with the given arguments and returns what it produced.
- *
- * `NODE_OPTIONS` is emptied because the test runner sets its own, and they
- * reach a spawned Node that neither needs nor understands them.
- *
- * `cwd` is what a run measures: the command line carries no `--directory`
- * flag of its own, so the directory a guide says to measure is the directory
- * this spawns from, exactly as running the documented `cd` and `codometer`
- * commands in a real shell would. Defaults to the workspace root, which is
- * where a run measures the whole repository from. Every run must carry its own
- * `--config`: nothing is searched for.
- */
+/** Runs the command line; `cwd` is what gets measured. */
 export const runCodometer = (
   args: readonly string[],
   cwd: string = workspaceDirectory,
 ): CodometerRun => {
   const result = spawnSync(
     process.execPath,
-    [
-      "--import",
-      "@swc-node/register/esm-register",
-      commandLineEntry,
-      "codometer",
-      ...args,
-    ],
+    ["--import", "@swc-node/register/esm-register", commandLineEntry, ...args],
     {
       cwd,
       encoding: "utf8",
@@ -189,40 +123,7 @@ export const runCodometer = (
   };
 };
 
-/**
- * Feeds a run's standard output to a second process, and reports what came out.
- *
- * The guides promise `codometer --format json | …` produces a stream something can
- * parse. What makes that promise true is the **split**: the report goes to
- * standard output and every diagnostic goes to standard error, so a consumer
- * reading the one gets data and nothing else. This takes the bytes a finished
- * run wrote to standard output and **only** those, and hands them unaltered to
- * a second process's standard input — which is what a shell pipe does, minus
- * the shell. A log line leaking into the data stream fails it, and a report
- * assembled in-process would not.
- *
- * The upstream run is handed in rather than spawned here, so a suite that
- * asserts on the same console run some other way pays for one spawn, not two.
- *
- * There is deliberately no `sh -c` here. Every path involved — the interpreter,
- * the command line's entry point, the measured directory — is absolute and
- * derived from where this repository happens to be checked out, and handing
- * those to a shell means a checkout path containing a space or a quote changes
- * what the shell reads as a word. Spawning the two processes directly gives the
- * argument vectors to the operating system rather than to a parser.
- *
- * `readReport` is the body of the downstream stage: it is handed the parsed
- * report and returns what to print. It reaches that process as a **file**
- * rather than as `node -e "…"`, because a program spliced into a command string
- * has to survive both the formatter reflowing it and a shell re-reading its
- * quotes, and one of those eventually loses.
- *
- * The run is reported rather than thrown, the way `runCodometer` reports its
- * own. Two processes can die and there is only one exit code to say so, so a
- * bare throw would say "command failed" and nothing about which half or why.
- * Whichever half failed is the code returned, and both halves' diagnostics come
- * back together.
- */
+/** Pipes stdout to a second process, so stray logs fail. */
 export const runPipeline = (
   upstream: CodometerRun,
   readReport: string,
@@ -243,14 +144,9 @@ export const runPipeline = (
       "    process.exit(1);",
       "  }",
       "  const report = JSON.parse(text);",
-      // Written as text rather than through `console.log`. That formats a lone
-      // non-string with Node's inspection, which colors its output whenever it
-      // believes colors are wanted — and a spawned process inherits
-      // `FORCE_COLOR` from the test runner, so the number 28 arrives wrapped in
-      // escape codes under an Nx target and bare under a plain run. The test
-      // then passes or fails on how it was invoked rather than on anything
-      // codometer did. Converting to a string first is what removes the
-      // question.
+      // Written as text, not `console.log`: that colors a lone non-string when
+      // `FORCE_COLOR` is inherited from the test runner, so the output would depend on how the test was invoked.
+      // Converting to a string first removes that.
       String.raw`  process.stdout.write(String(${readReport}) + "\n");`,
       "});",
     ].join("\n"),
@@ -279,13 +175,7 @@ export const runPipeline = (
   }
 };
 
-/**
- * Runs the command line asking for the report, and parses what came back.
- *
- * Parsing rather than merely reading is the assertion that matters here:
- * standard output carries the result and every diagnostic goes to standard
- * error, so a log line leaking into the data stream fails this outright.
- */
+/** Runs the command line and parses its report from stdout. */
 export const measure = (
   args: readonly string[],
   cwd: string = workspaceDirectory,
@@ -316,14 +206,7 @@ export interface GatedMeasurement {
   run: CodometerRun;
 }
 
-/**
- * Runs one example configuration as a gate and reads its report, in one spawn.
- *
- * A guide that quotes both an example's exit code and a number from its report
- * would otherwise pay for two runs of the same measurement. The gate verdict
- * does not depend on the output format, and a gating run still prints its
- * report before it exits, so asking for JSON on the same run answers both.
- */
+/** Runs one example as a gate in a single spawn. */
 export const gateAndMeasureExample = (
   ...segments: readonly string[]
 ): GatedMeasurement => {
@@ -356,7 +239,7 @@ export const readTarget = (
   return target;
 };
 
-/** Reads one metric's value from a target by its path within that target. */
+/** Reads one metric's value from a target by path. */
 export const readMetric = (
   report: CodometerReport,
   targetName: string,
@@ -373,7 +256,7 @@ export const readMetric = (
   return metric.value;
 };
 
-/** Reads every limit declared on one metric, in the order they were written. */
+/** Reads every limit on one metric, in written order. */
 export const readMetricLimits = (
   report: CodometerReport,
   targetName: string,
@@ -390,13 +273,7 @@ export const readMetricLimits = (
   return metric.limits;
 };
 
-/**
- * Reads one metric's breaching instances by its path within a target.
- *
- * `null` for a metric that only counts — a comment-budget counter is the one
- * kind that ever returns something else, so a test reading this back is
- * asserting it measured a `comment` selector rather than a plain count.
- */
+/** Reads one metric's breaching instances; `null` if it only counts. */
 export const readMetricInstances = (
   report: CodometerReport,
   targetName: string,
@@ -430,13 +307,7 @@ export const readCounters = (
 
 // 📋 Scratch copies
 
-/**
- * Runs a body against a throwaway copy of the corpus.
- *
- * Every example that writes needs somewhere to write to, and the committed
- * corpus is not it: a test that spliced a badge block into a sample file would
- * change the counts every other test asserts.
- */
+/** Runs a body on a copied corpus, keeping the original. */
 export const withCorpusCopy = <Result>(
   body: (directory: string) => Result,
 ): Result => {

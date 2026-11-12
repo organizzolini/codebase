@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -23,17 +24,12 @@ describe(IsDoubleChainCharacteristicService, () => {
     let service: IsDoubleChainCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const real = await buildTestingModule(CharacteristicContextService, {
         imports: [CodeModule, PatternCharacteristicsModule, MatrixModule],
-        providers: [CharacteristicContextService],
-      }).compile();
+      });
 
-      contextService = await module.resolve(CharacteristicContextService);
-      service = await module.resolve(IsDoubleChainCharacteristicService);
-    });
-
-    it("is defined", () => {
-      expect(service).toBeDefined();
+      contextService = real.instance;
+      service = await real.module.resolve(IsDoubleChainCharacteristicService);
     });
 
     it.each([
@@ -66,47 +62,49 @@ describe(IsDoubleChainCharacteristicService, () => {
     let service: IsDoubleChainCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
-        providers: [
-          CompoundUtilitiesService,
-          IsDoubleChainCharacteristicService,
-          {
-            provide: BettiNumber1CountCharacteristicService,
-            useValue: { compute: (): number => values.bettiNumber1Count },
-          },
-          {
-            provide: CrossCountCharacteristicService,
-            useValue: { compute: (): number => values.crossCount },
-          },
-          {
-            provide: ForkCountCharacteristicService,
-            useValue: { compute: (): number => values.forkCount },
-          },
-          {
-            provide: LongestHorizontalRunLengthCharacteristicService,
-            useValue: {
-              compute: (): number => values.longestHorizontalRunLength,
+      const built = await buildTestingModule(
+        IsDoubleChainCharacteristicService,
+        {
+          providers: [
+            CompoundUtilitiesService,
+            {
+              provide: BettiNumber1CountCharacteristicService,
+              useValue: { compute: (): number => values.bettiNumber1Count },
             },
-          },
-          {
-            provide: LongestVerticalRunLengthCharacteristicService,
-            useValue: {
-              compute: (): number => values.longestVerticalRunLength,
+            {
+              provide: CrossCountCharacteristicService,
+              useValue: { compute: (): number => values.crossCount },
             },
-          },
-          {
-            provide: StrandUtilitiesService,
-            useValue: {
-              hasStrandEnds: (
-                ...[, strands]: readonly [CharacteristicContext, number]
-              ): boolean => strands === values.strandEnds,
-              isWrappingReversal: (): boolean => values.isWrappingReversal,
+            {
+              provide: ForkCountCharacteristicService,
+              useValue: { compute: (): number => values.forkCount },
             },
-          },
-        ],
-      }).compile();
+            {
+              provide: LongestHorizontalRunLengthCharacteristicService,
+              useValue: {
+                compute: (): number => values.longestHorizontalRunLength,
+              },
+            },
+            {
+              provide: LongestVerticalRunLengthCharacteristicService,
+              useValue: {
+                compute: (): number => values.longestVerticalRunLength,
+              },
+            },
+            {
+              provide: StrandUtilitiesService,
+              useValue: {
+                hasStrandEnds: (
+                  ...[, strands]: readonly [CharacteristicContext, number]
+                ): boolean => strands === values.strandEnds,
+                isWrappingReversal: (): boolean => values.isWrappingReversal,
+              },
+            },
+          ],
+        },
+      );
 
-      service = await module.resolve(IsDoubleChainCharacteristicService);
+      service = built.instance;
     });
 
     beforeEach(() => {

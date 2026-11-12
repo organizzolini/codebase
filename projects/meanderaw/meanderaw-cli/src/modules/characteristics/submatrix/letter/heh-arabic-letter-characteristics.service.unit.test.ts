@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,17 +7,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the ه (final Arabic heh) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- * ┌┐
- * │├╴
- * └┘
- * ```
- */
+/** One isolated Code per orientation of the ه (final form). */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -57,17 +46,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "hehFinal",
 };
 
-/**
- * Each distinct orientation of the ه (initial Arabic heh) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *  ┌┐
- *  ├┤
- * ╶┴┘
- * ```
- */
+/** One isolated Code per orientation of the ه (initial form). */
 const INITIAL_FORM: LetterFormFixture = {
   aliases: [],
   orientations: [
@@ -107,17 +86,7 @@ const INITIAL_FORM: LetterFormFixture = {
   prefix: "hehInitial",
 };
 
-/**
- * Each distinct orientation of the ه (medial Arabic heh) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *  ┌┐
- * ╶┼┼╴
- *  └┘
- * ```
- */
+/** One isolated Code per orientation of the ه (medial form). */
 const MEDIAL_FORM: LetterFormFixture = {
   aliases: [],
   orientations: [
@@ -159,10 +128,7 @@ const FORMS: readonly LetterFormFixture[] = [
 ];
 
 describe(HehArabicLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    HehArabicLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(HehArabicLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

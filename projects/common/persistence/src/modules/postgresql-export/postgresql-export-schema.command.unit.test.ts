@@ -1,22 +1,22 @@
-import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
-import { afterAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+import { useTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { mockProcesses } from "../../../testing/mocks";
 
-vi.mock("node:child_process", async () => {
-  const { childProcessMock } = await import("../../../testing/mocks");
-  return childProcessMock;
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockPostgresChildProcess } = await import("../../../testing/mocks");
+  return mockPostgresChildProcess(await importOriginal());
 });
 
 const PASSWORD = "hunter2-secret";
 const SOURCE_URI = `postgresql://fixture_username:${PASSWORD}@database.example.com:6543/fixture_development`;
 
 /** Where successful exports write, so none lands in the working directory. */
-const DIRECTORY = fs.mkdtempSync(path.join(os.tmpdir(), "export-schema-unit-"));
+const DIRECTORY = useTemporaryDirectory("export-schema-unit");
 
 /** How many exports have run, which names each one's file. */
 let runs = 0;
@@ -44,17 +44,13 @@ async function runExport(
       ...tables.flatMap((table) => ["--table", table]),
       "--data",
       "--file",
-      path.join(DIRECTORY, `${String(runs)}.dump`),
+      path.join(DIRECTORY(), `${String(runs)}.dump`),
       ...extra,
     ],
   });
 }
 
 describe("postgresql-export --schema", () => {
-  afterAll(() => {
-    fs.rmSync(DIRECTORY, { force: true, recursive: true });
-  });
-
   it("fails fast on an unqualified --table without --schema, starting no process", async () => {
     const spawned = mockProcesses();
 

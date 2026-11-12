@@ -1,36 +1,23 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import _ from "lodash";
 import moment from "moment-timezone";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProgressiveAspectService } from "../progressive/progressive-aspect.service";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
 
 import { SpecialtyAspectsProgressiveService } from "./specialty-aspects-progressive.service";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
+import type { LoggerService } from "@codebase/observability";
 
 describe(SpecialtyAspectsProgressiveService, () => {
-  let service: SpecialtyAspectsProgressiveService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SpecialtyAspectsProgressiveService,
-        ProgressiveAspectService,
-        {
-          provide: ProgressiveUtilitiesService,
-          useValue: createMock<ProgressiveUtilitiesService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(SpecialtyAspectsProgressiveService);
-  });
+  const testingModuleOptions = {
+    mocks: [ProgressiveUtilitiesService],
+    providers: [ProgressiveAspectService],
+  };
 
   const progressiveUtilitiesService = {
     pairProgressiveEvents:
@@ -59,8 +46,13 @@ describe(SpecialtyAspectsProgressiveService, () => {
     specialtyAspectGroupKey: (event: DetectedCalendarEvent) => string;
   };
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      SpecialtyAspectsProgressiveService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(SpecialtyAspectsProgressiveService);
   });
 
   it("returns an empty group key for incomplete tags", () => {

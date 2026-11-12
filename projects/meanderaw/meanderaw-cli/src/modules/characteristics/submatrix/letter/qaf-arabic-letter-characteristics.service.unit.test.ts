@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,17 +7,7 @@ import { QafArabicLetterCharacteristicsService } from "./qaf-arabic-letter-chara
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the ٯ (final Arabic dotless qaf) as a Code
- * holding one isolated copy, beside every orientation name drawing that ink.
- * The base, facing Southwest, draws:
- *
- * ```text
- *   ┌┐
- * ╷ ├┴╴
- * └─┘
- * ```
- */
+/** Each distinct orientation of final ٯ as a standalone Code. */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -63,17 +52,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "qafFinal",
 };
 
-/**
- * Each distinct orientation of the ٯ (isolated Arabic dotless qaf) as a Code
- * holding one isolated copy, beside every orientation name drawing that ink.
- * The base, facing Southwest, draws:
- *
- * ```text
- *   ┌┐
- * ╷ ├┘
- * └─┘
- * ```
- */
+/** Each distinct orientation of isolated ٯ as a standalone Code. */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -122,10 +101,7 @@ const ISOLATED_FORM: LetterFormFixture = {
 const FORMS: readonly LetterFormFixture[] = [FINAL_FORM, ISOLATED_FORM];
 
 describe(QafArabicLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    QafArabicLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(QafArabicLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

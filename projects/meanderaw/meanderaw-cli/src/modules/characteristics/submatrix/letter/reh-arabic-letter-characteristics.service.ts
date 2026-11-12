@@ -8,11 +8,9 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of each positional form of the ر
- * (Arabic reh) skeleton — final and isolated — one per corner and clockwise
- * rotation, each counting that form's base template, which faces Southwest,
- * drawn that way. A letter sharing a form's skeleton, differing from it only by
- * dots or by other marks, is an alias of that form.
+ * Provides the sixteen orientation evaluators of each positional form of the ر skeleton, final and
+ * isolated. One per corner and clockwise rotation, each counting that form's base template, which
+ * faces Southwest. Letters sharing a skeleton, differing only by dots, are aliases.
  */
 @Injectable()
 export class RehArabicLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -50,28 +48,10 @@ export class RehArabicLetterCharacteristicsService implements CharacteristicEval
 
   // 🔐 Private Fields
 
-  /**
-   * The upright ر (final Arabic reh) glyph's points as hexadecimal Code digits,
-   * one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   *  ┌╴
-   * ┌┘
-   * ╵
-   * ```
-   */
+  /** Upright final ر glyph as hexadecimal Code digits, facing Southwest. */
   private readonly finalTemplate: readonly string[] = [".61", "69.", "8.."];
 
-  /**
-   * The upright ر (isolated Arabic reh) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   *  ╷
-   * ┌┘
-   * ╵
-   * ```
-   */
+  /** Upright isolated ر glyph as hexadecimal Code digits, facing Southwest. */
   private readonly isolatedTemplate: readonly string[] = [".4", "69", "8."];
 
   // 🔑 Public Fields

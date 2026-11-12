@@ -2,17 +2,13 @@ import { CLUSTER_ID_PREFIX } from "../../hooks/use-calendar-clusters/calendar-cl
 
 import { SPACES, WORD_START } from "./calendar-glyphs.constants";
 
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 import type { EventLabel } from "./calendar-glyphs.types";
 
 // 🌎 Public Functions
 
 /**
- * Splits an event's summary, which an ingested event writes as its symbols
- * followed by its name in English, into the two. The description, which
- * repeats the name, says where the name starts; without one the name starts
- * at the first word of English. A stand-in for a cluster, and an event with no
- * symbols, are all name.
+ * Splits an event's summary into symbols and English name, the name starting where its description says; a cluster is all name.
  */
 export function getEventLabel(event: CalendarEventRecord): EventLabel {
   const { description, id, summary } = event;

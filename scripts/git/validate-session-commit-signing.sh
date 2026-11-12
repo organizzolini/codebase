@@ -20,10 +20,9 @@ fi
 
 # 📋 Context
 
-# Cloud agents cannot configure gpg themselves — their key arrives from repository
-# secrets, or as an SSH signer from the harness — so they get bootstrap
-# instructions while local agents get local ones. An SSH signer, wherever it
-# runs, has no GPG key to list, so it gets the installation script instead.
+# Cloud agents cannot configure gpg themselves: their key arrives from secrets or
+# an SSH signer, so they get bootstrap instructions and local agents get local
+# ones. An SSH signer has no GPG key to list, so it gets the installation script.
 if [[ -n "${GITHUB_ACTIONS:-}" || -n "${CI:-}" ]]; then
 	REMEDIATION="1. Stop and do not create commits until signing is configured.
 2. Confirm repository environment \"copilot\" has secrets \"GPG_PRIVATE_KEY\" and \"GPG_PASSPHRASE\".

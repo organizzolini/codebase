@@ -11,7 +11,7 @@ import {
   NominalForm,
   ParticipleForm,
   SupineForm,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import { toLexemeType } from "../lexemes/lexemes.utilities";
 import { ENTITY_ID_PATTERN } from "../literature/literature.constants";
@@ -87,8 +87,7 @@ export function fuzzyScoreToDistance(score: number): number {
 }
 
 /**
- * Most edits a fuzzy match of a term may be from it: none for a term too short
- * to be told from its neighbors, one for a short term, two for a long one.
+ * Maximum edits a fuzzy match may use: none for very short terms, one for short, two for long.
  */
 export function maximumFuzzyDistance(term: string): number {
   if (term.length < FUZZY_MINIMUM_LENGTH) {
@@ -98,9 +97,7 @@ export function maximumFuzzyDistance(term: string): number {
 }
 
 /**
- * Reads the lexeme and score a search cursor names, as the row it claims:
- * its id, and its negated score as the sort key the ranking pages by. Null
- * for anything that is not the canonical cursor of a scored lexeme.
+ * Reads the lexeme and score a search cursor claims, keyed by negated score. Null for anything not canonical.
  */
 export function readSearchCursor(cursor: string): CursorClaim | null {
   const payload = fromCursorSafe<null | { id?: unknown; score?: unknown }>(

@@ -1,16 +1,17 @@
-import { appendFileSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PullRequestContextService } from "./pull-request-context.service";
 import { PullRequestGithubService } from "./pull-request-github.service";
 
 import type { PullRequestContext } from "./pull-request-context.types";
 import type { GithubCliResult } from "./pull-request-github.types";
-
-vi.mock("node:fs", () => ({ appendFileSync: vi.fn() }));
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 const document = {
   assignees: ["owner"],
@@ -31,23 +32,23 @@ function succeeded(standardOutput: string): GithubCliResult {
   };
 }
 
+/** What PullRequestContextService is built with. */
+const DEPENDENCIES = {
+  mocks: [PullRequestGithubService],
+} satisfies TestingModuleOptions;
+
 describe(PullRequestContextService, () => {
   let service: PullRequestContextService;
   let github: PullRequestGithubService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PullRequestContextService,
-        {
-          provide: PullRequestGithubService,
-          useValue: createMock<PullRequestGithubService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      PullRequestContextService,
+      DEPENDENCIES,
+    );
 
-    service = await module.resolve(PullRequestContextService);
-    github = await module.resolve(PullRequestGithubService);
+    service = built.instance;
+    github = built.mock(PullRequestGithubService);
   });
 
   beforeEach(() => {
@@ -55,8 +56,13 @@ describe(PullRequestContextService, () => {
     vi.mocked(github.describeFailure).mockReturnValue("HTTP 404");
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      PullRequestContextService,
+      DEPENDENCIES,
+    );
+
+    expect(instance).toBeInstanceOf(PullRequestContextService);
   });
 
   describe("fetch", () => {
@@ -188,19 +194,38 @@ describe(PullRequestContextService, () => {
     };
 
     it("appends the number and author when there is an output file", () => {
-      service.writeStepOutputs(context, { GITHUB_OUTPUT: "out" });
-
-      expect(appendFileSync).toHaveBeenCalledWith(
+      const outputFile = path.join(
+        createTemporaryDirectory("pull-request-context"),
         "out",
+      );
+
+      service.writeStepOutputs(context, { GITHUB_OUTPUT: outputFile });
+
+      expect(readFileSync(outputFile, "utf8")).toBe(
         "pull-request-number=12\npull-request-author=someone\n",
-        "utf8",
+      );
+    });
+
+    it("appends to what the output file already holds", () => {
+      const outputFile = path.join(
+        createTemporaryDirectory("pull-request-context"),
+        "out",
+      );
+
+      writeFileSync(outputFile, "earlier=1\n", "utf8");
+      service.writeStepOutputs(context, { GITHUB_OUTPUT: outputFile });
+
+      expect(readFileSync(outputFile, "utf8")).toBe(
+        "earlier=1\npull-request-number=12\npull-request-author=someone\n",
       );
     });
 
     it("does nothing without an output file", () => {
+      const directory = createTemporaryDirectory("pull-request-context");
+
       service.writeStepOutputs(context, {});
 
-      expect(appendFileSync).not.toHaveBeenCalled();
+      expect(readdirSync(directory)).toStrictEqual([]);
     });
   });
 });

@@ -1,8 +1,7 @@
 // 🏷️ Types
 
 /**
- * How the toolbar moves the view it sits over, and the title of the period
- * shown: the event calendar's or the timeline's.
+ * Moves the view and titles its period: calendar or timeline.
  */
 export interface CalendarNavigation {
   /**

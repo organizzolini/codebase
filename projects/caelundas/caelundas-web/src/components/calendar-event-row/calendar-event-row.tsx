@@ -10,7 +10,7 @@ import {
   formatEventTime,
 } from "../events-calendar/calendar-format.utilities";
 
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -32,9 +32,7 @@ export interface CalendarEventRowProperties {
 // 🧩 Component
 
 /**
- * Renders one event as a list row: its time in the data's zone, its color,
- * its symbols, drawn as the symbols setting says, and name, and beneath that
- * its duration and tags, drawn as pills.
+ * Renders one event as a list row: time, color, symbols, name, then its duration and tags as pills.
  */
 export function CalendarEventRow(
   properties: Readonly<CalendarEventRowProperties>,

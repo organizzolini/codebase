@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-/** What bounding the base came to: the lines to print, and how to exit. */
+/** Lines to print, and the exit code to end with. */
 export interface BoundBaseReport {
   exitCode: number;
   /** Lines for the log, in order; a line starting `❌` goes to standard error. */

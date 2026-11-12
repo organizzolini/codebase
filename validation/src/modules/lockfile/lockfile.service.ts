@@ -49,13 +49,8 @@ export class LockfileService {
   // 🌎 Public Methods
 
   /**
-   * Runs `pnpm install --frozen-lockfile --lockfile-only`, wherever pnpm is.
-   *
-   * The bare name first, then the directory holding the Node that is running
-   * this. A git hook runs without a login shell, so the terminal's pnpm may
-   * not be on its path — but the Node executing this check is the one a
-   * version manager installed pnpm alongside, which is what makes the second
-   * candidate the right one rather than a guess.
+   * Runs `pnpm install --frozen-lockfile --lockfile-only`: the bare name, then
+   * the Node's own directory, as a git hook may lack pnpm on its path.
    */
   public checkLockfile(): FrozenInstallResult {
     const onPath = this.runFrozenInstall(PACKAGE_MANAGER_BINARY);

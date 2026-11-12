@@ -3,6 +3,7 @@ import {
   DEFAULT_OPTIONS,
   LINE_OPACITY_RANGE,
   MINIMUM_BOTTOM_ALTITUDE_DEGREES,
+  OPACITY_RANGE,
 } from "../../hooks/use-night-sky/night-sky.constants";
 
 import type {
@@ -14,7 +15,7 @@ import type {
 // ♟️ Constants
 
 /**
- * Where the observer stands and which part of the sky the window shows.
+ * Observer position and the window's view of the sky.
  */
 export const ANGLE_SLIDERS: readonly SkySliderControl[] = [
   {
@@ -52,6 +53,28 @@ export const ANGLE_SLIDERS: readonly SkySliderControl[] = [
     minimum: MINIMUM_BOTTOM_ALTITUDE_DEGREES,
     step: 1,
     unit: "°",
+  },
+];
+
+/** Sky and calendar opacity, for readable text. */
+export const OPACITY_SLIDERS: readonly SkySliderControl[] = [
+  {
+    field: "skyOpacity",
+    key: "sky.opacity",
+    label: "Sky opacity",
+    maximum: OPACITY_RANGE.maximum,
+    minimum: OPACITY_RANGE.minimum,
+    step: 0.01,
+    unit: "",
+  },
+  {
+    field: "surfaceOpacity",
+    key: "sky.surfaceOpacity",
+    label: "Calendar opacity",
+    maximum: OPACITY_RANGE.maximum,
+    minimum: OPACITY_RANGE.minimum,
+    step: 0.01,
+    unit: "",
   },
 ];
 
@@ -137,11 +160,11 @@ export const ECLIPTIC_SLIDERS: readonly SkySliderControl[] = [
 ];
 
 /**
- * Every number the menu sets. The ranges are what looks right facing north,
- * inside the wider ones the link accepts.
+ * Every number the menu sets, within the link's wider ranges.
  */
 export const SKY_SLIDERS: readonly SkySliderControl[] = [
   ...ANGLE_SLIDERS,
+  ...OPACITY_SLIDERS,
   ...STAR_SLIDERS,
   ...LINE_SLIDERS,
   ...ECLIPTIC_SLIDERS,
@@ -187,8 +210,7 @@ export const SKY_COLORS: readonly SkyColorControl[] = [
 ];
 
 /**
- * Each key's default, which the menu removes from the link rather than
- * write, so a link names only what differs.
+ * Each key's default; the menu removes a key set to it.
  */
 export const SKY_DEFAULTS: Readonly<
   Partial<Record<SkyParameterKey, number | string>>
@@ -204,15 +226,16 @@ export const SKY_DEFAULTS: Readonly<
   "sky.lineWidth": DEFAULT_OPTIONS.lineWidth,
   "sky.lon": DEFAULT_OBSERVER.longitudeDegrees,
   "sky.maxMag": DEFAULT_OPTIONS.faintestMagnitude,
+  "sky.opacity": DEFAULT_OPTIONS.skyOpacity,
   "sky.pixelsPerSecond": DEFAULT_OPTIONS.pixelsPerSecond,
   "sky.starScale": DEFAULT_OPTIONS.starScale,
+  "sky.surfaceOpacity": DEFAULT_OPTIONS.surfaceOpacity,
   "sky.top": DEFAULT_OPTIONS.backgroundTopColor,
   "sky.vFov": DEFAULT_OPTIONS.verticalFieldOfViewDegrees,
 };
 
 /**
- * The keys the Default button removes: every key the menu sets. `sky.debug`
- * stays, since only a link sets it.
+ * Keys the Default button removes; `sky.debug` stays.
  */
 export const RESET_SKY_KEYS: readonly SkyParameterKey[] = [
   "sky",
@@ -223,24 +246,18 @@ export const RESET_SKY_KEYS: readonly SkyParameterKey[] = [
 ];
 
 /**
- * The menu's panel: four columns wide on a wide screen and as wide as a
- * phone allows on one, no taller than the room below the toolbar, scrolling
- * on its own only when even that is too short, as on a phone.
+ * Panel: four columns wide, one on a phone.
  */
 export const PANEL_CLASS_NAME =
   "w-[min(20rem,calc(100vw-1rem))] md:w-[min(40rem,calc(100vw-1rem))] lg:w-[min(68rem,calc(100vw-1rem))] max-h-(--available-height) overflow-y-auto";
 
 /**
- * The keys the menu itself reads, which the panel's controls let reach it:
- * Escape closes the menu and Tab leaves the panel. Every other key stays
- * with the slider, switch or list that has focus.
+ * Keys the panel passes up: Escape closes, Tab leaves.
  */
 export const MENU_KEYS: ReadonlySet<string> = new Set(["Escape", "Tab"]);
 
 /**
- * The slider's own classes size its track by `data-horizontal`, which this
- * version of Base UI writes as `data-orientation`, so the track and its fill
- * are drawn from here, with a thumb large enough to drag by touch.
+ * Slider track sizing; Base UI sets `data-orientation`, not `data-horizontal`.
  */
 export const SLIDER_CLASS_NAME =
   "py-2 [&_[data-slot=slider-track]]:h-1.5 [&_[data-slot=slider-track]]:w-full " +
@@ -248,33 +265,29 @@ export const SLIDER_CLASS_NAME =
   "[&_[data-slot=slider-thumb]]:size-4";
 
 /**
- * A group of controls: no heading, so each control's own label carries its
- * meaning; a column divides its groups with a hairline.
+ * A control group with no heading; each control is labeled.
  */
 export const SECTION_CLASS_NAME = "flex flex-col gap-1 py-2";
 
 /**
- * A column of the panel: its groups one under another, a hairline between.
+ * A panel column: groups stacked, hairlines between.
  */
 export const COLUMN_CLASS_NAME = "divide-y";
 
 /**
- * The constellation tree's box: as tall as the panel's other columns on a
- * wide screen, where its column takes no height of its own, and bounded on a
- * phone; it scrolls inside either way.
+ * Tree box: column height when wide, bounded on phones.
  */
 export const TREE_CLASS_NAME =
   "max-h-80 min-h-0 flex-1 overflow-y-auto overscroll-contain rounded-md border p-1 lg:max-h-none";
 
 /**
- * A constellation tree row: tall enough to tap, its checkbox and name in line.
+ * A tree row, tall enough to tap.
  */
 export const TREE_ROW_CLASS_NAME =
   "hover:bg-accent flex min-h-7 cursor-pointer items-center gap-2 rounded px-1 text-xs";
 
 /**
- * A folder's checkbox, which shows a dash when some of its constellations
- * show and not all.
+ * A folder checkbox: a dash when some, not all, show.
  */
 export const FOLDER_CHECKBOX_CLASS_NAME =
   "before:hidden before:h-0.5 before:w-2 before:rounded-full before:bg-primary data-indeterminate:border-primary data-indeterminate:before:block data-indeterminate:[&_svg]:hidden";

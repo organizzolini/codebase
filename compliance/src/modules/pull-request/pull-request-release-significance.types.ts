@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-/** What one conventional subject line — a commit's or the title's — declares. */
+/** What one conventional subject line, a commit's or title's, declares. */
 export interface ConventionalSubject {
   readonly breaking: boolean;
   /** Trimmed, lowercased, and de-duplicated; empty when the subject named none. */
@@ -8,24 +8,14 @@ export interface ConventionalSubject {
   readonly type: string;
 }
 
-/**
- * One commit reachable from the pull request, alongside what it parsed to.
- *
- * `convention` is `undefined` for a subject that does not parse as
- * conventional at all — a merge commit, say — which this check skips rather
- * than fails on, since such a commit carries no significance signal either
- * way.
- */
+/** One reachable commit and its parsed subject, if it parses. */
 export interface PullRequestCommit {
   readonly convention: ConventionalSubject | undefined;
   readonly sha: string;
   readonly subject: string;
 }
 
-/**
- * Either the pull request's title and commits, or the one line saying why
- * there are none.
- */
+/** The title and commits, or the reason there are none. */
 export type PullRequestCommitsResolution =
   | {
       readonly commits: readonly PullRequestCommit[];

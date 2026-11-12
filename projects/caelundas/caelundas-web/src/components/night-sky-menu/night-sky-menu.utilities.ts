@@ -30,8 +30,7 @@ export function formatSliderValue(
 // 🌎 Public Functions
 
 /**
- * Keeps a key pressed in the panel from the menu around it, whose arrows
- * and type-to-find would take focus from a slider, except Escape and Tab.
+ * Keeps a key pressed in the panel from the menu around it, so sliders keep focus; Escape and Tab still pass.
  */
 export function keepKeysInPanel(event: KeyboardEvent<HTMLElement>): void {
   if (!MENU_KEYS.has(event.key)) {
@@ -154,8 +153,7 @@ export function toggleConstellation(
 }
 
 /**
- * Shows every constellation of a folder when any is hidden, or hides them
- * all when all show, naming the choice again in its fewest words.
+ * Shows every constellation of a folder when any is hidden, or hides them all when all show.
  */
 export function toggleConstellations(
   words: readonly string[],

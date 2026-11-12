@@ -1,41 +1,35 @@
-import { appendFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 
-import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { Author, Text } from "@codebase/lexico-entities";
+import { Author, Text } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LiteratureTextIngestionService } from "./literature-text-ingestion.service";
 
 import type { IngestTextArguments, LibraryEntry } from "./literature.types";
-
-vi.mock("node:fs/promises", () => ({
-  appendFile: vi.fn<() => Promise<void>>(),
-}));
+import type { DeepMocked } from "@golevelup/ts-vitest";
 
 describe(LiteratureTextIngestionService, () => {
   let service: LiteratureTextIngestionService;
   let logger: DeepMocked<LoggerService>;
+  let logFilePath: string;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LiteratureTextIngestionService,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(LiteratureTextIngestionService);
 
-    service = await module.resolve(LiteratureTextIngestionService);
-    logger = await module.resolve(LoggerService);
+    service = built.instance;
+    logger = built.mock(LoggerService);
   });
 
   beforeEach(() => {
-    vi.mocked(appendFile).mockResolvedValue(undefined);
+    logFilePath = path.join(
+      createTemporaryDirectory("literature-text-ingestion"),
+      "literature-errors.log",
+    );
 
     logger.buildErrorLogEntry.mockImplementation((context, error) => {
       const errorMessage =
@@ -47,8 +41,12 @@ describe(LiteratureTextIngestionService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      LiteratureTextIngestionService,
+    );
+
+    expect(instance).toBeInstanceOf(LiteratureTextIngestionService);
   });
 
   it("sets logger context during construction", () => {
@@ -83,7 +81,7 @@ describe(LiteratureTextIngestionService, () => {
           authorEntity,
           authorSlug: "author",
           currentText: 1,
-          logFilePath: "/tmp/literature-errors.log",
+          logFilePath,
           parentTexts: new Map<string, Text>(),
           textEntry,
           totalTexts: 2,
@@ -135,7 +133,7 @@ describe(LiteratureTextIngestionService, () => {
           authorEntity,
           authorSlug: "author",
           currentText: 2,
-          logFilePath: "/tmp/literature-errors.log",
+          logFilePath,
           parentTexts: new Map<string, Text>([["author/book-1", parentText]]),
           textEntry,
           totalTexts: 2,
@@ -186,7 +184,7 @@ describe(LiteratureTextIngestionService, () => {
           authorEntity,
           authorSlug: "author",
           currentText: 1,
-          logFilePath: "/tmp/literature-errors.log",
+          logFilePath,
           parentTexts: new Map<string, Text>(),
           textEntry,
           totalTexts: 1,
@@ -198,8 +196,7 @@ describe(LiteratureTextIngestionService, () => {
         expect.any(String),
         expect.objectContaining({ title: "Work" }),
       );
-      expect(appendFile).toHaveBeenCalledWith(
-        "/tmp/literature-errors.log",
+      await expect(readFile(logFilePath, "utf8")).resolves.toStrictEqual(
         expect.stringContaining("data/library/provider/author/work.md"),
       );
       expect(logger.info).toHaveBeenCalledWith(
@@ -231,7 +228,7 @@ describe(LiteratureTextIngestionService, () => {
           authorEntity,
           authorSlug: "author",
           currentText: 1,
-          logFilePath: "/tmp/literature-errors.log",
+          logFilePath,
           parentTexts: new Map<string, Text>(),
           textEntry,
           totalTexts: 1,
@@ -243,8 +240,7 @@ describe(LiteratureTextIngestionService, () => {
         expect.any(String),
         expect.objectContaining({ title: "Work" }),
       );
-      expect(appendFile).toHaveBeenCalledWith(
-        "/tmp/literature-errors.log",
+      await expect(readFile(logFilePath, "utf8")).resolves.toStrictEqual(
         expect.stringContaining(
           "data/library/provider/author/work.md: ingestion failed",
         ),
@@ -276,15 +272,14 @@ describe(LiteratureTextIngestionService, () => {
           authorEntity,
           authorSlug: "author",
           currentText: 1,
-          logFilePath: "/tmp/literature-errors.log",
+          logFilePath,
           parentTexts: new Map<string, Text>(),
           textEntry,
           totalTexts: 1,
         },
       );
 
-      expect(appendFile).toHaveBeenCalledWith(
-        "/tmp/literature-errors.log",
+      await expect(readFile(logFilePath, "utf8")).resolves.toStrictEqual(
         expect.stringContaining("ingestion failed without stack"),
       );
     });

@@ -82,7 +82,7 @@ tool configs import it. Keep that: it is true, and `nx affected` uses it.
   target, and the `*-is-a-leaf` rules reach every project but it. A new rule
   must do the same, or every project's `codependix-bound` fails.
 - **Releases ignore it.** A change here would otherwise patch-bump every
-  package. the `publication` project's `version-packages` command appends this folder to
+  package. the `deployment` project's `version-packages` command appends this folder to
   `.nxignore` for the `nx release` command and restores the file on exit. Do not
   run `nx release` by hand without the same ignore, or it will version every
   package.
@@ -91,7 +91,7 @@ tool configs import it. Keep that: it is true, and `nx affected` uses it.
 
 | Caller                       | Targets                                                                                                                                                                                                                                                             |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `continuous-integration.yml` | `lint-code`, `format-code`, `deprecate-code`, `secure-code`, `build-projects`, and the leaves of `guard-code` (a leg each for `callidescope-restrict`, `codependix-bound`, `conformetry-validate` and `coinagerie-check`, the rest in Guard), through `nx affected` |
+| `continuous-integration.yml` | `lint-code`, `format-code`, `deprecate-code`, `secure-code`, `build-projects`, and the leaves of `guard-code` (a leg each for `callidescope-restrict`, `codependix-bound` and `conformetry-validate`, the rest in Guard), through `nx affected`                     |
 | `continuous-deployment.yml`  | `callidescope:write`, `codependix:write`, `codometer:write`                                                                                                                                                                                                         |
 | `lint-staged.config.ts`      | `sherif`, `syncpack` through `nx run-many`, the rest through `nx affected`                                                                                                                                                                                          |
 | `.husky/*`                   | `commitlint`, `validate-branch-name`, `lint-staged`, invoked directly                                                                                                                                                                                               |

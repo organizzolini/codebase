@@ -26,10 +26,7 @@ import type {
 import type { Connection } from "@codebase/interface";
 
 /**
- * Batches relation connections into one DataLoader: every request for the
- * same page arguments made in the same tick is answered by a single call
- * paging all of their parents together, and each answer is cached for the
- * rest of the request.
+ * Batches relation connection requests in one tick into a single call paging all parents together. Answers are cached per request.
  */
 export function createConnectionLoader<Node>(
   page: (
@@ -76,12 +73,7 @@ export function createConnectionLoader<Node>(
 }
 
 /**
- * Pages the children of many parents at once, each parent's page exactly as
- * `paginateQuery` would page that parent alone. A cursor bounds only the
- * parent whose child it names and is ignored by every other. However many
- * parents and children there are, it costs one statement resolving the
- * cursors when there are any, one counting every parent's children, and one
- * loading every parent's page, which a window function cuts per parent.
+ * Pages each parent's children exactly as `paginateQuery` pages that parent alone, in a fixed number of statements regardless of parent count.
  */
 export async function paginateQueryByParent<Entity extends IdentifiedEntity>(
   query: PartitionedConnectionQuery<Entity>,
@@ -126,10 +118,7 @@ export async function paginateQueryByParent<Entity extends IdentifiedEntity>(
 }
 
 /**
- * Builds one parent's connection from its page and counts, flagging the
- * neighboring pages the way `paginateQuery` does: a `before` cursor always
- * leaves a next page, and an `after` cursor leaves a previous one unless a
- * `before` cursor sits on the first child.
+ * Builds one parent's connection and its neighbor flags, as `paginateQuery` does. A `before` cursor always leaves a next page.
  */
 function assembleConnection<Entity extends IdentifiedEntity>(
   nodes: readonly Entity[],
@@ -197,9 +186,7 @@ async function countPartitions<Entity extends IdentifiedEntity>(
 }
 
 /**
- * Resolves the `after` and `before` cursors to the rows they name among the
- * parents' children, in one statement, or to null when a cursor is absent,
- * malformed, or names no such row.
+ * Resolves `after` and `before` cursors to the rows they name, in one statement; null when absent, malformed, or unknown.
  */
 async function findCursorPositions<Entity extends IdentifiedEntity>(
   query: PartitionedConnectionQuery<Entity>,
@@ -234,9 +221,7 @@ async function findCursorPositions<Entity extends IdentifiedEntity>(
 }
 
 /**
- * Loads every parent's page in one statement: a window function numbers each
- * parent's children between the cursors, and the page keeps the rows `first`
- * and then `last` leave, as `slicePage` cuts a single parent's window.
+ * Loads every parent's page in one statement, using a window function to number children between the cursors, as `slicePage` does per parent.
  */
 async function loadPartitionPages<Entity extends IdentifiedEntity>(
   query: PartitionedConnectionQuery<Entity>,

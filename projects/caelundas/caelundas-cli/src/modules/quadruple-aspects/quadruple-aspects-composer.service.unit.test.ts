@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
 import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
@@ -14,31 +13,39 @@ import { QuadrupleAspectsComposerService } from "./quadruple-aspects-composer.se
 
 import type { AspectBodies } from "../aspects/aspects.types";
 import type { Aspect } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 
 describe(QuadrupleAspectsComposerService, () => {
   let service: QuadrupleAspectsComposerService;
   let baseService: QuadrupleAspectsBaseService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        CompoundPhaseService,
-        QuadrupleAspectsComposerService,
-        QuadrupleAspectsBaseService,
-        AspectGraphService,
-        AspectPhaseEmojiService,
-        LoggerService,
-        ProgressiveUtilitiesService,
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    providers: [
+      CompoundPhaseService,
+      QuadrupleAspectsBaseService,
+      AspectGraphService,
+      AspectPhaseEmojiService,
+      ProgressiveUtilitiesService,
+    ],
+  };
 
-    service = await module.resolve(QuadrupleAspectsComposerService);
+  beforeAll(async () => {
+    const { instance, module } = await buildTestingModule(
+      QuadrupleAspectsComposerService,
+      testingModuleOptions,
+    );
+
+    service = instance;
     baseService = await module.resolve(QuadrupleAspectsBaseService);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      QuadrupleAspectsComposerService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(QuadrupleAspectsComposerService);
   });
 
   it("returns no grand crosses when minimum opposition/square counts are not met", () => {

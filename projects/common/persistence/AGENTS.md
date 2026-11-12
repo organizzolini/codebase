@@ -1,4 +1,4 @@
-# Persistence: Shared Postgres and SQLite Package
+# Persistence: Shared Postgres Package
 
 ## Quick Start
 
@@ -8,9 +8,7 @@ command line (`postgresql-export` and `postgresql-import`)
 **Purpose**: Two jobs. The library is the one way a database-backed project
 connects to Postgres: the `<PROJECT>_POSTGRES_*` environment fragment, the
 TypeORM options factory, the NestJS module and command-line data source built
-from it, and the naming convention behind them. `SqliteModule` does the same
-for a SQLite file through better-sqlite3, from one `<PROJECT>_SQLITE_DATABASE`
-variable, with its own base entities. The command line moves
+from it, and the naming convention behind them. The command line moves
 selected tables between databases through `pg_dump` and `pg_restore`, each
 database named by a URI. See the [README](README.md) for the exports, the
 naming table, and every command-line option.
@@ -19,7 +17,7 @@ This package may import one workspace package, `@codebase/observability`, for it
 command line's logger, and never any other, or every database-backed project
 inherits that edge. Logging has no workspace dependencies, so the edge makes
 no cycle, and lexico-cli, lexico-api, meanderaw-cli, and caelundas-cli
-already depend on it; lexico-entities gains it only transitively.
+already depend on it; lexico-db gains it only transitively.
 
 ## Architecture Overview
 
@@ -49,7 +47,6 @@ src/
     postgresql-export/              # The postgresql-export command: options, plan, dry run, atomic write
     postgresql-import/              # The postgresql-import command: options, plan, --clean (no prompt), dry run
     postgresql-utilities/           # pg_dump, pg_restore, and truncate behind one service
-    sqlite/                         # SqliteModule.forRoot, the options factory, createSqliteDataSource, SQLite base entities
 testing/
   index.ts                          # The @codebase/persistence/testing entry
   persistence-testing.*.ts          # startDatabaseTestingModule, the entry's Nest helper
@@ -66,20 +63,13 @@ testing/
 - **Never read an unprefixed `POSTGRES_*` variable.** They are the shared
   container's admin login, loaded by Nx into every task.
 - **Never let `synchronize` be configured on.** The schema changes only
-  through reviewed migrations. Postgres runs them as their own step;
-  `SqliteModule.forRoot` alone runs the migrations it is given on start, since
-  a file has one writer.
-- **Never share a Postgres entity with SQLite.** `uuid` and `timestamptz`
-  are refused by TypeORM's SQLite driver; use the `Sqlite*Entity` bases, whose
-  ids TypeORM generates in the application and whose timestamps are
-  `datetime`. Never read an unprefixed `SQLITE_DATABASE` either.
+  through reviewed migrations, which Postgres runs as their own step.
 - **Never name a schema in code.** It comes from `<PROJECT>_POSTGRES_SCHEMA`.
 - **Never run migrations from `PostgresqlModule.forRoot`.** It takes none;
   `createDataSource` and `startPostgresContainer` do.
-- **Keep the testing entry under `testing/`.** It imports `@nestjs/testing`,
-  and dependency-cruiser's `no-test-imports-in-app` allows test tooling only
-  from a `testing/` path, in this package and in every consumer that cruises
-  into it.
+- **Keep Postgres testing helpers with this package.** Export them through
+  `@codebase/persistence/testing`; they may use this package's own database
+  APIs but must not depend on `@codebase/testing`.
 - **Never name a real project in this package's tests.** Use `fixture`, and
   `sample` where a second is needed.
 - **Keep the command line connectionless.** `MainModule` holds no

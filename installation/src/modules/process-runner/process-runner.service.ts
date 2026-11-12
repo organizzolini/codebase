@@ -11,13 +11,10 @@ import { MILLISECONDS_PER_SECOND } from "./process-runner.constants";
 import type { ProcessOptions, ProcessResult } from "./process-runner.types";
 
 /**
- * Starts the child processes setup depends on, and answers whether a command
- * exists.
+ * Starts the child processes setup depends on, and answers whether a command exists.
  *
- * Nothing else in this project touches `node:child_process`. That is what
- * lets a test stand a fake in for the whole machine: every step asks here, so
- * a recorded list of command lines is a full account of what setup would have
- * done.
+ * Nothing else in this project touches `node:child_process`, so a test can fake the whole machine
+ * here, and a recorded list of command lines shows everything setup did.
  */
 @Injectable()
 export class ProcessRunnerService {
@@ -60,10 +57,8 @@ export class ProcessRunnerService {
   }
 
   /**
-   * Runs a command to completion.
-   *
-   * Never throws. A command that is missing or killed reports a `null` status,
-   * so the caller decides whether that is a failure.
+   * Runs a command. Never throws: a missing or killed command reports a
+   * `null` status, so the caller decides whether that is a failure.
    */
   public run(
     command: string,
@@ -89,10 +84,8 @@ export class ProcessRunnerService {
   }
 
   /**
-   * Runs a command and throws when it does not exit 0.
-   *
-   * This is what a script's `set -e` was: the first failing step ends setup,
-   * and the error names the command line that failed.
+   * Runs a command and throws unless it exits 0, as `set -e` would.
+   * The error names the command.
    */
   public runOrThrow(
     command: string,

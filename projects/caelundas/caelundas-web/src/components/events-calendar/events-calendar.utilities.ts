@@ -3,17 +3,15 @@ import {
   SCROLLING_WEEK_CLASS_NAMES,
 } from "./events-calendar.constants";
 
+import type { EventsDataset } from "./calendar-records.types";
 import type { CalendarViewName } from "./calendar-views.types";
-import type { EventsDataset } from "./events-database.types";
 
 // 🔏 Private Functions
 
 // 🌎 Public Functions
 
 /**
- * How the calendar lays a view out: a phone's week scrolls sideways in the
- * content area under a sticky hour column, and every other view scrolls
- * inside itself.
+ * How a view lays out: a phone's week scrolls sideways under a sticky hour column; every other view scrolls inside itself.
  */
 export function getViewLayout(
   view: CalendarViewName,

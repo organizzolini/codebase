@@ -42,9 +42,7 @@ export class IgnoreRulesService {
   // 🌎 Public Methods
 
   /**
-   * Whether the scopes ignore a repository-relative path, the innermost
-   * deciding — which is how a nested `!pattern` re-includes a file its parent
-   * ignored. A folder is judged with a trailing slash.
+   * Whether the scopes ignore a repository-relative path. The innermost scope decides, so a nested `!pattern` re-includes a file.
    */
   isIgnored(scopes: IgnoreScope[], relativePath: string): boolean {
     let ignored = false;
@@ -67,10 +65,7 @@ export class IgnoreRulesService {
   }
 
   /**
-   * Reads one ignore file, or `undefined` when it does not exist.
-   *
-   * Case-sensitive on every platform, so the same file ignores the same paths
-   * on a developer's machine and in CI.
+   * Reads one ignore file, or `undefined` when absent. Matching is case-sensitive on every platform, so CI agrees with local runs.
    */
   readScope(args: ReadIgnoreScopeArguments): IgnoreScope | undefined {
     if (!existsSync(args.filePath)) {

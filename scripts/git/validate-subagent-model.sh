@@ -1,14 +1,11 @@
 #!/bin/bash
 #
-# PreToolUse hook — prevents subagents from being spawned on Opus/Sol or higher.
+# PreToolUse hook: stops subagents spawning on Opus/Sol or higher.
 #
-#   - Silent when the requested subagent model is Haiku/Luna or Sonnet/Terra, or
-#     when a general-purpose subagent omits `model` and falls back to
-#     CLAUDE_CODE_SUBAGENT_MODEL ("haiku")
-#   - Denies the tool call when `model` names Opus, Fable, or Sol (reserved for
-#     human-selected main sessions)
-#   - Denies built-in Explore and Plan subagent calls that omit `model`, since
-#     those ignore CLAUDE_CODE_SUBAGENT_MODEL and inherit the main session model
+#   - Silent for Haiku/Luna or Sonnet/Terra, or an agent with no `model`
+#     (it falls back to CLAUDE_CODE_SUBAGENT_MODEL)
+#   - Denies a `model` naming Opus, Fable, or Sol
+#   - Denies Explore and Plan calls without `model`, ignoring the fallback
 
 command -v jq &>/dev/null || exit 0
 

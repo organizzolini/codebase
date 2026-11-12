@@ -1,10 +1,11 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { ZodError } from "zod";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationFileService } from "./configuration-file.service";
 import {
@@ -33,7 +34,7 @@ async function writeConfigurationFile(
   fileName: string,
   contents: string,
 ): Promise<string> {
-  const directory = await mkdtemp(path.join(tmpdir(), "callidescope-config-"));
+  const directory = createTemporaryDirectory("callidescope-config");
   const configurationPath = path.join(directory, fileName);
 
   await writeFile(configurationPath, contents, "utf8");
@@ -45,15 +46,15 @@ describe(ConfigurationFileService, () => {
   let service: ConfigurationFileService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [ConfigurationFileService],
-    }).compile();
-
-    service = await module.resolve(ConfigurationFileService);
+    ({ instance: service } = await buildTestingModule(
+      ConfigurationFileService,
+    ));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ConfigurationFileService);
+
+    expect(instance).toBeInstanceOf(ConfigurationFileService);
   });
 
   // 🌱 Defaults
@@ -247,13 +248,9 @@ describe(ConfigurationFileService, () => {
   });
 
   it("carries an authored heading through the file schema, not only the resolver", async () => {
-    // Resolution is not the whole path a configured value travels: a loaded
-    // file is parsed by the schema first, and a field the schema does not name
-    // is stripped there — silently, with the default appearing in its place
-    // and nothing to say the file asked for anything else. That is how the
-    // heading configured for this repository's own README came out at `#`
-    // while the file said `##`, so the schema is asserted through
-    // `loadConfiguration` rather than only through `resolveConfiguration`.
+    // Resolution is not the whole path: the loaded file is parsed by the schema first, which
+    // strips unknown fields silently. This asserts the schema through `loadConfiguration`,
+    // not only `resolveConfiguration`.
     const configurationPath = await writeConfiguration({
       write: { markdown: { heading: "### Deep", path: "README.md" } },
     });
@@ -362,7 +359,7 @@ describe(ConfigurationFileService, () => {
   // 🚨 Failures
 
   it("throws when an explicitly named configuration file is missing", async () => {
-    const directory = await mkdtemp(path.join(tmpdir(), "callidescope-gone-"));
+    const directory = createTemporaryDirectory("callidescope-gone");
 
     await expect(
       service.loadConfiguration({
@@ -378,9 +375,7 @@ describe(ConfigurationFileService, () => {
   // from somewhere below it.
 
   it("resolves a path relative to the repository root", async () => {
-    const repositoryRoot = await mkdtemp(
-      path.join(tmpdir(), "callidescope-repository-"),
-    );
+    const repositoryRoot = createTemporaryDirectory("callidescope-repository");
     await writeFile(
       path.join(repositoryRoot, "pnpm-workspace.yaml"),
       "packages: []\n",
@@ -408,9 +403,7 @@ describe(ConfigurationFileService, () => {
   });
 
   it("throws when the path is missing at the repository root too", async () => {
-    const repositoryRoot = await mkdtemp(
-      path.join(tmpdir(), "callidescope-repository-"),
-    );
+    const repositoryRoot = createTemporaryDirectory("callidescope-repository");
     await writeFile(
       path.join(repositoryRoot, "pnpm-workspace.yaml"),
       "packages: []\n",
@@ -433,9 +426,7 @@ describe(ConfigurationFileService, () => {
   it("throws when no repository root is found above the working directory", async () => {
     // A temp directory has no `.git` or `pnpm-workspace.yaml` anywhere above
     // it, so the upward walk reaches the filesystem root and gives up.
-    const directory = await mkdtemp(
-      path.join(tmpdir(), "callidescope-rootless-"),
-    );
+    const directory = createTemporaryDirectory("callidescope-rootless");
 
     const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(directory);
 
@@ -626,8 +617,8 @@ describe(ConfigurationFileService, () => {
     ).toBe(configurationPath);
   });
 
-  it("finds nothing in a directory holding no configuration file", async () => {
-    const directory = await mkdtemp(path.join(tmpdir(), "callidescope-empty-"));
+  it("finds nothing in a directory holding no configuration file", () => {
+    const directory = createTemporaryDirectory("callidescope-empty");
 
     expect(service.findConfigurationFileAt(directory)).toBeUndefined();
   });

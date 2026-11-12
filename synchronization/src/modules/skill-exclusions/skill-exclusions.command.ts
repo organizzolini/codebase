@@ -25,30 +25,12 @@ import type {
 } from "./skill-exclusions.types";
 
 /**
- * CLI command that syncs the installed-skill exclusion lists from
- * `skills-lock.json`.
+ * CLI command that syncs installed-skill exclusion lists from `skills-lock.json`.
  *
- * Installed skills are committed so a fresh worktree holds them, but they are
- * owned upstream, so anything that reaches `.agents/` has to skip them:
- * prettier scans `.`, codometer scans `--directory .`, GitHub Linguist reads
- * every committed file, and cspell and markdownlint both reach `.agents/`
- * because this repository's own skills there are documentation. Each of the
- * five lists one skill per line rather than excluding `.agents/skills/`
- * wholesale, so this repository's own skills in the same directory keep being
- * formatted, measured, attributed, spell-checked, and markdown-linted.
+ * Installed skills are owned upstream, so the five tools reaching `.agents/` list each one per line,
+ * not `.agents/skills/` wholesale, which would skip this repository's own skills.
  *
- * Some installers also copy agents and hooks into other harness folders
- * (`.claude/agents`, `.github/agents`), where the spell check and
- * ESLint's markdown rules reach them. `VENDORED_SKILL_PATHS` names those files,
- * and they are listed too, in the same tools plus ESLint, while their skill is
- * installed.
- *
- * Generating them is what keeps the lists in step with the lockfile. A skill
- * `skills update` adds is committed but invisible to all five until someone
- * adds it, and nothing else would notice — the symptom is a silently reformatted
- * upstream file, a badge counting somebody else's code, a language bar dominated
- * by a vendored bundle, or a spelling and markdown gate failing on prose this
- * repository has no right to correct.
+ * Generating keeps lists in step with the lockfile.
  */
 @Command({
   description: "Run the skill-exclusions command",

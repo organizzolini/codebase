@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-/** The headwords of the root glossary, read the way the root glossary lists them. */
+/** The root glossary's headwords, read as it lists them. */
 const rootGlossary = path.resolve(import.meta.dirname, "../../GLOSSARY.md");
 
 export default {

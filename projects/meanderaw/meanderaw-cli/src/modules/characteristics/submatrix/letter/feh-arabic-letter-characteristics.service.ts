@@ -8,11 +8,10 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of each positional form of the ڡ
- * (Arabic dotless feh) skeleton — final, initial, isolated, and medial — one
- * per corner and clockwise rotation, each counting that form's base template,
- * which faces Southwest, drawn that way. A letter sharing a form's skeleton,
- * differing from it only by dots or by other marks, is an alias of that form.
+ * Provides the sixteen orientation evaluators of each positional form of the ڡ skeleton: final, initial, isolated, and medial.
+ * Each counts that form's base template, drawn facing Southwest.
+ *
+ * A letter differing from a form only by dots or other marks is an alias of it.
  */
 @Injectable()
 export class FehArabicLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -72,50 +71,16 @@ export class FehArabicLetterCharacteristicsService implements CharacteristicEval
 
   // 🔐 Private Fields
 
-  /**
-   * The upright ڡ (final Arabic dotless feh) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   * ╷ ┌┐
-   * └─┴┴╴
-   * ```
-   */
+  /** Upright ڡ (final form) as hexadecimal Code digits, facing Southwest. */
   private readonly finalTemplate: readonly string[] = ["4.65.", "a3bb1"];
 
-  /**
-   * The upright ڡ (initial Arabic dotless feh) glyph's points as hexadecimal
-   * Code digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   *  ┌┐
-   *  └┤
-   * ╶─┘
-   * ```
-   */
+  /** Upright ڡ (initial form) as hexadecimal Code digits, facing Southwest. */
   private readonly initialTemplate: readonly string[] = [".65", ".ad", "239"];
 
-  /**
-   * The upright ڡ (isolated Arabic dotless feh) glyph's points as hexadecimal
-   * Code digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   * ╷ ┌┐
-   * └─┴┘
-   * ```
-   */
+  /** Upright ڡ (isolated form) as hexadecimal Code digits, facing Southwest. */
   private readonly isolatedTemplate: readonly string[] = ["4.65", "a3b9"];
 
-  /**
-   * The upright ڡ (medial Arabic dotless feh) glyph's points as hexadecimal
-   * Code digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   *  ┌┐
-   *  └┤
-   * ╶─┴╴
-   * ```
-   */
+  /** Upright ڡ (medial form) as hexadecimal Code digits, facing Southwest. */
   private readonly medialTemplate: readonly string[] = [".65.", ".ad.", "23b1"];
 
   // 🔑 Public Fields

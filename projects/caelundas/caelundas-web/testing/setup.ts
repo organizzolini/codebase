@@ -1,5 +1,13 @@
-import { cleanup } from "@testing-library/react";
-import { afterEach, beforeEach } from "vitest";
+import "@codebase/testing/react/setup";
+import { afterAll, afterEach, beforeAll, beforeEach } from "vitest";
+
+import {
+  resetGraphqlMockServer,
+  startGraphqlMockServer,
+  stopGraphqlMockServer,
+} from "@codebase/interface/testing";
+
+import { clearCalendarCaches } from "../src/components/events-calendar/calendar-loader.utilities";
 
 import { installViewport } from "./viewport";
 
@@ -36,10 +44,19 @@ globalThis.ResizeObserver = class {
   unobserve = ignore;
 };
 
+beforeAll(() => {
+  startGraphqlMockServer();
+});
+
 beforeEach(() => {
   installViewport();
 });
 
 afterEach(() => {
-  cleanup();
+  clearCalendarCaches();
+  resetGraphqlMockServer();
+});
+
+afterAll(() => {
+  stopGraphqlMockServer();
 });

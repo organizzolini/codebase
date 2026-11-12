@@ -24,7 +24,7 @@ import {
 } from "./phases.constants";
 
 import type { MartianPhase } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type {
   BuildPlanetPhaseEventArguments,
   MartianPhaseEventArguments,
@@ -80,19 +80,8 @@ export class MartianPhaseService {
   // 🌎 Public Methods
 
   /**
-   * Creates a calendar event for a specific Martian phase.
-   *
-   * Mars, being an outer planet, has a simpler phase cycle than Venus/Mercury:
-   * - Morning Rise: Mars becomes visible before sunrise
-   * - Morning Set: Mars sets with the Sun (approaching conjunction)
-   * - Evening Rise: Mars becomes visible after sunset
-   * - Evening Set: Mars disappears into Sun's glare (conjunction).
-   *
-   * Mars doesn't have elongation or brightness maxima like inner planets
-   * because it can appear at any angular distance from the Sun (up to 180°
-   * at opposition).
-   *
-   * @see {@link symbolByMartianPhase} for phase symbols
+   * Creates a Martian phase event; Mars has no elongation or brightness maxima,
+   * as it can reach 180° from the Sun.
    */
   buildMartianPhaseEvent(
     args: BuildPlanetPhaseEventArguments<MartianPhase>,

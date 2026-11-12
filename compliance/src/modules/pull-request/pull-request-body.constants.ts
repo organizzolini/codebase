@@ -5,18 +5,7 @@ import type { SectionRule, SectionShape } from "./pull-request-body.types";
 /** The template every pull request description starts as. */
 export const PULL_REQUEST_TEMPLATE_PATH = ".github/PULL_REQUEST_TEMPLATE.md";
 
-/**
- * The four sections a description must carry, in the order they are reported,
- * with what each may hold and how long it may run.
- *
- * Read from here rather than from the template, deliberately: the headings are
- * the contract, and a template edit that dropped one should fail this check
- * rather than silently stop requiring it. The comments are the opposite case —
- * see `extractTemplateComments`. Only Summary and Details are capped, being
- * what a reviewer reads first: Summary to what reads at a glance, Details to
- * between the 90th and 95th percentiles of past descriptions. Words are counted as `wc -w`
- * would, once comments are removed.
- */
+/** Required sections, kept here so a template edit cannot drop one. */
 export const SECTION_RULES: readonly SectionRule[] = [
   { heading: "## 🌰 Summary", maximumWords: 48, shape: "paragraph" },
   { heading: "## 📝 Details", maximumWords: 512, shape: "bullet-list" },
@@ -40,14 +29,7 @@ export const SECTION_SHAPE_DESCRIPTIONS: Readonly<
 /** How a `<!-- … -->` prompt is recognized in the template. */
 export const TEMPLATE_COMMENT_PATTERN = /<!--[\S\s]*?-->/gu;
 
-/**
- * How much of a template comment has to survive for it to count as unfilled.
- *
- * A prefix rather than the whole comment, because the point is to catch a
- * description that still carries the prompt, and a prompt with a word changed
- * in the middle of it is still the prompt. Long enough that no two prompts in
- * the template share one.
- */
+/** A template comment's prefix that must survive to count as unfilled. */
 export const TEMPLATE_COMMENT_PREFIX_LENGTH = 40;
 
 /** Said when there is no description to check at all. */

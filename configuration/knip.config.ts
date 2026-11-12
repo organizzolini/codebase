@@ -4,13 +4,9 @@ const config: KnipConfig = {
   $schema: "https://unpkg.com/knip@5/schema.json",
 
   // Globally ignored file patterns (tests, build output, caches)
-  // Each toolchain configuration named here is read by file name, never
-  // imported, the way nothing imports eslint.config.ts — but knip has a plugin
-  // for eslint and none for these. codometer walks upward from the directory it
-  // measures; callidescope resolves one beside every project a trace reaches;
-  // codependix, optionally, beside every project a run maps; and coinagerie
-  // from the folder a run starts in, where only the shared configuration a
-  // project spreads imports anything.
+  // Each toolchain configuration named here is read by file name, not imported. codometer walks
+  // upward from the directory it measures; callidescope and codependix resolve one beside each
+  // project; coinagerie reads from the folder a run starts in.
   ignore: [
     "**/*.test.ts",
     "**/callidescope.config.ts",
@@ -58,7 +54,9 @@ const config: KnipConfig = {
     "@graphql-codegen/typescript-validation-schema",
     "graphql-codegen-typescript-validation-schema",
     "@commitlint/config-conventional", // commitlint preset, referenced as string in extends array
+    "@codebase/testing", // Imported by tests and testing/setup.ts, which knip leaves out of its scope
     "@golevelup/ts-vitest", // Conformance-scaffolded test mock utility — imported in testing/mocks.ts which is in ignoreFiles
+    "@nestjs/testing", // Conformance-scaffolded test dependency — the testing package's module builder imports it for the tests, so no project file does
     "@nx/eslint-plugin", // Loaded dynamically by Nx ESLint integration
     // Kept despite knip hinting it is redundant: the hint comes from a
     // full-workspace run, and the Nx target runs knip scoped to one workspace,
@@ -67,7 +65,7 @@ const config: KnipConfig = {
     "@nx/web", // Nx web plugin (auto-detected by Nx)
     // Declared at the root only so pnpm resolves @nestjs/core's optional peer
     // the same way for every workspace package; without it lexico-api and
-    // lexico-entities load two copies of @nestjs/core and DI breaks.
+    // lexico-db load two copies of @nestjs/core and DI breaks.
     "@nestjs/platform-express",
     "@semantic-release/commit-analyzer", // semantic-release plugin, referenced in release.config.cjs
     "@semantic-release/github", // semantic-release plugin
@@ -170,6 +168,19 @@ const config: KnipConfig = {
       project: "src/**/*.ts",
     },
 
+    // caelundas-api: NestJS GraphQL API
+    "projects/caelundas/caelundas-api": {
+      ignoreDependencies: [
+        // Apollo 5's Express integration, which @nestjs/apollo resolves by
+        // name at startup; without it GraphQLModule refuses to boot.
+        "@as-integrations/express5",
+        // Named only by testing/mocks.ts, a conformance-scaffolded placeholder
+        // that knip ignores, so no import reaches it.
+        "typeorm",
+      ],
+      project: "src/**/*.ts",
+    },
+
     // caelundas-db: Shared TypeORM entities, migration, and read model
     "projects/caelundas/caelundas-db": {
       // The data source and the migration are read by the TypeORM command
@@ -203,11 +214,9 @@ const config: KnipConfig = {
       project: "src/**/*.ts",
     },
 
-    // codometer-examples: A sample corpus and one configuration per behavior.
-    // Nothing here is imported by anything — the configurations are read by the
-    // codometer command line and the corpus exists to be counted — so knip is
-    // told where the entry points really are rather than left to conclude the
-    // whole package is dead.
+    // codometer-examples: a sample corpus and one configuration per behavior.
+    // Nothing imports these; the corpus exists to be counted. Declaring the
+    // entry points stops knip concluding the whole package is dead.
     "projects/ic-suite/codometer/codometer-examples": {
       entry: [
         "codometer.config.ts",
@@ -249,28 +258,33 @@ const config: KnipConfig = {
     },
 
     // persistence: Shared Postgres package and its command line. The migration
-    // SQL extraction script is run by name from the `migration` target
-    // defaults in nx.json rather than imported, and `start` and `repl` run
-    // `src/persistence.main.ts` and `src/persistence.repl.ts` by path, so knip is
-    // told all three are entry points.
+    // SQL script runs by name from nx.json, and `start` and `repl` run their
+    // entry files by path, so knip is told those command entry points are used.
+    // Knip discovers the package exports from package.json.
     "projects/common/persistence": {
       entry: [
         "scripts/**/*.ts",
         "src/persistence.main.ts",
         "src/persistence.repl.ts",
       ],
-      project: ["src/**/*.ts", "scripts/**/*.ts"],
+      project: [
+        "src/**/*.ts",
+        "scripts/**/*.ts",
+        "testing/database-testing/**/*.ts",
+        "testing/postgres-container/**/*.ts",
+      ],
     },
 
-    // lexico-entities: Shared TypeORM entities
-    "projects/lexico/lexico-entities": {
+    // lexico-db: Shared TypeORM entities
+    "projects/lexico/lexico-db": {
       entry: [
         "src/index.ts",
         "src/modules/database/data-source.constants.ts",
         "src/modules/database/migrations/**/*.ts",
       ],
       ignore: [
-        "src/modules/entities/entities.module.ts", // Conformance-generated module stub, not yet exported
+        "src/modules/dictionary/dictionary.module.ts", // Conformance-generated module stub, not yet exported
+        "src/modules/literature/literature.module.ts", // Conformance-generated module stub, not yet exported
       ],
       project: ["src/**/*.ts"],
     },
@@ -305,9 +319,7 @@ const config: KnipConfig = {
 
     // logger: Shared pino-backed NestJS LoggerService and LoggerModule
     "projects/common/observability": {
-      entry: ["src/index.ts"],
-      ignore: ["src/**/*.test.ts", "testing/**"],
-      project: "src/**/*.ts",
+      project: ["src/**/*.ts", "testing/testing-module/**/*.ts"],
     },
 
     // integration: NestJS CLI tool for the Continuous Integration plumbing steps
@@ -319,9 +331,9 @@ const config: KnipConfig = {
       project: "src/**/*.ts",
     },
 
-    // publication: NestJS CLI tool for the CI release steps and the publishable-packages gate
-    publication: {
-      entry: ["src/publication.main.ts", "src/publication.repl.ts"], // Main CLI entry + the REPL its own target runs
+    // deployment: NestJS CLI tool for the CI release steps and the publishable-packages gate
+    deployment: {
+      entry: ["src/deployment.main.ts", "src/deployment.repl.ts"], // Main CLI entry + the REPL its own target runs
       ignore: [
         "testing/**", // Test fixtures and setup
       ],
@@ -376,15 +388,9 @@ const config: KnipConfig = {
       ignore: ["src/**/*.test.ts", "testing/**"],
       project: "src/**/*.ts",
     },
-    // Every fixture exists to be traced, not imported. An orphan-root fixture
-    // is *defined* by having no caller, and a resolution-table fixture is
-    // reached only by the type checker — which is exactly the shape knip
-    // reports as an unused file or an unused export. Declaring the whole of
-    // `examples/` as entry points says that directly, and keeps knip doing the
-    // one job that still applies here: telling this package when a dependency
-    // it declares has stopped being used. Ignoring `examples/` instead would
-    // leave every dependency looking unused, and `knip --fix` would delete
-    // them.
+    // Every fixture exists to be traced, not imported, so knip reports it as unused. Declaring
+    // all of `examples/` as entry points says so directly. Ignoring it instead would leave every
+    // dependency looking unused, and `knip --fix` would delete them.
     "projects/ic-suite/callidescope/callidescope-examples": {
       entry: [
         "callidescope.workspace.config.ts",
@@ -479,11 +485,9 @@ const config: KnipConfig = {
       ignore: ["src/**/*.test.ts", "testing/**"],
       project: "src/**/*.ts",
     },
-    // conformetry-examples: runnable examples of the toolchain. Example code
-    // exists to be read and run, not imported, so every file here is an entry
-    // point in its own right — without saying so, knip reports the whole
-    // package as unused. The fixture trees are excluded because a template
-    // file is not valid TypeScript until it has been rendered.
+    // conformetry-examples: runnable examples of the toolchain. Their files are entry points,
+    // since knip would otherwise report the whole package as unused. The fixture trees are
+    // excluded because a template is not valid TypeScript until it has been rendered.
     "projects/ic-suite/conformetry/conformetry-examples": {
       entry: ["examples/*/conformetry.config.ts", "examples/*/*.ts"],
       ignore: ["examples/*/instances/**", "examples/*/templates/**"],

@@ -15,9 +15,7 @@ import type {
 // 🌎 Public Functions
 
 /**
- * Lays one row's bars out as the timeline draws them at a scale and zoom:
- * the markers that would overlap gathered into counts, and the bars that
- * still overlap moved into lanes.
+ * Lays one row's bars out as the timeline draws them: markers that would overlap gathered into counts, then bars moved into lanes.
  */
 export function createTimelineLayout(
   rows: TimelineRows,
@@ -33,14 +31,7 @@ export function createTimelineLayout(
 }
 
 /**
- * Moves the bars of each row that would overlap into lanes beneath it, so
- * that nothing is drawn over anything else. A bar goes in the first lane of
- * its row that is free by the time it starts; a bar shorter than `reach`
- * holds its lane that long, which keeps room for its marker and for the
- * title drawn beside it. A row that needs more than one lane gets a row for
- * each further lane, without a title, directly beneath it; a row that needs
- * one is left as it is, and a bar in a row it does not know stays where it
- * is.
+ * Moves a row's overlapping bars into lanes beneath it, so nothing draws over anything; each extra lane gets an untitled row.
  */
 export function packTimelineLanes(
   resources: readonly GanttResource[],
@@ -71,9 +62,7 @@ export function packTimelineLanes(
 }
 
 /**
- * Copies the rows with a row for each lane a row needs beyond its first,
- * placed straight after it. Walks the tree with a stack of its own rather
- * than recursion, keeping the call stack flat.
+ * Copies the rows with a row for each lane a row needs beyond its first, placed straight after it.
  */
 function addLaneRows(
   resources: readonly GanttResource[],
@@ -107,9 +96,7 @@ function addLaneRows(
 }
 
 /**
- * Puts each bar of a row, in order of start, in the first lane that is free
- * by then, and says how many lanes that took. A lane's first bar stays on the
- * row; the others move to the row of their lane.
+ * Puts each bar, in start order, in the first lane free by then, and says how many lanes that took.
  */
 function assignLanes(
   rowId: string,

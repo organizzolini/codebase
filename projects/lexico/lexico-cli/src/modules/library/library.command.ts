@@ -135,10 +135,7 @@ export class LibraryCommand extends CommandRunner {
   }
 
   /**
-   * Resolves the provider, author and text filters. A given provider must be
-   * configured; a given author or text is taken as-is, since it may not be
-   * downloaded yet. A missing value is asked for on a terminal and otherwise
-   * means "All".
+   * Resolves provider, author, and text filters. A given provider must be configured; an author or text is taken as given.
    */
   private async parseIngestOptions(options: LibraryCommandOptions): Promise<{
     author: string | undefined;

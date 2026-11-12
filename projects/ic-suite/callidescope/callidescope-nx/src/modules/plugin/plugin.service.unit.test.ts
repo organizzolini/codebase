@@ -8,8 +8,9 @@ import {
   ProjectReportsService,
 } from "@callidescope/output";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { OptionsService } from "../options/options.service";
 import { ProjectsService } from "../projects/projects.service";
@@ -42,7 +43,7 @@ vi.mock("node:fs", () => ({
   existsSync: vi.fn<() => boolean>(() => true),
 }));
 
-/** The limits a stubbed run resolved, so a forwarded lookup can be pinned. */
+/** Stubbed run's resolved limits, so forwarded lookups can be pinned. */
 const LIMITS: ProjectLimitsLookup = {
   byProject: new Map(),
   workspace: createMock<ProjectLimits>(),
@@ -87,9 +88,8 @@ describe(PluginService, () => {
     projectReportsService = createMock<ProjectReportsService>();
     projectsService = new ProjectsService();
 
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(PluginService, {
       providers: [
-        PluginService,
         { provide: CallidescopeService, useValue: callidescopeService },
         { provide: ConfigurationService, useValue: configurationService },
         { provide: FileFilterService, useValue: fileFilterService },
@@ -105,9 +105,7 @@ describe(PluginService, () => {
         // below are its output, and a stub of it would pin the stub instead.
         VerdictService,
       ],
-    }).compile();
-
-    service = await module.resolve(PluginService);
+    }));
   });
 
   beforeEach(() => {
@@ -130,19 +128,8 @@ describe(PluginService, () => {
   });
 
   /**
-   * Stubs one trace outcome, typed rather than cast.
-   *
-   * `createMock` builds a value of the real type from the fields under test,
-   * so nothing here needs an `as unknown as` — which would take these stubs
-   * out of type coverage and stop the compiler noticing when the shapes they
-   * stand in for change.
-   *
-   * The findings are answered twice: as the whole run's, and as what the
-   * projects in scope own. A verdict reads only the second, so a test can set
-   * them apart and pin which one decided it.
-   *
-   * Every judged project is answered as read, so a case that means to fail on
-   * something else is not failed by the unread rule first.
+   * Stubs one trace outcome, typed rather than cast. Findings are answered twice: as the run's
+   * and as the scope's.
    */
   function stubOutcome(args: {
     callableCount: number;
@@ -169,9 +156,28 @@ describe(PluginService, () => {
     });
   }
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(PluginService, {
+      mocks: [
+        CallidescopeService,
+        ConfigurationService,
+        FileFilterService,
+        MarkdownReportService,
+        ProjectReportsService,
+        ProjectsService,
+      ],
+      providers: [
+        OptionsService,
+        // The real one, over the mocked `ConfigurationService` beside it.
+        RunConfigurationService,
+        // The real one, over the mocked `ProjectReportsService` beside it.
+        VerdictService,
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(PluginService);
   });
 
   describe("inferTargets", () => {
@@ -625,12 +631,9 @@ describe(PluginService, () => {
         "packages/alpha",
       ]);
 
-      // The one rule the two targets act on differently. Every project the
-      // workspace configuration excludes reads nothing of its own and is
-      // denied a gate for that reason, so failing its trace as well would
-      // leave the one target it has permanently red — a red task a reader
-      // learns to ignore. It still prints, because a reader must be able to
-      // see that the project read nothing.
+      // Excluded projects read nothing of their own and are denied a gate for that, so
+      // failing their trace too would leave one target permanently red. The trace still
+      // prints, so a reader can see the project read nothing.
       const result = await service.runTrace({
         configurationPath: CONFIGURATION_PATH,
         directories: ["packages/alpha", "packages/beta"],
@@ -778,10 +781,9 @@ describe(PluginService, () => {
     it("fails a gate that opened none of its own project's files", async () => {
       expect.hasAssertions();
 
-      // The whole run is not empty — a project with dependencies always has
-      // theirs to show — so the run-wide rule above cannot reach this. What
-      // went missing is the judged project's own files, which is what leaves
-      // it owning no finding and passing green over code nothing read.
+      // The run as a whole is not empty, since dependencies always have something to show,
+      // so the run-wide rule above cannot catch this. The judged project's own files went
+      // missing, leaving it green over code nothing read.
       stubGate();
       projectReportsService.findUnreadProjects.mockReturnValue([
         "packages/alpha",

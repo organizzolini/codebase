@@ -13,14 +13,7 @@ import type {
 
 // 🏷️ Types
 
-/**
- * One example project's exploration outcome.
- *
- * Modelled on `codependix-cli`'s split between `ProjectRunResult` and
- * `ProjectRunFailure`: a project either produced a graph or never got that
- * far, and the two must not be representable at once — which is what lets a
- * run report exactly which projects failed while completing every other one.
- */
+/** A graph, or the failure that stopped one project. */
 type Exploration =
   | {
       readonly error: string;
@@ -50,13 +43,7 @@ const EMPTY_CONTAINER = ["ambient-modules", "empty-container"];
 /** Container whose options factory refuses to run if it is ever called. */
 const PREVIEW_CONTAINER = ["preview-mode", "container"];
 
-/**
- * The root module each example application boots from, keyed by project name.
- *
- * What a real workspace declares in `nestjsModules.rootModules`: nothing about
- * where a root module lives is assumed, so a project absent from this table
- * is a library and is rooted in a synthetic module.
- */
+/** Boot root module per app; absent projects are libraries. */
 export const EXAMPLE_ROOT_MODULES: Readonly<Record<string, NestjsRootModule>> =
   {
     "rooted-application": {
@@ -80,15 +67,7 @@ const FAILING_CONTAINER = ["container-rooting", "failing-container"];
 
 // 🕸️ Graphs
 
-/**
- * Module graphs already built, keyed by the project root they came from.
- *
- * Exploring a container boots it, and the same containers are asked for
- * repeatedly. Nothing under `examples/` changes while the process runs, so the
- * second request is answered from here. Only a successful exploration is
- * cached: a container that refuses to load raises every time it is asked for,
- * which is what the container-rooting example shows.
- */
+/** Built module graphs by project root; only successes are cached. */
 const graphsByRoot = new Map<string, Promise<NestjsModuleGraph>>();
 
 /** Builds one example container's module graph. */
@@ -140,11 +119,7 @@ export function describeError(error: unknown): string {
 }
 
 /**
- * Describes a project the way discovery would have described it.
- *
- * `NestjsProjectService.discoverProjects` filters an Nx project graph by the
- * `framework:nestjs` tag, and an example project is not an Nx project — so the
- * descriptor discovery would have produced is built directly instead.
+ * Describes a project as discovery would have. An example is not an Nx project, so discovery's descriptor is built directly.
  */
 export function describeProjectAt(absoluteRoot: string): NestjsProject {
   const name = path.basename(absoluteRoot);

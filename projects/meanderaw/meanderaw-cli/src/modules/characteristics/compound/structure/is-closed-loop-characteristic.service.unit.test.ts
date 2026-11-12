@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -22,17 +23,12 @@ describe(IsClosedLoopCharacteristicService, () => {
     let service: IsClosedLoopCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const real = await buildTestingModule(CharacteristicContextService, {
         imports: [CodeModule, MatrixModule, StructureCharacteristicsModule],
-        providers: [CharacteristicContextService],
-      }).compile();
+      });
 
-      contextService = await module.resolve(CharacteristicContextService);
-      service = await module.resolve(IsClosedLoopCharacteristicService);
-    });
-
-    it("is defined", () => {
-      expect(service).toBeDefined();
+      contextService = real.instance;
+      service = await real.module.resolve(IsClosedLoopCharacteristicService);
     });
 
     it.each([
@@ -63,34 +59,36 @@ describe(IsClosedLoopCharacteristicService, () => {
     let service: IsClosedLoopCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
-        providers: [
-          CompoundUtilitiesService,
-          IsClosedLoopCharacteristicService,
-          {
-            provide: BettiNumber0CountCharacteristicService,
-            useValue: { compute: (): number => counts.bettiNumber0Count },
-          },
-          {
-            provide: BettiNumber1CountCharacteristicService,
-            useValue: { compute: (): number => counts.bettiNumber1Count },
-          },
-          {
-            provide: CrossCountCharacteristicService,
-            useValue: { compute: (): number => counts.crossCount },
-          },
-          {
-            provide: ForkCountCharacteristicService,
-            useValue: { compute: (): number => counts.forkCount },
-          },
-          {
-            provide: FreeEndCountCharacteristicService,
-            useValue: { compute: (): number => counts.freeEndCount },
-          },
-        ],
-      }).compile();
+      const built = await buildTestingModule(
+        IsClosedLoopCharacteristicService,
+        {
+          providers: [
+            CompoundUtilitiesService,
+            {
+              provide: BettiNumber0CountCharacteristicService,
+              useValue: { compute: (): number => counts.bettiNumber0Count },
+            },
+            {
+              provide: BettiNumber1CountCharacteristicService,
+              useValue: { compute: (): number => counts.bettiNumber1Count },
+            },
+            {
+              provide: CrossCountCharacteristicService,
+              useValue: { compute: (): number => counts.crossCount },
+            },
+            {
+              provide: ForkCountCharacteristicService,
+              useValue: { compute: (): number => counts.forkCount },
+            },
+            {
+              provide: FreeEndCountCharacteristicService,
+              useValue: { compute: (): number => counts.freeEndCount },
+            },
+          ],
+        },
+      );
 
-      service = await module.resolve(IsClosedLoopCharacteristicService);
+      service = built.instance;
     });
 
     beforeEach(() => {

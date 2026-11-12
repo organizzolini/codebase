@@ -7,7 +7,7 @@ const register = vi.hoisted(() =>
 
 vi.mock("node:module", () => ({ register }));
 
-/** The shim, named by a variable: it is JavaScript, with no types to check. */
+/** The untyped JavaScript shim, named by a variable. */
 const LOADER_PATH = "./loader.mjs";
 
 describe("gate loader", () => {

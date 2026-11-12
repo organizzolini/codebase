@@ -1,11 +1,6 @@
 // ♟️ Constants
 
-/**
- * The sixteen orientation names every letter is keyed by, in the order
- * `LetterUtilitiesService.orientations` enumerates them: each corner —
- * Southeast, Southwest, Northeast, Northwest — unturned, then turned a
- * quarter, a half, and three quarters clockwise.
- */
+/** Sixteen orientation names: each corner, turned zero to three quarters. */
 export const LETTER_ORIENTATION_NAMES = [
   "Southeast",
   "SoutheastQuarter",
@@ -25,11 +20,7 @@ export const LETTER_ORIENTATION_NAMES = [
   "NorthwestThreeQuarter",
 ] as const;
 
-/**
- * Every script whose letters are drawn as glyph templates, with its base
- * corner: its reading direction, the corner its glyphs face before any flip.
- * The source of truth for `LetterScript`, so a new script is one entry here.
- */
+/** Script drawn as glyph templates, facing its base corner. */
 export const LETTER_SCRIPTS = {
   Arabic: { baseCorner: "Southwest" },
   Greek: { baseCorner: "Southeast" },

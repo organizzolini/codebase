@@ -1,8 +1,8 @@
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 import type { FilterOption } from "@codebase/presentation";
 
 /**
- * A derived field's id: a period an event starts in, or its duration.
+ * A derived field's id: a time period or duration.
  */
 export type DerivedGroupId =
   | "day"
@@ -15,8 +15,7 @@ export type DerivedGroupId =
   | "year";
 
 /**
- * A dimension the events can be grouped by: a tag root, whose tree the
- * grouping can go down into, or a value derived from each event's times.
+ * A dimension events group by: a tag root or derived time.
  */
 export interface EventGroupField {
   /**
@@ -30,14 +29,11 @@ export interface EventGroupField {
   id: string;
   label: string;
   /**
-   * For a tag root, the names of the tags at each depth beneath it, from
-   * depth 1 down, so the depth picker can say what each level holds; empty
-   * for a derived field.
+   * For a tag root, the tag names at each depth below it, from depth 1; empty for a derived field.
    */
   levels: readonly (readonly string[])[];
   /**
-   * For a tag root, its tags in tree order as the filter lists them, so the
-   * grouping picks from the same tree; empty for a derived field.
+   * For a tag root, its tags in filter tree order; empty for a derived field.
    */
   options: readonly FilterOption[];
 }
@@ -48,10 +44,7 @@ export interface EventGroupField {
 export type EventGrouping = readonly EventGroupLevel[];
 
 /**
- * One level of a grouping: the field it groups by and, for a tag root, the
- * tags it makes a group of, each holding the events under it. With none
- * picked it groups by the root's children, or by the tags `depth` beneath the
- * root of a link from before tags could be picked.
+ * One grouping level: a field, plus tags or a `depth`.
  */
 export interface EventGroupLevel {
   depth?: number | undefined;
@@ -60,8 +53,7 @@ export interface EventGroupLevel {
 }
 
 /**
- * One group of events at one level of a grouping, and the groups it splits
- * into at the next level.
+ * One group of events at a level, with its child groups.
  */
 export interface EventGroupNode {
   children: EventGroupNode[];

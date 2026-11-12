@@ -1,11 +1,11 @@
 packages:
   - compliance
   - configuration
+  - deployment
   - documentation
   - infrastructure
   - installation
   - integration
-  - publication
   - synchronization
   - validation
   - projects/*
@@ -38,20 +38,24 @@ allowBuilds:
 minimumReleaseAge: 1440
 catalogMode: strict
 cleanupUnusedCatalogs: true
-peerDependencyRules:
-  allowedVersions:
-    # typeorm declares better-sqlite3 ^12 only; drop once it widens its range.
-    typeorm>better-sqlite3: ^13.0.3
 overrides:
   axios@>=1.15.2 <1.18.0: ^1.18.0
-  # openwiki's langgraph checkpoint pulls ^12, which would split typeorm's peer context.
-  better-sqlite3: "catalog:"
   brace-expansion@>=3.0.0 <5.0.7: ^5.0.7
   conventional-changelog-conventionalcommits: ^9.3.1
-  fast-uri@>=3.0.0 <3.1.6: ^3.1.6
+  fast-uri@>=3.0.0 <3.1.9: ^3.1.9
+  fast-uri@>=4.0.0 <4.2.3: ^4.2.3
+  "@graphql-tools/utils@<=12.0.1": ^12.0.2
+  "@vitest/mocker@<5.0.3": ^5.0.3
+  glob@>=9.0.0 <=14.0.1: ^14.0.2
+  ip-address@<=10.7.3: ^10.7.4
   js-yaml@>=4.0.0 <4.3.1: ^4.3.1
   lodash@<=4.17.23: ^4.18.0
   markdown-it@<=14.1.1: ^14.2.0
+  minimatch@>=7.0.0 <11.0.1: ^11.0.1
+  multer@<2.5.0: ^2.5.0
+  re2js@<2.8.7: ^2.8.7
+  undici@>=6.0.0 <6.29.1: ^6.29.1
+  undici@>=7.0.0 <7.30.1: ^7.30.1
   ws@>=8.0.0 <8.21.0: ^8.21.0
 catalog:
   "@apollo/server": ^5.5.1
@@ -65,10 +69,10 @@ catalog:
   "@microsoft/api-extractor": ^7.52.1
   "@golevelup/ts-vitest": ^4.0.0
   "@graphql-codegen/cli": ^7.4.6
-  "@graphql-codegen/typed-document-node": ^7.2.0
-  "@graphql-codegen/typescript": ^6.1.2
+  "@graphql-codegen/typed-document-node": ^8.0.0
+  "@graphql-codegen/typescript": ^7.0.0
   "@graphql-codegen/typescript-msw": ^4.0.2
-  "@graphql-codegen/typescript-operations": ^6.1.10
+  "@graphql-codegen/typescript-operations": ^7.0.0
   "@graphql-typed-document-node/core": ^3.2.0
   "@nestjs/apollo": ^14.0.2
   "@nestjs/common": ^11.1.21 || ^12.0.1
@@ -97,9 +101,9 @@ catalog:
   "@swc/helpers": ^0.5.21
   "@tailwindcss/vite": ^4.3.0
   "@photostructure/tz-lookup": ^11.6.0
-  "@tanstack/react-router": ^1.170.7
-  "@tanstack/react-router-devtools": ^1.167.0
-  "@tanstack/react-start": ^1.168.10
+  "@tanstack/react-router": ^1.170.46
+  "@tanstack/react-router-devtools": ^1.167.3
+  "@tanstack/react-start": ^1.169.5
   "@testcontainers/postgresql": ^12.0.3
   "@testing-library/react": ^16.3.2
   "@types/cheerio-tableparser": ^1.0.0
@@ -114,9 +118,9 @@ catalog:
   "@types/react": ^19.2.15
   "@types/react-dom": ^19.2.3
   "@vitejs/plugin-react": ^6.0.2
-  "@vitest/coverage-v8": ^5.0.0
-  "@vitest/eslint-plugin": ^1.6.20
-  "@vitest/ui": ^5.0.0
+  "@vitest/coverage-v8": ^5.1.0
+  "@vitest/eslint-plugin": ^1.6.28
+  "@vitest/ui": ^5.1.0
   autoprefixer: ^10.5.0
   aws4fetch: ^1.0.20
   cheerio: ^1.0.0
@@ -142,14 +146,15 @@ catalog:
   eslint-plugin-tsdoc: ^0.5.2
   eslint-plugin-unicorn: ^64.0.0
   eslint-plugin-yml: ^3.3.2
+  execa: ^9.6.1
   fallow: ^3.24.1
-  graphql: ^16.11.0
+  graphql: ^17.1.0
   husky: ^9.1.7
   graphql-codegen-typescript-validation-schema: ^0.19.0
   ignore: 7.0.14
   input-otp: ^1.4.2
   jiti: ^2.7.0
-  jsdom: ^30.0.1
+  jsdom: ^31.0.0
   json5: ^2.2.3
   jscpd: ^5.0.12
   jsonc-parser: ^3.3.1
@@ -170,7 +175,7 @@ catalog:
   next-themes: ^0.4.6
   number-to-words: ^1.2.4
   nx: ^24.0.0
-  oxfmt: ^0.75.0
+  oxfmt: ^0.78.0
   oxlint: ^1.66.0
   pg: ^8.21.0
   pino: ^10.3.1
@@ -191,8 +196,8 @@ catalog:
   sonner: ^2.0.7
   squawk-cli: ^2.55.0
   sweph: ^2.10.3-b-1
-  stylelint: ^17.12.0
-  stylelint-config-standard: ^40.0.0
+  stylelint: ^18.0.0
+  stylelint-config-standard: ^41.0.0
   stylelint-config-tailwindcss: ^1.0.1
   syncpack: ^15.3.1
   tailwind-merge: ^3.6.0
@@ -206,23 +211,23 @@ catalog:
   typescript: ^6.0.3
   typescript-eslint: ^8.59.4
   validate-branch-name: ^1.3.2
-  verdaccio: ^7.0.1
-  vite: 8.3.5
+  verdaccio: ^7.1.0
+  vite: 8.3.7
   vite-plugin-dts: ^5.0.1
   vite-plugin-static-copy: ^4.1.1
   vite-tsconfig-paths: ^6.1.1
-  vitest: ^5.0.0
+  vitest: ^5.1.0
   wink-lemmatizer: ^3.0.4
   yaml: ^2.9.0
   zod: ^4.4.3
-  openwiki: ^0.7.2
+  openwiki: ^0.9.0
   skills: ^1.5.20
   typescript-7: npm:typescript@7.0.2
   pino-pretty: ^13.1.3
   dataloader: ^2.2.3
   cn: ^0.5.0
   '@base-ui/react': ^1.9.0
-  '@tanstack/react-virtual': ^3.14.17
+  '@tanstack/react-virtual': ^3.14.26
   '@dnd-kit/core': ^6.3.1
   '@dnd-kit/modifiers': ^9.0.0
   '@dnd-kit/sortable': ^10.0.0
@@ -233,17 +238,16 @@ catalog:
   '@headless-tree/core': ^1.7.0
   '@date-fns/tz': ^1.5.0
   react-phone-number-input: ^3.4.18
-  '@sqlite.org/sqlite-wasm': 3.53.4-build2
-  better-sqlite3: ^13.0.3
-  '@types/better-sqlite3': ^9.6.0
   astronomy-engine: 2.1.19
+  compression: ^1.8.2
+  '@types/compression': ^1.8.1
 catalogs:
   # Only the ic-suite packages published to npm use this catalog
-  # (`catalog:ic-suite`); everything else stays on the default one. Their
-  # published manifests must admit NestJS 11: nest-commander pins
-  # @golevelup/nestjs-discovery 7.0.3, whose peers accept only NestJS 11, so
-  # npm needs 11 in range to install one shared copy, and a second copy breaks
-  # every CLI's dependency injection. The lockfile still resolves NestJS 12.
+  # (`catalog:ic-suite`). Their manifests must admit NestJS 11, because
+  # nest-commander pins a discovery package whose peers accept only 11, and a
+  # second copy of NestJS breaks every CLI's dependency injection.
   ic-suite:
     "@nestjs/common": ^11.1.21 || ^12.0.1
     "@nestjs/core": ^11.1.21 || ^12.0.1
+patchedDependencies:
+  nx@24.0.0: patches/nx@24.0.0.patch

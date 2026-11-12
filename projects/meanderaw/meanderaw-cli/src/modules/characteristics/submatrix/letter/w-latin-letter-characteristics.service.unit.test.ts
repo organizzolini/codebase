@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,7 +7,7 @@ import { WLatinLetterCharacteristicsService } from "./w-latin-letter-characteris
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the W as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** Each distinct orientation of W as a standalone Code. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "04x03y4040c4c0ab90",
@@ -39,10 +38,7 @@ const ORIENTATIONS: readonly LetterOrientationFixture[] = [
 ];
 
 describe(WLatinLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    WLatinLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(WLatinLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

@@ -2,16 +2,10 @@ import { defineConfig, mergeConfig } from "vitest/config";
 
 import vitestConfig from "@codebase/configuration/vitest.config";
 
-// Deliberately not merged with `vite.config.mts`: the TanStack Start plugin
-// code-splits every route component into a lazy chunk, which a test would then
-// have to suspend on before it could render the page it imported. Server
-// function files are left out of coverage because `createServerFn` only runs
-// inside the Start runtime; the logic they delegate to is tested in each
-// module's `.utilities.ts`.
-//
-// The events database's worker and the page-side client that starts it need
-// a real browser, which jsdom is not; tests read the same SQL through
-// `node:sqlite` instead.
+// Not merged with `vite.config.mts`: the TanStack Start plugin lazy-splits
+// route components, which a test would have to suspend on. Server function
+// files are excluded from coverage because `createServerFn` only runs inside
+// Start; their logic is tested in each module's `.utilities.ts`.
 export default mergeConfig(
   vitestConfig,
   defineConfig({
@@ -26,10 +20,8 @@ export default mergeConfig(
         exclude: [
           "src/**/*.test.ts",
           "src/**/*.test.tsx",
-          "src/components/events-calendar/events-database-browser.constants.ts",
-          "src/components/events-calendar/events-database-browser.utilities.ts",
           "src/**/*.functions.ts",
-          "src/**/*.worker.ts",
+          "src/graphql/generated/**",
           "src/client.tsx",
           "src/routeTree.gen.ts",
           "src/router.tsx",
@@ -38,6 +30,13 @@ export default mergeConfig(
         include: ["src/**/*.ts", "src/**/*.tsx"],
       },
       environment: "jsdom",
+      /**
+       * Fifteen seconds per test, where Vitest's default is five: a jsdom test
+       * that opens the calendar's menus takes about a second and a half on a
+       * developer's machine, and a CI runner under load has taken more than
+       * five, ejecting a pull request from the merge queue.
+       */
+      testTimeout: 15_000,
     },
   }),
 );

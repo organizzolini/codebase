@@ -1,12 +1,14 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { captureOutput } from "@codebase/testing";
+
 import gateBatchExecutor from "./batch-executor";
 
 import type { BatchService } from "../../modules/batch/batch.service";
 import type { GateService } from "../../modules/gate/gate.service";
+import type { CapturedOutput } from "@codebase/testing";
 import type { ExecutorContext, TaskGraph } from "@nx/devkit";
-import type { MockInstance } from "vitest";
 
 const batchService = createMock<BatchService>();
 const gateService = createMock<GateService>();
@@ -68,11 +70,11 @@ function buildTaskGraph(projectNames: string[]): TaskGraph {
 }
 
 describe(gateBatchExecutor, () => {
-  let write: MockInstance<typeof process.stdout.write>;
+  let output: CapturedOutput;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+    output = captureOutput();
     batchService.runBatch.mockResolvedValue({});
     gateService.resolveConfigurationPath.mockImplementation(
       ({ configuration }) => configuration ?? "registered.config.ts",
@@ -189,7 +191,7 @@ describe(gateBatchExecutor, () => {
 
     // Nx stores a batch task's output but never prints it, so without this a
     // failed gate would be a red task that does not say which rule broke.
-    const printed = write.mock.calls.map(([chunk]) => String(chunk)).join("");
+    const printed = output.stdout();
 
     expect(printed).toContain("alpha:codependix-bound");
     expect(printed).toContain("a-is-a-leaf: a must not depend on b");

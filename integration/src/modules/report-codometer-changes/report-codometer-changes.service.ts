@@ -26,12 +26,11 @@ import type {
 } from "./report-codometer-changes.types";
 
 /**
- * Writes the changes in codometer's measurements onto a pull request.
+ * Writes codometer's changes onto a pull request body.
  *
- * It fetches the baseline the latest green `main` run uploaded, when there is
- * one, has `codometer-cli` diff this run's reports against it inside the pull
- * request body, and edits the pull request. A baseline that cannot be fetched
- * only costs the comparison: the report is still written.
+ * Fetches the baseline the latest green `main` run uploaded, when there is one,
+ * and has `codometer-cli` diff this run's reports against it. A baseline that
+ * cannot be fetched only costs the comparison; the report is still written.
  */
 @Injectable()
 export class ReportCodometerChangesService {
@@ -176,10 +175,8 @@ export class ReportCodometerChangesService {
   // 🌎 Public Methods
 
   /**
-   * Fetches the baseline, rewrites the pull request body with the changes
-   * against it, and saves the body.
-   *
-   * @returns Lines to print, and 0 or the exit code of the step that failed.
+   * Fetches the baseline and rewrites the pull request body with its changes.
+   * @returns Lines to print, and the failed step's exit code.
    */
   public report(): ReportCodometerChangesOutcome {
     const pullRequest = this.configService.get("PULL_REQUEST", { infer: true });

@@ -1,9 +1,7 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -14,7 +12,13 @@ import {
   vi,
 } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import {
+  captureOutput,
+  createTemporaryDirectory,
+  overrideEnvironment,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
@@ -32,13 +36,17 @@ import type {
   FakeProcessBehavior,
   FakeProcessRunner,
 } from "./installed-skills.types";
-import type { MockInstance } from "vitest";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
-/**
- * Fixtures live inside the workspace, in its gitignored `tmp`, never in the
- * operating system's temporary directory.
- */
-const FIXTURE_PARENT = path.resolve(import.meta.dirname, "../../../tmp");
+/** The command's real services, over a mocked process runner. */
+const moduleOptions = {
+  mocks: [InstalledSkillsProcessService],
+  providers: [
+    InstalledSkillsService,
+    SynchronizationService,
+    { provide: ConfigService, useValue: new ConfigService({}) },
+  ],
+};
 
 const RETRY_HINT =
   "Retry with 'pnpm exec nx run synchronization:installed-skills:write'";
@@ -46,103 +54,71 @@ const RETRY_HINT =
 describe(InstalledSkillsCommand, () => {
   let command: InstalledSkillsCommand;
   let workspace: string;
-  let stdout: MockInstance<typeof process.stdout.write>;
+  let printed: () => string;
 
-  /** Everything the command wrote to standard output. */
-  const printed = (): string =>
-    stdout.mock.calls.map(([chunk]) => String(chunk)).join("");
-
-  /**
-   * Builds the command over the real service, with this environment and a
-   * fake process runner over the test's workspace.
-   */
+  /** Builds the command over the real service and a fake runner. */
   const createCommand = async (
     environment: Record<string, string> = {},
     behavior: FakeProcessBehavior = {},
   ): Promise<{
     command: InstalledSkillsCommand;
-    logger: LoggerService;
+    logger: BuiltTestingModule<unknown>["logger"];
     runner: FakeProcessRunner;
   }> => {
     const runner = createFakeProcessRunner(workspace, behavior);
-    const module = await Test.createTestingModule({
-      providers: [
-        InstalledSkillsCommand,
-        InstalledSkillsService,
-        SynchronizationService,
-        { provide: ConfigService, useValue: new ConfigService(environment) },
-        {
-          provide: InstalledSkillsProcessService,
-          useValue: createMock<InstalledSkillsProcessService>({
-            run: runner.run,
-          }),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, logger, mock } = await buildTestingModule(
+      InstalledSkillsCommand,
+      {
+        ...moduleOptions,
+        providers: [
+          InstalledSkillsService,
+          SynchronizationService,
+          { provide: ConfigService, useValue: new ConfigService(environment) },
+        ],
+      },
+    );
 
-    return {
-      command: await module.resolve(InstalledSkillsCommand),
-      logger: await module.resolve(LoggerService),
-      runner,
-    };
+    mock(InstalledSkillsProcessService).run.mockImplementation(runner.run);
+
+    return { command: instance, logger, runner };
   };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        InstalledSkillsCommand,
-        InstalledSkillsService,
-        SynchronizationService,
-        { provide: ConfigService, useValue: new ConfigService({}) },
-        {
-          provide: InstalledSkillsProcessService,
-          useValue: createMock<InstalledSkillsProcessService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      InstalledSkillsCommand,
+      moduleOptions,
+    );
 
-    command = await module.resolve(InstalledSkillsCommand);
+    command = built.instance;
   });
 
   beforeEach(() => {
-    mkdirSync(FIXTURE_PARENT, { recursive: true });
-    workspace = mkdtempSync(path.join(FIXTURE_PARENT, "installed-skills-"));
+    workspace = createTemporaryDirectory("installed-skills");
     vi.spyOn(process, "cwd").mockReturnValue(workspace);
     // A CI runner sets these, and the local-agent wording must not depend on it.
-    vi.stubEnv("CI", undefined);
-    vi.stubEnv("GITHUB_ACTIONS", undefined);
-    stdout = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+    overrideEnvironment({ CI: undefined, GITHUB_ACTIONS: undefined });
+    printed = captureOutput().stdout;
   });
 
   afterEach(() => {
-    rmSync(workspace, { force: true, recursive: true });
     vi.restoreAllMocks();
-    vi.unstubAllEnvs();
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      InstalledSkillsCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(InstalledSkillsCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        InstalledSkillsCommand,
-        InstalledSkillsService,
-        SynchronizationService,
-        { provide: ConfigService, useValue: new ConfigService({}) },
-        {
-          provide: InstalledSkillsProcessService,
-          useValue: createMock<InstalledSkillsProcessService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
+    expect.hasAssertions();
 
-    expect(logger.setContext).toHaveBeenCalledWith("InstalledSkillsCommand");
+    await expectLoggerContext(InstalledSkillsCommand, moduleOptions);
   });
 
   describe("check", () => {

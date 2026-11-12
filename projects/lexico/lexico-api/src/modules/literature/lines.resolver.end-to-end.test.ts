@@ -53,10 +53,7 @@ interface ReaderToken {
   readonly word: null | { readonly data: string; readonly id: string };
 }
 
-/**
- * Reads a passage the way the reader does: a page of lines, a page of each
- * line's tokens, and the word each token resolves to.
- */
+/** The reader's query: lines, their tokens, and each token's word. */
 const READER = `
   query Reader(
     $textId: ID!

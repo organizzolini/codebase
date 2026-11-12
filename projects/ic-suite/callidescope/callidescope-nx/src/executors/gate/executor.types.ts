@@ -2,13 +2,7 @@
 
 import type { ExecutorContext, TaskGraph } from "@nx/devkit";
 
-/**
- * The four arguments Nx calls a batch executor with, in the order it passes them.
- *
- * A tuple rather than four parameters because Nx fixes that signature and the
- * workspace holds a function to three: the task graph, each task's resolved
- * options by task id, the overrides of the whole run, and the context.
- */
+/** Batch executor arguments: task graph, options, overrides, and context. */
 export type GateBatchExecutorArguments = [
   taskGraph: TaskGraph,
   options: Record<string, GateExecutorOptions>,
@@ -16,13 +10,7 @@ export type GateBatchExecutorArguments = [
   context: ExecutorContext,
 ];
 
-/**
- * What one task of a gate batch settled on.
- *
- * Nx's own type for a batch executor's result is not exported through
- * `@nx/devkit`, so this states the shape Nx reads back: whether the task
- * passed, and the output to show and to store with it in the cache.
- */
+/** One gate task's verdict and the output Nx caches. */
 export interface GateBatchTaskResult {
   readonly success: boolean;
   readonly terminalOutput: string;

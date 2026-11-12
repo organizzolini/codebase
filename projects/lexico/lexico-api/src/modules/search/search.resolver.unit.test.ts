@@ -5,11 +5,11 @@ import {
   GraphQLSchemaBuilderModule,
   GraphQLSchemaFactory,
 } from "@nestjs/graphql";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { createConnection, createEdge } from "@codebase/interface";
-import { Lexeme } from "@codebase/lexico-entities";
+import { Lexeme } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LexemeType } from "../lexemes/lexeme.entities";
 import { ORPHANED_GRAPHQL_TYPES } from "../lexemes/lexemes.constants";
@@ -25,23 +25,12 @@ import { SearchService } from "./search.service";
 import type { LexemeSearchMatch } from "./search.types";
 
 describe(SearchResolver, () => {
-  let resolver: SearchResolver;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(SearchResolver, {
+      mocks: [SearchService],
+    });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SearchResolver,
-        { provide: SearchService, useValue: createMock<SearchService>() },
-      ],
-    }).compile();
-
-    resolver = await module.resolve(SearchResolver);
-  });
-
-  it("is defined", () => {
-    expect.hasAssertions();
-
-    expect(resolver).toBeDefined();
+    expect(instance).toBeInstanceOf(SearchResolver);
   });
 
   it("resolves searchLatin query with pagination parameters", async () => {
@@ -169,16 +158,10 @@ describe(SearchResolver, () => {
   it("generates GraphQL schema including searchLatin and searchEnglish queries", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(SearchResolver, {
       imports: [GraphQLSchemaBuilderModule],
-      providers: [
-        SearchResolver,
-        {
-          provide: SearchService,
-          useValue: createMock<SearchService>(),
-        },
-      ],
-    }).compile();
+      mocks: [SearchService],
+    });
 
     const schemaFactory = module.get(GraphQLSchemaFactory);
     const schema = await schemaFactory.create([SearchResolver], {

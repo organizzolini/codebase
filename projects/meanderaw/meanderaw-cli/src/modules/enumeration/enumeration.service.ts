@@ -10,40 +10,11 @@ import type { MeanderShape } from "../database/database.types";
 import type { EnumeratedMeander, Environment } from "./enumeration.types";
 
 /**
- * Enumerates the whole lattice's unit space — every structurally distinct
- * repeat the edge budget admits, at every shape it admits one at — and
- * spells each one as a Code.
+ * Enumerates the lattice's whole unit space: every structurally distinct
+ * repeat the edge budget admits, spelled as a Code.
  *
- * **There is one unit space, not ten.** That is spec #813's own
- * Implementation Decision, and it is why this service writes no new walk.
- * `TileEnumerationService` already decides each of a repeat's edges in turn,
- * `2 ** edges` wide, folded by `SymmetryService`'s group so that a
- * shift or a mirror of one repeat is not another — and nothing in that walk
- * is about `mosaic`. It was written for the `mosaic` generator because that
- * was the only generator whose corpus was drawn this way, not because the
- * enumeration knows what a `mosaic` is; its own doc comment says so
- * outright: "Nothing here knows what a tile is called." So the
- * generalization this ticket asks for is not nine more enumerators. It is
- * running the one that exists across the whole row range the budget reaches,
- * and measuring each meander afterwards, by its own structure rather than
- * by which generator drew something.
- *
- * **The budget is the lattice's, not any generator's.**
- * `EDGE_BUDGET` is read through `TileEnumerationService` rather than
- * restated here, so the workspace holds one budget rather than two that
- * could disagree about the same space. A repeat of `rows` by `columns` holds
- * `columns × (2 × rows - 1)` edges and the walk is `2 ** edges` wide, so the
- * budget is what keeps the space a size somebody chose rather than one
- * somebody discovers. At twenty-four it admits twenty-five shapes and
- * 7,059,159 distinct meanders — of which the 8,551 in the eleven shapes the
- * `mosaic` half of the corpus already commits are reproduced rather than
- * recomputed differently.
- *
- * **No filter is applied anywhere in here**, which is the point: every
- * repeat within budget is produced, and a repeat no pattern characteristic
- * holds for is still a meander with a Code. Enumerating one pattern's own
- * members would need its definition to exist first, and the definitions
- * are read off the enumeration.
+ * **There is one unit space, and no filter.** Every repeat within budget is
+ * produced; what a meander is gets measured afterwards.
  */
 @Injectable()
 export class EnumerationService {
@@ -66,18 +37,10 @@ export class EnumerationService {
 
   // 🔐 Private Fields
 
-  /**
-   * The widest column count the draw run draws, read once from
-   * `DRAW_MAXIMUM_COLUMNS` at construction and layered on top of the edge
-   * budget as a review filter rather than replacing it.
-   */
+  /** Widest column count drawn, a review filter from `DRAW_MAXIMUM_COLUMNS`. */
   private readonly maximumColumns: number;
 
-  /**
-   * The deepest row count the draw run draws, read once from
-   * `DRAW_MAXIMUM_ROWS` at construction and layered on top of the edge
-   * budget as a review filter rather than replacing it.
-   */
+  /** Deepest row count drawn, a review filter from `DRAW_MAXIMUM_ROWS`. */
   private readonly maximumRows: number;
 
   // 🔑 Public Fields
@@ -87,13 +50,8 @@ export class EnumerationService {
   // 🌎 Public Methods
 
   /**
-   * Every structurally distinct meander of one shape, one per symmetry
-   * class, each spelled by the Code of the class's own canonical
-   * representative.
-   *
-   * A shape the budget does not admit is refused rather than enumerated
-   * slowly, by the walk itself: `2 ** edges` wide means one shape too many
-   * is not a long run but an unfinished one.
+   * Every structurally distinct meander of one shape, one per symmetry class,
+   * each spelled by its canonical representative's Code.
    */
   enumerate(shape: MeanderShape): EnumeratedMeander[] {
     const { columns, rows } = shape;
@@ -111,21 +69,8 @@ export class EnumerationService {
   }
 
   /**
-   * Every shape the draw run covers, shallowest first and narrowest first
-   * within a row count.
-   *
-   * Both ends are the budget's rather than a table's, by default. The draw run
-   * starts at {@link DRAW_MINIMUM_ROWS} and climbs while a single-column
-   * repeat is still admitted, which stops it at twelve rows unconfigured;
-   * the column span at each row count is however many the budget leaves,
-   * which is eight at two rows and one from seven rows down.
-   * `DRAW_MAXIMUM_ROWS` and `DRAW_MAXIMUM_COLUMNS` layer a further review
-   * filter on top of those two ends — never past them, since a shape past
-   * the budget is still refused — and default to unbounded, so an
-   * unconfigured draw run is
-   * exactly this. No pattern's own row range is consulted here, and none
-   * could be: enumeration applies no filter, and a repeat is drawn because
-   * it fits, not because some pattern was expecting it.
+   * Every shape the draw run covers, shallowest and narrowest first. The edge
+   * budget bounds it; the `DRAW_MAXIMUM_*` settings only narrow it.
    */
   shapes(): MeanderShape[] {
     const shapes: MeanderShape[] = [];

@@ -11,7 +11,7 @@ import {
   RISE_SET_ELONGATION_DEGREES,
 } from "./phases.constants";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type {
   CoordinateEphemeris,
   Coordinates,
@@ -77,11 +77,8 @@ export class PhaseCalculationService {
   }
 
   /**
-   * Derives the signed elongation of the planet from the Sun, in (−180°, 180°].
-   *
-   * Positive means the planet lies east of the Sun (ahead of it in
-   * longitude), negative west. The difference is wrapped, so a planet at 4°
-   * Aries is 6° east of a Sun at 28° Pisces rather than 354° west of it.
+   * Signed elongation of the planet from the Sun in (−180°, 180°]: positive east,
+   * negative west, wrapped across 0° Aries.
    */
   private getSignedElongation(args: CurrentLongitudeArguments): number {
     const difference =
@@ -234,29 +231,16 @@ export class PhaseCalculationService {
   }
 
   /**
-   * Derives the elongation: the true angular separation between planet and sun.
-   *
-   * A planet well north or south of the ecliptic reads farther from the Sun
-   * than its longitude gap alone, which is why greatest elongation is timed
-   * by this rather than by the longitude gap.
+   * The true angular separation between planet and Sun, which includes latitude,
+   * unlike the longitude gap.
    */
   getElongationAngle(planet: Coordinates, sun: Coordinates): number {
     return this.mathService.getAngularSeparation(planet, sun);
   }
 
   /**
-   * Determines whether the planet is at greatest brilliancy: its apparent
-   * magnitude is lower (brighter) than every margin sample before it and no
-   * higher than every margin sample after it.
-   *
-   * Two magnitude minima are not brilliancies and are refused: a thin
-   * crescent near inferior conjunction, past
-   * {@link MAXIMUM_BRILLIANCY_PHASE_ANGLE_DEGREES}, and a planet lost in the
-   * Sun's glare, closer to it than the rise and set threshold.
-   *
-   * This gate measures the true separation while rise and set use the
-   * longitude gap; near an inferior conjunction far from the ecliptic the
-   * two differ, and the phase-angle gate covers that difference.
+   * Whether the planet is at greatest brilliancy: a lower magnitude than earlier
+   * minutes, no higher than later ones, outside crescent and glare limits.
    */
   isBrightest(args: BrightnessesArguments): boolean {
     const { currentMagnitude, nextMagnitudes, previousMagnitudes } = args;

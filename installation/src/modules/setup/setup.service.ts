@@ -16,18 +16,10 @@ import { SoftwareService } from "../software/software.service";
 import { STARTUP_FILES } from "./setup.constants";
 
 /**
- * Runs every step of a machine's setup that comes after Node.
+ * Runs every step of a machine's setup after Node, in order.
+ * Shell configuration goes first so completions are wired on a second run.
  *
- * A developer's Mac runs them in the order they have always run in: shell
- * configuration, software, environment files, the remote Nx cache key, then
- * dependencies. Shell configuration comes first, so completions for tools the
- * software step installs later are only wired when setup is run a second time.
- * The cache key follows the software step because it needs `linode-cli`.
- *
- * Linux is what a Claude Code cloud session and the devcontainer run. It has
- * no Homebrew and no shell of its own to configure, and `scripts/installation.sh`
- * has already installed its packages, so only the environment files, the
- * software step (which does less there), and the local services apply.
+ * Linux has no Homebrew or shell to configure, so only environment files, software, and local services apply.
  */
 @Injectable()
 export class SetupService {

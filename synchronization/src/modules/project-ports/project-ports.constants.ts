@@ -8,13 +8,13 @@ export const PROJECTS_DIRECTORY = "projects";
 /** Hash multiplier of the rolling hash a port is derived with. */
 export const PORT_HASH_MULTIPLIER = 31;
 
-/** How many ports the hash spreads over; every step is a bijection because 31 shares no factor with it. */
+/** Port count; 31 has no shared factor, keeping the hash one-to-one. */
 export const PORT_HASH_MODULUS = 9000;
 
 /** The lowest port the hash produces, so every port is in 1000-9999. */
 export const PORT_HASH_OFFSET = 1000;
 
-/** Where each kind of application declares the port it serves on, found by its project name's suffix. */
+/** Where each application kind declares its port, found by name suffix. */
 export const PORT_SOURCES: readonly PortSource[] = [
   {
     filePath: ".env.default",
@@ -24,7 +24,7 @@ export const PORT_SOURCES: readonly PortSource[] = [
   { filePath: "vite.config.mts", pattern: /\bport:\s*(\d+)/, suffix: "-web" },
 ];
 
-/** A line has to look like it is about a port before a number on it is rewritten, so an unrelated `3000` stays. */
+/** Only port lines are rewritten, so an unrelated `3000` stays. */
 export const PORT_LINE_CONTEXT = /port|localhost|127\.0\.0\.1/i;
 
 /** Directories no port is ever rewritten in. */
@@ -39,7 +39,7 @@ export const SKIPPED_DIRECTORIES: ReadonlySet<string> = new Set([
   "tmp",
 ]);
 
-/** Files no port is ever rewritten in: history and lockfiles record what was, not what is. */
+/** Files never rewritten: history and lockfiles record the past. */
 export const SKIPPED_FILES: ReadonlySet<string> = new Set([
   "CHANGELOG.md",
   "pnpm-lock.yaml",

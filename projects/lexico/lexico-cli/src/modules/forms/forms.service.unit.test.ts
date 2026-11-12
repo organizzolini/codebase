@@ -1,9 +1,9 @@
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { Form, Lexeme, NominalForm, WordForm } from "@codebase/lexico-entities";
+import { Form, Lexeme, NominalForm, WordForm } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createRepositoryMock } from "../../../testing/mocks";
 import { WordsService } from "../words/words.service";
@@ -11,6 +11,7 @@ import { WordsService } from "../words/words.service";
 import { FormsTransientWordsService } from "./forms-transient-words.service";
 import { FormsService } from "./forms.service";
 
+import type { Provider } from "@nestjs/common";
 import type { Repository } from "typeorm";
 import type { Mocked } from "vitest";
 
@@ -20,43 +21,48 @@ describe(FormsService, () => {
   let wordFormRepository: DeepMocked<Repository<WordForm>>;
   let wordsService: Mocked<WordsService>;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        FormsService,
-        {
-          provide: getRepositoryToken(Form),
-          useValue: createRepositoryMock<Form>(),
-        },
-        {
-          provide: getRepositoryToken(WordForm),
-          useValue: createRepositoryMock<WordForm>(),
-        },
-        {
-          provide: WordsService,
-          useValue: createMock<WordsService>({
-            upsertWordsAndJunctions: vi
-              .fn<
-                (
-                  formsByNormalizedWord: Map<string, Set<Form>>,
-                  lexeme: Lexeme,
-                ) => Promise<void>
-              >()
-              .mockResolvedValue(undefined),
-          }),
-        },
-        FormsTransientWordsService,
-      ],
-    }).compile();
+  const createProviders = (): Provider[] => [
+    {
+      provide: getRepositoryToken(Form),
+      useValue: createRepositoryMock<Form>(),
+    },
+    {
+      provide: getRepositoryToken(WordForm),
+      useValue: createRepositoryMock<WordForm>(),
+    },
+    {
+      provide: WordsService,
+      useValue: createMock<WordsService>({
+        upsertWordsAndJunctions: vi
+          .fn<
+            (
+              formsByNormalizedWord: Map<string, Set<Form>>,
+              lexeme: Lexeme,
+            ) => Promise<void>
+          >()
+          .mockResolvedValue(undefined),
+      }),
+    },
+    FormsTransientWordsService,
+  ];
 
-    service = await module.resolve(FormsService);
-    formRepository = module.get(getRepositoryToken(Form));
-    wordFormRepository = module.get(getRepositoryToken(WordForm));
-    wordsService = module.get(WordsService);
+  beforeAll(async () => {
+    const built = await buildTestingModule(FormsService, {
+      providers: createProviders(),
+    });
+
+    service = built.instance;
+    formRepository = built.module.get(getRepositoryToken(Form));
+    wordFormRepository = built.module.get(getRepositoryToken(WordForm));
+    wordsService = built.module.get(WordsService);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(FormsService, {
+      providers: createProviders(),
+    });
+
+    expect(instance).toBeInstanceOf(FormsService);
   });
 
   describe("ingestLexemeForms", () => {

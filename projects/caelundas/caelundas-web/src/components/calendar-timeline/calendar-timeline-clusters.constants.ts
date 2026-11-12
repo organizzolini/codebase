@@ -5,15 +5,12 @@ export const MINUTE_MILLISECONDS = 60_000;
 const DAY_MINUTES = 1440;
 
 /**
- * The width a marker takes on the axis, in rem: a circle is as wide as a
- * lane is tall, and a little more keeps neighbors from touching.
+ * Marker width in rem, so neighbors do not touch.
  */
 export const MARKER_REM = 1.5;
 
 /**
- * How wide the timeline draws one column of each scale at rest, in rem,
- * which the timeline hands the Gantt so the clusters are sized by the same
- * widths it draws.
+ * Column width per scale at rest, in rem.
  */
 export const TIMELINE_UNIT_WIDTHS: Readonly<Record<GanttScale, number>> = {
   day: 2.5,
@@ -24,15 +21,12 @@ export const TIMELINE_UNIT_WIDTHS: Readonly<Record<GanttScale, number>> = {
 };
 
 /**
- * How many minutes each of a day's columns lasts: the fewest the Gantt
- * draws.
+ * Minutes per day column: the Gantt's finest step.
  */
 export const TIMELINE_DAY_INTERVAL = 15;
 
 /**
- * How long one column of each scale lasts, in minutes, as the Gantt lays its
- * axis out: the fifteen minutes the timeline asks of a day, a day in a week
- * or a month, a week in a quarter, and an average month in a year.
+ * Minutes per column of each scale.
  */
 export const COLUMN_MINUTES: Readonly<Record<GanttScale, number>> = {
   day: TIMELINE_DAY_INTERVAL,

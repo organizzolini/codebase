@@ -2,10 +2,7 @@ import type { Command } from "../process-runner/process-runner.types";
 
 // ♟️ Constants
 
-/**
- * The application whose `requires-python` states the version in use. The
- * template below must say the same, and a conformance check holds them equal.
- */
+/** Application whose `requires-python` states the version; the template must match. */
 export const APPLICATION_PYPROJECT = "projects/affirmancy/pyproject.toml";
 
 /** The template of the notebook applications, which follows the application. */
@@ -31,11 +28,7 @@ export const INSTALL_COMMAND: Command = [
   "--upgrade",
 ];
 
-/**
- * Locks again for the new version, then proves the lock installs on it: a lock
- * alone would not catch a dependency with no wheel for that Python (ormsgpack,
- * #1491).
- */
+/** Re-lock, then prove it installs; a lock misses no-wheel packages. */
 export const LOCK_COMMANDS: readonly Command[] = [
   ["uv", "lock", "--project", "configuration"],
   ["uv", "sync", "--frozen", "--quiet", "--project", "configuration"],

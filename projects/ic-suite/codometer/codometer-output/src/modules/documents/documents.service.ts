@@ -9,10 +9,7 @@ import type { DocumentMarkers, EmitArguments } from "./documents.types";
 /**
  * Puts a rendered report body where it was asked for.
  *
- * Every report shares this: wrap the body in its markers, then write it to a
- * file, splice it into a document, or print it. Nothing here knows what any
- * report measures, and nothing here talks to a forge — handing the markdown to
- * a pull request, an issue, or a wiki is the caller's job.
+ * Wraps the body in its markers, then writes, splices, or prints it. Nothing here knows what a report measures. Posting to a forge is the caller's job.
  */
 @Injectable()
 export class DocumentsService {
@@ -41,12 +38,7 @@ export class DocumentsService {
   // 🌎 Public Methods
 
   /**
-   * Wraps a rendered body in its markers, then writes it wherever the
-   * destination says.
-   *
-   * With neither a file nor a document the section goes to standard output,
-   * which is what makes any report inspectable before it is wired into
-   * anything.
+   * Wraps a body in its markers, then writes it to the destination, which may be a file, a document, or standard output.
    */
   async emit(args: EmitArguments): Promise<void> {
     const { body, destination, label, markers } = args;

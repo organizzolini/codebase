@@ -3,9 +3,7 @@ import { vi } from "vitest";
 import type { TemporaryWorkspace } from "./temporary-workspace";
 
 /**
- * Points this process at a temporary workspace: its working directory, its
- * home directory, and the shell it claims to run under.
- *
+ * Points this process at a temporary workspace: its working directory, home, and shell.
  * Undone by `vi.unstubAllEnvs()` and `vi.restoreAllMocks()`.
  */
 export function enterWorkspace(

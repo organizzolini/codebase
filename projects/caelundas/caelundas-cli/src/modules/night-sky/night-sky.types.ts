@@ -1,8 +1,6 @@
 // 🏷️ Types
 
-/**
- * A star of the HYG catalog that carries a Hipparcos number, at J2000.
- */
+/** HYG catalog star with a Hipparcos number, at J2000. */
 export interface CatalogStar {
   colorIndex: number;
   declinationDegrees: number;
@@ -11,10 +9,7 @@ export interface CatalogStar {
   rightAscensionHours: number;
 }
 
-/**
- * A segment of a constellation's figure, between two stars by Hipparcos
- * number, as the `constellation_line` table stores it.
- */
+/** Figure segment between two stars, as `constellation_line` stores it. */
 export interface ConstellationLineRow {
   constellationDesignation: string;
   fromHip: number;
@@ -68,7 +63,6 @@ export interface NightSkySources {
 }
 
 /**
- * Catalog stars grouped by their declination rounded to a tenth of a degree,
- * so a position is matched against its neighbors only.
+ * Stars bucketed by declination to 0.1°, so matches check neighbors.
  */
 export type StarIndex = ReadonlyMap<number, readonly CatalogStar[]>;

@@ -22,9 +22,8 @@ export class IssueLabelingService {
   // 🌎 Public Methods
 
   /**
-   * One line per label added or failed, and never a failure of the run: a
-   * label that cannot be added is a fact about the environment, and the audit
-   * that follows reports whatever is still missing.
+   * One line per label added or failed, never a failure of the run.
+   * The audit that follows reports anything still missing.
    */
   public label(options: {
     readonly body: string;

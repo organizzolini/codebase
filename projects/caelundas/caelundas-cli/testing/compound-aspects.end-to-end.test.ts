@@ -5,13 +5,10 @@ import { bodies } from "../src/modules/caelundas/caelundas.constants";
 import { PIPELINE_TEST_TIMEOUT_MILLISECONDS } from "./pipeline-window.constants";
 import { runPipelineWindow } from "./pipeline-window.functions";
 
-import type { DetectedCalendarEvent } from "../src/modules/database/database.types";
+import type { DetectedCalendarEvent } from "../src/modules/calendar-events/calendar-events.types";
 
 /**
- * Philadelphia, 8–10 October 2026. Ceres comes into opposition with the Lunar
- * Apogee on the 8th, and on the 10th the Moon squares both, completing a
- * T-square that was emitted twice at the minute it formed. The test checks the
- * shape of that occurrence, not its minute, which no outside source pins.
+ * Philadelphia, 8–10 October 2026, where a T-square repeats; checks shape.
  */
 const octoberWindow = {
   endDate: "2026-10-10",
@@ -37,7 +34,7 @@ function compoundBoundaries(
   );
 }
 
-/** Every body name, lower-cased, to pick a simple aspect's two bodies out of its tags. */
+/** Lower-cased body names, to find a simple aspect's two bodies. */
 const bodyNames = new Set(bodies.map((body) => body.toLowerCase()));
 
 /** Lower-cased tag labels, since simple and compound events case body names differently. */

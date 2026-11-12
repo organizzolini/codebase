@@ -16,10 +16,7 @@ import type { InstanceScore } from "@conformetry/core";
 /**
  * Scores each matched instance and decides whether it clears its threshold.
  *
- * Scoring is deliberately separate from the report. Deduplication picks which
- * template gets to *print* a shared file's finding, but a score answers a
- * different question — how much of this instance's own template it honours —
- * so it is taken from what validation found before any of that is collapsed.
+ * Scoring stays separate from the report: deduplication picks which template prints a shared finding, but a score measures this instance's own template, taken before collapsing.
  */
 @Injectable()
 /* v8 ignore stop */
@@ -35,12 +32,9 @@ export class ValidationScoringService {
   // 🔏 Private Methods
 
   /**
-   * The instance's own directory.
+   * The instance's own directory, joining the name stem onto the shared parent.
    *
-   * `Instance.path` is the directory the template's tree is laid *over* — the
-   * parent — so every module in a project shares it. Joining the name stem is
-   * what tells `aspects` from `ephemeris`, and without it every module of a
-   * project collapses onto one score.
+   * Without the stem, modules collapse onto one score.
    */
   private resolveInstancePath(instance: MatchedInstance): string {
     return path.join(instance.instance.path, instance.instance.nameStem);
@@ -56,10 +50,7 @@ export class ValidationScoringService {
   /**
    * Resolves which threshold applies, narrowest level first.
    *
-   * An instance group is more specific than the generator that owns it, and
-   * the generator is more specific than a flag covering the whole run. The
-   * built-in default applies only when nothing else has an opinion, which is
-   * why no earlier level may be pre-filled with it.
+   * The built-in default applies only when no level sets one.
    */
   public resolveThreshold(args: ScoreInstanceArguments): number {
     return (
@@ -102,19 +93,9 @@ export class ValidationScoringService {
   }
 
   /**
-   * Scores every matched instance, reporting each instance and template pair
-   * once.
+   * Scores every matched instance, reporting each instance and template pair once.
    *
-   * The same directory is matched repeatedly when several generators declare
-   * overlapping globs — `src/modules/*` belongs to more than one template — so
-   * without this the summary prints the same score several times over. A
-   * genuine tie against two *different* templates is kept: those are two real
-   * requirements the instance answers to.
-   *
-   * When two groups claim the same instance with different thresholds, the
-   * strictest wins. Nothing makes one group more specific than another, so
-   * order would otherwise decide it; letting the strictest win at least means
-   * adding a lenient group can never silently relax a bar someone else set.
+   * Where two groups claim one instance with different thresholds, the strictest wins.
    */
   public scoreInstances(args: ScoreInstancesArguments): InstanceScore[] {
     const scoresByKey = new Map<string, InstanceScore>();

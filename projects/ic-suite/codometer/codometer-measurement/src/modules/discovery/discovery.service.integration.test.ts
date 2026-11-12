@@ -1,18 +1,15 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { useTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import {
-  createFixtureTree,
-  removeFixtureTree,
-} from "../../../testing/fixture-tree";
+import { createFixtureTree } from "../../../testing/fixture-tree";
 
 import { DiscoveryService } from "./discovery.service";
 import { IgnoreRulesService } from "./ignore-rules.service";
 
 import type { DiscoveryResult } from "./discovery.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 const DEFAULT_EXCLUDE = [
   "**/.nx/**",
@@ -22,30 +19,29 @@ const DEFAULT_EXCLUDE = [
   "**/node_modules/**",
 ];
 
+/** What the DiscoveryService is built with. */
+const DEPENDENCIES = {
+  providers: [IgnoreRulesService],
+} satisfies TestingModuleOptions;
+
 describe(`${DiscoveryService.name} over a real directory`, () => {
   let result: DiscoveryResult;
   let workingDirectory: string;
+  const getFixtureDirectory = useTemporaryDirectory("discovery");
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DiscoveryService,
-        IgnoreRulesService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const service = await module.resolve(DiscoveryService);
+    const { instance } = await buildTestingModule(
+      DiscoveryService,
+      DEPENDENCIES,
+    );
+    const service = instance;
 
-    workingDirectory = createFixtureTree();
+    workingDirectory = createFixtureTree(getFixtureDirectory());
     result = service.discoverFiles({
       exclude: DEFAULT_EXCLUDE,
       excludeFrom: [".codometerignore"],
       workingDirectory,
     });
-  });
-
-  afterAll(() => {
-    removeFixtureTree(workingDirectory);
   });
 
   it("discovers every measurable file in the tree, sorted", () => {

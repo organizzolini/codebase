@@ -8,11 +8,8 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of the Κ (Greek kappa) glyph — a
- * four-unit stem with a unit branch from its middle forking into a one-step
- * staircase rising east and another falling east, its diagonals drawn as
- * orthogonal zig-zags — one per corner and clockwise rotation, each counting
- * the base template drawn that way. The base faces Southeast, drawn:
+ * Provides the sixteen orientation evaluators of the Κ (Greek kappa) glyph, one per
+ * corner and clockwise rotation. The base faces Southeast:
  *
  * ```text
  * ╷ ╷
@@ -42,7 +39,7 @@ export class KappaGreekLetterCharacteristicsService implements CharacteristicEva
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** Upright glyph as hexadecimal Code digits, `.` outside it. */
   private readonly template: readonly string[] = [
     "4.4",
     "c69",

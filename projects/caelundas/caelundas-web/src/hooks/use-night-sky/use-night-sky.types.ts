@@ -1,8 +1,15 @@
 // 🏷️ Types
 
 /**
- * The backdrop's settings after the link's `sky.*` keys are applied over the
- * defaults.
+ * Settings the API draws from: the link's, minus opacities.
+ */
+export type NightSkyDrawing = Omit<
+  NightSkyOverrides,
+  "skyOpacity" | "surfaceOpacity"
+>;
+
+/**
+ * The backdrop's settings, with the link's `sky.*` keys applied.
  */
 export interface NightSkyOverrides {
   backgroundBottomColor: string;
@@ -33,13 +40,19 @@ export interface NightSkyOverrides {
    * to their defaults.
    */
   rejectedKeys: readonly string[];
+  /** `sky.opacity`: how opaque the whole sky is drawn, from 0 to 1. */
+  skyOpacity: number;
   starScale: number;
+  /**
+   * `sky.surfaceOpacity`: how opaque the calendar's surfaces are drawn over
+   * the sky, from 0 to 1.
+   */
+  surfaceOpacity: number;
   verticalFieldOfViewDegrees: number;
 }
 
 /**
- * The night sky the hook built: its SVG markup, or nothing while the star
- * catalog loads, when the link turns it off, and where the view cannot draw.
+ * The hook's sky: SVG markup, or nothing when there is none.
  */
 export interface UseNightSkyResult {
   /**

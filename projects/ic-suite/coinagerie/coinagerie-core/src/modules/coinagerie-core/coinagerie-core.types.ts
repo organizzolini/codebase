@@ -1,22 +1,9 @@
 // 🏷️ Types
 
-/**
- * A destination's words, each with its definition.
- *
- * A map rather than a plain object, so a word such as `constructor` or
- * `prototype` can never be confused with something every object already
- * carries. A definition is `""` when nobody has written one yet. Keys are
- * plain lowercase headwords; the forms folded into a headword are never
- * carried this far.
- */
+/** Words and definitions, empty if unwritten; a map avoids `constructor`. */
 export type Glossary = ReadonlyMap<string, string>;
 
-/**
- * How one destination disagrees with the codebase's vocabulary.
- *
- * Both lists are sorted. A destination agrees with the code exactly when both
- * are empty; an empty definition is never a disagreement.
- */
+/** Disagreement with the code; both lists empty means agreement. */
 export interface GlossaryDifference {
   /** Words the code uses that the destination does not list. */
   missing: string[];
@@ -38,10 +25,7 @@ export interface MalformedGlossaryLocation {
   reason: string;
 }
 
-/**
- * Everything one run found: the codebase's vocabulary, and how each
- * configured destination differs from it.
- */
+/** A run's vocabulary, and each destination's disagreement with it. */
 export interface VocabularyReport {
   /** One entry per configured destination, in configuration order. */
   destinations: GlossaryDifference[];

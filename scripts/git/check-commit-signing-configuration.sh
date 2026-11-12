@@ -14,13 +14,9 @@ if [[ -z "${signing_key}" ]]; then
   exit 1
 fi
 
-# SSH signing (gpg.format=ssh) is how cloud agent sessions sign: the harness
-# supplies a signer program, and GitHub verifies the result once the key is
-# registered on the account. None of the GPG checks below apply to it — there is
-# no secret key to list and no trust database — so it takes its own path: the
-# signer must run, and ssh-keygen must verify what it signs against an allowed
-# signers file. git runs gpg.ssh.program for verification too, and a harness
-# signer only signs, so verification names ssh-keygen explicitly.
+# SSH signing (gpg.format=ssh) is how cloud sessions sign. The GPG checks below
+# do not apply, so SSH has its own path: the signer must run, and ssh-keygen
+# must verify against an allowed signers file.
 signing_format="$(git config --get gpg.format || true)"
 if [[ "${signing_format}" == 'ssh' ]]; then
   ssh_program="$(git config --get gpg.ssh.program || true)"
@@ -88,15 +84,9 @@ if ! gpg --list-secret-keys --keyid-format=long "${signing_key}" | grep -q '^sec
   exit 1
 fi
 
-# A key that exists and can sign is not necessarily the committer's own key. A
-# developer with several GPG identities (work, personal) can end up with
-# user.signingkey resolved to someone else's key — for example by a setup
-# script that picks whichever secret key gpg happens to list first — and every
-# check above still passes, so the resulting commits carry someone else's
-# signature while showing this developer as the author. This is skipped in CI,
-# where the committer identity is a bot/service account rather than a personal
-# git user.email, and is driven by imported secrets rather than a local
-# multi-identity keyring.
+# A key that can sign is not necessarily the committer's own: with several GPG
+# identities, user.signingkey can resolve to someone else's key, and every check
+# above still passes. Skipped in CI, where the committer is a bot.
 if [[ -z "${CI:-}" && -z "${GITHUB_ACTIONS:-}" ]]; then
   git_email="$(git config --get user.email || true)"
   if [[ -z "${git_email}" ]]; then
@@ -125,21 +115,9 @@ if [[ "${SKIP_GPG_SIGNING_SMOKE_TEST:-}" == "true" ]]; then
   exit 0
 fi
 
-# The smoke test signs a throwaway commit object. It runs in CI too, so that a
-# key whose passphrase the agent cannot supply fails here in seconds rather than
-# minutes later, when semantic-release writes the release commit and the whole
-# release silently does not ship.
-#
-# Either way gpg is routed through a wrapper that never opens a pinentry, so the
-# smoke test can only ever pass, fail, or be skipped — it can never block:
-#
-#   - CI uses loopback, because interactive pinentry cannot work on a headless
-#     runner. It still uses a passphrase the agent has cached, but fails
-#     immediately instead of trying to prompt for one.
-#   - Local agents use cancel, because they share the developer's gpg-agent and a
-#     GUI pinentry would hang a session-start hook until it times out. A cached
-#     passphrase still signs normally; an uncached one fails in milliseconds and
-#     is treated as inconclusive below.
+# Signs a throwaway commit, so an unusable key fails in seconds. gpg runs through
+# a wrapper that never opens pinentry: CI uses loopback, and local agents cancel,
+# so an uncached passphrase fails at once and is inconclusive below.
 if [[ -n "${CI:-}" || -n "${GITHUB_ACTIONS:-}" ]]; then
   pinentry_mode='loopback'
 else
@@ -171,13 +149,10 @@ if ! test_commit_hash="$(
   printf '%s' "${test_commit_message}" | \
     git "${git_options[@]}" commit-tree "${tree_hash}" "${parent_options[@]}" -S 2> "${smoke_test_stderr}"
 )"; then
-  # A cancelled pinentry only means the agent holds no cached passphrase. The key
-  # itself is fine — the checks above proved it exists — and the next real commit
-  # will prompt for it normally, so the smoke test is inconclusive, not failed.
+  # A cancelled pinentry means only that the agent holds no cached passphrase. The key
+  # exists, and the next commit prompts normally, so the test is inconclusive, not failed.
   #
-  # This never applies in CI: there the passphrase is preloaded into the agent, so
-  # any signing failure is a real one that must fail the run rather than be
-  # skipped.
+  # This never applies in CI: the passphrase is preloaded there, so any failure is real.
   if [[ "${pinentry_mode}" == 'cancel' ]] && grep -q 'Operation cancelled' "${smoke_test_stderr}"; then
     exit 0
   fi

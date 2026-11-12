@@ -10,9 +10,7 @@ import {
 import type { EclipseCoordinates } from "../src/modules/eclipses/eclipses.types";
 
 /**
- * Separation at P1/P4 for the test distances, worked out independently of
- * the service: the penumbral radius 1.01·π☾ + π☉ + s☉ plus s☾ for a lunar
- * eclipse, π☾ − π☉ + s☉ + s☾ for a solar one.
+ * Separation at P1/P4 for the test distances, computed independently of the service from the penumbral radius.
  */
 export function getTestContactLimit(kind: "lunar" | "solar"): number {
   const moonParallax = subtend(6378.137, TEST_MOON_DISTANCE);
@@ -25,8 +23,7 @@ export function getTestContactLimit(kind: "lunar" | "solar"): number {
 }
 
 /**
- * Distance from the shadow axis inside which the whole Moon is in the umbra
- * (U2/U3) for the test distances: 1.01·π☾ + π☉ − s☉ − s☾.
+ * Distance from the shadow axis inside which the whole Moon is in the umbra (U2/U3) for the test distances.
  */
 export function getTestTotalityLimit(): number {
   return (
@@ -38,10 +35,7 @@ export function getTestTotalityLimit(): number {
 }
 
 /**
- * Coordinates with the Moon `alongTrack` degrees along, and `crossTrack`
- * degrees across, a track through the eclipse target: the antisolar point
- * for a lunar eclipse, the Sun for a solar one. The track runs east, tilted
- * north by `tilt` radians as a real Moon's does; the Sun sits on the ecliptic.
+ * Coordinates `alongTrack` and `crossTrack` degrees from a target: antisolar point for lunar, Sun for solar.
  */
 export function getTrackCoordinates(args: {
   alongTrack: number;

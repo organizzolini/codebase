@@ -35,7 +35,7 @@ import type { CalendarNavigation } from "../calendar-navigation-group/calendar-n
 import type {
   CalendarEventRecord,
   EventFacet,
-} from "../events-calendar/events-database.types";
+} from "../events-calendar/calendar-records.types";
 import type { TimelineLayout } from "./calendar-timeline-lanes.types";
 import type { TimelineBar } from "./calendar-timeline.types";
 import type { GanttRenderEventProps, GanttScale } from "@codebase/presentation";
@@ -44,8 +44,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The events to lay out, how to group them into rows, the period shown, and
- * where to report how it moves.
+ * Events, row grouping, the shown period, and a navigation reporter.
  */
 export interface CalendarTimelineProperties {
   anchor: Date;
@@ -83,11 +82,7 @@ export interface CalendarTimelineProperties {
 // 🧩 Component
 
 /**
- * Renders the events as a Gantt timeline: a row per group,
- * nested and collapsible as the grouping nests, each counting its distinct
- * events, with instants drawn as circles at their moment and spans as bars
- * of their true length. Markers that would overlap at the scale and zoom
- * shown are clustered into counts. Nothing on it can be moved or created.
+ * Renders the events as a Gantt timeline: a row per group, instants as circles, spans as true-length bars, and clustered markers.
  */
 export function CalendarTimeline(
   properties: Readonly<CalendarTimelineProperties>,
@@ -148,11 +143,8 @@ export function CalendarTimeline(
   // 💪 Handlers
 
   // ♻️ Lifecycle
-  // The Gantt draws every row and every bar it is handed, so only the rows
-  // scrolled into view, and a few beyond, are handed theirs. Rows keep one
-  // track each, so a row's height does not change as its bars come and go.
-  // The body is measured on scroll, and on resize, which also catches a
-  // group collapsing or expanding.
+  // The Gantt draws every bar it is handed, so only rows in view get theirs; rows keep one track each.
+  // The body is measured on scroll and resize, which also catches a group collapsing or expanding.
   useEffect(
     () =>
       container === null

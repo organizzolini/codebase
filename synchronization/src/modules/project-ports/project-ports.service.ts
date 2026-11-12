@@ -28,10 +28,8 @@ export class ProjectPortsService {
   // 🌎 Public Methods
 
   /**
-   * Rewrites a port to another on every line that is about a port.
-   *
-   * Only the whole number is replaced, so `5003` never matches inside `15003`
-   * or `5003.5`.
+   * Rewrites a port on each port line, matching only the whole number so `5003`
+   * never matches `15003`.
    */
   replacePort(content: string, from: number, to: number): string {
     const wholeNumber = new RegExp(String.raw`(?<![\w.])${from}(?![\w.])`, "g");
@@ -47,18 +45,8 @@ export class ProjectPortsService {
   }
 
   /**
-   * Derives a stable default port (1000-9999) from a project name.
-   *
-   * ```
-   * h = 0; for each byte c: h = (h * 31 + c) mod 9000
-   * port = h + 1000
-   * ```
-   *
-   * Order matters, and every port is equally likely because 31 shares no
-   * factor with 9000, which makes each step a bijection. Different names can
-   * still collide, so the caller checks the other projects' ports before
-   * adopting one. Bytes are hashed rather than characters, so the result never
-   * depends on a locale: `textToPort("lexico-web")` is `7797`.
+   * Derives a stable port from 1000 to 9999 by hashing the bytes of `text`.
+   * Names can collide, so callers check for clashes.
    */
   textToPort(text: string): number {
     let hash = 0;

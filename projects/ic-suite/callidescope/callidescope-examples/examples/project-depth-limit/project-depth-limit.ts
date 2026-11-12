@@ -1,14 +1,10 @@
 import { Injectable } from "@nestjs/common";
 
 /**
- * Six frames, a finding under five and not one under the run's own six.
+ * Six frames: a finding under five, none under the run's default of six.
  *
- * Six is the run's default: `callidescope.workspace.config.ts` declares it, and
- * it is the number a project adopts by spreading it. Six frames pass six. This
- * package's own `callidescope.config.ts` — a complete file, every field written
- * out, because a project's configuration leaving one out is refused — declares
- * five instead, and under five this chain is a finding. The only thing that
- * changed is which file the number was written in.
+ * This package's own `callidescope.config.ts` declares five, so the chain is a
+ * finding. Only the file the number was written in changed.
  */
 @Injectable()
 export class ProjectDepthLimitService {

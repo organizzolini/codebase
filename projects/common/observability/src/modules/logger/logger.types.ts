@@ -1,16 +1,8 @@
 // 🏷️ Types
 
-/**
- * Structured values that belong beside a log line rather than inside it.
- *
- * Counts, percentages, and durations are the values that change on every
- * occurrence, so they are carried as fields: the message stays constant and
- * groupable in telemetry, and the numbers stay queryable instead of having to
- * be parsed back out of prose.
- *
- * The named members are the recurring ones; the index signature keeps the
- * argument open for whatever a given call site needs to attach.
- */
+import type { ConsoleLogger } from "@nestjs/common";
+
+/** Values beside the log line, kept as queryable fields. */
 export interface LogData {
   [key: string]: unknown;
   /** How many things the operation handled. */
@@ -23,7 +15,22 @@ export interface LogData {
   total?: number;
 }
 
-/** A message split into the emoji the console shows and the prose telemetry stores. */
+/** Public logger shape, for test doubles without the service. */
+export interface LoggerServiceContract extends ConsoleLogger {
+  /** Normalizes unknown errors into a stable message and timestamped log line. */
+  buildErrorLogEntry(
+    context: string,
+    error: unknown,
+  ): { errorMessage: string; logLine: string };
+
+  /** Builds a timestamped output log file path and ensures the output directory exists. */
+  createTimestampedOutputLogFilePath(filePrefix: string): string;
+
+  /** Logs an informational message at the `info` level. */
+  info(message: unknown, context?: string, data?: LogData): void;
+}
+
+/** Message split into emoji and the prose telemetry stores. */
 export interface ParsedLogMessage {
   emoji: string | undefined;
   text: string;

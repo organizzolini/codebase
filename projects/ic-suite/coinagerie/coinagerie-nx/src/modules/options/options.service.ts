@@ -10,10 +10,9 @@ import type { CoinageriePluginOptions, PluginInput } from "./options.types";
 /**
  * Narrows the untyped options object Nx hands a plugin.
  *
- * Nx passes whatever the consumer wrote in `nx.json` with no validation, so
- * every field is checked before use rather than cast. A bad value falls back
- * to its default: a typo in a target name should not stop the project graph
- * from being built.
+ * Nx passes consumer config from `nx.json` unvalidated, so each field is checked
+ * before use. A bad value falls back to its default, so a target-name typo does
+ * not stop the project graph from building.
  */
 @Injectable()
 export class OptionsService {
@@ -38,13 +37,8 @@ export class OptionsService {
   }
 
   /**
-   * Reads the declared inputs from an untrusted record.
-   *
-   * Nx input strings are trimmed and the blanks dropped; Nx input objects such
-   * as `{ externalDependencies: [...] }` pass through untouched, because
-   * dropping one would let a cached verdict outlive what it was meant to track.
-   * Anything else is dropped rather than trusted, so one bad entry cannot
-   * discard the good ones beside it.
+   * Reads inputs from an untrusted record. Nx input objects pass whole, so a
+   * cached verdict cannot outlive what it tracks; junk is dropped.
    */
   private readInputs(options: Record<string, unknown>): PluginInput[] {
     const value = options["inputs"];

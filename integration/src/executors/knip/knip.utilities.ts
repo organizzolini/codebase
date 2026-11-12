@@ -3,12 +3,8 @@
 import type { AttributedIssues, BuildKnipArguments } from "./knip.types";
 
 /**
- * Counts the issues of a knip JSON report under the workspace each file is in.
- *
- * A file belongs to the deepest workspace whose directory holds it, since a
- * nested workspace's files are also under its parent's. Returns `undefined`
- * when the output is not a report, so a caller can fail on output it could not
- * check rather than pass.
+ * Counts a knip JSON report's issues per workspace, by each file's deepest
+ * enclosing one. Returns `undefined` for non-report output.
  */
 export function attributeIssues(
   output: string,
@@ -55,10 +51,8 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 /**
- * The workspace a file belongs to: the deepest whose directory holds it.
- *
- * Matched on a whole path segment, so `projects/ab` is not inside
- * `projects/a`, and a nested workspace's files are not claimed by its parent.
+ * The deepest workspace holding a file, matched on whole path segments so
+ * a nested workspace's files are not its parent's.
  */
 function ownerOf(file: string, roots: readonly string[]): string | undefined {
   return roots
@@ -67,10 +61,8 @@ function ownerOf(file: string, roots: readonly string[]): string | undefined {
 }
 
 /**
- * Reads the file of each issue in a knip JSON report, one per issue.
- *
- * Returns `undefined` when the output is not a report, or when an issue names
- * no file, so a caller can fail on output it could not check rather than pass.
+ * Reads an issue's file from a knip JSON report. Returns `undefined` if
+ * output is not a report or an issue has no file.
  */
 function readIssueFiles(output: string): string[] | undefined {
   let parsed: unknown;

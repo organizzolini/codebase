@@ -6,7 +6,7 @@ import { QuadrupleAspectsComposerService } from "./quadruple-aspects-composer.se
 
 import type { AspectBodies } from "../aspects/aspects.types";
 import type { Body } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { Moment } from "moment-timezone";
 
 /**
@@ -30,18 +30,8 @@ export class QuadrupleAspectsService {
   // 🌎 Public Methods
 
   /**
-   * Detects all quadruple aspect patterns from stored 2-body aspect events.
-   *
-   * Analyzes combinations of simple aspects to identify 4-body patterns:
-   * - Grand Cross (2 oppositions + 4 squares)
-   * - Kite (Grand Trine + opposition + 2 sextiles).
-   *
-   * These rare configurations represent major life themes and turning points,
-   * indicating either intense challenge (Grand Cross) or channeled talent (Kite).
-   *
-   * @see {@link parseAspectEvents} for extracting aspect relationships
-   * @see {@link composeGrandCrosses} for Grand Cross detection
-   * @see {@link composeKites} for Kite detection
+   * Detects Grand Cross and Kite patterns, rare 4-body configurations, from stored 2-body aspect events.
+   * @see {@link composeKites} and {@link composeGrandCrosses}
    */
   detect(args: {
     currentAspectBodies: AspectBodies[];
@@ -64,13 +54,7 @@ export class QuadrupleAspectsService {
   }
 
   /**
-   * Converts instantaneous quadruple aspect events into progressive events.
-   *
-   * Pairs forming and dissolving events for the same body quartet and
-   * pattern type to create events spanning the entire active period.
-   * Progressive events show when a pattern is in effect rather than just
-   * boundary moments.
-   *
+   * Pairs forming and dissolving events per body quartet into progressive events spanning the active period.
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     const progressiveEvents: DetectedCalendarEvent[] = [];

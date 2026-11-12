@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,7 +7,7 @@ import { MuHanziLetterCharacteristicsService } from "./mu-hanzi-letter-character
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the 目 (hanzi mu) as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** Each distinct orientation of 目 as a standalone Code. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "03x04y650ed0ed0a90",
@@ -39,10 +38,7 @@ const ORIENTATIONS: readonly LetterOrientationFixture[] = [
 ];
 
 describe(MuHanziLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    MuHanziLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(MuHanziLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

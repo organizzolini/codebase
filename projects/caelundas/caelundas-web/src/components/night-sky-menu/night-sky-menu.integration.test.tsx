@@ -1,7 +1,8 @@
 import { cleanup, fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { renderRoute } from "../../../testing/render-route";
+import { readServedApi } from "../../../testing/calendar-api";
+import { renderCalendarRoute } from "../../../testing/render-route";
 import { getRouter } from "../../router";
 import { NightSkyBackdropMount } from "../night-sky-backdrop/night-sky-backdrop-mount";
 
@@ -81,7 +82,7 @@ describe("night sky menu", () => {
   });
 
   it("sets its controls from the link", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       "/?date=2026-03-01&sky.constellations=all&sky.lat=51.5&sky=off",
     );
     await openNightSkyMenu();
@@ -101,7 +102,8 @@ describe("night sky menu", () => {
   });
 
   it("writes a control to the link, and the sky follows it", async () => {
-    await renderRoute("/?date=2026-03-01&sky.ecliptic=false");
+    await renderCalendarRoute("/?date=2026-03-01&sky.ecliptic=false");
+    const api = readServedApi();
     await findSky();
     await openNightSkyMenu();
     await openConstellations();
@@ -112,9 +114,9 @@ describe("night sky menu", () => {
       expect(readSearch()).toMatchObject({ "sky.constellations": "none" });
     });
     await waitFor(() => {
-      expect(
-        screen.getByTestId("night-sky-backdrop").querySelector("polyline"),
-      ).toBeNull();
+      expect(api.requests.nightSky.at(-1)?.constellations).toStrictEqual([
+        "none",
+      ]);
     });
 
     fireEvent.click(screen.getByRole("checkbox", { name: "Zodiac" }));
@@ -123,14 +125,14 @@ describe("night sky menu", () => {
       expect(readSearch()).not.toHaveProperty("sky.constellations");
     });
     await waitFor(() => {
-      expect(
-        screen.getByTestId("night-sky-backdrop").querySelector("polyline"),
-      ).not.toBeNull();
+      expect(api.requests.nightSky.at(-1)?.constellations).toStrictEqual([
+        "zodiac",
+      ]);
     });
   });
 
   it("steps a slider from the keyboard and writes the step to the link", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
     await openNightSkyMenu();
 
     const [latitude] = screen.getAllByLabelText("Latitude", {
@@ -148,9 +150,28 @@ describe("night sky menu", () => {
     });
   });
 
+  it("steps the sky's opacity from the keyboard and writes it to the link", async () => {
+    await renderCalendarRoute("/?date=2026-03-01&sky.opacity=0.5");
+    await openNightSkyMenu();
+
+    const [opacity] = screen.getAllByLabelText("Sky opacity", {
+      selector: "input",
+    });
+
+    if (opacity === undefined) {
+      throw new Error("No slider is labelled Sky opacity");
+    }
+
+    fireEvent.keyDown(opacity, { key: "ArrowLeft" });
+
+    await waitFor(() => {
+      expect(readSearch()).toMatchObject({ "sky.opacity": 0.49 });
+    });
+  });
+
   it("resets every setting it holds, and keeps the tuning view", async () => {
-    await renderRoute(
-      "/?date=2026-03-01&sky.lat=51.5&sky.top=%23102040&sky.eclipticOpacity=0.5&sky.debug=true",
+    await renderCalendarRoute(
+      "/?date=2026-03-01&sky.lat=51.5&sky.top=%23102040&sky.eclipticOpacity=0.5&sky.opacity=0.3&sky.surfaceOpacity=0.4&sky.debug=true",
     );
     await openNightSkyMenu();
 
@@ -162,13 +183,18 @@ describe("night sky menu", () => {
 
     expect(readSearch()).not.toHaveProperty("sky.top");
     expect(readSearch()).not.toHaveProperty("sky.eclipticOpacity");
+    expect(readSearch()).not.toHaveProperty("sky.opacity");
+    expect(readSearch()).not.toHaveProperty("sky.surfaceOpacity");
     expect(readSearch()).toMatchObject({ "sky.debug": true });
   });
 
   it.each(["all", "none"])(
     "resets sky.constellations=%s to the zodiac, the default, with a bare link",
     async (words) => {
-      await renderRoute(`/?date=2026-03-01&sky.constellations=${words}`);
+      await renderCalendarRoute(
+        `/?date=2026-03-01&sky.constellations=${words}`,
+      );
+      const api = readServedApi();
       await openNightSkyMenu();
       await openConstellations();
 
@@ -200,19 +226,15 @@ describe("night sky menu", () => {
       ).toStrictEqual([]);
 
       await waitFor(() => {
-        const backdrop = screen.getByTestId("night-sky-backdrop");
-
-        expect(
-          backdrop.querySelectorAll("polyline").length -
-            backdrop.querySelectorAll('[data-layer="ecliptic"] polyline')
-              .length,
-        ).toBeGreaterThan(0);
+        expect(api.requests.nightSky.at(-1)?.constellations).toStrictEqual([
+          "zodiac",
+        ]);
       });
     },
   );
 
   it("toggles all twelve zodiac figures from their folder, dashed when some show", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
     await openNightSkyMenu();
     await openConstellations();
 
@@ -246,7 +268,7 @@ describe("night sky menu", () => {
   });
 
   it("writes all once every folder is checked", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
     await openNightSkyMenu();
     await openConstellations();
 
@@ -259,25 +281,21 @@ describe("night sky menu", () => {
     });
   });
 
-  it("draws the ecliptic and the zodiac's figures at the defaults", async () => {
-    await renderRoute("/?date=2026-03-01");
+  it("asks for the ecliptic and the zodiac's figures at the defaults", async () => {
+    await renderCalendarRoute("/?date=2026-03-01");
+    const api = readServedApi();
 
-    const sky = await findSky();
+    await findSky();
 
-    await waitFor(() => {
-      expect(
-        sky.querySelector('[data-layer="ecliptic"] polyline'),
-      ).not.toBeNull();
+    expect(api.requests.nightSky[0]).toMatchObject({
+      constellations: ["zodiac"],
+      ecliptic: true,
     });
-
-    expect(
-      sky.querySelectorAll("polyline").length -
-        sky.querySelectorAll('[data-layer="ecliptic"] polyline').length,
-    ).toBeGreaterThan(0);
   });
 
   it("hides the ecliptic from its switch, and the Default button brings it back", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
+    const api = readServedApi();
     await findSky();
     await openNightSkyMenu();
 
@@ -287,11 +305,7 @@ describe("night sky menu", () => {
       expect(readSearch()).toMatchObject({ "sky.ecliptic": false });
     });
     await waitFor(() => {
-      expect(
-        screen
-          .getByTestId("night-sky-backdrop")
-          .querySelector('[data-layer="ecliptic"]'),
-      ).toBeNull();
+      expect(api.requests.nightSky.at(-1)?.ecliptic).toBe(false);
     });
 
     fireEvent.click(screen.getByRole("button", { name: "Default" }));
@@ -300,11 +314,7 @@ describe("night sky menu", () => {
       expect(readSearch()).not.toHaveProperty("sky.ecliptic");
     });
     await waitFor(() => {
-      expect(
-        screen
-          .getByTestId("night-sky-backdrop")
-          .querySelector('[data-layer="ecliptic"] polyline'),
-      ).not.toBeNull();
+      expect(api.requests.nightSky.at(-1)?.ecliptic).toBe(true);
     });
   });
 });

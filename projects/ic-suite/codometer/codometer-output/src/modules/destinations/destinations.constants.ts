@@ -7,14 +7,7 @@ import type { ResolvedMarkdownDestination } from "./destinations.types";
 
 // ♟️ Constants
 
-/**
- * The markdown destination the console falls back to.
- *
- * A run that names no markdown file still prints badges, and rendering the
- * block needs markers even when nothing is ever spliced. These are the same
- * defaults a configuration inherits, so what is printed matches what would
- * have been written byte for byte.
- */
+/** Console fallback markdown destination, rendering the same badges. */
 export const DEFAULT_MARKDOWN_DESTINATION: ResolvedMarkdownDestination = {
   custom: [],
   description: undefined,

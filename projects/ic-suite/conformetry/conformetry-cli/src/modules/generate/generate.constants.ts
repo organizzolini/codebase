@@ -2,13 +2,7 @@
 
 import { InputError } from "@conformetry/configuration";
 
-/**
- * No template was supplied and none could be chosen.
- *
- * The names go in the message because looking one up is exactly what the
- * picker exists to save, and a caller who cannot be shown the picker — a CI
- * job, or one who cancelled it — still has to type a name from somewhere.
- */
+/** No template given or chosen; names are listed for non-interactive callers. */
 export const missingTemplateError = (
   availableTemplateNames: readonly string[],
 ): InputError =>

@@ -11,16 +11,15 @@ export default [
       "@nx/dependency-checks": [
         "error",
         {
-          // @codebase/observability: inlined into the bundled build output and declared as a devDependency.
-          // pino, pino-pretty: runtime dependencies for the inlined @codebase/observability;
-          // pino-pretty is a transport reached only via runtime string in pino configuration.
-          // vitest: referenced via tsconfig "types" array; it's a devDependency
-          // and the @nx/dependency-checks rule misidentifies it as a production
-          // dependency.
+          // @codebase/observability is bundled, and pino and pino-pretty back it at runtime;
+          // pino-pretty is loaded by string. vitest is a devDependency named in tsconfig "types",
+          // which the rule misreads as a production dependency.
           ignoredDependencies: [
             "@codebase/observability",
+            "@codebase/testing",
             "pino",
             "pino-pretty",
+            "reflect-metadata",
             "vitest",
           ],
           ignoredFiles: ["{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}"],

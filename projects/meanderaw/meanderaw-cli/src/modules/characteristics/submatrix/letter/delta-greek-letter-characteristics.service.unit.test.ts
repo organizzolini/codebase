@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,18 +7,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the Δ (Greek delta) as a Code holding one isolated
- * copy, beside every orientation name drawing that ink. Its diagonals run as
- * orthogonal zig-zags; the base, facing Southeast, draws:
- *
- * ```text
- *   ┌┐
- *  ┌┘└┐
- * ┌┘  └┐
- * └────┘
- * ```
- */
+/** One isolated Code per orientation of the Δ (Greek delta). */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "07x04y0065000069a5006900a50a333390",
@@ -50,10 +38,7 @@ const ORIENTATIONS: readonly LetterOrientationFixture[] = [
 ];
 
 describe(DeltaGreekLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    DeltaGreekLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(DeltaGreekLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

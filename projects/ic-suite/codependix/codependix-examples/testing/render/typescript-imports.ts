@@ -12,13 +12,7 @@ import type {
 
 // 🏷️ Types
 
-/**
- * One statement in the resolution example that deliberately draws no edge.
- *
- * Kept as data rather than prose so the guide's table and the example cannot
- * drift apart: the table is rendered from this list, and the files it names are
- * read by the same run.
- */
+/** An import statement that deliberately draws no edge. */
 interface NonEdgeCase {
   readonly file: string;
   readonly reason: string;
@@ -41,13 +35,7 @@ const RESOLUTION_PROJECT = "resolution";
 /** Project whose `tsconfig.json` the compiler refuses to parse. */
 const BROKEN_PROJECT = "broken";
 
-/**
- * The specifiers the resolution project declares that draw no edge.
- *
- * Named here so the guide can list them without a reader opening every file,
- * and so a resolver change that started drawing one of them fails the example
- * rather than quietly widening what the graph claims.
- */
+/** Specifiers that draw no edge; drawing one fails the example. */
 const NON_EDGE_CASES: NonEdgeCase[] = [
   {
     file: "src/re-exported.ts",
@@ -73,15 +61,7 @@ const NON_EDGE_CASES: NonEdgeCase[] = [
 
 // 🕸️ Graphs
 
-/**
- * Graphs already built, keyed by the project root they were built from.
- *
- * `ts.createProgram` parses the whole default library before it resolves a
- * single specifier, and the same two projects are asked for repeatedly.
- * Nothing under `examples/` changes while the process runs, so the second
- * request is answered from here — which is what keeps a shared CI runner from
- * spending that parse a dozen times over.
- */
+/** Built graphs, keyed by project root, since parsing is slow. */
 const graphsByRoot = new Map<string, TypescriptImportGraph>();
 
 /** Builds one project's import graph, given its root on disk. */
@@ -175,11 +155,8 @@ export function describeOutcome(outcome: ProgramOutcome): string {
 }
 
 /**
- * Describes a project through the real discovery entry point.
- *
- * `TypescriptService.discoverProjects` reads no Nx tag — every project
- * carrying its own `tsconfig.json` is a candidate, since a file-level import
- * graph is meaningful for any TypeScript project.
+ * Describes a project through the real discovery entry point. Any directory with a
+ * `tsconfig.json` is a candidate, since no Nx tag is read.
  */
 export function describeProjectAt(absoluteRoot: string): TypescriptProject {
   const [project] = typescriptService.discoverProjects([
@@ -194,11 +171,8 @@ export function describeProjectAt(absoluteRoot: string): TypescriptProject {
 }
 
 /**
- * Replaces an absolute path with a repository-relative one.
- *
- * The compiler reports diagnostics against the real file it read, so a
- * committed example carrying the absolute path of whichever machine rendered
- * it would fail `examples --check` everywhere else.
+ * Replaces an absolute path with a repository-relative one. A committed example
+ * with an absolute path would fail `examples --check` on every other machine.
  */
 export function redactPath(message: string): string {
   return message.replaceAll(

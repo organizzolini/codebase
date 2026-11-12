@@ -19,7 +19,7 @@ import type {
   LexemeRelationField,
 } from "./lexemes.types";
 import type { Connection, GraphQLObjectOf } from "@codebase/interface";
-import type { Lexeme, PartOfSpeech } from "@codebase/lexico-entities";
+import type { Lexeme, PartOfSpeech } from "@codebase/lexico-db";
 
 /** A Latin dictionary entry with its forms, inflection, and translations. */
 @ObjectType("Lexeme")

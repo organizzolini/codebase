@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -11,7 +10,7 @@ import type {
   LetterOrientationFixture,
 } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the M as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** Each distinct orientation of M as a standalone Code. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "04x03y6750c8c08080",
@@ -50,10 +49,7 @@ const ALIASES: readonly LetterAliasFixture[] = [
 ];
 
 describe(MLatinLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    MLatinLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(MLatinLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

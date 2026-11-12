@@ -14,14 +14,10 @@ import type {
 } from "./release-archives.types";
 
 /**
- * Installs a command-line tool from its published release, for machines with
- * no Homebrew.
+ * Installs a command-line tool from its published release, for Linux machines with no Homebrew.
  *
- * A Claude Code cloud session and the devcontainer run Linux, which has no
- * Homebrew, so the software step that installs these through it never runs
- * there. The archive is checked against the checksum its publisher lists, and
- * the executables land in `~/.local/bin`, which the Linux bootstrap puts on
- * `PATH`.
+ * The archive is checked against its publisher's checksum, and executables land in `~/.local/bin`,
+ * which the Linux bootstrap puts on `PATH`.
  */
 @Injectable()
 export class ReleaseArchivesService {

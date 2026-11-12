@@ -8,16 +8,8 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of the 干 (hanzi gan) glyph — two
- * two-unit bars threaded on a vertical stroke that starts at the upper bar and
- * runs a unit below the lower — one per corner and clockwise rotation, each
- * counting the base template drawn that way. The base faces Southeast, drawn:
- *
- * ```text
- * ╶┬╴
- * ╶┼╴
- *  ╵
- * ```
+ * Provides the sixteen orientation evaluators of the 干 (hanzi gan) glyph, two bars threaded on a vertical stroke.
+ * Each counts the base template, drawn facing Southeast.
  */
 @Injectable()
 export class GanHanziLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -39,7 +31,7 @@ export class GanHanziLetterCharacteristicsService implements CharacteristicEvalu
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** Upright glyph as hexadecimal Code digits, `.` outside it. */
   private readonly template: readonly string[] = ["271", "2f1", ".8."];
 
   // 🔑 Public Fields

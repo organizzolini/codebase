@@ -4,10 +4,7 @@ import { describePostgresContent } from "../postgresql-utilities/postgresql-util
 
 import type { PostgresqlExportPlan } from "./postgresql-export.types";
 
-/**
- * What `postgresql-export` says when an option it requires is missing, keyed by the
- * option. Each names the option and shows it in use.
- */
+/** Missing-option messages, keyed by option, each showing its usage. */
 export const POSTGRESQL_EXPORT_OPTION_MESSAGES = {
   content:
     "--data and/or --ddl is required: pass --data for rows, --ddl for table definitions, or both",
@@ -33,10 +30,7 @@ export class PostgresqlExportOptionsError extends Error {
 export const existingFileMessage = (file: string): string =>
   `${file} already exists and was left unchanged: choose another --file, or pass --overwrite to replace it`;
 
-/**
- * What `postgresql-export` says when `pg_dump` found no table for `tables`: it names
- * them and the masked `source`, never pg_dump's own text.
- */
+/** No-table message: names the tables, never pg_dump's own text. */
 export const missingTablesMessage = (
   tables: readonly string[],
   source: string,
@@ -56,13 +50,7 @@ export class PostgresqlExportTableError extends Error {
   }
 }
 
-/**
- * What `postgresql-export --dry-run` prints, one line each: where it would export
- * from and to, what it would export of each selected table, in the plan's
- * order, and whether `file` (`exists`) would be created or overwritten.
- * Never carries the password. Each line is a whole log message, so each
- * opens with an emoji and a verb, as `LoggerService` requires.
- */
+/** Dry-run lines, no password, each opening with an emoji and verb. */
 export const dryRunMessages = (
   {
     connection: { database, host },

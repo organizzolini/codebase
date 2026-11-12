@@ -8,13 +8,8 @@ import type {
 } from "./executor.types";
 
 /**
- * Judges every task Nx batched for this executor from one command-line process.
- *
- * One `coinagerie-check` task per project used to start its own `node`, load
- * a transpiler, and boot a NestJS container — about eight seconds to read one
- * project's words in about half of one. A batch starts the command line once
- * and names every project to it, so each still passes or fails alone and is
- * still cached alone: Nx hashes and replays batched tasks one by one.
+ * Judges every Nx-batched task in one command-line process. Each task still
+ * passes or fails, and is cached, alone.
  */
 export default async function checkBatchExecutor(
   ...args: CheckBatchExecutorArguments
@@ -27,12 +22,8 @@ export default async function checkBatchExecutor(
 }
 
 /**
- * Prints what each failed task found, under the task's id.
- *
- * Nx keeps a batch task's output for the cache but does not print it, where
- * the single executor writes its report to stdout. Without this a failed
- * check is a red task that never says which glossary disagreed. Passing tasks
- * print nothing.
+ * Prints each failed task's output under its id. Nx caches batch output without
+ * printing it, so a failure would otherwise be silent.
  */
 function printFailures(results: Record<string, CheckBatchTaskResult>): void {
   for (const [taskId, result] of Object.entries(results)) {

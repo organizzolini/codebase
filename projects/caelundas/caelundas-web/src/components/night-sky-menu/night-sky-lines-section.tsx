@@ -22,8 +22,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The settings the line controls show and where to send a change to the
- * link.
+ * The line settings and the link change handler.
  */
 export interface NightSkyLinesSectionProperties {
   className?: string;

@@ -4,14 +4,13 @@ import { NightSkyMenu } from "../night-sky-menu/night-sky-menu";
 
 import type { CalendarSymbols } from "../../hooks/use-calendar-search/calendar-symbols.types";
 import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
-import type { EventFacet } from "../events-calendar/events-database.types";
+import type { EventFacet } from "../events-calendar/calendar-records.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * What the View and Color menus show and where each sends a change; the Sky
- * menu reads and writes the link itself.
+ * View and Color menu props; the Sky menu reads the link.
  */
 export interface CalendarMenusProperties {
   className?: string;

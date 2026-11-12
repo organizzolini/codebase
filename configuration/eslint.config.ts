@@ -34,22 +34,7 @@ import type { ConfigWithExtends } from "typescript-eslint";
 
 const folderStructureRule = projectStructurePlugin.rules["folder-structure"];
 
-/**
- * `folder-structure`, rebound to markdown's syntax tree.
- *
- * The rule listens on `Program` and reads nothing but `context.filename`, so it
- * fires only on a file ESLint parsed into a JavaScript tree. Markdown is parsed
- * with `@eslint/markdown`'s `markdown/gfm` language, whose tree is mdast and
- * whose root node is `root` — so the visitor never runs and no markdown path is
- * ever checked.
- *
- * ESLint resolves exactly one `language` per file, so this cannot be fixed by
- * giving markdown a JavaScript parser: overriding `language` rejects the
- * markdown block's own `frontmatter` option outright, and leaving it alone
- * leaves the rule silently inert. Binding the same handler to `root` instead
- * puts both the markdown rules and the structure rule in one pass, which is why
- * this repository needs no second ESLint configuration for markdown.
- */
+/** `folder-structure` rebound to markdown, binding mdast's `root` not `Program`. */
 const markdownStructurePlugin = {
   rules: {
     "folder-structure": {
@@ -69,9 +54,8 @@ const tsconfigRootDir = path.resolve(
 );
 
 /**
- * The absolute root of every project whose `project.json` carries all of
- * `tags`. Rules for a kind of project are scoped by its tags this way, so no
- * project is named here and a new one is covered the moment it is tagged.
+ * The absolute root of every project whose `project.json` carries all of `tags`.
+ * A new project is covered as soon as it is tagged.
  */
 function findProjectRoots(tags: readonly string[]): string[] {
   return fs
@@ -89,10 +73,7 @@ function findProjectRoots(tags: readonly string[]): string[] {
     .map((file) => path.join(tsconfigRootDir, path.dirname(file)));
 }
 
-/**
- * Syntax no source file may use. A block that sets `no-restricted-syntax`
- * replaces these rather than adding to them, so it spreads them back in.
- */
+/** Banned syntax for source files; overriding blocks must spread it. */
 const RESTRICTED_SYNTAX = [
   {
     message:
@@ -110,18 +91,13 @@ const RESTRICTED_SYNTAX = [
   },
 ];
 
-/**
- * Every React application: its `src/` is held to one file shape per kind.
- */
+/** One file shape per kind, for every React application's `src/`. */
 const WEB_APPLICATION_ROOTS = findProjectRoots([
   "framework:react",
   "type:application",
 ]);
 
-/**
- * The file kinds a web application's `src/` may hold, relative to its root.
- * Any other `.ts` or `.tsx` file there fits no kind and fails.
- */
+/** Allowed `src/` file kinds; other `.ts` and `.tsx` files fail. */
 const WEB_APPLICATION_FILE_KINDS = [
   "**/*.constants.ts",
   "**/*.schemas.ts",
@@ -139,9 +115,7 @@ const WEB_APPLICATION_FILE_KINDS = [
   "src/routes/**/*.tsx",
 ];
 
-/**
- * A hook file's siblings, which share its `use-` prefix but not its shape.
- */
+/** Hook siblings: share the `use-` prefix, but not the shape. */
 const HOOK_SIBLING_FILES = [
   "**/*.constants.ts",
   "**/*.schemas.ts",
@@ -150,12 +124,7 @@ const HOOK_SIBLING_FILES = [
   "**/*.utilities.ts",
 ];
 
-/**
- * The size and complexity limits every authored file in a web application is
- * held to: the workspace's own, with complexity raised from a warning to an
- * error. A project's own configuration comes after this one and could loosen
- * them, so a web application's must not.
- */
+/** Web app size limits; complexity is a hard error. */
 const WEB_APPLICATION_LIMITS: NonNullable<ConfigWithExtends["rules"]> = {
   "better-max-params/better-max-params": [
     "error",
@@ -269,6 +238,316 @@ function defineWebApplicationFileShape(basePath: string): ConfigWithExtends[] {
   ];
 }
 
+/** Nx tag rules, and the cycles allowed among common packages. */
+const MODULE_BOUNDARIES = {
+  depConstraints: [
+    {
+      onlyDependOnLibsWithTags: ["type:package"],
+      sourceTag: "type:application",
+    },
+    // Callidescope package graph. Core is the leaf; configuration resolves
+    // the file and flags over it; the graph builder analyzes; the output
+    // renderer depends on configuration and the graph; the CLI composes
+    // them. Dependencies only point one way.
+    {
+      onlyDependOnLibsWithTags: ["name:testing"],
+      sourceTag: "name:callidescope-core",
+    },
+    {
+      onlyDependOnLibsWithTags: [
+        "name:callidescope-core",
+        "name:observability",
+        "name:testing",
+      ],
+      sourceTag: "name:callidescope-configuration",
+    },
+    {
+      onlyDependOnLibsWithTags: [
+        "name:callidescope-configuration",
+        "name:callidescope-core",
+        "name:observability",
+        "name:testing",
+      ],
+      sourceTag: "name:callidescope-graph",
+    },
+    {
+      onlyDependOnLibsWithTags: [
+        "name:callidescope-configuration",
+        "name:callidescope-core",
+        "name:callidescope-graph",
+        "name:observability",
+        "name:testing",
+      ],
+      sourceTag: "name:callidescope-output",
+    },
+    {
+      onlyDependOnLibsWithTags: [
+        "name:callidescope-configuration",
+        "name:callidescope-core",
+        "name:callidescope-graph",
+        "name:callidescope-output",
+        "name:observability",
+        "name:testing",
+      ],
+      sourceTag: "name:callidescope-cli",
+    },
+    // The Nx plugin sits on top of the whole chain and nothing in the
+    // chain may depend back on it, which is what keeps `@nx/devkit`
+    // out of every package that actually traces. It is the only
+    // callidescope package Nx is allowed to reach.
+    {
+      onlyDependOnLibsWithTags: [
+        "name:callidescope-cli",
+        "name:callidescope-configuration",
+        "name:callidescope-core",
+        "name:callidescope-graph",
+        "name:callidescope-output",
+        "name:observability",
+        "name:testing",
+      ],
+      sourceTag: "name:callidescope-nx",
+    },
+    // Codometer package graph, on the ic-suite five-layer spine:
+    // `core <- configuration <- measurement <- output <- cli`. Contracts is the
+    // leaf; configuration resolves the config file and command line; analyzers
+    // and measurement do the measuring; output owns every render target; the
+    // command-line host wires them together.
+    {
+      onlyDependOnLibsWithTags: ["name:testing"],
+      sourceTag: "name:codometer-core",
+    },
+    {
+      onlyDependOnLibsWithTags: ["name:codometer-core", "name:testing"],
+      sourceTag: "name:codometer-configuration",
+    },
+    {
+      onlyDependOnLibsWithTags: [
+        "name:codometer-configuration",
+        "name:codometer-core",
+        "name:observability",
+        "name:testing",
+      ],
+      sourceTag: "name:codometer-languages",
+    },
+    {
+      onlyDependOnLibsWithTags: [
+        "name:codometer-configuration",
+        "name:codometer-core",
+        "name:codometer-languages",
+        "name:observability",
+        "name:testing",
+      ],
+      sourceTag: "name:codometer-measurement",
+    },
+    {
+      onlyDependOnLibsWithTags: [
+        "name:codometer-configuration",
+        "name:codometer-core",
+        "name:codometer-measurement",
+        "name:observability",
+        "name:testing",
+      ],
+      sourceTag: "name:codometer-output",
+    },
+    {
+      onlyDependOnLibsWithTags: [
+        "name:codometer-configuration",
+        "name:codometer-core",
+        "name:codometer-measurement",
+        "name:codometer-output",
+        "name:observability",
+        "name:testing",
+      ],
+      sourceTag: "name:codometer-cli",
+    },
+    // Coinagerie package graph, on the ic-suite spine:
+    // `core <- configuration <- languages <- vocabulary <- output <- cli`.
+    // No coinagerie package depends on another toolchain.
+    {
+      onlyDependOnLibsWithTags: ["name:testing"],
+      sourceTag: "name:coinagerie-core",
+    },
+    {
+      onlyDependOnLibsWithTags: ["name:coinagerie-core", "name:testing"],
+      sourceTag: "name:coinagerie-configuration",
+    },
+    {
+      onlyDependOnLibsWithTags: [
+        "name:coinagerie-configuration",
+        "name:coinagerie-core",
+        "name:observability",
+        "name:testing",
+      ],
+      sourceTag: "name:coinagerie-languages",
+    },
+    {
+      onlyDependOnLibsWithTags: [
+        "name:coinagerie-configuration",
+        "name:coinagerie-core",
+        "name:coinagerie-languages",
+        "name:observability",
+        "name:testing",
+      ],
+      sourceTag: "name:coinagerie-vocabulary",
+    },
+    {
+      onlyDependOnLibsWithTags: [
+        "name:coinagerie-configuration",
+        "name:coinagerie-core",
+        "name:coinagerie-vocabulary",
+        "name:observability",
+        "name:testing",
+      ],
+      sourceTag: "name:coinagerie-output",
+    },
+    {
+      onlyDependOnLibsWithTags: [
+        "name:coinagerie-configuration",
+        "name:coinagerie-core",
+        "name:coinagerie-output",
+        "name:coinagerie-vocabulary",
+        "name:observability",
+        "name:testing",
+      ],
+      sourceTag: "name:coinagerie-cli",
+    },
+    // The Nx plugin sits on top of the whole chain and nothing in the
+    // chain may depend back on it, which keeps `@nx/devkit` out of
+    // every package that reads a codebase.
+    {
+      onlyDependOnLibsWithTags: [
+        "name:coinagerie-cli",
+        "name:coinagerie-configuration",
+        "name:coinagerie-core",
+        "name:coinagerie-output",
+        "name:coinagerie-vocabulary",
+        "name:observability",
+        "name:testing",
+      ],
+      sourceTag: "name:coinagerie-nx",
+    },
+    // Conformetry package graph, on the five-layer spine: core, configuration,
+    // analysis, output, cli. `conformetry-core` is the contracts leaf, so
+    // nothing above it has to be imported to reach a type. Placeholder rendering
+    // lives in configuration, because resolving a path substitutes into it.
+    {
+      onlyDependOnLibsWithTags: ["name:testing"],
+      sourceTag: "name:conformetry-core",
+    },
+    {
+      onlyDependOnLibsWithTags: ["name:conformetry-core", "name:testing"],
+      sourceTag: "name:conformetry-configuration",
+    },
+    {
+      onlyDependOnLibsWithTags: [
+        "name:conformetry-configuration",
+        "name:conformetry-core",
+        "name:testing",
+      ],
+      sourceTag: "name:conformetry-generation",
+    },
+    // One rule for every Language, because they share one package,
+    // `conformetry-languages`, with the existence pass and the shared
+    // scoring primitives. Jupyter's delegation to JSON, markdown, and Python
+    // is an intra-package import that no rule polices; accepted.
+    {
+      onlyDependOnLibsWithTags: [
+        "name:conformetry-configuration",
+        "name:conformetry-core",
+        "name:testing",
+      ],
+      sourceTag: "name:conformetry-languages",
+    },
+    {
+      onlyDependOnLibsWithTags: [
+        "name:conformetry-configuration",
+        "name:conformetry-core",
+        "name:conformetry-languages",
+        "name:testing",
+      ],
+      sourceTag: "name:conformetry-validation",
+    },
+    {
+      onlyDependOnLibsWithTags: [
+        "name:conformetry-core",
+        "name:conformetry-languages",
+        "name:conformetry-validation",
+        "name:testing",
+      ],
+      sourceTag: "name:conformetry-output",
+    },
+    {
+      onlyDependOnLibsWithTags: [
+        "name:conformetry-configuration",
+        "name:conformetry-core",
+        "name:conformetry-generation",
+        "name:conformetry-output",
+        "name:conformetry-validation",
+        "name:observability",
+        "name:testing",
+      ],
+      sourceTag: "name:conformetry",
+    },
+    {
+      onlyDependOnLibsWithTags: [
+        "name:conformetry-configuration",
+        "name:conformetry-core",
+        "name:conformetry-generation",
+        "name:conformetry-output",
+        "name:conformetry-validation",
+        "name:observability",
+        "name:testing",
+      ],
+      sourceTag: "name:conformetry-nx",
+    },
+    // The examples package demonstrates the whole toolchain, so it sits
+    // above every runtime package and the Nx host. It may not depend on
+    // `name:conformetry`, the command-line host: the CLI holds no logic of its
+    // own, so nothing ever needs to import it.
+    {
+      onlyDependOnLibsWithTags: [
+        "name:conformetry-configuration",
+        "name:conformetry-core",
+        "name:conformetry-generation",
+        "name:conformetry-nx",
+        "name:conformetry-output",
+        "name:conformetry-validation",
+        "name:testing",
+      ],
+      sourceTag: "name:conformetry-examples",
+    },
+    // The testing package reaches only `observability`, for the logger token
+    // its Nest module builder mocks; the cycle that closes with observability's
+    // own testing entry is allowed below and nowhere else.
+    {
+      onlyDependOnLibsWithTags: ["name:configuration", "name:observability"],
+      sourceTag: "name:testing",
+    },
+    {
+      notDependOnLibsWithTags: ["type:application"],
+      sourceTag: "type:package",
+    },
+    {
+      notDependOnLibsWithTags: ["framework:nestjs"],
+      sourceTag: "framework:react",
+    },
+    {
+      notDependOnLibsWithTags: ["domain:lexico"],
+      sourceTag: "domain:caelundas",
+    },
+    {
+      notDependOnLibsWithTags: ["domain:caelundas"],
+      sourceTag: "domain:lexico",
+    },
+  ],
+  enforceBuildableLibDependency: true,
+  // `@codebase/observability/testing` builds its logger-context assertion on
+  // the testing package's module builder, which mocks observability's logger.
+  // `observability`'s `implicitDependencies: ["!testing"]` keeps the edge out
+  // of the task graph, so the cycle never orders a build.
+  ignoredCircularDependencies: [["observability", "testing"]],
+};
+
 export default [
   // 🚫 Global Ignores
   // Patterns excluded from ALL linting (build output, generated code, locks)
@@ -283,11 +562,9 @@ export default [
       "**/build",
       "**/tmp",
       "**/*.min.js",
-      // OpenWiki's output — the generated pages and the `.claims/` and
-      // `.page-manifest.json` bookkeeping beside them. The generator rewrites
-      // all of it on every refresh, so nothing here is hand-edited. Matched
-      // from either root: `documentation/` is linted by the root run and by
-      // its own project, whose paths start at `openwiki/`.
+      // OpenWiki's generated pages, and the `.claims/` and `.page-manifest.json` files beside them.
+      // The generator rewrites all of it on refresh, so nothing here is hand-edited.
+      // Matched from either root, since `documentation/` is linted by the root run and by its own project.
       "**/openwiki/**",
       // Python tool caches — generated, gitignored, and never source. .pytest_cache
       // writes a README.md, which the root eslint target's `**/*.md` glob reaches
@@ -351,14 +628,9 @@ export default [
   },
 
   // 📄 HTML Placement
-  // `.html` is matched by no other block, so ESLint never visits it and the
-  // structure rule above never judges an HTML path — which is how a generated
-  // `index.html` could have landed in a `src/` root unnoticed. Giving it a
-  // parser that yields an empty `Program` is enough: the structure rule reads
-  // only the path, so nothing here parses HTML or pretends to.
-  //
-  // Markdown needs a different treatment — see 📝 Markdown Placement below,
-  // which rebinds the same rule to mdast's root node rather than re-parsing.
+  // `.html` is matched by no other block, so ESLint never visits it and the structure rule
+  // never judges its path. A parser yielding an empty `Program` lets the rule see the path
+  // without parsing HTML. Markdown is handled separately, below, see Markdown Placement.
   {
     files: ["**/*.html"],
     languageOptions: {
@@ -367,12 +639,8 @@ export default [
   },
 
   // 📢 Logger Convention
-  // Statically flags a log call whose message doesn't start with an emoji
-  // naming its subject, then a verb in present progressive or past tense —
-  // the same convention `LoggerService` enforces at runtime. Test files are
-  // excluded: they deliberately construct malformed messages to exercise the
-  // runtime check's own production/context exemptions, and a static rule
-  // flagging that fixture data would be noise, not signal.
+  // Flags a log call whose message does not start with an emoji naming its subject, then a verb
+  // in present progressive or past tense. Test files are excluded: they build malformed messages on purpose.
   {
     files: [
       "**/*.ts",
@@ -629,296 +897,7 @@ export default [
           ignoredDependencies: ["@codebase/observability"],
         },
       ],
-      "@nx/enforce-module-boundaries": [
-        "error",
-        {
-          depConstraints: [
-            {
-              onlyDependOnLibsWithTags: ["type:package"],
-              sourceTag: "type:application",
-            },
-            // Callidescope package graph. Core, holding the domain vocabulary
-            // and nothing executable, is the leaf; the configuration package
-            // resolves the file and the flags over it; the graph builder
-            // analyzes; the output renderer depends on the configuration and
-            // the graph it renders; the CLI composes them, so the dependency
-            // only ever points that way.
-            {
-              onlyDependOnLibsWithTags: [],
-              sourceTag: "name:callidescope-core",
-            },
-            {
-              onlyDependOnLibsWithTags: [
-                "name:callidescope-core",
-                "name:observability",
-              ],
-              sourceTag: "name:callidescope-configuration",
-            },
-            {
-              onlyDependOnLibsWithTags: [
-                "name:callidescope-configuration",
-                "name:callidescope-core",
-                "name:observability",
-              ],
-              sourceTag: "name:callidescope-graph",
-            },
-            {
-              onlyDependOnLibsWithTags: [
-                "name:callidescope-configuration",
-                "name:callidescope-core",
-                "name:callidescope-graph",
-                "name:observability",
-              ],
-              sourceTag: "name:callidescope-output",
-            },
-            {
-              onlyDependOnLibsWithTags: [
-                "name:callidescope-configuration",
-                "name:callidescope-core",
-                "name:callidescope-graph",
-                "name:callidescope-output",
-                "name:observability",
-              ],
-              sourceTag: "name:callidescope-cli",
-            },
-            // The Nx plugin sits on top of the whole chain and nothing in the
-            // chain may depend back on it, which is what keeps `@nx/devkit`
-            // out of every package that actually traces. It is the only
-            // callidescope package Nx is allowed to reach.
-            {
-              onlyDependOnLibsWithTags: [
-                "name:callidescope-cli",
-                "name:callidescope-configuration",
-                "name:callidescope-core",
-                "name:callidescope-graph",
-                "name:callidescope-output",
-                "name:observability",
-              ],
-              sourceTag: "name:callidescope-nx",
-            },
-            // Codometer package graph, on the ic-suite five-layer spine:
-            // `core <- configuration <- measurement <- output <- cli`. The
-            // contracts leaf holds the measured vocabulary and depends on
-            // nothing; configuration resolves the config file and the command
-            // line over it; the language analyzers and the measurement
-            // package do the measuring; output owns every render target,
-            // report diffing included; and the command-line host wires
-            // commands over all of them.
-            {
-              onlyDependOnLibsWithTags: [],
-              sourceTag: "name:codometer-core",
-            },
-            {
-              onlyDependOnLibsWithTags: ["name:codometer-core"],
-              sourceTag: "name:codometer-configuration",
-            },
-            {
-              onlyDependOnLibsWithTags: [
-                "name:codometer-configuration",
-                "name:codometer-core",
-                "name:observability",
-              ],
-              sourceTag: "name:codometer-languages",
-            },
-            {
-              onlyDependOnLibsWithTags: [
-                "name:codometer-configuration",
-                "name:codometer-core",
-                "name:codometer-languages",
-                "name:observability",
-              ],
-              sourceTag: "name:codometer-measurement",
-            },
-            {
-              onlyDependOnLibsWithTags: [
-                "name:codometer-configuration",
-                "name:codometer-core",
-                "name:codometer-measurement",
-                "name:observability",
-              ],
-              sourceTag: "name:codometer-output",
-            },
-            {
-              onlyDependOnLibsWithTags: [
-                "name:codometer-configuration",
-                "name:codometer-core",
-                "name:codometer-measurement",
-                "name:codometer-output",
-                "name:observability",
-              ],
-              sourceTag: "name:codometer-cli",
-            },
-            // Coinagerie package graph, on the ic-suite spine:
-            // `core <- configuration <- languages <- vocabulary <- output <- cli`.
-            // No coinagerie package depends on another toolchain.
-            {
-              onlyDependOnLibsWithTags: [],
-              sourceTag: "name:coinagerie-core",
-            },
-            {
-              onlyDependOnLibsWithTags: ["name:coinagerie-core"],
-              sourceTag: "name:coinagerie-configuration",
-            },
-            {
-              onlyDependOnLibsWithTags: [
-                "name:coinagerie-configuration",
-                "name:coinagerie-core",
-                "name:observability",
-              ],
-              sourceTag: "name:coinagerie-languages",
-            },
-            {
-              onlyDependOnLibsWithTags: [
-                "name:coinagerie-configuration",
-                "name:coinagerie-core",
-                "name:coinagerie-languages",
-                "name:observability",
-              ],
-              sourceTag: "name:coinagerie-vocabulary",
-            },
-            {
-              onlyDependOnLibsWithTags: [
-                "name:coinagerie-configuration",
-                "name:coinagerie-core",
-                "name:coinagerie-vocabulary",
-                "name:observability",
-              ],
-              sourceTag: "name:coinagerie-output",
-            },
-            {
-              onlyDependOnLibsWithTags: [
-                "name:coinagerie-configuration",
-                "name:coinagerie-core",
-                "name:coinagerie-output",
-                "name:coinagerie-vocabulary",
-                "name:observability",
-              ],
-              sourceTag: "name:coinagerie-cli",
-            },
-            // The Nx plugin sits on top of the whole chain and nothing in the
-            // chain may depend back on it, which keeps `@nx/devkit` out of
-            // every package that reads a codebase.
-            {
-              onlyDependOnLibsWithTags: [
-                "name:coinagerie-cli",
-                "name:coinagerie-configuration",
-                "name:coinagerie-core",
-                "name:coinagerie-output",
-                "name:coinagerie-vocabulary",
-                "name:observability",
-              ],
-              sourceTag: "name:coinagerie-nx",
-            },
-            // Conformetry package graph, on the ic-suite five-layer spine:
-            // core, configuration, analysis, output, cli. `conformetry-core`
-            // is the contracts leaf and holds no service, so nothing above it
-            // has to be dragged in to import a type; placeholder rendering
-            // lives in the configuration layer, because substituting a
-            // template or instance path is part of resolving it, and
-            // `conformetry-generation` consumes it upward.
-            {
-              onlyDependOnLibsWithTags: [],
-              sourceTag: "name:conformetry-core",
-            },
-            {
-              onlyDependOnLibsWithTags: ["name:conformetry-core"],
-              sourceTag: "name:conformetry-configuration",
-            },
-            {
-              onlyDependOnLibsWithTags: [
-                "name:conformetry-configuration",
-                "name:conformetry-core",
-              ],
-              sourceTag: "name:conformetry-generation",
-            },
-            // One rule for every Language, because they are one package: the
-            // Languages sit in `conformetry-languages`, alongside the
-            // extension-agnostic existence pass and the difference and
-            // scoring primitives every validator shares. Jupyter's delegation
-            // to JSON, markdown, and Python is an intra-package import, which
-            // neither this rule nor codependix polices — accepted, and
-            // recorded as such.
-            {
-              onlyDependOnLibsWithTags: [
-                "name:conformetry-configuration",
-                "name:conformetry-core",
-              ],
-              sourceTag: "name:conformetry-languages",
-            },
-            {
-              onlyDependOnLibsWithTags: [
-                "name:conformetry-configuration",
-                "name:conformetry-core",
-                "name:conformetry-languages",
-              ],
-              sourceTag: "name:conformetry-validation",
-            },
-            {
-              onlyDependOnLibsWithTags: [
-                "name:conformetry-core",
-                "name:conformetry-languages",
-                "name:conformetry-validation",
-              ],
-              sourceTag: "name:conformetry-output",
-            },
-            {
-              onlyDependOnLibsWithTags: [
-                "name:conformetry-configuration",
-                "name:conformetry-core",
-                "name:conformetry-generation",
-                "name:conformetry-output",
-                "name:conformetry-validation",
-                "name:observability",
-              ],
-              sourceTag: "name:conformetry",
-            },
-            {
-              onlyDependOnLibsWithTags: [
-                "name:conformetry-configuration",
-                "name:conformetry-core",
-                "name:conformetry-generation",
-                "name:conformetry-output",
-                "name:conformetry-validation",
-                "name:observability",
-              ],
-              sourceTag: "name:conformetry-nx",
-            },
-            // The examples package demonstrates the whole toolchain, so it sits
-            // above every runtime package and above the Nx host. It may not
-            // depend on `name:conformetry` — the command-line host — which is
-            // the claim its embedding example makes: the CLI holds no logic of
-            // its own, so nothing ever needs to import it.
-            {
-              onlyDependOnLibsWithTags: [
-                "name:conformetry-configuration",
-                "name:conformetry-core",
-                "name:conformetry-generation",
-                "name:conformetry-nx",
-                "name:conformetry-output",
-                "name:conformetry-validation",
-              ],
-              sourceTag: "name:conformetry-examples",
-            },
-            {
-              notDependOnLibsWithTags: ["type:application"],
-              sourceTag: "type:package",
-            },
-            {
-              notDependOnLibsWithTags: ["framework:nestjs"],
-              sourceTag: "framework:react",
-            },
-            {
-              notDependOnLibsWithTags: ["domain:lexico"],
-              sourceTag: "domain:caelundas",
-            },
-            {
-              notDependOnLibsWithTags: ["domain:caelundas"],
-              sourceTag: "domain:lexico",
-            },
-          ],
-          enforceBuildableLibDependency: true,
-        },
-      ],
+      "@nx/enforce-module-boundaries": ["error", MODULE_BOUNDARIES],
 
       "import/default": "off", // TypeScript handles this
       "import/named": "off", // TypeScript handles this
@@ -1224,6 +1203,31 @@ export default [
     },
   },
 
+  // 🧪 Test Code Boundaries
+  // A React project's tests and test harnesses may import the testing package,
+  // whose Nest and Postgres adapters reach packages tagged `framework:nestjs`;
+  // the rule follows dependencies transitively, so only these files drop the
+  // React-to-Nest constraint, and a React project's own code still may not.
+  {
+    files: [
+      "**/*.test.ts",
+      "**/*.test.tsx",
+      "**/testing/**/*.ts",
+      "**/testing/**/*.tsx",
+    ],
+    rules: {
+      "@nx/enforce-module-boundaries": [
+        "error",
+        {
+          ...MODULE_BOUNDARIES,
+          depConstraints: MODULE_BOUNDARIES.depConstraints.filter(
+            (constraint) => constraint.sourceTag !== "framework:react",
+          ),
+        },
+      ],
+    },
+  },
+
   // 🪺 Nest Module Provider Overrides
   // NestJS module metadata can legitimately include provider factory functions
   // with many injected dependencies; allow more parameters in *.module.ts files.
@@ -1295,7 +1299,7 @@ export default [
       "**/projects/lexico/lexico-cli/src/modules/forms/forms.constants.ts",
       "**/projects/lexico/lexico-cli/src/modules/manual/manual.constants.ts",
       "**/projects/lexico/lexico-cli/src/modules/part-of-speech/part-of-speech.constants.ts",
-      "**/projects/lexico/lexico-entities/src/modules/database/database.constants.ts",
+      "**/projects/lexico/lexico-db/src/modules/database/database.constants.ts",
       "**/src/modules/caelundas/caelundas.constants.ts",
       "**/src/modules/postgresql/postgresql.constants.ts",
       "**/src/modules/ephemeris/ephemeris.constants.ts",
@@ -1306,11 +1310,9 @@ export default [
       "**/src/modules/validator/validator.constants.ts",
     ],
     rules: {
-      // The selector below is the guard that makes this safe: the only class a
-      // constants file may declare is one extending `Error`, so lifting the
-      // count permits several error classes and nothing else. A module whose
-      // errors are one class per cause — meanderaw's five — can then keep them
-      // distinct in the one constants file beside the code that throws them.
+      // The selector below is the guard: the only class a constants file may declare extends
+      // `Error`, so lifting the count allows several error classes and nothing else. A module
+      // with one error class per cause can keep them in its one constants file.
       "max-classes-per-file": "off",
       "no-restricted-syntax": [
         "error",
@@ -1346,10 +1348,8 @@ export default [
   },
 
   // 🕸️ Web Application File Shape
-  // Every project tagged framework:react and type:application holds each
-  // file in its src/ to one kind: a component, a hook, a route, or a types,
-  // constants, or utilities file. The three file shapes above cover the last
-  // three; these blocks cover the rest and reject a file that is none.
+  // Each file in a React application's src/ is one kind: a component, a hook, a route,
+  // or a types, constants, or utilities file. The rules below reject any file that is none.
   ...WEB_APPLICATION_ROOTS.flatMap(defineWebApplicationFileShape),
 
   // 🔷 TypeScript Strict Type-Checked
@@ -1533,6 +1533,19 @@ export default [
       "vitest/consistent-vitest-vi": "error",
       "vitest/hoisted-apis-on-top": "error",
       "vitest/max-nested-describe": ["error", { max: 3 }],
+      "vitest/expect-expect": [
+        "error",
+        {
+          // The shared testing helpers assert for the test that calls them.
+          assertFunctionNames: [
+            "expect",
+            "expectLoggerContext",
+            "expectModuleExports",
+            "expectModuleImports",
+            "expectModuleProvides",
+          ],
+        },
+      ],
       "vitest/no-alias-methods": "error",
       "vitest/no-commented-out-tests": "error",
       "vitest/no-disabled-tests": "error",
@@ -1708,15 +1721,10 @@ export default [
   },
 
   // 🧭 tsconfig.json path aliases
-  // Local modules are imported with relative paths; path aliases are reserved
-  // for cross-project mappings. A self-referential alias (one pointing back
-  // into the project's own directory) adds indirection, hides dependency
-  // cycles from dependency-cruiser, and breaks when files move.
+  // Local modules use relative imports; aliases are for cross-project mappings only. A
+  // self-referential alias hides dependency cycles from dependency-cruiser and breaks when files move.
   //
-  // Deliberately NOT flagged:
-  // - `./node_modules/...` entries, which are type shims for real packages
-  // - `../`-style entries, which are the cross-project mappings we want
-  // - non-`@`/`~` keys such as `codebase/configuration/*`
+  // Not flagged: `./node_modules/...` type shims, `../` cross-project mappings, and non-`@`/`~` keys.
   {
     files: ["**/tsconfig.json", "tsconfig.json"],
     rules: {
@@ -1758,9 +1766,8 @@ export default [
   },
 
   // 🧩 nx.json project patterns
-  // Nx reads a `projects` pattern list in order, and one that opens with a
-  // `!` exclusion starts from every project in the workspace. Sorting moves
-  // every exclusion ahead of the include it narrows, so `release.projects`
+  // Nx reads `projects` patterns in order, and a pattern opening with `!` starts from every
+  // project. Sorting moves exclusions ahead of the include they narrow, so `release.projects`
   // would silently match all projects instead of the publishable ones.
   {
     files: ["**/nx.json"],
@@ -1777,12 +1784,9 @@ export default [
   },
 
   // 🕸️ codependix graph JSON files
-  // Emitted from the Nx project graph, a NestJS container, or a `ts.Program`,
-  // in whichever order each source discovers its projects, modules, or
-  // files — not alphabetical. Enforcing array order here would make every
-  // `codependix map --write` immediately fail its own `--check`, the same
-  // reformatting-vs-drift conflict `configuration/.oxfmtignore` already
-  // solves for `oxfmt` and `.conformetry/**`.
+  // Their array order follows each source's discovery order, not alphabetical. Enforcing
+  // order here would make every `codependix map --write` fail its own `--check`, the same
+  // conflict `configuration/.oxfmtignore` solves for `oxfmt` and `.conformetry/**`.
   {
     files: ["**/codependix-*graph.json"],
     rules: {
@@ -1882,13 +1886,9 @@ export default [
   },
 
   // 📝 Markdown Placement
-  // Establishes markdown as markdown, and judges where every markdown file
-  // sits. This is separate from the authored-content rules below so that it
-  // reaches generated pages too: the same `folder-structure` rule the rest of
-  // the workspace is judged by, reading the same `codebase-structure.json`,
-  // bound to mdast's root node. Without it an undeclared markdown file — or a
-  // whole directory of them — passes lint, which is how `openwiki/` stayed
-  // undeclared.
+  // Judges where every markdown file sits, generated pages included. It runs the same
+  // `folder-structure` rule as the rest of the workspace, bound to mdast's root node.
+  // Without it an undeclared markdown directory, such as `openwiki/`, would pass lint.
   {
     files: ["**/*.md"],
     language: "markdown/gfm",
@@ -1909,11 +1909,9 @@ export default [
   },
 
   // 📝 Markdown Files
-  // GitHub Flavored Markdown (GFM) content rules, for the markdown this
-  // repository writes. `openwiki/` is excluded because its pages are generated
-  // and must not be hand-edited — its generator emits several H1s per page —
-  // which is the same reason `markdownlint` and `cspell` exclude the vendored
-  // skills. Placement above is judged for those pages regardless.
+  // GitHub Flavored Markdown rules for the markdown this repository writes. `openwiki/` is
+  // excluded, since its generated pages must not be hand-edited, as with the vendored skills.
+  // Placement is still judged for those pages.
   {
     files: ["**/*.md"],
     ignores: [
@@ -1938,14 +1936,9 @@ export default [
       "markdown/no-empty-definitions": "error",
       "markdown/no-empty-images": "error",
       "markdown/no-empty-links": "error",
-      // `details`/`summary` is the one disclosure GitHub renders and markdown
-      // cannot express, and generated sections long enough to need it — the
-      // callidescope call stacks — are exactly where it earns its place.
-      // `strong` is allowed because `**bold**` markdown is never reprocessed
-      // inside a `<summary>` on the same line as its opening `<details>` tag
-      // (CommonMark treats them as one raw HTML block), so `<strong>` is the
-      // only way to bold a summary's text. `markdownlint`'s MD033 already
-      // permits inline HTML here.
+      // `details` and `summary` are the one disclosure GitHub renders that markdown cannot express.
+      // `strong` is allowed because `**bold**` is not reprocessed inside a summary on the same line as its `<details>`,
+      // so `<strong>` is the only way to bold a summary. MD033 permits inline HTML.
       "markdown/no-html": [
         "error",
         { allowed: ["a", "details", "img", "strong", "summary"] },

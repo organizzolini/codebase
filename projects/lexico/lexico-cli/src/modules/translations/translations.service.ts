@@ -4,12 +4,12 @@ import * as cheerio from "cheerio";
 import _ from "lodash";
 import { Like, Repository } from "typeorm";
 
-import { Translation } from "@codebase/lexico-entities";
+import { Translation } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
 import { translationSkipRegex } from "./translations.constants";
 
-import type { Lexeme } from "@codebase/lexico-entities";
+import type { Lexeme } from "@codebase/lexico-db";
 import type { AnyNode } from "domhandler";
 
 /**
@@ -135,8 +135,7 @@ export class TranslationsService {
     return translations;
   }
 
-  /** Prepares translations to be saved onto the lexeme (preserves IDs of existing ones).
-   * Returns the array of translations to be set on the lexeme parent. */
+  /** Prepares translations for saving onto the lexeme, preserving existing IDs. */
   prepareTranslationsForSave(
     savedLexeme: Lexeme,
     translations: Translation[],

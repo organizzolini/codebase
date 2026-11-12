@@ -1,9 +1,8 @@
-import type { TimelineScale } from "./calendar-views.types";
-import type { EventsWindow } from "./events-database.types";
+import type { Period } from "./calendar-records.types";
+import type { CalendarViewName, TimelineScale } from "./calendar-views.types";
 
 /**
- * What else decides the days a view shows: how many the agenda lists, and
- * the span the timeline shows at once.
+ * Options for the view's days: agenda length and timeline scale.
  */
 export interface ViewWindowOptions {
   agendaDays?: number | undefined;
@@ -11,10 +10,17 @@ export interface ViewWindowOptions {
 }
 
 /**
- * The days a view shows, and the window of events read for them: those days
- * plus a buffer either side.
+ * The view's days, and the period read around them.
  */
 export interface ViewWindows {
-  visible: EventsWindow;
-  window: EventsWindow;
+  read: Period;
+  visible: Period;
+}
+
+/**
+ * The API query for a view's days: anchor, view, and options.
+ */
+export interface ViewWindowSearch extends ViewWindowOptions {
+  anchor: Date;
+  view?: CalendarViewName | undefined;
 }

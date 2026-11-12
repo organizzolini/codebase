@@ -5,14 +5,12 @@ import {
   TAG_ROOT_ORDER,
 } from "./calendar-tag-colors.constants";
 
-import type { CalendarEventTag } from "../events-calendar/events-database.types";
+import type { CalendarEventTag } from "../events-calendar/calendar-records.types";
 
 // 🌎 Public Functions
 
 /**
- * The color of a tag's tree: one for each tag root, so every tag beneath a
- * root shares it. A root the list does not know takes the next color after
- * those it does, by its name's length.
+ * The color of a tag's tree: one per tag root, shared by every tag beneath it; an unknown root takes the next color.
  */
 export function getTagColor(tag: CalendarEventTag): string {
   const [root = ""] = tag.path.split(PATH_SEPARATOR);

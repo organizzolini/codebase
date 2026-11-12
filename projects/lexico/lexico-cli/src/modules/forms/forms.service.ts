@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
-import { Form, type Lexeme } from "@codebase/lexico-entities";
+import { Form, type Lexeme } from "@codebase/lexico-db";
 
 import { WordsService } from "../words/words.service";
 
@@ -115,16 +115,7 @@ export class FormsService {
   // 🌎 Public Methods
 
   /**
-   * Saves Form entities for a Lexeme, then upserts Word rows and creates
-   * explicit WordLexeme and WordForm junction records.
-   *
-   * Deletes any Forms previously associated with this Lexeme for idempotency —
-   * the `onDelete: "CASCADE"` on WordForm.form means their WordForm rows are
-   * removed by the database automatically. Matches new forms with existing
-   * forms by properties to preserve IDs and avoid database churn.
-   *
-   * Uses batched database operations: one upsert for all Word rows, one reload to
-   * collect their IDs, then two bulk inserts for the junction rows.
+   * Saves a lexeme's Forms and their Word and junction rows, replacing earlier forms so reruns are idempotent. Batches its database writes.
    */
   async ingestLexemeForms(forms: Form[], lexeme: Lexeme): Promise<void> {
     const existingForms = await this.findExistingFormsByLexemeId(lexeme.id);
@@ -152,9 +143,7 @@ export class FormsService {
   }
 
   /**
-   * Sets transient word strings for a Form instance. These are used during
-   * ingestion to link forms to their corresponding Word rows but are not
-   * persisted on the Form entity itself.
+   * Sets transient word strings for a Form, used during ingestion to link forms to Word rows but never persisted on the Form.
    */
   setTransientWords(form: Form, words: string[]): void {
     this.transientWordsService.setTransientWords(form, words);

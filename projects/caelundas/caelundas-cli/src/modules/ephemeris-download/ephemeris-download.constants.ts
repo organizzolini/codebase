@@ -1,10 +1,6 @@
 // ♟️ Constants
 
-/**
- * The Swiss Ephemeris data files caelundas computes from: the planets, the
- * Moon, and the asteroids. The `18` in each name is the century they start at,
- * and together they cover the years 1800 to 2399.
- */
+/** Ephemeris files for planets, Moon, asteroids; `18` is the century. */
 export const EPHEMERIS_FILENAMES = [
   "seas_18.se1",
   "sepl_18.se1",
@@ -18,10 +14,7 @@ export const EPHEMERIS_BASE_URL =
 /** Where the files live, relative to the directory the CLI runs from. */
 export const EPHEMERIS_DIRECTORY = "./data/ephemeris";
 
-/**
- * The suffix a file carries while it downloads, so one cut short is never
- * mistaken for a whole one.
- */
+/** Suffix marking a file mid-download, so partials never pass. */
 export const PARTIAL_FILE_SUFFIX = ".part";
 
 /** The command that fetches the files, named in every error about them. */

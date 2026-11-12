@@ -18,13 +18,9 @@ import type {
 
 /* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
- * Runs conformetry generators: walks a template tree, renders every path and
- * file through the configuration layer, and writes the result.
+ * Runs conformetry generators: walks a template tree, renders each path and file, and writes the result.
  *
- * Filesystem and formatter access go through adapters so a host with a virtual
- * filesystem (an Nx generator `Tree`) can reuse this runtime unchanged.
- * Rendering deliberately is *not* an adapter — validation must substitute
- * exactly as generation does, so both render through one service.
+ * Filesystem and formatter access go through adapters, so a virtual filesystem host can reuse this. Rendering is not an adapter: validation must substitute exactly as generation does.
  */
 @Injectable()
 /* v8 ignore stop */
@@ -70,8 +66,7 @@ export class GenerationService {
   /**
    * Merges the derived name variants with the caller's inputs.
    *
-   * Inputs are spread last so an explicit value always wins over the variant
-   * derived from the same name.
+   * Inputs are spread last, so an explicit value wins over a derived variant.
    */
   private buildSubstitutions(args: {
     definitionName: string;
@@ -186,9 +181,9 @@ export class GenerationService {
   // 🌎 Public Methods
 
   /**
-   * Runs the generator lifecycle — `preGenerate`, render, `postGenerate`,
-   * format — and returns the generated file paths: the rendered paths sorted,
-   * then any path a `postGenerate` hook pushed, appended after the sort.
+   * Runs preGenerate, render, postGenerate, and format, then returns the file paths.
+   *
+   * Rendered paths come first, sorted; paths a `postGenerate` hook pushes follow.
    */
   public async runGenerator(
     args: RunGeneratorArguments,

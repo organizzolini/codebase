@@ -27,11 +27,8 @@ import type {
  * Reads a pull request's title and commits and says whether the title is at
  * least as release-significant as every commit behind it.
  *
- * Pure throughout except for `readReleaseRules`, which is the one method
- * that touches the filesystem — reading `release.config.cjs` fresh on every
- * run rather than duplicating its `releaseRules` here, so the two cannot
- * drift apart. Reading the pull request itself from GitHub is the command's
- * job, not this one's.
+ * Pure throughout, except `readReleaseRules`, which reads `release.config.cjs`
+ * fresh on every run so the rules cannot drift from a copy here.
  */
 @Injectable()
 export class PullRequestReleaseSignificanceService {
@@ -74,12 +71,7 @@ export class PullRequestReleaseSignificanceService {
   }
 
   /**
-   * Every scope that a commit used without any scope overlap in the title,
-   * grouped by scope and commit SHA.
-   *
-   * A title counts as scoping a commit when at least one of the commit's
-   * scopes also appears in the title; there is no requirement that the title
-   * name every scope the branch used.
+   * Commits that share no scope with the title, grouped by scope and SHA.
    */
   private findMissingScopes(
     commits: readonly PullRequestCommit[],
@@ -189,12 +181,7 @@ export class PullRequestReleaseSignificanceService {
   // 🌎 Public Methods
 
   /**
-   * Every way this pull request's title understates its own commits.
-   *
-   * Two independent comparisons, both against the title alone rather than
-   * against each other: the most release-significant commit sets the floor
-   * the title's own type must clear, and the title must share at least one
-   * scope with each commit it is checked against.
+   * Every way the title understates its commits, by type or by a shared scope.
    */
   public checkSignificance(options: {
     readonly commits: readonly PullRequestCommit[];
@@ -233,13 +220,8 @@ export class PullRequestReleaseSignificanceService {
   }
 
   /**
-   * Reads the type, scopes, and breaking marker out of a conventional
-   * subject line.
-   *
-   * A subject that does not parse at all returns `undefined`. The breaking
-   * marker is true when either the subject itself carries `!` or the body
-   * carries a `BREAKING CHANGE:` footer — the same two signals
-   * `@semantic-release/commit-analyzer` reads.
+   * Reads the type, scopes, and breaking marker of a conventional subject.
+   * Breaking means `!` or a `BREAKING CHANGE:` footer.
    */
   public parseConventionalSubject(
     subject: string,
@@ -270,10 +252,7 @@ export class PullRequestReleaseSignificanceService {
 
   /**
    * Reads `release.config.cjs`'s `releaseRules`, wherever `cwd` is.
-   *
-   * Throws when the commit-analyzer plugin is missing or malformed: that is
-   * a broken repository invariant this check depends on, not a pull request
-   * to report on.
+   * Throws when the commit-analyzer plugin is missing: a broken repository invariant.
    */
   public readReleaseRules(): ReleaseRule[] {
     const configPath = path.join(process.cwd(), RELEASE_CONFIG_PATH);
@@ -323,10 +302,8 @@ export class PullRequestReleaseSignificanceService {
   }
 
   /**
-   * How release-significant this subject is, under these `releaseRules`.
-   *
-   * The first rule this subject satisfies decides, in array order: first
-   * match rather than best match, mirroring `@semantic-release/commit-analyzer`.
+   * How release-significant a subject is under these `releaseRules`.
+   * The first matching rule decides, mirroring `commit-analyzer`.
    */
   public significanceRank(
     subject: ConventionalSubject,

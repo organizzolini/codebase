@@ -1,27 +1,19 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { TwilightsBuilderService } from "./twilights-builder.service";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 
 describe(TwilightsBuilderService, () => {
   let service: TwilightsBuilderService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        TwilightsBuilderService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance } = await buildTestingModule(TwilightsBuilderService);
 
-    service = await module.resolve(TwilightsBuilderService);
-    await module.resolve(LoggerService);
+    service = instance;
   });
 
   const beginningEvent: DetectedCalendarEvent = {
@@ -43,9 +35,10 @@ describe(TwilightsBuilderService, () => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(TwilightsBuilderService);
+
+    expect(instance).toBeInstanceOf(TwilightsBuilderService);
   });
 
   describe("transition events", () => {

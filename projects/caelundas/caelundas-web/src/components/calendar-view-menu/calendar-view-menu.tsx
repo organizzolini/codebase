@@ -22,8 +22,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * Whether crowded days merge their events, how symbols are drawn, and where
- * to send a change to either.
+ * Clustering and symbol settings, with their change handlers.
  */
 export interface CalendarViewMenuProperties {
   /**
@@ -44,9 +43,7 @@ export interface CalendarViewMenuProperties {
 // 🧩 Component
 
 /**
- * Renders the View menu: how the calendar looks. It arranges the view shown,
- * where that has anything to arrange, then picks how symbols are drawn and
- * turns the merging of crowded days on or off. Coloring is the Color menu's.
+ * Renders the View menu: how the calendar looks, its view arrangement, symbol drawing, and crowded-day merging; coloring is elsewhere.
  */
 export function CalendarViewMenu(
   properties: Readonly<CalendarViewMenuProperties>,

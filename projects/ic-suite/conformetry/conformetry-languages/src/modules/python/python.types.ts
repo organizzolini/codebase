@@ -1,12 +1,6 @@
 // 🏷️ Types
 
-/**
- * One error as the bridge emits it.
- *
- * Field names are snake_case because they cross a process boundary from
- * Python; every value is `unknown` because nothing about a subprocess's stdout
- * can be trusted until it is narrowed.
- */
+/** One bridge error in snake_case, `unknown` until narrowed. */
 export type PythonBridgeError = Readonly<Record<string, unknown>>;
 
 /** The bridge's response envelope. */
@@ -14,10 +8,7 @@ export interface PythonBridgeResponse {
   readonly differences: PythonBridgeError[];
   /**
    * Template requirements the Python side weighed the instance against.
-   *
-   * Snake_case because it crosses the same process boundary as the differences,
-   * and `unknown` for the same reason: nothing about a subprocess's stdout is
-   * trustworthy until narrowed.
+   * Snake_case and `unknown`, as with the differences above.
    */
   readonly total_weight?: unknown;
 }

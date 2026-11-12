@@ -13,13 +13,13 @@ import {
   getRowHeight,
 } from "./calendar-overflow-list.utilities";
 
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * One busy day, and the events to pick out the ones on it from.
+ * One busy day and the events to pick from.
  */
 export interface CalendarOverflowListProperties {
   className?: string;
@@ -34,8 +34,7 @@ export interface CalendarOverflowListProperties {
 // 🧩 Component
 
 /**
- * Renders the whole of a month cell's "+N more" day as a list that draws
- * only the rows on screen, so a day with hundreds of events opens at once.
+ * Renders a month cell's "+N more" day as a list drawing only the rows on screen.
  */
 export function CalendarOverflowList(
   properties: Readonly<CalendarOverflowListProperties>,

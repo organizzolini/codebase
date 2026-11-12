@@ -21,7 +21,7 @@ import type {
   Body,
   SpecialtyAspect,
 } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 import type { Moment } from "moment-timezone";
 
@@ -141,12 +141,7 @@ export class SpecialtyAspectsService {
   // 🌎 Public Methods
 
   /**
-   * Creates a calendar event for a specific specialty aspect occurrence.
-   *
-   * Formats the event with appropriate emoji indicators, body symbols,
-   * and tagging. Specialty aspects use distinct Unicode symbols
-   * for each aspect type.
-   *
+   * Creates a calendar event for a specialty aspect occurrence, with body symbols and tagging.
    * @see {@link getSpecialtyAspect} for aspect type determination
    */
   buildSpecialtyAspectEvent(args: {
@@ -183,13 +178,7 @@ export class SpecialtyAspectsService {
   }
 
   /**
-   * Detects specialty aspect events within a single minute time window.
-   *
-   * Scans all configured body pairs for specialty aspects (quintile 72°,
-   * biquintile 144°, septile 51.43°, novile 40°) and determines
-   * the phase (forming, exact, or dissolving) based on comparison with
-   * adjacent minutes.
-   *
+   * Detects specialty aspect events within one minute, labelling each as forming, exact or dissolving.
    */
   detect(args: {
     coordinateEphemerisByBody: Record<Body, CoordinateEphemeris>;
@@ -204,8 +193,7 @@ export class SpecialtyAspectsService {
   }
 
   /**
-   * Lists the specialty aspects in orb at this minute and the minutes either side,
-   * so a sweep can seed its active-aspect registry at the window start.
+   * Lists specialty aspects in orb at this minute and the adjacent minutes, seeding a sweep's registry at window start.
    */
   detectActive(args: SimpleAspectDetectorArguments): AspectBodies[] {
     const { coordinateEphemerisByBody, minute } = args;
@@ -222,12 +210,7 @@ export class SpecialtyAspectsService {
   }
 
   /**
-   * Converts instantaneous specialty aspect events into progressive events.
-   *
-   * Pairs forming and dissolving events for the same body-aspect combination
-   * to create events spanning the entire active period of each aspect.
-   * Progressive events show when an aspect is in orb rather than just boundary moments.
-   *
+   * Converts instantaneous specialty aspect events into progressive events spanning each aspect's active period.
    * @see {@link pairProgressiveEvents} for forming/dissolving pairing logic
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
@@ -246,9 +229,7 @@ export class SpecialtyAspectsService {
   }
 
   /**
-   * Classifies the specialty aspect phase (forming / perfective / dissolving) between two bodies
-   * across three consecutive minutes, or `null` if no specialty aspect is in progress.
-   *
+   * Classifies the phase (forming, perfective or dissolving) between two bodies over three minutes, or `null` when out of orb.
    */
   getSpecialtyAspectPhase(args: {
     currentLongitudeBody1: number;

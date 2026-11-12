@@ -12,13 +12,7 @@ export const SHELL_EXTENSIONS: readonly string[] = [
   ".zsh",
 ];
 
-/**
- * How shell is read: `#` comments only where a word could begin, single,
- * double, and `$'…'` strings, here-documents, and backslash escapes.
- *
- * The only key shell has is an associative array subscript, `["key"]=value`,
- * so a string followed by `]=` is a key.
- */
+/** `#` comments only at word start; keys precede `]=`. */
 export const SHELL_GRAMMAR: LexicalGrammar = {
   identifier: PLAIN_IDENTIFIER,
   keys: [{ after: /\]=/y }],
@@ -37,13 +31,7 @@ export const SHELL_GRAMMAR: LexicalGrammar = {
   ],
 };
 
-/**
- * The reserved words and builtin commands of POSIX shell and Bash, lowercased
- * as the vocabulary compares words.
- *
- * A plain array, so a configuration spreads it into `exclude.words` and the
- * tool excludes nothing it was not asked to.
- */
+/** POSIX shell and Bash reserved words and builtins, lowercased. */
 export const SHELL_KEYWORDS: string[] = [
   "alias",
   "break",

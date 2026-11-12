@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
@@ -14,7 +13,7 @@ import { TripleAspectsService } from "./triple-aspects.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
 import type { AspectPhase } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 
 /** Builds a Lunar Apogee–Moon–Venus T-square boundary event, Venus focal. */
 function buildTSquareBoundary(
@@ -45,23 +44,31 @@ function buildTSquareBoundary(
 describe(TripleAspectsService, () => {
   let service: TripleAspectsService;
 
+  const testingModuleOptions = {
+    providers: [
+      AspectGraphService,
+      CompoundPhaseService,
+      ProgressiveUtilitiesService,
+      TripleAspectsComposerService,
+      TripleAspectsDetectorService,
+    ],
+  };
+
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LoggerService,
-        AspectGraphService,
-        CompoundPhaseService,
-        ProgressiveUtilitiesService,
-        TripleAspectsComposerService,
-        TripleAspectsDetectorService,
-        TripleAspectsService,
-      ],
-    }).compile();
-    service = await module.resolve(TripleAspectsService);
+    const { instance } = await buildTestingModule(
+      TripleAspectsService,
+      testingModuleOptions,
+    );
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      TripleAspectsService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(TripleAspectsService);
   });
 
   describe("detect", () => {

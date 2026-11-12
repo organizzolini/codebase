@@ -15,13 +15,7 @@ import type { Heading, ListItem, Nodes } from "mdast";
 
 /* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
- * Walks parsed markdown documents to collect structural metrics.
- *
- * Comparison is structural rather than textual, so a heading only counts when
- * the parser agrees it is one. Frontmatter is parsed as its own node because
- * a `---` delimited block is otherwise read as a setext heading, which would
- * report a level-two heading at the top of every file that has frontmatter.
- * GFM is enabled so tables and task list items exist as nodes at all.
+ * Walks parsed markdown documents to collect structural metrics. Comparison is structural, so a heading counts only when the parser agrees. Frontmatter parses as its own node, or `---` reads as a heading.
  */
 @Injectable()
 /* v8 ignore stop */
@@ -117,11 +111,7 @@ export class MarkdownService {
   }
 
   /**
-   * Analyze markdown source text that never came from a file of its own.
-   *
-   * The seam the jupyter analyzer reads through: a notebook's markdown cells
-   * are documents without paths, and re-parsing them anywhere else would be a
-   * second implementation of this counting.
+   * Analyzes markdown source text with no file of its own, such as a notebook's markdown cells. Re-parsing elsewhere would duplicate this counting.
    */
   analyzeContents(contents: string[]): MarkdownResult {
     const result: MarkdownResult = { ...EMPTY_MARKDOWN_RESULT };

@@ -7,11 +7,7 @@ export default mergeConfig(
   defineConfig({
     test: {
       coverage: {
-        // This package ships runnable examples and the guides that read them.
-        // Its TypeScript is either an example configuration a reader copies or
-        // an example script a reader runs, and the test below runs each one as
-        // a child process — the same way the guides say to — so nothing here is
-        // imported as library source and there is no source to instrument.
+        // Runnable examples, executed as child processes, so there is no library source to instrument.
         include: [],
       },
       // Every test runs the conformetry command as a child process, which

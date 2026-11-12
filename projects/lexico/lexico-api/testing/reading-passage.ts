@@ -1,6 +1,6 @@
 /* cspell:words multa arma virumque cano Troiae primus oris Italiam fato profugus Laviniaque venit litora multum ille terris iactatus alto superum saevae memorem Iunonis iram quoque bello passus conderet urbem Georgica quid faciat laetas segetes */
 
-import { Author, Line, Text, Token, Word } from "@codebase/lexico-entities";
+import { Author, Line, Text, Token, Word } from "@codebase/lexico-db";
 
 import type { DataSource } from "typeorm";
 
@@ -19,14 +19,14 @@ const OTHER_TEXT_LINE = "quid faciat laetas segetes";
 /** Line indices in the order they are inserted, deliberately not sorted. */
 const INSERTION_ORDER = [3, 0, 4, 1, 2] as const;
 
-/** One token as a reader would see it, with the word it should resolve to. */
+/** A token as a reader sees it, with its word. */
 export interface PassageToken {
   readonly data: string;
   readonly isPunctuation: boolean;
   readonly word: null | string;
 }
 
-/** The seeded passage: its text, its lines by index, and the other text. */
+/** Seeded passage: its text, lines by index, and other text. */
 export interface ReadingPassage {
   readonly lines: readonly Line[];
   readonly otherText: Text;
@@ -68,8 +68,7 @@ export function passageTokensAt(index: number): PassageToken[] {
 }
 
 /**
- * Seeds the Aeneid's opening lines, out of index order, with every token
- * linked to its dictionary word, beside a second text by the same author.
+ * Seeds the Aeneid's opening lines, out of index order, each token linked to its word, plus a second text.
  */
 export async function seedReadingPassage(
   dataSource: DataSource,

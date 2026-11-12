@@ -1,6 +1,8 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { captureOutput } from "@codebase/testing";
+
 import { OptionsService } from "../options/options.service";
 
 import { runAddressExecutor } from "./address.utilities";
@@ -9,6 +11,7 @@ import type { PluginService } from "../plugin/plugin.service";
 import type { ResolvedTraceScope } from "../plugin/plugin.types";
 import type { AddressService } from "./address.service";
 import type { ConfigurationService } from "@callidescope/configuration";
+import type { CapturedOutput } from "@codebase/testing";
 import type { ExecutorContext } from "@nx/devkit";
 
 /** The workspace configuration every run must name. */
@@ -66,6 +69,8 @@ function buildScope(
 }
 
 describe(runAddressExecutor, () => {
+  let output: CapturedOutput;
+
   beforeEach(() => {
     vi.clearAllMocks();
     pluginService.resolveTraceScope.mockResolvedValue(buildScope());
@@ -75,7 +80,7 @@ describe(runAddressExecutor, () => {
       ok: true,
       report: "# Breadth",
     });
-    vi.spyOn(process.stdout, "write").mockReturnValue(true);
+    output = captureOutput();
   });
 
   it.each([
@@ -96,7 +101,7 @@ describe(runAddressExecutor, () => {
           },
         }),
       ).resolves.toStrictEqual({ success: true });
-      expect(process.stdout.write).toHaveBeenCalledWith(`${report}\n`);
+      expect(output.stdout()).toBe(`${report}\n`);
     },
   );
 
@@ -240,8 +245,6 @@ describe(runAddressExecutor, () => {
         },
       }),
     ).resolves.toStrictEqual({ success: false });
-    expect(process.stdout.write).toHaveBeenCalledWith(
-      "No callable matches it.\n",
-    );
+    expect(output.stdout()).toBe("No callable matches it.\n");
   });
 });

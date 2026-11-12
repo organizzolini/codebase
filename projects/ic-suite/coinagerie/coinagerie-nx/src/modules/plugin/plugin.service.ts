@@ -35,16 +35,7 @@ export class PluginService {
   // 🔏 Private Methods
 
   /**
-   * Builds the check target of one project.
-   *
-   * The check passes or fails on the project's configuration and the files
-   * that configuration includes, so both are inputs: a cached verdict taken
-   * across an edit to either would report the old answer. Whatever the
-   * registration declared joins them — the shared configuration a project
-   * spreads, or the glossary its `exclude.words` reads, live outside the
-   * project and are invisible to it otherwise. Declaring a path under
-   * `{workspaceRoot}` is also what makes Nx count an edit to it as touching
-   * this project, so `nx affected` selects the check without a dependency edge.
+   * Inputs are the project's configuration, its included files, and registered extras. A `{workspaceRoot}` path also marks the project affected on edit.
    */
   private buildCheckTarget(
     pluginOptions: CoinageriePluginOptions,
@@ -81,11 +72,7 @@ export class PluginService {
   }
 
   /**
-   * Whether a folder is an Nx project, which is what a target can run on.
-   *
-   * A `package.json` counts only when it names a package, because that is
-   * the only kind Nx makes a project of; a node returned for a folder it does
-   * not would carry no name and stop the whole project graph.
+   * Whether a folder is an Nx project. A `package.json` counts only if it names a package; an unnamed one would break the graph.
    */
   private isProject(args: {
     projectRoot: string;
@@ -102,12 +89,8 @@ export class PluginService {
   // 🌎 Public Methods
 
   /**
-   * Infers a check target onto every project that holds a configuration.
-   *
-   * A project with no configuration is never matched, so it has no target — a
-   * check there would find nothing to read its settings from. The options are
-   * read once for the whole workspace rather than once per project, because Nx
-   * hands this every matched file at once.
+   * Infers a check target onto every project holding a configuration. Options are
+   * read once per workspace, since Nx passes every matched file at once.
    */
   public inferTargets(
     args: InferTargetsArguments,

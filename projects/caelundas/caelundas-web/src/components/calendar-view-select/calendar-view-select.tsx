@@ -28,8 +28,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The view shown, where to send another, and whether the row is too narrow
- * for a button per view.
+ * The view shown, its change handler, and the compact layout.
  */
 export interface CalendarViewSelectProperties {
   className?: string;
@@ -44,9 +43,7 @@ export interface CalendarViewSelectProperties {
 // 🧩 Component
 
 /**
- * Renders one pressed button per view on a desktop, or on a narrower row, a
- * tablet's included, a menu button naming the current view that lists every
- * view.
+ * Renders one pressed button per view on a desktop, or a menu button naming the current view on narrower rows.
  */
 export function CalendarViewSelect(
   properties: Readonly<CalendarViewSelectProperties>,

@@ -12,7 +12,7 @@ import {
   Word,
   WordForm,
   WordLexeme,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import type { ObjectLiteral, Repository } from "typeorm";
 
@@ -38,9 +38,7 @@ export interface SeededWordLookups {
 }
 
 /**
- * Seeds the words a lookup has to tell apart: "rosae", one word for three
- * forms of one noun; "est", one word shared by two verbs; and "rosarum",
- * linked like any other word and then soft-deleted.
+ * Seeds the words a lookup must tell apart: "rosae" (one noun's forms), "est" (shared by two verbs), and "rosarum", soft-deleted.
  */
 export async function seedWordLookups(
   repository: RepositoryOf,

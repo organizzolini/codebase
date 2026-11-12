@@ -8,11 +8,9 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of each positional form of the ى
- * (Arabic alef maksura, the dotless yeh) skeleton — final and isolated — one
- * per corner and clockwise rotation, each counting that form's base template,
- * which faces Southwest, drawn that way. A letter sharing a form's skeleton,
- * differing from it only by dots or by other marks, is an alias of that form.
+ * Provides the sixteen orientation evaluators of each positional form of the ى skeleton, final and
+ * isolated. One per corner and clockwise rotation, each counting that form's base template, which
+ * faces Southwest. Letters sharing a skeleton, differing only by dots, are aliases.
  */
 @Injectable()
 export class YehArabicLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -50,34 +48,14 @@ export class YehArabicLetterCharacteristicsService implements CharacteristicEval
 
   // 🔐 Private Fields
 
-  /**
-   * The upright ى (final Arabic alef maksura, the dotless yeh) glyph's points
-   * as hexadecimal Code digits, one string per row, `.` outside the glyph,
-   * facing Southwest:
-   *
-   * ```text
-   *   ┌─╴
-   * ╷ └┐
-   * └──┘
-   * ```
-   */
+  /** Upright final ى glyph as hexadecimal Code digits, facing Southwest. */
   private readonly finalTemplate: readonly string[] = [
     "..631",
     "4.a5.",
     "a339.",
   ];
 
-  /**
-   * The upright ى (isolated Arabic alef maksura, the dotless yeh) glyph's
-   * points as hexadecimal Code digits, one string per row, `.` outside the
-   * glyph, facing Southwest:
-   *
-   * ```text
-   *   ┌╴
-   * ╷ └┐
-   * └──┘
-   * ```
-   */
+  /** Upright isolated ى glyph as hexadecimal Code digits, facing Southwest. */
   private readonly isolatedTemplate: readonly string[] = [
     "..61",
     "4.a5",

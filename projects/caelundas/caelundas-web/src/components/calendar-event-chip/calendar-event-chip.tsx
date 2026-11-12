@@ -5,14 +5,13 @@ import { CalendarEventTooltip } from "../calendar-event-tooltip/calendar-event-t
 import { getEventLabel } from "../event-glyphs/calendar-glyphs.utilities";
 import { EventGlyphs } from "../event-glyphs/event-glyphs";
 
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The event to draw, and what to spell out for a screen reader beyond its
- * name.
+ * The event to draw, and extra text for screen readers.
  */
 export interface CalendarEventChipProperties {
   className?: string;
@@ -26,9 +25,7 @@ export interface CalendarEventChipProperties {
 // 🧩 Component
 
 /**
- * Draws an event as its glyphs alone, with a tooltip of its name in English
- * and what the database says of it, and for a screen reader the name and the
- * description in full, since the glyphs say neither.
+ * Draws an event as its glyphs, with a tooltip of its name; a screen reader gets the name and description in full.
  */
 export function CalendarEventChip(
   properties: Readonly<CalendarEventChipProperties>,

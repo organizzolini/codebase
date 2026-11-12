@@ -1,20 +1,7 @@
-import {
-  mkdirSync,
-  mkdtempSync,
-  rmSync,
-  symlinkSync,
-  writeFileSync,
-} from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, symlinkSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-/**
- * Contents of the fixture tree, keyed by path relative to its root.
- *
- * Written to a real directory rather than mocked, because the behavior under
- * test is exactly what the filesystem reports: which entries a directory
- * holds, which of them are symlinks, and which ignore files sit beside them.
- */
+/** Fixture files by relative path, on real disk under test. */
 const FIXTURE_FILES: Readonly<Record<string, string>> = {
   // `README.md` is not named here on purpose. Codometer splices into it, so
   // it excludes it from what it measures without being told.
@@ -47,17 +34,10 @@ const FIXTURE_FILES: Readonly<Record<string, string>> = {
 };
 
 /**
- * Writes the fixture tree to a fresh temporary directory and returns its root.
- *
- * `CLAUDE.md` is a symlink to `AGENTS.md`, the shape the repository's own tree
- * has and the one that used to be counted twice.
- *
- * Every caller owes the tree a `removeFixtureTree` — a suite that forgets
- * leaves its trees behind in the system temporary directory for good.
+ * Writes the fixture tree into a directory and returns that root. `CLAUDE.md`
+ * is a symlink to `AGENTS.md`, like the repository's own tree.
  */
-export function createFixtureTree(): string {
-  const root = mkdtempSync(path.join(tmpdir(), "codometer-fixture-"));
-
+export function createFixtureTree(root: string): string {
   for (const [relativePath, contents] of Object.entries(FIXTURE_FILES)) {
     const absolutePath = path.join(root, relativePath);
     mkdirSync(path.dirname(absolutePath), { recursive: true });
@@ -67,9 +47,4 @@ export function createFixtureTree(): string {
   symlinkSync(path.join(root, "AGENTS.md"), path.join(root, "CLAUDE.md"));
 
   return root;
-}
-
-/** Removes a fixture tree, whether or not the suite that made it succeeded. */
-export function removeFixtureTree(root: string): void {
-  rmSync(root, { force: true, recursive: true });
 }

@@ -13,11 +13,8 @@ import type { TemplateSpans } from "mustache";
 /**
  * Renders conformetry template placeholders.
  *
- * This is the single owner of template rendering across the workspace.
- * Generation renders templates to create files; validation renders the same
- * templates to compare them against existing files. Both must substitute
- * identically or validation would flag files the generator itself produced,
- * so neither reimplements this.
+ * The single owner of template rendering. Generation and validation both render
+ * through it, so validation never flags files the generator produced.
  */
 @Injectable()
 export class RenderingService {
@@ -54,8 +51,7 @@ export class RenderingService {
   /**
    * Derives the case variants every template can reference from one name.
    *
-   * Callers merge their own inputs over this result, so an explicit input of
-   * the same key always wins over the derived variant.
+   * Explicit inputs with the same key override these.
    */
   public buildNameSubstitutions(name: string): Substitutions {
     const camelCaseName = lodash.camelCase(name);
@@ -71,11 +67,7 @@ export class RenderingService {
   /**
    * Every placeholder a template interpolates, deduplicated.
    *
-   * Mustache's own parser reads them, so an interpolation is told from a
-   * comment, a partial, and a delimiter change the way mustache tells them.
-   * Section names are skipped and their bodies still walked — `{{#field}}` and
-   * `{{^field}}` are conditionals, so absence is an answer there — as is the
-   * implicit iterator `{{.}}`, which names no field.
+   * Mustache's own parser decides what counts, so comments and partials are not placeholders.
    */
   public collectInterpolatedNames(template: string): string[] {
     const names = new Set<string>();
@@ -103,14 +95,8 @@ export class RenderingService {
   }
 
   /**
-   * Renders template contents with mustache.
-   *
-   * Full mustache is available — sections, inverted sections, partials — with
-   * HTML escaping disabled so substituted values cannot corrupt source code.
-   *
-   * An interpolated placeholder nobody supplied raises
-   * `MissingSubstitutionError`. `subject` is what that error names, so pass
-   * the template's path when there is one.
+   * Renders template contents with mustache, HTML escaping disabled. Throws
+   * `MissingSubstitutionError` for a placeholder with no value; `subject` names the template.
    */
   public renderContent(args: {
     subject?: string;
@@ -132,12 +118,9 @@ export class RenderingService {
   }
 
   /**
-   * Renders a template path with mustache, the same way contents are rendered.
+   * Renders a template path with mustache.
    *
-   * Paths once used a `__field__` syntax of their own, on the assumption that
-   * braces were not portable across filesystems. They are — and the separate
-   * syntax could not tell a placeholder from a Python dunder, so a template
-   * shipping `__init__.py` depended on `init` never being a substitution.
+   * Uses the same placeholders as contents, so a dunder such as `__init__` is never read as one.
    */
   public renderPath(args: {
     subject?: string;

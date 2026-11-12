@@ -1,3 +1,59 @@
+## 0.0.81 (2026-11-12)
+
+This was a version bump only for codependix-nx-projects to align it with other projects, there were no code changes.
+
+## 0.0.80 (2026-11-12)
+
+This was a version bump only for codependix-nx-projects to align it with other projects, there were no code changes.
+
+## 0.0.79 (2026-11-11)
+
+### 🚀 Features
+
+- **codometer:** ✨ tighten the comment budgets and shorten every comment over them ([#2262](https://github.com/organizzolini/codebase/pull/2262), [#2261](https://github.com/organizzolini/codebase/issues/2261))
+
+## 0.0.78 (2026-11-10)
+
+### 🚀 Features
+
+- **codometer:** ✨ gate JSDoc on every declaration kind and shorten long comments ([#2227](https://github.com/organizzolini/codebase/pull/2227), [#2226](https://github.com/organizzolini/codebase/issues/2226))
+
+## 0.0.77 (2026-11-10)
+
+This was a version bump only for codependix-nx-projects to align it with other projects, there were no code changes.
+
+## 0.0.76 (2026-11-10)
+
+This was a version bump only for codependix-nx-projects to align it with other projects, there were no code changes.
+
+## 0.0.75 (2026-11-10)
+
+This was a version bump only for codependix-nx-projects to align it with other projects, there were no code changes.
+
+## 0.0.74 (2026-11-10)
+
+### 🚀 Features
+
+- **callidescope,codependix,codometer,coinagerie,configuration:** ✨ write tool markdown to adjacent files ([#2225](https://github.com/organizzolini/codebase/pull/2225), [#2224](https://github.com/organizzolini/codebase/issues/2224))
+
+## 0.0.73 (2026-11-09)
+
+This was a version bump only for codependix-nx-projects to align it with other projects, there were no code changes.
+
+## 0.0.72 (2026-11-08)
+
+This was a version bump only for codependix-nx-projects to align it with other projects, there were no code changes.
+
+## 0.0.71 (2026-11-08)
+
+### 💅 Refactors
+
+- **lexico-db,lexico,lexico-cli,configuration:** ♻️ rename lexico-entities to lexico-db and split its modules ([#2185](https://github.com/organizzolini/codebase/pull/2185), [#2184](https://github.com/organizzolini/codebase/issues/2184))
+
+## 0.0.70 (2026-11-07)
+
+This was a version bump only for codependix-nx-projects to align it with other projects, there were no code changes.
+
 ## 0.0.69 (2026-11-06)
 
 This was a version bump only for codependix-nx-projects to align it with other projects, there were no code changes.

@@ -7,13 +7,10 @@ import { TERM_LENGTH_PATTERN } from "../words/words.constants";
 import type { ResolvedCoinagerieConfiguration } from "@coinagerie/configuration";
 
 /**
- * Folds the surface forms of a word into one headword, so the glossary lists
- * a term once however the code inflects it.
+ * Folds a word's surface forms into one headword, so each term is listed once.
  *
- * Plurals fold into their singular and inflected verbs into their lemma:
- * `aspects` into `aspect`, `configured` and `configuring` into `configure`.
- * Derivational families stay apart, so `configuration` keeps its own entry —
- * unless the configuration's own `fold` merges them.
+ * Plurals fold into their singular and inflected verbs into their lemma: `aspects` into `aspect`, `configured` into `configure`.
+ * Derivational families stay apart, so `configuration` keeps its own entry unless `fold` merges them.
  */
 @Injectable()
 export class FoldingService {
@@ -30,10 +27,7 @@ export class FoldingService {
   // 🌎 Public Methods
 
   /**
-   * The headword a lowercase word folds into: its singular, then its lemma.
-   *
-   * A fold that would leave a single letter (`ts` into `t`) is refused, since
-   * one-letter words are not terms.
+   * The headword a lowercase word folds into: its singular, then its lemma. A one-letter result is refused, since one-letter words are not terms.
    */
   fold(word: string): string {
     const folded = lemmatizer.verb(pluralize.singular(word));
@@ -42,9 +36,7 @@ export class FoldingService {
   }
 
   /**
-   * The headword a word is listed under: folded into its singular and lemma,
-   * then through the configuration's own `fold` when it has one. A fault in
-   * that function surfaces as an `InvalidConfigurationError` naming the file.
+   * The headword a word is listed under: folded, then passed through the configuration's `fold` when it has one. Faults name the file.
    */
   headword(
     word: string,

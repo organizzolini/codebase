@@ -5,10 +5,7 @@ import type {
   PostgresUriConnection,
 } from "../postgresql-utilities/postgresql-utilities.types";
 
-/**
- * The options `postgresql-export` receives, as nest-commander parsed them. Every one
- * is optional here; `PostgresqlExportCommand` validates them before anything runs.
- */
+/** Options `postgresql-export` receives. The command validates them. */
 export interface PostgresqlExportCommandOptions {
   data?: boolean;
   ddl?: boolean;

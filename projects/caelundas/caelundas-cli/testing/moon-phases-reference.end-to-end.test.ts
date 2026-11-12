@@ -12,11 +12,11 @@ import {
   loadReferenceFixture,
 } from "./reference-fixtures.utilities";
 
-import type { DetectedCalendarEvent } from "../src/modules/database/database.types";
+import type { DetectedCalendarEvent } from "../src/modules/calendar-events/calendar-events.types";
 import type { ReferenceEvent } from "./reference-fixtures.types";
 import type { INestApplicationContext } from "@nestjs/common";
 
-/** Minutes either side of each published phase that the detector is run over. */
+/** Minutes either side of each published phase to sweep. */
 const SCAN_MINUTES = 30;
 
 /** Extra ephemeris either side of the scan, for the detector's own neighbors. */

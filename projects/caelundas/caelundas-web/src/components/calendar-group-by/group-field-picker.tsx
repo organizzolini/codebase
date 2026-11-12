@@ -27,7 +27,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The fields to pick from, the one picked, and where to send another.
+ * Fields to pick from, the picked one, and the select handler.
  */
 export interface GroupFieldPickerProperties {
   className?: string;
@@ -43,9 +43,7 @@ export interface GroupFieldPickerProperties {
 // 🧩 Component
 
 /**
- * Renders the field of a level of a grouping as the filter renders its
- * attributes: a button that opens a searchable list, each field named with a
- * sentence on what it is, in the filter's own picker panel.
+ * Renders a grouping level's field as the filter renders its attributes: a button opening a searchable list of fields.
  */
 export function GroupFieldPicker(
   properties: Readonly<GroupFieldPickerProperties>,

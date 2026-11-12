@@ -19,10 +19,8 @@ import type { DiscoveredCallable } from "@callidescope/graph";
 export const DEFAULT_TEST_DATE = new Date("2025-03-20T14:46:00Z");
 
 /**
- * Builds a callable node with every field populated.
- *
- * Tests that only care about one field still get a whole node, so adding a
- * field to `CallableNode` does not break every test that builds one.
+ * Builds a callable node with every field populated, so adding a field to `CallableNode` does not
+ * break tests that build one.
  */
 export function buildCallableNode(
   overrides: Partial<CallableNode> = {},
@@ -45,10 +43,7 @@ export function buildCallableNode(
 
 /**
  * Builds a discovered callable for tests that only read its described node.
- *
- * The declaration and program come from `createMock` rather than a cast: the
- * graph services never touch either, but a bare `{}` would have to be lied
- * about to the type system to say so.
+ * Declaration and program come from `createMock`, not a cast.
  */
 export function buildDiscoveredCallable(
   overrides: Partial<CallableNode> = {},
@@ -61,16 +56,8 @@ export function buildDiscoveredCallable(
 }
 
 /**
- * Builds a result whose every collection and count is empty.
- *
- * Every collection the pipeline produces is present, so a test asserting on the
- * whole result keeps working when a new finding kind is added.
- *
- * Named for the emptiness rather than for the type, because the emptiness is
- * not neutral: an all-zero summary is itself a finding to anything that judges
- * a run, so a test about what a run reports wants
- * {@link buildTracedCallGraphResult} instead. This one is for the renderers,
- * which only pass a result through.
+ * Builds an empty result for renderers that only pass it through. Tests about what a run reports
+ * want `buildTracedCallGraphResult`.
  */
 export function buildEmptyCallGraphResult(
   overrides: Partial<CallGraphResult> = {},
@@ -94,11 +81,7 @@ export function buildEmptyCallGraphResult(
 }
 
 /**
- * Builds the limits lookup a run hands the renderers.
- *
- * The workspace row is what a project the lookup does not name resolves to, so
- * a test that cares about nothing but the number can pass `{ maximumDepth: 6 }`
- * and leave `byProject` empty.
+ * Builds the limits lookup a run hands the renderers. Unnamed projects fall back to the workspace limit.
  */
 export function buildProjectLimitsLookup(
   args: {
@@ -144,11 +127,7 @@ export function buildSourceLocation(
 }
 
 /**
- * Builds a stack frame, defaulting the parts a test does not care about.
- *
- * Carrying neither documentation nor a signature by default: most assertions are about the
- * shape of a stack rather than what its frames say about themselves, and a
- * frame carrying neither is the honest baseline.
+ * Builds a stack frame, with neither documentation nor a signature unless the test sets one.
  */
 export function buildStackFrame(
   overrides: Partial<StackFrame> = {},
@@ -167,13 +146,7 @@ export function buildStackFrame(
 }
 
 /**
- * Builds a result whose summary says a run really traced something.
- *
- * A result with nothing in it is not the neutral value it looks like: a run
- * that traced nothing is itself a finding, so an all-zero summary would make
- * every test that only passes a result through assert the wrong exit code for
- * the wrong reason. One callable in one file in one project is the smallest
- * summary that says the trace happened.
+ * Builds a result whose summary says a run traced something: one callable in one file in one project.
  */
 export function buildTracedCallGraphResult(
   overrides: Partial<CallGraphResult> = {},
@@ -194,18 +167,8 @@ export function buildTracedCallGraphResult(
 }
 
 /**
- * Sets up fake timers with a fixed system time before each test
- * and restores real timers after each test.
- *
- * Usage in test files:
- * ```ts
- * import { mockDates } from '../testing/mocks'
- *
- * describe('my suite', () => {
- *   mockDates()
- *   // your tests here
- * })
- * ```
+ * Fakes timers at a fixed system time before each test and restores real
+ * timers after.
  */
 export function mockDates(date: Date = DEFAULT_TEST_DATE): void {
   beforeEach(() => {

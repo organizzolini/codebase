@@ -9,7 +9,7 @@ import { ProgressiveAspectService } from "../progressive/progressive-aspect.serv
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
 
 import type { Body, MajorAspect } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 
 /**
  * Builds progressive major-aspect duration events by pairing forming and dissolving boundaries.

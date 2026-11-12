@@ -1,32 +1,21 @@
-import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { mkdirSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import {
+  captureExitCode,
+  captureOutput,
+  createTemporaryDirectory,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { SessionWorktreeNameGitService } from "./session-worktree-name-git.service";
 import { SessionWorktreeNameCommand } from "./session-worktree-name.command";
 import { SessionWorktreeNameService } from "./session-worktree-name.service";
 
 import type { GitResult } from "./session-worktree-name.types";
-import type { MockInstance } from "vitest";
-
-/**
- * Fixtures live inside the workspace, in its gitignored `tmp`, never in the
- * operating system's temporary directory.
- */
-const FIXTURE_PARENT = path.resolve(import.meta.dirname, "../../../tmp");
 
 const WORKTREE_DIRECTIVE =
   "🚨 Invoke the using-git-worktrees skill to configure a compliant isolated workspace.";
@@ -43,16 +32,18 @@ interface FakeCheckout {
   readonly superproject?: string;
 }
 
+/** The command's real service, over a mocked `git`. */
+const moduleOptions = {
+  mocks: [SessionWorktreeNameGitService],
+  providers: [SessionWorktreeNameService],
+};
+
 describe(SessionWorktreeNameCommand, () => {
-  let command: SessionWorktreeNameCommand;
   let fixture: string;
   let mainCheckout: string;
-  let stdout: MockInstance<typeof process.stdout.write>;
   let gitCalls: string[][];
-
-  /** Everything the command wrote to standard output. */
-  const printed = (): string =>
-    stdout.mock.calls.map(([chunk]) => String(chunk)).join("");
+  let exitCode: ReturnType<typeof captureExitCode>;
+  let printed: () => string;
 
   /** Answers one `git` invocation as this checkout would. */
   const answerGit = (
@@ -89,27 +80,22 @@ describe(SessionWorktreeNameCommand, () => {
   const createCommand = async (
     checkout: FakeCheckout,
   ): Promise<SessionWorktreeNameCommand> => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SessionWorktreeNameCommand,
-        SessionWorktreeNameService,
-        {
-          provide: SessionWorktreeNameGitService,
-          useValue: createMock<SessionWorktreeNameGitService>({
-            run: (args: readonly string[]): GitResult => {
-              gitCalls.push([...args]);
-              return answerGit(checkout, args);
-            },
-          }),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, mock } = await buildTestingModule(
+      SessionWorktreeNameCommand,
+      moduleOptions,
+    );
 
-    return module.resolve(SessionWorktreeNameCommand);
+    mock(SessionWorktreeNameGitService).run.mockImplementation(
+      (args: readonly string[]): GitResult => {
+        gitCalls.push([...args]);
+        return answerGit(checkout, args);
+      },
+    );
+
+    return instance;
   };
 
-  /** Puts a linked worktree with this directory name on disk and runs from it. */
+  /** Creates a linked worktree with this name, and runs from it. */
   const enterWorktree = (parent: string, name: string): string => {
     const worktree = path.join(parent, name);
     mkdirSync(worktree, { recursive: true });
@@ -123,64 +109,35 @@ describe(SessionWorktreeNameCommand, () => {
     own: path.join(mainCheckout, ".git", "worktrees", "linked"),
   });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SessionWorktreeNameCommand,
-        SessionWorktreeNameService,
-        {
-          provide: SessionWorktreeNameGitService,
-          useValue: createMock<SessionWorktreeNameGitService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(SessionWorktreeNameCommand);
-  });
-
   beforeEach(() => {
-    mkdirSync(FIXTURE_PARENT, { recursive: true });
-    fixture = mkdtempSync(path.join(FIXTURE_PARENT, "session-worktree-name-"));
+    fixture = createTemporaryDirectory("session-worktree-name");
     mainCheckout = path.join(fixture, "main");
     mkdirSync(path.join(mainCheckout, ".git"), { recursive: true });
     gitCalls = [];
-    process.exitCode = undefined;
+    exitCode = captureExitCode();
+    printed = captureOutput().stdout;
     vi.spyOn(process, "cwd").mockReturnValue(mainCheckout);
-    stdout = vi.spyOn(process.stdout, "write").mockReturnValue(true);
   });
 
   afterEach(() => {
-    rmSync(fixture, { force: true, recursive: true });
-    process.exitCode = undefined;
     vi.restoreAllMocks();
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      SessionWorktreeNameCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(SessionWorktreeNameCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SessionWorktreeNameCommand,
-        SessionWorktreeNameService,
-        {
-          provide: SessionWorktreeNameGitService,
-          useValue: createMock<SessionWorktreeNameGitService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    expect.hasAssertions();
 
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith(
-      "SessionWorktreeNameCommand",
-    );
+    await expectLoggerContext(SessionWorktreeNameCommand, moduleOptions);
   });
 
   it("prints nothing in the main checkout, whose git directory is its common one", async () => {
@@ -191,7 +148,7 @@ describe(SessionWorktreeNameCommand, () => {
     await session.run();
 
     expect(printed()).toBe("");
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
   });
 
   it("prints nothing for a compliant, ignored worktree inside the main checkout", async () => {
@@ -207,7 +164,7 @@ describe(SessionWorktreeNameCommand, () => {
     await session.run();
 
     expect(printed()).toBe("");
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
     expect(gitCalls).toContainEqual([
       "-C",
       mainCheckout,
@@ -236,7 +193,7 @@ describe(SessionWorktreeNameCommand, () => {
         WORKTREE_DIRECTIVE,
       ].join("\n"),
     );
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
   });
 
   it("reports a worktree inside the main checkout that is not gitignored", async () => {
@@ -255,7 +212,7 @@ describe(SessionWorktreeNameCommand, () => {
         WORKTREE_DIRECTIVE,
       ].join("\n"),
     );
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
   });
 
   it("reports both problems at once, the name first", async () => {
@@ -268,7 +225,7 @@ describe(SessionWorktreeNameCommand, () => {
       /^❌ Invalid worktree directory name: "Linked"\n.*\n\n❌ Worktree directory is not gitignored: /u,
     );
     expect(printed().endsWith(`contents.\n${WORKTREE_DIRECTIVE}`)).toBe(true);
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
   });
 
   it("never asks whether a worktree outside the main checkout is ignored", async () => {
@@ -291,7 +248,7 @@ describe(SessionWorktreeNameCommand, () => {
     await session.run();
 
     expect(printed()).toBe("");
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
   });
 
   it("prints nothing outside a git repository", async () => {
@@ -301,7 +258,7 @@ describe(SessionWorktreeNameCommand, () => {
     await session.run();
 
     expect(printed()).toBe("");
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
   });
 
   it("prints nothing when git cannot be started", async () => {
@@ -311,6 +268,6 @@ describe(SessionWorktreeNameCommand, () => {
     await session.run();
 
     expect(printed()).toBe("");
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
   });
 });

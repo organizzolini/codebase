@@ -8,10 +8,7 @@ import type { CodeStatisticsResult, CodometerReport } from "@codometer/core";
 export const DEFAULT_TEST_DATE = new Date("2025-03-20T14:46:00Z");
 
 /**
- * Builds a zeroed statistics report for tests that only pass one through.
- *
- * Every counter the pipeline produces is present, so a test asserting on the
- * whole report keeps working when a new statistic is added.
+ * Builds a zeroed statistics report, so tests asserting on the whole report survive new statistics.
  */
 export function buildCodeStatistics(
   overrides: Partial<CodeStatisticsResult> = {},
@@ -193,10 +190,7 @@ export function buildCodeStatistics(
 }
 
 /**
- * Builds a report holding one target and one unlimited metric.
- *
- * Enough shape for anything that only carries a report through, and small
- * enough that a test asserting on the whole document stays readable.
+ * Builds a report with one target and one unlimited metric, enough for tests that only pass a report through.
  */
 export function buildCodometerReport(
   overrides: Partial<CodometerReport> = {},
@@ -225,18 +219,8 @@ export function buildCodometerReport(
 }
 
 /**
- * Sets up fake timers with a fixed system time before each test
- * and restores real timers after each test.
- *
- * Usage in test files:
- * ```ts
- * import { mockDates } from '../testing/mocks'
- *
- * describe('my suite', () => {
- *   mockDates()
- *   // your tests here
- * })
- * ```
+ * Fakes timers at a fixed system time before each test and restores real
+ * timers after.
  */
 export function mockDates(date: Date = DEFAULT_TEST_DATE): void {
   beforeEach(() => {
@@ -250,13 +234,7 @@ export function mockDates(date: Date = DEFAULT_TEST_DATE): void {
 }
 
 /**
- * Throws the given value without narrowing it to `Error`.
- *
- * A catch block that special-cases `instanceof Error` needs a thrown value
- * that provably is not one to exercise its other branch. Typing the
- * parameter `unknown` is what lets a test throw a bare string or object
- * without tripping the lint rule that otherwise requires every `throw` to
- * carry an `Error`.
+ * Throws any value, typed `unknown` to avoid the lint rule requiring an `Error`, so tests can reach non-`Error` catch branches.
  */
 export function throwUnknown(value: unknown): never {
   throw value;

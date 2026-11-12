@@ -4,12 +4,7 @@ import { createDataSource } from "@codebase/persistence";
 
 import { Meander } from "./entities/meander.entity";
 
-/**
- * The TypeORM command-line data source `nx run meanderaw-cli:migration` runs
- * every configuration through: it connects as the `MEANDERAW_POSTGRES_*`
- * variables name, to the `meanderaw` schema, and compares {@link Meander}
- * against the migrations beside it.
- */
+/** TypeORM source for migrations, reading `MEANDERAW_POSTGRES_*` variables. */
 export const meanderawDataSource = createDataSource({
   entities: [Meander],
   migrations: ["src/modules/database/migrations/*.ts"],

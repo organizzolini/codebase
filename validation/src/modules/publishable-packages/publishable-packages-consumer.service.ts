@@ -54,9 +54,8 @@ export class PublishablePackagesConsumerService {
   // 🔏 Private Methods
 
   /**
-   * The consumer's manifest: every package from its own tarball, and the
-   * tools it runs pinned to the versions this workspace has installed, so the
-   * two never drift apart.
+   * The consumer's manifest: every package from its own tarball, and tools
+   * pinned to this workspace's installed versions, so they never drift.
    */
   private createManifest(options: ConsumerOptions): string {
     const tarballs = this.resolveTarballs(options);
@@ -97,10 +96,8 @@ export class PublishablePackagesConsumerService {
   }
 
   /**
-   * Overrides every package to its tarball, so a dependency between two of
-   * them never falls through to the registry's copy. Written to
-   * `pnpm-workspace.yaml` rather than `package.json`, where current pnpm
-   * reads its settings. Each key and value is JSON, which is valid YAML.
+   * Overrides every package to its tarball, so none falls through to the
+   * registry. Written to `pnpm-workspace.yaml`, where pnpm reads its settings.
    */
   private createWorkspaceConfiguration(options: ConsumerOptions): string {
     const builds = CONSUMER_ALLOWED_BUILDS.map(
@@ -179,10 +176,8 @@ export class PublishablePackagesConsumerService {
   // 🌎 Public Methods
 
   /**
-   * Writes a consumer of the packed packages into a fresh directory.
-   *
-   * @param options - The packages, where their tarballs are, and the workspace they came from.
-   * @returns Where the consumer was written, alongside the workspace it must not borrow from.
+   * Writes a consumer of the packed packages into a fresh directory, which must
+   * not borrow from the workspace.
    */
   public createConsumer(options: ConsumerOptions): ConsumerContext {
     const files = {
@@ -211,10 +206,8 @@ export class PublishablePackagesConsumerService {
   }
 
   /**
-   * Initializes the consumer's repository and installs its dependencies.
-   *
-   * @param context - The consumer to install.
-   * @returns One failure message, or none when the install succeeded.
+   * Initializes the consumer's repository and installs its dependencies,
+   * returning any failure messages.
    */
   public installConsumer(context: ConsumerContext): string[] {
     const steps = [

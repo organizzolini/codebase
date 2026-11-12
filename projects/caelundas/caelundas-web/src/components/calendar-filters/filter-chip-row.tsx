@@ -12,8 +12,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The chip row reads its rules from the surrounding `Filters`, so it takes
- * nothing else.
+ * Takes no props: its rules come from the surrounding `Filters`.
  */
 export interface FilterChipRowProperties {
   className?: string;
@@ -22,10 +21,7 @@ export interface FilterChipRowProperties {
 // 🧩 Component
 
 /**
- * Draws one chip per rule of the tree in the surrounding `Filters`, nested
- * ones included, in a row that wraps onto more rows. Unlike
- * the vendored chip row, it leaves out the Add filter button: rules are added
- * in the builder.
+ * Draws one chip per rule of the tree, nested ones included, in a row that wraps; it leaves out the Add filter button.
  */
 export function FilterChipRow(
   properties: Readonly<FilterChipRowProperties>,

@@ -12,13 +12,7 @@ import type {
 
 // 🏷️ Types
 
-/**
- * A row in one of the example's two scanner tables.
- *
- * The tables are built from these lists so a case is named in exactly one
- * place, and a source file that stops demonstrating one fails the example
- * rather than leaving the table quietly wrong.
- */
+/** A scanner-table row; the example fails if its file drifts. */
 interface ScannerCase {
   readonly description: string;
   readonly file: string;
@@ -26,7 +20,7 @@ interface ScannerCase {
 
 // ♟️ Constants
 
-/** Nx tag a project must carry for the Python pass to discover it at all. */
+/** Nx tag the Python pass needs to discover a project. */
 const PYTHON_PROJECT_TAG = "language:python";
 
 /** Path segment every Python example sits under, inside `examples/`. */
@@ -135,12 +129,8 @@ export function buildPythonDocuments(): ExampleDocument[] {
 }
 
 /**
- * Describes a project rooted anywhere on disk, through real discovery.
- *
- * `tags` defaults to the `language:python` tag an Nx project would have
- * brought with it, since an example project is not an Nx project. Passing tags
- * without it is how a caller sees the gate refuse: discovery returns nothing
- * at all.
+ * Describes a project rooted anywhere on disk. `tags` defaults to `language:python`,
+ * without which discovery returns nothing.
  */
 export function describeProjectAt(
   absoluteRoot: string,

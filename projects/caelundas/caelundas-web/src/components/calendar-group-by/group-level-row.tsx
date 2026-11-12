@@ -11,8 +11,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The level shown, the fields to pick from, whether the tag tree is open
- * beneath it, and where to send a change.
+ * The level, its fields, its open state, and change handlers.
  */
 export interface GroupLevelRowProperties {
   className?: string;
@@ -38,10 +37,7 @@ export interface GroupLevelRowProperties {
 // 🧩 Component
 
 /**
- * Draws one level like a filter: its field, what it goes by, and a button
- * that removes it, with the tag tree open beneath it when the tags are being
- * picked. It reports the changed level, or `null` once removed. The grouping
- * and the coloring both pick a level this way.
+ * Draws one grouping level like a filter: its field, what it goes by, and a button that removes it, with the tag tree beneath.
  */
 export function GroupLevelRow(
   properties: Readonly<GroupLevelRowProperties>,

@@ -5,9 +5,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/**
- * Every form of a verb, of which the ones without a person are listed.
- */
+/** A verb's forms, with those lacking a person listed. */
 export interface NonFiniteFormsProperties {
   className?: string;
   rows: VerbFormRow[];

@@ -4,7 +4,7 @@ import type { DiscoveredCallable } from "../callables/callables.types";
 import type { CallGraph } from "./graph.types";
 import type { CallableId, StackFrame } from "@callidescope/core";
 
-/** What one direction's walk reads a neighbor from, and what it may render. */
+/** What one direction's walk reads neighbors from and may render. */
 export interface AddressDepthTraversalContext {
   readonly adjacency: ReadonlyMap<CallableId, readonly CallableId[]>;
   readonly callablesById: ReadonlyMap<CallableId, DiscoveredCallable>;
@@ -28,10 +28,7 @@ export interface BuildCallAddressStacksArguments {
 /** One simple path traced above or below an addressed callable. */
 export interface CallAddressStack {
   readonly frames: readonly StackFrame[];
-  /**
-   * True when a frame on this path holds an unresolved call, making the path
-   * a floor rather than a complete picture of what lies beyond it.
-   */
+  /** True when a frame on this path holds an unresolved call, so the path is a floor rather than the full picture. */
   readonly isLowerBound: boolean;
 }
 

@@ -12,17 +12,15 @@ import {
   MAXIMUM_GROUP_LEVELS,
 } from "./event-groups.constants";
 
-import type { EventFacet } from "../events-calendar/events-database.types";
+import type { EventFacet } from "../events-calendar/calendar-records.types";
 import type {
-  DerivedGroupId,
   EventGroupField,
   EventGrouping,
   EventGroupLevel,
 } from "./event-groups.types";
 
 /**
- * The fields the events can be grouped by: one per tag root, in the facets'
- * order, then the periods and the duration derived from each event.
+ * The fields events group by: one per tag root in facet order, then the periods and duration derived from each event.
  */
 export function createEventGroupFields(
   facets: readonly EventFacet[],
@@ -61,9 +59,7 @@ export function createEventGroupFields(
 }
 
 /**
- * The grouping a view starts with when the link names none, built from
- * whichever of its default roots the data has; views other than the agenda
- * and the timeline are never grouped.
+ * The grouping a view starts with when the link names none, from its default roots the data has; only agenda and timeline are grouped.
  */
 export function getDefaultGrouping(
   view: string,
@@ -88,18 +84,7 @@ export function getDefaultGrouping(
 }
 
 /**
- * Whether a field id names one of the derived fields.
- */
-export function isDerivedGroupId(id: string): id is DerivedGroupId {
-  return (DERIVED_GROUP_ORDER as readonly string[]).includes(id);
-}
-
-/**
- * Keeps the levels of a grouping that name a field the data has, at most
- * {@link MAXIMUM_GROUP_LEVELS} of them, each field once. A tag level keeps the
- * tags it picks that the root still has, or with none its depth brought within
- * the root's tree; a derived level keeps neither, so a stale link groups by
- * what still exists rather than failing.
+ * Keeps the levels naming a field the data has, at most {@link MAXIMUM_GROUP_LEVELS} and each field once.
  */
 export function resolveEventGrouping(
   grouping: EventGrouping,
@@ -132,8 +117,7 @@ export function toGroupLevel(field: EventGroupField): EventGroupLevel {
 }
 
 /**
- * Brings one level within its field: a derived field takes no options, and a
- * tag field takes the picked tags it has or else a depth within its tree.
+ * Brings one level within its field: a derived field takes no options, a tag field takes its picked tags or a depth.
  */
 function resolveLevel(
   level: EventGroupLevel,

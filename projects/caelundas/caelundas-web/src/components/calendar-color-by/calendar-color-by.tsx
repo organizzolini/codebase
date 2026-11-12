@@ -10,14 +10,13 @@ import { PICKER_NAME } from "./calendar-color-by.constants";
 import { createColorScheme } from "./calendar-color-schemes.utilities";
 
 import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
-import type { EventFacet } from "../events-calendar/events-database.types";
+import type { EventFacet } from "../events-calendar/calendar-records.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The tag roots the data has, what the events are colored by, and where to
- * send another.
+ * The color level, the data's facets, and the change handler.
  */
 export interface CalendarColorByProperties {
   className?: string;
@@ -35,11 +34,7 @@ export interface CalendarColorByProperties {
 // 🧩 Component
 
 /**
- * Renders what the events are colored by, picked the way a grouping's level
- * is: any field the events can be filtered or grouped by, and for a tag root
- * the tags, or the depth of its tree, that each get a color, beside the
- * colors and what each stands for. The type is the default, drawn kind by
- * kind. The Color menu shows it in its panel, under its switch.
+ * Renders the Color-by picker: any groupable field, with tags or depth for a tag root, and the legend; the type is the default.
  */
 export function CalendarColorBy(
   properties: Readonly<CalendarColorByProperties>,

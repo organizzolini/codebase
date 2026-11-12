@@ -9,12 +9,8 @@ import type { CallableDocumentation } from "@callidescope/core";
 /**
  * Reads what a callable's documentation comment says about it.
  *
- * Read through the type checker rather than the comment trivia above the node,
- * which is what makes it right on the shapes this repository writes. An
- * overload's comment sits on the signature rather than the implementation the
- * graph points at, and an arrow-typed member's sits on the property rather than
- * the arrow — the checker resolves both to the same symbol, and scanning
- * trivia would find neither.
+ * Read through the type checker, not comment trivia, since an overload's comment
+ * sits on its signature and an arrow-typed member's on the property.
  */
 @Injectable()
 export class DocumentationService {
@@ -29,13 +25,7 @@ export class DocumentationService {
   // 🔏 Private Methods
 
   /**
-   * Collapses a documentation comment onto one line, in full.
-   *
-   * Nothing is shortened here. A comment is what it is, and how much of it
-   * fits is a question about the thing being rendered into — an indented tree
-   * in a terminal has an answer, and a JSON report consumed by a machine does
-   * not. Shortening at the point of reading would impose the terminal's answer
-   * on every consumer, so `ReportService` decides instead.
+   * Collapses a documentation comment onto one line, in full. Shortening is left to the consumer.
    */
   private readSummary(args: {
     checker: ts.TypeChecker;
@@ -69,11 +59,8 @@ export class DocumentationService {
   // 🌎 Public Methods
 
   /**
-   * Reads the documentation comment, if the callable has one.
-   *
-   * A comment that is nothing but tags — `@deprecated` on its own — leaves the
-   * summary empty, so the tags are read separately rather than inferred from
-   * whether there was any prose to find.
+   * Reads the documentation comment, if any. Tags are read separately, since a
+   * comment of only `@deprecated` has no summary.
    */
   public read(
     args: ReadDocumentationArguments,

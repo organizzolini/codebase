@@ -22,13 +22,8 @@ type ResolvedTask =
   | { task: RunGateBatchTask };
 
 /**
- * Judges every gate task Nx batched for this executor from as few command line
- * runs as it can.
- *
- * Each task still passes, fails and is cached by itself — Nx hashes and
- * replays batched tasks one by one — but the command line is started once per
- * share of the batch instead of once per project, which is most of what a gate
- * costs.
+ * Judges every batched gate task from as few command line runs as possible.
+ * Each task still passes, fails and is cached alone.
  */
 export default async function gateBatchExecutor(
   ...[taskGraph, options, overrides, context]: GateBatchExecutorArguments
@@ -68,12 +63,7 @@ export default async function gateBatchExecutor(
 }
 
 /**
- * Prints what each failed task found, under the task's id.
- *
- * Nx keeps a batch task's output for the cache but does not print it, where
- * the single executor lets the command line write to the task's own streams.
- * Without this a failed gate is a red task that never says which boundary
- * broke. Passing tasks print nothing.
+ * Prints each failed task's findings under its id, since Nx does not print batch output.
  */
 function printFailures(results: Record<string, GateBatchTaskResult>): void {
   for (const [taskId, result] of Object.entries(results)) {
@@ -84,11 +74,8 @@ function printFailures(results: Record<string, GateBatchTaskResult>): void {
 }
 
 /**
- * Resolves one task's configuration path, or the failure that earns it.
- *
- * Reading the path back out of `nx.json` is a long chain of calls, so it is
- * done here, near the top of the call, and never from inside a batch. A task
- * whose path cannot be resolved fails alone and costs its peers nothing.
+ * Resolves one task's configuration path, or the failure that earns it. A failing task
+ * fails alone, costing its peers nothing.
  */
 function resolveTask(args: {
   cached: boolean;

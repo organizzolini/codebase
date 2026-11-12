@@ -1,0 +1,23 @@
+query Windows(
+  $anchor: DateTime!
+  $window: CalendarWindow
+  $scale: TimelineScale
+  $agendaDays: Int
+) {
+  windows(
+    anchor: $anchor
+    window: $window
+    scale: $scale
+    agendaDays: $agendaDays
+  ) {
+    columnMinutes
+    visible {
+      end
+      start
+    }
+    read {
+      end
+      start
+    }
+  }
+}

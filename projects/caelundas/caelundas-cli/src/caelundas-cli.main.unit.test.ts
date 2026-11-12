@@ -1,4 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { captureExitCode } from "@codebase/testing";
 
 import { MainModule } from "./caelundas-cli.module";
 
@@ -40,16 +42,12 @@ vi.mock("nest-commander", async (importOriginal) => {
 });
 
 describe("main", () => {
-  const originalExitCode = process.exitCode;
+  let exitCode: () => typeof process.exitCode;
 
   beforeEach(() => {
     vi.resetModules();
     mockCommandFactoryRun.mockClear();
-    process.exitCode = undefined;
-  });
-
-  afterEach(() => {
-    process.exitCode = originalExitCode;
+    exitCode = captureExitCode();
   });
 
   it("bootstraps the command factory with the root module", async () => {
@@ -88,11 +86,11 @@ describe("main", () => {
 
     const errorSpy = vi.spyOn(logger, "error").mockReturnValue(undefined);
 
-    expect(process.exitCode).not.toBe(1);
+    expect(exitCode()).not.toBe(1);
 
     await serviceErrorHandler(new Error("💥 command exploded"));
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(errorSpy).toHaveBeenCalledTimes(1);
   });
 });

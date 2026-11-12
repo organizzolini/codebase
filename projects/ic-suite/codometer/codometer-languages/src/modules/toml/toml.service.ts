@@ -18,9 +18,8 @@ import type { TomlInput, TomlResult } from "./toml.types";
 /**
  * Counts the tables, keys, and arrays a TOML document declares.
  *
- * Read line by line while tracking whether a multi-line string is open, so a
- * `#` or a `[heading]` inside one of those strings is content rather than
- * syntax. That state is the whole reason this is not three regexes.
+ * Reads line by line, tracking whether a multi-line string is open, so a `#` or `[heading]` inside one is content.
+ * That state is why this is not three regexes.
  */
 @Injectable()
 /* v8 ignore stop */
@@ -80,10 +79,7 @@ export class TomlService {
   }
 
   /**
-   * Whether the line closes the multi-line string that was open, or opens one.
-   *
-   * An odd number of `"""` or `'''` delimiters flips the state; an even number
-   * opens and closes within the same line and leaves it as it was.
+   * Whether a line leaves a multi-line string open. An odd count of `"""` or `'''` flips the state; an even count leaves it.
    */
   private isInsideMultilineString(line: string, wasInside: boolean): boolean {
     const delimiters = (line.match(TOML_MULTILINE_DELIMITER_PATTERN) ?? [])

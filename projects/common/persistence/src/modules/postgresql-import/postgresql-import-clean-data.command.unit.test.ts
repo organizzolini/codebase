@@ -1,8 +1,9 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { useTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { mockProcesses, processFailure } from "../../../testing/mocks";
@@ -11,9 +12,9 @@ import { PostgresqlUtilitiesService } from "../postgresql-utilities/postgresql-u
 
 import type { SpawnedProcess } from "../../../testing/mocks";
 
-vi.mock("node:child_process", async () => {
-  const { childProcessMock } = await import("../../../testing/mocks");
-  return childProcessMock;
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockPostgresChildProcess } = await import("../../../testing/mocks");
+  return mockPostgresChildProcess(await importOriginal());
 });
 
 const PASSWORD = "hunter2-secret";
@@ -39,7 +40,7 @@ function restoresOf(spawned: readonly SpawnedProcess[]): SpawnedProcess[] {
 }
 
 describe("postgresql-import --clean --data", () => {
-  let directory: string;
+  const directory = useTemporaryDirectory("import-clean-data");
   let file: string;
 
   /** `postgresql-import --clean --data` of `fixture.widgets`, plus `extra`. */
@@ -69,13 +70,8 @@ describe("postgresql-import --clean --data", () => {
   };
 
   beforeAll(() => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "import-clean-data-"));
-    file = path.join(directory, "fixture.dump");
+    file = path.join(directory(), "fixture.dump");
     fs.writeFileSync(file, "a dump");
-  });
-
-  afterAll(() => {
-    fs.rmSync(directory, { force: true, recursive: true });
   });
 
   it("empties and refills the rows without asking", async () => {

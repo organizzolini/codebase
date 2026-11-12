@@ -18,11 +18,7 @@ import type {
 /**
  * Reads the workspace's projects straight from their `project.json` files.
  *
- * Not from the project graph, because two of the callers have none: inferring
- * targets is part of *building* that graph, and the install-time bootstrap
- * runs with no Nx at all. One implementation shared by every caller is what
- * keeps the emitted plugin byte-identical however it was produced — the drift
- * check compares those bytes, and would fire on any disagreement.
+ * Not from the project graph, which some callers cannot build. Sharing one implementation keeps the emitted plugin byte-identical however it was produced.
  */
 @Injectable()
 export class ProjectsService {
@@ -44,9 +40,7 @@ export class ProjectsService {
   /**
    * Walks a directory for `project.json` files.
    *
-   * Hidden directories and dependencies are skipped: the emitted plugin lives
-   * in one of the former, and walking the latter would take longer than every
-   * other part of an emit put together.
+   * Skips hidden directories, where the emitted plugin lives, and dependencies.
    */
   private listProjectConfigurationFiles(
     args: ListProjectConfigurationFilesArguments,
@@ -89,10 +83,7 @@ export class ProjectsService {
   /**
    * Reads the paths `.nxignore` excludes from project discovery.
    *
-   * Honored because a `project.json` inside a generator template is not a
-   * project — it is a file the template will one day render — and `.nxignore`
-   * is where a workspace already says so. Reading it keeps this walk agreeing
-   * with the graph Nx itself builds.
+   * Keeps the walk in step with Nx, so templates are not read as projects.
    */
   private readIgnoredPaths(workspaceRoot: string): string[] {
     const ignoreFilePath = path.resolve(workspaceRoot, NX_IGNORE_FILENAME);
@@ -110,10 +101,9 @@ export class ProjectsService {
   // 🌎 Public Methods
 
   /**
-   * Every project in the workspace, as a scope a generator can be matched to.
+   * Every project in the workspace, sorted by name.
    *
-   * Sorted by name so that anything derived from this list — the choices an
-   * emitted schema offers, above all — is stable between runs.
+   * A stable order keeps derived output, such as schema choices, the same between runs.
    */
   public listWorkspaceProjects(workspaceRoot: string): ProjectScope[] {
     return this.listProjectConfigurationFiles({

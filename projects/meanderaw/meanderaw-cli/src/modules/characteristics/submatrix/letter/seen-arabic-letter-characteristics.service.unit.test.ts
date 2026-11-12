@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,17 +7,7 @@ import { SeenArabicLetterCharacteristicsService } from "./seen-arabic-letter-cha
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the س (final Arabic seen) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *    ╷╷╷
- * ╷ ┌┴┴┴╴
- * └─┘
- * ```
- */
+/** Each distinct orientation of final س as a standalone Code. */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -63,16 +52,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "seenFinal",
 };
 
-/**
- * Each distinct orientation of the س (initial Arabic seen) as a Code holding
- * one isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *  ╷╷╷
- * ╶┴┴┘
- * ```
- */
+/** Each distinct orientation of initial س as a standalone Code. */
 const INITIAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -117,17 +97,7 @@ const INITIAL_FORM: LetterFormFixture = {
   prefix: "seenInitial",
 };
 
-/**
- * Each distinct orientation of the س (isolated Arabic seen) as a Code holding
- * one isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *    ╷╷╷
- * ╷ ┌┴┴┘
- * └─┘
- * ```
- */
+/** Each distinct orientation of isolated س as a standalone Code. */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -172,16 +142,7 @@ const ISOLATED_FORM: LetterFormFixture = {
   prefix: "seenIsolated",
 };
 
-/**
- * Each distinct orientation of the س (medial Arabic seen) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *  ╷╷╷
- * ╶┴┴┴╴
- * ```
- */
+/** Each distinct orientation of medial س as a standalone Code. */
 const MEDIAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -229,10 +190,7 @@ const FORMS: readonly LetterFormFixture[] = [
 ];
 
 describe(SeenArabicLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    SeenArabicLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(SeenArabicLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

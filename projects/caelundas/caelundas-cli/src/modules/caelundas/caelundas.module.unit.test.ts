@@ -1,7 +1,5 @@
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { DATABASE_DEFAULT_FILE } from "../database/database.constants";
-
 type ConfigOptions =
   | undefined
   | {
@@ -10,11 +8,7 @@ type ConfigOptions =
       validate?: (config: Record<string, unknown>) => unknown;
     };
 
-/**
- * A minute rather than the shared ten seconds: importing the whole
- * application afresh, every detector and the database entities with it,
- * took ten seconds locally, and a CI runner is several times slower.
- */
+/** Sixty seconds: a fresh app import is slow on CI. */
 const IMPORT_TIMEOUT_MILLISECONDS = 60_000;
 
 describe("caelundas module", () => {
@@ -45,7 +39,8 @@ describe("caelundas module", () => {
     expect(typeof options.validate).toBe("function");
 
     expect(options.validate?.({})).toMatchObject({
-      CAELUNDAS_SQLITE_DATABASE: DATABASE_DEFAULT_FILE,
+      CAELUNDAS_POSTGRES_DATABASE: "caelundas_development",
+      CAELUNDAS_POSTGRES_SCHEMA: "caelundas",
       OUTPUT_DIRECTORY: "./output",
     });
   });

@@ -69,10 +69,7 @@ export class LanguagesService {
   // 🌎 Public Methods
 
   /**
-   * The tokenizer for a file, or `undefined` when no language claims it.
-   *
-   * A file without one still contributes the words of its path; only its
-   * content goes unread.
+   * The tokenizer for a file, or `undefined` when none claims it. Such a file still contributes its path's words.
    */
   tokenizerFor(filePath: string): Tokenizer | undefined {
     return this.tokenizers.get(path.extname(filePath).toLowerCase());

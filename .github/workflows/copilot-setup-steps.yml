@@ -46,12 +46,9 @@ jobs:
           python-dependencies: "false"
           uv: "true"
 
-      # The Copilot coding agent reads its skills from `.github/skills`, which
-      # symlinks the installed set. Restoring from `skills-lock.json` gives the
-      # agent every skill the repository uses, including the ones installed
-      # from other repositories. The command pulls each skill's current version
-      # rather than the locked one, which is what an agent environment wants
-      # and why this runs here rather than in the shared setup action.
+      # Restores the skills from `skills-lock.json`, so the Copilot agent reads every
+      # skill the repository uses. Each skill is pulled at its current version rather
+      # than the locked one, which is why this runs here and not in the shared setup action.
       - name: 🧩 Install Agent Skills
         run: pnpm exec skills experimental_install
         shell: bash

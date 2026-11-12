@@ -20,13 +20,7 @@ export interface AnalyzeTypescriptFileArguments {
 }
 
 /** Everything one walk of one file's AST needs to carry down the tree. */
-/**
- * Everything one node's JSDoc measurement needs, gathered before any counting.
- *
- * Exists so `DeclarationCommentsService.measure` can stay inside this
- * repository's statement budget without putting a helper on the measuring path
- * itself, where it would deepen the stack the depth gate holds.
- */
+/** One node's JSDoc measurement inputs, gathered to keep frames shallow. */
 export interface PreparedDeclarationComment {
   counters: CommentCounter[];
   declaration: string;
@@ -39,12 +33,9 @@ export interface PreparedDeclarationComment {
 /** Input to the TypeScript/JavaScript AST analysis step. */
 export interface TypescriptInput {
   /**
-   * Every `comment`-selector custom statistic's budget, per declared statistic.
+   * One `comment` budget per declared statistic, for every statistic in the configuration.
    *
-   * The whole list, not only the counters this walk measures: a counter naming
-   * a documentable `kind` is one of those and every other one is ignored here,
-   * which is what leaves a configuration declaring no such statistic measuring
-   * nothing rather than measuring against a limit nobody chose.
+   * Only `kind` counters are read here; the rest are ignored.
    */
   commentCounters: CommentCounter[];
   sourceFiles: string[];
@@ -94,19 +85,13 @@ export interface TypescriptSymbolCounter {
   patterns: string[];
 }
 
-/**
- * What one file's AST walk carries with it, node to node.
- *
- * Narrowed once per file rather than rebuilt per node: which counters search a
- * file depends on its path, and the path does not change as the walk descends.
- */
+/** Per-file state carried through the AST walk, narrowed once per file. */
 export interface TypescriptWalkContext {
   commentCounters: CommentCounter[];
   /**
-   * The symbol counters that apply to the file being walked.
+   * Symbol counters that apply to the file being walked.
    *
-   * Narrowed once per file rather than per node: which counters search a file
-   * depends on its path, which does not change as the walk descends.
+   * Narrowed once per file, since a path does not change during the walk.
    */
   counters: TypescriptSymbolCounter[];
   filePath: string;

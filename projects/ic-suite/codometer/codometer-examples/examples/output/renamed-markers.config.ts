@@ -1,19 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * The same splice between markers of another name.
- *
- * Renaming them is not cosmetic. A document that *explains* the default markers
- * holds the default start marker in its own prose, so codometer reads it as
- * already carrying the block and rewrites the wrong region. Any file
- * documenting codometer therefore renames its own markers — the codometer
- * README does, and so does this package's.
- *
- * ```bash
- * cd packages/codometer-examples/examples/corpus
- * codometer --config ../output/renamed-markers.config.ts --output-markdown
- * ```
- */
+// See the [output guide](./README.md).
+/** The same splice between renamed markers, since prose can hold defaults. */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   outputs: [

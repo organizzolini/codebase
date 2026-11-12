@@ -1,40 +1,42 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
 
 import { TwilightsBuilderService } from "./twilights-builder.service";
 import { TwilightsComposerService } from "./twilights-composer.service";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 
 describe(TwilightsComposerService, () => {
   let service: TwilightsComposerService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        TwilightsComposerService,
-        TwilightsBuilderService,
-        ProgressiveUtilitiesService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    providers: [TwilightsBuilderService, ProgressiveUtilitiesService],
+  };
 
-    service = await module.resolve(TwilightsComposerService);
-    await module.resolve(LoggerService);
+  beforeAll(async () => {
+    const { instance } = await buildTestingModule(
+      TwilightsComposerService,
+      testingModuleOptions,
+    );
+
+    service = instance;
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      TwilightsComposerService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(TwilightsComposerService);
   });
 
   describe("pairAndBuild", () => {

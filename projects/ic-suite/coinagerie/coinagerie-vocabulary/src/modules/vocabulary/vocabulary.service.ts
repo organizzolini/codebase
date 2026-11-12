@@ -11,15 +11,10 @@ import { WordsService } from "../words/words.service";
 import type { ResolvedCoinagerieConfiguration } from "@coinagerie/configuration";
 
 /**
- * The coinagerie pipeline: from a configuration to the sorted list of every
- * word the code uses.
- *
- * Discovers the files, splits every path into words, tokenizes every file a
- * language claims and splits its identifiers into words, folds each word into
- * its headword, leaves out the headwords the configuration excludes, then
- * de-duplicates and sorts. A fault in the configuration's `fold` aborts the
- * run, naming the configuration file. A file no language claims still
- * contributes its path.
+ * The coinagerie pipeline: from a configuration to the sorted words the code
+ * uses. Splits paths and identifiers into words, folds each into its headword,
+ * drops excluded headwords, then de-duplicates. A fault in `fold` aborts the
+ * run, naming the configuration file.
  */
 @Injectable()
 export class VocabularyService {
@@ -61,11 +56,7 @@ export class VocabularyService {
   }
 
   /**
-   * The headwords the configuration leaves out by exact word.
-   *
-   * Its words are folded the way the code's are, so exclusion compares
-   * headwords: excluding `service` covers `services`, and excluding
-   * `implements` covers the `implement` it folds into.
+   * The headwords the configuration excludes by exact word. Words fold the way code words do, so excluding `service` covers `services`.
    */
   private excludedHeadwords(
     configuration: ResolvedCoinagerieConfiguration,
@@ -98,12 +89,7 @@ export class VocabularyService {
   // 🌎 Public Methods
 
   /**
-   * Every word the configured files use, sorted and de-duplicated.
-   *
-   * The files a configuration writes a glossary to are left out, so a run
-   * never reads its own output back as vocabulary. A headword a pattern
-   * matches is left out wholly, as a string leaves out a headword: the pattern
-   * is tested against each occurrence's lowercase word and its headword.
+   * Every word the configured files use, sorted and de-duplicated. Output files are skipped, so a run never reads its own glossary back.
    */
   async collect(
     configuration: ResolvedCoinagerieConfiguration,

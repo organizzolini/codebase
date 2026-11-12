@@ -15,41 +15,10 @@ import type { Meander } from "../database/entities/meander.entity";
 import type { CorpusEntry } from "./corpus.types";
 
 /**
- * Ingests the historical corpus into the meander database, through
- * the same generic reader and Characteristic computation
- * `DrawCodeService` draws a `--code` meander through — so an Enumerated row
- * and a Hardcoded row are produced by the exact same pipeline, and only ever
- * differ in where their Code came from.
+ * Ingests the historical corpus through `DrawCodeService`, so every row comes from one place.
  *
- * **Which entries it ingests is computed, not listed.** The corpus was
- * extracted against a sixteen-edge budget, and an entry within it was
- * reproduced by `EnumerationService` rather than preserved, so only the
- * entries beyond it are ingested — and that reach is two bounds rather than
- * one. `HISTORICAL_CORPUS_EDGE_BUDGET` is the edge boundary, fixed at the
- * budget the corpus was drawn against rather than following the draw run's
- * own; and `DRAW_MINIMUM_ROWS` is the floor the draw run starts at, because a
- * single-row band's interior is a single row with no southward edge anywhere
- * in it. An entry is kept when either bound puts it outside, which is what
- * lets `parallel`'s five single-row entries stay in the corpus while sitting
- * comfortably inside the budget. A raised draw run budget moves nothing here:
- * every preserved entry stays a hardcoded row, and the draw run skips the
- * Codes they hold rather than folding them.
- *
- * **Nothing about a Hardcoded entry is carried over but its Code.** Its
- * Characteristics are measured exactly as an Enumerated row's are, so a
- * pattern holds for a hardcoded meander for the same reason it holds for
- * any other.
- *
- * The stored Characteristics are `DrawRecordService`'s: every one of
- * `CharacteristicsService.compute` that is nonzero or true, in the one
- * `characteristics` map, with `isReducible` when the filed Code is wider
- * than its unit.
- *
- * A Code that collides with one already committed — an Enumerated row, or
- * another entry ingested earlier in the same draw run — fails loudly through
- * {@link DuplicateCorpusCodeError} rather than silently overwriting, since
- * `DatabaseService.save` relies on the `code` column's own unique constraint
- * rather than checking beforehand.
+ * Only entries beyond the sixteen-edge budget, or shallower than the draw run's
+ * row floor, are ingested. A raised draw run budget moves nothing here.
  */
 @Injectable()
 export class CorpusService {
@@ -115,13 +84,8 @@ export class CorpusService {
   // 🌎 Public Methods
 
   /**
-   * Ingests every entry of `corpus` that {@link isPreserved} keeps, in the
-   * corpus's own order, resolving with every row saved.
-   *
-   * Ingestion is sequential rather than run in parallel across entries: a
-   * failure has to name the one entry that caused it, which a `Promise.all`
-   * racing every `save` at once cannot promise, since concurrent writes
-   * would reach the database in whatever order their connections won.
+   * Ingests each entry `isPreserved` keeps, in order. Sequential, so a
+   * failure names the entry that caused it.
    */
   async ingest(corpus: readonly CorpusEntry[]): Promise<Meander[]> {
     const beyond = corpus.filter((entry) => this.isPreserved(entry));
@@ -135,10 +99,8 @@ export class CorpusService {
   }
 
   /**
-   * Whether an entry is preserved as a hardcoded row: past the sixteen edges
-   * the corpus was extracted against, or shallower than the draw run's row
-   * floor. Neither bound reads the draw run's own budget, so raising it never
-   * drops an entry.
+   * Whether an entry is kept as a hardcoded row: past sixteen edges, or
+   * shallower than the draw run's row floor.
    */
   isPreserved(entry: CorpusEntry): boolean {
     const { columns, rows } = entry;

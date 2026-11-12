@@ -12,8 +12,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The constellations to pick from, the words the link holds, and where to
- * send a new choice.
+ * The constellations, the link's words, and the change handler.
  */
 export interface NightSkyConstellationPickerProperties {
   className?: string;
@@ -25,10 +24,7 @@ export interface NightSkyConstellationPickerProperties {
 // 🧩 Component
 
 /**
- * Renders which constellations' figures the sky draws: a tree of two folders,
- * the zodiac's twelve, open, and every other, closed, whose folder checkboxes
- * pick all or none, in a list that scrolls on its own so the menu around it
- * keeps its height.
+ * Renders which constellations' figures the sky draws: a tree of folders in a list that scrolls on its own.
  */
 export function NightSkyConstellationPicker(
   properties: Readonly<NightSkyConstellationPickerProperties>,

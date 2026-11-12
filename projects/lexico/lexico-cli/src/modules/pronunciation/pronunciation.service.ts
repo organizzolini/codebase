@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import * as cheerio from "cheerio";
 import { Repository } from "typeorm";
 
-import { Lexeme, Pronunciation } from "@codebase/lexico-entities";
+import { Lexeme, Pronunciation } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
 import { PronunciationClassifierService } from "./pronunciation-classifier.service";
@@ -174,9 +174,7 @@ export class PronunciationService {
   }
 
   /**
-   * Parses pronunciation data from the Wiktionary HTML element context.
-   * Requires `macronizedWord` to already be resolved (call `parsePrincipalParts`
-   * before this function). Returns one `Pronunciation` entity per variant.
+   * Parses pronunciation from a Wiktionary element, one `Pronunciation` per variant. Requires `macronizedWord`, so call `parsePrincipalParts` first.
    */
   parse(
     $: cheerio.CheerioAPI,

@@ -21,12 +21,9 @@ export function quotePostgresTable(table: string): string {
 }
 
 /**
- * Empties exactly `tables` with one `TRUNCATE` and no `CASCADE`, so
- * Postgres refuses, truncating nothing, when a table outside them
- * references one of them. That refusal is explained from the catalog.
- *
- * @throws PostgresReferencedTablesError naming the referencing tables to
- * add; any other failure is rethrown as it was.
+ * Empties exactly `tables` in one `TRUNCATE` without `CASCADE`, which fails if
+ * an outside table references them.
+ * @throws PostgresReferencedTablesError naming the tables to add.
  */
 export async function truncatePostgresTables(
   query: PostgresQuery,

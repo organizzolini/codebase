@@ -9,11 +9,7 @@ export interface ConventionalLabel {
 }
 
 /**
- * What one reconciliation would do, decided before any of it is done.
- *
- * Creations and updates are kept apart from the stale names because the two
- * halves have opposite standing: the first two are acted on, and the third is
- * only ever reported. Nothing here deletes a label.
+ * What one reconciliation would do. Stale labels are reported, never deleted.
  */
 export interface LabelReconciliationPlan {
   readonly creations: readonly ConventionalLabel[];

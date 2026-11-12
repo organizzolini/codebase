@@ -33,13 +33,9 @@ export interface ConfiguredLimitRow {
 export interface ConfiguredTree {
   described: ConfiguredDirectory[];
   /**
-   * Why nothing could be resolved for the walk root, and `undefined` when
-   * something was.
+   * Why the walk root did not resolve; `undefined` when it did.
    *
-   * Carried rather than thrown. The listing is most wanted precisely when the
-   * configuration is in a state somebody is trying to understand, so an
-   * unreadable root is reported and the walk goes on with the built-in
-   * exclusions — but it still fails the run's exit code.
+   * Carried, not thrown: the walk continues, but the run still fails.
    */
   rootError: string | undefined;
 }
@@ -72,7 +68,7 @@ export interface RenderConfigurationArguments {
   rootError: string | undefined;
 }
 
-/** The exclusions a configuration walk uses, and why they may be the defaults. */
+/** Exclusions a configuration walk uses, which may be defaults. */
 export interface WalkExclusions {
   /** Why the walk root's configuration could not be read, if it could not. */
   error: string | undefined;

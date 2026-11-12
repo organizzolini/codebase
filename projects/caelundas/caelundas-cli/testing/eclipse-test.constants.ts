@@ -15,5 +15,5 @@ export const TEST_MOON_DISTANCE = 0.0025;
 /** Sun–Earth distance used by eclipse tests, AU. */
 export const TEST_SUN_DISTANCE = 0.99;
 
-/** The Moon's speed along its track relative to the eclipse target: 0.5° an hour, in degrees per minute. */
+/** Moon's speed relative to the eclipse target, degrees per minute. */
 export const TEST_TRACK_SPEED = 0.5 / 60;

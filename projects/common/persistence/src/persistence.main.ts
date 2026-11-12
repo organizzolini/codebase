@@ -6,12 +6,8 @@ import { LoggerService } from "@codebase/observability";
 import { MainModule } from "./persistence.module";
 
 /**
- * Bootstraps the database command line with buffered logs routed through a
- * pino `LoggerService`.
- *
- * nest-commander's default `serviceErrorHandler` only writes a failed command's
- * error to standard error, so the process would still exit 0. This one logs it
- * and sets a non-zero exit code instead.
+ * Bootstraps the database command line with logs routed through a pino
+ * `LoggerService`. Sets a non-zero exit code when a command fails.
  */
 async function main(): Promise<void> {
   const logger = new LoggerService();

@@ -10,10 +10,8 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Counts the hairpin U-turns of one repeat at their tightest: two points
- * joined by a single edge that both turn the same way, so the ink comes back
- * the way it went one grid unit over. A wider U, with a straight step
- * between its two turns, is not counted.
+ * Counts the hairpin U-turns of one repeat at their tightest: two same-hand turns joined by a
+ * single edge. A wider U, with a straight step between its turns, is not counted.
  */
 @Injectable()
 export class TightestTurnCountCharacteristicService implements CharacteristicEvaluator<number> {

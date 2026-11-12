@@ -26,7 +26,7 @@ import {
   UninflectedInflection,
   VerbInflection,
   Word,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import { environmentSchema } from "../src/lexico-api.constants";
 import { LiteratureModule } from "../src/modules/literature/literature.module";
@@ -62,10 +62,7 @@ export type ReadingResponse = z.infer<typeof readingResponseSchema>;
 class ReadingApplicationModule {}
 
 /**
- * Seeds the reading passage into a freshly migrated `lexico_testing`
- * database, then serves the literature module against it on an ephemeral
- * port, so a suite POSTs operations the way a browser would. Closes the
- * database again if seeding or booting fails.
+ * Seeds the reading passage into a fresh database and serves the literature module on an ephemeral port. Closes the database on failure.
  */
 export async function startReadingApplication(): Promise<ReadingApplication> {
   const database = await startLexicoDatabaseTestingModule([
@@ -108,11 +105,7 @@ export async function startReadingApplication(): Promise<ReadingApplication> {
 }
 
 /**
- * The literature module as the API mounts it: Apollo over Express, lexico's
- * database read from `LEXICO_POSTGRES_*`, with the schema built in memory
- * rather than written beside the root module. Built on call, because
- * `ConfigModule.forRoot` validates the environment as soon as it runs, and
- * the database's login is only stubbed once the container is up.
+ * Built on call: `ConfigModule.forRoot` validates the environment on run, before the database login is stubbed.
  */
 function readingApplicationModule(): DynamicModule {
   return {

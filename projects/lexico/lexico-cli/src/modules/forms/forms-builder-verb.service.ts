@@ -7,7 +7,7 @@ import {
   type formPersonValues,
   type Lexeme,
   ParticipleForm,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import { FormsBuilderGuardsService } from "./forms-builder-guards.service";
 import { FormsTransientWordsService } from "./forms-transient-words.service";
@@ -50,7 +50,7 @@ export class FormsBuilderVerbService {
   }
 
   /**
-   * Builds a finite verb form for a specific person based on the provided arguments, including lexeme, mood, number, tense, voice, and associated raw words. The built form is returned with transient words set for later association during persistence.
+   * Builds a finite verb form for one person, with transient words set for persistence.
    */
   private buildFiniteVerbForm(
     args: BuildFinitePersonFormsArguments & {
@@ -116,7 +116,7 @@ export class FormsBuilderVerbService {
   // 🌎 Public Methods
 
   /**
-   * Builds finite verb forms for specific persons based on the provided arguments, including lexeme, mood, number, tense, voice, and associated raw words. The built forms are returned with transient words set for later association during persistence.
+   * Builds finite verb forms for the given persons, with transient words set for persistence.
    */
   buildFinitePersonForms(args: BuildFinitePersonFormsArguments): Form[] {
     const forms: Form[] = [];

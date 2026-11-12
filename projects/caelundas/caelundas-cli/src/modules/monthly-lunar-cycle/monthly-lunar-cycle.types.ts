@@ -10,7 +10,7 @@ export interface DetectMonthlyLunarCycleArguments {
   sunCoordinateEphemeris: CoordinateEphemeris;
 }
 
-/** The Moon's elongation from the Sun one minute either side of a minute. */
+/** Moon's elongation from the Sun, one minute either side. */
 export interface ElongationWindow {
   current: number;
   next: number;

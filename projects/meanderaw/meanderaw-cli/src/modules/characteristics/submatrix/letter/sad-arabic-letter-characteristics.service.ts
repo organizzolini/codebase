@@ -8,11 +8,10 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of each positional form of the ص
- * (Arabic sad) skeleton — final, initial, isolated, and medial — one per corner
- * and clockwise rotation, each counting that form's base template, which faces
- * Southwest, drawn that way. A letter sharing a form's skeleton, differing from
- * it only by dots or by other marks, is an alias of that form.
+ * Provides the sixteen orientation evaluators of each positional form of the ص skeleton, final,
+ * initial, isolated, and medial. One per corner and clockwise rotation, each counting that form's
+ * base template, which faces Southwest. Letters sharing a skeleton, differing only by dots, are
+ * aliases.
  */
 @Injectable()
 export class SadArabicLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -72,58 +71,24 @@ export class SadArabicLetterCharacteristicsService implements CharacteristicEval
 
   // 🔐 Private Fields
 
-  /**
-   * The upright ص (final Arabic sad) glyph's points as hexadecimal Code digits,
-   * one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   *    ╷┌┐
-   * ╷ ┌┴┴┴╴
-   * └─┘
-   * ```
-   */
+  /** Upright final ص glyph as hexadecimal Code digits, facing Southwest. */
   private readonly finalTemplate: readonly string[] = [
     "...465.",
     "4.6bbb1",
     "a39....",
   ];
 
-  /**
-   * The upright ص (initial Arabic sad) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   *  ╷┌┐
-   * ╶┴┴┘
-   * ```
-   */
+  /** Upright initial ص glyph as hexadecimal Code digits, facing Southwest. */
   private readonly initialTemplate: readonly string[] = [".465", "2bb9"];
 
-  /**
-   * The upright ص (isolated Arabic sad) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   *    ╷┌┐
-   * ╷ ┌┴┴┘
-   * └─┘
-   * ```
-   */
+  /** Upright isolated ص glyph as hexadecimal Code digits, facing Southwest. */
   private readonly isolatedTemplate: readonly string[] = [
     "...465",
     "4.6bb9",
     "a39...",
   ];
 
-  /**
-   * The upright ص (medial Arabic sad) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   *  ╷┌┐
-   * ╶┴┴┴╴
-   * ```
-   */
+  /** Upright medial ص glyph as hexadecimal Code digits, facing Southwest. */
   private readonly medialTemplate: readonly string[] = [".465.", "2bbb1"];
 
   // 🔑 Public Fields

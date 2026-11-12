@@ -9,11 +9,9 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Counts the edges that cross the tile boundary — the eastward edges leaving
- * the last column that only exist because the Code repeats — as the
- * difference between the repeat read as a cyclic band and the same repeat
- * read as a lone tile. Replaces the `crossesTheSeam` flag, which is this
- * count being nonzero.
+ * Counts the edges crossing the tile boundary: eastward edges off the last column that
+ * exist only because the Code repeats. It is the difference between the cyclic-band and
+ * lone-tile reads. Replaces the `crossesTheSeam` flag.
  */
 @Injectable()
 export class TileCrossingCountCharacteristicService implements CharacteristicEvaluator<number> {

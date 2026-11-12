@@ -14,7 +14,7 @@ export const SKIPPED_DIRECTORIES: ReadonlySet<string> = new Set([
   "node_modules",
 ]);
 
-/** The measured examples are fixtures, not a project, so they stay out of the baseline. */
+/** Measured examples are fixtures, kept out of the baseline. */
 export const EXAMPLES_PREFIX =
   "projects/ic-suite/codometer/codometer-examples/";
 

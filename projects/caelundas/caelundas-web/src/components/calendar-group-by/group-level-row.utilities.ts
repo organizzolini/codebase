@@ -3,8 +3,7 @@ import { NAMED_TAGS } from "./group-level-row.constants";
 import type { EventGroupField, EventGroupLevel } from "./event-groups.types";
 
 /**
- * Names what a level goes by: the tags picked, or the level of the root's
- * tree it goes by, the first unless an older link says otherwise.
+ * Names what a level goes by: its picked tags, or else the tree level, the first unless an older link says otherwise.
  */
 export function describeTags(
   field: EventGroupField,

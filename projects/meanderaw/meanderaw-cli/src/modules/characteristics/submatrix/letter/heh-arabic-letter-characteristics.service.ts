@@ -9,12 +9,9 @@ import type {
 
 /**
  * Provides the sixteen orientation evaluators of each positional form of the ه
- * (Arabic heh) skeleton — final, initial, and medial — one per corner and
- * clockwise rotation, each counting that form's base template, which faces
- * Southwest, drawn that way. A letter sharing a form's skeleton, differing from
- * it only by dots or by other marks, is an alias of that form. The isolated
- * form draws the same glyph as the Latin O, so it is an alias there rather than
- * a form of its own.
+ * (Arabic heh) skeleton: final, initial, and medial. A letter differing from a
+ * form's skeleton only by dots or marks is an alias of that form. The isolated
+ * form is an alias of the Latin O.
  */
 @Injectable()
 export class HehArabicLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -56,40 +53,13 @@ export class HehArabicLetterCharacteristicsService implements CharacteristicEval
 
   // 🔐 Private Fields
 
-  /**
-   * The upright ه (final Arabic heh) glyph's points as hexadecimal Code digits,
-   * one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   * ┌┐
-   * │├╴
-   * └┘
-   * ```
-   */
+  /** Upright ه (final form) as hexadecimal Code digits, facing Southwest. */
   private readonly finalTemplate: readonly string[] = ["65.", "ce1", "a9."];
 
-  /**
-   * The upright ه (initial Arabic heh) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   *  ┌┐
-   *  ├┤
-   * ╶┴┘
-   * ```
-   */
+  /** Upright ه (initial form) as hexadecimal Code digits, facing Southwest. */
   private readonly initialTemplate: readonly string[] = [".65", ".ed", "2b9"];
 
-  /**
-   * The upright ه (medial Arabic heh) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   *  ┌┐
-   * ╶┼┼╴
-   *  └┘
-   * ```
-   */
+  /** Upright ه (medial form) as hexadecimal Code digits, facing Southwest. */
   private readonly medialTemplate: readonly string[] = [".65.", "2ff1", ".a9."];
 
   // 🔑 Public Fields

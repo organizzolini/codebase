@@ -1,13 +1,10 @@
 import { Injectable } from "@nestjs/common";
 
 /**
- * A leaf package's whole surface, four frames deep and three callees wide.
+ * A leaf package's whole surface: four frames deep, three callees wide.
  *
- * Nothing here is unusual code. It is a finding only because this directory is
- * its own project and that project declares its own limits — three frames and
- * two direct callees — in the `callidescope.config.ts` beside this file. The
- * package that imports it is held to five, and five would never have reported
- * any of this.
+ * Ordinary code, a finding only because this project declares limits of three
+ * frames and two callees in its own `callidescope.config.ts`.
  */
 @Injectable()
 export class GatedLeafService {
@@ -31,11 +28,7 @@ export class GatedLeafService {
   // 🌎 Public Methods
 
   /**
-   * The address this project declares as its entry point.
-   *
-   * Both findings are about this one method. It calls three things directly,
-   * which is the breadth finding, and the longest path below it runs four
-   * frames, which is the depth one.
+   * The project's declared entry point: three direct callees, four frames deep.
    */
   public read(key: string): string {
     return `${this.parse(key)}${this.normalize(key)}${this.finish(key)}`;

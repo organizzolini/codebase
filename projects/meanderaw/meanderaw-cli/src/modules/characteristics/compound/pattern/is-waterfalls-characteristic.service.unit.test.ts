@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -18,17 +19,12 @@ describe(IsWaterfallsCharacteristicService, () => {
     let service: IsWaterfallsCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const real = await buildTestingModule(CharacteristicContextService, {
         imports: [CodeModule, PatternCharacteristicsModule, MatrixModule],
-        providers: [CharacteristicContextService],
-      }).compile();
+      });
 
-      contextService = await module.resolve(CharacteristicContextService);
-      service = await module.resolve(IsWaterfallsCharacteristicService);
-    });
-
-    it("is defined", () => {
-      expect(service).toBeDefined();
+      contextService = real.instance;
+      service = await real.module.resolve(IsWaterfallsCharacteristicService);
     });
 
     it.each([
@@ -60,21 +56,25 @@ describe(IsWaterfallsCharacteristicService, () => {
     let service: IsWaterfallsCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
-        providers: [
-          IsWaterfallsCharacteristicService,
-          {
-            provide: IsSingleArcCharacteristicService,
-            useValue: { compute: (): boolean => values.isSingleArc },
-          },
-          {
-            provide: MaxMonotonicTurnLengthCharacteristicService,
-            useValue: { compute: (): number => values.maxMonotonicTurnLength },
-          },
-        ],
-      }).compile();
+      const built = await buildTestingModule(
+        IsWaterfallsCharacteristicService,
+        {
+          providers: [
+            {
+              provide: IsSingleArcCharacteristicService,
+              useValue: { compute: (): boolean => values.isSingleArc },
+            },
+            {
+              provide: MaxMonotonicTurnLengthCharacteristicService,
+              useValue: {
+                compute: (): number => values.maxMonotonicTurnLength,
+              },
+            },
+          ],
+        },
+      );
 
-      service = await module.resolve(IsWaterfallsCharacteristicService);
+      service = built.instance;
     });
 
     beforeEach(() => {

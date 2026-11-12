@@ -1,16 +1,13 @@
 import { DataSource } from "typeorm";
 
-import { startPostgresContainer } from "../src/modules/postgresql/postgresql-container.utilities";
+import { startPostgresContainer } from "@codebase/persistence/testing";
 
 import { CreateWidgets1767225600000 } from "./fixtures/migrations/1767225600000-create-widgets";
 import { CreateParts1767225600001 } from "./fixtures/migrations/1767225600001-create-parts";
 
 import type { PostgresConnection } from "../src/modules/postgresql/postgresql.types";
 
-/**
- * A throwaway Postgres 18 holding the `fixture` schema's `widgets` and
- * their child `parts`, for the export and import suites.
- */
+/** Throwaway Postgres 18 holding `fixture`'s `widgets` and child `parts`. */
 export interface FixtureDatabase {
   /** Closes the connection and stops the container. Safe to call once per start. */
   readonly close: () => Promise<void>;
@@ -32,11 +29,7 @@ export interface FixtureDatabase {
   readonly uri: string;
 }
 
-/**
- * A test or hook that runs the command line, client tools, or queries
- * against a container: a second or two locally, several times that on a
- * CI runner.
- */
+/** Container test timeout; CI runners run several times slower. */
 export const INTEGRATION_TEST_TIMEOUT_MILLISECONDS = 60_000;
 
 /** Starting Postgres and running the migrations takes longer than a test. */
@@ -49,16 +42,8 @@ export function postgresUri(connection: PostgresConnection): string {
 }
 
 /**
- * Starts a throwaway Postgres 18 container and builds the `fixture` schema
- * by running the fixture migrations, so a test seeds and reads real tables.
- *
- * ```ts
- * const database = await startFixtureDatabase();
- * await database.query("INSERT INTO widgets (display_name) VALUES ($1)", [
- *   "sprocket",
- * ]);
- * await database.close();
- * ```
+ * Starts a throwaway Postgres 18 with the `fixture` schema built by running
+ * the fixture migrations, so a test seeds and reads real tables.
  */
 export async function startFixtureDatabase(): Promise<FixtureDatabase> {
   const container = await startPostgresContainer({

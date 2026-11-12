@@ -1,17 +1,18 @@
-import * as fs from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
+import path from "node:path";
 
-import { Test } from "@nestjs/testing";
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { IgnoreRulesService } from "./ignore-rules.service";
 
 import type { IgnoreScope } from "./ignore-rules.types";
 
-// Pattern matching is pure, so the only I/O this service does — reading an
-// ignore file — is mocked rather than staged on disk. Real trees are walked in
-// `discovery.service.integration.test.ts`.
-vi.mock("node:fs");
-
+// Pattern matching is pure, so the only I/O this service does is reading an
+// ignore file, which is staged in a temporary directory. Real trees are walked
+// in `discovery.service.integration.test.ts`.
 describe(IgnoreRulesService, () => {
   let service: IgnoreRulesService;
 
@@ -21,15 +22,14 @@ describe(IgnoreRulesService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [IgnoreRulesService],
-    }).compile();
-    service = await module.resolve(IgnoreRulesService);
+    const { instance } = await buildTestingModule(IgnoreRulesService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(IgnoreRulesService);
+
+    expect(instance).toBeInstanceOf(IgnoreRulesService);
   });
 
   describe("gitignore pattern syntax", () => {
@@ -169,10 +169,20 @@ describe(IgnoreRulesService, () => {
   });
 
   describe("reading a rule set from a file", () => {
+    let ignoreFilePath: string;
+
     beforeEach(() => {
-      vi.mocked(fs.existsSync).mockReturnValue(true);
-      vi.mocked(fs.readFileSync).mockReturnValue(
+      const repository = createTemporaryDirectory("ignore-rules");
+
+      ignoreFilePath = path.join(
+        repository,
+        "applications/app/.codometerignore",
+      );
+      mkdirSync(path.dirname(ignoreFilePath), { recursive: true });
+      writeFileSync(
+        ignoreFilePath,
         "# Generated\npnpm-lock.yaml\n\n/CHANGELOG.md\n",
+        "utf8",
       );
     });
 
@@ -181,14 +191,10 @@ describe(IgnoreRulesService, () => {
 
       const scope = service.readScope({
         directory: "",
-        filePath: "/repository/.codometerignore",
+        filePath: ignoreFilePath,
       });
       const scopes = scope === undefined ? [] : [scope];
 
-      expect(fs.readFileSync).toHaveBeenCalledWith(
-        "/repository/.codometerignore",
-        "utf8",
-      );
       expect(service.isIgnored(scopes, "pnpm-lock.yaml")).toBe(true);
       expect(service.isIgnored(scopes, "CHANGELOG.md")).toBe(true);
       // The comment line is a comment, not a pattern claiming a file.
@@ -200,7 +206,7 @@ describe(IgnoreRulesService, () => {
 
       const scope = service.readScope({
         directory: "applications/app",
-        filePath: "/repository/applications/app/.codometerignore",
+        filePath: ignoreFilePath,
       });
       const scopes = scope === undefined ? [] : [scope];
 
@@ -213,15 +219,12 @@ describe(IgnoreRulesService, () => {
     it("returns nothing when the file is absent", () => {
       expect.hasAssertions();
 
-      vi.mocked(fs.existsSync).mockReturnValue(false);
-
       expect(
         service.readScope({
           directory: "",
-          filePath: "/nowhere/.codometerignore",
+          filePath: path.join(path.dirname(ignoreFilePath), "absent-ignore"),
         }),
       ).toBeUndefined();
-      expect(fs.readFileSync).not.toHaveBeenCalled();
     });
   });
 });

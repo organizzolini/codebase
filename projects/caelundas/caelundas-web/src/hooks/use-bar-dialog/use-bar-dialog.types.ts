@@ -1,12 +1,12 @@
 import type { TimelineBar } from "../../components/calendar-timeline/calendar-timeline.types";
-import type { CalendarEventRecord } from "../../components/events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../../components/events-calendar/calendar-records.types";
 import type { GanttOccurrence } from "@codebase/presentation";
 import type { ReactNode } from "react";
 
 // 🏷️ Types
 
 /**
- * The events a clicked marker holds, and the title its dialog opens under.
+ * A clicked marker's events, and its dialog title.
  */
 export interface OpenedBar {
   records: readonly CalendarEventRecord[];

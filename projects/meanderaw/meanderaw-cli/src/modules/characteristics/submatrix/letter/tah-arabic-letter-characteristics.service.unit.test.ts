@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,17 +7,7 @@ import { TahArabicLetterCharacteristicsService } from "./tah-arabic-letter-chara
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the ط (final Arabic tah) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- * ╷
- * ├┐
- * └┴╴
- * ```
- */
+/** Each distinct orientation of final ط as a standalone Code. */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -72,17 +61,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "tahFinal",
 };
 
-/**
- * Each distinct orientation of the ط (initial Arabic tah) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *  ╷
- *  ├┐
- * ╶┴┘
- * ```
- */
+/** Each distinct orientation of initial ط as a standalone Code. */
 const INITIAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -127,17 +106,7 @@ const INITIAL_FORM: LetterFormFixture = {
   prefix: "tahInitial",
 };
 
-/**
- * Each distinct orientation of the ط (isolated Arabic tah) as a Code holding
- * one isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- * ╷
- * ├┐
- * └┘
- * ```
- */
+/** Each distinct orientation of isolated ط as a standalone Code. */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -182,17 +151,7 @@ const ISOLATED_FORM: LetterFormFixture = {
   prefix: "tahIsolated",
 };
 
-/**
- * Each distinct orientation of the ط (medial Arabic tah) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *  ╷
- *  ├┐
- * ╶┴┴╴
- * ```
- */
+/** Each distinct orientation of medial ط as a standalone Code. */
 const MEDIAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -246,10 +205,7 @@ const FORMS: readonly LetterFormFixture[] = [
 ];
 
 describe(TahArabicLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    TahArabicLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(TahArabicLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

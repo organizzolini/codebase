@@ -10,7 +10,7 @@ import {
   LUNAR_PERIGEE_TAG,
 } from "./monthly-lunar-cycle.constants";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { DistanceEphemeris } from "../ephemeris/ephemeris.types";
 import type { Moment } from "moment-timezone";
 
@@ -95,15 +95,8 @@ export class LunarApsidesService {
   }
 
   /**
-   * Whether the radial speed crosses zero in the given direction between the
-   * minute and its neighbor, and the minute is the nearer of the two to zero.
-   *
-   * @remarks
-   * - Perigee: speed goes from negative to non-negative (approach to recession).
-   * - Apogee: speed goes from positive to non-positive.
-   * - The earlier minute wins a tie, so each crossing is stamped exactly once.
-   * - Radial speed is smooth where the distance itself can step at ephemeris
-   *   segment boundaries, so it is the extremum test.
+   * Whether radial speed crosses zero between two minutes, counting the crossing
+   * for only one of them.
    */
   private isCrossingAt(args: {
     direction: "apogee" | "perigee";
@@ -126,12 +119,8 @@ export class LunarApsidesService {
   // 🌎 Public Methods
 
   /**
-   * Detects a lunar apogee or perigee at one minute.
-   *
-   * @remarks
-   * - Perigee is the nearest point of the Moon's orbit, apogee the farthest.
-   * - Found where the Moon's radial speed changes sign, stamped at the adjacent
-   *   minute whose speed is nearer zero.
+   * Detects a lunar apogee or perigee at one minute, stamped at the adjacent
+   * minute whose radial speed is nearer zero.
    */
   detect(args: {
     minute: Moment;

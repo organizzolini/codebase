@@ -1,10 +1,6 @@
 // ♟️ Constants
 
-/**
- * The roots of the tag tree, one per dimension an event is classified
- * along. Independent attributes are separate roots, never nested under each
- * other, so an event carries one tag from each dimension side by side.
- */
+/** Tag tree roots, one per dimension, never nested. */
 export const TAG_ROOT = {
   aspectHarmonic: "Aspect Harmonic",
   aspectNature: "Aspect Nature",

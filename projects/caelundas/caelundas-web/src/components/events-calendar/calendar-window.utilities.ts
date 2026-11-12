@@ -12,9 +12,9 @@ import {
   WEEK_DAYS,
 } from "./calendar-window.constants";
 
+import type { Period } from "./calendar-records.types";
 import type { CalendarViewName, TimelineScale } from "./calendar-views.types";
 import type { ViewWindowOptions, ViewWindows } from "./calendar-window.types";
-import type { EventsWindow } from "./events-database.types";
 
 /**
  * The calendar day a number of days after a `YYYY-MM-DD` one, or before it
@@ -29,9 +29,8 @@ export function addCalendarDays(day: string, count: number): string {
 }
 
 /**
- * Writes the day an instant falls on in a zone as a `YYYY-MM-DD` search
- * parameter, the way the calendar's navigation hands back that zone's
- * midnight.
+ * Writes the zone's calendar day for an instant as `YYYY-MM-DD`, the search
+ * parameter's form.
  */
 export function formatCalendarDate(date: Date, timeZone: string): string {
   let format = DATE_FORMATS.get(timeZone);
@@ -46,14 +45,8 @@ export function formatCalendarDate(date: Date, timeZone: string): string {
 }
 
 /**
- * The days a view shows around the day it opens on, as UTC midnights, and
- * the window read for them, a day wider either side: a zone's midnight lies
- * up to a day from UTC's, so the buffer holds every event the zone's days
- * show. Only these days are read, whatever the data spans; the agenda's
- * count of days is clamped where the search is read.
- *
- * With no view, the default rests on the width and changes with it, so the
- * windows cover both defaults and a resize needs no reload.
+ * The view's days as UTC midnights, and the period read around them. With no
+ * view, both width defaults are covered.
  */
 export function getViewWindows(
   view: CalendarViewName | undefined,
@@ -65,8 +58,8 @@ export function getViewWindows(
     const agenda = getViewWindows("agenda", anchor, options);
 
     return {
-      visible: joinWindows(month.visible, agenda.visible),
-      window: joinWindows(month.window, agenda.window),
+      read: joinPeriods(month.read, agenda.read),
+      visible: joinPeriods(month.visible, agenda.visible),
     };
   }
 
@@ -76,11 +69,11 @@ export function getViewWindows(
       : getVisibleDays(view, anchor, options.agendaDays ?? AGENDA_DAY_COUNT);
 
   return {
-    visible,
-    window: {
+    read: {
       end: shiftDays(visible.end, BUFFER_DAYS),
       start: shiftDays(visible.start, -BUFFER_DAYS),
     },
+    visible,
   };
 }
 
@@ -129,11 +122,10 @@ function anchorDay(year: number, monthIndex: number, day: number): Date {
 }
 
 /**
- * The days the timeline's axis spans at a scale, as the Gantt lays them
- * out: the day, the week from Sunday, the month, the quarter widened to
- * whole weeks, or otherwise the year.
+ * The timeline's axis days at a scale, from Sunday for weeks and in whole
+ * weeks for quarters.
  */
-function getTimelineDays(scale: TimelineScale, anchor: Date): EventsWindow {
+function getTimelineDays(scale: TimelineScale, anchor: Date): Period {
   const year = anchor.getUTCFullYear();
   const month = anchor.getUTCMonth();
   const day = new Date(Date.UTC(year, month, anchor.getUTCDate()));
@@ -178,7 +170,7 @@ function getVisibleDays(
   view: Exclude<CalendarViewName, "timeline">,
   anchor: Date,
   agendaDays: number,
-): EventsWindow {
+): Period {
   const day = new Date(
     Date.UTC(
       anchor.getUTCFullYear(),
@@ -214,9 +206,9 @@ function getVisibleDays(
 }
 
 /**
- * The smallest window holding two.
+ * The smallest period holding two.
  */
-function joinWindows(left: EventsWindow, right: EventsWindow): EventsWindow {
+function joinPeriods(left: Period, right: Period): Period {
   return {
     end: new Date(Math.max(left.end.getTime(), right.end.getTime())),
     start: new Date(Math.min(left.start.getTime(), right.start.getTime())),

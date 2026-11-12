@@ -7,21 +7,10 @@ import type { CallGraph, CondensedGraph } from "./graph.types";
 import type { CallableId } from "@callidescope/core";
 
 /**
- * Collapses every cycle in the call graph into a single node.
+ * Collapses every cycle in the call graph into one node.
  *
- * Longest path is only defined on an acyclic graph, so recursion has to be
- * dealt with before depth is measured rather than during it. The obvious
- * alternative — detecting a repeat visit while walking — makes the memoized
- * depth depend on which path happened to arrive first, so the same function
- * reports different depths from different entry points and between runs. A
- * linter whose numbers move on their own is not usable as a gate.
- *
- * Condensing instead gives every cycle one cost, counted once: three functions
- * calling each other in a ring contribute three frames, which is an honest
- * floor on a stack that has no ceiling.
- *
- * The traversal is iterative because the graph is deep enough that a recursive
- * one risks blowing the JavaScript stack while measuring stack depth.
+ * Longest path needs an acyclic graph, so cycles are condensed first. Detecting
+ * repeats mid-walk would make memoized depth depend on arrival order.
  */
 @Injectable()
 export class ComponentsService {
@@ -36,11 +25,8 @@ export class ComponentsService {
   // 🔏 Private Methods
 
   /**
-   * Closes a completed node, emitting a component when it is a root.
-   *
-   * A node whose low link never moved below its own discovery order is the
-   * entry point of a strongly connected component, and everything above it on
-   * the pending stack belongs to that component.
+   * Closes a completed node, emitting a component when its low link never moved
+   * below its own discovery order.
    */
   private closeNode(args: {
     callableId: CallableId;

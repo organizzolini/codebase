@@ -41,9 +41,8 @@ export class PostgresqlService implements TypeOrmOptionsFactory {
   // 🔏 Private Methods
 
   /**
-   * The options `PostgresqlModule.forRoot` provides. Optional only so the bare
-   * module still boots for a dependency graph; using it without them is a
-   * mistake this names.
+   * The options `forRoot` provides. Optional only so the bare module still
+   * boots; using it without them throws.
    */
   private databaseOptions(): PostgresqlModuleOptions {
     if (this.options === undefined) {

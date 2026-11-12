@@ -3,11 +3,11 @@ import {
   GraphQLSchemaBuilderModule,
   GraphQLSchemaFactory,
 } from "@nestjs/graphql";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { createConnection, createEdge } from "@codebase/interface";
-import { Author, Line, Text } from "@codebase/lexico-entities";
+import { Author, Line, Text } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AuthorsResolver } from "./authors.resolver";
 import { LinesResolver } from "./lines.resolver";
@@ -19,24 +19,12 @@ import { TextsResolver } from "./texts.resolver";
 import { TokensResolver } from "./tokens.resolver";
 
 describe(LiteratureResolver, () => {
-  let resolver: LiteratureResolver;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LiteratureResolver, {
+      mocks: [LiteratureService],
+    });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LiteratureResolver,
-        {
-          provide: LiteratureService,
-          useValue: createMock<LiteratureService>(),
-        },
-      ],
-    }).compile();
-
-    resolver = await module.resolve(LiteratureResolver);
-  });
-
-  it("is defined", () => {
-    expect(resolver).toBeDefined();
+    expect(instance).toBeInstanceOf(LiteratureResolver);
   });
 
   it("resolves aggregated literature search results", async () => {
@@ -154,24 +142,16 @@ describe(LiteratureResolver, () => {
   it("generates a schema containing the literature queries and field resolvers", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(AuthorsResolver, {
       imports: [GraphQLSchemaBuilderModule],
+      mocks: [LiteratureService, LiteratureRelationsLoader],
       providers: [
-        AuthorsResolver,
         TextsResolver,
         LinesResolver,
         TokensResolver,
         LiteratureResolver,
-        {
-          provide: LiteratureService,
-          useValue: createMock<LiteratureService>(),
-        },
-        {
-          provide: LiteratureRelationsLoader,
-          useValue: createMock<LiteratureRelationsLoader>(),
-        },
       ],
-    }).compile();
+    });
 
     const schemaFactory = module.get(GraphQLSchemaFactory);
     const schema = await schemaFactory.create([

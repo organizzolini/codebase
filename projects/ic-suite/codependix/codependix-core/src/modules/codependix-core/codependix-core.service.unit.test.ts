@@ -1,20 +1,13 @@
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodependixCoreService } from "./codependix-core.service";
 
 describe(CodependixCoreService, () => {
-  let service: CodependixCoreService;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(CodependixCoreService);
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [CodependixCoreService],
-    }).compile();
-
-    service = await module.resolve(CodependixCoreService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(CodependixCoreService);
   });
 });

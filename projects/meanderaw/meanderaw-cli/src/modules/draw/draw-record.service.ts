@@ -7,20 +7,10 @@ import type { CodeObject } from "../code/code.types";
 import type { MeanderRecord } from "../database/database.types";
 
 /**
- * Turns one Code into the row the database holds for it: read once, then
- * measured from that same reading, with nothing re-read in between.
+ * Turns one Code into its database row, measured from the same single reading.
  *
- * It is the one place a meander row is built, and both ways a row comes to
- * exist go through it — the Code a person names at the command line and the
- * Code the draw run finds — so a Characteristic added to the pipeline reaches
- * both at once rather than reaching whichever caller was remembered. The
- * only thing that differs between the two is the `isHardcoded` the caller
- * passes, which is a fact about where the Code came from rather than
- * anything this can read off it.
- *
- * Every Characteristic of `CharacteristicsService.compute` that is nonzero
- * or true is stored in the one `characteristics` map, with `isReducible`
- * when the filed Code is wider than its unit.
+ * Shared by `--code` and the draw run. Only nonzero or true Characteristics are
+ * stored, in one `characteristics` map.
  */
 @Injectable()
 export class DrawRecordService {

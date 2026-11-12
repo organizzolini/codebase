@@ -2,8 +2,10 @@ import { ChildProcess, spawn } from "node:child_process";
 import { PassThrough } from "node:stream";
 
 import { ConfigurationModule } from "@codependix/configuration";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { captureOutput } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { GateService } from "../gate/gate.service";
 import { PluginService } from "../plugin/plugin.service";
@@ -12,12 +14,14 @@ import { BatchService } from "./batch.service";
 
 import type { GateOptions } from "../gate/gate.types";
 import type { RunGateBatchTask } from "./batch.types";
-import type * as ChildProcessModule from "node:child_process";
+import type * as Testing from "@codebase/testing";
 
-vi.mock("node:child_process", async (importOriginal) => ({
-  ...(await importOriginal<typeof ChildProcessModule>()),
-  spawn: vi.fn<() => void>(),
-}));
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockChildProcess } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
+
+  return mockChildProcess(await importOriginal());
+});
 
 /** A child process that prints, then exits with the given code or fails. */
 function buildChild(args: {
@@ -57,24 +61,25 @@ describe(BatchService, () => {
   let service: BatchService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(BatchService, {
       imports: [ConfigurationModule],
-      providers: [BatchService, GateService, PluginService],
-    }).compile();
-
-    service = await module.resolve(BatchService);
+      providers: [GateService, PluginService],
+    }));
   });
 
   beforeEach(() => {
     vi.mocked(spawn).mockReset();
     vi.mocked(spawn).mockReturnValue(buildChild({ exitCode: 0 }));
-    vi.spyOn(process.stdout, "write").mockReturnValue(true);
-    vi.spyOn(process.stderr, "write").mockReturnValue(true);
+    captureOutput();
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(BatchService, {
+      imports: [ConfigurationModule],
+      providers: [GateService, PluginService],
+    });
+
+    expect(instance).toBeInstanceOf(BatchService);
   });
 
   describe("runBatch", () => {
@@ -101,11 +106,8 @@ describe(BatchService, () => {
     }
 
     /**
-     * A command line run that finds nothing, new for every spawn.
-     *
-     * A function and not a value: a run that is spawned more than once must be
-     * handed a fresh child each time, and a shared one has already ended by
-     * the second, so it would never end again for anyone waiting on it.
+     * A command line run that finds nothing, new for every spawn; a shared child has already
+     * ended by its second spawn.
      */
     function passingRun(): ChildProcess {
       return buildChild({ exitCode: 0, standardOutput: reportOf() });

@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,17 +7,7 @@ import { NoonArabicLetterCharacteristicsService } from "./noon-arabic-letter-cha
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the ں (final Arabic dotless noon) as a Code
- * holding one isolated copy, beside every orientation name drawing that ink.
- * The base, facing Southwest, draws:
- *
- * ```text
- * ╷ ┌╴
- * │ │
- * └─┘
- * ```
- */
+/** Each distinct orientation of final ں as a standalone Code. */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -63,17 +52,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "noonFinal",
 };
 
-/**
- * Each distinct orientation of the ں (isolated Arabic dotless noon) as a Code
- * holding one isolated copy, beside every orientation name drawing that ink.
- * The base, facing Southwest, draws:
- *
- * ```text
- * ╷ ╷
- * │ │
- * └─┘
- * ```
- */
+/** Each distinct orientation of isolated ں as a standalone Code. */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -116,10 +95,7 @@ const ISOLATED_FORM: LetterFormFixture = {
 const FORMS: readonly LetterFormFixture[] = [FINAL_FORM, ISOLATED_FORM];
 
 describe(NoonArabicLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    NoonArabicLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(NoonArabicLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

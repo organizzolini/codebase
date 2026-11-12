@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { RenderConfigurationService } from "./render-configuration.service";
 
@@ -29,15 +30,15 @@ describe(RenderConfigurationService, () => {
   let service: RenderConfigurationService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [RenderConfigurationService],
-    }).compile();
+    const { instance } = await buildTestingModule(RenderConfigurationService);
 
-    service = await module.resolve(RenderConfigurationService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(RenderConfigurationService);
+
+    expect(instance).toBeInstanceOf(RenderConfigurationService);
   });
 
   it("renders the limits as a markdown table naming the file each came from", () => {

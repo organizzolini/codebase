@@ -8,11 +8,9 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of each positional form of the و
- * (Arabic waw) skeleton — final and isolated — one per corner and clockwise
- * rotation, each counting that form's base template, which faces Southwest,
- * drawn that way. A letter sharing a form's skeleton, differing from it only by
- * dots or by other marks, is an alias of that form.
+ * Provides the sixteen orientation evaluators of each positional form of the و skeleton, final and
+ * isolated. One per corner and clockwise rotation, each counting that form's base template, which
+ * faces Southwest. Letters sharing a skeleton, differing only by dots, are aliases.
  */
 @Injectable()
 export class WawArabicLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -50,17 +48,7 @@ export class WawArabicLetterCharacteristicsService implements CharacteristicEval
 
   // 🔐 Private Fields
 
-  /**
-   * The upright و (final Arabic waw) glyph's points as hexadecimal Code digits,
-   * one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   * ┌┐
-   * └┼╴
-   * ┌┘
-   * ╵
-   * ```
-   */
+  /** Upright final و glyph as hexadecimal Code digits, facing Southwest. */
   private readonly finalTemplate: readonly string[] = [
     "65.",
     "af1",
@@ -68,17 +56,7 @@ export class WawArabicLetterCharacteristicsService implements CharacteristicEval
     "8..",
   ];
 
-  /**
-   * The upright و (isolated Arabic waw) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   * ┌┐
-   * └┤
-   * ┌┘
-   * ╵
-   * ```
-   */
+  /** Upright isolated و glyph as hexadecimal Code digits, facing Southwest. */
   private readonly isolatedTemplate: readonly string[] = [
     "65",
     "ad",

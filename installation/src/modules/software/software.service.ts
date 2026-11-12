@@ -14,19 +14,11 @@ import { SoftwareOllamaService } from "./software-ollama.service";
 import { SoftwarePythonService } from "./software-python.service";
 
 /**
- * Installs the developer tools that come after Node, on every machine setup
- * runs on, with different results on each.
+ * Installs developer tools after Node, with a different set on each platform.
  *
- * A developer's Mac has Homebrew, so it gets Python, Ollama, Docker, GPG, the
- * infrastructure tools (Helm among them), and the database tools, in the order
- * they were always installed in. Linux, which is what a Claude Code cloud
- * session and the devcontainer run, has no Homebrew, so it gets the tools a
- * commit and the security gate need, from their release archives and package
- * managers. Both then make SSH commit signatures verifiable, which installs
- * `ssh-keygen` only where it is missing.
- *
- * Homebrew, nvm, Node, and pnpm are installed by `scripts/installation.sh` before
- * this runs, because this runs on Node.
+ * A Mac gets Python, Ollama, Docker, GPG, infrastructure tools, and database tools.
+ * Linux gets the tools a commit and the security gate need.
+ * Homebrew, nvm, Node, and pnpm are installed beforehand by `scripts/installation.sh`.
  */
 @Injectable()
 export class SoftwareService {

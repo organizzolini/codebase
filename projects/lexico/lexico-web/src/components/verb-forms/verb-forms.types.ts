@@ -22,12 +22,7 @@ export interface Selection {
   voice: string;
 }
 
-/**
- * One form of a verb and the word written for it. Which fields are filled
- * depends on the kind of form: a finite form has a mood, tense, voice, person
- * and number, an infinitive or participle a tense and voice, and a gerund or
- * supine a case.
- */
+/** A verb form and its word; fields vary by form kind. */
 export interface VerbFormRow {
   case?: string;
   kind: string;

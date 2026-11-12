@@ -1,9 +1,10 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationFileService } from "./configuration-file.service";
 import {
@@ -23,19 +24,14 @@ import type {
   ProjectLimitsLookup,
 } from "./configuration.types";
 
-/** A workspace file no staged project is ever beside, for runs that name one. */
+/** Workspace file no project sits beside, for named runs. */
 const WORKSPACE_CONFIGURATION_PATH = "/workspace/callidescope.config.ts";
 
 /** The spelling `writeWorkspace` stages every configuration under. */
 const CONFIGURATION_FILE_NAME = CONFIGURATION_FILE_NAMES[3];
 
 /**
- * A project configuration with every field a project must set.
- *
- * Every test staging a well-formed project file goes through here, so a field
- * that becomes required is added in one place rather than in thirty — and a
- * test asserting something other than completeness cannot accidentally stop
- * asserting it.
+ * Builds a complete project configuration, so a field that becomes required is added in one place.
  */
 function completeConfiguration(
   overrides: Partial<CallidescopeProjectConfiguration> = {},
@@ -93,11 +89,7 @@ async function resolveWrittenLimits(args: {
 }
 
 /**
- * Writes an object as a JavaScript literal, `undefined` members included.
- *
- * `JSON.stringify` drops a key written as `undefined`, which is precisely the
- * difference these tests are about: a project that wrote the member and a
- * project that forgot it would stage the same file.
+ * Writes a value as a JavaScript literal, keeping `undefined` members, which JSON would drop.
  */
 function serialize(value: unknown): string {
   if (Array.isArray(value)) {
@@ -118,12 +110,7 @@ function serialize(value: unknown): string {
 }
 
 /**
- * Copies an object without one key, staging the file a project forgot to
- * finish.
- *
- * Rebuilt from its entries rather than copied and deleted from, because a
- * dynamic `delete` is a lint error here — and a key whose value is `undefined`
- * survives the rebuild, which is exactly the distinction these tests turn on.
+ * Copies an object without one key. Rebuilt from entries, since a dynamic `delete` is a lint error.
  */
 function withoutKey(
   value: object,
@@ -135,19 +122,13 @@ function withoutKey(
 }
 
 /**
- * Writes a fresh workspace holding one configuration file per named project.
- *
- * An object is written as a JavaScript module and anything else verbatim, so
- * staging a malformed file is as easy as staging a well-formed one. JavaScript
- * rather than JSON because `undefined` is the value a complete configuration
- * writes to gate no breadth or publish no diagram, and JSON cannot spell it.
+ * Writes a fresh workspace holding one configuration file per named project. Objects are written
+ * as JavaScript, since `undefined` must survive.
  */
 async function writeWorkspace(
   projects: Record<string, object | string>,
 ): Promise<string> {
-  const workspaceRoot = await mkdtemp(
-    path.join(tmpdir(), "callidescope-workspace-"),
-  );
+  const workspaceRoot = createTemporaryDirectory("callidescope-workspace");
 
   for (const [project, contents] of Object.entries(projects)) {
     const projectRoot = path.join(workspaceRoot, project);
@@ -170,16 +151,21 @@ describe(ProjectConfigurationService, () => {
   let service: ProjectConfigurationService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [ConfigurationFileService, ProjectConfigurationService],
-    }).compile();
+    const { instance, module } = await buildTestingModule(
+      ProjectConfigurationService,
+      { providers: [ConfigurationFileService] },
+    );
 
     configurationService = await module.resolve(ConfigurationFileService);
-    service = await module.resolve(ProjectConfigurationService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ProjectConfigurationService, {
+      providers: [ConfigurationFileService],
+    });
+
+    expect(instance).toBeInstanceOf(ProjectConfigurationService);
   });
 
   // 🗂️ Discovery
@@ -389,9 +375,7 @@ describe(ProjectConfigurationService, () => {
   });
 
   it("names the project when its configuration threw something that is not an error", async () => {
-    const workspaceRoot = await mkdtemp(
-      path.join(tmpdir(), "callidescope-workspace-"),
-    );
+    const workspaceRoot = createTemporaryDirectory("callidescope-workspace");
     const projectRoot = path.join(workspaceRoot, "packages", "broken");
     await mkdir(projectRoot, { recursive: true });
     await writeFile(
@@ -519,10 +503,7 @@ describe(ProjectConfigurationService, () => {
   );
 
   it("refuses a field written as undefined, which says nothing about its members", async () => {
-    // `limits: undefined` is not the statement `maximumBreadth: undefined` is.
-    // A member written as undefined is a project saying it gates no breadth;
-    // the field written as undefined says nothing about either number, so it
-    // is the same gap as leaving the field out and is refused by that name.
+    // A field written as undefined says nothing about its members, so it is refused like a field left out.
     const workspaceRoot = await writeWorkspace({
       "packages/hollow": `export default {
         entryPoints: {
@@ -555,9 +536,7 @@ describe(ProjectConfigurationService, () => {
     // breadth, and `mermaid: undefined` says it publishes no diagram. Both are
     // written into the file rather than left out of it, which is the whole
     // distinction completeness buys.
-    const workspaceRoot = await mkdtemp(
-      path.join(tmpdir(), "callidescope-workspace-"),
-    );
+    const workspaceRoot = createTemporaryDirectory("callidescope-workspace");
     const projectRoot = path.join(workspaceRoot, "packages", "quiet");
     await mkdir(projectRoot, { recursive: true });
     await writeFile(

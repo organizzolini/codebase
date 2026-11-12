@@ -66,13 +66,8 @@ export class CallablesService {
   }
 
   /**
-   * Walks the files one program owns, skipping the ones it does not.
-   *
-   * Iterating the program's own source files rather than looking each owned
-   * path up in it. A workspace reached through a symlink — a macOS temp
-   * directory, a pnpm store — hands the program one spelling of a path and the
-   * ownership map another, and a lookup would then quietly find nothing rather
-   * than fail.
+   * Walks the files one program owns, iterating its source files so symlinked
+   * paths cannot miss the ownership map.
    */
   private collectFromProgram(
     args: CollectCallablesArguments & { projectProgram: ProjectProgram },
@@ -183,10 +178,7 @@ export class CallablesService {
 
   /**
    * Walks every owned file and returns the callables found, keyed by id.
-   *
-   * Each file is walked by the one program that owns it, so a package shared by
-   * several projects contributes its callables once rather than once per
-   * dependent.
+   * Each file is walked once, by the program that owns it.
    */
   public collect(args: CollectCallablesArguments): CallableCollection {
     const byId = new Map<CallableId, DiscoveredCallable>();

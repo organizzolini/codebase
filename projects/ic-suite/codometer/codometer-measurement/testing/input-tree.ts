@@ -1,11 +1,4 @@
-import {
-  mkdirSync,
-  mkdtempSync,
-  rmSync,
-  symlinkSync,
-  writeFileSync,
-} from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, symlinkSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 /** Words the generated source cycles through to keep its symbols distinct. */
@@ -21,12 +14,7 @@ const SOURCE_WORDS = [
 ] as const;
 
 /**
- * Builds source whose compressed size depends on the deflate level.
- *
- * Deliberately varied rather than repetitive: a file that compresses to almost
- * nothing does so at every level, and would pin the algorithm without pinning
- * the level. This one is 782 gzip bytes at level 9 and 881 at zlib's default,
- * so a level left unstated cannot pass the assertions that read it.
+ * Builds source whose gzip size depends on the deflate level, so a level left unstated fails the assertions.
  */
 function createGeneratedSource(functionCount: number): string {
   const lines: string[] = [];
@@ -41,13 +29,7 @@ function createGeneratedSource(functionCount: number): string {
   return `${lines.join("\n")}\n`;
 }
 
-/**
- * Contents of the input fixture tree, keyed by path relative to its root.
- *
- * A build directory rather than a source tree, because that is what an input
- * exists to name: every ignore file in every repository claims it, so nothing
- * but an outright glob can measure it.
- */
+/** Input fixture files by path, on disk for glob matching. */
 export const INPUT_FIXTURE_FILES: Readonly<Record<string, string>> = {
   ".hidden/secret.js": "export const secret = 1;\n",
   "dist/index.js": createGeneratedSource(128),
@@ -59,18 +41,9 @@ export const INPUT_FIXTURE_FILES: Readonly<Record<string, string>> = {
 };
 
 /**
- * Writes the input fixture tree to a fresh temporary directory.
- *
- * `dist/link.js` points at a file and `dist/loop` points at its own ancestor —
- * the first is followed the way every glob library follows links, the second
- * is what makes following directories forever a bad idea. `dist/broken.js`
- * points at nothing at all, which a build directory left half-cleaned holds.
- *
- * Every caller owes the tree a `removeInputTree`.
+ * Writes the input fixture tree into an empty directory, with a looping symlink and a broken one.
  */
-export function createInputTree(): string {
-  const root = mkdtempSync(path.join(tmpdir(), "codometer-input-"));
-
+export function createInputTree(root: string): string {
   for (const [relativePath, contents] of Object.entries(INPUT_FIXTURE_FILES)) {
     const absolutePath = path.join(root, relativePath);
     mkdirSync(path.dirname(absolutePath), { recursive: true });
@@ -88,9 +61,4 @@ export function createInputTree(): string {
   );
 
   return root;
-}
-
-/** Removes an input fixture tree, whether or not the suite that made it passed. */
-export function removeInputTree(root: string): void {
-  rmSync(root, { force: true, recursive: true });
 }

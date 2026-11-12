@@ -187,13 +187,19 @@ custom: [
 ],
 ```
 
-`kinds` is one or more of `class`, `enum`, `function`, `getter`, `interface`,
-`method`, `property`, `setter`; `modifiers` narrows to declarations carrying
+`kinds` is one or more of `class`, `enum`, `file`, `function`, `getter`,
+`interface`, `method`, `property`, `setter`, `signature`, `type`, `variable`;
+`modifiers` narrows to declarations carrying
 every named modifier from `abstract`, `async`, `export`, `override`, `private`,
 `protected`, `public`, `readonly`, `static`. Both are read literally from the
 syntax — a class member is a `method`, everything else callable is a
 `function` including an arrow, and a class field holding an arrow function is
-a `property` carrying none of the field's own modifiers.
+a `property` carrying none of the field's own modifiers. A `variable` is a
+`const`, `let`, or `var` statement, an arrow-holding one included; a `type` is a
+type alias; a `signature` is a property or method signature in an interface or
+type literal; and a `file` is the one JSDoc block at the top of a file that a
+blank line sets apart from the first statement, which is why no declaration
+claims it.
 
 `patterns` on a symbol counter narrows **which files are searched** rather than
 being what is counted. `group` places the badge after a named group's

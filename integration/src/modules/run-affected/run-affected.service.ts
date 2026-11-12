@@ -22,12 +22,10 @@ import type {
 /**
  * Runs one Nx target on the projects a CI change affects.
  *
- * Nx's task-based affected selects by each task's own inputs, so a dictionary
- * edit reaches only `spell-check` and a lockfile edit is diffed field by field
- * from `--base`/`--head`. One gap remains: `.nxignore` hides some conformetry
- * templates from Nx, so a template edit alone selects none of the instance
- * projects generated from it. With `INCLUDE_TEMPLATES`, a changed template adds
- * a second run over the conformetry config, an input of every instance project.
+ * `.nxignore` hides some conformetry templates from Nx, so a template edit
+ * alone selects none of the projects generated from it. With
+ * `INCLUDE_TEMPLATES`, a changed template adds a second run over the
+ * conformetry config.
  */
 @Injectable()
 export class RunAffectedService {
@@ -138,11 +136,8 @@ export class RunAffectedService {
   // 🌎 Public Methods
 
   /**
-   * Runs `nx affected` as planned, with this process's output streams, and
-   * stops at the first run that fails.
-   *
-   * @param plan - The runs `plan` produced.
-   * @returns The exit code of the first failing run, or 0.
+   * Runs each planned `nx affected` in turn, stopping at the first failure.
+   * @returns The first failing run's exit code, or 0.
    */
   public execute(plan: RunAffectedPlan): number {
     for (const run of plan.runs) {

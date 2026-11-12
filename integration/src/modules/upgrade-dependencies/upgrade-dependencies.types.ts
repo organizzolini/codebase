@@ -5,7 +5,7 @@ import type {
 
 // 🏷️ Types
 
-/** A step made of commands run one after another, stopping at the first to fail. */
+/** A step's commands, run in turn until one fails. */
 export interface CommandStep {
   commands: readonly Command[];
   /** What the pull request calls the step when it is skipped. */
@@ -14,10 +14,10 @@ export interface CommandStep {
   recover?: readonly Command[];
 }
 
-/** A step that failed and was undone, with the label it is reported under. */
+/** A failed, undone step, with its report label. */
 export type Failure = SkippedStep & { label: string };
 
-/** A step that failed and was undone, for the pull request to report. */
+/** A failed, undone step, for the pull request to report. */
 export interface SkippedStep {
   exitCode: number;
   /** The end of what the step printed, which names why it failed. */

@@ -1,21 +1,14 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import {
+  createTemporaryDirectory,
+  useTemporaryDirectory,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { mockProcesses, processFailure } from "../../../testing/mocks";
@@ -25,14 +18,14 @@ import { PostgresqlExportCommand } from "./postgresql-export.command";
 
 import type { SpawnedProcess } from "../../../testing/mocks";
 
-vi.mock("node:child_process", async () => {
-  const { childProcessMock } = await import("../../../testing/mocks");
-  return childProcessMock;
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockPostgresChildProcess } = await import("../../../testing/mocks");
+  return mockPostgresChildProcess(await importOriginal());
 });
 
 /** Where successful exports write, so none lands in the working directory. */
-const DIRECTORY = fs.mkdtempSync(path.join(os.tmpdir(), "export-unit-dump-"));
-const DUMP = path.join(DIRECTORY, "fixture.dump");
+const DIRECTORY = useTemporaryDirectory("export-unit-dump");
+const dump = (): string => path.join(DIRECTORY(), "fixture.dump");
 
 /** The temporary file pg_dump writes beside `DUMP` before it is renamed. */
 const PARTIAL_PATTERN = /^--file=.*fixture\.dump\.[\w-]+\.partial$/u;
@@ -58,63 +51,29 @@ async function runExport(
 }
 
 describe(PostgresqlExportCommand, () => {
-  let command: PostgresqlExportCommand;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PostgresqlExportCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: PostgresqlUtilitiesService,
-          useValue: createMock<PostgresqlUtilitiesService>(),
-        },
-      ],
-    }).compile();
-
-    command = await module.resolve(PostgresqlExportCommand);
-  });
-
   beforeEach(() => {
-    fs.rmSync(DUMP, { force: true });
+    fs.rmSync(dump(), { force: true });
   });
 
-  afterAll(() => {
-    fs.rmSync(DIRECTORY, { force: true, recursive: true });
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PostgresqlExportCommand, {
+      mocks: [PostgresqlUtilitiesService],
+    });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+    expect(instance).toBeInstanceOf(PostgresqlExportCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PostgresqlExportCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: PostgresqlUtilitiesService,
-          useValue: createMock<PostgresqlUtilitiesService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("PostgresqlExportCommand");
+    await expectLoggerContext(PostgresqlExportCommand, {
+      mocks: [PostgresqlUtilitiesService],
+    });
   });
 
   describe("fails fast, before any process starts", () => {
     it.each([
       [
         "no --source-uri",
-        ["--table", "widgets", "--data", "--file", DUMP],
+        ["--table", "widgets", "--data", "--file", "fixture.dump"],
         "--source-uri is required",
       ],
       [
@@ -126,13 +85,13 @@ describe(PostgresqlExportCommand, () => {
           "widgets",
           "--data",
           "--file",
-          DUMP,
+          "fixture.dump",
         ],
         "--source-uri must start with postgresql://",
       ],
       [
         "no --table",
-        ["--source-uri", SOURCE_URI, "--data", "--file", DUMP],
+        ["--source-uri", SOURCE_URI, "--data", "--file", "fixture.dump"],
         "--table is required: name each table to export, e.g. --table <schema>.<table>, or --schema <schema> --table <table>",
       ],
       [
@@ -169,7 +128,7 @@ describe(PostgresqlExportCommand, () => {
       "archive.parts",
       "--data",
       "--file",
-      DUMP,
+      dump(),
     ]);
 
     expect(result.exitCode).toBe(0);
@@ -202,7 +161,7 @@ describe(PostgresqlExportCommand, () => {
       "widgets",
       ...contentFlags,
       "--file",
-      DUMP,
+      dump(),
     ]);
 
     expect(dumpsOf(spawned)[0]?.args.slice(4, -1)).toStrictEqual(dumpFlags);
@@ -218,7 +177,7 @@ describe(PostgresqlExportCommand, () => {
       "sample.widgets",
       "--ddl",
       "--file",
-      DUMP,
+      dump(),
     ]);
 
     expect(dumpsOf(spawned)[0]?.args).toContain("--table=sample.widgets");
@@ -235,7 +194,7 @@ describe(PostgresqlExportCommand, () => {
       "--data",
       "--ddl",
       "--file",
-      DUMP,
+      dump(),
     ]);
 
     expect(dumpsOf(spawned)[0]?.args.join(" ")).not.toContain(PASSWORD);
@@ -254,20 +213,20 @@ describe(PostgresqlExportCommand, () => {
   });
 
   describe("checks pg_dump's version before any database work", () => {
-    const argv = [
+    const argv = (): string[] => [
       "--source-uri",
       SOURCE_URI,
       "--table",
       "widgets",
       "--data",
       "--file",
-      DUMP,
+      dump(),
     ];
 
     it("asks pg_dump for its version first, then dumps", async () => {
       const spawned = mockProcesses();
 
-      await runExport(argv);
+      await runExport(argv());
 
       expect(spawned.map(({ args }) => args[0])).toStrictEqual([
         "--version",
@@ -289,7 +248,7 @@ describe(PostgresqlExportCommand, () => {
     ])("stops at %s without dumping", async (_case, version, message) => {
       const spawned = mockProcesses({ version });
 
-      const result = await runExport(argv);
+      const result = await runExport(argv());
 
       expect(result.exitCode).toBe(1);
       expect(result.stderr).toContain(message);
@@ -313,12 +272,8 @@ describe(PostgresqlExportCommand, () => {
     ];
 
     beforeEach(() => {
-      directory = fs.mkdtempSync(path.join(os.tmpdir(), "export-unit-"));
+      directory = createTemporaryDirectory("export-unit");
       file = path.join(directory, "fixture.dump");
-    });
-
-    afterEach(() => {
-      fs.rmSync(directory, { force: true, recursive: true });
     });
 
     it("exits non-zero naming the file and --overwrite, starting no process and leaving the file unchanged", async () => {

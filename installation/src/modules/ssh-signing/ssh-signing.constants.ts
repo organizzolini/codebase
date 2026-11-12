@@ -1,6 +1,6 @@
 // ♟️ Constants
 
-/** The hash git gives an empty tree, which every repository can commit to. */
+/** Git's empty-tree hash, which every repository can commit to. */
 export const EMPTY_TREE_HASH = "4b825dc642cb6eb9a060e54bf8d69288fbee4904";
 
 /** The message of the throwaway commit signed to learn the signer's key. */

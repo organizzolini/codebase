@@ -77,9 +77,7 @@ export class LinesResolver {
   // 🔗 Relations
 
   /**
-   * Pages a line's tokens in index order, each with its dictionary word. The
-   * tokens of every line on a page are loaded together, in a fixed number of
-   * statements however many lines and tokens there are.
+   * Pages a line's tokens in index order, loading every line's tokens on a page together.
    */
   @ResolveField(() => TokenConnectionType, { name: "tokens" })
   public async tokensForLine(

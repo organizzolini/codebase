@@ -31,12 +31,7 @@ export interface JupyterResult {
   totalNodes: number;
 }
 
-/**
- * What the notebooks themselves report, before any language analyzer runs.
- *
- * The two source lists are what the notebook contributes to the Python and
- * markdown analyzers: cell bodies that exist in no file of their own.
- */
+/** Notebook counts before language analysis; sources are cell bodies, not files. */
 export interface NotebookParts {
   cells: number;
   codeCells: number;

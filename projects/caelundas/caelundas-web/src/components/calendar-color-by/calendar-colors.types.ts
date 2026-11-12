@@ -1,8 +1,7 @@
 // 🏷️ Types
 
 /**
- * One kind of event and the color it is drawn in: a tag's path from its
- * root, which also colors every tag beneath it.
+ * A tag path and its color, applying to the tags beneath.
  */
 export interface EventColorRule {
   color: string;

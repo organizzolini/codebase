@@ -6,10 +6,7 @@ import type { DynamicModule, Type } from "@nestjs/common";
 /**
  * Root module for a package that bootstraps nothing of its own.
  *
- * A library package has no `MainModule` to explore from, so this stands in as
- * one and imports every module the package defines. The global `ConfigModule`
- * comes with it because a package whose module reads configuration in a
- * `useFactory` cannot be scanned without one.
+ * Stands in as a `MainModule` to explore from, importing every module the package defines. The global `ConfigModule` comes along, since a `useFactory` reading configuration cannot scan without it.
  */
 @Module({})
 export class SyntheticRootModule {

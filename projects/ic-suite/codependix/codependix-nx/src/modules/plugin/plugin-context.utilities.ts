@@ -35,16 +35,8 @@ export async function resolvePluginService(): Promise<PluginService> {
 }
 
 /**
- * Builds, or returns, this process's application context.
- *
- * Nx calls plugins from module-level functions with no injection of their own,
- * so bare functions are the only possible entry points; they bootstrap the
- * NestJS context and hand back a service, which is where the logic lives.
- *
- * Cached on `globalThis` rather than in a module variable because the Nx
- * daemon is long-lived and may load this module more than once. The pending
- * promise is stored, not the context, so concurrent callers share one
- * bootstrap instead of racing to build two.
+ * Builds, or returns, the process's application context. Cached on `globalThis`, so the
+ * daemon shares one bootstrap.
  */
 async function resolvePluginContext(): Promise<INestApplicationContext> {
   const globalScope: PluginContextGlobal = globalThis;

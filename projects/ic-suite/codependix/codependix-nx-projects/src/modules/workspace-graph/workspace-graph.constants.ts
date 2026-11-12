@@ -1,6 +1,6 @@
 // ♟️ Constants
 
-/** Rendered in place of a diagram for a workspace with no Nx edges at all. */
+/** Replaces the diagram of a workspace with no Nx edges. */
 export const WORKSPACE_GRAPH_UNCONNECTED =
   "_This workspace has no Nx dependency edges between its projects._";
 

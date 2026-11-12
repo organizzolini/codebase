@@ -22,7 +22,7 @@ export const describeInvalidName = (name: string): string =>
     "   Worktree directory names must be lowercase kebab-case (letters, numbers, hyphens). Avoid spaces, uppercase characters, and special symbols.",
   ].join("\n");
 
-/** Said for a worktree inside the main checkout that git does not ignore. */
+/** Said for an unignored worktree inside the main checkout. */
 export const describeUnignoredWorktree = (root: string): string =>
   [
     `❌ Worktree directory is not gitignored: "${root}"`,

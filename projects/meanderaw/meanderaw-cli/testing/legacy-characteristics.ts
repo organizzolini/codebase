@@ -1,29 +1,12 @@
 /**
- * What the retired monolithic `CharacteristicsService` computed for a fixed
- * set of Codes, captured from it before it was deleted, so the evaluators
- * that replaced it stay pinned to the values it produced rather than to a
- * reading of themselves.
- *
- * The fixtures are the first, middle, and last enumerated Code of each
- * of the retired classifier's groups in the local database, the smallest
- * hardcoded Code of each group the enumeration never reaches, and three Codes whose repeating
- * unit is narrower than the Code as filed, so the unreduced tile-crossing
- * reading is exercised across every column rotation of a real tiling.
- *
- * Each entry holds one line per fixture, its values space-separated in
- * {@link LEGACY_FIELD_KEYS} order, so the whole capture stays readable at a
- * glance and a single changed value shows up as a single changed line.
+ * What the retired `CharacteristicsService` computed for fixed Codes, so replacement evaluators stay pinned to its values.
+ * Fixtures include each group's first, middle, and last enumerated Code, and tilings narrower than the Code as filed.
+ * Each entry holds one line per fixture, its values space-separated in {@link LEGACY_FIELD_KEYS} order.
  */
 
 // ♟️ Constants
 
-/**
- * The record fields the retired computation also produced, under their new
- * keys; `tileCrossing` is the retired `crossesTheSeam` flag, which the
- * record now states as `tileCrossingCount > 0`. The compound predicates it
- * also produced are left out: they were redefined as combinations of other
- * Characteristics, so they no longer match the retired values by design.
- */
+/** Retired fields under new keys; `tileCrossing` replaces `crossesTheSeam`. */
 export const LEGACY_FIELD_KEYS = [
   "bettiNumber0Count",
   "bettiNumber1Count",
@@ -146,11 +129,7 @@ export const LEGACY_FIELDS: Readonly<Record<string, string>> = {
     "1 0 2 0 1 0 0 0 3 0 true true 0 2 4 false true 1 1 true true 1 0",
 };
 
-/**
- * Each fixture Code drawn 1, 2, and 3 times side by side, one run per
- * tiling separated by ` | `: the retired `seamComponents` score of the tiling
- * cut at every column rotation in turn, starting from rotation 0.
- */
+/** Fixture tilings with their retired `seamComponents` scores. */
 export const LEGACY_TILE_CROSSING_COMPONENT_DELTAS: Readonly<
   Record<string, string>
 > = {
@@ -212,7 +191,7 @@ export const LEGACY_TILE_CROSSING_COMPONENT_DELTAS: Readonly<
     "1 1 1 1 1 1 | 1 1 1 1 1 1 1 1 1 1 1 1 | 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1",
 };
 
-/** Each fixture Code drawn 1, 2, and 3 times side by side: whether the retired computation called the tiling reducible. */
+/** Fixture tilings, and which the retired code called reducible. */
 export const LEGACY_REDUCIBILITY: Readonly<Record<string, string>> = {
   "01x02y00": "false true true",
   "01x02y03": "false true true",

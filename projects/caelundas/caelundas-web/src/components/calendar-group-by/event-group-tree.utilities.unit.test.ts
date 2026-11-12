@@ -1,27 +1,37 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { createTestEventsDatabase } from "../../../testing/events-database";
+import { serveCalendarApi } from "../../../testing/calendar-api";
+import {
+  findEvents,
+  findFacets,
+} from "../events-calendar/events-api.utilities";
 
-import { compileEventGrouping } from "./event-group-compiler.utilities";
 import { createEventGroupFields } from "./event-group-fields.utilities";
 import { formatDerivedKey } from "./event-group-labels.utilities";
 import { buildEventGroups } from "./event-group-tree.utilities";
 
 import type { EventGrouping, EventGroupNode } from "./event-groups.types";
 
-const database = createTestEventsDatabase();
-const fields = createEventGroupFields(await database.findFacets());
+const WINDOW = {
+  end: new Date("2027-01-01T00:00:00.000Z"),
+  start: new Date("2026-01-01T00:00:00.000Z"),
+};
+let fields: ReturnType<typeof createEventGroupFields> = [];
 
 /**
  * The seeded events grouped by a grouping, as the page would group them.
  */
 async function group(grouping: EventGrouping): Promise<EventGroupNode[]> {
-  const events = await database.findEvents({
-    groups: compileEventGrouping(grouping),
-    window: {
-      end: new Date("2027-01-01T00:00:00.000Z"),
-      start: new Date("2026-01-01T00:00:00.000Z"),
+  serveCalendarApi();
+
+  const events = await findEvents({
+    grouping: {
+      levels: grouping.map((level) => ({
+        ...level,
+        tags: [...(level.tags ?? [])],
+      })),
     },
+    period: WINDOW,
   });
 
   return buildEventGroups(events, grouping, fields);
@@ -39,6 +49,11 @@ function summarize(nodes: readonly EventGroupNode[]): unknown[] {
 }
 
 describe("event group tree", () => {
+  beforeAll(async () => {
+    serveCalendarApi();
+    fields = createEventGroupFields(await findFacets());
+  });
+
   describe(buildEventGroups, () => {
     it("counts an event under two planets in each, and once above them", async () => {
       const tree = await group([
@@ -77,12 +92,9 @@ describe("event group tree", () => {
     });
 
     it("puts events read without keys in a field's last group", async () => {
-      const events = await database.findEvents({
-        window: {
-          end: new Date("2027-01-01T00:00:00.000Z"),
-          start: new Date("2026-01-01T00:00:00.000Z"),
-        },
-      });
+      serveCalendarApi();
+
+      const events = await findEvents({ period: WINDOW });
 
       expect(
         summarize(
@@ -92,12 +104,9 @@ describe("event group tree", () => {
     });
 
     it("counts an event once in a group it is keyed to twice", async () => {
-      const [first] = await database.findEvents({
-        window: {
-          end: new Date("2027-01-01T00:00:00.000Z"),
-          start: new Date("2026-01-01T00:00:00.000Z"),
-        },
-      });
+      serveCalendarApi();
+
+      const [first] = await findEvents({ period: WINDOW });
       const twice = { key: "tag-x", label: null, path: "Type / X" };
 
       expect(

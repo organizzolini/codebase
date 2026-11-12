@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { MarkdownNodesService } from "./markdown-nodes.service";
 
@@ -9,15 +10,15 @@ describe(MarkdownNodesService, () => {
   let service: MarkdownNodesService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [MarkdownNodesService],
-    }).compile();
+    const built = await buildTestingModule(MarkdownNodesService);
 
-    service = await module.resolve(MarkdownNodesService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(MarkdownNodesService);
+
+    expect(instance).toBeInstanceOf(MarkdownNodesService);
   });
 
   describe("filterNodes", () => {
@@ -87,11 +88,7 @@ describe(MarkdownNodesService, () => {
   describe("matches, by node type", () => {
     const CELL: MarkdownNode = { type: "tableCell" };
 
-    /**
-     * Node pairs the tree walk rarely reaches on its own: inline content is
-     * usually settled by the paragraph's text before its children are
-     * compared, so each comparator is driven directly here.
-     */
+    /** Node pairs the walk rarely reaches, so comparators run directly. */
     const PAIRS: {
       differing: MarkdownNode;
       matching: MarkdownNode;

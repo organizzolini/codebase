@@ -14,7 +14,7 @@ import { TagNode } from "./entities/tag-node.entity";
 import { Tag } from "./entities/tag.entity";
 import { Migration1793990506900 } from "./migrations/1793990506900-migration";
 
-/** The tables, derived tables and view every application that opens the caelundas schema shares. */
+/** Tables, derived tables, and view shared by every caelundas-schema app. */
 export const CAELUNDAS_DATABASE_ENTITIES = [
   CalendarEvent,
   CalendarEventDerivedTime,
@@ -27,16 +27,10 @@ export const CAELUNDAS_DATABASE_ENTITIES = [
   TagNode,
 ] as const;
 
-/** Every migration, in order, for the test harness; the runtime module runs none. */
+/** All migrations in order, for tests; the runtime runs none. */
 export const CAELUNDAS_DATABASE_MIGRATIONS = [Migration1793990506900] as const;
 
-/**
- * The data source the TypeORM command line reads for
- * `nx run caelundas-db:migration:*`, built from the same options as the
- * runtime module. Reads only `CAELUNDAS_POSTGRES_*`, defaulting to
- * `caelundas_development`.`caelundas` as `caelundas_username`, and never
- * synchronizes.
- */
+/** TypeORM CLI data source; reads only `CAELUNDAS_POSTGRES_*`, never syncs. */
 export const caelundasDataSource = createDataSource({
   entities: [...CAELUNDAS_DATABASE_ENTITIES],
   migrations: ["src/modules/caelundas-database/migrations/*.ts"],

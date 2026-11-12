@@ -1,14 +1,20 @@
 import { spawnSync } from "node:child_process";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { IssueGithubService } from "./issue-github.service";
 import { GITHUB_CLI_BINARY } from "./issue-metadata.constants";
 
-vi.mock("node:child_process", () => ({
-  spawnSync: vi.fn<typeof spawnSync>(),
-}));
+import type * as Testing from "@codebase/testing";
+
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockChildProcess } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
+
+  return mockChildProcess(await importOriginal());
+});
 
 /** What `spawnSync` hands back, as much of it as this service reads. */
 interface SpawnCompletion {
@@ -35,20 +41,19 @@ describe(IssueGithubService, () => {
   };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [IssueGithubService],
-    }).compile();
+    const built = await buildTestingModule(IssueGithubService);
 
-    service = await module.resolve(IssueGithubService);
+    service = built.instance;
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(IssueGithubService);
+
+    expect(instance).toBeInstanceOf(IssueGithubService);
   });
 
   describe("run", () => {

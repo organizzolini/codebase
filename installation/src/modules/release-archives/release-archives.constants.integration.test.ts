@@ -21,7 +21,7 @@ const SETUP_CODEBASE_ACTION = readFileSync(
   "utf8",
 );
 
-/** Where the cloud devcontainer pins each tool: a feature option, or an environment variable. */
+/** Where the cloud devcontainer pins each tool, by option or variable. */
 const PINS: Record<string, RegExp> = {
   gitleaks: /"GITLEAKS_VERSION":\s*"([^"]+)"/u,
   helm: /kubectl-helm-minikube:1"\s*:\s*\{[^}]*?"helm":\s*"([^"]+)"/u,

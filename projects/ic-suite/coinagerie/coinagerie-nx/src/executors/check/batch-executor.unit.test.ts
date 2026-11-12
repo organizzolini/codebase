@@ -3,6 +3,8 @@ import { fileURLToPath } from "node:url";
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { captureOutput } from "@codebase/testing";
+
 import { FAKE_COMMAND } from "../../../testing/fake-command-line";
 
 import checkBatchExecutor from "./batch-executor";
@@ -11,9 +13,9 @@ import type {
   CheckBatchExecutorArguments,
   CheckExecutorOptions,
 } from "./executor.types";
-import type { MockInstance } from "vitest";
+import type { CapturedOutput } from "@codebase/testing";
 
-/** The workspace root: this project, so the fake command line resolves from it. */
+/** Workspace root: this project, so the fake command resolves. */
 const ROOT = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../../..",
@@ -48,11 +50,11 @@ function buildArguments(
 }
 
 describe(checkBatchExecutor, () => {
-  let write: MockInstance<typeof process.stdout.write>;
+  let output: CapturedOutput;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+    output = captureOutput();
   });
 
   it("judges every task from one process, each by its own verdict", async () => {
@@ -78,7 +80,7 @@ describe(checkBatchExecutor, () => {
     await checkBatchExecutor(...buildArguments(["a", "bad-b"]));
 
     // Nx stores a batch task's output but never prints it.
-    const printed = write.mock.calls.map(([chunk]) => String(chunk)).join("");
+    const printed = output.stdout();
 
     expect(printed).toContain("bad-b:coinagerie-check");
     expect(printed).toContain("missing: argv");

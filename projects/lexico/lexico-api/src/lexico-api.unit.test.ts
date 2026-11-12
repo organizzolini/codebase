@@ -3,6 +3,8 @@ import { NestFactory } from "@nestjs/core";
 import { ExpressAdapter } from "@nestjs/platform-express";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { overrideEnvironment } from "@codebase/testing";
+
 import type { INestApplication } from "@nestjs/common";
 
 const setContextMock = vi.fn<(context: string) => void>();
@@ -102,8 +104,10 @@ describe("lexico api bootstrap suite", () => {
   it("bootstraps nest application with custom LEXICO_API_PORT and LEXICO_API_LIGHTSHIP_PORT", async () => {
     expect.hasAssertions();
 
-    process.env["LEXICO_API_LIGHTSHIP_PORT"] = "9005";
-    process.env["LEXICO_API_PORT"] = "9999";
+    overrideEnvironment({
+      LEXICO_API_LIGHTSHIP_PORT: "9005",
+      LEXICO_API_PORT: "9999",
+    });
     const listenMock = vi
       .fn<() => Promise<INestApplication>>()
       .mockResolvedValue(undefined as unknown as INestApplication);
@@ -122,8 +126,5 @@ describe("lexico api bootstrap suite", () => {
 
     expect(createLightshipMock).toHaveBeenCalledWith({ port: 9005 });
     expect(listenMock).toHaveBeenCalledWith(9999);
-
-    delete process.env["LEXICO_API_LIGHTSHIP_PORT"];
-    delete process.env["LEXICO_API_PORT"];
   });
 });

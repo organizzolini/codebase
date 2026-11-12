@@ -8,11 +8,9 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of each positional form of the ں
- * (Arabic dotless noon) skeleton — final and isolated — one per corner and
- * clockwise rotation, each counting that form's base template, which faces
- * Southwest, drawn that way. A letter sharing a form's skeleton, differing from
- * it only by dots or by other marks, is an alias of that form.
+ * Provides the sixteen orientation evaluators of each positional form of the ں skeleton, final and
+ * isolated. One per corner and clockwise rotation, each counting that form's base template, which
+ * faces Southwest. Letters sharing a skeleton, differing only by dots, are aliases.
  */
 @Injectable()
 export class NoonArabicLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -49,28 +47,10 @@ export class NoonArabicLetterCharacteristicsService implements CharacteristicEva
 
   // 🔐 Private Fields
 
-  /**
-   * The upright ں (final Arabic dotless noon) glyph's points as hexadecimal
-   * Code digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   * ╷ ┌╴
-   * │ │
-   * └─┘
-   * ```
-   */
+  /** Upright final ں glyph as hexadecimal Code digits, facing Southwest. */
   private readonly finalTemplate: readonly string[] = ["4.61", "c.c.", "a39."];
 
-  /**
-   * The upright ں (isolated Arabic dotless noon) glyph's points as hexadecimal
-   * Code digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   * ╷ ╷
-   * │ │
-   * └─┘
-   * ```
-   */
+  /** Upright isolated ں glyph as hexadecimal Code digits, facing Southwest. */
   private readonly isolatedTemplate: readonly string[] = ["4.4", "c.c", "a39"];
 
   // 🔑 Public Fields

@@ -1,7 +1,8 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { TileEnumerationService } from "../enumeration/tile-enumeration.service";
 
@@ -11,10 +12,11 @@ import { DRAW_POOL_BATCH_SIZE, DrawWorkerError } from "./draw.constants";
 
 import type { MeanderRecord } from "../database/database.types";
 import type { DrawWorkerTask } from "./draw.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { EventEmitter } from "node:events";
 import type * as NodeUrl from "node:url";
 
-/** How a faked thread answers one batch, and every thread spawned so far. */
+/** A fake thread's answer, and every thread spawned. */
 const { threads } = vi.hoisted(() => {
   const state: {
     compiled: boolean;
@@ -65,6 +67,12 @@ vi.mock("node:url", async (importOriginal) => {
   };
 });
 
+/** Pool options for in-process drawing: no threads, mocked collaborators. */
+const MODULE_OPTIONS: TestingModuleOptions = {
+  mocks: [DrawWorkerService, TileEnumerationService],
+  providers: [{ provide: ConfigService, useValue: { get: () => 0 } }],
+};
+
 describe(DrawPoolService, () => {
   let service: DrawPoolService;
   let drawWorkerService: DrawWorkerService;
@@ -75,28 +83,20 @@ describe(DrawPoolService, () => {
   const second = createMock<MeanderRecord>({ code: "second" });
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DrawPoolService,
-        { provide: ConfigService, useValue: { get: () => 0 } },
-        {
-          provide: DrawWorkerService,
-          useValue: createMock<DrawWorkerService>(),
-        },
-        {
-          provide: TileEnumerationService,
-          useValue: createMock<TileEnumerationService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(DrawPoolService, MODULE_OPTIONS);
 
-    service = await module.resolve(DrawPoolService);
-    drawWorkerService = await module.resolve(DrawWorkerService);
-    tileEnumerationService = await module.resolve(TileEnumerationService);
+    service = built.instance;
+    drawWorkerService = built.mock(DrawWorkerService);
+    tileEnumerationService = built.mock(TileEnumerationService);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      DrawPoolService,
+      MODULE_OPTIONS,
+    );
+
+    expect(instance).toBeInstanceOf(DrawPoolService);
   });
 
   describe("batches", () => {
@@ -153,19 +153,15 @@ describe(DrawPoolService, () => {
     };
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(DrawPoolService, {
+        mocks: [DrawWorkerService],
         providers: [
-          DrawPoolService,
           { provide: ConfigService, useValue: { get: () => 2 } },
-          {
-            provide: DrawWorkerService,
-            useValue: createMock<DrawWorkerService>(),
-          },
           { provide: TileEnumerationService, useValue: tileEnumerationService },
         ],
-      }).compile();
+      });
 
-      threaded = await module.resolve(DrawPoolService);
+      threaded = built.instance;
     });
 
     afterEach(async () => {

@@ -1,7 +1,6 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
-import { resolveEventFilterCollections } from "../../components/calendar-filters/event-filter-collections.utilities";
-import { compileEventFilter } from "../../components/calendar-filters/event-filter-compiler.utilities";
+import { toEventFilterInput } from "../../components/calendar-filters/event-filter-input.utilities";
 import {
   isSameEventFilter,
   toLinkedEventFilter,
@@ -10,31 +9,22 @@ import {
 import { getDefaultFilter } from "./use-filter-query.utilities";
 
 import type { EventFilterQuery } from "../../components/calendar-filters/event-filters.types";
-import type { EventFacet } from "../../components/events-calendar/events-database.types";
+import type { ResolvedPreset } from "../../components/calendar-filters/presets.types";
 import type { UseFilterQueryResult } from "./use-filter-query.types";
 
 // 🧩 Hook
 
 /**
- * Holds the filter tree the builder edits and the collections it can be
- * replaced with. A link with no filter opens on the default collection. Only
- * a change to the link itself replaces the tree: the link lags an edit until
- * the calendar has reloaded, and must not undo it meanwhile. An edit that
- * leaves the query as it was, such as a rule that is not finished yet, stays
- * here rather than reloading the calendar, and a collection replaces the
- * whole tree and is written to the link at once.
+ * Holds the filter tree and presets. Only a link change replaces the tree, so
+ * an edit is not undone.
  */
 export function useFilterQuery(
   filter: EventFilterQuery | undefined,
-  facets: readonly EventFacet[],
+  presets: readonly ResolvedPreset[],
   onFilterChange: (filter: EventFilterQuery) => void,
 ): UseFilterQueryResult {
   // 🪝 Hooks
-  const collections = useMemo(
-    () => resolveEventFilterCollections(facets),
-    [facets],
-  );
-  const defaultFilter = getDefaultFilter(collections);
+  const defaultFilter = getDefaultFilter(presets);
   const [query, setQuery] = useState(filter ?? defaultFilter);
   const [seenFilter, setSeenFilter] = useState(filter);
 
@@ -52,13 +42,13 @@ export function useFilterQuery(
     setQuery(next);
 
     if (
-      JSON.stringify(compileEventFilter(next)) !==
-      JSON.stringify(compileEventFilter(query))
+      JSON.stringify(toEventFilterInput(next)) !==
+      JSON.stringify(toEventFilterInput(query))
     ) {
       onFilterChange(toLinkedEventFilter(next));
     }
   };
-  const handleCollectionSelect = (next: EventFilterQuery): void => {
+  const handlePresetSelect = (next: EventFilterQuery): void => {
     setQuery(next);
     onFilterChange(toLinkedEventFilter(next));
   };
@@ -67,8 +57,7 @@ export function useFilterQuery(
 
   // 🎁 Result
   return {
-    collections,
-    handleCollectionSelect,
+    handlePresetSelect,
     handleQueryChange,
     query,
   };

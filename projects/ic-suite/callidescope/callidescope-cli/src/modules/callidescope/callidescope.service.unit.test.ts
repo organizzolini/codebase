@@ -16,10 +16,9 @@ import {
 } from "@callidescope/graph";
 import { ProjectReportsService } from "@callidescope/output";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 import {
@@ -39,6 +38,7 @@ import type {
   ResolvedCallidescopeConfiguration,
 } from "@callidescope/configuration";
 import type { CallGraphResult } from "@callidescope/core";
+import type { LoggerService } from "@codebase/observability";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
 /** The real configuration facade, resolved once by `beforeAll` below. */
@@ -131,10 +131,7 @@ function buildSubject(args: {
 }
 
 /**
- * Resolves limits the way a real run does, through the real resolver.
- *
- * The one resolver rather than a second copy of the inheritance rules: a test
- * that worked them out for itself could pass while the tool disagreed.
+ * Resolves limits through the real resolver, so tests cannot disagree with the tool's inheritance rules.
  */
 function resolveLimits(args: {
   projectConfigurations?: readonly LoadedProjectConfiguration[];
@@ -151,26 +148,24 @@ function resolveLimits(args: {
 }
 
 describe(CallidescopeService, () => {
-  let service: CallidescopeService;
-
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(CallidescopeService, {
       imports: [...ANALYSIS_MODULES, ConfigurationModule],
-      providers: [
-        CallidescopeService,
-        GraphAssemblyService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+      providers: [GraphAssemblyService],
+    });
 
-    service = await module.resolve(CallidescopeService);
     // The real facade, wired by its own module, so `resolveLimits` below runs
     // the tool's own resolver rather than a second copy of its rules.
-    configurationService = await module.resolve(ConfigurationService);
+    configurationService = await built.module.resolve(ConfigurationService);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(CallidescopeService, {
+      imports: [...ANALYSIS_MODULES, ConfigurationModule],
+      providers: [GraphAssemblyService],
+    });
+
+    expect(instance).toBeInstanceOf(CallidescopeService);
   });
 
   it("logs a summary when the analysis finishes", () => {
@@ -209,12 +204,9 @@ describe(CallidescopeService, () => {
   });
 
   it("names the logged depth for the trace rather than for one project", () => {
-    // A scoped run builds programs for its whole dependency closure, so this
-    // number routinely belongs to a project the run was never pointed at —
-    // `tools/synchronization` printed a traced seventeen while owning ten.
-    // Under a bare `maximumDepth` it reads as the number to write into that
-    // project's own limit, which would be headroom. Pinned here because the
-    // name is the entire fix, and a rename back would be silent.
+    // A scoped run traces its dependency closure, so this number can belong to a
+    // project it was never pointed at. Under a bare `maximumDepth` it would read as
+    // that project's limit, which would be headroom. The name is the fix.
     const projectProgram = buildFixtureProgram({
       "packages/example/src/index.ts": `
         function inner(): void {}

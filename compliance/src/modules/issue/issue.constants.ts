@@ -14,7 +14,7 @@ export const SWEEP_EVENTS: readonly string[] = [
   "workflow_dispatch",
 ];
 
-/** The argument that lets a local run write, as in `issue 12 write`. */
+/** The argument that lets a local run write. */
 export const WRITE_ARGUMENT = "write";
 
 /** What the command prints when it cannot tell what to do. */

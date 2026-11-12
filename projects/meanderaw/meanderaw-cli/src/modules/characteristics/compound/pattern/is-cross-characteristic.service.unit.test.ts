@@ -1,8 +1,9 @@
 // Fragments of hexadecimal meander Codes used as test fixtures, not words.
 // cspell:ignore ccccffcccca ccffcca ccffcccca
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -23,17 +24,12 @@ describe(IsCrossCharacteristicService, () => {
     let service: IsCrossCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const real = await buildTestingModule(CharacteristicContextService, {
         imports: [CodeModule, PatternCharacteristicsModule, MatrixModule],
-        providers: [CharacteristicContextService],
-      }).compile();
+      });
 
-      contextService = await module.resolve(CharacteristicContextService);
-      service = await module.resolve(IsCrossCharacteristicService);
-    });
-
-    it("is defined", () => {
-      expect(service).toBeDefined();
+      contextService = real.instance;
+      service = await real.module.resolve(IsCrossCharacteristicService);
     });
 
     it.each([
@@ -81,9 +77,8 @@ describe(IsCrossCharacteristicService, () => {
     let service: IsCrossCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(IsCrossCharacteristicService, {
         providers: [
-          IsCrossCharacteristicService,
           {
             provide: CrossCountCharacteristicService,
             useValue: { compute: (): number => values.crossCount },
@@ -101,9 +96,9 @@ describe(IsCrossCharacteristicService, () => {
             useValue: { compute: (): number => values.freeEndCount },
           },
         ],
-      }).compile();
+      });
 
-      service = await module.resolve(IsCrossCharacteristicService);
+      service = built.instance;
     });
 
     beforeEach(() => {

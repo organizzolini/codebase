@@ -47,13 +47,7 @@ export type {
   ResolvedProjectSelection,
 } from "./modules/projects/projects.types";
 
-/**
- * Infers this plugin's targets onto every project holding a `tsconfig.json`.
- *
- * Nx hands this every `project.json` at once, which is why inference reads the
- * plugin options a single time inside `inferTargets` rather than once per
- * project.
- */
+/** Infers targets onto each project with a `tsconfig.json`. */
 const createNodes: CreateNodes = [
   PROJECT_CONFIGURATION_GLOB,
   async (

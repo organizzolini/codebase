@@ -45,7 +45,7 @@ export const PACKAGE_MANIFEST_SCHEMA = z.looseObject({
   version: z.string().min(1),
 });
 
-/** The complete list of 36 publishable package directories across the five IC suites. */
+/** All 36 publishable package directories across the five IC suites. */
 export const PUBLISHABLE_PACKAGE_PROJECTS = [
   // Conformetry (8)
   "projects/ic-suite/conformetry/conformetry-cli",

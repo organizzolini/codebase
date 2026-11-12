@@ -9,9 +9,8 @@ export interface TemplateDefinition {
   /** The template's directory name, used to identify it. */
   readonly name: string;
   /**
-   * Every placeholder the template's files and file paths interpolate. Read
-   * once here so validation knows which ones nothing supplied without
-   * reading the template again per instance. Absent means none.
+   * Every placeholder the template's files and paths interpolate. Read once
+   * here, so validation knows which nothing supplied. Absent means none.
    */
   readonly placeholderNames?: string[];
   /**

@@ -1,14 +1,12 @@
 import { gzipSync } from "node:zlib";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { useTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   createTargetTree,
-  removeTargetTree,
   TARGET_FIXTURE_FILES,
 } from "../../../testing/target-tree";
 
@@ -17,33 +15,21 @@ import { SizeService } from "./size.service";
 
 import type { CodometerCompression } from "@codometer/configuration";
 
-/**
- * The two fixture files every assertion here measures.
- *
- * One generated file whose compressed size moves with the deflate level, and
- * one small hand-written one — enough for the sum to be distinguishable from
- * a single compression of both.
- */
+/** Two fixtures: one compresses by deflate level, one is small. */
 const MEASURED_FILES = ["dist/index.js", "dist/nested/deep.js"];
 
-/**
- * Byte counts these files must always report, per compression.
- *
- * Written out rather than computed, so that a change to how compression is
- * called fails here instead of quietly changing every limit's meaning. They
- * hold across zlib 1.2 and 1.3; a version that moves them is worth hearing
- * about rather than absorbing.
- */
+/** Expected byte counts per compression, so call changes fail here. */
 const PINNED_BYTES: Readonly<Record<CodometerCompression, number>> = {
   brotli: 504,
   gzip: 825,
   none: 6906,
 };
 
-/** What the same files compress to at zlib's default level rather than 9. */
+/** Same files compressed at zlib's default level, not 9. */
 const DEFAULT_LEVEL_BYTES = 924;
 
 describe(`${SizeService.name} over real files`, () => {
+  const readTemporaryDirectory = useTemporaryDirectory("codometer-target");
   let service: SizeService;
   let workingDirectory: string;
 
@@ -56,19 +42,10 @@ describe(`${SizeService.name} over real files`, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SizeService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance } = await buildTestingModule(SizeService);
 
-    service = await module.resolve(SizeService);
-    workingDirectory = createTargetTree();
-  });
-
-  afterAll(() => {
-    removeTargetTree(workingDirectory);
+    service = instance;
+    workingDirectory = createTargetTree(readTemporaryDirectory());
   });
 
   it.each(["brotli", "gzip", "none"] as const)(
@@ -110,7 +87,11 @@ describe(`${SizeService.name} over real files`, () => {
     expect.hasAssertions();
     expect(
       service.analyze({ compression: "gzip", files: [], workingDirectory }),
-    ).toStrictEqual({ bytes: 0, compression: "gzip", files: 0 });
+    ).toStrictEqual({
+      bytes: 0,
+      compression: "gzip",
+      files: 0,
+    });
   });
 
   it("fails when a matched file has gone missing", () => {

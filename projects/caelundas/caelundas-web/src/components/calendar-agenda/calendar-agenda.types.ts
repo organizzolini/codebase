@@ -1,16 +1,15 @@
 import type { EventGroupNode } from "../calendar-group-by/event-groups.types";
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 
 // 🏷️ Types
 
 /**
- * A row the agenda draws: a day, an event, or the button that lists more.
+ * An agenda row: a day, an event, or the show-more button.
  */
 export type AgendaListRow = AgendaRow | { kind: "later" };
 
 /**
- * The days an agenda lists: `from` is included and `through` is not, both as
- * `YYYY-MM-DD` in `timeZone`.
+ * Agenda days: `from` included, `through` excluded, both `YYYY-MM-DD` in `timeZone`.
  */
 export interface AgendaRange {
   from: string;
@@ -19,9 +18,7 @@ export interface AgendaRange {
 }
 
 /**
- * One row of the agenda: a group's heading, a day's heading, or one event
- * under it. A day or an event in a group carries the group's id, because an
- * event in two groups is listed in both.
+ * An agenda row: a group, a day, or an event.
  */
 export type AgendaRow =
   | {

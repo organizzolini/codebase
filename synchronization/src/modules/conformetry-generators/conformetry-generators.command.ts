@@ -16,16 +16,12 @@ import type {
 import type { ConformetryGeneratorMetadata } from "./conformetry-generators.types";
 
 /**
- * CLI command that syncs the conformetry generators table into README.md.
+ * CLI command that syncs the conformetry generators table into README.md, the
+ * only destination on purpose.
  *
- * README.md is the only destination on purpose. AGENTS.md carried the same
- * generated table until it was condensed: the table is 10 rows an agent almost
- * never needs in full, `conformetry templates` prints it on demand, and every
- * word in AGENTS.md is loaded into every agent session. Adding a destination
- * back means adding its marker pair to that file first, or a run refuses.
- *
- * Reads configuration/conformetry.config.ts and injects a markdown
- * table between marker comments in both files.
+ * Reads configuration/conformetry.config.ts and injects a markdown table
+ * between marker comments. Adding a destination needs its marker pair in that
+ * file first, or a run refuses.
  */
 @Command({
   description: "Run the conformetry-generators command",

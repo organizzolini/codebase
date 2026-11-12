@@ -9,17 +9,8 @@ import type { ExecutorScopeOptions, ResolvedTraceScope } from "./plugin.types";
 import type { ExecutorContext } from "@nx/devkit";
 
 /**
- * Resolves what one executor invocation covers, refusing anything the
- * workspace does not have.
- *
- * Shared by every executor here because the scoping is the same question for
- * all of them — which projects, widened how far — and only what happens to the
- * result differs. Stating it once also means a refusal reads identically
- * whichever target produced it.
- *
- * Throws rather than returning a failure, because Nx turns a thrown executor
- * into a failed task with the message attached, and there is no report worth
- * printing for a selection that never resolved.
+ * Resolves what one executor invocation covers, throwing on anything the workspace does not have,
+ * so Nx fails the task.
  */
 export async function resolveExecutorScope(args: {
   context: ExecutorContext;

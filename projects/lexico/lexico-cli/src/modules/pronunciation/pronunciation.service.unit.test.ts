@@ -1,10 +1,9 @@
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { Lexeme, Pronunciation } from "@codebase/lexico-entities";
-import { LoggerService } from "@codebase/observability";
+import { Lexeme, Pronunciation } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { loadCheerioWithRoot } from "../../../testing/mocks";
 
@@ -18,6 +17,7 @@ import type {
   PronunciationClassicalCharacterContext,
   PronunciationEcclesiasticalCharacterContext,
 } from "./pronunciation.types";
+import type { Provider } from "@nestjs/common";
 import type { CheerioAPI } from "cheerio";
 import type { AnyNode } from "domhandler";
 import type { Repository } from "typeorm";
@@ -65,47 +65,51 @@ describe(PronunciationService, () => {
     };
   };
 
+  const createProviders = (): Provider[] => [
+    { provide: getRepositoryToken(Lexeme), useValue: lexemeRepository },
+    {
+      provide: PronunciationClassicalService,
+      useValue: createMock<PronunciationClassicalService>({
+        processClassicalCharacter: () => 0,
+      }),
+    },
+    {
+      provide: PronunciationPhonemesService,
+      useValue: createMock<PronunciationPhonemesService>({
+        getStringPhoneme: () => "",
+      }),
+    },
+    {
+      provide: PronunciationEcclesiasticalService,
+      useValue: createMock<PronunciationEcclesiasticalService>({
+        processEcclesiasticalCharacter: () => 0,
+      }),
+    },
+    {
+      provide: PronunciationClassifierService,
+      useValue: pronunciationClassifier,
+    },
+  ];
+
   beforeAll(async () => {
     lexemeRepository = createMock<Repository<Lexeme>>() satisfies DeepMocked<
       Repository<Lexeme>
     >;
     pronunciationClassifier = createMock<PronunciationClassifierService>();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        PronunciationService,
-        { provide: getRepositoryToken(Lexeme), useValue: lexemeRepository },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        {
-          provide: PronunciationClassicalService,
-          useValue: createMock<PronunciationClassicalService>({
-            processClassicalCharacter: () => 0,
-          }),
-        },
-        {
-          provide: PronunciationPhonemesService,
-          useValue: createMock<PronunciationPhonemesService>({
-            getStringPhoneme: () => "",
-          }),
-        },
-        {
-          provide: PronunciationEcclesiasticalService,
-          useValue: createMock<PronunciationEcclesiasticalService>({
-            processEcclesiasticalCharacter: () => 0,
-          }),
-        },
-        {
-          provide: PronunciationClassifierService,
-          useValue: pronunciationClassifier,
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(PronunciationService, {
+      providers: createProviders(),
+    });
 
-    service = await module.resolve(PronunciationService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PronunciationService, {
+      providers: createProviders(),
+    });
+
+    expect(instance).toBeInstanceOf(PronunciationService);
   });
 
   describe("private helpers", () => {

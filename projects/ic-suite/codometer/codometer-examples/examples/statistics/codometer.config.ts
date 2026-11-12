@@ -1,28 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * Both kinds of custom statistic, and the distinction between them.
- *
- * A counter carrying `patterns` counts **files**. A counter carrying `symbols`
- * counts **declarations**, and its `patterns` — if it has any — narrow which
- * files are searched rather than being what is counted. That one sentence is
- * the whole of the confusion, so the corpus is built to show it: four static
- * methods live in it, three in `*.service.ts` files and one in the JavaScript
- * sample, so the narrowed counter and the open one disagree by exactly the
- * file the narrowing removed.
- *
- * A counter is measured once it is declared in the top-level `custom`
- * array — regardless of whether any output selects it back out by label, or
- * whether this file declares an output at all. Run bare, nothing is written
- * anywhere; every counter below is still computed and printed to the console.
- *
- * Run against the corpus:
- *
- * ```bash
- * cd projects/ic-suite/codometer/codometer-examples/examples/corpus
- * codometer --config ../statistics/codometer.config.ts
- * ```
- */
+// See the [statistics guide](./README.md).
+/** A counter with `patterns` counts files; one with `symbols` counts declarations. */
 const codometerConfiguration: CodometerConfiguration = {
   custom: [
     // 🗂️ By file pattern — one badge per naming convention.

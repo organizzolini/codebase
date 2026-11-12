@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -13,23 +14,16 @@ describe(LongestVerticalRunLengthCharacteristicService, () => {
   let service: LongestVerticalRunLengthCharacteristicService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [CodeModule, MatrixModule],
-      providers: [
-        CharacteristicContextService,
-        LongestVerticalRunLengthCharacteristicService,
-        RunUtilitiesService,
-      ],
-    }).compile();
-
-    contextService = await module.resolve(CharacteristicContextService);
-    service = await module.resolve(
+    const built = await buildTestingModule(
       LongestVerticalRunLengthCharacteristicService,
+      {
+        imports: [CodeModule, MatrixModule],
+        providers: [CharacteristicContextService, RunUtilitiesService],
+      },
     );
-  });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    contextService = await built.module.resolve(CharacteristicContextService);
+    service = built.instance;
   });
 
   it.each([
@@ -44,11 +38,9 @@ describe(LongestVerticalRunLengthCharacteristicService, () => {
   });
 
   it("never wraps a vertical run across the band's own border rules", () => {
-    // A single-column south arm at row 0 and another at row 2, with a bare
-    // row 1 between them. If the last row's south arm wrapped around to
-    // row 0 the way an east arm wraps across columns, this would read as
-    // one continuous run of 2; since it does not, the longest run is the
-    // lone edge from row 0 to row 1.
+    // A south arm at row 0 and another at row 2, with a bare row 1 between
+    // them. Vertical runs do not wrap the way east arms do, so the longest
+    // run is the lone edge from row 0 to row 1.
     const context = contextService.create({
       columns: 1,
       digits: "404",

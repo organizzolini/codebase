@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment, { type Moment } from "moment-timezone";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   MARGIN_MINUTES,
@@ -34,20 +33,10 @@ import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
  * lower, all next values no higher). A direct station is the inverse minimum.
  */
 
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
-
 let service: RetrogradesService;
 
 /**
- * Builds a Record<RetrogradeBody, CoordinateEphemeris> across the 61-minute detection
- * window (MARGIN_MINUTES before and after `minute`). Each body maps to its own
- * timestamp-keyed CoordinateEphemeris. Every body defaults to a constant longitude of
- * 100°. An optional override specifies a different `previous` / `current` / `next`
- * pattern for one body so that targeted station scenarios can be tested in isolation.
+ * Builds ephemerides for every body across the detection window; bodies default to 100°, and one optional override sets a station pattern.
  */
 function createRetrogradeEphemeris(
   minute: Moment,
@@ -101,16 +90,11 @@ function createRetrogradeEphemeris(
 
 describe("retrogrades.events integration", () => {
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const { instance } = await buildTestingModule(RetrogradesService, {
       imports: [EphemerisModule],
-      providers: [
-        LoggerService,
-        RetrogradesService,
-        MathService,
-        ProgressiveUtilitiesService,
-      ],
-    }).compile();
-    service = await module.resolve(RetrogradesService);
+      providers: [MathService, ProgressiveUtilitiesService],
+    });
+    service = instance;
   });
 
   const minute = moment.utc("2024-09-09T12:00:00.000Z");

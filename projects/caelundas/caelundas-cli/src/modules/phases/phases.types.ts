@@ -8,11 +8,7 @@ import type {
 import type { Moment } from "moment-timezone";
 
 /**
- * Apparent magnitudes at the current minute and across its margins, with the
- * current phase angle and positions that decide whether the planet is visible.
- *
- * Greatest brilliancy is the least magnitude, so a minute is brightest when
- * every margin sample either side of it reads a larger magnitude.
+ * Magnitudes at a minute and its margins, plus visibility inputs.
  */
 export interface BrightnessesArguments {
   currentLatitudePlanet: number;
@@ -55,11 +51,7 @@ export interface DetectPlanetaryEventsArguments {
 }
 
 /**
- * Arguments containing previous/current/next ecliptic positions for elongation.
- *
- * Latitudes are carried alongside longitudes because greatest elongation is
- * the maximum of the true angular separation from the Sun, not of the
- * longitude gap.
+ * Ecliptic positions around a minute; latitudes matter for elongation.
  */
 export interface ElongationLongitudeArguments {
   currentLatitudePlanet: number;

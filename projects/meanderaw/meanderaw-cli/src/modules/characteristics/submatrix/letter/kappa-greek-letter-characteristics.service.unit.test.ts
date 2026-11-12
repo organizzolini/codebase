@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,19 +7,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the Κ (Greek kappa) as a Code holding one isolated
- * copy, beside every orientation name drawing that ink. Its diagonals run as
- * orthogonal zig-zags; the base, facing Southeast, draws:
- *
- * ```text
- * ╷ ╷
- * │┌┘
- * ├┤
- * │└┐
- * ╵ ╵
- * ```
- */
+/** One isolated Code per orientation of the Κ (Greek kappa). */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "04x05y4040c690ed00ca508080",
@@ -51,10 +38,7 @@ const ORIENTATIONS: readonly LetterOrientationFixture[] = [
 ];
 
 describe(KappaGreekLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    KappaGreekLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(KappaGreekLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

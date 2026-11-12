@@ -21,15 +21,9 @@ import type {
 } from "./letter.types";
 
 /**
- * The orientation arithmetic every letter shares: flipping a glyph template
- * either way, turning it clockwise, naming the sixteen corner and rotation
- * orientations, and reading each script's base corner. A letter holds one
- * base template and asks `evaluators` for an evaluator per orientation, each
- * counting the template `orientations` draws that way; an Arabic letter
- * holds one per positional form and asks `formEvaluators` instead.
- *
- * Counts are shared: within one context, every orientation, and every letter,
- * drawing the same template scans the matrix for it once.
+ * The orientation arithmetic every letter shares: flipping, turning, naming the sixteen
+ * orientations, and reading each script's base corner. Counts are shared: within one
+ * context, drawing the same template scans the matrix once.
  */
 @Injectable()
 export class LetterUtilitiesService {
@@ -42,11 +36,7 @@ export class LetterUtilitiesService {
 
   // 🔐 Private Fields
 
-  /**
-   * Each matrix's glyph counts by template, so orientations and letters
-   * drawing the same ink scan a context once between them. Keyed weakly by
-   * the context's matrix, so a count lives no longer than its context.
-   */
+  /** Glyph counts per template, cached weakly by matrix. */
   private readonly counts = new WeakMap<Matrix, Map<string, number>>();
 
   /** How many clockwise quarter turns each rotation makes. */
@@ -78,9 +68,7 @@ export class LetterUtilitiesService {
   }
 
   /**
-   * The count of `template` glyphs in a context, scanned the first time any
-   * evaluator asks for it. `ink` is the template's rows joined by `/`, which
-   * its evaluator spells once rather than on every context.
+   * The count of `template` glyphs in a context, scanned the first time any evaluator asks. `ink` is the template's rows joined by `/`.
    */
   private count(
     context: CharacteristicContext,
@@ -102,9 +90,7 @@ export class LetterUtilitiesService {
   }
 
   /**
-   * The sentence describing one orientation: the glyph, its upright shape,
-   * how the orientation draws it, and every alias given for an orientation
-   * drawing the same ink.
+   * The sentence describing one orientation: the glyph, its upright shape, how it is drawn, and any aliases drawing the same ink.
    */
   private description(
     definition: LetterDefinition,
@@ -164,9 +150,7 @@ export class LetterUtilitiesService {
   }
 
   /**
-   * The flips drawing a glyph at `corner` from its script's base corner:
-   * east to west wherever the two differ east–west, then north to south
-   * wherever they differ north–south.
+   * The flips drawing a glyph at `corner` from the base corner: east–west where they differ, then north–south.
    */
   private flips(corner: LetterCorner, base: LetterCorner): LetterFlip[] {
     return [
@@ -185,9 +169,7 @@ export class LetterUtilitiesService {
   }
 
   /**
-   * Rewrites a template digit's arms through `arms`, which maps each arm bit
-   * — north 8, south 4, east 2, west 1 — to the bit it becomes. A blank `.`
-   * stays blank.
+   * Rewrites a digit's arms through `arms`, mapping each bit (north 8, south 4, east 2, west 1); a blank `.` stays blank.
    */
   private mapArms(
     character: string,
@@ -255,9 +237,7 @@ export class LetterUtilitiesService {
   }
 
   /**
-   * Turns a template one quarter clockwise: its west column becomes its top
-   * row, and each arm moves round — north to east, east to south, south to
-   * west, west to north.
+   * Turns a template one quarter clockwise: the west column becomes the top row, and each arm moves a quarter round.
    */
   private turnQuarter(template: readonly string[]): string[] {
     const rows = this.rectangular(template);
@@ -280,10 +260,7 @@ export class LetterUtilitiesService {
   }
 
   /**
-   * A letter's sixteen evaluators, one per orientation in
-   * {@link LetterUtilitiesService.orientationNames} order. Each has its own
-   * key, display name, description, formula, and window, and counts the template its orientation draws. Orientations drawing the
-   * same ink count it alike, and share every alias given for any of them.
+   * A letter's sixteen evaluators, one per orientation. Orientations drawing the same ink count it alike and share every alias.
    */
   public evaluators(
     definition: LetterDefinition,
@@ -340,11 +317,7 @@ export class LetterUtilitiesService {
   }
 
   /**
-   * The evaluators of a letter drawn as several base templates — an Arabic
-   * letter's positional forms — each form's sixteen in turn, in the order
-   * given. Each form is keyed, described, and aliased as
-   * {@link LetterUtilitiesService.evaluators} builds it alone, so an alias
-   * stays on its own form even where another form draws the same ink.
+   * Evaluators of a letter with several base templates, such as an Arabic letter's positional forms. Aliases stay on their own form.
    */
   public formEvaluators(
     forms: readonly LetterDefinition[],
@@ -353,23 +326,14 @@ export class LetterUtilitiesService {
   }
 
   /**
-   * The sixteen orientation names, every corner with every rotation:
-   * `Southeast`, `SoutheastQuarter`, `SoutheastHalf`, `SoutheastThreeQuarter`,
-   * then the same for Southwest, Northeast, and Northwest — the order
-   * {@link LETTER_ORIENTATION_NAMES} lists and every letter's keys follow.
+   * The sixteen orientation names, every corner with every rotation, e.g. `Southeast`, `SoutheastQuarter`, `SoutheastHalf`, in the order letter keys follow.
    */
   public orientationNames(): readonly LetterOrientationName[] {
     return LETTER_ORIENTATION_NAMES;
   }
 
   /**
-   * A base template drawn in all sixteen orientations, in
-   * {@link LetterUtilitiesService.orientationNames} order. Each corner flips
-   * the base wherever it differs from the script's base corner — east–west
-   * by a horizontal flip, north–south by a vertical flip — and the rotation
-   * then turns the flipped glyph clockwise. Each carries the window its
-   * template fills, columns and rows swapping on a quarter turn, and the
-   * flips it was drawn with, which its description then names.
+   * A base template drawn in all sixteen orientations, in `orientationNames` order. Each carries its window and the flips it was drawn with.
    */
   public orientations(
     template: readonly string[],

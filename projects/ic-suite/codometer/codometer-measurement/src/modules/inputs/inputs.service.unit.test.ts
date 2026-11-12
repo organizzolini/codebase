@@ -1,8 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InputOutsideRepositoryError } from "./inputs.constants";
 import { InputsService } from "./inputs.service";
@@ -85,14 +84,9 @@ describe(InputsService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        InputsService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance } = await buildTestingModule(InputsService);
 
-    service = await module.resolve(InputsService);
+    service = instance;
   });
 
   beforeEach(() => {
@@ -110,8 +104,10 @@ describe(InputsService, () => {
     );
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(InputsService);
+
+    expect(instance).toBeInstanceOf(InputsService);
   });
 
   it("holds every file its globs claim, sorted", () => {

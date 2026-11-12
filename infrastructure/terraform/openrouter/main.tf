@@ -1,15 +1,12 @@
 terraform {
   required_version = ">= 1.6"
 
-  # State lives in a Linode Object Storage bucket, which speaks the S3 API. The
-  # bucket comes from `-backend-config="bucket=..."`, the endpoint from
-  # AWS_ENDPOINT_URL_S3, and the credentials from AWS_ACCESS_KEY_ID and
-  # AWS_SECRET_ACCESS_KEY; see the `terraform-init` target. Linode does not
-  # implement the AWS account, region, or checksum calls, so those are skipped.
-  # There is no state lock: CI serializes applies with a workflow concurrency
-  # group instead.
+  # State lives in a Linode Object Storage bucket, which speaks the S3 API. The bucket,
+  # endpoint, and credentials come from `-backend-config` and AWS_* environment variables.
+  # Linode lacks the AWS account, region, and checksum calls.
+  # No state lock: CI serializes applies with a workflow concurrency group.
   backend "s3" {
-    key    = "codebase/terraform.tfstate"
+    key    = "openrouter.tfstate"
     region = "us-east-1"
 
     skip_credentials_validation = true
@@ -59,10 +56,9 @@ resource "openrouter_guardrail" "refresh_documentation" {
   reset_interval = "monthly"
 }
 
-# The key the refresh-documentation job already uses, found by name in the
-# workspace and imported rather than created, so its value stays as it is in the
-# `OPENROUTER_API_KEY` secret. `limit` and `limit_reset` are left out on purpose:
-# a setting Terraform does not declare keeps the value the key has.
+# The key the refresh-documentation job already uses, imported by name rather than created,
+# so its value stays as it is in the `OPENROUTER_API_KEY` secret. `limit` and `limit_reset`
+# are left out on purpose: an undeclared setting keeps the value the key already has.
 data "openrouter_api_keys" "workspace" {
   workspace_id = var.workspace_id
 }

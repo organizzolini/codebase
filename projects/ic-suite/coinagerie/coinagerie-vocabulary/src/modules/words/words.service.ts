@@ -35,10 +35,7 @@ export class WordsService {
   // 🌎 Public Methods
 
   /**
-   * The words of one identifier, in the order written, repeats kept.
-   *
-   * Splits on every separator, then on case changes, keeping acronym runs
-   * together: `XMLHttpRequest` is `xml`, `http`, and `request`.
+   * The words of one identifier, in order, repeats kept. Splits on separators and case changes, keeping acronyms whole: `XMLHttpRequest` is `xml`, `http`, and `request`.
    */
   splitIdentifier(raw: string): string[] {
     return raw
@@ -49,9 +46,7 @@ export class WordsService {
   }
 
   /**
-   * The words of a relative file path: every folder name, and the file name
-   * with only its final extension removed, so `glossary.service.ts`
-   * contributes `glossary` and `service`.
+   * The words of a relative file path: every folder name, plus the file name without its final extension.
    */
   splitPath(relativePath: string): string[] {
     // A path separator is a word separator too, so the whole path splits at

@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-/** A task of a batch whose project is known, ready to be judged. */
+/** A batch task whose project is known, ready to judge. */
 export interface BatchedTask {
   readonly id: string;
   readonly root: string;
@@ -12,7 +12,7 @@ export interface BuildCspellArguments {
   readonly roots: readonly string[];
 }
 
-/** The arguments Nx calls a batch executor with, in the order it passes them. */
+/** Arguments Nx passes a batch executor, in order. */
 export type SpellCheckBatchExecutorArguments = [
   taskGraph: {
     readonly tasks: Readonly<
@@ -24,12 +24,7 @@ export type SpellCheckBatchExecutorArguments = [
   context: SpellCheckExecutorContext,
 ];
 
-/**
- * The fields of Nx's executor context these executors read.
- *
- * Stated here rather than imported from `@nx/devkit`: this project does not
- * depend on it, and Nx passes real objects that satisfy this structurally.
- */
+/** Nx executor context fields read here, without depending on `@nx/devkit`. */
 export interface SpellCheckExecutorContext {
   readonly projectGraph: {
     readonly nodes: Readonly<

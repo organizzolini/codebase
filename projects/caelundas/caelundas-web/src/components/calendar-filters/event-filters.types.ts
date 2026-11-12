@@ -1,16 +1,9 @@
-import type { SqlCondition } from "../events-calendar/events-database.types";
 import type {
   FilterField,
   FilterNode,
   FilterQuery,
   FilterRule,
 } from "@codebase/presentation";
-
-/**
- * A filter compiled to a boolean SQL expression over the derived events
- * view, the condition `EventsDatabase.findEvents` applies.
- */
-export type CompiledEventFilter = SqlCondition;
 
 /**
  * A field the filter builder offers, holding the calendar's rule values.
@@ -23,8 +16,7 @@ export type EventFilterField = FilterField<EventFilterValue>;
 export type EventFilterNode = FilterNode<EventFilterValue>;
 
 /**
- * The whole filter tree: always a group, so a flat filter and a nested one
- * compile the same way.
+ * The whole filter tree, always a group.
  */
 export type EventFilterQuery = FilterQuery<EventFilterValue>;
 
@@ -34,9 +26,7 @@ export type EventFilterQuery = FilterQuery<EventFilterValue>;
 export type EventFilterRule = FilterRule<EventFilterValue>;
 
 /**
- * What a rule may hold: a list of picks for "is any of", a pair for a range,
- * or one value for text. Anything else in a restored link is treated as a
- * rule that is not finished yet.
+ * A rule value: picks, a range, or text; else unfinished.
  */
 export type EventFilterValue =
   | (null | number | string)[]

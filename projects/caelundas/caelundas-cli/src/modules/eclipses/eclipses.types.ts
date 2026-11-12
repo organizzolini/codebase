@@ -1,6 +1,5 @@
 /**
- * The topocentric Moon's least separation from the Sun over a local solar
- * eclipse, degrees, and the observer's Sun and Moon at the minute nearest it.
+ * Least Moon-Sun separation (degrees) in a local solar eclipse.
  */
 export interface ClosestApproach {
   sample: TopocentricSample;
@@ -8,10 +7,7 @@ export interface ClosestApproach {
 }
 
 /**
- * How far one eclipse has to go at one minute, seen from Earth's center.
- *
- * The eclipse is in progress while `separation` is below `contactLimit`;
- * the two are equal at the first and last external contacts.
+ * Contact geometry; in progress while `separation` is below `contactLimit`.
  */
 export interface EclipseContactGeometry {
   /** Separation at external contact, degrees: P1/P4 for both kinds of eclipse. */
@@ -32,8 +28,7 @@ export interface EclipseContactWindow {
 
 // 🏷️ Types
 /**
- * Per-minute geocentric Sun/Moon geometry used by eclipse phase and visibility predicates.
- * Longitudes and latitudes are apparent ecliptic of date, in degrees; distances are in AU.
+ * Geocentric Sun and Moon per minute: ecliptic longitude, latitude, distance.
  */
 export interface EclipseCoordinates {
   distanceMoon: number;
@@ -51,27 +46,18 @@ export interface EclipseCoordinatesWindow {
   previous: EclipseCoordinates;
 }
 
-/**
- * Reference frame for eclipse visibility reporting.
- * - `geocentric`: Eclipse as seen from Earth's centre (always occurs when geometry aligns)
- * - `topocentric`: Eclipse as seen from the observer's ground location (requires bodies above horizon).
- */
+/** Reference frame: geocentric (Earth's center) or topocentric (observer). */
 export type EclipseFrame = "geocentric" | "topocentric";
 
 /**
- * The type given to the eclipse in progress, and the last minute (epoch
- * milliseconds) it was seen, so later minutes of it reuse that type.
+ * Eclipse in progress, its type, and last epoch-ms minute seen.
  */
 export interface EclipseOccurrence<TType extends EclipseType> {
   minute: number;
   type: TType;
 }
 
-/**
- * Kind of eclipse by the deepest shadow it reaches, as NASA's catalog names it.
- * - lunar: `total` (inside the umbra), `partial` (partly), `penumbral` (only the penumbra)
- * - solar: `total`, `annular`, `hybrid` (total at greatest, annular at the path's ends), `partial` (the umbra misses Earth)
- */
+/** Eclipse kind by deepest shadow, as NASA's catalog names it. */
 export type EclipseType = LunarEclipseType | SolarEclipseType;
 
 /** How deep a lunar eclipse goes: see {@link EclipseType}. */
@@ -81,14 +67,11 @@ export type LunarEclipseType = "partial" | "penumbral" | "total";
 export type SolarEclipseType = "annular" | "hybrid" | "partial" | "total";
 
 /**
- * The Sun or the Moon as the observer sees it at one minute: topocentric
- * apparent ecliptic position of date and semidiameter, in degrees.
+ * Topocentric Sun or Moon: ecliptic position and semidiameter, degrees.
  */
 export interface TopocentricDisc {
   /**
-   * How far the upper limb stands above the horizon, degrees, as rise and
-   * set judge it: true elevation plus 34′ of refraction plus semidiameter.
-   * Positive while the body is up.
+   * How far the upper limb stands above the horizon in degrees, with refraction and semidiameter. Positive while up.
    */
   clearance: number;
   latitude: number;
@@ -96,7 +79,7 @@ export interface TopocentricDisc {
   semidiameter: number;
 }
 
-/** The Sun and the Moon as the observer sees them at one minute. */
+/** Observer's view of the Sun and Moon at one minute. */
 export interface TopocentricSample {
   moon: TopocentricDisc;
   sun: TopocentricDisc;

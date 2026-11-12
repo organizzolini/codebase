@@ -12,12 +12,11 @@ import { LoggerModule } from "@codebase/observability";
 import { MeasureCommand } from "./measure.command";
 
 /**
- * NestJS module that wires the measure command to the layers it composes.
+ * NestJS module wiring the measure command to its layers.
  *
- * Nothing but wiring: the configuration layer reads the command line and the
- * configuration file, the measurement layer counts, and the output layer
- * resolves destinations, builds the report, and delivers it. The command
- * calls them in order and sets an exit code.
+ * Only wiring. Configuration reads the command line and file, measurement
+ * counts, and output resolves, builds, and delivers reports. The command sets
+ * the exit code.
  */
 @Module({
   controllers: [],

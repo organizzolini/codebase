@@ -1,9 +1,8 @@
-import { Test } from "@nestjs/testing";
 import _ from "lodash";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
 import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
@@ -16,9 +15,9 @@ import { QuadrupleAspectsService } from "./quadruple-aspects.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
 import type { AspectPhase } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 
-/** Moon–Mars–Jupiter grand trine with Venus opposite the Moon and sextile the other two. */
+/** Moon–Mars–Jupiter grand trine; Venus opposes Moon, sextiles the others. */
 const kiteEdges: AspectBodies[] = [
   { aspect: "trine", bodies: ["moon", "mars"] },
   { aspect: "trine", bodies: ["mars", "jupiter"] },
@@ -79,23 +78,26 @@ describe(QuadrupleAspectsService, () => {
   let composerService: QuadrupleAspectsComposerService;
   let compoundPhaseService: CompoundPhaseService;
 
+  const testingModuleOptions = {
+    providers: [
+      ProgressiveUtilitiesService,
+      CompoundPhaseService,
+      AspectGraphService,
+      AspectPhaseEmojiService,
+      QuadrupleAspectsBaseService,
+      QuadrupleAspectsComposerService,
+    ],
+  };
+
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LoggerService,
-        ProgressiveUtilitiesService,
-        CompoundPhaseService,
-        AspectGraphService,
-        AspectPhaseEmojiService,
-        QuadrupleAspectsBaseService,
-        QuadrupleAspectsComposerService,
-        QuadrupleAspectsService,
-      ],
-    }).compile();
+    const { instance, module } = await buildTestingModule(
+      QuadrupleAspectsService,
+      testingModuleOptions,
+    );
     baseService = await module.resolve(QuadrupleAspectsBaseService);
     compoundPhaseService = await module.resolve(CompoundPhaseService);
     composerService = await module.resolve(QuadrupleAspectsComposerService);
-    service = await module.resolve(QuadrupleAspectsService);
+    service = instance;
   });
 
   describe("detect", () => {
@@ -887,8 +889,13 @@ describe(QuadrupleAspectsService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      QuadrupleAspectsService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(QuadrupleAspectsService);
   });
 
   describe("involvesBody", () => {

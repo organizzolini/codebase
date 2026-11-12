@@ -10,7 +10,7 @@ export type DatabaseModuleOptions = PostgresqlModuleOptions;
 /** Backward-compatible alias for {@link PostgresqlOptions}. */
 export type DatabaseOptions = PostgresqlOptions;
 
-/** Where a project's database is, who to sign in as, and which schema holds its tables. */
+/** A project's database location, login, and table schema. */
 export interface PostgresConnection {
   readonly database: string;
   readonly host: string;
@@ -34,7 +34,7 @@ export type PostgresDataSourceOptions = Extract<
   { type: "postgres" }
 >;
 
-/** What a project's code contributes to its connection: everything that is not an environment variable. */
+/** A project's code-supplied connection settings, not environment variables. */
 export interface PostgresDataSourceSettings {
   readonly entities: NonNullable<PostgresDataSourceOptions["entities"]>;
   readonly migrations: NonNullable<PostgresDataSourceOptions["migrations"]>;
@@ -44,11 +44,7 @@ export interface PostgresDataSourceSettings {
 export type PostgresEnvironmentKey<Project extends string> =
   `${Uppercase<Project>}_${PostgresEnvironmentSuffix}`;
 
-/**
- * The fragment `postgresEnvironmentSchema` returns: every field's schema,
- * keyed by the project's own variable name, ready to spread into
- * `z.object({ ... })`.
- */
+/** Field schemas keyed by variable name, for spreading into `z.object`. */
 export type PostgresEnvironmentShape<Project extends string> = {
   readonly [
     Field in PostgresConnectionField as `${Uppercase<Project>}_${(typeof POSTGRES_ENVIRONMENT_SUFFIXES)[Field]}`
@@ -69,14 +65,11 @@ export interface PostgresProject<Project extends string = string> {
   readonly project: Project;
 }
 
-/**
- * What `PostgresqlModule.forRoot` is given: the project, and its code's part
- * of the connection. No migrations, which the runtime never runs.
- */
+/** Project and connection part given to `PostgresqlModule.forRoot`, without migrations. */
 export interface PostgresqlModuleOptions
   extends Omit<PostgresDataSourceSettings, "migrations">, PostgresProject {}
 
-/** What `createDataSource` is given: the module's options, and the migrations the TypeORM command line runs. */
+/** Module options, plus the migrations the TypeORM CLI runs. */
 export interface PostgresqlOptions
   extends PostgresDataSourceSettings, PostgresqlModuleOptions {}
 

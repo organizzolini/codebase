@@ -29,20 +29,16 @@ resolve_repository_owner() {
   return 1
 }
 
-# Claude Code cloud sessions hold a placeholder in GH_TOKEN and a session proxy
-# adds the real credential to each request, so `gh auth status` rejects a token
-# that every REST call succeeds with. They also cannot reach GraphQL at all —
-# the proxy answers 403 — which is what `gh project list` speaks. Both checks
-# would fail a session that can read and write the repository, so a cloud
-# session is judged by the REST call it will really make.
+# Cloud sessions hold a placeholder in GH_TOKEN; a proxy adds the real credential.
+# So `gh auth status` rejects a token that REST calls accept, and GraphQL gets a 403.
+# Cloud sessions are therefore judged by the REST call they make.
 is_cloud_session() {
   [[ "${CLAUDE_CODE_REMOTE:-}" == 'true' ]]
 }
 
-# `gh auth status` tests every account the keyring knows and fails when any one
-# of them has a problem, so `--active` narrows it to the single credential this
-# session will actually send. Without it a stale second account fails the check
-# while every gh command in the session succeeds.
+# `gh auth status` fails when any account the keyring knows has a problem, so
+# `--active` narrows it to the credential this session sends. Without it, a stale
+# second account fails the check while every gh command succeeds.
 verify_github_cli_access() {
   if is_cloud_session; then
     gh api user --hostname "${github_host}" --jq .login >/dev/null
@@ -59,14 +55,10 @@ verify_github_cli_access() {
   fi
 }
 
-# Session hooks run in a bare non-interactive shell that never reads the user's
-# shell profile, so GH_TOKEN and GITHUB_TOKEN are absent here even when every
-# terminal in the session exports them. gh then falls back to its keyring
-# account, whose token carries fewer scopes, and the check fails on a credential
-# the session never uses. Asking the login shell for what it exports is what
-# makes the hook see the same token the session does.
-#
-# Continuous integration passes the token in explicitly, so it never asks.
+# Hooks run in a bare shell that skips the user's profile, so GH_TOKEN and
+# GITHUB_TOKEN are absent and gh falls back to a keyring token with fewer scopes.
+# Asking the login shell for its exports sees that token. CI passes the token
+# itself, so it never asks.
 resolve_login_shell_token() {
   if [[ -n "${GITHUB_ACTIONS:-}" || -n "${CI:-}" ]]; then
     return 1
@@ -175,10 +167,10 @@ if [[ "${#authentication_tokens[@]}" -eq 0 ]]; then
   exit 1
 fi
 
-# A token in the environment outranks whichever account gh would otherwise pick,
-# so each candidate is exported and verified before the keyring is consulted.
-# The last failure keeps its diagnostics; earlier ones are quiet because a
-# candidate that loses to a later one is not a problem worth reporting.
+# A token in the environment outranks whichever account gh would pick, so each
+# candidate is exported and verified before the keyring is consulted. Only the
+# last failure keeps its diagnostics, since a candidate beaten by a later one is
+# not worth reporting.
 verification_index=0
 for authentication_token in "${authentication_tokens[@]}"; do
   verification_index=$((verification_index + 1))
@@ -194,11 +186,10 @@ for authentication_token in "${authentication_tokens[@]}"; do
   fi
 done
 
-# No token worked as a plain environment credential. Only continuous integration
+# No token worked as an environment credential. Only continuous integration
 # escalates to a full token login, because that path rewrites the gh host
-# configuration and configures the git credential helper — appropriate for a
-# throwaway runner, destructive on a developer machine that already holds a
-# working keyring account.
+# configuration and git credential helper: fine on a throwaway runner,
+# destructive on a developer machine with a working keyring account.
 if [[ -z "${GITHUB_ACTIONS:-}" && -z "${CI:-}" ]]; then
   echo '❌ GH CLI authentication failed with the token in GH_TOKEN/GITHUB_TOKEN.' >&2
   exit 1

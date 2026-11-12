@@ -8,8 +8,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The color a field picks, its value as `#rrggbb`, and where to send a picked
- * one.
+ * The color field's control, value as `#rrggbb`, and change handler.
  */
 export interface NightSkyColorFieldProperties {
   className?: string;
@@ -21,9 +20,7 @@ export interface NightSkyColorFieldProperties {
 // 🧩 Component
 
 /**
- * Renders one of the night sky's colors as a labeled ReUI color picker: a
- * swatch button whose popover picks by area, hue and hexadecimal field, each
- * reachable by keyboard, written to the link as `#rrggbb` as it moves.
+ * Renders one night sky color as a labeled ReUI color picker, written to the link as `#rrggbb` as it moves.
  */
 export function NightSkyColorField(
   properties: Readonly<NightSkyColorFieldProperties>,

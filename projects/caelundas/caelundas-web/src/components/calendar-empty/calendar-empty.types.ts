@@ -3,6 +3,6 @@ import type { CalendarEmptiness } from "../events-calendar/calendar-loader.types
 // 🏷️ Types
 
 /**
- * The kinds of emptiness that need no more than a title and a sentence.
+ * Emptiness kinds shown with just a title and sentence.
  */
 export type PlainEmptiness = Exclude<CalendarEmptiness["kind"], "range">;

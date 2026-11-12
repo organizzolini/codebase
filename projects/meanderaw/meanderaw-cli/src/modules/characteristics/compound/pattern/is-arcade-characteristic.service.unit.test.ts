@@ -1,8 +1,9 @@
 // Fragments of hexadecimal meander Codes used as test fixtures, not words.
 // cspell:ignore ccccccbb ccccccccbbb ccccccccccccbb
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -25,17 +26,12 @@ describe(IsArcadeCharacteristicService, () => {
     let service: IsArcadeCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const real = await buildTestingModule(CharacteristicContextService, {
         imports: [CodeModule, PatternCharacteristicsModule, MatrixModule],
-        providers: [CharacteristicContextService],
-      }).compile();
+      });
 
-      contextService = await module.resolve(CharacteristicContextService);
-      service = await module.resolve(IsArcadeCharacteristicService);
-    });
-
-    it("is defined", () => {
-      expect(service).toBeDefined();
+      contextService = real.instance;
+      service = await real.module.resolve(IsArcadeCharacteristicService);
     });
 
     it.each([
@@ -81,9 +77,8 @@ describe(IsArcadeCharacteristicService, () => {
     let service: IsArcadeCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(IsArcadeCharacteristicService, {
         providers: [
-          IsArcadeCharacteristicService,
           {
             provide: BettiNumber1CountCharacteristicService,
             useValue: { compute: (): number => values.bettiNumber1Count },
@@ -111,9 +106,9 @@ describe(IsArcadeCharacteristicService, () => {
             },
           },
         ],
-      }).compile();
+      });
 
-      service = await module.resolve(IsArcadeCharacteristicService);
+      service = built.instance;
     });
 
     beforeEach(() => {

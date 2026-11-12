@@ -1,0 +1,13 @@
+query Facets($period: PeriodInput, $filter: EventFilterGroupInput) {
+  facets(period: $period, filter: $filter) {
+    id
+    name
+    values {
+      count
+      depth
+      id
+      name
+      path
+    }
+  }
+}

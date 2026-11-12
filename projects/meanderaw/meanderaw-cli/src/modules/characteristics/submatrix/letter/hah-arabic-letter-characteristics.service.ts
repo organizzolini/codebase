@@ -8,11 +8,10 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of each positional form of the ح
- * (Arabic hah) skeleton — final, initial, isolated, and medial — one per corner
- * and clockwise rotation, each counting that form's base template, which faces
- * Southwest, drawn that way. A letter sharing a form's skeleton, differing from
- * it only by dots or by other marks, is an alias of that form.
+ * Provides the sixteen orientation evaluators of each positional form of the ح skeleton: final, initial, isolated, and medial.
+ * Each counts that form's base template, drawn facing Southwest.
+ *
+ * A letter differing from a form only by dots or other marks is an alias of it.
  */
 @Injectable()
 export class HahArabicLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -72,56 +71,20 @@ export class HahArabicLetterCharacteristicsService implements CharacteristicEval
 
   // 🔐 Private Fields
 
-  /**
-   * The upright ح (final Arabic hah) glyph's points as hexadecimal Code digits,
-   * one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   *  ┌─╴
-   * ┌┘
-   * └─╴
-   * ```
-   */
+  /** Upright ح (final form) as hexadecimal Code digits, facing Southwest. */
   private readonly finalTemplate: readonly string[] = [".631", "69..", "a31."];
 
-  /**
-   * The upright ح (initial Arabic hah) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   *   ┌╴
-   *  ┌┘
-   * ╶┘
-   * ```
-   */
+  /** Upright ح (initial form) as hexadecimal Code digits, facing Southwest. */
   private readonly initialTemplate: readonly string[] = [
     "..61",
     ".69.",
     "29..",
   ];
 
-  /**
-   * The upright ح (isolated Arabic hah) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   *  ┌╴
-   * ┌┘
-   * └─╴
-   * ```
-   */
+  /** Upright ح (isolated form) as hexadecimal Code digits, facing Southwest. */
   private readonly isolatedTemplate: readonly string[] = [".61", "69.", "a31"];
 
-  /**
-   * The upright ح (medial Arabic hah) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
-   * ```text
-   *   ┌╴
-   *  ┌┘
-   * ╶┴╴
-   * ```
-   */
+  /** Upright ح (medial form) as hexadecimal Code digits, facing Southwest. */
   private readonly medialTemplate: readonly string[] = ["..61", ".69.", "2b1."];
 
   // 🔑 Public Fields

@@ -8,13 +8,7 @@ import type {
   CodometerSymbolModifier,
 } from "@codometer/core";
 
-/**
- * The declaration kind each syntax kind is counted as.
- *
- * Purely syntactic: a callable is a `method` when it is written as a class
- * member and a `function` otherwise, including an arrow function nested
- * inside a method body, which is written as a function and not as a member.
- */
+/** Declaration kind per syntax kind; class-body callables count as `method`. */
 export const SYMBOL_KIND_BY_SYNTAX_KIND: Partial<
   Record<number, CodometerSymbolKind>
 > = {
@@ -27,9 +21,17 @@ export const SYMBOL_KIND_BY_SYNTAX_KIND: Partial<
   [tsCompiler.SyntaxKind.GetAccessor]: "getter",
   [tsCompiler.SyntaxKind.InterfaceDeclaration]: "interface",
   [tsCompiler.SyntaxKind.MethodDeclaration]: "method",
+  [tsCompiler.SyntaxKind.MethodSignature]: "signature",
   [tsCompiler.SyntaxKind.PropertyDeclaration]: "property",
+  [tsCompiler.SyntaxKind.PropertySignature]: "signature",
   [tsCompiler.SyntaxKind.SetAccessor]: "setter",
+  [tsCompiler.SyntaxKind.SourceFile]: "file",
+  [tsCompiler.SyntaxKind.TypeAliasDeclaration]: "type",
+  [tsCompiler.SyntaxKind.VariableStatement]: "variable",
 };
+
+/** Matches comment text when a blank line follows it immediately. */
+export const DETACHED_COMMENT_REGEX = /^[^\S\n]*\n[^\S\n]*\n/u;
 
 /** The modifier each modifier keyword is counted as. */
 export const SYMBOL_MODIFIER_BY_SYNTAX_KIND: Partial<

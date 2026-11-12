@@ -7,7 +7,7 @@ import {
   type Repository,
   Text,
   Token,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import { paginateQueryByParent } from "./literature-relations.utilities";
 
@@ -40,8 +40,7 @@ export class LiteratureRelationsService {
   // 🔏 Private Methods
 
   /**
-   * Selects texts with the relations a text connection exposes — the author,
-   * and the parent text with its own author — as a lookup by id would load.
+   * Selects texts with their author and parent's author joined in, avoiding per-row lookups.
    */
   private selectTexts(): ReturnType<Repository<Text>["createQueryBuilder"]> {
     return this.textRepository

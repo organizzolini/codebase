@@ -41,7 +41,7 @@ describe("main end-to-end suite", () => {
     expect(result.status).toBe(0);
 
     for (const command of [
-      "audit-governance",
+      "audit-files",
       "issue",
       "organization-project",
       "pull-request",

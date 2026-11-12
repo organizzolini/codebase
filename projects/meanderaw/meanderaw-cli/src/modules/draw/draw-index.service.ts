@@ -25,31 +25,10 @@ import type {
 } from "./draw-index.types";
 
 /**
- * Renders the pages the corpus is looked through: one per pattern
- * characteristic, listing every meander that pattern holds for, shape by
- * shape and captioned, and an index linking them. A meander appears on
- * every page whose pattern holds for it, and on none when none does.
+ * Renders the corpus pages: one per pattern characteristic, listing its meanders, plus an index.
  *
- * It embeds each meander's own SVG directly rather than linking to a file —
- * there is no file left to link to, since a meander is a database row now
- * rather than a path on disk. Embedding it is spec #813's own design rather
- * than a regression from the retired `DrawIndexService`, which linked
- * precisely because every drawing it indexed was a separate committed file
- * this one no longer has.
- *
- * Each row's SVG is one repeat of the meander, and one repeat read alone says
- * very little about the pattern it repeats into, so the page lays that tile
- * out `BAND_REPEAT_COUNT` times along a band rather than showing it once.
- * The stored tile is embedded verbatim in each position — the page states
- * where the repeats sit, and `DrawingService` stays the only thing
- * that decides what one of them draws.
- *
- * Every page is produced a batch of rows at a time rather than as one
- * string: at the default edge budget a pattern can hold over a million
- * meanders, and its page outgrows the longest string JavaScript can hold.
- * Counts come first, from one grouped query, so every heading is written
- * before any row is read. The pages are written under the gitignored
- * output directory — see `DrawCommand.drawAll`, the only caller.
+ * Tiles are embedded, since a meander is a row, not a file. Pages stream rows
+ * in batches, as a pattern can hold millions of meanders.
  */
 @Injectable()
 export class DrawIndexService {
@@ -224,22 +203,8 @@ ${contents}
   }
 
   /**
-   * Lays one row's tile out along a band of `BAND_REPEAT_COUNT` repeats.
-   *
-   * The tile is defined once and placed `BAND_REPEAT_COUNT` times rather than
-   * copied: the page carries every row in the corpus, so six copies of every
-   * row's markup would multiply an already large document by six for a
-   * drawing each copy is identical in. It is defined under its Code rather
-   * than its row's `id`: the Code is as unique, and unlike a uuidv7 it is
-   * the same on every regeneration, so the committed pages only change when
-   * a drawing does.
-   *
-   * Each placement steps one tile width (`columns`) further along, which is
-   * the distance that makes consecutive tiles meet: a tile's own drawing runs
-   * from `offset` to `offset + columns * unit`, so a step of `columns * unit` lands the next
-   * tile's first lattice column exactly on the last one's right edge. The
-   * half-stroke gutters either side of that edge overlap, and both tiles ink
-   * the same square cap there, so the seam paints over itself.
+   * Lays one row's tile along a band of `BAND_REPEAT_COUNT` repeats. The tile
+   * is defined once under its Code and placed, not copied.
    */
   private renderBand(meander: Meander): string {
     const geometry = this.geometryService.compute(meander.rows);
@@ -294,9 +259,8 @@ ${contents}
   }
 
   /**
-   * A pattern's one section: one grid per shape, each with its own count.
-   * Rows arrive ordered by shape, so each shape's grid opens as its first
-   * row arrives and closes as the next shape's does.
+   * A pattern's section: one grid per shape, each with its own count. Rows
+   * arrive ordered by shape.
    */
   private async *shapeSections(
     key: PatternCharacteristicKey,
@@ -340,10 +304,8 @@ ${contents}
   // 🌎 Public Methods
 
   /**
-   * Every page the database's rows make, keyed by its path under the output
-   * directory. Each page is an async iterable of HTML pieces, read from the
-   * database a batch of rows at a time only as the page is written, so no
-   * page — however many rows its pattern holds for — is ever one string.
+   * Every page, keyed by output path. Each is an async iterable read a batch
+   * of rows at a time.
    */
   async build(): Promise<Record<string, MeanderPageContent>> {
     const counts = await this.databaseService.patternShapeCounts(

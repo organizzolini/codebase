@@ -21,18 +21,7 @@ import type {
 import type { ResolvedCodometerOutput } from "@codometer/configuration";
 
 /**
- * Resolves which file each of a run's outputs lands in.
- *
- * Kept away from the command itself so that a destination can be resolved and
- * tested without a measurement: which file each output lands in, and whether
- * a bare `--output-*` flag has anything to resolve from at all, are questions
- * that have been got wrong by inferring them from whichever other flag
- * happened to be on the command line.
- *
- * It sits in the output layer rather than beside the flag reading it starts
- * from, because a destination is a render target: what it produces is the
- * path `JsonService` and `MarkdownService` write to, and the exclusion list
- * the measurement is told not to measure.
+ * Resolves which file each of a run's outputs lands in. Kept apart from the command so it can be tested without a measurement.
  */
 @Injectable()
 export class DestinationsService {
@@ -104,17 +93,7 @@ export class DestinationsService {
   }
 
   /**
-   * Which markdown file the badge block goes into, if any.
-   *
-   * One sink rather than two. The block is spliced between its markers when
-   * the file already carries them, and appended with them when it does not,
-   * so the same flag serves a README somebody else wrote the rest of and a
-   * file that holds nothing but badges.
-   *
-   * The path is never defaulted from nothing: it comes from the command line,
-   * or from a configured `markdown` output's own path or `write`. A
-   * configured `write` function is a destination in its own right — it picks
-   * the file itself — so it counts as "resolvable" even without a path.
+   * Which markdown file the badge block goes into, if any. The path comes from the command line or a configured `markdown` output.
    */
   private resolveMarkdown(
     args: ResolveDestinationsArguments,
@@ -183,10 +162,7 @@ export class DestinationsService {
   // 🌎 Public Methods
 
   /**
-   * Lists the files this run writes, relative to the measured directory.
-   *
-   * What codometer writes is what codometer must not measure, so this is also
-   * the exclusion list handed to the measurement.
+   * Lists the files this run writes, relative to the measured directory. These are also excluded from measurement.
    */
   listOutputPaths(args: ListOutputPathsArguments): string[] {
     const paths = [
@@ -205,16 +181,7 @@ export class DestinationsService {
   }
 
   /**
-   * Which markdown destination the console renders.
-   *
-   * Resolved from the configuration alone, never gated by whether
-   * `--output-markdown` — or any other `--output-*` flag — was passed: the
-   * printed badge block must carry every configured custom counter whether or
-   * not this run also writes a markdown file, so it is resolved as though no
-   * other output flag were on the command line. An explicit `--output-markdown
-   * <path>` is still honored, exactly as it would be for the write
-   * destination. Nothing here is written to disk; `resolveDestinations`
-   * decides that separately.
+   * Which markdown destination the console renders. Resolved from configuration alone, so every custom counter prints; an explicit `--output-markdown` path is still honored.
    */
   resolveConsoleMarkdown(
     args: ResolveDestinationsArguments,
@@ -223,13 +190,7 @@ export class DestinationsService {
   }
 
   /**
-   * Resolves which files the run writes, and refuses a destination this run
-   * has no way to have produced.
-   *
-   * `--output-json`/`--output-markdown` passed bare ask this run to write
-   * wherever the configuration says to; refused before anything is measured
-   * when the configuration names no such output at all, since there is then
-   * nowhere to write it.
+   * Resolves the files this run writes, refusing a bare `--output-*` flag when the configuration names no matching output.
    */
   resolveDestinations(
     args: ResolveDestinationsArguments,
@@ -247,13 +208,7 @@ export class DestinationsService {
   }
 
   /**
-   * Whether a run covers a whole repository or one project inside one.
-   *
-   * Decided from the measured directory alone, not by walking upward: a
-   * directory carrying a repository marker is a repository, and anything
-   * beneath one is a project. The first badge group is headed by this, so a
-   * project README saying `Repository` over figures that only ever covered
-   * that project is the thing it exists to prevent.
+   * Whether a run covers a whole repository or one project. Decided from the measured directory alone, by marker files, never by walking upward.
    */
   selectScope(workingDirectory: string): MeasurementScope {
     const isRepository = REPOSITORY_ROOT_MARKERS.some((marker) =>

@@ -11,7 +11,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The number a slider sets, its value, and where to send a moved one.
+ * The slider's control, value, and change handler.
  */
 export interface NightSkySliderProperties {
   className?: string;
@@ -23,8 +23,7 @@ export interface NightSkySliderProperties {
 // 🧩 Component
 
 /**
- * Renders one of the night sky's numbers as a labeled slider showing its
- * value and unit. It sends every step as it moves, so the sky follows it.
+ * Renders one night sky number as a labeled slider showing its value and unit; it sends every step as it moves.
  */
 export function NightSkySlider(
   properties: Readonly<NightSkySliderProperties>,

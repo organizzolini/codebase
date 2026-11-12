@@ -16,11 +16,7 @@ import {
 } from "./ephemeris-download.utilities";
 
 /**
- * Downloads the Swiss Ephemeris data files caelundas computes from.
- *
- * Each file is written to a `.part` file that is renamed only once it is whole,
- * so an interrupted download leaves nothing the next run would take as done.
- * Files already present are left alone, which makes a rerun cheap.
+ * Downloads the Swiss Ephemeris data files. Each file is written to a `.part` file renamed only once whole, so an interrupted download leaves nothing the next run would take as done. Files already present are skipped.
  */
 @Injectable()
 export class EphemerisDownloadService {
@@ -37,9 +33,8 @@ export class EphemerisDownloadService {
   // 🔏 Private Methods
 
   /**
-   * Fetches one file and writes it to `destination`, throwing unless a whole,
-   * non-empty file arrives. The files are small enough to hold in memory, so a
-   * dropped connection fails the read and nothing is written at all.
+   * Fetches one file to `destination`, throwing unless a whole, non-empty file
+   * arrives; nothing is written on a dropped connection.
    */
   private async fetchFile(url: string, destination: string): Promise<void> {
     const response = await fetch(url);

@@ -68,7 +68,7 @@ describe(SharedNxCacheServerService, () => {
   const listing = (): string[] =>
     fs.existsSync(directory) ? fs.readdirSync(directory) : [];
 
-  /** Sends bytes over a raw socket, which `fetch` would not let disagree with their length. */
+  /** Sends bytes raw, since `fetch` would refuse a length mismatch. */
   const raw = async (request: string, close = true): Promise<string> =>
     new Promise((resolve, reject) => {
       const socket = net.connect(running.port, "127.0.0.1", () => {

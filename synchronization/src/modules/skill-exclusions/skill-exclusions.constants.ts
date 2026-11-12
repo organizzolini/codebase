@@ -2,30 +2,13 @@
 
 import type { SkillExclusionFile } from "./skill-exclusions.types";
 
-/**
- * Body of the comment opening the generated block.
- *
- * A label rather than a whole marker, because each file prefixes it with its
- * own comment syntax: `#` for the four line-oriented ignore files and YAML,
- * `//` for JSONC.
- */
+/** Opening comment text of the generated block, in each file's syntax. */
 export const BLOCK_START_LABEL = "installed-skills-start";
 
 /** Body of the comment closing the generated block. */
 export const BLOCK_END_LABEL = "installed-skills-end";
 
-/**
- * The files a vendored skill's installer writes outside
- * `.agents/skills/<name>/`, by skill name.
- *
- * Some installers copy their agents and hooks into each harness folder they
- * find (`.claude`, `.github`), where the same tools reach them: the
- * spell check flags their prose, and ESLint's markdown rules flag the HTML in
- * it. Nothing in `skills-lock.json` names these files, so they are declared
- * here, and written into every list only while the skill that owns them is
- * installed. A new installer's files fail the weekly upgrade's pre-commit hook
- * until they are added.
- */
+/** Files a skill's installer writes outside its folder, by skill name. */
 export const VENDORED_SKILL_PATHS: Readonly<Record<string, readonly string[]>> =
   {
     impeccable: [
@@ -35,13 +18,7 @@ export const VENDORED_SKILL_PATHS: Readonly<Record<string, readonly string[]>> =
     ],
   };
 
-/**
- * The files that must name every installed skill and its vendored files.
- *
- * Every other tool in the repository scopes itself with explicit globs that
- * never include `.agents/`, so these six are the whole list. Adding a seventh
- * means adding its markers to the file in the same change.
- */
+/** Files naming every skill and its vendored files; each needs markers. */
 export const SKILL_EXCLUSION_FILES: SkillExclusionFile[] = [
   {
     commentPrefix: "#",

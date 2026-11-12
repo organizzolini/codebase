@@ -42,7 +42,7 @@ export class ZLatinLetterCharacteristicsService implements CharacteristicEvaluat
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** The upright glyph's points, `.` outside the glyph. */
   private readonly template: readonly string[] = ["25", "69", "a1"];
 
   // 🔑 Public Fields

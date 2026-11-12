@@ -5,11 +5,8 @@ import {
 
 // ♟️ Constants
 
-// A phone's week keeps each day wide enough to read, scrolling sideways in
-// the content area while the hour column and the day headers stay put. Page
-// scroll mode lets that area, rather than the grid's own inner scroller, do
-// all the scrolling, so one element owns both axes.
-// The "+N more" popover is widened to fit an event row's time and name.
+// A phone's week scrolls sideways in the content area, with the hour column and day headers fixed.
+// Page scroll mode lets that area own both axes; the "+N more" popover fits an event row.
 export const OVERFLOW_CLASS_NAMES = { morePopover: "w-80" };
 
 // The hour column stacks above the event chips, which the calendar stacks

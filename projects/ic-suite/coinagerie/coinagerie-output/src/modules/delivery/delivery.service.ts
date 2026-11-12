@@ -19,10 +19,9 @@ import type { GlossaryDifference } from "@coinagerie/core";
 /**
  * Checks and writes every configured glossary destination.
  *
- * Every destination is read and parsed before any is written, so one that
- * cannot be parsed stops the run with every file untouched. Destinations are
- * independent: each is compared with the vocabulary alone, and no definition
- * is ever copied from one to another.
+ * Every destination is parsed before any is written, so one unreadable file
+ * leaves all untouched. Destinations are independent; no definition is copied
+ * between them.
  */
 @Injectable()
 export class DeliveryService {
@@ -38,11 +37,7 @@ export class DeliveryService {
 
   // 🔐 Private Fields
 
-  /**
-   * Each destination type to the format that reads and writes it. A record
-   * rather than a map, so adding a destination type fails to compile until
-   * its format is registered here.
-   */
+  /** Format per destination type, so new types must register one. */
   private readonly handlers: Readonly<
     Record<ResolvedCoinagerieOutput["type"], GlossaryFormatHandler>
   >;
@@ -106,9 +101,7 @@ export class DeliveryService {
   }
 
   /**
-   * Rewrites every destination to hold exactly the vocabulary, keeping every
-   * definition still in use. A file already holding exactly that is not
-   * touched, so a second write changes nothing.
+   * Rewrites every destination to exactly the vocabulary, keeping definitions still in use. Untouched when already exact, so a second write changes nothing.
    */
   write(args: DeliverArguments): DeliveryResult[] {
     return this.readAll(args.destinations).map((read) => {

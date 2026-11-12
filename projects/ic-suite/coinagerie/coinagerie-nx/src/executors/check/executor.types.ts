@@ -1,12 +1,6 @@
 // 🏷️ Types
 
-/**
- * The four arguments Nx calls a batch executor with, in the order it passes them.
- *
- * A tuple rather than four parameters because Nx fixes that signature and the
- * workspace holds a function to three: the task graph, each task's resolved
- * options by task id, the overrides of the whole run, and the context.
- */
+/** Nx's four batch arguments: task graph, options, overrides, context. */
 export type CheckBatchExecutorArguments = [
   taskGraph: CheckBatchTaskGraph,
   options: Record<string, CheckExecutorOptions>,
@@ -14,7 +8,7 @@ export type CheckBatchExecutorArguments = [
   context: CheckBatchExecutorContext,
 ];
 
-/** What a batch reads of Nx's context: the project graph's roots and the workspace root. */
+/** Nx context fields a batch reads: graph roots, workspace root. */
 export interface CheckBatchExecutorContext {
   readonly projectGraph: {
     readonly nodes: Record<
@@ -25,7 +19,7 @@ export interface CheckBatchExecutorContext {
   readonly root: string;
 }
 
-/** What a batch reads of Nx's task graph: each task's id and its project. */
+/** Each task's id and project, from Nx's task graph. */
 export interface CheckBatchTaskGraph {
   readonly tasks: Record<
     string,
@@ -33,19 +27,13 @@ export interface CheckBatchTaskGraph {
   >;
 }
 
-/**
- * What one task of a check batch settled on.
- *
- * Nx's own type for a batch executor's result is not exported through
- * `@nx/devkit`, so this states the shape Nx reads back: whether the task
- * passed, and the output to show and to store with it in the cache.
- */
+/** One batch task's result, as Nx reads it back. */
 export interface CheckBatchTaskResult {
   readonly success: boolean;
   readonly terminalOutput: string;
 }
 
-/** What a single run reads of Nx's context: its project, that project's root, and the workspace root. */
+/** Project, its root, and workspace root for one run. */
 export interface CheckExecutorContext {
   readonly projectName?: string | undefined;
   readonly projectsConfigurations: {
@@ -62,7 +50,7 @@ export interface CheckExecutorOptions {
   readonly write?: boolean | undefined;
 }
 
-/** One task of a group: its id, and the project folder it judges. */
+/** One task of a group: its id and project folder. */
 export interface CheckTask {
   readonly directory: string;
   readonly id: string;

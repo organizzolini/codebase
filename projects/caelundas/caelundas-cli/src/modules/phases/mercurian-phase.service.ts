@@ -24,7 +24,7 @@ import {
 } from "./phases.constants";
 
 import type { MercurianPhase } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type {
   BuildPlanetPhaseEventArguments,
   MercurianPhaseEventArguments,
@@ -118,20 +118,8 @@ export class MercurianPhaseService {
   // 🌎 Public Methods
 
   /**
-   * Creates a calendar event for a specific Mercurian phase.
-   *
-   * Mercury exhibits an 8-phase cycle similar to Venus but with shorter duration
-   * due to its faster orbit (88 days vs 225 days):
-   * - Morning Rise: Mercury becomes visible before sunrise
-   * - Western Brightest: Maximum brilliance as morning star
-   * - Western Elongation: Greatest angular distance west of Sun (max 28°)
-   * - Morning Set: Mercury sets with the Sun
-   * - Evening Rise: Mercury becomes visible after sunset
-   * - Eastern Elongation: Greatest angular distance east of Sun (max 28°)
-   * - Eastern Brightest: Maximum brilliance as evening star
-   * - Evening Set: Mercury disappears into Sun's glare.
-   *
-   * @see {@link symbolByMercurianPhase} for phase symbols
+   * Creates a calendar event for a Mercurian phase: Mercury's eight-phase cycle,
+   * shorter than Venus's.
    */
   buildMercurianPhaseEvent(
     args: BuildPlanetPhaseEventArguments<MercurianPhase>,

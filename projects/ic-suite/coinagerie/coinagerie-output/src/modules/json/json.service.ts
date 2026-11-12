@@ -12,12 +12,11 @@ import type { Glossary } from "@coinagerie/core";
 
 /**
  * Renders and parses the JSON glossary: a flat object sorted by word, each
- * value the definition or `""` when there is none yet.
+ * value a definition or empty.
  *
- * The whole file is the glossary, so writing replaces it. Parsing is strict
- * on purpose, like the markdown format: anything it cannot read is refused
- * rather than dropped, because a dropped word reads as stale and writing
- * would delete its definition.
+ * The whole file is the glossary, so writing replaces it. Parsing is strict:
+ * anything unreadable is refused, not dropped, since a dropped word would lose
+ * its definition.
  */
 @Injectable()
 export class JsonService implements GlossaryFormatHandler {
@@ -99,11 +98,7 @@ export class JsonService implements GlossaryFormatHandler {
   }
 
   /**
-   * Refuses a word listed twice, which `JSON.parse` would resolve silently
-   * by keeping the last definition and dropping the first.
-   *
-   * Walks the tokens of content already known to be an object, reading the
-   * first string after the opening brace or after a top-level comma as a key.
+   * Refuses a word listed twice, since `JSON.parse` silently keeps the last definition. Keys are the strings after `{` or a top-level comma.
    */
   private refuseDuplicates(context: JsonParseContext): void {
     const seen = new Set<string>();
@@ -138,14 +133,7 @@ export class JsonService implements GlossaryFormatHandler {
   }
 
   /**
-   * The tokens of content already known to be valid JSON: a string with its
-   * quotes and escapes, a bracket, comma, or colon, or any other run of
-   * literal characters. Whitespace is skipped.
-   *
-   * Enough to walk an object's top level and tell its keys from its values,
-   * which is what lets a duplicated key be found: `JSON.parse` keeps only the
-   * last, whatever type the first one had. Scanned by hand in one pass, since
-   * a regular expression for strings backtracks on input it cannot finish.
+   * Splits valid JSON into tokens: strings with quotes, brackets, commas, colons, and literals. Hand-scanned, since a string regex can backtrack.
    */
   private tokenize(content: string): { index: number; text: string }[] {
     const tokens: { index: number; text: string }[] = [];
@@ -168,10 +156,7 @@ export class JsonService implements GlossaryFormatHandler {
   // 🌎 Public Methods
 
   /**
-   * The glossary a file holds.
-   *
-   * Throws `MalformedGlossaryError` on invalid JSON, anything but an object,
-   * a value that is not a string, or a word listed twice.
+   * The glossary a file holds. Throws `MalformedGlossaryError` on invalid JSON, a non-object, a non-string value, or a duplicate word.
    */
   parse(content: string, filePath: string): Glossary {
     const context = { content, filePath };
@@ -206,11 +191,7 @@ export class JsonService implements GlossaryFormatHandler {
   }
 
   /**
-   * The whole file: one word per line, sorted by code unit whatever order
-   * the glossary holds them in, ending in a newline.
-   *
-   * Written out entry by entry rather than through an object, because an
-   * object would reorder a key that looks like an array index.
+   * The whole file: one word per line, sorted by code unit. Entries are written individually, since an object would reorder index-like keys.
    */
   render(glossary: Glossary): string {
     const entries = [...glossary]

@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   LEGACY_FIELD_KEYS,
@@ -8,9 +9,12 @@ import {
   LEGACY_TILE_CROSSING_COMPONENT_DELTAS,
 } from "../../../testing/legacy-characteristics";
 import { tiled } from "../../../testing/meanders";
+import { CodeModule } from "../code/code.module";
 import { CodeService } from "../code/code.service";
 import { HISTORICAL_CORPUS } from "../corpus/historical-corpus.constants";
+import { MatrixModule } from "../matrix/matrix.module";
 
+import { CharacteristicContextService } from "./characteristic-context.service";
 import { CHARACTERISTIC_KEYS } from "./characteristics.constants";
 import { CharacteristicsModule } from "./characteristics.module";
 import { CharacteristicsService } from "./characteristics.service";
@@ -20,7 +24,7 @@ import type { Characteristics } from "./characteristics.types";
 /** The Codes the retired computation's values were captured for. */
 const FIXTURE_CODES = Object.keys(LEGACY_FIELDS);
 
-/** How many times side by side each fixture is drawn when its tilings are read. */
+/** Side-by-side copies of each fixture drawn when reading its tilings. */
 const TILINGS = [1, 2, 3] as const;
 
 /** A fixture's captured legacy fields, keyed by their new record keys. */
@@ -74,9 +78,9 @@ describe(CharacteristicsService, () => {
   let service: CharacteristicsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [CharacteristicsModule],
-    }).compile();
+    const { module } = await buildTestingModule(CharacteristicContextService, {
+      imports: [CodeModule, MatrixModule, CharacteristicsModule],
+    });
     await module.init();
 
     codeService = module.get(CodeService);

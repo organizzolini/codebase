@@ -8,17 +8,9 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of the 上 (hanzi shang) glyph — a
- * two-unit base with a two-unit stem rising from its middle and a unit stroke
- * reaching east from the stem's middle — one per corner and clockwise
- * rotation, each counting the base template drawn that way. The base faces
- * Southeast, drawn:
- *
- * ```text
- *  ╷
- *  ├╴
- * ╶┴╴
- * ```
+ * Provides the sixteen orientation evaluators of the 上 glyph: a two-unit base, a stem rising from
+ * its middle, and a stroke reaching east. One per corner and clockwise rotation, each counting the
+ * base template drawn that way. The base faces Southeast.
  */
 @Injectable()
 export class ShangHanziLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -40,7 +32,7 @@ export class ShangHanziLetterCharacteristicsService implements CharacteristicEva
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** Upright glyph as hexadecimal Code digits, one string per row. */
   private readonly template: readonly string[] = [".4.", ".e1", "2b1"];
 
   // 🔑 Public Fields

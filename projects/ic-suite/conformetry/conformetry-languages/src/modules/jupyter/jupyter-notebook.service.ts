@@ -73,11 +73,9 @@ export class JupyterNotebookService {
   // 🌎 Public Methods
 
   /**
-   * Pairs template cells with instance cells of the same kind, in order.
+   * Pairs template cells with instance cells of the same kind.
    *
-   * Cells are positional — a notebook has no cell identifiers — so the nth
-   * markdown cell is compared with the nth markdown cell. An instance may add
-   * cells at the end; it may not drop one the template declares.
+   * Cells have no identifiers, so pairing is positional.
    */
   public pairCells(args: {
     instanceNotebook: ParsedNotebook;
@@ -114,10 +112,9 @@ export class JupyterNotebookService {
   }
 
   /**
-   * Parses notebook JSON, tolerating a malformed file by reporting no cells.
+   * Parses notebook JSON, reporting no cells when it is malformed.
    *
-   * A notebook that will not parse is reported by the structural pass, so
-   * throwing here would only duplicate that as a crash.
+   * The structural pass reports a malformed notebook, so throwing would duplicate it.
    */
   public parseNotebook(content: string): ParsedNotebook {
     const parsed: unknown = parse(content);

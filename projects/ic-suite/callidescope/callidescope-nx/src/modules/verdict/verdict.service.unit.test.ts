@@ -1,7 +1,8 @@
 import { ProjectReportsService } from "@callidescope/output";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EMPTY_TRACE_REPORT } from "../plugin/plugin.constants";
 
@@ -17,7 +18,7 @@ import type {
   WideCallableFinding,
 } from "@callidescope/core";
 
-/** The limits a stubbed run resolved, so a forwarded lookup can be pinned. */
+/** Stubbed run's resolved limits, so forwarded lookups can be pinned. */
 const LIMITS = createMock<ProjectLimitsLookup>();
 
 /** The per-project reports a stubbed run produced. */
@@ -40,14 +41,11 @@ describe(VerdictService, () => {
   beforeAll(async () => {
     projectReportsService = createMock<ProjectReportsService>();
 
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(VerdictService, {
       providers: [
-        VerdictService,
         { provide: ProjectReportsService, useValue: projectReportsService },
       ],
-    }).compile();
-
-    service = await module.resolve(VerdictService);
+    }));
   });
 
   beforeEach(() => {
@@ -58,8 +56,14 @@ describe(VerdictService, () => {
     projectReportsService.findUnreadProjects.mockReturnValue([]);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(VerdictService, {
+      mocks: [ProjectReportsService],
+    });
+
+    expect(instance).toBeInstanceOf(VerdictService);
   });
 
   describe("judge", () => {

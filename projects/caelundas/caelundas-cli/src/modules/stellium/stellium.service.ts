@@ -16,7 +16,7 @@ import { stelliumNameBySize } from "./stellium.constants";
 
 import type { AspectBodies } from "../aspects/aspects.types";
 import type { Aspect, Body } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { StelliumPhase } from "./stellium.types";
 import type { Moment } from "moment-timezone";
 
@@ -73,23 +73,7 @@ export class StelliumService {
   }
 
   /**
-   * Composes Stellium patterns from stored 2-body aspects.
-   *
-   * A Stellium is a concentration of 4 or more celestial bodies within
-   * a small area of the zodiac (typically within 8° in the same sign).
-   * All bodies must be in conjunction (0° ± orb) with each other.
-   *
-   * Each stellium is a maximal clique of the conjunction graph with 4+
-   * bodies: every pair is conjunct, and no other body is conjunct with all of
-   * them. A larger connected component can hold several, overlapping ones.
-   *
-   * Stelliums represent focused energy and emphasis in a particular
-   * area of life or zodiac sign. The concentration of planetary energies
-   * can indicate both talent and challenge in the associated domain.
-   *
-   * A stellium forms on the minute its clique appears and dissolves on the
-   * minute it stops being one. So when a body joins or leaves, the old
-   * stellium dissolves and the new one forms on the same minute.
+   * Composes stelliums, maximal cliques of 4+ bodies all in conjunction. A stellium forms when its clique appears and dissolves when it breaks.
    */
   private composeStelliums(args: {
     currentAspectBodies: AspectBodies[];
@@ -190,9 +174,7 @@ export class StelliumService {
   }
 
   /**
-   * Finds the maximal cliques of four or more bodies in the conjunction graph:
-   * every pair of a clique is conjunct, and no other body is conjunct with
-   * all of it.
+   * Finds maximal cliques of four or more mutually conjunct bodies in the conjunction graph.
    */
   private findStelliumCliques(conjunctions: AspectBodies[]): Body[][] {
     const neighbors = this.buildConjunctionNeighbors(conjunctions);
@@ -267,16 +249,7 @@ export class StelliumService {
   // 🌎 Public Methods
 
   /**
-   * Detects all stellium patterns from stored 2-body aspect events.
-   *
-   * A stellium occurs when 4 or more bodies cluster together in conjunction,
-   * typically within the same zodiac sign. This represents an area of
-   * concentrated energy and focus in astrological interpretation.
-   *
-   * Each stellium is a maximal clique of conjunct bodies (all pairs in
-   * conjunction, not just transitively connected), so no reported stellium
-   * lies inside another.
-   *
+   * Detects stellium patterns from stored 2-body aspect events: maximal cliques of four or more conjunct bodies.
    * @see {@link composeStelliums} for stellium detection logic
    */
   detect(args: {
@@ -295,13 +268,7 @@ export class StelliumService {
   }
 
   /**
-   * Converts instantaneous stellium events into progressive events.
-   *
-   * Pairs forming and dissolving events for the same body group and
-   * stellium size to create events spanning the entire active period.
-   * Progressive events show when a stellium is in effect rather than just
-   * boundary moments.
-   *
+   * Converts instantaneous stellium events into progressive events spanning each stellium's active period.
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     const stelliumEvents = events.filter((event) =>

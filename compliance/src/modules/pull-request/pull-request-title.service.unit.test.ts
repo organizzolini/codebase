@@ -1,13 +1,20 @@
 import { spawnSync } from "node:child_process";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PullRequestTitleService } from "./pull-request-title.service";
 
+import type * as Testing from "@codebase/testing";
 import type { SpawnSyncReturns } from "node:child_process";
 
-vi.mock("node:child_process", () => ({ spawnSync: vi.fn() }));
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockChildProcess } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
+
+  return mockChildProcess(await importOriginal());
+});
 
 function completion(
   overrides: Partial<SpawnSyncReturns<string>>,
@@ -27,19 +34,19 @@ describe(PullRequestTitleService, () => {
   let service: PullRequestTitleService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PullRequestTitleService],
-    }).compile();
+    const built = await buildTestingModule(PullRequestTitleService);
 
-    service = await module.resolve(PullRequestTitleService);
+    service = built.instance;
   });
 
   beforeEach(() => {
     vi.mocked(spawnSync).mockReset();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PullRequestTitleService);
+
+    expect(instance).toBeInstanceOf(PullRequestTitleService);
   });
 
   it("passes a title commitlint accepts", () => {

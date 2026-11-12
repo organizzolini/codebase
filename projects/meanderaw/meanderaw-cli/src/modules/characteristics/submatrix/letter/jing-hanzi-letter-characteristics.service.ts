@@ -8,17 +8,8 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of the 井 (hanzi jing) glyph — a
- * unit square whose four sides each run a unit past both ends — one per corner
- * and clockwise rotation, each counting the base template drawn that way. The
- * base faces Southeast, drawn:
- *
- * ```text
- *  ╷╷
- * ╶┼┼╴
- * ╶┼┼╴
- *  ╵╵
- * ```
+ * Provides the sixteen orientation evaluators of the 井 (hanzi jing) glyph, a unit square whose sides each run past both ends.
+ * Each counts the base template, drawn facing Southeast.
  */
 @Injectable()
 export class JingHanziLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -39,7 +30,7 @@ export class JingHanziLetterCharacteristicsService implements CharacteristicEval
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** Upright glyph as hexadecimal Code digits, `.` outside it. */
   private readonly template: readonly string[] = [
     ".44.",
     "2ff1",

@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,18 +7,7 @@ import { MeemArabicLetterCharacteristicsService } from "./meem-arabic-letter-cha
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the م (final Arabic meem) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- * ┌┬╴
- * ├┘
- * │
- * ╵
- * ```
- */
+/** Each distinct orientation of final م as a standalone Code. */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [],
   orientations: [
@@ -59,16 +47,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "meemFinal",
 };
 
-/**
- * Each distinct orientation of the م (initial Arabic meem) as a Code holding
- * one isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- * ╶┬┐
- *  └┘
- * ```
- */
+/** Each distinct orientation of initial م as a standalone Code. */
 const INITIAL_FORM: LetterFormFixture = {
   aliases: [],
   orientations: [
@@ -108,16 +87,7 @@ const INITIAL_FORM: LetterFormFixture = {
   prefix: "meemInitial",
 };
 
-/**
- * Each distinct orientation of the م (medial Arabic meem) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- * ╶┬┬╴
- *  └┘
- * ```
- */
+/** Each distinct orientation of medial م as a standalone Code. */
 const MEDIAL_FORM: LetterFormFixture = {
   aliases: [],
   orientations: [
@@ -159,10 +129,7 @@ const FORMS: readonly LetterFormFixture[] = [
 ];
 
 describe(MeemArabicLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    MeemArabicLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(MeemArabicLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

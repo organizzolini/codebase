@@ -8,18 +8,18 @@ import { CalendarTimeline } from "../calendar-timeline/calendar-timeline";
 import { CalendarToolbar } from "../calendar-toolbar/calendar-toolbar";
 
 import { CalendarGrid } from "./calendar-grid";
+import { VENDORED_SURFACE_CLASS_NAMES } from "./calendar-surfaces.constants";
 import { DEFAULT_TIMELINE_SCALE } from "./calendar-views.constants";
 
 import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
+import type { CalendarEventRecord, EventFacet } from "./calendar-records.types";
 import type { CalendarViewName, TimelineScale } from "./calendar-views.types";
-import type { CalendarEventRecord, EventFacet } from "./events-database.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The events to show, the day the calendar opens on, and the zone it renders
- * every time in.
+ * The events, opening day, and display zone.
  */
 export interface EventsCalendarProperties {
   /**
@@ -92,9 +92,7 @@ export interface EventsCalendarProperties {
 // 🧩 Component
 
 /**
- * Renders a single toolbar row over the view the page picked, filling its
- * container: the timeline as a Gantt, every other view in the event
- * calendar.
+ * Renders one toolbar row over the picked view: the timeline as a Gantt, every other view in the event calendar.
  */
 export function EventsCalendar(
   properties: Readonly<EventsCalendarProperties>,
@@ -150,7 +148,9 @@ export function EventsCalendar(
       className={className}
       data-testid="events-calendar"
     >
-      <div className="flex h-full flex-col">
+      <div
+        className={`flex h-full flex-col ${VENDORED_SURFACE_CLASS_NAMES.gridCells}`}
+      >
         <CalendarToolbar
           compact={compact}
           filters={filters}

@@ -1,6 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectCalculationSupportService } from "./aspect-calculation-support.service";
 
@@ -11,15 +12,19 @@ describe(AspectCalculationSupportService, () => {
   let service: AspectCalculationSupportService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [AspectCalculationSupportService],
-    }).compile();
+    const { instance } = await buildTestingModule(
+      AspectCalculationSupportService,
+    );
 
-    service = await module.resolve(AspectCalculationSupportService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      AspectCalculationSupportService,
+    );
+
+    expect(instance).toBeInstanceOf(AspectCalculationSupportService);
   });
 
   it("requires an ephemeris service to read a longitudes window", () => {

@@ -1,8 +1,8 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { describe, expect, it, vi } from "vitest";
 
-import { Text } from "@codebase/lexico-entities";
+import { Text } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LiteratureRelationsLoader } from "./literature-relations.loader";
 import { LiteratureRelationsService } from "./literature-relations.service";
@@ -12,20 +12,17 @@ import { createEmptyConnection } from "./literature.utilities";
 async function createLoader(
   service: LiteratureRelationsService,
 ): Promise<LiteratureRelationsLoader> {
-  const module = await Test.createTestingModule({
-    providers: [
-      LiteratureRelationsLoader,
-      { provide: LiteratureRelationsService, useValue: service },
-    ],
-  }).compile();
-  return module.resolve(LiteratureRelationsLoader);
+  const { instance } = await buildTestingModule(LiteratureRelationsLoader, {
+    providers: [{ provide: LiteratureRelationsService, useValue: service }],
+  });
+  return instance;
 }
 
 describe(LiteratureRelationsLoader, () => {
-  it("is defined", async () => {
+  it("resolves with its dependencies", async () => {
     await expect(
       createLoader(createMock<LiteratureRelationsService>()),
-    ).resolves.toBeDefined();
+    ).resolves.toBeInstanceOf(LiteratureRelationsLoader);
   });
 
   it("finds every parent text asked for in the same tick with one lookup", async () => {

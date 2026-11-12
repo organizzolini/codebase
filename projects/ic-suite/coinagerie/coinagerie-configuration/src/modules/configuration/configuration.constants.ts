@@ -8,10 +8,7 @@ import type {
   FoldWord,
 } from "./configuration.types";
 
-/**
- * File names a run looks for in its working directory when no `--config` is
- * given, in order of preference.
- */
+/** Config file names searched in the working directory, in order. */
 export const CONFIGURATION_FILE_NAMES = [
   "coinagerie.config.ts",
   "coinagerie.config.mts",
@@ -21,19 +18,10 @@ export const CONFIGURATION_FILE_NAMES = [
   "coinagerie.config.cjs",
 ] as const;
 
-/**
- * Globs that together name every file, dot-files included.
- *
- * Three rather than one because `path.matchesGlob` never lets `*` or `**`
- * match a name that starts with a dot: `**` alone would skip `.gitignore` and
- * everything under `.github/`.
- */
+/** Globs for all files, dot-files too, since `*` skips dots. */
 export const DEFAULT_INCLUDE = ["**", "**/.*", "**/.*/**"] as const;
 
-/**
- * A line a markdown description may not hold: a list item would read back as
- * the start of the bullets, and an HTML comment could be taken for an anchor.
- */
+/** Markdown description lines barred: list items and HTML comments. */
 const DESCRIPTION_FORBIDDEN_LINE_PATTERN = /^\s*(?:[-*+]\s|<!--)/mu;
 
 const jsonOutputSchema = z.strictObject({
@@ -51,7 +39,7 @@ const descriptionSchema = z
     },
   );
 
-/** A function, whose parameters and result are only known when it is called. */
+/** A function, whose types are known only when called. */
 const isFunction = (value: unknown): value is (...args: never[]) => unknown =>
   typeof value === "function";
 
@@ -61,10 +49,7 @@ const excludedWordSchema = z.union([z.string(), z.instanceof(RegExp)]);
 /** What `exclude.words` must come to once any function has been called. */
 export const WORD_LIST_SCHEMA = z.array(excludedWordSchema);
 
-/**
- * What a configured `fold` must return for every word: text with no
- * whitespace or `*`, which a glossary bullet could not hold.
- */
+/** A `fold` result: text with no whitespace or `*`. */
 export const FOLDED_WORD_SCHEMA = z.string().regex(/^[^\s*]+$/u);
 
 const markdownOutputSchema = z.strictObject({
@@ -82,12 +67,7 @@ export const OVERRIDES_SCHEMA = z.strictObject({
   outputMarkdown: z.string().min(1).optional(),
 });
 
-/**
- * The shape a configuration file's default export must have.
- *
- * Strict at every level, so a misspelled field fails the run instead of being
- * silently ignored.
- */
+/** Strict configuration schema, so a misspelled field fails the run. */
 export const CONFIGURATION_SCHEMA: z.ZodType<CoinagerieConfiguration> =
   z.strictObject({
     exclude: z

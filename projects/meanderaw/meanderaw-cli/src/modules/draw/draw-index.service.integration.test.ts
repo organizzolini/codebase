@@ -62,14 +62,10 @@ describe(DrawIndexService, () => {
     await database.close();
   });
 
-  /** Every field besides `code` a fixture row does not care about, defaulted so a case only spells out what it means to test. */
+  /** Defaults for the row fields a case does not test. */
   const record = (
     overrides: Partial<MeanderRecord> & Pick<MeanderRecord, "code">,
   ): MeanderRecord => meanderRecord({ rows: 1, ...overrides });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
-  });
 
   it("builds one page per held pattern from the committed rows, and an index linking them", async () => {
     await repository.save(

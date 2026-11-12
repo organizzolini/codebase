@@ -11,10 +11,8 @@ import type { CapturedProcess } from "../../modules/process-runner/process-runne
 import type { BuildCspellArguments } from "./spell-check.types";
 
 /**
- * Runs cspell over the given project roots and returns what it printed.
- *
- * The one place cspell is started, so a single run and a batch run it the same
- * way: from the workspace root, through that workspace's own binary.
+ * Runs cspell over the given roots and returns what it printed.
+ * The one place cspell starts, so single and batch runs match.
  */
 export async function runCspell(
   args: BuildCspellArguments & { workspaceRoot: string },

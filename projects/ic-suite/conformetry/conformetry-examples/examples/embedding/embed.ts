@@ -17,11 +17,8 @@ import { NestFactory } from "@nestjs/core";
 
 /**
  * The whole of conformetry a host needs, with no command-line layer above it.
- *
- * `ConfigurationModule` publishes one service, so a host reaches template and
- * instance discovery through `ConfigurationService` rather than naming a
- * collaborator. `ReportingModule` is named separately because rendering sits
- * in the output layer above validation, which cannot reach up to it.
+ * `ReportingModule` is named separately because rendering sits above validation,
+ * which cannot reach up to it.
  */
 @Module({
   imports: [

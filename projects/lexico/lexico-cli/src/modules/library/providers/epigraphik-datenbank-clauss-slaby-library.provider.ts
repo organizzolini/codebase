@@ -8,13 +8,10 @@ import { Injectable } from "@nestjs/common";
 import _ from "lodash";
 import YAML from "yaml";
 
-import { Author, Text } from "@codebase/lexico-entities";
+import { Author, Text } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
-/**
- * Shape of a single record in the raw JSON chunks returned by the EDCS API.
- * `inschriften` is a sparse tuple where index 0 carries the raw inscription text (possibly HTML-tagged).
- */
+/** Raw EDCS record; `inschriften[0]` holds the HTML-tagged text. */
 interface EpigraphikDatenbankClaussSlabyRecord {
   obj: {
     "edcs-id"?: string;

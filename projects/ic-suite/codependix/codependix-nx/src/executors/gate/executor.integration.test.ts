@@ -1,39 +1,26 @@
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-import {
-  afterAll,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { captureOutput, overrideEnvironment } from "@codebase/testing";
 
 import gateBatchExecutor from "./batch-executor";
 import gateExecutor from "./executor";
 
 import type { GateExecutorOptions } from "./executor.types";
+import type { CapturedOutput } from "@codebase/testing";
 import type { ExecutorContext, TaskGraph } from "@nx/devkit";
 
-/**
- * Where fixture workspaces are written: inside this package, never the
- * operating system's temporary directory. The command line runs under the
- * `@swc-node/register` loader, which resolves its own helpers from the
- * importing file's directory — so a fixture outside the workspace passes on
- * macOS and fails on every Linux runner.
- */
+/** Fixtures stay in this package, not the OS temp directory. */
 const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../../../tmp");
 
 /** Long enough for one cold command-line boot on a slow CI runner. */
 const RUN_TIMEOUT = 180_000;
 
 /**
- * An executor context for a run against one project of the fixture workspace.
- *
- * Built literally rather than mocked, because `createMock` fabricates every
- * property it is not handed.
+ * An executor context for one project of the fixture workspace, built literally because
+ * `createMock` fabricates every property it is not handed.
  */
 function buildContext(args: {
   projectName: string;
@@ -51,13 +38,8 @@ function buildContext(args: {
 }
 
 /**
- * Writes a fixture workspace: `a → b` is forbidden, and `c` depends on `a`.
- *
- * The configuration path is named only in the fixture's `nx.json`, which is
- * what proves the executor reads its registration back rather than assuming
- * a conventional path — none of the conventional names exist here. The Nx
- * graph is a file the configuration points at, so no Nx workspace has to be
- * built underneath the fixture.
+ * Writes a fixture workspace: `a → b` is forbidden, `c` depends on `a`. The configuration
+ * path is named only in `nx.json`.
  */
 function writeFixtureWorkspace(): string {
   mkdirSync(FIXTURE_ROOT, { recursive: true });
@@ -137,7 +119,10 @@ function writeFixtureWorkspace(): string {
 
 describe("gate executor against a fixture workspace", () => {
   let workspaceRoot: string;
-  let printed: string;
+  let output: CapturedOutput;
+
+  /** Everything the command line printed to either stream. */
+  const printed = (): string => output.stdout() + output.stderr();
 
   /** Runs the real executor, collecting everything the command line printed. */
   async function runGate(args: {
@@ -188,19 +173,10 @@ describe("gate executor against a fixture workspace", () => {
   });
 
   beforeEach(() => {
-    printed = "";
     // A spawned process inherits FORCE_COLOR, and the logger would then
     // interleave ANSI codes with the text asserted on below.
-    vi.stubEnv("FORCE_COLOR", "0");
-
-    const collect = (chunk: unknown): boolean => {
-      printed += String(chunk);
-
-      return true;
-    };
-
-    vi.spyOn(process.stdout, "write").mockImplementation(collect);
-    vi.spyOn(process.stderr, "write").mockImplementation(collect);
+    overrideEnvironment({ FORCE_COLOR: "0" });
+    output = captureOutput();
   });
 
   afterAll(() => {
@@ -215,7 +191,7 @@ describe("gate executor against a fixture workspace", () => {
       await expect(runGate({ projectName: "a" })).resolves.toStrictEqual({
         success: false,
       });
-      expect(printed).toContain("a-is-a-leaf");
+      expect(printed()).toContain("a-is-a-leaf");
     },
     RUN_TIMEOUT,
   );
@@ -240,7 +216,7 @@ describe("gate executor against a fixture workspace", () => {
       await expect(runGate({ projectName: "c" })).resolves.toStrictEqual({
         success: true,
       });
-      expect(printed).toContain("in dependency a");
+      expect(printed()).toContain("in dependency a");
     },
     RUN_TIMEOUT,
   );
@@ -253,7 +229,7 @@ describe("gate executor against a fixture workspace", () => {
       await expect(
         runGate({ options: { dependencies: false }, projectName: "c" }),
       ).resolves.toStrictEqual({ success: true });
-      expect(printed).not.toContain("a-is-a-leaf");
+      expect(printed()).not.toContain("a-is-a-leaf");
     },
     RUN_TIMEOUT,
   );
@@ -278,7 +254,7 @@ describe("gate executor against a fixture workspace", () => {
       await expect(
         runGate({ options: { tags: ["name:a"] }, projectName: "c" }),
       ).resolves.toStrictEqual({ success: false });
-      expect(printed).toContain("a-is-a-leaf");
+      expect(printed()).toContain("a-is-a-leaf");
     },
     RUN_TIMEOUT,
   );

@@ -13,12 +13,7 @@ const COMMAND_PATH = path.resolve(
   "synchronization.main.ts",
 );
 
-/**
- * Where a spawned run's fixture workspace is rooted: inside this project, in
- * its gitignored `tmp`, never the operating system's temporary directory.
- * `@swc-node/register` resolves itself and this project's path aliases from
- * `cwd` upward, which a directory outside the workspace never reaches.
- */
+/** Fixtures live in gitignored `tmp`, since OS temp breaks alias resolution. */
 const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../tmp");
 
 describe("main end-to-end suite", () => {

@@ -1,13 +1,15 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import moment from "moment-timezone";
-import { Between, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
+import {
+  CaelundasDatabaseService,
+  CalendarEvent,
+  CalendarEventTag,
+} from "@codebase/caelundas-db";
 import { LoggerService } from "@codebase/observability";
 
-import { DatabaseService } from "../database/database.service";
-import { CalendarEventTag } from "../database/entities/calendar-event-tag.entity";
-import { CalendarEvent } from "../database/entities/calendar-event.entity";
+import { POSTGRES_MAXIMUM_PARAMETERS } from "../../caelundas-cli.constants";
 import { TagsService } from "../tags/tags.service";
 import { classifyEvent, tagPathKey } from "../tags/tags.utilities";
 
@@ -17,30 +19,25 @@ import {
   CALENDAR_EVENT_TAG_BATCH_SIZE,
   CALENDAR_EVENT_UPDATE_COLUMNS,
   COORDINATE_DECIMAL_PLACES,
-  SQLITE_MAXIMUM_PARAMETERS,
 } from "./calendar-events.constants";
 
-import type {
-  DetectedCalendarEvent,
-  StoredCalendarEvent,
-} from "../database/database.types";
+import type { ClassifiedCalendarEvent } from "../tags/tags.types";
 import type {
   CalendarEventRow,
   CalendarEventTagLink,
-  ClassifiedCalendarEvent,
+  DetectedCalendarEvent,
   FindInRangeParameters,
   Observer,
+  StoredCalendarEvent,
+  WrittenCalendarEvent,
 } from "./calendar-events.types";
 import type { Moment } from "moment-timezone";
 import type { EntityManager } from "typeorm";
 
 /**
- * Persists the events a run detects and reads them back for rendering.
- *
- * An event is keyed by its summary, start, and the location it was computed
- * for, so writing the same event again updates its row instead of adding one.
- * Its raw tags are classified into paths of the tag tree, and it is stored
- * linked to the nodes {@link TagsService} resolves those paths to.
+ * Persists detected events and reads them back for rendering. An event is
+ * keyed by summary, start, and location, and links to the tag tree nodes its
+ * tags classify under.
  */
 @Injectable()
 export class CalendarEventsService {
@@ -51,7 +48,7 @@ export class CalendarEventsService {
     @InjectRepository(CalendarEvent)
     private readonly calendarEventRepository: Repository<CalendarEvent>,
     private readonly tagsService: TagsService,
-    private readonly databaseService: DatabaseService,
+    private readonly databaseService: CaelundasDatabaseService,
   ) {
     this.logger.setContext(CalendarEventsService.name);
   }
@@ -63,10 +60,8 @@ export class CalendarEventsService {
   // 🔏 Private Methods
 
   /**
-   * The names of the tags each event is linked to directly, ordered by code
-   * point, which is also SQLite's default binary collation, so the order never
-   * depends on a locale. The ids go in batches that stay under SQLite's
-   * bind-parameter limit.
+   * Names of each event's direct tags, ordered by code point, not locale or
+   * collation; ids go in batches under the bind-parameter limit.
    */
   private async findTagNames(
     eventIds: readonly string[],
@@ -76,7 +71,7 @@ export class CalendarEventsService {
     for (
       let offset = 0;
       offset < eventIds.length;
-      offset += SQLITE_MAXIMUM_PARAMETERS
+      offset += POSTGRES_MAXIMUM_PARAMETERS
     ) {
       const links = await this.calendarEventRepository.manager
         .createQueryBuilder(CalendarEventTag, "eventTag")
@@ -84,7 +79,10 @@ export class CalendarEventsService {
         .select("eventTag.calendarEventId", "calendarEventId")
         .addSelect("tag.name", "name")
         .where("eventTag.calendarEventId IN (:...eventIds)", {
-          eventIds: eventIds.slice(offset, offset + SQLITE_MAXIMUM_PARAMETERS),
+          eventIds: eventIds.slice(
+            offset,
+            offset + POSTGRES_MAXIMUM_PARAMETERS,
+          ),
         })
         .getRawMany<{ calendarEventId: string; name: string }>();
 
@@ -104,9 +102,8 @@ export class CalendarEventsService {
   }
 
   /**
-   * Replaces the tag links of the written events with `links`: every link
-   * those events already had is deleted first, so a tag a re-run no longer
-   * reports is dropped, and a repeated link is inserted once.
+   * Replaces the written events' tag links: old links are deleted first, so a
+   * dropped tag goes and a repeated link is inserted once.
    */
   private async replaceTagLinks(
     manager: EntityManager,
@@ -154,54 +151,30 @@ export class CalendarEventsService {
   }
 
   /**
-   * Writes one batch of rows, updating any already stored, and returns the
-   * id each was written under, by {@link calendarEventKey}. TypeORM does not
-   * advance `updated_at` on a conflicting insert for SQLite, so both audit
-   * stamps are written, to the millisecond, and the update takes the new
-   * `updated_at`. TypeORM also reloads each inserted row's generated id with
-   * one `OR` per row, which SQLite refuses past 1,000 rows, and has no
-   * `RETURNING` to read them with, so the reload is turned off and the ids are
-   * read back instead: every row of the
-   * batch shares `observer`, so one select over that observer's events
-   * between the batch's first and last start finds them all.
+   * Writes a batch of rows, updating those already stored, and returns each
+   * written id by {@link calendarEventKey}.
    */
   private async writeRows(
     manager: EntityManager,
     rows: readonly CalendarEventRow[],
-    observer: Observer,
   ): Promise<Map<string, string>> {
-    const writtenAt = new Date();
-    await manager
+    const result = await manager
       .createQueryBuilder()
       .insert()
       .into(CalendarEvent)
-      .values(
-        rows.map((row) => ({
-          ...row,
-          createdAt: writtenAt,
-          updatedAt: writtenAt,
-        })),
-      )
-      .updateEntity(false)
+      .values([...rows])
       .orUpdate(
         [...CALENDAR_EVENT_UPDATE_COLUMNS],
         [...CALENDAR_EVENT_CONFLICT_COLUMNS],
       )
+      .returning(["id", "summary", "start", "end"])
       .execute();
-    const stored = await manager.getRepository(CalendarEvent).find({
-      select: { end: true, id: true, start: true, summary: true },
-      where: {
-        latitude: this.formatCoordinate(observer.latitude),
-        longitude: this.formatCoordinate(observer.longitude),
-        start: Between(
-          moment.min(rows.map(({ start }) => start)),
-          moment.max(rows.map(({ start }) => start)),
-        ),
-      },
-    });
+
+    // `RETURNING` rows are the driver's raw answer, which TypeORM types as `any`.
+    const { raw } = result as { raw: readonly WrittenCalendarEvent[] };
 
     return this.mapWrittenIds(
-      stored,
+      raw,
       new Set(
         rows.map(({ end, start, summary }) =>
           this.calendarEventKey(summary, start, end),
@@ -213,10 +186,8 @@ export class CalendarEventsService {
   // 🌎 Public Methods
 
   /**
-   * The key an event is told apart by within one observer's upsert: its
-   * summary and the instants it starts and ends, the natural key less the
-   * coordinates every event in the upsert shares. A boundary and a span may
-   * share a title and a start, so the end tells them apart.
+   * Keys an event by summary and instants; the end tells apart a boundary and
+   * span sharing a title and start.
    */
   calendarEventKey(
     summary: string,
@@ -227,11 +198,8 @@ export class CalendarEventsService {
   }
 
   /**
-   * Returns the stored events at one location that overlap a range, ordered
-   * by start, each with the names of the tags it is linked to directly. An event overlaps when it
-   * starts before the range ends and ends after the range starts, so one
-   * spanning either edge, like a retrograde, is included; an instant is
-   * included when it falls inside the range.
+   * Stored events at one location overlapping a range, by start, with tag
+   * names; events spanning an edge count, and an instant counts inside.
    */
   async findInRange(
     parameters: FindInRangeParameters,
@@ -267,21 +235,19 @@ export class CalendarEventsService {
   }
 
   /**
-   * A coordinate rounded to the decimals the column stores, as the text the
-   * column holds, so what is written and what is looked up compare exactly.
+   * A coordinate rounded to the stored decimals, as the text the column holds,
+   * so writes and lookups compare exactly.
    */
   formatCoordinate(coordinate: number): string {
     return coordinate.toFixed(COORDINATE_DECIMAL_PLACES);
   }
 
   /**
-   * The id each stored row is stored under, by {@link calendarEventKey}, from
-   * the summary, start and end each row reads back with its id, so the order
-   * SQLite answers in does not matter. Only the rows whose key is in `wanted`
-   * are included, as the select that reads them back also finds neighbors.
+   * Maps each stored row's key (by {@link calendarEventKey}) to its id, ignoring
+   * the database's answer order; keeps only `wanted` keys.
    */
   mapWrittenIds(
-    stored: readonly Pick<CalendarEvent, "end" | "id" | "start" | "summary">[],
+    stored: readonly WrittenCalendarEvent[],
     wanted: ReadonlySet<string>,
   ): Map<string, string> {
     const ids = new Map<string, string>();
@@ -298,19 +264,16 @@ export class CalendarEventsService {
   }
 
   /**
-   * Text with no leading or trailing whitespace and each run of whitespace
-   * inside it collapsed to one space, so a title never begins with a space or
-   * carries a double one, whatever a detector built it from.
+   * Trims text and collapses each run of whitespace to one space, so titles
+   * never start with or carry a double space.
    */
   tidyText(text: string): string {
     return text.replaceAll(/\s+/gu, " ").trim();
   }
 
   /**
-   * The links a written batch of events makes to the tag tree: one for each
-   * path each event is classified under, to the node `tagIds` resolved it to,
-   * each pair once. Throws for an event the write did not read back an id
-   * for, or a path `tagIds` lacks, either of which would lose its tags.
+   * Links each written event to its tag nodes, once per pair; throws if an id
+   * or node is missing, losing tags.
    */
   toTagLinks(
     batch: readonly (readonly [string, ClassifiedCalendarEvent])[],
@@ -344,12 +307,8 @@ export class CalendarEventsService {
   }
 
   /**
-   * Writes events for one observer, with its timezone, updating the row of
-   * any event already stored, and replaces each one's tag links with links
-   * to the nodes of the tag tree {@link classifyEvent} classifies it under,
-   * inserting any node that is missing, then rewrites the read model caelundas-web queries. It all runs in one transaction. Rows go in batches that stay under SQLite's
-   * bind-parameter limit, and a repeated key within the input keeps its last
-   * occurrence, as one statement may not update the same row twice.
+   * Writes one observer's events in a single transaction, then rebuilds the read
+   * model. A repeated key keeps its last occurrence.
    */
   async upsert(
     events: DetectedCalendarEvent[],
@@ -391,7 +350,6 @@ export class CalendarEventsService {
         const ids = await this.writeRows(
           manager,
           batch.map(([, { event }]) => this.toRow(event, observer)),
-          observer,
         );
         await this.replaceTagLinks(
           manager,

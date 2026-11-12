@@ -18,17 +18,10 @@ import type {
 
 /* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
- * Builds a project's internal file-level import Graph from a `ts.Program`,
- * and renders it.
+ * Builds a project's file-level import graph from its `ts.Program`, and renders it.
  *
- * Every import specifier is resolved through `ts.resolveModuleName`, called
- * with the exact compiler options and host `TypescriptProjectService` built
- * the program with — the compiler's own module resolution, so this
- * workspace's TypeScript path aliases and NodeNext `.js`-extension imports
- * resolve to the real `.ts` source file they point at, rather than through a
- * hand-written path heuristic. Import declarations are detected the same way
- * `codometer-cli`'s `TypescriptService.handleImport` does: `ts.isImportDeclaration`
- * on a string-literal module specifier.
+ * Specifiers resolve through `ts.resolveModuleName` with the same host and options the
+ * program was built with, so path aliases and NodeNext `.js` imports resolve as `tsc` would.
  */
 @Injectable()
 /* v8 ignore stop */
@@ -112,12 +105,8 @@ export class TypescriptImportGraphService {
   }
 
   /**
-   * Lists a program's own source files, excluding declaration files.
-   *
-   * `program.getRootFileNames()` is the same file list
-   * `TypescriptProjectService.buildProgram` handed to `ts.createProgram` —
-   * the project's own files, not the ones it merely pulls in as
-   * dependencies.
+   * Lists a program's own source files, excluding declaration files. Files pulled in
+   * only as dependencies are left out.
    */
   private listOwnedSourceFileNames(
     projectProgram: TypescriptProjectProgram,

@@ -10,14 +10,11 @@ import type { CallableId } from "@callidescope/core";
 import type { BreadthReport } from "@callidescope/output";
 
 /**
- * Answers `depth` and `breadth` about the callables it is named, inside a
- * resolved selection of Nx projects.
+ * Answers `depth` and `breadth` about the callables it is named, inside a resolved
+ * selection of Nx projects.
  *
- * The lookup itself is callidescope's — this only decides what it is asked
- * about. What the plugin adds is the scope: the CLI resolves an address
- * against the whole workspace, while here it is resolved against one project
- * and its Nx dependencies, which is both faster and the set the address
- * actually belongs to.
+ * The lookup is callidescope's. This adds the scope: the address resolves against one
+ * project and its Nx dependencies, which is faster and the set it belongs to.
  */
 @Injectable()
 export class AddressService {
@@ -37,12 +34,8 @@ export class AddressService {
   // 🔏 Private Methods
 
   /**
-   * Matches one address against an already-traced selection, or explains why
-   * it could not be.
-   *
-   * The explanation is returned rather than logged: an executor's product is
-   * what it writes to stdout, and a reader looking at a failed task needs the
-   * reason in the same place the report would have been.
+   * Matches one address against a traced selection, or returns why it could not. Returned,
+   * not logged, so a failed task shows it.
    */
   private identify(args: {
     address: string;
@@ -65,11 +58,8 @@ export class AddressService {
   }
 
   /**
-   * Traces the selection, then matches every address against it.
-   *
-   * All or nothing, the way the command line is: a task that printed the
-   * addresses it understood and skipped the rest would report a partial
-   * answer under a `success` nobody asked it to qualify.
+   * Traces the selection, then matches every address against it. All or nothing,
+   * like the command line.
    */
   private async locate(args: LookupArguments): Promise<
     | string

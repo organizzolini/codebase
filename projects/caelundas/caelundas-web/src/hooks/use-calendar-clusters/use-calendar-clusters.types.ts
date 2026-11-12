@@ -1,5 +1,5 @@
+import type { CalendarEventRecord } from "../../components/events-calendar/calendar-records.types";
 import type { CalendarViewName } from "../../components/events-calendar/calendar-views.types";
-import type { CalendarEventRecord } from "../../components/events-calendar/events-database.types";
 import type { EventCalendarOccurrence } from "@codebase/presentation";
 import type { ReactNode } from "react";
 
@@ -21,8 +21,7 @@ export interface UseCalendarClustersProperties {
 }
 
 /**
- * What the views of hours draw instead of every event, how a click on a
- * cluster opens the events in it, and the dialog that lists them.
+ * What the hour views draw, and the cluster dialog.
  */
 export interface UseCalendarClustersResult {
   /**

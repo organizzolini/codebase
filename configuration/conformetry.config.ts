@@ -175,7 +175,10 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       project: z.string().describe("Parent project name in kebab-case"),
     }),
     instances: [
-      { patterns: ["src/modules/*"], tags: ["framework:nest-commander"] },
+      {
+        patterns: ["src/modules/*"],
+        tags: ["framework:nest-commander"],
+      },
     ],
     name: "nestjs-command-module",
     templatePath: "configuration/conformetry-templates/nestjs-command-module",
@@ -260,20 +263,18 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       name: z.string().describe("Module name in kebab-case"),
       project: z.string().describe("Parent project name in kebab-case"),
     }),
-    instances: [{ patterns: ["src/modules/*"], tags: ["framework:nestjs"] }],
+    instances: [
+      {
+        patterns: ["src/modules/*"],
+        tags: ["framework:nestjs"],
+      },
+    ],
     name: "nestjs-service-module",
     templatePath: "configuration/conformetry-templates/nestjs-service-module",
   },
-  // The extglob in each frontend source pattern keeps a test file from being
-  // read as an instance named after itself. Instances are matched to whichever
-  // template their files fit, not to the group that found them, so a route's
-  // test is `.integration.test.tsx` and a component's `.unit.test.tsx` —
-  // otherwise `index.tsx` would fit both templates equally and be held to both.
-  // A React application holds every component and hook in a folder of its
-  // own, the way a NestJS project holds every service in a module: the folder
-  // generators write the folder with its types, constants, and utilities, and
-  // the file generators add one more component or hook to a folder that
-  // exists, the way `nestjs-service-file` adds a service to a module.
+  // The extglob in each frontend source pattern keeps a test file from being read as an
+  // instance named after itself. Instances match the template their files fit, so a route's
+  // test is `.integration.test.tsx` and `index.tsx` fits only its own template.
   {
     description:
       "A React component folder — the component, its types, constants, and utilities, and its unit test — in src/components of an existing React application",

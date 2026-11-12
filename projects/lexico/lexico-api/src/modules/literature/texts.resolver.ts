@@ -60,9 +60,7 @@ export class TextsResolver {
   }
 
   /**
-   * Pages the current text's lines in index order. A joined relation carries
-   * no order, and not every query joins it, so the lines of every text in a
-   * response are loaded together here.
+   * Pages a text's lines in index order, loading every text's lines in a response together.
    */
   @ResolveField(() => LineConnectionType, { name: "lines" })
   public async linesForText(
@@ -77,10 +75,7 @@ export class TextsResolver {
   }
 
   /**
-   * Resolves the parent text for a nested text. A parent the query joined is
-   * used as it is, a joined null included. One that was not joined — a parent
-   * loaded as a relation carries no `parentText` of its own, and search does
-   * not join it — is looked up with every other text's in the same response.
+   * Resolves a nested text's parent: a joined parent, even null, is used as is; otherwise it is loaded with the response's other parents.
    */
   @ResolveField(() => TextType, { name: "parentText", nullable: true })
   public async parentText(@Parent() text: TextType): Promise<null | TextType> {

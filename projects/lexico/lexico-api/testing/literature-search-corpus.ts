@@ -1,6 +1,8 @@
-/* cspell:words adspirate Amatoria Amores Argonautica argonautica atavis auctor carmina coeptis Cogitanti dicere edite fert Flaccus formas fueramus Horatius illas illi libelli Maecenas meis memoria Metamorphoses mihi mundi mutastis mutatas Naso Nasonis natus nondum nunc omnia Oratore origine Ovidius Peneia Phoebi Poetica praetulit primaque Publius quinque Quintus regibus repetenti saepenumero Satirae sumus Tullius Valerius valerius vetera vincit vinum */
+/* cspell:words adspirate Amatoria Amores Argonautica argonautica atavis auctor carmina coeptis Cogitanti dicere edite fert Flaccus formas fueramus Horatius illas illi libelli Maecenas meis memoria Metamorphoses mihi mundi mutastis mutatas */
 
-import { Author, Line, Text } from "@codebase/lexico-entities";
+/* cspell:words Naso Nasonis natus nondum nunc omnia Oratore origine Ovidius Peneia Phoebi Poetica praetulit primaque Publius quinque Quintus regibus repetenti saepenumero Satirae sumus Tullius Valerius valerius vetera vincit vinum */
+
+import { Author, Line, Text } from "@codebase/lexico-db";
 
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
@@ -9,7 +11,7 @@ const AUTHOR_SLUGS = ["cicero", "horace", "ovid", "valerius-flaccus"] as const;
 /** Author slugs seeded by the literature search corpus. */
 export type LiteratureSearchAuthorSlug = (typeof AUTHOR_SLUGS)[number];
 
-/** The saved rows of the corpus, looked up by slug, so tests can name expectations. */
+/** Saved corpus rows, looked up by slug for expectations. */
 export interface LiteratureSearchCorpus {
   readonly author: (slug: LiteratureSearchAuthorSlug) => Author;
   readonly lines: readonly Line[];
@@ -27,7 +29,7 @@ export type LiteratureSearchTextSlug =
   | "ovid/metamorphoses"
   | "valerius-flaccus/argonautica";
 
-/** One text to seed, with its author and its lines in index order. */
+/** A text to seed, with its author and lines. */
 interface SeededText {
   readonly author: LiteratureSearchAuthorSlug;
   readonly lines: readonly string[];
@@ -99,9 +101,7 @@ const TEXTS: ReadonlyMap<LiteratureSearchTextSlug, SeededText> = new Map([
 ]);
 
 /**
- * Seeds four authors, eight texts, and their lines: names, slugs, titles, and
- * line contents chosen so each search matches by exactly one column, matches
- * across authors, or matches nothing, as each test needs.
+ * Seeds four authors and eight texts with lines chosen so each search matches one column, several authors, or nothing.
  */
 export async function seedLiteratureSearchCorpus(
   database: DatabaseTestingModule,

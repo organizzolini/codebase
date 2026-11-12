@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { toCursor } from "@codebase/interface";
-import { Author, Line, Text, Token, Word } from "@codebase/lexico-entities";
+import { Author, Line, Text, Token, Word } from "@codebase/lexico-db";
 
 import { createRepositoryMock } from "../../../testing/mocks";
 import { WordType } from "../words/word.entities";
@@ -65,8 +65,7 @@ function createBook(): Text {
 }
 
 /**
- * Builds a line query whose one page statement reads back this row, with the
- * window as positions keyed by their order, and records what it ran.
+ * Builds a line query whose page statement reads back this row, with the window keyed by position.
  */
 function createLineQuery(
   windowIds: string[],

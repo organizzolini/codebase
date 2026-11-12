@@ -12,13 +12,7 @@ export interface BreadthMeasurement {
   readonly byCallable: ReadonlyMap<CallableId, CallableBreadth>;
 }
 
-/**
- * How many callables one callable calls directly, and which ones.
- *
- * `calleeIds` holds the distinct callables reached, not call sites: `assemble`
- * already dedupes repeat calls and drops self-edges when it builds
- * `calleeIdsByCaller`, so breadth inherits both properties for free.
- */
+/** Direct callee count. `calleeIds` holds distinct callees, not call sites. */
 export interface CallableBreadth {
   readonly breadth: number;
   readonly calleeIds: readonly CallableId[];
@@ -56,12 +50,7 @@ export interface ComponentDepth {
   readonly reachesUnresolved: boolean;
 }
 
-/**
- * The graph with each cycle collapsed into one node.
- *
- * Longest path is only well defined on an acyclic graph, so recursion is
- * condensed away before depth is computed rather than special-cased during it.
- */
+/** Graph with cycles collapsed, as longest path needs no cycles. */
 export interface CondensedGraph {
   readonly componentIdByCallable: ReadonlyMap<CallableId, number>;
   readonly memberIdsByComponent: readonly (readonly CallableId[])[];
@@ -73,12 +62,7 @@ export interface DepthMeasurement {
   readonly byComponent: readonly ComponentDepth[];
 }
 
-/**
- * Arguments for measuring breadth across the graph.
- *
- * No condensation is needed: unlike depth, a callable's breadth is well
- * defined even when it sits in a cycle, so breadth reads `graph` directly.
- */
+/** Arguments for measuring breadth across the graph, cycles included. */
 export interface MeasureBreadthArguments {
   readonly callableIds: readonly CallableId[];
   readonly graph: CallGraph;

@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,17 +7,7 @@ import { YehArabicLetterCharacteristicsService } from "./yeh-arabic-letter-chara
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the ى (final Arabic alef maksura, the dotless
- * yeh) as a Code holding one isolated copy, beside every orientation name
- * drawing that ink. The base, facing Southwest, draws:
- *
- * ```text
- *   ┌─╴
- * ╷ └┐
- * └──┘
- * ```
- */
+/** Each distinct orientation of final ى as a standalone Code. */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -63,17 +52,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "yehFinal",
 };
 
-/**
- * Each distinct orientation of the ى (isolated Arabic alef maksura, the dotless
- * yeh) as a Code holding one isolated copy, beside every orientation name
- * drawing that ink. The base, facing Southwest, draws:
- *
- * ```text
- *   ┌╴
- * ╷ └┐
- * └──┘
- * ```
- */
+/** Each distinct orientation of isolated ى as a standalone Code. */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -122,10 +101,7 @@ const ISOLATED_FORM: LetterFormFixture = {
 const FORMS: readonly LetterFormFixture[] = [FINAL_FORM, ISOLATED_FORM];
 
 describe(YehArabicLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    YehArabicLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(YehArabicLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

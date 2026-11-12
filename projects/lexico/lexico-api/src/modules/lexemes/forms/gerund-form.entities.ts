@@ -4,7 +4,7 @@ import { FormType } from "./form.entities";
 
 import type { FormDatabaseOnlyField } from "./forms.types";
 import type { GraphQLObjectOf } from "@codebase/interface";
-import type { FormGerundCase, GerundForm } from "@codebase/lexico-entities";
+import type { FormGerundCase, GerundForm } from "@codebase/lexico-db";
 
 /** A gerund, the verbal noun, in one case. */
 @ObjectType("GerundForm", { implements: FormType })

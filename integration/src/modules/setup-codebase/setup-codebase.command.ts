@@ -18,21 +18,11 @@ import {
 import type { Environment } from "../../integration.types";
 
 /**
- * CLI command that readies a CI job's Nx state after `pnpm install`, in the
- * order the steps depend on each other: bound a push's base to the push's own
- * previous tip, import the pull request's cache into a merge group, discard
- * any restored task database a cancelled save left damaged, and adopt the
- * restored one as this machine's.
+ * CLI command readying a CI job's Nx state after `pnpm install`: bounds a
+ * push's base, imports a pull request's cache into a merge group, discards a
+ * damaged task database, and adopts the restored one locally.
  *
- * Each step is a command of its own too, and this runs the same services, so
- * what a step decides is explained where its command is. Reads `NX_CACHE`,
- * `NX_SHAS`, `NX_BASE_SOURCE`, and `GITHUB_EVENT_NAME` to skip the steps the
- * job did not ask for, plus whatever the steps it runs read. Exits 1 only when
- * a push's base cannot be bounded; a cache that cannot be imported or adopted
- * leaves a cold run.
- *
- * It runs the services itself rather than through a service of its own: one
- * more layer would put the import's call stack over the depth limit.
+ * Exits 1 only when a push's base cannot be bounded.
  */
 @Command({
   description:
@@ -61,10 +51,8 @@ export class SetupCodebaseCommand extends CommandRunner {
   // 🔏 Private Methods
 
   /**
-   * Moves a push's base to the push's previous tip, when this job asked for
-   * that, and prints what it decided.
-   *
-   * @returns Whether the run may go on: false when the base could not be bounded.
+   * Moves a push's base to its previous tip, when this job asked for that.
+   * @returns False when the base cannot be bounded.
    */
   private boundBase(): boolean {
     if (

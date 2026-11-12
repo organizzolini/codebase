@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -11,7 +10,7 @@ import type {
   LetterOrientationFixture,
 } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the ㅋ (hangul kieuk) as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** One isolated Code per orientation of the ㅋ (hangul kieuk). */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   { fixture: "03x03y2502d0080", names: ["Southeast", "NorthwestHalf"] },
   {
@@ -41,10 +40,7 @@ const ALIASES: readonly LetterAliasFixture[] = [
 ];
 
 describe(KieukHangulLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    KieukHangulLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(KieukHangulLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

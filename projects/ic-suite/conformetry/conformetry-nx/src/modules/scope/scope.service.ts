@@ -11,17 +11,7 @@ import type { ConformetryInstanceGroup } from "@conformetry/configuration";
 /**
  * Reads an instance group as Nx resolves it.
  *
- * A group carrying `tags` selects projects and reads its globs inside each
- * one; a group without them is a workspace glob, which is what a host with no
- * project graph writes. Telling the two apart by a field the group already has
- * is what keeps a generator's location stated once — nothing else can
- * contradict it, and so nothing can silently narrow it.
- *
- * Which of the two a group is, is the configuration layer's to say. The groups
- * this plugin claims and the ones `@conformetry/configuration` reads on its own
- * must be exact complements, and nothing fails if they are not — a group both
- * hosts skipped is simply never validated. One rule, read from one place, is
- * what rules that out.
+ * A group with `tags` is read inside each project; one without is a workspace glob.
  */
 @Injectable()
 export class ScopeService {
@@ -45,10 +35,7 @@ export class ScopeService {
   /**
    * Returns whether a group applies to a project.
    *
-   * A group with no tags applies everywhere — tags narrow a group, they do not
-   * opt it in, so a configuration that never mentions them still reaches every
-   * project. A project must carry every tag the group names, so a second tag
-   * narrows the group further rather than widening it.
+   * An untagged group applies everywhere; each tag a group names must be on the project.
    */
   public matchesProject(args: {
     group: ConformetryInstanceGroup;
@@ -66,11 +53,7 @@ export class ScopeService {
   /**
    * Resolves one group against a project, into workspace-relative globs.
    *
-   * A tagged group's globs are read inside the project, so `src/modules/*`
-   * means the same thing in every project it selects. An untagged group is
-   * returned as written, which is how a host with no projects resolves it.
-   * Either way the result is indistinguishable downstream from a hand-written
-   * glob — discovery, validation, and layout inference need know nothing.
+   * Tagged globs are read inside the project; untagged ones are kept as written.
    */
   public resolveGroup(args: {
     group: ConformetryInstanceGroup;
@@ -101,10 +84,9 @@ export class ScopeService {
   }
 
   /**
-   * The folder a group's first glob points at, with any wildcard trimmed off.
+   * The folder a group's first glob points at.
    *
-   * `src/modules/*` places a new module in `src/modules`; a glob that starts
-   * with a wildcard places nothing, and layout falls back to being inferred.
+   * A glob starting with a wildcard places nothing, so layout falls back to inference.
    */
   public resolveScopedDirectory(
     groups: ConformetryInstanceGroup[],
@@ -125,12 +107,9 @@ export class ScopeService {
   }
 
   /**
-   * The projects a generator's groups admit, by name and sorted.
+   * The projects a generator's tagged groups admit, by name and sorted.
    *
-   * Sorted because the emitted schema is compared byte for byte by the drift
-   * check, and an unstable order would report drift on every re-emit. A
-   * generator with no tagged group admits nothing here, which the caller reads
-   * as "do not constrain the prompt at all".
+   * Sorted so the emitted schema stays stable across re-emits.
    */
   public resolveScopedProjectNames(args: {
     groups: ConformetryInstanceGroup[];

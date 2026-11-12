@@ -15,16 +15,9 @@ import type {
 } from "./markdown.types";
 
 /**
- * Walks two markdown trees and reports what the template requires but the
- * instance lacks.
+ * Walks two markdown trees and reports what the template requires but the instance lacks.
  *
- * The walk is order-preserving but not position-locked: each template node is
- * matched against any instance sibling, and the last match anchors the error
- * location for whatever follows. A document may therefore add sections freely,
- * as long as it still contains everything the template declares.
- *
- * The walk also counts what it asked for: every template node it weighs is one
- * requirement, and a node with no counterpart costs its whole subtree.
+ * The walk is order-preserving but not position-locked, so a document may add sections freely.
  */
 @Injectable()
 export class MarkdownTreeService {
@@ -74,8 +67,7 @@ export class MarkdownTreeService {
   /**
    * Matches a container node, then descends into it.
    *
-   * Several instance nodes may match the container shape — two lists, say — so
-   * the one whose children satisfy the most of the template is chosen.
+   * Picks the instance candidate whose children satisfy the most of the template.
    */
   private compareContainer(args: CompareNodeArguments): CompareNodeResult {
     const candidates = this.findCandidates(args);

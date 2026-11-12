@@ -1,6 +1,8 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { captureOutput } from "@codebase/testing";
+
 import { OptionsService } from "../../modules/options/options.service";
 import { EMPTY_SCOPE_REPORT } from "../../modules/plugin/plugin.constants";
 
@@ -10,8 +12,8 @@ import type { PluginService } from "../../modules/plugin/plugin.service";
 import type { ResolvedTraceScope } from "../../modules/plugin/plugin.types";
 import type { GateExecutorOptions } from "./executor.types";
 import type { ConfigurationService } from "@callidescope/configuration";
+import type { CapturedOutput } from "@codebase/testing";
 import type { ExecutorContext, TaskGraph } from "@nx/devkit";
-import type { MockInstance } from "vitest";
 
 /** The workspace configuration every run must name. */
 const CONFIGURATION_PATH = "configuration/callidescope.config.ts";
@@ -32,7 +34,7 @@ vi.mock("../../modules/plugin/plugin-context.utilities", () => ({
     await Promise.resolve(pluginService),
 }));
 
-/** The context a batch worker hands over: no project, since it holds many. */
+/** Batch context: no project, since a batch holds many. */
 const CONTEXT: ExecutorContext = {
   cwd: "/workspace",
   isVerbose: false,
@@ -91,11 +93,11 @@ function buildTaskGraph(projectNames: string[]): TaskGraph {
 }
 
 describe(gateBatchExecutor, () => {
-  let write: MockInstance<typeof process.stdout.write>;
+  let output: CapturedOutput;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+    output = captureOutput();
     pluginService.resolveTraceScope.mockImplementation(
       async ({ projectNames }) =>
         await Promise.resolve(buildScope(projectNames[0] ?? "")),
@@ -195,7 +197,7 @@ describe(gateBatchExecutor, () => {
 
     // Nx stores a batch task's output but never prints it, so without this a
     // failed gate would be a red task that does not say which stack broke.
-    const printed = write.mock.calls.map(([chunk]) => String(chunk)).join("");
+    const printed = output.stdout();
 
     expect(printed).toContain("alpha:callidescope-restrict");
     expect(printed).toContain("## Deep stacks (1)");
@@ -218,9 +220,7 @@ describe(gateBatchExecutor, () => {
       CONTEXT,
     );
 
-    expect(write.mock.calls.map(([chunk]) => String(chunk)).join("")).toContain(
-      EMPTY_SCOPE_REPORT,
-    );
+    expect(output.stdout()).toContain(EMPTY_SCOPE_REPORT);
   });
 
   it("fails a task with nothing to trace without failing its peers", async () => {

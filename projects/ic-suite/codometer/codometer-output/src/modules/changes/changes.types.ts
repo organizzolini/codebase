@@ -17,19 +17,13 @@ export interface CollectRowsArguments {
   workingDirectory: string;
 }
 
-/**
- * Everything one collection read: the rows, and what could not be measured.
- *
- * Both travel together because a table of rows alone cannot be read honestly.
- * A target that failed contributes no row, and the reader would have to count
- * rows against a list of projects to notice it was gone.
- */
+/** Rows plus unmeasured targets; rows alone would hide a failure. */
 export interface MetricCollection {
   failures: ProjectFailure[];
   rows: MetricRow[];
 }
 
-/** One metric joined to the project that measured it and to its baseline. */
+/** A metric with its measuring project and baseline. */
 export interface MetricRow extends ReportMetric {
   baseValue: number | undefined;
   /** False when this run did not rebuild the project, so the baseline stands in. */
@@ -45,13 +39,7 @@ export type MetricSeverity = "fail" | "warn";
 /** The denomination a metric's value is counted in. */
 export type MetricUnit = "bytes" | null;
 
-/**
- * Something one project's run could not do, and what it was trying to do it to.
- *
- * Neither a breach nor staleness: it is the run not having finished. A `target`
- * failure means a set of files nobody measured, so the rows it would have
- * produced are absent from the table entirely.
- */
+/** A failed project run; a `target` failure omits its rows. */
 export interface ProjectFailure extends ReportFailure {
   project: string;
 }
@@ -69,30 +57,18 @@ export type ReportFailure = NonNullable<CodometerReport["failures"]>[number];
 export type ReportLimit =
   CodometerReport["targets"][number]["metrics"][number]["limits"][number];
 
-/**
- * One metric codometer measured, and whatever limits it.
- *
- * Everything a row needs from the report itself, before the project it belongs
- * to and the baseline it is compared against are joined onto it. Carries every
- * metric a target produced — a byte count, a symbol count, anything — never
- * filtered by unit or by whether a limit was configured.
- */
+/** One measured metric and its limits; unfiltered by unit. */
 export interface ReportMetric {
   /**
-   * The severity of the worst limit this metric breached, if it breached one.
+   * The severity of the worst breached limit, if any.
    *
-   * One field for three states rather than a flag beside a severity, because
-   * "breached, severity unknown" is not a state a metric can be in. `undefined`
-   * is no breach, `"warn"` is advisory, `"fail"` stops the change.
+   * `undefined` for no breach, else `"warn"` or `"fail"`.
    */
   breach: MetricSeverity | undefined;
   /**
    * True when the target's globs matched no files.
    *
-   * Read straight off the report rather than inferred from a zero, because a
-   * target that matched nothing clears every limit written against it while
-   * measuring nothing at all — and a target that genuinely measures zero is a
-   * different thing entirely.
+   * Read from the report, since a target matching nothing clears every limit against it.
    */
   empty: boolean;
   /** What the row is called in the table: the written label, else its target. */
@@ -100,18 +76,13 @@ export interface ReportMetric {
   /**
    * The enforced limit, absent where nothing limits the metric.
    *
-   * The lowest `fail` limit when there is one, else the lowest `warn` limit.
-   * An advisory limit sitting below it is carried by the row's breach severity
-   * instead.
+   * The lowest `fail` limit, else the lowest `warn`.
    */
   limit: number | undefined;
   /**
-   * The metric's name, which is the key it joins to its baseline on.
+   * The metric's name, the key it joins to its baseline on.
    *
-   * Stable by construction — codometer builds it from the target's name and the
-   * metric's path within that target, both of which are written in the
-   * configuration — so a metric present on both sides never reads as one
-   * removal plus one addition.
+   * Stable by construction, so it never reads as remove plus add.
    */
   name: string;
   /** What `value` is denominated in, so a renderer can format it correctly. */

@@ -1,8 +1,6 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectEphemerisService } from "../aspects/aspect-ephemeris.service";
 import { AspectEventFormattingService } from "../aspects/aspect-event-formatting.service";
@@ -11,32 +9,20 @@ import { AspectsUtilitiesService } from "../aspects/aspects-utilities.service";
 import { MinorAspectsEventService } from "./minor-aspects-event.service";
 
 describe(MinorAspectsEventService, () => {
-  let service: MinorAspectsEventService;
+  const testingModuleOptions = {
+    mocks: [
+      AspectEphemerisService,
+      AspectsUtilitiesService,
+      AspectEventFormattingService,
+    ],
+  };
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        MinorAspectsEventService,
-        {
-          provide: AspectEphemerisService,
-          useValue: createMock<AspectEphemerisService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        {
-          provide: AspectsUtilitiesService,
-          useValue: createMock<AspectsUtilitiesService>(),
-        },
-        {
-          provide: AspectEventFormattingService,
-          useValue: createMock<AspectEventFormattingService>(),
-        },
-      ],
-    }).compile();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      MinorAspectsEventService,
+      testingModuleOptions,
+    );
 
-    service = await module.resolve(MinorAspectsEventService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(MinorAspectsEventService);
   });
 });

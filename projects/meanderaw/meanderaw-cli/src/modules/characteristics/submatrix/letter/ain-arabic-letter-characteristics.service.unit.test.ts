@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,17 +7,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the ع (final Arabic ain) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *  ┌┐
- * ┌┴┴╴
- * └─╴
- * ```
- */
+/** One isolated Code per orientation of the ع (final form). */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -63,16 +52,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "ainFinal",
 };
 
-/**
- * Each distinct orientation of the ع (initial Arabic ain) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *  ┌╴
- * ╶┴╴
- * ```
- */
+/** One isolated Code per orientation of the ع (initial form). */
 const INITIAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -117,17 +97,7 @@ const INITIAL_FORM: LetterFormFixture = {
   prefix: "ainInitial",
 };
 
-/**
- * Each distinct orientation of the ع (isolated Arabic ain) as a Code holding
- * one isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *  ┌╴
- * ┌┴╴
- * └─╴
- * ```
- */
+/** One isolated Code per orientation of the ع (isolated form). */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -172,16 +142,7 @@ const ISOLATED_FORM: LetterFormFixture = {
   prefix: "ainIsolated",
 };
 
-/**
- * Each distinct orientation of the ع (medial Arabic ain) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *  ┌┬╴
- * ╶┴┴╴
- * ```
- */
+/** One isolated Code per orientation of the ع (medial form). */
 const MEDIAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -235,10 +196,7 @@ const FORMS: readonly LetterFormFixture[] = [
 ];
 
 describe(AinArabicLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    AinArabicLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(AinArabicLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

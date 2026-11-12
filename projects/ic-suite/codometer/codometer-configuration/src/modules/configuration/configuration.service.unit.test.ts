@@ -1,5 +1,4 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import {
@@ -8,8 +7,10 @@ import {
   InvalidLimitValueError,
   UnknownConfigurationFileTypeError,
 } from "@codometer/core";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationFlagsService } from "./configuration-flags.service";
 import { ConfigurationLoaderService } from "./configuration-loader.service";
@@ -28,6 +29,7 @@ import {
 import { ConfigurationService } from "./configuration.service";
 
 import type { CodometerConfiguration } from "./configuration.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 /** The minimal configuration every test builds on: only `format` is required. */
 const BASE_CONFIGURATION = {
@@ -49,7 +51,7 @@ async function writeConfigurationFile(
   fileName: string,
   contents: string,
 ): Promise<string> {
-  const directory = await mkdtemp(path.join(tmpdir(), "codometer-config-"));
+  const directory = createTemporaryDirectory("config");
   const configurationPath = path.join(directory, fileName);
 
   await writeFile(configurationPath, contents, "utf8");
@@ -58,10 +60,7 @@ async function writeConfigurationFile(
 }
 
 /**
- * Writes a configuration file, and returns a folder two levels beneath it.
- *
- * The nested folder is where a test names a file beside an ancestor's, to
- * show that nothing is searched for or merged from above.
+ * Writes a configuration file and returns a folder two levels beneath it, where nothing is searched for or merged from above.
  */
 async function writeConfigurationTree(
   fileName: string,
@@ -76,24 +75,34 @@ async function writeConfigurationTree(
   return { nestedDirectory, rootDirectory };
 }
 
+/** What the ConfigurationService is built with. */
+const DEPENDENCIES = {
+  providers: [
+    ConfigurationFlagsService,
+    ConfigurationLoaderService,
+    ConfigurationResolverService,
+  ],
+} satisfies TestingModuleOptions;
+
 describe(ConfigurationService, () => {
   let service: ConfigurationService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ConfigurationFlagsService,
-        ConfigurationLoaderService,
-        ConfigurationResolverService,
-        ConfigurationService,
-      ],
-    }).compile();
+    const { instance } = await buildTestingModule(
+      ConfigurationService,
+      DEPENDENCIES,
+    );
 
-    service = await module.resolve(ConfigurationService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      ConfigurationService,
+      DEPENDENCIES,
+    );
+
+    expect(instance).toBeInstanceOf(ConfigurationService);
   });
 
   // 🗂️ Format
@@ -1268,9 +1277,7 @@ describe(ConfigurationService, () => {
   });
 
   it("throws when no repository root holds the relative path either", async () => {
-    const searchDirectory = await mkdtemp(
-      path.join(tmpdir(), "codometer-rootless-"),
-    );
+    const searchDirectory = createTemporaryDirectory("rootless");
     const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(searchDirectory);
 
     await expect(

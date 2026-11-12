@@ -14,22 +14,10 @@ import type {
 import type { AnchorCheckResult } from "@codependix/core";
 
 /**
- * Reads and rewrites codependix's own named anchor blocks in a Markdown file.
+ * Reads and rewrites codependix's named anchor blocks in a Markdown file. Markers are HTML
+ * comments, so no `conformetry-*` package is needed.
  *
- * Owns its comment-marker syntax outright — a start marker and an end marker,
- * each an HTML comment naming the anchor — with zero dependency on any
- * `conformetry-*` package, per issue #242's decision that codependix must be
- * able to evolve its export format without touching, or being constrained by,
- * conformetry's template-conformance mechanism. See `anchors.constants.ts`
- * for the exact marker text.
- *
- * `checkAnchor` and `replaceAnchorContent` still treat a missing anchor as an
- * error — they are low-level primitives with no notion of where a new section
- * would safely go. `insertAnchorSection` is the one place that risk is taken
- * on deliberately: it only ever places a new section at one of two safe,
- * well-defined spots — the end of the file, or the end of an existing
- * `## 🕸️ Codependix` section — never anywhere else in a document someone else
- * is authoring. `DeliveryService` is what decides when to reach for it.
+ * `insertAnchorSection` is the only method that creates a section, and only at a safe spot.
  */
 @Injectable()
 export class AnchorsService {
@@ -69,9 +57,7 @@ export class AnchorsService {
   }
 
   /**
-   * Inserts a new subsection at the end of an existing `## 🕸️ Codependix`
-   * section, before whatever heading comes next in the file (or at the end of
-   * the file, when the section is already the last thing in it).
+   * Inserts a subsection at the end of an existing Codependix section, before the next heading.
    */
   private insertIntoCodependixSection(args: {
     fileContent: string;
@@ -93,12 +79,8 @@ export class AnchorsService {
   // 🌎 Public Methods
 
   /**
-   * Compares a Markdown file's anchor against a freshly computed export.
-   *
-   * `--check` reads this and reports drift without writing anything; `--write`
-   * is what acts on it. Throws `AnchorNotFoundError` when the anchor is
-   * missing, which is what fails a `--check` run against a project that never
-   * had the markers placed.
+   * Compares a Markdown file's anchor against a freshly computed export. Throws
+   * `AnchorNotFoundError` when the anchor is missing, which fails a `--check` run.
    */
   checkAnchor(
     args: AnchorLocationArguments & { freshContent: string },
@@ -127,19 +109,8 @@ export class AnchorsService {
   }
 
   /**
-   * Auto-creates a missing anchor's `## 🕸️ Codependix` section.
-   *
-   * Called only when the caller has already confirmed the anchor is absent —
-   * this never checks that itself, and never touches an anchor that already
-   * exists. Two safe, well-defined outcomes only:
-   *
-   * - No `## 🕸️ Codependix` heading anywhere in the file: appends the heading,
-   *   `introLine`, the `### <subheading>` (when one is given), and the anchor
-   *   block to the end of the file.
-   * - A `## 🕸️ Codependix` heading already exists (from an earlier graph
-   *   type's write): inserts the new `### <subheading>` and anchor block at
-   *   the end of that section, before whatever heading comes next — never
-   *   duplicating the heading itself.
+   * Auto-creates a missing anchor's section, appending the heading only when none exists.
+   * Call only once the anchor is known absent.
    */
   insertAnchorSection(args: AnchorSectionInsertArguments): string {
     const subsectionBlock = this.wrapInAnchors(args.anchorName, args.content);
@@ -168,12 +139,7 @@ export class AnchorsService {
   }
 
   /**
-   * Replaces a named anchor's content in place, leaving the rest untouched.
-   *
-   * Idempotent: writing the same content twice produces byte-identical output,
-   * since the replacement is always rendered in the same canonical shape —
-   * marker, trimmed content, marker — regardless of what whitespace the
-   * anchor held before.
+   * Replaces a named anchor's content in place. Output is canonical, so writing twice is idempotent.
    */
   replaceAnchorContent(
     args: AnchorLocationArguments & { newContent: string },

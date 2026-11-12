@@ -17,7 +17,7 @@ import {
   Word,
   WordForm,
   WordLexeme,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 import { LoggerModule } from "@codebase/observability";
 
 import { DATABASE_TIMEOUT_MILLISECONDS } from "../testing/database";
@@ -49,14 +49,13 @@ const AUDIT_FIELDS = [
   "updatedBy",
 ] as const;
 
-/** The rows the suite seeds, by what each query looks them up with. */
+/** Seeded rows, by the key queries look them up with. */
 interface Seeded {
   readonly lexeme: Lexeme;
 }
 
 /**
- * Seeds one noun with every relation a lexeme exposes, the inflected word
- * that links back to it, and a line of literature whose token is that word.
+ * Seeds one noun with its relations, an inflected word linking back to it, and a literature line using that word.
  */
 async function seed(repository: RepositoryOf): Promise<Seeded> {
   const lexeme = new Lexeme();

@@ -34,12 +34,9 @@ export class SessionWorktreeNameService {
   // 🔏 Private Methods
 
   /**
-   * The linked worktree the current directory is the root of, or undefined
-   * when it is not one.
-   *
-   * A linked worktree's git directory sits under the shared one's `worktrees`
-   * folder, while the main checkout's is the shared one itself; the main
-   * checkout is the shared git directory's parent.
+   * Returns the linked worktree the current directory roots, or undefined. A
+   * linked worktree's git directory sits under the shared one's `worktrees`
+   * folder.
    */
   private findLinkedWorktree(): LinkedWorktree | undefined {
     if (this.readGit(SUPERPROJECT_ARGUMENTS) !== "") {
@@ -88,9 +85,8 @@ export class SessionWorktreeNameService {
   // 🌎 Public Methods
 
   /**
-   * Every way the current worktree breaks the convention: a directory name
-   * that is not lowercase kebab-case, then, for one inside the main checkout,
-   * not being gitignored. Empty when nothing is wrong or nothing is judged.
+   * Lists how the current worktree breaks the convention: a non-kebab-case
+   * name, or, inside the main checkout, not being gitignored.
    */
   public findViolations(): string[] {
     const worktree = this.findLinkedWorktree();

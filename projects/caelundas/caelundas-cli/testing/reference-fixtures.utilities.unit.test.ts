@@ -1,9 +1,10 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import moment from "moment-timezone";
-import { afterAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { useTemporaryDirectory } from "@codebase/testing";
 
 import {
   assertReferenceEvents,
@@ -11,7 +12,7 @@ import {
   loadReferenceFixture,
 } from "./reference-fixtures.utilities";
 
-import type { DetectedCalendarEvent } from "../src/modules/database/database.types";
+import type { DetectedCalendarEvent } from "../src/modules/calendar-events/calendar-events.types";
 import type { ReferenceFixture } from "./reference-fixtures.types";
 
 function detected(
@@ -394,32 +395,30 @@ describe("reference fixtures", () => {
   });
 
   describe(loadReferenceFixture, () => {
-    const directory = fs.mkdtempSync(path.join(os.tmpdir(), "reference-"));
-
-    afterAll(() => {
-      fs.rmSync(directory, { force: true, recursive: true });
-    });
+    const getDirectory = useTemporaryDirectory("reference");
 
     it("reads a fixture file by name", () => {
       expect.hasAssertions();
 
       fs.writeFileSync(
-        path.join(directory, "sample.json"),
+        path.join(getDirectory(), "sample.json"),
         JSON.stringify(fixture),
       );
 
-      expect(loadReferenceFixture("sample", directory)).toStrictEqual(fixture);
+      expect(loadReferenceFixture("sample", getDirectory())).toStrictEqual(
+        fixture,
+      );
     });
 
     it("rejects a fixture that names no source or retrieval date", () => {
       expect.hasAssertions();
 
       fs.writeFileSync(
-        path.join(directory, "bare.json"),
+        path.join(getDirectory(), "bare.json"),
         JSON.stringify({ events: [], name: "bare" }),
       );
 
-      expect(() => loadReferenceFixture("bare", directory)).toThrow(
+      expect(() => loadReferenceFixture("bare", getDirectory())).toThrow(
         /retrieved/,
       );
     });
@@ -428,14 +427,14 @@ describe("reference fixtures", () => {
       expect.hasAssertions();
 
       fs.writeFileSync(
-        path.join(directory, "local.json"),
+        path.join(getDirectory(), "local.json"),
         JSON.stringify({
           ...fixture,
           events: [{ start: "2026-03-20 06:37", summary: "🌄 Civil Dawn" }],
         }),
       );
 
-      expect(() => loadReferenceFixture("local", directory)).toThrow(
+      expect(() => loadReferenceFixture("local", getDirectory())).toThrow(
         /Invalid ISO datetime/,
       );
     });
@@ -444,14 +443,14 @@ describe("reference fixtures", () => {
       expect.hasAssertions();
 
       fs.writeFileSync(
-        path.join(directory, "off-globe.json"),
+        path.join(getDirectory(), "off-globe.json"),
         JSON.stringify({
           ...fixture,
           window: { ...fixture.window, latitude: 91 },
         }),
       );
 
-      expect(() => loadReferenceFixture("off-globe", directory)).toThrow(
+      expect(() => loadReferenceFixture("off-globe", getDirectory())).toThrow(
         /latitude/,
       );
     });
@@ -460,11 +459,11 @@ describe("reference fixtures", () => {
       expect.hasAssertions();
 
       fs.writeFileSync(
-        path.join(directory, "negative.json"),
+        path.join(getDirectory(), "negative.json"),
         JSON.stringify({ ...fixture, counts: { "🌄 Civil Dawn": -1 } }),
       );
 
-      expect(() => loadReferenceFixture("negative", directory)).toThrow(
+      expect(() => loadReferenceFixture("negative", getDirectory())).toThrow(
         /counts/,
       );
     });

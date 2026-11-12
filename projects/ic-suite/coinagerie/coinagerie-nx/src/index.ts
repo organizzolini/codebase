@@ -28,13 +28,7 @@ export type {
   InferredTargets,
 } from "./modules/plugin/plugin.types";
 
-/**
- * Infers a coinagerie check target onto every project holding a configuration.
- *
- * Nx hands this every matched file at once, which is why inference reads the
- * plugin options a single time inside `inferTargets` rather than once per
- * project.
- */
+/** Infers a check target on each project with a configuration. */
 const createNodes: CreateNodes = [
   CONFIGURATION_GLOB,
   async (

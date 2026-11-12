@@ -1,11 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectGraphService } from "../src/modules/aspects/aspect-graph.service";
 import { ProgressiveCompoundEventService } from "../src/modules/aspects/progressive-compound-event.service";
@@ -22,13 +21,13 @@ import {
 } from "./reference-longitudes.constants";
 
 import type { AspectBodies } from "../src/modules/aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../src/modules/database/database.types";
+import type { DetectedCalendarEvent } from "../src/modules/calendar-events/calendar-events.types";
 import type { z } from "zod";
 
 /** A body the stellium step considers. */
 type AspectBody = (typeof aspectBodies)[number];
 
-/** An expected boundary (no `end`) or span, as a subscriber would read it. */
+/** Expected boundary (no `end`) or span, as a subscriber sees. */
 type ReferenceStelliumEvent = StelliumLongitudeFixture["boundaries"][number];
 
 type StelliumLongitudeFixture = z.infer<typeof stelliumLongitudeFixtureSchema>;
@@ -79,9 +78,7 @@ function loadStelliumFixture(name: string): StelliumLongitudeFixture {
 }
 
 /**
- * Conjunctions in the active-aspect registry at `minute`: a pair within orb
- * then and a minute later, since a leg leaves the registry on its last minute
- * in orb.
+ * Conjunctions in the registry at `minute`: pairs in orb then and a minute later, since legs leave on their last minute in orb.
  */
 function registryAt(
   fixture: StelliumLongitudeFixture,
@@ -133,16 +130,14 @@ describe("stelliums against JPL Horizons positions", () => {
   let service: StelliumService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const { instance } = await buildTestingModule(StelliumService, {
       providers: [
         AspectGraphService,
-        LoggerService,
         ProgressiveCompoundEventService,
         ProgressiveUtilitiesService,
-        StelliumService,
       ],
-    }).compile();
-    service = await module.resolve(StelliumService);
+    });
+    service = instance;
   });
 
   /** Runs the stellium step at every boundary minute the fixture lists. */

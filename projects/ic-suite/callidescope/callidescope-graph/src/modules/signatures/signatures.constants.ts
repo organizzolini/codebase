@@ -2,12 +2,6 @@
 
 import ts from "typescript";
 
-/**
- * How TypeScript renders the types in a signature.
- *
- * Aliases defined elsewhere are kept by name rather than expanded, because
- * `MeasureArguments` tells a reader more in one word than the object it stands
- * for does in forty.
- */
+/** Type rendering; aliases keep their names, as those say more. */
 export const SIGNATURE_FORMAT_FLAGS =
   ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope;

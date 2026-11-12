@@ -1,13 +1,1 @@
-import { coinagerieConfiguration } from "../../../../configuration/coinagerie.config.js";
-
-export default {
-  ...coinagerieConfiguration,
-  outputs: [
-    {
-      description:
-        "The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-nx:coinagerie-check:write`.",
-      path: "README.md",
-      type: "markdown",
-    },
-  ],
-};
+export { coinagerieConfiguration as default } from "../../../../configuration/coinagerie.config.js";

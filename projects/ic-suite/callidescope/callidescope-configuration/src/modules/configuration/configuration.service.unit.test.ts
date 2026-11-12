@@ -1,5 +1,4 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import prompts from "prompts";
 import {
   afterEach,
@@ -10,6 +9,8 @@ import {
   it,
   vi,
 } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InputService } from "../input/input.service";
 import { RunPlanService } from "../run-plan/run-plan.service";
@@ -64,20 +65,10 @@ describe(ConfigurationService, () => {
   let service: ConfigurationService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ConfigurationService,
-        InputService,
-        ProjectConfigurationService,
-        {
-          provide: ConfigurationFileService,
-          useValue: createMock<ConfigurationFileService>(),
-        },
-        { provide: RunPlanService, useValue: createMock<RunPlanService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(ConfigurationService);
+    ({ instance: service } = await buildTestingModule(ConfigurationService, {
+      mocks: [ConfigurationFileService, RunPlanService],
+      providers: [InputService, ProjectConfigurationService],
+    }));
   });
 
   const originalIsTty = process.stdin.isTTY;
@@ -93,8 +84,13 @@ describe(ConfigurationService, () => {
     process.stdin.isTTY = originalIsTty;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ConfigurationService, {
+      mocks: [ConfigurationFileService, RunPlanService],
+      providers: [InputService, ProjectConfigurationService],
+    });
+
+    expect(instance).toBeInstanceOf(ConfigurationService);
   });
 
   // 🖨️ Format resolution
@@ -167,11 +163,8 @@ describe(ConfigurationService, () => {
       workspaceConfigurationPath: "/workspace/callidescope.config.ts",
     };
 
-    // Every question a consumer can ask reaches exactly one collaborator, with
-    // the arguments it was given. Stated as a table rather than a test apiece:
-    // what is asserted is that nothing is quietly reinterpreted on the way
-    // through, and a table is where a method added without a forwarding line
-    // shows up as a gap.
+    // Each consumer question reaches exactly one collaborator with the arguments it was given.
+    // A table shows a method added without a forwarding line as a gap.
     const cases: readonly ForwardingCase[] = [
       {
         ask: (subject) => subject.findConfigurationFileAt("/workspace"),

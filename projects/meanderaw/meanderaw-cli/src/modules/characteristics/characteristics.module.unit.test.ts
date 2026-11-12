@@ -1,7 +1,12 @@
 import { MODULE_METADATA } from "@nestjs/common/constants";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { CodeModule } from "../code/code.module";
+import { MatrixModule } from "../matrix/matrix.module";
+
+import { CharacteristicContextService } from "./characteristic-context.service";
 import {
   BOOLEAN_CHARACTERISTIC_KEY_SET,
   CHARACTERISTIC_KEYS,
@@ -93,9 +98,8 @@ function isLetterService(
 }
 
 /**
- * The letter module's declared exports, read off its `@Module` metadata. It
- * throws when the metadata holds no exports list, so a letter module that
- * stops declaring one fails every test here rather than exporting nothing.
+ * The letter module's exports list, read from its `@Module` metadata. Throws when
+ * missing, so a letter module that drops it fails the tests.
  */
 function letterModuleExports(): readonly unknown[] {
   const exported: unknown = Reflect.getMetadata(
@@ -109,11 +113,11 @@ function letterModuleExports(): readonly unknown[] {
   return exported;
 }
 
-/** Every letter service a consumer of `CharacteristicsModule` must be able to inject, each providing its letter's sixteen orientation evaluators per positional form: every letter service the letter module exports, so a new letter needs no second list here. */
+/** Every letter service `CharacteristicsModule` must provide. */
 const LETTER_SERVICES: readonly Type<CharacteristicEvaluatorGroup<number>>[] =
   letterModuleExports().filter((value) => isLetterService(value));
 
-/** Every lone characteristic evaluator a consumer of `CharacteristicsModule` must be able to inject. */
+/** Every standalone evaluator a consumer must be able to inject. */
 const CHARACTERISTIC_SERVICES: readonly Type<CharacteristicEvaluator>[] = [
   BettiNumber0CountCharacteristicService,
   BettiNumber1CountCharacteristicService,
@@ -178,18 +182,13 @@ const CHARACTERISTIC_SERVICES: readonly Type<CharacteristicEvaluator>[] = [
   WestForkCountCharacteristicService,
 ];
 
-/** A letter service's class name, read as its key stem and its script: `TuSoilHanziLetterCharacteristicsService` keys `tuSoil…HanziCount`. */
+/** A letter class name gives its key stem and script. */
 const LETTER_SERVICE_NAME = new RegExp(
   String.raw`^(?<stem>\w+?)(?<script>${Object.keys(LETTER_SCRIPTS).join("|")})LetterCharacteristicsService$`,
   "u",
 );
 
-/**
- * The window, in lattice points, each submatrix evaluator other than a letter
- * glyph reads: 1×1 for a point scan or a sum of point scans, and the smallest
- * window for a variable-size scan. A letter glyph's window is checked against
- * its drawn fixture in the letter module's own test.
- */
+/** The lattice-point window each non-letter submatrix evaluator reads. */
 const WINDOWS: Readonly<Record<string, SubmatrixWindow>> = {
   cornerCount: { columns: 1, rows: 1 },
   crossCount: { columns: 1, rows: 1 },
@@ -219,10 +218,10 @@ const WINDOWS: Readonly<Record<string, SubmatrixWindow>> = {
   westForkCount: { columns: 1, rows: 1 },
 };
 
-/** The token a consumer module gathers every evaluator under, through a factory whose `inject` list only resolves exported providers. */
+/** The token consumers gather every evaluator under; only exports resolve. */
 const EVALUATORS = Symbol("EVALUATORS");
 
-/** The token a consumer module gathers every letter service under, the same way. */
+/** The token a consumer gathers every letter service under. */
 const LETTERS = Symbol("LETTERS");
 
 /** The metadata key a service's class name promises: `DotCountCharacteristicService` fills `dotCount`. */
@@ -233,15 +232,8 @@ function expectedKey(service: Type<CharacteristicEvaluator>): string {
 }
 
 /**
- * The metadata keys a letter service's class name promises, in key-list
- * order: its letter's sixteen orientations, under each positional form the
- * key list gives an Arabic letter. `ALatinLetterCharacteristicsService`
- * fills `aSoutheastLatinCount` through `aNorthwestThreeQuarterLatinCount`,
- * and `BehArabicLetterCharacteristicsService` fills
- * `behFinalSoutheastArabicCount` through
- * `behMedialNorthwestThreeQuarterArabicCount`. Which forms a letter takes is
- * read off the key list rather than pinned here; each letter's own test pins
- * its form set.
+ * The metadata keys a letter service's class name promises, in key-list order.
+ * Forms are read off the key list, not pinned here.
  */
 function expectedLetterKeys(
   service: Type<CharacteristicEvaluatorGroup<number>>,
@@ -262,8 +254,8 @@ describe(CharacteristicsModule, () => {
   let letters: readonly CharacteristicEvaluatorGroup<number>[];
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [CharacteristicsModule],
+    const { module } = await buildTestingModule(CharacteristicContextService, {
+      imports: [CodeModule, MatrixModule, CharacteristicsModule],
       providers: [
         {
           inject: [...CHARACTERISTIC_SERVICES],
@@ -280,7 +272,7 @@ describe(CharacteristicsModule, () => {
           ): CharacteristicEvaluatorGroup<number>[] => injected,
         },
       ],
-    }).compile();
+    });
 
     letters = module.get<CharacteristicEvaluatorGroup<number>[]>(LETTERS);
     evaluators = [

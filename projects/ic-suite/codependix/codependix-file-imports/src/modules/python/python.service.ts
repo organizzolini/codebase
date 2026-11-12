@@ -7,15 +7,9 @@ import type { PythonImportGraph, PythonProject } from "./python.types";
 
 /* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
- * The `python` module's public surface: discovers the workspace's Python
- * projects, and builds and renders one project's file-level import Graph.
- *
- * A thin facade over `PythonProjectService` (project discovery and
- * source-file listing) and `PythonImportGraphService` (parsing those files'
- * imports into a graph, itself backed by `PythonImportParserService`) —
- * kept as separate collaborators internally so each stays focused, with
- * this class the one file this repository's conformetry template for a
- * NestJS service module expects a flat module to expose.
+ * The `python` module's public surface: discovers Python projects and builds and renders
+ * their file-level import graphs. A facade over `PythonProjectService` and
+ * `PythonImportGraphService`, since the conformetry NestJS template expects one service per module.
  */
 @Injectable()
 /* v8 ignore stop */

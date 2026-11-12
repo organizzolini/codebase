@@ -13,13 +13,7 @@ export const JUPYTER_VALIDATOR_DESCRIPTOR: LanguageValidatorDescriptor = {
   name: "jupyter",
 };
 
-/**
- * Notebook keys compared structurally.
- *
- * Cell contents are validated by the markdown and Python validators instead,
- * so the structural pass covers only the envelope — kernel, language, format
- * version — and deliberately not `cells`, whose diff would be unreadable.
- */
+/** Envelope keys compared: kernel, language, format version. */
 export const NOTEBOOK_ENVELOPE_KEYS = [
   "metadata",
   "nbformat",

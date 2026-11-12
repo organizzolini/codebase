@@ -1,8 +1,9 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { useTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import {
@@ -13,9 +14,9 @@ import {
 
 import type { SpawnedProcess } from "../../../testing/mocks";
 
-vi.mock("node:child_process", async () => {
-  const { childProcessMock } = await import("../../../testing/mocks");
-  return childProcessMock;
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockPostgresChildProcess } = await import("../../../testing/mocks");
+  return mockPostgresChildProcess(await importOriginal());
 });
 
 const PASSWORD = "hunter2-secret";
@@ -40,7 +41,7 @@ function restoresOf(spawned: readonly SpawnedProcess[]): SpawnedProcess[] {
 
 describe("postgresql-import --clean", () => {
   const setStandardInputTerminal = mockStandardInputTerminal();
-  let directory: string;
+  const directory = useTemporaryDirectory("import-clean-unit");
   let file: string;
 
   /** A command line that imports `fixture.widgets`' definitions, plus `extra`. */
@@ -62,13 +63,8 @@ describe("postgresql-import --clean", () => {
     runCliCommandLine({ argv: commandLine });
 
   beforeAll(() => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "import-clean-unit-"));
-    file = path.join(directory, "fixture.dump");
+    file = path.join(directory(), "fixture.dump");
     fs.writeFileSync(file, "a dump");
-  });
-
-  afterAll(() => {
-    fs.rmSync(directory, { force: true, recursive: true });
   });
 
   it.each([

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { Tag } from "../database/entities/tag.entity";
+import { Tag } from "@codebase/caelundas-db";
 
 import { tagNodeKey, tagPathKey } from "./tags.utilities";
 
@@ -24,9 +24,7 @@ export class TagsService {
   // 🔏 Private Methods
 
   /**
-   * The id of a path's last node, saving each missing node on the way down
-   * through a tree repository, which adds its closure-table rows, and
-   * recording it in `ids` for the paths after it.
+   * The id of a path's last node, saving missing nodes on the way down and recording them in `ids`.
    */
   private async ensurePath(
     manager: EntityManager,
@@ -60,12 +58,7 @@ export class TagsService {
   // 🌎 Public Methods
 
   /**
-   * Maps each distinct path, by its {@link tagPathKey}, to the id of its last
-   * node, through `manager`, so the nodes it inserts belong to the caller's
-   * transaction. An event classified under the path is linked to that node.
-   * SQLite takes one writer at a time, so no lock is needed to keep two runs
-   * from inserting the same missing node: the second waits for the first's
-   * transaction to end.
+   * Maps each path to its last node's id, saving missing nodes in the caller's transaction. Concurrent runs may collide, so rerun.
    */
   async resolve(
     manager: EntityManager,

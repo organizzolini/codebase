@@ -15,21 +15,12 @@ import type { Tile } from "../src/modules/tile/tile.types";
 
 // 🔧 Configuration
 
-/** The real builder, so a hand-written tile is derived exactly as an enumerated one is rather than by a second implementation of the same rule. */
+/** The real builder, so tiles match enumerated ones. */
 const tileService = new TileService();
 
 // 🌎 Utilities
 
-/**
- * The tile whose points own the edges `rowDescriptions` describes: one string per
- * interior row, one character per column, `.` for a point owning neither
- * edge, `e` for the eastward one, `s` for the southward one, and `b` for
- * both.
- *
- * `rows` is the number of interior point rows. A `s` on the last row and a
- * `e` at one column both mean what they always mean — the former is dropped
- * for having nowhere to reach, the latter wraps onto its own point.
- */
+/** Points from `rowDescriptions`; `e` east, `s` south, `b` both. */
 export const buildTile = (rowDescriptions: readonly string[]): Tile => {
   const columns = rowDescriptions[0]?.length ?? 0;
   const rows = rowDescriptions.length;

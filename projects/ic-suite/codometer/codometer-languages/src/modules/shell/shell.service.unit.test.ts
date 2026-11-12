@@ -1,12 +1,11 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ShellService } from "./shell.service";
 
@@ -35,17 +34,13 @@ vi.mock("node:fs", async (importOriginal) => {
 describe(ShellService, () => {
   let service: ShellService;
   let loggerService: DeepMocked<LoggerService>;
-  const temporaryDirectories: string[] = [];
 
   /** Writes sources into a fresh directory and returns it with their names. */
   function writeSources(files: Record<string, string>): {
     shellFiles: string[];
     workingDirectory: string;
   } {
-    const workingDirectory = mkdtempSync(
-      path.join(tmpdir(), "codometer-shell-"),
-    );
-    temporaryDirectories.push(workingDirectory);
+    const workingDirectory = createTemporaryDirectory("shell");
 
     for (const [fileName, content] of Object.entries(files)) {
       writeFileSync(path.join(workingDirectory, fileName), content, "utf8");
@@ -55,27 +50,20 @@ describe(ShellService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ShellService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, module } = await buildTestingModule(ShellService);
 
-    service = await module.resolve(ShellService);
+    service = instance;
     loggerService = await module.resolve(LoggerService);
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
-
-    for (const temporaryDirectory of temporaryDirectories.splice(0)) {
-      rmSync(temporaryDirectory, { force: true, recursive: true });
-    }
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ShellService);
+
+    expect(instance).toBeInstanceOf(ShellService);
   });
 
   it("counts functions, variables, and control flow", () => {

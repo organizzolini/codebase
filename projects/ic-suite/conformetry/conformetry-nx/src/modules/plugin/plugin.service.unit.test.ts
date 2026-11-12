@@ -1,15 +1,18 @@
 import { existsSync } from "node:fs";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { GenerationService } from "@conformetry/generation";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { createTree } from "nx/src/generators/testing-utils/create-tree";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import {
+  createTemporaryDirectory,
+  useTemporaryDirectory,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   DEFAULT_OUTPUT_PATH,
@@ -40,10 +43,7 @@ const EMPTY: ProjectScope = {
  * Writes a workspace holding one conforming module, one drifted module, and a
  * project with nothing to validate.
  */
-async function createWorkspace(): Promise<string> {
-  const workspaceRoot = await mkdtemp(
-    path.join(tmpdir(), "conformetry-nx-plugin-"),
-  );
+async function populateWorkspace(workspaceRoot: string): Promise<void> {
   const templatePath = path.join(workspaceRoot, "templates/widget");
 
   // A module template contains the folder it produces, so its tree is laid
@@ -124,16 +124,12 @@ async function createWorkspace(): Promise<string> {
     ]),
     "utf8",
   );
-
-  return workspaceRoot;
 }
 
 /**
- * Writes a configuration declaring the same generator as the JSON one, plus a
- * hook that refuses a name and one that stamps a receipt beside the file.
+ * Writes a configuration whose hooks are functions, so it must be a module.
  *
- * Hooks are functions, so this one has to be a module. The generator itself
- * is unchanged, which keeps the emitted plugin current for both files.
+ * Declares the same generator as the JSON configuration.
  */
 async function writeHooksConfiguration(workspaceRoot: string): Promise<string> {
   const configurationPath = path.join(workspaceRoot, "hooks.config.mjs");
@@ -181,11 +177,11 @@ async function writeHooksConfiguration(workspaceRoot: string): Promise<string> {
 }
 
 describe(PluginService, () => {
-  // Spied on the shared class prototype rather than injected as a mock: the
-  // conformetry template for this file expects `Test.createTestingModule`
-  // chained straight into `.compile()`, which an `overrideProvider` call
-  // would break. A prototype spy intercepts every instance's calls no matter
-  // which testing module constructed it.
+  const readWorkspaceRoot = useTemporaryDirectory("nx-plugin");
+  // Spied on the shared class prototype: the service under test is resolved
+  // from `PluginModule`, so it logs through the module's own logger rather
+  // than a mock the builder could hand it, and a prototype spy intercepts
+  // every instance's calls no matter which module constructed it.
   let errorSpy: MockInstance<typeof LoggerService.prototype.error>;
   let infoSpy: MockInstance<typeof LoggerService.prototype.info>;
   let setContextSpy: MockInstance<typeof LoggerService.prototype.setContext>;
@@ -208,20 +204,20 @@ describe(PluginService, () => {
       .spyOn(LoggerService.prototype, "warn")
       .mockImplementation(() => {});
 
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(PluginService, {
       imports: [PluginModule],
-      providers: [PluginService],
-    }).compile();
+    });
 
-    service = await module.resolve(PluginService);
-    workspaceRoot = await createWorkspace();
+    service = built.instance;
+    workspaceRoot = readWorkspaceRoot();
+    await populateWorkspace(workspaceRoot);
     options = {
       configurationPath: path.join(workspaceRoot, "conformetry.config.json"),
     };
 
     // The plugin refuses to run against a stale emitted plugin, so the
     // fixture emits a current one the way `nx sync` would.
-    const generatorService = await module.resolve(GeneratorService);
+    const generatorService = await built.module.resolve(GeneratorService);
     const emittedFiles = await generatorService.emitPlugin({
       configurationPath: options.configurationPath,
       outputPath: DEFAULT_OUTPUT_PATH,
@@ -236,19 +232,18 @@ describe(PluginService, () => {
     }
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PluginService, {
+      imports: [PluginModule],
+    });
+
+    expect(instance).toBeInstanceOf(PluginService);
   });
 
   it("sets logger context", async () => {
     // Its own module: the shared setup clears mocks between tests, so a
     // constructor call recorded during `beforeAll` is no longer observable.
-    const module = await Test.createTestingModule({
-      imports: [PluginModule],
-      providers: [PluginService],
-    }).compile();
-
-    await module.resolve(PluginService);
+    await buildTestingModule(PluginService, { imports: [PluginModule] });
 
     expect(setContextSpy).toHaveBeenCalledWith("PluginService");
   });
@@ -718,7 +713,7 @@ describe(PluginService, () => {
     });
 
     it("refuses to run when neither the options nor nx.json name a configuration path", async () => {
-      const bareRoot = await mkdtemp(path.join(tmpdir(), "conformetry-bare-"));
+      const bareRoot = createTemporaryDirectory("bare");
 
       await expect(
         service.runValidation({
@@ -729,8 +724,6 @@ describe(PluginService, () => {
       ).rejects.toThrow(
         'the "configuration" option, or the "configurationPath" option of the @conformetry/nx plugin in nx.json,',
       );
-
-      await rm(bareRoot, { force: true, recursive: true });
     });
   });
 });

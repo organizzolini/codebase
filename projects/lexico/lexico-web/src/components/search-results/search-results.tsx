@@ -24,9 +24,7 @@ export interface SearchResultsProperties {
 // 🧩 Component
 
 /**
- * The lexemes a query matched, in a masonry of cards. The best matches are
- * dealt round-robin across the columns, so the top results sit side by side
- * along the first row rather than stacked down the first column.
+ * The lexemes a query matched, in a masonry of cards. Best matches are dealt round-robin, so top results sit side by side.
  */
 export function SearchResults(
   properties: Readonly<SearchResultsProperties>,
@@ -49,11 +47,8 @@ export function SearchResults(
   // 💪 Handlers
 
   // ♻️ Lifecycle
-  // The server cannot know the viewport, so it renders a single column and
-  // the breakpoints only settle once the page hydrates. Keeping the cards
-  // invisible until then stops that stacked layout from flashing on screen.
-  // The breakpoint hooks above set their state in earlier effects, so it is
-  // already current when this flips.
+  // The server renders one column, and breakpoints settle only after hydration.
+  // Cards stay invisible until then so the stacked layout never flashes.
   useEffect(() => {
     setIsMeasured(true);
   }, []);

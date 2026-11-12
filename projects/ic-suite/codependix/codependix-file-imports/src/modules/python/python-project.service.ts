@@ -12,14 +12,9 @@ import {
 import type { PythonProject } from "./python.types";
 
 /**
- * Discovers the workspace's Python projects and lists each one's source
- * files.
+ * Discovers the workspace's Python projects and lists each one's source files.
  *
- * Discovery reads each project's own `language:python` tag, the same
- * way `codependix-nestjs-modules`'s `NestjsProjectService` reads `framework:nestjs` —
- * rather than probing for a marker file, since a Python project's own
- * `pyproject.toml` is optional (every project is already a member of the
- * workspace root's, per the `write-python` skill).
+ * Discovery reads each project's `language:python` tag, as NestjsProjectService reads `framework:nestjs`, not a marker file, since `pyproject.toml` is optional.
  */
 @Injectable()
 export class PythonProjectService {
@@ -59,12 +54,7 @@ export class PythonProjectService {
   }
 
   /**
-   * Filters an already-read list of Nx projects down to the ones tagged
-   * `language:python`, and describes each one.
-   *
-   * Projects are returned in the order they were given, which callers keep
-   * sorted by name — the same order `TypescriptProjectService.discoverProjects`
-   * preserves.
+   * Keeps the Nx projects tagged `language:python`, in input order, and describes each one.
    */
   discoverProjects(
     projects: { absoluteRoot: string; name: string; tags: string[] }[],

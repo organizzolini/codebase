@@ -4,7 +4,7 @@ import type {
   CommandOptionChoice,
   CommandOptionValue,
 } from "../lexico-ingestion/lexico-ingestion.types";
-import type { Author, Text } from "@codebase/lexico-entities";
+import type { Author, Text } from "@codebase/lexico-db";
 import type { PhrasingContent } from "mdast";
 
 /**
@@ -30,10 +30,7 @@ export interface LibraryEntry {
   title: string;
 }
 
-/**
- * Optional CLI filters that scope literature ingestion. Each is the value
- * given, `true` for a bare flag, or absent when omitted.
- */
+/** Optional literature filters; `true` for a bare flag, or absent. */
 export interface LiteratureCommandOptions {
   author?: CommandOptionValue;
   provider?: CommandOptionValue;

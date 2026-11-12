@@ -7,15 +7,12 @@ import {
   EmptyTitle,
 } from "@codebase/presentation";
 
-import { UnsupportedBrowserError } from "../events-calendar/events-database.constants";
-
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The error a load failed with, and what to do when the reader asks to try
- * again.
+ * The load's error and the retry handler.
  */
 export interface CalendarErrorProperties {
   className?: string;
@@ -26,8 +23,7 @@ export interface CalendarErrorProperties {
 // 🧩 Component
 
 /**
- * Renders a failed load: a retry for anything that may pass on a second try,
- * and a plain explanation for a browser that can never run the database.
+ * Renders a failed load, with a retry for when it may pass on a second try.
  */
 export function CalendarError(
   properties: Readonly<CalendarErrorProperties>,
@@ -37,8 +33,6 @@ export function CalendarError(
   // 🪝 Hooks
 
   // 🏗 Setup
-  const unsupported = error instanceof UnsupportedBrowserError;
-
   // 💪 Handlers
 
   // ♻️ Lifecycle
@@ -54,22 +48,12 @@ export function CalendarError(
     >
       <Empty className="h-dvh">
         <EmptyHeader>
-          <EmptyTitle>
-            {unsupported
-              ? "This browser cannot run the calendar"
-              : "The events could not be loaded"}
-          </EmptyTitle>
-          <EmptyDescription>
-            {unsupported
-              ? "The calendar reads its events with WebAssembly in a Web Worker. Open it in a current version of Chrome, Edge, Firefox, or Safari."
-              : String(error)}
-          </EmptyDescription>
+          <EmptyTitle>The events could not be loaded</EmptyTitle>
+          <EmptyDescription>{String(error)}</EmptyDescription>
         </EmptyHeader>
-        {unsupported ? null : (
-          <EmptyContent>
-            <Button onClick={onRetry}>Retry</Button>
-          </EmptyContent>
-        )}
+        <EmptyContent>
+          <Button onClick={onRetry}>Retry</Button>
+        </EmptyContent>
       </Empty>
     </div>
   );

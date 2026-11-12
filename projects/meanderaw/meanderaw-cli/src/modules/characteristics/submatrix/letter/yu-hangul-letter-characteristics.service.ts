@@ -8,10 +8,8 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of the ㅠ (hangul yu) glyph — two
- * unit strokes dropping from the middle two points of a three-unit bar — one
- * per corner and clockwise rotation, each counting the base template drawn
- * that way. The base faces Southeast, drawn:
+ * Sixteen orientation evaluators of the ㅠ glyph, one per corner and clockwise rotation.
+ * The base faces Southeast, drawn:
  *
  * ```text
  * ╶┬┬╴
@@ -38,7 +36,7 @@ export class YuHangulLetterCharacteristicsService implements CharacteristicEvalu
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** The upright glyph's points, `.` outside the glyph. */
   private readonly template: readonly string[] = ["2771", ".88."];
 
   // 🔑 Public Fields

@@ -5,15 +5,10 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { environmentSchema } from "./integration.constants";
 
-/** The workspace root, which the spawned command runs from, as the Nx targets do. */
+/** The workspace root, where the spawned command runs. */
 const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../..");
 
-/**
- * How long the one real boot may take. CI run 38950100262 took 20.6s for the
- * first boot of this command line and 12.5s for a second, swc-node
- * transforming the whole module graph cold each time; three times the slower
- * one leaves headroom on a busy runner.
- */
+/** Boot timeout, with headroom over a 20.6s cold CI transform. */
 const BOOT_TIMEOUT_MILLISECONDS = 60_000;
 
 /** The commands the container must register, each named in the help. */
@@ -25,6 +20,7 @@ const COMMAND_NAMES = [
   "import-pr-task-cache",
   "keep-task-database",
   "merge-task-cache",
+  "publishable-packages-gate",
   "report-codometer-changes",
   "run-affected",
   "setup-codebase",
@@ -32,10 +28,7 @@ const COMMAND_NAMES = [
   "verify-task-database",
 ];
 
-/**
- * Runs the real command line once, asking only for its help, with the inputs
- * left out and git pointed at no repository, so nothing it boots can touch one.
- */
+/** Runs the real command's help, with no inputs or repository. */
 const runHelp = (): { output: string; status: null | number } => {
   const result = spawnSync(
     process.execPath,
@@ -91,10 +84,9 @@ describe("main end-to-end suite", () => {
   });
 
   // A dependency-injection gap fails only when the real container boots,
-  // which neither the unit tests nor the lint gate do. `--help` boots the
-  // whole container, every command's providers included, before commander
-  // prints anything, so one spawn checks them all: each extra spawn would
-  // pay the whole cold transform again.
+  // which unit tests and the lint gate never do. `--help` boots every
+  // command's providers in one spawn, since each extra spawn repays the
+  // cold transform.
   describe("command boot e2e", () => {
     let boot: { output: string; status: null | number };
 

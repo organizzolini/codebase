@@ -28,12 +28,7 @@ export class InputService {
   // 🔏 Private Methods
 
   /**
-   * Refuses to draw a prompt nobody can answer.
-   *
-   * `prompts` does not fail on a non-terminal stdin — it renders the menu,
-   * never resolves, and lets the process exit 0, so a run that did nothing
-   * reads as one that succeeded. `isTTY` is read as falsy rather than
-   * coerced: `@types/node` calls it a `boolean`, so lint rejects a coercion.
+   * Refuses a prompt nobody can answer: `prompts` would exit 0 on non-TTY stdin having done nothing.
    */
   private assertCanPrompt(subject: string): void {
     if (!process.stdin.isTTY) {
@@ -44,12 +39,7 @@ export class InputService {
   // 🌎 Public Methods
 
   /**
-   * Parses a comma-separated list option, dropping blank entries.
-   *
-   * Mirrors `@callidescope/configuration`'s `InputService` exactly: an absent
-   * flag resolves to an empty list rather than `undefined`, so a caller
-   * overriding a configured list treats "the flag was left off" and "the flag
-   * named nothing" the same way.
+   * Parses a comma-separated list, dropping blank entries. An absent flag is an empty list, so "left off" and "named nothing" behave the same.
    */
   public parseCommaDelimitedOption(value: string | undefined): string[] {
     return value === undefined
@@ -61,11 +51,7 @@ export class InputService {
   }
 
   /**
-   * Parses a valueless boolean flag, which is present or it is not.
-   *
-   * Commander passes `undefined` for a flag carrying no value, so the flag
-   * appearing at all is what makes it true; reading that as false would turn
-   * every such flag permanently off.
+   * Parses a valueless boolean flag: present means true. Commander passes `undefined`, so reading that as false would disable every such flag.
    */
   public parseFlagOption(value: boolean | undefined): boolean {
     return value ?? true;
@@ -79,10 +65,7 @@ export class InputService {
   }
 
   /**
-   * Parses a path option that falls back to the working directory.
-   *
-   * Left unresolved: the caller resolves it against its own root, and
-   * resolving twice makes a relative path ambiguous about which it meant.
+   * Parses a path option, defaulting to the working directory. Left unresolved, since resolving twice makes a relative path ambiguous.
    */
   public parsePathOption(value: string | undefined): string {
     return this.parseOptionalOption(value) ?? process.cwd();

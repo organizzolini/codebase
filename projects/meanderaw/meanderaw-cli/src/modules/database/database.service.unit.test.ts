@@ -1,7 +1,8 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { meanderRecord } from "../../../testing/meanders";
 
@@ -9,8 +10,19 @@ import { DatabaseService } from "./database.service";
 import { Meander } from "./entities/meander.entity";
 
 import type { MeanderRecord } from "./database.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { EntityManager, Repository } from "typeorm";
 import type { ColumnMetadata } from "typeorm/metadata/ColumnMetadata.js";
+
+/** Built with a repository mock in place of Postgres. */
+const MODULE_OPTIONS: TestingModuleOptions = {
+  providers: [
+    {
+      provide: getRepositoryToken(Meander),
+      useValue: createMock<Repository<Meander>>(),
+    },
+  ],
+};
 
 // 🧪 Tests
 
@@ -30,24 +42,21 @@ describe(DatabaseService, () => {
   });
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DatabaseService,
-        {
-          provide: getRepositoryToken(Meander),
-          useValue: createMock<Repository<Meander>>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(DatabaseService, MODULE_OPTIONS);
 
-    service = await module.resolve(DatabaseService);
-    meanderRepository = module.get(getRepositoryToken(Meander));
+    service = built.instance;
+    meanderRepository = built.module.get(getRepositoryToken(Meander));
 
     vi.mocked(meanderRepository.save).mockResolvedValue(savedMeander);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      DatabaseService,
+      MODULE_OPTIONS,
+    );
+
+    expect(instance).toBeInstanceOf(DatabaseService);
   });
 
   describe("save", () => {

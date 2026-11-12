@@ -6,15 +6,7 @@ import type { CommentToken } from "./comments.types";
 
 /* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
- * Reads SQL's `--` and `/* ... *\/` comments.
- *
- * A line scanner rather than a tokenizer, so a `--` or `/*` inside a `'…'`
- * string literal is read as a comment here exactly as it already is when
- * `SqlService` counts keywords — the reading is the same, only the positions
- * are new. The block form is found with `indexOf` rather than a regular
- * expression: a pattern matching an unclosed `/*` through to end of input has
- * to fail once per occurrence, which is quadratic on adversarial input, while
- * two `indexOf` calls per comment never scan the same text twice.
+ * Reads SQL's `--` and block comments. A line scanner, not a tokenizer, so a `--` inside a string literal is read as a comment, as `SqlService` already reads it. Block comments use `indexOf`, since a regex on an unclosed block goes quadratic.
  */
 @Injectable()
 /* v8 ignore stop */
@@ -108,12 +100,7 @@ export class SqlCommentsService {
   // 🌎 Public Methods
 
   /**
-   * Reads every `--` and `/* *\/` comment, in the order they appear.
-   *
-   * Block spans are found first so a `--` matched inside one can be
-   * dropped — the block already spans the whole thing, and without dropping
-   * the overlap a `--` written as prose inside a block would be measured a
-   * second time as a comment of its own.
+   * Reads every `--` and block comment in order. Block spans come first, so a `--` inside one is dropped rather than measured twice.
    */
   read(content: string): CommentToken[] {
     const blocks = this.readBlocks(content);

@@ -1,6 +1,6 @@
 /* cspell:words arma cano carmina fato iactatus italiam laviniaque profugus terris troiae venit virumque */
 
-import { Author, Line, Text } from "@codebase/lexico-entities";
+import { Author, Line, Text } from "@codebase/lexico-db";
 
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
@@ -51,11 +51,7 @@ interface TextSeed {
 }
 
 /**
- * Seeds a small library whose hierarchy reaches three levels deep — Vergil's
- * Aeneid holds two books, the first of which holds a proem with three lines —
- * beside authors with flat bibliographies and two with none. Lines are
- * saved out of index order, and every name and title sorts uniquely, so the
- * order a query returns is the order the query imposed.
+ * Seeds a three-level library: Vergil's Aeneid holds two books, the first a proem with three lines. Lines are saved out of index order.
  */
 export async function seedAuthorTextCatalog(
   database: DatabaseTestingModule,

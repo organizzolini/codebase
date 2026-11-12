@@ -8,16 +8,9 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of the W glyph — three legs
- * rising from a bar, the middle one half as long, legs pointing north — one
- * per corner and clockwise rotation, each counting the base template drawn
- * that way. The base faces Southeast, drawn:
- *
- * ```text
- * ╷ ╷
- * │╷│
- * └┴┘
- * ```
+ * Provides the sixteen orientation evaluators of the W glyph: three legs rising from a bar, the
+ * middle one half as long, legs pointing north. One per corner and clockwise rotation, each
+ * counting the base template drawn that way. The base faces Southeast.
  */
 @Injectable()
 export class WLatinLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -39,7 +32,7 @@ export class WLatinLetterCharacteristicsService implements CharacteristicEvaluat
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** Upright glyph as hexadecimal Code digits, one string per row. */
   private readonly template: readonly string[] = ["4.4", "c4c", "ab9"];
 
   // 🔑 Public Fields

@@ -11,13 +11,7 @@ import { PerfectiveService } from "../perfective/perfective.service";
 import { ProgressiveService } from "../progressive/progressive.service";
 
 /**
- * CLI entry point for caelundas.
- * CLI entry point that orchestrates the full calendar generation pipeline.
- *
- * Reads observer coordinates and date range from environment variables,
- * runs perfective and progressive event detection in sequence, upserts the
- * detected events into the SQLite database, then reads the requested range and location
- * back and writes it to `.ics` and JSON files via {@link CalendarService}.
+ * CLI entry point for caelundas. Reads observer coordinates and date range from environment variables, detects and upserts events into Postgres, then writes the requested range to `.ics` and JSON files via {@link CalendarService}.
  */
 @Command({
   description: "Run the caelundas command",
@@ -55,14 +49,8 @@ export class CaelundasCommand extends CommandRunner {
   // 🌎 Public Methods
 
   /**
-   * Executes the full calendar generation pipeline.
-   *
-   * Parses environment input, detects all perfective and progressive astronomical events
-   * across the configured date range, merges and sorts the results by start time, upserts
-   * them through {@link CalendarEventsService}, then renders the stored events for the range and
-   * location to ICS and JSON files via {@link CalendarService}.
-   *
-   * @returns Promise that resolves when both files have been written.
+   * Runs the calendar pipeline: detect, store, then render the stored range to
+   * ICS and JSON files.
    */
   async run(): Promise<void> {
     this.logger.debug("🚀 Starting a caelundas run", undefined, {

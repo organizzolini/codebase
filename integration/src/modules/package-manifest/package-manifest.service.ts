@@ -38,13 +38,8 @@ export class PackageManifestService {
   // 🌎 Public Methods
 
   /**
-   * Sets a field to a new value.
-   *
-   * @param field - The field to rewrite.
-   * @param next - The value to write.
-   * @returns The value the field held before.
-   * @throws When the manifest lacks the field, or writes its current value
-   *   more than once, which would leave it unclear which to replace.
+   * Sets a field, returning its previous value.
+   * @throws When the field is absent or its value appears more than once.
    */
   public replace(field: ManifestField, next: string): string {
     const text = fs.readFileSync(MANIFEST_FILE, "utf8");

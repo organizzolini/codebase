@@ -1,20 +1,6 @@
 /**
- * Dependency Cruiser Configuration
- *
- * Validates architectural boundaries and prevents problematic dependency patterns
- * across the codebase. Rules enforce circular dependency prevention, orphan detection,
- * test isolation, production/dev dependency separation, and module system consistency.
- *
- * Each rule's `comment` field documents its purpose.
- *
- * Usage:
- *   nx run <project>:dependency-cruiser
- *
- * CI: Runs automatically via .github/workflows/lint-codebase.yml
- *     (on PRs affecting source files + weekly scheduled run)
- *
+ * Dependency Cruiser rules: cycles, orphans, and test imports.
  * @type {import('dependency-cruiser').IConfiguration}
- * @see https://github.com/sverweij/dependency-cruiser
  */
 const path = require("node:path");
 
@@ -26,7 +12,8 @@ module.exports = {
         // TypeORM bidirectional entity relations (ManyToMany, OneToMany) require
         // value imports of the related entity class for decorator callbacks.
         // These intra-package cycles are intentional and unavoidable.
-        pathNot: "^projects/lexico/lexico-entities/src/modules/entities/",
+        pathNot:
+          "^projects/lexico/lexico-db/src/modules/(?:dictionary|literature)/entities/",
       },
       name: "no-circular",
       severity: "error",

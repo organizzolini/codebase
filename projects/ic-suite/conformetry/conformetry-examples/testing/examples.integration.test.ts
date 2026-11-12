@@ -1,10 +1,11 @@
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { afterEach, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 
 /** This package's root, and the workspace root every command runs from. */
 const packageDirectory = path.resolve(
@@ -14,7 +15,7 @@ const packageDirectory = path.resolve(
 const workspaceRoot = path.resolve(packageDirectory, "..", "..", "..", "..");
 const examplesDirectory = path.join(packageDirectory, "examples");
 
-/** How the guides say to run the command-line host from the workspace root. */
+/** How the guides run the command-line host from the root. */
 const CONFORMETRY_COMMAND = [
   "--import",
   "@swc-node/register/esm-register",
@@ -37,13 +38,7 @@ interface ExampleExpectation {
   readonly present: string[];
 }
 
-/**
- * Every example, and the outcome its guide promises.
- *
- * Keyed by directory name and checked against the directory listing below, so
- * an example added without an expectation fails rather than going unchecked. This
- * is what keeps the guides honest: each one quotes output this table asserts.
- */
+/** Promised outcome per example; a new example needs one. */
 const EXPECTATIONS: Record<string, ExampleExpectation> = {
   "ambiguous-attribution": {
     exitCode: 1,
@@ -121,13 +116,7 @@ const EXPECTATIONS: Record<string, ExampleExpectation> = {
   },
 };
 
-/**
- * The examples whose committed instance is exactly what the generator writes.
- *
- * Rendering happens twice — once to generate, once to compare — so an instance
- * a reader is told to copy has to be byte-identical to generated output, or the
- * example teaches a file that would fail the very check it demonstrates.
- */
+/** Examples whose instance must match generated output exactly. */
 const ROUND_TRIPS = [
   {
     directory: "hello-template",
@@ -150,7 +139,7 @@ const ROUND_TRIPS = [
   },
 ];
 
-/** The two guides that index the examples, and must keep naming all of them. */
+/** Guides indexing the examples, which must name each one. */
 const guides = ["README.md", "AGENTS.md"].map((name) => ({
   contents: fs.readFileSync(path.join(packageDirectory, name), "utf8"),
   name,
@@ -318,8 +307,8 @@ describe("the examples this package ships", () => {
     it.each(ROUND_TRIPS)(
       "$directory generates its committed instance byte for byte",
       ({ directory, generator, inputs, instance }) => {
-        const outputDirectory = fs.mkdtempSync(
-          path.join(os.tmpdir(), `conformetry-examples-${directory}-`),
+        const outputDirectory = createTemporaryDirectory(
+          `examples-${directory}`,
         );
         const result = spawnSync(
           "node",
@@ -350,8 +339,6 @@ describe("the examples this package ships", () => {
             path.join(examplesDirectory, directory, "instances", instance),
           ),
         );
-
-        fs.rmSync(outputDirectory, { force: true, recursive: true });
       },
     );
   });

@@ -17,20 +17,9 @@ import type {
 import type { NxProject } from "@codependix/nx-projects";
 
 /**
- * Turns an error a graph builder raised into the failure a run reports.
- *
- * The failure is charged to the project whose graph was being built — a
- * container that cannot boot fails that project, whichever class broke it.
- * What the message alone cannot say is whose class that was: NestJS
- * containers are booted by `import()`, and a module that fails evaluation in
- * a dependency rethrows the same error into every project importing it. The
- * stack still holds the frame that threw, so the first frame inside the root
- * of a project the charged ones depend on names the project that owns the
- * failing code.
- *
- * Only their dependency closure: when codependix runs from source, its own
- * packages are workspace projects too, and an error it raises itself would
- * otherwise blame whichever of them threw.
+ * Turns an error a graph builder raised into the failure a run reports, charged to the project
+ * being built. A module failing in a dependency rethrows into every importer, so the first stack
+ * frame inside a dependency's root names the owner. Only the dependency closure is searched.
  */
 @Injectable()
 export class BoundaryFailureService {
@@ -45,8 +34,7 @@ export class BoundaryFailureService {
   // 🔏 Private Methods
 
   /**
-   * The project whose root holds a file, the innermost when roots nest — or
-   * nothing for a file no project holds, or one inside `node_modules`.
+   * The innermost project whose root holds a file, or nothing for a file no project holds or one in `node_modules`.
    */
   private findProjectHolding(
     filePath: string,
@@ -66,12 +54,8 @@ export class BoundaryFailureService {
   }
 
   /**
-   * The location one stack line names, without its line and column — or
-   * nothing for a line that is not a frame, or a frame naming no position.
-   *
-   * String operations rather than a regular expression: a stack is library
-   * input, and every single-pattern reading of both frame shapes backtracks
-   * in polynomial time on a crafted line.
+   * A stack line's location, without line and column. Plain string operations: any single regex
+   * backtracks on a crafted stack line.
    */
   private readFrameLocation(line: string): string | undefined {
     const frame = line.trim();
@@ -93,11 +77,8 @@ export class BoundaryFailureService {
   }
 
   /**
-   * The absolute file path one stack line names, or nothing for a line that
-   * is not a frame or names no file — a `node:` internal, say, or a `file:`
-   * URL that is no path on this machine, which `fileURLToPath` throws on.
-   * The frame is dropped rather than the failure it belongs to: a stack is
-   * library input, and a malformed line must not hide what broke.
+   * The absolute path a stack line names, or nothing. A malformed frame is dropped, never the
+   * failure it belongs to.
    */
   private readFramePath(line: string): string | undefined {
     const location = this.readFrameLocation(line);
@@ -116,13 +97,8 @@ export class BoundaryFailureService {
   }
 
   /**
-   * The project owning the first stack frame inside the root of a project
-   * the charged ones transitively depend on, themselves included.
-   *
-   * The first such frame rather than any: frames below it are whatever was
-   * importing the failing module, which is every project that depends on it.
-   * A frame in any other project is skipped — that project is not something
-   * the charged ones are built from, so it cannot be what broke them.
+   * The project owning the first stack frame inside any charged project's dependency closure.
+   * Frames below it are importers, so only the first counts.
    */
   private resolveOwnerProject(
     args: CollectFailureArguments,
@@ -156,11 +132,8 @@ export class BoundaryFailureService {
   // 🌎 Public Methods
 
   /**
-   * Collects one graph's failure, charged to the projects it was built for.
-   *
-   * `ownerProject` is set only when the stack resolves to a project that is
-   * not already charged: naming the charged project a second time says
-   * nothing, and naming a guess would blame a project that did nothing wrong.
+   * Collects one graph's failure, charged to its projects. `ownerProject` is set only when it names
+   * an uncharged project.
    */
   public collect(args: CollectFailureArguments): BoundaryCheckFailure {
     const owner = this.resolveOwnerProject(args);

@@ -14,10 +14,8 @@ import type { CallableId } from "@callidescope/core";
 /**
  * Measures how many distinct callables each callable calls directly.
  *
- * Unlike depth, this needs no condensation: a callable's breadth is well
- * defined even when it sits in a cycle, since it only ever looks at its own
- * row in `calleeIdsByCaller` — which `GraphService.assemble` has already
- * deduped and stripped of self-edges.
+ * No condensation is needed: breadth is well defined inside cycles, since each
+ * row in `calleeIdsByCaller` is already deduped and free of self-edges.
  */
 @Injectable()
 export class BreadthService {

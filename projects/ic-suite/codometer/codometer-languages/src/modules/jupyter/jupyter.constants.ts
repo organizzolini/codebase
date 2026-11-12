@@ -10,15 +10,7 @@ export const CODE_CELL_TYPE = "code";
 /** Cell type of a notebook cell holding prose. */
 export const MARKDOWN_CELL_TYPE = "markdown";
 
-/**
- * The parts of a notebook cell this analyzer reads.
- *
- * Declared as a schema rather than an interface because these are nbformat's
- * names, not this codebase's: a snake_case key is legal in an object literal
- * and would be a lint error in a type declaration. Every field is optional
- * because a file is only known to be JSON until it has been read, and a
- * notebook missing a field should be measured for what it does have.
- */
+/** Notebook cell parts read; a schema, as snake_case keys fail lint. */
 export const notebookCellSchema = z.object({
   cell_type: z.string().optional(),
   execution_count: z.number().nullish(),

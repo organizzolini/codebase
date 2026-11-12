@@ -24,13 +24,9 @@ import type {
 } from "./configuration.types";
 
 /**
- * Resolves the configuration file sitting beside each traced project.
+ * Resolves the configuration file beside each traced project.
  *
- * Its own service rather than more of `ConfigurationFileService`, because the two
- * answer different questions: one loads the file a run was pointed at, and this
- * one asks which of a run's projects configure themselves. Every refusal a
- * project configuration can earn belongs here, where the project it names is
- * already in hand.
+ * Its own service, apart from ConfigurationFileService: that one loads the file a run was pointed at, while this asks which projects configure themselves. Every refusal about a project's configuration belongs here.
  */
 @Injectable()
 export class ProjectConfigurationService {
@@ -45,12 +41,7 @@ export class ProjectConfigurationService {
   // 🔏 Private Methods
 
   /**
-   * Refuses a project configuration that leaves any field out.
-   *
-   * Walked against `authored`, the file exactly as written, for the same reason
-   * the permission check is: resolution manufactures every field for every
-   * project, so asking the resolved object whether a field is missing can never
-   * say yes.
+   * Refuses a project configuration that leaves a field out. Checked against `authored`, since resolution fills every field in.
    */
   private assertComplete(
     loadedConfiguration: LoadedProjectConfiguration,
@@ -87,12 +78,7 @@ export class ProjectConfigurationService {
   }
 
   /**
-   * Reads the limits one project's own configuration declares.
-   *
-   * The whole object comes from that one file, because completeness means both
-   * numbers were written in it. There is nothing left to fall back to and
-   * nothing to fall back per field: a project that declared no breadth limit
-   * wrote `maximumBreadth: undefined`, which is a decision rather than a gap.
+   * Reads a project's own declared limits, with overrides applied. Both numbers come from that one file.
    */
   private buildProjectLimits(args: {
     overrides: CallidescopeLimitOverrides | undefined;
@@ -115,15 +101,7 @@ export class ProjectConfigurationService {
   }
 
   /**
-   * Reads the limits the workspace file itself declares.
-   *
-   * These are the numbers `projectDefaults` carries into every project's file,
-   * and the ones the directory holding the workspace configuration is judged
-   * by — that being the one project which cannot write a file of its own.
-   *
-   * The file is named only when it really wrote a limit. `maximumDepth` is
-   * defaulted during resolution, so a path stamped unconditionally would name a
-   * file for a number that file never mentions.
+   * Reads the limits the workspace file declares. The path is named only when that file wrote a limit.
    */
   private buildWorkspaceLimits(
     args: ResolveProjectLimitsArguments,
@@ -146,19 +124,7 @@ export class ProjectConfigurationService {
   }
 
   /**
-   * Finds the first field a project's own configuration sets that only the
-   * workspace configuration may set.
-   *
-   * Checked against `authored`, the file exactly as written, never against the
-   * resolved configuration: resolution manufactures every field for every
-   * project, so asking the resolved object whether it "has" a field can never
-   * say no.
-   *
-   * The file's own fields are walked and each is asked whether it is
-   * permitted, rather than a list of forbidden ones being looked for. That is
-   * what makes the check fail closed: a field nothing classifies — a tenth one
-   * added upstream, a name somebody misspelled — is refused by name instead of
-   * being accepted and then quietly doing nothing.
+   * Finds the first field a project sets that only the workspace may set. Fails closed: an unclassified field is refused by name.
    */
   private findForbiddenField(
     authored: CallidescopeConfiguration,
@@ -185,17 +151,7 @@ export class ProjectConfigurationService {
   }
 
   /**
-   * Finds the first member a project set inside a field classified one member
-   * at a time.
-   *
-   * The dotted name is what comes back — `write.json` rather than `write` —
-   * because the field alone would send a reader to delete a block half of
-   * which they are entitled to keep.
-   *
-   * A value that is not an object at all is refused under the field's own
-   * name. The schema has already rejected every such file by the time this
-   * runs, so this is the guard that makes the walk total rather than a branch
-   * with a story behind it.
+   * Finds the first member a project sets inside a field classified one member at a time, named as `write.json`.
    */
   private findForbiddenMember(args: {
     field: string;
@@ -225,16 +181,7 @@ export class ProjectConfigurationService {
   }
 
   /**
-   * Finds the first name a project's configuration leaves out.
-   *
-   * A field is checked for presence rather than for a value, so a project
-   * writing `maximumBreadth: undefined` or `mermaid: undefined` has spoken.
-   * Those two are the whole reason presence and value are kept apart: each is a
-   * project saying it gates no breadth, or publishes no diagram, and an absent
-   * field could never distinguish either from a project that forgot.
-   *
-   * A field present but not an object is reported under its own name, which is
-   * unreachable through the schema and is what makes the walk total.
+   * Finds the first field a project's configuration leaves out. Presence is checked, not value, so `undefined` counts as set.
    */
   private findMissingField(
     authored: CallidescopeConfiguration,
@@ -271,12 +218,7 @@ export class ProjectConfigurationService {
   }
 
   /**
-   * Reads one project's configuration file.
-   *
-   * Every failure the read can produce — a file nothing can parse, a shape the
-   * schema rejects — is rethrown naming the project, because a run resolves a
-   * file per project and a bare parse error says nothing about which one to go
-   * and fix.
+   * Reads one project's configuration file. Rethrows any failure naming the project, since a bare parse error does not say which to fix.
    */
   private async loadProjectConfiguration(args: {
     configurationPath: string;
@@ -307,14 +249,7 @@ export class ProjectConfigurationService {
   }
 
   /**
-   * Applies one command-line limit override to one project's declared limit.
-   *
-   * The precedence rule, at the level a limit is actually enforced: a project
-   * that declared the limit is judged by the flag instead, and a project that
-   * declared none keeps no limit at all. A flag may override what a project chose
-   * and may not choose for a project that chose nothing — which for breadth is
-   * the whole difference between a run `--check breadth` can gate and one it
-   * refuses.
+   * Applies one command-line limit override to one project's declared limit. A flag overrides a declared limit but never supplies one.
    */
   private overrideLimit(args: {
     declared: number | undefined;
@@ -335,29 +270,7 @@ export class ProjectConfigurationService {
   // 🌎 Public Methods
 
   /**
-   * Resolves the configuration file sitting at each project's own root — the
-   * directory holding the `tsconfig.json` that makes it a project.
-   *
-   * A traced project with no file of its own is refused. That is the whole
-   * point of the arrangement: what a project is judged by is written in that
-   * project's own file, so a project with no file has nothing written down and
-   * a reader has no second file to go and resolve it against.
-   *
-   * The file must also be complete — every field present, `undefined` written
-   * where a project means to publish nothing or gate nothing. A project spreads
-   * the workspace's `projectDefaults` to get there in one line, which is what
-   * makes completeness cheap enough to require. What it may **not** spread is
-   * the workspace configuration itself: that object carries fields only the
-   * workspace may set, and `findForbiddenField` below refuses the file for the
-   * first one it finds.
-   *
-   * The file a run was pointed at is skipped, and the project holding it is
-   * exempt from the two rules above, because that file is already serving as
-   * the run's workspace configuration. One file, one role per run — reading it
-   * a second time as a project's would refuse it for the workspace-only fields
-   * it legitimately sets, and no second file can sit beside it under a name
-   * discovery would find. That project is judged by the workspace's own limits,
-   * which `resolveLimits` reports for it.
+   * Loads each traced project's own file, which must exist and be complete. The run's own file is skipped.
    */
   public async loadProjectConfigurations(
     args: LoadProjectConfigurationsArguments,
@@ -397,22 +310,7 @@ export class ProjectConfigurationService {
   }
 
   /**
-   * Resolves the depth and breadth limits every traced project is judged
-   * against, each carrying the file its number was written in.
-   *
-   * Every number comes from the project's own file, because loading refuses a
-   * project whose file is absent or incomplete. Nothing is inherited and
-   * nothing is merged — the workspace's numbers reach a project by being
-   * spread into its file, where a reader can see them, rather than by being
-   * resolved behind one.
-   *
-   * The one project handed the workspace's own limits is the directory holding
-   * the workspace configuration, which cannot write a second file under a name
-   * discovery would find.
-   *
-   * One resolver rather than one per reader. A gate and a listing that each
-   * worked this out for themselves could disagree about the same number, and a
-   * limit two answers can be given for is worse than no limit.
+   * Resolves each traced project's depth and breadth limits. One resolver, so a gate and a listing cannot disagree.
    */
   public resolveLimits(
     args: ResolveProjectLimitsArguments,

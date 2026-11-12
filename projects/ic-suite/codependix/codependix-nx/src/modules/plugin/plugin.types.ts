@@ -11,12 +11,7 @@ export interface CodependixPluginOptions {
   readonly gateTargetName: string;
 }
 
-/**
- * What one `extends` entry names: a file the gate's inputs can name, an
- * installed package Nx hashes by version, or what no input can name — a file
- * outside the workspace, an installed package the root manifest does not
- * declare, or a package base that resolves to no file.
- */
+/** An `extends` target: a workspace file, a package, or neither. */
 export type ExtendedBase =
   | { readonly file: string; readonly kind: "file" }
   | { readonly kind: "outside" }
@@ -32,10 +27,7 @@ export interface ExtendsChain {
   readonly packages: Set<string>;
 }
 
-/**
- * One cache input of an inferred target: a file glob, or the npm packages an
- * installed command line is versioned by.
- */
+/** Cache input: a file glob, or npm packages versioning it. */
 export type InferredInput = string | { externalDependencies: string[] };
 
 /** A target this plugin infers onto a project. */
@@ -80,8 +72,8 @@ export interface ResolveToolInputsArguments {
   /** Where a package that cannot be resolved is named. */
   readonly logger: ToolInputsLogger;
   /**
-   * The module `@codependix/cli` is resolved from, as a path or file URL —
-   * this plugin's own, unless a caller stands in for an install elsewhere.
+   * Where `@codependix/cli` is resolved from, as a path or file URL. Defaults
+   * to this plugin's own install.
    */
   readonly resolveFrom?: string | undefined;
   readonly workspaceRoot: string;
@@ -99,7 +91,7 @@ export interface ToolInputsLogger {
   warn: (message: string) => void;
 }
 
-/** The workspace packages a command line reaches, and the names it could not. */
+/** Workspace packages reached by a command line, and unresolved names. */
 export interface WorkspacePackages {
   /** Real directories, the command line's own included. */
   readonly directories: Set<string>;

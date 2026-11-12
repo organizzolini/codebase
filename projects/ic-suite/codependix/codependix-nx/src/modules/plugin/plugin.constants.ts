@@ -1,65 +1,29 @@
 // ♟️ Constants
 
-/**
- * Glob `createNodes` matches.
- *
- * It covers every codependix configuration as well as every `project.json`,
- * even though only the latter describes a project. Nx re-runs a plugin when a
- * file matching its glob changes, so a glob of `project.json` alone would
- * leave the daemon holding inference made before a configuration existed.
- */
+/** Glob for `createNodes`; omitting configurations leaves the daemon stale. */
 export const PROJECT_CONFIGURATION_GLOB =
   "**/{project.json,codependix.config.*}";
 
 /** Basename that marks a matched file as an actual project description. */
 export const PROJECT_CONFIGURATION_FILENAME = "project.json";
 
-/**
- * Cache input naming the project's own codependix configuration.
- *
- * `{projectRoot}`-relative rather than a workspace-wide glob: a glob reaching
- * every project's file would invalidate every gate whenever any one project
- * edited its own. A dependency's file is covered by `^default` instead. A
- * glob rather than one filename because the loader reads seven extensions.
- */
+/** Project-relative cache input for its own codependix configuration. */
 export const PROJECT_CONFIGURATION_INPUT = "{projectRoot}/codependix.config.*";
 
-/**
- * Key the plugin's application context is cached under on `globalThis`.
- *
- * Global rather than module-level so that loading this module twice — which
- * Nx's plugin isolation can do — still yields one NestJS context per process.
- */
+/** `globalThis` key for the NestJS context, shared across reloads. */
 export const PLUGIN_CONTEXT_GLOBAL_KEY = "__codependixPluginContext";
 
 /** Name this plugin is registered under in a workspace's `nx.json`. */
 export const CODEPENDIX_NX_PLUGIN_NAME = "@codependix/nx";
 
-/**
- * Name of the inferred per-project gate target, when the registration names
- * none.
- *
- * Prefixed, unlike `@callidescope/nx`'s bare `gate`, because a workspace
- * registering both plugins would otherwise infer two targets under one name,
- * and Nx keeps whichever plugin it ran last without saying so.
- */
+/** Default inferred target name, prefixed to avoid a silent clash. */
 export const DEFAULT_GATE_TARGET_NAME = "codependix-bound";
 
-/**
- * What the configuration refusal names when the plugin registration lacks the
- * path: required rather than defaulted, so a workspace states where its
- * configuration lives in its `nx.json` plugin entry.
- */
+/** Names the missing `configurationPath` in refusals; required, not defaulted. */
 export const PLUGIN_OPTION_SURFACE =
   "`configurationPath` option on the @codependix/nx plugin's entry in nx.json";
 
-/**
- * Root of the workspace-level project, which inference skips.
- *
- * Every other project sits inside it, so its dependency closure is the whole
- * workspace — which is the workspace-wide `codependix` run, not a per-project
- * gate.
- */
+/** Workspace root project, skipped: its closure is the whole workspace. */
 export const WORKSPACE_PROJECT_ROOT = ".";
 
 /** The package whose code decides every gate's verdict. */
@@ -68,11 +32,7 @@ export const CLI_PACKAGE_NAME = "@codependix/cli";
 /** The dependency specifier prefix marking a package of the same workspace. */
 export const WORKSPACE_PROTOCOL = "workspace:";
 
-/**
- * The dependency specifier prefixes marking a package that comes from this
- * workspace's own files rather than a registry, which Nx's graph need not
- * hold as an external node.
- */
+/** Specifier prefixes of this workspace's packages, not registry packages. */
 export const LOCAL_DEPENDENCY_PROTOCOLS = [
   "file:",
   "link:",
@@ -80,45 +40,19 @@ export const LOCAL_DEPENDENCY_PROTOCOLS = [
   WORKSPACE_PROTOCOL,
 ] as const;
 
-/**
- * The files of a workspace package that change what a gate decides.
- *
- * Its manifest and its sources — not its tests, nor its README, which
- * codependix regenerates on the default branch. The tests are left out
- * inside the one positive glob, as an extglob: Nx's affected computation
- * reads only positive `{workspaceRoot}` inputs and ignores a negated one
- * outright, so a `!` input would still let a test-only edit select every
- * gate. `testing/` sits beside `src/`, so no glob here reaches it. A
- * package's own `tsconfig.json` is not here: the loader never reads it.
- */
+/** Workspace package files that change a verdict, tests excluded. */
 export const TOOL_PACKAGE_GLOBS = [
   "package.json",
   "src/**/!(*.test.*|*.spec.*)",
 ] as const;
 
-/**
- * The compiler options the gate's loader reads.
- *
- * `@swc-node/register` takes them from `SWC_NODE_PROJECT` or
- * `TS_NODE_PROJECT`, else from `tsconfig.json` in its working directory,
- * which is the workspace root — and from every base that file `extends`. So
- * this file and its chain shape every gate's verdict, whichever way the
- * command line was installed. The input a gate keeps on its own when the
- * chain cannot be followed.
- */
+/** Root tsconfig for compiler options, plus its hashed `extends` chain. */
 export const WORKSPACE_TSCONFIG_INPUT = "{workspaceRoot}/tsconfig.json";
 
-/**
- * The file a base package provides when `extends` names the package alone,
- * with no path inside it — as TypeScript resolves it, short of a `tsconfig`
- * field in the package's manifest, which is rare enough to leave out.
- */
+/** File a package provides when `extends` names only the package. */
 export const PACKAGE_TSCONFIG_FILENAME = "tsconfig.json";
 
-/**
- * Why a tsconfig base that names no package was skipped, as the warning
- * naming it phrases it.
- */
+/** Warning for a tsconfig base that names no package. */
 export const SKIPPED_BASE_REASONS = {
   outside: "it lies outside the workspace",
   unresolved: "it resolves to no file",

@@ -17,30 +17,21 @@ import type { ExampleDocument, ExampleSection } from "./types";
 
 // 🏷️ Types
 
-/** One anchor placed into a file, with or without a subheading above it. */
+/** One anchor in a file, optionally under a subheading. */
 interface AnchorPlacement {
   readonly anchorName: string;
   readonly subheading: string | undefined;
 }
 
-/**
- * One branch of the auto-creation rule, as a section to render.
- *
- * Held as data so the branches read as cases of one rule rather than as
- * hand-written sections: what varies between them is only the file being
- * spliced, whether a subheading is placed above the anchor, and what was
- * already spliced into that file first.
- */
+/** One auto-creation branch: a section to render, held as data. */
 interface AnchorPlacementCase {
   readonly anchorName: string;
   readonly fileContent: string;
   readonly heading: string;
   readonly note: string;
   /**
-   * Placements applied to `fileContent` before this one.
-   *
-   * Non-empty for exactly one case: a second graph type landing under a
-   * `## 🕸️ Codependix` section an earlier graph type already created.
+   * Placements applied to `fileContent` first. Non-empty for exactly one case:
+   * a second graph type joining a section an earlier one created.
    */
   readonly previousPlacements: AnchorPlacement[];
   readonly subheading: string | undefined;
@@ -51,7 +42,7 @@ interface AnchorPlacementCase {
 /** Anchor the Nx Neighborhood block in every anchor example carries. */
 const NX_ANCHOR = buildExampleAnchor("nx");
 
-/** A second anchor in the same file, proving two named blocks never collide. */
+/** A second anchor in the same file, to test collisions. */
 const NESTJS_ANCHOR = buildExampleAnchor("nestjs");
 
 /** Anchor the workspace-level example uses, which carries no subheading. */
@@ -84,7 +75,7 @@ const HAND_WRITTEN_SECTION_README = [
   "",
 ].join("\n");
 
-/** Every branch of the auto-creation rule, in the order the example walks them. */
+/** Every auto-creation branch, in the order the example walks them. */
 const AUTO_CREATION_CASES: AnchorPlacementCase[] = [
   {
     anchorName: NX_ANCHOR,
@@ -174,7 +165,6 @@ export function describeMissingReadme(mode: "check" | "write"): string {
   try {
     deliver({ content: SAMPLE_DIAGRAM, mode, project });
 
-    /* v8 ignore next -- a destination with no file always raises */
     return "delivered";
   } catch (error) {
     return redactRoot(describeError(error), project.absoluteRoot);
@@ -197,10 +187,7 @@ export function insert(args: {
 }
 
 /**
- * Replaces a throwaway directory with a stable placeholder.
- *
- * A committed example carrying the temporary path of whichever machine
- * rendered it would fail `examples --check` everywhere else.
+ * Replaces a throwaway directory with a stable placeholder, so committed examples do not carry one machine's temp path.
  */
 export function redactRoot(message: string, absoluteRoot: string): string {
   return message.replaceAll(absoluteRoot, "<project>");
@@ -233,9 +220,9 @@ function buildAutoCreationSections(): ExampleSection[] {
 function buildMissingReadmeSections(): ExampleSection[] {
   return [
     {
-      body: fence(describeMissingReadme("write")),
-      heading: "A project with no `README.md`, on `--write`",
-      note: "Fails outright, in either mode. The file itself not existing is a more serious problem than a missing anchor — there is nothing to splice into and nothing safe to create.",
+      body: fence(describeMissingReadme("check")),
+      heading: "A project with no `README.md`, on `--check`",
+      note: "Fails outright. The file itself not existing is a more serious problem than a missing anchor — there is nothing to compare against. `--write` instead creates the file, with the `## 🕸️ Codependix` section in it.",
     },
     {
       body: fence(describeMissingAnchor()),
@@ -286,11 +273,7 @@ function buildModesDocument(): ExampleDocument {
 }
 
 /**
- * Wraps rendered Markdown in a fence so the document shows it verbatim.
- *
- * Fenced with four backticks rather than three: the content being shown is a
- * spliced export, which contains a fenced mermaid diagram of its own, and a
- * three-backtick fence would close on it.
+ * Wraps Markdown in a four-backtick fence so it shows verbatim. Three backticks would close on a nested mermaid fence.
  */
 function fenceMarkdown(content: string): string {
   return `\`\`\`\`markdown\n${content.trimEnd()}\n\`\`\`\``;

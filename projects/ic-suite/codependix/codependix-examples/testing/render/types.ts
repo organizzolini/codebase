@@ -1,12 +1,6 @@
 // 🏷️ Types
 
-/**
- * One worked example, rendered as a single Markdown document under `output/`.
- *
- * A document is data rather than prose: `renderDocument` turns it into Markdown,
- * and `render-examples --check` compares that against what is committed. That is
- * what keeps a guide from quoting a diagram the tool no longer draws.
- */
+/** A worked example rendered under `output/`, checked against the commit. */
 export interface ExampleDocument {
   /** File stem the document is written under, such as `03-ambient-modules`. */
   readonly id: string;
@@ -26,7 +20,7 @@ export interface ExampleFile {
   readonly relativePath: string;
 }
 
-/** A JSON export committed so a reader sees its shape without running anything. */
+/** A committed JSON export, so readers see its shape. */
 export interface ExampleJsonExport {
   /**
    * Content, already rendered by `DeliveryService.renderJson` so it is
@@ -34,11 +28,8 @@ export interface ExampleJsonExport {
    */
   readonly content: string;
   /**
-   * File name, committed inside the example's own directory.
-   *
-   * Named `codependix-*graph.json` so the committed exports inherit the
-   * carve-outs `configuration/eslint.config.ts` and `configuration/.oxfmtignore`
-   * declare for every graph codependix writes — see the `json-exports` example.
+   * File name, committed in the example's own directory. Named
+   * `codependix-*graph.json` to inherit the codependix lint carve-outs.
    */
   readonly fileName: string;
 }

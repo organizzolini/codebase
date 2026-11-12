@@ -20,42 +20,11 @@ import type { DrawCommandOptions } from "./draw.types";
 
 /**
  * Draws meanders into the Postgres database `MEANDERAW_POSTGRES_DATABASE` names.
- * It is the application's only command, and its default, so running it
- * with no arguments at all runs this.
  *
- * Both of its modes write the meander database, and which one runs is
- * decided by whether a Code was named:
+ * - **`draw`** draws every meander, then the corpus's hardcoded Codes beyond the budget.
+ * - **`draw --rows <n> --columns <n> --code <code>`** persists one meander.
  *
- * - **`draw`** draws everything, in two halves that between them are the
- *   whole corpus. {@link DrawEnumerationService} walks the lattice's unit
- *   space — every shape the edge budget admits, every structurally distinct
- *   repeat within each — and writes a row per meander found, with every
- *   Characteristic measured off its own structure. Then
- *   {@link CorpusService} ingests the historical corpus's
- *   hardcoded Code constants, which are exactly the meanders that lie
- *   *beyond* that budget — see `corpus.constants.ts` for how that
- *   boundary is drawn and why it has to be.
- * - **`draw --rows <n> --columns <n> --code <code>`** decodes,
- *   measures, and persists that one meander, through the same generic
- *   pipeline both halves of the draw run use.
- *
- * Nothing checks a draw run against a committed copy: at the default edge
- * budget the database holds millions of rows, and it lives in Postgres
- * rather than in the repository.
- *
- * **The SVG file tree is gone for good.** The procedural motif services, the
- * `output/` tree of SVG files they wrote, and the `--type`/`--modifier`
- * flags that named one are all retired: a meander is a database row, and a
- * row has no path-length limit for a Code to outgrow. One file write
- * survives the retirement: `output/index.html` and a page per pattern
- * characteristic, rebuilt at the end of every draw run from the
- * database's own rows — see {@link DrawIndexService}. They are gitignored
- * rather than committed: at the default edge budget they are gigabytes of
- * HTML, written a batch of rows at a time.
- *
- * The hardcoded half runs first, so a hardcoded meander keeps its row: the
- * draw run skips any Code a hardcoded row already holds rather than writing an
- * enumerated duplicate beside it.
+ * The hardcoded half runs first, so a hardcoded row keeps its Code.
  */
 @Command({
   description:
@@ -91,20 +60,8 @@ export class DrawCommand extends CommandRunner {
   // 🔏 Private Methods
 
   /**
-   * Draws every meander the application can draw, as rows in the local
-   * database.
-   *
-   * Two halves, one corpus and one unique index over a meander's
-   * lattice address. The hardcoded half is written first and the enumerated
-   * half second, so the two are ordered rather than racing: an enumerated
-   * meander whose Code a hardcoded row already holds is skipped, so the
-   * hardcoded row keeps it. Only enumerated
-   * meanders are folded by symmetry — a hardcoded mirror or flip of one is
-   * a row of its own.
-   *
-   * The existing rows are cleared first, so a draw run regenerates the
-   * database in place: every row is insert-only, and drawing over the rows
-   * a previous draw run left would collide with each one.
+   * Draws every meander, after clearing the existing rows. The hardcoded
+   * corpus goes first, so its rows keep their Codes.
    */
   private async drawAll(): Promise<void> {
     await this.databaseService.clear();
@@ -130,14 +87,8 @@ export class DrawCommand extends CommandRunner {
   }
 
   /**
-   * Decodes, measures, and persists the one meander `--rows`, `--columns`,
-   * and `--code` name, refusing the request when `--rows` or `--columns` is
-   * missing.
-   *
-   * Takes the three already-narrowed values rather than the whole options
-   * object, so the `rows` and `columns` presence check below is what
-   * TypeScript itself trusts, rather than a check the compiler cannot see
-   * through a wider type.
+   * Decodes, measures, and persists the one meander `--rows`, `--columns`, and
+   * `--code` name, refusing the request when `--rows` or `--columns` is missing.
    */
   private async runCodeDrawing(
     code: string,
@@ -159,11 +110,8 @@ export class DrawCommand extends CommandRunner {
   }
 
   /**
-   * Writes `output/index.html` and every pattern's page from the rows both
-   * halves committed, each streamed to disk a batch of rows at a time.
-   *
-   * Last, once both halves have committed — a page built from a partial
-   * draw run would tell a reader the corpus stopped short of where it did.
+   * Writes `output/index.html` and every pattern's page. Runs last, once both
+   * halves have committed.
    */
   private async writePages(): Promise<void> {
     const pages = await this.drawIndexService.build();
@@ -181,11 +129,8 @@ export class DrawCommand extends CommandRunner {
   // 🌎 Public Methods
 
   /**
-   * Parses `--code`, passed through unchanged: the hexadecimal digits a
-   * a meander's own points are read from, one character per interior
-   * lattice point. `CodeService.parse` is what refuses a
-   * non-hexadecimal character or a length `--rows`/`--columns` disagree
-   * with, so nothing is validated here.
+   * Parses `--code`, passed through unchanged. `CodeService.parse` refuses a
+   * non-hexadecimal character or a length that disagrees with the shape.
    */
   @Option({
     description:

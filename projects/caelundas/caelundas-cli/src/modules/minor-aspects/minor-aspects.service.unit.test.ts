@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment, { type Moment } from "moment-timezone";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectEphemerisService } from "../aspects/aspect-ephemeris.service";
 import { AspectEventFormattingService } from "../aspects/aspect-event-formatting.service";
@@ -18,35 +17,32 @@ import { MinorAspectsProgressiveService } from "./minor-aspects-progressive.serv
 import { MinorAspectsService } from "./minor-aspects.service";
 
 import type { Body } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
-
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
 
 describe(MinorAspectsService, () => {
   let service: MinorAspectsService;
 
+  const testingModuleOptions = {
+    imports: [EphemerisModule],
+    providers: [
+      AspectEphemerisService,
+      MinorAspectsEventService,
+      MinorAspectsProgressiveService,
+      AspectsUtilitiesService,
+      AspectEventFormattingService,
+      MathService,
+      ProgressiveAspectService,
+      ProgressiveUtilitiesService,
+    ],
+  };
+
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [EphemerisModule],
-      providers: [
-        LoggerService,
-        MinorAspectsService,
-        AspectEphemerisService,
-        MinorAspectsEventService,
-        MinorAspectsProgressiveService,
-        AspectsUtilitiesService,
-        AspectEventFormattingService,
-        MathService,
-        ProgressiveAspectService,
-        ProgressiveUtilitiesService,
-      ],
-    }).compile();
-    service = await module.resolve(MinorAspectsService);
+    const { instance } = await buildTestingModule(
+      MinorAspectsService,
+      testingModuleOptions,
+    );
+    service = instance;
   });
 
   describe("detect", () => {
@@ -276,10 +272,7 @@ describe(MinorAspectsService, () => {
       const previousMinute = currentMinute.clone().subtract(1, "minute");
       const nextMinute = currentMinute.clone().add(1, "minute");
 
-      // Create ephemeris with all bodies clustered in a small range to avoid aspects
-      // Minor aspects: 30° (2° orb), 45° (2° orb), 135° (2° orb), 150° (3° orb)
-      // If all bodies are within a ~20° range, no pairs will have angles matching minor aspects
-      // Positions: 50° through 70° (20° span, all angles < 28° which is outside all aspect orbs)
+      // Bodies clustered within 50°–70° form no minor aspect: every angle is under 28°.
       const safeLongitudes = [
         50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 51, 53, 55, 57, 59, 61, 63,
         65,
@@ -675,8 +668,13 @@ describe(MinorAspectsService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      MinorAspectsService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(MinorAspectsService);
   });
 
   describe("getMinorAspect", () => {

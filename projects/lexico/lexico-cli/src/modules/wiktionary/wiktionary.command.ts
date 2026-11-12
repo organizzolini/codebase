@@ -296,9 +296,7 @@ export class WiktionaryCommand extends CommandRunner {
 
   // 🌎 Public Methods
 
-  /** Scrapes every configured Latin category from Wiktionary, stores each
-   * article's HTML as a JSON file under `./data/wiktionary`, following
-   * pagination until all pages in each category are exhausted. */
+  /** Scrapes every configured Latin category from Wiktionary, following pagination and storing each article's HTML as JSON under `./data/wiktionary`. */
   async ingestWiktionary(): Promise<void> {
     this.logger.info("🌐 Ingesting wiktionary");
     if (!fs.existsSync(this.directory)) {

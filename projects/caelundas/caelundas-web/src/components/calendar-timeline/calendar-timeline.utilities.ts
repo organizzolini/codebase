@@ -11,7 +11,7 @@ import type {
   EventGroupField,
   EventGrouping,
 } from "../calendar-group-by/event-groups.types";
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 import type { TimelineRowBox } from "./calendar-timeline-window.types";
 import type {
   PendingGroup,
@@ -48,13 +48,7 @@ export function toCountColumns(
 }
 
 /**
- * Lays events out as Gantt rows by a grouping. Each group becomes a row,
- * nested under the group above it; a tag group grouped below its root's
- * children is also nested under each tag between, so grouping by Conjunct
- * draws Aspect, then Major Aspect, then Conjunct, each collapsible. An event
- * is drawn once in every innermost row it falls in, and each row counts its
- * distinct events. Instants keep no length, which the Gantt draws as a
- * circle at its moment; spans keep their true length.
+ * Lays events out as Gantt rows by a grouping, each group nested under the one above, and counts each row's distinct events.
  */
 export function toTimelineRows(
   events: readonly CalendarEventRecord[],
@@ -103,10 +97,7 @@ export function toTimelineRows(
 }
 
 /**
- * Reports the timeline body's visible rows once a frame at most, now and on
- * every scroll or resize of the body or its content, until the cleanup it
- * answers is called. The Gantt mounts its body after itself, so the body is
- * looked for again whenever the container's content changes.
+ * Reports visible rows once a frame at most, now and on each scroll or resize, until the returned cleanup runs.
  */
 export function watchVisibleRows(
   container: HTMLElement,
@@ -165,10 +156,7 @@ export function watchVisibleRows(
 }
 
 /**
- * Finds or adds the rows of one group's path under its parent, the group's
- * own row last, noting the group's events as members of each, and answers
- * the group's own row's id and the list rows nested in it go in. A row with
- * nothing nested keeps an empty list, which the Gantt draws as a plain row.
+ * Finds or adds one group's path rows under its parent, noting the group's events; a row with nothing nested stays a plain row.
  */
 function placeGroupRows(
   group: PendingGroup,
@@ -212,8 +200,7 @@ function readRowBoxes(viewport: HTMLElement): TimelineRowBox[] {
 }
 
 /**
- * How far the timeline body's first row has scrolled above its viewport's
- * top, past the axis drawn over it, and how tall the viewport is.
+ * How far the timeline body has scrolled above its viewport's top, and how tall the viewport is.
  */
 function readViewport(viewport: HTMLElement): {
   scrollTop: number;

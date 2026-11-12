@@ -5,14 +5,9 @@ export default [
   ...baseConfig,
 
   // 📚 Fixture Projects
-  // Everything under `examples/` is measured input rather than authored
-  // source: each fixture exists so coinagerie has words to collect, several
-  // are deliberately shaped the way this repository's conventions are not (an
-  // unparsable glossary, a configuration that throws, an undefined `fold`),
-  // and the comments and strings inside them exist to be skipped. Linting them
-  // would either force the fixtures to stop demonstrating what they
-  // demonstrate or bury them under suppression comments, which is the one
-  // thing this repository never does. Scoped out here, once.
+  // Examples are measured input, not source: several are deliberately malformed,
+  // and their comments and strings exist to be skipped. Linting them would need
+  // fixes or suppressions, which this repository never adds. Scoped out here.
   {
     ignores: ["examples/**"],
   },

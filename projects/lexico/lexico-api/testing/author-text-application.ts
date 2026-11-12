@@ -1,7 +1,7 @@
 import { NestFactory } from "@nestjs/core";
 import { z } from "zod";
 
-import { Author, Line, Text } from "@codebase/lexico-entities";
+import { Author, Line, Text } from "@codebase/lexico-db";
 
 import {
   type AuthorTextCatalog,
@@ -33,10 +33,7 @@ const authorTextResponseSchema = z.object({
 export type AuthorTextResponse = z.infer<typeof authorTextResponseSchema>;
 
 /**
- * Seeds the author-text catalog into a freshly migrated `lexico_testing`
- * database, then boots the whole Lexico API against it, as `main` does, on an
- * ephemeral port, so a suite POSTs operations the way a browser would.
- * Stops the database again if seeding or booting fails.
+ * Seeds the author-text catalog into a fresh database and boots the Lexico API on an ephemeral port. Stops the database if either fails.
  */
 export async function startAuthorTextApplication(): Promise<AuthorTextApplication> {
   const database = await startLexicoDatabaseTestingModule([Author, Line, Text]);

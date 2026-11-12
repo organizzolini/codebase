@@ -19,15 +19,11 @@ permissions:
   attestations: write
   artifact-metadata: write
 
-# Never cancel a deployment/release run. Concurrency is scoped per-ref so
-# releases and applies on main queue sequentially without colliding. Pull
-# requests run Continuous Integration, not this workflow.
-# The shared Nx cache's bucket. Only a trusted run gets the read-write key and
-# `NX_SHARED_CACHE_REMOTE_WRITABLE`: a run for a pull request, or a manual run
-# off `main`, gets the read-only key, which cannot write whatever the cache
-# server is told. Each key is the join of two expressions, one of them always
-# empty, so a missing read-only secret leaves it empty rather than falling back
-# to the read-write one.
+# Never cancel a deployment or release run, so releases and applies queue per ref.
+# Pull requests run Continuous Integration instead.
+#
+# The shared Nx cache bucket. Only trusted runs get read-write keys: a pull request
+# or a manual run off `main` gets read-only keys.
 env:
   NX_SHARED_CACHE_REMOTE_ACCESS_KEY_ID: >-
     ${{ (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main') && secrets.NX_CACHE_READ_ONLY_ACCESS_KEY_ID || '' }}${{ !((github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && secrets.NX_CACHE_READ_WRITE_ACCESS_KEY_ID || '' }}
@@ -55,38 +51,25 @@ jobs:
             name: Devcontainer
             emoji: 🧑‍🏭
             timeout: 20
-          # v2.33.7, which bumped no package, took 7 minutes. v2.33.6 bumped all
-          # 28 ic-suite packages and ran out of 24 minutes part way through
-          # publishing them: every build and report missed the Nx cache, and the
-          # release commit's pre-commit hook took 10 minutes over the 34
-          # projects whose manifests and changelogs it changed. With the faster
-          # lookups since, such a release should take 15 to 21 minutes, and
-          # this leaves headroom over that. A timeout before the push leaves
-          # nothing behind; a later one is finished by the next run, whose
-          # publish skips versions already on npm, though it cannot attest them.
+          # Sized for a release of many packages: a 28-package release once outran a
+          # 24-minute limit. A release now takes 15 to 21 minutes, and a timeout before
+          # the push leaves nothing behind.
           - id: push-releases
             name: Releases
             emoji: 🦸
             timeout: 32
-          # Applies the OpenRouter Terraform when a push to main changes it.
-          # Plans of the same change are reported on the pull request by
-          # Continuous Integration. State is in a Linode Object Storage bucket
-          # with no lock, so this workflow's per-ref concurrency group, which
-          # never cancels, is what keeps two applies from overlapping.
+          # Applies the OpenRouter Terraform when a push to main changes it. State is in
+          # a Linode bucket with no lock, so this workflow's per-ref concurrency group,
+          # which never cancels, keeps two applies from overlapping.
           - id: apply-terraform
             name: Infrastructure
             emoji: 🏗️
             timeout: 20
 
     steps:
-      # Decides from the GitHub API alone, before any checkout, so a run with
-      # nothing to do finishes in seconds. The devcontainer is built when the
-      # change touches a file the image or its test reads: its own
-      # configuration, the compose and environment files that configuration
-      # loads, this workflow, or the `packageManager` pin in `package.json`
-      # that the test checks pnpm against. Any other `package.json` edit, such
-      # as a release's version bump, does not rebuild it. When the change set
-      # cannot be read in full, it builds rather than guess.
+      # Decides from the GitHub API alone, before any checkout. The devcontainer is
+      # built only when the change touches a file its image or test reads, or this
+      # workflow. A change set that cannot be read in full builds rather than guessing.
       - name: 🚦 Skip Conditionally
         id: check-skip
         env:
@@ -258,17 +241,9 @@ jobs:
           matrix.target.id == 'push-releases'
         run: bash scripts/git/check-commit-signing-configuration.sh
 
-      # Versions the ic-suite packages and writes their changelogs, uncommitted,
-      # and leaves the remote carrying the release token. When `main` moves
-      # during the run, this step or a later one sets `RELEASE_SUPERSEDED` and
-      # every step after it skips, since the newer commit's run releases it all.
-      # The `version-packages` command and `MainTipService` of the
-      # `publication` project explain more.
-      #
-      # It precedes the build, so npm gets a `dist` built from the manifest it
-      # is published with, and the queued run on the release commit restores
-      # those builds from the cache this job saves. A package still rebuilds
-      # there when a report below rewrites its README or a dependency's.
+      # Versions the ic-suite packages and writes their changelogs, uncommitted.
+      # If `main` moves during the run, later steps skip, since the newer run releases it all.
+      # It runs before the build, so npm gets the build of the published manifest.
       - name: 🏷️ Version Packages
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
@@ -277,7 +252,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            publication/src/publication.main.ts version-packages
+            deployment/src/deployment.main.ts version-packages
 
       - name: 👷 Build Projects
         if: >-
@@ -360,10 +335,10 @@ jobs:
           GIT_COMMITTER_NAME: Jimmy Paolini
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            publication/src/publication.main.ts tag-codebase
+            deployment/src/deployment.main.ts tag-codebase
 
       # Tags each newly versioned package on the release commit and pushes the
-      # tags. The `tag-packages` command of the `publication` project explains
+      # tags. The `tag-packages` command of the `deployment` project explains
       # the commit it makes when there was no codebase release to carry the
       # versions.
       - name: 🔖 Tag Packages
@@ -376,14 +351,11 @@ jobs:
           GIT_COMMITTER_NAME: Jimmy Paolini
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            publication/src/publication.main.ts tag-packages
+            deployment/src/deployment.main.ts tag-packages
 
-      # Publishes each released package to npm with provenance, and to GitHub
-      # Packages under the owner's scope.
-      # The `publish-packages` command explains why it uses pnpm, why the
-      # GitHub Packages copies are renamed, and how a re-run completes a run that
-      # stopped part way. The workflow's own token publishes the copies, which
-      # links each one to this repository; `packages: write` above allows it.
+      # Publishes each released package to npm with provenance, and to GitHub Packages
+      # under the owner's scope. The `publish-packages` command explains why it uses pnpm
+      # and why the GitHub Packages copies are renamed. A re-run completes a run that stopped partway.
       - name: 📦 Publish Packages
         id: publish-packages
         if: >-
@@ -395,15 +367,11 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            publication/src/publication.main.ts publish-packages
+            deployment/src/deployment.main.ts publish-packages
 
-      # Lists each package published to npm on the organization's Linked
-      # artifacts page, and names the ones this run published for the
-      # attestation below. The `link-packages` command explains why only
-      # those are attested. It runs whenever publishing ran, even if that failed
-      # part way, such as on one GitHub Packages mirror: a version already on
-      # npm can only be attested by the run that published it, since a re-run
-      # skips it.
+      # Lists each npm package on the organization's Linked artifacts page and names
+      # the ones this run published, for the attestation below. A version already on
+      # npm can only be attested by the run that published it, since a re-run skips it.
       - name: 🔗 Link Packages
         id: link-packages
         if: >-
@@ -413,13 +381,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            publication/src/publication.main.ts link-packages
+            deployment/src/deployment.main.ts link-packages
 
-      # A GitHub build-provenance attestation for each npm tarball this run
-      # published, which the Linked artifacts page shows beside its record.
-      # The records themselves come from the step above, since this action
-      # creates them only for container registries. Like the step above, it
-      # runs after a failure there too, for whatever that step found to attest.
+      # A GitHub build-provenance attestation for each npm tarball this run published,
+      # shown beside its record on the Linked artifacts page. It also runs after a
+      # failure in the link step, for whatever that step found.
       - name: 🔏 Attest Packages
         if: >-
           !cancelled() &&

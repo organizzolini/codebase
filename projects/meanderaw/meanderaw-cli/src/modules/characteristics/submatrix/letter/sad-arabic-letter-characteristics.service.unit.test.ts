@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,17 +7,7 @@ import { SadArabicLetterCharacteristicsService } from "./sad-arabic-letter-chara
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the ص (final Arabic sad) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *    ╷┌┐
- * ╷ ┌┴┴┴╴
- * └─┘
- * ```
- */
+/** Each distinct orientation of final ص as a standalone Code. */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -63,16 +52,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "sadFinal",
 };
 
-/**
- * Each distinct orientation of the ص (initial Arabic sad) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *  ╷┌┐
- * ╶┴┴┘
- * ```
- */
+/** Each distinct orientation of initial ص as a standalone Code. */
 const INITIAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -117,17 +97,7 @@ const INITIAL_FORM: LetterFormFixture = {
   prefix: "sadInitial",
 };
 
-/**
- * Each distinct orientation of the ص (isolated Arabic sad) as a Code holding
- * one isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *    ╷┌┐
- * ╷ ┌┴┴┘
- * └─┘
- * ```
- */
+/** Each distinct orientation of isolated ص as a standalone Code. */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -172,16 +142,7 @@ const ISOLATED_FORM: LetterFormFixture = {
   prefix: "sadIsolated",
 };
 
-/**
- * Each distinct orientation of the ص (medial Arabic sad) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *  ╷┌┐
- * ╶┴┴┴╴
- * ```
- */
+/** Each distinct orientation of medial ص as a standalone Code. */
 const MEDIAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -235,10 +196,7 @@ const FORMS: readonly LetterFormFixture[] = [
 ];
 
 describe(SadArabicLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    SadArabicLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(SadArabicLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

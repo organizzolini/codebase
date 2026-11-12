@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { LoggerModule } from "@codebase/observability";
+import { expectModuleImports } from "@codebase/testing/nestjs";
 
 import { MainModule } from "./documentation.module";
 import { RefreshDocumentationModule } from "./modules/refresh-documentation/refresh-documentation.module";
@@ -27,12 +28,7 @@ describe(MainModule, () => {
   it("imports the logger and the refresh-documentation module", () => {
     expect.hasAssertions();
 
-    const imports = Reflect.getMetadata("imports", MainModule) as
-      | undefined
-      | unknown[];
-
-    expect(imports).toContain(LoggerModule);
-    expect(imports).toContain(RefreshDocumentationModule);
+    expectModuleImports(MainModule, LoggerModule, RefreshDocumentationModule);
   });
 
   it("validates the environment against the schema", () => {

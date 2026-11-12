@@ -10,11 +10,8 @@ export interface EmitPluginArguments {
   /** Package name the emitted plugin is addressed by, as in `nx g <name>:x`. */
   readonly packageName: string;
   /**
-   * The workspace's projects, used to enumerate a scoped generator's choices.
-   *
-   * Passed in rather than read here so emitting stays pure with respect to the
-   * filesystem: the graph, the sync generator, and the install-time bootstrap
-   * each know how to list projects, and they do not agree on how.
+   * The workspace's projects, enumerating a scoped generator's choices. Passed in
+   * to keep emitting pure; the callers disagree on how to list them.
    */
   readonly projects?: readonly ProjectScope[] | undefined;
 }

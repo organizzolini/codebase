@@ -34,18 +34,7 @@ vi.mock("node:fs/promises", () => ({
   }),
 }));
 
-/**
- * How many of the historical corpus's entries are preserved as hardcoded
- * rows: those past the sixteen edges the corpus was extracted against, or
- * shallower than the draw run's row floor.
- *
- * Written down rather than computed, because the boundary is computed from
- * `HISTORICAL_CORPUS_EDGE_BUDGET` and the row floor rather than hand-listed,
- * and a number written down is what catches that computation drifting. It
- * is exactly the number of entries the retired constants files held, and it
- * does not move with `DRAW_TEST_EDGE_BUDGET` or `EDGE_BUDGET`: raising the
- * draw run's budget never drops a hardcoded meander.
- */
+/** Historical corpus entries kept as hardcoded rows, to catch drift. */
 const HISTORICAL_CORPUS_PRESERVED = 1026;
 
 /** Starts a fresh draw run over an emptied `meanders` table, with `--code` and logging mocked out. */

@@ -1,18 +1,9 @@
 // ♟️ Constants
 
-/**
- * Which changed files count as conformetry templates.
- *
- * `.nxignore` hides some templates from Nx, so a template edit alone selects
- * none of the instance projects generated from it.
- */
+/** Conformetry templates `.nxignore` hides, so editing one selects no instance. */
 export const TEMPLATE_PATTERN = /^configuration\/conformetry-templates\//u;
 
-/**
- * The file added to the change set when a template changed: the conformetry
- * config is an input of every instance project, and the template hash input
- * then busts their caches.
- */
+/** Added on template changes, since every instance takes the config. */
 export const TEMPLATE_SELECTOR = "configuration/conformetry.config.ts";
 
 /** The value of `INCLUDE_TEMPLATES` that selects every instance on a template change. */

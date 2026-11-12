@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { buildCodeStatistics } from "../../../testing/mocks";
 
@@ -9,7 +10,7 @@ import type { MeasuredTarget } from "./limits.types";
 
 const zeroes = buildCodeStatistics();
 
-/** The repository's own metrics, with a counter in every shape a path reads. */
+/** The repository's metrics, with a counter in every path shape. */
 const codebaseTarget: MeasuredTarget = {
   files: 12,
   language: buildCodeStatistics({
@@ -34,15 +35,15 @@ describe(MetricIndexService, () => {
   let service: MetricIndexService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [MetricIndexService],
-    }).compile();
+    const { instance } = await buildTestingModule(MetricIndexService);
 
-    service = await module.resolve(MetricIndexService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(MetricIndexService);
+
+    expect(instance).toBeInstanceOf(MetricIndexService);
   });
 
   it.each([

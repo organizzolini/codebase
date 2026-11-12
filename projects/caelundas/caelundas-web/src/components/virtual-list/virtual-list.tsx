@@ -15,7 +15,7 @@ import type { ReactNode, UIEvent } from "react";
 // 🔖 Type
 
 /**
- * The rows to window, how tall each is, and how to draw one.
+ * The rows, and their height, key, and draw functions.
  */
 export interface VirtualListProperties<Row> {
   className?: string;
@@ -46,10 +46,7 @@ export interface VirtualListProperties<Row> {
 // 🧩 Component
 
 /**
- * Renders a vertically scrolling list that draws only the rows in view, plus
- * a few on each side, however long the list grows. Rows are absolutely
- * placed over a spacer as tall as the whole list, so the scrollbar still
- * reads true.
+ * Renders a vertical list drawing only the rows in view plus a few on each side, with a spacer keeping the scrollbar true.
  */
 export function VirtualList<Row>(
   properties: Readonly<VirtualListProperties<Row>>,
@@ -85,10 +82,8 @@ export function VirtualList<Row>(
   const shownRows = rows.slice(start, end);
 
   // 💪 Handlers
-  // Only a scroll can reach the end, so a list too short to scroll never
-  // calls back on its own. It calls back once per callback it is handed,
-  // however many scroll events land at the end: the owner hands a new one
-  // once it has answered, even when that answer added no rows.
+  // Only a scroll reaches the end, so a list too short to scroll never calls back.
+  // It calls back once per callback handed, so the owner hands a new one after each answer.
   const handleScroll = (event: UIEvent<HTMLDivElement>): void => {
     const top = event.currentTarget.scrollTop;
     const shown = getVirtualWindow({

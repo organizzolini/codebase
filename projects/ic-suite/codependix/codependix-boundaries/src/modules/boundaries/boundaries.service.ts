@@ -23,17 +23,9 @@ import type {
 /**
  * Judges a built graph against the rules declared for its level.
  *
- * The whole package's public act: a `BoundaryGraph` and a list of rules go in,
- * and the edges and cycles that break them come out. Nothing here knows how a
- * graph was built, where a rule was written, or what a caller will do with a
- * violation — which is what keeps the package a leaf, depending on nothing but
- * `@codependix/configuration` for the rule shapes it reads.
- *
- * A rule that matches nothing is not an error. It reports no violation, the
- * same as a rule everything satisfies: a workspace that has not yet grown the
- * code a rule was written for should not be failed for it, and a rule kept
- * around after the code it covered was deleted is a cleanup rather than a
- * breakage.
+ * Returns the edges and cycles that break a rule. A rule matching nothing reports
+ * nothing, so rules for code not yet written are harmless. Depends only on
+ * `@codependix/configuration`.
  */
 @Injectable()
 export class BoundariesService {
@@ -51,9 +43,8 @@ export class BoundariesService {
   // 🔏 Private Methods
 
   /**
-   * Turns one condemned edge into the violation reported for it, charged to
-   * the project owning the edge's source alone: the dependency is written in
-   * the source, so that is the project a fix belongs to.
+   * Turns one condemned edge into a violation charged to the source's project, where the
+   * dependency is written and a fix belongs.
    */
   private buildAccessViolation(args: {
     edge: { source: string; target: string };
@@ -85,13 +76,9 @@ export class BoundariesService {
   }
 
   /**
-   * The sentence a violation is reported as.
+   * The generated text, with the rule's `message` appended.
    *
-   * A rule's own `message` is appended to the generated one rather than
-   * replacing it, so no wording a configuration can choose ever costs the
-   * report the two things it must always carry: the rule that fired, and both
-   * ends of what it fired on. The generated half says what happened, and the
-   * configured half says why it matters.
+   * Appended, not substituted, so the rule name and both edge ends always survive.
    */
   private buildMessage(args: {
     generated: string;
@@ -103,12 +90,8 @@ export class BoundariesService {
   }
 
   /**
-   * The projects owning the given nodes, sorted and deduplicated.
-   *
-   * A node's own `project` where it carries one — every node in an Nx-level
-   * graph is its own project — and the graph's `scope` otherwise, which is
-   * the project a file- or NestJS-level graph was built for. Never the
-   * workspace: a finding charged to no project could fail no project.
+   * Sorted and deduplicated. A node's own `project`, else the graph's `scope`, never the
+   * workspace: a finding charged to no project fails no project.
    */
   private chargeProjects(args: {
     graph: BoundaryGraph;
@@ -129,10 +112,7 @@ export class BoundariesService {
   /**
    * Reports every edge an `allow` or `forbid` rule condemns.
    *
-   * The two kinds differ only in which verdict the target's match produces,
-   * so they are one traversal rather than two: `forbid` condemns an edge
-   * reaching what `to` claims, and `allow` condemns one reaching anything it
-   * does not.
+   * Both kinds share one traversal, differing only in the target's verdict.
    */
   private evaluateAccessRule(args: {
     graph: BoundaryGraph;
@@ -167,9 +147,8 @@ export class BoundariesService {
   }
 
   /**
-   * Reports every cycle an `acyclic` rule's selected nodes still form, each
-   * charged to every project owning a node on it: no one project on a cycle
-   * can break it alone, so it fails every one of them.
+   * Reports each cycle the selected nodes still form, charged to every project on it.
+   * No one project can break a cycle alone.
    */
   private evaluateAcyclicRule(args: {
     graph: BoundaryGraph;
@@ -204,15 +183,8 @@ export class BoundariesService {
   }
 
   /**
-   * Whether a rule judges this edge at all, before either end is selected.
-   *
-   * A rule naming no `edges` judges every one, which is the stricter reading
-   * and the right default for a rule about what a project may _depend on_.
-   * Naming `implicit: false` narrows it to what an
-   * `@nx/enforce-module-boundaries` `depConstraint` actually sees — that rule
-   * reads import statements, so an `implicitDependencies` entry is invisible
-   * to it. An edge at a level that draws no implicit edges is read as
-   * explicit, since a file import is not "explicitly" anything.
+   * Whether a rule judges this edge. `implicit: false` narrows it to explicit imports,
+   * which is all `@nx/enforce-module-boundaries` sees.
    */
   private judgesEdge(args: {
     edge: BoundaryEdge;
@@ -224,19 +196,8 @@ export class BoundariesService {
   }
 
   /**
-   * The node an edge names, or a bare one carrying only that identifier.
-   *
-   * An edge naming a node the graph does not list is judged on its identifier
-   * alone rather than skipped: silently dropping the edge would hide the rule
-   * rather than the mistake. The consequence is that a `path`, `project`, or
-   * `tags` selector cannot match such an endpoint, since a bare node carries
-   * none of them — so a `forbid` written against `path` reports nothing for
-   * it, which is the safer of the two wrong answers.
-   *
-   * Every real builder lists both ends of every edge it draws — an import
-   * graph only draws edges between files in its own `fileNames`, and the Nx
-   * and NestJS graphs both list every node they connect — so this is reached
-   * only by a hand-written graph.
+   * The node an edge names; when unlisted, a bare node with only its identifier, which
+   * `path`, `project`, and `tags` selectors never match.
    */
   private resolveNode(
     nodes: Map<string, BoundaryNode>,
@@ -248,12 +209,7 @@ export class BoundariesService {
   // 🌎 Public Methods
 
   /**
-   * Every violation one graph's rules report, in the order the rules were
-   * declared.
-   *
-   * Declaration order rather than severity or node order: a configuration's
-   * author reads their own file top to bottom, and a report ordered the same
-   * way needs no key.
+   * Every violation one graph's rules report, in declaration order, so the report reads like the configuration.
    */
   public evaluate(args: EvaluateBoundariesArguments): BoundaryViolation[] {
     return args.rules.flatMap((rule) =>

@@ -10,12 +10,7 @@ import type {
 } from "./ignore-rules.types";
 
 /**
- * Reads and applies gitignore-syntax rule sets without invoking git.
- *
- * Codometer used to hand this problem to `git ls-files`, which meant it could
- * only measure a directory that was a git repository. Reading the syntax here
- * is what lets it measure any directory at all, and it is the only reading of
- * that syntax in the tool — there is no git fast path to disagree with.
+ * Reads and applies gitignore-syntax rule sets without invoking git, so any directory can be measured. It is the only reader of that syntax.
  */
 @Injectable()
 export class IgnoreRulesService {
@@ -30,11 +25,7 @@ export class IgnoreRulesService {
   // 🔏 Private Methods
 
   /**
-   * The path a rule set sees, or nothing when the path lies outside it.
-   *
-   * A rule set anchored at `projects/affirmancy` matches its patterns
-   * against `output/one.md`, not against the full path, because that is what
-   * the patterns in that directory's ignore file were written against.
+   * The path relative to a rule set's directory, or nothing when it lies outside. Patterns match against this, not the full path.
    */
   private toScopedPath(
     scope: IgnoreScope,
@@ -56,12 +47,7 @@ export class IgnoreRulesService {
   // 🌎 Public Methods
 
   /**
-   * Builds a rule set from patterns already in hand.
-   *
-   * Case-sensitive on every platform, deliberately. Git decides that from the
-   * filesystem it happens to be on, so the same ignore file can claim a
-   * different set of files on a developer's Mac and on Linux CI. A measurement
-   * that disagrees with itself between machines is worse than a strict one.
+   * Builds a rule set from patterns in hand. Always case-sensitive, so one ignore file claims the same files on every platform.
    */
   createScope(args: CreateIgnoreScopeArguments): IgnoreScope {
     return {
@@ -71,15 +57,7 @@ export class IgnoreRulesService {
   }
 
   /**
-   * Whether the rule sets ignore a path, the innermost one deciding.
-   *
-   * gitignore resolution is nested rather than additive: a rule set in a
-   * subdirectory overrides the one above it, which is what lets a `!pattern`
-   * re-include a file its parent excluded. Reading the scopes outermost first
-   * and keeping the last decision reproduces that ordering.
-   *
-   * A directory is passed with a trailing slash, so a `build/` pattern claims
-   * the directory rather than only a file that happens to be named `build`.
+   * Whether the rule sets ignore a path, the innermost deciding. Scopes apply outermost first, so a nested `!pattern` can re-include a file.
    */
   isIgnored(scopes: readonly IgnoreScope[], relativePath: string): boolean {
     let isIgnored = false;
@@ -106,11 +84,7 @@ export class IgnoreRulesService {
   }
 
   /**
-   * Reads a rule set out of a gitignore-syntax file.
-   *
-   * Returns nothing when the file is absent, so a configured ignore file that
-   * was renamed is reported by the caller rather than silently behaving as an
-   * empty one.
+   * Reads a rule set from a gitignore-syntax file, or nothing when it is absent so the caller can report it.
    */
   readScope(args: ReadIgnoreScopeArguments): IgnoreScope | undefined {
     if (!existsSync(args.filePath)) {

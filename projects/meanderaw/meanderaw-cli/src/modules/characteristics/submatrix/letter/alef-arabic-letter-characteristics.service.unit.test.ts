@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,17 +7,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the ا (final Arabic alef) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- * ╷
- * │
- * └─╴
- * ```
- */
+/** One isolated Code per orientation of the ا (final form). */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -77,10 +66,7 @@ const FINAL_FORM: LetterFormFixture = {
 const FORMS: readonly LetterFormFixture[] = [FINAL_FORM];
 
 describe(AlefArabicLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    AlefArabicLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(AlefArabicLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

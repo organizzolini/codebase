@@ -21,16 +21,8 @@ import type {
 /**
  * Renders the template and instance inventory as readable lines.
  *
- * The whole rendered form lives here rather than in the host that prints it,
- * because the indent ladder, the headings, and the percentage are one visual
- * grammar: split across two packages, half of it would drift from the other.
- * Hosts decide what to ask for and where the lines go; this decides how a
- * pairing reads.
- *
- * Paths arrive absolute, because that is the only stable way for discovery to
- * name an instance to another process. Shortening them is a host's concern —
- * only a host knows which directory a person is standing in — so it is offered
- * here as a separate step rather than folded into rendering.
+ * Hosts decide what to ask for and where the lines go; this decides how a pairing reads.
+ * Paths arrive absolute, so shortening them is left to the host.
  */
 @Injectable()
 export class InventoryService {
@@ -54,10 +46,7 @@ export class InventoryService {
   /**
    * Renders a file-overlap ratio as a whole percentage.
    *
-   * Deliberately coarser than the score percentage reporting renders. A score
-   * is read against a threshold, where a tenth of a percent decides whether an
-   * instance passes; this is "how much of the template is here", scanned down
-   * a list, where a decimal is noise.
+   * Coarser than score percentages, which decide pass or fail; a decimal here is noise.
    */
   private formatRatio(matchRatio: number): string {
     return `${String(Math.round(matchRatio * PERCENT_SCALE))}%`;
@@ -87,9 +76,7 @@ export class InventoryService {
   /**
    * Renders every declared template, with the instances each explains.
    *
-   * The instances are listed only when the caller narrowed by path. A bare
-   * listing is a registry — naming every instance of every template there
-   * would bury the handful somebody actually asked about.
+   * Listed only when narrowed by path; a bare listing is a registry.
    */
   public describeTemplates(args: {
     showInstances: boolean;

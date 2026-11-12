@@ -1,9 +1,7 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { symbolByVenusianPhase } from "../caelundas/symbol-caelundas.constants";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
@@ -15,8 +13,9 @@ import {
 } from "./phases.constants";
 import { VenusianPhaseService } from "./venusian-phase.service";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { PhaseParameters } from "./phases.types";
+import type { createMock } from "@golevelup/ts-vitest";
 
 const createTimestamp = (): moment.Moment =>
   moment.utc("2024-01-15T06:00:00.000Z");
@@ -82,24 +81,17 @@ describe(VenusianPhaseService, () => {
     typeof createMock<ProgressiveUtilitiesService>
   >;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        VenusianPhaseService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        {
-          provide: PhaseCalculationService,
-          useValue: createMock<PhaseCalculationService>(),
-        },
-        {
-          provide: ProgressiveUtilitiesService,
-          useValue: createMock<ProgressiveUtilitiesService>(),
-        },
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    mocks: [PhaseCalculationService, ProgressiveUtilitiesService],
+  };
 
-    service = await module.resolve(VenusianPhaseService);
-    await module.resolve(LoggerService);
+  beforeAll(async () => {
+    const { instance, module } = await buildTestingModule(
+      VenusianPhaseService,
+      testingModuleOptions,
+    );
+
+    service = instance;
     phaseCalculationService = await module.resolve(PhaseCalculationService);
     progressiveUtilitiesService = await module.resolve(
       ProgressiveUtilitiesService,
@@ -113,8 +105,13 @@ describe(VenusianPhaseService, () => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      VenusianPhaseService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(VenusianPhaseService);
   });
 
   describe("buildVenusianPhaseEvent", () => {

@@ -19,11 +19,9 @@ import type {
 /**
  * Builds and narrows structured conformance differences.
  *
- * Every validator funnels through here so that error wording, the `fix`
- * suggestion, and the location fields stay consistent across languages. The
- * `resolve*` guards additionally narrow untrusted payloads — notably the JSON
- * emitted by the Python validator bridge, whose fields cross a process
- * boundary and cannot be trusted to match the TypeScript types.
+ * Every validator funnels through here, keeping error wording, the `fix`
+ * suggestion, and locations consistent. The `resolve*` guards narrow untrusted
+ * payloads, such as JSON from the Python bridge, whose fields may not match the types.
  */
 @Injectable()
 export class DifferencesService {
@@ -40,9 +38,9 @@ export class DifferencesService {
   // 🌎 Public Methods
 
   /**
-   * Builds the error raised when a template directory has no counterpart in
-   * the instance tree. Carries no `language`, since a missing directory is not
-   * attributable to any one file format.
+   * Builds the error for a missing template directory.
+   *
+   * Carries no `language`, since a missing directory belongs to no file format.
    */
   public buildMissingDirectoryDifference(
     args: BuildMissingDirectoryErrorArguments,
@@ -55,10 +53,9 @@ export class DifferencesService {
   }
 
   /**
-   * Builds the error raised when a template file has no counterpart in the
-   * instance tree. This is the one check that runs for every template file
-   * regardless of extension, so extension-less files such as `.gitignore` are
-   * covered too.
+   * Builds the error for a template file with no instance counterpart.
+   *
+   * Runs for every template file, whatever its extension.
    */
   public buildMissingFileDifference(
     args: BuildMissingFileErrorArguments,
@@ -71,9 +68,9 @@ export class DifferencesService {
   }
 
   /**
-   * Narrows an untrusted value to a known error category, falling back to
-   * `"code"`. Falling back rather than throwing keeps one malformed error from
-   * failing an entire validation run.
+   * Narrows an untrusted value to a known error category, falling back to `"code"`.
+   *
+   * Falls back rather than failing the run.
    */
   public resolveDifferenceType(value: unknown): ConformetryDifferenceType {
     return (
@@ -84,9 +81,9 @@ export class DifferencesService {
   }
 
   /**
-   * Narrows an untrusted value to a known error language, returning
-   * `undefined` when it matches none. Callers omit the field entirely rather
-   * than storing a bogus language.
+   * Narrows an untrusted value to a known error language, or `undefined`.
+   *
+   * Callers omit the field rather than store a bogus language.
    */
   public resolveErrorLanguage(
     value: unknown,

@@ -12,10 +12,5 @@ export const TYPESCRIPT_VALIDATOR_DESCRIPTOR: LanguageValidatorDescriptor = {
   name: "typescript",
 };
 
-/**
- * Marks a template comment as a placeholder.
- *
- * A template's `// TODO: Document this` is a prompt to write something, not
- * text to copy, so any instance comment satisfies it.
- */
+/** Placeholder comment that any instance comment satisfies. */
 export const TODO_COMMENT_PATTERN = /\bTODO\b/u;

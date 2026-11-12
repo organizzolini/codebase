@@ -1,10 +1,6 @@
 // 🏷️ Types
 
-/**
- * The inflection of a lexeme as the API reports it. Which fields are filled
- * depends on the part of speech: a noun has a declension and gender, a verb a
- * conjugation, and so on.
- */
+/** A lexeme's inflection; filled fields depend on part of speech. */
 export interface LexemeInflection {
   adverbType?: null | string;
   case?: null | string;

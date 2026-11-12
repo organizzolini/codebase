@@ -7,23 +7,9 @@ import { ALL_TEMPLATES_SELECTION, missingInputError } from "./input.constants";
 import type { PromptRunner, SchemaInput, TemplateChoice } from "./input.types";
 
 /**
- * Asks the user for input values interactively.
+ * Asks the user for input values interactively, and for the template to run.
  *
- * Whether anybody *can* be asked is decided here rather than by the caller,
- * and `promptForInput` refuses rather than draws itself when nobody can. That
- * used to be the caller's job, behind a `--no-interactive` flag; a flag is a
- * poor place for it, because forgetting to consult it is what hung this CLI
- * in non-interactive environments.
- *
- * `isAtTerminal` stays public because some callers genuinely need the question
- * rather than the refusal: an **optional** input nobody can be asked about is
- * left out where a required one is refused, and the two template pickers below
- * are only ever reached once a command has already asked it.
- *
- * Those pickers widen this service's remit from "values a schema declares" to
- * "also, which template to run". That is a deliberate trade: one prompting
- * seam is easier to keep honest than two, and a second one would have to read
- * the terminal for itself.
+ * Refuses rather than prompting when nobody can answer, so a non-terminal run cannot hang.
  */
 @Injectable()
 export class InputPromptingService {
@@ -43,9 +29,7 @@ export class InputPromptingService {
   /**
    * Refuses to draw a prompt nobody can answer.
    *
-   * `prompts` does not fail on a non-terminal stdin — it renders the menu,
-   * never resolves, and lets the process exit 0, so a run that generated
-   * nothing reads as one that succeeded.
+   * `prompts` would otherwise exit 0 with nothing generated.
    */
   private assertCanPrompt(inputName: string): void {
     if (!this.isAtTerminal()) {
@@ -73,11 +57,7 @@ export class InputPromptingService {
   /**
    * Whether anybody is there to answer a question.
    *
-   * The one place the terminal is read, so the refusal in front of a prompt
-   * and the caller's decision to skip an optional input cannot disagree about
-   * what counts as interactive. `isTTY` is read as falsy rather than coerced:
-   * `@types/node` calls it a `boolean` while it is `undefined` off a terminal,
-   * so lint rejects the coercion that would say so.
+   * `isTTY` is tested as falsy: it is `undefined` off a terminal, despite its `boolean` type.
    */
   public isAtTerminal(): boolean {
     return process.stdin.isTTY;
@@ -112,12 +92,7 @@ export class InputPromptingService {
   }
 
   /**
-   * Asks which single template to run, filtering as the caller types.
-   *
-   * Autocomplete rather than a plain select because a template name is long
-   * by design — `nestjs-service-module` — and typing a fragment is what makes
-   * that cheap. Whether anybody can be asked at all is the caller's decision,
-   * already taken by the time this is reached.
+   * Asks which single template to run, with autocomplete since template names are long.
    */
   public async promptForTemplate(
     templates: readonly TemplateChoice[],
@@ -134,12 +109,9 @@ export class InputPromptingService {
   }
 
   /**
-   * Asks which templates to narrow a run to, offering the `all` sentinel
-   * alongside them so the picker can express everything the flag can.
+   * Asks which templates to narrow a run to, offering the `all` sentinel alongside them.
    *
-   * Ticking nothing resolves to no selection rather than an empty one: an
-   * empty narrowing would validate nothing at all, where the caller plainly
-   * declined to narrow.
+   * Ticking nothing means no narrowing, not an empty one.
    */
   public async promptForTemplates(
     templates: readonly TemplateChoice[],

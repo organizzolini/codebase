@@ -5,46 +5,30 @@ import type { conformetryConfigurationSchema } from "./configuration.constants";
 import type { GeneratorHooks } from "@conformetry/core";
 import type { z } from "zod";
 
-/**
- * The loaded configuration: one entry per generator.
- *
- * An array rather than a keyed record because a generator's name is already a
- * field, and a record made the name true in two places at once.
- */
+/** The loaded config: one entry per generator, as an array. */
 export type ConformetryConfiguration = ConformetryGeneratorDefinition[];
 
 /** One generator, with the template it renders and the instances it governs. */
 export interface ConformetryGeneratorDefinition {
   description?: string;
   /**
-   * Functions run around generation: `preGenerate` before anything is written,
-   * `postGenerate` after the template is rendered. Optional, and left off the
-   * loaded definition when a generator declares none, so a host forwards
-   * exactly what the configuration said.
+   * Functions run around generation: `preGenerate` before writing, `postGenerate`
+   * after rendering. Left off when a generator declares none.
    */
   hooks?: GeneratorHooks;
-  /**
-   * The values this generator substitutes, as JSON Schema fragments. Named for
-   * what the implementation calls them everywhere else — a generator takes
-   * inputs and renders a template with them.
-   */
+  /** Values substituted into the template, each a JSON Schema fragment. */
   inputs: Record<string, ConformetryGeneratorInputDefinition>;
   /**
-   * Where this generator's output already lives in the workspace. Validation
-   * expands these to find what to check; generation reads them to learn where
-   * a new instance belongs.
+   * Where this generator's output already lives. Validation expands these to
+   * find what to check; generation reads them to place new instances.
    */
   instances: ConformetryInstanceGroup[];
   name: string;
   /** The template folder, relative to the workspace root. */
   templatePath: string;
   /**
-   * Lowest conformance score, from 0 to 1, an instance of this template may
-   * have and still pass.
-   *
-   * Left undefined when unset rather than defaulted to 1, so a run-level
-   * `--threshold` still has somewhere to apply. The default is reached only
-   * when no level supplies a value.
+   * Lowest passing conformance score, 0 to 1. Unset rather than defaulted, so a
+   * run-level `--threshold` can still apply.
    */
   threshold?: number;
 }
@@ -52,12 +36,7 @@ export interface ConformetryGeneratorDefinition {
 /** One configurable input, expressed as a JSON Schema fragment. */
 export type ConformetryGeneratorInputDefinition = Record<string, unknown>;
 
-/**
- * Minimal JSON Schema fragment used to discover a generator's inputs.
- *
- * Only the parts conformetry actually reads are modelled — `properties` for
- * the input names, and `required` for which ones must be supplied.
- */
+/** JSON Schema fragment for generator inputs: `properties` and `required` only. */
 export interface JsonSchemaDefinition {
   [key: string]: unknown;
   properties?: Record<string, unknown>;

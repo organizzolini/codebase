@@ -11,8 +11,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The toolbar moves the view it sits over, and shows whatever menus and
- * filter controls the page hands it and the view the page shows.
+ * The toolbar's navigation, plus the menus and filters it shows.
  */
 export interface CalendarToolbarProperties {
   className?: string;
@@ -40,10 +39,7 @@ export interface CalendarToolbarProperties {
 // 🧩 Component
 
 /**
- * Renders the calendar's toolbar in two rows over whichever view's navigation
- * it is handed: the menus, then the date with its buttons at the right; the
- * filter controls, then the view selector at the right. A phone's first row
- * has the date and the views' menu, with the menus and filters under them.
+ * Renders the toolbar in two rows over the view's navigation: menus and date on top, filters and view selector beneath.
  */
 export function CalendarToolbar(
   properties: Readonly<CalendarToolbarProperties>,

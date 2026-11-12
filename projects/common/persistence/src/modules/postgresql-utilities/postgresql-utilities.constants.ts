@@ -16,10 +16,7 @@ export const POSTGRES_URI_PROTOCOLS: readonly string[] = [
   "postgresql:",
 ];
 
-/**
- * The most a client tool may print before Node kills it; listing the
- * contents of a large dump runs to megabytes.
- */
+/** Client tool output cap; a dump listing runs to megabytes. */
 export const POSTGRES_CLIENT_MAXIMUM_BUFFER_BYTES = 64 * 1024 * 1024;
 
 /** The only major version of the client tools this CLI accepts. */
@@ -75,16 +72,10 @@ export class PostgresClientToolError extends Error {
   readonly tool: PostgresClientTool;
 }
 
-/**
- * The error code Postgres raises for a truncate of a table that a table
- * outside the same statement references, among other unsupported features.
- */
+/** Error code for truncating a table referenced from elsewhere. */
 export const POSTGRES_FEATURE_NOT_SUPPORTED = "0A000";
 
-/**
- * Lists the tables outside `$1`, a `regclass[]`, whose foreign keys
- * reference a table inside it, schema-qualified and sorted.
- */
+/** Outside tables with foreign keys into `$1`, schema-qualified and sorted. */
 export const POSTGRES_REFERENCING_TABLES_SQL = `SELECT DISTINCT referencing_schema.nspname || '.' || referencing.relname AS "table"
 FROM pg_catalog.pg_constraint AS foreign_key
 JOIN pg_catalog.pg_class AS referencing ON referencing.oid = foreign_key.conrelid
@@ -153,7 +144,7 @@ export class PostgresUriError extends Error {
   }
 }
 
-/** Reads a `pg_restore --list` entry line: its dump id, then what it is. */
+/** Parses a `pg_restore --list` entry: dump id, then its kind. */
 export const POSTGRES_DUMP_ENTRY_PATTERN = /^(\d+);\s+\d+\s+\d+\s+(.*)$/u;
 
 /** Reads the ids a `pg_restore --list --verbose` entry depends on. */
@@ -169,9 +160,6 @@ export const POSTGRES_DUMP_TABLE_PATTERN = /^TABLE (?!ATTACH )(.*)$/u;
 /** A table's rows. */
 export const POSTGRES_DUMP_TABLE_DATA_PATTERN = /^TABLE DATA (.*)$/u;
 
-/**
- * What `pg_dump --strict-names` prints for each `--table` that matches
- * nothing, capturing the pattern it was given.
- */
+/** Matches pg_dump's `--strict-names` message for each unmatched `--table`. */
 export const POSTGRES_DUMP_MISSING_TABLE_PATTERN =
   /no matching tables were found for pattern "([^"]+)"/gu;

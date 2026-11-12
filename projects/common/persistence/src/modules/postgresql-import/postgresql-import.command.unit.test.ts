@@ -1,12 +1,12 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { useTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { mockProcesses, processFailure } from "../../../testing/mocks";
@@ -16,9 +16,9 @@ import { PostgresqlImportCommand } from "./postgresql-import.command";
 
 import type { SpawnedProcess } from "../../../testing/mocks";
 
-vi.mock("node:child_process", async () => {
-  const { childProcessMock } = await import("../../../testing/mocks");
-  return childProcessMock;
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockPostgresChildProcess } = await import("../../../testing/mocks");
+  return mockPostgresChildProcess(await importOriginal());
 });
 
 const PASSWORD = "hunter2-secret";
@@ -59,8 +59,7 @@ async function runImport(
 }
 
 describe(PostgresqlImportCommand, () => {
-  let command: PostgresqlImportCommand;
-  let directory: string;
+  const directory = useTemporaryDirectory("import-unit");
   let file: string;
 
   /** A command line that imports `tables` with `content` from the dump file. */
@@ -76,54 +75,23 @@ describe(PostgresqlImportCommand, () => {
     file,
   ];
 
-  beforeAll(async () => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "import-unit-"));
-    file = path.join(directory, "fixture.dump");
+  beforeAll(() => {
+    file = path.join(directory(), "fixture.dump");
     fs.writeFileSync(file, "a dump");
-
-    const module = await Test.createTestingModule({
-      providers: [
-        PostgresqlImportCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: PostgresqlUtilitiesService,
-          useValue: createMock<PostgresqlUtilitiesService>(),
-        },
-      ],
-    }).compile();
-
-    command = await module.resolve(PostgresqlImportCommand);
   });
 
-  afterAll(() => {
-    fs.rmSync(directory, { force: true, recursive: true });
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PostgresqlImportCommand, {
+      mocks: [PostgresqlUtilitiesService],
+    });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+    expect(instance).toBeInstanceOf(PostgresqlImportCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PostgresqlImportCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: PostgresqlUtilitiesService,
-          useValue: createMock<PostgresqlUtilitiesService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("PostgresqlImportCommand");
+    await expectLoggerContext(PostgresqlImportCommand, {
+      mocks: [PostgresqlUtilitiesService],
+    });
   });
 
   describe("fails fast, before any process starts", () => {
@@ -362,14 +330,14 @@ describe(PostgresqlImportCommand, () => {
         .fn<PostgresqlUtilitiesService["restore"]>()
         .mockRejectedValue(new Error("ENOSPC: no space left on device")),
     });
-    const module = await Test.createTestingModule({
-      providers: [
-        PostgresqlImportCommand,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        { provide: PostgresqlUtilitiesService, useValue: postgresClient },
-      ],
-    }).compile();
-    const importCommand = await module.resolve(PostgresqlImportCommand);
+    const { instance: importCommand } = await buildTestingModule(
+      PostgresqlImportCommand,
+      {
+        providers: [
+          { provide: PostgresqlUtilitiesService, useValue: postgresClient },
+        ],
+      },
+    );
 
     const failure = importCommand.run([], {
       data: true,

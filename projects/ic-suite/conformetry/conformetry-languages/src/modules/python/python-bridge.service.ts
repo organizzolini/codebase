@@ -28,11 +28,9 @@ import type {
 /**
  * Runs Python conformance checks through the Python interpreter.
  *
- * Python's syntax tree is only available from Python, so structural validation
- * shells out to a small module shipped inside this package rather than
- * approximating it with a line comparison. The subprocess is synchronous
- * because callers are, and because one file's validation has nothing to
- * overlap with.
+ * Python's syntax tree is only available from Python, so structural checks shell
+ * out to a small module shipped in this package. The subprocess is synchronous,
+ * since its callers are.
  */
 @Injectable()
 /* v8 ignore stop */
@@ -46,11 +44,7 @@ export class PythonBridgeService {
 
   // 🔐 Private Fields
 
-  /**
-   * Directory holding the `python` package, resolved from this module rather
-   * than from the workspace root, so the bridge is found the same way whether
-   * conformetry runs from a checkout or from `node_modules`.
-   */
+  /** Directory of the `python` package, found from this module. */
   private readonly pythonRootPath = path.resolve(
     path.dirname(fileURLToPath(import.meta.url)),
     "..",
@@ -64,9 +58,7 @@ export class PythonBridgeService {
   /**
    * Wraps a bridge failure as a reportable error rather than throwing.
    *
-   * Weighed as a single failed requirement out of one: the file could not be
-   * checked at all, so claiming any particular proportion of it conforms would
-   * be an invention.
+   * Weighed as one failed requirement, as the file went unchecked.
    */
   private buildBridgeError(message: string): DocumentValidationResult {
     return {
@@ -154,10 +146,7 @@ export class PythonBridgeService {
   /**
    * Compares one Python source against its rendered template.
    *
-   * A missing interpreter, a crashed bridge, or unreadable output are all
-   * reported as conformance differences: they mean this file could not be checked,
-   * which the run should surface, but they must not abort validation of every
-   * other file.
+   * Bridge failures become reported differences, so one broken file does not abort the run.
    */
   public validatePythonSource(
     args: RunPythonBridgeArguments,

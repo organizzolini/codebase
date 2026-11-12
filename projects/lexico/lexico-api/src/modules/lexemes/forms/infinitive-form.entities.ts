@@ -8,7 +8,7 @@ import type {
   FormNonFiniteTense,
   FormVoice,
   InfinitiveForm,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 /** An infinitive in one voice and tense. */
 @ObjectType("InfinitiveForm", { implements: FormType })

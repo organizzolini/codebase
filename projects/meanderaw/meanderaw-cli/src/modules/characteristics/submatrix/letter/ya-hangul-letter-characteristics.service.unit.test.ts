@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,7 +7,7 @@ import { YaHangulLetterCharacteristicsService } from "./ya-hangul-letter-charact
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the ㅑ (hangul ya) as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** Each distinct orientation of ㅑ as a standalone Code. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "03x04y400e10e10800",
@@ -39,10 +38,7 @@ const ORIENTATIONS: readonly LetterOrientationFixture[] = [
 ];
 
 describe(YaHangulLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    YaHangulLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(YaHangulLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

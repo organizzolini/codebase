@@ -1,10 +1,11 @@
 import { spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, realpathSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 import { describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 
 import { environmentSchema } from "./callidescope-cli.constants";
 
@@ -14,48 +15,18 @@ const ENTRY_POINT = path.resolve(
   "callidescope-cli.main.ts",
 );
 
-/**
- * The TypeScript loader, as an absolute URL resolved from this file.
- *
- * The package's own `esm-register` entry registers the hook against the
- * working directory, and every run below sets that to a throwaway workspace
- * with no `node_modules` in it. Registering the resolved hook directly is
- * what makes the loader independent of where the command is run from.
- */
+/** TypeScript loader as an absolute URL; runs have no `node_modules`. */
 const LOADER_HOOK = import.meta.resolve("@swc-node/register/esm");
 
-/**
- * Milliseconds one spawned run is allowed, well above what it needs.
- *
- * Every test below spawns this package's real `callidescope-cli.main.ts` through the TypeScript
- * loader and lets it build a `ts.Program` per project in a throwaway
- * workspace. Vitest's default is five seconds, which is a unit-test budget: on
- * a developer machine each of these takes one to two, and on a continuous
- * integration runner two of them measured 5.4 and 5.7 — so the default failed
- * them for being what they are rather than for anything they did. This
- * repository's own guidance puts an end-to-end test at thirty to sixty
- * seconds, and thirty leaves several times the headroom the slowest observed
- * run used.
- */
+/** Per-run timeout, past Vitest's five-second default. CI builds take 5.7s. */
 const SPAWNED_RUN_TIMEOUT = 30_000;
 
-/**
- * The compiler options the spawned run reads.
- *
- * Not optional: NestJS constructor injection reads the metadata
- * `emitDecoratorMetadata` emits, and a loader falling back to its own
- * defaults produces a CLI whose every command is missing its dependencies.
- */
+/** Compiler options for spawned runs; NestJS injection needs decorator metadata. */
 const LOADER_PROJECT = path.resolve(import.meta.dirname, "..", "tsconfig.json");
 
 /**
- * Runs the `callidescope` command against a workspace, and returns its exit
- * code.
- *
- * A real process rather than a resolved command, because the exit code is the
- * whole subject: nest-commander's default handler writes a thrown error to
- * stderr and leaves the code at zero, which no in-process test of the command
- * can see.
+ * Spawns a real process: nest-commander writes a thrown error to stderr and leaves the
+ * exit code at zero, which in-process tests cannot see.
  */
 function runCallidescope(
   workspaceRoot: string,
@@ -92,12 +63,8 @@ function runCallidescope(
 }
 
 /**
- * Writes one project's own complete configuration file.
- *
- * Every traced project declares one, so a fixture project without one is a
- * refusal rather than a project judged by the run. JavaScript rather than
- * JSON, because `undefined` is what a project writes to gate no breadth and
- * publish nothing, and JSON cannot spell it.
+ * Writes one project's complete configuration file. JavaScript, not JSON, because JSON cannot
+ * spell `undefined`, which the configuration uses to disable breadth and publishing.
  */
 function writeProjectConfiguration(projectRoot: string): void {
   writeFileSync(
@@ -140,11 +107,8 @@ function writeReadableProject(workspaceRoot: string, name: string): void {
 }
 
 /**
- * Writes a project whose `tsconfig.json` names a compiler target TypeScript
- * rejects.
- *
- * The shape of the one committed in `codependix-examples`, which exists to be
- * unreadable and must stay that way.
+ * Writes a project whose tsconfig names a target TypeScript rejects, mirroring the
+ * unreadable example in `codependix-examples`, which must stay unreadable.
  */
 function writeUnreadableProject(workspaceRoot: string, name: string): void {
   const root = path.join(workspaceRoot, "packages", name);
@@ -167,24 +131,11 @@ function writeUnreadableProject(workspaceRoot: string, name: string): void {
 }
 
 /**
- * Builds a throwaway workspace carrying the tool's default configuration.
- *
- * Rooted at a resolved path, because `mkdtempSync` hands back a symlink on
- * macOS — `/var/folders/…` for a directory that really lives under
- * `/private/var/folders/…`. A program's source files come back under the real
- * path, so an unresolved root leaves every workspace-relative path a `../../…`
- * climb out of the workspace, which no project root contains: ownership
- * resolves to nothing and a project's own `exclude` silently applies to
- * nothing. Files are still collected under a different keying, so the only
- * symptom is a fixture that cannot reproduce a behavior the real workspace
- * has. This suite asserts exit codes rather than paths today and so is not
- * wrong yet; any assertion here on ownership, a module identifier, or a
- * rendered path would be measuring the wrong thing without this.
+ * Workspace with the default config, rooted at the resolved path since macOS temp directories
+ * are symlinks that break ownership. Assert exit codes, not paths.
  */
 function writeWorkspace(): string {
-  const workspaceRoot = realpathSync(
-    mkdtempSync(path.join(tmpdir(), "callidescope-exit-")),
-  );
+  const workspaceRoot = createTemporaryDirectory("callidescope-exit");
 
   writeFileSync(
     path.join(workspaceRoot, "callidescope.config.json"),

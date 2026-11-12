@@ -10,7 +10,11 @@ import {
   MAXIMUM_CAPTURED_BYTES,
 } from "./process-runner.constants";
 
-import type { CapturedProcess, Command } from "./process-runner.types";
+import type {
+  CapturedProcess,
+  CaptureLocation,
+  Command,
+} from "./process-runner.types";
 
 /**
  * Runs child processes for the integration commands.
@@ -33,11 +37,7 @@ export class ProcessRunnerService {
   // 🌎 Public Methods
 
   /**
-   * Runs a command to completion and returns what it printed.
-   *
-   * @param executable - The program to run, looked up on `PATH`.
-   * @param args - Its arguments, passed verbatim with no shell between.
-   * @returns Both output streams and the exit code.
+   * Runs a command to completion and returns both output streams and the exit code.
    */
   public capture(executable: string, args: readonly string[]): CapturedProcess {
     const result = spawnSync(executable, [...args], {
@@ -55,18 +55,15 @@ export class ProcessRunnerService {
   }
 
   /**
-   * Runs a command without blocking, so several can run at once, and returns
-   * what it printed once it ends. Its standard input is closed at once.
-   *
-   * @param executable - The program to run, looked up on `PATH`.
-   * @param args - Its arguments, passed verbatim with no shell between.
-   * @returns Both output streams and the exit code.
+   * Runs a command without blocking and returns what it printed. Standard input is closed at once.
    */
   public async captureAsync(
     executable: string,
     args: readonly string[],
+    where: CaptureLocation = {},
   ): Promise<CapturedProcess> {
     const child = spawn(executable, [...args], {
+      ...where,
       stdio: ["ignore", "pipe", "pipe"],
     });
     const printed = Promise.allSettled([
@@ -96,11 +93,7 @@ export class ProcessRunnerService {
   }
 
   /**
-   * Runs commands one after another, stopping at the first that fails.
-   *
-   * @param commands - The commands to run, in order.
-   * @returns What they all printed, and the exit code of the one that failed,
-   *   or 0 when none did.
+   * Runs commands in order, stopping at the first that fails, and returns their output.
    */
   public captureSequence(commands: readonly Command[]): CapturedProcess {
     const finished: CapturedProcess = { status: 0, stderr: "", stdout: "" };
@@ -121,13 +114,7 @@ export class ProcessRunnerService {
   }
 
   /**
-   * Runs a command to completion with its standard output written to a file,
-   * byte for byte, which suits a download that is not text.
-   *
-   * @param executable - The program to run, looked up on `PATH`.
-   * @param args - Its arguments, passed verbatim with no shell between.
-   * @param file - The file its standard output replaces.
-   * @returns The error stream and the exit code; `stdout` is always empty.
+   * Runs a command with its standard output written byte for byte to a file.
    */
   public captureToFile(
     executable: string,
@@ -155,13 +142,7 @@ export class ProcessRunnerService {
   }
 
   /**
-   * Runs a command with this process's own output streams, so its output
-   * appears as it would from the shell step that used to run it.
-   *
-   * @param executable - The program to run, looked up on `PATH`.
-   * @param args - Its arguments, passed verbatim with no shell between.
-   * @param input - Text to write to its standard input, when it reads any.
-   * @returns The exit code.
+   * Runs a command with this process's own output streams, optionally writing text to its input.
    */
   public stream(
     executable: string,

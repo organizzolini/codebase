@@ -22,22 +22,10 @@ import type {
 } from "./synchronization.types";
 
 /**
- * CLI command that runs every synchronization command in one process.
+ * CLI command that runs every synchronization command in one process, for a human at a terminal.
  *
- * Every command also runs on its own through its own Nx target — this exists
- * only for a human at a terminal who wants to check or write everything in
- * one command, and it is never named by any workflow or `lint-staged`
- * pattern. It has no `--kinds` or other selection flag: unlike the callers
- * that name specific targets, running "all of them, always" needs no
- * per-command declaration to select against.
- *
- * `nestjs-module-graphs` and `nx-project-graphs` are absent from this
- * aggregate because they no longer exist at all: `projects/ic-suite/codependix/codependix-nx-projects`
- * and `projects/ic-suite/codependix/codependix-nestjs-modules` now produce the same graphs through their own
- * anchor blocks, per issue #296, so both commands and their Nx targets were
- * removed outright rather than merely dropped from this list. Run
- * `nx run configuration:codependix` for what replaced them — there is nothing left
- * here to invoke directly.
+ * Workflows name each command's own Nx target instead. `nestjs-module-graphs` and `nx-project-graphs`
+ * were removed, since `codependix` now produces those graphs; run `nx run configuration:codependix`.
  */
 @Command({
   description: "Run every synchronization command",
@@ -71,15 +59,9 @@ export class SynchronizationCommand extends CommandRunner {
   // 🔏 Private Methods
 
   /**
-   * Every command this aggregate drives, in a stable reporting order.
-   *
-   * A command registered in the module but left out here would never run as
-   * part of `all`, and nothing else would notice — its own Nx target would
-   * still catch drift on its own. `vscode-settings` is left out on purpose: it
-   * writes the Machine settings under `/root/.vscode-server`, which only a
-   * devcontainer has, so a run of everything on any other machine would fail
-   * on it. `project-ports` is left out too: it rewrites authored ports rather
-   * than deriving a committed file, so it runs only by name.
+   * Lists the commands the aggregate drives. `vscode-settings` needs a
+   * devcontainer and `project-ports` rewrites authored ports, so both run only
+   * by name.
    */
   private getCommands(): SynchronizableCommand[] {
     return [
@@ -143,11 +125,8 @@ export class SynchronizationCommand extends CommandRunner {
   }
 
   /**
-   * Runs every synchronization and reports whether all succeeded.
-   *
-   * Commands run in sequence and every one runs even after an earlier
-   * failure, so a single run surfaces all drift instead of only the first
-   * instance. They are not parallelized: several write to AGENTS.md.
+   * Runs every command in sequence, even after a failure, so one run surfaces
+   * all drift. Not parallel: several write to AGENTS.md.
    */
   async synchronize(mode: SynchronizationMode): Promise<boolean> {
     const commands = this.getCommands();

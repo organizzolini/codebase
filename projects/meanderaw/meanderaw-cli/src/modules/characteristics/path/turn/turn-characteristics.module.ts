@@ -13,13 +13,9 @@ import { TopBorderTouchCountCharacteristicService } from "./top-border-touch-cou
 import { TotalTurnCountCharacteristicService } from "./total-turn-count-characteristic.service";
 
 /**
- * Provides and exports every turn-dynamics path characteristic evaluator —
- * how the ink turns along its strands and how often it touches the band's
- * two border rules — as one group `CharacteristicsModule` imports and
- * re-exports. It imports `ConnectivityModule` for the one shared
- * `ConnectivityService` rather than providing its own. It imports
- * `PointCharacteristicsModule` for the shared `PointUtilitiesService` arm
- * count rather than duplicating that read.
+ * Provides and exports every turn-dynamics path characteristic evaluator, re-exported as one
+ * group. It imports `ConnectivityModule` and `PointCharacteristicsModule` for their shared
+ * services rather than providing copies.
  */
 @Module({
   controllers: [],

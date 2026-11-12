@@ -11,12 +11,9 @@ export default [
       "@nx/dependency-checks": [
         "error",
         {
-          // moment: a devDependency, imported by one unit test, which the
-          // build dependency check does not read.
-          // vitest: a devDependency, imported by the harnesses in `testing/`,
-          // which the build dependency check counts as source because they
-          // are not `*.test.ts` themselves.
-          ignoredDependencies: ["moment", "vitest"],
+          // Test devDependencies: `testing/` files count as source to the build check.
+          // moment: imported by one unit test, which the build check does not read.
+          ignoredDependencies: ["@codebase/testing", "moment", "vitest"],
           ignoredFiles: ["{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}"],
         },
       ],

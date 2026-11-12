@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -8,18 +7,7 @@ import { SigmaGreekLetterCharacteristicsService } from "./sigma-greek-letter-cha
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the Σ (Greek sigma) as a Code holding one isolated
- * copy, beside every orientation name drawing that ink. Its diagonals run as
- * orthogonal zig-zags; the base, facing Southeast, draws:
- *
- * ```text
- * ┌─╴
- * └┐
- * ┌┘
- * └─╴
- * ```
- */
+/** Each distinct Σ orientation as a standalone Code; zig-zag diagonals. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "04x04y6310a5006900a310",
@@ -50,10 +38,7 @@ const ORIENTATIONS: readonly LetterOrientationFixture[] = [
 ];
 
 describe(SigmaGreekLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    SigmaGreekLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(SigmaGreekLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

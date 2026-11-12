@@ -1,17 +1,15 @@
-import type { ResolvedEventFilterCollection } from "../../components/calendar-filters/event-filter-collections.types";
 import type { EventFilterQuery } from "../../components/calendar-filters/event-filters.types";
 
 // 🏷️ Types
 
 /**
- * The filter tree the builder edits, with what to do with an edit.
+ * The filter tree, and its edit and preset handlers.
  */
 export interface UseFilterQueryResult {
   /**
-   * The collections a whole tree can be replaced with.
+   * Replaces the whole tree with a preset's, and writes it to the link.
    */
-  collections: ResolvedEventFilterCollection[];
-  handleCollectionSelect: (next: EventFilterQuery) => void;
+  handlePresetSelect: (next: EventFilterQuery) => void;
   handleQueryChange: (next: EventFilterQuery) => void;
   query: EventFilterQuery;
 }

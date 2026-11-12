@@ -19,32 +19,14 @@ import { scopes, types } from "./conventional.config.cjs";
 
 import type { Plugin, Rule, RuleOutcome, UserConfig } from "@commitlint/types";
 
-/**
- * A line `nx release version` adds to its commit for each independently
- * versioned project it bumps, e.g. `- project: codometer-cli 0.0.1`.
- */
+/** Trailer line `nx release version` adds per bumped project. */
 const NX_RELEASE_PROJECT_LINE =
   /^- project: [\w.@/-]+ \d+\.\d+\.\d+(?:-[\da-z.-]+)?$/i;
 
-/**
- * An attribution trailer: `Co-authored-by: <author>`, or the
- * `Claude-Session: <url>` link Claude Code appends beside it.
- */
+/** Attribution trailer: `Co-authored-by`, or the `Claude-Session` link. */
 const ATTRIBUTION_TRAILER = /^(?:Co-authored-by|Claude-Session): \S+/i;
 
-/**
- * Every non-empty body line must be an attribution trailer.
- *
- * Matched case-insensitively. Git trailer keys are case-insensitive, and the
- * tools that write this one disagree on casing — GitHub Copilot emits
- * `Co-authored-by:` and Claude Code emits `Co-Authored-By:`. Both are the same
- * trailer to git and to GitHub, so rejecting either would fail a valid commit
- * over a detail no downstream consumer distinguishes.
- *
- * A `chore(release)` commit may also list Nx's per-project release lines. Nx
- * always appends them when one commit releases several independent projects,
- * and no option turns them off.
- */
+/** Non-empty body lines must all be trailers, matched case-insensitively. */
 const bodyCoAuthoredOnly: Rule = (parsed): RuleOutcome => {
   const body: null | string = parsed.body;
   if (!body) return [true];
@@ -62,11 +44,7 @@ const bodyCoAuthoredOnly: Rule = (parsed): RuleOutcome => {
   ];
 };
 
-/**
- * Every non-empty footer line must be an attribution trailer.
- *
- * Matched case-insensitively, for the reason given on the body rule above.
- */
+/** Non-empty footer lines must all be trailers, matched case-insensitively. */
 const footerCoAuthoredOnly: Rule = (parsed): RuleOutcome => {
   const footer: null | string = parsed.footer;
   if (!footer) return [true];

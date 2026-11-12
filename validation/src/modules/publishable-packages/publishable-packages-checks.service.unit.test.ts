@@ -1,11 +1,9 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PublishablePackagesChecksService } from "./publishable-packages-checks.service";
 import { PLUGIN_TARGET_EXPECTATIONS } from "./publishable-packages-consumer.constants";
@@ -40,10 +38,7 @@ const publishablePackages: PublishablePackage[] = [
 
 const PASSED: ConsumerCommandResult = { output: "", status: 0 };
 
-/**
- * What a healthy consumer prints for each command, keyed by the executable's
- * basename and its arguments.
- */
+/** What a healthy consumer prints, keyed by executable and arguments. */
 const healthyConsumer = (command: ConsumerCommand): ConsumerCommandResult => {
   const executable = path.basename(command.executable);
   const words = command.args.join(" ");
@@ -64,24 +59,20 @@ const healthyConsumer = (command: ConsumerCommand): ConsumerCommandResult => {
   return PASSED;
 };
 
+const moduleOptions = { mocks: [PublishablePackagesProcessService] };
+
 describe(PublishablePackagesChecksService, () => {
   let service: PublishablePackagesChecksService;
   let processService: DeepMocked<PublishablePackagesProcessService>;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PublishablePackagesChecksService,
-        {
-          provide: PublishablePackagesProcessService,
-          useValue: createMock<PublishablePackagesProcessService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      PublishablePackagesChecksService,
+      moduleOptions,
+    );
 
-    service = await module.resolve(PublishablePackagesChecksService);
-    processService = module.get(PublishablePackagesProcessService);
+    service = built.instance;
+    processService = built.mock(PublishablePackagesProcessService);
   });
 
   beforeEach(() => {
@@ -102,9 +93,15 @@ describe(PublishablePackagesChecksService, () => {
     );
   };
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      PublishablePackagesChecksService,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(PublishablePackagesChecksService);
   });
 
   it("passes a consumer whose every check behaves", () => {

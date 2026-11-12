@@ -66,6 +66,7 @@ one class.
 | `cleanup-codebase` | `src/modules/cleanup-codebase` | the `cleanup-codebase` composite action, before it saves the caches; runs the two steps below it |
 | `keep-task-database` | `src/modules/keep-task-database` | `cleanup-codebase` |
 | `merge-task-cache` | `src/modules/merge-task-cache` | nothing in CI: `import-pr-task-cache` merges through the same service; run it by hand with a directory |
+| `publishable-packages-gate` | `src/modules/publishable-packages-gate` | the 🤵 Publishable Packages leg of Continuous Integration |
 | `run-affected` | `src/modules/run-affected` | the Continuous Integration matrix legs, for every check but Secure and Publishable Packages |
 | `collect-codometer-baseline` | `src/modules/collect-codometer-baseline` | the `report-integration` composite action, on a green `main` build |
 | `report-codometer-changes` | `src/modules/report-codometer-changes` | the `report-integration` composite action, on a pull request's build |
@@ -87,8 +88,8 @@ templates from Nx.
 
 `src/modules/process-runner` holds the wrapper over `node:child_process`
 (`capture` returns the output, `captureSequence` runs several commands until one
-fails, `captureAsync` does so without blocking, and `stream` inherits it). The `publication` project keeps its own copy for the
-release commands and the publishable-packages gate; the two are not shared
+fails, `captureAsync` does so without blocking, and `stream` inherits it). The `deployment` project keeps its own copy for the
+release commands; the two are not shared
 through a library yet. `src/modules/task-database` holds the service the three
 task-database commands share; it reads `NX_WORKSPACE_DATA_DIRECTORY` and
 `MACHINE_ID_FILES`, and opens the databases with the built-in `node:sqlite`, so
@@ -125,10 +126,11 @@ for a third-party tool. They exist to be **batched**. Nx only batches an executo
 that names a `batchImplementation`, and `nx:run-commands` has none, so a tool run
 once per project pays its start-up once per project.
 
-| Executor      | Replaces                                    | Source                       |
-| ------------- | ------------------------------------------- | ---------------------------- |
-| `knip`        | `knip --workspace <root>`, once per project | `src/executors/knip`         |
-| `spell-check` | `cspell '<root>/**'`, once per project      | `src/executors/spell-check`  |
+| Executor      | Replaces                                      | Source                      |
+| ------------- | --------------------------------------------- | --------------------------- |
+| `codometer`   | `codometer measure` in the project's root     | `src/executors/codometer`   |
+| `knip`        | `knip --workspace <root>`, once per project   | `src/executors/knip`        |
+| `spell-check` | `cspell '<root>/**'`, once per project        | `src/executors/spell-check` |
 
 `knip` runs one `knip --reporter json --workspace <root> --workspace <root> …` for
 every task Nx batches, reads which workspace each issue's file sits in, and fails
@@ -146,6 +148,19 @@ files are also under its parent's, as they are when each is run alone. A clean
 exit passes every task; a failing exit with no finding under any root asked about
 fails every task. A failed task is run again by itself for cspell's own report,
 which the batch executor prints under the task id.
+
+`codometer` runs one `codometer measure --config <config> --output-json … <root> <root> …`
+for every task Nx batches: `measure` takes directories as arguments, measures
+each as a run started inside it would be, and writes each one's report and badge
+block under its own root. Its exit code says only that some directory failed, so
+a clean exit passes every task and a failing one judges each task by running its
+project alone, a few at a time, through the same command line from its own root,
+which also gets codometer's own report for the batch executor to print under the
+task id. The batch runs with `LOG_LEVEL=silent`. It never imports codometer:
+callidescope gates this project at a depth of six across its dependency
+closure, and a call into codometer's measurement is fifteen frames deep. Tasks
+that ask for different measurements (`check` against `write`) are separate runs.
+With `--batch=false` each project runs the command line as before.
 
 An executor here is plain functions rather than a NestJS service, since Nx calls
 it directly, and it declares only the fields of Nx's context it reads, so this

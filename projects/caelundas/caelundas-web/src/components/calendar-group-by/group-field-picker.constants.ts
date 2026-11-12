@@ -3,8 +3,7 @@ import { DEFAULT_FILTER_LABELS } from "@codebase/presentation";
 import type { CascaderLabels } from "@codebase/presentation";
 
 /**
- * The picker's own words, the filter's: the cascader reads its keys by other
- * names than the filter's labels, so they are bridged as the filter does.
+ * The filter's words, under the cascader's key names.
  */
 export const LABELS: Partial<CascaderLabels> = {
   back: DEFAULT_FILTER_LABELS.back,
