@@ -3,7 +3,7 @@ import path from "node:path";
 /** The dist-tag published packages carry unless a test names another. */
 export const DEFAULT_REGISTRY_TAG = "e2e";
 
-/** Prefix of the throwaway account a sandbox registry signs up, made unique per registry. */
+/** Prefix of the throwaway registry account. */
 export const REGISTRY_USER_PREFIX = "e2e";
 
 /** That account's password. */

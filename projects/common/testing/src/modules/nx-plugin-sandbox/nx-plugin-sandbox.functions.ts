@@ -11,11 +11,7 @@ import type {
   ConsumerWorkspaceOptions,
 } from "./nx-plugin-sandbox.types";
 
-/**
- * Creates a clean Nx consumer workspace in `directory`: a manifest naming the
- * packages at `tag`, an `.npmrc` pointing at the registry, an `nx.json` with no
- * plugins, then `pnpm install`.
- */
+/** Creates a clean Nx consumer workspace in `directory` and installs it. */
 export async function bootstrapConsumerWorkspace(
   directory: string,
   registry: { readonly tag: string; readonly url: string },

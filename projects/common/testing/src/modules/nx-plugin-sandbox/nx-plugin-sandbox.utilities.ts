@@ -27,11 +27,7 @@ import type {
 } from "./nx-plugin-sandbox.types";
 import type { Server } from "node:http";
 
-/**
- * Starts an ephemeral Verdaccio on an operating-system-chosen port with its
- * own storage. Publish packed tarballs to it, bootstrap consumer workspaces
- * from it, and `stop` it when the suite is done.
- */
+/** Starts an ephemeral Verdaccio registry on a free local port. */
 export async function startVerdaccioPluginRunner(
   options: VerdaccioPluginRunnerOptions = {},
 ): Promise<VerdaccioPluginRunner> {

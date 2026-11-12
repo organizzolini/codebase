@@ -10,7 +10,7 @@ export interface Command {
   readonly withTimeout: (milliseconds: number) => Command;
 }
 
-/** What a finished command left behind. A failure is a result, never a throw. */
+/** What a finished command left behind. */
 export interface CommandResult {
   /** The exit code, or `undefined` when the command never started or was killed. */
   readonly exitCode: number | undefined;
