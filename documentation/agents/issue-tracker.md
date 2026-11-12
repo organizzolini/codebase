@@ -149,7 +149,7 @@ set_field <child> Status "In Progress"
 
   - **Pull request issue**: the pull request's `Closes #N` closes it on merge,
     so no agent closes it by hand. Stacked on another branch, the link only
-    registers once the pull request is retargeted to `main`.
+    registers once the pull request's base is `main`.
   - **Spec**: leave it open until every parent issue is merged and every
     acceptance item in the spec holds. Then close it with a comment listing the
     pull requests.
