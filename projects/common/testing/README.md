@@ -83,7 +83,9 @@ const sandbox = await createTarballSandboxRunner({
 const { exitCode } = await sandbox.command("codometer", ["--help"]).run();
 sandbox.dispose();
 
-const registry = await startVerdaccioPluginRunner();
+const registry = await startVerdaccioPluginRunner({
+  localScopes: ["@conformetry"],
+});
 await registry.publish({ packages: ["conformetry-nx"], workspaceRoot });
 const workspace = await registry.createWorkspace({
   dependencies: { nx: "22.0.0" },
@@ -98,7 +100,9 @@ Both runners test packed artifacts: run the `pack` target first, so
 `dist/tarballs` holds them. Commands receive only a sanitized environment, a
 timeout, and captured output, and a failing command is a result with an
 `exitCode`, never a throw. The registry takes a free port and temporary
-storage, and publishes the tarballs as packed, under a dist-tag.
+storage, and publishes the tarballs as packed, under a dist-tag. Name the
+scopes of the packages you publish in `localScopes`: the registry proxies
+npmjs, and refuses a version npmjs already holds.
 
 ### Nest
 

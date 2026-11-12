@@ -48,6 +48,8 @@ export interface VerdaccioPluginRunner {
 
 /** How to start a registry. */
 export interface VerdaccioPluginRunnerOptions {
+  /** Scopes the registry never proxies; a proxied one cannot publish a version npmjs holds. */
+  readonly localScopes?: readonly string[];
   /** The dist-tag published packages carry; defaults to `e2e`. */
   readonly tag?: string;
 }

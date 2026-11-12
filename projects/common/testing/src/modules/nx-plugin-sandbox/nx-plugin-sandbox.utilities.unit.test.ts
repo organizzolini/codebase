@@ -29,8 +29,20 @@ describe(startVerdaccioPluginRunner, () => {
       name: "@fixture/plugin",
       version: "3.0.0",
     });
+    await createFixtureTarball(tarballs, {
+      name: "fixture-unscoped",
+      version: "1.0.0",
+    });
+    await createFixtureTarball(tarballs, {
+      name: "@fixture/pinned",
+      publishConfig: { registry: "http://127.0.0.1:1/" },
+      version: "2.0.0",
+    });
 
-    runner = await startVerdaccioPluginRunner({ tag: "e2e-test" });
+    runner = await startVerdaccioPluginRunner({
+      localScopes: ["@fixture"],
+      tag: "e2e-test",
+    });
   }, 60_000);
 
   afterAll(async () => {
@@ -56,6 +68,32 @@ describe(startVerdaccioPluginRunner, () => {
       };
 
       expect(metadata["dist-tags"]).toMatchObject({ "e2e-test": "3.0.0" });
+    }, 60_000);
+
+    it("keeps a package whose manifest names another registry in the sandbox", async () => {
+      await runner.publish({
+        packages: ["@fixture/pinned"],
+        workspaceRoot: root(),
+      });
+      const response = await fetch(`${runner.registryUrl}@fixture/pinned`);
+      const metadata = (await response.json()) as {
+        "dist-tags": Record<string, string>;
+      };
+
+      expect(metadata["dist-tags"]).toMatchObject({ "e2e-test": "2.0.0" });
+    }, 60_000);
+
+    it("publishes a package that has no scope", async () => {
+      await runner.publish({
+        packages: ["fixture-unscoped"],
+        workspaceRoot: root(),
+      });
+      const response = await fetch(`${runner.registryUrl}fixture-unscoped`);
+      const metadata = (await response.json()) as {
+        "dist-tags": Record<string, string>;
+      };
+
+      expect(metadata["dist-tags"]).toMatchObject({ "e2e-test": "1.0.0" });
     }, 60_000);
 
     it("refuses to publish a version the registry already has", async () => {

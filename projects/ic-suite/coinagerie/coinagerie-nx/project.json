@@ -1,5 +1,6 @@
 {
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "implicitDependencies": ["coinagerie-cli"],
   "name": "coinagerie-nx",
   "projectType": "library",
   "sourceRoot": "projects/ic-suite/coinagerie/coinagerie-nx",
@@ -17,6 +18,7 @@
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "end-to-end": {},
     "format-code": {},
     "guard-code": {},
     "knip": {},
