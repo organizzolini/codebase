@@ -16,6 +16,7 @@ tests stop copying setup files, temporary directories, and capture code. See
 src/
   index.ts          # @codebase/testing: the core, no workspace dependencies
   setup.ts          # @codebase/testing/setup: the shared Vitest setup file
+  end-to-end.ts     # @codebase/testing/end-to-end: tarball sandbox and Verdaccio runners (execa, Verdaccio)
   nestjs.ts         # @codebase/testing/nestjs: module builder, module assertions, Nx tree
   react.ts          # @codebase/testing/react: route render and stand-ins
   react-setup.ts    # @codebase/testing/react/setup: the shared jsdom setup

@@ -20,6 +20,16 @@ export function createTemporaryDirectory(label: string): string {
   return directory;
 }
 
+/** Makes a fresh directory under the real path of the system's temporary directory. */
+export function makeDirectory(label: string): string {
+  return fs.mkdtempSync(
+    path.join(
+      fs.realpathSync(os.tmpdir()),
+      `${TEMPORARY_DIRECTORY_PREFIX}${label}-`,
+    ),
+  );
+}
+
 /**
  * Creates one empty directory before the suite's first test, removed after it.
  * Call in a `describe` body; the returned function reads its path.
@@ -45,16 +55,6 @@ export function useTemporaryDirectory(label: string): () => string {
 
     return directory;
   };
-}
-
-/** Makes a fresh directory under the real path of the system's temporary directory. */
-function makeDirectory(label: string): string {
-  return fs.mkdtempSync(
-    path.join(
-      fs.realpathSync(os.tmpdir()),
-      `${TEMPORARY_DIRECTORY_PREFIX}${label}-`,
-    ),
-  );
 }
 
 /** Removes a directory and everything in it, if it is still there. */

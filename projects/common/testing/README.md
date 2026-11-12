@@ -13,6 +13,7 @@ subpath exports.
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------- |
 | `@codebase/testing`             | Temporary directories, output and exit-code capture, environment overrides, the fixed clock, fixtures, mocks | nothing in the workspace  |
 | `@codebase/testing/setup`       | The shared Vitest setup file                                                                                 | nothing in the workspace  |
+| `@codebase/testing/end-to-end`  | Tarball sandbox and Verdaccio plugin runners that test packed packages as a consumer installs them           | `execa`, Verdaccio        |
 | `@codebase/testing/nestjs`      | The testing-module builder, module-wiring assertions, and the Nx workspace tree                              | `@codebase/observability` |
 | `@codebase/testing/react`       | The route-render helper and the `createServerFn` and `matchMedia` stand-ins                                  | TanStack Router           |
 | `@codebase/testing/react/setup` | The shared jsdom setup                                                                                       | Testing Library           |
@@ -66,6 +67,38 @@ from the suite's first test to its last.
 to the test file. `mockChildProcess` and `mockPartially` build `vi.mock`
 factories, `stubFetch` queues responses for `fetch`, and `answerPrompts`
 queues answers for the `promptsMock` stand-in of the `prompts` package.
+
+### End to end
+
+```ts
+import {
+  createTarballSandboxRunner,
+  startVerdaccioPluginRunner,
+} from "@codebase/testing/end-to-end";
+
+const sandbox = await createTarballSandboxRunner({
+  packages: ["codometer"],
+  workspaceRoot,
+});
+const { exitCode } = await sandbox.command("codometer", ["--help"]).run();
+sandbox.dispose();
+
+const registry = await startVerdaccioPluginRunner();
+await registry.publish({ packages: ["conformetry-nx"], workspaceRoot });
+const workspace = await registry.createWorkspace({
+  dependencies: { nx: "22.0.0" },
+  packages: ["conformetry-nx"],
+});
+workspace.registerPlugin("conformetry-nx");
+await workspace.runTarget("project:gate");
+await registry.stop();
+```
+
+Both runners test packed artifacts: run the `pack` target first, so
+`dist/tarballs` holds them. Commands receive only a sanitized environment, a
+timeout, and captured output, and a failing command is a result with an
+`exitCode`, never a throw. The registry takes a free port and temporary
+storage, and publishes the tarballs as packed, under a dist-tag.
 
 ### Nest
 
