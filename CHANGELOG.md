@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.1](https://github.com/organizzolini/codebase/compare/v4.0.0...v4.0.1) (2026-11-12)
+
+### 🐛 Bug Fixes
+
+* **infrastructure:** 🐛 read terraform state from the bucket root ([#2265](https://github.com/organizzolini/codebase/issues/2265)) ([2eb78c5](https://github.com/organizzolini/codebase/commit/2eb78c5ae8e2e2ce7279adaa7cd62d60016c26a4)), closes [#2264](https://github.com/organizzolini/codebase/issues/2264)
+
 ## [4.0.0](https://github.com/organizzolini/codebase/compare/v3.63.0...v4.0.0) (2026-11-12)
 
 ### ⚠ BREAKING CHANGES
