@@ -1,5 +1,11 @@
 import type { Command } from "../command/command.types";
 
+/** The fields of a tarball's `package.json` the sandbox reads. */
+export interface Manifest {
+  readonly dependencies?: Readonly<Record<string, string>>;
+  readonly name: string;
+}
+
 /** Which packed packages to install, and where their tarballs are. */
 export interface TarballSandboxOptions {
   /**
