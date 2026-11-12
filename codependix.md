@@ -58,6 +58,7 @@ graph LR
   conformetry_nx["conformetry-nx"]
   conformetry_output["conformetry-output"]
   conformetry_validation["conformetry-validation"]
+  deployment["deployment"]
   documentation["documentation"]
   infrastructure["infrastructure"]
   installation["installation"]
@@ -72,7 +73,6 @@ graph LR
   observability["observability"]
   persistence["persistence"]
   presentation["presentation"]
-  publication["publication"]
   synchronization["synchronization"]
   testing["testing"]
   validation["validation"]
@@ -81,33 +81,43 @@ graph LR
   caelundas_api --> configuration
   caelundas_api --> observability
   caelundas_api --> persistence
+  caelundas_api --> testing
   caelundas_cli --> caelundas_db
   caelundas_cli --> configuration
   caelundas_cli --> observability
   caelundas_cli --> persistence
+  caelundas_cli --> testing
   caelundas_db --> configuration
   caelundas_db --> persistence
+  caelundas_db --> testing
   caelundas_web --> configuration
   caelundas_web --> interface
   caelundas_web --> presentation
+  caelundas_web --> testing
   callidescope_agents --> configuration
+  callidescope_agents --> testing
   callidescope_cli --> callidescope_configuration
   callidescope_cli --> callidescope_core
   callidescope_cli --> callidescope_graph
   callidescope_cli --> callidescope_output
   callidescope_cli --> configuration
   callidescope_cli --> observability
+  callidescope_cli --> testing
   callidescope_configuration --> callidescope_core
   callidescope_configuration --> configuration
+  callidescope_configuration --> testing
   callidescope_core --> configuration
+  callidescope_core --> testing
   callidescope_examples -.-> callidescope_cli
   callidescope_examples --> callidescope_configuration
   callidescope_examples --> callidescope_core
   callidescope_examples --> configuration
+  callidescope_examples --> testing
   callidescope_graph --> callidescope_configuration
   callidescope_graph --> callidescope_core
   callidescope_graph --> configuration
   callidescope_graph --> observability
+  callidescope_graph --> testing
   callidescope_nx --> callidescope_cli
   callidescope_nx --> callidescope_configuration
   callidescope_nx --> callidescope_core
@@ -115,27 +125,34 @@ graph LR
   callidescope_nx --> callidescope_output
   callidescope_nx --> configuration
   callidescope_nx --> observability
+  callidescope_nx --> testing
   callidescope_output --> callidescope_configuration
   callidescope_output --> callidescope_core
   callidescope_output --> callidescope_graph
   callidescope_output --> configuration
   callidescope_output --> observability
+  callidescope_output --> testing
   codependix_agents --> configuration
+  codependix_agents --> testing
   codependix_boundaries --> codependix_configuration
   codependix_boundaries --> codependix_core
   codependix_boundaries --> codependix_file_imports
   codependix_boundaries --> codependix_nestjs_modules
   codependix_boundaries --> codependix_nx_projects
   codependix_boundaries --> configuration
+  codependix_boundaries --> testing
   codependix_cli --> codependix_boundaries
   codependix_cli --> codependix_configuration
   codependix_cli --> codependix_core
   codependix_cli --> codependix_output
   codependix_cli --> configuration
   codependix_cli --> observability
+  codependix_cli --> testing
   codependix_configuration --> codependix_core
   codependix_configuration --> configuration
+  codependix_configuration --> testing
   codependix_core --> configuration
+  codependix_core --> testing
   codependix_examples --> codependix_boundaries
   codependix_examples -.-> codependix_cli
   codependix_examples --> codependix_configuration
@@ -146,13 +163,18 @@ graph LR
   codependix_examples --> codependix_output
   codependix_examples --> configuration
   codependix_examples --> observability
+  codependix_examples --> testing
   codependix_file_imports --> configuration
+  codependix_file_imports --> testing
   codependix_nestjs_modules --> configuration
   codependix_nestjs_modules --> observability
+  codependix_nestjs_modules --> testing
   codependix_nx --> codependix_cli
   codependix_nx --> codependix_configuration
   codependix_nx --> configuration
+  codependix_nx --> testing
   codependix_nx_projects --> configuration
+  codependix_nx_projects --> testing
   codependix_output --> codependix_boundaries
   codependix_output --> codependix_configuration
   codependix_output --> codependix_core
@@ -161,34 +183,43 @@ graph LR
   codependix_output --> codependix_nx_projects
   codependix_output --> configuration
   codependix_output --> observability
+  codependix_output --> testing
   codometer_agents --> configuration
+  codometer_agents --> testing
   codometer_cli --> codometer_configuration
   codometer_cli --> codometer_core
   codometer_cli --> codometer_measurement
   codometer_cli --> codometer_output
   codometer_cli --> configuration
   codometer_cli --> observability
+  codometer_cli --> testing
   codometer_configuration --> codometer_core
   codometer_configuration --> configuration
+  codometer_configuration --> testing
   codometer_core --> configuration
+  codometer_core --> testing
   codometer_examples -.-> codometer_cli
   codometer_examples --> codometer_configuration
   codometer_examples --> codometer_core
   codometer_examples --> configuration
+  codometer_examples --> testing
   codometer_languages --> codometer_configuration
   codometer_languages --> codometer_core
   codometer_languages --> configuration
   codometer_languages --> observability
+  codometer_languages --> testing
   codometer_measurement --> codometer_configuration
   codometer_measurement --> codometer_core
   codometer_measurement --> codometer_languages
   codometer_measurement --> configuration
   codometer_measurement --> observability
+  codometer_measurement --> testing
   codometer_output --> codometer_configuration
   codometer_output --> codometer_core
   codometer_output --> codometer_measurement
   codometer_output --> configuration
   codometer_output --> observability
+  codometer_output --> testing
   coinagerie_agents --> configuration
   coinagerie_cli --> coinagerie_configuration
   coinagerie_cli --> coinagerie_core
@@ -196,23 +227,33 @@ graph LR
   coinagerie_cli --> coinagerie_vocabulary
   coinagerie_cli --> configuration
   coinagerie_cli --> observability
+  coinagerie_cli --> testing
   coinagerie_configuration --> coinagerie_core
   coinagerie_configuration --> configuration
+  coinagerie_configuration --> testing
   coinagerie_core --> configuration
+  coinagerie_core --> testing
   coinagerie_examples -.-> coinagerie_cli
   coinagerie_examples --> configuration
   coinagerie_languages --> configuration
+  coinagerie_languages --> testing
+  coinagerie_nx -.-> coinagerie_cli
   coinagerie_nx --> coinagerie_configuration
   coinagerie_nx --> configuration
+  coinagerie_nx --> testing
   coinagerie_output --> coinagerie_configuration
   coinagerie_output --> coinagerie_core
   coinagerie_output --> configuration
+  coinagerie_output --> testing
   coinagerie_vocabulary --> coinagerie_configuration
   coinagerie_vocabulary --> coinagerie_languages
   coinagerie_vocabulary --> configuration
+  coinagerie_vocabulary --> testing
   compliance --> configuration
   compliance --> observability
+  compliance --> testing
   conformetry_agents --> configuration
+  conformetry_agents --> testing
   conformetry_cli --> configuration
   conformetry_cli --> conformetry_configuration
   conformetry_cli --> conformetry_core
@@ -220,9 +261,12 @@ graph LR
   conformetry_cli --> conformetry_output
   conformetry_cli --> conformetry_validation
   conformetry_cli --> observability
+  conformetry_cli --> testing
   conformetry_configuration --> configuration
   conformetry_configuration --> conformetry_core
+  conformetry_configuration --> testing
   conformetry_core --> configuration
+  conformetry_core --> testing
   conformetry_examples --> configuration
   conformetry_examples -.-> conformetry_cli
   conformetry_examples --> conformetry_configuration
@@ -230,44 +274,60 @@ graph LR
   conformetry_examples --> conformetry_nx
   conformetry_examples --> conformetry_output
   conformetry_examples --> conformetry_validation
+  conformetry_examples --> testing
   conformetry_generation --> configuration
   conformetry_generation --> conformetry_configuration
   conformetry_generation --> conformetry_core
+  conformetry_generation --> testing
   conformetry_languages --> configuration
   conformetry_languages --> conformetry_configuration
   conformetry_languages --> conformetry_core
+  conformetry_languages --> testing
   conformetry_nx --> configuration
   conformetry_nx --> conformetry_configuration
   conformetry_nx --> conformetry_generation
   conformetry_nx --> conformetry_output
   conformetry_nx --> conformetry_validation
   conformetry_nx --> observability
+  conformetry_nx --> testing
   conformetry_output --> configuration
   conformetry_output --> conformetry_core
   conformetry_output --> conformetry_languages
+  conformetry_output --> testing
   conformetry_validation --> configuration
   conformetry_validation --> conformetry_configuration
   conformetry_validation --> conformetry_core
   conformetry_validation --> conformetry_languages
+  conformetry_validation --> testing
+  deployment --> configuration
+  deployment --> observability
+  deployment --> testing
   documentation --> configuration
   documentation --> observability
+  documentation --> testing
   infrastructure --> configuration
   installation --> configuration
   installation --> observability
+  installation --> testing
   integration --> configuration
   integration --> observability
+  integration --> testing
   interface --> configuration
+  interface --> testing
   lexico_api --> configuration
   lexico_api --> interface
   lexico_api --> lexico_db
   lexico_api --> observability
   lexico_api --> persistence
+  lexico_api --> testing
   lexico_cli --> configuration
   lexico_cli --> lexico_db
   lexico_cli --> observability
   lexico_cli --> persistence
+  lexico_cli --> testing
   lexico_db --> configuration
   lexico_db --> persistence
+  lexico_db --> testing
   lexico_web --> configuration
   lexico_web --> interface
   lexico_web --> presentation
@@ -275,20 +335,23 @@ graph LR
   meanderaw_cli --> configuration
   meanderaw_cli --> observability
   meanderaw_cli --> persistence
+  meanderaw_cli --> testing
   meanderaw_web --> configuration
+  meanderaw_web --> testing
   observability --> configuration
   persistence --> configuration
   persistence --> observability
+  persistence --> testing
   presentation --> configuration
-  publication --> configuration
-  publication --> observability
   synchronization --> configuration
   synchronization --> conformetry_configuration
   synchronization --> observability
+  synchronization --> testing
   testing --> configuration
   testing --> observability
   validation --> configuration
   validation --> observability
+  validation --> testing
 ```
 
 _Dashed edges are dependencies Nx inferred from configuration rather than from code._
@@ -667,7 +730,7 @@ graph LR
   module_coinagerie_vocabulary_VocabularyModule["coinagerie-vocabulary/VocabularyModule"]
   module_coinagerie_vocabulary_WordsModule["coinagerie-vocabulary/WordsModule"]
   module_coinagerie_vocabulary_YamlModule["coinagerie-vocabulary/YamlModule"]
-  module_compliance_AuditGovernanceModule["compliance/AuditGovernanceModule"]
+  module_compliance_AuditFilesModule["compliance/AuditFilesModule"]
   module_compliance_DiscoveryModule["compliance/DiscoveryModule"]
   module_compliance_IssueModule["compliance/IssueModule"]
   module_compliance_LoggerModule["compliance/LoggerModule"]
@@ -784,6 +847,17 @@ graph LR
   module_conformetry_validation_TextModule["conformetry-validation/TextModule"]
   module_conformetry_validation_TypescriptModule["conformetry-validation/TypescriptModule"]
   module_conformetry_validation_ValidationModule["conformetry-validation/ValidationModule"]
+  module_deployment_DiscoveryModule["deployment/DiscoveryModule"]
+  module_deployment_LinkPackagesModule["deployment/LinkPackagesModule"]
+  module_deployment_LoggerModule["deployment/LoggerModule"]
+  module_deployment_MainModule["deployment/MainModule"]
+  module_deployment_MainTipModule["deployment/MainTipModule"]
+  module_deployment_ProcessRunnerModule["deployment/ProcessRunnerModule"]
+  module_deployment_PublishPackagesModule["deployment/PublishPackagesModule"]
+  module_deployment_ReleaseGroupModule["deployment/ReleaseGroupModule"]
+  module_deployment_TagCodebaseModule["deployment/TagCodebaseModule"]
+  module_deployment_TagPackagesModule["deployment/TagPackagesModule"]
+  module_deployment_VersionPackagesModule["deployment/VersionPackagesModule"]
   module_documentation_DiscoveryModule["documentation/DiscoveryModule"]
   module_documentation_LoggerModule["documentation/LoggerModule"]
   module_documentation_MainModule["documentation/MainModule"]
@@ -915,18 +989,6 @@ graph LR
   module_persistence_PostgresqlImportModule["persistence/PostgresqlImportModule"]
   module_persistence_PostgresqlModule["persistence/PostgresqlModule"]
   module_persistence_PostgresqlUtilitiesModule["persistence/PostgresqlUtilitiesModule"]
-  module_publication_DiscoveryModule["publication/DiscoveryModule"]
-  module_publication_LinkPackagesModule["publication/LinkPackagesModule"]
-  module_publication_LoggerModule["publication/LoggerModule"]
-  module_publication_MainModule["publication/MainModule"]
-  module_publication_MainTipModule["publication/MainTipModule"]
-  module_publication_ProcessRunnerModule["publication/ProcessRunnerModule"]
-  module_publication_PublishablePackagesGateModule["publication/PublishablePackagesGateModule"]
-  module_publication_PublishPackagesModule["publication/PublishPackagesModule"]
-  module_publication_ReleaseGroupModule["publication/ReleaseGroupModule"]
-  module_publication_TagCodebaseModule["publication/TagCodebaseModule"]
-  module_publication_TagPackagesModule["publication/TagPackagesModule"]
-  module_publication_VersionPackagesModule["publication/VersionPackagesModule"]
   module_synchronization_ConfigModule["synchronization/ConfigModule"]
   module_synchronization_ConfigurationModule["synchronization/ConfigurationModule"]
   module_synchronization_ConformetryGeneratorsModule["synchronization/ConformetryGeneratorsModule"]
@@ -955,7 +1017,6 @@ graph LR
   module_validation_LockfileModule["validation/LockfileModule"]
   module_validation_LoggerModule["validation/LoggerModule"]
   module_validation_MainModule["validation/MainModule"]
-  module_validation_PublishablePackagesModule["validation/PublishablePackagesModule"]
   module_validation_ReadmeProjectsModule["validation/ReadmeProjectsModule"]
   module_validation_SessionBranchNameModule["validation/SessionBranchNameModule"]
   module_validation_SessionWorktreeNameModule["validation/SessionWorktreeNameModule"]
@@ -1506,7 +1567,7 @@ graph LR
   module_coinagerie_vocabulary_VocabularyModule --> module_coinagerie_vocabulary_FoldingModule
   module_coinagerie_vocabulary_VocabularyModule --> module_coinagerie_vocabulary_LanguagesModule
   module_coinagerie_vocabulary_VocabularyModule --> module_coinagerie_vocabulary_WordsModule
-  module_compliance_MainModule --> module_compliance_AuditGovernanceModule
+  module_compliance_MainModule --> module_compliance_AuditFilesModule
   module_compliance_MainModule --> module_compliance_DiscoveryModule
   module_compliance_MainModule --> module_compliance_IssueModule
   module_compliance_MainModule --> module_compliance_OrganizationProjectModule
@@ -1688,6 +1749,26 @@ graph LR
   module_conformetry_validation_ValidationModule --> module_conformetry_validation_LanguagesModule
   module_conformetry_validation_ValidationModule --> module_conformetry_validation_RunnerModule
   module_conformetry_validation_ValidationModule --> module_conformetry_validation_ScoringModule
+  module_deployment_LinkPackagesModule --> module_deployment_ProcessRunnerModule
+  module_deployment_LinkPackagesModule --> module_deployment_ReleaseGroupModule
+  module_deployment_MainModule --> module_deployment_DiscoveryModule
+  module_deployment_MainModule --> module_deployment_LinkPackagesModule
+  module_deployment_MainModule --> module_deployment_PublishPackagesModule
+  module_deployment_MainModule --> module_deployment_TagCodebaseModule
+  module_deployment_MainModule --> module_deployment_TagPackagesModule
+  module_deployment_MainModule --> module_deployment_VersionPackagesModule
+  module_deployment_MainTipModule --> module_deployment_ProcessRunnerModule
+  module_deployment_PublishPackagesModule --> module_deployment_ProcessRunnerModule
+  module_deployment_PublishPackagesModule --> module_deployment_ReleaseGroupModule
+  module_deployment_ReleaseGroupModule --> module_deployment_ProcessRunnerModule
+  module_deployment_TagCodebaseModule --> module_deployment_MainTipModule
+  module_deployment_TagCodebaseModule --> module_deployment_ProcessRunnerModule
+  module_deployment_TagPackagesModule --> module_deployment_MainTipModule
+  module_deployment_TagPackagesModule --> module_deployment_ProcessRunnerModule
+  module_deployment_TagPackagesModule --> module_deployment_ReleaseGroupModule
+  module_deployment_VersionPackagesModule --> module_deployment_MainTipModule
+  module_deployment_VersionPackagesModule --> module_deployment_ProcessRunnerModule
+  module_deployment_VersionPackagesModule --> module_deployment_TagPackagesModule
   module_documentation_MainModule --> module_documentation_DiscoveryModule
   module_documentation_MainModule --> module_documentation_RefreshDocumentationModule
   module_installation_DependenciesModule --> module_installation_ProcessRunnerModule
@@ -1906,28 +1987,6 @@ graph LR
   module_persistence_MainModule --> module_persistence_PostgresqlImportModule
   module_persistence_PostgresqlExportModule --> module_persistence_PostgresqlUtilitiesModule
   module_persistence_PostgresqlImportModule --> module_persistence_PostgresqlUtilitiesModule
-  module_publication_LinkPackagesModule --> module_publication_ProcessRunnerModule
-  module_publication_LinkPackagesModule --> module_publication_ReleaseGroupModule
-  module_publication_MainModule --> module_publication_DiscoveryModule
-  module_publication_MainModule --> module_publication_LinkPackagesModule
-  module_publication_MainModule --> module_publication_PublishablePackagesGateModule
-  module_publication_MainModule --> module_publication_PublishPackagesModule
-  module_publication_MainModule --> module_publication_TagCodebaseModule
-  module_publication_MainModule --> module_publication_TagPackagesModule
-  module_publication_MainModule --> module_publication_VersionPackagesModule
-  module_publication_MainTipModule --> module_publication_ProcessRunnerModule
-  module_publication_PublishablePackagesGateModule --> module_publication_ProcessRunnerModule
-  module_publication_PublishPackagesModule --> module_publication_ProcessRunnerModule
-  module_publication_PublishPackagesModule --> module_publication_ReleaseGroupModule
-  module_publication_ReleaseGroupModule --> module_publication_ProcessRunnerModule
-  module_publication_TagCodebaseModule --> module_publication_MainTipModule
-  module_publication_TagCodebaseModule --> module_publication_ProcessRunnerModule
-  module_publication_TagPackagesModule --> module_publication_MainTipModule
-  module_publication_TagPackagesModule --> module_publication_ProcessRunnerModule
-  module_publication_TagPackagesModule --> module_publication_ReleaseGroupModule
-  module_publication_VersionPackagesModule --> module_publication_MainTipModule
-  module_publication_VersionPackagesModule --> module_publication_ProcessRunnerModule
-  module_publication_VersionPackagesModule --> module_publication_TagPackagesModule
   module_synchronization_ConfigurationModule --> module_synchronization_InputModule
   module_synchronization_ConfigurationModule --> module_synchronization_InstanceDiscoveryModule
   module_synchronization_ConfigurationModule --> module_synchronization_InstanceGroupModule
@@ -1954,7 +2013,6 @@ graph LR
   module_validation_MainModule --> module_validation_CatalogManifestsModule
   module_validation_MainModule --> module_validation_DiscoveryModule
   module_validation_MainModule --> module_validation_LockfileModule
-  module_validation_MainModule --> module_validation_PublishablePackagesModule
   module_validation_MainModule --> module_validation_ReadmeProjectsModule
   module_validation_MainModule --> module_validation_SessionBranchNameModule
   module_validation_MainModule --> module_validation_SessionWorktreeNameModule
@@ -1991,72 +2049,65 @@ graph LR
   file_caelundas_api_src_caelundas_api_constants_ts["caelundas-api/src/caelundas-api.constants.ts"]
   file_caelundas_api_src_caelundas_api_constants_unit_test_ts["caelundas-api/src/caelundas-api.constants.unit.test.ts"]
   file_caelundas_api_src_caelundas_api_end_to_end_test_ts["caelundas-api/src/caelundas-api.end-to-end.test.ts"]
-  file_caelundas_api_src_caelundas_api_entities_ts["caelundas-api/src/caelundas-api.entities.ts"]
   file_caelundas_api_src_caelundas_api_module_ts["caelundas-api/src/caelundas-api.module.ts"]
   file_caelundas_api_src_caelundas_api_module_unit_test_ts["caelundas-api/src/caelundas-api.module.unit.test.ts"]
   file_caelundas_api_src_caelundas_api_ts["caelundas-api/src/caelundas-api.ts"]
-  file_caelundas_api_src_caelundas_api_types_ts["caelundas-api/src/caelundas-api.types.ts"]
   file_caelundas_api_src_caelundas_api_unit_test_ts["caelundas-api/src/caelundas-api.unit.test.ts"]
-  file_caelundas_api_src_caelundas_api_utilities_ts["caelundas-api/src/caelundas-api.utilities.ts"]
-  file_caelundas_api_src_caelundas_api_utilities_unit_test_ts["caelundas-api/src/caelundas-api.utilities.unit.test.ts"]
+  file_caelundas_api_src_cors_service_ts["caelundas-api/src/cors.service.ts"]
+  file_caelundas_api_src_cors_service_unit_test_ts["caelundas-api/src/cors.service.unit.test.ts"]
   file_caelundas_api_src_modules_events_calendar_event_tag_entities_ts["caelundas-api/src/modules/events/calendar-event-tag.entities.ts"]
   file_caelundas_api_src_modules_events_calendar_event_entities_ts["caelundas-api/src/modules/events/calendar-event.entities.ts"]
-  file_caelundas_api_src_modules_events_calendar_view_entities_ts["caelundas-api/src/modules/events/calendar-view.entities.ts"]
-  file_caelundas_api_src_modules_events_calendar_windows_arguments_entities_ts["caelundas-api/src/modules/events/calendar-windows-arguments.entities.ts"]
-  file_caelundas_api_src_modules_events_calendar_windows_constants_ts["caelundas-api/src/modules/events/calendar-windows.constants.ts"]
-  file_caelundas_api_src_modules_events_calendar_windows_entities_ts["caelundas-api/src/modules/events/calendar-windows.entities.ts"]
-  file_caelundas_api_src_modules_events_calendar_windows_types_ts["caelundas-api/src/modules/events/calendar-windows.types.ts"]
-  file_caelundas_api_src_modules_events_calendar_windows_utilities_ts["caelundas-api/src/modules/events/calendar-windows.utilities.ts"]
-  file_caelundas_api_src_modules_events_calendar_windows_utilities_unit_test_ts["caelundas-api/src/modules/events/calendar-windows.utilities.unit.test.ts"]
   file_caelundas_api_src_modules_events_event_facet_value_entities_ts["caelundas-api/src/modules/events/event-facet-value.entities.ts"]
   file_caelundas_api_src_modules_events_event_facet_entities_ts["caelundas-api/src/modules/events/event-facet.entities.ts"]
-  file_caelundas_api_src_modules_events_event_filter_binder_utilities_ts["caelundas-api/src/modules/events/event-filter-binder.utilities.ts"]
-  file_caelundas_api_src_modules_events_event_filter_collection_entities_ts["caelundas-api/src/modules/events/event-filter-collection.entities.ts"]
-  file_caelundas_api_src_modules_events_event_filter_collections_constants_ts["caelundas-api/src/modules/events/event-filter-collections.constants.ts"]
-  file_caelundas_api_src_modules_events_event_filter_collections_types_ts["caelundas-api/src/modules/events/event-filter-collections.types.ts"]
-  file_caelundas_api_src_modules_events_event_filter_collections_utilities_ts["caelundas-api/src/modules/events/event-filter-collections.utilities.ts"]
-  file_caelundas_api_src_modules_events_event_filter_collections_utilities_unit_test_ts["caelundas-api/src/modules/events/event-filter-collections.utilities.unit.test.ts"]
-  file_caelundas_api_src_modules_events_event_filter_combinator_entities_ts["caelundas-api/src/modules/events/event-filter-combinator.entities.ts"]
-  file_caelundas_api_src_modules_events_event_filter_compiler_utilities_ts["caelundas-api/src/modules/events/event-filter-compiler.utilities.ts"]
-  file_caelundas_api_src_modules_events_event_filter_compiler_utilities_unit_test_ts["caelundas-api/src/modules/events/event-filter-compiler.utilities.unit.test.ts"]
-  file_caelundas_api_src_modules_events_event_filter_derived_utilities_ts["caelundas-api/src/modules/events/event-filter-derived.utilities.ts"]
-  file_caelundas_api_src_modules_events_event_filter_fields_constants_ts["caelundas-api/src/modules/events/event-filter-fields.constants.ts"]
-  file_caelundas_api_src_modules_events_event_filter_numbers_utilities_ts["caelundas-api/src/modules/events/event-filter-numbers.utilities.ts"]
-  file_caelundas_api_src_modules_events_event_filter_rule_entities_ts["caelundas-api/src/modules/events/event-filter-rule.entities.ts"]
-  file_caelundas_api_src_modules_events_event_filter_sql_constants_ts["caelundas-api/src/modules/events/event-filter-sql.constants.ts"]
-  file_caelundas_api_src_modules_events_event_filter_values_constants_ts["caelundas-api/src/modules/events/event-filter-values.constants.ts"]
-  file_caelundas_api_src_modules_events_event_filter_values_utilities_ts["caelundas-api/src/modules/events/event-filter-values.utilities.ts"]
-  file_caelundas_api_src_modules_events_event_filter_constants_ts["caelundas-api/src/modules/events/event-filter.constants.ts"]
-  file_caelundas_api_src_modules_events_event_filter_entities_ts["caelundas-api/src/modules/events/event-filter.entities.ts"]
-  file_caelundas_api_src_modules_events_event_filter_types_ts["caelundas-api/src/modules/events/event-filter.types.ts"]
-  file_caelundas_api_src_modules_events_event_filter_utilities_ts["caelundas-api/src/modules/events/event-filter.utilities.ts"]
-  file_caelundas_api_src_modules_events_event_filter_utilities_unit_test_ts["caelundas-api/src/modules/events/event-filter.utilities.unit.test.ts"]
-  file_caelundas_api_src_modules_events_event_group_key_entities_ts["caelundas-api/src/modules/events/event-group-key.entities.ts"]
-  file_caelundas_api_src_modules_events_event_group_level_entities_ts["caelundas-api/src/modules/events/event-group-level.entities.ts"]
-  file_caelundas_api_src_modules_events_event_grouping_compiler_utilities_ts["caelundas-api/src/modules/events/event-grouping-compiler.utilities.ts"]
-  file_caelundas_api_src_modules_events_event_grouping_compiler_utilities_unit_test_ts["caelundas-api/src/modules/events/event-grouping-compiler.utilities.unit.test.ts"]
-  file_caelundas_api_src_modules_events_event_grouping_constants_ts["caelundas-api/src/modules/events/event-grouping.constants.ts"]
-  file_caelundas_api_src_modules_events_event_grouping_entities_ts["caelundas-api/src/modules/events/event-grouping.entities.ts"]
-  file_caelundas_api_src_modules_events_event_grouping_types_ts["caelundas-api/src/modules/events/event-grouping.types.ts"]
-  file_caelundas_api_src_modules_events_event_grouping_utilities_ts["caelundas-api/src/modules/events/event-grouping.utilities.ts"]
-  file_caelundas_api_src_modules_events_event_grouping_utilities_unit_test_ts["caelundas-api/src/modules/events/event-grouping.utilities.unit.test.ts"]
-  file_caelundas_api_src_modules_events_events_calendar_windows_resolver_end_to_end_test_ts["caelundas-api/src/modules/events/events-calendar-windows.resolver.end-to-end.test.ts"]
-  file_caelundas_api_src_modules_events_events_filter_resolver_end_to_end_test_ts["caelundas-api/src/modules/events/events-filter.resolver.end-to-end.test.ts"]
-  file_caelundas_api_src_modules_events_events_grouping_resolver_end_to_end_test_ts["caelundas-api/src/modules/events/events-grouping.resolver.end-to-end.test.ts"]
-  file_caelundas_api_src_modules_events_events_window_input_entities_ts["caelundas-api/src/modules/events/events-window-input.entities.ts"]
   file_caelundas_api_src_modules_events_events_constants_ts["caelundas-api/src/modules/events/events.constants.ts"]
   file_caelundas_api_src_modules_events_events_entities_ts["caelundas-api/src/modules/events/events.entities.ts"]
   file_caelundas_api_src_modules_events_events_module_ts["caelundas-api/src/modules/events/events.module.ts"]
+  file_caelundas_api_src_modules_events_events_module_unit_test_ts["caelundas-api/src/modules/events/events.module.unit.test.ts"]
   file_caelundas_api_src_modules_events_events_resolver_end_to_end_test_ts["caelundas-api/src/modules/events/events.resolver.end-to-end.test.ts"]
   file_caelundas_api_src_modules_events_events_resolver_ts["caelundas-api/src/modules/events/events.resolver.ts"]
   file_caelundas_api_src_modules_events_events_resolver_unit_test_ts["caelundas-api/src/modules/events/events.resolver.unit.test.ts"]
   file_caelundas_api_src_modules_events_events_service_ts["caelundas-api/src/modules/events/events.service.ts"]
   file_caelundas_api_src_modules_events_events_service_unit_test_ts["caelundas-api/src/modules/events/events.service.unit.test.ts"]
   file_caelundas_api_src_modules_events_events_types_ts["caelundas-api/src/modules/events/events.types.ts"]
-  file_caelundas_api_src_modules_events_events_utilities_ts["caelundas-api/src/modules/events/events.utilities.ts"]
-  file_caelundas_api_src_modules_events_events_utilities_unit_test_ts["caelundas-api/src/modules/events/events.utilities.unit.test.ts"]
-  file_caelundas_api_src_modules_events_time_window_entities_ts["caelundas-api/src/modules/events/time-window.entities.ts"]
-  file_caelundas_api_src_modules_events_timeline_scale_entities_ts["caelundas-api/src/modules/events/timeline-scale.entities.ts"]
+  file_caelundas_api_src_modules_events_filters_event_filter_calendar_fields_service_ts["caelundas-api/src/modules/events/filters/event-filter-calendar-fields.service.ts"]
+  file_caelundas_api_src_modules_events_filters_event_filter_combinator_entities_ts["caelundas-api/src/modules/events/filters/event-filter-combinator.entities.ts"]
+  file_caelundas_api_src_modules_events_filters_event_filter_fields_constants_ts["caelundas-api/src/modules/events/filters/event-filter-fields.constants.ts"]
+  file_caelundas_api_src_modules_events_filters_event_filter_numbers_service_ts["caelundas-api/src/modules/events/filters/event-filter-numbers.service.ts"]
+  file_caelundas_api_src_modules_events_filters_event_filter_parameters_service_ts["caelundas-api/src/modules/events/filters/event-filter-parameters.service.ts"]
+  file_caelundas_api_src_modules_events_filters_event_filter_rule_entities_ts["caelundas-api/src/modules/events/filters/event-filter-rule.entities.ts"]
+  file_caelundas_api_src_modules_events_filters_event_filter_sql_constants_ts["caelundas-api/src/modules/events/filters/event-filter-sql.constants.ts"]
+  file_caelundas_api_src_modules_events_filters_event_filter_values_constants_ts["caelundas-api/src/modules/events/filters/event-filter-values.constants.ts"]
+  file_caelundas_api_src_modules_events_filters_event_filter_values_service_ts["caelundas-api/src/modules/events/filters/event-filter-values.service.ts"]
+  file_caelundas_api_src_modules_events_filters_event_filter_constants_ts["caelundas-api/src/modules/events/filters/event-filter.constants.ts"]
+  file_caelundas_api_src_modules_events_filters_event_filter_entities_ts["caelundas-api/src/modules/events/filters/event-filter.entities.ts"]
+  file_caelundas_api_src_modules_events_filters_event_filter_service_ts["caelundas-api/src/modules/events/filters/event-filter.service.ts"]
+  file_caelundas_api_src_modules_events_filters_event_filter_service_unit_test_ts["caelundas-api/src/modules/events/filters/event-filter.service.unit.test.ts"]
+  file_caelundas_api_src_modules_events_filters_event_filter_types_ts["caelundas-api/src/modules/events/filters/event-filter.types.ts"]
+  file_caelundas_api_src_modules_events_filters_events_filter_resolver_end_to_end_test_ts["caelundas-api/src/modules/events/filters/events-filter.resolver.end-to-end.test.ts"]
+  file_caelundas_api_src_modules_events_grouping_event_group_key_entities_ts["caelundas-api/src/modules/events/grouping/event-group-key.entities.ts"]
+  file_caelundas_api_src_modules_events_grouping_event_group_level_entities_ts["caelundas-api/src/modules/events/grouping/event-group-level.entities.ts"]
+  file_caelundas_api_src_modules_events_grouping_event_grouping_constants_ts["caelundas-api/src/modules/events/grouping/event-grouping.constants.ts"]
+  file_caelundas_api_src_modules_events_grouping_event_grouping_entities_ts["caelundas-api/src/modules/events/grouping/event-grouping.entities.ts"]
+  file_caelundas_api_src_modules_events_grouping_event_grouping_service_ts["caelundas-api/src/modules/events/grouping/event-grouping.service.ts"]
+  file_caelundas_api_src_modules_events_grouping_event_grouping_service_unit_test_ts["caelundas-api/src/modules/events/grouping/event-grouping.service.unit.test.ts"]
+  file_caelundas_api_src_modules_events_grouping_event_grouping_types_ts["caelundas-api/src/modules/events/grouping/event-grouping.types.ts"]
+  file_caelundas_api_src_modules_events_grouping_events_grouping_resolver_end_to_end_test_ts["caelundas-api/src/modules/events/grouping/events-grouping.resolver.end-to-end.test.ts"]
+  file_caelundas_api_src_modules_events_presets_preset_entities_ts["caelundas-api/src/modules/events/presets/preset.entities.ts"]
+  file_caelundas_api_src_modules_events_presets_presets_constants_ts["caelundas-api/src/modules/events/presets/presets.constants.ts"]
+  file_caelundas_api_src_modules_events_presets_presets_service_ts["caelundas-api/src/modules/events/presets/presets.service.ts"]
+  file_caelundas_api_src_modules_events_presets_presets_service_unit_test_ts["caelundas-api/src/modules/events/presets/presets.service.unit.test.ts"]
+  file_caelundas_api_src_modules_events_presets_presets_types_ts["caelundas-api/src/modules/events/presets/presets.types.ts"]
+  file_caelundas_api_src_modules_events_windows_calendar_window_entities_ts["caelundas-api/src/modules/events/windows/calendar-window.entities.ts"]
+  file_caelundas_api_src_modules_events_windows_events_windows_resolver_end_to_end_test_ts["caelundas-api/src/modules/events/windows/events-windows.resolver.end-to-end.test.ts"]
+  file_caelundas_api_src_modules_events_windows_period_input_entities_ts["caelundas-api/src/modules/events/windows/period-input.entities.ts"]
+  file_caelundas_api_src_modules_events_windows_period_entities_ts["caelundas-api/src/modules/events/windows/period.entities.ts"]
+  file_caelundas_api_src_modules_events_windows_timeline_scale_entities_ts["caelundas-api/src/modules/events/windows/timeline-scale.entities.ts"]
+  file_caelundas_api_src_modules_events_windows_windows_arguments_entities_ts["caelundas-api/src/modules/events/windows/windows-arguments.entities.ts"]
+  file_caelundas_api_src_modules_events_windows_windows_constants_ts["caelundas-api/src/modules/events/windows/windows.constants.ts"]
+  file_caelundas_api_src_modules_events_windows_windows_entities_ts["caelundas-api/src/modules/events/windows/windows.entities.ts"]
+  file_caelundas_api_src_modules_events_windows_windows_service_ts["caelundas-api/src/modules/events/windows/windows.service.ts"]
+  file_caelundas_api_src_modules_events_windows_windows_service_unit_test_ts["caelundas-api/src/modules/events/windows/windows.service.unit.test.ts"]
+  file_caelundas_api_src_modules_events_windows_windows_types_ts["caelundas-api/src/modules/events/windows/windows.types.ts"]
   file_caelundas_api_src_modules_health_health_constants_ts["caelundas-api/src/modules/health/health.constants.ts"]
   file_caelundas_api_src_modules_health_health_module_ts["caelundas-api/src/modules/health/health.module.ts"]
   file_caelundas_api_src_modules_health_health_module_unit_test_ts["caelundas-api/src/modules/health/health.module.unit.test.ts"]
@@ -2065,28 +2116,37 @@ graph LR
   file_caelundas_api_src_modules_health_health_service_ts["caelundas-api/src/modules/health/health.service.ts"]
   file_caelundas_api_src_modules_health_health_service_unit_test_ts["caelundas-api/src/modules/health/health.service.unit.test.ts"]
   file_caelundas_api_src_modules_health_health_types_ts["caelundas-api/src/modules/health/health.types.ts"]
-  file_caelundas_api_src_modules_night_sky_night_sky_colors_utilities_ts["caelundas-api/src/modules/night-sky/night-sky-colors.utilities.ts"]
-  file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_utilities_ts["caelundas-api/src/modules/night-sky/night-sky-ecliptic.utilities.ts"]
-  file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_utilities_unit_test_ts["caelundas-api/src/modules/night-sky/night-sky-ecliptic.utilities.unit.test.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_colors_service_ts["caelundas-api/src/modules/night-sky/night-sky-colors.service.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_colors_service_unit_test_ts["caelundas-api/src/modules/night-sky/night-sky-colors.service.unit.test.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_service_ts["caelundas-api/src/modules/night-sky/night-sky-ecliptic.service.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_service_unit_test_ts["caelundas-api/src/modules/night-sky/night-sky-ecliptic.service.unit.test.ts"]
   file_caelundas_api_src_modules_night_sky_night_sky_input_entities_ts["caelundas-api/src/modules/night-sky/night-sky-input.entities.ts"]
-  file_caelundas_api_src_modules_night_sky_night_sky_input_utilities_ts["caelundas-api/src/modules/night-sky/night-sky-input.utilities.ts"]
-  file_caelundas_api_src_modules_night_sky_night_sky_input_utilities_unit_test_ts["caelundas-api/src/modules/night-sky/night-sky-input.utilities.unit.test.ts"]
-  file_caelundas_api_src_modules_night_sky_night_sky_lines_utilities_ts["caelundas-api/src/modules/night-sky/night-sky-lines.utilities.ts"]
-  file_caelundas_api_src_modules_night_sky_night_sky_lines_utilities_unit_test_ts["caelundas-api/src/modules/night-sky/night-sky-lines.utilities.unit.test.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_input_service_ts["caelundas-api/src/modules/night-sky/night-sky-input.service.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_input_service_unit_test_ts["caelundas-api/src/modules/night-sky/night-sky-input.service.unit.test.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_lines_service_ts["caelundas-api/src/modules/night-sky/night-sky-lines.service.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_lines_service_unit_test_ts["caelundas-api/src/modules/night-sky/night-sky-lines.service.unit.test.ts"]
   file_caelundas_api_src_modules_night_sky_night_sky_measurements_entities_ts["caelundas-api/src/modules/night-sky/night-sky-measurements.entities.ts"]
-  file_caelundas_api_src_modules_night_sky_night_sky_options_utilities_ts["caelundas-api/src/modules/night-sky/night-sky-options.utilities.ts"]
-  file_caelundas_api_src_modules_night_sky_night_sky_options_utilities_unit_test_ts["caelundas-api/src/modules/night-sky/night-sky-options.utilities.unit.test.ts"]
-  file_caelundas_api_src_modules_night_sky_night_sky_projection_utilities_ts["caelundas-api/src/modules/night-sky/night-sky-projection.utilities.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_options_service_ts["caelundas-api/src/modules/night-sky/night-sky-options.service.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_options_service_unit_test_ts["caelundas-api/src/modules/night-sky/night-sky-options.service.unit.test.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_projection_service_ts["caelundas-api/src/modules/night-sky/night-sky-projection.service.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_projection_service_unit_test_ts["caelundas-api/src/modules/night-sky/night-sky-projection.service.unit.test.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_sidereal_time_service_ts["caelundas-api/src/modules/night-sky/night-sky-sidereal-time.service.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_sidereal_time_service_unit_test_ts["caelundas-api/src/modules/night-sky/night-sky-sidereal-time.service.unit.test.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_stars_service_ts["caelundas-api/src/modules/night-sky/night-sky-stars.service.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_stars_service_unit_test_ts["caelundas-api/src/modules/night-sky/night-sky-stars.service.unit.test.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_svg_service_ts["caelundas-api/src/modules/night-sky/night-sky-svg.service.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_svg_service_unit_test_ts["caelundas-api/src/modules/night-sky/night-sky-svg.service.unit.test.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_view_service_ts["caelundas-api/src/modules/night-sky/night-sky-view.service.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_view_service_unit_test_ts["caelundas-api/src/modules/night-sky/night-sky-view.service.unit.test.ts"]
   file_caelundas_api_src_modules_night_sky_night_sky_constants_ts["caelundas-api/src/modules/night-sky/night-sky.constants.ts"]
   file_caelundas_api_src_modules_night_sky_night_sky_entities_ts["caelundas-api/src/modules/night-sky/night-sky.entities.ts"]
   file_caelundas_api_src_modules_night_sky_night_sky_module_ts["caelundas-api/src/modules/night-sky/night-sky.module.ts"]
+  file_caelundas_api_src_modules_night_sky_night_sky_module_unit_test_ts["caelundas-api/src/modules/night-sky/night-sky.module.unit.test.ts"]
   file_caelundas_api_src_modules_night_sky_night_sky_resolver_ts["caelundas-api/src/modules/night-sky/night-sky.resolver.ts"]
   file_caelundas_api_src_modules_night_sky_night_sky_resolver_unit_test_ts["caelundas-api/src/modules/night-sky/night-sky.resolver.unit.test.ts"]
   file_caelundas_api_src_modules_night_sky_night_sky_service_ts["caelundas-api/src/modules/night-sky/night-sky.service.ts"]
   file_caelundas_api_src_modules_night_sky_night_sky_service_unit_test_ts["caelundas-api/src/modules/night-sky/night-sky.service.unit.test.ts"]
   file_caelundas_api_src_modules_night_sky_night_sky_types_ts["caelundas-api/src/modules/night-sky/night-sky.types.ts"]
-  file_caelundas_api_src_modules_night_sky_night_sky_utilities_ts["caelundas-api/src/modules/night-sky/night-sky.utilities.ts"]
-  file_caelundas_api_src_modules_night_sky_night_sky_utilities_unit_test_ts["caelundas-api/src/modules/night-sky/night-sky.utilities.unit.test.ts"]
   file_caelundas_api_testing_events_application_ts["caelundas-api/testing/events-application.ts"]
   file_caelundas_api_testing_mocks_ts["caelundas-api/testing/mocks.ts"]
   file_caelundas_api_testing_no_database_constants_ts["caelundas-api/testing/no-database.constants.ts"]
@@ -2465,11 +2525,6 @@ graph LR
   file_caelundas_web_src_components_calendar_cluster_dialog_calendar_cluster_dialog_types_ts["caelundas-web/src/components/calendar-cluster-dialog/calendar-cluster-dialog.types.ts"]
   file_caelundas_web_src_components_calendar_cluster_dialog_calendar_cluster_dialog_unit_test_tsx["caelundas-web/src/components/calendar-cluster-dialog/calendar-cluster-dialog.unit.test.tsx"]
   file_caelundas_web_src_components_calendar_cluster_dialog_calendar_cluster_dialog_utilities_ts["caelundas-web/src/components/calendar-cluster-dialog/calendar-cluster-dialog.utilities.ts"]
-  file_caelundas_web_src_components_calendar_collection_picker_calendar_collection_picker_constants_ts["caelundas-web/src/components/calendar-collection-picker/calendar-collection-picker.constants.ts"]
-  file_caelundas_web_src_components_calendar_collection_picker_calendar_collection_picker_tsx["caelundas-web/src/components/calendar-collection-picker/calendar-collection-picker.tsx"]
-  file_caelundas_web_src_components_calendar_collection_picker_calendar_collection_picker_types_ts["caelundas-web/src/components/calendar-collection-picker/calendar-collection-picker.types.ts"]
-  file_caelundas_web_src_components_calendar_collection_picker_calendar_collection_picker_unit_test_tsx["caelundas-web/src/components/calendar-collection-picker/calendar-collection-picker.unit.test.tsx"]
-  file_caelundas_web_src_components_calendar_collection_picker_calendar_collection_picker_utilities_ts["caelundas-web/src/components/calendar-collection-picker/calendar-collection-picker.utilities.ts"]
   file_caelundas_web_src_components_calendar_color_by_calendar_color_by_constants_ts["caelundas-web/src/components/calendar-color-by/calendar-color-by.constants.ts"]
   file_caelundas_web_src_components_calendar_color_by_calendar_color_by_tsx["caelundas-web/src/components/calendar-color-by/calendar-color-by.tsx"]
   file_caelundas_web_src_components_calendar_color_by_calendar_color_by_types_ts["caelundas-web/src/components/calendar-color-by/calendar-color-by.types.ts"]
@@ -2520,10 +2575,6 @@ graph LR
   file_caelundas_web_src_components_calendar_filters_calendar_filters_types_ts["caelundas-web/src/components/calendar-filters/calendar-filters.types.ts"]
   file_caelundas_web_src_components_calendar_filters_calendar_filters_unit_test_tsx["caelundas-web/src/components/calendar-filters/calendar-filters.unit.test.tsx"]
   file_caelundas_web_src_components_calendar_filters_calendar_filters_utilities_ts["caelundas-web/src/components/calendar-filters/calendar-filters.utilities.ts"]
-  file_caelundas_web_src_components_calendar_filters_event_filter_collections_constants_ts["caelundas-web/src/components/calendar-filters/event-filter-collections.constants.ts"]
-  file_caelundas_web_src_components_calendar_filters_event_filter_collections_types_ts["caelundas-web/src/components/calendar-filters/event-filter-collections.types.ts"]
-  file_caelundas_web_src_components_calendar_filters_event_filter_collections_utilities_ts["caelundas-web/src/components/calendar-filters/event-filter-collections.utilities.ts"]
-  file_caelundas_web_src_components_calendar_filters_event_filter_collections_utilities_unit_test_ts["caelundas-web/src/components/calendar-filters/event-filter-collections.utilities.unit.test.ts"]
   file_caelundas_web_src_components_calendar_filters_event_filter_fields_constants_ts["caelundas-web/src/components/calendar-filters/event-filter-fields.constants.ts"]
   file_caelundas_web_src_components_calendar_filters_event_filter_fields_utilities_ts["caelundas-web/src/components/calendar-filters/event-filter-fields.utilities.ts"]
   file_caelundas_web_src_components_calendar_filters_event_filter_fields_utilities_unit_test_ts["caelundas-web/src/components/calendar-filters/event-filter-fields.utilities.unit.test.ts"]
@@ -2539,6 +2590,10 @@ graph LR
   file_caelundas_web_src_components_calendar_filters_filter_chip_row_unit_test_tsx["caelundas-web/src/components/calendar-filters/filter-chip-row.unit.test.tsx"]
   file_caelundas_web_src_components_calendar_filters_filter_surface_tsx["caelundas-web/src/components/calendar-filters/filter-surface.tsx"]
   file_caelundas_web_src_components_calendar_filters_filter_surface_unit_test_tsx["caelundas-web/src/components/calendar-filters/filter-surface.unit.test.tsx"]
+  file_caelundas_web_src_components_calendar_filters_presets_constants_ts["caelundas-web/src/components/calendar-filters/presets.constants.ts"]
+  file_caelundas_web_src_components_calendar_filters_presets_types_ts["caelundas-web/src/components/calendar-filters/presets.types.ts"]
+  file_caelundas_web_src_components_calendar_filters_presets_utilities_ts["caelundas-web/src/components/calendar-filters/presets.utilities.ts"]
+  file_caelundas_web_src_components_calendar_filters_presets_utilities_unit_test_ts["caelundas-web/src/components/calendar-filters/presets.utilities.unit.test.ts"]
   file_caelundas_web_src_components_calendar_group_by_calendar_group_by_constants_ts["caelundas-web/src/components/calendar-group-by/calendar-group-by.constants.ts"]
   file_caelundas_web_src_components_calendar_group_by_calendar_group_by_tsx["caelundas-web/src/components/calendar-group-by/calendar-group-by.tsx"]
   file_caelundas_web_src_components_calendar_group_by_calendar_group_by_types_ts["caelundas-web/src/components/calendar-group-by/calendar-group-by.types.ts"]
@@ -2743,6 +2798,11 @@ graph LR
   file_caelundas_web_src_components_page_not_found_page_not_found_types_ts["caelundas-web/src/components/page-not-found/page-not-found.types.ts"]
   file_caelundas_web_src_components_page_not_found_page_not_found_unit_test_tsx["caelundas-web/src/components/page-not-found/page-not-found.unit.test.tsx"]
   file_caelundas_web_src_components_page_not_found_page_not_found_utilities_ts["caelundas-web/src/components/page-not-found/page-not-found.utilities.ts"]
+  file_caelundas_web_src_components_preset_picker_preset_picker_constants_ts["caelundas-web/src/components/preset-picker/preset-picker.constants.ts"]
+  file_caelundas_web_src_components_preset_picker_preset_picker_tsx["caelundas-web/src/components/preset-picker/preset-picker.tsx"]
+  file_caelundas_web_src_components_preset_picker_preset_picker_types_ts["caelundas-web/src/components/preset-picker/preset-picker.types.ts"]
+  file_caelundas_web_src_components_preset_picker_preset_picker_unit_test_tsx["caelundas-web/src/components/preset-picker/preset-picker.unit.test.tsx"]
+  file_caelundas_web_src_components_preset_picker_preset_picker_utilities_ts["caelundas-web/src/components/preset-picker/preset-picker.utilities.ts"]
   file_caelundas_web_src_components_virtual_list_calendar_virtual_window_types_ts["caelundas-web/src/components/virtual-list/calendar-virtual-window.types.ts"]
   file_caelundas_web_src_components_virtual_list_calendar_virtual_window_utilities_ts["caelundas-web/src/components/virtual-list/calendar-virtual-window.utilities.ts"]
   file_caelundas_web_src_components_virtual_list_calendar_virtual_window_utilities_unit_test_ts["caelundas-web/src/components/virtual-list/calendar-virtual-window.utilities.unit.test.ts"]
@@ -2795,6 +2855,9 @@ graph LR
   file_caelundas_web_src_hooks_use_night_sky_night_sky_colors_utilities_ts["caelundas-web/src/hooks/use-night-sky/night-sky-colors.utilities.ts"]
   file_caelundas_web_src_hooks_use_night_sky_night_sky_constants_ts["caelundas-web/src/hooks/use-night-sky/night-sky.constants.ts"]
   file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts["caelundas-web/src/hooks/use-night-sky/night-sky.types.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_opacity_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky-opacity.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_opacity_types_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky-opacity.types.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_opacity_unit_test_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky-opacity.unit.test.ts"]
   file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky-settings.ts"]
   file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_types_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky-settings.types.ts"]
   file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_unit_test_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky-settings.unit.test.ts"]
@@ -2882,6 +2945,7 @@ graph LR
   file_callidescope_cli_src_modules_limits_limits_types_ts["callidescope-cli/src/modules/limits/limits.types.ts"]
   file_callidescope_cli_src_modules_limits_render_limits_service_ts["callidescope-cli/src/modules/limits/render-limits.service.ts"]
   file_callidescope_cli_src_modules_limits_render_limits_service_unit_test_ts["callidescope-cli/src/modules/limits/render-limits.service.unit.test.ts"]
+  file_callidescope_cli_testing_callidescope_cli_packed_test_ts["callidescope-cli/testing/callidescope-cli.packed.test.ts"]
   file_callidescope_cli_testing_mocks_ts["callidescope-cli/testing/mocks.ts"]
   file_callidescope_cli_testing_modules_ts["callidescope-cli/testing/modules.ts"]
   file_callidescope_cli_testing_programs_ts["callidescope-cli/testing/programs.ts"]
@@ -3136,6 +3200,7 @@ graph LR
   file_callidescope_nx_src_modules_verdict_verdict_service_ts["callidescope-nx/src/modules/verdict/verdict.service.ts"]
   file_callidescope_nx_src_modules_verdict_verdict_service_unit_test_ts["callidescope-nx/src/modules/verdict/verdict.service.unit.test.ts"]
   file_callidescope_nx_src_modules_verdict_verdict_types_ts["callidescope-nx/src/modules/verdict/verdict.types.ts"]
+  file_callidescope_nx_testing_callidescope_nx_packed_test_ts["callidescope-nx/testing/callidescope-nx.packed.test.ts"]
   file_callidescope_nx_testing_mocks_ts["callidescope-nx/testing/mocks.ts"]
   file_callidescope_nx_testing_setup_ts["callidescope-nx/testing/setup.ts"]
   file_callidescope_nx_vite_config_ts["callidescope-nx/vite.config.ts"]
@@ -3267,6 +3332,7 @@ graph LR
   file_codependix_cli_src_modules_path_path_module_ts["codependix-cli/src/modules/path/path.module.ts"]
   file_codependix_cli_src_modules_path_path_module_unit_test_ts["codependix-cli/src/modules/path/path.module.unit.test.ts"]
   file_codependix_cli_src_modules_path_path_types_ts["codependix-cli/src/modules/path/path.types.ts"]
+  file_codependix_cli_testing_codependix_cli_packed_test_ts["codependix-cli/testing/codependix-cli.packed.test.ts"]
   file_codependix_cli_testing_mocks_ts["codependix-cli/testing/mocks.ts"]
   file_codependix_cli_testing_setup_ts["codependix-cli/testing/setup.ts"]
   file_codependix_cli_vite_config_ts["codependix-cli/vite.config.ts"]
@@ -3484,6 +3550,7 @@ graph LR
   file_codependix_nx_src_modules_plugin_plugin_service_ts["codependix-nx/src/modules/plugin/plugin.service.ts"]
   file_codependix_nx_src_modules_plugin_plugin_service_unit_test_ts["codependix-nx/src/modules/plugin/plugin.service.unit.test.ts"]
   file_codependix_nx_src_modules_plugin_plugin_types_ts["codependix-nx/src/modules/plugin/plugin.types.ts"]
+  file_codependix_nx_testing_codependix_nx_packed_test_ts["codependix-nx/testing/codependix-nx.packed.test.ts"]
   file_codependix_nx_testing_mocks_ts["codependix-nx/testing/mocks.ts"]
   file_codependix_nx_testing_setup_ts["codependix-nx/testing/setup.ts"]
   file_codependix_nx_vite_config_ts["codependix-nx/vite.config.ts"]
@@ -3590,6 +3657,7 @@ graph LR
   file_codometer_cli_src_modules_measure_measure_constants_ts["codometer-cli/src/modules/measure/measure.constants.ts"]
   file_codometer_cli_src_modules_measure_measure_module_ts["codometer-cli/src/modules/measure/measure.module.ts"]
   file_codometer_cli_src_modules_measure_measure_types_ts["codometer-cli/src/modules/measure/measure.types.ts"]
+  file_codometer_cli_testing_codometer_cli_packed_test_ts["codometer-cli/testing/codometer-cli.packed.test.ts"]
   file_codometer_cli_testing_fixture_tree_ts["codometer-cli/testing/fixture-tree.ts"]
   file_codometer_cli_testing_mocks_ts["codometer-cli/testing/mocks.ts"]
   file_codometer_cli_testing_setup_ts["codometer-cli/testing/setup.ts"]
@@ -3621,7 +3689,6 @@ graph LR
   file_codometer_configuration_src_modules_configuration_configuration_types_ts["codometer-configuration/src/modules/configuration/configuration.types.ts"]
   file_codometer_configuration_src_modules_configuration_output_types_ts["codometer-configuration/src/modules/configuration/output.types.ts"]
   file_codometer_configuration_src_modules_configuration_resolved_types_ts["codometer-configuration/src/modules/configuration/resolved.types.ts"]
-  file_codometer_configuration_testing_mocks_ts["codometer-configuration/testing/mocks.ts"]
   file_codometer_configuration_testing_setup_ts["codometer-configuration/testing/setup.ts"]
   file_codometer_configuration_vite_config_ts["codometer-configuration/vite.config.ts"]
   file_codometer_configuration_vitest_config_ts["codometer-configuration/vitest.config.ts"]
@@ -3637,7 +3704,6 @@ graph LR
   file_codometer_core_src_modules_codometer_core_codometer_core_service_ts["codometer-core/src/modules/codometer-core/codometer-core.service.ts"]
   file_codometer_core_src_modules_codometer_core_codometer_core_service_unit_test_ts["codometer-core/src/modules/codometer-core/codometer-core.service.unit.test.ts"]
   file_codometer_core_src_modules_codometer_core_codometer_core_types_ts["codometer-core/src/modules/codometer-core/codometer-core.types.ts"]
-  file_codometer_core_testing_mocks_ts["codometer-core/testing/mocks.ts"]
   file_codometer_core_testing_setup_ts["codometer-core/testing/setup.ts"]
   file_codometer_core_vite_config_ts["codometer-core/vite.config.ts"]
   file_codometer_core_vitest_config_ts["codometer-core/vitest.config.ts"]
@@ -3789,7 +3855,6 @@ graph LR
   file_codometer_languages_src_modules_yaml_yaml_service_ts["codometer-languages/src/modules/yaml/yaml.service.ts"]
   file_codometer_languages_src_modules_yaml_yaml_service_unit_test_ts["codometer-languages/src/modules/yaml/yaml.service.unit.test.ts"]
   file_codometer_languages_src_modules_yaml_yaml_types_ts["codometer-languages/src/modules/yaml/yaml.types.ts"]
-  file_codometer_languages_testing_mocks_ts["codometer-languages/testing/mocks.ts"]
   file_codometer_languages_testing_setup_ts["codometer-languages/testing/setup.ts"]
   file_codometer_languages_vite_config_ts["codometer-languages/vite.config.ts"]
   file_codometer_languages_vitest_config_ts["codometer-languages/vitest.config.ts"]
@@ -3938,9 +4003,11 @@ graph LR
   file_coinagerie_cli_src_modules_batch_batch_command_unit_test_ts["coinagerie-cli/src/modules/batch/batch.command.unit.test.ts"]
   file_coinagerie_cli_src_modules_batch_batch_constants_ts["coinagerie-cli/src/modules/batch/batch.constants.ts"]
   file_coinagerie_cli_src_modules_batch_batch_module_ts["coinagerie-cli/src/modules/batch/batch.module.ts"]
+  file_coinagerie_cli_src_modules_batch_batch_module_unit_test_ts["coinagerie-cli/src/modules/batch/batch.module.unit.test.ts"]
   file_coinagerie_cli_src_modules_batch_batch_types_ts["coinagerie-cli/src/modules/batch/batch.types.ts"]
   file_coinagerie_cli_src_modules_check_check_constants_ts["coinagerie-cli/src/modules/check/check.constants.ts"]
   file_coinagerie_cli_src_modules_check_check_module_ts["coinagerie-cli/src/modules/check/check.module.ts"]
+  file_coinagerie_cli_src_modules_check_check_module_unit_test_ts["coinagerie-cli/src/modules/check/check.module.unit.test.ts"]
   file_coinagerie_cli_src_modules_check_check_service_ts["coinagerie-cli/src/modules/check/check.service.ts"]
   file_coinagerie_cli_src_modules_check_check_service_unit_test_ts["coinagerie-cli/src/modules/check/check.service.unit.test.ts"]
   file_coinagerie_cli_src_modules_check_check_types_ts["coinagerie-cli/src/modules/check/check.types.ts"]
@@ -3950,7 +4017,9 @@ graph LR
   file_coinagerie_cli_src_modules_collect_collect_command_unit_test_ts["coinagerie-cli/src/modules/collect/collect.command.unit.test.ts"]
   file_coinagerie_cli_src_modules_collect_collect_constants_ts["coinagerie-cli/src/modules/collect/collect.constants.ts"]
   file_coinagerie_cli_src_modules_collect_collect_module_ts["coinagerie-cli/src/modules/collect/collect.module.ts"]
+  file_coinagerie_cli_src_modules_collect_collect_module_unit_test_ts["coinagerie-cli/src/modules/collect/collect.module.unit.test.ts"]
   file_coinagerie_cli_src_modules_collect_collect_types_ts["coinagerie-cli/src/modules/collect/collect.types.ts"]
+  file_coinagerie_cli_testing_coinagerie_cli_packed_test_ts["coinagerie-cli/testing/coinagerie-cli.packed.test.ts"]
   file_coinagerie_cli_testing_examples_ts["coinagerie-cli/testing/examples.ts"]
   file_coinagerie_cli_testing_fixture_tree_ts["coinagerie-cli/testing/fixture-tree.ts"]
   file_coinagerie_cli_testing_mocks_ts["coinagerie-cli/testing/mocks.ts"]
@@ -3967,6 +4036,7 @@ graph LR
   file_coinagerie_configuration_src_index_unit_test_ts["coinagerie-configuration/src/index.unit.test.ts"]
   file_coinagerie_configuration_src_modules_configuration_configuration_constants_ts["coinagerie-configuration/src/modules/configuration/configuration.constants.ts"]
   file_coinagerie_configuration_src_modules_configuration_configuration_module_ts["coinagerie-configuration/src/modules/configuration/configuration.module.ts"]
+  file_coinagerie_configuration_src_modules_configuration_configuration_module_unit_test_ts["coinagerie-configuration/src/modules/configuration/configuration.module.unit.test.ts"]
   file_coinagerie_configuration_src_modules_configuration_configuration_service_ts["coinagerie-configuration/src/modules/configuration/configuration.service.ts"]
   file_coinagerie_configuration_src_modules_configuration_configuration_service_unit_test_ts["coinagerie-configuration/src/modules/configuration/configuration.service.unit.test.ts"]
   file_coinagerie_configuration_src_modules_configuration_configuration_types_ts["coinagerie-configuration/src/modules/configuration/configuration.types.ts"]
@@ -3983,6 +4053,7 @@ graph LR
   file_coinagerie_core_src_index_unit_test_ts["coinagerie-core/src/index.unit.test.ts"]
   file_coinagerie_core_src_modules_coinagerie_core_coinagerie_core_constants_ts["coinagerie-core/src/modules/coinagerie-core/coinagerie-core.constants.ts"]
   file_coinagerie_core_src_modules_coinagerie_core_coinagerie_core_module_ts["coinagerie-core/src/modules/coinagerie-core/coinagerie-core.module.ts"]
+  file_coinagerie_core_src_modules_coinagerie_core_coinagerie_core_module_unit_test_ts["coinagerie-core/src/modules/coinagerie-core/coinagerie-core.module.unit.test.ts"]
   file_coinagerie_core_src_modules_coinagerie_core_coinagerie_core_service_ts["coinagerie-core/src/modules/coinagerie-core/coinagerie-core.service.ts"]
   file_coinagerie_core_src_modules_coinagerie_core_coinagerie_core_service_unit_test_ts["coinagerie-core/src/modules/coinagerie-core/coinagerie-core.service.unit.test.ts"]
   file_coinagerie_core_src_modules_coinagerie_core_coinagerie_core_types_ts["coinagerie-core/src/modules/coinagerie-core/coinagerie-core.types.ts"]
@@ -4084,6 +4155,7 @@ graph LR
   file_coinagerie_nx_src_index_unit_test_ts["coinagerie-nx/src/index.unit.test.ts"]
   file_coinagerie_nx_src_modules_options_options_constants_ts["coinagerie-nx/src/modules/options/options.constants.ts"]
   file_coinagerie_nx_src_modules_options_options_module_ts["coinagerie-nx/src/modules/options/options.module.ts"]
+  file_coinagerie_nx_src_modules_options_options_module_unit_test_ts["coinagerie-nx/src/modules/options/options.module.unit.test.ts"]
   file_coinagerie_nx_src_modules_options_options_service_ts["coinagerie-nx/src/modules/options/options.service.ts"]
   file_coinagerie_nx_src_modules_options_options_service_unit_test_ts["coinagerie-nx/src/modules/options/options.service.unit.test.ts"]
   file_coinagerie_nx_src_modules_options_options_types_ts["coinagerie-nx/src/modules/options/options.types.ts"]
@@ -4091,9 +4163,11 @@ graph LR
   file_coinagerie_nx_src_modules_plugin_plugin_context_utilities_unit_test_ts["coinagerie-nx/src/modules/plugin/plugin-context.utilities.unit.test.ts"]
   file_coinagerie_nx_src_modules_plugin_plugin_constants_ts["coinagerie-nx/src/modules/plugin/plugin.constants.ts"]
   file_coinagerie_nx_src_modules_plugin_plugin_module_ts["coinagerie-nx/src/modules/plugin/plugin.module.ts"]
+  file_coinagerie_nx_src_modules_plugin_plugin_module_unit_test_ts["coinagerie-nx/src/modules/plugin/plugin.module.unit.test.ts"]
   file_coinagerie_nx_src_modules_plugin_plugin_service_ts["coinagerie-nx/src/modules/plugin/plugin.service.ts"]
   file_coinagerie_nx_src_modules_plugin_plugin_service_unit_test_ts["coinagerie-nx/src/modules/plugin/plugin.service.unit.test.ts"]
   file_coinagerie_nx_src_modules_plugin_plugin_types_ts["coinagerie-nx/src/modules/plugin/plugin.types.ts"]
+  file_coinagerie_nx_testing_coinagerie_nx_packed_test_ts["coinagerie-nx/testing/coinagerie-nx.packed.test.ts"]
   file_coinagerie_nx_testing_fake_command_line_ts["coinagerie-nx/testing/fake-command-line.ts"]
   file_coinagerie_nx_testing_fake_workspace_ts["coinagerie-nx/testing/fake-workspace.ts"]
   file_coinagerie_nx_testing_mocks_ts["coinagerie-nx/testing/mocks.ts"]
@@ -4173,14 +4247,14 @@ graph LR
   file_compliance_src_compliance_main_ts["compliance/src/compliance.main.ts"]
   file_compliance_src_compliance_module_ts["compliance/src/compliance.module.ts"]
   file_compliance_src_compliance_repl_ts["compliance/src/compliance.repl.ts"]
-  file_compliance_src_modules_audit_governance_audit_governance_command_ts["compliance/src/modules/audit-governance/audit-governance.command.ts"]
-  file_compliance_src_modules_audit_governance_audit_governance_command_unit_test_ts["compliance/src/modules/audit-governance/audit-governance.command.unit.test.ts"]
-  file_compliance_src_modules_audit_governance_audit_governance_constants_ts["compliance/src/modules/audit-governance/audit-governance.constants.ts"]
-  file_compliance_src_modules_audit_governance_audit_governance_module_ts["compliance/src/modules/audit-governance/audit-governance.module.ts"]
-  file_compliance_src_modules_audit_governance_audit_governance_module_unit_test_ts["compliance/src/modules/audit-governance/audit-governance.module.unit.test.ts"]
-  file_compliance_src_modules_audit_governance_audit_governance_service_ts["compliance/src/modules/audit-governance/audit-governance.service.ts"]
-  file_compliance_src_modules_audit_governance_audit_governance_service_unit_test_ts["compliance/src/modules/audit-governance/audit-governance.service.unit.test.ts"]
-  file_compliance_src_modules_audit_governance_audit_governance_types_ts["compliance/src/modules/audit-governance/audit-governance.types.ts"]
+  file_compliance_src_modules_audit_files_audit_files_command_ts["compliance/src/modules/audit-files/audit-files.command.ts"]
+  file_compliance_src_modules_audit_files_audit_files_command_unit_test_ts["compliance/src/modules/audit-files/audit-files.command.unit.test.ts"]
+  file_compliance_src_modules_audit_files_audit_files_constants_ts["compliance/src/modules/audit-files/audit-files.constants.ts"]
+  file_compliance_src_modules_audit_files_audit_files_module_ts["compliance/src/modules/audit-files/audit-files.module.ts"]
+  file_compliance_src_modules_audit_files_audit_files_module_unit_test_ts["compliance/src/modules/audit-files/audit-files.module.unit.test.ts"]
+  file_compliance_src_modules_audit_files_audit_files_service_ts["compliance/src/modules/audit-files/audit-files.service.ts"]
+  file_compliance_src_modules_audit_files_audit_files_service_unit_test_ts["compliance/src/modules/audit-files/audit-files.service.unit.test.ts"]
+  file_compliance_src_modules_audit_files_audit_files_types_ts["compliance/src/modules/audit-files/audit-files.types.ts"]
   file_compliance_src_modules_issue_issue_assignees_constants_ts["compliance/src/modules/issue/issue-assignees.constants.ts"]
   file_compliance_src_modules_issue_issue_assignees_types_ts["compliance/src/modules/issue/issue-assignees.types.ts"]
   file_compliance_src_modules_issue_issue_assigning_service_ts["compliance/src/modules/issue/issue-assigning.service.ts"]
@@ -4207,11 +4281,13 @@ graph LR
   file_compliance_src_modules_issue_issue_command_unit_test_ts["compliance/src/modules/issue/issue.command.unit.test.ts"]
   file_compliance_src_modules_issue_issue_constants_ts["compliance/src/modules/issue/issue.constants.ts"]
   file_compliance_src_modules_issue_issue_module_ts["compliance/src/modules/issue/issue.module.ts"]
+  file_compliance_src_modules_issue_issue_module_unit_test_ts["compliance/src/modules/issue/issue.module.unit.test.ts"]
   file_compliance_src_modules_issue_issue_types_ts["compliance/src/modules/issue/issue.types.ts"]
   file_compliance_src_modules_organization_project_organization_project_command_ts["compliance/src/modules/organization-project/organization-project.command.ts"]
   file_compliance_src_modules_organization_project_organization_project_command_unit_test_ts["compliance/src/modules/organization-project/organization-project.command.unit.test.ts"]
   file_compliance_src_modules_organization_project_organization_project_constants_ts["compliance/src/modules/organization-project/organization-project.constants.ts"]
   file_compliance_src_modules_organization_project_organization_project_module_ts["compliance/src/modules/organization-project/organization-project.module.ts"]
+  file_compliance_src_modules_organization_project_organization_project_module_unit_test_ts["compliance/src/modules/organization-project/organization-project.module.unit.test.ts"]
   file_compliance_src_modules_organization_project_organization_project_types_ts["compliance/src/modules/organization-project/organization-project.types.ts"]
   file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_ts["compliance/src/modules/pull-request/pull-request-ancestor-issues.service.ts"]
   file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_unit_test_ts["compliance/src/modules/pull-request/pull-request-ancestor-issues.service.unit.test.ts"]
@@ -4257,6 +4333,7 @@ graph LR
   file_compliance_src_modules_pull_request_pull_request_command_unit_test_ts["compliance/src/modules/pull-request/pull-request.command.unit.test.ts"]
   file_compliance_src_modules_pull_request_pull_request_constants_ts["compliance/src/modules/pull-request/pull-request.constants.ts"]
   file_compliance_src_modules_pull_request_pull_request_module_ts["compliance/src/modules/pull-request/pull-request.module.ts"]
+  file_compliance_src_modules_pull_request_pull_request_module_unit_test_ts["compliance/src/modules/pull-request/pull-request.module.unit.test.ts"]
   file_compliance_src_modules_pull_request_pull_request_types_ts["compliance/src/modules/pull-request/pull-request.types.ts"]
   file_compliance_testing_mocks_ts["compliance/testing/mocks.ts"]
   file_compliance_testing_setup_ts["compliance/testing/setup.ts"]
@@ -4349,7 +4426,6 @@ graph LR
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes___root_tsx["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/src/routes/__root.tsx"]
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes_index_integration_test_tsx["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/src/routes/index.integration.test.tsx"]
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes_index_tsx["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/src/routes/index.tsx"]
-  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___testing_render_route_tsx["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/testing/render-route.tsx"]
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___testing_setup_ts["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/testing/setup.ts"]
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___vite_config_mts["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/vite.config.mts"]
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___vitest_config_ts["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/vitest.config.ts"]
@@ -4370,6 +4446,7 @@ graph LR
   file_configuration_prettier_config_ts["configuration/prettier.config.ts"]
   file_configuration_vite_library_config_ts["configuration/vite.library.config.ts"]
   file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
+  file_configuration_vitest_packed_config_mts["configuration/vitest.packed.config.mts"]
   file_conformetry_agents_codependix_config_ts["conformetry-agents/codependix.config.ts"]
   file_conformetry_agents_codometer_config_ts["conformetry-agents/codometer.config.ts"]
   file_conformetry_agents_coinagerie_config_ts["conformetry-agents/coinagerie.config.ts"]
@@ -4411,6 +4488,7 @@ graph LR
   file_conformetry_cli_src_modules_validate_validate_constants_ts["conformetry-cli/src/modules/validate/validate.constants.ts"]
   file_conformetry_cli_src_modules_validate_validate_module_ts["conformetry-cli/src/modules/validate/validate.module.ts"]
   file_conformetry_cli_src_modules_validate_validate_types_ts["conformetry-cli/src/modules/validate/validate.types.ts"]
+  file_conformetry_cli_testing_conformetry_cli_packed_test_ts["conformetry-cli/testing/conformetry-cli.packed.test.ts"]
   file_conformetry_cli_testing_mocks_ts["conformetry-cli/testing/mocks.ts"]
   file_conformetry_cli_testing_setup_ts["conformetry-cli/testing/setup.ts"]
   file_conformetry_cli_vite_config_ts["conformetry-cli/vite.config.ts"]
@@ -4673,6 +4751,7 @@ graph LR
   file_conformetry_nx_src_modules_scope_scope_service_ts["conformetry-nx/src/modules/scope/scope.service.ts"]
   file_conformetry_nx_src_modules_scope_scope_service_unit_test_ts["conformetry-nx/src/modules/scope/scope.service.unit.test.ts"]
   file_conformetry_nx_src_modules_scope_scope_types_ts["conformetry-nx/src/modules/scope/scope.types.ts"]
+  file_conformetry_nx_testing_conformetry_nx_packed_test_ts["conformetry-nx/testing/conformetry-nx.packed.test.ts"]
   file_conformetry_nx_testing_manifest_unit_test_ts["conformetry-nx/testing/manifest.unit.test.ts"]
   file_conformetry_nx_testing_mocks_ts["conformetry-nx/testing/mocks.ts"]
   file_conformetry_nx_testing_setup_ts["conformetry-nx/testing/setup.ts"]
@@ -4727,6 +4806,83 @@ graph LR
   file_conformetry_validation_testing_setup_ts["conformetry-validation/testing/setup.ts"]
   file_conformetry_validation_vite_config_ts["conformetry-validation/vite.config.ts"]
   file_conformetry_validation_vitest_config_ts["conformetry-validation/vitest.config.ts"]
+  file_deployment_callidescope_config_ts["deployment/callidescope.config.ts"]
+  file_deployment_codependix_config_ts["deployment/codependix.config.ts"]
+  file_deployment_codometer_config_ts["deployment/codometer.config.ts"]
+  file_deployment_coinagerie_config_ts["deployment/coinagerie.config.ts"]
+  file_deployment_eslint_config_ts["deployment/eslint.config.ts"]
+  file_deployment_src_deployment_constants_ts["deployment/src/deployment.constants.ts"]
+  file_deployment_src_deployment_main_end_to_end_test_ts["deployment/src/deployment.main.end-to-end.test.ts"]
+  file_deployment_src_deployment_main_ts["deployment/src/deployment.main.ts"]
+  file_deployment_src_deployment_main_unit_test_ts["deployment/src/deployment.main.unit.test.ts"]
+  file_deployment_src_deployment_module_ts["deployment/src/deployment.module.ts"]
+  file_deployment_src_deployment_repl_ts["deployment/src/deployment.repl.ts"]
+  file_deployment_src_deployment_repl_unit_test_ts["deployment/src/deployment.repl.unit.test.ts"]
+  file_deployment_src_deployment_types_ts["deployment/src/deployment.types.ts"]
+  file_deployment_src_modules_link_packages_link_packages_command_ts["deployment/src/modules/link-packages/link-packages.command.ts"]
+  file_deployment_src_modules_link_packages_link_packages_command_unit_test_ts["deployment/src/modules/link-packages/link-packages.command.unit.test.ts"]
+  file_deployment_src_modules_link_packages_link_packages_constants_ts["deployment/src/modules/link-packages/link-packages.constants.ts"]
+  file_deployment_src_modules_link_packages_link_packages_module_ts["deployment/src/modules/link-packages/link-packages.module.ts"]
+  file_deployment_src_modules_link_packages_link_packages_module_unit_test_ts["deployment/src/modules/link-packages/link-packages.module.unit.test.ts"]
+  file_deployment_src_modules_link_packages_link_packages_service_ts["deployment/src/modules/link-packages/link-packages.service.ts"]
+  file_deployment_src_modules_link_packages_link_packages_service_unit_test_ts["deployment/src/modules/link-packages/link-packages.service.unit.test.ts"]
+  file_deployment_src_modules_link_packages_link_packages_types_ts["deployment/src/modules/link-packages/link-packages.types.ts"]
+  file_deployment_src_modules_main_tip_main_tip_constants_ts["deployment/src/modules/main-tip/main-tip.constants.ts"]
+  file_deployment_src_modules_main_tip_main_tip_module_ts["deployment/src/modules/main-tip/main-tip.module.ts"]
+  file_deployment_src_modules_main_tip_main_tip_module_unit_test_ts["deployment/src/modules/main-tip/main-tip.module.unit.test.ts"]
+  file_deployment_src_modules_main_tip_main_tip_service_ts["deployment/src/modules/main-tip/main-tip.service.ts"]
+  file_deployment_src_modules_main_tip_main_tip_service_unit_test_ts["deployment/src/modules/main-tip/main-tip.service.unit.test.ts"]
+  file_deployment_src_modules_main_tip_main_tip_types_ts["deployment/src/modules/main-tip/main-tip.types.ts"]
+  file_deployment_src_modules_process_runner_process_runner_constants_ts["deployment/src/modules/process-runner/process-runner.constants.ts"]
+  file_deployment_src_modules_process_runner_process_runner_module_ts["deployment/src/modules/process-runner/process-runner.module.ts"]
+  file_deployment_src_modules_process_runner_process_runner_module_unit_test_ts["deployment/src/modules/process-runner/process-runner.module.unit.test.ts"]
+  file_deployment_src_modules_process_runner_process_runner_service_integration_test_ts["deployment/src/modules/process-runner/process-runner.service.integration.test.ts"]
+  file_deployment_src_modules_process_runner_process_runner_service_ts["deployment/src/modules/process-runner/process-runner.service.ts"]
+  file_deployment_src_modules_process_runner_process_runner_service_unit_test_ts["deployment/src/modules/process-runner/process-runner.service.unit.test.ts"]
+  file_deployment_src_modules_process_runner_process_runner_types_ts["deployment/src/modules/process-runner/process-runner.types.ts"]
+  file_deployment_src_modules_process_runner_process_runner_utilities_ts["deployment/src/modules/process-runner/process-runner.utilities.ts"]
+  file_deployment_src_modules_process_runner_process_runner_utilities_unit_test_ts["deployment/src/modules/process-runner/process-runner.utilities.unit.test.ts"]
+  file_deployment_src_modules_publish_packages_publish_packages_command_ts["deployment/src/modules/publish-packages/publish-packages.command.ts"]
+  file_deployment_src_modules_publish_packages_publish_packages_command_unit_test_ts["deployment/src/modules/publish-packages/publish-packages.command.unit.test.ts"]
+  file_deployment_src_modules_publish_packages_publish_packages_constants_ts["deployment/src/modules/publish-packages/publish-packages.constants.ts"]
+  file_deployment_src_modules_publish_packages_publish_packages_module_ts["deployment/src/modules/publish-packages/publish-packages.module.ts"]
+  file_deployment_src_modules_publish_packages_publish_packages_module_unit_test_ts["deployment/src/modules/publish-packages/publish-packages.module.unit.test.ts"]
+  file_deployment_src_modules_publish_packages_publish_packages_service_ts["deployment/src/modules/publish-packages/publish-packages.service.ts"]
+  file_deployment_src_modules_publish_packages_publish_packages_service_unit_test_ts["deployment/src/modules/publish-packages/publish-packages.service.unit.test.ts"]
+  file_deployment_src_modules_publish_packages_publish_packages_types_ts["deployment/src/modules/publish-packages/publish-packages.types.ts"]
+  file_deployment_src_modules_release_group_release_group_constants_ts["deployment/src/modules/release-group/release-group.constants.ts"]
+  file_deployment_src_modules_release_group_release_group_module_ts["deployment/src/modules/release-group/release-group.module.ts"]
+  file_deployment_src_modules_release_group_release_group_module_unit_test_ts["deployment/src/modules/release-group/release-group.module.unit.test.ts"]
+  file_deployment_src_modules_release_group_release_group_service_ts["deployment/src/modules/release-group/release-group.service.ts"]
+  file_deployment_src_modules_release_group_release_group_service_unit_test_ts["deployment/src/modules/release-group/release-group.service.unit.test.ts"]
+  file_deployment_src_modules_release_group_release_group_types_ts["deployment/src/modules/release-group/release-group.types.ts"]
+  file_deployment_src_modules_tag_codebase_tag_codebase_command_ts["deployment/src/modules/tag-codebase/tag-codebase.command.ts"]
+  file_deployment_src_modules_tag_codebase_tag_codebase_command_unit_test_ts["deployment/src/modules/tag-codebase/tag-codebase.command.unit.test.ts"]
+  file_deployment_src_modules_tag_codebase_tag_codebase_constants_ts["deployment/src/modules/tag-codebase/tag-codebase.constants.ts"]
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_ts["deployment/src/modules/tag-codebase/tag-codebase.module.ts"]
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_unit_test_ts["deployment/src/modules/tag-codebase/tag-codebase.module.unit.test.ts"]
+  file_deployment_src_modules_tag_codebase_tag_codebase_service_ts["deployment/src/modules/tag-codebase/tag-codebase.service.ts"]
+  file_deployment_src_modules_tag_codebase_tag_codebase_service_unit_test_ts["deployment/src/modules/tag-codebase/tag-codebase.service.unit.test.ts"]
+  file_deployment_src_modules_tag_codebase_tag_codebase_types_ts["deployment/src/modules/tag-codebase/tag-codebase.types.ts"]
+  file_deployment_src_modules_tag_packages_tag_packages_command_ts["deployment/src/modules/tag-packages/tag-packages.command.ts"]
+  file_deployment_src_modules_tag_packages_tag_packages_command_unit_test_ts["deployment/src/modules/tag-packages/tag-packages.command.unit.test.ts"]
+  file_deployment_src_modules_tag_packages_tag_packages_constants_ts["deployment/src/modules/tag-packages/tag-packages.constants.ts"]
+  file_deployment_src_modules_tag_packages_tag_packages_module_ts["deployment/src/modules/tag-packages/tag-packages.module.ts"]
+  file_deployment_src_modules_tag_packages_tag_packages_module_unit_test_ts["deployment/src/modules/tag-packages/tag-packages.module.unit.test.ts"]
+  file_deployment_src_modules_tag_packages_tag_packages_service_ts["deployment/src/modules/tag-packages/tag-packages.service.ts"]
+  file_deployment_src_modules_tag_packages_tag_packages_service_unit_test_ts["deployment/src/modules/tag-packages/tag-packages.service.unit.test.ts"]
+  file_deployment_src_modules_tag_packages_tag_packages_types_ts["deployment/src/modules/tag-packages/tag-packages.types.ts"]
+  file_deployment_src_modules_version_packages_version_packages_command_ts["deployment/src/modules/version-packages/version-packages.command.ts"]
+  file_deployment_src_modules_version_packages_version_packages_command_unit_test_ts["deployment/src/modules/version-packages/version-packages.command.unit.test.ts"]
+  file_deployment_src_modules_version_packages_version_packages_constants_ts["deployment/src/modules/version-packages/version-packages.constants.ts"]
+  file_deployment_src_modules_version_packages_version_packages_module_ts["deployment/src/modules/version-packages/version-packages.module.ts"]
+  file_deployment_src_modules_version_packages_version_packages_module_unit_test_ts["deployment/src/modules/version-packages/version-packages.module.unit.test.ts"]
+  file_deployment_src_modules_version_packages_version_packages_service_ts["deployment/src/modules/version-packages/version-packages.service.ts"]
+  file_deployment_src_modules_version_packages_version_packages_service_unit_test_ts["deployment/src/modules/version-packages/version-packages.service.unit.test.ts"]
+  file_deployment_src_modules_version_packages_version_packages_types_ts["deployment/src/modules/version-packages/version-packages.types.ts"]
+  file_deployment_testing_mocks_ts["deployment/testing/mocks.ts"]
+  file_deployment_testing_setup_ts["deployment/testing/setup.ts"]
+  file_deployment_vitest_config_ts["deployment/vitest.config.ts"]
   file_documentation_callidescope_config_ts["documentation/callidescope.config.ts"]
   file_documentation_codependix_config_ts["documentation/codependix.config.ts"]
   file_documentation_codometer_config_ts["documentation/codometer.config.ts"]
@@ -4885,6 +5041,16 @@ graph LR
   file_integration_codometer_config_ts["integration/codometer.config.ts"]
   file_integration_coinagerie_config_ts["integration/coinagerie.config.ts"]
   file_integration_eslint_config_ts["integration/eslint.config.ts"]
+  file_integration_src_executors_codometer_batch_executor_ts["integration/src/executors/codometer/batch-executor.ts"]
+  file_integration_src_executors_codometer_batch_executor_unit_test_ts["integration/src/executors/codometer/batch-executor.unit.test.ts"]
+  file_integration_src_executors_codometer_codometer_constants_ts["integration/src/executors/codometer/codometer.constants.ts"]
+  file_integration_src_executors_codometer_codometer_runner_ts["integration/src/executors/codometer/codometer.runner.ts"]
+  file_integration_src_executors_codometer_codometer_runner_unit_test_ts["integration/src/executors/codometer/codometer.runner.unit.test.ts"]
+  file_integration_src_executors_codometer_codometer_types_ts["integration/src/executors/codometer/codometer.types.ts"]
+  file_integration_src_executors_codometer_codometer_utilities_ts["integration/src/executors/codometer/codometer.utilities.ts"]
+  file_integration_src_executors_codometer_codometer_utilities_unit_test_ts["integration/src/executors/codometer/codometer.utilities.unit.test.ts"]
+  file_integration_src_executors_codometer_executor_ts["integration/src/executors/codometer/executor.ts"]
+  file_integration_src_executors_codometer_executor_unit_test_ts["integration/src/executors/codometer/executor.unit.test.ts"]
   file_integration_src_executors_knip_batch_executor_ts["integration/src/executors/knip/batch-executor.ts"]
   file_integration_src_executors_knip_batch_executor_unit_test_ts["integration/src/executors/knip/batch-executor.unit.test.ts"]
   file_integration_src_executors_knip_executor_ts["integration/src/executors/knip/executor.ts"]
@@ -5582,7 +5748,6 @@ graph LR
   file_lexico_web_src_routes_search_integration_test_tsx["lexico-web/src/routes/search.integration.test.tsx"]
   file_lexico_web_src_routes_search_tsx["lexico-web/src/routes/search.tsx"]
   file_lexico_web_src_routeTree_gen_ts["lexico-web/src/routeTree.gen.ts"]
-  file_lexico_web_testing_render_route_tsx["lexico-web/testing/render-route.tsx"]
   file_lexico_web_testing_setup_ts["lexico-web/testing/setup.ts"]
   file_lexico_web_vite_config_mts["lexico-web/vite.config.mts"]
   file_lexico_web_vitest_config_ts["lexico-web/vitest.config.ts"]
@@ -6021,7 +6186,6 @@ graph LR
   file_meanderaw_cli_testing_legacy_characteristics_ts["meanderaw-cli/testing/legacy-characteristics.ts"]
   file_meanderaw_cli_testing_letters_ts["meanderaw-cli/testing/letters.ts"]
   file_meanderaw_cli_testing_meanders_ts["meanderaw-cli/testing/meanders.ts"]
-  file_meanderaw_cli_testing_mocks_ts["meanderaw-cli/testing/mocks.ts"]
   file_meanderaw_cli_testing_path_data_ts["meanderaw-cli/testing/path-data.ts"]
   file_meanderaw_cli_testing_setup_ts["meanderaw-cli/testing/setup.ts"]
   file_meanderaw_cli_testing_tiles_ts["meanderaw-cli/testing/tiles.ts"]
@@ -6036,7 +6200,6 @@ graph LR
   file_meanderaw_web_src_routes_index_integration_test_tsx["meanderaw-web/src/routes/index.integration.test.tsx"]
   file_meanderaw_web_src_routes_index_tsx["meanderaw-web/src/routes/index.tsx"]
   file_meanderaw_web_src_routeTree_gen_ts["meanderaw-web/src/routeTree.gen.ts"]
-  file_meanderaw_web_testing_render_route_tsx["meanderaw-web/testing/render-route.tsx"]
   file_meanderaw_web_testing_setup_ts["meanderaw-web/testing/setup.ts"]
   file_meanderaw_web_vite_config_mts["meanderaw-web/vite.config.mts"]
   file_meanderaw_web_vitest_config_ts["meanderaw-web/vitest.config.ts"]
@@ -6298,91 +6461,6 @@ graph LR
   file_presentation_src_index_ts["presentation/src/index.ts"]
   file_presentation_src_lib_utils_ts["presentation/src/lib/utils.ts"]
   file_presentation_vite_config_mts["presentation/vite.config.mts"]
-  file_publication_callidescope_config_ts["publication/callidescope.config.ts"]
-  file_publication_codependix_config_ts["publication/codependix.config.ts"]
-  file_publication_codometer_config_ts["publication/codometer.config.ts"]
-  file_publication_coinagerie_config_ts["publication/coinagerie.config.ts"]
-  file_publication_eslint_config_ts["publication/eslint.config.ts"]
-  file_publication_src_modules_link_packages_link_packages_command_ts["publication/src/modules/link-packages/link-packages.command.ts"]
-  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts["publication/src/modules/link-packages/link-packages.command.unit.test.ts"]
-  file_publication_src_modules_link_packages_link_packages_constants_ts["publication/src/modules/link-packages/link-packages.constants.ts"]
-  file_publication_src_modules_link_packages_link_packages_module_ts["publication/src/modules/link-packages/link-packages.module.ts"]
-  file_publication_src_modules_link_packages_link_packages_module_unit_test_ts["publication/src/modules/link-packages/link-packages.module.unit.test.ts"]
-  file_publication_src_modules_link_packages_link_packages_service_ts["publication/src/modules/link-packages/link-packages.service.ts"]
-  file_publication_src_modules_link_packages_link_packages_service_unit_test_ts["publication/src/modules/link-packages/link-packages.service.unit.test.ts"]
-  file_publication_src_modules_link_packages_link_packages_types_ts["publication/src/modules/link-packages/link-packages.types.ts"]
-  file_publication_src_modules_main_tip_main_tip_constants_ts["publication/src/modules/main-tip/main-tip.constants.ts"]
-  file_publication_src_modules_main_tip_main_tip_module_ts["publication/src/modules/main-tip/main-tip.module.ts"]
-  file_publication_src_modules_main_tip_main_tip_module_unit_test_ts["publication/src/modules/main-tip/main-tip.module.unit.test.ts"]
-  file_publication_src_modules_main_tip_main_tip_service_ts["publication/src/modules/main-tip/main-tip.service.ts"]
-  file_publication_src_modules_main_tip_main_tip_service_unit_test_ts["publication/src/modules/main-tip/main-tip.service.unit.test.ts"]
-  file_publication_src_modules_main_tip_main_tip_types_ts["publication/src/modules/main-tip/main-tip.types.ts"]
-  file_publication_src_modules_process_runner_process_runner_constants_ts["publication/src/modules/process-runner/process-runner.constants.ts"]
-  file_publication_src_modules_process_runner_process_runner_module_ts["publication/src/modules/process-runner/process-runner.module.ts"]
-  file_publication_src_modules_process_runner_process_runner_module_unit_test_ts["publication/src/modules/process-runner/process-runner.module.unit.test.ts"]
-  file_publication_src_modules_process_runner_process_runner_service_integration_test_ts["publication/src/modules/process-runner/process-runner.service.integration.test.ts"]
-  file_publication_src_modules_process_runner_process_runner_service_ts["publication/src/modules/process-runner/process-runner.service.ts"]
-  file_publication_src_modules_process_runner_process_runner_service_unit_test_ts["publication/src/modules/process-runner/process-runner.service.unit.test.ts"]
-  file_publication_src_modules_process_runner_process_runner_types_ts["publication/src/modules/process-runner/process-runner.types.ts"]
-  file_publication_src_modules_process_runner_process_runner_utilities_ts["publication/src/modules/process-runner/process-runner.utilities.ts"]
-  file_publication_src_modules_process_runner_process_runner_utilities_unit_test_ts["publication/src/modules/process-runner/process-runner.utilities.unit.test.ts"]
-  file_publication_src_modules_publish_packages_publish_packages_command_ts["publication/src/modules/publish-packages/publish-packages.command.ts"]
-  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts["publication/src/modules/publish-packages/publish-packages.command.unit.test.ts"]
-  file_publication_src_modules_publish_packages_publish_packages_constants_ts["publication/src/modules/publish-packages/publish-packages.constants.ts"]
-  file_publication_src_modules_publish_packages_publish_packages_module_ts["publication/src/modules/publish-packages/publish-packages.module.ts"]
-  file_publication_src_modules_publish_packages_publish_packages_module_unit_test_ts["publication/src/modules/publish-packages/publish-packages.module.unit.test.ts"]
-  file_publication_src_modules_publish_packages_publish_packages_service_ts["publication/src/modules/publish-packages/publish-packages.service.ts"]
-  file_publication_src_modules_publish_packages_publish_packages_service_unit_test_ts["publication/src/modules/publish-packages/publish-packages.service.unit.test.ts"]
-  file_publication_src_modules_publish_packages_publish_packages_types_ts["publication/src/modules/publish-packages/publish-packages.types.ts"]
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.command.ts"]
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.command.unit.test.ts"]
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_constants_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.constants.ts"]
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.module.ts"]
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.module.unit.test.ts"]
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.service.ts"]
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_unit_test_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.service.unit.test.ts"]
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_types_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.types.ts"]
-  file_publication_src_modules_release_group_release_group_constants_ts["publication/src/modules/release-group/release-group.constants.ts"]
-  file_publication_src_modules_release_group_release_group_module_ts["publication/src/modules/release-group/release-group.module.ts"]
-  file_publication_src_modules_release_group_release_group_module_unit_test_ts["publication/src/modules/release-group/release-group.module.unit.test.ts"]
-  file_publication_src_modules_release_group_release_group_service_ts["publication/src/modules/release-group/release-group.service.ts"]
-  file_publication_src_modules_release_group_release_group_service_unit_test_ts["publication/src/modules/release-group/release-group.service.unit.test.ts"]
-  file_publication_src_modules_release_group_release_group_types_ts["publication/src/modules/release-group/release-group.types.ts"]
-  file_publication_src_modules_tag_codebase_tag_codebase_command_ts["publication/src/modules/tag-codebase/tag-codebase.command.ts"]
-  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts["publication/src/modules/tag-codebase/tag-codebase.command.unit.test.ts"]
-  file_publication_src_modules_tag_codebase_tag_codebase_constants_ts["publication/src/modules/tag-codebase/tag-codebase.constants.ts"]
-  file_publication_src_modules_tag_codebase_tag_codebase_module_ts["publication/src/modules/tag-codebase/tag-codebase.module.ts"]
-  file_publication_src_modules_tag_codebase_tag_codebase_module_unit_test_ts["publication/src/modules/tag-codebase/tag-codebase.module.unit.test.ts"]
-  file_publication_src_modules_tag_codebase_tag_codebase_service_ts["publication/src/modules/tag-codebase/tag-codebase.service.ts"]
-  file_publication_src_modules_tag_codebase_tag_codebase_service_unit_test_ts["publication/src/modules/tag-codebase/tag-codebase.service.unit.test.ts"]
-  file_publication_src_modules_tag_codebase_tag_codebase_types_ts["publication/src/modules/tag-codebase/tag-codebase.types.ts"]
-  file_publication_src_modules_tag_packages_tag_packages_command_ts["publication/src/modules/tag-packages/tag-packages.command.ts"]
-  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts["publication/src/modules/tag-packages/tag-packages.command.unit.test.ts"]
-  file_publication_src_modules_tag_packages_tag_packages_constants_ts["publication/src/modules/tag-packages/tag-packages.constants.ts"]
-  file_publication_src_modules_tag_packages_tag_packages_module_ts["publication/src/modules/tag-packages/tag-packages.module.ts"]
-  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts["publication/src/modules/tag-packages/tag-packages.module.unit.test.ts"]
-  file_publication_src_modules_tag_packages_tag_packages_service_ts["publication/src/modules/tag-packages/tag-packages.service.ts"]
-  file_publication_src_modules_tag_packages_tag_packages_service_unit_test_ts["publication/src/modules/tag-packages/tag-packages.service.unit.test.ts"]
-  file_publication_src_modules_tag_packages_tag_packages_types_ts["publication/src/modules/tag-packages/tag-packages.types.ts"]
-  file_publication_src_modules_version_packages_version_packages_command_ts["publication/src/modules/version-packages/version-packages.command.ts"]
-  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts["publication/src/modules/version-packages/version-packages.command.unit.test.ts"]
-  file_publication_src_modules_version_packages_version_packages_constants_ts["publication/src/modules/version-packages/version-packages.constants.ts"]
-  file_publication_src_modules_version_packages_version_packages_module_ts["publication/src/modules/version-packages/version-packages.module.ts"]
-  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts["publication/src/modules/version-packages/version-packages.module.unit.test.ts"]
-  file_publication_src_modules_version_packages_version_packages_service_ts["publication/src/modules/version-packages/version-packages.service.ts"]
-  file_publication_src_modules_version_packages_version_packages_service_unit_test_ts["publication/src/modules/version-packages/version-packages.service.unit.test.ts"]
-  file_publication_src_modules_version_packages_version_packages_types_ts["publication/src/modules/version-packages/version-packages.types.ts"]
-  file_publication_src_publication_constants_ts["publication/src/publication.constants.ts"]
-  file_publication_src_publication_main_end_to_end_test_ts["publication/src/publication.main.end-to-end.test.ts"]
-  file_publication_src_publication_main_ts["publication/src/publication.main.ts"]
-  file_publication_src_publication_main_unit_test_ts["publication/src/publication.main.unit.test.ts"]
-  file_publication_src_publication_module_ts["publication/src/publication.module.ts"]
-  file_publication_src_publication_repl_ts["publication/src/publication.repl.ts"]
-  file_publication_src_publication_repl_unit_test_ts["publication/src/publication.repl.unit.test.ts"]
-  file_publication_src_publication_types_ts["publication/src/publication.types.ts"]
-  file_publication_testing_mocks_ts["publication/testing/mocks.ts"]
-  file_publication_testing_setup_ts["publication/testing/setup.ts"]
-  file_publication_vitest_config_ts["publication/vitest.config.ts"]
   file_synchronization_callidescope_config_ts["synchronization/callidescope.config.ts"]
   file_synchronization_codependix_config_ts["synchronization/codependix.config.ts"]
   file_synchronization_codometer_config_ts["synchronization/codometer.config.ts"]
@@ -6486,6 +6564,8 @@ graph LR
   file_testing_codometer_config_ts["testing/codometer.config.ts"]
   file_testing_coinagerie_config_ts["testing/coinagerie.config.ts"]
   file_testing_eslint_config_ts["testing/eslint.config.ts"]
+  file_testing_src_end_to_end_ts["testing/src/end-to-end.ts"]
+  file_testing_src_entries_unit_test_ts["testing/src/entries.unit.test.ts"]
   file_testing_src_index_ts["testing/src/index.ts"]
   file_testing_src_modules_browser_stand_ins_browser_stand_ins_types_ts["testing/src/modules/browser-stand-ins/browser-stand-ins.types.ts"]
   file_testing_src_modules_browser_stand_ins_browser_stand_ins_utilities_ts["testing/src/modules/browser-stand-ins/browser-stand-ins.utilities.ts"]
@@ -6496,6 +6576,10 @@ graph LR
   file_testing_src_modules_clock_clock_constants_ts["testing/src/modules/clock/clock.constants.ts"]
   file_testing_src_modules_clock_clock_utilities_ts["testing/src/modules/clock/clock.utilities.ts"]
   file_testing_src_modules_clock_clock_utilities_unit_test_ts["testing/src/modules/clock/clock.utilities.unit.test.ts"]
+  file_testing_src_modules_command_command_constants_ts["testing/src/modules/command/command.constants.ts"]
+  file_testing_src_modules_command_command_types_ts["testing/src/modules/command/command.types.ts"]
+  file_testing_src_modules_command_command_utilities_ts["testing/src/modules/command/command.utilities.ts"]
+  file_testing_src_modules_command_command_utilities_unit_test_ts["testing/src/modules/command/command.utilities.unit.test.ts"]
   file_testing_src_modules_environment_environment_utilities_ts["testing/src/modules/environment/environment.utilities.ts"]
   file_testing_src_modules_environment_environment_utilities_unit_test_ts["testing/src/modules/environment/environment.utilities.unit.test.ts"]
   file_testing_src_modules_fixtures_fixtures_utilities_ts["testing/src/modules/fixtures/fixtures.utilities.ts"]
@@ -6506,8 +6590,17 @@ graph LR
   file_testing_src_modules_mocks_mocks_utilities_unit_test_ts["testing/src/modules/mocks/mocks.utilities.unit.test.ts"]
   file_testing_src_modules_module_wiring_module_wiring_utilities_ts["testing/src/modules/module-wiring/module-wiring.utilities.ts"]
   file_testing_src_modules_module_wiring_module_wiring_utilities_unit_test_ts["testing/src/modules/module-wiring/module-wiring.utilities.unit.test.ts"]
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_constants_ts["testing/src/modules/nx-plugin-sandbox/nx-plugin-sandbox.constants.ts"]
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_functions_ts["testing/src/modules/nx-plugin-sandbox/nx-plugin-sandbox.functions.ts"]
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_types_ts["testing/src/modules/nx-plugin-sandbox/nx-plugin-sandbox.types.ts"]
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_utilities_ts["testing/src/modules/nx-plugin-sandbox/nx-plugin-sandbox.utilities.ts"]
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_utilities_unit_test_ts["testing/src/modules/nx-plugin-sandbox/nx-plugin-sandbox.utilities.unit.test.ts"]
   file_testing_src_modules_route_render_route_render_utilities_tsx["testing/src/modules/route-render/route-render.utilities.tsx"]
   file_testing_src_modules_route_render_route_render_utilities_unit_test_tsx["testing/src/modules/route-render/route-render.utilities.unit.test.tsx"]
+  file_testing_src_modules_tarball_sandbox_tarball_sandbox_constants_ts["testing/src/modules/tarball-sandbox/tarball-sandbox.constants.ts"]
+  file_testing_src_modules_tarball_sandbox_tarball_sandbox_types_ts["testing/src/modules/tarball-sandbox/tarball-sandbox.types.ts"]
+  file_testing_src_modules_tarball_sandbox_tarball_sandbox_utilities_ts["testing/src/modules/tarball-sandbox/tarball-sandbox.utilities.ts"]
+  file_testing_src_modules_tarball_sandbox_tarball_sandbox_utilities_unit_test_ts["testing/src/modules/tarball-sandbox/tarball-sandbox.utilities.unit.test.ts"]
   file_testing_src_modules_temporary_directory_temporary_directory_constants_ts["testing/src/modules/temporary-directory/temporary-directory.constants.ts"]
   file_testing_src_modules_temporary_directory_temporary_directory_utilities_ts["testing/src/modules/temporary-directory/temporary-directory.utilities.ts"]
   file_testing_src_modules_temporary_directory_temporary_directory_utilities_unit_test_ts["testing/src/modules/temporary-directory/temporary-directory.utilities.unit.test.ts"]
@@ -6526,6 +6619,7 @@ graph LR
   file_testing_testing_fixtures_sample_clock_service_ts["testing/testing/fixtures/sample-clock.service.ts"]
   file_testing_testing_fixtures_sample_greeter_service_ts["testing/testing/fixtures/sample-greeter.service.ts"]
   file_testing_testing_setup_ts["testing/testing/setup.ts"]
+  file_testing_testing_tarball_fixture_ts["testing/testing/tarball-fixture.ts"]
   file_testing_vitest_config_ts["testing/vitest.config.ts"]
   file_validation_callidescope_config_ts["validation/callidescope.config.ts"]
   file_validation_codependix_config_ts["validation/codependix.config.ts"]
@@ -6548,22 +6642,6 @@ graph LR
   file_validation_src_modules_lockfile_lockfile_service_ts["validation/src/modules/lockfile/lockfile.service.ts"]
   file_validation_src_modules_lockfile_lockfile_service_unit_test_ts["validation/src/modules/lockfile/lockfile.service.unit.test.ts"]
   file_validation_src_modules_lockfile_lockfile_types_ts["validation/src/modules/lockfile/lockfile.types.ts"]
-  file_validation_src_modules_publishable_packages_publishable_packages_checks_service_ts["validation/src/modules/publishable-packages/publishable-packages-checks.service.ts"]
-  file_validation_src_modules_publishable_packages_publishable_packages_checks_service_unit_test_ts["validation/src/modules/publishable-packages/publishable-packages-checks.service.unit.test.ts"]
-  file_validation_src_modules_publishable_packages_publishable_packages_consumer_constants_ts["validation/src/modules/publishable-packages/publishable-packages-consumer.constants.ts"]
-  file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_ts["validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts"]
-  file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_unit_test_ts["validation/src/modules/publishable-packages/publishable-packages-consumer.service.unit.test.ts"]
-  file_validation_src_modules_publishable_packages_publishable_packages_fixtures_constants_ts["validation/src/modules/publishable-packages/publishable-packages-fixtures.constants.ts"]
-  file_validation_src_modules_publishable_packages_publishable_packages_process_service_ts["validation/src/modules/publishable-packages/publishable-packages-process.service.ts"]
-  file_validation_src_modules_publishable_packages_publishable_packages_process_service_unit_test_ts["validation/src/modules/publishable-packages/publishable-packages-process.service.unit.test.ts"]
-  file_validation_src_modules_publishable_packages_publishable_packages_command_ts["validation/src/modules/publishable-packages/publishable-packages.command.ts"]
-  file_validation_src_modules_publishable_packages_publishable_packages_command_unit_test_ts["validation/src/modules/publishable-packages/publishable-packages.command.unit.test.ts"]
-  file_validation_src_modules_publishable_packages_publishable_packages_constants_ts["validation/src/modules/publishable-packages/publishable-packages.constants.ts"]
-  file_validation_src_modules_publishable_packages_publishable_packages_module_ts["validation/src/modules/publishable-packages/publishable-packages.module.ts"]
-  file_validation_src_modules_publishable_packages_publishable_packages_module_unit_test_ts["validation/src/modules/publishable-packages/publishable-packages.module.unit.test.ts"]
-  file_validation_src_modules_publishable_packages_publishable_packages_service_ts["validation/src/modules/publishable-packages/publishable-packages.service.ts"]
-  file_validation_src_modules_publishable_packages_publishable_packages_service_unit_test_ts["validation/src/modules/publishable-packages/publishable-packages.service.unit.test.ts"]
-  file_validation_src_modules_publishable_packages_publishable_packages_types_ts["validation/src/modules/publishable-packages/publishable-packages.types.ts"]
   file_validation_src_modules_readme_projects_readme_projects_command_ts["validation/src/modules/readme-projects/readme-projects.command.ts"]
   file_validation_src_modules_readme_projects_readme_projects_command_unit_test_ts["validation/src/modules/readme-projects/readme-projects.command.unit.test.ts"]
   file_validation_src_modules_readme_projects_readme_projects_constants_ts["validation/src/modules/readme-projects/readme-projects.constants.ts"]
@@ -6615,7 +6693,7 @@ graph LR
   file_affirmancy_testing_test_prompts_py --> file_affirmancy_src_prompts_py
   file_affirmancy_testing_test_services_py --> file_affirmancy_src_services_py
   file_affirmancy_testing_test_subjects_py --> file_affirmancy_src_subjects_py
-  file_caelundas_api_src_caelundas_api_graphql_end_to_end_test_ts --> file_caelundas_api_src_caelundas_api_utilities_ts
+  file_caelundas_api_src_caelundas_api_graphql_end_to_end_test_ts --> file_caelundas_api_src_cors_service_ts
   file_caelundas_api_src_caelundas_api_graphql_end_to_end_test_ts --> file_caelundas_api_src_modules_health_health_module_ts
   file_caelundas_api_src_caelundas_api_night_sky_end_to_end_test_ts --> file_caelundas_api_src_caelundas_api_module_ts
   file_caelundas_api_src_caelundas_api_night_sky_end_to_end_test_ts --> file_caelundas_api_testing_no_database_module_ts
@@ -6628,194 +6706,279 @@ graph LR
   file_caelundas_api_src_caelundas_api_module_unit_test_ts --> file_caelundas_api_src_modules_events_events_module_ts
   file_caelundas_api_src_caelundas_api_ts --> file_caelundas_api_src_caelundas_api_constants_ts
   file_caelundas_api_src_caelundas_api_ts --> file_caelundas_api_src_caelundas_api_module_ts
-  file_caelundas_api_src_caelundas_api_ts --> file_caelundas_api_src_caelundas_api_utilities_ts
-  file_caelundas_api_src_caelundas_api_types_ts --> file_caelundas_api_src_caelundas_api_entities_ts
-  file_caelundas_api_src_caelundas_api_utilities_ts --> file_caelundas_api_src_caelundas_api_entities_ts
-  file_caelundas_api_src_caelundas_api_utilities_ts --> file_caelundas_api_src_caelundas_api_types_ts
-  file_caelundas_api_src_caelundas_api_utilities_unit_test_ts --> file_caelundas_api_src_caelundas_api_entities_ts
-  file_caelundas_api_src_caelundas_api_utilities_unit_test_ts --> file_caelundas_api_src_caelundas_api_types_ts
-  file_caelundas_api_src_caelundas_api_utilities_unit_test_ts --> file_caelundas_api_src_caelundas_api_utilities_ts
+  file_caelundas_api_src_caelundas_api_ts --> file_caelundas_api_src_cors_service_ts
+  file_caelundas_api_src_cors_service_unit_test_ts --> file_caelundas_api_src_cors_service_ts
   file_caelundas_api_src_modules_events_calendar_event_entities_ts --> file_caelundas_api_src_modules_events_calendar_event_tag_entities_ts
-  file_caelundas_api_src_modules_events_calendar_event_entities_ts --> file_caelundas_api_src_modules_events_event_group_key_entities_ts
-  file_caelundas_api_src_modules_events_calendar_windows_arguments_entities_ts --> file_caelundas_api_src_modules_events_calendar_view_entities_ts
-  file_caelundas_api_src_modules_events_calendar_windows_arguments_entities_ts --> file_caelundas_api_src_modules_events_timeline_scale_entities_ts
-  file_caelundas_api_src_modules_events_calendar_windows_constants_ts --> file_caelundas_api_src_modules_events_timeline_scale_entities_ts
-  file_caelundas_api_src_modules_events_calendar_windows_entities_ts --> file_caelundas_api_src_modules_events_time_window_entities_ts
-  file_caelundas_api_src_modules_events_calendar_windows_types_ts --> file_caelundas_api_src_modules_events_timeline_scale_entities_ts
-  file_caelundas_api_src_modules_events_calendar_windows_utilities_ts --> file_caelundas_api_src_modules_events_calendar_view_entities_ts
-  file_caelundas_api_src_modules_events_calendar_windows_utilities_ts --> file_caelundas_api_src_modules_events_calendar_windows_constants_ts
-  file_caelundas_api_src_modules_events_calendar_windows_utilities_ts --> file_caelundas_api_src_modules_events_calendar_windows_types_ts
-  file_caelundas_api_src_modules_events_calendar_windows_utilities_ts --> file_caelundas_api_src_modules_events_timeline_scale_entities_ts
-  file_caelundas_api_src_modules_events_calendar_windows_utilities_unit_test_ts --> file_caelundas_api_src_modules_events_calendar_view_entities_ts
-  file_caelundas_api_src_modules_events_calendar_windows_utilities_unit_test_ts --> file_caelundas_api_src_modules_events_calendar_windows_types_ts
-  file_caelundas_api_src_modules_events_calendar_windows_utilities_unit_test_ts --> file_caelundas_api_src_modules_events_calendar_windows_utilities_ts
-  file_caelundas_api_src_modules_events_calendar_windows_utilities_unit_test_ts --> file_caelundas_api_src_modules_events_timeline_scale_entities_ts
+  file_caelundas_api_src_modules_events_calendar_event_entities_ts --> file_caelundas_api_src_modules_events_grouping_event_group_key_entities_ts
   file_caelundas_api_src_modules_events_event_facet_entities_ts --> file_caelundas_api_src_modules_events_event_facet_value_entities_ts
-  file_caelundas_api_src_modules_events_event_filter_binder_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_sql_constants_ts
-  file_caelundas_api_src_modules_events_event_filter_binder_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_types_ts
-  file_caelundas_api_src_modules_events_event_filter_collection_entities_ts --> file_caelundas_api_src_modules_events_event_filter_entities_ts
-  file_caelundas_api_src_modules_events_event_filter_collections_constants_ts --> file_caelundas_api_src_modules_events_event_filter_collections_types_ts
-  file_caelundas_api_src_modules_events_event_filter_collections_constants_ts --> file_caelundas_api_src_modules_events_event_filter_combinator_entities_ts
-  file_caelundas_api_src_modules_events_event_filter_collections_constants_ts --> file_caelundas_api_src_modules_events_event_filter_fields_constants_ts
-  file_caelundas_api_src_modules_events_event_filter_collections_types_ts --> file_caelundas_api_src_modules_events_event_facet_entities_ts
-  file_caelundas_api_src_modules_events_event_filter_collections_types_ts --> file_caelundas_api_src_modules_events_event_filter_combinator_entities_ts
-  file_caelundas_api_src_modules_events_event_filter_collections_types_ts --> file_caelundas_api_src_modules_events_event_filter_fields_constants_ts
-  file_caelundas_api_src_modules_events_event_filter_collections_types_ts --> file_caelundas_api_src_modules_events_event_filter_entities_ts
-  file_caelundas_api_src_modules_events_event_filter_collections_utilities_ts --> file_caelundas_api_src_modules_events_event_facet_entities_ts
-  file_caelundas_api_src_modules_events_event_filter_collections_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_collections_constants_ts
-  file_caelundas_api_src_modules_events_event_filter_collections_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_collections_types_ts
-  file_caelundas_api_src_modules_events_event_filter_collections_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_combinator_entities_ts
-  file_caelundas_api_src_modules_events_event_filter_collections_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_fields_constants_ts
-  file_caelundas_api_src_modules_events_event_filter_collections_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_rule_entities_ts
-  file_caelundas_api_src_modules_events_event_filter_collections_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_entities_ts
-  file_caelundas_api_src_modules_events_event_filter_collections_utilities_unit_test_ts --> file_caelundas_api_src_modules_events_event_facet_entities_ts
-  file_caelundas_api_src_modules_events_event_filter_collections_utilities_unit_test_ts --> file_caelundas_api_src_modules_events_event_filter_collections_constants_ts
-  file_caelundas_api_src_modules_events_event_filter_collections_utilities_unit_test_ts --> file_caelundas_api_src_modules_events_event_filter_collections_utilities_ts
-  file_caelundas_api_src_modules_events_event_filter_compiler_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_binder_utilities_ts
-  file_caelundas_api_src_modules_events_event_filter_compiler_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_derived_utilities_ts
-  file_caelundas_api_src_modules_events_event_filter_compiler_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_fields_constants_ts
-  file_caelundas_api_src_modules_events_event_filter_compiler_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_numbers_utilities_ts
-  file_caelundas_api_src_modules_events_event_filter_compiler_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_sql_constants_ts
-  file_caelundas_api_src_modules_events_event_filter_compiler_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_values_constants_ts
-  file_caelundas_api_src_modules_events_event_filter_compiler_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_values_utilities_ts
-  file_caelundas_api_src_modules_events_event_filter_compiler_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_types_ts
-  file_caelundas_api_src_modules_events_event_filter_compiler_utilities_unit_test_ts --> file_caelundas_api_src_modules_events_event_filter_compiler_utilities_ts
-  file_caelundas_api_src_modules_events_event_filter_compiler_utilities_unit_test_ts --> file_caelundas_api_src_modules_events_event_filter_types_ts
-  file_caelundas_api_src_modules_events_event_filter_derived_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_binder_utilities_ts
-  file_caelundas_api_src_modules_events_event_filter_derived_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_fields_constants_ts
-  file_caelundas_api_src_modules_events_event_filter_derived_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_sql_constants_ts
-  file_caelundas_api_src_modules_events_event_filter_derived_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_values_utilities_ts
-  file_caelundas_api_src_modules_events_event_filter_derived_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_types_ts
-  file_caelundas_api_src_modules_events_event_filter_numbers_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_binder_utilities_ts
-  file_caelundas_api_src_modules_events_event_filter_numbers_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_fields_constants_ts
-  file_caelundas_api_src_modules_events_event_filter_numbers_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_sql_constants_ts
-  file_caelundas_api_src_modules_events_event_filter_numbers_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_values_utilities_ts
-  file_caelundas_api_src_modules_events_event_filter_numbers_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_types_ts
-  file_caelundas_api_src_modules_events_event_filter_values_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_values_constants_ts
-  file_caelundas_api_src_modules_events_event_filter_constants_ts --> file_caelundas_api_src_modules_events_event_filter_types_ts
-  file_caelundas_api_src_modules_events_event_filter_entities_ts --> file_caelundas_api_src_modules_events_event_filter_combinator_entities_ts
-  file_caelundas_api_src_modules_events_event_filter_entities_ts --> file_caelundas_api_src_modules_events_event_filter_rule_entities_ts
-  file_caelundas_api_src_modules_events_event_filter_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_constants_ts
-  file_caelundas_api_src_modules_events_event_filter_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_types_ts
-  file_caelundas_api_src_modules_events_event_filter_utilities_unit_test_ts --> file_caelundas_api_src_modules_events_event_filter_utilities_ts
-  file_caelundas_api_src_modules_events_event_grouping_compiler_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_binder_utilities_ts
-  file_caelundas_api_src_modules_events_event_grouping_compiler_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_fields_constants_ts
-  file_caelundas_api_src_modules_events_event_grouping_compiler_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_values_constants_ts
-  file_caelundas_api_src_modules_events_event_grouping_compiler_utilities_ts --> file_caelundas_api_src_modules_events_event_filter_types_ts
-  file_caelundas_api_src_modules_events_event_grouping_compiler_utilities_ts --> file_caelundas_api_src_modules_events_event_grouping_constants_ts
-  file_caelundas_api_src_modules_events_event_grouping_compiler_utilities_ts --> file_caelundas_api_src_modules_events_event_grouping_types_ts
-  file_caelundas_api_src_modules_events_event_grouping_compiler_utilities_unit_test_ts --> file_caelundas_api_src_modules_events_event_grouping_compiler_utilities_ts
-  file_caelundas_api_src_modules_events_event_grouping_compiler_utilities_unit_test_ts --> file_caelundas_api_src_modules_events_event_grouping_types_ts
-  file_caelundas_api_src_modules_events_event_grouping_constants_ts --> file_caelundas_api_src_modules_events_event_filter_fields_constants_ts
-  file_caelundas_api_src_modules_events_event_grouping_constants_ts --> file_caelundas_api_src_modules_events_event_grouping_types_ts
-  file_caelundas_api_src_modules_events_event_grouping_entities_ts --> file_caelundas_api_src_modules_events_event_group_level_entities_ts
-  file_caelundas_api_src_modules_events_event_grouping_utilities_ts --> file_caelundas_api_src_modules_events_event_grouping_constants_ts
-  file_caelundas_api_src_modules_events_event_grouping_utilities_ts --> file_caelundas_api_src_modules_events_event_grouping_types_ts
-  file_caelundas_api_src_modules_events_event_grouping_utilities_unit_test_ts --> file_caelundas_api_src_modules_events_event_grouping_utilities_ts
-  file_caelundas_api_src_modules_events_events_calendar_windows_resolver_end_to_end_test_ts --> file_caelundas_api_testing_events_application_ts
-  file_caelundas_api_src_modules_events_events_filter_resolver_end_to_end_test_ts --> file_caelundas_api_testing_events_application_ts
-  file_caelundas_api_src_modules_events_events_grouping_resolver_end_to_end_test_ts --> file_caelundas_api_testing_events_application_ts
   file_caelundas_api_src_modules_events_events_module_ts --> file_caelundas_api_src_modules_events_events_resolver_ts
   file_caelundas_api_src_modules_events_events_module_ts --> file_caelundas_api_src_modules_events_events_service_ts
+  file_caelundas_api_src_modules_events_events_module_ts --> file_caelundas_api_src_modules_events_filters_event_filter_calendar_fields_service_ts
+  file_caelundas_api_src_modules_events_events_module_ts --> file_caelundas_api_src_modules_events_filters_event_filter_numbers_service_ts
+  file_caelundas_api_src_modules_events_events_module_ts --> file_caelundas_api_src_modules_events_filters_event_filter_parameters_service_ts
+  file_caelundas_api_src_modules_events_events_module_ts --> file_caelundas_api_src_modules_events_filters_event_filter_values_service_ts
+  file_caelundas_api_src_modules_events_events_module_ts --> file_caelundas_api_src_modules_events_filters_event_filter_service_ts
+  file_caelundas_api_src_modules_events_events_module_ts --> file_caelundas_api_src_modules_events_grouping_event_grouping_service_ts
+  file_caelundas_api_src_modules_events_events_module_ts --> file_caelundas_api_src_modules_events_presets_presets_service_ts
+  file_caelundas_api_src_modules_events_events_module_ts --> file_caelundas_api_src_modules_events_windows_windows_service_ts
+  file_caelundas_api_src_modules_events_events_module_unit_test_ts --> file_caelundas_api_src_modules_events_events_module_ts
+  file_caelundas_api_src_modules_events_events_module_unit_test_ts --> file_caelundas_api_src_modules_events_events_resolver_ts
+  file_caelundas_api_src_modules_events_events_module_unit_test_ts --> file_caelundas_api_src_modules_events_events_service_ts
   file_caelundas_api_src_modules_events_events_resolver_end_to_end_test_ts --> file_caelundas_api_testing_events_application_ts
   file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_calendar_event_entities_ts
-  file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_calendar_windows_arguments_entities_ts
-  file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_calendar_windows_entities_ts
   file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_event_facet_entities_ts
-  file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_event_filter_collection_entities_ts
-  file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_event_filter_collections_constants_ts
-  file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_event_filter_entities_ts
-  file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_event_filter_utilities_ts
-  file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_event_grouping_entities_ts
-  file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_event_grouping_utilities_ts
-  file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_events_window_input_entities_ts
   file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_events_constants_ts
   file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_events_entities_ts
   file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_events_service_ts
+  file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_filters_event_filter_entities_ts
+  file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_filters_event_filter_service_ts
+  file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_grouping_event_grouping_entities_ts
+  file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_grouping_event_grouping_service_ts
+  file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_presets_preset_entities_ts
+  file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_presets_presets_constants_ts
+  file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_windows_period_input_entities_ts
+  file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_windows_windows_arguments_entities_ts
+  file_caelundas_api_src_modules_events_events_resolver_ts --> file_caelundas_api_src_modules_events_windows_windows_entities_ts
   file_caelundas_api_src_modules_events_events_resolver_unit_test_ts --> file_caelundas_api_src_modules_events_calendar_event_entities_ts
-  file_caelundas_api_src_modules_events_events_resolver_unit_test_ts --> file_caelundas_api_src_modules_events_calendar_view_entities_ts
   file_caelundas_api_src_modules_events_events_resolver_unit_test_ts --> file_caelundas_api_src_modules_events_event_facet_entities_ts
-  file_caelundas_api_src_modules_events_events_resolver_unit_test_ts --> file_caelundas_api_src_modules_events_event_filter_collections_types_ts
-  file_caelundas_api_src_modules_events_events_resolver_unit_test_ts --> file_caelundas_api_src_modules_events_event_filter_combinator_entities_ts
   file_caelundas_api_src_modules_events_events_resolver_unit_test_ts --> file_caelundas_api_src_modules_events_events_entities_ts
   file_caelundas_api_src_modules_events_events_resolver_unit_test_ts --> file_caelundas_api_src_modules_events_events_resolver_ts
   file_caelundas_api_src_modules_events_events_resolver_unit_test_ts --> file_caelundas_api_src_modules_events_events_service_ts
+  file_caelundas_api_src_modules_events_events_resolver_unit_test_ts --> file_caelundas_api_src_modules_events_filters_event_filter_calendar_fields_service_ts
+  file_caelundas_api_src_modules_events_events_resolver_unit_test_ts --> file_caelundas_api_src_modules_events_filters_event_filter_combinator_entities_ts
+  file_caelundas_api_src_modules_events_events_resolver_unit_test_ts --> file_caelundas_api_src_modules_events_filters_event_filter_numbers_service_ts
+  file_caelundas_api_src_modules_events_events_resolver_unit_test_ts --> file_caelundas_api_src_modules_events_filters_event_filter_parameters_service_ts
+  file_caelundas_api_src_modules_events_events_resolver_unit_test_ts --> file_caelundas_api_src_modules_events_filters_event_filter_values_service_ts
+  file_caelundas_api_src_modules_events_events_resolver_unit_test_ts --> file_caelundas_api_src_modules_events_filters_event_filter_service_ts
+  file_caelundas_api_src_modules_events_events_resolver_unit_test_ts --> file_caelundas_api_src_modules_events_grouping_event_grouping_service_ts
+  file_caelundas_api_src_modules_events_events_resolver_unit_test_ts --> file_caelundas_api_src_modules_events_presets_presets_types_ts
+  file_caelundas_api_src_modules_events_events_resolver_unit_test_ts --> file_caelundas_api_src_modules_events_windows_calendar_window_entities_ts
   file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_calendar_event_entities_ts
-  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_calendar_windows_arguments_entities_ts
-  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_calendar_windows_types_ts
-  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_calendar_windows_utilities_ts
   file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_event_facet_entities_ts
-  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_event_filter_collections_types_ts
-  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_event_filter_collections_utilities_ts
-  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_event_filter_compiler_utilities_ts
-  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_event_filter_types_ts
-  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_event_grouping_compiler_utilities_ts
-  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_event_grouping_types_ts
-  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_events_window_input_entities_ts
   file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_events_constants_ts
   file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_events_entities_ts
-  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_events_utilities_ts
-  file_caelundas_api_src_modules_events_events_service_unit_test_ts --> file_caelundas_api_src_modules_events_calendar_view_entities_ts
+  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_service_ts
+  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_types_ts
+  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_grouping_event_grouping_service_ts
+  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_grouping_event_grouping_types_ts
+  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_presets_presets_service_ts
+  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_presets_presets_types_ts
+  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_windows_period_input_entities_ts
+  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_windows_windows_arguments_entities_ts
+  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_windows_windows_service_ts
+  file_caelundas_api_src_modules_events_events_service_ts --> file_caelundas_api_src_modules_events_windows_windows_types_ts
   file_caelundas_api_src_modules_events_events_service_unit_test_ts --> file_caelundas_api_src_modules_events_events_service_ts
-  file_caelundas_api_src_modules_events_events_service_unit_test_ts --> file_caelundas_api_src_modules_events_timeline_scale_entities_ts
-  file_caelundas_api_src_modules_events_events_utilities_unit_test_ts --> file_caelundas_api_src_modules_events_events_utilities_ts
+  file_caelundas_api_src_modules_events_events_service_unit_test_ts --> file_caelundas_api_src_modules_events_filters_event_filter_calendar_fields_service_ts
+  file_caelundas_api_src_modules_events_events_service_unit_test_ts --> file_caelundas_api_src_modules_events_filters_event_filter_numbers_service_ts
+  file_caelundas_api_src_modules_events_events_service_unit_test_ts --> file_caelundas_api_src_modules_events_filters_event_filter_parameters_service_ts
+  file_caelundas_api_src_modules_events_events_service_unit_test_ts --> file_caelundas_api_src_modules_events_filters_event_filter_values_service_ts
+  file_caelundas_api_src_modules_events_events_service_unit_test_ts --> file_caelundas_api_src_modules_events_filters_event_filter_service_ts
+  file_caelundas_api_src_modules_events_events_service_unit_test_ts --> file_caelundas_api_src_modules_events_grouping_event_grouping_service_ts
+  file_caelundas_api_src_modules_events_events_service_unit_test_ts --> file_caelundas_api_src_modules_events_presets_presets_service_ts
+  file_caelundas_api_src_modules_events_events_service_unit_test_ts --> file_caelundas_api_src_modules_events_windows_calendar_window_entities_ts
+  file_caelundas_api_src_modules_events_events_service_unit_test_ts --> file_caelundas_api_src_modules_events_windows_timeline_scale_entities_ts
+  file_caelundas_api_src_modules_events_events_service_unit_test_ts --> file_caelundas_api_src_modules_events_windows_windows_service_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_calendar_fields_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_fields_constants_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_calendar_fields_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_parameters_service_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_calendar_fields_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_sql_constants_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_calendar_fields_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_values_service_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_calendar_fields_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_types_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_numbers_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_fields_constants_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_numbers_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_parameters_service_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_numbers_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_sql_constants_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_numbers_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_values_service_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_numbers_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_types_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_parameters_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_sql_constants_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_parameters_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_types_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_values_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_values_constants_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_constants_ts --> file_caelundas_api_src_modules_events_filters_event_filter_types_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_entities_ts --> file_caelundas_api_src_modules_events_filters_event_filter_combinator_entities_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_entities_ts --> file_caelundas_api_src_modules_events_filters_event_filter_rule_entities_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_calendar_fields_service_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_fields_constants_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_numbers_service_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_parameters_service_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_sql_constants_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_values_constants_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_values_service_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_constants_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_types_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_service_unit_test_ts --> file_caelundas_api_src_modules_events_filters_event_filter_calendar_fields_service_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_service_unit_test_ts --> file_caelundas_api_src_modules_events_filters_event_filter_numbers_service_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_service_unit_test_ts --> file_caelundas_api_src_modules_events_filters_event_filter_parameters_service_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_service_unit_test_ts --> file_caelundas_api_src_modules_events_filters_event_filter_values_service_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_service_unit_test_ts --> file_caelundas_api_src_modules_events_filters_event_filter_service_ts
+  file_caelundas_api_src_modules_events_filters_event_filter_service_unit_test_ts --> file_caelundas_api_src_modules_events_filters_event_filter_types_ts
+  file_caelundas_api_src_modules_events_filters_events_filter_resolver_end_to_end_test_ts --> file_caelundas_api_testing_events_application_ts
+  file_caelundas_api_src_modules_events_grouping_event_grouping_constants_ts --> file_caelundas_api_src_modules_events_filters_event_filter_fields_constants_ts
+  file_caelundas_api_src_modules_events_grouping_event_grouping_constants_ts --> file_caelundas_api_src_modules_events_grouping_event_grouping_types_ts
+  file_caelundas_api_src_modules_events_grouping_event_grouping_entities_ts --> file_caelundas_api_src_modules_events_grouping_event_group_level_entities_ts
+  file_caelundas_api_src_modules_events_grouping_event_grouping_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_fields_constants_ts
+  file_caelundas_api_src_modules_events_grouping_event_grouping_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_parameters_service_ts
+  file_caelundas_api_src_modules_events_grouping_event_grouping_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_values_constants_ts
+  file_caelundas_api_src_modules_events_grouping_event_grouping_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_types_ts
+  file_caelundas_api_src_modules_events_grouping_event_grouping_service_ts --> file_caelundas_api_src_modules_events_grouping_event_grouping_constants_ts
+  file_caelundas_api_src_modules_events_grouping_event_grouping_service_ts --> file_caelundas_api_src_modules_events_grouping_event_grouping_types_ts
+  file_caelundas_api_src_modules_events_grouping_event_grouping_service_unit_test_ts --> file_caelundas_api_src_modules_events_filters_event_filter_parameters_service_ts
+  file_caelundas_api_src_modules_events_grouping_event_grouping_service_unit_test_ts --> file_caelundas_api_src_modules_events_grouping_event_grouping_service_ts
+  file_caelundas_api_src_modules_events_grouping_event_grouping_service_unit_test_ts --> file_caelundas_api_src_modules_events_grouping_event_grouping_types_ts
+  file_caelundas_api_src_modules_events_grouping_events_grouping_resolver_end_to_end_test_ts --> file_caelundas_api_testing_events_application_ts
+  file_caelundas_api_src_modules_events_presets_preset_entities_ts --> file_caelundas_api_src_modules_events_filters_event_filter_entities_ts
+  file_caelundas_api_src_modules_events_presets_presets_constants_ts --> file_caelundas_api_src_modules_events_filters_event_filter_combinator_entities_ts
+  file_caelundas_api_src_modules_events_presets_presets_constants_ts --> file_caelundas_api_src_modules_events_filters_event_filter_fields_constants_ts
+  file_caelundas_api_src_modules_events_presets_presets_constants_ts --> file_caelundas_api_src_modules_events_presets_presets_types_ts
+  file_caelundas_api_src_modules_events_presets_presets_service_ts --> file_caelundas_api_src_modules_events_event_facet_entities_ts
+  file_caelundas_api_src_modules_events_presets_presets_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_combinator_entities_ts
+  file_caelundas_api_src_modules_events_presets_presets_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_fields_constants_ts
+  file_caelundas_api_src_modules_events_presets_presets_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_rule_entities_ts
+  file_caelundas_api_src_modules_events_presets_presets_service_ts --> file_caelundas_api_src_modules_events_filters_event_filter_entities_ts
+  file_caelundas_api_src_modules_events_presets_presets_service_ts --> file_caelundas_api_src_modules_events_presets_presets_constants_ts
+  file_caelundas_api_src_modules_events_presets_presets_service_ts --> file_caelundas_api_src_modules_events_presets_presets_types_ts
+  file_caelundas_api_src_modules_events_presets_presets_service_unit_test_ts --> file_caelundas_api_src_modules_events_event_facet_entities_ts
+  file_caelundas_api_src_modules_events_presets_presets_service_unit_test_ts --> file_caelundas_api_src_modules_events_presets_presets_constants_ts
+  file_caelundas_api_src_modules_events_presets_presets_service_unit_test_ts --> file_caelundas_api_src_modules_events_presets_presets_service_ts
+  file_caelundas_api_src_modules_events_presets_presets_types_ts --> file_caelundas_api_src_modules_events_event_facet_entities_ts
+  file_caelundas_api_src_modules_events_presets_presets_types_ts --> file_caelundas_api_src_modules_events_filters_event_filter_combinator_entities_ts
+  file_caelundas_api_src_modules_events_presets_presets_types_ts --> file_caelundas_api_src_modules_events_filters_event_filter_fields_constants_ts
+  file_caelundas_api_src_modules_events_presets_presets_types_ts --> file_caelundas_api_src_modules_events_filters_event_filter_entities_ts
+  file_caelundas_api_src_modules_events_windows_events_windows_resolver_end_to_end_test_ts --> file_caelundas_api_testing_events_application_ts
+  file_caelundas_api_src_modules_events_windows_windows_arguments_entities_ts --> file_caelundas_api_src_modules_events_windows_calendar_window_entities_ts
+  file_caelundas_api_src_modules_events_windows_windows_arguments_entities_ts --> file_caelundas_api_src_modules_events_windows_timeline_scale_entities_ts
+  file_caelundas_api_src_modules_events_windows_windows_constants_ts --> file_caelundas_api_src_modules_events_windows_timeline_scale_entities_ts
+  file_caelundas_api_src_modules_events_windows_windows_entities_ts --> file_caelundas_api_src_modules_events_windows_period_entities_ts
+  file_caelundas_api_src_modules_events_windows_windows_service_ts --> file_caelundas_api_src_modules_events_windows_calendar_window_entities_ts
+  file_caelundas_api_src_modules_events_windows_windows_service_ts --> file_caelundas_api_src_modules_events_windows_timeline_scale_entities_ts
+  file_caelundas_api_src_modules_events_windows_windows_service_ts --> file_caelundas_api_src_modules_events_windows_windows_constants_ts
+  file_caelundas_api_src_modules_events_windows_windows_service_ts --> file_caelundas_api_src_modules_events_windows_windows_types_ts
+  file_caelundas_api_src_modules_events_windows_windows_service_unit_test_ts --> file_caelundas_api_src_modules_events_windows_calendar_window_entities_ts
+  file_caelundas_api_src_modules_events_windows_windows_service_unit_test_ts --> file_caelundas_api_src_modules_events_windows_timeline_scale_entities_ts
+  file_caelundas_api_src_modules_events_windows_windows_service_unit_test_ts --> file_caelundas_api_src_modules_events_windows_windows_service_ts
+  file_caelundas_api_src_modules_events_windows_windows_service_unit_test_ts --> file_caelundas_api_src_modules_events_windows_windows_types_ts
+  file_caelundas_api_src_modules_events_windows_windows_types_ts --> file_caelundas_api_src_modules_events_windows_timeline_scale_entities_ts
   file_caelundas_api_src_modules_health_health_module_ts --> file_caelundas_api_src_modules_health_health_resolver_ts
   file_caelundas_api_src_modules_health_health_module_ts --> file_caelundas_api_src_modules_health_health_service_ts
   file_caelundas_api_src_modules_health_health_module_unit_test_ts --> file_caelundas_api_src_modules_health_health_module_ts
+  file_caelundas_api_src_modules_health_health_module_unit_test_ts --> file_caelundas_api_src_modules_health_health_resolver_ts
+  file_caelundas_api_src_modules_health_health_module_unit_test_ts --> file_caelundas_api_src_modules_health_health_service_ts
   file_caelundas_api_src_modules_health_health_resolver_ts --> file_caelundas_api_src_modules_health_health_service_ts
   file_caelundas_api_src_modules_health_health_resolver_unit_test_ts --> file_caelundas_api_src_modules_health_health_resolver_ts
   file_caelundas_api_src_modules_health_health_resolver_unit_test_ts --> file_caelundas_api_src_modules_health_health_service_ts
   file_caelundas_api_src_modules_health_health_service_unit_test_ts --> file_caelundas_api_src_modules_health_health_service_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_colors_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_colors_utilities_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_projection_utilities_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_utilities_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_utilities_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_utilities_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_input_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_colors_utilities_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_input_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_input_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_input_utilities_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_input_utilities_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_input_utilities_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_lines_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_colors_utilities_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_lines_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_projection_utilities_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_lines_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_lines_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_lines_utilities_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_lines_utilities_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_lines_utilities_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_projection_utilities_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_lines_utilities_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_options_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_options_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_options_utilities_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_options_utilities_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_options_utilities_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_projection_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_projection_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_colors_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_colors_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_colors_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_colors_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_projection_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_colors_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_projection_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_input_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_colors_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_input_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_input_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_input_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_colors_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_input_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_input_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_input_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_lines_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_colors_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_lines_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_projection_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_lines_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_lines_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_lines_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_colors_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_lines_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_lines_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_lines_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_projection_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_lines_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_options_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_options_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_options_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_options_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_options_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_projection_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_projection_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_projection_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_projection_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_projection_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_sidereal_time_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_sidereal_time_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_sidereal_time_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_stars_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_projection_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_stars_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_stars_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_stars_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_projection_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_stars_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_stars_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_stars_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_stars_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_svg_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_colors_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_svg_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_svg_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_lines_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_svg_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_options_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_svg_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_stars_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_svg_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_view_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_svg_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_svg_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_colors_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_svg_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_svg_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_lines_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_svg_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_options_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_svg_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_projection_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_svg_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_sidereal_time_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_svg_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_stars_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_svg_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_svg_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_svg_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_view_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_svg_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_view_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_projection_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_view_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_view_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_view_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_projection_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_view_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_view_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_view_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_view_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
   file_caelundas_api_src_modules_night_sky_night_sky_constants_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
   file_caelundas_api_src_modules_night_sky_night_sky_entities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_measurements_entities_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_module_ts --> file_caelundas_api_src_modules_night_sky_night_sky_colors_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_module_ts --> file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_module_ts --> file_caelundas_api_src_modules_night_sky_night_sky_input_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_module_ts --> file_caelundas_api_src_modules_night_sky_night_sky_lines_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_module_ts --> file_caelundas_api_src_modules_night_sky_night_sky_options_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_module_ts --> file_caelundas_api_src_modules_night_sky_night_sky_projection_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_module_ts --> file_caelundas_api_src_modules_night_sky_night_sky_sidereal_time_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_module_ts --> file_caelundas_api_src_modules_night_sky_night_sky_stars_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_module_ts --> file_caelundas_api_src_modules_night_sky_night_sky_svg_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_module_ts --> file_caelundas_api_src_modules_night_sky_night_sky_view_service_ts
   file_caelundas_api_src_modules_night_sky_night_sky_module_ts --> file_caelundas_api_src_modules_night_sky_night_sky_resolver_ts
   file_caelundas_api_src_modules_night_sky_night_sky_module_ts --> file_caelundas_api_src_modules_night_sky_night_sky_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_module_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_module_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_module_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_resolver_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_module_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_service_ts
   file_caelundas_api_src_modules_night_sky_night_sky_resolver_ts --> file_caelundas_api_src_modules_night_sky_night_sky_input_entities_ts
   file_caelundas_api_src_modules_night_sky_night_sky_resolver_ts --> file_caelundas_api_src_modules_night_sky_night_sky_entities_ts
   file_caelundas_api_src_modules_night_sky_night_sky_resolver_ts --> file_caelundas_api_src_modules_night_sky_night_sky_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_resolver_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_colors_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_resolver_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_resolver_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_input_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_resolver_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_lines_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_resolver_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_options_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_resolver_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_projection_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_resolver_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_sidereal_time_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_resolver_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_stars_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_resolver_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_svg_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_resolver_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_view_service_ts
   file_caelundas_api_src_modules_night_sky_night_sky_resolver_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_resolver_ts
   file_caelundas_api_src_modules_night_sky_night_sky_resolver_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_service_ts
   file_caelundas_api_src_modules_night_sky_night_sky_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_input_entities_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_input_utilities_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_input_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_sidereal_time_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_svg_service_ts
   file_caelundas_api_src_modules_night_sky_night_sky_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
   file_caelundas_api_src_modules_night_sky_night_sky_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_service_ts --> file_caelundas_api_src_modules_night_sky_night_sky_utilities_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_colors_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_input_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_lines_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_options_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_projection_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_sidereal_time_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_stars_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_svg_service_ts
+  file_caelundas_api_src_modules_night_sky_night_sky_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_view_service_ts
   file_caelundas_api_src_modules_night_sky_night_sky_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
   file_caelundas_api_src_modules_night_sky_night_sky_service_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_service_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_colors_utilities_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_ecliptic_utilities_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_lines_utilities_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_options_utilities_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_projection_utilities_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_constants_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_utilities_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_utilities_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_types_ts
-  file_caelundas_api_src_modules_night_sky_night_sky_utilities_unit_test_ts --> file_caelundas_api_src_modules_night_sky_night_sky_utilities_ts
   file_caelundas_api_testing_events_application_ts --> file_caelundas_api_src_caelundas_api_constants_ts
   file_caelundas_api_testing_events_application_ts --> file_caelundas_api_src_modules_events_events_module_ts
   file_caelundas_api_testing_no_database_module_ts --> file_caelundas_api_testing_no_database_constants_ts
@@ -7049,7 +7212,6 @@ graph LR
   file_caelundas_cli_src_modules_calendar_calendar_service_ts --> file_caelundas_cli_src_modules_input_input_types_ts
   file_caelundas_cli_src_modules_calendar_calendar_service_unit_test_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_types_ts
   file_caelundas_cli_src_modules_calendar_calendar_service_unit_test_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
-  file_caelundas_cli_src_modules_calendar_calendar_service_unit_test_ts --> file_caelundas_cli_testing_mocks_ts
   file_caelundas_cli_src_modules_calendar_calendar_types_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_types_ts
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_builder_service_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_types_ts
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_builder_service_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
@@ -7316,7 +7478,6 @@ graph LR
   file_caelundas_cli_src_modules_input_input_service_unit_test_ts --> file_caelundas_cli_src_modules_input_input_constants_ts
   file_caelundas_cli_src_modules_input_input_service_unit_test_ts --> file_caelundas_cli_src_modules_input_input_service_ts
   file_caelundas_cli_src_modules_input_input_service_unit_test_ts --> file_caelundas_cli_src_modules_input_input_types_ts
-  file_caelundas_cli_src_modules_input_input_service_unit_test_ts --> file_caelundas_cli_testing_mocks_ts
   file_caelundas_cli_src_modules_input_input_types_ts --> file_caelundas_cli_src_caelundas_cli_constants_ts
   file_caelundas_cli_src_modules_input_input_types_ts --> file_caelundas_cli_src_modules_input_input_constants_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspect_event_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_utilities_service_ts
@@ -8271,13 +8432,6 @@ graph LR
   file_caelundas_web_src_components_calendar_cluster_dialog_calendar_cluster_dialog_unit_test_tsx --> file_caelundas_web_src_components_events_calendar_calendar_records_types_ts
   file_caelundas_web_src_components_calendar_cluster_dialog_calendar_cluster_dialog_utilities_ts --> file_caelundas_web_src_components_calendar_agenda_calendar_agenda_utilities_ts
   file_caelundas_web_src_components_calendar_cluster_dialog_calendar_cluster_dialog_utilities_ts --> file_caelundas_web_src_components_events_calendar_calendar_records_types_ts
-  file_caelundas_web_src_components_calendar_collection_picker_calendar_collection_picker_tsx --> file_caelundas_web_src_components_calendar_collection_picker_calendar_collection_picker_constants_ts
-  file_caelundas_web_src_components_calendar_collection_picker_calendar_collection_picker_tsx --> file_caelundas_web_src_components_calendar_filters_event_filter_collections_types_ts
-  file_caelundas_web_src_components_calendar_collection_picker_calendar_collection_picker_tsx --> file_caelundas_web_src_components_calendar_filters_event_filter_input_utilities_ts
-  file_caelundas_web_src_components_calendar_collection_picker_calendar_collection_picker_tsx --> file_caelundas_web_src_components_calendar_filters_event_filter_tree_constants_ts
-  file_caelundas_web_src_components_calendar_collection_picker_calendar_collection_picker_tsx --> file_caelundas_web_src_components_calendar_filters_event_filters_types_ts
-  file_caelundas_web_src_components_calendar_collection_picker_calendar_collection_picker_unit_test_tsx --> file_caelundas_web_src_components_calendar_collection_picker_calendar_collection_picker_tsx
-  file_caelundas_web_src_components_calendar_collection_picker_calendar_collection_picker_unit_test_tsx --> file_caelundas_web_src_components_calendar_filters_event_filter_tree_constants_ts
   file_caelundas_web_src_components_calendar_color_by_calendar_color_by_tsx --> file_caelundas_web_src_components_calendar_color_by_calendar_color_by_constants_ts
   file_caelundas_web_src_components_calendar_color_by_calendar_color_by_tsx --> file_caelundas_web_src_components_calendar_color_by_calendar_color_schemes_utilities_ts
   file_caelundas_web_src_components_calendar_color_by_calendar_color_by_tsx --> file_caelundas_web_src_components_calendar_group_by_event_group_fields_utilities_ts
@@ -8355,24 +8509,18 @@ graph LR
   file_caelundas_web_src_components_calendar_filters_calendar_filters_constants_ts --> file_caelundas_web_src_components_calendar_filters_event_filters_constants_ts
   file_caelundas_web_src_components_calendar_filters_calendar_filters_constants_ts --> file_caelundas_web_src_components_filter_date_range_editor_filter_date_range_editor_tsx
   file_caelundas_web_src_components_calendar_filters_calendar_filters_constants_ts --> file_caelundas_web_src_components_filter_tag_editor_filter_tag_editor_tsx
-  file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_calendar_collection_picker_calendar_collection_picker_tsx
   file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_calendar_filters_calendar_filters_constants_ts
   file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_calendar_filters_calendar_filters_utilities_ts
-  file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_calendar_filters_event_filter_collections_types_ts
   file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_calendar_filters_event_filter_tree_constants_ts
   file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_calendar_filters_event_filter_tree_utilities_ts
   file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_calendar_filters_event_filters_types_ts
   file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_calendar_filters_filter_chip_row_tsx
   file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_calendar_filters_filter_surface_tsx
+  file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_calendar_filters_presets_types_ts
+  file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_preset_picker_preset_picker_tsx
   file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_hooks_use_filter_query_use_filter_query_ts
   file_caelundas_web_src_components_calendar_filters_calendar_filters_unit_test_tsx --> file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx
   file_caelundas_web_src_components_calendar_filters_calendar_filters_utilities_ts --> file_caelundas_web_src_components_calendar_filters_calendar_filters_constants_ts
-  file_caelundas_web_src_components_calendar_filters_event_filter_collections_types_ts --> file_caelundas_web_src_components_calendar_filters_event_filters_types_ts
-  file_caelundas_web_src_components_calendar_filters_event_filter_collections_utilities_ts --> file_caelundas_web_src_components_calendar_filters_event_filter_collections_types_ts
-  file_caelundas_web_src_components_calendar_filters_event_filter_collections_utilities_ts --> file_caelundas_web_src_components_calendar_filters_event_filters_types_ts
-  file_caelundas_web_src_components_calendar_filters_event_filter_collections_utilities_ts --> file_caelundas_web_src_graphql_generated_operations_ts
-  file_caelundas_web_src_components_calendar_filters_event_filter_collections_utilities_unit_test_ts --> file_caelundas_web_src_components_calendar_filters_event_filter_collections_utilities_ts
-  file_caelundas_web_src_components_calendar_filters_event_filter_collections_utilities_unit_test_ts --> file_caelundas_web_src_components_calendar_filters_event_filter_input_utilities_ts
   file_caelundas_web_src_components_calendar_filters_event_filter_fields_constants_ts --> file_caelundas_web_src_components_calendar_filters_event_filters_constants_ts
   file_caelundas_web_src_components_calendar_filters_event_filter_fields_constants_ts --> file_caelundas_web_src_components_calendar_filters_event_filters_types_ts
   file_caelundas_web_src_components_calendar_filters_event_filter_fields_utilities_ts --> file_caelundas_web_src_components_calendar_filters_event_filter_fields_constants_ts
@@ -8403,6 +8551,12 @@ graph LR
   file_caelundas_web_src_components_calendar_filters_filter_chip_row_unit_test_tsx --> file_caelundas_web_testing_event_filters_ts
   file_caelundas_web_src_components_calendar_filters_filter_surface_tsx --> file_caelundas_web_src_components_calendar_filters_calendar_filters_constants_ts
   file_caelundas_web_src_components_calendar_filters_filter_surface_unit_test_tsx --> file_caelundas_web_src_components_calendar_filters_filter_surface_tsx
+  file_caelundas_web_src_components_calendar_filters_presets_types_ts --> file_caelundas_web_src_components_calendar_filters_event_filters_types_ts
+  file_caelundas_web_src_components_calendar_filters_presets_utilities_ts --> file_caelundas_web_src_components_calendar_filters_event_filters_types_ts
+  file_caelundas_web_src_components_calendar_filters_presets_utilities_ts --> file_caelundas_web_src_components_calendar_filters_presets_types_ts
+  file_caelundas_web_src_components_calendar_filters_presets_utilities_ts --> file_caelundas_web_src_graphql_generated_operations_ts
+  file_caelundas_web_src_components_calendar_filters_presets_utilities_unit_test_ts --> file_caelundas_web_src_components_calendar_filters_event_filter_input_utilities_ts
+  file_caelundas_web_src_components_calendar_filters_presets_utilities_unit_test_ts --> file_caelundas_web_src_components_calendar_filters_presets_utilities_ts
   file_caelundas_web_src_components_calendar_group_by_calendar_group_by_tsx --> file_caelundas_web_src_components_calendar_group_by_calendar_group_by_constants_ts
   file_caelundas_web_src_components_calendar_group_by_calendar_group_by_tsx --> file_caelundas_web_src_components_calendar_group_by_event_group_fields_utilities_ts
   file_caelundas_web_src_components_calendar_group_by_calendar_group_by_tsx --> file_caelundas_web_src_components_calendar_group_by_event_groups_constants_ts
@@ -8633,19 +8787,19 @@ graph LR
   file_caelundas_web_src_components_events_calendar_calendar_grid_tsx --> file_caelundas_web_src_hooks_use_calendar_clusters_use_calendar_clusters_ts
   file_caelundas_web_src_components_events_calendar_calendar_grid_unit_test_tsx --> file_caelundas_web_src_components_calendar_navigation_group_calendar_navigation_group_types_ts
   file_caelundas_web_src_components_events_calendar_calendar_grid_unit_test_tsx --> file_caelundas_web_src_components_events_calendar_calendar_grid_tsx
-  file_caelundas_web_src_components_events_calendar_calendar_loader_constants_ts --> file_caelundas_web_src_components_calendar_filters_event_filter_collections_types_ts
   file_caelundas_web_src_components_events_calendar_calendar_loader_constants_ts --> file_caelundas_web_src_components_calendar_filters_event_filters_types_ts
+  file_caelundas_web_src_components_events_calendar_calendar_loader_constants_ts --> file_caelundas_web_src_components_calendar_filters_presets_types_ts
   file_caelundas_web_src_components_events_calendar_calendar_loader_constants_ts --> file_caelundas_web_src_components_events_calendar_calendar_records_types_ts
-  file_caelundas_web_src_components_events_calendar_calendar_loader_types_ts --> file_caelundas_web_src_components_calendar_filters_event_filter_collections_types_ts
   file_caelundas_web_src_components_events_calendar_calendar_loader_types_ts --> file_caelundas_web_src_components_calendar_filters_event_filters_types_ts
+  file_caelundas_web_src_components_events_calendar_calendar_loader_types_ts --> file_caelundas_web_src_components_calendar_filters_presets_types_ts
   file_caelundas_web_src_components_events_calendar_calendar_loader_types_ts --> file_caelundas_web_src_components_calendar_group_by_event_groups_types_ts
   file_caelundas_web_src_components_events_calendar_calendar_loader_types_ts --> file_caelundas_web_src_components_events_calendar_calendar_records_types_ts
   file_caelundas_web_src_components_events_calendar_calendar_loader_utilities_integration_test_tsx --> file_caelundas_web_testing_event_filters_ts
   file_caelundas_web_src_components_events_calendar_calendar_loader_utilities_integration_test_tsx --> file_caelundas_web_testing_render_route_tsx
-  file_caelundas_web_src_components_events_calendar_calendar_loader_utilities_ts --> file_caelundas_web_src_components_calendar_filters_event_filter_collections_types_ts
-  file_caelundas_web_src_components_events_calendar_calendar_loader_utilities_ts --> file_caelundas_web_src_components_calendar_filters_event_filter_collections_utilities_ts
   file_caelundas_web_src_components_events_calendar_calendar_loader_utilities_ts --> file_caelundas_web_src_components_calendar_filters_event_filter_input_utilities_ts
   file_caelundas_web_src_components_events_calendar_calendar_loader_utilities_ts --> file_caelundas_web_src_components_calendar_filters_event_filters_types_ts
+  file_caelundas_web_src_components_events_calendar_calendar_loader_utilities_ts --> file_caelundas_web_src_components_calendar_filters_presets_types_ts
+  file_caelundas_web_src_components_events_calendar_calendar_loader_utilities_ts --> file_caelundas_web_src_components_calendar_filters_presets_utilities_ts
   file_caelundas_web_src_components_events_calendar_calendar_loader_utilities_ts --> file_caelundas_web_src_components_calendar_group_by_event_group_fields_utilities_ts
   file_caelundas_web_src_components_events_calendar_calendar_loader_utilities_ts --> file_caelundas_web_src_components_calendar_group_by_event_group_input_utilities_ts
   file_caelundas_web_src_components_events_calendar_calendar_loader_utilities_ts --> file_caelundas_web_src_components_calendar_group_by_event_groups_types_ts
@@ -8700,6 +8854,7 @@ graph LR
   file_caelundas_web_src_components_events_calendar_events_calendar_tsx --> file_caelundas_web_src_components_calendar_toolbar_calendar_toolbar_tsx
   file_caelundas_web_src_components_events_calendar_events_calendar_tsx --> file_caelundas_web_src_components_events_calendar_calendar_grid_tsx
   file_caelundas_web_src_components_events_calendar_events_calendar_tsx --> file_caelundas_web_src_components_events_calendar_calendar_records_types_ts
+  file_caelundas_web_src_components_events_calendar_events_calendar_tsx --> file_caelundas_web_src_components_events_calendar_calendar_surfaces_constants_ts
   file_caelundas_web_src_components_events_calendar_events_calendar_tsx --> file_caelundas_web_src_components_events_calendar_calendar_views_constants_ts
   file_caelundas_web_src_components_events_calendar_events_calendar_tsx --> file_caelundas_web_src_components_events_calendar_calendar_views_types_ts
   file_caelundas_web_src_components_events_calendar_events_calendar_tsx --> file_caelundas_web_src_hooks_use_calendar_navigation_use_calendar_navigation_ts
@@ -8728,6 +8883,7 @@ graph LR
   file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_integration_test_tsx --> file_caelundas_web_testing_viewport_ts
   file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_tsx --> file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_constants_ts
   file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_tsx --> file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_tsx
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_tsx --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_opacity_ts
   file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_tsx --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_ts
   file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_unit_test_tsx --> file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_tsx
   file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_unit_test_tsx --> file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_tsx
@@ -8792,6 +8948,13 @@ graph LR
   file_caelundas_web_src_components_night_sky_menu_night_sky_sliders_unit_test_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_sliders_tsx
   file_caelundas_web_src_components_night_sky_menu_night_sky_sliders_unit_test_tsx --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_utilities_ts
   file_caelundas_web_src_components_page_not_found_page_not_found_unit_test_tsx --> file_caelundas_web_src_components_page_not_found_page_not_found_tsx
+  file_caelundas_web_src_components_preset_picker_preset_picker_tsx --> file_caelundas_web_src_components_calendar_filters_event_filter_input_utilities_ts
+  file_caelundas_web_src_components_preset_picker_preset_picker_tsx --> file_caelundas_web_src_components_calendar_filters_event_filter_tree_constants_ts
+  file_caelundas_web_src_components_preset_picker_preset_picker_tsx --> file_caelundas_web_src_components_calendar_filters_event_filters_types_ts
+  file_caelundas_web_src_components_preset_picker_preset_picker_tsx --> file_caelundas_web_src_components_calendar_filters_presets_types_ts
+  file_caelundas_web_src_components_preset_picker_preset_picker_tsx --> file_caelundas_web_src_components_preset_picker_preset_picker_constants_ts
+  file_caelundas_web_src_components_preset_picker_preset_picker_unit_test_tsx --> file_caelundas_web_src_components_calendar_filters_event_filter_tree_constants_ts
+  file_caelundas_web_src_components_preset_picker_preset_picker_unit_test_tsx --> file_caelundas_web_src_components_preset_picker_preset_picker_tsx
   file_caelundas_web_src_components_virtual_list_calendar_virtual_window_utilities_ts --> file_caelundas_web_src_components_virtual_list_calendar_virtual_window_types_ts
   file_caelundas_web_src_components_virtual_list_calendar_virtual_window_utilities_unit_test_ts --> file_caelundas_web_src_components_virtual_list_calendar_virtual_window_utilities_ts
   file_caelundas_web_src_components_virtual_list_virtual_list_tsx --> file_caelundas_web_src_components_virtual_list_calendar_virtual_window_utilities_ts
@@ -8865,10 +9028,10 @@ graph LR
   file_caelundas_web_src_hooks_use_calendar_search_use_calendar_search_unit_test_ts --> file_caelundas_web_src_components_events_calendar_calendar_views_constants_ts
   file_caelundas_web_src_hooks_use_calendar_search_use_calendar_search_unit_test_ts --> file_caelundas_web_src_hooks_use_calendar_search_calendar_search_types_ts
   file_caelundas_web_src_hooks_use_calendar_search_use_calendar_search_unit_test_ts --> file_caelundas_web_src_hooks_use_calendar_search_use_calendar_search_ts
-  file_caelundas_web_src_hooks_use_filter_query_use_filter_query_ts --> file_caelundas_web_src_components_calendar_filters_event_filter_collections_types_ts
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_ts --> file_caelundas_web_src_components_calendar_filters_event_filter_input_utilities_ts
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_ts --> file_caelundas_web_src_components_calendar_filters_event_filter_tree_utilities_ts
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_ts --> file_caelundas_web_src_components_calendar_filters_event_filters_types_ts
+  file_caelundas_web_src_hooks_use_filter_query_use_filter_query_ts --> file_caelundas_web_src_components_calendar_filters_presets_types_ts
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_ts --> file_caelundas_web_src_hooks_use_filter_query_use_filter_query_types_ts
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_ts --> file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_ts
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_types_ts --> file_caelundas_web_src_components_calendar_filters_event_filters_types_ts
@@ -8876,16 +9039,19 @@ graph LR
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_unit_test_ts --> file_caelundas_web_src_components_calendar_filters_event_filters_types_ts
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_unit_test_ts --> file_caelundas_web_src_hooks_use_filter_query_use_filter_query_ts
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_unit_test_ts --> file_caelundas_web_testing_event_filters_ts
-  file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_ts --> file_caelundas_web_src_components_calendar_filters_event_filter_collections_constants_ts
-  file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_ts --> file_caelundas_web_src_components_calendar_filters_event_filter_collections_types_ts
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_ts --> file_caelundas_web_src_components_calendar_filters_event_filter_tree_constants_ts
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_ts --> file_caelundas_web_src_components_calendar_filters_event_filters_types_ts
-  file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_unit_test_ts --> file_caelundas_web_src_components_calendar_filters_event_filter_collections_constants_ts
+  file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_ts --> file_caelundas_web_src_components_calendar_filters_presets_constants_ts
+  file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_ts --> file_caelundas_web_src_components_calendar_filters_presets_types_ts
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_unit_test_ts --> file_caelundas_web_src_components_calendar_filters_event_filter_tree_constants_ts
+  file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_unit_test_ts --> file_caelundas_web_src_components_calendar_filters_presets_constants_ts
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_unit_test_ts --> file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_ts
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_unit_test_ts --> file_caelundas_web_testing_event_filters_ts
   file_caelundas_web_src_hooks_use_night_sky_night_sky_colors_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_constants_ts
   file_caelundas_web_src_hooks_use_night_sky_night_sky_constants_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_opacity_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_opacity_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_opacity_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_utilities_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_opacity_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_opacity_ts
   file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_ts --> file_caelundas_web_src_hooks_use_calendar_search_calendar_search_types_ts
   file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_constants_ts
   file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_types_ts
@@ -10433,7 +10599,6 @@ graph LR
   file_codometer_measurement_src_modules_limits_limits_service_integration_test_ts --> file_codometer_measurement_src_modules_limits_limits_service_ts
   file_codometer_measurement_src_modules_limits_limits_service_integration_test_ts --> file_codometer_measurement_src_modules_limits_limits_types_ts
   file_codometer_measurement_src_modules_limits_limits_service_integration_test_ts --> file_codometer_measurement_src_modules_limits_metric_index_service_ts
-  file_codometer_measurement_src_modules_limits_limits_service_integration_test_ts --> file_codometer_measurement_testing_fixture_tree_ts
   file_codometer_measurement_src_modules_limits_limits_service_integration_test_ts --> file_codometer_measurement_testing_mocks_ts
   file_codometer_measurement_src_modules_limits_limits_service_ts --> file_codometer_measurement_src_modules_limits_limits_constants_ts
   file_codometer_measurement_src_modules_limits_limits_service_ts --> file_codometer_measurement_src_modules_limits_limits_types_ts
@@ -10581,8 +10746,13 @@ graph LR
   file_coinagerie_cli_src_modules_batch_batch_command_unit_test_ts --> file_coinagerie_cli_src_modules_check_check_types_ts
   file_coinagerie_cli_src_modules_batch_batch_module_ts --> file_coinagerie_cli_src_modules_batch_batch_command_ts
   file_coinagerie_cli_src_modules_batch_batch_module_ts --> file_coinagerie_cli_src_modules_check_check_module_ts
+  file_coinagerie_cli_src_modules_batch_batch_module_unit_test_ts --> file_coinagerie_cli_src_modules_batch_batch_command_ts
+  file_coinagerie_cli_src_modules_batch_batch_module_unit_test_ts --> file_coinagerie_cli_src_modules_batch_batch_module_ts
+  file_coinagerie_cli_src_modules_batch_batch_module_unit_test_ts --> file_coinagerie_cli_src_modules_check_check_module_ts
   file_coinagerie_cli_src_modules_batch_batch_types_ts --> file_coinagerie_cli_src_modules_check_check_types_ts
   file_coinagerie_cli_src_modules_check_check_module_ts --> file_coinagerie_cli_src_modules_check_check_service_ts
+  file_coinagerie_cli_src_modules_check_check_module_unit_test_ts --> file_coinagerie_cli_src_modules_check_check_module_ts
+  file_coinagerie_cli_src_modules_check_check_module_unit_test_ts --> file_coinagerie_cli_src_modules_check_check_service_ts
   file_coinagerie_cli_src_modules_check_check_service_ts --> file_coinagerie_cli_src_modules_check_check_constants_ts
   file_coinagerie_cli_src_modules_check_check_service_ts --> file_coinagerie_cli_src_modules_check_check_types_ts
   file_coinagerie_cli_src_modules_check_check_service_ts --> file_coinagerie_cli_src_modules_check_check_utilities_ts
@@ -10598,9 +10768,13 @@ graph LR
   file_coinagerie_cli_src_modules_collect_collect_command_unit_test_ts --> file_coinagerie_cli_src_modules_collect_collect_types_ts
   file_coinagerie_cli_src_modules_collect_collect_command_unit_test_ts --> file_coinagerie_cli_testing_fixture_tree_ts
   file_coinagerie_cli_src_modules_collect_collect_module_ts --> file_coinagerie_cli_src_modules_collect_collect_command_ts
+  file_coinagerie_cli_src_modules_collect_collect_module_unit_test_ts --> file_coinagerie_cli_src_modules_collect_collect_command_ts
+  file_coinagerie_cli_src_modules_collect_collect_module_unit_test_ts --> file_coinagerie_cli_src_modules_collect_collect_module_ts
   file_coinagerie_configuration_src_index_unit_test_ts --> file_coinagerie_configuration_src_index_ts
   file_coinagerie_configuration_src_modules_configuration_configuration_constants_ts --> file_coinagerie_configuration_src_modules_configuration_configuration_types_ts
   file_coinagerie_configuration_src_modules_configuration_configuration_module_ts --> file_coinagerie_configuration_src_modules_configuration_configuration_service_ts
+  file_coinagerie_configuration_src_modules_configuration_configuration_module_unit_test_ts --> file_coinagerie_configuration_src_modules_configuration_configuration_module_ts
+  file_coinagerie_configuration_src_modules_configuration_configuration_module_unit_test_ts --> file_coinagerie_configuration_src_modules_configuration_configuration_service_ts
   file_coinagerie_configuration_src_modules_configuration_configuration_service_ts --> file_coinagerie_configuration_src_modules_configuration_configuration_constants_ts
   file_coinagerie_configuration_src_modules_configuration_configuration_service_ts --> file_coinagerie_configuration_src_modules_configuration_configuration_types_ts
   file_coinagerie_configuration_src_modules_configuration_configuration_service_unit_test_ts --> file_coinagerie_configuration_src_modules_configuration_configuration_constants_ts
@@ -10608,6 +10782,8 @@ graph LR
   file_coinagerie_core_src_index_unit_test_ts --> file_coinagerie_core_src_index_ts
   file_coinagerie_core_src_modules_coinagerie_core_coinagerie_core_constants_ts --> file_coinagerie_core_src_modules_coinagerie_core_coinagerie_core_types_ts
   file_coinagerie_core_src_modules_coinagerie_core_coinagerie_core_module_ts --> file_coinagerie_core_src_modules_coinagerie_core_coinagerie_core_service_ts
+  file_coinagerie_core_src_modules_coinagerie_core_coinagerie_core_module_unit_test_ts --> file_coinagerie_core_src_modules_coinagerie_core_coinagerie_core_module_ts
+  file_coinagerie_core_src_modules_coinagerie_core_coinagerie_core_module_unit_test_ts --> file_coinagerie_core_src_modules_coinagerie_core_coinagerie_core_service_ts
   file_coinagerie_core_src_modules_coinagerie_core_coinagerie_core_service_unit_test_ts --> file_coinagerie_core_src_modules_coinagerie_core_coinagerie_core_service_ts
   file_coinagerie_examples_testing_examples_integration_test_ts --> file_coinagerie_examples_testing_coinagerie_ts
   file_coinagerie_examples_testing_examples_integration_test_ts --> file_coinagerie_examples_testing_runs_ts
@@ -10742,6 +10918,8 @@ graph LR
   file_coinagerie_nx_src_index_unit_test_ts --> file_coinagerie_nx_src_index_ts
   file_coinagerie_nx_src_index_unit_test_ts --> file_coinagerie_nx_testing_fake_workspace_ts
   file_coinagerie_nx_src_modules_options_options_module_ts --> file_coinagerie_nx_src_modules_options_options_service_ts
+  file_coinagerie_nx_src_modules_options_options_module_unit_test_ts --> file_coinagerie_nx_src_modules_options_options_module_ts
+  file_coinagerie_nx_src_modules_options_options_module_unit_test_ts --> file_coinagerie_nx_src_modules_options_options_service_ts
   file_coinagerie_nx_src_modules_options_options_service_ts --> file_coinagerie_nx_src_modules_options_options_constants_ts
   file_coinagerie_nx_src_modules_options_options_service_ts --> file_coinagerie_nx_src_modules_options_options_types_ts
   file_coinagerie_nx_src_modules_options_options_service_unit_test_ts --> file_coinagerie_nx_src_modules_options_options_service_ts
@@ -10753,6 +10931,9 @@ graph LR
   file_coinagerie_nx_src_modules_plugin_plugin_context_utilities_unit_test_ts --> file_coinagerie_nx_src_modules_plugin_plugin_service_ts
   file_coinagerie_nx_src_modules_plugin_plugin_module_ts --> file_coinagerie_nx_src_modules_options_options_module_ts
   file_coinagerie_nx_src_modules_plugin_plugin_module_ts --> file_coinagerie_nx_src_modules_plugin_plugin_service_ts
+  file_coinagerie_nx_src_modules_plugin_plugin_module_unit_test_ts --> file_coinagerie_nx_src_modules_options_options_module_ts
+  file_coinagerie_nx_src_modules_plugin_plugin_module_unit_test_ts --> file_coinagerie_nx_src_modules_plugin_plugin_module_ts
+  file_coinagerie_nx_src_modules_plugin_plugin_module_unit_test_ts --> file_coinagerie_nx_src_modules_plugin_plugin_service_ts
   file_coinagerie_nx_src_modules_plugin_plugin_service_ts --> file_coinagerie_nx_src_modules_options_options_service_ts
   file_coinagerie_nx_src_modules_plugin_plugin_service_ts --> file_coinagerie_nx_src_modules_options_options_types_ts
   file_coinagerie_nx_src_modules_plugin_plugin_service_ts --> file_coinagerie_nx_src_modules_plugin_plugin_constants_ts
@@ -10820,24 +11001,24 @@ graph LR
   file_compliance_src_compliance_main_end_to_end_test_ts --> file_compliance_testing_mocks_ts
   file_compliance_src_compliance_main_ts --> file_compliance_src_compliance_module_ts
   file_compliance_src_compliance_module_ts --> file_compliance_src_compliance_constants_ts
-  file_compliance_src_compliance_module_ts --> file_compliance_src_modules_audit_governance_audit_governance_module_ts
+  file_compliance_src_compliance_module_ts --> file_compliance_src_modules_audit_files_audit_files_module_ts
   file_compliance_src_compliance_module_ts --> file_compliance_src_modules_issue_issue_module_ts
   file_compliance_src_compliance_module_ts --> file_compliance_src_modules_organization_project_organization_project_module_ts
   file_compliance_src_compliance_module_ts --> file_compliance_src_modules_pull_request_pull_request_module_ts
   file_compliance_src_compliance_repl_ts --> file_compliance_src_compliance_module_ts
-  file_compliance_src_modules_audit_governance_audit_governance_command_ts --> file_compliance_src_modules_audit_governance_audit_governance_service_ts
-  file_compliance_src_modules_audit_governance_audit_governance_command_ts --> file_compliance_src_modules_audit_governance_audit_governance_types_ts
-  file_compliance_src_modules_audit_governance_audit_governance_command_unit_test_ts --> file_compliance_src_modules_audit_governance_audit_governance_command_ts
-  file_compliance_src_modules_audit_governance_audit_governance_command_unit_test_ts --> file_compliance_src_modules_audit_governance_audit_governance_service_ts
-  file_compliance_src_modules_audit_governance_audit_governance_command_unit_test_ts --> file_compliance_testing_mocks_ts
-  file_compliance_src_modules_audit_governance_audit_governance_module_ts --> file_compliance_src_modules_audit_governance_audit_governance_command_ts
-  file_compliance_src_modules_audit_governance_audit_governance_module_ts --> file_compliance_src_modules_audit_governance_audit_governance_service_ts
-  file_compliance_src_modules_audit_governance_audit_governance_module_unit_test_ts --> file_compliance_src_modules_audit_governance_audit_governance_command_ts
-  file_compliance_src_modules_audit_governance_audit_governance_module_unit_test_ts --> file_compliance_src_modules_audit_governance_audit_governance_module_ts
-  file_compliance_src_modules_audit_governance_audit_governance_module_unit_test_ts --> file_compliance_src_modules_audit_governance_audit_governance_service_ts
-  file_compliance_src_modules_audit_governance_audit_governance_service_ts --> file_compliance_src_modules_audit_governance_audit_governance_constants_ts
-  file_compliance_src_modules_audit_governance_audit_governance_service_ts --> file_compliance_src_modules_audit_governance_audit_governance_types_ts
-  file_compliance_src_modules_audit_governance_audit_governance_service_unit_test_ts --> file_compliance_src_modules_audit_governance_audit_governance_service_ts
+  file_compliance_src_modules_audit_files_audit_files_command_ts --> file_compliance_src_modules_audit_files_audit_files_service_ts
+  file_compliance_src_modules_audit_files_audit_files_command_ts --> file_compliance_src_modules_audit_files_audit_files_types_ts
+  file_compliance_src_modules_audit_files_audit_files_command_unit_test_ts --> file_compliance_src_modules_audit_files_audit_files_command_ts
+  file_compliance_src_modules_audit_files_audit_files_command_unit_test_ts --> file_compliance_src_modules_audit_files_audit_files_service_ts
+  file_compliance_src_modules_audit_files_audit_files_command_unit_test_ts --> file_compliance_testing_mocks_ts
+  file_compliance_src_modules_audit_files_audit_files_module_ts --> file_compliance_src_modules_audit_files_audit_files_command_ts
+  file_compliance_src_modules_audit_files_audit_files_module_ts --> file_compliance_src_modules_audit_files_audit_files_service_ts
+  file_compliance_src_modules_audit_files_audit_files_module_unit_test_ts --> file_compliance_src_modules_audit_files_audit_files_command_ts
+  file_compliance_src_modules_audit_files_audit_files_module_unit_test_ts --> file_compliance_src_modules_audit_files_audit_files_module_ts
+  file_compliance_src_modules_audit_files_audit_files_module_unit_test_ts --> file_compliance_src_modules_audit_files_audit_files_service_ts
+  file_compliance_src_modules_audit_files_audit_files_service_ts --> file_compliance_src_modules_audit_files_audit_files_constants_ts
+  file_compliance_src_modules_audit_files_audit_files_service_ts --> file_compliance_src_modules_audit_files_audit_files_types_ts
+  file_compliance_src_modules_audit_files_audit_files_service_unit_test_ts --> file_compliance_src_modules_audit_files_audit_files_service_ts
   file_compliance_src_modules_issue_issue_assigning_service_ts --> file_compliance_src_modules_issue_issue_assignees_constants_ts
   file_compliance_src_modules_issue_issue_assigning_service_ts --> file_compliance_src_modules_issue_issue_github_service_ts
   file_compliance_src_modules_issue_issue_assigning_service_ts --> file_compliance_src_modules_issue_issue_types_ts
@@ -10904,6 +11085,17 @@ graph LR
   file_compliance_src_modules_issue_issue_module_ts --> file_compliance_src_modules_issue_issue_plan_service_ts
   file_compliance_src_modules_issue_issue_module_ts --> file_compliance_src_modules_issue_issue_report_service_ts
   file_compliance_src_modules_issue_issue_module_ts --> file_compliance_src_modules_issue_issue_command_ts
+  file_compliance_src_modules_issue_issue_module_unit_test_ts --> file_compliance_src_modules_issue_issue_assigning_service_ts
+  file_compliance_src_modules_issue_issue_module_unit_test_ts --> file_compliance_src_modules_issue_issue_audit_service_ts
+  file_compliance_src_modules_issue_issue_module_unit_test_ts --> file_compliance_src_modules_issue_issue_github_service_ts
+  file_compliance_src_modules_issue_issue_module_unit_test_ts --> file_compliance_src_modules_issue_issue_labeling_service_ts
+  file_compliance_src_modules_issue_issue_module_unit_test_ts --> file_compliance_src_modules_issue_issue_labels_service_ts
+  file_compliance_src_modules_issue_issue_module_unit_test_ts --> file_compliance_src_modules_issue_issue_metadata_type_service_ts
+  file_compliance_src_modules_issue_issue_module_unit_test_ts --> file_compliance_src_modules_issue_issue_metadata_service_ts
+  file_compliance_src_modules_issue_issue_module_unit_test_ts --> file_compliance_src_modules_issue_issue_plan_service_ts
+  file_compliance_src_modules_issue_issue_module_unit_test_ts --> file_compliance_src_modules_issue_issue_report_service_ts
+  file_compliance_src_modules_issue_issue_module_unit_test_ts --> file_compliance_src_modules_issue_issue_command_ts
+  file_compliance_src_modules_issue_issue_module_unit_test_ts --> file_compliance_src_modules_issue_issue_module_ts
   file_compliance_src_modules_organization_project_organization_project_command_ts --> file_compliance_src_modules_organization_project_organization_project_constants_ts
   file_compliance_src_modules_organization_project_organization_project_command_ts --> file_compliance_src_modules_pull_request_pull_request_github_service_ts
   file_compliance_src_modules_organization_project_organization_project_command_unit_test_ts --> file_compliance_src_modules_organization_project_organization_project_command_ts
@@ -10913,6 +11105,9 @@ graph LR
   file_compliance_src_modules_organization_project_organization_project_command_unit_test_ts --> file_compliance_testing_mocks_ts
   file_compliance_src_modules_organization_project_organization_project_module_ts --> file_compliance_src_modules_organization_project_organization_project_command_ts
   file_compliance_src_modules_organization_project_organization_project_module_ts --> file_compliance_src_modules_pull_request_pull_request_module_ts
+  file_compliance_src_modules_organization_project_organization_project_module_unit_test_ts --> file_compliance_src_modules_organization_project_organization_project_command_ts
+  file_compliance_src_modules_organization_project_organization_project_module_unit_test_ts --> file_compliance_src_modules_organization_project_organization_project_module_ts
+  file_compliance_src_modules_organization_project_organization_project_module_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_module_ts
   file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_ts --> file_compliance_src_modules_issue_issue_metadata_service_ts
   file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_ts --> file_compliance_src_modules_pull_request_pull_request_body_links_constants_ts
   file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_ts --> file_compliance_src_modules_pull_request_pull_request_body_links_service_ts
@@ -11029,6 +11224,22 @@ graph LR
   file_compliance_src_modules_pull_request_pull_request_module_ts --> file_compliance_src_modules_pull_request_pull_request_title_service_ts
   file_compliance_src_modules_pull_request_pull_request_module_ts --> file_compliance_src_modules_pull_request_pull_request_validation_service_ts
   file_compliance_src_modules_pull_request_pull_request_module_ts --> file_compliance_src_modules_pull_request_pull_request_command_ts
+  file_compliance_src_modules_pull_request_pull_request_module_unit_test_ts --> file_compliance_src_modules_issue_issue_module_ts
+  file_compliance_src_modules_pull_request_pull_request_module_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_body_links_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_body_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_context_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_descendant_issues_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_github_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_label_vocabulary_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_labels_assignees_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_labels_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_release_significance_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_report_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_title_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_validation_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_command_ts
+  file_compliance_src_modules_pull_request_pull_request_module_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_module_ts
   file_configuration_commitlint_config_ts --> file_configuration_conventional_config_d_cts
   file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___main_end_to_end_test_ts --> file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___constants_ts
   file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___main_ts --> file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___module_ts
@@ -11046,11 +11257,9 @@ graph LR
   file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___vitest_config_ts --> file_configuration_vitest_config_ts
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___callidescope_config_ts --> file_configuration_callidescope_config_ts
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___codometer_config_ts --> file_configuration_codometer_config_ts
-  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___coinagerie_config_ts --> file_configuration_coinagerie_config_ts
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___eslint_config_ts --> file_configuration_eslint_config_ts
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes_index_integration_test_tsx --> file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_router_tsx
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes_index_integration_test_tsx --> file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes_index_tsx
-  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes_index_integration_test_tsx --> file_configuration_conformetry_templates_tanstack_application___nameKebabCase___testing_render_route_tsx
-  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___testing_render_route_tsx --> file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_router_tsx
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___vitest_config_ts --> file_configuration_vitest_config_ts
   file_configuration_conformetry_templates_tanstack_route___name___integration_test_tsx --> file_configuration_conformetry_templates_tanstack_route___name___tsx
   file_configuration_eslint_config_ts --> file_configuration_types_eslint_plugin_better_max_params_index_d_ts
@@ -11095,6 +11304,12 @@ graph LR
   file_conformetry_configuration_src_modules_configuration_configuration_module_ts --> file_conformetry_configuration_src_modules_rendering_rendering_module_ts
   file_conformetry_configuration_src_modules_configuration_configuration_module_ts --> file_conformetry_configuration_src_modules_template_discovery_template_discovery_module_ts
   file_conformetry_configuration_src_modules_configuration_configuration_module_unit_test_ts --> file_conformetry_configuration_src_modules_configuration_configuration_module_ts
+  file_conformetry_configuration_src_modules_configuration_configuration_module_unit_test_ts --> file_conformetry_configuration_src_modules_configuration_configuration_service_ts
+  file_conformetry_configuration_src_modules_configuration_configuration_module_unit_test_ts --> file_conformetry_configuration_src_modules_input_input_module_ts
+  file_conformetry_configuration_src_modules_configuration_configuration_module_unit_test_ts --> file_conformetry_configuration_src_modules_instance_discovery_instance_discovery_module_ts
+  file_conformetry_configuration_src_modules_configuration_configuration_module_unit_test_ts --> file_conformetry_configuration_src_modules_instance_group_instance_group_module_ts
+  file_conformetry_configuration_src_modules_configuration_configuration_module_unit_test_ts --> file_conformetry_configuration_src_modules_rendering_rendering_module_ts
+  file_conformetry_configuration_src_modules_configuration_configuration_module_unit_test_ts --> file_conformetry_configuration_src_modules_template_discovery_template_discovery_module_ts
   file_conformetry_configuration_src_modules_configuration_configuration_service_ts --> file_conformetry_configuration_src_modules_configuration_configuration_constants_ts
   file_conformetry_configuration_src_modules_configuration_configuration_service_ts --> file_conformetry_configuration_src_modules_configuration_configuration_types_ts
   file_conformetry_configuration_src_modules_configuration_configuration_service_ts --> file_conformetry_configuration_src_modules_input_input_prompting_service_ts
@@ -11204,6 +11419,7 @@ graph LR
   file_conformetry_core_src_modules_conformetry_core_conformetry_core_service_unit_test_ts --> file_conformetry_core_src_modules_conformetry_core_conformetry_core_service_ts
   file_conformetry_generation_src_modules_generation_generation_module_ts --> file_conformetry_generation_src_modules_generation_generation_service_ts
   file_conformetry_generation_src_modules_generation_generation_module_unit_test_ts --> file_conformetry_generation_src_modules_generation_generation_module_ts
+  file_conformetry_generation_src_modules_generation_generation_module_unit_test_ts --> file_conformetry_generation_src_modules_generation_generation_service_ts
   file_conformetry_generation_src_modules_generation_generation_service_ts --> file_conformetry_generation_src_modules_generation_generation_types_ts
   file_conformetry_generation_src_modules_generation_generation_service_unit_test_ts --> file_conformetry_generation_src_modules_generation_generation_service_ts
   file_conformetry_generation_src_modules_generation_generation_service_unit_test_ts --> file_conformetry_generation_src_modules_generation_generation_types_ts
@@ -11523,6 +11739,205 @@ graph LR
   file_conformetry_validation_src_modules_validation_validation_service_unit_test_ts --> file_conformetry_validation_src_modules_validation_validation_module_ts
   file_conformetry_validation_src_modules_validation_validation_service_unit_test_ts --> file_conformetry_validation_src_modules_validation_validation_service_ts
   file_conformetry_validation_src_modules_validation_validation_service_unit_test_ts --> file_conformetry_validation_src_modules_validation_validation_types_ts
+  file_deployment_src_deployment_main_end_to_end_test_ts --> file_deployment_src_deployment_constants_ts
+  file_deployment_src_deployment_main_ts --> file_deployment_src_deployment_module_ts
+  file_deployment_src_deployment_main_unit_test_ts --> file_deployment_src_modules_link_packages_link_packages_module_ts
+  file_deployment_src_deployment_main_unit_test_ts --> file_deployment_src_modules_publish_packages_publish_packages_module_ts
+  file_deployment_src_deployment_main_unit_test_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_module_ts
+  file_deployment_src_deployment_main_unit_test_ts --> file_deployment_src_modules_tag_packages_tag_packages_module_ts
+  file_deployment_src_deployment_main_unit_test_ts --> file_deployment_src_modules_version_packages_version_packages_module_ts
+  file_deployment_src_deployment_module_ts --> file_deployment_src_deployment_constants_ts
+  file_deployment_src_deployment_module_ts --> file_deployment_src_modules_link_packages_link_packages_module_ts
+  file_deployment_src_deployment_module_ts --> file_deployment_src_modules_publish_packages_publish_packages_module_ts
+  file_deployment_src_deployment_module_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_module_ts
+  file_deployment_src_deployment_module_ts --> file_deployment_src_modules_tag_packages_tag_packages_module_ts
+  file_deployment_src_deployment_module_ts --> file_deployment_src_modules_version_packages_version_packages_module_ts
+  file_deployment_src_deployment_repl_ts --> file_deployment_src_deployment_module_ts
+  file_deployment_src_deployment_types_ts --> file_deployment_src_deployment_constants_ts
+  file_deployment_src_modules_link_packages_link_packages_command_ts --> file_deployment_src_modules_link_packages_link_packages_service_ts
+  file_deployment_src_modules_link_packages_link_packages_command_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_link_packages_link_packages_command_unit_test_ts --> file_deployment_src_modules_link_packages_link_packages_command_ts
+  file_deployment_src_modules_link_packages_link_packages_command_unit_test_ts --> file_deployment_src_modules_link_packages_link_packages_service_ts
+  file_deployment_src_modules_link_packages_link_packages_command_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_link_packages_link_packages_command_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_link_packages_link_packages_command_unit_test_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_link_packages_link_packages_command_unit_test_ts --> file_deployment_testing_mocks_ts
+  file_deployment_src_modules_link_packages_link_packages_module_ts --> file_deployment_src_modules_link_packages_link_packages_command_ts
+  file_deployment_src_modules_link_packages_link_packages_module_ts --> file_deployment_src_modules_link_packages_link_packages_service_ts
+  file_deployment_src_modules_link_packages_link_packages_module_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_link_packages_link_packages_module_ts --> file_deployment_src_modules_release_group_release_group_module_ts
+  file_deployment_src_modules_link_packages_link_packages_module_unit_test_ts --> file_deployment_src_modules_link_packages_link_packages_command_ts
+  file_deployment_src_modules_link_packages_link_packages_module_unit_test_ts --> file_deployment_src_modules_link_packages_link_packages_module_ts
+  file_deployment_src_modules_link_packages_link_packages_module_unit_test_ts --> file_deployment_src_modules_link_packages_link_packages_service_ts
+  file_deployment_src_modules_link_packages_link_packages_module_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_link_packages_link_packages_module_unit_test_ts --> file_deployment_src_modules_release_group_release_group_module_ts
+  file_deployment_src_modules_link_packages_link_packages_service_ts --> file_deployment_src_deployment_types_ts
+  file_deployment_src_modules_link_packages_link_packages_service_ts --> file_deployment_src_modules_link_packages_link_packages_constants_ts
+  file_deployment_src_modules_link_packages_link_packages_service_ts --> file_deployment_src_modules_link_packages_link_packages_types_ts
+  file_deployment_src_modules_link_packages_link_packages_service_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_link_packages_link_packages_service_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_link_packages_link_packages_service_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_link_packages_link_packages_service_ts --> file_deployment_src_modules_release_group_release_group_constants_ts
+  file_deployment_src_modules_link_packages_link_packages_service_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_link_packages_link_packages_service_ts --> file_deployment_src_modules_release_group_release_group_types_ts
+  file_deployment_src_modules_link_packages_link_packages_service_unit_test_ts --> file_deployment_src_modules_link_packages_link_packages_service_ts
+  file_deployment_src_modules_link_packages_link_packages_service_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_link_packages_link_packages_service_unit_test_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_main_tip_main_tip_module_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_main_tip_main_tip_module_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_main_tip_main_tip_module_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_module_ts
+  file_deployment_src_modules_main_tip_main_tip_module_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_main_tip_main_tip_module_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_main_tip_main_tip_service_ts --> file_deployment_src_deployment_types_ts
+  file_deployment_src_modules_main_tip_main_tip_service_ts --> file_deployment_src_modules_main_tip_main_tip_constants_ts
+  file_deployment_src_modules_main_tip_main_tip_service_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_main_tip_main_tip_service_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_main_tip_main_tip_service_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_main_tip_main_tip_service_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_main_tip_main_tip_service_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_main_tip_main_tip_service_unit_test_ts --> file_deployment_testing_mocks_ts
+  file_deployment_src_modules_process_runner_process_runner_module_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_process_runner_process_runner_module_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_process_runner_process_runner_module_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_process_runner_process_runner_service_integration_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_process_runner_process_runner_service_integration_test_ts --> file_deployment_testing_mocks_ts
+  file_deployment_src_modules_process_runner_process_runner_service_ts --> file_deployment_src_modules_process_runner_process_runner_constants_ts
+  file_deployment_src_modules_process_runner_process_runner_service_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_process_runner_process_runner_service_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_process_runner_process_runner_utilities_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_process_runner_process_runner_utilities_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_publish_packages_publish_packages_command_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_publish_packages_publish_packages_command_ts --> file_deployment_src_modules_publish_packages_publish_packages_service_ts
+  file_deployment_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_deployment_src_modules_publish_packages_publish_packages_command_ts
+  file_deployment_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_deployment_src_modules_publish_packages_publish_packages_service_ts
+  file_deployment_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_deployment_testing_mocks_ts
+  file_deployment_src_modules_publish_packages_publish_packages_module_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_publish_packages_publish_packages_module_ts --> file_deployment_src_modules_publish_packages_publish_packages_command_ts
+  file_deployment_src_modules_publish_packages_publish_packages_module_ts --> file_deployment_src_modules_publish_packages_publish_packages_service_ts
+  file_deployment_src_modules_publish_packages_publish_packages_module_ts --> file_deployment_src_modules_release_group_release_group_module_ts
+  file_deployment_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_deployment_src_modules_publish_packages_publish_packages_command_ts
+  file_deployment_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_deployment_src_modules_publish_packages_publish_packages_module_ts
+  file_deployment_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_deployment_src_modules_publish_packages_publish_packages_service_ts
+  file_deployment_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_deployment_src_modules_release_group_release_group_module_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_ts --> file_deployment_src_deployment_types_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_ts --> file_deployment_src_modules_publish_packages_publish_packages_constants_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_ts --> file_deployment_src_modules_publish_packages_publish_packages_types_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_ts --> file_deployment_src_modules_release_group_release_group_constants_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_ts --> file_deployment_src_modules_release_group_release_group_types_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_unit_test_ts --> file_deployment_src_modules_publish_packages_publish_packages_service_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_unit_test_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_release_group_release_group_module_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_release_group_release_group_module_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_release_group_release_group_module_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_release_group_release_group_module_unit_test_ts --> file_deployment_src_modules_release_group_release_group_module_ts
+  file_deployment_src_modules_release_group_release_group_module_unit_test_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_release_group_release_group_service_ts --> file_deployment_src_deployment_types_ts
+  file_deployment_src_modules_release_group_release_group_service_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_release_group_release_group_service_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_release_group_release_group_service_ts --> file_deployment_src_modules_release_group_release_group_constants_ts
+  file_deployment_src_modules_release_group_release_group_service_ts --> file_deployment_src_modules_release_group_release_group_types_ts
+  file_deployment_src_modules_release_group_release_group_service_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_release_group_release_group_service_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_release_group_release_group_service_unit_test_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_release_group_release_group_service_unit_test_ts --> file_deployment_src_modules_release_group_release_group_types_ts
+  file_deployment_src_modules_release_group_release_group_service_unit_test_ts --> file_deployment_testing_mocks_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_command_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_command_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_service_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_command_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_service_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_deployment_testing_mocks_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_ts --> file_deployment_src_modules_main_tip_main_tip_module_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_command_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_service_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_module_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_command_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_module_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_service_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_service_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_service_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_service_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_constants_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_service_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_service_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_service_unit_test_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_command_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_tag_packages_tag_packages_command_ts --> file_deployment_src_modules_tag_packages_tag_packages_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_deployment_src_modules_tag_packages_tag_packages_command_ts
+  file_deployment_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_deployment_src_modules_tag_packages_tag_packages_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_deployment_testing_mocks_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_ts --> file_deployment_src_modules_main_tip_main_tip_module_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_ts --> file_deployment_src_modules_release_group_release_group_module_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_ts --> file_deployment_src_modules_tag_packages_tag_packages_command_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_ts --> file_deployment_src_modules_tag_packages_tag_packages_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_module_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_deployment_src_modules_release_group_release_group_module_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_deployment_src_modules_tag_packages_tag_packages_command_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_deployment_src_modules_tag_packages_tag_packages_module_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_deployment_src_modules_tag_packages_tag_packages_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_ts --> file_deployment_src_deployment_types_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_ts --> file_deployment_src_modules_release_group_release_group_types_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_ts --> file_deployment_src_modules_tag_packages_tag_packages_constants_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_ts --> file_deployment_src_modules_tag_packages_tag_packages_types_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_deployment_src_modules_tag_packages_tag_packages_service_ts
+  file_deployment_src_modules_version_packages_version_packages_command_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_version_packages_version_packages_command_ts --> file_deployment_src_modules_version_packages_version_packages_service_ts
+  file_deployment_src_modules_version_packages_version_packages_command_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_version_packages_version_packages_command_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_version_packages_version_packages_command_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_version_packages_version_packages_command_unit_test_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_version_packages_version_packages_command_unit_test_ts --> file_deployment_src_modules_tag_packages_tag_packages_service_ts
+  file_deployment_src_modules_version_packages_version_packages_command_unit_test_ts --> file_deployment_src_modules_version_packages_version_packages_command_ts
+  file_deployment_src_modules_version_packages_version_packages_command_unit_test_ts --> file_deployment_src_modules_version_packages_version_packages_service_ts
+  file_deployment_src_modules_version_packages_version_packages_command_unit_test_ts --> file_deployment_testing_mocks_ts
+  file_deployment_src_modules_version_packages_version_packages_module_ts --> file_deployment_src_modules_main_tip_main_tip_module_ts
+  file_deployment_src_modules_version_packages_version_packages_module_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_version_packages_version_packages_module_ts --> file_deployment_src_modules_tag_packages_tag_packages_module_ts
+  file_deployment_src_modules_version_packages_version_packages_module_ts --> file_deployment_src_modules_version_packages_version_packages_command_ts
+  file_deployment_src_modules_version_packages_version_packages_module_ts --> file_deployment_src_modules_version_packages_version_packages_service_ts
+  file_deployment_src_modules_version_packages_version_packages_module_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_module_ts
+  file_deployment_src_modules_version_packages_version_packages_module_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_version_packages_version_packages_module_unit_test_ts --> file_deployment_src_modules_tag_packages_tag_packages_module_ts
+  file_deployment_src_modules_version_packages_version_packages_module_unit_test_ts --> file_deployment_src_modules_version_packages_version_packages_command_ts
+  file_deployment_src_modules_version_packages_version_packages_module_unit_test_ts --> file_deployment_src_modules_version_packages_version_packages_module_ts
+  file_deployment_src_modules_version_packages_version_packages_module_unit_test_ts --> file_deployment_src_modules_version_packages_version_packages_service_ts
+  file_deployment_src_modules_version_packages_version_packages_service_ts --> file_deployment_src_deployment_types_ts
+  file_deployment_src_modules_version_packages_version_packages_service_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_version_packages_version_packages_service_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_version_packages_version_packages_service_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_version_packages_version_packages_service_ts --> file_deployment_src_modules_tag_packages_tag_packages_service_ts
+  file_deployment_src_modules_version_packages_version_packages_service_ts --> file_deployment_src_modules_version_packages_version_packages_constants_ts
+  file_deployment_src_modules_version_packages_version_packages_service_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_version_packages_version_packages_service_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_version_packages_version_packages_service_unit_test_ts --> file_deployment_src_modules_tag_packages_tag_packages_service_ts
+  file_deployment_src_modules_version_packages_version_packages_service_unit_test_ts --> file_deployment_src_modules_version_packages_version_packages_service_ts
+  file_deployment_testing_mocks_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_testing_mocks_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
   file_documentation_src_documentation_main_end_to_end_test_ts --> file_documentation_src_documentation_constants_ts
   file_documentation_src_documentation_main_ts --> file_documentation_src_documentation_module_ts
   file_documentation_src_documentation_main_unit_test_ts --> file_documentation_src_documentation_module_ts
@@ -11933,6 +12348,28 @@ graph LR
   file_installation_testing_environment_ts --> file_installation_testing_temporary_workspace_ts
   file_installation_testing_fake_process_runner_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
   file_installation_testing_fake_process_runner_ts --> file_installation_src_modules_process_runner_process_runner_types_ts
+  file_integration_src_executors_codometer_batch_executor_ts --> file_integration_src_executors_codometer_codometer_runner_ts
+  file_integration_src_executors_codometer_batch_executor_ts --> file_integration_src_executors_codometer_codometer_types_ts
+  file_integration_src_executors_codometer_batch_executor_ts --> file_integration_src_executors_codometer_codometer_utilities_ts
+  file_integration_src_executors_codometer_batch_executor_unit_test_ts --> file_integration_src_executors_codometer_batch_executor_ts
+  file_integration_src_executors_codometer_batch_executor_unit_test_ts --> file_integration_src_executors_codometer_codometer_types_ts
+  file_integration_src_executors_codometer_batch_executor_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
+  file_integration_src_executors_codometer_codometer_runner_ts --> file_integration_src_executors_codometer_codometer_constants_ts
+  file_integration_src_executors_codometer_codometer_runner_ts --> file_integration_src_executors_codometer_codometer_types_ts
+  file_integration_src_executors_codometer_codometer_runner_ts --> file_integration_src_executors_codometer_codometer_utilities_ts
+  file_integration_src_executors_codometer_codometer_runner_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_executors_codometer_codometer_runner_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
+  file_integration_src_executors_codometer_codometer_runner_unit_test_ts --> file_integration_src_executors_codometer_codometer_runner_ts
+  file_integration_src_executors_codometer_codometer_runner_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
+  file_integration_src_executors_codometer_codometer_utilities_ts --> file_integration_src_executors_codometer_codometer_constants_ts
+  file_integration_src_executors_codometer_codometer_utilities_ts --> file_integration_src_executors_codometer_codometer_types_ts
+  file_integration_src_executors_codometer_codometer_utilities_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
+  file_integration_src_executors_codometer_codometer_utilities_unit_test_ts --> file_integration_src_executors_codometer_codometer_utilities_ts
+  file_integration_src_executors_codometer_executor_ts --> file_integration_src_executors_codometer_codometer_runner_ts
+  file_integration_src_executors_codometer_executor_ts --> file_integration_src_executors_codometer_codometer_types_ts
+  file_integration_src_executors_codometer_executor_unit_test_ts --> file_integration_src_executors_codometer_codometer_types_ts
+  file_integration_src_executors_codometer_executor_unit_test_ts --> file_integration_src_executors_codometer_executor_ts
+  file_integration_src_executors_codometer_executor_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
   file_integration_src_executors_knip_batch_executor_ts --> file_integration_src_executors_knip_knip_runner_ts
   file_integration_src_executors_knip_batch_executor_ts --> file_integration_src_executors_knip_knip_types_ts
   file_integration_src_executors_knip_batch_executor_ts --> file_integration_src_executors_knip_knip_utilities_ts
@@ -12899,7 +13336,6 @@ graph LR
   file_lexico_cli_src_modules_lexico_ingestion_lexico_ingestion_command_unit_test_ts --> file_lexico_cli_src_modules_literature_literature_command_ts
   file_lexico_cli_src_modules_lexico_ingestion_lexico_ingestion_command_unit_test_ts --> file_lexico_cli_src_modules_perseus_perseus_command_ts
   file_lexico_cli_src_modules_lexico_ingestion_lexico_ingestion_command_unit_test_ts --> file_lexico_cli_src_modules_wiktionary_wiktionary_command_ts
-  file_lexico_cli_src_modules_lexico_ingestion_lexico_ingestion_command_unit_test_ts --> file_lexico_cli_testing_mocks_ts
   file_lexico_cli_src_modules_lexico_ingestion_lexico_ingestion_module_ts --> file_lexico_cli_src_modules_clear_clear_module_ts
   file_lexico_cli_src_modules_lexico_ingestion_lexico_ingestion_module_ts --> file_lexico_cli_src_modules_corpus_scriptorum_ecclesiasticorum_latinorum_corpus_scriptorum_ecclesiasticorum_latinorum_module_ts
   file_lexico_cli_src_modules_lexico_ingestion_lexico_ingestion_module_ts --> file_lexico_cli_src_modules_dictionary_dictionary_module_ts
@@ -13303,11 +13739,11 @@ graph LR
   file_lexico_web_src_graphql_generated_validation_ts --> file_lexico_web_src_graphql_generated_operations_ts
   file_lexico_web_src_router_tsx --> file_lexico_web_src_routeTree_gen_ts
   file_lexico_web_src_routes___root_tsx --> file_lexico_web_src_components_application_sidebar_application_sidebar_tsx
+  file_lexico_web_src_routes_index_integration_test_tsx --> file_lexico_web_src_router_tsx
   file_lexico_web_src_routes_index_integration_test_tsx --> file_lexico_web_src_routes_index_tsx
-  file_lexico_web_src_routes_index_integration_test_tsx --> file_lexico_web_testing_render_route_tsx
   file_lexico_web_src_routes_search_integration_test_tsx --> file_lexico_web_src_graphql_generated_mocks_ts
+  file_lexico_web_src_routes_search_integration_test_tsx --> file_lexico_web_src_router_tsx
   file_lexico_web_src_routes_search_integration_test_tsx --> file_lexico_web_src_routes_search_tsx
-  file_lexico_web_src_routes_search_integration_test_tsx --> file_lexico_web_testing_render_route_tsx
   file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_components_lexeme_forms_lexeme_forms_types_ts
   file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_components_search_bar_search_bar_tsx
   file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_components_search_landing_search_landing_tsx
@@ -13318,7 +13754,6 @@ graph LR
   file_lexico_web_src_routeTree_gen_ts --> file_lexico_web_src_routes___root_tsx
   file_lexico_web_src_routeTree_gen_ts --> file_lexico_web_src_routes_index_tsx
   file_lexico_web_src_routeTree_gen_ts --> file_lexico_web_src_routes_search_tsx
-  file_lexico_web_testing_render_route_tsx --> file_lexico_web_src_router_tsx
   file_meanderaw_cli_src_meanderaw_cli_constants_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_constants_ts
   file_meanderaw_cli_src_meanderaw_cli_main_end_to_end_test_ts --> file_meanderaw_cli_src_meanderaw_cli_constants_ts
   file_meanderaw_cli_src_meanderaw_cli_main_ts --> file_meanderaw_cli_src_meanderaw_cli_module_ts
@@ -13354,6 +13789,7 @@ graph LR
   file_meanderaw_cli_src_modules_characteristics_characteristics_module_ts --> file_meanderaw_cli_src_modules_characteristics_submatrix_run_run_characteristics_module_ts
   file_meanderaw_cli_src_modules_characteristics_characteristics_module_ts --> file_meanderaw_cli_src_modules_code_code_module_ts
   file_meanderaw_cli_src_modules_characteristics_characteristics_module_ts --> file_meanderaw_cli_src_modules_matrix_matrix_module_ts
+  file_meanderaw_cli_src_modules_characteristics_characteristics_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristic_context_service_ts
   file_meanderaw_cli_src_modules_characteristics_characteristics_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_constants_ts
   file_meanderaw_cli_src_modules_characteristics_characteristics_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_module_ts
   file_meanderaw_cli_src_modules_characteristics_characteristics_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_types_ts
@@ -13420,12 +13856,17 @@ graph LR
   file_meanderaw_cli_src_modules_characteristics_characteristics_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_submatrix_rectangle_vertical_rectangle_count_characteristic_service_ts
   file_meanderaw_cli_src_modules_characteristics_characteristics_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_submatrix_run_longest_horizontal_run_length_characteristic_service_ts
   file_meanderaw_cli_src_modules_characteristics_characteristics_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_submatrix_run_longest_vertical_run_length_characteristic_service_ts
+  file_meanderaw_cli_src_modules_characteristics_characteristics_module_unit_test_ts --> file_meanderaw_cli_src_modules_code_code_module_ts
+  file_meanderaw_cli_src_modules_characteristics_characteristics_module_unit_test_ts --> file_meanderaw_cli_src_modules_matrix_matrix_module_ts
+  file_meanderaw_cli_src_modules_characteristics_characteristics_service_integration_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristic_context_service_ts
   file_meanderaw_cli_src_modules_characteristics_characteristics_service_integration_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_constants_ts
   file_meanderaw_cli_src_modules_characteristics_characteristics_service_integration_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_module_ts
   file_meanderaw_cli_src_modules_characteristics_characteristics_service_integration_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_service_ts
   file_meanderaw_cli_src_modules_characteristics_characteristics_service_integration_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_types_ts
+  file_meanderaw_cli_src_modules_characteristics_characteristics_service_integration_test_ts --> file_meanderaw_cli_src_modules_code_code_module_ts
   file_meanderaw_cli_src_modules_characteristics_characteristics_service_integration_test_ts --> file_meanderaw_cli_src_modules_code_code_service_ts
   file_meanderaw_cli_src_modules_characteristics_characteristics_service_integration_test_ts --> file_meanderaw_cli_src_modules_corpus_historical_corpus_constants_ts
+  file_meanderaw_cli_src_modules_characteristics_characteristics_service_integration_test_ts --> file_meanderaw_cli_src_modules_matrix_matrix_module_ts
   file_meanderaw_cli_src_modules_characteristics_characteristics_service_integration_test_ts --> file_meanderaw_cli_testing_legacy_characteristics_ts
   file_meanderaw_cli_src_modules_characteristics_characteristics_service_integration_test_ts --> file_meanderaw_cli_testing_meanders_ts
   file_meanderaw_cli_src_modules_characteristics_characteristics_service_ts --> file_meanderaw_cli_src_modules_characteristics_characteristic_context_service_ts
@@ -13446,9 +13887,12 @@ graph LR
   file_meanderaw_cli_src_modules_characteristics_compound_compound_utilities_module_ts --> file_meanderaw_cli_src_modules_characteristics_compound_compound_utilities_service_ts
   file_meanderaw_cli_src_modules_characteristics_compound_compound_utilities_module_ts --> file_meanderaw_cli_src_modules_characteristics_submatrix_cross_cross_characteristics_module_ts
   file_meanderaw_cli_src_modules_characteristics_compound_compound_utilities_module_ts --> file_meanderaw_cli_src_modules_characteristics_submatrix_fork_fork_characteristics_module_ts
+  file_meanderaw_cli_src_modules_characteristics_compound_compound_utilities_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristic_context_service_ts
   file_meanderaw_cli_src_modules_characteristics_compound_compound_utilities_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_module_ts
   file_meanderaw_cli_src_modules_characteristics_compound_compound_utilities_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_compound_compound_utilities_module_ts
   file_meanderaw_cli_src_modules_characteristics_compound_compound_utilities_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_compound_compound_utilities_service_ts
+  file_meanderaw_cli_src_modules_characteristics_compound_compound_utilities_module_unit_test_ts --> file_meanderaw_cli_src_modules_code_code_module_ts
+  file_meanderaw_cli_src_modules_characteristics_compound_compound_utilities_module_unit_test_ts --> file_meanderaw_cli_src_modules_matrix_matrix_module_ts
   file_meanderaw_cli_src_modules_characteristics_compound_compound_utilities_service_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_types_ts
   file_meanderaw_cli_src_modules_characteristics_compound_compound_utilities_service_ts --> file_meanderaw_cli_src_modules_characteristics_submatrix_cross_cross_count_characteristic_service_ts
   file_meanderaw_cli_src_modules_characteristics_compound_compound_utilities_service_ts --> file_meanderaw_cli_src_modules_characteristics_submatrix_fork_fork_count_characteristic_service_ts
@@ -13842,9 +14286,12 @@ graph LR
   file_meanderaw_cli_src_modules_characteristics_compound_structure_structure_characteristics_module_ts --> file_meanderaw_cli_src_modules_characteristics_path_topology_topology_characteristics_module_ts
   file_meanderaw_cli_src_modules_characteristics_connectivity_connectivity_module_ts --> file_meanderaw_cli_src_modules_characteristics_connectivity_connectivity_service_ts
   file_meanderaw_cli_src_modules_characteristics_connectivity_connectivity_module_ts --> file_meanderaw_cli_src_modules_graph_graph_module_ts
+  file_meanderaw_cli_src_modules_characteristics_connectivity_connectivity_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristic_context_service_ts
   file_meanderaw_cli_src_modules_characteristics_connectivity_connectivity_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_module_ts
   file_meanderaw_cli_src_modules_characteristics_connectivity_connectivity_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_connectivity_connectivity_module_ts
   file_meanderaw_cli_src_modules_characteristics_connectivity_connectivity_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_connectivity_connectivity_service_ts
+  file_meanderaw_cli_src_modules_characteristics_connectivity_connectivity_module_unit_test_ts --> file_meanderaw_cli_src_modules_code_code_module_ts
+  file_meanderaw_cli_src_modules_characteristics_connectivity_connectivity_module_unit_test_ts --> file_meanderaw_cli_src_modules_matrix_matrix_module_ts
   file_meanderaw_cli_src_modules_characteristics_connectivity_connectivity_service_ts --> file_meanderaw_cli_src_modules_characteristics_connectivity_connectivity_types_ts
   file_meanderaw_cli_src_modules_characteristics_connectivity_connectivity_service_ts --> file_meanderaw_cli_src_modules_graph_graph_service_ts
   file_meanderaw_cli_src_modules_characteristics_connectivity_connectivity_service_ts --> file_meanderaw_cli_src_modules_graph_graph_types_ts
@@ -13884,9 +14331,12 @@ graph LR
   file_meanderaw_cli_src_modules_characteristics_path_end_ends_on_border_rules_characteristic_service_unit_test_ts --> file_meanderaw_cli_src_modules_graph_graph_module_ts
   file_meanderaw_cli_src_modules_characteristics_path_end_ends_on_border_rules_characteristic_service_unit_test_ts --> file_meanderaw_cli_src_modules_matrix_matrix_module_ts
   file_meanderaw_cli_src_modules_characteristics_path_path_utilities_module_ts --> file_meanderaw_cli_src_modules_characteristics_path_path_utilities_service_ts
+  file_meanderaw_cli_src_modules_characteristics_path_path_utilities_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristic_context_service_ts
   file_meanderaw_cli_src_modules_characteristics_path_path_utilities_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_module_ts
   file_meanderaw_cli_src_modules_characteristics_path_path_utilities_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_path_path_utilities_module_ts
   file_meanderaw_cli_src_modules_characteristics_path_path_utilities_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_path_path_utilities_service_ts
+  file_meanderaw_cli_src_modules_characteristics_path_path_utilities_module_unit_test_ts --> file_meanderaw_cli_src_modules_code_code_module_ts
+  file_meanderaw_cli_src_modules_characteristics_path_path_utilities_module_unit_test_ts --> file_meanderaw_cli_src_modules_matrix_matrix_module_ts
   file_meanderaw_cli_src_modules_characteristics_path_path_utilities_service_ts --> file_meanderaw_cli_src_modules_characteristics_connectivity_connectivity_types_ts
   file_meanderaw_cli_src_modules_characteristics_path_path_utilities_service_ts --> file_meanderaw_cli_src_modules_characteristics_path_path_types_ts
   file_meanderaw_cli_src_modules_characteristics_path_path_utilities_service_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_path_path_utilities_service_ts
@@ -14778,9 +15228,12 @@ graph LR
   file_meanderaw_cli_src_modules_characteristics_submatrix_run_run_utilities_service_unit_test_ts --> file_meanderaw_cli_src_modules_matrix_matrix_module_ts
   file_meanderaw_cli_src_modules_characteristics_submatrix_run_run_utilities_service_unit_test_ts --> file_meanderaw_cli_src_modules_matrix_matrix_service_ts
   file_meanderaw_cli_src_modules_characteristics_submatrix_submatrix_utilities_module_ts --> file_meanderaw_cli_src_modules_characteristics_submatrix_submatrix_utilities_service_ts
+  file_meanderaw_cli_src_modules_characteristics_submatrix_submatrix_utilities_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristic_context_service_ts
   file_meanderaw_cli_src_modules_characteristics_submatrix_submatrix_utilities_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_module_ts
   file_meanderaw_cli_src_modules_characteristics_submatrix_submatrix_utilities_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_submatrix_submatrix_utilities_module_ts
   file_meanderaw_cli_src_modules_characteristics_submatrix_submatrix_utilities_module_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_submatrix_submatrix_utilities_service_ts
+  file_meanderaw_cli_src_modules_characteristics_submatrix_submatrix_utilities_module_unit_test_ts --> file_meanderaw_cli_src_modules_code_code_module_ts
+  file_meanderaw_cli_src_modules_characteristics_submatrix_submatrix_utilities_module_unit_test_ts --> file_meanderaw_cli_src_modules_matrix_matrix_module_ts
   file_meanderaw_cli_src_modules_characteristics_submatrix_submatrix_utilities_service_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_types_ts
   file_meanderaw_cli_src_modules_characteristics_submatrix_submatrix_utilities_service_ts --> file_meanderaw_cli_src_modules_characteristics_submatrix_submatrix_types_ts
   file_meanderaw_cli_src_modules_characteristics_submatrix_submatrix_utilities_service_ts --> file_meanderaw_cli_src_modules_matrix_matrix_types_ts
@@ -15136,7 +15589,6 @@ graph LR
   file_meanderaw_cli_src_modules_matrix_matrix_service_unit_test_ts --> file_meanderaw_cli_src_modules_code_code_service_ts
   file_meanderaw_cli_src_modules_matrix_matrix_service_unit_test_ts --> file_meanderaw_cli_src_modules_matrix_matrix_constants_ts
   file_meanderaw_cli_src_modules_matrix_matrix_service_unit_test_ts --> file_meanderaw_cli_src_modules_matrix_matrix_service_ts
-  file_meanderaw_cli_src_modules_matrix_matrix_service_unit_test_ts --> file_meanderaw_cli_src_modules_matrix_matrix_types_ts
   file_meanderaw_cli_src_modules_matrix_matrix_service_unit_test_ts --> file_meanderaw_cli_src_modules_symmetry_symmetry_service_ts
   file_meanderaw_cli_src_modules_matrix_matrix_service_unit_test_ts --> file_meanderaw_cli_src_modules_tile_tile_service_ts
   file_meanderaw_cli_src_modules_svg_svg_module_ts --> file_meanderaw_cli_src_modules_svg_svg_service_ts
@@ -15198,12 +15650,11 @@ graph LR
   file_meanderaw_cli_testing_tiles_ts --> file_meanderaw_cli_src_modules_tile_tile_service_ts
   file_meanderaw_cli_testing_tiles_ts --> file_meanderaw_cli_src_modules_tile_tile_types_ts
   file_meanderaw_web_src_router_tsx --> file_meanderaw_web_src_routeTree_gen_ts
+  file_meanderaw_web_src_routes_index_integration_test_tsx --> file_meanderaw_web_src_router_tsx
   file_meanderaw_web_src_routes_index_integration_test_tsx --> file_meanderaw_web_src_routes_index_tsx
-  file_meanderaw_web_src_routes_index_integration_test_tsx --> file_meanderaw_web_testing_render_route_tsx
   file_meanderaw_web_src_routeTree_gen_ts --> file_meanderaw_web_src_router_tsx
   file_meanderaw_web_src_routeTree_gen_ts --> file_meanderaw_web_src_routes___root_tsx
   file_meanderaw_web_src_routeTree_gen_ts --> file_meanderaw_web_src_routes_index_tsx
-  file_meanderaw_web_testing_render_route_tsx --> file_meanderaw_web_src_router_tsx
   file_observability_src_lib_conventional_log_message_eslint_rule_ts --> file_observability_src_modules_logger_logger_constants_ts
   file_observability_src_lib_conventional_log_message_eslint_rule_unit_test_ts --> file_observability_src_lib_conventional_log_message_eslint_rule_ts
   file_observability_src_modules_logger_logger_module_ts --> file_observability_src_modules_logger_logger_service_ts
@@ -15674,227 +16125,6 @@ graph LR
   file_presentation_src_components_ui_sidebar_tsx --> file_presentation_src_components_ui_tooltip_tsx
   file_presentation_src_components_ui_sidebar_tsx --> file_presentation_src_hooks_use_mobile_ts
   file_presentation_src_components_ui_toggle_group_tsx --> file_presentation_src_components_ui_toggle_tsx
-  file_publication_src_modules_link_packages_link_packages_command_ts --> file_publication_src_modules_link_packages_link_packages_service_ts
-  file_publication_src_modules_link_packages_link_packages_command_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_command_ts
-  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_service_ts
-  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_link_packages_link_packages_module_ts --> file_publication_src_modules_link_packages_link_packages_command_ts
-  file_publication_src_modules_link_packages_link_packages_module_ts --> file_publication_src_modules_link_packages_link_packages_service_ts
-  file_publication_src_modules_link_packages_link_packages_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_link_packages_link_packages_module_ts --> file_publication_src_modules_release_group_release_group_module_ts
-  file_publication_src_modules_link_packages_link_packages_module_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_command_ts
-  file_publication_src_modules_link_packages_link_packages_module_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_module_ts
-  file_publication_src_modules_link_packages_link_packages_module_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_service_ts
-  file_publication_src_modules_link_packages_link_packages_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_link_packages_link_packages_module_unit_test_ts --> file_publication_src_modules_release_group_release_group_module_ts
-  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_link_packages_link_packages_constants_ts
-  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_link_packages_link_packages_types_ts
-  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_release_group_release_group_constants_ts
-  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_release_group_release_group_types_ts
-  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_publication_types_ts
-  file_publication_src_modules_link_packages_link_packages_service_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_service_ts
-  file_publication_src_modules_link_packages_link_packages_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_link_packages_link_packages_service_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_main_tip_main_tip_module_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_main_tip_main_tip_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_main_tip_main_tip_module_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
-  file_publication_src_modules_main_tip_main_tip_module_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_main_tip_main_tip_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_main_tip_main_tip_service_ts --> file_publication_src_modules_main_tip_main_tip_constants_ts
-  file_publication_src_modules_main_tip_main_tip_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_main_tip_main_tip_service_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_main_tip_main_tip_service_ts --> file_publication_src_publication_types_ts
-  file_publication_src_modules_main_tip_main_tip_service_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_main_tip_main_tip_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_main_tip_main_tip_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_main_tip_main_tip_service_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_process_runner_process_runner_module_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_process_runner_process_runner_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_process_runner_process_runner_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_process_runner_process_runner_service_integration_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_process_runner_process_runner_service_integration_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_process_runner_process_runner_service_ts --> file_publication_src_modules_process_runner_process_runner_constants_ts
-  file_publication_src_modules_process_runner_process_runner_service_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_process_runner_process_runner_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_process_runner_process_runner_utilities_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_process_runner_process_runner_utilities_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_publish_packages_publish_packages_command_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_publish_packages_publish_packages_command_ts --> file_publication_src_modules_publish_packages_publish_packages_service_ts
-  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_command_ts
-  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_service_ts
-  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_publish_packages_publish_packages_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_publish_packages_publish_packages_module_ts --> file_publication_src_modules_publish_packages_publish_packages_command_ts
-  file_publication_src_modules_publish_packages_publish_packages_module_ts --> file_publication_src_modules_publish_packages_publish_packages_service_ts
-  file_publication_src_modules_publish_packages_publish_packages_module_ts --> file_publication_src_modules_release_group_release_group_module_ts
-  file_publication_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_command_ts
-  file_publication_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_module_ts
-  file_publication_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_service_ts
-  file_publication_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_publication_src_modules_release_group_release_group_module_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_publish_packages_publish_packages_constants_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_publish_packages_publish_packages_types_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_release_group_release_group_constants_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_release_group_release_group_types_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_publication_types_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_service_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_constants_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_constants_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_types_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts --> file_publication_src_publication_types_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
-  file_publication_src_modules_release_group_release_group_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_release_group_release_group_module_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_release_group_release_group_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_release_group_release_group_module_unit_test_ts --> file_publication_src_modules_release_group_release_group_module_ts
-  file_publication_src_modules_release_group_release_group_module_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_release_group_release_group_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_release_group_release_group_service_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_release_group_release_group_service_ts --> file_publication_src_modules_release_group_release_group_constants_ts
-  file_publication_src_modules_release_group_release_group_service_ts --> file_publication_src_modules_release_group_release_group_types_ts
-  file_publication_src_modules_release_group_release_group_service_ts --> file_publication_src_publication_types_ts
-  file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_src_modules_release_group_release_group_types_ts
-  file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_command_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_command_ts --> file_publication_src_modules_tag_codebase_tag_codebase_service_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_command_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_service_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_module_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_module_ts --> file_publication_src_modules_tag_codebase_tag_codebase_command_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_module_ts --> file_publication_src_modules_tag_codebase_tag_codebase_service_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_command_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_module_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_service_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_service_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_service_ts --> file_publication_src_modules_tag_codebase_tag_codebase_constants_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_service_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_service_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_command_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_tag_packages_tag_packages_command_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_command_ts
-  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_ts --> file_publication_src_modules_release_group_release_group_module_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_ts --> file_publication_src_modules_tag_packages_tag_packages_command_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_publication_src_modules_release_group_release_group_module_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_command_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_release_group_release_group_types_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_tag_packages_tag_packages_constants_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_tag_packages_tag_packages_types_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_publication_types_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
-  file_publication_src_modules_version_packages_version_packages_command_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_version_packages_version_packages_command_ts --> file_publication_src_modules_version_packages_version_packages_service_ts
-  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
-  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_command_ts
-  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_service_ts
-  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_version_packages_version_packages_module_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
-  file_publication_src_modules_version_packages_version_packages_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_version_packages_version_packages_module_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
-  file_publication_src_modules_version_packages_version_packages_module_ts --> file_publication_src_modules_version_packages_version_packages_command_ts
-  file_publication_src_modules_version_packages_version_packages_module_ts --> file_publication_src_modules_version_packages_version_packages_service_ts
-  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
-  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
-  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_command_ts
-  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_module_ts
-  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_service_ts
-  file_publication_src_modules_version_packages_version_packages_service_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_version_packages_version_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_version_packages_version_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_version_packages_version_packages_service_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
-  file_publication_src_modules_version_packages_version_packages_service_ts --> file_publication_src_modules_version_packages_version_packages_constants_ts
-  file_publication_src_modules_version_packages_version_packages_service_ts --> file_publication_src_publication_types_ts
-  file_publication_src_modules_version_packages_version_packages_service_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_version_packages_version_packages_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_version_packages_version_packages_service_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
-  file_publication_src_modules_version_packages_version_packages_service_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_service_ts
-  file_publication_src_publication_main_end_to_end_test_ts --> file_publication_src_publication_constants_ts
-  file_publication_src_publication_main_ts --> file_publication_src_publication_module_ts
-  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_module_ts
-  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_module_ts
-  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
-  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_module_ts
-  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
-  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_modules_link_packages_link_packages_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_modules_publish_packages_publish_packages_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_modules_tag_codebase_tag_codebase_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_modules_version_packages_version_packages_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_publication_constants_ts
-  file_publication_src_publication_repl_ts --> file_publication_src_publication_module_ts
-  file_publication_src_publication_types_ts --> file_publication_src_publication_constants_ts
-  file_publication_testing_mocks_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_testing_mocks_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
   file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_ts --> file_synchronization_src_modules_conformetry_generators_conformetry_generators_types_ts
   file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
   file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
@@ -16122,6 +16352,10 @@ graph LR
   file_testing_src_modules_clock_clock_utilities_ts --> file_testing_src_modules_clock_clock_constants_ts
   file_testing_src_modules_clock_clock_utilities_unit_test_ts --> file_testing_src_modules_clock_clock_constants_ts
   file_testing_src_modules_clock_clock_utilities_unit_test_ts --> file_testing_src_modules_clock_clock_utilities_ts
+  file_testing_src_modules_command_command_utilities_ts --> file_testing_src_modules_command_command_constants_ts
+  file_testing_src_modules_command_command_utilities_ts --> file_testing_src_modules_command_command_types_ts
+  file_testing_src_modules_command_command_utilities_unit_test_ts --> file_testing_src_modules_command_command_constants_ts
+  file_testing_src_modules_command_command_utilities_unit_test_ts --> file_testing_src_modules_command_command_utilities_ts
   file_testing_src_modules_environment_environment_utilities_unit_test_ts --> file_testing_src_modules_environment_environment_utilities_ts
   file_testing_src_modules_fixtures_fixtures_utilities_unit_test_ts --> file_testing_src_modules_fixtures_fixtures_utilities_ts
   file_testing_src_modules_fixtures_fixtures_utilities_unit_test_ts --> file_testing_src_modules_temporary_directory_temporary_directory_utilities_ts
@@ -16132,7 +16366,33 @@ graph LR
   file_testing_src_modules_mocks_mocks_utilities_unit_test_ts --> file_testing_src_modules_mocks_mocks_utilities_ts
   file_testing_src_modules_mocks_mocks_utilities_unit_test_ts --> file_testing_src_modules_temporary_directory_temporary_directory_utilities_ts
   file_testing_src_modules_module_wiring_module_wiring_utilities_unit_test_ts --> file_testing_src_modules_module_wiring_module_wiring_utilities_ts
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_functions_ts --> file_testing_src_modules_command_command_types_ts
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_functions_ts --> file_testing_src_modules_command_command_utilities_ts
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_functions_ts --> file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_constants_ts
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_functions_ts --> file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_types_ts
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_types_ts --> file_testing_src_modules_command_command_types_ts
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_types_ts --> file_testing_src_modules_tarball_sandbox_tarball_sandbox_types_ts
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_utilities_ts --> file_testing_src_modules_command_command_utilities_ts
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_utilities_ts --> file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_constants_ts
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_utilities_ts --> file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_functions_ts
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_utilities_ts --> file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_types_ts
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_utilities_ts --> file_testing_src_modules_tarball_sandbox_tarball_sandbox_constants_ts
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_utilities_ts --> file_testing_src_modules_tarball_sandbox_tarball_sandbox_utilities_ts
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_utilities_ts --> file_testing_src_modules_temporary_directory_temporary_directory_utilities_ts
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_utilities_unit_test_ts --> file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_types_ts
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_utilities_unit_test_ts --> file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_utilities_ts
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_utilities_unit_test_ts --> file_testing_src_modules_temporary_directory_temporary_directory_utilities_ts
+  file_testing_src_modules_nx_plugin_sandbox_nx_plugin_sandbox_utilities_unit_test_ts --> file_testing_testing_tarball_fixture_ts
   file_testing_src_modules_route_render_route_render_utilities_unit_test_tsx --> file_testing_src_modules_route_render_route_render_utilities_tsx
+  file_testing_src_modules_tarball_sandbox_tarball_sandbox_types_ts --> file_testing_src_modules_command_command_types_ts
+  file_testing_src_modules_tarball_sandbox_tarball_sandbox_utilities_ts --> file_testing_src_modules_command_command_utilities_ts
+  file_testing_src_modules_tarball_sandbox_tarball_sandbox_utilities_ts --> file_testing_src_modules_tarball_sandbox_tarball_sandbox_constants_ts
+  file_testing_src_modules_tarball_sandbox_tarball_sandbox_utilities_ts --> file_testing_src_modules_tarball_sandbox_tarball_sandbox_types_ts
+  file_testing_src_modules_tarball_sandbox_tarball_sandbox_utilities_ts --> file_testing_src_modules_temporary_directory_temporary_directory_utilities_ts
+  file_testing_src_modules_tarball_sandbox_tarball_sandbox_utilities_unit_test_ts --> file_testing_src_modules_tarball_sandbox_tarball_sandbox_types_ts
+  file_testing_src_modules_tarball_sandbox_tarball_sandbox_utilities_unit_test_ts --> file_testing_src_modules_tarball_sandbox_tarball_sandbox_utilities_ts
+  file_testing_src_modules_tarball_sandbox_tarball_sandbox_utilities_unit_test_ts --> file_testing_src_modules_temporary_directory_temporary_directory_utilities_ts
+  file_testing_src_modules_tarball_sandbox_tarball_sandbox_utilities_unit_test_ts --> file_testing_testing_tarball_fixture_ts
   file_testing_src_modules_temporary_directory_temporary_directory_utilities_ts --> file_testing_src_modules_temporary_directory_temporary_directory_constants_ts
   file_testing_src_modules_temporary_directory_temporary_directory_utilities_unit_test_ts --> file_testing_src_modules_temporary_directory_temporary_directory_constants_ts
   file_testing_src_modules_temporary_directory_temporary_directory_utilities_unit_test_ts --> file_testing_src_modules_temporary_directory_temporary_directory_utilities_ts
@@ -16177,49 +16437,6 @@ graph LR
   file_validation_src_modules_lockfile_lockfile_service_ts --> file_validation_src_modules_lockfile_lockfile_types_ts
   file_validation_src_modules_lockfile_lockfile_service_unit_test_ts --> file_validation_src_modules_lockfile_lockfile_constants_ts
   file_validation_src_modules_lockfile_lockfile_service_unit_test_ts --> file_validation_src_modules_lockfile_lockfile_service_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_checks_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_consumer_constants_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_checks_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_process_service_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_checks_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_types_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_checks_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_checks_service_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_checks_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_consumer_constants_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_checks_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_process_service_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_checks_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_types_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_consumer_constants_ts --> file_validation_src_modules_publishable_packages_publishable_packages_types_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_consumer_constants_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_fixtures_constants_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_process_service_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_types_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_consumer_constants_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_process_service_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_types_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_process_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_consumer_constants_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_process_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_types_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_process_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_process_service_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_process_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_types_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_command_ts --> file_validation_src_modules_publishable_packages_publishable_packages_constants_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_command_ts --> file_validation_src_modules_publishable_packages_publishable_packages_service_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_command_ts --> file_validation_src_modules_publishable_packages_publishable_packages_types_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_command_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_command_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_command_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_constants_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_command_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_service_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_command_unit_test_ts --> file_validation_testing_mocks_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_module_ts --> file_validation_src_modules_publishable_packages_publishable_packages_checks_service_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_module_ts --> file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_module_ts --> file_validation_src_modules_publishable_packages_publishable_packages_process_service_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_module_ts --> file_validation_src_modules_publishable_packages_publishable_packages_command_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_module_ts --> file_validation_src_modules_publishable_packages_publishable_packages_service_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_module_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_command_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_module_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_module_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_module_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_service_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_checks_service_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_constants_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_types_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_checks_service_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_constants_ts
-  file_validation_src_modules_publishable_packages_publishable_packages_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_service_ts
   file_validation_src_modules_readme_projects_readme_projects_command_ts --> file_validation_src_modules_readme_projects_readme_projects_service_ts
   file_validation_src_modules_readme_projects_readme_projects_command_unit_test_ts --> file_validation_src_modules_readme_projects_readme_projects_command_ts
   file_validation_src_modules_readme_projects_readme_projects_command_unit_test_ts --> file_validation_src_modules_readme_projects_readme_projects_service_ts
@@ -16275,13 +16492,11 @@ graph LR
   file_validation_src_validation_main_ts --> file_validation_src_validation_module_ts
   file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_catalog_manifests_catalog_manifests_module_ts
   file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_lockfile_lockfile_module_ts
-  file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_module_ts
   file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_readme_projects_readme_projects_module_ts
   file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_session_branch_name_session_branch_name_module_ts
   file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_module_ts
   file_validation_src_validation_module_ts --> file_validation_src_modules_catalog_manifests_catalog_manifests_module_ts
   file_validation_src_validation_module_ts --> file_validation_src_modules_lockfile_lockfile_module_ts
-  file_validation_src_validation_module_ts --> file_validation_src_modules_publishable_packages_publishable_packages_module_ts
   file_validation_src_validation_module_ts --> file_validation_src_modules_readme_projects_readme_projects_module_ts
   file_validation_src_validation_module_ts --> file_validation_src_modules_session_branch_name_session_branch_name_module_ts
   file_validation_src_validation_module_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_module_ts

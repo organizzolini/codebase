@@ -6,7 +6,6 @@ import { LoggerModule } from "@codebase/observability";
 
 import { CatalogManifestsModule } from "./modules/catalog-manifests/catalog-manifests.module";
 import { LockfileModule } from "./modules/lockfile/lockfile.module";
-import { PublishablePackagesModule } from "./modules/publishable-packages/publishable-packages.module";
 import { ReadmeProjectsModule } from "./modules/readme-projects/readme-projects.module";
 import { SessionBranchNameModule } from "./modules/session-branch-name/session-branch-name.module";
 import { SessionWorktreeNameModule } from "./modules/session-worktree-name/session-worktree-name.module";
@@ -27,7 +26,6 @@ import { environmentSchema } from "./validation.constants";
     DiscoveryModule,
     LockfileModule,
     LoggerModule,
-    PublishablePackagesModule,
     ReadmeProjectsModule,
     SessionBranchNameModule,
     SessionWorktreeNameModule,

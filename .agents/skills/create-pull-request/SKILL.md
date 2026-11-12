@@ -79,7 +79,7 @@ suffixes do not push the queued commit subject over the header limit.
 | `persistence` | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations |
 | `interface` | Shared GraphQL package: Relay helpers, entity-to-object types, client codegen, and test helpers |
 | `dependencies` | Dependency version changes (upgrades, additions, removals via pnpm) |
-| `deployment` | Deployment CLI: the CI release steps and the publishable-packages gate |
+| `deployment` | Deployment CLI: the CI release steps |
 | `deployments` | GitHub Actions workflows and CI/CD pipeline configuration |
 | `documentation` | Markdown docs, skills, planning files, and AGENTS.md files |
 | `infrastructure` | Helm charts, Terraform configs, and Kubernetes resources |

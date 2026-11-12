@@ -331,7 +331,7 @@ const config: KnipConfig = {
       project: "src/**/*.ts",
     },
 
-    // deployment: NestJS CLI tool for the CI release steps and the publishable-packages gate
+    // deployment: NestJS CLI tool for the CI release steps
     deployment: {
       entry: ["src/deployment.main.ts", "src/deployment.repl.ts"], // Main CLI entry + the REPL its own target runs
       ignore: [

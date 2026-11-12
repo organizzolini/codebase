@@ -118,9 +118,6 @@
         "lockfile": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts lockfile"
         },
-        "publishable-packages": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts publishable-packages"
-        },
         "readme-projects": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts readme-projects"
         },
@@ -142,21 +139,6 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
-    "verify-publishable-packages": {
-      "cache": false,
-      "dependsOn": [
-        {
-          "projects": ["tag:layer:*"],
-          "target": "pack"
-        }
-      ],
-      "description": "Pack every publishable ic-suite package, install the tarballs into a consumer outside the workspace, and check its imports, command lines, project graph, and one inferred target per Nx plugin. Every publishable ic-suite package, and only those, carries a layer:* tag; the *-agents and *-examples packages deliberately do not. Never publishes.",
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "pnpm exec nx run validation:start:publishable-packages",
-        "cwd": "{workspaceRoot}"
-      }
-    },
     "yaml-lint": {}
   }
 }

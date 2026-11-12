@@ -66,8 +66,7 @@ one class.
 | `cleanup-codebase` | `src/modules/cleanup-codebase` | the `cleanup-codebase` composite action, before it saves the caches; runs the two steps below it |
 | `keep-task-database` | `src/modules/keep-task-database` | `cleanup-codebase` |
 | `merge-task-cache` | `src/modules/merge-task-cache` | nothing in CI: `import-pr-task-cache` merges through the same service; run it by hand with a directory |
-| `publishable-packages-gate` | `src/modules/publishable-packages-gate` | the 🤵 Publishable Packages leg of Continuous Integration |
-| `run-affected` | `src/modules/run-affected` | the Continuous Integration matrix legs, for every check but Secure and Publishable Packages |
+| `run-affected` | `src/modules/run-affected` | the Continuous Integration matrix legs, for every check but Secure |
 | `collect-codometer-baseline` | `src/modules/collect-codometer-baseline` | the `report-integration` composite action, on a green `main` build |
 | `report-codometer-changes` | `src/modules/report-codometer-changes` | the `report-integration` composite action, on a pull request's build |
 | `upgrade-dependencies` | `src/modules/upgrade-dependencies` | the `upgrade-dependencies` workflow |

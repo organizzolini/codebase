@@ -131,7 +131,7 @@ const scopes = [
   },
   {
     description:
-      "Deployment CLI: the CI release steps and the publishable-packages gate",
+      "Deployment CLI: the CI release steps",
     name: "deployment",
   },
   {

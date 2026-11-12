@@ -6,19 +6,20 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 8352 |
-| Files | 2799 |
-| Calls traced | 8949 |
-| Call stacks | 2389 |
+| Callables | 8395 |
+| Files | 2807 |
+| Calls traced | 9021 |
+| Call stacks | 2400 |
 | Deepest stack | 17 |
 | Stacks through recursion | 15 |
-| Unfollowable calls | 491 |
+| Unfollowable calls | 527 |
 
 ### Projects
 
 | Project | Deepest | Limit | Headroom | Widest |
 | --- | --- | --- | --- | --- |
 | `compliance` | 8 | 8 | 0 | 9 |
+| `deployment` | 6 | 6 | 0 | 8 |
 | `integration` | 6 | 6 | 0 | 8 |
 | `projects/caelundas/caelundas-web` | 6 | 6 | 0 | 8 |
 | `projects/common/observability` | 4 | 4 | 0 | 2 |
@@ -29,7 +30,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/codependix/codependix-boundaries` | 12 | 12 | 0 | 7 |
 | `projects/ic-suite/codependix/codependix-cli` | 15 | 15 | 0 | 7 |
 | `projects/ic-suite/codependix/codependix-nx` | 6 | 6 | 0 | 5 |
-| `projects/ic-suite/codometer/codometer-cli` | 15 | 15 | 0 | 9 |
+| `projects/ic-suite/codometer/codometer-cli` | 15 | 15 | 0 | 8 |
 | `projects/ic-suite/coinagerie/coinagerie-cli` | 13 | 13 | 0 | 5 |
 | `projects/ic-suite/coinagerie/coinagerie-nx` | 6 | 6 | 0 | 4 |
 | `projects/ic-suite/conformetry/conformetry-cli` | 15 | 15 | 0 | 9 |
@@ -37,9 +38,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/conformetry/conformetry-nx` | 15 | 15 | 0 | 9 |
 | `projects/lexico/lexico-cli` | 17 | 17 | 0 | 8 |
 | `projects/meanderaw/meanderaw-cli` | 16 | 16 | 0 | 12 |
-| `publication` | 6 | 6 | 0 | 8 |
 | `synchronization` | 10 | 10 | 0 | 8 |
-| `validation` | 8 | 8 | 0 | 8 |
 | `projects/caelundas/caelundas-cli` | 15 | 16 | 1 | 12 |
 | `projects/ic-suite/codependix/codependix-core` | 0 | 1 | 1 | 0 |
 | `projects/ic-suite/codometer/codometer-core` | 0 | 1 | 1 | 0 |
@@ -54,6 +53,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/codependix/codependix-output` | 11 | 14 | 3 | 7 |
 | `projects/lexico/lexico-db` | 0 | 3 | 3 | 0 |
 | `projects/lexico/lexico-web` | 6 | 9 | 3 | 8 |
+| `validation` | 5 | 8 | 3 | 4 |
 | `installation` | 13 | 17 | 4 | 8 |
 | `projects/common/interface` | 3 | 7 | 4 | 2 |
 | `projects/ic-suite/codependix/codependix-nx-projects` | 0 | 4 | 4 | 8 |
@@ -83,9 +83,9 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | Headroom | Projects |
 | --- | --- |
 | over limit | 0 |
-| 0 — at limit | 22 |
+| 0 — at limit | 21 |
 | 1 | 2 |
-| 2–3 | 5 |
+| 2–3 | 6 |
 | 4+ | 13 |
 | no stacks | 17 |
 
