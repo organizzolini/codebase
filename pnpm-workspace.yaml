@@ -146,6 +146,7 @@ catalog:
   eslint-plugin-tsdoc: ^0.5.2
   eslint-plugin-unicorn: ^64.0.0
   eslint-plugin-yml: ^3.3.2
+  execa: ^9.6.1
   fallow: ^3.24.1
   graphql: ^17.1.0
   husky: ^9.1.7
@@ -210,7 +211,7 @@ catalog:
   typescript: ^6.0.3
   typescript-eslint: ^8.59.4
   validate-branch-name: ^1.3.2
-  verdaccio: ^7.0.1
+  verdaccio: ^7.1.0
   vite: 8.3.7
   vite-plugin-dts: ^5.0.1
   vite-plugin-static-copy: ^4.1.1

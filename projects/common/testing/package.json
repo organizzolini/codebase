@@ -7,10 +7,13 @@
     "@nx/devkit": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@testing-library/react": "catalog:",
+    "execa": "catalog:",
     "react": "catalog:",
     "reflect-metadata": "catalog:",
     "tslib": "catalog:",
-    "vitest": "catalog:"
+    "verdaccio": "catalog:",
+    "vitest": "catalog:",
+    "yaml": "catalog:"
   },
   "devDependencies": {
     "@nx/eslint-plugin": "catalog:",
@@ -22,6 +25,7 @@
   },
   "exports": {
     ".": "./src/index.ts",
+    "./end-to-end": "./src/end-to-end.ts",
     "./nestjs": "./src/nestjs.ts",
     "./react": "./src/react.ts",
     "./react/setup": "./src/react-setup.ts",
@@ -41,6 +45,10 @@
       ".": {
         "default": "./dist/src/index.js",
         "types": "./dist/src/index.d.ts"
+      },
+      "./end-to-end": {
+        "default": "./dist/src/end-to-end.js",
+        "types": "./dist/src/end-to-end.d.ts"
       },
       "./nestjs": {
         "default": "./dist/src/nestjs.js",

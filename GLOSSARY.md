@@ -25,6 +25,7 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **dispatch**: Orchestration step where the main session hands each parent issue or ticket to a fresh subagent with its own brief.
 - **documentation**: Folder holding the ADRs of this repository, agent configuration, guides, and generated OpenWiki pages, reached through the docs link.
 - **documenter**: Impeccable subagent that records DESIGN.md and its sidecar from a finished build, deriving the design system from the shipped artifact.
+- **execa**: Child-process library behind the testing package's end-to-end runners, which run commands with a sanitized environment, a timeout, and captured output.
 - **fold**: Coinagerie configuration hook that maps a word to its canonical headword, merging families like plurals and spelling variants.
 - **guard**: Nx code-quality target run with typecheck, lint, format, and deprecate across affected projects, in the validate-code step.
 - **ic**: Five toolchains grouped as the suite, callidescope, codependix, codometer, coinagerie, and conformetry, that measure and gate this workspace.
