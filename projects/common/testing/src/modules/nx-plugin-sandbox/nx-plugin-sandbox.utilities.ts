@@ -35,7 +35,7 @@ export async function startVerdaccioPluginRunner(
   const directory = makeDirectory("verdaccio");
   const npmrc = path.join(directory, ".npmrc");
   const workspaces: string[] = [];
-  const server = await createServer(directory);
+  const server = await createServer(directory, options.localScopes ?? []);
   const stop = async (): Promise<void> => {
     await closeServer(server);
 
@@ -65,8 +65,13 @@ export async function startVerdaccioPluginRunner(
           packages,
         );
 
-        for (const tarball of tarballs) {
-          await publishTarball(tarball, { npmrc, tag });
+        for (const [index, tarball] of tarballs.entries()) {
+          await publishTarball(tarball, {
+            name: packages[index] ?? "",
+            npmrc,
+            registryUrl,
+            tag,
+          });
         }
       },
       registryUrl,
@@ -134,15 +139,28 @@ async function createRegistryToken(registryUrl: string): Promise<string> {
   return token;
 }
 
-/** Builds a Verdaccio server, not yet listening, storing under `directory`. */
-async function createServer(directory: string): Promise<Server> {
-  const config = parse(
-    fs.readFileSync(VERDACCIO_CONFIG_PATH, "utf8"),
-  ) as object;
+/**
+ * Builds a Verdaccio server, not yet listening, storing under `directory`.
+ * Packages in `localScopes` come first, so they match before the proxying `**`.
+ */
+async function createServer(
+  directory: string,
+  localScopes: readonly string[],
+): Promise<Server> {
+  const config = parse(fs.readFileSync(VERDACCIO_CONFIG_PATH, "utf8")) as {
+    packages?: Record<string, unknown>;
+  };
+  const local = Object.fromEntries(
+    localScopes.map((scope) => [
+      `${scope}/*`,
+      { access: "$all", publish: "$all", unpublish: "$all" },
+    ]),
+  );
 
   return (await runServer({
     ...config,
     max_body_size: VERDACCIO_MAXIMUM_BODY_SIZE,
+    packages: { ...local, ...config.packages },
     self_path: directory,
     storage: path.join(directory, "storage"),
   })) as Server;
@@ -158,11 +176,22 @@ async function listen(server: Server): Promise<void> {
   });
 }
 
-/** Publishes one tarball as it is, so the registry sees the packed manifest. */
+/**
+ * Publishes one tarball as it is, so the registry sees the packed manifest.
+ *
+ * A packed `publishConfig.registry` overrides `--registry`, so a scoped package
+ * is pinned to the sandbox registry by its scope, which npm consults first.
+ */
 async function publishTarball(
   tarball: string,
-  registry: { readonly npmrc: string; readonly tag: string },
+  registry: {
+    readonly name: string;
+    readonly npmrc: string;
+    readonly registryUrl: string;
+    readonly tag: string;
+  },
 ): Promise<void> {
+  const [scope] = registry.name.startsWith("@") ? registry.name.split("/") : [];
   const result = await createCommand("npm", [
     "publish",
     tarball,
@@ -170,6 +199,9 @@ async function publishTarball(
     registry.tag,
     "--userconfig",
     registry.npmrc,
+    ...(scope === undefined
+      ? []
+      : [`--${scope}:registry=${registry.registryUrl}`]),
   ])
     .withTimeout(REGISTRY_OPERATION_TIMEOUT_MS)
     .run();

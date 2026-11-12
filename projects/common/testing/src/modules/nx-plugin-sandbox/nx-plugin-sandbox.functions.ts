@@ -27,6 +27,12 @@ export async function bootstrapConsumerWorkspace(
     path.join(directory, "package.json"),
     JSON.stringify({ devDependencies, name: "consumer", private: true }),
   );
+  // Nx has an install script pnpm would refuse to run, and a package published
+  // a moment ago is younger than any release-age rule; either fails the install.
+  fs.writeFileSync(
+    path.join(directory, "pnpm-workspace.yaml"),
+    "strictDepBuilds: false\nminimumReleaseAge: 0\n",
+  );
   fs.writeFileSync(
     path.join(directory, "nx.json"),
     JSON.stringify({ plugins: [] }),

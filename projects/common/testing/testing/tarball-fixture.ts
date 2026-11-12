@@ -9,6 +9,8 @@ export interface FixtureTarballOptions {
   readonly bin?: string;
   readonly dependencies?: Readonly<Record<string, string>>;
   readonly name: string;
+  /** Written as the manifest's `publishConfig`, as a published package's would be. */
+  readonly publishConfig?: Readonly<Record<string, string>>;
   readonly version: string;
 }
 
@@ -17,7 +19,7 @@ export async function createFixtureTarball(
   directory: string,
   options: FixtureTarballOptions,
 ): Promise<string> {
-  const { bin, dependencies = {}, name, version } = options;
+  const { bin, dependencies = {}, name, publishConfig, version } = options;
   const flatName = name.replace(/^@/u, "").replace("/", "-");
   const staging = fs.mkdtempSync(path.join(directory, "stage-"));
   const packageDirectory = path.join(staging, "package");
@@ -27,6 +29,7 @@ export async function createFixtureTarball(
     ...(bin === undefined ? {} : { bin: { [bin]: "bin.js" } }),
     dependencies,
     name,
+    ...(publishConfig === undefined ? {} : { publishConfig }),
     version,
   };
   fs.writeFileSync(
