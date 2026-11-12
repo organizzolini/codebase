@@ -81,7 +81,7 @@ serving all three roots, so the move can stop at any point.
 
    The `sync` needs one profile that can read the old bucket and write the new one, so copy through a local directory when the two keys differ.
 
-4. **Check the copy**: `aws s3 ls --recursive` on both buckets lists the same `codebase/*.tfstate` keys, and the new `linode.tfstate` matches the old one byte for byte.
+4. **Check the copy**: `aws s3 ls --recursive` on both buckets lists the same `*.tfstate` keys, and the new `linode.tfstate` matches the old one byte for byte.
 5. **Switch**: set `TERRAFORM_STATE_BUCKET`, `TERRAFORM_STATE_ENDPOINT`, `TERRAFORM_STATE_ACCESS_KEY_ID`, and `TERRAFORM_STATE_SECRET_ACCESS_KEY` to the new values with `gh secret set`, reading each from the `terraform output` of step 2.
 6. **Prove it**: run `nx run infrastructure:terraform-init:<root>` and `terraform plan` for each of `openrouter`, `github`, and `linode` with the new values. Each plan must show no changes, since the state is the same state. Roll back by restoring the four secrets to the old values.
 7. **Retire the old bucket** only after a week of clean runs: `terraform state rm` the `state` bucket and key in the `linode` root, delete their resources and `bucket_label`, then delete the old bucket and key in Linode by hand. Both resources set `prevent_destroy` so that Terraform cannot do this itself.
