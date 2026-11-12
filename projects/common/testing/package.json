@@ -12,7 +12,8 @@
     "reflect-metadata": "catalog:",
     "tslib": "catalog:",
     "verdaccio": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "yaml": "catalog:"
   },
   "devDependencies": {
     "@nx/eslint-plugin": "catalog:",

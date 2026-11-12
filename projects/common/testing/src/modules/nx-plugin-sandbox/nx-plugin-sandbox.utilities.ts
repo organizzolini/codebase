@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 import runServer from "verdaccio";
+import { parse } from "yaml";
 
 import { createCommand } from "../command/command.utilities";
 import { TARBALL_DIRECTORY } from "../tarball-sandbox/tarball-sandbox.constants";
@@ -15,7 +16,8 @@ import {
   REGISTRY_OPERATION_TIMEOUT_MS,
   REGISTRY_PASSWORD,
   REGISTRY_USER_PREFIX,
-  VERDACCIO_CONFIG,
+  VERDACCIO_CONFIG_PATH,
+  VERDACCIO_MAXIMUM_BODY_SIZE,
 } from "./nx-plugin-sandbox.constants";
 import { bootstrapConsumerWorkspace } from "./nx-plugin-sandbox.functions";
 
@@ -138,8 +140,13 @@ async function createRegistryToken(registryUrl: string): Promise<string> {
 
 /** Builds a Verdaccio server, not yet listening, storing under `directory`. */
 async function createServer(directory: string): Promise<Server> {
+  const config = parse(
+    fs.readFileSync(VERDACCIO_CONFIG_PATH, "utf8"),
+  ) as object;
+
   return (await runServer({
-    ...VERDACCIO_CONFIG,
+    ...config,
+    max_body_size: VERDACCIO_MAXIMUM_BODY_SIZE,
     self_path: directory,
     storage: path.join(directory, "storage"),
   })) as Server;

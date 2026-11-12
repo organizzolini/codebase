@@ -8,9 +8,9 @@ The words this project uses that the root glossary does not define, regenerated 
 - **contract**:
 - **counter**:
 - **dispose**:
+- **forbid**:
 - **fork**:
 - **greeter**:
-- **importer**:
 - **ping**:
 - **poem**:
 - **role**:
