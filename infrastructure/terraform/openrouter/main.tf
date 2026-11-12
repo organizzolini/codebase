@@ -6,7 +6,7 @@ terraform {
   # Linode lacks the AWS account, region, and checksum calls.
   # No state lock: CI serializes applies with a workflow concurrency group.
   backend "s3" {
-    key    = "terraform.tfstate"
+    key    = "openrouter.tfstate"
     region = "us-east-1"
 
     skip_credentials_validation = true

@@ -39,7 +39,7 @@ data "terraform_remote_state" "openrouter" {
 
   config = {
     bucket = var.state_bucket
-    key    = "terraform.tfstate"
+    key    = "openrouter.tfstate"
     region = "us-east-1"
 
     skip_credentials_validation = true
