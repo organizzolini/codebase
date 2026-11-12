@@ -91,5 +91,5 @@
     "strict": true
   },
   "types": "src/index.ts",
-  "version": "0.0.81"
+  "version": "0.0.82"
 }

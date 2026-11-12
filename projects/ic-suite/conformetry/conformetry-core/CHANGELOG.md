@@ -1,3 +1,7 @@
+## 0.0.81 (2026-11-12)
+
+This was a version bump only for conformetry-core to align it with other projects, there were no code changes.
+
 ## 0.0.80 (2026-11-11)
 
 ### 🚀 Features
