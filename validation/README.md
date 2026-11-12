@@ -15,7 +15,6 @@ nx run validation:start:catalog-manifests         # catalog:/workspace:* in ever
 nx run validation:start:lockfile                  # pnpm-lock.yaml against the manifests
 nx run validation:start:session-branch-name       # the checked-out branch against the naming convention
 nx run validation:start:session-worktree-name     # the linked worktree's directory name and gitignore status
-nx run validation:verify-publishable-packages     # pack ic-suite, install the tarballs, run the plugins
 ```
 
 It is the one-sided counterpart to
@@ -46,7 +45,6 @@ authentication checks stay in shell — see [AGENTS.md](AGENTS.md).
 | `pull-request-body` | Does a pull request description carry all four headings, each section non-empty, in its shape, and within its word limit, with no template comment left unfilled? |
 | `catalog-manifests` | Does every workspace manifest pin externals as `catalog:` and internals as `workspace:*`? |
 | `lockfile` | Is `pnpm-lock.yaml` in sync with the manifests? |
-| `publishable-packages` | Do the packed ic-suite packages work when installed by someone else? |
 | `session-branch-name` | Does the checked-out branch follow `<type>/<scope>-<description>`? |
 | `session-worktree-name` | Is the linked worktree named in kebab-case, and gitignored inside the main checkout? |
 
@@ -140,33 +138,6 @@ directive to invoke the using-git-worktrees skill, with exit 1.
 This check used to need nothing but `git`. As a command it needs a healthy
 `node_modules` too, a cost accepted for one way of writing session checks;
 the hook says to run `pnpm install` when that is what stops it.
-
-### `publishable-packages`
-
-Installs every publishable ic-suite package from the tarball `pnpm pack` wrote,
-into a throwaway consumer, and uses it the way a user would: each package's
-import typechecks under the consumer's own TypeScript, each command line runs
-`--help`, the project graph builds with `@callidescope/nx`, `@codependix/nx`,
-and `@conformetry/nx` registered, the conformetry generator writes an instance,
-and one inferred target per plugin passes a healthy fixture and fails a broken
-one with the message only a gate that ran would print. Run it through
-`verify-publishable-packages`, which packs first.
-
-**Where the consumer lives is the whole check.** One beneath this workspace
-resolves this workspace's `node_modules`, so an executor path into `./src`, an
-unshipped schema, or a loader resolved from the wrong root all pass there and
-fail for every real user. The consumer is created under
-`PUBLISHABLE_PACKAGES_CONSUMER_ROOT`, or the system temporary directory, and
-the check refuses either when it, or any directory above it, holds a
-`package.json`, `node_modules`, or `pnpm-workspace.yaml`. CI points it at
-`$RUNNER_TEMP`.
-
-It never publishes: no command it runs writes to a registry. Every command
-runs without a shell, without this workspace's `PATH` entries, Nx variables,
-or registry tokens, and with an empty user `.npmrc`. As a tripwire against a
-publish added here later, a command carrying `publish`, `release`, `login`,
-`dist-tag`, an `nx-release-publish` target, or a similar npm subcommand is
-refused before it starts.
 
 ## Start
 

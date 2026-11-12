@@ -241,7 +241,7 @@ Symbols and logic shared across projects
 **📚 [documentation](documentation)** - NestJS CLI that refreshes the repository documentation from code, and is what the scheduled 🧑‍🏫 Refresh Documentation workflow runs\
 **🏗️ [infrastructure](infrastructure)** - Docker Compose services, the `kubernetes-job` Helm chart, and Terraform for the Linode LKE cluster\
 **🛠️ [installation](installation)** - NestJS CLI that sets up a developer machine once Node is installed: environment files, project dependencies, shell configuration, and the remaining tools\
-**🔁 [integration](integration)** - NestJS CLI for the Continuous Integration plumbing steps: the affected run, the Nx task-cache database, and the publishable-packages gate\
+**🔁 [integration](integration)** - NestJS CLI for the Continuous Integration plumbing steps: the affected run, and the Nx task-cache database\
 **📤 [deployment](deployment)** - NestJS CLI for the Continuous Deployment release steps: versioning, tagging, publishing, and linking the ic-suite packages\
 **↔️ [synchronization](synchronization)** - NestJS CLI that regenerates the workspace's derived configuration and documentation, and fails CI when they drift\
 **✅ [validation](validation)** - NestJS CLI for the repository's one-sided checks, the ones with a check and no write, such as the pull request metadata gate

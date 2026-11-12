@@ -77,7 +77,7 @@ import {
 } from "@codebase/testing/end-to-end";
 
 const sandbox = await createTarballSandboxRunner({
-  packages: ["codometer"],
+  packages: ["@codometer/cli"],
   workspaceRoot,
 });
 const { exitCode } = await sandbox.command("codometer", ["--help"]).run();
@@ -86,12 +86,12 @@ sandbox.dispose();
 const registry = await startVerdaccioPluginRunner({
   localScopes: ["@conformetry"],
 });
-await registry.publish({ packages: ["conformetry-nx"], workspaceRoot });
+await registry.publish({ packages: ["@conformetry/nx"], workspaceRoot });
 const workspace = await registry.createWorkspace({
   dependencies: { nx: "22.0.0" },
-  packages: ["conformetry-nx"],
+  packages: ["@conformetry/nx"],
 });
-workspace.registerPlugin("conformetry-nx");
+workspace.registerPlugin("@conformetry/nx");
 await workspace.runTarget("project:gate");
 await registry.stop();
 ```

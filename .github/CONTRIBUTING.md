@@ -271,6 +271,8 @@ Five workflows run on every pull request. Each maps to targets you can run local
 | Comply Code   | Branch name, pull request title, body, labels, assignees, and release significance                                       | See [Pull Request Process](#pull-request-process)             |
 | Enforce Code  | CODEOWNERS rules and workflow security                                                                                   | `compliance/src/compliance.main.ts audit-files` |
 
+Continuous Integration also runs an `End to End IC Suite` leg, which packs the five ic-suite CLIs and four Nx plugins and runs `*.packed.test.ts` against the installed tarballs (`nx affected --target=end-to-end`): the CLIs through a tarball sandbox, the plugins through a local Verdaccio registry.
+
 🚀 Continuous Deployment runs post-merge on `main` to release the workspace and to build and verify the dev container image. Builds are verified before merge, in the merge queue, and a pull request that changes the dev container builds and tests it there too.
 
 ## Code Standards
@@ -453,7 +455,7 @@ Commits are validated by commitlint through Husky. See [commit-code](.agents/ski
 | `persistence` | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations |
 | `interface` | Shared GraphQL package: Relay helpers, entity-to-object types, client codegen, and test helpers |
 | `dependencies` | Dependency version changes (upgrades, additions, removals via pnpm) |
-| `deployment` | Deployment CLI: the CI release steps and the publishable-packages gate |
+| `deployment` | Deployment CLI: the CI release steps |
 | `deployments` | GitHub Actions workflows and CI/CD pipeline configuration |
 | `documentation` | Markdown docs, skills, planning files, and AGENTS.md files |
 | `infrastructure` | Helm charts, Terraform configs, and Kubernetes resources |

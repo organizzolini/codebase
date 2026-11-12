@@ -69,13 +69,6 @@ vi.mock("./modules/merge-task-cache/merge-task-cache.module", () => ({
   MergeTaskCacheModule: function MergeTaskCacheModule() {},
 }));
 
-vi.mock(
-  "./modules/publishable-packages-gate/publishable-packages-gate.module",
-  () => ({
-    PublishablePackagesGateModule: function PublishablePackagesGateModule() {},
-  }),
-);
-
 vi.mock("./modules/cleanup-codebase/cleanup-codebase.module", () => ({
   CleanupCodebaseModule: function CleanupCodebaseModule() {},
 }));

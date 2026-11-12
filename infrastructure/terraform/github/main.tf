@@ -215,7 +215,7 @@ locals {
     "🕸️ Codependix Bound",
     "👔 Conformetry Validate",
     "👷 Build",
-    "🤵 Publishable Packages",
+    "🤵 End to End IC Suite",
     "🧑‍🚀 Infrastructure",
     "🧑‍🏭 Devcontainer",
     "👮 Enforce",

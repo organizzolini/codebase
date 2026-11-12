@@ -83,7 +83,7 @@ Keeping a branch scoped to one project or module (see the root [AGENTS.md](../..
 | `persistence` | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations |
 | `interface` | Shared GraphQL package: Relay helpers, entity-to-object types, client codegen, and test helpers |
 | `dependencies` | Dependency version changes (upgrades, additions, removals via pnpm) |
-| `deployment` | Deployment CLI: the CI release steps and the publishable-packages gate |
+| `deployment` | Deployment CLI: the CI release steps |
 | `deployments` | GitHub Actions workflows and CI/CD pipeline configuration |
 | `documentation` | Markdown docs, skills, planning files, and AGENTS.md files |
 | `infrastructure` | Helm charts, Terraform configs, and Kubernetes resources |

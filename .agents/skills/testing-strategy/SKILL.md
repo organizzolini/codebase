@@ -24,6 +24,9 @@ Use when asked to:
 - Unit: `*.unit.test.ts`
 - Integration: `*.integration.test.ts`
 - End-to-end: `*.end-to-end.test.ts`
+- Packed: `*.packed.test.ts`, run by the `end-to-end` target, which installs the
+  tarballs `pack` leaves in `dist/tarballs` into an isolated sandbox and runs
+  the real executable there
 
 ## Run Tests
 
@@ -31,8 +34,16 @@ Use when asked to:
 nx run <project>:vitest:unit
 nx run <project>:vitest:integration
 nx run <project>:vitest:end-to-end
+nx run <project>:end-to-end    # packed tests: the five ic-suite CLIs and four Nx plugins
 nx affected --target=vitest --base=main
 ```
+
+The `end-to-end` target is separate from `vitest:end-to-end`, which runs
+`*.end-to-end.test.ts` against source. Nine projects opt in by declaring an
+empty `end-to-end` target: the five CLIs install tarballs through
+`createTarballSandboxRunner`, and the four Nx plugins publish to a local
+Verdaccio registry through `startVerdaccioPluginRunner`, both from
+`@codebase/testing/end-to-end`. CI runs them in the `End to End IC Suite` leg.
 
 ## Shared Helpers: `@codebase/testing`
 
