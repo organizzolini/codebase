@@ -4,7 +4,7 @@ terraform {
   # Same Linode Object Storage bucket and backend settings as the openrouter
   # root; see its main.tf. Only the state key differs.
   backend "s3" {
-    key    = "codebase/github.tfstate"
+    key    = "github.tfstate"
     region = "us-east-1"
 
     skip_credentials_validation = true
@@ -39,7 +39,7 @@ data "terraform_remote_state" "openrouter" {
 
   config = {
     bucket = var.state_bucket
-    key    = "codebase/terraform.tfstate"
+    key    = "terraform.tfstate"
     region = "us-east-1"
 
     skip_credentials_validation = true
@@ -66,7 +66,7 @@ data "terraform_remote_state" "linode" {
 
   config = {
     bucket = var.state_bucket
-    key    = "codebase/linode.tfstate"
+    key    = "linode.tfstate"
     region = "us-east-1"
 
     skip_credentials_validation = true
