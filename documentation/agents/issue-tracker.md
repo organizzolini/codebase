@@ -136,11 +136,23 @@ set_field <child> Status "In Progress"
   true the moment it is — `/triage`'s frontier query and anyone scanning the
   board both read them that way.
 - **Closing the issue is the whole of finishing.** The board's built-in
-  workflow marks a closed issue Done, so there is nothing to clear:
+  workflow marks a closed issue Done, so there is nothing to clear. Each layer
+  closes at its own moment:
 
-  ```bash
-  gh issue close <child> --comment "..."
-  ```
+  - **Commit sub-issue**: close it right after its commit lands, quoting the
+    sha. A commit trailer cannot do it, because a squash merge keeps only the
+    pull request's title and body. If review sends the commit back, reopen it.
+
+    ```bash
+    gh issue close <child> --comment "<sha>"
+    ```
+
+  - **Pull request issue**: the pull request's `Closes #N` closes it on merge,
+    so no agent closes it by hand. Stacked on another branch, the link only
+    registers once the pull request's base is `main`.
+  - **Spec**: leave it open until every parent issue is merged and every
+    acceptance item in the spec holds. Then close it with a comment listing the
+    pull requests.
 
 The 🦹 Continuous Compliance workflow reads only the `type:*`, `scope:*`, and `source:*`
 families, so a `status:*` label neither satisfies nor fails it.
