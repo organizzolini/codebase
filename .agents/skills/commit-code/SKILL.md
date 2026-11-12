@@ -255,6 +255,14 @@ Use `-S` and fail immediately if `git verify-commit HEAD` does not succeed.
 >
 > ⚠️ **Warning:** Avoid manually running `scripts/git/check-push-commit-signatures.sh` in routine command-line flows. It is intended for pre-push hook stdin data and may fail or appear to hang when called directly.
 
+### Close the Commit's Sub-Issue
+
+Right after the commit lands, close the sub-issue it implements, quoting the sha, as described in [Marking work in progress](../../../documentation/agents/issue-tracker.md#marking-work-in-progress). A footer cannot do it, because a squash merge keeps only the pull request's title and body.
+
+```bash
+gh issue close <child> --comment "$(git rev-parse --short HEAD)"
+```
+
 ### Common Pitfalls
 
 ❌ **Avoid:** Using multiple `-m` flags or newlines:
