@@ -10,6 +10,7 @@ import {
 } from "./tarball-sandbox.constants";
 
 import type {
+  Manifest,
   TarballSandboxOptions,
   TarballSandboxRunner,
 } from "./tarball-sandbox.types";
@@ -32,9 +33,7 @@ export async function createTarballSandboxRunner(
   };
 
   try {
-    const names = await Promise.all(
-      tarballs.map(async (tarball) => readPackageName(tarball)),
-    );
+    const names = await readNames(tarballs);
     const files = Object.fromEntries(
       names.map((name, index) => [name, `file:${tarballs[index]}`]),
     );
@@ -106,8 +105,36 @@ export function findTarballs(
   });
 }
 
-/** Reads the `name` a tarball's package declares. */
-async function readPackageName(tarball: string): Promise<string> {
+/**
+ * Throws when a tarball needs an unnamed package of a scope the sandbox
+ * holds: pnpm would fetch it from the registry.
+ */
+function assertClosure(manifests: readonly Manifest[]): void {
+  const names = new Set(manifests.map((manifest) => manifest.name));
+  const scopes = new Set(
+    [...names]
+      .filter((name) => name.startsWith("@"))
+      .map((name) => name.split("/", 1)[0]),
+  );
+  const missing = new Set<string>();
+
+  for (const manifest of manifests) {
+    for (const dependency of Object.keys({ ...manifest.dependencies })) {
+      if (scopes.has(dependency.split("/", 1)[0]) && !names.has(dependency)) {
+        missing.add(dependency);
+      }
+    }
+  }
+
+  if (missing.size > 0) {
+    throw new Error(
+      `Packages missing from the sandbox, which would install from the registry: ${[...missing].join(", ")}`,
+    );
+  }
+}
+
+/** Reads a tarball's `package.json`. */
+async function readManifest(tarball: string): Promise<Manifest> {
   const result = await createCommand("tar", [
     "-xOzf",
     tarball,
@@ -118,5 +145,18 @@ async function readPackageName(tarball: string): Promise<string> {
     throw new Error(`Cannot read ${tarball}:\n${result.stderr}`);
   }
 
-  return (JSON.parse(result.stdout) as { name: string }).name;
+  return JSON.parse(result.stdout) as Manifest;
+}
+
+/** Reads the package names of the tarballs, refusing an open closure. */
+async function readNames(tarballs: readonly string[]): Promise<string[]> {
+  const manifests: Manifest[] = [];
+
+  for (const tarball of tarballs) {
+    manifests.push(await readManifest(tarball));
+  }
+
+  assertClosure(manifests);
+
+  return manifests.map((manifest) => manifest.name);
 }
