@@ -1,4 +1,4 @@
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 
 const vitestConfig = defineConfig({
   resolve: {
@@ -16,6 +16,7 @@ const vitestConfig = defineConfig({
         statements: 96,
       },
     },
+    exclude: [...configDefaults.exclude, "**/*.packed.test.ts"],
     globals: false,
     include: [
       "src/**/*.test.js",

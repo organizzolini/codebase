@@ -48,7 +48,7 @@ export async function createTarballSandboxRunner(
     );
     fs.writeFileSync(
       path.join(directory, "pnpm-workspace.yaml"),
-      JSON.stringify({ overrides: files }),
+      JSON.stringify({ overrides: files, strictDepBuilds: false }),
     );
     fs.writeFileSync(path.join(directory, ".npmrc"), "");
     const install = await createCommand("pnpm", ["install"])
