@@ -140,7 +140,7 @@ Write clear, comprehensive descriptions that help reviewers understand changes. 
 ```markdown
 ## 🌰 Summary
 
-<!-- One plain paragraph of at most 48 words, readable at a glance: what this PR does and why. Title reminder: include every touched scope in the PR title's scope list so release-significance passes. -->
+<!-- One plain paragraph of at most 48 words, readable at a glance: what this PR does and why. Title reminder: the title's scope list must share at least one scope with each commit, so release-significance passes. -->
 
 ## 📝 Details
 
@@ -390,8 +390,9 @@ This codebase uses **squash merging** by default:
   is genuinely coupled and must land together.
 - If you would need many scopes or the title becomes awkward/too long, split
   into multiple pull requests and keep each title scope-focused.
-- Before opening, verify that every commit scope on the branch is represented by
-  the title scopes; otherwise the release-significance check will fail.
+- Before opening, verify that each commit shares at least one scope with the
+  title; the release-significance check requires that overlap, not every scope.
+  List the fewest scopes that cover every commit.
 
 ## Pre-Flight Checklist
 
