@@ -1,3 +1,10 @@
+## 0.0.81 (2026-11-12)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.81
+- Updated codometer-core to 0.0.81
+
 ## 0.0.80 (2026-11-12)
 
 ### 🧱 Updated Dependencies

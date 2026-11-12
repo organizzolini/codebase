@@ -51,6 +51,10 @@ implementation run legitimate. Five repository rules override
   without stating that the session owns **all** of them is a brief that
   returns one pull request and nothing else, so write the exit condition
   out — every ticket merged or open — and point at that same section.
+  Say when each issue closes too: the session closes each commit sub-issue right
+  after its commit lands, a pull request's `Closes #N` closes its parent on merge,
+  and the spec stays open until every parent is merged and every acceptance item
+  holds — see [Marking work in progress](issue-tracker.md#marking-work-in-progress).
 - **Assign a model and thinking level per role.** Planning, orchestrating a
   ticket set, implementing a ticket or task, and reviewing a diff are different
   problems and should not draw the same reasoning budget (this overrides

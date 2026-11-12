@@ -147,7 +147,7 @@ Use the PR template as the structure:
 ```markdown
 ## 🌰 Summary
 
-<!-- One plain paragraph of at most 48 words, readable at a glance: what this PR does and why. Title reminder: include every touched scope in the PR title's scope list so release-significance passes. -->
+<!-- One plain paragraph of at most 48 words, readable at a glance: what this PR does and why. Title reminder: the title's scope list must share at least one scope with each commit, so release-significance passes. -->
 
 ## 📝 Details
 
