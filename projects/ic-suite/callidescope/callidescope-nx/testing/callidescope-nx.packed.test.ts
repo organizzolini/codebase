@@ -13,6 +13,18 @@ import type {
 
 const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../../../..");
 
+/** The version of `name` this workspace has installed, so a registry release cannot move the leg. */
+function installedVersion(name: string): string {
+  const manifest = JSON.parse(
+    fs.readFileSync(
+      path.join(WORKSPACE_ROOT, "node_modules", name, "package.json"),
+      "utf8",
+    ),
+  ) as { version: string };
+
+  return manifest.version;
+}
+
 /** A project's own configuration, in JavaScript because JSON cannot spell `undefined`. */
 const projectConfiguration = (maximumDepth: number): string => `export default {
   entryPoints: {
@@ -94,7 +106,10 @@ describe("the callidescope plugin installed from a registry", () => {
       workspaceRoot: WORKSPACE_ROOT,
     });
     workspace = await runner.createWorkspace({
-      dependencies: { nx: "^24.0.0", typescript: "^6.0.3" },
+      dependencies: {
+        nx: installedVersion("nx"),
+        typescript: installedVersion("typescript"),
+      },
       packages: ["@callidescope/nx"],
     });
     workspace.registerPlugin("@callidescope/nx", {

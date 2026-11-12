@@ -48,11 +48,7 @@ export interface VerdaccioPluginRunner {
 
 /** How to start a registry. */
 export interface VerdaccioPluginRunnerOptions {
-  /**
-   * Scopes, such as `@callidescope`, whose packages the registry never
-   * proxies. Without this, the registry refuses to publish a version the
-   * real registry already has, which every released package does.
-   */
+  /** Scopes the registry never proxies; a proxied one cannot publish a version npmjs holds. */
   readonly localScopes?: readonly string[];
   /** The dist-tag published packages carry; defaults to `e2e`. */
   readonly tag?: string;

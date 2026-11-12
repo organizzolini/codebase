@@ -13,6 +13,18 @@ import type {
 
 const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../../../..");
 
+/** The version of `name` this workspace has installed, so a registry release cannot move the leg. */
+function installedVersion(name: string): string {
+  const manifest = JSON.parse(
+    fs.readFileSync(
+      path.join(WORKSPACE_ROOT, "node_modules", name, "package.json"),
+      "utf8",
+    ),
+  ) as { version: string };
+
+  return manifest.version;
+}
+
 describe("the codependix plugin installed from a registry", () => {
   let runner: VerdaccioPluginRunner;
   let workspace: ConsumerWorkspace;
@@ -60,7 +72,10 @@ describe("the codependix plugin installed from a registry", () => {
       workspaceRoot: WORKSPACE_ROOT,
     });
     workspace = await runner.createWorkspace({
-      dependencies: { nx: "^24.0.0", typescript: "^6.0.3" },
+      dependencies: {
+        nx: installedVersion("nx"),
+        typescript: installedVersion("typescript"),
+      },
       packages: ["@codependix/cli", "@codependix/nx"],
     });
     workspace.registerPlugin("@codependix/nx", {
