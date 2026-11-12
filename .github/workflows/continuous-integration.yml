@@ -130,13 +130,11 @@ jobs:
             emoji: 👷
           # Packs the five CLIs and the four Nx plugins, installs the tarballs into
           # a sandbox outside the checkout (the plugins through a local Verdaccio
-          # registry), and runs the real executable there. Never publishes. It runs
-          # in 1m12s locally, cold; the runner is 5 to 7 times slower, so with the
-          # setup 20 minutes leaves room without waiting 12 on a slow pack.
+          # registry), and runs the real executable there. Never publishes. It keeps
+          # the default limit until a passing CI run shows what it needs.
           - target: end-to-end
             name: End to End IC Suite
             emoji: 🤵
-            timeout-minutes: 20
           # Plans the OpenRouter Terraform for a pull request and comments the result.
           # Nothing applies here: Continuous Deployment applies it on `main`. The leg
           # always reports, so it can be a required check; its steps run only for a
