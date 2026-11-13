@@ -1,12 +1,4 @@
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import {
   answerPrompts,
@@ -17,17 +9,6 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { missingInputError, promptCancelledError } from "./input.constants";
 import { InputService } from "./input.service";
-
-import type * as Testing from "@codebase/testing";
-
-// Mocked at the module boundary so the service's own wiring is exercised and
-// no test ever reaches for a terminal.
-vi.mock("prompts", async () => {
-  const { promptsMock } =
-    await vi.importActual<typeof Testing>("@codebase/testing");
-
-  return { default: promptsMock };
-});
 
 describe(InputService, () => {
   let service: InputService;
