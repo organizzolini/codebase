@@ -1,3 +1,6 @@
+import { existsSync, mkdirSync } from "node:fs";
+import { access, appendFile, mkdir, writeFile } from "node:fs/promises";
+
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -9,35 +12,31 @@ import { resetCommandTestHarness } from "../../../testing/command-harness";
 
 import { CorpusScriptorumEcclesiasticorumLatinorumCommand } from "./corpus-scriptorum-ecclesiasticorum-latinorum.command";
 
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
-const {
-  accessMock,
-  appendFileMock,
-  existsSyncMock,
-  mkdirMock,
-  mkdirSyncMock,
-  writeFileMock,
-} = vi.hoisted(() => ({
-  accessMock: vi.fn<() => Promise<void>>(),
-  appendFileMock: vi.fn<() => Promise<void>>(),
-  existsSyncMock: vi.fn<() => boolean>(),
-  mkdirMock: vi.fn<() => Promise<string | undefined>>(),
-  mkdirSyncMock: vi.fn<(...parameters: unknown[]) => void>(),
-  writeFileMock: vi.fn<() => Promise<void>>(),
-}));
+const existsSyncMock = vi.mocked(existsSync);
+const mkdirSyncMock = vi.mocked(mkdirSync);
+const accessMock = vi.mocked(access);
+const appendFileMock = vi.mocked(appendFile);
+const mkdirMock = vi.mocked(mkdir);
+const writeFileMock = vi.mocked(writeFile);
 
-vi.mock("node:fs", () => ({
-  existsSync: existsSyncMock,
-  mkdirSync: mkdirSyncMock,
-}));
+vi.mock("node:fs", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
 
-vi.mock("node:fs/promises", () => ({
-  access: accessMock,
-  appendFile: appendFileMock,
-  mkdir: mkdirMock,
-  writeFile: writeFileMock,
-}));
+  return mockFileSystem();
+});
+
+vi.mock("node:fs/promises", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem();
+});
 
 describe(CorpusScriptorumEcclesiasticorumLatinorumCommand, () => {
   let command: CorpusScriptorumEcclesiasticorumLatinorumCommand;

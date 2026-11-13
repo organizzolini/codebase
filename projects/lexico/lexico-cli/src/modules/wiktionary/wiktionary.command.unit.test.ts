@@ -1,3 +1,5 @@
+import { appendFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
+
 import * as cheerio from "cheerio";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -9,25 +11,22 @@ import { resetCommandTestHarness } from "../../../testing/command-harness";
 
 import { WiktionaryCommand } from "./wiktionary.command";
 
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { AnyNode, Element } from "domhandler";
 
-const { appendFileSyncMock, existsSyncMock, mkdirSyncMock, writeFileSyncMock } =
-  vi.hoisted(() => ({
-    appendFileSyncMock: vi.fn<(...parameters: unknown[]) => void>(),
-    existsSyncMock: vi.fn<() => boolean>(),
-    mkdirSyncMock: vi.fn<(...parameters: unknown[]) => void>(),
-    writeFileSyncMock: vi.fn<(...parameters: unknown[]) => void>(),
-  }));
+const appendFileSyncMock = vi.mocked(appendFileSync);
+const existsSyncMock = vi.mocked(existsSync);
+const mkdirSyncMock = vi.mocked(mkdirSync);
+const writeFileSyncMock = vi.mocked(writeFileSync);
 
-vi.mock("node:fs", () => ({
-  default: {
-    appendFileSync: appendFileSyncMock,
-    existsSync: existsSyncMock,
-    mkdirSync: mkdirSyncMock,
-    writeFileSync: writeFileSyncMock,
-  },
-}));
+vi.mock("node:fs", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem();
+});
 
 describe(WiktionaryCommand, () => {
   let command: WiktionaryCommand;
