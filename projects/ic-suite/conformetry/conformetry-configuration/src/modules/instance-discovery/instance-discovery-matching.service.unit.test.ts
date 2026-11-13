@@ -1,10 +1,13 @@
 import { readdirSync } from "node:fs";
-import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { createTemporaryDirectory } from "@codebase/testing";
+import {
+  createFileTree,
+  createTemporaryDirectory,
+  writeFileTree,
+} from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { RenderingService } from "../rendering/rendering.service";
@@ -33,33 +36,29 @@ function collectTemplates(
  * Creates a module directory holding the five service-module files, and
  * returns its *parent* — the instance path a template's tree is laid over.
  */
-async function createServiceModule(stem: string): Promise<string> {
-  const instancePath = createTemporaryDirectory("instance");
-  const modulePath = path.join(instancePath, stem);
-
-  await mkdir(modulePath, { recursive: true });
-
-  for (const suffix of [
-    ".constants.ts",
-    ".module.ts",
-    ".service.ts",
-    ".service.unit.test.ts",
-    ".types.ts",
-  ]) {
-    await writeFile(path.join(modulePath, `${stem}${suffix}`), "", "utf8");
-  }
-
-  return instancePath;
+function createServiceModule(stem: string): string {
+  return createFileTree(
+    emptyFiles(
+      [
+        ".constants.ts",
+        ".module.ts",
+        ".service.ts",
+        ".service.unit.test.ts",
+        ".types.ts",
+      ].map((suffix) => `${stem}/${stem}${suffix}`),
+    ),
+    { label: "instance" },
+  );
 }
 
 /**
  * Builds a templates root mirroring this workspace's real shapes, so the
  * ranking is exercised against the cases it actually has to discriminate.
  */
-async function createTemplates(): Promise<{
+function createTemplates(): {
   templates: TemplateDefinition[];
   templatesRootPath: string;
-}> {
+} {
   const templatesRootPath = createTemporaryDirectory("templates");
   const layout: Record<string, string[]> = {
     "nestjs-graphql-module": [
@@ -84,16 +83,21 @@ async function createTemplates(): Promise<{
     ],
   };
 
-  for (const [name, filenames] of Object.entries(layout)) {
-    for (const filename of filenames) {
-      const filePath = path.join(templatesRootPath, name, filename);
-
-      await mkdir(path.dirname(filePath), { recursive: true });
-      await writeFile(filePath, "", "utf8");
-    }
-  }
+  writeFileTree(
+    templatesRootPath,
+    emptyFiles(
+      Object.entries(layout).flatMap(([name, filenames]) =>
+        filenames.map((filename) => `${name}/${filename}`),
+      ),
+    ),
+  );
 
   return { templates: [], templatesRootPath };
+}
+
+/** Empty files at each relative path, in the shape `writeFileTree` takes. */
+function emptyFiles(filePaths: readonly string[]): Record<string, string> {
+  return Object.fromEntries(filePaths.map((filePath) => [filePath, ""]));
 }
 
 describe(InstanceDiscoveryMatchingService, () => {
@@ -146,19 +150,17 @@ describe(InstanceDiscoveryMatchingService, () => {
   });
 
   describe("matchInstances", () => {
-    it("stands in for every placeholder but name and supplied ones", async () => {
+    it("stands in for every placeholder but name and supplied ones", () => {
       const templatesRootPath = createTemporaryDirectory("templates");
-      const templatePath = path.join(templatesRootPath, "route");
 
-      await mkdir(templatePath, { recursive: true });
-      await writeFile(
-        path.join(templatePath, "{{nameKebabCase}}.ts"),
-        '"{{name}}" "{{path}}" "{{title}}" "{{type}}"',
-        "utf8",
+      writeFileTree(templatesRootPath, {
+        "route/{{nameKebabCase}}.ts":
+          '"{{name}}" "{{path}}" "{{title}}" "{{type}}"',
+      });
+      const instancePath = createFileTree(
+        { "word.ts": "" },
+        { label: "conformetry" },
       );
-      const instancePath = createTemporaryDirectory("conformetry");
-
-      await writeFile(path.join(instancePath, "word.ts"), "", "utf8");
       const { matched } = service.matchInstances({
         instances: [
           {
@@ -180,10 +182,10 @@ describe(InstanceDiscoveryMatchingService, () => {
       });
     });
 
-    it("prefers the larger template when both match completely", async () => {
-      const { templatesRootPath } = await createTemplates();
+    it("prefers the larger template when both match completely", () => {
+      const { templatesRootPath } = createTemplates();
       const templates = collectTemplates(templatesService, templatesRootPath);
-      const instancePath = await createServiceModule("differences");
+      const instancePath = createServiceModule("differences");
 
       const { matched } = service.matchInstances({
         instances: [{ nameStem: "differences", path: instancePath }],
@@ -194,10 +196,10 @@ describe(InstanceDiscoveryMatchingService, () => {
       expect(matched[0]?.matchedFileCount).toBe(5);
     });
 
-    it("rejects a partially matching larger template on ratio", async () => {
-      const { templatesRootPath } = await createTemplates();
+    it("rejects a partially matching larger template on ratio", () => {
+      const { templatesRootPath } = createTemplates();
       const templates = collectTemplates(templatesService, templatesRootPath);
-      const instancePath = await createServiceModule("differences");
+      const instancePath = createServiceModule("differences");
 
       const { matched } = service.matchInstances({
         instances: [{ nameStem: "differences", path: instancePath }],
@@ -208,10 +210,10 @@ describe(InstanceDiscoveryMatchingService, () => {
       expect(matched[0]?.template.name).not.toBe("nestjs-graphql-module");
     });
 
-    it("selects a two-file template when a file scope narrows the instance", async () => {
-      const { templatesRootPath } = await createTemplates();
+    it("selects a two-file template when a file scope narrows the instance", () => {
+      const { templatesRootPath } = createTemplates();
       const templates = collectTemplates(templatesService, templatesRootPath);
-      const instancePath = await createServiceModule("differences");
+      const instancePath = createServiceModule("differences");
 
       const modulePath = path.join(instancePath, "differences");
       const { matched } = service.matchInstances({
@@ -231,8 +233,8 @@ describe(InstanceDiscoveryMatchingService, () => {
       expect(matched[0]?.template.name).toBe("nestjs-service-file");
     });
 
-    it("reports an instance no template explains", async () => {
-      const { templatesRootPath } = await createTemplates();
+    it("reports an instance no template explains", () => {
+      const { templatesRootPath } = createTemplates();
       const templates = collectTemplates(templatesService, templatesRootPath);
       const instancePath = createTemporaryDirectory("empty");
 
@@ -245,7 +247,7 @@ describe(InstanceDiscoveryMatchingService, () => {
       expect(unmatched[0]?.reason).toBe("no-match");
     });
 
-    it("reports two partially matching templates that tie as ambiguous", async () => {
+    it("reports two partially matching templates that tie as ambiguous", () => {
       const templatesRootPath = createTemporaryDirectory("templates");
       const layout: Record<string, string[]> = {
         // Each shares exactly one file with the instance, so both reach 50%.
@@ -259,16 +261,16 @@ describe(InstanceDiscoveryMatchingService, () => {
         ],
       };
 
-      for (const [name, filenames] of Object.entries(layout)) {
-        for (const filename of filenames) {
-          const filePath = path.join(templatesRootPath, name, filename);
+      writeFileTree(
+        templatesRootPath,
+        emptyFiles(
+          Object.entries(layout).flatMap(([name, filenames]) =>
+            filenames.map((filename) => `${name}/${filename}`),
+          ),
+        ),
+      );
 
-          await mkdir(path.dirname(filePath), { recursive: true });
-          await writeFile(filePath, "", "utf8");
-        }
-      }
-
-      const instancePath = await createServiceModule("differences");
+      const instancePath = createServiceModule("differences");
       const { unmatched } = service.matchInstances({
         instances: [{ nameStem: "differences", path: instancePath }],
         templates: collectTemplates(templatesService, templatesRootPath),
@@ -278,7 +280,7 @@ describe(InstanceDiscoveryMatchingService, () => {
       expect(unmatched[0]?.tiedTemplateNames).toStrictEqual(["alpha", "beta"]);
     });
 
-    it("breaks an equal-ratio tie by absolute matched file count", async () => {
+    it("breaks an equal-ratio tie by absolute matched file count", () => {
       const templatesRootPath = createTemporaryDirectory("templates");
       const layout: Record<string, string[]> = {
         // Both templates reach a 50% match ratio, so the tiebreaker must fall
@@ -292,24 +294,23 @@ describe(InstanceDiscoveryMatchingService, () => {
         smaller: ["smaller.service.ts", "smaller.module.ts"],
       };
 
-      for (const [name, filenames] of Object.entries(layout)) {
-        for (const filename of filenames) {
-          const filePath = path.join(templatesRootPath, name, filename);
-
-          await mkdir(path.dirname(filePath), { recursive: true });
-          await writeFile(filePath, "", "utf8");
-        }
-      }
-
-      const instancePath = createTemporaryDirectory("instance");
+      writeFileTree(
+        templatesRootPath,
+        emptyFiles(
+          Object.entries(layout).flatMap(([name, filenames]) =>
+            filenames.map((filename) => `${name}/${filename}`),
+          ),
+        ),
+      );
 
       // Matches half of "larger" (2 of 4) and half of "smaller" (1 of 2).
-      await writeFile(path.join(instancePath, "larger.service.ts"), "", "utf8");
-      await writeFile(path.join(instancePath, "larger.module.ts"), "", "utf8");
-      await writeFile(
-        path.join(instancePath, "smaller.service.ts"),
-        "",
-        "utf8",
+      const instancePath = createFileTree(
+        emptyFiles([
+          "larger.service.ts",
+          "larger.module.ts",
+          "smaller.service.ts",
+        ]),
+        { label: "instance" },
       );
 
       const matches = service.matchTemplates({
@@ -324,21 +325,23 @@ describe(InstanceDiscoveryMatchingService, () => {
       ]);
     });
 
-    it("matches every template an instance satisfies completely", async () => {
+    it("matches every template an instance satisfies completely", () => {
       const templatesRootPath = createTemporaryDirectory("templates");
       const layout: Record<string, string> = {
         alpha: "{{nameKebabCase}}/{{nameKebabCase}}.service.ts",
         beta: "{{nameKebabCase}}/{{nameKebabCase}}.module.ts",
       };
 
-      for (const [name, filename] of Object.entries(layout)) {
-        const filePath = path.join(templatesRootPath, name, filename);
+      writeFileTree(
+        templatesRootPath,
+        emptyFiles(
+          Object.entries(layout).map(
+            ([name, filename]) => `${name}/${filename}`,
+          ),
+        ),
+      );
 
-        await mkdir(path.dirname(filePath), { recursive: true });
-        await writeFile(filePath, "", "utf8");
-      }
-
-      const instancePath = await createServiceModule("differences");
+      const instancePath = createServiceModule("differences");
       const { matched, unmatched } = service.matchInstances({
         instances: [{ nameStem: "differences", path: instancePath }],
         templates: collectTemplates(templatesService, templatesRootPath),
