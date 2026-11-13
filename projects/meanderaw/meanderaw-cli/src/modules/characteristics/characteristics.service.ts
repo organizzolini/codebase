@@ -258,7 +258,7 @@ export class CharacteristicsService implements OnApplicationBootstrap {
   }
 
   /**
-   * Tile-crossing component delta of the Code as filed, not its repeating unit: the canonical-phase scorer compares cuts, so it needs their width.
+   * Tile-crossing component delta of the Code as filed, not its repeating unit: the canonical-rotation scorer compares cuts, so it needs their width.
    */
   public tileCrossingComponentDeltaCount(code: Code | CodeObject): number {
     return this.tileCrossingComponentDeltaCountService.compute(
