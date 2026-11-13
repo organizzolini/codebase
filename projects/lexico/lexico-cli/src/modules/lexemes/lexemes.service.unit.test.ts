@@ -252,11 +252,11 @@ describe(LexemesService, () => {
     expect(result).toStrictEqual([]);
   });
 
-  it("should return empty parse result when no headwords are present", async () => {
+  it("should return empty parse result when no lemmas are present", async () => {
     const page: WiktionaryPage = {
       category: "lemma",
       href: "x",
-      html: "<div><p>no headword</p></div>",
+      html: "<div><p>no lemma</p></div>",
       word: "amo",
     };
 
@@ -264,13 +264,13 @@ describe(LexemesService, () => {
 
     expect(result).toStrictEqual([]);
     expect(logger.warn).toHaveBeenCalledWith(
-      "🔤 Missing headwords for word",
+      "🔤 Missing lemmas for word",
       undefined,
       { word: "amo" },
     );
   });
 
-  it("should parse lexemes from headword elements", async () => {
+  it("should parse lexemes from lemma elements", async () => {
     const page: WiktionaryPage = {
       category: "lemma",
       href: "x",

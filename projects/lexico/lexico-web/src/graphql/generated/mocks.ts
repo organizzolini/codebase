@@ -394,7 +394,7 @@ export type Query = {
   searchAuthors: AuthorConnection;
   /** Performs English definition and translation search with relevance ranking, returning at most the 200 best-ranked lexemes. */
   searchEnglish: LexemeSearchResultConnection;
-  /** Performs tiered Latin dictionary search across exact headwords, inflected forms, prefixes, and fuzzy matches. */
+  /** Performs tiered Latin dictionary search across exact lemmas, inflected forms, prefixes, and fuzzy matches. */
   searchLatin: LexemeSearchResultConnection;
   searchLines: LineConnection;
   searchLiterature: LiteratureSearchResult;

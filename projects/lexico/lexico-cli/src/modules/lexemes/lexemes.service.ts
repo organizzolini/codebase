@@ -23,7 +23,7 @@ import type { PartOfSpeech } from "@codebase/lexico-db";
 import type { AnyNode } from "domhandler";
 
 /**
- * Coordinates conversion of Wiktionary headword sections into persisted `Lexeme`
+ * Coordinates conversion of Wiktionary lemma sections into persisted `Lexeme`
  * graphs, delegating specialized parsing to domain services.
  */
 @Injectable()
@@ -311,16 +311,16 @@ export class LexemesService {
     const word = this.normalize(wiktionaryPage.word);
     const lexemes: Lexeme[] = [];
 
-    const headwordElements = $("p:has(strong.Latn.headword)").toArray();
+    const lemmaElements = $("p:has(strong.Latn.headword)").toArray();
 
-    if (headwordElements.length === 0) {
-      this.logger.warn("🔤 Missing headwords for word", undefined, {
+    if (lemmaElements.length === 0) {
+      this.logger.warn("🔤 Missing lemmas for word", undefined, {
         word: wiktionaryPage.word,
       });
       return [];
     }
 
-    for (const [index, elt] of headwordElements.entries()) {
+    for (const [index, elt] of lemmaElements.entries()) {
       const lexeme = await this.parseLexemeFromElement({ $, elt, index, word });
       if (lexeme) lexemes.push(lexeme);
     }

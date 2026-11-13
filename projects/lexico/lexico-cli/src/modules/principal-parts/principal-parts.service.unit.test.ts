@@ -120,7 +120,7 @@ describe(PrincipalPartsService, () => {
   });
 
   describe("parsePrincipalParts", () => {
-    it("extracts first principal part from headword and classifies remaining parts", () => {
+    it("extracts first principal part from lemma and classifies remaining parts", () => {
       const $ = cheerio.load(`
         <p id="entry">
           <strong class="Latn headword">Write</strong>
@@ -193,7 +193,7 @@ describe(PrincipalPartsService, () => {
       expect(result.macronizedWord).toBe("wrote");
     });
 
-    it("returns empty macronized word when no headword is present", () => {
+    it("returns empty macronized word when no lemma is present", () => {
       const $ = cheerio.load(`
         <p id="entry">
           <i>perfect</i><b>Written</b>

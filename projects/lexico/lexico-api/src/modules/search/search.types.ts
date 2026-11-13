@@ -9,7 +9,7 @@ import type { Lexeme } from "@codebase/lexico-db";
  */
 export interface EncliticDecompositionResult {
   enclitic: null | string;
-  stem: string;
+  host: string;
 }
 
 /** One lexeme a search matched, and how, before mapping. */
