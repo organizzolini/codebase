@@ -13,10 +13,11 @@ import { HISTORICAL_CORPUS } from "../corpus/historical-corpus.constants";
 
 import { DrawCodeService } from "./draw-code.service";
 
-vi.mock("node:fs/promises", () => ({
-  mkdir: vi.fn<() => Promise<void>>(),
-  writeFile: vi.fn<(path: string, data: unknown) => Promise<void>>(),
-}));
+vi.mock("node:fs/promises", async () => {
+  const { mockFileSystem } = await import("@codebase/testing");
+
+  return mockFileSystem();
+});
 
 /** Starts a fresh draw run over an emptied `meanders` table, with `--code` and logging mocked out. */
 async function startMockedDrawRun(): Promise<DrawRunFixture> {
