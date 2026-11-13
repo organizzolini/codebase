@@ -6,12 +6,17 @@ import { beforeAll, beforeEach, vi } from "vitest";
 
 import { promptsMock } from "./modules/mocks/mocks.constants";
 
-// Every project mocks `prompts` with the one shared stand-in. The factory
-// imports it dynamically, as `vi.mock` hoists above static imports.
-vi.mock("prompts", async () => {
+import type * as Prompts from "prompts";
+
+// Every project mocks `prompts` with the one shared stand-in. This package
+// depends on `prompts`, so the id resolves to the copy consumers import. The
+// factory imports the stand-in dynamically, as `vi.mock` hoists above static
+// imports, and keeps the module's other exports.
+vi.mock("prompts", async (importOriginal) => {
+  const original = await importOriginal<typeof Prompts>();
   const mocks = await import("./modules/mocks/mocks.constants");
 
-  return { default: mocks.promptsMock };
+  return { ...original, default: mocks.promptsMock };
 });
 
 /**

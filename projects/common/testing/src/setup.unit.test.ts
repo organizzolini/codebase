@@ -1,5 +1,6 @@
 import fs from "node:fs";
 
+import prompts from "prompts";
 import { describe, expect, it, vi } from "vitest";
 
 import { promptsMock } from "./modules/mocks/mocks.constants";
@@ -43,16 +44,7 @@ describe("the shared Vitest setup", () => {
     await expect(promptsMock({ name: "next" })).resolves.toStrictEqual({});
   });
 
-  it("mocks prompts with the shared stand-in for every consumer", async () => {
-    // `prompts` is the consumer's dependency, so the specifier is held in a
-    // variable: this package has none to resolve at build time.
-    const specifier = "prompts";
-    const { default: prompts } = (await import(
-      /* @vite-ignore */ specifier
-    )) as {
-      default: unknown;
-    };
-
+  it("mocks prompts with the shared stand-in for every consumer", () => {
     expect(prompts).toBe(promptsMock);
   });
 
