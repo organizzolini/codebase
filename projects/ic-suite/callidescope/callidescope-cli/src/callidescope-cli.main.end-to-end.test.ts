@@ -1,10 +1,9 @@
-import { spawnSync } from "node:child_process";
 import path from "node:path";
-import { pathToFileURL } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
 import { createFileTree } from "@codebase/testing";
+import { runSourceCommand } from "@codebase/testing/end-to-end";
 
 import { environmentSchema } from "./callidescope-cli.constants";
 
@@ -14,8 +13,8 @@ const ENTRY_POINT = path.resolve(
   "callidescope-cli.main.ts",
 );
 
-/** TypeScript loader as an absolute URL; runs have no `node_modules`. */
-const LOADER_HOOK = import.meta.resolve("@swc-node/register/esm");
+/** Gitignored directory inside the package, where swc-node resolves its hook from a spawned run's cwd. */
+const SPAWN_PARENT = path.resolve(import.meta.dirname, "..", "tmp");
 
 /** Per-run timeout, past Vitest's five-second default. CI builds take 5.7s. */
 const SPAWNED_RUN_TIMEOUT = 30_000;
@@ -62,7 +61,7 @@ function readableProjectFiles(name: string): Record<string, string> {
  * Spawns a real process: nest-commander writes a thrown error to stderr and leaves the
  * exit code at zero, which in-process tests cannot see.
  */
-function runCallidescope(
+async function runCallidescope(
   workspaceRoot: string,
   commandArguments: readonly string[] = [
     "callidescope",
@@ -71,28 +70,21 @@ function runCallidescope(
     "--check",
     "depth",
   ],
-): {
+): Promise<{
   output: string;
-  status: null | number;
-} {
-  const result = spawnSync(
-    process.execPath,
-    [
-      "--import",
-      pathToFileURL(path.join(workspaceRoot, "register.mjs")).toString(),
-      ENTRY_POINT,
-      ...commandArguments,
-    ],
-    {
-      cwd: workspaceRoot,
-      encoding: "utf8",
-      env: { ...process.env, SWC_NODE_PROJECT: LOADER_PROJECT },
-    },
-  );
+  status: number;
+}> {
+  const result = await runSourceCommand({
+    args: commandArguments,
+    directory: workspaceRoot,
+    entry: ENTRY_POINT,
+    timeout: SPAWNED_RUN_TIMEOUT,
+    tsconfig: LOADER_PROJECT,
+  });
 
   return {
     output: `${result.stdout}${result.stderr}`,
-    status: result.status,
+    status: result.exitCode,
   };
 }
 
@@ -114,8 +106,8 @@ function unreadableProjectFiles(name: string): Record<string, string> {
 }
 
 /**
- * Workspace with the default config plus the given projects, rooted at the resolved path since
- * macOS temp directories are symlinks that break ownership. Assert exit codes, not paths.
+ * Workspace with the default config plus the given projects, rooted inside the package, so swc-node
+ * resolves from the spawned cwd. Assert exit codes, not paths.
  */
 function writeWorkspace(projects: Record<string, string>[] = []): string {
   return createFileTree(
@@ -123,10 +115,9 @@ function writeWorkspace(projects: Record<string, string>[] = []): string {
       "callidescope.config.json": JSON.stringify({
         limits: { maximumDepth: 6 },
       }),
-      "register.mjs": `import { register } from "node:module";\nregister(${JSON.stringify(LOADER_HOOK)});\n`,
       ...Object.fromEntries(projects.flatMap((files) => Object.entries(files))),
     },
-    { label: "callidescope-exit" },
+    { label: "callidescope-exit", parent: SPAWN_PARENT },
   );
 }
 
@@ -141,14 +132,16 @@ describe("main end-to-end suite", () => {
   describe(
     "the exit code of a run that could not trace",
     () => {
-      it("passes a workspace it traced without finding anything", () => {
+      it("passes a workspace it traced without finding anything", async () => {
         expect.hasAssertions();
 
         const workspaceRoot = writeWorkspace([
           readableProjectFiles("readable"),
         ]);
 
-        expect(runCallidescope(workspaceRoot).status).toBe(0);
+        const { status } = await runCallidescope(workspaceRoot);
+
+        expect(status).toBe(0);
       });
 
       // The configuration is never searched for: a workspace holding a
@@ -156,21 +149,23 @@ describe("main end-to-end suite", () => {
       // refused when the command line does not name it.
       it.each([["callidescope"], ["depth"], ["breadth"], ["limits"]])(
         "refuses `%s` with no --config, even beside a configuration file",
-        (command) => {
+        async (command) => {
           expect.hasAssertions();
 
           const workspaceRoot = writeWorkspace([
             readableProjectFiles("readable"),
           ]);
 
-          const { output, status } = runCallidescope(workspaceRoot, [command]);
+          const { output, status } = await runCallidescope(workspaceRoot, [
+            command,
+          ]);
 
           expect(status).not.toBe(0);
           expect(output).toContain("--config");
         },
       );
 
-      it("fails a workspace whose only project cannot be read", () => {
+      it("fails a workspace whose only project cannot be read", async () => {
         expect.hasAssertions();
 
         // The regression. This used to print the parsing failure and exit 0,
@@ -179,10 +174,12 @@ describe("main end-to-end suite", () => {
           unreadableProjectFiles("broken"),
         ]);
 
-        expect(runCallidescope(workspaceRoot).status).toBe(1);
+        const { status } = await runCallidescope(workspaceRoot);
+
+        expect(status).toBe(1);
       });
 
-      it("fails a workspace holding one unreadable project among readable ones", () => {
+      it("fails a workspace holding one unreadable project among readable ones", async () => {
         expect.hasAssertions();
 
         const workspaceRoot = writeWorkspace([
@@ -190,7 +187,7 @@ describe("main end-to-end suite", () => {
           unreadableProjectFiles("broken"),
         ]);
 
-        const { output, status } = runCallidescope(workspaceRoot);
+        const { output, status } = await runCallidescope(workspaceRoot);
 
         // Fails on the project it could not read, rather than on anything it
         // measured through a workspace that was missing one.
