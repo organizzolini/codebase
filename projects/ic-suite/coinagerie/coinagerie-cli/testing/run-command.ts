@@ -17,7 +17,7 @@ const PROJECT_TSCONFIG_PATH = path.resolve(
 /** Gitignored `tmp/`, never system temp: spawns resolve `@swc-node/register` only in-workspace. */
 const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../tmp");
 
-/** Options for a fixture tree a spawned run reads: a repository, held in-workspace. */
+/** Fixture trees: repositories held in-workspace. */
 export const FIXTURE_OPTIONS = {
   git: true,
   label: "coinagerie",
