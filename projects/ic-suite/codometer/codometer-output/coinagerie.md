@@ -4,9 +4,8 @@
 
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
-- **anchor**: Start and end marker comments that bracket a generated block in a markdown file, so a sync replaces only that span.
+- **anchor**: The pair of start and end comment markers that bracket a generated block in a file, so a write replaces only what lies between them.
 - **baseline**: The previous codometer report a changes run diffs against, joined per project to produce each row's base value and delta.
-- **breadth**: Callidescope measure counting how many distinct callees a callable invokes directly, checked against the project's maximumBreadth limit.
 - **bullet**: Markdown list item the generated block emits for each instance of a custom statistic, naming the location it came from.
 - **counter**: Named measurement tally, such as a custom convention, that the pipeline produces and the badge block must always render.
 - **pipeline**: Ordered measurement stages a codometer run passes through, from parsing source files to producing the reports.

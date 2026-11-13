@@ -17,12 +17,12 @@ Every configuration below runs the same way — swap the file name.
 
 | Example | Shows | Exit |
 | ------- | ----- | ---- |
-| [`unprefixed.config.ts`](unprefixed.config.ts) | a path with no target name binds to nothing | 1 |
+| [`unqualified.config.ts`](unqualified.config.ts) | a path with no target name binds to nothing | 1 |
 | [`warn.config.ts`](warn.config.ts) | `severity: "warn"` prints and leaves the exit code alone | 0 |
 | [`fail.config.ts`](fail.config.ts) | a `fail` beneath a `warn`; both reported, one gates | 1 |
 | [`ambiguous.config.ts`](ambiguous.config.ts) | a path that reads two ways, refused naming both | 1 |
 | [`unbound.config.ts`](unbound.config.ts) | a path naming nothing, and one naming an analysis never run | 1 |
-| [`default-target.config.ts`](default-target.config.ts) | `defaultInput` resolving an unprefixed path | 0 |
+| [`default-target.config.ts`](default-target.config.ts) | `defaultInput` resolving an unqualified path | 0 |
 | [`units.config.ts`](units.config.ts) | `"8 KB"` is 8000 and `"1 MB"` is 1000000 | 1 |
 | [`unreadable-unit.config.ts`](unreadable-unit.config.ts) | `"8 K"` refused rather than guessed at | 1 |
 | [`empty-target-limited.config.ts`](empty-target-limited.config.ts) | an empty target with a limit fails | 1 |
@@ -30,7 +30,7 @@ Every configuration below runs the same way — swap the file name.
 
 ## The stumble almost everyone hits first
 
-[`unprefixed.config.ts`](unprefixed.config.ts)
+[`unqualified.config.ts`](unqualified.config.ts)
 
 **A path with no target name on the front binds to nothing** unless
 `defaultInput` names the input it belongs to — even when only one target was
@@ -47,7 +47,7 @@ Write `codebase.linesOfCode`, or set `defaultInput: "codebase"`.
 ## Ambiguity is refused, never resolved
 
 Two things together make a path ambiguous: a target sharing a name with a metric
-group, and a `defaultInput` that makes the unprefixed path readable as the
+group, and a `defaultInput` that makes the unqualified path readable as the
 default input's too.
 
 ```text
