@@ -59,9 +59,9 @@ describe("main", () => {
 
     if (firstCall === undefined) throw new Error("firstCall is undefined");
 
-    const module = firstCall[0];
+    const rootModule = firstCall[0];
 
-    expect(module.name).toBe(MainModule.name);
+    expect(rootModule.name).toBe(MainModule.name);
 
     const options = firstCall[1];
 
