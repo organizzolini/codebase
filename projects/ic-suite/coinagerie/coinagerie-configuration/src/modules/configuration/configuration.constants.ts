@@ -52,6 +52,14 @@ export const WORD_LIST_SCHEMA = z.array(excludedWordSchema);
 /** A `fold` result: text with no whitespace or `*`. */
 export const FOLDED_WORD_SCHEMA = z.string().regex(/^[^\s*]+$/u);
 
+/** An `unfolded` entry: a lowercase word, as every collected word is. */
+const UNFOLDED_WORD_SCHEMA = z
+  .string()
+  .regex(/^[^\s*]+$/u)
+  .refine((word) => word === word.toLowerCase(), {
+    message: "Expected a lowercase word",
+  });
+
 const markdownOutputSchema = z.strictObject({
   description: descriptionSchema.optional(),
   path: z.string().min(1),
@@ -93,4 +101,5 @@ export const CONFIGURATION_SCHEMA: z.ZodType<CoinagerieConfiguration> =
         z.discriminatedUnion("type", [jsonOutputSchema, markdownOutputSchema]),
       )
       .optional(),
+    unfolded: z.array(UNFOLDED_WORD_SCHEMA).optional(),
   });

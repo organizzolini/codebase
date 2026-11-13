@@ -148,6 +148,7 @@ describe("every example this package ships", () => {
         "aspect",
         "configure",
         "engine",
+        "pisces",
         "src",
       ]);
     });

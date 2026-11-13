@@ -15,6 +15,11 @@ export interface CoinagerieConfiguration {
   include?: string[] | undefined;
   /** Where the glossary is kept. With none, a run only prints it. */
   outputs?: CoinagerieOutput[] | undefined;
+  /**
+   * Words listed exactly as written, skipping every fold: `pisces` stays
+   * `pisces` rather than losing its last letter.
+   */
+  unfolded?: string[] | undefined;
 }
 
 /** What a run leaves out, on top of whatever `.gitignore` already ignores. */
@@ -121,6 +126,8 @@ export interface ResolvedCoinagerieConfiguration {
   fold: FoldWord | undefined;
   include: string[];
   outputs: ResolvedCoinagerieOutput[];
+  /** Words that skip every fold. */
+  unfolded: string[];
 }
 
 /** A JSON destination whose path has been made absolute. */
