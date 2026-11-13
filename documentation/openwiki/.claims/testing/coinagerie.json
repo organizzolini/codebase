@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:39cd86e71f41ff5e52781b6bf1d925e514bf067e5138a827e831321eac37ca71",
+  "claims": [
+    {
+      "id": "claim_117cdbcba6644b8d84cbafddba0095cf",
+      "statement": "Coinagerie tests are organized by package with each having its own vitest configuration extending a shared base configuration from configuration/vitest.config.ts",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/vitest.config.ts",
+          "version": "repo-file-v1:sha256:818905bc3aca074f7732ca5429e4e2bee85773130482dd13fcafa17894b47001"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-examples/vitest.config.ts",
+          "version": "repo-file-v1:sha256:6747b348cbe7d84c6fb7c8ef75b8aaaa424ade58a824baa81fb09053ab441b4e"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-languages/vitest.config.ts",
+          "version": "repo-file-v1:sha256:2ae08d6168b84e49627369b13577655ae79063357cf9d8e68a14050b0d976e7b"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-output/vitest.config.ts",
+          "version": "repo-file-v1:sha256:2ae08d6168b84e49627369b13577655ae79063357cf9d8e68a14050b0d976e7b"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/vitest.config.ts",
+          "version": "repo-file-v1:sha256:2ae08d6168b84e49627369b13577655ae79063357cf9d8e68a14050b0d976e7b"
+        }
+      ]
+    },
+    {
+      "id": "claim_25474968c04f48709585e54eb6ef22af",
+      "statement": "The vocabulary service unit tests exercise the complete pipeline: file discovery → language tokenization → word splitting → folding → exclusion → sorted headwords",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/vocabulary/vocabulary.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:608050c265721e7cf0eb39dc44cabff4595b2eafb796c98403e7130ababed8c2"
+        }
+      ]
+    },
+    {
+      "id": "claim_9f41545de37347c08deec35500fa36d3",
+      "statement": "Discovery tests verify file discovery honoring .gitignore rules at every level with innermost .gitignore winning",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/discovery/discovery.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:30094d70e1303ee45701f017dc5d36b781c5cdc9f7c3f4f5c55882b517d3b376"
+        }
+      ]
+    },
+    {
+      "id": "claim_3fdf3c2dd0054b5fb390296080acd67e",
+      "statement": "Word splitting tests cover splitIdentifier (camelCase, PascalCase, snake_case, SCREAMING_SNAKE, kebab-case, dotted, prefixed) and splitPath (drops final extension)",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/words/words.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:aa6a17f487452896975d0e82c2c3b1193006bcd380b47701a3a68681cc18f2e3"
+        }
+      ]
+    },
+    {
+      "id": "claim_0d57158c9ae84e89b6e1949100a94719",
+      "statement": "Folding tests verify English inflection folding (plurals, participles, irregulars) and configurable fold function that runs on the folded lemma",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/folding/folding.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:af2f7664dbf225673bfc5872d54584fcc03cbb0037fb39e35fbaecd3df825712"
+        }
+      ]
+    },
+    {
+      "id": "claim_39212dcc0bd04520b244d3cb94701dc4",
+      "statement": "Exclusion tests verify the full pipeline: exclude.words (exact strings, case-insensitive), exclude.patterns (RegExp tested against raw lowercase word AND folded headword), and exclude.paths (globs)",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/vocabulary/vocabulary.service.unit.test.ts#L100-L300",
+          "version": "repo-lines-v1:sha256:9d02eb8ce05ff5a8172d89efaa253076c78f58430d2eb4eb8da1ecdfc14d3dab:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI2ZmExZTRlMzM3MDg1ZmE3MTIyMDEwNjIxZDk2MWQyZDBhNzFkNDhhMWMyN2M1NjY3ZTIzNmY0Y2RhZTkyNjllIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIxNGFiNGY1ZTMxNzg0OTU5MTEwZWU5NzA3YTEwZWMzY2RjMzc4MTljYzdkZDIwNDQzNWMwZjdjY2ZlZTI2ZDM5IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJkMmE4YzE2ZTdkOGUwYjg0NTFjN2I1MDNmNTgxMGY5OTAxZDY2ZmRhMjZhMGM4OWM4ZWZjNzk0MWMyYTdkZGRiIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_698abbaa8f594dacb290d60d41979226",
+      "statement": "Language tokenizer tests cover TypeScript, Python, JSON, YAML, TOML, Shell, SQL, HCL, CSS with shared ScannerService and import-cycle guard",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-languages/src/modules/css/css.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:d58998b333ad7e40818d4bb424faf00c48b1ef5979b00211c3a1596512ca4e71"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-languages/src/modules/hcl/hcl.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:9059e205f0220701bb54b4420dc3edefdb10509fb8984d57e19abb6e3533f6b0"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-languages/src/modules/json/json.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:069d4440d64f0aef762fa578b512213c1d8af792db8f975c57e9f853d21b08ac"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-languages/src/modules/python/python.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:b3979f0550aadbdd481d26a8c1885f32ac50c71b6c02c6e95a18a5becc02dfc3"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-languages/src/modules/shell/shell.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:edfc61f73015cfe34a736bed81a19ae278bcf67c4183de0b45303049ad5c5e9a"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-languages/src/modules/sql/sql.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:dcd6fe586d3ede22a87d523b7a9c587185a44d542e44aad3a071b93008bb498f"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-languages/src/modules/toml/toml.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:eb066ea9443303223877e0da7d2ed1cbec064bc83856a364e8f5ddfef79d5381"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-languages/src/modules/typescript/typescript.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:2af379beff4359b7062c42533dac7442ef3bbb740e566a04540b65a4fac9b2c3"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-languages/src/modules/yaml/yaml.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:2ad3f089dc65a044966ab2673b633e2ebcb65193ddcab4dbfcdaf8c1ed49d8de"
+        }
+      ]
+    },
+    {
+      "id": "claim_8b7381cb2aa94dc29f6368a8f015a37d",
+      "statement": "Output service tests cover comparison (missing/stale detection), markdown rendering (anchor-delimited blocks), JSON rendering (flat sorted object), and delivery (check/write for multiple destinations)",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-output/src/modules/comparison/comparison.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:fdc9e5cc866b11da685072e35f1c655e7e5b580dfa2365eadd9c356a64dd2ead"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-output/src/modules/delivery/delivery.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:5f0f1ae75e95f098a60fe83d128ed17bf8c65bbacd25bce1cc43004ea938e4a0"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-output/src/modules/json/json.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:e79c023d8ddc28d2b2ae1bc138bd3f81113778edd056c3219e61ee3c03b65b34"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-output/src/modules/markdown/markdown.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:8e1f9d220975a5bb170cde9f7592d1aa6825065a71fcb732adf97483adc206d0"
+        }
+      ]
+    },
+    {
+      "id": "claim_dc9046ef22874534a8ced4f7995eeff1",
+      "statement": "CLI packing test (coinagerie-cli.packed.test.ts) verifies the published @coinagerie/cli tarball by installing it into a temporary sandbox and running the binary",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/testing/coinagerie-cli.packed.test.ts",
+          "version": "repo-file-v1:sha256:3319c07d380754dbecba6a3544f01cdf25a02215f42a078f4106bce8d1b72876"
+        }
+      ]
+    },
+    {
+      "id": "claim_4176d8e3f5c240978110a4aee278c2b5",
+      "statement": "Example integration tests serve as a smoke gate over seven documented example projects with completeness checks for README, project folder, guide links, and documented runs",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-examples/testing/examples.integration.test.ts",
+          "version": "repo-file-v1:sha256:d452841a7dffecc0e4219eb178e315c1e87d485a509fa2fcd15e39f786ab5314"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-examples/testing/run-examples.ts",
+          "version": "repo-file-v1:sha256:69836d4bb5adf3e31dec1ad06401733c382eb4585a920556b59d31689e364561"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-examples/testing/runs.ts",
+          "version": "repo-file-v1:sha256:cb01ed21e98d2de4ea09bb3b1412ca2975111179c542d7c5989fcf25963fac75"
+        }
+      ]
+    },
+    {
+      "id": "claim_79fcb1d0d8d9422d98d19259e8b02a76",
+      "statement": "Test commands: nx run coinagerie-cli:vitest:unit, nx run coinagerie-vocabulary:vitest:unit, nx run coinagerie-output:vitest:unit, nx run coinagerie-languages:vitest:unit, nx run coinagerie-examples:examples",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/package.json",
+          "version": "repo-file-v1:sha256:2622e312de6dd857d3bdd0734b18791cfedb2083e2ffc8cb33c58aecd1a1e238"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-examples/project.json",
+          "version": "repo-file-v1:sha256:17e0680c3d1ff1ab54e0ab3f2d5a521ba914fc5c1b0fc1af9cd4266199bf2cb4"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-output/package.json",
+          "version": "repo-file-v1:sha256:3d51aa2ea9998419be81e221672a70696909a72eae9708eb37247c246d886076"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/package.json",
+          "version": "repo-file-v1:sha256:417aba4dfb1c739ac911643fbdefea4cb332d0aa26827dab960f448e6213ecee"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-13T16:30:25.369Z"
+  }
+}

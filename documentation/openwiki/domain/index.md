@@ -5,6 +5,7 @@
 - [Callidescope Domain Model](callidescope.md) - Domain model documentation for callidescope call stack tracing toolchain: call graph, stack, frame, finding vocabulary, depth/breadth measurement, gate semantics, findings charged to projects.
 - [Codependix — Dependency Graph Boundary Enforcement](codependix.md)
 - [Codometer — Repository Measurement & Limits](codometer.md) - Domain model documentation for the codometer repository measurement toolchain: file sizes, symbol counts, comment budgets, custom counters, limits enforcement, badge generation, gate semantics, and CI integration.
+- [Coinagerie — Vocabulary Toolchain](coinagerie.md)
 - [Conformetry](conformetry.md) - Template-driven code generation and conformance validation toolchain for the monorepo. Generators render templates to instances, languages compare instances against templates structurally, and validation reports differences with conformance scores that gate CI.
 - [Lexico — Latin-English Dictionary Suite](lexico.md) - Four-project suite (lexico-cli, lexico-entities, lexico-api, lexico-web) that scrapes Latin dictionary and literature sources into Postgres, exposes them via a Relay-paginated GraphQL API, and renders search via TanStack Start SSR.
 - [Meanderaw — Greek Meander Enumeration & Classification](meanderaw.md) - CLI application that enumerates Greek key/fret patterns into Postgres by lattice address (Code), measures structural characteristics and classifies compound pattern booleans, then streams HTML index pages to disk for exploration via a web app.
