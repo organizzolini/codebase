@@ -7,8 +7,8 @@ import { promptsMock } from "./modules/mocks/mocks.constants";
 
 // 🧪 Tests
 
-// The project's own `testing/setup.ts` loads `src/setup.ts`, so this file
-// observes the shared setup exactly as a consuming project would.
+// The base Vitest config lists `src/setup.ts` for every project, so this file
+// observes the shared setup exactly as a consuming project does.
 describe("the shared Vitest setup", () => {
   const counter = vi.fn<() => void>();
 

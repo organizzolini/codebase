@@ -12,7 +12,7 @@ subpath exports.
 | Entry                           | Holds                                                                                                        | Depends on                |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------- |
 | `@codebase/testing`             | Temporary directories, output and exit-code capture, environment overrides, the fixed clock, fixtures, mocks | nothing in the workspace  |
-| `@codebase/testing/setup`       | The shared Vitest setup file                                                                                 | nothing in the workspace  |
+| `@codebase/testing/setup`       | The shared Vitest setup file, which the base config lists                                                    | nothing in the workspace  |
 | `@codebase/testing/end-to-end`  | Tarball sandbox and Verdaccio plugin runners that test packed packages as a consumer installs them           | `execa`, Verdaccio        |
 | `@codebase/testing/file-system` | The `mockFileSystem` factory helper, kept free of `node:fs` imports                                          | nothing in the workspace  |
 | `@codebase/testing/nestjs`      | The testing-module builder, module-wiring assertions, and the Nx workspace tree                              | `@codebase/observability` |
