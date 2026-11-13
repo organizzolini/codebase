@@ -10,8 +10,8 @@ export function createFileTree(
   files: Readonly<Record<string, string>>,
   options: FileTreeOptions = {},
 ): string {
-  const { git = false, label = "file-tree", symlinks = {} } = options;
-  const root = createTemporaryDirectory(label);
+  const { git = false, label = "file-tree", parent, symlinks = {} } = options;
+  const root = createTemporaryDirectory(label, parent);
 
   writeFileTree(root, files);
 

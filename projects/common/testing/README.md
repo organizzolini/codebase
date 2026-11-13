@@ -59,8 +59,10 @@ describe("the command line", () => {
 ```
 
 `createFileTree({ "src/a.ts": "..." }, { git: true, symlinks: { "link": "src" } })`
-writes a temporary tree and returns its root, removed with the test;
-`writeFileTree(root, files)` writes into a directory you already hold.
+writes a temporary tree and returns its root, removed with the test; `parent`
+makes the root inside a directory you name instead, for a spawned command that
+must resolve its packages from the workspace. `writeFileTree(root, files)`
+writes into a directory you already hold.
 
 Every helper that changes global state undoes it once the test finishes, so a
 test cannot leak a directory, a stream spy, an exit code, or a variable into
