@@ -1,11 +1,10 @@
 import { spawnSync } from "node:child_process";
-import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { createTemporaryDirectory } from "@codebase/testing";
+import { createFileTree } from "@codebase/testing";
 
 import { environmentSchema } from "./callidescope-cli.constants";
 
@@ -23,6 +22,41 @@ const SPAWNED_RUN_TIMEOUT = 30_000;
 
 /** Compiler options for spawned runs; NestJS injection needs decorator metadata. */
 const LOADER_PROJECT = path.resolve(import.meta.dirname, "..", "tsconfig.json");
+
+/**
+ * One project's complete configuration file. JavaScript, not JSON, because JSON cannot
+ * spell `undefined`, which the configuration uses to disable breadth and publishing.
+ */
+function projectConfigurationFile(projectRoot: string): Record<string, string> {
+  return {
+    [path.join(projectRoot, "callidescope.config.js")]: `export default {
+      entryPoints: {
+        addresses: [],
+        decorators: [],
+        includeExportedFunctions: true,
+        includeOrphans: true,
+        includeTests: false,
+      },
+      exclude: [],
+      limits: { maximumBreadth: undefined, maximumDepth: 6 },
+      write: { markdown: undefined, mermaid: undefined },
+    };\n`,
+  };
+}
+
+/** A project holding one traceable source file. */
+function readableProjectFiles(name: string): Record<string, string> {
+  const root = path.join("packages", name);
+
+  return {
+    [path.join(root, "src", "index.ts")]: "export function entry(): void {}\n",
+    [path.join(root, "tsconfig.json")]: JSON.stringify({
+      compilerOptions: { noLib: true, target: "es2022" },
+      include: ["src/**/*.ts"],
+    }),
+    ...projectConfigurationFile(root),
+  };
+}
 
 /**
  * Spawns a real process: nest-commander writes a thrown error to stderr and leaves the
@@ -63,92 +97,37 @@ function runCallidescope(
 }
 
 /**
- * Writes one project's complete configuration file. JavaScript, not JSON, because JSON cannot
- * spell `undefined`, which the configuration uses to disable breadth and publishing.
- */
-function writeProjectConfiguration(projectRoot: string): void {
-  writeFileSync(
-    path.join(projectRoot, "callidescope.config.js"),
-    `export default {
-      entryPoints: {
-        addresses: [],
-        decorators: [],
-        includeExportedFunctions: true,
-        includeOrphans: true,
-        includeTests: false,
-      },
-      exclude: [],
-      limits: { maximumBreadth: undefined, maximumDepth: 6 },
-      write: { markdown: undefined, mermaid: undefined },
-    };\n`,
-    "utf8",
-  );
-}
-
-/** Writes a project holding one traceable source file. */
-function writeReadableProject(workspaceRoot: string, name: string): void {
-  const root = path.join(workspaceRoot, "packages", name);
-
-  mkdirSync(path.join(root, "src"), { recursive: true });
-  writeFileSync(
-    path.join(root, "tsconfig.json"),
-    JSON.stringify({
-      compilerOptions: { noLib: true, target: "es2022" },
-      include: ["src/**/*.ts"],
-    }),
-    "utf8",
-  );
-  writeFileSync(
-    path.join(root, "src", "index.ts"),
-    "export function entry(): void {}\n",
-    "utf8",
-  );
-  writeProjectConfiguration(root);
-}
-
-/**
- * Writes a project whose tsconfig names a target TypeScript rejects, mirroring the
+ * A project whose tsconfig names a target TypeScript rejects, mirroring the
  * unreadable example in `codependix-examples`, which must stay unreadable.
  */
-function writeUnreadableProject(workspaceRoot: string, name: string): void {
-  const root = path.join(workspaceRoot, "packages", name);
+function unreadableProjectFiles(name: string): Record<string, string> {
+  const root = path.join("packages", name);
 
-  mkdirSync(path.join(root, "src"), { recursive: true });
-  writeFileSync(
-    path.join(root, "tsconfig.json"),
-    JSON.stringify({
+  return {
+    [path.join(root, "src", "index.ts")]: "export function broken(): void {}\n",
+    [path.join(root, "tsconfig.json")]: JSON.stringify({
       compilerOptions: { target: "not-a-real-target" },
       include: ["src/**/*.ts"],
     }),
-    "utf8",
-  );
-  writeFileSync(
-    path.join(root, "src", "index.ts"),
-    "export function broken(): void {}\n",
-    "utf8",
-  );
-  writeProjectConfiguration(root);
+    ...projectConfigurationFile(root),
+  };
 }
 
 /**
- * Workspace with the default config, rooted at the resolved path since macOS temp directories
- * are symlinks that break ownership. Assert exit codes, not paths.
+ * Workspace with the default config plus the given projects, rooted at the resolved path since
+ * macOS temp directories are symlinks that break ownership. Assert exit codes, not paths.
  */
-function writeWorkspace(): string {
-  const workspaceRoot = createTemporaryDirectory("callidescope-exit");
-
-  writeFileSync(
-    path.join(workspaceRoot, "callidescope.config.json"),
-    JSON.stringify({ limits: { maximumDepth: 6 } }),
-    "utf8",
+function writeWorkspace(projects: Record<string, string>[] = []): string {
+  return createFileTree(
+    {
+      "callidescope.config.json": JSON.stringify({
+        limits: { maximumDepth: 6 },
+      }),
+      "register.mjs": `import { register } from "node:module";\nregister(${JSON.stringify(LOADER_HOOK)});\n`,
+      ...Object.fromEntries(projects.flatMap((files) => Object.entries(files))),
+    },
+    { label: "callidescope-exit" },
   );
-  writeFileSync(
-    path.join(workspaceRoot, "register.mjs"),
-    `import { register } from "node:module";\nregister(${JSON.stringify(LOADER_HOOK)});\n`,
-    "utf8",
-  );
-
-  return workspaceRoot;
 }
 
 describe("main end-to-end suite", () => {
@@ -165,9 +144,9 @@ describe("main end-to-end suite", () => {
       it("passes a workspace it traced without finding anything", () => {
         expect.hasAssertions();
 
-        const workspaceRoot = writeWorkspace();
-
-        writeReadableProject(workspaceRoot, "readable");
+        const workspaceRoot = writeWorkspace([
+          readableProjectFiles("readable"),
+        ]);
 
         expect(runCallidescope(workspaceRoot).status).toBe(0);
       });
@@ -180,9 +159,9 @@ describe("main end-to-end suite", () => {
         (command) => {
           expect.hasAssertions();
 
-          const workspaceRoot = writeWorkspace();
-
-          writeReadableProject(workspaceRoot, "readable");
+          const workspaceRoot = writeWorkspace([
+            readableProjectFiles("readable"),
+          ]);
 
           const { output, status } = runCallidescope(workspaceRoot, [command]);
 
@@ -196,9 +175,9 @@ describe("main end-to-end suite", () => {
 
         // The regression. This used to print the parsing failure and exit 0,
         // so the depth gate passed for having traced nothing at all.
-        const workspaceRoot = writeWorkspace();
-
-        writeUnreadableProject(workspaceRoot, "broken");
+        const workspaceRoot = writeWorkspace([
+          unreadableProjectFiles("broken"),
+        ]);
 
         expect(runCallidescope(workspaceRoot).status).toBe(1);
       });
@@ -206,10 +185,10 @@ describe("main end-to-end suite", () => {
       it("fails a workspace holding one unreadable project among readable ones", () => {
         expect.hasAssertions();
 
-        const workspaceRoot = writeWorkspace();
-
-        writeReadableProject(workspaceRoot, "readable");
-        writeUnreadableProject(workspaceRoot, "broken");
+        const workspaceRoot = writeWorkspace([
+          readableProjectFiles("readable"),
+          unreadableProjectFiles("broken"),
+        ]);
 
         const { output, status } = runCallidescope(workspaceRoot);
 

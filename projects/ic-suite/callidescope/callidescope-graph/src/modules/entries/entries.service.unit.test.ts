@@ -1,12 +1,10 @@
+import { buildSourceLocation } from "@callidescope/core/testing";
 import { createMock } from "@golevelup/ts-vitest";
 import { describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import {
-  buildDiscoveredCallable,
-  buildSourceLocation,
-} from "../../../testing/mocks";
+import { buildDiscoveredCallable } from "../../../testing";
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 import {
   buildFixtureProgram,

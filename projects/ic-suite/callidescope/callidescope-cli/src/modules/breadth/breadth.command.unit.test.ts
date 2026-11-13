@@ -5,6 +5,7 @@ import {
   ProjectConfigurationFieldNotPermittedError,
 } from "@callidescope/configuration";
 import { BreadthService, ProgramConfigurationError } from "@callidescope/graph";
+import { buildDiscoveredCallable } from "@callidescope/graph/testing";
 import { AddressReportService } from "@callidescope/output";
 import { createMock } from "@golevelup/ts-vitest";
 import {
@@ -21,7 +22,6 @@ import { expectLoggerContext } from "@codebase/observability/testing";
 import { captureExitCode, captureOutput } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { buildDiscoveredCallable } from "../../../testing/mocks";
 import { AddressLookupService } from "../address-lookup/address-lookup.service";
 
 import { BreadthCommand } from "./breadth.command";

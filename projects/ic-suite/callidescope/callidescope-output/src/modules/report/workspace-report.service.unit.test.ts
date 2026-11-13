@@ -1,11 +1,9 @@
+import { buildSourceLocation } from "@callidescope/core/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import {
-  buildProjectLimitsLookup,
-  buildSourceLocation,
-} from "../../../testing/mocks";
+import { buildProjectLimitsLookup } from "../../../testing/mocks";
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 
 import {
