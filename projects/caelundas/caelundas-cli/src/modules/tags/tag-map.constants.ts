@@ -23,6 +23,7 @@ import {
 } from "../caelundas/symbol-caelundas.constants";
 import { eclipseTypeLabelByType } from "../eclipses/eclipses.constants";
 import { DECAN_TAG_BY_DECAN } from "../ingresses/ingresses.constants";
+import { MINIMUM_STELLIUM_BODIES } from "../stellium/stellium.constants";
 
 import {
   BODY_CLASS_BY_BODY,
@@ -49,9 +50,6 @@ const { type } = TAG_ROOT;
 
 /** Every body's display name, as detectors tag it. */
 const BODY_NAMES = bodies.map((body) => bodyDisplayName(body));
-
-/** The smallest stellium: three bodies. */
-const MINIMUM_STELLIUM_BODIES = 3;
 
 /** The largest stellium the detector names: one past the smallest per size. */
 const MAXIMUM_STELLIUM_BODIES =

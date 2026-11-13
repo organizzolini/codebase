@@ -101,19 +101,15 @@ describe(StelliumService, () => {
         expect(stellium?.tags).toContain("4 Body");
       });
 
-      it("returns empty array when fewer than 6 conjunctions exist", () => {
+      it("returns empty array when fewer than 3 conjunctions exist", () => {
         const currentMinute = moment.utc("2024-03-21T12:00:00.000Z");
 
-        // Only 5 conjunctions (need 6 for 4-body stellium)
-        const edges: AspectBodies[] = [
+        // Only 2 conjunctions (need 3 for a 3-body stellium)
+        const currentAspectBodies: AspectBodies[] = [
           { aspect: "conjunct", bodies: ["sun", "moon"] },
           { aspect: "conjunct", bodies: ["sun", "mars"] },
-          { aspect: "conjunct", bodies: ["sun", "venus"] },
-          { aspect: "conjunct", bodies: ["moon", "mars"] },
-          { aspect: "conjunct", bodies: ["moon", "venus"] },
         ];
-        const currentAspectBodies = edges;
-        const previousAspectBodies = edges;
+        const previousAspectBodies: AspectBodies[] = [];
 
         const events = service.detect({
           currentAspectBodies,
@@ -124,20 +120,16 @@ describe(StelliumService, () => {
         expect(events).toHaveLength(0);
       });
 
-      it("skips clusters with fewer than 4 bodies", () => {
+      it("skips clusters with fewer than 3 bodies", () => {
         const currentMinute = moment.utc("2024-03-21T12:00:00.000Z");
 
-        // Two separate 3-body clusters (neither forms a stellium)
-        const edges: AspectBodies[] = [
+        // Three separate conjunct pairs (none forms a stellium)
+        const currentAspectBodies: AspectBodies[] = [
           { aspect: "conjunct", bodies: ["sun", "moon"] },
-          { aspect: "conjunct", bodies: ["sun", "mars"] },
-          { aspect: "conjunct", bodies: ["moon", "mars"] },
+          { aspect: "conjunct", bodies: ["mars", "mercury"] },
           { aspect: "conjunct", bodies: ["jupiter", "venus"] },
-          { aspect: "conjunct", bodies: ["jupiter", "saturn"] },
-          { aspect: "conjunct", bodies: ["venus", "saturn"] },
         ];
-        const currentAspectBodies = edges;
-        const previousAspectBodies = edges;
+        const previousAspectBodies: AspectBodies[] = [];
 
         const events = service.detect({
           currentAspectBodies,
@@ -146,6 +138,22 @@ describe(StelliumService, () => {
         });
 
         expect(events).toHaveLength(0);
+      });
+
+      it("detects the smallest stellium, three bodies", () => {
+        const events = service.detect({
+          currentAspectBodies: [
+            { aspect: "conjunct", bodies: ["sun", "moon"] },
+            { aspect: "conjunct", bodies: ["sun", "mars"] },
+            { aspect: "conjunct", bodies: ["moon", "mars"] },
+          ],
+          minute: moment.utc("2024-03-21T12:00:00.000Z"),
+          previousAspectBodies: [],
+        });
+
+        expect(events.map((event) => event.description)).toStrictEqual([
+          "Mars, Moon, Sun stellium forming",
+        ]);
       });
 
       it("rejects incomplete stellium (not all pairs conjunct)", () => {
@@ -240,10 +248,10 @@ describe(StelliumService, () => {
           ...service.detect({
             currentAspectBodies: cluster,
             minute: formingMinute,
-            previousAspectBodies: cluster.slice(1),
+            previousAspectBodies: [],
           }),
           ...service.detect({
-            currentAspectBodies: cluster.slice(1),
+            currentAspectBodies: [],
             minute: dissolvingMinute,
             previousAspectBodies: cluster,
           }),

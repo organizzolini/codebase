@@ -58,7 +58,8 @@ describe("stelliumService maximal conjunction cliques", () => {
     it("reports a stellium inside a conjunction component that is not a clique", () => {
       // 15 January 2026: Mars, Mercury, Sun and Venus are one stellium, and
       // Vesta and Pluto are conjunct with only some of it. The Sun-Pluto leg
-      // closes a second stellium inside the same component.
+      // closes a second stellium inside the same component, out of two
+      // three-body ones.
       const before = [
         ...clique("mars", "mercury", "sun", "venus"),
         ...clique("pluto", "venus", "vesta"),
@@ -71,13 +72,15 @@ describe("stelliumService maximal conjunction cliques", () => {
 
       expect(describeDetected(before, after)).toStrictEqual([
         "Pluto, Sun, Venus, Vesta stellium forming",
+        "Pluto, Venus, Vesta stellium dissolving",
+        "Sun, Venus, Vesta stellium dissolving",
       ]);
     });
 
     it("reports overlapping stelliums that share bodies", () => {
       // 19 December 2025: Mars is conjunct with Juno, the Moon and the Sun
-      // but not Venus, so the Moon-Mars leg forms a second stellium beside
-      // Juno, Moon, Sun, Venus without disturbing it.
+      // but not Venus, so the Moon-Mars leg grows Juno, Mars, Sun into a
+      // second stellium beside Juno, Moon, Sun, Venus without disturbing it.
       const before = [
         ...clique("juno", "moon", "sun", "venus"),
         ...clique("juno", "mars", "sun"),
@@ -89,6 +92,7 @@ describe("stelliumService maximal conjunction cliques", () => {
 
       expect(describeDetected(before, after)).toStrictEqual([
         "Juno, Mars, Moon, Sun stellium forming",
+        "Juno, Mars, Sun stellium dissolving",
       ]);
     });
 
@@ -141,9 +145,9 @@ describe("stelliumService maximal conjunction cliques", () => {
         bodies: [edge.bodies[1], edge.bodies[0]],
       }));
 
-      expect(
-        describeDetected(legs.slice(1), [...legs, ...reversed]),
-      ).toStrictEqual(["Mars, Mercury, Sun, Venus stellium forming"]);
+      expect(describeDetected([], [...legs, ...reversed])).toStrictEqual([
+        "Mars, Mercury, Sun, Venus stellium forming",
+      ]);
     });
   });
 });
