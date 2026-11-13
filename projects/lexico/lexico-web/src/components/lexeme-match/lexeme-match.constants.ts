@@ -67,18 +67,18 @@ export const KINDS: Readonly<
     language: "latin",
     type: "exact",
   },
-  "exact-headword": {
-    hint: "The headword is exactly what you searched for",
+  "exact-lemma": {
+    hint: "The lemma is exactly what you searched for",
     language: "latin",
     type: "exact",
   },
   fuzzy: {
-    hint: "A headword or form a few letters away from what you searched for",
+    hint: "A lemma or form a few letters away from what you searched for",
     language: "latin",
     type: "fuzzy",
   },
   prefix: {
-    hint: "The headword starts with what you searched for",
+    hint: "The lemma starts with what you searched for",
     language: "latin",
     type: "starts-with",
   },

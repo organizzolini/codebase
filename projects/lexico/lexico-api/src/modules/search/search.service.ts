@@ -99,7 +99,7 @@ export class SearchService {
   }
 
   /**
-   * Describes each Latin match on a page as merging its tiers would: morphological identifiers, plus any split-off enclitic whose stem matched.
+   * Describes each Latin match on a page as merging its tiers would: morphological identifiers, plus any split-off enclitic whose host matched.
    */
   private async describeLatinMatches(
     scored: readonly ScoredLexeme[],
@@ -108,7 +108,7 @@ export class SearchService {
       terms: readonly string[];
     },
   ): Promise<LexemeSearchMatch[]> {
-    const { enclitic, stem } = search.decomposition;
+    const { enclitic, host } = search.decomposition;
     if (scored.length === 0) {
       return [];
     }
@@ -143,12 +143,12 @@ export class SearchService {
         }
       }
     }
-    const stemMatched = new Set([
+    const hostMatched = new Set([
       ...scored
-        .filter(({ lexeme }) => lexeme.lemma.toLowerCase() === stem)
+        .filter(({ lexeme }) => lexeme.lemma.toLowerCase() === host)
         .map(({ lexeme }) => lexeme.id),
       ...words
-        .filter((word) => word.data.toLowerCase() === stem)
+        .filter((word) => word.data.toLowerCase() === host)
         .flatMap((word) => word.wordLexemes.map(({ lexeme }) => lexeme.id)),
     ]);
 
@@ -159,7 +159,7 @@ export class SearchService {
           source === SearchMatchSource.FUZZY
             ? fuzzyScoreToDistance(score)
             : null,
-        enclitic: stemMatched.has(lexeme.id) ? enclitic : null,
+        enclitic: hostMatched.has(lexeme.id) ? enclitic : null,
         identifiers: [...(identifiers.get(lexeme.id) ?? [])],
         lexeme,
         score,
@@ -169,18 +169,15 @@ export class SearchService {
   }
 
   /**
-   * Selects the lexemes whose headword is one of the terms, or one of whose
+   * Selects the lexemes whose lemma is one of the terms, or one of whose
    * inflected words is, as SQL yielding a `lexemeId` column.
    */
-  private headwordOrWordMatches(
-    alias: string,
-    termsParameter: string,
-  ): string[] {
+  private lemmaOrWordMatches(alias: string, termsParameter: string): string[] {
     return [
       this.lexemeRepository
-        .createQueryBuilder(`${alias}Headword`)
-        .select(`${alias}Headword.id`, "lexemeId")
-        .where(`LOWER(${alias}Headword.lemma) IN (:...${termsParameter})`)
+        .createQueryBuilder(`${alias}Lemma`)
+        .select(`${alias}Lemma.id`, "lexemeId")
+        .where(`LOWER(${alias}Lemma.lemma) IN (:...${termsParameter})`)
         .getQuery(),
       this.wordRepository
         .createQueryBuilder(`${alias}Word`)
@@ -313,11 +310,11 @@ export class SearchService {
     const maximum = `:${termParameter}Maximum`;
     const distance = (column: string): string =>
       `levenshtein_less_equal(LOWER(${column}), :${termParameter}, ${maximum})`;
-    const headwords = this.lexemeRepository
-      .createQueryBuilder("fuzzyHeadword")
-      .select("fuzzyHeadword.id", "lexemeId")
-      .addSelect(distance("fuzzyHeadword.lemma"), "distance")
-      .where(`LOWER(fuzzyHeadword.lemma) % :${termParameter}`)
+    const lemmas = this.lexemeRepository
+      .createQueryBuilder("fuzzyLemma")
+      .select("fuzzyLemma.id", "lexemeId")
+      .addSelect(distance("fuzzyLemma.lemma"), "distance")
+      .where(`LOWER(fuzzyLemma.lemma) % :${termParameter}`)
       .getQuery();
     const words = this.wordRepository
       .createQueryBuilder("fuzzyWord")
@@ -327,7 +324,7 @@ export class SearchService {
       .addSelect(distance("fuzzyWord.data"), "distance")
       .where(`LOWER(fuzzyWord.data) % :${termParameter}`)
       .getQuery();
-    return `SELECT "fuzzy"."lexemeId", ${String(SCORE_FUZZY)} - ${String(SCORE_FUZZY_STEP)} * MIN("fuzzy"."distance") AS "score" FROM (${headwords} UNION ALL ${words}) "fuzzy" WHERE "fuzzy"."distance" <= ${maximum} GROUP BY "fuzzy"."lexemeId" ORDER BY "score" DESC, "fuzzy"."lexemeId" ASC LIMIT ${String(LATIN_TIER_RESULT_LIMIT)}`;
+    return `SELECT "fuzzy"."lexemeId", ${String(SCORE_FUZZY)} - ${String(SCORE_FUZZY_STEP)} * MIN("fuzzy"."distance") AS "score" FROM (${lemmas} UNION ALL ${words}) "fuzzy" WHERE "fuzzy"."distance" <= ${maximum} GROUP BY "fuzzy"."lexemeId" ORDER BY "score" DESC, "fuzzy"."lexemeId" ASC LIMIT ${String(LATIN_TIER_RESULT_LIMIT)}`;
   }
 
   /**
@@ -338,15 +335,15 @@ export class SearchService {
     decomposition: EncliticDecompositionResult,
   ): RankedLexemeQuery {
     const parameters: Record<string, unknown> = {
-      latinStem: [decomposition.stem],
+      latinHost: [decomposition.host],
       latinTerms: [...terms],
     };
-    const [headwords = "", words = ""] = this.headwordOrWordMatches(
+    const [lemmas = "", words = ""] = this.lemmaOrWordMatches(
       "match",
       "latinTerms",
     );
     const tiers = [
-      `SELECT "headwordMatch"."lexemeId", ${String(SCORE_LEMMA_EXACT)} AS "score" FROM (${headwords}) "headwordMatch"`,
+      `SELECT "lemmaMatch"."lexemeId", ${String(SCORE_LEMMA_EXACT)} AS "score" FROM (${lemmas}) "lemmaMatch"`,
       `SELECT "wordMatch"."lexemeId", ${String(SCORE_WORD_EXACT)} AS "score" FROM (${words}) "wordMatch"`,
     ];
 
@@ -359,7 +356,7 @@ export class SearchService {
           .addSelect(String(SCORE_ENCLITIC), "score")
           .where("LOWER(encliticLexeme.lemma) = :encliticLemma")
           .andWhere(
-            `EXISTS (SELECT 1 FROM (${this.headwordOrWordMatches("stem", "latinStem").join(" UNION ALL ")}) "stemMatch" WHERE ${this.translatedCondition(`"stemMatch"."lexemeId"`)})`,
+            `EXISTS (SELECT 1 FROM (${this.lemmaOrWordMatches("host", "latinHost").join(" UNION ALL ")}) "hostMatch" WHERE ${this.translatedCondition(`"hostMatch"."lexemeId"`)})`,
           )
           .getQuery(),
       );
@@ -385,7 +382,7 @@ export class SearchService {
   }
 
   /**
-   * Ranks the first `LATIN_TIER_RESULT_LIMIT` lexemes by id whose headword
+   * Ranks the first `LATIN_TIER_RESULT_LIMIT` lexemes by id whose lemma
    * matches a pattern parameter, all at one score.
    */
   private rankLemmaPattern(patternParameter: string, score: number): string {
@@ -459,7 +456,7 @@ export class SearchService {
 
     const decomposition = decomposeEnclitic(cleanQuery);
     const terms = [
-      ...new Set([cleanQuery, decomposition.stem].filter(Boolean)),
+      ...new Set([cleanQuery, decomposition.host].filter(Boolean)),
     ];
     const connection = await this.paginateRankedLexemes(
       this.rankLatinMatches(terms, decomposition),

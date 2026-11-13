@@ -160,7 +160,7 @@ export interface InstanceScore {
 
 /** An instance on disk, with the templates that explain it. */
 export interface InventoriedInstance {
-  /** Where the instance is, including its name stem. */
+  /** Where the instance is, including its name. */
   readonly path: string;
   /** Templates that explain this instance, best fit first. */
   readonly templates: InventoriedPairing[];

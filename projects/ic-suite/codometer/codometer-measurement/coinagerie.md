@@ -4,9 +4,8 @@
 
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
-- **anchor**: Stem of anchored, as in the discovery test's note that a leading-slash ignore pattern is anchored at the repository root.
+- **anchor**: Fixed to the repository root, as a leading-slash ignore pattern is; the word appears here only as `anchored`.
 - **boundary**: Repository edge passed to the inputs constructor, beyond which an input configuration is not allowed to reach.
-- **breadth**: Callidescope maximumBreadth limit this package holds itself to, set to nine in its own callidescope configuration.
 - **budget**: Per-comment allowance checked in the customization pass, judged against each comment block's own configured limit.
 - **bundle**: Compiled JavaScript output that this package's own codometer config measures, held to a 32 KB size limit.
 - **counter**: Custom metric that measures files by path, declarations by symbol, or comments, as the customization service describes.

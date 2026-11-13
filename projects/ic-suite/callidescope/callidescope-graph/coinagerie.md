@@ -4,7 +4,6 @@
 
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
-- **breadth**: Width of a call graph, counting distinct callees per frame and compared to the maximumBreadth limit.
 - **callable**: Function, method, or constructor declaration that the call graph tracks as a node, identified by CallableId.
 - **canonical**: Normalized spelling of a file name, such as getCanonicalFileName in test host stubs that returns it unchanged.
 - **disambiguator**: Trailing line-number suffix that separates two callables sharing one address, such as a line suffix after the name.

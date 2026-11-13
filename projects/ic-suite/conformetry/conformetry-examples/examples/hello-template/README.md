@@ -64,8 +64,8 @@ Three facts do all the work:
 
 ## Where the name comes from
 
-The instance's own directory name. `instances/world` makes `world` the name
-stem, and the four case variants are derived from it, so a template can write
+The instance's own directory name. `instances/world` makes `world` the
+name, and the four case variants are derived from it, so a template can write
 `{{namePascalCase}}` and get `World` without anyone configuring anything.
 
 That is also why the round trip above used `--name mars` and produced
@@ -73,5 +73,5 @@ That is also why the round trip above used `--name mars` and produced
 
 ## Next
 
-[case-variants](../case-variants/README.md), for what else that name stem gives
+[case-variants](../case-variants/README.md), for what else that name gives
 you — and how to override it.

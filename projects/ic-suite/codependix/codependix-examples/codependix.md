@@ -50,12 +50,12 @@ graph LR
   file_codometer_config_ts["codometer.config.ts"]
   file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
-  file_testing_boundary_attribution_integration_test_ts["testing/boundary-attribution.integration.test.ts"]
+  file_testing_boundary_charges_integration_test_ts["testing/boundary-charges.integration.test.ts"]
   file_testing_examples_integration_test_ts["testing/examples.integration.test.ts"]
   file_testing_graphs_integration_test_ts["testing/graphs.integration.test.ts"]
   file_testing_render_examples_ts["testing/render-examples.ts"]
   file_testing_render_anchor_placement_ts["testing/render/anchor-placement.ts"]
-  file_testing_render_boundary_attribution_ts["testing/render/boundary-attribution.ts"]
+  file_testing_render_boundary_charges_ts["testing/render/boundary-charges.ts"]
   file_testing_render_boundary_boot_failures_ts["testing/render/boundary-boot-failures.ts"]
   file_testing_render_boundary_rules_ts["testing/render/boundary-rules.ts"]
   file_testing_render_boundary_run_ts["testing/render/boundary-run.ts"]
@@ -76,10 +76,10 @@ graph LR
   file_testing_render_typescript_imports_ts["testing/render/typescript-imports.ts"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vitest_config_ts["vitest.config.ts"]
-  file_testing_boundary_attribution_integration_test_ts --> file_testing_render_boundary_attribution_ts
-  file_testing_boundary_attribution_integration_test_ts --> file_testing_render_boundary_boot_failures_ts
-  file_testing_boundary_attribution_integration_test_ts --> file_testing_render_boundary_run_ts
-  file_testing_boundary_attribution_integration_test_ts --> file_testing_render_builders_ts
+  file_testing_boundary_charges_integration_test_ts --> file_testing_render_boundary_charges_ts
+  file_testing_boundary_charges_integration_test_ts --> file_testing_render_boundary_boot_failures_ts
+  file_testing_boundary_charges_integration_test_ts --> file_testing_render_boundary_run_ts
+  file_testing_boundary_charges_integration_test_ts --> file_testing_render_builders_ts
   file_testing_examples_integration_test_ts --> file_testing_render_anchor_placement_ts
   file_testing_examples_integration_test_ts --> file_testing_render_builders_ts
   file_testing_examples_integration_test_ts --> file_testing_render_catalog_ts
@@ -101,11 +101,11 @@ graph LR
   file_testing_render_anchor_placement_ts --> file_testing_render_export_delivery_ts
   file_testing_render_anchor_placement_ts --> file_testing_render_paths_ts
   file_testing_render_anchor_placement_ts --> file_testing_render_types_ts
-  file_testing_render_boundary_attribution_ts --> file_testing_render_boundary_run_ts
-  file_testing_render_boundary_attribution_ts --> file_testing_render_builders_ts
-  file_testing_render_boundary_attribution_ts --> file_testing_render_document_ts
-  file_testing_render_boundary_attribution_ts --> file_testing_render_nx_graphs_ts
-  file_testing_render_boundary_attribution_ts --> file_testing_render_types_ts
+  file_testing_render_boundary_charges_ts --> file_testing_render_boundary_run_ts
+  file_testing_render_boundary_charges_ts --> file_testing_render_builders_ts
+  file_testing_render_boundary_charges_ts --> file_testing_render_document_ts
+  file_testing_render_boundary_charges_ts --> file_testing_render_nx_graphs_ts
+  file_testing_render_boundary_charges_ts --> file_testing_render_types_ts
   file_testing_render_boundary_boot_failures_ts --> file_testing_render_boundary_run_ts
   file_testing_render_boundary_boot_failures_ts --> file_testing_render_document_ts
   file_testing_render_boundary_boot_failures_ts --> file_testing_render_nestjs_graphs_ts
@@ -119,7 +119,7 @@ graph LR
   file_testing_render_boundary_run_ts --> file_testing_render_document_ts
   file_testing_render_boundary_run_ts --> file_testing_render_nx_graphs_ts
   file_testing_render_catalog_ts --> file_testing_render_anchor_placement_ts
-  file_testing_render_catalog_ts --> file_testing_render_boundary_attribution_ts
+  file_testing_render_catalog_ts --> file_testing_render_boundary_charges_ts
   file_testing_render_catalog_ts --> file_testing_render_boundary_boot_failures_ts
   file_testing_render_catalog_ts --> file_testing_render_boundary_rules_ts
   file_testing_render_catalog_ts --> file_testing_render_configuration_ts

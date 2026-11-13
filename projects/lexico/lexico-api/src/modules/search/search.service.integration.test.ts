@@ -37,7 +37,7 @@ import type { Connection } from "@codebase/interface";
 import type { LoggerService } from "@codebase/observability";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
-/** One headword to seed, with the English senses it translates to. */
+/** One lemma to seed, with the English senses it translates to. */
 interface SeededLexeme {
   readonly forms?: readonly Form[];
   readonly lemma: string;
@@ -63,7 +63,7 @@ function summarizeSearch(
 
 /**
  * Searches a real `lexico_testing` database, built by lexico's migrations,
- * so each tier's SQL — exact and prefix headwords, inflected words, and
+ * so each tier's SQL — exact and prefix lemmas, inflected words, and
  * English full-text ranking — runs against the schema the API reads.
  */
 describe("search service integration suite", () => {
@@ -152,7 +152,7 @@ describe("search service integration suite", () => {
     expect(result.pageInfo.endCursor).toBeDefined();
   });
 
-  it("matches a headword both whole and as a stem with its enclitic split off", async () => {
+  it("matches a lemma both whole and as a host with its enclitic split off", async () => {
     expect.hasAssertions();
 
     const si = await seedLexeme({
@@ -171,7 +171,7 @@ describe("search service integration suite", () => {
       result.edges.map((edge) => [edge.node.lexeme.id, edge.node]),
     );
 
-    // 🧩 The whole query keeps no enclitic; its stem carries the split-off "-ne".
+    // 🧩 The whole query keeps no enclitic; its host carries the split-off "-ne".
     expect(result.totalCount).toBe(2);
     expect(nodes.get(sine.id)).toMatchObject({
       enclitic: null,
@@ -609,7 +609,7 @@ describe("search service integration suite", () => {
   });
 
   describe("tiers", () => {
-    it("adds the enclitic's own entry only once its stem matched a translated lexeme", async () => {
+    it("adds the enclitic's own entry only once its host matched a translated lexeme", async () => {
       expect.hasAssertions();
 
       const ve = await seedLexeme({
@@ -645,7 +645,7 @@ describe("search service integration suite", () => {
       ]);
     });
 
-    it("matches a query written with macrons against headwords written without", async () => {
+    it("matches a query written with macrons against lemmas written without", async () => {
       expect.hasAssertions();
 
       const result = await service.searchLatin("laudō");

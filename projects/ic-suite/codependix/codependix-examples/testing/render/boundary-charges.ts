@@ -108,8 +108,8 @@ const API_REACHES_DATABASE_ONLY: CodependixBoundaryRule[] = [
 
 // 🏃 Scenarios
 
-/** Builds the three in-memory attribution examples. */
-export async function buildAttributionDocuments(): Promise<ExampleDocument[]> {
+/** Builds the three in-memory charge examples. */
+export async function buildChargeDocuments(): Promise<ExampleDocument[]> {
   return [
     await buildCycleDocument(),
     await buildForbiddenEdgeDocument(),

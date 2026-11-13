@@ -27,6 +27,7 @@ export default {
     words: [...typescriptKeywords, "src", "index"],
   },
   fold: (word) => (word === "configuration" ? "configure" : word),
+  unfolded: ["pisces"],
   outputs: [
     {
       description: "Words this project uses. Regenerate with `coinagerie --write`.",
@@ -117,6 +118,18 @@ It must be synchronous and return a non-empty string without whitespace or
 `*`. A throw, an empty or non-string result, or a promise fails the run,
 naming the configuration file.
 
+## unfolded
+
+A list of words listed exactly as written. Use it for a word that only looks
+inflected: a singular ending in `s` (`pisces`, `axios`, `nestjs`) that folding
+would strip of its last letter. An unfolded word skips plural and inflection folding
+and `fold`; entries must be lowercase. Prefer it to a `fold` entry that maps
+the trimmed form back.
+
+```ts
+unfolded: ["pisces", "axios"],
+```
+
 ## outputs
 
 An array of destinations. With none, a run only prints, and `--check` and
@@ -162,7 +175,7 @@ child's target, or an edit to it will not re-run their checks.
 
 ## Try before editing
 
-Every field except `exclude.words` and `fold` has a command-line flag that
+Every field except `exclude.words`, `fold`, and `unfolded` has a command-line flag that
 replaces it for one run: `--include`, `--exclude-paths`, `--output-json`,
 `--output-markdown`, `--description`. The `coinagerie-collect` skill has the
 table. A bare `coinagerie` run prints the result of a change without writing

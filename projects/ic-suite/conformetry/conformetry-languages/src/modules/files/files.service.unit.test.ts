@@ -67,7 +67,7 @@ describe(FilesService, () => {
   /** Matches an instance path against the single `widget` template. */
   function matchInstance(instancePath: string): MatchedInstance[] {
     const { matched } = configurationService.matchInstances({
-      instances: [{ nameStem: "my-widget", path: instancePath }],
+      instances: [{ name: "my-widget", path: instancePath }],
       templates: [template],
     });
 
@@ -133,7 +133,7 @@ describe(FilesService, () => {
     // a no-op rather than an error.
     const matched: MatchedInstance[] = [
       {
-        instance: { nameStem: "my-widget", path: instancePath },
+        instance: { name: "my-widget", path: instancePath },
         matchedFileCount: 0,
         substitutions: {},
         template: emptyTemplate,
@@ -181,7 +181,7 @@ describe(FilesService, () => {
     );
 
     const { matched } = configurationService.matchInstances({
-      instances: [{ nameStem: "my-widget", path: instancePath }],
+      instances: [{ name: "my-widget", path: instancePath }],
       templates: [nestedTemplate],
     });
     const { fileResults: results } = service.checkInstanceFiles({

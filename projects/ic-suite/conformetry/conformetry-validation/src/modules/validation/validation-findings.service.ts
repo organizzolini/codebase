@@ -72,7 +72,7 @@ export class ValidationFindingsService {
     return args.unmatched.map((instance) => {
       const instancePath = path.join(
         instance.instance.path,
-        instance.instance.nameStem,
+        instance.instance.name,
       );
 
       return {
@@ -85,7 +85,7 @@ export class ValidationFindingsService {
             }),
           },
         ],
-        filename: instance.instance.nameStem,
+        filename: instance.instance.name,
         instanceFilePath: instancePath,
         templateFilePath: templatesRootPath,
         // An unmatched instance is never scored — no template means no
@@ -137,8 +137,8 @@ export class ValidationFindingsService {
               weight: 1,
             };
           }),
-          filename: instance.nameStem,
-          instanceFilePath: path.join(instance.path, instance.nameStem),
+          filename: instance.name,
+          instanceFilePath: path.join(instance.path, instance.name),
           templateFilePath: args.group.instance.template.directoryPath,
           totalWeight: entries.length,
         },

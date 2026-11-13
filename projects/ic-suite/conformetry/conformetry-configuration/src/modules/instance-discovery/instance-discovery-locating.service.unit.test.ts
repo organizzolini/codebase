@@ -13,11 +13,11 @@ import { InstanceDiscoveryLocatingService } from "./instance-discovery-locating.
  * file globs can be exercised against the same tree.
  */
 async function populateWorkspace(workingDirectory: string): Promise<void> {
-  for (const stem of ["differences", "logger"]) {
+  for (const name of ["differences", "logger"]) {
     const instancePath = path.join(
       workingDirectory,
       "packages/widgets/src/modules",
-      stem,
+      name,
     );
 
     await mkdir(instancePath, { recursive: true });
@@ -27,7 +27,7 @@ async function populateWorkspace(workingDirectory: string): Promise<void> {
       ".service.ts",
       ".service.unit.test.ts",
     ]) {
-      await writeFile(path.join(instancePath, `${stem}${suffix}`), "", "utf8");
+      await writeFile(path.join(instancePath, `${name}${suffix}`), "", "utf8");
     }
   }
 }
@@ -61,7 +61,7 @@ describe(InstanceDiscoveryLocatingService, () => {
         workingDirectory,
       });
 
-      expect(instances.map((instance) => instance.nameStem)).toStrictEqual([
+      expect(instances.map((instance) => instance.name)).toStrictEqual([
         "differences",
       ]);
     });
@@ -73,7 +73,7 @@ describe(InstanceDiscoveryLocatingService, () => {
         workingDirectory,
       });
 
-      expect(instances.map((instance) => instance.nameStem)).toStrictEqual([
+      expect(instances.map((instance) => instance.name)).toStrictEqual([
         "logger",
       ]);
     });
@@ -84,7 +84,7 @@ describe(InstanceDiscoveryLocatingService, () => {
         workingDirectory,
       });
 
-      expect(instances.map((instance) => instance.nameStem)).toStrictEqual([
+      expect(instances.map((instance) => instance.name)).toStrictEqual([
         "differences",
         "logger",
       ]);
@@ -132,7 +132,7 @@ describe(InstanceDiscoveryLocatingService, () => {
       });
 
       expect(instances).toHaveLength(2);
-      expect(instances[0]?.nameStem).toBe("differences");
+      expect(instances[0]?.name).toBe("differences");
       expect(
         instances[0]?.fileScope?.map((filePath) => path.basename(filePath)),
       ).toStrictEqual([
@@ -162,7 +162,7 @@ describe(InstanceDiscoveryLocatingService, () => {
         workingDirectory,
       });
 
-      expect(instances[0]?.nameStem).toBe("differences.module");
+      expect(instances[0]?.name).toBe("differences.module");
     });
 
     it("applies caller substitutions to every instance", () => {

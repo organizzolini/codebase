@@ -7,9 +7,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **affirmation**: Generated phrase that the affirmations feature planning documents describe, produced by an LLM from tarot-card references.
 - **band**: Horizontal strip of a meander drawing bounded by two borders, which ADR 0004 and ADR 0006 adjust for crossings and branch families.
 - **border**: Edge of a meander band that ADR 0006 closes on both sides in the branch and parallel families through a MotifService hook.
-- **breadth**: One of the two callidescope limits, alongside depth, that ADR 0006 keeps after dropping the other noise controls.
 - **bundle**: Bundle-size measurement that ADR 0003 folds into codometer as a general change report, replacing the separate reporting module.
-- **canonical**: Normalized form of a meander or its symmetry class, which ADR 0007 and ADR 0014 standardize addressing and phase around.
+- **canonical**: The one form chosen to stand for a meander or its symmetry class, which ADR 0007 and ADR 0014 standardize addressing and rotation around.
 - **cascade**: Refers to the cascading dependents rule in ADR 0017, where a bump to one internal dependency republishes every package depending on it.
 - **characteristic**: Named property of a meander, such as its letter counts, that ADR 0012 and ADR 0018 store together in one sparse JSON map.
 - **corpus**: Committed historical set of meander drawings that ADR 0006 and ADR 0013 read as a test set for regression checks.
@@ -26,10 +25,10 @@ The words this project uses that the root glossary does not define, regenerated 
 - **law**: Governing rule in ADR 0011, the universal path and naming law that every project type follows for its file layout.
 - **letter**: Glyph counted in each meander's letter-count map under ADR 0017, counted in all sixteen orientations for every meander.
 - **meanderaw**: Meander drawing project whose cross, branch, and parallel families ADRs 0004 to 0006 change, producing the drawings in the corpus.
-- **phase**: Names the canonical rotation of a meander in ADR 0014, chosen by minimizing seam components for each drawing in the corpus.
 - **pipeline**: Generic meander pipeline of decode, render, compute Characteristics, and classify that ADR 0012 runs for every drawing.
 - **pitch**: One grid unit on the lattice, which ADR 0004 uses to place the interrupted crossing break one pitch either side of the junction.
 - **role**: Layer assignment of a package, which ADR 0013 documents so a reader learns its place without opening its index file.
+- **rotation**: A cyclic column shift of a meander's Code; ADR 0014 picks one canonical rotation for each drawing by minimizing seam components.
 - **statistic**: Per-project figure, such as the statistics block that ADR 0002 publishes in each project's README on the default branch.
 - **swiss**: Short for Swiss Ephemeris, the local astronomy library that the caelundas performance plan uses instead of NASA Horizons HTTP calls.
 - **triage**: Labels in agents triage-labels documentation map the status family to canonical roles for issues in this repository.

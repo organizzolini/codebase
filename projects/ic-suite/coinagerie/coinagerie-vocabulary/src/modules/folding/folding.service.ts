@@ -36,12 +36,16 @@ export class FoldingService {
   }
 
   /**
-   * The headword a word is listed under: folded, then passed through the configuration's `fold` when it has one. Faults name the file.
+   * The headword a word is listed under: itself when the configuration lists it as `unfolded`, else folded, then passed through `fold` when there is one.
    */
   headword(
     word: string,
     configuration: ResolvedCoinagerieConfiguration,
   ): string {
+    if (configuration.unfolded.includes(word)) {
+      return word;
+    }
+
     const folded = this.fold(word);
 
     return configuration.fold === undefined

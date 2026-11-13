@@ -28,7 +28,7 @@ const CONFIGURATION: ConformetryConfiguration = [
 ];
 
 const INSTANCE: Instance = {
-  nameStem: "gears",
+  name: "gears",
   path: "/w/packages/widgets/src/modules",
 };
 
@@ -39,7 +39,7 @@ const TEMPLATE: TemplateDefinition = {
 };
 
 const GADGET_INSTANCE: Instance = {
-  nameStem: "cogs",
+  name: "cogs",
   path: "/w/applications/gadgets/src/modules",
 };
 

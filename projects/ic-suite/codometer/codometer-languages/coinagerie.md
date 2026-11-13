@@ -5,7 +5,6 @@
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **anchor**: YAML node property holding a reusable node's name, which the YAML comment service reads as a string when present.
-- **breadth**: Limit on how many calls a function may make, which the languages service keeps within by avoiding an extra split.
 - **budget**: Per-statistic allowance of words, lines, or characters for one comment block, judged by the comment measurement.
 - **counter**: Custom statistic that tallies matching declarations or comments, configured per selector and shared by the TypeScript and comment services.
 - **pipeline**: Shell pipe operator counted as joining two commands, and the measurement pipeline collaborator the languages service holds.

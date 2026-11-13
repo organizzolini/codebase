@@ -43,7 +43,7 @@ function buildInstance(args: {
 }): MatchedInstance {
   return {
     instance: {
-      nameStem: "logger",
+      name: "logger",
       path: "/w/packages/widgets/src/modules/logger",
     },
     matchedFileCount: args.fileCount,

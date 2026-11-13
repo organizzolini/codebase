@@ -63,6 +63,10 @@ holding a coinagerie configuration is the root its run scans, so the root
 glossary's configuration has to sit at the root, and it writes the
 `GLOSSARY.md` beside it. Every project's own `coinagerie.config.ts` spreads
 `coinagerieConfiguration` from `configuration/coinagerie.config.ts`.
+A word many projects use with one meaning, such as `breadth` or `sandbox`, is a
+home word: `HOME_WORDS` in that file names the one project whose glossary
+defines it, and every other project excludes it. A word that only looks
+plural, such as `pisces`, goes in `unfoldedWords` so it is listed as written.
 No hook or pull request judges a glossary: the release workflow writes every
 glossary on the default branch, adding new words and removing stale ones, the
 way it writes the callidescope, codependix, and codometer reports. To see a

@@ -33,9 +33,9 @@ function collectTemplates(
  * Creates a module directory holding the five service-module files, and
  * returns its *parent* — the instance path a template's tree is laid over.
  */
-async function createServiceModule(stem: string): Promise<string> {
+async function createServiceModule(name: string): Promise<string> {
   const instancePath = createTemporaryDirectory("instance");
-  const modulePath = path.join(instancePath, stem);
+  const modulePath = path.join(instancePath, name);
 
   await mkdir(modulePath, { recursive: true });
 
@@ -46,7 +46,7 @@ async function createServiceModule(stem: string): Promise<string> {
     ".service.unit.test.ts",
     ".types.ts",
   ]) {
-    await writeFile(path.join(modulePath, `${stem}${suffix}`), "", "utf8");
+    await writeFile(path.join(modulePath, `${name}${suffix}`), "", "utf8");
   }
 
   return instancePath;
@@ -119,10 +119,10 @@ describe(InstanceDiscoveryMatchingService, () => {
   });
 
   describe("buildSubstitutions", () => {
-    it("derives name variants from the instance stem", () => {
+    it("derives name variants from the instance name", () => {
       expect(
         service.buildSubstitutions({
-          nameStem: "my-widget",
+          name: "my-widget",
           path: "/w/packages/x",
         }),
       ).toStrictEqual({
@@ -137,7 +137,7 @@ describe(InstanceDiscoveryMatchingService, () => {
     it("lets caller-supplied substitutions win", () => {
       expect(
         service.buildSubstitutions({
-          nameStem: "my-widget",
+          name: "my-widget",
           path: "/w/packages/x",
           substitutions: { name: "overridden", type: "packages" },
         }),
@@ -162,7 +162,7 @@ describe(InstanceDiscoveryMatchingService, () => {
       const { matched } = service.matchInstances({
         instances: [
           {
-            nameStem: "word",
+            name: "word",
             path: instancePath,
             substitutions: { title: "Word", type: "applications" },
           },
@@ -186,7 +186,7 @@ describe(InstanceDiscoveryMatchingService, () => {
       const instancePath = await createServiceModule("differences");
 
       const { matched } = service.matchInstances({
-        instances: [{ nameStem: "differences", path: instancePath }],
+        instances: [{ name: "differences", path: instancePath }],
         templates,
       });
 
@@ -200,7 +200,7 @@ describe(InstanceDiscoveryMatchingService, () => {
       const instancePath = await createServiceModule("differences");
 
       const { matched } = service.matchInstances({
-        instances: [{ nameStem: "differences", path: instancePath }],
+        instances: [{ name: "differences", path: instancePath }],
         templates,
       });
 
@@ -221,7 +221,7 @@ describe(InstanceDiscoveryMatchingService, () => {
               path.join(modulePath, "differences.service.ts"),
               path.join(modulePath, "differences.service.unit.test.ts"),
             ],
-            nameStem: "differences",
+            name: "differences",
             path: modulePath,
           },
         ],
@@ -237,7 +237,7 @@ describe(InstanceDiscoveryMatchingService, () => {
       const instancePath = createTemporaryDirectory("empty");
 
       const { matched, unmatched } = service.matchInstances({
-        instances: [{ nameStem: "nothing", path: instancePath }],
+        instances: [{ name: "nothing", path: instancePath }],
         templates,
       });
 
@@ -270,7 +270,7 @@ describe(InstanceDiscoveryMatchingService, () => {
 
       const instancePath = await createServiceModule("differences");
       const { unmatched } = service.matchInstances({
-        instances: [{ nameStem: "differences", path: instancePath }],
+        instances: [{ name: "differences", path: instancePath }],
         templates: collectTemplates(templatesService, templatesRootPath),
       });
 
@@ -313,7 +313,7 @@ describe(InstanceDiscoveryMatchingService, () => {
       );
 
       const matches = service.matchTemplates({
-        instance: { nameStem: "differences", path: instancePath },
+        instance: { name: "differences", path: instancePath },
         substitutions: {},
         templates: collectTemplates(templatesService, templatesRootPath),
       });
@@ -340,7 +340,7 @@ describe(InstanceDiscoveryMatchingService, () => {
 
       const instancePath = await createServiceModule("differences");
       const { matched, unmatched } = service.matchInstances({
-        instances: [{ nameStem: "differences", path: instancePath }],
+        instances: [{ name: "differences", path: instancePath }],
         templates: collectTemplates(templatesService, templatesRootPath),
       });
 

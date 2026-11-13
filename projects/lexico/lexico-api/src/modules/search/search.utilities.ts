@@ -44,7 +44,7 @@ export function decomposeEnclitic(
 ): EncliticDecompositionResult {
   const normalized = rawQuery.trim().toLowerCase();
   if (ENCLITIC_FALSE_POSITIVES.has(normalized)) {
-    return { enclitic: null, stem: normalized };
+    return { enclitic: null, host: normalized };
   }
 
   for (const suffix of ENCLITIC_SUFFIXES) {
@@ -52,12 +52,12 @@ export function decomposeEnclitic(
     if (normalized.endsWith(suffix) && normalized.length > minimumLength) {
       return {
         enclitic: suffix,
-        stem: normalized.slice(0, -suffix.length),
+        host: normalized.slice(0, -suffix.length),
       };
     }
   }
 
-  return { enclitic: null, stem: normalized };
+  return { enclitic: null, host: normalized };
 }
 
 /**

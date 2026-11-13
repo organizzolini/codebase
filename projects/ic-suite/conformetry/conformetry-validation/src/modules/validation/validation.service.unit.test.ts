@@ -143,7 +143,7 @@ describe(ValidationService, () => {
       });
 
       const result = service.validate({
-        instances: [{ nameStem: "my-widget", path: instancePath }],
+        instances: [{ name: "my-widget", path: instancePath }],
         templates,
       });
 
@@ -159,7 +159,7 @@ describe(ValidationService, () => {
       });
 
       const result = service.validate({
-        instances: [{ nameStem: "my-widget", path: instancePath }],
+        instances: [{ name: "my-widget", path: instancePath }],
         templates,
       });
 
@@ -174,7 +174,7 @@ describe(ValidationService, () => {
       });
 
       const result = service.validate({
-        instances: [{ nameStem: "my-widget", path: instancePath }],
+        instances: [{ name: "my-widget", path: instancePath }],
         templates,
       });
 
@@ -191,7 +191,7 @@ describe(ValidationService, () => {
       });
 
       const result = service.validate({
-        instances: [{ nameStem: "my-widget", path: instancePath }],
+        instances: [{ name: "my-widget", path: instancePath }],
         languageNames: ["markdown"],
         templates,
       });
@@ -204,7 +204,7 @@ describe(ValidationService, () => {
       const instancePath = createTemporaryDirectory("validate-empty");
 
       const result = service.validate({
-        instances: [{ nameStem: "nothing", path: instancePath }],
+        instances: [{ name: "nothing", path: instancePath }],
         templates,
       });
 
@@ -244,7 +244,7 @@ describe(ValidationService, () => {
       });
 
       const result = service.validate({
-        instances: [{ nameStem: "word", path: instancePath }],
+        instances: [{ name: "word", path: instancePath }],
         templates: routeTemplates,
       });
 
@@ -259,7 +259,7 @@ describe(ValidationService, () => {
       });
 
       const result = service.validate({
-        instances: [{ nameStem: "word", path: instancePath }],
+        instances: [{ name: "word", path: instancePath }],
         templates: routeTemplates,
       });
 
@@ -280,7 +280,7 @@ describe(ValidationService, () => {
       });
 
       const result = service.validate({
-        instances: [{ nameStem: "word", path: instancePath }],
+        instances: [{ name: "word", path: instancePath }],
         templates: routeTemplates,
         threshold: 0,
       });
@@ -324,7 +324,7 @@ describe(ValidationService, () => {
         const validation = await module.resolve(ValidationService);
 
         return validation.validate({
-          instances: [{ nameStem: "word", path: instancePath }],
+          instances: [{ name: "word", path: instancePath }],
           templates: routeTemplates,
         });
       };
@@ -359,7 +359,7 @@ describe(ValidationService, () => {
       const result = service.validate({
         instances: [
           {
-            nameStem: "word",
+            name: "word",
             path: instancePath,
             substitutions: { path: "/elsewhere" },
           },
@@ -378,7 +378,7 @@ describe(ValidationService, () => {
         withNotes: true,
       });
       const result = service.validate({
-        instances: [{ nameStem: "my-widget", path: instancePath }],
+        instances: [{ name: "my-widget", path: instancePath }],
         languageNames: ["markdown"],
         templates,
       });
@@ -391,7 +391,7 @@ describe(ValidationService, () => {
         configuration: "{}\n",
         withNotes: true,
       });
-      const instances = [{ nameStem: "my-widget", path: instancePath }];
+      const instances = [{ name: "my-widget", path: instancePath }];
       const filtered = service.validate({
         instances,
         languageNames: [],
@@ -442,7 +442,7 @@ describe(ValidationService, () => {
         await overriddenModule.resolve(ValidationService);
 
       const result = serviceUnderTest.validate({
-        instances: [{ nameStem: "my-widget", path: instancePath }],
+        instances: [{ name: "my-widget", path: instancePath }],
         templates,
       });
 
