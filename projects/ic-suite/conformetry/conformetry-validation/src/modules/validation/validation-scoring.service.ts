@@ -32,12 +32,12 @@ export class ValidationScoringService {
   // 🔏 Private Methods
 
   /**
-   * The instance's own directory, joining the name stem onto the shared parent.
+   * The instance's own directory, joining the name onto the shared parent.
    *
-   * Without the stem, modules collapse onto one score.
+   * Without the name, modules collapse onto one score.
    */
   private resolveInstancePath(instance: MatchedInstance): string {
-    return path.join(instance.instance.path, instance.instance.nameStem);
+    return path.join(instance.instance.path, instance.instance.name);
   }
 
   /** Keys a score by the instance and template it describes. */

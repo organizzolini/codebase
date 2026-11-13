@@ -40,14 +40,11 @@ export class InstanceDiscoveryLocatingService {
    */
   private deriveLocationSubstitutions(args: {
     instancePath: string;
-    nameStem: string;
+    name: string;
     workingDirectory: string;
   }): Record<string, string> {
     const [type = ""] = path
-      .relative(
-        args.workingDirectory,
-        path.join(args.instancePath, args.nameStem),
-      )
+      .relative(args.workingDirectory, path.join(args.instancePath, args.name))
       .split(path.sep);
 
     // An instance at the working directory itself, or outside it, has no
@@ -112,7 +109,7 @@ export class InstanceDiscoveryLocatingService {
    *
    * Minus the glob's suffix, `differences.service.ts` and `differences.service.unit.test.ts` both give `differences`.
    */
-  private resolveNameStem(args: {
+  private resolveName(args: {
     entryName: string;
     isDirectory: boolean;
     suffix: string;
@@ -149,14 +146,14 @@ export class InstanceDiscoveryLocatingService {
         // a template that produces a folder contains that folder, so the tree
         // is laid over the folder's parent either way.
         const instancePath = entry.parentPath;
-        const nameStem = this.resolveNameStem({
+        const name = this.resolveName({
           entryName: entry.name,
           isDirectory,
           suffix,
         });
         const key = [
           instancePath,
-          nameStem,
+          name,
           isDirectory ? "directory" : "file",
         ].join(INSTANCE_KEY_SEPARATOR);
 
@@ -175,7 +172,7 @@ export class InstanceDiscoveryLocatingService {
     return [...fileScopesByKey.entries()]
       .toSorted(([left], [right]) => left.localeCompare(right))
       .map(([key, fileScope]) => {
-        const [instancePath = "", nameStem = ""] = key.split(
+        const [instancePath = "", name = ""] = key.split(
           INSTANCE_KEY_SEPARATOR,
         );
 
@@ -183,14 +180,14 @@ export class InstanceDiscoveryLocatingService {
           ...(fileScope === undefined
             ? {}
             : { fileScope: [...fileScope].toSorted() }),
-          nameStem,
+          name,
           // Spelled out rather than shorthand: `path` is the node module in
           // this scope, so the shorthand would bind the import.
           path: instancePath,
           substitutions: {
             ...this.deriveLocationSubstitutions({
               instancePath,
-              nameStem,
+              name,
               workingDirectory: args.workingDirectory,
             }),
             ...args.substitutions,

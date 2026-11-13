@@ -28,8 +28,8 @@ export interface Instance {
    * glob narrows this, so a template describing those files fits better.
    */
   readonly fileScope?: string[];
-  /** Drives the name substitutions — a directory basename or a filename stem. */
-  readonly nameStem: string;
+  /** Drives the name substitutions — a directory name, or a file name without its extension. */
+  readonly name: string;
   /**
    * Directory the template's tree is laid over: for a folder-producing template,
    * the folder's parent; for loose files, their directory.
