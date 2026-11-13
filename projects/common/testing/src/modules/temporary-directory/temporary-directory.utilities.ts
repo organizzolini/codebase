@@ -7,9 +7,8 @@ import { beforeAll, onTestFinished } from "vitest";
 import { TEMPORARY_DIRECTORY_PREFIX } from "./temporary-directory.constants";
 
 /**
- * Creates an empty directory for the running test, removed with its contents
- * once the test finishes. `parent` holds it instead of the system's temporary
- * directory.
+ * Creates an empty directory for the running test, removed once it finishes.
+ * `parent` holds it instead of the system temporary directory.
  */
 export function createTemporaryDirectory(
   label: string,
