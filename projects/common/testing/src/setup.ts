@@ -6,6 +6,14 @@ import { beforeAll, beforeEach, vi } from "vitest";
 
 import { promptsMock } from "./modules/mocks/mocks.constants";
 
+// Every project mocks `prompts` with the one shared stand-in. The factory
+// imports it dynamically, as `vi.mock` hoists above static imports.
+vi.mock("prompts", async () => {
+  const mocks = await import("./modules/mocks/mocks.constants");
+
+  return { default: mocks.promptsMock };
+});
+
 /**
  * The Vitest setup every project shares: `reflect-metadata` for Nest
  * decorators, an `output` directory for tests that write files, every mock's

@@ -45,6 +45,20 @@ src/
 - **Never add a `framework:*` tag.** A framework tag pulls the package into
   that framework's conformetry templates and module-boundary rules.
 
+### Recipes by test kind
+
+- **Command**: `buildTestingModule`, `answerPrompts` (the setup already mocks
+  `prompts`), `captureOutput`, `captureExitCode`, `mockFileSystem`.
+- **Module**: `bootModule`, `expectModuleProvides`/`Exports`/`Imports`.
+- **Integration**: `createFileTree`, `createTemporaryDirectory`,
+  `overrideEnvironment`, `mockDates`.
+- **End-to-end CLI**: `runSourceCommand` over a `createFileTree` root (core
+  stays free of `execa`, so it lives in `/end-to-end`).
+- **Utilities**: `mockPartially`, `stubFetch`, `loadFixture`.
+
+`mockFileSystem` is built inside a `vi.mock` factory with a dynamic
+`import("@codebase/testing")`, since `vi.mock` hoists above static imports.
+
 ### Key Commands
 
 ```bash

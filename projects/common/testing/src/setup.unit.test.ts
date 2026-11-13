@@ -43,6 +43,19 @@ describe("the shared Vitest setup", () => {
     await expect(promptsMock({ name: "next" })).resolves.toStrictEqual({});
   });
 
+  it("mocks prompts with the shared stand-in for every consumer", async () => {
+    // `prompts` is the consumer's dependency, so the specifier is held in a
+    // variable: this package has none to resolve at build time.
+    const specifier = "prompts";
+    const { default: prompts } = (await import(
+      /* @vite-ignore */ specifier
+    )) as {
+      default: unknown;
+    };
+
+    expect(prompts).toBe(promptsMock);
+  });
+
   it("loads reflect-metadata, which Nest decorators need", () => {
     expect(typeof Reflect.getMetadata).toBe("function");
   });
