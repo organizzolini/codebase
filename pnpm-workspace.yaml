@@ -71,7 +71,7 @@ catalog:
   "@graphql-codegen/cli": ^8.0.0
   "@graphql-codegen/typed-document-node": ^8.0.0
   "@graphql-codegen/typescript": ^7.0.0
-  "@graphql-codegen/typescript-msw": ^4.0.2
+  "@graphql-codegen/typescript-msw": ^5.0.0
   "@graphql-codegen/typescript-operations": ^7.0.0
   "@graphql-typed-document-node/core": ^3.2.0
   "@nestjs/apollo": ^14.0.2
