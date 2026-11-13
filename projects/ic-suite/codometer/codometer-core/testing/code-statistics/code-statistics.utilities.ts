@@ -1,7 +1,7 @@
-import type { CodeStatisticsResult } from "@codometer/core";
+import type { CodeStatisticsResult } from "../../src";
 
 /**
- * Builds a zeroed statistics report, with every counter present so whole-report assertions survive new statistics.
+ * Builds a zeroed statistics report, so tests asserting on the whole report survive new statistics.
  */
 export function buildCodeStatistics(
   overrides: Partial<CodeStatisticsResult> = {},
@@ -180,11 +180,4 @@ export function buildCodeStatistics(
     },
     ...overrides,
   };
-}
-
-/**
- * Throws a value provably not an `Error`, so a test can reach a catch block's other branch. Typed `unknown` to pass lint.
- */
-export function throwUnknown(value: unknown): never {
-  throw value;
 }

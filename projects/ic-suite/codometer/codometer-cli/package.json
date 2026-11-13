@@ -8,7 +8,6 @@
   },
   "dependencies": {
     "@codometer/configuration": "workspace:*",
-    "@codometer/core": "workspace:*",
     "@codometer/measurement": "workspace:*",
     "@codometer/output": "workspace:*",
     "@nestjs/common": "catalog:ic-suite",
@@ -24,6 +23,7 @@
   "devDependencies": {
     "@codebase/observability": "workspace:*",
     "@codebase/testing": "workspace:*",
+    "@codometer/core": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",

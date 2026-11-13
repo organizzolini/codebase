@@ -22,8 +22,8 @@ describe("every example configuration this package ships", () => {
     /** Bare `codometer --format json` run, shared by two assertions. */
     let consoleRun: CodometerRun;
 
-    beforeAll(() => {
-      consoleRun = runCodometer(
+    beforeAll(async () => {
+      consoleRun = await runCodometer(
         ["--config", packageConfiguration, "--format", "json"],
         corpusDirectory,
       );
@@ -38,9 +38,9 @@ describe("every example configuration this package ships", () => {
       expect(run.standardError).toContain("Finished the measurement run");
     });
 
-    it("writes the badge block where --output-markdown named a path", () => {
-      withCorpusCopy((directory) => {
-        const run = runCodometer(
+    it("writes the badge block where --output-markdown named a path", async () => {
+      await withCorpusCopy(async (directory) => {
+        const run = await runCodometer(
           [
             "--config",
             exampleConfiguration("output", "codometer.config.ts"),
@@ -82,13 +82,13 @@ describe("every example configuration this package ships", () => {
       expect(piped.standardError).toContain("Finished the measurement run");
     });
 
-    it("refuses a bare --output-json on a run whose configuration names none", () => {
+    it("refuses a bare --output-json on a run whose configuration names none", async () => {
       // A path always means a file — `--output-json <path>` writes there
       // outright, with no companion flag needed. Only the bare flag, asking
       // for wherever the configuration says to, can still be refused, and
       // only when that configuration names no "json" output to resolve one
       // from.
-      const run = runCodometer(
+      const run = await runCodometer(
         [
           "--config",
           exampleConfiguration("python", "uv.config.ts"),
@@ -103,9 +103,9 @@ describe("every example configuration this package ships", () => {
       );
     });
 
-    it("lets a named path write on its own, with no companion flag", () => {
-      withCorpusCopy((directory) => {
-        const run = runCodometer(
+    it("lets a named path write on its own, with no companion flag", async () => {
+      await withCorpusCopy(async (directory) => {
+        const run = await runCodometer(
           [
             "--config",
             exampleConfiguration("output", "codometer.config.ts"),
@@ -127,15 +127,15 @@ describe("every example configuration this package ships", () => {
       });
     });
 
-    it("appends the block when the markers are absent and creates the file", () => {
-      withCorpusCopy((directory) => {
+    it("appends the block when the markers are absent and creates the file", async () => {
+      await withCorpusCopy(async (directory) => {
         const destination = path.join(directory, "statistics.md");
         const configuration = exampleConfiguration(
           "output",
           "codometer.config.ts",
         );
 
-        runCodometer(
+        await runCodometer(
           ["--config", configuration, "--output-markdown"],
           directory,
         );
@@ -145,7 +145,7 @@ describe("every example configuration this package ships", () => {
         expect(first).toContain("<!-- codometer:start -->");
         expect(first).toContain("<!-- codometer:end -->");
 
-        runCodometer(
+        await runCodometer(
           ["--config", configuration, "--output-markdown"],
           directory,
         );
@@ -157,9 +157,9 @@ describe("every example configuration this package ships", () => {
       });
     });
 
-    it("splices between renamed markers", () => {
-      withCorpusCopy((directory) => {
-        runCodometer(
+    it("splices between renamed markers", async () => {
+      await withCorpusCopy(async (directory) => {
+        await runCodometer(
           [
             "--config",
             exampleConfiguration("output", "renamed-markers.config.ts"),
@@ -178,9 +178,9 @@ describe("every example configuration this package ships", () => {
       });
     });
 
-    it("splices a `write` function's own content between the markers", () => {
-      withCorpusCopy((directory) => {
-        runCodometer(
+    it("splices a `write` function's own content between the markers", async () => {
+      await withCorpusCopy(async (directory) => {
+        await runCodometer(
           [
             "--config",
             exampleConfiguration("output", "custom-render.config.ts"),
@@ -203,9 +203,9 @@ describe("every example configuration this package ships", () => {
       });
     });
 
-    it("lets a `write` function pick its own destination", () => {
-      withCorpusCopy((directory) => {
-        runCodometer(
+    it("lets a `write` function pick its own destination", async () => {
+      await withCorpusCopy(async (directory) => {
+        await runCodometer(
           [
             "--config",
             exampleConfiguration("output", "custom-write.config.ts"),

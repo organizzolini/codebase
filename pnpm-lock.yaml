@@ -2983,9 +2983,6 @@ importers:
       '@codometer/configuration':
         specifier: workspace:*
         version: link:../codometer-configuration
-      '@codometer/core':
-        specifier: workspace:*
-        version: link:../codometer-core
       '@codometer/measurement':
         specifier: workspace:*
         version: link:../codometer-measurement
@@ -3023,6 +3020,9 @@ importers:
       '@codebase/testing':
         specifier: workspace:*
         version: link:../../../common/testing
+      '@codometer/core':
+        specifier: workspace:*
+        version: link:../codometer-core
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0

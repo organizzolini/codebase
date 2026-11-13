@@ -28,23 +28,23 @@ describe("every example configuration this package ships", () => {
     let remeasured: CodometerReport;
     let rewritten: CodometerReport;
 
-    beforeAll(() => {
-      withCorpusCopy((directory) => {
+    beforeAll(async () => {
+      await withCorpusCopy(async (directory) => {
         const configuration = exampleConfiguration(
           "output",
           "self-excluded.config.ts",
         );
-        const write = (): CodometerRun =>
+        const write = async (): Promise<CodometerRun> =>
           runCodometer(
             ["--config", configuration, "--output-json", "--output-markdown"],
             directory,
           );
 
-        firstWrite = write();
+        firstWrite = await write();
         // Asking for the report on the console is `--format json`, which names
         // no destination and so cannot drop the configured pair.
-        remeasured = measure(["--config", configuration], directory);
-        write();
+        remeasured = await measure(["--config", configuration], directory);
+        await write();
         rewritten = JSON.parse(
           fs.readFileSync(
             path.join(directory, "codometer-report.json"),
@@ -76,22 +76,25 @@ describe("every example configuration this package ships", () => {
   });
 
   describe("false staleness", () => {
-    it("reports a report as stale when only a compressed size differs", () => {
-      withCorpusCopy((directory) => {
+    it("reports a report as stale when only a compressed size differs", async () => {
+      await withCorpusCopy(async (directory) => {
         const configuration = exampleConfiguration(
           "staleness",
           "codometer.config.ts",
         );
         const reportPath = path.join(directory, "codometer-report.json");
 
-        runCodometer(["--config", configuration, "--output-json"], directory);
+        await runCodometer(
+          ["--config", configuration, "--output-json"],
+          directory,
+        );
 
-        expect(
-          runCodometer(
-            ["--config", configuration, "--check", "reports"],
-            directory,
-          ).exitCode,
-        ).toBe(0);
+        const checked = await runCodometer(
+          ["--config", configuration, "--check", "reports"],
+          directory,
+        );
+
+        expect(checked.exitCode).toBe(0);
 
         // Stand in for a Node release whose bundled zlib compresses differently.
         // Nothing in the measured tree changes.
@@ -109,7 +112,7 @@ describe("every example configuration this package ships", () => {
 
         fs.writeFileSync(reportPath, JSON.stringify(written, null, 2));
 
-        const stale = runCodometer(
+        const stale = await runCodometer(
           ["--config", configuration, "--check", "reports"],
           directory,
         );

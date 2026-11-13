@@ -1,12 +1,7 @@
-import {
-  mkdirSync,
-  mkdtempSync,
-  rmSync,
-  symlinkSync,
-  writeFileSync,
-} from "node:fs";
-import { tmpdir } from "node:os";
+import { symlinkSync } from "node:fs";
 import path from "node:path";
+
+import { writeFileTree } from "@codebase/testing";
 
 /** Fixture files by root-relative path, written to disk, not mocked. */
 const FIXTURE_FILES: Readonly<Record<string, string>> = {
@@ -41,23 +36,12 @@ const FIXTURE_FILES: Readonly<Record<string, string>> = {
 };
 
 /**
- * Writes the fixture tree under `parentDirectory` (default: the temporary directory) and returns its root. Every caller owes a `removeFixtureTree`.
+ * Writes the fixture tree into a directory and returns that root. `CLAUDE.md`
+ * is a symlink to `AGENTS.md`, like the repository's own tree.
  */
-export function createFixtureTree(parentDirectory: string = tmpdir()): string {
-  const root = mkdtempSync(path.join(parentDirectory, "codometer-fixture-"));
-
-  for (const [relativePath, contents] of Object.entries(FIXTURE_FILES)) {
-    const absolutePath = path.join(root, relativePath);
-    mkdirSync(path.dirname(absolutePath), { recursive: true });
-    writeFileSync(absolutePath, contents);
-  }
-
+export function createFixtureTree(root: string): string {
+  writeFileTree(root, FIXTURE_FILES);
   symlinkSync(path.join(root, "AGENTS.md"), path.join(root, "CLAUDE.md"));
 
   return root;
-}
-
-/** Removes a fixture tree, whether or not the suite that made it succeeded. */
-export function removeFixtureTree(root: string): void {
-  rmSync(root, { force: true, recursive: true });
 }

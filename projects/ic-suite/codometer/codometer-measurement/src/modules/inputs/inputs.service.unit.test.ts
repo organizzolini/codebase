@@ -6,6 +6,7 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 import { InputOutsideRepositoryError } from "./inputs.constants";
 import { InputsService } from "./inputs.service";
 
+import type * as TestingPackage from "@codebase/testing";
 import type { ResolvedCodometerInput } from "@codometer/configuration";
 import type { Dirent } from "node:fs";
 
@@ -18,11 +19,16 @@ const { existsSyncMock, readdirSyncMock } = vi.hoisted(() => ({
   readdirSyncMock: vi.fn<(directory: string) => Dirent[]>(),
 }));
 
-vi.mock("node:fs", async (importOriginal) => ({
-  ...(await importOriginal<Record<string, unknown>>()),
-  existsSync: existsSyncMock,
-  readdirSync: readdirSyncMock,
-}));
+vi.mock("node:fs", async (importOriginal) => {
+  const { mockFileSystem } =
+    await vi.importActual<typeof TestingPackage>("@codebase/testing");
+
+  return mockFileSystem({
+    ...(await importOriginal<Record<string, unknown>>()),
+    existsSync: existsSyncMock,
+    readdirSync: readdirSyncMock,
+  });
+});
 
 /** An in-memory tree, keyed by absolute directory path. */
 const TREE: Readonly<Record<string, readonly (readonly [string, boolean])[]>> =
