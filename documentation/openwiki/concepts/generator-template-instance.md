@@ -4,8 +4,8 @@ title: Generator / Template / Instance Model
 description: Explains the conformetry generator/template/instance model that governs all scaffolding. A template defines file structure and content with parameterized inputs; generating renders it into a target directory creating an instance; validating re-renders the template with the instance's substitutions and compares structurally (AST for TypeScript, mdast for markdown, Python AST for Python) to detect drift.
 tags: [conformetry, architecture, scaffolding, generation, validation]
 verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-29T03:39:46.432Z
+  - by: openwiki/0.9.0
+    at: 2026-11-13T16:30:25.369Z
 sources:
   - id: openwiki-source-39c3295efc089133e87a9c80
     resource: repo://CONTEXT.md

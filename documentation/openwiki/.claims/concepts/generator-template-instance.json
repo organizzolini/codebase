@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:692cef328d1470363539cbc3542bf8e6c3f1647c0313b35984ae493156015474",
+  "pageVersion": "sha256:0d5d964fc4524748a0f65e105374be3454ed2985ebd0ce21f0c795d63c82997e",
   "claims": [
     {
       "id": "claim_82043b01245a49f885c685a638e9338a",
@@ -87,8 +87,8 @@
       "statement": "Languages are selected by file extension via LanguagesService.resolveValidators, which filters injected validators to those claiming extensions present in the run, then widens the Text validator descriptor to claim all unclaimed extensions.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/languages/languages.service.ts#L86-L117",
-          "version": "repo-lines-v1:sha256:c96ed091be6f2136372991e217bd6706665130e22ca89232537f7b911327a797:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzNDBiNzM0MmU3Y2MwNjEzN2RlYjNkN2M2ZDJmZDUwZDg0ZjlkM2YyNzU1YWEwMWVlOTMxZGIyNzQyOWJhNjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/languages/languages.service.ts#L78-L105",
+          "version": "repo-lines-v1:sha256:5c9c468e2ad366fbcebbf048ac86421d568317e8f6d6155c865db7019e1a43bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzNDBiNzM0MmU3Y2MwNjEzN2RlYjNkN2M2ZDJmZDUwZDg0ZjlkM2YyNzU1YWEwMWVlOTMxZGIyNzQyOWJhNjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
         }
       ]
     },
@@ -97,12 +97,12 @@
       "statement": "The conformance score is calculated as (totalWeight - failedWeight) / totalWeight, where totalWeight includes conforming documents so an instance is scored against all template requirements, not just the parts it got wrong.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/scoring/scoring.service.ts#L33-L50",
-          "version": "repo-lines-v1:sha256:36c21f6c301d2788ad28978c3d25db344461ce76e000aad1a41da3597e151037:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzNDBiNzM0MmU3Y2MwNjEzN2RlYjNkN2M2ZDJmZDUwZDg0ZjlkM2YyNzU1YWEwMWVlOTMxZGIyNzQyOWJhNjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNjNmYwMzE5NTk0YmEzZWFmNTMxMjA0ZWJiMGE0NGY0YTc0Y2ZmODY4ZmE1N2ExZWE2ZTJiMTczNzE5MzRlZjMifQ"
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/scoring/scoring.service.ts#L32-L45",
+          "version": "repo-lines-v1:sha256:d5a1abafec69c38bf5ada021e0faca654c714d453dce76e572d3d351cdaf8b1e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzNDBiNzM0MmU3Y2MwNjEzN2RlYjNkN2M2ZDJmZDUwZDg0ZjlkM2YyNzU1YWEwMWVlOTMxZGIyNzQyOWJhNjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNjNmYwMzE5NTk0YmEzZWFmNTMxMjA0ZWJiMGE0NGY0YTc0Y2ZmODY4ZmE1N2ExZWE2ZTJiMTczNzE5MzRlZjMifQ"
         },
         {
-          "resource": "repo://projects/ic-suite/conformetry/conformetry-validation/src/modules/runner/runner.service.ts#L94-L130",
-          "version": "repo-lines-v1:sha256:c5a19a438dc371fd29a7808588d894baadbc2cb541c751c28a0f3b1a300e3e48:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkOWUxMjU0NjQyNTU3NmQzZGVhZThjOWI5ZGJmMTI4ZDVkNmRkYWY1ZDdmZTg1NzkzNDkyN2RlZmZhM2I5ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkYjNlN2NkMGMzYTYyMzA0NzY2ODE2MWQxMDRlOTlkODYyMDljYTNlNzc1NGEyNWIxMTlhNDkwNzg3ODA0MjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmNzM5YTA2YzFjYmIxMjQ0ZTMzNjNkMzhiY2Y5ZmE1MGNlODRmZWQzOTljMjE5M2EzYzdmMDhkNTk5MThiMmEifQ"
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-validation/src/modules/runner/runner.service.ts#L87-L114",
+          "version": "repo-lines-v1:sha256:3f41525f0a6f182ce626e72afe023ad77b90d055ebcc66d60a895d050166e174:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkOWUxMjU0NjQyNTU3NmQzZGVhZThjOWI5ZGJmMTI4ZDVkNmRkYWY1ZDdmZTg1NzkzNDkyN2RlZmZhM2I5ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkYjNlN2NkMGMzYTYyMzA0NzY2ODE2MWQxMDRlOTlkODYyMDljYTNlNzc1NGEyNWIxMTlhNDkwNzg3ODA0MjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmNzM5YTA2YzFjYmIxMjQ0ZTMzNjNkMzhiY2Y5ZmE1MGNlODRmZWQzOTljMjE5M2EzYzdmMDhkNTk5MThiMmEifQ"
         }
       ]
     },
@@ -111,12 +111,12 @@
       "statement": "An empty template (totalWeight <= 0) receives a perfect score of 1 because it asks for nothing and nothing is exactly what the instance supplied.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/scoring/scoring.constants.ts#L12-L20",
-          "version": "repo-lines-v1:sha256:0feac0c6e71aa71b24d9b3a0b30936a97b24301b5b999534430a455570badfb9:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWFmMjJjZjA3MzI1OTJjMjQ3MTQxY2JlNjFlZmExMTAxMjYxMmY1YTMxMjJiOWFmOWJiYWY1MmY1NzI0ZDE5NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDYzOTAxN2Q0ZTczY2YzODdlNTE4MjE0MWI3MDg1ZDFiYzUyYWIwY2FkYTJlNzY5YmJkN2IzYjg2ZTJmZTg0MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODUzYmM0MjY4OTg1YTg0YTM1ZDQ5ZTJiNDM2N2ZmNjg5MDFjNjc4ZDBkMjllOWRjOTdjNjc3OTFmNGEwZjFjZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDJmZDk2NDBlZTU3OTA5MTVkYjBlMWY5MjlmYWQwNzgyNjlhYWY5MDBlN2U0MTcwZGE5ZjhjMjQ0Njg4MmUwYSJ9"
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/scoring/scoring.constants.ts#L7-L8",
+          "version": "repo-lines-v1:sha256:67964f31d8c2e27c1cb1936f1ea5b781bbcfe3fe2cbe6195c05d9309506c0706:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDYzOTAxN2Q0ZTczY2YzODdlNTE4MjE0MWI3MDg1ZDFiYzUyYWIwY2FkYTJlNzY5YmJkN2IzYjg2ZTJmZTg0MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWU2YTk1NGQ3YTAwY2M2YTYzZGNjNmMyMWNiYWVlNTZhMDdjOWI5YWRjZjE5YmNkMDhjZjgxYTllMmNmMjc3ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjIsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTk4ODNiMTg3NDQ3YjZkMTlmMzFlMmE4MzNiMDVhZDRhMmJjMTE2MWYwMGZmMTVmZjIwNDEyM2QyZGVkOWFjOCJ9"
         },
         {
-          "resource": "repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/scoring/scoring.service.ts#L42-L45",
-          "version": "repo-lines-v1:sha256:86057154d00669ea51719f6ca0bec934757c4654486d1551f1b580d743ca382d:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODc0MTk0MDc0ZTdiMTViMzE1NWI5MDFiOGYxODk4MTU1YWI5ZTliOWQ5YTQyY2VmN2MwYzIyODdkZjVjNjk2YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGYxNDk5ZDk5ZDllNTA3ZWU1ODFkYzhmNDAyYjRiN2E0NGY3NjNlODVlZWUyNDlhYTc1ODk0NWFmNDRmYzMzYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODRhZjQ4ODA3OTE4ODk5NmMxMjdiZTZmODg3YmE5ZmM5Yjc3MjJiOWVhMTY5MmE5YWEwODE2NjUzNDVmMTAzNiJ9"
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/scoring/scoring.service.ts#L16-L20",
+          "version": "repo-lines-v1:sha256:84ab98be41660674e21acf0df609feaae6659e8b734549644773c7b3bc2dfc71:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGRmYWQ0OTg1YzEwN2VjYTQzYmY5YWFkNWNjOGQzYWIzYTBlODhkZmY4ODY3MTU0ZjE0MGUwYmUwNzRlNTcwZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjA5ZjU4NzNhNmNiYWM0NDE0MDVjMTM2NTI1NTZhMTgzODBlZWI1M2YwZDAyMjFiNDlkNTA2YTlmNjhjMGY4MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTVlNjgyNTI4MzY0YWU3MjI0OGQ5MzRkNDg1YzQyMjgxZjljOGQ4MTYyYTBkNWIyM2FlN2M4MDkyN2Q5NDk5NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2RkNTUyNzJlOGI3ZDM0Mzc2MmE3NzhiYTZhY2MxZjc2MWMwYzhhM2UxMTMxNGNkNTdjYTllOGY1Yzg1NmQ2NyJ9"
         }
       ]
     },
@@ -125,8 +125,8 @@
       "statement": "Difference weight restores proportion: a missing class is reported once but weighted for its whole subtree, while a missing import is weighted only for itself.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/conformetry/conformetry-core/src/modules/conformetry-core/conformetry-core.types.ts#L42-L53",
-          "version": "repo-lines-v1:sha256:ea7ff00f4c4f1b7e32cf5c3a1234e38f04ab6c5abd6b5e496ec7731c711e55b1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjN2M2Yjk4ZTIwZGIyM2Y5MWRlYzc4ZDBmZTAwYmRhM2RkMTc0YTlhZmYwZDRiMGNmYTNiZDI5ZGViMGQyMmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY5ZThkOWM0NDYzZWVhNjBlZTUxNDg1ZGNhMGMyMmY3NGIxNjhmN2FhYjRhNTVlYTBkMGYwYzNjMTkwMGNhYTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3OTI5ZTkxZTBmOTljM2U4MjVkZTY5YjQzNWZiNjQ4NGQxYjBhMWRmMmY0NjU2MWFiZjFhMjlmMDQxODhiODgifQ"
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-core/src/modules/conformetry-core/conformetry-core.types.ts#L34-L37",
+          "version": "repo-lines-v1:sha256:a76497060f70f5dc178c1423c1450f9de2e1bdb0254e4a780fc4165d7da79fee:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmM5ZGExYTdmN2E5YWM5NDY2Zjc4NjJkYzEyNWExMjYxZmFkZmJlZmZlMzViMGUyNGU2NThkOGUyOWFmNzQ2NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDY3ZDU0NDU4ODljMzVmZmU1YmE2NmI5ZmJkMWUxN2ZkMGM4MTM5ZDRjMDY5ZjkwNzIxNzVlYTczMGQ0NjE0ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWFhMjRjMTA3NTc0NDNhMWZjNGYwZWMxZTA5YWJiMjVhNzg3ZGU4YWU1NDJjZmY2OWZjODk1ODE0ZmE1NzBmMCJ9"
         }
       ]
     },
@@ -142,7 +142,7 @@
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.0",
-    "at": "2026-10-29T03:39:46.432Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-13T16:30:25.369Z"
   }
 }

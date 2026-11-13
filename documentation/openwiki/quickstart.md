@@ -3,6 +3,9 @@ type: Reference
 title: Quickstart
 description: Entry point for the OpenWiki. Provides a task-oriented map routing readers to the right architecture, domain, workflow, or operations page based on what they need to understand or change.
 tags: [quickstart, overview, navigation]
+verified:
+  - by: openwiki/0.9.0
+    at: 2026-11-13T16:30:25.369Z
 sources:
   - id: openwiki-source-7ce83b1fa051a437b5baffc6
     resource: repo://.devcontainer/cloud/devcontainer.json
@@ -26,19 +29,25 @@ sources:
     resource: repo://projects/common/persistence/package.json
   - id: openwiki-source-1bc1e17fecca95c41675a45f
     resource: repo://projects/common/presentation/package.json
+  - id: openwiki-source-ca6ff5242336082371d82360
+    resource: repo://projects/common/testing/package.json
   - id: openwiki-source-7b424da3424410740bbda58c
     resource: repo://projects/ic-suite/callidescope/callidescope-cli/package.json
   - id: openwiki-source-824c9da02a58cc5b2f5aef5c
     resource: repo://projects/ic-suite/codependix/codependix-cli/package.json
   - id: openwiki-source-3ae2ebeca3adb1785fa98c4c
     resource: repo://projects/ic-suite/codometer/codometer-cli/package.json
+  - id: openwiki-source-c782c5f4d341f62f31fe8aab
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-cli/package.json
   - id: openwiki-source-b26e4947b4168052f48f0702
     resource: repo://projects/ic-suite/conformetry/conformetry-cli/package.json
   - id: openwiki-source-d29bde3ec215557ea1958feb
     resource: repo://projects/lexico/lexico-web/package.json
   - id: openwiki-source-a6e80b612169ffb94413f377
     resource: repo://projects/meanderaw/meanderaw-cli/README.md
-generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
+  - id: openwiki-source-23775c3de52f3ab95a13cb8b
+    resource: repo://README.md
+generated: { by: "openwiki/0.9.0", at: "2026-11-13T16:30:25.369Z" }
 ---
 
 # Quickstart
@@ -50,9 +59,9 @@ Welcome to the OpenWiki for this pnpm + Nx monorepo of personal applications, sh
 | I want to… | Start here |
 |------------|------------|
 <!-- openwiki: broken internal link [../architecture/overview.md] file "../architecture/overview.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-| **Understand the big picture** | [Architecture Overview](../architecture/overview.md) — four domains, four toolchains, common packages, infrastructure |
+| **Understand the big picture** | [Architecture Overview](../architecture/overview.md) — five domains, five toolchains, common packages, infrastructure |
 <!-- openwiki: broken internal link [../domain/overview.md] file "../domain/overview.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-| **Explore a specific domain** | [Domain Systems Overview](../domain/overview.md) — affirmancy, caelundas, lexico, meanderaw |
+| **Explore a specific domain** | [Domain Systems Overview](../domain/overview.md) — affirmancy, caelundas, lexico, meanderaw, IC-Suite toolchains |
 <!-- openwiki: broken internal link [../operations/local-development.md] file "../operations/local-development.md" does not exist. Fix the href or restore the target, then delete this comment. -->
 | **Set up my local machine** | [Local Development Setup](../operations/local-development.md) — dev container, Docker Compose, env files |
 <!-- openwiki: broken internal link [../workflows/development.md] file "../workflows/development.md" does not exist. Fix the href or restore the target, then delete this comment. -->
@@ -64,23 +73,24 @@ Welcome to the OpenWiki for this pnpm + Nx monorepo of personal applications, sh
 <!-- openwiki: broken internal link [../workflows/scaffolding.md] file "../workflows/scaffolding.md" does not exist. Fix the href or restore the target, then delete this comment. -->
 | **Scaffold a new project/module/file** | [Scaffolding & Generators](../workflows/scaffolding.md) — conformetry generators via Nx |
 <!-- openwiki: broken internal link [../architecture/ic-suite.md] file "../architecture/ic-suite.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-| **Learn the IC-Suite toolchains** | [IC-Suite Architecture](../architecture/ic-suite.md) — callidescope, codependix, codometer, conformetry |
+| **Learn the IC-Suite toolchains** | [IC-Suite Architecture](../architecture/ic-suite.md) — callidescope, codependix, codometer, conformetry, coinagerie |
 
 ---
 
 ## Projects Table
 
-The repository is organized into four top-level domain groups and the IC-Suite toolchains:
+The repository is organized into four top-level domain groups, the IC-Suite toolchains, and shared common packages:
 
 | Group | Projects | Description |
 |-------|----------|-------------|
 | **affirmancy** | `affirmancy` | Python LangGraph ReAct agent using Ollama (gemma4:e2b) + SearxNG to research subjects and generate grammatically-validated affirmations |
-| **caelundas** | `caelundas-cli`, `caelundas-web` | NestJS CLI computes planetary positions with Swiss Ephemeris (JPL DE431), detects astronomical events, stores in Postgres, renders `.ics` + JSON; TanStack Start web for browsing |
-| **lexico** | `lexico-cli`, `lexico-api`, `lexico-entities`, `lexico-web` | Latin-English dictionary suite: ingestion CLI, NestJS GraphQL API (Relay), TypeORM entities/migrations, TanStack Start SSR web |
+| **caelundas** | `caelundas-cli`, `caelundas-api`, `caelundas-db`, `caelundas-web` | NestJS CLI computes planetary positions with Swiss Ephemeris (JPL DE431), detects astronomical events, stores in Postgres, renders `.ics` + JSON; TanStack Start web for browsing; GraphQL API for events |
+| **lexico** | `lexico-cli`, `lexico-api`, `lexico-db`, `lexico-web` | Latin-English dictionary suite: ingestion CLI, NestJS GraphQL API (Relay), TypeORM entities/migrations, TanStack Start SSR web |
 | **meanderaw** | `meanderaw-cli`, `meanderaw-web` | NestJS CLI enumerates/measures/classifies Greek meander patterns by lattice Code into Postgres; TanStack Start SSR web for exploration |
-| **ic-suite** | `callidescope`, `codependix`, `codometer`, `conformetry` | Four independent toolchains published as npm packages: call-stack analysis, dependency graph boundaries, code measurement, template generation & validation |
+| **ic-suite** | `callidescope`, `codependix`, `codometer`, `conformetry`, `coinagerie` | Five independent toolchains published as npm packages: call-stack analysis, dependency graph boundaries, code measurement, template generation & validation, vocabulary glossary management |
+| **common** | `persistence`, `interface`, `presentation`, `observability`, `testing` | Shared infrastructure: Postgres/TypeORM/Testcontainers, GraphQL Relay types, React components, Pino logger, Vitest/NestJS/React test utilities |
 
-All domain projects depend on the **common packages** (`@codebase/persistence`, `@codebase/interface`, `@codebase/presentation`, `@codebase/observability`) but never on each other.
+All domain projects depend on the **common packages** but never on each other. IC-Suite toolchains share only `observability`.
 
 ---
 
@@ -91,13 +101,13 @@ All domain projects depend on the **common packages** (`@codebase/persistence`, 
 | Domain | Language | Primary Output | Key Tech |
 |--------|----------|----------------|----------|
 | **affirmancy** | Python | Affirmations JSON/Markdown | LangGraph, Ollama, SearxNG, Pydantic |
-| **caelundas** | TypeScript | `.ics` calendar + JSON | Swiss Ephemeris (JPL DE431), Postgres, nest-commander |
+| **caelundas** | TypeScript | `.ics` calendar + JSON + GraphQL | Swiss Ephemeris (JPL DE431), Postgres, nest-commander |
 | **lexico** | TypeScript | Latin dictionary (Postgres + GraphQL) | GraphQL, Relay, TypeORM, cheerio |
 | **meanderaw** | TypeScript | Meander DB (Postgres) + HTML | Lattice enumeration, Betti numbers, sparse JSONB |
 
-### IC-Suite: Four Independent Toolchains
+### IC-Suite: Five Independent Toolchains
 
-Each follows the **five-layer spine** (ADR 0013): `core → configuration → analysis → output → cli` (with Nx plugins for callidescope, codependix, conformetry).
+Each follows the **five-layer spine** (ADR 0013): `core → configuration → analysis → output → cli` (with Nx plugins for callidescope, codependix, conformetry, coinagerie).
 
 | Toolchain | Purpose | Published Packages |
 |-----------|---------|-------------------|
@@ -105,6 +115,7 @@ Each follows the **five-layer spine** (ADR 0013): `core → configuration → an
 | **codependix** | Dependency graphs (Nx/NestJS/file) + boundary rules | 10 |
 | **codometer** | Measure TS/JS/Python/JSON/md/notebooks; enforce limits | 7 |
 | **conformetry** | Template-driven generation; validate instances vs templates | 9 |
+| **coinagerie** | Vocabulary extraction, folding, glossary synchronization | 8 |
 
 Toolchains share only `observability`. Configuration tooling (`configuration/`, `synchronization/`) consumes IC-Suite.
 
@@ -116,23 +127,31 @@ Toolchains share only `observability`. Configuration tooling (`configuration/`, 
 # Install dependencies
 pnpm install
 
-# Run all quality checks on affected projects
-pnpm nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --base=main
+# Run all quality checks on affected projects (write mode)
+pnpm nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=write --base=main
+
+# Verify no issues remain — all checks must pass (check mode)
+pnpm nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check --base=main
 
 # Run tests for a project
 nx run <project>:vitest:unit
 nx run <project>:vitest:integration
 
 # Start local infrastructure (Postgres, SearxNG, Open WebUI)
-docker compose -f infrastructure/docker-compose.yml up -d
+docker compose -f infrastructure/docker/docker-compose.yml up -d
 
-# Database migrations (example for lexico)
+# Database migrations (examples)
 nx run lexico-api:migration:run
+nx run caelundas-cli:migration:run
+nx run meanderaw-cli:migration:run
 
 # Dev servers
 nx run lexico-web:start          # TanStack Start at localhost:3000
 nx run caelundas-web:start
 nx run meanderaw-web:start
+
+# Run affected tests
+pnpm nx affected --target=vitest --base=main
 ```
 
 ---
@@ -151,7 +170,12 @@ nx run meanderaw-web:start
 <!-- openwiki: broken internal link [../domain/caelundas.md] file "../domain/caelundas.md" does not exist. Fix the href or restore the target, then delete this comment. -->
 <!-- openwiki: broken internal link [../domain/lexico.md] file "../domain/lexico.md" does not exist. Fix the href or restore the target, then delete this comment. -->
 <!-- openwiki: broken internal link [../domain/meanderaw.md] file "../domain/meanderaw.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-| **Domains** | [Overview](../domain/overview.md) • [Affirmancy](../domain/affirmancy.md) • [Caelundas](../domain/caelundas.md) • [Lexico](../domain/lexico.md) • [Meanderaw](../domain/meanderaw.md) |
+<!-- openwiki: broken internal link [../domain/callidescope.md] file "../domain/callidescope.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+<!-- openwiki: broken internal link [../domain/codependix.md] file "../domain/codependix.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+<!-- openwiki: broken internal link [../domain/codometer.md] file "../domain/codometer.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+<!-- openwiki: broken internal link [../domain/conformetry.md] file "../domain/conformetry.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+<!-- openwiki: broken internal link [../domain/coinagerie.md] file "../domain/coinagerie.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+| **Domains** | [Overview](../domain/overview.md) • [Affirmancy](../domain/affirmancy.md) • [Caelundas](../domain/caelundas.md) • [Lexico](../domain/lexico.md) • [Meanderaw](../domain/meanderaw.md) • [Callidescope](../domain/callidescope.md) • [Codependix](../domain/codependix.md) • [Codometer](../domain/codometer.md) • [Conformetry](../domain/conformetry.md) • [Coinagerie](../domain/coinagerie.md) |
 <!-- openwiki: broken internal link [../operations/local-development.md] file "../operations/local-development.md" does not exist. Fix the href or restore the target, then delete this comment. -->
 <!-- openwiki: broken internal link [../operations/database-management.md] file "../operations/database-management.md" does not exist. Fix the href or restore the target, then delete this comment. -->
 | **Operations** | [Local Development](../operations/local-development.md) • [Database Management](../operations/database-management.md) |
@@ -166,9 +190,9 @@ nx run meanderaw-web:start
 <!-- openwiki: broken internal link [../testing/caelundas.md] file "../testing/caelundas.md" does not exist. Fix the href or restore the target, then delete this comment. -->
 <!-- openwiki: broken internal link [../testing/lexico.md] file "../testing/lexico.md" does not exist. Fix the href or restore the target, then delete this comment. -->
 <!-- openwiki: broken internal link [../testing/meanderaw.md] file "../testing/meanderaw.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-<!-- openwiki: broken internal link [../testing/ic-suite.md] file "../testing/ic-suite.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+<!-- openwiki: broken internal link [../testing/coinagerie.md] file "../testing/coinagerie.md" does not exist. Fix the href or restore the target, then delete this comment. -->
 <!-- openwiki: broken internal link [../testing/integration.md] file "../testing/integration.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-| **Testing** | [Strategy](../testing/overview.md) • [Affirmancy](../testing/affirmancy.md) • [Caelundas](../testing/caelundas.md) • [Lexico](../testing/lexico.md) • [Meanderaw](../testing/meanderaw.md) • [IC-Suite](../testing/ic-suite.md) • [Integration](../testing/integration.md) |
+| **Testing** | [Strategy](../testing/overview.md) • [Affirmancy](../testing/affirmancy.md) • [Caelundas](../testing/caelundas.md) • [Lexico](../testing/lexico.md) • [Meanderaw](../testing/meanderaw.md) • [Coinagerie](../testing/coinagerie.md) • [Integration](../testing/integration.md) |
 <!-- openwiki: broken internal link [../integrations/external-services.md] file "../integrations/external-services.md" does not exist. Fix the href or restore the target, then delete this comment. -->
 <!-- openwiki: broken internal link [../integrations/ollama-searxng.md] file "../integrations/ollama-searxng.md" does not exist. Fix the href or restore the target, then delete this comment. -->
 <!-- openwiki: broken internal link [../integrations/swiss-ephemeris.md] file "../integrations/swiss-ephemeris.md" does not exist. Fix the href or restore the target, then delete this comment. -->
@@ -183,9 +207,9 @@ nx run meanderaw-web:start
 
 - [ ] Open in **VS Code Dev Container** (choose *Local* for Docker-outside-of-Docker, *Cloud* for Codespaces)
 - [ ] Run `pnpm install` (if not done by `postCreateCommand`)
-- [ ] Start infrastructure: `docker compose -f infrastructure/docker-compose.yml up -d`
+- [ ] Start infrastructure: `docker compose -f infrastructure/docker/docker-compose.yml up -d`
 - [ ] Run migrations for domains you'll work on (e.g., `nx run lexico-api:migration:run`)
 - [ ] Start a dev server: `nx run lexico-web:start` → <http://localhost:3000>
 <!-- openwiki: broken internal link [../workflows/development.md] file "../workflows/development.md" does not exist. Fix the href or restore the target, then delete this comment. -->
 - [ ] Read [Development Workflow](../workflows/development.md) before making changes
-- [ ] Run `nx affected --target=vitest --base=main` to verify test setup
+- [ ] Run `pnpm nx affected --target=vitest --base=main` to verify test setup

@@ -1,22 +1,38 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:c28dca9902da163c1c9589dbdcb8c91fad1e2fa1fbbdb22b9e0c27c8cc785270",
+  "pageVersion": "sha256:d621963dffd899fef1121a6c1b8c96bdf23795d5e1d1d84a30e4ab4f7635dd5b",
   "claims": [
     {
       "id": "claim_ff5540c9dcf54d78959182fda4d52e17",
-      "statement": "The infrastructure directory contains three independent deployment layers: local Docker Compose services (PostgreSQL, SearxNG, Open WebUI), a reusable Helm chart (kubernetes-job) for batch Job deployments with PVC storage, and Terraform configuration for provisioning Linode LKE clusters.",
+      "statement": "The infrastructure directory contains three independent deployment layers: local Docker Compose services (PostgreSQL, SearxNG, Open WebUI), a reusable Helm chart (kubernetes-job) for batch Job deployments with PVC storage, and Terraform configuration with four roots (main for Linode LKE cluster, openrouter for OpenRouter workspace/keys/presets, github for GitHub repository settings and Actions variables, linode for Object Storage buckets holding Terraform state and shared Nx cache).",
       "evidence": [
         {
           "resource": "repo://infrastructure/AGENTS.md",
-          "version": "repo-file-v1:sha256:36b513af3a0089df5a9703bfb7a2ae5467538dc160aa8155aee58d9333713c74"
+          "version": "repo-file-v1:sha256:05f771bee9148b0ddcf9ce2d1c295b3d40e8061a73f6bbe4742e1afee88ac70a"
         },
         {
           "resource": "repo://infrastructure/README.md",
-          "version": "repo-file-v1:sha256:cf8383119539e231f9b91c40f61247d38ac8f18777490399dfa39e264158af88"
+          "version": "repo-file-v1:sha256:2ec9549f3ac3d9c8f08b6ed6db06d8a00ed1eb002365dc48fc9bc80d1b5b6a60"
         },
         {
           "resource": "repo://infrastructure/project.json",
           "version": "repo-file-v1:sha256:9a3c184e7184752ce32efc8609e108547012b2a89a4d5eeeb44ad258a2564294"
+        },
+        {
+          "resource": "repo://infrastructure/terraform/github/main.tf",
+          "version": "repo-file-v1:sha256:5515e6d7615a343cba1397c04a125af167bacbba122fc1a85f110e7fd47d1bb2"
+        },
+        {
+          "resource": "repo://infrastructure/terraform/linode/main.tf",
+          "version": "repo-file-v1:sha256:db3d011087b417a51737ed943086538e5955a82f2a8a5ef38b19126b36945455"
+        },
+        {
+          "resource": "repo://infrastructure/terraform/main.tf",
+          "version": "repo-file-v1:sha256:ef575fe619ad29efb668b1eafc7896db0e1e019b52e428605c7f69b15094084d"
+        },
+        {
+          "resource": "repo://infrastructure/terraform/openrouter/main.tf",
+          "version": "repo-file-v1:sha256:148f30e6d2e423f7a44ed70f0ea66b500c4bf4b9ef1b5172a6a1ab1da1b0360c"
         }
       ]
     },
@@ -26,7 +42,7 @@
       "evidence": [
         {
           "resource": "repo://infrastructure/docker/docker-compose.yml",
-          "version": "repo-file-v1:sha256:e242ca799db420d17b7643c353309d547b1f7242407b65cbbda93ba5f9192734"
+          "version": "repo-file-v1:sha256:c94b3a62a7df511ee8b06e13cad84e42b9eacc2750a3af7899c543df3dceee27"
         },
         {
           "resource": "repo://infrastructure/project.json#L56-L93",
@@ -36,15 +52,15 @@
     },
     {
       "id": "claim_ca69ae54f21b4b4085cee212c0cdb03c",
-      "statement": "The PostgreSQL Compose service uses a Compose config (postgres-databases) that installs an executable init script at /docker-entrypoint-initdb.d/databases.sh, which runs only on an empty volume and creates a role, database, and schema for each project listed in POSTGRES_PROJECTS (currently lexico, meanderaw).",
+      "statement": "The PostgreSQL Compose service uses a Compose config (postgres-databases) that installs an executable init script at /docker-entrypoint-initdb.d/databases.sh, which runs only on an empty volume and creates a role, database, and schema for each project listed in POSTGRES_PROJECTS (currently caelundas, lexico, meanderaw).",
       "evidence": [
         {
           "resource": "repo://infrastructure/README.md#L56-L74",
-          "version": "repo-lines-v1:sha256:72971f4a7d574e3e60e7d12603c1525c29cc44cb2270c97cf5d7cd3b2967f40c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZDg5NDk2NTU3NTgxOGNlM2YyNDg0ZjZlNGI5Njc5MWE5YTEyOWZjMjE1NmM0ODYxZWQ0NTlmNjE5ODAxNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3MDdiNGU5NDI4ODdmODkxZDhiNGFkZGUxOThjMjNlYmEwZDllMTVmNmJjNzAxNDk1YjJjMDMyYmY0MzU1NDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ZTg2M2Q1Y2UwNzlkMDE5N2UzNjhlZTU0OTM1YjNhMjc1MGQwYjRlMWZhOTkyMzJlMzE3YjVjMDA3OWVkYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRhYzMzOTIxZmQ2NWZmZDZjN2Q4ZDI5OGMzNTk1NzU0ODJhMmJiYzVhYjU0Mzg1NWFkNzM4NGRmNDBjZjVmYTMifQ"
+          "version": "repo-lines-v1:sha256:d72bb76e02991d43e3fe23f9715d153e4586edb576e0b62ae68cea55a1111337:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZDg5NDk2NTU3NTgxOGNlM2YyNDg0ZjZlNGI5Njc5MWE5YTEyOWZjMjE1NmM0ODYxZWQ0NTlmNjE5ODAxNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ZTg2M2Q1Y2UwNzlkMDE5N2UzNjhlZTU0OTM1YjNhMjc1MGQwYjRlMWZhOTkyMzJlMzE3YjVjMDA3OWVkYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU1MDYxNmViMDdlNjdkZjBmZjlhNjAwNmNjMzhiNTI5YmJiMjlhOWM4MjQyNDdjOWI1YTUyY2M4NDUwYjdjZjYifQ"
         },
         {
-          "resource": "repo://infrastructure/docker/docker-compose.yml#L26-L100",
-          "version": "repo-lines-v1:sha256:92a51342e736d87045f7ffc0d2db0984fc18424bbb296d6ebf779fea78709829:eyJzZWxlY3RlZExpbmVDb3VudCI6NzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwZjhkYzgzYTlkMTA3NzQxZTUzNjRhZTBjZjZmNDg1OTU3MDIyMDkwMzExMjIwYWFmOTAxOGI4NzcwZmUxNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmMTdjYTY2MTcxMDZkNmNmNmNlYzhkZjA3MGYzZWQwNzIwNzlmY2ZjOGZhMWFiMDhjZWU5OTkxMjUyMTA1MTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmNjgwNjVjN2IzOGFlOWNlMmJiNGNhNWEzZDY2ZDliZjJhOTY2MTQxOWU1YTY1YjM0ZmFhODRhYjBhNWNkODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMxZTg1MDkyNjA4ZThjMmE2MDkyNGMyOGIzNTFmNjEyOTcwOWM5NmZkY2QxZDE2YWEzYTFlMDY2ZGM2N2U4ZjAifQ"
+          "resource": "repo://infrastructure/docker/docker-compose.yml#L26-L96",
+          "version": "repo-lines-v1:sha256:026002fd5e4a445ba1463c329061eb0834d54bb51531e8da0d12448a3702f80b:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwZjhkYzgzYTlkMTA3NzQxZTUzNjRhZTBjZjZmNDg1OTU3MDIyMDkwMzExMjIwYWFmOTAxOGI4NzcwZmUxNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4NTFlNzA4MjkyNjFjOWNkYmRmMWM3YTBiZGViOTM1NzBmZjljNmY1MmU4YmFmMGMxZDA4OWMxNDExOWYzMTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmNjgwNjVjN2IzOGFlOWNlMmJiNGNhNWEzZDY2ZDliZjJhOTY2MTQxOWU1YTY1YjM0ZmFhODRhYjBhNWNkODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -53,12 +69,12 @@
       "statement": "To add a project to an existing PostgreSQL volume without data loss, add the project to POSTGRES_PROJECTS, run nx run infrastructure:postgres:up to recreate the container keeping the volume, then execute the init script for only the missing project via docker exec -e POSTGRES_PROJECTS=<project> postgres sh /docker-entrypoint-initdb.d/databases.sh.",
       "evidence": [
         {
-          "resource": "repo://documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md#L35-L55",
+          "resource": "repo://documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md#L37-L57",
           "version": "repo-lines-v1:sha256:b7307d63c162366b9efd4523159615432abe03e03f4788e190e865a5962a3eef:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyNzhlYWU4N2JkYjU2NDYzZDk2ZmQzMjE0MTJiNTdiYjg4M2ZkOGYzYTFlMmVjY2ZhZmY3YjhhMDY3ZDdkYTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2MWE0ZjlmYTQ5ZjY4ODBiMWQyMTU0OTVlNTg1NzE1ODRlNjFkNjdmMTcxMjkyZDM2Y2Q1MzY2MjlmZDMwMWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRkMDZhN2E5NTliYWU5NWQyZDRkZjQxY2QyMzIyZTJiZWMwMzBlYjBlMTEyYzVkNzUwNjFiZDgyM2YxZDBmY2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlZmExMTdjNzZlYjkwYWJjZGU4NWJkYzEzMTM0Mjk0ZDgxMTA3OWY3NjhhNDM1NjNhNGQ2MTI2YWVkYzdlMjQifQ"
         },
         {
-          "resource": "repo://infrastructure/README.md#L56-L74",
-          "version": "repo-lines-v1:sha256:72971f4a7d574e3e60e7d12603c1525c29cc44cb2270c97cf5d7cd3b2967f40c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZDg5NDk2NTU3NTgxOGNlM2YyNDg0ZjZlNGI5Njc5MWE5YTEyOWZjMjE1NmM0ODYxZWQ0NTlmNjE5ODAxNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3MDdiNGU5NDI4ODdmODkxZDhiNGFkZGUxOThjMjNlYmEwZDllMTVmNmJjNzAxNDk1YjJjMDMyYmY0MzU1NDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ZTg2M2Q1Y2UwNzlkMDE5N2UzNjhlZTU0OTM1YjNhMjc1MGQwYjRlMWZhOTkyMzJlMzE3YjVjMDA3OWVkYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRhYzMzOTIxZmQ2NWZmZDZjN2Q4ZDI5OGMzNTk1NzU0ODJhMmJiYzVhYjU0Mzg1NWFkNzM4NGRmNDBjZjVmYTMifQ"
+          "resource": "repo://infrastructure/README.md#L56-L80",
+          "version": "repo-lines-v1:sha256:3bf84dfa8b46896200cadf46eb5568c7ee5a22b3639736dc3224e49bba80eba8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZDg5NDk2NTU3NTgxOGNlM2YyNDg0ZjZlNGI5Njc5MWE5YTEyOWZjMjE1NmM0ODYxZWQ0NTlmNjE5ODAxNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3MDdiNGU5NDI4ODdmODkxZDhiNGFkZGUxOThjMjNlYmEwZDllMTVmNmJjNzAxNDk1YjJjMDMyYmY0MzU1NDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ZTg2M2Q1Y2UwNzlkMDE5N2UzNjhlZTU0OTM1YjNhMjc1MGQwYjRlMWZhOTkyMzJlMzE3YjVjMDA3OWVkYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRhYzMzOTIxZmQ2NWZmZDZjN2Q4ZDI5OGMzNTk1NzU0ODJhMmJiYzVhYjU0Mzg1NWFkNzM4NGRmNDBjZjVmYTMifQ"
         }
       ]
     },
@@ -85,7 +101,7 @@
       "statement": "The kubernetes-job chart's PVC is conditionally created (when persistence.enabled=true), named after the Job via the kubernetes-job.fullname helper, uses storageClassName standard by default with 1Gi size and ReadWriteOnce access, mounts at /app/output, and is never automatically deleted when the Job completes — it must be manually removed with kubectl delete pvc.",
       "evidence": [
         {
-          "resource": "repo://infrastructure/AGENTS.md#L60-L62",
+          "resource": "repo://infrastructure/AGENTS.md#L91-L93",
           "version": "repo-lines-v1:sha256:24a0d43f03ff0cec571f893958af8a07879f3c3b36c4d0d6ff81a38e16ebae0d:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjU3MGYxMzkzZWUwYzQ3ZjY1MWE4ODU3NTI5ZTE0NzE3ZGE2MDRlNWYyMmEyOTFhZTc2MjNiYzY3MjQwMjUzMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjVkYWIzZGFmZWIxYTVlOTdmMTYyMmZjMTc2ZWYxZDQ1YmQ2YzFlYjA4OTlkNjg5NmY3ZmI2MWRmMjc1MjVhOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzQ5NDZiNDE2ZmUxNGZiM2NmYzAyZGE1NjhjZDg4YWFiMjBiNDk4Y2ZjYzQxZmM1MDgxOGE0Y2JjMzc5NzY5ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmU0MWQzNGFiOTgyZjdiMjJmMzJhMWRiMjg5MDBmZTM2NGM0OWY3MzhjYmE3ODQ2NDNjMjgwYjFmOTAxZTUzMSJ9"
         },
         {
@@ -100,11 +116,27 @@
     },
     {
       "id": "claim_a216c323e88142a59e3d12fd67f55bc2",
-      "statement": "Terraform at infrastructure/terraform/ provisions a Linode LKE cluster (linode_lke_cluster resource) with label lexico-prod, Kubernetes version 1.34, a g6-standard-1 node pool (count 1, autoscaler min 1/max 3), requiring linode_token variable and outputting sensitive kubeconfig.",
+      "statement": "Terraform at infrastructure/terraform/ provisions a Linode LKE cluster (linode_lke_cluster resource) with label lexico-prod, Kubernetes version 1.34, a g6-standard-1 node pool (count 1, autoscaler min 1/max 3), requiring linode_token variable and outputting sensitive kubeconfig. Additional Terraform roots manage OpenRouter (workspace, guardrail, API key, ranked-model preset), GitHub (repository settings, main ruleset, Actions variables sourced from other roots), and Linode Object Storage (state bucket with migration to new bucket, Nx cache bucket with read-only and read-write keys).",
       "evidence": [
         {
+          "resource": "repo://infrastructure/terraform/github/main.tf",
+          "version": "repo-file-v1:sha256:5515e6d7615a343cba1397c04a125af167bacbba122fc1a85f110e7fd47d1bb2"
+        },
+        {
+          "resource": "repo://infrastructure/terraform/linode/main.tf",
+          "version": "repo-file-v1:sha256:db3d011087b417a51737ed943086538e5955a82f2a8a5ef38b19126b36945455"
+        },
+        {
+          "resource": "repo://infrastructure/terraform/linode/outputs.tf",
+          "version": "repo-file-v1:sha256:d5c339d58656141b031fc6c18a9e1c3b68e120cb65546cefb0dddb775e20138f"
+        },
+        {
           "resource": "repo://infrastructure/terraform/main.tf",
-          "version": "repo-file-v1:sha256:0dcf20fea7844922f56c82cd544594a0f376d210c528b48b64f834c3b8c8557a"
+          "version": "repo-file-v1:sha256:ef575fe619ad29efb668b1eafc7896db0e1e019b52e428605c7f69b15094084d"
+        },
+        {
+          "resource": "repo://infrastructure/terraform/openrouter/main.tf",
+          "version": "repo-file-v1:sha256:148f30e6d2e423f7a44ed70f0ea66b500c4bf4b9ef1b5172a6a1ab1da1b0360c"
         },
         {
           "resource": "repo://infrastructure/terraform/variables.tf",
@@ -117,7 +149,7 @@
       "statement": "Nx targets helm-lint and compose-config run in CI as part of lint-code (the Lint leg of .github/workflows/continuous-integration.yml); helm-lint validates the kubernetes-job chart against base.yaml, compose-config validates docker-compose.yml and creates .env from .env.default if missing.",
       "evidence": [
         {
-          "resource": "repo://infrastructure/README.md#L97-L98",
+          "resource": "repo://infrastructure/README.md#L103-L104",
           "version": "repo-lines-v1:sha256:1aa3023e2227a68144bf07355a6ff4ff7bdb28b3c7fc5b1100b42e1257ddc434:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWUxNWYyNTQ2MDJkNWZlOTUwNTRmMWJiNTRmMWRhNmIwOThlMDFjNzZmMTg3NzBlNTFkZGRjNDZlN2MwODllMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDhhYWMzNmNiOWEzYjZiZmVmMGEyOTZjNTgxYTA1N2FkYjc0ZWJhNTk5NjdkODMxNjkzM2IyZmJjOGNkYmE2MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDE2NjU4NzEyMmNkMTU2YzQ1MmVlNjYwOGJkZTM3YTljM2MyMzYwMmU2OTFiMzcxYzhhYWRjMTM1MjEyYzU1MyJ9"
         },
         {
@@ -135,18 +167,92 @@
       "statement": "ADR 0022 establishes the convention of one database, one schema, and one role per domain (project), with the local Compose postgres service creating these on first start via the POSTGRES_PROJECTS list, and documents the procedure for adding projects to existing volumes without data loss.",
       "evidence": [
         {
-          "resource": "repo://documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md#L15-L36",
+          "resource": "repo://documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md#L17-L38",
           "version": "repo-lines-v1:sha256:7955e7115a34409878f5671ca6fe1d43216e6c0d1e491f5aa203d36f45eecf87:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkMDRkODA3M2NhOGNkM2QzNGM1MTJlZTc1Y2YwYzg1ZTBmNGE5ZDlhMWVhMzAwYTUxNmRmNDc1ZDZjMmM3NTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNiMTU3YTZkMjc2N2ZmN2Y0MTMzZWUyNzY1MTM2N2M2ZmRmZjdhYjRmZDliYTNjYjQyNjJlMmFhNDQ5MGNjYTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI2ODRiMmJjNWQ4YmIwNTk1MWUwZjZkNTU3NWYxMTRjZThlYzIyMTJlYjcwZmI4NzAzMzA4MzlmMTJmNDFlZTUifQ"
         },
         {
-          "resource": "repo://documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md#L39-L55",
+          "resource": "repo://documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md#L41-L57",
           "version": "repo-lines-v1:sha256:391dd373395ecdbd7cc840ac25c290a92612a9cceb595e8bce57a6f7925b3374:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0NWQ0ZjY4NWUxNTBjZWRkMmE3MzgyMDlmYmUyZTU0OWZmN2ZmMTFhYTQ3MzY5NzQ3NDhmNGZjNmMxMjE3YzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2MWE0ZjlmYTQ5ZjY4ODBiMWQyMTU0OTVlNTg1NzE1ODRlNjFkNjdmMTcxMjkyZDM2Y2Q1MzY2MjlmZDMwMWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVmNzMyODlkZTFiYjVlM2E4NDM0Y2ZmMzYxNjczOGY4NWU3ZDQzMmM5MTM2Y2E4MDk0MGI0NTk4MGE4YWViOGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlZmExMTdjNzZlYjkwYWJjZGU4NWJkYzEzMTM0Mjk0ZDgxMTA3OWY3NjhhNDM1NjNhNGQ2MTI2YWVkYzdlMjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7998a6a33c55418f8aecdd7febd47d31",
+      "statement": "The kubernetes-job Helm chart (infrastructure/helm/kubernetes-job/) deploys batch Jobs with optional PVC storage, using values/base.yaml defaults including placeholder image my-application, job backoffLimit 3, completions 1, parallelism 1, ttlSecondsAfterFinished 86400, and persistence enabled with 1Gi PVC mounted at /app/output. The chart stamps caelundas.job/git-commit and caelundas.job/timestamp labels on Job and PVC when metadata values are provided.",
+      "evidence": [
+        {
+          "resource": "repo://infrastructure/helm/kubernetes-job/Chart.yaml",
+          "version": "repo-file-v1:sha256:8bb92b18506eca2eb38520e8b0337bec8dbff16ead965e6bc859b8fcd42ac95f"
+        },
+        {
+          "resource": "repo://infrastructure/helm/kubernetes-job/templates/_helpers.tpl",
+          "version": "repo-file-v1:sha256:b1eefb0238e49ed246b66a2cff8b1357ce0d9121c47570aaf142d81fc43abb13"
+        },
+        {
+          "resource": "repo://infrastructure/helm/kubernetes-job/templates/job.yaml",
+          "version": "repo-file-v1:sha256:10d37eddc4fd52481d93e3de9950baec7831ee21e30d9eb72f2a2ca70d97dfbe"
+        },
+        {
+          "resource": "repo://infrastructure/helm/kubernetes-job/templates/pvc.yaml",
+          "version": "repo-file-v1:sha256:002c6a4802d2396a1ff385cd7690586e8bb2a07ad84473877aeec2b0a36d3e30"
+        },
+        {
+          "resource": "repo://infrastructure/helm/kubernetes-job/values/base.yaml",
+          "version": "repo-file-v1:sha256:09deeba3fac8185c692f7239ff6739e532d2509fb98273d874b92c4e535648d0"
+        }
+      ]
+    },
+    {
+      "id": "claim_b1b91cc9cd2f43aeb1bd332567caa881",
+      "statement": "All Terraform roots share an S3-compatible backend pointing to a Linode Object Storage bucket, configured via environment variables (TF_STATE_BUCKET, AWS_ENDPOINT_URL_S3, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY) with AWS validation skipped. No state locking is used; CI serializes applies via a workflow concurrency group. The linode root manages both the Terraform state bucket (with migration from organizzolini to organizzolini-codebase-terraform-state) and a separate Nx cache bucket with read-only and read-write access keys.",
+      "evidence": [
+        {
+          "resource": "repo://infrastructure/README.md",
+          "version": "repo-file-v1:sha256:2ec9549f3ac3d9c8f08b6ed6db06d8a00ed1eb002365dc48fc9bc80d1b5b6a60"
+        },
+        {
+          "resource": "repo://infrastructure/terraform/github/main.tf",
+          "version": "repo-file-v1:sha256:5515e6d7615a343cba1397c04a125af167bacbba122fc1a85f110e7fd47d1bb2"
+        },
+        {
+          "resource": "repo://infrastructure/terraform/linode/main.tf",
+          "version": "repo-file-v1:sha256:db3d011087b417a51737ed943086538e5955a82f2a8a5ef38b19126b36945455"
+        },
+        {
+          "resource": "repo://infrastructure/terraform/linode/outputs.tf",
+          "version": "repo-file-v1:sha256:d5c339d58656141b031fc6c18a9e1c3b68e120cb65546cefb0dddb775e20138f"
+        },
+        {
+          "resource": "repo://infrastructure/terraform/main.tf",
+          "version": "repo-file-v1:sha256:ef575fe619ad29efb668b1eafc7896db0e1e019b52e428605c7f69b15094084d"
+        },
+        {
+          "resource": "repo://infrastructure/terraform/openrouter/main.tf",
+          "version": "repo-file-v1:sha256:148f30e6d2e423f7a44ed70f0ea66b500c4bf4b9ef1b5172a6a1ab1da1b0360c"
+        }
+      ]
+    },
+    {
+      "id": "claim_9a6a1e41e0f0479ca02d99d71a443c26",
+      "statement": "GitHub Actions CI runs helm-lint and compose-config in the Lint leg via nx run infrastructure:helm-lint and nx run infrastructure:compose-config. The plan-terraform target runs for PRs changing infrastructure/terraform/** and comments the plan output. Continuous Deployment applies Terraform roots in order: openrouter → github → linode, using GitHub secrets for all sensitive values.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/continuous-integration.yml",
+          "version": "repo-file-v1:sha256:9a87d4a6126422f46bf43e65c8b374e21a57c863a4f91a6c1e0aade4e42cbbaa"
+        },
+        {
+          "resource": "repo://infrastructure/README.md",
+          "version": "repo-file-v1:sha256:2ec9549f3ac3d9c8f08b6ed6db06d8a00ed1eb002365dc48fc9bc80d1b5b6a60"
+        },
+        {
+          "resource": "repo://infrastructure/project.json",
+          "version": "repo-file-v1:sha256:9a3c184e7184752ce32efc8609e108547012b2a89a4d5eeeb44ad258a2564294"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.0",
-    "at": "2026-10-29T03:39:46.432Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-13T16:30:25.369Z"
   }
 }
