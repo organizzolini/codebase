@@ -17,7 +17,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **border**: The border styling utility that frames cards, inputs, and cells, the most used class family in the presentation package.
 - **boundary**: The edge limit that a popup or overflow respects, as the example sidebar notes the boundary holds under all eight styles.
 - **br**: The HTML line-break element, used in code-block output to render an empty line with no tokens.
-- **breadth**: The number of direct calls a callable makes, measured by callidescope and reported in this project's Breadth table.
 - **brightness**: The colour-picker brightness channel, one of the axes the picker exposes alongside hue and saturation.
 - **canonical**: The color-picker function that normalizes colour text into one canonical form before the picker compares or stores it.
 - **cascade**: The stacked, multi-level selection flow of the cascader, where each choice loads and opens the next level.

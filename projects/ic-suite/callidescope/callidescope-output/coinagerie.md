@@ -4,8 +4,7 @@
 
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
-- **anchor**: Start or end marker that delimits a generated block inside a markdown file, so a splice can replace it.
-- **breadth**: Width of a call graph as reported in the breadth section, measured against maximumBreadth.
+- **anchor**: The pair of start and end comment markers that bracket a generated block in a file, so a write replaces only what lies between them.
 - **callable**: Function, method, or constructor declaration that a report lists by display name, id, and stacks.
 - **headroom**: Measure of how far a stack or callable sits below its limit, bucketed into labeled ranges for the report.
 - **splice**: Replace the anchored region of a markdown file with freshly generated text, keeping everything outside it.
