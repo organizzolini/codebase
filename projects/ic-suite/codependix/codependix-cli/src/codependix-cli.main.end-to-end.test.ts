@@ -1,8 +1,10 @@
-import { spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import path from "node:path";
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+
+import { writeFileTree } from "@codebase/testing";
+import { runSourceCommand } from "@codebase/testing/end-to-end";
 
 import { environmentSchema } from "./codependix-cli.constants";
 
@@ -11,7 +13,21 @@ const COMMAND_PATH = path.resolve(
   "codependix-cli.main.ts",
 );
 
+/**
+ * Fixtures live in the package, not the OS temp directory: the swc loader resolves from the
+ * working directory, which must sit inside the workspace.
+ */
 const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../tmp");
+
+/** The tsconfig every fixture extends, so the command line's decorators compile. */
+function writeTsconfig(directory: string): string {
+  return JSON.stringify({
+    extends: path.relative(
+      directory,
+      path.resolve(import.meta.dirname, "../tsconfig.json"),
+    ),
+  });
+}
 
 describe("main end-to-end suite", () => {
   describe("environment schema e2e", () => {
@@ -26,15 +42,14 @@ describe("main end-to-end suite", () => {
     let standardError: string;
     let workingDirectory: string;
 
-    beforeAll(() => {
+    beforeAll(async () => {
       mkdirSync(FIXTURE_ROOT, { recursive: true });
       workingDirectory = mkdtempSync(
         path.join(FIXTURE_ROOT, "codependix-cli-stream-test-"),
       );
 
-      writeFileSync(
-        path.join(workingDirectory, "codependix.config.json"),
-        JSON.stringify({
+      writeFileTree(workingDirectory, {
+        "codependix.config.json": JSON.stringify({
           include: [],
           workspace: {
             nxProjects: {
@@ -45,24 +60,11 @@ describe("main end-to-end suite", () => {
             },
           },
         }),
-      );
+        "tsconfig.json": writeTsconfig(workingDirectory),
+      });
 
-      writeFileSync(
-        path.join(workingDirectory, "tsconfig.json"),
-        JSON.stringify({
-          extends: path.relative(
-            workingDirectory,
-            path.resolve(import.meta.dirname, "../tsconfig.json"),
-          ),
-        }),
-      );
-
-      const result = spawnSync(
-        process.execPath,
-        [
-          "--import",
-          "@swc-node/register/esm-register",
-          COMMAND_PATH,
+      const result = await runSourceCommand({
+        args: [
           "map",
           "--config",
           path.join(workingDirectory, "codependix.config.json"),
@@ -70,13 +72,9 @@ describe("main end-to-end suite", () => {
           "json",
           "--write",
         ],
-        {
-          cwd: workingDirectory,
-          encoding: "utf8",
-          env: { ...process.env, FORCE_COLOR: "0" },
-          timeout: 120_000,
-        },
-      );
+        directory: workingDirectory,
+        entry: COMMAND_PATH,
+      });
 
       standardError = result.stderr;
       standardOutput = result.stdout;
@@ -105,17 +103,13 @@ describe("main end-to-end suite", () => {
     let workingDirectory: string;
 
     /** Runs `--check boundaries` over the fixture with the given extra flags. */
-    function runBoundaries(flags: string[]): {
-      exitCode: null | number;
+    async function runBoundaries(flags: string[]): Promise<{
+      exitCode: number;
       standardError: string;
       standardOutput: string;
-    } {
-      const result = spawnSync(
-        process.execPath,
-        [
-          "--import",
-          "@swc-node/register/esm-register",
-          COMMAND_PATH,
+    }> {
+      const result = await runSourceCommand({
+        args: [
           "map",
           "--config",
           path.join(workingDirectory, "codependix.config.json"),
@@ -125,16 +119,12 @@ describe("main end-to-end suite", () => {
           "a",
           ...flags,
         ],
-        {
-          cwd: workingDirectory,
-          encoding: "utf8",
-          env: { ...process.env, FORCE_COLOR: "0" },
-          timeout: 120_000,
-        },
-      );
+        directory: workingDirectory,
+        entry: COMMAND_PATH,
+      });
 
       return {
-        exitCode: result.status,
+        exitCode: result.exitCode,
         standardError: result.stderr,
         standardOutput: result.stdout,
       };
@@ -147,9 +137,8 @@ describe("main end-to-end suite", () => {
       );
 
       // a ⇄ b is a cycle, and c depends on a.
-      writeFileSync(
-        path.join(workingDirectory, "codependix-graph.json"),
-        JSON.stringify({
+      writeFileTree(workingDirectory, {
+        "codependix-graph.json": JSON.stringify({
           dependencies: {
             a: [{ source: "a", target: "b", type: "static" }],
             b: [{ source: "b", target: "a", type: "static" }],
@@ -162,36 +151,28 @@ describe("main end-to-end suite", () => {
             ]),
           ),
         }),
-      );
-      writeFileSync(
-        path.join(workingDirectory, "codependix.config.json"),
-        JSON.stringify({
+        "codependix.config.json": JSON.stringify({
           boundaries: {
             nxProjects: [{ kind: "acyclic", name: "no-cycles" }],
           },
           include: [],
           projectGraph: "codependix-graph.json",
         }),
-      );
-      writeFileSync(
-        path.join(workingDirectory, "tsconfig.json"),
-        JSON.stringify({
-          extends: path.relative(
-            workingDirectory,
-            path.resolve(import.meta.dirname, "../tsconfig.json"),
-          ),
-        }),
-      );
+        "tsconfig.json": writeTsconfig(workingDirectory),
+      });
     });
 
     afterAll(() => {
       rmSync(workingDirectory, { force: true, recursive: true });
     });
 
-    it("puts nothing but a parseable report with a boundaries key on standard output", () => {
+    it("puts nothing but a parseable report with a boundaries key on standard output", async () => {
       expect.hasAssertions();
 
-      const { exitCode, standardOutput } = runBoundaries(["--format", "json"]);
+      const { exitCode, standardOutput } = await runBoundaries([
+        "--format",
+        "json",
+      ]);
       const report = JSON.parse(standardOutput) as {
         boundaries: {
           judgedProjects: string[];
@@ -208,10 +189,12 @@ describe("main end-to-end suite", () => {
       });
     });
 
-    it("logs on standard error and prints nothing without a format flag", () => {
+    it("logs on standard error and prints nothing without a format flag", async () => {
       expect.hasAssertions();
 
-      const { exitCode, standardError, standardOutput } = runBoundaries([]);
+      const { exitCode, standardError, standardOutput } = await runBoundaries(
+        [],
+      );
 
       expect(exitCode).toBe(1);
       expect(standardOutput).toBe("");
@@ -221,11 +204,11 @@ describe("main end-to-end suite", () => {
 
   describe("a command line naming no configuration", () => {
     /** Runs a command with no `--config`, in a directory holding a default-named file. */
-    function runWithoutConfig(command: string[]): {
-      exitCode: null | number;
+    async function runWithoutConfig(command: string[]): Promise<{
+      exitCode: number;
       standardError: string;
       standardOutput: string;
-    } {
+    }> {
       mkdirSync(FIXTURE_ROOT, { recursive: true });
 
       const workingDirectory = mkdtempSync(
@@ -234,38 +217,19 @@ describe("main end-to-end suite", () => {
 
       try {
         // A default-named file must not be found: nothing is searched for.
-        writeFileSync(
-          path.join(workingDirectory, "codependix.config.json"),
-          "{}",
-        );
-        writeFileSync(
-          path.join(workingDirectory, "tsconfig.json"),
-          JSON.stringify({
-            extends: path.relative(
-              workingDirectory,
-              path.resolve(import.meta.dirname, "../tsconfig.json"),
-            ),
-          }),
-        );
+        writeFileTree(workingDirectory, {
+          "codependix.config.json": "{}",
+          "tsconfig.json": writeTsconfig(workingDirectory),
+        });
 
-        const result = spawnSync(
-          process.execPath,
-          [
-            "--import",
-            "@swc-node/register/esm-register",
-            COMMAND_PATH,
-            ...command,
-          ],
-          {
-            cwd: workingDirectory,
-            encoding: "utf8",
-            env: { ...process.env, FORCE_COLOR: "0" },
-            timeout: 120_000,
-          },
-        );
+        const result = await runSourceCommand({
+          args: command,
+          directory: workingDirectory,
+          entry: COMMAND_PATH,
+        });
 
         return {
-          exitCode: result.status,
+          exitCode: result.exitCode,
           standardError: result.stderr,
           standardOutput: result.stdout,
         };
@@ -279,11 +243,11 @@ describe("main end-to-end suite", () => {
       ["path", ["path", "a", "b"]],
     ])(
       "refuses %s, naming the --config flag",
-      (_name, command) => {
+      async (_name, command) => {
         expect.hasAssertions();
 
         const { exitCode, standardError, standardOutput } =
-          runWithoutConfig(command);
+          await runWithoutConfig(command);
 
         expect(exitCode).not.toBe(0);
         expect(standardOutput).toBe("");

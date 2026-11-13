@@ -1,21 +1,13 @@
-import {
-  mkdirSync,
-  mkdtempSync,
-  rmSync,
-  symlinkSync,
-  writeFileSync,
-} from "node:fs";
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { createFileTree } from "@codebase/testing";
 
 import { resolveTsconfigInputs } from "./plugin-tsconfig.utilities";
 
 import type { ToolInputsLogger } from "./plugin.types";
-
-/** Fixture workspaces go in gitignored `tmp/`, as real directory trees. */
-const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../../../tmp");
 
 /** This repository's root, whose tsconfig extends `configuration/`'s. */
 const WORKSPACE_ROOT = path.resolve(
@@ -24,17 +16,6 @@ const WORKSPACE_ROOT = path.resolve(
 );
 
 describe(resolveTsconfigInputs, () => {
-  let fixtures: string;
-
-  beforeAll(() => {
-    mkdirSync(FIXTURE_ROOT, { recursive: true });
-    fixtures = mkdtempSync(path.join(FIXTURE_ROOT, "plugin-tsconfig-"));
-  });
-
-  afterAll(() => {
-    rmSync(fixtures, { force: true, recursive: true });
-  });
-
   /**
    * Writes a workspace holding the given files, linking each `links` key as pnpm links a package.
    */
@@ -45,24 +26,10 @@ describe(resolveTsconfigInputs, () => {
     inputs: ReturnType<typeof resolveTsconfigInputs>;
     logger: ToolInputsLogger;
   } {
-    const workspaceRoot = mkdtempSync(path.join(fixtures, "workspace-"));
-
-    for (const [file, content] of Object.entries(files)) {
-      mkdirSync(path.dirname(path.join(workspaceRoot, file)), {
-        recursive: true,
-      });
-      writeFileSync(path.join(workspaceRoot, file), content);
-    }
-    for (const [linkPath, target] of Object.entries(links)) {
-      mkdirSync(path.dirname(path.join(workspaceRoot, linkPath)), {
-        recursive: true,
-      });
-      symlinkSync(
-        path.join(workspaceRoot, target),
-        path.join(workspaceRoot, linkPath),
-        "dir",
-      );
-    }
+    const workspaceRoot = createFileTree(files, {
+      label: "plugin-tsconfig",
+      symlinks: links,
+    });
 
     const logger = createMock<ToolInputsLogger>();
 
@@ -473,7 +440,7 @@ describe(resolveTsconfigInputs, () => {
     expect(
       resolveTsconfigInputs({
         logger,
-        workspaceRoot: path.join(fixtures, "absent"),
+        workspaceRoot: path.join(createFileTree({}), "absent"),
       }),
     ).toStrictEqual(["{workspaceRoot}/tsconfig.json"]);
     expect(logger.warn).toHaveBeenCalledExactlyOnceWith(
