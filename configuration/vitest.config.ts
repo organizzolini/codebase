@@ -1,10 +1,9 @@
-import { existsSync } from "node:fs";
 import { join } from "node:path";
 
 import { configDefaults, defineConfig } from "vitest/config";
 
 // The shared setup by absolute path: a bare specifier resolves from the project,
-// which need not (and, to stay free of an unused dependency, does not) list it.
+// which need not list `@codebase/testing` as a dependency.
 const sharedSetup = join(
   import.meta.dirname,
   "../projects/common/testing/src/setup.ts",
@@ -40,11 +39,8 @@ const vitestConfig = defineConfig({
       "testing/**/*.test.ts",
       "testing/**/*.test.tsx",
     ],
-    // A project with its own `testing/setup.ts` (one that adds mocks beyond the
-    // shared setup) keeps it; every other project runs the shared one.
-    setupFiles: [
-      existsSync("./testing/setup.ts") ? "./testing/setup.ts" : sharedSetup,
-    ],
+    // A project that needs more adds its own file to this list.
+    setupFiles: [sharedSetup],
   },
 });
 
