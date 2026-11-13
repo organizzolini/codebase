@@ -1,14 +1,16 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 
-import { afterEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { createFileTree } from "@codebase/testing";
 
 import { readExample } from "../../../testing/examples";
 import {
-  createFixtureTree,
-  removeFixtureTree,
-} from "../../../testing/fixture-tree";
-import { run, SPAWN_TIMEOUT } from "../../../testing/run-command";
+  FIXTURE_OPTIONS,
+  run,
+  SPAWN_TIMEOUT,
+} from "../../../testing/run-command";
 
 const START = "<!-- coinagerie:start -->";
 const END = "<!-- coinagerie:end -->";
@@ -56,28 +58,22 @@ function readme(...bullets: string[]): string {
 }
 
 describe("collect command with a json destination end-to-end suite", () => {
-  let root: string | undefined;
-
-  afterEach(() => {
-    if (root !== undefined) {
-      removeFixtureTree(root);
-      root = undefined;
-    }
-  });
-
   it(
     "reports each destination's own missing and stale words",
-    () => {
-      root = createFixtureTree({
-        ...SOURCE,
-        ...CONFIGURATION,
-        "glossary.json": glossary({ angle: "", lunar: "", vanished: "" }),
-        "README.md": readme(
-          ...[...JSON_WORDS, "gone"].map((word) => `- **${word}**:`),
-        ),
-      });
+    async () => {
+      const root = createFileTree(
+        {
+          ...SOURCE,
+          ...CONFIGURATION,
+          "glossary.json": glossary({ angle: "", lunar: "", vanished: "" }),
+          "README.md": readme(
+            ...[...JSON_WORDS, "gone"].map((word) => `- **${word}**:`),
+          ),
+        },
+        FIXTURE_OPTIONS,
+      );
 
-      const result = run(root, ["--check"]);
+      const result = await run(root, ["--check"]);
 
       expect(result.exitCode).toBe(1);
       expect(result.standardError).toContain(path.join(root, "glossary.json"));
@@ -90,19 +86,22 @@ describe("collect command with a json destination end-to-end suite", () => {
 
   it(
     "writes both, copies no definition between them, and then checks clean",
-    () => {
-      root = createFixtureTree({
-        ...SOURCE,
-        ...CONFIGURATION,
-        "glossary.json": glossary({ phase: "A stage.", stale: "Gone." }),
-        "README.md": readme("- **lunar**: Of the moon."),
-      });
+    async () => {
+      const root = createFileTree(
+        {
+          ...SOURCE,
+          ...CONFIGURATION,
+          "glossary.json": glossary({ phase: "A stage.", stale: "Gone." }),
+          "README.md": readme("- **lunar**: Of the moon."),
+        },
+        FIXTURE_OPTIONS,
+      );
 
-      const written = run(root, ["--write"]);
-      const checked = run(root, ["--check"]);
+      const written = await run(root, ["--write"]);
+      const checked = await run(root, ["--check"]);
       const jsonPath = path.join(root, "glossary.json");
       const content = readFileSync(jsonPath, "utf8");
-      const rewritten = run(root, ["--write"]);
+      const rewritten = await run(root, ["--write"]);
 
       expect(written.exitCode).toBe(0);
       expect(content).toBe(
@@ -134,10 +133,13 @@ describe("collect command with a json destination end-to-end suite", () => {
 
   it(
     "creates a json destination that does not exist yet",
-    () => {
-      root = createFixtureTree({ ...SOURCE, ...CONFIGURATION });
+    async () => {
+      const root = createFileTree(
+        { ...SOURCE, ...CONFIGURATION },
+        FIXTURE_OPTIONS,
+      );
 
-      const result = run(root, ["--write"]);
+      const result = await run(root, ["--write"]);
 
       expect(result.exitCode).toBe(0);
       expect(
@@ -154,15 +156,18 @@ describe("collect command with a json destination end-to-end suite", () => {
     ["an array", '["angle"]'],
   ])(
     "refuses to write over %s, leaving every destination untouched",
-    (_case, content) => {
-      root = createFixtureTree({
-        ...SOURCE,
-        ...CONFIGURATION,
-        "glossary.json": content,
-        "README.md": "# Fixture\n",
-      });
+    async (_case, content) => {
+      const root = createFileTree(
+        {
+          ...SOURCE,
+          ...CONFIGURATION,
+          "glossary.json": content,
+          "README.md": "# Fixture\n",
+        },
+        FIXTURE_OPTIONS,
+      );
 
-      const result = run(root, ["--write"]);
+      const result = await run(root, ["--write"]);
 
       expect(result.exitCode).toBe(1);
       expect(result.standardError).toContain(path.join(root, "glossary.json"));
@@ -178,14 +183,17 @@ describe("collect command with a json destination end-to-end suite", () => {
 
   it(
     "refuses a check against a glossary it cannot parse",
-    () => {
-      root = createFixtureTree({
-        ...SOURCE,
-        ...CONFIGURATION,
-        "glossary.json": "not json",
-      });
+    async () => {
+      const root = createFileTree(
+        {
+          ...SOURCE,
+          ...CONFIGURATION,
+          "glossary.json": "not json",
+        },
+        FIXTURE_OPTIONS,
+      );
 
-      const result = run(root, ["--check"]);
+      const result = await run(root, ["--check"]);
 
       expect(result.exitCode).toBe(1);
       expect(existsSync(path.join(root, "README.md"))).toBe(false);
@@ -195,10 +203,10 @@ describe("collect command with a json destination end-to-end suite", () => {
 
   it(
     "prints flat json to standard output when --format json asks, honoring --exclude-paths",
-    () => {
-      root = createFixtureTree(SOURCE);
+    async () => {
+      const root = createFileTree(SOURCE, FIXTURE_OPTIONS);
 
-      const result = run(root, [
+      const result = await run(root, [
         "--format",
         "json",
         "--exclude-paths",
@@ -216,11 +224,14 @@ describe("collect command with a json destination end-to-end suite", () => {
 
   it(
     "lets --output-json and --output-markdown stand in for a configuration, and --include narrow the scan",
-    () => {
-      root = createFixtureTree({
-        ...SOURCE,
-        "other.ts": "const strayName = 1;\n",
-      });
+    async () => {
+      const root = createFileTree(
+        {
+          ...SOURCE,
+          "other.ts": "const strayName = 1;\n",
+        },
+        FIXTURE_OPTIONS,
+      );
       const flags = [
         "--include",
         "src/**",
@@ -230,8 +241,8 @@ describe("collect command with a json destination end-to-end suite", () => {
         "WORDS.md",
       ];
 
-      const written = run(root, [...flags, "--write"]);
-      const checked = run(root, [...flags, "--check"]);
+      const written = await run(root, [...flags, "--write"]);
+      const checked = await run(root, [...flags, "--check"]);
 
       expect(written.exitCode).toBe(0);
       expect(checked.exitCode).toBe(0);
@@ -247,14 +258,17 @@ describe("collect command with a json destination end-to-end suite", () => {
 
   it(
     "writes only the destinations a flag names, leaving the configured ones alone",
-    () => {
-      root = createFixtureTree({
-        ...SOURCE,
-        ...CONFIGURATION,
-        "README.md": "# Fixture\n",
-      });
+    async () => {
+      const root = createFileTree(
+        {
+          ...SOURCE,
+          ...CONFIGURATION,
+          "README.md": "# Fixture\n",
+        },
+        FIXTURE_OPTIONS,
+      );
 
-      const result = run(root, ["--output-json", "only.json", "--write"]);
+      const result = await run(root, ["--output-json", "only.json", "--write"]);
 
       expect(result.exitCode).toBe(0);
       expect(existsSync(path.join(root, "only.json"))).toBe(true);
@@ -268,10 +282,10 @@ describe("collect command with a json destination end-to-end suite", () => {
 
   it(
     "sets the markdown description from --description",
-    () => {
-      root = createFixtureTree(SOURCE);
+    async () => {
+      const root = createFileTree(SOURCE, FIXTURE_OPTIONS);
 
-      const result = run(root, [
+      const result = await run(root, [
         "--output-markdown",
         "WORDS.md",
         "--description",
@@ -296,10 +310,10 @@ describe("collect command with a json destination end-to-end suite", () => {
     ],
   ])(
     "refuses %s",
-    (_case, args) => {
-      root = createFixtureTree(SOURCE);
+    async (_case, args) => {
+      const root = createFileTree(SOURCE, FIXTURE_OPTIONS);
 
-      const result = run(root, args);
+      const result = await run(root, args);
 
       expect(result.exitCode).toBe(1);
       expect(existsSync(path.join(root, "W.md"))).toBe(false);
