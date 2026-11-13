@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+
 import { configDefaults, defineConfig } from "vitest/config";
 
 const vitestConfig = defineConfig({
@@ -6,6 +8,8 @@ const vitestConfig = defineConfig({
   },
   test: {
     coverage: {
+      exclude: ["src/**/*.test.ts"],
+      include: ["src/**/*.ts"],
       provider: "v8",
       reporter: ["text", "json-summary", "lcov", "html"],
       reportOnFailure: true,
@@ -28,7 +32,13 @@ const vitestConfig = defineConfig({
       "testing/**/*.test.ts",
       "testing/**/*.test.tsx",
     ],
-    setupFiles: ["./testing/setup.ts"],
+    // A project with its own `testing/setup.ts` (one that adds mocks beyond the
+    // shared setup) keeps it; every other project runs the shared one.
+    setupFiles: [
+      existsSync("./testing/setup.ts")
+        ? "./testing/setup.ts"
+        : "@codebase/testing/setup",
+    ],
   },
 });
 
