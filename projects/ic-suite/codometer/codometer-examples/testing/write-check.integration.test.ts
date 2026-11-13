@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import {
   type CodometerRun,
@@ -44,11 +44,11 @@ describe("every example configuration this package ships", () => {
         directory,
       );
 
-    /** Rows run in order on one shared copy. */
-    let walk: MatrixWalk;
+    /** Rows run in order on one shared copy, walked once by the first test to ask. */
+    let walking: Promise<MatrixWalk> | undefined;
 
-    beforeAll(async () => {
-      walk = await withCorpusCopy(async (directory): Promise<MatrixWalk> => {
+    const readWalk = async (): Promise<MatrixWalk> => {
+      walking ??= withCorpusCopy(async (directory): Promise<MatrixWalk> => {
         const reportPath = path.join(directory, "codometer-report.json");
         const bare = await runRow(directory);
         const bareWroteReport = fs.existsSync(reportPath);
@@ -76,9 +76,13 @@ describe("every example configuration this package ships", () => {
           wroteReport: fs.existsSync(reportPath),
         };
       });
-    });
 
-    it("writes only when asked, and gates only when asked", () => {
+      return walking;
+    };
+
+    it("writes only when asked, and gates only when asked", async () => {
+      const walk = await readWalk();
+
       expect(walk.bare.exitCode).toBe(0);
       expect(walk.bareWroteReport).toBe(false);
 
@@ -109,7 +113,9 @@ describe("every example configuration this package ships", () => {
       });
     });
 
-    it("compares a written report rather than rewriting it", () => {
+    it("compares a written report rather than rewriting it", async () => {
+      const walk = await readWalk();
+
       expect(walk.checkedReports.exitCode).toBe(0);
       expect(walk.checkedReportsAndLimits.exitCode).toBe(1);
     });

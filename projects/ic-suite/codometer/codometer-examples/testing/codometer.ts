@@ -298,19 +298,16 @@ export const readCounters = (
 
 // 📋 Scratch copies
 
-/** Runs a body on a copied corpus, keeping the original. */
+/**
+ * Runs a body on a copied corpus, keeping the original. Call it from a test:
+ * the copy is removed once that test finishes.
+ */
 export const withCorpusCopy = async <Result>(
   body: (directory: string) => Promise<Result> | Result,
 ): Promise<Result> => {
-  fs.mkdirSync(scratchDirectory, { recursive: true });
+  const directory = createTemporaryDirectory("corpus", scratchDirectory);
 
-  const directory = fs.mkdtempSync(path.join(scratchDirectory, "corpus-"));
+  fs.cpSync(corpusDirectory, directory, { recursive: true });
 
-  try {
-    fs.cpSync(corpusDirectory, directory, { recursive: true });
-
-    return await body(directory);
-  } finally {
-    fs.rmSync(directory, { force: true, recursive: true });
-  }
+  return body(directory);
 };

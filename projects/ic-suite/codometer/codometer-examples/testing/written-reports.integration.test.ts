@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import {
   type CodometerReport,
@@ -23,13 +23,17 @@ import {
 
 describe("every example configuration this package ships", () => {
   describe("what codometer writes, it does not measure", () => {
-    /** One copy, walked in the order the guide describes. */
-    let firstWrite: CodometerRun;
-    let remeasured: CodometerReport;
-    let rewritten: CodometerReport;
+    /** The writes of one copy, walked once, in the order the guide describes. */
+    interface Walk {
+      firstWrite: CodometerRun;
+      remeasured: CodometerReport;
+      rewritten: CodometerReport;
+    }
 
-    beforeAll(async () => {
-      await withCorpusCopy(async (directory) => {
+    let walking: Promise<Walk> | undefined;
+
+    const readWalk = async (): Promise<Walk> => {
+      walking ??= withCorpusCopy(async (directory): Promise<Walk> => {
         const configuration = exampleConfiguration(
           "output",
           "self-excluded.config.ts",
@@ -40,21 +44,32 @@ describe("every example configuration this package ships", () => {
             directory,
           );
 
-        firstWrite = await write();
+        const firstWrite = await write();
         // Asking for the report on the console is `--format json`, which names
         // no destination and so cannot drop the configured pair.
-        remeasured = await measure(["--config", configuration], directory);
+        const remeasured = await measure(
+          ["--config", configuration],
+          directory,
+        );
+
         await write();
-        rewritten = JSON.parse(
+
+        const rewritten = JSON.parse(
           fs.readFileSync(
             path.join(directory, "codometer-report.json"),
             "utf8",
           ),
         ) as CodometerReport;
-      });
-    });
 
-    it("leaves its own destinations out of the tree it measured", () => {
+        return { firstWrite, remeasured, rewritten };
+      });
+
+      return walking;
+    };
+
+    it("leaves its own destinations out of the tree it measured", async () => {
+      const { rewritten } = await readWalk();
+
       // Twice: the first run created the two destinations, the second measured
       // a tree that already held them. Two files were written into the measured
       // directory, and the counts are exactly what they were before either
@@ -64,13 +79,17 @@ describe("every example configuration this package ships", () => {
       expect(readMetric(rewritten, "codebase", "json.files")).toBe(1);
     });
 
-    it("measures the same tree whether or not the report was asked for", () => {
+    it("measures the same tree whether or not the report was asked for", async () => {
+      const { remeasured } = await readWalk();
+
       // The two files stay excluded and the count is the one the write run
       // reported.
       expect(readTarget(remeasured, "codebase").files).toBe(28);
     });
 
-    it("says on the console what it left out", () => {
+    it("says on the console what it left out", async () => {
+      const { firstWrite } = await readWalk();
+
       expect(firstWrite.standardError).toContain("statistics.md");
     });
   });
