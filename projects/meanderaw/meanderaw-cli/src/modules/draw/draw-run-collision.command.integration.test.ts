@@ -2,7 +2,6 @@ import { createMock } from "@golevelup/ts-vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
-import { mockFileSystem } from "@codebase/testing";
 
 import {
   DRAW_RUN_TIMEOUT_MILLISECONDS,
@@ -14,7 +13,15 @@ import { HISTORICAL_CORPUS } from "../corpus/historical-corpus.constants";
 
 import { DrawCodeService } from "./draw-code.service";
 
-vi.mock("node:fs/promises", () => mockFileSystem());
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
+
+vi.mock("node:fs/promises", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem();
+});
 
 /** Starts a fresh draw run over an emptied `meanders` table, with `--code` and logging mocked out. */
 async function startMockedDrawRun(): Promise<DrawRunFixture> {
