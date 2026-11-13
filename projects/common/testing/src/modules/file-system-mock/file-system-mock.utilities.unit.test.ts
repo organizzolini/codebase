@@ -9,12 +9,14 @@ import {
   readThroughPromises,
 } from "../../../testing/fixtures/sample-file-reader";
 
+import type * as FileSystemHelpers from "../../file-system";
 import type * as NodeFileSystemPromises from "node:fs/promises";
 
 // `vi.mock` hoists above static imports, so the factory imports the helper
-// dynamically. `node:fs` is a bare mock: no real function runs.
+// through `vi.importActual`. `node:fs` is a bare mock: no real function runs.
 vi.mock("node:fs", async () => {
-  const { mockFileSystem } = await import("../../index");
+  const { mockFileSystem } =
+    await vi.importActual<typeof FileSystemHelpers>("../../file-system");
 
   return mockFileSystem();
 });
@@ -22,7 +24,8 @@ vi.mock("node:fs", async () => {
 // `node:fs/promises` is a spying mock: each function runs for real until a
 // test stages a result.
 vi.mock("node:fs/promises", async (importOriginal) => {
-  const { mockFileSystem } = await import("../../index");
+  const { mockFileSystem } =
+    await vi.importActual<typeof FileSystemHelpers>("../../file-system");
 
   return mockFileSystem(await importOriginal<typeof NodeFileSystemPromises>());
 });

@@ -14,6 +14,7 @@ subpath exports.
 | `@codebase/testing`             | Temporary directories, output and exit-code capture, environment overrides, the fixed clock, fixtures, mocks | nothing in the workspace  |
 | `@codebase/testing/setup`       | The shared Vitest setup file                                                                                 | nothing in the workspace  |
 | `@codebase/testing/end-to-end`  | Tarball sandbox and Verdaccio plugin runners that test packed packages as a consumer installs them           | `execa`, Verdaccio        |
+| `@codebase/testing/file-system` | The `mockFileSystem` factory helper, kept free of `node:fs` imports                                          | nothing in the workspace  |
 | `@codebase/testing/nestjs`      | The testing-module builder, module-wiring assertions, and the Nx workspace tree                              | `@codebase/observability` |
 | `@codebase/testing/react`       | The route-render helper and the `createServerFn` and `matchMedia` stand-ins                                  | TanStack Router           |
 | `@codebase/testing/react/setup` | The shared jsdom setup                                                                                       | Testing Library           |
@@ -59,8 +60,10 @@ describe("the command line", () => {
 ```
 
 `createFileTree({ "src/a.ts": "..." }, { git: true, symlinks: { "link": "src" } })`
-writes a temporary tree and returns its root, removed with the test;
-`writeFileTree(root, files)` writes into a directory you already hold.
+writes a temporary tree and returns its root, removed with the test; `parent`
+makes the root inside a directory you name instead, for a spawned command that
+must resolve its packages from the workspace. `writeFileTree(root, files)`
+writes into a directory you already hold.
 
 Every helper that changes global state undoes it once the test finishes, so a
 test cannot leak a directory, a stream spy, an exit code, or a variable into
@@ -78,22 +81,32 @@ shared setup file already mocks `prompts` with it, so a test needs no
 
 `mockFileSystem` builds the module a `vi.mock` factory returns, served as named
 exports and as `default`, so code written either way reads one set of stubs.
-`vi.mock` hoists above static imports, so the factory imports the helper
-dynamically:
+`vi.mock` hoists above static imports, so the factory loads the helper from its
+own entry, `@codebase/testing/file-system`, with `vi.importActual`. A
+dynamic `import()` of the package makes `@nx/enforce-module-boundaries` forbid
+every static import of `@codebase/testing` in the same project, but
+`vi.importActual` is a call, not an import expression, so the rule passes
+without a disable comment. The entry loads nothing that imports `node:fs`:
 
 ```ts
 import fs from "node:fs";
 
 import { vi } from "vitest";
 
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
+
 vi.mock("node:fs", async () => {
-  const { mockFileSystem } = await import("@codebase/testing");
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
 
   return mockFileSystem(); // bare stubs: no real function runs
 });
 
 vi.mock("node:fs/promises", async (importOriginal) => {
-  const { mockFileSystem } = await import("@codebase/testing");
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
 
   return mockFileSystem(await importOriginal()); // real, until a result is staged
 });
@@ -139,7 +152,9 @@ sanitized, the timeout defaults to 120 seconds, and a failing or stopped run is
 a result (exit code 1 when it never exited), never a throw. `tsconfig` sets
 `SWC_NODE_PROJECT`, which swc-node reads ahead of `TS_NODE_PROJECT`. Run it
 from a directory inside the workspace: `@swc-node/register` resolves from the
-working directory, so a `os.tmpdir()` one fails on Linux.
+working directory, so a `os.tmpdir()` one fails on Linux. Its hook also resolves from there,
+so an absolute loader path would not help; pass `parent` to `createFileTree` to
+put a spawned root inside the workspace.
 
 Both runners test packed artifacts: run the `pack` target first, so
 `dist/tarballs` holds them. Commands receive only a sanitized environment, a

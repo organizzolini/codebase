@@ -7,11 +7,14 @@ import { beforeAll, onTestFinished } from "vitest";
 import { TEMPORARY_DIRECTORY_PREFIX } from "./temporary-directory.constants";
 
 /**
- * Creates an empty directory for the running test, removed with its contents
- * once the test finishes.
+ * Creates an empty directory for the running test, removed once it finishes.
+ * `parent` holds it instead of the system temporary directory.
  */
-export function createTemporaryDirectory(label: string): string {
-  const directory = makeDirectory(label);
+export function createTemporaryDirectory(
+  label: string,
+  parent?: string,
+): string {
+  const directory = makeDirectory(label, parent);
 
   onTestFinished(() => {
     removeDirectory(directory);
@@ -20,11 +23,18 @@ export function createTemporaryDirectory(label: string): string {
   return directory;
 }
 
-/** Makes a fresh directory under the real path of the system's temporary directory. */
-export function makeDirectory(label: string): string {
+/**
+ * Makes a fresh directory under the real path of `parent`, created when
+ * missing, or of the system's temporary directory.
+ */
+export function makeDirectory(label: string, parent?: string): string {
+  if (parent !== undefined) {
+    fs.mkdirSync(parent, { recursive: true });
+  }
+
   return fs.mkdtempSync(
     path.join(
-      fs.realpathSync(os.tmpdir()),
+      fs.realpathSync(parent ?? os.tmpdir()),
       `${TEMPORARY_DIRECTORY_PREFIX}${label}-`,
     ),
   );

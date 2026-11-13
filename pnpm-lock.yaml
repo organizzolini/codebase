@@ -1975,6 +1975,9 @@ importers:
       execa:
         specifier: 'catalog:'
         version: 9.6.1
+      prompts:
+        specifier: 'catalog:'
+        version: 2.4.2
       react:
         specifier: 'catalog:'
         version: 19.3.0
@@ -2003,6 +2006,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 26.6.2
+      '@types/prompts':
+        specifier: 'catalog:'
+        version: 2.4.9
       '@types/react':
         specifier: 'catalog:'
         version: 19.3.0

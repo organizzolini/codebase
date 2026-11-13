@@ -43,9 +43,14 @@ function reachablePackages(entry: string): string[] {
 
 describe("entries", () => {
   it("never reach execa or Verdaccio from any entry but end-to-end", () => {
-    const entries = ["index", "nestjs", "react", "react-setup", "setup"].map(
-      (name) => path.join(import.meta.dirname, `${name}.ts`),
-    );
+    const entries = [
+      "file-system",
+      "index",
+      "nestjs",
+      "react",
+      "react-setup",
+      "setup",
+    ].map((name) => path.join(import.meta.dirname, `${name}.ts`));
 
     for (const entry of entries) {
       expect(
