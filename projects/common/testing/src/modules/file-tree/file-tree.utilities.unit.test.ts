@@ -53,6 +53,13 @@ describe("file trees", () => {
       expect(fs.readdirSync(path.join(repository, ".git"))).toStrictEqual([]);
     });
 
+    it("holds the root in the parent directory, creating it when missing", () => {
+      const parent = path.join(createFileTree({}), "nested");
+      const root = createFileTree({}, { parent });
+
+      expect(path.dirname(root)).toBe(fs.realpathSync(parent));
+    });
+
     it("links each symlink path to its target under the root", () => {
       const root = createFileTree(
         { "real/file.txt": "linked" },
