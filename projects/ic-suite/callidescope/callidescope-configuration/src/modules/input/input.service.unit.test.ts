@@ -15,10 +15,7 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 import { ConfigurationPathRequiredError } from "./input.constants";
 import { InputService } from "./input.service";
 
-// Mocked at the module boundary so the service's own wiring is exercised and
-// no test ever reaches for a terminal.
-vi.mock("prompts", () => ({ default: vi.fn() }));
-
+// The shared setup mocks `prompts`, so no test ever reaches for a terminal.
 const promptRunner = vi.mocked(prompts);
 
 describe(InputService, () => {
