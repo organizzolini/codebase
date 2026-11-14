@@ -52,7 +52,7 @@ src/
   `prompts`), `captureOutput`, `captureExitCode`, `mockFileSystem`.
 - **Module**: `bootModule`, `expectModuleProvides`/`Exports`/`Imports`.
 - **Integration**: `createFileTree`, `createTemporaryDirectory`,
-  `overrideEnvironment`, `mockDates`.
+  `useWorkingDirectory`, `overrideEnvironment`, `mockDates`.
 - **End-to-end CLI**: `runSourceCommand` over a `createFileTree` root (core
   stays free of `execa`, so it lives in `/end-to-end`).
 - **Utilities**: `mockPartially`, `stubFetch`, `loadFixture`.

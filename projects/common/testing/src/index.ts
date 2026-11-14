@@ -34,3 +34,4 @@ export {
   createTemporaryDirectory,
   useTemporaryDirectory,
 } from "./modules/temporary-directory/temporary-directory.utilities";
+export { useWorkingDirectory } from "./modules/working-directory/working-directory.utilities";

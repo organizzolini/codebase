@@ -68,7 +68,8 @@ writes into a directory you already hold.
 Every helper that changes global state undoes it once the test finishes, so a
 test cannot leak a directory, a stream spy, an exit code, or a variable into
 the next. `useTemporaryDirectory` is the suite-level variant: one directory
-from the suite's first test to its last.
+from the suite's first test to its last. `useWorkingDirectory(directory)`
+makes `process.cwd()` return any path, real or not, until the test finishes.
 
 `loadFixture(import.meta.url, "fixtures/page.html")` reads a fixture relative
 to the test file. `mockChildProcess` and `mockPartially` build `vi.mock`
@@ -193,7 +194,7 @@ builds the class the same way and asserts its logger context, comes from
 | ------------------ | -------------------------------------------------------------------------------------------------------------------------- |
 | Command            | `buildTestingModule`, `answerPrompts`, `captureOutput`, `captureExitCode`, `mockFileSystem`                                |
 | Module             | `bootModule`, `expectModuleProvides`, `expectModuleExports`, `expectModuleImports`                                         |
-| Integration        | `createFileTree`, `createTemporaryDirectory`, `overrideEnvironment`, `mockDates`                                           |
+| Integration        | `createFileTree`, `createTemporaryDirectory`, `useWorkingDirectory`, `overrideEnvironment`, `mockDates`                    |
 | End-to-end CLI     | `runSourceCommand` over a `createFileTree({ ... }, { git: true })` root, or `createTarballSandboxRunner` for packed output |
 | Utilities          | `mockPartially`, `stubFetch`, `loadFixture`, `mockDates`                                                                   |
 
