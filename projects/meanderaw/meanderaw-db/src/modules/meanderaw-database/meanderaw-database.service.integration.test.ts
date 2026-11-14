@@ -35,14 +35,6 @@ import type { MeanderRecord } from "./meanderaw-database.types";
  * `MeanderawDatabaseModule` at a fresh, isolated database of its own
  * instead of the local one.
  */
-/** Names that must never be columns: they live in the bridge. */
-const CHARACTERISTIC_NAMES = [
-  "cornerCount",
-  "dotCount",
-  "edgeCount",
-  "forkCount",
-];
-
 /** The catalog these cases hold, registered before each. */
 const CATALOG_KEYS = [
   "aSoutheastLatinCount",
@@ -158,16 +150,25 @@ describe(MeanderawDatabaseService, () => {
 
   describe("characteristics", () => {
     it("stores no Characteristic under a column of its own, nor the retired jsonb map", () => {
-      const columns = new Set(
-        dataSource
-          .getMetadata(Meander)
-          .columns.map((column) => column.propertyName),
-      );
+      const columns = dataSource
+        .getMetadata(Meander)
+        .columns.map((column) => column.propertyName)
+        .toSorted();
 
-      expect(
-        CHARACTERISTIC_NAMES.filter((key) => columns.has(key)),
-      ).toStrictEqual([]);
-      expect(columns.has("characteristics")).toBe(false);
+      expect(columns).toStrictEqual([
+        "code",
+        "columns",
+        "createdAt",
+        "createdBy",
+        "id",
+        "isHardcoded",
+        "lattice",
+        "repeats",
+        "rows",
+        "symmetricalCodes",
+        "updatedAt",
+        "updatedBy",
+      ]);
     });
 
     it("writes one bridge row per number above 0 and per true boolean, a boolean as 1", async () => {

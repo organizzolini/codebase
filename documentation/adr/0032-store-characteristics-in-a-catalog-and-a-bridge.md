@@ -19,14 +19,14 @@ Two tables replace the column.
 - **The catalog follows the evaluators.** Each draw run, and each `--code` run, upserts one row per registered evaluator and deletes the rows whose key is no longer registered. Their bridge rows cascade with them, so a removed or renamed evaluator leaves nothing behind.
 - **No data migrates.** The migration empties `meanders`, drops the column and creates the tables. The corpus is recomputed by re-running the draw.
 - **`clear` truncates both tables together.** The bridge references `meanders`, so a `TRUNCATE` of `meanders` alone is refused; the catalog is left in place.
-- **A worker thread still returns a sparse map.** The main thread writes the meander rows with `RETURNING id`, then the bridge rows from three parallel arrays, so the pool never touches the database.
+- **A worker thread still returns a sparse map.** The main thread writes the meander rows, then the bridge rows from three parallel arrays that join each Code back to its meander and each key to the catalog, so the pool never touches the database.
 - **Pattern pages read through the bridge.** `patternRows` selects the meanders holding a key and attaches the booleans each holds for its caption. `patternShapeCounts` counts from the bridge.
 
 ### Negative values
 
 The cutoff only holds if no characteristic can be negative, since a negative value would read as 0. Three characteristics are written as differences: `tileCrossingComponentDeltaCount`, `tileCrossingCount` and `tileCrossingCycleCount`. Each compares the repeat read as a cyclic band with the same repeat read as a lone tile, and each should be non-negative because the band's graph contains the tile's.
 
-That was checked against the data rather than taken from the argument. Every characteristic was computed for every entry of the historical corpus and for every enumerated meander within the 12-edge test budget. None was negative, and `density` was the only non-integer. `CharacteristicsService.stored` also throws on a negative number now, so a future evaluator that can go below 0 fails loudly rather than vanishing from the bridge.
+That was checked against the data rather than taken from the argument. Every characteristic was computed for every entry of the historical corpus and for every enumerated meander within the 12-edge test budget. None was negative, and `density` was the only non-integer. A test computes every evaluator over the historical corpus and asserts none is negative. `CharacteristicsService.stored` also throws on a negative or NaN number now, so a future evaluator that can go below 0 fails loudly rather than vanishing from the bridge.
 
 ## Consequences
 

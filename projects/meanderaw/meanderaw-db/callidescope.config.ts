@@ -1,17 +1,8 @@
 import { projectDefaults } from "../../../configuration/callidescope.config.js";
 
 /**
- * What meanderaw-db is held to, measured rather than assumed.
- *
- * `MeanderawDatabaseService` runs its statements inside the transaction
- * callback it hands to the entity manager. Entities and migrations make up
- * the rest, so there is little else to call.
- *
- * Its stacks fit within the workspace's default limits, so none is overridden
- * here; a deeper stack fails the gate and is the signal to set one.
- *
- * @see configuration/callidescope.config.ts — `projectDefaults`, spread below
- * for everything this file does not override
+ * Measured against the workspace defaults, which every stack here fits within.
+ * Migrations are excluded: TypeORM generates them.
  */
 export default {
   ...projectDefaults,

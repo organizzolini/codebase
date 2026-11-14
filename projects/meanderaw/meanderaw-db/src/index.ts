@@ -12,9 +12,6 @@ export { ShapeCount } from "./modules/meanderaw-database/entities/shape-count.en
 // 📤 Exports
 export {
   BIGINT_NUMBER_TRANSFORMER,
-  CHARACTERISTIC_INSERT_CHUNK_SIZE,
-  MEANDER_INSERT_CHUNK_SIZE,
-  MEANDER_READ_BATCH_SIZE,
   MEANDERAW_PROJECT,
   UnknownCharacteristicError,
 } from "./modules/meanderaw-database/meanderaw-database.constants";

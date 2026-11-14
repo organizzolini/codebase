@@ -101,6 +101,18 @@ describe(CharacteristicsService, () => {
     );
   });
 
+  it("computes no negative or NaN number for any historical corpus entry, so the bridge's above-0 cutoff drops nothing real", () => {
+    const unreadable = HISTORICAL_CORPUS.flatMap((entry) =>
+      Object.entries(
+        service.compute(
+          codeService.parse(entry.code, entry.rows, entry.columns),
+        ),
+      ).filter(([, value]) => typeof value === "number" && !(value >= 0)),
+    );
+
+    expect(unreadable).toStrictEqual([]);
+  });
+
   it("names the three rotated tilings among its fixtures", () => {
     expect(FIXTURE_CODES).toStrictEqual(
       expect.arrayContaining([

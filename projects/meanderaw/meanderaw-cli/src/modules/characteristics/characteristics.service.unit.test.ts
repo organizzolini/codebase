@@ -341,6 +341,19 @@ describe(CharacteristicsService, () => {
     expect(() => fresh.stored(characteristics, false)).toThrow(/dotCount/u);
   });
 
+  it("refuses to store a NaN number, which fails both comparisons against 0", async () => {
+    providers = providers.map((provider, index) =>
+      CHARACTERISTIC_KEYS[index] === "dotCount"
+        ? fake("dotCount", "number", Number.NaN)
+        : provider,
+    );
+    const fresh = await registry();
+
+    expect(() => fresh.stored(fresh.compute("02x01y2c"), false)).toThrow(
+      /dotCount/u,
+    );
+  });
+
   it("stores every number above 0 in key-list order, and no zero or false one", () => {
     const characteristics = service.compute("02x01y2c");
 
