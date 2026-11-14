@@ -28,14 +28,6 @@ import type { MeanderRecord } from "./meanderaw-database.types";
  * `MeanderawDatabaseModule` at a fresh, isolated database of its own
  * instead of the local one.
  */
-/** Characteristic names that must never appear as columns: they live in the `characteristics` jsonb. */
-const CHARACTERISTIC_NAMES = [
-  "cornerCount",
-  "dotCount",
-  "edgeCount",
-  "forkCount",
-];
-
 describe(MeanderawDatabaseService, () => {
   let database: DatabaseTestingModule;
   let dataSource: DataSource;
@@ -119,16 +111,26 @@ describe(MeanderawDatabaseService, () => {
 
   describe("characteristics", () => {
     it("stores no Characteristic under a column of its own, only in the one characteristics map", () => {
-      const columns = new Set(
-        dataSource
-          .getMetadata(Meander)
-          .columns.map((column) => column.propertyName),
-      );
+      const columns = dataSource
+        .getMetadata(Meander)
+        .columns.map((column) => column.propertyName)
+        .toSorted();
 
-      expect(
-        CHARACTERISTIC_NAMES.filter((key) => columns.has(key)),
-      ).toStrictEqual([]);
-      expect(columns.has("characteristics")).toBe(true);
+      expect(columns).toStrictEqual([
+        "characteristics",
+        "code",
+        "columns",
+        "createdAt",
+        "createdBy",
+        "id",
+        "isHardcoded",
+        "lattice",
+        "repeats",
+        "rows",
+        "symmetricalCodes",
+        "updatedAt",
+        "updatedBy",
+      ]);
     });
 
     it("round-trips a meander's numbers, letter counts, and true booleans through save and a Code lookup", async () => {

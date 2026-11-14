@@ -242,9 +242,8 @@ meanderaw variable carries the `MEANDERAW_` prefix, so the unprefixed `POSTGRES_
 `PostgresqlUpdatableEntity`, so its `uuidv7()` id and audit columns come from the shared package, and the
 migrations live in `projects/meanderaw/meanderaw-db/src/modules/meanderaw-database/migrations/`. After changing the entity run
 `nx run meanderaw-db:migration:generate`, and `nx run meanderaw-db:migration:run` to apply it; the
-`start` target never migrates, so run the migrations before the first draw run. The CLI reads the
-data source `data-source.constants.ts` exports, and the
-`migration` target finds both through its `module` option, which names that folder.
+`start` target never migrates, so run the migrations before the first draw run. The CLI reads its
+data source from `@codebase/meanderaw-db`, whose `migration` target finds it through the `module` option.
 
 A draw run commits nothing: the HTML pages it writes stay in the gitignored `output/` — see
 [ADR 0021](../../../documentation/adr/0021-stop-committing-the-meander-pages.md). Integration suites start

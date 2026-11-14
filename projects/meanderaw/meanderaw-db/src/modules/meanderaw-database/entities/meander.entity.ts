@@ -4,7 +4,7 @@ import { PostgresqlUpdatableEntity } from "@codebase/persistence";
 
 import { BIGINT_NUMBER_TRANSFORMER } from "../meanderaw-database.constants";
 
-/** A characteristic's stored value: a number, or `true` for a boolean. Missing keys mean zero or false. */
+/** A stored value. Loose until #2277 replaces the jsonb column. */
 export type StoredCharacteristicValues = Readonly<
   Record<string, number | true>
 >;

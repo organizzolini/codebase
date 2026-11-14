@@ -18,7 +18,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **comb**: A pattern characteristic named for a comb-shaped ink layout, computed for each unit by IsCombCharacteristicService.
 - **coordinate**: A band or pixel position rounded and trimmed before drawing, as the draw index and drawing services format each path coordinate.
 - **corpus**: The historical set of meander Codes ingested from the retired file tree, split by CorpusService into preserved and enumerated halves.
-- **db**:
+- **db**: Short for the meanderaw-db package, the Postgres entities, migrations, and service the CLI consumes.
 - **degree**: The number of ink edges meeting a point, which path and end characteristics read to find degree-one ends and degree-two runs.
 - **element**: An HTML element as the draw index builds it, such as the nav sectioning element that wraps the jump list of pages.
 - **enumeration**: The walk over every structurally distinct repeat a shape admits under the edge budget, implemented by EnumerationService.
