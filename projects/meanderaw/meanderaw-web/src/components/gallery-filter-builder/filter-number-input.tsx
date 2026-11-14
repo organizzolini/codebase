@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { MAXIMUM_FILTER_TEXT_LENGTH } from "./gallery-filter-builder.constants";
+
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -37,25 +39,40 @@ export function FilterNumberInput(
 
   // 🪝 Hooks
   const [draft, setDraft] = useState(String(value));
+  const [seen, setSeen] = useState(value);
 
   // 🏗 Setup
+  const shown = String(value);
+
+  // A value that changed elsewhere, such as a new field's, replaces what was
+  // typed, unless what was typed already says the same.
+  if (seen !== value) {
+    setSeen(value);
+
+    if (isText ? draft !== shown : Number(draft) !== value) {
+      setDraft(shown);
+    }
+  }
 
   // 💪 Handlers
-  const handleChange = (text: string): void => {
-    setDraft(text);
-
+  const handleCommit = (): void => {
     if (isText) {
-      if (text !== "") {
-        onValueChange(text);
+      if (draft !== shown) {
+        onValueChange(draft);
       }
 
       return;
     }
 
-    const parsed = Number(text);
+    const parsed = Number(draft);
+    const isSound =
+      draft.trim() !== "" &&
+      (isInteger ? Number.isSafeInteger(parsed) : Number.isFinite(parsed));
 
-    if (text.trim() !== "" && Number.isFinite(parsed)) {
-      onValueChange(isInteger ? Math.trunc(parsed) : parsed);
+    if (!isSound) {
+      setDraft(shown);
+    } else if (parsed !== value) {
+      onValueChange(parsed);
     }
   };
 
@@ -73,8 +90,15 @@ export function FilterNumberInput(
         aria-label={label}
         className="w-24 rounded-md border border-(--line) bg-(--surface-raised) px-2 py-1"
         inputMode={isText ? "text" : "decimal"}
+        maxLength={MAXIMUM_FILTER_TEXT_LENGTH}
+        onBlur={handleCommit}
         onChange={(event) => {
-          handleChange(event.target.value);
+          setDraft(event.target.value);
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            handleCommit();
+          }
         }}
         value={draft}
       />

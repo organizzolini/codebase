@@ -1,3 +1,4 @@
+import { isWithinLimits, normalizeRule } from "./filter-limits.utilities";
 import {
   OPERATOR_INPUTS,
   OPERATOR_LABELS,
@@ -43,9 +44,27 @@ export function changeRuleField(
   rule: FilterRule,
   field: FilterField,
 ): FilterRule {
-  return typeOfValue(rule.value) === field.type
-    ? { ...rule, field: field.key }
-    : createRule(field);
+  if (typeOfValue(rule.value) !== field.type) {
+    return createRule(field);
+  }
+
+  const { value } = rule;
+
+  // A number field's value, which may be fractional, moves to a whole-number
+  // field by dropping its fraction.
+  if (field.isInteger && typeof value === "number") {
+    return { ...rule, field: field.key, value: Math.trunc(value) };
+  }
+
+  if (field.isInteger && Array.isArray(value)) {
+    return {
+      ...rule,
+      field: field.key,
+      value: [Math.trunc(value[0]), Math.trunc(value[1])],
+    };
+  }
+
+  return { ...rule, field: field.key };
 }
 
 /**
@@ -76,7 +95,11 @@ export function countRules(group: FilterGroup): number {
   let count = 0;
 
   for (const node of group.rules) {
-    count += "rules" in node ? countRules(node) : 1;
+    if ("rules" in node) {
+      count += countRules(node);
+    } else if (isFinished(node)) {
+      count += 1;
+    }
   }
 
   return count;
@@ -106,8 +129,6 @@ export function createFilterFields(
   return fields;
 }
 
-// 🌎 Public Functions
-
 /**
  * Builds a group holding one fresh rule on a field.
  */
@@ -116,7 +137,8 @@ export function createGroup(field: FilterField): FilterGroup {
 }
 
 /**
- * Builds the rule a field starts with: its first operator and its least value.
+ * Builds the rule a field starts with: its first operator and 0, or no text
+ * yet for a text field.
  */
 export function createRule(field: FilterField): FilterRule {
   const operator = OPERATORS_BY_TYPE[field.type][0] ?? "eq";
@@ -125,7 +147,7 @@ export function createRule(field: FilterField): FilterRule {
     return { field: field.key, operator, value: true };
   }
 
-  return { field: field.key, operator, value: field.type === "text" ? "0" : 0 };
+  return { field: field.key, operator, value: field.type === "text" ? "" : 0 };
 }
 
 /**
@@ -154,6 +176,8 @@ export function describeField(field: FilterField): string {
   return `${parts.join(" · ")} · meanders by value ${counts.join(", ")}${more}`;
 }
 
+// 🌎 Public Functions
+
 /**
  * Words a rule for a chip: its field's label, the operator and the value.
  */
@@ -163,7 +187,7 @@ export function describeRule(
 ): string {
   const label =
     fields.find(({ key }) => key === rule.field)?.label ?? rule.field;
-  const { value } = rule;
+  const { value } = normalizeRule(rule);
   const shown =
     typeof value === "object"
       ? `${String(value[0])} and ${String(value[1])}`
@@ -186,7 +210,7 @@ export function listRules(
 
     if ("rules" in node) {
       entries.push(...listRules(node, path));
-    } else {
+    } else if (isFinished(node)) {
       entries.push({ path, rule: node });
     }
   }
@@ -226,7 +250,7 @@ export function sanitizeFilter(
     rules: keepUsableNodes(group.rules, fields),
   });
 
-  return clean.rules.length === 0 ? undefined : clean;
+  return clean.rules.length === 0 || !isWithinLimits(clean) ? undefined : clean;
 }
 
 /**
@@ -250,7 +274,7 @@ export function setRule(path: readonly number[], rule: FilterRule): FilterEdit {
     updateGroup(root, path.slice(0, -1), (group) => ({
       ...group,
       rules: group.rules.map((node, position) =>
-        position === index ? rule : node,
+        position === index ? normalizeRule(rule) : node,
       ),
     }));
 }
@@ -270,7 +294,10 @@ export function toFilterInput(
 
   for (const node of group.rules) {
     if (!("rules" in node)) {
-      rules.push(toRuleInput(node));
+      if (isFinished(node)) {
+        rules.push(toRuleInput(node));
+      }
+
       continue;
     }
 
@@ -282,6 +309,31 @@ export function toFilterInput(
   }
 
   return toGroupInput(group, rules, groups);
+}
+
+/**
+ * Whether every number a rule carries is finite, and whole where the field
+ * takes whole numbers only.
+ */
+function hasSoundNumbers(rule: FilterRule, field: FilterField): boolean {
+  const { value } = rule;
+  const numbers = typeof value === "number" ? [value] : [];
+
+  if (Array.isArray(value)) {
+    numbers.push(...value);
+  }
+
+  return numbers.every((number) =>
+    field.isInteger ? Number.isSafeInteger(number) : Number.isFinite(number),
+  );
+}
+
+/**
+ * Whether a rule is complete: a lattice rule still waiting for its text is
+ * kept in the tree, but neither counts, shows nor reaches the API.
+ */
+function isFinished(rule: FilterRule): boolean {
+  return typeof rule.value !== "string" || rule.value.trim() !== "";
 }
 
 /**
@@ -306,9 +358,10 @@ function keepUsableNodes(
       field !== undefined &&
       OPERATORS_BY_TYPE[field.type].includes(node.operator) &&
       typeOfValue(node.value) === field.type &&
-      (node.operator === "between") === Array.isArray(node.value)
+      (node.operator === "between") === Array.isArray(node.value) &&
+      hasSoundNumbers(node, field)
     ) {
-      kept.push(node);
+      kept.push(normalizeRule(node));
     }
   }
 

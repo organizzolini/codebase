@@ -4,6 +4,7 @@ import {
   useRouter,
   useRouterState,
 } from "@tanstack/react-router";
+import { useEffect, useMemo } from "react";
 
 import { GalleryError } from "../components/gallery-error/gallery-error";
 import {
@@ -60,6 +61,7 @@ export const Route = createFileRoute("/")({
       deps.filter,
       createFilterFields(characteristics),
     );
+
     const page = await findMeanders({
       filter: toFilterInput(filter),
       sort: toSortInput(sort, deps.direction),
@@ -104,22 +106,31 @@ function IndexPage(): ReactNode {
     handleViewChange,
     view,
   } = useGallerySearch();
+  const { filter: linkedFilter } = Route.useSearch();
   // While a new sort reads, the cards of the last stay up under a notice.
   const isReloading = useRouterState({
     select: (state: { isLoading: boolean }) => state.isLoading,
   });
 
   // 🏗 Setup
+  const filterInput = useMemo(() => toFilterInput(filter), [filter]);
   const { hasMore, loadError, loadMore, meanders } = useMeanders(
     page,
     toSortInput(sort, direction),
-    toFilterInput(filter),
+    filterInput,
   );
   const fields = createFilterFields(characteristics);
 
   // 💪 Handlers
 
   // ♻️ Lifecycle
+  // A link carrying rules the catalog cannot answer is replaced by one that
+  // does not, so what the address says is what is shown.
+  useEffect(() => {
+    if (JSON.stringify(filter) !== JSON.stringify(linkedFilter)) {
+      handleFilterChange(filter);
+    }
+  }, [filter, handleFilterChange, linkedFilter]);
 
   // 🏁 Early Returns
 

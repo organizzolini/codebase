@@ -29,6 +29,8 @@ export interface FilterGroupEditorProperties {
   className?: string;
   fields: readonly FilterField[];
   group: FilterGroup;
+  /** Whether the filter holds as many rules and groups as the API takes. */
+  isFull: boolean;
   onEdit: (edit: FilterEdit) => void;
   /** The index of each node from the root down to this group. */
   path: readonly number[];
@@ -43,7 +45,7 @@ export interface FilterGroupEditorProperties {
 export function FilterGroupEditor(
   properties: Readonly<FilterGroupEditorProperties>,
 ): ReactNode {
-  const { className, fields, group, onEdit, path } = properties;
+  const { className, fields, group, isFull, onEdit, path } = properties;
 
   // 🪝 Hooks
 
@@ -127,12 +129,13 @@ export function FilterGroupEditor(
               key={`${String(index)}-group`}
               fields={fields}
               group={node}
+              isFull={isFull}
               onEdit={onEdit}
               path={[...path, index]}
             />
           ) : (
             <FilterRuleEditor
-              key={`${String(index)}-${node.field}-${node.operator}`}
+              key={`${String(index)}-rule`}
               fields={fields}
               onEdit={onEdit}
               path={[...path, index]}
@@ -142,7 +145,8 @@ export function FilterGroupEditor(
         )}
         <div className="flex gap-2 text-sm">
           <button
-            className="rounded-md border border-(--line) px-3 py-1"
+            className="rounded-md border border-(--line) px-3 py-1 disabled:opacity-50"
+            disabled={isFull}
             onClick={handleAddRule}
             type="button"
           >
@@ -150,7 +154,7 @@ export function FilterGroupEditor(
           </button>
           <button
             className="rounded-md border border-(--line) px-3 py-1 disabled:opacity-50"
-            disabled={path.length + 1 >= MAXIMUM_FILTER_DEPTH}
+            disabled={isFull || path.length + 1 >= MAXIMUM_FILTER_DEPTH}
             onClick={handleAddGroup}
             type="button"
           >
