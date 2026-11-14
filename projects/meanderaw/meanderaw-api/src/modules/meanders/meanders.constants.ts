@@ -24,6 +24,10 @@ export const SHAPE_SORT_FIELDS = [
 export const MEANDERS_QUERY_DESCRIPTION =
   "A page of meanders, sorted by any characteristic or shape field, ties broken by id. A missing characteristic value sorts as 0 or false. Pagination is by keyset cursor.";
 
+/** What the `filter` argument describes, for the schema. */
+export const FILTER_ARGUMENT_DESCRIPTION =
+  "A tree of and/or groups and rules on shape fields and characteristics. A missing characteristic value reads as 0 or false in every rule.";
+
 /** What the `sort` argument describes, for the schema. */
 export const SORT_ARGUMENT_DESCRIPTION =
   "A shape field (code, rows, columns, lattice, repeats, isHardcoded) or a characteristic key, and a direction. Without it, meanders come in id order.";

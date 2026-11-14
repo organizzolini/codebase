@@ -16,6 +16,7 @@ import {
   toCursor,
 } from "../../meanderaw-api.utilities";
 
+import { MeanderFilterService } from "./filters/meander-filter.service";
 import {
   cursorSchema,
   meandersArgumentsSchema,
@@ -23,6 +24,7 @@ import {
 } from "./meanders.constants";
 import { SortDirection } from "./sort-direction.entities";
 
+import type { CompiledMeanderFilter } from "./filters/meander-filter.types";
 import type { MeanderConnection } from "./meander-connection.entities";
 import type { MeanderSortInput } from "./meander-sort.entities";
 import type { MeanderEntity } from "./meanders.entities";
@@ -33,7 +35,7 @@ import type {
 } from "./meanders.types";
 import type { Repository, SelectQueryBuilder } from "typeorm";
 
-/** Pages through the meanders, sorted by any shape field or characteristic. */
+/** Pages through the meanders, filtered by a rule tree and sorted by any shape field or characteristic. */
 @Injectable()
 export class MeandersService {
   // 🏗 Dependency Injection
@@ -45,6 +47,8 @@ export class MeandersService {
     private readonly characteristicRepository: Repository<Characteristic>,
     @InjectRepository(ShapeCount)
     private readonly shapeCountRepository: Repository<ShapeCount>,
+    @Inject(MeanderFilterService)
+    private readonly filterService: MeanderFilterService,
     @Inject(CodeService) private readonly codeService: CodeService,
     @Inject(DrawingService) private readonly drawingService: DrawingService,
   ) {}
@@ -59,9 +63,10 @@ export class MeandersService {
   private buildQuery(arguments_: {
     after: null | string | undefined;
     direction: SortDirection;
+    filter: CompiledMeanderFilter | null;
     target: SortTarget;
   }): SelectQueryBuilder<Meander> {
-    const { after, direction, target } = arguments_;
+    const { after, direction, filter, target } = arguments_;
     const query = this.meanderRepository.createQueryBuilder("meander");
     let expression = "meander.id";
 
@@ -83,7 +88,7 @@ export class MeandersService {
       const cursor = this.decodeCursor(after);
       const beyond = direction === SortDirection.DESC ? "<" : ">";
 
-      query.where(
+      query.andWhere(
         target.kind === "id"
           ? "meander.id > :cursorId"
           : `(${expression} ${beyond} :cursorValue OR (${expression} = :cursorValue AND meander.id > :cursorId))`,
@@ -91,14 +96,28 @@ export class MeandersService {
       );
     }
 
+    if (filter !== null) {
+      query.andWhere(filter.where, filter.parameters);
+    }
+
     query.orderBy(expression, direction);
 
     return target.kind === "id" ? query : query.addOrderBy("meander.id", "ASC");
   }
 
-  /** Every meander there is: the shape counts sum to it. */
-  private async countAll(): Promise<number> {
-    return (await this.shapeCountRepository.sum("meanderCount")) ?? 0;
+  /** Every meander the filter keeps, counted exactly; all of them when it is absent. */
+  private async count(filter: CompiledMeanderFilter | null): Promise<number> {
+    if (filter === null) {
+      return (await this.shapeCountRepository.sum("meanderCount")) ?? 0;
+    }
+
+    const row = await this.meanderRepository
+      .createQueryBuilder("meander")
+      .select("COUNT(*)", "total")
+      .where(filter.where, filter.parameters)
+      .getRawOne<{ total: string }>();
+
+    return Number(row?.total ?? 0);
   }
 
   /** Reads what a cursor carries, refusing one this API did not issue. */
@@ -172,10 +191,15 @@ export class MeandersService {
     }
 
     const { after, first, sort } = parsed.data;
+    const filter =
+      arguments_.filter === null || arguments_.filter === undefined
+        ? null
+        : await this.filterService.compile(arguments_.filter);
     const target = await this.resolveTarget(sort);
     const { entities, raw } = await this.buildQuery({
       after,
       direction: sort?.direction ?? SortDirection.ASC,
+      filter,
       target,
     })
       .limit(first + 1)
@@ -202,7 +226,7 @@ export class MeandersService {
       ),
       hasNextPage: entities.length > first,
       hasPreviousPage: after !== null && after !== undefined,
-      totalCount: await this.countAll(),
+      totalCount: await this.count(filter),
     });
   }
 }

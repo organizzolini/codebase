@@ -5,12 +5,13 @@ import { CodeService, DrawingService } from "@codebase/meanderaw-core";
 import { Characteristic, Meander, ShapeCount } from "@codebase/meanderaw-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { MeanderFilterService } from "./filters/meander-filter.service";
 import { MeandersService } from "./meanders.service";
 
 /** Builds the service over repositories that are never reached. */
 async function buildService(): Promise<MeandersService> {
   const { instance } = await buildTestingModule(MeandersService, {
-    mocks: [CodeService, DrawingService],
+    mocks: [CodeService, DrawingService, MeanderFilterService],
     providers: [
       { provide: getRepositoryToken(Meander), useValue: {} },
       { provide: getRepositoryToken(Characteristic), useValue: {} },
@@ -24,7 +25,7 @@ async function buildService(): Promise<MeandersService> {
 describe(MeandersService, () => {
   it("resolves with its dependencies", async () => {
     const { instance } = await buildTestingModule(MeandersService, {
-      mocks: [CodeService, DrawingService],
+      mocks: [CodeService, DrawingService, MeanderFilterService],
       providers: [
         { provide: getRepositoryToken(Meander), useValue: {} },
         { provide: getRepositoryToken(Characteristic), useValue: {} },
@@ -49,7 +50,7 @@ describe(MeandersService, () => {
     expect.hasAssertions();
 
     const { instance, mock } = await buildTestingModule(MeandersService, {
-      mocks: [CodeService, DrawingService],
+      mocks: [CodeService, DrawingService, MeanderFilterService],
       providers: [
         { provide: getRepositoryToken(Meander), useValue: {} },
         { provide: getRepositoryToken(Characteristic), useValue: {} },

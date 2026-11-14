@@ -26,10 +26,15 @@ describe(MeandersResolver, () => {
     mock(MeandersService).find.mockResolvedValue(page as never);
 
     await expect(
-      instance.meanders({ direction: "ASC", field: "rows" } as never, 5, "c"),
+      instance.meanders({
+        after: "c",
+        first: 5,
+        sort: { direction: "ASC", field: "rows" },
+      } as never),
     ).resolves.toBe(page);
     expect(mock(MeandersService).find).toHaveBeenCalledWith({
       after: "c",
+      filter: undefined,
       first: 5,
       sort: { direction: "ASC", field: "rows" },
     });

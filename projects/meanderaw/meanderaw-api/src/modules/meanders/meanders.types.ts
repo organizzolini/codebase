@@ -1,11 +1,13 @@
 // 🏷️ Types
 
+import type { MeanderFilterGroupInput } from "./filters/meander-filter.entities";
 import type { MeanderSortInput } from "./meander-sort.entities";
 import type { SHAPE_SORT_FIELDS } from "./meanders.constants";
 
 /** What a `meanders` query asks for. */
 export interface MeandersArguments {
   readonly after?: null | string | undefined;
+  readonly filter?: MeanderFilterGroupInput | null | undefined;
   readonly first?: number | undefined;
   readonly sort?: MeanderSortInput | null | undefined;
 }
