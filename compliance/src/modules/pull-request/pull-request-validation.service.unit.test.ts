@@ -166,6 +166,16 @@ describe(PullRequestValidationService, () => {
     expect(title.check).not.toHaveBeenCalled();
   });
 
+  it("exempts a workflow-authored pull request from the linked-issue check only", () => {
+    const outcomes = service.validate({
+      ...context,
+      author: "github-actions[bot]",
+    });
+
+    expect(outcomes).toHaveLength(5);
+    expect(title.check).toHaveBeenCalledWith();
+  });
+
   it("fails when the pull request closes no issue", () => {
     vi.mocked(github.run).mockImplementation((arguments_) => ({
       available: true,

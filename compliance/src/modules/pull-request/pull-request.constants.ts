@@ -5,6 +5,9 @@ export const PULL_REQUEST_EVENT = "pull_request";
 
 export const DEPENDABOT_LOGIN = "dependabot[bot]";
 
+/** Author of the pull requests the scheduled workflows open. */
+export const GITHUB_ACTIONS_LOGIN = "github-actions[bot]";
+
 /** How to run the command, printed when its input is unusable. */
 export const USAGE_LINES = [
   "Usage: compliance pull-request <number> [write]",
