@@ -13,8 +13,20 @@ export const GALLERY_VIEWS = ["grid", "list"] as const;
 export const DEFAULT_GALLERY_VIEW = "grid" as const;
 
 /**
- * Validates the link's search parameters, dropping any that is not valid.
+ * The two ways a sort runs, as a link names them.
+ */
+export const SORT_DIRECTIONS = ["asc", "desc"] as const;
+
+/**
+ * The way a sort runs when a link names an invalid direction.
+ */
+export const DEFAULT_SORT_DIRECTION = "asc" as const;
+
+/**
+ * Validates the link's search parameters, repairing invalid ones.
  */
 export const gallerySearchSchema = z.object({
+  direction: z.enum(SORT_DIRECTIONS).catch(DEFAULT_SORT_DIRECTION).optional(),
+  sort: z.coerce.string().min(1).optional(),
   view: z.enum(GALLERY_VIEWS).catch(DEFAULT_GALLERY_VIEW).optional(),
 });

@@ -8,7 +8,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The view showing, and what to call when a button picks the other.
+ * The view showing, and how to pick the other.
  */
 export interface GalleryToolbarProperties {
   className?: string;

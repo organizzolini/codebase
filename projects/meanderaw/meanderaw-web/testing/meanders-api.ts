@@ -4,12 +4,15 @@ import { serveGraphqlApi } from "./graphql-api";
 
 import type { GalleryMeander } from "../src/components/meander-gallery/meanders-api.types";
 import type {
+  CharacteristicsQuery,
+  CharacteristicsQueryVariables,
+  MeanderSortInput,
   MeandersQuery,
   MeandersQueryVariables,
 } from "../src/graphql/generated/operations";
 
 /**
- * A test's mock API: what it was asked, and a switch that makes it fail.
+ * A test's mock API: its requests, and a failure switch.
  */
 export interface MeandersApi {
   /**
@@ -45,8 +48,22 @@ export function fixtureMeander(index: number): GalleryMeander {
 }
 
 /**
- * Serves `count` fixture meanders over the `Meanders` query, paged by cursor
- * the way the API pages them, and hands back what a test needs to watch it.
+ * The catalog the fixture meanders are measured by.
+ */
+export const FIXTURE_CHARACTERISTICS: CharacteristicsQuery["characteristics"] =
+  [
+    { isPattern: true, key: "isChain", name: "Chain", valueType: "boolean" },
+    {
+      isPattern: false,
+      key: "junctionCount",
+      name: "Junction count",
+      valueType: "number",
+    },
+  ];
+
+/**
+ * Serves `count` fixture meanders over `Meanders`, paged by cursor as the API
+ * does, and returns a handle to watch it.
  */
 export function serveMeandersApi(count = 3): MeandersApi {
   let failure: string | undefined;
@@ -75,10 +92,12 @@ export function serveMeandersApi(count = 3): MeandersApi {
             ? 0
             : Number(variables.after) + 1;
         const end = Math.min(start + (variables.first ?? 50), count);
-        const edges = Array.from({ length: end - start }, (_, offset) => ({
-          cursor: String(start + offset),
-          node: fixtureMeander(start + offset),
-        }));
+        const edges = sortedPositions(count, variables.sort)
+          .slice(start, end)
+          .map((position, offset) => ({
+            cursor: String(start + offset),
+            node: fixtureMeander(position),
+          }));
 
         return HttpResponse.json({
           data: {
@@ -94,7 +113,59 @@ export function serveMeandersApi(count = 3): MeandersApi {
         });
       },
     ),
+    graphql.query<CharacteristicsQuery, CharacteristicsQueryVariables>(
+      "Characteristics",
+      () =>
+        HttpResponse.json({
+          data: { characteristics: FIXTURE_CHARACTERISTICS },
+        }),
+    ),
   );
 
   return api;
+}
+
+/**
+ * Fixture positions in a sort's order, ties by position; position order
+ * with no sort.
+ */
+function sortedPositions(
+  count: number,
+  sort: MeanderSortInput | null | undefined,
+): number[] {
+  const positions = Array.from({ length: count }, (_, position) => position);
+
+  if (sort === null || sort === undefined) {
+    return positions;
+  }
+
+  const sign = sort.direction === "DESC" ? -1 : 1;
+
+  return positions.toSorted((left, right) => {
+    const a = sortValue(fixtureMeander(left), sort.field);
+    const b = sortValue(fixtureMeander(right), sort.field);
+
+    return a === b ? left - right : sign * (a < b ? -1 : 1);
+  });
+}
+
+/**
+ * What a meander holds for a sort field; a characteristic not held reads
+ * 0.
+ */
+function sortValue(meander: GalleryMeander, field: string): number | string {
+  const shape: Partial<Record<string, number | string>> = {
+    code: meander.code,
+    columns: meander.columns,
+    isHardcoded: Number(meander.isHardcoded),
+    lattice: meander.lattice,
+    repeats: meander.repeats,
+    rows: meander.rows,
+  };
+
+  return (
+    shape[field] ??
+    meander.characteristics.find(({ key }) => key === field)?.value ??
+    0
+  );
 }

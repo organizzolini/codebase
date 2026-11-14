@@ -36,7 +36,10 @@ describe(useGallerySearch, () => {
     const { result } = renderHook(() => useGallerySearch());
 
     expect(result.current).toStrictEqual({
+      direction: "asc",
+      handleSortChange: result.current.handleSortChange,
       handleViewChange: result.current.handleViewChange,
+      sort: undefined,
       view: "grid",
     });
   });
@@ -58,10 +61,41 @@ describe(useGallerySearch, () => {
     });
   });
 
-  it("drops a view that is not one of the two", () => {
-    expect(gallerySearchSchema.parse({ view: "wall" })).toStrictEqual({
-      view: "grid",
+  it("reads the sort and direction the link names", () => {
+    mockNavigate();
+    vi.mocked(useSearch).mockReturnValue({ direction: "desc", sort: "rows" });
+
+    const { result } = renderHook(() => useGallerySearch());
+
+    expect(result.current.sort).toBe("rows");
+    expect(result.current.direction).toBe("desc");
+  });
+
+  it("replaces the link with the sort picked, and drops the direction with no field", () => {
+    const navigate = mockNavigate();
+    vi.mocked(useSearch).mockReturnValue({ view: "list" });
+
+    const { result } = renderHook(() => useGallerySearch());
+    result.current.handleSortChange("rows", "desc");
+    result.current.handleSortChange(undefined, "desc");
+
+    const [picked, cleared] = navigate.mock.calls.map(([options]) => options);
+
+    expect(picked?.search({ view: "list" })).toStrictEqual({
+      direction: "desc",
+      sort: "rows",
+      view: "list",
     });
+    expect(cleared?.search({ direction: "desc", sort: "rows" })).toStrictEqual({
+      direction: undefined,
+      sort: undefined,
+    });
+  });
+
+  it("drops a view or direction that is not one of the two, and reads a number as a field", () => {
+    expect(
+      gallerySearchSchema.parse({ direction: "up", sort: 5, view: "wall" }),
+    ).toStrictEqual({ direction: "asc", sort: "5", view: "grid" });
     expect(gallerySearchSchema.parse({})).toStrictEqual({});
   });
 });

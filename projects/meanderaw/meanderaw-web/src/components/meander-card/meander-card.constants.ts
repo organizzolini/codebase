@@ -6,8 +6,7 @@
 export const COPIED_MILLISECONDS = 1500;
 
 /**
- * The classes a card wears in each view: a column in the grid, a row in the
- * list.
+ * The classes a card wears per view: a column, or a row.
  */
 export const VIEW_CLASSES = {
   grid: { drawing: "w-full aspect-square", root: "flex-col" },

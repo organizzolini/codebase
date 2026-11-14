@@ -5,11 +5,19 @@ import {
 } from "@tanstack/react-router";
 
 import { GalleryError } from "../components/gallery-error/gallery-error";
+import { GallerySort } from "../components/gallery-sort/gallery-sort";
 import { GalleryToolbar } from "../components/gallery-toolbar/gallery-toolbar";
 import { MeanderGallery } from "../components/meander-gallery/meander-gallery";
-import { findMeanders } from "../components/meander-gallery/meanders-api.utilities";
+import {
+  findCharacteristics,
+  findMeanders,
+} from "../components/meander-gallery/meanders-api.utilities";
 import { useGallerySearch } from "../hooks/use-gallery-search/use-gallery-search";
-import { gallerySearchSchema } from "../hooks/use-gallery-search/use-gallery-search.constants";
+import {
+  DEFAULT_SORT_DIRECTION,
+  gallerySearchSchema,
+} from "../hooks/use-gallery-search/use-gallery-search.constants";
+import { toSortInput } from "../hooks/use-gallery-search/use-gallery-search.utilities";
 import { useMeanders } from "../hooks/use-meanders/use-meanders";
 
 import type { ReactNode } from "react";
@@ -24,9 +32,23 @@ export const Route = createFileRoute("/")({
   component: IndexPage,
   errorComponent: IndexError,
   head: () => ({ meta: [{ title: "Meanderaw" }] }),
-  loader: async () => findMeanders(),
+  validateSearch: (search: Record<string, unknown>) =>
+    gallerySearchSchema.parse(search),
+  // The sort is read from the link, so a change to it reads the first page again.
+  loaderDeps: ({ search }) => ({
+    direction: search.direction ?? DEFAULT_SORT_DIRECTION,
+    sort: search.sort,
+  }),
   ssr: false,
-  validateSearch: (search) => gallerySearchSchema.parse(search),
+
+  loader: async ({ deps }) => {
+    const [characteristics, page] = await Promise.all([
+      findCharacteristics(),
+      findMeanders({ sort: toSortInput(deps.sort, deps.direction) }),
+    ]);
+
+    return { characteristics, page };
+  },
 });
 
 // 🧩 Component
@@ -56,11 +78,15 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
  */
 function IndexPage(): ReactNode {
   // 🪝 Hooks
-  const page = Route.useLoaderData();
-  const { handleViewChange, view } = useGallerySearch();
-  const { hasMore, loadError, loadMore, meanders } = useMeanders(page);
+  const { characteristics, page } = Route.useLoaderData();
+  const { direction, handleSortChange, handleViewChange, sort, view } =
+    useGallerySearch();
 
   // 🏗 Setup
+  const { hasMore, loadError, loadMore, meanders } = useMeanders(
+    page,
+    toSortInput(sort, direction),
+  );
 
   // 💪 Handlers
 
@@ -72,11 +98,19 @@ function IndexPage(): ReactNode {
   return (
     <section className="flex flex-col gap-4 p-4">
       <h1 className="text-xl">Meanderaw</h1>
-      <GalleryToolbar
-        onViewChange={handleViewChange}
-        totalCount={page.totalCount}
-        view={view}
-      />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <GalleryToolbar
+          onViewChange={handleViewChange}
+          totalCount={page.totalCount}
+          view={view}
+        />
+        <GallerySort
+          characteristics={characteristics}
+          direction={direction}
+          field={sort}
+          onSortChange={handleSortChange}
+        />
+      </div>
       <MeanderGallery
         hasMore={hasMore}
         loadError={loadError}

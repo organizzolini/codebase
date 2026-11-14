@@ -1,7 +1,7 @@
 // 🏷️ Types
 
 /**
- * Where an element sits and how wide it is, and how to hand the hook the element.
+ * An element's top and width, and how to hand it over.
  */
 export interface UseElementBoxResult {
   setElement: (element: HTMLElement | null) => void;

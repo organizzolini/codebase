@@ -14,6 +14,13 @@ function cardsIn(row: HTMLElement | undefined): HTMLElement[] {
   return row === undefined ? [] : within(row).queryAllByTestId("meander-card");
 }
 
+/** The Codes of the cards on screen, in the order they appear. */
+function codesShown(): string[] {
+  return screen
+    .getAllByTestId("meander-card")
+    .map((card) => within(card).getByRole("code").textContent);
+}
+
 describe("index", () => {
   it("renders its page", async () => {
     serveMeandersApi();
@@ -187,5 +194,111 @@ describe("index", () => {
     });
 
     expect(api.requests.at(-1)).toMatchObject({ after: "47" });
+  });
+
+  it("offers the shape fields and the catalog to sort by", async () => {
+    serveMeandersApi(3);
+
+    await renderRoute(getRouter(), "/");
+    await screen.findAllByTestId("meander-card");
+
+    const options = within(screen.getByRole("combobox")).getAllByRole("option");
+
+    expect(options.map((option) => option.textContent)).toStrictEqual([
+      "Default order",
+      "Rows",
+      "Columns",
+      "Lattice",
+      "Repeats",
+      "Hardcoded",
+      "Code",
+      "Chain",
+      "Junction count",
+    ]);
+  });
+
+  it("sorts by the field picked, in the link and in the order of the cards", async () => {
+    const api = serveMeandersApi(6);
+    const router = getRouter();
+
+    await renderRoute(router, "/");
+    await screen.findAllByTestId("meander-card");
+
+    expect(codesShown()).toStrictEqual([
+      "01x01y0000",
+      "01x01y0001",
+      "01x01y0002",
+      "01x01y0003",
+      "01x01y0004",
+      "01x01y0005",
+    ]);
+
+    fireEvent.change(screen.getByRole("combobox"), {
+      target: { value: "rows" },
+    });
+
+    await waitFor(() => {
+      expect({ ...router.state.location.search }).toStrictEqual({
+        direction: "asc",
+        sort: "rows",
+      });
+    });
+    await waitFor(() => {
+      expect(codesShown().slice(0, 2)).toStrictEqual([
+        "01x01y0000",
+        "01x01y0005",
+      ]);
+    });
+
+    expect(api.requests.at(-1)).toMatchObject({
+      sort: { direction: "ASC", field: "rows" },
+    });
+  });
+
+  it("flips the direction of the sort, and drops the sort with the default order", async () => {
+    serveMeandersApi(6);
+    const router = getRouter();
+
+    await renderRoute(router, "/?sort=rows");
+    await screen.findAllByTestId("meander-card");
+
+    fireEvent.click(screen.getByRole("button", { name: "Ascending" }));
+
+    await waitFor(() => {
+      expect(codesShown()[0]).toBe("01x01y0004");
+    });
+
+    expect({ ...router.state.location.search }).toStrictEqual({
+      direction: "desc",
+      sort: "rows",
+    });
+
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "" } });
+
+    await waitFor(() => {
+      expect(codesShown()[0]).toBe("01x01y0000");
+    });
+
+    expect({ ...router.state.location.search }).toStrictEqual({});
+  });
+
+  it("opens sorted by a characteristic when the link names one, and pages in that sort", async () => {
+    const api = serveMeandersApi(100);
+
+    await renderRoute(getRouter(), "/?sort=junctionCount&direction=desc");
+    await screen.findAllByTestId("meander-card");
+
+    expect(screen.getByDisplayValue("Junction count")).toBeDefined();
+
+    scrollWindowTo(3300);
+
+    await waitFor(() => {
+      expect(api.requests).toHaveLength(2);
+    });
+
+    expect(api.requests[1]).toMatchObject({
+      after: "47",
+      sort: { direction: "DESC", field: "junctionCount" },
+    });
   });
 });

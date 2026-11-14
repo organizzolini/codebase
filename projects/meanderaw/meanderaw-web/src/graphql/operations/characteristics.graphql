@@ -1,0 +1,8 @@
+query Characteristics {
+  characteristics {
+    isPattern
+    key
+    name
+    valueType
+  }
+}

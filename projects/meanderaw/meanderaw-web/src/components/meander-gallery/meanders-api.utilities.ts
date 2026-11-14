@@ -1,7 +1,10 @@
 import { print } from "graphql";
 import { z } from "zod";
 
-import { MeandersDocument } from "../../graphql/generated/operations";
+import {
+  CharacteristicsDocument,
+  MeandersDocument,
+} from "../../graphql/generated/operations";
 
 import {
   DEFAULT_MEANDERAW_API_URL,
@@ -10,10 +13,19 @@ import {
 } from "./meanders-api.constants";
 
 import type { MeandersQueryVariables } from "../../graphql/generated/operations";
-import type { MeandersPage } from "./meanders-api.types";
+import type { GalleryCharacteristic, MeandersPage } from "./meanders-api.types";
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
 
 // 🌎 Public Functions
+
+/**
+ * Reads the characteristic catalog, which names the fields a sort may use.
+ */
+export async function findCharacteristics(): Promise<GalleryCharacteristic[]> {
+  const { characteristics } = await queryApi(CharacteristicsDocument, {});
+
+  return characteristics;
+}
 
 /**
  * Reads one page of meanders, from the start or after a cursor.

@@ -3,16 +3,19 @@ import { useCallback, useRef as useReference, useState } from "react";
 import { findMeanders } from "../../components/meander-gallery/meanders-api.utilities";
 
 import type { MeandersPage } from "../../components/meander-gallery/meanders-api.types";
+import type { MeanderSortInput } from "../../graphql/generated/operations";
 import type { UseMeandersResult } from "./use-meanders.types";
 
 // 🧩 Hook
 
 /**
- * Collects the pages of meanders after the first, which the route loaded,
- * reading each by the cursor the page before it ended on. A new first page
- * starts the collection over.
+ * Collects the pages after the one the route loaded, in its sort, by cursor.
+ * A new first page starts over.
  */
-export function useMeanders(first: MeandersPage): UseMeandersResult {
+export function useMeanders(
+  first: MeandersPage,
+  sort?: MeanderSortInput,
+): UseMeandersResult {
   // 🪝 Hooks
   const [loaded, setLoaded] = useState<{
     first: MeandersPage;
@@ -36,7 +39,7 @@ export function useMeanders(first: MeandersPage): UseMeandersResult {
 
     isLoading.current = true;
     setLoadError(undefined);
-    findMeanders({ after: last.pageInfo.endCursor })
+    findMeanders({ after: last.pageInfo.endCursor, sort })
       .then((next) => {
         setLoaded({ first, pages: [...pages, next] });
       })
@@ -46,7 +49,7 @@ export function useMeanders(first: MeandersPage): UseMeandersResult {
       .finally(() => {
         isLoading.current = false;
       });
-  }, [first, last, pages]);
+  }, [first, last, pages, sort]);
 
   // ♻️ Lifecycle
 

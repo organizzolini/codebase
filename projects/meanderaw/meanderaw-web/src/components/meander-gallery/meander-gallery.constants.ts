@@ -6,17 +6,17 @@
 export const GAP_PIXELS = 16;
 
 /**
- * The narrowest a grid card gets before a column gives way, in pixels.
+ * The narrowest a grid card gets, in pixels.
  */
 export const CARD_MIN_WIDTH_PIXELS = 256;
 
 /**
- * How tall a row of cards is guessed to be before it is measured, in pixels.
+ * A row's guessed height before it is measured, in pixels.
  */
 export const ROW_ESTIMATES = { grid: 420, list: 140 } as const;
 
 /**
- * How many rows past the visible ones stay mounted on each side.
+ * Rows kept mounted past the visible ones, each side.
  */
 export const OVERSCAN_ROWS = 2;
 

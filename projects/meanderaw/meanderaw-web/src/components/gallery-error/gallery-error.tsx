@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The error that stopped the load, and what to call to try again.
+ * The error that stopped a load, and how to retry.
  */
 export interface GalleryErrorProperties {
   className?: string;

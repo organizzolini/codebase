@@ -56,6 +56,23 @@ describe(useMeanders, () => {
     expect(result.current.hasMore).toBe(false);
   });
 
+  it("reads the next page in the sort the first was read in", async () => {
+    const api = serveMeandersApi(5);
+    const sort = { direction: "DESC", field: "rows" } as const;
+    const first = pageOf(0, 2, true);
+    const { result } = renderHook(() => useMeanders(first, sort));
+
+    act(() => {
+      result.current.loadMore();
+    });
+
+    await waitFor(() => {
+      expect(result.current.meanders).toHaveLength(5);
+    });
+
+    expect(api.requests[0]).toMatchObject({ sort });
+  });
+
   it("reads nothing once the last page is in", () => {
     const api = serveMeandersApi(2);
     const { result } = renderHook(() => useMeanders(pageOf(0, 2, false)));

@@ -10,8 +10,8 @@ export function formatShape(rows: number, columns: number): string {
 }
 
 /**
- * Wraps an SVG document as a data URI an `img` can show, so the drawing is
- * displayed as an image and never as markup in the page.
+ * Wraps an SVG document as a data URI an `img` can show, never as page
+ * markup.
  */
 export function toSvgDataUri(svg: string): string {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;

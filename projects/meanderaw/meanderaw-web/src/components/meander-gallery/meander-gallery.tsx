@@ -20,7 +20,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The meanders read so far, how to read more, and the view that lays them out.
+ * The meanders so far, how to read more, and the view.
  */
 export interface MeanderGalleryProperties {
   className?: string;
@@ -34,8 +34,8 @@ export interface MeanderGalleryProperties {
 // 🧩 Component
 
 /**
- * Renders the meanders as rows of cards, mounting only the rows in view, and
- * asks for the next page as the last rows come near.
+ * Renders the meanders as virtualized rows of cards, asking for the next page
+ * as the last rows come near.
  */
 export function MeanderGallery(
   properties: Readonly<MeanderGalleryProperties>,
