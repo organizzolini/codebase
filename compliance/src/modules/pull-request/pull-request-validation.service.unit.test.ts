@@ -173,7 +173,7 @@ describe(PullRequestValidationService, () => {
     });
 
     expect(outcomes).toHaveLength(5);
-    expect(title.check).toHaveBeenCalledWith();
+    expect(title.check).toHaveBeenCalledWith(context.title);
   });
 
   it("fails when the pull request closes no issue", () => {
