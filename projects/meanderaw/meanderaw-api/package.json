@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@apollo/server": "catalog:",
+    "@codebase/meanderaw-core": "workspace:*",
     "@codebase/meanderaw-db": "workspace:*",
     "@codebase/observability": "workspace:*",
     "@codebase/persistence": "workspace:*",

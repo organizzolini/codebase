@@ -4609,6 +4609,9 @@ importers:
       '@apollo/server':
         specifier: 'catalog:'
         version: 5.5.1(graphql@17.1.0)(supports-color@8.1.1)
+      '@codebase/meanderaw-core':
+        specifier: workspace:*
+        version: link:../meanderaw-core
       '@codebase/meanderaw-db':
         specifier: workspace:*
         version: link:../meanderaw-db

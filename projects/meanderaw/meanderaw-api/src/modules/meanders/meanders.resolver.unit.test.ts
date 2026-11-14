@@ -34,4 +34,26 @@ describe(MeandersResolver, () => {
       sort: { direction: "ASC", field: "rows" },
     });
   });
+
+  it("draws the meander the service is asked to", async () => {
+    expect.hasAssertions();
+
+    const { instance, mock } = await buildTestingModule(MeandersResolver, {
+      mocks: [MeandersService],
+    });
+    const meander = {
+      code: "01",
+      columns: 2,
+      id: "i",
+      isHardcoded: true,
+      lattice: "0",
+      repeats: 1,
+      rows: 1,
+      symmetricalCodes: [],
+    };
+    mock(MeandersService).draw.mockReturnValue("<svg/>");
+
+    expect(instance.svg(meander)).toBe("<svg/>");
+    expect(mock(MeandersService).draw).toHaveBeenCalledWith(meander);
+  });
 });

@@ -22,6 +22,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **handoff**: Structured hand-off comment posted on a spec issue for the next session, whose repository rules agents handoffs documentation sets out.
 - **historical**: Describes the historical meander corpus of committed drawings whose labels ADR 0012 and ADR 0013 treat as a test set.
 - **interlace**: Woven over-and-under crossing pattern in meander drawings, which ADR 0004 breaks with a one-pitch gap at each crossing.
+- **keyset**: A way to page through sorted rows by asking for those past the last row's sort value and id, rather than skipping a count of rows, so a deep page costs the same as the first.
 - **lattice**: Grid on which every meander sits, which ADR 0007 uses to address each drawing and MeanderLatticeService validates against.
 - **law**: Governing rule in ADR 0011, the universal path and naming law that every project type follows for its file layout.
 - **letter**: Glyph counted in each meander's letter-count map under ADR 0017, counted in all sixteen orientations for every meander.

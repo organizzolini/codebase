@@ -1,5 +1,12 @@
 import { Inject } from "@nestjs/common";
-import { Args as Arguments, Int, Query, Resolver } from "@nestjs/graphql";
+import {
+  Args as Arguments,
+  Int,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from "@nestjs/graphql";
 
 import { MeanderConnection } from "./meander-connection.entities";
 import { MeanderSortInput } from "./meander-sort.entities";
@@ -54,4 +61,14 @@ export class MeandersResolver {
   // 🖋️ Mutations
 
   // 🔗 Relations
+
+  /** The drawing, rendered only for a meander whose query selects it. */
+  @ResolveField(() => String, {
+    description:
+      "The meander's drawing as an SVG document, rendered on request from its Code.",
+    name: "svg",
+  })
+  svg(@Parent() meander: MeanderEntity): string {
+    return this.meandersService.draw(meander);
+  }
 }

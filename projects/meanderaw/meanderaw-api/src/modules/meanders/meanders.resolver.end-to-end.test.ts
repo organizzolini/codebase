@@ -1,5 +1,7 @@
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
+
+import { CodeService, DrawingService } from "@codebase/meanderaw-core";
 
 import { catalogEntry, meanderRow } from "../../../testing/fixtures";
 import {
@@ -297,5 +299,69 @@ describe("meanders resolver end-to-end suite", () => {
     expect(cursor.errors?.[0]?.message).toBe("The cursor is not valid.");
     expect(none.errors).toHaveLength(1);
     expect(huge.errors).toHaveLength(1);
+  });
+
+  describe("svg", () => {
+    const SVG_QUERY =
+      "query ($first: Int) { meanders(first: $first) { edges { node { code rows columns svg } } } }";
+
+    it("matches the drawing core makes for the same Code, as the CLI draws it", async () => {
+      expect.hasAssertions();
+
+      const body = await application.query(SVG_QUERY, { first: 6 });
+      const nodes = z
+        .object({
+          meanders: z.object({
+            edges: z.array(
+              z.object({
+                node: z.object({
+                  code: z.string(),
+                  columns: z.number(),
+                  rows: z.number(),
+                  svg: z.string(),
+                }),
+              }),
+            ),
+          }),
+        })
+        .parse(body.data)
+        .meanders.edges.map(({ node }) => node);
+      const codes = application.database.module.get(CodeService, {
+        strict: false,
+      });
+      const drawings = application.database.module.get(DrawingService, {
+        strict: false,
+      });
+
+      expect(body.errors).toBeUndefined();
+      expect(nodes).toHaveLength(6);
+
+      for (const { code, columns, rows, svg } of nodes) {
+        expect(svg).toMatch(/^<svg /);
+        expect(svg).toBe(drawings.render(codes.parse(code, rows, columns)));
+      }
+
+      expect(new Set(nodes.map(({ svg }) => svg)).size).toBeGreaterThan(1);
+    });
+
+    it("renders only the meanders asked for, and none when the query leaves svg out", async () => {
+      expect.hasAssertions();
+
+      const drawings = application.database.module.get(DrawingService, {
+        strict: false,
+      });
+      const render = vi.spyOn(drawings, "render");
+
+      await page({ first: 6 });
+
+      expect(render).not.toHaveBeenCalled();
+
+      const body = await application.query(SVG_QUERY, { first: 2 });
+
+      expect(body.errors).toBeUndefined();
+      expect(render).toHaveBeenCalledTimes(2);
+
+      render.mockRestore();
+    });
   });
 });

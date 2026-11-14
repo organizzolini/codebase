@@ -1,6 +1,7 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
+import { CodeService, DrawingService } from "@codebase/meanderaw-core";
 import {
   Characteristic,
   Meander,
@@ -44,6 +45,8 @@ export class MeandersService {
     private readonly characteristicRepository: Repository<Characteristic>,
     @InjectRepository(ShapeCount)
     private readonly shapeCountRepository: Repository<ShapeCount>,
+    @Inject(CodeService) private readonly codeService: CodeService,
+    @Inject(DrawingService) private readonly drawingService: DrawingService,
   ) {}
 
   // 🔐 Private Fields
@@ -149,6 +152,13 @@ export class MeandersService {
   }
 
   // 🌎 Public Methods
+
+  /** The meander's drawing, the same SVG document the CLI draws for its Code. */
+  draw(meander: MeanderEntity): string {
+    return this.drawingService.render(
+      this.codeService.parse(meander.code, meander.rows, meander.columns),
+    );
+  }
 
   /**
    * One page of meanders after a cursor. Rows come in the sort's order, then id
