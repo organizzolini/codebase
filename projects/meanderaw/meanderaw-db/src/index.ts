@@ -2,6 +2,7 @@ export {
   MEANDERAW_DATABASE_ENTITIES,
   MEANDERAW_DATABASE_MIGRATIONS,
 } from "./modules/meanderaw-database/data-source.constants";
+export { AggregateMarker } from "./modules/meanderaw-database/entities/aggregate-marker.entity";
 export { CharacteristicPairCount } from "./modules/meanderaw-database/entities/characteristic-pair-count.entity";
 export { CharacteristicShapeCount } from "./modules/meanderaw-database/entities/characteristic-shape-count.entity";
 export { CharacteristicValueCount } from "./modules/meanderaw-database/entities/characteristic-value-count.entity";

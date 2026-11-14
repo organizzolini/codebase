@@ -37,7 +37,7 @@ src/meanderaw-api.ts
        ├─ GraphQLModule.forRoot(ApolloDriver)
        ├─ MeanderawDatabaseModule
        ├─ CharacteristicsModule → CharacteristicsResolver → CharacteristicsService
-       └─ MeandersModule → MeandersResolver → MeandersService
+       ├─ MeandersModule → MeandersResolver → MeandersService
        └─ MeanderGroupsModule → MeanderGroupsResolver → MeanderGroupsService
 ```
 

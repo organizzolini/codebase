@@ -1,9 +1,9 @@
-import { getRepositoryToken } from "@nestjs/typeorm";
+import { getDataSourceToken, getRepositoryToken } from "@nestjs/typeorm";
 import { describe, expect, it, vi } from "vitest";
 
 import {
+  AggregateMarker,
   CharacteristicPairCount,
-  CharacteristicShapeCount,
   CharacteristicValueCount,
   ShapeCount,
 } from "@codebase/meanderaw-db";
@@ -17,94 +17,248 @@ import { MeanderAggregateService } from "./meander-aggregate.service";
 import type { CompiledMeanderFilter } from "../filters/meander-filter.types";
 import type { Characteristic } from "@codebase/meanderaw-db";
 
-const SHAPES = [{ columns: 1, lattice: "0", meanderCount: 4, rows: 1 }];
+type Tables = Map<unknown, readonly object[]>;
 
-/** Builds the service over a shape table holding `shapes` and no other counts. */
+/** Two shapes holding ten meanders in all. */
+const SHAPES = [
+  { columns: 1, lattice: "0", meanderCount: 4, rows: 1 },
+  { columns: 2, lattice: "1", meanderCount: 6, rows: 2 },
+];
+
+const JUNCTION = { id: 1, valueType: "number" } as Characteristic;
+const CHAIN = { id: 2, valueType: "boolean" } as Characteristic;
+
+/** Builds the service over fake tables read in a fake snapshot. */
 async function buildService(
-  shapes: readonly object[],
-): Promise<MeanderAggregateService> {
+  tables: Tables,
+): Promise<{ service: MeanderAggregateService; transaction: () => void }> {
+  const transaction = vi.fn<() => void>();
+  const rows = (entity: unknown): readonly object[] => tables.get(entity) ?? [];
+  const manager = {
+    findBy: async (
+      entity: unknown,
+      where: Record<string, unknown>,
+    ): Promise<readonly object[]> =>
+      await Promise.resolve(
+        rows(entity).filter((row) =>
+          Object.entries(where).every(
+            ([key, value]) => (row as Record<string, unknown>)[key] === value,
+          ),
+        ),
+      ),
+    findOneBy: async (entity: unknown): Promise<null | object> =>
+      await Promise.resolve(rows(entity)[0] ?? null),
+    getRepository: (
+      entity: unknown,
+    ): { find: () => Promise<readonly object[]> } => ({
+      find: async (): Promise<readonly object[]> =>
+        await Promise.resolve(rows(entity)),
+    }),
+  };
   const { instance } = await buildTestingModule(MeanderAggregateService, {
     providers: [
       MeanderFilterPlanService,
       {
-        provide: getRepositoryToken(ShapeCount),
-        useValue: { find: vi.fn().mockResolvedValue(shapes) },
+        provide: getRepositoryToken(CharacteristicValueCount),
+        useValue: {},
       },
       {
-        provide: getRepositoryToken(CharacteristicValueCount),
-        useValue: { findBy: vi.fn().mockResolvedValue([]) },
+        provide: getDataSourceToken(),
+        useValue: {
+          transaction: (_level: string, work: (m: unknown) => unknown) => {
+            transaction();
+
+            return work(manager);
+          },
+        },
       },
-      { provide: getRepositoryToken(CharacteristicShapeCount), useValue: {} },
-      { provide: getRepositoryToken(CharacteristicPairCount), useValue: {} },
     ],
   });
 
-  return instance;
+  return { service: instance, transaction };
 }
 
-/** A compiled filter holding rules the way a parsed tree does. */
-function filterOf(
-  combinator: "and" | "or",
-  fields: readonly string[],
-): CompiledMeanderFilter {
-  const catalog = new Map([
-    ["isChain", { id: 2, valueType: "boolean" } as Characteristic],
-    ["junctionCount", { id: 1, valueType: "number" } as Characteristic],
+/** Tables as a rebuild leaves them: the marker, the shapes, and `extra`. */
+function built(extra: [unknown, readonly object[]][] = []): Tables {
+  return new Map<unknown, readonly object[]>([
+    [AggregateMarker, [{ id: 1, meanderCount: 10 }]],
+    [ShapeCount, SHAPES],
+    ...extra,
   ]);
+}
+
+/** A compiled filter of one characteristic rule. */
+function ruleFilter(
+  characteristic: Characteristic,
+  operator: MeanderFilterOperator,
+  numbers: number[],
+  flag: boolean | null = null,
+): CompiledMeanderFilter {
+  const field = characteristic === JUNCTION ? "junctionCount" : "isChain";
 
   return {
-    catalog,
+    catalog: new Map([[field, characteristic]]),
     hash: "h",
     parameters: {},
     tree: {
-      combinator,
+      combinator: "and",
       groups: [],
-      rules: fields.map((field) => ({
-        field,
-        flag: true,
-        numbers: [0],
-        operator: MeanderFilterOperator.GT,
-        text: null,
-      })),
+      rules: [{ field, flag, numbers, operator, text: null }],
     },
     where: "",
   };
 }
 
+const VALUES = [
+  { characteristicId: 1, meanderCount: 3, value: 1 },
+  { characteristicId: 1, meanderCount: 2, value: 2 },
+  { characteristicId: 2, meanderCount: 4, value: 1 },
+];
+
 describe(MeanderAggregateService, () => {
-  it("answers nothing before the tables have been built", async () => {
+  it("answers nothing without a marker, or one the shape totals contradict", async () => {
     expect.hasAssertions();
 
-    const service = await buildService([]);
+    const missing = await buildService(new Map([[ShapeCount, SHAPES]]));
+    const contradicted = await buildService(
+      new Map<unknown, readonly object[]>([
+        [AggregateMarker, [{ id: 1, meanderCount: 11 }]],
+        [ShapeCount, SHAPES],
+      ]),
+    );
+    const empty = await buildService(
+      new Map<unknown, readonly object[]>([
+        [AggregateMarker, [{ id: 1, meanderCount: 0 }]],
+      ]),
+    );
 
-    await expect(service.total(null)).resolves.toBeNull();
-    await expect(service.valueCounts(null, { id: 1 })).resolves.toBeNull();
-    await expect(service.shapeCounts(null, "lattice")).resolves.toBeNull();
+    await expect(missing.service.total(null)).resolves.toBeNull();
+    await expect(contradicted.service.total(null)).resolves.toBeNull();
+    await expect(empty.service.total(null)).resolves.toBeNull();
   });
 
-  it("leaves trees no table can answer to the meanders", async () => {
+  it("opens no snapshot for a tree no table can answer", async () => {
     expect.hasAssertions();
 
-    const service = await buildService(SHAPES);
+    const { service, transaction } = await buildService(built());
+    const or = ruleFilter(JUNCTION, MeanderFilterOperator.GT, [0]);
 
     await expect(
-      service.total(filterOf("or", ["junctionCount", "isChain"])),
+      service.total({
+        ...or,
+        tree: {
+          ...or.tree,
+          combinator: "or",
+          rules: [...or.tree.rules, ...or.tree.rules],
+        },
+      }),
     ).resolves.toBeNull();
+    expect(transaction).not.toHaveBeenCalled();
+  });
+
+  it("totals a characteristic rule from the stored rows, a missing row as 0", async () => {
+    expect.hasAssertions();
+
+    const { service } = await buildService(
+      built([[CharacteristicValueCount, VALUES]]),
+    );
+    const total = async (
+      operator: MeanderFilterOperator,
+      numbers: number[],
+    ): Promise<null | number> =>
+      await service.total(ruleFilter(JUNCTION, operator, numbers));
+
+    // Ten meanders, five hold the characteristic, five do not.
+    await expect(total(MeanderFilterOperator.GT, [0])).resolves.toBe(5);
+    await expect(total(MeanderFilterOperator.EQ, [0])).resolves.toBe(5);
+    await expect(total(MeanderFilterOperator.LT, [2])).resolves.toBe(8);
+    await expect(total(MeanderFilterOperator.NE, [1])).resolves.toBe(7);
+  });
+
+  it("refuses a total when the rows exceed the shapes", async () => {
+    expect.hasAssertions();
+
+    const { service } = await buildService(
+      built([
+        [
+          CharacteristicValueCount,
+          [{ characteristicId: 1, meanderCount: 11, value: 1 }],
+        ],
+      ]),
+    );
+
     await expect(
-      service.total(filterOf("and", ["junctionCount", "rows"])),
+      service.total(ruleFilter(JUNCTION, MeanderFilterOperator.EQ, [0])),
     ).resolves.toBeNull();
   });
 
-  it("does not group a shape by a characteristic rule or a numeric pattern", async () => {
+  it("adds the 0 bucket to the value counts and to any 0 row stored", async () => {
     expect.hasAssertions();
 
-    const service = await buildService(SHAPES);
+    const plain = await buildService(
+      built([[CharacteristicValueCount, VALUES]]),
+    );
+    const stored = await buildService(
+      built([
+        [
+          CharacteristicValueCount,
+          [...VALUES, { characteristicId: 1, meanderCount: 2, value: 0 }],
+        ],
+      ]),
+    );
 
     await expect(
-      service.shapeCounts(filterOf("and", ["isChain"]), "lattice"),
-    ).resolves.toBeNull();
+      plain.service.valueCounts(null, { id: 1 }),
+    ).resolves.toStrictEqual(
+      new Map([
+        [0, 5],
+        [1, 3],
+        [2, 2],
+      ]),
+    );
     await expect(
-      service.valueCounts(filterOf("and", ["junctionCount"]), { id: 2 }),
-    ).resolves.toBeNull();
+      stored.service.valueCounts(null, { id: 1 }),
+    ).resolves.toStrictEqual(
+      new Map([
+        [0, 5],
+        [1, 3],
+        [2, 2],
+      ]),
+    );
+  });
+
+  it("derives a pattern's 0 bucket from its own count minus the pair rows", async () => {
+    expect.hasAssertions();
+
+    const { service } = await buildService(
+      built([
+        [CharacteristicValueCount, VALUES],
+        [
+          CharacteristicPairCount,
+          [
+            {
+              characteristicId: 2,
+              meanderCount: 3,
+              otherCharacteristicId: 1,
+              otherValue: 1,
+              value: 1,
+            },
+          ],
+        ],
+      ]),
+    );
+    const pattern = ruleFilter(CHAIN, MeanderFilterOperator.IS, [], true);
+    const absent = ruleFilter(CHAIN, MeanderFilterOperator.IS_NOT, [], true);
+
+    // Four meanders hold the pattern; three of them hold junctionCount 1.
+    await expect(
+      service.valueCounts(pattern, { id: 1 }),
+    ).resolves.toStrictEqual(
+      new Map([
+        [0, 1],
+        [1, 3],
+      ]),
+    );
+    await expect(service.valueCounts(absent, { id: 1 })).resolves.toBeNull();
   });
 });

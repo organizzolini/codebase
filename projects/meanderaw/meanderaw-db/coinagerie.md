@@ -4,7 +4,7 @@
 
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
-- **aggregate**:
+- **aggregate**: Pre-counted table the draw run rebuilds, from which the API reads group counts and totals while the marker says it is current.
 - **arcade**: A pattern characteristic for a unit with no cross or bare dot, stored as a true boolean on each meander row that holds it.
 - **batch**: A fixed-size chunk of meander rows that the database service reads or writes at once, sized so one statement stays under Postgres's bind-parameter limit.
 - **cascade**: A foreign key rule that deletes a bridge row with the catalog row or meander it points at, so a removed characteristic leaves no stored values.

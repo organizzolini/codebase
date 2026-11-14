@@ -48,6 +48,7 @@ describe("meanderaw-database migrations", () => {
     await expect(
       dataSource.query<unknown[]>(TABLES_QUERY),
     ).resolves.toStrictEqual([
+      { table_name: "aggregate_markers" },
       { table_name: "characteristic_pair_counts" },
       { table_name: "characteristic_shape_counts" },
       { table_name: "characteristic_value_counts" },
@@ -70,6 +71,7 @@ describe("meanderaw-database migrations", () => {
     await expect(
       dataSource.query<unknown[]>(TABLES_QUERY),
     ).resolves.toStrictEqual([
+      { table_name: "aggregate_markers" },
       { table_name: "characteristic_pair_counts" },
       { table_name: "characteristic_shape_counts" },
       { table_name: "characteristic_value_counts" },
