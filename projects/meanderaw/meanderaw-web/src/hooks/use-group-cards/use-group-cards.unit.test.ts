@@ -68,4 +68,20 @@ describe(useGroupCards, () => {
 
     expect(result.current.cards["all"]?.error).toBeUndefined();
   });
+
+  it("reads a group once however many times it is asked for at once", async () => {
+    const api = serveMeandersApi(3);
+    const leaf = { filter: undefined, id: "all" };
+    const { result } = renderHook(() => useGroupCards());
+
+    result.current.load(leaf);
+    result.current.load(leaf);
+    result.current.load(leaf);
+
+    await waitFor(() => {
+      expect(result.current.cards["all"]?.meanders).toHaveLength(3);
+    });
+
+    expect(api.requests).toHaveLength(1);
+  });
 });

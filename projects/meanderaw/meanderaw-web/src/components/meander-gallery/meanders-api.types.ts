@@ -17,8 +17,7 @@ export type GalleryCharacteristic =
 export interface GalleryGroup {
   count: number;
   field: string;
-  /** Absent at the deepest level the query reads. */
-  groups?: GalleryGroup[];
+  groups: GalleryGroup[];
   value: string;
 }
 

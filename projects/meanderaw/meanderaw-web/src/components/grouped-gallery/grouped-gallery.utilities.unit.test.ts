@@ -151,4 +151,42 @@ describe(buildGroupedItems, () => {
     ]);
     expect(reading[0]).toMatchObject({ label: "Hardcoded: No" });
   });
+
+  it("splices an AND filter into the leaf's own rules, and nests any other whole", () => {
+    const group = { count: 1, field: "isHardcoded", groups: [], value: "true" };
+    const inner = { combinator: "OR" as const, rules: [] };
+    const base = { cards: {}, columns: 1, fields: FIELDS };
+    const spliced = buildGroupedItems([group], {
+      ...base,
+      filter: {
+        combinator: "AND",
+        groups: [inner],
+        rules: [{ field: "rows", numbers: [9], operator: "LT" }],
+      },
+    }).at(1);
+    const nested = buildGroupedItems([group], {
+      ...base,
+      filter: { combinator: "OR", groups: [inner], rules: [] },
+    }).at(1);
+
+    expect(spliced).toMatchObject({
+      leaf: {
+        filter: {
+          groups: [inner],
+          rules: [
+            { field: "isHardcoded", operator: "IS" },
+            { field: "rows", operator: "LT" },
+          ],
+        },
+      },
+    });
+    expect(nested).toMatchObject({
+      leaf: {
+        filter: {
+          groups: [{ combinator: "OR" }],
+          rules: [{ field: "isHardcoded", operator: "IS" }],
+        },
+      },
+    });
+  });
 });

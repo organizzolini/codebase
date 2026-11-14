@@ -47,6 +47,22 @@ describe(GroupedItem, () => {
     expect(screen.getByTestId("group-count").textContent).toBe("1,234");
   });
 
+  it("ranks a header's heading by its depth, below the page's own", () => {
+    const { rerender } = render(<GroupedItem {...properties()} />);
+
+    expect(screen.getByRole("heading", { level: 3 })).toBeDefined();
+
+    rerender(
+      <GroupedItem
+        {...properties({
+          item: { count: 1, depth: 9, key: "k", kind: "header", label: "x" },
+        })}
+      />,
+    );
+
+    expect(screen.getByRole("heading", { level: 6 })).toBeDefined();
+  });
+
   it("shows a row of cards, a stand-in, and a failure to retry", () => {
     const onRetry = vi.fn<GroupedItemProperties["onRetry"]>();
     const leaf = { filter: undefined, id: "k" };
@@ -67,7 +83,7 @@ describe(GroupedItem, () => {
       />,
     );
 
-    expect(screen.getByRole("status").textContent).toBe("Loading…");
+    expect(screen.getByText("Loading…")).toBeDefined();
 
     rerender(
       <GroupedItem

@@ -1,9 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useRef as useReference,
-  useState,
-} from "react";
+import { useCallback, useRef as useReference, useState } from "react";
 
 import { findMeanders } from "../../components/meander-gallery/meanders-api.utilities";
 
@@ -25,15 +20,21 @@ import type { UseGroupCardsResult } from "./use-group-cards.types";
 export function useGroupCards(sort?: MeanderSortInput): UseGroupCardsResult {
   // 🪝 Hooks
   const [cards, setCards] = useState<Readonly<Record<string, GroupCards>>>({});
-  const latest = useReference(cards);
+  // What was read is kept here too, so a read starting before React commits
+  // the last one still sees its cursor.
+  const store = useReference<Readonly<Record<string, GroupCards>>>({});
   const inFlight = useReference(new Set<string>());
 
   // 🏗 Setup
 
   // 💪 Handlers
+  const commit = (next: Readonly<Record<string, GroupCards>>): void => {
+    store.current = next;
+    setCards(next);
+  };
   const load = useCallback(
     (leaf: GroupLeaf): void => {
-      const current = latest.current[leaf.id];
+      const current = store.current[leaf.id];
 
       if (inFlight.current.has(leaf.id) || current?.hasMore === false) {
         return;
@@ -42,10 +43,10 @@ export function useGroupCards(sort?: MeanderSortInput): UseGroupCardsResult {
       inFlight.current.add(leaf.id);
       findMeanders({ after: current?.endCursor, filter: leaf.filter, sort })
         .then((page) => {
-          setCards((previous) => appendPage(previous, leaf.id, page));
+          commit(appendPage(store.current, leaf.id, page));
         })
         .catch((error: unknown) => {
-          setCards((previous) => recordFailure(previous, leaf.id, error));
+          commit(recordFailure(store.current, leaf.id, error));
         })
         .finally(() => {
           inFlight.current.delete(leaf.id);
@@ -55,9 +56,6 @@ export function useGroupCards(sort?: MeanderSortInput): UseGroupCardsResult {
   );
 
   // ♻️ Lifecycle
-  useEffect(() => {
-    latest.current = cards;
-  }, [cards]);
 
   // 🎁 Result
   return { cards, load };

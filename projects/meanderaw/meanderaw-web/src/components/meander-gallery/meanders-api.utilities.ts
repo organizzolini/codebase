@@ -8,10 +8,13 @@ import {
 } from "../../graphql/generated/operations";
 import { toSortInput } from "../../hooks/use-gallery-search/use-gallery-search.utilities";
 import { toFilterInput } from "../gallery-filter-builder/gallery-filter-builder.utilities";
+import { MAXIMUM_GROUP_LEVELS } from "../gallery-group-by/gallery-group-by.constants";
+import { fitsGrouping } from "../gallery-group-by/gallery-group-by.utilities";
 
 import {
   DEFAULT_MEANDERAW_API_URL,
   GALLERY_PAGE_SIZE,
+  groupNodeSchema,
   responseSchema,
 } from "./meanders-api.constants";
 
@@ -57,6 +60,12 @@ export async function findGallery(
   const { direction, filter, grouping, sort } = request;
 
   if (grouping.length > 0) {
+    if (!fitsGrouping(filter, grouping)) {
+      throw new Error(
+        "This filter is too large to read the cards of its groups; remove a rule or a group level.",
+      );
+    }
+
     return {
       groups: await findMeanderGroups({
         filter: toFilterInput(filter),
@@ -84,7 +93,10 @@ export async function findMeanderGroups(
 ): Promise<GalleryGroup[]> {
   const { meanderGroups } = await queryApi(MeanderGroupsDocument, variables);
 
-  return meanderGroups;
+  return parseGroups(
+    meanderGroups,
+    [variables.groupBy].flat().map(({ field }) => field),
+  );
 }
 
 /**
@@ -99,6 +111,58 @@ export async function findMeanders(
   });
 
   return meanders;
+}
+
+/**
+ * Checks the groups the API sent against the levels asked for, level by
+ * level: each is a count with the field of its level, and each level but the
+ * last holds the groups of the next. What is a leaf is the levels asked, not
+ * whether `groups` is there.
+ */
+export function parseGroups(
+  raw: unknown,
+  levels: readonly string[],
+): GalleryGroup[] {
+  if (levels.length === 0 || levels.length > MAXIMUM_GROUP_LEVELS) {
+    throw new Error("A grouping holds one to four levels");
+  }
+
+  const roots: GalleryGroup[] = [];
+  let current = [{ children: raw, into: roots }];
+
+  for (const [index, field] of levels.entries()) {
+    const next: typeof current = [];
+
+    for (const { children, into } of current) {
+      for (const child of z.array(groupNodeSchema).parse(children)) {
+        if (child.field !== field) {
+          throw new Error(
+            `A group of ${child.field} came in place of ${field}`,
+          );
+        }
+
+        const group: GalleryGroup = {
+          count: child.count,
+          field,
+          groups: [],
+          value: child.value,
+        };
+
+        into.push(group);
+
+        if (index < levels.length - 1) {
+          next.push({
+            children: z.array(z.unknown()).parse(child.groups),
+            into: group.groups,
+          });
+        }
+      }
+    }
+
+    current = next;
+  }
+
+  return roots;
 }
 
 /**

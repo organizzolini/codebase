@@ -158,7 +158,14 @@ function IndexPage(): ReactNode {
   });
 
   // 🏗 Setup
-  const filterInput = useMemo(() => toFilterInput(filter), [filter]);
+  // What the API is asked, kept steady so the reads do not restart.
+  const input = useMemo(
+    () => ({
+      filter: toFilterInput(filter),
+      sort: toSortInput(sort, direction),
+    }),
+    [direction, filter, sort],
+  );
   const fields = createFilterFields(characteristics);
   const groupFields = createGroupFields(characteristics);
   // A level the catalog does not know is left out of the page.
@@ -174,6 +181,14 @@ function IndexPage(): ReactNode {
       handleFilterChange(filter);
     }
   }, [filter, handleFilterChange, linkedFilter]);
+
+  // A link carrying levels the catalog does not know, or twice, is replaced
+  // by one that does not.
+  useEffect(() => {
+    if (JSON.stringify(grouping) !== JSON.stringify(group)) {
+      handleGroupChange(grouping);
+    }
+  }, [group, grouping, handleGroupChange]);
 
   // 🏁 Early Returns
 
@@ -217,18 +232,18 @@ function IndexPage(): ReactNode {
       ) : null}
       {groups === undefined && page !== undefined ? (
         <FlatGallery
-          filter={filterInput}
+          filter={input.filter}
           page={page}
-          sort={toSortInput(sort, direction)}
+          sort={input.sort}
           view={view}
         />
       ) : (
         <GroupedGallery
           key={JSON.stringify({ direction, filter, grouping, sort })}
           fields={groupFields}
-          filter={filterInput}
+          filter={input.filter}
           groups={groups ?? []}
-          sort={toSortInput(sort, direction)}
+          sort={input.sort}
           view={view}
         />
       )}

@@ -177,4 +177,12 @@ describe(useGallerySearch, () => {
       group: [],
     });
   });
+
+  it("drops a level that is not text alone, then caps the rest at four", () => {
+    expect(
+      gallerySearchSchema.parse({
+        group: [1, "a", "", "b", { x: 1 }, "c", "d", "e"],
+      }),
+    ).toStrictEqual({ group: ["a", "b", "c", "d"] });
+  });
 });

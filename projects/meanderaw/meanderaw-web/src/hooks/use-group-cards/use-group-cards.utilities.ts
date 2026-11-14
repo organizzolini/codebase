@@ -14,11 +14,18 @@ export function appendPage(
   page: MeandersPage,
 ): Record<string, GroupCards> {
   const meanders = [...(cards[id]?.meanders ?? [])];
+  const seen = new Set<string>();
+
+  for (const { id: meanderId } of meanders) {
+    seen.add(meanderId);
+  }
 
   // A loop rather than a mapping callback, which would count as one more
-  // frame on the stack beneath it.
+  // frame on the stack beneath it. A meander read twice shows once.
   for (const { node } of page.edges) {
-    meanders.push(node);
+    if (!seen.has(node.id)) {
+      meanders.push(node);
+    }
   }
 
   return {

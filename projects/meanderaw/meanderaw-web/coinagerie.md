@@ -29,6 +29,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **role**: Accessibility role argument in testing-library queries such as findByRole, which the index integration test uses to find the heading.
 - **selector**: A CSS selector, such as `FOCUSABLE_SELECTOR` in `gallery-filters.constants.ts`, that finds what can take focus inside the filter surface.
 - **sound**: Said of a rule's numbers when they are finite, and whole where the field takes whole numbers only, as `hasSoundNumbers` checks.
+- **splice**:
 - **unmount**: To remove a rendered component from the page, as a test does to start a fresh render within one test.
 - **usable**: Said of a rule or group the catalog can answer, which `sanitizeFilter` keeps: a known field with an operator and value it takes.
 - **visible**: The virtual rows the grouped gallery has mounted, whose pending rows start a group's cards loading.

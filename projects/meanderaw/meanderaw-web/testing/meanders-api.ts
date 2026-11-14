@@ -1,5 +1,6 @@
 import { delay, graphql, HttpResponse } from "msw";
 
+import { refuseFilter } from "./filter-api-contract";
 import { serveGraphqlApi } from "./graphql-api";
 
 import type {
@@ -33,6 +34,11 @@ export interface MeandersApi {
   recover: () => void;
   requests: MeandersQueryVariables[];
 }
+
+/**
+ * A group as the API sends it: the fourth level has no `groups`.
+ */
+type RawGroup = Omit<GalleryGroup, "groups"> & { groups?: RawGroup[] };
 
 /**
  * The meander at a place in the fixture: every third one is hardcoded and
@@ -124,7 +130,8 @@ export function serveMeandersApi(count = 3, delayMs = 0): MeandersApi {
         api.requests.push(variables);
         await delay(delayMs);
 
-        const message = failure ?? meandersFailure;
+        const message =
+          failure ?? meandersFailure ?? refuseInput(variables.filter);
 
         if (message !== undefined) {
           return HttpResponse.json({ errors: [{ message }] });
@@ -161,34 +168,34 @@ export function serveMeandersApi(count = 3, delayMs = 0): MeandersApi {
       },
     ),
     // The generated result stops at four levels; the groups here nest freely.
-    graphql.query<
-      { meanderGroups: GalleryGroup[] },
-      MeanderGroupsQueryVariables
-    >("MeanderGroups", ({ variables }) => {
-      api.groupRequests.push(variables);
+    graphql.query<{ meanderGroups: RawGroup[] }, MeanderGroupsQueryVariables>(
+      "MeanderGroups",
+      ({ variables }) => {
+        api.groupRequests.push(variables);
 
-      if (failure !== undefined) {
-        return HttpResponse.json({ errors: [{ message: failure }] });
-      }
+        if (failure !== undefined) {
+          return HttpResponse.json({ errors: [{ message: failure }] });
+        }
 
-      const fixtures = Array.from({ length: count }, (_, position) =>
-        fixtureMeander(position),
-      ).filter(
-        (meander) =>
-          variables.filter === null ||
-          variables.filter === undefined ||
-          matchesGroup(meander, variables.filter),
-      );
+        const fixtures = Array.from({ length: count }, (_, position) =>
+          fixtureMeander(position),
+        ).filter(
+          (meander) =>
+            variables.filter === null ||
+            variables.filter === undefined ||
+            matchesGroup(meander, variables.filter),
+        );
 
-      return HttpResponse.json({
-        data: {
-          meanderGroups: groupMeanders(
-            fixtures,
-            [variables.groupBy].flat().map(({ field }) => field),
-          ),
-        },
-      });
-    }),
+        return HttpResponse.json({
+          data: {
+            meanderGroups: groupMeanders(
+              fixtures,
+              [variables.groupBy].flat().map(({ field }) => field),
+            ),
+          },
+        });
+      },
+    ),
     graphql.query<CharacteristicsQuery, CharacteristicsQueryVariables>(
       "Characteristics",
       () =>
@@ -227,7 +234,8 @@ function groupKey(meander: GalleryMeander, field: string): string {
 function groupMeanders(
   meanders: readonly GalleryMeander[],
   fields: readonly string[],
-): GalleryGroup[] {
+  depth = 1,
+): RawGroup[] {
   const [field, ...rest] = fields;
 
   if (field === undefined) {
@@ -249,7 +257,8 @@ function groupMeanders(
     .map(([value, members]) => ({
       count: members.length,
       field,
-      groups: groupMeanders(members, rest),
+      // The query reads four levels, so the fourth has no `groups` field.
+      ...(depth < 4 ? { groups: groupMeanders(members, rest, depth + 1) } : {}),
       value,
     }));
 }
@@ -312,6 +321,17 @@ function matchesRule(
       return held !== compared;
     }
   }
+}
+
+/**
+ * Why the API would refuse the filter an operation carries, if it would.
+ */
+function refuseInput(
+  filter: MeanderFilterGroupInput | null | undefined,
+): string | undefined {
+  return filter === null || filter === undefined
+    ? undefined
+    : refuseFilter(filter);
 }
 
 /**

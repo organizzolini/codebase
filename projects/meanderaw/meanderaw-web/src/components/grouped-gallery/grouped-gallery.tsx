@@ -105,6 +105,14 @@ export function GroupedGallery(
       className={className}
       data-testid="grouped-gallery"
     >
+      <p
+        className="sr-only"
+        role="status"
+      >
+        {visible.some(({ index }) => items[index]?.kind === "pending")
+          ? "Loading groups…"
+          : ""}
+      </p>
       <ul
         className="relative"
         style={{ height: virtualizer.getTotalSize() }}

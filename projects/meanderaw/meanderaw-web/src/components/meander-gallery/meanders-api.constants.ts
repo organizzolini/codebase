@@ -19,3 +19,13 @@ export const responseSchema = z.object({
  * How many meanders a page asks for.
  */
 export const GALLERY_PAGE_SIZE = 48;
+
+/**
+ * Validates one group as the API sends it, its nested groups unread.
+ */
+export const groupNodeSchema = z.object({
+  count: z.number().int().nonnegative(),
+  field: z.string(),
+  groups: z.array(z.unknown()).optional(),
+  value: z.string(),
+});

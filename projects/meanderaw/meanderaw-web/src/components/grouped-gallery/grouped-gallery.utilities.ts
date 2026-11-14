@@ -56,7 +56,7 @@ export function buildGroupedItems(
       label: `${field?.label ?? group.field}: ${describeKey(field, group.value)}`,
     });
 
-    const children = group.groups ?? [];
+    const children = group.groups;
 
     if (children.length > 0) {
       stack.push(
@@ -68,11 +68,7 @@ export function buildGroupedItems(
     }
 
     const leaf: GroupLeaf = {
-      filter: {
-        combinator: "AND",
-        groups: context.filter === undefined ? [] : [context.filter],
-        rules,
-      },
+      filter: toLeafFilter(context.filter, rules),
       id,
     };
 
@@ -133,6 +129,28 @@ function toKeyRules(
 }
 
 // 🌎 Public Functions
+
+/**
+ * The filter that selects a last-level group's cards: its key rules joined
+ * with the page's filter. An AND filter's rules and groups are spliced in so
+ * the nesting grows by nothing; any other is nested whole.
+ */
+function toLeafFilter(
+  filter: MeanderFilterGroupInput | undefined,
+  rules: readonly MeanderFilterRuleInput[],
+): MeanderFilterGroupInput {
+  if (filter === undefined) {
+    return { combinator: "AND", groups: [], rules: [...rules] };
+  }
+
+  return filter.combinator === "AND"
+    ? {
+        combinator: "AND",
+        groups: [...(filter.groups ?? [])],
+        rules: [...rules, ...(filter.rules ?? [])],
+      }
+    : { combinator: "AND", groups: [filter], rules: [...rules] };
+}
 
 /**
  * The rows under a last-level header: its cards read so far, then a failure

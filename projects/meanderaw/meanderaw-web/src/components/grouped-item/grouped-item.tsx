@@ -1,6 +1,8 @@
 import { GalleryError } from "../gallery-error/gallery-error";
 import { MeanderCard } from "../meander-card/meander-card";
 
+import { HEADINGS } from "./grouped-item.constants";
+
 import type { GalleryView } from "../../hooks/use-gallery-search/use-gallery-search.types";
 import type {
   GroupedItem as GroupedRow,
@@ -34,6 +36,9 @@ export function GroupedItem(
   // 🪝 Hooks
 
   // 🏗 Setup
+  // The level sets the heading's rank, below the page's own heading.
+  const Heading =
+    HEADINGS[Math.min(item.kind === "header" ? item.depth : 0, 4)] ?? "h2";
 
   // 💪 Handlers
 
@@ -48,7 +53,7 @@ export function GroupedItem(
       data-testid="grouped-item"
     >
       {item.kind === "header" ? (
-        <h2
+        <Heading
           className="flex items-baseline justify-between gap-3 border-b border-(--line) pb-1 text-base"
           data-testid="group-header"
           style={{ paddingLeft: `${String(item.depth * 16)}px` }}
@@ -60,7 +65,7 @@ export function GroupedItem(
           >
             {item.count.toLocaleString("en-US")}
           </span>
-        </h2>
+        </Heading>
       ) : null}
       {item.kind === "cards" ? (
         <div
@@ -80,12 +85,7 @@ export function GroupedItem(
         </div>
       ) : null}
       {item.kind === "pending" ? (
-        <p
-          className="text-sm text-(--ink-muted)"
-          role="status"
-        >
-          Loading…
-        </p>
+        <p className="text-sm text-(--ink-muted)">Loading…</p>
       ) : null}
       {item.kind === "error" ? (
         <GalleryError
