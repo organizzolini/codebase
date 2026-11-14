@@ -283,6 +283,28 @@ describe(MeanderawDatabaseService, () => {
       expect(keys).toStrictEqual(CATALOG_KEYS.toSorted());
     });
 
+    it("spends an identity value only on a key the catalog lacks", async () => {
+      const lastValue = async (): Promise<number> => {
+        const [row]: [{ last: string }] = await dataSource.query(
+          `SELECT last_value AS last FROM meanderaw.characteristics_id_seq`,
+        );
+
+        return Number(row.last);
+      };
+      const before = await lastValue();
+
+      await service.syncCharacteristics(characteristicRecords(CATALOG_KEYS));
+      await service.syncCharacteristics(characteristicRecords(CATALOG_KEYS));
+
+      await expect(lastValue()).resolves.toBe(before);
+
+      await service.syncCharacteristics(
+        characteristicRecords([...CATALOG_KEYS, "brandNewCount"]),
+      );
+
+      await expect(lastValue()).resolves.toBe(before + 1);
+    });
+
     it("rewrites an entry's description in place, keeping its id", async () => {
       const before = await dataSource
         .getRepository(Characteristic)
