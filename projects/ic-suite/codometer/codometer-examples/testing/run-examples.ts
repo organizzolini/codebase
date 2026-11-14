@@ -104,7 +104,7 @@ function readPackageGuide(): string {
 }
 
 /** One configuration, run against the corpus and gated on the promised code. */
-function runConfiguration(relativePath: string): boolean {
+async function runConfiguration(relativePath: string): Promise<boolean> {
   const expected = EXPECTED_EXIT_CODES[relativePath];
 
   if (expected === undefined) {
@@ -115,7 +115,7 @@ function runConfiguration(relativePath: string): boolean {
     return false;
   }
 
-  const run = runCodometer(
+  const run = await runCodometer(
     [
       "--config",
       path.join(examplesDirectory, relativePath),
@@ -142,7 +142,10 @@ function runConfiguration(relativePath: string): boolean {
 /**
  * Checks one example: its guide must exist and be linked from the index, and every configuration must hold.
  */
-function runExample(exampleName: string, packageGuide: string): boolean {
+async function runExample(
+  exampleName: string,
+  packageGuide: string,
+): Promise<boolean> {
   console.info(`📁 ${exampleName}`);
 
   let held = true;
@@ -160,7 +163,7 @@ function runExample(exampleName: string, packageGuide: string): boolean {
   }
 
   for (const relativePath of readConfigurations(exampleName)) {
-    if (!runConfiguration(relativePath)) held = false;
+    if (!(await runConfiguration(relativePath))) held = false;
   }
 
   return held;
@@ -175,9 +178,11 @@ console.info(
 );
 
 const packageGuide = readPackageGuide();
-const outcomes = exampleNames.map((exampleName) =>
-  runExample(exampleName, packageGuide),
-);
+const outcomes: boolean[] = [];
+
+for (const exampleName of exampleNames) {
+  outcomes.push(await runExample(exampleName, packageGuide));
+}
 
 const documented = new Set(
   exampleNames.flatMap((exampleName) => readConfigurations(exampleName)),

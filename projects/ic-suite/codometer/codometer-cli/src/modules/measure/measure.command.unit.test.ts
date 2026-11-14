@@ -4,6 +4,7 @@ import {
   ConfigurationModule,
   ConfigurationService,
 } from "@codometer/configuration";
+import { buildCodeStatistics, throwUnknown } from "@codometer/core/testing";
 import { MeasureService } from "@codometer/measurement";
 import {
   DeliveryService,
@@ -17,8 +18,6 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { expectLoggerContext } from "@codebase/observability/testing";
 import { captureExitCode, captureOutput } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
-
-import { buildCodeStatistics, throwUnknown } from "../../../testing/mocks";
 
 import { MeasureCommand } from "./measure.command";
 

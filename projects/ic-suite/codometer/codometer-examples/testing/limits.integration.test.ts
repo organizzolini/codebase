@@ -19,23 +19,23 @@ import {
 
 describe("every example configuration this package ships", () => {
   describe("limits", () => {
-    it("prints a warning breach without changing the exit code", () => {
-      const run = gateExample("limits", "warn.config.ts");
+    it("prints a warning breach without changing the exit code", async () => {
+      const run = await gateExample("limits", "warn.config.ts");
 
       expect(run.exitCode).toBe(0);
       expect(run.standardError).toContain("Breached a warning limit");
     });
 
-    it("fails on a breach at the default severity, reporting both limits", () => {
-      const run = gateExample("limits", "fail.config.ts");
+    it("fails on a breach at the default severity, reporting both limits", async () => {
+      const run = await gateExample("limits", "fail.config.ts");
 
       expect(run.exitCode).toBe(1);
       expect(run.standardError).toContain("Breached a failing limit");
       expect(run.standardError).toContain("Breached a warning limit");
     });
 
-    it("reports a breach without failing when nothing asked for a gate", () => {
-      const run = runCodometer(
+    it("reports a breach without failing when nothing asked for a gate", async () => {
+      const run = await runCodometer(
         ["--config", exampleConfiguration("limits", "fail.config.ts")],
         corpusDirectory,
       );
@@ -45,9 +45,12 @@ describe("every example configuration this package ships", () => {
       expect(run.standardError).toContain("Breached a failing limit");
     });
 
-    it("fails an empty target if and only if a limit is written against it", () => {
-      const limited = gateExample("limits", "empty-target-limited.config.ts");
-      const unlimited = gateAndMeasureExample(
+    it("fails an empty target if and only if a limit is written against it", async () => {
+      const limited = await gateExample(
+        "limits",
+        "empty-target-limited.config.ts",
+      );
+      const unlimited = await gateAndMeasureExample(
         "limits",
         "empty-target-unlimited.config.ts",
       );

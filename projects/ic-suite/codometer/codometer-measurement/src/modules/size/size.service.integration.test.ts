@@ -1,13 +1,13 @@
 import { gzipSync } from "node:zlib";
 
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import { useTemporaryDirectory } from "@codebase/testing";
+import { createFileTree } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
-  createTargetTree,
   TARGET_FIXTURE_FILES,
+  TARGET_FIXTURE_SYMLINKS,
 } from "../../../testing/target-tree";
 
 import { GZIP_LEVEL, UnreadableTargetFileError } from "./size.constants";
@@ -29,7 +29,6 @@ const PINNED_BYTES: Readonly<Record<CodometerCompression, number>> = {
 const DEFAULT_LEVEL_BYTES = 924;
 
 describe(`${SizeService.name} over real files`, () => {
-  const readTemporaryDirectory = useTemporaryDirectory("codometer-target");
   let service: SizeService;
   let workingDirectory: string;
 
@@ -45,7 +44,13 @@ describe(`${SizeService.name} over real files`, () => {
     const { instance } = await buildTestingModule(SizeService);
 
     service = instance;
-    workingDirectory = createTargetTree(readTemporaryDirectory());
+  });
+
+  beforeEach(() => {
+    workingDirectory = createFileTree(TARGET_FIXTURE_FILES, {
+      label: "codometer-target",
+      symlinks: TARGET_FIXTURE_SYMLINKS,
+    });
   });
 
   it.each(["brotli", "gzip", "none"] as const)(
