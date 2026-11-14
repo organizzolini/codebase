@@ -11,6 +11,7 @@ import {
   environmentSchema,
   GRAPHQL_SCHEMA_FILE,
 } from "./meanderaw-api.constants";
+import { CharacteristicsModule } from "./modules/characteristics/characteristics.module";
 
 /**
  * Root NestJS application module for the MeanderawApi GraphQL API.
@@ -31,6 +32,7 @@ import {
     }),
     MeanderawDatabaseModule,
     LoggerModule,
+    CharacteristicsModule,
   ],
 })
 export class MeanderawApiModule {}

@@ -10,10 +10,12 @@
     "@nestjs/core": "catalog:",
     "@nestjs/graphql": "catalog:",
     "@nestjs/platform-express": "catalog:",
+    "@nestjs/typeorm": "catalog:",
     "graphql": "catalog:",
     "lightship": "catalog:",
     "reflect-metadata": "catalog:",
     "tslib": "catalog:",
+    "typeorm": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
