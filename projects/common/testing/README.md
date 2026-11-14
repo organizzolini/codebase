@@ -12,7 +12,7 @@ subpath exports.
 | Entry                           | Holds                                                                                                        | Depends on                |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------- |
 | `@codebase/testing`             | Temporary directories, output and exit-code capture, environment overrides, the fixed clock, fixtures, mocks | nothing in the workspace  |
-| `@codebase/testing/setup`       | The shared Vitest setup file                                                                                 | nothing in the workspace  |
+| `@codebase/testing/setup`       | The shared Vitest setup file, which the base config lists                                                    | nothing in the workspace  |
 | `@codebase/testing/end-to-end`  | Tarball sandbox and Verdaccio plugin runners that test packed packages as a consumer installs them           | `execa`, Verdaccio        |
 | `@codebase/testing/file-system` | The `mockFileSystem` factory helper, kept free of `node:fs` imports                                          | nothing in the workspace  |
 | `@codebase/testing/nestjs`      | The testing-module builder, module-wiring assertions, and the Nx workspace tree                              | `@codebase/observability` |
@@ -60,8 +60,10 @@ describe("the command line", () => {
 ```
 
 `createFileTree({ "src/a.ts": "..." }, { git: true, symlinks: { "link": "src" } })`
-writes a temporary tree and returns its root, removed with the test;
-`writeFileTree(root, files)` writes into a directory you already hold.
+writes a temporary tree and returns its root, removed with the test; `parent`
+makes the root inside a directory you name instead, for a spawned command that
+must resolve its packages from the workspace. `writeFileTree(root, files)`
+writes into a directory you already hold.
 
 Every helper that changes global state undoes it once the test finishes, so a
 test cannot leak a directory, a stream spy, an exit code, or a variable into
@@ -150,7 +152,9 @@ sanitized, the timeout defaults to 120 seconds, and a failing or stopped run is
 a result (exit code 1 when it never exited), never a throw. `tsconfig` sets
 `SWC_NODE_PROJECT`, which swc-node reads ahead of `TS_NODE_PROJECT`. Run it
 from a directory inside the workspace: `@swc-node/register` resolves from the
-working directory, so a `os.tmpdir()` one fails on Linux.
+working directory, so a `os.tmpdir()` one fails on Linux. Its hook also resolves from there,
+so an absolute loader path would not help; pass `parent` to `createFileTree` to
+put a spawned root inside the workspace.
 
 Both runners test packed artifacts: run the `pack` target first, so
 `dist/tarballs` holds them. Commands receive only a sanitized environment, a

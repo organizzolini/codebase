@@ -1,3 +1,16 @@
+## 0.0.85 (2026-11-13)
+
+### 💅 Refactors
+
+- **configuration:** ♻️ default vitest coverage and setup in the base config ([#2376](https://github.com/organizzolini/codebase/pull/2376), [#2374](https://github.com/organizzolini/codebase/issues/2374))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.84
+- Updated codependix-boundaries to 0.0.84
+- Updated codependix-output to 0.0.84
+- Updated codependix-core to 0.0.82
+
 ## 0.0.84 (2026-11-12)
 
 ### 🧱 Updated Dependencies

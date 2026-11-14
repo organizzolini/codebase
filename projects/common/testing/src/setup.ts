@@ -23,7 +23,7 @@ vi.mock("prompts", async (importOriginal) => {
  * The Vitest setup every project shares: `reflect-metadata` for Nest
  * decorators, an `output` directory for tests that write files, every mock's
  * calls cleared before each test, and console logging silenced behind spies a
- * test can assert on. A project lists it in `setupFiles`.
+ * test can assert on. The base Vitest config lists it for every project.
  */
 
 beforeAll(() => {

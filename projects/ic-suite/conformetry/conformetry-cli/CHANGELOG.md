@@ -1,3 +1,17 @@
+## 0.0.86 (2026-11-13)
+
+### 💅 Refactors
+
+- **configuration:** ♻️ default vitest coverage and setup in the base config ([#2376](https://github.com/organizzolini/codebase/pull/2376), [#2374](https://github.com/organizzolini/codebase/issues/2374))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.86
+- Updated conformetry-generation to 0.0.86
+- Updated conformetry-validation to 0.0.85
+- Updated conformetry-output to 0.0.85
+- Updated conformetry-core to 0.0.84
+
 ## 0.0.85 (2026-11-12)
 
 ### 🧱 Updated Dependencies

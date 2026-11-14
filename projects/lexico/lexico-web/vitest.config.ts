@@ -36,6 +36,8 @@ export default mergeConfig(
         },
       },
       environment: "jsdom",
+      // Runs after the shared setup the base config lists.
+      setupFiles: ["./testing/setup.ts"],
     },
   }),
 );
