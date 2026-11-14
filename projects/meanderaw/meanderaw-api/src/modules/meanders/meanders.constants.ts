@@ -35,6 +35,9 @@ export const FILTER_ARGUMENT_DESCRIPTION =
 export const SORT_ARGUMENT_DESCRIPTION =
   "A shape field (code, rows, columns, lattice, repeats, isHardcoded) or a characteristic key, and a direction. Without it, meanders come in id order.";
 
+/** What a cursor records as its filter when the query had none. */
+export const NO_FILTER = "none";
+
 /** What a `meanders` query may ask for, checked at the API boundary. */
 export const meandersArgumentsSchema = z.object({
   after: z.string().min(1).max(MAXIMUM_TEXT_LENGTH).nullish(),
@@ -52,10 +55,11 @@ export const meandersArgumentsSchema = z.object({
     .nullish(),
 });
 
-/** What a cursor carries: the sort it was issued for, and the last row's value and id. */
+/** A cursor's sort, filter, last value and id. */
 export const cursorSchema = z.object({
   direction: z.enum(SortDirection),
   field: z.string().max(MAXIMUM_TEXT_LENGTH),
+  filter: z.string().max(MAXIMUM_TEXT_LENGTH),
   id: z.uuid(),
   value: z.union([z.boolean(), z.number(), z.string()]).nullish(),
 });

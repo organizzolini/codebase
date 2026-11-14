@@ -25,23 +25,6 @@ export class MeanderFilterPlanService {
 
   // 🔏 Private Methods
 
-  /** How many meanders a rule keeps among those holding the characteristic. */
-  private estimate(
-    rule: MeanderFilterRule,
-    id: number | undefined,
-    counts: readonly CharacteristicValueCount[],
-  ): number {
-    let estimate = 0;
-
-    for (const row of counts) {
-      if (row.characteristicId === id && this.holds(rule, row.value)) {
-        estimate += row.meanderCount;
-      }
-    }
-
-    return estimate;
-  }
-
   /** Whether a rule holds when its field has this value; 0 stands for a missing row. */
   private holds(rule: MeanderFilterRule, value: number): boolean {
     const [first = 0, second = 0] = rule.numbers;
@@ -79,11 +62,28 @@ export class MeanderFilterPlanService {
     return value !== first;
   }
 
+  /** How many meanders a rule keeps among those holding the characteristic. */
+  private keptCount(
+    rule: MeanderFilterRule,
+    id: number | undefined,
+    counts: readonly CharacteristicValueCount[],
+  ): number {
+    let kept = 0;
+
+    for (const row of counts) {
+      if (row.characteristicId === id && this.holds(rule, row.value)) {
+        kept += row.meanderCount;
+      }
+    }
+
+    return kept;
+  }
+
   // 🌎 Public Methods
 
   /**
-   * The qualifying rule that keeps the fewest meanders; null for a tree that
-   * is not a flat AND. The rest are probed through the primary key.
+   * The qualifying rule keeping the smallest count; null unless the tree is
+   * a flat AND. The rest are probed by primary key.
    */
   async chooseDriver(
     group: MeanderFilterGroup,
@@ -106,14 +106,14 @@ export class MeanderFilterPlanService {
       characteristicId: In(ids),
     });
     let driver: MeanderFilterRule | null = null;
-    let fewest = Number.POSITIVE_INFINITY;
+    let smallest = Number.POSITIVE_INFINITY;
 
     for (const rule of candidates) {
-      const estimate = this.estimate(rule, catalog.get(rule.field)?.id, counts);
+      const kept = this.keptCount(rule, catalog.get(rule.field)?.id, counts);
 
-      if (estimate < fewest) {
+      if (kept < smallest) {
         driver = rule;
-        fewest = estimate;
+        smallest = kept;
       }
     }
 
