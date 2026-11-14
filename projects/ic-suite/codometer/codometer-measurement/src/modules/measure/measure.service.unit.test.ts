@@ -1,10 +1,10 @@
+import { throwUnknown } from "@codometer/core/testing";
 import { LanguagesService } from "@codometer/languages";
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { throwUnknown } from "../../../testing/mocks";
 import { CustomizationService } from "../customization/customization.service";
 import { DiscoveryService } from "../discovery/discovery.service";
 import { InputsService } from "../inputs/inputs.service";

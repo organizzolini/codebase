@@ -36,8 +36,8 @@ describe("every example configuration this package ships", () => {
   describe("targets", () => {
     let targetsReport: CodometerReport;
 
-    beforeAll(() => {
-      targetsReport = measureExample("targets", "codometer.config.ts");
+    beforeAll(async () => {
+      targetsReport = await measureExample("targets", "codometer.config.ts");
     });
 
     it("measures compiled output sitting beside the corpus", () => {
@@ -49,8 +49,8 @@ describe("every example configuration this package ships", () => {
       expect(readTarget(report, "Compiled").files).toBe(2);
     });
 
-    it("reaches the files the codebase target's ignore rules hide", () => {
-      withCorpusCopy((directory) => {
+    it("reaches the files the codebase target's ignore rules hide", async () => {
+      await withCorpusCopy(async (directory) => {
         // `corpus/.gitignore` names `generated/`. Fill it, exactly as the
         // example's own instructions say to.
         fs.cpSync(
@@ -59,7 +59,7 @@ describe("every example configuration this package ships", () => {
           { recursive: true },
         );
 
-        const report = measure(
+        const report = await measure(
           ["--config", exampleConfiguration("targets", "ignored.config.ts")],
           directory,
         );
@@ -87,9 +87,9 @@ describe("every example configuration this package ships", () => {
       expect(readTarget(report, "Manifests").files).toBe(2);
     });
 
-    it("holds the same files however the include array is ordered", () => {
+    it("holds the same files however the include array is ordered", async () => {
       const ordered = targetsReport;
-      const reordered = measureExample("targets", "reordered.config.ts");
+      const reordered = await measureExample("targets", "reordered.config.ts");
       const describeTargets = (
         report: CodometerReport,
       ): Record<string, number> =>
@@ -106,16 +106,16 @@ describe("every example configuration this package ships", () => {
   });
 
   describe("compression", () => {
-    it("compresses each file on its own, and gzip beats nothing", () => {
-      const readSize = (configuration: string): number =>
+    it("compresses each file on its own, and gzip beats nothing", async () => {
+      const readSize = async (configuration: string): Promise<number> =>
         readMetric(
-          measureExample("compression", configuration),
+          await measureExample("compression", configuration),
           "Compiled",
           "size",
         );
-      const uncompressed = readSize("none.config.ts");
-      const gzip = readSize("gzip.config.ts");
-      const brotli = readSize("brotli.config.ts");
+      const uncompressed = await readSize("none.config.ts");
+      const gzip = await readSize("gzip.config.ts");
+      const brotli = await readSize("brotli.config.ts");
 
       expect(gzip).toBeLessThan(uncompressed);
       expect(brotli).toBeLessThan(gzip);
@@ -126,8 +126,8 @@ describe("every example configuration this package ships", () => {
   });
 
   describe("the named configuration", () => {
-    it("answers alone, with nothing merged from a file above it", () => {
-      const nested = measure(
+    it("answers alone, with nothing merged from a file above it", async () => {
+      const nested = await measure(
         [
           "--config",
           exampleConfiguration("discovery", "nested", "codometer.config.ts"),
@@ -145,8 +145,8 @@ describe("every example configuration this package ships", () => {
       ]);
     });
 
-    it("is never searched for from the folder measured", () => {
-      const parent = measure(
+    it("is never searched for from the folder measured", async () => {
+      const parent = await measure(
         ["--config", packageConfiguration],
         exampleConfiguration("discovery"),
       );
@@ -168,8 +168,8 @@ describe("every example configuration this package ships", () => {
       expect(parent.failures).toHaveLength(1);
     });
 
-    it("refuses a run that names no configuration", () => {
-      const run = runCodometer([], exampleConfiguration("discovery"));
+    it("refuses a run that names no configuration", async () => {
+      const run = await runCodometer([], exampleConfiguration("discovery"));
 
       expect(run.exitCode).not.toBe(0);
       expect(run.standardError).toContain("--config");

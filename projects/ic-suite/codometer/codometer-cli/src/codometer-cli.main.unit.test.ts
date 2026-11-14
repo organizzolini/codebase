@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { captureExitCode } from "@codebase/testing";
+
 interface CommandFactoryRunOptions {
   readonly bufferLogs?: boolean;
   readonly logger?: unknown;
@@ -65,7 +67,7 @@ function getRunOptions(): CommandFactoryRunOptions {
 
 describe("main", () => {
   const originalArgv = process.argv;
-  const originalExitCode = process.exitCode;
+  let readExitCode: () => typeof process.exitCode;
 
   beforeEach(() => {
     vi.resetModules();
@@ -74,12 +76,11 @@ describe("main", () => {
     mockLogToStandardError.mockClear();
     mockCommandFactoryRun.mockClear();
     process.argv = ["node", "codometer"];
-    process.exitCode = undefined;
+    readExitCode = captureExitCode();
   });
 
   afterEach(() => {
     process.argv = originalArgv;
-    process.exitCode = originalExitCode;
   });
 
   it("bootstraps the command factory with a buffered stderr logger", async () => {
@@ -108,7 +109,7 @@ describe("main", () => {
     const error = new Error("💥 command exploded");
     serviceErrorHandler(error);
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(mockLoggerError).toHaveBeenCalledWith(error.message, error.stack);
   });
 });

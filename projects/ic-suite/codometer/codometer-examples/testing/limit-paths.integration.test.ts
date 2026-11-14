@@ -19,8 +19,8 @@ import {
 
 describe("every example configuration this package ships", () => {
   describe("limits", () => {
-    it("refuses an ambiguous path, naming both readings", () => {
-      const run = gateExample("limits", "ambiguous.config.ts");
+    it("refuses an ambiguous path, naming both readings", async () => {
+      const run = await gateExample("limits", "ambiguous.config.ts");
 
       expect(run.exitCode).toBe(1);
       expect(run.standardError).toContain(
@@ -28,8 +28,8 @@ describe("every example configuration this package ships", () => {
       );
     });
 
-    it("refuses an unprefixed path even where only one target was measured", () => {
-      const run = gateExample("limits", "unprefixed.config.ts");
+    it("refuses an unprefixed path even where only one target was measured", async () => {
+      const run = await gateExample("limits", "unprefixed.config.ts");
 
       expect(run.exitCode).toBe(1);
       // The exact sentence both guides quote. `linesOfCode` is real, spelled
@@ -43,8 +43,8 @@ describe("every example configuration this package ships", () => {
       );
     });
 
-    it("refuses a path naming nothing, and one naming an analysis never run", () => {
-      const run = gateExample("limits", "unbound.config.ts");
+    it("refuses a path naming nothing, and one naming an analysis never run", async () => {
+      const run = await gateExample("limits", "unbound.config.ts");
 
       expect(run.exitCode).toBe(1);
       // Both failures are collected and reported together rather than one run at
@@ -53,8 +53,8 @@ describe("every example configuration this package ships", () => {
       expect(run.standardError).toContain("Compiled.typescript.files");
     });
 
-    it("reads an unprefixed path as the default input's", () => {
-      const { report, run } = gateAndMeasureExample(
+    it("reads an unprefixed path as the default input's", async () => {
+      const { report, run } = await gateAndMeasureExample(
         "limits",
         "default-target.config.ts",
       );
@@ -66,10 +66,10 @@ describe("every example configuration this package ships", () => {
       expect(readMetric(report, "codebase", "typescript.interfaces")).toBe(6);
     });
 
-    it("reads a decimal unit, and refuses one it cannot read", () => {
-      const report = measureExample("limits", "units.config.ts");
+    it("reads a decimal unit, and refuses one it cannot read", async () => {
+      const report = await measureExample("limits", "units.config.ts");
       const limits = readMetricLimits(report, "Corpus", "size");
-      const refused = gateExample("limits", "unreadable-unit.config.ts");
+      const refused = await gateExample("limits", "unreadable-unit.config.ts");
 
       // "8 KB" is 8000 bytes and "1 MB" is 1000000 — decimal, not binary.
       expect(limits.map((limit) => limit.value)).toStrictEqual([

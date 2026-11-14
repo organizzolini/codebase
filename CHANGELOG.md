@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.0.2](https://github.com/organizzolini/codebase/compare/v6.0.1...v6.0.2) (2026-11-13)
+
+### ♻️ Code Refactoring
+
+* **configuration:** ♻️ default vitest coverage and setup in the base config ([#2376](https://github.com/organizzolini/codebase/issues/2376)) ([efba471](https://github.com/organizzolini/codebase/commit/efba47184ba9aeb6e46af352ecd3ae498d3de045)), closes [#2374](https://github.com/organizzolini/codebase/issues/2374)
+
+## [6.0.1](https://github.com/organizzolini/codebase/compare/v6.0.0...v6.0.1) (2026-11-12)
+
 ## [6.0.0](https://github.com/organizzolini/codebase/compare/v5.0.0...v6.0.0) (2026-11-12)
 
 ### ⚠ BREAKING CHANGES

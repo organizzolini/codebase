@@ -17,6 +17,7 @@ src/
   index.ts          # @codebase/testing: the core, no workspace dependencies
   setup.ts          # @codebase/testing/setup: the shared Vitest setup file
   end-to-end.ts     # @codebase/testing/end-to-end: tarball sandbox and Verdaccio runners (execa, Verdaccio)
+  file-system.ts    # @codebase/testing/file-system: mockFileSystem, for a vi.mock factory
   nestjs.ts         # @codebase/testing/nestjs: module builder, module assertions, Nx tree
   react.ts          # @codebase/testing/react: route render and stand-ins
   react-setup.ts    # @codebase/testing/react/setup: the shared jsdom setup
@@ -44,6 +45,21 @@ src/
   assertions.
 - **Never add a `framework:*` tag.** A framework tag pulls the package into
   that framework's conformetry templates and module-boundary rules.
+
+### Recipes by test kind
+
+- **Command**: `buildTestingModule`, `answerPrompts` (the setup already mocks
+  `prompts`), `captureOutput`, `captureExitCode`, `mockFileSystem`.
+- **Module**: `bootModule`, `expectModuleProvides`/`Exports`/`Imports`.
+- **Integration**: `createFileTree`, `createTemporaryDirectory`,
+  `overrideEnvironment`, `mockDates`.
+- **End-to-end CLI**: `runSourceCommand` over a `createFileTree` root (core
+  stays free of `execa`, so it lives in `/end-to-end`).
+- **Utilities**: `mockPartially`, `stubFetch`, `loadFixture`.
+
+`mockFileSystem` is built inside a `vi.mock` factory with
+`vi.importActual("@codebase/testing/file-system")`, since `vi.mock` hoists above static imports and a dynamic `import()` of
+the package trips `@nx/enforce-module-boundaries`.
 
 ### Key Commands
 

@@ -20,6 +20,7 @@
   },
   "exports": {
     ".": "./src/index.ts",
+    "./testing": "./testing/index.ts",
     "./package.json": "./package.json"
   },
   "files": [
@@ -64,5 +65,5 @@
     "strict": true
   },
   "types": "src/index.ts",
-  "version": "0.0.82"
+  "version": "0.0.83"
 }

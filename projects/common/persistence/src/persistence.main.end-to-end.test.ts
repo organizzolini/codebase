@@ -1,10 +1,10 @@
-import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
 import { createTemporaryDirectory } from "@codebase/testing";
+import { runSourceCommand } from "@codebase/testing/end-to-end";
 
 /** The project root, which `start` runs the command line from. */
 const PROJECT_ROOT = path.resolve(import.meta.dirname, "..");
@@ -14,31 +14,23 @@ const SPAWN_TIMEOUT_MILLISECONDS = 60_000;
 
 /**
  * Runs `persistence.main.ts` in its own process, with no Postgres variable and
- * the default log level.
+ * the default log level: the sanitized environment carries neither.
  */
-function runMain(argv: readonly string[]): {
+async function runMain(argv: readonly string[]): Promise<{
   readonly output: string;
-  readonly status: null | number;
-} {
-  const environment = Object.fromEntries(
-    Object.entries(process.env).filter(
-      ([key]) =>
-        !key.includes("POSTGRES") &&
-        !key.startsWith("PG") &&
-        key !== "LOG_LEVEL",
-    ),
-  );
-  const result = spawnSync(
-    process.execPath,
-    [
-      "--import",
-      "@swc-node/register/esm-register",
-      "src/persistence.main.ts",
-      ...argv,
-    ],
-    { cwd: PROJECT_ROOT, encoding: "utf8", env: environment },
-  );
-  return { output: `${result.stdout}${result.stderr}`, status: result.status };
+  readonly status: number;
+}> {
+  const result = await runSourceCommand({
+    args: argv,
+    directory: PROJECT_ROOT,
+    entry: "src/persistence.main.ts",
+    timeout: SPAWN_TIMEOUT_MILLISECONDS,
+  });
+
+  return {
+    output: `${result.stdout}${result.stderr}`,
+    status: result.exitCode,
+  };
 }
 
 // Run as a real process rather than through the testing module, because the
@@ -47,8 +39,8 @@ function runMain(argv: readonly string[]): {
 describe("main end-to-end suite", () => {
   it(
     "lists its commands",
-    () => {
-      const { output, status } = runMain(["--help"]);
+    async () => {
+      const { output, status } = await runMain(["--help"]);
 
       expect(status).toBe(0);
       expect(output).toMatch(/^\s+postgresql-export\b/mu);
@@ -59,8 +51,8 @@ describe("main end-to-end suite", () => {
 
   it(
     "prints why a command failed and exits non-zero, needing no Postgres environment",
-    () => {
-      const { output, status } = runMain([
+    async () => {
+      const { output, status } = await runMain([
         "postgresql-export",
         "--source-uri",
         "postgresql://fixture_username:hunter2-secret@127.0.0.1:1/fixture_development",
@@ -82,11 +74,11 @@ describe("main end-to-end suite", () => {
 
   it(
     "prints a dry run's plan and exits zero, writing no file",
-    () => {
+    async () => {
       const directory = createTemporaryDirectory("database-main-dry-run");
       const file = path.join(directory, "never.dump");
 
-      const { output, status } = runMain([
+      const { output, status } = await runMain([
         "postgresql-export",
         "--source-uri",
         "postgresql://fixture_username:hunter2-secret@127.0.0.1:1/fixture_development",

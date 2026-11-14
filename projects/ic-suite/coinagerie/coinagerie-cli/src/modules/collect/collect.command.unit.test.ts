@@ -20,13 +20,12 @@ import {
 } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
-import { captureExitCode, captureOutput } from "@codebase/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
-
 import {
-  createFixtureTree,
-  removeFixtureTree,
-} from "../../../testing/fixture-tree";
+  captureExitCode,
+  captureOutput,
+  createFileTree,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CollectCommand } from "./collect.command";
 
@@ -63,7 +62,6 @@ const SOURCE = { "main.ts": "const answerValue = 1;\n" };
 describe(CollectCommand, () => {
   let command: CollectCommand;
   let logger: BuiltTestingModule<CollectCommand>["logger"];
-  let root: string | undefined;
   let readExitCode: () => typeof process.exitCode;
 
   beforeAll(async () => {
@@ -79,20 +77,14 @@ describe(CollectCommand, () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
-
-    if (root !== undefined) {
-      removeFixtureTree(root);
-      root = undefined;
-    }
   });
 
-  /** Runs the command in-process with a fixture tree as its working directory. */
+  /** Runs the command in-process with a repository fixture as its working directory. */
   async function runIn(
     files: Record<string, string>,
     options: CollectCommandOptions,
   ): Promise<string> {
-    const fixture = createFixtureTree(files);
-    root = fixture;
+    const fixture = createFileTree(files, { git: true, label: "collect" });
     vi.spyOn(process, "cwd").mockReturnValue(fixture);
     await command.run([], options);
     return fixture;
