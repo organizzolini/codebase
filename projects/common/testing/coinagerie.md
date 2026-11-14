@@ -10,6 +10,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **dispose**: Cleanup call on a sandbox runner that deletes its temporary consumer directory, which a packed test calls once it has finished with the installed tarballs. Defined by `@codebase/testing`.
 - **forbid**:
 - **fork**:
+- **gap**: Missing piece in an example's documentation, such as its README or index link, named by the shared example-run helpers.
 - **greeter**:
 - **ping**:
 - **poem**:

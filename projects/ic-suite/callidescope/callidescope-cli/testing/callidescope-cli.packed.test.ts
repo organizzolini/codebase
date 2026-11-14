@@ -1,14 +1,11 @@
 import path from "node:path";
 
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { createFileTree } from "@codebase/testing";
-import { createTarballSandboxRunner } from "@codebase/testing/end-to-end";
+import { usePackedSandbox } from "@codebase/testing/end-to-end";
 
-import type {
-  CommandResult,
-  TarballSandboxRunner,
-} from "@codebase/testing/end-to-end";
+import type { CommandResult } from "@codebase/testing/end-to-end";
 
 const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../../../..");
 
@@ -28,7 +25,17 @@ const PROJECT_CONFIGURATION = `export default {
 `;
 
 describe("the packed callidescope command", () => {
-  let sandbox: TarballSandboxRunner;
+  const packed = usePackedSandbox({
+    binary: "callidescope",
+    packages: [
+      "@callidescope/cli",
+      "@callidescope/configuration",
+      "@callidescope/core",
+      "@callidescope/graph",
+      "@callidescope/output",
+    ],
+    workspaceRoot: WORKSPACE_ROOT,
+  });
 
   /** Writes a workspace of one traceable project; returns the workspace directory. */
   function writeWorkspace(): string {
@@ -54,37 +61,17 @@ describe("the packed callidescope command", () => {
     directory: string,
     args: readonly string[],
   ): Promise<CommandResult> {
-    return sandbox
-      .command(path.join(sandbox.directory, "node_modules/.bin/callidescope"), [
-        ...args,
-        "--config",
-        path.join(directory, "callidescope.config.json"),
-      ])
-      .inDirectory(directory)
-      .run();
+    return packed.run(directory, [
+      ...args,
+      "--config",
+      path.join(directory, "callidescope.config.json"),
+    ]);
   }
-
-  beforeAll(async () => {
-    sandbox = await createTarballSandboxRunner({
-      packages: [
-        "@callidescope/cli",
-        "@callidescope/configuration",
-        "@callidescope/core",
-        "@callidescope/graph",
-        "@callidescope/output",
-      ],
-      workspaceRoot: WORKSPACE_ROOT,
-    });
-  });
-
-  afterAll(() => {
-    sandbox.dispose();
-  });
 
   it("lists its commands under --help", async () => {
     expect.hasAssertions();
 
-    const result = await sandbox.command("callidescope", ["--help"]).run();
+    const result = await packed.command("callidescope", ["--help"]).run();
 
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("depth");

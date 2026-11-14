@@ -1,9 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
-import { createTemporaryDirectory } from "@codebase/testing";
+import {
+  createTemporaryDirectory,
+  useWorkingDirectory,
+} from "@codebase/testing";
 
 import {
   EPHEMERIS_FILENAMES,
@@ -30,13 +33,9 @@ describe("ephemeris-download utilities", () => {
     directory = createTemporaryDirectory("ephemeris");
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
   describe(resolveEphemerisDirectory, () => {
     it("resolves the data directory from the working directory", () => {
-      vi.spyOn(process, "cwd").mockReturnValue(directory);
+      useWorkingDirectory(directory);
 
       expect(resolveEphemerisDirectory()).toBe(
         path.join(directory, "data", "ephemeris"),
@@ -120,7 +119,7 @@ describe("ephemeris-download utilities", () => {
     });
 
     it("checks the data directory under the working directory by default", () => {
-      vi.spyOn(process, "cwd").mockReturnValue(directory);
+      useWorkingDirectory(directory);
 
       expect(() => {
         assertEphemerisFilesPresent();

@@ -6,6 +6,7 @@ import { GRAPHQL_MODULE_OPTIONS } from "@nestjs/graphql";
 import { describe, expect, it, vi } from "vitest";
 
 import { CaelundasDatabaseModule } from "@codebase/caelundas-db";
+import { useWorkingDirectory } from "@codebase/testing";
 
 import { CaelundasApiModule } from "./caelundas-api.module";
 import { EventsModule } from "./modules/events/events.module";
@@ -77,11 +78,10 @@ describe("caelundas api module suite", () => {
   it("emits the schema beside the module whatever the working directory", async () => {
     expect.hasAssertions();
 
-    const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(tmpdir());
+    useWorkingDirectory(tmpdir());
     vi.resetModules();
     const { CaelundasApiModule: freshModule } =
       await import("./caelundas-api.module");
-    cwdSpy.mockRestore();
 
     expect(findAutoSchemaFile(freshModule)).toBe(
       fileURLToPath(new URL("schema.gql", import.meta.url)),

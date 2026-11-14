@@ -11,7 +11,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **breadth**: Second limit in callidescope's gate, the count of distinct callees one callable may reach, here capped at five in this package.
 - **bullet**: Glossary entry line in the form dash, bold word, colon, which carries the definition beneath it and is what the parser reads.
 - **disagree**: Of a glossary whose words differ from the code's, missing some or listing stale ones, so a check fails on it.
-- **dispose**: Cleanup call on a sandbox runner that deletes its temporary consumer directory, which a packed test calls once it has finished with the installed tarballs. Defined by `@codebase/testing`.
 - **glossary**: The markdown or JSON file of word-to-definition entries that a run checks against the code and rewrites when asked.
 - **lunar**: Sample glossary word in the check-failure fixtures, given an empty definition, which a check still passes though it stays undefined.
 - **phase**: Sample glossary word in the check-failure fixtures, given a short definition that the markdown and JSON tests assert on.

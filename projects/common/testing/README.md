@@ -68,7 +68,8 @@ writes into a directory you already hold.
 Every helper that changes global state undoes it once the test finishes, so a
 test cannot leak a directory, a stream spy, an exit code, or a variable into
 the next. `useTemporaryDirectory` is the suite-level variant: one directory
-from the suite's first test to its last.
+from the suite's first test to its last. `useWorkingDirectory(directory)`
+makes `process.cwd()` return any path, real or not, until the test finishes.
 
 `loadFixture(import.meta.url, "fixtures/page.html")` reads a fixture relative
 to the test file. `mockChildProcess` and `mockPartially` build `vi.mock`
@@ -113,6 +114,27 @@ vi.mock("node:fs/promises", async (importOriginal) => {
 
 it("reads the config", () => {
   vi.mocked(fs.readFileSync).mockReturnValue("name = 1");
+});
+```
+
+#### Mocking `node:child_process`
+
+`mockChildProcess` wraps every starter in a spy that runs the real process until
+a test stages a result; `mockExecFile(actual, decide)` instead replaces
+`execFile` with a fake that starts nothing and exits as `decide` says
+(`processFailure` builds its `error`). Load the helper with `vi.importActual`
+and a type import, never a dynamic `import()`, for the reason given above:
+
+```ts
+import { vi } from "vitest";
+
+import type * as Testing from "@codebase/testing";
+
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockChildProcess } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
+
+  return mockChildProcess(await importOriginal());
 });
 ```
 
@@ -189,13 +211,15 @@ builds the class the same way and asserts its logger context, comes from
 
 ### Recipes by test kind
 
-| Kind               | Reach for                                                                                                                  |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------------- |
-| Command            | `buildTestingModule`, `answerPrompts`, `captureOutput`, `captureExitCode`, `mockFileSystem`                                |
-| Module             | `bootModule`, `expectModuleProvides`, `expectModuleExports`, `expectModuleImports`                                         |
-| Integration        | `createFileTree`, `createTemporaryDirectory`, `overrideEnvironment`, `mockDates`                                           |
-| End-to-end CLI     | `runSourceCommand` over a `createFileTree({ ... }, { git: true })` root, or `createTarballSandboxRunner` for packed output |
-| Utilities          | `mockPartially`, `stubFetch`, `loadFixture`, `mockDates`                                                                   |
+| Kind            | Reach for                                                                                                                                 |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Command         | `buildTestingModule`, `mockErrorLogEntries`, `setErrorLogFilePath`, `answerPrompts`, `captureOutput`, `captureExitCode`, `mockFileSystem` |
+| Module          | `bootModule`, `expectModuleProvides`, `expectModuleExports`, `expectModuleImports`                                                        |
+| Integration     | `createFileTree`, `createTemporaryDirectory`, `useWorkingDirectory`, `overrideEnvironment`, `mockDates`                                   |
+| End-to-end CLI  | `runSourceCommand` over a `createFileTree({ ... }, { git: true })` root, or `createTarballSandboxRunner` for packed output                |
+| Utilities       | `mockPartially`, `stubFetch`, `loadFixture`, `mockDates`                                                                                  |
+| Child process   | `mockChildProcess`, `mockExecFile`, `processFailure`                                                                                      |
+| Example folders | `listExampleNames`, `stageExample` with `removeStagedExample`, `findGuideGaps` (all from `/end-to-end`)                                   |
 
 ### Postgres
 

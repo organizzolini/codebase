@@ -6,7 +6,10 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { Author, Text } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 import { createTemporaryDirectory } from "@codebase/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
+import {
+  buildTestingModule,
+  mockErrorLogEntries,
+} from "@codebase/testing/nestjs";
 
 import { LiteratureTextIngestionService } from "./literature-text-ingestion.service";
 
@@ -31,14 +34,7 @@ describe(LiteratureTextIngestionService, () => {
       "literature-errors.log",
     );
 
-    logger.buildErrorLogEntry.mockImplementation((context, error) => {
-      const errorMessage =
-        error instanceof Error ? error.stack || error.message : String(error);
-      return {
-        errorMessage,
-        logLine: `[${new Date().toISOString()}] ${context}: ${errorMessage}\n`,
-      };
-    });
+    mockErrorLogEntries(logger);
   });
 
   it("resolves with its dependencies", async () => {

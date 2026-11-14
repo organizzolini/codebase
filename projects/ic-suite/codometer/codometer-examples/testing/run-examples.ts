@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 
+import { findGuideGaps, listExampleNames } from "@codebase/testing/end-to-end";
+
 import {
   corpusDirectory,
   examplesDirectory,
@@ -85,17 +87,6 @@ function readConfigurations(exampleName: string): string[] {
   return found.toSorted();
 }
 
-/** Every example directory, alphabetically — the order is the listing's own. */
-function readExampleNames(): string[] {
-  return fs
-    .readdirSync(examplesDirectory, { withFileTypes: true })
-    .filter(
-      (entry) => entry.isDirectory() && !FIXTURE_DIRECTORIES.has(entry.name),
-    )
-    .map((entry) => entry.name)
-    .toSorted();
-}
-
 // 🏃 Running
 
 /** The package guide, read once so the index table can be checked against it. */
@@ -148,18 +139,11 @@ async function runExample(
 ): Promise<boolean> {
   console.info(`📁 ${exampleName}`);
 
-  let held = true;
+  const gaps = findGuideGaps(exampleName, { examplesDirectory, packageGuide });
+  let held = gaps.length === 0;
 
-  if (!fs.existsSync(path.join(examplesDirectory, exampleName, "README.md"))) {
-    console.error(`   ❌ ${exampleName} has no README.md`);
-    held = false;
-  }
-
-  if (!packageGuide.includes(`(examples/${exampleName}/README.md)`)) {
-    console.error(
-      `   ❌ ${exampleName} is not linked from the README's index table`,
-    );
-    held = false;
+  for (const gap of gaps) {
+    console.error(`   ❌ ${gap}`);
   }
 
   for (const relativePath of readConfigurations(exampleName)) {
@@ -171,7 +155,7 @@ async function runExample(
 
 // 🚀 Entry point
 
-const exampleNames = readExampleNames();
+const exampleNames = listExampleNames(examplesDirectory, FIXTURE_DIRECTORIES);
 
 console.info(
   `⏲️ Running ${exampleNames.length} codometer examples over the sample corpus.\n`,

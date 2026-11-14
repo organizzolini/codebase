@@ -21,12 +21,18 @@ export { loadFixture } from "./modules/fixtures/fixtures.utilities";
 export { promptsMock } from "./modules/mocks/mocks.constants";
 export type {
   ChildProcessMock,
+  ExecFileExit,
+  ExecFileMock,
+  ExecFileParameters,
+  ExecFileStart,
   PromptAnswers,
 } from "./modules/mocks/mocks.types";
 export {
   answerPrompts,
   mockChildProcess,
+  mockExecFile,
   mockPartially,
+  processFailure,
   stubFetch,
 } from "./modules/mocks/mocks.utilities";
 export { TEMPORARY_DIRECTORY_PREFIX } from "./modules/temporary-directory/temporary-directory.constants";
@@ -34,3 +40,4 @@ export {
   createTemporaryDirectory,
   useTemporaryDirectory,
 } from "./modules/temporary-directory/temporary-directory.utilities";
+export { useWorkingDirectory } from "./modules/working-directory/working-directory.utilities";

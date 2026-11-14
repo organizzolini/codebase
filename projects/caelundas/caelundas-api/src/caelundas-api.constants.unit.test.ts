@@ -2,14 +2,15 @@ import path from "node:path";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import { useWorkingDirectory } from "@codebase/testing";
+
 describe("caelundas api constants", () => {
   afterEach(() => {
-    vi.restoreAllMocks();
     vi.resetModules();
   });
 
   it("emits the GraphQL schema beside the root module whatever the working directory", async () => {
-    vi.spyOn(process, "cwd").mockReturnValue("/somewhere/else/entirely");
+    useWorkingDirectory("/somewhere/else/entirely");
 
     const { GRAPHQL_SCHEMA_FILE } = await import("./caelundas-api.constants");
 
