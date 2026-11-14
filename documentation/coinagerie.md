@@ -32,7 +32,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **pipeline**: Generic meander pipeline of decode, render, compute Characteristics, and classify that ADR 0012 runs for every drawing.
 - **pitch**: One grid unit on the lattice, which ADR 0004 uses to place the interrupted crossing break one pitch either side of the junction.
 - **role**: Layer assignment of a package, which ADR 0013 documents so a reader learns its place without opening its index file.
-- **she**:
 - **statistic**: Per-project figure, such as the statistics block that ADR 0002 publishes in each project's README on the default branch.
 - **swiss**: Short for Swiss Ephemeris, the local astronomy library that the caelundas performance plan uses instead of NASA Horizons HTTP calls.
 - **triage**: Labels in agents triage-labels documentation map the status family to canonical roles for issues in this repository.

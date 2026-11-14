@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 
+import { AggregateMarker } from "./entities/aggregate-marker.entity";
 import { CharacteristicPairCount } from "./entities/characteristic-pair-count.entity";
 import { CharacteristicShapeCount } from "./entities/characteristic-shape-count.entity";
 import { CharacteristicValueCount } from "./entities/characteristic-value-count.entity";
@@ -13,10 +14,9 @@ import { ShapeCount } from "./entities/shape-count.entity";
 import type { EntityManager } from "typeorm";
 
 /**
- * Rebuilds the aggregate count tables, and each characteristic's
- * `meanderCount`, from the meanders and the bridge. Each table is built beside
- * the live one and swapped in, all in one transaction, so a reader sees the
- * old counts until the commit and the new ones after, never a half.
+ * Rebuilds the aggregate count tables and each characteristic's `meanderCount`
+ * in one transaction. Each table is built beside the live one and swapped in,
+ * and the marker saying the tables are current is written last.
  */
 @Injectable()
 export class MeanderawDatabaseAggregatesService {
@@ -81,7 +81,11 @@ export class MeanderawDatabaseAggregatesService {
     const catalog = this.table(Characteristic);
     const meanders = this.table(Meander);
 
-    await this.dataSource.transaction(async (manager) => {
+    await this.dataSource.transaction("REPEATABLE READ", async (manager) => {
+      // Writers wait, so no write can land between the counts and the marker.
+      await manager.query(
+        `LOCK TABLE ${meanders}, ${bridge}, ${catalog} IN SHARE MODE`,
+      );
       await this.swap(
         manager,
         CharacteristicValueCount,
@@ -112,6 +116,11 @@ export class MeanderawDatabaseAggregatesService {
       await manager.query(
         `UPDATE ${catalog} catalog SET meander_count = COALESCE(
            (SELECT SUM(meander_count) FROM ${this.table(CharacteristicValueCount)} counts WHERE counts.characteristic_id = catalog.id), 0)`,
+      );
+      await manager.query(
+        `INSERT INTO ${this.table(AggregateMarker)} (id, meander_count)
+         SELECT 1, COUNT(*) FROM ${meanders}
+         ON CONFLICT (id) DO UPDATE SET meander_count = EXCLUDED.meander_count`,
       );
     });
   }

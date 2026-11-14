@@ -1,9 +1,24 @@
+import { DataSource } from "typeorm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { z } from "zod";
 
-import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
+import {
+  MeanderawDatabaseAggregatesService,
+  MeanderawDatabaseService,
+} from "@codebase/meanderaw-db";
 
-import { catalogEntry, meanderRow } from "../../../testing/fixtures";
+import { catalogEntry } from "../../../testing/fixtures";
+import {
+  expectedTree,
+  FIXTURES,
+  generator,
+  holds,
+  LATE_MEANDER,
+  matches,
+  only,
+  toRow,
+  wire,
+} from "../../../testing/groups-brute-force";
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
   seedMeanderaw,
@@ -13,6 +28,12 @@ import { MeandersModule } from "../meanders/meanders.module";
 
 import { MeanderGroupsModule } from "./meander-groups.module";
 
+import type {
+  Fixture,
+  Group,
+  Rule,
+  Tree,
+} from "../../../testing/groups-brute-force";
 import type { MeanderawApplication } from "../../../testing/meanderaw-application";
 
 const GROUPS_QUERY = `query ($filter: MeanderFilterGroupInput, $groupBy: [MeanderGroupLevelInput!]!) {
@@ -35,200 +56,6 @@ const groupSchema: z.ZodType<Tree> = z.object({
     .transform((groups) => groups ?? []),
   value: z.string(),
 });
-
-interface Fixture {
-  readonly code: string;
-  readonly columns: number;
-  readonly isChain: boolean;
-  readonly isHardcoded: boolean;
-  readonly isLoop: boolean;
-  readonly junctionCount: number;
-  readonly lattice: string;
-  readonly repeats: number;
-  readonly rows: number;
-  readonly strokeCount: number;
-}
-
-interface Group {
-  readonly combinator: "and" | "or";
-  readonly groups?: readonly Group[];
-  readonly rules?: readonly Rule[];
-}
-
-interface Rule {
-  readonly field: string;
-  readonly flag?: boolean;
-  readonly numbers?: readonly number[];
-  readonly operator: string;
-  readonly text?: string;
-}
-
-interface Tree {
-  count: number;
-  field: string;
-  groups: Tree[];
-  value: string;
-}
-
-/** A hundred and twenty meanders spread over every field, many values missing. */
-const FIXTURES: readonly Fixture[] = Array.from(
-  { length: 120 },
-  (_, index) => ({
-    code: `01x${String(index).padStart(3, "0")}`,
-    columns: (index % 2) + 1,
-    isChain: index % 3 === 0,
-    isHardcoded: index % 4 === 0,
-    isLoop: index % 5 < 2,
-    junctionCount: [0, 1, 3, 0, 2, 4, 1, 0][index % 8] ?? 0,
-    lattice: index % 7 < 3 ? "0" : "1",
-    repeats: (index % 3) + 1,
-    rows: (index % 4) + 1,
-    strokeCount: index % 7 < 3 ? 0 : (index % 7) - 2,
-  }),
-);
-
-/** A meander the aggregate tables have never seen. */
-const LATE_MEANDER: Fixture = {
-  code: "01x999",
-  columns: 2,
-  isChain: true,
-  isHardcoded: false,
-  isLoop: false,
-  junctionCount: 3,
-  lattice: "0",
-  repeats: 1,
-  rows: 2,
-  strokeCount: 0,
-};
-
-const collator = new Intl.Collator("en", { numeric: true });
-
-/** The tree a brute-force walk of the fixtures gives, keys in natural order. */
-function expectedTree(
-  fixtures: readonly Fixture[],
-  fields: readonly string[],
-): Tree[] {
-  const [field, ...rest] = fields;
-
-  if (field === undefined) {
-    return [];
-  }
-
-  const byKey = new Map<string, Fixture[]>();
-
-  for (const fixture of fixtures) {
-    const key = keyOf(fixture, field);
-
-    byKey.set(key, [...(byKey.get(key) ?? []), fixture]);
-  }
-
-  return [...byKey.entries()]
-    .toSorted(([left], [right]) => collator.compare(left, right))
-    .map(([value, members]) => ({
-      count: members.length,
-      field,
-      groups: expectedTree(members, rest),
-      value,
-    }));
-}
-
-/** A repeatable pseudo-random generator, so the trees are the same every run. */
-function generator(seed: number): () => number {
-  let state = seed;
-
-  return () => {
-    state = (state * 1_664_525 + 1_013_904_223) % 4_294_967_296;
-
-    return state / 4_294_967_296;
-  };
-}
-
-/** Whether a rule holds for a fixture, written independently of the API. */
-function holds(fixture: Fixture, rule: Rule): boolean {
-  const value = fixture[rule.field as keyof Fixture];
-  const [first = 0, second = 0] = rule.numbers ?? [];
-  const compared = rule.text ?? first;
-
-  switch (rule.operator) {
-    case "between": {
-      return Number(value) >= first && Number(value) <= second;
-    }
-    case "eq": {
-      return value === compared;
-    }
-    case "gt": {
-      return Number(value) > first;
-    }
-    case "gte": {
-      return Number(value) >= first;
-    }
-    case "is": {
-      return value === rule.flag;
-    }
-    case "is_not": {
-      return value !== rule.flag;
-    }
-    case "lt": {
-      return Number(value) < first;
-    }
-    case "lte": {
-      return Number(value) <= first;
-    }
-    default: {
-      return value !== compared;
-    }
-  }
-}
-
-/** The text a group key reads as, written independently of the API. */
-function keyOf(fixture: Fixture, field: string): string {
-  switch (field) {
-    case "isChain":
-    case "isLoop": {
-      return String(fixture[field]);
-    }
-    case "isHardcoded": {
-      return String(fixture.isHardcoded);
-    }
-    case "lattice": {
-      return fixture.lattice;
-    }
-    case "rowsColumns": {
-      return `${fixture.rows}x${fixture.columns}`;
-    }
-    default: {
-      return String(fixture[field as "junctionCount" | "strokeCount"]);
-    }
-  }
-}
-
-/** Whether a tree holds for a fixture. */
-function matches(fixture: Fixture, group: Group): boolean {
-  const results = [
-    ...(group.rules ?? []).map((rule) => holds(fixture, rule)),
-    ...(group.groups ?? []).map((child) => matches(fixture, child)),
-  ];
-
-  return group.combinator === "and"
-    ? results.every(Boolean)
-    : results.some(Boolean);
-}
-
-/** A tree as GraphQL spells it: enum names in capitals. */
-function wire(group: Group): unknown {
-  return {
-    ...group,
-    combinator: group.combinator.toUpperCase(),
-    groups: group.groups?.map((child) => wire(child)),
-    rules: group.rules?.map((rule) => ({
-      ...rule,
-      operator: rule.operator.toUpperCase(),
-    })),
-  };
-}
-
-/** A single-rule tree. */
-const only = (rule: Rule): Group => ({ combinator: "and", rules: [rule] });
 
 /** Groups and totals over a migrated, seeded Postgres, against brute force. */
 describe("meander groups end-to-end suite", () => {
@@ -264,7 +91,10 @@ describe("meander groups end-to-end suite", () => {
       .parse(body.data).meanders.totalCount;
   }
 
-  /** Expects the groups and the total to equal a brute-force walk. */
+  /**
+   * Expects the groups and the total to equal a brute-force walk, and the
+   * same request forced onto the computed path to agree with it.
+   */
   async function expectBruteForce(
     filter: Group | null,
     fields: readonly string[],
@@ -273,11 +103,19 @@ describe("meander groups end-to-end suite", () => {
     const kept = meanders.filter(
       (fixture) => filter === null || matches(fixture, filter),
     );
+    // A rule every meander meets, in a nested group no table covers.
+    const computed: Group = {
+      combinator: "and",
+      groups: filter === null ? [] : [filter],
+      rules: [{ field: "repeats", numbers: [1], operator: "gte" }],
+    };
 
-    await expect(grouped(filter, fields)).resolves.toStrictEqual(
-      expectedTree(kept, fields),
-    );
-    await expect(total(filter)).resolves.toBe(kept.length);
+    for (const request of [filter, computed]) {
+      await expect(grouped(request, fields)).resolves.toStrictEqual(
+        expectedTree(kept, fields),
+      );
+      await expect(total(request)).resolves.toBe(kept.length);
+    }
   }
 
   beforeAll(async () => {
@@ -480,52 +318,54 @@ describe("meander groups end-to-end suite", () => {
     expect(deep.errors).toHaveLength(1);
   });
 
-  it("reads covered counts from the tables and the rest from the meanders", async () => {
+  it("answers exactly after a write, from the tables again after a rebuild", async () => {
     expect.hasAssertions();
 
-    await application.database.module
-      .get(MeanderawDatabaseService)
-      .saveAll([toRow(LATE_MEANDER)]);
-
-    const everything = only({
-      field: "repeats",
-      numbers: [1],
-      operator: "gte",
-    });
     const fresh = [...FIXTURES, LATE_MEANDER];
+    const pattern = only({ field: "isChain", flag: true, operator: "is" });
+    const service = application.database.module.get(MeanderawDatabaseService);
+    const database = application.database.module.get(DataSource);
 
-    // Covered by the tables, which have not been rebuilt since the seed.
-    await expect(total(null)).resolves.toBe(FIXTURES.length);
-    await expect(grouped(null, ["junctionCount"])).resolves.toStrictEqual(
-      expectedTree(FIXTURES, ["junctionCount"]),
-    );
-
-    // Computed from the meanders, so it sees the new one.
-    await expect(total(everything)).resolves.toBe(fresh.length);
-    await expect(grouped(everything, ["junctionCount"])).resolves.toStrictEqual(
-      expectedTree(fresh, ["junctionCount"]),
-    );
-
+    await service.saveAll([toRow(LATE_MEANDER)]);
     seeded = fresh;
+
+    // The write dropped the marker, so nothing is read from the old tables.
+    await expectBruteForce(null, ["junctionCount"]);
+    await expectBruteForce(pattern, ["strokeCount"]);
+
+    await application.database.module
+      .get(MeanderawDatabaseAggregatesService)
+      .rebuild();
+
+    // Back on the tables: a nudged table row shows up, which no count of the meanders would.
+    const junction = `characteristic_id = (SELECT id FROM meanderaw.characteristics WHERE key = 'junctionCount')`;
+
+    await expectBruteForce(null, ["junctionCount"]);
+    await database.query(
+      `UPDATE meanderaw.characteristic_value_counts SET meander_count = meander_count + 1 WHERE ${junction} AND value = 1`,
+    );
+
+    const nudgedGroups = await grouped(null, ["junctionCount"]);
+    const nudged = nudgedGroups.find(({ value }) => value === "1");
+    const counted = expectedTree(fresh, ["junctionCount"]).find(
+      ({ value }) => value === "1",
+    );
+
+    expect(nudged?.count).toBe((counted?.count ?? 0) + 1);
+
+    // Rows adding up to more than the total are refused, not hidden.
+    await database.query(
+      `UPDATE meanderaw.characteristic_value_counts SET meander_count = meander_count + 100000 WHERE ${junction} AND value = 1`,
+    );
+    await expectBruteForce(null, ["junctionCount"]);
+
+    // Shape totals the marker does not agree with are refused too.
+    await application.database.module
+      .get(MeanderawDatabaseAggregatesService)
+      .rebuild();
+    await database.query(
+      "UPDATE meanderaw.shape_counts SET meander_count = meander_count + 1",
+    );
+    await expectBruteForce(null, ["lattice"]);
   });
 });
-
-/** A fixture as the row the draw run would write. */
-function toRow(fixture: Fixture): ReturnType<typeof meanderRow> {
-  return meanderRow({
-    characteristics: {
-      ...(fixture.junctionCount > 0
-        ? { junctionCount: fixture.junctionCount }
-        : {}),
-      ...(fixture.strokeCount > 0 ? { strokeCount: fixture.strokeCount } : {}),
-      ...(fixture.isChain ? { isChain: true } : {}),
-      ...(fixture.isLoop ? { isLoop: true } : {}),
-    },
-    code: fixture.code,
-    columns: fixture.columns,
-    isHardcoded: fixture.isHardcoded,
-    lattice: fixture.lattice,
-    repeats: fixture.repeats,
-    rows: fixture.rows,
-  });
-}

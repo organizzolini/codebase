@@ -1,7 +1,9 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
+import { InjectDataSource } from "@nestjs/typeorm";
+import { DataSource } from "typeorm";
 
 import {
+  AggregateMarker,
   CharacteristicPairCount,
   CharacteristicShapeCount,
   CharacteristicValueCount,
@@ -20,40 +22,38 @@ import type {
   AggregateShape,
   ValueTotals,
 } from "./meander-aggregate.types";
-import type { Repository } from "typeorm";
+import type { EntityManager } from "typeorm";
 
 /**
- * Answers counts from the aggregate tables when they cover a request, and
- * says so with `null` when they do not. Every answer is exact: a 0 or false
- * bucket is the total minus the stored rows, never a guess.
+ * Answers counts from the aggregate tables when they cover a request and are
+ * current, and with `null` when not. Each read is one snapshot that first
+ * finds the marker, so a count never mixes tables or newer meanders.
  */
 @Injectable()
 export class MeanderAggregateService {
   // 🏗 Dependency Injection
 
   constructor(
-    @InjectRepository(ShapeCount)
-    private readonly shapeCountRepository: Repository<ShapeCount>,
-    @InjectRepository(CharacteristicValueCount)
-    private readonly valueCountRepository: Repository<CharacteristicValueCount>,
-    @InjectRepository(CharacteristicShapeCount)
-    private readonly shapeValueRepository: Repository<CharacteristicShapeCount>,
-    @InjectRepository(CharacteristicPairCount)
-    private readonly pairCountRepository: Repository<CharacteristicPairCount>,
+    @InjectDataSource() private readonly dataSource: DataSource,
     @Inject(MeanderFilterPlanService)
     private readonly planService: MeanderFilterPlanService,
   ) {}
+
+  // 🔐 Private Fields
+
+  // 🔑 Public Fields
 
   // 🔏 Private Methods
 
   /** The stored value counts and the total they fall short of, for no filter. */
   private async allValues(
+    manager: EntityManager,
     id: number,
     shapes: readonly ShapeCount[],
   ): Promise<ValueTotals> {
     const stored = new Map<number, number>();
 
-    for (const row of await this.valueCountRepository.findBy({
+    for (const row of await manager.findBy(CharacteristicValueCount, {
       characteristicId: id,
     })) {
       stored.set(row.value, row.meanderCount);
@@ -101,11 +101,14 @@ export class MeanderAggregateService {
   }
 
   /** The stored value counts among the meanders holding one pattern. */
-  private async patternValues(held: number, id: number): Promise<ValueTotals> {
+  private async patternValues(
+    manager: EntityManager,
+    held: number,
+    id: number,
+  ): Promise<ValueTotals> {
     const stored = new Map<number, number>();
-    let total = 0;
 
-    for (const row of await this.pairCountRepository.findBy({
+    for (const row of await manager.findBy(CharacteristicPairCount, {
       characteristicId: held,
       otherCharacteristicId: id,
     })) {
@@ -115,16 +118,17 @@ export class MeanderAggregateService {
       );
     }
 
-    for (const row of await this.valueCountRepository.findBy({
+    const heldCounts = await manager.findBy(CharacteristicValueCount, {
       characteristicId: held,
-    })) {
-      total += row.meanderCount;
-    }
+    });
 
-    return { stored, total };
+    return {
+      stored,
+      total: heldCounts.reduce((total, row) => total + row.meanderCount, 0),
+    };
   }
 
-  /** Whether a shape satisfies a rule on rows, columns or lattice. */
+  /** Whether a shape satisfies a rule; the lattice takes only eq or ne, so non-eq reads as ne. */
   private shapeHolds(rule: MeanderFilterRule, shape: AggregateShape): boolean {
     if (rule.field === "lattice") {
       return (
@@ -149,13 +153,17 @@ export class MeanderAggregateService {
 
   /** The stored value counts among the meanders of the shapes a scope keeps. */
   private async shapeValues(
-    scope: AggregateScope,
-    id: number,
-    shapes: readonly ShapeCount[],
+    manager: EntityManager,
+    request: {
+      id: number;
+      scope: AggregateScope;
+      shapes: readonly ShapeCount[];
+    },
   ): Promise<ValueTotals> {
+    const { id, scope, shapes } = request;
     const stored = new Map<number, number>();
 
-    for (const row of await this.shapeValueRepository.findBy({
+    for (const row of await manager.findBy(CharacteristicShapeCount, {
       characteristicId: id,
     })) {
       if (this.shapeKept(scope, row)) {
@@ -169,21 +177,44 @@ export class MeanderAggregateService {
     };
   }
 
+  /** Runs `work` in one snapshot once the marker agrees with the shapes; else null. */
+  private async snapshot<T>(
+    work: (
+      manager: EntityManager,
+      shapes: readonly ShapeCount[],
+    ) => Promise<T> | T,
+  ): Promise<null | T> {
+    return this.dataSource.transaction("REPEATABLE READ", async (manager) => {
+      const marker = await manager.findOneBy(AggregateMarker, { id: 1 });
+      const shapes = await manager.getRepository(ShapeCount).find();
+
+      return marker === null ||
+        shapes.length === 0 ||
+        marker.meanderCount !== this.sum(shapes)
+        ? null
+        : work(manager, shapes);
+    });
+  }
+
   /** The meanders in a list of counted shapes. */
   private sum(rows: readonly ShapeCount[]): number {
     return rows.reduce((total, row) => total + row.meanderCount, 0);
   }
 
-  /** The 0 or false bucket and the stored rows, as one list of counts. */
+  /** The stored rows plus the 0 bucket; null when they exceed the total. */
   private withZeroBucket(
     stored: ReadonlyMap<number, number>,
     total: number,
-  ): Map<number, number> {
+  ): Map<number, number> | null {
     const buckets = new Map(stored);
     const zero = total - [...stored.values()].reduce((sum, n) => sum + n, 0);
 
+    if (zero < 0) {
+      return null;
+    }
+
     if (zero > 0) {
-      buckets.set(0, zero);
+      buckets.set(0, (stored.get(0) ?? 0) + zero);
     }
 
     return buckets;
@@ -200,28 +231,25 @@ export class MeanderAggregateService {
     field: "lattice" | "rowsColumns",
   ): Promise<Map<string, number> | null> {
     const scope = this.classify(filter);
-    const shapes = await this.shapeCountRepository.find();
 
-    if (
-      scope === null ||
-      scope.kind === "characteristic" ||
-      shapes.length === 0
-    ) {
+    if (scope === null || scope.kind === "characteristic") {
       return null;
     }
 
-    const counts = new Map<string, number>();
+    return this.snapshot((_manager, shapes) => {
+      const counts = new Map<string, number>();
 
-    for (const row of shapes) {
-      if (this.shapeKept(scope, row)) {
+      for (const row of shapes.filter((shape) =>
+        this.shapeKept(scope, shape),
+      )) {
         const key =
           field === "lattice" ? row.lattice : `${row.rows}x${row.columns}`;
 
         counts.set(key, (counts.get(key) ?? 0) + row.meanderCount);
       }
-    }
 
-    return counts;
+      return counts;
+    });
   }
 
   /**
@@ -230,33 +258,32 @@ export class MeanderAggregateService {
    */
   async total(filter: AggregateFilter): Promise<null | number> {
     const scope = this.classify(filter);
-    const shapes = await this.shapeCountRepository.find();
 
-    if (scope === null || shapes.length === 0) {
+    if (scope === null) {
       return null;
     }
 
-    const everything = shapes.reduce((sum, row) => sum + row.meanderCount, 0);
+    return this.snapshot(async (manager, shapes) => {
+      if (scope.kind !== "characteristic") {
+        return this.sum(shapes.filter((row) => this.shapeKept(scope, row)));
+      }
 
-    if (scope.kind !== "characteristic") {
-      return shapes
-        .filter((row) => this.shapeKept(scope, row))
+      const { characteristic, rule } = scope;
+      const counts = await manager.findBy(CharacteristicValueCount, {
+        characteristicId: characteristic.id,
+      });
+      const stored = counts.reduce((sum, row) => sum + row.meanderCount, 0);
+      const kept = counts
+        .filter((row) => this.planService.holds(rule, row.value))
         .reduce((sum, row) => sum + row.meanderCount, 0);
-    }
+      const missing = this.sum(shapes) - stored;
 
-    const { characteristic, rule } = scope;
-    const counts = await this.valueCountRepository.findBy({
-      characteristicId: characteristic.id,
+      if (missing < 0) {
+        return null;
+      }
+
+      return this.planService.holds(rule, 0) ? kept + missing : kept;
     });
-    let kept = 0;
-    let stored = 0;
-
-    for (const row of counts) {
-      stored += row.meanderCount;
-      kept += this.planService.holds(rule, row.value) ? row.meanderCount : 0;
-    }
-
-    return this.planService.holds(rule, 0) ? kept + everything - stored : kept;
   }
 
   /**
@@ -268,30 +295,34 @@ export class MeanderAggregateService {
     characteristic: { id: number },
   ): Promise<Map<number, number> | null> {
     const scope = this.classify(filter);
-    const shapes = await this.shapeCountRepository.find();
 
-    if (scope === null || shapes.length === 0) {
+    if (
+      scope === null ||
+      (scope.kind === "characteristic" && !this.isPattern(scope))
+    ) {
       return null;
     }
 
-    if (scope.kind === "characteristic") {
-      if (!this.isPattern(scope)) {
-        return null;
+    return this.snapshot(async (manager, shapes) => {
+      let totals: ValueTotals;
+
+      if (scope.kind === "characteristic") {
+        totals = await this.patternValues(
+          manager,
+          scope.characteristic.id,
+          characteristic.id,
+        );
+      } else if (scope.kind === "all") {
+        totals = await this.allValues(manager, characteristic.id, shapes);
+      } else {
+        totals = await this.shapeValues(manager, {
+          id: characteristic.id,
+          scope,
+          shapes,
+        });
       }
 
-      const { stored, total } = await this.patternValues(
-        scope.characteristic.id,
-        characteristic.id,
-      );
-
-      return this.withZeroBucket(stored, total);
-    }
-
-    const { stored, total } =
-      scope.kind === "all"
-        ? await this.allValues(characteristic.id, shapes)
-        : await this.shapeValues(scope, characteristic.id, shapes);
-
-    return this.withZeroBucket(stored, total);
+      return this.withZeroBucket(totals.stored, totals.total);
+    });
   }
 }

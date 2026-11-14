@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
+import { AggregateMarker } from "./entities/aggregate-marker.entity";
 import { Characteristic } from "./entities/characteristic.entity";
 import { MeanderCharacteristic } from "./entities/meander-characteristic.entity";
 import { Meander } from "./entities/meander.entity";
@@ -64,6 +65,11 @@ export class MeanderawDatabaseService {
     }
 
     return byMeander;
+  }
+
+  /** Deletes the marker, after a write, so readers count from the meanders until the next rebuild. */
+  private async invalidateAggregates(manager: EntityManager): Promise<void> {
+    await manager.query(`DELETE FROM ${this.table(AggregateMarker)}`);
   }
 
   /**
@@ -147,7 +153,7 @@ export class MeanderawDatabaseService {
   /** Truncates the meanders and their bridge rows in one statement, so a draw run regenerates them. The catalog stays. */
   async clear(): Promise<void> {
     await this.meanderRepository.query(
-      `TRUNCATE TABLE ${this.table(MeanderCharacteristic)}, ${this.table(Meander)}`,
+      `TRUNCATE TABLE ${this.table(MeanderCharacteristic)}, ${this.table(Meander)}, ${this.table(AggregateMarker)}`,
     );
   }
 
@@ -265,6 +271,7 @@ export class MeanderawDatabaseService {
       await this.writeCharacteristics(manager, [
         { characteristics, code: record.code },
       ]);
+      await this.invalidateAggregates(manager);
 
       return meander;
     });
@@ -302,6 +309,8 @@ export class MeanderawDatabaseService {
         );
         await this.writeCharacteristics(manager, chunk);
       }
+
+      await this.invalidateAggregates(manager);
     });
 
     return records.length;
@@ -338,6 +347,7 @@ export class MeanderawDatabaseService {
         .from(Characteristic)
         .where("NOT (key = ANY(:keys))", { keys })
         .execute();
+      await this.invalidateAggregates(manager);
     });
   }
 }

@@ -256,4 +256,72 @@ describe(MeanderawDatabaseAggregatesService, () => {
       ).resolves.toStrictEqual([{ count: 2 }]);
     });
   });
+
+  describe("marker", () => {
+    /** The marker's meander counts: none when it is absent. */
+    const markers = async (): Promise<unknown[]> =>
+      await dataSource.query(
+        "SELECT meander_count::int AS count FROM meanderaw.aggregate_markers",
+      );
+
+    it("is written by a rebuild with the meanders it counted, and replaced by the next", async () => {
+      await expect(markers()).resolves.toStrictEqual([]);
+
+      await aggregates.rebuild();
+
+      await expect(markers()).resolves.toStrictEqual([{ count: 5 }]);
+
+      await service.save(meanderRecord({ code: "c6", lattice: "2" }));
+      await aggregates.rebuild();
+
+      await expect(markers()).resolves.toStrictEqual([{ count: 6 }]);
+    });
+
+    it.each([
+      [
+        "save",
+        async (): Promise<void> => {
+          await service.save(meanderRecord({ code: "m1" }));
+        },
+      ],
+      [
+        "saveAll",
+        async (): Promise<void> => {
+          await service.saveAll([meanderRecord({ code: "m2" })]);
+        },
+      ],
+      [
+        "syncCharacteristics",
+        async (): Promise<void> => {
+          await service.syncCharacteristics(characteristicRecords(["isA"]));
+        },
+      ],
+      [
+        "clear",
+        async (): Promise<void> => {
+          await service.clear();
+        },
+      ],
+    ])(
+      "is deleted by %s, so no reader trusts counts it has outdated",
+      async (_name, write) => {
+        await aggregates.rebuild();
+        await write();
+
+        await expect(markers()).resolves.toStrictEqual([]);
+      },
+    );
+
+    it("is not written when the rebuild fails", async () => {
+      await dataSource.query(
+        `CREATE TABLE meanderaw.shape_counts_next (blocker int)`,
+      );
+
+      await expect(aggregates.rebuild()).rejects.toThrow(/shape_counts_next/);
+
+      await dataSource.query(`DROP TABLE meanderaw.shape_counts_next`);
+
+      await expect(markers()).resolves.toStrictEqual([]);
+    });
+  });
 });
