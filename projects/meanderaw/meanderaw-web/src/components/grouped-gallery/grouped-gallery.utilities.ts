@@ -131,9 +131,8 @@ function toKeyRules(
 // 🌎 Public Functions
 
 /**
- * The filter that selects a last-level group's cards: its key rules joined
- * with the page's filter. An AND filter's rules and groups are spliced in so
- * the nesting grows by nothing; any other is nested whole.
+ * The filter for a last-level group's cards: its key rules and the page's
+ * filter, an AND one spliced in and any other nested.
  */
 function toLeafFilter(
   filter: MeanderFilterGroupInput | undefined,

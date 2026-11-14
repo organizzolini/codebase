@@ -114,10 +114,8 @@ export async function findMeanders(
 }
 
 /**
- * Checks the groups the API sent against the levels asked for, level by
- * level: each is a count with the field of its level, and each level but the
- * last holds the groups of the next. What is a leaf is the levels asked, not
- * whether `groups` is there.
+ * Checks the groups sent against the levels asked for. The last level asked
+ * is the leaf, whether or not `groups` is there.
  */
 export function parseGroups(
   raw: unknown,

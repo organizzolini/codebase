@@ -36,7 +36,7 @@ export interface MeandersApi {
 }
 
 /**
- * A group as the API sends it: the fourth level has no `groups`.
+ * A group as sent; the fourth level has no `groups`.
  */
 type RawGroup = Omit<GalleryGroup, "groups"> & { groups?: RawGroup[] };
 

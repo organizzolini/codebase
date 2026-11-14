@@ -34,8 +34,7 @@ export function createGroupFields(
 }
 
 /**
- * Whether a group's cards can still be read within the filter: its key rules
- * join the filter, and the API's caps on nesting and size hold for the whole.
+ * Whether the key rules joined to the filter stay within the API's caps.
  */
 export function fitsGrouping(
   filter: FilterGroup | undefined,
