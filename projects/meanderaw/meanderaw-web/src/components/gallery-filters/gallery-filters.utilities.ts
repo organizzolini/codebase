@@ -29,8 +29,7 @@ export function listFocusable(root: HTMLElement): HTMLElement[] {
 }
 
 /**
- * Picks where the builder opens for a window's width: a popover on a
- * desktop, a drawer on a tablet and a bottom sheet on a phone.
+ * Picks where the builder opens for a width: popover on desktop, drawer on tablet, sheet on phone.
  */
 export function pickFilterSurface(width: number): FilterSurfaceKind {
   if (width >= DESKTOP_MINIMUM_WIDTH) {

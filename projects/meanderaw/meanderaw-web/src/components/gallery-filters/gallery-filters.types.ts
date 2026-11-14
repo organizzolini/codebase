@@ -1,6 +1,6 @@
 // 🏷️ Types
 
 /**
- * Where the builder opens: beside its button, from the side, or from below.
+ * Where the builder opens: a popover, a drawer or a sheet.
  */
 export type FilterSurfaceKind = "drawer" | "popover" | "sheet";

@@ -18,7 +18,7 @@ export const TABLET_MINIMUM_WIDTH = 768;
 export const DESKTOP_MINIMUM_WIDTH = 1024;
 
 /**
- * What can take focus inside the surface, which a modal surface keeps it in.
+ * What can take focus inside the surface.
  */
 export const FOCUSABLE_SELECTOR =
   "button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])";

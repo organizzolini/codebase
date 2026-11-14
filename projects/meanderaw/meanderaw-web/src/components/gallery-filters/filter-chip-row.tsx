@@ -15,7 +15,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The tree whose rules are drawn, the fields that word them, and the edit.
+ * The tree whose rules are drawn, their fields, and the edit.
  */
 export interface FilterChipRowProperties {
   className?: string;

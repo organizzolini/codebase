@@ -18,7 +18,7 @@ export type MeanderFilterGroupInput = {
   rules?: Array<MeanderFilterRuleInput> | null | undefined;
 };
 
-/** How a rule compares: eq, ne, lt, lte, gt, gte and between for numbers, is and is_not for booleans. A missing value reads as 0 or false. */
+/** How a rule compares; a missing value reads as 0 or false. */
 export type MeanderFilterOperator =
   | 'BETWEEN'
   | 'EQ'

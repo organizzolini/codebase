@@ -17,7 +17,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The surface kind, how many filters are active, and what the surface holds.
+ * The surface kind, the active rule count, and what it holds.
  */
 export interface FilterSurfaceProperties {
   /** How many rules are in force, shown on the button. */
@@ -30,8 +30,7 @@ export interface FilterSurfaceProperties {
 // 🧩 Component
 
 /**
- * Renders the Filters button and, once it is pressed, the builder as a
- * popover, a drawer or a bottom sheet, so it never takes room from the cards.
+ * Renders the Filters button and, once pressed, the builder as a popover, drawer or sheet.
  */
 export function FilterSurface(
   properties: Readonly<FilterSurfaceProperties>,

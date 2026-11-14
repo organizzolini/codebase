@@ -22,7 +22,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * A rule, its place in the tree, and how to edit the tree.
+ * A rule, its place in the tree, and how to edit it.
  */
 export interface FilterRuleEditorProperties {
   className?: string;

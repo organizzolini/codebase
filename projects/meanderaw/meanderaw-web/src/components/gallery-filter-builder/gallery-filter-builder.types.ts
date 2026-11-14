@@ -11,7 +11,7 @@ export type FilterCombinator = "and" | "or";
 export type FilterEdit = (root: FilterGroup) => FilterGroup;
 
 /**
- * A field a rule may name: a shape field or a catalog characteristic.
+ * A field a rule may name: a shape field or a characteristic.
  */
 export interface FilterField {
   /** Where it is measured, or shape for the shape fields. */
@@ -71,7 +71,7 @@ export interface FilterRule {
 }
 
 /**
- * A rule rooted at its place in the tree, as a chip lists it.
+ * A rule and its place in the tree.
  */
 export interface FilterRuleEntry {
   /** The index of each node from the root down to the rule. */
@@ -80,6 +80,6 @@ export interface FilterRuleEntry {
 }
 
 /**
- * What a rule compares with: a number, a range, a flag or a text.
+ * What a rule compares with: a number, range, flag or text.
  */
 export type FilterValue = [number, number] | boolean | number | string;
