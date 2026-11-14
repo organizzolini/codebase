@@ -14,7 +14,7 @@ import { MeandersService } from "./meanders.service";
  */
 @Module({
   controllers: [],
-  exports: [MeandersService],
+  exports: [MeanderFilterService, MeandersService],
   imports: [CodeModule, DrawingModule, MeanderawDatabaseModule],
   providers: [
     MeandersResolver,
