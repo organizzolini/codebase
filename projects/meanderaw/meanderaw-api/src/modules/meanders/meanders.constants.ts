@@ -48,7 +48,7 @@ export const meandersArgumentsSchema = z.object({
     .nullish(),
 });
 
-/** What a cursor carries: the sort it was issued for, and the last row's value and id. */
+/** A cursor's sort, filter, last value and id. */
 export const cursorSchema = z.object({
   direction: z.enum(SortDirection),
   field: z.string().max(MAXIMUM_TEXT_LENGTH),
