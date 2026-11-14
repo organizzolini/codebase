@@ -5,18 +5,21 @@ import {
   Meander,
   MEANDERAW_DATABASE_MIGRATIONS,
   MeanderawDatabaseModule,
+  MeanderawDatabaseService,
 } from "@codebase/meanderaw-db";
 import {
   type DatabaseTestingModule,
   startDatabaseTestingModule,
 } from "@codebase/persistence/testing";
 
+import { storedCharacteristics } from "../../../testing/bridge";
 import {
   DRAW_TEST_EDGE_BUDGET,
   DRAW_TEST_WORKERS,
 } from "../../../testing/draw-run-budget";
 import { environmentSchema } from "../../meanderaw-cli.constants";
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
+import { CharacteristicsService } from "../characteristics/characteristics.service";
 import { CodeService } from "../code/code.service";
 import { DrawingService } from "../drawing/drawing.service";
 import { EnumerationService } from "../enumeration/enumeration.service";
@@ -97,6 +100,11 @@ describe(DrawEnumerationService, () => {
     service = await database.module.resolve(DrawEnumerationService);
     repository = database.repository(Meander);
 
+    await database.module
+      .get(MeanderawDatabaseService)
+      .syncCharacteristics(
+        database.module.get(CharacteristicsService).catalog(),
+      );
     await service.drawAll();
   }, DRAW_RUN_TIMEOUT_MILLISECONDS);
 
@@ -166,16 +174,18 @@ describe(DrawEnumerationService, () => {
     it("records a meander's Characteristics with its row, so a structural question is answerable without re-deriving one", async () => {
       const row = await repository.findOneByOrFail({ lattice: "4488" });
 
+      await expect(
+        storedCharacteristics(database.dataSource, "02x02y4488"),
+      ).resolves.toMatchObject({
+        bettiNumber0Count: 1,
+        endsAreLatticeNeighbors: true,
+        endsOnBorderRules: true,
+        freeEndCount: 2,
+        isBars: true,
+        isReducible: true,
+        isSingleArc: true,
+      });
       expect(row).toMatchObject({
-        characteristics: {
-          bettiNumber0Count: 1,
-          endsAreLatticeNeighbors: true,
-          endsOnBorderRules: true,
-          freeEndCount: 2,
-          isBars: true,
-          isReducible: true,
-          isSingleArc: true,
-        },
         code: "02x02y4488",
         columns: 2,
         isHardcoded: false,

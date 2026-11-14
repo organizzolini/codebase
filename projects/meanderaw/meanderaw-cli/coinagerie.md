@@ -46,6 +46,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **rectangle**: A solid block of inked points, which the rectangle submatrix characteristics count and measure across each unit.
 - **reply**: A DrawWorkerReply message a draw worker posts back to the pool, handled by DrawPoolService when a batch finishes or fails.
 - **representative**: The canonical member standing for a symmetry class, from which the draw worker builds the class and its stored Code.
+- **retire**:
 - **rotation**: A column shift of a Code's repeating unit, one of the phases that canonical-phase scoring compares to pick an identity.
 - **south**: The bottom side of a lattice point or unit, one of the four compass sides the Code bits and edge flags name.
 - **square**: Adjective for a square-shaped unit or wave in the test fixtures, such as a square wave whose turns the inflection test counts.

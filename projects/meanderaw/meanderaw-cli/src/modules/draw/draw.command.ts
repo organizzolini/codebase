@@ -7,6 +7,7 @@ import { Command, CommandRunner, Option } from "nest-commander";
 import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
 import { LoggerService } from "@codebase/observability";
 
+import { CharacteristicsService } from "../characteristics/characteristics.service";
 import { CODE_FORMAT_PATTERN } from "../code/code.constants";
 import { CorpusService } from "../corpus/corpus.service";
 import { HISTORICAL_CORPUS } from "../corpus/historical-corpus.constants";
@@ -44,6 +45,8 @@ export class DrawCommand extends CommandRunner {
     private readonly drawEnumerationService: DrawEnumerationService,
     @Inject(DrawIndexService)
     private readonly drawIndexService: DrawIndexService,
+    @Inject(CharacteristicsService)
+    private readonly characteristicsService: CharacteristicsService,
     @Inject(CorpusService)
     private readonly corpusService: CorpusService,
     @Inject(MeanderawDatabaseService)
@@ -159,11 +162,15 @@ export class DrawCommand extends CommandRunner {
     return Number.parseInt(value, 10);
   }
 
-  /** Draws every meander into the database when no Code is named, or draws the one `--code` names. */
+  /** Syncs the characteristic catalog, then draws every meander, or the one `--code` names. */
   async run(
     _passedParameters: string[],
     options: DrawCommandOptions,
   ): Promise<void> {
+    await this.databaseService.syncCharacteristics(
+      this.characteristicsService.catalog(),
+    );
+
     if (options.code === undefined) {
       await this.drawAll();
 

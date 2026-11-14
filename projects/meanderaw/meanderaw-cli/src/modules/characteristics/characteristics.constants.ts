@@ -1,5 +1,7 @@
 import { LETTER_ORIENTATION_NAMES } from "./submatrix/letter/letter.constants";
 
+import type { CharacteristicRecord } from "@codebase/meanderaw-db";
+
 // ♟️ Constants
 
 /** Each letter's sixteen count keys, in `LETTER_ORIENTATION_NAMES` order. */
@@ -313,6 +315,11 @@ export const PATTERN_CHARACTERISTIC_KEYS = [
   "isWhirl",
 ] as const satisfies readonly (typeof BOOLEAN_CHARACTERISTIC_KEYS)[number][];
 
+/** {@link PATTERN_CHARACTERISTIC_KEYS} as plain strings, for lookups without narrowing. */
+export const PATTERN_CHARACTERISTIC_KEY_SET: ReadonlySet<string> = new Set(
+  PATTERN_CHARACTERISTIC_KEYS,
+);
+
 /** Every characteristic key: numeric first, then boolean, each run alphabetical. */
 export const CHARACTERISTIC_KEYS = [
   ...NUMERIC_CHARACTERISTIC_KEYS,
@@ -324,6 +331,19 @@ export const STORED_BOOLEAN_KEYS = [
   ...BOOLEAN_CHARACTERISTIC_KEYS,
   "isReducible",
 ] as const;
+
+/** `isReducible`'s catalog row, which no evaluator describes. */
+export const IS_REDUCIBLE_CATALOG_ENTRY: CharacteristicRecord = {
+  category: "compound",
+  description:
+    "Whether the Code as filed is wider than its repeating unit: a property of the filing rather than of the unit's drawing.",
+  documentationUrl: null,
+  formula: null,
+  isPattern: false,
+  key: "isReducible",
+  name: "Is Reducible",
+  valueType: "boolean",
+};
 
 /** {@link BOOLEAN_CHARACTERISTIC_KEYS} as plain strings, for lookups without narrowing. */
 export const BOOLEAN_CHARACTERISTIC_KEY_SET: ReadonlySet<string> = new Set(

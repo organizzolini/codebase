@@ -10,7 +10,9 @@ import {
   CHARACTERISTIC_KEY_SET,
   CHARACTERISTIC_KEYS,
   CharacteristicRegistryError,
+  IS_REDUCIBLE_CATALOG_ENTRY,
   NUMERIC_CHARACTERISTIC_KEYS,
+  PATTERN_CHARACTERISTIC_KEY_SET,
 } from "./characteristics.constants";
 import { TileCrossingComponentDeltaCountCharacteristicService } from "./path/tile-crossing/tile-crossing-component-delta-count-characteristic.service";
 
@@ -28,6 +30,7 @@ import type {
   NumericCharacteristicRecord,
   StoredCharacteristics,
 } from "./characteristics.types";
+import type { CharacteristicRecord } from "@codebase/meanderaw-db";
 import type { OnApplicationBootstrap } from "@nestjs/common";
 
 /**
@@ -199,6 +202,36 @@ export class CharacteristicsService implements OnApplicationBootstrap {
 
   // 🌎 Public Methods
 
+  /**
+   * The catalog the draw run registers: one row per evaluator, in key-list
+   * order, then `isReducible`, which is stored beside them.
+   */
+  public catalog(): readonly CharacteristicRecord[] {
+    return [
+      ...this.metadata().map(
+        ({
+          category,
+          description,
+          documentationUrl,
+          formula,
+          key,
+          name,
+          valueType,
+        }) => ({
+          category,
+          description,
+          documentationUrl: documentationUrl ?? null,
+          formula: formula ?? null,
+          isPattern: PATTERN_CHARACTERISTIC_KEY_SET.has(key),
+          key,
+          name,
+          valueType,
+        }),
+      ),
+      IS_REDUCIBLE_CATALOG_ENTRY,
+    ];
+  }
+
   /** Every characteristic of a Code's repeating unit, computed by every evaluator from one shared context. */
   public compute(code: Code | CodeObject): Characteristics {
     const context = this.contextService.create(code);
@@ -232,16 +265,26 @@ export class CharacteristicsService implements OnApplicationBootstrap {
   }
 
   /**
-   * A record as a meander row stores it: non-zero numbers, held booleans as `true`, and `isReducible` when the Code is wider than its unit.
+   * A record as the bridge stores it: numbers above 0, held booleans as `true`, and `isReducible` when the Code is reducible. Throws on a negative number.
    */
   public stored(
     characteristics: Characteristics,
     isReducible: boolean,
   ): StoredCharacteristics {
+    const negative = NUMERIC_CHARACTERISTIC_KEYS.find(
+      (key) => characteristics[key] < 0,
+    );
+
+    if (negative !== undefined) {
+      throw new CharacteristicRegistryError(
+        `Characteristic "${negative}" computed ${characteristics[negative]}, but only values above 0 are stored, so a negative one would read as 0`,
+      );
+    }
+
     const numbers: Partial<NumericCharacteristicRecord> = Object.fromEntries(
-      NUMERIC_CHARACTERISTIC_KEYS.filter(
-        (key) => characteristics[key] !== 0,
-      ).map((key) => [key, characteristics[key]]),
+      NUMERIC_CHARACTERISTIC_KEYS.filter((key) => characteristics[key] > 0).map(
+        (key) => [key, characteristics[key]],
+      ),
     );
     const truths: Partial<Record<BooleanCharacteristicKey, true>> =
       Object.fromEntries(

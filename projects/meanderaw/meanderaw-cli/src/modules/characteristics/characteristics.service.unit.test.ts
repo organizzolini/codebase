@@ -13,6 +13,7 @@ import {
   CHARACTERISTIC_KEYS,
   CharacteristicRegistryError,
   NUMERIC_CHARACTERISTIC_KEYS,
+  PATTERN_CHARACTERISTIC_KEYS,
 } from "./characteristics.constants";
 import { CharacteristicsService } from "./characteristics.service";
 import { TileCrossingComponentDeltaCountCharacteristicService } from "./path/tile-crossing/tile-crossing-component-delta-count-characteristic.service";
@@ -303,7 +304,44 @@ describe(CharacteristicsService, () => {
     ).toBe(false);
   });
 
-  it("stores every nonzero numeric value in key-list order, and no zero or false one", () => {
+  it("catalogs one row per evaluator in key-list order, then isReducible, marking the pattern characteristics", () => {
+    const catalog = service.catalog();
+
+    expect(catalog.map(({ key }) => key)).toStrictEqual([
+      ...CHARACTERISTIC_KEYS,
+      "isReducible",
+    ]);
+    expect(
+      catalog.filter(({ isPattern }) => isPattern).map(({ key }) => key),
+    ).toStrictEqual([...PATTERN_CHARACTERISTIC_KEYS]);
+    expect(catalog.find(({ key }) => key === "isDots")).toMatchObject({
+      category: "submatrix",
+      documentationUrl: null,
+      formula: null,
+      valueType: "boolean",
+    });
+    expect(catalog.find(({ key }) => key === "isReducible")).toMatchObject({
+      isPattern: false,
+      valueType: "boolean",
+    });
+  });
+
+  it("refuses to store a negative number, which the bridge's above-0 cutoff would silently drop", async () => {
+    providers = providers.map((provider, index) =>
+      CHARACTERISTIC_KEYS[index] === "dotCount"
+        ? fake("dotCount", "number", -1)
+        : provider,
+    );
+    const fresh = await registry();
+    const characteristics = fresh.compute("02x01y2c");
+
+    expect(() => fresh.stored(characteristics, false)).toThrow(
+      CharacteristicRegistryError,
+    );
+    expect(() => fresh.stored(characteristics, false)).toThrow(/dotCount/u);
+  });
+
+  it("stores every number above 0 in key-list order, and no zero or false one", () => {
     const characteristics = service.compute("02x01y2c");
 
     const stored = service.stored(characteristics, false);

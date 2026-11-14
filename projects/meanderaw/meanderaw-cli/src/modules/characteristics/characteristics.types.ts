@@ -113,7 +113,7 @@ export type PatternCharacteristicKey =
 /** A boolean key a stored row may hold `true` under. */
 export type StoredBooleanKey = (typeof STORED_BOOLEAN_KEYS)[number];
 
-/** A row's `characteristics` map; a missing key means zero or `false`. */
+/** A meander's stored characteristics, by key. */
 export type StoredCharacteristics = Readonly<
   Partial<Record<NumericCharacteristicKey, number>> &
     Partial<Record<StoredBooleanKey, true>>
