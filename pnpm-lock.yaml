@@ -4850,22 +4850,46 @@ importers:
 
   projects/meanderaw/meanderaw-web:
     dependencies:
+      '@codebase/interface':
+        specifier: workspace:*
+        version: link:../../common/interface
+      '@graphql-codegen/cli':
+        specifier: 'catalog:'
+        version: 8.0.0(@types/node@26.6.2)(graphql@17.1.0)(typescript@6.0.3)
+      '@graphql-typed-document-node/core':
+        specifier: 'catalog:'
+        version: 3.2.0(graphql@17.1.0)
       '@tanstack/react-router':
         specifier: 'catalog:'
         version: 1.170.46(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@tanstack/react-start':
         specifier: 'catalog:'
         version: 1.169.5(esbuild@0.28.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(rolldown@1.2.18)(supports-color@8.1.1)(vite@8.3.7(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
+      graphql:
+        specifier: 'catalog:'
+        version: 17.1.0
+      msw:
+        specifier: 'catalog:'
+        version: 2.15.0(@types/node@26.6.2)(typescript@6.0.3)
       react:
         specifier: 'catalog:'
         version: 19.3.0
       react-dom:
         specifier: 'catalog:'
         version: 19.3.0(react@19.3.0)
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@codebase/testing':
         specifier: workspace:*
         version: link:../../common/testing
+      '@graphql-codegen/typed-document-node':
+        specifier: 'catalog:'
+        version: 8.0.0(graphql@17.1.0)
+      '@graphql-codegen/typescript-operations':
+        specifier: 'catalog:'
+        version: 7.0.0(graphql@17.1.0)
       '@nx/eslint-plugin':
         specifier: 'catalog:'
         version: 24.0.0(@babel/traverse@7.29.8(supports-color@8.1.1))(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@8.1.1)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23))(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3))(eslint-config-prettier@10.1.8(eslint@10.11.0(jiti@2.7.0)(supports-color@8.1.1)))(eslint@10.11.0(jiti@2.7.0)(supports-color@8.1.1))(nx@24.0.0(patch_hash=02d747bd93aea300955436be29dc083b9fc89e2ee1bbaca0100d643f925880fc)(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@8.1.1)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23)))(supports-color@8.1.1)(typescript@6.0.3)(verdaccio@7.1.0(supports-color@8.1.1)(typanion@3.14.0))

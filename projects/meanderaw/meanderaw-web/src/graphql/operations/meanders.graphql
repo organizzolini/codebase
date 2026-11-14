@@ -1,0 +1,27 @@
+query Meanders($first: Int, $after: String, $sort: MeanderSortInput) {
+  meanders(first: $first, after: $after, sort: $sort) {
+    totalCount
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+    edges {
+      cursor
+      node {
+        code
+        columns
+        id
+        isHardcoded
+        lattice
+        repeats
+        rows
+        svg
+        characteristics {
+          isPattern
+          key
+          value
+        }
+      }
+    }
+  }
+}

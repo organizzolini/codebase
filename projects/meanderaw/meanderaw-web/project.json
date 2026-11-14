@@ -20,6 +20,35 @@
       },
       "outputs": ["{projectRoot}/dist"]
     },
+    "codegen": {
+      "configurations": {
+        "check": {
+          "command": "pnpm run codegen --check"
+        }
+      },
+      "description": "Generate typed GraphQL operations",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/codegen.ts",
+        "{projectRoot}/src/graphql/operations/**/*.graphql",
+        "{workspaceRoot}/projects/meanderaw/meanderaw-api/src/schema.gql"
+      ],
+      "options": {
+        "command": "pnpm run codegen",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{projectRoot}/src/graphql/generated/operations.ts"]
+    },
+    "codegen-watch": {
+      "continuous": true,
+      "dependsOn": ["meanderaw-api:await-health", "meanderaw-api:start"],
+      "description": "Regenerate GraphQL artifacts when schema or operations change",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run codegen:watch",
+        "cwd": "{projectRoot}"
+      }
+    },
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},

@@ -6,7 +6,7 @@ export default [
 
   // 🚫 Project Ignores
   {
-    ignores: ["src/routeTree.gen.ts"],
+    ignores: ["codegen.ts", "src/graphql/generated/**", "src/routeTree.gen.ts"],
   },
 
   // 📦 Dependency Checks
@@ -16,6 +16,8 @@ export default [
       "@nx/dependency-checks": [
         "error",
         {
+          // Named only by `testing/`, which dependency checks skip.
+          ignoredDependencies: ["@codebase/interface", "msw"],
           ignoredFiles: [
             "{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}",
             "{projectRoot}/testing/**",

@@ -1,4 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  type ErrorComponentProps,
+  useRouter,
+} from "@tanstack/react-router";
+
+import { GalleryError } from "../components/gallery-error/gallery-error";
+import { GalleryToolbar } from "../components/gallery-toolbar/gallery-toolbar";
+import { MeanderGallery } from "../components/meander-gallery/meander-gallery";
+import { findMeanders } from "../components/meander-gallery/meanders-api.utilities";
+import { useGallerySearch } from "../hooks/use-gallery-search/use-gallery-search";
+import { gallerySearchSchema } from "../hooks/use-gallery-search/use-gallery-search.constants";
 
 import type { ReactNode } from "react";
 
@@ -7,17 +18,45 @@ import type { ReactNode } from "react";
 /**
  * The landing page.
  */
+// The meanders come from the Meanderaw API, read in the browser only.
 export const Route = createFileRoute("/")({
   component: IndexPage,
+  errorComponent: IndexError,
+  head: () => ({ meta: [{ title: "Meanderaw" }] }),
+  loader: async () => findMeanders(),
+  ssr: false,
+  validateSearch: (search) => gallerySearchSchema.parse(search),
 });
 
 // 🧩 Component
+
+/**
+ * Renders a failed load, retrying by running the loader again.
+ */
+function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
+  const { error } = properties;
+  // Typed by hand: this route is part of the tree the registered router type
+  // is built from, so inferring it here would be circular.
+  const router: { invalidate: () => Promise<void> } = useRouter();
+
+  return (
+    <GalleryError
+      className="p-4"
+      error={error}
+      onRetry={() => {
+        void router.invalidate();
+      }}
+    />
+  );
+}
 
 /**
  * Renders the landing page's heading.
  */
 function IndexPage(): ReactNode {
   // 🪝 Hooks
+  const page = Route.useLoaderData();
+  const { handleViewChange, view } = useGallerySearch();
 
   // 🏗 Setup
 
@@ -29,8 +68,16 @@ function IndexPage(): ReactNode {
 
   // 🎨 Markup
   return (
-    <section>
-      <h1>MeanderawWeb</h1>
+    <section className="flex flex-col gap-4 p-4">
+      <h1 className="text-xl">Meanderaw</h1>
+      <GalleryToolbar
+        onViewChange={handleViewChange}
+        view={view}
+      />
+      <MeanderGallery
+        meanders={page.edges.map(({ node }) => node)}
+        view={view}
+      />
     </section>
   );
 }
