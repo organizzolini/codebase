@@ -22,6 +22,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **surplus**:
 - **unassigned**:
 - **unchanged**:
+- **unlinked**:
 - **verb**:
 - **vocabulary**:
 
