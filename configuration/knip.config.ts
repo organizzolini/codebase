@@ -317,6 +317,13 @@ const config: KnipConfig = {
       project: "src/**/*.ts",
     },
 
+    // meanderaw-core: Drawing stack library consumed by meanderaw-cli. Its
+    // testing/ folder holds the Vitest setup and tile fixtures, which Vitest and
+    // the package exports reach by path rather than by import, so only src/ is judged.
+    "projects/meanderaw/meanderaw-core": {
+      project: "src/**/*.ts",
+    },
+
     // logger: Shared pino-backed NestJS LoggerService and LoggerModule
     "projects/common/observability": {
       project: ["src/**/*.ts", "testing/testing-module/**/*.ts"],
