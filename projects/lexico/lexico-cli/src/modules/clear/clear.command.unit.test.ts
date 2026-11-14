@@ -1,5 +1,5 @@
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import {
   Author,
@@ -21,10 +21,6 @@ import { ClearCommand } from "./clear.command";
 
 import type { Provider } from "@nestjs/common";
 import type { Repository } from "typeorm";
-
-vi.mock("prompts", () => ({
-  default: promptsMock,
-}));
 
 describe(ClearCommand, () => {
   let command: ClearCommand;

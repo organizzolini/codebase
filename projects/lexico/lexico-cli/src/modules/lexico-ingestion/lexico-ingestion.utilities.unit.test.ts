@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { promptsMock } from "@codebase/testing";
 
@@ -10,10 +10,6 @@ import {
   requireChoice,
   selectChoice,
 } from "./lexico-ingestion.utilities";
-
-vi.mock("prompts", () => ({
-  default: promptsMock,
-}));
 
 const choices = [
   { title: "perseus", value: "perseus" },

@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import { stubFetch } from "@codebase/testing";
+
 import { DatasetDocument } from "../../graphql/generated/operations";
 
 import { DEFAULT_CAELUNDAS_API_URL } from "./events-api.constants";
@@ -8,16 +10,13 @@ import { queryApi } from "./events-api.utilities";
 /**
  * Stands in for `fetch`, answering with a JSON body.
  */
-function answer(body: unknown): ReturnType<typeof vi.fn> {
-  const stub = vi.fn<typeof fetch>().mockResolvedValue(Response.json(body));
-  vi.stubGlobal("fetch", stub);
-  return stub;
+function answer(body: unknown): ReturnType<typeof stubFetch> {
+  return stubFetch(Response.json(body));
 }
 
 describe("graphql client", () => {
   afterEach(() => {
     vi.unstubAllEnvs();
-    vi.unstubAllGlobals();
   });
 
   it("calls the local default address when the build variable is empty", async () => {

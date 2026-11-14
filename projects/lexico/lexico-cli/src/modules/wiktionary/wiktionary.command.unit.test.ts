@@ -1,32 +1,32 @@
+import { appendFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
+
 import * as cheerio from "cheerio";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
+import { stubFetch } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { resetCommandTestHarness } from "../../../testing/command-harness";
 
 import { WiktionaryCommand } from "./wiktionary.command";
 
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { AnyNode, Element } from "domhandler";
 
-const { appendFileSyncMock, existsSyncMock, mkdirSyncMock, writeFileSyncMock } =
-  vi.hoisted(() => ({
-    appendFileSyncMock: vi.fn<(...parameters: unknown[]) => void>(),
-    existsSyncMock: vi.fn<() => boolean>(),
-    mkdirSyncMock: vi.fn<(...parameters: unknown[]) => void>(),
-    writeFileSyncMock: vi.fn<(...parameters: unknown[]) => void>(),
-  }));
+const appendFileSyncMock = vi.mocked(appendFileSync);
+const existsSyncMock = vi.mocked(existsSync);
+const mkdirSyncMock = vi.mocked(mkdirSync);
+const writeFileSyncMock = vi.mocked(writeFileSync);
 
-vi.mock("node:fs", () => ({
-  default: {
-    appendFileSync: appendFileSyncMock,
-    existsSync: existsSyncMock,
-    mkdirSync: mkdirSyncMock,
-    writeFileSync: writeFileSyncMock,
-  },
-}));
+vi.mock("node:fs", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem();
+});
 
 describe(WiktionaryCommand, () => {
   let command: WiktionaryCommand;
@@ -271,8 +271,7 @@ describe(WiktionaryCommand, () => {
   });
 
   it("should identify itself with a user agent when fetching", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(new Response("ok"));
-    vi.stubGlobal("fetch", fetchMock);
+    const fetchMock = stubFetch(new Response("ok"));
 
     await (
       command as unknown as {
@@ -286,12 +285,7 @@ describe(WiktionaryCommand, () => {
   });
 
   it("should return non-429 response immediately in retry fetch", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn<(...parameters: unknown[]) => unknown>(
-        async () => await Promise.resolve({ status: 200 }),
-      ),
-    );
+    stubFetch(new Response(null, { status: 200 }));
 
     const response = await (
       command as unknown as {
@@ -357,15 +351,10 @@ describe(WiktionaryCommand, () => {
 
   it("should retry after rate limit and then return success response", async () => {
     vi.useFakeTimers();
-    const fetchMock = vi
-      .fn<(...parameters: unknown[]) => unknown>()
-      .mockResolvedValueOnce({
-        headers: { get: () => "0" },
-        status: 429,
-      })
-      .mockResolvedValueOnce({ status: 200 });
-
-    vi.stubGlobal("fetch", fetchMock);
+    const fetchMock = stubFetch(
+      new Response(null, { headers: { "Retry-After": "0" }, status: 429 }),
+      new Response(null, { status: 200 }),
+    );
 
     const responsePromise = (
       command as unknown as {
@@ -387,22 +376,11 @@ describe(WiktionaryCommand, () => {
 
   it("should perform final fetch when retries are exhausted", async () => {
     vi.useFakeTimers();
-    const fetchMock = vi
-      .fn<(...parameters: unknown[]) => unknown>()
-      .mockResolvedValueOnce({
-        headers: { get: () => null },
-        status: 429,
-      })
-      .mockResolvedValueOnce({
-        headers: { get: () => null },
-        status: 429,
-      })
-      .mockResolvedValueOnce({
-        headers: { get: () => null },
-        status: 429,
-      });
-
-    vi.stubGlobal("fetch", fetchMock);
+    const fetchMock = stubFetch(
+      new Response(null, { status: 429 }),
+      new Response(null, { status: 429 }),
+      new Response(null, { status: 429 }),
+    );
 
     const responsePromise = (
       command as unknown as {
@@ -430,15 +408,10 @@ describe(WiktionaryCommand, () => {
 
   it("should honor Retry-After and cap delay at maximum retry delay", async () => {
     vi.useFakeTimers();
-    const fetchMock = vi
-      .fn<(...parameters: unknown[]) => unknown>()
-      .mockResolvedValueOnce({
-        headers: { get: () => "120" },
-        status: 429,
-      })
-      .mockResolvedValueOnce({ status: 200 });
-
-    vi.stubGlobal("fetch", fetchMock);
+    stubFetch(
+      new Response(null, { headers: { "Retry-After": "120" }, status: 429 }),
+      new Response(null, { status: 200 }),
+    );
 
     const responsePromise = (
       command as unknown as {
