@@ -16,8 +16,7 @@ export enum MeanderFilterOperator {
 }
 
 registerEnumType(MeanderFilterOperator, {
-  description:
-    "How a rule compares: eq, ne, lt, lte, gt, gte and between for numbers, is and is_not for booleans. A missing value reads as 0 or false.",
+  description: "How a rule compares; a missing value reads as 0 or false.",
   name: "MeanderFilterOperator",
 });
 

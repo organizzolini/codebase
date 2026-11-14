@@ -23,7 +23,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * A group, its place in the tree, and how to edit the tree.
+ * A group, its place in the tree, and how to edit it.
  */
 export interface FilterGroupEditorProperties {
   className?: string;

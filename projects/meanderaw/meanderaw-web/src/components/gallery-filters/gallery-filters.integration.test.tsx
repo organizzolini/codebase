@@ -21,8 +21,7 @@ function codesShown(): string[] {
 }
 
 /**
- * Sets a control by its label, commits it as a user does by leaving it, and
- * waits until the link has carried the edit back to it.
+ * Sets a control by label, commits it by leaving it, and waits for the link to carry it back.
  */
 async function commitControl(
   label: string,

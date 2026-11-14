@@ -7,7 +7,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * A label, the value shown, and what to do with a value typed.
+ * A label, the value shown, and what to do with one typed.
  */
 export interface FilterNumberInputProperties {
   className?: string;
@@ -22,8 +22,7 @@ export interface FilterNumberInputProperties {
 // 🧩 Component
 
 /**
- * Renders a box that keeps what is typed while it is not yet a value, and
- * hands on only the typed text or number that is finished.
+ * Renders a box that holds what is typed, handing on a finished number or text when it is committed.
  */
 export function FilterNumberInput(
   properties: Readonly<FilterNumberInputProperties>,

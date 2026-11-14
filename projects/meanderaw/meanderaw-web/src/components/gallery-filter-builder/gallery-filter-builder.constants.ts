@@ -35,20 +35,17 @@ export const FILTER_OPERATORS = [
 ] as const satisfies readonly FilterOperator[];
 
 /**
- * How deep groups may nest, the root being level 1; the API's own limit,
- * `MEANDER_FILTER_MAXIMUM_DEPTH` in meanderaw-api.
+ * How deep groups nest, the root being level 1; the API's limit.
  */
 export const MAXIMUM_FILTER_DEPTH = 6;
 
 /**
- * The most rules and groups a filter may hold in all, root excepted; the
- * API's own limit, `MEANDER_FILTER_MAXIMUM_ENTRIES`.
+ * The most rules and groups a filter holds; the API's limit.
  */
 export const MAXIMUM_FILTER_ENTRIES = 128;
 
 /**
- * The longest field key or text a rule may carry; the API's own limit,
- * `MEANDER_FILTER_MAXIMUM_TEXT_LENGTH`.
+ * The longest field key or text in a rule; the API's limit.
  */
 export const MAXIMUM_FILTER_TEXT_LENGTH = 64;
 
@@ -108,7 +105,7 @@ export const OPERATORS_BY_TYPE: Record<
 };
 
 /**
- * The shape fields a rule may name, in the order a picker lists them.
+ * The shape fields a rule may name, in picker order.
  */
 export const SHAPE_FILTER_FIELDS: readonly FilterField[] = [
   {
@@ -198,7 +195,7 @@ export const filterGroupSchema: z.ZodType<FilterGroup> = z.lazy(() =>
 );
 
 /**
- * Reads a filter tree from a link, or none for anything that is not one.
+ * Reads a filter tree from a link, or none for anything else.
  */
 export const linkedFilterSchema = z.unknown().transform((value) => {
   const parsed = filterGroupSchema.safeParse(value);

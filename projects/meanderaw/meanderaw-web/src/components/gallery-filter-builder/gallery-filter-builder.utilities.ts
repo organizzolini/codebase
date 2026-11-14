@@ -329,16 +329,14 @@ function hasSoundNumbers(rule: FilterRule, field: FilterField): boolean {
 }
 
 /**
- * Whether a rule is complete: a lattice rule still waiting for its text is
- * kept in the tree, but neither counts, shows nor reaches the API.
+ * Whether a rule is complete; a lattice rule awaiting its text is kept, yet neither counts nor reaches the API.
  */
 function isFinished(rule: FilterRule): boolean {
   return typeof rule.value !== "string" || rule.value.trim() !== "";
 }
 
 /**
- * Keeps the nodes a catalog can answer: rules naming a known field with an
- * operator and a value it takes, and the groups of such nodes.
+ * Keeps the nodes the catalog can answer: known fields with an operator and value they take.
  */
 function keepUsableNodes(
   nodes: readonly FilterNode[],
