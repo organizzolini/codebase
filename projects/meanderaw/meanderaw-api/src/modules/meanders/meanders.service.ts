@@ -6,7 +6,6 @@ import {
   Characteristic,
   Meander,
   MeanderCharacteristic,
-  ShapeCount,
 } from "@codebase/meanderaw-db";
 
 import {
@@ -16,6 +15,7 @@ import {
   toCursor,
 } from "../../meanderaw-api.utilities";
 
+import { MeanderAggregateService } from "./aggregates/meander-aggregate.service";
 import { MeanderFilterService } from "./filters/meander-filter.service";
 import {
   cursorSchema,
@@ -47,8 +47,8 @@ export class MeandersService {
     private readonly meanderRepository: Repository<Meander>,
     @InjectRepository(Characteristic)
     private readonly characteristicRepository: Repository<Characteristic>,
-    @InjectRepository(ShapeCount)
-    private readonly shapeCountRepository: Repository<ShapeCount>,
+    @Inject(MeanderAggregateService)
+    private readonly aggregateService: MeanderAggregateService,
     @Inject(MeanderFilterService)
     private readonly filterService: MeanderFilterService,
     @Inject(CodeService) private readonly codeService: CodeService,
@@ -106,20 +106,23 @@ export class MeandersService {
     return target.kind === "id" ? query : query.addOrderBy("meander.id", "ASC");
   }
 
-  /** Every meander the filter keeps, counted exactly; with none, the shape counts' sum, or a count when none have been aggregated yet. */
+  /** Every meander the filter keeps, counted exactly: from the aggregate tables when they cover it, else from the meanders. */
   private async count(filter: CompiledMeanderFilter | null): Promise<number> {
-    if (filter === null) {
-      return (
-        (await this.shapeCountRepository.sum("meanderCount")) ??
-        (await this.meanderRepository.count())
-      );
+    const aggregated = await this.aggregateService.total(filter);
+
+    if (aggregated !== null) {
+      return aggregated;
     }
 
-    const row = await this.meanderRepository
+    const query = this.meanderRepository
       .createQueryBuilder("meander")
-      .select("COUNT(*)", "total")
-      .where(filter.where, filter.parameters)
-      .getRawOne<{ total: string }>();
+      .select("COUNT(*)", "total");
+
+    if (filter !== null) {
+      query.where(filter.where, filter.parameters);
+    }
+
+    const row = await query.getRawOne<{ total: string }>();
 
     return Number(row?.total ?? 0);
   }

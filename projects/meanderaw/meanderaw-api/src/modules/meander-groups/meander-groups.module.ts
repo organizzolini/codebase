@@ -8,7 +8,8 @@ import { MeanderGroupsResolver } from "./meander-groups.resolver";
 import { MeanderGroupsService } from "./meander-groups.service";
 
 /**
- * Serves the `meanderGroups` query, counting exactly from the meanders.
+ * Serves the `meanderGroups` query, counting from the aggregate tables where
+ * they cover a request and from the meanders where they do not.
  */
 @Module({
   controllers: [],

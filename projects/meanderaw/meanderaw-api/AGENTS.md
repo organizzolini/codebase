@@ -38,6 +38,7 @@ src/meanderaw-api.ts
        ├─ MeanderawDatabaseModule
        ├─ CharacteristicsModule → CharacteristicsResolver → CharacteristicsService
        └─ MeandersModule → MeandersResolver → MeandersService
+       └─ MeanderGroupsModule → MeanderGroupsResolver → MeanderGroupsService
 ```
 
 ### Directory Layout

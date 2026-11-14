@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { Characteristic, Meander } from "@codebase/meanderaw-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { MeanderAggregateService } from "../meanders/aggregates/meander-aggregate.service";
 import { MeanderFilterService } from "../meanders/filters/meander-filter.service";
 
 import { MeanderGroupsService } from "./meander-groups.service";
@@ -11,7 +12,7 @@ import { MeanderGroupsService } from "./meander-groups.service";
 /** Builds the service over repositories that are never reached. */
 async function buildService(): Promise<MeanderGroupsService> {
   const { instance } = await buildTestingModule(MeanderGroupsService, {
-    mocks: [MeanderFilterService],
+    mocks: [MeanderAggregateService, MeanderFilterService],
     providers: [
       { provide: getRepositoryToken(Characteristic), useValue: {} },
       { provide: getRepositoryToken(Meander), useValue: {} },
@@ -26,7 +27,7 @@ describe(MeanderGroupsService, () => {
     expect.hasAssertions();
 
     const { instance } = await buildTestingModule(MeanderGroupsService, {
-      mocks: [MeanderFilterService],
+      mocks: [MeanderAggregateService, MeanderFilterService],
       providers: [
         { provide: getRepositoryToken(Characteristic), useValue: {} },
         { provide: getRepositoryToken(Meander), useValue: {} },

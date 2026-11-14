@@ -25,43 +25,6 @@ export class MeanderFilterPlanService {
 
   // 🔏 Private Methods
 
-  /** Whether a rule holds when its field has this value; 0 stands for a missing row. */
-  private holds(rule: MeanderFilterRule, value: number): boolean {
-    const [first = 0, second = 0] = rule.numbers;
-
-    switch (rule.operator) {
-      case MeanderFilterOperator.BETWEEN: {
-        return value >= first && value <= second;
-      }
-      case MeanderFilterOperator.EQ: {
-        return value === first;
-      }
-      case MeanderFilterOperator.GT: {
-        return value > first;
-      }
-      case MeanderFilterOperator.GTE: {
-        return value >= first;
-      }
-      case MeanderFilterOperator.IS: {
-        return value > 0 === rule.flag;
-      }
-      case MeanderFilterOperator.IS_NOT: {
-        return value > 0 !== rule.flag;
-      }
-      case MeanderFilterOperator.LT: {
-        return value < first;
-      }
-      case MeanderFilterOperator.LTE: {
-        return value <= first;
-      }
-      case MeanderFilterOperator.NE: {
-        break;
-      }
-    }
-
-    return value !== first;
-  }
-
   /** How many meanders a rule keeps among those holding the characteristic. */
   private keptCount(
     rule: MeanderFilterRule,
@@ -118,5 +81,42 @@ export class MeanderFilterPlanService {
     }
 
     return driver;
+  }
+
+  /** Whether a rule holds when its field has this value; 0 stands for a missing row. */
+  holds(rule: MeanderFilterRule, value: number): boolean {
+    const [first = 0, second = 0] = rule.numbers;
+
+    switch (rule.operator) {
+      case MeanderFilterOperator.BETWEEN: {
+        return value >= first && value <= second;
+      }
+      case MeanderFilterOperator.EQ: {
+        return value === first;
+      }
+      case MeanderFilterOperator.GT: {
+        return value > first;
+      }
+      case MeanderFilterOperator.GTE: {
+        return value >= first;
+      }
+      case MeanderFilterOperator.IS: {
+        return value > 0 === rule.flag;
+      }
+      case MeanderFilterOperator.IS_NOT: {
+        return value > 0 !== rule.flag;
+      }
+      case MeanderFilterOperator.LT: {
+        return value < first;
+      }
+      case MeanderFilterOperator.LTE: {
+        return value <= first;
+      }
+      case MeanderFilterOperator.NE: {
+        break;
+      }
+    }
+
+    return value !== first;
   }
 }

@@ -5,6 +5,7 @@
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **affirmation**: Generated phrase that the affirmations feature planning documents describe, produced by an LLM from tarot-card references.
+- **aggregate**: Pre-counted table the draw run rebuilds, from which ADR 0035 reads exact group counts and totals.
 - **band**: Horizontal strip of a meander drawing bounded by two borders, which ADR 0004 and ADR 0006 adjust for crossings and branch families.
 - **border**: Edge of a meander band that ADR 0006 closes on both sides in the branch and parallel families through a MotifService hook.
 - **breadth**: One of the two callidescope limits, alongside depth, that ADR 0006 keeps after dropping the other noise controls.
@@ -31,6 +32,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **pipeline**: Generic meander pipeline of decode, render, compute Characteristics, and classify that ADR 0012 runs for every drawing.
 - **pitch**: One grid unit on the lattice, which ADR 0004 uses to place the interrupted crossing break one pitch either side of the junction.
 - **role**: Layer assignment of a package, which ADR 0013 documents so a reader learns its place without opening its index file.
+- **she**:
 - **statistic**: Per-project figure, such as the statistics block that ADR 0002 publishes in each project's README on the default branch.
 - **swiss**: Short for Swiss Ephemeris, the local astronomy library that the caelundas performance plan uses instead of NASA Horizons HTTP calls.
 - **triage**: Labels in agents triage-labels documentation map the status family to canonical roles for issues in this repository.

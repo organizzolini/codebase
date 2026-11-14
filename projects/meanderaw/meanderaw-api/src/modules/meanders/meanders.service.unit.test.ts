@@ -2,20 +2,25 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { describe, expect, it } from "vitest";
 
 import { CodeService, DrawingService } from "@codebase/meanderaw-core";
-import { Characteristic, Meander, ShapeCount } from "@codebase/meanderaw-db";
+import { Characteristic, Meander } from "@codebase/meanderaw-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { MeanderAggregateService } from "./aggregates/meander-aggregate.service";
 import { MeanderFilterService } from "./filters/meander-filter.service";
 import { MeandersService } from "./meanders.service";
 
 /** Builds the service over repositories that are never reached. */
 async function buildService(): Promise<MeandersService> {
   const { instance } = await buildTestingModule(MeandersService, {
-    mocks: [CodeService, DrawingService, MeanderFilterService],
+    mocks: [
+      CodeService,
+      DrawingService,
+      MeanderAggregateService,
+      MeanderFilterService,
+    ],
     providers: [
       { provide: getRepositoryToken(Meander), useValue: {} },
       { provide: getRepositoryToken(Characteristic), useValue: {} },
-      { provide: getRepositoryToken(ShapeCount), useValue: {} },
     ],
   });
 
@@ -25,11 +30,15 @@ async function buildService(): Promise<MeandersService> {
 describe(MeandersService, () => {
   it("resolves with its dependencies", async () => {
     const { instance } = await buildTestingModule(MeandersService, {
-      mocks: [CodeService, DrawingService, MeanderFilterService],
+      mocks: [
+        CodeService,
+        DrawingService,
+        MeanderAggregateService,
+        MeanderFilterService,
+      ],
       providers: [
         { provide: getRepositoryToken(Meander), useValue: {} },
         { provide: getRepositoryToken(Characteristic), useValue: {} },
-        { provide: getRepositoryToken(ShapeCount), useValue: {} },
       ],
     });
 
@@ -50,11 +59,15 @@ describe(MeandersService, () => {
     expect.hasAssertions();
 
     const { instance, mock } = await buildTestingModule(MeandersService, {
-      mocks: [CodeService, DrawingService, MeanderFilterService],
+      mocks: [
+        CodeService,
+        DrawingService,
+        MeanderAggregateService,
+        MeanderFilterService,
+      ],
       providers: [
         { provide: getRepositoryToken(Meander), useValue: {} },
         { provide: getRepositoryToken(Characteristic), useValue: {} },
-        { provide: getRepositoryToken(ShapeCount), useValue: {} },
       ],
     });
     const parsed = { columns: 2, digits: "01", repeats: 1, rows: 1 };

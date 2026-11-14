@@ -278,11 +278,13 @@ export class MeanderFilterService {
     const where = this.compileGroup(parsed.data, context);
 
     return {
+      catalog,
       hash: createHash("sha256")
         .update(JSON.stringify(parsed.data))
         .digest("base64url")
         .slice(0, 16),
       parameters: context.parameters,
+      tree: parsed.data,
       where,
     };
   }

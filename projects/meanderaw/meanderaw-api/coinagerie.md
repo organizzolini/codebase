@@ -17,5 +17,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **rare**: Held by few meanders, so a rule on it is selective and worth starting a filter from.
 - **rebuild**:
 - **unaggregated**:
+- **wire**:
 
 <!-- coinagerie:end -->

@@ -9,6 +9,7 @@ import {
   MeanderCharacteristic,
 } from "@codebase/meanderaw-db";
 
+import { MeanderAggregateService } from "../meanders/aggregates/meander-aggregate.service";
 import { MeanderFilterService } from "../meanders/filters/meander-filter.service";
 
 import {
@@ -19,7 +20,11 @@ import {
 
 import type { CompiledMeanderFilter } from "../meanders/filters/meander-filter.types";
 import type { MeanderGroupEntity } from "./meander-groups.entities";
-import type { GroupLevel, ShapeGroupField } from "./meander-groups.types";
+import type {
+  GroupCount,
+  GroupLevel,
+  ShapeGroupField,
+} from "./meander-groups.types";
 import type { Repository } from "typeorm";
 
 /** Counts the meanders a filter keeps, grouped, exactly. */
@@ -34,6 +39,8 @@ export class MeanderGroupsService {
     private readonly meanderRepository: Repository<Meander>,
     @Inject(MeanderFilterService)
     private readonly filterService: MeanderFilterService,
+    @Inject(MeanderAggregateService)
+    private readonly aggregateService: MeanderAggregateService,
   ) {}
 
   // 🔐 Private Fields
@@ -84,6 +91,33 @@ export class MeanderGroupsService {
       count: Number(row["total"]),
       keys: levels.map((_, index) => String(row[`key${index}`])),
     }));
+  }
+
+  /** Counts a single level from the aggregate tables; null when they do not cover it. */
+  private async fromTables(
+    filter: CompiledMeanderFilter | null,
+    level: GroupLevel,
+  ): Promise<GroupCount[] | null> {
+    if (level.kind === "characteristic") {
+      const counts = await this.aggregateService.valueCounts(filter, level);
+
+      return counts === null
+        ? null
+        : [...counts].map(([value, count]) => ({
+            count,
+            value: level.isBoolean ? String(value > 0) : String(value),
+          }));
+    }
+
+    if (level.field === "isHardcoded") {
+      return null;
+    }
+
+    const counts = await this.aggregateService.shapeCounts(filter, level.field);
+
+    return counts === null
+      ? null
+      : [...counts].map(([value, count]) => ({ count, value }));
   }
 
   /** Nests key paths into groups, counts summed up the levels, keys in natural order. */
@@ -174,8 +208,8 @@ export class MeanderGroupsService {
   // 🌎 Public Methods
 
   /**
-   * The groups of a filter's meanders, nested by level, counted exactly from
-   * the meanders.
+   * The groups of a filter's meanders, nested by level, exactly: a lone
+   * level the tables cover is read from them, the rest counted.
    */
   async group(arguments_: {
     filter?: unknown;
@@ -193,7 +227,15 @@ export class MeanderGroupsService {
       arguments_.filter === null || arguments_.filter === undefined
         ? null
         : await this.filterService.compile(arguments_.filter);
+    const [only] = levels;
+    const stored =
+      levels.length === 1 && only !== undefined
+        ? await this.fromTables(filter, only)
+        : null;
+    const rows =
+      stored?.map(({ count, value }) => ({ count, keys: [value] })) ??
+      (await this.computed(filter, levels));
 
-    return this.nest(await this.computed(filter, levels), fields);
+    return this.nest(rows, fields);
   }
 }

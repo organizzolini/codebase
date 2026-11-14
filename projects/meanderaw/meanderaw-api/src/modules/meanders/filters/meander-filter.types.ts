@@ -5,9 +5,11 @@ import type { Characteristic } from "@codebase/meanderaw-db";
 
 /** A boolean SQL expression over the meanders table, aliased `meander`. */
 export interface CompiledMeanderFilter {
+  readonly catalog: ReadonlyMap<string, Characteristic>;
   /** Identifies the tree, so a cursor can be bound to it. */
   readonly hash: string;
   readonly parameters: Record<string, unknown>;
+  readonly tree: MeanderFilterGroup;
   readonly where: string;
 }
 

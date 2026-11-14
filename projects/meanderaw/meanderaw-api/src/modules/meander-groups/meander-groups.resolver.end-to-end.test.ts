@@ -1,6 +1,8 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { z } from "zod";
 
+import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
+
 import { catalogEntry, meanderRow } from "../../../testing/fixtures";
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
@@ -84,6 +86,20 @@ const FIXTURES: readonly Fixture[] = Array.from(
     strokeCount: index % 7 < 3 ? 0 : (index % 7) - 2,
   }),
 );
+
+/** A meander the aggregate tables have never seen. */
+const LATE_MEANDER: Fixture = {
+  code: "01x999",
+  columns: 2,
+  isChain: true,
+  isHardcoded: false,
+  isLoop: false,
+  junctionCount: 3,
+  lattice: "0",
+  repeats: 1,
+  rows: 2,
+  strokeCount: 0,
+};
 
 const collator = new Intl.Collator("en", { numeric: true });
 
@@ -217,6 +233,7 @@ const only = (rule: Rule): Group => ({ combinator: "and", rules: [rule] });
 /** Groups and totals over a migrated, seeded Postgres, against brute force. */
 describe("meander groups end-to-end suite", () => {
   let application: MeanderawApplication;
+  let seeded: readonly Fixture[] = FIXTURES;
 
   /** What the API groups a filter's meanders into. */
   async function grouped(
@@ -251,7 +268,7 @@ describe("meander groups end-to-end suite", () => {
   async function expectBruteForce(
     filter: Group | null,
     fields: readonly string[],
-    meanders: readonly Fixture[] = FIXTURES,
+    meanders: readonly Fixture[] = seeded,
   ): Promise<void> {
     const kept = meanders.filter(
       (fixture) => filter === null || matches(fixture, filter),
@@ -461,6 +478,35 @@ describe("meander groups end-to-end suite", () => {
     );
     expect(empty.errors).toHaveLength(1);
     expect(deep.errors).toHaveLength(1);
+  });
+
+  it("reads covered counts from the tables and the rest from the meanders", async () => {
+    expect.hasAssertions();
+
+    await application.database.module
+      .get(MeanderawDatabaseService)
+      .saveAll([toRow(LATE_MEANDER)]);
+
+    const everything = only({
+      field: "repeats",
+      numbers: [1],
+      operator: "gte",
+    });
+    const fresh = [...FIXTURES, LATE_MEANDER];
+
+    // Covered by the tables, which have not been rebuilt since the seed.
+    await expect(total(null)).resolves.toBe(FIXTURES.length);
+    await expect(grouped(null, ["junctionCount"])).resolves.toStrictEqual(
+      expectedTree(FIXTURES, ["junctionCount"]),
+    );
+
+    // Computed from the meanders, so it sees the new one.
+    await expect(total(everything)).resolves.toBe(fresh.length);
+    await expect(grouped(everything, ["junctionCount"])).resolves.toStrictEqual(
+      expectedTree(fresh, ["junctionCount"]),
+    );
+
+    seeded = fresh;
   });
 });
 
