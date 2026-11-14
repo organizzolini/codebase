@@ -12,6 +12,7 @@ import {
   GRAPHQL_SCHEMA_FILE,
 } from "./meanderaw-api.constants";
 import { CharacteristicsModule } from "./modules/characteristics/characteristics.module";
+import { MeandersModule } from "./modules/meanders/meanders.module";
 
 /**
  * Root NestJS application module for the MeanderawApi GraphQL API.
@@ -33,6 +34,7 @@ import { CharacteristicsModule } from "./modules/characteristics/characteristics
     MeanderawDatabaseModule,
     LoggerModule,
     CharacteristicsModule,
+    MeandersModule,
   ],
 })
 export class MeanderawApiModule {}

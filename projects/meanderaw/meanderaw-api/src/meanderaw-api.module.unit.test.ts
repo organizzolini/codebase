@@ -9,6 +9,7 @@ import { MeanderawDatabaseModule } from "@codebase/meanderaw-db";
 
 import { MeanderawApiModule } from "./meanderaw-api.module";
 import { CharacteristicsModule } from "./modules/characteristics/characteristics.module";
+import { MeandersModule } from "./modules/meanders/meanders.module";
 
 /**
  * Reads the `autoSchemaFile` option a root module hands `GraphQLModule`, by
@@ -72,6 +73,17 @@ describe("meanderaw api module suite", () => {
     );
 
     expect(imports).toContain(CharacteristicsModule);
+  });
+
+  it("serves the meanders", () => {
+    expect.hasAssertions();
+
+    const imports: unknown = Reflect.getMetadata(
+      MODULE_METADATA.IMPORTS,
+      MeanderawApiModule,
+    );
+
+    expect(imports).toContain(MeandersModule);
   });
 
   it("emits the schema beside the module whatever the working directory", async () => {
