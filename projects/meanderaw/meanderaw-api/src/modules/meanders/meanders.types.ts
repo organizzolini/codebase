@@ -2,7 +2,11 @@
 
 import type { MeanderFilterGroupInput } from "./filters/meander-filter.entities";
 import type { MeanderSortInput } from "./meander-sort.entities";
-import type { SHAPE_SORT_FIELDS } from "./meanders.constants";
+import type { cursorSchema, SHAPE_SORT_FIELDS } from "./meanders.constants";
+import type { z } from "zod";
+
+/** What a cursor carries, as read back. */
+export type Cursor = z.infer<typeof cursorSchema>;
 
 /** What a `meanders` query asks for. */
 export interface MeandersArguments {
@@ -15,7 +19,7 @@ export interface MeandersArguments {
 /** A shape column a sort may name. */
 export type ShapeSortField = (typeof SHAPE_SORT_FIELDS)[number];
 
-/** What a sort orders by: one shape column, or a characteristic's stored value. */
+/** What a sort orders by. */
 export type SortTarget =
   | { readonly characteristicId: number; readonly kind: "characteristic" }
   | { readonly column: ShapeSortField; readonly kind: "shape" }

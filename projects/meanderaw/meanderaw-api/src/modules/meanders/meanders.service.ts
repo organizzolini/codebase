@@ -29,6 +29,7 @@ import type { MeanderConnection } from "./meander-connection.entities";
 import type { MeanderSortInput } from "./meander-sort.entities";
 import type { MeanderEntity } from "./meanders.entities";
 import type {
+  Cursor,
   MeandersArguments,
   SortTarget,
   SortValue,
@@ -61,12 +62,12 @@ export class MeandersService {
 
   /** The query for the rows after a cursor, in the sort's order, then id order. */
   private buildQuery(arguments_: {
-    after: null | string | undefined;
+    cursor: Cursor | null;
     direction: SortDirection;
     filter: CompiledMeanderFilter | null;
     target: SortTarget;
   }): SelectQueryBuilder<Meander> {
-    const { after, direction, filter, target } = arguments_;
+    const { cursor, direction, filter, target } = arguments_;
     const query = this.meanderRepository.createQueryBuilder("meander");
     let expression = "meander.id";
 
@@ -84,8 +85,7 @@ export class MeandersService {
         .addSelect(expression, "sort_value");
     }
 
-    if (after !== null && after !== undefined) {
-      const cursor = this.decodeCursor(after);
+    if (cursor !== null) {
       const beyond = direction === SortDirection.DESC ? "<" : ">";
 
       query.andWhere(
@@ -105,10 +105,13 @@ export class MeandersService {
     return target.kind === "id" ? query : query.addOrderBy("meander.id", "ASC");
   }
 
-  /** Every meander the filter keeps, counted exactly; all of them when it is absent. */
+  /** Every meander the filter keeps, counted exactly; with none, the shape counts' sum, or a count when none have been aggregated yet. */
   private async count(filter: CompiledMeanderFilter | null): Promise<number> {
     if (filter === null) {
-      return (await this.shapeCountRepository.sum("meanderCount")) ?? 0;
+      return (
+        (await this.shapeCountRepository.sum("meanderCount")) ??
+        (await this.meanderRepository.count())
+      );
     }
 
     const row = await this.meanderRepository
@@ -120,16 +123,30 @@ export class MeandersService {
     return Number(row?.total ?? 0);
   }
 
-  /** Reads what a cursor carries, refusing one this API did not issue. */
-  private decodeCursor(after: string): {
-    id: string;
-    value?: null | SortValue | undefined;
-  } {
+  /** Reads a cursor, refusing one this API did not issue or one issued for another sort. */
+  private decodeCursor(
+    after: null | string | undefined,
+    sort: { direction: SortDirection; field: string },
+  ): Cursor | null {
+    if (after === null || after === undefined) {
+      return null;
+    }
+
+    let cursor: Cursor;
+
     try {
-      return fromCursor(after, (value) => cursorSchema.parse(value));
+      cursor = fromCursor(after, (value) => cursorSchema.parse(value));
     } catch {
       throw new BadRequestException("The cursor is not valid.");
     }
+
+    if (cursor.field !== sort.field || cursor.direction !== sort.direction) {
+      throw new BadRequestException(
+        "The cursor was issued for a different sort.",
+      );
+    }
+
+    return cursor;
   }
 
   /** Reads what the sort names, refusing a field that is neither shape nor characteristic. */
@@ -180,8 +197,8 @@ export class MeandersService {
   }
 
   /**
-   * One page of meanders after a cursor. Rows come in the sort's order, then id
-   * order; a missing characteristic value sorts as 0. The total is exact.
+   * One page after a cursor, in the sort's order then id order. A missing
+   * characteristic value sorts as 0. The total is exact.
    */
   async find(arguments_: MeandersArguments): Promise<MeanderConnection> {
     const parsed = meandersArgumentsSchema.safeParse(arguments_);
@@ -195,10 +212,15 @@ export class MeandersService {
       arguments_.filter === null || arguments_.filter === undefined
         ? null
         : await this.filterService.compile(arguments_.filter);
+    const direction = sort?.direction ?? SortDirection.ASC;
+    const cursor = this.decodeCursor(after, {
+      direction,
+      field: sort?.field ?? "id",
+    });
     const target = await this.resolveTarget(sort);
     const { entities, raw } = await this.buildQuery({
-      after,
-      direction: sort?.direction ?? SortDirection.ASC,
+      cursor,
+      direction,
       filter,
       target,
     })
@@ -219,6 +241,8 @@ export class MeandersService {
             symmetricalCodes: meander.symmetricalCodes,
           },
           toCursor({
+            direction,
+            field: sort?.field ?? "id",
             id: meander.id,
             value: this.sortValue(meander, target, raw[index]?.sort_value),
           }),

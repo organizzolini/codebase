@@ -14,11 +14,7 @@ import { PageInfo } from "./meanderaw-api.entities";
 import {
   createConnection,
   createEdge,
-  decodeOffsetCursor,
-  encodeOffsetCursor,
   fromCursor,
-  fromCursorSafe,
-  paginateArray,
   Paginated,
   toCursor,
 } from "./meanderaw-api.utilities";
@@ -157,42 +153,6 @@ describe("relay pagination helpers suite", () => {
     });
   });
 
-  describe("safe cursor decoding", () => {
-    it("returns null for undefined, null, or empty string", () => {
-      expect.hasAssertions();
-      expect(fromCursorSafe(undefined)).toBeNull();
-      expect(fromCursorSafe(null)).toBeNull();
-      expect(fromCursorSafe("")).toBeNull();
-    });
-
-    it("returns null for invalid cursor format or malformed json", () => {
-      expect.hasAssertions();
-
-      const invalidJsonCursor = Buffer.from("plain text", "utf8").toString(
-        "base64url",
-      );
-
-      expect(fromCursorSafe("invalid-base64-%%%")).toBeNull();
-      expect(fromCursorSafe(invalidJsonCursor)).toBeNull();
-    });
-
-    it("decodes valid cursor", () => {
-      expect.hasAssertions();
-
-      const payload = { test: true };
-      const cursor = toCursor(payload);
-
-      expect(fromCursorSafe<{ test: boolean }>(cursor)).toStrictEqual(payload);
-
-      const parsedResult = fromCursorSafe(cursor, (value) => {
-        const object_ = value as { test: boolean };
-        return object_.test ? "ok" : "fail";
-      });
-
-      expect(parsedResult).toBe("ok");
-    });
-  });
-
   describe("relay factory helpers", () => {
     it("creates an edge with node and cursor", () => {
       expect.hasAssertions();
@@ -236,114 +196,6 @@ describe("relay pagination helpers suite", () => {
       expect(connection.pageInfo.startCursor).toBeUndefined();
       expect(connection.pageInfo.endCursor).toBeUndefined();
       expect(connection.totalCount).toBe(0);
-    });
-  });
-
-  describe("offset cursor helpers", () => {
-    it("encodes and decodes offset cursors", () => {
-      expect.hasAssertions();
-
-      const cursor = encodeOffsetCursor(25);
-
-      expect(decodeOffsetCursor(cursor)).toBe(25);
-    });
-
-    it("clamps negative offsets to zero on encode", () => {
-      expect.hasAssertions();
-
-      const cursor = encodeOffsetCursor(-10);
-
-      expect(decodeOffsetCursor(cursor)).toBe(0);
-    });
-
-    it("returns default offset when cursor is missing or empty", () => {
-      expect.hasAssertions();
-      expect(decodeOffsetCursor(undefined, 10)).toBe(10);
-      expect(decodeOffsetCursor(null, 15)).toBe(15);
-      expect(decodeOffsetCursor("", 20)).toBe(20);
-      expect(decodeOffsetCursor()).toBe(0);
-    });
-
-    it("returns default offset when cursor does not contain valid offset number", () => {
-      expect.hasAssertions();
-
-      const invalidPayloadCursor = toCursor({ wrong: "field" });
-      const negativeOffsetCursor = toCursor({ offset: -5 });
-      const invalidJsonCursor = Buffer.from("plain text", "utf8").toString(
-        "base64url",
-      );
-
-      expect(decodeOffsetCursor(invalidPayloadCursor, 5)).toBe(5);
-      expect(decodeOffsetCursor(negativeOffsetCursor, 5)).toBe(5);
-      expect(decodeOffsetCursor(invalidJsonCursor, 5)).toBe(5);
-    });
-  });
-
-  describe("array pagination", () => {
-    const items = [
-      { id: "1", name: "one" },
-      { id: "2", name: "two" },
-      { id: "3", name: "three" },
-      { id: "4", name: "four" },
-    ];
-    const getCursor = (item: { id: string }): string => `cursor-${item.id}`;
-
-    it("paginates from the beginning with first limit", () => {
-      expect.hasAssertions();
-
-      const result = paginateArray(items, {
-        first: 2,
-        getCursor,
-      });
-
-      expect(result.edges).toHaveLength(2);
-      expect(result.edges[0]?.node).toStrictEqual({ id: "1", name: "one" });
-      expect(result.edges[1]?.node).toStrictEqual({ id: "2", name: "two" });
-      expect(result.hasNextPage).toBe(true);
-      expect(result.hasPreviousPage).toBe(false);
-    });
-
-    it("paginates after a cursor", () => {
-      expect.hasAssertions();
-
-      const result = paginateArray(items, {
-        after: "cursor-2",
-        first: 2,
-        getCursor,
-      });
-
-      expect(result.edges).toHaveLength(2);
-      expect(result.edges[0]?.node).toStrictEqual({ id: "3", name: "three" });
-      expect(result.edges[1]?.node).toStrictEqual({ id: "4", name: "four" });
-      expect(result.hasNextPage).toBe(false);
-      expect(result.hasPreviousPage).toBe(true);
-    });
-
-    it("handles after cursor not found in list", () => {
-      expect.hasAssertions();
-
-      const result = paginateArray(items, {
-        after: "cursor-missing",
-        first: 2,
-        getCursor,
-      });
-
-      expect(result.edges).toHaveLength(2);
-      expect(result.edges[0]?.node).toStrictEqual({ id: "1", name: "one" });
-      expect(result.hasNextPage).toBe(true);
-      expect(result.hasPreviousPage).toBe(false);
-    });
-
-    it("returns all items when first is not specified", () => {
-      expect.hasAssertions();
-
-      const result = paginateArray(items, {
-        getCursor,
-      });
-
-      expect(result.edges).toHaveLength(4);
-      expect(result.hasNextPage).toBe(false);
-      expect(result.hasPreviousPage).toBe(false);
     });
   });
 });

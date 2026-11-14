@@ -3,7 +3,6 @@ import { ArgsType as ArgumentsType, Field, Int } from "@nestjs/graphql";
 import { MeanderFilterGroupInput } from "./filters/meander-filter.entities";
 import { MeanderSortInput } from "./meander-sort.entities";
 import {
-  DEFAULT_PAGE_SIZE,
   FILTER_ARGUMENT_DESCRIPTION,
   SORT_ARGUMENT_DESCRIPTION,
 } from "./meanders.constants";
@@ -24,8 +23,8 @@ export class MeandersArgs {
   filter?: MeanderFilterGroupInput | null;
 
   @Field(() => Int, {
-    defaultValue: DEFAULT_PAGE_SIZE,
-    description: "How many meanders to return.",
+    description: "How many meanders to return; 50 when left out, at most 200.",
+    nullable: true,
   })
   first?: number;
 

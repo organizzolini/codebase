@@ -12,15 +12,16 @@ The words this project uses that the root glossary does not define, regenerated 
 - **db**:
 - **estimate**:
 - **fewest**:
+- **golden**:
 - **huge**:
 - **lattice**:
 - **meanderaw**:
 - **mention**:
 - **ne**:
-- **negative**:
 - **rare**:
 - **rebuild**:
 - **survey**:
+- **unaggregated**:
 - **wire**:
 
 <!-- coinagerie:end -->

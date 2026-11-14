@@ -2,8 +2,10 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 
 import { CodeService, DrawingService } from "@codebase/meanderaw-core";
+import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
 
 import { catalogEntry, meanderRow } from "../../../testing/fixtures";
+import { GOLDEN_SVG } from "../../../testing/golden-svg";
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
   seedMeanderaw,
@@ -98,7 +100,7 @@ describe("meanders resolver end-to-end suite", () => {
     }
   }
 
-  /** The codes in `id` order, regrouped so equal values stay in id order. */
+  /** The codes, regrouped into id order. */
   const inIdOrder = (codes: readonly string[]): string[] =>
     codes.toSorted(
       (left, right) => idOrder.indexOf(left) - idOrder.indexOf(right),
@@ -120,6 +122,21 @@ describe("meanders resolver end-to-end suite", () => {
     expect(empty.edges).toStrictEqual([]);
     expect(empty.totalCount).toBe(0);
     expect(empty.pageInfo.hasNextPage).toBe(false);
+  });
+
+  it("counts exactly before the first aggregate has run", async () => {
+    expect.hasAssertions();
+
+    const database = application.database.module.get(MeanderawDatabaseService);
+
+    await database.saveAll([meanderRow({ code: "01x01y0" })]);
+
+    const unaggregated = await page({ first: 10 });
+
+    expect(unaggregated.totalCount).toBe(1);
+    expect(unaggregated.edges).toHaveLength(1);
+
+    await database.clear();
   });
 
   it("seeds the meanders the rest of the suite reads", async () => {
@@ -277,6 +294,33 @@ describe("meanders resolver end-to-end suite", () => {
     expect(last.pageInfo.hasNextPage).toBe(false);
   });
 
+  it("refuses a cursor issued for a different sort or direction", async () => {
+    expect.hasAssertions();
+
+    const ascending = { direction: "ASC", field: "junctionCount" };
+    const issued = await page({ first: 2, sort: ascending });
+    const after = issued.pageInfo.endCursor;
+
+    for (const sort of [
+      { direction: "DESC", field: "junctionCount" },
+      { direction: "ASC", field: "rows" },
+      null,
+    ]) {
+      const body = await application.query(MEANDERS_QUERY, { after, sort });
+
+      expect(body.errors?.[0]?.message).toBe(
+        "The cursor was issued for a different sort.",
+      );
+    }
+
+    const same = await application.query(MEANDERS_QUERY, {
+      after,
+      sort: ascending,
+    });
+
+    expect(same.errors).toBeUndefined();
+  });
+
   it("refuses a sort field that is neither a shape field nor a characteristic", async () => {
     expect.hasAssertions();
 
@@ -342,6 +386,9 @@ describe("meanders resolver end-to-end suite", () => {
       }
 
       expect(new Set(nodes.map(({ svg }) => svg)).size).toBeGreaterThan(1);
+      expect(nodes.find(({ code }) => code === "01x01y5")?.svg).toBe(
+        GOLDEN_SVG,
+      );
     });
 
     it("renders only the meanders asked for, and none when the query leaves svg out", async () => {

@@ -82,9 +82,8 @@ export class MeanderFilterPlanService {
   // 🌎 Public Methods
 
   /**
-   * The rule that keeps the fewest meanders, among those that can only keep
-   * meanders with a bridge row. Null when the tree is not a flat AND, or no
-   * rule qualifies: the rest are probed through the bridge's primary key.
+   * The qualifying rule that keeps the fewest meanders; null for a tree that
+   * is not a flat AND. The rest are probed through the primary key.
    */
   async chooseDriver(
     group: MeanderFilterGroup,
