@@ -1,27 +1,12 @@
-import prompts from "prompts";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import { overrideEnvironment } from "@codebase/testing";
+import { overrideEnvironment, promptsMock } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InputOptionsService } from "./input-options.service";
 import { InputPromptingService } from "./input-prompting.service";
 import { InputSchemaService } from "./input-schema.service";
 import { InputService } from "./input.service";
-
-// Mocked at the module boundary so the interactive path is exercised without
-// a terminal.
-vi.mock("prompts", () => ({ default: vi.fn() }));
-
-const promptRunner = vi.mocked(prompts);
 
 const REQUIRED_NAME_SCHEMA = {
   properties: { name: { description: "Module name", type: "string" } },
@@ -46,7 +31,7 @@ describe(InputService, () => {
   const originalIsTty = process.stdin.isTTY;
 
   beforeEach(() => {
-    promptRunner.mockReset();
+    promptsMock.mockReset();
     // Not a terminal by default, which is what a script, a hook, or a CI job
     // gets — and what the removed `--no-interactive` used to stand for.
     process.stdin.isTTY = false;
@@ -168,7 +153,7 @@ describe(InputService, () => {
 
     it("prompts for a missing required value at a terminal", async () => {
       process.stdin.isTTY = true;
-      promptRunner.mockResolvedValue({ value: "my-widget" });
+      promptsMock.mockResolvedValue({ value: "my-widget" });
 
       const inputs = await service.resolveGeneratorInputs({
         rawArguments: [],
@@ -180,7 +165,7 @@ describe(InputService, () => {
 
     it("drops a prompted value the caller left blank", async () => {
       process.stdin.isTTY = true;
-      promptRunner.mockResolvedValue({ value: "   " });
+      promptsMock.mockResolvedValue({ value: "   " });
 
       const inputs = await service.resolveGeneratorInputs({
         rawArguments: [],
@@ -192,7 +177,7 @@ describe(InputService, () => {
 
     it("rejects a prompted value the schema refuses", async () => {
       process.stdin.isTTY = true;
-      promptRunner.mockResolvedValue({ value: "nope" });
+      promptsMock.mockResolvedValue({ value: "nope" });
 
       await expect(
         service.resolveGeneratorInputs({
@@ -251,7 +236,7 @@ describe(InputService, () => {
           schema: REQUIRED_NAME_SCHEMA,
         }),
       ).rejects.toThrow("stdin is not a terminal");
-      expect(promptRunner).not.toHaveBeenCalled();
+      expect(promptsMock).not.toHaveBeenCalled();
     });
 
     // Nothing consults an environment variable any more: CI has no terminal,
@@ -259,7 +244,7 @@ describe(InputService, () => {
     it("prompts in CI when a terminal is attached", async () => {
       process.stdin.isTTY = true;
       overrideEnvironment({ CI: "true" });
-      promptRunner.mockResolvedValue({ value: "my-widget" });
+      promptsMock.mockResolvedValue({ value: "my-widget" });
 
       await expect(
         service.resolveGeneratorInputs({

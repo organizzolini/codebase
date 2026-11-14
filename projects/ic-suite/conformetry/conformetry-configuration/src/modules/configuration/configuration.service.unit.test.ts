@@ -1,10 +1,9 @@
 import { existsSync } from "node:fs";
-import { writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { createTemporaryDirectory } from "@codebase/testing";
+import { createFileTree, createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InputPromptingService } from "../input/input-prompting.service";
@@ -28,22 +27,21 @@ function mockValue<T>(_unused?: T): T {
 }
 
 /** Writes a JSON config holding whatever the caller passes. */
-async function writeConfiguration(configuration: unknown): Promise<string> {
-  const directory = createTemporaryDirectory("config");
-  const configurationPath = path.join(directory, "conformetry.config.json");
-
-  await writeFile(configurationPath, JSON.stringify(configuration), "utf8");
-
-  return configurationPath;
+function writeConfiguration(configuration: unknown): string {
+  return path.join(
+    createFileTree(
+      { "conformetry.config.json": JSON.stringify(configuration) },
+      { label: "config" },
+    ),
+    "conformetry.config.json",
+  );
 }
 /** Writes a TypeScript config whose default export is the given source. */
-async function writeTypescriptConfiguration(source: string): Promise<string> {
-  const directory = createTemporaryDirectory("config-ts");
-  const configurationPath = path.join(directory, "conformetry.config.ts");
-
-  await writeFile(configurationPath, source, "utf8");
-
-  return configurationPath;
+function writeTypescriptConfiguration(source: string): string {
+  return path.join(
+    createFileTree({ "conformetry.config.ts": source }, { label: "config-ts" }),
+    "conformetry.config.ts",
+  );
 }
 
 describe(ConfigurationService, () => {
@@ -390,7 +388,7 @@ describe(ConfigurationService, () => {
 
   describe("resolveConfigurationPath", () => {
     it("returns an existing absolute path unchanged", async () => {
-      const configurationPath = await writeConfiguration([]);
+      const configurationPath = writeConfiguration([]);
 
       await expect(
         service.resolveConfigurationPath(configurationPath),
@@ -425,7 +423,7 @@ describe(ConfigurationService, () => {
   });
 
   it("keeps the configured template path", async () => {
-    const configurationPath = await writeConfiguration([
+    const configurationPath = writeConfiguration([
       { name: "example", templatePath: "custom/templates/example" },
     ]);
 
@@ -436,7 +434,7 @@ describe(ConfigurationService, () => {
   });
 
   it("keeps a generator's declared threshold", async () => {
-    const configurationPath = await writeConfiguration([
+    const configurationPath = writeConfiguration([
       { name: "example", templatePath: "templates/example", threshold: 0.9 },
     ]);
 
@@ -447,7 +445,7 @@ describe(ConfigurationService, () => {
   });
 
   it("keeps an instance group's declared threshold", async () => {
-    const configurationPath = await writeConfiguration([
+    const configurationPath = writeConfiguration([
       {
         instances: [{ patterns: ["src/modules/*"], threshold: 0.75 }],
         name: "example",
@@ -462,7 +460,7 @@ describe(ConfigurationService, () => {
   });
 
   it("leaves an undeclared threshold unset rather than defaulting it", async () => {
-    const configurationPath = await writeConfiguration([
+    const configurationPath = writeConfiguration([
       { name: "example", templatePath: "templates/example" },
     ]);
 
@@ -475,7 +473,7 @@ describe(ConfigurationService, () => {
   });
 
   it("rejects a threshold outside the 0-to-1 range", async () => {
-    const configurationPath = await writeConfiguration([
+    const configurationPath = writeConfiguration([
       { name: "example", templatePath: "templates/example", threshold: 90 },
     ]);
 
@@ -485,7 +483,7 @@ describe(ConfigurationService, () => {
   });
 
   it("defaults inputs and instances to empty", async () => {
-    const configurationPath = await writeConfiguration([
+    const configurationPath = writeConfiguration([
       { name: "example", templatePath: "templates/example" },
     ]);
 
@@ -497,7 +495,7 @@ describe(ConfigurationService, () => {
   });
 
   it("keeps instance globs, substitutions, and tags", async () => {
-    const configurationPath = await writeConfiguration([
+    const configurationPath = writeConfiguration([
       {
         instances: [
           {
@@ -538,10 +536,11 @@ describe(ConfigurationService, () => {
   });
 
   it("reads no generators from a module that exports nothing usable", async () => {
-    const directory = createTemporaryDirectory("config");
+    const directory = createFileTree(
+      { "conformetry.config.mjs": "export default 42;\n" },
+      { label: "config" },
+    );
     const configurationPath = path.join(directory, "conformetry.config.mjs");
-
-    await writeFile(configurationPath, "export default 42;\n", "utf8");
 
     await expect(
       service.loadConformetryConfiguration(configurationPath),
@@ -549,14 +548,14 @@ describe(ConfigurationService, () => {
   });
 
   it("reads a module whose default export holds the generators", async () => {
-    const directory = createTemporaryDirectory("config");
-    const configurationPath = path.join(directory, "conformetry.config.mjs");
-
-    await writeFile(
-      configurationPath,
-      'export default [{ name: "example", templatePath: "templates/example" }];\n',
-      "utf8",
+    const directory = createFileTree(
+      {
+        "conformetry.config.mjs":
+          'export default [{ name: "example", templatePath: "templates/example" }];\n',
+      },
+      { label: "config" },
     );
+    const configurationPath = path.join(directory, "conformetry.config.mjs");
 
     const configuration =
       await service.loadConformetryConfiguration(configurationPath);
@@ -565,16 +564,16 @@ describe(ConfigurationService, () => {
   });
 
   it("unwraps a default export that is itself nested one level deeper", async () => {
-    const directory = createTemporaryDirectory("config");
-    const configurationPath = path.join(directory, "conformetry.config.mjs");
-
     // Mirrors a CommonJS/ESM interop shape where the resolved default export
     // is itself an object carrying a further `default` field.
-    await writeFile(
-      configurationPath,
-      'export default { default: [{ name: "example", templatePath: "templates/example" }] };\n',
-      "utf8",
+    const directory = createFileTree(
+      {
+        "conformetry.config.mjs":
+          'export default { default: [{ name: "example", templatePath: "templates/example" }] };\n',
+      },
+      { label: "config" },
     );
+    const configurationPath = path.join(directory, "conformetry.config.mjs");
 
     const configuration =
       await service.loadConformetryConfiguration(configurationPath);
@@ -583,14 +582,14 @@ describe(ConfigurationService, () => {
   });
 
   it("reads a JSONC configuration, comments and all", async () => {
-    const directory = createTemporaryDirectory("config");
-    const configurationPath = path.join(directory, "conformetry.config.jsonc");
-
-    await writeFile(
-      configurationPath,
-      '// the workspace generators\n[{ "name": "example", "templatePath": "t" }]\n',
-      "utf8",
+    const directory = createFileTree(
+      {
+        "conformetry.config.jsonc":
+          '// the workspace generators\n[{ "name": "example", "templatePath": "t" }]\n',
+      },
+      { label: "config" },
     );
+    const configurationPath = path.join(directory, "conformetry.config.jsonc");
 
     const configuration =
       await service.loadConformetryConfiguration(configurationPath);
@@ -599,7 +598,7 @@ describe(ConfigurationService, () => {
   });
 
   it("rejects a generator missing its name rather than validating nothing", async () => {
-    const configurationPath = await writeConfiguration([
+    const configurationPath = writeConfiguration([
       { templatePath: "templates/example" },
     ]);
 
@@ -609,7 +608,7 @@ describe(ConfigurationService, () => {
   });
 
   it("rejects a generator missing its template path", async () => {
-    const configurationPath = await writeConfiguration([{ name: "example" }]);
+    const configurationPath = writeConfiguration([{ name: "example" }]);
 
     await expect(
       service.loadConformetryConfiguration(configurationPath),
@@ -618,7 +617,7 @@ describe(ConfigurationService, () => {
 
   describe("typeScript configuration files", () => {
     it("reads a configuration exported from a module", async () => {
-      const configurationPath = await writeTypescriptConfiguration(
+      const configurationPath = writeTypescriptConfiguration(
         `export default [
           {
             inputs: {},
@@ -642,7 +641,7 @@ describe(ConfigurationService, () => {
     async function loadWithHooks(
       hooks: string,
     ): Promise<ConformetryConfiguration> {
-      const configurationPath = await writeTypescriptConfiguration(
+      const configurationPath = writeTypescriptConfiguration(
         `export default [
           {
             hooks: ${hooks},
@@ -685,7 +684,7 @@ describe(ConfigurationService, () => {
     });
 
     it("leaves a generator with no hooks without a hooks entry", async () => {
-      const configurationPath = await writeConfiguration([
+      const configurationPath = writeConfiguration([
         { name: "example", templatePath: "templates/example" },
       ]);
 
@@ -744,12 +743,7 @@ describe(ConfigurationService, () => {
     async function load(
       definitions: unknown[],
     ): Promise<ConformetryConfiguration> {
-      const configurationPath = path.join(
-        createTemporaryDirectory("collision"),
-        "conformetry.config.json",
-      );
-
-      await writeFile(configurationPath, JSON.stringify(definitions), "utf8");
+      const configurationPath = writeConfiguration(definitions);
 
       return service.loadConformetryConfiguration(configurationPath);
     }

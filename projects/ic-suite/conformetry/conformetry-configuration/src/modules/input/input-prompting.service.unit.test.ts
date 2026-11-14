@@ -1,24 +1,17 @@
-import prompts from "prompts";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
+import { promptsMock } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InputPromptingService } from "./input-prompting.service";
 import { InputSchemaService } from "./input-schema.service";
 
-// Mocked at the module boundary so the service's own wiring is exercised and
-// no test ever reaches for a terminal.
-vi.mock("prompts", () => ({ default: vi.fn() }));
+import type { PromptObject } from "prompts";
 
-const promptRunner = vi.mocked(prompts);
+/** Narrows what `prompts` was called with to one prompt object, not a list. */
+function isSinglePrompt(value: unknown): value is PromptObject {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
 
 describe(InputPromptingService, () => {
   let service: InputPromptingService;
@@ -34,7 +27,7 @@ describe(InputPromptingService, () => {
   const originalIsTty = process.stdin.isTTY;
 
   beforeEach(() => {
-    promptRunner.mockReset();
+    promptsMock.mockReset();
     // A terminal, so each test exercises the prompt rather than the refusal
     // standing in front of it.
     process.stdin.isTTY = true;
@@ -54,7 +47,7 @@ describe(InputPromptingService, () => {
 
   describe("promptForInput", () => {
     it("returns the answer the caller typed", async () => {
-      promptRunner.mockResolvedValue({ value: "my-widget" });
+      promptsMock.mockResolvedValue({ value: "my-widget" });
 
       await expect(
         service.promptForInput({
@@ -66,7 +59,7 @@ describe(InputPromptingService, () => {
     });
 
     it("returns nothing when the prompt is cancelled", async () => {
-      promptRunner.mockResolvedValue({});
+      promptsMock.mockResolvedValue({});
 
       await expect(
         service.promptForInput({
@@ -78,7 +71,7 @@ describe(InputPromptingService, () => {
     });
 
     it("hands prompts a validator backed by the schema", async () => {
-      promptRunner.mockResolvedValue({ value: "my-widget" });
+      promptsMock.mockResolvedValue({ value: "my-widget" });
 
       await service.promptForInput({
         inputName: "name",
@@ -86,9 +79,9 @@ describe(InputPromptingService, () => {
         propertySchema: { type: "string" },
       });
 
-      const options = promptRunner.mock.calls[0]?.[0];
+      const options: unknown = promptsMock.mock.calls[0]?.[0];
 
-      if (options === undefined || Array.isArray(options)) {
+      if (!isSinglePrompt(options)) {
         throw new Error("prompts was not called with a single prompt");
       }
 
@@ -99,7 +92,7 @@ describe(InputPromptingService, () => {
     });
 
     it("offers a choice list when the schema declares an enum", async () => {
-      promptRunner.mockResolvedValue({ value: "packages" });
+      promptsMock.mockResolvedValue({ value: "packages" });
 
       await service.promptForInput({
         inputName: "type",
@@ -107,13 +100,13 @@ describe(InputPromptingService, () => {
         propertySchema: { enum: ["applications", "packages"] },
       });
 
-      expect(promptRunner).toHaveBeenCalledWith(
+      expect(promptsMock).toHaveBeenCalledWith(
         expect.objectContaining({ type: "select" }),
       );
     });
 
     it("asks for free text when the schema declares no enum", async () => {
-      promptRunner.mockResolvedValue({ value: "my-widget" });
+      promptsMock.mockResolvedValue({ value: "my-widget" });
 
       await service.promptForInput({
         inputName: "name",
@@ -121,13 +114,13 @@ describe(InputPromptingService, () => {
         propertySchema: { type: "string" },
       });
 
-      expect(promptRunner).toHaveBeenCalledWith(
+      expect(promptsMock).toHaveBeenCalledWith(
         expect.objectContaining({ type: "text" }),
       );
     });
 
     it("returns nothing when the caller cancels", async () => {
-      promptRunner.mockResolvedValue({});
+      promptsMock.mockResolvedValue({});
 
       await expect(
         service.promptForInput({
@@ -146,7 +139,7 @@ describe(InputPromptingService, () => {
     ];
 
     it("returns the template the caller chose", async () => {
-      promptRunner.mockResolvedValue({ template: "react-component-folder" });
+      promptsMock.mockResolvedValue({ template: "react-component-folder" });
 
       await expect(service.promptForTemplate(TEMPLATES)).resolves.toBe(
         "react-component-folder",
@@ -156,11 +149,11 @@ describe(InputPromptingService, () => {
     // Filtering as you type is the whole reason a long template name is
     // cheap to select, so the prompt type is asserted rather than assumed.
     it("asks with an autocomplete over the configured templates", async () => {
-      promptRunner.mockResolvedValue({ template: "react-component-folder" });
+      promptsMock.mockResolvedValue({ template: "react-component-folder" });
 
       await service.promptForTemplate(TEMPLATES);
 
-      expect(promptRunner).toHaveBeenCalledWith(
+      expect(promptsMock).toHaveBeenCalledWith(
         expect.objectContaining({
           choices: [
             {
@@ -179,7 +172,7 @@ describe(InputPromptingService, () => {
     });
 
     it("returns nothing when the prompt is cancelled", async () => {
-      promptRunner.mockResolvedValue({});
+      promptsMock.mockResolvedValue({});
 
       await expect(
         service.promptForTemplate(TEMPLATES),
@@ -193,7 +186,7 @@ describe(InputPromptingService, () => {
     ];
 
     it("returns every template the caller ticked", async () => {
-      promptRunner.mockResolvedValue({
+      promptsMock.mockResolvedValue({
         templates: ["nestjs-service-module", "react-component-folder"],
       });
 
@@ -208,11 +201,11 @@ describe(InputPromptingService, () => {
     // The flag and the picker have to be able to express the same set, and
     // `--templates all` is how the flag says "every template".
     it("offers the all sentinel alongside the configured templates", async () => {
-      promptRunner.mockResolvedValue({ templates: ["all"] });
+      promptsMock.mockResolvedValue({ templates: ["all"] });
 
       await service.promptForTemplates(TEMPLATES);
 
-      expect(promptRunner).toHaveBeenCalledWith(
+      expect(promptsMock).toHaveBeenCalledWith(
         expect.objectContaining({
           choices: [
             expect.objectContaining({ title: "all", value: "all" }) as unknown,
@@ -227,7 +220,7 @@ describe(InputPromptingService, () => {
     });
 
     it("returns nothing when the prompt is cancelled", async () => {
-      promptRunner.mockResolvedValue({});
+      promptsMock.mockResolvedValue({});
 
       await expect(
         service.promptForTemplates(TEMPLATES),
@@ -237,7 +230,7 @@ describe(InputPromptingService, () => {
     // Ticking nothing is not a narrowing, so it reads as no answer rather
     // than as "no templates", which would validate nothing at all.
     it("returns nothing when the caller ticks no template", async () => {
-      promptRunner.mockResolvedValue({ templates: [] });
+      promptsMock.mockResolvedValue({ templates: [] });
 
       await expect(
         service.promptForTemplates(TEMPLATES),
@@ -269,7 +262,7 @@ describe(InputPromptingService, () => {
       ).rejects.toThrow(
         "name is required, and stdin is not a terminal so it cannot be asked for. Pass --name.",
       );
-      expect(promptRunner).not.toHaveBeenCalled();
+      expect(promptsMock).not.toHaveBeenCalled();
     });
   });
 });
