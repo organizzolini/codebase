@@ -10,9 +10,13 @@ import { mockProcesses } from "../../../testing/mocks";
 import { PostgresqlUtilitiesService } from "../postgresql-utilities/postgresql-utilities.service";
 
 import type { SpawnedProcess } from "../../../testing/mocks";
+import type * as PostgresMocks from "../../../testing/mocks";
 
 vi.mock("node:child_process", async (importOriginal) => {
-  const { mockPostgresChildProcess } = await import("../../../testing/mocks");
+  const { mockPostgresChildProcess } = await vi.importActual<
+    typeof PostgresMocks
+  >("../../../testing/mocks");
+
   return mockPostgresChildProcess(await importOriginal());
 });
 

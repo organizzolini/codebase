@@ -4,19 +4,23 @@ import path from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
-import { createTemporaryDirectory } from "@codebase/testing";
+import { createTemporaryDirectory, processFailure } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
-import { mockProcesses, processFailure } from "../../../testing/mocks";
+import { mockProcesses } from "../../../testing/mocks";
 import { PostgresqlUtilitiesService } from "../postgresql-utilities/postgresql-utilities.service";
 
 import { PostgresqlExportCommand } from "./postgresql-export.command";
 
 import type { SpawnedProcess } from "../../../testing/mocks";
+import type * as PostgresMocks from "../../../testing/mocks";
 
 vi.mock("node:child_process", async (importOriginal) => {
-  const { mockPostgresChildProcess } = await import("../../../testing/mocks");
+  const { mockPostgresChildProcess } = await vi.importActual<
+    typeof PostgresMocks
+  >("../../../testing/mocks");
+
   return mockPostgresChildProcess(await importOriginal());
 });
 

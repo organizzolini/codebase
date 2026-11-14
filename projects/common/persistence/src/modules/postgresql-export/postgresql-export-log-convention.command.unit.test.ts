@@ -7,10 +7,14 @@ import { useTemporaryDirectory } from "@codebase/testing";
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { mockProcesses } from "../../../testing/mocks";
 
+import type * as PostgresMocks from "../../../testing/mocks";
 import type * as PostgresqlExportConstants from "./postgresql-export.constants";
 
 vi.mock("node:child_process", async (importOriginal) => {
-  const { mockPostgresChildProcess } = await import("../../../testing/mocks");
+  const { mockPostgresChildProcess } = await vi.importActual<
+    typeof PostgresMocks
+  >("../../../testing/mocks");
+
   return mockPostgresChildProcess(await importOriginal());
 });
 

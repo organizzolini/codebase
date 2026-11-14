@@ -3,10 +3,10 @@ import path from "node:path";
 
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { useTemporaryDirectory } from "@codebase/testing";
+import { processFailure, useTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { mockProcesses, processFailure } from "../../../testing/mocks";
+import { mockProcesses } from "../../../testing/mocks";
 
 import {
   PostgresClientError,
@@ -14,6 +14,7 @@ import {
 } from "./postgresql-utilities.constants";
 import { PostgresqlUtilitiesService } from "./postgresql-utilities.service";
 
+import type * as PostgresMocks from "../../../testing/mocks";
 import type {
   PostgresDumpEntry,
   PostgresDumpOptions,
@@ -22,7 +23,10 @@ import type {
 } from "./postgresql-utilities.types";
 
 vi.mock("node:child_process", async (importOriginal) => {
-  const { mockPostgresChildProcess } = await import("../../../testing/mocks");
+  const { mockPostgresChildProcess } = await vi.importActual<
+    typeof PostgresMocks
+  >("../../../testing/mocks");
+
   return mockPostgresChildProcess(await importOriginal());
 });
 
