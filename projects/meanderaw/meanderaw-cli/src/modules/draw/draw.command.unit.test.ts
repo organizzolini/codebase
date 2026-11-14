@@ -11,7 +11,10 @@ import {
   vi,
 } from "vitest";
 
-import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
+import {
+  MeanderawDatabaseAggregatesService,
+  MeanderawDatabaseService,
+} from "@codebase/meanderaw-db";
 import { expectLoggerContext } from "@codebase/observability/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
@@ -65,6 +68,7 @@ describe(DrawCommand, () => {
   let draw: Mock<() => Promise<Meander>>;
   let ingest: Mock<() => Promise<Meander[]>>;
   let drawAll: Mock<() => Promise<number>>;
+  let rebuild: Mock<() => Promise<void>>;
   let syncCharacteristics: Mock<
     (entries: readonly CharacteristicRecord[]) => Promise<void>
   >;
@@ -96,6 +100,10 @@ describe(DrawCommand, () => {
         useValue: createMock<CorpusService>({ ingest }),
       },
       {
+        provide: MeanderawDatabaseAggregatesService,
+        useValue: createMock<MeanderawDatabaseAggregatesService>({ rebuild }),
+      },
+      {
         provide: MeanderawDatabaseService,
         useValue: createMock<MeanderawDatabaseService>({
           clear,
@@ -120,6 +128,7 @@ describe(DrawCommand, () => {
       );
     ingest = vi.fn<() => Promise<Meander[]>>().mockResolvedValue([]);
     drawAll = vi.fn<() => Promise<number>>().mockResolvedValue(30_279);
+    rebuild = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
     syncCharacteristics = vi
       .fn<(entries: readonly CharacteristicRecord[]) => Promise<void>>()
       .mockResolvedValue(undefined);
@@ -148,6 +157,7 @@ describe(DrawCommand, () => {
     draw.mockClear();
     ingest.mockClear();
     drawAll.mockClear();
+    rebuild.mockClear();
     syncCharacteristics.mockClear();
     vi.mocked(writeFile).mockClear();
     vi.mocked(mkdir).mockClear();
@@ -243,6 +253,21 @@ describe(DrawCommand, () => {
     const [written] = vi.mocked(writeFile).mock.invocationCallOrder;
 
     expect(enumerated ?? 0).toBeLessThan(written ?? 0);
+  });
+
+  it("rebuilds the aggregate counts last, after the pages, and only on a draw run", async () => {
+    await command.run([], {});
+
+    const [written] = vi.mocked(writeFile).mock.invocationCallOrder;
+    const [aggregated] = rebuild.mock.invocationCallOrder;
+
+    expect(rebuild).toHaveBeenCalledTimes(1);
+    expect(written ?? 0).toBeLessThan(aggregated ?? 0);
+
+    rebuild.mockClear();
+    await command.run([], { code: "3c9a", columns: 2, rows: 3 });
+
+    expect(rebuild).not.toHaveBeenCalled();
   });
 
   it("draws the one meander a Code names, drawing nothing else and never rebuilding the index pages", async () => {

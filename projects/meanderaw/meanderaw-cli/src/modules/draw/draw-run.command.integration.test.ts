@@ -1,8 +1,14 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
+import { MeanderawDatabaseAggregatesService } from "@codebase/meanderaw-db";
 import { LoggerService } from "@codebase/observability";
 
+import {
+  bruteForceAggregates,
+  derivedAbsent,
+  storedAggregates,
+} from "../../../testing/aggregates";
 import { bridgeRows, storedCharacteristics } from "../../../testing/bridge";
 import {
   DRAW_RUN_TIMEOUT_MILLISECONDS,
@@ -91,10 +97,17 @@ describe("drawCommand draw run", () => {
    */
   describe("over an empty database", () => {
     let drawRun: DrawRunFixture;
+    let rebuilds = 0;
 
     beforeAll(async () => {
+      const rebuild = vi.spyOn(
+        MeanderawDatabaseAggregatesService.prototype,
+        "rebuild",
+      );
+
       drawRun = await startMockedDrawRun();
       await drawRun.command.run([], {});
+      rebuilds = rebuild.mock.calls.length;
     }, DRAW_RUN_TIMEOUT_MILLISECONDS);
 
     afterAll(async () => {
@@ -154,6 +167,38 @@ describe("drawCommand draw run", () => {
       await expect(
         storedCharacteristics(drawRun.dataSource, whirl.code),
       ).resolves.toMatchObject({ isWhirl: true });
+    });
+
+    it("ends with every count table equal to a brute-force count of what it drew, and rebuilt exactly once", async () => {
+      const { absent: _absent, ...counted } = await bruteForceAggregates(
+        drawRun.dataSource,
+      );
+
+      expect(rebuilds).toBe(1);
+      expect(counted.values).not.toHaveLength(0);
+      expect(counted.pairs).not.toHaveLength(0);
+      expect(counted.shapes).not.toHaveLength(0);
+      await expect(storedAggregates(drawRun.dataSource)).resolves.toStrictEqual(
+        counted,
+      );
+    });
+
+    it("lets a reader derive every 0 or false bucket from the stored tables, as the shape total minus what is stored", async () => {
+      const { absent } = await bruteForceAggregates(drawRun.dataSource);
+
+      await expect(derivedAbsent(drawRun.dataSource)).resolves.toStrictEqual(
+        absent,
+      );
+    });
+
+    it("rebuilds the same tables when the aggregate command runs on its own", async () => {
+      const drawn = await storedAggregates(drawRun.dataSource);
+
+      await drawRun.aggregate.run();
+
+      await expect(storedAggregates(drawRun.dataSource)).resolves.toStrictEqual(
+        drawn,
+      );
     });
 
     it("registers exactly one catalog row per evaluator, and isReducible beside them, marking each pattern characteristic", async () => {

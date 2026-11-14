@@ -35,4 +35,17 @@ That was checked against the data rather than taken from the argument. Every cha
 - A rare pattern's page query still walks the `(rows, columns, code)` index and probes the bridge by primary key for each row. It was the same cost against the map.
 - The bridge may hold hundreds of millions of rows. If the indexes prove too slow, the next step is to list-partition it by `characteristicId`; it is not needed yet.
 - Every write to the bridge needs the catalog to be current. Saving a meander that holds an unregistered key throws `UnknownCharacteristicError`.
-- The aggregate count tables, and the `aggregate` command that rebuilds them and `meanderCount`, are separate work.
+- Exact counts come from four tables rather than from counting the bridge on each request.
+
+## Aggregate counts
+
+Four tables hold the counts, each keyed by what it counts and holding only true booleans and values above 0.
+
+- **`characteristic_value_counts`** holds `(characteristicId, value, meanderCount)`.
+- **`characteristic_pair_counts`** holds a true boolean characteristic and its value (always 1), crossed with any characteristic and its value.
+- **`characteristic_shape_counts`** holds `(rows, columns, lattice)` crossed with a characteristic and its value.
+- **`shape_counts`** holds each shape's total.
+
+A reader derives the 0 or false bucket as the shape total minus the stored rows, so the missing-means-zero rule holds here too. The tables carry no foreign keys, since a rebuild replaces them whole.
+
+The `aggregate` command rebuilds all four, and every `characteristics.meanderCount`, in one transaction. Each table is created beside the live one, filled, keyed, then swapped in by dropping the live table and renaming, so a reader sees the old counts until the commit and the new ones after, and a failure leaves the old ones. The draw run calls it last. A `--code` run does not, so run `aggregate` after one. The draw run's worker pool never writes a count table, so parallel workers never contend on shared counter rows.

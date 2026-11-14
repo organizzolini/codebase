@@ -18,7 +18,7 @@ import type { DataSource } from "typeorm";
 
 // 🧪 Tests
 
-/** Five meanders in two shapes, so every table has rows the cases can name. */
+/** Five meanders in two shapes, giving every table rows to name. */
 const MEANDERS = [
   meanderRecord({
     characteristics: { cornerCount: 2, isA: true },
@@ -93,7 +93,7 @@ describe(MeanderawDatabaseAggregatesService, () => {
     await database.close();
   });
 
-  /** One count table's rows as `|`-joined strings, sorted; a key replaces each characteristic id. */
+  /** A count table's rows as sorted `|`-joined lines, keyed by characteristic. */
   const rowsOf = async (table: string, select: string): Promise<string[]> => {
     const rows: { line: string }[] = await dataSource.query(
       `SELECT ${select} AS line FROM meanderaw.${table} counts

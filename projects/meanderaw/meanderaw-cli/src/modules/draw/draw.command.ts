@@ -4,7 +4,10 @@ import path from "node:path";
 import { Inject, Injectable } from "@nestjs/common";
 import { Command, CommandRunner, Option } from "nest-commander";
 
-import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
+import {
+  MeanderawDatabaseAggregatesService,
+  MeanderawDatabaseService,
+} from "@codebase/meanderaw-db";
 import { LoggerService } from "@codebase/observability";
 
 import { CharacteristicsService } from "../characteristics/characteristics.service";
@@ -22,7 +25,7 @@ import type { DrawCommandOptions } from "./draw.types";
 /**
  * Draws meanders into the Postgres database `MEANDERAW_POSTGRES_DATABASE` names.
  *
- * - **`draw`** draws every meander, then the corpus's hardcoded Codes beyond the budget.
+ * - **`draw`** draws every meander, then the corpus's hardcoded Codes beyond the budget, and ends by rebuilding the aggregate counts.
  * - **`draw --rows <n> --columns <n> --code <code>`** persists one meander.
  *
  * The hardcoded half runs first, so a hardcoded row keeps its Code.
@@ -51,6 +54,8 @@ export class DrawCommand extends CommandRunner {
     private readonly corpusService: CorpusService,
     @Inject(MeanderawDatabaseService)
     private readonly databaseService: MeanderawDatabaseService,
+    @Inject(MeanderawDatabaseAggregatesService)
+    private readonly aggregatesService: MeanderawDatabaseAggregatesService,
   ) {
     super();
     this.logger.setContext(DrawCommand.name);
@@ -87,6 +92,9 @@ export class DrawCommand extends CommandRunner {
     });
 
     await this.writePages();
+    await this.aggregatesService.rebuild();
+
+    this.logger.log("✨ Rebuilt the aggregate counts");
   }
 
   /**

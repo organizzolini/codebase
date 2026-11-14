@@ -80,17 +80,32 @@ export async function bruteForceAggregates(
   }
 
   const absent: string[] = [];
+  const shapeTotals = new Map<string, number>();
+  const holdersByKey = new Map<string, number>();
+  const holdersByKeyShape = new Map<string, number>();
+
+  for (const meander of meanders) {
+    const shape = shapeOf(meander);
+
+    shapeTotals.set(shape, (shapeTotals.get(shape) ?? 0) + 1);
+  }
+
+  for (const row of held) {
+    const keyed = `${row.key}|${shapeOf(row)}`;
+
+    holdersByKey.set(row.key, (holdersByKey.get(row.key) ?? 0) + 1);
+    holdersByKeyShape.set(keyed, (holdersByKeyShape.get(keyed) ?? 0) + 1);
+  }
 
   for (const { key } of catalog) {
-    const holders = held.filter((row) => row.key === key);
+    absent.push(
+      `value|${key}|${meanders.length - (holdersByKey.get(key) ?? 0)}`,
+    );
 
-    absent.push(`value|${key}|${meanders.length - holders.length}`);
+    for (const [shape, total] of shapeTotals) {
+      const have = holdersByKeyShape.get(`${key}|${shape}`) ?? 0;
 
-    for (const shape of new Set(meanders.map((one) => shapeOf(one)))) {
-      const total = meanders.filter((one) => shapeOf(one) === shape);
-      const have = holders.filter((row) => shapeOf(row) === shape);
-
-      absent.push(`shape|${shape}|${key}|${total.length - have.length}`);
+      absent.push(`shape|${shape}|${key}|${total - have}`);
     }
   }
 

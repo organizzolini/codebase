@@ -30,12 +30,7 @@ export class MeanderawDatabaseAggregatesService {
 
   // 🔏 Private Methods
 
-  /**
-   * Builds `entity`'s table afresh from `select`, which yields the table's
-   * columns under their own names, then swaps it in for the live one. The primary
-   * key goes on after the load, under a temporary name, and takes the live
-   * name once the old table is gone.
-   */
+  /** Fills a table beside `entity`'s from `select`, keys it, then swaps it in. */
   private async swap(
     manager: EntityManager,
     entity: new () => object,
@@ -80,11 +75,7 @@ export class MeanderawDatabaseAggregatesService {
 
   // 🌎 Public Methods
 
-  /**
-   * Rebuilds every count table and `characteristics.meanderCount` in one
-   * transaction. Only true booleans and numbers above 0 are counted, as in
-   * the bridge, so a 0 or false bucket is the shape total minus these rows.
-   */
+  /** Rebuilds every count table and `meanderCount` in one transaction. */
   async rebuild(): Promise<void> {
     const bridge = this.table(MeanderCharacteristic);
     const catalog = this.table(Characteristic);
