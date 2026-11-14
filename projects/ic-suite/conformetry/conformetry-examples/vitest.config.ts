@@ -8,7 +8,7 @@ export default mergeConfig(
     test: {
       coverage: {
         // Runnable examples, executed as child processes, so there is no library source to instrument.
-        include: [],
+        exclude: ["src/**/*.ts"],
       },
       // Every test runs the conformetry command as a child process, which
       // compiles the toolchain through SWC on the way in. That is seconds per

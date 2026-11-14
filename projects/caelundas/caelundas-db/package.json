@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "@codebase/persistence": "workspace:*",
-    "@codebase/testing": "workspace:*",
     "@nestjs/common": "catalog:",
     "@nestjs/typeorm": "catalog:",
     "moment-timezone": "catalog:",
@@ -11,6 +10,7 @@
     "typeorm": "catalog:"
   },
   "devDependencies": {
+    "@codebase/testing": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",
