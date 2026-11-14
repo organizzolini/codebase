@@ -1,5 +1,7 @@
 # 0018: Store Every Characteristic in One Sparse JSON Map
 
+Partly superseded by [ADR 0032](0032-store-characteristics-in-a-catalog-and-a-bridge.md): the `jsonb` column is replaced by a catalog table and a bridge table. A missing value still means zero or false.
+
 ## Context
 
 [ADR 0017](0017-store-letter-counts-as-a-sparse-json-map.md) moved letter counts into a sparse `glyphs` JSON column on `meanders`, and left every other numeric Characteristic in a typed column of its own. [ADR 0015](0015-store-families-as-an-open-multi-label-set.md) had already put the boolean Characteristics that hold into a `characteristics` string array. So one meander row stored its Characteristics in three shapes: 38 integer and float columns, a letter map, and a list of true booleans with `isReducible` appended.

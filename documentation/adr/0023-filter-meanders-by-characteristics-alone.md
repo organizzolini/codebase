@@ -1,5 +1,7 @@
 # 0023: Filter Meanders by Characteristics Alone
 
+Partly superseded by [ADR 0032](0032-store-characteristics-in-a-catalog-and-a-bridge.md): characteristics are stored in a catalog and a bridge table, no longer in the row's sparse `characteristics` map, and `patternRows` reads through the bridge. The rest of this decision stands.
+
 Supersedes [ADR 0015](0015-store-families-as-an-open-multi-label-set.md) and the family-per-page layout of [ADR 0021](0021-stop-committing-the-meander-pages.md). Postgres storage, the two halves of the corpus, and writing the pages under a gitignored `output/` stand.
 
 ## Context
