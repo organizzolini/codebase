@@ -1,11 +1,9 @@
+import { buildSourceLocation } from "@callidescope/core/testing";
+import { buildDiscoveredCallable } from "@callidescope/graph/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import {
-  buildDiscoveredCallable,
-  buildSourceLocation,
-} from "../../../testing/mocks";
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 
 import { ProjectReportsService } from "./project-reports.service";
