@@ -308,7 +308,7 @@ export class MeanderawDatabaseService {
   }
 
   /**
-   * Makes the catalog hold exactly `entries`: upserts each by key and deletes
+   * Makes the catalog hold exactly `entries`: inserts each new key, updates the rest, and deletes
    * every other row, whose bridge rows cascade with it.
    */
   async syncCharacteristics(
@@ -317,11 +317,21 @@ export class MeanderawDatabaseService {
     const keys = entries.map(({ key }) => key);
 
     await this.characteristicRepository.manager.transaction(async (manager) => {
-      await manager.upsert(
+      const held = await manager
+        .getRepository(Characteristic)
+        .find({ select: { key: true } });
+      const heldKeys = new Set(held.map((row) => row.key));
+
+      // An upsert burns an identity value per row even when the row exists, so
+      // only a key the catalog lacks is inserted.
+      await manager.insert(
         Characteristic,
-        entries.map((entry) => ({ ...entry })),
-        ["key"],
+        entries.filter(({ key }) => !heldKeys.has(key)),
       );
+
+      for (const entry of entries.filter(({ key }) => heldKeys.has(key))) {
+        await manager.update(Characteristic, { key: entry.key }, entry);
+      }
       await manager
         .createQueryBuilder()
         .delete()
