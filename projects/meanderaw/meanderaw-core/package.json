@@ -13,6 +13,10 @@
     "@vitest/coverage-v8": "catalog:",
     "vitest": "catalog:"
   },
+  "exports": {
+    ".": "./src/index.ts",
+    "./testing/tiles": "./testing/tiles.ts"
+  },
   "main": "src/index.ts",
   "name": "@codebase/meanderaw-core",
   "publishConfig": {

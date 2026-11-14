@@ -1,13 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { CodeModule, MatrixModule } from "@codebase/meanderaw-core";
 import {
   buildTestingModule,
   expectModuleExports,
 } from "@codebase/testing/nestjs";
 
-import { CodeModule } from "../../../code/code.module";
-import { MatrixModule } from "../../../matrix/matrix.module";
 import { CharacteristicContextService } from "../../characteristic-context.service";
 import { SubmatrixUtilitiesService } from "../submatrix-utilities.service";
 

@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 
-import { BARE_MATRIX_POINT } from "../../../matrix/matrix.constants";
+import { BARE_MATRIX_POINT } from "@codebase/meanderaw-core";
 
-import type { Matrix } from "../../../matrix/matrix.types";
+import type { Matrix } from "@codebase/meanderaw-core";
 
 /**
  * Shared straight-run scans, injected by every `submatrix/run` evaluator

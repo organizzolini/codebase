@@ -1,14 +1,16 @@
 import { ConfigModule } from "@nestjs/config";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
+import {
+  CodeModule,
+  DrawingModule,
+  SymmetryModule,
+} from "@codebase/meanderaw-core";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { environmentSchema } from "../../meanderaw-cli.constants";
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
-import { CodeModule } from "../code/code.module";
-import { DrawingModule } from "../drawing/drawing.module";
 import { EnumerationModule } from "../enumeration/enumeration.module";
-import { SymmetryModule } from "../symmetry/symmetry.module";
 
 import { DrawPoolService } from "./draw-pool.service";
 import { DrawRecordService } from "./draw-record.service";

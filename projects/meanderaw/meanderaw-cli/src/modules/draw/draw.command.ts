@@ -4,9 +4,9 @@ import path from "node:path";
 import { Inject, Injectable } from "@nestjs/common";
 import { Command, CommandRunner, Option } from "nest-commander";
 
+import { CODE_FORMAT_PATTERN } from "@codebase/meanderaw-core";
 import { LoggerService } from "@codebase/observability";
 
-import { CODE_FORMAT_PATTERN } from "../code/code.constants";
 import { CorpusService } from "../corpus/corpus.service";
 import { HISTORICAL_CORPUS } from "../corpus/historical-corpus.constants";
 import { DatabaseService } from "../database/database.service";

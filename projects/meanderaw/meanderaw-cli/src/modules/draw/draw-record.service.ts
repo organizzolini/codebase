@@ -1,10 +1,11 @@
 import { Inject, Injectable } from "@nestjs/common";
 
-import { CharacteristicsService } from "../characteristics/characteristics.service";
-import { CodeService } from "../code/code.service";
+import { CodeService } from "@codebase/meanderaw-core";
 
-import type { CodeObject } from "../code/code.types";
+import { CharacteristicsService } from "../characteristics/characteristics.service";
+
 import type { MeanderRecord } from "../database/database.types";
+import type { CodeObject } from "@codebase/meanderaw-core";
 
 /**
  * Turns one Code into its database row, measured from the same single reading.

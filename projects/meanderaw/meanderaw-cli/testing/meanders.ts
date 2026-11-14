@@ -7,8 +7,8 @@ import type {
   NumericCharacteristicKey,
   NumericCharacteristicRecord,
 } from "../src/modules/characteristics/characteristics.types";
-import type { CodeObject } from "../src/modules/code/code.types";
 import type { MeanderRecord } from "../src/modules/database/database.types";
+import type { CodeObject } from "@codebase/meanderaw-core";
 
 /**
  * Builds characteristic records and meander rows for the tests that need a

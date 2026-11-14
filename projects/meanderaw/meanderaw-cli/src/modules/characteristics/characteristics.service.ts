@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { DiscoveryService } from "@nestjs/core";
 
-import { CodeService } from "../code/code.service";
+import { CodeService } from "@codebase/meanderaw-core";
 
 import { CharacteristicContextService } from "./characteristic-context.service";
 import {
@@ -14,7 +14,6 @@ import {
 } from "./characteristics.constants";
 import { TileCrossingComponentDeltaCountCharacteristicService } from "./path/tile-crossing/tile-crossing-component-delta-count-characteristic.service";
 
-import type { Code, CodeObject } from "../code/code.types";
 import type {
   BooleanCharacteristicKey,
   CandidateEvaluator,
@@ -28,6 +27,7 @@ import type {
   NumericCharacteristicRecord,
   StoredCharacteristics,
 } from "./characteristics.types";
+import type { Code, CodeObject } from "@codebase/meanderaw-core";
 import type { OnApplicationBootstrap } from "@nestjs/common";
 
 /**

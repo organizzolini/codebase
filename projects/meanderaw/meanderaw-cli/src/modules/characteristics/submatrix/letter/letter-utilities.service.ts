@@ -4,7 +4,6 @@ import { SubmatrixUtilitiesService } from "../submatrix-utilities.service";
 
 import { LETTER_ORIENTATION_NAMES, LETTER_SCRIPTS } from "./letter.constants";
 
-import type { Matrix } from "../../../matrix/matrix.types";
 import type {
   CharacteristicContext,
   CharacteristicEvaluator,
@@ -19,6 +18,7 @@ import type {
   LetterScript,
   LetterTurn,
 } from "./letter.types";
+import type { Matrix } from "@codebase/meanderaw-core";
 
 /**
  * The orientation arithmetic every letter shares: flipping, turning, naming the sixteen

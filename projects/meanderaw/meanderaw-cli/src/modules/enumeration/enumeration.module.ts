@@ -1,8 +1,10 @@
 import { Module } from "@nestjs/common";
 
-import { CodeModule } from "../code/code.module";
-import { SymmetryModule } from "../symmetry/symmetry.module";
-import { TileModule } from "../tile/tile.module";
+import {
+  CodeModule,
+  SymmetryModule,
+  TileModule,
+} from "@codebase/meanderaw-core";
 
 import { EnumerationService } from "./enumeration.service";
 import { TileEnumerationService } from "./tile-enumeration.service";

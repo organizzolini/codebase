@@ -1,11 +1,10 @@
+import { CodeModule, MatrixModule } from "@codebase/meanderaw-core";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CharacteristicContextService } from "../src/modules/characteristics/characteristic-context.service";
 import { LetterUtilitiesService } from "../src/modules/characteristics/submatrix/letter/letter-utilities.service";
 import { LETTER_ORIENTATION_NAMES } from "../src/modules/characteristics/submatrix/letter/letter.constants";
 import { SubmatrixUtilitiesService } from "../src/modules/characteristics/submatrix/submatrix-utilities.service";
-import { CodeModule } from "../src/modules/code/code.module";
-import { MatrixModule } from "../src/modules/matrix/matrix.module";
 
 import type {
   CharacteristicEvaluator,

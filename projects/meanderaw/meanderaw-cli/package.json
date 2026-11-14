@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@codebase/meanderaw-core": "workspace:*",
     "@codebase/observability": "workspace:*",
     "@codebase/persistence": "workspace:*",
     "@nestjs/common": "catalog:",

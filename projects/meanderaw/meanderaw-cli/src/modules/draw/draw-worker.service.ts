@@ -1,8 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 
-import { CodeService } from "../code/code.service";
+import { CodeService, SymmetryService } from "@codebase/meanderaw-core";
+
 import { TileEnumerationService } from "../enumeration/tile-enumeration.service";
-import { SymmetryService } from "../symmetry/symmetry.service";
 
 import { DrawRecordService } from "./draw-record.service";
 

@@ -4597,6 +4597,9 @@ importers:
 
   projects/meanderaw/meanderaw-cli:
     dependencies:
+      '@codebase/meanderaw-core':
+        specifier: workspace:*
+        version: link:../meanderaw-core
       '@codebase/observability':
         specifier: workspace:*
         version: link:../../common/observability
