@@ -5,6 +5,8 @@ import type { Characteristic } from "@codebase/meanderaw-db";
 
 /** A boolean SQL expression over the meanders table, aliased `meander`. */
 export interface CompiledMeanderFilter {
+  /** Identifies the tree, so a cursor can be bound to it. */
+  readonly hash: string;
   readonly parameters: Record<string, unknown>;
   readonly where: string;
 }

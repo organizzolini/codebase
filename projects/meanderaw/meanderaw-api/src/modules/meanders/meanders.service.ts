@@ -20,6 +20,7 @@ import { MeanderFilterService } from "./filters/meander-filter.service";
 import {
   cursorSchema,
   meandersArgumentsSchema,
+  NO_FILTER,
   SHAPE_SORT_FIELDS,
 } from "./meanders.constants";
 import { SortDirection } from "./sort-direction.entities";
@@ -126,7 +127,7 @@ export class MeandersService {
   /** Reads a cursor, refusing one this API did not issue or one issued for another sort. */
   private decodeCursor(
     after: null | string | undefined,
-    sort: { direction: SortDirection; field: string },
+    sort: { direction: SortDirection; field: string; filter: string },
   ): Cursor | null {
     if (after === null || after === undefined) {
       return null;
@@ -143,6 +144,12 @@ export class MeandersService {
     if (cursor.field !== sort.field || cursor.direction !== sort.direction) {
       throw new BadRequestException(
         "The cursor was issued for a different sort.",
+      );
+    }
+
+    if (cursor.filter !== sort.filter) {
+      throw new BadRequestException(
+        "The cursor was issued for a different filter.",
       );
     }
 
@@ -213,9 +220,11 @@ export class MeandersService {
         ? null
         : await this.filterService.compile(arguments_.filter);
     const direction = sort?.direction ?? SortDirection.ASC;
+    const filterHash = filter?.hash ?? NO_FILTER;
     const cursor = this.decodeCursor(after, {
       direction,
       field: sort?.field ?? "id",
+      filter: filterHash,
     });
     const target = await this.resolveTarget(sort);
     const { entities, raw } = await this.buildQuery({
@@ -243,6 +252,7 @@ export class MeandersService {
           toCursor({
             direction,
             field: sort?.field ?? "id",
+            filter: filterHash,
             id: meander.id,
             value: this.sortValue(meander, target, raw[index]?.sort_value),
           }),

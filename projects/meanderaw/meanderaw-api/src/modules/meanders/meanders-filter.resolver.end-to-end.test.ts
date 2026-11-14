@@ -1,3 +1,4 @@
+import { DataSource } from "typeorm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { z } from "zod";
 
@@ -8,6 +9,7 @@ import {
   startMeanderawApplication,
 } from "../../../testing/meanderaw-application";
 
+import { MeanderFilterService } from "./filters/meander-filter.service";
 import { MeandersModule } from "./meanders.module";
 
 import type { MeanderawApplication } from "../../../testing/meanderaw-application";
@@ -57,18 +59,21 @@ interface Rule {
   readonly text?: string;
 }
 
-/** Forty meanders spread over each field, many values missing. */
-const FIXTURES: readonly Fixture[] = Array.from({ length: 40 }, (_, index) => ({
-  code: `01x${String(index).padStart(2, "0")}`,
-  columns: (index % 2) + 1,
-  isChain: index % 3 === 0,
-  isHardcoded: index % 4 === 0,
-  junctionCount: [0, 1, 3, 0, 2, 4, 1, 0][index % 8] ?? 0,
-  lattice: index % 5 < 2 ? "0" : "1",
-  repeats: (index % 3) + 1,
-  rows: (index % 4) + 1,
-  strokeCount: index % 7 < 3 ? 0 : (index % 7) - 2,
-}));
+/** 120 meanders spread over each field, many values missing. */
+const FIXTURES: readonly Fixture[] = Array.from(
+  { length: 120 },
+  (_, index) => ({
+    code: `01x${String(index).padStart(2, "0")}`,
+    columns: (index % 2) + 1,
+    isChain: index % 3 === 0,
+    isHardcoded: index % 4 === 0,
+    junctionCount: [0, 1, 3, 0, 2, 4, 1, 0][index % 8] ?? 0,
+    lattice: index % 5 < 2 ? "0" : "1",
+    repeats: (index % 3) + 1,
+    rows: (index % 4) + 1,
+    strokeCount: index % 7 < 3 ? 0 : (index % 7) - 2,
+  }),
+);
 
 /** A repeatable pseudo-random generator, so the trees are the same every run. */
 function generator(seed: number): () => number {
@@ -130,17 +135,54 @@ function matches(fixture: Fixture, group: Group): boolean {
     : results.some(Boolean);
 }
 
-/** The value a field holds for a fixture, a missing one as 0 or false. */
-function valueOf(fixture: Fixture, field: string): boolean | number | string {
-  return fixture[field as keyof Fixture];
+/** Nested and/or trees, `between` and negative bounds included, the same for a seed. */
+function randomTrees(seed: number, count: number): Group[] {
+  const random = generator(seed);
+  const pick = <T>(items: readonly T[]): T =>
+    items[Math.floor(random() * items.length)] as T;
+  const rule = (): Rule => {
+    const field = pick(["junctionCount", "strokeCount", "rows", "isChain"]);
+
+    if (field === "isChain") {
+      return { field, flag: random() < 0.5, operator: pick(["is", "is_not"]) };
+    }
+
+    if (random() < 0.25) {
+      const low = Math.floor(random() * 8) - 3;
+
+      return {
+        field,
+        numbers: [low, low + Math.floor(random() * 4)],
+        operator: "between",
+      };
+    }
+
+    return {
+      field,
+      numbers: [Math.floor(random() * 6) - 1],
+      operator: pick(["eq", "ne", "lt", "lte", "gt", "gte"]),
+    };
+  };
+  const group = (depth: number): Group => ({
+    combinator: pick(["and", "or"]),
+    groups:
+      depth > 0
+        ? Array.from({ length: Math.floor(random() * 3) }, () =>
+            group(depth - 1),
+          )
+        : [],
+    rules: Array.from({ length: 1 + Math.floor(random() * 3) }, rule),
+  });
+
+  return Array.from({ length: count }, () => group(2));
 }
 
 /** A tree as GraphQL spells it: enum names in capitals. */
-function wire(group: Group): unknown {
+function toGraphql(group: Group): unknown {
   return {
     ...group,
     combinator: group.combinator.toUpperCase(),
-    groups: group.groups?.map((child) => wire(child)),
+    groups: group.groups?.map((child) => toGraphql(child)),
     rules: group.rules?.map((rule) => ({
       ...rule,
       operator: rule.operator.toUpperCase(),
@@ -148,9 +190,15 @@ function wire(group: Group): unknown {
   };
 }
 
+/** The value a field holds for a fixture, a missing one as 0 or false. */
+function valueOf(fixture: Fixture, field: string): boolean | number | string {
+  return fixture[field as keyof Fixture];
+}
+
 /** Sends the meanders query with a rule tree to a migrated, seeded Postgres. */
 describe("meanders filter end-to-end suite", () => {
   let application: MeanderawApplication;
+  let trees: Group[];
 
   /** The codes a tree selects, and the total the API reports for it. */
   async function select(
@@ -158,7 +206,7 @@ describe("meanders filter end-to-end suite", () => {
     extra: Record<string, unknown> = {},
   ): Promise<{ codes: string[]; totalCount: number }> {
     const body = await application.query(QUERY, {
-      filter: wire(filter),
+      filter: toGraphql(filter),
       first: 200,
       ...extra,
     });
@@ -188,6 +236,7 @@ describe("meanders filter end-to-end suite", () => {
   const only = (rule: Rule): Group => ({ combinator: "and", rules: [rule] });
 
   beforeAll(async () => {
+    trees = randomTrees(2280, 60);
     application = await startMeanderawApplication([MeandersModule]);
     await seedMeanderaw(
       application.database,
@@ -284,36 +333,40 @@ describe("meanders filter end-to-end suite", () => {
   it("returns exactly the brute-force result for nested and/or trees", async () => {
     expect.hasAssertions();
 
-    const random = generator(2280);
-    const operators = ["eq", "ne", "lt", "lte", "gt", "gte"];
-    const pick = <T>(items: readonly T[]): T =>
-      items[Math.floor(random() * items.length)] as T;
-    const rule = (): Rule => {
-      const field = pick(["junctionCount", "strokeCount", "rows", "isChain"]);
-
-      return field === "isChain"
-        ? { field, flag: random() < 0.5, operator: pick(["is", "is_not"]) }
-        : {
-            field,
-            numbers: [Math.floor(random() * 4)],
-            operator: pick(operators),
-          };
-    };
-    const group = (depth: number): Group => ({
-      combinator: pick(["and", "or"]),
-      groups:
-        depth > 0
-          ? Array.from({ length: Math.floor(random() * 3) }, () =>
-              group(depth - 1),
-            )
-          : [],
-      rules: Array.from({ length: 1 + Math.floor(random() * 3) }, rule),
-    });
-
-    for (let index = 0; index < 30; index += 1) {
-      await expectBruteForce(group(2));
+    for (const tree of trees) {
+      await expectBruteForce(tree);
     }
   });
+
+  it.each([
+    ["lt", [-1]],
+    ["lte", [-1]],
+    ["gt", [-1]],
+    ["gte", [-3]],
+    ["eq", [-2]],
+    ["ne", [-2]],
+    ["between", [-3, -1]],
+    ["between", [-1, 0]],
+    ["between", [0, 0]],
+    ["between", [-2, 2]],
+    ["between", [1, 1]],
+  ])(
+    "reads a negative or zero-spanning bound exactly: %s %j",
+    async (operator, numbers) => {
+      expect.hasAssertions();
+
+      await expectBruteForce(
+        only({ field: "junctionCount", numbers, operator }),
+      );
+      await expectBruteForce({
+        combinator: "and",
+        rules: [
+          { field: "junctionCount", numbers, operator },
+          { field: "isChain", flag: true, operator: "is" },
+        ],
+      });
+    },
+  );
 
   it("returns the brute-force result for flat AND trees in every rule order", async () => {
     expect.hasAssertions();
@@ -365,7 +418,7 @@ describe("meanders filter end-to-end suite", () => {
     for (;;) {
       const body = await application.query(QUERY, {
         after,
-        filter: wire(filter),
+        filter: toGraphql(filter),
         first: 3,
         sort,
       });
@@ -410,16 +463,51 @@ describe("meanders filter end-to-end suite", () => {
     [
       "a between without two ordered numbers",
       only({ field: "rows", numbers: [3, 1], operator: "between" }),
-      "between needs two numbers",
+      "between takes two numbers, the lower first",
     ],
     [
       "a fractional shape number",
       only({ field: "rows", numbers: [1.5], operator: "eq" }),
-      'Rule on "rows" needs whole numbers.',
+      "rows takes whole numbers up to",
+    ],
+    [
+      "a shape number past the column's range",
+      only({ field: "rows", numbers: [1e30], operator: "lt" }),
+      "rows takes whole numbers up to",
+    ],
+    [
+      "a shape number one past the safe range",
+      only({
+        field: "columns",
+        numbers: [Number.MAX_SAFE_INTEGER + 1],
+        operator: "gt",
+      }),
+      "columns takes whole numbers up to",
+    ],
+    [
+      "a text on a numeric rule",
+      {
+        combinator: "and",
+        rules: [{ field: "rows", numbers: [1], operator: "eq", text: "1" }],
+      },
+      "eq takes exactly one number",
+    ],
+    [
+      "a flag on a comparison",
+      {
+        combinator: "and",
+        rules: [{ field: "rows", flag: true, numbers: [1], operator: "eq" }],
+      },
+      "eq does not take a flag",
+    ],
+    [
+      "a number on a lattice comparison",
+      only({ field: "lattice", numbers: [1], operator: "eq" }),
+      "eq on the lattice takes only a text",
     ],
     [
       "an operator the lattice cannot take",
-      only({ field: "lattice", operator: "gt", text: "1" }),
+      only({ field: "lattice", numbers: [1], operator: "gt" }),
       "The lattice takes eq or ne with a text",
     ],
     [
@@ -434,7 +522,9 @@ describe("meanders filter end-to-end suite", () => {
     async (_name, filter, message) => {
       expect.hasAssertions();
 
-      const body = await application.query(QUERY, { filter: wire(filter) });
+      const body = await application.query(QUERY, {
+        filter: toGraphql(filter),
+      });
 
       expect(body.errors).toHaveLength(1);
       expect(body.errors?.[0]?.message).toContain(message);
@@ -450,8 +540,148 @@ describe("meanders filter end-to-end suite", () => {
       filter = { combinator: "and", groups: [filter] };
     }
 
-    const body = await application.query(QUERY, { filter: wire(filter) });
+    const body = await application.query(QUERY, { filter: toGraphql(filter) });
 
     expect(body.errors?.[0]?.message).toContain("nest");
+  });
+
+  it("accepts the largest safe whole number on a shape field", async () => {
+    expect.hasAssertions();
+
+    await expectBruteForce(
+      only({
+        field: "rows",
+        numbers: [Number.MAX_SAFE_INTEGER],
+        operator: "lt",
+      }),
+    );
+  });
+
+  it("refuses a tree past the size cap, and answers one at it with few parameters", async () => {
+    expect.hasAssertions();
+
+    const rule = (index: number): Rule => ({
+      field: "junctionCount",
+      numbers: [index % 5],
+      operator: "gte",
+    });
+    const atCap: Group = {
+      combinator: "or",
+      rules: Array.from({ length: 128 }, (_, index) => rule(index)),
+    };
+    const pastCap: Group = {
+      combinator: "or",
+      rules: Array.from({ length: 129 }, (_, index) => rule(index)),
+    };
+    const nested: Group = {
+      combinator: "and",
+      groups: Array.from({ length: 70 }, () => only(rule(1))),
+      rules: Array.from({ length: 70 }, (_, index) => rule(index)),
+    };
+
+    await expectBruteForce(atCap);
+
+    for (const filter of [pastCap, nested]) {
+      const body = await application.query(QUERY, {
+        filter: toGraphql(filter),
+      });
+
+      expect(body.errors?.[0]?.message).toContain("128 rules and groups");
+    }
+  });
+
+  it("binds a cursor to the filter it was issued for", async () => {
+    expect.hasAssertions();
+
+    const filter = only({ field: "rows", numbers: [1], operator: "gte" });
+    const other = only({ field: "rows", numbers: [2], operator: "gte" });
+    const first = await application.query(QUERY, {
+      filter: toGraphql(filter),
+      first: 3,
+    });
+    const after = pageSchema.parse(first.data).meanders.pageInfo.endCursor;
+    const same = await application.query(QUERY, {
+      after,
+      filter: toGraphql(filter),
+      first: 3,
+    });
+    const changed = await application.query(QUERY, {
+      after,
+      filter: toGraphql(other),
+      first: 3,
+    });
+    const dropped = await application.query(QUERY, { after, first: 3 });
+
+    expect(same.errors).toBeUndefined();
+
+    for (const body of [changed, dropped]) {
+      expect(body.errors?.[0]?.message).toBe(
+        "The cursor was issued for a different filter.",
+      );
+    }
+  });
+
+  describe("plan", () => {
+    /** The compiled SQL and parameters for a tree, as the service plans it. */
+    async function plan(
+      tree: Group,
+    ): Promise<{ parameters: Record<string, unknown>; where: string }> {
+      return application.database.module
+        .get(MeanderFilterService, { strict: false })
+        .compile(tree);
+    }
+
+    /** A characteristic's catalog id. */
+    async function idOf(key: string): Promise<number> {
+      const rows: { id: number }[] = await application.database.module
+        .get(DataSource, { strict: false })
+        .query("SELECT id FROM characteristics WHERE key = $1", [key]);
+
+      return rows[0]?.id ?? -1;
+    }
+
+    it("starts a flat AND from an index range on its most selective rule", async () => {
+      expect.hasAssertions();
+
+      const planned = await plan({
+        combinator: "and",
+        rules: [
+          { field: "junctionCount", numbers: [0], operator: "gt" },
+          { field: "isChain", flag: true, operator: "is" },
+          { field: "strokeCount", numbers: [4], operator: "gte" },
+          { field: "rows", numbers: [3], operator: "lte" },
+        ],
+      });
+      const ranges = planned.where
+        .split(" AND ")
+        .filter((part) => part.includes("IN (SELECT"));
+      const bound = /"characteristic_id" = :(\w+)/.exec(ranges[0] ?? "")?.[1];
+
+      expect(ranges).toHaveLength(1);
+      expect(planned.parameters[bound ?? ""]).toBe(await idOf("strokeCount"));
+      expect(planned.where).toContain("COALESCE");
+      expect(planned.where).not.toMatch(/FROM "meander_characteristics"/);
+      expect(planned.where).toMatch(/FROM "\w+"\."meander_characteristics"/);
+    });
+
+    it("probes an OR, a nested tree, and rules a missing row satisfies", async () => {
+      expect.hasAssertions();
+
+      const rare: Rule = {
+        field: "strokeCount",
+        numbers: [4],
+        operator: "gte",
+      };
+
+      for (const tree of [
+        { combinator: "or", rules: [rare, rare] } as Group,
+        { combinator: "and", groups: [only(rare)], rules: [rare] } as Group,
+        only({ field: "strokeCount", numbers: [4], operator: "lt" }),
+      ]) {
+        const planned = await plan(tree);
+
+        expect(planned.where).not.toContain("IN (SELECT");
+      }
+    });
   });
 });

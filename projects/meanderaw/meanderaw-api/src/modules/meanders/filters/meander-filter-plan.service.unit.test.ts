@@ -87,6 +87,20 @@ describe(MeanderFilterPlanService, () => {
     );
   });
 
+  it("starts from a not-equal-to-zero rule, which a missing row fails", async () => {
+    expect.hasAssertions();
+
+    const service = await buildService();
+    const notZero = rule("rare", MeanderFilterOperator.NE, [0]);
+
+    await expect(
+      service.chooseDriver(
+        all(rule("common", MeanderFilterOperator.GT, [0]), notZero),
+        CATALOG,
+      ),
+    ).resolves.toBe(notZero);
+  });
+
   it("never starts from a rule a missing row satisfies", async () => {
     expect.hasAssertions();
 
