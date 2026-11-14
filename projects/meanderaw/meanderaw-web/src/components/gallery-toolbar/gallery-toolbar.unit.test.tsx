@@ -9,6 +9,7 @@ describe(GalleryToolbar, () => {
       <GalleryToolbar
         className="gallery-toolbar"
         onViewChange={vi.fn<() => void>()}
+        totalCount={0}
         view="grid"
       />,
     );
@@ -23,6 +24,7 @@ describe(GalleryToolbar, () => {
     render(
       <GalleryToolbar
         onViewChange={onViewChange}
+        totalCount={0}
         view="grid"
       />,
     );
@@ -34,5 +36,17 @@ describe(GalleryToolbar, () => {
     fireEvent.click(screen.getByRole("button", { name: "List" }));
 
     expect(onViewChange).toHaveBeenCalledWith("list");
+  });
+
+  it("says how many meanders there are in all", () => {
+    render(
+      <GalleryToolbar
+        onViewChange={vi.fn<() => void>()}
+        totalCount={1234567}
+        view="grid"
+      />,
+    );
+
+    expect(screen.getByText("1,234,567 meanders")).toBeDefined();
   });
 });

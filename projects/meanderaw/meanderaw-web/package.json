@@ -5,6 +5,7 @@
     "@graphql-typed-document-node/core": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-start": "catalog:",
+    "@tanstack/react-virtual": "catalog:",
     "graphql": "catalog:",
     "msw": "catalog:",
     "react": "catalog:",

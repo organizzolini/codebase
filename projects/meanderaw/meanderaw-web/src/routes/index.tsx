@@ -10,6 +10,7 @@ import { MeanderGallery } from "../components/meander-gallery/meander-gallery";
 import { findMeanders } from "../components/meander-gallery/meanders-api.utilities";
 import { useGallerySearch } from "../hooks/use-gallery-search/use-gallery-search";
 import { gallerySearchSchema } from "../hooks/use-gallery-search/use-gallery-search.constants";
+import { useMeanders } from "../hooks/use-meanders/use-meanders";
 
 import type { ReactNode } from "react";
 
@@ -57,6 +58,7 @@ function IndexPage(): ReactNode {
   // 🪝 Hooks
   const page = Route.useLoaderData();
   const { handleViewChange, view } = useGallerySearch();
+  const { hasMore, loadError, loadMore, meanders } = useMeanders(page);
 
   // 🏗 Setup
 
@@ -72,10 +74,14 @@ function IndexPage(): ReactNode {
       <h1 className="text-xl">Meanderaw</h1>
       <GalleryToolbar
         onViewChange={handleViewChange}
+        totalCount={page.totalCount}
         view={view}
       />
       <MeanderGallery
-        meanders={page.edges.map(({ node }) => node)}
+        hasMore={hasMore}
+        loadError={loadError}
+        meanders={meanders}
+        onLoadMore={loadMore}
         view={view}
       />
     </section>

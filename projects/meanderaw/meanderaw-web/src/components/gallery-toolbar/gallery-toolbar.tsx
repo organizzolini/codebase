@@ -13,6 +13,7 @@ import type { ReactNode } from "react";
 export interface GalleryToolbarProperties {
   className?: string;
   onViewChange: (view: GalleryView) => void;
+  totalCount: number;
   view: GalleryView;
 }
 
@@ -24,7 +25,7 @@ export interface GalleryToolbarProperties {
 export function GalleryToolbar(
   properties: Readonly<GalleryToolbarProperties>,
 ): ReactNode {
-  const { className, onViewChange, view } = properties;
+  const { className, onViewChange, totalCount, view } = properties;
 
   // 🪝 Hooks
 
@@ -42,6 +43,9 @@ export function GalleryToolbar(
       className={className}
       data-testid="gallery-toolbar"
     >
+      <p className="text-sm text-(--ink-muted)">
+        {totalCount.toLocaleString("en-US")} meanders
+      </p>
       <div
         aria-label="View"
         className="flex gap-1"

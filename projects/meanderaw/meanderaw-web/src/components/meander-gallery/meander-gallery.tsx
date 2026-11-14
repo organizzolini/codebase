@@ -1,7 +1,17 @@
+import { useWindowVirtualizer } from "@tanstack/react-virtual";
+import { useEffect, useMemo } from "react";
+
+import { useElementBox } from "../../hooks/use-element-box/use-element-box";
 import { GalleryEmpty } from "../gallery-empty/gallery-empty";
+import { GalleryError } from "../gallery-error/gallery-error";
 import { MeanderCard } from "../meander-card/meander-card";
 
-import { LAYOUT_CLASSES } from "./meander-gallery.constants";
+import {
+  LOAD_AHEAD_ROWS,
+  OVERSCAN_ROWS,
+  ROW_ESTIMATES,
+} from "./meander-gallery.constants";
+import { getColumnCount, toRows } from "./meander-gallery.utilities";
 
 import type { GalleryView } from "../../hooks/use-gallery-search/use-gallery-search.types";
 import type { GalleryMeander } from "./meanders-api.types";
@@ -10,31 +20,57 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The meanders to show, and the view that lays them out.
+ * The meanders read so far, how to read more, and the view that lays them out.
  */
 export interface MeanderGalleryProperties {
   className?: string;
+  hasMore: boolean;
+  loadError: unknown;
   meanders: readonly GalleryMeander[];
+  onLoadMore: () => void;
   view: GalleryView;
 }
 
 // 🧩 Component
 
 /**
- * Renders the meanders as cards in a grid or a list, or says there are none.
+ * Renders the meanders as rows of cards, mounting only the rows in view, and
+ * asks for the next page as the last rows come near.
  */
 export function MeanderGallery(
   properties: Readonly<MeanderGalleryProperties>,
 ): ReactNode {
-  const { className, meanders, view } = properties;
+  const { className, hasMore, loadError, meanders, onLoadMore, view } =
+    properties;
 
   // 🪝 Hooks
+  const { setElement, top, width } = useElementBox();
+  const columns = getColumnCount(width, view);
+  const rows = useMemo(() => toRows(meanders, columns), [meanders, columns]);
+  const virtualizer = useWindowVirtualizer({
+    count: rows.length,
+    estimateSize: () => ROW_ESTIMATES[view],
+    overscan: OVERSCAN_ROWS,
+    scrollMargin: top,
+  });
 
   // 🏗 Setup
+  const items = virtualizer.getVirtualItems();
+  const lastIndex = items.at(-1)?.index ?? -1;
+  const isNearEnd = lastIndex >= rows.length - LOAD_AHEAD_ROWS;
 
   // 💪 Handlers
 
   // ♻️ Lifecycle
+  useEffect(() => {
+    virtualizer.measure();
+  }, [columns, view, virtualizer]);
+
+  useEffect(() => {
+    if (hasMore && isNearEnd && loadError === undefined) {
+      onLoadMore();
+    }
+  }, [hasMore, isNearEnd, loadError, onLoadMore, rows.length]);
 
   // 🏁 Early Returns
   if (meanders.length === 0) {
@@ -44,19 +80,43 @@ export function MeanderGallery(
   // 🎨 Markup
   return (
     <div
+      ref={setElement}
       className={className}
       data-testid="meander-gallery"
     >
-      <ul className={LAYOUT_CLASSES[view]}>
-        {meanders.map((meander) => (
-          <li key={meander.id}>
-            <MeanderCard
-              meander={meander}
-              view={view}
-            />
+      <ul
+        className="relative"
+        style={{ height: virtualizer.getTotalSize() }}
+      >
+        {items.map((item) => (
+          <li
+            key={item.key}
+            ref={virtualizer.measureElement}
+            className="absolute left-0 grid w-full gap-4 pb-4"
+            data-index={item.index}
+            data-testid="meander-gallery-row"
+            style={{
+              gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+              top: item.start - top,
+            }}
+          >
+            {rows[item.index]?.map((meander) => (
+              <MeanderCard
+                key={meander.id}
+                meander={meander}
+                view={view}
+              />
+            ))}
           </li>
         ))}
       </ul>
+      {loadError === undefined ? null : (
+        <GalleryError
+          className="pt-2"
+          error={loadError}
+          onRetry={onLoadMore}
+        />
+      )}
     </div>
   );
 }

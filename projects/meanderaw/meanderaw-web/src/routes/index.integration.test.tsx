@@ -4,9 +4,15 @@ import { describe, expect, it } from "vitest";
 import { renderRoute } from "@codebase/testing/react";
 
 import { serveMeandersApi } from "../../testing/meanders-api";
+import { scrollWindowTo, setViewportWidth } from "../../testing/viewport";
 import { getRouter } from "../router";
 
 import { Route } from "./index";
+
+/** The cards in one row of the gallery, none for a row that is not there. */
+function cardsIn(row: HTMLElement | undefined): HTMLElement[] {
+  return row === undefined ? [] : within(row).queryAllByTestId("meander-card");
+}
 
 describe("index", () => {
   it("renders its page", async () => {
@@ -108,5 +114,78 @@ describe("index", () => {
     await expect(screen.findAllByTestId("meander-card")).resolves.toHaveLength(
       2,
     );
+  });
+
+  it("mounts only the rows in view, however many meanders there are", async () => {
+    serveMeandersApi(500);
+
+    await renderRoute(getRouter(), "/");
+
+    const mounted = await screen.findAllByTestId("meander-card");
+
+    expect(mounted.length).toBeGreaterThan(0);
+    expect(mounted.length).toBeLessThan(25);
+    expect(screen.getByText("500 meanders")).toBeDefined();
+  });
+
+  it("puts as many cards in a row as the width holds", async () => {
+    serveMeandersApi(40);
+    setViewportWidth(1280);
+
+    await renderRoute(getRouter(), "/");
+
+    const [row] = await screen.findAllByTestId("meander-gallery-row");
+
+    expect(cardsIn(row)).toHaveLength(4);
+  });
+
+  it("puts one card in a row on a phone", async () => {
+    serveMeandersApi(40);
+    setViewportWidth(375);
+
+    await renderRoute(getRouter(), "/");
+
+    const [row] = await screen.findAllByTestId("meander-gallery-row");
+
+    expect(cardsIn(row)).toHaveLength(1);
+  });
+
+  it("loads the next page as the last rows scroll into view", async () => {
+    const api = serveMeandersApi(100);
+
+    await renderRoute(getRouter(), "/");
+    await screen.findAllByTestId("meander-card");
+
+    expect(api.requests).toHaveLength(1);
+
+    scrollWindowTo(3300);
+
+    await waitFor(() => {
+      expect(api.requests).toHaveLength(2);
+    });
+
+    expect(api.requests[1]).toMatchObject({ after: "47" });
+  });
+
+  it("shows why the next page failed, and reads it again when asked", async () => {
+    const api = serveMeandersApi(100);
+
+    await renderRoute(getRouter(), "/");
+    await screen.findAllByTestId("meander-card");
+    api.fail("The database is down");
+    scrollWindowTo(3300);
+
+    const alert = await screen.findByRole("alert");
+
+    expect(alert.textContent).toMatch(/The database is down/u);
+
+    api.recover();
+    fireEvent.click(screen.getByRole("button", { name: "Try again" }));
+
+    await waitFor(() => {
+      expect(screen.queryByRole("alert")).toBeNull();
+    });
+
+    expect(api.requests.at(-1)).toMatchObject({ after: "47" });
   });
 });
