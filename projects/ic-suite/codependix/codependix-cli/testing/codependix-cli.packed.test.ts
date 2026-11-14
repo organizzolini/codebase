@@ -3,7 +3,7 @@ import path from "node:path";
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { createTemporaryDirectory } from "@codebase/testing";
+import { createTemporaryDirectory, writeFileTree } from "@codebase/testing";
 import { createTarballSandboxRunner } from "@codebase/testing/end-to-end";
 
 import type {
@@ -33,15 +33,9 @@ describe("the packed codependix command", () => {
 
   /** Writes the project graph and a configuration over it; returns the configuration's path. */
   function writeWorkspace(directory: string): string {
-    const configuration = path.join(directory, "codependix.config.json");
-
-    fs.writeFileSync(
-      path.join(directory, "codependix-graph.json"),
-      JSON.stringify(PROJECT_GRAPH),
-    );
-    fs.writeFileSync(
-      configuration,
-      JSON.stringify({
+    writeFileTree(directory, {
+      "codependix-graph.json": JSON.stringify(PROJECT_GRAPH),
+      "codependix.config.json": JSON.stringify({
         include: [],
         projectGraph: "codependix-graph.json",
         workspace: {
@@ -51,9 +45,9 @@ describe("the packed codependix command", () => {
           },
         },
       }),
-    );
+    });
 
-    return configuration;
+    return path.join(directory, "codependix.config.json");
   }
 
   /** Runs the installed binary from `directory`, which is outside the sandbox. */
