@@ -2,6 +2,15 @@ import { ConfigService } from "@nestjs/config";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import {
+  CodeService,
+  DrawingService,
+  GeometryService,
+  MatrixService,
+  SvgService,
+  SymmetryService,
+  TileService,
+} from "@codebase/meanderaw-core";
+import {
   type DatabaseTestingModule,
   startDatabaseTestingModule,
 } from "@codebase/persistence/testing";
@@ -12,20 +21,13 @@ import {
 } from "../../../testing/draw-run-budget";
 import { environmentSchema } from "../../meanderaw-cli.constants";
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
-import { CodeService } from "../code/code.service";
 import { DatabaseModule } from "../database/database.module";
 import { Meander } from "../database/entities/meander.entity";
 import { Migration1791160950069 } from "../database/migrations/1791160950069-migration";
 import { Migration1791414023001 } from "../database/migrations/1791414023001-migration";
-import { DrawingService } from "../drawing/drawing.service";
 import { EnumerationService } from "../enumeration/enumeration.service";
 import { TileEnumerationService } from "../enumeration/tile-enumeration.service";
-import { GeometryService } from "../geometry/geometry.service";
 import { GraphService } from "../graph/graph.service";
-import { MatrixService } from "../matrix/matrix.service";
-import { SvgService } from "../svg/svg.service";
-import { SymmetryService } from "../symmetry/symmetry.service";
-import { TileService } from "../tile/tile.service";
 
 import { DrawEnumerationService } from "./draw-enumeration.service";
 import { DrawPoolService } from "./draw-pool.service";

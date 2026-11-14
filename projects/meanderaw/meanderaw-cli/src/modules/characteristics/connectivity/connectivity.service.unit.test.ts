@@ -1,12 +1,14 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
+import {
+  CodeService,
+  MatrixService,
+  SymmetryService,
+  TileService,
+} from "@codebase/meanderaw-core";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { CodeService } from "../../code/code.service";
 import { GraphService } from "../../graph/graph.service";
-import { MatrixService } from "../../matrix/matrix.service";
-import { SymmetryService } from "../../symmetry/symmetry.service";
-import { TileService } from "../../tile/tile.service";
 
 import { ConnectivityService } from "./connectivity.service";
 

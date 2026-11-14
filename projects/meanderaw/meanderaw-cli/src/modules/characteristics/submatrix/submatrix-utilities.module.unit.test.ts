@@ -2,13 +2,12 @@ import { Injectable } from "@nestjs/common";
 import { DiscoveryModule, DiscoveryService } from "@nestjs/core";
 import { describe, expect, it } from "vitest";
 
+import { CodeModule, MatrixModule } from "@codebase/meanderaw-core";
 import {
   buildTestingModule,
   expectModuleExports,
 } from "@codebase/testing/nestjs";
 
-import { CodeModule } from "../../code/code.module";
-import { MatrixModule } from "../../matrix/matrix.module";
 import { CharacteristicContextService } from "../characteristic-context.service";
 import { CharacteristicsModule } from "../characteristics.module";
 

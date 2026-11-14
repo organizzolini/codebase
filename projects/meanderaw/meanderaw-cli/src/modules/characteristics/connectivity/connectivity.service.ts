@@ -1,11 +1,12 @@
 import { Inject, Injectable } from "@nestjs/common";
 
+import { BARE_MATRIX_POINT } from "@codebase/meanderaw-core";
+
 import { GraphService } from "../../graph/graph.service";
-import { BARE_MATRIX_POINT } from "../../matrix/matrix.constants";
 
 import type { InkAdjacency } from "../../graph/graph.types";
-import type { Matrix } from "../../matrix/matrix.types";
 import type { CodeEdge, Connectivity } from "./connectivity.types";
+import type { Matrix } from "@codebase/meanderaw-core";
 
 /**
  * Reads a meander Matrix as a graph and reports its pieces, loops, and terminating points.

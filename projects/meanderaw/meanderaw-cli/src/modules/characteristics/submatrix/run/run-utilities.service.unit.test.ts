@@ -1,10 +1,11 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
+import {
+  CodeModule,
+  MatrixModule,
+  MatrixService,
+} from "@codebase/meanderaw-core";
 import { buildTestingModule } from "@codebase/testing/nestjs";
-
-import { CodeModule } from "../../../code/code.module";
-import { MatrixModule } from "../../../matrix/matrix.module";
-import { MatrixService } from "../../../matrix/matrix.service";
 
 import { RunUtilitiesService } from "./run-utilities.service";
 

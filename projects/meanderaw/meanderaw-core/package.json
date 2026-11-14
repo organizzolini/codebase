@@ -1,0 +1,36 @@
+{
+  "dependencies": {
+    "@codebase/testing": "workspace:*",
+    "@nestjs/common": "catalog:",
+    "tslib": "catalog:"
+  },
+  "devDependencies": {
+    "@golevelup/ts-vitest": "catalog:",
+    "@nestjs/testing": "catalog:",
+    "@nx/eslint-plugin": "catalog:",
+    "@swc/helpers": "catalog:",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "vitest": "catalog:"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./testing/tiles": "./testing/tiles.ts"
+  },
+  "main": "src/index.ts",
+  "name": "@codebase/meanderaw-core",
+  "private": true,
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "type": "module",
+  "typeCoverage": {
+    "atLeast": 100,
+    "ignoreFiles": [
+      "**/*.test.ts"
+    ],
+    "strict": true
+  },
+  "types": "src/index.ts"
+}

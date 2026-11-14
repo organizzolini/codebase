@@ -1,13 +1,15 @@
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
+import {
+  CodeService,
+  DrawingService,
+  GeometryService,
+} from "@codebase/meanderaw-core";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { meanderRecord } from "../../../testing/meanders";
 import { PATTERN_CHARACTERISTIC_KEYS } from "../characteristics/characteristics.constants";
-import { CodeService } from "../code/code.service";
 import { DatabaseService } from "../database/database.service";
-import { DrawingService } from "../drawing/drawing.service";
-import { GeometryService } from "../geometry/geometry.service";
 
 import { DrawIndexService } from "./draw-index.service";
 

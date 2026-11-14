@@ -1,21 +1,23 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import {
+  CodeService,
+  DrawingService,
+  GeometryService,
+  SvgService,
+  SymmetryService,
+  TileService,
+} from "@codebase/meanderaw-core";
+import {
   type DatabaseTestingModule,
   startDatabaseTestingModule,
 } from "@codebase/persistence/testing";
 
 import { meanderRecord } from "../../../testing/meanders";
-import { CodeService } from "../code/code.service";
 import { DatabaseModule } from "../database/database.module";
 import { Meander } from "../database/entities/meander.entity";
 import { Migration1791160950069 } from "../database/migrations/1791160950069-migration";
 import { Migration1791414023001 } from "../database/migrations/1791414023001-migration";
-import { DrawingService } from "../drawing/drawing.service";
-import { GeometryService } from "../geometry/geometry.service";
-import { SvgService } from "../svg/svg.service";
-import { SymmetryService } from "../symmetry/symmetry.service";
-import { TileService } from "../tile/tile.service";
 
 import { DrawIndexService } from "./draw-index.service";
 

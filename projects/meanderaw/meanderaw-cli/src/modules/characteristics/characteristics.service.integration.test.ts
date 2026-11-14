@@ -1,5 +1,10 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
+import {
+  CodeModule,
+  CodeService,
+  MatrixModule,
+} from "@codebase/meanderaw-core";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
@@ -9,10 +14,7 @@ import {
   LEGACY_TILE_CROSSING_COMPONENT_DELTAS,
 } from "../../../testing/legacy-characteristics";
 import { tiled } from "../../../testing/meanders";
-import { CodeModule } from "../code/code.module";
-import { CodeService } from "../code/code.service";
 import { HISTORICAL_CORPUS } from "../corpus/historical-corpus.constants";
-import { MatrixModule } from "../matrix/matrix.module";
 
 import { CharacteristicContextService } from "./characteristic-context.service";
 import { CHARACTERISTIC_KEYS } from "./characteristics.constants";

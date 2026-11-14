@@ -8,7 +8,7 @@ import type {
   Matrix,
   MatrixPoint,
   MatrixPointArm,
-} from "../../matrix/matrix.types";
+} from "@codebase/meanderaw-core";
 
 /** A point carrying exactly the named arms. */
 function point(...arms: MatrixPointArm[]): MatrixPoint {

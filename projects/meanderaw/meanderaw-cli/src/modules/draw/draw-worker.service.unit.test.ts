@@ -1,12 +1,11 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { CodeService, SymmetryService } from "@codebase/meanderaw-core";
+import { buildTile } from "@codebase/meanderaw-core/testing/tiles";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { buildTile } from "../../../testing/tiles";
-import { CodeService } from "../code/code.service";
 import { TileEnumerationService } from "../enumeration/tile-enumeration.service";
-import { SymmetryService } from "../symmetry/symmetry.service";
 
 import { DrawRecordService } from "./draw-record.service";
 import { DrawWorkerService } from "./draw-worker.service";

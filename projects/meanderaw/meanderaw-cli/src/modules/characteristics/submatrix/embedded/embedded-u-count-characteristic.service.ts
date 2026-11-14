@@ -2,12 +2,12 @@ import { Inject, Injectable } from "@nestjs/common";
 
 import { SubmatrixUtilitiesService } from "../submatrix-utilities.service";
 
-import type { Matrix } from "../../../matrix/matrix.types";
 import type {
   CharacteristicContext,
   CharacteristicEvaluator,
   CharacteristicMetadata,
 } from "../../characteristics.types";
+import type { Matrix } from "@codebase/meanderaw-core";
 
 /**
  * Counts the U shapes in a Code's 2×2 windows: three sides of a unit square open on the

@@ -1,13 +1,16 @@
 import { Module } from "@nestjs/common";
 
+import {
+  CodeModule,
+  DrawingModule,
+  GeometryModule,
+  SymmetryModule,
+} from "@codebase/meanderaw-core";
+
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
-import { CodeModule } from "../code/code.module";
 import { CorpusModule } from "../corpus/corpus.module";
 import { DatabaseModule } from "../database/database.module";
-import { DrawingModule } from "../drawing/drawing.module";
 import { EnumerationModule } from "../enumeration/enumeration.module";
-import { GeometryModule } from "../geometry/geometry.module";
-import { SymmetryModule } from "../symmetry/symmetry.module";
 
 import { DrawCodeService } from "./draw-code.service";
 import { DrawEnumerationService } from "./draw-enumeration.service";

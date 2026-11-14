@@ -5,13 +5,16 @@
 import { Inject, Injectable } from "@nestjs/common";
 
 import {
+  CodeService,
+  DrawingService,
+  GeometryService,
+} from "@codebase/meanderaw-core";
+
+import {
   PATTERN_CHARACTERISTIC_KEYS,
   STORED_BOOLEAN_KEYS,
 } from "../characteristics/characteristics.constants";
-import { CodeService } from "../code/code.service";
 import { DatabaseService } from "../database/database.service";
-import { DrawingService } from "../drawing/drawing.service";
-import { GeometryService } from "../geometry/geometry.service";
 
 import { BAND_REPEAT_COUNT, PAGE_STYLES } from "./draw-index.constants";
 

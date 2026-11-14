@@ -1,8 +1,7 @@
 import { Module } from "@nestjs/common";
 import { DiscoveryModule } from "@nestjs/core";
 
-import { CodeModule } from "../code/code.module";
-import { MatrixModule } from "../matrix/matrix.module";
+import { CodeModule, MatrixModule } from "@codebase/meanderaw-core";
 
 import { CharacteristicContextService } from "./characteristic-context.service";
 import { CharacteristicsService } from "./characteristics.service";

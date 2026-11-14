@@ -1,5 +1,10 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
+import {
+  CodeModule,
+  CodeService,
+  DrawingModule,
+} from "@codebase/meanderaw-core";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
@@ -10,9 +15,6 @@ import {
 } from "../characteristics/characteristics.constants";
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
 import { CharacteristicsService } from "../characteristics/characteristics.service";
-import { CodeModule } from "../code/code.module";
-import { CodeService } from "../code/code.service";
-import { DrawingModule } from "../drawing/drawing.module";
 
 import { DrawRecordService } from "./draw-record.service";
 
