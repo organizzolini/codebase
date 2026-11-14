@@ -93,12 +93,12 @@ function readExampleNames(): string[] {
 }
 
 /** One documented run, gated on the exit code its guide promises. */
-function runDocumented(documented: ExampleRun): boolean {
+async function runDocumented(documented: ExampleRun): Promise<boolean> {
   const label = `${documented.example}: coinagerie ${documented.args.join(" ")}`;
   const root = stageExample(documented.example, documented.extraFiles);
 
   try {
-    const run = runCoinagerie(root, documented.args);
+    const run = await runCoinagerie(root, documented.args);
 
     if (run.exitCode === documented.exitCode) {
       console.info(`   ✅ ${label} exited ${run.exitCode}`);
@@ -134,9 +134,13 @@ for (const gap of gaps) {
 
 console.info(`🪙 Running ${EXAMPLE_RUNS.length} documented coinagerie runs.\n`);
 
-const failed =
-  EXAMPLE_RUNS.filter((documented) => !runDocumented(documented)).length +
-  gaps.length;
+let failed = gaps.length;
+
+for (const documented of EXAMPLE_RUNS) {
+  if (!(await runDocumented(documented))) {
+    failed += 1;
+  }
+}
 
 if (failed === 0) {
   console.info("\n✅ Every example ran as its guide says.");

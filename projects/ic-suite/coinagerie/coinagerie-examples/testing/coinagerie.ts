@@ -1,7 +1,8 @@
-import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+
+import { runSourceCommand } from "@codebase/testing/end-to-end";
 
 /**
  * Drives the real coinagerie command line over the fixture projects.
@@ -59,29 +60,20 @@ export function removeStagedExample(root: string): void {
  * Runs the real command in a staged example as a separate process.
  * `SWC_NODE_PROJECT` names the host's `tsconfig.json`, for Nest's decorator settings.
  */
-export function runCoinagerie(root: string, args: string[]): RunResult {
-  const result = spawnSync(
-    process.execPath,
-    [
-      "--import",
-      "@swc-node/register/esm-register",
-      path.join(cliDirectory, "src", "coinagerie-cli.main.ts"),
-      ...args,
-    ],
-    {
-      cwd: root,
-      encoding: "utf8",
-      env: {
-        ...process.env,
-        FORCE_COLOR: "0",
-        SWC_NODE_PROJECT: path.join(cliDirectory, "tsconfig.json"),
-      },
-      timeout: SPAWN_TIMEOUT,
-    },
-  );
+export async function runCoinagerie(
+  root: string,
+  args: string[],
+): Promise<RunResult> {
+  const result = await runSourceCommand({
+    args,
+    directory: root,
+    entry: path.join(cliDirectory, "src", "coinagerie-cli.main.ts"),
+    timeout: SPAWN_TIMEOUT,
+    tsconfig: path.join(cliDirectory, "tsconfig.json"),
+  });
 
   return {
-    exitCode: result.status,
+    exitCode: result.exitCode,
     standardError: result.stderr,
     standardOutput: result.stdout,
   };
