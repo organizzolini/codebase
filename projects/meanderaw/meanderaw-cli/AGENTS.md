@@ -100,15 +100,16 @@ measurements behind it, is in [README.md](./README.md), under "Meander Charter".
 **The property test that gated them is gone with the corpus it drawn.** It measured every
 drawing the procedural draw run produced, and that draw run no longer exists; the structural
 facts it asserted are now computed per row by `CharacteristicsService` and stored in the
-row's one sparse `characteristics` JSON map, so they are queryable rather than gated.
+bridge's rows (`meander_characteristics`), so they are queryable rather than gated.
 Rebuilding a gate over the database is open work, not something this project claims to
 have.
 
-**Every Characteristic lives in that one map, and a missing key means zero or `false`.**
-No Characteristic has a column of its own, so adding one needs no schema change — see
-[ADR 0018](../../../documentation/adr/0018-store-every-characteristic-in-one-sparse-json-map.md). Raw
-SQL reads one as `COALESCE((characteristics ->> 'key')::numeric, 0)`; a bare `->>` is
-NULL for a missing key and silently drops it from a zero filter.
+**Every Characteristic is a catalog row and, where it holds, a bridge row, and a missing row
+means zero or `false`.** No Characteristic has a column of its own, so adding one needs no
+schema change — see
+[ADR 0032](../../../documentation/adr/0032-store-characteristics-in-a-catalog-and-a-bridge.md).
+Raw SQL reads one by joining `meander_characteristics` to `characteristics` on its key; a
+meander with no row for it holds 0, so a zero filter needs an anti-join.
 
 The three invariants that most often catch a change:
 

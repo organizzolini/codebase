@@ -86,8 +86,9 @@ the index pages are built, so a row holds the Code and what was measured off it.
 
 ### What a row holds
 
-A `meanders` row has one column per fact about the row itself, and one JSON map for
-everything measured off it:
+A `meanders` row has one column per fact about the row itself. What was measured off it
+lives in two further tables, a catalog of characteristics and a bridge to the meanders that
+hold them.
 
 | Column | Type | Holds |
 | ------ | ---- | ----- |
@@ -98,34 +99,35 @@ everything measured off it:
 | `lattice` | text | The Code's bare hexadecimal digits |
 | `repeats` | integer | How many times the filed Code repeats its unit |
 | `is_hardcoded` | boolean | True for a historical-corpus row or a `--code` drawing, false for an enumerated one |
-| `characteristics` | jsonb | Every Characteristic, in one sparse map |
 
 Columns are snake case, so raw SQL never quotes one.
 
-**`characteristics` holds every Characteristic, and leaves out every zero and every
-`false`.** A numeric key — a structural count such as `forkCount`, or a letter count such
-as `aSoutheastLatinCount` — holds its value only when it is not zero, and a boolean key,
-`isReducible` included, holds `true` only when it holds. Two dots in a two-row band,
-`01x02y00`, store this and nothing else:
+**`characteristics` is the catalog.** One row per characteristic: its `key`, `name`,
+`description`, `category`, `value_type`, whether it `is_pattern`, and an optional `formula`
+and `documentation_url`. Each draw run registers one row per evaluator, and `isReducible`,
+which is stored beside them, and deletes any row whose evaluator is gone.
 
-```json
-{"bettiNumber0Count":2,"dotCount":2,"isDots":true}
-```
+**`meander_characteristics` is the bridge, and it leaves out every zero and every
+`false`.** A row holds a meander, a characteristic and a `value`: a number above 0, or 1 for
+a boolean that holds. Two dots in a two-row band, `01x02y00`, store `bettiNumber0Count` 2,
+`dotCount` 2 and `isDots` 1, and nothing else. A check constraint refuses a value of 0 or less.
 
-So **a missing key means zero or `false`**. Read one as `characteristics.forkCount ?? 0`
-in TypeScript, and as `COALESCE((characteristics ->> 'forkCount')::numeric, 0)` in raw
-SQL — a bare `->>` is `NULL` for a missing key, and silently drops that row from any filter
-on zero or less-than:
+So **a missing row means zero or `false`**. A filter on zero or less-than has to count a
+meander with no row, which an anti-join does:
 
 ```sql
-SELECT code FROM meanderaw.meanders -- the default MEANDERAW_POSTGRES_SCHEMA
-WHERE COALESCE((characteristics ->> 'crossCount')::numeric, 0) = 0
-  AND characteristics @> '{"isBars": true}';
+SELECT meander.code FROM meanderaw.meanders meander -- the default MEANDERAW_POSTGRES_SCHEMA
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM meanderaw.meander_characteristics bridge
+  JOIN meanderaw.characteristics catalog ON catalog.id = bridge.characteristic_id
+  WHERE bridge.meander_id = meander.id AND catalog.key = 'crossCount'
+);
 ```
 
-A Characteristic added, renamed, or removed needs no schema change, which is why every one
-of them shares the map rather than taking a column: see
-[ADR 0018](../../../documentation/adr/0018-store-every-characteristic-in-one-sparse-json-map.md).
+A Characteristic added, renamed, or removed needs no schema change: the next draw run
+rewrites the catalog, and a removed one takes its bridge rows with it. See
+[ADR 0032](../../../documentation/adr/0032-store-characteristics-in-a-catalog-and-a-bridge.md).
 
 **Nothing checks the database against a fresh draw run.** A drift check used to
 run on every commit, and a `drawingHash` column fed it; both are gone, for now — see

@@ -4,6 +4,7 @@ import {
   Meander,
   MEANDERAW_DATABASE_MIGRATIONS,
   MeanderawDatabaseModule,
+  MeanderawDatabaseService,
 } from "@codebase/meanderaw-db";
 import {
   type DatabaseTestingModule,
@@ -21,7 +22,6 @@ import { TileService } from "../tile/tile.service";
 import { DrawIndexService } from "./draw-index.service";
 
 import type { MeanderRecord } from "@codebase/meanderaw-db";
-import type { Repository } from "typeorm";
 
 /**
  * Drives `DrawIndexService.build` against a real TypeORM connection to a
@@ -35,7 +35,7 @@ import type { Repository } from "typeorm";
  */
 describe(DrawIndexService, () => {
   let database: DatabaseTestingModule;
-  let repository: Repository<Meander>;
+  let databaseService: MeanderawDatabaseService;
   let service: DrawIndexService;
 
   beforeAll(async () => {
@@ -56,7 +56,19 @@ describe(DrawIndexService, () => {
     });
 
     service = await database.module.resolve(DrawIndexService);
-    repository = database.repository(Meander);
+    databaseService = database.module.get(MeanderawDatabaseService);
+    await databaseService.syncCharacteristics(
+      ["isDots", "isSnake", "isWhirl"].map((key) => ({
+        category: "compound",
+        description: `Whether ${key} holds.`,
+        documentationUrl: null,
+        formula: null,
+        isPattern: true,
+        key,
+        name: key,
+        valueType: "boolean",
+      })),
+    );
   });
 
   afterAll(async () => {
@@ -69,21 +81,21 @@ describe(DrawIndexService, () => {
   ): MeanderRecord => meanderRecord({ rows: 1, ...overrides });
 
   it("builds one page per held pattern from the committed rows, and an index linking them", async () => {
-    await repository.save(
+    await databaseService.save(
       record({
         characteristics: { isSnake: true },
         code: "01x01y0",
         lattice: "0",
       }),
     );
-    await repository.save(
+    await databaseService.save(
       record({
         characteristics: { isDots: true, isWhirl: true },
         code: "01x01y1",
         lattice: "1",
       }),
     );
-    await repository.save(record({ code: "01x01y2", lattice: "2" }));
+    await databaseService.save(record({ code: "01x01y2", lattice: "2" }));
 
     const built = await service.build();
     const pages: Record<string, string> = {};
