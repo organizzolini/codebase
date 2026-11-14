@@ -6,7 +6,7 @@ import { SymmetryService } from "../symmetry/symmetry.service";
 
 import { DrawRecordService } from "./draw-record.service";
 
-import type { MeanderRecord, MeanderShape } from "../database/database.types";
+import type { MeanderRecord, MeanderShape } from "@codebase/meanderaw-db";
 
 /**
  * Draws one batch of a shape's orbit minima into database rows. This is the

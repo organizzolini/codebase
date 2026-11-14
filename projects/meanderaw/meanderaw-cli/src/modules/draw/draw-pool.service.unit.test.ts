@@ -10,8 +10,8 @@ import { DrawPoolService } from "./draw-pool.service";
 import { DrawWorkerService } from "./draw-worker.service";
 import { DRAW_POOL_BATCH_SIZE, DrawWorkerError } from "./draw.constants";
 
-import type { MeanderRecord } from "../database/database.types";
 import type { DrawWorkerTask } from "./draw.types";
+import type { MeanderRecord } from "@codebase/meanderaw-db";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { EventEmitter } from "node:events";
 import type * as NodeUrl from "node:url";

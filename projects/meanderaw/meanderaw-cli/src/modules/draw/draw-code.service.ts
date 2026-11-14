@@ -1,11 +1,11 @@
 import { Inject, Injectable } from "@nestjs/common";
 
-import { DatabaseService } from "../database/database.service";
+import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
 
 import { DrawRecordService } from "./draw-record.service";
 
-import type { Meander } from "../database/entities/meander.entity";
 import type { CodeDrawingOptions } from "./draw.types";
+import type { Meander } from "@codebase/meanderaw-db";
 
 /**
  * Persists the meander a `--code` drawing names, as one row. It is recorded
@@ -19,8 +19,8 @@ export class DrawCodeService {
   constructor(
     @Inject(DrawRecordService)
     private readonly drawRecordService: DrawRecordService,
-    @Inject(DatabaseService)
-    private readonly databaseService: DatabaseService,
+    @Inject(MeanderawDatabaseService)
+    private readonly databaseService: MeanderawDatabaseService,
   ) {}
 
   // 🔐 Private Fields

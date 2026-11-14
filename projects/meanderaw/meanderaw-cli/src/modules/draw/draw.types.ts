@@ -1,7 +1,5 @@
 // 🏷️ Types
 
-import type { MeanderRecord, MeanderShape } from "../database/database.types";
-
 /** One meander's `--rows`, `--columns`, and `--code` values. */
 export interface CodeDrawingOptions {
   readonly code: string;
@@ -27,3 +25,4 @@ export interface DrawWorkerTask {
   readonly masks: readonly number[];
   readonly shape: MeanderShape;
 }
+import type { MeanderRecord, MeanderShape } from "@codebase/meanderaw-db";

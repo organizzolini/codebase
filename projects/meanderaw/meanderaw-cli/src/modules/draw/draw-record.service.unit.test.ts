@@ -107,7 +107,7 @@ describe(DrawRecordService, () => {
       ).toStrictEqual(
         BOOLEAN_CHARACTERISTIC_KEYS.map((key) => [key, expected[key]]),
       );
-      expect(record.characteristics.isReducible === true).toBe(
+      expect(record.characteristics["isReducible"] === true).toBe(
         characteristicsService.isReducible(canonical),
       );
     });
@@ -115,7 +115,7 @@ describe(DrawRecordService, () => {
     it("stores no zero in the map, so every letter it lacks is left out", () => {
       const record = service.record("03x03y650ed0880");
 
-      expect(record.characteristics.aSoutheastLatinCount).toBe(1);
+      expect(record.characteristics["aSoutheastLatinCount"]).toBe(1);
       expect(
         Object.values(record.characteristics).filter((value) => value === 0),
       ).toStrictEqual([]);
@@ -133,7 +133,7 @@ describe(DrawRecordService, () => {
         true,
       );
 
-      expect(record.characteristics.isBoxes).toBe(true);
+      expect(record.characteristics["isBoxes"]).toBe(true);
       expect(record.characteristics).not.toHaveProperty("crossCount");
       expect(record.characteristics).not.toHaveProperty("forkCount");
 
@@ -143,7 +143,7 @@ describe(DrawRecordService, () => {
         true,
       );
 
-      expect(waterfallRecord.characteristics.isWaterfalls).toBe(true);
+      expect(waterfallRecord.characteristics["isWaterfalls"]).toBe(true);
 
       const wideWaterfallRecord = service.record(
         "23531a",
@@ -151,7 +151,7 @@ describe(DrawRecordService, () => {
         true,
       );
 
-      expect(wideWaterfallRecord.characteristics.isWaterfalls).toBe(true);
+      expect(wideWaterfallRecord.characteristics["isWaterfalls"]).toBe(true);
     });
 
     it("records whether it is hardcoded as it was told rather than deriving it, since where a Code came from is no property of the Code", () => {

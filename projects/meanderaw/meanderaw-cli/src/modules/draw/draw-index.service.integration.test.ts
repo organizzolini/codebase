@@ -1,16 +1,17 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import {
+  Meander,
+  MEANDERAW_DATABASE_MIGRATIONS,
+  MeanderawDatabaseModule,
+} from "@codebase/meanderaw-db";
+import {
   type DatabaseTestingModule,
   startDatabaseTestingModule,
 } from "@codebase/persistence/testing";
 
 import { meanderRecord } from "../../../testing/meanders";
 import { CodeService } from "../code/code.service";
-import { DatabaseModule } from "../database/database.module";
-import { Meander } from "../database/entities/meander.entity";
-import { Migration1791160950069 } from "../database/migrations/1791160950069-migration";
-import { Migration1791414023001 } from "../database/migrations/1791414023001-migration";
 import { DrawingService } from "../drawing/drawing.service";
 import { GeometryService } from "../geometry/geometry.service";
 import { SvgService } from "../svg/svg.service";
@@ -19,7 +20,7 @@ import { TileService } from "../tile/tile.service";
 
 import { DrawIndexService } from "./draw-index.service";
 
-import type { MeanderRecord } from "../database/database.types";
+import type { MeanderRecord } from "@codebase/meanderaw-db";
 import type { Repository } from "typeorm";
 
 /**
@@ -28,7 +29,7 @@ import type { Repository } from "typeorm";
  * constructed set of rows, per spec #813's Testing Decisions for this seam.
  *
  * The module is booted by `startDatabaseTestingModule`, which points
- * `DatabaseModule` at a fresh, isolated database instead of the
+ * `MeanderawDatabaseModule` at a fresh, isolated database instead of the
  * local one, the same way `database.service.integration.test.ts`
  * does.
  */
@@ -39,9 +40,9 @@ describe(DrawIndexService, () => {
 
   beforeAll(async () => {
     database = await startDatabaseTestingModule({
-      database: DatabaseModule,
+      database: MeanderawDatabaseModule,
       entities: [Meander],
-      migrations: [Migration1791160950069, Migration1791414023001],
+      migrations: [...MEANDERAW_DATABASE_MIGRATIONS],
       project: "meanderaw",
       providers: [
         DrawIndexService,

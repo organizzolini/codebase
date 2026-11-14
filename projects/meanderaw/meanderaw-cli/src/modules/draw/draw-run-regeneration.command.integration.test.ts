@@ -11,7 +11,7 @@ import {
 
 import { DrawCodeService } from "./draw-code.service";
 
-import type { Meander } from "../database/entities/meander.entity";
+import type { Meander } from "@codebase/meanderaw-db";
 import type * as FileSystemHelpers from "@codebase/testing/file-system";
 
 vi.mock("node:fs/promises", async () => {

@@ -11,19 +11,19 @@ import {
   vi,
 } from "vitest";
 
+import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
 import { expectLoggerContext } from "@codebase/observability/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CorpusService } from "../corpus/corpus.service";
-import { DatabaseService } from "../database/database.service";
 
 import { DrawCodeService } from "./draw-code.service";
 import { DrawEnumerationService } from "./draw-enumeration.service";
 import { DrawIndexService } from "./draw-index.service";
 import { DrawCommand } from "./draw.command";
 
-import type { Meander } from "../database/entities/meander.entity";
 import type { MeanderPageContent } from "./draw-index.types";
+import type { Meander } from "@codebase/meanderaw-db";
 import type * as FileSystemHelpers from "@codebase/testing/file-system";
 import type {
   BuiltTestingModule,
@@ -85,8 +85,8 @@ describe(DrawCommand, () => {
         useValue: createMock<CorpusService>({ ingest }),
       },
       {
-        provide: DatabaseService,
-        useValue: createMock<DatabaseService>({ clear }),
+        provide: MeanderawDatabaseService,
+        useValue: createMock<MeanderawDatabaseService>({ clear }),
       },
     ],
   });

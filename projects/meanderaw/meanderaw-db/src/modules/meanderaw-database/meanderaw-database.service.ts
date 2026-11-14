@@ -2,18 +2,17 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
+import { Meander } from "./entities/meander.entity";
 import {
   MEANDER_INSERT_CHUNK_SIZE,
   MEANDER_READ_BATCH_SIZE,
-} from "./database.constants";
-import { Meander } from "./entities/meander.entity";
+} from "./meanderaw-database.constants";
 
-import type { PatternCharacteristicKey } from "../characteristics/characteristics.types";
 import type {
   MeanderPatternShapeCount,
   MeanderRecord,
   MeanderShape,
-} from "./database.types";
+} from "./meanderaw-database.types";
 import type { ColumnMetadata } from "typeorm/metadata/ColumnMetadata.js";
 
 /**
@@ -23,7 +22,7 @@ import type { ColumnMetadata } from "typeorm/metadata/ColumnMetadata.js";
  * rendering pipeline and TypeORM.
  */
 @Injectable()
-export class DatabaseService {
+export class MeanderawDatabaseService {
   // 🏗 Dependency Injection
 
   constructor(
@@ -92,7 +91,7 @@ export class DatabaseService {
    * page order. Each batch resumes after the last.
    */
   async *patternRows(
-    key: PatternCharacteristicKey,
+    key: string,
     batchSize = MEANDER_READ_BATCH_SIZE,
   ): AsyncGenerator<Meander[]> {
     let after: Meander | undefined;
@@ -132,13 +131,13 @@ export class DatabaseService {
    * a set-returning function must be joined laterally.
    */
   async patternShapeCounts(
-    keys: readonly PatternCharacteristicKey[],
+    keys: readonly string[],
   ): Promise<MeanderPatternShapeCount[]> {
     const { tablePath } = this.meanderRepository.metadata;
     const counted: {
       columns: string;
       count: string;
-      key: PatternCharacteristicKey;
+      key: string;
       rows: string;
     }[] = await this.meanderRepository.query(
       `SELECT pattern AS key, meander.rows, meander.columns, COUNT(*) AS count

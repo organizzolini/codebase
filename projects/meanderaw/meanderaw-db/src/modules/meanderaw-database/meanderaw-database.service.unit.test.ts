@@ -6,10 +6,10 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { meanderRecord } from "../../../testing/meanders";
 
-import { DatabaseService } from "./database.service";
 import { Meander } from "./entities/meander.entity";
+import { MeanderawDatabaseService } from "./meanderaw-database.service";
 
-import type { MeanderRecord } from "./database.types";
+import type { MeanderRecord } from "./meanderaw-database.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { EntityManager, Repository } from "typeorm";
 import type { ColumnMetadata } from "typeorm/metadata/ColumnMetadata.js";
@@ -26,8 +26,8 @@ const MODULE_OPTIONS: TestingModuleOptions = {
 
 // 🧪 Tests
 
-describe(DatabaseService, () => {
-  let service: DatabaseService;
+describe(MeanderawDatabaseService, () => {
+  let service: MeanderawDatabaseService;
   let meanderRepository: Repository<Meander>;
 
   const record: MeanderRecord = meanderRecord({
@@ -42,7 +42,10 @@ describe(DatabaseService, () => {
   });
 
   beforeAll(async () => {
-    const built = await buildTestingModule(DatabaseService, MODULE_OPTIONS);
+    const built = await buildTestingModule(
+      MeanderawDatabaseService,
+      MODULE_OPTIONS,
+    );
 
     service = built.instance;
     meanderRepository = built.module.get(getRepositoryToken(Meander));
@@ -52,11 +55,11 @@ describe(DatabaseService, () => {
 
   it("resolves with its dependencies", async () => {
     const { instance } = await buildTestingModule(
-      DatabaseService,
+      MeanderawDatabaseService,
       MODULE_OPTIONS,
     );
 
-    expect(instance).toBeInstanceOf(DatabaseService);
+    expect(instance).toBeInstanceOf(MeanderawDatabaseService);
   });
 
   describe("save", () => {
@@ -87,16 +90,11 @@ describe(DatabaseService, () => {
   describe("saveAll", () => {
     it("writes every record through one multi-row INSERT per chunk into the schema-qualified table, leaving database-filled columns out", async () => {
       vi.mocked(meanderRepository.manager.transaction).mockImplementation(
-        async (
-          callbackOrLevel: unknown,
-          maybeCallback?: (manager: EntityManager) => Promise<unknown>,
-        ) => {
-          const callback =
-            typeof callbackOrLevel === "function"
-              ? (callbackOrLevel as (
-                  manager: EntityManager,
-                ) => Promise<unknown>)
-              : maybeCallback;
+        async (...args: unknown[]) => {
+          const callback = args.find(
+            (arg): arg is (manager: EntityManager) => Promise<unknown> =>
+              typeof arg === "function",
+          );
           if (callback) {
             await callback(meanderRepository.manager);
           }

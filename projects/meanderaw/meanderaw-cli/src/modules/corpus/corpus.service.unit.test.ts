@@ -1,20 +1,20 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { characteristicRecord } from "../../../testing/meanders";
 import { CharacteristicsService } from "../characteristics/characteristics.service";
 import { CodeService } from "../code/code.service";
-import { DatabaseService } from "../database/database.service";
 import { TileEnumerationService } from "../enumeration/tile-enumeration.service";
 
 import { DuplicateCorpusCodeError } from "./corpus.constants";
 import { CorpusService } from "./corpus.service";
 
-import type { Meander } from "../database/entities/meander.entity";
 import type { Tile } from "../tile/tile.types";
 import type { CorpusEntry } from "./corpus.types";
+import type { Meander } from "@codebase/meanderaw-db";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 // 🧪 Tests
@@ -23,7 +23,7 @@ import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 const MODULE_OPTIONS: TestingModuleOptions = {
   mocks: [
     CharacteristicsService,
-    DatabaseService,
+    MeanderawDatabaseService,
     CodeService,
     TileEnumerationService,
   ],
@@ -32,7 +32,7 @@ const MODULE_OPTIONS: TestingModuleOptions = {
 describe(CorpusService, () => {
   let service: CorpusService;
   let characteristicsService: CharacteristicsService;
-  let databaseService: DatabaseService;
+  let databaseService: MeanderawDatabaseService;
   let codeService: CodeService;
   let tileEnumerationService: TileEnumerationService;
 
@@ -59,7 +59,7 @@ describe(CorpusService, () => {
 
     service = built.instance;
     characteristicsService = built.mock(CharacteristicsService);
-    databaseService = built.mock(DatabaseService);
+    databaseService = built.mock(MeanderawDatabaseService);
     codeService = built.mock(CodeService);
     tileEnumerationService = built.mock(TileEnumerationService);
   });

@@ -1,0 +1,58 @@
+{
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "name": "meanderaw-db",
+  "projectType": "library",
+  "sourceRoot": "projects/meanderaw/meanderaw-db",
+  "tags": [
+    "domain:meanderaw",
+    "framework:nestjs",
+    "framework:typeorm",
+    "generator:nestjs-service-project",
+    "language:typescript",
+    "name:meanderaw-db",
+    "type:package"
+  ],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "options": {
+        "assets": [
+          {
+            "glob": "README.md",
+            "input": "projects/meanderaw/meanderaw-db",
+            "output": "."
+          }
+        ],
+        "generatePackageJson": false,
+        "main": "projects/meanderaw/meanderaw-db/src/index.ts",
+        "outputPath": "projects/meanderaw/meanderaw-db/dist",
+        "tsConfig": "projects/meanderaw/meanderaw-db/tsconfig.build.json"
+      },
+      "outputs": ["{options.outputPath}"]
+    },
+    "build-projects": {},
+    "codometer": {},
+    "dependency-cruiser": {},
+    "deprecate-code": {},
+    "format-code": {},
+    "guard-code": {},
+    "knip": {},
+    "lint-code": {},
+    "markdown-lint": {},
+    "migration": {
+      "options": {
+        "module": "src/modules/meanderaw-database"
+      }
+    },
+    "oxfmt": {},
+    "oxlint": {},
+    "prettier": {},
+    "spell-check": {},
+    "squawk": {},
+    "test-code": {},
+    "type-coverage": {},
+    "typecheck": {},
+    "typecheck-code": {},
+    "yaml-lint": {}
+  }
+}

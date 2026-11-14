@@ -18,11 +18,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **comb**: A pattern characteristic named for a comb-shaped ink layout, computed for each unit by IsCombCharacteristicService.
 - **coordinate**: A band or pixel position rounded and trimmed before drawing, as the draw index and drawing services format each path coordinate.
 - **corpus**: The historical set of meander Codes ingested from the retired file tree, split by CorpusService into preserved and enumerated halves.
+- **db**: Short for the meanderaw-db package, the Postgres entities, migrations, and service the CLI consumes.
 - **degree**: The number of ink edges meeting a point, which path and end characteristics read to find degree-one ends and degree-two runs.
 - **element**: An HTML element as the draw index builds it, such as the nav sectioning element that wraps the jump list of pages.
 - **enumeration**: The walk over every structurally distinct repeat a shape admits under the edge budget, implemented by EnumerationService.
 - **evaluator**: A characteristic service that computes one value for a Code's unit from a shared context, registered for discovery.
-- **family**: A group of related meanders, such as the waterfalls family in the historical corpus, which draw index pages gather together.
 - **fork**: A point with three branches of ink, which IsForkCharacteristicService and the fork submatrix count for each unit.
 - **hebrew**: The Hebrew script, whose letter shapes such as dalet get their own letter characteristics services with orientation evaluators.
 - **historical**: Adjective for the retired corpus of meanders, kept as hardcoded rows and ingested by CorpusService before enumeration.
@@ -57,7 +57,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **tile**: A square cell of the lattice with its four direction bits, handled by TileService and TileCrossingCharacteristicsModule.
 - **trace**: A callidescope trace, the call-stack walk the gate measures, or a motif trace that path-data test helpers split out of a unit.
 - **tu**: Romanized name of a Hanzi glyph whose orientations get a letter characteristics service class with sixteen evaluators.
-- **updatable**: Stray fragment with no source hit, so the glossary lists it without any meanderaw concept behind it.
 - **waterfall**: A pattern characteristic named for a waterfall of stacked strands, computed by IsWaterfallsCharacteristicService for each unit.
 - **whirl**: A pattern characteristic for a unit whose strands wind in a whirl, computed by IsWhirlCharacteristicService for each Code.
 - **window**: The rectangle of cells of a letter's matrix that a characteristic reads, or the part of a Code an address names to draw.

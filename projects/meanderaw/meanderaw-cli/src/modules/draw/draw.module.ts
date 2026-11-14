@@ -1,9 +1,10 @@
 import { Module } from "@nestjs/common";
 
+import { MeanderawDatabaseModule } from "@codebase/meanderaw-db";
+
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
 import { CodeModule } from "../code/code.module";
 import { CorpusModule } from "../corpus/corpus.module";
-import { DatabaseModule } from "../database/database.module";
 import { DrawingModule } from "../drawing/drawing.module";
 import { EnumerationModule } from "../enumeration/enumeration.module";
 import { GeometryModule } from "../geometry/geometry.module";
@@ -28,7 +29,7 @@ import { DrawCommand } from "./draw.command";
   imports: [
     CorpusModule,
     CharacteristicsModule,
-    DatabaseModule,
+    MeanderawDatabaseModule,
     CodeModule,
     EnumerationModule,
     DrawingModule,

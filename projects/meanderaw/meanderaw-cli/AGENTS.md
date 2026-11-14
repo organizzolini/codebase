@@ -209,7 +209,7 @@ Always prefer running tasks through Nx rather than calling the underlying tools 
 
 ```bash
 nx run infrastructure:postgres:up     # The local Postgres the database lives in
-nx run meanderaw-cli:migration:run            # Build or update the meanders table
+nx run meanderaw-db:migration:run             # Build or update the meanders table
 nx run meanderaw-cli:start                    # Clear the meander rows, then draw every meander back into them
 nx run meanderaw-cli:typecheck-code,lint-code,format-code,deprecate-code,guard-code   # Every static check, in one graph
 nx run meanderaw-cli:typecheck       # tsc --noEmit
@@ -240,11 +240,10 @@ meanderaw variable carries the `MEANDERAW_` prefix, so the unprefixed `POSTGRES_
 
 **The `meanders` table is built by migrations, never by synchronizing.** `Meander` extends
 `PostgresqlUpdatableEntity`, so its `uuidv7()` id and audit columns come from the shared package, and the
-migrations live in `src/modules/database/migrations/`. After changing the entity run
-`nx run meanderaw-cli:migration:generate`, and `nx run meanderaw-cli:migration:run` to apply it; the
-`start` target never migrates, so run the migrations before the first draw run. The CLI reads the
-data source `src/modules/database/data-source.constants.ts` exports, and the
-`migration` target finds both through its `module` option, which names that folder.
+migrations live in `projects/meanderaw/meanderaw-db/src/modules/meanderaw-database/migrations/`. After changing the entity run
+`nx run meanderaw-db:migration:generate`, and `nx run meanderaw-db:migration:run` to apply it; the
+`start` target never migrates, so run the migrations before the first draw run. The CLI reads its
+data source from `@codebase/meanderaw-db`, whose `migration` target finds it through the `module` option.
 
 A draw run commits nothing: the HTML pages it writes stay in the gitignored `output/` — see
 [ADR 0021](../../../documentation/adr/0021-stop-committing-the-meander-pages.md). Integration suites start

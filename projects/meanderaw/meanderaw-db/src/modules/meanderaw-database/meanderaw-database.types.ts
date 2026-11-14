@@ -1,6 +1,5 @@
 // 🏷️ Types
 
-import type { PatternCharacteristicKey } from "../characteristics/characteristics.types";
 import type { Meander } from "./entities/meander.entity";
 import type { PostgresqlUpdatableEntity } from "@codebase/persistence";
 
@@ -8,7 +7,7 @@ import type { PostgresqlUpdatableEntity } from "@codebase/persistence";
 export interface MeanderPatternShapeCount {
   readonly columns: number;
   readonly count: number;
-  readonly key: PatternCharacteristicKey;
+  readonly key: string;
   readonly rows: number;
 }
 
