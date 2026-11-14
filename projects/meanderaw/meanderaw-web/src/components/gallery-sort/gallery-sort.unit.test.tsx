@@ -1,19 +1,13 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+import { FIXTURE_CHARACTERISTICS } from "../../../testing/meanders-api";
+
 import { GallerySort } from "./gallery-sort";
 
 import type { GallerySortProperties } from "./gallery-sort";
 
-const CATALOG = [
-  { isPattern: true, key: "isChain", name: "Chain", valueType: "boolean" },
-  {
-    isPattern: false,
-    key: "junctionCount",
-    name: "Junction count",
-    valueType: "number",
-  },
-];
+const CATALOG = FIXTURE_CHARACTERISTICS;
 
 /** The properties a control needs, over a two-row catalog. */
 function properties(

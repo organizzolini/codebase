@@ -5,6 +5,7 @@ import {
   DEFAULT_SORT_DIRECTION,
 } from "./use-gallery-search.constants";
 
+import type { FilterGroup } from "../../components/gallery-filter-builder/gallery-filter-builder.types";
 import type {
   GalleryView,
   SortDirection,
@@ -14,7 +15,7 @@ import type {
 // 🧩 Hook
 
 /**
- * Reads the gallery's view and sort from the link, and changes them by
+ * Reads the gallery's view, sort and filter from the link, and changes them by
  * replacing it.
  */
 export function useGallerySearch(): UseGallerySearchResult {
@@ -27,6 +28,12 @@ export function useGallerySearch(): UseGallerySearchResult {
   const direction = search.direction ?? DEFAULT_SORT_DIRECTION;
 
   // 💪 Handlers
+  const handleFilterChange = (filter: FilterGroup | undefined): void => {
+    void navigate({
+      replace: true,
+      search: (previous) => ({ ...previous, filter }),
+    });
+  };
   const handleViewChange = (next: GalleryView): void => {
     void navigate({
       replace: true,
@@ -53,6 +60,8 @@ export function useGallerySearch(): UseGallerySearchResult {
   // 🎁 Result
   return {
     direction,
+    filter: search.filter,
+    handleFilterChange,
     handleSortChange,
     handleViewChange,
     sort: search.sort,

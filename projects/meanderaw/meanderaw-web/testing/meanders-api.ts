@@ -6,6 +6,8 @@ import type { GalleryMeander } from "../src/components/meander-gallery/meanders-
 import type {
   CharacteristicsQuery,
   CharacteristicsQueryVariables,
+  MeanderFilterGroupInput,
+  MeanderFilterRuleInput,
   MeanderSortInput,
   MeandersQuery,
   MeandersQueryVariables,
@@ -52,11 +54,27 @@ export function fixtureMeander(index: number): GalleryMeander {
  */
 export const FIXTURE_CHARACTERISTICS: CharacteristicsQuery["characteristics"] =
   [
-    { isPattern: true, key: "isChain", name: "Chain", valueType: "boolean" },
     {
+      category: "path",
+      description: "Whether the path is one chain",
+      isPattern: true,
+      key: "isChain",
+      meanderCount: 3,
+      name: "Chain",
+      valueCounts: [{ meanderCount: 3, value: 1 }],
+      valueType: "boolean",
+    },
+    {
+      category: "submatrix",
+      description: "How many junctions the path has",
       isPattern: false,
       key: "junctionCount",
+      meanderCount: 8,
       name: "Junction count",
+      valueCounts: [
+        { meanderCount: 2, value: 1 },
+        { meanderCount: 2, value: 2 },
+      ],
       valueType: "number",
     },
   ];
@@ -91,13 +109,17 @@ export function serveMeandersApi(count = 3): MeandersApi {
           variables.after === null || variables.after === undefined
             ? 0
             : Number(variables.after) + 1;
-        const end = Math.min(start + (variables.first ?? 50), count);
-        const edges = sortedPositions(count, variables.sort)
-          .slice(start, end)
-          .map((position, offset) => ({
-            cursor: String(start + offset),
-            node: fixtureMeander(position),
-          }));
+        const positions = sortedPositions(count, variables.sort).filter(
+          (position) =>
+            variables.filter === null ||
+            variables.filter === undefined ||
+            matchesGroup(fixtureMeander(position), variables.filter),
+        );
+        const end = Math.min(start + (variables.first ?? 50), positions.length);
+        const edges = positions.slice(start, end).map((position, offset) => ({
+          cursor: String(start + offset),
+          node: fixtureMeander(position),
+        }));
 
         return HttpResponse.json({
           data: {
@@ -105,9 +127,9 @@ export function serveMeandersApi(count = 3): MeandersApi {
               edges,
               pageInfo: {
                 endCursor: edges.at(-1)?.cursor ?? null,
-                hasNextPage: end < count,
+                hasNextPage: end < positions.length,
               },
-              totalCount: count,
+              totalCount: positions.length,
             },
           },
         });
@@ -123,6 +145,66 @@ export function serveMeandersApi(count = 3): MeandersApi {
   );
 
   return api;
+}
+
+/**
+ * Whether a meander satisfies a group of the API's filter input, a missing
+ * characteristic reading 0 or false.
+ */
+function matchesGroup(
+  meander: GalleryMeander,
+  group: MeanderFilterGroupInput,
+): boolean {
+  const results = [
+    ...(group.rules ?? []).map((rule) => matchesRule(meander, rule)),
+    ...(group.groups ?? []).map((nested) => matchesGroup(meander, nested)),
+  ];
+
+  return group.combinator === "AND"
+    ? results.every(Boolean)
+    : results.some(Boolean);
+}
+
+/**
+ * Whether a meander satisfies one rule of the API's filter input.
+ */
+function matchesRule(
+  meander: GalleryMeander,
+  rule: MeanderFilterRuleInput,
+): boolean {
+  const held = sortValue(meander, rule.field);
+  const [low = 0, high = 0] = rule.numbers ?? [];
+  const compared = rule.text ?? low;
+
+  switch (rule.operator) {
+    case "BETWEEN": {
+      return Number(held) >= low && Number(held) <= high;
+    }
+    case "EQ": {
+      return held === compared;
+    }
+    case "GT": {
+      return Number(held) > low;
+    }
+    case "GTE": {
+      return Number(held) >= low;
+    }
+    case "IS": {
+      return Boolean(held) === rule.flag;
+    }
+    case "IS_NOT": {
+      return Boolean(held) !== rule.flag;
+    }
+    case "LT": {
+      return Number(held) < low;
+    }
+    case "LTE": {
+      return Number(held) <= low;
+    }
+    case "NE": {
+      return held !== compared;
+    }
+  }
 }
 
 /**

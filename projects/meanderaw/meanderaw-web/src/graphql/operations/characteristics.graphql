@@ -1,8 +1,15 @@
 query Characteristics {
   characteristics {
+    category
+    description
     isPattern
     key
+    meanderCount
     name
+    valueCounts {
+      meanderCount
+      value
+    }
     valueType
   }
 }

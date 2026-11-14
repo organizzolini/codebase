@@ -21,6 +21,23 @@ function codesShown(): string[] {
     .map((card) => within(card).getByRole("code").textContent);
 }
 
+/**
+ * Sets a control by its label and waits until the link has carried the edit
+ * back to it, so the next edit builds on it. A rule's editor is replaced when
+ * its field or operator changes, so the control is found again each time.
+ */
+async function setControl(
+  label: string,
+  value: string,
+  scope: Pick<typeof screen, "findByLabelText" | "getByLabelText"> = screen,
+): Promise<void> {
+  fireEvent.change(await scope.findByLabelText(label), { target: { value } });
+
+  await waitFor(() => {
+    expect(scope.getByLabelText<HTMLInputElement>(label).value).toBe(value);
+  });
+}
+
 describe("index", () => {
   it("renders its page", async () => {
     serveMeandersApi();
@@ -202,7 +219,9 @@ describe("index", () => {
     await renderRoute(getRouter(), "/");
     await screen.findAllByTestId("meander-card");
 
-    const options = within(screen.getByRole("combobox")).getAllByRole("option");
+    const options = within(screen.getByLabelText("Sort by")).getAllByRole(
+      "option",
+    );
 
     expect(options.map((option) => option.textContent)).toStrictEqual([
       "Default order",
@@ -233,7 +252,7 @@ describe("index", () => {
       "01x01y0005",
     ]);
 
-    fireEvent.change(screen.getByRole("combobox"), {
+    fireEvent.change(screen.getByLabelText("Sort by"), {
       target: { value: "rows" },
     });
 
@@ -273,7 +292,9 @@ describe("index", () => {
       sort: "rows",
     });
 
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "" } });
+    fireEvent.change(screen.getByLabelText("Sort by"), {
+      target: { value: "" },
+    });
 
     await waitFor(() => {
       expect(codesShown()[0]).toBe("01x01y0000");
@@ -300,5 +321,71 @@ describe("index", () => {
       after: "47",
       sort: { direction: "DESC", field: "junctionCount" },
     });
+  });
+
+  it("builds a nested filter, writing it to the link and narrowing the cards and the total", async () => {
+    const api = serveMeandersApi(8);
+    const router = getRouter();
+
+    await renderRoute(router, "/");
+    await screen.findAllByTestId("meander-card");
+
+    expect(screen.getByText("8 meanders")).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "Add rule" }));
+    await setControl("Field", "junctionCount");
+    await setControl("Operator", "gte");
+    await setControl("Value", "3");
+
+    await waitFor(() => {
+      expect(screen.getByText("4 meanders")).toBeDefined();
+    });
+
+    expect(structuredClone(router.state.location.search.filter)).toStrictEqual({
+      combinator: "and",
+      rules: [{ field: "junctionCount", operator: "gte", value: 3 }],
+    });
+    expect(api.requests.at(-1)).toMatchObject({
+      filter: {
+        combinator: "AND",
+        rules: [{ field: "junctionCount", numbers: [3], operator: "GTE" }],
+      },
+    });
+
+    // Nested: and, too, either a chain or hardcoded.
+    fireEvent.click(screen.getByRole("button", { name: "Add group" }));
+
+    const group = await screen.findByRole("group", { name: "Filter group 2" });
+
+    await setControl("Match", "or", within(group));
+    await setControl("Field", "isChain", within(group));
+
+    await waitFor(() => {
+      expect(screen.getByText("2 meanders")).toBeDefined();
+    });
+
+    expect(codesShown()).toStrictEqual(["01x01y0003", "01x01y0006"]);
+  });
+
+  it("removes a rule, and the whole filter with the last one", async () => {
+    serveMeandersApi(8);
+    const router = getRouter();
+
+    await renderRoute(router, "/");
+    await screen.findAllByTestId("meander-card");
+    fireEvent.click(screen.getByRole("button", { name: "Add rule" }));
+    await setControl("Value", "9");
+
+    await waitFor(() => {
+      expect(screen.getByText("0 meanders")).toBeDefined();
+    });
+
+    fireEvent.click(await screen.findByRole("button", { name: "Remove rule" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("8 meanders")).toBeDefined();
+    });
+
+    expect({ ...router.state.location.search }).toStrictEqual({});
   });
 });

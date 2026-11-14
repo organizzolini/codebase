@@ -5,6 +5,11 @@ import {
 } from "@tanstack/react-router";
 
 import { GalleryError } from "../components/gallery-error/gallery-error";
+import { GalleryFilterBuilder } from "../components/gallery-filter-builder/gallery-filter-builder";
+import {
+  createFilterFields,
+  toFilterInput,
+} from "../components/gallery-filter-builder/gallery-filter-builder.utilities";
 import { GallerySort } from "../components/gallery-sort/gallery-sort";
 import { GalleryToolbar } from "../components/gallery-toolbar/gallery-toolbar";
 import { MeanderGallery } from "../components/meander-gallery/meander-gallery";
@@ -34,9 +39,11 @@ export const Route = createFileRoute("/")({
   head: () => ({ meta: [{ title: "Meanderaw" }] }),
   validateSearch: (search: Record<string, unknown>) =>
     gallerySearchSchema.parse(search),
-  // The sort is read from the link, so a change to it reads the first page again.
+  // The sort and filter are read from the link, so a change to either reads
+  // the first page again.
   loaderDeps: ({ search }) => ({
     direction: search.direction ?? DEFAULT_SORT_DIRECTION,
+    filter: search.filter,
     sort: search.sort,
   }),
   ssr: false,
@@ -44,7 +51,10 @@ export const Route = createFileRoute("/")({
   loader: async ({ deps }) => {
     const [characteristics, page] = await Promise.all([
       findCharacteristics(),
-      findMeanders({ sort: toSortInput(deps.sort, deps.direction) }),
+      findMeanders({
+        filter: toFilterInput(deps.filter),
+        sort: toSortInput(deps.sort, deps.direction),
+      }),
     ]);
 
     return { characteristics, page };
@@ -79,14 +89,23 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
 function IndexPage(): ReactNode {
   // 🪝 Hooks
   const { characteristics, page } = Route.useLoaderData();
-  const { direction, handleSortChange, handleViewChange, sort, view } =
-    useGallerySearch();
+  const {
+    direction,
+    filter,
+    handleFilterChange,
+    handleSortChange,
+    handleViewChange,
+    sort,
+    view,
+  } = useGallerySearch();
 
   // 🏗 Setup
   const { hasMore, loadError, loadMore, meanders } = useMeanders(
     page,
     toSortInput(sort, direction),
+    toFilterInput(filter),
   );
+  const fields = createFilterFields(characteristics);
 
   // 💪 Handlers
 
@@ -98,6 +117,11 @@ function IndexPage(): ReactNode {
   return (
     <section className="flex flex-col gap-4 p-4">
       <h1 className="text-xl">Meanderaw</h1>
+      <GalleryFilterBuilder
+        fields={fields}
+        filter={filter}
+        onFilterChange={handleFilterChange}
+      />
       <div className="flex flex-wrap items-center justify-between gap-3">
         <GalleryToolbar
           onViewChange={handleViewChange}

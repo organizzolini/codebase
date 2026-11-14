@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { linkedFilterSchema } from "../../components/gallery-filter-builder/gallery-filter-builder.constants";
+
 // ♟️ Constants
 
 /**
@@ -27,6 +29,7 @@ export const DEFAULT_SORT_DIRECTION = "asc" as const;
  */
 export const gallerySearchSchema = z.object({
   direction: z.enum(SORT_DIRECTIONS).catch(DEFAULT_SORT_DIRECTION).optional(),
+  filter: linkedFilterSchema.optional(),
   sort: z.coerce.string().min(1).optional(),
   view: z.enum(GALLERY_VIEWS).catch(DEFAULT_GALLERY_VIEW).optional(),
 });

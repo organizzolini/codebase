@@ -4,7 +4,7 @@
 
 **Type**: Server-rendered web application (TanStack Start)
 
-**Purpose**: A gallery of the meanders `meanderaw-api` serves: each as a card with its drawing, shape, Code and characteristics, in a grid or a list, sorted by any field, paged by cursor and virtualized. Reads the API at `VITE_MEANDERAW_API_URL` (default `http://localhost:8367/graphql`); view and sort live in the URL search params. GraphQL documents are in `src/graphql/operations/`; `nx run meanderaw-web:codegen` regenerates the typed documents from the API's emitted `src/schema.gql`.
+**Purpose**: A gallery of the meanders `meanderaw-api` serves: each as a card with its drawing, shape, Code and characteristics, in a grid or a list, filtered by a nested AND/OR rule tree over any field, sorted by any field, paged by cursor and virtualized. Reads the API at `VITE_MEANDERAW_API_URL` (default `http://localhost:8367/graphql`); view, sort and filter live in the URL search params. GraphQL documents are in `src/graphql/operations/`; `nx run meanderaw-web:codegen` regenerates the typed documents from the API's emitted `src/schema.gql`.
 
 ### Run Locally
 
