@@ -1,3 +1,4 @@
+import type { MeanderRecord, MeanderShape } from "@codebase/meanderaw-db";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Worker } from "node:worker_threads";
@@ -10,7 +11,6 @@ import { TileEnumerationService } from "../enumeration/tile-enumeration.service"
 import { DrawWorkerService } from "./draw-worker.service";
 import { DRAW_POOL_BATCH_SIZE, DrawWorkerError } from "./draw.constants";
 
-import type { MeanderRecord, MeanderShape } from "../database/database.types";
 import type { Environment } from "../enumeration/enumeration.types";
 import type { DrawWorkerReply, DrawWorkerTask } from "./draw.types";
 

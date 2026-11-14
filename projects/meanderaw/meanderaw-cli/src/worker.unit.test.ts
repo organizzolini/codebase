@@ -2,7 +2,7 @@ import { MessageChannel } from "node:worker_threads";
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { MeanderRecord } from "./modules/database/database.types";
+import type { MeanderRecord } from "@codebase/meanderaw-db";
 import type {
   DrawWorkerReply,
   DrawWorkerTask,

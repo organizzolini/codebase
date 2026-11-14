@@ -1,3 +1,4 @@
+import type { MeanderRecord, MeanderShape } from "@codebase/meanderaw-db";
 import { Inject, Injectable } from "@nestjs/common";
 
 import { CodeService } from "../code/code.service";
@@ -6,7 +7,6 @@ import { SymmetryService } from "../symmetry/symmetry.service";
 
 import { DrawRecordService } from "./draw-record.service";
 
-import type { MeanderRecord, MeanderShape } from "../database/database.types";
 
 /**
  * Draws one batch of a shape's orbit minima into database rows. This is the

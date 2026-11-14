@@ -140,7 +140,7 @@ describe("drawCommand draw run", () => {
       });
 
       expect(whirl.isHardcoded).toBe(true);
-      expect(whirl.characteristics.isWhirl).toBe(true);
+      expect(whirl.characteristics["isWhirl"]).toBe(true);
     });
   });
 });

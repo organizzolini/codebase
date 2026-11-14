@@ -7,43 +7,44 @@ import {
 } from "@codebase/persistence/testing";
 
 import { meanderRecord } from "../../../testing/meanders";
-import { CHARACTERISTIC_KEYS } from "../characteristics/characteristics.constants";
-
-import { MEANDER_INSERT_CHUNK_SIZE } from "./database.constants";
-import { DatabaseModule } from "./database.module";
-import { DatabaseService } from "./database.service";
+import { MEANDER_INSERT_CHUNK_SIZE } from "./meanderaw-database.constants";
+import { MeanderawDatabaseModule } from "./meanderaw-database.module";
+import { MeanderawDatabaseService } from "./meanderaw-database.service";
 import { Meander } from "./entities/meander.entity";
 import { Migration1791160950069 } from "./migrations/1791160950069-migration";
 import { Migration1791414023001 } from "./migrations/1791414023001-migration";
 
-import type { MeanderRecord } from "./database.types";
+import type { MeanderRecord } from "./meanderaw-database.types";
 
 // 🧪 Tests
 
 /**
- * Drives `DatabaseService` against a real TypeORM connection to a throwaway
+ * Drives `MeanderawDatabaseService` against a real TypeORM connection to a throwaway
  * Postgres container, per spec #813's Testing Decisions: this is the highest
  * seam, and it asserts on persisted rows rather than on a mocked repository.
  *
  * The module is booted by `startDatabaseTestingModule`, which points
- * `DatabaseModule` at a fresh, isolated database of its own
+ * `MeanderawDatabaseModule` at a fresh, isolated database of its own
  * instead of the local one.
  */
-describe(DatabaseService, () => {
+/** Characteristic names that must never appear as columns: they live in the `characteristics` jsonb. */
+const CHARACTERISTIC_NAMES = ["cornerCount", "dotCount", "edgeCount", "forkCount"];
+
+describe(MeanderawDatabaseService, () => {
   let database: DatabaseTestingModule;
   let dataSource: DataSource;
   let repository: Repository<Meander>;
-  let service: DatabaseService;
+  let service: MeanderawDatabaseService;
 
   beforeAll(async () => {
     database = await startDatabaseTestingModule({
-      database: DatabaseModule,
+      database: MeanderawDatabaseModule,
       entities: [Meander],
       migrations: [Migration1791160950069, Migration1791414023001],
       project: "meanderaw",
     });
 
-    service = await database.module.resolve(DatabaseService);
+    service = await database.module.resolve(MeanderawDatabaseService);
     dataSource = database.dataSource;
     repository = database.repository(Meander);
   });
@@ -119,7 +120,7 @@ describe(DatabaseService, () => {
       );
 
       expect(
-        CHARACTERISTIC_KEYS.filter((key) => columns.has(key)),
+        CHARACTERISTIC_NAMES.filter((key) => columns.has(key)),
       ).toStrictEqual([]);
       expect(columns.has("characteristics")).toBe(true);
     });
@@ -179,7 +180,7 @@ describe(DatabaseService, () => {
       expect(
         rows.every(
           (row) =>
-            row.characteristics.oSoutheastLatinCount ===
+            row.characteristics["oSoutheastLatinCount"] ===
             Number(row.lattice.split("-")[2]) + 1,
         ),
       ).toBe(true);

@@ -1,3 +1,4 @@
+import type { MeanderRecord } from "@codebase/meanderaw-db";
 import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
@@ -10,7 +11,6 @@ import { DrawPoolService } from "./draw-pool.service";
 import { DrawWorkerService } from "./draw-worker.service";
 import { DRAW_POOL_BATCH_SIZE, DrawWorkerError } from "./draw.constants";
 
-import type { MeanderRecord } from "../database/database.types";
 import type { DrawWorkerTask } from "./draw.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { EventEmitter } from "node:events";

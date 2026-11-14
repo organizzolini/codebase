@@ -1,3 +1,4 @@
+import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
@@ -9,7 +10,6 @@ import { LoggerService } from "@codebase/observability";
 import { CODE_FORMAT_PATTERN } from "../code/code.constants";
 import { CorpusService } from "../corpus/corpus.service";
 import { HISTORICAL_CORPUS } from "../corpus/historical-corpus.constants";
-import { DatabaseService } from "../database/database.service";
 
 import { DrawCodeService } from "./draw-code.service";
 import { DrawEnumerationService } from "./draw-enumeration.service";
@@ -46,8 +46,8 @@ export class DrawCommand extends CommandRunner {
     private readonly drawIndexService: DrawIndexService,
     @Inject(CorpusService)
     private readonly corpusService: CorpusService,
-    @Inject(DatabaseService)
-    private readonly databaseService: DatabaseService,
+    @Inject(MeanderawDatabaseService)
+    private readonly databaseService: MeanderawDatabaseService,
   ) {
     super();
     this.logger.setContext(DrawCommand.name);

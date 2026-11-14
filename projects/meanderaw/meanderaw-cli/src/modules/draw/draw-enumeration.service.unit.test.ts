@@ -1,15 +1,15 @@
+import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
+import type { MeanderRecord } from "@codebase/meanderaw-db";
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { DatabaseService } from "../database/database.service";
 import { EnumerationService } from "../enumeration/enumeration.service";
 
 import { DrawEnumerationService } from "./draw-enumeration.service";
 import { DrawPoolService } from "./draw-pool.service";
 
-import type { MeanderRecord } from "../database/database.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 // 🧪 Tests
@@ -23,12 +23,12 @@ import type { TestingModuleOptions } from "@codebase/testing/nestjs";
  */
 /** What the class under test is built with. */
 const MODULE_OPTIONS: TestingModuleOptions = {
-  mocks: [DrawPoolService, DatabaseService, EnumerationService],
+  mocks: [DrawPoolService, MeanderawDatabaseService, EnumerationService],
 };
 
 describe(DrawEnumerationService, () => {
   let drawPoolService: DrawPoolService;
-  let databaseService: DatabaseService;
+  let databaseService: MeanderawDatabaseService;
   let enumerationService: EnumerationService;
   let service: DrawEnumerationService;
 
@@ -42,7 +42,7 @@ describe(DrawEnumerationService, () => {
 
     service = built.instance;
     drawPoolService = built.mock(DrawPoolService);
-    databaseService = built.mock(DatabaseService);
+    databaseService = built.mock(MeanderawDatabaseService);
     enumerationService = built.mock(EnumerationService);
   });
 

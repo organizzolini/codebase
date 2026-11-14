@@ -2,9 +2,10 @@ import { Column, Entity, Index } from "typeorm";
 
 import { PostgresqlUpdatableEntity } from "@codebase/persistence";
 
-import { BIGINT_NUMBER_TRANSFORMER } from "../database.constants";
+import { BIGINT_NUMBER_TRANSFORMER } from "../meanderaw-database.constants";
 
-import type { StoredCharacteristics } from "../../characteristics/characteristics.types";
+/** A characteristic's stored value: a number, or `true` for a boolean. Missing keys mean zero or false. */
+export type StoredCharacteristicValues = Readonly<Record<string, number | true>>;
 
 /**
  * One row of the `meanders` table: a single meander addressed by its Code.
@@ -17,7 +18,7 @@ import type { StoredCharacteristics } from "../../characteristics/characteristic
 export class Meander extends PostgresqlUpdatableEntity {
   /** Sparse JSON; missing keys mean zero or false, COALESCE them. */
   @Column({ type: "jsonb" })
-  characteristics!: StoredCharacteristics;
+  characteristics!: StoredCharacteristicValues;
 
   @Column({ type: "text" })
   code!: string;

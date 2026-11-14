@@ -1,8 +1,9 @@
+import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
+import type { Meander } from "@codebase/meanderaw-db";
 import { Inject, Injectable } from "@nestjs/common";
 
 import { CharacteristicsService } from "../characteristics/characteristics.service";
 import { CodeService } from "../code/code.service";
-import { DatabaseService } from "../database/database.service";
 import { DRAW_MINIMUM_ROWS } from "../enumeration/enumeration.constants";
 import { TileEnumerationService } from "../enumeration/tile-enumeration.service";
 
@@ -11,7 +12,6 @@ import {
   HISTORICAL_CORPUS_EDGE_BUDGET,
 } from "./corpus.constants";
 
-import type { Meander } from "../database/entities/meander.entity";
 import type { CorpusEntry } from "./corpus.types";
 
 /**
@@ -27,8 +27,8 @@ export class CorpusService {
   constructor(
     @Inject(CharacteristicsService)
     private readonly characteristicsService: CharacteristicsService,
-    @Inject(DatabaseService)
-    private readonly databaseService: DatabaseService,
+    @Inject(MeanderawDatabaseService)
+    private readonly databaseService: MeanderawDatabaseService,
     @Inject(CodeService)
     private readonly codeService: CodeService,
     @Inject(TileEnumerationService)

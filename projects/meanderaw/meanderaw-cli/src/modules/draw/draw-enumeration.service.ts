@@ -1,11 +1,11 @@
+import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
+import type { MeanderShape } from "@codebase/meanderaw-db";
 import { Inject, Injectable } from "@nestjs/common";
 
-import { DatabaseService } from "../database/database.service";
 import { EnumerationService } from "../enumeration/enumeration.service";
 
 import { DrawPoolService } from "./draw-pool.service";
 
-import type { MeanderShape } from "../database/database.types";
 
 /**
  * The draw run's lattice-first half: enumerates the whole unit space and
@@ -21,8 +21,8 @@ export class DrawEnumerationService {
   constructor(
     @Inject(DrawPoolService)
     private readonly drawPoolService: DrawPoolService,
-    @Inject(DatabaseService)
-    private readonly databaseService: DatabaseService,
+    @Inject(MeanderawDatabaseService)
+    private readonly databaseService: MeanderawDatabaseService,
     @Inject(EnumerationService)
     private readonly enumerationService: EnumerationService,
   ) {}

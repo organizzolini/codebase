@@ -2,6 +2,8 @@
 // abbreviation of "navigation" this file chose to write.
 // cspell:ignore nav
 
+import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
+import type { Meander, MeanderPatternShapeCount } from "@codebase/meanderaw-db";
 import { Inject, Injectable } from "@nestjs/common";
 
 import {
@@ -9,15 +11,12 @@ import {
   STORED_BOOLEAN_KEYS,
 } from "../characteristics/characteristics.constants";
 import { CodeService } from "../code/code.service";
-import { DatabaseService } from "../database/database.service";
 import { DrawingService } from "../drawing/drawing.service";
 import { GeometryService } from "../geometry/geometry.service";
 
 import { BAND_REPEAT_COUNT, PAGE_STYLES } from "./draw-index.constants";
 
 import type { PatternCharacteristicKey } from "../characteristics/characteristics.types";
-import type { MeanderPatternShapeCount } from "../database/database.types";
-import type { Meander } from "../database/entities/meander.entity";
 import type {
   MeanderPageContent,
   MeanderPageSource,
@@ -37,8 +36,8 @@ export class DrawIndexService {
   constructor(
     @Inject(CodeService)
     private readonly codeService: CodeService,
-    @Inject(DatabaseService)
-    private readonly databaseService: DatabaseService,
+    @Inject(MeanderawDatabaseService)
+    private readonly databaseService: MeanderawDatabaseService,
     @Inject(DrawingService)
     private readonly drawingService: DrawingService,
     @Inject(GeometryService)

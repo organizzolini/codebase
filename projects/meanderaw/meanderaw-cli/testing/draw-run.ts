@@ -1,13 +1,10 @@
+import { MEANDERAW_DATABASE_MIGRATIONS, Meander, MeanderawDatabaseModule } from "@codebase/meanderaw-db";
 import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
 import { environmentSchema } from "../src/meanderaw-cli.constants";
 import { CharacteristicsModule } from "../src/modules/characteristics/characteristics.module";
 import { CodeModule } from "../src/modules/code/code.module";
 import { CorpusService } from "../src/modules/corpus/corpus.service";
-import { DatabaseModule } from "../src/modules/database/database.module";
-import { Meander } from "../src/modules/database/entities/meander.entity";
-import { Migration1791160950069 } from "../src/modules/database/migrations/1791160950069-migration";
-import { Migration1791414023001 } from "../src/modules/database/migrations/1791414023001-migration";
 import { DrawEnumerationService } from "../src/modules/draw/draw-enumeration.service";
 import { DrawIndexService } from "../src/modules/draw/draw-index.service";
 import { DrawPoolService } from "../src/modules/draw/draw-pool.service";
@@ -46,7 +43,7 @@ export async function startDrawRun(
   mocks: readonly Provider[],
 ): Promise<DrawRunFixture> {
   const database = await startDatabaseTestingModule({
-    database: DatabaseModule,
+    database: MeanderawDatabaseModule,
     entities: [Meander],
     imports: [
       GeometryModule,
@@ -56,7 +53,7 @@ export async function startDrawRun(
       SymmetryModule,
       DrawingModule,
     ],
-    migrations: [Migration1791160950069, Migration1791414023001],
+    migrations: [...MEANDERAW_DATABASE_MIGRATIONS],
     project: "meanderaw",
     providers: [
       DrawCommand,

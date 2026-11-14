@@ -1,3 +1,5 @@
+import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
+import type { Meander } from "@codebase/meanderaw-db";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
@@ -5,19 +7,17 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 import { meanderRecord } from "../../../testing/meanders";
 import { PATTERN_CHARACTERISTIC_KEYS } from "../characteristics/characteristics.constants";
 import { CodeService } from "../code/code.service";
-import { DatabaseService } from "../database/database.service";
 import { DrawingService } from "../drawing/drawing.service";
 import { GeometryService } from "../geometry/geometry.service";
 
 import { DrawIndexService } from "./draw-index.service";
 
-import type { Meander } from "../database/entities/meander.entity";
 import type { MeanderPageContent } from "./draw-index.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 /** Mocked database, with stubbed parser and drawing. */
 const MODULE_OPTIONS: TestingModuleOptions = {
-  mocks: [DatabaseService],
+  mocks: [MeanderawDatabaseService],
   providers: [
     GeometryService,
     {
@@ -45,7 +45,7 @@ const MODULE_OPTIONS: TestingModuleOptions = {
  * `draw-index.service.integration.test.ts` covers `build` against a real one.
  */
 describe(DrawIndexService, () => {
-  let databaseService: DatabaseService;
+  let databaseService: MeanderawDatabaseService;
   let service: DrawIndexService;
 
   /** Defaults for the row fields a case does not test. */
@@ -63,7 +63,7 @@ describe(DrawIndexService, () => {
     const built = await buildTestingModule(DrawIndexService, MODULE_OPTIONS);
 
     service = built.instance;
-    databaseService = built.mock(DatabaseService);
+    databaseService = built.mock(MeanderawDatabaseService);
   });
 
   it("resolves with its dependencies", async () => {
