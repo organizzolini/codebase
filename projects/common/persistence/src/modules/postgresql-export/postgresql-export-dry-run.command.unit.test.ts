@@ -2,9 +2,9 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { DataSource } from "typeorm";
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { useTemporaryDirectory } from "@codebase/testing";
+import { createTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { mockProcesses } from "../../../testing/mocks";
@@ -20,7 +20,7 @@ const PASSWORD = "hunter2-secret";
 const SOURCE_URI = `postgresql://fixture_username:${PASSWORD}@127.0.0.1:1/fixture_development`;
 
 describe("postgresql-export --dry-run", () => {
-  const directory = useTemporaryDirectory("export-dry-run-unit");
+  let directory: string;
   let file: string;
 
   /** A dry run exporting `fixture.widgets` to `file`, plus `extra`. */
@@ -41,12 +41,9 @@ describe("postgresql-export --dry-run", () => {
       ],
     });
 
-  beforeAll(() => {
-    file = path.join(directory(), "fixture.dump");
-  });
-
   beforeEach(() => {
-    fs.rmSync(file, { force: true });
+    directory = createTemporaryDirectory("export-dry-run-unit");
+    file = path.join(directory, "fixture.dump");
   });
 
   it("prints the plan and runs nothing but the version check", async () => {
@@ -65,7 +62,7 @@ describe("postgresql-export --dry-run", () => {
     expect(`${output}${result.stderr}`).not.toContain(PASSWORD);
     expect(spawned.map(({ args }) => args)).toStrictEqual([["--version"]]);
     expect(initialize).not.toHaveBeenCalled();
-    expect(fs.readdirSync(directory())).toStrictEqual([]);
+    expect(fs.readdirSync(directory)).toStrictEqual([]);
   });
 
   it.each([
@@ -114,7 +111,7 @@ describe("postgresql-export --dry-run", () => {
     expect(result.logs.join("\n")).toContain(`Planning to overwrite ${file}`);
     expect(fs.readFileSync(file, "utf8")).toBe("an earlier dump");
     expect(fs.statSync(file).mtimeMs).toBe(before);
-    expect(fs.readdirSync(directory())).toStrictEqual(["fixture.dump"]);
+    expect(fs.readdirSync(directory)).toStrictEqual(["fixture.dump"]);
     expect(spawned.map(({ args }) => args)).toStrictEqual([["--version"]]);
   });
 

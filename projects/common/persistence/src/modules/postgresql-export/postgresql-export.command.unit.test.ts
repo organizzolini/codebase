@@ -4,10 +4,7 @@ import path from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
-import {
-  createTemporaryDirectory,
-  useTemporaryDirectory,
-} from "@codebase/testing";
+import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
@@ -24,8 +21,8 @@ vi.mock("node:child_process", async (importOriginal) => {
 });
 
 /** Where successful exports write, so none lands in the working directory. */
-const DIRECTORY = useTemporaryDirectory("export-unit-dump");
-const dump = (): string => path.join(DIRECTORY(), "fixture.dump");
+let dumpDirectory = "";
+const dump = (): string => path.join(dumpDirectory, "fixture.dump");
 
 /** The temporary file pg_dump writes beside `DUMP` before it is renamed. */
 const PARTIAL_PATTERN = /^--file=.*fixture\.dump\.[\w-]+\.partial$/u;
@@ -52,7 +49,7 @@ async function runExport(
 
 describe(PostgresqlExportCommand, () => {
   beforeEach(() => {
-    fs.rmSync(dump(), { force: true });
+    dumpDirectory = createTemporaryDirectory("export-unit-dump");
   });
 
   it("resolves with its dependencies", async () => {
