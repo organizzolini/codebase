@@ -190,13 +190,13 @@ builds the class the same way and asserts its logger context, comes from
 
 ### Recipes by test kind
 
-| Kind               | Reach for                                                                                                                  |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------------- |
-| Command            | `buildTestingModule`, `answerPrompts`, `captureOutput`, `captureExitCode`, `mockFileSystem`                                |
-| Module             | `bootModule`, `expectModuleProvides`, `expectModuleExports`, `expectModuleImports`                                         |
-| Integration        | `createFileTree`, `createTemporaryDirectory`, `useWorkingDirectory`, `overrideEnvironment`, `mockDates`                    |
-| End-to-end CLI     | `runSourceCommand` over a `createFileTree({ ... }, { git: true })` root, or `createTarballSandboxRunner` for packed output |
-| Utilities          | `mockPartially`, `stubFetch`, `loadFixture`, `mockDates`                                                                   |
+| Kind           | Reach for                                                                                                                                 |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Command        | `buildTestingModule`, `mockErrorLogEntries`, `setErrorLogFilePath`, `answerPrompts`, `captureOutput`, `captureExitCode`, `mockFileSystem` |
+| Module         | `bootModule`, `expectModuleProvides`, `expectModuleExports`, `expectModuleImports`                                                        |
+| Integration    | `createFileTree`, `createTemporaryDirectory`, `useWorkingDirectory`, `overrideEnvironment`, `mockDates`                                   |
+| End-to-end CLI | `runSourceCommand` over a `createFileTree({ ... }, { git: true })` root, or `createTarballSandboxRunner` for packed output                |
+| Utilities      | `mockPartially`, `stubFetch`, `loadFixture`, `mockDates`                                                                                  |
 
 ### Postgres
 

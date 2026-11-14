@@ -6,7 +6,11 @@ import { SampleClockModule } from "../../../testing/fixtures/sample-clock.module
 import { SampleClockService } from "../../../testing/fixtures/sample-clock.service";
 import { SampleGreeterService } from "../../../testing/fixtures/sample-greeter.service";
 
-import { buildTestingModule } from "./testing-module.utilities";
+import {
+  buildTestingModule,
+  mockErrorLogEntries,
+  setErrorLogFilePath,
+} from "./testing-module.utilities";
 
 // 🧪 Tests
 
@@ -50,5 +54,36 @@ describe(buildTestingModule, () => {
     await expect(buildTestingModule(SampleGreeterService)).rejects.toThrow(
       /SampleClockService/u,
     );
+  });
+
+  it("builds timestamped error log lines through mockErrorLogEntries", async () => {
+    const { logger } = await buildTestingModule(SampleGreeterService, {
+      mocks: [SampleClockService],
+    });
+    mockErrorLogEntries(logger);
+    const error = new Error("boom");
+
+    const entry = logger.buildErrorLogEntry("scope", error);
+
+    expect(entry.errorMessage).toBe(error.stack);
+    expect(entry.logLine).toMatch(/^\[.+\] scope: .*boom/su);
+    expect(logger.buildErrorLogEntry("scope", "plain").errorMessage).toBe(
+      "plain",
+    );
+  });
+
+  it("overwrites a private readonly errorLogFilePath through setErrorLogFilePath", () => {
+    class Sample {
+      private readonly errorLogFilePath = "/before.log";
+
+      public read(): string {
+        return this.errorLogFilePath;
+      }
+    }
+    const sample = new Sample();
+
+    setErrorLogFilePath(sample, "/after.log");
+
+    expect(sample.read()).toBe("/after.log");
   });
 });
