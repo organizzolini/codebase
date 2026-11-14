@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
+import { useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 
 import { FIXTURE_CHARACTERISTICS } from "../../../testing/meanders-api";
@@ -8,6 +9,7 @@ import { createFilterFields } from "./gallery-filter-builder.utilities";
 
 import type { GalleryFilterBuilderProperties } from "./gallery-filter-builder";
 import type { FilterGroup } from "./gallery-filter-builder.types";
+import type { ReactNode } from "react";
 
 const FIELDS = createFilterFields(FIXTURE_CHARACTERISTICS);
 
@@ -26,6 +28,11 @@ function properties(
 /** A tree holding the rules given, under and. */
 function tree(...rules: FilterGroup["rules"]): FilterGroup {
   return { combinator: "and", rules };
+}
+
+/** Types into a box, without committing what is typed. */
+function type(box: HTMLElement, text: string): void {
+  fireEvent.change(box, { target: { value: text } });
 }
 
 describe(GalleryFilterBuilder, () => {
@@ -155,7 +162,7 @@ describe(GalleryFilterBuilder, () => {
     );
   });
 
-  it("edits a number, a range, a flag and a text", () => {
+  it("edits a number, a range, a flag and a text, each once it is committed", () => {
     const rule = (
       value: number | string,
       field = "junctionCount",
@@ -168,13 +175,15 @@ describe(GalleryFilterBuilder, () => {
     const number = properties({ filter: rule(1) });
     const { rerender } = render(<GalleryFilterBuilder {...number} />);
 
-    fireEvent.change(screen.getByLabelText("Value"), {
-      target: { value: "4.5" },
-    });
-    fireEvent.change(screen.getByLabelText("Value"), { target: { value: "" } });
-    fireEvent.change(screen.getByLabelText("Value"), {
-      target: { value: "x" },
-    });
+    type(screen.getByLabelText("Value"), "4.5");
+
+    expect(number.onFilterChange).not.toHaveBeenCalled();
+
+    fireEvent.blur(screen.getByLabelText("Value"));
+    type(screen.getByLabelText("Value"), "");
+    fireEvent.blur(screen.getByLabelText("Value"));
+    type(screen.getByLabelText("Value"), "x");
+    fireEvent.keyDown(screen.getByLabelText("Value"), { key: "Enter" });
 
     expect(number.onFilterChange).toHaveBeenCalledTimes(1);
     expect(number.onFilterChange).toHaveBeenCalledWith(rule(4.5));
@@ -182,21 +191,23 @@ describe(GalleryFilterBuilder, () => {
     const whole = properties({ filter: rule(1, "rows") });
 
     rerender(<GalleryFilterBuilder {...whole} />);
-    fireEvent.change(screen.getByLabelText("Value"), {
-      target: { value: "2.9" },
-    });
+    type(screen.getByLabelText("Value"), "2.9");
+    fireEvent.keyDown(screen.getByLabelText("Value"), { key: "Enter" });
+
+    expect(whole.onFilterChange).not.toHaveBeenCalled();
+
+    type(screen.getByLabelText("Value"), "2");
+    fireEvent.keyDown(screen.getByLabelText("Value"), { key: "Enter" });
 
     expect(whole.onFilterChange).toHaveBeenCalledWith(rule(2, "rows"));
 
-    const text = properties({ filter: rule("0", "lattice") });
+    const text = properties({ filter: rule("", "lattice") });
 
     rerender(<GalleryFilterBuilder {...text} />);
-    fireEvent.change(screen.getByLabelText("Value"), {
-      target: { value: "square" },
-    });
-    fireEvent.change(screen.getByLabelText("Value"), { target: { value: "" } });
+    type(screen.getByLabelText("Value"), "square");
+    fireEvent.blur(screen.getByLabelText("Value"));
 
-    expect(text.onFilterChange).toHaveBeenCalledTimes(1);
+    expect(text.onFilterChange).toHaveBeenCalledWith(rule("square", "lattice"));
 
     const flag = properties({
       filter: tree({ field: "isChain", operator: "is", value: true }),
@@ -220,8 +231,10 @@ describe(GalleryFilterBuilder, () => {
     });
 
     rerender(<GalleryFilterBuilder {...range} />);
-    fireEvent.change(screen.getByLabelText("From"), { target: { value: "2" } });
-    fireEvent.change(screen.getByLabelText("To"), { target: { value: "3" } });
+    type(screen.getByLabelText("From"), "2");
+    fireEvent.blur(screen.getByLabelText("From"));
+    type(screen.getByLabelText("To"), "3");
+    fireEvent.blur(screen.getByLabelText("To"));
 
     expect(range.onFilterChange).toHaveBeenNthCalledWith(
       1,
@@ -231,6 +244,61 @@ describe(GalleryFilterBuilder, () => {
       2,
       tree({ field: "junctionCount", operator: "between", value: [1, 3] }),
     );
+  });
+
+  it("stops adding rules and groups once the filter holds as many as the API takes", () => {
+    const full = properties({
+      filter: {
+        combinator: "and",
+        rules: Array.from({ length: 128 }, () => ({
+          field: "rows",
+          operator: "eq" as const,
+          value: 1,
+        })),
+      },
+    });
+
+    render(<GalleryFilterBuilder {...full} />);
+
+    expect(
+      screen.getByRole("button", { name: "Add rule" }).hasAttribute("disabled"),
+    ).toBe(true);
+    expect(
+      screen
+        .getByRole("button", { name: "Add group" })
+        .hasAttribute("disabled"),
+    ).toBe(true);
+  });
+
+  it("keeps an edited rule's controls and their focus as its field and operator change", () => {
+    const Harness = (): ReactNode => {
+      const [filter, setFilter] = useState<FilterGroup | undefined>(
+        tree({ field: "rows", operator: "eq", value: 1 }),
+      );
+
+      return (
+        <GalleryFilterBuilder
+          {...properties({ filter, onFilterChange: setFilter })}
+        />
+      );
+    };
+
+    render(<Harness />);
+
+    const field = screen.getByLabelText("Field");
+
+    field.focus();
+    fireEvent.change(field, { target: { value: "junctionCount" } });
+
+    expect(screen.getByLabelText("Field")).toBe(field);
+    expect(globalThis.document.activeElement).toBe(field);
+
+    const operator = screen.getByLabelText("Operator");
+
+    fireEvent.change(operator, { target: { value: "between" } });
+
+    expect(screen.getByLabelText("Operator")).toBe(operator);
+    expect(screen.getByLabelText("From")).toBeDefined();
   });
 
   it("shows what the field in the rule measures, with its counts", () => {

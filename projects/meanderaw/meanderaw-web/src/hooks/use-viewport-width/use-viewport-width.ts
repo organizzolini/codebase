@@ -9,7 +9,7 @@ import type { UseViewportWidthResult } from "./use-viewport-width.types";
  */
 export function useViewportWidth(): UseViewportWidthResult {
   // 🪝 Hooks
-  const [width, setWidth] = useState(0);
+  const [width, setWidth] = useState(() => globalThis.innerWidth);
 
   // 🏗 Setup
 
@@ -18,14 +18,14 @@ export function useViewportWidth(): UseViewportWidthResult {
   // ♻️ Lifecycle
   useEffect(() => {
     const handleResize = (): void => {
-      setWidth(window.innerWidth);
+      setWidth(globalThis.innerWidth);
     };
 
     handleResize();
-    window.addEventListener("resize", handleResize);
+    globalThis.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      globalThis.removeEventListener("resize", handleResize);
     };
   }, []);
 

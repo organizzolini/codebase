@@ -4,6 +4,7 @@ import {
   useRouter,
   useRouterState,
 } from "@tanstack/react-router";
+import { useEffect, useMemo } from "react";
 
 import { GalleryError } from "../components/gallery-error/gallery-error";
 import {
@@ -34,9 +35,11 @@ import {
 import { toSortInput } from "../hooks/use-gallery-search/use-gallery-search.utilities";
 import { useMeanders } from "../hooks/use-meanders/use-meanders";
 
-import type { FilterGroup } from "../components/gallery-filter-builder/gallery-filter-builder.types";
 import type { MeandersPage } from "../components/meander-gallery/meanders-api.types";
-import type { MeanderSortInput } from "../graphql/generated/operations";
+import type {
+  MeanderFilterGroupInput,
+  MeanderSortInput,
+} from "../graphql/generated/operations";
 import type { GalleryView } from "../hooks/use-gallery-search/use-gallery-search.types";
 import type { ReactNode } from "react";
 
@@ -89,7 +92,7 @@ export const Route = createFileRoute("/")({
  */
 function FlatGallery(
   properties: Readonly<{
-    filter: FilterGroup | undefined;
+    filter: MeanderFilterGroupInput | undefined;
     page: MeandersPage;
     sort: MeanderSortInput | undefined;
     view: GalleryView;
@@ -99,7 +102,7 @@ function FlatGallery(
   const { hasMore, loadError, loadMore, meanders } = useMeanders(
     page,
     sort,
-    toFilterInput(filter),
+    filter,
   );
 
   return (
@@ -148,12 +151,14 @@ function IndexPage(): ReactNode {
     handleViewChange,
     view,
   } = useGallerySearch();
+  const { filter: linkedFilter } = Route.useSearch();
   // While a new sort reads, the cards of the last stay up under a notice.
   const isReloading = useRouterState({
     select: (state: { isLoading: boolean }) => state.isLoading,
   });
 
   // 🏗 Setup
+  const filterInput = useMemo(() => toFilterInput(filter), [filter]);
   const fields = createFilterFields(characteristics);
   const groupFields = createGroupFields(characteristics);
   // A level the catalog does not know is left out of the page.
@@ -162,6 +167,13 @@ function IndexPage(): ReactNode {
   // 💪 Handlers
 
   // ♻️ Lifecycle
+  // A link carrying rules the catalog cannot answer is replaced by one that
+  // does not, so what the address says is what is shown.
+  useEffect(() => {
+    if (JSON.stringify(filter) !== JSON.stringify(linkedFilter)) {
+      handleFilterChange(filter);
+    }
+  }, [filter, handleFilterChange, linkedFilter]);
 
   // 🏁 Early Returns
 
@@ -205,7 +217,7 @@ function IndexPage(): ReactNode {
       ) : null}
       {groups === undefined && page !== undefined ? (
         <FlatGallery
-          filter={filter}
+          filter={filterInput}
           page={page}
           sort={toSortInput(sort, direction)}
           view={view}
@@ -214,7 +226,7 @@ function IndexPage(): ReactNode {
         <GroupedGallery
           key={JSON.stringify({ direction, filter, grouping, sort })}
           fields={groupFields}
-          filter={toFilterInput(filter)}
+          filter={filterInput}
           groups={groups ?? []}
           sort={toSortInput(sort, direction)}
           view={view}

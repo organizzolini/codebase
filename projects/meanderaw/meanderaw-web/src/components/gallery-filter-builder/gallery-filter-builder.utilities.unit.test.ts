@@ -3,6 +3,12 @@ import { describe, expect, it } from "vitest";
 import { FIXTURE_CHARACTERISTICS } from "../../../testing/meanders-api";
 
 import {
+  countEntries,
+  isWithinLimits,
+  measureDepth,
+  normalizeRule,
+} from "./filter-limits.utilities";
+import {
   addNode,
   changeRuleField,
   changeRuleOperator,
@@ -71,7 +77,7 @@ describe("gallery filter builder utilities", () => {
         value: 0,
       });
       expect(createRule(FIELD("isChain"))).toStrictEqual(CHAIN);
-      expect(createRule(FIELD("lattice")).value).toBe("0");
+      expect(createRule(FIELD("lattice")).value).toBe("");
       expect(createGroup(FIELD("rows"))).toStrictEqual({
         combinator: "and",
         rules: [createRule(FIELD("rows"))],
@@ -89,7 +95,7 @@ describe("gallery filter builder utilities", () => {
 
     it("starts over for a field of another kind", () => {
       expect(changeRuleField(ROWS, FIELD("isChain"))).toStrictEqual(CHAIN);
-      expect(changeRuleField(CHAIN, FIELD("lattice")).value).toBe("0");
+      expect(changeRuleField(CHAIN, FIELD("lattice")).value).toBe("");
     });
   });
 
@@ -237,6 +243,123 @@ describe("gallery filter builder utilities", () => {
           FIELDS,
         ),
       ).toBeUndefined();
+    });
+  });
+
+  describe("whole-number fields", () => {
+    it("drops the fraction of a number moved to a field that takes whole numbers", () => {
+      const fraction: FilterRule = {
+        field: "junctionCount",
+        operator: "gte",
+        value: 4.9,
+      };
+
+      expect(changeRuleField(fraction, FIELD("rows")).value).toBe(4);
+      expect(
+        changeRuleField(
+          { ...fraction, operator: "between", value: [1.5, 4.9] },
+          FIELD("rows"),
+        ).value,
+      ).toStrictEqual([1, 4]);
+      expect(changeRuleField(fraction, FIELD("junctionCount")).value).toBe(4.9);
+    });
+  });
+
+  describe(normalizeRule, () => {
+    it("puts a range's ends in order and leaves everything else", () => {
+      const range: FilterRule = {
+        field: "junctionCount",
+        operator: "between",
+        value: [4, 1],
+      };
+
+      expect(normalizeRule(range).value).toStrictEqual([1, 4]);
+      expect(normalizeRule({ ...range, value: [1, 4] })).toStrictEqual({
+        ...range,
+        value: [1, 4],
+      });
+      expect(normalizeRule(ROWS)).toBe(ROWS);
+      expect(describeRule(range, FIELDS)).toBe(
+        "Junction count between 1 and 4",
+      );
+      expect(setRule([0], range)(TREE).rules[0]).toStrictEqual({
+        ...range,
+        value: [1, 4],
+      });
+    });
+  });
+
+  describe("a lattice rule still waiting for its text", () => {
+    const waiting: FilterGroup = {
+      combinator: "and",
+      rules: [{ field: "lattice", operator: "eq", value: " " }, ROWS],
+    };
+
+    it("is kept, yet neither counted, listed nor sent to the API", () => {
+      expect(countRules(waiting)).toBe(1);
+      expect(listRules(waiting)).toStrictEqual([{ path: [1], rule: ROWS }]);
+      expect(toFilterInput(waiting)?.rules).toStrictEqual([
+        { field: "rows", numbers: [2], operator: "EQ" },
+      ]);
+      expect(sanitizeFilter(waiting, FIELDS)).toStrictEqual(waiting);
+    });
+  });
+
+  describe("the API's caps", () => {
+    /** A tree nested `levels` deep, its innermost group holding one rule. */
+    const nested = (levels: number): FilterGroup => {
+      let group: FilterGroup = { combinator: "and", rules: [ROWS] };
+
+      for (let level = 1; level < levels; level += 1) {
+        group = { combinator: "and", rules: [group] };
+      }
+
+      return group;
+    };
+
+    it("measures depth from the root as level 1, and counts rules and groups but not the root", () => {
+      expect(measureDepth(nested(1))).toBe(1);
+      expect(measureDepth(nested(6))).toBe(6);
+      expect(countEntries(nested(3))).toBe(3);
+    });
+
+    it("keeps a filter at the caps and drops one past them", () => {
+      expect(isWithinLimits(nested(6))).toBe(true);
+      expect(isWithinLimits(nested(7))).toBe(false);
+      expect(sanitizeFilter(nested(7), FIELDS)).toBeUndefined();
+
+      const full: FilterGroup = {
+        combinator: "or",
+        rules: Array.from({ length: 128 }, () => ROWS),
+      };
+
+      expect(sanitizeFilter(full, FIELDS)).toStrictEqual(full);
+      expect(
+        sanitizeFilter({ ...full, rules: [...full.rules, ROWS] }, FIELDS),
+      ).toBeUndefined();
+    });
+
+    it("drops a whole-number field's fraction or unsafe size, and a range read out of order is put in order", () => {
+      const rule = (value: FilterRule["value"]): FilterGroup => ({
+        combinator: "and",
+        rules: [{ field: "rows", operator: "eq", value }],
+      });
+
+      expect(sanitizeFilter(rule(1.5), FIELDS)).toBeUndefined();
+      expect(sanitizeFilter(rule(2 ** 60), FIELDS)).toBeUndefined();
+      expect(
+        sanitizeFilter(
+          {
+            combinator: "and",
+            rules: [
+              { field: "junctionCount", operator: "between", value: [4, 1] },
+            ],
+          },
+          FIELDS,
+        )?.rules,
+      ).toStrictEqual([
+        { field: "junctionCount", operator: "between", value: [1, 4] },
+      ]);
     });
   });
 });

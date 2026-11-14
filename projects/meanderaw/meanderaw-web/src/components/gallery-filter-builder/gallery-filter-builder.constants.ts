@@ -35,9 +35,22 @@ export const FILTER_OPERATORS = [
 ] as const satisfies readonly FilterOperator[];
 
 /**
- * How deep groups may nest, which is as deep as the API allows.
+ * How deep groups may nest, the root being level 1; the API's own limit,
+ * `MEANDER_FILTER_MAXIMUM_DEPTH` in meanderaw-api.
  */
 export const MAXIMUM_FILTER_DEPTH = 6;
+
+/**
+ * The most rules and groups a filter may hold in all, root excepted; the
+ * API's own limit, `MEANDER_FILTER_MAXIMUM_ENTRIES`.
+ */
+export const MAXIMUM_FILTER_ENTRIES = 128;
+
+/**
+ * The longest field key or text a rule may carry; the API's own limit,
+ * `MEANDER_FILTER_MAXIMUM_TEXT_LENGTH`.
+ */
+export const MAXIMUM_FILTER_TEXT_LENGTH = 64;
 
 /**
  * Shown for the combinator, one label each.
@@ -164,12 +177,12 @@ export const filterOperatorSchema = z.enum(FILTER_OPERATORS);
  * Validates a rule from a link.
  */
 export const filterRuleSchema = z.object({
-  field: z.string().min(1),
+  field: z.string().min(1).max(MAXIMUM_FILTER_TEXT_LENGTH),
   operator: filterOperatorSchema,
   value: z.union([
     z.boolean(),
     z.number(),
-    z.string(),
+    z.string().max(MAXIMUM_FILTER_TEXT_LENGTH),
     z.tuple([z.number(), z.number()]),
   ]),
 });

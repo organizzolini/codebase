@@ -1,5 +1,9 @@
 import { FilterGroupEditor } from "./filter-group-editor";
-import { EMPTY_FILTER_GROUP } from "./gallery-filter-builder.constants";
+import { countEntries } from "./filter-limits.utilities";
+import {
+  EMPTY_FILTER_GROUP,
+  MAXIMUM_FILTER_ENTRIES,
+} from "./gallery-filter-builder.constants";
 
 import type {
   FilterEdit,
@@ -57,6 +61,7 @@ export function GalleryFilterBuilder(
       <FilterGroupEditor
         fields={fields}
         group={root}
+        isFull={countEntries(root) >= MAXIMUM_FILTER_ENTRIES}
         onEdit={handleEdit}
         path={[]}
       />

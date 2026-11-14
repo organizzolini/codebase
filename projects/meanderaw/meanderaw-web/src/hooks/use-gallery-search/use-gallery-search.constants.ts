@@ -1,6 +1,9 @@
 import { z } from "zod";
 
-import { linkedFilterSchema } from "../../components/gallery-filter-builder/gallery-filter-builder.constants";
+import {
+  linkedFilterSchema,
+  MAXIMUM_FILTER_TEXT_LENGTH,
+} from "../../components/gallery-filter-builder/gallery-filter-builder.constants";
 import { MAXIMUM_GROUP_LEVELS } from "../../components/gallery-group-by/gallery-group-by.constants";
 
 // ♟️ Constants
@@ -32,7 +35,7 @@ export const gallerySearchSchema = z.object({
   direction: z.enum(SORT_DIRECTIONS).catch(DEFAULT_SORT_DIRECTION).optional(),
   filter: linkedFilterSchema.optional(),
   group: z
-    .array(z.string().min(1))
+    .array(z.string().min(1).max(MAXIMUM_FILTER_TEXT_LENGTH))
     .transform((levels) => levels.slice(0, MAXIMUM_GROUP_LEVELS))
     .catch([])
     .optional(),

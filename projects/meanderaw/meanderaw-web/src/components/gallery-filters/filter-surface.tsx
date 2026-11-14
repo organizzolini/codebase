@@ -5,7 +5,11 @@ import {
   FILTERS_TITLE,
   SURFACE_CLASS_NAMES,
 } from "./gallery-filters.constants";
-import { describeFiltersButton } from "./gallery-filters.utilities";
+import {
+  describeFiltersButton,
+  listFocusable,
+  trapTab,
+} from "./gallery-filters.utilities";
 
 import type { FilterSurfaceKind } from "./gallery-filters.types";
 import type { ReactNode } from "react";
@@ -36,6 +40,8 @@ export function FilterSurface(
 
   // 🪝 Hooks
   const [isOpen, setIsOpen] = useState(false);
+  const [dialog, setDialog] = useState<HTMLDivElement | null>(null);
+  const [trigger, setTrigger] = useState<HTMLButtonElement | null>(null);
 
   // 🏗 Setup
 
@@ -45,19 +51,38 @@ export function FilterSurface(
   };
 
   // ♻️ Lifecycle
+  // Opening moves focus in, and closing gives it back to the button. Escape
+  // and Tab are read on the surface, so a closed one never hears them, and
+  // Escape in a select is left to it, which uses it to close its list.
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent): void => {
-      if (isOpen && event.key === "Escape") {
+      if (
+        event.key === "Escape" &&
+        !(event.target instanceof HTMLSelectElement)
+      ) {
         setIsOpen(false);
+      } else if (
+        event.key === "Tab" &&
+        dialog?.matches('[aria-modal="true"]') === true
+      ) {
+        trapTab(event, dialog);
       }
     };
 
-    globalThis.addEventListener("keydown", handleKeyDown);
+    dialog?.addEventListener("keydown", handleKeyDown);
+    (dialog === null
+      ? undefined
+      : (listFocusable(dialog).at(0) ?? dialog)
+    )?.focus();
 
     return () => {
-      globalThis.removeEventListener("keydown", handleKeyDown);
+      dialog?.removeEventListener("keydown", handleKeyDown);
+
+      if (dialog !== null) {
+        trigger?.focus();
+      }
     };
-  }, [isOpen]);
+  }, [dialog, trigger]);
 
   // 🏁 Early Returns
 
@@ -69,6 +94,7 @@ export function FilterSurface(
     >
       <div className="relative">
         <button
+          ref={setTrigger}
           aria-expanded={isOpen}
           aria-haspopup="dialog"
           aria-label={describeFiltersButton(activeCount)}
@@ -98,11 +124,13 @@ export function FilterSurface(
               type="button"
             />
             <div
+              ref={setDialog}
               aria-label={FILTERS_TITLE}
               aria-modal={kind !== "popover"}
               className={SURFACE_CLASS_NAMES[kind]}
               data-surface={kind}
               role="dialog"
+              tabIndex={-1}
             >
               {kind !== "popover" && (
                 <div className="flex items-center justify-between">
