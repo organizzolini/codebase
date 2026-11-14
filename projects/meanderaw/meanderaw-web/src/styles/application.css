@@ -16,9 +16,6 @@
   --danger: oklch(72% 0.17 25deg);
   --radius-card: 0.75rem;
 
-  /* The narrowest a grid card gets before a column gives way. */
-  --card-min-width: 16rem;
-
   color-scheme: dark;
 }
 

@@ -1,4 +1,9 @@
-import { useCallback, useRef as useReference, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef as useReference,
+  useState,
+} from "react";
 
 import { findMeanders } from "../../components/meander-gallery/meanders-api.utilities";
 
@@ -12,8 +17,8 @@ import type { UseMeandersResult } from "./use-meanders.types";
 // 🧩 Hook
 
 /**
- * Collects the pages after the one the route loaded, in its sort and filter, by cursor.
- * A new first page starts over.
+ * Collects the pages after the loaded first, in its sort and filter, by
+ * cursor. A new first page starts over.
  */
 export function useMeanders(
   first: MeandersPage,
@@ -25,8 +30,14 @@ export function useMeanders(
     first: MeandersPage;
     pages: readonly MeandersPage[];
   }>({ first, pages: [] });
-  const [loadError, setLoadError] = useState<unknown>();
-  const isLoading = useReference(false);
+  const [failure, setFailure] = useState<{
+    error: unknown;
+    first: MeandersPage;
+  }>();
+  // The first page a read is in flight for, and the one now showing: a read
+  // belongs to the first page it began under, whatever shows when it ends.
+  const inFlight = useReference<MeandersPage | null>(null);
+  const showing = useReference(first);
 
   // 🏗 Setup
   const pages = loaded.first === first ? loaded.pages : [];
@@ -37,30 +48,42 @@ export function useMeanders(
 
   // 💪 Handlers
   const loadMore = useCallback((): void => {
-    if (isLoading.current || !last.pageInfo.hasNextPage) {
+    if (inFlight.current === first || !last.pageInfo.hasNextPage) {
       return;
     }
 
-    isLoading.current = true;
-    setLoadError(undefined);
+    inFlight.current = first;
+    setFailure(undefined);
     findMeanders({ after: last.pageInfo.endCursor, filter, sort })
       .then((next) => {
-        setLoaded({ first, pages: [...pages, next] });
+        if (showing.current === first) {
+          setLoaded((previous) => ({
+            first,
+            pages: [...(previous.first === first ? previous.pages : []), next],
+          }));
+        }
       })
       .catch((error: unknown) => {
-        setLoadError(error);
+        if (showing.current === first) {
+          setFailure({ error, first });
+        }
       })
       .finally(() => {
-        isLoading.current = false;
+        if (inFlight.current === first) {
+          inFlight.current = null;
+        }
       });
-  }, [filter, first, last, pages, sort]);
+  }, [filter, first, last, sort]);
 
   // ♻️ Lifecycle
+  useEffect(() => {
+    showing.current = first;
+  }, [first]);
 
   // 🎁 Result
   return {
     hasMore: last.pageInfo.hasNextPage,
-    loadError,
+    loadError: failure?.first === first ? failure.error : undefined,
     loadMore,
     meanders,
   };

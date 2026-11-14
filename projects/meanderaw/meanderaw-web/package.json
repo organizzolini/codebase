@@ -1,18 +1,17 @@
 {
   "dependencies": {
-    "@codebase/interface": "workspace:*",
     "@graphql-codegen/cli": "catalog:",
     "@graphql-typed-document-node/core": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-start": "catalog:",
     "@tanstack/react-virtual": "catalog:",
     "graphql": "catalog:",
-    "msw": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@codebase/interface": "workspace:*",
     "@codebase/testing": "workspace:*",
     "@graphql-codegen/typed-document-node": "catalog:",
     "@graphql-codegen/typescript-operations": "catalog:",
@@ -25,6 +24,7 @@
     "@vitejs/plugin-react": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "jsdom": "catalog:",
+    "msw": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",

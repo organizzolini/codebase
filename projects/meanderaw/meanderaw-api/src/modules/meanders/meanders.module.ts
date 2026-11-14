@@ -6,6 +6,8 @@ import { MeanderawDatabaseModule } from "@codebase/meanderaw-db";
 import { MeanderAggregateService } from "./aggregates/meander-aggregate.service";
 import { MeanderFilterPlanService } from "./filters/meander-filter-plan.service";
 import { MeanderFilterService } from "./filters/meander-filter.service";
+import { MeanderCharacteristicsLoader } from "./meander-characteristics.loader";
+import { MeanderCharacteristicsResolver } from "./meander-characteristics.resolver";
 import { MeandersResolver } from "./meanders.resolver";
 import { MeandersService } from "./meanders.service";
 
@@ -18,6 +20,8 @@ import { MeandersService } from "./meanders.service";
   exports: [MeanderAggregateService, MeanderFilterService, MeandersService],
   imports: [CodeModule, DrawingModule, MeanderawDatabaseModule],
   providers: [
+    MeanderCharacteristicsLoader,
+    MeanderCharacteristicsResolver,
     MeandersResolver,
     MeandersService,
     MeanderAggregateService,

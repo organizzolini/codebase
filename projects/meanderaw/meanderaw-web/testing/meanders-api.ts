@@ -1,4 +1,4 @@
-import { graphql, HttpResponse } from "msw";
+import { delay, graphql, HttpResponse } from "msw";
 
 import { serveGraphqlApi } from "./graphql-api";
 
@@ -35,8 +35,15 @@ export function fixtureMeander(index: number): GalleryMeander {
 
   return {
     characteristics: [
-      ...(isChain ? [{ isPattern: true, key: "isChain", value: 1 }] : []),
-      { isPattern: false, key: "junctionCount", value: (index % 4) + 1 },
+      ...(isChain
+        ? [{ isPattern: true, key: "isChain", name: "Chain", value: 1 }]
+        : []),
+      {
+        isPattern: false,
+        key: "junctionCount",
+        name: "Junction count",
+        value: (index % 4) + 1,
+      },
     ],
     code,
     columns: (index % 3) + 1,
@@ -83,7 +90,7 @@ export const FIXTURE_CHARACTERISTICS: CharacteristicsQuery["characteristics"] =
  * Serves `count` fixture meanders over `Meanders`, paged by cursor as the API
  * does, and returns a handle to watch it.
  */
-export function serveMeandersApi(count = 3): MeandersApi {
+export function serveMeandersApi(count = 3, delayMs = 0): MeandersApi {
   let failure: string | undefined;
   const api: MeandersApi = {
     fail: (message) => {
@@ -98,8 +105,9 @@ export function serveMeandersApi(count = 3): MeandersApi {
   serveGraphqlApi(
     graphql.query<MeandersQuery, MeandersQueryVariables>(
       "Meanders",
-      ({ variables }) => {
+      async ({ variables }) => {
         api.requests.push(variables);
+        await delay(delayMs);
 
         if (failure !== undefined) {
           return HttpResponse.json({ errors: [{ message: failure }] });
@@ -138,9 +146,11 @@ export function serveMeandersApi(count = 3): MeandersApi {
     graphql.query<CharacteristicsQuery, CharacteristicsQueryVariables>(
       "Characteristics",
       () =>
-        HttpResponse.json({
-          data: { characteristics: FIXTURE_CHARACTERISTICS },
-        }),
+        failure === undefined
+          ? HttpResponse.json({
+              data: { characteristics: FIXTURE_CHARACTERISTICS },
+            })
+          : HttpResponse.json({ errors: [{ message: failure }] }),
     ),
   );
 

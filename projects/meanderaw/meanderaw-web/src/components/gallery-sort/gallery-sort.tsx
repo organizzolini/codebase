@@ -90,6 +90,9 @@ export function GallerySort(
           </select>
         </label>
         <button
+          aria-label={
+            direction === "asc" ? "Sort descending" : "Sort ascending"
+          }
           className="rounded-md border border-(--line) px-3 py-1 disabled:opacity-50"
           disabled={field === undefined}
           onClick={handleDirectionToggle}

@@ -2,6 +2,7 @@ import {
   createFileRoute,
   type ErrorComponentProps,
   useRouter,
+  useRouterState,
 } from "@tanstack/react-router";
 
 import { GalleryError } from "../components/gallery-error/gallery-error";
@@ -11,6 +12,7 @@ import {
 } from "../components/gallery-filter-builder/gallery-filter-builder.utilities";
 import { GalleryFilters } from "../components/gallery-filters/gallery-filters";
 import { GallerySort } from "../components/gallery-sort/gallery-sort";
+import { resolveSortField } from "../components/gallery-sort/gallery-sort.utilities";
 import { GalleryToolbar } from "../components/gallery-toolbar/gallery-toolbar";
 import { MeanderGallery } from "../components/meander-gallery/meander-gallery";
 import {
@@ -49,15 +51,15 @@ export const Route = createFileRoute("/")({
   ssr: false,
 
   loader: async ({ deps }) => {
-    const [characteristics, page] = await Promise.all([
-      findCharacteristics(),
-      findMeanders({
-        filter: toFilterInput(deps.filter),
-        sort: toSortInput(deps.sort, deps.direction),
-      }),
-    ]);
+    const characteristics = await findCharacteristics();
+    // A sort the catalog does not know falls back to the default order.
+    const sort = resolveSortField(deps.sort, characteristics);
+    const page = await findMeanders({
+      filter: toFilterInput(deps.filter),
+      sort: toSortInput(sort, deps.direction),
+    });
 
-    return { characteristics, page };
+    return { characteristics, page, sort };
   },
 });
 
@@ -88,16 +90,19 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
  */
 function IndexPage(): ReactNode {
   // 🪝 Hooks
-  const { characteristics, page } = Route.useLoaderData();
+  const { characteristics, page, sort } = Route.useLoaderData();
   const {
     direction,
     filter,
     handleFilterChange,
     handleSortChange,
     handleViewChange,
-    sort,
     view,
   } = useGallerySearch();
+  // While a new sort reads, the cards of the last stay up under a notice.
+  const isReloading = useRouterState({
+    select: (state: { isLoading: boolean }) => state.isLoading,
+  });
 
   // 🏗 Setup
   const { hasMore, loadError, loadMore, meanders } = useMeanders(
@@ -135,6 +140,14 @@ function IndexPage(): ReactNode {
           onSortChange={handleSortChange}
         />
       </div>
+      {isReloading ? (
+        <p
+          className="text-sm text-(--ink-muted)"
+          role="status"
+        >
+          Loading…
+        </p>
+      ) : null}
       <MeanderGallery
         hasMore={hasMore}
         loadError={loadError}

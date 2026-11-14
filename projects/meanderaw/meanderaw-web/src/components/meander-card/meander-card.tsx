@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { COPIED_MILLISECONDS, VIEW_CLASSES } from "./meander-card.constants";
+import {
+  COPIED_MILLISECONDS,
+  COPY_LABELS,
+  VIEW_CLASSES,
+} from "./meander-card.constants";
 import { formatShape, toSvgDataUri } from "./meander-card.utilities";
 
 import type { GalleryView } from "../../hooks/use-gallery-search/use-gallery-search.types";
@@ -30,7 +34,7 @@ export function MeanderCard(
   const { className, meander, view } = properties;
 
   // 🪝 Hooks
-  const [copied, setCopied] = useState(false);
+  const [copy, setCopy] = useState<"copied" | "failed" | "idle">("idle");
 
   // 🏗 Setup
   const classes = VIEW_CLASSES[view];
@@ -38,14 +42,30 @@ export function MeanderCard(
 
   // 💪 Handlers
   const handleCopy = (): void => {
-    void navigator.clipboard.writeText(meander.code);
-    setCopied(true);
-    setTimeout(() => {
-      setCopied(false);
-    }, COPIED_MILLISECONDS);
+    navigator.clipboard
+      .writeText(meander.code)
+      .then(() => {
+        setCopy("copied");
+      })
+      .catch(() => {
+        setCopy("failed");
+      });
   };
 
   // ♻️ Lifecycle
+  // The notice goes after a moment, and with the card if it leaves first.
+  useEffect(() => {
+    const timer =
+      copy === "idle"
+        ? undefined
+        : setTimeout(() => {
+            setCopy("idle");
+          }, COPIED_MILLISECONDS);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [copy]);
 
   // 🏁 Early Returns
 
@@ -61,7 +81,9 @@ export function MeanderCard(
         <img
           alt={`Drawing of meander ${meander.code}`}
           className={`rounded-md bg-(--surface-sunken) object-contain ${classes.drawing}`}
+          height={classes.size}
           src={toSvgDataUri(meander.svg)}
+          width={classes.size}
         />
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <p className="text-sm">
@@ -86,19 +108,19 @@ export function MeanderCard(
               onClick={handleCopy}
               type="button"
             >
-              {copied ? "Copied" : "Copy"}
+              {COPY_LABELS[copy]}
             </button>
           </p>
           <ul
             aria-label="Pattern characteristics"
             className="flex flex-wrap gap-1"
           >
-            {patterns.map(({ key }) => (
+            {patterns.map(({ key, name }) => (
               <li
                 key={key}
                 className="rounded-full border border-(--accent) px-2 py-0.5 text-xs text-(--accent)"
               >
-                {key}
+                {name}
               </li>
             ))}
           </ul>
@@ -107,12 +129,12 @@ export function MeanderCard(
               All values ({meander.characteristics.length})
             </summary>
             <dl className="mt-1 grid grid-cols-[1fr_auto] gap-x-3">
-              {meander.characteristics.map(({ key, value }) => (
+              {meander.characteristics.map(({ key, name, value }) => (
                 <div
                   key={key}
                   className="contents"
                 >
-                  <dt>{key}</dt>
+                  <dt>{name}</dt>
                   <dd>{value}</dd>
                 </div>
               ))}

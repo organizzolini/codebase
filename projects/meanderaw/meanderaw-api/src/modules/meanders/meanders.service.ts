@@ -272,26 +272,34 @@ export class MeandersService {
   }
 
   /**
-   * The non-zero values a meander holds, by key. The bridge is probed through
-   * its primary key, once per catalog row, never scanned by meander alone.
+   * The non-zero values each meander holds, in the order of the ids, in two
+   * reads however many ids: the catalog, then the bridge rows.
    */
-  async findCharacteristics(
-    meander: MeanderEntity,
-  ): Promise<MeanderCharacteristicValueEntity[]> {
+  async findCharacteristicsFor(
+    meanderIds: readonly string[],
+  ): Promise<MeanderCharacteristicValueEntity[][]> {
     const catalog = await this.characteristicRepository.find({
       order: { key: "ASC" },
     });
     const rows = await this.bridgeRepository.find({
       where: {
         characteristicId: In(catalog.map(({ id }) => id)),
-        meanderId: meander.id,
+        meanderId: In([...meanderIds]),
       },
     });
+    const values = new Map(
+      rows.map((row) => [
+        `${row.characteristicId}:${row.meanderId}`,
+        row.value,
+      ]),
+    );
 
-    return catalog.flatMap(({ id, isPattern, key }) => {
-      const row = rows.find(({ characteristicId }) => characteristicId === id);
+    return meanderIds.map((meanderId) =>
+      catalog.flatMap(({ id, isPattern, key, name }) => {
+        const value = values.get(`${id}:${meanderId}`);
 
-      return row === undefined ? [] : [{ isPattern, key, value: row.value }];
-    });
+        return value === undefined ? [] : [{ isPattern, key, name, value }];
+      }),
+    );
   }
 }

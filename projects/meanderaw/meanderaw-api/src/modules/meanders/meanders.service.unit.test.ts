@@ -1,5 +1,5 @@
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { CodeService, DrawingService } from "@codebase/meanderaw-core";
 import {
@@ -95,5 +95,51 @@ describe(MeandersService, () => {
     ).toBe("<svg/>");
     expect(mock(CodeService).parse).toHaveBeenCalledWith("01", 1, 2);
     expect(mock(DrawingService).render).toHaveBeenCalledWith(parsed);
+  });
+
+  it("finds the values every meander holds in two reads, in the order of the ids", async () => {
+    expect.hasAssertions();
+
+    const catalogFind = vi.fn().mockResolvedValue([
+      { id: 1, isPattern: true, key: "isChain", name: "Chain" },
+      { id: 2, isPattern: false, key: "junctionCount", name: "Junctions" },
+    ]);
+    const bridgeFind = vi.fn().mockResolvedValue([
+      { characteristicId: 2, meanderId: "b", value: 3 },
+      { characteristicId: 1, meanderId: "a", value: 1 },
+      { characteristicId: 2, meanderId: "a", value: 2 },
+    ]);
+    const { instance } = await buildTestingModule(MeandersService, {
+      mocks: [
+        CodeService,
+        DrawingService,
+        MeanderAggregateService,
+        MeanderFilterService,
+      ],
+      providers: [
+        { provide: getRepositoryToken(Meander), useValue: {} },
+        {
+          provide: getRepositoryToken(Characteristic),
+          useValue: { find: catalogFind },
+        },
+        {
+          provide: getRepositoryToken(MeanderCharacteristic),
+          useValue: { find: bridgeFind },
+        },
+      ],
+    });
+
+    const values = await instance.findCharacteristicsFor(["a", "b", "c"]);
+
+    expect(values).toStrictEqual([
+      [
+        { isPattern: true, key: "isChain", name: "Chain", value: 1 },
+        { isPattern: false, key: "junctionCount", name: "Junctions", value: 2 },
+      ],
+      [{ isPattern: false, key: "junctionCount", name: "Junctions", value: 3 }],
+      [],
+    ]);
+    expect(catalogFind).toHaveBeenCalledTimes(1);
+    expect(bridgeFind).toHaveBeenCalledTimes(1);
   });
 });

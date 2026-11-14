@@ -12,6 +12,7 @@
     "@nestjs/graphql": "catalog:",
     "@nestjs/platform-express": "catalog:",
     "@nestjs/typeorm": "catalog:",
+    "dataloader": "catalog:",
     "graphql": "catalog:",
     "lightship": "catalog:",
     "reflect-metadata": "catalog:",

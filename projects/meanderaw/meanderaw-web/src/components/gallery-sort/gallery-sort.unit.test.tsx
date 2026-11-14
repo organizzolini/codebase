@@ -80,7 +80,7 @@ describe(GallerySort, () => {
       <GallerySort {...properties({ field: "rows", onSortChange })} />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Ascending" }));
+    fireEvent.click(screen.getByRole("button", { name: "Sort descending" }));
 
     expect(onSortChange).toHaveBeenCalledWith("rows", "desc");
 
@@ -89,7 +89,7 @@ describe(GallerySort, () => {
         {...properties({ direction: "desc", field: "rows", onSortChange })}
       />,
     );
-    fireEvent.click(screen.getByRole("button", { name: "Descending" }));
+    fireEvent.click(screen.getByRole("button", { name: "Sort ascending" }));
 
     expect(onSortChange).toHaveBeenLastCalledWith("rows", "asc");
 
@@ -97,7 +97,7 @@ describe(GallerySort, () => {
 
     expect(
       screen
-        .getByRole("button", { name: "Ascending" })
+        .getByRole("button", { name: "Sort descending" })
         .hasAttribute("disabled"),
     ).toBe(true);
   });
