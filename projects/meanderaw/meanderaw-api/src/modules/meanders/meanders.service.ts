@@ -81,7 +81,7 @@ export class MeandersService {
 
     if (after !== null && after !== undefined) {
       const cursor = this.decodeCursor(after);
-      const beyond = direction === SortDirection.ASC ? ">" : "<";
+      const beyond = direction === SortDirection.DESC ? "<" : ">";
 
       query.where(
         target.kind === "id"

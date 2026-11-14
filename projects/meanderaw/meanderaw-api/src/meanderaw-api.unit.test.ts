@@ -84,7 +84,7 @@ describe("meanderaw api bootstrap suite", () => {
     expect(createLightshipMock).toHaveBeenCalledWith({ port: 9002 });
     expect(loggerConstructorMock).toHaveBeenCalledTimes(1);
     expect(setContextMock).toHaveBeenCalledWith("NestApplication");
-    expect(listenMock).toHaveBeenCalledWith(2162);
+    expect(listenMock).toHaveBeenCalledWith(8367);
     expect(signalReadyMock).toHaveBeenCalledTimes(1);
     expect(registerShutdownHandlerMock).toHaveBeenCalledTimes(1);
 

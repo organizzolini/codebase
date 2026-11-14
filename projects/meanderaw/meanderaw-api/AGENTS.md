@@ -4,7 +4,7 @@
 
 **Type**: Node.js HTTP API server (NestJS + Apollo GraphQL)
 
-**Purpose**: Serve the meanders `meanderaw-cli` writes to the Meanderaw Postgres over GraphQL, reading them through `MeanderawDatabaseModule` from `@codebase/meanderaw-db` and drawing them through `@codebase/meanderaw-core`. Runs locally on `MEANDERAW_API_PORT` (default 2162).
+**Purpose**: Serve the meanders `meanderaw-cli` writes to the Meanderaw Postgres over GraphQL, reading them through `MeanderawDatabaseModule` from `@codebase/meanderaw-db` and drawing them through `@codebase/meanderaw-core`. Runs locally on `MEANDERAW_API_PORT` (default 8367).
 
 ### Run Locally
 

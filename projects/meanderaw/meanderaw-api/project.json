@@ -14,7 +14,7 @@
   "targets": {
     "await-health": {
       "options": {
-        "url": "http://localhost:${MEANDERAW_API_PORT:-2162}/graphql"
+        "url": "http://localhost:${MEANDERAW_API_PORT:-8367}/graphql"
       }
     },
     "codometer": {},
@@ -40,7 +40,7 @@
     },
     "stop": {
       "options": {
-        "port": "${MEANDERAW_API_PORT:-2162}"
+        "port": "${MEANDERAW_API_PORT:-8367}"
       }
     },
     "test-code": {},

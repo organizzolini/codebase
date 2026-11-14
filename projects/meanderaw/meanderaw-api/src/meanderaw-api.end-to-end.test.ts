@@ -8,7 +8,7 @@ describe("meanderaw-api end-to-end suite", () => {
       expect.hasAssertions();
       expect(environmentSchema.parse({})).toMatchObject({
         MEANDERAW_API_LIGHTSHIP_PORT: 9002,
-        MEANDERAW_API_PORT: 2162,
+        MEANDERAW_API_PORT: 8367,
       });
     });
   });

@@ -8,7 +8,7 @@ import { postgresEnvironmentSchema } from "@codebase/persistence";
 export const environmentSchema = z.object({
   ...postgresEnvironmentSchema({ project: "meanderaw" }),
   MEANDERAW_API_LIGHTSHIP_PORT: z.coerce.number().default(9002),
-  MEANDERAW_API_PORT: z.coerce.number().default(2162),
+  MEANDERAW_API_PORT: z.coerce.number().default(8367),
 });
 
 /** Schema file beside the root module, not the working directory. */
