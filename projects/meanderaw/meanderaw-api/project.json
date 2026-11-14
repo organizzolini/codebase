@@ -1,0 +1,52 @@
+{
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "name": "meanderaw-api",
+  "projectType": "application",
+  "sourceRoot": "projects/meanderaw/meanderaw-api",
+  "tags": [
+    "domain:meanderaw",
+    "framework:nestjs",
+    "generator:nestjs-graphql-application",
+    "language:graphql",
+    "language:typescript",
+    "type:application"
+  ],
+  "targets": {
+    "await-health": {
+      "options": {
+        "url": "http://localhost:${MEANDERAW_API_PORT:-2162}/graphql"
+      }
+    },
+    "codometer": {},
+    "dependency-cruiser": {},
+    "deprecate-code": {},
+    "format-code": {},
+    "guard-code": {},
+    "knip": {},
+    "lint-code": {},
+    "markdown-lint": {},
+    "oxfmt": {},
+    "oxlint": {},
+    "prettier": {},
+    "spell-check": {},
+    "start": {
+      "continuous": true,
+      "description": "Start the MeanderawApi GraphQL API with restart on change",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node --watch --import @swc-node/register/esm-register src/meanderaw-api.ts",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "stop": {
+      "options": {
+        "port": "${MEANDERAW_API_PORT:-2162}"
+      }
+    },
+    "test-code": {},
+    "type-coverage": {},
+    "typecheck": {},
+    "typecheck-code": {},
+    "yaml-lint": {}
+  }
+}

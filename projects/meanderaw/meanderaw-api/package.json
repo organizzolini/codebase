@@ -1,0 +1,43 @@
+{
+  "dependencies": {
+    "@apollo/server": "catalog:",
+    "@codebase/meanderaw-db": "workspace:*",
+    "@codebase/observability": "workspace:*",
+    "@codebase/persistence": "workspace:*",
+    "@nestjs/apollo": "catalog:",
+    "@nestjs/common": "catalog:",
+    "@nestjs/config": "catalog:",
+    "@nestjs/core": "catalog:",
+    "@nestjs/graphql": "catalog:",
+    "@nestjs/platform-express": "catalog:",
+    "graphql": "catalog:",
+    "lightship": "catalog:",
+    "reflect-metadata": "catalog:",
+    "tslib": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@codebase/testing": "workspace:*",
+    "@golevelup/ts-vitest": "catalog:",
+    "@nestjs/testing": "catalog:",
+    "@swc-node/register": "catalog:",
+    "@swc/core": "catalog:",
+    "@swc/helpers": "catalog:",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "name": "meanderaw-api",
+  "type": "module",
+  "typeCoverage": {
+    "atLeast": 100,
+    "ignoreCatch": true,
+    "ignoreFiles": [
+      "**/*.test.ts",
+      "src/meanderaw-api.ts"
+    ],
+    "strict": true
+  },
+  "version": "0.0.1"
+}

@@ -36,7 +36,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **meanderaw**: The project name, the NestJS CLI that draws meanders into Postgres rows, and the meanderaw web application beside it.
 - **mesh**: A pattern characteristic named for a mesh of crossed strands, computed for each unit by IsMeshCharacteristicService.
 - **minima**: The canonical orbit minimum of each symmetry class, which draw pool cuts into batches for worker threads to draw.
-- **negative**:
+- **negative**: A characteristic number below 0, which the bridge refuses to store because its above-0 cutoff would silently drop it.
 - **north**: The top side of a lattice point or unit, one of the four compass sides the Code bits and edge flags name.
 - **orientation**: One of the sixteen orientation names a letter's glyph is evaluated under, such as a flip or a mirror of its base.
 - **phase**: A rotation offset of a Code's repeating unit, which canonical-phase scoring compares to choose the one identity.
