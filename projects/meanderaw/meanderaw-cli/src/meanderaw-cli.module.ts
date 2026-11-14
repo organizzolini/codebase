@@ -5,6 +5,7 @@ import { DiscoveryModule } from "@nestjs/core";
 import { LoggerModule } from "@codebase/observability";
 
 import { environmentSchema } from "./meanderaw-cli.constants";
+import { AggregateModule } from "./modules/aggregate/aggregate.module";
 import { DrawModule } from "./modules/draw/draw.module";
 import { DrawingModule } from "./modules/drawing/drawing.module";
 import { MatrixModule } from "./modules/matrix/matrix.module";
@@ -22,6 +23,7 @@ import { MatrixModule } from "./modules/matrix/matrix.module";
     }),
     DiscoveryModule,
     LoggerModule,
+    AggregateModule,
     DrawModule,
     // 🏛️ Registered even though `DrawModule` already provides the renderer: this keeps
     // the reverse direction, parsing a finished drawing back into Codes, resolvable.

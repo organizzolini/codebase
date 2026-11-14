@@ -9,6 +9,7 @@ export { Characteristic } from "./modules/meanderaw-database/entities/characteri
 export { MeanderCharacteristic } from "./modules/meanderaw-database/entities/meander-characteristic.entity";
 export { Meander } from "./modules/meanderaw-database/entities/meander.entity";
 export { ShapeCount } from "./modules/meanderaw-database/entities/shape-count.entity";
+export { MeanderawDatabaseAggregatesService } from "./modules/meanderaw-database/meanderaw-database-aggregates.service";
 // 📤 Exports
 export {
   BIGINT_NUMBER_TRANSFORMER,

@@ -7,6 +7,7 @@ import {
 import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
 import { environmentSchema } from "../src/meanderaw-cli.constants";
+import { AggregateCommand } from "../src/modules/aggregate/aggregate.command";
 import { CharacteristicsModule } from "../src/modules/characteristics/characteristics.module";
 import { CharacteristicsService } from "../src/modules/characteristics/characteristics.service";
 import { CodeModule } from "../src/modules/code/code.module";
@@ -33,6 +34,8 @@ export const DRAW_RUN_TIMEOUT_MILLISECONDS = 300_000;
 
 /** Everything a draw-run case reads back from one compiled `DrawCommand`. */
 export interface DrawRunFixture {
+  /** The `aggregate` command, for rebuilding the count tables on its own. */
+  aggregate: AggregateCommand;
   /** Closes the module and stops its throwaway Postgres container. */
   close: () => Promise<void>;
   command: DrawCommand;
@@ -42,6 +45,8 @@ export interface DrawRunFixture {
   enumeration: EnumerationService;
   /** The evaluators the draw run measures with, to recompute what a row should hold. */
   evaluators: CharacteristicsService;
+  /** Builds the row a Code describes, as the draw run would write it. */
+  records: DrawRecordService;
   repository: Repository<Meander>;
   /** The database service the command writes through. */
   service: MeanderawDatabaseService;
@@ -68,6 +73,7 @@ export async function startDrawRun(
     migrations: [...MEANDERAW_DATABASE_MIGRATIONS],
     project: "meanderaw",
     providers: [
+      AggregateCommand,
       DrawCommand,
       DrawEnumerationService,
       DrawIndexService,
@@ -86,12 +92,14 @@ export async function startDrawRun(
   });
 
   return {
+    aggregate: await database.module.resolve(AggregateCommand),
     close: database.close,
     command: await database.module.resolve(DrawCommand),
     corpus: database.module.get(CorpusService),
     dataSource: database.dataSource,
     enumeration: database.module.get(EnumerationService),
     evaluators: database.module.get(CharacteristicsService),
+    records: database.module.get(DrawRecordService),
     repository: database.repository(Meander),
     service: database.module.get(MeanderawDatabaseService),
   };

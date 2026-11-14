@@ -4,6 +4,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { DatabaseModule } from "@codebase/persistence";
 
 import { MEANDERAW_DATABASE_ENTITIES } from "./data-source.constants";
+import { MeanderawDatabaseAggregatesService } from "./meanderaw-database-aggregates.service";
 import { MEANDERAW_PROJECT } from "./meanderaw-database.constants";
 import { MeanderawDatabaseService } from "./meanderaw-database.service";
 
@@ -14,7 +15,11 @@ import { MeanderawDatabaseService } from "./meanderaw-database.service";
  */
 @Module({
   controllers: [],
-  exports: [MeanderawDatabaseService, TypeOrmModule],
+  exports: [
+    MeanderawDatabaseAggregatesService,
+    MeanderawDatabaseService,
+    TypeOrmModule,
+  ],
   imports: [
     DatabaseModule.forRoot({
       entities: [...MEANDERAW_DATABASE_ENTITIES],
@@ -22,6 +27,6 @@ import { MeanderawDatabaseService } from "./meanderaw-database.service";
     }),
     TypeOrmModule.forFeature([...MEANDERAW_DATABASE_ENTITIES]),
   ],
-  providers: [MeanderawDatabaseService],
+  providers: [MeanderawDatabaseAggregatesService, MeanderawDatabaseService],
 })
 export class MeanderawDatabaseModule {}

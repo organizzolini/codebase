@@ -4,6 +4,7 @@
 
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
+- **aggregate**:
 - **arcade**: A pattern characteristic for a unit with no cross or bare dot, computed by IsArcadeCharacteristicService for each unit.
 - **arm**: One arm of a letter's ink, a stroke end the letter utilities count and sum through LetterUtilitiesService.reduce.
 - **band**: The cyclic strip of a Code's repeating unit that characteristics read as a graph, and that drawing cuts at a width.
@@ -11,6 +12,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **border**: An edge of the unit's grid, which the top and bottom border touch-count characteristics check for ink touching it.
 - **br**: Bottom-right corner digit of the 2x2 window that EmbeddedUCountCharacteristicService reads when counting embedded U shapes.
 - **breadth**: Callidescope's count of the direct calls a callable makes, recorded in the project's Breadth table for the gate.
+- **brute**:
 - **budget**: The edge budget capping how many edges a Code may hold, which bounds enumeration and sets the corpus's fixed historical cutoff.
 - **canonical**: The phase-normalized form of a Code, the lowest rotation chosen as its identity, scored by the canonical-phase scorer.
 - **category**: A grouping of characteristic evaluators, each in its own service under a category folder and shown with a display name.
@@ -26,6 +28,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **fork**: A point with three branches of ink, which IsForkCharacteristicService and the fork submatrix count for each unit.
 - **hebrew**: The Hebrew script, whose letter shapes such as dalet get their own letter characteristics services with orientation evaluators.
 - **historical**: Adjective for the retired corpus of meanders, kept as hardcoded rows and ingested by CorpusService before enumeration.
+- **holder**:
 - **horizontal**: Adjective for left-to-right runs and rectangles, such as horizontal rectangle counts and the longest horizontal run length.
 - **ingest**: CorpusService.ingest, which takes the historical corpus entries and writes them into the database before the draw run.
 - **ink**: The inked points of a unit, the strokes a Code draws, which nearly every characteristic counts, walks, or measures.
@@ -43,6 +46,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **place**: A position in a Code's band or grid where a cut or read happens, such as a different cut of the same band.
 - **pure**: Adjective for a tree-shaped ink unit with no loops, as IsPureTreeCharacteristicService checks, and for pure value computation.
 - **quarter**: Suffix in corner keys such as Quarter and ThreeQuarter, naming a partial corner count, and also a quarter turn of a unit.
+- **rebuild**:
 - **rectangle**: A solid block of inked points, which the rectangle submatrix characteristics count and measure across each unit.
 - **reply**: A DrawWorkerReply message a draw worker posts back to the pool, handled by DrawPoolService when a batch finishes or fails.
 - **representative**: The canonical member standing for a symmetry class, from which the draw worker builds the class and its stored Code.
@@ -54,6 +58,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **strand**: A maximal run of ink through degree-two points, which StrandUtilitiesService cuts out of a repeat for the strand characteristics.
 - **submatrix**: A folder of characteristic evaluators that read one sub-window of a Code's unit, such as point, letter, corner, or rectangle.
 - **swirl**: A pattern characteristic for a unit whose strands wind one way, computed by IsSwirlCharacteristicService for each Code.
+- **tally**:
 - **tian**: Romanized name of a Hanzi glyph whose orientations get a letter characteristics service class with sixteen evaluators.
 - **tile**: A square cell of the lattice with its four direction bits, handled by TileService and TileCrossingCharacteristicsModule.
 - **trace**: A callidescope trace, the call-stack walk the gate measures, or a motif trace that path-data test helpers split out of a unit.
