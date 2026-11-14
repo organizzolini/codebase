@@ -4,14 +4,14 @@
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-3392-22c55e?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-3390-22c55e?style=flat-square)
 ![Repository Size](https://img.shields.io/badge/Repository_Size-158.90_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-22-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-79-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-78-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-79-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-78-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-17-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-5-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
@@ -30,7 +30,7 @@
 ![Sync Functions](https://img.shields.io/badge/Sync_Functions-243-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-74-059669?style=flat-square)
 ![Constants](https://img.shields.io/badge/Constants-195-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-209-0284c7?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-208-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-76-ea580c?style=flat-square)
 ![Comments](https://img.shields.io/badge/Comments-194-64748b?style=flat-square)
 ![Comment Lines](https://img.shields.io/badge/Comment_Lines-279-475569?style=flat-square)

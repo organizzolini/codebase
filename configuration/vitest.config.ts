@@ -1,4 +1,13 @@
+import { join } from "node:path";
+
 import { configDefaults, defineConfig } from "vitest/config";
+
+// The shared setup by absolute path: a bare specifier resolves from the project,
+// which need not list `@codebase/testing` as a dependency.
+const sharedSetup = join(
+  import.meta.dirname,
+  "../projects/common/testing/src/setup.ts",
+);
 
 const vitestConfig = defineConfig({
   resolve: {
@@ -6,6 +15,8 @@ const vitestConfig = defineConfig({
   },
   test: {
     coverage: {
+      exclude: ["src/**/*.test.ts"],
+      include: ["src/**/*.ts"],
       provider: "v8",
       reporter: ["text", "json-summary", "lcov", "html"],
       reportOnFailure: true,
@@ -28,7 +39,8 @@ const vitestConfig = defineConfig({
       "testing/**/*.test.ts",
       "testing/**/*.test.tsx",
     ],
-    setupFiles: ["./testing/setup.ts"],
+    // A project that needs more adds its own file to this list.
+    setupFiles: [sharedSetup],
   },
 });
 
