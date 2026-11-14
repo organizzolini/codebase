@@ -5,6 +5,8 @@ import { MODULE_METADATA } from "@nestjs/common/constants";
 import { GRAPHQL_MODULE_OPTIONS } from "@nestjs/graphql";
 import { describe, expect, it, vi } from "vitest";
 
+import { useWorkingDirectory } from "@codebase/testing";
+
 import { LexicoApiModule } from "./lexico-api.module";
 
 /**
@@ -52,11 +54,10 @@ describe("lexico api module suite", () => {
   it("emits the schema beside the module whatever the working directory", async () => {
     expect.hasAssertions();
 
-    const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(tmpdir());
+    useWorkingDirectory(tmpdir());
     vi.resetModules();
     const { LexicoApiModule: freshModule } =
       await import("./lexico-api.module");
-    cwdSpy.mockRestore();
 
     expect(findAutoSchemaFile(freshModule)).toBe(
       fileURLToPath(new URL("schema.gql", import.meta.url)),
