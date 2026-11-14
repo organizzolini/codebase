@@ -10,6 +10,14 @@ import {
 } from "vitest";
 
 import {
+  CodeModule,
+  DrawingModule,
+  GeometryService,
+  MatrixModule,
+  SvgService,
+  TileService,
+} from "@codebase/meanderaw-core";
+import {
   Meander,
   MEANDERAW_DATABASE_MIGRATIONS,
   MeanderawDatabaseModule,
@@ -23,14 +31,8 @@ import {
 
 import { storedCharacteristics } from "../../../testing/bridge";
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
-import { CodeModule } from "../code/code.module";
 import { CorpusService } from "../corpus/corpus.service";
-import { DrawingModule } from "../drawing/drawing.module";
-import { GeometryService } from "../geometry/geometry.service";
 import { GraphService } from "../graph/graph.service";
-import { MatrixModule } from "../matrix/matrix.module";
-import { SvgService } from "../svg/svg.service";
-import { TileService } from "../tile/tile.service";
 
 import { DrawCodeService } from "./draw-code.service";
 import { DrawEnumerationService } from "./draw-enumeration.service";

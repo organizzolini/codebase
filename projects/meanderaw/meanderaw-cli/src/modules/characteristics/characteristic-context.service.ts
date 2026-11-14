@@ -1,10 +1,9 @@
 import { Inject, Injectable } from "@nestjs/common";
 
-import { CodeService } from "../code/code.service";
-import { MatrixService } from "../matrix/matrix.service";
+import { CodeService, MatrixService } from "@codebase/meanderaw-core";
 
-import type { Code, CodeObject } from "../code/code.types";
 import type { CharacteristicContext } from "./characteristics.types";
+import type { Code, CodeObject } from "@codebase/meanderaw-core";
 
 /**
  * Prepares the one {@link CharacteristicContext} every evaluator reads, so a Code is

@@ -1,0 +1,50 @@
+{
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "name": "meanderaw-core",
+  "projectType": "library",
+  "sourceRoot": "projects/meanderaw/meanderaw-core",
+  "tags": [
+    "framework:nestjs",
+    "generator:nestjs-service-project",
+    "language:typescript",
+    "name:meanderaw-core",
+    "type:package"
+  ],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "options": {
+        "assets": [
+          {
+            "glob": "README.md",
+            "input": "projects/meanderaw/meanderaw-core",
+            "output": "."
+          }
+        ],
+        "generatePackageJson": false,
+        "main": "projects/meanderaw/meanderaw-core/src/index.ts",
+        "outputPath": "projects/meanderaw/meanderaw-core/dist",
+        "tsConfig": "projects/meanderaw/meanderaw-core/tsconfig.build.json"
+      },
+      "outputs": ["{options.outputPath}"]
+    },
+    "build-projects": {},
+    "codometer": {},
+    "dependency-cruiser": {},
+    "deprecate-code": {},
+    "format-code": {},
+    "guard-code": {},
+    "knip": {},
+    "lint-code": {},
+    "markdown-lint": {},
+    "oxfmt": {},
+    "oxlint": {},
+    "prettier": {},
+    "spell-check": {},
+    "test-code": {},
+    "type-coverage": {},
+    "typecheck": {},
+    "typecheck-code": {},
+    "yaml-lint": {}
+  }
+}

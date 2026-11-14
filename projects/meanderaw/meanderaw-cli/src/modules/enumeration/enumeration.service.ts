@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
-import { CodeService } from "../code/code.service";
+import { CodeService } from "@codebase/meanderaw-core";
 
 import { DRAW_MINIMUM_ROWS } from "./enumeration.constants";
 import { TileEnumerationService } from "./tile-enumeration.service";

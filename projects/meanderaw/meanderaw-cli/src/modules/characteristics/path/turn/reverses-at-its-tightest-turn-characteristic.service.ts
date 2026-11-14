@@ -3,7 +3,6 @@ import { Inject, Injectable } from "@nestjs/common";
 import { ConnectivityService } from "../../connectivity/connectivity.service";
 import { PointUtilitiesService } from "../../submatrix/point/point-utilities.service";
 
-import type { Matrix } from "../../../matrix/matrix.types";
 import type {
   CharacteristicContext,
   CharacteristicEvaluator,
@@ -11,6 +10,7 @@ import type {
 } from "../../characteristics.types";
 import type { CodeEdge } from "../../connectivity/connectivity.types";
 import type { TurnTraceMetrics } from "./reverses-at-its-tightest-turn.types";
+import type { Matrix } from "@codebase/meanderaw-core";
 
 /**
  * Whether one repeat's ink reverses at its tightest turn, a turn one lattice step after the

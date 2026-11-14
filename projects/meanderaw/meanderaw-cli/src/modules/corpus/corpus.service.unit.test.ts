@@ -1,19 +1,19 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { CodeService } from "@codebase/meanderaw-core";
 import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { characteristicRecord } from "../../../testing/meanders";
 import { CharacteristicsService } from "../characteristics/characteristics.service";
-import { CodeService } from "../code/code.service";
 import { TileEnumerationService } from "../enumeration/tile-enumeration.service";
 
 import { DuplicateCorpusCodeError } from "./corpus.constants";
 import { CorpusService } from "./corpus.service";
 
-import type { Tile } from "../tile/tile.types";
 import type { CorpusEntry } from "./corpus.types";
+import type { Tile } from "@codebase/meanderaw-core";
 import type { Meander } from "@codebase/meanderaw-db";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 

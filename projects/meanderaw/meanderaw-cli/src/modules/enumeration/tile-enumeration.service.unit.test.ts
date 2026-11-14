@@ -1,12 +1,14 @@
 import { ConfigService } from "@nestjs/config";
 import { beforeAll, describe, expect, it } from "vitest";
 
+import {
+  CodeService,
+  SymmetryService,
+  TileService,
+} from "@codebase/meanderaw-core";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { environmentSchema } from "../../meanderaw-cli.constants";
-import { CodeService } from "../code/code.service";
-import { SymmetryService } from "../symmetry/symmetry.service";
-import { TileService } from "../tile/tile.service";
 
 import { OversizedTileError } from "./enumeration.constants";
 import { TileEnumerationService } from "./tile-enumeration.service";

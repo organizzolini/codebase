@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import type { MatrixPoint } from "../../../matrix/matrix.types";
+import type { MatrixPoint } from "@codebase/meanderaw-core";
 
 /**
  * Shared reading of a single point's raw arm count, injected by every

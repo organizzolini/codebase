@@ -1,4 +1,10 @@
 import {
+  CodeModule,
+  DrawingModule,
+  GeometryModule,
+  SymmetryModule,
+} from "@codebase/meanderaw-core";
+import {
   Meander,
   MEANDERAW_DATABASE_MIGRATIONS,
   MeanderawDatabaseModule,
@@ -10,7 +16,6 @@ import { environmentSchema } from "../src/meanderaw-cli.constants";
 import { AggregateCommand } from "../src/modules/aggregate/aggregate.command";
 import { CharacteristicsModule } from "../src/modules/characteristics/characteristics.module";
 import { CharacteristicsService } from "../src/modules/characteristics/characteristics.service";
-import { CodeModule } from "../src/modules/code/code.module";
 import { CorpusService } from "../src/modules/corpus/corpus.service";
 import { DrawEnumerationService } from "../src/modules/draw/draw-enumeration.service";
 import { DrawIndexService } from "../src/modules/draw/draw-index.service";
@@ -18,11 +23,8 @@ import { DrawPoolService } from "../src/modules/draw/draw-pool.service";
 import { DrawRecordService } from "../src/modules/draw/draw-record.service";
 import { DrawWorkerService } from "../src/modules/draw/draw-worker.service";
 import { DrawCommand } from "../src/modules/draw/draw.command";
-import { DrawingModule } from "../src/modules/drawing/drawing.module";
 import { EnumerationModule } from "../src/modules/enumeration/enumeration.module";
 import { EnumerationService } from "../src/modules/enumeration/enumeration.service";
-import { GeometryModule } from "../src/modules/geometry/geometry.module";
-import { SymmetryModule } from "../src/modules/symmetry/symmetry.module";
 
 import { DRAW_TEST_EDGE_BUDGET, DRAW_TEST_WORKERS } from "./draw-run-budget";
 

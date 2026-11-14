@@ -3,10 +3,9 @@
 
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
+import { CodeModule, MatrixModule } from "@codebase/meanderaw-core";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { CodeModule } from "../../../code/code.module";
-import { MatrixModule } from "../../../matrix/matrix.module";
 import { CharacteristicContextService } from "../../characteristic-context.service";
 import { DoubleHorizontalEdgeCountCharacteristicService } from "../../submatrix/point/double-horizontal-edge-count-characteristic.service";
 import { IsClosedLoopCharacteristicService } from "../structure/is-closed-loop-characteristic.service";

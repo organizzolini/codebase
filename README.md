@@ -225,6 +225,7 @@ Enumerate, measure, and classify greek meander patterns
 
 **[meanderaw-db](projects/meanderaw/meanderaw-db)** - TypeORM entities, migrations, and data source shared by meanderaw-cli and the meanderaw apps that read the meanders\
 **[meanderaw-cli](projects/meanderaw/meanderaw-cli)** - CLI that enumerates Greek meander (key/fret) patterns into a Postgres database, measuring and classifying each by its Code\
+**[meanderaw-core](projects/meanderaw/meanderaw-core)** - NestJS drawing stack (Code, tile, symmetry, matrix, geometry, drawing, and SVG) that meanderaw-cli draws with and a later browser build could reuse\
 **[meanderaw-web](projects/meanderaw/meanderaw-web)** - TanStack Start SSR web application for showing and exploring the meanders meanderaw-cli generates
 
 ### 🤝 Common

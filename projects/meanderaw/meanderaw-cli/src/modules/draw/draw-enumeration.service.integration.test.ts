@@ -2,6 +2,15 @@ import { ConfigService } from "@nestjs/config";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import {
+  CodeService,
+  DrawingService,
+  GeometryService,
+  MatrixService,
+  SvgService,
+  SymmetryService,
+  TileService,
+} from "@codebase/meanderaw-core";
+import {
   Meander,
   MEANDERAW_DATABASE_MIGRATIONS,
   MeanderawDatabaseModule,
@@ -20,16 +29,9 @@ import {
 import { environmentSchema } from "../../meanderaw-cli.constants";
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
 import { CharacteristicsService } from "../characteristics/characteristics.service";
-import { CodeService } from "../code/code.service";
-import { DrawingService } from "../drawing/drawing.service";
 import { EnumerationService } from "../enumeration/enumeration.service";
 import { TileEnumerationService } from "../enumeration/tile-enumeration.service";
-import { GeometryService } from "../geometry/geometry.service";
 import { GraphService } from "../graph/graph.service";
-import { MatrixService } from "../matrix/matrix.service";
-import { SvgService } from "../svg/svg.service";
-import { SymmetryService } from "../symmetry/symmetry.service";
-import { TileService } from "../tile/tile.service";
 
 import { DrawEnumerationService } from "./draw-enumeration.service";
 import { DrawPoolService } from "./draw-pool.service";

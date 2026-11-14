@@ -1,12 +1,15 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 
+import {
+  CodeModule,
+  DrawingModule,
+  SymmetryModule,
+} from "@codebase/meanderaw-core";
+
 import { environmentSchema } from "../../meanderaw-cli.constants";
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
-import { CodeModule } from "../code/code.module";
-import { DrawingModule } from "../drawing/drawing.module";
 import { EnumerationModule } from "../enumeration/enumeration.module";
-import { SymmetryModule } from "../symmetry/symmetry.module";
 
 import { DrawRecordService } from "./draw-record.service";
 import { DrawWorkerService } from "./draw-worker.service";

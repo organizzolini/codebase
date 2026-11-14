@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 
+import { CodeModule } from "@codebase/meanderaw-core";
 import { MeanderawDatabaseModule } from "@codebase/meanderaw-db";
 
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
-import { CodeModule } from "../code/code.module";
 import { EnumerationModule } from "../enumeration/enumeration.module";
 
 import { CorpusService } from "./corpus.service";

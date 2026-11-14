@@ -2,8 +2,8 @@ import { Inject, Injectable } from "@nestjs/common";
 
 import { SubmatrixUtilitiesService } from "../submatrix-utilities.service";
 
-import type { Matrix } from "../../../matrix/matrix.types";
 import type { SubmatrixOffset } from "../submatrix.types";
+import type { Matrix } from "@codebase/meanderaw-core";
 
 /**
  * Finds the isolated rectangular rings of a matrix for the rectangle group,

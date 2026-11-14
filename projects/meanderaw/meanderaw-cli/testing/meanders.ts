@@ -7,7 +7,7 @@ import type {
   NumericCharacteristicKey,
   NumericCharacteristicRecord,
 } from "../src/modules/characteristics/characteristics.types";
-import type { CodeObject } from "../src/modules/code/code.types";
+import type { CodeObject } from "@codebase/meanderaw-core";
 import type { MeanderRecord } from "@codebase/meanderaw-db";
 
 /**
