@@ -482,4 +482,92 @@ describe("index", () => {
       expect(screen.queryByRole("status")).toBeNull();
     });
   });
+
+  it("reads the filter from a shared link, shows it as chips and narrows the cards", async () => {
+    const api = serveMeandersApi(8);
+    const filter = {
+      combinator: "and",
+      rules: [
+        { field: "junctionCount", operator: "gte", value: 3 },
+        {
+          combinator: "or",
+          rules: [{ field: "isChain", operator: "is", value: true }],
+        },
+      ],
+    };
+
+    await renderRoute(
+      getRouter(),
+      `/?filter=${encodeURIComponent(JSON.stringify(filter))}`,
+    );
+
+    await expect(
+      screen.findByRole("button", { name: "Remove Junction count ≥ 3" }),
+    ).resolves.toBeDefined();
+    expect(
+      screen.getByRole("button", { name: "Remove Chain is true" }),
+    ).toBeDefined();
+    expect(
+      screen.getByRole("button", { name: "Filter, 2 active" }),
+    ).toBeDefined();
+    expect(screen.getByText("2 meanders")).toBeDefined();
+    expect(codesShown()).toStrictEqual(["01x01y0003", "01x01y0006"]);
+    expect(api.requests[0]).toMatchObject({
+      filter: {
+        combinator: "AND",
+        groups: [{ combinator: "OR" }],
+        rules: [{ field: "junctionCount", numbers: [3], operator: "GTE" }],
+      },
+    });
+  });
+
+  it("opens the builder on the filter a link carries", async () => {
+    serveMeandersApi(8);
+    const filter = {
+      combinator: "and",
+      rules: [{ field: "junctionCount", operator: "between", value: [2, 3] }],
+    };
+
+    await renderRoute(
+      getRouter(),
+      `/?filter=${encodeURIComponent(JSON.stringify(filter))}`,
+    );
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Filter, 1 active" }),
+    );
+
+    expect(screen.getByLabelText<HTMLSelectElement>("Operator").value).toBe(
+      "between",
+    );
+    expect(screen.getByLabelText<HTMLInputElement>("From").value).toBe("2");
+    expect(screen.getByLabelText<HTMLInputElement>("To").value).toBe("3");
+  });
+
+  it("leaves out a filter that is not a tree, and the rules the catalog cannot answer", async () => {
+    const api = serveMeandersApi(8);
+    const router = getRouter();
+
+    await renderRoute(router, "/?filter=%7Bnot-json");
+    await screen.findAllByTestId("meander-card");
+
+    expect(screen.getByText("8 meanders")).toBeDefined();
+    expect(api.requests[0]?.filter).toBeUndefined();
+
+    const stale = {
+      combinator: "and",
+      rules: [{ field: "retired", operator: "eq", value: 1 }],
+    };
+
+    await renderRoute(
+      getRouter(),
+      `/?filter=${encodeURIComponent(JSON.stringify(stale))}`,
+    );
+
+    await waitFor(() => {
+      expect(screen.getAllByText("8 meanders").length).toBeGreaterThan(0);
+    });
+
+    expect(api.requests.at(-1)?.filter).toBeUndefined();
+    expect(screen.queryByTestId("filter-chip-row")).toBeNull();
+  });
 });

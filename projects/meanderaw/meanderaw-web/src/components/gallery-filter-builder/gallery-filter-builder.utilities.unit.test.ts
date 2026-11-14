@@ -14,6 +14,7 @@ import {
   describeRule,
   listRules,
   removeNode,
+  sanitizeFilter,
   setCombinator,
   setRule,
   toFilterInput,
@@ -199,6 +200,42 @@ describe("gallery filter builder utilities", () => {
           combinator: "and",
           rules: [{ combinator: "or", rules: [] }],
         }),
+      ).toBeUndefined();
+    });
+  });
+
+  describe(sanitizeFilter, () => {
+    it("keeps a tree the catalog can answer", () => {
+      expect(sanitizeFilter(TREE, FIELDS)).toStrictEqual(TREE);
+    });
+
+    it("drops rules naming an unknown field, a stranger operator or a mismatched value", () => {
+      expect(
+        sanitizeFilter(
+          {
+            combinator: "and",
+            rules: [
+              { field: "gone", operator: "eq", value: 1 },
+              { field: "rows", operator: "is", value: true },
+              { field: "rows", operator: "eq", value: "two" },
+              { field: "rows", operator: "between", value: 2 },
+              { field: "rows", operator: "eq", value: [1, 2] },
+              ROWS,
+              { combinator: "or", rules: [{ ...ROWS, field: "gone" }] },
+            ],
+          },
+          FIELDS,
+        ),
+      ).toStrictEqual({ combinator: "and", rules: [ROWS] });
+    });
+
+    it("gives none when nothing is left", () => {
+      expect(sanitizeFilter(undefined, FIELDS)).toBeUndefined();
+      expect(
+        sanitizeFilter(
+          { combinator: "and", rules: [{ ...ROWS, field: "gone" }] },
+          FIELDS,
+        ),
       ).toBeUndefined();
     });
   });

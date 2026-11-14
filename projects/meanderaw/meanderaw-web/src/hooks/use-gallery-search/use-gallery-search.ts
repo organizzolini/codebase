@@ -60,7 +60,6 @@ export function useGallerySearch(): UseGallerySearchResult {
   // 🎁 Result
   return {
     direction,
-    filter: search.filter,
     handleFilterChange,
     handleSortChange,
     handleViewChange,

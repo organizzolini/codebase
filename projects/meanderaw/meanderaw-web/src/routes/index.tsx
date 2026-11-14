@@ -8,6 +8,7 @@ import {
 import { GalleryError } from "../components/gallery-error/gallery-error";
 import {
   createFilterFields,
+  sanitizeFilter,
   toFilterInput,
 } from "../components/gallery-filter-builder/gallery-filter-builder.utilities";
 import { GalleryFilters } from "../components/gallery-filters/gallery-filters";
@@ -54,12 +55,17 @@ export const Route = createFileRoute("/")({
     const characteristics = await findCharacteristics();
     // A sort the catalog does not know falls back to the default order.
     const sort = resolveSortField(deps.sort, characteristics);
+    // A filter the catalog cannot answer is left out of the read and the page.
+    const filter = sanitizeFilter(
+      deps.filter,
+      createFilterFields(characteristics),
+    );
     const page = await findMeanders({
-      filter: toFilterInput(deps.filter),
+      filter: toFilterInput(filter),
       sort: toSortInput(sort, deps.direction),
     });
 
-    return { characteristics, page, sort };
+    return { characteristics, filter, page, sort };
   },
 });
 
@@ -90,10 +96,9 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
  */
 function IndexPage(): ReactNode {
   // 🪝 Hooks
-  const { characteristics, page, sort } = Route.useLoaderData();
+  const { characteristics, filter, page, sort } = Route.useLoaderData();
   const {
     direction,
-    filter,
     handleFilterChange,
     handleSortChange,
     handleViewChange,

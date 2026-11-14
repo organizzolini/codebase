@@ -210,6 +210,26 @@ export function removeNode(path: readonly number[]): FilterEdit {
 }
 
 /**
+ * Drops from a filter a link carried every rule the catalog cannot answer,
+ * and the groups that leaves empty; none when nothing is left.
+ */
+export function sanitizeFilter(
+  group: FilterGroup | undefined,
+  fields: readonly FilterField[],
+): FilterGroup | undefined {
+  if (group === undefined) {
+    return undefined;
+  }
+
+  const clean = pruneGroup({
+    ...group,
+    rules: keepUsableNodes(group.rules, fields),
+  });
+
+  return clean.rules.length === 0 ? undefined : clean;
+}
+
+/**
  * Sets how the group at a path joins what is in it.
  */
 export function setCombinator(
@@ -262,6 +282,37 @@ export function toFilterInput(
   }
 
   return toGroupInput(group, rules, groups);
+}
+
+/**
+ * Keeps the nodes a catalog can answer: rules naming a known field with an
+ * operator and a value it takes, and the groups of such nodes.
+ */
+function keepUsableNodes(
+  nodes: readonly FilterNode[],
+  fields: readonly FilterField[],
+): FilterNode[] {
+  const kept: FilterNode[] = [];
+
+  for (const node of nodes) {
+    if ("rules" in node) {
+      kept.push({ ...node, rules: keepUsableNodes(node.rules, fields) });
+      continue;
+    }
+
+    const field = fields.find(({ key }) => key === node.field);
+
+    if (
+      field !== undefined &&
+      OPERATORS_BY_TYPE[field.type].includes(node.operator) &&
+      typeOfValue(node.value) === field.type &&
+      (node.operator === "between") === Array.isArray(node.value)
+    ) {
+      kept.push(node);
+    }
+  }
+
+  return kept;
 }
 
 /**

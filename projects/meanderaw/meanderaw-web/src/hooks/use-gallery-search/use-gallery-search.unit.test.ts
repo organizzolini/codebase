@@ -37,7 +37,6 @@ describe(useGallerySearch, () => {
 
     expect(result.current).toStrictEqual({
       direction: "asc",
-      filter: undefined,
       handleFilterChange: result.current.handleFilterChange,
       handleSortChange: result.current.handleSortChange,
       handleViewChange: result.current.handleViewChange,

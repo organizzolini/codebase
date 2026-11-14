@@ -26,6 +26,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **radius**: Design token for the corner rounding of a card, `--radius-card` in the theme.
 - **role**: Accessibility role argument in testing-library queries such as findByRole, which the index integration test uses to find the heading.
 - **unmount**: To remove a rendered component from the page, as a test does to start a fresh render within one test.
+- **usable**:
 - **window**: The browser window, whose scroll position the gallery's virtualizer follows so the page scrolls as one, rather than an inner scroll area.
 
 <!-- coinagerie:end -->
