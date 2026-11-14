@@ -9,7 +9,10 @@ import {
   useTemporaryDirectory,
   writeFileTree,
 } from "@codebase/testing";
-import { runSourceCommand } from "@codebase/testing/end-to-end";
+import {
+  listExampleNames,
+  runSourceCommand,
+} from "@codebase/testing/end-to-end";
 
 import callidescopeConfiguration from "../callidescope.workspace.config.js";
 
@@ -42,13 +45,9 @@ const AGGREGATE_TARGET_NAME = "examples";
 const RUN_IT_COMMAND = `nx run ${readProjectDefinition().name}:${AGGREGATE_TARGET_NAME}`;
 
 /** Every directory under `examples/`, whether or not it is a project. */
-const EXAMPLE_NAMES = readdirSync(
+const EXAMPLE_NAMES = listExampleNames(
   path.join(WORKSPACE_ROOT, EXAMPLES_DIRECTORY, "examples"),
-  { withFileTypes: true },
-)
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => entry.name)
-  .toSorted();
+);
 
 /** The nested project that carries its own limits, and breaches both. */
 const GATED_LEAF_DIRECTORY = `${EXAMPLES_DIRECTORY}/examples/gated-leaf`;
