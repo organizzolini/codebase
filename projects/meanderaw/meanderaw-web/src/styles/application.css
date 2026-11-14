@@ -1,1 +1,31 @@
 @import "tailwindcss";
+
+/*
+ * Design tokens, dark with a slight green tint: every neutral leans toward
+ * hue 150. Markup reads them as `bg-(--surface)`, `text-(--ink-muted)`.
+ */
+:root {
+  --surface: oklch(17% 0.02 150deg);
+  --surface-raised: oklch(22% 0.025 150deg);
+  --surface-sunken: oklch(14% 0.02 150deg);
+  --line: oklch(32% 0.03 150deg);
+  --ink: oklch(94% 0.015 150deg);
+  --ink-muted: oklch(72% 0.03 150deg);
+  --accent: oklch(78% 0.15 150deg);
+  --accent-ink: oklch(18% 0.03 150deg);
+  --danger: oklch(72% 0.17 25deg);
+  --radius-card: 0.75rem;
+
+  /* The narrowest a grid card gets before a column gives way. */
+  --card-min-width: 16rem;
+
+  color-scheme: dark;
+}
+
+@layer base {
+  body {
+    background-color: var(--surface);
+    color: var(--ink);
+    margin: 0;
+  }
+}
