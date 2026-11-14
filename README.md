@@ -224,6 +224,7 @@ Latin-English dictionary suite: the web application, its components, its schema,
 Enumerate, measure, and classify greek meander patterns
 
 **[meanderaw-cli](projects/meanderaw/meanderaw-cli)** - CLI that enumerates Greek meander (key/fret) patterns into a Postgres database, measuring and classifying each by its Code\
+**[meanderaw-core](projects/meanderaw/meanderaw-core)** - NestJS drawing stack (Code, tile, symmetry, matrix, geometry, drawing, and SVG) that meanderaw-cli draws with and meanderaw-web will draw with later\
 **[meanderaw-web](projects/meanderaw/meanderaw-web)** - TanStack Start SSR web application for showing and exploring the meanders meanderaw-cli generates
 
 ### 🤝 Common
