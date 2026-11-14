@@ -37,7 +37,7 @@ export class Characteristic {
   @Column({ type: "text" })
   key!: string;
 
-  /** How many meanders hold it, rebuilt by the aggregate step. */
+  /** How many meanders hold it; not yet populated. */
   @Column({
     default: 0,
     transformer: BIGINT_NUMBER_TRANSFORMER,

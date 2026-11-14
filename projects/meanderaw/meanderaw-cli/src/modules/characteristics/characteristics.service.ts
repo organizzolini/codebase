@@ -265,19 +265,19 @@ export class CharacteristicsService implements OnApplicationBootstrap {
   }
 
   /**
-   * A record as the bridge stores it: numbers above 0, held booleans as `true`, and `isReducible` when the Code is reducible. Throws on a negative number.
+   * A record as the bridge stores it: numbers above 0, held booleans as `true`, and `isReducible` when the Code is reducible. Throws on a negative or NaN number.
    */
   public stored(
     characteristics: Characteristics,
     isReducible: boolean,
   ): StoredCharacteristics {
     const negative = NUMERIC_CHARACTERISTIC_KEYS.find(
-      (key) => characteristics[key] < 0,
+      (key) => !(characteristics[key] >= 0),
     );
 
     if (negative !== undefined) {
       throw new CharacteristicRegistryError(
-        `Characteristic "${negative}" computed ${characteristics[negative]}, but only values above 0 are stored, so a negative one would read as 0`,
+        `Characteristic "${negative}" computed ${characteristics[negative]}, but only values above 0 are stored, so a negative or NaN one would read as 0`,
       );
     }
 
