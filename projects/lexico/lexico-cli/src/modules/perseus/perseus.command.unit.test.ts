@@ -5,7 +5,11 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
 import { createTemporaryDirectory } from "@codebase/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
+import {
+  buildTestingModule,
+  mockErrorLogEntries,
+  setErrorLogFilePath,
+} from "@codebase/testing/nestjs";
 
 import { resetCommandTestHarness } from "../../../testing/command-harness";
 
@@ -50,16 +54,8 @@ describe(PerseusCommand, () => {
     mkdirMock.mockResolvedValue(undefined);
     writeFileMock.mockResolvedValue(undefined);
 
-    logger.buildErrorLogEntry.mockImplementation((context, error) => {
-      const errorMessage =
-        error instanceof Error ? error.stack || error.message : String(error);
-      return {
-        errorMessage,
-        logLine: `[${new Date().toISOString()}] ${context}: ${errorMessage}\n`,
-      };
-    });
-    (command as unknown as { errorLogFilePath: string }).errorLogFilePath =
-      "/tmp/perseus-errors.log";
+    mockErrorLogEntries(logger);
+    setErrorLogFilePath(command, "/tmp/perseus-errors.log");
   });
 
   it("resolves with its dependencies", async () => {
