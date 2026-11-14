@@ -13,7 +13,7 @@ let viewportWidth = DESKTOP_WIDTH;
  * watching resize observer the size of what it starts to watch.
  */
 export function installViewport(): void {
-  viewportWidth = DESKTOP_WIDTH;
+  setViewportWidth(DESKTOP_WIDTH);
   Object.defineProperty(globalThis, "scrollY", {
     configurable: true,
     value: 0,
@@ -69,4 +69,5 @@ export function scrollWindowTo(top: number): void {
  */
 export function setViewportWidth(width: number): void {
   viewportWidth = width;
+  globalThis.innerWidth = width;
 }

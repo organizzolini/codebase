@@ -5,11 +5,11 @@ import {
 } from "@tanstack/react-router";
 
 import { GalleryError } from "../components/gallery-error/gallery-error";
-import { GalleryFilterBuilder } from "../components/gallery-filter-builder/gallery-filter-builder";
 import {
   createFilterFields,
   toFilterInput,
 } from "../components/gallery-filter-builder/gallery-filter-builder.utilities";
+import { GalleryFilters } from "../components/gallery-filters/gallery-filters";
 import { GallerySort } from "../components/gallery-sort/gallery-sort";
 import { GalleryToolbar } from "../components/gallery-toolbar/gallery-toolbar";
 import { MeanderGallery } from "../components/meander-gallery/meander-gallery";
@@ -117,7 +117,7 @@ function IndexPage(): ReactNode {
   return (
     <section className="flex flex-col gap-4 p-4">
       <h1 className="text-xl">Meanderaw</h1>
-      <GalleryFilterBuilder
+      <GalleryFilters
         fields={fields}
         filter={filter}
         onFilterChange={handleFilterChange}

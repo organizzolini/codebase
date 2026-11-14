@@ -332,6 +332,7 @@ describe("index", () => {
 
     expect(screen.getByText("8 meanders")).toBeDefined();
 
+    fireEvent.click(screen.getByRole("button", { name: "Filter" }));
     fireEvent.click(screen.getByRole("button", { name: "Add rule" }));
     await setControl("Field", "junctionCount");
     await setControl("Operator", "gte");
@@ -373,6 +374,7 @@ describe("index", () => {
 
     await renderRoute(router, "/");
     await screen.findAllByTestId("meander-card");
+    fireEvent.click(screen.getByRole("button", { name: "Filter" }));
     fireEvent.click(screen.getByRole("button", { name: "Add rule" }));
     await setControl("Value", "9");
 
@@ -387,5 +389,48 @@ describe("index", () => {
     });
 
     expect({ ...router.state.location.search }).toStrictEqual({});
+  });
+
+  it("shows each rule in force as a chip, and removes the rule with its chip", async () => {
+    serveMeandersApi(8);
+    const router = getRouter();
+
+    await renderRoute(router, "/");
+    await screen.findAllByTestId("meander-card");
+    fireEvent.click(screen.getByRole("button", { name: "Filter" }));
+    fireEvent.click(screen.getByRole("button", { name: "Add rule" }));
+    await setControl("Field", "junctionCount");
+    await setControl("Operator", "gte");
+    await setControl("Value", "3");
+
+    const chip = await screen.findByRole("button", {
+      name: "Remove Junction count ≥ 3",
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("4 meanders")).toBeDefined();
+    });
+
+    fireEvent.click(chip);
+
+    await waitFor(() => {
+      expect(screen.getByText("8 meanders")).toBeDefined();
+    });
+
+    expect(screen.queryByTestId("filter-chip-row")).toBeNull();
+    expect({ ...router.state.location.search }).toStrictEqual({});
+  });
+
+  it("opens the builder in the surface the width suits", async () => {
+    serveMeandersApi(3);
+    setViewportWidth(375);
+
+    await renderRoute(getRouter(), "/");
+    await screen.findAllByTestId("meander-card");
+    fireEvent.click(screen.getByRole("button", { name: "Filter" }));
+
+    expect(screen.getByRole("dialog").matches('[data-surface="sheet"]')).toBe(
+      true,
+    );
   });
 });
