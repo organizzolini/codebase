@@ -1,10 +1,11 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In } from "typeorm";
 import { z } from "zod";
 
 import { Characteristic } from "@codebase/meanderaw-db";
 
+import { MeanderFilterPlanService } from "./meander-filter-plan.service";
 import { MeanderFilterOperator } from "./meander-filter-rule.entities";
 import {
   COMPARISON_SQL,
@@ -30,6 +31,8 @@ export class MeanderFilterService {
   constructor(
     @InjectRepository(Characteristic)
     private readonly characteristicRepository: Repository<Characteristic>,
+    @Inject(MeanderFilterPlanService)
+    private readonly planService: MeanderFilterPlanService,
   ) {}
 
   // 🔏 Private Methods
@@ -50,6 +53,10 @@ export class MeanderFilterService {
 
     if (characteristic === undefined) {
       return `"meander"."is_hardcoded" = ${this.bind(context, wanted)}`;
+    }
+
+    if (rule === context.driver) {
+      return this.range(characteristic.id, context, `"value" > 0`);
     }
 
     return `${wanted ? "" : "NOT "}EXISTS ${this.probe(characteristic.id, context, "1")}`;
@@ -84,6 +91,15 @@ export class MeanderFilterService {
       throw new BadRequestException(
         `Rule on "${field}" needs ${characteristic === undefined ? "whole " : ""}numbers.`,
       );
+    }
+
+    if (characteristic !== undefined && rule === context.driver) {
+      const comparison =
+        operator === MeanderFilterOperator.BETWEEN
+          ? `"value" BETWEEN ${this.bind(context, numbers[0])} AND ${this.bind(context, numbers[1])}`
+          : `"value" ${COMPARISON_SQL.get(operator)} ${this.bind(context, numbers[0])}`;
+
+      return this.range(characteristic.id, context, comparison);
     }
 
     const subject =
@@ -160,6 +176,11 @@ export class MeanderFilterService {
     return `(SELECT ${select} FROM "meander_characteristics" WHERE "meander_id" = "meander"."id" AND "characteristic_id" = ${this.bind(context, id)})`;
   }
 
+  /** The meanders whose bridge rows for a characteristic satisfy a condition, by index range. */
+  private range(id: number, context: Context, condition: string): string {
+    return `"meander"."id" IN (SELECT "meander_id" FROM "meander_characteristics" WHERE "characteristic_id" = ${this.bind(context, id)} AND ${condition})`;
+  }
+
   /** Every rule and group in the tree, and how deep it nests, without recursing. */
   private survey(root: MeanderFilterGroup): {
     depth: number;
@@ -216,10 +237,9 @@ export class MeanderFilterService {
       keys.length === 0
         ? []
         : await this.characteristicRepository.findBy({ key: In(keys) });
-    const context: Context = {
-      catalog: new Map(found.map((entry) => [entry.key, entry])),
-      parameters: {},
-    };
+    const catalog = new Map(found.map((entry) => [entry.key, entry]));
+    const driver = await this.planService.chooseDriver(parsed.data, catalog);
+    const context: Context = { catalog, driver, parameters: {} };
     const where = this.compileGroup(parsed.data, context);
 
     return { parameters: context.parameters, where };

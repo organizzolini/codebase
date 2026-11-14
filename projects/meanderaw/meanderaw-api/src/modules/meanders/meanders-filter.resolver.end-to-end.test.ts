@@ -315,6 +315,32 @@ describe("meanders filter end-to-end suite", () => {
     }
   });
 
+  it("returns the brute-force result for flat AND trees in every rule order", async () => {
+    expect.hasAssertions();
+
+    const rules: Rule[] = [
+      { field: "strokeCount", numbers: [1], operator: "gte" },
+      { field: "junctionCount", numbers: [3], operator: "lt" },
+      { field: "isChain", flag: true, operator: "is" },
+      { field: "junctionCount", numbers: [0], operator: "gt" },
+      { field: "rows", numbers: [2], operator: "lte" },
+    ];
+    const orders = (items: readonly Rule[]): Rule[][] =>
+      items.length <= 1
+        ? [[...items]]
+        : items.flatMap((item, index) =>
+            orders([...items.slice(0, index), ...items.slice(index + 1)]).map(
+              (rest) => [item, ...rest],
+            ),
+          );
+
+    for (const subset of [rules.slice(0, 3), rules.slice(2)]) {
+      for (const ordered of orders(subset)) {
+        await expectBruteForce({ combinator: "and", rules: ordered });
+      }
+    }
+  });
+
   it("composes with sorting and keyset pagination", async () => {
     expect.hasAssertions();
 

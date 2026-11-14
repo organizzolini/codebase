@@ -12,6 +12,7 @@ export interface CompiledMeanderFilter {
 /** What a compile pass carries: the catalog and bound parameters. */
 export interface MeanderFilterContext {
   readonly catalog: ReadonlyMap<string, Characteristic>;
+  readonly driver: MeanderFilterRule | null;
   readonly parameters: Record<string, unknown>;
 }
 

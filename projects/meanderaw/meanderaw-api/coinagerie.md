@@ -10,12 +10,15 @@ The words this project uses that the root glossary does not define, regenerated 
 - **category**:
 - **characteristic**:
 - **db**:
+- **estimate**:
+- **fewest**:
 - **huge**:
 - **lattice**:
 - **meanderaw**:
 - **mention**:
 - **ne**:
 - **negative**:
+- **rare**:
 - **rebuild**:
 - **survey**:
 - **wire**:

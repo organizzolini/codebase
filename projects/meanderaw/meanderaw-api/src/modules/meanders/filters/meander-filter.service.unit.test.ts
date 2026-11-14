@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { Characteristic } from "@codebase/meanderaw-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { MeanderFilterPlanService } from "./meander-filter-plan.service";
 import { MeanderFilterService } from "./meander-filter.service";
 
 /** Builds the service over a catalog that holds `keys`, each a number. */
@@ -11,6 +12,7 @@ async function buildService(
   keys: readonly string[] = [],
 ): Promise<MeanderFilterService> {
   const { instance } = await buildTestingModule(MeanderFilterService, {
+    mocks: [MeanderFilterPlanService],
     providers: [
       {
         provide: getRepositoryToken(Characteristic),

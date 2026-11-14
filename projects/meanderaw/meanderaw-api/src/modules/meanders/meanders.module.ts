@@ -3,6 +3,7 @@ import { Module } from "@nestjs/common";
 import { CodeModule, DrawingModule } from "@codebase/meanderaw-core";
 import { MeanderawDatabaseModule } from "@codebase/meanderaw-db";
 
+import { MeanderFilterPlanService } from "./filters/meander-filter-plan.service";
 import { MeanderFilterService } from "./filters/meander-filter.service";
 import { MeandersResolver } from "./meanders.resolver";
 import { MeandersService } from "./meanders.service";
@@ -15,6 +16,11 @@ import { MeandersService } from "./meanders.service";
   controllers: [],
   exports: [MeandersService],
   imports: [CodeModule, DrawingModule, MeanderawDatabaseModule],
-  providers: [MeandersResolver, MeandersService, MeanderFilterService],
+  providers: [
+    MeandersResolver,
+    MeandersService,
+    MeanderFilterPlanService,
+    MeanderFilterService,
+  ],
 })
 export class MeandersModule {}
