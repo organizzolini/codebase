@@ -11,13 +11,7 @@ export default [
       "@nx/dependency-checks": [
         "error",
         {
-          // @codebase/testing: harnesses under `testing/` and the test files, which
-          // are outside the build dependency check's scope.
-          // @golevelup/ts-vitest: a devDependency used only in test files, which
-          // are outside the build dependency check's scope.
-          // pg: TypeORM resolves its driver by name at runtime, so nothing imports it.
-          // vitest: referenced via tsconfig "types" array; it's a devDependency and
-          // the @nx/dependency-checks rule misidentifies it as a production dependency.
+          // Test-only packages and the runtime-loaded pg driver sit outside the build check.
           ignoredDependencies: [
             "@codebase/testing",
             "@golevelup/ts-vitest",
