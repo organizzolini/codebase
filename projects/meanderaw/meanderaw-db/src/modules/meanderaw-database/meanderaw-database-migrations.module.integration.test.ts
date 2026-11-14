@@ -48,9 +48,13 @@ describe("meanderaw-database migrations", () => {
     await expect(
       dataSource.query<unknown[]>(TABLES_QUERY),
     ).resolves.toStrictEqual([
+      { table_name: "characteristic_pair_counts" },
+      { table_name: "characteristic_shape_counts" },
+      { table_name: "characteristic_value_counts" },
       { table_name: "characteristics" },
       { table_name: "meander_characteristics" },
       { table_name: "meanders" },
+      { table_name: "shape_counts" },
     ]);
 
     for (const _migration of MEANDERAW_DATABASE_MIGRATIONS) {
@@ -66,9 +70,13 @@ describe("meanderaw-database migrations", () => {
     await expect(
       dataSource.query<unknown[]>(TABLES_QUERY),
     ).resolves.toStrictEqual([
+      { table_name: "characteristic_pair_counts" },
+      { table_name: "characteristic_shape_counts" },
+      { table_name: "characteristic_value_counts" },
       { table_name: "characteristics" },
       { table_name: "meander_characteristics" },
       { table_name: "meanders" },
+      { table_name: "shape_counts" },
     ]);
 
     await dataSource.destroy();
