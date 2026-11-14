@@ -8,10 +8,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **category**:
 - **characteristic**:
 - **db**:
+- **golden**:
 - **huge**:
 - **lattice**:
 - **meanderaw**:
-- **negative**:
 - **rebuild**:
+- **unaggregated**:
 
 <!-- coinagerie:end -->

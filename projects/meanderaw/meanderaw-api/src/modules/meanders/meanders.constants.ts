@@ -7,6 +7,9 @@ import { SortDirection } from "./sort-direction.entities";
 /** Meanders in a page when `first` is left out. */
 export const DEFAULT_PAGE_SIZE = 50;
 
+/** The longest cursor or sort field accepted. */
+export const MAXIMUM_TEXT_LENGTH = 512;
+
 /** The most meanders one page may hold. */
 export const MAXIMUM_PAGE_SIZE = 200;
 
@@ -30,7 +33,7 @@ export const SORT_ARGUMENT_DESCRIPTION =
 
 /** What a `meanders` query may ask for, checked at the API boundary. */
 export const meandersArgumentsSchema = z.object({
-  after: z.string().min(1).nullish(),
+  after: z.string().min(1).max(MAXIMUM_TEXT_LENGTH).nullish(),
   first: z
     .number()
     .int()
@@ -40,13 +43,15 @@ export const meandersArgumentsSchema = z.object({
   sort: z
     .object({
       direction: z.enum(SortDirection),
-      field: z.string().min(1),
+      field: z.string().min(1).max(MAXIMUM_TEXT_LENGTH),
     })
     .nullish(),
 });
 
-/** What a cursor carries: the last row's sort value and id. */
+/** What a cursor carries: the sort it was issued for, and the last row's value and id. */
 export const cursorSchema = z.object({
+  direction: z.enum(SortDirection),
+  field: z.string().max(MAXIMUM_TEXT_LENGTH),
   id: z.uuid(),
   value: z.union([z.boolean(), z.number(), z.string()]).nullish(),
 });

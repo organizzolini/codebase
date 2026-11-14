@@ -11,7 +11,6 @@ import {
 import { MeanderConnection } from "./meander-connection.entities";
 import { MeanderSortInput } from "./meander-sort.entities";
 import {
-  DEFAULT_PAGE_SIZE,
   MEANDERS_QUERY_DESCRIPTION,
   SORT_ARGUMENT_DESCRIPTION,
 } from "./meanders.constants";
@@ -43,8 +42,9 @@ export class MeandersResolver {
     })
     sort?: MeanderSortInput | null,
     @Arguments("first", {
-      defaultValue: DEFAULT_PAGE_SIZE,
-      description: "How many meanders to return.",
+      description:
+        "How many meanders to return; 50 when left out, at most 200.",
+      nullable: true,
       type: () => Int,
     })
     first?: number,

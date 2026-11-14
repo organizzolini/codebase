@@ -13,17 +13,20 @@ cp .env.default .env  # Fill in required environment variables
 nx run meanderaw-api:start
 ```
 
+The database must be running and migrated first (`nx run meanderaw-db:migration:run`).
+
 ## Architecture Overview
 
 ### Tech Stack
 
 - **Framework**: NestJS (modules, dependency injection, providers)
 - **GraphQL server**: Apollo Server via `@nestjs/apollo` (`ApolloDriver`)
-- **Schema strategy**: Code-first, emitted to `src/schema.gql` beside the root module (`GRAPHQL_SCHEMA_FILE`), whatever the working directory; the file is gitignored
-- **Pagination**: Relay connections via `nestjs-graphql-connection`
-- **Dataloaders**: `dataloader` (request-scoped, prevents N+1 queries)
-- **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `.constants.ts`)
-- **Logging**: `@codebase/observability` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
+- **Schema strategy**: Code-first, emitted to `src/schema.gql` beside the root module (`GRAPHQL_SCHEMA_FILE`); the file is gitignored
+- **Pagination**: Relay-shaped connections built by the `Paginated` mixin and `createConnection` in `meanderaw-api.utilities.ts`, paged by keyset cursor (never `OFFSET`)
+- **Database**: Postgres through `MeanderawDatabaseModule` (`@codebase/meanderaw-db`); services read it through TypeORM repositories
+- **Drawing**: `@codebase/meanderaw-core`'s `CodeService` and `DrawingService`, called by the `Meander.svg` field resolver
+- **Validation**: Zod, at the boundary — `environmentSchema` for the environment, `meandersArgumentsSchema` and `cursorSchema` for a query
+- **Logging**: `@codebase/observability`'s `LoggerService`
 - **Language**: Strict TypeScript
 
 ### Execution Flow
@@ -31,9 +34,10 @@ nx run meanderaw-api:start
 ```text
 src/meanderaw-api.ts
   └─ NestFactory.create(MeanderawApiModule)
-       └─ GraphQLModule.forRoot(ApolloDriver)
-            └─ Feature modules (SampleModule, ...)
-                 └─ Resolvers → Services → Loaders
+       ├─ GraphQLModule.forRoot(ApolloDriver)
+       ├─ MeanderawDatabaseModule
+       ├─ CharacteristicsModule → CharacteristicsResolver → CharacteristicsService
+       └─ MeandersModule → MeandersResolver → MeandersService
 ```
 
 ### Directory Layout
@@ -41,87 +45,34 @@ src/meanderaw-api.ts
 ```text
 src/
   meanderaw-api.ts            # Bootstrap — do not modify
-  meanderaw-api.module.ts     # Root NestJS module (imports GraphQLModule, LoggerModule)
-  meanderaw-api.constants.ts  # Zod environmentSchema for env validation
-  meanderaw-api.types.ts      # Application-scoped TypeScript types
+  meanderaw-api.module.ts     # Root module
+  meanderaw-api.constants.ts  # environmentSchema, GRAPHQL_SCHEMA_FILE
+  meanderaw-api.entities.ts   # PageInfo
+  meanderaw-api.types.ts      # Connection and Edge types
+  meanderaw-api.utilities.ts  # Paginated mixin, createConnection, cursor encoding
   modules/
-    sample/                           # Example GraphQL module — replace with your domain
-      sample.module.ts
-      sample.resolver.ts
-      sample.service.ts
-      sample.loader.ts
-      sample.entities.ts
-      sample.inputs.ts
-      sample.args.ts
-      sample.factories.ts
-      sample.constants.ts
-      sample.types.ts
-      sample.*.unit.test.ts
-    <domain>/                         # Add feature modules here
-      <domain>.module.ts
-      <domain>.resolver.ts
-      <domain>.service.ts
-      <domain>.loader.ts
-      <domain>.entities.ts
-      <domain>.inputs.ts
-      <domain>.args.ts
-      <domain>.factories.ts
-      <domain>.constants.ts
-      <domain>.types.ts
-      <domain>.<tier>.test.ts
-testing/                              # Shared test utilities
+    characteristics/          # `characteristics`: the catalog with per-value counts
+    meanders/                 # `meanders` and `Meander.svg`
+      meanders.service.ts     #   keyset paging, sorting, total, drawing
+      meander-sort.entities.ts, sort-direction.entities.ts, meanders.entities.ts, meander-connection.entities.ts
+      meanders.constants.ts   #   limits and the Zod schemas
+testing/
+  meanderaw-application.ts    # Serves modules over HTTP from a migrated, seeded Postgres
+  fixtures.ts                 # catalogEntry, meanderRow
+  golden-svg.ts               # The SVG the CLI draws for one Code
 ```
 
 ## Development
 
 ### Adding Domain Modules
 
-Use the generator to scaffold new GraphQL modules, then implement the resolver and service:
+Scaffold with the `nestjs-service-module` template, then add the resolver and entities, and register the module in `meanderaw-api.module.ts`. Keep one class per file: GraphQL entities, inputs and enums each go in a `*.entities.ts` file; constants files hold only `const` declarations, including Zod schemas.
 
-```bash
-nx g conformetry:nestjs-graphql-module --name=<domain>
-```
+### Sorting and Paging
 
-This creates 13 files in `src/modules/<domain>/`. After generation:
-
-1. **Register in root module** — import the new module in `meanderaw-api.module.ts`:
-
-   ```ts
-   @Module({
-     imports: [
-       ConfigModule.forRoot({ ... }),
-       GraphQLModule.forRoot<ApolloDriverConfig>({ ... }),
-       LoggerModule,
-       MyDomainModule,   // ← add here
-     ],
-   })
-   export class MeanderawApiModule {}
-   ```
-
-2. **Implement the resolver** — add queries and mutations in `<domain>.resolver.ts`.
-3. **Implement the service** — add business logic in `<domain>.service.ts`.
-4. **Implement the dataloader** — add batch loading in `<domain>.loader.ts`.
-5. **Define entities** — add GraphQL object types in `<domain>.entities.ts`.
-
-### Logging
-
-`LoggerService` and `LoggerModule` come from `@codebase/observability` — this project does not define its own logger. Add `"@codebase/observability": "workspace:*"` to `dependencies`, then import `LoggerModule` once in the root module; it is `@Global()`, so feature modules inject `LoggerService` without importing it.
-
-`LoggerService` is `Scope.TRANSIENT` — each injecting class gets its own instance. Always call `setContext` in the constructor:
-
-```ts
-constructor(private readonly logger: LoggerService) {
-  super();
-  this.logger.setContext(MyService.name);
-}
-```
-
-Outputs structured JSON in production (`NODE_ENV=production`) and pretty-printed logs in development.
-
-### GraphQL Playground
-
-The GraphQL playground is available at `http://localhost:3000/graphql` in development.
-Disabled automatically in production (`NODE_ENV=production`).
+- A sort names a shape field or a characteristic key. A missing characteristic value sorts as 0 or false (a left join on the bridge's primary key), and ties break by id ascending.
+- A cursor carries the sort field, direction, last value and id. A cursor used with a different sort is refused with a 400, never answered with a wrong page.
+- `totalCount` is the sum of `shape_counts`, or an exact count of `meanders` while no aggregate has run.
 
 ### Key Commands
 
@@ -130,158 +81,25 @@ Always prefer running tasks through Nx rather than calling the underlying tools 
 ```bash
 nx run meanderaw-api:start           # Start the GraphQL API server
 nx run meanderaw-api:typecheck-code,lint-code,format-code,deprecate-code,guard-code   # Every static check, in one graph
-nx run meanderaw-api:typecheck       # tsc --noEmit
-nx run meanderaw-api:oxfmt           # Formatting
+nx run meanderaw-api:codometer       # Size and comment-budget limits
 ```
 
 ### Testing
 
-Follow the codebase's strict three-tier testing strategy. Co-locate test files with the source they test.
-
 ```bash
-nx run meanderaw-api:vitest:unit          # Fast (<100ms) — pure logic, mocked DI
-nx run meanderaw-api:vitest:integration   # Moderate (1-2s) — real database/API I/O
-nx run meanderaw-api:vitest:end-to-end    # Slow (30-60s) — full server execution
+nx run meanderaw-api:vitest:unit          # Pure logic, mocked DI
+nx run meanderaw-api:vitest:end-to-end    # Full GraphQL requests against a migrated Postgres container
 ```
 
-| Tier        | File pattern            | What to test                                       |
-| ----------- | ----------------------- | -------------------------------------------------- |
-| Unit        | `*.unit.test.ts`        | Resolver methods, service methods with mocked deps |
-| Integration | `*.integration.test.ts` | Database queries, external API clients             |
-| End-to-end  | `*.end-to-end.test.ts`  | Full GraphQL request/response cycles               |
+| Tier       | File pattern           | What to test                                                  |
+| ---------- | ---------------------- | ------------------------------------------------------------- |
+| Unit       | `*.unit.test.ts`       | Resolver and service methods with mocked deps                 |
+| End-to-end | `*.end-to-end.test.ts` | GraphQL request/response cycles against a seeded database     |
 
-See the [testing-strategy skill](../../.agents/skills/testing-strategy/SKILL.md) and [testing-mocks skill](../../.agents/skills/testing-mocks/SKILL.md) for patterns and mock conventions.
-
-## Writing GraphQL Modules
-
-### Resolver file
-
-Use section comments to keep resolvers scannable:
-
-```ts
-@Resolver(() => MyEntity)
-export class MyResolver {
-  // 🏗 Dependency Injection
-  constructor(
-    private readonly myLoader: MyLoader,
-    private readonly myService: MyService,
-  ) {}
-
-  // 🔎 Queries
-
-  @Query(() => MyConnection)
-  async myEntities(@Args() args: FindMyArgs): Promise<MyConnection> {
-    // ...
-  }
-
-  // 🖋️ Mutations
-
-  @Mutation(() => MyEntity)
-  async createMyEntity(@Args("input") input: CreateMyInput): Promise<MyEntity> {
-    // ...
-  }
-
-  // 🔗 Relations
-}
-```
-
-### DataLoader pattern
-
-Use DataLoaders for all relation fields to avoid N+1 queries:
-
-```ts
-@ResolveField(() => RelatedEntity)
-async relatedEntity(
-  @Parent() parent: MyEntity,
-): Promise<RelatedEntity | null> {
-  return this.relatedLoader.byId.load(parent.relatedId);
-}
-```
-
-### Relay Connections
-
-Use `nestjs-graphql-connection` for all list queries:
-
-```ts
-@Query(() => MyConnection)
-async myEntities(@Args() args: FindMyArgs): Promise<MyConnection> {
-  const { first, after } = args;
-  const items = await this.myService.findAll({ first, after });
-  return buildConnection(items);
-}
-```
-
-### Module file
-
-Register the resolver, service, and dataloader in both `providers` and `exports`:
-
-```ts
-@Module({
-  exports: [MyLoader, MyService],
-  imports: [],
-  providers: [MyLoader, MyResolver, MyService],
-})
-export class MyModule {}
-```
-
-Add a JSDoc comment on the module class describing what domain it owns.
-
-### Service file
-
-Follow the section-comment layout — keeps large services scannable:
-
-```ts
-@Injectable()
-export class MyService {
-  // 🏗 Dependency Injection
-  constructor(private readonly logger: LoggerService) {
-    this.logger.setContext(MyService.name);
-  }
-
-  // 🔐 Private Fields
-
-  // 🔑 Public Fields
-
-  // 🔏 Private Methods
-
-  // 🌎 Public Methods
-}
-```
-
-Key rules:
-
-- **Call `setContext` in every constructor** — always use `MyClass.name`, never a string literal.
-- **Inject `LoggerService` as the last constructor parameter** (after repository/domain deps).
-- **Private first** — keep internal helpers in the `🔏 Private Methods` section.
-- **`readonly` everything in the constructor** — all injected deps must be `private readonly`.
-
-## Best Practices
-
-- **Never** put business logic in `meanderaw-api.ts` — it bootstraps `NestFactory` only.
-- **One module per domain** — split large domains into sub-domain modules.
-- **Validate at the boundary** — all env vars must be declared in `environmentSchema`; access via `ConfigService`, not `process.env`.
-- **Use DataLoaders for relations** — never load related entities inside resolver field methods without batching.
-- **Type imports** — use `import { type Foo }` for type-only imports (enforced by ESLint).
-- **No `any` types** — use `unknown` or proper typing; strict mode is enabled.
-
-See the [write-typescript skill](../../.agents/skills/write-typescript/SKILL.md) for strict mode patterns.
-
-## Troubleshooting
-
-- **Resolver not found at runtime** — ensure the resolver class is listed in `providers` of its module and the module is imported by the root module.
-- **Dependency injection failure** — verify the service is `@Injectable()`, exported from its module, and that module is imported by the consuming module.
-- **GraphQL schema not generating** — ensure `autoSchemaFile` is set to `GRAPHQL_SCHEMA_FILE` in `GraphQLModule.forRoot()` and all types use `@ObjectType()`, `@Field()`, etc.
-- **N+1 query problem** — use DataLoaders for all relation fields in resolvers.
-- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `.constants.ts` and to `.env.default`.
-
-See the [triage-integration skill](../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
+See the [testing-strategy skill](../../../.agents/skills/testing-strategy/SKILL.md) and [testing-mocks skill](../../../.agents/skills/testing-mocks/SKILL.md) for patterns and mock conventions.
 
 ## Key Files
 
-- [src/meanderaw-api.ts](src/meanderaw-api.ts): Application bootstrap
-- [src/meanderaw-api.module.ts](src/meanderaw-api.module.ts): Root NestJS module
-- [src/meanderaw-api.constants.ts](src/meanderaw-api.constants.ts): `environmentSchema` (Zod)
-- `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
-- [src/modules/sample/sample.module.ts](src/modules/sample/sample.module.ts): Example GraphQL module
-- [project.json](project.json): Nx targets (`start`, `test`, `lint`, `typecheck`, `format`)
-- [.env.default](.env.default): Environment variable template
+- [src/meanderaw-api.module.ts](src/meanderaw-api.module.ts): Root module
+- [src/modules/meanders/meanders.service.ts](src/modules/meanders/meanders.service.ts): Keyset paging and drawing
+- [testing/meanderaw-application.ts](testing/meanderaw-application.ts): End-to-end harness

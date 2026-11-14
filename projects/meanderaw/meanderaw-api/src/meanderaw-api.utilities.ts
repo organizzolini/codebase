@@ -61,34 +61,6 @@ export function createEdgeType<T>(
 }
 
 /**
- * Decodes an offset-based cursor, returning the specified default offset if missing or invalid.
- */
-export function decodeOffsetCursor(
-  cursor?: null | string,
-  defaultOffset = 0,
-): number {
-  if (cursor === undefined || cursor === null || cursor.length === 0) {
-    return defaultOffset;
-  }
-  const decoded = fromCursorSafe<{ offset?: number }>(cursor);
-  if (
-    decoded !== null &&
-    typeof decoded.offset === "number" &&
-    decoded.offset >= 0
-  ) {
-    return decoded.offset;
-  }
-  return defaultOffset;
-}
-
-/**
- * Encodes an offset-based integer cursor.
- */
-export function encodeOffsetCursor(offset: number): string {
-  return toCursor({ offset: Math.max(0, offset) });
-}
-
-/**
  * Decodes an opaque Base64 cursor string into structured data.
  */
 export function fromCursor<T = unknown>(
@@ -100,69 +72,6 @@ export function fromCursor<T = unknown>(
     return parse(JSON.parse(jsonString));
   }
   return JSON.parse(jsonString) as T;
-}
-
-/**
- * Safely decodes a cursor string, returning null if invalid, null, or undefined.
- */
-export function fromCursorSafe<T = unknown>(
-  cursor?: null | string,
-  parse?: (value: unknown) => T,
-): null | T {
-  if (cursor === undefined || cursor === null || cursor.length === 0) {
-    return null;
-  }
-  try {
-    return fromCursor<T>(cursor, parse);
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Slices an array of items according to forward (first, after) Relay pagination parameters.
- */
-export function paginateArray<T>(
-  items: T[],
-  parameters: {
-    after?: null | string;
-    first?: null | number;
-    getCursor: (item: T) => string;
-  },
-): {
-  edges: Edge<T>[];
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-} {
-  let startIndex = 0;
-  if (
-    parameters.after !== undefined &&
-    parameters.after !== null &&
-    parameters.after.length > 0
-  ) {
-    const foundIndex = items.findIndex(
-      (item) => parameters.getCursor(item) === parameters.after,
-    );
-    if (foundIndex !== -1) {
-      startIndex = foundIndex + 1;
-    }
-  }
-
-  const limit =
-    parameters.first !== undefined &&
-    parameters.first !== null &&
-    parameters.first > 0
-      ? parameters.first
-      : items.length;
-  const slicedItems = items.slice(startIndex, startIndex + limit);
-
-  return {
-    edges: slicedItems.map((item) =>
-      createEdge(item, parameters.getCursor(item)),
-    ),
-    hasNextPage: startIndex + limit < items.length,
-    hasPreviousPage: startIndex > 0,
-  };
 }
 
 /**
