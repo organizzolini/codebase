@@ -19,6 +19,7 @@
   },
   "main": "src/index.ts",
   "name": "@codebase/meanderaw-core",
+  "private": true,
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
