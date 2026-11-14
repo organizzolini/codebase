@@ -13,6 +13,7 @@ import {
   Meander,
   MEANDERAW_DATABASE_MIGRATIONS,
   MeanderawDatabaseModule,
+  MeanderawDatabaseService,
 } from "@codebase/meanderaw-db";
 import { LoggerService } from "@codebase/observability";
 import {
@@ -20,6 +21,7 @@ import {
   startDatabaseTestingModule,
 } from "@codebase/persistence/testing";
 
+import { storedCharacteristics } from "../../../testing/bridge";
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
 import { CodeModule } from "../code/code.module";
 import { CorpusService } from "../corpus/corpus.service";
@@ -97,7 +99,7 @@ describe("drawCommand --code mode", () => {
   beforeEach(async () => {
     // The migrated schema persists across the cases one container serves,
     // so each case starts from an empty table.
-    await repository.clear();
+    await database.module.get(MeanderawDatabaseService).clear();
   });
 
   afterAll(async () => {
@@ -122,8 +124,12 @@ describe("drawCommand --code mode", () => {
       repeats: 1,
       rows: 2,
     });
-    expect(rows[0]?.characteristics).not.toHaveProperty("crossCount");
-    expect(rows[0]?.characteristics).not.toHaveProperty("forkCount");
+    await expect(
+      storedCharacteristics(database.dataSource, "02x02y3c9a"),
+    ).resolves.not.toHaveProperty("crossCount");
+    await expect(
+      storedCharacteristics(database.dataSource, "02x02y3c9a"),
+    ).resolves.not.toHaveProperty("forkCount");
     expect(rows[0]).not.toHaveProperty("pitch");
   });
 
@@ -155,12 +161,16 @@ describe("drawCommand --code mode", () => {
 
     expect(rows).toHaveLength(1);
     expect(rows[0]).toMatchObject({
-      characteristics: { forkCount: 1 },
       code: "01x01ye",
       lattice: "e",
       repeats: 1,
     });
-    expect(rows[0]?.characteristics).not.toHaveProperty("crossCount");
+    await expect(
+      storedCharacteristics(database.dataSource, "01x01ye"),
+    ).resolves.toMatchObject({ forkCount: 1 });
+    await expect(
+      storedCharacteristics(database.dataSource, "01x01ye"),
+    ).resolves.not.toHaveProperty("crossCount");
   });
 
   it("refuses a --code drawing missing --columns", async () => {

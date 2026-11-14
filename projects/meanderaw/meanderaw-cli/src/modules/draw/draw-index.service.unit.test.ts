@@ -12,7 +12,7 @@ import { GeometryService } from "../geometry/geometry.service";
 import { DrawIndexService } from "./draw-index.service";
 
 import type { MeanderPageContent } from "./draw-index.types";
-import type { Meander } from "@codebase/meanderaw-db";
+import type { MeanderHolding } from "@codebase/meanderaw-db";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 /** Mocked database, with stubbed parser and drawing. */
@@ -50,8 +50,8 @@ describe(DrawIndexService, () => {
 
   /** Defaults for the row fields a case does not test. */
   const meander = (
-    overrides: Partial<Meander> & Pick<Meander, "code">,
-  ): Meander => ({
+    overrides: Partial<MeanderHolding> & Pick<MeanderHolding, "code">,
+  ): MeanderHolding => ({
     ...meanderRecord({ code: overrides.code, lattice: "3c9a" }),
     createdAt: new Date(0),
     id: "01a107d6-cff8-7238-8684-a2a863bc6928",

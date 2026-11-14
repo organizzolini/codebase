@@ -3,11 +3,16 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
 
+import { bridgeRows, storedCharacteristics } from "../../../testing/bridge";
 import {
   DRAW_RUN_TIMEOUT_MILLISECONDS,
   type DrawRunFixture,
   startDrawRun,
 } from "../../../testing/draw-run";
+import {
+  CHARACTERISTIC_KEYS,
+  PATTERN_CHARACTERISTIC_KEYS,
+} from "../characteristics/characteristics.constants";
 import { HISTORICAL_CORPUS } from "../corpus/historical-corpus.constants";
 
 import { DrawCodeService } from "./draw-code.service";
@@ -114,10 +119,13 @@ describe("drawCommand draw run", () => {
     });
 
     it("rebuilds output/index.html and a page per pattern from the draw run's own rows once both halves have committed", async () => {
-      const whirls = await drawRun.repository
-        .createQueryBuilder("meander")
-        .where("meander.characteristics ? 'isWhirl'")
-        .getCount();
+      const [{ count }]: [{ count: string }] = await drawRun.dataSource.query(
+        `SELECT COUNT(*) AS count
+         FROM meanderaw.meander_characteristics bridge
+         JOIN meanderaw.characteristics catalog ON catalog.id = bridge.characteristic_id
+         WHERE catalog.key = 'isWhirl'`,
+      );
+      const whirls = Number(count);
 
       expect(whirls).toBeGreaterThan(0);
       expect(writes.get("output/index.html")).toContain(
@@ -125,6 +133,9 @@ describe("drawCommand draw run", () => {
       );
       expect(writes.get("output/patterns/isWhirl.html")).toContain(
         '<section id="isWhirl">',
+      );
+      expect(writes.get("output/patterns/isWhirl.html")).toContain(
+        "04x03y6354c69c8a39",
       );
     });
 
@@ -140,7 +151,55 @@ describe("drawCommand draw run", () => {
       });
 
       expect(whirl.isHardcoded).toBe(true);
-      expect(whirl.characteristics["isWhirl"]).toBe(true);
+      await expect(
+        storedCharacteristics(drawRun.dataSource, whirl.code),
+      ).resolves.toMatchObject({ isWhirl: true });
+    });
+
+    it("registers exactly one catalog row per evaluator, and isReducible beside them, marking each pattern characteristic", async () => {
+      const catalog: { isPattern: boolean; key: string }[] =
+        await drawRun.dataSource.query(
+          `SELECT key, is_pattern AS "isPattern" FROM meanderaw.characteristics ORDER BY key`,
+        );
+
+      expect(catalog.map(({ key }) => key)).toStrictEqual(
+        [...CHARACTERISTIC_KEYS, "isReducible"].toSorted(),
+      );
+      expect(
+        catalog.filter(({ isPattern }) => isPattern).map(({ key }) => key),
+      ).toStrictEqual([...PATTERN_CHARACTERISTIC_KEYS].toSorted());
+    });
+
+    it("writes a bridge row only for a true boolean, as 1, and a number above 0, so a sample of meanders holds exactly what it measures", async () => {
+      const sample = await drawRun.repository.find({
+        order: { code: "ASC" },
+        take: 60,
+      });
+      const whirl = await drawRun.repository.findOneByOrFail({
+        code: "04x03y6354c69c8a39",
+      });
+
+      for (const { code } of [...sample, whirl]) {
+        await expect(
+          storedCharacteristics(drawRun.dataSource, code),
+        ).resolves.toStrictEqual(
+          drawRun.evaluators.stored(
+            drawRun.evaluators.compute(code),
+            drawRun.evaluators.isReducible(code),
+          ),
+        );
+      }
+
+      const [{ unwritten }]: [{ unwritten: string }] =
+        await drawRun.dataSource.query(
+          `SELECT COUNT(*) AS unwritten
+           FROM meanderaw.meander_characteristics bridge
+           JOIN meanderaw.characteristics catalog ON catalog.id = bridge.characteristic_id
+           WHERE bridge.value <= 0 OR (catalog.value_type = 'boolean' AND bridge.value <> 1)`,
+        );
+
+      expect(Number(unwritten)).toBe(0);
+      await expect(bridgeRows(drawRun.dataSource)).resolves.not.toHaveLength(0);
     });
   });
 });

@@ -1,7 +1,10 @@
 // 🏷️ Types
 
 import type { PatternCharacteristicKey } from "../characteristics/characteristics.types";
-import type { Meander, MeanderPatternShapeCount } from "@codebase/meanderaw-db";
+import type {
+  MeanderHolding,
+  MeanderPatternShapeCount,
+} from "@codebase/meanderaw-db";
 
 /** One page's HTML, read lazily or already in hand. */
 export type MeanderPageContent = AsyncIterable<string> | Iterable<string>;
@@ -14,5 +17,5 @@ export interface MeanderPageSource {
 
 /** One pattern's rows in page order, read lazily. */
 export type MeanderRowBatches =
-  | AsyncIterable<readonly Meander[]>
-  | Iterable<readonly Meander[]>;
+  | AsyncIterable<readonly MeanderHolding[]>
+  | Iterable<readonly MeanderHolding[]>;

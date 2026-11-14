@@ -4,24 +4,16 @@ import { PostgresqlUpdatableEntity } from "@codebase/persistence";
 
 import { BIGINT_NUMBER_TRANSFORMER } from "../meanderaw-database.constants";
 
-/** A characteristic's stored value: a number, or `true` for a boolean. Missing keys mean zero or false. */
-export type StoredCharacteristicValues = Readonly<
-  Record<string, number | true>
->;
-
 /**
  * One row of the `meanders` table: a single meander addressed by its Code.
  * `lattice`, `rows`, and `columns` sit beside it for filtering, and
- * `isHardcoded` records whether it came from the historical corpus.
+ * `isHardcoded` records whether it came from the historical corpus. The
+ * characteristics it holds live in `meander_characteristics`.
  */
 @Entity({ name: "meanders" })
 @Index(["code"], { unique: true })
 @Index(["rows", "columns", "code"])
 export class Meander extends PostgresqlUpdatableEntity {
-  /** Sparse JSON; missing keys mean zero or false, COALESCE them. */
-  @Column({ type: "jsonb" })
-  characteristics!: StoredCharacteristicValues;
-
   @Column({ type: "text" })
   code!: string;
 

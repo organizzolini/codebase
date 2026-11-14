@@ -6,14 +6,18 @@ The words this project uses that the root glossary does not define, regenerated 
 
 - **arcade**:
 - **batch**:
+- **cascade**:
+- **category**:
 - **characteristic**:
+- **chk**:
 - **comb**:
 - **family**:
 - **fork**:
 - **lattice**:
 - **meanderaw**:
-- **north**:
+- **smallint**:
 - **swirl**:
+- **unregistered**:
 - **updatable**:
 - **whirl**:
 

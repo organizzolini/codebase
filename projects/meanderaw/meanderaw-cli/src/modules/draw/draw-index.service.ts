@@ -22,7 +22,10 @@ import type {
   MeanderPageSource,
   MeanderRowBatches,
 } from "./draw-index.types";
-import type { Meander, MeanderPatternShapeCount } from "@codebase/meanderaw-db";
+import type {
+  MeanderHolding,
+  MeanderPatternShapeCount,
+} from "@codebase/meanderaw-db";
 
 /**
  * Renders the corpus pages: one per pattern characteristic, listing its meanders, plus an index.
@@ -52,7 +55,7 @@ export class DrawIndexService {
   // 🔏 Private Methods
 
   /** One meander's own caption: its lattice address, and every boolean Characteristic that holds for it. */
-  private caption(meander: Meander): string {
+  private caption(meander: MeanderHolding): string {
     const { characteristics, code, columns, rows } = meander;
     const address = `${rows}×${columns} · ${code}`;
     const holding = STORED_BOOLEAN_KEYS.filter(
@@ -123,9 +126,9 @@ export class DrawIndexService {
 
   /** A pattern's rows already in memory, in the order its page lists them. */
   private heldRows(
-    meanders: readonly Meander[],
+    meanders: readonly MeanderHolding[],
     key: PatternCharacteristicKey,
-  ): (readonly Meander[])[] {
+  ): (readonly MeanderHolding[])[] {
     const rows = meanders
       .filter((meander) => meander.characteristics[key] === true)
       .toSorted(
@@ -206,7 +209,7 @@ ${contents}
    * Lays one row's tile along a band of `BAND_REPEAT_COUNT` repeats. The tile
    * is defined once under its Code and placed, not copied.
    */
-  private renderBand(meander: Meander): string {
+  private renderBand(meander: MeanderHolding): string {
     const geometry = this.geometryService.compute(meander.rows);
     const step = meander.columns * geometry.unit;
     const height = this.format(geometry.height + geometry.strokeWidth);
@@ -226,7 +229,7 @@ ${contents}
   }
 
   /** Renders one meander's own figure: the band its tile repeats into, and its caption. */
-  private renderFigure(meander: Meander): string {
+  private renderFigure(meander: MeanderHolding): string {
     return `<figure><div class="art">${this.renderBand(meander)}</div><figcaption>${this.caption(meander)}</figcaption></figure>`;
   }
 
@@ -322,7 +325,9 @@ ${contents}
    * The same pages from rows already in memory, each read into one string —
    * the seam a test renders a handful of meanders through.
    */
-  async render(meanders: readonly Meander[]): Promise<Record<string, string>> {
+  async render(
+    meanders: readonly MeanderHolding[],
+  ): Promise<Record<string, string>> {
     const counts = new Map<string, MeanderPatternShapeCount>();
 
     for (const { characteristics, columns, rows } of meanders) {

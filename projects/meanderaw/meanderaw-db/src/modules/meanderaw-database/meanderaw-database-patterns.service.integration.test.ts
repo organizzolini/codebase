@@ -5,13 +5,13 @@ import {
   startDatabaseTestingModule,
 } from "@codebase/persistence/testing";
 
+import { characteristicRecords } from "../../../testing/characteristics";
 import { meanderRecord } from "../../../testing/meanders";
 
+import { MEANDERAW_DATABASE_MIGRATIONS } from "./data-source.constants";
 import { Meander } from "./entities/meander.entity";
 import { MeanderawDatabaseModule } from "./meanderaw-database.module";
 import { MeanderawDatabaseService } from "./meanderaw-database.service";
-import { Migration1791160950069 } from "./migrations/1791160950069-migration";
-import { Migration1791414023001 } from "./migrations/1791414023001-migration";
 
 // 🧪 Tests
 
@@ -22,6 +22,21 @@ import { Migration1791414023001 } from "./migrations/1791414023001-migration";
  * beside `database.service.integration.test.ts`, which covers the
  * rest of the service. They live apart so neither file outgrows the line cap.
  */
+/** The characteristics these cases hold, registered before any row is written. */
+const CATALOG_KEYS = [
+  "crossCount",
+  "isArcade",
+  "isBars",
+  "isChain",
+  "isClasps",
+  "isComb",
+  "isFork",
+  "isMesh",
+  "isSwirl",
+  "isWaterfalls",
+  "isWhirl",
+];
+
 describe(MeanderawDatabaseService, () => {
   let database: DatabaseTestingModule;
   let service: MeanderawDatabaseService;
@@ -30,11 +45,12 @@ describe(MeanderawDatabaseService, () => {
     database = await startDatabaseTestingModule({
       database: MeanderawDatabaseModule,
       entities: [Meander],
-      migrations: [Migration1791160950069, Migration1791414023001],
+      migrations: [...MEANDERAW_DATABASE_MIGRATIONS],
       project: "meanderaw",
     });
 
     service = await database.module.resolve(MeanderawDatabaseService);
+    await service.syncCharacteristics(characteristicRecords(CATALOG_KEYS));
   });
 
   afterAll(async () => {
@@ -208,6 +224,55 @@ describe(MeanderawDatabaseService, () => {
         "pattern-rows-d",
       ]);
       expect(new Set(codes).size).toBe(codes.length);
+    });
+
+    it("hands each row the booleans it holds, and no number it holds", async () => {
+      await service.save(
+        meanderRecord({
+          characteristics: { crossCount: 2, isSwirl: true, isWhirl: true },
+          code: "pattern-rows-held",
+          columns: 1,
+          rows: 46,
+        }),
+      );
+
+      const held: Record<string, unknown> = {};
+
+      for await (const batch of service.patternRows("isWhirl")) {
+        for (const { characteristics, code } of batch) {
+          held[code] = characteristics;
+        }
+      }
+
+      expect(held["pattern-rows-held"]).toStrictEqual({
+        isSwirl: true,
+        isWhirl: true,
+      });
+      expect(held["pattern-rows-b"]).toStrictEqual({
+        isSwirl: true,
+        isWhirl: true,
+      });
+    });
+
+    it("hands a row holding no boolean an empty map", async () => {
+      await service.save(
+        meanderRecord({
+          characteristics: { crossCount: 1 },
+          code: "pattern-rows-numeric",
+          columns: 1,
+          rows: 47,
+        }),
+      );
+
+      const held: Record<string, unknown> = {};
+
+      for await (const batch of service.patternRows("crossCount")) {
+        for (const { characteristics, code } of batch) {
+          held[code] = characteristics;
+        }
+      }
+
+      expect(held["pattern-rows-numeric"]).toStrictEqual({});
     });
 
     it("yields a final short batch, and nothing for a pattern no row holds", async () => {

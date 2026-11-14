@@ -8,11 +8,10 @@ import {
 
 import { meanderRecord } from "../../../testing/meanders";
 
+import { MEANDERAW_DATABASE_MIGRATIONS } from "./data-source.constants";
 import { Meander } from "./entities/meander.entity";
 import { MeanderawDatabaseModule } from "./meanderaw-database.module";
 import { MeanderawDatabaseService } from "./meanderaw-database.service";
-import { Migration1791160950069 } from "./migrations/1791160950069-migration";
-import { Migration1791414023001 } from "./migrations/1791414023001-migration";
 
 // 🧪 Tests
 
@@ -35,7 +34,7 @@ describe(MeanderawDatabaseModule, () => {
     database = await startDatabaseTestingModule({
       database: MeanderawDatabaseModule,
       entities: [Meander],
-      migrations: [Migration1791160950069, Migration1791414023001],
+      migrations: [...MEANDERAW_DATABASE_MIGRATIONS],
       project: "meanderaw",
     });
   });
@@ -58,7 +57,6 @@ describe(MeanderawDatabaseModule, () => {
       );
 
     expect(columns.map((column) => column.column_name)).toStrictEqual([
-      "characteristics",
       "code",
       "columns",
       "created_at",
@@ -89,6 +87,7 @@ describe(MeanderawDatabaseModule, () => {
     expect(migrations).toStrictEqual([
       { name: "Migration1791160950069" },
       { name: "Migration1791414023001" },
+      { name: "Migration1794630084904" },
     ]);
   });
 });

@@ -1,19 +1,26 @@
 import { type DataSource, Like, type Repository } from "typeorm";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import {
   type DatabaseTestingModule,
   startDatabaseTestingModule,
 } from "@codebase/persistence/testing";
 
+import {
+  characteristicRecord,
+  characteristicRecords,
+} from "../../../testing/characteristics";
 import { meanderRecord } from "../../../testing/meanders";
 
+import { MEANDERAW_DATABASE_MIGRATIONS } from "./data-source.constants";
+import { Characteristic } from "./entities/characteristic.entity";
 import { Meander } from "./entities/meander.entity";
-import { MEANDER_INSERT_CHUNK_SIZE } from "./meanderaw-database.constants";
+import {
+  MEANDER_INSERT_CHUNK_SIZE,
+  UnknownCharacteristicError,
+} from "./meanderaw-database.constants";
 import { MeanderawDatabaseModule } from "./meanderaw-database.module";
 import { MeanderawDatabaseService } from "./meanderaw-database.service";
-import { Migration1791160950069 } from "./migrations/1791160950069-migration";
-import { Migration1791414023001 } from "./migrations/1791414023001-migration";
 
 import type { MeanderRecord } from "./meanderaw-database.types";
 
@@ -28,12 +35,27 @@ import type { MeanderRecord } from "./meanderaw-database.types";
  * `MeanderawDatabaseModule` at a fresh, isolated database of its own
  * instead of the local one.
  */
-/** Characteristic names that must never appear as columns: they live in the `characteristics` jsonb. */
+/** Names that must never be columns: they live in the bridge. */
 const CHARACTERISTIC_NAMES = [
   "cornerCount",
   "dotCount",
   "edgeCount",
   "forkCount",
+];
+
+/** The catalog these cases hold, registered before each. */
+const CATALOG_KEYS = [
+  "aSoutheastLatinCount",
+  "bettiNumber0Count",
+  "crossCount",
+  "density",
+  "forkCount",
+  "isDots",
+  "isReducible",
+  "isSnake",
+  "northForkCount",
+  "oSoutheastLatinCount",
+  "yuSoutheastHangulCount",
 ];
 
 describe(MeanderawDatabaseService, () => {
@@ -46,7 +68,7 @@ describe(MeanderawDatabaseService, () => {
     database = await startDatabaseTestingModule({
       database: MeanderawDatabaseModule,
       entities: [Meander],
-      migrations: [Migration1791160950069, Migration1791414023001],
+      migrations: [...MEANDERAW_DATABASE_MIGRATIONS],
       project: "meanderaw",
     });
 
@@ -55,9 +77,27 @@ describe(MeanderawDatabaseService, () => {
     repository = database.repository(Meander);
   });
 
+  beforeEach(async () => {
+    await service.syncCharacteristics(characteristicRecords(CATALOG_KEYS));
+  });
+
   afterAll(async () => {
     await database.close();
   });
+
+  /** One meander's bridge rows as `key=value` strings, sorted. */
+  const bridgeOf = async (code: string): Promise<string[]> => {
+    const rows: { key: string; value: number }[] = await dataSource.query(
+      `SELECT catalog.key, bridge.value
+       FROM meanderaw.meander_characteristics bridge
+       JOIN meanderaw.characteristics catalog ON catalog.id = bridge.characteristic_id
+       JOIN meanderaw.meanders meander ON meander.id = bridge.meander_id
+       WHERE meander.code = $1`,
+      [code],
+    );
+
+    return rows.map(({ key, value }) => `${key}=${value}`).toSorted();
+  };
 
   describe("save", () => {
     it("persists a meander row with every field it was given", async () => {
@@ -79,20 +119,19 @@ describe(MeanderawDatabaseService, () => {
       const row = await repository.findOneByOrFail({ id: saved.id });
 
       expect(row).toMatchObject({
-        ...meanderRecord({
-          characteristics: {
-            bettiNumber0Count: 1,
-            density: 0.5,
-            forkCount: 1,
-            isSnake: true,
-          },
-          code: "3c9a",
-          columns: 2,
-          lattice: "3c9a",
-          rows: 3,
-        }),
+        code: "3c9a",
+        columns: 2,
         id: saved.id,
+        isHardcoded: true,
+        lattice: "3c9a",
+        rows: 3,
       });
+      await expect(bridgeOf("3c9a")).resolves.toStrictEqual([
+        "bettiNumber0Count=1",
+        "density=0.5",
+        "forkCount=1",
+        "isSnake=1",
+      ]);
     });
 
     it("assigns each saved row its own uuidv7 id, ordered by when it was written", async () => {
@@ -118,7 +157,7 @@ describe(MeanderawDatabaseService, () => {
   });
 
   describe("characteristics", () => {
-    it("stores no Characteristic under a column of its own, only in the one characteristics map", () => {
+    it("stores no Characteristic under a column of its own, nor the retired jsonb map", () => {
       const columns = new Set(
         dataSource
           .getMetadata(Meander)
@@ -128,10 +167,10 @@ describe(MeanderawDatabaseService, () => {
       expect(
         CHARACTERISTIC_NAMES.filter((key) => columns.has(key)),
       ).toStrictEqual([]);
-      expect(columns.has("characteristics")).toBe(true);
+      expect(columns.has("characteristics")).toBe(false);
     });
 
-    it("round-trips a meander's numbers, letter counts, and true booleans through save and a Code lookup", async () => {
+    it("writes one bridge row per number above 0 and per true boolean, a boolean as 1", async () => {
       await service.save(
         meanderRecord({
           characteristics: {
@@ -142,112 +181,156 @@ describe(MeanderawDatabaseService, () => {
             isSnake: true,
             yuSoutheastHangulCount: 1,
           },
-          code: "map-round-trip",
-          lattice: "map-round-trip",
+          code: "bridge-round-trip",
+          lattice: "bridge-round-trip",
         }),
       );
 
-      const found = await service.findOneByCode("map-round-trip");
-
-      expect(found?.characteristics).toStrictEqual({
-        aSoutheastLatinCount: 2,
-        crossCount: 1,
-        density: 0.25,
-        isReducible: true,
-        isSnake: true,
-        yuSoutheastHangulCount: 1,
-      });
+      await expect(bridgeOf("bridge-round-trip")).resolves.toStrictEqual([
+        "aSoutheastLatinCount=2",
+        "crossCount=1",
+        "density=0.25",
+        "isReducible=1",
+        "isSnake=1",
+        "yuSoutheastHangulCount=1",
+      ]);
     });
 
-    it("round-trips an empty map as empty", async () => {
+    it("writes no bridge row for a meander holding nothing", async () => {
       await service.save(
-        meanderRecord({ code: "map-empty", lattice: "map-empty" }),
+        meanderRecord({ code: "bridge-empty", lattice: "bridge-empty" }),
       );
 
-      const found = await service.findOneByCode("map-empty");
-
-      expect(found?.characteristics).toStrictEqual({});
+      await expect(bridgeOf("bridge-empty")).resolves.toStrictEqual([]);
     });
 
-    it("round-trips maps written in chunks, every row keeping its own", async () => {
+    it("writes the bridge rows of every chunk, each meander keeping its own", async () => {
       const records = Array.from(
         { length: MEANDER_INSERT_CHUNK_SIZE + 1 },
         (_row, index) =>
           meanderRecord({
             characteristics: { oSoutheastLatinCount: index + 1 },
-            code: `map-chunk-${index}`,
-            lattice: `map-chunk-${index}`,
+            code: `bridge-chunk-${index}`,
+            lattice: `bridge-chunk-${index}`,
           }),
       );
 
       await service.saveAll(records);
-      const rows = await repository.findBy({ code: Like("map-chunk-%") });
+      const rows: { code: string; value: number }[] = await dataSource.query(
+        `SELECT meander.code, bridge.value
+         FROM meanderaw.meander_characteristics bridge
+         JOIN meanderaw.meanders meander ON meander.id = bridge.meander_id
+         WHERE meander.code LIKE 'bridge-chunk-%'`,
+      );
 
+      expect(rows).toHaveLength(records.length);
       expect(
         rows.every(
-          (row) =>
-            row.characteristics["oSoutheastLatinCount"] ===
-            Number(row.lattice.split("-")[2]) + 1,
+          ({ code, value }) => value === Number(code.split("-")[2]) + 1,
         ),
       ).toBe(true);
-      expect(rows).toHaveLength(records.length);
     });
 
-    it("is queryable by one numeric Characteristic, per spec #813's acceptance criteria, which a missing key never matches", async () => {
-      await service.save(
-        meanderRecord({
-          characteristics: { northForkCount: 1 },
-          code: "map-query-hit",
-          lattice: "map-query-hit",
-        }),
-      );
-      await service.save(
-        meanderRecord({
-          characteristics: { bettiNumber0Count: 2 },
-          code: "map-query-miss",
-          lattice: "map-query-miss",
-        }),
-      );
-
-      const hits = await repository
-        .createQueryBuilder("meander")
-        .where("(meander.characteristics ->> :key)::numeric > 0", {
-          key: "northForkCount",
-        })
-        .getMany();
-
-      expect(hits.map((row) => row.code)).toStrictEqual(["map-query-hit"]);
+    it("refuses a meander holding a characteristic the catalog lacks, and writes none of it", async () => {
+      await expect(
+        service.save(
+          meanderRecord({
+            characteristics: { unregisteredCount: 1 },
+            code: "bridge-unknown",
+            lattice: "bridge-unknown",
+          }),
+        ),
+      ).rejects.toThrow(UnknownCharacteristicError);
+      await expect(
+        service.saveAll([
+          meanderRecord({
+            characteristics: { unregisteredCount: 1 },
+            code: "bridge-unknown-batch",
+            lattice: "bridge-unknown-batch",
+          }),
+        ]),
+      ).rejects.toThrow(/no catalog row/u);
+      await expect(
+        repository.countBy({ code: Like("bridge-unknown%") }),
+      ).resolves.toBe(0);
     });
 
-    it("reads a missing key as zero only through COALESCE", async () => {
+    it("refuses a bridge row holding 0 or less, since only values above 0 are stored", async () => {
+      const saved = await service.save(
+        meanderRecord({ code: "bridge-check", lattice: "bridge-check" }),
+      );
+      const insert = async (value: number): Promise<unknown> =>
+        dataSource.query(
+          `INSERT INTO meanderaw.meander_characteristics (meander_id, characteristic_id, value)
+           SELECT $1, id, $2 FROM meanderaw.characteristics WHERE key = 'crossCount'`,
+          [saved.id, value],
+        );
+
+      await expect(insert(0)).rejects.toThrow(/check constraint/iu);
+      await expect(insert(-1)).rejects.toThrow(/check constraint/iu);
+    });
+  });
+
+  describe("syncCharacteristics", () => {
+    it("registers every entry once, however many times it syncs", async () => {
+      await service.syncCharacteristics(characteristicRecords(CATALOG_KEYS));
+      await service.syncCharacteristics(characteristicRecords(CATALOG_KEYS));
+
+      const registered = await dataSource.getRepository(Characteristic).find();
+      const keys = registered.map(({ key }) => key).toSorted();
+
+      expect(keys).toStrictEqual(CATALOG_KEYS.toSorted());
+    });
+
+    it("rewrites an entry's description in place, keeping its id", async () => {
+      const before = await dataSource
+        .getRepository(Characteristic)
+        .findOneByOrFail({ key: "crossCount" });
+
+      await service.syncCharacteristics([
+        ...characteristicRecords(
+          CATALOG_KEYS.filter((key) => key !== "crossCount"),
+        ),
+        characteristicRecord("crossCount", {
+          description: "Rewritten.",
+          formula: "n",
+          isPattern: true,
+        }),
+      ]);
+
+      await expect(
+        dataSource
+          .getRepository(Characteristic)
+          .findOneByOrFail({ key: "crossCount" }),
+      ).resolves.toMatchObject({
+        description: "Rewritten.",
+        formula: "n",
+        id: before.id,
+        isPattern: true,
+      });
+    });
+
+    it("deletes an entry no longer registered, and the bridge rows that held it", async () => {
       await service.save(
         meanderRecord({
-          characteristics: { isDots: true },
-          code: "map-coalesce",
-          lattice: "map-coalesce",
+          characteristics: { crossCount: 3, forkCount: 1 },
+          code: "sync-stale",
+          lattice: "sync-stale",
         }),
       );
 
-      const bare = await repository
-        .createQueryBuilder("meander")
-        .where("meander.code = :code", { code: "map-coalesce" })
-        .andWhere("(meander.characteristics ->> :key)::numeric = 0", {
-          key: "crossCount",
-        })
-        .getMany();
-      const coalesced = await repository
-        .createQueryBuilder("meander")
-        .where("meander.code = :code", { code: "map-coalesce" })
-        .andWhere(
-          "COALESCE((meander.characteristics ->> :key)::numeric, 0) = 0",
-          {
-            key: "crossCount",
-          },
-        )
-        .getMany();
+      await service.syncCharacteristics(
+        characteristicRecords(
+          CATALOG_KEYS.filter((key) => key !== "crossCount"),
+        ),
+      );
 
-      expect(bare).toStrictEqual([]);
-      expect(coalesced.map((row) => row.code)).toStrictEqual(["map-coalesce"]);
+      await expect(bridgeOf("sync-stale")).resolves.toStrictEqual([
+        "forkCount=1",
+      ]);
+      await expect(
+        dataSource.getRepository(Characteristic).countBy({ key: "crossCount" }),
+      ).resolves.toBe(0);
     });
   });
 
@@ -279,7 +362,7 @@ describe(MeanderawDatabaseService, () => {
       ).resolves.toBe(records.length);
     });
 
-    it("stores every column exactly as save would, the JSON map and array columns included", async () => {
+    it("stores every column and bridge row exactly as save would, the array column included", async () => {
       const fields: Partial<MeanderRecord> = {
         characteristics: { aSoutheastLatinCount: 2, crossCount: 1 },
         symmetricalCodes: ["01x02y12", "01x02y21"],
@@ -308,6 +391,9 @@ describe(MeanderawDatabaseService, () => {
       const { lattice: _oneLattice, ...comparable } = one;
 
       expect(all).toStrictEqual(comparable);
+      await expect(bridgeOf("saved-all")).resolves.toStrictEqual(
+        await bridgeOf("saved-one"),
+      );
     });
 
     it("refuses a batch holding a duplicate code and writes none of it", async () => {
@@ -328,12 +414,25 @@ describe(MeanderawDatabaseService, () => {
 
   describe("clear", () => {
     it("deletes every meander row, so a regenerated draw run writes the same codes again rather than colliding with them", async () => {
-      await service.save(meanderRecord({ code: "clear-first-row" }));
+      await service.save(
+        meanderRecord({
+          characteristics: { crossCount: 1 },
+          code: "clear-first-row",
+        }),
+      );
       await service.save(meanderRecord({ code: "clear-second-row" }));
 
       await service.clear();
 
       await expect(repository.find()).resolves.toStrictEqual([]);
+      await expect(
+        dataSource.query<unknown[]>(
+          "SELECT 1 FROM meanderaw.meander_characteristics",
+        ),
+      ).resolves.toStrictEqual([]);
+      await expect(
+        dataSource.getRepository(Characteristic).count(),
+      ).resolves.toBe(CATALOG_KEYS.length);
       await expect(
         service.save(meanderRecord({ code: "clear-first-row" })),
       ).resolves.toMatchObject({ code: "clear-first-row" });
