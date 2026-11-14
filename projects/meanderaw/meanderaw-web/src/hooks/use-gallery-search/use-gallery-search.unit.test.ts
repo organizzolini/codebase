@@ -37,7 +37,9 @@ describe(useGallerySearch, () => {
 
     expect(result.current).toStrictEqual({
       direction: "asc",
+      group: [],
       handleFilterChange: result.current.handleFilterChange,
+      handleGroupChange: result.current.handleGroupChange,
       handleSortChange: result.current.handleSortChange,
       handleViewChange: result.current.handleViewChange,
       sort: undefined,
@@ -142,5 +144,37 @@ describe(useGallerySearch, () => {
       gallerySearchSchema.parse({ direction: "up", sort: 5, view: "wall" }),
     ).toStrictEqual({ direction: "asc", sort: "5", view: "grid" });
     expect(gallerySearchSchema.parse({})).toStrictEqual({});
+  });
+
+  it("replaces the link with the grouping, dropping it for no levels", () => {
+    const navigate = mockNavigate();
+    vi.mocked(useSearch).mockReturnValue({ group: ["lattice"] });
+
+    const { result } = renderHook(() => useGallerySearch());
+    result.current.handleGroupChange(["lattice", "rowsColumns"]);
+    result.current.handleGroupChange([]);
+
+    const [[first], [second]] = navigate.mock.calls as [
+      [NavigateOptions],
+      [NavigateOptions],
+    ];
+
+    expect(result.current.group).toStrictEqual(["lattice"]);
+    expect(first.search({ view: "list" })).toStrictEqual({
+      group: ["lattice", "rowsColumns"],
+      view: "list",
+    });
+    expect(second.search({ group: ["lattice"] })).toStrictEqual({
+      group: undefined,
+    });
+  });
+
+  it("reads a grouping from a link, capped at four levels, and drops one that is not a list", () => {
+    expect(
+      gallerySearchSchema.parse({ group: ["a", "b", "c", "d", "e"] }),
+    ).toStrictEqual({ group: ["a", "b", "c", "d"] });
+    expect(gallerySearchSchema.parse({ group: "lattice" })).toStrictEqual({
+      group: [],
+    });
   });
 });

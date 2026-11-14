@@ -34,6 +34,16 @@ export function useGallerySearch(): UseGallerySearchResult {
       search: (previous) => ({ ...previous, filter }),
     });
   };
+  // No levels drops the parameter, so a flat gallery has a clean link.
+  const handleGroupChange = (group: string[]): void => {
+    void navigate({
+      replace: true,
+      search: (previous) => ({
+        ...previous,
+        group: group.length === 0 ? undefined : group,
+      }),
+    });
+  };
   const handleViewChange = (next: GalleryView): void => {
     void navigate({
       replace: true,
@@ -60,7 +70,9 @@ export function useGallerySearch(): UseGallerySearchResult {
   // 🎁 Result
   return {
     direction,
+    group: search.group ?? [],
     handleFilterChange,
+    handleGroupChange,
     handleSortChange,
     handleViewChange,
     sort: search.sort,

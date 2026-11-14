@@ -12,6 +12,11 @@ import {
   toFilterInput,
 } from "../components/gallery-filter-builder/gallery-filter-builder.utilities";
 import { GalleryFilters } from "../components/gallery-filters/gallery-filters";
+import { GalleryGroupBy } from "../components/gallery-group-by/gallery-group-by";
+import {
+  createGroupFields,
+  resolveGrouping,
+} from "../components/gallery-group-by/gallery-group-by.utilities";
 import { GallerySort } from "../components/gallery-sort/gallery-sort";
 import { resolveSortField } from "../components/gallery-sort/gallery-sort.utilities";
 import { GalleryToolbar } from "../components/gallery-toolbar/gallery-toolbar";
@@ -99,7 +104,9 @@ function IndexPage(): ReactNode {
   const { characteristics, filter, page, sort } = Route.useLoaderData();
   const {
     direction,
+    group,
     handleFilterChange,
+    handleGroupChange,
     handleSortChange,
     handleViewChange,
     view,
@@ -116,6 +123,9 @@ function IndexPage(): ReactNode {
     toFilterInput(filter),
   );
   const fields = createFilterFields(characteristics);
+  const groupFields = createGroupFields(characteristics);
+  // A level the catalog does not know is left out of the page.
+  const grouping = resolveGrouping(group, groupFields);
 
   // 💪 Handlers
 
@@ -131,6 +141,11 @@ function IndexPage(): ReactNode {
         fields={fields}
         filter={filter}
         onFilterChange={handleFilterChange}
+      />
+      <GalleryGroupBy
+        fields={groupFields}
+        grouping={grouping}
+        onGroupingChange={handleGroupChange}
       />
       <div className="flex flex-wrap items-center justify-between gap-3">
         <GalleryToolbar

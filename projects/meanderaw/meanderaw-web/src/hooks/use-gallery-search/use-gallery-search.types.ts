@@ -22,7 +22,10 @@ export type SortDirection = (typeof SORT_DIRECTIONS)[number];
 export interface UseGallerySearchResult {
   /** Which way the sort runs; ascending when the link names none. */
   direction: SortDirection;
+  /** The fields the cards are grouped by, outermost first; none when flat. */
+  group: string[];
   handleFilterChange: (filter: FilterGroup | undefined) => void;
+  handleGroupChange: (group: string[]) => void;
   handleSortChange: (
     sort: string | undefined,
     direction: SortDirection,
