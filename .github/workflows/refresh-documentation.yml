@@ -82,8 +82,8 @@ jobs:
           base: main
           branch: docs/documentation-refresh
           delete-branch: true
-          commit-message: "docs(documentation): 📝 refresh OpenWiki"
-          title: "docs(documentation): 📝 refresh OpenWiki"
+          commit-message: "docs(documentation): 📝 refresh"
+          title: "docs(documentation): 📝 refresh"
           body: |
             ## 🌰 Summary
 
