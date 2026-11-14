@@ -6,7 +6,6 @@
     "@nestjs/common": "catalog:",
     "@nestjs/config": "catalog:",
     "@nestjs/core": "catalog:",
-    "@nestjs/typeorm": "catalog:",
     "nest-commander": "catalog:",
     "pg": "catalog:",
     "reflect-metadata": "catalog:",

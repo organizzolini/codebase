@@ -2,7 +2,7 @@
 
 ```bash
 nx run infrastructure:postgres:up
-nx run meanderaw-cli:migration:run
+nx run meanderaw-db:migration:run
 nx run meanderaw-cli:start
 ```
 
@@ -17,8 +17,8 @@ The `meanders` table is built by a migration, never by synchronizing. Run the mi
 before the first draw run, and again whenever a new one lands:
 
 ```bash
-nx run meanderaw-cli:migration:run        # Build or update the meanders table
-nx run meanderaw-cli:migration:generate   # After editing the Meander entity, write the next migration
+nx run meanderaw-db:migration:run        # Build or update the meanders table
+nx run meanderaw-db:migration:generate   # After editing the Meander entity, write the next migration
 ```
 
 The connection is the `MEANDERAW_POSTGRES_HOST`, `MEANDERAW_POSTGRES_PORT`,

@@ -1,3 +1,9 @@
+export {
+  MEANDERAW_DATABASE_ENTITIES,
+  MEANDERAW_DATABASE_MIGRATIONS,
+} from "./modules/meanderaw-database/data-source.constants";
+export { Meander } from "./modules/meanderaw-database/entities/meander.entity";
+export type { StoredCharacteristicValues } from "./modules/meanderaw-database/entities/meander.entity";
 // 📤 Exports
 export {
   BIGINT_NUMBER_TRANSFORMER,
@@ -7,12 +13,6 @@ export {
 } from "./modules/meanderaw-database/meanderaw-database.constants";
 export { MeanderawDatabaseModule } from "./modules/meanderaw-database/meanderaw-database.module";
 export { MeanderawDatabaseService } from "./modules/meanderaw-database/meanderaw-database.service";
-export {
-  MEANDERAW_DATABASE_ENTITIES,
-  MEANDERAW_DATABASE_MIGRATIONS,
-} from "./modules/meanderaw-database/data-source.constants";
-export { Meander } from "./modules/meanderaw-database/entities/meander.entity";
-export type { StoredCharacteristicValues } from "./modules/meanderaw-database/entities/meander.entity";
 export type {
   MeanderPatternShapeCount,
   MeanderRecord,

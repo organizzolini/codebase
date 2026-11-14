@@ -8,9 +8,9 @@ import {
 
 import { meanderRecord } from "../../../testing/meanders";
 
+import { Meander } from "./entities/meander.entity";
 import { MeanderawDatabaseModule } from "./meanderaw-database.module";
 import { MeanderawDatabaseService } from "./meanderaw-database.service";
-import { Meander } from "./entities/meander.entity";
 import { Migration1791160950069 } from "./migrations/1791160950069-migration";
 import { Migration1791414023001 } from "./migrations/1791414023001-migration";
 

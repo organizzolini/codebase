@@ -1,4 +1,3 @@
-import type { MeanderRecord } from "@codebase/meanderaw-db";
 import { LETTER_CHARACTERISTIC_KEYS } from "../src/modules/characteristics/characteristics.constants";
 
 import type {
@@ -9,6 +8,7 @@ import type {
   NumericCharacteristicRecord,
 } from "../src/modules/characteristics/characteristics.types";
 import type { CodeObject } from "../src/modules/code/code.types";
+import type { MeanderRecord } from "@codebase/meanderaw-db";
 
 /**
  * Builds characteristic records and meander rows for the tests that need a

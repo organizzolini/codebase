@@ -7,10 +7,11 @@ import {
 } from "@codebase/persistence/testing";
 
 import { meanderRecord } from "../../../testing/meanders";
+
+import { Meander } from "./entities/meander.entity";
 import { MEANDER_INSERT_CHUNK_SIZE } from "./meanderaw-database.constants";
 import { MeanderawDatabaseModule } from "./meanderaw-database.module";
 import { MeanderawDatabaseService } from "./meanderaw-database.service";
-import { Meander } from "./entities/meander.entity";
 import { Migration1791160950069 } from "./migrations/1791160950069-migration";
 import { Migration1791414023001 } from "./migrations/1791414023001-migration";
 
@@ -28,7 +29,12 @@ import type { MeanderRecord } from "./meanderaw-database.types";
  * instead of the local one.
  */
 /** Characteristic names that must never appear as columns: they live in the `characteristics` jsonb. */
-const CHARACTERISTIC_NAMES = ["cornerCount", "dotCount", "edgeCount", "forkCount"];
+const CHARACTERISTIC_NAMES = [
+  "cornerCount",
+  "dotCount",
+  "edgeCount",
+  "forkCount",
+];
 
 describe(MeanderawDatabaseService, () => {
   let database: DatabaseTestingModule;

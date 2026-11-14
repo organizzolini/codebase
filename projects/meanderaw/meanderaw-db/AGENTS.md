@@ -1,8 +1,8 @@
-# MeanderawDb: NestJS Service Application
+# MeanderawDatabase: Postgres Schema Library
 
 ## Quick Start
 
-**Type**: Node.js service application (NestJS + `NestFactory`)
+**Type**: NestJS library (`type:package`), published to no registry
 
 **Purpose**: <!-- Briefly describe the specific purpose of this service application -->
 

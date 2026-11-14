@@ -2,8 +2,8 @@ import "reflect-metadata";
 
 import { createDataSource } from "@codebase/persistence";
 
-import { MEANDERAW_PROJECT } from "./meanderaw-database.constants";
 import { Meander } from "./entities/meander.entity";
+import { MEANDERAW_PROJECT } from "./meanderaw-database.constants";
 import { Migration1791160950069 } from "./migrations/1791160950069-migration";
 import { Migration1791414023001 } from "./migrations/1791414023001-migration";
 

@@ -301,18 +301,26 @@ const config: KnipConfig = {
       project: "src/**/*.ts",
     },
 
+    // meanderaw-db: Shared TypeORM entities, migrations, and data source
+    "projects/meanderaw/meanderaw-db": {
+      // The data source and the migrations are read by the TypeORM command
+      // line the `migration` target runs, by path rather than by import.
+      entry: [
+        "src/index.ts",
+        "src/modules/meanderaw-database/data-source.constants.ts",
+        "src/modules/meanderaw-database/migrations/**/*.ts",
+      ],
+      project: ["src/**/*.ts"],
+    },
+
     // meanderaw: Greek meander (key/fret) SVG generator CLI
     "projects/meanderaw/meanderaw-cli": {
       // The CLI, the REPL its own target runs, and the sweep's worker
-      // thread — spawned by URL, so nothing imports it. The data source and
-      // the migrations are read by the TypeORM command line the `migration`
-      // target runs, by path rather than by import.
+      // thread — spawned by URL, so nothing imports it.
       entry: [
         "src/meanderaw-cli.main.ts",
         "src/meanderaw-cli.repl.ts",
         "src/worker.ts",
-        "src/modules/database/data-source.constants.ts",
-        "src/modules/database/migrations/**/*.ts",
       ],
       project: "src/**/*.ts",
     },

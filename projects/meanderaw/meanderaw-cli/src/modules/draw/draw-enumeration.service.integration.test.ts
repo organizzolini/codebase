@@ -1,7 +1,11 @@
-import { MEANDERAW_DATABASE_MIGRATIONS, Meander, MeanderawDatabaseModule } from "@codebase/meanderaw-db";
 import { ConfigService } from "@nestjs/config";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
+import {
+  Meander,
+  MEANDERAW_DATABASE_MIGRATIONS,
+  MeanderawDatabaseModule,
+} from "@codebase/meanderaw-db";
 import {
   type DatabaseTestingModule,
   startDatabaseTestingModule,

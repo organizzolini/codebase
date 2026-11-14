@@ -2,11 +2,11 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
+import { Meander } from "./entities/meander.entity";
 import {
   MEANDER_INSERT_CHUNK_SIZE,
   MEANDER_READ_BATCH_SIZE,
 } from "./meanderaw-database.constants";
-import { Meander } from "./entities/meander.entity";
 
 import type {
   MeanderPatternShapeCount,

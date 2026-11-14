@@ -1,5 +1,6 @@
-import { MeanderawDatabaseModule } from "@codebase/meanderaw-db";
 import { Module } from "@nestjs/common";
+
+import { MeanderawDatabaseModule } from "@codebase/meanderaw-db";
 
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
 import { CodeModule } from "../code/code.module";

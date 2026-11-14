@@ -1,4 +1,8 @@
-import { MEANDERAW_DATABASE_MIGRATIONS, Meander, MeanderawDatabaseModule } from "@codebase/meanderaw-db";
+import {
+  Meander,
+  MEANDERAW_DATABASE_MIGRATIONS,
+  MeanderawDatabaseModule,
+} from "@codebase/meanderaw-db";
 import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
 import { environmentSchema } from "../src/meanderaw-cli.constants";

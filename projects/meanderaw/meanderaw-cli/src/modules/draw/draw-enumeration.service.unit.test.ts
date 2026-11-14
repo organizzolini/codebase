@@ -1,8 +1,7 @@
-import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
-import type { MeanderRecord } from "@codebase/meanderaw-db";
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EnumerationService } from "../enumeration/enumeration.service";
@@ -10,6 +9,7 @@ import { EnumerationService } from "../enumeration/enumeration.service";
 import { DrawEnumerationService } from "./draw-enumeration.service";
 import { DrawPoolService } from "./draw-pool.service";
 
+import type { MeanderRecord } from "@codebase/meanderaw-db";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 // 🧪 Tests

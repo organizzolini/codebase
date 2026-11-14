@@ -1,4 +1,3 @@
-import type { MeanderRecord } from "@codebase/meanderaw-db";
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -12,6 +11,7 @@ import { SymmetryService } from "../symmetry/symmetry.service";
 import { DrawRecordService } from "./draw-record.service";
 import { DrawWorkerService } from "./draw-worker.service";
 
+import type { MeanderRecord } from "@codebase/meanderaw-db";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 /** What the class under test is built with. */

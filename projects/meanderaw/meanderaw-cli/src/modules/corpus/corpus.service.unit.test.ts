@@ -1,8 +1,7 @@
-import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
-import type { Meander } from "@codebase/meanderaw-db";
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { characteristicRecord } from "../../../testing/meanders";
@@ -15,6 +14,7 @@ import { CorpusService } from "./corpus.service";
 
 import type { Tile } from "../tile/tile.types";
 import type { CorpusEntry } from "./corpus.types";
+import type { Meander } from "@codebase/meanderaw-db";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 // 🧪 Tests

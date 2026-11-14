@@ -1,6 +1,6 @@
-import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
-import type { Meander } from "@codebase/meanderaw-db";
 import { Inject, Injectable } from "@nestjs/common";
+
+import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
 
 import { CharacteristicsService } from "../characteristics/characteristics.service";
 import { CodeService } from "../code/code.service";
@@ -13,6 +13,7 @@ import {
 } from "./corpus.constants";
 
 import type { CorpusEntry } from "./corpus.types";
+import type { Meander } from "@codebase/meanderaw-db";
 
 /**
  * Ingests the historical corpus through `DrawCodeService`, so every row comes from one place.

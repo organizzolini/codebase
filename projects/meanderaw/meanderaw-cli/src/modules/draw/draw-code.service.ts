@@ -1,11 +1,11 @@
-import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
-import type { Meander } from "@codebase/meanderaw-db";
 import { Inject, Injectable } from "@nestjs/common";
 
+import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
 
 import { DrawRecordService } from "./draw-record.service";
 
 import type { CodeDrawingOptions } from "./draw.types";
+import type { Meander } from "@codebase/meanderaw-db";
 
 /**
  * Persists the meander a `--code` drawing names, as one row. It is recorded

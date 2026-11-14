@@ -1,5 +1,3 @@
-import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
-import type { Meander } from "@codebase/meanderaw-db";
 import { createMock } from "@golevelup/ts-vitest";
 import {
   beforeAll,
@@ -11,6 +9,7 @@ import {
   vi,
 } from "vitest";
 
+import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
 import { expectLoggerContext } from "@codebase/observability/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
@@ -22,6 +21,7 @@ import { DrawIndexService } from "./draw-index.service";
 import { DrawCommand } from "./draw.command";
 
 import type { MeanderPageContent } from "./draw-index.types";
+import type { Meander } from "@codebase/meanderaw-db";
 import type {
   BuiltTestingModule,
   TestingModuleOptions,

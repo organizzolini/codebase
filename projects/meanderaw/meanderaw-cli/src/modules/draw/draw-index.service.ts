@@ -2,9 +2,9 @@
 // abbreviation of "navigation" this file chose to write.
 // cspell:ignore nav
 
-import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
-import type { Meander, MeanderPatternShapeCount } from "@codebase/meanderaw-db";
 import { Inject, Injectable } from "@nestjs/common";
+
+import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
 
 import {
   PATTERN_CHARACTERISTIC_KEYS,
@@ -22,6 +22,7 @@ import type {
   MeanderPageSource,
   MeanderRowBatches,
 } from "./draw-index.types";
+import type { Meander, MeanderPatternShapeCount } from "@codebase/meanderaw-db";
 
 /**
  * Renders the corpus pages: one per pattern characteristic, listing its meanders, plus an index.

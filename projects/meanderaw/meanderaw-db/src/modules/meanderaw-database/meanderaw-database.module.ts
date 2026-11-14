@@ -3,9 +3,9 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { DatabaseModule } from "@codebase/persistence";
 
+import { MEANDERAW_DATABASE_ENTITIES } from "./data-source.constants";
 import { MEANDERAW_PROJECT } from "./meanderaw-database.constants";
 import { MeanderawDatabaseService } from "./meanderaw-database.service";
-import { MEANDERAW_DATABASE_ENTITIES } from "./data-source.constants";
 
 /**
  * Connects an application to the Postgres database `MEANDERAW_POSTGRES_*` names, through the shared `DatabaseModule.forRoot` and its naming strategy, with every meanderaw entity registered. Never synchronizes or runs migrations on start: `nx run meanderaw-db:migration:run` does that.

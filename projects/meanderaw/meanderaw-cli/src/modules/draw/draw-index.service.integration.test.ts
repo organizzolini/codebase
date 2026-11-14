@@ -1,7 +1,10 @@
-import { MEANDERAW_DATABASE_MIGRATIONS, Meander, MeanderawDatabaseModule } from "@codebase/meanderaw-db";
-import type { MeanderRecord } from "@codebase/meanderaw-db";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
+import {
+  Meander,
+  MEANDERAW_DATABASE_MIGRATIONS,
+  MeanderawDatabaseModule,
+} from "@codebase/meanderaw-db";
 import {
   type DatabaseTestingModule,
   startDatabaseTestingModule,
@@ -17,6 +20,7 @@ import { TileService } from "../tile/tile.service";
 
 import { DrawIndexService } from "./draw-index.service";
 
+import type { MeanderRecord } from "@codebase/meanderaw-db";
 import type { Repository } from "typeorm";
 
 /**

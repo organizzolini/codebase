@@ -1,4 +1,3 @@
-import { MEANDERAW_DATABASE_MIGRATIONS, Meander, MeanderawDatabaseModule } from "@codebase/meanderaw-db";
 import { createMock } from "@golevelup/ts-vitest";
 import {
   afterAll,
@@ -10,6 +9,11 @@ import {
   vi,
 } from "vitest";
 
+import {
+  Meander,
+  MEANDERAW_DATABASE_MIGRATIONS,
+  MeanderawDatabaseModule,
+} from "@codebase/meanderaw-db";
 import { LoggerService } from "@codebase/observability";
 import {
   type DatabaseTestingModule,

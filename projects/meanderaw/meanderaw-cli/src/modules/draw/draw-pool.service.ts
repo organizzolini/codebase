@@ -1,4 +1,3 @@
-import type { MeanderRecord, MeanderShape } from "@codebase/meanderaw-db";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Worker } from "node:worker_threads";
@@ -13,6 +12,7 @@ import { DRAW_POOL_BATCH_SIZE, DrawWorkerError } from "./draw.constants";
 
 import type { Environment } from "../enumeration/enumeration.types";
 import type { DrawWorkerReply, DrawWorkerTask } from "./draw.types";
+import type { MeanderRecord, MeanderShape } from "@codebase/meanderaw-db";
 
 /**
  * Draws a shape's meanders across worker threads, in single-thread order.

@@ -6,8 +6,8 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { meanderRecord } from "../../../testing/meanders";
 
-import { MeanderawDatabaseService } from "./meanderaw-database.service";
 import { Meander } from "./entities/meander.entity";
+import { MeanderawDatabaseService } from "./meanderaw-database.service";
 
 import type { MeanderRecord } from "./meanderaw-database.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
@@ -42,7 +42,10 @@ describe(MeanderawDatabaseService, () => {
   });
 
   beforeAll(async () => {
-    const built = await buildTestingModule(MeanderawDatabaseService, MODULE_OPTIONS);
+    const built = await buildTestingModule(
+      MeanderawDatabaseService,
+      MODULE_OPTIONS,
+    );
 
     service = built.instance;
     meanderRepository = built.module.get(getRepositoryToken(Meander));
@@ -87,16 +90,11 @@ describe(MeanderawDatabaseService, () => {
   describe("saveAll", () => {
     it("writes every record through one multi-row INSERT per chunk into the schema-qualified table, leaving database-filled columns out", async () => {
       vi.mocked(meanderRepository.manager.transaction).mockImplementation(
-        async (
-          callbackOrLevel: unknown,
-          maybeCallback?: (manager: EntityManager) => Promise<unknown>,
-        ) => {
-          const callback =
-            typeof callbackOrLevel === "function"
-              ? (callbackOrLevel as (
-                  manager: EntityManager,
-                ) => Promise<unknown>)
-              : maybeCallback;
+        async (...args: unknown[]) => {
+          const callback = args.find(
+            (arg): arg is (manager: EntityManager) => Promise<unknown> =>
+              typeof arg === "function",
+          );
           if (callback) {
             await callback(meanderRepository.manager);
           }

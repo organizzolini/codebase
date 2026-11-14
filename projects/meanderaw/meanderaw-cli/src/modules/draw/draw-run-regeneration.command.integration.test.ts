@@ -1,4 +1,3 @@
-import type { Meander } from "@codebase/meanderaw-db";
 import { createMock } from "@golevelup/ts-vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -12,6 +11,7 @@ import {
 
 import { DrawCodeService } from "./draw-code.service";
 
+import type { Meander } from "@codebase/meanderaw-db";
 
 vi.mock("node:fs/promises", () => ({
   mkdir: vi.fn<() => Promise<void>>(),

@@ -1,7 +1,6 @@
-import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
-import type { Meander } from "@codebase/meanderaw-db";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
+import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { meanderRecord } from "../../../testing/meanders";
@@ -13,6 +12,7 @@ import { GeometryService } from "../geometry/geometry.service";
 import { DrawIndexService } from "./draw-index.service";
 
 import type { MeanderPageContent } from "./draw-index.types";
+import type { Meander } from "@codebase/meanderaw-db";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 /** Mocked database, with stubbed parser and drawing. */
