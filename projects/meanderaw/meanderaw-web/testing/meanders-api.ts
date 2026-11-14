@@ -2,12 +2,16 @@ import { delay, graphql, HttpResponse } from "msw";
 
 import { serveGraphqlApi } from "./graphql-api";
 
-import type { GalleryMeander } from "../src/components/meander-gallery/meanders-api.types";
+import type {
+  GalleryGroup,
+  GalleryMeander,
+} from "../src/components/meander-gallery/meanders-api.types";
 import type {
   CharacteristicsQuery,
   CharacteristicsQueryVariables,
   MeanderFilterGroupInput,
   MeanderFilterRuleInput,
+  MeanderGroupsQueryVariables,
   MeanderSortInput,
   MeandersQuery,
   MeandersQueryVariables,
@@ -21,6 +25,11 @@ export interface MeandersApi {
    * Makes every read fail with the message, until `recover`.
    */
   fail: (message: string) => void;
+  /**
+   * Makes only the reads of meanders fail, until `recover`.
+   */
+  failMeanders: (message: string) => void;
+  groupRequests: MeanderGroupsQueryVariables[];
   recover: () => void;
   requests: MeandersQueryVariables[];
 }
@@ -92,12 +101,18 @@ export const FIXTURE_CHARACTERISTICS: CharacteristicsQuery["characteristics"] =
  */
 export function serveMeandersApi(count = 3, delayMs = 0): MeandersApi {
   let failure: string | undefined;
+  let meandersFailure: string | undefined;
   const api: MeandersApi = {
     fail: (message) => {
       failure = message;
     },
+    failMeanders: (message) => {
+      meandersFailure = message;
+    },
+    groupRequests: [],
     recover: () => {
       failure = undefined;
+      meandersFailure = undefined;
     },
     requests: [],
   };
@@ -109,8 +124,10 @@ export function serveMeandersApi(count = 3, delayMs = 0): MeandersApi {
         api.requests.push(variables);
         await delay(delayMs);
 
-        if (failure !== undefined) {
-          return HttpResponse.json({ errors: [{ message: failure }] });
+        const message = failure ?? meandersFailure;
+
+        if (message !== undefined) {
+          return HttpResponse.json({ errors: [{ message }] });
         }
 
         const start =
@@ -143,6 +160,35 @@ export function serveMeandersApi(count = 3, delayMs = 0): MeandersApi {
         });
       },
     ),
+    // The generated result stops at four levels; the groups here nest freely.
+    graphql.query<
+      { meanderGroups: GalleryGroup[] },
+      MeanderGroupsQueryVariables
+    >("MeanderGroups", ({ variables }) => {
+      api.groupRequests.push(variables);
+
+      if (failure !== undefined) {
+        return HttpResponse.json({ errors: [{ message: failure }] });
+      }
+
+      const fixtures = Array.from({ length: count }, (_, position) =>
+        fixtureMeander(position),
+      ).filter(
+        (meander) =>
+          variables.filter === null ||
+          variables.filter === undefined ||
+          matchesGroup(meander, variables.filter),
+      );
+
+      return HttpResponse.json({
+        data: {
+          meanderGroups: groupMeanders(
+            fixtures,
+            [variables.groupBy].flat().map(({ field }) => field),
+          ),
+        },
+      });
+    }),
     graphql.query<CharacteristicsQuery, CharacteristicsQueryVariables>(
       "Characteristics",
       () =>
@@ -155,6 +201,57 @@ export function serveMeandersApi(count = 3, delayMs = 0): MeandersApi {
   );
 
   return api;
+}
+
+/**
+ * The key a meander falls under at a level.
+ */
+function groupKey(meander: GalleryMeander, field: string): string {
+  if (field === "rowsColumns") {
+    return `${String(meander.rows)}x${String(meander.columns)}`;
+  }
+
+  const held = sortValue(meander, field);
+  const isBoolean =
+    field === "isHardcoded" ||
+    FIXTURE_CHARACTERISTICS.find(({ key }) => key === field)?.valueType ===
+      "boolean";
+
+  return isBoolean ? String(Boolean(held)) : String(held);
+}
+
+/**
+ * Splits meanders into groups level by level with exact counts, in numeric
+ * key order, a missing characteristic being its own 0 or false group.
+ */
+function groupMeanders(
+  meanders: readonly GalleryMeander[],
+  fields: readonly string[],
+): GalleryGroup[] {
+  const [field, ...rest] = fields;
+
+  if (field === undefined) {
+    return [];
+  }
+
+  const buckets = new Map<string, GalleryMeander[]>();
+
+  for (const meander of meanders) {
+    const key = groupKey(meander, field);
+
+    buckets.set(key, [...(buckets.get(key) ?? []), meander]);
+  }
+
+  return [...buckets.entries()]
+    .toSorted(([left], [right]) =>
+      left.localeCompare(right, "en", { numeric: true }),
+    )
+    .map(([value, members]) => ({
+      count: members.length,
+      field,
+      groups: groupMeanders(members, rest),
+      value,
+    }));
 }
 
 /**

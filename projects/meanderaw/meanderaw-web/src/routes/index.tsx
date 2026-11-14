@@ -20,10 +20,11 @@ import {
 import { GallerySort } from "../components/gallery-sort/gallery-sort";
 import { resolveSortField } from "../components/gallery-sort/gallery-sort.utilities";
 import { GalleryToolbar } from "../components/gallery-toolbar/gallery-toolbar";
+import { GroupedGallery } from "../components/grouped-gallery/grouped-gallery";
 import { MeanderGallery } from "../components/meander-gallery/meander-gallery";
 import {
   findCharacteristics,
-  findMeanders,
+  findGallery,
 } from "../components/meander-gallery/meanders-api.utilities";
 import { useGallerySearch } from "../hooks/use-gallery-search/use-gallery-search";
 import {
@@ -33,6 +34,10 @@ import {
 import { toSortInput } from "../hooks/use-gallery-search/use-gallery-search.utilities";
 import { useMeanders } from "../hooks/use-meanders/use-meanders";
 
+import type { FilterGroup } from "../components/gallery-filter-builder/gallery-filter-builder.types";
+import type { MeandersPage } from "../components/meander-gallery/meanders-api.types";
+import type { MeanderSortInput } from "../graphql/generated/operations";
+import type { GalleryView } from "../hooks/use-gallery-search/use-gallery-search.types";
 import type { ReactNode } from "react";
 
 // 🧭 Route
@@ -52,6 +57,7 @@ export const Route = createFileRoute("/")({
   loaderDeps: ({ search }) => ({
     direction: search.direction ?? DEFAULT_SORT_DIRECTION,
     filter: search.filter,
+    group: search.group,
     sort: search.sort,
   }),
   ssr: false,
@@ -65,16 +71,47 @@ export const Route = createFileRoute("/")({
       deps.filter,
       createFilterFields(characteristics),
     );
-    const page = await findMeanders({
-      filter: toFilterInput(filter),
-      sort: toSortInput(sort, deps.direction),
+    const { groups, page } = await findGallery({
+      direction: deps.direction,
+      filter,
+      grouping: resolveGrouping(deps.group, createGroupFields(characteristics)),
+      sort,
     });
 
-    return { characteristics, filter, page, sort };
+    return { characteristics, filter, groups, page, sort };
   },
 });
 
 // 🧩 Component
+
+/**
+ * Renders the flat gallery, reading its pages after the first by cursor.
+ */
+function FlatGallery(
+  properties: Readonly<{
+    filter: FilterGroup | undefined;
+    page: MeandersPage;
+    sort: MeanderSortInput | undefined;
+    view: GalleryView;
+  }>,
+): ReactNode {
+  const { filter, page, sort, view } = properties;
+  const { hasMore, loadError, loadMore, meanders } = useMeanders(
+    page,
+    sort,
+    toFilterInput(filter),
+  );
+
+  return (
+    <MeanderGallery
+      hasMore={hasMore}
+      loadError={loadError}
+      meanders={meanders}
+      onLoadMore={loadMore}
+      view={view}
+    />
+  );
+}
 
 /**
  * Renders a failed load, retrying by running the loader again.
@@ -101,7 +138,7 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
  */
 function IndexPage(): ReactNode {
   // 🪝 Hooks
-  const { characteristics, filter, page, sort } = Route.useLoaderData();
+  const { characteristics, filter, groups, page, sort } = Route.useLoaderData();
   const {
     direction,
     group,
@@ -117,11 +154,6 @@ function IndexPage(): ReactNode {
   });
 
   // 🏗 Setup
-  const { hasMore, loadError, loadMore, meanders } = useMeanders(
-    page,
-    toSortInput(sort, direction),
-    toFilterInput(filter),
-  );
   const fields = createFilterFields(characteristics);
   const groupFields = createGroupFields(characteristics);
   // A level the catalog does not know is left out of the page.
@@ -150,7 +182,10 @@ function IndexPage(): ReactNode {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <GalleryToolbar
           onViewChange={handleViewChange}
-          totalCount={page.totalCount}
+          totalCount={
+            page?.totalCount ??
+            (groups ?? []).reduce((total, { count }) => total + count, 0)
+          }
           view={view}
         />
         <GallerySort
@@ -168,13 +203,23 @@ function IndexPage(): ReactNode {
           Loading…
         </p>
       ) : null}
-      <MeanderGallery
-        hasMore={hasMore}
-        loadError={loadError}
-        meanders={meanders}
-        onLoadMore={loadMore}
-        view={view}
-      />
+      {groups === undefined && page !== undefined ? (
+        <FlatGallery
+          filter={filter}
+          page={page}
+          sort={toSortInput(sort, direction)}
+          view={view}
+        />
+      ) : (
+        <GroupedGallery
+          key={JSON.stringify({ direction, filter, grouping, sort })}
+          fields={groupFields}
+          filter={toFilterInput(filter)}
+          groups={groups ?? []}
+          sort={toSortInput(sort, direction)}
+          view={view}
+        />
+      )}
     </section>
   );
 }

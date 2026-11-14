@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The fields to group by, the grouping in force, and how to change it.
+ * The fields, the grouping in force, and how to change it.
  */
 export interface GalleryGroupByProperties {
   className?: string;
@@ -19,8 +19,8 @@ export interface GalleryGroupByProperties {
 // 🧩 Component
 
 /**
- * Renders the grouping's levels, each a field picker and a remove button,
- * and a button that adds a level of a field not yet used.
+ * Renders each level as a field picker and a remove button, and a button
+ * that adds a level.
  */
 export function GalleryGroupBy(
   properties: Readonly<GalleryGroupByProperties>,

@@ -18,6 +18,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **ink**: Design token for text color on the dark surface, such as `--ink` and `--ink-muted` in the theme.
 - **innermost**: The deepest nested filter group in a test, where the builder disables Add group at the maximum depth.
 - **lattice**: Which lattice a meander sits on, a text shape field the card shows and the sort and filter fields name.
+- **leaf**: A last-level group, the only kind whose cards the grouped gallery reads, selected by the page filter and one key per level.
 - **meanderaw**: The Greek meander project: its CLI draws and measures meanders, its API serves them, and this web app browses them.
 - **ne**: The not-equal filter operator, shown as ≠ and sent to the API as `NE`.
 - **observer**: A resize observer, the browser object that tells `useElementBox` when the gallery's width changes; jsdom has none, so `testing/viewport.ts` supplies one.
@@ -27,6 +28,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **role**: Accessibility role argument in testing-library queries such as findByRole, which the index integration test uses to find the heading.
 - **unmount**: To remove a rendered component from the page, as a test does to start a fresh render within one test.
 - **usable**:
+- **visible**: The virtual rows the grouped gallery has mounted, whose pending rows start a group's cards loading.
 - **window**: The browser window, whose scroll position the gallery's virtualizer follows so the page scrolls as one, rather than an inner scroll area.
 
 <!-- coinagerie:end -->
