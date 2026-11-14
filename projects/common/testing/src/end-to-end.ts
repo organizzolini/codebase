@@ -5,6 +5,16 @@ export {
   sanitizeEnvironment,
 } from "./modules/command/command.utilities";
 export type {
+  GuideGapOptions,
+  StageExampleOptions,
+} from "./modules/example-run/example-run.types";
+export {
+  findGuideGaps,
+  listExampleNames,
+  removeStagedExample,
+  stageExample,
+} from "./modules/example-run/example-run.utilities";
+export type {
   ConsumerWorkspace,
   ConsumerWorkspaceOptions,
   VerdaccioPluginRunner,
