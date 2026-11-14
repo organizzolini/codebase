@@ -97,6 +97,7 @@ describe("drawCommand draw run", () => {
    */
   describe("over an empty database", () => {
     let drawRun: DrawRunFixture;
+    let brute: Awaited<ReturnType<typeof bruteForceAggregates>>;
     let rebuilds = 0;
 
     beforeAll(async () => {
@@ -108,6 +109,8 @@ describe("drawCommand draw run", () => {
       drawRun = await startMockedDrawRun();
       await drawRun.command.run([], {});
       rebuilds = rebuild.mock.calls.length;
+      // Counted once here, in memory, since it dwarfs the cases that read it.
+      brute = await bruteForceAggregates(drawRun.dataSource);
     }, DRAW_RUN_TIMEOUT_MILLISECONDS);
 
     afterAll(async () => {
@@ -170,9 +173,7 @@ describe("drawCommand draw run", () => {
     });
 
     it("ends with every count table equal to a brute-force count of what it drew, and rebuilt exactly once", async () => {
-      const { absent: _absent, ...counted } = await bruteForceAggregates(
-        drawRun.dataSource,
-      );
+      const { absent: _absent, ...counted } = brute;
 
       expect(rebuilds).toBe(1);
       expect(counted.values).not.toHaveLength(0);
@@ -184,10 +185,8 @@ describe("drawCommand draw run", () => {
     });
 
     it("lets a reader derive every 0 or false bucket from the stored tables, as the shape total minus what is stored", async () => {
-      const { absent } = await bruteForceAggregates(drawRun.dataSource);
-
       await expect(derivedAbsent(drawRun.dataSource)).resolves.toStrictEqual(
-        absent,
+        brute.absent,
       );
     });
 
