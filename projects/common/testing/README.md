@@ -117,6 +117,27 @@ it("reads the config", () => {
 });
 ```
 
+#### Mocking `node:child_process`
+
+`mockChildProcess` wraps every starter in a spy that runs the real process until
+a test stages a result; `mockExecFile(actual, decide)` instead replaces
+`execFile` with a fake that starts nothing and exits as `decide` says
+(`processFailure` builds its `error`). Load the helper with `vi.importActual`
+and a type import, never a dynamic `import()`, for the reason given above:
+
+```ts
+import { vi } from "vitest";
+
+import type * as Testing from "@codebase/testing";
+
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockChildProcess } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
+
+  return mockChildProcess(await importOriginal());
+});
+```
+
 ### End to end
 
 ```ts
@@ -197,6 +218,7 @@ builds the class the same way and asserts its logger context, comes from
 | Integration    | `createFileTree`, `createTemporaryDirectory`, `useWorkingDirectory`, `overrideEnvironment`, `mockDates`                                   |
 | End-to-end CLI | `runSourceCommand` over a `createFileTree({ ... }, { git: true })` root, or `createTarballSandboxRunner` for packed output                |
 | Utilities      | `mockPartially`, `stubFetch`, `loadFixture`, `mockDates`                                                                                  |
+| Child process  | `mockChildProcess`, `mockExecFile`, `processFailure`                                                                                      |
 
 ### Postgres
 
