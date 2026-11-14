@@ -125,6 +125,14 @@ component conventions and the
 [testing-strategy skill](/.agents/skills/testing-strategy/SKILL.md) for
 test tiers.
 
+## The Gallery
+
+- **Data**: GraphQL over `fetch` in `components/meander-gallery/meanders-api.utilities.ts`; typed documents come from `nx run meanderaw-web:codegen`, which reads the API's emitted `src/schema.gql` and the documents in `src/graphql/operations/`.
+- **Paging**: hand-rolled in `hooks/use-meanders/use-meanders.ts`, since the repository has no `@tanstack/react-query`.
+- **Virtualization**: `@tanstack/react-virtual`'s window virtualizer in `MeanderGallery`.
+- **State**: view and sort live in URL search params, validated with Zod in `use-gallery-search.constants.ts`; a sort the catalog does not know falls back to the default order.
+- **Tests**: route integration tests mock GraphQL with MSW; `testing/meanders-api.ts` serves the fixture and `testing/viewport.ts` fakes width, resize observers and scroll.
+
 ## Key Files
 
 - [src/router.tsx](src/router.tsx): Router factory

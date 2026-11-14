@@ -1,3 +1,5 @@
+import { setTimeout as sleep } from "node:timers/promises";
+
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
@@ -109,6 +111,52 @@ describe(useMeanders, () => {
       expect(result.current.meanders).toHaveLength(4);
     });
 
+    expect(result.current.loadError).toBeUndefined();
+  });
+
+  it("drops a read begun under an old first page, and reads for the new one", async () => {
+    const api = serveMeandersApi(6, 50);
+    const { rerender, result } = renderHook(({ first }) => useMeanders(first), {
+      initialProps: { first: pageOf(0, 2, true) },
+    });
+
+    act(() => {
+      result.current.loadMore();
+    });
+
+    const next = pageOf(2, 4, true);
+    rerender({ first: next });
+    act(() => {
+      result.current.loadMore();
+    });
+
+    await waitFor(() => {
+      expect(api.requests).toHaveLength(2);
+    });
+    await waitFor(() => {
+      expect(result.current.meanders).toHaveLength(4);
+    });
+
+    expect(result.current.meanders[0]?.code).toBe(fixtureMeander(2).code);
+  });
+
+  it("ignores the failure of a read begun under an old first page", async () => {
+    const api = serveMeandersApi(6, 30);
+    api.fail("The database is down");
+    const { rerender, result } = renderHook(({ first }) => useMeanders(first), {
+      initialProps: { first: pageOf(0, 2, true) },
+    });
+
+    act(() => {
+      result.current.loadMore();
+    });
+    rerender({ first: pageOf(2, 4, true) });
+
+    await act(async () => {
+      await sleep(100);
+    });
+
+    expect(api.requests).toHaveLength(1);
     expect(result.current.loadError).toBeUndefined();
   });
 

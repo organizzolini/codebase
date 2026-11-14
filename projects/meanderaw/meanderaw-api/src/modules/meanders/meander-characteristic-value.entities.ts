@@ -13,6 +13,9 @@ export class MeanderCharacteristicValueEntity {
   @Field(() => String, { description: "The catalog key." })
   key!: string;
 
+  @Field(() => String, { description: "Its display name." })
+  name!: string;
+
   @Field(() => Float, { description: "The stored value; 1 stands for true." })
   value!: number;
 }

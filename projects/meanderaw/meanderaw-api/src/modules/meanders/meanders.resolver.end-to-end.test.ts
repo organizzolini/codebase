@@ -1,8 +1,13 @@
+import { EntityManager } from "typeorm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 
 import { CodeService, DrawingService } from "@codebase/meanderaw-core";
-import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
+import {
+  Characteristic,
+  MeanderawDatabaseService,
+  MeanderCharacteristic,
+} from "@codebase/meanderaw-db";
 
 import { catalogEntry, meanderRow } from "../../../testing/fixtures";
 import { GOLDEN_SVG } from "../../../testing/golden-svg";
@@ -347,7 +352,7 @@ describe("meanders resolver end-to-end suite", () => {
 
   describe("characteristics", () => {
     const VALUES_QUERY =
-      "query ($first: Int) { meanders(first: $first) { edges { node { code characteristics { isPattern key value } } } } }";
+      "query ($first: Int) { meanders(first: $first) { edges { node { code characteristics { isPattern key name value } } } } }";
 
     it("lists the non-zero values a meander holds by key, and none for a meander with none", async () => {
       expect.hasAssertions();
@@ -364,6 +369,7 @@ describe("meanders resolver end-to-end suite", () => {
                       z.object({
                         isPattern: z.boolean(),
                         key: z.string(),
+                        name: z.string(),
                         value: z.number(),
                       }),
                     ),
@@ -379,13 +385,55 @@ describe("meanders resolver end-to-end suite", () => {
 
       expect(body.errors).toBeUndefined();
       expect(held.get("01x01y0")).toStrictEqual([
-        { isPattern: true, key: "isChain", value: 1 },
-        { isPattern: false, key: "junctionCount", value: 3 },
+        { isPattern: true, key: "isChain", name: "isChain", value: 1 },
+        {
+          isPattern: false,
+          key: "junctionCount",
+          name: "junctionCount",
+          value: 3,
+        },
       ]);
       expect(held.get("01x01y1")).toStrictEqual([
-        { isPattern: false, key: "junctionCount", value: 1 },
+        {
+          isPattern: false,
+          key: "junctionCount",
+          name: "junctionCount",
+          value: 1,
+        },
       ]);
       expect(held.get("01x01y2")).toStrictEqual([]);
+    });
+  });
+
+  describe("characteristics reads", () => {
+    const VALUES_QUERY =
+      "query ($first: Int) { meanders(first: $first) { edges { node { characteristics { key value } } } } }";
+
+    /** How many reads of the catalog or bridge a query makes. */
+    async function readsFor(first: number): Promise<number> {
+      const find = vi.spyOn(EntityManager.prototype, "find");
+      const body = await application.query(VALUES_QUERY, { first });
+      const forCharacteristics = find.mock.calls.filter(([target]) =>
+        [Characteristic, MeanderCharacteristic].includes(
+          target as typeof Characteristic,
+        ),
+      ).length;
+
+      find.mockRestore();
+
+      expect(body.errors).toBeUndefined();
+
+      return forCharacteristics;
+    }
+
+    it("reads the catalog and the bridge once per page, not once per meander", async () => {
+      expect.hasAssertions();
+
+      const small = await readsFor(1);
+      const large = await readsFor(6);
+
+      expect(small).toBe(2);
+      expect(large).toBe(2);
     });
   });
 

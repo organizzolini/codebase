@@ -4642,6 +4642,9 @@ importers:
       '@nestjs/typeorm':
         specifier: 'catalog:'
         version: 12.0.1(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@12.1.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@1.1.1(babel-plugin-macros@3.1.0)(better-sqlite3@12.11.1)(pg@8.23.0)(supports-color@8.1.1))
+      dataloader:
+        specifier: 'catalog:'
+        version: 2.2.3
       graphql:
         specifier: 'catalog:'
         version: 17.1.0
@@ -4850,9 +4853,6 @@ importers:
 
   projects/meanderaw/meanderaw-web:
     dependencies:
-      '@codebase/interface':
-        specifier: workspace:*
-        version: link:../../common/interface
       '@graphql-codegen/cli':
         specifier: 'catalog:'
         version: 8.0.0(@types/node@26.6.2)(graphql@17.1.0)(typescript@6.0.3)
@@ -4871,9 +4871,6 @@ importers:
       graphql:
         specifier: 'catalog:'
         version: 17.1.0
-      msw:
-        specifier: 'catalog:'
-        version: 2.15.0(@types/node@26.6.2)(typescript@6.0.3)
       react:
         specifier: 'catalog:'
         version: 19.3.0
@@ -4884,6 +4881,9 @@ importers:
         specifier: 'catalog:'
         version: 4.6.7
     devDependencies:
+      '@codebase/interface':
+        specifier: workspace:*
+        version: link:../../common/interface
       '@codebase/testing':
         specifier: workspace:*
         version: link:../../common/testing
@@ -4920,6 +4920,9 @@ importers:
       jsdom:
         specifier: 'catalog:'
         version: 31.0.0(@noble/hashes@2.2.0)
+      msw:
+        specifier: 'catalog:'
+        version: 2.15.0(@types/node@26.6.2)(typescript@6.0.3)
       tailwindcss:
         specifier: 'catalog:'
         version: 4.3.3

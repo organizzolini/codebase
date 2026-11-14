@@ -13,6 +13,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **db**:
 - **golden**:
 - **huge**:
+- **large**:
 - **lattice**:
 - **meanderaw**:
 - **median**: Middle of five timed runs of one request, the figure the benchmark reports.

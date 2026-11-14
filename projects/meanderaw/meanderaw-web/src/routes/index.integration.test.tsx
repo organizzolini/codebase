@@ -49,7 +49,7 @@ describe("index", () => {
     expect(first?.getByText("01x01y0000")).toBeDefined();
     expect(
       first?.getByRole("list", { name: "Pattern characteristics" }).textContent,
-    ).toBe("isChain");
+    ).toBe("Chain");
     expect(second?.queryByText("Hardcoded")).toBeNull();
   });
 
@@ -217,7 +217,10 @@ describe("index", () => {
     ]);
   });
 
-  it("sorts by the field picked, in the link and in the order of the cards", async () => {
+  // The mock API sorts like the real one, so the order of the cards shown proves
+  // the page sends the sort and shows the answer in the order it came, not that
+  // the API sorts correctly: that is the API's own end-to-end suite.
+  it("puts the field picked in the link, asks the API for it, and shows the answer in order", async () => {
     const api = serveMeandersApi(6);
     const router = getRouter();
 
@@ -255,14 +258,14 @@ describe("index", () => {
     });
   });
 
-  it("flips the direction of the sort, and drops the sort with the default order", async () => {
+  it("flips the direction in the link and the request, and drops both with the default order", async () => {
     serveMeandersApi(6);
     const router = getRouter();
 
     await renderRoute(router, "/?sort=rows");
     await screen.findAllByTestId("meander-card");
 
-    fireEvent.click(screen.getByRole("button", { name: "Ascending" }));
+    fireEvent.click(screen.getByRole("button", { name: "Sort descending" }));
 
     await waitFor(() => {
       expect(codesShown()[0]).toBe("01x01y0004");
@@ -299,6 +302,52 @@ describe("index", () => {
     expect(api.requests[1]).toMatchObject({
       after: "47",
       sort: { direction: "DESC", field: "junctionCount" },
+    });
+  });
+
+  it("falls back to the default order when the link names a sort that is not a field", async () => {
+    const api = serveMeandersApi(3);
+
+    await renderRoute(getRouter(), "/?sort=nope&direction=desc");
+    await screen.findAllByTestId("meander-card");
+
+    expect(codesShown()).toStrictEqual([
+      "01x01y0000",
+      "01x01y0001",
+      "01x01y0002",
+    ]);
+    expect(api.requests[0]?.sort).toBeUndefined();
+    expect(screen.getByDisplayValue("Default order")).toBeDefined();
+  });
+
+  it("shows why the first page failed, whatever the sort", async () => {
+    const api = serveMeandersApi(3);
+    api.fail("The database is down");
+
+    await renderRoute(getRouter(), "/?sort=rows");
+
+    const alert = await screen.findByRole("alert");
+
+    expect(alert.textContent).toMatch(/The database is down/u);
+    expect(screen.queryAllByTestId("meander-card")).toHaveLength(0);
+  });
+
+  it("says it is loading while a new sort reads, keeping the cards up", async () => {
+    serveMeandersApi(3, 150);
+
+    await renderRoute(getRouter(), "/");
+    await screen.findAllByTestId("meander-card");
+    fireEvent.change(screen.getByRole("combobox"), {
+      target: { value: "rows" },
+    });
+
+    const status = await screen.findByRole("status");
+
+    expect(status.textContent).toBe("Loading…");
+    expect(screen.getAllByTestId("meander-card")).toHaveLength(3);
+
+    await waitFor(() => {
+      expect(screen.queryByRole("status")).toBeNull();
     });
   });
 });

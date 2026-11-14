@@ -7,8 +7,13 @@ import type { GalleryMeander } from "../meander-gallery/meanders-api.types";
 
 const MEANDER: GalleryMeander = {
   characteristics: [
-    { isPattern: true, key: "isChain", value: 1 },
-    { isPattern: false, key: "junctionCount", value: 3 },
+    { isPattern: true, key: "isChain", name: "Chain", value: 1 },
+    {
+      isPattern: false,
+      key: "junctionCount",
+      name: "Junction count",
+      value: 3,
+    },
   ],
   code: "01x01y0",
   columns: 3,
@@ -46,7 +51,7 @@ describe(MeanderCard, () => {
     expect(screen.getByText("01x01y0")).toBeDefined();
     expect(
       screen.getAllByRole("listitem").map((item) => item.textContent),
-    ).toStrictEqual(["isChain"]);
+    ).toStrictEqual(["Chain"]);
     expect(screen.getByRole("img").getAttribute("src")).toMatch(
       /^data:image\/svg\+xml/u,
     );
@@ -72,11 +77,11 @@ describe(MeanderCard, () => {
     );
 
     expect(screen.getByText("All values (2)")).toBeDefined();
-    expect(screen.getByText("junctionCount")).toBeDefined();
+    expect(screen.getByText("Junction count")).toBeDefined();
     expect(screen.getByText("3")).toBeDefined();
   });
 
-  it("copies the Code, then says so", () => {
+  it("copies the Code, then says so, then goes back to Copy", async () => {
     vi.useFakeTimers();
     const writeText = vi.fn<(text: string) => Promise<void>>(async () => {});
     Object.defineProperty(navigator, "clipboard", {
@@ -90,7 +95,10 @@ describe(MeanderCard, () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: /Copy the Code/u }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /Copy the Code/u }));
+      await Promise.resolve();
+    });
 
     expect(writeText).toHaveBeenCalledWith("01x01y0");
     expect(screen.getByText("Copied")).toBeDefined();
@@ -100,6 +108,56 @@ describe(MeanderCard, () => {
     });
 
     expect(screen.getByText("Copy")).toBeDefined();
+
+    vi.useRealTimers();
+  });
+
+  it("says the copy failed when the clipboard refuses, and does not say Copied", async () => {
+    const writeText = vi
+      .fn<(text: string) => Promise<void>>()
+      .mockRejectedValue(new Error("denied"));
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
+    render(
+      <MeanderCard
+        meander={MEANDER}
+        view="grid"
+      />,
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /Copy the Code/u }));
+      await Promise.resolve();
+    });
+
+    expect(screen.getByText("Copy failed")).toBeDefined();
+    expect(screen.queryByText("Copied")).toBeNull();
+  });
+
+  it("lets go of the notice's timer when the card leaves first", async () => {
+    vi.useFakeTimers();
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {
+        writeText: vi.fn<(text: string) => Promise<void>>(async () => {}),
+      },
+    });
+    const { unmount } = render(
+      <MeanderCard
+        meander={MEANDER}
+        view="grid"
+      />,
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /Copy the Code/u }));
+      await Promise.resolve();
+    });
+    unmount();
+
+    expect(vi.getTimerCount()).toBe(0);
 
     vi.useRealTimers();
   });

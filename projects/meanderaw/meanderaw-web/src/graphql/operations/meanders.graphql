@@ -19,6 +19,7 @@ query Meanders($first: Int, $after: String, $sort: MeanderSortInput) {
         characteristics {
           isPattern
           key
+          name
           value
         }
       }
