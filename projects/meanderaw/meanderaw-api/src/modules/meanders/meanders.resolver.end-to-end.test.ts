@@ -345,6 +345,50 @@ describe("meanders resolver end-to-end suite", () => {
     expect(huge.errors).toHaveLength(1);
   });
 
+  describe("characteristics", () => {
+    const VALUES_QUERY =
+      "query ($first: Int) { meanders(first: $first) { edges { node { code characteristics { isPattern key value } } } } }";
+
+    it("lists the non-zero values a meander holds by key, and none for a meander with none", async () => {
+      expect.hasAssertions();
+
+      const body = await application.query(VALUES_QUERY, { first: 6 });
+      const held = new Map(
+        z
+          .object({
+            meanders: z.object({
+              edges: z.array(
+                z.object({
+                  node: z.object({
+                    characteristics: z.array(
+                      z.object({
+                        isPattern: z.boolean(),
+                        key: z.string(),
+                        value: z.number(),
+                      }),
+                    ),
+                    code: z.string(),
+                  }),
+                }),
+              ),
+            }),
+          })
+          .parse(body.data)
+          .meanders.edges.map(({ node }) => [node.code, node.characteristics]),
+      );
+
+      expect(body.errors).toBeUndefined();
+      expect(held.get("01x01y0")).toStrictEqual([
+        { isPattern: true, key: "isChain", value: 1 },
+        { isPattern: false, key: "junctionCount", value: 3 },
+      ]);
+      expect(held.get("01x01y1")).toStrictEqual([
+        { isPattern: false, key: "junctionCount", value: 1 },
+      ]);
+      expect(held.get("01x01y2")).toStrictEqual([]);
+    });
+  });
+
   describe("svg", () => {
     const SVG_QUERY =
       "query ($first: Int) { meanders(first: $first) { edges { node { code rows columns svg } } } }";

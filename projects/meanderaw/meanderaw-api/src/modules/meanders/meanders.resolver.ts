@@ -7,6 +7,7 @@ import {
   Resolver,
 } from "@nestjs/graphql";
 
+import { MeanderCharacteristicValueEntity } from "./meander-characteristic-value.entities";
 import { MeanderConnection } from "./meander-connection.entities";
 import { MeandersArgs as MeandersArguments } from "./meanders-arguments.entities";
 import { MEANDERS_QUERY_DESCRIPTION } from "./meanders.constants";
@@ -25,6 +26,22 @@ export class MeandersResolver {
 
   // 🔎 Queries
 
+  /** The non-zero characteristic values, read only for a meander whose query selects them. */
+  @ResolveField(() => [MeanderCharacteristicValueEntity], {
+    description:
+      "The characteristics the meander holds, by key; a missing one reads as 0 or false.",
+    name: "characteristics",
+  })
+  async characteristics(
+    @Parent() meander: MeanderEntity,
+  ): Promise<MeanderCharacteristicValueEntity[]> {
+    return this.meandersService.findCharacteristics(meander);
+  }
+
+  // 🖋️ Mutations
+
+  // 🔗 Relations
+
   /** A page of meanders. */
   @Query(() => MeanderConnection, {
     description: MEANDERS_QUERY_DESCRIPTION,
@@ -37,10 +54,6 @@ export class MeandersResolver {
 
     return this.meandersService.find({ after, filter, first, sort });
   }
-
-  // 🖋️ Mutations
-
-  // 🔗 Relations
 
   /** The drawing, rendered only for a meander whose query selects it. */
   @ResolveField(() => String, {

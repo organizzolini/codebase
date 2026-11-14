@@ -1,5 +1,6 @@
 import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { In } from "typeorm";
 
 import { CodeService, DrawingService } from "@codebase/meanderaw-core";
 import {
@@ -26,6 +27,7 @@ import {
 import { SortDirection } from "./sort-direction.entities";
 
 import type { CompiledMeanderFilter } from "./filters/meander-filter.types";
+import type { MeanderCharacteristicValueEntity } from "./meander-characteristic-value.entities";
 import type { MeanderConnection } from "./meander-connection.entities";
 import type { MeanderSortInput } from "./meander-sort.entities";
 import type { MeanderEntity } from "./meanders.entities";
@@ -47,6 +49,8 @@ export class MeandersService {
     private readonly meanderRepository: Repository<Meander>,
     @InjectRepository(Characteristic)
     private readonly characteristicRepository: Repository<Characteristic>,
+    @InjectRepository(MeanderCharacteristic)
+    private readonly bridgeRepository: Repository<MeanderCharacteristic>,
     @Inject(MeanderAggregateService)
     private readonly aggregateService: MeanderAggregateService,
     @Inject(MeanderFilterService)
@@ -264,6 +268,30 @@ export class MeandersService {
       hasNextPage: entities.length > first,
       hasPreviousPage: after !== null && after !== undefined,
       totalCount: await this.count(filter),
+    });
+  }
+
+  /**
+   * The non-zero values a meander holds, by key. The bridge is probed through
+   * its primary key, once per catalog row, never scanned by meander alone.
+   */
+  async findCharacteristics(
+    meander: MeanderEntity,
+  ): Promise<MeanderCharacteristicValueEntity[]> {
+    const catalog = await this.characteristicRepository.find({
+      order: { key: "ASC" },
+    });
+    const rows = await this.bridgeRepository.find({
+      where: {
+        characteristicId: In(catalog.map(({ id }) => id)),
+        meanderId: meander.id,
+      },
+    });
+
+    return catalog.flatMap(({ id, isPattern, key }) => {
+      const row = rows.find(({ characteristicId }) => characteristicId === id);
+
+      return row === undefined ? [] : [{ isPattern, key, value: row.value }];
     });
   }
 }

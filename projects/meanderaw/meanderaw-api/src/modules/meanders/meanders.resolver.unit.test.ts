@@ -61,4 +61,26 @@ describe(MeandersResolver, () => {
     expect(instance.svg(meander)).toBe("<svg/>");
     expect(mock(MeandersService).draw).toHaveBeenCalledWith(meander);
   });
+
+  it("reads the characteristic values the service finds for the meander", async () => {
+    expect.hasAssertions();
+
+    const { instance, mock } = await buildTestingModule(MeandersResolver, {
+      mocks: [MeandersService],
+    });
+    const meander = {
+      code: "01",
+      columns: 2,
+      id: "i",
+      isHardcoded: true,
+      lattice: "0",
+      repeats: 1,
+      rows: 1,
+      symmetricalCodes: [],
+    };
+    const values = [{ isPattern: true, key: "isChain", value: 1 }];
+    mock(MeandersService).findCharacteristics.mockResolvedValue(values);
+
+    await expect(instance.characteristics(meander)).resolves.toBe(values);
+  });
 });

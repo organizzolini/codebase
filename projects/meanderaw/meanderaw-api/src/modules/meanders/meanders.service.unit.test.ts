@@ -2,7 +2,11 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { describe, expect, it } from "vitest";
 
 import { CodeService, DrawingService } from "@codebase/meanderaw-core";
-import { Characteristic, Meander } from "@codebase/meanderaw-db";
+import {
+  Characteristic,
+  Meander,
+  MeanderCharacteristic,
+} from "@codebase/meanderaw-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { MeanderAggregateService } from "./aggregates/meander-aggregate.service";
@@ -21,6 +25,7 @@ async function buildService(): Promise<MeandersService> {
     providers: [
       { provide: getRepositoryToken(Meander), useValue: {} },
       { provide: getRepositoryToken(Characteristic), useValue: {} },
+      { provide: getRepositoryToken(MeanderCharacteristic), useValue: {} },
     ],
   });
 
@@ -39,6 +44,7 @@ describe(MeandersService, () => {
       providers: [
         { provide: getRepositoryToken(Meander), useValue: {} },
         { provide: getRepositoryToken(Characteristic), useValue: {} },
+        { provide: getRepositoryToken(MeanderCharacteristic), useValue: {} },
       ],
     });
 
@@ -68,6 +74,7 @@ describe(MeandersService, () => {
       providers: [
         { provide: getRepositoryToken(Meander), useValue: {} },
         { provide: getRepositoryToken(Characteristic), useValue: {} },
+        { provide: getRepositoryToken(MeanderCharacteristic), useValue: {} },
       ],
     });
     const parsed = { columns: 2, digits: "01", repeats: 1, rows: 1 };
