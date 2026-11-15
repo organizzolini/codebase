@@ -13,7 +13,7 @@ import { projectDefaults } from "../../../configuration/callidescope.config.js";
  * Eight direct callees at the widest, where two callables tie:
  * `PronunciationEcclesiasticalService.processEcclesiasticalCharacter`
  * switching on one branch per Latin letter it re-classifies for
- * ecclesiastical pronunciation, and `LatinLibraryProvider.ingest`'s ordinary
+ * ecclesiastical pronunciation, and `LatinLibraryService.ingest`'s ordinary
  * sequential orchestration — read the cached index, build and expand
  * authors, sort and filter them, process each author's page, write each
  * author's texts, clean up metadata. Every traced project gates breadth now,
