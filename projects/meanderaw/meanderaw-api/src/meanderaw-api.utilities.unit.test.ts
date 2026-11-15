@@ -131,7 +131,7 @@ describe("relay pagination helpers suite", () => {
       expect(schema).toBeDefined();
       expect(schema.getType("TestItemConnection")).toBeDefined();
       expect(schema.getType("TestItemEdge")).toBeDefined();
-      expect(schema.getType("PageInfo")).toBeDefined();
+      expect(schema.getType("MeanderPageInfo")).toBeDefined();
       expect(schema.getQueryType()?.getFields()["testItems"]).toBeDefined();
     });
   });
