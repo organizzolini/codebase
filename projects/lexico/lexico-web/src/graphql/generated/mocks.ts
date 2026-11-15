@@ -829,6 +829,15 @@ export type SearchLatinQuery = { searchLatin: { edges: Array<{ node: { distance:
                   | { __typename: 'SupineForm', case: string }
                  } }> } } } }> } };
 
+export type TextReaderQueryVariables = Exact<{
+  slug: string;
+  first: number;
+  after?: string | null | undefined;
+}>;
+
+
+export type TextReaderQuery = { text: { id: string, slug: string, title: string, type: string, author: { name: string, slug: string }, ancestors: Array<{ slug: string, title: string }>, nextText: { slug: string, title: string } | null, parentText: { slug: string, title: string } | null, previousText: { slug: string, title: string } | null, lines: { edges: Array<{ node: { id: string, index: number, label: string, tokens: { edges: Array<{ node: { id: string, index: number, data: string, isPunctuation: boolean } }> } } }>, pageInfo: { endCursor: string | null, hasNextPage: boolean } } } | null };
+
 
 /**
  * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
@@ -870,6 +879,28 @@ export const mockSearchEnglishQuery = (resolver: GraphQLResponseResolver<SearchE
 export const mockSearchLatinQuery = (resolver: GraphQLResponseResolver<SearchLatinQuery, SearchLatinQueryVariables>, options?: RequestHandlerOptions) =>
   graphql.query<SearchLatinQuery, SearchLatinQueryVariables>(
     'SearchLatin',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTextReaderQuery(
+ *   ({ query, variables }) => {
+ *     const { slug, first, after } = variables;
+ *     return HttpResponse.json({
+ *       data: { text }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockTextReaderQuery = (resolver: GraphQLResponseResolver<TextReaderQuery, TextReaderQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<TextReaderQuery, TextReaderQueryVariables>(
+    'TextReader',
     resolver,
     options
   )

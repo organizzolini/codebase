@@ -48,6 +48,33 @@ export function describeMatch(match: {
 }
 
 /**
+ * Runs one GraphQL query against the lexico API and returns its data.
+ */
+export async function queryApi<
+  TResult,
+  TVariables extends Record<string, unknown>,
+>(
+  document: TypedDocumentNode<TResult, TVariables>,
+  variables: TVariables,
+): Promise<TResult> {
+  const response = await fetch(
+    process.env["LEXICO_API_URL"] ?? DEFAULT_LEXICO_API_URL,
+    {
+      body: JSON.stringify({ query: print(document), variables }),
+      headers: { "content-type": "application/json" },
+      method: "POST",
+    },
+  );
+  const body = (await response.json()) as ApiResponse;
+
+  if (body.errors?.[0] !== undefined) {
+    throw new Error(body.errors[0].message);
+  }
+
+  return z.custom<TResult>().parse(body.data);
+}
+
+/**
  * Searches Latin and English at once, since a query is not labeled with its language, and merges both results, best match first.
  */
 export async function searchDictionary(query: string): Promise<LexemeResult[]> {
@@ -141,30 +168,6 @@ export function toLexemeResult(node: ResultNode, query: string): LexemeResult {
       ({ node: translation }) => translation.data,
     ),
   };
-}
-
-/**
- * Runs one GraphQL query against the lexico API and returns its data.
- */
-async function queryApi<TResult, TVariables extends Record<string, unknown>>(
-  document: TypedDocumentNode<TResult, TVariables>,
-  variables: TVariables,
-): Promise<TResult> {
-  const response = await fetch(
-    process.env["LEXICO_API_URL"] ?? DEFAULT_LEXICO_API_URL,
-    {
-      body: JSON.stringify({ query: print(document), variables }),
-      headers: { "content-type": "application/json" },
-      method: "POST",
-    },
-  );
-  const body = (await response.json()) as ApiResponse;
-
-  if (body.errors?.[0] !== undefined) {
-    throw new Error(body.errors[0].message);
-  }
-
-  return z.custom<TResult>().parse(body.data);
 }
 
 /**

@@ -1,0 +1,51 @@
+query TextReader($slug: String!, $first: Int!, $after: String) {
+  text(slug: $slug) {
+    id
+    slug
+    title
+    type
+    author {
+      name
+      slug
+    }
+    ancestors {
+      slug
+      title
+    }
+    nextText {
+      slug
+      title
+    }
+    parentText {
+      slug
+      title
+    }
+    previousText {
+      slug
+      title
+    }
+    lines(first: $first, after: $after) {
+      edges {
+        node {
+          id
+          index
+          label
+          tokens(first: 1000) {
+            edges {
+              node {
+                id
+                index
+                data
+                isPunctuation
+              }
+            }
+          }
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+}
