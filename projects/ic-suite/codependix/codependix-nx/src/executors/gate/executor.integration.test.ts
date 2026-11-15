@@ -1,9 +1,13 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import { captureOutput, overrideEnvironment } from "@codebase/testing";
+import {
+  captureOutput,
+  overrideEnvironment,
+  useTemporaryDirectory,
+  writeFileTree,
+} from "@codebase/testing";
 
 import gateBatchExecutor from "./batch-executor";
 import gateExecutor from "./executor";
@@ -11,9 +15,6 @@ import gateExecutor from "./executor";
 import type { GateExecutorOptions } from "./executor.types";
 import type { CapturedOutput } from "@codebase/testing";
 import type { ExecutorContext, TaskGraph } from "@nx/devkit";
-
-/** Fixtures stay in this package, not the OS temp directory. */
-const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../../../tmp");
 
 /** Long enough for one cold command-line boot on a slow CI runner. */
 const RUN_TIMEOUT = 180_000;
@@ -41,29 +42,12 @@ function buildContext(args: {
  * Writes a fixture workspace: `a → b` is forbidden, `c` depends on `a`. The configuration
  * path is named only in `nx.json`.
  */
-function writeFixtureWorkspace(): string {
-  mkdirSync(FIXTURE_ROOT, { recursive: true });
-
-  const workspaceRoot = mkdtempSync(
-    path.join(FIXTURE_ROOT, "codependix-bound-"),
-  );
+function writeFixtureWorkspace(workspaceRoot: string): void {
   const projects = ["a", "b", "c"];
   const edges: Record<string, string[]> = { a: ["b"], b: [], c: ["a"] };
 
-  writeFileSync(
-    path.join(workspaceRoot, "nx.json"),
-    JSON.stringify({
-      plugins: [
-        {
-          options: { configurationPath: "boundaries.config.json" },
-          plugin: "@codependix/nx",
-        },
-      ],
-    }),
-  );
-  writeFileSync(
-    path.join(workspaceRoot, "boundaries.config.json"),
-    JSON.stringify({
+  writeFileTree(workspaceRoot, {
+    "boundaries.config.json": JSON.stringify({
       boundaries: {
         nxProjects: [
           {
@@ -76,10 +60,7 @@ function writeFixtureWorkspace(): string {
       },
       projectGraph: "codependix-graph.json",
     }),
-  );
-  writeFileSync(
-    path.join(workspaceRoot, "codependix-graph.json"),
-    JSON.stringify({
+    "codependix-graph.json": JSON.stringify({
       dependencies: Object.fromEntries(
         projects.map((source) => [
           source,
@@ -101,23 +82,27 @@ function writeFixtureWorkspace(): string {
         ]),
       ),
     }),
-  );
-  // The loader reads the compiler options beside the working directory, and
-  // the command line's own sources need decorator metadata emitted.
-  writeFileSync(
-    path.join(workspaceRoot, "tsconfig.json"),
-    JSON.stringify({
+    "nx.json": JSON.stringify({
+      plugins: [
+        {
+          options: { configurationPath: "boundaries.config.json" },
+          plugin: "@codependix/nx",
+        },
+      ],
+    }),
+    // The loader reads the compiler options beside the working directory, and
+    // the command line's own sources need decorator metadata emitted.
+    "tsconfig.json": JSON.stringify({
       extends: path.relative(
         workspaceRoot,
         path.resolve(import.meta.dirname, "../../../tsconfig.json"),
       ),
     }),
-  );
-
-  return workspaceRoot;
+  });
 }
 
 describe("gate executor against a fixture workspace", () => {
+  const fixtureRoot = useTemporaryDirectory("codependix-bound");
   let workspaceRoot: string;
   let output: CapturedOutput;
 
@@ -169,7 +154,8 @@ describe("gate executor against a fixture workspace", () => {
   }
 
   beforeAll(() => {
-    workspaceRoot = writeFixtureWorkspace();
+    workspaceRoot = fixtureRoot();
+    writeFixtureWorkspace(workspaceRoot);
   });
 
   beforeEach(() => {
@@ -177,10 +163,6 @@ describe("gate executor against a fixture workspace", () => {
     // interleave ANSI codes with the text asserted on below.
     overrideEnvironment({ FORCE_COLOR: "0" });
     output = captureOutput();
-  });
-
-  afterAll(() => {
-    rmSync(workspaceRoot, { force: true, recursive: true });
   });
 
   it(

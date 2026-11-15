@@ -368,7 +368,7 @@ describe(CodeService, () => {
       );
     });
 
-    it("gives a tile and its own column shift the same name, since shifting only re-phases the pattern", () => {
+    it("gives a tile and its own column shift the same name, since shifting only rotates the pattern", () => {
       expect(service.spellCanonical(buildTile([".e", ".."]))).toBe(
         service.spellCanonical(buildTile(["e.", ".."])),
       );
@@ -407,7 +407,7 @@ describe(CodeService, () => {
       expect(service.rotate(code, 3).digits).toBe("012345");
     });
 
-    it("takes a shift past the span modulo it, since every integer names a real phase", () => {
+    it("takes a shift past the span modulo it, since every integer names a real rotation", () => {
       const code = service.parse("012345", 2, 3);
 
       expect(service.rotate(code, 4).digits).toBe(
@@ -415,7 +415,7 @@ describe(CodeService, () => {
       );
     });
 
-    it("reads a negative shift as the phase it names rather than refusing it", () => {
+    it("reads a negative shift as the rotation it names rather than refusing it", () => {
       const code = service.parse("012345", 2, 3);
 
       expect(service.rotate(code, -1).digits).toBe(
@@ -436,13 +436,16 @@ describe(CodeService, () => {
   });
 
   describe("symmetricalCodes", () => {
-    /** Ranks every phase alike; the digits alone pick one. */
+    /** Ranks every rotation alike; the digits alone pick one. */
     const rankedAlike = (): number => 0;
 
-    /** A tile's Code at its canonical phase, as stored. */
+    /** A tile's Code at its canonical rotation, as stored. */
     const storedCode = (tile: Tile): string =>
       service.format(
-        service.canonicalPhase(service.parse(service.spell(tile)), rankedAlike),
+        service.canonicalRotation(
+          service.parse(service.spell(tile)),
+          rankedAlike,
+        ),
       );
 
     it("is empty for a meander every mirror and flip maps onto itself", () => {
@@ -452,7 +455,7 @@ describe(CodeService, () => {
     });
 
     it("names the flip a meander's own Code cannot reach, and never the meander itself", () => {
-      const own = service.canonicalPhase(
+      const own = service.canonicalRotation(
         service.parse(service.spell(singleColumn)),
         rankedAlike,
       );
@@ -464,7 +467,7 @@ describe(CodeService, () => {
 
     it("names every member of the symmetry class a shift alone cannot reach, so no member is lost to the fold", () => {
       const tile = buildTile(["s.", ".e", ".."]);
-      const own = service.canonicalPhase(
+      const own = service.canonicalRotation(
         service.parse(service.spell(tile)),
         rankedAlike,
       );

@@ -1,9 +1,8 @@
-import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { useTemporaryDirectory } from "@codebase/testing";
+import { useTemporaryDirectory, writeFileTree } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InstanceDiscoveryLocatingService } from "./instance-discovery-locating.service";
@@ -12,24 +11,20 @@ import { InstanceDiscoveryLocatingService } from "./instance-discovery-locating.
  * Builds a workspace holding two module directories, so directory globs and
  * file globs can be exercised against the same tree.
  */
-async function populateWorkspace(workingDirectory: string): Promise<void> {
-  for (const stem of ["differences", "logger"]) {
-    const instancePath = path.join(
-      workingDirectory,
-      "packages/widgets/src/modules",
-      stem,
-    );
-
-    await mkdir(instancePath, { recursive: true });
-
-    for (const suffix of [
-      ".module.ts",
-      ".service.ts",
-      ".service.unit.test.ts",
-    ]) {
-      await writeFile(path.join(instancePath, `${stem}${suffix}`), "", "utf8");
-    }
-  }
+function populateWorkspace(workingDirectory: string): void {
+  writeFileTree(
+    workingDirectory,
+    Object.fromEntries(
+      ["differences", "logger"].flatMap((name) => {
+        return [".module.ts", ".service.ts", ".service.unit.test.ts"].map(
+          (suffix) => [
+            `packages/widgets/src/modules/${name}/${name}${suffix}`,
+            "",
+          ],
+        );
+      }),
+    ),
+  );
 }
 
 describe(InstanceDiscoveryLocatingService, () => {
@@ -42,7 +37,7 @@ describe(InstanceDiscoveryLocatingService, () => {
 
     service = built.instance;
     workingDirectory = readWorkspace();
-    await populateWorkspace(workingDirectory);
+    populateWorkspace(workingDirectory);
   });
 
   it("resolves with its dependencies", async () => {
@@ -61,7 +56,7 @@ describe(InstanceDiscoveryLocatingService, () => {
         workingDirectory,
       });
 
-      expect(instances.map((instance) => instance.nameStem)).toStrictEqual([
+      expect(instances.map((instance) => instance.name)).toStrictEqual([
         "differences",
       ]);
     });
@@ -73,7 +68,7 @@ describe(InstanceDiscoveryLocatingService, () => {
         workingDirectory,
       });
 
-      expect(instances.map((instance) => instance.nameStem)).toStrictEqual([
+      expect(instances.map((instance) => instance.name)).toStrictEqual([
         "logger",
       ]);
     });
@@ -84,7 +79,7 @@ describe(InstanceDiscoveryLocatingService, () => {
         workingDirectory,
       });
 
-      expect(instances.map((instance) => instance.nameStem)).toStrictEqual([
+      expect(instances.map((instance) => instance.name)).toStrictEqual([
         "differences",
         "logger",
       ]);
@@ -132,7 +127,7 @@ describe(InstanceDiscoveryLocatingService, () => {
       });
 
       expect(instances).toHaveLength(2);
-      expect(instances[0]?.nameStem).toBe("differences");
+      expect(instances[0]?.name).toBe("differences");
       expect(
         instances[0]?.fileScope?.map((filePath) => path.basename(filePath)),
       ).toStrictEqual([
@@ -162,7 +157,7 @@ describe(InstanceDiscoveryLocatingService, () => {
         workingDirectory,
       });
 
-      expect(instances[0]?.nameStem).toBe("differences.module");
+      expect(instances[0]?.name).toBe("differences.module");
     });
 
     it("applies caller substitutions to every instance", () => {

@@ -1,4 +1,5 @@
 // 📤 Exports
+export { bootModule } from "./modules/boot-module/boot-module.utilities";
 export {
   expectModuleExports,
   expectModuleImports,

@@ -8,7 +8,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **adoption**: The AdoptionPlan that decides which restored task database to rename to this machine's id, if any.
 - **baseline**: The codometer report snapshot from a green main build, which later pull requests are compared against.
 - **batch**: Group of knip tasks Nx hands to one executor call, which runs knip once from the workspace root and splits its findings by project.
-- **breadth**: The count of direct calls a callable makes, which callidescope caps with maximumBreadth.
 - **bullet**: A single list item the upgrade-dependencies step adds to its pull request's details section.
 - **charge**: Assign a knip or cspell finding to the workspace root that owns its file, so only a finding charged to a project fails that project.
 - **corrupt**: A task database that fails its integrity check, which CI discards with a warning instead of restoring it.

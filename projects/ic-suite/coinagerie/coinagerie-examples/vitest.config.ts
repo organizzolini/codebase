@@ -9,7 +9,7 @@ export default mergeConfig(
       coverage: {
         // Fixtures and the harness that runs the command line, so there is no
         // source to instrument and an empty report is expected.
-        include: [],
+        exclude: ["src/**/*.ts"],
       },
       // Each test spawns the command line, which compiles through swc and
       // bootstraps Nest, so runs are slow. Hooks share the budget: a

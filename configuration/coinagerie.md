@@ -10,7 +10,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **band**: Appears only inside the word bandit, the Python security scanner named in the Python project templates.
 - **baseline**: Fallow reporting keys, deadCodeBaseline and healthBaseline, set to null so no existing findings are grandfathered.
 - **boundary**: The layer rule that codependix checks on every built graph, forbidding imports the workspace declares out of bounds.
-- **breadth**: The number of distinct callables a single callable calls directly, which the maximumBreadth limit gates and the breadth command prints.
+- **breadth**: The number of distinct callables one callable calls directly. Callidescope reports it in each project's Breadth table and gates it with `maximumBreadth`. Defined here once for every project.
 - **budget**: The comment-length cap codometer enforces per language, such as the TypeScript comment budget in the codometer config.
 - **bullet**: A glossary entry line of the form dash, bold word, colon, definition, which coinagerie parses to read headwords.
 - **bundle**: The output a bundler such as Vite emits for a package, which the vite library config can inline packages into.
