@@ -1,6 +1,9 @@
 /* cspell:words canō */
 
+import { DataSource } from "typeorm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+
+import { Token } from "@codebase/lexico-db";
 
 import { DATABASE_TIMEOUT_MILLISECONDS } from "../../../testing/database";
 import {
@@ -104,6 +107,39 @@ describe("word candidates end to end", () => {
     expect(
       new Set(candidates.map((candidate) => candidate.lexemeId)).size,
     ).toBe(1);
+  });
+
+  it("returns no candidates for a word whose dictionary entry has no forms", async () => {
+    await expect(candidatesFor("virumque")).resolves.toStrictEqual([]);
+  });
+
+  it("returns no candidates for a word token that has no word", async () => {
+    const tokens = application.server.get(DataSource).getRepository(Token);
+    const canoId = tokenIds.get("cano");
+    if (canoId === undefined) {
+      throw new Error('The passage has no token "cano"');
+    }
+    const template = await tokens.findOneOrFail({
+      relations: { author: true, line: true, text: true },
+      where: { id: canoId },
+    });
+    const orphan = await tokens.save(
+      Object.assign(new Token(), {
+        author: template.author,
+        data: "orphan",
+        index: 99,
+        isPunctuation: false,
+        line: template.line,
+        text: template.text,
+        word: null,
+      }),
+    );
+    const response = await application.execute(WORD_CANDIDATES, {
+      tokenId: orphan.id,
+    });
+
+    expect(response.errors).toBeUndefined();
+    expect(response.data?.["wordCandidates"]).toStrictEqual([]);
   });
 
   it("returns no candidates for a punctuation token", async () => {

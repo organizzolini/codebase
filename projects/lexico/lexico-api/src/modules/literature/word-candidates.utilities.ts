@@ -65,5 +65,5 @@ function describeVerbalForm(form: Form): string {
   if (form instanceof AdverbForm) {
     return `${form.degree} adverb`;
   }
-  return "";
+  throw new Error(`Cannot describe a ${form.constructor.name}`);
 }

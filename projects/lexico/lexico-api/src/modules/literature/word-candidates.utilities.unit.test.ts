@@ -1,9 +1,16 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  AdjectivalForm,
+  AdverbForm,
   FiniteVerbForm,
+  Form,
+  GerundForm,
+  InfinitiveForm,
   Lexeme,
   NominalForm,
+  ParticipleForm,
+  SupineForm,
   Translation,
   WordForm,
 } from "@codebase/lexico-db";
@@ -58,6 +65,57 @@ describe("word candidate utilities", () => {
       expect(describeForm(form)).toBe(
         "present indicative active first singular",
       );
+    });
+  });
+
+  describe("the other form kinds", () => {
+    it.each([
+      [
+        "an adjectival form",
+        Object.assign(new AdjectivalForm(), {
+          case: "genitive",
+          gender: "feminine",
+          number: "plural",
+        }),
+        "feminine genitive plural",
+      ],
+      [
+        "a participle",
+        Object.assign(new ParticipleForm(), {
+          tense: "perfect",
+          voice: "passive",
+        }),
+        "perfect passive participle",
+      ],
+      [
+        "an infinitive",
+        Object.assign(new InfinitiveForm(), {
+          tense: "present",
+          voice: "active",
+        }),
+        "present active infinitive",
+      ],
+      [
+        "a gerund",
+        Object.assign(new GerundForm(), { case: "dative" }),
+        "dative gerund",
+      ],
+      [
+        "a supine",
+        Object.assign(new SupineForm(), { case: "accusative" }),
+        "accusative supine",
+      ],
+      [
+        "an adverb",
+        Object.assign(new AdverbForm(), { degree: "comparative" }),
+        "comparative adverb",
+      ],
+    ])("describes %s", (_, form, description) => {
+      expect(describeForm(form)).toBe(description);
+    });
+
+    it("refuses a form of an unknown kind rather than describing it as nothing", () => {
+      expect(() => describeForm(new Form())).toThrow("Cannot describe a Form");
     });
   });
 

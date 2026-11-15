@@ -31,7 +31,9 @@ export class WordCandidatesService {
 
   /**
    * Returns the word-form links of a token's word, each with its form's lexeme
-   * and that lexeme's translations. A missing token, a punctuation token, and a
+   * and that lexeme's translations. Links come in the order they were stored,
+   * and each lexeme's translations likewise, so the first translation is the
+   * earliest recorded. A missing token, a punctuation token, and a
    * token with no word all return none.
    */
   public async findWordFormsForToken(tokenId: string): Promise<WordForm[]> {
@@ -44,6 +46,7 @@ export class WordCandidatesService {
     }
 
     return this.wordFormRepository.find({
+      order: { form: { lexeme: { translations: { id: "ASC" } } }, id: "ASC" },
       relations: { form: { lexeme: { translations: true } } },
       where: { word: { id: token.word.id } },
     });

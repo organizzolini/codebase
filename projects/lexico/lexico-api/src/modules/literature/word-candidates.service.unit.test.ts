@@ -60,6 +60,7 @@ describe(WordCandidatesService, () => {
     await service.findWordFormsForToken("token-1");
 
     expect(find).toHaveBeenCalledWith({
+      order: { form: { lexeme: { translations: { id: "ASC" } } }, id: "ASC" },
       relations: { form: { lexeme: { translations: true } } },
       where: { word: { id: "word-1" } },
     });
