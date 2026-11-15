@@ -1,6 +1,13 @@
 import { Module } from "@nestjs/common";
 
-import { Author, Line, Text, Token, TypeOrmModule } from "@codebase/lexico-db";
+import {
+  Author,
+  Line,
+  Text,
+  Token,
+  TypeOrmModule,
+  WordForm,
+} from "@codebase/lexico-db";
 
 import { AuthorsResolver } from "./authors.resolver";
 import { LinesResolver } from "./lines.resolver";
@@ -10,6 +17,8 @@ import { LiteratureResolver } from "./literature.resolver";
 import { LiteratureService } from "./literature.service";
 import { TextsResolver } from "./texts.resolver";
 import { TokensResolver } from "./tokens.resolver";
+import { WordCandidatesResolver } from "./word-candidates.resolver";
+import { WordCandidatesService } from "./word-candidates.service";
 
 /**
  * Module providing literature browsing, hierarchy, and search endpoints.
@@ -17,7 +26,7 @@ import { TokensResolver } from "./tokens.resolver";
 @Module({
   controllers: [],
   exports: [LiteratureService],
-  imports: [TypeOrmModule.forFeature([Author, Text, Line, Token])],
+  imports: [TypeOrmModule.forFeature([Author, Text, Line, Token, WordForm])],
   providers: [
     AuthorsResolver,
     TextsResolver,
@@ -27,6 +36,8 @@ import { TokensResolver } from "./tokens.resolver";
     LiteratureService,
     LiteratureRelationsService,
     LiteratureRelationsLoader,
+    WordCandidatesResolver,
+    WordCandidatesService,
   ],
 })
 export class LiteratureModule {}

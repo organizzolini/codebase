@@ -6,6 +6,7 @@ The words this project uses that the root glossary does not define, regenerated 
 
 - **batch**: Dataloader term for grouping ID lookups into one query, such as lexemes loaded together in a single batch.
 - **book**: Division of a literary work used as a text locator, such as book one of Vergil's Aeneid in literature fixtures.
+- **cano**: Latin verb "to sing" seeded as the one-candidate word in the word-card fixture, whose first-person singular form the card describes.
 - **corpus**: Fixture collection of literary texts and lines seeded into the database, used by literature search and lookup tests.
 - **cut**: Local name for the page-limit condition that trims a query's rows to the count a page requested.
 - **db**: Suffix of the POSTGRES_DB environment variable, naming the Postgres database the API connects to and tests stub.
