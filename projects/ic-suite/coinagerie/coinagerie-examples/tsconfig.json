@@ -16,9 +16,7 @@
   "exclude": ["dist", "examples", "node_modules", "output", "tmp"],
   "extends": "../../../../configuration/tsconfig.json",
   "include": [
-    "codependix.config.ts",
-    "codometer.config.ts",
-    "coinagerie.config.ts",
+    "configuration/*.ts",
     "eslint.config.ts",
     "testing/**/*.ts",
     "vitest.config.ts"

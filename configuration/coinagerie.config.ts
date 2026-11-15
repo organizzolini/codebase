@@ -3172,16 +3172,11 @@ export const coinagerieConfiguration = {
     {
       description:
         "The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.",
-      path: "coinagerie.md",
+      path: "configuration/coinagerie.md",
       type: "markdown",
     },
   ],
 } satisfies CoinagerieConfiguration;
 
-/**
- * The `configuration` project's own glossary, written into `coinagerie.md`.
- *
- * The default export is what the loader reads, and the shared configuration
- * above already names the output, so it is exported as it is.
- */
+/** The shared configuration, for a host that loads this file by its default export. */
 export default coinagerieConfiguration;

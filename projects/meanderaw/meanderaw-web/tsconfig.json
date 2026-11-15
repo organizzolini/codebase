@@ -12,9 +12,7 @@
   "exclude": ["dist", "node_modules", "output"],
   "extends": "@codebase/configuration/tsconfig.json",
   "include": [
-    "callidescope.config.ts",
-    "codometer.config.ts",
-    "coinagerie.config.ts",
+    "configuration/*.ts",
     "eslint.config.ts",
     "src/**/*.ts",
     "src/**/*.tsx",

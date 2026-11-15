@@ -14,10 +14,7 @@
   "extends": "../../../configuration/tsconfig.json",
   "include": [
     "*.config.mts",
-    "callidescope.config.ts",
-    "codependix.config.ts",
-    "codometer.config.ts",
-    "coinagerie.config.ts",
+    "configuration/*.ts",
     "eslint.config.ts",
     "src/**/*.ts",
     "testing/**/*.ts",

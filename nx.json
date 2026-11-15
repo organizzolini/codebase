@@ -95,7 +95,7 @@
     {
       "options": {
         "configurationPath": "configuration/callidescope.config.ts",
-        "projectConfigurationPath": "callidescope.config.ts"
+        "projectConfigurationPath": "configuration/callidescope.config.ts"
       },
       "plugin": "@callidescope/nx"
     },
@@ -103,7 +103,7 @@
       "options": {
         "configurationPath": "configuration/codependix.config.ts",
         "gateTargetName": "codependix-bound",
-        "projectConfigurationPath": "codependix.config.ts"
+        "projectConfigurationPath": "configuration/codependix.config.ts"
       },
       "plugin": "@codependix/nx"
     },
@@ -116,7 +116,7 @@
           "{workspaceRoot}/GLOSSARY.md",
           "{workspaceRoot}/projects/ic-suite/coinagerie/*/src/**/!(*.test.*|*.spec.*)"
         ],
-        "projectConfigurationPath": "coinagerie.config.ts"
+        "projectConfigurationPath": "configuration/coinagerie.config.ts"
       },
       "plugin": "@coinagerie/nx"
     }
@@ -290,11 +290,11 @@
           "production"
         ],
         "options": {
-          "config": "codometer.config.ts"
+          "config": "configuration/codometer.config.ts"
         },
         "outputs": [
-          "{projectRoot}/codometer.md",
-          "{projectRoot}/codometer-report.json"
+          "{projectRoot}/codometer-report.json",
+          "{projectRoot}/configuration/codometer.md"
         ]
       }
     ],
@@ -311,7 +311,7 @@
         }
       ],
       "description": "Two things the `@coinagerie/nx` inference does not declare. The `write` configuration of the check target it infers for every project holding a configuration at the plugin's `projectConfigurationPath`, which writes the glossary instead of judging it. And a dependency on the root glossary's own target, `configuration:coinagerie`, so that the root `GLOSSARY.md` is checked, or written, before any project's glossary is: every project excludes the words the root glossary lists, so a project judged against a stale root glossary would be judged wrongly. Nx forwards an explicit configuration down `dependsOn`, so `-c write` writes the root first and `-c check` checks it first. The plugin infers only the check, so the `write` configuration is added here: it sets the executor's `write` option, which rewrites each glossary instead of judging it.",
-      "outputs": ["{projectRoot}/coinagerie.md"]
+      "outputs": ["{projectRoot}/configuration/coinagerie.md"]
     },
     "dependency-cruiser": [
       {

@@ -22,9 +22,7 @@
   ],
   "extends": "../../../../configuration/tsconfig.json",
   "include": [
-    "codependix.config.ts",
-    "codometer.config.ts",
-    "coinagerie.config.ts",
+    "configuration/*.ts",
     "eslint.config.ts",
     "examples/**/*.ts",
     "testing/**/*.ts",

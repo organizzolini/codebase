@@ -28,15 +28,24 @@ export const projectDefaults = {
    * request, so a pull request cannot catch this.
    */
   fileImports: {
-    markdown: { anchor: "codependix-file-imports", path: "codependix.md" },
+    markdown: {
+      anchor: "codependix-file-imports",
+      path: "configuration/codependix.md",
+    },
     target: "markdown",
   },
   nestjsModules: {
-    markdown: { anchor: "codependix-nestjs-modules", path: "codependix.md" },
+    markdown: {
+      anchor: "codependix-nestjs-modules",
+      path: "configuration/codependix.md",
+    },
     target: "markdown",
   },
   nxProjects: {
-    markdown: { anchor: "codependix-nx-projects", path: "codependix.md" },
+    markdown: {
+      anchor: "codependix-nx-projects",
+      path: "configuration/codependix.md",
+    },
     target: "markdown",
   },
 } satisfies CodependixProjectConfiguration;
@@ -47,7 +56,7 @@ export const projectDefaults = {
  */
 const codependixConfiguration: CodependixConfiguration = {
   /** Where each project's own configuration file sits, relative to its root. */
-  projectConfigurationPath: "codependix.config.ts",
+  projectConfigurationPath: "configuration/codependix.config.ts",
   /**
    * Rules every built graph is judged against, keyed by graph level and
    * gated by `--check boundaries` — never by `--check reports`, which is

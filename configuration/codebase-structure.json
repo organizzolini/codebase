@@ -33,6 +33,14 @@
         {
           "children": [
             {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "configuration"
+        },
+        {
+          "children": [
+            {
               "children": [
                 {
                   "ruleId": "module-folder"
@@ -266,6 +274,14 @@
             }
           ],
           "name": ".vscode"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "configuration"
         },
         {
           "children": [
@@ -576,6 +592,14 @@
         {
           "children": [
             {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "configuration"
+        },
+        {
+          "children": [
+            {
               "ruleId": "kebab-case-folder"
             },
             {
@@ -693,6 +717,14 @@
             }
           ],
           "name": ".vscode"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "configuration"
         },
         {
           "children": [

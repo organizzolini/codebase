@@ -171,7 +171,7 @@ export const codometerConfiguration = {
     },
     {
       custom: selectAllLabels(customStatistics),
-      path: "codometer.md",
+      path: "configuration/codometer.md",
       type: "markdown",
     },
   ],
