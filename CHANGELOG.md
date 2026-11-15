@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.2.0](https://github.com/organizzolini/codebase/compare/v6.1.0...v6.2.0) (2026-11-15)
+
+### ✨ Features
+
+* **coinagerie,configuration,lexico,caelundas,meanderaw,conformetry,codometer,codependix:** ✨ clarify word meanings ([#2373](https://github.com/organizzolini/codebase/issues/2373)) ([a0a31f2](https://github.com/organizzolini/codebase/commit/a0a31f28d042ce652bcc19a5f776f715680589a6)), closes [#2372](https://github.com/organizzolini/codebase/issues/2372)
+
+### 📝 Documentation
+
+* **compliance,conformetry:** 📝 shorten two comments over the JSDoc budget ([#2416](https://github.com/organizzolini/codebase/issues/2416)) ([bf16fa7](https://github.com/organizzolini/codebase/commit/bf16fa7edefb5e788351861b447d365c13bca7c7)), closes [#2415](https://github.com/organizzolini/codebase/issues/2415) [#2315](https://github.com/organizzolini/codebase/issues/2315)
+
 ## [6.1.0](https://github.com/organizzolini/codebase/compare/v6.0.3...v6.1.0) (2026-11-15)
 
 ### ✨ Features
