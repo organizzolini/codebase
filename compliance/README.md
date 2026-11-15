@@ -6,7 +6,8 @@ commands:
 
 - `pull-request` — one run per pull request or merge group: it writes parent
   issue references and labels (pull request events only), then validates title,
-  body, labels, assignees, and release significance together.
+  body, labels, assignees, release significance, and the issues it closes
+  together.
 - `issue` — labels and assigns a new issue, audits one issue, or audits every
   open issue, chosen by event or arguments.
 - `audit-files` — CODEOWNERS and workflow security.
