@@ -39,12 +39,15 @@ describe("every example this package ships", () => {
     }
   });
 
-  describe("zero-config", () => {
+  describe("minimal-config", () => {
     it("prints every language's words, hides what each skips, and writes nothing", async () => {
-      const staged = stage("zero-config");
+      const staged = stage("minimal-config");
       const before = fs.readdirSync(staged, { recursive: true }).toSorted();
 
-      const result = await runCoinagerie(staged, []);
+      const result = await runCoinagerie(staged, [
+        "--config",
+        "coinagerie.config.ts",
+      ]);
 
       expect(result.exitCode).toBe(0);
       expect(readWords(result.standardOutput)).toStrictEqual(
@@ -108,11 +111,29 @@ describe("every example this package ships", () => {
     });
   });
 
+  describe("minimal-config refusal", () => {
+    it("refuses a run that names no configuration, though one sits in the folder", async () => {
+      const staged = stage("minimal-config");
+      const before = fs.readdirSync(staged, { recursive: true }).toSorted();
+
+      const result = await runCoinagerie(staged, []);
+
+      expect(result.exitCode).toBe(1);
+      expect(result.standardOutput).toBe("");
+      expect(result.standardError).toContain(
+        "--config is required: coinagerie never searches for or assumes a configuration file",
+      );
+      expect(
+        fs.readdirSync(staged, { recursive: true }).toSorted(),
+      ).toStrictEqual(before);
+    });
+  });
+
   describe("exclusions", () => {
     it("leaves out ignored files, excluded paths, and excluded words", async () => {
       const result = await runCoinagerie(
         stage("exclusions", EXCLUSIONS_SCRATCH_FILES),
-        [],
+        ["--config", "coinagerie.config.ts"],
       );
 
       expect(result.exitCode).toBe(0);
@@ -128,7 +149,10 @@ describe("every example this package ships", () => {
   describe("exclusion-patterns", () => {
     it("leaves out every word a pattern matches, and keeps the rest", async () => {
       const staged = stage("exclusion-patterns");
-      const result = await runCoinagerie(staged, []);
+      const result = await runCoinagerie(staged, [
+        "--config",
+        "coinagerie.config.ts",
+      ]);
 
       expect(result.exitCode).toBe(0);
       expect(readWords(result.standardOutput)).toStrictEqual([
@@ -141,7 +165,10 @@ describe("every example this package ships", () => {
 
   describe("folding", () => {
     it("folds forms, merges a configured family, and excludes after folding", async () => {
-      const result = await runCoinagerie(stage("folding"), []);
+      const result = await runCoinagerie(stage("folding"), [
+        "--config",
+        "coinagerie.config.ts",
+      ]);
 
       expect(result.exitCode).toBe(0);
       expect(readWords(result.standardOutput)).toStrictEqual([
@@ -205,8 +232,16 @@ describe("every example this package ships", () => {
         fs.readFileSync(json, "utf8"),
       ];
 
-      const first = await runCoinagerie(staged, ["--write"]);
-      const second = await runCoinagerie(staged, ["--write"]);
+      const first = await runCoinagerie(staged, [
+        "--config",
+        "coinagerie.config.ts",
+        "--write",
+      ]);
+      const second = await runCoinagerie(staged, [
+        "--config",
+        "coinagerie.config.ts",
+        "--write",
+      ]);
 
       expect(first.exitCode).toBe(0);
       expect(second.exitCode).toBe(0);
@@ -225,7 +260,11 @@ describe("every example this package ships", () => {
         '{"orbit": "Kept.", "vanished": "Deleted."}\n',
       );
 
-      const result = await runCoinagerie(staged, ["--write"]);
+      const result = await runCoinagerie(staged, [
+        "--config",
+        "coinagerie.config.ts",
+        "--write",
+      ]);
       const json = fs.readFileSync(path.join(staged, "glossary.json"), "utf8");
 
       expect(result.exitCode).toBe(0);
@@ -236,6 +275,8 @@ describe("every example this package ships", () => {
 
     it("prints the flat JSON glossary when asked", async () => {
       const result = await runCoinagerie(stage("outputs"), [
+        "--config",
+        "coinagerie.config.ts",
         "--format",
         "json",
       ]);

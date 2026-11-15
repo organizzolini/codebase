@@ -1,3 +1,4 @@
+import { ConfigurationPathRequiredError } from "@coinagerie/configuration";
 import { Injectable } from "@nestjs/common";
 
 import {
@@ -11,8 +12,9 @@ import type { CoinageriePluginOptions, PluginInput } from "./options.types";
  * Narrows the untyped options object Nx hands a plugin.
  *
  * Nx passes consumer config from `nx.json` unvalidated, so each field is checked
- * before use. A bad value falls back to its default, so a target-name typo does
- * not stop the project graph from building.
+ * before use. A bad name falls back to its default, so a typo does not stop the
+ * project graph from building; a missing configuration path does, since nothing
+ * may assume where a configuration lives.
  */
 @Injectable()
 export class OptionsService {
@@ -72,10 +74,24 @@ export class OptionsService {
 
   // 🌎 Public Methods
 
-  /** Resolves the effective plugin options from an untrusted value. */
+  /**
+   * Resolves the effective plugin options from an untrusted value, throwing
+   * when the registration names no `projectConfigurationPath`.
+   */
   public resolvePluginOptions(options: unknown): CoinageriePluginOptions {
     const record: Record<string, unknown> =
       typeof options === "object" && options !== null ? { ...options } : {};
+
+    const projectConfigurationPath = this.readString({
+      key: "projectConfigurationPath",
+      options: record,
+    });
+
+    if (projectConfigurationPath === undefined) {
+      throw new ConfigurationPathRequiredError(
+        "The @coinagerie/nx plugin option projectConfigurationPath",
+      );
+    }
 
     return {
       checkTargetName:
@@ -84,6 +100,7 @@ export class OptionsService {
       command:
         this.readString({ key: "command", options: record }) ?? DEFAULT_COMMAND,
       inputs: this.readInputs(record),
+      projectConfigurationPath,
     };
   }
 }

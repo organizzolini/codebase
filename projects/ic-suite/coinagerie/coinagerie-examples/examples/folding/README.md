@@ -7,7 +7,7 @@ choose, and `exclude.words` applies after all of it.
 
 ```bash
 cd examples/folding/project
-coinagerie
+coinagerie --config coinagerie.config.ts
 ```
 
 It exits 0 and prints four words: `aspect`, `configure`, `engine`, and `src`.

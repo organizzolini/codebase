@@ -32,7 +32,7 @@ file elsewhere.
 
 | Example | Answers |
 | ------- | ------- |
-| [zero-config](examples/zero-config/README.md) | What does `coinagerie` do in a folder with no configuration? |
+| [minimal-config](examples/minimal-config/README.md) | What does `coinagerie` print for a configuration that sets nothing? |
 | [exclusions](examples/exclusions/README.md) | How do I leave files and words out? |
 | [exclusion-patterns](examples/exclusion-patterns/README.md) | How do I leave out a whole family of words, such as plan IDs? |
 | [folding](examples/folding/README.md) | How do `aspects` and `aspect` become one entry, and `configuration` and `configure`? |

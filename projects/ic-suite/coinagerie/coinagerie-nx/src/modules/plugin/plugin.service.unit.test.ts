@@ -15,6 +15,9 @@ const DEPENDENCIES = {
   providers: [OptionsService],
 } satisfies TestingModuleOptions;
 
+/** The registration every case runs with. */
+const OPTIONS = { projectConfigurationPath: "coinagerie.config.ts" };
+
 describe(PluginService, () => {
   let service: PluginService;
   let workspace: FakeWorkspace | undefined;
@@ -45,7 +48,7 @@ describe(PluginService, () => {
   });
 
   describe("inferTargets", () => {
-    it("gives a target to each project that holds a configuration, and to no other", () => {
+    it("gives a target to each project that holds the configuration, and to no other", () => {
       expect.hasAssertions();
 
       const { root } = build({
@@ -57,22 +60,47 @@ describe(PluginService, () => {
       });
 
       const targets = service.inferTargets({
-        configurationFiles: [
-          "packages/alpha/coinagerie.config.ts",
-          "packages/beta/coinagerie.config.ts",
+        options: OPTIONS,
+        projectFiles: [
+          "packages/alpha/project.json",
+          "packages/beta/package.json",
+          "packages/gamma/project.json",
         ],
-        options: {},
         workspaceRoot: root,
       });
 
-      // `gamma` holds no configuration, so Nx never matched it.
+      // `gamma` is a project but holds no configuration.
       expect([...targets.keys()]).toStrictEqual([
         "packages/alpha",
         "packages/beta",
       ]);
     });
 
-    it("gives the workspace root a target when the root holds a configuration", () => {
+    it("looks for the configuration only at the configured path", () => {
+      expect.hasAssertions();
+
+      const { root } = build({
+        "packages/alpha/coinagerie.config.ts": "",
+        "packages/alpha/project.json": "{}",
+        "packages/beta/configuration/coinagerie.config.ts": "",
+        "packages/beta/project.json": "{}",
+      });
+
+      const targets = service.inferTargets({
+        options: {
+          projectConfigurationPath: "configuration/coinagerie.config.ts",
+        },
+        projectFiles: [
+          "packages/alpha/project.json",
+          "packages/beta/project.json",
+        ],
+        workspaceRoot: root,
+      });
+
+      expect([...targets.keys()]).toStrictEqual(["packages/beta"]);
+    });
+
+    it("gives the workspace root a target when the root holds the configuration", () => {
       expect.hasAssertions();
 
       const { root } = build({
@@ -83,8 +111,8 @@ describe(PluginService, () => {
       expect([
         ...service
           .inferTargets({
-            configurationFiles: ["coinagerie.config.ts"],
-            options: {},
+            options: OPTIONS,
+            projectFiles: ["package.json"],
             workspaceRoot: root,
           })
           .keys(),
@@ -96,12 +124,13 @@ describe(PluginService, () => {
 
       const { root } = build({
         "fixtures/sample/coinagerie.config.ts": "",
+        "fixtures/sample/package.json": "{}",
       });
 
       expect(
         service.inferTargets({
-          configurationFiles: ["fixtures/sample/coinagerie.config.ts"],
-          options: {},
+          options: OPTIONS,
+          projectFiles: ["fixtures/sample/package.json"],
           workspaceRoot: root,
         }).size,
       ).toBe(0);
@@ -124,48 +153,60 @@ describe(PluginService, () => {
 
         expect(
           service.inferTargets({
-            configurationFiles: ["packages/alpha/coinagerie.config.ts"],
-            options: {},
+            options: OPTIONS,
+            projectFiles: ["packages/alpha/package.json"],
             workspaceRoot: root,
           }).size,
         ).toBe(0);
       },
     );
 
-    it("gives a project holding two configuration files one set of targets", () => {
+    it("gives a project holding two manifests one set of targets", () => {
       expect.hasAssertions();
 
       const { root } = build({
-        "packages/alpha/coinagerie.config.mjs": "",
         "packages/alpha/coinagerie.config.ts": "",
+        "packages/alpha/package.json": '{"name":"alpha"}',
         "packages/alpha/project.json": "{}",
       });
 
       expect(
         service.inferTargets({
-          configurationFiles: [
-            "packages/alpha/coinagerie.config.mjs",
-            "packages/alpha/coinagerie.config.ts",
+          options: OPTIONS,
+          projectFiles: [
+            "packages/alpha/package.json",
+            "packages/alpha/project.json",
           ],
-          options: {},
           workspaceRoot: root,
         }).size,
       ).toBe(1);
     });
 
-    it("infers nothing when Nx matched no configuration", () => {
+    it("infers nothing when Nx matched no project", () => {
       expect.hasAssertions();
 
       expect(
         service.inferTargets({
-          configurationFiles: [],
-          options: {},
+          options: OPTIONS,
+          projectFiles: [],
           workspaceRoot: build({}).root,
         }).size,
       ).toBe(0);
     });
 
-    it("runs the command with --check from the project, cached", () => {
+    it("refuses a registration that names no configuration path", () => {
+      expect.hasAssertions();
+
+      expect(() =>
+        service.inferTargets({
+          options: {},
+          projectFiles: [],
+          workspaceRoot: build({}).root,
+        }),
+      ).toThrow("projectConfigurationPath is required");
+    });
+
+    it("runs the command with the configuration path, cached", () => {
       expect.hasAssertions();
 
       const { root } = build({
@@ -174,8 +215,8 @@ describe(PluginService, () => {
       });
       const targets = service
         .inferTargets({
-          configurationFiles: ["packages/alpha/coinagerie.config.ts"],
-          options: {},
+          options: OPTIONS,
+          projectFiles: ["packages/alpha/project.json"],
           workspaceRoot: root,
         })
         .get("packages/alpha");
@@ -184,29 +225,35 @@ describe(PluginService, () => {
         "coinagerie-check": {
           cache: true,
           executor: "@coinagerie/nx:check",
-          options: { command: "coinagerie" },
+          options: {
+            command: "coinagerie",
+            projectConfigurationPath: "coinagerie.config.ts",
+          },
         },
       });
     });
 
-    it("names the configuration and every file the project holds as cache inputs", () => {
+    it("names the configured configuration and every file the project holds as cache inputs", () => {
       expect.hasAssertions();
 
       const { root } = build({
-        "packages/alpha/coinagerie.config.ts": "",
+        "packages/alpha/configuration/coinagerie.config.ts": "",
         "packages/alpha/project.json": "{}",
       });
       const inputs = service
         .inferTargets({
-          configurationFiles: ["packages/alpha/coinagerie.config.ts"],
-          options: {},
+          options: {
+            projectConfigurationPath: "configuration/coinagerie.config.ts",
+          },
+          projectFiles: ["packages/alpha/project.json"],
           workspaceRoot: root,
         })
         .get("packages/alpha")?.["coinagerie-check"]?.inputs;
 
-      expect(inputs).toContain("{projectRoot}/coinagerie.config.ts");
-      expect(inputs).toContain("{projectRoot}/coinagerie.config.mjs");
-      expect(inputs).toContain("{projectRoot}/**/*");
+      expect(inputs).toStrictEqual([
+        "{projectRoot}/configuration/coinagerie.config.ts",
+        "{projectRoot}/**/*",
+      ]);
     });
 
     it("adds every declared input after the ones it always names", () => {
@@ -218,15 +265,17 @@ describe(PluginService, () => {
       });
       const inputs = service
         .inferTargets({
-          configurationFiles: ["packages/alpha/coinagerie.config.ts"],
           options: {
+            ...OPTIONS,
             inputs: ["{workspaceRoot}/GLOSSARY.md", "{workspaceRoot}/a/b.json"],
           },
+          projectFiles: ["packages/alpha/project.json"],
           workspaceRoot: root,
         })
         .get("packages/alpha")?.["coinagerie-check"]?.inputs;
 
-      expect(inputs?.slice(-3)).toStrictEqual([
+      expect(inputs).toStrictEqual([
+        "{projectRoot}/coinagerie.config.ts",
         "{projectRoot}/**/*",
         "{workspaceRoot}/GLOSSARY.md",
         "{workspaceRoot}/a/b.json",
@@ -242,11 +291,12 @@ describe(PluginService, () => {
       });
       const targets = service
         .inferTargets({
-          configurationFiles: ["packages/alpha/coinagerie.config.ts"],
           options: {
+            ...OPTIONS,
             checkTargetName: "glossary",
             command: "pnpm exec coinagerie",
           },
+          projectFiles: ["packages/alpha/project.json"],
           workspaceRoot: root,
         })
         .get("packages/alpha");
@@ -254,6 +304,7 @@ describe(PluginService, () => {
       expect(Object.keys(targets ?? {})).toStrictEqual(["glossary"]);
       expect(targets?.["glossary"]?.options).toStrictEqual({
         command: "pnpm exec coinagerie",
+        projectConfigurationPath: "coinagerie.config.ts",
       });
     });
   });

@@ -180,15 +180,15 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "node --import @swc-node/register/esm-register projects/ic-suite/coinagerie/coinagerie-cli/src/coinagerie-cli.main.ts --check"
+          "command": "node --import @swc-node/register/esm-register projects/ic-suite/coinagerie/coinagerie-cli/src/coinagerie-cli.main.ts --config coinagerie.config.ts --check"
         },
         "write": {
-          "command": "node --import @swc-node/register/esm-register projects/ic-suite/coinagerie/coinagerie-cli/src/coinagerie-cli.main.ts --write"
+          "command": "node --import @swc-node/register/esm-register projects/ic-suite/coinagerie/coinagerie-cli/src/coinagerie-cli.main.ts --config coinagerie.config.ts --write"
         }
       },
       "defaultConfiguration": "check",
       "dependsOn": [],
-      "description": "Check or write the root glossary, `GLOSSARY.md`: the words of every folder that is not a project, which every project's own glossary then leaves out. It runs from the workspace root, where the root `coinagerie.config.ts` is, and not as an inferred target, because the root is not a project and the plugin registration excludes that file so that it does not become one. The inputs are everything no project owns, which is what the root configuration scans, and the tool's own source, so a change to how words are found re-runs the check. `dependsOn` is written out as an empty list so no configuration of this target waits on a build.",
+      "description": "Check or write the root glossary, `GLOSSARY.md`: the words of every folder that is not a project, which every project's own glossary then leaves out. It runs from the workspace root, where the root `coinagerie.config.ts` is, named with `--config`, and not as an inferred target, because the root is not a project and the plugin registration excludes that file so that it does not become one. The inputs are everything no project owns, which is what the root configuration scans, and the tool's own source, so a change to how words are found re-runs the check. `dependsOn` is written out as an empty list so no configuration of this target waits on a build.",
       "executor": "nx:run-commands",
       "inputs": [
         "{workspaceRoot}/configuration/coinagerie.config.ts",

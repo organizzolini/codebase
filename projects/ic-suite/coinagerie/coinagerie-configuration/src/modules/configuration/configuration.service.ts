@@ -11,7 +11,6 @@ import { createJiti } from "jiti";
 import { z } from "zod";
 
 import {
-  CONFIGURATION_FILE_NAMES,
   CONFIGURATION_SCHEMA,
   DEFAULT_INCLUDE,
   FOLDED_WORD_SCHEMA,
@@ -33,7 +32,7 @@ import type {
 } from "./configuration.types";
 
 /**
- * Finds, reads, validates, and resolves a `coinagerie.config.ts`.
+ * Reads, validates, and resolves a `coinagerie.config.ts`.
  *
  * The one place a configuration is interpreted: what leaves here has every
  * default filled in and every path made absolute, so nothing downstream has
@@ -85,27 +84,18 @@ export class ConfigurationService {
     };
   }
 
-  /**
-   * Reads the configuration file, or `undefined` for defaults. An unnamed file is
-   * searched only in the working directory, never above it.
-   */
-  private locate(args: LoadConfigurationArguments): string | undefined {
-    if (args.configurationPath !== undefined) {
-      const namedPath = path.resolve(
-        args.workingDirectory,
-        args.configurationPath,
-      );
+  /** The absolute path of the named file, which must exist; nothing is searched for. */
+  private locate(args: LoadConfigurationArguments): string {
+    const namedPath = path.resolve(
+      args.workingDirectory,
+      args.configurationPath,
+    );
 
-      if (!existsSync(namedPath)) {
-        throw new ConfigurationFileNotFoundError(namedPath);
-      }
-
-      return namedPath;
+    if (!existsSync(namedPath)) {
+      throw new ConfigurationFileNotFoundError(namedPath);
     }
 
-    return CONFIGURATION_FILE_NAMES.map((name) =>
-      path.join(args.workingDirectory, name),
-    ).find((candidate) => existsSync(candidate));
+    return namedPath;
   }
 
   /**
@@ -188,14 +178,13 @@ export class ConfigurationService {
 
   /** Fills in every default and makes every path absolute. */
   private resolve(args: {
-    configurationPath: string | undefined;
+    configurationPath: string;
     directory: string;
     loaded: LoadedConfiguration;
-    location: string;
     overrides: ConfigurationOverrides | undefined;
     workingDirectory: string;
   }): ResolvedCoinagerieConfiguration {
-    const { directory, location } = args;
+    const { directory } = args;
     const flags = OVERRIDES_SCHEMA.safeParse(args.overrides ?? {});
 
     // A flag the schema refuses is the command line's fault, not the file's.
@@ -221,7 +210,10 @@ export class ConfigurationService {
       // Two destinations on one file would overwrite each other on every write.
       if (seen.has(absolutePath)) {
         throw new InvalidConfigurationError(
-          args.configurationPath ?? "the command line",
+          flags.data.outputJson === undefined &&
+            flags.data.outputMarkdown === undefined
+            ? args.configurationPath
+            : "the command line",
           `Two outputs name ${absolutePath}, and each write would overwrite the other`,
         );
       }
@@ -249,7 +241,7 @@ export class ConfigurationService {
       fold:
         configuration.fold === undefined
           ? undefined
-          : this.guardFold(configuration.fold, location),
+          : this.guardFold(configuration.fold, args.configurationPath),
       include: configuration.include ?? [...DEFAULT_INCLUDE],
       outputs,
     };
@@ -294,30 +286,18 @@ export class ConfigurationService {
   // 🌎 Public Methods
 
   /**
-   * Loads the run's configuration, or defaults. The scan root is the configuration
-   * file's folder, so runs behave the same wherever invoked.
+   * Loads the run's configuration from the file it names. The scan root is the
+   * `rootDirectory` when given, else the file's folder.
    */
   async loadConfiguration(
     args: LoadConfigurationArguments,
   ): Promise<ResolvedCoinagerieConfiguration> {
     const configurationPath = this.locate(args);
 
-    if (configurationPath === undefined) {
-      return this.resolve({
-        configurationPath: undefined,
-        directory: args.workingDirectory,
-        loaded: { configuration: {}, excluded: { patterns: [], words: [] } },
-        location: args.workingDirectory,
-        overrides: args.overrides,
-        workingDirectory: args.workingDirectory,
-      });
-    }
-
     return this.resolve({
       configurationPath,
-      directory: path.dirname(configurationPath),
+      directory: args.rootDirectory ?? path.dirname(configurationPath),
       loaded: await this.read(configurationPath),
-      location: configurationPath,
       overrides: args.overrides,
       workingDirectory: args.workingDirectory,
     });

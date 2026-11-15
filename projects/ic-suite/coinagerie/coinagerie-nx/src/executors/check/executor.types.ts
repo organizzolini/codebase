@@ -46,6 +46,8 @@ export interface CheckExecutorContext {
 export interface CheckExecutorOptions {
   /** The shell command that starts the `coinagerie` command line. */
   readonly command: string;
+  /** Required. Each project's configuration, relative to its root. */
+  readonly projectConfigurationPath: string;
   /** Rewrite each glossary to hold the code's words instead of judging it. */
   readonly write?: boolean | undefined;
 }
@@ -56,10 +58,11 @@ export interface CheckTask {
   readonly id: string;
 }
 
-/** The tasks that can share one command-line process: same command, same mode. */
+/** The tasks that can share one command-line process: same command, path, and mode. */
 export interface CheckTaskGroup {
   readonly command: string;
   readonly mode: "check" | "write";
+  readonly projectConfigurationPath: string;
   readonly tasks: CheckTask[];
 }
 

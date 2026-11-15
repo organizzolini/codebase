@@ -8,15 +8,22 @@ import type {
   FoldWord,
 } from "./configuration.types";
 
-/** Config file names searched in the working directory, in order. */
-export const CONFIGURATION_FILE_NAMES = [
-  "coinagerie.config.ts",
-  "coinagerie.config.mts",
-  "coinagerie.config.cts",
-  "coinagerie.config.js",
-  "coinagerie.config.mjs",
-  "coinagerie.config.cjs",
-] as const;
+// 🚨 Errors
+
+/**
+ * Raised when a run names no configuration path.
+ *
+ * Coinagerie never searches for a configuration or assumes one, so the path is
+ * the caller's to supply; the message names the surface that left it out.
+ */
+export class ConfigurationPathRequiredError extends Error {
+  constructor(surface: string) {
+    super(
+      `${surface} is required: coinagerie never searches for or assumes a configuration file. Pass the path to a coinagerie configuration file, such as coinagerie.config.ts.`,
+    );
+    this.name = "ConfigurationPathRequiredError";
+  }
+}
 
 /** Globs for all files, dot-files too, since `*` skips dots. */
 export const DEFAULT_INCLUDE = ["**", "**/.*", "**/.*/**"] as const;

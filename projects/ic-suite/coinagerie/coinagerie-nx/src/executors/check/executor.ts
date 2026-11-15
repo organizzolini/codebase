@@ -35,6 +35,7 @@ export default async function checkExecutor(
       group: {
         command: options.command,
         mode: options.write === true ? "write" : "check",
+        projectConfigurationPath: options.projectConfigurationPath,
         tasks: [{ directory: projectConfiguration.root, id: projectName }],
       },
       root: context.root,

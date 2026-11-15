@@ -1,7 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 
-import { CONFIGURATION_FILE_NAMES } from "@coinagerie/configuration";
 import { Injectable } from "@nestjs/common";
 
 import { OptionsService } from "../options/options.service";
@@ -35,7 +34,7 @@ export class PluginService {
   // 🔏 Private Methods
 
   /**
-   * Inputs are the project's configuration, its included files, and registered extras. A `{workspaceRoot}` path also marks the project affected on edit.
+   * Inputs are the project's configuration at its configured path, its files, and registered extras. A `{workspaceRoot}` path also marks the project affected on edit.
    */
   private buildCheckTarget(
     pluginOptions: CoinageriePluginOptions,
@@ -45,11 +44,14 @@ export class PluginService {
         cache: true,
         executor: "@coinagerie/nx:check",
         inputs: [
-          ...CONFIGURATION_FILE_NAMES.map((name) => `{projectRoot}/${name}`),
+          `{projectRoot}/${pluginOptions.projectConfigurationPath}`,
           PROJECT_FILES_INPUT,
           ...pluginOptions.inputs,
         ],
-        options: { command: pluginOptions.command },
+        options: {
+          command: pluginOptions.command,
+          projectConfigurationPath: pluginOptions.projectConfigurationPath,
+        },
       },
     };
   }
@@ -89,8 +91,9 @@ export class PluginService {
   // 🌎 Public Methods
 
   /**
-   * Infers a check target onto every project holding a configuration. Options are
-   * read once per workspace, since Nx passes every matched file at once.
+   * Infers a check target onto every project holding a configuration at the
+   * configured path. Options are read once per workspace, since Nx passes
+   * every matched manifest at once.
    */
   public inferTargets(
     args: InferTargetsArguments,
@@ -100,12 +103,19 @@ export class PluginService {
     );
     const targetsByProjectRoot = new Map<string, InferredTargets>();
 
-    for (const configurationFile of args.configurationFiles) {
-      const projectRoot = path.posix.dirname(configurationFile);
+    for (const projectFile of args.projectFiles) {
+      const projectRoot = path.posix.dirname(projectFile);
 
       if (
         !targetsByProjectRoot.has(projectRoot) &&
-        this.isProject({ projectRoot, workspaceRoot: args.workspaceRoot })
+        this.isProject({ projectRoot, workspaceRoot: args.workspaceRoot }) &&
+        existsSync(
+          path.join(
+            args.workspaceRoot,
+            projectRoot,
+            pluginOptions.projectConfigurationPath,
+          ),
+        )
       ) {
         targetsByProjectRoot.set(
           projectRoot,

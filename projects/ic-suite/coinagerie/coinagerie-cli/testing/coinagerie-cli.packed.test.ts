@@ -22,6 +22,10 @@ describe("the packed coinagerie command", () => {
 
     fs.mkdirSync(path.join(directory, "src"));
     fs.writeFileSync(
+      path.join(directory, "coinagerie.config.mjs"),
+      'export default { exclude: { paths: ["coinagerie.config.mjs"] } };\n',
+    );
+    fs.writeFileSync(
       path.join(directory, "src/orbit-planner.ts"),
       "export const orbitPlanner = 1;\n",
     );
@@ -29,13 +33,15 @@ describe("the packed coinagerie command", () => {
     return directory;
   }
 
-  /** Runs the installed binary from `directory`, which is outside the sandbox. */
+  /** Runs the installed binary from `directory`, naming the configuration it never searches for. */
   async function coinagerie(
     directory: string,
     args: readonly string[],
   ): Promise<CommandResult> {
     return sandbox
       .command(path.join(sandbox.directory, "node_modules/.bin/coinagerie"), [
+        "--config",
+        "coinagerie.config.mjs",
         ...args,
       ])
       .inDirectory(directory)

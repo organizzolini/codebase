@@ -1,23 +1,36 @@
-# 🪙 Zero Configuration
+# 🪙 Minimal Configuration
 
-Run `coinagerie` in a folder with no configuration file and it prints every
-word the code uses, writes nothing, and reads nine languages at once.
+Run `coinagerie` with a configuration that sets nothing and it prints every
+word the code uses, writes nothing, and reads nine languages at once. The
+configuration path is always given with `--config`; coinagerie never looks for
+one.
 
 ## Run it
 
 ```bash
-cd examples/zero-config/project
-coinagerie
+cd examples/minimal-config/project
+coinagerie --config coinagerie.config.ts
 ```
 
 It exits 0 and prints a sorted glossary block of fifty headwords, each with an
 empty definition (`- **dome**:`). No file is created or changed — printing is
 the default, so trying the tool never edits yours.
 
+Leave `--config` out and it refuses, though `coinagerie.config.ts` sits right
+there:
+
+```bash
+coinagerie
+```
+
+It exits 1 and prints `--config is required: coinagerie never searches for or
+assumes a configuration file`. Nothing is read, printed, or written.
+
 ## What it shows
 
-[`project/`](project) is an invented observatory scheduler with one file per
-language: TypeScript, Python, shell, JSON, YAML, SQL, HCL, CSS, and TOML. Each
+[`coinagerie.config.ts`](project/coinagerie.config.ts) only leaves itself out
+of the scan. [`project/`](project) is an invented observatory scheduler with
+one file per language: TypeScript, Python, shell, JSON, YAML, SQL, HCL, CSS, and TOML. Each
 file carries a word in a comment or a string that must not reach the glossary,
 and each also carries identifiers that must:
 
