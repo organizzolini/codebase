@@ -15,7 +15,7 @@ import { MatrixModule } from "./modules/matrix/matrix.module";
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ".env",
+      envFilePath: "configuration/.env",
       isGlobal: true,
       validate: (config: Record<string, unknown>) =>
         environmentSchema.parse(config),

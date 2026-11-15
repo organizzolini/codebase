@@ -28,7 +28,7 @@ import { VerifyTaskDatabaseModule } from "./modules/verify-task-database/verify-
     CleanupCodebaseModule,
     CollectCodometerBaselineModule,
     ConfigModule.forRoot({
-      envFilePath: ".env",
+      envFilePath: "configuration/.env",
       isGlobal: true,
       validate: (config: Record<string, unknown>) =>
         environmentSchema.parse(config),

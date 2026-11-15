@@ -11,7 +11,7 @@ Ingest Wiktionary Latin dictionary data into PostgreSQL, parsing HTML pages into
 ### Run Locally
 
 ```bash
-cp .env.default .env  # Fill in required environment variables
+cp configuration/.env.default configuration/.env  # Fill in required environment variables
 nx run lexico-cli:start
 ```
 
@@ -296,7 +296,7 @@ See the [write-typescript skill](../../../.agents/skills/write-typescript/SKILL.
 - **Command not found at runtime** — ensure the command class is listed in `providers` of its module and the module is imported by the root module.
 - **Dependency injection failure** — verify the service is `@Injectable()`, exported from its module, and that module is imported by the consuming module.
 - **Unrecognized CLI flag** — check that `@Option()` decorators in the command class exactly match the flag names passed.
-- **Env var validation error on startup** — add the missing variable to environmentSchema in src/lexico-cli.constants.ts and to .env.default.
+- **Env var validation error on startup** — add the missing variable to environmentSchema in src/lexico-cli.constants.ts and to configuration/.env.default.
 - **TypeORM entity not found** — register the entity via `TypeOrmModule.forFeature([MyEntity])` in the module that uses it.
 
 See the [triage-integration skill](../../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
@@ -309,7 +309,7 @@ See the [triage-integration skill](../../../.agents/skills/triage-integration/SK
 - [src/lexico-cli.constants.ts](src/lexico-cli.constants.ts): environmentSchema (Zod)
 - `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
 - [project.json](project.json): Nx targets (`start`, `build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
-- [.env.default](.env.default): Environment variable template
+- [configuration/.env.default](configuration/.env.default): Environment variable template
 
 **Project Files**:
 

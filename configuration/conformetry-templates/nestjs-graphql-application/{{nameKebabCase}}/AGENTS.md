@@ -9,7 +9,7 @@
 ### Run Locally
 
 ```bash
-cp .env.default .env  # Fill in required environment variables
+cp configuration/.env.default configuration/.env  # Fill in required environment variables
 nx run {{nameKebabCase}}:start
 ```
 
@@ -272,7 +272,7 @@ See the [write-typescript skill](../../.agents/skills/write-typescript/SKILL.md)
 - **Dependency injection failure** — verify the service is `@Injectable()`, exported from its module, and that module is imported by the consuming module.
 - **GraphQL schema not generating** — ensure `autoSchemaFile` is set to `GRAPHQL_SCHEMA_FILE` in `GraphQLModule.forRoot()` and all types use `@ObjectType()`, `@Field()`, etc.
 - **N+1 query problem** — use DataLoaders for all relation fields in resolvers.
-- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `.constants.ts` and to `.env.default`.
+- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `.constants.ts` and to `configuration/.env.default`.
 
 See the [triage-integration skill](../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
 
@@ -284,4 +284,4 @@ See the [triage-integration skill](../../.agents/skills/triage-integration/SKILL
 - `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
 - [src/modules/sample/sample.module.ts](src/modules/sample/sample.module.ts): Example GraphQL module
 - [project.json](project.json): Nx targets (`start`, `test`, `lint`, `typecheck`, `format`)
-- [.env.default](.env.default): Environment variable template
+- [configuration/.env.default](configuration/.env.default): Environment variable template

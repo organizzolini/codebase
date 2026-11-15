@@ -22,7 +22,7 @@ import { UpdateReuiSkillModule } from "./modules/update-reui-skill/update-reui-s
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ".env",
+      envFilePath: "configuration/.env",
       isGlobal: true,
       validate: (config: Record<string, unknown>) =>
         environmentSchema.parse(config),
