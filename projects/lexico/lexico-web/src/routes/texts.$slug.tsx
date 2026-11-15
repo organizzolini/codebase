@@ -12,17 +12,24 @@ import {
 } from "../components/font-size-control/font-size-control.utilities";
 import { ReaderHeader } from "../components/reader-header/reader-header";
 import { ReaderHint } from "../components/reader-hint/reader-hint";
+import { ReaderHistory } from "../components/reader-history/reader-history";
 import { ReaderLines } from "../components/reader-lines/reader-lines";
 import { readerSearchSchema } from "../components/reader-lines/reader-lines-api.constants";
 import { getText } from "../components/reader-lines/reader-lines.constants";
 import { failNotFound } from "../components/reader-lines/reader-lines.utilities";
 import { ReaderNavigation } from "../components/reader-navigation/reader-navigation";
+import { useLookupHistory } from "../hooks/use-lookup-history/use-lookup-history";
 
 import type { FontSize } from "../components/font-size-control/font-size-control.types";
 import type {
+  ReaderFocus,
   ReaderSearch,
   ReaderText,
 } from "../components/reader-lines/reader-lines.types";
+import type {
+  LookupEntry,
+  WordLookup,
+} from "../hooks/use-lookup-history/use-lookup-history.types";
 import type { ReactNode } from "react";
 
 // 🧭 Route
@@ -75,13 +82,31 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
   // 🪝 Hooks
   const { line } = Route.useSearch();
   const [fontSize, setFontSize] = useState<FontSize>(DEFAULT_FONT_SIZE);
+  const [focus, setFocus] = useState<null | ReaderFocus>(null);
+  const { clear, entries, record } = useLookupHistory();
 
   // 🏗 Setup
+  const thisText = entries.filter((entry) => entry.slug === text.slug);
 
   // 💪 Handlers
   const handleFontSize = useCallback((size: FontSize): void => {
     setFontSize(size);
     writeFontSize(size);
+  }, []);
+
+  const handleLookup = useCallback(
+    (lookup: WordLookup): void => {
+      record({ ...lookup, slug: text.slug });
+    },
+    [record, text.slug],
+  );
+
+  const handleFocusEntry = useCallback((entry: LookupEntry | null): void => {
+    setFocus(
+      entry === null
+        ? null
+        : { line: entry.line, token: entry.token, word: entry.word },
+    );
   }, []);
 
   // ♻️ Lifecycle
@@ -98,16 +123,25 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
         author={text.author.name}
         parent={text.parentText}
       />
-      <FontSizeControl
-        className="flex gap-2"
-        onChange={handleFontSize}
-        size={fontSize}
-      />
+      <div className="flex items-center justify-between gap-2">
+        <FontSizeControl
+          className="flex gap-2"
+          onChange={handleFontSize}
+          size={fontSize}
+        />
+        <ReaderHistory
+          entries={thisText}
+          onClear={clear}
+          onFocusEntry={handleFocusEntry}
+        />
+      </div>
       <ReaderHint className="flex items-center justify-between gap-4 rounded-md border p-3 text-sm" />
       <ReaderLines
         anchor={line}
         className={`space-y-2 font-serif ${FONT_SIZE_CLASSES[fontSize]}`}
+        focus={focus}
         initial={text.lines}
+        onLookup={handleLookup}
         slug={text.slug}
       />
       <ReaderNavigation

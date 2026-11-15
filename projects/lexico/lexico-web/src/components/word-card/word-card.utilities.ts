@@ -56,3 +56,30 @@ export async function findWordCandidates(
   });
   return wordCandidates;
 }
+
+/**
+ * The attributes that light up a word, or none when it is not highlighted.
+ */
+export function highlightProperties(isHighlighted: boolean): {
+  className?: string;
+  "data-highlighted"?: "true";
+} {
+  return isHighlighted
+    ? { className: "rounded-sm bg-accent", "data-highlighted": "true" }
+    : {};
+}
+
+/**
+ * Hands the reading the card shows to the reader, when there is one.
+ */
+export function reportReading(
+  candidates: WordCandidate[],
+  chosen: null | number,
+  onReading?: (reading: WordCandidate) => void,
+): void {
+  const reading = chooseCandidate(candidates, chosen);
+
+  if (reading !== undefined) {
+    onReading?.(reading);
+  }
+}

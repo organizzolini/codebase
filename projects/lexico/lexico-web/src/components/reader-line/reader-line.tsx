@@ -2,7 +2,11 @@ import { Fragment } from "react";
 
 import { WordCard } from "../word-card/word-card";
 
-import type { ReaderLineNode } from "../reader-lines/reader-lines.types";
+import type { WordLookup } from "../../hooks/use-lookup-history/use-lookup-history.types";
+import type {
+  ReaderFocus,
+  ReaderLineNode,
+} from "../reader-lines/reader-lines.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -12,7 +16,9 @@ import type { ReactNode } from "react";
  */
 export interface ReaderLineProperties {
   className?: string;
+  focus?: null | ReaderFocus;
   line: ReaderLineNode;
+  onLookup?: ((lookup: WordLookup) => void) | undefined;
 }
 
 // 🧩 Component
@@ -24,7 +30,7 @@ export interface ReaderLineProperties {
 export function ReaderLine(
   properties: Readonly<ReaderLineProperties>,
 ): ReactNode {
-  const { className, line } = properties;
+  const { className, focus = null, line, onLookup } = properties;
 
   // 🪝 Hooks
 
@@ -55,6 +61,24 @@ export function ReaderLine(
             {position === 0 ? "" : " "}
             <WordCard
               className="inline"
+              isFocused={
+                focus !== null &&
+                focus.line === line.index &&
+                focus.token === token.index
+              }
+              isHighlighted={
+                focus !== null &&
+                focus.word.toLowerCase() === token.data.toLowerCase()
+              }
+              onReading={(reading) => {
+                onLookup?.({
+                  definition: reading.definition,
+                  form: reading.description,
+                  line: line.index,
+                  token: token.index,
+                  word: token.data,
+                });
+              }}
               token={token}
             />
           </Fragment>

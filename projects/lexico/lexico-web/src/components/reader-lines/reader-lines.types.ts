@@ -13,6 +13,13 @@ export type GetTextInput = z.infer<typeof getTextInputSchema>;
 /** A connection of lines, as the reader accumulates them. */
 export type LineConnection = ReaderText["lines"];
 
+/** The occurrence a history entry points at, which the reader highlights. */
+export interface ReaderFocus {
+  line: number;
+  token: number;
+  word: string;
+}
+
 /** One line with its tokens. */
 export type ReaderLineNode = LineConnection["edges"][number]["node"];
 

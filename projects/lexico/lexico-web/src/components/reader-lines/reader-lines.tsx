@@ -12,7 +12,8 @@ import { ReaderLine } from "../reader-line/reader-line";
 import { getText } from "./reader-lines.constants";
 import { mergeLines } from "./reader-lines.utilities";
 
-import type { LineConnection } from "./reader-lines.types";
+import type { WordLookup } from "../../hooks/use-lookup-history/use-lookup-history.types";
+import type { LineConnection, ReaderFocus } from "./reader-lines.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -23,7 +24,9 @@ import type { ReactNode } from "react";
 export interface ReaderLinesProperties {
   anchor?: number | undefined;
   className?: string;
+  focus?: null | ReaderFocus | undefined;
   initial: LineConnection;
+  onLookup?: ((lookup: WordLookup) => void) | undefined;
   slug: string;
 }
 
@@ -36,7 +39,14 @@ export interface ReaderLinesProperties {
 export function ReaderLines(
   properties: Readonly<ReaderLinesProperties>,
 ): ReactNode {
-  const { anchor, className, initial, slug } = properties;
+  const {
+    anchor,
+    className,
+    focus = null,
+    initial,
+    onLookup,
+    slug,
+  } = properties;
 
   // 🪝 Hooks
   const [lines, setLines] = useState<LineConnection>(initial);
@@ -108,7 +118,9 @@ export function ReaderLines(
       {lines.edges.map((edge) => (
         <ReaderLine
           key={edge.node.id}
+          focus={focus}
           line={edge.node}
+          onLookup={onLookup}
         />
       ))}
       {hasNextPage ? (

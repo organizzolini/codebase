@@ -1,5 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { useCallback, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef as useReference,
+  useState,
+} from "react";
 
 import {
   Button,
@@ -9,7 +14,12 @@ import {
 } from "@codebase/presentation";
 
 import { getWordCandidates } from "./word-card.constants";
-import { chooseCandidate, describeStatus } from "./word-card.utilities";
+import {
+  chooseCandidate,
+  describeStatus,
+  highlightProperties,
+  reportReading,
+} from "./word-card.utilities";
 
 import type { WordCandidate, WordCardToken } from "./word-card.types";
 import type { ReactNode } from "react";
@@ -21,6 +31,9 @@ import type { ReactNode } from "react";
  */
 export interface WordCardProperties {
   className?: string;
+  isFocused?: boolean;
+  isHighlighted?: boolean;
+  onReading?: (reading: WordCandidate) => void;
   token: WordCardToken;
 }
 
@@ -29,15 +42,17 @@ export interface WordCardProperties {
 /**
  * A clicked word and the card beside it, which looks the word up the first
  * time the reader opens it: its form, definition, and entry link, with every
- * candidate listed when the spelling is ambiguous.
+ * candidate listed when the spelling is ambiguous. A focused word scrolls
+ * into view, and a highlighted word is lit up.
  */
 export function WordCard(properties: Readonly<WordCardProperties>): ReactNode {
-  const { className, token } = properties;
+  const { className, isFocused, isHighlighted, onReading, token } = properties;
 
   // 🪝 Hooks
   const [candidates, setCandidates] = useState<null | WordCandidate[]>(null);
   const [hasFailed, setHasFailed] = useState(false);
   const [chosen, setChosen] = useState<null | number>(null);
+  const root = useReference<HTMLDivElement>(null);
 
   // 🏗 Setup
   const status = describeStatus(candidates, hasFailed);
@@ -46,31 +61,46 @@ export function WordCard(properties: Readonly<WordCardProperties>): ReactNode {
   // 💪 Handlers
   const handleOpenChange = useCallback(
     (isOpen: boolean): void => {
-      if (!isOpen || candidates !== null) {
+      if (!isOpen) {
+        return;
+      }
+
+      if (candidates !== null) {
+        reportReading(candidates, chosen, onReading);
         return;
       }
 
       getWordCandidates({ data: { tokenId: token.id } })
-        .then(setCandidates)
+        .then((found) => {
+          setCandidates(found);
+          reportReading(found, null, onReading);
+        })
         .catch(() => {
           setHasFailed(true);
         });
     },
-    [candidates, token.id],
+    [candidates, chosen, onReading, token.id],
   );
 
   // ♻️ Lifecycle
+  useEffect(() => {
+    if (isFocused === true) {
+      root.current?.scrollIntoView({ block: "center" });
+    }
+  }, [isFocused, root]);
 
   // 🏁 Early Returns
 
   // 🎨 Markup
   return (
     <div
+      ref={root}
       className={className}
       data-testid="word-card"
     >
       <Popover onOpenChange={handleOpenChange}>
         <PopoverTrigger
+          {...highlightProperties(isHighlighted === true)}
           data-testid="reader-token"
           render={<button type="button" />}
         >
@@ -90,7 +120,10 @@ export function WordCard(properties: Readonly<WordCardProperties>): ReactNode {
                   <Button
                     className="h-auto w-full justify-start whitespace-normal py-1 text-left"
                     onClick={() => {
-                      setChosen(candidates.indexOf(candidate));
+                      const index = candidates.indexOf(candidate);
+
+                      setChosen(index);
+                      reportReading(candidates, index, onReading);
                     }}
                     variant="ghost"
                   >
