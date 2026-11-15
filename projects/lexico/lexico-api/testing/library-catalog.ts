@@ -1,4 +1,4 @@
-/* cspell:words Hagendorn Maro Mynors Tarraco Tarraconensis carmina Carmina heroides Heroides tarraconensis */
+/* cspell:words Fasti Sententiae Hagendorn Maro Pompeii Syrus Mynors Tarraco Tarraconensis carmina Carmina heroides Heroides tarraconensis */
 
 import { Author, Text, textCollection } from "@codebase/lexico-db";
 
@@ -129,6 +129,25 @@ export async function seedLibraryCatalog(
       collection: textCollection.theLatinLibrary,
       slug: "caesar/de-bello-gallico",
       title: "De Bello Gallico",
+      type: "text",
+    }),
+  );
+  await texts.save(
+    texts.create({
+      author: caesar,
+      collection: textCollection.theLatinLibrary,
+      slug: "caesar/publius-syrus",
+      title: "Publius Syrus Sententiae",
+      type: "text",
+    }),
+  );
+  await texts.save(
+    texts.create({
+      author: ovid,
+      collection: textCollection.theLatinLibrary,
+      findSpot: "Pompeii",
+      slug: "ovid/fasti",
+      title: "Fasti",
       type: "text",
     }),
   );

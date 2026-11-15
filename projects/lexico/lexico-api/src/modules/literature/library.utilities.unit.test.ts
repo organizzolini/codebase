@@ -1,4 +1,4 @@
-/* cspell:words Mynors mynors */
+/* cspell:words Mynors mynors stanbul İstanbul */
 
 import { describe, expect, it } from "vitest";
 
@@ -60,6 +60,22 @@ describe("library utilities", () => {
       expect(findMatchRanges("title", "Ana Ana", "ana")).toStrictEqual([
         { end: 3, field: "title", start: 0 },
         { end: 7, field: "title", start: 4 },
+      ]);
+    });
+
+    it("indexes the original value where lowercasing changes its length", () => {
+      expect.hasAssertions();
+
+      expect(findMatchRanges("title", "İstanbul", "stanbul")).toStrictEqual([
+        { end: 8, field: "title", start: 1 },
+      ]);
+    });
+
+    it("reads regular-expression characters in a term literally", () => {
+      expect.hasAssertions();
+
+      expect(findMatchRanges("title", "a.b axb", "a.b")).toStrictEqual([
+        { end: 3, field: "title", start: 0 },
       ]);
     });
 

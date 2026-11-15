@@ -28,25 +28,27 @@ export function escapeLikePattern(term: string): string {
 }
 
 /**
- * Finds every non-overlapping, case-insensitive occurrence of a lowercased
- * term in a field's value. The same literal substring test the SQL search runs.
+ * Finds every non-overlapping, case-insensitive occurrence of a term in a
+ * field's value. Offsets index the original value, never a lowercased copy,
+ * because lowercasing can change a string's length (`İ` becomes two units).
  */
 export function findMatchRanges(
   field: string,
   value: null | string | undefined,
   term: null | string,
 ): LibraryMatchRange[] {
-  if (term === null || !value) {
+  if (term === null || term.length === 0 || !value) {
     return [];
   }
-  const haystack = value.toLowerCase();
-  const ranges: LibraryMatchRange[] = [];
-  let start = haystack.indexOf(term);
-  while (start !== -1) {
-    ranges.push({ end: start + term.length, field, start });
-    start = haystack.indexOf(term, start + term.length);
-  }
-  return ranges;
+  const pattern = new RegExp(
+    term.replaceAll(/[$()*+.?[\\\]^{|}]/g, String.raw`\$&`),
+    "giu",
+  );
+  return [...value.matchAll(pattern)].map((match) => ({
+    end: match.index + match[0].length,
+    field,
+    start: match.index,
+  }));
 }
 
 /** Computes the match ranges of every named field against a lowercased term. */

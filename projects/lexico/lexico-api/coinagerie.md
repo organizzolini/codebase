@@ -15,7 +15,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **deletable**: Shared base type for soft-deletable rows, exposing id and audit columns through GraphQL types across modules.
 - **disambiguator**: Numeric lexeme field separating homographs that share a headword, such as two entries spelled the same way.
 - **edition**: Published version of a Text, such as its series or volume, shown beside its collection in the library.
-- **haystack**: Field value a library search looks inside, whose matched spans become bold ranges.
 - **headword**: Dictionary entry form that a search matches first, seeded with English senses and ranked by the search service.
 - **imperial**: Era label for authors of the Roman Empire, such as Ovid in the library catalog fixture.
 - **inscription**: Text recording one EDCS inscription, a child of its province book with its own find-spot and dates.

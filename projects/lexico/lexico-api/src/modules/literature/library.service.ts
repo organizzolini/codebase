@@ -89,6 +89,9 @@ export class LibraryService {
       .orderBy("ranked.rank_in_author", "ASC")
       .getRawMany<{ id: string }>();
 
+    if (picked.length === 0) {
+      return new Map();
+    }
     const texts = await this.textRepository.find({
       relations: { author: true, parentText: true },
       where: { id: In(picked.map((row) => row.id)) },

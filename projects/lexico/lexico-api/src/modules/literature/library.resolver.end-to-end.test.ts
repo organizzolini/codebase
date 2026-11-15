@@ -1,4 +1,4 @@
-/* cspell:words Maro mynors Tarraconensis */
+/* cspell:words Fasti Syrus Sententiae Maro mynors Tarraconensis */
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
@@ -185,6 +185,63 @@ describe("library resolver end-to-end suite", () => {
       { end: 4, field: "collection", start: 0 },
       { end: 4, field: "edition", start: 0 },
     ]);
+  });
+
+  it("matches the edition alone", async () => {
+    expect.hasAssertions();
+
+    const page = await library({ search: "oxford" });
+
+    expect(page.authors.map(({ author }) => author.name)).toStrictEqual([
+      "Vergil",
+    ]);
+    expect(page.authors[0]?.texts.map(({ matches }) => matches)).toStrictEqual([
+      [{ end: 6, field: "edition", start: 0 }],
+    ]);
+  });
+
+  it("matches the find spot alone", async () => {
+    expect.hasAssertions();
+
+    const page = await library({ search: "pompeii" });
+
+    expect(page.authors.map(({ author }) => author.name)).toStrictEqual([
+      "Ovid",
+    ]);
+    expect(page.authors[0]?.texts.map(({ text }) => text.title)).toStrictEqual([
+      "Fasti",
+    ]);
+    expect(page.authors[0]?.texts[0]?.matches).toStrictEqual([
+      { end: 7, field: "findSpot", start: 0 },
+    ]);
+  });
+
+  it("mixes an author matched by name with an author matched by a text", async () => {
+    expect.hasAssertions();
+
+    const page = await library({ search: "publius" });
+    const names = page.authors.map(({ author }) => author.name);
+    const caesar = page.authors.find(({ author }) => author.name === "Caesar");
+    const vergil = page.authors.find(({ author }) => author.name === "Vergil");
+
+    expect(names).toStrictEqual(["Caesar", "Ovid", "Vergil"]);
+    expect(caesar?.matches).toStrictEqual([]);
+    expect(caesar?.texts.map(({ text }) => text.title)).toStrictEqual([
+      "Publius Syrus Sententiae",
+    ]);
+    expect(vergil?.matches).toStrictEqual([
+      { end: 7, field: "fullName", start: 0 },
+    ]);
+    expect(vergil?.texts).toHaveLength(4);
+  });
+
+  it("accepts a page size of exactly 100", async () => {
+    expect.hasAssertions();
+
+    const page = await library({ pageSize: 100 });
+
+    expect(page.totalCount).toBe(5);
+    expect(page.pageCount).toBe(1);
   });
 
   it("matches editors", async () => {
