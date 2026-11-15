@@ -12,6 +12,11 @@ import {
 import { paginateQueryByParent } from "./literature-relations.utilities";
 
 import type { PaginationArguments } from "../search/pagination-arguments.entities";
+import type {
+  AncestorLink,
+  SiblingNeighbors,
+  TextSiblings,
+} from "./literature.types";
 import type { Connection } from "@codebase/interface";
 
 /**
@@ -53,6 +58,51 @@ export class LiteratureRelationsService {
   // 🌎 Public Methods
 
   /**
+   * Finds each text's ancestors, root first, with their authors, in two
+   * statements however many texts ask: the chain of parent ids, then the rows.
+   * A top-level text has none.
+   */
+  public async findAncestorTexts(
+    textIds: readonly string[],
+  ): Promise<Map<string, Text[]>> {
+    if (textIds.length === 0) {
+      return new Map();
+    }
+
+    const links = await this.textRepository.query<AncestorLink[]>(
+      `WITH RECURSIVE "chain" AS (
+        SELECT "text"."id" AS "origin", "parent"."id" AS "ancestorId", "parent"."parent_text_id" AS "parentId", 1 AS "depth"
+        FROM "texts" "text"
+        INNER JOIN "texts" "parent" ON "parent"."id" = "text"."parent_text_id"
+        WHERE "text"."id" = ANY($1::uuid[]) AND "parent"."deleted_at" IS NULL
+        UNION ALL
+        SELECT "chain"."origin", "parent"."id", "parent"."parent_text_id", "chain"."depth" + 1
+        FROM "chain"
+        INNER JOIN "texts" "parent" ON "parent"."id" = "chain"."parentId"
+        WHERE "parent"."deleted_at" IS NULL
+      )
+      SELECT "origin", "ancestorId", "depth" FROM "chain"`,
+      [[...textIds]],
+    );
+    const ancestors = await this.textRepository.find({
+      where: { id: In([...new Set(links.map((link) => link.ancestorId))]) },
+    });
+    const ancestorsById = new Map(ancestors.map((text) => [text.id, text]));
+
+    const ancestorsByText = new Map<string, Text[]>();
+    for (const link of links.toSorted((a, b) => b.depth - a.depth)) {
+      const ancestor = ancestorsById.get(link.ancestorId);
+      if (ancestor !== undefined) {
+        ancestorsByText.set(link.origin, [
+          ...(ancestorsByText.get(link.origin) ?? []),
+          ancestor,
+        ]);
+      }
+    }
+    return ancestorsByText;
+  }
+
+  /**
    * Finds each text's parent text, with that parent's author, in one
    * statement: null for a top-level text, and absent for an unknown one.
    */
@@ -68,6 +118,55 @@ export class LiteratureRelationsService {
       where: { id: In([...textIds]) },
     });
     return new Map(texts.map((text) => [text.id, text.parentText ?? null]));
+  }
+
+  /**
+   * Finds each text's previous and next sibling, in the order its parent's
+   * child texts are listed, in two statements however many texts ask. Null at
+   * either end, and for a top-level text, which has no siblings.
+   */
+  public async findSiblingTexts(
+    textIds: readonly string[],
+  ): Promise<Map<string, TextSiblings>> {
+    if (textIds.length === 0) {
+      return new Map();
+    }
+
+    const neighbors = await this.textRepository.query<SiblingNeighbors[]>(
+      `WITH "siblings" AS (
+        SELECT "text"."id",
+          LAG("text"."id") OVER "ordered" AS "previousId",
+          LEAD("text"."id") OVER "ordered" AS "nextId"
+        FROM "texts" "text"
+        WHERE "text"."deleted_at" IS NULL AND "text"."parent_text_id" IN (
+          SELECT "origin"."parent_text_id" FROM "texts" "origin"
+          WHERE "origin"."id" = ANY($1::uuid[]) AND "origin"."parent_text_id" IS NOT NULL
+        )
+        WINDOW "ordered" AS (PARTITION BY "text"."parent_text_id" ORDER BY "text"."title", "text"."id")
+      )
+      SELECT "id", "previousId", "nextId" FROM "siblings" WHERE "id" = ANY($1::uuid[])`,
+      [[...textIds]],
+    );
+    const neighborIds = neighbors.flatMap((neighbor) => [
+      neighbor.previousId,
+      neighbor.nextId,
+    ]);
+    const siblings = await this.textRepository.find({
+      where: {
+        id: In([...new Set(neighborIds.filter((id) => id !== null))]),
+      },
+    });
+    const siblingsById = new Map(siblings.map((text) => [text.id, text]));
+
+    return new Map(
+      neighbors.map((neighbor) => [
+        neighbor.id,
+        {
+          next: siblingsById.get(neighbor.nextId ?? "") ?? null,
+          previous: siblingsById.get(neighbor.previousId ?? "") ?? null,
+        },
+      ]),
+    );
   }
 
   /** Pages the child texts of many parent texts at once, in title order. */

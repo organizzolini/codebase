@@ -19,6 +19,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **quick**: Word in the README Quick Start heading, introducing the short setup steps for running the lexico API locally.
 - **reader**: Readable view of a line, reduced to what a reader can observe; the reader query selects one line for display.
 - **retyped**: Adjective for a GraphQL type whose fields are redeclared as non-null rows, such as LexemeType in the lexico type tests.
+- **sibling**: Text under the same parent text as another, ordered as the parent's child texts are listed; the previous and next text link a text to its neighbors.
 - **stem**: Portion of a word the search matches; a headword is found whole or as a stem with its enclitic split off.
 - **term**: Search input string a user types; fuzzy matching applies only to terms above a shortest allowed length.
 - **translation**: English sense of a lexeme, a Translation entity joined to lexemes and returned in search results and lexeme types.

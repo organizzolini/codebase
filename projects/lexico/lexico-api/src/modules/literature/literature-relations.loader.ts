@@ -5,6 +5,7 @@ import { LiteratureRelationsService } from "./literature-relations.service";
 import { createConnectionLoader } from "./literature-relations.utilities";
 import { LOAD_CHUNK_SIZE } from "./literature.constants";
 
+import type { TextSiblings } from "./literature.types";
 import type { Line, Text, Token } from "@codebase/lexico-db";
 
 /**
@@ -24,6 +25,16 @@ export class LiteratureRelationsLoader {
   // 🔐 Private Fields
 
   // 🔑 Public Fields
+
+  /** Finds a text's ancestors, root first: empty for a top-level text. */
+  public readonly ancestorsByText = new DataLoader<string, Text[]>(
+    async (textIds) => {
+      const ancestors =
+        await this.literatureRelationsService.findAncestorTexts(textIds);
+      return textIds.map((textId) => ancestors.get(textId) ?? []);
+    },
+    { maxBatchSize: LOAD_CHUNK_SIZE },
+  );
 
   /** Pages a text's child texts, in title order. */
   public readonly childTextsByParent = createConnectionLoader<Text>(
@@ -46,6 +57,18 @@ export class LiteratureRelationsLoader {
       const parents =
         await this.literatureRelationsService.findParentTexts(textIds);
       return textIds.map((textId) => parents.get(textId) ?? null);
+    },
+    { maxBatchSize: LOAD_CHUNK_SIZE },
+  );
+
+  /** Finds a text's previous and next siblings: null at either end. */
+  public readonly siblingsByText = new DataLoader<string, TextSiblings>(
+    async (textIds) => {
+      const siblings =
+        await this.literatureRelationsService.findSiblingTexts(textIds);
+      return textIds.map(
+        (textId) => siblings.get(textId) ?? { next: null, previous: null },
+      );
     },
     { maxBatchSize: LOAD_CHUNK_SIZE },
   );
