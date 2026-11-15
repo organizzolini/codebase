@@ -1,6 +1,6 @@
 import * as z from 'zod'
 import { SearchMatchSource } from './operations'
-import type { AuthorLookupInput, LinesRangeInput, TextLookupInput, SearchEnglishQuery, SearchLatinQuery, TextReaderQuery } from './operations'
+import type { AuthorLookupInput, LinesRangeInput, TextLookupInput, SearchEnglishQuery, SearchLatinQuery, TextReaderQuery, WordCandidatesQuery } from './operations'
 
 type Properties<T> = {
   [K in keyof T]: z.ZodType<T[K], T[K] | undefined>;
@@ -324,5 +324,17 @@ export function TextReaderQuerySchema(): z.ZodType<TextReaderQuery> {
 })
 })
 }).nullable()
+})
+}
+
+export function WordCandidatesQuerySchema(): z.ZodType<WordCandidatesQuery> {
+  return z.object({
+    wordCandidates: z.array(z.object({
+    definition: z.string().nullable(),
+    description: z.string(),
+    lemma: z.string(),
+    lexemeId: z.string(),
+    partOfSpeech: z.string()
+}))
 })
 }

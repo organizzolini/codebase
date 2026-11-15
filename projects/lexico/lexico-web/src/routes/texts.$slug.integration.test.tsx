@@ -1,17 +1,23 @@
 // cspell:ignore Troiae Italiam fato profugus Laviniaque venit
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { HttpResponse } from "msw";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { graphqlMockServer } from "@codebase/interface/testing";
 import { renderRoute } from "@codebase/testing/react";
 
-import { mockTextReaderQuery } from "../graphql/generated/mocks";
+import {
+  mockTextReaderQuery,
+  mockWordCandidatesQuery,
+} from "../graphql/generated/mocks";
 import { getRouter } from "../router";
 
 import { Route } from "./texts.$slug";
 
-import type { TextReaderQuery } from "../graphql/generated/mocks";
+import type {
+  TextReaderQuery,
+  WordCandidatesQuery,
+} from "../graphql/generated/mocks";
 
 type ReaderLine = ReaderText["lines"]["edges"][number]["node"];
 type ReaderPage = ReaderText["lines"];
@@ -91,6 +97,8 @@ const SECOND_PAGE = page(
   "cursor-2",
 );
 
+type WordCandidate = WordCandidatesQuery["wordCandidates"][number];
+
 /**
  * Answers the reader query with the page its cursor selects, or with no text
  * when no page matches.
@@ -108,6 +116,37 @@ function stubReader(
         data: { text: found === undefined ? null : text(found.page, links) },
       });
     }),
+  );
+}
+
+const ARMA: WordCandidate = {
+  definition: "arms",
+  description: "nominative plural",
+  lemma: "arma",
+  lexemeId: "lexeme-arma",
+  partOfSpeech: "noun",
+};
+const EST_SUM: WordCandidate = {
+  definition: "to be",
+  description: "third person singular present",
+  lemma: "sum",
+  lexemeId: "lexeme-sum",
+  partOfSpeech: "verb",
+};
+const EST_EDO: WordCandidate = {
+  definition: "to eat",
+  description: "third person singular present",
+  lemma: "edo",
+  lexemeId: "lexeme-edo",
+  partOfSpeech: "verb",
+};
+
+/** Answers word-card lookups with the given candidates. */
+function stubWordCandidates(candidates: WordCandidate[]): void {
+  graphqlMockServer.use(
+    mockWordCandidatesQuery(() =>
+      HttpResponse.json({ data: { wordCandidates: candidates } }),
+    ),
   );
 }
 
@@ -217,5 +256,98 @@ describe("texts.$slug", () => {
     await renderRoute(getRouter(), "/texts/no-such-text");
 
     await expect(screen.findByText("404")).resolves.toBeDefined();
+  });
+
+  describe("word card", () => {
+    it("opens a card beside a clicked word with its form, definition, and entry link", async () => {
+      stubWordCandidates([ARMA]);
+      await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+
+      fireEvent.click(await screen.findByRole("button", { name: "Arma" }));
+
+      const card = await screen.findByRole("dialog");
+
+      expect(within(card).getByText("nominative plural")).toBeDefined();
+      expect(within(card).getByText("arms")).toBeDefined();
+      expect(
+        within(card)
+          .getByRole("link", { name: "Full entry" })
+          .getAttribute("href"),
+      ).toBe("/search?query=arma");
+    });
+
+    it("lists every candidate for an ambiguous spelling and expands the one chosen", async () => {
+      stubReader([
+        { after: null, page: page([line(0, "1.1", ["est"])], false, null) },
+      ]);
+      stubWordCandidates([EST_SUM, EST_EDO]);
+      await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+
+      fireEvent.click(await screen.findByRole("button", { name: "est" }));
+
+      const card = await screen.findByRole("dialog");
+
+      expect(within(card).getByRole("button", { name: /^sum/u })).toBeDefined();
+      expect(within(card).getByRole("button", { name: /^edo/u })).toBeDefined();
+      expect(screen.queryByText("to be")).toBeNull();
+
+      fireEvent.click(within(card).getByRole("button", { name: /^sum/u }));
+
+      await expect(screen.findByText("to be")).resolves.toBeDefined();
+    });
+
+    it("says a word is not in the dictionary when it has no candidates", async () => {
+      stubWordCandidates([]);
+      await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+
+      fireEvent.click(await screen.findByRole("button", { name: "Arma" }));
+
+      await expect(
+        screen.findByText(/not in the dictionary/u),
+      ).resolves.toBeDefined();
+    });
+
+    it("does not make punctuation clickable", async () => {
+      await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+
+      await screen.findByText("1.1");
+
+      expect(screen.queryByRole("button", { name: "," })).toBeNull();
+    });
+
+    it("closes on Escape and returns focus to the word", async () => {
+      stubWordCandidates([ARMA]);
+      await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+
+      const word = await screen.findByRole("button", { name: "Arma" });
+      fireEvent.click(word);
+      await screen.findByRole("dialog");
+
+      fireEvent.keyDown(document.activeElement ?? document.body, {
+        key: "Escape",
+      });
+
+      await waitFor(() => {
+        expect(screen.queryByRole("dialog")).toBeNull();
+      });
+
+      expect(document.activeElement).toBe(word);
+    });
+
+    it("closes when the reader clicks elsewhere", async () => {
+      stubWordCandidates([ARMA]);
+      await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+
+      fireEvent.click(await screen.findByRole("button", { name: "Arma" }));
+      await screen.findByRole("dialog");
+
+      fireEvent.pointerDown(document.body, { button: 0, pointerType: "mouse" });
+      fireEvent.mouseDown(document.body, { button: 0 });
+      fireEvent.click(document.body);
+
+      await waitFor(() => {
+        expect(screen.queryByRole("dialog")).toBeNull();
+      });
+    });
   });
 });

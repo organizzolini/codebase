@@ -838,6 +838,13 @@ export type TextReaderQueryVariables = Exact<{
 
 export type TextReaderQuery = { text: { id: string, slug: string, title: string, type: string, author: { name: string, slug: string }, ancestors: Array<{ slug: string, title: string }>, nextText: { slug: string, title: string } | null, parentText: { slug: string, title: string } | null, previousText: { slug: string, title: string } | null, lines: { edges: Array<{ node: { id: string, index: number, label: string, tokens: { edges: Array<{ node: { id: string, index: number, data: string, isPunctuation: boolean } }> } } }>, pageInfo: { endCursor: string | null, hasNextPage: boolean } } } | null };
 
+export type WordCandidatesQueryVariables = Exact<{
+  tokenId: string | number;
+}>;
+
+
+export type WordCandidatesQuery = { wordCandidates: Array<{ definition: string | null, description: string, lemma: string, lexemeId: string, partOfSpeech: string }> };
+
 
 /**
  * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
@@ -901,6 +908,28 @@ export const mockSearchLatinQuery = (resolver: GraphQLResponseResolver<SearchLat
 export const mockTextReaderQuery = (resolver: GraphQLResponseResolver<TextReaderQuery, TextReaderQueryVariables>, options?: RequestHandlerOptions) =>
   graphql.query<TextReaderQuery, TextReaderQueryVariables>(
     'TextReader',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockWordCandidatesQuery(
+ *   ({ query, variables }) => {
+ *     const { tokenId } = variables;
+ *     return HttpResponse.json({
+ *       data: { wordCandidates }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockWordCandidatesQuery = (resolver: GraphQLResponseResolver<WordCandidatesQuery, WordCandidatesQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<WordCandidatesQuery, WordCandidatesQueryVariables>(
+    'WordCandidates',
     resolver,
     options
   )

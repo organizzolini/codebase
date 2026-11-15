@@ -1,5 +1,7 @@
 import { Fragment } from "react";
 
+import { WordCard } from "../word-card/word-card";
+
 import type { ReaderLineNode } from "../reader-lines/reader-lines.types";
 import type { ReactNode } from "react";
 
@@ -16,8 +18,8 @@ export interface ReaderLineProperties {
 // 🧩 Component
 
 /**
- * One line of a text: its label, then each word as its own element and each
- * punctuation mark as plain text.
+ * One line of a text: its label, then each word as a button that opens its
+ * word card and each punctuation mark as plain text.
  */
 export function ReaderLine(
   properties: Readonly<ReaderLineProperties>,
@@ -51,7 +53,10 @@ export function ReaderLine(
         ) : (
           <Fragment key={token.id}>
             {position === 0 ? "" : " "}
-            <span data-testid="reader-token">{token.data}</span>
+            <WordCard
+              className="inline"
+              token={token}
+            />
           </Fragment>
         ),
       )}
