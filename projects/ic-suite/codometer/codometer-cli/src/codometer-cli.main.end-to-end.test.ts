@@ -145,7 +145,7 @@ describe("main end-to-end suite", () => {
       const result = await runCommand([
         "configuration",
         "--config",
-        path.join(workingDirectory, "missing.config.json"),
+        path.join(workingDirectory, "missing", "codometer.config.json"),
         "--directory",
         workingDirectory,
         "--limits",

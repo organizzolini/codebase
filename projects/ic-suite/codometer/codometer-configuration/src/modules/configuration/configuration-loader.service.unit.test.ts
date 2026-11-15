@@ -106,37 +106,20 @@ describe(ConfigurationLoaderService, () => {
     ).rejects.toBeInstanceOf(ConfigurationFileNotFoundError);
   });
 
-  it("throws when no repository root holds the relative path either", async () => {
-    const searchDirectory = createTemporaryDirectory("loader-rootless");
-    const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(searchDirectory);
-
-    await expect(
-      service.load({
-        configurationPath: "configuration/codometer.config.ts",
-      }),
-    ).rejects.toBeInstanceOf(ConfigurationFileNotFoundError);
-
-    cwdSpy.mockRestore();
-  });
-
-  it("resolves a configuration path relative to the repository root", async () => {
-    // A configuration path relative to a repository root, read from a nested
-    // working directory, as a task runner leaves behind. The fixture is a
-    // temporary repository so no real configuration file is needed.
+  it("never resolves a relative path against the repository root", async () => {
+    // A repository root holds the file, but the working directory does not:
+    // the path is read as given, so this must not be found.
     const repositoryRoot = createTemporaryDirectory("loader-repository");
     await writeFile(
       path.join(repositoryRoot, "pnpm-workspace.yaml"),
       "",
       "utf8",
     );
-    const configurationDirectory = path.join(repositoryRoot, "configuration");
-    await mkdir(configurationDirectory, { recursive: true });
-    const configurationPath = path.join(
-      configurationDirectory,
-      "codometer.config.json",
-    );
+    await mkdir(path.join(repositoryRoot, "configuration"), {
+      recursive: true,
+    });
     await writeFile(
-      configurationPath,
+      path.join(repositoryRoot, "configuration", "codometer.config.json"),
       JSON.stringify({ defaultInput: "codebase" }),
       "utf8",
     );
@@ -144,16 +127,13 @@ describe(ConfigurationLoaderService, () => {
     await mkdir(nestedDirectory, { recursive: true });
     const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(nestedDirectory);
 
-    const loaded = await service.load({
-      configurationPath: "configuration/codometer.config.json",
-    });
+    await expect(
+      service.load({
+        configurationPath: "configuration/codometer.config.json",
+      }),
+    ).rejects.toBeInstanceOf(ConfigurationFileNotFoundError);
 
     cwdSpy.mockRestore();
-
-    expect(loaded).toStrictEqual({
-      configuration: { defaultInput: "codebase" },
-      path: configurationPath,
-    });
   });
 
   it("no longer invokes a factory's default export through interop", async () => {

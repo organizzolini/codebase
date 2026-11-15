@@ -212,7 +212,7 @@ export interface CodometerTreeSelector {
 
 /** Arguments accepted when loading a configuration file. */
 export interface LoadConfigurationArguments {
-  /** The configuration file, relative to the cwd or the repository root. */
+  /** The configuration file, absolute or relative to the working directory. */
   configurationPath: string;
 }
 

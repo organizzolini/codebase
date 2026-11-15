@@ -126,9 +126,9 @@ cd projects/common/observability && codometer --config codometer.config.ts --che
 The configuration is exactly the file `--config` names: nothing is searched
 for, no ancestor's file is consulted, and nothing is merged, because a merged
 configuration leaves a limit that never applied looking exactly like one that
-did. A relative path is resolved against the working directory, then the
-repository root, so a task runner that sets the working directory to a project
-can still name a workspace file; a path that names no file fails the run.
+did. A relative path is resolved against the working directory alone, so a task
+runner that sets the working directory to a project names a workspace file by
+a path that reaches it from there; a path that names no file fails the run.
 
 A configuration file is always read as a plain object — one exported as a
 function is not recognized, and falls back to an empty configuration, the
@@ -289,9 +289,9 @@ codometer configuration --limits --config configuration/codometer.config.ts
 | projects/common/observability  | `Compiled JavaScript.size`| —     | fail     | 12.00 kB | `projects/common/observability/codometer.config.ts`|
 ```
 
-It walks for every configuration file beneath the directory it is given — in
-any of the formats codometer accepts — and resolves each one **by its own
-path**, so what it reports is what a run naming that file actually sees. The walk
+It walks for every file beneath the directory it is given that is named like
+the `--config` file — `codometer.config.ts` for the command above, never a
+guessed list of names — and resolves each one **by its own path**, so what it reports is what a run naming that file actually sees. The walk
 honors the exclusions of whatever configuration answers for the directory being
 listed, so a configuration inside a dependency or a generator template is never
 listed as something the repository configures.

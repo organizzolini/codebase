@@ -82,8 +82,8 @@ still writes to the repository root.
 
 The configuration path is required: `ConfigurationService.loadConfiguration`
 takes a `configurationPath` and nothing else, and the CLI refuses a run without
-`--config`. A relative path is resolved against the working directory, then
-the repository root; a path naming no file fails with a not-found error.
+`--config`. A relative path is resolved against the working directory alone, never the
+repository root; a path naming no file fails with a not-found error.
 
 **The named file answers alone**: no ancestor's configuration is folded into
 it. Merging would leave a limit that never applied looking exactly like one

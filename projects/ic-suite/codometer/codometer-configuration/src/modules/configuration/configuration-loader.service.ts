@@ -11,10 +11,7 @@ import { Injectable } from "@nestjs/common";
 import { createJiti } from "jiti";
 import { parse as parseJsonc } from "jsonc-parser";
 
-import {
-  REPOSITORY_ROOT_MARKERS,
-  SUPPORTED_CONFIGURATION_EXTENSIONS,
-} from "./configuration.constants";
+import { SUPPORTED_CONFIGURATION_EXTENSIONS } from "./configuration.constants";
 
 import type { LoadedConfigurationModule } from "./configuration-loader.types";
 import type { LoadConfigurationArguments } from "./configuration.types";
@@ -36,32 +33,6 @@ export class ConfigurationLoaderService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
-
-  /**
-   * Walks upward from the working directory to the repository root, so paths resolve when run from a nested project.
-   */
-  private findRepositoryRoot(): string | undefined {
-    let candidateDirectory = path.resolve(process.cwd());
-
-    for (;;) {
-      const directory = candidateDirectory;
-      const isRoot = REPOSITORY_ROOT_MARKERS.some((marker) =>
-        existsSync(path.join(directory, marker)),
-      );
-
-      if (isRoot) {
-        return candidateDirectory;
-      }
-
-      const parentDirectory = path.dirname(candidateDirectory);
-
-      if (parentDirectory === candidateDirectory) {
-        return undefined;
-      }
-
-      candidateDirectory = parentDirectory;
-    }
-  }
 
   /** Loads a configuration module, choosing the reader by extension. */
   private async loadConfigurationModule(args: {
@@ -106,32 +77,15 @@ export class ConfigurationLoaderService {
       : importedModule;
   }
 
-  /**
-   * Resolves a configuration path against the cwd, then the repository root.
-   */
+  /** Resolves a configuration path against the working directory alone. */
   private resolveConfigurationPath(configurationPath: string): string {
     const absolutePath = path.resolve(configurationPath);
 
-    if (existsSync(absolutePath)) {
-      return absolutePath;
-    }
-
-    const repositoryRoot = this.findRepositoryRoot();
-
-    if (repositoryRoot === undefined) {
+    if (!existsSync(absolutePath)) {
       throw new ConfigurationFileNotFoundError(absolutePath);
     }
 
-    const repositoryRelativePath = path.resolve(
-      repositoryRoot,
-      configurationPath,
-    );
-
-    if (!existsSync(repositoryRelativePath)) {
-      throw new ConfigurationFileNotFoundError(absolutePath);
-    }
-
-    return repositoryRelativePath;
+    return absolutePath;
   }
 
   // 🌎 Public Methods

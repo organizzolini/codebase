@@ -7,7 +7,7 @@ import {
   InvalidLimitValueError,
   UnknownConfigurationFileTypeError,
 } from "@codometer/core";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
@@ -1277,19 +1277,6 @@ describe(ConfigurationService, () => {
         configurationPath: "configuration/missing.config.ts",
       }),
     ).rejects.toBeInstanceOf(ConfigurationFileNotFoundError);
-  });
-
-  it("throws when no repository root holds the relative path either", async () => {
-    const searchDirectory = createTemporaryDirectory("rootless");
-    const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(searchDirectory);
-
-    await expect(
-      service.loadConfiguration({
-        configurationPath: "configuration/codometer.config.ts",
-      }),
-    ).rejects.toBeInstanceOf(ConfigurationFileNotFoundError);
-
-    cwdSpy.mockRestore();
   });
 
   it("never reads an ancestor's configuration in place of a named one", async () => {
