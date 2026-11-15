@@ -35,6 +35,7 @@ export const packageDirectory = path.resolve(
 /** This package's own configuration, passed with `--config`. */
 export const packageConfiguration = path.join(
   packageDirectory,
+  "configuration",
   "codometer.config.ts",
 );
 
