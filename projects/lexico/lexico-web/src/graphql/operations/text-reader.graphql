@@ -8,10 +8,6 @@ query TextReader($slug: String!, $first: Int!, $after: String) {
       name
       slug
     }
-    ancestors {
-      slug
-      title
-    }
     nextText {
       slug
       title
