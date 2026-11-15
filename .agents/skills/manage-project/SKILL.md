@@ -36,7 +36,7 @@ A `High` that would not fit one reviewable pull request is a planning defect: sp
 
 ## Fill the Board
 
-- **When you file or plan an issue**, set Effort on every parent issue and standalone issue. Set Priority only when the user gave one; leave it empty and say so in your report when they did not.
+- **When you file or plan an issue**, set Effort on every parent issue and standalone issue. Set Priority on every root issue (a spec or a standalone issue): `compliance issue` fails a root issue without one as soon as it opens. Priority is the user's call, so ask for it before filing rather than choosing one or leaving it empty.
 - **Before a pull request leaves draft**, both fields must be filled: `compliance pull-request` fails until the issue it closes has an Effort and the root of that issue's hierarchy has a Priority. A missing Priority is the user's to set, so ask for it rather than choosing one.
 - **When you start work**, set Status to **In Progress** on every layer the work is about to move — the spec, the parent issue, and the commit sub-issue. This replaces the retired `status:in-progress` label. Do it before the first failing test.
 - **When work finishes**, close the issue. The board marks it Done; there is nothing to set.
@@ -68,7 +68,7 @@ set_field() {
 }
 ```
 
-Priority and Effort go through the issue-field endpoint instead, and take the option **name**, not its id. Set Priority only when the user gave a value:
+Priority and Effort go through the issue-field endpoint instead, and take the option **name**, not its id. Ask the user for Priority before you set it:
 
 ```bash
 echo '{"issue_field_values":[{"field_id":46460698,"value":"Medium"}]}' |
