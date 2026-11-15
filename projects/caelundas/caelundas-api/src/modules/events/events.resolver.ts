@@ -9,15 +9,15 @@ import {
 } from "./events.constants";
 import { EventsDatasetEntity } from "./events.entities";
 import { EventsService } from "./events.service";
-import { EventFilterGroupEntity } from "./filters/event-filter.entities";
-import { EventFilterService } from "./filters/event-filter.service";
-import { EventGroupingEntity } from "./grouping/event-grouping.entities";
-import { EventGroupingService } from "./grouping/event-grouping.service";
-import { PresetEntity } from "./presets/preset.entities";
-import { DEFAULT_PRESET_ID } from "./presets/presets.constants";
-import { PeriodInput } from "./windows/period-input.entities";
-import { WindowsArguments } from "./windows/windows-arguments.entities";
-import { WindowsEntity } from "./windows/windows.entities";
+import { EventFilterGroupEntity } from "./modules/filters/event-filter.entities";
+import { EventFilterService } from "./modules/filters/event-filter.service";
+import { EventGroupingEntity } from "./modules/grouping/event-grouping.entities";
+import { EventGroupingService } from "./modules/grouping/event-grouping.service";
+import { PresetEntity } from "./modules/presets/preset.entities";
+import { DEFAULT_PRESET_ID } from "./modules/presets/presets.constants";
+import { PeriodInput } from "./modules/windows/period-input.entities";
+import { WindowsArguments } from "./modules/windows/windows-arguments.entities";
+import { WindowsEntity } from "./modules/windows/windows.entities";
 
 /**
  * Serves the dataset, events and facets queries over the Caelundas Postgres.

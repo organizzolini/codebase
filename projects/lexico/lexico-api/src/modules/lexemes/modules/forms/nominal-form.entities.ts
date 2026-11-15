@@ -1,0 +1,21 @@
+import { Field, ObjectType } from "@nestjs/graphql";
+
+import { FormType } from "./form.entities";
+
+import type { FormDatabaseOnlyField } from "./forms.types";
+import type { GraphQLObjectOf } from "@codebase/interface";
+import type { FormCase, FormNumber, NominalForm } from "@codebase/lexico-db";
+
+/** A declined form of a noun, pronoun, or determiner: case and number. */
+@ObjectType("NominalForm", { implements: FormType })
+export class NominalFormType
+  extends FormType
+  implements
+    GraphQLObjectOf<NominalForm, NominalFormType, FormDatabaseOnlyField>
+{
+  @Field(() => String)
+  public case!: FormCase;
+
+  @Field(() => String)
+  public number!: FormNumber;
+}

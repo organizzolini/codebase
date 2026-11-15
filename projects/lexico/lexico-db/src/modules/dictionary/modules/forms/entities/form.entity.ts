@@ -1,0 +1,29 @@
+import { Entity, Index, ManyToOne, OneToMany, TableInheritance } from "typeorm";
+
+import { PostgresqlDeletableEntity } from "@codebase/persistence";
+
+import type { Lexeme } from "../../../entities/lexeme.entity";
+import type { WordForm } from "../../../entities/word-form.entity";
+
+/**
+ * Base single-table-inheritance entity for all lexical forms.
+ */
+@Entity({
+  comment:
+    "Abstract base table for normalized inflected forms using single-table inheritance",
+  name: "forms",
+})
+@TableInheritance({ column: { name: "type", type: "text" } })
+export class Form extends PostgresqlDeletableEntity {
+  @Index()
+  @ManyToOne("Lexeme", "forms", {
+    nullable: false,
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
+  lexeme!: Lexeme;
+
+  // Inverse side of WordForm.form
+  @OneToMany("WordForm", "form")
+  wordForms!: WordForm[];
+}
