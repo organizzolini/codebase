@@ -13,7 +13,7 @@ module.exports = {
         // value imports of the related entity class for decorator callbacks.
         // These intra-package cycles are intentional and unavoidable.
         pathNot:
-          "^projects/lexico/lexico-db/src/modules/(?:dictionary|literature)/entities/",
+          "^projects/lexico/lexico-db/src/modules/(?:dictionary|literature)/(?:modules/(?:forms|inflections)/)?entities/",
       },
       name: "no-circular",
       severity: "error",

@@ -549,6 +549,9 @@
       ],
       "name": "^(?!(dir|err|req|res|utils|ctx|app)$)[a-z0-9-]+$"
     },
+    "entity-file": {
+      "name": "^[a-z0-9-]+.entity(.(unit|integration|end-to-end).test)?.(ts|mts|cts)$"
+    },
     "hook-folder": {
       "children": [
         {
@@ -629,7 +632,28 @@
     "module-folder": {
       "children": [
         {
-          "ruleId": "kebab-case-folder"
+          "children": [
+            {
+              "ruleId": "module-folder"
+            }
+          ],
+          "name": "modules"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "entity-file"
+            }
+          ],
+          "name": "entities"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "migrations"
         },
         {
           "ruleId": "module-file"
