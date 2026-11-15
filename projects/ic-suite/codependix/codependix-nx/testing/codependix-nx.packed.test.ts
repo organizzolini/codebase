@@ -80,6 +80,7 @@ describe("the codependix plugin installed from a registry", () => {
     });
     workspace.registerPlugin("@codependix/nx", {
       configurationPath: "codependix.config.json",
+      projectConfigurationPath: "configuration/codependix.config.json",
     });
     // The gate boots NestJS containers from sources, which needs decorator metadata.
     fs.writeFileSync(
@@ -106,6 +107,7 @@ describe("the codependix plugin installed from a registry", () => {
             },
           ],
         },
+        projectConfigurationPath: "configuration/codependix.config.json",
       }),
     );
     writeProject("a", ["b"]);
