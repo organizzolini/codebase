@@ -3,6 +3,7 @@ import { LibrarySortDirection } from "./library-sort.entities";
 import {
   LIBRARY_BOOK_TYPE,
   LIBRARY_SORT_COLUMNS,
+  LIBRARY_SORT_RANKS,
   LIBRARY_TEXT_SEARCH_COLUMNS,
 } from "./library.constants";
 
@@ -105,12 +106,24 @@ export function orderDirection(
   return direction === LibrarySortDirection.DESC ? "DESC" : "ASC";
 }
 
-/** The sort's attribute as SQL, on the `author` or `text` alias. */
+/**
+ * The sort's attribute as SQL, on the `author` or `text` alias. An enum
+ * field becomes a CASE over its explicit rank, so its order never depends on
+ * how the database declares the enum.
+ */
 export function sortColumnSql(
   field: LibrarySort["field"],
   alias: string,
 ): string {
-  return `${alias}.${LIBRARY_SORT_COLUMNS[field].column}`;
+  const column = `${alias}.${LIBRARY_SORT_COLUMNS[field].column}`;
+  const ranks = LIBRARY_SORT_RANKS[field];
+  if (ranks === undefined) {
+    return column;
+  }
+  const whens = ranks.map(
+    (value, rank) => `WHEN '${value.replaceAll("'", "''")}' THEN ${rank}`,
+  );
+  return `CASE CAST(${column} AS TEXT) ${whens.join(" ")} END`;
 }
 
 /** Makes a clause from SQL and the parameters it names. */
@@ -266,8 +279,9 @@ function kindClauses(
 }
 
 /**
- * Keeps rows whose [start, end] span overlaps the range. A row with no start
- * or no end is left out, because it cannot be placed on the range.
+ * Keeps rows whose [start, end] span overlaps the range. One rule covers a
+ * range with a single bound: a row missing its start or its end is always
+ * left out, because its span cannot be placed on the range.
  */
 function overlapClauses(
   [start, end]: readonly [string, string],
@@ -275,6 +289,9 @@ function overlapClauses(
   key: string,
 ): LibrarySqlClause[] {
   const clauses: LibrarySqlClause[] = [];
+  if (hasRange(range)) {
+    clauses.push(sqlClause(`${start} IS NOT NULL AND ${end} IS NOT NULL`));
+  }
   if (typeof range?.min === "number") {
     clauses.push(
       sqlClause(`${end} >= :${key}Min`, { [`${key}Min`]: range.min }),

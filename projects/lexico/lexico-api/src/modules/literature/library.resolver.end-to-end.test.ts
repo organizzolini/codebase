@@ -2,6 +2,8 @@
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
+import { Author } from "@codebase/lexico-db";
+
 import { DATABASE_TIMEOUT_MILLISECONDS } from "../../../testing/database";
 import {
   type LibraryApplication,
@@ -435,6 +437,30 @@ describe("library resolver end-to-end suite", () => {
     expect(wide.authors.map(({ author }) => author.name)).not.toContain(
       "Roman Inscriptions",
     );
+  });
+
+  it("leaves out an author missing a start or end year from a range with one bound", async () => {
+    expect.hasAssertions();
+
+    const authors = application.database.repository(Author);
+    const open = await authors.save(
+      authors.create({ name: "Open Ended", slug: "open-ended", startYear: 0 }),
+    );
+    try {
+      const minimum = await library({ filters: { authorYears: { min: 15 } } });
+      const maximum = await library({
+        filters: { authorYears: { max: -90 } },
+      });
+
+      expect(minimum.authors.map(({ author }) => author.name)).toStrictEqual([
+        "Ovid",
+      ]);
+      expect(maximum.authors.map(({ author }) => author.name)).toStrictEqual([
+        "Caesar",
+      ]);
+    } finally {
+      await authors.delete(open.id);
+    }
   });
 
   it("narrows each card's texts to the collection filter", async () => {

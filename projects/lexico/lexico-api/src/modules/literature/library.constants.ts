@@ -76,6 +76,31 @@ export const LIBRARY_SORT_COLUMNS: Record<
   [LibrarySortField.TEXT_WORD_COUNT]: { column: "word_count", scope: "text" },
 };
 
+/**
+ * The explicit order of the enum-valued sort fields, first to last: eras run
+ * chronologically, collections from the general corpora to the specialist
+ * ones. A sort ranks by this list and never by the database's enum order or
+ * the alphabet.
+ */
+export const LIBRARY_SORT_RANKS: Partial<
+  Record<LibrarySortField, readonly string[]>
+> = {
+  [LibrarySortField.AUTHOR_ERA]: [
+    authorEra.archaic,
+    authorEra.classical,
+    authorEra.imperial,
+    authorEra.late,
+    authorEra.medieval,
+    authorEra.neoLatin,
+  ],
+  [LibrarySortField.TEXT_COLLECTION]: [
+    textCollection.perseus,
+    textCollection.theLatinLibrary,
+    textCollection.csel,
+    textCollection.edcs,
+  ],
+};
+
 /** A text value a filter or search may hold. */
 const textSchema = z.string().max(LIBRARY_MAX_SEARCH_LENGTH);
 

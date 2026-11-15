@@ -29,7 +29,7 @@ registerEnumType(LibraryTextKind, {
 export class LibraryFiltersInput {
   @Field(() => LibraryRangeInput, {
     description:
-      "Authors whose years overlap this range. Authors without years are left out.",
+      "Authors whose years overlap this range. Authors missing a start or end year are left out, even when the range has one bound.",
     nullable: true,
   })
   public authorYears?: LibraryRangeInput | null;
@@ -54,7 +54,7 @@ export class LibraryFiltersInput {
 
   @Field(() => LibraryRangeInput, {
     description:
-      "Inscriptions whose dating overlaps this range. Other Texts are left out.",
+      "Inscriptions whose dating overlaps this range. Texts missing a start or end year are left out, even when the range has one bound.",
     nullable: true,
   })
   public inscriptionYears?: LibraryRangeInput | null;

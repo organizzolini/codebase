@@ -6,11 +6,13 @@ import { Author, Line, Text } from "@codebase/lexico-db";
 import { startLexicoDatabaseTestingModule } from "./database";
 import { seedLibraryCatalog } from "./library-catalog";
 
+import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 import type { INestApplication } from "@nestjs/common";
 import type { Server } from "node:http";
 
 /** The whole Lexico API, served over HTTP from the seeded library catalog. */
 export interface LibraryApplication {
+  readonly database: DatabaseTestingModule;
   readonly execute: (
     document: string,
     variables?: Record<string, unknown>,
@@ -50,6 +52,7 @@ export async function startLibraryApplication(): Promise<LibraryApplication> {
     const endpoint = `${await application.getUrl()}/graphql`;
 
     return {
+      database,
       execute: async (
         document: string,
         variables: Record<string, unknown> = {},
