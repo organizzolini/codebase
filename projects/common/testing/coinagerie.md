@@ -12,6 +12,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **greeter**: Sample dependency class in the module-wiring tests, injected to prove a module resolves its providers.
 - **ping**: Sample server function in the browser stand-in tests that answers `pong`.
 - **poem**: Sample route in the route-render tests whose loader data the rendered heading shows.
+- **reader**: Sample module in the file-system mock tests, `sample-file-reader`, that reads a file through the mocked `node:fs`.
 - **role**: The ARIA role testing-library queries find an element by, as in `findByRole("heading")`.
 - **sandbox**: Isolated consumer project outside the workspace, where a packed test installs tarballs and runs the real executable. Everyday "sandbox" suggests a safe play area; here it is a disposable directory. Created by `createTarballSandboxRunner`.
 - **selector**: A CSS selector string passed to `querySelector` in the route-render tests.

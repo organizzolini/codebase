@@ -1,3 +1,5 @@
+import { mkdir, writeFile } from "node:fs/promises";
+
 import { createMock } from "@golevelup/ts-vitest";
 import {
   beforeAll,
@@ -22,20 +24,19 @@ import { DrawCommand } from "./draw.command";
 
 import type { Meander } from "../database/entities/meander.entity";
 import type { MeanderPageContent } from "./draw-index.types";
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
 import type {
   BuiltTestingModule,
   TestingModuleOptions,
 } from "@codebase/testing/nestjs";
 
-const { mkdirMock, writeFileMock } = vi.hoisted(() => ({
-  mkdirMock: vi.fn<() => Promise<void>>(),
-  writeFileMock: vi.fn<() => Promise<void>>(),
-}));
+vi.mock("node:fs/promises", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
 
-vi.mock("node:fs/promises", () => ({
-  mkdir: mkdirMock,
-  writeFile: writeFileMock,
-}));
+  return mockFileSystem();
+});
 
 /**
  * Covers what `DrawCommand` decides rather than what it produces: which of
@@ -118,8 +119,8 @@ describe(DrawCommand, () => {
     draw.mockClear();
     ingest.mockClear();
     drawAll.mockClear();
-    writeFileMock.mockClear();
-    mkdirMock.mockClear();
+    vi.mocked(writeFile).mockClear();
+    vi.mocked(mkdir).mockClear();
   });
 
   it("resolves with its dependencies", async () => {
@@ -186,17 +187,17 @@ describe(DrawCommand, () => {
     await command.run([], {});
 
     expect(build).toHaveBeenCalledTimes(1);
-    expect(writeFileMock).toHaveBeenCalledWith(
+    expect(vi.mocked(writeFile)).toHaveBeenCalledWith(
       expect.stringMatching(/output\/index\.html$/),
       indexPage,
     );
-    expect(writeFileMock).toHaveBeenCalledWith(
+    expect(vi.mocked(writeFile)).toHaveBeenCalledWith(
       expect.stringMatching(/output\/patterns\/isSnake\.html$/),
       patternPage,
     );
 
     const [enumerated] = drawAll.mock.invocationCallOrder;
-    const [written] = writeFileMock.mock.invocationCallOrder;
+    const [written] = vi.mocked(writeFile).mock.invocationCallOrder;
 
     expect(enumerated ?? 0).toBeLessThan(written ?? 0);
   });
@@ -208,7 +209,7 @@ describe(DrawCommand, () => {
     expect(clear).not.toHaveBeenCalled();
     expect(drawAll).not.toHaveBeenCalled();
     expect(build).not.toHaveBeenCalled();
-    expect(writeFileMock).not.toHaveBeenCalled();
+    expect(vi.mocked(writeFile)).not.toHaveBeenCalled();
   });
 
   it("draws a self-contained formatted Code without requiring --rows and --columns", async () => {

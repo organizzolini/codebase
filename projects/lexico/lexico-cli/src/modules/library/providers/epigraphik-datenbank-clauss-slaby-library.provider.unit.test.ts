@@ -1,7 +1,8 @@
-// `obj` is the field name the EDCS API returns, not an abbreviation this code chose.
-// cspell:ignore obj
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
+// `obj` is the field name the EDCS API returns, not an abbreviation this code chose.
+// cspell:ignore obj
 import { describe, expect, it, vi } from "vitest";
 
 import { Author, type Text } from "@codebase/lexico-db";
@@ -9,22 +10,20 @@ import { Author, type Text } from "@codebase/lexico-db";
 import { EpigraphikDatenbankClaussSlabyLibraryProvider } from "./epigraphik-datenbank-clauss-slaby-library.provider";
 
 import type { LoggerService } from "@codebase/observability";
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
 
-const { mkdirMock, readdirMock, readFileMock, writeFileMock } = vi.hoisted(
-  () => ({
-    mkdirMock: vi.fn<() => Promise<string | undefined>>(),
-    readdirMock: vi.fn<() => Promise<string[]>>(),
-    readFileMock: vi.fn<() => Promise<string>>(),
-    writeFileMock: vi.fn<() => Promise<void>>(),
-  }),
-);
+const mkdirMock = vi.mocked(mkdir);
+const readdirMock = vi.mocked<(path: string) => Promise<string[]>>(readdir);
+const readFileMock = vi.mocked(readFile);
+const writeFileMock = vi.mocked(writeFile);
 
-vi.mock("node:fs/promises", () => ({
-  mkdir: mkdirMock,
-  readdir: readdirMock,
-  readFile: readFileMock,
-  writeFile: writeFileMock,
-}));
+vi.mock("node:fs/promises", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem();
+});
 
 describe(EpigraphikDatenbankClaussSlabyLibraryProvider, () => {
   const logger: DeepMocked<LoggerService> = createMock<LoggerService>();

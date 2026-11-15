@@ -1,11 +1,12 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
-import { afterEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { createFileTree } from "@codebase/testing";
 
 import { readExample } from "../testing/examples";
-import { createFixtureTree, removeFixtureTree } from "../testing/fixture-tree";
-import { run, SPAWN_TIMEOUT } from "../testing/run-command";
+import { FIXTURE_OPTIONS, run, SPAWN_TIMEOUT } from "../testing/run-command";
 
 import { environmentSchema } from "./coinagerie-cli.constants";
 
@@ -66,7 +67,7 @@ const POLYGLOT_WORDS = [
 ];
 
 /** Runs `coinagerie --config <name>.config.ts <flags>` over the `check-failures` example. */
-function runCheckFailure(
+async function runCheckFailure(
   root: string,
   name: string,
   ...flags: string[]
@@ -75,23 +76,17 @@ function runCheckFailure(
 }
 
 describe("main end-to-end suite", () => {
-  let root: string | undefined;
-
   /** Stages an example's project, removed after the case that asked for it. */
   function stage(
     exampleName: string,
     overrides: Record<string, string> = {},
   ): string {
-    root = createFixtureTree({ ...readExample(exampleName), ...overrides });
+    const root = createFileTree(
+      { ...readExample(exampleName), ...overrides },
+      FIXTURE_OPTIONS,
+    );
     return root;
   }
-
-  afterEach(() => {
-    if (root !== undefined) {
-      removeFixtureTree(root);
-      root = undefined;
-    }
-  });
 
   describe("environment schema e2e", () => {
     it("allows an empty schema by default", () => {
@@ -102,10 +97,10 @@ describe("main end-to-end suite", () => {
 
   it(
     "prints the glossary of every language and writes nothing when run with no configuration and no flag",
-    () => {
+    async () => {
       const staged = stage("zero-config");
 
-      const result = run(staged, []);
+      const result = await run(staged, []);
       const words = [
         ...result.standardOutput.matchAll(/^- \*\*(.+)\*\*:/gmu),
       ].map(([, word]) => word);
@@ -122,10 +117,10 @@ describe("main end-to-end suite", () => {
 
   it(
     "fails a check naming every missing word",
-    () => {
+    async () => {
       const staged = stage("check-failures");
 
-      const result = runCheckFailure(staged, "missing", "--check");
+      const result = await runCheckFailure(staged, "missing", "--check");
 
       expect(result.exitCode).toBe(1);
       expect(result.standardError).toContain("angle");
@@ -139,11 +134,11 @@ describe("main end-to-end suite", () => {
 
   it(
     "fails a check naming every stale word, and passes one whose definitions are empty",
-    () => {
+    async () => {
       const staged = stage("check-failures");
 
-      const stale = runCheckFailure(staged, "stale", "--check");
-      const empty = runCheckFailure(staged, "undefined", "--check");
+      const stale = await runCheckFailure(staged, "stale", "--check");
+      const empty = await runCheckFailure(staged, "undefined", "--check");
 
       expect(stale.exitCode).toBe(1);
       expect(stale.standardError).toContain("vanished");
@@ -154,14 +149,14 @@ describe("main end-to-end suite", () => {
 
   it(
     "writes a glossary that then checks clean, keeps definitions, and does not change on a second write",
-    () => {
+    async () => {
       const staged = stage("check-failures");
       const glossaryPath = path.join(staged, "glossaries", "stale.md");
 
-      const written = runCheckFailure(staged, "stale", "--write");
+      const written = await runCheckFailure(staged, "stale", "--write");
       const content = readFileSync(glossaryPath, "utf8");
-      const checked = runCheckFailure(staged, "stale", "--check");
-      const rewritten = runCheckFailure(staged, "stale", "--write");
+      const checked = await runCheckFailure(staged, "stale", "--check");
+      const rewritten = await runCheckFailure(staged, "stale", "--write");
 
       expect(written.exitCode).toBe(0);
       expect(content).toContain(
@@ -178,10 +173,10 @@ describe("main end-to-end suite", () => {
 
   it(
     "appends the block to a destination without anchors",
-    () => {
+    async () => {
       const staged = stage("outputs", { "README.md": "# Fixture\n" });
 
-      const result = run(staged, ["--write"]);
+      const result = await run(staged, ["--write"]);
 
       expect(result.exitCode).toBe(0);
       expect(readFileSync(path.join(staged, "README.md"), "utf8")).toContain(
@@ -196,12 +191,12 @@ describe("main end-to-end suite", () => {
     ["a duplicated word", "duplicate"],
   ])(
     "refuses to write a glossary with %s, leaving it byte for byte",
-    (_case, name) => {
+    async (_case, name) => {
       const staged = stage("check-failures");
       const glossaryPath = path.join(staged, "glossaries", `${name}.md`);
       const content = readFileSync(glossaryPath, "utf8");
 
-      const result = runCheckFailure(staged, name, "--write");
+      const result = await runCheckFailure(staged, name, "--write");
 
       expect(result.exitCode).toBe(1);
       expect(result.standardError).toContain(glossaryPath);
@@ -212,10 +207,10 @@ describe("main end-to-end suite", () => {
 
   it(
     "reports a faulty configuration with its path",
-    () => {
+    async () => {
       const staged = stage("check-failures");
 
-      const result = runCheckFailure(staged, "bad-shape", "--check");
+      const result = await runCheckFailure(staged, "bad-shape", "--check");
 
       expect(result.exitCode).toBe(1);
       expect(result.standardError).toContain(
@@ -227,11 +222,19 @@ describe("main end-to-end suite", () => {
 
   it(
     "folds word forms, merges a configured family, and leaves out excluded words",
-    () => {
+    async () => {
       const staged = stage("folding");
 
-      const written = run(staged, ["--output-markdown", "WORDS.md", "--write"]);
-      const checked = run(staged, ["--output-markdown", "WORDS.md", "--check"]);
+      const written = await run(staged, [
+        "--output-markdown",
+        "WORDS.md",
+        "--write",
+      ]);
+      const checked = await run(staged, [
+        "--output-markdown",
+        "WORDS.md",
+        "--check",
+      ]);
 
       expect(written.exitCode).toBe(0);
       expect(readFileSync(path.join(staged, "WORDS.md"), "utf8")).toContain(
@@ -244,12 +247,12 @@ describe("main end-to-end suite", () => {
 
   it(
     "leaves out ignored files, excluded paths, and excluded words",
-    () => {
+    async () => {
       const staged = stage("exclusions", {
         "scratch/leftover.ts": "export const leftoverWord = 1;\n",
       });
 
-      const result = run(staged, []);
+      const result = await run(staged, []);
 
       expect(result.exitCode).toBe(0);
       expect(result.standardOutput).toContain(
@@ -262,11 +265,11 @@ describe("main end-to-end suite", () => {
 
   it(
     "reads a layered glossary through exclude.words from the root glossary",
-    () => {
+    async () => {
       const staged = stage("layered-glossaries");
       const flags = ["--config", "packages/billing/coinagerie.config.ts"];
 
-      const checked = run(staged, [...flags, "--check"]);
+      const checked = await run(staged, [...flags, "--check"]);
 
       expect(checked.exitCode).toBe(0);
     },
@@ -278,12 +281,12 @@ describe("main end-to-end suite", () => {
     ["a fold that returns an empty string", "empty-fold"],
   ])(
     "aborts on %s, naming the configuration file and writing nothing",
-    (_case, name) => {
+    async (_case, name) => {
       const staged = stage("check-failures");
       const glossaryPath = path.join(staged, "glossaries", "missing.md");
       const content = readFileSync(glossaryPath, "utf8");
 
-      const result = runCheckFailure(staged, name, "--write");
+      const result = await runCheckFailure(staged, name, "--write");
 
       expect(result.exitCode).toBe(1);
       expect(result.standardError).toContain(
@@ -300,13 +303,13 @@ describe("main end-to-end suite", () => {
     ["--write with no destination configured", "zero-config", ["--write"]],
   ])(
     "refuses %s",
-    (_case, exampleName, args) => {
+    async (_case, exampleName, args) => {
       const staged = stage(exampleName);
       const listing = (): string[] =>
         readdirSync(staged, { recursive: true }).map(String).toSorted();
       const before = listing();
 
-      const result = run(staged, args);
+      const result = await run(staged, args);
 
       expect(result.exitCode).toBe(1);
       expect(listing()).toStrictEqual(before);

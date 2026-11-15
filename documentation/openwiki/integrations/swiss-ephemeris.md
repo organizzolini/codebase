@@ -16,6 +16,8 @@ sources:
     resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.service.ts
   - id: openwiki-source-4b2a7c84cda2b81178df846c
     resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.utilities.ts
+  - id: openwiki-source-f49667a9c8a9384967f375f9
+    resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-aggregation.service.ts
   - id: openwiki-source-201258b93de74dbab274c0ec
     resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.constants.ts
   - id: openwiki-source-39525b7782afc593454331a3
@@ -26,8 +28,8 @@ sources:
     resource: repo://projects/caelundas/caelundas-cli/src/modules/input/input.constants.ts
 generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
 verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-29T03:39:46.432Z
+  - by: openwiki/0.9.0
+    at: 2026-11-13T16:30:25.369Z
 ---
 
 # Swiss Ephemeris Integration

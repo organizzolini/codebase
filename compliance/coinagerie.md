@@ -21,6 +21,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **surplus**: Command-line arguments beyond the ones the pull-request command takes, which it rejects.
 - **unassigned**: An open issue with no assignee, which the issue command assigns to the repository's default owner.
 - **unchanged**: The outcome of a body check that found nothing to add, so the pull request is left as it is.
+- **unlinked**: Of a pull request author, such as a bot, whose pull requests need no linked issue; `UNLINKED_AUTHOR_LOGINS` lists them.
 - **verb**: The `gh label` action a reconciliation step runs, `create` or `edit`.
 - **vocabulary**: The set of `type:` and `scope:` labels the repository should hold, derived from `conventional.config.cjs`.
 
