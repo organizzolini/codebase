@@ -2,8 +2,9 @@ import { Column, Entity, Index, OneToMany, OneToOne, Unique } from "typeorm";
 
 import { PostgresqlDeletableEntity } from "@codebase/persistence";
 
-import { Form } from "./form/form.entity";
-import { Inflection } from "./inflection/inflection.entity";
+import { Form } from "../modules/forms/entities/form.entity";
+import { Inflection } from "../modules/inflections/entities/inflection.entity";
+
 import { type PartOfSpeech, partsOfSpeech } from "./part-of-speech.entity";
 import { PrincipalPart } from "./principal-part.entity";
 import { Pronunciation } from "./pronunciation.entity";

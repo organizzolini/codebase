@@ -2,7 +2,7 @@ import { Entity, Index, ManyToOne } from "typeorm";
 
 import { PostgresqlDeletableEntity } from "@codebase/persistence";
 
-import { Form } from "./form/form.entity";
+import { Form } from "../modules/forms/entities/form.entity";
 
 import type { Word } from "./word.entity";
 import type { Relation } from "typeorm";
