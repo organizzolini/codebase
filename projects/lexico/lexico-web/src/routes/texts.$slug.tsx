@@ -105,6 +105,7 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
       />
       <ReaderHint className="flex items-center justify-between gap-4 rounded-md border p-3 text-sm" />
       <ReaderLines
+        key={`${text.slug}:${String(line)}`}
         anchor={line}
         className={`space-y-2 font-serif ${FONT_SIZE_CLASSES[fontSize]}`}
         initial={text.lines}

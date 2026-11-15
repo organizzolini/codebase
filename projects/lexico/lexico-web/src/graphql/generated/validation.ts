@@ -284,10 +284,6 @@ export function TextReaderQuerySchema(): z.ZodType<TextReaderQuery> {
     name: z.string(),
     slug: z.string()
 }),
-    ancestors: z.array(z.object({
-    slug: z.string(),
-    title: z.string()
-})),
     nextText: z.object({
     slug: z.string(),
     title: z.string()
