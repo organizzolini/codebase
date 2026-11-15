@@ -22,10 +22,7 @@ import { ProjectsService } from "../projects/projects.service";
 import { RunConfigurationService } from "../run-configuration/run-configuration.service";
 import { VerdictService } from "../verdict/verdict.service";
 
-import {
-  PROJECT_CONFIGURATION_FILENAME,
-  PROJECT_LIMITS_INPUT,
-} from "./plugin.constants";
+import { ProjectConfigurationPathMismatchError } from "./plugin.constants";
 
 import type { CallidescopePluginOptions } from "../options/options.types";
 import type {
@@ -39,6 +36,7 @@ import type {
   RunTraceResult,
 } from "./plugin.types";
 import type { TraceOutcome } from "@callidescope/cli";
+import type { ResolvedCallidescopeConfiguration } from "@callidescope/configuration";
 import type { FileFilter } from "@callidescope/graph";
 
 /**
@@ -75,22 +73,35 @@ export class PluginService {
    */
   private async buildExclusionFilter(args: {
     configurationPath: string;
+    projectConfigurationPath: string;
     workspaceRoot: string;
   }): Promise<FileFilter> {
-    try {
-      const { configuration } =
-        await this.configurationService.loadConfigurationFile({
-          configurationPath: args.configurationPath,
-        });
+    const configuration = await this.loadWorkspaceConfiguration(
+      args.configurationPath,
+    );
 
-      return this.fileFilterService.buildFileFilter({
-        exclude: configuration.exclude,
-        excludeFrom: configuration.excludeFrom,
-        workspaceRoot: args.workspaceRoot,
-      });
-    } catch {
+    if (configuration === undefined) {
       return { isExcluded: (): boolean => false };
     }
+
+    // The registration's path keys the cache and the configuration's path
+    // drives the trace, so two values for one fact would judge a project by
+    // one file and cache it by another.
+    if (
+      configuration.projectConfigurationPath !== args.projectConfigurationPath
+    ) {
+      throw new ProjectConfigurationPathMismatchError({
+        configurationPath: args.configurationPath,
+        declared: configuration.projectConfigurationPath,
+        registered: args.projectConfigurationPath,
+      });
+    }
+
+    return this.fileFilterService.buildFileFilter({
+      exclude: configuration.exclude,
+      excludeFrom: configuration.excludeFrom,
+      workspaceRoot: args.workspaceRoot,
+    });
   }
 
   /**
@@ -111,6 +122,9 @@ export class PluginService {
       "^default",
       `{workspaceRoot}/${pluginOptions.configurationPath}`,
     ];
+    // Per project rather than workspace-wide, so one project's edit to its
+    // limits never invalidates another's gate.
+    const projectConfigurationInput = `{projectRoot}/${pluginOptions.projectConfigurationPath}`;
     // Every executor requires the path, so it is written onto each target
     // rather than left for a run to look up: there is nowhere else it could
     // come from, since nothing searches for it.
@@ -145,7 +159,7 @@ export class PluginService {
       [pluginOptions.gateTargetName]: {
         cache: true,
         executor: `${CALLIDESCOPE_NX_PLUGIN_NAME}:gate`,
-        inputs: [...inputs, PROJECT_LIMITS_INPUT],
+        inputs: [...inputs, projectConfigurationInput],
         options,
       },
     };
@@ -172,6 +186,22 @@ export class PluginService {
     return args.fileFilter.isExcluded(
       path.posix.join(args.projectRoot, PROJECT_PROGRAM_FILENAME),
     );
+  }
+
+  /** Loads the workspace configuration, or `undefined` when it cannot be read. */
+  private async loadWorkspaceConfiguration(
+    configurationPath: string,
+  ): Promise<ResolvedCallidescopeConfiguration | undefined> {
+    try {
+      const { configuration } =
+        await this.configurationService.loadConfigurationFile({
+          configurationPath,
+        });
+
+      return configuration;
+    } catch {
+      return undefined;
+    }
   }
 
   /**
@@ -231,18 +261,12 @@ export class PluginService {
     );
     const fileFilter = await this.buildExclusionFilter({
       configurationPath: pluginOptions.configurationPath,
+      projectConfigurationPath: pluginOptions.projectConfigurationPath,
       workspaceRoot: args.workspaceRoot,
     });
     const targetsByProjectRoot = new Map<string, InferredTargets>();
 
     for (const projectConfigurationFile of args.projectConfigurationFiles) {
-      if (
-        path.basename(projectConfigurationFile) !==
-        PROJECT_CONFIGURATION_FILENAME
-      ) {
-        continue;
-      }
-
       const projectRoot = path.dirname(projectConfigurationFile);
 
       if (

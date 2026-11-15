@@ -194,6 +194,7 @@ export class CallidescopeService {
     workspaceRoot: string;
   }): Promise<ProjectDeclarations> {
     const loaded = await this.configurationService.loadProjectConfigurations({
+      projectConfigurationPath: args.configuration.projectConfigurationPath,
       projects: args.projectNames,
       workspaceConfigurationPath: args.configurationPath,
       workspaceRoot: args.workspaceRoot,

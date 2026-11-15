@@ -13,6 +13,8 @@ export interface CallidescopeConfiguration {
   /** Gitignore-syntax files listing paths to leave untraced. */
   excludeFrom?: string[] | undefined;
   limits?: CallidescopeLimits | undefined;
+  /** Where each traced project keeps its own configuration, relative to the project root. Required of a workspace configuration, with no default and no search. */
+  projectConfigurationPath?: string | undefined;
   write?: CallidescopeWriteConfiguration | undefined;
 }
 
@@ -132,6 +134,8 @@ export interface LoadedProjectConfiguration {
 
 /** Arguments accepted by the project configuration loader. */
 export interface LoadProjectConfigurationsArguments {
+  /** Where each project keeps its file, relative to its root, as the workspace configuration wrote it. Refused when `undefined`. */
+  projectConfigurationPath: string | undefined;
   /** Workspace-relative project roots to look beside. */
   projects: readonly string[];
   /** The run's own configuration file, resolved against `workspaceRoot`. A file read as the run's own is never also read as a project's. */
@@ -195,6 +199,8 @@ export interface ResolvedCallidescopeConfiguration {
   excludeCallees: string[];
   excludeFrom: string[];
   limits: ResolvedCallidescopeLimits;
+  /** Where each traced project keeps its own configuration, as authored. No default, so `undefined` is refused when projects are read. */
+  projectConfigurationPath?: string | undefined;
   write: ResolvedCallidescopeWriteConfiguration;
 }
 

@@ -18,6 +18,9 @@ export const DEFAULT_GATE_TARGET_NAME = "callidescope-restrict";
 /** Names the plugin option in a refusal of a missing configuration path. */
 export const PLUGIN_CONFIGURATION_SURFACE = `The "configurationPath" option in the nx.json registration of ${CALLIDESCOPE_NX_PLUGIN_NAME}`;
 
+/** Names the plugin option in a refusal of a missing project configuration path. */
+export const PLUGIN_PROJECT_CONFIGURATION_SURFACE = `The "projectConfigurationPath" option in the nx.json registration of ${CALLIDESCOPE_NX_PLUGIN_NAME}`;
+
 /** Names the executor option in a refusal of a missing configuration path. */
 export const EXECUTOR_CONFIGURATION_SURFACE =
   'The "configuration" executor option';

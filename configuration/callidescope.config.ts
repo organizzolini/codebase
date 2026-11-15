@@ -137,6 +137,12 @@ const callidescopeConfiguration: CallidescopeConfiguration = {
   excludeCallees: ["LoggerService.*"],
   excludeFrom: ["configuration/.callidescopeignore"],
   limits: workspaceLimits,
+  /**
+   * Where each traced project keeps its own file, relative to the project's root.
+   *
+   * Never searched for. It matches `projectConfigurationPath` in this plugin's `nx.json` registration, and the plugin refuses a disagreement.
+   */
+  projectConfigurationPath: "callidescope.config.ts",
   write: {
     /**
      * The workspace-scope report in the repository's own `callidescope.md`.

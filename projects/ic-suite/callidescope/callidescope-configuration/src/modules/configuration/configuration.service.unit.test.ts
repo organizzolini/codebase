@@ -164,10 +164,11 @@ describe(ConfigurationService, () => {
     // A table shows a method added without a forwarding line as a gap.
     const cases: readonly ForwardingCase[] = [
       {
-        ask: (subject) => subject.findConfigurationFileAt("/workspace"),
-        name: "findConfigurationFileAt",
+        ask: (subject) =>
+          subject.configurationFileExists("/workspace/callidescope.config.ts"),
+        name: "configurationFileExists",
         read: ({ configurationFileService }) =>
-          configurationFileService.findConfigurationFileAt.mock.calls[0]?.[0],
+          configurationFileService.configurationFileExists.mock.calls[0]?.[0],
       },
       {
         ask: async (subject) =>
@@ -195,6 +196,13 @@ describe(ConfigurationService, () => {
         name: "requireConfigurationPath",
         read: ({ inputService }) =>
           inputService.requireConfigurationPath.mock.calls[0]?.[0],
+      },
+      {
+        ask: (subject) =>
+          subject.requireProjectConfigurationPath("a", "The option"),
+        name: "requireProjectConfigurationPath",
+        read: ({ inputService }) =>
+          inputService.requireProjectConfigurationPath.mock.calls[0]?.[0],
       },
       {
         ask: (subject) => subject.parseOptionalOption("a"),
@@ -290,6 +298,7 @@ describe(ConfigurationService, () => {
       const { collaborators, subject } = buildForwardingSubject();
 
       await subject.loadProjectConfigurations({
+        projectConfigurationPath: "callidescope.config.ts",
         projects: ["packages/example"],
         workspaceConfigurationPath: "/workspace/callidescope.config.ts",
         workspaceRoot: "/workspace",

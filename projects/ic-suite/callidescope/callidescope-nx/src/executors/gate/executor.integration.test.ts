@@ -241,7 +241,10 @@ describe("the gate executor, against a workspace on disk", () => {
     // narrowing below proves nothing.
     writeFileSync(
       path.join(workspaceRoot, CONFIGURATION_FILE_NAME),
-      JSON.stringify({ limits: { maximumDepth: 99 } }),
+      JSON.stringify({
+        limits: { maximumDepth: 99 },
+        projectConfigurationPath: PROJECT_CONFIGURATION_FILE_NAME,
+      }),
     );
     writeProject({
       configuration: { limits: { maximumDepth: 2 } },

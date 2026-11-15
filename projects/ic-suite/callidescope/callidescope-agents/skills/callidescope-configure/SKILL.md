@@ -30,7 +30,7 @@ leaves every committed report exactly as it found it.
 | Flag                                                                                                                          | Meaning                                                                                                                                                                                 |
 | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `-a, --addresses`                                                                                                             | Comma-separated callable addresses, each `<file>#<qualified-name>`. `depth` and `breadth` only. Prompted for when omitted                                                               |
-| `--config`                                                                                                                    | Required. Path to the workspace `callidescope.config.ts`. Never searched for; omitting it is refused naming the flag                                                                    |
+| `--config`                                                                                                                    | Required. Path to the workspace configuration file. Never searched for; omitting it is refused naming the flag                                                                          |
 | `-d, --directories`                                                                                                           | Comma-separated project directories to trace, each holding its own `tsconfig.json`                                                                                                      |
 | `--entry-point-addresses`, `--entry-point-decorators`, `--include-exported-functions`, `--include-orphans`, `--include-tests` | Override the matching `entryPoints` field. The two lists are comma-separated; the three switches take `true` or `false`, or the bare flag for `true`                                    |
 | `--exclude`, `--exclude-callees`                                                                                              | Comma-separated globs and callee patterns, overriding the **authored** field. The tool's own default exclusions are folded back in, exactly as they are under a configured `exclude`    |
@@ -186,10 +186,11 @@ an argument would read as a green one.
 
 ## The workspace configuration file
 
-Any of `callidescope.config.{ts,mts,cts,js,mjs,cjs,json,jsonc}`, TypeScript
-first because it gets type checking. This is the **workspace** configuration,
-the file a run is pointed at with the required `--config` (an Nx target's
-`configuration`, the plugin's `configurationPath`), never searched for: `configuration/callidescope.config.ts` here.
+A `.ts`, `.mts`, `.cts`, `.js`, `.mjs`, `.cjs`, `.json`, or `.jsonc` file,
+TypeScript first because it gets type checking. This is the **workspace**
+configuration, the file a run is pointed at with the required `--config` (an Nx
+target's `configuration`, the plugin's `configurationPath`), never searched for
+and never given a default name: `configuration/callidescope.config.ts` here.
 
 ```ts
 import { type CallidescopeConfiguration } from "@callidescope/configuration";
@@ -197,13 +198,17 @@ import { type CallidescopeConfiguration } from "@callidescope/configuration";
 const callidescopeConfiguration: CallidescopeConfiguration = {
   excludeFrom: ["configuration/.callidescopeignore"],
   limits: { maximumDepth: 6 },
+  projectConfigurationPath: "callidescope.config.ts",
 };
 
 export default callidescopeConfiguration;
 ```
 
-The whole surface is seven top-level keys: `directories`, `entryPoints`,
-`exclude`, `excludeCallees`, `excludeFrom`, `limits`, and `write`. The
+The whole surface is eight top-level keys: `directories`, `entryPoints`,
+`exclude`, `excludeCallees`, `excludeFrom`, `limits`, `projectConfigurationPath`,
+and `write`. `projectConfigurationPath` is required wherever projects are traced,
+has no default, and is the path of each project's own file relative to its root
+(see below); only the workspace file may set it. The
 workspace file also exports `projectDefaults` alongside its default export —
 a separate binding, not a member of this type — for a project's own
 `callidescope.config.ts` to spread.
@@ -370,9 +375,12 @@ current.
 
 ## Every traced project's own configuration is required and complete
 
-A second `callidescope.config.ts` sits at each traced project's own root, the
-directory holding the `tsconfig.json` that makes it a project, found by name in
-that directory alone with no upward walk, in any of the same eight extensions.
+A second file sits at each traced project's own root, the directory holding the
+`tsconfig.json` that makes it a project, at the path the workspace
+configuration's `projectConfigurationPath` names, relative to that root. No file
+name is searched for and nothing walks upward. A workspace configuration that
+omits `projectConfigurationPath` is refused naming it, and the Nx plugin's
+`projectConfigurationPath` option must equal it.
 
 **Every traced project has one, and every one of them is complete.** A traced
 project with no configuration file at all is refused by name, and so is a file

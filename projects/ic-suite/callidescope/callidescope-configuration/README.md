@@ -5,8 +5,8 @@
 **Reads `callidescope.config.ts` and resolves the limits callidescope enforces.**
 
 This package is the configuration reader for
-[`@callidescope/cli`](../callidescope-cli/README.md). It finds a configuration
-file, validates it, and fills in every field the file left out, so that no
+[`@callidescope/cli`](../callidescope-cli/README.md). It reads the configuration
+file it is given, validates it, and fills in every field the file left out, so that no
 analyzer has to know which options are optional.
 
 It knows nothing about call graphs. What a threshold means, and which decorator
@@ -22,9 +22,10 @@ Any of `callidescope.config.{ts,mts,cts,js,mjs,cjs,json,jsonc}`, named by the
 required `--config` path (or the `configurationPath` option of the Nx plugin, which every inferred target passes to its executor as `configuration`).
 It is never searched for and never defaulted: a run that names no file is
 refused with a `ConfigurationPathRequiredError` naming the surface that should have carried it, decided by `ConfigurationService.requireConfigurationPath`. A relative path is resolved against the working directory, then the
-repository root. TypeScript is the form that gets type checking. What _is_
-discovered is each traced project's own `callidescope.config.*`, read from the
-project's root with no upward walk.
+repository root. TypeScript is the form that gets type checking. Each traced
+project's own file is read from the path the workspace configuration's required
+`projectConfigurationPath` names, relative to the project's root. Nothing is
+searched for, so no file name is assumed and nothing is found by walking up.
 
 ```ts
 import { type CallidescopeConfiguration } from "@callidescope/configuration";
@@ -32,10 +33,16 @@ import { type CallidescopeConfiguration } from "@callidescope/configuration";
 const callidescopeConfiguration: CallidescopeConfiguration = {
   excludeFrom: ["configuration/.callidescopeignore"],
   limits: { maximumBreadth: 5, maximumDepth: 6 },
+  projectConfigurationPath: "callidescope.config.ts",
 };
 
 export default callidescopeConfiguration;
 ```
+
+`projectConfigurationPath` is required and has no default: a run that traces
+projects with a workspace configuration that leaves it out is refused with a
+`ProjectConfigurationPathMissingError` naming that file. Only the workspace
+configuration may set it.
 
 That file is the **workspace** configuration, and every section below describes
 it. A project may also configure itself, from a much smaller surface —
@@ -47,10 +54,10 @@ There are two, both per project, both gated. A limit the schema does not name is
 refused rather than ignored, so a number nothing reads cannot sit in a file
 looking as though it were in force.
 
-| Limit | Default | Meaning |
-| ----- | ------- | ------- |
-| `maximumDepth` | `6` | Frames a call stack may hold, entry point inclusive |
-| `maximumBreadth` | **none** | Callables one callable may call directly |
+| Limit            | Default  | Meaning                                             |
+| ---------------- | -------- | --------------------------------------------------- |
+| `maximumDepth`   | `6`      | Frames a call stack may hold, entry point inclusive |
+| `maximumBreadth` | **none** | Callables one callable may call directly            |
 
 `maximumBreadth` is the one limit with no default — a project that wants it
 gated has to declare its own measured number, since a workspace-wide guess
@@ -68,13 +75,13 @@ instead — see [the decision record](../../../../documentation/adr/0006-narrow-
 A depth measurement is only as meaningful as its roots, so which callables count
 as roots is configurable.
 
-| Option | Default | Meaning |
-| ------ | ------- | ------- |
-| `addresses` | none | Callables named outright as roots, each `<file>#<qualified-name>` |
-| `decorators` | 13 framework decorators | Decorators whose methods a framework invokes |
-| `includeExportedFunctions` | `true` | Treat every `src/index.ts` export as a root |
-| `includeOrphans` | `true` | Promote callables nothing in the repository calls |
-| `includeTests` | `false` | Trace test files too |
+| Option                     | Default                 | Meaning                                                           |
+| -------------------------- | ----------------------- | ----------------------------------------------------------------- |
+| `addresses`                | none                    | Callables named outright as roots, each `<file>#<qualified-name>` |
+| `decorators`               | 13 framework decorators | Decorators whose methods a framework invokes                      |
+| `includeExportedFunctions` | `true`                  | Treat every `src/index.ts` export as a root                       |
+| `includeOrphans`           | `true`                  | Promote callables nothing in the repository calls                 |
+| `includeTests`             | `false`                 | Trace test files too                                              |
 
 `addresses` takes the same `<file>#<qualified-name>` form the `depth` and
 `breadth` commands accept and every stack frame prints, so an address can be
@@ -134,11 +141,11 @@ Every destination is optional, and unconfigured is the normal case: a run that
 names no destination reports to the console and exits non-zero on violations, so
 nothing it writes can go stale.
 
-| Destination | Purpose |
-| ----------- | ------- |
-| `write.json` | A machine-readable report at `path`, indented by `indentation` |
-| `write.markdown` | A marker-delimited block spliced into `path` |
-| `write.mermaid` | The same block with its call stacks drawn as one mermaid flowchart |
+| Destination      | Purpose                                                            |
+| ---------------- | ------------------------------------------------------------------ |
+| `write.json`     | A machine-readable report at `path`, indented by `indentation`     |
+| `write.markdown` | A marker-delimited block spliced into `path`                       |
+| `write.mermaid`  | The same block with its call stacks drawn as one mermaid flowchart |
 
 `write.mermaid` takes the same keys as `write.markdown` — they differ in what
 goes between the anchors, not in how a block is placed or overridden — and is a
@@ -190,25 +197,25 @@ package, in `FlagResolutionService`, under one rule:
 > presentation** is command-line only, because neither can make an
 > under-configured run legal.
 
-| Flag | Role | What resolution does with it |
-| ---- | ---- | ---------------------------- |
-| `--check` | Mode | Command-line only. Nothing in the configuration corresponds to it |
-| `--write` | Mode | Command-line only, for the same reason |
-| `--format` | Presentation | Command-line only, and validated. It is returned beside the configuration rather than written into it |
-| `--directories` | Override | Replaces `directories` when it named any. An empty value is absent, not a scope |
-| `--entry-point-addresses` | Override | Replaces `entryPoints.addresses` when it named any |
-| `--entry-point-decorators` | Override | Replaces `entryPoints.decorators` when it named any |
-| `--exclude` | Override | Replaces the **authored** `exclude` when it named any, and the default globs are folded back in — resolution adds them to a configured `exclude` too, so a flag that dropped them would start tracing `node_modules` |
-| `--exclude-callees` | Override | Replaces `excludeCallees` when it named any |
-| `--include-exported-functions` | Override | Replaces `entryPoints.includeExportedFunctions`. Takes `true` or `false`, or the flag alone for `true` |
-| `--include-orphans` | Override | Replaces `entryPoints.includeOrphans`, the same way |
-| `--include-tests` | Override | Replaces `entryPoints.includeTests`, the same way |
-| `--maximum-depth` | Override | Replaces `limits.maximumDepth`, in the run's own configuration and in every project's. A value that is not a positive whole number is refused |
-| `--maximum-breadth` | Override | Replaces `limits.maximumBreadth` the same way — and is refused when the run's configuration declares none, there being nothing to override |
-| `--json` | Override | Replaces `write.json.path`, and no other property of that destination |
-| `--markdown` | Override | Replaces `write.markdown.path`, and no other property of that destination |
-| `--mermaid` | Override | Replaces `write.mermaid.path`, and no other property of that destination |
-| `--config` | Neither | It chooses the file everything else is resolved against, so it has already done its whole job by the time resolution runs |
+| Flag                           | Role         | What resolution does with it                                                                                                                                                                                         |
+| ------------------------------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--check`                      | Mode         | Command-line only. Nothing in the configuration corresponds to it                                                                                                                                                    |
+| `--write`                      | Mode         | Command-line only, for the same reason                                                                                                                                                                               |
+| `--format`                     | Presentation | Command-line only, and validated. It is returned beside the configuration rather than written into it                                                                                                                |
+| `--directories`                | Override     | Replaces `directories` when it named any. An empty value is absent, not a scope                                                                                                                                      |
+| `--entry-point-addresses`      | Override     | Replaces `entryPoints.addresses` when it named any                                                                                                                                                                   |
+| `--entry-point-decorators`     | Override     | Replaces `entryPoints.decorators` when it named any                                                                                                                                                                  |
+| `--exclude`                    | Override     | Replaces the **authored** `exclude` when it named any, and the default globs are folded back in — resolution adds them to a configured `exclude` too, so a flag that dropped them would start tracing `node_modules` |
+| `--exclude-callees`            | Override     | Replaces `excludeCallees` when it named any                                                                                                                                                                          |
+| `--include-exported-functions` | Override     | Replaces `entryPoints.includeExportedFunctions`. Takes `true` or `false`, or the flag alone for `true`                                                                                                               |
+| `--include-orphans`            | Override     | Replaces `entryPoints.includeOrphans`, the same way                                                                                                                                                                  |
+| `--include-tests`              | Override     | Replaces `entryPoints.includeTests`, the same way                                                                                                                                                                    |
+| `--maximum-depth`              | Override     | Replaces `limits.maximumDepth`, in the run's own configuration and in every project's. A value that is not a positive whole number is refused                                                                        |
+| `--maximum-breadth`            | Override     | Replaces `limits.maximumBreadth` the same way — and is refused when the run's configuration declares none, there being nothing to override                                                                           |
+| `--json`                       | Override     | Replaces `write.json.path`, and no other property of that destination                                                                                                                                                |
+| `--markdown`                   | Override     | Replaces `write.markdown.path`, and no other property of that destination                                                                                                                                            |
+| `--mermaid`                    | Override     | Replaces `write.mermaid.path`, and no other property of that destination                                                                                                                                             |
+| `--config`                     | Neither      | It chooses the file everything else is resolved against, so it has already done its whole job by the time resolution runs                                                                                            |
 
 **Every configured field has an overriding flag, save one.** `excludeFrom`
 names the ignore files a run reads, which is what the run _is_ rather than a
@@ -261,10 +268,10 @@ Nothing has been traced or written by the time resolution returns.
 ## Project Configuration
 
 Everything above describes the file a run is pointed at — the **workspace**
-configuration. A second `callidescope.config.ts` may also sit at any traced
-project's own root, the directory holding the `tsconfig.json` that makes it a
-project. It is found by name in that directory alone, with no upward walk, and
-may use any of the same eight extensions.
+configuration. A second file sits at `projectConfigurationPath` under any traced
+project's root, the directory holding the `tsconfig.json` that makes it a
+project. That one path is read for every project, with no search and no upward
+walk, and may use any of the supported extensions.
 
 **Every traced project has one, and every one of them is complete.** A traced
 project with no file at all is refused by name, and so is a file that leaves a
@@ -284,14 +291,14 @@ workspace-only fields it legitimately sets.
 
 ### What a project may set
 
-| Field | What it does |
-| ----- | ------------ |
-| `entryPoints` | Which of that project's callables root a stack, `addresses` included |
-| `limits.maximumDepth` | The depth every stack rooted in that project is judged against |
-| `limits.maximumBreadth` | The breadth every callable that project declares is judged against |
-| `exclude` | Globs naming that project's own files to leave untraced |
-| `write.markdown` | Where that project's own published section goes |
-| `write.mermaid` | Where that project's own diagram goes, when it wants one |
+| Field                   | What it does                                                         |
+| ----------------------- | -------------------------------------------------------------------- |
+| `entryPoints`           | Which of that project's callables root a stack, `addresses` included |
+| `limits.maximumDepth`   | The depth every stack rooted in that project is judged against       |
+| `limits.maximumBreadth` | The breadth every callable that project declares is judged against   |
+| `exclude`               | Globs naming that project's own files to leave untraced              |
+| `write.markdown`        | Where that project's own published section goes                      |
+| `write.mermaid`         | Where that project's own diagram goes, when it wants one             |
 
 **A project's written destinations are anchored to its root** the same way its
 `exclude` globs are: `write: { markdown: { path: "docs/CALLS.md" } }` in
@@ -411,8 +418,25 @@ is left exactly as the run found it. `<project>` is the workspace-relative
 project root; the workspace configuration's own declared addresses are labelled
 `the workspace configuration` instead.
 
-Five of them. Each is shown under the headline it is logged with — four of the
-five share one — and quoted as the tool writes it.
+Seven of them. Each is shown under the headline it is logged with — six of the
+seven share one — and quoted as the tool writes it.
+
+**`🔭 Rejected a project configuration` — there is no file at the path.**
+
+```text
+<project> is traced but has no callidescope configuration at <path>. Every traced project declares its own there, spreading the workspace's projectDefaults and overriding what it means to.
+```
+
+`<path>` is the one `projectConfigurationPath` produced for that project. Nothing
+else is looked for, so write the file there or correct the setting.
+
+**`🔭 Rejected a project configuration` — the workspace names no path.**
+
+```text
+<workspace configuration> sets no projectConfigurationPath: callidescope never searches for or assumes a project's configuration file. Set it to the path of each project's own file, relative to the project root, such as callidescope.config.ts.
+```
+
+Set `projectConfigurationPath` in the workspace configuration.
 
 **`🔭 Rejected a project configuration` — the file could not be read.**
 
@@ -483,11 +507,11 @@ Three runnable examples in
 [`@callidescope/examples`](../callidescope-examples/README.md) demonstrate the
 whole of this, each against real traced code:
 
-| Example | What it shows |
-| ------- | ------------- |
-| [`declared-entry-points`](../callidescope-examples/examples/declared-entry-points/README.md) | `entryPoints.addresses`, what declaring adds, and the refusals |
-| [`project-depth-limit`](../callidescope-examples/examples/project-depth-limit/README.md) | One run, two depth limits, and why the two files at that package's root are separate |
-| [`gated-leaf`](../callidescope-examples/examples/gated-leaf/README.md) | A leaf gated at three, and both halves of the `--check breadth` rule side by side |
+| Example                                                                                      | What it shows                                                                        |
+| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| [`declared-entry-points`](../callidescope-examples/examples/declared-entry-points/README.md) | `entryPoints.addresses`, what declaring adds, and the refusals                       |
+| [`project-depth-limit`](../callidescope-examples/examples/project-depth-limit/README.md)     | One run, two depth limits, and why the two files at that package's root are separate |
+| [`gated-leaf`](../callidescope-examples/examples/gated-leaf/README.md)                       | A leaf gated at three, and both halves of the `--check breadth` rule side by side    |
 
 ## Call Graph Types
 
@@ -512,8 +536,8 @@ configuration object it assembled itself and get the same resolved shape a file
 produces, without touching the disk.
 
 `ProjectConfigurationService` is the second service, and the only place a
-per-project refusal is raised: `loadProjectConfigurations` reads the file beside
-each traced project and rejects the ones setting a workspace-only field, and
+per-project refusal is raised: `loadProjectConfigurations` reads the file at
+`projectConfigurationPath` under each traced project and rejects the ones setting a workspace-only field, and
 `resolveLimits` says what every project is judged against, each number carrying
 the file it was written in. One resolver rather than one per reader — a gate
 and a listing that each read a flag override its own way could disagree about

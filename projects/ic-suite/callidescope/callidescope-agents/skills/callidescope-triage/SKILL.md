@@ -9,16 +9,16 @@ license: MIT
 Callidescope fails for a handful of distinct reasons, and reading which one
 occurred is most of the work. Separate them first:
 
-| The run said                              | It is                                                                                                                                           |
-| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `🚨 [DEPTH n > limit]`                    | A **finding** about the code. Fix the layering                                                                                                  |
-| A breadth row over the limit              | A **finding**. Split the callable                                                                                                               |
-| `A configured destination is stale`       | **Drift**. Re-run `--write`                                                                                                                     |
-| `## Read nothing of its own (0 files)`    | A gate **judged a project whose own files it never read**. Its verdict means nothing                                                            |
-| `🔭 Rejected a project it could not read` | A `tsconfig.json` **is missing or did not parse**. The trace stopped there                                                                      |
-| `🔭 Traced nothing`                       | The run **saw no code at all**. Nothing below it means anything                                                                                 |
-| `🔭 Rejected the command line`            | A **mistake** in the flags. Nothing was traced                                                                                                  |
-| `🔭 Rejected a project configuration`     | One project's own `callidescope.config.ts` **was missing, incomplete, or refused** for a field only the workspace may set. Nothing was reported |
+| The run said                              | It is                                                                                                                                                       |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `🚨 [DEPTH n > limit]`                    | A **finding** about the code. Fix the layering                                                                                                              |
+| A breadth row over the limit              | A **finding**. Split the callable                                                                                                                           |
+| `A configured destination is stale`       | **Drift**. Re-run `--write`                                                                                                                                 |
+| `## Read nothing of its own (0 files)`    | A gate **judged a project whose own files it never read**. Its verdict means nothing                                                                        |
+| `🔭 Rejected a project it could not read` | A `tsconfig.json` **is missing or did not parse**. The trace stopped there                                                                                  |
+| `🔭 Traced nothing`                       | The run **saw no code at all**. Nothing below it means anything                                                                                             |
+| `🔭 Rejected the command line`            | A **mistake** in the flags. Nothing was traced                                                                                                              |
+| `🔭 Rejected a project configuration`     | One project's own configuration **was missing at the configured path, incomplete, or refused** for a field only the workspace may set. Nothing was reported |
 
 The bottom five all mean the run never produced a verdict on the code. None of
 them writes a destination, so a checkout is unchanged by any of them — and no
@@ -244,7 +244,7 @@ Nothing was traced. The message lists the reasons; these are the ones to expect:
 
 ## A refused project configuration
 
-A `callidescope.config.ts` sitting at one traced project's own root — or the
+The file at `projectConfigurationPath` under one traced project's root — or the
 absence of one — was refused. Nothing was printed and no destination was
 touched, so the checkout is exactly as the run found it. `<project>` is the
 workspace-relative project root; an address the workspace file declared is
@@ -252,9 +252,10 @@ labelled `the workspace configuration` instead.
 
 **The project has no configuration file at all.**
 
-Every traced project's own `callidescope.config.ts` is required, not optional.
-A project with none is refused by name before anything is traced. The fix is
-to add one, spreading the workspace's `projectDefaults` export and overriding
+Every traced project's own file is required, not optional. A project with none
+at the path the workspace's `projectConfigurationPath` names is refused by name,
+with that path, before anything is traced. Nothing else is looked for, so the fix
+is to add one there (or correct the setting), spreading the workspace's `projectDefaults` export and overriding
 what it means to:
 
 ```ts

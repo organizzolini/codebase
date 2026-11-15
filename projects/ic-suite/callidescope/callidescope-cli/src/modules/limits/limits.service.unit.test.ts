@@ -53,13 +53,10 @@ const QUIET_PROJECT_CONFIGURATION_PATH = path.join(
   "callidescope.config.ts",
 );
 
-/** Which file each project root answers with, keyed by absolute root. */
-const CONFIGURATION_PATH_BY_PROJECT_ROOT = new Map([
-  [
-    path.join(process.cwd(), DECLARING_PROJECT),
-    DECLARING_PROJECT_CONFIGURATION_PATH,
-  ],
-  [path.join(process.cwd(), QUIET_PROJECT), QUIET_PROJECT_CONFIGURATION_PATH],
+/** The files that exist on this suite's imagined disk. */
+const EXISTING_CONFIGURATION_PATHS = new Set([
+  DECLARING_PROJECT_CONFIGURATION_PATH,
+  QUIET_PROJECT_CONFIGURATION_PATH,
 ]);
 
 /** A resolved configuration with every field a run reads filled in. */
@@ -81,6 +78,7 @@ function buildConfiguration(
     limits: {
       maximumDepth: DEFAULT_MAXIMUM_DEPTH,
     },
+    projectConfigurationPath: "callidescope.config.ts",
     write: {
       json: undefined,
       markdown: undefined,
@@ -135,8 +133,8 @@ function buildLoadedFile(args: {
 
 describe(LimitsService, () => {
   let configurationService: ConfigurationService;
-  let findConfigurationFileAt: MockInstance<
-    ConfigurationService["findConfigurationFileAt"]
+  let configurationFileExists: MockInstance<
+    ConfigurationService["configurationFileExists"]
   >;
   let loadConfigurationFile: MockInstance<
     (
@@ -182,9 +180,9 @@ describe(LimitsService, () => {
     // this one object is stubbing the whole layer's view of the disk — and
     // the resolver that decides the numbers stays the tool's own.
     configurationService = await built.module.resolve(ConfigurationService);
-    findConfigurationFileAt = vi.spyOn(
+    configurationFileExists = vi.spyOn(
       configurationService,
-      "findConfigurationFileAt",
+      "configurationFileExists",
     );
     loadConfigurationFile = vi.spyOn(
       configurationService,
@@ -195,7 +193,7 @@ describe(LimitsService, () => {
   // The service holds no state, so one instance serves the suite; what each
   // test needs fresh is what the filesystem answers with.
   beforeEach(() => {
-    findConfigurationFileAt.mockReset();
+    configurationFileExists.mockReset();
     loadConfigurationFile.mockReset();
     logger.info.mockClear();
     fileFilterService.buildFileFilter.mockReset();
@@ -206,8 +204,8 @@ describe(LimitsService, () => {
     });
     discover([DECLARING_PROJECT, QUIET_PROJECT]);
 
-    findConfigurationFileAt.mockImplementation((directory: string) =>
-      CONFIGURATION_PATH_BY_PROJECT_ROOT.get(directory),
+    configurationFileExists.mockImplementation((filePath: string) =>
+      EXISTING_CONFIGURATION_PATHS.has(filePath),
     );
     declareProjectLimits({ maximumDepth: 17 });
   });
@@ -323,7 +321,7 @@ describe(LimitsService, () => {
     // The listing is at its least trustworthy exactly when a project's
     // configuration is missing, so it ends the run rather than printing a
     // number that project never wrote.
-    findConfigurationFileAt.mockReturnValue(undefined);
+    configurationFileExists.mockReturnValue(false);
 
     await expect(service.list({ config: CONFIGURATION_PATH })).rejects.toThrow(
       ProjectConfigurationMissingError,

@@ -9,7 +9,6 @@ import { parse as parseJsonc } from "jsonc-parser";
 
 import {
   callidescopeConfigurationSchema,
-  CONFIGURATION_FILE_NAMES,
   ConfigurationFileNotFoundError,
   DEFAULT_ENTRY_POINT_DECORATORS,
   DEFAULT_EXCLUDE_GLOBS,
@@ -221,20 +220,9 @@ export class ConfigurationFileService {
 
   // 🌎 Public Methods
 
-  /**
-   * Finds a configuration file directly in one directory, without walking upward.
-   * Walking up would hand every project the workspace file.
-   */
-  public findConfigurationFileAt(directory: string): string | undefined {
-    for (const fileName of CONFIGURATION_FILE_NAMES) {
-      const candidatePath = path.join(directory, fileName);
-
-      if (existsSync(candidatePath)) {
-        return candidatePath;
-      }
-    }
-
-    return undefined;
+  /** Whether a file exists at exactly this path. Nothing is searched for. */
+  public configurationFileExists(filePath: string): boolean {
+    return existsSync(filePath);
   }
 
   /**
@@ -290,6 +278,7 @@ export class ConfigurationFileService {
       excludeCallees: configuration.excludeCallees ?? [],
       excludeFrom: configuration.excludeFrom ?? [],
       limits: this.resolveLimits(configuration.limits),
+      projectConfigurationPath: configuration.projectConfigurationPath,
       write: {
         json: this.resolveJsonOutput(configuration.write),
         markdown: this.resolveMarkdownDestination(

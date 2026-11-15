@@ -130,6 +130,7 @@ export class LimitsService {
     const projects = this.discoverProjects({ configuration, workspaceRoot });
     const projectConfigurations =
       await this.configurationService.loadProjectConfigurations({
+        projectConfigurationPath: configuration.projectConfigurationPath,
         projects,
         workspaceConfigurationPath: configurationPath,
         workspaceRoot,

@@ -25,6 +25,20 @@ export class InputError extends Error {
   }
 }
 
+/**
+ * Raised when a plugin registration does not say where projects keep their configuration.
+ *
+ * Callidescope never assumes a project's file name, so the path, relative to each project root, must come from the caller.
+ */
+export class ProjectConfigurationPathRequiredError extends Error {
+  constructor(surface: string) {
+    super(
+      `${surface} is required and names where each project keeps its own callidescope configuration, relative to the project root. Nothing is searched for, so a missing or blank value is refused.`,
+    );
+    this.name = "ProjectConfigurationPathRequiredError";
+  }
+}
+
 /** Refuses a prompt on a non-terminal, which exits 0 silently. */
 export const missingInputError = (subject: string): InputError =>
   new InputError(

@@ -262,6 +262,30 @@ describe(ConfigurationFileService, () => {
     expect(configuration.write.markdown?.heading).toBe("### Deep");
   });
 
+  it("carries the project configuration path through the file schema", async () => {
+    const configurationPath = await writeConfiguration({
+      projectConfigurationPath: "configuration/callidescope.config.ts",
+    });
+
+    const { authored } = await service.loadConfigurationFile({
+      configurationPath,
+    });
+
+    expect(authored.projectConfigurationPath).toBe(
+      "configuration/callidescope.config.ts",
+    );
+  });
+
+  it("refuses a blank project configuration path", async () => {
+    const configurationPath = await writeConfiguration({
+      projectConfigurationPath: "",
+    });
+
+    await expect(
+      service.loadConfigurationFile({ configurationPath }),
+    ).rejects.toThrow("projectConfigurationPath");
+  });
+
   it("leaves the diagram destination alone until it is asked for", () => {
     expect(
       service.resolveConfiguration({ write: {} }).write.mermaid,
@@ -609,17 +633,14 @@ describe(ConfigurationFileService, () => {
     expect(loaded.configuration.limits.maximumDepth).toBe(9);
   });
 
-  it("finds a configuration file sitting directly in a directory", async () => {
+  it("reports whether a file exists at an exact path", async () => {
     const configurationPath = await writeConfiguration({});
 
+    expect(service.configurationFileExists(configurationPath)).toBe(true);
     expect(
-      service.findConfigurationFileAt(path.dirname(configurationPath)),
-    ).toBe(configurationPath);
-  });
-
-  it("finds nothing in a directory holding no configuration file", () => {
-    const directory = createTemporaryDirectory("callidescope-empty");
-
-    expect(service.findConfigurationFileAt(directory)).toBeUndefined();
+      service.configurationFileExists(
+        path.join(path.dirname(configurationPath), "absent.config.ts"),
+      ),
+    ).toBe(false);
   });
 });

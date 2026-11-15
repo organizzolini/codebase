@@ -4,13 +4,13 @@
 
 | Measure | Value |
 | --- | --- |
-| Callables | 431 |
+| Callables | 436 |
 | Files | 238 |
 | Calls traced | 365 |
-| Call stacks | 144 |
+| Call stacks | 148 |
 | Deepest stack | 9 |
 | Stacks through recursion | 1 |
-| Unfollowable calls | 30 |
+| Unfollowable calls | 34 |
 
 ## Projects
 
@@ -66,19 +66,19 @@
 **2. `DeepStackService.quote`** — depth 8 · orphan-root
 
 ```text
-🚀 DeepStackService.quote(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:50]
+🚀 DeepStackService.quote(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:47]
    ↳ Quotes one order, priced through every stage below.
-  └─> DeepStackService.validate(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:43]
+  └─> DeepStackService.validate(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:40]
      ↳ Rejects a negative amount before anything else reads it.
-    └─> DeepStackService.removeDiscount(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:33]
+    └─> DeepStackService.removeDiscount(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:30]
        ↳ Removes the tier discount from the validated amount.
-      └─> DeepStackService.resolveTier(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:38]
+      └─> DeepStackService.resolveTier(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:35]
          ↳ Picks the pricing tier the discounted amount falls into.
-        └─> DeepStackService.loadRate(amount: number, tier: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:28]
+        └─> DeepStackService.loadRate(amount: number, tier: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:25]
            ↳ Looks up the tax rate the resolved tier pays.
-          └─> DeepStackService.applyTax(amount: number, rate: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:18]
+          └─> DeepStackService.applyTax(amount: number, rate: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:15]
              ↳ Adds tax at the resolved rate.
-            └─> DeepStackService.convertCurrency(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:23]
+            └─> DeepStackService.convertCurrency(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:20]
                ↳ Converts to the reporting currency and rounds through the shared tail.
               └─> roundToCents(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/shared-tail/round-to-cents.ts:4]
                  ↳ The tail two deep stacks share, so their mermaid diagrams converge.
@@ -130,17 +130,17 @@
 **5. `LoggerService.log`** — depth 6 · orphan-root
 
 ```text
-🚀 LoggerService.log(message: unknown, context?: string, data?: LogData): void [projects/common/observability/src/modules/logger/logger.service.ts:269]
+🚀 LoggerService.log(message: unknown, context?: string, data?: LogData): void [projects/common/observability/src/modules/logger/logger.service.ts:275]
    ↳ Logs at the `info` level, as NestJS and `nest-commander` call it. Application code should call `info` instead.
-  └─> LoggerService.info(message: unknown, context?: string, data?: LogData): void [projects/common/observability/src/modules/logger/logger.service.ts:257]
+  └─> LoggerService.info(message: unknown, context?: string, data?: LogData): void [projects/common/observability/src/modules/logger/logger.service.ts:263]
      ↳ Logs an informational message at the `info` level.
-    └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/common/observability/src/modules/logger/logger.service.ts:118]
+    └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/common/observability/src/modules/logger/logger.service.ts:124]
        ↳ Assembles the object pino merges into the line.
-      └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/common/observability/src/modules/logger/logger.service.ts:99]
+      └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/common/observability/src/modules/logger/logger.service.ts:105]
          ↳ Fails a malformed message in development only, since a throw in production would turn logging into an outage.
-        └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/common/observability/src/modules/logger/logger.service.ts:137]
+        └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/common/observability/src/modules/logger/logger.service.ts:143]
            ↳ Returns a human-readable explanation when the message format is invalid.
-          └─> LoggerService.isConventionalVerb(word: string): boolean [projects/common/observability/src/modules/logger/logger.service.ts:160]
+          └─> LoggerService.isConventionalVerb(word: string): boolean [projects/common/observability/src/modules/logger/logger.service.ts:166]
              ↳ Whether a word is a present-progressive or past-tense verb.
 ```
 
@@ -164,60 +164,60 @@
 **7. `LoggerService.debug`** — depth 5 · orphan-root
 
 ```text
-🚀 LoggerService.debug(message: unknown, context?: string, data?: LogData): void [projects/common/observability/src/modules/logger/logger.service.ts:225]
+🚀 LoggerService.debug(message: unknown, context?: string, data?: LogData): void [projects/common/observability/src/modules/logger/logger.service.ts:231]
    ↳ Logs a debug message at the `debug` level.
-  └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/common/observability/src/modules/logger/logger.service.ts:118]
+  └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/common/observability/src/modules/logger/logger.service.ts:124]
      ↳ Assembles the object pino merges into the line.
-    └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/common/observability/src/modules/logger/logger.service.ts:99]
+    └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/common/observability/src/modules/logger/logger.service.ts:105]
        ↳ Fails a malformed message in development only, since a throw in production would turn logging into an outage.
-      └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/common/observability/src/modules/logger/logger.service.ts:137]
+      └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/common/observability/src/modules/logger/logger.service.ts:143]
          ↳ Returns a human-readable explanation when the message format is invalid.
-        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/common/observability/src/modules/logger/logger.service.ts:160]
+        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/common/observability/src/modules/logger/logger.service.ts:166]
            ↳ Whether a word is a present-progressive or past-tense verb.
 ```
 
 **8. `LoggerService.error`** — depth 5 · orphan-root
 
 ```text
-🚀 LoggerService.error(…): void [projects/common/observability/src/modules/logger/logger.service.ts:237]
+🚀 LoggerService.error(…): void [projects/common/observability/src/modules/logger/logger.service.ts:243]
    ↳ Logs at the `error` level. The second argument is a stack, the third a context string or structured data.
-  └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/common/observability/src/modules/logger/logger.service.ts:118]
+  └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/common/observability/src/modules/logger/logger.service.ts:124]
      ↳ Assembles the object pino merges into the line.
-    └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/common/observability/src/modules/logger/logger.service.ts:99]
+    └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/common/observability/src/modules/logger/logger.service.ts:105]
        ↳ Fails a malformed message in development only, since a throw in production would turn logging into an outage.
-      └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/common/observability/src/modules/logger/logger.service.ts:137]
+      └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/common/observability/src/modules/logger/logger.service.ts:143]
          ↳ Returns a human-readable explanation when the message format is invalid.
-        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/common/observability/src/modules/logger/logger.service.ts:160]
+        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/common/observability/src/modules/logger/logger.service.ts:166]
            ↳ Whether a word is a present-progressive or past-tense verb.
 ```
 
 **9. `LoggerService.verbose`** — depth 5 · orphan-root
 
 ```text
-🚀 LoggerService.verbose(message: unknown, context?: string, data?: LogData): void [projects/common/observability/src/modules/logger/logger.service.ts:280]
+🚀 LoggerService.verbose(message: unknown, context?: string, data?: LogData): void [projects/common/observability/src/modules/logger/logger.service.ts:286]
    ↳ Logs a verbose message at the `trace` level.
-  └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/common/observability/src/modules/logger/logger.service.ts:118]
+  └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/common/observability/src/modules/logger/logger.service.ts:124]
      ↳ Assembles the object pino merges into the line.
-    └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/common/observability/src/modules/logger/logger.service.ts:99]
+    └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/common/observability/src/modules/logger/logger.service.ts:105]
        ↳ Fails a malformed message in development only, since a throw in production would turn logging into an outage.
-      └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/common/observability/src/modules/logger/logger.service.ts:137]
+      └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/common/observability/src/modules/logger/logger.service.ts:143]
          ↳ Returns a human-readable explanation when the message format is invalid.
-        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/common/observability/src/modules/logger/logger.service.ts:160]
+        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/common/observability/src/modules/logger/logger.service.ts:166]
            ↳ Whether a word is a present-progressive or past-tense verb.
 ```
 
 **10. `LoggerService.warn`** — depth 5 · orphan-root
 
 ```text
-🚀 LoggerService.warn(message: unknown, context?: string, data?: LogData): void [projects/common/observability/src/modules/logger/logger.service.ts:289]
+🚀 LoggerService.warn(message: unknown, context?: string, data?: LogData): void [projects/common/observability/src/modules/logger/logger.service.ts:295]
    ↳ Logs a warning message at the `warn` level.
-  └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/common/observability/src/modules/logger/logger.service.ts:118]
+  └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/common/observability/src/modules/logger/logger.service.ts:124]
      ↳ Assembles the object pino merges into the line.
-    └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/common/observability/src/modules/logger/logger.service.ts:99]
+    └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/common/observability/src/modules/logger/logger.service.ts:105]
        ↳ Fails a malformed message in development only, since a throw in production would turn logging into an outage.
-      └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/common/observability/src/modules/logger/logger.service.ts:137]
+      └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/common/observability/src/modules/logger/logger.service.ts:143]
          ↳ Returns a human-readable explanation when the message format is invalid.
-        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/common/observability/src/modules/logger/logger.service.ts:160]
+        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/common/observability/src/modules/logger/logger.service.ts:166]
            ↳ Whether a word is a present-progressive or past-tense verb.
 ```
 

@@ -22,8 +22,8 @@ npx callidescope breadth --config configuration/callidescope.config.ts --address
 
 **`--config` is required on all three**, and names the workspace configuration
 file: nothing is searched for and nothing is defaulted, so a run that omits it
-is refused naming the flag. **A traced project's own `callidescope.config.ts` is a different matter**: it
-must exist and must be complete, or the run is refused before anything is
+is refused naming the flag. **A traced project's own configuration is a different matter**: it
+must exist at the workspace's `projectConfigurationPath` and must be complete, or the run is refused before anything is
 traced — see the `callidescope-configure` skill. What a run _gates_ on and what
 it _writes_ are both opt-in and both live in that skill; this one is about
 reading the result.

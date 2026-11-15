@@ -1,14 +1,23 @@
 // ♟️ Constants
 
-/** Glob `createNodes` matches, including configuration, so edits re-run the plugin. */
-export const PROJECT_CONFIGURATION_GLOB =
-  "**/{project.json,callidescope.config.*}";
+/** Glob `createNodes` matches. Nx fixes it before reading options, so it names no configuration file. */
+export const PROJECT_CONFIGURATION_GLOB = "**/project.json";
 
-/** Basename that marks a matched file as an actual project description. */
-export const PROJECT_CONFIGURATION_FILENAME = "project.json";
-
-/** Cache input for the project's configuration, relative to its root. */
-export const PROJECT_LIMITS_INPUT = "{projectRoot}/callidescope.config.*";
+/**
+ * Raised when the registration and the workspace configuration name different project configuration paths.
+ */
+export class ProjectConfigurationPathMismatchError extends Error {
+  constructor(args: {
+    configurationPath: string;
+    declared: string | undefined;
+    registered: string;
+  }) {
+    super(
+      `The nx.json registration sets projectConfigurationPath to "${args.registered}", but ${args.configurationPath} sets ${args.declared === undefined ? "none" : `"${args.declared}"`}. Both must name the same path.`,
+    );
+    this.name = "ProjectConfigurationPathMismatchError";
+  }
+}
 
 /** `globalThis` key for the plugin context; one per process. */
 export const PLUGIN_CONTEXT_GLOBAL_KEY = "__callidescopePluginContext";
@@ -29,8 +38,8 @@ export const reportUnreadProjects = (projectNames: readonly string[]): string =>
     "project's own sources went missing.",
     "",
     "Check `exclude` and `excludeFrom` in the workspace callidescope",
-    "configuration and `exclude` in the project's own `callidescope.config.*`",
-    "for a pattern matching everything that project holds, and check that the",
+    "configuration and `exclude` in the project's own configuration for a",
+    "pattern matching everything that project holds, and check that the",
     "project still holds sources its `tsconfig.json` includes.",
   ].join("\n");
 
@@ -42,8 +51,8 @@ export const EMPTY_TRACE_REPORT = [
   "a gate that never looked cannot tell a clean project from an unread one.",
   "",
   "Check `exclude` and `excludeFrom` in the workspace callidescope",
-  "configuration and in this project's own `callidescope.config.*` for a",
-  "pattern matching everything the project holds.",
+  "configuration and in this project's own configuration for a pattern",
+  "matching everything the project holds.",
 ].join("\n");
 
 /** Gate's Nx selection matched no directory; nothing was traced. */

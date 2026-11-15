@@ -71,6 +71,7 @@ function buildConfiguration(): ResolvedCallidescopeConfiguration {
     limits: {
       maximumDepth: 2,
     },
+    projectConfigurationPath: PROJECT_CONFIGURATION,
     write: {
       json: undefined,
       markdown: undefined,
