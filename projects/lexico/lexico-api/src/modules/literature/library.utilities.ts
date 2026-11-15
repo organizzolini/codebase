@@ -6,6 +6,7 @@ import { LibraryPageType } from "./library-page.entities";
 import { LibraryTextType } from "./library-text.entities";
 import {
   LIBRARY_DEFAULT_PAGE_SIZE,
+  LIBRARY_DEFAULT_SORT,
   libraryArgumentsSchema,
 } from "./library.constants";
 import { toAuthorType, toTextType } from "./literature.utilities";
@@ -76,9 +77,29 @@ export function parseLibraryArguments(
     );
   }
   return {
+    filters: result.data.filters ?? {},
     page: result.data.page ?? 1,
     pageSize: result.data.pageSize ?? LIBRARY_DEFAULT_PAGE_SIZE,
     search: normalizeSearch(result.data.search),
+    sort: {
+      direction: result.data.sort?.direction ?? LIBRARY_DEFAULT_SORT.direction,
+      field: result.data.sort?.field ?? LIBRARY_DEFAULT_SORT.field,
+    },
+  };
+}
+
+/**
+ * The lowercased term a search matches, and the LIKE pattern that matches it.
+ * Both are null when there is no search.
+ */
+export function searchPatternsOf(search: null | string): {
+  readonly pattern: null | string;
+  readonly term: null | string;
+} {
+  const term = search?.toLowerCase() ?? null;
+  return {
+    pattern: term === null ? null : `%${escapeLikePattern(term)}%`,
+    term,
   };
 }
 

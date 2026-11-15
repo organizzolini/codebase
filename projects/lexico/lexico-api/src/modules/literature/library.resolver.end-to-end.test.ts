@@ -44,8 +44,20 @@ interface MatchNode {
 
 /** Runs one page of the library. */
 const LIBRARY = `
-  query Library($search: String, $page: Int, $pageSize: Int) {
-    library(search: $search, page: $page, pageSize: $pageSize) {
+  query Library(
+    $search: String
+    $page: Int
+    $pageSize: Int
+    $filters: LibraryFilters
+    $sort: LibrarySort
+  ) {
+    library(
+      search: $search
+      page: $page
+      pageSize: $pageSize
+      filters: $filters
+      sort: $sort
+    ) {
       totalCount
       pageCount
       authors {
@@ -364,5 +376,320 @@ describe("library resolver end-to-end suite", () => {
     const body = await application.execute(LIBRARY, { page: 0 });
 
     expect(body.errors).toHaveLength(1);
+  });
+
+  it("filters authors by era", async () => {
+    expect.hasAssertions();
+
+    const page = await library({ filters: { eras: ["CLASSICAL"] } });
+
+    expect(page.totalCount).toBe(3);
+    expect(page.authors.map(({ author }) => author.name)).toStrictEqual([
+      "Caesar",
+      "Catullus",
+      "Vergil",
+    ]);
+  });
+
+  it("keeps an author whose era is null out of any era filter", async () => {
+    expect.hasAssertions();
+
+    const page = await library({
+      filters: { eras: ["CLASSICAL", "IMPERIAL", "MEDIEVAL"] },
+    });
+
+    expect(page.authors.map(({ author }) => author.name)).not.toContain(
+      "Roman Inscriptions",
+    );
+  });
+
+  it("treats an empty list of values as no filter", async () => {
+    expect.hasAssertions();
+
+    const page = await library({ filters: { collections: [], eras: [] } });
+
+    expect(page.totalCount).toBe(5);
+  });
+
+  it("filters authors by overlap with an inclusive BCE year range", async () => {
+    expect.hasAssertions();
+
+    const onBoundary = await library({
+      filters: { authorYears: { max: -44, min: -44 } },
+    });
+    const single = await library({
+      filters: { authorYears: { max: -43, min: -43 } },
+    });
+    const wide = await library({
+      filters: { authorYears: { max: 1000, min: -1000 } },
+    });
+
+    expect(onBoundary.authors.map(({ author }) => author.name)).toStrictEqual([
+      "Caesar",
+      "Vergil",
+    ]);
+    expect(single.authors.map(({ author }) => author.name)).toStrictEqual([
+      "Ovid",
+      "Vergil",
+    ]);
+    expect(wide.authors.map(({ author }) => author.name)).not.toContain(
+      "Roman Inscriptions",
+    );
+  });
+
+  it("narrows each card's texts to the collection filter", async () => {
+    expect.hasAssertions();
+
+    const page = await library({ filters: { collections: ["CSEL"] } });
+    const [card] = page.authors;
+
+    expect(page.totalCount).toBe(1);
+    expect(card?.author.name).toBe("Vergil");
+    expect(card?.textCount).toBe(1);
+    expect(card?.texts.map(({ text }) => text.edition)).toStrictEqual([
+      "CSEL 12",
+    ]);
+  });
+
+  it("filters texts to books or single texts", async () => {
+    expect.hasAssertions();
+
+    const books = await library({ filters: { kinds: ["BOOK"] } });
+    const texts = await library({ filters: { kinds: ["TEXT"] } });
+
+    expect(books.authors.map(({ author }) => author.name)).toStrictEqual([
+      "Roman Inscriptions",
+      "Vergil",
+    ]);
+    expect(books.authors[1]?.texts.map(({ text }) => text.title)).toStrictEqual(
+      ["Book I"],
+    );
+    expect(texts.authors[0]?.texts.map(({ text }) => text.title)).not.toContain(
+      "Book I",
+    );
+  });
+
+  it("filters inscriptions by province, type, and material", async () => {
+    expect.hasAssertions();
+
+    const province = await library({
+      filters: { provinces: ["Hispania Tarraconensis"] },
+    });
+    const type = await library({ filters: { inscriptionTypes: ["stela"] } });
+    const material = await library({ filters: { materials: ["marble"] } });
+
+    expect(province.authors.map(({ author }) => author.name)).toStrictEqual([
+      "Roman Inscriptions",
+    ]);
+    expect(province.authors[0]?.textCount).toBe(LIBRARY_INSCRIPTION_COUNT);
+    expect(type.totalCount).toBe(0);
+    expect(material.authors[0]?.textCount).toBe(LIBRARY_INSCRIPTION_COUNT);
+  });
+
+  it("filters inscriptions by an inclusive year range that overlaps their dates", async () => {
+    expect.hasAssertions();
+
+    const inside = await library({
+      filters: { inscriptionYears: { max: 160, min: 150 } },
+    });
+    const outside = await library({
+      filters: { inscriptionYears: { max: 99, min: 0 } },
+    });
+
+    expect(inside.authors[0]?.textCount).toBe(LIBRARY_INSCRIPTION_COUNT);
+    expect(inside.authors[0]?.texts[0]?.text.title).toBe("HD000001");
+    expect(outside.totalCount).toBe(0);
+  });
+
+  it("filters texts by print year, line count, and word count", async () => {
+    expect.hasAssertions();
+
+    const printed = await library({
+      filters: { printYears: { max: 1970, min: 1960 } },
+    });
+    const lines = await library({ filters: { lineCount: { max: 3, min: 3 } } });
+    const words = await library({ filters: { wordCount: { min: 50 } } });
+
+    expect(printed.authors.map(({ author }) => author.name)).toStrictEqual([
+      "Vergil",
+    ]);
+    expect(
+      printed.authors[0]?.texts.map(({ text }) => text.title),
+    ).toStrictEqual(["Aeneid"]);
+    expect(lines.authors[0]?.texts[0]?.text.title).toBe("Aeneid");
+    expect(words).toMatchObject({ authors: [], totalCount: 0 });
+  });
+
+  it("combines filters with each other using AND", async () => {
+    expect.hasAssertions();
+
+    const page = await library({
+      filters: { collections: ["PERSEUS"], eras: ["CLASSICAL"] },
+    });
+    const [card] = page.authors;
+
+    expect(page.totalCount).toBe(1);
+    expect(card?.author.name).toBe("Vergil");
+    expect(card?.textCount).toBe(3);
+  });
+
+  it("combines filters with search using AND", async () => {
+    expect.hasAssertions();
+
+    const csel = await library({
+      filters: { collections: ["CSEL"] },
+      search: "eclogues",
+    });
+    const latin = await library({
+      filters: { collections: ["THE_LATIN_LIBRARY"] },
+      search: "eclogues",
+    });
+    const byAuthor = await library({
+      filters: { kinds: ["BOOK"] },
+      search: "vergil",
+    });
+
+    expect(csel.authors[0]?.textCount).toBe(1);
+    expect(latin.totalCount).toBe(0);
+    expect(
+      byAuthor.authors[0]?.texts.map(({ text }) => text.title),
+    ).toStrictEqual(["Book I"]);
+  });
+
+  it("counts pages over the filtered authors", async () => {
+    expect.hasAssertions();
+
+    const page = await library({
+      filters: { eras: ["CLASSICAL"] },
+      pageSize: 2,
+    });
+
+    expect(page.totalCount).toBe(3);
+    expect(page.pageCount).toBe(2);
+  });
+
+  it("sorts authors by an author attribute in both directions, with nulls last", async () => {
+    expect.hasAssertions();
+
+    const ascending = await library({
+      sort: { direction: "ASC", field: "AUTHOR_START_YEAR" },
+    });
+    const descending = await library({
+      sort: { direction: "DESC", field: "AUTHOR_START_YEAR" },
+    });
+    const byName = await library({
+      sort: { direction: "DESC", field: "AUTHOR_NAME" },
+    });
+
+    expect(ascending.authors.map(({ author }) => author.name)).toStrictEqual([
+      "Caesar",
+      "Catullus",
+      "Vergil",
+      "Ovid",
+      "Roman Inscriptions",
+    ]);
+    expect(descending.authors.map(({ author }) => author.name)).toStrictEqual([
+      "Ovid",
+      "Vergil",
+      "Catullus",
+      "Caesar",
+      "Roman Inscriptions",
+    ]);
+    expect(byName.authors.map(({ author }) => author.name)).toStrictEqual([
+      "Vergil",
+      "Roman Inscriptions",
+      "Ovid",
+      "Catullus",
+      "Caesar",
+    ]);
+  });
+
+  it("sorts authors by era chronologically with nulls last", async () => {
+    expect.hasAssertions();
+
+    const page = await library({
+      sort: { direction: "ASC", field: "AUTHOR_ERA" },
+    });
+
+    expect(page.authors.map(({ author }) => author.name)).toStrictEqual([
+      "Caesar",
+      "Catullus",
+      "Vergil",
+      "Ovid",
+      "Roman Inscriptions",
+    ]);
+  });
+
+  it("orders cards by their first matching text and orders texts within each card", async () => {
+    expect.hasAssertions();
+
+    const descending = await library({
+      sort: { direction: "DESC", field: "TEXT_PRINT_YEAR" },
+    });
+    const ascending = await library({
+      sort: { direction: "ASC", field: "TEXT_PRINT_YEAR" },
+    });
+
+    expect(descending.authors.map(({ author }) => author.name)).toStrictEqual([
+      "Vergil",
+      "Caesar",
+      "Catullus",
+      "Ovid",
+      "Roman Inscriptions",
+    ]);
+    expect(
+      descending.authors[0]?.texts.map(({ text }) => text.title),
+    ).toStrictEqual(["Aeneid", "Book I", "Eclogues", "Eclogues"]);
+    expect(ascending.authors[0]?.author.name).toBe("Vergil");
+  });
+
+  it("sorts texts by a text attribute in both directions", async () => {
+    expect.hasAssertions();
+
+    const descending = await library({
+      filters: { collections: ["PERSEUS"] },
+      search: "vergil",
+      sort: { direction: "DESC", field: "TEXT_TITLE" },
+    });
+    const ascending = await library({
+      filters: { kinds: ["BOOK"] },
+      sort: { direction: "ASC", field: "TEXT_TITLE" },
+    });
+    const descendingBooks = await library({
+      filters: { kinds: ["BOOK"] },
+      sort: { direction: "DESC", field: "TEXT_TITLE" },
+    });
+
+    expect(
+      descending.authors[0]?.texts.map(({ text }) => text.title),
+    ).toStrictEqual(["Eclogues", "Book I", "Aeneid"]);
+    expect(ascending.authors.map(({ author }) => author.name)).toStrictEqual([
+      "Vergil",
+      "Roman Inscriptions",
+    ]);
+    expect(
+      descendingBooks.authors.map(({ author }) => author.name),
+    ).toStrictEqual(["Roman Inscriptions", "Vergil"]);
+  });
+
+  it("rejects an unknown enum value", async () => {
+    expect.hasAssertions();
+
+    const body = await application.execute(LIBRARY, {
+      filters: { eras: ["MODERN"] },
+    });
+
+    expect(body.errors).toHaveLength(1);
+  });
+
+  it("rejects an inverted range", async () => {
+    expect.hasAssertions();
+
+    const body = await application.execute(LIBRARY, {
+      filters: { printYears: { max: 1960, min: 1970 } },
+    });
+
+    expect(body.errors).toHaveLength(1);
+    expect(body.errors?.[0]?.message).toMatch(/min|max|range/iu);
   });
 });

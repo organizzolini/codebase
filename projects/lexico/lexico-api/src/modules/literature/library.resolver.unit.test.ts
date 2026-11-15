@@ -46,7 +46,9 @@ describe(LibraryResolver, () => {
       search: "  vergil ",
     });
 
-    expect(service.listLibraryPage).toHaveBeenCalledWith("vergil", 2, 10);
+    expect(service.listLibraryPage).toHaveBeenCalledWith(
+      expect.objectContaining({ page: 2, pageSize: 10, search: "vergil" }),
+    );
     expect(result.totalCount).toBe(5);
     expect(result.pageCount).toBe(3);
     expect(result.authors[0]?.author.name).toBe("Vergil");

@@ -4,9 +4,11 @@
 
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
+- **aggregate**: SQL function, such as MIN or MAX, that reduces an author's Texts to the one value a library card is ordered by.
 - **archaic**: Era label for the earliest Latin authors, the first period of the library era filter.
 - **batch**: Dataloader term for grouping ID lookups into one query, such as lexemes loaded together in a single batch.
 - **book**: Division of a literary work used as a text locator, such as book one of Vergil's Aeneid in literature fixtures.
+- **boundary**: Inclusive edge of a library range filter, such as the lowest or highest year a filter keeps.
 - **corpus**: Fixture collection of literary texts and lines seeded into the database, used by literature search and lookup tests.
 - **csel**: Collection label for editions ingested from the Corpus Scriptorum Ecclesiasticorum Latinorum catalogue.
 - **cut**: Local name for the page-limit condition that trims a query's rows to the count a page requested.
@@ -31,7 +33,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **retyped**: Adjective for a GraphQL type whose fields are redeclared as non-null rows, such as LexemeType in the lexico type tests.
 - **spot**: Part of findSpot, the place where an inscription was found.
 - **stem**: Portion of a word the search matches; a headword is found whole or as a stem with its enclitic split off.
-- **subquery**: Nested query an author search runs inside EXISTS to match that author's Texts.
 - **term**: Search input string a user types; fuzzy matching applies only to terms above a shortest allowed length.
 - **translation**: English sense of a lexeme, a Translation entity joined to lexemes and returned in search results and lexeme types.
 - **valerius**: Roman poet named in the literature search corpus fixture, whose texts the corpus lists for search tests.

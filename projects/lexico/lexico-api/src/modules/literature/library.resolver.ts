@@ -20,14 +20,15 @@ export class LibraryResolver {
 
   // 🔎 Queries
 
-  /** Pages the library's author cards, each with its matching Texts. */
+  /** Pages the library's author cards, filtered, sorted, and searched. */
   @Query(() => LibraryPageType, { name: "library" })
   public async library(
     @Arguments() arguments_: LibraryArguments,
   ): Promise<LibraryPageType> {
-    const { page, pageSize, search } = parseLibraryArguments(arguments_);
     return toLibraryPageType(
-      await this.libraryService.listLibraryPage(search, page, pageSize),
+      await this.libraryService.listLibraryPage(
+        parseLibraryArguments(arguments_),
+      ),
     );
   }
 

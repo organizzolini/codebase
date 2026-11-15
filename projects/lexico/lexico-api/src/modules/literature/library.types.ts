@@ -1,4 +1,14 @@
-import type { Author, Text } from "@codebase/lexico-db";
+import type { LibraryTextKind } from "./library-filters.entities";
+import type {
+  LibrarySortDirection,
+  LibrarySortField,
+} from "./library-sort.entities";
+import type {
+  Author,
+  AuthorEra,
+  Text,
+  TextCollection,
+} from "@codebase/lexico-db";
 
 /** An author card: the author, what matched, and the Texts it carries. */
 export interface LibraryAuthorRecord {
@@ -6,6 +16,21 @@ export interface LibraryAuthorRecord {
   readonly matches: LibraryMatchRange[];
   readonly textCount: number;
   readonly texts: LibraryTextRecord[];
+}
+
+/** Library filters after validation. An absent or empty filter keeps everything. */
+export interface LibraryFilters {
+  readonly authorYears?: LibraryRange | null | undefined;
+  readonly collections?: null | readonly TextCollection[] | undefined;
+  readonly eras?: null | readonly AuthorEra[] | undefined;
+  readonly inscriptionTypes?: null | readonly string[] | undefined;
+  readonly inscriptionYears?: LibraryRange | null | undefined;
+  readonly kinds?: null | readonly LibraryTextKind[] | undefined;
+  readonly lineCount?: LibraryRange | null | undefined;
+  readonly materials?: null | readonly string[] | undefined;
+  readonly printYears?: LibraryRange | null | undefined;
+  readonly provinces?: null | readonly string[] | undefined;
+  readonly wordCount?: LibraryRange | null | undefined;
 }
 
 /** One matched span of a field, as UTF-16 offsets into its value. */
@@ -22,6 +47,18 @@ export interface LibraryPageRecord {
   readonly totalCount: number;
 }
 
+/** An inclusive range. A missing bound leaves that side open. */
+export interface LibraryRange {
+  readonly max?: null | number | undefined;
+  readonly min?: null | number | undefined;
+}
+
+/** How the library is ordered, after validation. */
+export interface LibrarySort {
+  readonly direction: LibrarySortDirection;
+  readonly field: LibrarySortField;
+}
+
 /** A Text a library author card carries, with the spans its search matched. */
 export interface LibraryTextRecord {
   readonly matches: LibraryMatchRange[];
@@ -30,7 +67,9 @@ export interface LibraryTextRecord {
 
 /** Library arguments after validation, with defaults applied. */
 export interface ParsedLibraryArguments {
+  readonly filters: LibraryFilters;
   readonly page: number;
   readonly pageSize: number;
   readonly search: null | string;
+  readonly sort: LibrarySort;
 }

@@ -16,9 +16,11 @@ describe("library utilities", () => {
       expect.hasAssertions();
 
       expect(parseLibraryArguments({ search: "   " })).toStrictEqual({
+        filters: {},
         page: 1,
         pageSize: LIBRARY_DEFAULT_PAGE_SIZE,
         search: null,
+        sort: { direction: "ASC", field: "AUTHOR_NAME" },
       });
     });
 
@@ -27,7 +29,7 @@ describe("library utilities", () => {
 
       expect(
         parseLibraryArguments({ page: 3, pageSize: 10, search: "  vergil " }),
-      ).toStrictEqual({ page: 3, pageSize: 10, search: "vergil" });
+      ).toMatchObject({ page: 3, pageSize: 10, search: "vergil" });
     });
 
     it("rejects a page below one", () => {

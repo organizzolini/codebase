@@ -8,23 +8,40 @@ import {
   Text,
 } from "@codebase/lexico-db";
 
+import { LibrarySortField } from "./library-sort.entities";
 import {
-  LIBRARY_TEXT_SEARCH_COLUMNS,
+  LIBRARY_SORT_COLUMNS,
   LIBRARY_TEXTS_PER_AUTHOR,
 } from "./library.constants";
-import { escapeLikePattern, matchRangesOf } from "./library.utilities";
+import {
+  andClauses,
+  authorFilterClause,
+  firstTextAggregate,
+  hasTextFilters,
+  type LibrarySqlClause,
+  matchAuthorClause,
+  matchTextClause,
+  orClauses,
+  orderDirection,
+  sortColumnSql,
+  sqlClause,
+  textOrderSql,
+  textScopeClause,
+} from "./library.functions";
+import { matchRangesOf, searchPatternsOf } from "./library.utilities";
 
 import type {
   LibraryAuthorRecord,
   LibraryPageRecord,
   LibraryTextRecord,
+  ParsedLibraryArguments,
 } from "./library.types";
 import type { QueryBuilder } from "./literature.types";
 
 /**
- * Service behind the library query. Authors are paged and counted in SQL, and
- * their Texts are fetched in one windowed statement, so no page loads more
- * than its authors' capped Texts.
+ * Service behind the library query. Authors are filtered, sorted, paged, and
+ * counted in SQL, and their Texts are fetched in one windowed statement, so no
+ * page loads more than its authors' capped Texts.
  */
 @Injectable()
 export class LibraryService {
@@ -43,17 +60,71 @@ export class LibraryService {
 
   // 🔏 Private Methods
 
-  /** Matches an author by name or full name, on the `author` alias. */
-  private authorMatchSql(): string {
-    return "(LOWER(author.name) LIKE :pattern OR LOWER(author.full_name) LIKE :pattern)";
+  /**
+   * The value each card is ordered by. An author attribute is read directly;
+   * a Text attribute takes the card's first Text under the sort, which is the
+   * smallest value ascending and the largest descending. Nulls are ignored
+   * by the aggregate, so a card with no value sorts last.
+   */
+  private authorOrderKey(
+    query: ParsedLibraryArguments,
+    pattern: null | string,
+  ): LibrarySqlClause {
+    const { sort } = query;
+    if (LIBRARY_SORT_COLUMNS[sort.field].scope === "author") {
+      return sqlClause(sortColumnSql(sort.field, "author"));
+    }
+    const scope = textScopeClause("sub", pattern, query.filters);
+    const aggregate = firstTextAggregate(sort.direction);
+    const texts = this.textRepository
+      .createQueryBuilder("sub")
+      .select(`${aggregate}(${sortColumnSql(sort.field, "sub")})`)
+      .where("sub.author_id = author.id")
+      .andWhere(scope.sql)
+      .getQuery();
+    return sqlClause(`(${texts})`, scope.parameters);
+  }
+
+  /** A fresh query over the authors that the scope keeps. */
+  private authorQuery(scope: LibrarySqlClause): QueryBuilder<Author> {
+    return this.authorRepository
+      .createQueryBuilder("author")
+      .where(scope.sql)
+      .setParameters(scope.parameters);
+  }
+
+  /**
+   * The authors a request keeps: those whose own attributes pass the
+   * filters, that the search matched, and that carry a Text in scope.
+   */
+  private authorScope(
+    query: ParsedLibraryArguments,
+    pattern: null | string,
+  ): LibrarySqlClause {
+    const clauses = [authorFilterClause(query.filters)];
+    if (pattern !== null) {
+      clauses.push(
+        orClauses([
+          matchAuthorClause(pattern),
+          this.existsText(matchTextClause("sub", pattern)),
+        ]),
+      );
+    }
+    if (hasTextFilters(query.filters)) {
+      clauses.push(
+        this.existsText(textScopeClause("sub", pattern, query.filters)),
+      );
+    }
+    return andClauses(clauses);
   }
 
   /** Counts each author's Texts in scope, keyed by author id. */
   private async countTexts(
     authorIds: string[],
     pattern: null | string,
+    query: ParsedLibraryArguments,
   ): Promise<Map<string, number>> {
-    const rows = await this.textScope(authorIds, pattern)
+    const rows = await this.scopedTexts(authorIds, pattern, query)
       .select("author.id", "authorId")
       .addSelect("COUNT(*)", "count")
       .groupBy("author.id")
@@ -61,20 +132,31 @@ export class LibraryService {
     return new Map(rows.map((row) => [row.authorId, Number(row.count)]));
   }
 
+  /** Keeps an author that has at least one Text meeting the clause. */
+  private existsText(clause: LibrarySqlClause): LibrarySqlClause {
+    const texts = this.textRepository
+      .createQueryBuilder("sub")
+      .select("1")
+      .where("sub.author_id = author.id")
+      .andWhere(clause.sql)
+      .getQuery();
+    return sqlClause(`EXISTS (${texts})`, clause.parameters);
+  }
+
   /**
-   * Loads the Texts each author carries, in title order and capped per
+   * Loads the Texts each author carries, in the sort's order and capped per
    * author. A single windowed statement picks the Texts, and then they are
    * loaded by id with their author and book.
    */
   private async loadTexts(
     authorIds: string[],
-    pattern: null | string,
-    term: null | string,
+    query: ParsedLibraryArguments,
   ): Promise<Map<string, LibraryTextRecord[]>> {
-    const ranked = this.textScope(authorIds, pattern)
+    const { pattern, term } = searchPatternsOf(query.search);
+    const ranked = this.scopedTexts(authorIds, pattern, query)
       .select("text.id", "id")
       .addSelect(
-        "ROW_NUMBER() OVER (PARTITION BY text.author_id ORDER BY text.title, text.id)",
+        `ROW_NUMBER() OVER (PARTITION BY text.author_id ORDER BY ${textOrderSql(query.sort)})`,
         "rank_in_author",
       );
     const picked = await this.textRepository.manager
@@ -126,70 +208,49 @@ export class LibraryService {
     return byAuthor;
   }
 
-  /** The Texts a search can select an author through, as a subquery. */
-  private matchingTextSubquery(): string {
-    return this.textRepository
-      .createQueryBuilder("sub")
-      .select("1")
-      .where("sub.author_id = author.id")
-      .andWhere(this.textMatchSql("sub"))
-      .getQuery();
-  }
-
-  /** Matches a Text by any searchable column, on the given alias. */
-  private textMatchSql(alias: string): string {
-    const columns = LIBRARY_TEXT_SEARCH_COLUMNS.map(
-      (column) => `LOWER(${alias}.${column}) LIKE :pattern`,
-    );
-    columns.push(`LOWER(CAST(${alias}.collection AS TEXT)) LIKE :pattern`);
-    return `(${columns.join(" OR ")})`;
-  }
-
   /**
-   * The Texts of the given authors that the search keeps: every Text of an
-   * author the search matched, and otherwise only the matching Texts.
+   * The Texts of the given authors that the request keeps, with the scope
+   * applied. Each author's Texts are then counted or ranked from this base.
    */
-  private textScope(
+  private scopedTexts(
     authorIds: string[],
     pattern: null | string,
+    query: ParsedLibraryArguments,
   ): QueryBuilder<Text> {
-    const texts = this.textRepository
+    const scope = textScopeClause("text", pattern, query.filters);
+    return this.textRepository
       .createQueryBuilder("text")
       .innerJoin("text.author", "author")
-      .where("text.author_id IN (:...authorIds)", { authorIds });
-    if (pattern !== null) {
-      texts.andWhere(
-        `(${this.authorMatchSql()} OR ${this.textMatchSql("text")})`,
-        { pattern },
-      );
-    }
-    return texts;
+      .where("text.author_id IN (:...authorIds)", { authorIds })
+      .andWhere(scope.sql)
+      .setParameters(scope.parameters);
   }
 
   // 🌎 Public Methods
 
   /**
-   * Pages the authors that match a search, with each author's matching Texts.
-   * With no search every author is listed, in name order.
+   * Pages the authors a request keeps, each with its Texts in scope. Authors
+   * are ordered by the sort, then by name; Texts by the sort, then by title.
    */
   public async listLibraryPage(
-    search: null | string,
-    page: number,
-    pageSize: number,
+    query: ParsedLibraryArguments,
   ): Promise<LibraryPageRecord> {
-    const term = search?.toLowerCase() ?? null;
-    const pattern = term === null ? null : `%${escapeLikePattern(term)}%`;
+    const { page, pageSize, sort } = query;
+    const { pattern, term } = searchPatternsOf(query.search);
 
-    const authors = this.authorRepository.createQueryBuilder("author");
-    if (pattern !== null) {
-      authors.where(
-        `(${this.authorMatchSql()} OR EXISTS (${this.matchingTextSubquery()}))`,
-        { pattern },
-      );
+    const scope = this.authorScope(query, pattern);
+    const totalCount = await this.authorQuery(scope).getCount();
+
+    const key = this.authorOrderKey(query, pattern);
+    const ordered = this.authorQuery(scope)
+      .setParameters(key.parameters)
+      .orderBy(key.sql, orderDirection(sort.direction), "NULLS LAST");
+    // TypeORM keys its order-by list by expression, so a name tiebreak would
+    // overwrite a name sort's direction; the name key already orders by name.
+    if (sort.field !== LibrarySortField.AUTHOR_NAME) {
+      ordered.addOrderBy("author.name", "ASC");
     }
-    const totalCount = await authors.getCount();
-    const pageRows = await authors
-      .orderBy("author.name", "ASC")
+    const pageRows = await ordered
       .addOrderBy("author.id", "ASC")
       .offset((page - 1) * pageSize)
       .limit(pageSize)
@@ -199,11 +260,11 @@ export class LibraryService {
     const counts =
       authorIds.length === 0
         ? new Map<string, number>()
-        : await this.countTexts(authorIds, pattern);
+        : await this.countTexts(authorIds, pattern, query);
     const texts =
       authorIds.length === 0
         ? new Map<string, LibraryTextRecord[]>()
-        : await this.loadTexts(authorIds, pattern, term);
+        : await this.loadTexts(authorIds, query);
 
     const records: LibraryAuthorRecord[] = pageRows.map((author) => ({
       author,
