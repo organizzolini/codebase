@@ -1,11 +1,12 @@
-import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { beforeAll, describe, expect, it } from "vitest";
 
 import {
+  createFileTree,
   createTemporaryDirectory,
   useTemporaryDirectory,
+  writeFileTree,
 } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
@@ -24,29 +25,14 @@ const SUBSTITUTIONS = {
  * Writes a template that produces a folder: its whole tree sits under
  * `{{nameKebabCase}}/`, so the template itself says an instance is a folder.
  */
-async function createTemplatePath(templatesRoot: string): Promise<string> {
-  const templatePath = path.join(templatesRoot, "example");
-
-  await mkdir(path.join(templatePath, "{{nameKebabCase}}", "src"), {
-    recursive: true,
+function createTemplatePath(templatesRoot: string): string {
+  writeFileTree(templatesRoot, {
+    "example/{{nameKebabCase}}/README.md": "# {{namePascalCase}}\n",
+    "example/{{nameKebabCase}}/src/{{nameKebabCase}}.service.ts":
+      "export class {{namePascalCase}}Service {}\n",
   });
-  await writeFile(
-    path.join(templatePath, "{{nameKebabCase}}", "README.md"),
-    "# {{namePascalCase}}\n",
-    "utf8",
-  );
-  await writeFile(
-    path.join(
-      templatePath,
-      "{{nameKebabCase}}",
-      "src",
-      "{{nameKebabCase}}.service.ts",
-    ),
-    "export class {{namePascalCase}}Service {}\n",
-    "utf8",
-  );
 
-  return templatePath;
+  return path.join(templatesRoot, "example");
 }
 
 describe(TemplateDiscoveryService, () => {
@@ -62,7 +48,7 @@ describe(TemplateDiscoveryService, () => {
     service = built.instance;
     template = service.collectTemplate({
       name: "example",
-      templatePath: await createTemplatePath(readTemplatesRoot()),
+      templatePath: createTemplatePath(readTemplatesRoot()),
     });
   });
 
@@ -108,8 +94,8 @@ describe(TemplateDiscoveryService, () => {
   });
 
   describe("collectTemplates", () => {
-    it("reads every generator's template folder in one pass", async () => {
-      const templatePath = await createTemplatePath(
+    it("reads every generator's template folder in one pass", () => {
+      const templatePath = createTemplatePath(
         createTemporaryDirectory("templates"),
       );
 
@@ -131,8 +117,8 @@ describe(TemplateDiscoveryService, () => {
 
     // A configured path is relative to the workspace, not to whatever directory
     // the host happened to be started from.
-    it("resolves a configured template path against the working directory", async () => {
-      const templatePath = await createTemplatePath(
+    it("resolves a configured template path against the working directory", () => {
+      const templatePath = createTemplatePath(
         createTemporaryDirectory("templates"),
       );
 
@@ -151,8 +137,8 @@ describe(TemplateDiscoveryService, () => {
       expect(templates[0]?.directoryPath).toBe(templatePath);
     });
 
-    it("carries a generator's declared threshold onto its template", async () => {
-      const templatePath = await createTemplatePath(
+    it("carries a generator's declared threshold onto its template", () => {
+      const templatePath = createTemplatePath(
         createTemporaryDirectory("templates"),
       );
 
@@ -199,14 +185,10 @@ describe(TemplateDiscoveryService, () => {
   });
 
   describe("countMatchingFiles", () => {
-    it("counts only files the instance path already has", async () => {
-      const instancePath = createTemporaryDirectory("instance");
-
-      await mkdir(path.join(instancePath, "my-widget"), { recursive: true });
-      await writeFile(
-        path.join(instancePath, "my-widget", "README.md"),
-        "# MyWidget\n",
-        "utf8",
+    it("counts only files the instance path already has", () => {
+      const instancePath = createFileTree(
+        { "my-widget/README.md": "# MyWidget\n" },
+        { label: "instance" },
       );
 
       expect(
@@ -218,19 +200,15 @@ describe(TemplateDiscoveryService, () => {
       ).toBe(1);
     });
 
-    it("counts only files inside the given scope", async () => {
-      const instancePath = createTemporaryDirectory("instance");
-      const readmePath = path.join(instancePath, "my-widget", "README.md");
-
-      await mkdir(path.join(instancePath, "my-widget", "src"), {
-        recursive: true,
-      });
-      await writeFile(readmePath, "# MyWidget\n", "utf8");
-      await writeFile(
-        path.join(instancePath, "my-widget", "src", "my-widget.service.ts"),
-        "",
-        "utf8",
+    it("counts only files inside the given scope", () => {
+      const instancePath = createFileTree(
+        {
+          "my-widget/README.md": "# MyWidget\n",
+          "my-widget/src/my-widget.service.ts": "",
+        },
+        { label: "instance" },
       );
+      const readmePath = path.join(instancePath, "my-widget", "README.md");
 
       expect(
         service.countMatchingFiles({
@@ -244,14 +222,10 @@ describe(TemplateDiscoveryService, () => {
   });
 
   describe("prepareDocument", () => {
-    it("renders the template when the instance exists", async () => {
-      const instancePath = createTemporaryDirectory("instance");
-
-      await mkdir(path.join(instancePath, "my-widget"), { recursive: true });
-      await writeFile(
-        path.join(instancePath, "my-widget", "README.md"),
-        "# Drifted\n",
-        "utf8",
+    it("renders the template when the instance exists", () => {
+      const instancePath = createFileTree(
+        { "my-widget/README.md": "# Drifted\n" },
+        { label: "instance" },
       );
 
       const document = service.prepareDocument({

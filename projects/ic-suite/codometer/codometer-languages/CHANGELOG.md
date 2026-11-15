@@ -1,3 +1,14 @@
+## 0.0.83 (2026-11-13)
+
+### 💅 Refactors
+
+- **configuration:** ♻️ default vitest coverage and setup in the base config ([#2376](https://github.com/organizzolini/codebase/pull/2376), [#2374](https://github.com/organizzolini/codebase/issues/2374))
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.83
+- Updated codometer-core to 0.0.83
+
 ## 0.0.82 (2026-11-12)
 
 ### 🧱 Updated Dependencies

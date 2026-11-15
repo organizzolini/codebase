@@ -1,9 +1,8 @@
-import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { useTemporaryDirectory } from "@codebase/testing";
+import { useTemporaryDirectory, writeFileTree } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InstanceGroupService } from "../instance-group/instance-group.service";
@@ -21,48 +20,24 @@ const INSTANCE_PATTERN = "packages/*/src/modules/*";
  *
  * The instance fits `widget` completely and `gadget` partially.
  */
-async function populateWorkspace(workingDirectory: string): Promise<void> {
-  const templatesPath = path.join(workingDirectory, "configuration/templates");
-
+function populateWorkspace(workingDirectory: string): void {
   // The tree sits under `{{nameKebabCase}}/`, which is how a template says
   // its instance is a directory rather than a set of loose files.
-  for (const suffix of [".module.ts", ".service.ts"]) {
-    await writeEmptyFile(
-      path.join(
-        templatesPath,
-        "widget/{{nameKebabCase}}",
-        `{{nameKebabCase}}${suffix}`,
-      ),
-    );
-  }
-  for (const suffix of [".entities.ts", ".resolver.ts", ".service.ts"]) {
-    await writeEmptyFile(
-      path.join(
-        templatesPath,
-        "gadget/{{nameKebabCase}}",
-        `{{nameKebabCase}}${suffix}`,
-      ),
-    );
-  }
-  await writeEmptyFile(
-    path.join(templatesPath, "sprocket/{{nameKebabCase}}", "Dockerfile"),
+  writeFileTree(
+    workingDirectory,
+    Object.fromEntries(
+      [
+        "configuration/templates/widget/{{nameKebabCase}}/{{nameKebabCase}}.module.ts",
+        "configuration/templates/widget/{{nameKebabCase}}/{{nameKebabCase}}.service.ts",
+        "configuration/templates/gadget/{{nameKebabCase}}/{{nameKebabCase}}.entities.ts",
+        "configuration/templates/gadget/{{nameKebabCase}}/{{nameKebabCase}}.resolver.ts",
+        "configuration/templates/gadget/{{nameKebabCase}}/{{nameKebabCase}}.service.ts",
+        "configuration/templates/sprocket/{{nameKebabCase}}/Dockerfile",
+        "packages/widgets/src/modules/gears/gears.module.ts",
+        "packages/widgets/src/modules/gears/gears.service.ts",
+      ].map((filePath) => [filePath, ""]),
+    ),
   );
-
-  for (const suffix of [".module.ts", ".service.ts"]) {
-    await writeEmptyFile(
-      path.join(
-        workingDirectory,
-        "packages/widgets/src/modules/gears",
-        `gears${suffix}`,
-      ),
-    );
-  }
-}
-
-/** Writes one empty file, creating the directories above it. */
-async function writeEmptyFile(filePath: string): Promise<void> {
-  await mkdir(path.dirname(filePath), { recursive: true });
-  await writeFile(filePath, "", "utf8");
 }
 
 /** Both templates, each declaring the one instance glob. */
@@ -111,7 +86,7 @@ describe(InstanceDiscoveryService, () => {
 
     service = built.instance;
     workingDirectory = readWorkspace();
-    await populateWorkspace(workingDirectory);
+    populateWorkspace(workingDirectory);
   });
 
   it("resolves with its dependencies", async () => {

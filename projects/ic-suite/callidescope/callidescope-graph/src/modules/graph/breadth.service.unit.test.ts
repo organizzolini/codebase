@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { buildDiscoveredCallable } from "../../../testing/mocks";
+import { buildDiscoveredCallable } from "../../../testing";
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 
 import { BreadthService } from "./breadth.service";

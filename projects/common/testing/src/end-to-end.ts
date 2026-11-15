@@ -12,6 +12,11 @@ export type {
 } from "./modules/nx-plugin-sandbox/nx-plugin-sandbox.types";
 export { startVerdaccioPluginRunner } from "./modules/nx-plugin-sandbox/nx-plugin-sandbox.utilities";
 export type {
+  SourceCommandOptions,
+  SourceCommandResult,
+} from "./modules/source-command/source-command.types";
+export { runSourceCommand } from "./modules/source-command/source-command.utilities";
+export type {
   TarballSandboxOptions,
   TarballSandboxRunner,
 } from "./modules/tarball-sandbox/tarball-sandbox.types";

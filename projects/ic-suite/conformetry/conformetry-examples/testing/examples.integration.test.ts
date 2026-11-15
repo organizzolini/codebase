@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { createTemporaryDirectory } from "@codebase/testing";
+import { runSourceCommand } from "@codebase/testing/end-to-end";
 
 /** This package's root, and the workspace root every command runs from. */
 const packageDirectory = path.resolve(
@@ -15,17 +16,15 @@ const packageDirectory = path.resolve(
 const workspaceRoot = path.resolve(packageDirectory, "..", "..", "..", "..");
 const examplesDirectory = path.join(packageDirectory, "examples");
 
-/** How the guides run the command-line host from the root. */
-const CONFORMETRY_COMMAND = [
-  "--import",
-  "@swc-node/register/esm-register",
-  "projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts",
-];
+/** The command-line host the guides run from the root, and the tsconfig it compiles with. */
+const CONFORMETRY_ENTRY =
+  "projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts";
+const CONFORMETRY_TSCONFIG =
+  "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json";
 
 /** The environment every documented command needs, and nothing more. */
 const COMMAND_ENVIRONMENT = {
-  SWC_NODE_PROJECT:
-    "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json",
+  SWC_NODE_PROJECT: CONFORMETRY_TSCONFIG,
 };
 
 /** What one example's documented commands are supposed to do. */
@@ -226,14 +225,12 @@ const readFileTree = (directory: string): Record<string, string> => {
 };
 
 /** One run of the hooks example's generator against an output directory. */
-const runHooksExample = (
+const runHooksExample = async (
   name: string,
   outputDirectory: string,
-): { exitCode: number; output: string } => {
-  const result = spawnSync(
-    "node",
-    [
-      ...CONFORMETRY_COMMAND,
+): Promise<{ exitCode: number; output: string }> => {
+  const result = await runSourceCommand({
+    args: [
       "generate",
       "--template",
       "receipt",
@@ -244,15 +241,13 @@ const runHooksExample = (
       "--config",
       "projects/ic-suite/conformetry/conformetry-examples/examples/hooks/conformetry.config.ts",
     ],
-    {
-      cwd: workspaceRoot,
-      encoding: "utf8",
-      env: { ...process.env, ...COMMAND_ENVIRONMENT },
-    },
-  );
+    directory: workspaceRoot,
+    entry: CONFORMETRY_ENTRY,
+    tsconfig: CONFORMETRY_TSCONFIG,
+  });
 
   return {
-    exitCode: result.status ?? 1,
+    exitCode: result.exitCode,
     output: `${result.stdout}${result.stderr}`,
   };
 };
@@ -306,14 +301,12 @@ describe("the examples this package ships", () => {
   describe("the instances a reader is told to copy", () => {
     it.each(ROUND_TRIPS)(
       "$directory generates its committed instance byte for byte",
-      ({ directory, generator, inputs, instance }) => {
+      async ({ directory, generator, inputs, instance }) => {
         const outputDirectory = createTemporaryDirectory(
           `examples-${directory}`,
         );
-        const result = spawnSync(
-          "node",
-          [
-            ...CONFORMETRY_COMMAND,
+        const result = await runSourceCommand({
+          args: [
             "generate",
             "--template",
             generator,
@@ -323,15 +316,13 @@ describe("the examples this package ships", () => {
             outputDirectory,
             ...inputs,
           ],
-          {
-            cwd: workspaceRoot,
-            encoding: "utf8",
-            env: { ...process.env, ...COMMAND_ENVIRONMENT },
-          },
-        );
+          directory: workspaceRoot,
+          entry: CONFORMETRY_ENTRY,
+          tsconfig: CONFORMETRY_TSCONFIG,
+        });
 
         expect(`${result.stdout}${result.stderr}`).toContain(outputDirectory);
-        expect(result.status).toBe(0);
+        expect(result.exitCode).toBe(0);
         expect(
           readFileTree(path.join(outputDirectory, instance)),
         ).toStrictEqual(
@@ -363,8 +354,8 @@ describe("the examples this package ships", () => {
       fs.rmSync(receiptsDirectory, { force: true, recursive: true });
     });
 
-    it("writes its receipt beside the configuration, through the filesystem adapter", () => {
-      const { exitCode, output } = runHooksExample("mars", runDirectory);
+    it("writes its receipt beside the configuration, through the filesystem adapter", async () => {
+      const { exitCode, output } = await runHooksExample("mars", runDirectory);
 
       expect(output).toContain("Receipt written:");
       expect(exitCode).toBe(0);
@@ -378,8 +369,8 @@ describe("the examples this package ships", () => {
       ).toContain("mars.txt");
     });
 
-    it("lists the receipt among the files the run produced", () => {
-      const { output } = runHooksExample("mars", runDirectory);
+    it("lists the receipt among the files the run produced", async () => {
+      const { output } = await runHooksExample("mars", runDirectory);
 
       // The command prints each listed path on its own line, indented two
       // spaces; the hook's own "Receipt written:" line must not satisfy this.
@@ -388,8 +379,11 @@ describe("the examples this package ships", () => {
       );
     });
 
-    it("writes nothing when its preGenerate hook refuses the input", () => {
-      const { exitCode, output } = runHooksExample("Not Kebab", runDirectory);
+    it("writes nothing when its preGenerate hook refuses the input", async () => {
+      const { exitCode, output } = await runHooksExample(
+        "Not Kebab",
+        runDirectory,
+      );
 
       expect(output).toContain('Refused "Not Kebab"');
       expect(exitCode).not.toBe(0);

@@ -40,11 +40,11 @@ describe("every example this package ships", () => {
   });
 
   describe("zero-config", () => {
-    it("prints every language's words, hides what each skips, and writes nothing", () => {
+    it("prints every language's words, hides what each skips, and writes nothing", async () => {
       const staged = stage("zero-config");
       const before = fs.readdirSync(staged, { recursive: true }).toSorted();
 
-      const result = runCoinagerie(staged, []);
+      const result = await runCoinagerie(staged, []);
 
       expect(result.exitCode).toBe(0);
       expect(readWords(result.standardOutput)).toStrictEqual(
@@ -109,8 +109,8 @@ describe("every example this package ships", () => {
   });
 
   describe("exclusions", () => {
-    it("leaves out ignored files, excluded paths, and excluded words", () => {
-      const result = runCoinagerie(
+    it("leaves out ignored files, excluded paths, and excluded words", async () => {
+      const result = await runCoinagerie(
         stage("exclusions", EXCLUSIONS_SCRATCH_FILES),
         [],
       );
@@ -126,9 +126,9 @@ describe("every example this package ships", () => {
   });
 
   describe("exclusion-patterns", () => {
-    it("leaves out every word a pattern matches, and keeps the rest", () => {
+    it("leaves out every word a pattern matches, and keeps the rest", async () => {
       const staged = stage("exclusion-patterns");
-      const result = runCoinagerie(staged, []);
+      const result = await runCoinagerie(staged, []);
 
       expect(result.exitCode).toBe(0);
       expect(readWords(result.standardOutput)).toStrictEqual([
@@ -140,8 +140,8 @@ describe("every example this package ships", () => {
   });
 
   describe("folding", () => {
-    it("folds forms, merges a configured family, and excludes after folding", () => {
-      const result = runCoinagerie(stage("folding"), []);
+    it("folds forms, merges a configured family, and excludes after folding", async () => {
+      const result = await runCoinagerie(stage("folding"), []);
 
       expect(result.exitCode).toBe(0);
       expect(readWords(result.standardOutput)).toStrictEqual([
@@ -154,12 +154,12 @@ describe("every example this package ships", () => {
   });
 
   describe("layered-glossaries", () => {
-    it("lists in the package only the words the root glossary lacks", () => {
+    it("lists in the package only the words the root glossary lacks", async () => {
       const staged = stage("layered-glossaries");
       const billing = path.join("packages", "billing", "README.md");
       fs.rmSync(path.join(staged, billing));
 
-      const written = runCoinagerie(staged, [
+      const written = await runCoinagerie(staged, [
         "--config",
         "packages/billing/coinagerie.config.ts",
         "--write",
@@ -171,19 +171,19 @@ describe("every example this package ships", () => {
       ).toStrictEqual(["date", "due", "invoice", "src"]);
     });
 
-    it("turns a package word stale once the root glossary defines it", () => {
+    it("turns a package word stale once the root glossary defines it", async () => {
       const staged = stage("layered-glossaries");
       fs.writeFileSync(
         path.join(staged, "shared", "invoice.ts"),
         "export const sharedInvoice = 1;\n",
       );
 
-      const moved = runCoinagerie(staged, [
+      const moved = await runCoinagerie(staged, [
         "--config",
         "coinagerie.config.ts",
         "--write",
       ]);
-      const result = runCoinagerie(staged, [
+      const result = await runCoinagerie(staged, [
         "--config",
         "packages/billing/coinagerie.config.ts",
         "--check",
@@ -196,7 +196,7 @@ describe("every example this package ships", () => {
   });
 
   describe("outputs", () => {
-    it("keeps each destination's own definitions and does not change on a second write", () => {
+    it("keeps each destination's own definitions and does not change on a second write", async () => {
       const staged = stage("outputs");
       const markdown = path.join(staged, "README.md");
       const json = path.join(staged, "glossary.json");
@@ -205,8 +205,8 @@ describe("every example this package ships", () => {
         fs.readFileSync(json, "utf8"),
       ];
 
-      const first = runCoinagerie(staged, ["--write"]);
-      const second = runCoinagerie(staged, ["--write"]);
+      const first = await runCoinagerie(staged, ["--write"]);
+      const second = await runCoinagerie(staged, ["--write"]);
 
       expect(first.exitCode).toBe(0);
       expect(second.exitCode).toBe(0);
@@ -218,14 +218,14 @@ describe("every example this package ships", () => {
       expect(committed[1]).toContain('"orbit": "A closed path around a body."');
     });
 
-    it("deletes a stale word with its definition and adds a missing one empty", () => {
+    it("deletes a stale word with its definition and adds a missing one empty", async () => {
       const staged = stage("outputs");
       fs.writeFileSync(
         path.join(staged, "glossary.json"),
         '{"orbit": "Kept.", "vanished": "Deleted."}\n',
       );
 
-      const result = runCoinagerie(staged, ["--write"]);
+      const result = await runCoinagerie(staged, ["--write"]);
       const json = fs.readFileSync(path.join(staged, "glossary.json"), "utf8");
 
       expect(result.exitCode).toBe(0);
@@ -234,8 +234,11 @@ describe("every example this package ships", () => {
       expect(json).not.toContain("vanished");
     });
 
-    it("prints the flat JSON glossary when asked", () => {
-      const result = runCoinagerie(stage("outputs"), ["--format", "json"]);
+    it("prints the flat JSON glossary when asked", async () => {
+      const result = await runCoinagerie(stage("outputs"), [
+        "--format",
+        "json",
+      ]);
 
       expect(result.exitCode).toBe(0);
       expect(JSON.parse(result.standardOutput)).toStrictEqual({
@@ -253,30 +256,33 @@ describe("every example this package ships", () => {
     it.each([
       ["missing", ["angle", "service", "src"], []],
       ["stale", [], ["vanished"]],
-    ])("names every missing and stale word for %s", (name, missing, stale) => {
-      const staged = stage("check-failures");
+    ])(
+      "names every missing and stale word for %s",
+      async (name, missing, stale) => {
+        const staged = stage("check-failures");
 
-      const result = runCoinagerie(staged, [
-        "--config",
-        `${name}.config.ts`,
-        "--check",
-      ]);
+        const result = await runCoinagerie(staged, [
+          "--config",
+          `${name}.config.ts`,
+          "--check",
+        ]);
 
-      expect(result.exitCode).toBe(1);
-      expect(result.standardError).toContain(
-        "Found a glossary out of step with the code",
-      );
-      expect(result.standardError).toContain(
-        path.join(staged, "glossaries", `${name}.md`),
-      );
+        expect(result.exitCode).toBe(1);
+        expect(result.standardError).toContain(
+          "Found a glossary out of step with the code",
+        );
+        expect(result.standardError).toContain(
+          path.join(staged, "glossaries", `${name}.md`),
+        );
 
-      for (const word of [...missing, ...stale]) {
-        expect(result.standardError).toContain(word);
-      }
-    });
+        for (const word of [...missing, ...stale]) {
+          expect(result.standardError).toContain(word);
+        }
+      },
+    );
 
-    it("passes a glossary whose every definition is empty", () => {
-      const result = runCoinagerie(stage("check-failures"), [
+    it("passes a glossary whose every definition is empty", async () => {
+      const result = await runCoinagerie(stage("check-failures"), [
         "--config",
         "undefined.config.ts",
         "--check",
@@ -292,13 +298,13 @@ describe("every example this package ships", () => {
       ["broken-json", "broken.glossary"],
     ])(
       "refuses a %s glossary, even to write, leaving it byte for byte",
-      (name, glossary) => {
+      async (name, glossary) => {
         const staged = stage("check-failures");
         const glossaryPath = path.join(staged, "glossaries", glossary);
         const before = fs.readFileSync(glossaryPath, "utf8");
 
         for (const mode of ["--check", "--write"]) {
-          const result = runCoinagerie(staged, [
+          const result = await runCoinagerie(staged, [
             "--config",
             `${name}.config.ts`,
             mode,
@@ -320,10 +326,10 @@ describe("every example this package ships", () => {
       ["bad-shape", "Rejected the configuration"],
       ["throwing-words", "the parent glossary is unreadable"],
       ["empty-fold", "fold must return a non-empty string"],
-    ])("reports %s", (name, sentence) => {
+    ])("reports %s", async (name, sentence) => {
       const staged = stage("check-failures");
 
-      const result = runCoinagerie(staged, [
+      const result = await runCoinagerie(staged, [
         "--config",
         `${name}.config.ts`,
         "--check",
@@ -336,12 +342,12 @@ describe("every example this package ships", () => {
       );
     });
 
-    it("refuses both --check and --write, writing nothing", () => {
+    it("refuses both --check and --write, writing nothing", async () => {
       const staged = stage("check-failures");
       const glossaryPath = path.join(staged, "glossaries", "missing.md");
       const before = fs.readFileSync(glossaryPath, "utf8");
 
-      const result = runCoinagerie(staged, [
+      const result = await runCoinagerie(staged, [
         "--config",
         "missing.config.ts",
         "--check",

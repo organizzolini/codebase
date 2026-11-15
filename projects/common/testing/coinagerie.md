@@ -13,6 +13,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **greeter**:
 - **ping**:
 - **poem**:
+- **reader**:
 - **role**:
 - **sandbox**: Isolated consumer project outside the workspace, where a packed test installs tarballs and runs the real executable. Everyday "sandbox" suggests a safe play area; here it is a disposable directory. Created by `createTarballSandboxRunner` in `@codebase/testing`.
 - **selector**:
