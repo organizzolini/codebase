@@ -4,8 +4,8 @@
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-2394-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-80.84_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-2396-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-80.87_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-5-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-42-3178c6?style=flat-square)
 
