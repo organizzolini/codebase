@@ -6,9 +6,9 @@ import {
 
 import { toDeletableFields } from "../../lexico-api.utilities";
 
-import { toFormType } from "./forms/forms.utilities";
-import { toInflectionType } from "./inflections/inflections.utilities";
 import { LexemeType } from "./lexeme.entities";
+import { toFormType } from "./modules/forms/forms.utilities";
+import { toInflectionType } from "./modules/inflections/inflections.utilities";
 import { PrincipalPartType } from "./principal-part.entities";
 import { PronunciationType } from "./pronunciation.entities";
 import { TranslationType } from "./translation.entities";

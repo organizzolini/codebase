@@ -1,7 +1,7 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 
 import { DeletableType } from "../../deletable.entities";
-import { FormType } from "../lexemes/forms/form.entities";
+import { FormType } from "../lexemes/modules/forms/form.entities";
 
 import type {
   WordFormRelationField,

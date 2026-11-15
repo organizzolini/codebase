@@ -1,8 +1,8 @@
 import { mapRelation, mapRelationConnection } from "@codebase/interface";
 
 import { toDeletableFields } from "../../lexico-api.utilities";
-import { toFormType } from "../lexemes/forms/forms.utilities";
 import { toLexemeType } from "../lexemes/lexemes.utilities";
+import { toFormType } from "../lexemes/modules/forms/forms.utilities";
 
 import { LexemeWordFormType } from "./lexeme-word-form.entities";
 import { WordFormType } from "./word-form.entities";

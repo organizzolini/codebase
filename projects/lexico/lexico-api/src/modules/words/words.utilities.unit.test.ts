@@ -10,8 +10,8 @@ import {
   WordLexeme,
 } from "@codebase/lexico-db";
 
-import { NominalFormType } from "../lexemes/forms/nominal-form.entities";
 import { LexemeType } from "../lexemes/lexeme.entities";
+import { NominalFormType } from "../lexemes/modules/forms/nominal-form.entities";
 
 import { WordFormType } from "./word-form.entities";
 import { WordLexemeType } from "./word-lexeme.entities";

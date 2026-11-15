@@ -1,13 +1,13 @@
 import { describe, expectTypeOf, it } from "vitest";
 
-import type { FormType } from "./modules/lexemes/forms/form.entities";
-import type { InflectionType } from "./modules/lexemes/inflections/inflection.entities";
 import type { LexemeType } from "./modules/lexemes/lexeme.entities";
 import type {
   LexemeDatabaseOnlyField,
   LexemeRelationField,
   TranslationDatabaseOnlyField,
 } from "./modules/lexemes/lexemes.types";
+import type { FormType } from "./modules/lexemes/modules/forms/form.entities";
+import type { InflectionType } from "./modules/lexemes/modules/inflections/inflection.entities";
 import type { PronunciationType } from "./modules/lexemes/pronunciation.entities";
 import type { TranslationType } from "./modules/lexemes/translation.entities";
 import type { AuthorType } from "./modules/literature/author.entities";

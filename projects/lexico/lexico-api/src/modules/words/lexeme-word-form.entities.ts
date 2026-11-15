@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql";
 
-import { FormType } from "../lexemes/forms/form.entities";
+import { FormType } from "../lexemes/modules/forms/form.entities";
 
 /**
  * One form of a lexeme and a written word that surfaces as it, such as the

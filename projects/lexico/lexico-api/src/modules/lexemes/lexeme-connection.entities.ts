@@ -1,6 +1,6 @@
 import { Paginated } from "@codebase/interface";
 
-import { FormType } from "./forms/form.entities";
+import { FormType } from "./modules/forms/form.entities";
 import { PrincipalPartType } from "./principal-part.entities";
 import { PronunciationType } from "./pronunciation.entities";
 import { TranslationType } from "./translation.entities";

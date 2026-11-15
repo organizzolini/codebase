@@ -12,10 +12,10 @@ import {
   WordLexeme,
 } from "@codebase/lexico-db";
 
-import { NominalFormType } from "./forms/nominal-form.entities";
-import { NounInflectionType } from "./inflections/noun-inflection.entities";
 import { LexemeType } from "./lexeme.entities";
 import { toLexemeType, toTranslationType } from "./lexemes.utilities";
+import { NominalFormType } from "./modules/forms/nominal-form.entities";
+import { NounInflectionType } from "./modules/inflections/noun-inflection.entities";
 import { PrincipalPartType } from "./principal-part.entities";
 import { PronunciationType } from "./pronunciation.entities";
 import { TranslationType } from "./translation.entities";

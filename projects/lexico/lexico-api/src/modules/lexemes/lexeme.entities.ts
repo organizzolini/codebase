@@ -2,14 +2,14 @@ import { Field, Float, ObjectType } from "@nestjs/graphql";
 
 import { DeletableType } from "../../deletable.entities";
 
-import { FormType } from "./forms/form.entities";
-import { InflectionType } from "./inflections/inflection.entities";
 import {
   FormConnectionType,
   PrincipalPartConnectionType,
   PronunciationConnectionType,
   TranslationConnectionType,
 } from "./lexeme-connection.entities";
+import { FormType } from "./modules/forms/form.entities";
+import { InflectionType } from "./modules/inflections/inflection.entities";
 import { PrincipalPartType } from "./principal-part.entities";
 import { PronunciationType } from "./pronunciation.entities";
 import { TranslationType } from "./translation.entities";
