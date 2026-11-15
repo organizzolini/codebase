@@ -6,10 +6,12 @@ The words this project uses that the root glossary does not define, regenerated 
 
 - **bullet**: One `-` list item of a pull request body, the shape the Details and Related sections must take and the unit the links service adds per issue.
 - **climb**: Walks from a linked issue up through its parents to collect its ancestors, stopping at a cycle; `climb` in `pull-request-ancestor-issues.service.ts`.
+- **compliant**: Passing every issue check: the audit reports open issues and their parent-child links as compliant when none fails.
 - **contract**: What the pull request template's headings promise a body must contain; `pull-request-body.constants.ts` reads them from here so a template edit that dropped one fails the check.
 - **convention**: The Conventional Commits format, `type(scope): subject`, that issue titles, pull request titles, and commits are parsed against.
 - **creation**: A label the vocabulary plan must create because `conventional.config.cjs` names it and the repository lacks it.
 - **descendant**: An open issue beneath a linked issue in the sub-issue tree, which the pull request body must close alongside it.
+- **effort**: The project board's Effort field, which the issue a pull request is built for must have set; `EFFORT_FIELD` names it.
 - **governance**: Repository-level rules outside any one issue or pull request, such as CODEOWNERS and workflow security, checked by `audit-files`.
 - **mention**: A reference to an issue number in a pull request body; an ancestor issue that is not mentioned fails verification.
 - **organization**: The GitHub organization that owns the project board; the `organization-project` command adds issues and pull requests to it.
