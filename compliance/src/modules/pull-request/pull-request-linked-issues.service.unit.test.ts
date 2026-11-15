@@ -2,6 +2,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { IssueFieldsService } from "../issue/issue-fields.service";
 import { IssueMetadataTypeService } from "../issue/issue-metadata-type.service";
 import { IssueMetadataService } from "../issue/issue-metadata.service";
 
@@ -41,7 +42,11 @@ function answer(standardOutput: string, succeeded = true): GithubCliResult {
 /** What PullRequestLinkedIssuesService is built with. */
 const DEPENDENCIES = {
   mocks: [PullRequestGithubService],
-  providers: [IssueMetadataService, IssueMetadataTypeService],
+  providers: [
+    IssueFieldsService,
+    IssueMetadataService,
+    IssueMetadataTypeService,
+  ],
 } satisfies TestingModuleOptions;
 
 describe(PullRequestLinkedIssuesService, () => {

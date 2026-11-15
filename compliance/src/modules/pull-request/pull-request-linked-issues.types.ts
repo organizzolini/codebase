@@ -1,12 +1,5 @@
 // 🏷️ Types
 
-/** An organization issue field the linked-issue check requires. */
-export interface IssueField {
-  readonly id: number;
-  readonly name: string;
-  readonly options: readonly string[];
-}
-
 /** One issue as the linked-issue check reads it. */
 export interface LinkedIssue {
   /** Its `gh issue view` document, for the issue audit to read. */
