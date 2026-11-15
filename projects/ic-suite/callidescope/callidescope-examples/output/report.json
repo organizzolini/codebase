@@ -11149,7 +11149,7 @@
           "callees": [
             {
               "displayName": "ConfigurationLoaderService.readAuthoredConfiguration",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#3386"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#2665"
             },
             {
               "displayName": "OverrideResolutionService.applyOverrides",
@@ -11185,7 +11185,7 @@
           "callees": [
             {
               "displayName": "ConfigurationLoaderService.resolveProjectConfigurationFile",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#4475"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#3453"
             },
             {
               "displayName": "UnknownConfigurationFileTypeError.constructor",
@@ -11193,7 +11193,7 @@
             },
             {
               "displayName": "ConfigurationLoaderService.loadConfigurationModule",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#2231"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#1510"
             }
           ],
           "displayName": "ConfigurationService.loadProjectConfiguration",
@@ -11257,15 +11257,15 @@
             },
             {
               "displayName": "ConfigurationLoaderService.loadConfigurationModule",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#2231"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#1510"
             }
           ],
           "displayName": "ConfigurationLoaderService.parseConfigurationFile",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#2724",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#2003",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts",
-            "line": 96
+            "line": 69
           },
           "signature": {
             "parameters": [
@@ -11285,19 +11285,19 @@
           "callees": [
             {
               "displayName": "ConfigurationLoaderService.parseConfigurationFile",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#2724"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#2003"
             },
             {
               "displayName": "ConfigurationLoaderService.resolveConfigurationPath",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#3701"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#2996"
             }
           ],
           "displayName": "ConfigurationLoaderService.readAuthoredConfiguration",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#3386",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#2665",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts",
-            "line": 116
+            "line": 89
           },
           "signature": {
             "parameters": [
@@ -11310,38 +11310,6 @@
             ],
             "returnType": "Promise<CodependixConfiguration>",
             "text": "(args: { configurationPath: string; }): Promise<CodependixConfiguration>"
-          }
-        },
-        {
-          "breadth": 2,
-          "callees": [
-            {
-              "displayName": "ConfigurationLoaderService.findWorkspaceRoot",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#1596"
-            },
-            {
-              "displayName": "ConfigurationFileNotFoundError.constructor",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#7030"
-            }
-          ],
-          "displayName": "ConfigurationLoaderService.resolveConfigurationPath",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#3701",
-          "location": {
-            "column": 3,
-            "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts",
-            "line": 125
-          },
-          "signature": {
-            "parameters": [
-              {
-                "isOptional": false,
-                "isRest": false,
-                "name": "configurationPath",
-                "type": "string"
-              }
-            ],
-            "returnType": "string",
-            "text": "(configurationPath: string): string"
           }
         },
         {
@@ -11515,15 +11483,15 @@
           "callees": [
             {
               "displayName": "some(…)",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#2070"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#1913"
             }
           ],
           "displayName": "refine(…)",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#2027",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#1870",
           "location": {
             "column": 5,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts",
-            "line": 68
+            "line": 65
           },
           "signature": {
             "parameters": [
@@ -11710,37 +11678,16 @@
           "breadth": 1,
           "callees": [
             {
-              "displayName": "ConfigurationLoaderService.some(…)",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#1813"
-            }
-          ],
-          "displayName": "ConfigurationLoaderService.findWorkspaceRoot",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#1596",
-          "location": {
-            "column": 3,
-            "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts",
-            "line": 56
-          },
-          "signature": {
-            "parameters": [],
-            "returnType": "string | undefined",
-            "text": "(): string | undefined"
-          }
-        },
-        {
-          "breadth": 1,
-          "callees": [
-            {
               "displayName": "ConfigurationLoaderService.readDefaultExport",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#1079"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#1052"
             }
           ],
           "displayName": "ConfigurationLoaderService.loadConfigurationModule",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#2231",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#1510",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts",
-            "line": 80
+            "line": 53
           },
           "signature": {
             "parameters": [
@@ -11753,6 +11700,34 @@
             ],
             "returnType": "Promise<unknown>",
             "text": "(args: { configurationPath: string; extension: string; }): Promise<unknown>"
+          }
+        },
+        {
+          "breadth": 1,
+          "callees": [
+            {
+              "displayName": "ConfigurationFileNotFoundError.constructor",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#6873"
+            }
+          ],
+          "displayName": "ConfigurationLoaderService.resolveConfigurationPath",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#2996",
+          "location": {
+            "column": 3,
+            "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts",
+            "line": 98
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "configurationPath",
+                "type": "string"
+              }
+            ],
+            "returnType": "string",
+            "text": "(configurationPath: string): string"
           }
         },
         {
@@ -12085,7 +12060,7 @@
           "callees": [
             {
               "displayName": "ConfigurationPathRequiredError.constructor",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#7522"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#7365"
             }
           ],
           "displayName": "ConfigurationService.requireConfigurationPath",
@@ -12119,7 +12094,7 @@
           "callees": [
             {
               "displayName": "ProjectConfigurationPathRequiredError.constructor",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#7988"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#7831"
             }
           ],
           "displayName": "ConfigurationService.requireProjectConfigurationPath",
@@ -12800,12 +12775,12 @@
                 "summary": "Reads the main configuration file at the given path. The path is required: a missing file is an error, never an empty configuration.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#3386",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#2665",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts",
-                "line": 116
+                "line": 89
               },
               "signature": {
                 "parameters": [
@@ -12827,12 +12802,12 @@
                 "summary": "Loads and validates one configuration file at a resolved path.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#2724",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#2003",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts",
-                "line": 96
+                "line": 69
               },
               "signature": {
                 "parameters": [
@@ -12854,12 +12829,12 @@
                 "summary": "Loads a configuration module, choosing the reader by extension.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#2231",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#1510",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts",
-                "line": 80
+                "line": 53
               },
               "signature": {
                 "parameters": [
@@ -12881,12 +12856,12 @@
                 "summary": "Reads what a configuration module exported, through either interop shape.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#1079",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#1052",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts",
-                "line": 39
+                "line": 38
               },
               "signature": {
                 "parameters": [
@@ -12942,12 +12917,12 @@
                 "summary": "Loads a configuration module, choosing the reader by extension.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#2231",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#1510",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts",
-                "line": 80
+                "line": 53
               },
               "signature": {
                 "parameters": [
@@ -12969,12 +12944,12 @@
                 "summary": "Reads what a configuration module exported, through either interop shape.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#1079",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts#1052",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-loader.service.ts",
-                "line": 39
+                "line": 38
               },
               "signature": {
                 "parameters": [
@@ -13169,12 +13144,12 @@
           "frames": [
             {
               "displayName": "refine(…)",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#2027",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#1870",
               "isCycle": false,
               "location": {
                 "column": 5,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts",
-                "line": 68
+                "line": 65
               },
               "signature": {
                 "parameters": [
@@ -13191,12 +13166,12 @@
             },
             {
               "displayName": "some(…)",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#2070",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#1913",
               "isCycle": false,
               "location": {
                 "column": 48,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts",
-                "line": 68
+                "line": 65
               },
               "signature": {
                 "parameters": [
@@ -13375,12 +13350,12 @@
             },
             {
               "displayName": "ConfigurationPathRequiredError.constructor",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#7522",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#7365",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts",
-                "line": 227
+                "line": 224
               },
               "signature": {
                 "parameters": [
@@ -13437,12 +13412,12 @@
             },
             {
               "displayName": "ProjectConfigurationPathRequiredError.constructor",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#7988",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#7831",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts",
-                "line": 242
+                "line": 239
               },
               "signature": {
                 "parameters": [
@@ -13590,9 +13565,9 @@
         }
       ],
       "summary": {
-        "callableCount": 71,
+        "callableCount": 69,
         "cyclicComponentCount": 0,
-        "edgeCount": 65,
+        "edgeCount": 62,
         "entryPointCount": 14,
         "fileCount": 23,
         "maximumDepth": 7,
@@ -18676,9 +18651,9 @@
     }
   ],
   "summary": {
-    "callableCount": 434,
+    "callableCount": 432,
     "cyclicComponentCount": 1,
-    "edgeCount": 362,
+    "edgeCount": 359,
     "entryPointCount": 148,
     "fileCount": 238,
     "maximumDepth": 9,

@@ -541,9 +541,9 @@ describe("callidescope examples (integration)", () => {
       // `gated-leaf` declares `exclude: ["*.generated.ts"]`. Counting disk against trace makes this an assertion about the exclusion.
       // A glob anchored to the workspace would match nothing, and the counts would agree.
       const traced = (directory: string): Record<string, number> => ({
-        onDisk: readdirSync(path.join(WORKSPACE_ROOT, directory)).filter(
-          (name) => name.endsWith(".ts"),
-        ).length,
+        onDisk: readdirSync(path.join(WORKSPACE_ROOT, directory), {
+          recursive: true,
+        }).filter((name) => String(name).endsWith(".ts")).length,
         traced: readProjectReport(result, directory).summary.fileCount,
       });
 

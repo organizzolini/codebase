@@ -26,7 +26,7 @@ const callidescopeConfiguration: CallidescopeConfiguration = {
     maximumDepth: 6,
   },
   /** Where each fixture project keeps its own file, relative to its root. */
-  projectConfigurationPath: "callidescope.config.ts",
+  projectConfigurationPath: "configuration/callidescope.config.ts",
   write: {
     /** The whole run as JSON, which is the machine-readable shape. */
     json: {

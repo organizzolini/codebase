@@ -23,8 +23,8 @@ for their code, and every one of them leaves a leaf with no limit that binds:
 
 | A limit the leaf could be held to | Written in | The leaf's four frames |
 | --------------------------------- | ---------- | ---------------------- |
-| 3 | [`callidescope.config.ts`](callidescope.config.ts), its own | a finding |
-| 5 | [`../../callidescope.config.ts`](../../callidescope.config.ts), the package around it | silent |
+| 3 | [`configuration/callidescope.config.ts`](configuration/callidescope.config.ts), its own | a finding |
+| 5 | [`../../configuration/callidescope.config.ts`](../../configuration/callidescope.config.ts), the package around it | silent |
 | 6 | [`../../callidescope.workspace.config.ts`](../../callidescope.workspace.config.ts), the run's default | silent |
 | 17 | [`configuration/callidescope.config.ts`](../../../../../../configuration/callidescope.config.ts), this repository's ratchet | silent |
 
@@ -41,12 +41,12 @@ in the row above.
 
 **It had to be a project.** Limits resolve per project, and a project is a
 directory holding a `tsconfig.json`. This directory has one, which is what lets
-the [`callidescope.config.ts`](callidescope.config.ts) beside it be read as a
+the [`configuration/callidescope.config.ts`](configuration/callidescope.config.ts) beside it be read as a
 project configuration at all.
 
 **It had to declare its entry point.** Nothing outside this project calls
 `read`, so without the address in
-[`callidescope.config.ts`](callidescope.config.ts) it would root under the
+[`configuration/callidescope.config.ts`](configuration/callidescope.config.ts) it would root under the
 `orphan-root` rule instead — measured the same, but labeled as dead code rather
 than as a surface this project asked to be measured on. Declaring the address
 is what makes the `declared` kind below say that in writing; see
@@ -105,7 +105,7 @@ spelling of it that could name anything outside this directory.
 
 The proof is in what is written against what is traced. Three files sit in
 this directory — [`gated-leaf.ts`](gated-leaf.ts),
-[`callidescope.config.ts`](callidescope.config.ts), and
+[`configuration/callidescope.config.ts`](configuration/callidescope.config.ts), and
 [`gated-leaf.generated.ts`](gated-leaf.generated.ts) — and the `Files` row in
 the `## 🔭 Callidescope` section [at the bottom of this
 guide](#-callidescope) reads 2: the generated one never joins the count,

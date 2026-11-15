@@ -8,7 +8,7 @@ const callidescopeConfiguration: CallidescopeProjectConfiguration = {
    * Read relative to this project's own root, which is what keeps it here:
    * `gated-leaf.generated.ts` is named, and there is no spelling of this glob
    * that could reach a file outside the project that wrote it — see
-   * [`README.md`](README.md) for the file-count proof.
+   * [`README.md`](../README.md) for the file-count proof.
    */
   exclude: ["*.generated.ts"],
 
@@ -19,7 +19,7 @@ const callidescopeConfiguration: CallidescopeProjectConfiguration = {
      * Nothing outside this project calls `read`, so declaring it is what
      * roots it under the `declared` kind rather than under `orphan-root` —
      * the same measurement, labeled as the surface this project asked to be
-     * judged on rather than as dead code. See [`README.md`](README.md).
+     * judged on rather than as dead code. See [`README.md`](../README.md).
      */
     addresses: [
       "projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf/gated-leaf.ts#GatedLeafService.read",
