@@ -45,8 +45,8 @@ export class CorpusService {
   private async ingestOne(entry: CorpusEntry): Promise<Meander> {
     const { code, columns, rows } = entry;
     const parsed = this.codeService.parse(code, rows, columns);
-    const canonical = this.codeService.canonicalPhase(parsed, (phase) =>
-      this.characteristicsService.tileCrossingComponentDeltaCount(phase),
+    const canonical = this.codeService.canonicalRotation(parsed, (rotation) =>
+      this.characteristicsService.tileCrossingComponentDeltaCount(rotation),
     );
 
     const characteristics = this.characteristicsService.compute(canonical);
@@ -72,8 +72,10 @@ export class CorpusService {
         rows,
         symmetricalCodes: this.codeService.symmetricalCodes(
           canonical,
-          (phase) =>
-            this.characteristicsService.tileCrossingComponentDeltaCount(phase),
+          (rotation) =>
+            this.characteristicsService.tileCrossingComponentDeltaCount(
+              rotation,
+            ),
         ),
       });
     } catch (error) {

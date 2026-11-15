@@ -8,6 +8,7 @@ import type { ResolvedCoinagerieConfiguration } from "@coinagerie/configuration"
 
 function configure(
   fold: ResolvedCoinagerieConfiguration["fold"],
+  unfolded: string[] = [],
 ): ResolvedCoinagerieConfiguration {
   return {
     configurationPath: "/project/coinagerie.config.ts",
@@ -16,6 +17,7 @@ function configure(
     fold,
     include: ["**"],
     outputs: [],
+    unfolded,
   };
 }
 
@@ -86,6 +88,20 @@ describe(FoldingService, () => {
       expect(service.headword("configured", configure(fold))).toBe("setup");
       expect(service.headword("configures", configure(fold))).toBe("setup");
       expect(service.headword("aspects", configure(fold))).toBe("aspect");
+    });
+
+    it("lists an unfolded word as written, skipping the configured fold too", () => {
+      const fold = (word: string): string => `${word}-folded`;
+
+      expect(service.headword("pisces", configure(undefined))).not.toBe(
+        "pisces",
+      );
+      expect(service.headword("pisces", configure(fold, ["pisces"]))).toBe(
+        "pisces",
+      );
+      expect(
+        service.headword("aspects", configure(undefined, ["pisces"])),
+      ).toBe("aspect");
     });
 
     it("lets a configured fold merge a derivational family", () => {

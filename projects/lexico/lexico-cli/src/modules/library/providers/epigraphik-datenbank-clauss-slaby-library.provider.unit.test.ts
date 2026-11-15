@@ -1,7 +1,8 @@
-// `obj` is the field name the EDCS API returns, not an abbreviation this code chose.
-// cspell:ignore obj
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
+// `obj` is the field name the EDCS API returns, not an abbreviation this code chose.
+// cspell:ignore obj
 import { describe, expect, it, vi } from "vitest";
 
 import { Author, type Text } from "@codebase/lexico-db";
@@ -9,22 +10,20 @@ import { Author, type Text } from "@codebase/lexico-db";
 import { EpigraphikDatenbankClaussSlabyLibraryProvider } from "./epigraphik-datenbank-clauss-slaby-library.provider";
 
 import type { LoggerService } from "@codebase/observability";
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
 
-const { mkdirMock, readdirMock, readFileMock, writeFileMock } = vi.hoisted(
-  () => ({
-    mkdirMock: vi.fn<() => Promise<string | undefined>>(),
-    readdirMock: vi.fn<() => Promise<string[]>>(),
-    readFileMock: vi.fn<() => Promise<string>>(),
-    writeFileMock: vi.fn<() => Promise<void>>(),
-  }),
-);
+const mkdirMock = vi.mocked(mkdir);
+const readdirMock = vi.mocked<(path: string) => Promise<string[]>>(readdir);
+const readFileMock = vi.mocked(readFile);
+const writeFileMock = vi.mocked(writeFile);
 
-vi.mock("node:fs/promises", () => ({
-  mkdir: mkdirMock,
-  readdir: readdirMock,
-  readFile: readFileMock,
-  writeFile: writeFileMock,
-}));
+vi.mock("node:fs/promises", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem();
+});
 
 describe(EpigraphikDatenbankClaussSlabyLibraryProvider, () => {
   const logger: DeepMocked<LoggerService> = createMock<LoggerService>();
@@ -250,7 +249,7 @@ describe(EpigraphikDatenbankClaussSlabyLibraryProvider, () => {
     );
   });
 
-  it("should skip undefined entries in chunk phase", async () => {
+  it("should skip undefined entries in chunk stage", async () => {
     const processSourceChunkFileSpy = vi
       .spyOn(
         epigraphikDatenbankClaussSlabyLibraryProvider as unknown as {
@@ -268,12 +267,12 @@ describe(EpigraphikDatenbankClaussSlabyLibraryProvider, () => {
 
     await (
       epigraphikDatenbankClaussSlabyLibraryProvider as unknown as {
-        processSourceChunkPhase: (
+        processSourceChunkStage: (
           chunkFiles: string[],
           sourceDataDirectory: string,
         ) => Promise<Map<string, string[]>>;
       }
-    ).processSourceChunkPhase(
+    ).processSourceChunkStage(
       ["chunk-0.json", undefined as unknown as string],
       "/tmp/edcs",
     );
@@ -369,17 +368,17 @@ describe(EpigraphikDatenbankClaussSlabyLibraryProvider, () => {
 
     vi.spyOn(
       epigraphikDatenbankClaussSlabyLibraryProvider as unknown as {
-        processSourceChunkPhase: (
+        processSourceChunkStage: (
           chunkFiles: string[],
           sourceDataDirectory: string,
         ) => Promise<Map<string, string[]>>;
       },
-      "processSourceChunkPhase",
+      "processSourceChunkStage",
     ).mockResolvedValue(new Map([["Roma", ["**EDCS-1** AVE ROMA"]]]));
 
     vi.spyOn(
       epigraphikDatenbankClaussSlabyLibraryProvider as unknown as {
-        saveEdcsProvincePhase: (args: {
+        saveEdcsProvinceStage: (args: {
           author: Author;
           authorDirectory: string;
           authorSlug: string;
@@ -387,7 +386,7 @@ describe(EpigraphikDatenbankClaussSlabyLibraryProvider, () => {
           provinceData: Map<string, string[]>;
         }) => Promise<void>;
       },
-      "saveEdcsProvincePhase",
+      "saveEdcsProvinceStage",
     ).mockResolvedValue(undefined);
 
     const authors =

@@ -5,6 +5,7 @@
   },
   "description": "Small invented multi-language fixture projects, one per coinagerie feature, with a guided tour",
   "devDependencies": {
+    "@codebase/testing": "workspace:*",
     "@nx/eslint-plugin": "catalog:",
     "@swc-node/register": "catalog:",
     "@types/node": "catalog:",

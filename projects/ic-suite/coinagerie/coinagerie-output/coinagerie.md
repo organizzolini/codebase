@@ -4,9 +4,8 @@
 
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
-- **anchor**: The HTML comment markers coinagerie:start and coinagerie:end that bracket the managed block in a markdown file.
+- **anchor**: The pair of start and end comment markers that bracket a generated block in a file, so a write replaces only what lies between them.
 - **boundary**: Edge where glossary text enters the package, where it is parsed and validated before any comparison or write happens.
-- **breadth**: The maximumBreadth limit, set to four in this project's callidescope configuration, bounding callees per function.
 - **bullet**: One word's entry in a glossary block, written as a dash, bolded word, and colon, read by the markdown parser.
 - **glossary**: The map from each word to its definition, which the parsers fill and comparison checks against the codebase.
 - **hand**: Manually written or manually scanned: tests use hand-written blocks, and tokenizing scans JSON by hand rather than regex.

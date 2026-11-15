@@ -1,5 +1,7 @@
-import { mkdirSync, symlinkSync, writeFileSync } from "node:fs";
+import { symlinkSync } from "node:fs";
 import path from "node:path";
+
+import { writeFileTree } from "@codebase/testing";
 
 /** Fixture files by relative path, on real disk under test. */
 const FIXTURE_FILES: Readonly<Record<string, string>> = {
@@ -38,12 +40,7 @@ const FIXTURE_FILES: Readonly<Record<string, string>> = {
  * is a symlink to `AGENTS.md`, like the repository's own tree.
  */
 export function createFixtureTree(root: string): string {
-  for (const [relativePath, contents] of Object.entries(FIXTURE_FILES)) {
-    const absolutePath = path.join(root, relativePath);
-    mkdirSync(path.dirname(absolutePath), { recursive: true });
-    writeFileSync(absolutePath, contents);
-  }
-
+  writeFileTree(root, FIXTURE_FILES);
   symlinkSync(path.join(root, "AGENTS.md"), path.join(root, "CLAUDE.md"));
 
   return root;

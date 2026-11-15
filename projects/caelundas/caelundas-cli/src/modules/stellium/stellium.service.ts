@@ -12,7 +12,10 @@ import {
 } from "../caelundas/symbol-caelundas.constants";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
 
-import { stelliumNameBySize } from "./stellium.constants";
+import {
+  MINIMUM_STELLIUM_BODIES,
+  stelliumNameBySize,
+} from "./stellium.constants";
 
 import type { AspectBodies } from "../aspects/aspects.types";
 import type { Aspect, Body } from "../caelundas/caelundas.types";
@@ -21,7 +24,7 @@ import type { StelliumPhase } from "./stellium.types";
 import type { Moment } from "moment-timezone";
 
 /**
- * Detects stellium configurations — concentrations of 4 or more bodies in close conjunction.
+ * Detects stellium configurations — concentrations of 3 or more bodies in close conjunction.
  *
  * Finds the maximal cliques of the conjunction graph, so a stellium is
  * reported even when a body outside it is conjunct with only some of it, then
@@ -174,7 +177,7 @@ export class StelliumService {
   }
 
   /**
-   * Finds maximal cliques of four or more mutually conjunct bodies in the conjunction graph.
+   * Finds maximal cliques of three or more mutually conjunct bodies in the conjunction graph.
    */
   private findStelliumCliques(conjunctions: AspectBodies[]): Body[][] {
     const neighbors = this.buildConjunctionNeighbors(conjunctions);
@@ -187,7 +190,7 @@ export class StelliumService {
       neighbors,
     });
     return found
-      .filter((clique) => clique.length >= 4)
+      .filter((clique) => clique.length >= MINIMUM_STELLIUM_BODIES)
       .map((clique) => this.aspectGraphService.canonicalBodyOrder(clique));
   }
 
@@ -201,7 +204,7 @@ export class StelliumService {
       this.groupAspectsByType(
         this.aspectGraphService.unionAspectBodies(aspectBodies, []),
       ).get("conjunct") ?? [];
-    if (conjunctions.length < 6) return new Map();
+    if (conjunctions.length < MINIMUM_STELLIUM_BODIES) return new Map();
     return new Map(
       this.findStelliumCliques(conjunctions).map((bodies) => [
         bodies.join("-"),
@@ -249,7 +252,7 @@ export class StelliumService {
   // 🌎 Public Methods
 
   /**
-   * Detects stellium patterns from stored 2-body aspect events: maximal cliques of four or more conjunct bodies.
+   * Detects stellium patterns from stored 2-body aspect events: maximal cliques of three or more conjunct bodies.
    * @see {@link composeStelliums} for stellium detection logic
    */
   detect(args: {

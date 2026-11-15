@@ -6,7 +6,6 @@
     "@codebase/lexico-db": "workspace:*",
     "@codebase/observability": "workspace:*",
     "@codebase/persistence": "workspace:*",
-    "@codebase/testing": "workspace:*",
     "@nestjs/apollo": "catalog:",
     "@nestjs/common": "catalog:",
     "@nestjs/config": "catalog:",
@@ -21,6 +20,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@codebase/testing": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/testing": "catalog:",
     "@nestjs/typeorm": "catalog:",

@@ -8,26 +8,26 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **analyzer**: A codometer or callidescope component that inspects one input language's source to produce measurements, such as a TypeScript or Python analyzer.
 - **application**: A project tagged type:application in the Nx workspace that runs as a deployable program, as opposed to a type:package library.
 - **applier**: Subagent role that writes leased live copy-edit batches into source files and returns canonical results to the parent.
-- **caelundas**: A Node.js CLI for astronomical calendar generation from NASA JPL ephemeris data, one of the workspace's applications.
+- **caelundas**: The astronomical calendar product under projects/caelundas: a CLI that detects sky events from Swiss Ephemeris positions, and the database, API, and web calendar that store and show them.
 - **callidescope**: IC-suite toolchain that measures call-stack depth and breadth across the workspace and gates each project's limits.
 - **callidescopeignore**: Ignore file, configured at configuration/.callidescopeignore, listing paths the trace skips when measuring call stacks.
 - **codependix**: IC-suite toolchain that exports dependency graphs and enforces boundary rules between projects, modules, and files.
 - **codometer**: IC-suite measurement tool that reports sizes, counts, and comment budgets against configured limits per project.
 - **codometerignore**: Ignore file at configuration/.codometerignore that tells codometer which paths to skip when it measures sizes and counts.
 - **coinagerie**: Vocabulary toolchain that collects a repository's words and checks or writes their definitions into glossary files.
-- **compliance**: Gate that checks issue metadata, labels, and issue type on every opened or edited issue, which the workflow reconciles.
-- **comply**: The pull request gate, Comply Code, that validates branch name, title, body, labels, assignees, and release significance.
+- **compliance**: The Compliance CLI and Continuous Compliance workflow, which read or update GitHub issues, pull requests, and repository governance metadata.
+- **comply**: The job of the Continuous Compliance workflow that checks pull request metadata and commit message conventions.
 - **conformetry**: IC-suite toolchain that scaffolds code from templates with generators and checks that generated files still match them.
 - **context**: Background information an agent or reviewer uses to locate and judge a change, and the root CONTEXT.md domain glossary.
 - **core**: Central layer of the codebase's module architecture, holding domain vocabulary, shared enums, and error classes that other layers depend on.
-- **deprecate**: Nx code-quality target run with typecheck, lint, format, and deprecate across affected projects, in the validate-code step.
+- **deprecate**: Nx code-quality target, deprecate-code, that finds unused or outdated code and dependencies with tools such as knip, sherif, and syncpack in the validate-code step.
 - **depth**: Callidescope metric for the longest call stack, gated per project by maximumDepth in callidescope configuration.
 - **dispatch**: Orchestration step where the main session hands each parent issue or ticket to a fresh subagent with its own brief.
 - **documentation**: Folder holding the ADRs of this repository, agent configuration, guides, and generated OpenWiki pages, reached through the docs link.
 - **documenter**: Impeccable subagent that records DESIGN.md and its sidecar from a finished build, deriving the design system from the shipped artifact.
 - **execa**: Child-process library behind the testing package's end-to-end runners, which run commands with a sanitized environment, a timeout, and captured output.
 - **fold**: Coinagerie configuration hook that maps a word to its canonical headword, merging families like plurals and spelling variants.
-- **guard**: Nx code-quality target run with typecheck, lint, format, and deprecate across affected projects, in the validate-code step.
+- **guard**: Nx code-quality target, guard-code, that runs the IC-suite gates and the catalog check on each project in the validate-code step.
 - **ic**: Five toolchains grouped as the suite, callidescope, codependix, codometer, coinagerie, and conformetry, that measure and gate this workspace.
 - **impeccable**: Design tooling suite whose agents and skills, such as asset producer and finish reviewer, drive approved visual builds.
 - **infrastructure**: Top-level folder of deployment projects such as Helm charts and Terraform, whose words the root glossary skips.
@@ -56,6 +56,6 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **synchronization**: The synchronization project and its Nx target family, which keep VS Code settings, extensions, and devcontainer config matched to their source.
 - **typecheck**: Nx target that runs type checking per project, driven by the typecheck-code gate in validate-code and CI.
 - **undici**: HTTP client package whose two supported major lines each get a `pnpm-workspace.yaml` override to their own patched release.
-- **validation**: Workspace package and CLI, such as validation.main.ts, that checks PR bodies, branch names, and worktree names locally.
+- **validation**: Workspace project and CLI for checks with nothing to write back, such as pull request metadata, catalog pins, and branch or worktree names, printing the fix for each failure.
 
 <!-- coinagerie:end -->
