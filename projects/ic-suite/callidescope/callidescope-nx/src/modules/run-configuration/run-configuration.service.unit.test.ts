@@ -51,8 +51,10 @@ describe(RunConfigurationService, () => {
           .load({ configurationPath: "elsewhere.ts", workspaceRoot: "/w" })
           .then((loaded) => loaded.path),
       ).resolves.toBe("configuration/callidescope.config.ts");
+      // Resolved against the workspace root here, so the loader never has to
+      // guess which directory a relative path meant.
       expect(configurationService.loadConfigurationFile).toHaveBeenCalledWith({
-        configurationPath: "elsewhere.ts",
+        configurationPath: "/w/elsewhere.ts",
       });
     });
   });

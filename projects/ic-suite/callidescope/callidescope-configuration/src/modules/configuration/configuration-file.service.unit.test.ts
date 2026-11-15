@@ -392,28 +392,19 @@ describe(ConfigurationFileService, () => {
     ).rejects.toThrow(ConfigurationFileNotFoundError);
   });
 
-  // 🌳 Repository-root resolution
+  // 📍 Working-directory resolution
   //
-  // A task runner sets the cwd to the project rather than the workspace, so a
-  // path given relative to the repository root has to survive being resolved
-  // from somewhere below it.
+  // A relative path means relative to the working directory and nothing else:
+  // a host that runs elsewhere resolves it against its own root before calling.
 
-  it("resolves a path relative to the repository root", async () => {
-    const repositoryRoot = createTemporaryDirectory("callidescope-repository");
+  it("resolves a relative path against the working directory", async () => {
+    const directory = createTemporaryDirectory("callidescope-cwd");
     await writeFile(
-      path.join(repositoryRoot, "pnpm-workspace.yaml"),
-      "packages: []\n",
-      "utf8",
-    );
-    const nestedDirectory = path.join(repositoryRoot, "packages", "nested");
-    await mkdir(nestedDirectory, { recursive: true });
-    await writeFile(
-      path.join(repositoryRoot, "callidescope.config.json"),
+      path.join(directory, "callidescope.config.json"),
       JSON.stringify({ limits: { maximumDepth: 11 } }),
       "utf8",
     );
-
-    const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(nestedDirectory);
+    const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(directory);
 
     try {
       const configuration = await service.loadConfiguration({
@@ -426,33 +417,21 @@ describe(ConfigurationFileService, () => {
     }
   });
 
-  it("throws when the path is missing at the repository root too", async () => {
+  it("never falls back to the repository root", async () => {
     const repositoryRoot = createTemporaryDirectory("callidescope-repository");
     await writeFile(
       path.join(repositoryRoot, "pnpm-workspace.yaml"),
       "packages: []\n",
       "utf8",
     );
-
-    const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(repositoryRoot);
-
-    try {
-      await expect(
-        service.loadConfiguration({
-          configurationPath: "callidescope.config.json",
-        }),
-      ).rejects.toThrow(ConfigurationFileNotFoundError);
-    } finally {
-      cwdSpy.mockRestore();
-    }
-  });
-
-  it("throws when no repository root is found above the working directory", async () => {
-    // A temp directory has no `.git` or `pnpm-workspace.yaml` anywhere above
-    // it, so the upward walk reaches the filesystem root and gives up.
-    const directory = createTemporaryDirectory("callidescope-rootless");
-
-    const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(directory);
+    await writeFile(
+      path.join(repositoryRoot, "callidescope.config.json"),
+      JSON.stringify({ limits: { maximumDepth: 11 } }),
+      "utf8",
+    );
+    const nestedDirectory = path.join(repositoryRoot, "packages", "nested");
+    await mkdir(nestedDirectory, { recursive: true });
+    const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(nestedDirectory);
 
     try {
       await expect(

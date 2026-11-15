@@ -1,5 +1,7 @@
 // 🛠️ Utilities
 
+import path from "node:path";
+
 import {
   resolveAddressService,
   resolveOptionsService,
@@ -36,10 +38,17 @@ export async function runAddressExecutor(args: {
   });
   const optionsService = await resolveOptionsService();
   const addressService = await resolveAddressService();
+  const lookupOptions = optionsService.readLookupOptions(args.options);
   const lookupArguments = {
     addresses,
     directories: scope.directories,
-    ...optionsService.readLookupOptions(args.options),
+    ...lookupOptions,
+    // Resolved here, against the workspace root, so the loader never has to
+    // guess which directory a relative path meant.
+    configurationPath: path.resolve(
+      args.context.root,
+      lookupOptions.configurationPath,
+    ),
   };
   const result =
     args.kind === "depth"

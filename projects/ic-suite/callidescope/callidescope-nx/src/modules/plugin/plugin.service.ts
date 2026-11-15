@@ -77,7 +77,7 @@ export class PluginService {
     workspaceRoot: string;
   }): Promise<FileFilter> {
     const configuration = await this.loadWorkspaceConfiguration(
-      args.configurationPath,
+      path.resolve(args.workspaceRoot, args.configurationPath),
     );
 
     if (configuration === undefined) {

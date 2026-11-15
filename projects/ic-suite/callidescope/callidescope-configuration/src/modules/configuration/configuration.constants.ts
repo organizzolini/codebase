@@ -26,9 +26,6 @@ export const SUPPORTED_CONFIGURATION_EXTENSIONS = new Set([
   ".ts",
 ]);
 
-/** Repository root markers. `package.json` is absent: every package has one. */
-export const REPOSITORY_ROOT_MARKERS = [".git", "pnpm-workspace.yaml"] as const;
-
 /** Directories no repository wants traced, kept out even when unmentioned. */
 export const DEFAULT_EXCLUDE_GLOBS = [
   "**/.conformetry/**",

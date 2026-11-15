@@ -18,7 +18,6 @@ export {
   ProjectConfigurationIncompleteError,
   ProjectConfigurationMissingError,
   ProjectConfigurationPathMissingError,
-  REPOSITORY_ROOT_MARKERS,
   SUPPORTED_CONFIGURATION_EXTENSIONS,
   UnknownConfigurationFileTypeError,
 } from "./modules/configuration/configuration.constants";

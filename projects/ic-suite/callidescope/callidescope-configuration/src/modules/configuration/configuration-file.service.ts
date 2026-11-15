@@ -18,7 +18,6 @@ import {
   DEFAULT_MAXIMUM_DEPTH,
   DEFAULT_PREVIEW_COUNT,
   DEFAULT_RUN_HEADING,
-  REPOSITORY_ROOT_MARKERS,
   SUPPORTED_CONFIGURATION_EXTENSIONS,
   UnknownConfigurationFileTypeError,
 } from "./configuration.constants";
@@ -54,32 +53,6 @@ export class ConfigurationFileService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
-
-  /**
-   * Finds the repository root by walking up from the cwd, for task runners that start in a project.
-   */
-  private findRepositoryRoot(): string | undefined {
-    let candidateDirectory = path.resolve(process.cwd());
-
-    for (;;) {
-      const directory = candidateDirectory;
-      const isRoot = REPOSITORY_ROOT_MARKERS.some((marker) =>
-        existsSync(path.join(directory, marker)),
-      );
-
-      if (isRoot) {
-        return candidateDirectory;
-      }
-
-      const parentDirectory = path.dirname(candidateDirectory);
-
-      if (parentDirectory === candidateDirectory) {
-        return undefined;
-      }
-
-      candidateDirectory = parentDirectory;
-    }
-  }
 
   /** Loads a configuration module, choosing the reader by extension. */
   private async loadConfigurationModule(args: {
@@ -118,30 +91,15 @@ export class ConfigurationFileService {
       : JSON.parse(configurationContent);
   }
 
-  /** Resolves a configuration path against the cwd, then the repository root. */
+  /** Resolves a configuration path against the working directory, and nothing else. */
   private resolveConfigurationPath(configurationPath: string): string {
     const absolutePath = path.resolve(configurationPath);
 
-    if (existsSync(absolutePath)) {
-      return absolutePath;
-    }
-
-    const repositoryRoot = this.findRepositoryRoot();
-
-    if (repositoryRoot === undefined) {
+    if (!existsSync(absolutePath)) {
       throw new ConfigurationFileNotFoundError(absolutePath);
     }
 
-    const repositoryRelativePath = path.resolve(
-      repositoryRoot,
-      configurationPath,
-    );
-
-    if (!existsSync(repositoryRelativePath)) {
-      throw new ConfigurationFileNotFoundError(absolutePath);
-    }
-
-    return repositoryRelativePath;
+    return absolutePath;
   }
 
   /**

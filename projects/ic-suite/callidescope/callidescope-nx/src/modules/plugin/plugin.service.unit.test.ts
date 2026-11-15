@@ -388,6 +388,23 @@ describe(PluginService, () => {
       );
     });
 
+    it("reads the workspace configuration relative to the workspace root", async () => {
+      expect.hasAssertions();
+
+      await service.inferTargets({
+        options: {
+          configurationPath: CONFIGURATION_PATH,
+          projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+        },
+        projectConfigurationFiles: ["packages/alpha/project.json"],
+        workspaceRoot: "/workspace",
+      });
+
+      expect(configurationService.loadConfigurationFile).toHaveBeenCalledWith({
+        configurationPath: `/workspace/${CONFIGURATION_PATH}`,
+      });
+    });
+
     it("skips the workspace-root project", async () => {
       expect.hasAssertions();
 
@@ -986,7 +1003,7 @@ describe(PluginService, () => {
       });
 
       expect(configurationService.loadConfigurationFile).toHaveBeenCalledWith({
-        configurationPath: "elsewhere.ts",
+        configurationPath: "/workspace/elsewhere.ts",
       });
     });
   });

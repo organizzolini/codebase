@@ -21,8 +21,7 @@ npm install --save-dev @callidescope/configuration
 Any of `callidescope.config.{ts,mts,cts,js,mjs,cjs,json,jsonc}`, named by the
 required `--config` path (or the `configurationPath` option of the Nx plugin, which every inferred target passes to its executor as `configuration`).
 It is never searched for and never defaulted: a run that names no file is
-refused with a `ConfigurationPathRequiredError` naming the surface that should have carried it, decided by `ConfigurationService.requireConfigurationPath`. A relative path is resolved against the working directory, then the
-repository root. TypeScript is the form that gets type checking. Each traced
+refused with a `ConfigurationPathRequiredError` naming the surface that should have carried it, decided by `ConfigurationService.requireConfigurationPath`. A relative path is resolved against the working directory and nothing else; a host that runs elsewhere, such as the Nx plugin, resolves it against its own workspace root first. TypeScript is the form that gets type checking. Each traced
 project's own file is read from the path the workspace configuration's required
 `projectConfigurationPath` names, relative to the project's root. Nothing is
 searched for, so no file name is assumed and nothing is found by walking up.

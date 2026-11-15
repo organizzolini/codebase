@@ -109,7 +109,7 @@ export interface CallidescopeWriteConfiguration {
 
 /** Arguments accepted by the configuration loader. */
 export interface LoadConfigurationArguments {
-  /** The workspace configuration file, relative to the cwd or the repository root. */
+  /** The workspace configuration file, relative to the cwd. */
   configurationPath: string;
 }
 

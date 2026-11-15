@@ -3498,31 +3498,31 @@
           "callees": [
             {
               "displayName": "ConfigurationFileService.resolveEntryPoints",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#4297"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#3241"
             },
             {
               "displayName": "ConfigurationFileService.resolveExclude",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#4905"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#3849"
             },
             {
               "displayName": "ConfigurationFileService.resolveLimits",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#5513"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#4457"
             },
             {
               "displayName": "ConfigurationFileService.resolveJsonOutput",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#5127"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#4071"
             },
             {
               "displayName": "ConfigurationFileService.resolveMarkdownDestination",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#5917"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#4861"
             }
           ],
           "displayName": "ConfigurationFileService.resolveConfiguration",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#8336",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#7280",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
-            "line": 271
+            "line": 229
           },
           "signature": {
             "parameters": [
@@ -3542,11 +3542,11 @@
           "callees": [
             {
               "displayName": "ProjectConfigurationPathMissingError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#10715"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#10552"
             },
             {
               "displayName": "ProjectConfigurationMissingError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#10133"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#9970"
             },
             {
               "displayName": "ProjectConfigurationService.loadProjectConfiguration",
@@ -3718,27 +3718,27 @@
           "callees": [
             {
               "displayName": "ConfigurationFileService.resolveConfigurationPath",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#3547"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#2849"
             },
             {
               "displayName": "UnknownConfigurationFileTypeError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#5246"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#5083"
             },
             {
               "displayName": "ConfigurationFileService.loadConfigurationModule",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#2362"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#1658"
             },
             {
               "displayName": "ConfigurationFileService.resolveConfiguration",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#8336"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#7280"
             }
           ],
           "displayName": "ConfigurationFileService.loadConfigurationFile",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#7489",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#6433",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
-            "line": 243
+            "line": 201
           },
           "signature": {
             "parameters": [
@@ -3830,19 +3830,19 @@
           "callees": [
             {
               "displayName": "map(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#3042"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#2879"
             },
             {
               "displayName": "filter(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#2993"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#2830"
             }
           ],
           "displayName": "readPermittedNames",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#2703",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#2540",
           "location": {
             "column": 28,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts",
-            "line": 99
+            "line": 96
           },
           "signature": {
             "parameters": [
@@ -4173,44 +4173,12 @@
           "breadth": 2,
           "callees": [
             {
-              "displayName": "ConfigurationFileService.findRepositoryRoot",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#1725"
-            },
-            {
-              "displayName": "ConfigurationFileNotFoundError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#7778"
-            }
-          ],
-          "displayName": "ConfigurationFileService.resolveConfigurationPath",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#3547",
-          "location": {
-            "column": 3,
-            "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
-            "line": 122
-          },
-          "signature": {
-            "parameters": [
-              {
-                "isOptional": false,
-                "isRest": false,
-                "name": "configurationPath",
-                "type": "string"
-              }
-            ],
-            "returnType": "string",
-            "text": "(configurationPath: string): string"
-          }
-        },
-        {
-          "breadth": 2,
-          "callees": [
-            {
               "displayName": "ProjectConfigurationService.findMissingField",
               "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/project-configuration.service.ts#5653"
             },
             {
               "displayName": "ProjectConfigurationIncompleteError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#9576"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#9413"
             }
           ],
           "displayName": "ProjectConfigurationService.assertComplete",
@@ -4242,7 +4210,7 @@
             },
             {
               "displayName": "ProjectConfigurationFieldNotPermittedError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#8949"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#8786"
             }
           ],
           "displayName": "ProjectConfigurationService.assertNoForbiddenFields",
@@ -4334,15 +4302,15 @@
           "callees": [
             {
               "displayName": "readPermittedNames",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#2703"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#2540"
             }
           ],
           "displayName": "flatMap(…)",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#4158",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#3995",
           "location": {
             "column": 5,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts",
-            "line": 142
+            "line": 139
           },
           "signature": {
             "parameters": [
@@ -4362,15 +4330,15 @@
           "callees": [
             {
               "displayName": "custom(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#5557"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#5394"
             }
           ],
           "displayName": "callbackSchema",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#5496",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#5333",
           "location": {
             "column": 24,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts",
-            "line": 182
+            "line": 179
           },
           "signature": {
             "parameters": [],
@@ -4724,37 +4692,16 @@
           "breadth": 1,
           "callees": [
             {
-              "displayName": "ConfigurationFileService.some(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#1944"
-            }
-          ],
-          "displayName": "ConfigurationFileService.findRepositoryRoot",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#1725",
-          "location": {
-            "column": 3,
-            "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
-            "line": 61
-          },
-          "signature": {
-            "parameters": [],
-            "returnType": "string | undefined",
-            "text": "(): string | undefined"
-          }
-        },
-        {
-          "breadth": 1,
-          "callees": [
-            {
               "displayName": "ConfigurationFileService.loadJsonConfiguration",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#3131"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#2427"
             }
           ],
           "displayName": "ConfigurationFileService.loadConfigurationModule",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#2362",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#1658",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
-            "line": 85
+            "line": 58
           },
           "signature": {
             "parameters": [
@@ -4773,16 +4720,44 @@
           "breadth": 1,
           "callees": [
             {
-              "displayName": "ConfigurationFileService.loadConfigurationFile",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#7489"
+              "displayName": "ConfigurationFileNotFoundError.constructor",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#7615"
             }
           ],
-          "displayName": "ConfigurationFileService.loadConfiguration",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#7115",
+          "displayName": "ConfigurationFileService.resolveConfigurationPath",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#2849",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
-            "line": 231
+            "line": 95
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "configurationPath",
+                "type": "string"
+              }
+            ],
+            "returnType": "string",
+            "text": "(configurationPath: string): string"
+          }
+        },
+        {
+          "breadth": 1,
+          "callees": [
+            {
+              "displayName": "ConfigurationFileService.loadConfigurationFile",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#6433"
+            }
+          ],
+          "displayName": "ConfigurationFileService.loadConfiguration",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#6059",
+          "location": {
+            "column": 3,
+            "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
+            "line": 189
           },
           "signature": {
             "parameters": [
@@ -4858,7 +4833,7 @@
           "callees": [
             {
               "displayName": "ProjectConfigurationError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#8190"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#8027"
             }
           ],
           "displayName": "ProjectConfigurationService.loadProjectConfiguration",
@@ -4914,7 +4889,7 @@
           "callees": [
             {
               "displayName": "ConfigurationFileService.configurationFileExists",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#6868"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#5812"
             }
           ],
           "displayName": "ConfigurationService.configurationFileExists",
@@ -4942,7 +4917,7 @@
           "callees": [
             {
               "displayName": "ConfigurationFileService.loadConfigurationFile",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#7489"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#6433"
             }
           ],
           "displayName": "ConfigurationService.loadConfigurationFile",
@@ -5234,7 +5209,7 @@
           "callees": [
             {
               "displayName": "ConfigurationFileService.resolveConfiguration",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#8336"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#7280"
             }
           ],
           "displayName": "ConfigurationService.resolveConfiguration",
@@ -5864,266 +5839,6 @@
           "entryPointKind": "orphan-root",
           "frames": [
             {
-              "displayName": "ConfigurationFileService.loadConfiguration",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Loads and validates a configuration file. The path is required and must exist, so a typo fails rather than tracing with defaults.",
-                "tags": []
-              },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#7115",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
-                "line": 231
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "args",
-                    "type": "LoadConfigurationArguments"
-                  }
-                ],
-                "returnType": "Promise<ResolvedCallidescopeConfiguration>",
-                "text": "(args: LoadConfigurationArguments): Promise<ResolvedCallidescopeConfiguration>"
-              }
-            },
-            {
-              "displayName": "ConfigurationFileService.loadConfigurationFile",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Loads a configuration, returning the authored object and the file it came from. Its path lets a caller skip the run's own file.",
-                "tags": []
-              },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#7489",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
-                "line": 243
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "args",
-                    "type": "LoadConfigurationArguments"
-                  }
-                ],
-                "returnType": "Promise<LoadedCallidescopeConfiguration>",
-                "text": "(args: LoadConfigurationArguments): Promise<LoadedCallidescopeConfiguration>"
-              }
-            },
-            {
-              "displayName": "ConfigurationFileService.resolveConfigurationPath",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Resolves a configuration path against the cwd, then the repository root.",
-                "tags": []
-              },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#3547",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
-                "line": 122
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "configurationPath",
-                    "type": "string"
-                  }
-                ],
-                "returnType": "string",
-                "text": "(configurationPath: string): string"
-              }
-            },
-            {
-              "displayName": "ConfigurationFileService.findRepositoryRoot",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Finds the repository root by walking up from the cwd, for task runners that start in a project.",
-                "tags": []
-              },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#1725",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
-                "line": 61
-              },
-              "signature": {
-                "parameters": [],
-                "returnType": "string | undefined",
-                "text": "(): string | undefined"
-              }
-            },
-            {
-              "displayName": "ConfigurationFileService.some(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#1944",
-              "isCycle": false,
-              "location": {
-                "column": 51,
-                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
-                "line": 66
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "marker",
-                    "type": "\".git\" | \"pnpm-workspace.yaml\""
-                  }
-                ],
-                "returnType": "boolean",
-                "text": "(marker: \".git\" | \"pnpm-workspace.yaml\"): boolean"
-              }
-            }
-          ],
-          "isLowerBound": true
-        },
-        {
-          "depth": 5,
-          "entryPointKind": "orphan-root",
-          "frames": [
-            {
-              "displayName": "ConfigurationService.loadConfigurationFile",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Loads a configuration, and says what the file itself declared and which file answered.",
-                "tags": []
-              },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#2023",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 64
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "args",
-                    "type": "LoadConfigurationArguments"
-                  }
-                ],
-                "returnType": "Promise<LoadedCallidescopeConfiguration>",
-                "text": "(args: LoadConfigurationArguments): Promise<LoadedCallidescopeConfiguration>"
-              }
-            },
-            {
-              "displayName": "ConfigurationFileService.loadConfigurationFile",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Loads a configuration, returning the authored object and the file it came from. Its path lets a caller skip the run's own file.",
-                "tags": []
-              },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#7489",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
-                "line": 243
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "args",
-                    "type": "LoadConfigurationArguments"
-                  }
-                ],
-                "returnType": "Promise<LoadedCallidescopeConfiguration>",
-                "text": "(args: LoadConfigurationArguments): Promise<LoadedCallidescopeConfiguration>"
-              }
-            },
-            {
-              "displayName": "ConfigurationFileService.resolveConfigurationPath",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Resolves a configuration path against the cwd, then the repository root.",
-                "tags": []
-              },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#3547",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
-                "line": 122
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "configurationPath",
-                    "type": "string"
-                  }
-                ],
-                "returnType": "string",
-                "text": "(configurationPath: string): string"
-              }
-            },
-            {
-              "displayName": "ConfigurationFileService.findRepositoryRoot",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Finds the repository root by walking up from the cwd, for task runners that start in a project.",
-                "tags": []
-              },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#1725",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
-                "line": 61
-              },
-              "signature": {
-                "parameters": [],
-                "returnType": "string | undefined",
-                "text": "(): string | undefined"
-              }
-            },
-            {
-              "displayName": "ConfigurationFileService.some(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#1944",
-              "isCycle": false,
-              "location": {
-                "column": 51,
-                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
-                "line": 66
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "marker",
-                    "type": "\".git\" | \"pnpm-workspace.yaml\""
-                  }
-                ],
-                "returnType": "boolean",
-                "text": "(marker: \".git\" | \"pnpm-workspace.yaml\"): boolean"
-              }
-            }
-          ],
-          "isLowerBound": true
-        },
-        {
-          "depth": 5,
-          "entryPointKind": "orphan-root",
-          "frames": [
-            {
               "displayName": "ConfigurationService.loadProjectConfigurations",
               "documentation": {
                 "isDeprecated": false,
@@ -6542,17 +6257,237 @@
           "isLowerBound": false
         },
         {
+          "depth": 4,
+          "entryPointKind": "orphan-root",
+          "frames": [
+            {
+              "displayName": "ConfigurationFileService.loadConfiguration",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Loads and validates a configuration file. The path is required and must exist, so a typo fails rather than tracing with defaults.",
+                "tags": []
+              },
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#6059",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
+                "line": 189
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "args",
+                    "type": "LoadConfigurationArguments"
+                  }
+                ],
+                "returnType": "Promise<ResolvedCallidescopeConfiguration>",
+                "text": "(args: LoadConfigurationArguments): Promise<ResolvedCallidescopeConfiguration>"
+              }
+            },
+            {
+              "displayName": "ConfigurationFileService.loadConfigurationFile",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Loads a configuration, returning the authored object and the file it came from. Its path lets a caller skip the run's own file.",
+                "tags": []
+              },
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#6433",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
+                "line": 201
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "args",
+                    "type": "LoadConfigurationArguments"
+                  }
+                ],
+                "returnType": "Promise<LoadedCallidescopeConfiguration>",
+                "text": "(args: LoadConfigurationArguments): Promise<LoadedCallidescopeConfiguration>"
+              }
+            },
+            {
+              "displayName": "ConfigurationFileService.resolveConfigurationPath",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Resolves a configuration path against the working directory, and nothing else.",
+                "tags": []
+              },
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#2849",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
+                "line": 95
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "configurationPath",
+                    "type": "string"
+                  }
+                ],
+                "returnType": "string",
+                "text": "(configurationPath: string): string"
+              }
+            },
+            {
+              "displayName": "ConfigurationFileNotFoundError.constructor",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#7615",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts",
+                "line": 249
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "filePath",
+                    "type": "string"
+                  }
+                ],
+                "returnType": "ConfigurationFileNotFoundError",
+                "text": "(filePath: string): ConfigurationFileNotFoundError"
+              }
+            }
+          ],
+          "isLowerBound": true
+        },
+        {
+          "depth": 4,
+          "entryPointKind": "orphan-root",
+          "frames": [
+            {
+              "displayName": "ConfigurationService.loadConfigurationFile",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Loads a configuration, and says what the file itself declared and which file answered.",
+                "tags": []
+              },
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#2023",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts",
+                "line": 64
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "args",
+                    "type": "LoadConfigurationArguments"
+                  }
+                ],
+                "returnType": "Promise<LoadedCallidescopeConfiguration>",
+                "text": "(args: LoadConfigurationArguments): Promise<LoadedCallidescopeConfiguration>"
+              }
+            },
+            {
+              "displayName": "ConfigurationFileService.loadConfigurationFile",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Loads a configuration, returning the authored object and the file it came from. Its path lets a caller skip the run's own file.",
+                "tags": []
+              },
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#6433",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
+                "line": 201
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "args",
+                    "type": "LoadConfigurationArguments"
+                  }
+                ],
+                "returnType": "Promise<LoadedCallidescopeConfiguration>",
+                "text": "(args: LoadConfigurationArguments): Promise<LoadedCallidescopeConfiguration>"
+              }
+            },
+            {
+              "displayName": "ConfigurationFileService.resolveConfigurationPath",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Resolves a configuration path against the working directory, and nothing else.",
+                "tags": []
+              },
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#2849",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
+                "line": 95
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "configurationPath",
+                    "type": "string"
+                  }
+                ],
+                "returnType": "string",
+                "text": "(configurationPath: string): string"
+              }
+            },
+            {
+              "displayName": "ConfigurationFileNotFoundError.constructor",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#7615",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts",
+                "line": 249
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "filePath",
+                    "type": "string"
+                  }
+                ],
+                "returnType": "ConfigurationFileNotFoundError",
+                "text": "(filePath: string): ConfigurationFileNotFoundError"
+              }
+            }
+          ],
+          "isLowerBound": true
+        },
+        {
           "depth": 3,
           "entryPointKind": "orphan-root",
           "frames": [
             {
               "displayName": "flatMap(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#4158",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#3995",
               "isCycle": false,
               "location": {
                 "column": 5,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts",
-                "line": 142
+                "line": 139
               },
               "signature": {
                 "parameters": [
@@ -6574,12 +6509,12 @@
                 "summary": "Names a field adds; member fields are dotted, as `write.markdown`.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#2703",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#2540",
               "isCycle": false,
               "location": {
                 "column": 28,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts",
-                "line": 99
+                "line": 96
               },
               "signature": {
                 "parameters": [
@@ -6596,12 +6531,12 @@
             },
             {
               "displayName": "map(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#3042",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#2879",
               "isCycle": false,
               "location": {
                 "column": 10,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts",
-                "line": 109
+                "line": 106
               },
               "signature": {
                 "parameters": [
@@ -6991,12 +6926,12 @@
                 "summary": "Any function: Zod cannot describe callbacks, and parsing wraps them.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#5496",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#5333",
               "isCycle": false,
               "location": {
                 "column": 24,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts",
-                "line": 182
+                "line": 179
               },
               "signature": {
                 "parameters": [],
@@ -7006,12 +6941,12 @@
             },
             {
               "displayName": "custom(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#5557",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#5394",
               "isCycle": false,
               "location": {
                 "column": 23,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts",
-                "line": 183
+                "line": 180
               },
               "signature": {
                 "parameters": [
@@ -7067,12 +7002,12 @@
                 "summary": "Whether a file exists at exactly this path. Nothing is searched for.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#6868",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#5812",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
-                "line": 224
+                "line": 182
               },
               "signature": {
                 "parameters": [
@@ -7214,9 +7149,9 @@
         }
       ],
       "summary": {
-        "callableCount": 118,
+        "callableCount": 116,
         "cyclicComponentCount": 0,
-        "edgeCount": 116,
+        "edgeCount": 113,
         "entryPointCount": 17,
         "fileCount": 28,
         "maximumDepth": 7,
@@ -9856,12 +9791,12 @@
                 "summary": "Fills in every field a configuration may leave out. Also used by hosts that assemble a configuration object themselves.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#8336",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#7280",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
-                "line": 271
+                "line": 229
               },
               "signature": {
                 "parameters": [
@@ -9883,12 +9818,12 @@
                 "summary": "Applies defaults to the entry-point rules. Defaulting the authored object once keeps one branch per option.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#4297",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#3241",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts",
-                "line": 150
+                "line": 108
               },
               "signature": {
                 "parameters": [
@@ -18741,9 +18676,9 @@
     }
   ],
   "summary": {
-    "callableCount": 436,
+    "callableCount": 434,
     "cyclicComponentCount": 1,
-    "edgeCount": 365,
+    "edgeCount": 362,
     "entryPointCount": 148,
     "fileCount": 238,
     "maximumDepth": 9,
