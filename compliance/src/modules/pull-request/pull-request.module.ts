@@ -13,6 +13,7 @@ import { PullRequestGithubService } from "./pull-request-github.service";
 import { PullRequestLabelVocabularyService } from "./pull-request-label-vocabulary.service";
 import { PullRequestLabelsAssigneesService } from "./pull-request-labels-assignees.service";
 import { PullRequestLabelsService } from "./pull-request-labels.service";
+import { PullRequestLinkedIssuesService } from "./pull-request-linked-issues.service";
 import { PullRequestReleaseSignificanceService } from "./pull-request-release-significance.service";
 import { PullRequestReportService } from "./pull-request-report.service";
 import { PullRequestTitleService } from "./pull-request-title.service";
@@ -32,6 +33,7 @@ import { PullRequestCommand } from "./pull-request.command";
     PullRequestLabelsAssigneesService,
     PullRequestLabelsService,
     PullRequestLabelVocabularyService,
+    PullRequestLinkedIssuesService,
     PullRequestAncestorIssuesService,
     PullRequestDescendantIssuesService,
     PullRequestBodyLinksService,

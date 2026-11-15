@@ -4,7 +4,6 @@
 
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
-- **breadth**: The count of direct calls a callable makes, which callidescope gates against this project's maximum breadth limit.
 - **contract**: What a public surface promises its callers and must keep working: `src/index.ts`, and the NestJS `LoggerService` interface that `LoggerService` implements.
 - **convention**: The logging message rule: an emoji naming the subject, then a present-progressive or past-tense verb, checked at runtime and by lint.
 - **greeter**: Sample service, `SampleGreeterService`, that the testing-module utility tests inject to prove a logger receives the service's name as its context.

@@ -12,8 +12,9 @@ subpath exports.
 | Entry                           | Holds                                                                                                        | Depends on                |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------- |
 | `@codebase/testing`             | Temporary directories, output and exit-code capture, environment overrides, the fixed clock, fixtures, mocks | nothing in the workspace  |
-| `@codebase/testing/setup`       | The shared Vitest setup file                                                                                 | nothing in the workspace  |
+| `@codebase/testing/setup`       | The shared Vitest setup file, which the base config lists                                                    | nothing in the workspace  |
 | `@codebase/testing/end-to-end`  | Tarball sandbox and Verdaccio plugin runners that test packed packages as a consumer installs them           | `execa`, Verdaccio        |
+| `@codebase/testing/file-system` | The `mockFileSystem` factory helper, kept free of `node:fs` imports                                          | nothing in the workspace  |
 | `@codebase/testing/nestjs`      | The testing-module builder, module-wiring assertions, and the Nx workspace tree                              | `@codebase/observability` |
 | `@codebase/testing/react`       | The route-render helper and the `createServerFn` and `matchMedia` stand-ins                                  | TanStack Router           |
 | `@codebase/testing/react/setup` | The shared jsdom setup                                                                                       | Testing Library           |
@@ -58,6 +59,12 @@ describe("the command line", () => {
 });
 ```
 
+`createFileTree({ "src/a.ts": "..." }, { git: true, symlinks: { "link": "src" } })`
+writes a temporary tree and returns its root, removed with the test; `parent`
+makes the root inside a directory you name instead, for a spawned command that
+must resolve its packages from the workspace. `writeFileTree(root, files)`
+writes into a directory you already hold.
+
 Every helper that changes global state undoes it once the test finishes, so a
 test cannot leak a directory, a stream spy, an exit code, or a variable into
 the next. `useTemporaryDirectory` is the suite-level variant: one directory
@@ -66,7 +73,48 @@ from the suite's first test to its last.
 `loadFixture(import.meta.url, "fixtures/page.html")` reads a fixture relative
 to the test file. `mockChildProcess` and `mockPartially` build `vi.mock`
 factories, `stubFetch` queues responses for `fetch`, and `answerPrompts`
-queues answers for the `promptsMock` stand-in of the `prompts` package.
+queues answers for the `promptsMock` stand-in of the `prompts` package. The
+shared setup file already mocks `prompts` with it, so a test needs no
+`vi.mock("prompts")` of its own.
+
+#### Mocking the file system
+
+`mockFileSystem` builds the module a `vi.mock` factory returns, served as named
+exports and as `default`, so code written either way reads one set of stubs.
+`vi.mock` hoists above static imports, so the factory loads the helper from its
+own entry, `@codebase/testing/file-system`, with `vi.importActual`. A
+dynamic `import()` of the package makes `@nx/enforce-module-boundaries` forbid
+every static import of `@codebase/testing` in the same project, but
+`vi.importActual` is a call, not an import expression, so the rule passes
+without a disable comment. The entry loads nothing that imports `node:fs`:
+
+```ts
+import fs from "node:fs";
+
+import { vi } from "vitest";
+
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
+
+vi.mock("node:fs", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem(); // bare stubs: no real function runs
+});
+
+vi.mock("node:fs/promises", async (importOriginal) => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem(await importOriginal()); // real, until a result is staged
+});
+
+it("reads the config", () => {
+  vi.mocked(fs.readFileSync).mockReturnValue("name = 1");
+});
+```
 
 ### End to end
 
@@ -96,6 +144,18 @@ await workspace.runTarget("project:gate");
 await registry.stop();
 ```
 
+`runSourceCommand({ entry, args, directory, tsconfig, environment, timeout })`
+runs a TypeScript entry as a command line would run, through
+`node --import @swc-node/register/esm-register`, and resolves
+`{ exitCode, stdout, stderr }`. Color is forced off, the environment is
+sanitized, the timeout defaults to 120 seconds, and a failing or stopped run is
+a result (exit code 1 when it never exited), never a throw. `tsconfig` sets
+`SWC_NODE_PROJECT`, which swc-node reads ahead of `TS_NODE_PROJECT`. Run it
+from a directory inside the workspace: `@swc-node/register` resolves from the
+working directory, so a `os.tmpdir()` one fails on Linux. Its hook also resolves from there,
+so an absolute loader path would not help; pass `parent` to `createFileTree` to
+put a spawned root inside the workspace.
+
 Both runners test packed artifacts: run the `pack` target first, so
 `dist/tarballs` holds them. Commands receive only a sanitized environment, a
 timeout, and captured output, and a failing command is a result with an
@@ -115,6 +175,9 @@ const { instance, mock } = await buildTestingModule(ExportCommand, {
 mock(PostgresqlUtilitiesService).dump.mockResolvedValue(undefined);
 ```
 
+`bootModule(MainModule)` compiles the root module with its real providers and
+closes it once the test finishes, so "boots the root module" is one line.
+
 `buildTestingModule` always provides a deep mock of observability's
 `LoggerService`, and a dependency nothing provides fails the build, so
 resolving the class is itself the wiring check an "is defined" test used to
@@ -123,6 +186,16 @@ stand in for. `@codebase/testing/nestjs` also exports `expectModuleProvides`,
 `@Module` metadata without reading it by hand. `expectLoggerContext`, which
 builds the class the same way and asserts its logger context, comes from
 [`@codebase/observability/testing`](../observability/README.md#testing-helpers).
+
+### Recipes by test kind
+
+| Kind               | Reach for                                                                                                                  |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| Command            | `buildTestingModule`, `answerPrompts`, `captureOutput`, `captureExitCode`, `mockFileSystem`                                |
+| Module             | `bootModule`, `expectModuleProvides`, `expectModuleExports`, `expectModuleImports`                                         |
+| Integration        | `createFileTree`, `createTemporaryDirectory`, `overrideEnvironment`, `mockDates`                                           |
+| End-to-end CLI     | `runSourceCommand` over a `createFileTree({ ... }, { git: true })` root, or `createTarballSandboxRunner` for packed output |
+| Utilities          | `mockPartially`, `stubFetch`, `loadFixture`, `mockDates`                                                                   |
 
 ### Postgres
 

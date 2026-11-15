@@ -1,5 +1,8 @@
-import { spawnSync } from "node:child_process";
 import path from "node:path";
+
+import { runSourceCommand } from "@codebase/testing/end-to-end";
+
+import type { FileTreeOptions } from "@codebase/testing";
 
 const COMMAND_PATH = path.resolve(
   import.meta.dirname,
@@ -10,6 +13,16 @@ const PROJECT_TSCONFIG_PATH = path.resolve(
   import.meta.dirname,
   "../tsconfig.json",
 );
+
+/** Gitignored `tmp/`, never system temp: spawns resolve `@swc-node/register` only in-workspace. */
+const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../tmp");
+
+/** Fixture trees: repositories held in-workspace. */
+export const FIXTURE_OPTIONS = {
+  git: true,
+  label: "coinagerie",
+  parent: FIXTURE_ROOT,
+} satisfies FileTreeOptions;
 
 /** Long enough for a cold swc start on a slow runner. */
 export const SPAWN_TIMEOUT = 120_000;
@@ -25,24 +38,17 @@ export interface RunResult {
  * Runs the real command in a separate process, since the test checks its exit
  * code, streams, and written files.
  */
-export function run(root: string, args: string[]): RunResult {
-  const result = spawnSync(
-    process.execPath,
-    ["--import", "@swc-node/register/esm-register", COMMAND_PATH, ...args],
-    {
-      cwd: root,
-      encoding: "utf8",
-      env: {
-        ...process.env,
-        FORCE_COLOR: "0",
-        SWC_NODE_PROJECT: PROJECT_TSCONFIG_PATH,
-      },
-      timeout: SPAWN_TIMEOUT,
-    },
-  );
+export async function run(root: string, args: string[]): Promise<RunResult> {
+  const result = await runSourceCommand({
+    args,
+    directory: root,
+    entry: COMMAND_PATH,
+    timeout: SPAWN_TIMEOUT,
+    tsconfig: PROJECT_TSCONFIG_PATH,
+  });
 
   return {
-    exitCode: result.status,
+    exitCode: result.exitCode,
     standardError: result.stderr,
     standardOutput: result.stdout,
   };

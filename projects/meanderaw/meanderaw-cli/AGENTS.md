@@ -53,8 +53,8 @@ does not slow them.
 only those no element of the symmetry group sends lower — one per class, without building
 the rest — and `canonicalTile` folds each to the representative the corpus stores. The
 rest of the class is recorded, not lost: `symmetricalCodes` holds the Codes of its mirror,
-flip, and both, each at its own canonical phase (a column shift is already folded by
-`canonicalPhase`). Drawing a row is the expensive part, so `DrawPoolService` deals each
+flip, and both, each at its own canonical rotation (a column shift is already folded by
+`canonicalRotation`). Drawing a row is the expensive part, so `DrawPoolService` deals each
 shape's minima in batches to `DRAW_WORKERS` threads booted from `src/worker.ts`, sorts
 the rows back into edge-key order, and the main thread inserts them with one prepared
 multi-row `INSERT` per chunk. `DRAW_WORKERS=0` draws in-process, which every suite pins

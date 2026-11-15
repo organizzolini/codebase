@@ -1,3 +1,5 @@
+import { access, appendFile, mkdir, writeFile } from "node:fs/promises";
+
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -10,27 +12,25 @@ import { resetCommandTestHarness } from "../../../testing/command-harness";
 import { PerseusCommand } from "./perseus.command";
 
 import type { LoggerService } from "@codebase/observability";
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
-
-const { accessMock, appendFileMock, mkdirMock, writeFileMock } = vi.hoisted(
-  () => ({
-    accessMock: vi.fn<(...parameters: unknown[]) => unknown>(),
-    appendFileMock: vi.fn<(...parameters: unknown[]) => unknown>(),
-    mkdirMock: vi.fn<(...parameters: unknown[]) => unknown>(),
-    writeFileMock: vi.fn<(...parameters: unknown[]) => unknown>(),
-  }),
-);
-
-vi.mock("node:fs/promises", () => ({
-  access: accessMock,
-  appendFile: appendFileMock,
-  mkdir: mkdirMock,
-  writeFile: writeFileMock,
-}));
 
 interface FetchJsonResponse {
   tree: { path: string; type: string }[];
 }
+
+const accessMock = vi.mocked(access);
+const appendFileMock = vi.mocked(appendFile);
+const mkdirMock = vi.mocked(mkdir);
+const writeFileMock = vi.mocked(writeFile);
+
+vi.mock("node:fs/promises", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem();
+});
 
 describe(PerseusCommand, () => {
   let command: PerseusCommand;

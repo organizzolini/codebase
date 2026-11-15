@@ -30,6 +30,8 @@ export default mergeConfig(
         include: ["src/**/*.ts", "src/**/*.tsx"],
       },
       environment: "jsdom",
+      // Runs after the shared setup the base config lists.
+      setupFiles: ["./testing/setup.ts"],
       /**
        * Fifteen seconds per test, where Vitest's default is five: a jsdom test
        * that opens the calendar's menus takes about a second and a half on a

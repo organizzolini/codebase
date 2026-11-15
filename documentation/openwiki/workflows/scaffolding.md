@@ -1,8 +1,11 @@
 ---
 type: workflow
 title: Scaffolding with Conformetry
-description: How to scaffold new projects, modules, and components using conformetry generators. Covers the nx g conformetry:<generator> command, the template picker, required inputs, and the validation that ensures generated code stays conformant. Lists available templates and their use cases.
+description: How to scaffold new projects, modules, and files using conformetry generators. Covers the nx g conformetry:<generator> command, the conformetry CLI, template discovery, instance matching, validation scoring, and synchronization. Lists all available templates and their use cases.
 tags: [scaffolding, generators, conformetry, nx, project-creation, module-creation, file-creation]
+verified:
+  - by: openwiki/0.9.0
+    at: 2026-11-13T16:30:25.369Z
 sources:
   - id: openwiki-source-d5a2a32b7849ae8b44301e20
     resource: repo://.agents/skills/nx-generate/SKILL.md
@@ -18,20 +21,18 @@ sources:
     resource: repo://projects/ic-suite/callidescope/callidescope-cli/project.json
   - id: openwiki-source-15595f87d2b72a10e2cbba47
     resource: repo://projects/ic-suite/conformetry/conformetry-cli/README.md
-  - id: openwiki-source-687a69dfdec0ebf92b0babfb
-    resource: repo://projects/ic-suite/conformetry/conformetry-nx/generators.json
-  - id: openwiki-source-51289acac01f188bf1ca3053
-    resource: repo://projects/ic-suite/conformetry/conformetry-nx/project.json
   - id: openwiki-source-4eb0d21efbe34e65dacab4d0
     resource: repo://projects/ic-suite/conformetry/conformetry-nx/src/modules/instances/instances.service.ts
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
-generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
+  - id: openwiki-source-843e28d83578389126912d89
+    resource: repo://synchronization/project.json
+generated: { by: "openwiki/0.9.0", at: "2026-11-13T16:30:25.369Z" }
 ---
 
 # Scaffolding with Conformetry
 
-This page documents how to create new projects, modules, and files using the **conformetry** generator system. Conformetry is the workspace's template-driven code generation and conformance validation system. Its templates live in `configuration/conformetry-templates/` and are defined in `configuration/conformetry.config.ts`. The Nx plugin is synced by running `nx run synchronization:conformetry-generators:write`.
+This page documents how to create new projects, modules, and files using the **conformetry** generator system. Conformetry is the workspace's template-driven code generation and conformance validation system. Its templates live in `configuration/conformetry-templates/` and are defined in `configuration/conformetry.config.ts`. The Nx plugin generators are synced by running `nx run synchronization:conformetry-generators:write`.
 
 > **Always invoke the `nx-generate` skill first** before exploring or calling MCP tools when scaffolding new artifacts. The skill handles generator discovery, dry-runs, and verification.
 
@@ -46,15 +47,15 @@ Every Nx project in this workspace carries a `type` tag in its `project.json`:
 
 ## Generator Categories
 
-Conformetry generators fall into three tiers:
+Conformetry generators fall into three tiers. As of the current configuration, there are **17 generators** total.
 
-| Tier | Generators | Purpose |
-|------|------------|---------|
-| **Project** | `jupyter-notebook-application`, `nestjs-command-project`, `nestjs-graphql-application`, `nestjs-service-project`, `tanstack-application` | Create a brand-new Nx project (new `project.json`, `package.json`, `tsconfig`, bootstrap, etc.) |
-| **Module** | `nestjs-command-module`, `nestjs-dataloader-module`, `nestjs-graphql-module`, `nestjs-service-module`, `tanstack-server-function` | Add a new module directory inside an **existing** NestJS/TanStack project (`src/modules/<name>/`) |
-| **File** | `nestjs-service-file`, `nestjs-resolver-file`, `react-component`, `react-hook`, `tanstack-route` | Add one or two files inside an existing module/project without creating a new module directory |
+| Tier | Count | Generators | Purpose |
+|------|-------|------------|---------|
+| **Project** | 5 | `jupyter-notebook-application`, `nestjs-command-project`, `nestjs-graphql-application`, `nestjs-service-project`, `tanstack-application` | Create a brand-new Nx project (new `project.json`, `package.json`, `tsconfig`, bootstrap, etc.) |
+| **Module** | 6 | `nestjs-command-module`, `nestjs-dataloader-module`, `nestjs-graphql-module`, `nestjs-service-module`, `tanstack-server-function` | Add a new module directory inside an **existing** NestJS/TanStack project (`src/modules/<name>/`) |
+| **File/Folder** | 6 | `nestjs-service-file`, `nestjs-resolver-file`, `react-component-folder`, `react-component-file`, `react-hook-folder`, `react-hook-file`, `tanstack-route` | Add files inside an existing module/project — some create a folder with multiple files, others add individual files |
 
-## The 14 Generators
+## All 17 Generators
 
 All generators are defined in `configuration/conformetry.config.ts`.
 
@@ -68,7 +69,7 @@ All generators are defined in `configuration/conformetry.config.ts`.
 | `nestjs-service-project` | Standalone NestJS library package for internal workspace code shared across projects, no CLI entry point or HTTP server | `type:package` | `name` (kebab-case), `type` (nesting directory), `workspaceRelativePrefix` |
 | `tanstack-application` | Standalone TanStack Start web app — server rendering, file-based routes, Tailwind CSS, Vitest — for a new frontend in `projects/` | `type:application` | `name` (kebab-case) |
 
-### Module Generators (5)
+### Module Generators (6)
 
 | Generator | Description | Target Projects (tags) | Key Inputs |
 |-----------|-------------|------------------------|------------|
@@ -78,17 +79,19 @@ All generators are defined in `configuration/conformetry.config.ts`.
 | `nestjs-service-module` | Plain service module — module, service, constants, types, unit test — for an existing NestJS project | `framework:nestjs` | `name`, `project` |
 | `tanstack-server-function` | TanStack Start server function module — GET/POST server functions, utilities, schemas, types, unit test — for an existing TanStack Start project | `framework:tanstack-start` | `name`, `project` |
 
-### File Generators (4)
+### File/Folder Generators (6)
 
 | Generator | Description | Target Projects (tags) | Key Inputs |
 |-----------|-------------|------------------------|------------|
 | `nestjs-service-file` | Service + unit test file for an existing NestJS module, without surrounding module files | `framework:nestjs` | `module` (target module), `name` (service name), `project` |
 | `nestjs-resolver-file` | Resolver + unit test file for an existing NestJS module, without surrounding module files | `framework:nestjs`, `language:graphql` | `module`, `name`, `project` |
-| `react-component` | React component + unit test file for an existing React project, placed in `src/components/` | `framework:react` | `name` (kebab-case), `project` |
-| `react-hook` | React hook + unit test file for an existing React project, placed in `src/hooks/` (name must start with `use-`) | `framework:react` | `name` (kebab-case, `use-*`), `project` |
+| `react-component-folder` | React component folder — component, types, constants, utilities, unit test — in `src/components/` of an existing React application | `framework:react`, `type:application` | `name` (kebab-case), `project` |
+| `react-component-file` | React component + unit test file added to an existing component folder | `framework:react`, `type:application` | `module` (component folder), `name` (kebab-case), `project` |
+| `react-hook-folder` | React hook folder — hook, result type, constants, utilities, unit test — in `src/hooks/` (name must start with `use-`) | `framework:react`, `type:application` | `name` (kebab-case, `use-*`), `project` |
+| `react-hook-file` | React hook + result type + unit test added to an existing hook folder | `framework:react`, `type:application` | `module` (hook folder), `name` (kebab-case, `use-*`), `project` |
 | `tanstack-route` | TanStack Start file route + integration test — the route and the page it renders — for an existing TanStack Start project | `framework:tanstack-start` | `name` (route file stem, e.g. `index`, `word.$id`), `project`, `path` (URL path, e.g. `/`, `/word/$id`) |
 
-## Running Generators
+## Running Generators via Nx
 
 Generators are invoked through Nx. **Always run with `--dry-run` first** to verify file placement.
 
@@ -98,7 +101,9 @@ nx list conformetry
 
 # Show options for a specific generator
 nx g conformetry:nestjs-service-module --help
+```
 
+```bash
 # Dry-run (no files written)
 nx g conformetry:nestjs-service-module --name=users --project=callidescope-core --dry-run --no-interactive
 
@@ -135,10 +140,10 @@ nx g conformetry:nestjs-service-module \
   --no-interactive
 ```
 
-**Add a React component to an existing React project:**
+**Add a React component folder to an existing React project:**
 
 ```bash
-nx g conformetry:react-component \
+nx g conformetry:react-component-folder \
   --name=button \
   --project=caelundas-web \
   --no-interactive
@@ -168,7 +173,7 @@ conformetry validate --config configuration/conformetry.config.ts
 
 ### Interactive Template Picker
 
-Omitting `--template` at a terminal offers an autocomplete picker over every configured template, each shown with its description, filtering as you type. Typing `service` is the quickest way to reach `nestjs-service-module` without running a separate lookup command.
+Omitting `--template` at a terminal offers an autocomplete picker over every configured template, each shown with its description, filtering as you type. Typing `service` is the quickest way to reach `nestjs-service-module` without running a separate lookup command. Passing `--template` skips the picker entirely.
 
 **With no terminal (CI, scripts, hooks)**, a missing `--template` is **refused** — listing every available name — rather than waiting, so a CI job fails immediately instead of hanging until timeout.
 
@@ -192,7 +197,7 @@ Conformetry validates that generated files conform to their templates. The same 
 conformetry validate --config configuration/conformetry.config.ts
 
 # Validate specific templates
-conformetry validate --config configuration/conformetry.config.ts --templates nestjs-service-module,react-component
+conformetry validate --config configuration/conformetry.config.ts --templates nestjs-service-module,react-component-file
 
 # Validate specific instance paths
 conformetry validate --config configuration/conformetry.config.ts --instances projects/common/observability/src/modules/logger
@@ -214,40 +219,62 @@ An instance must score at or above its **threshold** to pass. Three levels set i
 2. Generator: `threshold` on the generator definition
 3. CLI flag: `--threshold` on the validate command
 
-## Instance Matching & Validation
+## Instance Discovery & Matching
 
 The **InstancesService** (`projects/ic-suite/conformetry/conformetry-nx/src/modules/instances/instances.service.ts`) resolves which instances belong to which project:
 
 - **Project generators** use **untagged instance groups** (workspace globs like `projects/**/*-web`)
 - **Module/file generators** use **tagged instance groups** (e.g., `{ patterns: ["src/modules/*"], tags: ["framework:nestjs"] }`)
 
-Tags like `framework:nestjs`, `language:graphql`, `framework:tanstack-start`, `framework:react` are declared in each project's `project.json` and determine which module/file generators apply.
+Tags like `framework:nestjs`, `language:graphql`, `framework:tanstack-start`, `framework:react`, `framework:nest-commander`, `type:application` are declared in each project's `project.json` and determine which module/file generators apply.
+
+### Glob Expansion & Template Fit Scoring
+
+The configuration service (`@conformetry/configuration`) expands globs to discover instances. Each instance is matched against templates by scoring how many template files the instance contains. An instance belongs to the template it best fits. If two templates score equally, both are reported — ambiguous matches are surfaced rather than arbitrarily resolved. If no template fits, the instance is not validated.
+
+### CLI vs Nx Host Difference
 
 A template whose instances are scoped by project tags **cannot be located by the CLI host** (`conformetry validate`) — tag resolution belongs to the Nx plugin, and the CLI host locates instances by glob alone. Such groups are left out rather than expanded from the working directory. Run those through `@conformetry/nx`, or pass `--instances` with explicit paths.
 
-## SHADCN_GENERATED_PATTERNS Exclusion
+## Generator Declaration (configuration/conformetry.config.ts)
 
-Presentation components managed by the `shadcn` CLI are **excluded from conformetry validation** because they are vendored code that the shadcn CLI overwrites on every `shadcn add`. Holding them to a template would mean editing files the next `shadcn add` overwrites.
+Each generator in `configuration/conformetry.config.ts` declares:
 
-The exclusion is defined in `configuration/conformetry.config.ts`:
+- **`name`** — Unique generator identifier (used as `nx g conformetry:<name>`)
+- **`description`** — Shown in picker and help
+- **`templatePath`** — Path under `configuration/conformetry-templates/`
+- **`inputs`** — Zod schema defining the generator's CLI options (converted to JSON Schema for Nx)
+- **`instances`** — Array of instance groups defining where existing instances live
+
+### Instance Groups
 
 ```typescript
-const SHADCN_GENERATED_PATTERNS = [
-  "projects/common/presentation/src/components/examples/**",
-  "projects/common/presentation/src/components/reui/**",
-  "projects/common/presentation/src/components/ui/**",
-  "projects/common/presentation/src/hooks/**",
-  "projects/common/presentation/src/lib/**",
-];
+instances: [
+  // Untagged group (project generators): workspace globs
+  { patterns: ["projects/**/*-web"], exclude: ["projects/**/node_modules/**"] },
+
+  // Tagged group (module/file generators): globs read inside each matching project
+  { patterns: ["src/modules/*"], tags: ["framework:nestjs", "language:graphql"] },
+
+  // With substitutions for project generators that need context
+  {
+    patterns: ["projects/ic-suite/callidescope/callidescope-cli"],
+    substitutions: { type: "projects/ic-suite/callidescope/", workspaceRelativePrefix: "../../../../" }
+  }
+]
 ```
 
-These patterns are applied as `exclude` on the `react-component` and `react-hook` instance groups. If you add shadcn components to a different project, update this list accordingly.
+- **Untagged groups** = workspace globs expanded from workspace root (for project generators)
+- **Tagged groups** = `{ patterns: [...], tags: [...] }` expanded inside each Nx project matching the tags (for module/file generators)
+- **`substitutions`** — Fixed input values for specific instance paths (used by project generators that need `type` and `workspaceRelativePrefix`)
+- **`exclude`** — Glob patterns to exclude from discovery (e.g., `node_modules`)
+- **`threshold`** — Per-group conformance threshold (default: 100%)
 
 ## Template Structure
 
-Templates live in `configuration/conformetry-templates/<generator-name>/` and use `{{placeholder}}` syntax (double braces) for substitution.
+Templates live in `configuration/conformetry-templates/<generator-name>/` and use `{{placeholder}}` syntax (double braces) for substitution. Both file contents and file paths are rendered.
 
-**Project template example** (`nestjs-service-project`):
+### Project Template Example (`nestjs-service-project`)
 
 ```
 configuration/conformetry-templates/nestjs-service-project/
@@ -256,6 +283,7 @@ configuration/conformetry-templates/nestjs-service-project/
     ├── .gitignore
     ├── AGENTS.md
     ├── codometer.config.ts
+    ├── coinagerie.config.ts
     ├── eslint.config.ts
     ├── package.json
     ├── project.json        # declares type:package tag
@@ -264,7 +292,7 @@ configuration/conformetry-templates/nestjs-service-project/
     │   ├── {{nameKebabCase}}.module.ts
     │   ├── {{nameKebabCase}}.service.ts
     │   ├── {{nameKebabCase}}.types.ts
-    │   └── {{nameKebabCase}}.constants.ts
+    │   └── index.ts
     ├── testing/
     ├── tsconfig.build.json
     ├── tsconfig.json
@@ -272,7 +300,7 @@ configuration/conformetry-templates/nestjs-service-project/
     └── vitest.config.ts
 ```
 
-**Module template example** (`nestjs-service-module`):
+### Module Template Example (`nestjs-service-module`)
 
 ```
 configuration/conformetry-templates/nestjs-service-module/
@@ -284,29 +312,46 @@ configuration/conformetry-templates/nestjs-service-module/
     └── {{nameKebabCase}}.types.ts
 ```
 
-**File template example** (`react-component`):
+### File Template Example (`react-component-file`)
 
 ```
-configuration/conformetry-templates/react-component/
+configuration/conformetry-templates/react-component-file/
 ├── {{nameKebabCase}}.tsx
 └── {{nameKebabCase}}.unit.test.tsx
 ```
 
-## Conformetry Configuration
+### Automatic Case Variants
 
-The generator definitions in `configuration/conformetry.config.ts` control:
+Every generator's `name` input is expanded into four case variants automatically:
 
-- **`inputs`** — Zod schema defining the generator's CLI options (converted to JSON Schema for Nx)
-- **`instances`** — Where existing instances of this template live in the workspace, used for validation
-  - **Untagged groups** = workspace globs (for project generators)
-  - **Tagged groups** = `{ patterns: [...], tags: [...] }` matched per-project (for module/file generators)
-- **`templatePath`** — Path to the template directory under `configuration/conformetry-templates/`
+| Placeholder | `search bar` becomes |
+| ----------- | -------------------- |
+| `{{nameCamelCase}}` | `searchBar` |
+| `{{nameKebabCase}}` | `search-bar` |
+| `{{namePascalCase}}` | `SearchBar` |
+| `{{nameSnakeCase}}` | `search_bar` |
 
-When you add a new generator, you:
-1. Create the template in `configuration/conformetry-templates/<name>/`
-2. Add the definition to `configuration/conformetry.config.ts`
-3. Run `nx run synchronization:conformetry-generators:write` to regenerate the Nx plugin
-4. The plugin is emitted to `projects/ic-suite/conformetry/conformetry-nx/` (see ADR 0025)
+An explicit input of the same name always wins over the derived variant.
+
+## Synchronization Tooling
+
+The conformetry Nx plugin generators are **emitted at install time** via a postinstall script, and can be regenerated by running:
+
+```bash
+# Check for drift (runs in CI on pull requests)
+nx run synchronization:conformetry-generators:check
+
+# Write the generated plugin (runs on default branch release)
+nx run synchronization:conformetry-generators:write
+```
+
+The synchronization target is defined in `synchronization/project.json`. It runs `synchronization/src/synchronization.main.ts conformetry-generators write` which reads `configuration/conformetry.config.ts` and emits the Nx plugin to `projects/ic-suite/conformetry/conformetry-nx/`.
+
+The emitted plugin exposes a `sync` generator (see `projects/ic-suite/conformetry/conformetry-nx/generators.json`) and provides:
+- Inferred `conformetry-validate` targets on projects that hold instances
+- Generators addressed by name: `nx g conformetry:<generator>`
+
+**CI fails on drift** — the `check` configuration runs in pull request validation and exits non-zero if the emitted plugin differs from the committed one.
 
 ## Verification After Generation
 
@@ -345,7 +390,7 @@ See the full skill at `.agents/skills/nx-generate/SKILL.md`.
 <!-- openwiki: broken internal link [../architecture/decisions/0011-hold-one-path-law-for-every-project-type.md] file "../architecture/decisions/0011-hold-one-path-law-for-every-project-type.md" does not exist. Fix the href or restore the target, then delete this comment. -->
 - **ADR 0011** — [Hold one path law for every project type](../architecture/decisions/0011-hold-one-path-law-for-every-project-type.md): The universal path/naming law lives in `configuration/codebase-structure.json`; per-type shape is enforced by conformetry via tags, not by folder name.
 <!-- openwiki: broken internal link [../architecture/decisions/0025-run-the-workspace-tools-from-a-configuration-project.md] file "../architecture/decisions/0025-run-the-workspace-tools-from-a-configuration-project.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- **ADR 0025** — [Run the workspace tools from a configuration project](../architecture/decisions/0025-run-the-workspace-tools-from-a-configuration-project.md): The conformetry Nx plugin lives in `projects/ic-suite/conformetry/conformetry-nx/` (the `configuration` project), and workspace tools run from there.
+- **ADR 0025** — [Run the workspace tools from a configuration project](../architecture/decisions/0025-run-the-workspace-tools-from-a-configuration-project.md): The `configuration` project holds workspace tool configuration; the conformetry Nx plugin is emitted to `projects/ic-suite/conformetry/conformetry-nx/` by the `synchronization` project.
 
 ## Related Pages
 

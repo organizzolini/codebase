@@ -8,15 +8,15 @@ describe(LexemeMatch, () => {
     render(
       <LexemeMatch
         className="lexeme-match"
-        match={{ kind: "exact-headword" }}
+        match={{ kind: "exact-lemma" }}
       />,
     );
 
     expect(screen.getByTestId("lexeme-match").className).toBe("lexeme-match");
   });
 
-  it("shows a Latin icon and an exact icon for an exact headword match", () => {
-    render(<LexemeMatch match={{ kind: "exact-headword" }} />);
+  it("shows a Latin icon and an exact icon for an exact lemma match", () => {
+    render(<LexemeMatch match={{ kind: "exact-lemma" }} />);
 
     expect(screen.getByLabelText("Latin match")).toBeDefined();
     expect(screen.getByLabelText("Exact match")).toBeDefined();
@@ -42,7 +42,7 @@ describe(LexemeMatch, () => {
 
     await expect(
       screen.findByText(
-        "Fuzzy match: A headword or form a few letters away from what you searched for (2 edits away)",
+        "Fuzzy match: A lemma or form a few letters away from what you searched for (2 edits away)",
       ),
     ).resolves.toBeDefined();
   });
@@ -54,7 +54,7 @@ describe(LexemeMatch, () => {
 
     await expect(
       screen.findByText(
-        "Starts with: The headword starts with what you searched for (+2 letters)",
+        "Starts with: The lemma starts with what you searched for (+2 letters)",
       ),
     ).resolves.toBeDefined();
   });

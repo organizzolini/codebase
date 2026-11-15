@@ -6,4 +6,6 @@ export default {
   // Merges a derivational family the tool leaves apart on its own.
   fold: (word: string) => (word === "configuration" ? "configure" : word),
   include: ["src/**"],
+  // Listed as written: left to fold, `pisces` would lose its last letter.
+  unfolded: ["pisces"],
 };

@@ -8,6 +8,7 @@ import { DiscoveryService } from "./discovery.service";
 import { IgnoreRulesService } from "./ignore-rules.service";
 
 import type { DiscoveryResult } from "./discovery.types";
+import type * as TestingPackage from "@codebase/testing";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 import type { Dirent } from "node:fs";
@@ -23,14 +24,17 @@ const { existsSyncMock, readdirSyncMock, readFileSyncMock } = vi.hoisted(
   }),
 );
 
-vi.mock("node:fs", async (importOriginal) => ({
-  // Everything else the module graph reaches for stays real; only the three
-  // calls the walk makes are answered from the in-memory tree below.
-  ...(await importOriginal<Record<string, unknown>>()),
-  existsSync: existsSyncMock,
-  readdirSync: readdirSyncMock,
-  readFileSync: readFileSyncMock,
-}));
+vi.mock("node:fs", async (importOriginal) => {
+  const { mockFileSystem } =
+    await vi.importActual<typeof TestingPackage>("@codebase/testing");
+
+  return mockFileSystem({
+    ...(await importOriginal<Record<string, unknown>>()),
+    existsSync: existsSyncMock,
+    readdirSync: readdirSyncMock,
+    readFileSync: readFileSyncMock,
+  });
+});
 
 const DEFAULT_EXCLUDE = [
   "**/.nx/**",

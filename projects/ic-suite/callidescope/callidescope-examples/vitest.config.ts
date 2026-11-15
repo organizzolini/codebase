@@ -34,7 +34,7 @@ export default mergeConfig(
          * and asserts every finding the guides document. That is the behavior
          * worth covering, and it is covered exactly.
          */
-        include: [],
+        exclude: ["src/**/*.ts"],
       },
     },
   }),
