@@ -15,7 +15,7 @@ import type { Code, CodeObject } from "./code.types";
 
 /**
  * Owns a meander's Code: reading one, a point's direction bits, spelling a
- * tile into one, and rotating its phase.
+ * tile into one, and rotating its columns.
  *
  * **A Code is read in place.** Each bit is decoded from its own digit.
  *
@@ -112,27 +112,27 @@ export class CodeService {
   // 🌎 Public Methods
 
   /**
-   * The canonical phase of a Code: the one minimizing its tile-crossing
+   * The canonical rotation of a Code: the one minimizing its tile-crossing
    * score, ties broken by the lexicographically smallest digits.
    */
-  canonicalPhase(
+  canonicalRotation(
     code: CodeObject,
-    scoreTileCrossing: (phase: CodeObject) => number,
+    scoreTileCrossing: (rotation: CodeObject) => number,
     group: (code: CodeObject) => CodeObject[] = (c) =>
       Array.from({ length: c.columns }, (_, index) => this.rotate(c, index)),
   ): CodeObject {
     let best = code;
     let minimumTileCrossingScore = Infinity;
 
-    for (const phase of group(code)) {
-      const tileCrossingScore = scoreTileCrossing(phase);
+    for (const rotation of group(code)) {
+      const tileCrossingScore = scoreTileCrossing(rotation);
 
       if (
         tileCrossingScore < minimumTileCrossingScore ||
         (tileCrossingScore === minimumTileCrossingScore &&
-          phase.digits < best.digits)
+          rotation.digits < best.digits)
       ) {
-        best = phase;
+        best = rotation;
         minimumTileCrossingScore = tileCrossingScore;
       }
     }
@@ -218,7 +218,7 @@ export class CodeService {
 
   /**
    * The Code shifted `shift` columns west, wrapping each row. A shift
-   * re-phases the repeat without changing the pattern.
+   * rotates the repeat without changing the pattern.
    */
   rotate(code: CodeObject, shift: number): CodeObject {
     const { columns, digits, rows } = code;
@@ -275,11 +275,11 @@ export class CodeService {
 
   /**
    * The Codes of `code`'s other symmetry-class members, each at its canonical
-   * phase, sorted. The draw run folds these into this row.
+   * rotation, sorted. The draw run folds these into this row.
    */
   symmetricalCodes(
     code: CodeObject,
-    scoreTileCrossing: (phase: CodeObject) => number,
+    scoreTileCrossing: (rotation: CodeObject) => number,
   ): string[] {
     const own = this.format(code);
     const codes = new Set(
@@ -287,7 +287,7 @@ export class CodeService {
         .reflections(this.tile(code))
         .map((reflection) =>
           this.format(
-            this.canonicalPhase(
+            this.canonicalRotation(
               { ...code, digits: this.spellDigits(reflection) },
               scoreTileCrossing,
             ),

@@ -46,7 +46,7 @@ export class SearchResolver {
    */
   @Query(() => LexemeSearchConnection, {
     description:
-      "Performs tiered Latin dictionary search across exact headwords, inflected forms, prefixes, and fuzzy matches.",
+      "Performs tiered Latin dictionary search across exact lemmas, inflected forms, prefixes, and fuzzy matches.",
     name: "searchLatin",
   })
   public async searchLatin(

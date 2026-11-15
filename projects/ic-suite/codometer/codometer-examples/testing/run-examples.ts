@@ -44,7 +44,7 @@ const EXPECTED_EXIT_CODES: Record<string, number> = {
   "limits/fail.config.ts": 1,
   "limits/unbound.config.ts": 1,
   "limits/units.config.ts": 1,
-  "limits/unprefixed.config.ts": 1,
+  "limits/unqualified.config.ts": 1,
   "limits/unreadable-unit.config.ts": 1,
   "limits/warn.config.ts": 0,
   "output/codometer.config.ts": 0,
