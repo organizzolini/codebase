@@ -6,20 +6,20 @@ import { MatrixModule } from "../matrix/matrix.module";
 
 import { CharacteristicContextService } from "./characteristic-context.service";
 import { CharacteristicsService } from "./characteristics.service";
-import { PatternCharacteristicsModule } from "./compound/pattern/pattern-characteristics.module";
-import { StructureCharacteristicsModule } from "./compound/structure/structure-characteristics.module";
-import { EndCharacteristicsModule } from "./path/end/end-characteristics.module";
-import { TileCrossingCharacteristicsModule } from "./path/tile-crossing/tile-crossing-characteristics.module";
-import { TopologyCharacteristicsModule } from "./path/topology/topology-characteristics.module";
-import { TurnCharacteristicsModule } from "./path/turn/turn-characteristics.module";
-import { CornerCharacteristicsModule } from "./submatrix/corner/corner-characteristics.module";
-import { CrossCharacteristicsModule } from "./submatrix/cross/cross-characteristics.module";
-import { EmbeddedCharacteristicsModule } from "./submatrix/embedded/embedded-characteristics.module";
-import { ForkCharacteristicsModule } from "./submatrix/fork/fork-characteristics.module";
-import { LetterCharacteristicsModule } from "./submatrix/letter/letter-characteristics.module";
-import { PointCharacteristicsModule } from "./submatrix/point/point-characteristics.module";
-import { RectangleCharacteristicsModule } from "./submatrix/rectangle/rectangle-characteristics.module";
-import { RunCharacteristicsModule } from "./submatrix/run/run-characteristics.module";
+import { PatternCharacteristicsModule } from "./modules/compound/modules/pattern/pattern-characteristics.module";
+import { StructureCharacteristicsModule } from "./modules/compound/modules/structure/structure-characteristics.module";
+import { EndCharacteristicsModule } from "./modules/path/modules/end/end-characteristics.module";
+import { TileCrossingCharacteristicsModule } from "./modules/path/modules/tile-crossing/tile-crossing-characteristics.module";
+import { TopologyCharacteristicsModule } from "./modules/path/modules/topology/topology-characteristics.module";
+import { TurnCharacteristicsModule } from "./modules/path/modules/turn/turn-characteristics.module";
+import { CornerCharacteristicsModule } from "./modules/submatrix/modules/corner/corner-characteristics.module";
+import { CrossCharacteristicsModule } from "./modules/submatrix/modules/cross/cross-characteristics.module";
+import { EmbeddedCharacteristicsModule } from "./modules/submatrix/modules/embedded/embedded-characteristics.module";
+import { ForkCharacteristicsModule } from "./modules/submatrix/modules/fork/fork-characteristics.module";
+import { LetterCharacteristicsModule } from "./modules/submatrix/modules/letter/letter-characteristics.module";
+import { PointCharacteristicsModule } from "./modules/submatrix/modules/point/point-characteristics.module";
+import { RectangleCharacteristicsModule } from "./modules/submatrix/modules/rectangle/rectangle-characteristics.module";
+import { RunCharacteristicsModule } from "./modules/submatrix/modules/run/run-characteristics.module";
 
 /**
  * Computes Characteristics from a Code alone, with no grid, SVG, filesystem or database.
