@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import * as attribution from "./render/boundary-attribution";
 import * as bootFailures from "./render/boundary-boot-failures";
+import * as charges from "./render/boundary-charges";
 import { boundaryOutcomeReportService } from "./render/builders";
 
 import type { BoundaryRun } from "./render/boundary-run";
@@ -11,12 +11,12 @@ function chargedProjects(run: BoundaryRun): (readonly string[])[] {
   return run.outcome.violations.map((violation) => violation.projects);
 }
 
-describe("boundary attribution examples", () => {
+describe("boundary charge examples", () => {
   describe("a cycle", () => {
     it("fails every project on a cross-project cycle", async () => {
       expect.hasAssertions();
 
-      const run = await attribution.runCycleCheck({
+      const run = await charges.runCycleCheck({
         judged: ["shop-checkout", "shop-pricing", "shop-web"],
       });
 
@@ -30,7 +30,7 @@ describe("boundary attribution examples", () => {
     it("fails a project judged alone when it sits on the cycle", async () => {
       expect.hasAssertions();
 
-      const run = await attribution.runCycleCheck({ judged: ["shop-pricing"] });
+      const run = await charges.runCycleCheck({ judged: ["shop-pricing"] });
 
       expect(chargedProjects(run)).toStrictEqual([
         ["shop-checkout", "shop-pricing"],
@@ -41,7 +41,7 @@ describe("boundary attribution examples", () => {
     it("charges a longer cycle to all of its projects and to nothing off it", async () => {
       expect.hasAssertions();
 
-      const run = await attribution.runRingCheck({
+      const run = await charges.runRingCheck({
         judged: ["shop-admin", "shop-ledger"],
       });
 
@@ -58,7 +58,7 @@ describe("boundary attribution examples", () => {
     it("judges what a --projects glob selects, and builds its closure", async () => {
       expect.hasAssertions();
 
-      const run = await attribution.runCycleCheck({ judged: ["shop-p*"] });
+      const run = await charges.runCycleCheck({ judged: ["shop-p*"] });
 
       expect(run.judged).toStrictEqual(["shop-pricing"]);
       expect(run.builtProjects).toStrictEqual([
@@ -76,7 +76,7 @@ describe("boundary attribution examples", () => {
     it("is only noted when the cycle lives in its dependencies", async () => {
       expect.hasAssertions();
 
-      const run = await attribution.runCycleCheck({ judged: ["shop-web"] });
+      const run = await charges.runCycleCheck({ judged: ["shop-web"] });
 
       expect(run.builtProjects).toStrictEqual([
         "shop-checkout",
@@ -91,7 +91,7 @@ describe("boundary attribution examples", () => {
     it("fails once a project on the cycle is judged as well", async () => {
       expect.hasAssertions();
 
-      const run = await attribution.runCycleCheck({
+      const run = await charges.runCycleCheck({
         judged: ["shop-pricing", "shop-web"],
       });
 
@@ -102,7 +102,7 @@ describe("boundary attribution examples", () => {
     it("never builds the dependencies under --no-dependencies", async () => {
       expect.hasAssertions();
 
-      const run = await attribution.runCycleCheck({
+      const run = await charges.runCycleCheck({
         dependencies: false,
         judged: ["shop-web"],
       });
@@ -117,7 +117,7 @@ describe("boundary attribution examples", () => {
     it("is charged to the project that owns its source", async () => {
       expect.hasAssertions();
 
-      const run = await attribution.runAccessCheck({
+      const run = await charges.runAccessCheck({
         judged: ["shop-web"],
         kind: "forbid",
       });
@@ -129,7 +129,7 @@ describe("boundary attribution examples", () => {
     it("is not charged to its target, which reports nothing", async () => {
       expect.hasAssertions();
 
-      const run = await attribution.runAccessCheck({
+      const run = await charges.runAccessCheck({
         judged: ["shop-database"],
         kind: "forbid",
       });
@@ -141,7 +141,7 @@ describe("boundary attribution examples", () => {
     it("is a note against the source for a project depending on it", async () => {
       expect.hasAssertions();
 
-      const run = await attribution.runAccessCheck({
+      const run = await charges.runAccessCheck({
         judged: ["shop-e2e"],
         kind: "forbid",
       });
@@ -154,7 +154,7 @@ describe("boundary attribution examples", () => {
     it("charges an edge no allow rule covers to its source", async () => {
       expect.hasAssertions();
 
-      const run = await attribution.runAccessCheck({
+      const run = await charges.runAccessCheck({
         judged: ["shop-api"],
         kind: "allow",
       });
@@ -211,7 +211,7 @@ describe("boundary attribution examples", () => {
     it("words a note as living in a dependency and not failing", async () => {
       expect.hasAssertions();
 
-      const run = await attribution.runCycleCheck({ judged: ["shop-web"] });
+      const run = await charges.runCycleCheck({ judged: ["shop-web"] });
 
       expect(boundaryOutcomeReportService.renderMarkdown(run.report)).toContain(
         "in dependency shop-checkout, shop-pricing, not failing",
