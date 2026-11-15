@@ -4,10 +4,15 @@ import type { PaginationArguments } from "../search/pagination-arguments.entitie
 import type { Repository } from "@codebase/lexico-db";
 
 /**
- * The `Author` column the API does not expose: its unstructured ingestion
- * metadata.
+ * The `Author` columns the API does not expose yet: its unstructured ingestion
+ * metadata, and the library attributes the library query will expose.
  */
-export type AuthorDatabaseOnlyField = "metadata";
+export type AuthorDatabaseOnlyField =
+  | "endYear"
+  | "era"
+  | "fullName"
+  | "metadata"
+  | "startYear";
 
 /** The `Author` relation resolvers expose: texts, in title order. */
 export type AuthorResolvedField = "texts";
@@ -146,10 +151,26 @@ export interface SqlCondition {
 }
 
 /**
- * The `Text` column the API does not expose: its unstructured ingestion
- * metadata.
+ * The `Text` columns the API does not expose yet: its unstructured ingestion
+ * metadata, and the library attributes the library query will expose.
  */
-export type TextDatabaseOnlyField = "metadata";
+export type TextDatabaseOnlyField =
+  | "collection"
+  | "edition"
+  | "editors"
+  | "endYear"
+  | "findSpot"
+  | "inscriptionType"
+  | "lineCount"
+  | "material"
+  | "metadata"
+  | "printYear"
+  | "province"
+  | "publisher"
+  | "recognisedWordCount"
+  | "startYear"
+  | "wordCount"
+  | "workIdentifier";
 
 /** The `Text` relations the API exposes, each as its own GraphQL type. */
 export type TextRelationField = "author" | "parentText";
