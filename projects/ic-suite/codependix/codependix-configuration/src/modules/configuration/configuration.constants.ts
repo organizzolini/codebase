@@ -50,9 +50,6 @@ export const DEFAULT_MARKDOWN_PATH = "README.md";
 /** Default project list; empty on purpose, never silently widened. */
 export const DEFAULT_INCLUDE_GLOBS = [] as const;
 
-/** Upward search root markers; not manifests, which every project has. */
-export const REPOSITORY_ROOT_MARKERS = [".git", "pnpm-workspace.yaml"] as const;
-
 /** Separates the entries of a `--projects` or `--tags` argument. */
 export const SELECTION_SEPARATOR = ",";
 

@@ -213,13 +213,16 @@ describe(ConfigurationService, () => {
       cwdSpy.mockRestore();
     });
 
-    it("resolves a configuration path relative to the workspace root", async () => {
+    it("reads the workspace configuration from the path it is given", async () => {
       const configuration = await service.loadConfiguration({
-        configurationPath: "configuration/codependix.config.ts",
+        configurationPath: path.resolve(
+          import.meta.dirname,
+          "../../../../../../../configuration/codependix.config.ts",
+        ),
       });
 
       expect(configuration.projectConfigurationPath).toBe(
-        "codependix.config.ts",
+        "configuration/codependix.config.ts",
       );
     });
 

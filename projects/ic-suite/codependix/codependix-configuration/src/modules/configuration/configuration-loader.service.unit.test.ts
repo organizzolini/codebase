@@ -1,12 +1,13 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { beforeAll, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationLoaderService } from "./configuration-loader.service";
+import { ConfigurationFileNotFoundError } from "./configuration.constants";
 
 describe(ConfigurationLoaderService, () => {
   let service: ConfigurationLoaderService;
@@ -15,6 +16,10 @@ describe(ConfigurationLoaderService, () => {
     ({ instance: service } = await buildTestingModule(
       ConfigurationLoaderService,
     ));
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it("resolves with its dependencies", async () => {
@@ -117,6 +122,20 @@ describe(ConfigurationLoaderService, () => {
       expect(service.resolveConfigurationPath(configurationPath)).toBe(
         configurationPath,
       );
+    });
+
+    it("never retries a missing relative path from the workspace root", async () => {
+      const workspace = createTemporaryDirectory("codependix-loader");
+      const nested = path.join(workspace, "projects", "nested");
+
+      await mkdir(nested, { recursive: true });
+      await writeFile(path.join(workspace, "pnpm-workspace.yaml"), "", "utf8");
+      await writeFile(path.join(workspace, "codependix.config.json"), "{}");
+      vi.spyOn(process, "cwd").mockReturnValue(nested);
+
+      expect(() =>
+        service.resolveConfigurationPath("codependix.config.json"),
+      ).toThrow(ConfigurationFileNotFoundError);
     });
   });
 });

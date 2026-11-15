@@ -114,7 +114,7 @@ export interface CodependixWorkspaceConfiguration {
 
 /** Arguments accepted when loading a configuration file. */
 export interface LoadConfigurationArguments {
-  /** The main configuration file, resolved against the cwd then the workspace root. */
+  /** The main configuration file, resolved against the cwd alone. */
   configurationPath: string;
   /** Strict per-field CLI overrides, applied after the file is resolved. */
   overrides?: CodependixConfigurationOverrides | undefined;

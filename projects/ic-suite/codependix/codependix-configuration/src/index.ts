@@ -25,7 +25,6 @@ export {
   DEFAULT_INCLUDE_GLOBS,
   DEFAULT_MARKDOWN_PATH,
   ProjectConfigurationPathRequiredError,
-  REPOSITORY_ROOT_MARKERS,
   RUN_MODE_CHOICES,
   RUN_MODE_SUBJECT,
   UnknownConfigurationFileTypeError,

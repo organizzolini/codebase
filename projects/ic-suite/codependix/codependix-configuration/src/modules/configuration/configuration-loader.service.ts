@@ -9,7 +9,6 @@ import { createJiti } from "jiti";
 import {
   codependixConfigurationSchema,
   ConfigurationFileNotFoundError,
-  REPOSITORY_ROOT_MARKERS,
   SUPPORTED_CONFIGURATION_EXTENSIONS,
   UnknownConfigurationFileTypeError,
 } from "./configuration.constants";
@@ -49,32 +48,6 @@ export class ConfigurationLoaderService {
   }
 
   // 🌎 Public Methods
-
-  /**
-   * Walks upward from the cwd to the workspace root, so a task runner's nested cwd still resolves configuration paths.
-   */
-  public findWorkspaceRoot(): string | undefined {
-    let candidateDirectory = path.resolve(process.cwd());
-
-    for (;;) {
-      const directory = candidateDirectory;
-      const isRoot = REPOSITORY_ROOT_MARKERS.some((marker) =>
-        existsSync(path.join(directory, marker)),
-      );
-
-      if (isRoot) {
-        return candidateDirectory;
-      }
-
-      const parentDirectory = path.dirname(candidateDirectory);
-
-      if (parentDirectory === candidateDirectory) {
-        return undefined;
-      }
-
-      candidateDirectory = parentDirectory;
-    }
-  }
 
   /** Loads a configuration module, choosing the reader by extension. */
   public async loadConfigurationModule(args: {
@@ -121,27 +94,15 @@ export class ConfigurationLoaderService {
     );
   }
 
-  /** Resolves a configuration path against the cwd, then the workspace root. */
+  /** Resolves a configuration path against the cwd alone, and refuses a path naming no file. */
   public resolveConfigurationPath(configurationPath: string): string {
     const absolutePath = path.resolve(configurationPath);
 
-    if (existsSync(absolutePath)) {
-      return absolutePath;
-    }
-
-    const workspaceRoot = this.findWorkspaceRoot();
-
-    if (workspaceRoot === undefined) {
+    if (!existsSync(absolutePath)) {
       throw new ConfigurationFileNotFoundError(absolutePath);
     }
 
-    const rootRelativePath = path.resolve(workspaceRoot, configurationPath);
-
-    if (!existsSync(rootRelativePath)) {
-      throw new ConfigurationFileNotFoundError(absolutePath);
-    }
-
-    return rootRelativePath;
+    return absolutePath;
   }
 
   /**

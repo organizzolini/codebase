@@ -52,9 +52,10 @@ Any extension in `ts`, `mts`, `cts`, `js`, `mjs`, `cjs`, or `json` loads; a
 neighboring file is never read in its place.
 
 - **A path given with `--config` must exist.** A typo fails the run rather than
-  quietly resolving every graph to `"none"`. It is resolved against the working
-  directory first, then against the workspace root, so a configuration kept in
-  a `configuration/` folder can be named relative to either.
+  quietly resolving every graph to `"none"`. A relative path is resolved
+  against the working directory alone — never retried from the workspace root —
+  and the Nx plugin resolves its own `configurationPath` against the workspace
+  root before it calls in.
 - **A missing `--config` fails the run too.** The flag is required: omitting
   it is refused with an error naming `--config`, and nothing falls back to a
   `codependix.config.ts` at the workspace root.

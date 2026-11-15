@@ -87,7 +87,7 @@ Two options qualify whichever mode was picked, the first of them mandatory:
 
 | Option | Meaning |
 | ------ | ------- |
-| `--config <config>` | **Required.** Path to the codependix configuration file, resolved against the working directory, then the workspace root. Omitting it fails the run; nothing is searched for |
+| `--config <config>` | **Required.** Path to the codependix configuration file, resolved against the working directory alone. Omitting it fails the run; nothing is searched for |
 | `-d, --directory [directory]` | Workspace root whose Nx project graph this run reads. Defaults to the working directory |
 
 ```bash
