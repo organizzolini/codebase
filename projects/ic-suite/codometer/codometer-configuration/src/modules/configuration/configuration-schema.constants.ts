@@ -41,7 +41,25 @@ const commentSelectorSchema = z.object({
   severity: z.enum(CODOMETER_SEVERITIES).optional(),
 });
 
-/** One configured counter: `patterns`, `symbols`, `comment`, or a mix. */
+/** A `tree` selector: exactly one ceiling, and the directories it skips. */
+const treeSelectorSchema = z
+  .object({
+    exclude: z.array(z.string().min(1)).optional(),
+    maximumBreadth: z.number().int().min(1).optional(),
+    maximumDepth: z.number().int().min(0).optional(),
+  })
+  // One selector holding both ceilings would report a single `measured` per
+  // directory without saying which of the two it measured.
+  .refine(
+    (tree) =>
+      (tree.maximumBreadth === undefined) !== (tree.maximumDepth === undefined),
+    {
+      message:
+        "A tree selector names exactly one of maximumBreadth or maximumDepth — declare a second statistic for the other ceiling.",
+    },
+  );
+
+/** One configured counter: `patterns`, `symbols`, `comment`, `tree`, or a mix. */
 const customStatisticSchema = z
   .object({
     color: z.string().optional(),
@@ -55,17 +73,19 @@ const customStatisticSchema = z
         modifiers: z.array(z.enum(CODOMETER_SYMBOL_MODIFIERS)).optional(),
       })
       .optional(),
+    tree: treeSelectorSchema.optional(),
   })
-  // Without one of the three a counter has nothing to match on, and would
+  // Without one of the four a counter has nothing to match on, and would
   // report a permanent zero rather than announcing it was misconfigured.
   .refine(
     (statistic) =>
       statistic.patterns !== undefined ||
       statistic.symbols !== undefined ||
-      statistic.comment !== undefined,
+      statistic.comment !== undefined ||
+      statistic.tree !== undefined,
     {
       message:
-        "A statistic needs patterns to match files, symbols to match declarations, or a comment selector to match a budget — otherwise it counts nothing.",
+        "A statistic needs patterns to match files, symbols to match declarations, a comment selector to match a budget, or a tree selector to match directories — otherwise it counts nothing.",
     },
   );
 

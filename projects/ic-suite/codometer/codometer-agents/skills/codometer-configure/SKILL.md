@@ -155,8 +155,8 @@ custom: [
 Each entry renders as one badge everywhere it is selected, in configured
 order. `color` is a shields.io hexadecimal triplet; an entry that omits it
 takes the next color from a built-in palette per group, so a counter's color
-stays stable between runs. A counter selects what it counts with exactly one
-of three fields — `patterns`, `symbols`, or `comment` — and an entry naming
+stays stable between runs. A counter selects what it counts with one of four
+fields — `patterns`, `symbols`, `comment`, or `tree` — and an entry naming
 none of them is rejected rather than reported as a permanent zero.
 
 An `outputs` entry's own `custom` array is a separate, later concern: it
@@ -287,6 +287,46 @@ Two accuracy caveats worth knowing before trusting a count:
   unmeasured rather than miscounted.
 
 For what to do about a breach, reach for the `codometer-triage` skill.
+
+### Selecting a tree ceiling
+
+`tree` holds every directory of the measured tree to one ceiling — how many
+entries it holds directly, or how deep it sits below the measured root — and
+counts the directories that broke it:
+
+```ts
+custom: [
+  { label: "Directory Breadth", tree: { exclude: ["**/migrations"], maximumBreadth: 12 } },
+  { label: "Directory Depth", tree: { maximumDepth: 8 } },
+],
+limits: [
+  { metric: "custom.Directory Breadth", value: 0 },
+  { metric: "custom.Directory Depth", value: 0 },
+],
+```
+
+| Field | Required | Default | Meaning |
+| ----- | -------- | ------- | ------- |
+| `maximumBreadth` | one of the two | — | Entries one directory may hold directly, files and folders counted alike |
+| `maximumDepth` | one of the two | — | Folders deep a directory may sit, the measured root being depth `0` |
+| `exclude` | no | none | Directory globs exempt from the ceiling, their descendants included |
+
+**A selector names exactly one ceiling.** Breadth and depth are separate
+problems with separate fixes, so one selector holding both is refused —
+declare a second statistic for the second ceiling.
+
+The tree is rebuilt from the files discovery found, so an ignored file is
+never an entry and a folder holding only ignored files does not exist. An
+excluded directory still counts as one entry in its parent; only its own
+contents go unmeasured. `patterns`, when set, narrows which files build the
+tree.
+
+A breadth breach names the directory and how many entries it holds; the
+measured root is named `.`. A depth breach names the shallowest directory
+past the ceiling, once, measured by the deepest folder beneath it, so one
+over-nested subtree is one breach rather than one per level. Split a wide
+directory into child folders, or flatten a deep one — **never raise the
+ceiling to make the run pass**.
 
 ## Output destinations
 

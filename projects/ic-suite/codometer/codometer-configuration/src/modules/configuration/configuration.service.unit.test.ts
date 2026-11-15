@@ -750,6 +750,7 @@ describe(ConfigurationService, () => {
         label: "Services",
         patterns: ["**/*.service.ts"],
         symbols: undefined,
+        tree: undefined,
       },
       {
         color: "ff0000",
@@ -758,6 +759,7 @@ describe(ConfigurationService, () => {
         label: "Modules",
         patterns: ["**/*.module.ts"],
         symbols: undefined,
+        tree: undefined,
       },
     ]);
   });
@@ -820,6 +822,7 @@ describe(ConfigurationService, () => {
       label: "Static Methods",
       patterns: [],
       symbols: { kinds: ["method"], modifiers: ["static"] },
+      tree: undefined,
     });
   });
 

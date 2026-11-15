@@ -59,6 +59,7 @@ export interface ResolvedCodometerCustomStatistic {
   /** Empty for a symbol or comment counter naming none, which then searches every file. */
   patterns: string[];
   symbols?: CodometerSymbolMatcher | undefined;
+  tree?: ResolvedCodometerTreeSelector | undefined;
 }
 
 /** A named file set: includes claim files, excludes remove them. */
@@ -108,4 +109,11 @@ export type ResolvedCodometerOutput =
 /** Python analysis settings with defaults applied. */
 export interface ResolvedCodometerPythonConfiguration {
   command: string;
+}
+
+/** A `tree` selector with its exclusions always present. */
+export interface ResolvedCodometerTreeSelector {
+  exclude: string[];
+  maximumBreadth: number | undefined;
+  maximumDepth: number | undefined;
 }

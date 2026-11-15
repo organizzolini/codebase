@@ -32,6 +32,7 @@ import type {
   CodometerLimit,
   CodometerMarkdownOutput,
   CodometerOutput,
+  CodometerTreeSelector,
 } from "./configuration.types";
 import type {
   ResolvedCodometerConfiguration,
@@ -41,6 +42,7 @@ import type {
   ResolvedCodometerLimit,
   ResolvedCodometerMarkdownOutput,
   ResolvedCodometerOutput,
+  ResolvedCodometerTreeSelector,
 } from "./resolved.types";
 import type { CodometerStatisticGroup } from "@codometer/core";
 
@@ -148,6 +150,7 @@ export class ConfigurationResolverService {
         label: statistic.label,
         patterns: statistic.patterns ?? [],
         symbols: statistic.symbols,
+        tree: this.resolveTreeSelector(statistic.tree),
       };
     });
   }
@@ -247,6 +250,19 @@ export class ConfigurationResolverService {
         ? this.resolveJsonOutput(output, customStatistics)
         : this.resolveMarkdownOutput(output, customStatistics),
     );
+  }
+
+  /** Gives a `tree` selector its exclusions, as an empty list when it named none. */
+  private resolveTreeSelector(
+    tree: CodometerTreeSelector | undefined,
+  ): ResolvedCodometerTreeSelector | undefined {
+    return tree === undefined
+      ? undefined
+      : {
+          exclude: tree.exclude ?? [],
+          maximumBreadth: tree.maximumBreadth,
+          maximumDepth: tree.maximumDepth,
+        };
   }
 
   /**

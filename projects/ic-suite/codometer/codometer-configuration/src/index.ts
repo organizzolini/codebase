@@ -50,6 +50,7 @@ export type {
   CodometerOutput,
   CodometerPythonConfiguration,
   CodometerSymbolMatcher,
+  CodometerTreeSelector,
   LoadConfigurationArguments,
   MeasureCommandOptions,
   MeasureFormat,
@@ -72,6 +73,7 @@ export type {
   ResolvedCodometerMarkdownOutput,
   ResolvedCodometerOutput,
   ResolvedCodometerPythonConfiguration,
+  ResolvedCodometerTreeSelector,
 } from "./modules/configuration/resolved.types";
 // 📤 Exports
 export { CODOMETER_SYMBOL_KINDS } from "@codometer/core";

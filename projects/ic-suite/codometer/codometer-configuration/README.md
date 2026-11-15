@@ -264,9 +264,9 @@ exclusions apply. A file matching several of one entry's globs counts once.
 color from a built-in palette, cycling so a counter's color stays the same
 between runs.
 
-A counter selects what it counts with one of three fields — `patterns`,
-`symbols`, or `comment` — and needs at least one of them, or it is rejected as
-counting nothing.
+A counter selects what it counts with one of four fields — `patterns`,
+`symbols`, `comment`, or `tree` — and needs at least one of them, or it is
+rejected as counting nothing.
 
 An output's own `custom` array is a separate, later concern: it **selects**,
 by label, which of the top-level counters that destination renders — it never
@@ -350,8 +350,35 @@ Its `value` is a count — how many blocks broke the selector's own
 each breaching block's `file` and 1-indexed `line`, plus how much it measured.
 A block that stayed within budget contributes to neither.
 
-An entry with none of `patterns`, `symbols`, or `comment` is rejected rather
-than reported as a permanent zero.
+### Selecting A Tree Ceiling
+
+`tree` holds every directory of the measured tree to one ceiling and counts
+the directories that broke it:
+
+```ts
+custom: [
+  { label: "Directory Breadth", tree: { exclude: ["**/migrations"], maximumBreadth: 12 } },
+  { label: "Directory Depth", tree: { maximumDepth: 8 } },
+],
+limits: [{ metric: "custom.Directory Breadth", value: 0 }],
+```
+
+| Field | Required | Default | Meaning |
+| ----- | -------- | ------- | ------- |
+| `maximumBreadth` | one of the two | — | Entries one directory may hold directly, files and folders counted alike |
+| `maximumDepth` | one of the two | — | Folders deep a directory may sit, the measured root being depth `0` |
+| `exclude` | no | none | Directory globs exempt from the ceiling, their descendants included |
+
+A selector names exactly one of the two ceilings; one naming both, or
+neither, is rejected. The tree is rebuilt from the discovered files, so an
+ignored file is never an entry, and an excluded directory still counts as one
+entry in its parent. Each breach is an `instances` entry naming its directory —
+the measured root is `.` — with no `line`. A breadth breach measures the
+directory's entries; a depth breach names the shallowest directory past the
+ceiling, once, measured by the deepest folder beneath it.
+
+An entry with none of `patterns`, `symbols`, `comment`, or `tree` is rejected
+rather than reported as a permanent zero.
 
 ### Where A Counter Renders
 

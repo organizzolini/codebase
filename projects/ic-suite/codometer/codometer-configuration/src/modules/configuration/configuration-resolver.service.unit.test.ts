@@ -65,6 +65,56 @@ describe(ConfigurationResolverService, () => {
     ]);
   });
 
+  it("gives a tree selector that names no exclusions an empty list", () => {
+    const resolved = service.resolveConfiguration({
+      custom: [{ label: "Directory Breadth", tree: { maximumBreadth: 12 } }],
+      format: "markdown",
+    });
+
+    expect(resolved.custom[0]?.tree).toStrictEqual({
+      exclude: [],
+      maximumBreadth: 12,
+      maximumDepth: undefined,
+    });
+  });
+
+  it("accepts a statistic whose only selector is a tree", () => {
+    expect(() =>
+      service.parseConfiguration({
+        custom: [
+          {
+            label: "Directory Depth",
+            tree: { exclude: ["**/migrations"], maximumDepth: 6 },
+          },
+        ],
+        format: "json",
+      }),
+    ).not.toThrow();
+  });
+
+  it("refuses a tree selector naming both ceilings", () => {
+    expect(() =>
+      service.parseConfiguration({
+        custom: [
+          {
+            label: "Directory Shape",
+            tree: { maximumBreadth: 12, maximumDepth: 6 },
+          },
+        ],
+        format: "json",
+      }),
+    ).toThrow(InvalidConfigurationError);
+  });
+
+  it("refuses a tree selector naming neither ceiling", () => {
+    expect(() =>
+      service.parseConfiguration({
+        custom: [{ label: "Directory Shape", tree: {} }],
+        format: "json",
+      }),
+    ).toThrow(InvalidConfigurationError);
+  });
+
   it("refuses a limit whose value names no unit it knows", () => {
     expect(() =>
       service.resolveConfiguration({

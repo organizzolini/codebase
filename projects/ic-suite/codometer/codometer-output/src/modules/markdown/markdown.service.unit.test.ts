@@ -462,6 +462,30 @@ describe(MarkdownService, () => {
     expect(block).toContain("- `src/values.yaml:3` — measured 14");
   });
 
+  it("names a directory alone when a breach carries no line", () => {
+    const block = service.renderBadges({
+      destination: buildDestination("README.md", {
+        custom: [buildCustomStatistic("Directory Breadth")],
+      }),
+      scope: "repository",
+      statistics: {
+        ...sampleStatistics,
+        custom: [
+          {
+            color: "dc2626",
+            count: 1,
+            group: "conventions",
+            instances: [{ file: "src/modules", measured: 14 }],
+            label: "Directory Breadth",
+          },
+        ],
+      },
+      targets: [],
+    });
+
+    expect(block).toContain("- `src/modules` — measured 14");
+  });
+
   // The old renderer returned an empty string when nothing breached, and
   // that instinct is what keeps a clean run's badge block byte-identical to
   // one with no per-instance counter configured at all.
