@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
 import { PullRequestAncestorIssuesService } from "./pull-request-ancestor-issues.service";
-import { linkedIssueNumbersSchema } from "./pull-request-body-links.constants";
 import {
   BODY_GUIDANCE_LINES,
   BODY_MISSING_MESSAGE,
@@ -15,6 +14,7 @@ import {
 import { PullRequestBodyService } from "./pull-request-body.service";
 import { PullRequestGithubService } from "./pull-request-github.service";
 import { PullRequestLabelsAssigneesService } from "./pull-request-labels-assignees.service";
+import { PullRequestLinkedIssuesService } from "./pull-request-linked-issues.service";
 import { PullRequestReleaseSignificanceService } from "./pull-request-release-significance.service";
 import { PullRequestTitleService } from "./pull-request-title.service";
 import {
@@ -39,6 +39,7 @@ export class PullRequestValidationService {
     private readonly pullRequestBodyService: PullRequestBodyService,
     private readonly pullRequestGithubService: PullRequestGithubService,
     private readonly pullRequestLabelsAssigneesService: PullRequestLabelsAssigneesService,
+    private readonly pullRequestLinkedIssuesService: PullRequestLinkedIssuesService,
     private readonly pullRequestReleaseSignificanceService: PullRequestReleaseSignificanceService,
     private readonly pullRequestTitleService: PullRequestTitleService,
   ) {}
@@ -75,56 +76,6 @@ export class PullRequestValidationService {
       failures:
         failures.length === 0 ? [] : [...failures, ...BODY_GUIDANCE_LINES],
     };
-  }
-
-  /** A pull request must close at least one issue; the write phase then relates its ancestors. */
-  private checkLinkedIssue(context: PullRequestContext): CheckOutcome {
-    const base = {
-      heading: "❌ Pull request is not linked to an issue",
-      remediationCommands: [],
-      successMessage: "✅ Pull request closes at least one issue",
-    };
-    const view = this.pullRequestGithubService.run([
-      "pr",
-      "view",
-      String(context.number),
-      "--json",
-      "closingIssuesReferences",
-      "--jq",
-      "[.closingIssuesReferences[].number]",
-    ]);
-
-    if (!view.succeeded) {
-      return {
-        ...base,
-        failures: [
-          `❌ Unable to read the issues closed by pull request ${String(context.number)}: ${this.pullRequestGithubService.describeFailure(view)}`,
-        ],
-      };
-    }
-
-    try {
-      const linked = linkedIssueNumbersSchema.parse(
-        JSON.parse(view.standardOutput),
-      );
-
-      return {
-        ...base,
-        failures:
-          linked.length === 0
-            ? [
-                "❌ No issue is closed by this pull request. Add a `Closes #<issue>` bullet to the 🔗 Related section.",
-              ]
-            : [],
-      };
-    } catch (error) {
-      return {
-        ...base,
-        failures: [
-          `❌ Unable to parse the issues closed by pull request ${String(context.number)}: ${error instanceof Error ? error.message : String(error)}`,
-        ],
-      };
-    }
   }
 
   /** Labels and assignees against what the title declares. */
@@ -271,8 +222,7 @@ export class PullRequestValidationService {
 
   /**
    * Every check that applies to this pull request.
-   * Dependabot writes its own title and body, so those checks exempt its pull requests.
-   * No issue plans a bot's pull request, so the issue link exempts every automated author.
+   * Dependabot's title and body, and every automated author's issue link, are exempt.
    */
   public validate(context: PullRequestContext): CheckOutcome[] {
     const authoredByDependabot = context.author === DEPENDABOT_LOGIN;
@@ -285,7 +235,7 @@ export class PullRequestValidationService {
       this.checkSignificance(context),
       ...(UNLINKED_AUTHOR_LOGINS.includes(context.author) || context.draft
         ? []
-        : [this.checkLinkedIssue(context)]),
+        : [this.pullRequestLinkedIssuesService.check(context)]),
       this.pullRequestAncestorIssuesService.verify(context),
     ];
   }

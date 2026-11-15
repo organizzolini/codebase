@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.1.0](https://github.com/organizzolini/codebase/compare/v6.0.3...v6.1.0) (2026-11-15)
+
+### ✨ Features
+
+* **compliance,documentation:** ✨ validate the issues a pull request closes ([#2406](https://github.com/organizzolini/codebase/issues/2406)) ([0ab90af](https://github.com/organizzolini/codebase/commit/0ab90aff98c6166d2cd28f80cc46ef3e161c33f8)), closes [#2405](https://github.com/organizzolini/codebase/issues/2405) [documentation/agents/issue-tracker.md#every-pull-request-closes-an-issue](https://github.com/documentation/agents/issue-tracker.md/issues/every-pull-request-closes-an-issue)
+
 ## [6.0.3](https://github.com/organizzolini/codebase/compare/v6.0.2...v6.0.3) (2026-11-14)
 
 ### 🐛 Bug Fixes

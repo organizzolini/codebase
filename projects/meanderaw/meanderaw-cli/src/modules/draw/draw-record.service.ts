@@ -44,9 +44,9 @@ export class DrawRecordService {
     const parsed = this.codeService.parse(code, shape.rows, shape.columns);
     const repeats = shape.repeats ?? parsed.repeats;
     const withRepeats = { ...parsed, repeats };
-    const scoreTileCrossing = (phase: CodeObject): number =>
-      this.characteristicsService.tileCrossingComponentDeltaCount(phase);
-    const canonical = this.codeService.canonicalPhase(
+    const scoreTileCrossing = (rotation: CodeObject): number =>
+      this.characteristicsService.tileCrossingComponentDeltaCount(rotation);
+    const canonical = this.codeService.canonicalRotation(
       withRepeats,
       scoreTileCrossing,
     );

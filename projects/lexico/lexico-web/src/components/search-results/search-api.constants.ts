@@ -25,7 +25,7 @@ export const connectionSchema = z.object({
 /** Match kind an API tier without a score stands for. */
 export const MATCH_KINDS: Readonly<Partial<Record<string, LexemeMatchKind>>> = {
   ENCLITIC: "enclitic",
-  LEMMA_EXACT: "exact-headword",
+  LEMMA_EXACT: "exact-lemma",
   TRANSLATION_EXACT: "translation-exact",
   TRANSLATION_PREFIX: "translation-prefix",
   WORD_EXACT: "exact-form",

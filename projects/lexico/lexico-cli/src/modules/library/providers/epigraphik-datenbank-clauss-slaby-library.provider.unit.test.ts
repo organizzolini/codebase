@@ -249,7 +249,7 @@ describe(EpigraphikDatenbankClaussSlabyLibraryProvider, () => {
     );
   });
 
-  it("should skip undefined entries in chunk phase", async () => {
+  it("should skip undefined entries in chunk stage", async () => {
     const processSourceChunkFileSpy = vi
       .spyOn(
         epigraphikDatenbankClaussSlabyLibraryProvider as unknown as {
@@ -267,12 +267,12 @@ describe(EpigraphikDatenbankClaussSlabyLibraryProvider, () => {
 
     await (
       epigraphikDatenbankClaussSlabyLibraryProvider as unknown as {
-        processSourceChunkPhase: (
+        processSourceChunkStage: (
           chunkFiles: string[],
           sourceDataDirectory: string,
         ) => Promise<Map<string, string[]>>;
       }
-    ).processSourceChunkPhase(
+    ).processSourceChunkStage(
       ["chunk-0.json", undefined as unknown as string],
       "/tmp/edcs",
     );
@@ -368,17 +368,17 @@ describe(EpigraphikDatenbankClaussSlabyLibraryProvider, () => {
 
     vi.spyOn(
       epigraphikDatenbankClaussSlabyLibraryProvider as unknown as {
-        processSourceChunkPhase: (
+        processSourceChunkStage: (
           chunkFiles: string[],
           sourceDataDirectory: string,
         ) => Promise<Map<string, string[]>>;
       },
-      "processSourceChunkPhase",
+      "processSourceChunkStage",
     ).mockResolvedValue(new Map([["Roma", ["**EDCS-1** AVE ROMA"]]]));
 
     vi.spyOn(
       epigraphikDatenbankClaussSlabyLibraryProvider as unknown as {
-        saveEdcsProvincePhase: (args: {
+        saveEdcsProvinceStage: (args: {
           author: Author;
           authorDirectory: string;
           authorSlug: string;
@@ -386,7 +386,7 @@ describe(EpigraphikDatenbankClaussSlabyLibraryProvider, () => {
           provinceData: Map<string, string[]>;
         }) => Promise<void>;
       },
-      "saveEdcsProvincePhase",
+      "saveEdcsProvinceStage",
     ).mockResolvedValue(undefined);
 
     const authors =
