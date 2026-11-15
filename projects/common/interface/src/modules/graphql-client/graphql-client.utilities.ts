@@ -24,11 +24,20 @@ export function createGraphqlCodegenConfig(
     documents,
     generates: {
       [`${generatedDirectory}/mocks.ts`]: {
-        config: { useTypeImports: true },
+        config: {
+          importSchemaTypesFrom: `${generatedDirectory}/mocks`,
+          namespacedImportName: "Schema",
+          useTypeImports: true,
+        },
         plugins: ["typescript", "typescript-operations", "typescript-msw"],
       },
       [`${generatedDirectory}/operations.ts`]: {
-        config: { scalars: GRAPHQL_CODEGEN_SCALARS, useTypeImports: true },
+        config: {
+          importSchemaTypesFrom: `${generatedDirectory}/operations`,
+          namespacedImportName: "Schema",
+          scalars: GRAPHQL_CODEGEN_SCALARS,
+          useTypeImports: true,
+        },
         plugins: ["typescript", "typescript-operations", "typed-document-node"],
       },
       [`${generatedDirectory}/validation.ts`]: {

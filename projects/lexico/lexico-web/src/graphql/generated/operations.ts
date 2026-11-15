@@ -1,11 +1,12 @@
+/** Internal type. DO NOT USE DIRECTLY. */
+type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+/** Internal type. DO NOT USE DIRECTLY. */
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+import type * as Schema from './operations';
+
 import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -404,6 +405,8 @@ export type Query = {
   tokens: TokenConnection;
   /** Retrieves a surface Latin word and its morphological links. */
   word?: Maybe<Word>;
+  /** Lists the lexeme and form candidates a token's word can be, for a word card. */
+  wordCandidates: Array<WordCandidate>;
   /** Retrieves multiple surface Latin words and their links. */
   words: Array<Word>;
 };
@@ -528,6 +531,11 @@ export type QueryWordArgs = {
 };
 
 
+export type QueryWordCandidatesArgs = {
+  tokenId: Scalars['ID']['input'];
+};
+
+
 export type QueryWordsArgs = {
   data: Array<Scalars['String']['input']>;
 };
@@ -552,6 +560,7 @@ export type SupineForm = Form & {
 
 export type Text = {
   __typename?: 'Text';
+  ancestors: Array<Text>;
   author: Author;
   childTexts: TextConnection;
   createdAt: Scalars['DateTime']['output'];
@@ -560,7 +569,9 @@ export type Text = {
   deletedBy?: Maybe<Scalars['ID']['output']>;
   id: Scalars['ID']['output'];
   lines: LineConnection;
+  nextText?: Maybe<Text>;
   parentText?: Maybe<Text>;
+  previousText?: Maybe<Text>;
   slug: Scalars['String']['output'];
   title: Scalars['String']['output'];
   type: Scalars['String']['output'];
@@ -699,6 +710,15 @@ export type Word = {
   wordLexemes: WordLexemeConnection;
 };
 
+export type WordCandidate = {
+  __typename?: 'WordCandidate';
+  definition?: Maybe<Scalars['String']['output']>;
+  description: Scalars['String']['output'];
+  lemma: Scalars['String']['output'];
+  lexemeId: Scalars['ID']['output'];
+  partOfSpeech: Scalars['String']['output'];
+};
+
 export type WordForm = {
   __typename?: 'WordForm';
   createdAt: Scalars['DateTime']['output'];
@@ -762,19 +782,19 @@ export type WordLexemeEdge = {
 };
 
 export type SearchEnglishQueryVariables = Exact<{
-  query: Scalars['String']['input'];
-  first: Scalars['Int']['input'];
+  query: string;
+  first: number;
 }>;
 
 
-export type SearchEnglishQuery = { __typename?: 'Query', searchEnglish: { __typename?: 'LexemeSearchResultConnection', edges: Array<{ __typename?: 'LexemeSearchResultEdge', node: { __typename?: 'LexemeSearchResult', distance?: number | null, enclitic?: string | null, identifiers: Array<string>, score: number, source: SearchMatchSource, lexeme: { __typename?: 'Lexeme', id: string, etymology?: string | null, lemma: string, partOfSpeech: string, inflection?:
-            | { __typename?: 'AdjectiveInflection', declension: string, degree: string }
-            | { __typename?: 'AdverbInflection', adverbType: string, degree: string }
-            | { __typename?: 'NounInflection', declension: string, gender: string }
-            | { __typename?: 'PrepositionInflection', case: string }
-            | { __typename?: 'UninflectedInflection' }
-            | { __typename?: 'VerbInflection', conjugation: string, other?: string | null }
-           | null, principalParts: { __typename?: 'PrincipalPartConnection', edges: Array<{ __typename?: 'PrincipalPartEdge', node: { __typename?: 'PrincipalPart', text: Array<string> } }> }, pronunciations?: { __typename?: 'PronunciationConnection', edges: Array<{ __typename?: 'PronunciationEdge', node: { __typename?: 'Pronunciation', phonetic?: string | null, variant: string } }> } | null, translations?: { __typename?: 'TranslationConnection', edges: Array<{ __typename?: 'TranslationEdge', node: { __typename?: 'Translation', data: string } }> } | null, wordForms: { __typename?: 'LexemeWordFormConnection', edges: Array<{ __typename?: 'LexemeWordFormEdge', node: { __typename?: 'LexemeWordForm', id: string, word: string, form:
+export type SearchEnglishQuery = { searchEnglish: { edges: Array<{ node: { distance: number | null, enclitic: string | null, identifiers: Array<string>, score: number, source: Schema.SearchMatchSource, lexeme: { id: string, etymology: string | null, lemma: string, partOfSpeech: string, inflection:
+            | { declension: string, degree: string }
+            | { adverbType: string, degree: string }
+            | { declension: string, gender: string }
+            | { case: string }
+            | { conjugation: string, other: string | null }
+            | Record<PropertyKey, never>
+           | null, principalParts: { edges: Array<{ node: { text: Array<string> } }> }, pronunciations: { edges: Array<{ node: { phonetic: string | null, variant: string } }> } | null, translations: { edges: Array<{ node: { data: string } }> } | null, wordForms: { edges: Array<{ node: { id: string, word: string, form:
                   | { __typename: 'AdjectivalForm', case: string, gender: string, number: string }
                   | { __typename: 'AdverbForm', degree: string }
                   | { __typename: 'FiniteVerbForm', mood: string, number: string, person: string, tense: string, voice: string }
@@ -786,19 +806,19 @@ export type SearchEnglishQuery = { __typename?: 'Query', searchEnglish: { __type
                  } }> } } } }> } };
 
 export type SearchLatinQueryVariables = Exact<{
-  query: Scalars['String']['input'];
-  first: Scalars['Int']['input'];
+  query: string;
+  first: number;
 }>;
 
 
-export type SearchLatinQuery = { __typename?: 'Query', searchLatin: { __typename?: 'LexemeSearchResultConnection', edges: Array<{ __typename?: 'LexemeSearchResultEdge', node: { __typename?: 'LexemeSearchResult', distance?: number | null, enclitic?: string | null, identifiers: Array<string>, score: number, source: SearchMatchSource, lexeme: { __typename?: 'Lexeme', id: string, etymology?: string | null, lemma: string, partOfSpeech: string, inflection?:
-            | { __typename?: 'AdjectiveInflection', declension: string, degree: string }
-            | { __typename?: 'AdverbInflection', adverbType: string, degree: string }
-            | { __typename?: 'NounInflection', declension: string, gender: string }
-            | { __typename?: 'PrepositionInflection', case: string }
-            | { __typename?: 'UninflectedInflection' }
-            | { __typename?: 'VerbInflection', conjugation: string, other?: string | null }
-           | null, principalParts: { __typename?: 'PrincipalPartConnection', edges: Array<{ __typename?: 'PrincipalPartEdge', node: { __typename?: 'PrincipalPart', text: Array<string> } }> }, pronunciations?: { __typename?: 'PronunciationConnection', edges: Array<{ __typename?: 'PronunciationEdge', node: { __typename?: 'Pronunciation', phonetic?: string | null, variant: string } }> } | null, translations?: { __typename?: 'TranslationConnection', edges: Array<{ __typename?: 'TranslationEdge', node: { __typename?: 'Translation', data: string } }> } | null, wordForms: { __typename?: 'LexemeWordFormConnection', edges: Array<{ __typename?: 'LexemeWordFormEdge', node: { __typename?: 'LexemeWordForm', id: string, word: string, form:
+export type SearchLatinQuery = { searchLatin: { edges: Array<{ node: { distance: number | null, enclitic: string | null, identifiers: Array<string>, score: number, source: Schema.SearchMatchSource, lexeme: { id: string, etymology: string | null, lemma: string, partOfSpeech: string, inflection:
+            | { declension: string, degree: string }
+            | { adverbType: string, degree: string }
+            | { declension: string, gender: string }
+            | { case: string }
+            | { conjugation: string, other: string | null }
+            | Record<PropertyKey, never>
+           | null, principalParts: { edges: Array<{ node: { text: Array<string> } }> }, pronunciations: { edges: Array<{ node: { phonetic: string | null, variant: string } }> } | null, translations: { edges: Array<{ node: { data: string } }> } | null, wordForms: { edges: Array<{ node: { id: string, word: string, form:
                   | { __typename: 'AdjectivalForm', case: string, gender: string, number: string }
                   | { __typename: 'AdverbForm', degree: string }
                   | { __typename: 'FiniteVerbForm', mood: string, number: string, person: string, tense: string, voice: string }
