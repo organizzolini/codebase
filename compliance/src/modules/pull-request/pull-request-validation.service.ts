@@ -17,7 +17,10 @@ import { PullRequestLabelsAssigneesService } from "./pull-request-labels-assigne
 import { PullRequestLinkedIssuesService } from "./pull-request-linked-issues.service";
 import { PullRequestReleaseSignificanceService } from "./pull-request-release-significance.service";
 import { PullRequestTitleService } from "./pull-request-title.service";
-import { DEPENDABOT_LOGIN } from "./pull-request.constants";
+import {
+  DEPENDABOT_LOGIN,
+  UNLINKED_AUTHOR_LOGINS,
+} from "./pull-request.constants";
 
 import type { BodyVerdict } from "./pull-request-body.types";
 import type { PullRequestContext } from "./pull-request-context.types";
@@ -220,6 +223,7 @@ export class PullRequestValidationService {
   /**
    * Every check that applies to this pull request.
    * Dependabot writes its own title and body, so those checks exempt its pull requests.
+   * No issue plans a bot's pull request, so the issue link exempts every automated author.
    */
   public validate(context: PullRequestContext): CheckOutcome[] {
     const authoredByDependabot = context.author === DEPENDABOT_LOGIN;
@@ -230,7 +234,7 @@ export class PullRequestValidationService {
         : [this.checkTitle(context), this.checkBody(context)]),
       this.checkMetadata(context),
       this.checkSignificance(context),
-      ...(authoredByDependabot || context.draft
+      ...(UNLINKED_AUTHOR_LOGINS.includes(context.author) || context.draft
         ? []
         : [this.pullRequestLinkedIssuesService.check(context)]),
       this.pullRequestAncestorIssuesService.verify(context),

@@ -174,6 +174,17 @@ describe(PullRequestValidationService, () => {
     expect(title.check).not.toHaveBeenCalled();
   });
 
+  it("exempts a GitHub Actions pull request from the issue link only", () => {
+    const outcomes = service.validate({
+      ...context,
+      author: "github-actions[bot]",
+    });
+
+    expect(outcomes).toHaveLength(5);
+    expect(title.check).toHaveBeenCalledWith(context.title);
+    expect(linkedIssues.check).not.toHaveBeenCalled();
+  });
+
   it("reports what the linked-issue check found", () => {
     vi.mocked(linkedIssues.check).mockReturnValue({
       failures: ["❌ Issue #5: No Effort issue field"],
