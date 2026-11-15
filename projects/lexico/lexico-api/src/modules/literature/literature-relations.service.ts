@@ -60,7 +60,8 @@ export class LiteratureRelationsService {
   /**
    * Finds each text's ancestors, root first, with their authors, in two
    * statements however many texts ask: the chain of parent ids, then the rows.
-   * A top-level text has none.
+   * A top-level text has none. No constraint forbids a parent cycle, so the
+   * chain stops before revisiting a text rather than looping.
    */
   public async findAncestorTexts(
     textIds: readonly string[],
@@ -71,15 +72,15 @@ export class LiteratureRelationsService {
 
     const links = await this.textRepository.query<AncestorLink[]>(
       `WITH RECURSIVE "chain" AS (
-        SELECT "text"."id" AS "origin", "parent"."id" AS "ancestorId", "parent"."parent_text_id" AS "parentId", 1 AS "depth"
+        SELECT "text"."id" AS "origin", "parent"."id" AS "ancestorId", "parent"."parent_text_id" AS "parentId", 1 AS "depth", ARRAY["text"."id", "parent"."id"] AS "path"
         FROM "texts" "text"
         INNER JOIN "texts" "parent" ON "parent"."id" = "text"."parent_text_id"
         WHERE "text"."id" = ANY($1::uuid[]) AND "parent"."deleted_at" IS NULL
         UNION ALL
-        SELECT "chain"."origin", "parent"."id", "parent"."parent_text_id", "chain"."depth" + 1
+        SELECT "chain"."origin", "parent"."id", "parent"."parent_text_id", "chain"."depth" + 1, "chain"."path" || "parent"."id"
         FROM "chain"
         INNER JOIN "texts" "parent" ON "parent"."id" = "chain"."parentId"
-        WHERE "parent"."deleted_at" IS NULL
+        WHERE "parent"."deleted_at" IS NULL AND "parent"."id" <> ALL("chain"."path")
       )
       SELECT "origin", "ancestorId", "depth" FROM "chain"`,
       [[...textIds]],

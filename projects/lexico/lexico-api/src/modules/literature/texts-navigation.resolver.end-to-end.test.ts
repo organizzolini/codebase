@@ -194,6 +194,7 @@ describe("text navigation end-to-end suite", () => {
       }>(TEXTS_NAVIGATION, {}),
     );
 
+    expect(one.statements.length).toBeGreaterThan(0);
     expect(every.result.texts.edges.length).toBeGreaterThan(1);
     expect(every.statements).toHaveLength(one.statements.length);
   });
