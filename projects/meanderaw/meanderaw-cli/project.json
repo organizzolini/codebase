@@ -26,7 +26,7 @@
         "generatePackageJson": false,
         "main": "projects/meanderaw/meanderaw-cli/src/meanderaw-cli.main.ts",
         "outputPath": "projects/meanderaw/meanderaw-cli/dist",
-        "tsConfig": "projects/meanderaw/meanderaw-cli/tsconfig.build.json"
+        "tsConfig": "projects/meanderaw/meanderaw-cli/configuration/tsconfig.build.json"
       },
       "outputs": ["{options.outputPath}"]
     },

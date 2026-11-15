@@ -23,7 +23,7 @@
         "generatePackageJson": false,
         "main": "projects/common/interface/src/index.ts",
         "outputPath": "projects/common/interface/dist",
-        "tsConfig": "projects/common/interface/tsconfig.build.json"
+        "tsConfig": "projects/common/interface/configuration/tsconfig.build.json"
       },
       "outputs": ["{options.outputPath}"]
     },

@@ -30,7 +30,7 @@
         "generatePackageJson": false,
         "main": "projects/lexico/lexico-api/src/lexico-api.ts",
         "outputPath": "projects/lexico/lexico-api/dist",
-        "tsConfig": "projects/lexico/lexico-api/tsconfig.build.json"
+        "tsConfig": "projects/lexico/lexico-api/configuration/tsconfig.build.json"
       },
       "outputs": ["{options.outputPath}"]
     },

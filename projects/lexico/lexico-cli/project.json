@@ -25,7 +25,7 @@
         "generatePackageJson": false,
         "main": "projects/lexico/lexico-cli/src/lexico-cli.main.ts",
         "outputPath": "projects/lexico/lexico-cli/dist",
-        "tsConfig": "projects/lexico/lexico-cli/tsconfig.build.json"
+        "tsConfig": "projects/lexico/lexico-cli/configuration/tsconfig.build.json"
       },
       "outputs": ["{options.outputPath}"]
     },

@@ -26,7 +26,7 @@
         "generatePackageJson": false,
         "main": "projects/caelundas/caelundas-cli/src/caelundas-cli.main.ts",
         "outputPath": "projects/caelundas/caelundas-cli/dist",
-        "tsConfig": "projects/caelundas/caelundas-cli/tsconfig.build.json"
+        "tsConfig": "projects/caelundas/caelundas-cli/configuration/tsconfig.build.json"
       },
       "outputs": ["{options.outputPath}"]
     },

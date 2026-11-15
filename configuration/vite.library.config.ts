@@ -26,7 +26,7 @@ export interface ViteLibraryConfigOptions {
   readonly packageDirectory: string;
   /**
    * Path to the tsconfig file used for type generation.
-   * Defaults to `tsconfig.build.json` in the package directory.
+   * Defaults to `configuration/tsconfig.build.json` in the package directory.
    */
   readonly tsconfigPath?: string;
 }
@@ -45,7 +45,11 @@ export function createViteLibraryConfig(
     },
     external,
     packageDirectory,
-    tsconfigPath = path.resolve(packageDirectory, "tsconfig.build.json"),
+    tsconfigPath = path.resolve(
+      packageDirectory,
+      "configuration",
+      "tsconfig.build.json",
+    ),
   } = options;
 
   const inlinedPackages = new Set([

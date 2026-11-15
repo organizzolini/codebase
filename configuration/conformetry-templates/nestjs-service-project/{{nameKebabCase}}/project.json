@@ -24,7 +24,7 @@
         "generatePackageJson": false,
         "main": "{{type}}/{{nameKebabCase}}/src/index.ts",
         "outputPath": "{{type}}/{{nameKebabCase}}/dist",
-        "tsConfig": "{{type}}/{{nameKebabCase}}/tsconfig.build.json"
+        "tsConfig": "{{type}}/{{nameKebabCase}}/configuration/tsconfig.build.json"
       },
       "outputs": [
         "{options.outputPath}"

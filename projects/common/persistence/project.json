@@ -25,7 +25,7 @@
         "generatePackageJson": false,
         "main": "projects/common/persistence/src/index.ts",
         "outputPath": "projects/common/persistence/dist",
-        "tsConfig": "projects/common/persistence/tsconfig.build.json"
+        "tsConfig": "projects/common/persistence/configuration/tsconfig.build.json"
       },
       "outputs": ["{options.outputPath}"]
     },
