@@ -59,9 +59,12 @@ neighboring file is never read in its place.
   it is refused with an error naming `--config`, and nothing falls back to a
   `codependix.config.ts` at the workspace root.
 
-A project's own `codependix.config.ts` is the one file that is found rather
-than named: it is read from beside the project root, never from a parent, and a
-project without one produces no per-project output.
+A project's own configuration file is named too: the workspace file's required
+`projectConfigurationPath` setting gives its path relative to each project's
+root (`"codependix.config.ts"`, or `"configuration/codependix.config.ts"`).
+Only that path is read, never a parent's file and never a neighbor, and a
+project with no file there produces no per-project output. A configuration
+without `projectConfigurationPath` is rejected.
 
 ## `defaults`, never `default`
 
@@ -334,7 +337,8 @@ it is given a `project.json`. Register the plugin once in `nx.json`:
       "plugin": "@codependix/nx",
       "options": {
         "configurationPath": "configuration/codependix.config.ts",
-        "gateTargetName": "codependix-bound"
+        "gateTargetName": "codependix-bound",
+        "projectConfigurationPath": "codependix.config.ts"
       }
     }
   ]
@@ -343,7 +347,9 @@ it is given a `project.json`. Register the plugin once in `nx.json`:
 
 `configurationPath` names the one configuration every gate reads, and it is
 required: a registration without it fails with an error naming the option, and
-no `codependix.config.ts` at the workspace root is assumed. A gate target can
+no `codependix.config.ts` at the workspace root is assumed. `projectConfigurationPath`
+is required too, and must match the workspace file's setting of that name: it
+names each project's own file for the cache inputs. A gate target can
 override it with the executor option `configuration` (not Nx's own
 `--configuration` flag, which selects `check` or `write`); a blank value is
 refused, naming that option. Nothing else is configured per project: the rules in `boundaries`
@@ -355,7 +361,7 @@ does need a `tsconfig.json` that emits decorator metadata, because the hooks
 read it from the working directory and NestJS constructor injection depends on
 it.
 
-The gate is cached. A project's own `codependix.config.*` is one of its cache
+The gate is cached. A project's own file, at `projectConfigurationPath`, is one of its cache
 inputs, so editing it re-runs that gate. So is the codependix command line
 itself: its `package.json` and sources when it is a package of the workspace, or
 its installed version when it comes from a registry. So is the workspace root's

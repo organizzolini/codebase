@@ -1,14 +1,10 @@
 // ♟️ Constants
 
-/** Glob for `createNodes`; omitting configurations leaves the daemon stale. */
-export const PROJECT_CONFIGURATION_GLOB =
-  "**/{project.json,codependix.config.*}";
+/** Glob for `createNodes`; static, so it names only the project file. */
+export const PROJECT_CONFIGURATION_GLOB = "**/project.json";
 
 /** Basename that marks a matched file as an actual project description. */
 export const PROJECT_CONFIGURATION_FILENAME = "project.json";
-
-/** Project-relative cache input for its own codependix configuration. */
-export const PROJECT_CONFIGURATION_INPUT = "{projectRoot}/codependix.config.*";
 
 /** `globalThis` key for the NestJS context, shared across reloads. */
 export const PLUGIN_CONTEXT_GLOBAL_KEY = "__codependixPluginContext";
@@ -22,6 +18,10 @@ export const DEFAULT_GATE_TARGET_NAME = "codependix-bound";
 /** Names the missing `configurationPath` in refusals; required, not defaulted. */
 export const PLUGIN_OPTION_SURFACE =
   "`configurationPath` option on the @codependix/nx plugin's entry in nx.json";
+
+/** Names the missing `projectConfigurationPath`; required, not defaulted. */
+export const PROJECT_PATH_OPTION_SURFACE =
+  "`projectConfigurationPath` option on the @codependix/nx plugin's entry in nx.json";
 
 /** Workspace root project, skipped: its closure is the whole workspace. */
 export const WORKSPACE_PROJECT_ROOT = ".";

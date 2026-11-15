@@ -4,6 +4,7 @@
  */
 export default {
   include: ["packages/*"],
+  projectConfigurationPath: "codependix.config.ts",
   workspace: {
     nxProjects: { markdown: { anchor: "example-nx" }, target: "markdown" },
   },

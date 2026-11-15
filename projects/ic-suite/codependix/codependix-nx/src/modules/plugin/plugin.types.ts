@@ -9,6 +9,11 @@ export interface CodependixPluginOptions {
   readonly configurationPath: string;
   /** Name of the inferred per-project gate target. */
   readonly gateTargetName: string;
+  /**
+   * Where each project's own configuration file sits, relative to its root.
+   * Required; must match the workspace configuration's setting of that name.
+   */
+  readonly projectConfigurationPath: string;
 }
 
 /** An `extends` target: a workspace file, a package, or neither. */

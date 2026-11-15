@@ -46,6 +46,8 @@ export const projectDefaults = {
  * live in `projects/ic-suite/codependix/codependix-examples`.
  */
 const codependixConfiguration: CodependixConfiguration = {
+  /** Where each project's own configuration file sits, relative to its root. */
+  projectConfigurationPath: "codependix.config.ts",
   /**
    * Rules every built graph is judged against, keyed by graph level and
    * gated by `--check boundaries` — never by `--check reports`, which is

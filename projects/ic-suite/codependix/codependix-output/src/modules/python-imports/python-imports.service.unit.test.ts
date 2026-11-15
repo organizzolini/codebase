@@ -49,6 +49,7 @@ describe(PythonImportsService, () => {
         exclude: [],
         include: ["**"],
         nestjsRootModules: {},
+        projectConfigurationPath: "codependix.config.ts",
         projectGraph: undefined,
         selection: { dependencies: true, projects: [], tags: [] },
         workspace: {},

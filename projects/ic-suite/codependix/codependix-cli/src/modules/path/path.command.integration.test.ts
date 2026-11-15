@@ -109,6 +109,7 @@ describe("path command", () => {
         [
           "export default {",
           '  include: ["packages/*"],',
+          '  projectConfigurationPath: "codependix.config.ts",',
           '  projectGraph: "codependix-graph.json",',
           "};",
           "",

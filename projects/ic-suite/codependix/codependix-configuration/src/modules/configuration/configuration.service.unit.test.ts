@@ -15,7 +15,7 @@ import {
   codependixConfigurationSchema,
   ConfigurationFileNotFoundError,
   ConfigurationPathRequiredError,
-  DEFAULT_INCLUDE_GLOBS,
+  ProjectConfigurationPathRequiredError,
 } from "./configuration.constants";
 import { ConfigurationService } from "./configuration.service";
 import { FlagResolutionService } from "./flag-resolution.service";
@@ -27,12 +27,17 @@ import type {
 } from "./configuration.types";
 
 /** Writes a JSON configuration holding whatever the caller passes. */
-async function writeConfiguration(configuration: unknown): Promise<string> {
+async function writeConfiguration(configuration: object): Promise<string> {
   return writeConfigurationFile(
     "codependix.config.json",
-    JSON.stringify(configuration),
+    JSON.stringify({ ...BASE_CONFIGURATION, ...configuration }),
   );
 }
+
+/** The one setting a configuration file cannot omit. */
+const BASE_CONFIGURATION = {
+  projectConfigurationPath: "codependix.config.ts",
+};
 
 /** Writes a configuration file of the given name into a fresh temp directory. */
 async function writeConfigurationFile(
@@ -95,12 +100,42 @@ describe(ConfigurationService, () => {
     });
   });
 
+  describe("requireProjectConfigurationPath", () => {
+    it("returns a path it was given unchanged", () => {
+      expect(
+        service.requireProjectConfigurationPath(
+          "configuration/codependix.config.ts",
+          "`projectConfigurationPath` option",
+        ),
+      ).toBe("configuration/codependix.config.ts");
+    });
+
+    it.each([
+      ["absent", undefined],
+      ["empty", ""],
+      ["blank", "   "],
+    ])("refuses a path that is %s, naming the surface", (_name, value) => {
+      expect(() =>
+        service.requireProjectConfigurationPath(
+          value,
+          "`projectConfigurationPath` option",
+        ),
+      ).toThrow(ProjectConfigurationPathRequiredError);
+      expect(() =>
+        service.requireProjectConfigurationPath(
+          value,
+          "`projectConfigurationPath` option",
+        ),
+      ).toThrow("`projectConfigurationPath` option");
+    });
+  });
+
   describe("loading", () => {
     it("reads a TypeScript configuration's default export", async () => {
       const configurationPath = await writeConfigurationFile(
         "codependix.config.ts",
-        `interface Configuration { include: string[] }
-        const configuration: Configuration = { include: ["packages/*"] };
+        `interface Configuration { include: string[]; projectConfigurationPath: string }
+        const configuration: Configuration = { include: ["packages/*"], projectConfigurationPath: "codependix.config.ts" };
         export default configuration;
         `,
       );
@@ -115,7 +150,7 @@ describe(ConfigurationService, () => {
     it("unwraps a CommonJS module's nested default export", async () => {
       const configurationPath = await writeConfigurationFile(
         "codependix.config.cjs",
-        'module.exports = { default: { include: ["packages/*"] } };',
+        'module.exports = { default: { include: ["packages/*"], projectConfigurationPath: "codependix.config.ts" } };',
       );
 
       const configuration = await service.loadConfiguration({
@@ -125,17 +160,15 @@ describe(ConfigurationService, () => {
       expect(configuration.include).toStrictEqual(["packages/*"]);
     });
 
-    it("falls back to defaults when the module exports no object", async () => {
+    it("refuses a module that exports no object, since it names no project configuration path", async () => {
       const configurationPath = await writeConfigurationFile(
         "codependix.config.ts",
         "export default 42;",
       );
 
-      const configuration = await service.loadConfiguration({
-        configurationPath,
-      });
-
-      expect(configuration.include).toStrictEqual([...DEFAULT_INCLUDE_GLOBS]);
+      await expect(
+        service.loadConfiguration({ configurationPath }),
+      ).rejects.toBeInstanceOf(ZodError);
     });
 
     it("rejects a malformed configuration", async () => {
@@ -182,12 +215,12 @@ describe(ConfigurationService, () => {
 
     it("resolves a configuration path relative to the workspace root", async () => {
       const configuration = await service.loadConfiguration({
-        configurationPath:
-          "projects/ic-suite/codependix/codependix-configuration/package.json",
+        configurationPath: "configuration/codependix.config.ts",
       });
 
-      // package.json parses as JSON and validates as an (empty) configuration.
-      expect(configuration.include).toStrictEqual([...DEFAULT_INCLUDE_GLOBS]);
+      expect(configuration.projectConfigurationPath).toBe(
+        "codependix.config.ts",
+      );
     });
 
     it("rejects a graph output naming a json target with no json destination", async () => {
@@ -337,7 +370,9 @@ describe(ConfigurationService, () => {
 
   describe("boundaries", () => {
     it("resolves every level to an empty list when none is declared", () => {
-      expect(service.resolveConfiguration({}).boundaries).toStrictEqual({
+      expect(
+        service.resolveConfiguration(BASE_CONFIGURATION).boundaries,
+      ).toStrictEqual({
         fileImports: { python: [], typescript: [] },
         nestjsModules: [],
         nxProjects: [],
@@ -353,8 +388,10 @@ describe(ConfigurationService, () => {
       };
 
       expect(
-        service.resolveConfiguration({ boundaries: { nxProjects: [rule] } })
-          .boundaries,
+        service.resolveConfiguration({
+          ...BASE_CONFIGURATION,
+          boundaries: { nxProjects: [rule] },
+        }).boundaries,
       ).toStrictEqual({
         fileImports: { python: [], typescript: [] },
         nestjsModules: [],
@@ -378,6 +415,7 @@ describe(ConfigurationService, () => {
 
       expect(
         service.resolveConfiguration({
+          ...BASE_CONFIGURATION,
           boundaries: {
             fileImports: { python: [pythonRule], typescript: [typescriptRule] },
           },
@@ -399,6 +437,7 @@ describe(ConfigurationService, () => {
 
       expect(
         service.resolveConfiguration({
+          ...BASE_CONFIGURATION,
           boundaries: { fileImports: { typescript: [typescriptRule] } },
         }).boundaries.fileImports,
       ).toStrictEqual({ python: [], typescript: [typescriptRule] });
@@ -406,6 +445,7 @@ describe(ConfigurationService, () => {
 
     it("accepts an access rule and an acyclic rule at the same level", () => {
       const parsed = codependixConfigurationSchema.safeParse({
+        ...BASE_CONFIGURATION,
         boundaries: {
           fileImports: {
             typescript: [
@@ -431,6 +471,7 @@ describe(ConfigurationService, () => {
 
     it("accepts a Python rule under fileImports.python independently of typescript", () => {
       const parsed = codependixConfigurationSchema.safeParse({
+        ...BASE_CONFIGURATION,
         boundaries: {
           fileImports: {
             python: [
@@ -450,6 +491,7 @@ describe(ConfigurationService, () => {
 
     it("refuses a selector naming no field at all", () => {
       const parsed = codependixConfigurationSchema.safeParse({
+        ...BASE_CONFIGURATION,
         boundaries: {
           nxProjects: [
             { from: {}, kind: "forbid", name: "empty", to: { id: ["a"] } },
@@ -462,6 +504,7 @@ describe(ConfigurationService, () => {
 
     it("refuses a rule kind it does not know", () => {
       const parsed = codependixConfigurationSchema.safeParse({
+        ...BASE_CONFIGURATION,
         boundaries: {
           nxProjects: [
             { from: { id: ["a"] }, kind: "warn", name: "x", to: { id: ["b"] } },
@@ -474,6 +517,7 @@ describe(ConfigurationService, () => {
 
     it("refuses a rule with no name", () => {
       const parsed = codependixConfigurationSchema.safeParse({
+        ...BASE_CONFIGURATION,
         boundaries: { nxProjects: [{ kind: "acyclic", name: "" }] },
       });
 
@@ -489,7 +533,7 @@ describe(ConfigurationService, () => {
 
     // Participation is declared: naming an own file alone selects nothing.
     it("resolves to none for a configuration naming no include", () => {
-      const configuration = service.resolveConfiguration({});
+      const configuration = service.resolveConfiguration(BASE_CONFIGURATION);
 
       expect(configuration.include).toStrictEqual([]);
       expect(
@@ -504,6 +548,7 @@ describe(ConfigurationService, () => {
 
     it("resolves to none for an included project with no configuration file of its own", () => {
       const configuration = service.resolveConfiguration({
+        ...BASE_CONFIGURATION,
         include: ["**"],
       });
 
@@ -519,6 +564,7 @@ describe(ConfigurationService, () => {
 
     it("resolves to none when the project's own file names no override for the graph type", () => {
       const configuration = service.resolveConfiguration({
+        ...BASE_CONFIGURATION,
         include: ["**"],
       });
 
@@ -534,6 +580,7 @@ describe(ConfigurationService, () => {
 
     it("resolves an included project's own file for the graph type it declares", () => {
       const configuration = service.resolveConfiguration({
+        ...BASE_CONFIGURATION,
         include: ["**"],
       });
 
@@ -553,6 +600,7 @@ describe(ConfigurationService, () => {
 
     it("reads a project's own file as-is, with no merge against anything else", () => {
       const configuration = service.resolveConfiguration({
+        ...BASE_CONFIGURATION,
         include: ["**"],
       });
       const projectConfiguration: CodependixProjectConfiguration = {
@@ -575,6 +623,7 @@ describe(ConfigurationService, () => {
 
     it("defaults an anchor destination's markdown path to README.md", () => {
       const configuration = service.resolveConfiguration({
+        ...BASE_CONFIGURATION,
         include: ["**"],
       });
 
@@ -590,6 +639,7 @@ describe(ConfigurationService, () => {
 
     it("keeps a standalone markdown path a project names for itself", () => {
       const configuration = service.resolveConfiguration({
+        ...BASE_CONFIGURATION,
         include: ["**"],
       });
       const projectConfiguration: CodependixProjectConfiguration = {
@@ -614,6 +664,7 @@ describe(ConfigurationService, () => {
 
     it("excludes a project matching an exclude glob even with its own configuration file", () => {
       const configuration = service.resolveConfiguration({
+        ...BASE_CONFIGURATION,
         exclude: ["excluded-*"],
         include: ["**"],
       });
@@ -630,6 +681,7 @@ describe(ConfigurationService, () => {
 
     it("excludes a project matching no include glob", () => {
       const configuration = service.resolveConfiguration({
+        ...BASE_CONFIGURATION,
         include: ["packages/*"],
       });
 
@@ -645,6 +697,7 @@ describe(ConfigurationService, () => {
 
     it("includes a project matching the configured include glob", () => {
       const configuration = service.resolveConfiguration({
+        ...BASE_CONFIGURATION,
         include: ["packages/*"],
       });
 
@@ -658,6 +711,7 @@ describe(ConfigurationService, () => {
 
     it("includes a project whose root matches an include glob its name does not", () => {
       const configuration = service.resolveConfiguration({
+        ...BASE_CONFIGURATION,
         include: ["packages/*"],
       });
       const projectConfiguration: CodependixProjectConfiguration = {
@@ -677,6 +731,7 @@ describe(ConfigurationService, () => {
 
     it("excludes a project whose root matches an exclude glob its name does not", () => {
       const configuration = service.resolveConfiguration({
+        ...BASE_CONFIGURATION,
         exclude: ["packages/excluded-*"],
         include: ["**"],
       });
@@ -698,7 +753,10 @@ describe(ConfigurationService, () => {
       const projectRoot = createTemporaryDirectory("codependix-project-none");
 
       await expect(
-        service.loadProjectConfiguration({ projectRoot }),
+        service.loadProjectConfiguration({
+          projectConfigurationPath: "codependix.config.json",
+          projectRoot,
+        }),
       ).resolves.toBeUndefined();
     });
 
@@ -708,6 +766,7 @@ describe(ConfigurationService, () => {
       });
 
       const projectConfiguration = await service.loadProjectConfiguration({
+        projectConfigurationPath: path.basename(configurationPath),
         projectRoot: path.dirname(configurationPath),
       });
 
@@ -728,7 +787,10 @@ describe(ConfigurationService, () => {
       await mkdir(projectRoot, { recursive: true });
 
       await expect(
-        service.loadProjectConfiguration({ projectRoot }),
+        service.loadProjectConfiguration({
+          projectConfigurationPath: "codependix.config.json",
+          projectRoot,
+        }),
       ).resolves.toBeUndefined();
     });
 
@@ -738,6 +800,7 @@ describe(ConfigurationService, () => {
       });
 
       const projectConfiguration = await service.loadProjectConfiguration({
+        projectConfigurationPath: path.basename(configurationPath),
         projectRoot: path.dirname(configurationPath),
       });
 
@@ -752,26 +815,55 @@ describe(ConfigurationService, () => {
 
       await expect(
         service.loadProjectConfiguration({
+          projectConfigurationPath: path.basename(configurationPath),
           projectRoot: path.dirname(configurationPath),
         }),
       ).rejects.toBeInstanceOf(ZodError);
     });
   });
 
+  describe("projectConfigurationPath", () => {
+    it("carries the path a configuration named", () => {
+      expect(
+        service.resolveConfiguration({
+          ...BASE_CONFIGURATION,
+          projectConfigurationPath: "configuration/codependix.config.ts",
+        }).projectConfigurationPath,
+      ).toBe("configuration/codependix.config.ts");
+    });
+
+    it("refuses a configuration that names none", () => {
+      expect(codependixConfigurationSchema.safeParse({}).success).toBe(false);
+    });
+
+    it("refuses a blank path", () => {
+      expect(
+        codependixConfigurationSchema.safeParse({
+          projectConfigurationPath: "",
+        }).success,
+      ).toBe(false);
+    });
+  });
+
   describe("projectGraph", () => {
     it("carries the path a configuration named", () => {
       expect(
-        service.resolveConfiguration({ projectGraph: "artifacts/graph.json" })
-          .projectGraph,
+        service.resolveConfiguration({
+          ...BASE_CONFIGURATION,
+          projectGraph: "artifacts/graph.json",
+        }).projectGraph,
       ).toBe("artifacts/graph.json");
     });
 
     it("leaves it unset when a configuration names none", () => {
-      expect(service.resolveConfiguration({}).projectGraph).toBeUndefined();
+      expect(
+        service.resolveConfiguration(BASE_CONFIGURATION).projectGraph,
+      ).toBeUndefined();
     });
 
     it("refuses a projectGraph that is not a path", () => {
       const parsed = codependixConfigurationSchema.safeParse({
+        ...BASE_CONFIGURATION,
         projectGraph: 42,
       });
 
@@ -789,19 +881,22 @@ describe(ConfigurationService, () => {
 
     it("carries the root modules a configuration named", () => {
       expect(
-        service.resolveConfiguration({ nestjsModules: { rootModules } })
-          .nestjsRootModules,
+        service.resolveConfiguration({
+          ...BASE_CONFIGURATION,
+          nestjsModules: { rootModules },
+        }).nestjsRootModules,
       ).toStrictEqual(rootModules);
     });
 
     it("assumes none when a configuration names none", () => {
-      expect(service.resolveConfiguration({}).nestjsRootModules).toStrictEqual(
-        {},
-      );
+      expect(
+        service.resolveConfiguration(BASE_CONFIGURATION).nestjsRootModules,
+      ).toStrictEqual({});
     });
 
     it("keeps the field when a configuration file is parsed rather than stripping it", () => {
       const parsed = codependixConfigurationSchema.parse({
+        ...BASE_CONFIGURATION,
         nestjsModules: { rootModules },
       });
 
@@ -810,6 +905,7 @@ describe(ConfigurationService, () => {
 
     it("refuses a root module naming no export", () => {
       const parsed = codependixConfigurationSchema.safeParse({
+        ...BASE_CONFIGURATION,
         nestjsModules: { rootModules: { app: { file: "src/app.module.ts" } } },
       });
 
@@ -820,6 +916,7 @@ describe(ConfigurationService, () => {
   describe("workspace", () => {
     it("accepts a fileImports workspace section, the same CodependixGraphOutput shape as nxProjects", () => {
       const parsed = codependixConfigurationSchema.safeParse({
+        ...BASE_CONFIGURATION,
         workspace: {
           fileImports: {
             markdown: { anchor: "codependix-workspace-file-imports" },
@@ -833,6 +930,7 @@ describe(ConfigurationService, () => {
 
     it("accepts a nestjsModules workspace section, the same CodependixGraphOutput shape as nxProjects", () => {
       const parsed = codependixConfigurationSchema.safeParse({
+        ...BASE_CONFIGURATION,
         workspace: {
           nestjsModules: {
             markdown: { anchor: "codependix-workspace-nestjs-modules" },
@@ -846,6 +944,7 @@ describe(ConfigurationService, () => {
 
     it("accepts all three workspace graph types declared together", () => {
       const parsed = codependixConfigurationSchema.safeParse({
+        ...BASE_CONFIGURATION,
         workspace: {
           fileImports: { markdown: { anchor: "workspace-file-imports" } },
           nestjsModules: { markdown: { anchor: "workspace-nestjs-modules" } },
@@ -858,6 +957,7 @@ describe(ConfigurationService, () => {
 
     it("refuses a fileImports workspace section missing its markdown destination for a markdown target", () => {
       const parsed = codependixConfigurationSchema.safeParse({
+        ...BASE_CONFIGURATION,
         workspace: { fileImports: { target: "markdown" } },
       });
 
@@ -875,7 +975,7 @@ describe(ConfigurationService, () => {
       } = {},
     ): ResolvedCodependixConfiguration {
       return service.resolveConfiguration(
-        { include: ["packages/*"] },
+        { ...BASE_CONFIGURATION, include: ["packages/*"] },
         selection,
       );
     }
@@ -959,7 +1059,7 @@ describe(ConfigurationService, () => {
       // advisory rather than a statement that a project is never exported.
       it("lets exclude win over a project the command line named", () => {
         const configuration = service.resolveConfiguration(
-          { exclude: ["widgets"], include: ["**"] },
+          { ...BASE_CONFIGURATION, exclude: ["widgets"], include: ["**"] },
           { projects: "widgets" },
         );
 
@@ -997,7 +1097,10 @@ describe(ConfigurationService, () => {
       // `include` is about which projects get exports written, and has never
       // reached the workspace graph or the gate. A selection reaches all three.
       it("ignores include entirely", () => {
-        const configuration = service.resolveConfiguration({ include: [] }, {});
+        const configuration = service.resolveConfiguration(
+          { ...BASE_CONFIGURATION, include: [] },
+          {},
+        );
 
         expect(
           service.isProjectSelected({ configuration, projectName: "widgets" }),
@@ -1008,7 +1111,7 @@ describe(ConfigurationService, () => {
 
   describe("resolveForWorkspace", () => {
     it("resolves to none when the configuration names no workspace section", () => {
-      const configuration = service.resolveConfiguration({});
+      const configuration = service.resolveConfiguration(BASE_CONFIGURATION);
 
       expect(
         service.resolveForWorkspace(configuration, "nxProjects"),
@@ -1021,6 +1124,7 @@ describe(ConfigurationService, () => {
 
     it("reads the workspace section's nx export configuration", () => {
       const configuration = service.resolveConfiguration({
+        ...BASE_CONFIGURATION,
         workspace: {
           nxProjects: {
             json: { path: "codependix-workspace-graph.json" },
@@ -1041,6 +1145,7 @@ describe(ConfigurationService, () => {
 
     it("reads the workspace section's fileImports export configuration", () => {
       const configuration = service.resolveConfiguration({
+        ...BASE_CONFIGURATION,
         workspace: {
           fileImports: {
             markdown: { anchor: "codependix-workspace-file-imports" },
@@ -1063,6 +1168,7 @@ describe(ConfigurationService, () => {
 
     it("reads the workspace section's nestjsModules export configuration", () => {
       const configuration = service.resolveConfiguration({
+        ...BASE_CONFIGURATION,
         workspace: {
           nestjsModules: {
             markdown: { anchor: "codependix-workspace-nestjs-modules" },
@@ -1087,6 +1193,7 @@ describe(ConfigurationService, () => {
     // never resolves another that was never declared.
     it("resolves each graph type's workspace section independently", () => {
       const configuration = service.resolveConfiguration({
+        ...BASE_CONFIGURATION,
         workspace: {
           nxProjects: { markdown: { anchor: "workspace" }, target: "markdown" },
         },
@@ -1102,6 +1209,7 @@ describe(ConfigurationService, () => {
 
     it("is unaffected by include and exclude globs", () => {
       const configuration = service.resolveConfiguration({
+        ...BASE_CONFIGURATION,
         exclude: ["**"],
         include: [],
         workspace: {

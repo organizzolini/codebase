@@ -114,6 +114,7 @@ export async function runBoundaryCheck(
       JSON.stringify({
         boundaries: args.rules,
         nestjsModules: { rootModules: args.rootModules },
+        projectConfigurationPath: "codependix.config.ts",
         projectGraph: graphPath,
       }),
     );

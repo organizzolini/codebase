@@ -15,7 +15,7 @@ drifted; `:write` regenerates it.
 
 ## A `both` target with no `json` destination
 
-Reproduced by `codependixConfigurationSchema.parse({"workspace":{"nxProjects":{"target":"both"}}})`.
+Reproduced by `codependixConfigurationSchema.parse({"projectConfigurationPath":"codependix.config.ts","workspace":{"nxProjects":{"target":"both"}}})`.
 
 ```text
 A "both" export target needs a json destination.
@@ -24,7 +24,7 @@ A "both" export target needs a markdown destination.
 
 ## A `json` target with no `json` destination
 
-Reproduced by `codependixConfigurationSchema.parse({"workspace":{"nxProjects":{"target":"json"}}})`.
+Reproduced by `codependixConfigurationSchema.parse({"projectConfigurationPath":"codependix.config.ts","workspace":{"nxProjects":{"target":"json"}}})`.
 
 ```text
 A "json" export target needs a json destination.
@@ -32,7 +32,7 @@ A "json" export target needs a json destination.
 
 ## A `both` target with no `markdown` destination
 
-Reproduced by `codependixConfigurationSchema.parse({"workspace":{"nxProjects":{"json":{"path":"graph.json"},"target":"both"}}})`.
+Reproduced by `codependixConfigurationSchema.parse({"projectConfigurationPath":"codependix.config.ts","workspace":{"nxProjects":{"json":{"path":"graph.json"},"target":"both"}}})`.
 
 ```text
 A "both" export target needs a markdown destination.
@@ -40,7 +40,7 @@ A "both" export target needs a markdown destination.
 
 ## A `markdown` target with no `markdown` destination
 
-Reproduced by `codependixConfigurationSchema.parse({"workspace":{"nxProjects":{"target":"markdown"}}})`.
+Reproduced by `codependixConfigurationSchema.parse({"projectConfigurationPath":"codependix.config.ts","workspace":{"nxProjects":{"target":"markdown"}}})`.
 
 ```text
 A "markdown" export target needs a markdown destination.
@@ -48,10 +48,18 @@ A "markdown" export target needs a markdown destination.
 
 ## A `markdown` destination naming neither an anchor nor a path
 
-Reproduced by `codependixConfigurationSchema.parse({"workspace":{"nxProjects":{"markdown":{},"target":"markdown"}}})`.
+Reproduced by `codependixConfigurationSchema.parse({"projectConfigurationPath":"codependix.config.ts","workspace":{"nxProjects":{"markdown":{},"target":"markdown"}}})`.
 
 ```text
 A markdown destination needs an anchor, a path, or both — otherwise nothing names where the export goes.
+```
+
+## No `projectConfigurationPath`, so nothing says where a project's own file sits
+
+Reproduced by `codependixConfigurationSchema.parse({})`.
+
+```text
+Invalid input: expected string, received undefined
 ```
 
 ## A run naming no configuration path

@@ -37,6 +37,7 @@ describe("the packed codependix command", () => {
       "codependix-graph.json": JSON.stringify(PROJECT_GRAPH),
       "codependix.config.json": JSON.stringify({
         include: [],
+        projectConfigurationPath: "codependix.config.json",
         projectGraph: "codependix-graph.json",
         workspace: {
           nxProjects: {

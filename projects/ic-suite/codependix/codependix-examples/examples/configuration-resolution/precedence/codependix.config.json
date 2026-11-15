@@ -1,4 +1,5 @@
 {
+  "projectConfigurationPath": "codependix.config.ts",
   "workspace": {
     "nxProjects": {
       "markdown": {

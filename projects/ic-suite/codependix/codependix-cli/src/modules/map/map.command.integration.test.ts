@@ -123,6 +123,8 @@ describe("map command", () => {
           "",
           "export default {",
           '  include: ["packages/*"],',
+          '  projectConfigurationPath: "codependix.config.ts",',
+          '  projectConfigurationPath: "codependix.config.ts",',
           '  projectGraph: "codependix-graph.json",',
           "  workspace: {",
           '    nxProjects: { json: { path: "workspace-graph.json" }, target: "json" },',
@@ -344,6 +346,9 @@ describe("map command", () => {
         [
           "export default {",
           '  include: ["packages/*"],',
+          '  projectConfigurationPath: "codependix.config.ts",',
+          '  projectConfigurationPath: "codependix.config.ts",',
+          '  projectConfigurationPath: "codependix.config.ts",',
           '  projectGraph: "codependix-graph.json",',
           "};",
           "",
@@ -525,6 +530,8 @@ describe("map command", () => {
         [
           "export default {",
           '  include: ["packages/*"],',
+          '  projectConfigurationPath: "codependix.config.ts",',
+          '  projectConfigurationPath: "codependix.config.ts",',
           '  projectGraph: "codependix-graph.json",',
           "  workspace: {",
           '    fileImports: { json: { path: "workspace-file-imports.json" }, target: "json" },',
@@ -683,6 +690,7 @@ describe("map command", () => {
         [
           "export default {",
           `  boundaries: { nxProjects: ${args.rules} },`,
+          '  projectConfigurationPath: "codependix.config.ts",',
           '  projectGraph: "codependix-graph.json",',
           "};",
           "",

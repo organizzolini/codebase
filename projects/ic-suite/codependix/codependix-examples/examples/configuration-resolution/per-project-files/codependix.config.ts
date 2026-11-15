@@ -5,4 +5,5 @@ export const projectDefaults = {
 
 export default {
   include: ["packages/*"],
+  projectConfigurationPath: "codependix.config.ts",
 };

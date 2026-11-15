@@ -23,26 +23,41 @@ describe(ConfigurationLoaderService, () => {
     expect(instance).toBeInstanceOf(ConfigurationLoaderService);
   });
 
-  describe("findProjectConfigurationFile", () => {
-    it("finds a configuration file colocated with the project", async () => {
+  describe("resolveProjectConfigurationFile", () => {
+    it("resolves the configured path against the project root", async () => {
       const directory = createTemporaryDirectory("codependix-loader");
-      const configurationPath = path.join(directory, "codependix.config.json");
+      const configurationPath = path.join(
+        directory,
+        "configuration",
+        "codependix.config.json",
+      );
 
+      await mkdir(path.dirname(configurationPath), { recursive: true });
       await writeFile(configurationPath, "{}", "utf8");
 
-      expect(service.findProjectConfigurationFile(directory)).toBe(
-        configurationPath,
-      );
+      expect(
+        service.resolveProjectConfigurationFile({
+          projectConfigurationPath: "configuration/codependix.config.json",
+          projectRoot: directory,
+        }),
+      ).toBe(configurationPath);
     });
 
-    it("never walks upward", async () => {
-      const root = createTemporaryDirectory("codependix-loader");
-      const nested = path.join(root, "nested");
+    it("returns undefined when nothing exists at the configured path, whatever sits beside it", async () => {
+      const directory = createTemporaryDirectory("codependix-loader");
 
-      await mkdir(nested, { recursive: true });
-      await writeFile(path.join(root, "codependix.config.json"), "{}", "utf8");
+      await writeFile(
+        path.join(directory, "codependix.config.json"),
+        "{}",
+        "utf8",
+      );
 
-      expect(service.findProjectConfigurationFile(nested)).toBeUndefined();
+      expect(
+        service.resolveProjectConfigurationFile({
+          projectConfigurationPath: "configuration/codependix.config.json",
+          projectRoot: directory,
+        }),
+      ).toBeUndefined();
     });
   });
 
@@ -52,7 +67,10 @@ describe(ConfigurationLoaderService, () => {
 
       await writeFile(
         path.join(directory, "codependix.config.json"),
-        JSON.stringify({ include: ["**"] }),
+        JSON.stringify({
+          include: ["**"],
+          projectConfigurationPath: "codependix.config.ts",
+        }),
         "utf8",
       );
 
@@ -60,7 +78,10 @@ describe(ConfigurationLoaderService, () => {
         service.readAuthoredConfiguration({
           configurationPath: path.join(directory, "codependix.config.json"),
         }),
-      ).resolves.toStrictEqual({ include: ["**"] });
+      ).resolves.toStrictEqual({
+        include: ["**"],
+        projectConfigurationPath: "codependix.config.ts",
+      });
     });
 
     it("refuses a path naming no file rather than resolving to nothing", async () => {

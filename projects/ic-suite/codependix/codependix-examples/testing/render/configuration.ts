@@ -50,15 +50,22 @@ const PER_PROJECT_FILES = "per-project-files";
 /** Config refusals, rendered from the real schema's messages. */
 const REFUSED_CONFIGURATIONS = [
   {
-    configuration: { workspace: { nxProjects: { target: "both" } } },
+    configuration: {
+      projectConfigurationPath: "codependix.config.ts",
+      workspace: { nxProjects: { target: "both" } },
+    },
     title: "A `both` target with no `json` destination",
   },
   {
-    configuration: { workspace: { nxProjects: { target: "json" } } },
+    configuration: {
+      projectConfigurationPath: "codependix.config.ts",
+      workspace: { nxProjects: { target: "json" } },
+    },
     title: "A `json` target with no `json` destination",
   },
   {
     configuration: {
+      projectConfigurationPath: "codependix.config.ts",
       workspace: {
         nxProjects: { json: { path: "graph.json" }, target: "both" },
       },
@@ -66,14 +73,23 @@ const REFUSED_CONFIGURATIONS = [
     title: "A `both` target with no `markdown` destination",
   },
   {
-    configuration: { workspace: { nxProjects: { target: "markdown" } } },
+    configuration: {
+      projectConfigurationPath: "codependix.config.ts",
+      workspace: { nxProjects: { target: "markdown" } },
+    },
     title: "A `markdown` target with no `markdown` destination",
   },
   {
     configuration: {
+      projectConfigurationPath: "codependix.config.ts",
       workspace: { nxProjects: { markdown: {}, target: "markdown" } },
     },
     title: "A `markdown` destination naming neither an anchor nor a path",
+  },
+  {
+    configuration: {},
+    title:
+      "No `projectConfigurationPath`, so nothing says where a project's own file sits",
   },
 ] as const;
 
@@ -226,7 +242,7 @@ async function buildDiscoverySections(): Promise<ExampleSection[]> {
         "codependix.config.ts": named.workspace,
       }),
       heading: "The path names the file; a neighbor is never read",
-      note: "`examples/configuration-resolution/precedence/` holds both a `codependix.config.ts` and a `codependix.config.json`. `--config` names exactly one, and that is the only one read — the anchor each declares differs, so loading either by name shows which file answered. Nothing is searched for: no default filename, no walk upward, and no absent file is read as an empty configuration. A project's own `codependix.config.ts` is the exception — see the next section — found beside the project root, never upward.",
+      note: "`examples/configuration-resolution/precedence/` holds both a `codependix.config.ts` and a `codependix.config.json`. `--config` names exactly one, and that is the only one read — the anchor each declares differs, so loading either by name shows which file answered. Nothing is searched for: no default filename, no walk upward, and no absent file is read as an empty configuration. A project's own configuration file is named by the required `projectConfigurationPath` setting, relative to the project root — see the next section — and never searched for or found upward.",
     },
     {
       body: fenceJson(unknownFields.workspace),
@@ -346,6 +362,7 @@ function buildSampleConfiguration(
   return configurationService.resolveConfiguration({
     exclude: ["applications/*"],
     include: ["packages/*", "codependix-*"],
+    projectConfigurationPath: "codependix.config.ts",
     workspace: {
       nxProjects: {
         markdown: { anchor: "example-workspace" },
@@ -362,6 +379,7 @@ async function loadExampleProjectConfiguration(
   const configurationService = await getConfigurationService();
 
   return configurationService.loadProjectConfiguration({
+    projectConfigurationPath: "codependix.config.ts",
     projectRoot: resolveExample(
       CONFIGURATION_SEGMENT,
       PER_PROJECT_FILES,

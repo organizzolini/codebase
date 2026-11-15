@@ -60,6 +60,7 @@ describe(RunContextService, () => {
       exclude: [],
       include: ["**"],
       nestjsRootModules: {},
+      projectConfigurationPath: "configuration/codependix.config.ts",
       projectGraph: undefined,
       selection: { dependencies: true, projects: [], tags: [] },
       workspace: {},
@@ -224,6 +225,7 @@ describe(RunContextService, () => {
       exclude: [],
       include: ["**"],
       nestjsRootModules: {},
+      projectConfigurationPath: "codependix.config.ts",
       projectGraph: "artifacts/graph.json",
       selection: { dependencies: true, projects: [], tags: [] },
       workspace: {},
@@ -315,6 +317,7 @@ describe(RunContextService, () => {
         exclude: [],
         include: ["**"],
         nestjsRootModules: {},
+        projectConfigurationPath: "codependix.config.ts",
         projectGraph: undefined,
         selection: { dependencies: false, projects: ["widgets"], tags: [] },
         workspace: {},
@@ -352,6 +355,7 @@ describe(RunContextService, () => {
         exclude: [],
         include: ["**"],
         nestjsRootModules: {},
+        projectConfigurationPath: "codependix.config.ts",
         projectGraph: undefined,
         selection,
         workspace: {},
@@ -466,6 +470,7 @@ describe(RunContextService, () => {
         exclude: [],
         include: ["**"],
         nestjsRootModules: {},
+        projectConfigurationPath: "codependix.config.ts",
         projectGraph: undefined,
         selection: { dependencies: true, ...selection },
         workspace: {},
@@ -569,9 +574,11 @@ describe(RunContextService, () => {
     });
     expect(context.projectConfigurations.get("reporting")).toBeUndefined();
     expect(configurationService.loadProjectConfiguration).toHaveBeenCalledWith({
+      projectConfigurationPath: "configuration/codependix.config.ts",
       projectRoot: "/workspace/packages/widgets",
     });
     expect(configurationService.loadProjectConfiguration).toHaveBeenCalledWith({
+      projectConfigurationPath: "configuration/codependix.config.ts",
       projectRoot: "/workspace/tools/reporting",
     });
   });

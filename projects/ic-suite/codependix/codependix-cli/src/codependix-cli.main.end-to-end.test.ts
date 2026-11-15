@@ -46,6 +46,7 @@ describe("main end-to-end suite", () => {
       const workingDirectory = createFixture("codependix-cli-stream-test", {
         "codependix.config.json": JSON.stringify({
           include: [],
+          projectConfigurationPath: "codependix.config.json",
           workspace: {
             nxProjects: {
               json: {
@@ -118,6 +119,7 @@ describe("main end-to-end suite", () => {
             nxProjects: [{ kind: "acyclic", name: "no-cycles" }],
           },
           include: [],
+          projectConfigurationPath: "codependix.config.json",
           projectGraph: "codependix-graph.json",
         }),
       });

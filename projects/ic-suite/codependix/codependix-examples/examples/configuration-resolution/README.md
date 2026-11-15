@@ -70,7 +70,7 @@ It is exported once for the repository rather than once per project, so it carri
 
 ## The path names the file; a neighbor is never read
 
-`examples/configuration-resolution/precedence/` holds both a `codependix.config.ts` and a `codependix.config.json`. `--config` names exactly one, and that is the only one read — the anchor each declares differs, so loading either by name shows which file answered. Nothing is searched for: no default filename, no walk upward, and no absent file is read as an empty configuration. A project's own `codependix.config.ts` is the exception — see the next section — found beside the project root, never upward.
+`examples/configuration-resolution/precedence/` holds both a `codependix.config.ts` and a `codependix.config.json`. `--config` names exactly one, and that is the only one read — the anchor each declares differs, so loading either by name shows which file answered. Nothing is searched for: no default filename, no walk upward, and no absent file is read as an empty configuration. A project's own configuration file is named by the required `projectConfigurationPath` setting, relative to the project root — see the next section — and never searched for or found upward.
 
 ```json
 {

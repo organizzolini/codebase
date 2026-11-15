@@ -22,6 +22,11 @@ export interface CodependixConfiguration {
    */
   nestjsModules?: CodependixNestjsModulesConfiguration | undefined;
   /**
+   * Where each project's own configuration file sits, relative to its root.
+   * Required: nothing is searched for.
+   */
+  projectConfigurationPath: string;
+  /**
    * Path, relative to the workspace root, of an `nx graph --file` JSON to read
    * instead of resolving the working directory's graph.
    */
@@ -119,6 +124,8 @@ export interface LoadConfigurationArguments {
 
 /** Arguments accepted when loading one project's own configuration file. */
 export interface LoadProjectConfigurationArguments {
+  /** Where the file sits, relative to `projectRoot`; no other name is tried. */
+  projectConfigurationPath: string;
   /** The project's root, absolute or resolved against the process cwd. */
   projectRoot: string;
 }
@@ -199,6 +206,8 @@ export interface ResolvedCodependixConfiguration {
   include: string[];
   /** The root module of each NestJS application, keyed by Nx project name. */
   nestjsRootModules: Record<string, CodependixNestjsRootModule>;
+  /** Where each project's own configuration file sits, relative to its root. */
+  projectConfigurationPath: string;
   /** A project graph to read instead of the working directory's, if named. */
   projectGraph: string | undefined;
   /**

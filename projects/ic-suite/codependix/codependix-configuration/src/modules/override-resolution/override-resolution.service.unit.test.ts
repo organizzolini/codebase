@@ -17,6 +17,7 @@ function buildResolved(): ResolvedCodependixConfiguration {
     exclude: [],
     include: ["packages/**"],
     nestjsRootModules: {},
+    projectConfigurationPath: "codependix.config.ts",
     projectGraph: undefined,
     selection: { dependencies: true, projects: [], tags: [] },
     workspace: {},
@@ -42,7 +43,10 @@ describe(OverrideResolutionService, () => {
     const resolved = buildResolved();
 
     const applied = service.applyOverrides({
-      authored: { include: ["packages/**"] },
+      authored: {
+        include: ["packages/**"],
+        projectConfigurationPath: "codependix.config.ts",
+      },
       overrides: undefined,
       resolved,
     });
@@ -52,7 +56,10 @@ describe(OverrideResolutionService, () => {
 
   it("overrides include when the author declared it", () => {
     const applied = service.applyOverrides({
-      authored: { include: ["packages/**"] },
+      authored: {
+        include: ["packages/**"],
+        projectConfigurationPath: "codependix.config.ts",
+      },
       overrides: { include: ["applications/**"] },
       resolved: buildResolved(),
     });
@@ -62,7 +69,11 @@ describe(OverrideResolutionService, () => {
 
   it("overrides exclude when the author declared it", () => {
     const applied = service.applyOverrides({
-      authored: { exclude: ["scratch-*"], include: ["packages/**"] },
+      authored: {
+        exclude: ["scratch-*"],
+        include: ["packages/**"],
+        projectConfigurationPath: "codependix.config.ts",
+      },
       overrides: { exclude: ["fixtures-*"] },
       resolved: { ...buildResolved(), exclude: ["scratch-*"] },
     });
@@ -73,7 +84,7 @@ describe(OverrideResolutionService, () => {
   it("refuses to override include the author never declared", () => {
     expect(() =>
       service.applyOverrides({
-        authored: {},
+        authored: { projectConfigurationPath: "codependix.config.ts" },
         overrides: { include: ["applications/**"] },
         resolved: buildResolved(),
       }),
@@ -85,7 +96,10 @@ describe(OverrideResolutionService, () => {
   it("refuses to override exclude the author never declared", () => {
     expect(() =>
       service.applyOverrides({
-        authored: { include: ["packages/**"] },
+        authored: {
+          include: ["packages/**"],
+          projectConfigurationPath: "codependix.config.ts",
+        },
         overrides: { exclude: ["fixtures-*"] },
         resolved: buildResolved(),
       }),
@@ -96,7 +110,7 @@ describe(OverrideResolutionService, () => {
 
   it("ignores an empty override list, the same as an absent one", () => {
     const applied = service.applyOverrides({
-      authored: {},
+      authored: { projectConfigurationPath: "codependix.config.ts" },
       overrides: { include: [] },
       resolved: buildResolved(),
     });

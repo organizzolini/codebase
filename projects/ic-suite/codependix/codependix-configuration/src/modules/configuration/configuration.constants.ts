@@ -41,17 +41,6 @@ export const SUPPORTED_CONFIGURATION_EXTENSIONS = new Set([
   ".ts",
 ]);
 
-/** Project config file names, searched in order: TypeScript before JSON. */
-export const CONFIGURATION_FILE_NAMES = [
-  "codependix.config.ts",
-  "codependix.config.mts",
-  "codependix.config.cts",
-  "codependix.config.js",
-  "codependix.config.mjs",
-  "codependix.config.cjs",
-  "codependix.config.json",
-] as const;
-
 /** Export target applied to a graph type naming none. */
 export const DEFAULT_EXPORT_TARGET: CodependixExportTarget = "none";
 
@@ -190,6 +179,7 @@ export const codependixConfigurationSchema = z.object({
   exclude: z.array(z.string()).optional(),
   include: z.array(z.string()).optional(),
   nestjsModules: nestjsModulesConfigurationSchema.optional(),
+  projectConfigurationPath: z.string().min(1),
   projectGraph: z.string().optional(),
   workspace: workspaceConfigurationSchema.optional(),
 });
@@ -239,5 +229,20 @@ export class ConfigurationPathRequiredError extends Error {
       `A configuration path is required, but the ${surface} named none: give it the path of the codependix configuration file.`,
     );
     this.name = "ConfigurationPathRequiredError";
+  }
+}
+
+/**
+ * Raised when no per-project configuration path was given.
+ *
+ * Names the setting that should have carried it, so the message says which
+ * one to fix.
+ */
+export class ProjectConfigurationPathRequiredError extends Error {
+  constructor(surface: string) {
+    super(
+      `A project configuration path is required, but the ${surface} named none: give it where each project's own codependix configuration file sits, relative to the project root.`,
+    );
+    this.name = "ProjectConfigurationPathRequiredError";
   }
 }

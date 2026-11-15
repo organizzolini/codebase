@@ -8,7 +8,7 @@ import {
   DEFAULT_GATE_TARGET_NAME,
   PLUGIN_OPTION_SURFACE,
   PROJECT_CONFIGURATION_FILENAME,
-  PROJECT_CONFIGURATION_INPUT,
+  PROJECT_PATH_OPTION_SURFACE,
   WORKSPACE_PROJECT_ROOT,
 } from "./plugin.constants";
 
@@ -21,7 +21,7 @@ import type {
 
 /**
  * Reads this plugin's registration and infers the gate from it. Every option is checked
- * before use, and a bad value falls back to its default rather than stopping the project graph.
+ * before use, and an unusable gate target name falls back to its default.
  */
 @Injectable()
 export class PluginService {
@@ -92,7 +92,7 @@ export class PluginService {
           "default",
           "^default",
           `{workspaceRoot}/${pluginOptions.configurationPath}`,
-          PROJECT_CONFIGURATION_INPUT,
+          `{projectRoot}/${pluginOptions.projectConfigurationPath}`,
           ...args.toolInputs,
         ],
         options: {},
@@ -124,8 +124,8 @@ export class PluginService {
   }
 
   /**
-   * Resolves plugin options from an untrusted value. `configurationPath` is required and never
-   * searched for: a guess would cache gates across real edits.
+   * Resolves plugin options from an untrusted value. `configurationPath` and `projectConfigurationPath`
+   * are required and never searched for: a guess would cache gates across real edits.
    */
   public resolvePluginOptions(
     args: ResolvePluginOptionsArguments,
@@ -142,6 +142,11 @@ export class PluginService {
       gateTargetName:
         this.readString({ key: "gateTargetName", record }) ??
         DEFAULT_GATE_TARGET_NAME,
+      projectConfigurationPath:
+        this.configurationService.requireProjectConfigurationPath(
+          this.readString({ key: "projectConfigurationPath", record }),
+          PROJECT_PATH_OPTION_SURFACE,
+        ),
     };
   }
 }
