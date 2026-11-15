@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 
 import { FontSizeControl } from "../components/font-size-control/font-size-control";
@@ -19,6 +19,7 @@ import { getText } from "../components/reader-lines/reader-lines.constants";
 import { failNotFound } from "../components/reader-lines/reader-lines.utilities";
 import { ReaderNavigation } from "../components/reader-navigation/reader-navigation";
 import { useLookupHistory } from "../hooks/use-lookup-history/use-lookup-history";
+import { isLookupEntry } from "../hooks/use-lookup-history/use-lookup-history.utilities";
 
 import type { FontSize } from "../components/font-size-control/font-size-control.types";
 import type {
@@ -27,7 +28,7 @@ import type {
   ReaderText,
 } from "../components/reader-lines/reader-lines.types";
 import type {
-  LookupEntry,
+  HistoryEntry,
   WordLookup,
 } from "../hooks/use-lookup-history/use-lookup-history.types";
 import type { ReactNode } from "react";
@@ -84,9 +85,9 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
   const [fontSize, setFontSize] = useState<FontSize>(DEFAULT_FONT_SIZE);
   const [focus, setFocus] = useState<null | ReaderFocus>(null);
   const { clear, entries, record } = useLookupHistory();
+  const navigate = useNavigate();
 
   // 🏗 Setup
-  const thisText = entries.filter((entry) => entry.slug === text.slug);
 
   // 💪 Handlers
   const handleFontSize = useCallback((size: FontSize): void => {
@@ -96,18 +97,38 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
 
   const handleLookup = useCallback(
     (lookup: WordLookup): void => {
-      record({ ...lookup, slug: text.slug });
+      record({ ...lookup, slug: text.slug, title: text.title });
     },
-    [record, text.slug],
+    [record, text.slug, text.title],
   );
 
-  const handleFocusEntry = useCallback((entry: LookupEntry | null): void => {
-    setFocus(
-      entry === null
-        ? null
-        : { line: entry.line, token: entry.token, word: entry.word },
-    );
-  }, []);
+  const handleFocusEntry = useCallback(
+    (entry: HistoryEntry | null): void => {
+      setFocus(
+        entry !== null && isLookupEntry(entry) && entry.slug === text.slug
+          ? { line: entry.line, token: entry.token, word: entry.word }
+          : null,
+      );
+    },
+    [text.slug],
+  );
+
+  const handleOpenEntry = useCallback(
+    (entry: HistoryEntry): void => {
+      if (!isLookupEntry(entry)) {
+        void navigate({ search: { query: entry.query }, to: "/search" });
+      } else if (entry.slug === text.slug) {
+        document.querySelector(`#line-${entry.line}`)?.scrollIntoView();
+      } else {
+        void navigate({
+          params: { slug: entry.slug },
+          search: { line: entry.line },
+          to: "/texts/$slug",
+        });
+      }
+    },
+    [navigate, text.slug],
+  );
 
   // ♻️ Lifecycle
   useEffect(() => {
@@ -130,9 +151,11 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
           size={fontSize}
         />
         <ReaderHistory
-          entries={thisText}
+          currentSlug={text.slug}
+          entries={entries}
           onClear={clear}
           onFocusEntry={handleFocusEntry}
+          onOpenEntry={handleOpenEntry}
         />
       </div>
       <ReaderHint className="flex items-center justify-between gap-4 rounded-md border p-3 text-sm" />

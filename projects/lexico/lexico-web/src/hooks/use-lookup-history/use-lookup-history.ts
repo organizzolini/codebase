@@ -3,24 +3,25 @@ import { useCallback, useEffect, useState } from "react";
 import {
   readLookupHistory,
   recordLookup,
+  recordSearch,
   writeLookupHistory,
 } from "./use-lookup-history.utilities";
 
 import type {
+  HistoryEntry,
   LookupDraft,
-  LookupEntry,
   UseLookupHistoryResult,
 } from "./use-lookup-history.types";
 
 // 🧩 Hook
 
 /**
- * The lookup history this browser keeps, newest first, with functions to
- * record a lookup and to clear the history.
+ * The history this browser keeps, newest first, with functions to record a
+ * word lookup or a search and to clear the history.
  */
 export function useLookupHistory(): UseLookupHistoryResult {
   // 🪝 Hooks
-  const [entries, setEntries] = useState<LookupEntry[]>([]);
+  const [entries, setEntries] = useState<HistoryEntry[]>([]);
 
   // 🏗 Setup
 
@@ -28,6 +29,15 @@ export function useLookupHistory(): UseLookupHistoryResult {
   const record = useCallback((draft: LookupDraft): void => {
     setEntries((current) => {
       const next = recordLookup(current, draft, Date.now());
+
+      writeLookupHistory(next);
+      return next;
+    });
+  }, []);
+
+  const recordSearchQuery = useCallback((query: string): void => {
+    setEntries((current) => {
+      const next = recordSearch(current, { query }, Date.now());
 
       writeLookupHistory(next);
       return next;
@@ -45,5 +55,5 @@ export function useLookupHistory(): UseLookupHistoryResult {
   }, []);
 
   // 🎁 Result
-  return { clear, entries, record };
+  return { clear, entries, record, recordSearch: recordSearchQuery };
 }

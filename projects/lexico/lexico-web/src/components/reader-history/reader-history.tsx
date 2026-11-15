@@ -6,9 +6,16 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
 } from "@codebase/presentation";
 
-import type { LookupEntry } from "../../hooks/use-lookup-history/use-lookup-history.types";
+import { isLookupEntry } from "../../hooks/use-lookup-history/use-lookup-history.utilities";
+import { HistoryList } from "../history-list/history-list";
+
+import type { HistoryEntry } from "../../hooks/use-lookup-history/use-lookup-history.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -18,25 +25,38 @@ import type { ReactNode } from "react";
  */
 export interface ReaderHistoryProperties {
   className?: string;
-  entries: LookupEntry[];
+  currentSlug: string;
+  entries: HistoryEntry[];
   onClear: () => void;
-  onFocusEntry: (entry: LookupEntry | null) => void;
+  onFocusEntry: (entry: HistoryEntry | null) => void;
+  onOpenEntry: (entry: HistoryEntry) => void;
 }
 
 // 🧩 Component
 
 /**
- * The History button and its side sheet, which lists the words looked up in
- * this text, newest first, and lights up an entry's word while it is hovered.
+ * The History button and its side sheet. Its This text tab lists the words
+ * looked up in this text, newest first; its All tab lists every lookup and
+ * search, labelled by origin.
  */
 export function ReaderHistory(
   properties: Readonly<ReaderHistoryProperties>,
 ): ReactNode {
-  const { className, entries, onClear, onFocusEntry } = properties;
+  const {
+    className,
+    currentSlug,
+    entries,
+    onClear,
+    onFocusEntry,
+    onOpenEntry,
+  } = properties;
 
   // 🪝 Hooks
 
   // 🏗 Setup
+  const thisText = entries.filter(
+    (entry) => isLookupEntry(entry) && entry.slug === currentSlug,
+  );
 
   // 💪 Handlers
 
@@ -57,49 +77,38 @@ export function ReaderHistory(
         <SheetContent>
           <SheetHeader>
             <SheetTitle>History</SheetTitle>
-            <SheetDescription>This text</SheetDescription>
+            <SheetDescription>Words looked up and searches</SheetDescription>
           </SheetHeader>
-          <div className="flex-1 space-y-4 overflow-y-auto px-4">
-            {entries.length === 0 ? (
-              <p className="text-muted-foreground">
-                No words looked up in this text yet.
-              </p>
-            ) : (
-              <ul className="space-y-1">
-                {entries.map((entry) => (
-                  <li key={`${entry.line}-${entry.token}`}>
-                    <button
-                      className="w-full rounded-md p-2 text-left hover:bg-accent"
-                      onBlur={() => {
-                        onFocusEntry(null);
-                      }}
-                      onFocus={() => {
-                        onFocusEntry(entry);
-                      }}
-                      onMouseEnter={() => {
-                        onFocusEntry(entry);
-                      }}
-                      onMouseLeave={() => {
-                        onFocusEntry(null);
-                      }}
-                      type="button"
-                    >
-                      <span className="font-medium">{entry.word}</span>{" "}
-                      <span className="text-muted-foreground">
-                        {entry.form}
-                      </span>
-                      {entry.definition === null ? null : (
-                        <span className="block">{entry.definition}</span>
-                      )}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+          <Tabs
+            className="flex-1 overflow-y-auto px-4"
+            defaultValue="this-text"
+          >
+            <TabsList>
+              <TabsTrigger value="this-text">This text</TabsTrigger>
+              <TabsTrigger value="all">All</TabsTrigger>
+            </TabsList>
+            <TabsContent value="this-text">
+              <HistoryList
+                emptyMessage="No words looked up in this text yet."
+                entries={thisText}
+                onFocusEntry={onFocusEntry}
+                onOpenEntry={onOpenEntry}
+              />
+            </TabsContent>
+            <TabsContent value="all">
+              <HistoryList
+                emptyMessage="No words looked up or searches yet."
+                entries={entries}
+                onFocusEntry={onFocusEntry}
+                onOpenEntry={onOpenEntry}
+              />
+            </TabsContent>
+          </Tabs>
           <div className="px-4 pb-4">
             <Button
-              onClick={onClear}
+              onClick={() => {
+                onClear();
+              }}
               variant="outline"
             >
               Clear history
