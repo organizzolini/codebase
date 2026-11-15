@@ -325,6 +325,16 @@ const config: KnipConfig = {
       project: "src/**/*.ts",
     },
 
+    // meanderaw-api: NestJS GraphQL API
+    "projects/meanderaw/meanderaw-api": {
+      ignoreDependencies: [
+        // Apollo 5's Express integration, which @nestjs/apollo resolves by
+        // name at startup; without it GraphQLModule refuses to boot.
+        "@as-integrations/express5",
+      ],
+      project: "src/**/*.ts",
+    },
+
     // meanderaw-core: Drawing stack library consumed by meanderaw-cli. Its
     // testing/ folder holds the Vitest setup and tile fixtures, which Vitest and
     // the package exports reach by path rather than by import, so only src/ is judged.
