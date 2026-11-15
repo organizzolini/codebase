@@ -3,6 +3,8 @@ import { Module } from "@nestjs/common";
 import { Author, Line, Text, Token, TypeOrmModule } from "@codebase/lexico-db";
 
 import { AuthorsResolver } from "./authors.resolver";
+import { LibraryResolver } from "./library.resolver";
+import { LibraryService } from "./library.service";
 import { LinesResolver } from "./lines.resolver";
 import { LiteratureRelationsLoader } from "./literature-relations.loader";
 import { LiteratureRelationsService } from "./literature-relations.service";
@@ -27,6 +29,8 @@ import { TokensResolver } from "./tokens.resolver";
     LiteratureService,
     LiteratureRelationsService,
     LiteratureRelationsLoader,
+    LibraryResolver,
+    LibraryService,
   ],
 })
 export class LiteratureModule {}
