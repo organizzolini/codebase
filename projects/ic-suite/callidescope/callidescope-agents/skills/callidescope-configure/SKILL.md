@@ -59,9 +59,8 @@ one place, `FlagResolutionService`, under one rule:
 `--check`, `--write`, and `--format` are mode or presentation and are never
 written into the configuration. `--config` is neither: it is **required**, never
 defaulted or searched for, and chooses the file everything else is resolved
-against, so it has done its whole job before the rest of resolution runs.
-Every other flag is an override, and an
-override answers a question the configuration already asked: a path flag
+against, so it has done its whole job before the rest of resolution runs. Every
+other flag is an override, answering a question the configuration already asked: a path flag
 replaces only the `path` of a destination already declared, keeping its
 heading, description, anchors, and hooks; `--maximum-breadth` cannot conjure a
 limit a project's own file left unset, the same way `--json` cannot conjure a
@@ -186,11 +185,10 @@ an argument would read as a green one.
 
 ## The workspace configuration file
 
-A `.ts`, `.mts`, `.cts`, `.js`, `.mjs`, `.cjs`, `.json`, or `.jsonc` file,
-TypeScript first because it gets type checking. This is the **workspace**
-configuration, the file a run is pointed at with the required `--config` (an Nx
-target's `configuration`, the plugin's `configurationPath`), never searched for
-and never given a default name: `configuration/callidescope.config.ts` here.
+A `.ts` (preferred, for type checking), `.mts`, `.cts`, `.js`, `.mjs`, `.cjs`,
+`.json`, or `.jsonc` file. The **workspace** configuration is the file a run is
+pointed at with the required `--config` (an Nx target's `configuration`, the
+plugin's `configurationPath`), never searched for: `configuration/callidescope.config.ts`.
 
 ```ts
 import { type CallidescopeConfiguration } from "@callidescope/configuration";
@@ -198,20 +196,16 @@ import { type CallidescopeConfiguration } from "@callidescope/configuration";
 const callidescopeConfiguration: CallidescopeConfiguration = {
   excludeFrom: ["configuration/.callidescopeignore"],
   limits: { maximumDepth: 6 },
-  projectConfigurationPath: "callidescope.config.ts",
+  projectConfigurationPath: "configuration/callidescope.config.ts",
 };
 
 export default callidescopeConfiguration;
 ```
 
 The whole surface is eight top-level keys: `directories`, `entryPoints`,
-`exclude`, `excludeCallees`, `excludeFrom`, `limits`, `projectConfigurationPath`,
-and `write`. `projectConfigurationPath` is required wherever projects are traced,
-has no default, and is the path of each project's own file relative to its root
-(see below); only the workspace file may set it. The
-workspace file also exports `projectDefaults` alongside its default export —
-a separate binding, not a member of this type — for a project's own
-`callidescope.config.ts` to spread.
+`exclude`, `excludeCallees`, `excludeFrom`, `limits`, `projectConfigurationPath`
+(only the workspace file sets it; see below), and `write`. The workspace file
+also exports `projectDefaults`, a separate binding, for each project file to spread.
 
 ### `limits`
 
@@ -375,12 +369,10 @@ current.
 
 ## Every traced project's own configuration is required and complete
 
-A second file sits at each traced project's own root, the directory holding the
-`tsconfig.json` that makes it a project, at the path the workspace
-configuration's `projectConfigurationPath` names, relative to that root. No file
-name is searched for and nothing walks upward. A workspace configuration that
-omits `projectConfigurationPath` is refused naming it, and the Nx plugin's
-`projectConfigurationPath` option must equal it.
+Each traced project (the directory holding its `tsconfig.json`) keeps a second
+file at the path `projectConfigurationPath` names, relative to that root, with
+no default, no name search, and no upward walk. Omitting it is refused by name,
+and the Nx plugin's option of the same name must equal it.
 
 **Every traced project has one, and every one of them is complete.** A traced
 project with no configuration file at all is refused by name, and so is a file
