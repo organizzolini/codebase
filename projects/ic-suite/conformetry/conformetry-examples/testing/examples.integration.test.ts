@@ -16,7 +16,7 @@ const packageDirectory = path.resolve(
 const workspaceRoot = path.resolve(packageDirectory, "..", "..", "..", "..");
 const examplesDirectory = path.join(packageDirectory, "examples");
 
-/** The command-line host the guides run from the root, and the tsconfig it compiles with. */
+/** The command-line host the guides run, and its tsconfig. */
 const CONFORMETRY_ENTRY =
   "projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts";
 const CONFORMETRY_TSCONFIG =

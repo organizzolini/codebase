@@ -271,8 +271,7 @@ export class PullRequestValidationService {
 
   /**
    * Every check that applies to this pull request.
-   * Dependabot writes its own title and body, so those checks exempt its pull requests.
-   * No issue plans a bot's pull request, so the issue link exempts every automated author.
+   * Dependabot's title and body, and every automated author's issue link, are exempt.
    */
   public validate(context: PullRequestContext): CheckOutcome[] {
     const authoredByDependabot = context.author === DEPENDABOT_LOGIN;
