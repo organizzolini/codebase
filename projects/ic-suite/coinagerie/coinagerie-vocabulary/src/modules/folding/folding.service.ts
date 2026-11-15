@@ -36,7 +36,7 @@ export class FoldingService {
   }
 
   /**
-   * The headword a word is listed under: itself when the configuration lists it as `unfolded`, else folded, then passed through `fold` when there is one.
+   * The headword a word is listed under: itself when `unfolded`, else folded, then passed through the configured `fold`.
    */
   headword(
     word: string,

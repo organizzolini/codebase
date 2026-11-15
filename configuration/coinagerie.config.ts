@@ -3180,20 +3180,17 @@ const sharedConfiguration = {
   unfolded: unfoldedWords,
 } satisfies CoinagerieConfiguration;
 
-/**
- * Words many projects use with one meaning, each defined once in the glossary
- * of the project that owns it and excluded everywhere else.
- */
+/** Shared words, each defined only in its home project's glossary. */
 const HOME_WORDS = {
   configuration: ["breadth"],
   testing: ["dispose", "sandbox"],
 };
 
 /**
- * Settings a project spreads: the root glossary's words are excluded, and so is
- * every home word but the ones this project defines.
+ * Settings a project spreads, excluding root glossary words and other
+ * projects' home words.
  *
- * @param home - The project whose own home words stay in its glossary
+ * @param home - The project whose home words stay listed
  */
 export function configureCoinagerie(
   home?: keyof typeof HOME_WORDS,
