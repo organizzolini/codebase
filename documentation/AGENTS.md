@@ -26,15 +26,15 @@ nx run documentation:refresh-documentation
 ### Execution Flow
 
 ```text
-src/documentation.main.ts
+tooling/src/documentation.main.ts
   └─ CommandFactory.run(MainModule)
-       └─ domain command modules            ← add under src/modules/
+       └─ domain command modules            ← add under tooling/src/modules/
 ```
 
 ### Directory Layout
 
 ```text
-src/
+tooling/src/
   documentation.main.ts  # Bootstrap — do not modify
   documentation.module.ts  # Root NestJS module (imports ConfigModule, LoggerModule)
   documentation.constants.ts  # Zod environmentSchema for env validation
@@ -46,14 +46,14 @@ src/
       <domain>.types.ts
       <domain>.constants.ts
       <domain>.<tier>.test.ts
-testing/                            # Shared test utilities
+tooling/testing/                            # Shared test utilities
 ```
 
 ## Development
 
 ### Adding Business Logic
 
-1. **Add domain command modules** — create `src/modules/<domain>/` with a NestJS module, command, service, types, and constants.
+1. **Add domain command modules** — create `tooling/src/modules/<domain>/` with a NestJS module, command, service, types, and constants.
 2. **Register in root module** — import the new module in `documentation.module.ts`.
 3. **Validate env vars** — extend `environmentSchema` in `documentation.constants.ts` with all required environment variables.
 
@@ -109,7 +109,7 @@ Use the generator to scaffold new domain modules, then implement the service:
 nx g conformetry:nestjs-service-module --name=<domain>
 ```
 
-This creates five files in `src/modules/<domain>/`:
+The generator writes under the project root's `src/modules/<domain>/`, not `tooling/`, so move the new folder into `tooling/src/modules/` before editing it. It holds five files:
 
 | File                            | Purpose                                                 |
 | ------------------------------- | ------------------------------------------------------- |
@@ -232,15 +232,15 @@ See the [write-typescript skill](../.agents/skills/write-typescript/SKILL.md) fo
 - **Command not found at runtime** — ensure the command class is listed in `providers` of its module and the module is imported by the root module.
 - **Dependency injection failure** — verify the service is `@Injectable()`, exported from its module, and that module is imported by the consuming module.
 - **Unrecognized CLI flag** — check that `@Option()` decorators in the command class exactly match the flag names passed.
-- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `src/documentation.constants.ts` and to `configuration/.env.default`.
+- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `tooling/src/documentation.constants.ts` and to `configuration/.env.default`.
 
 See the [triage-integration skill](../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
 
 ## Key Files
 
-- [src/documentation.main.ts](src/documentation.main.ts): Application bootstrap
-- [src/documentation.module.ts](src/documentation.module.ts): Root NestJS module
-- [src/documentation.constants.ts](src/documentation.constants.ts): `environmentSchema` (Zod)
+- [tooling/src/documentation.main.ts](tooling/src/documentation.main.ts): Application bootstrap
+- [tooling/src/documentation.module.ts](tooling/src/documentation.module.ts): Root NestJS module
+- [tooling/src/documentation.constants.ts](tooling/src/documentation.constants.ts): `environmentSchema` (Zod)
 - `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
 - [project.json](project.json): Nx targets (`start`, `build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
 - [configuration/.env.default](configuration/.env.default): Environment variable template

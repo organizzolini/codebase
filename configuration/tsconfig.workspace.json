@@ -27,6 +27,7 @@
   "include": [
     "../*.ts",
     "../.devcontainer/scripts/**/*.ts",
+    "../documentation/configuration/*.ts",
     "../infrastructure/configuration/*.ts",
     "./**/*.ts",
     "../scripts/**/*.ts"

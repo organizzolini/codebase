@@ -360,11 +360,14 @@ const config: KnipConfig = {
 
     // documentation: NestJS CLI tool that refreshes the repository's generated documentation
     documentation: {
-      entry: ["src/documentation.main.ts", "src/documentation.repl.ts"], // Main CLI entry + the REPL its own target runs
+      entry: [
+        "tooling/src/documentation.main.ts",
+        "tooling/src/documentation.repl.ts",
+      ], // Main CLI entry + the REPL its own target runs
       ignore: [
-        "testing/**", // Test fixtures and setup
+        "tooling/testing/**", // Test fixtures and setup
       ],
-      project: "src/**/*.ts",
+      project: "tooling/src/**/*.ts",
     },
 
     // synchronization: NestJS CLI tool for codebase config synchronization commands

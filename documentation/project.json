@@ -2,7 +2,7 @@
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "name": "documentation",
   "projectType": "application",
-  "sourceRoot": "documentation",
+  "sourceRoot": "documentation/tooling/src",
   "tags": [
     "framework:nest-commander",
     "framework:nestjs",
@@ -12,7 +12,11 @@
   ],
   "targets": {
     "codometer": {},
-    "dependency-cruiser": {},
+    "dependency-cruiser": {
+      "options": {
+        "command": "depcruise documentation/tooling/src --config configuration/dependency-cruiser.cjs"
+      }
+    },
     "deprecate-code": {},
     "eslint": {},
     "format-code": {},
@@ -21,21 +25,33 @@
     "lint-code": {},
     "markdown-lint": {},
     "oxfmt": {},
-    "oxlint": {},
+    "oxlint": {
+      "options": {
+        "command": "oxlint --config configuration/oxlint.config.ts --ignore-path \"$PWD/configuration/.oxlintignore\" {args} documentation/tooling/src"
+      }
+    },
     "prettier": {},
     "refresh-documentation": {
       "cache": false,
       "description": "Refreshes the OpenWiki documentation from code, writing through the root `openwiki` symlink, which is why it runs from the workspace root. Needs the `OPENWIKI_*` and provider key environment variables OpenWiki reads; the 🧑‍🏫 Refresh Documentation workflow supplies them.",
       "executor": "nx:run-commands",
       "options": {
-        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register documentation/src/documentation.main.ts refresh-documentation",
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register documentation/tooling/src/documentation.main.ts refresh-documentation",
         "cwd": "{workspaceRoot}"
       }
     },
     "spell-check": {},
     "test-code": {},
-    "type-coverage": {},
-    "typecheck": {},
+    "type-coverage": {
+      "options": {
+        "command": "type-coverage --project tooling/tsconfig.json --detail > type-coverage-report.txt 2>&1 || (cat type-coverage-report.txt && exit 1)"
+      }
+    },
+    "typecheck": {
+      "options": {
+        "command": "node \"$NX_WORKSPACE_ROOT/node_modules/typescript-7/bin/tsc\" --noEmit -p tooling/tsconfig.json"
+      }
+    },
     "typecheck-code": {},
     "vitest": {},
     "yaml-lint": {}

@@ -288,6 +288,147 @@
             {
               "children": [
                 {
+                  "children": [
+                    {
+                      "ruleId": "module-folder"
+                    }
+                  ],
+                  "name": "modules"
+                },
+                {
+                  "children": [
+                    {
+                      "ruleId": "kebab-case-folder"
+                    },
+                    {
+                      "ruleId": "any-file"
+                    }
+                  ],
+                  "name": "components"
+                },
+                {
+                  "children": [
+                    {
+                      "ruleId": "kebab-case-folder"
+                    },
+                    {
+                      "ruleId": "any-file"
+                    }
+                  ],
+                  "name": "lib"
+                },
+                {
+                  "children": [
+                    {
+                      "ruleId": "kebab-case-folder"
+                    },
+                    {
+                      "ruleId": "any-file"
+                    }
+                  ],
+                  "name": "routes"
+                },
+                {
+                  "children": [
+                    {
+                      "ruleId": "kebab-case-folder"
+                    },
+                    {
+                      "ruleId": "any-file"
+                    }
+                  ],
+                  "name": "hooks"
+                },
+                {
+                  "children": [
+                    {
+                      "ruleId": "kebab-case-folder"
+                    },
+                    {
+                      "ruleId": "any-file"
+                    }
+                  ],
+                  "name": "styles"
+                },
+                {
+                  "children": [
+                    {
+                      "ruleId": "kebab-case-folder"
+                    },
+                    {
+                      "ruleId": "any-file"
+                    }
+                  ],
+                  "name": "assets"
+                },
+                {
+                  "children": [
+                    {
+                      "ruleId": "kebab-case-folder"
+                    },
+                    {
+                      "ruleId": "any-file"
+                    }
+                  ],
+                  "name": "executors"
+                },
+                {
+                  "children": [
+                    {
+                      "ruleId": "kebab-case-folder"
+                    },
+                    {
+                      "ruleId": "any-file"
+                    }
+                  ],
+                  "name": "generators"
+                },
+                {
+                  "enforceExistence": "__plugin_entrypoints_are_forbidden__",
+                  "name": "plugin.ts"
+                },
+                {
+                  "children": [
+                    {
+                      "ruleId": "source-python-file"
+                    }
+                  ],
+                  "name": "python"
+                },
+                {
+                  "ruleId": "source-entry-file"
+                },
+                {
+                  "ruleId": "source-entry-support-file"
+                },
+                {
+                  "ruleId": "source-python-file"
+                }
+              ],
+              "name": "src"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "kebab-case-folder"
+                },
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "name": "testing"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "tooling"
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
                   "ruleId": "module-folder"
                 }
               ],

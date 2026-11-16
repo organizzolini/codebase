@@ -268,6 +268,11 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
         patterns: ["src/modules/*"],
         tags: ["framework:nestjs"],
       },
+      // The documentation project keeps its code in `tooling/`, beside the docs.
+      {
+        patterns: ["tooling/src/modules/*"],
+        tags: ["framework:nestjs"],
+      },
     ],
     name: "nestjs-service-module",
     templatePath: "configuration/conformetry-templates/nestjs-service-module",
