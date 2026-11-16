@@ -14,7 +14,10 @@ import { Lexeme, Translation } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 import { expectLoggerContext } from "@codebase/observability/testing";
 import { promptsMock } from "@codebase/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
+import {
+  buildTestingModule,
+  mockErrorLogEntries,
+} from "@codebase/testing/nestjs";
 
 import {
   resetCommandTestHarness,
@@ -125,14 +128,7 @@ describe(DictionaryCommand, () => {
 
     manualService.ingestManual.mockResolvedValue(undefined);
 
-    logger.buildErrorLogEntry.mockImplementation((context, error) => {
-      const errorMessage =
-        error instanceof Error ? error.stack || error.message : String(error);
-      return {
-        errorMessage,
-        logLine: `[${new Date().toISOString()}] ${context}: ${errorMessage}\n`,
-      };
-    });
+    mockErrorLogEntries(logger);
   });
 
   it("resolves with its dependencies", async () => {

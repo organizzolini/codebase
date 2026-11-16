@@ -6,7 +6,11 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
 import { expectLoggerContext } from "@codebase/observability/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
+import {
+  buildTestingModule,
+  mockErrorLogEntries,
+  setErrorLogFilePath,
+} from "@codebase/testing/nestjs";
 
 import { resetCommandTestHarness } from "../../../testing/command-harness";
 
@@ -68,21 +72,13 @@ describe(CorpusScriptorumEcclesiasticorumLatinorumCommand, () => {
     logger.createTimestampedOutputLogFilePath.mockReturnValue(
       "/tmp/csel-errors.log",
     );
-    logger.buildErrorLogEntry.mockImplementation((context, error) => {
-      const errorMessage =
-        error instanceof Error ? error.stack || error.message : String(error);
-      return {
-        errorMessage,
-        logLine: `[${new Date().toISOString()}] ${context}: ${errorMessage}\n`,
-      };
-    });
+    mockErrorLogEntries(logger);
 
     existsSyncMock.mockReturnValue(true);
     mkdirMock.mockResolvedValue(undefined);
     appendFileMock.mockResolvedValue(undefined);
     writeFileMock.mockResolvedValue(undefined);
-    (command as unknown as { errorLogFilePath: string }).errorLogFilePath =
-      "/tmp/csel-errors.log";
+    setErrorLogFilePath(command, "/tmp/csel-errors.log");
   });
 
   it("resolves with its dependencies", async () => {

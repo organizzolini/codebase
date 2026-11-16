@@ -2,10 +2,11 @@ import fs from "node:fs";
 
 import { afterEach, beforeEach, onTestFinished, vi } from "vitest";
 
-import { mockChildProcess } from "@codebase/testing";
+import { mockExecFile } from "@codebase/testing";
 
+import type { ExecFileMock } from "@codebase/testing";
 import type * as ChildProcess from "node:child_process";
-import type { ExecException, ExecFileOptions } from "node:child_process";
+import type { ExecException } from "node:child_process";
 
 /**
  * Default test date used across time-sensitive tests.
@@ -17,39 +18,6 @@ const processes: { outcome: ProcessOutcome; spawned: SpawnedProcess[] } = {
   outcome: {},
   spawned: [],
 };
-
-/** What the fake `execFile` does: record the start, then exit as staged. */
-const fakeExecFile = vi.fn(
-  (
-    file: string,
-    args: readonly string[],
-    options: ExecFileOptions,
-    callback: ExecFileCallback,
-  ): void => {
-    const {
-      error = null,
-      stderr = "",
-      stdout = "",
-    } = outcomeFor(file, args, processes.outcome);
-    processes.spawned.push({
-      args,
-      environment: options.env,
-      file,
-      useList: useListOf(args),
-    });
-    // A pg_dump that succeeds has written the file it was given.
-    for (const argument of args) {
-      if (
-        error === null &&
-        file === "pg_dump" &&
-        argument.startsWith("--file=")
-      ) {
-        fs.writeFileSync(argument.slice("--file=".length), "dump");
-      }
-    }
-    callback(error, stdout, stderr);
-  },
-);
 
 /**
  * One process the mocked `execFile` was asked to start.
@@ -65,13 +33,6 @@ export interface SpawnedProcess {
    */
   readonly useList: string | undefined;
 }
-
-/** The callback `execFile` reports a process's exit to. */
-type ExecFileCallback = (
-  error: ExecException | null,
-  stdout: string,
-  stderr: string,
-) => void;
 
 /**
  * How every process the mocked `execFile` starts will exit.
@@ -113,14 +74,30 @@ export function mockDates(date: Date = DEFAULT_TEST_DATE): void {
   });
 }
 
-/** The shared `node:child_process` mock, its `execFile` replaced by a fake that follows {@link mockProcesses}. */
-export function mockPostgresChildProcess(actual: typeof ChildProcess): Omit<
-  ReturnType<typeof mockChildProcess>,
-  "execFile"
-> & {
-  readonly execFile: typeof fakeExecFile;
-} {
-  return { ...mockChildProcess(actual), execFile: fakeExecFile };
+/** The shared `node:child_process` mock, its `execFile` following {@link mockProcesses}. */
+export function mockPostgresChildProcess(
+  actual: typeof ChildProcess,
+): ExecFileMock {
+  return mockExecFile(actual, ({ args, environment, file }) => {
+    const exit = outcomeFor(file, args, processes.outcome);
+    processes.spawned.push({
+      args,
+      environment,
+      file,
+      useList: useListOf(args),
+    });
+    // A pg_dump that succeeds has written the file it was given.
+    for (const argument of args) {
+      if (
+        exit.error === undefined &&
+        file === "pg_dump" &&
+        argument.startsWith("--file=")
+      ) {
+        fs.writeFileSync(argument.slice("--file=".length), "dump");
+      }
+    }
+    return exit;
+  });
 }
 
 /**
@@ -156,17 +133,6 @@ export function mockStandardInputTerminal(): (isTerminal: boolean) => void {
       }
     });
   };
-}
-
-/**
- * An `execFile` error as Node reports it: a process that exited with a
- * numeric `code`, or one that never started, with a string `code`.
- */
-export function processFailure(
-  code: number | string,
-  message = "Command failed",
-): ExecException {
-  return Object.assign(new Error(message), { cmd: "", code });
 }
 
 /**

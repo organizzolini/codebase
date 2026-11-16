@@ -5,9 +5,12 @@ import {
   ConfigurationFileNotFoundError,
   UnknownConfigurationFileTypeError,
 } from "@codometer/core";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { createTemporaryDirectory } from "@codebase/testing";
+import {
+  createTemporaryDirectory,
+  useWorkingDirectory,
+} from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationLoaderService } from "./configuration-loader.service";
@@ -108,15 +111,13 @@ describe(ConfigurationLoaderService, () => {
 
   it("throws when no repository root holds the relative path either", async () => {
     const searchDirectory = createTemporaryDirectory("loader-rootless");
-    const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(searchDirectory);
+    useWorkingDirectory(searchDirectory);
 
     await expect(
       service.load({
         configurationPath: "configuration/codometer.config.ts",
       }),
     ).rejects.toBeInstanceOf(ConfigurationFileNotFoundError);
-
-    cwdSpy.mockRestore();
   });
 
   it("resolves a configuration path relative to the repository root", async () => {
@@ -142,13 +143,11 @@ describe(ConfigurationLoaderService, () => {
     );
     const nestedDirectory = path.join(repositoryRoot, "packages", "project");
     await mkdir(nestedDirectory, { recursive: true });
-    const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(nestedDirectory);
+    useWorkingDirectory(nestedDirectory);
 
     const loaded = await service.load({
       configurationPath: "configuration/codometer.config.json",
     });
-
-    cwdSpy.mockRestore();
 
     expect(loaded).toStrictEqual({
       configuration: { defaultInput: "codebase" },

@@ -11,6 +11,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **convention**: Named naming or layout rule that codometer counts across files, illustrated by the statistics example's per-pattern badges.
 - **corpus**: Sample repository of known contents under examples/corpus that every example measures, with its target named Corpus.
 - **counter**: Custom statistic that tallies matches of a pattern across files, such as the corpus config's service-file count.
+- **gap**: Missing piece in an example's documentation, such as its README or index link, named by the shared example-run helpers.
 - **hand**: Part of the phrase on hand, the inventory sample's wording for stock held, in its Python module and notebook.
 - **inventory**: Python module and Jupyter notebook corpus sample describing stock on hand, with an Inventory class counting holdings.
 - **pipeline**: YAML CI workflow sample, pipeline.yaml, whose note above its anchor is the one documentation block measured.

@@ -9,6 +9,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **dispose**: Cleanup call on a sandbox runner that deletes its temporary consumer directory, which a packed test calls once it has finished with the installed tarballs.
 - **forbid**: Names the packages an entry point must not reach, `execa` and `verdaccio`, in `entries.unit.test.ts`.
 - **fork**: The `node:child_process` function, one of the process starters the child-process mock replaces with a spy.
+- **gap**: Missing piece in an example's documentation, such as its README or index link, which the shared example-run helpers name.
 - **greeter**: Sample dependency class in the module-wiring tests, injected to prove a module resolves its providers.
 - **ping**: Sample server function in the browser stand-in tests that answers `pong`.
 - **poem**: Sample route in the route-render tests whose loader data the rendered heading shows.

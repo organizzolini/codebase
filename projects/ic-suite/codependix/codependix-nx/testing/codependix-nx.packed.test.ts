@@ -1,32 +1,36 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { startVerdaccioPluginRunner } from "@codebase/testing/end-to-end";
+import {
+  installedVersion,
+  usePackedRegistry,
+} from "@codebase/testing/end-to-end";
 
 import type {
   CommandResult,
   ConsumerWorkspace,
-  VerdaccioPluginRunner,
 } from "@codebase/testing/end-to-end";
 
 const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../../../..");
 
-/** The version of `name` this workspace has installed, so a registry release cannot move the leg. */
-function installedVersion(name: string): string {
-  const manifest = JSON.parse(
-    fs.readFileSync(
-      path.join(WORKSPACE_ROOT, "node_modules", name, "package.json"),
-      "utf8",
-    ),
-  ) as { version: string };
-
-  return manifest.version;
-}
-
 describe("the codependix plugin installed from a registry", () => {
-  let runner: VerdaccioPluginRunner;
+  const registry = usePackedRegistry({
+    localScopes: ["@codependix"],
+    packages: [
+      "@codependix/boundaries",
+      "@codependix/cli",
+      "@codependix/configuration",
+      "@codependix/core",
+      "@codependix/file-imports",
+      "@codependix/nestjs-modules",
+      "@codependix/nx",
+      "@codependix/nx-projects",
+      "@codependix/output",
+    ],
+    workspaceRoot: WORKSPACE_ROOT,
+  });
   let workspace: ConsumerWorkspace;
 
   /** Writes the project `name`, which depends on each of `dependencies`. */
@@ -54,27 +58,10 @@ describe("the codependix plugin installed from a registry", () => {
   }
 
   beforeAll(async () => {
-    runner = await startVerdaccioPluginRunner({
-      localScopes: ["@codependix"],
-    });
-    await runner.publish({
-      packages: [
-        "@codependix/boundaries",
-        "@codependix/cli",
-        "@codependix/configuration",
-        "@codependix/core",
-        "@codependix/file-imports",
-        "@codependix/nestjs-modules",
-        "@codependix/nx",
-        "@codependix/nx-projects",
-        "@codependix/output",
-      ],
-      workspaceRoot: WORKSPACE_ROOT,
-    });
-    workspace = await runner.createWorkspace({
+    workspace = await registry.runner.createWorkspace({
       dependencies: {
-        nx: installedVersion("nx"),
-        typescript: installedVersion("typescript"),
+        nx: installedVersion(WORKSPACE_ROOT, "nx"),
+        typescript: installedVersion(WORKSPACE_ROOT, "typescript"),
       },
       packages: ["@codependix/cli", "@codependix/nx"],
     });
@@ -110,10 +97,6 @@ describe("the codependix plugin installed from a registry", () => {
     );
     writeProject("a", ["b"]);
     writeProject("b", []);
-  });
-
-  afterAll(async () => {
-    await runner.stop();
   });
 
   it("passes the gate of a project that breaks no boundary", async () => {

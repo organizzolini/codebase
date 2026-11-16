@@ -39,3 +39,26 @@ export async function buildTestingModule<Target>(
     module,
   };
 }
+
+/**
+ * Makes the logger mock build error entries the way the real logger does.
+ */
+export function mockErrorLogEntries(
+  logger: DeepMocked<LoggerServiceContract>,
+): void {
+  logger.buildErrorLogEntry.mockImplementation((context, error) => {
+    const errorMessage =
+      error instanceof Error ? error.stack || error.message : String(error);
+    return {
+      errorMessage,
+      logLine: `[${new Date().toISOString()}] ${context}: ${errorMessage}\n`,
+    };
+  });
+}
+
+/**
+ * Points a command's private `errorLogFilePath` at the path.
+ */
+export function setErrorLogFilePath(instance: object, path: string): void {
+  Object.assign(instance, { errorLogFilePath: path });
+}

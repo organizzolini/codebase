@@ -1,10 +1,13 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { ZodError } from "zod";
 
-import { createTemporaryDirectory } from "@codebase/testing";
+import {
+  createTemporaryDirectory,
+  useWorkingDirectory,
+} from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationFileService } from "./configuration-file.service";
@@ -389,17 +392,13 @@ describe(ConfigurationFileService, () => {
       "utf8",
     );
 
-    const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(nestedDirectory);
+    useWorkingDirectory(nestedDirectory);
 
-    try {
-      const configuration = await service.loadConfiguration({
-        configurationPath: "callidescope.config.json",
-      });
+    const configuration = await service.loadConfiguration({
+      configurationPath: "callidescope.config.json",
+    });
 
-      expect(configuration.limits.maximumDepth).toBe(11);
-    } finally {
-      cwdSpy.mockRestore();
-    }
+    expect(configuration.limits.maximumDepth).toBe(11);
   });
 
   it("throws when the path is missing at the repository root too", async () => {
@@ -410,17 +409,13 @@ describe(ConfigurationFileService, () => {
       "utf8",
     );
 
-    const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(repositoryRoot);
+    useWorkingDirectory(repositoryRoot);
 
-    try {
-      await expect(
-        service.loadConfiguration({
-          configurationPath: "callidescope.config.json",
-        }),
-      ).rejects.toThrow(ConfigurationFileNotFoundError);
-    } finally {
-      cwdSpy.mockRestore();
-    }
+    await expect(
+      service.loadConfiguration({
+        configurationPath: "callidescope.config.json",
+      }),
+    ).rejects.toThrow(ConfigurationFileNotFoundError);
   });
 
   it("throws when no repository root is found above the working directory", async () => {
@@ -428,17 +423,13 @@ describe(ConfigurationFileService, () => {
     // it, so the upward walk reaches the filesystem root and gives up.
     const directory = createTemporaryDirectory("callidescope-rootless");
 
-    const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(directory);
+    useWorkingDirectory(directory);
 
-    try {
-      await expect(
-        service.loadConfiguration({
-          configurationPath: "callidescope.config.json",
-        }),
-      ).rejects.toThrow(ConfigurationFileNotFoundError);
-    } finally {
-      cwdSpy.mockRestore();
-    }
+    await expect(
+      service.loadConfiguration({
+        configurationPath: "callidescope.config.json",
+      }),
+    ).rejects.toThrow(ConfigurationFileNotFoundError);
   });
 
   it("throws when a configuration file has an unreadable extension", async () => {

@@ -1,11 +1,10 @@
 import { spawnSync } from "node:child_process";
-import fs from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { createTemporaryDirectory, writeFileTree } from "@codebase/testing";
-import { runSourceCommand } from "@codebase/testing/end-to-end";
+import { runSourceCommand, stageExample } from "@codebase/testing/end-to-end";
 
 import type {
   CodometerReport,
@@ -305,9 +304,12 @@ export const readCounters = (
 export const withCorpusCopy = async <Result>(
   body: (directory: string) => Promise<Result> | Result,
 ): Promise<Result> => {
-  const directory = createTemporaryDirectory("corpus", scratchDirectory);
-
-  fs.cpSync(corpusDirectory, directory, { recursive: true });
-
-  return body(directory);
+  return body(
+    stageExample({
+      label: "corpus",
+      parent: scratchDirectory,
+      removeAfterTest: true,
+      source: corpusDirectory,
+    }),
+  );
 };

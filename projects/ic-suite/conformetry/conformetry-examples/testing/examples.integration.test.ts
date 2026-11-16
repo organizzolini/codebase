@@ -6,7 +6,10 @@ import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { createTemporaryDirectory } from "@codebase/testing";
-import { runSourceCommand } from "@codebase/testing/end-to-end";
+import {
+  listExampleNames,
+  runSourceCommand,
+} from "@codebase/testing/end-to-end";
 
 /** This package's root, and the workspace root every command runs from. */
 const packageDirectory = path.resolve(
@@ -145,11 +148,7 @@ const guides = ["README.md", "AGENTS.md"].map((name) => ({
 }));
 
 /** Every example directory this package ships, read rather than listed. */
-const exampleDirectories = fs
-  .readdirSync(examplesDirectory, { withFileTypes: true })
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => entry.name)
-  .toSorted();
+const exampleDirectories = listExampleNames(examplesDirectory);
 
 /** As much of `project.json` as this suite reads, and no more. */
 interface ProjectManifest {
