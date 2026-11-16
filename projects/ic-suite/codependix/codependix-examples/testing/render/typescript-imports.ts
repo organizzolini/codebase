@@ -158,8 +158,8 @@ export function describeOutcome(outcome: ProgramOutcome): string {
 }
 
 /**
- * Describes a project through the real discovery entry point. Any directory with a tsconfig at
- * `PROJECT_TSCONFIG_PATH` is a candidate, since no Nx tag is read.
+ * Describes a project through the real discovery entry point, which takes any
+ * directory holding a tsconfig at `PROJECT_TSCONFIG_PATH`.
  */
 export function describeProjectAt(absoluteRoot: string): TypescriptProject {
   const [project] = typescriptService.discoverProjects(

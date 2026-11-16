@@ -58,7 +58,7 @@ export interface CheckTask {
   readonly id: string;
 }
 
-/** The tasks that can share one command-line process: same command, path, and mode. */
+/** Tasks sharing one process: same command, path, and mode. */
 export interface CheckTaskGroup {
   readonly command: string;
   readonly mode: "check" | "write";

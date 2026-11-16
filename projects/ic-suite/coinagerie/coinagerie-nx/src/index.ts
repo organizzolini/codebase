@@ -28,7 +28,7 @@ export type {
   InferredTargets,
 } from "./modules/plugin/plugin.types";
 
-/** Infers a check target on each project holding a configuration at the configured path. */
+/** Infers a check target where the configured configuration exists. */
 const createNodes: CreateNodes = [
   PROJECT_MANIFEST_GLOB,
   async (

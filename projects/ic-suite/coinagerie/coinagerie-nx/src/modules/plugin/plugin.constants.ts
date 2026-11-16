@@ -1,10 +1,6 @@
 // ♟️ Constants
 
-/**
- * Every manifest that can make a folder a project. A glob is fixed before the
- * plugin's options are read, so it cannot name the configured configuration
- * path; the path is checked per project instead.
- */
+/** Every manifest that can make a folder a project. */
 export const PROJECT_MANIFEST_GLOB = "**/{project.json,package.json}";
 
 /** The file that makes a folder an Nx project on its own. */

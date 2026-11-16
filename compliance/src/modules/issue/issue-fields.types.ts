@@ -9,10 +9,10 @@ export interface IssueField {
   readonly options: readonly string[];
 }
 
-/** What the Priority rule reads off an issue, where the source could say. */
+/** What the Priority rule reads off an issue. */
 export type IssueFieldFacts = Pick<IssueMetadata, "fieldNames" | "hasParent">;
 
-/** The names of one issue's filled fields, or why they cannot be read. */
+/** One issue's filled field names, or why they are unreadable. */
 export interface IssueFieldNamesResult {
   readonly error?: string;
   readonly fieldNames?: readonly string[];
@@ -25,7 +25,7 @@ export interface IssueFieldTarget {
   readonly issueNumber: string;
 }
 
-/** Every open issue's filled field names by number, or why they cannot be read. */
+/** Open issues' filled field names by number, or why unreadable. */
 export type OpenIssueFieldNamesResult =
   | { readonly error: string; readonly success: false }
   | {

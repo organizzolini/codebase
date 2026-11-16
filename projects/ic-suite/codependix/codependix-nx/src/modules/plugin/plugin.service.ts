@@ -126,8 +126,8 @@ export class PluginService {
   }
 
   /**
-   * Resolves plugin options from an untrusted value. `configurationPath`, `projectConfigurationPath`
-   * and `projectTsconfigPath` are required and never searched for: a guess would cache gates across real edits.
+   * Resolves plugin options from an untrusted value. Every path option is
+   * required and never searched for.
    */
   public resolvePluginOptions(
     args: ResolvePluginOptionsArguments,

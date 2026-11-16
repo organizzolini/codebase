@@ -13,12 +13,10 @@ import { BATCH_ARGUMENTS } from "./batch.constants";
 import type { BatchCommandOptions, BatchVerdict } from "./batch.types";
 
 /**
- * The `batch` command: check or rewrite many projects' glossaries in one
- * process, avoiding startup costs.
+ * The `batch` command: checks or rewrites many projects' glossaries in one process.
  *
- * Each directory is a project root, and `--project-configuration-path` names
- * the configuration inside each, which is never searched for. Standard output
- * is one JSON array of verdicts, in order; the exit code is 1 when any failed.
+ * `--project-configuration-path` names each root's configuration, never searched
+ * for. It prints one JSON array of verdicts and exits 1 when any failed.
  */
 @Command({
   arguments: BATCH_ARGUMENTS,

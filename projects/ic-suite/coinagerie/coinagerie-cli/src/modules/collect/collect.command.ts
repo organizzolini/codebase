@@ -27,12 +27,10 @@ import type {
 } from "@coinagerie/configuration";
 
 /**
- * The `coinagerie` command: collect the vocabulary, then print, check, or write
- * glossaries.
+ * The `coinagerie` command: collects the vocabulary, then prints, checks, or writes glossaries.
  *
- * `--config` is required: no file is searched for. With no other flag, it prints and writes nothing. `--check` exits 1 naming missing
- * and stale words; `--write` rewrites destinations, keeping definitions still
- * in use. A glossary that cannot be parsed stops the run before any write.
+ * `--config` is required and never searched for. `--check` exits 1 naming missing and
+ * stale words; `--write` rewrites destinations, keeping definitions still in use.
  */
 @Command({
   description:

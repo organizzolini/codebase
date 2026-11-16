@@ -91,9 +91,8 @@ export class PluginService {
   // 🌎 Public Methods
 
   /**
-   * Infers a check target onto every project holding a configuration at the
-   * configured path. Options are read once per workspace, since Nx passes
-   * every matched manifest at once.
+   * Infers a check target onto each project holding a configuration at the
+   * configured path, reading options once per workspace.
    */
   public inferTargets(
     args: InferTargetsArguments,
