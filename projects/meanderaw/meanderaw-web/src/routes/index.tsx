@@ -15,6 +15,7 @@ import {
   toFilterInput,
 } from "../components/gallery-filter-builder/gallery-filter-builder.utilities";
 import { GalleryFilters } from "../components/gallery-filters/gallery-filters";
+import { GalleryRepeats } from "../components/gallery-repeats/gallery-repeats";
 import { GallerySort } from "../components/gallery-sort/gallery-sort";
 import { resolveSortField } from "../components/gallery-sort/gallery-sort.utilities";
 import { GalleryToolbar } from "../components/gallery-toolbar/gallery-toolbar";
@@ -25,6 +26,7 @@ import {
 } from "../components/meander-gallery/meanders-api.utilities";
 import { useGallerySearch } from "../hooks/use-gallery-search/use-gallery-search";
 import {
+  DEFAULT_REPEATS,
   DEFAULT_SORT_DIRECTION,
   gallerySearchSchema,
 } from "../hooks/use-gallery-search/use-gallery-search.constants";
@@ -52,6 +54,7 @@ export const Route = createFileRoute("/")({
     filter: search.filter,
     // Read as the rule it settles to, so adding the default to the link does
     // not read the first page a second time.
+    repeats: search.repeats ?? DEFAULT_REPEATS,
     rows: sanitizeRows(search.rows),
     sort: search.sort,
   }),
@@ -71,10 +74,18 @@ export const Route = createFileRoute("/")({
     const rows = sanitizeRows(deps.rows);
     const page = await findMeanders({
       filter: toFilterInput(filter, rows),
+      repeats: deps.repeats,
       sort: toSortInput(sort, deps.direction),
     });
 
-    return { characteristics, filter, page, rows, sort };
+    return {
+      characteristics,
+      filter,
+      page,
+      repeats: deps.repeats,
+      rows,
+      sort,
+    };
   },
 });
 
@@ -105,10 +116,12 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
  */
 function IndexPage(): ReactNode {
   // 🪝 Hooks
-  const { characteristics, filter, page, rows, sort } = Route.useLoaderData();
+  const { characteristics, filter, page, repeats, rows, sort } =
+    Route.useLoaderData();
   const {
     direction,
     handleFilterChange,
+    handleRepeatsChange,
     handleSortChange,
     handleViewChange,
     view,
@@ -119,17 +132,18 @@ function IndexPage(): ReactNode {
     select: (state: { isLoading: boolean }) => state.isLoading,
   });
 
-  // 🏗 Setup
-  const filterInput = useMemo(
-    () => toFilterInput(filter, rows),
-    [filter, rows],
-  );
-  const { hasMore, loadError, loadMore, meanders } = useMeanders(
-    page,
-    toSortInput(sort, direction),
-    filterInput,
+  const query = useMemo(
+    () => ({
+      filter: toFilterInput(filter, rows),
+      repeats,
+      sort: toSortInput(sort, direction),
+    }),
+    [direction, filter, repeats, rows, sort],
   );
   const fields = createFilterFields(characteristics);
+
+  // 🏗 Setup
+  const { hasMore, loadError, loadMore, meanders } = useMeanders(page, query);
 
   // 💪 Handlers
 
@@ -171,6 +185,10 @@ function IndexPage(): ReactNode {
           totalCount={page.totalCount}
           view={view}
         />
+        <GalleryRepeats
+          onRepeatsChange={handleRepeatsChange}
+          repeats={repeats}
+        />
         <GallerySort
           characteristics={characteristics}
           direction={direction}
@@ -187,10 +205,12 @@ function IndexPage(): ReactNode {
         </p>
       ) : null}
       <MeanderGallery
+        catalog={characteristics}
         hasMore={hasMore}
         loadError={loadError}
         meanders={meanders}
         onLoadMore={loadMore}
+        repeats={repeats}
         view={view}
       />
     </section>

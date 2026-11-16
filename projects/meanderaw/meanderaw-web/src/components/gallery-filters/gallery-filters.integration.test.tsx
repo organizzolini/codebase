@@ -48,7 +48,9 @@ async function addFilter(
 function codesShown(): string[] {
   return screen
     .getAllByTestId("meander-card")
-    .map((card) => within(card).getByRole("code").textContent);
+    .map((card) =>
+      within(card).getByRole("code").textContent.replace(/r\d+$/u, ""),
+    );
 }
 
 /**

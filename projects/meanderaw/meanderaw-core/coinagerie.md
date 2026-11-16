@@ -14,10 +14,10 @@ The words this project uses that the root glossary does not define, regenerated 
 - **mirror**:
 - **negative**:
 - **north**:
-- **phase**:
 - **piece**:
 - **place**:
 - **representative**:
+- **rotation**:
 - **south**:
 - **submatrix**:
 - **tile**:

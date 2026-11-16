@@ -29,8 +29,8 @@ describe(searchFields, () => {
       "lattice",
       "repeats",
       "isHardcoded",
-      "isChain",
       "junctionCount",
+      "isChain",
     ]);
     expect(result.total).toBe(7);
   });
@@ -39,8 +39,10 @@ describe(searchFields, () => {
     expect(keys(searchFields(FIELDS, "junction"))).toStrictEqual([
       "junctionCount",
     ]);
-    expect(keys(searchFields(FIELDS, "chain path"))).toStrictEqual(["isChain"]);
-    expect(keys(searchFields(FIELDS, "SUBMATRIX many"))).toStrictEqual([
+    expect(keys(searchFields(FIELDS, "chain submatrix"))).toStrictEqual([
+      "isChain",
+    ]);
+    expect(keys(searchFields(FIELDS, "PATH ink"))).toStrictEqual([
       "junctionCount",
     ]);
     expect(keys(searchFields(FIELDS, "xyz"))).toStrictEqual([]);

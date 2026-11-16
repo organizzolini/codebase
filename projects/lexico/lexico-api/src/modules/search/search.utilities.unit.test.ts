@@ -37,32 +37,32 @@ describe("search utilities suite", () => {
 
       expect(decomposeEnclitic("puellamque")).toStrictEqual({
         enclitic: "que",
-        stem: "puellam",
+        host: "puellam",
       });
       expect(decomposeEnclitic("aquave")).toStrictEqual({
         enclitic: "ve",
-        stem: "aqua",
+        host: "aqua",
       });
       expect(decomposeEnclitic("videsne")).toStrictEqual({
         enclitic: "ne",
-        stem: "vides",
+        host: "vides",
       });
     });
 
-    it("does not strip false positive stems like neque, atque, denique", () => {
+    it("does not strip false positive hosts like neque, atque, denique", () => {
       expect.hasAssertions();
 
       expect(decomposeEnclitic("neque")).toStrictEqual({
         enclitic: null,
-        stem: "neque",
+        host: "neque",
       });
       expect(decomposeEnclitic("atque")).toStrictEqual({
         enclitic: null,
-        stem: "atque",
+        host: "atque",
       });
       expect(decomposeEnclitic("denique")).toStrictEqual({
         enclitic: null,
-        stem: "denique",
+        host: "denique",
       });
     });
 
@@ -71,7 +71,7 @@ describe("search utilities suite", () => {
 
       expect(decomposeEnclitic("amare")).toStrictEqual({
         enclitic: null,
-        stem: "amare",
+        host: "amare",
       });
     });
   });

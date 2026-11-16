@@ -6,22 +6,9 @@
 export const COPIED_MILLISECONDS = 1500;
 
 /**
- * The classes a card wears per view: a column, or a row.
+ * The size assumed for a drawing whose SVG names none.
  */
-export const VIEW_CLASSES = {
-  grid: {
-    drawing: "h-32 w-full",
-    height: 128,
-    root: "flex-col",
-    width: 256,
-  },
-  list: {
-    drawing: "h-16 w-48 shrink-0",
-    height: 64,
-    root: "flex-row items-start",
-    width: 192,
-  },
-} as const;
+export const FALLBACK_DRAWING_SIZE = { height: 128, width: 256 } as const;
 
 /**
  * What the copy button says in each state.

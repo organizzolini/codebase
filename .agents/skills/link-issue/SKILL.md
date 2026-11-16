@@ -76,6 +76,8 @@ gh pr view <number> --json closingIssuesReferences --jq '.closingIssuesReference
 
 An empty result means the link is missing: fix the keyword, or add the issue under **Development** in the pull request sidebar. GitHub honors closing keywords only for a pull request whose base is the default branch, so a stacked pull request from [gh-stack](../gh-stack/SKILL.md) may need the sidebar link. Run the command above on every pull request rather than assuming.
 
+The link alone does not pass the check: `compliance pull-request` also audits each closed issue's labels and Issue Type, and wants Effort on the issue and Priority on its root, as [manage-project](../manage-project/SKILL.md) describes.
+
 ## Issue vs Pull Request Content
 
 The issue holds the **why and the intent**; the pull request holds the **what, as built**. Each states a thing once and links to the other.

@@ -148,7 +148,8 @@ test tiers.
 - **Data**: GraphQL over `fetch` in `components/meander-gallery/meanders-api.utilities.ts`; typed documents come from `nx run meanderaw-web:codegen`, which reads the API's emitted `src/schema.gql` and the documents in `src/graphql/operations/`.
 - **Paging**: hand-rolled in `hooks/use-meanders/use-meanders.ts`, since the repository has no `@tanstack/react-query`.
 - **Virtualization**: `@tanstack/react-virtual`'s window virtualizer in `MeanderGallery`.
-- **State**: view and sort live in URL search params, validated with Zod in `use-gallery-search.constants.ts`; a sort the catalog does not know falls back to the default order.
+- **State**: view, sort and repeats live in URL search params, validated with Zod in `use-gallery-search.constants.ts`; a sort the catalog does not know falls back to the default order, and repeats outside 1 to 24 (the API's `MAXIMUM_SVG_REPEATS`) or not a number fall back to 12, and an unknown view to the list. A change to the sort or repeats reloads from page 1.
+- **Cards**: each card stacks the drawing (at the SVG's own aspect) over the Code with its repeats written `r<n>`, as the Code format spells them, and pills of its characteristics grouped by catalog category, patterns first.
 - **Tests**: route integration tests mock GraphQL with MSW; `testing/meanders-api.ts` serves the fixture and `testing/viewport.ts` fakes width, resize observers and scroll.
 
 ## Key Files

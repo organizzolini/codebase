@@ -46,7 +46,7 @@ graph LR
   file_examples_limits_fail_config_ts["examples/limits/fail.config.ts"]
   file_examples_limits_unbound_config_ts["examples/limits/unbound.config.ts"]
   file_examples_limits_units_config_ts["examples/limits/units.config.ts"]
-  file_examples_limits_unprefixed_config_ts["examples/limits/unprefixed.config.ts"]
+  file_examples_limits_unqualified_config_ts["examples/limits/unqualified.config.ts"]
   file_examples_limits_unreadable_unit_config_ts["examples/limits/unreadable-unit.config.ts"]
   file_examples_limits_warn_config_ts["examples/limits/warn.config.ts"]
   file_examples_output_codometer_config_ts["examples/output/codometer.config.ts"]

@@ -11,7 +11,7 @@ export const DEFAULT_PAGE_SIZE = 50;
 export const MAXIMUM_TEXT_LENGTH = 512;
 
 /** The most times a drawing may repeat the meander's tile. */
-export const MAXIMUM_SVG_REPEATS = 12;
+export const MAXIMUM_SVG_REPEATS = 24;
 
 /** The repeats of a drawing when `svg` is given none. */
 export const DEFAULT_SVG_REPEATS = 1;

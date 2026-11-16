@@ -5,7 +5,6 @@
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **aspect**: Example word in folding tests, where aspects folds into the singular aspect; also a fixture file name.
-- **breadth**: The maximumBreadth limit, set to seven in this project's callidescope configuration, bounding callees per function.
 - **bundle**: Fixture path dist/bundle.js that discovery tests use to check an exclude list drops the dist folder.
 - **glossary**: The GLOSSARY.md file discovery skips so a glossary's own headwords never count as codebase vocabulary.
 - **headword**: The single form a word folds into, which the glossary lists once and exclusion compares against.

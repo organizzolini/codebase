@@ -113,7 +113,7 @@ describe(FilterAttributeSearch, () => {
 
     fireEvent.keyDown(box, { key: "Enter" });
 
-    expect(onSelect.mock.calls[0]?.[0].key).toBe("junctionCount");
+    expect(onSelect.mock.calls[0]?.[0].key).toBe("isChain");
 
     fireEvent.keyDown(box, { key: "a" });
 

@@ -1,3 +1,5 @@
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
 import * as cheerio from "cheerio";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -8,19 +10,20 @@ import { LatinLibraryProvider } from "./latin-library.provider";
 
 import type { LatinLibraryBuilder } from "./latin-library.builder";
 import type { LoggerService } from "@codebase/observability";
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
 import type { AnyNode } from "domhandler";
 
-const { mkdirMock, readFileMock, writeFileMock } = vi.hoisted(() => ({
-  mkdirMock: vi.fn<() => Promise<string | undefined>>(),
-  readFileMock: vi.fn<() => Promise<string>>(),
-  writeFileMock: vi.fn<() => Promise<void>>(),
-}));
+const mkdirMock = vi.mocked(mkdir);
+const readFileMock = vi.mocked(readFile);
+const writeFileMock = vi.mocked(writeFile);
 
-vi.mock("node:fs/promises", () => ({
-  mkdir: mkdirMock,
-  readFile: readFileMock,
-  writeFile: writeFileMock,
-}));
+vi.mock("node:fs/promises", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem();
+});
 
 describe(LatinLibraryProvider, () => {
   const logger: DeepMocked<LoggerService> = createMock<LoggerService>();

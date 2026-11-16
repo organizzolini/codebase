@@ -7,7 +7,6 @@ import {
 } from "../../graphql/generated/operations";
 
 import {
-  CARD_REPEATS,
   DEFAULT_MEANDERAW_API_URL,
   GALLERY_PAGE_SIZE,
   responseSchema,
@@ -29,15 +28,15 @@ export async function findCharacteristics(): Promise<GalleryCharacteristic[]> {
 }
 
 /**
- * Reads one page of meanders, from the start or after a cursor.
+ * Reads one page of meanders, from the start or after a cursor, each drawn
+ * with its tile repeated as asked.
  */
 export async function findMeanders(
-  variables: Readonly<Omit<MeandersQueryVariables, "first" | "repeats">> = {},
+  variables: Readonly<Omit<MeandersQueryVariables, "first">>,
 ): Promise<MeandersPage> {
   const { meanders } = await queryApi(MeandersDocument, {
     ...variables,
     first: GALLERY_PAGE_SIZE,
-    repeats: CARD_REPEATS,
   });
 
   return meanders;

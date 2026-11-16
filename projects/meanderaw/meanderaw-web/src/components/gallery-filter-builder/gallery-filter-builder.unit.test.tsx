@@ -40,7 +40,7 @@ describe(GalleryFilterBuilder, () => {
     render(<GalleryFilterBuilder {...filter} />);
     fireEvent.click(screen.getByRole("option", { name: /Junction count/u }));
 
-    expect(screen.getByText("How many junctions the path has")).toBeDefined();
+    expect(screen.getByText("Pieces of ink.")).toBeDefined();
     expect(
       screen.queryByRole("combobox", { name: "Search attributes" }),
     ).toBeNull();
