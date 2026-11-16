@@ -1,6 +1,7 @@
 import { Inject } from "@nestjs/common";
 import {
   Args as Arguments,
+  Int,
   Parent,
   Query,
   ResolveField,
@@ -9,7 +10,10 @@ import {
 
 import { MeanderConnection } from "./meander-connection.entities";
 import { MeandersArgs as MeandersArguments } from "./meanders-arguments.entities";
-import { MEANDERS_QUERY_DESCRIPTION } from "./meanders.constants";
+import {
+  DEFAULT_SVG_REPEATS,
+  MEANDERS_QUERY_DESCRIPTION,
+} from "./meanders.constants";
 import { MeanderEntity } from "./meanders.entities";
 import { MeandersService } from "./meanders.service";
 
@@ -45,10 +49,18 @@ export class MeandersResolver {
   /** The drawing, rendered only for a meander whose query selects it. */
   @ResolveField(() => String, {
     description:
-      "The meander's drawing as an SVG document, rendered on request from its Code.",
+      "The meander's drawing as an SVG document, rendered on request from its Code, its tile repeated `repeats` times across (1 to 12).",
     name: "svg",
   })
-  svg(@Parent() meander: MeanderEntity): string {
-    return this.meandersService.draw(meander);
+  svg(
+    @Parent() meander: MeanderEntity,
+    @Arguments("repeats", {
+      defaultValue: DEFAULT_SVG_REPEATS,
+      description: "How many times the tile repeats across, from 1 to 12.",
+      type: () => Int,
+    })
+    repeats: number,
+  ): string {
+    return this.meandersService.draw(meander, repeats);
   }
 }

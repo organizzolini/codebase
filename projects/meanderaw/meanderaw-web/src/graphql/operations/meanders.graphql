@@ -3,6 +3,7 @@ query Meanders(
   $after: String
   $sort: MeanderSortInput
   $filter: MeanderFilterGroupInput
+  $repeats: Int
 ) {
   meanders(first: $first, after: $after, sort: $sort, filter: $filter) {
     totalCount
@@ -20,7 +21,7 @@ query Meanders(
         lattice
         repeats
         rows
-        svg
+        svg(repeats: $repeats)
         characteristics {
           isPattern
           key
