@@ -1,6 +1,6 @@
 import * as z from 'zod'
 import { SearchMatchSource } from './operations'
-import type { AuthorLookupInput, LinesRangeInput, TextLookupInput, SearchEnglishQuery, SearchLatinQuery } from './operations'
+import type { AuthorLookupInput, LinesRangeInput, TextLookupInput, SearchEnglishQuery, SearchLatinQuery, TextReaderQuery, WordCandidatesQuery } from './operations'
 
 type Properties<T> = {
   [K in keyof T]: z.ZodType<T[K], T[K] | undefined>;
@@ -270,5 +270,67 @@ export function SearchLatinQuerySchema(): z.ZodType<SearchLatinQuery> {
 })
 }))
 })
+})
+}
+
+export function TextReaderQuerySchema(): z.ZodType<TextReaderQuery> {
+  return z.object({
+    text: z.object({
+    id: z.string(),
+    slug: z.string(),
+    title: z.string(),
+    type: z.string(),
+    author: z.object({
+    name: z.string(),
+    slug: z.string()
+}),
+    nextText: z.object({
+    slug: z.string(),
+    title: z.string()
+}).nullable(),
+    parentText: z.object({
+    slug: z.string(),
+    title: z.string()
+}).nullable(),
+    previousText: z.object({
+    slug: z.string(),
+    title: z.string()
+}).nullable(),
+    lines: z.object({
+    edges: z.array(z.object({
+    node: z.object({
+    id: z.string(),
+    index: z.number(),
+    label: z.string(),
+    tokens: z.object({
+    edges: z.array(z.object({
+    node: z.object({
+    id: z.string(),
+    index: z.number(),
+    data: z.string(),
+    isPunctuation: z.boolean()
+})
+}))
+})
+})
+})),
+    pageInfo: z.object({
+    endCursor: z.string().nullable(),
+    hasNextPage: z.boolean()
+})
+})
+}).nullable()
+})
+}
+
+export function WordCandidatesQuerySchema(): z.ZodType<WordCandidatesQuery> {
+  return z.object({
+    wordCandidates: z.array(z.object({
+    definition: z.string().nullable(),
+    description: z.string(),
+    lemma: z.string(),
+    lexemeId: z.string(),
+    partOfSpeech: z.string()
+}))
 })
 }

@@ -3,10 +3,11 @@ import {
   useRouter,
   useRouterState,
 } from "@tanstack/react-router";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 
 import { Button } from "@codebase/presentation";
 
+import { RecentHistory } from "../components/recent-history/recent-history";
 import { SearchBar } from "../components/search-bar/search-bar";
 import { SearchLanding } from "../components/search-landing/search-landing";
 import { SearchResults } from "../components/search-results/search-results";
@@ -14,9 +15,12 @@ import {
   getSearch,
   searchSchema,
 } from "../components/search-results/search.constants";
+import { useLookupHistory } from "../hooks/use-lookup-history/use-lookup-history";
+import { isLookupEntry } from "../hooks/use-lookup-history/use-lookup-history.utilities";
 
 import type { LexemeFormRow } from "../components/lexeme-forms/lexeme-forms.types";
 import type { SearchParameters } from "../components/search-results/search.types";
+import type { HistoryEntry } from "../hooks/use-lookup-history/use-lookup-history.types";
 import type { ReactNode } from "react";
 
 // 🧭 Route
@@ -87,6 +91,7 @@ function SearchPage(): ReactNode {
   const navigate = Route.useNavigate();
   const { query = "" } = Route.useSearch();
   const results = Route.useLoaderData();
+  const { clear, entries, recordSearch } = useLookupHistory();
   const isLoading = useRouterState({
     select: (state: { isLoading: boolean }) => state.isLoading,
   });
@@ -115,8 +120,27 @@ function SearchPage(): ReactNode {
       await Promise.resolve(formsByLexeme.get(lexemeId) ?? []),
     [formsByLexeme],
   );
+  const handleOpenEntry = useCallback(
+    (entry: HistoryEntry): void => {
+      if (isLookupEntry(entry)) {
+        void navigate({
+          params: { slug: entry.slug },
+          search: { line: entry.line },
+          to: "/texts/$slug",
+        });
+      } else {
+        void navigate({ search: { query: entry.query } });
+      }
+    },
+    [navigate],
+  );
 
   // ♻️ Lifecycle
+  useEffect(() => {
+    if (query !== "") {
+      recordSearch(query);
+    }
+  }, [query, recordSearch]);
 
   // 🏁 Early Returns
 
@@ -130,7 +154,14 @@ function SearchPage(): ReactNode {
         onSearch={handleSearch}
       />
       {query === "" ? (
-        <SearchLanding />
+        <>
+          <SearchLanding />
+          <RecentHistory
+            entries={entries}
+            onClear={clear}
+            onOpenEntry={handleOpenEntry}
+          />
+        </>
       ) : (
         <SearchResults
           loadForms={handleLoadForms}

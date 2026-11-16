@@ -508,10 +508,13 @@ describe("lexico api graphql end-to-end suite", () => {
       ].toSorted(),
       text: [
         ...AUDIT_FIELDS,
+        "ancestors",
         "author",
         "childTexts",
         "lines",
+        "nextText",
         "parentText",
+        "previousText",
         "slug",
         "title",
         "type",

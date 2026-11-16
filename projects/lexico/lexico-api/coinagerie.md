@@ -6,6 +6,7 @@ The words this project uses that the root glossary does not define, regenerated 
 
 - **batch**: Dataloader term for grouping ID lookups into one query, such as lexemes loaded together in a single batch.
 - **book**: Division of a literary work used as a text locator, such as book one of Vergil's Aeneid in literature fixtures.
+- **cano**: Latin verb "to sing" seeded as the one-candidate word in the word-card fixture, whose first-person singular form the card describes.
 - **corpus**: Fixture collection of literary texts and lines seeded into the database, used by literature search and lookup tests.
 - **cut**: Local name for the page-limit condition that trims a query's rows to the count a page requested.
 - **db**: Suffix of the POSTGRES_DB environment variable, naming the Postgres database the API connects to and tests stub.
@@ -18,6 +19,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **quick**: Word in the README Quick Start heading, introducing the short setup steps for running the lexico API locally.
 - **reader**: Readable view of a line, reduced to what a reader can observe; the reader query selects one line for display.
 - **retyped**: Adjective for a GraphQL type whose fields are redeclared as non-null rows, such as LexemeType in the lexico type tests.
+- **sibling**: Text under the same parent text as another, ordered as the parent's child texts are listed; the previous and next text link a text to its neighbors.
 - **term**: Search input string a user types; fuzzy matching applies only to terms above a shortest allowed length.
 - **translation**: English sense of a lexeme, a Translation entity joined to lexemes and returned in search results and lexeme types.
 - **valerius**: Roman poet named in the literature search corpus fixture, whose texts the corpus lists for search tests.
