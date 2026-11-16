@@ -1,10 +1,4 @@
-import {
-  act,
-  fireEvent,
-  screen,
-  waitFor,
-  within,
-} from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { renderRoute } from "@codebase/testing/react";
@@ -14,6 +8,42 @@ import { setViewportWidth } from "../../../testing/viewport";
 import { getRouter } from "../../router";
 import { DEFAULT_ROWS_FILTER } from "../gallery-filter-builder/gallery-filter-builder.constants";
 
+const ROWS_REQUEST = { field: "rows", numbers: [4], operator: "EQ" };
+const ONLY_ROWS_REQUEST = { combinator: "AND", rules: [ROWS_REQUEST] };
+
+/**
+ * Adds a filter through the popup: search for the attribute, pick it, set
+ * the operator and value, and press Add filter.
+ */
+async function addFilter(
+  search: string,
+  attribute: RegExp,
+  operator?: string,
+  value?: string,
+): Promise<void> {
+  const popup = within(await openFilters());
+
+  fireEvent.change(popup.getByRole("combobox", { name: "Search attributes" }), {
+    target: { value: search },
+  });
+  fireEvent.click(popup.getByRole("option", { name: attribute }));
+
+  if (operator !== undefined) {
+    fireEvent.change(popup.getByLabelText("Operator"), {
+      target: { value: operator },
+    });
+  }
+
+  if (value !== undefined) {
+    const box = popup.getByLabelText("Value");
+
+    fireEvent.change(box, { target: { value } });
+    fireEvent.blur(box);
+  }
+
+  fireEvent.click(popup.getByRole("button", { name: "Add filter" }));
+}
+
 /** The Codes of the cards on screen, in the order they appear. */
 function codesShown(): string[] {
   return screen
@@ -22,7 +52,8 @@ function codesShown(): string[] {
 }
 
 /**
- * Sets a control by label, commits it by leaving it, and waits for the link to carry it back.
+ * Sets a control by its label, commits it as a user does by leaving it, and
+ * waits until it shows the value.
  */
 async function commitControl(
   label: string,
@@ -39,16 +70,6 @@ async function commitControl(
   });
 }
 
-const ROWS_REQUEST = { field: "rows", numbers: [4], operator: "EQ" };
-const ONLY_ROWS_REQUEST = { combinator: "AND", rules: [ROWS_REQUEST] };
-
-/** The chips on screen, as they read. */
-function chipsShown(): (null | string)[] {
-  return within(screen.getByTestId("filter-chip-row"))
-    .getAllByRole("listitem")
-    .map((chip) => chip.textContent);
-}
-
 /** A link to the gallery carrying a filter tree, and perhaps a rows rule. */
 function linkTo(filter: unknown, rows?: unknown): string {
   const parameters = [`filter=${encodeURIComponent(JSON.stringify(filter))}`];
@@ -60,15 +81,22 @@ function linkTo(filter: unknown, rows?: unknown): string {
   return `/?${parameters.join("&")}`;
 }
 
-/** Opens the Filters surface, whichever kind the width gives. */
-async function openFilters(name = "Filter"): Promise<HTMLElement> {
-  fireEvent.click(await screen.findByRole("button", { name }));
+/** Opens the Filter popup. */
+async function openFilters(): Promise<HTMLElement> {
+  fireEvent.click(await screen.findByRole("button", { name: /^Filter(,|$)/u }));
 
   return screen.getByRole("dialog");
 }
 
+/** The filter pills on screen, by their attribute. */
+function pillsShown(): (null | string)[] {
+  return within(screen.getByTestId("filter-pill-row"))
+    .getAllByTestId("filter-pill")
+    .map((pill) => within(pill).getByRole("group").getAttribute("aria-label"));
+}
+
 describe("gallery filters", () => {
-  it("builds a nested filter, writing it to the link and narrowing the cards and the total", async () => {
+  it("adds a filter through the popup: search, attribute, operator, value, and a pill appears", async () => {
     const api = serveMeandersApi(8);
     const router = getRouter();
 
@@ -77,191 +105,293 @@ describe("gallery filters", () => {
 
     expect(screen.getByText("8 meanders")).toBeDefined();
 
-    await openFilters();
-    fireEvent.click(screen.getByRole("button", { name: "Add rule" }));
-    await commitControl("Field", "junctionCount");
-    await commitControl("Operator", "gte");
-    await commitControl("Value", "3");
+    await addFilter("junction", /Junction count/u, "gte", "3");
 
     await waitFor(() => {
       expect(screen.getByText("4 meanders")).toBeDefined();
     });
 
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(pillsShown()).toStrictEqual([
+      "Filter Rows",
+      "Filter Junction count",
+    ]);
+    expect(
+      screen.getByLabelText<HTMLInputElement>("Junction count Value").value,
+    ).toBe("3");
     expect(structuredClone(router.state.location.search.filter)).toStrictEqual({
       combinator: "and",
       rules: [{ field: "junctionCount", operator: "gte", value: 3 }],
     });
-    expect(api.requests.at(-1)).toMatchObject({
-      filter: {
-        combinator: "AND",
-        groups: [
-          {
-            combinator: "AND",
-            rules: [{ field: "junctionCount", numbers: [3], operator: "GTE" }],
-          },
-        ],
-        rules: [ROWS_REQUEST],
-      },
+    expect(api.requests.at(-1)?.filter).toStrictEqual({
+      combinator: "AND",
+      groups: [
+        {
+          combinator: "AND",
+          rules: [{ field: "junctionCount", numbers: [3], operator: "GTE" }],
+        },
+      ],
+      rules: [ROWS_REQUEST],
+    });
+  });
+
+  it("finds an attribute by searching, and picks one with the arrow keys and Enter", async () => {
+    serveMeandersApi(8);
+
+    await renderRoute(getRouter(), "/");
+    await screen.findAllByTestId("meander-card");
+
+    const popup = within(await openFilters());
+    const search = popup.getByRole("combobox", { name: "Search attributes" });
+
+    expect(globalThis.document.activeElement).toBe(search);
+
+    fireEvent.change(search, { target: { value: "ch" } });
+
+    expect(popup.getAllByRole("option").length).toBeGreaterThan(0);
+
+    fireEvent.change(search, { target: { value: "zzz" } });
+
+    expect(popup.getByText("No attributes match.")).toBeDefined();
+
+    fireEvent.change(search, { target: { value: "" } });
+    fireEvent.keyDown(search, { key: "ArrowDown" });
+    fireEvent.keyDown(search, { key: "Enter" });
+
+    expect(popup.getByText("How many columns the meander has")).toBeDefined();
+  });
+
+  it("edits a pill's operator and value in place, reading the cards and total again", async () => {
+    const api = serveMeandersApi(8);
+    const router = getRouter();
+
+    await renderRoute(router, "/");
+    await screen.findAllByTestId("meander-card");
+    await addFilter("junction", /Junction count/u, "gte", "3");
+    await waitFor(() => {
+      expect(screen.getByText("4 meanders")).toBeDefined();
     });
 
-    // Nested: and, too, either a chain or hardcoded.
-    fireEvent.click(screen.getByRole("button", { name: "Add group" }));
-
-    const group = await screen.findByRole("group", { name: "Filter group 2" });
-
-    await commitControl("Match", "or", within(group));
-    await commitControl("Field", "isChain", within(group));
+    await commitControl("Junction count Value", "4");
 
     await waitFor(() => {
       expect(screen.getByText("2 meanders")).toBeDefined();
     });
 
-    expect(codesShown()).toStrictEqual(["01x01y0003", "01x01y0006"]);
+    expect(codesShown()).toStrictEqual(["01x01y0003", "01x01y0007"]);
+
+    await commitControl("Junction count operator", "lt");
+
+    await waitFor(() => {
+      expect(screen.getByText("6 meanders")).toBeDefined();
+    });
+
+    expect(structuredClone(router.state.location.search.filter)).toStrictEqual({
+      combinator: "and",
+      rules: [{ field: "junctionCount", operator: "lt", value: 4 }],
+    });
+    expect(api.requests.at(-1)?.filter).toMatchObject({
+      groups: [
+        { rules: [{ field: "junctionCount", numbers: [4], operator: "LT" }] },
+      ],
+    });
   });
 
-  it("keeps focus on a control as its field and operator change", async () => {
-    serveMeandersApi(8);
-
-    await renderRoute(getRouter(), "/");
-    await openFilters();
-    fireEvent.click(screen.getByRole("button", { name: "Add rule" }));
-
-    const field = await screen.findByLabelText("Field");
-
-    field.focus();
-    await commitControl("Field", "junctionCount");
-
-    expect(screen.getByLabelText("Field")).toBe(field);
-    expect(globalThis.document.activeElement).toBe(field);
-  });
-
-  it("removes a rule, and the whole filter with the last one", async () => {
+  it("removes a pill with its ×, and the filter from the address with the last one", async () => {
     serveMeandersApi(8);
     const router = getRouter();
 
     await renderRoute(router, "/");
     await screen.findAllByTestId("meander-card");
-    await openFilters();
-    fireEvent.click(screen.getByRole("button", { name: "Add rule" }));
-    await commitControl("Field", "junctionCount");
-    await commitControl("Value", "9");
-
+    await addFilter("junction", /Junction count/u, "gte", "3");
     await waitFor(() => {
-      expect(screen.getByText("0 meanders")).toBeDefined();
+      expect(screen.getByText("4 meanders")).toBeDefined();
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "Remove rule" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Remove Junction count filter" }),
+    );
 
     await waitFor(() => {
       expect(screen.getByText("8 meanders")).toBeDefined();
     });
 
-    expect({ ...router.state.location.search }).toStrictEqual({
-      rows: DEFAULT_ROWS_FILTER,
+    expect(pillsShown()).toStrictEqual(["Filter Rows"]);
+    expect(router.state.location.search.filter).toBeUndefined();
+  });
+
+  it("matches all or any of the pills, the rows rule applying either way", async () => {
+    const api = serveMeandersApi(8);
+
+    await renderRoute(getRouter(), "/");
+    await screen.findAllByTestId("meander-card");
+    await addFilter("junction", /Junction count/u, "gte", "3");
+    await waitFor(() => {
+      expect(screen.getByText("4 meanders")).toBeDefined();
+    });
+    await addFilter("chain", /Chain/u);
+    await waitFor(() => {
+      expect(screen.getByText("2 meanders")).toBeDefined();
+    });
+
+    expect(codesShown()).toStrictEqual(["01x01y0003", "01x01y0006"]);
+
+    await commitControl("Match", "or");
+
+    await waitFor(() => {
+      expect(screen.getByText("5 meanders")).toBeDefined();
+    });
+
+    expect(api.requests.at(-1)?.filter).toMatchObject({
+      combinator: "AND",
+      groups: [{ combinator: "OR" }],
+      rules: [ROWS_REQUEST],
     });
   });
 
-  it("shows each rule in force as a chip, and removes the rule with its chip", async () => {
-    serveMeandersApi(8);
+  it("applies rows = 4 on the first load, as a pill with no remove button, and says so in the address", async () => {
+    const api = serveMeandersApi(8);
     const router = getRouter();
 
     await renderRoute(router, "/");
     await screen.findAllByTestId("meander-card");
-    await openFilters();
-    fireEvent.click(screen.getByRole("button", { name: "Add rule" }));
-    await commitControl("Field", "junctionCount");
-    await commitControl("Operator", "gte");
-    await commitControl("Value", "3");
 
-    const chip = await screen.findByRole("button", {
-      name: "Remove Junction count ≥ 3",
+    expect(api.requests[0]?.filter).toStrictEqual(ONLY_ROWS_REQUEST);
+    expect(screen.getByLabelText<HTMLInputElement>("Rows Value").value).toBe(
+      "4",
+    );
+    expect(screen.queryByRole("button", { name: /Remove Rows/u })).toBeNull();
+
+    await waitFor(() => {
+      expect(structuredClone(router.state.location.search.rows)).toStrictEqual({
+        operator: "eq",
+        value: 4,
+      });
     });
+  });
+
+  it("narrows the cards and the total to the rows rule, and lets its operator and value change in place", async () => {
+    const api = serveMeandersApi(8, 0, (index) => (index % 4) + 2);
+    const router = getRouter();
+
+    await renderRoute(router, "/");
+    await screen.findAllByTestId("meander-card");
+
+    expect(screen.getByText("2 meanders")).toBeDefined();
+    expect(codesShown()).toStrictEqual(["01x01y0002", "01x01y0006"]);
+
+    await commitControl("Rows operator", "gte");
 
     await waitFor(() => {
       expect(screen.getByText("4 meanders")).toBeDefined();
     });
 
-    fireEvent.click(chip);
+    await commitControl("Rows Value", "5");
 
     await waitFor(() => {
-      expect(screen.getByText("8 meanders")).toBeDefined();
+      expect(screen.getByText("2 meanders")).toBeDefined();
     });
 
-    expect(chipsShown()).toStrictEqual(["Rows = 4"]);
-    expect({ ...router.state.location.search }).toStrictEqual({
-      rows: DEFAULT_ROWS_FILTER,
+    expect(codesShown()).toStrictEqual(["01x01y0003", "01x01y0007"]);
+    expect(structuredClone(router.state.location.search.rows)).toStrictEqual({
+      operator: "gte",
+      value: 5,
+    });
+    expect(api.requests.at(-1)?.filter).toStrictEqual({
+      combinator: "AND",
+      rules: [{ field: "rows", numbers: [5], operator: "GTE" }],
+    });
+
+    await commitControl("Rows operator", "between");
+    await commitControl("Rows From", "3");
+    await commitControl("Rows To", "4");
+
+    await waitFor(() => {
+      expect(screen.getByText("4 meanders")).toBeDefined();
     });
   });
 
-  it.each([
-    [1280, "popover"],
-    [1024, "popover"],
-    [900, "drawer"],
-    [768, "drawer"],
-    [375, "sheet"],
-  ])("opens the builder at %i pixels as a %s", async (width, kind) => {
-    serveMeandersApi(3);
-    setViewportWidth(width);
+  it("keeps the rows rule ANDed with a tree whose own combinator is any", async () => {
+    const api = serveMeandersApi(8, 0, (index) => (index % 4) + 2);
 
-    await renderRoute(getRouter(), "/");
+    await renderRoute(
+      getRouter(),
+      linkTo({
+        combinator: "or",
+        rules: [
+          { field: "isChain", operator: "is", value: true },
+          { field: "junctionCount", operator: "gte", value: 4 },
+        ],
+      }),
+    );
     await screen.findAllByTestId("meander-card");
 
-    const dialog = await openFilters();
-
-    expect(dialog.matches(`[data-surface="${kind}"]`)).toBe(true);
+    // rows = 4 holds for indices 2 and 6; of these only 6 is a chain.
+    expect(codesShown()).toStrictEqual(["01x01y0006"]);
+    expect(api.requests[0]?.filter).toMatchObject({
+      combinator: "AND",
+      groups: [{ combinator: "OR" }],
+      rules: [ROWS_REQUEST],
+    });
   });
 
-  it("moves focus into the builder, and gives it back to the button on Escape", async () => {
-    serveMeandersApi(3);
-    setViewportWidth(375);
+  it("resets to rows = 4, with no other filter, when cleared", async () => {
+    serveMeandersApi(8, 0, (index) => (index % 4) + 2);
+    const router = getRouter();
 
-    await renderRoute(getRouter(), "/");
+    await renderRoute(router, "/");
     await screen.findAllByTestId("meander-card");
-
-    const button = await screen.findByRole("button", { name: "Filter" });
-    const dialog = await openFilters();
-
-    expect(dialog.contains(globalThis.document.activeElement)).toBe(true);
-
-    fireEvent.keyDown(dialog, { key: "Escape" });
-
-    expect(screen.queryByRole("dialog")).toBeNull();
-    expect(globalThis.document.activeElement).toBe(button);
-  });
-
-  it("leaves Escape to a select that is open in the builder", async () => {
-    serveMeandersApi(3);
-
-    await renderRoute(getRouter(), "/");
-    await openFilters();
-    fireEvent.click(screen.getByRole("button", { name: "Add rule" }));
-    fireEvent.keyDown(await screen.findByLabelText("Field"), {
-      key: "Escape",
+    await commitControl("Rows Value", "5");
+    await waitFor(() => {
+      expect(structuredClone(router.state.location.search.rows)).toStrictEqual({
+        operator: "eq",
+        value: 5,
+      });
+    });
+    await addFilter("chain", /Chain/u);
+    await waitFor(() => {
+      expect(router.state.location.search.filter).toBeDefined();
     });
 
-    expect(screen.getByRole("dialog")).toBeDefined();
-  });
+    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
 
-  it("stays open as the window resizes across a width, changing its surface", async () => {
-    serveMeandersApi(3);
-
-    await renderRoute(getRouter(), "/");
-    await screen.findAllByTestId("meander-card");
-
-    const dialog = await openFilters();
-
-    expect(dialog.matches('[data-surface="popover"]')).toBe(true);
-
-    act(() => {
-      setViewportWidth(375);
-      globalThis.dispatchEvent(new Event("resize"));
+    await waitFor(() => {
+      expect(router.state.location.search.filter).toBeUndefined();
     });
 
-    expect(screen.getByRole("dialog")).toBe(dialog);
-    expect(dialog.matches('[data-surface="sheet"]')).toBe(true);
+    expect(structuredClone(router.state.location.search.rows)).toStrictEqual({
+      operator: "eq",
+      value: 4,
+    });
+    expect(screen.getByLabelText<HTMLInputElement>("Rows Value").value).toBe(
+      "4",
+    );
   });
 
-  it("reads the filter from a shared link, shows it as chips and narrows the cards", async () => {
+  it("opens the popup at every width, small, and gives focus back to the button on Escape", async () => {
+    for (const width of [1280, 900, 375]) {
+      serveMeandersApi(3);
+      setViewportWidth(width);
+
+      const { unmount } = await renderRoute(getRouter(), "/");
+
+      await screen.findAllByTestId("meander-card");
+
+      const button = await screen.findByRole("button", { name: "Filter" });
+      const dialog = await openFilters();
+
+      expect(dialog.contains(globalThis.document.activeElement)).toBe(true);
+
+      fireEvent.keyDown(dialog, { key: "Escape" });
+
+      expect(screen.queryByRole("dialog")).toBeNull();
+      expect(globalThis.document.activeElement).toBe(button);
+
+      unmount();
+    }
+  });
+
+  it("shows a shared link's nested tree as parenthesized pills, editable in place", async () => {
     const api = serveMeandersApi(8);
 
     await renderRoute(
@@ -279,48 +409,29 @@ describe("gallery filters", () => {
     );
 
     await expect(
-      screen.findByRole("button", { name: "Remove Junction count ≥ 3" }),
+      screen.findByRole("group", { name: "Filter group 2" }),
     ).resolves.toBeDefined();
-    expect(
-      screen.getByRole("button", { name: "Remove Chain is true" }),
-    ).toBeDefined();
-    expect(
-      screen.getByRole("button", { name: "Filter, 2 active" }),
-    ).toBeDefined();
+    expect(screen.getByLabelText("Chain Value")).toBeDefined();
     expect(screen.getByText("2 meanders")).toBeDefined();
     expect(codesShown()).toStrictEqual(["01x01y0003", "01x01y0006"]);
-    expect(api.requests[0]).toMatchObject({
-      filter: {
-        combinator: "AND",
-        groups: [
-          {
-            combinator: "AND",
-            groups: [{ combinator: "OR" }],
-            rules: [{ field: "junctionCount", numbers: [3], operator: "GTE" }],
-          },
-        ],
-        rules: [ROWS_REQUEST],
-      },
+    expect(api.requests[0]?.filter).toMatchObject({
+      combinator: "AND",
+      groups: [
+        {
+          combinator: "AND",
+          groups: [{ combinator: "OR" }],
+          rules: [{ field: "junctionCount", numbers: [3], operator: "GTE" }],
+        },
+      ],
+      rules: [ROWS_REQUEST],
     });
-  });
 
-  it("opens the builder on the filter a link carries", async () => {
-    serveMeandersApi(8);
+    await commitControl("Filter group 2 match", "and");
+    await commitControl("Chain Value", "false");
 
-    await renderRoute(
-      getRouter(),
-      linkTo({
-        combinator: "and",
-        rules: [{ field: "junctionCount", operator: "between", value: [2, 3] }],
-      }),
-    );
-    await openFilters("Filter, 1 active");
-
-    expect(screen.getByLabelText<HTMLSelectElement>("Operator").value).toBe(
-      "between",
-    );
-    expect(screen.getByLabelText<HTMLInputElement>("From").value).toBe("2");
-    expect(screen.getByLabelText<HTMLInputElement>("To").value).toBe("3");
+    await waitFor(() => {
+      expect(screen.getByText("2 meanders")).toBeDefined();
+    });
   });
 
   it("replaces a link's rules the catalog cannot answer, in the address as well as the page", async () => {
@@ -386,7 +497,7 @@ describe("gallery filters", () => {
 
     expect(screen.getByText("8 meanders")).toBeDefined();
     expect(api.requests.at(-1)?.filter).toStrictEqual(ONLY_ROWS_REQUEST);
-    expect(chipsShown()).toStrictEqual(["Rows = 4"]);
+    expect(pillsShown()).toStrictEqual(["Filter Rows"]);
   });
 
   it("opens on every meander when the link's filter is not a tree", async () => {
@@ -397,158 +508,6 @@ describe("gallery filters", () => {
 
     expect(screen.getByText("8 meanders")).toBeDefined();
     expect(api.requests[0]?.filter).toStrictEqual(ONLY_ROWS_REQUEST);
-  });
-
-  it("applies rows = 4 on the first load, and says so in the address and in a chip", async () => {
-    const api = serveMeandersApi(8);
-    const router = getRouter();
-
-    await renderRoute(router, "/");
-    await screen.findAllByTestId("meander-card");
-
-    expect(api.requests[0]?.filter).toStrictEqual(ONLY_ROWS_REQUEST);
-    expect(screen.getByText("Rows = 4")).toBeDefined();
-
-    await waitFor(() => {
-      expect(structuredClone(router.state.location.search.rows)).toStrictEqual({
-        operator: "eq",
-        value: 4,
-      });
-    });
-  });
-
-  it("narrows the cards and the total to the rows rule, and lets its operator and value change", async () => {
-    const api = serveMeandersApi(8, 0, (index) => (index % 4) + 2);
-    const router = getRouter();
-
-    await renderRoute(router, "/");
-    await screen.findAllByTestId("meander-card");
-
-    expect(screen.getByText("2 meanders")).toBeDefined();
-    expect(codesShown()).toStrictEqual(["01x01y0002", "01x01y0006"]);
-
-    await openFilters();
-    await commitControl("Rows operator", "gte");
-
-    await waitFor(() => {
-      expect(screen.getByText("4 meanders")).toBeDefined();
-    });
-
-    await commitControl("Rows Value", "5");
-
-    await waitFor(() => {
-      expect(screen.getByText("2 meanders")).toBeDefined();
-    });
-
-    expect(codesShown()).toStrictEqual(["01x01y0003", "01x01y0007"]);
-    expect(structuredClone(router.state.location.search.rows)).toStrictEqual({
-      operator: "gte",
-      value: 5,
-    });
-    expect(api.requests.at(-1)?.filter).toStrictEqual({
-      combinator: "AND",
-      rules: [{ field: "rows", numbers: [5], operator: "GTE" }],
-    });
-
-    await commitControl("Rows operator", "between");
-    await commitControl("Rows From", "3");
-    await commitControl("Rows To", "4");
-
-    await waitFor(() => {
-      expect(screen.getByText("4 meanders")).toBeDefined();
-    });
-
-    expect(screen.getByText("Rows between 3 and 4")).toBeDefined();
-  });
-
-  it("keeps the rows rule ANDed with a tree whose own combinator is any", async () => {
-    const api = serveMeandersApi(8, 0, (index) => (index % 4) + 2);
-
-    await renderRoute(
-      getRouter(),
-      linkTo({
-        combinator: "or",
-        rules: [
-          { field: "isChain", operator: "is", value: true },
-          { field: "junctionCount", operator: "gte", value: 4 },
-        ],
-      }),
-    );
-    await screen.findAllByTestId("meander-card");
-
-    // rows = 4 holds for indices 2 and 6; of these only 6 is a chain.
-    expect(codesShown()).toStrictEqual(["01x01y0006"]);
-    expect(api.requests[0]?.filter).toMatchObject({
-      combinator: "AND",
-      groups: [{ combinator: "OR" }],
-      rules: [ROWS_REQUEST],
-    });
-  });
-
-  it("cannot remove the rows rule: its chip has no remove button, its builder control is disabled and removing a rule leaves it", async () => {
-    serveMeandersApi(8);
-    const router = getRouter();
-
-    await renderRoute(router, "/");
-    await screen.findAllByTestId("meander-card");
-
-    expect(screen.queryByRole("button", { name: /Remove Rows/u })).toBeNull();
-
-    await openFilters();
-
-    expect(
-      screen
-        .getByRole("button", { name: "Remove rows rule" })
-        .hasAttribute("disabled"),
-    ).toBe(true);
-
-    fireEvent.click(screen.getByRole("button", { name: "Add rule" }));
-    await commitControl("Field", "junctionCount");
-    fireEvent.click(screen.getByRole("button", { name: "Remove rule" }));
-
-    await waitFor(() => {
-      expect(router.state.location.search.filter).toBeUndefined();
-    });
-
-    expect(structuredClone(router.state.location.search.rows)).toStrictEqual({
-      operator: "eq",
-      value: 4,
-    });
-  });
-
-  it("resets to rows = 4, with no tree, when cleared", async () => {
-    serveMeandersApi(8, 0, (index) => (index % 4) + 2);
-    const router = getRouter();
-
-    await renderRoute(router, "/");
-    await screen.findAllByTestId("meander-card");
-    await openFilters();
-    await commitControl("Rows Value", "5");
-
-    await waitFor(() => {
-      expect(structuredClone(router.state.location.search.rows)).toStrictEqual({
-        operator: "eq",
-        value: 5,
-      });
-    });
-
-    fireEvent.click(screen.getByRole("button", { name: "Add rule" }));
-
-    await waitFor(() => {
-      expect(router.state.location.search.filter).toBeDefined();
-    });
-
-    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
-
-    await waitFor(() => {
-      expect(router.state.location.search.filter).toBeUndefined();
-    });
-
-    expect(structuredClone(router.state.location.search.rows)).toStrictEqual({
-      operator: "eq",
-      value: 4,
-    });
-    expect(screen.getByText("Rows = 4")).toBeDefined();
   });
 
   it("adds rows = 4 to a shared link that has filters but no rows rule, and keeps one that it has", async () => {
@@ -577,11 +536,11 @@ describe("gallery filters", () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText("Rows > 2")).toBeDefined();
-    });
-
-    expect(api.requests.at(-1)?.filter).toMatchObject({
-      rules: [{ field: "rows", numbers: [2], operator: "GT" }],
+      expect(api.requests.at(-1)?.filter?.rules?.[0]).toStrictEqual({
+        field: "rows",
+        numbers: [2],
+        operator: "GT",
+      });
     });
   });
 
@@ -595,12 +554,9 @@ describe("gallery filters", () => {
     );
 
     await waitFor(() => {
-      expect(structuredClone(router.state.location.search.rows)).toStrictEqual({
-        operator: "eq",
-        value: 4,
-      });
+      expect(structuredClone(router.state.location.search.rows)).toStrictEqual(
+        DEFAULT_ROWS_FILTER,
+      );
     });
-
-    expect(screen.getByText("Rows = 4")).toBeDefined();
   });
 });

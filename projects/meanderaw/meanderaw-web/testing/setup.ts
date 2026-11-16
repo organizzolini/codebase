@@ -11,6 +11,8 @@ import { installViewport } from "./viewport";
 
 // jsdom does not scroll, and the router asks it to on every navigation.
 globalThis.scrollTo = (): void => {};
+// Nor does it scroll an element into view.
+Element.prototype.scrollIntoView = (): void => {};
 
 beforeAll(() => {
   startGraphqlMockServer();

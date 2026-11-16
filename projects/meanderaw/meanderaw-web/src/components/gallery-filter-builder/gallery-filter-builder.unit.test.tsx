@@ -1,41 +1,23 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
-import { useState } from "react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { FIXTURE_CHARACTERISTICS } from "../../../testing/meanders-api";
 
 import { GalleryFilterBuilder } from "./gallery-filter-builder";
-import { DEFAULT_ROWS_FILTER } from "./gallery-filter-builder.constants";
 import { createFilterFields } from "./gallery-filter-builder.utilities";
 
 import type { GalleryFilterBuilderProperties } from "./gallery-filter-builder";
-import type { FilterGroup } from "./gallery-filter-builder.types";
-import type { ReactNode } from "react";
 
-const FIELDS = createFilterFields(FIXTURE_CHARACTERISTICS);
-
-/** The properties a builder needs, over the fixture catalog. */
+/** The properties the builder needs, over the fixture catalog. */
 function properties(
   overrides: Partial<GalleryFilterBuilderProperties> = {},
 ): GalleryFilterBuilderProperties {
   return {
-    fields: FIELDS,
-    filter: undefined,
-    onFilterChange: vi.fn<GalleryFilterBuilderProperties["onFilterChange"]>(),
-    onRowsChange: vi.fn<GalleryFilterBuilderProperties["onRowsChange"]>(),
-    rows: DEFAULT_ROWS_FILTER,
+    fields: createFilterFields(FIXTURE_CHARACTERISTICS),
+    isFull: false,
+    onAdd: vi.fn<GalleryFilterBuilderProperties["onAdd"]>(),
     ...overrides,
   };
-}
-
-/** A tree holding the rules given, under and. */
-function tree(...rules: FilterGroup["rules"]): FilterGroup {
-  return { combinator: "and", rules };
-}
-
-/** Types into a box, without committing what is typed. */
-function type(box: HTMLElement, text: string): void {
-  fireEvent.change(box, { target: { value: text } });
 }
 
 describe(GalleryFilterBuilder, () => {
@@ -52,341 +34,68 @@ describe(GalleryFilterBuilder, () => {
     );
   });
 
-  it("asks for a first rule when it holds none", () => {
+  it("asks for an attribute first, then its operator and value, and adds the rule", () => {
     const filter = properties();
 
     render(<GalleryFilterBuilder {...filter} />);
+    fireEvent.click(screen.getByRole("option", { name: /Junction count/u }));
 
-    expect(screen.getByText(/No filters yet/u)).toBeDefined();
-
-    fireEvent.click(screen.getByRole("button", { name: "Add rule" }));
-
-    expect(filter.onFilterChange).toHaveBeenCalledWith(
-      tree({ field: "rows", operator: "eq", value: 0 }),
-    );
-  });
-
-  it("adds a nested group holding a rule, and gives the root back when it is emptied", () => {
-    const filter = properties({
-      filter: tree({ field: "rows", operator: "eq", value: 2 }),
-    });
-
-    render(<GalleryFilterBuilder {...filter} />);
-    fireEvent.click(screen.getByRole("button", { name: "Add group" }));
-
-    expect(filter.onFilterChange).toHaveBeenLastCalledWith(
-      tree(
-        { field: "rows", operator: "eq", value: 2 },
-        tree({ field: "rows", operator: "eq", value: 0 }),
-      ),
-    );
-
-    fireEvent.click(screen.getByRole("button", { name: "Remove rule" }));
-
-    expect(vi.mocked(filter.onFilterChange).mock.lastCall).toStrictEqual([
-      undefined,
-    ]);
-  });
-
-  it("limits how deep groups nest", () => {
-    let deep = tree({ field: "rows", operator: "eq", value: 1 });
-
-    for (let level = 0; level < 4; level += 1) {
-      deep = tree(deep);
-    }
-
-    render(<GalleryFilterBuilder {...properties({ filter: deep })} />);
-
-    const innermost = screen.getByRole("group", {
-      name: "Filter group 1.1.1.1",
-    });
-
+    expect(screen.getByText("How many junctions the path has")).toBeDefined();
     expect(
-      within(innermost)
-        .getByRole("button", { name: "Add group" })
-        .hasAttribute("disabled"),
-    ).toBe(true);
-  });
-
-  it("joins a group by any, and removes a nested group", () => {
-    const filter = properties({
-      filter: tree(tree({ field: "rows", operator: "eq", value: 2 })),
-    });
-
-    render(<GalleryFilterBuilder {...filter} />);
-
-    const [rootMatch] = screen.getAllByLabelText("Match");
-
-    if (rootMatch === undefined) {
-      throw new Error("no combinator");
-    }
-
-    fireEvent.change(rootMatch, { target: { value: "or" } });
-
-    expect(filter.onFilterChange).toHaveBeenLastCalledWith({
-      combinator: "or",
-      rules: [tree({ field: "rows", operator: "eq", value: 2 })],
-    });
-
-    fireEvent.click(screen.getByRole("button", { name: "Remove group" }));
-
-    expect(vi.mocked(filter.onFilterChange).mock.lastCall).toStrictEqual([
-      undefined,
-    ]);
-  });
-
-  it("offers each kind of field its own operators and value editor", () => {
-    const filter = properties({
-      filter: tree({ field: "junctionCount", operator: "eq", value: 3 }),
-    });
-
-    render(<GalleryFilterBuilder {...filter} />);
-
-    expect(
-      within(screen.getByLabelText("Operator"))
-        .getAllByRole("option")
-        .map((option) => option.textContent),
-    ).toStrictEqual(["=", "≠", "<", "≤", ">", "≥", "between"]);
+      screen.queryByRole("combobox", { name: "Search attributes" }),
+    ).toBeNull();
 
     fireEvent.change(screen.getByLabelText("Operator"), {
-      target: { value: "between" },
+      target: { value: "gte" },
     });
-
-    expect(filter.onFilterChange).toHaveBeenLastCalledWith(
-      tree({ field: "junctionCount", operator: "between", value: [3, 3] }),
-    );
-
-    fireEvent.change(screen.getByLabelText("Field"), {
-      target: { value: "isChain" },
-    });
-
-    expect(filter.onFilterChange).toHaveBeenLastCalledWith(
-      tree({ field: "isChain", operator: "is", value: true }),
-    );
-  });
-
-  it("edits a number, a range, a flag and a text, each once it is committed", () => {
-    const rule = (
-      value: number | string,
-      field = "junctionCount",
-    ): FilterGroup =>
-      tree({
-        field,
-        operator: typeof value === "string" ? "eq" : "gte",
-        value,
-      });
-    const number = properties({ filter: rule(1) });
-    const { rerender } = render(<GalleryFilterBuilder {...number} />);
-
-    type(screen.getByLabelText("Value"), "4.5");
-
-    expect(number.onFilterChange).not.toHaveBeenCalled();
-
-    fireEvent.blur(screen.getByLabelText("Value"));
-    type(screen.getByLabelText("Value"), "");
-    fireEvent.blur(screen.getByLabelText("Value"));
-    type(screen.getByLabelText("Value"), "x");
-    fireEvent.keyDown(screen.getByLabelText("Value"), { key: "Enter" });
-
-    expect(number.onFilterChange).toHaveBeenCalledTimes(1);
-    expect(number.onFilterChange).toHaveBeenCalledWith(rule(4.5));
-
-    const whole = properties({ filter: rule(1, "rows") });
-
-    rerender(<GalleryFilterBuilder {...whole} />);
-    type(screen.getByLabelText("Value"), "2.9");
-    fireEvent.keyDown(screen.getByLabelText("Value"), { key: "Enter" });
-
-    expect(whole.onFilterChange).not.toHaveBeenCalled();
-
-    type(screen.getByLabelText("Value"), "2");
-    fireEvent.keyDown(screen.getByLabelText("Value"), { key: "Enter" });
-
-    expect(whole.onFilterChange).toHaveBeenCalledWith(rule(2, "rows"));
-
-    const text = properties({ filter: rule("", "lattice") });
-
-    rerender(<GalleryFilterBuilder {...text} />);
-    type(screen.getByLabelText("Value"), "square");
-    fireEvent.blur(screen.getByLabelText("Value"));
-
-    expect(text.onFilterChange).toHaveBeenCalledWith(rule("square", "lattice"));
-
-    const flag = properties({
-      filter: tree({ field: "isChain", operator: "is", value: true }),
-    });
-
-    rerender(<GalleryFilterBuilder {...flag} />);
     fireEvent.change(screen.getByLabelText("Value"), {
-      target: { value: "false" },
+      target: { value: "3" },
     });
+    fireEvent.blur(screen.getByLabelText("Value"));
+    fireEvent.click(screen.getByRole("button", { name: "Add filter" }));
 
-    expect(flag.onFilterChange).toHaveBeenCalledWith(
-      tree({ field: "isChain", operator: "is", value: false }),
-    );
-
-    const range = properties({
-      filter: tree({
-        field: "junctionCount",
-        operator: "between",
-        value: [1, 4],
-      }),
+    expect(filter.onAdd).toHaveBeenCalledWith({
+      field: "junctionCount",
+      operator: "gte",
+      value: 3,
     });
-
-    rerender(<GalleryFilterBuilder {...range} />);
-    type(screen.getByLabelText("From"), "2");
-    fireEvent.blur(screen.getByLabelText("From"));
-    type(screen.getByLabelText("To"), "3");
-    fireEvent.blur(screen.getByLabelText("To"));
-
-    expect(range.onFilterChange).toHaveBeenNthCalledWith(
-      1,
-      tree({ field: "junctionCount", operator: "between", value: [2, 4] }),
-    );
-    expect(range.onFilterChange).toHaveBeenNthCalledWith(
-      2,
-      tree({ field: "junctionCount", operator: "between", value: [1, 3] }),
-    );
+    expect(
+      screen.getByRole("combobox", { name: "Search attributes" }),
+    ).toBeDefined();
   });
 
-  it("stops adding rules and groups once the filter holds as many as the API takes", () => {
-    const full = properties({
-      filter: {
-        combinator: "and",
-        rules: Array.from({ length: 126 }, () => ({
-          field: "rows",
-          operator: "eq" as const,
-          value: 1,
-        })),
-      },
-    });
-
-    render(<GalleryFilterBuilder {...full} />);
+  it("goes back to the search to change the attribute", () => {
+    render(<GalleryFilterBuilder {...properties()} />);
+    fireEvent.click(screen.getByRole("option", { name: /Chain/u }));
+    fireEvent.click(screen.getByRole("button", { name: "Change attribute" }));
 
     expect(
-      screen.getByRole("button", { name: "Add rule" }).hasAttribute("disabled"),
-    ).toBe(true);
+      screen.getByRole("combobox", { name: "Search attributes" }),
+    ).toBeDefined();
+  });
+
+  it("will not add a lattice rule that has no text yet, or once the filter is full", () => {
+    const { rerender } = render(<GalleryFilterBuilder {...properties()} />);
+
+    fireEvent.click(screen.getByRole("option", { name: /Lattice/u }));
+
+    const add = screen.getByRole("button", { name: "Add filter" });
+
+    expect(add.hasAttribute("disabled")).toBe(true);
+
+    fireEvent.change(screen.getByLabelText("Value"), {
+      target: { value: "square" },
+    });
+    fireEvent.blur(screen.getByLabelText("Value"));
+
+    expect(add.hasAttribute("disabled")).toBe(false);
+
+    rerender(<GalleryFilterBuilder {...properties({ isFull: true })} />);
+
     expect(
       screen
-        .getByRole("button", { name: "Add group" })
+        .getByRole("button", { name: "Add filter" })
         .hasAttribute("disabled"),
     ).toBe(true);
-  });
-
-  it("keeps an edited rule's controls and their focus as its field and operator change", () => {
-    const Harness = (): ReactNode => {
-      const [filter, setFilter] = useState<FilterGroup | undefined>(
-        tree({ field: "rows", operator: "eq", value: 1 }),
-      );
-
-      return (
-        <GalleryFilterBuilder
-          {...properties({ filter, onFilterChange: setFilter })}
-        />
-      );
-    };
-
-    render(<Harness />);
-
-    const field = screen.getByLabelText("Field");
-
-    field.focus();
-    fireEvent.change(field, { target: { value: "junctionCount" } });
-
-    expect(screen.getByLabelText("Field")).toBe(field);
-    expect(globalThis.document.activeElement).toBe(field);
-
-    const operator = screen.getByLabelText("Operator");
-
-    fireEvent.change(operator, { target: { value: "between" } });
-
-    expect(screen.getByLabelText("Operator")).toBe(operator);
-    expect(screen.getByLabelText("From")).toBeDefined();
-  });
-
-  it("shows what the field in the rule measures, with its counts", () => {
-    render(
-      <GalleryFilterBuilder
-        {...properties({
-          filter: tree({ field: "isChain", operator: "is", value: true }),
-        })}
-      />,
-    );
-
-    expect(screen.getByTestId("filter-field-details").textContent).toBe(
-      "Whether the path is one chain · path · boolean · pattern · meanders by value 1: 3",
-    );
-    expect(
-      within(screen.getByLabelText("Field"))
-        .getAllByRole("option")
-        .map((option) => option.textContent),
-    ).toContain("Chain (pattern)");
-  });
-
-  it("keeps a rule naming a field it does not know, without an operator", () => {
-    render(
-      <GalleryFilterBuilder
-        {...properties({
-          filter: tree({ field: "gone", operator: "eq", value: 1 }),
-        })}
-      />,
-    );
-
-    expect(screen.getByText("gone")).toBeDefined();
-    expect(screen.queryByLabelText("Operator")).toBeNull();
-  });
-
-  it("holds the rows rule above the tree, changing its operator and value but never removing it", () => {
-    const filter = properties({ rows: { operator: "gte", value: 3 } });
-
-    render(<GalleryFilterBuilder {...filter} />);
-
-    const group = within(
-      screen.getByRole("group", { name: "Required rows filter" }),
-    );
-
-    expect(group.getByLabelText<HTMLInputElement>("Rows Value").value).toBe(
-      "3",
-    );
-    expect(
-      group
-        .getByRole("button", { name: "Remove rows rule" })
-        .hasAttribute("disabled"),
-    ).toBe(true);
-
-    fireEvent.change(group.getByLabelText("Rows operator"), {
-      target: { value: "between" },
-    });
-
-    expect(filter.onRowsChange).toHaveBeenLastCalledWith({
-      operator: "between",
-      value: [3, 3],
-    });
-
-    type(group.getByLabelText("Rows Value"), "6");
-    fireEvent.blur(group.getByLabelText("Rows Value"));
-
-    expect(filter.onRowsChange).toHaveBeenLastCalledWith({
-      operator: "gte",
-      value: 6,
-    });
-    expect(
-      within(group.getByLabelText("Rows operator"))
-        .getAllByRole("option")
-        .map((option) => option.textContent),
-    ).toStrictEqual(["=", "≠", "<", "≤", ">", "≥", "between"]);
-  });
-
-  it("puts a range's ends in order when the rows rule is edited", () => {
-    const filter = properties({ rows: { operator: "between", value: [2, 5] } });
-
-    render(<GalleryFilterBuilder {...filter} />);
-    type(screen.getByLabelText("Rows From"), "9");
-    fireEvent.blur(screen.getByLabelText("Rows From"));
-
-    expect(filter.onRowsChange).toHaveBeenLastCalledWith({
-      operator: "between",
-      value: [5, 9],
-    });
   });
 });

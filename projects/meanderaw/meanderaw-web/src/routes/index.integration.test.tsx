@@ -348,7 +348,7 @@ describe("index", () => {
 
     await renderRoute(getRouter(), "/");
     await screen.findAllByTestId("meander-card");
-    fireEvent.change(screen.getByRole("combobox"), {
+    fireEvent.change(screen.getByLabelText("Sort by"), {
       target: { value: "rows" },
     });
 
