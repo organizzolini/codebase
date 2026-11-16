@@ -40,8 +40,13 @@ export const CONVENTIONAL_ISSUE_TITLE_PATTERN =
 /** Maximum nesting depth of the issue hierarchy, Spec to Commit. */
 export const MAX_HIERARCHY_DEPTH = 3;
 
-/** Issue Types a root issue may carry: spec or report. */
-export const ROOT_ISSUE_TYPES = ["Bug", "Feature"];
+/** Issue Types a root issue may carry: a spec, a report, or a standalone task. */
+export const ROOT_ISSUE_TYPES = ["Bug", "Feature", "Task"];
+
+/** The root issue types as the sentence names them. */
+export const ROOT_TYPE_LIST = new Intl.ListFormat("en", {
+  type: "disjunction",
+}).format(ROOT_ISSUE_TYPES);
 
 /** The GitHub Issue Type every sub-issue carries, at any depth. */
 export const SUB_ISSUE_TYPE = "Task";

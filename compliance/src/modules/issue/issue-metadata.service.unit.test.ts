@@ -72,7 +72,7 @@ describe(IssueMetadataService, () => {
       hasParent: boolean,
     ): MetadataVerdict => check({ ...validMetadata, hasParent, issueType });
 
-    it.each(["Feature", "Bug"])("accepts a %s root", (type) => {
+    it.each(["Feature", "Bug", "Task"])("accepts a %s root", (type) => {
       expect.hasAssertions();
       expect(typed(type, false).failures).toStrictEqual([]);
     });
@@ -82,15 +82,16 @@ describe(IssueMetadataService, () => {
       expect(typed("Task", true).failures).toStrictEqual([]);
     });
 
-    it.each(["Task", null])("rejects a root typed %s", (type) => {
+    it.each(["Epic", null])("rejects a root typed %s", (type) => {
       expect.hasAssertions();
       expect(typed(type, false)).toStrictEqual({
         failures: [
-          `❌ A root issue must have the Bug or Feature issue type (found: ${type ?? "none"})`,
+          `❌ A root issue must have the Bug, Feature, or Task issue type (found: ${type ?? "none"})`,
         ],
         remediationCommands: [
           "gh issue edit 7 --type Bug",
           "gh issue edit 7 --type Feature",
+          "gh issue edit 7 --type Task",
         ],
       });
     });
@@ -168,7 +169,7 @@ describe(IssueMetadataService, () => {
       const verdict = service.checkBulkIssues([
         {
           body: "",
-          issueType: { name: "Task" },
+          issueType: { name: "Epic" },
           labels,
           number: 1,
           parent: null,
@@ -185,7 +186,7 @@ describe(IssueMetadataService, () => {
       ]);
 
       expect(verdict.failures).toStrictEqual([
-        "Issue #1: ❌ A root issue must have the Bug or Feature issue type (found: Task)",
+        "Issue #1: ❌ A root issue must have the Bug, Feature, or Task issue type (found: Epic)",
         "Issue #2: ❌ A sub-issue must have the Task issue type (found: Feature)",
       ]);
     });
