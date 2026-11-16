@@ -1,3 +1,5 @@
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
 import * as cheerio from "cheerio";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -7,22 +9,20 @@ import { Author, type Text } from "@codebase/lexico-db";
 import { CorpusScriptorumEcclesiasticorumLatinorumLibraryProvider } from "./corpus-scriptorum-ecclesiasticorum-latinorum-library.provider";
 
 import type { LoggerService } from "@codebase/observability";
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
 
-const { mkdirMock, readdirMock, readFileMock, writeFileMock } = vi.hoisted(
-  () => ({
-    mkdirMock: vi.fn<() => Promise<string | undefined>>(),
-    readdirMock: vi.fn<() => Promise<unknown[]>>(),
-    readFileMock: vi.fn<() => Promise<string>>(),
-    writeFileMock: vi.fn<() => Promise<void>>(),
-  }),
-);
+const mkdirMock = vi.mocked(mkdir);
+const readdirMock = vi.mocked<(path: string) => Promise<unknown[]>>(readdir);
+const readFileMock = vi.mocked(readFile);
+const writeFileMock = vi.mocked(writeFile);
 
-vi.mock("node:fs/promises", () => ({
-  mkdir: mkdirMock,
-  readdir: readdirMock,
-  readFile: readFileMock,
-  writeFile: writeFileMock,
-}));
+vi.mock("node:fs/promises", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem();
+});
 
 describe(CorpusScriptorumEcclesiasticorumLatinorumLibraryProvider, () => {
   const logger: DeepMocked<LoggerService> = createMock<LoggerService>();

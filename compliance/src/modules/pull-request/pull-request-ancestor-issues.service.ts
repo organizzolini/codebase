@@ -10,7 +10,7 @@ import {
 import { PullRequestBodyLinksService } from "./pull-request-body-links.service";
 import { PullRequestDescendantIssuesService } from "./pull-request-descendant-issues.service";
 import { PullRequestGithubService } from "./pull-request-github.service";
-import { DEPENDABOT_LOGIN } from "./pull-request.constants";
+import { UNLINKED_AUTHOR_LOGINS } from "./pull-request.constants";
 
 import type { PullRequestContext } from "./pull-request-context.types";
 import type {
@@ -297,7 +297,7 @@ export class PullRequestAncestorIssuesService {
 
   /**
    * Every ancestor of a closed issue must be named in the description.
-   * Drafts and Dependabot are exempt.
+   * Drafts and automated authors are exempt.
    */
   public verify(context: PullRequestContext): CheckOutcome {
     const base = {
@@ -308,7 +308,7 @@ export class PullRequestAncestorIssuesService {
       successMessage: "✅ Pull request references its ancestor issues",
     };
 
-    if (context.draft || context.author === DEPENDABOT_LOGIN) {
+    if (context.draft || UNLINKED_AUTHOR_LOGINS.includes(context.author)) {
       return { ...base, failures: [] };
     }
 

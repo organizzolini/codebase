@@ -63,9 +63,8 @@ export async function seedMeanderaw(
 }
 
 /**
- * Serves `modules` over Apollo and Express, against a migrated Postgres
- * container on an ephemeral port, with CORS for `origins` when given. Nothing
- * is seeded: call {@link seedMeanderaw}.
+ * Serves `modules` over HTTP from a migrated Postgres, with CORS for `origins`
+ * when given. Nothing is seeded.
  */
 export async function startMeanderawApplication(
   modules: readonly Type<unknown>[],

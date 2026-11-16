@@ -4,7 +4,6 @@
 
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
-- **breadth**: Callidescope measure of how many callables one function calls directly, shown in the README breadth tables and gated per project.
 - **inventoried**: Types for entries the inventory service has listed: InventoriedInstance, InventoriedTemplate, and InventoriedPairing.
 - **inventory**: Module that renders the template and instance listing, with its indent ladder, headings, and match percentage.
 - **meet**: Verdict wording used when an instance's score reaches its threshold, paired with below threshold for failing instances.

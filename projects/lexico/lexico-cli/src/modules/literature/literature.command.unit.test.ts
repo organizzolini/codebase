@@ -19,10 +19,6 @@ import type { LibraryEntry } from "./literature.types";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { Provider } from "@nestjs/common";
 
-vi.mock("prompts", () => ({
-  default: promptsMock,
-}));
-
 describe(LiteratureCommand, () => {
   let command: LiteratureCommand;
   let logger: BuiltTestingModule<LiteratureCommand>["logger"];

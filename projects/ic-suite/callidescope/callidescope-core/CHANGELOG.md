@@ -1,3 +1,9 @@
+## 0.0.84 (2026-11-15)
+
+### 🚀 Features
+
+- **coinagerie,configuration,lexico,caelundas,meanderaw,conformetry,codometer,codependix:** ✨ clarify word meanings ([#2373](https://github.com/organizzolini/codebase/pull/2373), [#2372](https://github.com/organizzolini/codebase/issues/2372))
+
 ## 0.0.83 (2026-11-13)
 
 ### 💅 Refactors
