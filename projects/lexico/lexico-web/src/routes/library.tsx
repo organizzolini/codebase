@@ -6,6 +6,10 @@ import { LibraryGrid } from "../components/library-grid/library-grid";
 import { librarySearchSchema } from "../components/library-grid/library-grid-api.constants";
 import { getLibrary } from "../components/library-grid/library-grid.constants";
 import { LibraryPagination } from "../components/library-pagination/library-pagination";
+import {
+  isPastEnd,
+  pastEndMessage,
+} from "../components/library-pagination/library-pagination.utilities";
 import { LibrarySearch } from "../components/library-search/library-search";
 
 import type {
@@ -55,6 +59,7 @@ function LibraryPage(): ReactNode {
   const library = Route.useLoaderData();
 
   // 🏗 Setup
+  const pastEnd = isPastEnd(page, library.totalCount, library.pageCount);
   const count = `${String(library.totalCount)} ${library.totalCount === 1 ? "author" : "authors"}`;
 
   // 💪 Handlers
@@ -100,6 +105,20 @@ function LibraryPage(): ReactNode {
               Clear search
             </Button>
           )}
+        </div>
+      ) : pastEnd ? (
+        <div className="space-y-4 text-center">
+          <p className="text-muted-foreground">
+            {pastEndMessage(page, library.pageCount)}
+          </p>
+          <Button
+            onClick={() => {
+              handlePage(library.pageCount);
+            }}
+            variant="outline"
+          >
+            {`Go to page ${String(library.pageCount)}`}
+          </Button>
         </div>
       ) : (
         <>

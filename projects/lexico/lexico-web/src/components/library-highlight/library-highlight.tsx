@@ -11,6 +11,8 @@ import type { ReactNode } from "react";
  * Properties for the LibraryHighlight component.
  */
 export interface LibraryHighlightProperties {
+  /** The element to render: a span by default, a div only where block content is valid. */
+  as?: "div" | "span";
   className?: string;
   field: string;
   matches: readonly LibraryMatchRow[];
@@ -25,18 +27,36 @@ export interface LibraryHighlightProperties {
 export function LibraryHighlight(
   properties: Readonly<LibraryHighlightProperties>,
 ): ReactNode {
-  const { className, field, matches, value } = properties;
+  const { as = "span", className, field, matches, value } = properties;
 
   // 🪝 Hooks
 
   // 🏗 Setup
   const segments = highlightSegments(value, field, matches);
 
+  const content = segments.map((segment, index) =>
+    segment.bold ? (
+      <strong key={`${String(index)}:bold`}>{segment.text}</strong>
+    ) : (
+      <Fragment key={`${String(index)}:plain`}>{segment.text}</Fragment>
+    ),
+  );
+
   // 💪 Handlers
 
   // ♻️ Lifecycle
 
   // 🏁 Early Returns
+  if (as === "span") {
+    return (
+      <span
+        className={className}
+        data-testid="library-highlight"
+      >
+        {content}
+      </span>
+    );
+  }
 
   // 🎨 Markup
   return (
@@ -44,13 +64,7 @@ export function LibraryHighlight(
       className={className}
       data-testid="library-highlight"
     >
-      {segments.map((segment, index) =>
-        segment.bold ? (
-          <strong key={`${String(index)}:bold`}>{segment.text}</strong>
-        ) : (
-          <Fragment key={`${String(index)}:plain`}>{segment.text}</Fragment>
-        ),
-      )}
+      {content}
     </div>
   );
 }

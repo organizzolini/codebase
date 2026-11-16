@@ -1,3 +1,4 @@
+// cspell:ignore Maro
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
@@ -29,5 +30,29 @@ describe(LibraryAuthorCard, () => {
     expect(screen.getByTestId("library-author-card").className).toBe(
       "library-author-card",
     );
+  });
+
+  it("bolds the matched part of the full name", () => {
+    render(
+      <LibraryAuthorCard
+        row={{
+          author: {
+            endYear: null,
+            era: null,
+            fullName: "Publius Vergilius Maro",
+            id: "a2",
+            name: "Vergil",
+            slug: "vergil",
+            startYear: null,
+          },
+          matches: [{ end: 17, field: "fullName", start: 8 }],
+          textCount: 0,
+          texts: [],
+        }}
+        search="vergilius"
+      />,
+    );
+
+    expect(screen.getByText("Vergilius", { selector: "strong" })).toBeDefined();
   });
 });

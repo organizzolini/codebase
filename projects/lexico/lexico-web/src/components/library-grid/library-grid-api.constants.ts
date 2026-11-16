@@ -14,7 +14,10 @@ export const librarySearchSchema = z.object({
     .optional()
     .catch((): undefined => undefined),
   search: z
-    .string()
+    .preprocess(
+      (value) => (typeof value === "number" ? String(value) : value),
+      z.string(),
+    )
     .optional()
     .catch((): undefined => undefined),
 });

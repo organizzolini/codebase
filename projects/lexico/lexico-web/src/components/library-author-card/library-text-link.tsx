@@ -2,7 +2,8 @@ import { Link } from "@tanstack/react-router";
 
 import { LibraryHighlight } from "../library-highlight/library-highlight";
 
-import { editionLabel } from "./library-author-card.utilities";
+import { JOINED_FIELD } from "./library-author-card.constants";
+import { attributeLine, editionLine } from "./library-author-card.utilities";
 
 import type { LibraryTextRow } from "../library-grid/library-grid.types";
 import type { ReactNode } from "react";
@@ -32,7 +33,8 @@ export function LibraryTextLink(
   // 🪝 Hooks
 
   // 🏗 Setup
-  const label = editionLabel(row);
+  const label = editionLine(row);
+  const attributes = attributeLine(row);
   const counts = [
     text.lineCount === null ? null : `${String(text.lineCount)} lines`,
     text.wordCount === null ? null : `${String(text.wordCount)} words`,
@@ -61,8 +63,21 @@ export function LibraryTextLink(
           matches={matches}
           value={text.title}
         />
-        {label === "" ? null : (
-          <span className="block text-xs text-muted-foreground">{label}</span>
+        {label.value === "" ? null : (
+          <LibraryHighlight
+            className="block text-xs text-muted-foreground"
+            field={JOINED_FIELD}
+            matches={label.matches}
+            value={label.value}
+          />
+        )}
+        {attributes.value === "" ? null : (
+          <LibraryHighlight
+            className="block text-xs text-muted-foreground"
+            field={JOINED_FIELD}
+            matches={attributes.matches}
+            value={attributes.value}
+          />
         )}
         {counts.length === 0 ? null : (
           <span className="block text-xs text-muted-foreground">

@@ -73,6 +73,7 @@ export function LibraryPagination(
             <Button
               key={entry}
               aria-current={entry === page ? "page" : undefined}
+              aria-label={`Page ${String(entry)}`}
               onClick={() => {
                 onPageChange(entry);
               }}

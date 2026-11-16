@@ -9,6 +9,7 @@ import { renderRoute } from "@codebase/testing/react";
 import {
   AuthorEra,
   mockLibraryQuery,
+  mockTextReaderQuery,
   TextCollection,
 } from "../graphql/generated/mocks";
 import { getRouter } from "../router";
@@ -16,9 +17,11 @@ import { getRouter } from "../router";
 import { Route } from "./library";
 
 import type { LibraryPageResult } from "../components/library-grid/library-grid.types";
+import type { TextReaderQuery } from "../graphql/generated/mocks";
 
 type LibraryAuthorRow = LibraryPageResult["authors"][number];
 type LibraryTextRow = LibraryAuthorRow["texts"][number];
+type ReaderText = NonNullable<TextReaderQuery["text"]>;
 
 const SEARCHES: { page: number; search: string }[] = [];
 
@@ -33,9 +36,14 @@ const AENEID_BOOK_ONE: LibraryTextRow = {
   text: {
     collection: TextCollection.Perseus,
     edition: "Mynors 1969",
+    editors: null,
+    findSpot: null,
     id: "text-aeneid-1",
+    inscriptionType: null,
     lineCount: 756,
+    material: null,
     parentText: PARENT,
+    province: null,
     slug: "vergil-aeneid-1",
     title: "Book 1",
     type: "text",
@@ -48,9 +56,14 @@ const AENEID_BOOK_ONE_CSEL: LibraryTextRow = {
   text: {
     collection: TextCollection.Csel,
     edition: "Hirtel 1891",
+    editors: null,
+    findSpot: null,
     id: "text-aeneid-1-csel",
+    inscriptionType: null,
     lineCount: 756,
+    material: null,
     parentText: PARENT,
+    province: null,
     slug: "vergil-aeneid-1-csel",
     title: "Book 1",
     type: "text",
@@ -63,9 +76,14 @@ const ECLOGUES: LibraryTextRow = {
   text: {
     collection: TextCollection.TheLatinLibrary,
     edition: null,
+    editors: null,
+    findSpot: null,
     id: "text-eclogues",
+    inscriptionType: null,
     lineCount: 830,
+    material: null,
     parentText: null,
+    province: null,
     slug: "vergil-eclogues",
     title: "Eclogues",
     type: "text",
@@ -78,9 +96,14 @@ const AENEID_BOOK: LibraryTextRow = {
   text: {
     collection: TextCollection.Perseus,
     edition: "Mynors 1969",
+    editors: null,
+    findSpot: null,
     id: PARENT.id,
+    inscriptionType: null,
     lineCount: null,
+    material: null,
     parentText: null,
+    province: null,
     slug: PARENT.slug,
     title: PARENT.title,
     type: "book",
@@ -121,9 +144,14 @@ const OVID: LibraryAuthorRow = {
       text: {
         collection: TextCollection.Perseus,
         edition: null,
+        editors: null,
+        findSpot: null,
         id: "text-metamorphoses",
+        inscriptionType: null,
         lineCount: null,
+        material: null,
         parentText: null,
+        province: null,
         slug: "ovid-metamorphoses",
         title: "Metamorphoses",
         type: "text",
@@ -133,10 +161,30 @@ const OVID: LibraryAuthorRow = {
   ],
 };
 
+/** The Reader's answer for the Aeneid's first book. */
+const READER_TEXT: ReaderText = {
+  author: { name: "Vergil", slug: "vergil" },
+  id: "text-aeneid-1",
+  lines: {
+    edges: [],
+    pageInfo: { endCursor: null, hasNextPage: false },
+  },
+  nextText: null,
+  parentText: null,
+  previousText: null,
+  slug: "vergil-aeneid-1",
+  title: "Book 1",
+  type: "text",
+};
+
 /** The page the API answers for one search, with a fixed page count. */
 function answer(search: string): LibraryPageResult {
   if (search === "zzz") {
     return { authors: [], pageCount: 0, totalCount: 0 };
+  }
+
+  if (search === "70") {
+    return { authors: [OVID], pageCount: 1, totalCount: 1 };
   }
 
   if (search === "ecl") {
@@ -158,7 +206,11 @@ describe("library", () => {
         const page = variables.page ?? 1;
         const search = variables.search ?? "";
         SEARCHES.push({ page, search });
-        return HttpResponse.json({ data: { library: answer(search) } });
+        const found =
+          page > 3
+            ? { authors: [], pageCount: 3, totalCount: 50 }
+            : answer(search);
+        return HttpResponse.json({ data: { library: found } });
       }),
     );
   });
@@ -199,8 +251,8 @@ describe("library", () => {
 
     const pages = screen.getByRole("navigation", { name: "Library pages" });
 
-    expect(within(pages).getByRole("button", { name: "2" })).toBeDefined();
-    expect(within(pages).getByRole("button", { name: "3" })).toBeDefined();
+    expect(within(pages).getByRole("button", { name: "Page 2" })).toBeDefined();
+    expect(within(pages).getByRole("button", { name: "Page 3" })).toBeDefined();
   });
 
   it("expands a card into its books and Texts, labelling duplicate editions", async () => {
@@ -304,7 +356,7 @@ describe("library", () => {
     const pages = await screen.findByRole("navigation", {
       name: "Library pages",
     });
-    fireEvent.click(within(pages).getByRole("button", { name: "2" }));
+    fireEvent.click(within(pages).getByRole("button", { name: "Page 2" }));
 
     await waitFor(() => expect(SEARCHES.at(-1)?.page).toBe(2));
 
@@ -353,5 +405,56 @@ describe("library", () => {
     const meta = router.state.matches.flatMap((match) => match.meta ?? []);
 
     expect(meta).toContainEqual({ title: "Lexico - Library" });
+  });
+
+  it("reads a numeric search from the URL as text", async () => {
+    await renderRoute(getRouter(), "/library?search=70");
+
+    await screen.findByText("1 author");
+
+    expect(SEARCHES.at(-1)).toStrictEqual({ page: 1, search: "70" });
+  });
+
+  it("says when the page is past the last one and offers the last", async () => {
+    await renderRoute(getRouter(), "/library?page=9");
+
+    await expect(
+      screen.findByText("Page 9 does not exist; the library has 3 pages."),
+    ).resolves.toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "Go to page 3" }));
+
+    await waitFor(() => expect(SEARCHES.at(-1)?.page).toBe(3));
+  });
+
+  it("opens the Reader from a Text and returns to the Library from its Author", async () => {
+    graphqlMockServer.use(
+      mockTextReaderQuery(() =>
+        HttpResponse.json({ data: { text: READER_TEXT } }),
+      ),
+    );
+    Element.prototype.scrollIntoView = (): void => {};
+    const router = getRouter();
+    await renderRoute(router, "/library?search=ecl");
+
+    fireEvent.click(await screen.findByRole("link", { name: /Eclogues/u }));
+
+    await waitFor(() =>
+      expect(router.state.location.pathname).toBe("/texts/vergil-eclogues"),
+    );
+
+    fireEvent.click(await screen.findByRole("link", { name: "Vergil" }));
+
+    await waitFor(() =>
+      expect(router.state.location.pathname).toBe("/library"),
+    );
+
+    await expect(
+      screen.findByRole("heading", { level: 1, name: "Library" }),
+    ).resolves.toBeDefined();
+
+    expect({ ...router.state.location.search }).toStrictEqual({
+      search: "Vergil",
+    });
   });
 });

@@ -949,7 +949,7 @@ export type LibraryQueryVariables = Exact<{
 }>;
 
 
-export type LibraryQuery = { library: { totalCount: number, pageCount: number, authors: Array<{ textCount: number, author: { id: string, slug: string, name: string, fullName: string | null, era: Schema.AuthorEra | null, startYear: number | null, endYear: number | null }, matches: Array<{ field: string, start: number, end: number }>, texts: Array<{ matches: Array<{ field: string, start: number, end: number }>, text: { id: string, slug: string, title: string, type: string, collection: Schema.TextCollection | null, edition: string | null, lineCount: number | null, wordCount: number | null, parentText: { id: string, slug: string, title: string } | null } }> }> } };
+export type LibraryQuery = { library: { totalCount: number, pageCount: number, authors: Array<{ textCount: number, author: { id: string, slug: string, name: string, fullName: string | null, era: Schema.AuthorEra | null, startYear: number | null, endYear: number | null }, matches: Array<{ field: string, start: number, end: number }>, texts: Array<{ matches: Array<{ field: string, start: number, end: number }>, text: { id: string, slug: string, title: string, type: string, collection: Schema.TextCollection | null, edition: string | null, editors: string | null, findSpot: string | null, inscriptionType: string | null, material: string | null, province: string | null, lineCount: number | null, wordCount: number | null, parentText: { id: string, slug: string, title: string } | null } }> }> } };
 
 export type SearchEnglishQueryVariables = Exact<{
   query: string;

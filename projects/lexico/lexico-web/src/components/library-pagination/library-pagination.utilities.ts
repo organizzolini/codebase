@@ -2,6 +2,15 @@
 
 // 🌎 Public Functions
 
+/** Whether a page number lies beyond the last page of a library that has authors. */
+export function isPastEnd(
+  page: number,
+  totalCount: number,
+  pageCount: number,
+): boolean {
+  return totalCount > 0 && page > pageCount;
+}
+
 /**
  * The page numbers to offer: the first, the last, and the pages around the
  * current one, with a gap wherever pages are skipped.
@@ -26,4 +35,10 @@ export function pageNumbers(
       ? ["gap", candidate]
       : [candidate];
   });
+}
+
+/** Tells a reader the page they asked for does not exist, and how many do. */
+export function pastEndMessage(page: number, pageCount: number): string {
+  const pages = `${String(pageCount)} ${pageCount === 1 ? "page" : "pages"}`;
+  return `Page ${String(page)} does not exist; the library has ${pages}.`;
 }
