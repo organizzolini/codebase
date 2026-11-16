@@ -3,6 +3,8 @@ export type { CapturedOutput } from "./modules/capture/capture.types";
 export {
   captureExitCode,
   captureOutput,
+  expectProcessExitOne,
+  mockProcessExit,
 } from "./modules/capture/capture.utilities";
 export { DEFAULT_TEST_DATE } from "./modules/clock/clock.constants";
 export { mockDates } from "./modules/clock/clock.utilities";

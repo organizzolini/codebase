@@ -49,7 +49,8 @@ src/
 ### Recipes by test kind
 
 - **Command**: `buildTestingModule`, `answerPrompts` (the setup already mocks
-  `prompts`), `captureOutput`, `captureExitCode`, `mockFileSystem`.
+  `prompts`), `captureOutput`, `captureExitCode`, `mockProcessExit`,
+  `expectProcessExitOne`, `mockFileSystem`.
 - **Module**: `bootModule`, `expectModuleProvides`/`Exports`/`Imports`.
 - **Integration**: `createFileTree`, `createTemporaryDirectory`,
   `useWorkingDirectory`, `overrideEnvironment`, `mockDates`.
