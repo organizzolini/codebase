@@ -5,7 +5,6 @@
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **archaic**: Era value for the earliest period of Latin, one of the author era enum values.
-- **breadth**: Heading of the callidescope breadth section in this README, currently None, so no breadth limit is measured here.
 - **cascade**: Foreign-key behavior in the migrations, ON DELETE CASCADE, so deleting a parent row also removes its dependent rows.
 - **conjunction**: Part-of-speech value for conjunctions, stored in the lexemes part_of_speech enum with the other word classes.
 - **csel**: Collection value for the Corpus Scriptorum Ecclesiasticorum Latinorum editions, one of the text collection enum values.

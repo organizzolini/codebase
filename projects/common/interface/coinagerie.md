@@ -4,7 +4,6 @@
 
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
-- **breadth**: The callee-count limit callidescope applies per callable, set to seven in this project.
 - **large**: Size word in test names for first and last counts beyond the array length, such as largeFirstResult.
 - **namespaced**: Codegen option name for importing schema types under one namespace alias instead of by name.
 - **negative**: Input value below zero, such as an offset or count in pagination, clamped to zero on encode.

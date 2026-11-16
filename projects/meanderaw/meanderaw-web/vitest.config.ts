@@ -23,6 +23,8 @@ export default mergeConfig(
         include: ["src/**/*.ts", "src/**/*.tsx"],
       },
       environment: "jsdom",
+      // Runs after the shared setup the base config lists.
+      setupFiles: ["./testing/setup.ts"],
     },
   }),
 );

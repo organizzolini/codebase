@@ -9,6 +9,7 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ShellService } from "./shell.service";
 
+import type * as TestingPackage from "@codebase/testing";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 import type * as NodeFileSystem from "node:fs";
 
@@ -16,19 +17,21 @@ import type * as NodeFileSystem from "node:fs";
 // a rejected promise or a thrown literal is not an Error, and the analyzer
 // still has to report which file it gave up on.
 vi.mock("node:fs", async (importOriginal) => {
+  const { mockFileSystem } =
+    await vi.importActual<typeof TestingPackage>("@codebase/testing");
+  const notAnError: unknown = "not an Error";
   const actual = await importOriginal<typeof NodeFileSystem>();
 
-  return {
+  return mockFileSystem({
     ...actual,
     readFileSync: (filePath: string, encoding: "utf8") => {
       if (filePath.endsWith("throws-a-string.sh")) {
-        // eslint-disable-next-line @typescript-eslint/only-throw-error
-        throw "not an Error";
+        throw notAnError;
       }
 
       return actual.readFileSync(filePath, encoding);
     },
-  };
+  });
 });
 
 describe(ShellService, () => {

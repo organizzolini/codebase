@@ -1,3 +1,29 @@
+## 0.0.88 (2026-11-15)
+
+### 🚀 Features
+
+- **coinagerie,configuration,lexico,caelundas,meanderaw,conformetry,codometer,codependix:** ✨ clarify word meanings ([#2373](https://github.com/organizzolini/codebase/pull/2373), [#2372](https://github.com/organizzolini/codebase/issues/2372))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.87
+- Updated conformetry-generation to 0.0.87
+- Updated conformetry-validation to 0.0.86
+- Updated conformetry-output to 0.0.86
+
+## 0.0.87 (2026-11-13)
+
+### 💅 Refactors
+
+- **configuration:** ♻️ default vitest coverage and setup in the base config ([#2376](https://github.com/organizzolini/codebase/pull/2376), [#2374](https://github.com/organizzolini/codebase/issues/2374))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.86
+- Updated conformetry-generation to 0.0.86
+- Updated conformetry-validation to 0.0.85
+- Updated conformetry-output to 0.0.85
+
 ## 0.0.86 (2026-11-12)
 
 ### 🧱 Updated Dependencies

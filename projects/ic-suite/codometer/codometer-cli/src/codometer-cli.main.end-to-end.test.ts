@@ -1,17 +1,12 @@
-import { spawnSync } from "node:child_process";
-import {
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
-import { tmpdir } from "node:os";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { createFixtureTree, removeFixtureTree } from "../testing/fixture-tree";
+import { useTemporaryDirectory, writeFileTree } from "@codebase/testing";
+import { runSourceCommand } from "@codebase/testing/end-to-end";
+
+import { createFixtureTree } from "../testing/fixture-tree";
 
 import { environmentSchema } from "./codometer-cli.constants";
 
@@ -19,8 +14,24 @@ import type { CodometerReport } from "@codometer/core";
 
 const COMMAND_PATH = path.resolve(import.meta.dirname, "codometer-cli.main.ts");
 
-/** Spawned-run fixture; swc resolves only from inside the workspace. */
-const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../tmp");
+/** The project's directory: swc resolves only from inside the workspace. */
+const PROJECT_DIRECTORY = path.resolve(import.meta.dirname, "..");
+
+/** Resolves the workspace's TypeScript path aliases for every spawned run. */
+const TSCONFIG = path.join(PROJECT_DIRECTORY, "tsconfig.json");
+
+/** Runs the command line from the project's directory with these arguments. */
+async function runCommand(
+  args: readonly string[],
+): ReturnType<typeof runSourceCommand> {
+  return runSourceCommand({
+    args,
+    directory: PROJECT_DIRECTORY,
+    entry: COMMAND_PATH,
+    timeout: 120_000,
+    tsconfig: TSCONFIG,
+  });
+}
 
 describe("main end-to-end suite", () => {
   describe("environment schema e2e", () => {
@@ -34,67 +45,37 @@ describe("main end-to-end suite", () => {
   // thing under test is which file descriptor each byte came out of — and a
   // logger writing through a transport worker cannot be observed any other way.
   describe("the streams the command writes to", () => {
+    const readTemporaryDirectory = useTemporaryDirectory("codometer-streams");
     let standardOutput: string;
     let standardError: string;
-    let workingDirectory: string;
 
-    beforeAll(() => {
-      mkdirSync(FIXTURE_ROOT, { recursive: true });
-      workingDirectory = createFixtureTree(FIXTURE_ROOT);
+    beforeAll(async () => {
+      const workingDirectory = createFixtureTree(readTemporaryDirectory());
 
-      writeFileSync(
-        path.join(workingDirectory, "codometer.config.json"),
-        JSON.stringify({
+      writeFileTree(workingDirectory, {
+        "codometer.config.json": JSON.stringify({
           excludeFrom: [".codometerignore"],
           format: "json",
         }),
-      );
-      // `@swc-node/register` looks for a `tsconfig.json` at `cwd` exactly,
-      // never climbing to an ancestor's — so the fixture tree needs its own,
-      // extending this project's real one to resolve the workspace's
-      // TypeScript path aliases the same way this project's own build does.
-      writeFileSync(
-        path.join(workingDirectory, "tsconfig.json"),
-        JSON.stringify({
-          extends: path.relative(
-            workingDirectory,
-            path.resolve(import.meta.dirname, "../tsconfig.json"),
-          ),
-        }),
-      );
+      });
 
-      const result = spawnSync(
-        process.execPath,
-        [
-          "--import",
-          "@swc-node/register/esm-register",
-          COMMAND_PATH,
-          "measure",
-          "--config",
-          path.join(workingDirectory, "codometer.config.json"),
-          // The report goes to the console, and the badge block goes into a
-          // file — so there is a written file to announce and nothing but the
-          // report on standard output.
-          "--format",
-          "json",
-          "--output-markdown",
-          path.join(workingDirectory, "README.md"),
-        ],
-        {
-          cwd: workingDirectory,
-          encoding: "utf8",
-          env: { ...process.env, FORCE_COLOR: "0" },
-          timeout: 120_000,
-        },
-      );
+      const result = await runCommand([
+        "measure",
+        "--config",
+        path.join(workingDirectory, "codometer.config.json"),
+        // The report goes to the console, and the badge block goes into a
+        // file — so there is a written file to announce and nothing but the
+        // report on standard output.
+        "--format",
+        "json",
+        "--output-markdown",
+        path.join(workingDirectory, "README.md"),
+        workingDirectory,
+      ]);
 
       standardError = result.stderr;
       standardOutput = result.stdout;
     }, 150_000);
-
-    afterAll(() => {
-      removeFixtureTree(workingDirectory);
-    });
 
     // `codometer --format json > report.json` has to produce a file something
     // can parse. A diagnostic sharing that stream is not a note beside the
@@ -123,25 +104,12 @@ describe("main end-to-end suite", () => {
   // comes with its own exit code.
   describe("a run that names no configuration", () => {
     let standardError: string;
-    let exitCode: null | number;
+    let exitCode: number;
 
-    beforeAll(() => {
-      const result = spawnSync(
-        process.execPath,
-        [
-          "--import",
-          "@swc-node/register/esm-register",
-          COMMAND_PATH,
-          "measure",
-        ],
-        {
-          encoding: "utf8",
-          env: { ...process.env, FORCE_COLOR: "0" },
-          timeout: 120_000,
-        },
-      );
+    beforeAll(async () => {
+      const result = await runCommand(["measure"]);
 
-      exitCode = result.status;
+      exitCode = result.exitCode;
       standardError = result.stderr;
     }, 150_000);
 
@@ -157,55 +125,36 @@ describe("main end-to-end suite", () => {
   // naming a missing file. Runs as a real process because the exit code is under
   // test, and nothing beneath the command line reports one.
   describe("the configuration command given a configuration that cannot be read", () => {
+    const readTemporaryDirectory = useTemporaryDirectory("codometer-listing");
     let standardOutput: string;
     let standardError: string;
-    let exitCode: null | number;
-    let workingDirectory: string;
+    let exitCode: number;
 
-    beforeAll(() => {
-      workingDirectory = mkdtempSync(path.join(tmpdir(), "codometer-listing-"));
+    beforeAll(async () => {
+      const workingDirectory = readTemporaryDirectory();
 
-      mkdirSync(path.join(workingDirectory, "packages", "logging"), {
-        recursive: true,
-      });
       // One project configures itself. The root configuration the run names
       // below is not there.
-      writeFileSync(
-        path.join(workingDirectory, "packages/logging/codometer.config.json"),
-        JSON.stringify({
+      writeFileTree(workingDirectory, {
+        "packages/logging/codometer.config.json": JSON.stringify({
           format: "json",
           limits: [{ label: "Bundle", metric: "codebase.size", value: 6000 }],
         }),
-      );
+      });
 
-      const result = spawnSync(
-        process.execPath,
-        [
-          "--import",
-          "@swc-node/register/esm-register",
-          COMMAND_PATH,
-          "configuration",
-          "--config",
-          path.join(workingDirectory, "missing.config.json"),
-          "--directory",
-          workingDirectory,
-          "--limits",
-        ],
-        {
-          encoding: "utf8",
-          env: { ...process.env, FORCE_COLOR: "0" },
-          timeout: 120_000,
-        },
-      );
+      const result = await runCommand([
+        "configuration",
+        "--config",
+        path.join(workingDirectory, "missing.config.json"),
+        "--directory",
+        workingDirectory,
+        "--limits",
+      ]);
 
-      exitCode = result.status;
+      exitCode = result.exitCode;
       standardError = result.stderr;
       standardOutput = result.stdout;
     }, 150_000);
-
-    afterAll(() => {
-      rmSync(workingDirectory, { force: true, recursive: true });
-    });
 
     it("still lists every limit the tree declares", () => {
       expect.hasAssertions();
@@ -233,88 +182,44 @@ describe("main end-to-end suite", () => {
   });
 
   describe("the changes command", () => {
-    let workingDirectory: string;
+    const readTemporaryDirectory = useTemporaryDirectory("codometer-changes");
     let outputPath: string;
 
-    beforeAll(() => {
-      workingDirectory = mkdtempSync(path.join(tmpdir(), "codometer-changes-"));
+    /** Builds a report for the one project, carrying one size value. */
+    function buildReport(value: number): string {
+      return JSON.stringify({
+        targets: [
+          {
+            empty: false,
+            metrics: [
+              { limits: [], name: "logging.size", unit: "bytes", value },
+            ],
+            name: "logging",
+          },
+        ],
+      });
+    }
+
+    beforeAll(async () => {
+      const workingDirectory = readTemporaryDirectory();
+
       outputPath = path.join(workingDirectory, "section.md");
 
-      mkdirSync(path.join(workingDirectory, "packages", "logging"), {
-        recursive: true,
+      writeFileTree(workingDirectory, {
+        ".baseline/packages/logging/codometer-report.json": buildReport(1000),
+        "packages/logging/codometer-report.json": buildReport(1200),
       });
-      mkdirSync(
-        path.join(workingDirectory, ".baseline", "packages", "logging"),
-        { recursive: true },
-      );
 
-      writeFileSync(
-        path.join(
-          workingDirectory,
-          ".baseline/packages/logging/codometer-report.json",
-        ),
-        JSON.stringify({
-          targets: [
-            {
-              empty: false,
-              metrics: [
-                {
-                  limits: [],
-                  name: "logging.size",
-                  unit: "bytes",
-                  value: 1000,
-                },
-              ],
-              name: "logging",
-            },
-          ],
-        }),
-      );
-      writeFileSync(
-        path.join(workingDirectory, "packages/logging/codometer-report.json"),
-        JSON.stringify({
-          targets: [
-            {
-              empty: false,
-              metrics: [
-                {
-                  limits: [],
-                  name: "logging.size",
-                  unit: "bytes",
-                  value: 1200,
-                },
-              ],
-              name: "logging",
-            },
-          ],
-        }),
-      );
-
-      spawnSync(
-        process.execPath,
-        [
-          "--import",
-          "@swc-node/register/esm-register",
-          COMMAND_PATH,
-          "changes",
-          "--directory",
-          workingDirectory,
-          "--baseline",
-          ".baseline",
-          "--output",
-          outputPath,
-        ],
-        {
-          encoding: "utf8",
-          env: { ...process.env, FORCE_COLOR: "0" },
-          timeout: 120_000,
-        },
-      );
+      await runCommand([
+        "changes",
+        "--directory",
+        workingDirectory,
+        "--baseline",
+        ".baseline",
+        "--output",
+        outputPath,
+      ]);
     }, 150_000);
-
-    afterAll(() => {
-      rmSync(workingDirectory, { force: true, recursive: true });
-    });
 
     it("writes a report naming the project whose metric changed", () => {
       expect.hasAssertions();

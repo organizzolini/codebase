@@ -1,15 +1,15 @@
-import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
-import { createTemporaryDirectory } from "@codebase/testing";
+import { createFileTree, writeFileTree } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { UnreadableTargetFileError } from "./size.constants";
 import { SizeService } from "./size.service";
 
+import type * as TestingPackage from "@codebase/testing";
 import type { CodometerCompression } from "@codometer/configuration";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 import type * as NodeFileSystem from "node:fs";
@@ -18,19 +18,21 @@ import type * as NodeFileSystem from "node:fs";
 // a thrown literal is not an Error, and the measurement still has to report
 // which file it gave up on. Real files are staged in a temporary directory.
 vi.mock("node:fs", async (importOriginal) => {
+  const { mockFileSystem } =
+    await vi.importActual<typeof TestingPackage>("@codebase/testing");
+  const notAnError: unknown = "not an Error";
   const actual = await importOriginal<typeof NodeFileSystem>();
 
-  return {
+  return mockFileSystem({
     ...actual,
     readFileSync: (filePath: string) => {
       if (filePath.endsWith("odd.js")) {
-        // eslint-disable-next-line @typescript-eslint/only-throw-error
-        throw "not an Error";
+        throw notAnError;
       }
 
       return actual.readFileSync(filePath);
     },
-  };
+  });
 });
 
 /** The two files measured here, keyed by relative path. */
@@ -69,14 +71,7 @@ describe(SizeService, () => {
   });
 
   beforeEach(() => {
-    workingDirectory = createTemporaryDirectory("size");
-
-    for (const [fileName, contents] of Object.entries(FILE_CONTENTS)) {
-      const filePath = path.join(workingDirectory, fileName);
-
-      mkdirSync(path.dirname(filePath), { recursive: true });
-      writeFileSync(filePath, contents, "utf8");
-    }
+    workingDirectory = createFileTree(FILE_CONTENTS, { label: "size" });
   });
 
   it("resolves with its dependencies", async () => {
@@ -146,7 +141,7 @@ describe(SizeService, () => {
   });
 
   it("logs the reason for a thrown value that is not an Error", () => {
-    writeFileSync(path.join(workingDirectory, "dist/odd.js"), "", "utf8");
+    writeFileTree(workingDirectory, { "dist/odd.js": "" });
 
     expect(() =>
       service.analyze({
