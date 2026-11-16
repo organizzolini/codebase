@@ -15,10 +15,5 @@
   },
   "exclude": ["dist", "node_modules", "output"],
   "extends": "../../../../configuration/tsconfig.json",
-  "include": [
-    "configuration/*.ts",
-    "eslint.config.ts",
-    "testing/**/*.ts",
-    "vitest.config.ts"
-  ]
+  "include": ["configuration/*.ts", "eslint.config.ts", "testing/**/*.ts"]
 }

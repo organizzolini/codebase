@@ -3,7 +3,9 @@
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "lib": ["ES2023"],
+    "lib": [
+      "ES2023"
+    ],
     "module": "esnext",
     "moduleResolution": "bundler",
     "noEmit": true,
@@ -11,15 +13,31 @@
       "@golevelup/ts-vitest": [
         "./node_modules/@golevelup/ts-vitest/lib/index.d.ts"
       ],
-      "codebase/configuration/*": ["{{workspaceRelativePrefix}}configuration/*"],
+      "codebase/configuration/*": [
+        "{{workspaceRelativePrefix}}configuration/*"
+      ],
       "eslint-plugin-better-max-params": [
         "{{workspaceRelativePrefix}}configuration/types/eslint-plugin-better-max-params/index.d.ts"
       ]
     },
     "target": "esnext",
-    "types": ["node", "vitest/globals"]
+    "types": [
+      "node",
+      "vitest/globals"
+    ]
   },
-  "exclude": ["dist", "node_modules", "output"],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "output"
+  ],
   "extends": "{{workspaceRelativePrefix}}configuration/tsconfig.json",
-  "include": ["configuration/*.ts", "eslint.config.ts", "scripts/**/*.ts", "src/**/*.ts", "src/**/*.tsx", "testing/**/*.ts", "vitest.config.ts"]
+  "include": [
+    "configuration/*.ts",
+    "eslint.config.ts",
+    "scripts/**/*.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "testing/**/*.ts"
+  ]
 }

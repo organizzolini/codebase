@@ -26,6 +26,7 @@
   "extends": "@codebase/configuration/tsconfig.json",
   "include": [
     "codegen.ts",
+    "configuration/*.mts",
     "configuration/*.ts",
     "eslint.config.ts",
     "src/**/*.js",
@@ -33,8 +34,6 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "testing/**/*.ts",
-    "testing/**/*.tsx",
-    "vite.config.mts",
-    "vitest.config.ts"
+    "testing/**/*.tsx"
   ]
 }

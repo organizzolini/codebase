@@ -19,7 +19,10 @@ export default [
           // pg: TypeORM resolves its driver by name at runtime, so nothing imports it.
           // Test devDependencies: `testing/` harnesses count as source to the build check.
           ignoredDependencies: ["@codebase/testing", "pg", "vitest"],
-          ignoredFiles: ["{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}"],
+          ignoredFiles: [
+            "{projectRoot}/configuration/**",
+            "{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}",
+          ],
         },
       ],
     },

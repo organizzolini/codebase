@@ -64,26 +64,9 @@
     {
       "exclude": ["configuration/**"],
       "options": {
-        "buildTargetName": "build",
-        "devTargetName": "vite-dev",
-        "typecheckTargetName": "typecheck"
-      },
-      "plugin": "@nx/vite/plugin"
-    },
-    {
-      "exclude": ["configuration/**"],
-      "options": {
         "targetName": "eslint"
       },
       "plugin": "@nx/eslint/plugin"
-    },
-    {
-      "exclude": ["configuration/**"],
-      "options": {
-        "testMode": "run",
-        "testTargetName": "vitest"
-      },
-      "plugin": "@nx/vitest"
     },
     {
       "options": {
@@ -1255,25 +1238,60 @@
       "inputs": ["typescript-files"]
     },
     "vitest": {
+      "cache": true,
       "configurations": {
         "coverage": {
-          "command": "pnpm exec vitest run --coverage --coverage.provider=v8"
+          "command": "pnpm exec vitest run --config configuration/vitest.config.ts --coverage --coverage.provider=v8"
         },
         "end-to-end": {
-          "command": "pnpm exec vitest run end-to-end.test.ts"
+          "command": "pnpm exec vitest run --config configuration/vitest.config.ts end-to-end.test.ts"
         },
         "integration": {
-          "command": "pnpm exec vitest run integration.test.ts"
+          "command": "pnpm exec vitest run --config configuration/vitest.config.ts integration.test.ts"
         },
         "unit": {
-          "command": "pnpm exec vitest run unit.test.ts"
+          "command": "pnpm exec vitest run --config configuration/vitest.config.ts unit.test.ts"
         },
         "watch": {
-          "command": "pnpm exec vitest"
+          "command": "pnpm exec vitest --config configuration/vitest.config.ts"
         }
       },
       "defaultConfiguration": "coverage",
-      "description": "Extra configurations layered onto the vitest target that @nx/vitest infers. The plugin supplies the command, inputs, and outputs. Coverage is the default so that a bare `test-code` run still enforces the thresholds — Nx only propagates a configuration down `dependsOn` when it is named explicitly."
+      "description": "Extra configurations layered onto the vitest target that @nx/vitest infers. The plugin supplies the command, inputs, and outputs. Coverage is the default so that a bare `test-code` run still enforces the thresholds — Nx only propagates a configuration down `dependsOn` when it is named explicitly.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "^production",
+        "default",
+        {
+          "fields": ["compilerOptions"],
+          "json": "{workspaceRoot}/configuration/tsconfig.json"
+        },
+        {
+          "fields": ["compilerOptions"],
+          "json": "{workspaceRoot}/configuration/tsconfig.workspace.json"
+        },
+        {
+          "fields": ["compilerOptions"],
+          "json": "{workspaceRoot}/projects/common/testing/tsconfig.json"
+        },
+        "{workspaceRoot}/configuration/vitest.config.ts",
+        "{workspaceRoot}/projects/common/testing/src/setup.ts",
+        {
+          "env": "CI"
+        },
+        {
+          "dependentTasksOutputFiles": "**/*.js",
+          "transitive": true
+        },
+        {
+          "externalDependencies": ["vitest"]
+        }
+      ],
+      "options": {
+        "command": "pnpm exec vitest run --config configuration/vitest.config.ts",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"]
     },
     "vulture": [
       {

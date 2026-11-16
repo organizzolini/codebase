@@ -17,10 +17,9 @@ export default [
         "error",
         {
           ignoredFiles: [
+            "{projectRoot}/configuration/**",
             "{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}",
             "{projectRoot}/testing/**",
-            "{projectRoot}/vite.config.{js,ts,mjs,mts}",
-            "{projectRoot}/vitest.config.{js,ts,mjs,mts}",
           ],
           // Named only by `testing/`, which dependency checks skip.
           ignoredDependencies: ["@codebase/interface"],

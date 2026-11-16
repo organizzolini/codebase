@@ -20,7 +20,10 @@ export default [
           // the @nx/dependency-checks rule misidentifies it as a production dependency.
           // pg: the driver TypeORM loads by name for its Postgres connection.
           ignoredDependencies: ["@golevelup/ts-vitest", "pg", "vitest"],
-          ignoredFiles: ["{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}"],
+          ignoredFiles: [
+            "{projectRoot}/configuration/**",
+            "{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}",
+          ],
         },
       ],
     },

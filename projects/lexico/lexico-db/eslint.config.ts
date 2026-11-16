@@ -14,8 +14,13 @@ export default [
       "@nx/dependency-checks": [
         "error",
         {
-          ignoredDependencies: ["typescript", "pg", "@nestjs/core"],
-          ignoredFiles: ["{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}"],
+          // vitest: used only by tests and the configuration folder's Vitest
+          // configuration, both outside the build dependency check's scope.
+          ignoredDependencies: ["typescript", "pg", "@nestjs/core", "vitest"],
+          ignoredFiles: [
+            "{projectRoot}/configuration/**",
+            "{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}",
+          ],
         },
       ],
     },

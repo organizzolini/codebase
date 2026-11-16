@@ -13,10 +13,12 @@
       "description": "Build the application for production",
       "executor": "nx:run-commands",
       "options": {
-        "command": "vite build",
+        "command": "vite build --config configuration/vite.config.mts",
         "cwd": "{projectRoot}"
       },
-      "outputs": ["{projectRoot}/dist"]
+      "outputs": [
+        "{projectRoot}/dist"
+      ]
     },
     "codometer": {},
     "dependency-cruiser": {},
@@ -30,11 +32,13 @@
     "oxlint": {},
     "prettier": {},
     "preview": {
-      "dependsOn": ["build"],
+      "dependsOn": [
+        "build"
+      ],
       "description": "Serve the production build locally",
       "executor": "nx:run-commands",
       "options": {
-        "command": "vite preview",
+        "command": "vite preview --config configuration/vite.config.mts",
         "cwd": "{projectRoot}"
       }
     },
@@ -43,7 +47,7 @@
       "description": "Start the development server with hot reload",
       "executor": "nx:run-commands",
       "options": {
-        "command": "vite dev",
+        "command": "vite dev --config configuration/vite.config.mts",
         "cwd": "{projectRoot}"
       }
     },
@@ -52,6 +56,7 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "vitest": {},
     "yaml-lint": {}
   }
 }

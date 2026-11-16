@@ -14,7 +14,10 @@ export default [
           // Test devDependencies: `testing/` files count as source to the build check.
           // moment: imported by one unit test, which the build check does not read.
           ignoredDependencies: ["@codebase/testing", "moment", "vitest"],
-          ignoredFiles: ["{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}"],
+          ignoredFiles: [
+            "{projectRoot}/configuration/**",
+            "{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}",
+          ],
         },
       ],
     },

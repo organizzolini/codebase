@@ -46,6 +46,7 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "vitest": {},
     "yaml-lint": {}
   }
 }

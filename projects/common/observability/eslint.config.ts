@@ -21,7 +21,10 @@ export default [
             "pino-pretty",
             "vitest",
           ],
-          ignoredFiles: ["{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}"],
+          ignoredFiles: [
+            "{projectRoot}/configuration/**",
+            "{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}",
+          ],
         },
       ],
     },

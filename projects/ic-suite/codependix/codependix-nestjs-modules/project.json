@@ -12,7 +12,14 @@
     "type:package"
   ],
   "targets": {
-    "build": {},
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vite build --config configuration/vite.config.ts",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
     "build-projects": {},
     "codometer": {},
     "dependency-cruiser": {},
@@ -31,6 +38,7 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "vitest": {},
     "yaml-lint": {}
   }
 }

@@ -37,7 +37,11 @@
     "knip": {},
     "lint-code": {},
     "markdown-lint": {},
-    "migration": { "options": { "module": "src/modules/database" } },
+    "migration": {
+      "options": {
+        "module": "src/modules/database"
+      }
+    },
     "oxfmt": {},
     "oxlint": {},
     "prettier": {},
@@ -49,6 +53,7 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "vitest": {},
     "yaml-lint": {}
   }
 }

@@ -3,7 +3,9 @@
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "lib": ["ES2023"],
+    "lib": [
+      "ES2023"
+    ],
     "module": "esnext",
     "moduleResolution": "bundler",
     "noEmit": true,
@@ -14,12 +16,21 @@
       "eslint-plugin-better-max-params": [
         "../../configuration/types/eslint-plugin-better-max-params/index.d.ts"
       ],
-      "codebase/configuration/*": ["../../configuration/*"]
+      "codebase/configuration/*": [
+        "../../configuration/*"
+      ]
     },
     "target": "esnext",
-    "types": ["node", "vitest/globals"]
+    "types": [
+      "node",
+      "vitest/globals"
+    ]
   },
-  "exclude": ["dist", "node_modules", "output"],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "output"
+  ],
   "extends": "../../configuration/tsconfig.json",
   "include": [
     "configuration/*.ts",
@@ -27,7 +38,6 @@
     "scripts/**/*.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "testing/**/*.ts",
-    "vitest.config.ts"
+    "testing/**/*.ts"
   ]
 }

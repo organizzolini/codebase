@@ -29,7 +29,6 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "testing/**/*.ts",
-    "testing/**/*.tsx",
-    "vitest.config.ts"
+    "testing/**/*.tsx"
   ]
 }
