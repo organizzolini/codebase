@@ -14,6 +14,12 @@ export interface AuthorAttributes {
   startYear?: number | undefined;
 }
 
+/** The years an author lived or flourished, negative for BCE. */
+export interface AuthorYears {
+  endYear: number;
+  startYear: number;
+}
+
 /**
  * Inputs required to ingest one markdown text into the literature entity graph.
  */

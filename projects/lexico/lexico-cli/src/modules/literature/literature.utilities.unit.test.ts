@@ -1,8 +1,40 @@
 import { describe, expect, it } from "vitest";
 
-import { mergeAuthor, parseText } from "./literature.utilities";
+import { deriveEra, mergeAuthor, parseText } from "./literature.utilities";
 
 describe("literature.utilities", () => {
+  describe(deriveEra, () => {
+    it.each([
+      [-249, -183, "Archaic"],
+      [-101, -101, "Archaic"],
+      [-100, -100, "Classical"],
+      [-43, 17, "Classical"],
+      [13, 13, "Classical"],
+      [14, 14, "Imperial"],
+      [56, 120, "Imperial"],
+      [199, 199, "Imperial"],
+      [200, 200, "Late"],
+      [354, 430, "Late"],
+      [599, 599, "Late"],
+      [600, 600, "Medieval"],
+      [673, 735, "Medieval"],
+      [1299, 1299, "Medieval"],
+      [1300, 1300, "Neo-Latin"],
+      [1500, 1600, "Neo-Latin"],
+    ])("places %i to %i in %s", (start, end, era) => {
+      expect(deriveEra(start, end)).toBe(era);
+    });
+
+    it("uses the one year it is given", () => {
+      expect(deriveEra(undefined, -44)).toBe("Classical");
+      expect(deriveEra(1200, null)).toBe("Medieval");
+    });
+
+    it("gives no era without a year", () => {
+      expect(deriveEra(undefined, null)).toBeUndefined();
+    });
+  });
+
   describe(parseText, () => {
     it("maps frontmatter source fields onto typed text columns", () => {
       expect(

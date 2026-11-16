@@ -12,6 +12,7 @@ import {
 } from "../../../testing/command-harness";
 import { mockStandardInputTerminal } from "../../../testing/mocks";
 
+import { LiteratureAuthorEraService } from "./literature-author-era.service";
 import { LiteratureCommand } from "./literature.command";
 import { LiteratureService } from "./literature.service";
 
@@ -55,7 +56,12 @@ describe(LiteratureCommand, () => {
     scanLibrary: vi.fn<() => Promise<LibraryEntry[]>>(),
   };
 
+  const authorEraService = {
+    dateAuthors: vi.fn<() => Promise<void>>(),
+  };
+
   const createProviders = (): Provider[] => [
+    { provide: LiteratureAuthorEraService, useValue: authorEraService },
     {
       provide: LiteratureService,
       useValue: literatureService,
@@ -240,6 +246,7 @@ describe(LiteratureCommand, () => {
           LiteratureCommand,
           { provide: LoggerService, useValue: createMock<LoggerService>() },
           { provide: LiteratureService, useValue: literatureService },
+          { provide: LiteratureAuthorEraService, useValue: authorEraService },
         ],
       });
     }
@@ -260,6 +267,12 @@ describe(LiteratureCommand, () => {
 
       expect(ingestedPaths()).toStrictEqual(["/tmp/vergil/aeneid-alt.md"]);
       expect(promptsMock).not.toHaveBeenCalled();
+    });
+
+    it("dates the authors once their texts are ingested", async () => {
+      await runLiterature();
+
+      expect(authorEraService.dateAuthors).toHaveBeenCalledExactlyOnceWith();
     });
 
     it("ingests every text without prompting when standard input is not a terminal", async () => {

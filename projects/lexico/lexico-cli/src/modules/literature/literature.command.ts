@@ -9,6 +9,7 @@ import {
   selectChoice,
 } from "../lexico-ingestion/lexico-ingestion.utilities";
 
+import { LiteratureAuthorEraService } from "./literature-author-era.service";
 import { LiteratureService } from "./literature.service";
 
 import type { CommandOptionChoice } from "../lexico-ingestion/lexico-ingestion.types";
@@ -33,6 +34,7 @@ export class LiteratureCommand extends CommandRunner {
   constructor(
     private readonly logger: LoggerService,
     private readonly helper: LiteratureService,
+    private readonly authorEraService: LiteratureAuthorEraService,
   ) {
     super();
     this.logger.setContext(LiteratureCommand.name);
@@ -125,6 +127,14 @@ export class LiteratureCommand extends CommandRunner {
       ),
     ].toSorted();
     return textSlugs.map((textSlug) => ({ title: textSlug, value: textSlug }));
+  }
+
+  /**
+   * Ingests the selected texts, then dates their authors.
+   */
+  private async ingestAndDateAuthors(texts: LibraryEntry[]): Promise<void> {
+    await this.helper.ingestAllAuthors(texts);
+    await this.authorEraService.dateAuthors();
   }
 
   /**
@@ -253,7 +263,7 @@ export class LiteratureCommand extends CommandRunner {
     this.logger.info("📚 Selected texts for ingestion", undefined, {
       count: textsToIngest.length,
     });
-    await this.helper.ingestAllAuthors(textsToIngest);
+    await this.ingestAndDateAuthors(textsToIngest);
     const endTime = performance.now();
     const duration = ((endTime - startTime) / 1000).toFixed(2);
     this.logger.info("📚 Ingested literature", undefined, {

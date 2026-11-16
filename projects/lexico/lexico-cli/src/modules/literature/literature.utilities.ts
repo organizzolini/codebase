@@ -2,11 +2,16 @@ import _ from "lodash";
 
 import {
   authorMetadataSchema,
+  ERA_BOUNDARIES,
   textFrontmatterSchema,
 } from "./literature.constants";
 
-import type { AuthorAttributes, TextAttributes } from "./literature.types";
-import type { Author, Token } from "@codebase/lexico-db";
+import type {
+  AuthorAttributes,
+  AuthorYears,
+  TextAttributes,
+} from "./literature.types";
+import type { Author, AuthorEra, Token } from "@codebase/lexico-db";
 import type { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity.js";
 
 /**
@@ -21,6 +26,19 @@ export function countTokens(
     recognisedWordCount: tokens.filter((token) => token.word).length,
     wordCount: tokens.filter((token) => !token.isPunctuation).length,
   };
+}
+
+/**
+ * Places an author in the era their years' midpoint falls in; no years, no era.
+ */
+export function deriveEra(
+  startYear?: null | number,
+  endYear?: null | number,
+): AuthorEra | undefined {
+  const years = [startYear, endYear].filter((year) => typeof year === "number");
+  if (years.length === 0) return undefined;
+  const midpoint = _.mean(years);
+  return ERA_BOUNDARIES.findLast((boundary) => midpoint >= boundary.from)?.era;
 }
 
 /**
@@ -74,4 +92,33 @@ export function parseText(
     },
     (value) => value === undefined,
   );
+}
+
+/**
+ * Takes an author's birth and death from a Wikidata row, or its floruit when
+ * they are missing or contradict each other; nothing if neither is usable.
+ */
+export function pickWikidataYears(
+  row: Partial<
+    Record<"birth" | "death" | "floruit", undefined | { value: string }>
+  >,
+): AuthorYears | undefined {
+  const birth = parseWikidataYear(row.birth?.value);
+  const death = parseWikidataYear(row.death?.value);
+  if (birth !== undefined && death !== undefined && birth <= death)
+    return { endYear: death, startYear: birth };
+  const floruit = parseWikidataYear(row.floruit?.value);
+  // shortcut: a birth or death alone is ignored, upgrade if authors lose their dates to it
+  return floruit === undefined
+    ? undefined
+    : { endYear: floruit, startYear: floruit };
+}
+
+/**
+ * Reads a Wikidata date as a year, negative for BCE; its calendar has a year 0.
+ */
+function parseWikidataYear(value: string | undefined): number | undefined {
+  const year = value ? /^(-?\d+)-/.exec(value)?.[1] : undefined;
+  if (year === undefined) return undefined;
+  return Number(year) <= 0 ? Number(year) - 1 : Number(year);
 }

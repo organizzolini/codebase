@@ -4,24 +4,40 @@
 
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
+- **adamnan**:
 - **agr**: Abbreviated praenomen key for Agrippa in the manual praenomen table, expanded only to its masculine form.
+- **ambrose**:
 - **ammianus**: Short literature slug that the literature constants map to the full author name Ammianus Marcellinus.
 - **anchor**: HTML link element the Latin Library builder reads, using its text and nearby headings to label a work or book.
 - **ap**: Abbreviated praenomen key for Appius, which the manual praenomen table expands to feminine Appia or masculine Appius.
 - **apicius**: Author slug for the Roman cookery writer Apicius, whose appendicula and excerpta texts the library ingests from Open Greek and Latin.
+- **apollinaris**:
 - **apuleius**: Short literature slug mapped by the literature constants to the full name Lucius Apuleius Madaurensis.
+- **aquileia**:
+- **archaic**:
+- **augustine**:
+- **ausonius**:
+- **auxerre**:
 - **batch**: Group of rows written in one database operation, such as the single upsert of all Word and form rows.
+- **bede**:
 - **bi**:
+- **bishop**:
+- **boethius**:
 - **book**: A division of a literary work, set as type book or text by the Latin Library builder and the EDCS provider.
+- **boundary**:
+- **cassian**:
 - **category**: Grouping page or part-of-speech class; Latin Library category links become Author entities, and the forms builder builds Forms per category.
+- **claudianus**:
 - **conjunction**: Part-of-speech tag for conjunctions, which the part-of-speech constants also assign to idioms, particles, and phrases.
 - **coquinaria**: Title of the Apicius text De Re Coquinaria, an ingested Latin cookery book under the apicius data folder.
 - **corpus**: Ingested collection of Latin texts, such as the data/library corpus from Open Greek and Latin, and the Corpus Scriptorum provider.
 - **csel**: Short name for the Corpus Scriptorum Ecclesiasticorum Latinorum, the ecclesiastical corpus whose XML this command downloads and caches.
 - **curtius**: Literature constants slug for Curtius Rufus, expanded to quintus curtius rufus for literature ingestion lookups.
+- **cyprian**:
 - **datenbank**: German noun part of Epigraphik-Datenbank, the EDCS name the project's command and provider use for the inscription database.
 - **datierung**:
 - **db**: Stray fragment of the db.edcs.eu source URL, which the EDCS library provider records as text metadata.
+- **decimus**:
 - **degree**: Comparison grade of an adjective or adverb, such as positive, comparative, or superlative, set on manual inflections.
 - **dictionary**: Main ingestion stage that parses cached Wiktionary pages into lexemes, forms, and translations, run by the dictionary command.
 - **disambiguator**: Numeric index that tells apart lexemes sharing a lemma, saved on each lexeme and used to reload it by lemma.
@@ -30,9 +46,14 @@ The words this project uses that the root glossary does not define, regenerated 
 - **edition**: The printed version of a source text, with its editors, publisher, and print year, which tells apart two Texts of one work.
 - **element**: Cheerio node a parser callback receives while walking Wiktionary or library HTML, passed to $(element) for selection.
 - **epigraphik**: Prefix of Epigraphik-Datenbank Clauss-Slaby, the inscription source whose command, provider, and chunk schema this CLI reads.
+- **eucherius**:
+- **eugippius**:
+- **floruit**:
 - **fundort**:
+- **hilary**:
 - **hispania**:
 - **iacē**: Classical substitution key matching a Latin stem fragment, rewritten to the j form jacē before phonemes are mapped.
+- **imperial**:
 - **ingest**: Verb for loading one source into the database, as in provider.ingest for each library author the library command selects.
 - **inschrifttyp**:
 - **inscription**: Stone-text record from the Epigraphik-Datenbank, whose text the EDCS provider skips when missing and turns into a work.
@@ -43,6 +64,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **iūr**: Classical substitution key matching a Latin stem fragment, rewritten to the j form jūr before phonemes are mapped.
 - **iūt**: Classical substitution key matching a Latin stem fragment, rewritten to the j form jūt before phonemes are mapped.
 - **iūv**: Classical substitution key matching a Latin stem fragment, rewritten to the j form jūv before phonemes are mapped.
+- **jerome**:
+- **john**:
 - **justin**: Literature constants slug for Justin, expanded to marcus iunianus iustinus, the epitomist whose name the constants spell out.
 - **juvenal**: Literature constants slug expanded to decimus iunius iuvenalis, the satirist whose full Latin name the constants supply.
 - **law**: Path segment /law/ that the Latin Library crawler matches, and part of the roman-law literature slug mapped to ius romanum.
@@ -53,28 +76,57 @@ The words this project uses that the root glossary does not define, regenerated 
 - **livy**: Literature constants slug for Livy, expanded to titus livius, the historian whose name the literature ingestion uses.
 - **lucan**: Literature constants slug for Lucan, expanded to marcus annaeus lucanus, the epic poet whose name the constants supply.
 - **lucretius**: Literature constants slug expanded to titus lucretius carus, the philosopher-poet whose text the literature ingestion loads.
+- **lyon**:
+- **magnus**:
+- **mamertus**:
+- **marcellinus**:
+- **marcus**:
+- **marseille**:
 - **martial**: Literature constants slug for Martial, expanded to marcus valerius martialis, the epigrammatist the literature ingestion loads.
 - **material**:
+- **medieval**:
 - **mela**: Second half of the author slug pomponius-mela, whose De chorographia the library ingests as a work.
+- **midpoint**:
+- **negative**:
+- **neo**:
+- **nola**:
+- **orosius**:
+- **paulinus**:
+- **paulus**:
+- **pella**:
 - **perfect**: Verb tense family covering perfect, future perfect, and pluperfect, which the part-of-speech forms service maps by name.
 - **period**: Literary era of an author or work, such as Classical, recorded with the text it was ingested from.
 - **perseus**: Source and command for the Perseus Digital Library, which the perseus stage converts from XML into markdown library works.
+- **poitier**:
+- **porcius**:
+- **priscillian**:
 - **pronunciation**: Module and service that derive phonemic and phonetic spellings for each Wiktionary entry, in classical or ecclesiastical mode.
+- **prudentius**:
 - **publication**: Word in the `print_publication_date` metadata key, the year a print edition of a library work appeared, which the Perseus and CSEL providers record from the source record when it carries one.
 - **recognise**: Token linked to a dictionary Word, so counted among a Text's recognised words.
+- **remigius**:
 - **roma**:
+- **rufinus**:
+- **saint**:
+- **salvian**:
 - **selector**: CSS selector string passed to the test mock Cheerio helper, which selects one element from loaded HTML for assertions.
 - **self**: Adjective for a link that points back to its own page, which the Latin Library builder skips as self-referential.
+- **severus**:
+- **sidonius**:
 - **slaby**: Name part of Epigraphik-Datenbank Clauss-Slaby, the EDCS source whose command and chunk schema live in this project.
 - **splice**: Array method that removes matched items from existing forms, used in the forms service to reuse saved row IDs.
 - **spot**:
+- **sulpicius**:
 - **terence**: Literature constants slug expanded to publius terentius afer, the comic playwright whose name the constants supply.
+- **tertullian**:
 - **tibullus**: Literature constants slug expanded to albius tibullus, the elegiac poet whose name the constants supply for lookups.
 - **trace**: Stack-trace text the logger records with an error, and the call chain callidescope follows when measuring depth.
 - **translation**: Gloss entity for one meaning of a lexeme, saved per lexeme and parsed from the Wiktionary translations list.
+- **undated**:
 - **valerius**: Name part shared by the Catullus, Martial, and Valerius Flaccus literature slugs, which each expand to a full Valerius name.
 - **varro**: Literature constants slug for Varro, expanded to marcus terentius varro, whose Res rusticae the library ingests.
 - **vellius**: Literature constants slug expanded to gaius velleius patereculus, the historian whose name the constants supply.
+- **venerable**:
 - **verb**: Part-of-speech tag for verbs, which the forms builder uses to build finite and non-finite verb forms through the verb builder service.
 - **vergil**: Literature constants slug expanded to publius vergilius maro, also a Latin Library path segment for Vergil's works.
 - **victor**: Second word of the aurelius-victor literature slug, which the constants expand to sextus aurelius victor.
@@ -85,6 +137,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **vop**: Praenomen abbreviation key vop, expanded to feminine vopisca or masculine vopiscus in the manual praenomen table.
 - **vulgate**: Literature constants slug part for the Vulgate Bible, expanded to biblia sacra vulgata testamentum novum or vetum.
 - **whitespace**: Character class of spaces and tabs that the library utilities strip from lines, such as padded end-of-line poetry numbers.
+- **wikidatum**:
 - **wikipedia**: Source dump, a data/wikipedia folder kept out of git, whose extraction the dictionary command requires first.
 - **wiktionary**: Dictionary source of raw HTML lemma pages that the stage downloads and caches under data/wiktionary.
 

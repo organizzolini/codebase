@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-import { textCollections } from "@codebase/lexico-db";
+import { authorEra, textCollections } from "@codebase/lexico-db";
 
-import type { TextCollection } from "@codebase/lexico-db";
+import type { AuthorEra, TextCollection } from "@codebase/lexico-db";
 
 // ♟️ Constants
 
@@ -105,3 +105,74 @@ export const authorMetadataSchema = z.object({
   death_year: z.number().int().optional(),
   full_name: z.string().optional(),
 });
+
+/** Where each era starts, by the midpoint of an author's years (negative for BCE). */
+export const ERA_BOUNDARIES: readonly { era: AuthorEra; from: number }[] = [
+  { era: authorEra.archaic, from: Number.NEGATIVE_INFINITY },
+  { era: authorEra.classical, from: -100 },
+  { era: authorEra.imperial, from: 14 },
+  { era: authorEra.late, from: 200 },
+  { era: authorEra.medieval, from: 600 },
+  { era: authorEra.neoLatin, from: 1300 },
+];
+
+export const WIKIDATA_QUERY_URL = "https://query.wikidata.org/sparql";
+
+/** A generic client identifier; Wikidata asks automated clients to send one. */
+export const WIKIDATA_USER_AGENT = "lexico-ingestion";
+
+export const WIKIDATA_REQUEST_DELAY_MILLISECONDS = 1000;
+
+export const WIKIDATA_TIMEOUT_MILLISECONDS = 15_000;
+
+/** The catalogue folder in a source URL, such as `phi0959` or `stoa0054`. */
+export const CATALOGUE_IDENTIFIER_PATTERN = /\/data\/((?:phi|stoa|tlg)\d+[a-z]?)\//;
+
+/** One row of a Wikidata response; each field is absent when the match lacks it. */
+export const wikidataResponseSchema = z.object({
+  results: z.object({
+    bindings: z.array(
+      z.object({
+        birth: z.object({ value: z.string() }).optional(),
+        death: z.object({ value: z.string() }).optional(),
+        floruit: z.object({ value: z.string() }).optional(),
+      }),
+    ),
+  }),
+});
+
+/**
+ * Years for authors Wikidata cannot match: it indexes only PHI Latin author
+ * numbers, so authors catalogued under Stoa numbers need these. Keyed by author
+ * slug; BCE negative. Authors not listed stay undated and are reported.
+ */
+export const FALLBACK_AUTHOR_YEARS: Record<string, [number, number]> = {
+  adamnan: [624, 704],
+  ambrose: [339, 397],
+  "ammianus-marcellinus": [330, 395],
+  augustine: [354, 430],
+  "augustine-saint": [354, 430],
+  "ausonius-decimus-magnus": [310, 394],
+  "bede-the-venerable": [673, 735],
+  boethius: [480, 524],
+  "cato-marcus-porcius": [-234, -149],
+  claudian: [370, 404],
+  "claudianus-mamertus": [425, 474],
+  "cyprian-saint": [210, 258],
+  "eucherius-of-lyon": [380, 449],
+  eugippius: [460, 535],
+  "hilary-saint-bishop-of-poitiers": [310, 367],
+  "jerome-saint": [347, 420],
+  "john-cassian": [360, 435],
+  "orosius-paulus": [375, 420],
+  "paulinus-of-nola": [354, 431],
+  "paulinus-of-pella": [376, 459],
+  priscillian: [340, 385],
+  prudentius: [348, 413],
+  "remigius-of-auxerre": [841, 908],
+  "rufinus-of-aquileia": [344, 411],
+  "salvian-of-marseilles": [400, 480],
+  "severus-sulpicius": [363, 425],
+  "sidonius-apollinaris": [430, 489],
+  tertullian: [155, 220],
+};
