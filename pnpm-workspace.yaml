@@ -212,7 +212,7 @@ catalog:
   typescript-eslint: ^8.59.4
   validate-branch-name: ^1.3.2
   verdaccio: ^7.1.0
-  vite: 8.3.7
+  vite: 8.3.8
   vite-plugin-dts: ^5.0.1
   vite-plugin-static-copy: ^4.1.1
   vite-tsconfig-paths: ^6.1.1
