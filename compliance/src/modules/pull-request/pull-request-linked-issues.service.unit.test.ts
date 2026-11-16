@@ -176,8 +176,8 @@ describe(PullRequestLinkedIssuesService, () => {
       "❌ Issue #1: No Priority issue field",
     ]);
     expect(outcome.remediationCommands).toStrictEqual([
-      `echo '{"issue_field_values":[{"field_id":46460698,"value":"<Low|Medium|High>"}]}' | gh api -X PUT repos/{owner}/{repo}/issues/5/issue-field-values --input -`,
-      `echo '{"issue_field_values":[{"field_id":46460695,"value":"<Urgent|High|Medium|Low>"}]}' | gh api -X PUT repos/{owner}/{repo}/issues/1/issue-field-values --input -`,
+      `echo '{"issue_field_values":[{"field_id":46460698,"value":"<Low|Medium|High>"}]}' | gh api -X POST repos/{owner}/{repo}/issues/5/issue-field-values --input -`,
+      `echo '{"issue_field_values":[{"field_id":46460695,"value":"<Urgent|High|Medium|Low>"}]}' | gh api -X POST repos/{owner}/{repo}/issues/1/issue-field-values --input -`,
     ]);
   });
 

@@ -47,7 +47,7 @@ export class IssueFieldsService {
 
     record(
       `❌ No ${field.name} issue field`,
-      `echo '${value}' | gh api -X PUT repos/{owner}/{repo}/issues/${issueNumber}/issue-field-values --input -`,
+      `echo '${value}' | gh api -X POST repos/{owner}/{repo}/issues/${issueNumber}/issue-field-values --input -`,
     );
   }
 

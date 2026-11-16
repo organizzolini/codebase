@@ -34,7 +34,7 @@ describe(IssueFieldsService, () => {
 
     expect(record).toHaveBeenCalledExactlyOnceWith(
       "❌ No Effort issue field",
-      `echo '{"issue_field_values":[{"field_id":46460698,"value":"<Low|Medium|High>"}]}' | gh api -X PUT repos/{owner}/{repo}/issues/9/issue-field-values --input -`,
+      `echo '{"issue_field_values":[{"field_id":46460698,"value":"<Low|Medium|High>"}]}' | gh api -X POST repos/{owner}/{repo}/issues/9/issue-field-values --input -`,
     );
   });
 
