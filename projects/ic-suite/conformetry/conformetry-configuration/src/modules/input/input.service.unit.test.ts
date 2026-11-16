@@ -206,12 +206,14 @@ describe(InputService, () => {
   describe("resolveInputsFromValues", () => {
     it("passes through values the caller already had", async () => {
       const inputs = await service.resolveInputsFromValues({
-        providedInputs: { config: "configuration/conformetry.config.ts" },
+        providedInputs: {
+          config: "configuration/ic-suite/conformetry.config.ts",
+        },
         schema: { properties: { config: { type: "string" } } },
       });
 
       expect(inputs).toStrictEqual({
-        config: "configuration/conformetry.config.ts",
+        config: "configuration/ic-suite/conformetry.config.ts",
       });
     });
 

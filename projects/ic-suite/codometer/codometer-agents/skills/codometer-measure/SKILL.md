@@ -36,7 +36,7 @@ configured input — not even the built-in `codebase` one — active.
 file and has no default one: a run without the flag is refused with an error
 naming it. The named file answers alone — nothing from any other file is folded
 into it — and a relative path is resolved against the working directory alone. In this repository the workspace file is
-`configuration/codometer.config.ts`; a project's own is its
+`configuration/ic-suite/codometer.config.ts`; a project's own is its
 `codometer.config.ts`. A configuration file is always read as a plain object — exporting a function is
 not recognized and falls back to an empty configuration.
 

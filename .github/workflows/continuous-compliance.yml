@@ -189,7 +189,7 @@ jobs:
         if: github.event_name == 'push' && github.event.head_commit.author.name != 'dependabot[bot]'
         run: |
           git log -1 --pretty=%s | \
-            npx commitlint --config configuration/commitlint.config.ts
+            npx commitlint --config configuration/repository/commitlint.config.ts
 
       # Validates the merge group's head commit, which is what lands on main.
       # GitHub does not document a queued squash commit's subject, so a generic
@@ -208,4 +208,4 @@ jobs:
           fi
           echo "🏷️ Linting merge group commit subject: ${COMMIT_SUBJECT}"
           echo "$COMMIT_SUBJECT" | \
-            npx commitlint --config configuration/commitlint.config.ts
+            npx commitlint --config configuration/repository/commitlint.config.ts

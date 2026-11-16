@@ -83,7 +83,7 @@ describe(FileFilterService, () => {
     const root = createTemporaryDirectory("callidescope-ignore");
     const filter = subject.buildFileFilter({
       exclude: [],
-      excludeFrom: ["configuration/.callidescopeignore"],
+      excludeFrom: ["configuration/ic-suite/.callidescopeignore"],
       workspaceRoot: root,
     });
 
@@ -91,7 +91,7 @@ describe(FileFilterService, () => {
     expect(subjectLogger.warn).toHaveBeenCalledWith(
       "🔭 Skipped a missing ignore file",
       undefined,
-      { ignoreFile: "configuration/.callidescopeignore" },
+      { ignoreFile: "configuration/ic-suite/.callidescopeignore" },
     );
   });
 
@@ -109,7 +109,7 @@ describe(FileFilterService, () => {
 
     const filter = subject.buildFileFilter({
       exclude: [],
-      excludeFrom: ["configuration/.callidescopeignore"],
+      excludeFrom: ["configuration/ic-suite/.callidescopeignore"],
       workspaceRoot: root,
     });
 
@@ -129,7 +129,7 @@ describe(FileFilterService, () => {
     const workspaceRoot = path.resolve(process.cwd(), "..", "..", "..", "..");
     const filter = subject.buildFileFilter({
       exclude: [],
-      excludeFrom: ["configuration/.callidescopeignore"],
+      excludeFrom: ["configuration/ic-suite/.callidescopeignore"],
       workspaceRoot,
     });
 

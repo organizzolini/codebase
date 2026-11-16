@@ -275,7 +275,9 @@ describe(LimitsService, () => {
     discover([]);
     loadConfigurationFile.mockResolvedValue(
       buildLoadedFile({
-        authored: { excludeFrom: ["configuration/.callidescopeignore"] },
+        authored: {
+          excludeFrom: ["configuration/ic-suite/.callidescopeignore"],
+        },
         path: WORKSPACE_CONFIGURATION_PATH,
       }),
     );
@@ -381,7 +383,7 @@ describe(LimitsService, () => {
       authored: {},
       configuration: buildConfiguration({
         exclude: ["packages/ignored/**"],
-        excludeFrom: ["configuration/.callidescopeignore"],
+        excludeFrom: ["configuration/ic-suite/.callidescopeignore"],
       }),
       path: WORKSPACE_CONFIGURATION_PATH,
     });
@@ -390,7 +392,7 @@ describe(LimitsService, () => {
 
     expect(fileFilterService.buildFileFilter).toHaveBeenCalledWith({
       exclude: ["packages/ignored/**"],
-      excludeFrom: ["configuration/.callidescopeignore"],
+      excludeFrom: ["configuration/ic-suite/.callidescopeignore"],
       workspaceRoot: process.cwd(),
     });
   });

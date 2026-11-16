@@ -14,6 +14,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **db**: Short for the sample project `lexico-db` that the boundary-report and boundary-failure tests use as a dependency target, so a violation names a project other than its source.
 - **forbid**: Kind of boundary rule that names a dependency edge from one project to another which must not exist.
 - **holder**: Project whose root directory contains a given file path, found by findProjectHolding for a failure's source file.
+- **lexico**: The Latin dictionary product whose web app, ingestion CLI, and entity packages live under projects/lexico.
 - **neighborhood**: Graph type showing one project's direct dependency neighbors, which boundary rules deliberately do not judge.
 - **restrict**: Verb in no-restricted-imports, the ESLint rule that blocks importing @nx/devkit outside the nx-projects package.
 - **selector**: Object naming which nodes a rule claims by project, tag, or dependency, evaluated by BoundarySelectorService.

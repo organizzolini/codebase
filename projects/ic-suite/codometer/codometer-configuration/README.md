@@ -34,7 +34,7 @@ const codometerConfiguration: CodometerConfiguration = {
   // .nx), matched against repository-relative paths with `path.matchesGlob`.
   exclude: ["notepads/**", "**/templates/**"],
   // Ignore files in gitignore syntax, whose patterns exclude as well.
-  excludeFrom: ["configuration/.codometerignore"],
+  excludeFrom: ["configuration/ic-suite/.codometerignore"],
   // Named sets of files measured alongside the codebase itself. The built-in
   // `codebase` whole-tree scan is always present unless one of these entries
   // replaces it by name.

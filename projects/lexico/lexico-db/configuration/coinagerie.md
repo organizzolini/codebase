@@ -15,6 +15,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **ecclesiastical**: Pronunciation variant value for Ecclesiastical Latin, one of classical, ecclesiastical, or vulgar in the enum.
 - **generation**: Field generationStrategy in column expectations, one of increment, rowid, or uuid, that the entity service tests check.
 - **lexeme**: The Lexeme entity, a lexical entry joined to words, which holds part of speech, etymology, and lemma.
+- **lexico**: The Latin dictionary product whose web app, ingestion CLI, and entity packages live under projects/lexico.
 - **literature**: The literature module: Author, Text, Line, and Token entities that tie classical texts to dictionary words.
 - **perfect**: Tense enum value for perfect verb forms, also one of the three non-finite tenses.
 - **pronunciation**: Entity holding a lexeme's classical, ecclesiastical, or vulgar sound variants and transcriptions, one row per variant.

@@ -246,7 +246,7 @@ Always run tasks through Nx rather than the underlying tool, so caching and the 
 
 ### Python Projects
 
-`affirmancy` is a Python project and does not share the TypeScript tool names. It lives in the shared `uv` workspace declared in `configuration/pyproject.toml`, so its dependencies come from that workspace config and `configuration/uv.lock` rather than a manifest of its own.
+`affirmancy` is a Python project and does not share the TypeScript tool names. It lives in the shared `uv` workspace declared in `configuration/python/pyproject.toml`, so its dependencies come from that workspace config and `configuration/python/uv.lock` rather than a manifest of its own.
 
 | Concern   | TypeScript                   | Python          |
 | --------- | ---------------------------- | --------------- |
@@ -287,7 +287,7 @@ Continuous Integration also runs an `End to End IC Suite` leg, which packs the f
 
 **Never silence an error.** No `eslint-disable`, `@ts-ignore`, `@ts-expect-error`, or `nocheck` comments; no loosening `compilerOptions`; no adding ESLint `ignores` or rule overrides to suppress a specific failure. Triage the root cause instead. Suppression is only acceptable when explicitly requested.
 
-See [configuration/eslint.config.ts](configuration/eslint.config.ts) for the complete rule set, and [configuration/codebase-structure.json](configuration/codebase-structure.json) for the folder and file placement rules — placement is a lint error here, not a preference.
+See [configuration/eslint.config.ts](configuration/eslint.config.ts) for the complete rule set, and [configuration/lint/codebase-structure.json](configuration/lint/codebase-structure.json) for the folder and file placement rules — placement is a lint error here, not a preference.
 
 ### Nx Boundaries
 
@@ -322,7 +322,7 @@ When a file nears 512 lines, split it along the module file suffixes instead of 
 
 ### Coverage Gates
 
-- **Test coverage: 96%** for branches, functions, lines, and statements, from [configuration/vitest.config.ts](configuration/vitest.config.ts). New code needs tests in the same change.
+- **Test coverage: 96%** for branches, functions, lines, and statements, from [configuration/typescript/vitest.config.ts](configuration/typescript/vitest.config.ts). New code needs tests in the same change.
 - **Type coverage** is per project, declared as `typeCoverage.atLeast` in that project's `package.json` — most packages sit at 100 with `strict: true`; the workspace root requires 95. Passing `typecheck` proves nothing about this gate, so run both.
 - **Bundle size** is per project, declared in that project's `codometer.config.ts` and gated by its `codometer` target. A breach fails 👷 Make Projects and names the project.
 
@@ -352,12 +352,12 @@ Every configuration these five read lives in [configuration/](../configuration),
 
 ## Git Hooks (Husky)
 
-Three Husky hooks enforce quality gates locally, from [configuration/.husky/](../configuration/.husky). **Never bypass them with `--no-verify`** — fix the underlying issue instead.
+Three Husky hooks enforce quality gates locally, from [configuration/repository/.husky/](../configuration/repository/.husky). **Never bypass them with `--no-verify`** — fix the underlying issue instead.
 
 | Hook         | Trigger      | What it runs                                                                                                                          | Config                                                                |
 | ------------ | ------------ | ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `pre-commit` | `git commit` | Commit signing configuration check, then **lint-staged**: format (`oxfmt`), lint (`oxlint`), and `typecheck` on the affected projects | [lint-staged.config.ts](../configuration/lint-staged.config.ts)       |
-| `commit-msg` | `git commit` | **commitlint**: validates the Conventional Commits format                                                                             | [commitlint.config.ts](../configuration/commitlint.config.ts)         |
+| `pre-commit` | `git commit` | Commit signing configuration check, then **lint-staged**: format (`oxfmt`), lint (`oxlint`), and `typecheck` on the affected projects | [lint-staged.config.ts](../configuration/repository/lint-staged.config.ts)       |
+| `commit-msg` | `git commit` | **commitlint**: validates the Conventional Commits format                                                                             | [commitlint.config.ts](../configuration/repository/commitlint.config.ts)         |
 | `pre-push`   | `git push`   | **validate-branch-name**, then a commit signature check over the pushed commits                                                       | [validate-branch-name.config.cjs](../validate-branch-name.config.cjs) |
 
 If a hook fails, the git operation is blocked until you fix the error. `pre-commit` writes its full output to `last-lint-staged-output.log`, which is where to look when the terminal output is truncated.
@@ -499,7 +499,7 @@ This is also why one project or module per pull request is the rule: the fewer c
 
 ## Issues and Planning
 
-Issues and specs live as GitHub issues in [Organizzolini/codebase](https://github.com/Organizzolini/codebase/issues). Blank issues are disabled, so a human-filed issue goes through the single template, whose Type and Scope dropdowns are kept in step with `configuration/conventional.config.cjs` by a synchronization target:
+Issues and specs live as GitHub issues in [Organizzolini/codebase](https://github.com/Organizzolini/codebase/issues). Blank issues are disabled, so a human-filed issue goes through the single template, whose Type and Scope dropdowns are kept in step with `configuration/repository/conventional.config.cjs` by a synchronization target:
 
 ```bash
 gh issue create --template issue.yml
@@ -532,7 +532,7 @@ See [documentation/agents/issue-tracker.md](../documentation/agents/issue-tracke
 7. **Code review**: requires `@JimmyPaolini` approval ([CODEOWNERS](.github/CODEOWNERS))
 8. **Merge**: squash and merge, then delete the branch
 
-Comply Code creates any label missing from the vocabulary when a pull request is opened or reopened, so a fresh pull request already has the labels it needs. That vocabulary lives in [configuration/conventional.config.cjs](configuration/conventional.config.cjs) and is never hard-coded elsewhere.
+Comply Code creates any label missing from the vocabulary when a pull request is opened or reopened, so a fresh pull request already has the labels it needs. That vocabulary lives in [configuration/repository/conventional.config.cjs](configuration/repository/conventional.config.cjs) and is never hard-coded elsewhere.
 
 Merges go through a merge queue, and the check workflows run again on the queued merge commit — a pull request that was green on its own can still fail there once `main` has moved underneath it.
 
@@ -549,7 +549,7 @@ Releases operate at two distinct tiers:
 1. **Workspace Root (Repository)**: Uses [semantic-release](https://semantic-release.gitbook.io/), fully automated on merge to `main` by the 🦸 Continuous Deployment workflow (`push-releases` target). Versioning is fixed — the whole codebase shares one version — and nothing is published to a package registry.
 2. **IC-Suite Packages (Publishable Packages)**: Uses [Nx Release](https://nx.dev/features/manage-releases) to independently version and publish the 36 publishable packages across the five toolchains (`callidescope`, `codependix`, `codometer`, `coinagerie`, `conformetry`). Each package is versioned from its own commit history, and upstream bumps automatically cascade patch bumps to internal dependents. The 10 unpublished packages (`*-agents` and `*-examples` across the five suites) are explicitly excluded in `nx.json` (`release.projects`) in addition to their private manifest flags.
 
-**Version bumps**, from `releaseRules` in [release.config.cjs](../configuration/release.config.cjs) for the codebase and `release.conventionalCommits` in [nx.json](../nx.json) for each package a commit touches:
+**Version bumps**, from `releaseRules` in [release.config.cjs](../configuration/repository/release.config.cjs) for the codebase and `release.conventionalCommits` in [nx.json](../nx.json) for each package a commit touches:
 
 | Type                                                                      | Codebase | IC-suite package              |
 | ------------------------------------------------------------------------- | -------- | ----------------------------- |
@@ -646,7 +646,7 @@ pnpm add -w <package>
 - [.agents/skills](../.agents/skills) — agent skills, the canonical source for every agent entrypoint
 - [Commit Messages Guide](../.agents/skills/commit-code/SKILL.md)
 - [Code Validation Guide](../.agents/skills/validate-code/SKILL.md)
-- [Semantic Release Config](../configuration/release.config.cjs)
+- [Semantic Release Config](../configuration/repository/release.config.cjs)
 - [GitHub Actions Workflows](./workflows)
 - [Gitmoji Reference](https://gitmoji.dev)
 - [Nx Documentation](https://nx.dev)

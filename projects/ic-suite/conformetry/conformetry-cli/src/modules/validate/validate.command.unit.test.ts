@@ -16,7 +16,7 @@ import type {
   TemplateDefinition,
 } from "@conformetry/configuration";
 
-const CONFIGURATION_PATH = "configuration/conformetry.config.ts";
+const CONFIGURATION_PATH = "configuration/ic-suite/conformetry.config.ts";
 
 const CONFIGURATION: ConformetryConfiguration = [
   {

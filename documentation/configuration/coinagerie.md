@@ -4,6 +4,7 @@
 
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
+- **affirmancy**: A Python Jupyter notebook project that generates affirmations through a LangGraph ReAct agent running on a local Ollama model.
 - **affirmation**: Generated phrase that the affirmations feature planning documents describe, produced by an LLM from tarot-card references.
 - **band**: Horizontal strip of a meander drawing bounded by two borders, which ADR 0004 and ADR 0006 adjust for crossings and branch families.
 - **border**: Edge of a meander band that ADR 0006 closes on both sides in the branch and parallel families through a MotifService hook.
@@ -25,6 +26,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **lattice**: Grid on which every meander sits, which ADR 0007 uses to address each drawing and MeanderLatticeService validates against.
 - **law**: Governing rule in ADR 0011, the universal path and naming law that every project type follows for its file layout.
 - **letter**: Glyph counted in each meander's letter-count map under ADR 0017, counted in all sixteen orientations for every meander.
+- **lexico**: The Latin dictionary product whose web app, ingestion CLI, and entity packages live under projects/lexico.
+- **meander**: Greek key or fret border motif that the meanderaw project generates as SVG from composable motif and modifier definitions.
 - **meanderaw**: Meander drawing project whose cross, branch, and parallel families ADRs 0004 to 0006 change, producing the drawings in the corpus.
 - **phase**: Names the canonical rotation of a meander in ADR 0014, chosen by minimizing seam components for each drawing in the corpus.
 - **pipeline**: Generic meander pipeline of decode, render, compute Characteristics, and classify that ADR 0012 runs for every drawing.

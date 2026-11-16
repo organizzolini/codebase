@@ -45,6 +45,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **instant**: Scroll behavior value that jumps to the target without animation, used by data-grid when moving focus to a cell.
 - **leaf**: Terminal tree node with no children, which cascader selection and data-grid leaf columns treat differently from branches.
 - **letter**: Single character typed for typeahead matching in the cascader, and a letter that a file extension must contain to count.
+- **lexico**: The Latin dictionary product whose web app, ingestion CLI, and entity packages live under projects/lexico.
 - **literature**: Reader typography class in the global stylesheet, a text style for long-form reading that the lexico apps use.
 - **live**: Aria-live regions that announce changes to assistive tech in cascader and data-grid, and live data in example content.
 - **magnitude**: Size of a relative date offset in the filters date editor, parsed from counted text and signed by past or future direction.

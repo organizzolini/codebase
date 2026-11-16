@@ -51,7 +51,7 @@ describe(PluginService, () => {
                 inputs: [
                   "default",
                   "^default",
-                  "{workspaceRoot}/configuration/codependix.config.ts",
+                  "{workspaceRoot}/configuration/ic-suite/codependix.config.ts",
                   "{projectRoot}/configuration/codependix.config.ts",
                   "{workspaceRoot}/tool/src/**/*",
                 ],

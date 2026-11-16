@@ -5,7 +5,8 @@ import { z } from "zod";
 import type { ConventionalLabel } from "./pull-request-labels.types";
 
 /** The vocabulary's single source of truth, relative to the workspace root. */
-export const CONVENTIONAL_CONFIG_PATH = "configuration/conventional.config.cjs";
+export const CONVENTIONAL_CONFIG_PATH =
+  "configuration/repository/conventional.config.cjs";
 
 /** Color every `type:` label carries, so the family reads as one. */
 export const TYPE_LABEL_COLOR = "d93f0b";

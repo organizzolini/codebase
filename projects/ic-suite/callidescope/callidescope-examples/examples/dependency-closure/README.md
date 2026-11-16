@@ -54,7 +54,7 @@ starting roots and three arrive through the closure:
 | `projects/ic-suite/callidescope/callidescope-examples` | Named — the directory the run was pointed at |
 | `.../../examples/gated-leaf` | Named — a nested project [`gated-leaf`](../gated-leaf/README.md) explains, and says why it is named rather than reached |
 | `projects/ic-suite/callidescope/callidescope-configuration` | The fixture above imports it, and [`callidescope.workspace.config.ts`](../../callidescope.workspace.config.ts) imports a type from it |
-| `projects/ic-suite/codometer/codometer-configuration` | Reached through the shared `configuration/codometer.config.ts` that this package's own [`codometer.config.ts`](../../codometer.config.ts) spreads |
+| `projects/ic-suite/codometer/codometer-configuration` | Reached through the shared `configuration/ic-suite/codometer.config.ts` that this package's own [`codometer.config.ts`](../../codometer.config.ts) spreads |
 | `projects/common/observability` | Reached through the shared `configuration/eslint.config.ts`, which imports `@codebase/observability/eslint` |
 
 The last two arrive through the shared configuration directory the closure

@@ -12,7 +12,7 @@ import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { ConformetryConfiguration } from "@conformetry/configuration";
 import type { GeneratorHook } from "@conformetry/core";
 
-const CONFIGURATION_PATH = "configuration/conformetry.config.ts";
+const CONFIGURATION_PATH = "configuration/ic-suite/conformetry.config.ts";
 
 const CONFIGURATION: ConformetryConfiguration = [
   {

@@ -45,6 +45,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **leaf**: Terminal node of the Perseus text tree that writes one markdown file, using p or l nodes or a fallback.
 - **letter**: Part-of-speech value that the lexemes service skips entirely, because a letter entry is not ingested as a lexeme.
 - **lexeme**: Core entity for one dictionary entry, saved per lemma and disambiguator, holding translations, forms, and principal parts.
+- **lexico**: The Latin dictionary product whose web app, ingestion CLI, and entity packages live under projects/lexico.
 - **literature**: Lexico-cli stage that ingests lines and tokens of each text loaded from the library, run by the literature command.
 - **livy**: Literature constants slug for Livy, expanded to titus livius, the historian whose name the literature ingestion uses.
 - **lucan**: Literature constants slug for Lucan, expanded to marcus annaeus lucanus, the epic poet whose name the constants supply.

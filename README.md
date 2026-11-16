@@ -281,7 +281,7 @@ Other important files include [CHANGELOG.md](CHANGELOG.md), [SECURITY.md](.githu
 
 ## 👔 Conformetry
 
-Template-driven code generation and conformance validation, templates synced from [configuration/conformetry.config.ts](configuration/conformetry.config.ts) by `nx run synchronization:conformetry-generators:write`.
+Template-driven code generation and conformance validation, templates synced from [configuration/ic-suite/conformetry.config.ts](configuration/ic-suite/conformetry.config.ts) by `nx run synchronization:conformetry-generators:write`.
 
 <!-- conformetry:start -->
 | Template | Description |

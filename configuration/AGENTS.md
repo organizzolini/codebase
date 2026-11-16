@@ -62,7 +62,7 @@ for tools that require a root entrypoint), `.gitignore`, `.gitattributes`,
 holding a coinagerie configuration is the root its run scans, so the root
 glossary's configuration has to sit at the root, and it writes the
 `GLOSSARY.md` beside it. Every project's own `coinagerie.config.ts` spreads
-`coinagerieConfiguration` from `configuration/coinagerie.config.ts`.
+`coinagerieConfiguration` from `configuration/ic-suite/coinagerie.config.ts`.
 No hook or pull request judges a glossary: the release workflow writes every
 glossary on the default branch, adding new words and removing stale ones, the
 way it writes the callidescope, codependix, and codometer reports. To see a

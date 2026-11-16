@@ -15,6 +15,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **headword**: Dictionary entry's main Latin form, the lemma a search matches exactly, shown as exact-headword in match kinds.
 - **letter**: Count of extra letters in a fuzzy headword match, shown in the tooltip for a prefix match beyond the query.
 - **lexeme**: Dictionary entry for one headword with its forms, pronunciations and etymology, the core record every card shows.
+- **lexico**: The Latin dictionary product whose web app, ingestion CLI, and entity packages live under projects/lexico.
 - **literature**: GraphQL type for literature search results, present in generated mocks and operations but not yet rebuilt as a page.
 - **perfect**: Verb tense name for the perfect, abbreviated PERF in identifiers and listed among the finite verb tenses.
 - **presentation**: Shared component library package @codebase/presentation, built on shadcn/ui, supplying Card, Badge, Tabs and Button.

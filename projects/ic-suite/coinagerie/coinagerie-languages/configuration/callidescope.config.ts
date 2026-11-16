@@ -1,4 +1,4 @@
-import { projectDefaults } from "../../../../../configuration/callidescope.config.js";
+import { projectDefaults } from "../../../../../configuration/ic-suite/callidescope.config.js";
 
 /**
  * What coinagerie-languages is held to, measured rather than assumed.
@@ -11,7 +11,7 @@ import { projectDefaults } from "../../../../../configuration/callidescope.confi
  * limit passes, so the number is a starting point to ratchet down from rather
  * than a target to grow into.
  *
- * @see configuration/callidescope.config.ts — `projectDefaults`, spread below
+ * @see configuration/ic-suite/callidescope.config.ts — `projectDefaults`, spread below
  * for everything this file does not override
  */
 export default {

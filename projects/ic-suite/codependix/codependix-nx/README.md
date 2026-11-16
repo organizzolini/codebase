@@ -31,7 +31,7 @@ Register it in `nx.json`:
     {
       "plugin": "@codependix/nx",
       "options": {
-        "configurationPath": "configuration/codependix.config.ts",
+        "configurationPath": "configuration/ic-suite/codependix.config.ts",
         "gateTargetName": "codependix-bound",
         "projectConfigurationPath": "codependix.config.ts"
       }

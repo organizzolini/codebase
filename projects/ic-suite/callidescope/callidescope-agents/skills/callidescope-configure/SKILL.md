@@ -96,7 +96,7 @@ depth reads source and needs no build, which is what keeps it cheap enough for
 a commit hook.
 
 ```bash
-npx callidescope --config configuration/callidescope.config.ts --check depth
+npx callidescope --config configuration/ic-suite/callidescope.config.ts --check depth
 ```
 
 **In an Nx workspace, prefer the per-project `gate` target to this flag.** A
@@ -115,7 +115,7 @@ drift they did not cause. Publish on the default branch instead, where nothing
 else competes to rewrite the same block:
 
 ```bash
-npx callidescope --config configuration/callidescope.config.ts --write
+npx callidescope --config configuration/ic-suite/callidescope.config.ts --write
 ```
 
 `--write --check reports` is **refused outright**: a report cannot be stale in
@@ -132,7 +132,7 @@ built are those plus every project they transitively import, so a call into a
 dependency still resolves to a real frame:
 
 ```bash
-npx callidescope --config configuration/callidescope.config.ts -d packages/foo,packages/bar --check depth
+npx callidescope --config configuration/ic-suite/callidescope.config.ts -d packages/foo,packages/bar --check depth
 ```
 
 Omit it and callidescope walks the working directory for every `tsconfig.json`
@@ -188,13 +188,13 @@ an argument would read as a green one.
 A `.ts` (preferred, for type checking), `.mts`, `.cts`, `.js`, `.mjs`, `.cjs`,
 `.json`, or `.jsonc` file. The **workspace** configuration is the file a run is
 pointed at with the required `--config` (an Nx target's `configuration`, the
-plugin's `configurationPath`), never searched for: `configuration/callidescope.config.ts`.
+plugin's `configurationPath`), never searched for: `configuration/ic-suite/callidescope.config.ts`.
 
 ```ts
 import { type CallidescopeConfiguration } from "@callidescope/configuration";
 
 const callidescopeConfiguration: CallidescopeConfiguration = {
-  excludeFrom: ["configuration/.callidescopeignore"],
+  excludeFrom: ["configuration/ic-suite/.callidescopeignore"],
   limits: { maximumDepth: 6 },
   projectConfigurationPath: "configuration/callidescope.config.ts",
 };
@@ -480,7 +480,7 @@ file it used to live in. The `limits` command is where it is reviewable as a
 set instead:
 
 ```bash
-npx callidescope limits --config configuration/callidescope.config.ts
+npx callidescope limits --config configuration/ic-suite/callidescope.config.ts
 ```
 
 A markdown table, one row per project per limit — `Project`, `Limit`, `Value`,

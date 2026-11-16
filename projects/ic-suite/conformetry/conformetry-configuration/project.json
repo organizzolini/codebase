@@ -37,7 +37,7 @@
     "spell-check": {},
     "test-code": {
       "inputs": [
-        "{workspaceRoot}/configuration/conformetry.config.ts",
+        "{workspaceRoot}/configuration/ic-suite/conformetry.config.ts",
         "default"
       ]
     },
@@ -62,7 +62,7 @@
         },
         {
           "fields": ["compilerOptions"],
-          "json": "{workspaceRoot}/configuration/tsconfig.workspace.json"
+          "json": "{workspaceRoot}/configuration/typescript/tsconfig.workspace.json"
         },
         {
           "externalDependencies": ["vitest"]
@@ -74,7 +74,7 @@
           "dependentTasksOutputFiles": "**/*.js",
           "transitive": true
         },
-        "{workspaceRoot}/configuration/conformetry.config.ts"
+        "{workspaceRoot}/configuration/ic-suite/conformetry.config.ts"
       ]
     },
     "yaml-lint": {}

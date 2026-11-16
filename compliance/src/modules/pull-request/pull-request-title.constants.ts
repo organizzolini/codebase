@@ -3,5 +3,5 @@
 export const COMMITLINT_ARGUMENTS = [
   "commitlint",
   "--config",
-  "configuration/commitlint.config.ts",
+  "configuration/repository/commitlint.config.ts",
 ] as const;

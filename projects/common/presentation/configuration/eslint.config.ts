@@ -28,10 +28,12 @@ export default [
       "@nx/dependency-checks": [
         "error",
         {
+          // tailwindcss-animate: required only by configuration/tailwind.config.cjs.
           ignoredDependencies: [
             "vite",
             "@vitejs/plugin-react",
             "vite-plugin-dts",
+            "tailwindcss-animate",
           ],
           ignoredFiles: ["{projectRoot}/configuration/**"],
         },

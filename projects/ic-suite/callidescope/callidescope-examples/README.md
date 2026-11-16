@@ -336,9 +336,9 @@ over exactly the drift this gate exists to catch.
 Two command lines are refused outright:
 
 ```bash
-callidescope --config configuration/callidescope.config.ts --write --check reports   # a report cannot be stale in the run that just wrote it
-callidescope --config configuration/callidescope.config.ts --check lint              # not a finding this tool has
-callidescope --config configuration/callidescope.config.ts --check                   # a gate that cannot fail is a mistake, not a shorthand
+callidescope --config configuration/ic-suite/callidescope.config.ts --write --check reports   # a report cannot be stale in the run that just wrote it
+callidescope --config configuration/ic-suite/callidescope.config.ts --check lint              # not a finding this tool has
+callidescope --config configuration/ic-suite/callidescope.config.ts --check                   # a gate that cannot fail is a mistake, not a shorthand
 ```
 
 ## Acting on a finding
@@ -411,7 +411,7 @@ Four decisions are worth making deliberately:
    a wrong-looking label rather than a missing subtree.
 3. **`excludeFrom`.** Point it at a gitignore-syntax file rather than growing
    the configuration. This repository's
-   [`.callidescopeignore`](../../../../configuration/.callidescopeignore) excludes
+   [`.callidescopeignore`](../../../../configuration/ic-suite/.callidescopeignore) excludes
    generated code, template sources, and — the reason it matters here — this
    package, whose fixtures exist to breach the limits the workspace gate
    enforces.
@@ -432,7 +432,7 @@ whose entire content is deliberately-shaped fixture code. The answers:
 
 | Check | Answer |
 | ----- | ------ |
-| Workspace depth gate | The package is in [`.callidescopeignore`](../../../../configuration/.callidescopeignore) and traced by its own configuration instead |
+| Workspace depth gate | The package is in [`.callidescopeignore`](../../../../configuration/ic-suite/.callidescopeignore) and traced by its own configuration instead |
 | Published section | Yes — this package declares its own `write.markdown`, because a section reporting the deliberately-bad fixtures is the best example in the package, not noise |
 | Test coverage | Nothing is instrumented. Fixture code exists to be read by the type checker, not executed; what is verified is what callidescope makes of it |
 | `knip` and `fallow` | Every fixture is declared an entry point rather than ignored, so both keep checking dependencies while the orphan-root fixture stops being a finding |
@@ -440,7 +440,7 @@ whose entire content is deliberately-shaped fixture code. The answers:
 | `codometer` | No declared size limit: the package is private and never built, so there is no bundle to gate |
 | Nested projects | One example directory, `gated-leaf`, holds a `tsconfig.json` and no `package.json`. The first is what makes it a project with limits of its own; the second is deliberate — Nx infers a project from a nested `package.json`, and a `tsconfig.json` and a `package.json` nested one directory apart would collide with `@nx/enforce-module-boundaries`. It is named in the run's `--directories` instead |
 | Nx tags | `type:package`, `framework:nestjs`, `language:typescript`, `name:callidescope-examples`. The NestJS dependency is real — `injected-dependency` is the headline case |
-| Project layout | An `examples/` directory rather than `src/modules/`, matching the other `*-examples` packages. `configuration/codebase-structure.json` declares it |
+| Project layout | An `examples/` directory rather than `src/modules/`, matching the other `*-examples` packages. `configuration/lint/codebase-structure.json` declares it |
 | `conformetry` | Not an instance of any template, and nothing had to be suppressed to keep it that way — see below |
 
 The layout is what keeps this package out of conformance, and it is worth

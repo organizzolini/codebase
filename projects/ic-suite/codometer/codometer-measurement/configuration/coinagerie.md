@@ -9,6 +9,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **breadth**: Callidescope maximumBreadth limit this package holds itself to, set to nine in its own callidescope configuration.
 - **budget**: Per-comment allowance checked in the customization pass, judged against each comment block's own configured limit.
 - **bundle**: Compiled JavaScript output that this package's own codometer config measures, held to a 32 KB size limit.
+- **codometerignore**: Ignore file at configuration/ic-suite/.codometerignore that tells codometer which paths to skip when it measures sizes and counts.
 - **counter**: Custom metric that measures files by path, declarations by symbol, or comments, as the customization service describes.
 - **pipeline**: Measurement pipeline, the sequence of inputs, discovery, size, and limits services that one codometer run passes through.
 - **selector**: Config key naming which files or declarations a custom statistic counts, such as a language or a documentable kind.

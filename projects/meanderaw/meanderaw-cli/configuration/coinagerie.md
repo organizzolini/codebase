@@ -31,6 +31,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **ink**: The inked points of a unit, the strokes a Code draws, which nearly every characteristic counts, walks, or measures.
 - **lattice**: The rows-by-columns grid of points and edges that a Code spells, the structure every meander and characteristic is measured on.
 - **letter**: A script glyph whose ink is characterized by a letter service with sixteen orientation evaluators, held in the letter submatrix folder.
+- **meander**: Greek key or fret border motif that the meanderaw project generates as SVG from composable motif and modifier definitions.
 - **meanderaw**: The project name, the NestJS CLI that draws meanders into Postgres rows, and the meanderaw web application beside it.
 - **mesh**: A pattern characteristic named for a mesh of crossed strands, computed for each unit by IsMeshCharacteristicService.
 - **minima**: The canonical orbit minimum of each symmetry class, which draw pool cuts into batches for worker threads to draw.

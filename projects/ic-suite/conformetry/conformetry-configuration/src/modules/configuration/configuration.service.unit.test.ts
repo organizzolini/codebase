@@ -375,7 +375,7 @@ describe(ConfigurationService, () => {
     const configuration = await service.loadConformetryConfiguration(
       fileURLToPath(
         new URL(
-          "../../../../../../../configuration/conformetry.config.ts",
+          "../../../../../../../configuration/ic-suite/conformetry.config.ts",
           import.meta.url,
         ),
       ),
@@ -402,8 +402,10 @@ describe(ConfigurationService, () => {
 
     it("resolves a relative path against the cwd only, never the workspace root", () => {
       expect(
-        service.resolveConfigurationPath("configuration/conformetry.config.ts"),
-      ).toBe(path.resolve("configuration/conformetry.config.ts"));
+        service.resolveConfigurationPath(
+          "configuration/ic-suite/conformetry.config.ts",
+        ),
+      ).toBe(path.resolve("configuration/ic-suite/conformetry.config.ts"));
     });
   });
 

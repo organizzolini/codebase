@@ -4,6 +4,7 @@
 
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
+- **affirmancy**: A Python Jupyter notebook project that generates affirmations through a LangGraph ReAct agent running on a local Ollama model.
 - **affirmation**: Pydantic model in src/models.py holding one generated sentence of text, which the output writer numbers into per-grammar lists.
 - **aleph**: A Subject in the Hebrew Letter category, first in order, whose metadata carries the character alef.
 - **angle**: Metadata key on astrology aspects giving the degree separation between two bodies, such as zero for a conjunction.

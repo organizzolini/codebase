@@ -1,4 +1,4 @@
-import { projectDefaults } from "../../../../configuration/callidescope.config.js";
+import { projectDefaults } from "../../../../configuration/ic-suite/callidescope.config.js";
 
 /**
  * What the shared test code is held to, measured rather than assumed.

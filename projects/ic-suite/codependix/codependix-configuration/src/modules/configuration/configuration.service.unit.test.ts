@@ -217,7 +217,7 @@ describe(ConfigurationService, () => {
       const configuration = await service.loadConfiguration({
         configurationPath: path.resolve(
           import.meta.dirname,
-          "../../../../../../../configuration/codependix.config.ts",
+          "../../../../../../../configuration/ic-suite/codependix.config.ts",
         ),
       });
 

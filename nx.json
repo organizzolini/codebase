@@ -47,7 +47,7 @@
       "{projectRoot}/**/*.ipynb",
       "{projectRoot}/**/*.py",
       "{projectRoot}/pyproject.toml",
-      "{workspaceRoot}/configuration/uv.lock"
+      "{workspaceRoot}/configuration/python/uv.lock"
     ],
     "python-tests": ["{projectRoot}/testing/**/*.py"],
     "shared-globals": ["{workspaceRoot}/configuration/tsconfig.json"],
@@ -63,21 +63,21 @@
   "plugins": [
     {
       "options": {
-        "configurationPath": "configuration/conformetry.config.ts",
+        "configurationPath": "configuration/ic-suite/conformetry.config.ts",
         "validateTargetName": "conformetry-validate"
       },
       "plugin": "@conformetry/nx"
     },
     {
       "options": {
-        "configurationPath": "configuration/callidescope.config.ts",
+        "configurationPath": "configuration/ic-suite/callidescope.config.ts",
         "projectConfigurationPath": "configuration/callidescope.config.ts"
       },
       "plugin": "@callidescope/nx"
     },
     {
       "options": {
-        "configurationPath": "configuration/codependix.config.ts",
+        "configurationPath": "configuration/ic-suite/codependix.config.ts",
         "gateTargetName": "codependix-bound",
         "projectConfigurationPath": "configuration/codependix.config.ts"
       },
@@ -88,7 +88,7 @@
       "options": {
         "command": "SWC_NODE_PROJECT=\"$NX_WORKSPACE_ROOT/configuration/tsconfig.json\" node --import @swc-node/register/esm-register \"$NX_WORKSPACE_ROOT/projects/ic-suite/coinagerie/coinagerie-cli/src/coinagerie-cli.main.ts\"",
         "inputs": [
-          "{workspaceRoot}/configuration/coinagerie.config.ts",
+          "{workspaceRoot}/configuration/ic-suite/coinagerie.config.ts",
           "{workspaceRoot}/GLOSSARY.md",
           "{workspaceRoot}/projects/ic-suite/coinagerie/*/src/**/!(*.test.*|*.spec.*)"
         ],
@@ -199,12 +199,12 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock",
           "python-source"
         ],
         "options": {
-          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" bandit -c pyproject.toml -r src/",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" bandit -c pyproject.toml -r src/",
           "cwd": "{projectRoot}"
         }
       }
@@ -221,13 +221,13 @@
       {
         "cache": true,
         "dependsOn": ["^build"],
-        "description": "The `projects/ic-suite/<suite>/` override of the default `build` entry above: every field is identical except the one extra input. Each ic-suite `vite.config.ts` builds from `configuration/vite.library.config.ts`, which belongs to the `configuration` project, so without it a change there neither invalidates a cached build nor makes these packages affected — and Nx release reads that same affected set to decide which packages a commit republishes. Kept as a full second entry because Nx does not merge across matching targetDefaults array entries; the last one whose `filter` matches a project replaces the earlier entry wholesale.",
+        "description": "The `projects/ic-suite/<suite>/` override of the default `build` entry above: every field is identical except the one extra input. Each ic-suite `vite.config.ts` builds from `configuration/typescript/vite.library.config.ts`, which belongs to the `configuration` project, so without it a change there neither invalidates a cached build nor makes these packages affected — and Nx release reads that same affected set to decide which packages a commit republishes. Kept as a full second entry because Nx does not merge across matching targetDefaults array entries; the last one whose `filter` matches a project replaces the earlier entry wholesale.",
         "filter": {
           "projects": ["projects/ic-suite/*/*"]
         },
         "inputs": [
           "^production",
-          "{workspaceRoot}/configuration/vite.library.config.ts",
+          "{workspaceRoot}/configuration/typescript/vite.library.config.ts",
           "dependency-versions",
           "production"
         ]
@@ -258,8 +258,8 @@
         "inputs": [
           "!{projectRoot}/codometer-report.json",
           "^production",
-          "{workspaceRoot}/configuration/.codometerignore",
-          "{workspaceRoot}/configuration/codometer.config.ts",
+          "{workspaceRoot}/configuration/ic-suite/.codometerignore",
+          "{workspaceRoot}/configuration/ic-suite/codometer.config.ts",
           "{workspaceRoot}/integration/executors.json",
           "{workspaceRoot}/integration/src/executors/codometer/**/!(*.test.*|*.spec.*)",
           "{workspaceRoot}/integration/src/modules/process-runner/process-runner.service.ts",
@@ -300,14 +300,14 @@
           "^default",
           "{projectRoot}/**/*.ts",
           "{projectRoot}/**/*.tsx",
-          "{workspaceRoot}/configuration/dependency-cruiser.cjs",
+          "{workspaceRoot}/configuration/typescript/dependency-cruiser.cjs",
           "default",
           {
             "externalDependencies": ["dependency-cruiser"]
           }
         ],
         "options": {
-          "command": "depcruise {projectRoot}/src --config configuration/dependency-cruiser.cjs",
+          "command": "depcruise {projectRoot}/src --config configuration/typescript/dependency-cruiser.cjs",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -340,12 +340,12 @@
       "executor": "nx:run-commands",
       "inputs": [
         "^production",
-        "{workspaceRoot}/configuration/vitest.packed.config.mts",
+        "{workspaceRoot}/configuration/typescript/vitest.packed.config.mts",
         "default",
         "dependency-versions"
       ],
       "options": {
-        "command": "pnpm exec vitest run --root . --config \"$NX_WORKSPACE_ROOT/configuration/vitest.packed.config.mts\"",
+        "command": "pnpm exec vitest run --root . --config \"$NX_WORKSPACE_ROOT/configuration/typescript/vitest.packed.config.mts\"",
         "cwd": "{projectRoot}"
       }
     },
@@ -368,8 +368,8 @@
         "inputs": [
           "!{projectRoot}/.eslintcache/**",
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,html,css,scss,md,mdx,yaml,yml}",
-          "{workspaceRoot}/configuration/codebase-structure.json",
           "{workspaceRoot}/configuration/eslint.config.ts",
+          "{workspaceRoot}/configuration/lint/codebase-structure.json",
           "shared-globals",
           {
             "externalDependencies": [
@@ -412,7 +412,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/configuration/fallow.config.jsonc",
+          "{workspaceRoot}/configuration/typescript/fallow.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["fallow"]
@@ -430,7 +430,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/configuration/fallow.config.jsonc",
+          "{workspaceRoot}/configuration/typescript/fallow.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["fallow"]
@@ -448,7 +448,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/configuration/fallow.config.jsonc",
+          "{workspaceRoot}/configuration/typescript/fallow.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["fallow"]
@@ -466,7 +466,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/configuration/fallow.config.jsonc",
+          "{workspaceRoot}/configuration/typescript/fallow.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["fallow"]
@@ -484,7 +484,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/configuration/fallow.config.jsonc",
+          "{workspaceRoot}/configuration/typescript/fallow.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["fallow"]
@@ -511,8 +511,8 @@
       "executor": "nx:noop",
       "inputs": [
         "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,css,scss,html,yaml,yml,md,mdx,py,ipynb,sql}",
-        "{workspaceRoot}/configuration/.cspell/**",
-        "{workspaceRoot}/configuration/cspell.config.yaml"
+        "{workspaceRoot}/configuration/lint/.cspell/**",
+        "{workspaceRoot}/configuration/lint/cspell.config.yaml"
       ]
     },
     "guard-code": {
@@ -553,7 +553,7 @@
           "projects": ["tag:language:typescript"]
         },
         "inputs": [
-          "{workspaceRoot}/configuration/knip.config.ts",
+          "{workspaceRoot}/configuration/typescript/knip.config.ts",
           "{workspaceRoot}/integration/executors.json",
           "{workspaceRoot}/integration/src/executors/knip/**/!(*.test.*|*.spec.*)",
           "{workspaceRoot}/integration/src/modules/process-runner/process-runner.service.ts",
@@ -563,7 +563,7 @@
           }
         ],
         "options": {
-          "configuration": "configuration/knip.config.ts"
+          "configuration": "configuration/typescript/knip.config.ts"
         }
       }
     ],
@@ -595,10 +595,10 @@
         "cache": true,
         "configurations": {
           "check": {
-            "command": "markdownlint-cli2 --config configuration/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'"
+            "command": "markdownlint-cli2 --config configuration/lint/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'"
           },
           "write": {
-            "command": "markdownlint-cli2 --fix --config configuration/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'"
+            "command": "markdownlint-cli2 --fix --config configuration/lint/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'"
           }
         },
         "defaultConfiguration": "check",
@@ -612,14 +612,14 @@
         },
         "inputs": [
           "{projectRoot}/**/*.md",
-          "{workspaceRoot}/configuration/markdownlint-cli2.config.jsonc",
+          "{workspaceRoot}/configuration/lint/markdownlint-cli2.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["markdownlint-cli2"]
           }
         ],
         "options": {
-          "command": "markdownlint-cli2 --config configuration/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'",
+          "command": "markdownlint-cli2 --config configuration/lint/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -679,11 +679,11 @@
         },
         "inputs": [
           "{projectRoot}/src/**/*.ipynb",
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock"
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock"
         ],
         "options": {
-          "command": "find src -name '*.ipynb' -exec uv run --project \"$NX_WORKSPACE_ROOT/configuration\" nbstripout {args} {} +",
+          "command": "find src -name '*.ipynb' -exec uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" nbstripout {args} {} +",
           "cwd": "{projectRoot}"
         }
       }
@@ -706,15 +706,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,html,css,scss,md,mdx,yaml,yml}",
-          "{workspaceRoot}/configuration/.oxfmtignore",
-          "{workspaceRoot}/configuration/oxfmt.config.ts",
+          "{workspaceRoot}/configuration/lint/.oxfmtignore",
+          "{workspaceRoot}/configuration/lint/oxfmt.config.ts",
           "shared-globals",
           {
             "externalDependencies": ["oxfmt"]
           }
         ],
         "options": {
-          "command": "oxfmt -c configuration/oxfmt.config.ts --ignore-path configuration/.oxfmtignore {args} {projectRoot}",
+          "command": "oxfmt -c configuration/lint/oxfmt.config.ts --ignore-path configuration/lint/.oxfmtignore {args} {projectRoot}",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -735,15 +735,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/configuration/.oxlintignore",
-          "{workspaceRoot}/configuration/oxlint.config.ts",
+          "{workspaceRoot}/configuration/lint/.oxlintignore",
+          "{workspaceRoot}/configuration/lint/oxlint.config.ts",
           "shared-globals",
           {
             "externalDependencies": ["oxlint"]
           }
         ],
         "options": {
-          "command": "oxlint --config configuration/oxlint.config.ts --ignore-path \"$PWD/configuration/.oxlintignore\" {args} {projectRoot}/src",
+          "command": "oxlint --config configuration/lint/oxlint.config.ts --ignore-path \"$PWD/configuration/lint/.oxlintignore\" {args} {projectRoot}/src",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -783,15 +783,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,html,css,scss,md,mdx,yaml,yml}",
-          "{workspaceRoot}/configuration/.prettierignore",
-          "{workspaceRoot}/configuration/prettier.config.ts",
+          "{workspaceRoot}/configuration/lint/.prettierignore",
+          "{workspaceRoot}/configuration/lint/prettier.config.ts",
           "shared-globals",
           {
             "externalDependencies": ["prettier"]
           }
         ],
         "options": {
-          "command": "prettier {args} --config configuration/prettier.config.ts --ignore-path configuration/.prettierignore {projectRoot}"
+          "command": "prettier {args} --config configuration/lint/prettier.config.ts --ignore-path configuration/lint/.prettierignore {projectRoot}"
         }
       }
     ],
@@ -803,12 +803,12 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock",
           "python-source"
         ],
         "options": {
-          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" pyright src/",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" pyright src/",
           "cwd": "{projectRoot}"
         }
       }
@@ -818,16 +818,16 @@
         "cache": true,
         "configurations": {
           "coverage": {
-            "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" pytest --cov=src --cov-report=xml:coverage/python.xml --cov-report=term-missing"
+            "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" pytest --cov=src --cov-report=xml:coverage/python.xml --cov-report=term-missing"
           },
           "integration": {
-            "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" pytest -m integration"
+            "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" pytest -m integration"
           },
           "unit": {
-            "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" pytest -m unit"
+            "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" pytest -m unit"
           },
           "watch": {
-            "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" pytest-watch"
+            "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" pytest-watch"
           }
         },
         "executor": "nx:run-commands",
@@ -835,13 +835,13 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock",
           "python-source",
           "python-tests"
         ],
         "options": {
-          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" pytest",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" pytest",
           "cwd": "{projectRoot}"
         }
       }
@@ -875,12 +875,12 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock",
           "python-source"
         ],
         "options": {
-          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" ruff format {args} .",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" ruff format {args} .",
           "cwd": "{projectRoot}"
         }
       }
@@ -900,12 +900,12 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock",
           "python-source"
         ],
         "options": {
-          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" ruff check {args} .",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" ruff check {args} .",
           "cwd": "{projectRoot}"
         }
       }
@@ -936,8 +936,8 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,css,scss,html,yaml,yml,md,mdx,py,ipynb,sql}",
-          "{workspaceRoot}/configuration/.cspell/**",
-          "{workspaceRoot}/configuration/cspell.config.yaml",
+          "{workspaceRoot}/configuration/lint/.cspell/**",
+          "{workspaceRoot}/configuration/lint/cspell.config.yaml",
           "{workspaceRoot}/integration/executors.json",
           "{workspaceRoot}/integration/src/executors/spell-check/**/!(*.test.*|*.spec.*)",
           "{workspaceRoot}/integration/src/modules/process-runner/process-runner.service.ts",
@@ -947,7 +947,7 @@
           }
         ],
         "options": {
-          "configuration": "configuration/cspell.config.yaml"
+          "configuration": "configuration/lint/cspell.config.yaml"
         }
       }
     ],
@@ -969,15 +969,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.sql",
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock",
           "shared-globals",
           {
             "externalDependencies": []
           }
         ],
         "options": {
-          "command": "uv run --project configuration sqlfluff {args} --config configuration/pyproject.toml {projectRoot}",
+          "command": "uv run --project configuration/python sqlfluff {args} --config configuration/python/pyproject.toml {projectRoot}",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -1000,15 +1000,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.sql",
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock",
           "shared-globals",
           {
             "externalDependencies": []
           }
         ],
         "options": {
-          "command": "uv run --project configuration sqlfluff {args} --config configuration/pyproject.toml {projectRoot}",
+          "command": "uv run --project configuration/python sqlfluff {args} --config configuration/python/pyproject.toml {projectRoot}",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -1022,14 +1022,14 @@
         },
         "inputs": [
           "{projectRoot}/src/**/*.sql",
-          "{workspaceRoot}/configuration/squawk.toml",
+          "{workspaceRoot}/configuration/python/squawk.toml",
           "shared-globals",
           {
             "externalDependencies": ["squawk-cli"]
           }
         ],
         "options": {
-          "command": "squawk --config configuration/squawk.toml '{projectRoot}/src/**/*.sql'",
+          "command": "squawk --config configuration/python/squawk.toml '{projectRoot}/src/**/*.sql'",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -1069,10 +1069,10 @@
         "cache": true,
         "configurations": {
           "check": {
-            "command": "stylelint --allow-empty-input --config configuration/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
+            "command": "stylelint --allow-empty-input --config configuration/lint/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
           },
           "write": {
-            "command": "stylelint --allow-empty-input --fix --config configuration/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
+            "command": "stylelint --allow-empty-input --fix --config configuration/lint/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
           }
         },
         "defaultConfiguration": "check",
@@ -1082,7 +1082,7 @@
         },
         "inputs": [
           "{projectRoot}/src/**/*.css",
-          "{workspaceRoot}/configuration/stylelint.config.cjs",
+          "{workspaceRoot}/configuration/lint/stylelint.config.cjs",
           "shared-globals",
           {
             "externalDependencies": [
@@ -1093,17 +1093,17 @@
           }
         ],
         "options": {
-          "command": "stylelint --allow-empty-input --config configuration/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
+          "command": "stylelint --allow-empty-input --config configuration/lint/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
         }
       },
       {
         "cache": true,
         "configurations": {
           "check": {
-            "command": "stylelint --allow-empty-input --config ../../../configuration/stylelint.config.cjs 'src/**/*.css'"
+            "command": "stylelint --allow-empty-input --config ../../../configuration/lint/stylelint.config.cjs 'src/**/*.css'"
           },
           "write": {
-            "command": "stylelint --allow-empty-input --fix --config ../../../configuration/stylelint.config.cjs 'src/**/*.css'"
+            "command": "stylelint --allow-empty-input --fix --config ../../../configuration/lint/stylelint.config.cjs 'src/**/*.css'"
           }
         },
         "defaultConfiguration": "check",
@@ -1121,7 +1121,7 @@
         },
         "inputs": [
           "{projectRoot}/src/**/*.css",
-          "{workspaceRoot}/configuration/stylelint.config.cjs",
+          "{workspaceRoot}/configuration/lint/stylelint.config.cjs",
           "shared-globals",
           {
             "externalDependencies": [
@@ -1132,7 +1132,7 @@
           }
         ],
         "options": {
-          "command": "stylelint --allow-empty-input --config ../../../configuration/stylelint.config.cjs 'src/**/*.css'",
+          "command": "stylelint --allow-empty-input --config ../../../configuration/lint/stylelint.config.cjs 'src/**/*.css'",
           "cwd": "{projectRoot}"
         }
       }
@@ -1158,12 +1158,12 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock",
           "python-source"
         ],
         "options": {
-          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" ty check src/",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" ty check src/",
           "cwd": "{projectRoot}"
         }
       }
@@ -1264,13 +1264,13 @@
         },
         {
           "fields": ["compilerOptions"],
-          "json": "{workspaceRoot}/configuration/tsconfig.workspace.json"
+          "json": "{workspaceRoot}/configuration/typescript/tsconfig.workspace.json"
         },
         {
           "fields": ["compilerOptions"],
           "json": "{workspaceRoot}/projects/common/testing/tsconfig.json"
         },
-        "{workspaceRoot}/configuration/vitest.config.ts",
+        "{workspaceRoot}/configuration/typescript/vitest.config.ts",
         "{workspaceRoot}/projects/common/testing/src/setup.ts",
         {
           "env": "CI"
@@ -1303,15 +1303,15 @@
         },
         "inputs": [
           "{projectRoot}/configuration/.vulture_whitelist.py",
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock",
           "python-source",
           {
             "externalDependencies": []
           }
         ],
         "options": {
-          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" python -m vulture src/ configuration/.vulture_whitelist.py --min-confidence 80",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" python -m vulture src/ configuration/.vulture_whitelist.py --min-confidence 80",
           "cwd": "{projectRoot}"
         }
       }
@@ -1329,16 +1329,16 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{yaml,yml}",
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock",
-          "{workspaceRoot}/configuration/yamllint.yaml",
+          "{workspaceRoot}/configuration/lint/yamllint.yaml",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock",
           "shared-globals",
           {
             "externalDependencies": []
           }
         ],
         "options": {
-          "command": "uv run --project configuration yamllint -c configuration/yamllint.yaml '{projectRoot}'",
+          "command": "uv run --project configuration/python yamllint -c configuration/lint/yamllint.yaml '{projectRoot}'",
           "cwd": "{workspaceRoot}"
         }
       }

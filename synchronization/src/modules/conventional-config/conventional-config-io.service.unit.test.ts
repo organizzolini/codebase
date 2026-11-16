@@ -51,7 +51,7 @@ describe(ConventionalConfigIoService, () => {
   const workspaceRoot = process.cwd();
   const releaseConfigFile = path.join(
     workspaceRoot,
-    "configuration/release.config.cjs",
+    "configuration/repository/release.config.cjs",
   );
   const settingsFile = path.join(workspaceRoot, ".vscode/settings.json");
 

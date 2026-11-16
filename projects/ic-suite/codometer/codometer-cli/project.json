@@ -55,7 +55,7 @@
     "vitest": {
       "inputs": [
         "...",
-        "{workspaceRoot}/configuration/vite.library.config.ts",
+        "{workspaceRoot}/configuration/typescript/vite.library.config.ts",
         {
           "externalDependencies": ["vite"]
         }

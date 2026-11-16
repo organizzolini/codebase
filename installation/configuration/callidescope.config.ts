@@ -1,4 +1,4 @@
-import { projectDefaults } from "../../configuration/callidescope.config.js";
+import { projectDefaults } from "../../configuration/ic-suite/callidescope.config.js";
 
 export default {
   ...projectDefaults,

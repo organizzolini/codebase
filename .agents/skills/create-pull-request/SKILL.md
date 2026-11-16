@@ -39,8 +39,8 @@ suffixes do not push the queued commit subject over the header limit.
 
 ### Structure Rules
 
-1. **Type**: Required, lowercase, from [allowed types](../../../configuration/conventional.config.cjs)
-2. **Scope**: Required, lowercase, from [allowed scopes](../../../configuration/conventional.config.cjs)
+1. **Type**: Required, lowercase, from [allowed types](../../../configuration/repository/conventional.config.cjs)
+2. **Scope**: Required, lowercase, from [allowed scopes](../../../configuration/repository/conventional.config.cjs)
 3. **Gitmoji**: Required, emoji at start of subject
 4. **Subject**: Required, lowercase, imperative mood, no period
 

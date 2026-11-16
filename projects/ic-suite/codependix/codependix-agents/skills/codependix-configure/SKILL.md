@@ -9,7 +9,7 @@ license: MIT
 Codependix produces nothing until a configuration tells it what to export and
 where. Every field of the file is optional, but the file itself never is: every
 run names it with `--config <path>` (in this repository,
-`--config configuration/codependix.config.ts`), and a run naming none
+`--config configuration/ic-suite/codependix.config.ts`), and a run naming none
 is refused. A configuration that leaves out `include` resolves every graph type
 for every project to `target: "none"` — a successful run that writes nothing.
 The configuration is the whole control surface; there is no flag that selects a
@@ -47,7 +47,7 @@ export default codependixConfiguration;
 
 Nowhere: it is named. `--config <path>` is required, with no default filename,
 no search, and no walk upward, so `codependix map --write --config
-configuration/codependix.config.ts` reads that file and nothing else.
+configuration/ic-suite/codependix.config.ts` reads that file and nothing else.
 Any extension in `ts`, `mts`, `cts`, `js`, `mjs`, `cjs`, or `json` loads; a
 neighboring file is never read in its place.
 
@@ -62,7 +62,7 @@ neighboring file is never read in its place.
 
 A project's own configuration file is named too: the workspace file's required
 `projectConfigurationPath` setting gives its path relative to each project's
-root (`"codependix.config.ts"`, or `"configuration/codependix.config.ts"`).
+root (`"codependix.config.ts"`, or `"configuration/ic-suite/codependix.config.ts"`).
 Only that path is read, never a parent's file and never a neighbor, and a
 project with no file there produces no per-project output. A configuration
 without `projectConfigurationPath` is rejected.
@@ -337,7 +337,7 @@ it is given a `project.json`. Register the plugin once in `nx.json`:
     {
       "plugin": "@codependix/nx",
       "options": {
-        "configurationPath": "configuration/codependix.config.ts",
+        "configurationPath": "configuration/ic-suite/codependix.config.ts",
         "gateTargetName": "codependix-bound",
         "projectConfigurationPath": "codependix.config.ts"
       }

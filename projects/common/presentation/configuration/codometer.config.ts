@@ -1,4 +1,4 @@
-import { codometerConfiguration } from "../../../../configuration/codometer.config.js";
+import { codometerConfiguration } from "../../../../configuration/ic-suite/codometer.config.js";
 
 /**
  * What this component library is measured by.

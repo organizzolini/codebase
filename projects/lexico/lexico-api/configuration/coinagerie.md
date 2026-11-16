@@ -14,6 +14,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **disambiguator**: Numeric lexeme field separating homographs that share a headword, such as two entries spelled the same way.
 - **headword**: Dictionary entry form that a search matches first, seeded with English senses and ranked by the search service.
 - **lexeme**: Dictionary entry for a Latin word, the core entity of the lexicon carrying its headword, translations, forms, and pronunciation.
+- **lexico**: The Latin dictionary product whose web app, ingestion CLI, and entity packages live under projects/lexico.
 - **literature**: Domain module for authors, texts, lines, tokens, and passages, the largest area of the lexico API's resolvers and services.
 - **pronunciation**: Lexeme field recording how a word is pronounced, with phonemes, phonetic spelling, and variant data mapped to GraphQL.
 - **quick**: Word in the README Quick Start heading, introducing the short setup steps for running the lexico API locally.

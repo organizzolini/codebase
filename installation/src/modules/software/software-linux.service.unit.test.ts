@@ -81,7 +81,7 @@ describe(SoftwareLinuxService, () => {
 
     expect(steps.python.installPythonThroughUv).toHaveBeenCalledWith();
     expect(steps.commands).toStrictEqual([
-      "uv sync --project configuration",
+      "uv sync --project configuration/python",
       "uv tool install linode-cli",
     ]);
     expect(steps.database.installSquawk).toHaveBeenCalledWith();
@@ -110,7 +110,7 @@ describe(SoftwareLinuxService, () => {
   });
 
   it("warns when the Python environment cannot be synced", async () => {
-    const steps = await createSteps(["uv sync --project configuration"]);
+    const steps = await createSteps(["uv sync --project configuration/python"]);
 
     steps.service.installLinuxTools();
 

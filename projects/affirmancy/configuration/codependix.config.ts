@@ -1,4 +1,4 @@
-import { projectDefaults } from "../../../configuration/codependix.config.js";
+import { projectDefaults } from "../../../configuration/ic-suite/codependix.config.js";
 
 export default {
   ...projectDefaults,

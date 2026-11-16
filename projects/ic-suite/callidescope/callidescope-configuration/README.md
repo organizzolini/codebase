@@ -30,7 +30,7 @@ searched for, so no file name is assumed and nothing is found by walking up.
 import { type CallidescopeConfiguration } from "@callidescope/configuration";
 
 const callidescopeConfiguration: CallidescopeConfiguration = {
-  excludeFrom: ["configuration/.callidescopeignore"],
+  excludeFrom: ["configuration/ic-suite/.callidescopeignore"],
   limits: { maximumBreadth: 5, maximumDepth: 6 },
   projectConfigurationPath: "callidescope.config.ts",
 };

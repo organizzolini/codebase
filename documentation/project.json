@@ -14,7 +14,7 @@
     "codometer": {},
     "dependency-cruiser": {
       "options": {
-        "command": "depcruise documentation/tooling/src --config configuration/dependency-cruiser.cjs"
+        "command": "depcruise documentation/tooling/src --config configuration/typescript/dependency-cruiser.cjs"
       }
     },
     "deprecate-code": {},
@@ -27,7 +27,7 @@
     "oxfmt": {},
     "oxlint": {
       "options": {
-        "command": "oxlint --config configuration/oxlint.config.ts --ignore-path \"$PWD/configuration/.oxlintignore\" {args} documentation/tooling/src"
+        "command": "oxlint --config configuration/lint/oxlint.config.ts --ignore-path \"$PWD/configuration/lint/.oxlintignore\" {args} documentation/tooling/src"
       }
     },
     "prettier": {},

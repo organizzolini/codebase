@@ -13,7 +13,7 @@
       ],
       "codebase/configuration/*": ["../configuration/*"],
       "eslint-plugin-better-max-params": [
-        "../configuration/types/eslint-plugin-better-max-params/index.d.ts"
+        "../configuration/typescript/types/eslint-plugin-better-max-params/index.d.ts"
       ]
     },
     "target": "esnext",

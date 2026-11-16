@@ -1,7 +1,7 @@
 // The plugin ships no types, and this file is typechecked inside every project
 // that imports it by package name, so the declaration travels with the file
 // rather than being mapped in each project's tsconfig `paths`.
-/// <reference path="./types/eslint-plugin-better-max-params/index.d.ts" />
+/// <reference path="./typescript/types/eslint-plugin-better-max-params/index.d.ts" />
 
 import fs from "node:fs";
 import path from "node:path";
@@ -623,7 +623,7 @@ export default [
     },
     settings: {
       "project-structure/folder-structure-config-path":
-        "configuration/codebase-structure.json",
+        "configuration/lint/codebase-structure.json",
     },
   },
 
@@ -1789,7 +1789,7 @@ export default [
   // 🕸️ codependix graph JSON files
   // Their array order follows each source's discovery order, not alphabetical. Enforcing
   // order here would make every `codependix map --write` fail its own `--check`, the same
-  // conflict `configuration/.oxfmtignore` solves for `oxfmt` and `.conformetry/**`.
+  // conflict `configuration/lint/.oxfmtignore` solves for `oxfmt` and `.conformetry/**`.
   {
     files: ["**/codependix-*graph.json"],
     rules: {

@@ -7,10 +7,10 @@ export const APPLICATION_PYPROJECT = "projects/affirmancy/pyproject.toml";
 
 /** The template of the notebook applications, which follows the application. */
 export const TEMPLATE_PYPROJECT =
-  "configuration/conformetry-templates/jupyter-notebook-application/{{nameKebabCase}}/pyproject.toml";
+  "configuration/ic-suite/conformetry-templates/jupyter-notebook-application/{{nameKebabCase}}/pyproject.toml";
 
 /** The workspace configuration, whose ruff and pyright versions follow too. */
-export const TOOLS_PYPROJECT = "configuration/pyproject.toml";
+export const TOOLS_PYPROJECT = "configuration/python/pyproject.toml";
 
 /** Prints the `major.minor` of the Python it runs on. */
 export const VERSION_PROGRAM =

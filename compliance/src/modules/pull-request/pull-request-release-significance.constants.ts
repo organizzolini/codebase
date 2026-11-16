@@ -13,7 +13,8 @@ export const SUBJECT_SCOPE_SEPARATOR_PATTERN = /[,/]/u;
 export const BREAKING_CHANGE_FOOTER_PATTERN = /BREAKING[ -]CHANGE:/u;
 
 /** Path to `release.config.cjs`, read fresh so `releaseRules` needs no edit here. */
-export const RELEASE_CONFIG_PATH = "configuration/release.config.cjs";
+export const RELEASE_CONFIG_PATH =
+  "configuration/repository/release.config.cjs";
 
 /** The plugin entry in `release.config.cjs` whose options hold `releaseRules`. */
 export const COMMIT_ANALYZER_PLUGIN_NAME = "@semantic-release/commit-analyzer";
