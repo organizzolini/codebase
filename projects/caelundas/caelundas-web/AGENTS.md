@@ -435,5 +435,5 @@ focusable by themselves.
   The event, facet, dataset and window types the views share
 - [src/components/events-calendar/events-api.utilities.ts](src/components/events-calendar/events-api.utilities.ts):
   `queryApi`, the one way the app reaches the API
-- [codegen.ts](codegen.ts): GraphQL Code Generator configuration
+- [configuration/codegen.ts](configuration/codegen.ts): GraphQL Code Generator configuration
 - [src/routes/index.tsx](src/routes/index.tsx): The calendar page

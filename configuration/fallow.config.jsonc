@@ -242,7 +242,7 @@
     // build/lint time, not code this repository ships or runs in production.
     "zod",
     // Loaded by graphql-code-generator from the plugin name in
-    // projects/lexico/lexico-web/codegen.ts, resolved at runtime rather than imported.
+    // projects/lexico/lexico-web/configuration/codegen.ts, resolved at runtime rather than imported.
     "graphql-codegen-typescript-validation-schema",
   ],
   "ignoreExports": [

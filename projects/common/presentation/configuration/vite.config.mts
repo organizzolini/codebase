@@ -32,6 +32,9 @@ export default defineConfig(() => ({
     },
   },
   cacheDir: "../../node_modules/.vite/projects/common/presentation",
+  css: {
+    postcss: path.dirname(import.meta.filename),
+  },
   plugins: [
     react(),
     tsconfigPaths(),

@@ -25,7 +25,6 @@
   "exclude": ["dist", "node_modules", "output"],
   "extends": "@codebase/configuration/tsconfig.json",
   "include": [
-    "codegen.ts",
     "configuration/*.mts",
     "configuration/*.ts",
     "src/**/*.js",

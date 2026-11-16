@@ -40,7 +40,7 @@
       "description": "Generate typed GraphQL operations and test mocks",
       "executor": "nx:run-commands",
       "inputs": [
-        "{projectRoot}/codegen.ts",
+        "{projectRoot}/configuration/codegen.ts",
         "{projectRoot}/src/graphql/operations/**/*.graphql",
         "{workspaceRoot}/projects/caelundas/caelundas-api/src/schema.gql"
       ],

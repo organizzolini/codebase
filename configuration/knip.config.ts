@@ -103,9 +103,17 @@ const config: KnipConfig = {
   // Allow exports that are only used in the same file (common for barrel re-exports)
   ignoreExportsUsedInFile: true,
 
-  // Every project keeps its ESLint, Vite, and Vitest configuration in its
-  // `configuration` folder, which none of the three plugins looks in by default.
+  // Every project keeps its tool configuration in its `configuration` folder,
+  // which none of these plugins looks in by default.
   eslint: { config: ["configuration/eslint.config.ts"] },
+  // The generated files are named here too: the plugin reads them relative to
+  // the configuration file, which no longer sits beside `src/`.
+  "graphql-codegen": {
+    config: ["configuration/codegen.ts"],
+    entry: ["src/graphql/generated/**"],
+  },
+  postcss: { config: ["configuration/postcss.config.cjs"] },
+  tailwind: { config: ["configuration/tailwind.config.cjs"] },
   vite: { config: ["configuration/vite.config.{ts,mts}"] },
   vitest: { config: ["configuration/vitest.config.ts"] },
 

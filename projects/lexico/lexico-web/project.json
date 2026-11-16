@@ -26,7 +26,7 @@
       "description": "Generate typed GraphQL operations, runtime schemas, and test mocks",
       "executor": "nx:run-commands",
       "inputs": [
-        "{projectRoot}/codegen.ts",
+        "{projectRoot}/configuration/codegen.ts",
         "{projectRoot}/src/graphql/operations/**/*.graphql",
         "{workspaceRoot}/projects/lexico/lexico-api/src/schema.gql"
       ],

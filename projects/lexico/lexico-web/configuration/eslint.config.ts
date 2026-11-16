@@ -6,7 +6,11 @@ export default [
 
   // 🚫 Project Ignores
   {
-    ignores: ["codegen.ts", "src/graphql/generated/**", "src/routeTree.gen.ts"],
+    ignores: [
+      "configuration/codegen.ts",
+      "src/graphql/generated/**",
+      "src/routeTree.gen.ts",
+    ],
   },
 
   // 📦 Dependency Checks
@@ -16,7 +20,15 @@ export default [
       "@nx/dependency-checks": [
         "error",
         {
-          ignoredDependencies: ["vite", "@vitejs/plugin-react", "lodash"],
+          // @codebase/interface and @graphql-codegen/cli: read only by
+          // configuration/codegen.ts, which the `codegen` target runs.
+          ignoredDependencies: [
+            "vite",
+            "@vitejs/plugin-react",
+            "lodash",
+            "@codebase/interface",
+            "@graphql-codegen/cli",
+          ],
           ignoredFiles: [
             "{projectRoot}/configuration/**",
             "{projectRoot}/testing/**",

@@ -6,7 +6,11 @@ export default [
 
   // 🚫 Project Ignores
   {
-    ignores: ["codegen.ts", "src/graphql/generated/**", "src/routeTree.gen.ts"],
+    ignores: [
+      "configuration/codegen.ts",
+      "src/graphql/generated/**",
+      "src/routeTree.gen.ts",
+    ],
   },
 
   // 📦 Dependency Checks
@@ -21,7 +25,9 @@ export default [
             "{projectRoot}/testing/**",
           ],
           // Named only by `testing/`, which dependency checks skip.
-          ignoredDependencies: ["@codebase/interface"],
+          // @graphql-codegen/cli: read only by configuration/codegen.ts, which
+          // the `codegen` target runs.
+          ignoredDependencies: ["@codebase/interface", "@graphql-codegen/cli"],
         },
       ],
     },

@@ -19,6 +19,7 @@ export default defineConfig({
   },
   css: {
     devSourcemap: true,
+    postcss: path.dirname(import.meta.filename),
   },
   plugins: [
     tailwindcss(),
