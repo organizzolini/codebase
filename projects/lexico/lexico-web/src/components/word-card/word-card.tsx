@@ -9,7 +9,11 @@ import {
 } from "@codebase/presentation";
 
 import { getWordCandidates } from "./word-card.constants";
-import { chooseCandidate, describeStatus } from "./word-card.utilities";
+import {
+  chooseCandidate,
+  describeStatus,
+  listReadings,
+} from "./word-card.utilities";
 
 import type { WordCandidate, WordCardToken } from "./word-card.types";
 import type { ReactNode } from "react";
@@ -50,6 +54,7 @@ export function WordCard(properties: Readonly<WordCardProperties>): ReactNode {
         return;
       }
 
+      setHasFailed(false);
       getWordCandidates({ data: { tokenId: token.id } })
         .then(setCandidates)
         .catch(() => {
@@ -85,12 +90,12 @@ export function WordCard(properties: Readonly<WordCardProperties>): ReactNode {
           {status === null ? null : <p role="status">{status.text}</p>}
           {candidates !== null && candidates.length > 1 ? (
             <ul className="space-y-1">
-              {candidates.map((candidate) => (
-                <li key={`${candidate.lexemeId}-${candidate.description}`}>
+              {listReadings(candidates).map(({ candidate, key, position }) => (
+                <li key={key}>
                   <Button
                     className="h-auto w-full justify-start whitespace-normal py-1 text-left"
                     onClick={() => {
-                      setChosen(candidates.indexOf(candidate));
+                      setChosen(position);
                     }}
                     variant="ghost"
                   >

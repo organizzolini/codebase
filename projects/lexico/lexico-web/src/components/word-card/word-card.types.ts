@@ -6,6 +6,13 @@ import type { ReaderLineNode } from "../reader-lines/reader-lines.types";
 /** One reading a clicked word can take, as the word-card lookup answers it. */
 export type WordCandidate = WordCandidatesQuery["wordCandidates"][number];
 
+/** One candidate with its position and a unique list key. */
+export interface WordCardReading {
+  candidate: WordCandidate;
+  key: string;
+  position: number;
+}
+
 /** A status line the card shows in place of readings. */
 export interface WordCardStatus {
   isError: boolean;

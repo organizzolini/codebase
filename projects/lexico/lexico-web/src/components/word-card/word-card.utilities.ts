@@ -1,7 +1,11 @@
 import { WordCandidatesDocument } from "../../graphql/generated/operations";
 import { queryApi } from "../search-results/search.utilities";
 
-import type { WordCandidate, WordCardStatus } from "./word-card.types";
+import type {
+  WordCandidate,
+  WordCardReading,
+  WordCardStatus,
+} from "./word-card.types";
 
 // 🔏 Private Functions
 
@@ -55,4 +59,24 @@ export async function findWordCandidates(
     tokenId,
   });
   return wordCandidates;
+}
+
+/**
+ * Numbers each candidate with its position and a key no other shares, since
+ * two readings of one lexeme can carry the same description.
+ */
+export function listReadings(candidates: WordCandidate[]): WordCardReading[] {
+  const seen = new Map<string, number>();
+
+  return candidates.map((candidate, position) => {
+    const base = `${candidate.lexemeId}-${candidate.description}`;
+    const count = (seen.get(base) ?? 0) + 1;
+    seen.set(base, count);
+
+    return {
+      candidate,
+      key: count === 1 ? base : `${base}-${String(count)}`,
+      position,
+    };
+  });
 }
