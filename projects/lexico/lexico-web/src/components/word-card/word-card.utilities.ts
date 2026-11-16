@@ -1,7 +1,12 @@
 import { WordCandidatesDocument } from "../../graphql/generated/operations";
 import { queryApi } from "../search-results/search.utilities";
 
-import type { WordCandidate, WordCardStatus } from "./word-card.types";
+import type {
+  WordCandidate,
+  WordCardLookup,
+  WordCardReading,
+  WordCardStatus,
+} from "./word-card.types";
 
 // 🔏 Private Functions
 
@@ -70,16 +75,47 @@ export function highlightProperties(isHighlighted: boolean): {
 }
 
 /**
- * Hands the reading the card shows to the reader, when there is one.
+ * Numbers each candidate with its position and a key no other shares, since
+ * two readings of one lexeme can carry the same description.
  */
-export function reportReading(
-  candidates: WordCandidate[],
+export function listReadings(candidates: WordCandidate[]): WordCardReading[] {
+  const seen = new Map<string, number>();
+
+  return candidates.map((candidate, position) => {
+    const base = `${candidate.lexemeId}-${candidate.description}`;
+    const count = (seen.get(base) ?? 0) + 1;
+    seen.set(base, count);
+
+    return {
+      candidate,
+      key: count === 1 ? base : `${base}-${String(count)}`,
+      position,
+    };
+  });
+}
+
+/**
+ * What the card shows for a finished lookup, as the history keeps it: the
+ * reading in view, or a note when there is none yet.
+ */
+export function summarizeLookup(
+  candidates: null | WordCandidate[],
+  hasFailed: boolean,
   chosen: null | number,
-  onReading?: (reading: WordCandidate) => void,
-): void {
+): WordCardLookup {
   const reading = chooseCandidate(candidates, chosen);
 
   if (reading !== undefined) {
-    onReading?.(reading);
+    return { definition: reading.definition, form: reading.description };
   }
+  if (hasFailed || candidates === null) {
+    return { definition: null, form: "Lookup failed" };
+  }
+  return {
+    definition: null,
+    form:
+      candidates.length === 0
+        ? "Not in the dictionary"
+        : `${String(candidates.length)} possible readings`,
+  };
 }

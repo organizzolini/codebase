@@ -14,6 +14,15 @@ import type {
 // 🔏 Private Functions
 
 /**
+ * Names a text for a history entry: its parent work, then its own title.
+ */
+export function describeOrigin(text: Readonly<ReaderText>): string {
+  return text.parentText === null
+    ? text.title
+    : `${text.parentText.title}, ${text.title}`;
+}
+
+/**
  * Makes the router answer not found, for a loader that has no text to show.
  */
 export function failNotFound(): never {

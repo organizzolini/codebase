@@ -6,6 +6,7 @@ The words this project uses that the root glossary does not define, regenerated 
 
 - **alt**: Alternate text on the Lexico logo image, so screen readers announce the brand name rather than the file.
 - **anchor**: URL line parameter naming the line a reader opens at, and the element id each line carries so it can be scrolled into view.
+- **book**: Child text of a work, such as Book 1 of the Aeneid, whose history label follows its parent work's title.
 - **breadth**: Callidescope measure of how many callees one frame fans out to, bounded by maximumBreadth in each project's config.
 - **degree**: Comparison grade of an adjective or adverb, such as positive, shown in lexeme inflection data and header details.
 - **dictionary**: Latin reference the app searches in Latin and English, shown as the sidebar brand and as each lexeme entry.

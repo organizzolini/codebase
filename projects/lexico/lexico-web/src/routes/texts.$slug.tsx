@@ -16,7 +16,10 @@ import { ReaderHistory } from "../components/reader-history/reader-history";
 import { ReaderLines } from "../components/reader-lines/reader-lines";
 import { readerSearchSchema } from "../components/reader-lines/reader-lines-api.constants";
 import { getText } from "../components/reader-lines/reader-lines.constants";
-import { failNotFound } from "../components/reader-lines/reader-lines.utilities";
+import {
+  describeOrigin,
+  failNotFound,
+} from "../components/reader-lines/reader-lines.utilities";
 import { ReaderNavigation } from "../components/reader-navigation/reader-navigation";
 import { useLookupHistory } from "../hooks/use-lookup-history/use-lookup-history";
 import { isLookupEntry } from "../hooks/use-lookup-history/use-lookup-history.utilities";
@@ -97,9 +100,9 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
 
   const handleLookup = useCallback(
     (lookup: WordLookup): void => {
-      record({ ...lookup, slug: text.slug, title: text.title });
+      record({ ...lookup, slug: text.slug, title: describeOrigin(text) });
     },
-    [record, text.slug, text.title],
+    [record, text],
   );
 
   const handleFocusEntry = useCallback(
@@ -160,6 +163,7 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
       </div>
       <ReaderHint className="flex items-center justify-between gap-4 rounded-md border p-3 text-sm" />
       <ReaderLines
+        key={`${text.slug}:${String(line)}`}
         anchor={line}
         className={`space-y-2 font-serif ${FONT_SIZE_CLASSES[fontSize]}`}
         focus={focus}

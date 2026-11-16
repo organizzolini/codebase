@@ -1,3 +1,5 @@
+import { useCallback } from "react";
+
 import {
   Button,
   Sheet,
@@ -59,6 +61,14 @@ export function ReaderHistory(
   );
 
   // 💪 Handlers
+  const handleOpenChange = useCallback(
+    (isOpen: boolean): void => {
+      if (!isOpen) {
+        onFocusEntry(null);
+      }
+    },
+    [onFocusEntry],
+  );
 
   // ♻️ Lifecycle
 
@@ -70,7 +80,7 @@ export function ReaderHistory(
       className={className}
       data-testid="reader-history"
     >
-      <Sheet>
+      <Sheet onOpenChange={handleOpenChange}>
         <SheetTrigger render={<Button variant="outline" />}>
           History
         </SheetTrigger>

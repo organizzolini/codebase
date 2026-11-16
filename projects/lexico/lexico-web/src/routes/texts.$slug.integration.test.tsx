@@ -1,5 +1,11 @@
 // cspell:ignore Troiae Italiam fato profugus Laviniaque venit
-import { fireEvent, screen, waitFor, within } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { HttpResponse } from "msw";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -7,6 +13,8 @@ import { graphqlMockServer } from "@codebase/interface/testing";
 import { renderRoute } from "@codebase/testing/react";
 
 import {
+  mockSearchEnglishQuery,
+  mockSearchLatinQuery,
   mockTextReaderQuery,
   mockWordCandidatesQuery,
 } from "../graphql/generated/mocks";
@@ -26,6 +34,28 @@ type TextLink = null | { slug: string; title: string };
 
 const FONT_SIZE_KEY = "lexico-reader-font-size";
 const HINT_KEY = "lexico-reader-hint-seen";
+
+/** An observer the test drives by hand, in place of the browser's. */
+class FakeIntersectionObserver {
+  public constructor(
+    callback: (entries: { isIntersecting: boolean }[]) => void,
+  ) {
+    FakeIntersectionObserver.notify = callback;
+  }
+
+  public static notify: (entries: { isIntersecting: boolean }[]) => void =
+    () => {};
+
+  public disconnect(): void {
+    // Nothing to release.
+  }
+
+  public observe(): void {
+    // Entries are sent by the test.
+  }
+}
+
+const scrollIntoView = vi.fn<(this: Element) => void>();
 
 /** One line whose tokens are the given words; single marks are punctuation. */
 function line(index: number, label: string, words: string[]): ReaderLine {
@@ -66,8 +96,6 @@ function text(
   const parent = links.parent ?? null;
 
   return {
-    ancestors:
-      parent === null ? [] : [{ slug: parent.slug, title: parent.title }],
     author: { name: "Vergil", slug: "vergil" },
     id: "text-1",
     lines,
@@ -160,6 +188,15 @@ function entry(
   };
 }
 
+/** Opens the History panel on its All tab. */
+async function openAll(): Promise<HTMLElement> {
+  const panel = await openHistory();
+
+  fireEvent.click(within(panel).getByRole("tab", { name: "All" }));
+
+  return panel;
+}
+
 /** Opens the History panel and returns it. */
 async function openHistory(): Promise<HTMLElement> {
   fireEvent.click(screen.getByRole("button", { name: "History" }));
@@ -176,14 +213,16 @@ function stubWordCandidates(candidates: WordCandidate[]): void {
   );
 }
 
-const scrollIntoView = vi.fn<() => void>();
-
 describe("texts.$slug", () => {
   beforeEach(() => {
     globalThis.localStorage.clear();
-    scrollIntoView.mockClear();
     Element.prototype.scrollIntoView = scrollIntoView;
+    scrollIntoView.mockClear();
     stubReader([{ after: null, page: FIRST_PAGE }]);
+  });
+
+  afterEach(() => {
+    Reflect.deleteProperty(globalThis, "IntersectionObserver");
   });
 
   it("renders its page", async () => {
@@ -277,6 +316,111 @@ describe("texts.$slug", () => {
 
     expect(screen.queryByText(/words are clickable/u)).toBeNull();
     expect(globalThis.localStorage.getItem(HINT_KEY)).toBe("true");
+  });
+
+  it("replaces the lines when the line anchor changes on the same text", async () => {
+    stubReader([
+      { after: null, page: FIRST_PAGE },
+      { after: "cursor-1", page: SECOND_PAGE },
+    ]);
+    const router = getRouter();
+
+    await renderRoute(router, "/texts/vergil-aeneid-1");
+    await screen.findByText("1.1");
+
+    expect(screen.queryByText("1.4")).toBeNull();
+
+    await act(async () => {
+      await router.navigate({
+        params: { slug: "vergil-aeneid-1" },
+        search: { line: 3 },
+        to: "/texts/$slug",
+      });
+    });
+
+    await expect(screen.findByText("1.4")).resolves.toBeDefined();
+  });
+
+  it("loads the next page when the load-more button scrolls into view", async () => {
+    globalThis.IntersectionObserver = FakeIntersectionObserver as never;
+    stubReader([
+      { after: null, page: FIRST_PAGE },
+      { after: "cursor-1", page: SECOND_PAGE },
+    ]);
+
+    await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+    await screen.findByRole("button", { name: "Load more lines" });
+    act(() => {
+      FakeIntersectionObserver.notify([{ isIntersecting: true }]);
+    });
+
+    await expect(screen.findByText("1.3")).resolves.toBeDefined();
+  });
+
+  it("scrolls the anchored line itself into view", async () => {
+    stubReader([
+      { after: null, page: FIRST_PAGE },
+      { after: "cursor-1", page: SECOND_PAGE },
+    ]);
+
+    await renderRoute(getRouter(), "/texts/vergil-aeneid-1?line=3");
+    await screen.findByText("1.4");
+
+    const scrolled = scrollIntoView.mock.contexts[0] as HTMLElement;
+
+    expect(scrolled.id).toBe("line-3");
+  });
+
+  it("restores the font size chosen earlier on reload", async () => {
+    globalThis.localStorage.setItem(FONT_SIZE_KEY, "large");
+
+    await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+
+    await waitFor(() => {
+      expect(screen.getByTestId("reader-lines").className).toContain(
+        "text-2xl",
+      );
+    });
+  });
+
+  it("falls back to the default font size when storage is unavailable", async () => {
+    const unavailable = vi
+      .spyOn(Storage.prototype, "getItem")
+      .mockImplementation(() => {
+        throw new Error("storage unavailable");
+      });
+
+    await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+
+    await screen.findByText("1.1");
+
+    expect(screen.getByTestId("reader-lines").className).toContain("text-lg");
+
+    unavailable.mockRestore();
+  });
+
+  it("does not show the hint to a browser that has seen it", async () => {
+    globalThis.localStorage.setItem(HINT_KEY, "true");
+
+    await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+
+    await screen.findByText("1.1");
+
+    expect(screen.queryByTestId("reader-hint")).toBeNull();
+  });
+
+  it("titles the page and describes it with the author and work", async () => {
+    const head = await Route.options.head?.({
+      loaderData: text(FIRST_PAGE),
+    } as never);
+
+    expect(head?.meta).toStrictEqual([
+      { title: "Lexico - Vergil: Book 1" },
+      {
+        content: expect.stringContaining("Book 1 by Vergil") as string,
+        name: "description",
+      },
+    ]);
   });
 
   it("answers not found for a text the API does not have", async () => {
@@ -485,6 +629,87 @@ describe("texts.$slug", () => {
       expect(within(panel).getByText("Arma")).toBeDefined();
     });
 
+    it("records a word the dictionary does not have", async () => {
+      stubWordCandidates([]);
+      await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+
+      fireEvent.click(await screen.findByRole("button", { name: "Arma" }));
+      await screen.findByText(/not in the dictionary/u);
+      fireEvent.keyDown(document.activeElement ?? document.body, {
+        key: "Escape",
+      });
+
+      const panel = await openHistory();
+
+      expect(within(panel).getByText("Arma")).toBeDefined();
+      expect(within(panel).getByText("Not in the dictionary")).toBeDefined();
+    });
+
+    it("records a lookup that failed", async () => {
+      graphqlMockServer.use(
+        mockWordCandidatesQuery(() => HttpResponse.error()),
+      );
+      await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+
+      fireEvent.click(await screen.findByRole("button", { name: "Arma" }));
+      await screen.findByText(/Could not look up this word/u);
+      fireEvent.keyDown(document.activeElement ?? document.body, {
+        key: "Escape",
+      });
+
+      const panel = await openHistory();
+
+      expect(within(panel).getByText("Lookup failed")).toBeDefined();
+    });
+
+    it("records an ambiguous word as soon as it is looked up, then updates it with the reading chosen", async () => {
+      stubReader([
+        { after: null, page: page([line(0, "1.1", ["est"])], false, null) },
+      ]);
+      stubWordCandidates([EST_SUM, EST_EDO]);
+      await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+
+      fireEvent.click(await screen.findByRole("button", { name: "est" }));
+      const card = await screen.findByRole("dialog");
+      await within(card).findByRole("button", { name: /^sum/u });
+
+      fireEvent.click(within(card).getByRole("button", { name: /^sum/u }));
+      fireEvent.keyDown(document.activeElement ?? document.body, {
+        key: "Escape",
+      });
+
+      const panel = await openHistory();
+
+      expect(within(panel).getAllByRole("listitem")).toHaveLength(1);
+      expect(
+        within(panel).getByText("third person singular present"),
+      ).toBeDefined();
+      expect(within(panel).getByText("to be")).toBeDefined();
+    });
+
+    it("stops highlighting a hovered entry when the panel closes", async () => {
+      await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+      fireEvent.click(await screen.findByRole("button", { name: "virumque" }));
+      await screen.findByText("arms");
+      fireEvent.keyDown(document.activeElement ?? document.body, {
+        key: "Escape",
+      });
+      const panel = await openHistory();
+
+      fireEvent.mouseEnter(
+        within(panel).getByRole("button", { name: /^virumque/u }),
+      );
+      fireEvent.click(within(panel).getByRole("button", { name: "Close" }));
+
+      await waitFor(() => {
+        expect(screen.queryByRole("dialog")).toBeNull();
+      });
+
+      expect(
+        screen.getByRole("button", { name: "virumque" }).dataset["highlighted"],
+      ).toBeUndefined();
+    });
+
     it("opens and closes the panel", async () => {
       await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
 
@@ -536,9 +761,9 @@ describe("texts.$slug", () => {
       expect(word.dataset["highlighted"]).toBe("true");
       expect(scrollIntoView).toHaveBeenCalledTimes(1);
 
-      const scrolled = scrollIntoView.mock.contexts[0] as Element;
+      const scrolled = scrollIntoView.mock.contexts[0];
 
-      expect(scrolled.textContent).toBe("virumque");
+      expect(scrolled?.textContent).toBe("virumque");
 
       fireEvent.mouseLeave(
         within(panel).getByRole("button", { name: /^virumque/u }),
@@ -564,6 +789,139 @@ describe("texts.$slug", () => {
       );
 
       expect(scrollIntoView).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("shared history", () => {
+    const HISTORY_KEY = "lexico-lookup-history";
+    const SEARCH = { kind: "search", query: "amo", recordedAt: 2 };
+    const OTHER_TEXT = {
+      ...entry("vergil-aeneid-2", "Troiae", 2, 0),
+      title: "Aeneid, Book 2",
+    };
+
+    beforeEach(() => {
+      stubWordCandidates([ARMA]);
+    });
+
+    it("labels a recorded lookup with its parent work and its text", async () => {
+      stubReader([{ after: null, page: FIRST_PAGE }], {
+        parent: { slug: "vergil-aeneid", title: "Aeneid" },
+      });
+      await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+
+      fireEvent.click(await screen.findByRole("button", { name: "Arma" }));
+      await screen.findByText("arms");
+      fireEvent.keyDown(document.activeElement ?? document.body, {
+        key: "Escape",
+      });
+      const panel = await openAll();
+
+      expect(within(panel).getByText("Aeneid, Book 1")).toBeDefined();
+    });
+
+    it("lists lookups from every text and searches on the All tab, each labelled", async () => {
+      globalThis.localStorage.setItem(
+        HISTORY_KEY,
+        JSON.stringify([SEARCH, OTHER_TEXT]),
+      );
+      await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+
+      const panel = await openAll();
+
+      expect(within(panel).getByText("Troiae")).toBeDefined();
+      expect(within(panel).getByText("Aeneid, Book 2")).toBeDefined();
+      expect(within(panel).getByText("amo")).toBeDefined();
+      expect(within(panel).getByText("Search")).toBeDefined();
+    });
+
+    it("opens a lookup from another text at its line", async () => {
+      globalThis.localStorage.setItem(
+        HISTORY_KEY,
+        JSON.stringify([OTHER_TEXT]),
+      );
+      stubReader([
+        { after: null, page: FIRST_PAGE },
+        { after: "cursor-1", page: SECOND_PAGE },
+      ]);
+      const router = getRouter();
+      await renderRoute(router, "/texts/vergil-aeneid-1");
+      const panel = await openAll();
+
+      fireEvent.click(within(panel).getByRole("button", { name: /^Troiae/u }));
+
+      await waitFor(() => {
+        expect(router.state.location.pathname).toBe("/texts/vergil-aeneid-2");
+      });
+
+      expect(router.state.location.search).toMatchObject({ line: 2 });
+
+      await waitFor(() => {
+        expect(scrollIntoView.mock.contexts.at(-1)).toHaveProperty(
+          "id",
+          "line-2",
+        );
+      });
+    });
+
+    it("opens a search from the history on the search page", async () => {
+      graphqlMockServer.use(
+        mockSearchLatinQuery(() =>
+          HttpResponse.json({ data: { searchLatin: { edges: [] } } }),
+        ),
+        mockSearchEnglishQuery(() =>
+          HttpResponse.json({ data: { searchEnglish: { edges: [] } } }),
+        ),
+      );
+      globalThis.localStorage.setItem(HISTORY_KEY, JSON.stringify([SEARCH]));
+      const router = getRouter();
+      await renderRoute(router, "/texts/vergil-aeneid-1");
+      const panel = await openAll();
+
+      fireEvent.click(within(panel).getByRole("button", { name: /^amo/u }));
+
+      await waitFor(() => {
+        expect(router.state.location.pathname).toBe("/search");
+      });
+
+      expect(router.state.location.search).toMatchObject({ query: "amo" });
+    });
+
+    it("keeps lookups and searches within one cap", async () => {
+      const searches = Array.from({ length: 200 }, (_, index) => ({
+        kind: "search",
+        query: `query ${index}`,
+        recordedAt: index,
+      }));
+      globalThis.localStorage.setItem(HISTORY_KEY, JSON.stringify(searches));
+      await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+
+      fireEvent.click(await screen.findByRole("button", { name: "Arma" }));
+      await screen.findByText("arms");
+      fireEvent.keyDown(document.activeElement ?? document.body, {
+        key: "Escape",
+      });
+      const panel = await openAll();
+
+      expect(within(panel).getAllByRole("listitem")).toHaveLength(200);
+      expect(within(panel).getByText("Arma")).toBeDefined();
+      expect(within(panel).queryByText("query 199")).toBeNull();
+    });
+
+    it("clears lookups and searches together", async () => {
+      globalThis.localStorage.setItem(
+        HISTORY_KEY,
+        JSON.stringify([SEARCH, OTHER_TEXT]),
+      );
+      await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+      const panel = await openAll();
+
+      fireEvent.click(
+        within(panel).getByRole("button", { name: "Clear history" }),
+      );
+
+      expect(within(panel).queryByText("amo")).toBeNull();
+      expect(globalThis.localStorage.getItem(HISTORY_KEY)).toBe("[]");
     });
   });
 });

@@ -5,16 +5,10 @@ import { z } from "zod";
 /** The browser storage key the lookup history is kept under. */
 export const LOOKUP_HISTORY_KEY = "lexico-lookup-history";
 
-/**
- * The most entries kept, lookups and searches together; the oldest are
- * dropped first.
- */
+/** The most entries kept, lookups and searches together. */
 export const LOOKUP_HISTORY_CAP = 200;
 
-/**
- * One stored word lookup, validated because storage can hold anything. Entries
- * stored before searches were kept have no kind, and are read as lookups.
- */
+/** One stored word lookup; a missing kind reads as a lookup. */
 export const lookupEntrySchema = z.object({
   definition: z.string().nullable(),
   form: z.string(),
@@ -40,5 +34,5 @@ export const historyEntrySchema = z.union([
   searchEntrySchema,
 ]);
 
-/** The whole stored history, validated as one list. */
-export const lookupHistorySchema = z.array(historyEntrySchema);
+/** The stored list before its entries are checked one by one. */
+export const storedListSchema = z.array(z.unknown());

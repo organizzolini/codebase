@@ -1,4 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef as useReference,
+  useState,
+} from "react";
 
 import {
   readLookupHistory,
@@ -22,36 +27,39 @@ import type {
 export function useLookupHistory(): UseLookupHistoryResult {
   // 🪝 Hooks
   const [entries, setEntries] = useState<HistoryEntry[]>([]);
+  const latest = useReference<HistoryEntry[]>([]);
 
   // 🏗 Setup
 
   // 💪 Handlers
-  const record = useCallback((draft: LookupDraft): void => {
-    setEntries((current) => {
-      const next = recordLookup(current, draft, Date.now());
-
-      writeLookupHistory(next);
-      return next;
-    });
+  const replace = useCallback((next: HistoryEntry[]): void => {
+    latest.current = next;
+    setEntries(next);
+    writeLookupHistory(next);
   }, []);
 
-  const recordSearchQuery = useCallback((query: string): void => {
-    setEntries((current) => {
-      const next = recordSearch(current, { query }, Date.now());
+  const record = useCallback(
+    (draft: LookupDraft): void => {
+      replace(recordLookup(latest.current, draft, Date.now()));
+    },
+    [replace],
+  );
 
-      writeLookupHistory(next);
-      return next;
-    });
-  }, []);
+  const recordSearchQuery = useCallback(
+    (query: string): void => {
+      replace(recordSearch(latest.current, { query }, Date.now()));
+    },
+    [replace],
+  );
 
   const clear = useCallback((): void => {
-    setEntries([]);
-    writeLookupHistory([]);
-  }, []);
+    replace([]);
+  }, [replace]);
 
   // ♻️ Lifecycle
   useEffect(() => {
-    setEntries(readLookupHistory());
+    latest.current = readLookupHistory();
+    setEntries(latest.current);
   }, []);
 
   // 🎁 Result

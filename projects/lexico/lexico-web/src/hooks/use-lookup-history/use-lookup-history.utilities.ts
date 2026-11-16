@@ -1,7 +1,8 @@
 import {
+  historyEntrySchema,
   LOOKUP_HISTORY_CAP,
   LOOKUP_HISTORY_KEY,
-  lookupHistorySchema,
+  storedListSchema,
 } from "./use-lookup-history.constants";
 
 import type {
@@ -31,15 +32,19 @@ export function readLookupHistory(): HistoryEntry[] {
       return [];
     }
 
-    const parsed = lookupHistorySchema.safeParse(JSON.parse(raw));
+    const stored = storedListSchema.safeParse(JSON.parse(raw));
 
-    return parsed.success ? parsed.data : [];
+    return stored.success
+      ? stored.data.flatMap((item) => {
+          const parsed = historyEntrySchema.safeParse(item);
+
+          return parsed.success ? [parsed.data] : [];
+        })
+      : [];
   } catch {
     return [];
   }
 }
-
-// 🌎 Public Functions
 
 /**
  * Puts a lookup at the top, replacing an earlier lookup of the same word in
@@ -54,6 +59,8 @@ export function recordLookup(
 
   return capped([entry, ...entries.filter((kept) => !isSameWord(kept, draft))]);
 }
+
+// 🌎 Public Functions
 
 /**
  * Puts a search at the top, replacing an earlier identical search, and drops
