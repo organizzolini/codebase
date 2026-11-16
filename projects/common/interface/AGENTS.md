@@ -62,6 +62,9 @@ A web client's `codegen.ts` calls `createGraphqlCodegenConfig` from
 of Nest decorators and server imports, since the code generator loads it
 directly and a client must not inherit `@nestjs/graphql`. The plugins the
 configuration names are installed by the client that runs `graphql-codegen`.
+The `validators` option defaults to on; a client whose nested input objects
+generate Zod schemas that fail typecheck under `exactOptionalPropertyTypes`
+passes `validators: false` and deletes the emitted `validation.ts`.
 
 ### Key Commands
 

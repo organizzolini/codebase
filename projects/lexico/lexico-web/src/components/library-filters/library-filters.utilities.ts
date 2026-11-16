@@ -14,6 +14,32 @@ import type { LibraryFilterDraft } from "./library-filters.types";
 // 🔏 Private Functions
 
 /**
+ * What is wrong with the range bounds a form holds: a bound that is not a
+ * whole number, or a minimum above its maximum. Each is worded for a reader.
+ */
+export function draftErrors(draft: Readonly<LibraryFilterDraft>): string[] {
+  const errors: string[] = [];
+
+  for (const { key, label } of LIBRARY_RANGE_FILTERS) {
+    const bounds = (["Minimum", "Maximum"] as const).map((end) => {
+      const text = (draft.text[`${key}${end}`] ?? "").trim();
+      const value = Number(text);
+      const isBad = text !== "" && !Number.isInteger(value);
+      if (isBad) {
+        errors.push(`${label} ${end.toLowerCase()} must be a whole number.`);
+      }
+      return text === "" || isBad ? undefined : value;
+    });
+    const [minimum, maximum] = bounds;
+    if (minimum !== undefined && maximum !== undefined && minimum > maximum) {
+      errors.push(`${label} minimum is greater than its maximum.`);
+    }
+  }
+
+  return errors;
+}
+
+/**
  * Reads the filters a filled-in form describes, dropping what is empty or invalid.
  */
 export function fromDraft(
@@ -31,6 +57,8 @@ export function fromDraft(
 
   return z.object(libraryFilterShape).parse(raw);
 }
+
+// 🌎 Public Functions
 
 /**
  * Fills the filter form from the filters the URL carries.
@@ -54,8 +82,6 @@ export function toDraft(
 
   return { selected, text };
 }
-
-// 🌎 Public Functions
 
 /** The non-empty entries of a comma-separated list. */
 function toList(text: string | undefined): string[] {

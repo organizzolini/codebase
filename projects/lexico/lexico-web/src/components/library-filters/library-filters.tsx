@@ -4,7 +4,7 @@ import { Button, cn } from "@codebase/presentation";
 
 import { LibraryFilterChoices } from "./library-filter-choices";
 import { LibraryFilterRanges } from "./library-filter-ranges";
-import { fromDraft, toDraft } from "./library-filters.utilities";
+import { draftErrors, fromDraft, toDraft } from "./library-filters.utilities";
 
 import type { LibraryFilterParameters } from "../library-grid/library-grid.types";
 import type { ReactNode, SubmitEvent } from "react";
@@ -34,6 +34,7 @@ export function LibraryFilters(
 
   // 🪝 Hooks
   const [draft, setDraft] = useState(() => toDraft(filters));
+  const [errors, setErrors] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
   // 🏗 Setup
@@ -41,7 +42,11 @@ export function LibraryFilters(
   // 💪 Handlers
   const handleSubmit = (event: SubmitEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    onApply(fromDraft(draft));
+    const found = draftErrors(draft);
+    setErrors(found);
+    if (found.length === 0) {
+      onApply(fromDraft(draft));
+    }
   };
   const handleText = (key: string, value: string): void => {
     setDraft((previous) => ({
@@ -102,10 +107,21 @@ export function LibraryFilters(
           draft={draft}
           onText={handleText}
         />
+        {errors.length === 0 ? null : (
+          <ul
+            className="text-sm text-destructive"
+            role="alert"
+          >
+            {errors.map((error) => (
+              <li key={error}>{error}</li>
+            ))}
+          </ul>
+        )}
         <div className="flex gap-2">
           <Button type="submit">Apply filters</Button>
           <Button
             onClick={() => {
+              setErrors([]);
               onReset();
             }}
             type="button"

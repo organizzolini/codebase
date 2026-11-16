@@ -90,8 +90,16 @@ export function LibrarySort(
             onChange={(event) => {
               handleDirection(event.target.value);
             }}
-            value={direction ?? LibrarySortDirection.Asc}
+            value={
+              sort === undefined ? "" : (direction ?? LibrarySortDirection.Asc)
+            }
           >
+            <option
+              value=""
+              disabled
+            >
+              None
+            </option>
             <option value={LibrarySortDirection.Asc}>Ascending</option>
             <option value={LibrarySortDirection.Desc}>Descending</option>
           </select>

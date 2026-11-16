@@ -49,10 +49,23 @@ export function LibraryFilterRanges(
             className="space-y-1"
           >
             <legend className="text-sm font-medium">{filter.label}</legend>
+            {"hint" in filter ? (
+              <p
+                className="text-xs text-muted-foreground"
+                id={`library-filter-${filter.key}-hint`}
+              >
+                {filter.hint}
+              </p>
+            ) : null}
             <div className="flex gap-2">
               {(["Minimum", "Maximum"] as const).map((end) => (
                 <Input
                   key={end}
+                  aria-describedby={
+                    "hint" in filter
+                      ? `library-filter-${filter.key}-hint`
+                      : undefined
+                  }
                   aria-label={`${filter.label} ${end.toLowerCase()}`}
                   inputMode="numeric"
                   onChange={(event) => {

@@ -64,4 +64,13 @@ describe(LibrarySort, () => {
 
     expect(onSort).toHaveBeenCalledWith(undefined, undefined);
   });
+
+  it("shows no direction while no attribute is picked", () => {
+    render(<LibrarySort onSort={vi.fn<LibrarySortHandler>()} />);
+
+    const select = screen.getByLabelText<HTMLSelectElement>("Direction");
+
+    expect(select.value).toBe("");
+    expect(select.selectedOptions[0]?.textContent).not.toBe("Ascending");
+  });
 });

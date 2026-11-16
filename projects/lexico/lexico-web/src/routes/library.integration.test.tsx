@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { graphqlMockServer } from "@codebase/interface/testing";
 import { renderRoute } from "@codebase/testing/react";
 
+import { LIBRARY_SORT_OPTIONS } from "../components/library-sort/library-sort.constants";
 import {
   AuthorEra,
   LibrarySortDirection,
@@ -444,12 +445,9 @@ describe("library", () => {
     fireEvent.change(await screen.findByLabelText("Provinces"), {
       target: { value: "Dacia, Syria" },
     });
-    fireEvent.change(
-      screen.getByLabelText("Author years (negative for BCE) minimum"),
-      {
-        target: { value: "-70" },
-      },
-    );
+    fireEvent.change(screen.getByLabelText("Author years minimum"), {
+      target: { value: "-70" },
+    });
     fireEvent.change(screen.getByLabelText("Line count maximum"), {
       target: { value: "900" },
     });
@@ -467,6 +465,38 @@ describe("library", () => {
       authorYearsMinimum: -70,
       lineCountMaximum: 900,
       provinces: ["Dacia", "Syria"],
+    });
+  });
+
+  it.each(
+    LIBRARY_SORT_OPTIONS.flatMap(({ field }) =>
+      Object.values(LibrarySortDirection).map(
+        (direction) => [field, direction] as const,
+      ),
+    ),
+  )("sends sort %s %s to the API and the URL", async (field, direction) => {
+    const router = getRouter();
+    await renderRoute(router, "/library");
+
+    fireEvent.change(await screen.findByLabelText("Sort by"), {
+      target: { value: field },
+    });
+    await waitFor(() =>
+      expect(
+        screen.getByLabelText<HTMLSelectElement>("Direction").disabled,
+      ).toBe(false),
+    );
+    fireEvent.change(screen.getByLabelText("Direction"), {
+      target: { value: direction },
+    });
+
+    await waitFor(() =>
+      expect(CALLS.at(-1)?.sort).toStrictEqual({ direction, field }),
+    );
+
+    expect({ ...router.state.location.search }).toStrictEqual({
+      direction,
+      sort: field,
     });
   });
 
@@ -727,5 +757,22 @@ describe("library", () => {
     expect({ ...router.state.location.search }).toStrictEqual({
       search: "Vergil",
     });
+  });
+
+  it("keeps a half-typed filter when a new search is submitted", async () => {
+    await renderRoute(getRouter(), "/library");
+
+    const provinces = await screen.findByLabelText("Provinces");
+    fireEvent.change(provinces, { target: { value: "Dac" } });
+    fireEvent.change(screen.getByRole("searchbox"), {
+      target: { value: "vergil" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+
+    await waitFor(() => expect(SEARCHES.at(-1)?.search).toBe("vergil"));
+
+    expect(screen.getByLabelText<HTMLInputElement>("Provinces").value).toBe(
+      "Dac",
+    );
   });
 });

@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { AuthorEra } from "../../graphql/generated/operations";
 
 import { LibraryFilters } from "./library-filters";
-import { fromDraft, toDraft } from "./library-filters.utilities";
+import { draftErrors, fromDraft, toDraft } from "./library-filters.utilities";
 
 import type { LibraryFilterParameters } from "../library-grid/library-grid.types";
 
@@ -105,5 +105,51 @@ describe(LibraryFilters, () => {
     draft.text["lineCountMinimum"] = "many";
 
     expect(fromDraft(draft).lineCountMinimum).toBeUndefined();
+  });
+
+  it("names a bound that is not a whole number", () => {
+    const draft = toDraft({});
+    draft.text["lineCountMinimum"] = "1.5";
+    draft.text["wordCountMaximum"] = "many";
+
+    expect(draftErrors(draft)).toStrictEqual([
+      "Line count minimum must be a whole number.",
+      "Word count maximum must be a whole number.",
+    ]);
+  });
+
+  it("names a range whose minimum is above its maximum", () => {
+    const draft = toDraft({ authorYearsMaximum: -70, authorYearsMinimum: 14 });
+
+    expect(draftErrors(draft)).toStrictEqual([
+      "Author years minimum is greater than its maximum.",
+    ]);
+  });
+
+  it("finds no error in a valid draft", () => {
+    expect(draftErrors(toDraft({ lineCountMinimum: 10 }))).toStrictEqual([]);
+  });
+
+  it("shows what is wrong instead of applying an invalid range", () => {
+    const onApply = vi.fn<(filters: LibraryFilterParameters) => void>();
+    render(
+      <LibraryFilters
+        filters={{}}
+        onApply={onApply}
+        onReset={vi.fn<() => void>()}
+      />,
+    );
+    fireEvent.change(screen.getByLabelText("Line count minimum"), {
+      target: { value: "30" },
+    });
+    fireEvent.change(screen.getByLabelText("Line count maximum"), {
+      target: { value: "10" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Apply filters" }));
+
+    expect(screen.getByRole("alert").textContent).toContain(
+      "Line count minimum is greater than its maximum.",
+    );
+    expect(onApply).not.toHaveBeenCalled();
   });
 });

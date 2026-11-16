@@ -49,8 +49,12 @@ export const LIBRARY_LIST_FILTERS = [
 
 /** Filters with a minimum and a maximum; the URL carries each as key plus Minimum or Maximum. */
 export const LIBRARY_RANGE_FILTERS = [
-  { key: "authorYears", label: "Author years (negative for BCE)" },
-  { key: "inscriptionYears", label: "Inscription years (negative for BCE)" },
+  { hint: "Negative for BCE", key: "authorYears", label: "Author years" },
+  {
+    hint: "Negative for BCE",
+    key: "inscriptionYears",
+    label: "Inscription years",
+  },
   { key: "printYears", label: "Print year" },
   { key: "lineCount", label: "Line count" },
   { key: "wordCount", label: "Word count" },

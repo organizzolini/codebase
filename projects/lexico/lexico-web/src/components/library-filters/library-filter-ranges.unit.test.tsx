@@ -32,4 +32,21 @@ describe(LibraryFilterRanges, () => {
 
     expect(onText).toHaveBeenCalledWith("wordCountMaximum", "500");
   });
+
+  it("keeps the BCE hint out of the accessible name", () => {
+    render(
+      <LibraryFilterRanges
+        draft={{ selected: {}, text: {} }}
+        onText={vi.fn<(key: string, value: string) => void>()}
+      />,
+    );
+
+    expect(screen.getByLabelText("Author years minimum")).toBeDefined();
+    expect(
+      screen
+        .getByLabelText("Author years minimum")
+        .getAttribute("aria-describedby"),
+    ).toBe("library-filter-authorYears-hint");
+    expect(screen.getAllByText("Negative for BCE")).toHaveLength(2);
+  });
 });
