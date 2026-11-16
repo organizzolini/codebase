@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.2.1](https://github.com/organizzolini/codebase/compare/v6.2.0...v6.2.1) (2026-11-16)
+
+### 🐛 Bug Fixes
+
+* **compliance:** 🐛 allow Task as a root issue type ([#2433](https://github.com/organizzolini/codebase/issues/2433)) ([c28f4de](https://github.com/organizzolini/codebase/commit/c28f4de9e68ebbd12cca8808dbd6e1975e5e31fd)), closes [#2432](https://github.com/organizzolini/codebase/issues/2432)
+
 ## [6.2.0](https://github.com/organizzolini/codebase/compare/v6.1.0...v6.2.0) (2026-11-15)
 
 ### ✨ Features
