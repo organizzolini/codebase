@@ -20,7 +20,10 @@ import type {
 } from "../../graphql/generated/operations";
 import type { GalleryView } from "../../hooks/use-gallery-search/use-gallery-search.types";
 import type { GroupField } from "../gallery-group-by/gallery-group-by.types";
-import type { GalleryGroup } from "../meander-gallery/meanders-api.types";
+import type {
+  GalleryCharacteristic,
+  GalleryGroup,
+} from "../meander-gallery/meanders-api.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -29,12 +32,17 @@ import type { ReactNode } from "react";
  * The groups with their counts, what selects their cards, and the view.
  */
 export interface GroupedGalleryProperties {
+  /** The catalog, which groups each card's pills. */
+  catalog: readonly GalleryCharacteristic[];
   className?: string;
   fields: readonly GroupField[];
-  /** The page's filter, which every group's cards are read within. */
-  filter: MeanderFilterGroupInput | undefined;
   groups: readonly GalleryGroup[];
-  sort: MeanderSortInput | undefined;
+  /** What every group's cards are read with: the page's filter, repeats, sort. */
+  query: Readonly<{
+    filter: MeanderFilterGroupInput | undefined;
+    repeats: number;
+    sort: MeanderSortInput | undefined;
+  }>;
   view: GalleryView;
 }
 
@@ -47,15 +55,21 @@ export interface GroupedGalleryProperties {
 export function GroupedGallery(
   properties: Readonly<GroupedGalleryProperties>,
 ): ReactNode {
-  const { className, fields, filter, groups, sort, view } = properties;
+  const { catalog, className, fields, groups, query, view } = properties;
 
   // 🪝 Hooks
   const { setElement, top, width } = useElementBox();
-  const { cards, load } = useGroupCards(sort);
+  const { cards, load } = useGroupCards(query);
   const columns = getColumnCount(width, view);
   const items = useMemo(
-    () => buildGroupedItems(groups, { cards, columns, fields, filter }),
-    [cards, columns, fields, filter, groups],
+    () =>
+      buildGroupedItems(groups, {
+        cards,
+        columns,
+        fields,
+        filter: query.filter,
+      }),
+    [cards, columns, fields, groups, query.filter],
   );
   const virtualizer = useWindowVirtualizer({
     count: items.length,
@@ -129,10 +143,11 @@ export function GroupedGallery(
               style={{ top: row.start - top }}
             >
               <GroupedItem
+                catalog={catalog}
                 columns={columns}
                 item={item}
                 onRetry={load}
-                view={view}
+                repeats={query.repeats}
               />
             </li>
           );

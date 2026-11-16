@@ -28,10 +28,12 @@ function pageOf(
   };
 }
 
+const QUERY = { repeats: 6 };
+
 describe(useMeanders, () => {
   it("returns its result", () => {
     const first = pageOf(0, 2, true);
-    const { result } = renderHook(() => useMeanders(first));
+    const { result } = renderHook(() => useMeanders(first, QUERY));
 
     expect(result.current).toStrictEqual({
       hasMore: true,
@@ -44,7 +46,7 @@ describe(useMeanders, () => {
   it("reads the page after the last one, by its cursor", async () => {
     const api = serveMeandersApi(5);
     const first = pageOf(0, 2, true);
-    const { result } = renderHook(() => useMeanders(first));
+    const { result } = renderHook(() => useMeanders(first, QUERY));
 
     act(() => {
       result.current.loadMore();
@@ -58,11 +60,29 @@ describe(useMeanders, () => {
     expect(result.current.hasMore).toBe(false);
   });
 
+  it("reads the next page with the repeats asked for", async () => {
+    const api = serveMeandersApi(5);
+    const first = pageOf(0, 2, true);
+    const { result } = renderHook(() => useMeanders(first, { repeats: 3 }));
+
+    act(() => {
+      result.current.loadMore();
+    });
+
+    await waitFor(() => {
+      expect(result.current.meanders).toHaveLength(5);
+    });
+
+    expect(api.requests[0]).toMatchObject({ repeats: 3 });
+  });
+
   it("reads the next page in the sort the first was read in", async () => {
     const api = serveMeandersApi(5);
     const sort = { direction: "DESC", field: "rows" } as const;
     const first = pageOf(0, 2, true);
-    const { result } = renderHook(() => useMeanders(first, sort));
+    const { result } = renderHook(() =>
+      useMeanders(first, { repeats: 6, sort }),
+    );
 
     act(() => {
       result.current.loadMore();
@@ -77,7 +97,9 @@ describe(useMeanders, () => {
 
   it("reads nothing once the last page is in", () => {
     const api = serveMeandersApi(2);
-    const { result } = renderHook(() => useMeanders(pageOf(0, 2, false)));
+    const { result } = renderHook(() =>
+      useMeanders(pageOf(0, 2, false), QUERY),
+    );
 
     act(() => {
       result.current.loadMore();
@@ -90,7 +112,7 @@ describe(useMeanders, () => {
     const api = serveMeandersApi(4);
     api.fail("The database is down");
     const first = pageOf(0, 2, true);
-    const { result } = renderHook(() => useMeanders(first));
+    const { result } = renderHook(() => useMeanders(first, QUERY));
 
     act(() => {
       result.current.loadMore();
@@ -116,9 +138,12 @@ describe(useMeanders, () => {
 
   it("drops a read begun under an old first page, and reads for the new one", async () => {
     const api = serveMeandersApi(6, 50);
-    const { rerender, result } = renderHook(({ first }) => useMeanders(first), {
-      initialProps: { first: pageOf(0, 2, true) },
-    });
+    const { rerender, result } = renderHook(
+      ({ first }) => useMeanders(first, QUERY),
+      {
+        initialProps: { first: pageOf(0, 2, true) },
+      },
+    );
 
     act(() => {
       result.current.loadMore();
@@ -143,9 +168,12 @@ describe(useMeanders, () => {
   it("ignores the failure of a read begun under an old first page", async () => {
     const api = serveMeandersApi(6, 30);
     api.fail("The database is down");
-    const { rerender, result } = renderHook(({ first }) => useMeanders(first), {
-      initialProps: { first: pageOf(0, 2, true) },
-    });
+    const { rerender, result } = renderHook(
+      ({ first }) => useMeanders(first, QUERY),
+      {
+        initialProps: { first: pageOf(0, 2, true) },
+      },
+    );
 
     act(() => {
       result.current.loadMore();
@@ -162,9 +190,12 @@ describe(useMeanders, () => {
 
   it("starts over when the first page changes", async () => {
     serveMeandersApi(6);
-    const { rerender, result } = renderHook(({ first }) => useMeanders(first), {
-      initialProps: { first: pageOf(0, 2, true) },
-    });
+    const { rerender, result } = renderHook(
+      ({ first }) => useMeanders(first, QUERY),
+      {
+        initialProps: { first: pageOf(0, 2, true) },
+      },
+    );
 
     act(() => {
       result.current.loadMore();

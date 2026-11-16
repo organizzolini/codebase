@@ -1,49 +1,56 @@
 import { useEffect, useState } from "react";
 
-import {
-  COPIED_MILLISECONDS,
-  COPY_LABELS,
-  VIEW_CLASSES,
-} from "./meander-card.constants";
-import { formatShape, toSvgDataUri } from "./meander-card.utilities";
+import { MeanderCharacteristics } from "../meander-characteristics/meander-characteristics";
 
-import type { GalleryView } from "../../hooks/use-gallery-search/use-gallery-search.types";
-import type { GalleryMeander } from "../meander-gallery/meanders-api.types";
+import { COPIED_MILLISECONDS, COPY_LABELS } from "./meander-card.constants";
+import {
+  formatCode,
+  readDrawingSize,
+  toSvgDataUri,
+} from "./meander-card.utilities";
+
+import type {
+  GalleryCharacteristic,
+  GalleryMeander,
+} from "../meander-gallery/meanders-api.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The meander a card shows, and the view that decides its layout.
+ * The meander, the catalog categorizing its pills, and its repeats.
  */
 export interface MeanderCardProperties {
+  catalog: readonly GalleryCharacteristic[];
   className?: string;
   meander: GalleryMeander;
-  view: GalleryView;
+  repeats: number;
 }
 
 // 🧩 Component
 
 /**
- * Renders one meander: its drawing, shape, Code and the characteristics it
- * holds, the same fields in a grid card as in a list row.
+ * Renders one meander: its drawing on top, then its Code and the
+ * characteristics it holds as grouped pills.
  */
 export function MeanderCard(
   properties: Readonly<MeanderCardProperties>,
 ): ReactNode {
-  const { className, meander, view } = properties;
+  const { catalog, className, meander, repeats } = properties;
 
   // 🪝 Hooks
   const [copy, setCopy] = useState<"copied" | "failed" | "idle">("idle");
 
   // 🏗 Setup
-  const classes = VIEW_CLASSES[view];
-  const patterns = meander.characteristics.filter(({ isPattern }) => isPattern);
+  const size = readDrawingSize(meander.svg);
+  // The Code format spells repeats `r<n>`, so the shown Code is a Code the CLI
+  // reads as this drawing; copying takes the same text.
+  const code = formatCode(meander.code, repeats);
 
   // 💪 Handlers
   const handleCopy = (): void => {
     navigator.clipboard
-      .writeText(meander.code)
+      .writeText(code)
       .then(() => {
         setCopy("copied");
       })
@@ -75,72 +82,41 @@ export function MeanderCard(
       className={className}
       data-testid="meander-card"
     >
-      <article
-        className={`flex gap-3 rounded-(--radius-card) border border-(--line) bg-(--surface-raised) p-3 ${classes.root}`}
-      >
+      <article className="flex flex-col gap-3 rounded-(--radius-card) border border-(--line) bg-(--surface-raised) p-3">
         <img
           alt={`Drawing of meander ${meander.code}`}
-          className={`rounded-md border border-(--line) bg-(--drawing-panel) object-contain ${classes.drawing}`}
-          height={classes.height}
+          className="max-h-64 w-full rounded-md border border-(--line) bg-(--drawing-panel) object-contain"
+          height={size.height}
           src={toSvgDataUri(meander.svg)}
-          width={classes.width}
+          style={{ aspectRatio: `${size.width} / ${size.height}` }}
+          width={size.width}
         />
-        <div className="flex min-w-0 flex-1 flex-col gap-2">
-          <p className="text-sm">
-            <span>{formatShape(meander.rows, meander.columns)}</span>
-            <span className="text-(--ink-muted)">
-              {" "}
-              · lattice {meander.lattice} · repeats {meander.repeats}
-            </span>
-            {meander.isHardcoded ? (
-              <span className="ml-2 rounded-full bg-(--accent) px-2 py-0.5 text-xs text-(--accent-ink)">
-                Hardcoded
-              </span>
-            ) : null}
-          </p>
-          <p className="flex items-center gap-2">
-            <code className="min-w-0 flex-1 truncate text-xs">
-              {meander.code}
-            </code>
-            <button
-              aria-label={`Copy the Code of meander ${meander.code}`}
-              className="rounded-md border border-(--line) px-2 py-0.5 text-xs"
-              onClick={handleCopy}
-              type="button"
-            >
-              {COPY_LABELS[copy]}
-            </button>
-          </p>
-          <ul
-            aria-label="Pattern characteristics"
-            className="flex flex-wrap gap-1"
+        <p className="flex items-center gap-2">
+          <code
+            className="flex min-w-0 flex-1 text-sm"
+            title={code}
           >
-            {patterns.map(({ key, name }) => (
-              <li
-                key={key}
-                className="rounded-full border border-(--accent) px-2 py-0.5 text-xs text-(--accent)"
-              >
-                {name}
-              </li>
-            ))}
-          </ul>
-          <details className="text-xs">
-            <summary className="cursor-pointer text-(--ink-muted)">
-              All values ({meander.characteristics.length})
-            </summary>
-            <dl className="mt-1 grid grid-cols-[1fr_auto] gap-x-3">
-              {meander.characteristics.map(({ key, name, value }) => (
-                <div
-                  key={key}
-                  className="contents"
-                >
-                  <dt>{name}</dt>
-                  <dd>{value}</dd>
-                </div>
-              ))}
-            </dl>
-          </details>
-        </div>
+            <span className="truncate">{meander.code}</span>
+            <span className="shrink-0">r{repeats}</span>
+          </code>
+          {meander.isHardcoded ? (
+            <span className="rounded-full bg-(--accent) px-2 py-0.5 text-xs text-(--accent-ink)">
+              Hardcoded
+            </span>
+          ) : null}
+          <button
+            aria-label={`Copy the Code of meander ${meander.code}`}
+            className="rounded-md border border-(--line) px-2 py-0.5 text-xs"
+            onClick={handleCopy}
+            type="button"
+          >
+            {COPY_LABELS[copy]}
+          </button>
+        </p>
+        <MeanderCharacteristics
+          catalog={catalog}
+          characteristics={meander.characteristics}
+        />
       </article>
     </div>
   );

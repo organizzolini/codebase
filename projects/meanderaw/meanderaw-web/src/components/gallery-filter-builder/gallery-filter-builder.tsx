@@ -1,56 +1,50 @@
-import { FilterGroupEditor } from "./filter-group-editor";
-import { countEntries } from "./filter-limits.utilities";
-import { FilterRowsEditor } from "./filter-rows-editor";
-import {
-  EMPTY_FILTER_GROUP,
-  MAXIMUM_FILTER_ENTRIES,
-} from "./gallery-filter-builder.constants";
+import { useState } from "react";
 
-import type {
-  FilterEdit,
-  FilterField,
-  FilterGroup,
-  RowsFilter,
-} from "./gallery-filter-builder.types";
+import { FilterAttributeSearch } from "./filter-attribute-search";
+import { FilterOperandEditor } from "./filter-operand-editor";
+import { createRule } from "./gallery-filter-builder.utilities";
+
+import type { FilterField, FilterRule } from "./gallery-filter-builder.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The fields, the filter tree, the rows rule, and the edit handlers.
+ * The attributes, whether the filter is full, and the add.
  */
 export interface GalleryFilterBuilderProperties {
   className?: string;
   fields: readonly FilterField[];
-  filter: FilterGroup | undefined;
-  /** Called with the whole tree after every edit, none once it is empty. */
-  onFilterChange: (filter: FilterGroup | undefined) => void;
-  onRowsChange: (rows: RowsFilter) => void;
-  /** The rows rule every filter holds, which cannot be removed. */
-  rows: RowsFilter;
+  /** Whether the filter holds as many rules as the API takes. */
+  isFull: boolean;
+  /** Called with the finished rule when Add filter is pressed. */
+  onAdd: (rule: FilterRule) => void;
 }
 
 // 🧩 Component
 
 /**
- * Renders the required rows rule above the rule tree builder: nested AND/OR groups of rules.
+ * Renders the add-a-filter steps: search and pick an attribute, then its
+ * operator and value, then Add filter.
  */
 export function GalleryFilterBuilder(
   properties: Readonly<GalleryFilterBuilderProperties>,
 ): ReactNode {
-  const { className, fields, filter, onFilterChange, onRowsChange, rows } =
-    properties;
+  const { className, fields, isFull, onAdd } = properties;
 
   // 🪝 Hooks
+  const [draft, setDraft] = useState<
+    undefined | { field: FilterField; rule: FilterRule }
+  >();
 
   // 🏗 Setup
-  const root = filter ?? EMPTY_FILTER_GROUP;
 
   // 💪 Handlers
-  const handleEdit = (edit: FilterEdit): void => {
-    const next = edit(root);
-
-    onFilterChange(next.rules.length === 0 ? undefined : next);
+  const handleAdd = (): void => {
+    if (draft !== undefined) {
+      onAdd(draft.rule);
+      setDraft(undefined);
+    }
   };
 
   // ♻️ Lifecycle
@@ -63,17 +57,53 @@ export function GalleryFilterBuilder(
       className={className}
       data-testid="gallery-filter-builder"
     >
-      <FilterRowsEditor
-        onRowsChange={onRowsChange}
-        rows={rows}
-      />
-      <FilterGroupEditor
-        fields={fields}
-        group={root}
-        isFull={countEntries(root) >= MAXIMUM_FILTER_ENTRIES}
-        onEdit={handleEdit}
-        path={[]}
-      />
+      {draft === undefined ? (
+        <FilterAttributeSearch
+          fields={fields}
+          onSelect={(field) => {
+            setDraft({ field, rule: createRule(field) });
+          }}
+        />
+      ) : (
+        <div className="flex flex-col gap-3">
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex flex-col">
+              <span className="font-medium">{draft.field.label}</span>
+              <span className="text-xs text-(--ink-muted)">
+                {draft.field.description}
+              </span>
+            </div>
+            <button
+              className="rounded-md border border-(--line) px-2 py-1 text-sm"
+              onClick={() => {
+                setDraft(undefined);
+              }}
+              type="button"
+            >
+              Change attribute
+            </button>
+          </div>
+          <FilterOperandEditor
+            field={draft.field}
+            onRuleChange={(rule) => {
+              setDraft({ field: draft.field, rule });
+            }}
+            rule={draft.rule}
+          />
+          <button
+            className="self-start rounded-md bg-(--accent) px-3 py-1 text-sm text-(--accent-ink) disabled:opacity-50"
+            disabled={
+              isFull ||
+              (typeof draft.rule.value === "string" &&
+                draft.rule.value.trim() === "")
+            }
+            onClick={handleAdd}
+            type="button"
+          >
+            Add filter
+          </button>
+        </div>
+      )}
     </div>
   );
 }

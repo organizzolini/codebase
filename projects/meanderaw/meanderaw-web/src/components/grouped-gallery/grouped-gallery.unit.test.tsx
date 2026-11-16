@@ -1,7 +1,10 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { serveMeandersApi } from "../../../testing/meanders-api";
+import {
+  FIXTURE_CHARACTERISTICS,
+  serveMeandersApi,
+} from "../../../testing/meanders-api";
 
 import { GroupedGallery } from "./grouped-gallery";
 
@@ -12,10 +15,10 @@ function properties(
   overrides: Partial<GroupedGalleryProperties> = {},
 ): GroupedGalleryProperties {
   return {
+    catalog: FIXTURE_CHARACTERISTICS,
     fields: [{ key: "lattice", label: "Lattice", type: "text" }],
-    filter: undefined,
     groups: [{ count: 1, field: "lattice", groups: [], value: "0" }],
-    sort: undefined,
+    query: { filter: undefined, repeats: 12, sort: undefined },
     view: "grid",
     ...overrides,
   };

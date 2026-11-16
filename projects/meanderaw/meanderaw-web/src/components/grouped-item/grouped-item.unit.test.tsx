@@ -1,7 +1,10 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { fixtureMeander } from "../../../testing/meanders-api";
+import {
+  FIXTURE_CHARACTERISTICS,
+  fixtureMeander,
+} from "../../../testing/meanders-api";
 
 import { GroupedItem } from "./grouped-item";
 
@@ -12,6 +15,7 @@ function properties(
   overrides: Partial<GroupedItemProperties> = {},
 ): GroupedItemProperties {
   return {
+    catalog: FIXTURE_CHARACTERISTICS,
     columns: 2,
     item: {
       count: 1234,
@@ -21,7 +25,7 @@ function properties(
       label: "Lattice: 0",
     },
     onRetry: vi.fn<GroupedItemProperties["onRetry"]>(),
-    view: "grid",
+    repeats: 12,
     ...overrides,
   };
 }

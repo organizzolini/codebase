@@ -1,7 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { fixtureMeander } from "../../../testing/meanders-api";
+import {
+  FIXTURE_CHARACTERISTICS,
+  fixtureMeander,
+} from "../../../testing/meanders-api";
 
 import { MeanderGallery } from "./meander-gallery";
 
@@ -12,10 +15,12 @@ function properties(
   overrides: Partial<MeanderGalleryProperties> = {},
 ): MeanderGalleryProperties {
   return {
+    catalog: FIXTURE_CHARACTERISTICS,
     hasMore: false,
     loadError: undefined,
     meanders: [fixtureMeander(0), fixtureMeander(1), fixtureMeander(2)],
     onLoadMore: vi.fn<() => void>(),
+    repeats: 12,
     view: "grid",
     ...overrides,
   };

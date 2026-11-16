@@ -32,11 +32,14 @@ export interface UseGallerySearchResult {
     rows: RowsFilter,
   ) => void;
   handleGroupChange: (group: string[]) => void;
+  handleRepeatsChange: (repeats: number) => void;
   handleSortChange: (
     sort: string | undefined,
     direction: SortDirection,
   ) => void;
   handleViewChange: (view: GalleryView) => void;
+  /** How many times each drawing repeats its tile. */
+  repeats: number;
   /** The field the cards are sorted by, or none for the API's own order. */
   sort: string | undefined;
   view: GalleryView;

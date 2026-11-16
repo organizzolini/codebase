@@ -8,9 +8,12 @@ import {
 
 import { useGroupCards } from "./use-group-cards";
 
+/** What every read of the cards carries. */
+const QUERY = { repeats: 12, sort: undefined };
+
 describe(useGroupCards, () => {
   it("returns its result", () => {
-    const { result } = renderHook(() => useGroupCards());
+    const { result } = renderHook(() => useGroupCards(QUERY));
 
     expect(result.current).toStrictEqual({
       cards: {},
@@ -21,7 +24,7 @@ describe(useGroupCards, () => {
   it("reads a group's cards, and its next page after the first", async () => {
     const api = serveMeandersApi(60);
     const leaf = { filter: undefined, id: "all" };
-    const { result } = renderHook(() => useGroupCards());
+    const { result } = renderHook(() => useGroupCards(QUERY));
 
     result.current.load(leaf);
 
@@ -50,7 +53,7 @@ describe(useGroupCards, () => {
   it("keeps a failure with the group until it is tried again", async () => {
     const api = serveMeandersApi(3);
     const leaf = { filter: undefined, id: "all" };
-    const { result } = renderHook(() => useGroupCards());
+    const { result } = renderHook(() => useGroupCards(QUERY));
     api.fail("The database is down");
 
     result.current.load(leaf);
@@ -72,7 +75,7 @@ describe(useGroupCards, () => {
   it("reads a group once however many times it is asked for at once", async () => {
     const api = serveMeandersApi(3);
     const leaf = { filter: undefined, id: "all" };
-    const { result } = renderHook(() => useGroupCards());
+    const { result } = renderHook(() => useGroupCards(QUERY));
 
     result.current.load(leaf);
     result.current.load(leaf);

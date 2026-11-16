@@ -3,24 +3,25 @@ import { MeanderCard } from "../meander-card/meander-card";
 
 import { HEADINGS } from "./grouped-item.constants";
 
-import type { GalleryView } from "../../hooks/use-gallery-search/use-gallery-search.types";
 import type {
   GroupedItem as GroupedRow,
   GroupLeaf,
 } from "../grouped-gallery/grouped-gallery.types";
+import type { GalleryCharacteristic } from "../meander-gallery/meanders-api.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The row, its card columns, and how to retry a failure.
+ * The row, the catalog, its columns, repeats, and a retry.
  */
 export interface GroupedItemProperties {
+  catalog: readonly GalleryCharacteristic[];
   className?: string;
   columns: number;
   item: GroupedRow;
   onRetry: (leaf: GroupLeaf) => void;
-  view: GalleryView;
+  repeats: number;
 }
 
 // 🧩 Component
@@ -31,7 +32,7 @@ export interface GroupedItemProperties {
 export function GroupedItem(
   properties: Readonly<GroupedItemProperties>,
 ): ReactNode {
-  const { className, columns, item, onRetry, view } = properties;
+  const { catalog, className, columns, item, onRetry, repeats } = properties;
 
   // 🪝 Hooks
 
@@ -78,8 +79,9 @@ export function GroupedItem(
           {item.meanders.map((meander) => (
             <MeanderCard
               key={meander.id}
+              catalog={catalog}
               meander={meander}
-              view={view}
+              repeats={repeats}
             />
           ))}
         </div>

@@ -1,15 +1,28 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { FilterSurface } from "./filter-surface";
+
+import type { FilterSurfaceProperties } from "./filter-surface";
+
+/** The properties a surface needs, closed and with no active filters. */
+function properties(
+  overrides: Partial<FilterSurfaceProperties> = {},
+): FilterSurfaceProperties {
+  return {
+    activeCount: 0,
+    isOpen: false,
+    onOpenChange: vi.fn<FilterSurfaceProperties["onOpenChange"]>(),
+    ...overrides,
+  };
+}
 
 describe(FilterSurface, () => {
   it("applies its class name", () => {
     render(
       <FilterSurface
-        activeCount={0}
+        {...properties()}
         className="filter-surface"
-        kind="popover"
       />,
     );
 
@@ -18,189 +31,83 @@ describe(FilterSurface, () => {
     );
   });
 
-  it("opens from the button and closes with the backdrop, Escape or Done", () => {
-    render(
-      <FilterSurface
-        activeCount={2}
-        kind="drawer"
-      >
-        <p>Builder</p>
-      </FilterSurface>,
-    );
+  it("asks to open when its button is pressed, and to close when it is pressed open", () => {
+    const closed = properties();
+    const { rerender } = render(<FilterSurface {...closed} />);
 
     expect(screen.queryByRole("dialog")).toBeNull();
 
-    fireEvent.click(screen.getByRole("button", { name: "Filter, 2 active" }));
+    fireEvent.click(screen.getByRole("button", { name: "Filter" }));
 
-    expect(screen.getByRole("dialog").matches('[data-surface="drawer"]')).toBe(
-      true,
+    expect(closed.onOpenChange).toHaveBeenLastCalledWith(true);
+
+    const open = properties({ isOpen: true });
+
+    rerender(<FilterSurface {...open} />);
+    fireEvent.click(screen.getByRole("button", { name: "Filter" }));
+
+    expect(open.onOpenChange).toHaveBeenLastCalledWith(false);
+  });
+
+  it("badges the button with the active count", () => {
+    render(<FilterSurface {...properties({ activeCount: 2 })} />);
+
+    expect(
+      screen.getByRole("button", { name: "Filter, 2 active" }),
+    ).toBeDefined();
+  });
+
+  it("shows a popup holding its children, asks to close on the backdrop, and moves focus in", () => {
+    const open = properties({ isOpen: true });
+
+    render(
+      <FilterSurface {...open}>
+        <input aria-label="Inside" />
+      </FilterSurface>,
     );
-    expect(screen.getByText("Builder")).toBeDefined();
+
+    expect(screen.getByRole("dialog")).toBeDefined();
+    expect(globalThis.document.activeElement).toBe(
+      screen.getByLabelText("Inside"),
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "Close filters" }));
 
-    expect(screen.queryByRole("dialog")).toBeNull();
-
-    fireEvent.click(screen.getByRole("button", { name: "Filter, 2 active" }));
-    fireEvent.keyDown(screen.getByRole("dialog"), { key: "a" });
-    fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
-
-    expect(screen.queryByRole("dialog")).toBeNull();
-
-    fireEvent.click(screen.getByRole("button", { name: "Filter, 2 active" }));
-    fireEvent.click(screen.getByRole("button", { name: "Done" }));
-
-    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(open.onOpenChange).toHaveBeenLastCalledWith(false);
   });
 
-  it("moves focus in when it opens and gives it back to the button when it closes", () => {
+  it("asks to close on Escape, except one pressed in a select, which keeps it", () => {
+    const open = properties({ isOpen: true });
+
     render(
-      <FilterSurface
-        activeCount={0}
-        kind="sheet"
-      >
-        <input aria-label="Inside" />
-      </FilterSurface>,
-    );
-
-    const button = screen.getByRole("button", { name: "Filter" });
-
-    fireEvent.click(button);
-
-    expect(globalThis.document.activeElement).toBe(
-      screen.getByRole("button", { name: "Done" }),
-    );
-
-    fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
-
-    expect(globalThis.document.activeElement).toBe(button);
-  });
-
-  it("keeps Tab inside a drawer or a sheet, wrapping from the last control to the first", () => {
-    render(
-      <FilterSurface
-        activeCount={0}
-        kind="drawer"
-      >
-        <input aria-label="Inside" />
-      </FilterSurface>,
-    );
-    fireEvent.click(screen.getByRole("button", { name: "Filter" }));
-
-    const done = screen.getByRole("button", { name: "Done" });
-    const inside = screen.getByLabelText("Inside");
-
-    inside.focus();
-
-    const forward = fireEvent.keyDown(inside, { key: "Tab" });
-
-    expect(forward).toBe(false);
-    expect(globalThis.document.activeElement).toBe(done);
-
-    const backward = fireEvent.keyDown(done, { key: "Tab", shiftKey: true });
-
-    expect(backward).toBe(false);
-    expect(globalThis.document.activeElement).toBe(inside);
-
-    done.focus();
-
-    expect(fireEvent.keyDown(done, { key: "Tab" })).toBe(true);
-  });
-
-  it("lets Tab leave a popover, which does not trap it", () => {
-    render(
-      <FilterSurface
-        activeCount={0}
-        kind="popover"
-      >
-        <input aria-label="Inside" />
-      </FilterSurface>,
-    );
-    fireEvent.click(screen.getByRole("button", { name: "Filter" }));
-
-    const inside = screen.getByLabelText("Inside");
-
-    expect(fireEvent.keyDown(inside, { key: "Tab" })).toBe(true);
-  });
-
-  it("leaves Escape to a select, which uses it to close its list", () => {
-    render(
-      <FilterSurface
-        activeCount={0}
-        kind="popover"
-      >
+      <FilterSurface {...open}>
         <select aria-label="Pick">
           <option>one</option>
         </select>
       </FilterSurface>,
     );
-    fireEvent.click(screen.getByRole("button", { name: "Filter" }));
     fireEvent.keyDown(screen.getByLabelText("Pick"), { key: "Escape" });
 
-    expect(screen.getByRole("dialog")).toBeDefined();
+    expect(open.onOpenChange).not.toHaveBeenCalled();
+
+    fireEvent.keyDown(screen.getByRole("dialog"), { key: "a" });
+
+    expect(open.onOpenChange).not.toHaveBeenCalled();
+
+    fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
+
+    expect(open.onOpenChange).toHaveBeenCalledWith(false);
   });
 
-  it("ignores Escape pressed when it is closed", () => {
-    render(
-      <FilterSurface
-        activeCount={0}
-        kind="popover"
-      />,
-    );
-    fireEvent.keyDown(globalThis.document.body, { key: "Escape" });
-
-    expect(screen.queryByRole("dialog")).toBeNull();
-  });
-
-  it("stays open, with its focus, when the kind changes as the window resizes", () => {
+  it("gives focus back to its button when it closes", () => {
     const { rerender } = render(
-      <FilterSurface
-        activeCount={0}
-        kind="popover"
-      >
-        <input aria-label="Inside" />
-      </FilterSurface>,
+      <FilterSurface {...properties({ isOpen: true })} />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Filter" }));
+    rerender(<FilterSurface {...properties({ isOpen: false })} />);
 
-    const dialog = screen.getByRole("dialog");
-    const inside = screen.getByLabelText("Inside");
-
-    inside.focus();
-    rerender(
-      <FilterSurface
-        activeCount={0}
-        kind="sheet"
-      >
-        <input aria-label="Inside" />
-      </FilterSurface>,
+    expect(globalThis.document.activeElement).toBe(
+      screen.getByRole("button", { name: "Filter" }),
     );
-
-    expect(screen.getByRole("dialog")).toBe(dialog);
-    expect(dialog.matches('[data-surface="sheet"]')).toBe(true);
-    expect(globalThis.document.activeElement).toBe(inside);
-  });
-
-  it("opens a popover with no header of its own, and toggles on its button", () => {
-    render(
-      <FilterSurface
-        activeCount={0}
-        kind="popover"
-      />,
-    );
-
-    const button = screen.getByRole("button", { name: "Filter" });
-
-    fireEvent.click(button);
-
-    expect(screen.queryByRole("button", { name: "Done" })).toBeNull();
-    expect(screen.getByRole("dialog").matches('[data-surface="popover"]')).toBe(
-      true,
-    );
-
-    fireEvent.click(button);
-
-    expect(screen.queryByRole("dialog")).toBeNull();
   });
 });

@@ -20,6 +20,7 @@ import {
   createGroupFields,
   resolveGrouping,
 } from "../components/gallery-group-by/gallery-group-by.utilities";
+import { GalleryRepeats } from "../components/gallery-repeats/gallery-repeats";
 import { GallerySort } from "../components/gallery-sort/gallery-sort";
 import { resolveSortField } from "../components/gallery-sort/gallery-sort.utilities";
 import { GalleryToolbar } from "../components/gallery-toolbar/gallery-toolbar";
@@ -31,13 +32,19 @@ import {
 } from "../components/meander-gallery/meanders-api.utilities";
 import { useGallerySearch } from "../hooks/use-gallery-search/use-gallery-search";
 import {
+  DEFAULT_REPEATS,
   DEFAULT_SORT_DIRECTION,
   gallerySearchSchema,
 } from "../hooks/use-gallery-search/use-gallery-search.constants";
 import { toSortInput } from "../hooks/use-gallery-search/use-gallery-search.utilities";
 import { useMeanders } from "../hooks/use-meanders/use-meanders";
 
-import type { MeandersPage } from "../components/meander-gallery/meanders-api.types";
+import type { GroupField } from "../components/gallery-group-by/gallery-group-by.types";
+import type {
+  GalleryCharacteristic,
+  GalleryGroup,
+  MeandersPage,
+} from "../components/meander-gallery/meanders-api.types";
 import type {
   MeanderFilterGroupInput,
   MeanderSortInput,
@@ -65,6 +72,7 @@ export const Route = createFileRoute("/")({
     group: search.group,
     // Read as the rule it settles to, so adding the default to the link does
     // not read the first page a second time.
+    repeats: search.repeats ?? DEFAULT_REPEATS,
     rows: sanitizeRows(search.rows),
     sort: search.sort,
   }),
@@ -86,11 +94,20 @@ export const Route = createFileRoute("/")({
       direction: deps.direction,
       filter,
       grouping: resolveGrouping(deps.group, createGroupFields(characteristics)),
+      repeats: deps.repeats,
       rows,
       sort,
     });
 
-    return { characteristics, filter, groups, page, rows, sort };
+    return {
+      characteristics,
+      filter,
+      groups,
+      page,
+      repeats: deps.repeats,
+      rows,
+      sort,
+    };
   },
 });
 
@@ -101,25 +118,67 @@ export const Route = createFileRoute("/")({
  */
 function FlatGallery(
   properties: Readonly<{
-    filter: MeanderFilterGroupInput | undefined;
+    catalog: readonly GalleryCharacteristic[];
     page: MeandersPage;
-    sort: MeanderSortInput | undefined;
+    query: Readonly<{
+      filter: MeanderFilterGroupInput | undefined;
+      repeats: number;
+      sort: MeanderSortInput | undefined;
+    }>;
     view: GalleryView;
   }>,
 ): ReactNode {
-  const { filter, page, sort, view } = properties;
-  const { hasMore, loadError, loadMore, meanders } = useMeanders(
-    page,
-    sort,
-    filter,
-  );
+  const { catalog, page, query, view } = properties;
+  const { hasMore, loadError, loadMore, meanders } = useMeanders(page, query);
 
   return (
     <MeanderGallery
+      catalog={catalog}
       hasMore={hasMore}
       loadError={loadError}
       meanders={meanders}
       onLoadMore={loadMore}
+      repeats={query.repeats}
+      view={view}
+    />
+  );
+}
+
+/**
+ * Renders the pages of a flat gallery, or the groups of a grouped one, which
+ * start over when the reset key changes.
+ */
+function GalleryBody(
+  properties: Readonly<{
+    catalog: readonly GalleryCharacteristic[];
+    fields: readonly GroupField[];
+    groups: GalleryGroup[] | undefined;
+    page: MeandersPage | undefined;
+    query: Readonly<{
+      filter: MeanderFilterGroupInput | undefined;
+      repeats: number;
+      sort: MeanderSortInput | undefined;
+    }>;
+    resetKey: string;
+    view: GalleryView;
+  }>,
+): ReactNode {
+  const { catalog, fields, groups, page, query, resetKey, view } = properties;
+
+  return groups === undefined && page !== undefined ? (
+    <FlatGallery
+      catalog={catalog}
+      page={page}
+      query={query}
+      view={view}
+    />
+  ) : (
+    <GroupedGallery
+      key={resetKey}
+      catalog={catalog}
+      fields={fields}
+      groups={groups ?? []}
+      query={query}
       view={view}
     />
   );
@@ -150,13 +209,14 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
  */
 function IndexPage(): ReactNode {
   // 🪝 Hooks
-  const { characteristics, filter, groups, page, rows, sort } =
+  const { characteristics, filter, groups, page, repeats, rows, sort } =
     Route.useLoaderData();
   const {
     direction,
     group,
     handleFilterChange,
     handleGroupChange,
+    handleRepeatsChange,
     handleSortChange,
     handleViewChange,
     view,
@@ -172,9 +232,10 @@ function IndexPage(): ReactNode {
   const input = useMemo(
     () => ({
       filter: toFilterInput(filter, rows),
+      repeats,
       sort: toSortInput(sort, direction),
     }),
-    [direction, filter, rows, sort],
+    [direction, filter, repeats, rows, sort],
   );
   const fields = createFilterFields(characteristics);
   const groupFields = createGroupFields(characteristics);
@@ -237,6 +298,10 @@ function IndexPage(): ReactNode {
           }
           view={view}
         />
+        <GalleryRepeats
+          onRepeatsChange={handleRepeatsChange}
+          repeats={repeats}
+        />
         <GallerySort
           characteristics={characteristics}
           direction={direction}
@@ -252,23 +317,15 @@ function IndexPage(): ReactNode {
           Loading…
         </p>
       ) : null}
-      {groups === undefined && page !== undefined ? (
-        <FlatGallery
-          filter={input.filter}
-          page={page}
-          sort={input.sort}
-          view={view}
-        />
-      ) : (
-        <GroupedGallery
-          key={JSON.stringify({ direction, filter, grouping, sort })}
-          fields={groupFields}
-          filter={input.filter}
-          groups={groups ?? []}
-          sort={input.sort}
-          view={view}
-        />
-      )}
+      <GalleryBody
+        catalog={characteristics}
+        fields={groupFields}
+        groups={groups}
+        page={page}
+        query={input}
+        resetKey={JSON.stringify({ direction, filter, grouping, rows, sort })}
+        view={view}
+      />
     </section>
   );
 }

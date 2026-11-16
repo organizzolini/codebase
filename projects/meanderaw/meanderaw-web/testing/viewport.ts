@@ -69,5 +69,4 @@ export function scrollWindowTo(top: number): void {
  */
 export function setViewportWidth(width: number): void {
   viewportWidth = width;
-  globalThis.innerWidth = width;
 }

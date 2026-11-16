@@ -40,10 +40,12 @@ describe(useGallerySearch, () => {
       group: [],
       handleFilterChange: result.current.handleFilterChange,
       handleGroupChange: result.current.handleGroupChange,
+      handleRepeatsChange: result.current.handleRepeatsChange,
       handleSortChange: result.current.handleSortChange,
       handleViewChange: result.current.handleViewChange,
+      repeats: 12,
       sort: undefined,
-      view: "grid",
+      view: "list",
     });
   });
 
@@ -93,6 +95,48 @@ describe(useGallerySearch, () => {
       direction: undefined,
       sort: undefined,
     });
+  });
+
+  it("reads the repeats the link names, and replaces the link with the count picked", () => {
+    const navigate = mockNavigate();
+    vi.mocked(useSearch).mockReturnValue({ repeats: 3, view: "list" });
+
+    const { result } = renderHook(() => useGallerySearch());
+    result.current.handleRepeatsChange(9);
+
+    expect(result.current.repeats).toBe(3);
+    expect(navigate.mock.calls[0]?.[0].search({ view: "list" })).toStrictEqual({
+      repeats: 9,
+      view: "list",
+    });
+  });
+
+  it("repairs repeats that are out of range or not a number to 12", () => {
+    expect(gallerySearchSchema.parse({ repeats: 25 })).toStrictEqual({
+      repeats: 12,
+    });
+    expect(gallerySearchSchema.parse({ repeats: "abc" })).toStrictEqual({
+      repeats: 12,
+    });
+    expect(gallerySearchSchema.parse({ repeats: 0 })).toStrictEqual({
+      repeats: 12,
+    });
+    expect(gallerySearchSchema.parse({ repeats: 2.5 })).toStrictEqual({
+      repeats: 12,
+    });
+    expect(gallerySearchSchema.parse({ repeats: 24 })).toStrictEqual({
+      repeats: 24,
+    });
+    expect(gallerySearchSchema.parse({ repeats: 1 })).toStrictEqual({
+      repeats: 1,
+    });
+  });
+
+  it("drops a view or direction that is not one of the two, and reads a number as a field", () => {
+    expect(
+      gallerySearchSchema.parse({ direction: "up", sort: 5, view: "wall" }),
+    ).toStrictEqual({ direction: "asc", sort: "5", view: "list" });
+    expect(gallerySearchSchema.parse({})).toStrictEqual({});
   });
 
   it("replaces the link with the filter and rows rule, keeping the rest of it", () => {
@@ -155,13 +199,6 @@ describe(useGallerySearch, () => {
     expect(gallerySearchSchema.parse({ rows: 4 })).toStrictEqual({
       rows: undefined,
     });
-  });
-
-  it("drops a view or direction that is not one of the two, and reads a number as a field", () => {
-    expect(
-      gallerySearchSchema.parse({ direction: "up", sort: 5, view: "wall" }),
-    ).toStrictEqual({ direction: "asc", sort: "5", view: "grid" });
-    expect(gallerySearchSchema.parse({})).toStrictEqual({});
   });
 
   it("replaces the link with the grouping, dropping it for no levels", () => {

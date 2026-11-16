@@ -12,6 +12,15 @@
 nx run meanderaw-web:start
 ```
 
+## The Filter UI
+
+Filtering works like ReUI's filters: a small **Filter** button opens a popup, and each filter then shows on the page as a pill.
+
+- **Adding**: the popup is one step at a time. A search box lists the attributes (the shape fields first, then the catalog by category, at most 50 at once, then "refine your search"); arrow keys and Enter, or a click, pick one. Then its operator and value are set in the same popup, and Add filter puts a pill on the page. The popup is a popover at every width, closes on Escape or a click outside, and gives focus back to the button.
+- **Pills**: `[attribute | operator | value | ×]`. Operator and value edit in place (a value commits on blur or Enter); × removes the rule.
+- **Combinator**: new filters join the root group, which a Match all / Match any select switches (it appears once there are two). The popup only adds to the root. A link's nested groups still show, as parenthesized sub-groups of pills with their own match select and ×, and are editable in place.
+- **Code**: `GalleryFilters` holds the button, the Match select and Clear; `FilterSurface` is the popup; `GalleryFilterBuilder` is its add-a-filter steps (`FilterAttributeSearch`, `FilterOperandEditor`); `FilterPillRow` and `FilterPillGroup` draw the pills.
+
 ## The Rows Rule
 
 Every filter holds a rows rule, `rows = 4` by default, which the user can change to any numeric comparison (`=`, `≠`, `<`, `≤`, `>`, `≥`, `between`) but never remove.
@@ -19,7 +28,7 @@ Every filter holds a rows rule, `rows = 4` by default, which the user can change
 - It lives in its own `rows` search parameter (`{operator, value}`, Zod-validated). A link with none, or an invalid one, is repaired to `rows = 4` in the address.
 - The request is `AND{ rows rule, group(tree) }` (`toFilterInput(tree, rows)`), so the rule holds whatever the tree's own combinator. Anything that sends a filter (grouping included) must go through `toFilterInput` with the rows rule.
 - The API caps a filter at depth 6 and 128 rules and groups, so the tree is capped at depth 5 and 126 (`MAXIMUM_FILTER_DEPTH`, `MAXIMUM_FILTER_ENTRIES`): the rows rule and the group holding the tree take the rest.
-- The rows chip has no remove button, the builder's remove control for it is disabled, and Clear resets to `rows = 4` with no tree.
+- The rows pill has no × and Clear resets to `rows = 4` with no tree.
 
 ## Architecture Overview
 
@@ -139,7 +148,8 @@ test tiers.
 - **Data**: GraphQL over `fetch` in `components/meander-gallery/meanders-api.utilities.ts`; typed documents come from `nx run meanderaw-web:codegen`, which reads the API's emitted `src/schema.gql` and the documents in `src/graphql/operations/`.
 - **Paging**: hand-rolled in `hooks/use-meanders/use-meanders.ts`, since the repository has no `@tanstack/react-query`.
 - **Virtualization**: `@tanstack/react-virtual`'s window virtualizer in `MeanderGallery`.
-- **State**: view and sort live in URL search params, validated with Zod in `use-gallery-search.constants.ts`; a sort the catalog does not know falls back to the default order.
+- **State**: view, sort and repeats live in URL search params, validated with Zod in `use-gallery-search.constants.ts`; a sort the catalog does not know falls back to the default order, and repeats outside 1 to 24 (the API's `MAXIMUM_SVG_REPEATS`) or not a number fall back to 12, and an unknown view to the list. A change to the sort or repeats reloads from page 1.
+- **Cards**: each card stacks the drawing (at the SVG's own aspect) over the Code with its repeats written `r<n>`, as the Code format spells them, and pills of its characteristics grouped by catalog category, patterns first.
 - **Tests**: route integration tests mock GraphQL with MSW; `testing/meanders-api.ts` serves the fixture and `testing/viewport.ts` fakes width, resize observers and scroll.
 
 ## Key Files

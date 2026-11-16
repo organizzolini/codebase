@@ -1,15 +1,27 @@
-import { useViewportWidth } from "../../hooks/use-viewport-width/use-viewport-width";
-import { GalleryFilterBuilder } from "../gallery-filter-builder/gallery-filter-builder";
-import { DEFAULT_ROWS_FILTER } from "../gallery-filter-builder/gallery-filter-builder.constants";
-import { countRules } from "../gallery-filter-builder/gallery-filter-builder.utilities";
+import { useState } from "react";
 
-import { FilterChipRow } from "./filter-chip-row";
+import { countEntries } from "../gallery-filter-builder/filter-limits.utilities";
+import { GalleryFilterBuilder } from "../gallery-filter-builder/gallery-filter-builder";
+import {
+  DEFAULT_ROWS_FILTER,
+  EMPTY_FILTER_GROUP,
+  filterCombinatorSchema,
+  MAXIMUM_FILTER_ENTRIES,
+} from "../gallery-filter-builder/gallery-filter-builder.constants";
+import {
+  addNode,
+  countRules,
+  setCombinator,
+} from "../gallery-filter-builder/gallery-filter-builder.utilities";
+
+import { FilterPillRow } from "./filter-pill-row";
 import { FilterSurface } from "./filter-surface";
-import { pickFilterSurface } from "./gallery-filters.utilities";
 
 import type {
+  FilterEdit,
   FilterField,
   FilterGroup,
+  FilterRule,
   RowsFilter,
 } from "../gallery-filter-builder/gallery-filter-builder.types";
 import type { ReactNode } from "react";
@@ -17,7 +29,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The fields to pick from, the filter tree, and the edit handler.
+ * The attributes, tree, rows rule, and edits.
  */
 export interface GalleryFiltersProperties {
   className?: string;
@@ -36,7 +48,7 @@ export interface GalleryFiltersProperties {
 // 🧩 Component
 
 /**
- * Renders the Filters button, a Clear button resetting rows to its default, and the chips.
+ * Renders the Filter button and popup, a Match select, Clear, and a pill for each filter.
  */
 export function GalleryFilters(
   properties: Readonly<GalleryFiltersProperties>,
@@ -52,15 +64,25 @@ export function GalleryFilters(
   } = properties;
 
   // 🪝 Hooks
-  const { width } = useViewportWidth();
+  const [isOpen, setIsOpen] = useState(false);
 
   // 🏗 Setup
-  const activeCount = filter === undefined ? 0 : countRules(filter);
+  const root = filter ?? EMPTY_FILTER_GROUP;
+  const activeCount = countRules(root);
   const isDefault =
     activeCount === 0 &&
     JSON.stringify(rows) === JSON.stringify(DEFAULT_ROWS_FILTER);
 
   // 💪 Handlers
+  const handleEdit = (edit: FilterEdit): void => {
+    const next = edit(root);
+
+    onFilterChange(next.rules.length === 0 ? undefined : next);
+  };
+  const handleAdd = (rule: FilterRule): void => {
+    handleEdit(addNode([], rule));
+    setIsOpen(false);
+  };
 
   // ♻️ Lifecycle
 
@@ -72,31 +94,52 @@ export function GalleryFilters(
       className={className}
       data-testid="gallery-filters"
     >
-      <div className="flex flex-wrap items-center gap-2">
-        <FilterSurface
-          activeCount={activeCount}
-          kind={pickFilterSurface(width)}
-        >
-          <GalleryFilterBuilder
-            fields={fields}
-            filter={filter}
-            onFilterChange={onFilterChange}
-            onRowsChange={onRowsChange}
-            rows={rows}
-          />
-        </FilterSurface>
-        <button
-          className="rounded-md border border-(--line) px-3 py-1 text-sm disabled:opacity-50"
-          disabled={isDefault}
-          onClick={onClear}
-          type="button"
-        >
-          Clear
-        </button>
-        <FilterChipRow
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <FilterSurface
+            activeCount={activeCount}
+            isOpen={isOpen}
+            onOpenChange={setIsOpen}
+          >
+            <GalleryFilterBuilder
+              fields={fields}
+              isFull={countEntries(root) >= MAXIMUM_FILTER_ENTRIES}
+              onAdd={handleAdd}
+            />
+          </FilterSurface>
+          {root.rules.length > 1 && (
+            <select
+              aria-label="Match"
+              className="rounded-md border border-(--line) bg-(--surface-raised) px-2 py-1 text-sm"
+              onChange={(event) => {
+                handleEdit(
+                  setCombinator(
+                    [],
+                    filterCombinatorSchema.parse(event.target.value),
+                  ),
+                );
+              }}
+              title="Rows always applies, whichever you pick"
+              value={root.combinator}
+            >
+              <option value="and">Match all</option>
+              <option value="or">Match any</option>
+            </select>
+          )}
+          <button
+            className="rounded-md border border-(--line) px-3 py-1 text-sm disabled:opacity-50"
+            disabled={isDefault}
+            onClick={onClear}
+            type="button"
+          >
+            Clear
+          </button>
+        </div>
+        <FilterPillRow
           fields={fields}
           filter={filter}
-          onFilterChange={onFilterChange}
+          onEdit={handleEdit}
+          onRowsChange={onRowsChange}
           rows={rows}
         />
       </div>

@@ -17,7 +17,9 @@ import type { UseGroupCardsResult } from "./use-group-cards.types";
  * Reads each last-level group's cards on request, page by page by cursor, in
  * the sort given. Remount it to start over.
  */
-export function useGroupCards(sort?: MeanderSortInput): UseGroupCardsResult {
+export function useGroupCards(
+  query: Readonly<{ repeats: number; sort: MeanderSortInput | undefined }>,
+): UseGroupCardsResult {
   // 🪝 Hooks
   const [cards, setCards] = useState<Readonly<Record<string, GroupCards>>>({});
   // What was read is kept here too, so a read starting before React commits
@@ -41,7 +43,12 @@ export function useGroupCards(sort?: MeanderSortInput): UseGroupCardsResult {
       }
 
       inFlight.current.add(leaf.id);
-      findMeanders({ after: current?.endCursor, filter: leaf.filter, sort })
+      findMeanders({
+        after: current?.endCursor,
+        filter: leaf.filter,
+        repeats: query.repeats,
+        sort: query.sort,
+      })
         .then((page) => {
           commit(appendPage(store.current, leaf.id, page));
         })
@@ -52,7 +59,7 @@ export function useGroupCards(sort?: MeanderSortInput): UseGroupCardsResult {
           inFlight.current.delete(leaf.id);
         });
     },
-    [sort],
+    [query.repeats, query.sort],
   );
 
   // ♻️ Lifecycle

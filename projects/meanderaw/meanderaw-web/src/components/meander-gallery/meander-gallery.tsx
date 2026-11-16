@@ -14,20 +14,25 @@ import {
 import { getColumnCount, toRows } from "./meander-gallery.utilities";
 
 import type { GalleryView } from "../../hooks/use-gallery-search/use-gallery-search.types";
-import type { GalleryMeander } from "./meanders-api.types";
+import type {
+  GalleryCharacteristic,
+  GalleryMeander,
+} from "./meanders-api.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The meanders so far, how to read more, and the view.
+ * Meanders so far, the catalog, how to read more, the view.
  */
 export interface MeanderGalleryProperties {
+  catalog: readonly GalleryCharacteristic[];
   className?: string;
   hasMore: boolean;
   loadError: unknown;
   meanders: readonly GalleryMeander[];
   onLoadMore: () => void;
+  repeats: number;
   view: GalleryView;
 }
 
@@ -40,8 +45,16 @@ export interface MeanderGalleryProperties {
 export function MeanderGallery(
   properties: Readonly<MeanderGalleryProperties>,
 ): ReactNode {
-  const { className, hasMore, loadError, meanders, onLoadMore, view } =
-    properties;
+  const {
+    catalog,
+    className,
+    hasMore,
+    loadError,
+    meanders,
+    onLoadMore,
+    repeats,
+    view,
+  } = properties;
 
   // 🪝 Hooks
   const { setElement, top, width } = useElementBox();
@@ -62,10 +75,6 @@ export function MeanderGallery(
   // 💪 Handlers
 
   // ♻️ Lifecycle
-  useEffect(() => {
-    virtualizer.measure();
-  }, [columns, view, virtualizer]);
-
   useEffect(() => {
     if (hasMore && isNearEnd && loadError === undefined) {
       onLoadMore();
@@ -103,8 +112,9 @@ export function MeanderGallery(
             {rows[item.index]?.map((meander) => (
               <MeanderCard
                 key={meander.id}
+                catalog={catalog}
                 meander={meander}
-                view={view}
+                repeats={repeats}
               />
             ))}
           </li>

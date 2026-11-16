@@ -41,7 +41,7 @@ describe("grouped gallery", () => {
 
     await renderRoute(
       getRouter(),
-      `/?group=${encodeURIComponent('["lattice"]')}`,
+      `/?view=grid&group=${encodeURIComponent('["lattice"]')}`,
     );
 
     await screen.findAllByTestId("group-header");
@@ -62,7 +62,7 @@ describe("grouped gallery", () => {
 
     await renderRoute(
       getRouter(),
-      `/?group=${encodeURIComponent('["isChain"]')}`,
+      `/?view=grid&group=${encodeURIComponent('["isChain"]')}`,
     );
 
     await screen.findAllByTestId("group-header");
@@ -73,12 +73,12 @@ describe("grouped gallery", () => {
 
     await waitFor(() => {
       expect(codesShown()).toStrictEqual([
-        "01x01y0001",
-        "01x01y0002",
-        "01x01y0004",
-        "01x01y0005",
-        "01x01y0000",
-        "01x01y0003",
+        "01x01y0001r12",
+        "01x01y0002r12",
+        "01x01y0004r12",
+        "01x01y0005r12",
+        "01x01y0000r12",
+        "01x01y0003r12",
       ]);
     });
 
@@ -97,7 +97,7 @@ describe("grouped gallery", () => {
 
     await renderRoute(
       getRouter(),
-      `/?group=${encodeURIComponent('["isChain","lattice"]')}`,
+      `/?view=grid&group=${encodeURIComponent('["isChain","lattice"]')}`,
     );
 
     await screen.findAllByTestId("group-header");
@@ -119,7 +119,7 @@ describe("grouped gallery", () => {
 
     await renderRoute(
       getRouter(),
-      `/?group=${encodeURIComponent('["rowsColumns"]')}&rows=${ALL_ROWS}`,
+      `/?view=grid&group=${encodeURIComponent('["rowsColumns"]')}&rows=${ALL_ROWS}`,
     );
     await screen.findAllByTestId("meander-card");
 
@@ -141,7 +141,7 @@ describe("grouped gallery", () => {
 
     await renderRoute(
       getRouter(),
-      `/?group=${encodeURIComponent('["rowsColumns"]')}&rows=${ALL_ROWS}`,
+      `/?view=grid&group=${encodeURIComponent('["rowsColumns"]')}&rows=${ALL_ROWS}`,
     );
     await screen.findAllByTestId("meander-card");
 
@@ -154,7 +154,7 @@ describe("grouped gallery", () => {
         { field: "rows", numbers: [1], operator: "GTE" },
       ],
     });
-    expect(codesShown()[0]).toBe("01x01y0000");
+    expect(codesShown()[0]).toBe("01x01y0000r12");
   });
 
   it("reads a group's next page as its last rows come near", async () => {
@@ -164,13 +164,13 @@ describe("grouped gallery", () => {
 
     await renderRoute(
       getRouter(),
-      `/?group=${encodeURIComponent('["isChain"]')}`,
+      `/?view=grid&group=${encodeURIComponent('["isChain"]')}`,
     );
     await screen.findAllByTestId("meander-card");
 
     expect(notHeld()).toHaveLength(1);
 
-    scrollWindowTo(3300);
+    scrollWindowTo(5200);
 
     await waitFor(() => {
       expect(notHeld().length).toBeGreaterThan(1);
@@ -191,7 +191,7 @@ describe("grouped gallery", () => {
 
     await renderRoute(
       getRouter(),
-      `/?group=${encodeURIComponent('["lattice"]')}&filter=${encodeURIComponent(JSON.stringify(filter))}`,
+      `/?view=grid&group=${encodeURIComponent('["lattice"]')}&filter=${encodeURIComponent(JSON.stringify(filter))}`,
     );
 
     await waitFor(() => {
@@ -212,7 +212,7 @@ describe("grouped gallery", () => {
 
     await renderRoute(
       getRouter(),
-      `/?group=${encodeURIComponent('["lattice"]')}&filter=${encodeURIComponent(JSON.stringify(filter))}`,
+      `/?view=grid&group=${encodeURIComponent('["lattice"]')}&filter=${encodeURIComponent(JSON.stringify(filter))}`,
     );
 
     await waitFor(() => {
@@ -233,7 +233,7 @@ describe("grouped gallery", () => {
 
     await renderRoute(
       getRouter(),
-      `/?group=${encodeURIComponent('["lattice"]')}&filter=${encodeURIComponent(JSON.stringify(filter))}`,
+      `/?view=grid&group=${encodeURIComponent('["lattice"]')}&filter=${encodeURIComponent(JSON.stringify(filter))}`,
     );
 
     const alert = await screen.findByRole("alert");
@@ -250,7 +250,7 @@ describe("grouped gallery", () => {
 
     await renderRoute(
       getRouter(),
-      `/?group=${encodeURIComponent('["lattice"]')}&sort=junctionCount&direction=desc&filter=${encodeURIComponent(JSON.stringify(filter))}`,
+      `/?view=grid&group=${encodeURIComponent('["lattice"]')}&sort=junctionCount&direction=desc&filter=${encodeURIComponent(JSON.stringify(filter))}`,
     );
 
     await screen.findAllByTestId("group-header");
@@ -268,7 +268,7 @@ describe("grouped gallery", () => {
     }
 
     await waitFor(() => {
-      expect(codesShown()).toStrictEqual(["01x01y0002", "01x01y0003"]);
+      expect(codesShown()).toStrictEqual(["01x01y0002r12", "01x01y0003r12"]);
     });
 
     expect(api.requests[0]).toMatchObject({
@@ -276,12 +276,12 @@ describe("grouped gallery", () => {
     });
   });
 
-  it("groups only the rows the rows control keeps, and asks again when it changes", async () => {
+  it("groups only the rows the Rows pill keeps, and asks again when the pill changes", async () => {
     const api = serveMeandersApi(6, 0, (index) => (index % 2) + 3);
 
     await renderRoute(
       getRouter(),
-      `/?group=${encodeURIComponent('["rowsColumns"]')}`,
+      `/?view=grid&group=${encodeURIComponent('["rowsColumns"]')}`,
     );
     await screen.findAllByTestId("group-header");
 
@@ -295,9 +295,16 @@ describe("grouped gallery", () => {
     ]);
     expect(api.groupRequests).toHaveLength(1);
 
-    fireEvent.click(screen.getByRole("button", { name: "Filter" }));
+    // The Rows pill stays on a grouped page, and edits in place.
+    expect(
+      within(screen.getByTestId("filter-pill-row"))
+        .getAllByTestId("filter-pill")
+        .map((pill) =>
+          within(pill).getByRole("group").getAttribute("aria-label"),
+        ),
+    ).toStrictEqual(["Filter Rows"]);
 
-    const value = await screen.findByLabelText("Rows Value");
+    const value = screen.getByLabelText("Rows Value");
 
     fireEvent.change(value, { target: { value: "3" } });
     fireEvent.blur(value);
@@ -357,7 +364,7 @@ describe("grouped gallery", () => {
 
     await renderRoute(
       getRouter(),
-      `/?group=${encodeURIComponent('["lattice"]')}`,
+      `/?view=grid&group=${encodeURIComponent('["lattice"]')}`,
     );
 
     await expect(screen.findByTestId("gallery-empty")).resolves.toBeDefined();
@@ -369,7 +376,7 @@ describe("grouped gallery", () => {
 
     await renderRoute(
       getRouter(),
-      `/?group=${encodeURIComponent('["lattice"]')}`,
+      `/?view=grid&group=${encodeURIComponent('["lattice"]')}`,
     );
 
     const [alert] = await screen.findAllByRole("alert");

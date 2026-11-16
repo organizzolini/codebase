@@ -30,6 +30,14 @@ export interface FilterField {
 }
 
 /**
+ * Fields of one category, as the attribute search lists them.
+ */
+export interface FilterFieldGroup {
+  category: string;
+  fields: FilterField[];
+}
+
+/**
  * What a field holds, which decides the operators it takes.
  */
 export type FilterFieldType = "boolean" | "number" | "text";
@@ -77,6 +85,15 @@ export interface FilterRuleEntry {
   /** The index of each node from the root down to the rule. */
   path: readonly number[];
   rule: FilterRule;
+}
+
+/**
+ * What an attribute search found, grouped, and how many more there were.
+ */
+export interface FilterSearchResult {
+  groups: FilterFieldGroup[];
+  /** How many fields matched in all, shown or not. */
+  total: number;
 }
 
 /**

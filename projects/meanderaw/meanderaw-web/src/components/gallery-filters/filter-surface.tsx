@@ -1,70 +1,57 @@
 import { useEffect, useState } from "react";
 
-import {
-  BACKDROP_CLASS_NAMES,
-  FILTERS_TITLE,
-  SURFACE_CLASS_NAMES,
-} from "./gallery-filters.constants";
+import { FILTERS_TITLE, POPUP_CLASS_NAME } from "./gallery-filters.constants";
 import {
   describeFiltersButton,
   listFocusable,
-  trapTab,
 } from "./gallery-filters.utilities";
 
-import type { FilterSurfaceKind } from "./gallery-filters.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The surface kind, the active rule count, and what it holds.
+ * Whether it is open, how to change that, and what it holds.
  */
 export interface FilterSurfaceProperties {
   /** How many rules are in force, shown on the button. */
   activeCount: number;
   children?: ReactNode;
   className?: string;
-  kind: FilterSurfaceKind;
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
 }
 
 // 🧩 Component
 
 /**
- * Renders the Filters button and, once pressed, the builder as a popover, drawer or sheet.
+ * Renders the Filter button and, once it is pressed, a small popup beneath
+ * it holding the add-a-filter steps, at every width.
  */
 export function FilterSurface(
   properties: Readonly<FilterSurfaceProperties>,
 ): ReactNode {
-  const { activeCount, children, className, kind } = properties;
+  const { activeCount, children, className, isOpen, onOpenChange } = properties;
 
   // 🪝 Hooks
-  const [isOpen, setIsOpen] = useState(false);
   const [dialog, setDialog] = useState<HTMLDivElement | null>(null);
   const [trigger, setTrigger] = useState<HTMLButtonElement | null>(null);
 
   // 🏗 Setup
 
   // 💪 Handlers
-  const handleClose = (): void => {
-    setIsOpen(false);
-  };
 
   // ♻️ Lifecycle
   // Opening moves focus in, and closing gives it back to the button. Escape
-  // and Tab are read on the surface, so a closed one never hears them, and
-  // Escape in a select is left to it, which uses it to close its list.
+  // is read on the popup, so a closed one never hears it, and Escape in a
+  // select is left to it, which uses it to close its list.
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent): void => {
       if (
         event.key === "Escape" &&
         !(event.target instanceof HTMLSelectElement)
       ) {
-        setIsOpen(false);
-      } else if (
-        event.key === "Tab" &&
-        dialog?.matches('[aria-modal="true"]') === true
-      ) {
-        trapTab(event, dialog);
+        onOpenChange(false);
       }
     };
 
@@ -81,7 +68,7 @@ export function FilterSurface(
         trigger?.focus();
       }
     };
-  }, [dialog, trigger]);
+  }, [dialog, onOpenChange, trigger]);
 
   // 🏁 Early Returns
 
@@ -99,7 +86,7 @@ export function FilterSurface(
           aria-label={describeFiltersButton(activeCount)}
           className="rounded-md border border-(--line) px-3 py-1 text-sm"
           onClick={() => {
-            setIsOpen((open) => !open);
+            onOpenChange(!isOpen);
           }}
           type="button"
         >
@@ -117,32 +104,20 @@ export function FilterSurface(
           <>
             <button
               aria-label="Close filters"
-              className={`fixed inset-0 z-20 cursor-default ${BACKDROP_CLASS_NAMES[kind]}`}
-              onClick={handleClose}
+              className="fixed inset-0 z-20 cursor-default bg-transparent"
+              onClick={() => {
+                onOpenChange(false);
+              }}
               tabIndex={-1}
               type="button"
             />
             <div
               ref={setDialog}
               aria-label={FILTERS_TITLE}
-              aria-modal={kind !== "popover"}
-              className={SURFACE_CLASS_NAMES[kind]}
-              data-surface={kind}
+              className={POPUP_CLASS_NAME}
               role="dialog"
               tabIndex={-1}
             >
-              {kind !== "popover" && (
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg">{FILTERS_TITLE}</h2>
-                  <button
-                    className="rounded-md border border-(--line) px-3 py-1 text-sm"
-                    onClick={handleClose}
-                    type="button"
-                  >
-                    Done
-                  </button>
-                </div>
-              )}
               {children}
             </div>
           </>

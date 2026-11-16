@@ -46,6 +46,11 @@ export const MAXIMUM_FILTER_DEPTH = 5;
 export const MAXIMUM_FILTER_ENTRIES = 126;
 
 /**
+ * The most attributes a search lists at once.
+ */
+export const FIELD_SEARCH_LIMIT = 50;
+
+/**
  * The rows rule a link names none for.
  */
 export const DEFAULT_ROWS_FILTER: RowsFilter = { operator: "eq", value: 4 };

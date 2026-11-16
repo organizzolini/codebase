@@ -8,12 +8,12 @@ export const GAP_PIXELS = 16;
 /**
  * The narrowest a grid card gets, in pixels.
  */
-export const CARD_MIN_WIDTH_PIXELS = 256;
+export const CARD_MIN_WIDTH_PIXELS = 320;
 
 /**
  * A row's guessed height before it is measured, in pixels.
  */
-export const ROW_ESTIMATES = { grid: 420, list: 140 } as const;
+export const ROW_ESTIMATES = { grid: 480, list: 520 } as const;
 
 /**
  * Rows kept mounted past the visible ones, each side.

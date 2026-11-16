@@ -49,14 +49,14 @@ export class MeandersResolver {
   /** The drawing, rendered only for a meander whose query selects it. */
   @ResolveField(() => String, {
     description:
-      "The meander's drawing as an SVG document, rendered on request from its Code, its tile repeated `repeats` times across (1 to 12).",
+      "The meander's drawing as an SVG document, rendered on request from its Code, its tile repeated `repeats` times across (1 to 24).",
     name: "svg",
   })
   svg(
     @Parent() meander: MeanderEntity,
     @Arguments("repeats", {
       defaultValue: DEFAULT_SVG_REPEATS,
-      description: "How many times the tile repeats across, from 1 to 12.",
+      description: "How many times the tile repeats across, from 1 to 24.",
       type: () => Int,
     })
     repeats: number,

@@ -12,7 +12,6 @@ import { MAXIMUM_GROUP_LEVELS } from "../gallery-group-by/gallery-group-by.const
 import { fitsGrouping } from "../gallery-group-by/gallery-group-by.utilities";
 
 import {
-  CARD_REPEATS,
   DEFAULT_MEANDERAW_API_URL,
   GALLERY_PAGE_SIZE,
   groupNodeSchema,
@@ -55,6 +54,7 @@ export async function findGallery(
     direction: SortDirection;
     filter: FilterGroup | undefined;
     grouping: readonly string[];
+    repeats: number;
     rows: RowsFilter;
     sort: string | undefined;
   }>,
@@ -62,7 +62,7 @@ export async function findGallery(
   groups: GalleryGroup[] | undefined;
   page: MeandersPage | undefined;
 }> {
-  const { direction, filter, grouping, rows, sort } = request;
+  const { direction, filter, grouping, repeats, rows, sort } = request;
 
   if (grouping.length > 0) {
     if (!fitsGrouping(filter, grouping)) {
@@ -84,6 +84,7 @@ export async function findGallery(
     groups: undefined,
     page: await findMeanders({
       filter: toFilterInput(filter, rows),
+      repeats,
       sort: toSortInput(sort, direction),
     }),
   };
@@ -105,15 +106,15 @@ export async function findMeanderGroups(
 }
 
 /**
- * Reads one page of meanders, from the start or after a cursor.
+ * Reads one page of meanders, from the start or after a cursor, each drawn
+ * with its tile repeated as asked.
  */
 export async function findMeanders(
-  variables: Readonly<Omit<MeandersQueryVariables, "first" | "repeats">> = {},
+  variables: Readonly<Omit<MeandersQueryVariables, "first">>,
 ): Promise<MeandersPage> {
   const { meanders } = await queryApi(MeandersDocument, {
     ...variables,
     first: GALLERY_PAGE_SIZE,
-    repeats: CARD_REPEATS,
   });
 
   return meanders;
