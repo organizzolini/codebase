@@ -40,9 +40,9 @@ describe(useGallerySearch, () => {
       handleRepeatsChange: result.current.handleRepeatsChange,
       handleSortChange: result.current.handleSortChange,
       handleViewChange: result.current.handleViewChange,
-      repeats: 6,
+      repeats: 12,
       sort: undefined,
-      view: "grid",
+      view: "list",
     });
   });
 
@@ -108,28 +108,31 @@ describe(useGallerySearch, () => {
     });
   });
 
-  it("repairs repeats that are out of range or not a number to 6", () => {
-    expect(gallerySearchSchema.parse({ repeats: 99 })).toStrictEqual({
-      repeats: 6,
+  it("repairs repeats that are out of range or not a number to 12", () => {
+    expect(gallerySearchSchema.parse({ repeats: 25 })).toStrictEqual({
+      repeats: 12,
     });
     expect(gallerySearchSchema.parse({ repeats: "abc" })).toStrictEqual({
-      repeats: 6,
+      repeats: 12,
     });
     expect(gallerySearchSchema.parse({ repeats: 0 })).toStrictEqual({
-      repeats: 6,
+      repeats: 12,
     });
     expect(gallerySearchSchema.parse({ repeats: 2.5 })).toStrictEqual({
-      repeats: 6,
-    });
-    expect(gallerySearchSchema.parse({ repeats: 12 })).toStrictEqual({
       repeats: 12,
+    });
+    expect(gallerySearchSchema.parse({ repeats: 24 })).toStrictEqual({
+      repeats: 24,
+    });
+    expect(gallerySearchSchema.parse({ repeats: 1 })).toStrictEqual({
+      repeats: 1,
     });
   });
 
   it("drops a view or direction that is not one of the two, and reads a number as a field", () => {
     expect(
       gallerySearchSchema.parse({ direction: "up", sort: 5, view: "wall" }),
-    ).toStrictEqual({ direction: "asc", sort: "5", view: "grid" });
+    ).toStrictEqual({ direction: "asc", sort: "5", view: "list" });
     expect(gallerySearchSchema.parse({})).toStrictEqual({});
   });
 });

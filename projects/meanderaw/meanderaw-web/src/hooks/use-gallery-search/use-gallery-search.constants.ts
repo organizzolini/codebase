@@ -10,7 +10,7 @@ export const GALLERY_VIEWS = ["grid", "list"] as const;
 /**
  * The view a link opens on when it names none.
  */
-export const DEFAULT_GALLERY_VIEW = "grid" as const;
+export const DEFAULT_GALLERY_VIEW = "list" as const;
 
 /**
  * The two ways a sort runs, as a link names them.
@@ -30,12 +30,12 @@ export const MINIMUM_REPEATS = 1;
 /**
  * The most repeats, as the API's `MAXIMUM_SVG_REPEATS` allows.
  */
-export const MAXIMUM_REPEATS = 12;
+export const MAXIMUM_REPEATS = 24;
 
 /**
  * Repeats a link opens on when it names no valid count.
  */
-export const DEFAULT_REPEATS = 6;
+export const DEFAULT_REPEATS = 12;
 
 /**
  * Validates the link's search parameters, repairing invalid ones.

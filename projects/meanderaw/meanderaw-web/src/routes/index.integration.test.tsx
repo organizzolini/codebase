@@ -1,10 +1,11 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { renderRoute } from "@codebase/testing/react";
 
 import { serveMeandersApi } from "../../testing/meanders-api";
 import { scrollWindowTo, setViewportWidth } from "../../testing/viewport";
+import { ROW_ESTIMATES } from "../components/meander-gallery/meander-gallery.constants";
 import { getRouter } from "../router";
 
 import { Route } from "./index";
@@ -18,7 +19,9 @@ function cardsIn(row: HTMLElement | undefined): HTMLElement[] {
 function codesShown(): string[] {
   return screen
     .getAllByTestId("meander-card")
-    .map((card) => within(card).getByRole("code").textContent);
+    .map((card) =>
+      within(card).getByRole("code").textContent.replace(/r\d+$/u, ""),
+    );
 }
 
 /** The drawing a card shows, as the Code its image carries, decoded. */
@@ -27,6 +30,10 @@ function drawingOf(position: number): string {
 
   return decodeURIComponent(image?.getAttribute("src") ?? "");
 }
+
+// Every row not yet on screen is guessed at, since jsdom measures only the
+// mounted ones: the scroll past the guessed end of a first page of 48 list rows.
+const END_OF_FIRST_PAGE = ROW_ESTIMATES.list * 48;
 
 describe("index", () => {
   it("renders its page", async () => {
@@ -40,7 +47,7 @@ describe("index", () => {
     expect(Route.fullPath).toBe("/");
   });
 
-  it("shows each meander as a card with its shape, Code and patterns", async () => {
+  it("shows each meander as a card: drawing, Code with its repeats, badge and grouped pills", async () => {
     serveMeandersApi(3);
 
     await renderRoute(getRouter(), "/");
@@ -51,16 +58,38 @@ describe("index", () => {
 
     const [first, second] = cards.map((card) => within(card));
 
-    expect(first?.getByText("1 × 1")).toBeDefined();
+    expect(first?.getByRole("code").textContent).toBe("01x01y0000r12");
     expect(first?.getByText("Hardcoded")).toBeDefined();
-    expect(first?.getByText("01x01y0000")).toBeDefined();
     expect(
-      first?.getByRole("list", { name: "Pattern characteristics" }).textContent,
-    ).toBe("Chain");
+      first
+        ?.getAllByRole("group")
+        .map((group) => group.getAttribute("aria-label")),
+    ).toStrictEqual(["Patterns", "Path"]);
+    expect(first?.getByRole("group", { name: "Path" }).textContent).toContain(
+      "Junction count 1",
+    );
     expect(second?.queryByText("Hardcoded")).toBeNull();
   });
 
-  it("opens on the grid, and switches to the list and back through the link", async () => {
+  it("copies the Code as shown, with its repeats", async () => {
+    const writeText = vi.fn<(text: string) => Promise<void>>(async () => {});
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
+    serveMeandersApi(1);
+
+    await renderRoute(getRouter(), "/?repeats=7");
+    fireEvent.click(
+      await screen.findByRole("button", { name: /Copy the Code/u }),
+    );
+
+    await waitFor(() => {
+      expect(writeText).toHaveBeenCalledWith("01x01y0000r7");
+    });
+  });
+
+  it("opens on the list, and switches to the grid and back through the link", async () => {
     serveMeandersApi(3);
     const router = getRouter();
 
@@ -68,21 +97,8 @@ describe("index", () => {
     await screen.findAllByTestId("meander-card");
 
     expect(
-      screen.getByRole("button", { name: "Grid", pressed: true }),
-    ).toBeDefined();
-
-    fireEvent.click(screen.getByRole("button", { name: "List" }));
-
-    await waitFor(() => {
-      expect({ ...router.state.location.search }).toStrictEqual({
-        view: "list",
-      });
-    });
-
-    expect(
       screen.getByRole("button", { name: "List", pressed: true }),
     ).toBeDefined();
-    expect(screen.getAllByTestId("meander-card")).toHaveLength(3);
 
     fireEvent.click(screen.getByRole("button", { name: "Grid" }));
 
@@ -91,12 +107,35 @@ describe("index", () => {
         view: "grid",
       });
     });
+
+    expect(
+      screen.getByRole("button", { name: "Grid", pressed: true }),
+    ).toBeDefined();
+    expect(screen.getAllByTestId("meander-card")).toHaveLength(3);
+
+    fireEvent.click(screen.getByRole("button", { name: "List" }));
+
+    await waitFor(() => {
+      expect({ ...router.state.location.search }).toStrictEqual({
+        view: "list",
+      });
+    });
   });
 
-  it("opens on the list when the link names it, and ignores a view it does not know", async () => {
+  it("opens on the grid when the link names it", async () => {
     serveMeandersApi(2);
 
-    await renderRoute(getRouter(), "/?view=list");
+    await renderRoute(getRouter(), "/?view=grid");
+
+    await expect(
+      screen.findByRole("button", { name: "Grid", pressed: true }),
+    ).resolves.toBeDefined();
+  });
+
+  it("opens on the list for a view it does not know", async () => {
+    serveMeandersApi(2);
+
+    await renderRoute(getRouter(), "/?view=wall");
 
     await expect(
       screen.findByRole("button", { name: "List", pressed: true }),
@@ -146,18 +185,18 @@ describe("index", () => {
     serveMeandersApi(40);
     setViewportWidth(1280);
 
-    await renderRoute(getRouter(), "/");
+    await renderRoute(getRouter(), "/?view=grid");
 
     const [row] = await screen.findAllByTestId("meander-gallery-row");
 
-    expect(cardsIn(row)).toHaveLength(4);
+    expect(cardsIn(row)).toHaveLength(3);
   });
 
   it("puts one card in a row on a phone", async () => {
     serveMeandersApi(40);
     setViewportWidth(375);
 
-    await renderRoute(getRouter(), "/");
+    await renderRoute(getRouter(), "/?view=grid");
 
     const [row] = await screen.findAllByTestId("meander-gallery-row");
 
@@ -172,7 +211,7 @@ describe("index", () => {
 
     expect(api.requests).toHaveLength(1);
 
-    scrollWindowTo(3300);
+    scrollWindowTo(END_OF_FIRST_PAGE);
 
     await waitFor(() => {
       expect(api.requests).toHaveLength(2);
@@ -187,7 +226,7 @@ describe("index", () => {
     await renderRoute(getRouter(), "/");
     await screen.findAllByTestId("meander-card");
     api.fail("The database is down");
-    scrollWindowTo(3300);
+    scrollWindowTo(END_OF_FIRST_PAGE);
 
     const alert = await screen.findByRole("alert");
 
@@ -236,13 +275,13 @@ describe("index", () => {
     await renderRoute(router, "/");
     await screen.findAllByTestId("meander-card");
 
-    expect(codesShown()).toStrictEqual([
+    // The list mounts only the rows in view and a few past them.
+    expect(codesShown().slice(0, 5)).toStrictEqual([
       "01x01y0000",
       "01x01y0001",
       "01x01y0002",
       "01x01y0003",
       "01x01y0004",
-      "01x01y0005",
     ]);
 
     fireEvent.change(screen.getByRole("combobox", { name: "Sort by" }), {
@@ -304,7 +343,7 @@ describe("index", () => {
 
     expect(screen.getByDisplayValue("Junction count")).toBeDefined();
 
-    scrollWindowTo(3300);
+    scrollWindowTo(END_OF_FIRST_PAGE);
 
     await waitFor(() => {
       expect(api.requests).toHaveLength(2);
@@ -362,7 +401,7 @@ describe("index", () => {
     });
   });
 
-  it("asks for each drawing with its tile repeated 6 times, on the first page and the next", async () => {
+  it("asks for each drawing with its tile repeated 12 times, on the first page and the next", async () => {
     const api = serveMeandersApi(100);
 
     await renderRoute(getRouter(), "/");
@@ -370,15 +409,15 @@ describe("index", () => {
     const [image] = await screen.findAllByRole("img");
     const drawing = decodeURIComponent(image?.getAttribute("src") ?? "");
 
-    expect(drawing).toContain('data-repeats="6"');
+    expect(drawing).toContain('data-repeats="12"');
 
-    scrollWindowTo(3300);
+    scrollWindowTo(END_OF_FIRST_PAGE);
 
     await waitFor(() => {
       expect(api.requests).toHaveLength(2);
     });
 
-    expect(api.requests.map(({ repeats }) => repeats)).toStrictEqual([6, 6]);
+    expect(api.requests.map(({ repeats }) => repeats)).toStrictEqual([12, 12]);
   });
 
   it("changes the repeats from a labelled control, in the link, the request and the drawing", async () => {
@@ -392,7 +431,7 @@ describe("index", () => {
       name: "Repeats",
     });
 
-    expect(control.value).toBe("6");
+    expect(control.value).toBe("12");
 
     fireEvent.change(control, { target: { value: "3" } });
 
@@ -410,27 +449,37 @@ describe("index", () => {
     expect(screen.getAllByTestId("meander-card")).toHaveLength(3);
   });
 
-  it("falls back to 6 repeats for a link that names none that is valid", async () => {
+  it("falls back to 12 repeats for a link that names 25", async () => {
     const api = serveMeandersApi(2);
 
-    await renderRoute(getRouter(), "/?repeats=99");
+    await renderRoute(getRouter(), "/?repeats=25");
     await screen.findAllByTestId("meander-card");
 
-    expect(api.requests[0]?.repeats).toBe(6);
-    expect(drawingOf(0)).toContain('data-repeats="6"');
+    expect(api.requests[0]?.repeats).toBe(12);
+    expect(drawingOf(0)).toContain('data-repeats="12"');
   });
 
-  it("falls back to 6 repeats for a link that names text", async () => {
+  it("accepts 24 repeats, the most the API allows", async () => {
+    const api = serveMeandersApi(1);
+
+    await renderRoute(getRouter(), "/?repeats=24");
+    await screen.findAllByTestId("meander-card");
+
+    expect(api.requests[0]?.repeats).toBe(24);
+    expect(drawingOf(0)).toContain('data-repeats="24"');
+  });
+
+  it("falls back to 12 repeats for a link that names text", async () => {
     const api = serveMeandersApi(2);
 
     await renderRoute(getRouter(), "/?repeats=abc");
     await screen.findAllByTestId("meander-card");
 
-    expect(api.requests[0]?.repeats).toBe(6);
+    expect(api.requests[0]?.repeats).toBe(12);
     expect(
       screen.getByRole<HTMLSelectElement>("combobox", { name: "Repeats" })
         .value,
-    ).toBe("6");
+    ).toBe("12");
   });
 
   it("opens on the repeats the link names, and pages with them", async () => {
@@ -438,7 +487,7 @@ describe("index", () => {
 
     await renderRoute(getRouter(), "/?repeats=2");
     await screen.findAllByTestId("meander-card");
-    scrollWindowTo(3300);
+    scrollWindowTo(END_OF_FIRST_PAGE);
 
     await waitFor(() => {
       expect(api.requests).toHaveLength(2);

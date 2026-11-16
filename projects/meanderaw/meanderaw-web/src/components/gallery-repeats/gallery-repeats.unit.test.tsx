@@ -9,7 +9,7 @@ describe(GalleryRepeats, () => {
       <GalleryRepeats
         className="gallery-repeats"
         onRepeatsChange={vi.fn<(repeats: number) => void>()}
-        repeats={6}
+        repeats={12}
       />,
     );
 
@@ -18,11 +18,11 @@ describe(GalleryRepeats, () => {
     );
   });
 
-  it("offers 1 to 12 under a label, showing the count in force", () => {
+  it("offers 1 to 24 under a label, showing the count in force", () => {
     render(
       <GalleryRepeats
         onRepeatsChange={vi.fn<(repeats: number) => void>()}
-        repeats={6}
+        repeats={12}
       />,
     );
 
@@ -33,9 +33,9 @@ describe(GalleryRepeats, () => {
     expect(
       screen.getAllByRole("option").map((option) => option.textContent),
     ).toStrictEqual(
-      Array.from({ length: 12 }, (_, index) => String(index + 1)),
+      Array.from({ length: 24 }, (_, index) => String(index + 1)),
     );
-    expect(select.value).toBe("6");
+    expect(select.value).toBe("12");
   });
 
   it("hands over the count picked as a number", () => {
@@ -43,7 +43,7 @@ describe(GalleryRepeats, () => {
     render(
       <GalleryRepeats
         onRepeatsChange={onRepeatsChange}
-        repeats={6}
+        repeats={12}
       />,
     );
 

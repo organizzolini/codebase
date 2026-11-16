@@ -208,7 +208,7 @@ export class MeandersService {
 
   /**
    * The meander's drawing, the SVG document the CLI draws for its Code, with
-   * its tile repeated `repeats` times across, from 1 to 12.
+   * its tile repeated `repeats` times across, from 1 to 24.
    */
   draw(meander: MeanderEntity, repeats = DEFAULT_SVG_REPEATS): string {
     const parsed = svgRepeatsSchema.safeParse(repeats);

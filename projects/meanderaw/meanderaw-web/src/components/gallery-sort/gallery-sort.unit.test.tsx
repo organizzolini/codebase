@@ -6,8 +6,17 @@ import { GallerySort } from "./gallery-sort";
 import type { GallerySortProperties } from "./gallery-sort";
 
 const CATALOG = [
-  { isPattern: true, key: "isChain", name: "Chain", valueType: "boolean" },
   {
+    category: "submatrix",
+    description: "Holds a chain.",
+    isPattern: true,
+    key: "isChain",
+    name: "Chain",
+    valueType: "boolean",
+  },
+  {
+    category: "path",
+    description: "Pieces of ink.",
     isPattern: false,
     key: "junctionCount",
     name: "Junction count",

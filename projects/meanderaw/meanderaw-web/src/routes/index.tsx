@@ -144,10 +144,12 @@ function IndexPage(): ReactNode {
         </p>
       ) : null}
       <MeanderGallery
+        catalog={characteristics}
         hasMore={hasMore}
         loadError={loadError}
         meanders={meanders}
         onLoadMore={loadMore}
+        repeats={repeats}
         view={view}
       />
     </section>

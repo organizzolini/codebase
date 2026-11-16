@@ -1,5 +1,7 @@
 query Characteristics {
   characteristics {
+    category
+    description
     isPattern
     key
     name

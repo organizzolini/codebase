@@ -5,7 +5,9 @@
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **alt**: The text alternative of a meander's drawing, set on the card's `img` in `meander-card.tsx` as `Drawing of meander <Code>`, so assistive technology and tests can name it.
+- **aspect**: The ratio of a drawing's width to its height, read from the SVG the API returns and set on the card's `img` so a wide meander is never squashed.
 - **border**: A Tailwind utility class, and the `--line` color token it takes in the card markup, that outlines a card or control; not a unit's grid border, which the CLI measures.
+- **category**: The catalog's grouping of a characteristic, such as submatrix or path, which names a group of pills on a card; the pattern characteristics form their own group first.
 - **characteristic**: A measured property of a meander, listed in the catalog the API's `characteristics` query returns; a card shows the pattern ones it holds and expands to every non-zero value, and the sort control offers each key.
 - **element**: A DOM node the page measures or observes, such as the gallery's root that `useElementBox` in `use-element-box.ts` reads the width of.
 - **estimate**: The guessed height of a row of cards before it is measured, `ROW_ESTIMATES` in `meander-gallery.constants.ts`, which the virtualizer corrects once the row mounts.

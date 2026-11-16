@@ -519,14 +519,24 @@ describe("meanders resolver end-to-end suite", () => {
       expect(node?.svg).not.toBe(drawings.render(one));
     });
 
-    it("refuses repeats outside 1 to 12", async () => {
+    it("accepts the most repeats, 24", async () => {
       expect.hasAssertions();
 
       const body = await application.query(
-        "query { meanders(first: 1) { edges { node { svg(repeats: 13) } } } }",
+        "query { meanders(first: 1) { edges { node { svg(repeats: 24) } } } }",
       );
 
-      expect(body.errors?.[0]?.message).toMatch(/from 1 to 12/u);
+      expect(body.errors).toBeUndefined();
+    });
+
+    it("refuses repeats outside 1 to 24", async () => {
+      expect.hasAssertions();
+
+      const body = await application.query(
+        "query { meanders(first: 1) { edges { node { svg(repeats: 25) } } } }",
+      );
+
+      expect(body.errors?.[0]?.message).toMatch(/from 1 to 24/u);
     });
 
     it("renders only the meanders asked for, and none when the query leaves svg out", async () => {

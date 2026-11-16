@@ -50,7 +50,7 @@ export function fixtureMeander(index: number, repeats = 1): GalleryMeander {
     lattice: index % 2 === 0 ? "0" : "1",
     repeats: 1,
     rows: (index % 5) + 1,
-    svg: `<svg data-repeats="${repeats}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><title>${code}</title></svg>`,
+    svg: `<svg data-repeats="${repeats}" width="${40 * repeats}" height="40" viewBox="0 0 ${40 * repeats} 40" xmlns="http://www.w3.org/2000/svg"><title>${code}</title></svg>`,
   };
 }
 
@@ -59,8 +59,17 @@ export function fixtureMeander(index: number, repeats = 1): GalleryMeander {
  */
 export const FIXTURE_CHARACTERISTICS: CharacteristicsQuery["characteristics"] =
   [
-    { isPattern: true, key: "isChain", name: "Chain", valueType: "boolean" },
     {
+      category: "submatrix",
+      description: "Holds a chain.",
+      isPattern: true,
+      key: "isChain",
+      name: "Chain",
+      valueType: "boolean",
+    },
+    {
+      category: "path",
+      description: "Pieces of ink.",
       isPattern: false,
       key: "junctionCount",
       name: "Junction count",

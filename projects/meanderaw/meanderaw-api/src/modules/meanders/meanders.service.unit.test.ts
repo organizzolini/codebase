@@ -179,8 +179,8 @@ describe(MeandersService, () => {
       ...parsed,
       repeats: 6,
     });
-    expect(() => instance.draw(meander, 0)).toThrow(/from 1 to 12/u);
-    expect(() => instance.draw(meander, 13)).toThrow(/from 1 to 12/u);
-    expect(() => instance.draw(meander, 1.5)).toThrow(/from 1 to 12/u);
+    expect(() => instance.draw(meander, 0)).toThrow(/from 1 to 24/u);
+    expect(() => instance.draw(meander, 25)).toThrow(/from 1 to 24/u);
+    expect(() => instance.draw(meander, 1.5)).toThrow(/from 1 to 24/u);
   });
 });

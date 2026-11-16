@@ -3,7 +3,14 @@ import { describe, expect, it } from "vitest";
 import { resolveSortField } from "./gallery-sort.utilities";
 
 const CATALOG = [
-  { isPattern: true, key: "isChain", name: "Chain", valueType: "boolean" },
+  {
+    category: "submatrix",
+    description: "Holds a chain.",
+    isPattern: true,
+    key: "isChain",
+    name: "Chain",
+    valueType: "boolean",
+  },
 ];
 
 describe(resolveSortField, () => {
