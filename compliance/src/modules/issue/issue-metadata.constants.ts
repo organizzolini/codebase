@@ -40,7 +40,7 @@ export const CONVENTIONAL_ISSUE_TITLE_PATTERN =
 /** Maximum nesting depth of the issue hierarchy, Spec to Commit. */
 export const MAX_HIERARCHY_DEPTH = 3;
 
-/** Issue Types a root issue may carry: a spec, a report, or a standalone task. */
+/** Issue Types a root issue may carry: spec, report, or task. */
 export const ROOT_ISSUE_TYPES = ["Bug", "Feature", "Task"];
 
 /** The root issue types as the sentence names them. */
