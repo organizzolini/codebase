@@ -1061,6 +1061,33 @@ describe(LiteratureService, () => {
     );
   });
 
+  it("should keep valid text attributes and log the invalid ones", async () => {
+    await (
+      service as unknown as {
+        saveTextToDatabase: (args: Record<string, unknown>) => Promise<Text>;
+      }
+    ).saveTextToDatabase({
+      author: createAuthorFixture({ id: "author-id", slug: "vergil" }),
+      frontmatterData: { collection: "Perseus", print_year: "unknown" },
+      parentText: undefined,
+      textSlug: "vergil/aeneid",
+      title: "Aeneid",
+    });
+
+    expect(textRepository.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({ collection: "Perseus" }),
+      expect.anything(),
+    );
+    expect(logger.warn).toHaveBeenCalledWith(
+      expect.any(String),
+      undefined,
+      expect.objectContaining({
+        invalidFields: ["print_year"],
+        slug: "vergil/aeneid",
+      }),
+    );
+  });
+
   it("should extract and upsert tokens when ingesting lines", async () => {
     const getWordsCacheSpy = vi
       .spyOn(

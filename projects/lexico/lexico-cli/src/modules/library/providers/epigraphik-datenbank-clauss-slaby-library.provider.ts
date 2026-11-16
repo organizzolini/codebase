@@ -355,9 +355,7 @@ export class EpigraphikDatenbankClaussSlabyLibraryProvider {
     this.logger.info(
       "🗂️ Reading Epigraphik-Datenbank Clauss-Slaby chunks",
       undefined,
-      {
-        sourceDataDirectory,
-      },
+      { sourceDataDirectory },
     );
     const chunkFiles = await this.readSourceChunkFiles(sourceDataDirectory);
     if (!chunkFiles) return [];

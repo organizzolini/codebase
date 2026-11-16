@@ -66,9 +66,7 @@ export class PerseusLibraryProvider {
       this.logger.info(
         "🗂️ Found Latin XML files in local Perseus cache",
         undefined,
-        {
-          count: xmlPaths.length,
-        },
+        { count: xmlPaths.length },
       );
       return xmlPaths;
     } catch {

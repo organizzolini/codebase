@@ -85,7 +85,9 @@ const knownCollections: readonly unknown[] = textCollections;
 
 /** Source fields a provider writes into a text's frontmatter. */
 export const textFrontmatterSchema = z.object({
-  collection: z.custom<TextCollection>((value) => knownCollections.includes(value)).optional(),
+  collection: z
+    .custom<TextCollection>((value) => knownCollections.includes(value))
+    .optional(),
   edition: z.string().optional(),
   editors: z.string().optional(),
   end_year: z.number().int().optional(),

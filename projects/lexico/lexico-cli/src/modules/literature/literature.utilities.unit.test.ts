@@ -15,12 +15,15 @@ describe("literature.utilities", () => {
           work_identifier: "urn:cts:latinLit:phi0959.phi006.perseus-lat2",
         }),
       ).toStrictEqual({
-        collection: "Perseus",
-        edition: "First edition",
-        editors: "Editor One, Editor Two",
-        printYear: 1901,
-        publisher: "Publisher",
-        workIdentifier: "urn:cts:latinLit:phi0959.phi006.perseus-lat2",
+        attributes: {
+          collection: "Perseus",
+          edition: "First edition",
+          editors: "Editor One, Editor Two",
+          printYear: 1901,
+          publisher: "Publisher",
+          workIdentifier: "urn:cts:latinLit:phi0959.phi006.perseus-lat2",
+        },
+        invalidFields: [],
       });
     });
 
@@ -36,22 +39,44 @@ describe("literature.utilities", () => {
           start_year: -50,
         }),
       ).toStrictEqual({
-        collection: "EDCS",
-        endYear: 50,
-        findSpot: "Ostia",
-        inscriptionType: "Grabinschrift",
-        material: "Marmor",
-        province: "Roma",
-        startYear: -50,
+        attributes: {
+          collection: "EDCS",
+          endYear: 50,
+          findSpot: "Ostia",
+          inscriptionType: "Grabinschrift",
+          material: "Marmor",
+          province: "Roma",
+          startYear: -50,
+        },
+        invalidFields: [],
       });
     });
 
-    it("returns no attributes when the collection is not a known source", () => {
-      expect(parseText({ collection: "Unknown" })).toStrictEqual({});
+    it("reports a collection that is not a known source", () => {
+      expect(parseText({ collection: "Unknown" })).toStrictEqual({
+        attributes: {},
+        invalidFields: ["collection"],
+      });
+    });
+
+    it("keeps the valid fields when another field is invalid", () => {
+      expect(
+        parseText({
+          collection: "Perseus",
+          print_year: "nineteen oh one",
+          publisher: "Publisher",
+        }),
+      ).toStrictEqual({
+        attributes: { collection: "Perseus", publisher: "Publisher" },
+        invalidFields: ["print_year"],
+      });
     });
 
     it("returns no attributes when frontmatter has none of the fields", () => {
-      expect(parseText({ title: "Aeneid" })).toStrictEqual({});
+      expect(parseText({ title: "Aeneid" })).toStrictEqual({
+        attributes: {},
+        invalidFields: [],
+      });
     });
   });
 
