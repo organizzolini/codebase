@@ -15,10 +15,10 @@ The words this project uses that the root glossary does not define, regenerated 
 - **mirror**:
 - **negative**:
 - **north**:
-- **phase**:
 - **piece**:
 - **place**:
 - **representative**:
+- **rotation**: A column shift of a Code's repeating unit, which the matrix and tile services turn into a rotated tile.
 - **south**:
 - **square**: The filled shape of a dot, as wide as the stroke and centered on its point, drawn instead of a zero-length stroke that engines inflate differently.
 - **submatrix**:

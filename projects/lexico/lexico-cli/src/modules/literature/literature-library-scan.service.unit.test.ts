@@ -6,11 +6,16 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LiteratureLibraryScanService } from "./literature-library-scan.service";
 
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
 import type { Dirent } from "node:fs";
 
-vi.mock("node:fs/promises", () => ({
-  readdir: vi.fn<() => Promise<Dirent[]>>(),
-}));
+vi.mock("node:fs/promises", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem();
+});
 
 function createDirectoryEntry(name: string): Dirent {
   return {

@@ -6,7 +6,6 @@ The words this project uses that the root glossary does not define, regenerated 
 
 - **alt**: The text alternative of a meander's drawing, set on the card's `img` in `meander-card.tsx` as `Drawing of meander <Code>`, so assistive technology and tests can name it.
 - **border**: A Tailwind utility class, and the `--line` color token it takes in the card markup, that outlines a card or control; not a unit's grid border, which the CLI measures.
-- **breadth**: Callidescope's count of the direct calls a web callable makes, recorded in the project's Breadth table for its gate.
 - **category**: Where a characteristic is measured (submatrix, path or compound), or `shape` for the shape fields; the filter picker groups and describes fields by it.
 - **characteristic**: A measured property of a meander, listed in the catalog the API's `characteristics` query returns; a card shows the pattern ones it holds and expands to every non-zero value, and the sort control offers each key.
 - **contract**: A test that feeds what the builder writes through a mirror of the API's own filter schema, `filter-api-contract.unit.test.ts`, so a rule the builder can write is one the API accepts.

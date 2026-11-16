@@ -207,7 +207,7 @@ export class InstanceDiscoveryService {
     return weighed
       .map(({ instance, pairings }) => {
         return {
-          path: path.join(instance.path, instance.nameStem),
+          path: path.join(instance.path, instance.name),
           templates: pairings.filter((pairing) => wanted.has(pairing.name)),
         };
       })
@@ -242,7 +242,7 @@ export class InstanceDiscoveryService {
             : [
                 {
                   ...pairing,
-                  name: path.join(instance.path, instance.nameStem),
+                  name: path.join(instance.path, instance.name),
                 },
               ];
         });

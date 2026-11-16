@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:bf5f513a0fd53898a1b6c5597bf2f789daed5546f1b22f46c797b8e4bf6f60b0",
+  "pageVersion": "sha256:68988265e26103d901a53c0b7e919bd574ba08cc44f60ec29ecb03b35618e8e7",
   "claims": [
     {
       "id": "claim_562338b830ca4969b96436690c62796c",
@@ -12,7 +12,7 @@
         },
         {
           "resource": "repo://projects/caelundas/caelundas-cli/project.json",
-          "version": "repo-file-v1:sha256:2474e047d239e13ddc4e5873ec2757eb608c40bfcb71fe5d4d60e1aa06711e46"
+          "version": "repo-file-v1:sha256:0852abba6d7e4939c41775979015231eaae79acacadfe03f57688e1078542a0f"
         },
         {
           "resource": "repo://projects/lexico/lexico-web/project.json",
@@ -38,7 +38,7 @@
         },
         {
           "resource": "repo://projects/common/observability/project.json",
-          "version": "repo-file-v1:sha256:994e83ab9efbcae6ee06ec69fee224fc55dd2bc445e548e351380f8b9fe05bb8"
+          "version": "repo-file-v1:sha256:03e2b3999a54388ee8ce7fc36971127caa9b5daada09d7f0edc9858aabb86bed"
         },
         {
           "resource": "repo://projects/common/persistence/project.json",
@@ -94,7 +94,7 @@
         },
         {
           "resource": "repo://projects/common/observability/project.json",
-          "version": "repo-file-v1:sha256:994e83ab9efbcae6ee06ec69fee224fc55dd2bc445e548e351380f8b9fe05bb8"
+          "version": "repo-file-v1:sha256:03e2b3999a54388ee8ce7fc36971127caa9b5daada09d7f0edc9858aabb86bed"
         }
       ]
     },
@@ -108,7 +108,7 @@
         },
         {
           "resource": "repo://projects/common/observability/project.json",
-          "version": "repo-file-v1:sha256:994e83ab9efbcae6ee06ec69fee224fc55dd2bc445e548e351380f8b9fe05bb8"
+          "version": "repo-file-v1:sha256:03e2b3999a54388ee8ce7fc36971127caa9b5daada09d7f0edc9858aabb86bed"
         },
         {
           "resource": "repo://projects/common/persistence/project.json",
@@ -125,7 +125,7 @@
       "statement": "Infrastructure includes Helm charts (kubernetes-job), Terraform (Linode LKE), Docker Compose (local Postgres, SearxNG, Open WebUI), and GitHub Actions workflows for CI/CD/Compliance.",
       "evidence": [
         {
-          "resource": "repo://infrastructure/README.md#L85-L97",
+          "resource": "repo://infrastructure/README.md#L91-L103",
           "version": "repo-lines-v1:sha256:68aa8a733044a79150cabcf5070b72bef3ef6fc498ff55a28cf31e3e877696f6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkYTEzZjdhOGIyZTIxMzdlODgyNDZhZjc2MWFiNjEzMWY5YzBhM2Y0MzQzNjVhNWJiZTc4MjYwMjE4NWEyNzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlMTVmMjU0NjAyZDVmZTk1MDU0ZjFiYjU0ZjFkYTZiMDk4ZTAxYzc2ZjE4NzcwZTUxZGRkYzQ2ZTdjMDg5ZTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0NmY5Mzc1MWIzMTUzYWY2NTdmMzJmOTcxNmZlZmIzMTRlMTRjNjM5NDY5MzdlNTI4YmRhMWExZGI2YzAxZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5NDZiNTFiODZhN2U4OGQwNmQ5ZGNmMDgwODlhY2I2YWE4NDQ2MDUwOGUyODg5YjM1N2JmMDQ2NTg3YjExYzIifQ"
         },
         {
@@ -139,16 +139,12 @@
       "statement": "Dependency direction: applications depend on common packages; IC-Suite toolchains are independent but consumed by configuration tooling; infrastructure runs applications and provides shared services.",
       "evidence": [
         {
-          "resource": "repo://README.md#L354-L475",
-          "version": "repo-lines-v1:sha256:9c4f122ed6d61ee59f9745ade416bc4222e470ecc198d8c33379d9ed665f3f4d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJiMTcyZTdhNjczNGYwZDc3NWNlYzgwZGJmYjk1NWI2N2EyMDlmZWY0NzkwMTUzNjU3NDY1NTAwZmY0ZDcyMjIyIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI4NTY3MGRjMzFlZmQzMmRkYTYwMDQzODIwN2RiZWM3ZjBhMzExN2QyZDYwZWY1OGZjMGQ0NTZhOWQ4YWJiMDU1IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI4MzYxMjI3N2ExZTU4ZDdhNDY5Mjc3ZWZjYjM0Njk2ZjEwMDNiZTY5MmIyZDAxZDg3YjZiMGMwMGU5NmE0ZGNmIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJkMzRmNjRlYmFjYjMzNzlmMTI2NTRlNjRmMDZmMzRlNjliMWE5NGEzNzViY2U5YTM3OWEwNjMwODAxOTFiODFkIn0"
-        },
-        {
           "resource": "repo://configuration/codependix.config.ts#L172-L286",
-          "version": "repo-lines-v1:sha256:a8c133139231f6e4f9b6a441e51f728e62f5cd0eb80f7a8021760e31574a61be:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJmOTJkYWI5ZGU5NzI3Y2Y0NWQ2ODM5YmZhYWY4ZDRkZWM5ZTY4MDAwMGU3MWM2ZjI5ZWJjOTgzZTU5NjdiOWQ3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJiOTc4ZTI1MDNiOGNmMzdhMDZmN2Q2ZjBhM2E2YjZmZTM1NjkxZmJjYWI1MGI4Nzc1Y2FiNmZhYmM3MWM1OTJiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIxYTdiNjg2ZTM0YTZhNDBmZGY2MzdlMzY5ZmMxY2I0NWQ3YTk2ZGRlYWIxNDA3ODY4Mzc4MzIwMmI5ZmJiNDRkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI5YzI4NDk1ZDNjYWUwNDhhYmIzMGExY2I4ZjRkMDQ5YTRhZjQyMjk4NjQ0NjZjNWQ0MTZmNmM3YmRkMWEwMDllIn0"
+          "version": "repo-lines-v1:sha256:9b2babf9c4d575fece2bb9f6e135ef0636954df1c1acc05ea34a7a87af81d3a9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjNjNkNTM1Y2UzODA2M2Q2YjRjNTFkOGMzODZhN2Y5YjNlNTgwYTE0YTEwYzA3YjE5OGRmYWYxOWM5M2EzYmZlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI1MjA2MTMzYjBlMTNjNDIwODU3Y2U5NTA0MjQyMjE5Njg2NzM0NGY4OGVmYTk1MzEyNTVjM2JjZDQwZjU3ZmQ4IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI1YjQ1ZDhkNGFkYmNjOTYzNDVkZGQzNDVjOTJmMjIyMWJjMTJkNTQzNGFmZGZkMWM5MGQxZDYxNzllMzUxNThkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJiNWRjNDAwOWNlNWQyYjM5OWU5ZTAzMzc4NjE1ZjM2ZjE3MGY5NzFkNTZjYjVmNWMzOGU0MjQ2MzliMDg5M2VmIn0"
         },
         {
-          "resource": "repo://infrastructure/README.md#L48-L54",
-          "version": "repo-lines-v1:sha256:64011e94c25302403792bb34f74444c1555123caac0a57ae399e0c8eab60c2ff:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjIxOGU0ZDc1NzdmYzA5NGI5NWM3ZDBjNjg1ZTExNzhhNGNhZmRlNzViMDNkODY1NDZjYTc4ZjcwYmRiZTZjOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODY1YjFmMzRhZTAwNTE0Mjk1NzQ5MWRiZTkwYmQ0NDBiYzEyMDdiNzFjNDVhYzM2ZDUxOTA1YzNhYzk1NTU2NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGQxOTM4OGVlMjFjY2RkMmNkOTcyN2E3ZTk2OTM0YTExYmY1NDE3ZTkxNzdlYzBjNjRkYTZkZjU2YmI5N2I1MyJ9"
+          "resource": "repo://configuration/eslint.config.ts#L243-L550",
+          "version": "repo-lines-v1:sha256:d23582138ebb4e49cf2088b96d61840c7423bbcac5153e0e29ce6715546454fb:eyJzZWxlY3RlZExpbmVDb3VudCI6MzA4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI5Y2QzNTk4NmFmYWNmZjIyMWQwZWZjMTA2MjI4ZWJlMTQ5OWJhMTM4NGNjZWRmNGE2MjBiZmQyNjAxOGUxYjNiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJkMmZjMWVmMTNjYmMzNDFjMGFkMmZhZTE1NDZjMGFmMTI4NDBhN2RlMThjZmNhMzc4YzI5NzRkZWRlZDNlNWNkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI1OTljNGVkNzIwMmQzOThjNDEwNjRkMGY1ZDE3ZjllM2M2MGZiNzU5NTNhNjFhOTg4YWI0ODc3YmMwZTVhMWU2In0"
         }
       ]
     },
@@ -193,16 +189,16 @@
           "version": "repo-lines-v1:sha256:9eaf49a0590ad92bdb7b11eefd7f9c42c742765b74862837c4257d39b415f293:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3YmM0YzFiYzIzNzVjZDljZDhlMjBmODIyNjVlNTlhNDg3MDE5Y2YyNWYyZjBlOTY4NzEzOGJjN2FkYWVhNzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2OTVlMTViNjZjOTA1MDFkY2UxMzkzODA0YzRlOGVjMDNkNWMzM2MxNjA1MGM4ZWYzNzRmYTBiODBmNTFmMTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM5YzliOTRmM2JkMTc3OTIyYTdhZDQ0OWZmZWUzZTYyYTlmYzllNDM2ODFkYTIwYzQyMmU2OTZjY2ZjMWEzNTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlY2RmNWI1NDFmODBkMjU4MTUyZTgzZjM5OGFhNTM5NWJmM2Q5ODA1Yjc2MTk2MmM0N2Q1OWRkZjI4MjhiZmUifQ"
         },
         {
-          "resource": "repo://configuration/conformetry.config.ts#L50-L120",
-          "version": "repo-lines-v1:sha256:3410f188d53065677e9f81dbbf559a60ad4537125471ececb67d0e120e06b588:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjZTIxN2VjNzE3MGE2MDkzMmUyN2EwMWMwMjczMTQyMmRkNjgzYTE5NTJjYzNhMTg4YWQyODA4ZjE2MTFiYzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5OTBlYjZjY2RiMGZlZmNjM2M5YTg4M2M4NzljOTg2NmJlMzM5MzFjYWFhYmYzNjYyZDdhYzRjNDEzZWM4YjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMzNDBmMGU5NjUzYTQyOGZmMDhiNmQ1YmE5NzEwYzdmN2EzYmJhMmYxMzhkYzk4MWFlMjVmOWY5OTkwYmY1ZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFkMjMzZjZjMTdkNmE3Y2EwYjUxNjE4NWEyZDEzNDljODcxZmRmZTlhYjhlYzg5ZDFhY2Y0MDRlYjkzYjg1NTcifQ"
+          "resource": "repo://configuration/conformetry.config.ts",
+          "version": "repo-file-v1:sha256:c7dc83831ad17e25f05f1f171d914330aa143bafac48aac14ed735c286ceaf11"
         },
         {
           "resource": "repo://projects/ic-suite/conformetry/conformetry-configuration/README.md",
-          "version": "repo-file-v1:sha256:95c5953c52e9719ad16fc6a9b8d04f9d2546b2638d437addf7f5b7eb30752fa3"
+          "version": "repo-file-v1:sha256:a3143a36d801ff33d8967b9e6932accdf261c651ff544c352c9827ca2d3662ae"
         },
         {
           "resource": "repo://projects/ic-suite/conformetry/conformetry-validation/src/modules/runner/runner.service.ts",
-          "version": "repo-file-v1:sha256:6370d76ee7468ca16398324c72f1661d1170182d2afee79516475bffb8b2b84e"
+          "version": "repo-file-v1:sha256:dd789c2abddbb66b7bc06bf44566e7d1656108acf1d02ab6e997950776946ec8"
         }
       ]
     },
@@ -212,10 +208,10 @@
       "evidence": [
         {
           "resource": "repo://configuration/codependix.config.ts",
-          "version": "repo-file-v1:sha256:72fe9decdbfb6dc02c76d97c5636eb4c4be31d2831507f6aef51964223f51d00"
+          "version": "repo-file-v1:sha256:10c62b8816ad34385b5d64ba430535bd9032eed853800b5eda3d330c2932140b"
         },
         {
-          "resource": "repo://nx.json#L180-L200",
+          "resource": "repo://nx.json#L194-L214",
           "version": "repo-lines-v1:sha256:96faef7d2f20ef24826a174ddbd0a4fb69088ea78f97e92f79d5bd4307b07947:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2M2Q1MzVjZTM4MDYzZDZiNGM1MWQ4YzM4NmE3ZjliM2U1ODBhMTRhMTBjMDdiMTk4ZGZhZjE5YzkzYTNiZmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUwZTc2MjBiNzBkMWE5MTlhNzZlMGM3OTc1NmNkMTNjYzRiZDliM2VkY2FhNjQ1N2E4NThkOWFlZDQ0NTM5OWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYyYjBkNWYzMzBmMzY5YjU5ZGQxM2U5MmJjNzk4ZjIwM2IyOTkwYjRmMDFkZTVlNDRjMDE1NmJmOGYyZmVhNmUifQ"
         },
         {
@@ -230,7 +226,7 @@
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.0",
-    "at": "2026-10-29T03:39:46.432Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-13T16:30:25.369Z"
   }
 }

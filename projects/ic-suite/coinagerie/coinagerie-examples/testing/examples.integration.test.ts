@@ -3,12 +3,9 @@ import path from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
-import {
-  readWords,
-  removeStagedExample,
-  runCoinagerie,
-  stageExample,
-} from "./coinagerie.js";
+import { removeStagedExample } from "@codebase/testing/end-to-end";
+
+import { readWords, runCoinagerie, stageExample } from "./coinagerie.js";
 import { EXCLUSIONS_SCRATCH_FILES } from "./runs.js";
 
 /**
@@ -148,6 +145,7 @@ describe("every example this package ships", () => {
         "aspect",
         "configure",
         "engine",
+        "pisces",
         "src",
       ]);
     });

@@ -1,10 +1,13 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { ZodError } from "zod";
 
-import { createTemporaryDirectory } from "@codebase/testing";
+import {
+  createTemporaryDirectory,
+  useWorkingDirectory,
+} from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InputService } from "../input/input.service";
@@ -169,15 +172,13 @@ describe(ConfigurationService, () => {
 
     it("throws when no workspace root holds the relative path either", async () => {
       const searchDirectory = createTemporaryDirectory("codependix-rootless");
-      const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(searchDirectory);
+      useWorkingDirectory(searchDirectory);
 
       await expect(
         service.loadConfiguration({
           configurationPath: "configuration/codependix.config.ts",
         }),
       ).rejects.toBeInstanceOf(ConfigurationFileNotFoundError);
-
-      cwdSpy.mockRestore();
     });
 
     it("resolves a configuration path relative to the workspace root", async () => {

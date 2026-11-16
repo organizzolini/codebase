@@ -12,7 +12,7 @@ const result: LexemeResult = {
   identifiers: ["first person singular present active indicative"],
   inflection: { conjugation: "first" },
   lemma: "amo",
-  match: { kind: "exact-headword" },
+  match: { kind: "exact-lemma" },
   partOfSpeech: "verb",
   principalParts: ["amō", "amāre"],
   pronunciations: [{ phonetic: "[ˈa.moː]", variant: "classical" }],

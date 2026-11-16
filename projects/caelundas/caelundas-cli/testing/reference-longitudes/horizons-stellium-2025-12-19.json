@@ -2,7 +2,19 @@
   "boundaries": [
     {
       "start": "2025-12-19T08:16:00Z",
+      "summary": "✨☀️♀️⚵ Juno, Sun, Venus stellium"
+    },
+    {
+      "start": "2025-12-19T08:16:00Z",
+      "summary": "✨🌙♀️⚵ Juno, Moon, Venus stellium"
+    },
+    {
+      "start": "2025-12-19T08:16:00Z",
       "summary": "🌟🌙☀️♀️⚵ Juno, Moon, Sun, Venus stellium"
+    },
+    {
+      "start": "2025-12-19T19:44:00Z",
+      "summary": "✨♂️☀️⚵ Juno, Mars, Sun stellium"
     },
     {
       "start": "2025-12-19T19:44:00Z",
@@ -10,7 +22,19 @@
     },
     {
       "start": "2025-12-20T10:06:00Z",
+      "summary": "✨☀️♀️⚵ Juno, Sun, Venus stellium"
+    },
+    {
+      "start": "2025-12-20T10:06:00Z",
       "summary": "🌟🌙☀️♀️⚵ Juno, Moon, Sun, Venus stellium"
+    },
+    {
+      "start": "2025-12-20T14:19:00Z",
+      "summary": "✨♂️☀️⚵ Juno, Mars, Sun stellium"
+    },
+    {
+      "start": "2025-12-20T14:19:00Z",
+      "summary": "✨♂️🌙☀️ Mars, Moon, Sun stellium"
     },
     {
       "start": "2025-12-20T14:19:00Z",
@@ -104,7 +128,7 @@
     }
   },
   "name": "Two overlapping stelliums around the 20 December 2025 new Moon",
-  "note": "Juno, Moon, Sun and Venus are pairwise within 8 degrees from 08:16 UT on 19 December, and Juno, Mars, Moon and Sun from 19:44 UT. Mars and Venus are about 10 degrees apart, so the five bodies form one conjunction component that is not a clique, and both stelliums are its maximal cliques. Each minute listed is a boundary T with T-1 and T+1: an edge is in T's registry when its bodies are within orb at T and T+1, because a leg's dissolving event marks its last minute in orb and the registry drops it then.",
+  "note": "Juno, Moon, Sun and Venus are pairwise within 8 degrees from 08:16 UT on 19 December, and Juno, Mars, Moon and Sun from 19:44 UT. Mars and Venus are about 10 degrees apart, so the five bodies form one conjunction component that is not a clique, and both stelliums are its maximal cliques. Each minute listed is a boundary T with T-1 and T+1: an edge is in T's registry when its bodies are within orb at T and T+1, because a leg's dissolving event marks its last minute in orb and the registry drops it then. A stellium is three or more bodies, so the three-body cliques a listed minute forms or dissolves are boundaries too.",
   "retrieved": "2026-10-08",
   "source": {
     "commandByBody": {

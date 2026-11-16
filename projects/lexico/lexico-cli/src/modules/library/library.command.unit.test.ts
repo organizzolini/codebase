@@ -1,4 +1,5 @@
 import { existsSync, mkdirSync } from "node:fs";
+import { appendFile, mkdir, readdir } from "node:fs/promises";
 import path from "node:path";
 
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
@@ -7,7 +8,10 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { LoggerService } from "@codebase/observability";
 import { expectLoggerContext } from "@codebase/observability/testing";
 import { createTemporaryDirectory, promptsMock } from "@codebase/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
+import {
+  buildTestingModule,
+  mockErrorLogEntries,
+} from "@codebase/testing/nestjs";
 
 import {
   resetCommandTestHarness,
@@ -20,24 +24,9 @@ import { LIBRARY_PROVIDERS_TOKEN } from "./library.constants";
 
 import type { LibrarySourceProvider } from "./library.types";
 import type { Author } from "@codebase/lexico-db";
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { Provider } from "@nestjs/common";
-
-const { appendFileMock, mkdirMock, readdirMock } = vi.hoisted(() => ({
-  appendFileMock: vi.fn<() => Promise<void>>(),
-  mkdirMock: vi.fn<() => Promise<string | undefined>>(),
-  readdirMock: vi.fn<() => Promise<unknown[]>>(),
-}));
-
-vi.mock("node:fs/promises", () => ({
-  appendFile: appendFileMock,
-  mkdir: mkdirMock,
-  readdir: readdirMock,
-}));
-
-vi.mock("prompts", () => ({
-  default: promptsMock,
-}));
 
 function createProviders(): LibrarySourceProvider[] {
   return [
@@ -55,6 +44,18 @@ function createProviders(): LibrarySourceProvider[] {
     },
   ];
 }
+
+const appendFileMock = vi.mocked(appendFile);
+const mkdirMock = vi.mocked(mkdir);
+const readdirMock = vi.mocked<(path: string) => Promise<unknown[]>>(readdir);
+
+vi.mock("node:fs/promises", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem();
+});
 
 describe(LibraryCommand, () => {
   let command: LibraryCommand;
@@ -94,14 +95,7 @@ describe(LibraryCommand, () => {
     appendFileMock.mockResolvedValue(undefined);
     promptsMock.mockResolvedValue({ provider: "ALL" });
 
-    logger.buildErrorLogEntry.mockImplementation((context, error) => {
-      const errorMessage =
-        error instanceof Error ? error.stack || error.message : String(error);
-      return {
-        errorMessage,
-        logLine: `[${new Date().toISOString()}] ${context}: ${errorMessage}\n`,
-      };
-    });
+    mockErrorLogEntries(logger);
   });
 
   it("resolves with its dependencies", async () => {

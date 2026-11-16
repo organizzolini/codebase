@@ -1,15 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { createTemporaryDirectory, writeFileTree } from "@codebase/testing";
-import { createTarballSandboxRunner } from "@codebase/testing/end-to-end";
+import { usePackedSandbox } from "@codebase/testing/end-to-end";
 
-import type {
-  CommandResult,
-  TarballSandboxRunner,
-} from "@codebase/testing/end-to-end";
+import type { CommandResult } from "@codebase/testing/end-to-end";
 
 const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../../../..");
 
@@ -29,7 +26,20 @@ const PROJECT_GRAPH = {
 };
 
 describe("the packed codependix command", () => {
-  let sandbox: TarballSandboxRunner;
+  const packed = usePackedSandbox({
+    binary: "codependix",
+    packages: [
+      "@codependix/boundaries",
+      "@codependix/cli",
+      "@codependix/configuration",
+      "@codependix/core",
+      "@codependix/file-imports",
+      "@codependix/nestjs-modules",
+      "@codependix/nx-projects",
+      "@codependix/output",
+    ],
+    workspaceRoot: WORKSPACE_ROOT,
+  });
 
   /** Writes the project graph and a configuration over it; returns the configuration's path. */
   function writeWorkspace(directory: string): string {
@@ -55,38 +65,13 @@ describe("the packed codependix command", () => {
     directory: string,
     args: readonly string[],
   ): Promise<CommandResult> {
-    return sandbox
-      .command(path.join(sandbox.directory, "node_modules/.bin/codependix"), [
-        ...args,
-      ])
-      .inDirectory(directory)
-      .run();
+    return packed.run(directory, args);
   }
-
-  beforeAll(async () => {
-    sandbox = await createTarballSandboxRunner({
-      packages: [
-        "@codependix/boundaries",
-        "@codependix/cli",
-        "@codependix/configuration",
-        "@codependix/core",
-        "@codependix/file-imports",
-        "@codependix/nestjs-modules",
-        "@codependix/nx-projects",
-        "@codependix/output",
-      ],
-      workspaceRoot: WORKSPACE_ROOT,
-    });
-  });
-
-  afterAll(() => {
-    sandbox.dispose();
-  });
 
   it("lists its commands under --help", async () => {
     expect.hasAssertions();
 
-    const result = await sandbox.command("codependix", ["--help"]).run();
+    const result = await packed.command("codependix", ["--help"]).run();
 
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("map");

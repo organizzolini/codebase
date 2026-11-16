@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
+import { IssueFieldsService } from "./issue-fields.service";
 import { IssueMetadataTypeService } from "./issue-metadata-type.service";
 import {
   CONVENTIONAL_ISSUE_TITLE_PATTERN,
@@ -34,6 +35,7 @@ export class IssueMetadataService {
   // 🏗 Dependency Injection
 
   constructor(
+    private readonly issueFieldsService: IssueFieldsService,
     private readonly issueMetadataTypeService: IssueMetadataTypeService,
   ) {}
 
@@ -291,6 +293,9 @@ export class IssueMetadataService {
         metadata: {
           body: issue.body,
           ...this.issueMetadataTypeService.readFromSummary(issue),
+          ...(issue.fieldNames === undefined
+            ? {}
+            : { fieldNames: issue.fieldNames }),
           labelNames: issue.labels.map((label) => label.name),
         },
       });
@@ -362,7 +367,7 @@ export class IssueMetadataService {
     return violations;
   }
 
-  /** Every way this issue's labels disagree with it. */
+  /** Every way this issue's labels, type, and fields disagree with it. */
   public checkMetadata(options: {
     readonly formAnswers: IssueFormAnswers;
     readonly issueNumber: string;
@@ -380,6 +385,11 @@ export class IssueMetadataService {
     this.checkScopeLabels(options, labels, record);
     this.checkSourceLabel(options.issueNumber, labels, record);
     this.issueMetadataTypeService.check(
+      options.issueNumber,
+      options.metadata,
+      record,
+    );
+    this.issueFieldsService.checkPriority(
       options.issueNumber,
       options.metadata,
       record,
