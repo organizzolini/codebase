@@ -1,7 +1,9 @@
 import _ from "lodash";
+import { Raw } from "typeorm";
 
 import {
   authorMetadataSchema,
+  EDCS_PROVIDER,
   ERA_BOUNDARIES,
   textFrontmatterSchema,
 } from "./literature.constants";
@@ -9,9 +11,11 @@ import {
 import type {
   AuthorAttributes,
   AuthorYears,
+  LibraryEntry,
   TextAttributes,
 } from "./literature.types";
-import type { Author, AuthorEra, Token } from "@codebase/lexico-db";
+import type { Author, AuthorEra, Text, Token } from "@codebase/lexico-db";
+import type { Repository } from "typeorm";
 import type { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity.js";
 
 /**
@@ -64,34 +68,46 @@ export function mergeAuthor(
 }
 
 /**
- * Maps a text's frontmatter source fields onto its typed columns; invalid input yields none.
+ * Maps a text's frontmatter source fields onto its typed columns, field by field, and names
+ * the fields that were present but invalid so one bad field never drops the rest.
  */
-export function parseText(
-  frontmatter: Record<string, unknown>,
-): TextAttributes {
-  const parsed = textFrontmatterSchema.safeParse(frontmatter);
-  if (!parsed.success) return {};
-  const {
-    end_year,
-    find_spot,
-    inscription_type,
-    print_year,
-    start_year,
-    work_identifier,
-    ...rest
-  } = parsed.data;
-  return _.omitBy(
-    {
-      ...rest,
-      endYear: end_year,
-      findSpot: find_spot,
-      inscriptionType: inscription_type,
-      printYear: print_year,
-      startYear: start_year,
-      workIdentifier: work_identifier,
+export function parseText(frontmatter: Record<string, unknown>): {
+  attributes: TextAttributes;
+  invalidFields: string[];
+} {
+  const attributes: Record<string, unknown> = {};
+  const invalidFields: string[] = [];
+  for (const [field, schema] of Object.entries(textFrontmatterSchema.shape)) {
+    const value = frontmatter[field];
+    if (value === undefined) continue;
+    const parsed = schema.safeParse(value);
+    if (parsed.success) attributes[_.camelCase(field)] = parsed.data;
+    else invalidFields.push(field);
+  }
+  return { attributes, invalidFields };
+}
+
+/**
+ * Soft-deletes the numbered "Part" texts an earlier EDCS run stored per province, which the
+ * per-inscription texts replace; only an author with EDCS entries is touched.
+ */
+export async function removeReplacedTexts(
+  repository: Repository<Text>,
+  authorId: string,
+  entries: LibraryEntry[],
+): Promise<number> {
+  if (!entries.some((entry) => entry.provider === EDCS_PROVIDER)) return 0;
+  const replaced = await repository.find({
+    select: { id: true },
+    where: {
+      author: { id: authorId },
+      title: Raw((alias) => `${alias} ~ ' Part [0-9]+$'`),
+      type: "text",
     },
-    (value) => value === undefined,
-  );
+  });
+  if (replaced.length === 0) return 0;
+  await repository.softDelete(replaced.map((text) => text.id));
+  return replaced.length;
 }
 
 /**

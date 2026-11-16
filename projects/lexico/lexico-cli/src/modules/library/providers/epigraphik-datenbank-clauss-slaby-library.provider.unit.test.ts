@@ -1,4 +1,4 @@
-import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
 // `obj` is the field name the EDCS API returns, not an abbreviation this code chose.
@@ -112,31 +112,17 @@ describe(EpigraphikDatenbankClaussSlabyLibraryProvider, () => {
     expect(provider.name).toBe("epigraphik-datenbank-clauss-slaby");
   });
 
-  it("should write one province book with one child text per inscription", async () => {
+  it("should write one province book per province without holding the inscriptions", async () => {
     const authors = await ingestSample();
 
     const books = authors[0]?.texts ?? [];
-    const romaBook = books.find((book) => book.title === "Roma");
-    const hispaniaBook = books.find((book) => book.title === "Hispania");
 
-    const unknownBook = books.find((book) => book.title === "Unknown Province");
-
-    expect(books.map((book) => book.type)).toStrictEqual([
-      "book",
-      "book",
-      "book",
+    expect(books.map((book) => [book.title, book.type])).toStrictEqual([
+      ["Roma", "book"],
+      ["Hispania", "book"],
+      ["Unknown Province", "book"],
     ]);
-    expect(romaBook?.childTexts.map((text) => text.title)).toStrictEqual([
-      "EDCS-1",
-      "EDCS-2",
-    ]);
-    expect(hispaniaBook?.childTexts.map((text) => text.title)).toStrictEqual([
-      "EDCS-3",
-      "EDCS-7",
-    ]);
-    expect(unknownBook?.childTexts.map((text) => text.title)).toStrictEqual([
-      "EDCS-8",
-    ]);
+    expect(books.every((book) => book.childTexts.length === 0)).toBe(true);
   });
 
   it("should give each inscription its EDCS id as title, slug, and line label", async () => {
@@ -186,14 +172,10 @@ describe(EpigraphikDatenbankClaussSlabyLibraryProvider, () => {
   });
 
   it("should skip records without inscription text and log invalid records without stopping", async () => {
-    const authors = await ingestSample();
+    await ingestSample();
 
-    const titles = (authors[0]?.texts ?? []).flatMap((book) =>
-      book.childTexts.map((text) => text.title),
-    );
-
-    expect(titles).not.toContain("EDCS-4");
-    expect(titles).not.toContain("EDCS-6");
+    expect(writtenMarkdown("edcs-4.md")).toBeUndefined();
+    expect(writtenMarkdown("edcs-6.md")).toBeUndefined();
     expect(writeFileMock).toHaveBeenCalledTimes(5);
     expect(logger.warn).toHaveBeenCalledWith(
       "📄 Skipped invalid EDCS record",
@@ -214,6 +196,148 @@ describe(EpigraphikDatenbankClaussSlabyLibraryProvider, () => {
 
     expect(writeFileMock).toHaveBeenCalledTimes(1);
     expect(writeFileMock.mock.calls[0]?.[0]).toContain("edcs-3.md");
+  });
+
+  it("should stream a large province chunk by chunk without accumulating it", async () => {
+    const chunkCount = 5;
+    const perChunk = 400;
+    const chunk = (chunkIndex: number): string =>
+      JSON.stringify({
+        data: Array.from({ length: perChunk }, (_unused, index) => ({
+          obj: {
+            "edcs-id": `EDCS-${chunkIndex}-${index}`,
+            fundort: "Ostia",
+            inschriften: [["AVE", null, [], []]],
+            inschrifttyp: "Grabinschrift",
+            material: "Marmor",
+            provinz: "Roma",
+          },
+        })),
+      });
+    readdirMock.mockResolvedValueOnce(
+      Array.from(
+        { length: chunkCount },
+        (_unused, index) => `chunk-${index}.json`,
+      ),
+    );
+    for (let index = 0; index < chunkCount; index++) {
+      readFileMock.mockResolvedValueOnce(chunk(index));
+    }
+
+    const authors = await provider.ingest();
+
+    expect(writeFileMock).toHaveBeenCalledTimes(chunkCount * perChunk);
+    expect(authors[0]?.texts).toHaveLength(1);
+    expect(authors[0]?.texts[0]?.childTexts).toHaveLength(0);
+  });
+
+  it("should clear stale generated files before a full run but not a filtered one", async () => {
+    await ingestSample();
+
+    expect(vi.mocked(rm)).toHaveBeenCalledWith(
+      expect.stringContaining("epigraphik-datenbank-clauss-slaby"),
+      { force: true, recursive: true },
+    );
+
+    vi.mocked(rm).mockClear();
+    await ingestSample({
+      text: "epigraphik-datenbank-clauss-slaby/roma/edcs-1",
+    });
+
+    expect(vi.mocked(rm)).not.toHaveBeenCalled();
+  });
+
+  it("should log and skip a duplicate EDCS id instead of overwriting it", async () => {
+    readdirMock.mockResolvedValueOnce(["chunk-0.json"]);
+    readFileMock.mockResolvedValueOnce(
+      JSON.stringify({
+        data: [
+          {
+            obj: {
+              "edcs-id": "EDCS-1",
+              inschriften: [["A", null]],
+              provinz: "Roma",
+            },
+          },
+          {
+            obj: {
+              "edcs-id": "edcs 1",
+              inschriften: [["B", null]],
+              provinz: "Roma",
+            },
+          },
+        ],
+      }),
+    );
+    writeFileMock
+      .mockResolvedValueOnce(undefined)
+      .mockRejectedValueOnce(
+        Object.assign(new Error("exists"), { code: "EEXIST" }),
+      );
+
+    await provider.ingest();
+
+    expect(logger.warn).toHaveBeenCalledWith(
+      "📄 Skipped duplicate EDCS id",
+      undefined,
+      { id: "edcs 1", slug: "epigraphik-datenbank-clauss-slaby/roma/edcs-1" },
+    );
+  });
+
+  it("should rethrow a write failure that is not a duplicate", async () => {
+    readdirMock.mockResolvedValueOnce(["chunk-0.json"]);
+    readFileMock.mockResolvedValueOnce(JSON.stringify(sampleRecords));
+    writeFileMock.mockRejectedValueOnce(new Error("disk full"));
+
+    await provider.ingest();
+
+    expect(logger.warn).toHaveBeenCalledWith(
+      "📄 Failed reading chunk file",
+      undefined,
+      expect.objectContaining({ reason: "Error: disk full" }),
+    );
+  });
+
+  it("should log attribute coverage and warn when an attribute is missing nearly everywhere", async () => {
+    readdirMock.mockResolvedValueOnce(["chunk-0.json"]);
+    readFileMock.mockResolvedValueOnce(
+      JSON.stringify({
+        data: Array.from({ length: 20 }, (_unused, index) => ({
+          obj: {
+            datierung_bis: 5,
+            datierung_von: 1,
+            "edcs-id": `EDCS-${index}`,
+            inschriften: [["AVE", null]],
+            inschrifttyp: "Grabinschrift",
+            material: "Marmor",
+            provinz: "Roma",
+          },
+        })),
+      }),
+    );
+
+    await provider.ingest();
+
+    expect(logger.info).toHaveBeenCalledWith(
+      "📊 Measured EDCS attribute coverage",
+      undefined,
+      { missing: { find_spot: 20 }, records: 20 },
+    );
+    expect(logger.warn).toHaveBeenCalledWith(
+      expect.stringContaining("missing on nearly every record"),
+      undefined,
+      { affected: ["find_spot"], records: 20 },
+    );
+  });
+
+  it("should not warn about missing attributes on a handful of records", async () => {
+    await ingestSample();
+
+    expect(logger.warn).not.toHaveBeenCalledWith(
+      expect.stringContaining("missing on nearly every record"),
+      expect.anything(),
+      expect.anything(),
+    );
   });
 
   it("should return empty when chunk files cannot be read", async () => {

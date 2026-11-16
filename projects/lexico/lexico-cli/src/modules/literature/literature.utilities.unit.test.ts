@@ -1,6 +1,16 @@
+import { createMock } from "@golevelup/ts-vitest";
 import { describe, expect, it } from "vitest";
 
-import { deriveEra, mergeAuthor, parseText } from "./literature.utilities";
+import {
+  deriveEra,
+  mergeAuthor,
+  parseText,
+  removeReplacedTexts,
+} from "./literature.utilities";
+
+import type { LibraryEntry } from "./literature.types";
+import type { Text } from "@codebase/lexico-db";
+import type { Repository } from "typeorm";
 
 describe("literature.utilities", () => {
   describe(deriveEra, () => {
@@ -47,12 +57,15 @@ describe("literature.utilities", () => {
           work_identifier: "urn:cts:latinLit:phi0959.phi006.perseus-lat2",
         }),
       ).toStrictEqual({
-        collection: "Perseus",
-        edition: "First edition",
-        editors: "Editor One, Editor Two",
-        printYear: 1901,
-        publisher: "Publisher",
-        workIdentifier: "urn:cts:latinLit:phi0959.phi006.perseus-lat2",
+        attributes: {
+          collection: "Perseus",
+          edition: "First edition",
+          editors: "Editor One, Editor Two",
+          printYear: 1901,
+          publisher: "Publisher",
+          workIdentifier: "urn:cts:latinLit:phi0959.phi006.perseus-lat2",
+        },
+        invalidFields: [],
       });
     });
 
@@ -68,22 +81,44 @@ describe("literature.utilities", () => {
           start_year: -50,
         }),
       ).toStrictEqual({
-        collection: "EDCS",
-        endYear: 50,
-        findSpot: "Ostia",
-        inscriptionType: "Grabinschrift",
-        material: "Marmor",
-        province: "Roma",
-        startYear: -50,
+        attributes: {
+          collection: "EDCS",
+          endYear: 50,
+          findSpot: "Ostia",
+          inscriptionType: "Grabinschrift",
+          material: "Marmor",
+          province: "Roma",
+          startYear: -50,
+        },
+        invalidFields: [],
       });
     });
 
-    it("returns no attributes when the collection is not a known source", () => {
-      expect(parseText({ collection: "Unknown" })).toStrictEqual({});
+    it("reports a collection that is not a known source", () => {
+      expect(parseText({ collection: "Unknown" })).toStrictEqual({
+        attributes: {},
+        invalidFields: ["collection"],
+      });
+    });
+
+    it("keeps the valid fields when another field is invalid", () => {
+      expect(
+        parseText({
+          collection: "Perseus",
+          print_year: "nineteen oh one",
+          publisher: "Publisher",
+        }),
+      ).toStrictEqual({
+        attributes: { collection: "Perseus", publisher: "Publisher" },
+        invalidFields: ["print_year"],
+      });
     });
 
     it("returns no attributes when frontmatter has none of the fields", () => {
-      expect(parseText({ title: "Aeneid" })).toStrictEqual({});
+      expect(parseText({ title: "Aeneid" })).toStrictEqual({
+        attributes: {},
+        invalidFields: [],
+      });
     });
   });
 
@@ -114,6 +149,55 @@ describe("literature.utilities", () => {
         fullName: "Ennius",
         metadata: {},
       });
+    });
+  });
+
+  describe(removeReplacedTexts, () => {
+    const entry = (provider: string): LibraryEntry => ({
+      authorSlug: "epigraphik-datenbank-clauss-slaby",
+      fullPath: "roma/edcs-1.md",
+      pathParts: ["roma"],
+      provider,
+      textSlug: "edcs-1",
+      title: "EDCS 1",
+    });
+
+    it("soft-deletes the old numbered part texts of an EDCS author", async () => {
+      const repository = createMock<Repository<Text>>();
+      repository.find.mockResolvedValueOnce([
+        { id: "part-1" } as Text,
+        { id: "part-2" } as Text,
+      ]);
+
+      const removed = await removeReplacedTexts(repository, "author-id", [
+        entry("epigraphik-datenbank-clauss-slaby"),
+      ]);
+
+      expect(removed).toBe(2);
+      expect(repository.softDelete).toHaveBeenCalledWith(["part-1", "part-2"]);
+    });
+
+    it("deletes nothing when no part texts remain", async () => {
+      const repository = createMock<Repository<Text>>();
+      repository.find.mockResolvedValueOnce([]);
+
+      const removed = await removeReplacedTexts(repository, "author-id", [
+        entry("epigraphik-datenbank-clauss-slaby"),
+      ]);
+
+      expect(removed).toBe(0);
+      expect(repository.softDelete).not.toHaveBeenCalled();
+    });
+
+    it("leaves an author that has no EDCS text untouched", async () => {
+      const repository = createMock<Repository<Text>>();
+
+      const removed = await removeReplacedTexts(repository, "author-id", [
+        entry("perseus"),
+      ]);
+
+      expect(removed).toBe(0);
+      expect(repository.find).not.toHaveBeenCalled();
     });
   });
 });

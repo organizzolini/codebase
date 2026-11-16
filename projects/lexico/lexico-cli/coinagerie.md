@@ -51,7 +51,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **floruit**:
 - **fundort**:
 - **hilary**:
-- **hispania**:
 - **iacē**: Classical substitution key matching a Latin stem fragment, rewritten to the j form jacē before phonemes are mapped.
 - **imperial**:
 - **ingest**: Verb for loading one source into the database, as in provider.ingest for each library author the library command selects.
@@ -105,7 +104,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **publication**: Word in the `print_publication_date` metadata key, the year a print edition of a library work appeared, which the Perseus and CSEL providers record from the source record when it carries one.
 - **recognise**: Token linked to a dictionary Word, so counted among a Text's recognised words.
 - **remigius**:
-- **roma**:
 - **rufinus**:
 - **saint**:
 - **salvian**:

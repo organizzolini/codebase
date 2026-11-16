@@ -81,11 +81,16 @@ export const WORD_TOKEN_PATTERN = /^[\p{L}]+$/u;
 
 export const COMBINING_MARKS_PATTERN = /[\u0300-\u036F]/gu;
 
+/** Name of the EDCS library provider. */
+export const EDCS_PROVIDER = "epigraphik-datenbank-clauss-slaby";
+
 const knownCollections: readonly unknown[] = textCollections;
 
 /** Source fields a provider writes into a text's frontmatter. */
 export const textFrontmatterSchema = z.object({
-  collection: z.custom<TextCollection>((value) => knownCollections.includes(value)).optional(),
+  collection: z
+    .custom<TextCollection>((value) => knownCollections.includes(value))
+    .optional(),
   edition: z.string().optional(),
   editors: z.string().optional(),
   end_year: z.number().int().optional(),
