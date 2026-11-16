@@ -7,19 +7,49 @@ import path from "node:path";
 import { Injectable } from "@nestjs/common";
 import _ from "lodash";
 import YAML from "yaml";
+import { z } from "zod";
 
 import { Author, Text, textCollection } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
-/** Raw EDCS record; `inschriften[0]` holds the HTML-tagged text. */
-interface EpigraphikDatenbankClaussSlabyRecord {
-  obj: {
-    "edcs-id"?: string;
-    edcsId?: string;
-    inschriften: [string, unknown, string[], string[]][];
-    provinz: null | string;
-  };
+/** An attribute a record may omit; a value of the wrong shape reads as absent, so the record is kept. */
+const optionalAttribute = <T extends z.ZodType>(
+  schema: T,
+): z.ZodCatch<z.ZodOptional<z.ZodNullable<T>>> => schema.nullish().catch(null);
+
+/**
+ * One EDCS record. The id and inscription rows are required; each other field is optional.
+ * shortcut: attribute field names are unverified against the live API (it returned 403), so a wrong name nulls that attribute, check on a live run.
+ */
+const epigraphikDatenbankRecordSchema = z.object({
+  obj: z
+    .object({
+      datierung_bis: optionalAttribute(z.number().int()),
+      datierung_von: optionalAttribute(z.number().int()),
+      "edcs-id": z.string().optional(),
+      edcsId: z.string().optional(),
+      fundort: optionalAttribute(z.string()),
+      inschriften: z.array(z.tuple([z.string()]).rest(z.unknown())),
+      inschrifttyp: optionalAttribute(z.string()),
+      material: optionalAttribute(z.string()),
+      provinz: optionalAttribute(z.string()),
+    })
+    .refine((object) => Boolean(object["edcs-id"] || object.edcsId), {
+      message: "EDCS record has no id",
+    }),
+});
+
+/** One validated inscription, ready to become its own child text. */
+interface EdcsInscription {
+  attributes: Record<string, number | string>;
+  id: string;
+  text: string;
 }
+
+/** The validated shape of one EDCS record. */
+type EpigraphikDatenbankRecord = z.infer<
+  typeof epigraphikDatenbankRecordSchema
+>;
 
 /**
  * Provider for ingesting Epigraphik-Datenbank Clauss-Slaby inscriptions.
@@ -68,15 +98,15 @@ export class EpigraphikDatenbankClaussSlabyLibraryProvider {
   }
 
   /**
-   * Processes one workflow step for EDCS library ingestion.
+   * Turns one validated EDCS record into an inscription grouped under its province.
    */
   private processEdcsRecord(
-    item: EpigraphikDatenbankClaussSlabyRecord,
-    provinceData: Map<string, string[]>,
+    record: EpigraphikDatenbankRecord,
+    provinceData: Map<string, EdcsInscription[]>,
   ): void {
-    const object = item.obj;
-    const recordId = object["edcs-id"] || object.edcsId;
-    const provinz = object.provinz || "Unknown Province";
+    const object = record.obj;
+    const id = object["edcs-id"] || object.edcsId || "";
+    const province = object.provinz || "Unknown Province";
     const text = object.inschriften[0]?.[0];
     if (!text) return;
     let cleanedText = text;
@@ -85,19 +115,19 @@ export class EpigraphikDatenbankClaussSlabyLibraryProvider {
       previousText = cleanedText;
       cleanedText = cleanedText.replaceAll(/<[^>]*>?/gm, "");
     } while (cleanedText !== previousText);
-    const markdownLine = `**${recordId}** ${cleanedText}`;
-    const provArray = provinceData.get(provinz) || [];
-    provArray.push(markdownLine);
-    provinceData.set(provinz, provArray);
+    const attributes = buildEdcsAttributes(object, province);
+    const inscriptions = provinceData.get(province) || [];
+    inscriptions.push({ attributes, id, text: cleanedText });
+    provinceData.set(province, inscriptions);
   }
 
   /**
-   * Processes one workflow step for EDCS library ingestion.
+   * Parses one chunk file, skipping invalid records so one bad record never stops the run.
    */
   private async processSourceChunkFile(args: {
     file: string;
     index: number;
-    provinceData: Map<string, string[]>;
+    provinceData: Map<string, EdcsInscription[]>;
     sourceDataDirectory: string;
     total: number;
   }): Promise<void> {
@@ -106,10 +136,19 @@ export class EpigraphikDatenbankClaussSlabyLibraryProvider {
     try {
       const filePath = path.join(sourceDataDirectory, file);
       const fileContent = await fs.readFile(filePath, "utf8");
-      const data = JSON.parse(fileContent) as {
-        data: EpigraphikDatenbankClaussSlabyRecord[];
-      };
-      for (const item of data.data) this.processEdcsRecord(item, provinceData);
+      const data = JSON.parse(fileContent) as { data: unknown[] };
+      for (const [recordIndex, item] of data.data.entries()) {
+        const parsed = epigraphikDatenbankRecordSchema.safeParse(item);
+        if (parsed.success) {
+          this.processEdcsRecord(parsed.data, provinceData);
+          continue;
+        }
+        this.logger.warn("📄 Skipped invalid EDCS record", undefined, {
+          file,
+          index: recordIndex,
+          reason: parsed.error.issues.map((issue) => issue.message).join("; "),
+        });
+      }
       this.logger.info("📜 Completed processing chunk", undefined, {
         current: index + 1,
         file,
@@ -130,8 +169,8 @@ export class EpigraphikDatenbankClaussSlabyLibraryProvider {
   private async processSourceChunkStage(
     chunkFiles: string[],
     sourceDataDirectory: string,
-  ): Promise<Map<string, string[]>> {
-    const provinceData = new Map<string, string[]>();
+  ): Promise<Map<string, EdcsInscription[]>> {
+    const provinceData = new Map<string, EdcsInscription[]>();
     for (let index = 0; index < chunkFiles.length; index++) {
       const file = chunkFiles[index];
       if (!file) continue;
@@ -166,42 +205,44 @@ export class EpigraphikDatenbankClaussSlabyLibraryProvider {
   }
 
   /**
-   * Persists generated output for EDCS library ingestion.
+   * Persists one inscription as a child text of its province book.
    */
-  private async saveEdcsChunkFile(args: {
+  private async saveEdcsInscription(args: {
     authorSlug: string;
     bookDirectory: string;
     bookSlug: string;
     bookText: Text;
-    chunk: string[];
-    title: string;
-    titleSlug: string;
+    inscription: EdcsInscription;
+    options: undefined | { text?: string };
   }): Promise<void> {
     const {
       authorSlug,
       bookDirectory,
       bookSlug,
       bookText,
-      chunk,
-      title,
-      titleSlug,
+      inscription,
+      options,
     } = args;
+    const titleSlug = _.kebabCase(inscription.id);
+    const textSlug = `${authorSlug}/${bookSlug}/${titleSlug}`;
+    if (options?.text && textSlug !== options.text) return;
     const textEntity = new Text();
     textEntity.type = "text";
-    textEntity.title = title;
+    textEntity.title = inscription.id;
     textEntity.slug = titleSlug;
     textEntity.metadata = { sourceUrl: `${bookSlug}/${titleSlug}.md` };
     bookText.childTexts.push(textEntity);
     const frontmatterObject = {
       author: authorSlug,
       collection: textCollection.edcs,
+      ...inscription.attributes,
       text_metadata: { source_url: "https://db.edcs.eu" },
-      title,
+      title: inscription.id,
       type: "text",
     };
     let markdown = `---\n${YAML.stringify(frontmatterObject)}---\n\n`;
-    markdown += `# ${title}\n\n`;
-    markdown += `${chunk.join("\n\n")}\n`;
+    markdown += `# ${inscription.id}\n\n`;
+    markdown += `**${inscription.id}** ${inscription.text}\n`;
     await fs.writeFile(
       path.join(bookDirectory, `${titleSlug}.md`),
       markdown,
@@ -217,7 +258,7 @@ export class EpigraphikDatenbankClaussSlabyLibraryProvider {
     authorDirectory: string;
     authorSlug: string;
     booksMap: Map<string, Text>;
-    inscriptions: string[];
+    inscriptions: EdcsInscription[];
     options: undefined | { text?: string };
     province: string;
   }): Promise<void> {
@@ -240,21 +281,14 @@ export class EpigraphikDatenbankClaussSlabyLibraryProvider {
       booksMap,
       province,
     });
-    const chunkSize = 1000;
-    for (let index = 0; index < inscriptions.length; index += chunkSize) {
-      const chunk = inscriptions.slice(index, index + chunkSize);
-      const title = `${province} Part ${Math.floor(index / chunkSize) + 1}`;
-      const titleSlug = _.kebabCase(title);
-      const textSlug = `${authorSlug}/${bookSlug}/${titleSlug}`;
-      if (options?.text && textSlug !== options.text) continue;
-      await this.saveEdcsChunkFile({
+    for (const inscription of inscriptions) {
+      await this.saveEdcsInscription({
         authorSlug,
         bookDirectory,
         bookSlug,
         bookText,
-        chunk,
-        title,
-        titleSlug,
+        inscription,
+        options,
       });
     }
     this.logger.info("🌍 Completed province", undefined, { province });
@@ -268,7 +302,7 @@ export class EpigraphikDatenbankClaussSlabyLibraryProvider {
     authorDirectory: string;
     authorSlug: string;
     options: undefined | { text?: string };
-    provinceData: Map<string, string[]>;
+    provinceData: Map<string, EdcsInscription[]>;
   }): Promise<void> {
     const { author, authorDirectory, authorSlug, options, provinceData } = args;
     const booksMap = new Map<string, Text>();
@@ -340,4 +374,23 @@ export class EpigraphikDatenbankClaussSlabyLibraryProvider {
     });
     return [author];
   }
+}
+
+/** Frontmatter keys for the province and each attribute the record provides. */
+function buildEdcsAttributes(
+  object: EpigraphikDatenbankRecord["obj"],
+  province: string,
+): Record<string, number | string> {
+  const attributes: Record<string, number | string> = { province };
+  const optional = {
+    end_year: object.datierung_bis,
+    find_spot: object.fundort,
+    inscription_type: object.inschrifttyp,
+    material: object.material,
+    start_year: object.datierung_von,
+  };
+  for (const [key, value] of Object.entries(optional)) {
+    if (value !== null && value !== undefined) attributes[key] = value;
+  }
+  return attributes;
 }

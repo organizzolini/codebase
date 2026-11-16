@@ -88,8 +88,14 @@ export const textFrontmatterSchema = z.object({
   collection: z.custom<TextCollection>((value) => knownCollections.includes(value)).optional(),
   edition: z.string().optional(),
   editors: z.string().optional(),
+  end_year: z.number().int().optional(),
+  find_spot: z.string().optional(),
+  inscription_type: z.string().optional(),
+  material: z.string().optional(),
   print_year: z.number().int().optional(),
+  province: z.string().optional(),
   publisher: z.string().optional(),
+  start_year: z.number().int().optional(),
   work_identifier: z.string().optional(),
 });
 

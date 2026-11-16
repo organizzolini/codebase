@@ -24,6 +24,28 @@ describe("literature.utilities", () => {
       });
     });
 
+    it("maps inscription frontmatter onto typed inscription columns", () => {
+      expect(
+        parseText({
+          collection: "EDCS",
+          end_year: 50,
+          find_spot: "Ostia",
+          inscription_type: "Grabinschrift",
+          material: "Marmor",
+          province: "Roma",
+          start_year: -50,
+        }),
+      ).toStrictEqual({
+        collection: "EDCS",
+        endYear: 50,
+        findSpot: "Ostia",
+        inscriptionType: "Grabinschrift",
+        material: "Marmor",
+        province: "Roma",
+        startYear: -50,
+      });
+    });
+
     it("returns no attributes when the collection is not a known source", () => {
       expect(parseText({ collection: "Unknown" })).toStrictEqual({});
     });

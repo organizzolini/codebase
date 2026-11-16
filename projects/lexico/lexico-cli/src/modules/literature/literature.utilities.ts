@@ -53,9 +53,25 @@ export function parseText(
 ): TextAttributes {
   const parsed = textFrontmatterSchema.safeParse(frontmatter);
   if (!parsed.success) return {};
-  const { print_year, work_identifier, ...rest } = parsed.data;
+  const {
+    end_year,
+    find_spot,
+    inscription_type,
+    print_year,
+    start_year,
+    work_identifier,
+    ...rest
+  } = parsed.data;
   return _.omitBy(
-    { ...rest, printYear: print_year, workIdentifier: work_identifier },
+    {
+      ...rest,
+      endYear: end_year,
+      findSpot: find_spot,
+      inscriptionType: inscription_type,
+      printYear: print_year,
+      startYear: start_year,
+      workIdentifier: work_identifier,
+    },
     (value) => value === undefined,
   );
 }

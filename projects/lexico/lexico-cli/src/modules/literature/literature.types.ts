@@ -67,7 +67,13 @@ export interface TextAttributes {
   collection?: TextCollection | undefined;
   edition?: string | undefined;
   editors?: string | undefined;
+  endYear?: number | undefined;
+  findSpot?: string | undefined;
+  inscriptionType?: string | undefined;
+  material?: string | undefined;
   printYear?: number | undefined;
+  province?: string | undefined;
   publisher?: string | undefined;
+  startYear?: number | undefined;
   workIdentifier?: string | undefined;
 }

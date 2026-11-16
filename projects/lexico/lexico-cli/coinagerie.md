@@ -11,6 +11,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **apicius**: Author slug for the Roman cookery writer Apicius, whose appendicula and excerpta texts the library ingests from Open Greek and Latin.
 - **apuleius**: Short literature slug mapped by the literature constants to the full name Lucius Apuleius Madaurensis.
 - **batch**: Group of rows written in one database operation, such as the single upsert of all Word and form rows.
+- **bi**:
 - **book**: A division of a literary work, set as type book or text by the Latin Library builder and the EDCS provider.
 - **category**: Grouping page or part-of-speech class; Latin Library category links become Author entities, and the forms builder builds Forms per category.
 - **conjunction**: Part-of-speech tag for conjunctions, which the part-of-speech constants also assign to idioms, particles, and phrases.
@@ -19,6 +20,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **csel**: Short name for the Corpus Scriptorum Ecclesiasticorum Latinorum, the ecclesiastical corpus whose XML this command downloads and caches.
 - **curtius**: Literature constants slug for Curtius Rufus, expanded to quintus curtius rufus for literature ingestion lookups.
 - **datenbank**: German noun part of Epigraphik-Datenbank, the EDCS name the project's command and provider use for the inscription database.
+- **datierung**:
 - **db**: Stray fragment of the db.edcs.eu source URL, which the EDCS library provider records as text metadata.
 - **degree**: Comparison grade of an adjective or adverb, such as positive, comparative, or superlative, set on manual inflections.
 - **dictionary**: Main ingestion stage that parses cached Wiktionary pages into lexemes, forms, and translations, run by the dictionary command.
@@ -28,8 +30,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **edition**: The printed version of a source text, with its editors, publisher, and print year, which tells apart two Texts of one work.
 - **element**: Cheerio node a parser callback receives while walking Wiktionary or library HTML, passed to $(element) for selection.
 - **epigraphik**: Prefix of Epigraphik-Datenbank Clauss-Slaby, the inscription source whose command, provider, and chunk schema this CLI reads.
+- **fundort**:
+- **hispania**:
 - **iacē**: Classical substitution key matching a Latin stem fragment, rewritten to the j form jacē before phonemes are mapped.
 - **ingest**: Verb for loading one source into the database, as in provider.ingest for each library author the library command selects.
+- **inschrifttyp**:
 - **inscription**: Stone-text record from the Epigraphik-Datenbank, whose text the EDCS provider skips when missing and turns into a work.
 - **iūd**: Classical substitution key matching a Latin stem fragment, rewritten to the j form jūd before phonemes are mapped.
 - **iūe**: Classical substitution key matching a Latin stem fragment, rewritten to the j form jūe before phonemes are mapped.
@@ -49,6 +54,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **lucan**: Literature constants slug for Lucan, expanded to marcus annaeus lucanus, the epic poet whose name the constants supply.
 - **lucretius**: Literature constants slug expanded to titus lucretius carus, the philosopher-poet whose text the literature ingestion loads.
 - **martial**: Literature constants slug for Martial, expanded to marcus valerius martialis, the epigrammatist the literature ingestion loads.
+- **material**:
 - **mela**: Second half of the author slug pomponius-mela, whose De chorographia the library ingests as a work.
 - **perfect**: Verb tense family covering perfect, future perfect, and pluperfect, which the part-of-speech forms service maps by name.
 - **period**: Literary era of an author or work, such as Classical, recorded with the text it was ingested from.
@@ -56,10 +62,12 @@ The words this project uses that the root glossary does not define, regenerated 
 - **pronunciation**: Module and service that derive phonemic and phonetic spellings for each Wiktionary entry, in classical or ecclesiastical mode.
 - **publication**: Word in the `print_publication_date` metadata key, the year a print edition of a library work appeared, which the Perseus and CSEL providers record from the source record when it carries one.
 - **recognise**: Token linked to a dictionary Word, so counted among a Text's recognised words.
+- **roma**:
 - **selector**: CSS selector string passed to the test mock Cheerio helper, which selects one element from loaded HTML for assertions.
 - **self**: Adjective for a link that points back to its own page, which the Latin Library builder skips as self-referential.
 - **slaby**: Name part of Epigraphik-Datenbank Clauss-Slaby, the EDCS source whose command and chunk schema live in this project.
 - **splice**: Array method that removes matched items from existing forms, used in the forms service to reuse saved row IDs.
+- **spot**:
 - **terence**: Literature constants slug expanded to publius terentius afer, the comic playwright whose name the constants supply.
 - **tibullus**: Literature constants slug expanded to albius tibullus, the elegiac poet whose name the constants supply for lookups.
 - **trace**: Stack-trace text the logger records with an error, and the call chain callidescope follows when measuring depth.
@@ -73,6 +81,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **virgil**: Path segment and literature name for Virgil, a spelling variant of vergil that the Latin Library crawler matches.
 - **vitruvius**: Literature constants slug expanded to marcus vitruvius pollio, the architectural writer whose name the constants supply.
 - **vol**: Praenomen abbreviation key vol, expanded to feminine volusa or masculine volesus in the manual praenomen table.
+- **von**:
 - **vop**: Praenomen abbreviation key vop, expanded to feminine vopisca or masculine vopiscus in the manual praenomen table.
 - **vulgate**: Literature constants slug part for the Vulgate Bible, expanded to biblia sacra vulgata testamentum novum or vetum.
 - **whitespace**: Character class of spaces and tabs that the library utilities strip from lines, such as padded end-of-line poetry numbers.
