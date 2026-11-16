@@ -43,7 +43,7 @@ Pick the Issue Type by position in the hierarchy:
 
 Take the title from the commit convention, `<type>(<scope>): <gitmoji> <subject>`, and apply the labels the Continuous Compliance issue check expects: one `type:*`, one `scope:*` per scope, and `source:agent`. Then set its board fields with [manage-project](../manage-project/SKILL.md): Effort always, and Status In Progress when you are about to start, or are already doing, the work.
 
-**A root issue (Bug or Feature) needs a Priority before you file it.** `compliance issue` audits every issue as it opens and fails a root issue with no Priority. Priority is the user's call, so ask for it (Urgent, High, Medium, or Low) before filing, then set it in the same call. A Task under a spec owes none.
+**A root issue (one with no parent) needs a Priority before you file it.** `compliance issue` audits every issue as it opens and fails a root issue with no Priority. Priority is the user's call, so ask for it (Urgent, High, Medium, or Low) before filing, then set it in the same call. A Task under a spec owes none.
 
 ```bash
 gh issue create \
