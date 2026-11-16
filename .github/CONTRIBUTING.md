@@ -482,7 +482,7 @@ Commits are validated by commitlint through Husky. See [commit-code](.agents/ski
 
 <!-- scopes-end -->
 
-If a change genuinely spans scopes, list them comma-separated (`feat(lexico,logger): ...`) rather than reaching for an umbrella scope. Better still, keep one project or module per pull request — see [Release Significance](#release-significance) for why.
+If a change spans scopes, list them comma-separated (`feat(lexico,logger): ...`) rather than reaching for an umbrella scope. Spanning scopes is no reason to split a pull request: keep each commit to one project or module and let the title name the fewest scopes that cover them all — see [Release Significance](#release-significance).
 
 ## Release Significance
 
@@ -495,7 +495,7 @@ The release-significance check of `compliance pull-request` reads the branch's c
 - A `feat` commit on a branch titled `chore` or `ci` fails the check — either retitle the pull request as `feat`, or move that commit to its own branch.
 - Mixing `feat` and `fix` work is fine; title it `feat`, since `feat` outranks `fix`. Mixing only breaks when a later commit is _more_ significant than the type already chosen.
 
-This is also why one project or module per pull request is the rule: the fewer concerns a branch carries, the less likely it accumulates a commit that outranks its title.
+A branch that spans several projects is fine: title it at its most significant commit and list the scopes its commits need. Fewer, larger pull requests are preferred — they are one review and one manual test for a single maintainer — and work is split only when it mechanically must be, such as a change that has to deploy before the code that depends on it. See [One Pull Request by Default](../AGENTS.md#one-pull-request-by-default).
 
 ## Issues and Planning
 
@@ -509,7 +509,7 @@ Issue titles follow the same `<type>(<scope>): <gitmoji> <subject>` convention a
 
 The Continuous Compliance workflow checks issue metadata on `opened`, `edited`, `labeled`, and `unlabeled`, and on `opened` first reconciles the labels a submitted form implies. It has its own README badge, and the same issue job also checks that every pull request closes or references an issue (see [Pull Request Process](#pull-request-process)), so a red badge there means an issue or a pull request missing its issue link.
 
-Planned work is filed in three layers — a spec, one parent issue per pull request beneath it, and one sub-issue per planned commit beneath that:
+Planned work is filed in three layers — a spec, one parent issue per pull request beneath it (usually exactly one), and one sub-issue per planned commit beneath that:
 
 ```text
 spec issue          the specification the work came from   (Issue Type: Feature or Bug)
@@ -536,7 +536,7 @@ Comply Code creates any label missing from the vocabulary when a pull request is
 
 Merges go through a merge queue, and the check workflows run again on the queued merge commit — a pull request that was green on its own can still fail there once `main` has moved underneath it.
 
-A practical way to avoid release-significance failures is to keep one pull request focused to one project/scope whenever possible. If a change really spans scopes, name the one or two that best describe it in the title (`type(scope-a,scope-b): …`), or split it into separate pull requests.
+To avoid release-significance failures in a pull request that spans scopes, keep each commit to one project or module, name at least one scope the commits use in the title (`type(scope-a,scope-b): …`), and title it at the most significant commit. Split into separate pull requests only when the scopes cannot fit the 128-character header or the work must deploy in stages.
 
 A pull request with merge conflicts runs almost none of these workflows — a short list of green checks means nothing was validated. Resolve conflicts before reading the checks as a pass.
 
