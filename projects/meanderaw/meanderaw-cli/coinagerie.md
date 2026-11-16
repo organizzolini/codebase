@@ -13,7 +13,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **br**: Bottom-right corner digit of the 2x2 window that EmbeddedUCountCharacteristicService reads when counting embedded U shapes.
 - **brute**:
 - **budget**: The edge budget capping how many edges a Code may hold, which bounds enumeration and sets the corpus's fixed historical cutoff.
-- **canonical**: Chosen as a Code's one identity among its rotations: the rotation with the best tile-crossing score, ties broken by the lowest digits.
+- **canonical**: The phase-normalized form of a Code, the lowest rotation chosen as its identity, scored by the canonical-phase scorer.
 - **category**: A grouping of characteristic evaluators, each in its own service under a category folder and shown with a display name.
 - **characteristic**: A measured property of a Code's repeating unit, computed by one evaluator service from a shared context and stored in the database.
 - **comb**: A pattern characteristic named for a comb-shaped ink layout, computed for each unit by IsCombCharacteristicService.
