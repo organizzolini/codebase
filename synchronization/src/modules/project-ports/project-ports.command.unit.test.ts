@@ -54,12 +54,12 @@ describe(ProjectPortsCommand, () => {
 
     if (name.endsWith("-web")) {
       write(
-        `${directory}/vite.config.mts`,
+        `${directory}/configuration/vite.config.mts`,
         `export default {\n  server: {\n    port: ${port},\n  },\n};\n`,
       );
     } else {
       write(
-        `${directory}/.env.default`,
+        `${directory}/configuration/.env.default`,
         `EXAMPLE_API_LIGHTSHIP_PORT=9000\nEXAMPLE_API_PORT=${port}\n`,
       );
     }
@@ -134,9 +134,9 @@ describe(ProjectPortsCommand, () => {
 
     await expect(command.synchronize("check")).resolves.toBe(false);
 
-    expect(read("projects/caelundas/caelundas-web/vite.config.mts")).toContain(
-      "port: 3000",
-    );
+    expect(
+      read("projects/caelundas/caelundas-web/configuration/vite.config.mts"),
+    ).toContain("port: 3000");
     expect(sharedLogger.info).toHaveBeenCalledWith(
       "🔌 Detected an out-of-sync port",
       undefined,
@@ -162,9 +162,9 @@ describe(ProjectPortsCommand, () => {
 
     await expect(command.synchronize("write")).resolves.toBe(true);
 
-    expect(read("projects/meanderaw/meanderaw-web/vite.config.mts")).toContain(
-      "port: 2161",
-    );
+    expect(
+      read("projects/meanderaw/meanderaw-web/configuration/vite.config.mts"),
+    ).toContain("port: 2161");
     expect(read("projects/meanderaw/meanderaw-web/README.md")).toBe(
       "Served on http://localhost:2161\n",
     );
@@ -199,7 +199,7 @@ describe(ProjectPortsCommand, () => {
 
     await expect(command.synchronize("write")).resolves.toBe(true);
 
-    expect(read("projects/lexico/lexico-api/.env.default")).toBe(
+    expect(read("projects/lexico/lexico-api/configuration/.env.default")).toBe(
       "EXAMPLE_API_LIGHTSHIP_PORT=9000\nEXAMPLE_API_PORT=5003\n",
     );
     expect(read("projects/lexico/lexico-web/src/search.tsx")).toBe(
@@ -227,7 +227,10 @@ describe(ProjectPortsCommand, () => {
 
   it("fails when a project does not declare a port", async () => {
     write("projects/lexico/lexico-web/project.json", '{"name":"lexico-web"}');
-    write("projects/lexico/lexico-web/vite.config.mts", "export default {};\n");
+    write(
+      "projects/lexico/lexico-web/configuration/vite.config.mts",
+      "export default {};\n",
+    );
 
     await expect(command.synchronize("check")).resolves.toBe(false);
 
@@ -235,7 +238,10 @@ describe(ProjectPortsCommand, () => {
       "🔌 Failed to find the port a project declares",
       undefined,
       {
-        file: path.join("projects/lexico/lexico-web", "vite.config.mts"),
+        file: path.join(
+          "projects/lexico/lexico-web",
+          "configuration/vite.config.mts",
+        ),
         project: "lexico-web",
       },
     );
