@@ -1,0 +1,45 @@
+query Library($search: String, $page: Int, $pageSize: Int) {
+  library(search: $search, page: $page, pageSize: $pageSize) {
+    totalCount
+    pageCount
+    authors {
+      author {
+        id
+        slug
+        name
+        fullName
+        era
+        startYear
+        endYear
+      }
+      matches {
+        field
+        start
+        end
+      }
+      textCount
+      texts {
+        matches {
+          field
+          start
+          end
+        }
+        text {
+          id
+          slug
+          title
+          type
+          collection
+          edition
+          lineCount
+          wordCount
+          parentText {
+            id
+            slug
+            title
+          }
+        }
+      }
+    }
+  }
+}

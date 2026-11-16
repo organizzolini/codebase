@@ -41,7 +41,13 @@ export function ReaderHeader(
       data-testid="reader-header"
     >
       <p className="text-sm text-muted-foreground">
-        <span>{author}</span>
+        <Link
+          className="underline"
+          search={{ search: author }}
+          to="/library"
+        >
+          {author}
+        </Link>
         {parent === null ? null : (
           <>
             {" · "}
