@@ -49,7 +49,7 @@ Priority is how soon the work matters. A value the user gave wins; otherwise pic
 
 ## Fill the Board
 
-- **When you file or plan an issue**, set Effort on every parent issue and standalone issue, and Priority on every spec and standalone issue, as part of filing it.
+- **When you file or plan an issue**, set Effort on every parent issue and standalone issue, and Priority on every root issue (a spec or a standalone issue) as part of filing it: `compliance issue` fails a root issue without one as soon as it opens.
 - **Before a pull request leaves draft**, both fields must be filled: `compliance pull-request` fails until the issue it closes has an Effort and the root of that issue's hierarchy has a Priority. If that root is an older issue with no Priority, fill the empty field from [Choosing priority](#choosing-priority) and say so in your report; never overwrite one that is set.
 - **When you start work**, set Status to **In Progress** on every layer the work is about to move — the spec, the parent issue, and the commit sub-issue. This replaces the retired `status:in-progress` label. Do it before the first failing test.
 - **When work finishes**, close the issue. The board marks it Done; there is nothing to set.
@@ -81,7 +81,9 @@ set_field() {
 }
 ```
 
-Priority and Effort go through the issue-field endpoint instead, and take the option **name**, not its id. Read the field first, and write Priority only while it is empty:
+Priority and Effort go through the issue-field endpoint instead, and take the option **name**, not its id. Read the field first, and write Priority only while it is empty.
+
+**Use `POST`, never `PUT`.** `PUT` replaces every field on the issue with the ones you send, so setting Priority with it silently erases Effort. `POST` adds or updates only the fields you name:
 
 ```bash
 # read: prints the Priority already set, or nothing when it is empty
@@ -89,7 +91,7 @@ gh api repos/Organizzolini/codebase/issues/<number>/issue-field-values \
   --jq '.[] | select(.issue_field_name == "Priority") | .single_select_option.name'
 # set
 echo '{"issue_field_values":[{"field_id":46460698,"value":"Medium"}]}' |
-  gh api -X PUT repos/Organizzolini/codebase/issues/<number>/issue-field-values --input -
+  gh api -X POST repos/Organizzolini/codebase/issues/<number>/issue-field-values --input -
 # clear it
 gh api -X DELETE repos/Organizzolini/codebase/issues/<number>/issue-field-values/46460698
 ```

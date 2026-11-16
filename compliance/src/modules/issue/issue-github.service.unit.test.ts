@@ -40,6 +40,20 @@ describe(IssueGithubService, () => {
     });
   };
 
+  /** Makes the coming `spawnSync` calls complete like these, in order. */
+  const completeInOrder = (...completions: SpawnCompletion[]): void => {
+    for (const completion of completions) {
+      vi.mocked(spawnSync).mockReturnValueOnce({
+        output: [],
+        pid: 1,
+        signal: null,
+        status: completion.status ?? 0,
+        stderr: completion.stderr ?? "",
+        stdout: completion.stdout ?? "",
+      });
+    }
+  };
+
   beforeAll(async () => {
     const built = await buildTestingModule(IssueGithubService);
 
@@ -122,12 +136,45 @@ describe(IssueGithubService, () => {
           title: "feat(auth): add login",
         },
       ];
-      completeWith({ stdout: JSON.stringify(sampleIssues) });
+      completeInOrder(
+        {
+          stdout: JSON.stringify([
+            ...sampleIssues,
+            { ...sampleIssues[0], number: 102 },
+          ]),
+        },
+        { stdout: '{"fieldNames":["Priority"],"number":101}\n' },
+      );
 
       expect(service.listOpenIssues()).toStrictEqual({
-        issues: sampleIssues,
+        issues: [
+          { ...sampleIssues[0], fieldNames: ["Priority"] },
+          { ...sampleIssues[0], number: 102 },
+        ],
         success: true,
       });
+      expect(vi.mocked(spawnSync).mock.calls[1]?.[1]).toContain("--paginate");
+    });
+
+    it("returns error when the field listing fails", () => {
+      expect.hasAssertions();
+
+      completeInOrder({ stdout: "[]" }, { status: 1, stderr: "HTTP 502" });
+
+      expect(service.listOpenIssues()).toStrictEqual({
+        error: "HTTP 502",
+        success: false,
+      });
+    });
+
+    it("returns error when the field listing does not parse", () => {
+      expect.hasAssertions();
+
+      completeInOrder({ stdout: "[]" }, { stdout: '{"number":"one"}\n' });
+
+      expect(service.listOpenIssues().error).toContain(
+        "Unable to parse the open issue fields",
+      );
     });
 
     it("returns error when gh fails", () => {
@@ -164,6 +211,43 @@ describe(IssueGithubService, () => {
 
       expect(result.success).toBe(false);
       expect(result.error).toContain("string-error");
+    });
+  });
+
+  describe("readFieldNames", () => {
+    it("reads the names of the filled issue fields", () => {
+      expect.hasAssertions();
+
+      completeWith({ stdout: '["Priority","Effort"]' });
+
+      expect(service.readFieldNames("7")).toStrictEqual({
+        fieldNames: ["Priority", "Effort"],
+        success: true,
+      });
+      expect(vi.mocked(spawnSync).mock.calls[0]?.[1]).toContain(
+        "repos/{owner}/{repo}/issues/7",
+      );
+    });
+
+    it("returns gh failures to the caller", () => {
+      expect.hasAssertions();
+
+      completeWith({ status: 1, stderr: "HTTP 404" });
+
+      expect(service.readFieldNames("7")).toStrictEqual({
+        error: "HTTP 404",
+        success: false,
+      });
+    });
+
+    it("returns error when the fields do not parse", () => {
+      expect.hasAssertions();
+
+      completeWith({ stdout: "[1]" });
+
+      expect(service.readFieldNames("7").error).toContain(
+        "Unable to parse the issue fields",
+      );
     });
   });
 

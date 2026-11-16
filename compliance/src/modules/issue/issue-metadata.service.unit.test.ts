@@ -2,6 +2,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { IssueFieldsService } from "./issue-fields.service";
 import { IssueMetadataTypeService } from "./issue-metadata-type.service";
 import { IssueMetadataService } from "./issue-metadata.service";
 
@@ -37,7 +38,7 @@ const validMetadata: IssueMetadata = {
 
 /** What IssueMetadataService is built with. */
 const DEPENDENCIES = {
-  providers: [IssueMetadataTypeService],
+  providers: [IssueFieldsService, IssueMetadataTypeService],
 } satisfies TestingModuleOptions;
 
 describe(IssueMetadataService, () => {
@@ -245,6 +246,26 @@ describe(IssueMetadataService, () => {
   });
 
   describe("checkMetadata", () => {
+    it("fails a root issue with no Priority and says how to set one", () => {
+      expect.hasAssertions();
+
+      const verdict = service.checkMetadata({
+        formAnswers: service.parseFormAnswers(validMetadata.body),
+        issueNumber: "8",
+        metadata: {
+          ...validMetadata,
+          fieldNames: [],
+          hasParent: false,
+          issueType: "Feature",
+        },
+      });
+
+      expect(verdict.failures).toStrictEqual(["❌ No Priority issue field"]);
+      expect(verdict.remediationCommands[0]).toContain(
+        "repos/{owner}/{repo}/issues/8/issue-field-values",
+      );
+    });
+
     it("passes an issue whose labels agree with its template submission", () => {
       expect.hasAssertions();
       expect(check(validMetadata)).toStrictEqual({
@@ -877,6 +898,40 @@ describe(IssueMetadataService, () => {
       expect(
         verdict.failures.some((f) => f.includes("Hierarchy violation:")),
       ).toBe(true);
+    });
+
+    it("wants a Priority on a root issue but not on its sub-issue", () => {
+      expect.hasAssertions();
+
+      const labels = [
+        { name: "type:feat" },
+        { name: "scope:ci" },
+        { name: "source:agent" },
+      ];
+      const verdict = service.checkBulkIssues([
+        {
+          body: "",
+          fieldNames: ["Effort"],
+          issueType: { name: "Feature" },
+          labels,
+          number: 1,
+          parent: null,
+          title: "feat(ci): a",
+        },
+        {
+          body: "",
+          fieldNames: [],
+          issueType: { name: "Task" },
+          labels,
+          number: 2,
+          parent: { number: 1 },
+          title: "feat(ci): b",
+        },
+      ]);
+
+      expect(verdict.failures).toStrictEqual([
+        "Issue #1: ❌ No Priority issue field",
+      ]);
     });
   });
 });

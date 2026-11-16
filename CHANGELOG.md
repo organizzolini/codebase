@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.3.1](https://github.com/organizzolini/codebase/compare/v6.3.0...v6.3.1) (2026-11-16)
+
+### 🐛 Bug Fixes
+
+* **compliance:** 🐛 shorten the root issue types comment over the JSDoc budget ([#2444](https://github.com/organizzolini/codebase/issues/2444)) ([52e81c9](https://github.com/organizzolini/codebase/commit/52e81c99cd72c852bce4dc8f9d125b5605cad6b6)), closes [#2443](https://github.com/organizzolini/codebase/issues/2443) [#2433](https://github.com/organizzolini/codebase/issues/2433)
+
+## [6.3.0](https://github.com/organizzolini/codebase/compare/v6.2.1...v6.3.0) (2026-11-16)
+
+### ✨ Features
+
+* **compliance,documentation:** ✨ require a Priority on every root issue in the issue audit ([#2441](https://github.com/organizzolini/codebase/issues/2441)) ([e26c08b](https://github.com/organizzolini/codebase/commit/e26c08b0189df6322ebf4489036015931f4c2aaa)), closes [#2331](https://github.com/organizzolini/codebase/issues/2331) [#2417](https://github.com/organizzolini/codebase/issues/2417) [#2406](https://github.com/organizzolini/codebase/issues/2406)
+
 ## [6.2.1](https://github.com/organizzolini/codebase/compare/v6.2.0...v6.2.1) (2026-11-16)
 
 ### 🐛 Bug Fixes

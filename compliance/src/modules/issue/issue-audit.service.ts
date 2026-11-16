@@ -3,6 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { IssueGithubService } from "./issue-github.service";
 import { IssueMetadataService } from "./issue-metadata.service";
 
+import type { MetadataVerdict } from "./issue-metadata.types";
 import type { IssueOutcome } from "./issue.types";
 
 /** Audits issue metadata and hierarchy, one issue or every open one. */
@@ -24,6 +25,30 @@ export class IssueAuditService {
   /** A failure that is the whole of an outcome. */
   private fail(message: string): IssueOutcome {
     return { failures: [message], lines: [message] };
+  }
+
+  /** The outcome of one issue's audit, with the commands that fix it. */
+  private report(verdict: MetadataVerdict): IssueOutcome {
+    if (verdict.failures.length === 0) {
+      return { failures: [], lines: ["✅ Issue metadata is valid"] };
+    }
+
+    return {
+      failures: verdict.failures,
+      lines: [
+        "❌ Issue metadata is invalid",
+        "",
+        ...verdict.failures.map((failure) => `- ${failure}`),
+        ...(verdict.remediationCommands.length === 0
+          ? []
+          : [
+              "",
+              "🔧 Fix with:",
+              "",
+              ...verdict.remediationCommands.map((command) => `- ${command}`),
+            ]),
+      ],
+    };
   }
 
   // 🌎 Public Methods
@@ -63,7 +88,7 @@ export class IssueAuditService {
     };
   }
 
-  /** Audits one issue, read live, against its own body. */
+  /** Audits one issue, read live, against its own body and fields. */
   public auditOne(issueNumber: string): IssueOutcome {
     if (!this.issueGithubService.isAvailable()) {
       return this.fail(
@@ -93,33 +118,22 @@ export class IssueAuditService {
       return this.fail(resolution.failure);
     }
 
+    const fields = this.issueGithubService.readFieldNames(issueNumber);
+
+    if (!fields.success || fields.fieldNames === undefined) {
+      return this.fail(
+        `❌ Unable to read the issue fields of issue ${issueNumber}: ${fields.error ?? "unknown error"}`,
+      );
+    }
+
     const verdict = this.issueMetadataService.checkMetadata({
       formAnswers: this.issueMetadataService.parseFormAnswers(
         resolution.metadata.body,
       ),
       issueNumber,
-      metadata: resolution.metadata,
+      metadata: { ...resolution.metadata, fieldNames: fields.fieldNames },
     });
 
-    if (verdict.failures.length === 0) {
-      return { failures: [], lines: ["✅ Issue metadata is valid"] };
-    }
-
-    return {
-      failures: verdict.failures,
-      lines: [
-        "❌ Issue metadata is invalid",
-        "",
-        ...verdict.failures.map((failure) => `- ${failure}`),
-        ...(verdict.remediationCommands.length === 0
-          ? []
-          : [
-              "",
-              "🔧 Fix with:",
-              "",
-              ...verdict.remediationCommands.map((command) => `- ${command}`),
-            ]),
-      ],
-    };
+    return this.report(verdict);
   }
 }

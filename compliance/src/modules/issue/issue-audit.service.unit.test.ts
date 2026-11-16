@@ -30,6 +30,10 @@ describe(IssueAuditService, () => {
     vi.clearAllMocks();
     vi.mocked(github.isAvailable).mockReturnValue(true);
     vi.mocked(github.describeFailure).mockReturnValue("HTTP 404");
+    vi.mocked(github.readFieldNames).mockReturnValue({
+      fieldNames: ["Priority"],
+      success: true,
+    });
   });
 
   it("resolves with its dependencies", async () => {
@@ -155,6 +159,39 @@ describe(IssueAuditService, () => {
         failures: [],
         lines: ["✅ Issue metadata is valid"],
       });
+    });
+
+    it("hands the issue fields to the metadata check", () => {
+      vi.mocked(metadata.checkMetadata).mockReturnValue({
+        failures: [],
+        remediationCommands: [],
+      });
+
+      service.auditOne("4");
+
+      expect(github.readFieldNames).toHaveBeenCalledWith("4");
+      expect(metadata.checkMetadata).toHaveBeenCalledWith(
+        expect.objectContaining({
+          metadata: { body: "body", fieldNames: ["Priority"], labelNames: [] },
+        }),
+      );
+    });
+
+    it("fails when the issue fields cannot be read", () => {
+      vi.mocked(github.readFieldNames).mockReturnValue({
+        error: "HTTP 502",
+        success: false,
+      });
+
+      expect(service.auditOne("4").failures).toStrictEqual([
+        "❌ Unable to read the issue fields of issue 4: HTTP 502",
+      ]);
+    });
+
+    it("names an unknown error when the field read gives none", () => {
+      vi.mocked(github.readFieldNames).mockReturnValue({ success: false });
+
+      expect(service.auditOne("4").failures[0]).toContain("unknown error");
     });
 
     it("lists the failures without a fix when there is none", () => {
