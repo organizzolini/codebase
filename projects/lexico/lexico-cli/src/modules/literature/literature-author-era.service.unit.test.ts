@@ -114,6 +114,13 @@ describe(LiteratureAuthorEraService, () => {
       { endYear: 17, era: "Classical", startYear: -43 },
     );
 
+    // TypeORM pages a find with an eager relation by id, so a select without the id fails in Postgres.
+    expect(texts.findOne).toHaveBeenCalledWith(
+      expect.objectContaining({
+        select: expect.objectContaining({ id: true, metadata: true }),
+      }),
+    );
+
     const [url, init] = fetchMock.mock.calls[0] ?? [];
 
     expect(url as string).toContain(encodeURIComponent('"959"'));

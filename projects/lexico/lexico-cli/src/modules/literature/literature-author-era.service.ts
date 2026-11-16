@@ -67,7 +67,7 @@ export class LiteratureAuthorEraService {
     author: Author,
   ): Promise<string | undefined> {
     const text = await this.textRepository.findOne({
-      select: { metadata: true },
+      select: { id: true, metadata: true },
       where: { author: { id: author.id }, metadata: Not(IsNull()) },
     });
     const sourceUrl = text?.metadata?.["source_url"];
