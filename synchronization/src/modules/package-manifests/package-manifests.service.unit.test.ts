@@ -1,4 +1,4 @@
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
@@ -15,24 +15,16 @@ import {
 import { PackageManifestsService } from "./package-manifests.service";
 
 import type { RootPackageManifest } from "./package-manifests.types";
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
 
 const fileContents = new Map<string, string>();
 
-vi.mock("node:fs", () => {
-  return {
-    readFileSync: vi.fn<(filePath: string) => string>((filePath: string) => {
-      const value = fileContents.get(filePath);
-      if (value === undefined) {
-        throw new Error(`File not found: ${filePath}`);
-      }
-      return value;
-    }),
-    writeFileSync: vi.fn<(filePath: string, content: string) => void>(
-      (filePath: string, content: string) => {
-        fileContents.set(filePath, content);
-      },
-    ),
-  };
+vi.mock("node:fs", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem();
 });
 
 describe(PackageManifestsService, () => {
@@ -55,6 +47,16 @@ describe(PackageManifestsService, () => {
   beforeEach(() => {
     fileContents.clear();
     vi.clearAllMocks();
+    vi.mocked(readFileSync).mockImplementation((filePath) => {
+      const value = fileContents.get(String(filePath));
+      if (value === undefined) {
+        throw new Error(`File not found: ${String(filePath)}`);
+      }
+      return value;
+    });
+    vi.mocked(writeFileSync).mockImplementation((filePath, content) => {
+      fileContents.set(String(filePath), String(content));
+    });
   });
 
   it("resolves with its dependencies", async () => {

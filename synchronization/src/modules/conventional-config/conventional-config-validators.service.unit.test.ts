@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import path from "node:path";
 
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
@@ -9,20 +10,17 @@ import { ConventionalConfigIoService } from "./conventional-config-io.service";
 import { ConventionalConfigValidatorsService } from "./conventional-config-validators.service";
 
 import type { ConventionalConfig } from "./conventional-config.types";
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 const fileContents = new Map<string, string>();
 
-vi.mock("node:fs", () => {
-  return {
-    readFileSync: vi.fn<(filePath: string) => string>((filePath: string) => {
-      const value = fileContents.get(filePath);
-      if (value === undefined) {
-        throw new Error(`File not found: ${filePath}`);
-      }
-      return value;
-    }),
-  };
+vi.mock("node:fs", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem();
 });
 
 const moduleOptions = { mocks: [ConventionalConfigIoService] };
@@ -52,6 +50,13 @@ describe(ConventionalConfigValidatorsService, () => {
   beforeEach(() => {
     fileContents.clear();
     vi.clearAllMocks();
+    vi.mocked(readFileSync).mockImplementation((filePath) => {
+      const value = fileContents.get(String(filePath));
+      if (value === undefined) {
+        throw new Error(`File not found: ${String(filePath)}`);
+      }
+      return value;
+    });
   });
 
   it("resolves with its dependencies", async () => {
