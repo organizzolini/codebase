@@ -1,4 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef as useReference,
+  useState,
+} from "react";
 
 import {
   readLookupHistory,
@@ -21,27 +26,32 @@ import type {
 export function useLookupHistory(): UseLookupHistoryResult {
   // 🪝 Hooks
   const [entries, setEntries] = useState<LookupEntry[]>([]);
+  const latest = useReference<LookupEntry[]>([]);
 
   // 🏗 Setup
 
   // 💪 Handlers
-  const record = useCallback((draft: LookupDraft): void => {
-    setEntries((current) => {
-      const next = recordLookup(current, draft, Date.now());
-
-      writeLookupHistory(next);
-      return next;
-    });
+  const replace = useCallback((next: LookupEntry[]): void => {
+    latest.current = next;
+    setEntries(next);
+    writeLookupHistory(next);
   }, []);
+
+  const record = useCallback(
+    (draft: LookupDraft): void => {
+      replace(recordLookup(latest.current, draft, Date.now()));
+    },
+    [replace],
+  );
 
   const clear = useCallback((): void => {
-    setEntries([]);
-    writeLookupHistory([]);
-  }, []);
+    replace([]);
+  }, [replace]);
 
   // ♻️ Lifecycle
   useEffect(() => {
-    setEntries(readLookupHistory());
+    latest.current = readLookupHistory();
+    setEntries(latest.current);
   }, []);
 
   // 🎁 Result

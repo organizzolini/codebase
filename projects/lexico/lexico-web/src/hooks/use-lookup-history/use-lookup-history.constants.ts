@@ -19,5 +19,5 @@ export const lookupEntrySchema = z.object({
   word: z.string(),
 });
 
-/** The whole stored history, validated as one list. */
-export const lookupHistorySchema = z.array(lookupEntrySchema);
+/** The stored list before its entries are checked one by one. */
+export const storedListSchema = z.array(z.unknown());

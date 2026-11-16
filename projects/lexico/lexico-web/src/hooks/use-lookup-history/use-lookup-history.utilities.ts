@@ -1,7 +1,8 @@
 import {
   LOOKUP_HISTORY_CAP,
   LOOKUP_HISTORY_KEY,
-  lookupHistorySchema,
+  lookupEntrySchema,
+  storedListSchema,
 } from "./use-lookup-history.constants";
 
 import type { LookupDraft, LookupEntry } from "./use-lookup-history.types";
@@ -19,9 +20,15 @@ export function readLookupHistory(): LookupEntry[] {
       return [];
     }
 
-    const parsed = lookupHistorySchema.safeParse(JSON.parse(raw));
+    const stored = storedListSchema.safeParse(JSON.parse(raw));
 
-    return parsed.success ? parsed.data : [];
+    return stored.success
+      ? stored.data.flatMap((item) => {
+          const parsed = lookupEntrySchema.safeParse(item);
+
+          return parsed.success ? [parsed.data] : [];
+        })
+      : [];
   } catch {
     return [];
   }

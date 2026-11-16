@@ -18,10 +18,15 @@ import {
   chooseCandidate,
   describeStatus,
   highlightProperties,
-  reportReading,
+  listReadings,
+  summarizeLookup,
 } from "./word-card.utilities";
 
-import type { WordCandidate, WordCardToken } from "./word-card.types";
+import type {
+  WordCandidate,
+  WordCardLookup,
+  WordCardToken,
+} from "./word-card.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -33,7 +38,7 @@ export interface WordCardProperties {
   className?: string;
   isFocused?: boolean;
   isHighlighted?: boolean;
-  onReading?: (reading: WordCandidate) => void;
+  onLookup?: (lookup: WordCardLookup) => void;
   token: WordCardToken;
 }
 
@@ -46,7 +51,7 @@ export interface WordCardProperties {
  * into view, and a highlighted word is lit up.
  */
 export function WordCard(properties: Readonly<WordCardProperties>): ReactNode {
-  const { className, isFocused, isHighlighted, onReading, token } = properties;
+  const { className, isFocused, isHighlighted, onLookup, token } = properties;
 
   // 🪝 Hooks
   const [candidates, setCandidates] = useState<null | WordCandidate[]>(null);
@@ -66,20 +71,23 @@ export function WordCard(properties: Readonly<WordCardProperties>): ReactNode {
       }
 
       if (candidates !== null) {
-        reportReading(candidates, chosen, onReading);
+        onLookup?.(summarizeLookup(candidates, false, chosen));
         return;
       }
 
-      getWordCandidates({ data: { tokenId: token.id } })
-        .then((found) => {
+      setHasFailed(false);
+      getWordCandidates({ data: { tokenId: token.id } }).then(
+        (found) => {
           setCandidates(found);
-          reportReading(found, null, onReading);
-        })
-        .catch(() => {
+          onLookup?.(summarizeLookup(found, false, null));
+        },
+        () => {
           setHasFailed(true);
-        });
+          onLookup?.(summarizeLookup(null, true, null));
+        },
+      );
     },
-    [candidates, chosen, onReading, token.id],
+    [candidates, chosen, onLookup, token.id],
   );
 
   // ♻️ Lifecycle
@@ -115,15 +123,13 @@ export function WordCard(properties: Readonly<WordCardProperties>): ReactNode {
           {status === null ? null : <p role="status">{status.text}</p>}
           {candidates !== null && candidates.length > 1 ? (
             <ul className="space-y-1">
-              {candidates.map((candidate) => (
-                <li key={`${candidate.lexemeId}-${candidate.description}`}>
+              {listReadings(candidates).map(({ candidate, key, position }) => (
+                <li key={key}>
                   <Button
                     className="h-auto w-full justify-start whitespace-normal py-1 text-left"
                     onClick={() => {
-                      const index = candidates.indexOf(candidate);
-
-                      setChosen(index);
-                      reportReading(candidates, index, onReading);
+                      setChosen(position);
+                      onLookup?.(summarizeLookup(candidates, false, position));
                     }}
                     variant="ghost"
                   >

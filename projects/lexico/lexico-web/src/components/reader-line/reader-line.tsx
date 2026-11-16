@@ -70,10 +70,10 @@ export function ReaderLine(
                 focus !== null &&
                 focus.word.toLowerCase() === token.data.toLowerCase()
               }
-              onReading={(reading) => {
+              onLookup={(summary) => {
                 onLookup?.({
-                  definition: reading.definition,
-                  form: reading.description,
+                  definition: summary.definition,
+                  form: summary.form,
                   line: line.index,
                   token: token.index,
                   word: token.data,
