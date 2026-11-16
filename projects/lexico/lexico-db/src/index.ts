@@ -81,7 +81,12 @@ export { WordLexeme } from "./modules/dictionary/entities/word-lexeme.entity";
 export { Word } from "./modules/dictionary/entities/word.entity";
 export { Author } from "./modules/literature/entities/author.entity";
 export { Line } from "./modules/literature/entities/line.entity";
-export { Text } from "./modules/literature/entities/text.entity";
+export {
+  Text,
+  textCollection,
+  type TextCollection,
+  textCollections,
+} from "./modules/literature/entities/text.entity";
 export { Token } from "./modules/literature/entities/token.entity";
 export { InjectRepository, TypeOrmModule } from "@nestjs/typeorm";
 export { DataSource, In, Repository } from "typeorm";
