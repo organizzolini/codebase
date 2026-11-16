@@ -1,9 +1,11 @@
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import { createRequire } from "node:module";
-import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+
+import { createTemporaryDirectory, writeFileTree } from "@codebase/testing";
+import { runSourceCommand } from "@codebase/testing/end-to-end";
 
 import type {
   CodometerReport,
@@ -97,27 +99,19 @@ export type ReportedDeclaration = NonNullable<
 // 🏃 Running
 
 /** Runs the command line; `cwd` is what gets measured. */
-export const runCodometer = (
+export const runCodometer = async (
   args: readonly string[],
   cwd: string = workspaceDirectory,
-): CodometerRun => {
-  const result = spawnSync(
-    process.execPath,
-    ["--import", "@swc-node/register/esm-register", commandLineEntry, ...args],
-    {
-      cwd,
-      encoding: "utf8",
-      env: {
-        ...process.env,
-        NODE_OPTIONS: "",
-        TS_NODE_PROJECT: typescriptConfigurationPath,
-      },
-      maxBuffer: 32 * 1024 * 1024,
-    },
-  );
+): Promise<CodometerRun> => {
+  const result = await runSourceCommand({
+    args,
+    directory: cwd,
+    entry: commandLineEntry,
+    tsconfig: typescriptConfigurationPath,
+  });
 
   return {
-    exitCode: result.status ?? 1,
+    exitCode: result.exitCode,
     standardError: result.stderr,
     standardOutput: result.stdout,
   };
@@ -128,14 +122,13 @@ export const runPipeline = (
   upstream: CodometerRun,
   readReport: string,
 ): CodometerRun => {
-  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "codometer-pipe-"));
+  const directory = createTemporaryDirectory("codometer-pipe");
   const downstream = path.join(directory, "downstream.mjs");
 
   // Says outright that the upstream stage produced nothing, rather than
   // failing as an unexplained `JSON.parse` on an empty string.
-  fs.writeFileSync(
-    downstream,
-    [
+  writeFileTree(directory, {
+    "downstream.mjs": [
       'let text = "";',
       'process.stdin.on("data", (chunk) => { text += chunk; });',
       'process.stdin.on("end", () => {',
@@ -150,37 +143,33 @@ export const runPipeline = (
       String.raw`  process.stdout.write(String(${readReport}) + "\n");`,
       "});",
     ].join("\n"),
-  );
+  });
 
-  try {
-    // Only what the run wrote to standard output crosses over. Its standard
-    // error is held back deliberately: that separation is the property under
-    // test, and merging the streams here would test nothing.
-    const result = spawnSync(process.execPath, [downstream], {
-      cwd: workspaceDirectory,
-      encoding: "utf8",
-      env: { ...process.env, NODE_OPTIONS: "" },
-      input: upstream.standardOutput,
-      maxBuffer: 32 * 1024 * 1024,
-    });
+  // Only what the run wrote to standard output crosses over. Its standard
+  // error is held back deliberately: that separation is the property under
+  // test, and merging the streams here would test nothing.
+  const result = spawnSync(process.execPath, [downstream], {
+    cwd: workspaceDirectory,
+    encoding: "utf8",
+    env: { ...process.env, NODE_OPTIONS: "" },
+    input: upstream.standardOutput,
+    maxBuffer: 32 * 1024 * 1024,
+  });
 
-    return {
-      exitCode:
-        upstream.exitCode === 0 ? (result.status ?? 1) : upstream.exitCode,
-      standardError: upstream.standardError + result.stderr,
-      standardOutput: result.stdout,
-    };
-  } finally {
-    fs.rmSync(directory, { force: true, recursive: true });
-  }
+  return {
+    exitCode:
+      upstream.exitCode === 0 ? (result.status ?? 1) : upstream.exitCode,
+    standardError: upstream.standardError + result.stderr,
+    standardOutput: result.stdout,
+  };
 };
 
 /** Runs the command line and parses its report from stdout. */
-export const measure = (
+export const measure = async (
   args: readonly string[],
   cwd: string = workspaceDirectory,
-): CodometerReport => {
-  const run = runCodometer([...args, "--format", "json"], cwd);
+): Promise<CodometerReport> => {
+  const run = await runCodometer([...args, "--format", "json"], cwd);
 
   return JSON.parse(run.standardOutput) as CodometerReport;
 };
@@ -188,13 +177,15 @@ export const measure = (
 // 🧪 Example shorthands
 
 /** Runs one example configuration over the committed corpus. */
-export const measureExample = (
+export const measureExample = async (
   ...segments: readonly string[]
-): CodometerReport =>
+): Promise<CodometerReport> =>
   measure(["--config", exampleConfiguration(...segments)], corpusDirectory);
 
 /** Runs one example configuration as a gate, and returns what it produced. */
-export const gateExample = (...segments: readonly string[]): CodometerRun =>
+export const gateExample = async (
+  ...segments: readonly string[]
+): Promise<CodometerRun> =>
   runCodometer(
     ["--config", exampleConfiguration(...segments), "--check", "limits"],
     corpusDirectory,
@@ -207,10 +198,10 @@ export interface GatedMeasurement {
 }
 
 /** Runs one example as a gate in a single spawn. */
-export const gateAndMeasureExample = (
+export const gateAndMeasureExample = async (
   ...segments: readonly string[]
-): GatedMeasurement => {
-  const run = runCodometer(
+): Promise<GatedMeasurement> => {
+  const run = await runCodometer(
     [
       "--config",
       exampleConfiguration(...segments),
@@ -307,19 +298,16 @@ export const readCounters = (
 
 // 📋 Scratch copies
 
-/** Runs a body on a copied corpus, keeping the original. */
-export const withCorpusCopy = <Result>(
-  body: (directory: string) => Result,
-): Result => {
-  fs.mkdirSync(scratchDirectory, { recursive: true });
+/**
+ * Runs a body on a copied corpus, keeping the original. Call it from a test:
+ * the copy is removed once that test finishes.
+ */
+export const withCorpusCopy = async <Result>(
+  body: (directory: string) => Promise<Result> | Result,
+): Promise<Result> => {
+  const directory = createTemporaryDirectory("corpus", scratchDirectory);
 
-  const directory = fs.mkdtempSync(path.join(scratchDirectory, "corpus-"));
+  fs.cpSync(corpusDirectory, directory, { recursive: true });
 
-  try {
-    fs.cpSync(corpusDirectory, directory, { recursive: true });
-
-    return body(directory);
-  } finally {
-    fs.rmSync(directory, { force: true, recursive: true });
-  }
+  return body(directory);
 };

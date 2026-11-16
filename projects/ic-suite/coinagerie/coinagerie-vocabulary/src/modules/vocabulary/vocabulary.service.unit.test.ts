@@ -49,6 +49,7 @@ describe(VocabularyService, () => {
       fold: undefined,
       include: [...DEFAULT_INCLUDE],
       outputs: [],
+      unfolded: [],
       ...overrides,
     };
   }

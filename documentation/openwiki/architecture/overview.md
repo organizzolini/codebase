@@ -4,13 +4,15 @@ title: Architecture Overview
 description: High-level system architecture showing the four major domains (affirmancy, caelundas, lexico, meanderaw), the IC-Suite toolchains, shared common packages, and cross-cutting infrastructure.
 tags: [architecture, codebase, nx, TypeScript, Python]
 verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-29T03:39:46.432Z
+  - by: openwiki/0.9.0
+    at: 2026-11-13T16:30:25.369Z
 sources:
   - id: openwiki-source-3813a8d6b5fb514dbe957652
     resource: repo://configuration/codependix.config.ts
   - id: openwiki-source-75161601af5a39bb60abb392
     resource: repo://configuration/conformetry.config.ts
+  - id: openwiki-source-d59d1fc281b8d9c7a97b4166
+    resource: repo://configuration/eslint.config.ts
   - id: openwiki-source-39c3295efc089133e87a9c80
     resource: repo://CONTEXT.md
   - id: openwiki-source-2611f82c4debd12996455857
@@ -49,10 +51,9 @@ sources:
     resource: repo://projects/lexico/lexico-web/project.json
   - id: openwiki-source-e4dad6cf25b0a8d5881fa48e
     resource: repo://projects/meanderaw/meanderaw-cli/project.json
-  - id: openwiki-source-23775c3de52f3ab95a13cb8b
-    resource: repo://README.md
-generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-13T16:30:25.369Z" }
 ---
+
 # Architecture Overview
 
 This document presents the high-level architecture of the codebase, organized into four application domains, the IC-Suite toolchains, shared common packages, and cross-cutting infrastructure.
@@ -71,6 +72,7 @@ flowchart TD
         Callidescope["callidescope<br/>Call stack tracing"]
         Codependix["codependix<br/>Dependency graph export"]
         Codometer["codometer<br/>Repository measurement"]
+        Coinagerie["coinagerie<br/>Identifier vocabulary extraction"]
         Conformetry["conformetry<br/>Template generation & validation"]
     end
 
@@ -130,6 +132,7 @@ flowchart TD
     Callidescope --> Observability
     Codependix --> Observability
     Codometer --> Observability
+    Coinagerie --> Observability
     Conformetry --> Observability
 
     %% Configuration tooling consumes IC-Suite
@@ -148,7 +151,7 @@ flowchart TD
     Publication --> CIWorkflows
 ```
 
-**Figure 1:** High-level architecture showing four application domains, four IC-Suite toolchains with their five-layer spine (ADR 0013), shared common packages, configuration tooling, and infrastructure.
+**Figure 1:** High-level architecture showing four application domains, five IC-Suite toolchains with their five-layer spine (ADR 0013), shared common packages, configuration tooling, and infrastructure.
 
 ## System Structure
 
@@ -167,7 +170,7 @@ Each domain is a vertical slice: it owns its applications, data models, and inte
 
 ### IC-Suite Toolchains
 
-The IC-Suite (`projects/ic-suite/`) contains four independently versioned toolchains, each following the same **five-layer spine** defined in **ADR 0013**:
+The IC-Suite (`projects/ic-suite/`) contains **five** independently versioned toolchains, each following the same **five-layer spine** defined in **ADR 0013**:
 
 ```
 core ← configuration ← analysis ← output ← cli
@@ -183,15 +186,16 @@ core ← configuration ← analysis ← output ← cli
 | **output** | `layer:output` | Every render target: JSON, markdown, mermaid, anchor blocks, destination routing | Analysis |
 | **cli** | `layer:cli` | `*.command.ts` modules only (entrypoints) | Any logic |
 
-The four toolchains:
+The five toolchains:
 - **callidescope**: Call stack tracing through injected dependencies
 - **codependix**: Dependency graph export and boundary gating
 - **codometer**: Repository measurement and reporting
+- **coinagerie**: Identifier vocabulary extraction and glossary comparison
 - **conformetry**: Template-driven generation and conformance validation
 
 Each toolchain's packages are **independently publishable** to npm. The toolchains share **only** the `observability` package (a pino-backed logger); no cross-toolchain `@ic-suite/*` package exists — this is a deliberate constraint (ADR 0013).
 
-The `nx` plugin layer (callidescope, codependix, conformetry) carries `layer:cli`, not a sixth tag — it is a second host for the same underlying toolchain, not a new layer stacked above it.
+The `nx` plugin layer (callidescope, codependix, coinagerie, conformetry) carries `layer:cli`, not a sixth tag — it is a second host for the same underlying toolchain, not a new layer stacked above it.
 
 ### Common Packages (`projects/common/`)
 
@@ -255,7 +259,7 @@ This loop is cross-cutting because it applies to **all project types** — Pytho
 
 ## Nx Module Boundary Rules
 
-Nx enforces architectural boundaries through **project tags** and **dependency constraints** defined in `nx.json` and `eslint.config.ts`:
+Nx enforces architectural boundaries through **project tags** and **dependency constraints** defined in `nx.json`, `eslint.config.ts`, and `configuration/codependix.config.ts`:
 
 ### Project Tags
 
@@ -274,10 +278,17 @@ Every `project.json` carries tags that classify the project:
 | **Packages cannot import applications** | `type:package` projects may not depend on `type:application` projects |
 | **Applications can import packages** | `type:application` → `type:package` is allowed (the normal direction) |
 | **Packages can import packages** | `type:package` → `type:package` is allowed (shared infrastructure) |
-| **IC-Suite layer ordering** | Within each toolchain: `core` → `configuration` → `analysis` → `output` → `cli` (enforced by `codependix` boundary rules) |
+| **IC-Suite layer ordering** | Within each toolchain: `core` → `configuration` → `analysis` → `output` → `cli` (enforced by `codependix` boundary rules and ESLint `depConstraints`) |
 | **No cross-toolchain `@ic-suite/*` imports** | Each toolchain is independently versioned; they share only `observability` |
+| **React projects cannot depend on NestJS** | `framework:react` projects forbidden from importing `framework:nestjs` |
+| **Domain isolation** | `domain:caelundas` and `domain:lexico` cannot import each other |
+| **Testing package isolation** | `name:testing` may only depend on `name:configuration` and `name:observability` |
+| **No project cycles** | Acyclic dependency rule across all projects, including implicit edges |
 
-These rules are codified in `configuration/codependix.config.ts` boundary definitions and enforced by the `codependix-gate` Nx target (provided by `@codependix/nx` plugin) which runs in CI.
+These rules are codified in:
+- **ESLint** `depConstraints` in `configuration/eslint.config.ts` for import-level enforcement at compile time
+- **codependix** boundary definitions in `configuration/codependix.config.ts` for project-graph-level enforcement including implicit dependencies
+- The `codependix-gate` Nx target (provided by `@codependix/nx` plugin) runs in CI to enforce both
 
 ## Dependency Direction
 
@@ -297,19 +308,3 @@ Infrastructure (runs applications, provides cluster/services)
 - **IC-Suite toolchains** are independent; **configuration tooling** consumes them
 - **Infrastructure** runs applications and provides shared services (Postgres, etc.)
 - **Common observability** is the single shared dependency across all NestJS projects (domains + IC-Suite)
-
-## Architectural Decisions
-
-- **ADR 0024**: Every project lives under `projects/` — folder structure no longer encodes project type; `type:application` / `type:package` tags do
-- **ADR 0013**: IC-Suite layer vocabulary — five-layer spine with `layer:*` tags, no shared cross-toolchain package, analysis layer named per-suite
-- **Nx project graph** is the source of truth for dependency gating (codependix boundaries, ESLint `depConstraints`)
-
-## Related Documentation
-
-- [Common Packages](../architecture/common-packages.md) — Detailed common package responsibilities
-- [IC-Suite Toolchains](../architecture/ic-suite.md) — Per-toolchain package structure and layer details
-- [Infrastructure](../architecture/infrastructure.md) — Helm, Terraform, Docker Compose, CI/CD
-- [Domain Overview](../domain/overview.md) — Per-domain architecture and data models
-- [Generator, Template, Instance, Language](../concepts/generator-template-instance.md) — Conformetry vocabulary
-- [ADR 0013: Name the ic-suite layers](../../documentation/adr/0013-name-the-ic-suite-layers.md)
-- [ADR 0024: Nest every project under projects/](../../documentation/adr/0024-nest-every-project-under-projects.md)
