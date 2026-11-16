@@ -9,6 +9,17 @@ export {
 export { DEFAULT_TEST_DATE } from "./modules/clock/clock.constants";
 export { mockDates } from "./modules/clock/clock.utilities";
 export { overrideEnvironment } from "./modules/environment/environment.utilities";
+export { FakeProcessRunner } from "./modules/fake-process-runner/fake-process-runner.service";
+export type {
+  FakeProcessResult,
+  RecordedCall,
+  ScriptedAnswer,
+  ScriptedEffect,
+} from "./modules/fake-process-runner/fake-process-runner.types";
+export {
+  failed,
+  succeeded,
+} from "./modules/fake-process-runner/fake-process-runner.utilities";
 export type {
   FileSystemFunctions,
   FileSystemMock,

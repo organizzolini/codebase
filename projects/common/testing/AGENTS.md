@@ -57,6 +57,9 @@ src/
 - **End-to-end CLI**: `runSourceCommand` over a `createFileTree` root (core
   stays free of `execa`, so it lives in `/end-to-end`).
 - **Utilities**: `mockPartially`, `stubFetch`, `loadFixture`.
+- **Scripted process runner**: `FakeProcessRunner` answers `capture`,
+  `captureAsync`, `captureToFile`, and `stream` from a script, with
+  `succeeded`/`failed` results.
 
 `mockFileSystem` is built inside a `vi.mock` factory with
 `vi.importActual("@codebase/testing/file-system")`, since `vi.mock` hoists above static imports and a dynamic `import()` of
