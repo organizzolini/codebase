@@ -44,12 +44,12 @@
     "test-code": {},
     "type-coverage": {
       "options": {
-        "command": "type-coverage --project tooling/tsconfig.json --detail > type-coverage-report.txt 2>&1 || (cat type-coverage-report.txt && exit 1)"
+        "command": "type-coverage --project configuration/tsconfig.json --detail > type-coverage-report.txt 2>&1 || (cat type-coverage-report.txt && exit 1)"
       }
     },
     "typecheck": {
       "options": {
-        "command": "node \"$NX_WORKSPACE_ROOT/node_modules/typescript-7/bin/tsc\" --noEmit -p tooling/tsconfig.json"
+        "command": "node \"$NX_WORKSPACE_ROOT/node_modules/typescript-7/bin/tsc\" --noEmit -p configuration/tsconfig.json"
       }
     },
     "typecheck-code": {},

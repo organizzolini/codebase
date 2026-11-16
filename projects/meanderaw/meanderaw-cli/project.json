@@ -57,7 +57,7 @@
       "description": "Start an interactive NestJS REPL for Meanderaw services",
       "executor": "nx:run-commands",
       "options": {
-        "command": "node --import @swc-node/register/esm-register src/meanderaw-cli.repl.ts",
+        "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register src/meanderaw-cli.repl.ts",
         "cwd": "{projectRoot}"
       }
     },
@@ -77,7 +77,7 @@
         }
       ],
       "options": {
-        "command": "node --import @swc-node/register/esm-register src/meanderaw-cli.main.ts {args}",
+        "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register src/meanderaw-cli.main.ts {args}",
         "cwd": "{projectRoot}"
       }
     },

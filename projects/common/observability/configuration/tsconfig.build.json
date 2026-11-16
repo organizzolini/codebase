@@ -10,6 +10,6 @@
     "../src/**/*.test.tsx",
     "../src/lib/**"
   ],
-  "extends": "../tsconfig.json",
+  "extends": "./tsconfig.json",
   "include": ["../src/**/*.ts", "../src/**/*.tsx", "../testing/index.ts"]
 }

@@ -101,7 +101,10 @@ function writeFixtureWorkspace(workspaceRoot: string): void {
     "tsconfig.json": JSON.stringify({
       extends: path.relative(
         workspaceRoot,
-        path.resolve(import.meta.dirname, "../../../tsconfig.json"),
+        path.resolve(
+          import.meta.dirname,
+          "../../../configuration/tsconfig.json",
+        ),
       ),
     }),
   });

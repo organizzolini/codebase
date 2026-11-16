@@ -20,7 +20,7 @@
         "default"
       ],
       "options": {
-        "command": "node --import @swc-node/register/esm-register testing/run-examples.ts",
+        "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register testing/run-examples.ts",
         "cwd": "{projectRoot}"
       },
       "outputs": []

@@ -44,7 +44,7 @@
         "command": "node --import @swc-node/register/esm-register projects/ic-suite/coinagerie/coinagerie-cli/src/coinagerie-cli.main.ts",
         "cwd": "{workspaceRoot}",
         "env": {
-          "SWC_NODE_PROJECT": "projects/ic-suite/coinagerie/coinagerie-cli/tsconfig.json"
+          "SWC_NODE_PROJECT": "projects/ic-suite/coinagerie/coinagerie-cli/configuration/tsconfig.json"
         }
       }
     },

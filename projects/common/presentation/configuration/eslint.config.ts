@@ -15,7 +15,7 @@ export default [
   // `components.json` declares `@/components`, `@/hooks`, and `@/lib`, and the
   // shadcn CLI emits `@/` imports on every add. Relative paths would be undone.
   {
-    files: ["tsconfig.json"],
+    files: ["configuration/tsconfig.json"],
     rules: {
       "no-restricted-syntax": "off",
     },

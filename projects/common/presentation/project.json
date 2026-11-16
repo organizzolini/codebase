@@ -30,7 +30,7 @@
     "stylelint": {},
     "type-coverage": {
       "options": {
-        "command": "type-coverage --detail > type-coverage-report.txt 2>&1 || (cat type-coverage-report.txt && exit 1)"
+        "command": "type-coverage --project configuration/tsconfig.json --detail > type-coverage-report.txt 2>&1 || (cat type-coverage-report.txt && exit 1)"
       }
     },
     "typecheck": {},

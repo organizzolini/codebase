@@ -66,7 +66,7 @@ export async function runCoinagerie(
     directory: root,
     entry: path.join(cliDirectory, "src", "coinagerie-cli.main.ts"),
     timeout: SPAWN_TIMEOUT,
-    tsconfig: path.join(cliDirectory, "tsconfig.json"),
+    tsconfig: path.join(cliDirectory, "configuration", "tsconfig.json"),
   });
 
   return {

@@ -52,4 +52,4 @@ projects/ic-suite/conformetry/conformetry-examples/
 # in: a project named by its root-relative path has no name at all when that
 # path is the root, so its section was headed with empty backticks, and both
 # destinations default to the same markers and would fight over the same file.
-/tsconfig.json
+/configuration/tsconfig.json

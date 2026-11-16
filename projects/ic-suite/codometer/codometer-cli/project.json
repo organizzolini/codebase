@@ -44,7 +44,7 @@
         "command": "node --import @swc-node/register/esm-register projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts",
         "cwd": "{workspaceRoot}",
         "env": {
-          "SWC_NODE_PROJECT": "projects/ic-suite/codometer/codometer-cli/tsconfig.json"
+          "SWC_NODE_PROJECT": "projects/ic-suite/codometer/codometer-cli/configuration/tsconfig.json"
         }
       }
     },

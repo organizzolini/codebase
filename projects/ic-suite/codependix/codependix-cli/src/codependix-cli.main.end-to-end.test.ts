@@ -19,7 +19,9 @@ const COMMAND_PATH = path.resolve(
 const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../tmp");
 
 /** Every fixture sits one level under `FIXTURE_ROOT`, so this reaches the package's tsconfig. */
-const FIXTURE_TSCONFIG = JSON.stringify({ extends: "../../tsconfig.json" });
+const FIXTURE_TSCONFIG = JSON.stringify({
+  extends: "../../configuration/tsconfig.json",
+});
 
 /** Writes a fixture directory inside the package, with the tsconfig the command line's decorators need. */
 function createFixture(label: string, files: Record<string, string>): string {

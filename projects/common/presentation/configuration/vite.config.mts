@@ -44,10 +44,7 @@ export default defineConfig(() => ({
     dts({
       entryRoot: "src",
       pathsToAliases: false,
-      tsconfigPath: path.join(
-        path.dirname(import.meta.dirname),
-        "tsconfig.json",
-      ),
+      tsconfigPath: path.join(import.meta.dirname, "tsconfig.json"),
     }),
   ],
   root: path.dirname(import.meta.dirname),

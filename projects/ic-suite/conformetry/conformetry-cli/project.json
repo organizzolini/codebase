@@ -44,7 +44,7 @@
         "command": "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts",
         "cwd": "{workspaceRoot}",
         "env": {
-          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json"
+          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/configuration/tsconfig.json"
         }
       }
     },

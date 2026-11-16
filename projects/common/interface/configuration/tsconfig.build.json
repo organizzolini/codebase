@@ -9,6 +9,6 @@
     "../src/**/*.test.ts",
     "../src/**/*.test.tsx"
   ],
-  "extends": "../tsconfig.json",
+  "extends": "./tsconfig.json",
   "include": ["../src/**/*.ts", "../src/**/*.tsx", "../testing/index.ts"]
 }

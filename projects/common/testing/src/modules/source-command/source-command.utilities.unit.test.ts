@@ -51,7 +51,11 @@ describe(runSourceCommand, () => {
   });
 
   it("names the tsconfig through SWC_NODE_PROJECT", async () => {
-    const tsconfig = path.join(PACKAGE_DIRECTORY, "tsconfig.json");
+    const tsconfig = path.join(
+      PACKAGE_DIRECTORY,
+      "configuration",
+      "tsconfig.json",
+    );
     const result = await runSourceCommand({
       directory: PACKAGE_DIRECTORY,
       entry: ENTRY,

@@ -1724,12 +1724,11 @@ export default [
   },
 
   // 🧭 tsconfig.json path aliases
-  // Local modules use relative imports; aliases are for cross-project mappings only. A
-  // self-referential alias hides dependency cycles from dependency-cruiser and breaks when files move.
-  //
-  // Not flagged: `./node_modules/...` type shims, `../` cross-project mappings, and non-`@`/`~` keys.
+  // Aliases are for cross-project mappings only: a self-referential one hides
+  // cycles from dependency-cruiser. From a project's `configuration/` folder, one
+  // `../` reaches its own files; `node_modules` shims and non-`@`/`~` keys pass.
   {
-    files: ["**/tsconfig.json", "tsconfig.json"],
+    files: ["**/configuration/tsconfig.json"],
     rules: {
       "no-restricted-syntax": [
         "error",
@@ -1737,7 +1736,7 @@ export default [
           message:
             "Self-referential tsconfig path alias. Import local files with a relative path instead; reserve path aliases for cross-project mappings.",
           selector:
-            "JSONProperty[key.value=/^[@~]/] > JSONArrayExpression > JSONLiteral[value=/^\\.\\//]:not([value=/node_modules/])",
+            "JSONProperty[key.value=/^[@~]/] > JSONArrayExpression > JSONLiteral[value=/^\\.\\.\\/(?!\\.)/]:not([value=/node_modules/])",
         },
       ],
     },

@@ -10,7 +10,7 @@
     "../src/**/*.test.tsx",
     "../testing/**"
   ],
-  "extends": "../tsconfig.json",
+  "extends": "./tsconfig.json",
   "include": [
     "../src/**/*.ts",
     "../src/**/*.tsx"

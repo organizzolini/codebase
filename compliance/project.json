@@ -28,7 +28,7 @@
       "description": "Start a Nest Commander application in REPL mode",
       "executor": "nx:run-commands",
       "options": {
-        "command": "node --import @swc-node/register/esm-register src/compliance.repl.ts",
+        "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register src/compliance.repl.ts",
         "cwd": "compliance"
       },
       "parallelism": true

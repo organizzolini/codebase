@@ -148,7 +148,7 @@ const callidescopeConfiguration: CallidescopeConfiguration = {
    *
    * Never searched for. It matches `projectTsconfigPath` in this plugin's `nx.json` registration, and the plugin refuses a disagreement.
    */
-  projectTsconfigPath: "tsconfig.json",
+  projectTsconfigPath: "configuration/tsconfig.json",
   write: {
     /**
      * The workspace-scope report in the repository's own `callidescope.md`.

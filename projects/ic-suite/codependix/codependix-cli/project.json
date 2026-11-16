@@ -44,7 +44,7 @@
         "command": "node --import @swc-node/register/esm-register projects/ic-suite/codependix/codependix-cli/src/codependix-cli.main.ts",
         "cwd": "{workspaceRoot}",
         "env": {
-          "SWC_NODE_PROJECT": "projects/ic-suite/codependix/codependix-cli/tsconfig.json"
+          "SWC_NODE_PROJECT": "projects/ic-suite/codependix/codependix-cli/configuration/tsconfig.json"
         }
       }
     },

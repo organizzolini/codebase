@@ -68,8 +68,8 @@
       "inputs": [
         "{projectRoot}/**/*.ts",
         "{projectRoot}/**/*.tsx",
+        "{projectRoot}/configuration/tsconfig.json",
         "{projectRoot}/package.json",
-        "{projectRoot}/tsconfig.json",
         "shared-globals",
         "testing-source",
         {
