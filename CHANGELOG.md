@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.4.0](https://github.com/organizzolini/codebase/compare/v6.3.1...v6.4.0) (2026-11-16)
+
+### ✨ Features
+
+* **conformetry:** ✨ generate CORS in the nestjs-graphql-application template ([#2442](https://github.com/organizzolini/codebase/issues/2442)) ([ba38280](https://github.com/organizzolini/codebase/commit/ba382800f3201fbf685e03dc828d95a87140ed06)), closes [#2440](https://github.com/organizzolini/codebase/issues/2440)
+
 ## [6.3.1](https://github.com/organizzolini/codebase/compare/v6.3.0...v6.3.1) (2026-11-16)
 
 ### 🐛 Bug Fixes
