@@ -1,5 +1,12 @@
 import { Injectable } from "@nestjs/common";
 
+import {
+  EFFORT_FIELD,
+  ISSUE_FIELD_NAMES_QUERY,
+  issueFieldNamesSchema,
+  PRIORITY_FIELD,
+} from "../issue/issue-fields.constants";
+import { IssueFieldsService } from "../issue/issue-fields.service";
 import { MAX_HIERARCHY_DEPTH } from "../issue/issue-metadata.constants";
 import { IssueMetadataService } from "../issue/issue-metadata.service";
 
@@ -8,16 +15,11 @@ import {
   linkedIssueNumbersSchema,
 } from "./pull-request-body-links.constants";
 import { PullRequestGithubService } from "./pull-request-github.service";
-import {
-  EFFORT_FIELD,
-  issueFieldNamesSchema,
-  NO_LINKED_ISSUE_MESSAGE,
-  PRIORITY_FIELD,
-} from "./pull-request-linked-issues.constants";
+import { NO_LINKED_ISSUE_MESSAGE } from "./pull-request-linked-issues.constants";
 
+import type { IssueField } from "../issue/issue-fields.types";
 import type { PullRequestContext } from "./pull-request-context.types";
 import type {
-  IssueField,
   LinkedIssue,
   LinkedIssuesRun,
 } from "./pull-request-linked-issues.types";
@@ -33,6 +35,7 @@ export class PullRequestLinkedIssuesService {
   // 🏗 Dependency Injection
 
   constructor(
+    private readonly issueFieldsService: IssueFieldsService,
     private readonly issueMetadataService: IssueMetadataService,
     private readonly pullRequestGithubService: PullRequestGithubService,
   ) {}
@@ -43,25 +46,18 @@ export class PullRequestLinkedIssuesService {
 
   // 🔏 Private Methods
 
-  /** Records the failure and its fix when the issue leaves the field empty. */
+  /** The shared field rule, its failure naming the issue it is about. */
   private checkField(
     issue: LinkedIssue,
     field: IssueField,
     run: LinkedIssuesRun,
   ): void {
-    if (issue.fieldNames.includes(field.name)) {
-      return;
-    }
-
-    const value = JSON.stringify({
-      issue_field_values: [
-        { field_id: field.id, value: `<${field.options.join("|")}>` },
-      ],
-    });
-
-    run.record(
-      `❌ Issue #${String(issue.number)}: No ${field.name} issue field`,
-      `echo '${value}' | gh api -X PUT repos/{owner}/{repo}/issues/${String(issue.number)}/issue-field-values --input -`,
+    this.issueFieldsService.checkField(
+      { fieldNames: issue.fieldNames, issueNumber: String(issue.number) },
+      field,
+      (failure, ...commands) => {
+        run.record(this.nameIssue(issue.number, failure), ...commands);
+      },
     );
   }
 
@@ -90,7 +86,7 @@ export class PullRequestLinkedIssuesService {
     // The audit pairs no command with its failure, so the first carries them all.
     for (const [index, failure] of verdict.failures.entries()) {
       run.record(
-        failure.replace(/^❌ /u, `❌ Issue #${String(issue.number)}: `),
+        this.nameIssue(issue.number, failure),
         ...(index === 0 ? verdict.remediationCommands : []),
       );
     }
@@ -130,6 +126,11 @@ export class PullRequestLinkedIssuesService {
     }
 
     return current;
+  }
+
+  /** A failure about one issue, naming it after the mark. */
+  private nameIssue(issueNumber: number, failure: string): string {
+    return failure.replace(/^❌ /u, `❌ Issue #${String(issueNumber)}: `);
   }
 
   /** Runs `gh` and parses its JSON output, or says why it cannot. */
@@ -205,7 +206,7 @@ export class PullRequestLinkedIssuesService {
         "api",
         `repos/{owner}/{repo}/issues/${String(issueNumber)}`,
         "--jq",
-        "[.issue_field_values[].issue_field_name]",
+        ISSUE_FIELD_NAMES_QUERY,
       ],
       `the issue fields of ${name}`,
       (document) => issueFieldNamesSchema.parse(document),

@@ -44,6 +44,11 @@ export interface IssueFormAnswers {
 export interface IssueMetadata {
   readonly body: string;
   /**
+   * The names of the issue fields that hold a value. Omitted when the source
+   * cannot say, which skips the field checks.
+   */
+  readonly fieldNames?: readonly string[];
+  /**
    * Whether the issue has a native parent. Omitted when the source cannot
    * say, such as the environment mode that skips the type check.
    */
@@ -61,6 +66,8 @@ export type IssueMetadataResolution =
 /** Summary representation of a GitHub issue from list API. */
 export interface IssueSummary {
   readonly body: string;
+  /** Filled issue field names, joined in from the REST listing. */
+  readonly fieldNames?: readonly string[];
   readonly issueType?: null | { readonly name: string };
   readonly labels: readonly { readonly name: string }[];
   readonly number: number;
