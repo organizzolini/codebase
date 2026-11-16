@@ -70,9 +70,11 @@ set_field() {
 
 Priority and Effort go through the issue-field endpoint instead, and take the option **name**, not its id. Ask the user for Priority before you set it:
 
+**Use `POST`, never `PUT`.** `PUT` replaces every field on the issue with the ones you send, so setting Priority with it silently erases Effort. `POST` adds or updates only the fields you name:
+
 ```bash
 echo '{"issue_field_values":[{"field_id":46460698,"value":"Medium"}]}' |
-  gh api -X PUT repos/Organizzolini/codebase/issues/<number>/issue-field-values --input -
+  gh api -X POST repos/Organizzolini/codebase/issues/<number>/issue-field-values --input -
 # clear it
 gh api -X DELETE repos/Organizzolini/codebase/issues/<number>/issue-field-values/46460698
 ```
