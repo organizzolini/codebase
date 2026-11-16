@@ -297,7 +297,7 @@ describe(PullRequestAncestorIssuesService, () => {
     expect(service.verify(context).failures).toHaveLength(1);
   });
 
-  it("exempts draft and Dependabot pull requests from verification", () => {
+  it("exempts draft and automated pull requests from verification", () => {
     stubGithub({ linked: "[5]" });
     vi.mocked(children.collect).mockReturnValue({ ok: true, value: [8] });
 
@@ -306,6 +306,9 @@ describe(PullRequestAncestorIssuesService, () => {
     );
     expect(
       service.verify({ ...context, author: "dependabot[bot]" }).failures,
+    ).toStrictEqual([]);
+    expect(
+      service.verify({ ...context, author: "github-actions[bot]" }).failures,
     ).toStrictEqual([]);
   });
 });

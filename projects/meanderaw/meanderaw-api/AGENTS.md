@@ -26,6 +26,7 @@ The database must be running and migrated first (`nx run meanderaw-db:migration:
 - **Database**: Postgres through `MeanderawDatabaseModule` (`@codebase/meanderaw-db`); services read it through TypeORM repositories
 - **Drawing**: `@codebase/meanderaw-core`'s `CodeService` and `DrawingService`, called by the `Meander.svg` field resolver
 - **Validation**: Zod, at the boundary — `environmentSchema` for the environment, `meandersArgumentsSchema` and `cursorSchema` for a query
+- **CORS**: `application.enableCors(new CorsService().getOptions(...))` in the bootstrap, with the origins from `MEANDERAW_API_CORS_ORIGINS` (comma separated, default `*`). The CORS middleware answers the browser's `OPTIONS` preflight before Apollo sees it, so Apollo's CSRF prevention (which would answer it with 400) never runs
 - **Logging**: `@codebase/observability`'s `LoggerService`
 - **Language**: Strict TypeScript
 
@@ -48,6 +49,7 @@ src/
   meanderaw-api.ts            # Bootstrap — do not modify
   meanderaw-api.module.ts     # Root module
   meanderaw-api.constants.ts  # environmentSchema, GRAPHQL_SCHEMA_FILE
+  cors.service.ts             # The CORS options the bootstrap enables
   meanderaw-api.entities.ts   # PageInfo
   meanderaw-api.types.ts      # Connection and Edge types
   meanderaw-api.utilities.ts  # Paginated mixin, createConnection, cursor encoding

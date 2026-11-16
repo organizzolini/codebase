@@ -14,7 +14,7 @@ function result(id: string): LexemeResult {
     id,
     identifiers: [],
     lemma: id,
-    match: { kind: "exact-headword" },
+    match: { kind: "exact-lemma" },
     partOfSpeech: "noun",
     principalParts: [],
     pronunciations: [],

@@ -1,9 +1,9 @@
-import { execFile } from "node:child_process";
 import { globSync } from "node:fs";
 import path from "node:path";
-import { pathToFileURL } from "node:url";
 
 import { describe, expect, it } from "vitest";
+
+import { runSourceCommand } from "@codebase/testing/end-to-end";
 
 const MODULES_DIRECTORY = path.resolve(import.meta.dirname, "..");
 
@@ -16,29 +16,20 @@ const ENTITY_FILES = globSync("**/*.entity.ts", {
 const IMPORT_TIMEOUT_MILLISECONDS = 120_000;
 
 /**
- * Imports a module in a fresh process under the SWC loader, which emits decorator metadata unlike Vitest, so an entity cycle throws here.
+ * Runs a module as an entry point in a fresh process under the SWC loader, which emits decorator metadata unlike Vitest, so an entity cycle throws here.
  */
 async function importInFreshProcess(modulePath: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    execFile(
-      process.execPath,
-      [
-        "--import",
-        "@swc-node/register/esm-register",
-        "--input-type=module",
-        "--eval",
-        `await import(${JSON.stringify(pathToFileURL(modulePath).href)});`,
-      ],
-      { cwd: WORKSPACE_ROOT, timeout: IMPORT_TIMEOUT_MILLISECONDS },
-      (error, _standardOutput, standardError) => {
-        if (error) {
-          reject(new Error(standardError || error.message));
-          return;
-        }
-        resolve(standardError);
-      },
-    );
+  const { exitCode, stderr } = await runSourceCommand({
+    directory: WORKSPACE_ROOT,
+    entry: modulePath,
+    timeout: IMPORT_TIMEOUT_MILLISECONDS,
   });
+
+  if (exitCode !== 0) {
+    throw new Error(stderr);
+  }
+
+  return stderr;
 }
 
 describe("entities module graph", () => {

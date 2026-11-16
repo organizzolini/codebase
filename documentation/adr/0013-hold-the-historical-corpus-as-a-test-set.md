@@ -101,6 +101,6 @@ failures**, and two independent checks say the readings are right:
   rotation of another entry already in the corpus** — the same band cut at a
   different place — which no unique index over a Code can see. Among them is
   the whirl at four rows by eight columns that spec #859 names, and nine more
-  `whirl`/`snake` pairs at four to twelve rows. Choosing one canonical phase
+  `whirl`/`snake` pairs at four to twelve rows. Choosing one canonical rotation
   for a stored Code is what collapses them, and it is deliberately not done
   here: the Codes are committed exactly as the drawings spell them.

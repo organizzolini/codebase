@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.2.0](https://github.com/organizzolini/codebase/compare/v6.1.0...v6.2.0) (2026-11-15)
+
+### ✨ Features
+
+* **coinagerie,configuration,lexico,caelundas,meanderaw,conformetry,codometer,codependix:** ✨ clarify word meanings ([#2373](https://github.com/organizzolini/codebase/issues/2373)) ([a0a31f2](https://github.com/organizzolini/codebase/commit/a0a31f28d042ce652bcc19a5f776f715680589a6)), closes [#2372](https://github.com/organizzolini/codebase/issues/2372)
+
+### 📝 Documentation
+
+* **compliance,conformetry:** 📝 shorten two comments over the JSDoc budget ([#2416](https://github.com/organizzolini/codebase/issues/2416)) ([bf16fa7](https://github.com/organizzolini/codebase/commit/bf16fa7edefb5e788351861b447d365c13bca7c7)), closes [#2415](https://github.com/organizzolini/codebase/issues/2415) [#2315](https://github.com/organizzolini/codebase/issues/2315)
+
+## [6.1.0](https://github.com/organizzolini/codebase/compare/v6.0.3...v6.1.0) (2026-11-15)
+
+### ✨ Features
+
+* **compliance,documentation:** ✨ validate the issues a pull request closes ([#2406](https://github.com/organizzolini/codebase/issues/2406)) ([0ab90af](https://github.com/organizzolini/codebase/commit/0ab90aff98c6166d2cd28f80cc46ef3e161c33f8)), closes [#2405](https://github.com/organizzolini/codebase/issues/2405) [documentation/agents/issue-tracker.md#every-pull-request-closes-an-issue](https://github.com/documentation/agents/issue-tracker.md/issues/every-pull-request-closes-an-issue)
+
+## [6.0.3](https://github.com/organizzolini/codebase/compare/v6.0.2...v6.0.3) (2026-11-14)
+
+### 🐛 Bug Fixes
+
+* **compliance,deployments:** 🐛 exempt GitHub Actions pull requests from the issue link ([#2404](https://github.com/organizzolini/codebase/issues/2404)) ([8a88246](https://github.com/organizzolini/codebase/commit/8a88246fd71f203a9f393c1c6bcfa8b72f419e77)), closes [#2316](https://github.com/organizzolini/codebase/issues/2316) [#2403](https://github.com/organizzolini/codebase/issues/2403) [#2316](https://github.com/organizzolini/codebase/issues/2316)
+
+### 📝 Documentation
+
+* **documentation:** 📝 refresh ([#2316](https://github.com/organizzolini/codebase/issues/2316)) ([9acfa45](https://github.com/organizzolini/codebase/commit/9acfa453ac833193e81043adfb655d701b0f6afb))
+
 ## [6.0.2](https://github.com/organizzolini/codebase/compare/v6.0.1...v6.0.2) (2026-11-13)
 
 ### ♻️ Code Refactoring

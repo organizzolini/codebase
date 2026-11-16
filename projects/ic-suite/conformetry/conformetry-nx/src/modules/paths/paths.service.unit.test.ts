@@ -450,9 +450,9 @@ describe(PathsService, () => {
       // matches the directory holding it, not a directory inside it — and
       // that instance's parent path sits outside the project root entirely.
       const isolatedService = createIsolatedService([
-        { nameStem: "widgets", path: path.join(workspaceRoot, "packages") },
+        { name: "widgets", path: path.join(workspaceRoot, "packages") },
         {
-          nameStem: "differences",
+          name: "differences",
           path: path.join(workspaceRoot, "packages/widgets/src/modules"),
         },
       ]);
@@ -470,11 +470,11 @@ describe(PathsService, () => {
     it("breaks a tie between equally common parents alphabetically", async () => {
       const isolatedService = createIsolatedService([
         {
-          nameStem: "differences",
+          name: "differences",
           path: path.join(workspaceRoot, "packages/widgets/src/modules"),
         },
         {
-          nameStem: "other",
+          name: "other",
           path: path.join(workspaceRoot, "packages/widgets/src/alpha"),
         },
       ]);

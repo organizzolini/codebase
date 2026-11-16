@@ -15,10 +15,10 @@ function populateWorkspace(workingDirectory: string): void {
   writeFileTree(
     workingDirectory,
     Object.fromEntries(
-      ["differences", "logger"].flatMap((stem) => {
+      ["differences", "logger"].flatMap((name) => {
         return [".module.ts", ".service.ts", ".service.unit.test.ts"].map(
           (suffix) => [
-            `packages/widgets/src/modules/${stem}/${stem}${suffix}`,
+            `packages/widgets/src/modules/${name}/${name}${suffix}`,
             "",
           ],
         );
@@ -56,7 +56,7 @@ describe(InstanceDiscoveryLocatingService, () => {
         workingDirectory,
       });
 
-      expect(instances.map((instance) => instance.nameStem)).toStrictEqual([
+      expect(instances.map((instance) => instance.name)).toStrictEqual([
         "differences",
       ]);
     });
@@ -68,7 +68,7 @@ describe(InstanceDiscoveryLocatingService, () => {
         workingDirectory,
       });
 
-      expect(instances.map((instance) => instance.nameStem)).toStrictEqual([
+      expect(instances.map((instance) => instance.name)).toStrictEqual([
         "logger",
       ]);
     });
@@ -79,7 +79,7 @@ describe(InstanceDiscoveryLocatingService, () => {
         workingDirectory,
       });
 
-      expect(instances.map((instance) => instance.nameStem)).toStrictEqual([
+      expect(instances.map((instance) => instance.name)).toStrictEqual([
         "differences",
         "logger",
       ]);
@@ -127,7 +127,7 @@ describe(InstanceDiscoveryLocatingService, () => {
       });
 
       expect(instances).toHaveLength(2);
-      expect(instances[0]?.nameStem).toBe("differences");
+      expect(instances[0]?.name).toBe("differences");
       expect(
         instances[0]?.fileScope?.map((filePath) => path.basename(filePath)),
       ).toStrictEqual([
@@ -157,7 +157,7 @@ describe(InstanceDiscoveryLocatingService, () => {
         workingDirectory,
       });
 
-      expect(instances[0]?.nameStem).toBe("differences.module");
+      expect(instances[0]?.name).toBe("differences.module");
     });
 
     it("applies caller substitutions to every instance", () => {
