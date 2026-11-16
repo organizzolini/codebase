@@ -1,6 +1,15 @@
+import { createMock } from "@golevelup/ts-vitest";
 import { describe, expect, it } from "vitest";
 
-import { mergeAuthor, parseText } from "./literature.utilities";
+import {
+  mergeAuthor,
+  parseText,
+  removeReplacedTexts,
+} from "./literature.utilities";
+
+import type { LibraryEntry } from "./literature.types";
+import type { Text } from "@codebase/lexico-db";
+import type { Repository } from "typeorm";
 
 describe("literature.utilities", () => {
   describe(parseText, () => {
@@ -107,6 +116,55 @@ describe("literature.utilities", () => {
         fullName: "Ennius",
         metadata: {},
       });
+    });
+  });
+
+  describe(removeReplacedTexts, () => {
+    const entry = (provider: string): LibraryEntry => ({
+      authorSlug: "epigraphik-datenbank-clauss-slaby",
+      fullPath: "roma/edcs-1.md",
+      pathParts: ["roma"],
+      provider,
+      textSlug: "edcs-1",
+      title: "EDCS 1",
+    });
+
+    it("soft-deletes the old numbered part texts of an EDCS author", async () => {
+      const repository = createMock<Repository<Text>>();
+      repository.find.mockResolvedValueOnce([
+        { id: "part-1" } as Text,
+        { id: "part-2" } as Text,
+      ]);
+
+      const removed = await removeReplacedTexts(repository, "author-id", [
+        entry("epigraphik-datenbank-clauss-slaby"),
+      ]);
+
+      expect(removed).toBe(2);
+      expect(repository.softDelete).toHaveBeenCalledWith(["part-1", "part-2"]);
+    });
+
+    it("deletes nothing when no part texts remain", async () => {
+      const repository = createMock<Repository<Text>>();
+      repository.find.mockResolvedValueOnce([]);
+
+      const removed = await removeReplacedTexts(repository, "author-id", [
+        entry("epigraphik-datenbank-clauss-slaby"),
+      ]);
+
+      expect(removed).toBe(0);
+      expect(repository.softDelete).not.toHaveBeenCalled();
+    });
+
+    it("leaves an author that has no EDCS text untouched", async () => {
+      const repository = createMock<Repository<Text>>();
+
+      const removed = await removeReplacedTexts(repository, "author-id", [
+        entry("perseus"),
+      ]);
+
+      expect(removed).toBe(0);
+      expect(repository.find).not.toHaveBeenCalled();
     });
   });
 });

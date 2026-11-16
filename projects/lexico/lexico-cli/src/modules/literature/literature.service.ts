@@ -30,7 +30,12 @@ import {
   TOKEN_SEGMENT_PATTERN,
   WORD_TOKEN_PATTERN,
 } from "./literature.constants";
-import { countTokens, mergeAuthor, parseText } from "./literature.utilities";
+import {
+  countTokens,
+  mergeAuthor,
+  parseText,
+  removeReplacedTexts,
+} from "./literature.utilities";
 
 import type {
   IngestTextArguments,
@@ -216,6 +221,7 @@ export class LiteratureService {
     const authorEntity = await this.authorRepository.findOneOrFail({
       where: { slug: authorSlug },
     });
+    await removeReplacedTexts(this.textRepository, authorEntity.id, texts);
     const parentTexts = await this.ensureParentTexts(
       authorEntity,
       authorSlug,
@@ -332,11 +338,7 @@ export class LiteratureService {
     if (!yamlNode?.value) return {};
     try {
       const parsed: unknown = YAML.parse(yamlNode.value);
-      if (this.isRecord(parsed)) {
-        return parsed;
-      }
-
-      return {};
+      return this.isRecord(parsed) ? parsed : {};
     } catch {
       return {};
     }

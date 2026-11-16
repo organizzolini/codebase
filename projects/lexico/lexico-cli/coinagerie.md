@@ -31,7 +31,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **element**: Cheerio node a parser callback receives while walking Wiktionary or library HTML, passed to $(element) for selection.
 - **epigraphik**: Prefix of Epigraphik-Datenbank Clauss-Slaby, the inscription source whose command, provider, and chunk schema this CLI reads.
 - **fundort**:
-- **hispania**:
 - **iacē**: Classical substitution key matching a Latin stem fragment, rewritten to the j form jacē before phonemes are mapped.
 - **ingest**: Verb for loading one source into the database, as in provider.ingest for each library author the library command selects.
 - **inschrifttyp**:
@@ -62,7 +61,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **pronunciation**: Module and service that derive phonemic and phonetic spellings for each Wiktionary entry, in classical or ecclesiastical mode.
 - **publication**: Word in the `print_publication_date` metadata key, the year a print edition of a library work appeared, which the Perseus and CSEL providers record from the source record when it carries one.
 - **recognise**: Token linked to a dictionary Word, so counted among a Text's recognised words.
-- **roma**:
 - **selector**: CSS selector string passed to the test mock Cheerio helper, which selects one element from loaded HTML for assertions.
 - **self**: Adjective for a link that points back to its own page, which the Latin Library builder skips as self-referential.
 - **slaby**: Name part of Epigraphik-Datenbank Clauss-Slaby, the EDCS source whose command and chunk schema live in this project.

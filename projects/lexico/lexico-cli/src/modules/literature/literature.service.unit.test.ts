@@ -1061,6 +1061,48 @@ describe(LiteratureService, () => {
     );
   });
 
+  it("should soft-delete replaced texts before ingesting an EDCS author", async () => {
+    textRepository.find.mockResolvedValueOnce([{ id: "old-part" } as Text]);
+    authorRepository.findOneOrFail.mockResolvedValueOnce(
+      createAuthorFixture({ id: "author-id", slug: "edcs" }),
+    );
+    const ensureSpy = vi
+      .spyOn(
+        service as unknown as { ensureParentTexts: () => Promise<unknown> },
+        "ensureParentTexts",
+      )
+      .mockResolvedValue(new Map());
+    const chunksSpy = vi
+      .spyOn(
+        service as unknown as { ingestTextChunks: () => Promise<void> },
+        "ingestTextChunks",
+      )
+      .mockResolvedValue(undefined);
+
+    await (
+      service as unknown as {
+        ingestAuthorGroup: (
+          authorSlug: string,
+          texts: LibraryEntry[],
+        ) => Promise<void>;
+      }
+    ).ingestAuthorGroup("edcs", [
+      {
+        authorSlug: "edcs",
+        fullPath: "roma/edcs-1.md",
+        pathParts: ["roma"],
+        provider: "epigraphik-datenbank-clauss-slaby",
+        textSlug: "edcs-1",
+        title: "EDCS 1",
+      },
+    ]);
+
+    expect(textRepository.softDelete).toHaveBeenCalledWith(["old-part"]);
+
+    ensureSpy.mockRestore();
+    chunksSpy.mockRestore();
+  });
+
   it("should keep valid text attributes and log the invalid ones", async () => {
     await (
       service as unknown as {

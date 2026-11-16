@@ -1,12 +1,19 @@
 import _ from "lodash";
+import { Raw } from "typeorm";
 
 import {
   authorMetadataSchema,
+  EDCS_PROVIDER,
   textFrontmatterSchema,
 } from "./literature.constants";
 
-import type { AuthorAttributes, TextAttributes } from "./literature.types";
-import type { Author, Token } from "@codebase/lexico-db";
+import type {
+  AuthorAttributes,
+  LibraryEntry,
+  TextAttributes,
+} from "./literature.types";
+import type { Author, Text, Token } from "@codebase/lexico-db";
+import type { Repository } from "typeorm";
 import type { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity.js";
 
 /**
@@ -63,4 +70,27 @@ export function parseText(frontmatter: Record<string, unknown>): {
     else invalidFields.push(field);
   }
   return { attributes, invalidFields };
+}
+
+/**
+ * Soft-deletes the numbered "Part" texts an earlier EDCS run stored per province, which the
+ * per-inscription texts replace; only an author with EDCS entries is touched.
+ */
+export async function removeReplacedTexts(
+  repository: Repository<Text>,
+  authorId: string,
+  entries: LibraryEntry[],
+): Promise<number> {
+  if (!entries.some((entry) => entry.provider === EDCS_PROVIDER)) return 0;
+  const replaced = await repository.find({
+    select: { id: true },
+    where: {
+      author: { id: authorId },
+      title: Raw((alias) => `${alias} ~ ' Part [0-9]+$'`),
+      type: "text",
+    },
+  });
+  if (replaced.length === 0) return 0;
+  await repository.softDelete(replaced.map((text) => text.id));
+  return replaced.length;
 }
