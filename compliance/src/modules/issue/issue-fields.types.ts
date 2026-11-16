@@ -12,7 +12,7 @@ export interface IssueField {
 /** What the Priority rule reads off an issue. */
 export type IssueFieldFacts = Pick<IssueMetadata, "fieldNames" | "hasParent">;
 
-/** An issue's filled field names, or why unreadable. */
+/** One issue's filled field names, or why they cannot be read. */
 export interface IssueFieldNamesResult {
   readonly error?: string;
   readonly fieldNames?: readonly string[];

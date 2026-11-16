@@ -385,11 +385,15 @@ This codebase uses **squash merging** by default:
 
 ### Scope Selection: Multi-Scope Title vs Split PR
 
-- Use one focused scope when the branch is mostly one project or concern.
-- Use a multi-scope title (`type(scope-a,scope-b): ...`) only when the change
-  is genuinely coupled and must land together.
-- If you would need many scopes or the title becomes awkward/too long, split
-  into multiple pull requests and keep each title scope-focused.
+Prefer one larger pull request over several smaller ones: the single maintainer
+reviews and manually tests it as one change. See
+[One Pull Request by Default](../../../AGENTS.md#one-pull-request-by-default).
+
+- Use one scope when every commit is in one project or concern.
+- Use a multi-scope title (`type(scope-a,scope-b): ...`) whenever the commits
+  span projects — that alone is no reason to split.
+- Split only for a mechanical reason: the scopes cannot fit the 128-character
+  header, one part must deploy before the rest can merge, or the user asked.
 - Before opening, verify that each commit shares at least one scope with the
   title; the release-significance check requires that overlap, not every scope.
   List the fewest scopes that cover every commit.
