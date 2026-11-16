@@ -52,7 +52,7 @@ Each directory under [`examples/`](examples) is one example, carries its own
 `README.md`, and is readable on its own.
 
 **The package is traced as one unit, together with its dependency closure.**
-Almost every example directory carries no `tsconfig.json` of its own, so it
+Almost every example directory carries no `configuration/tsconfig.json` of its own, so it
 cannot be traced alone — which is why every example's `## Run it` names the same
 command and then says where in the committed output to look. The one exception
 is deliberate: [gated-leaf](examples/gated-leaf/README.md) _is_ a project of its
@@ -208,7 +208,7 @@ same file is the example working, not a lint failure to chase.
 ### Per-project configuration
 
 Every limit callidescope gates on belongs to a **project** rather than to a run,
-and a project is a directory holding a tsconfig at the workspace's `projectTsconfigPath` (here `tsconfig.json`). Three examples cover
+and a project is a directory holding a tsconfig at the workspace's `projectTsconfigPath` (here `configuration/tsconfig.json`). Three examples cover
 what a project may say about itself:
 
 | Example | What it declares | What that changed |
@@ -438,7 +438,7 @@ whose entire content is deliberately-shaped fixture code. The answers:
 | `knip` and `fallow` | Every fixture is declared an entry point rather than ignored, so both keep checking dependencies while the orphan-root fixture stops being a finding |
 | `jscpd` | Scoped for this project. The resolution-table fixtures are near-identical by design |
 | `codometer` | No declared size limit: the package is private and never built, so there is no bundle to gate |
-| Nested projects | One example directory, `gated-leaf`, holds a `tsconfig.json` and no `package.json`. The first is what makes it a project with limits of its own; the second is deliberate — Nx infers a project from a nested `package.json`, and a `tsconfig.json` and a `package.json` nested one directory apart would collide with `@nx/enforce-module-boundaries`. It is named in the run's `--directories` instead |
+| Nested projects | One example directory, `gated-leaf`, holds a `configuration/tsconfig.json` and no `package.json`. The first is what makes it a project with limits of its own; the second is deliberate — Nx infers a project from a nested `package.json`, and a `tsconfig.json` and a `package.json` nested one directory apart would collide with `@nx/enforce-module-boundaries`. It is named in the run's `--directories` instead |
 | Nx tags | `type:package`, `framework:nestjs`, `language:typescript`, `name:callidescope-examples`. The NestJS dependency is real — `injected-dependency` is the headline case |
 | Project layout | An `examples/` directory rather than `src/modules/`, matching the other `*-examples` packages. `configuration/lint/codebase-structure.json` declares it |
 | `conformetry` | Not an instance of any template, and nothing had to be suppressed to keep it that way — see below |
@@ -469,7 +469,7 @@ callidescope-examples/
 │   └── gated-leaf/                    a nested project, with its own limits
 │       ├── callidescope.config.ts     what that project declares about itself
 │       ├── *.generated.ts             the file this project's own exclude drops
-│       ├── tsconfig.json              what makes the directory a project
+│       ├── configuration/tsconfig.json  what makes the directory a project
 │       └── README.md                  the guide, holding that project's own section
 ├── output/
 │   ├── report.json                    the whole run, machine-readable

@@ -18,7 +18,7 @@ nx run callidescope-examples:vitest            # assert every documented finding
 ```
 
 There is no per-example command. Almost every example directory carries no
-`tsconfig.json`, so the package traces as one unit — every example's `## Run it`
+`configuration/tsconfig.json`, so the package traces as one unit — every example's `## Run it`
 names the command above and then says where in `output/` to look. One
 directory is an exception and is a project of its own,
 [`gated-leaf`](examples/gated-leaf/README.md), because a limit resolves per
@@ -69,7 +69,7 @@ callidescope-examples/
 │   └── gated-leaf/                    a nested project, with its own limits
 │       ├── callidescope.config.ts     what that project declares about itself
 │       ├── *.generated.ts             the file this project's own exclude drops
-│       └── tsconfig.json              what makes the directory a project
+│       └── configuration/tsconfig.json  what makes the directory a project
 ├── output/
 │   ├── report.json                    the whole run, machine-readable
 │   ├── report.md                      the printed trees, between anchors
@@ -82,7 +82,7 @@ callidescope-examples/
 ```
 
 - Every directory under `examples/` is one example, readable on its own.
-- **One of them is also a project.** `gated-leaf` holds a `tsconfig.json`,
+- **One of them is also a project.** `gated-leaf` holds a `configuration/tsconfig.json`,
   which is what makes a directory a project and therefore what lets a limit
   belong to it. It is named in the `examples` target's `--directories` rather
   than reached through the closure, and it may not gain a `package.json`: Nx
@@ -92,7 +92,7 @@ callidescope-examples/
 - **No other example needed a project of its own.** A project-declared depth
   limit and a project-declared entry point are already demonstrated by this
   package's own root `callidescope.config.ts` — the root package itself has a
-  `tsconfig.json`, so it was already a discoverable project before this
+  `configuration/tsconfig.json`, so it was already a discoverable project before this
   package's examples were reworked as a set. `project-depth-limit` and
   `declared-entry-points` read from that root configuration and stay plain
   fixtures; only the exclusion criterion needed the extra isolation a nested

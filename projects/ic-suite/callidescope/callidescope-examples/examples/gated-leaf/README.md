@@ -40,7 +40,7 @@ in the row above.
 ## Two things had to be true before a limit here meant anything
 
 **It had to be a project.** Limits resolve per project, and a project is a
-directory holding a tsconfig at the workspace's `projectTsconfigPath` (here `tsconfig.json`). This directory has one, which is what lets
+directory holding a tsconfig at the workspace's `projectTsconfigPath` (here `configuration/tsconfig.json`). This directory has one, which is what lets
 the [`configuration/ic-suite/callidescope.config.ts`](configuration/ic-suite/callidescope.config.ts) beside it be read as a
 project configuration at all.
 

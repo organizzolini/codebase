@@ -3542,11 +3542,11 @@
           "callees": [
             {
               "displayName": "ProjectConfigurationPathMissingError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#10552"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#10641"
             },
             {
               "displayName": "ProjectConfigurationMissingError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#9970"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#10059"
             },
             {
               "displayName": "ProjectConfigurationService.loadProjectConfiguration",
@@ -3592,27 +3592,27 @@
           "callees": [
             {
               "displayName": "InputService.assertCanPrompt",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#1024"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#1060"
             },
             {
               "displayName": "InputService.map(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#3182"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#3218"
             },
             {
               "displayName": "promptCancelledError",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.constants.ts#1786"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.constants.ts#2422"
             },
             {
               "displayName": "InputService.filter(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#4064"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#4100"
             }
           ],
           "displayName": "InputService.promptForAutocompleteMultiselect",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2900",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2936",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-            "line": 96
+            "line": 97
           },
           "signature": {
             "parameters": [
@@ -3632,27 +3632,27 @@
           "callees": [
             {
               "displayName": "InputService.assertCanPrompt",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#1024"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#1060"
             },
             {
               "displayName": "InputService.map(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#4643"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#4679"
             },
             {
               "displayName": "promptCancelledError",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.constants.ts#1786"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.constants.ts#2422"
             },
             {
               "displayName": "InputService.find(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#4940"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#4976"
             }
           ],
           "displayName": "InputService.promptForSelect",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#4365",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#4401",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-            "line": 145
+            "line": 146
           },
           "signature": {
             "parameters": [
@@ -3722,7 +3722,7 @@
             },
             {
               "displayName": "UnknownConfigurationFileTypeError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#5083"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#5119"
             },
             {
               "displayName": "ConfigurationFileService.loadConfigurationModule",
@@ -3862,19 +3862,19 @@
           "callees": [
             {
               "displayName": "InputService.isAtTerminal",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2049"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2085"
             },
             {
               "displayName": "missingInputError",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.constants.ts#1541"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.constants.ts#2177"
             }
           ],
           "displayName": "InputService.assertCanPrompt",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#1024",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#1060",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-            "line": 39
+            "line": 40
           },
           "signature": {
             "parameters": [
@@ -3894,19 +3894,19 @@
           "callees": [
             {
               "displayName": "InputService.map(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#3458"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#3494"
             },
             {
               "displayName": "InputService.completeSuggestions",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#1310"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#1346"
             }
           ],
           "displayName": "InputService.suggest",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#3286",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#3322",
           "location": {
             "column": 16,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-            "line": 107
+            "line": 108
           },
           "signature": {
             "parameters": [
@@ -3926,7 +3926,7 @@
           "callees": [
             {
               "displayName": "InputService.parseOptionalOption",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2560"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2596"
             },
             {
               "displayName": "ConfigurationPathRequiredError.constructor",
@@ -3934,11 +3934,11 @@
             }
           ],
           "displayName": "InputService.requireConfigurationPath",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#5260",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#5296",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-            "line": 178
+            "line": 179
           },
           "signature": {
             "parameters": [
@@ -3964,7 +3964,7 @@
           "callees": [
             {
               "displayName": "InputService.parseOptionalOption",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2560"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2596"
             },
             {
               "displayName": "ProjectConfigurationPathRequiredError.constructor",
@@ -3972,11 +3972,49 @@
             }
           ],
           "displayName": "InputService.requireProjectConfigurationPath",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#5656",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#5692",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-            "line": 194
+            "line": 195
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "path",
+                "type": "string | undefined"
+              },
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "surface",
+                "type": "string"
+              }
+            ],
+            "returnType": "string",
+            "text": "(path: string | undefined, surface: string): string"
+          }
+        },
+        {
+          "breadth": 2,
+          "callees": [
+            {
+              "displayName": "InputService.parseOptionalOption",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2596"
+            },
+            {
+              "displayName": "ProjectTsconfigPathRequiredError.constructor",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.constants.ts#1777"
+            }
+          ],
+          "displayName": "InputService.requireProjectTsconfigPath",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#6097",
+          "location": {
+            "column": 3,
+            "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
+            "line": 211
           },
           "signature": {
             "parameters": [
@@ -4178,7 +4216,7 @@
             },
             {
               "displayName": "ProjectConfigurationIncompleteError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#9413"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#9502"
             }
           ],
           "displayName": "ProjectConfigurationService.assertComplete",
@@ -4210,7 +4248,7 @@
             },
             {
               "displayName": "ProjectConfigurationFieldNotPermittedError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#8786"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#8875"
             }
           ],
           "displayName": "ProjectConfigurationService.assertNoForbiddenFields",
@@ -4270,7 +4308,7 @@
           "callees": [
             {
               "displayName": "InputService.isAtTerminal",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2049"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2085"
             },
             {
               "displayName": "ConfigurationService.promptForSelect",
@@ -4278,11 +4316,11 @@
             }
           ],
           "displayName": "ConfigurationService.resolveFormatOption",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#5008",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#5273",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 149
+            "line": 157
           },
           "signature": {
             "parameters": [
@@ -4306,11 +4344,11 @@
             }
           ],
           "displayName": "flatMap(…)",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#3995",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#4031",
           "location": {
             "column": 5,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts",
-            "line": 139
+            "line": 140
           },
           "signature": {
             "parameters": [
@@ -4330,15 +4368,15 @@
           "callees": [
             {
               "displayName": "custom(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#5394"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#5430"
             }
           ],
           "displayName": "callbackSchema",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#5333",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#5369",
           "location": {
             "column": 24,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts",
-            "line": 179
+            "line": 180
           },
           "signature": {
             "parameters": [],
@@ -4355,11 +4393,11 @@
             }
           ],
           "displayName": "missingInputError",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.constants.ts#1541",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.constants.ts#2177",
           "location": {
             "column": 34,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.constants.ts",
-            "line": 43
+            "line": 57
           },
           "signature": {
             "parameters": [
@@ -4383,11 +4421,11 @@
             }
           ],
           "displayName": "promptCancelledError",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.constants.ts#1786",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.constants.ts#2422",
           "location": {
             "column": 37,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.constants.ts",
-            "line": 49
+            "line": 63
           },
           "signature": {
             "parameters": [
@@ -4407,15 +4445,15 @@
           "callees": [
             {
               "displayName": "InputService.filter(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#1500"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#1536"
             }
           ],
           "displayName": "InputService.completeSuggestions",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#1310",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#1346",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-            "line": 49
+            "line": 50
           },
           "signature": {
             "parameters": [
@@ -4435,15 +4473,15 @@
           "callees": [
             {
               "displayName": "InputService.map(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2432"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2468"
             }
           ],
           "displayName": "InputService.parseCommaDelimitedOption",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2267",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2303",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-            "line": 76
+            "line": 77
           },
           "signature": {
             "parameters": [
@@ -4721,7 +4759,7 @@
           "callees": [
             {
               "displayName": "ConfigurationFileNotFoundError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#7615"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#7704"
             }
           ],
           "displayName": "ConfigurationFileService.resolveConfigurationPath",
@@ -4833,7 +4871,7 @@
           "callees": [
             {
               "displayName": "ProjectConfigurationError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#8027"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#8116"
             }
           ],
           "displayName": "ProjectConfigurationService.loadProjectConfiguration",
@@ -4973,7 +5011,7 @@
           "callees": [
             {
               "displayName": "InputService.parseCommaDelimitedOption",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2267"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2303"
             }
           ],
           "displayName": "ConfigurationService.parseCommaDelimitedOption",
@@ -5001,7 +5039,7 @@
           "callees": [
             {
               "displayName": "InputService.parseOptionalOption",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2560"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2596"
             }
           ],
           "displayName": "ConfigurationService.parseOptionalOption",
@@ -5085,7 +5123,7 @@
           "callees": [
             {
               "displayName": "InputService.promptForAutocompleteMultiselect",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2900"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2936"
             }
           ],
           "displayName": "ConfigurationService.promptForAutocompleteMultiselect",
@@ -5113,7 +5151,7 @@
           "callees": [
             {
               "displayName": "InputService.promptForSelect",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#4365"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#4401"
             }
           ],
           "displayName": "ConfigurationService.promptForSelect",
@@ -5141,7 +5179,7 @@
           "callees": [
             {
               "displayName": "InputService.requireConfigurationPath",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#5260"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#5296"
             }
           ],
           "displayName": "ConfigurationService.requireConfigurationPath",
@@ -5175,7 +5213,7 @@
           "callees": [
             {
               "displayName": "InputService.requireProjectConfigurationPath",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#5656"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#5692"
             }
           ],
           "displayName": "ConfigurationService.requireProjectConfigurationPath",
@@ -5208,16 +5246,50 @@
           "breadth": 1,
           "callees": [
             {
+              "displayName": "InputService.requireProjectTsconfigPath",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#6097"
+            }
+          ],
+          "displayName": "ConfigurationService.requireProjectTsconfigPath",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#4688",
+          "location": {
+            "column": 3,
+            "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts",
+            "line": 139
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "path",
+                "type": "string | undefined"
+              },
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "surface",
+                "type": "string"
+              }
+            ],
+            "returnType": "string",
+            "text": "(path: string | undefined, surface: string): string"
+          }
+        },
+        {
+          "breadth": 1,
+          "callees": [
+            {
               "displayName": "ConfigurationFileService.resolveConfiguration",
               "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts#7280"
             }
           ],
           "displayName": "ConfigurationService.resolveConfiguration",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#4668",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#4933",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 139
+            "line": 147
           },
           "signature": {
             "parameters": [
@@ -5241,11 +5313,11 @@
             }
           ],
           "displayName": "ConfigurationService.resolveLimits",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#5534",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#5799",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 166
+            "line": 174
           },
           "signature": {
             "parameters": [
@@ -5269,11 +5341,11 @@
             }
           ],
           "displayName": "ConfigurationService.touchesFiles",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#5768",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#6033",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 173
+            "line": 181
           },
           "signature": {
             "parameters": [
@@ -5681,12 +5753,12 @@
                 "summary": "Fills `--format` in where wanted. Offered, not required: scripted runs without a terminal keep the caller's default.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#5008",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#5273",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 149
+                "line": 157
               },
               "signature": {
                 "parameters": [
@@ -5735,12 +5807,12 @@
                 "summary": "Prompts for one value out of a fixed set of choices.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#4365",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#4401",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-                "line": 145
+                "line": 146
               },
               "signature": {
                 "parameters": [
@@ -5762,12 +5834,12 @@
                 "summary": "Refuses to draw a prompt nobody can answer. `prompts` would exit 0 without doing anything.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#1024",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#1060",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-                "line": 39
+                "line": 40
               },
               "signature": {
                 "parameters": [
@@ -5789,12 +5861,12 @@
                 "summary": "Refuses a prompt on a non-terminal, which exits 0 silently.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.constants.ts#1541",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.constants.ts#2177",
               "isCycle": false,
               "location": {
                 "column": 34,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.constants.ts",
-                "line": 43
+                "line": 57
               },
               "signature": {
                 "parameters": [
@@ -6020,12 +6092,12 @@
                 "summary": "Prompts for several values, completing as typed. Selecting nothing is refused, since it cannot be told from an escape.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2900",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2936",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-                "line": 96
+                "line": 97
               },
               "signature": {
                 "parameters": [
@@ -6047,12 +6119,12 @@
                 "summary": "Refuses to draw a prompt nobody can answer. `prompts` would exit 0 without doing anything.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#1024",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#1060",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-                "line": 39
+                "line": 40
               },
               "signature": {
                 "parameters": [
@@ -6074,12 +6146,12 @@
                 "summary": "Refuses a prompt on a non-terminal, which exits 0 silently.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.constants.ts#1541",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.constants.ts#2177",
               "isCycle": false,
               "location": {
                 "column": 34,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.constants.ts",
-                "line": 43
+                "line": 57
               },
               "signature": {
                 "parameters": [
@@ -6130,12 +6202,12 @@
                 "summary": "Resolves the limits every traced project is judged against.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#5534",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#5799",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 166
+                "line": 174
               },
               "signature": {
                 "parameters": [
@@ -6343,12 +6415,12 @@
             },
             {
               "displayName": "ConfigurationFileNotFoundError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#7615",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#7704",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts",
-                "line": 249
+                "line": 251
               },
               "signature": {
                 "parameters": [
@@ -6453,12 +6525,12 @@
             },
             {
               "displayName": "ConfigurationFileNotFoundError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#7615",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#7704",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts",
-                "line": 249
+                "line": 251
               },
               "signature": {
                 "parameters": [
@@ -6482,12 +6554,12 @@
           "frames": [
             {
               "displayName": "flatMap(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#3995",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#4031",
               "isCycle": false,
               "location": {
                 "column": 5,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts",
-                "line": 139
+                "line": 140
               },
               "signature": {
                 "parameters": [
@@ -6560,12 +6632,12 @@
           "frames": [
             {
               "displayName": "InputService.suggest",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#3286",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#3322",
               "isCycle": false,
               "location": {
                 "column": 16,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-                "line": 107
+                "line": 108
               },
               "signature": {
                 "parameters": [
@@ -6587,12 +6659,12 @@
                 "summary": "Narrows suggestions to those containing the typed text. Matches a substring, since a name is more often remembered than its path.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#1310",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#1346",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-                "line": 49
+                "line": 50
               },
               "signature": {
                 "parameters": [
@@ -6609,12 +6681,12 @@
             },
             {
               "displayName": "InputService.filter(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#1500",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#1536",
               "isCycle": false,
               "location": {
                 "column": 45,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-                "line": 54
+                "line": 55
               },
               "signature": {
                 "parameters": [
@@ -6670,12 +6742,12 @@
                 "summary": "Splits a comma-separated flag into trimmed, non-empty entries. Entries stay relative, resolved later against the workspace root.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2267",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2303",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-                "line": 76
+                "line": 77
               },
               "signature": {
                 "parameters": [
@@ -6692,12 +6764,12 @@
             },
             {
               "displayName": "InputService.map(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2432",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2468",
               "isCycle": false,
               "location": {
                 "column": 16,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-                "line": 81
+                "line": 82
               },
               "signature": {
                 "parameters": [
@@ -6759,12 +6831,12 @@
                 "summary": "Trims the configuration path, refusing an absent or blank one, and names the surface it came from.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#5260",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#5296",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-                "line": 178
+                "line": 179
               },
               "signature": {
                 "parameters": [
@@ -6792,12 +6864,12 @@
                 "summary": "Trims an optional string option, treating blank as absent.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2560",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2596",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-                "line": 86
+                "line": 87
               },
               "signature": {
                 "parameters": [
@@ -6859,12 +6931,12 @@
                 "summary": "Trims the project configuration path, refusing an absent or blank one, and names the surface it came from.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#5656",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#5692",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-                "line": 194
+                "line": 195
               },
               "signature": {
                 "parameters": [
@@ -6892,12 +6964,112 @@
                 "summary": "Trims an optional string option, treating blank as absent.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2560",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2596",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-                "line": 86
+                "line": 87
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "value",
+                    "type": "string | undefined"
+                  }
+                ],
+                "returnType": "string | undefined",
+                "text": "(value: string | undefined): string | undefined"
+              }
+            }
+          ],
+          "isLowerBound": true
+        },
+        {
+          "depth": 3,
+          "entryPointKind": "orphan-root",
+          "frames": [
+            {
+              "displayName": "ConfigurationService.requireProjectTsconfigPath",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Reads the project tsconfig path, refusing an absent or blank one by surface.",
+                "tags": []
+              },
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#4688",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts",
+                "line": 139
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "path",
+                    "type": "string | undefined"
+                  },
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "surface",
+                    "type": "string"
+                  }
+                ],
+                "returnType": "string",
+                "text": "(path: string | undefined, surface: string): string"
+              }
+            },
+            {
+              "displayName": "InputService.requireProjectTsconfigPath",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Trims the project tsconfig path, refusing an absent or blank one, and names the surface it came from.",
+                "tags": []
+              },
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#6097",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
+                "line": 211
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "path",
+                    "type": "string | undefined"
+                  },
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "surface",
+                    "type": "string"
+                  }
+                ],
+                "returnType": "string",
+                "text": "(path: string | undefined, surface: string): string"
+              }
+            },
+            {
+              "displayName": "InputService.parseOptionalOption",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Trims an optional string option, treating blank as absent.",
+                "tags": []
+              },
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2596",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
+                "line": 87
               },
               "signature": {
                 "parameters": [
@@ -6926,12 +7098,12 @@
                 "summary": "Any function: Zod cannot describe callbacks, and parsing wraps them.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#5333",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#5369",
               "isCycle": false,
               "location": {
                 "column": 24,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts",
-                "line": 179
+                "line": 180
               },
               "signature": {
                 "parameters": [],
@@ -6941,12 +7113,12 @@
             },
             {
               "displayName": "custom(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#5394",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#5430",
               "isCycle": false,
               "location": {
                 "column": 23,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts",
-                "line": 180
+                "line": 181
               },
               "signature": {
                 "parameters": [
@@ -7063,12 +7235,12 @@
                 "summary": "Trims an optional string option, treating blank as absent.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2560",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts#2596",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/input/input.service.ts",
-                "line": 86
+                "line": 87
               },
               "signature": {
                 "parameters": [
@@ -7097,12 +7269,12 @@
                 "summary": "Whether a run reads or rewrites the files its reports live in.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#5768",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#6033",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 173
+                "line": 181
               },
               "signature": {
                 "parameters": [
@@ -7149,14 +7321,14 @@
         }
       ],
       "summary": {
-        "callableCount": 116,
+        "callableCount": 119,
         "cyclicComponentCount": 0,
-        "edgeCount": 113,
-        "entryPointCount": 17,
+        "edgeCount": 116,
+        "entryPointCount": 18,
         "fileCount": 28,
         "maximumDepth": 7,
         "projectCount": 1,
-        "unresolvedCallCount": 14
+        "unresolvedCallCount": 15
       }
     },
     {
@@ -7771,7 +7943,7 @@
           "callees": [
             {
               "displayName": "ConfigurationService.resolveConfiguration",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#4668"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#4933"
             }
           ],
           "displayName": "DependencyClosureService.readDepthLimit",
@@ -9764,12 +9936,12 @@
                 "summary": "Fills in every field a configuration file may leave out.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#4668",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts#4933",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 139
+                "line": 147
               },
               "signature": {
                 "parameters": [
@@ -11157,15 +11329,15 @@
             },
             {
               "displayName": "ConfigurationService.resolveConfiguration",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#9507"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#10011"
             }
           ],
           "displayName": "ConfigurationService.loadConfiguration",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#6108",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#6144",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 190
+            "line": 191
           },
           "signature": {
             "parameters": [
@@ -11197,11 +11369,11 @@
             }
           ],
           "displayName": "ConfigurationService.loadProjectConfiguration",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#6660",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#6696",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 206
+            "line": 207
           },
           "signature": {
             "parameters": [
@@ -11317,19 +11489,19 @@
           "callees": [
             {
               "displayName": "ConfigurationService.matchesAnyName",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2665"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2701"
             },
             {
               "displayName": "ConfigurationService.some(…)",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2315"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2351"
             }
           ],
           "displayName": "ConfigurationService.isProjectNamedOnCommandLine",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2018",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2054",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 65
+            "line": 66
           },
           "signature": {
             "parameters": [
@@ -11349,19 +11521,19 @@
           "callees": [
             {
               "displayName": "ConfigurationService.filter(…)",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#4859"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#4895"
             },
             {
               "displayName": "ConfigurationService.map(…)",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#4820"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#4856"
             }
           ],
           "displayName": "ConfigurationService.splitSelectionArgument",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#4674",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#4710",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 148
+            "line": 149
           },
           "signature": {
             "parameters": [
@@ -11381,19 +11553,19 @@
           "callees": [
             {
               "displayName": "ConfigurationService.matchesAnyName",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2665"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2701"
             },
             {
               "displayName": "ConfigurationService.isProjectNamedOnCommandLine",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2018"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2054"
             }
           ],
           "displayName": "ConfigurationService.isProjectIncluded",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5063",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5099",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 159
+            "line": 160
           },
           "signature": {
             "parameters": [
@@ -11413,19 +11585,19 @@
           "callees": [
             {
               "displayName": "ConfigurationService.resolveBoundaries",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#3078"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#3114"
             },
             {
               "displayName": "ConfigurationService.resolveSelection",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#4274"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#4310"
             }
           ],
           "displayName": "ConfigurationService.resolveConfiguration",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#9507",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#10011",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 291
+            "line": 309
           },
           "signature": {
             "parameters": [
@@ -11451,19 +11623,19 @@
           "callees": [
             {
               "displayName": "ConfigurationService.isProjectIncluded",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5063"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5099"
             },
             {
               "displayName": "ConfigurationService.resolveGraphOutput",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#3562"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#3598"
             }
           ],
           "displayName": "ConfigurationService.resolveForProject",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#10330",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#10896",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 311
+            "line": 330
           },
           "signature": {
             "parameters": [
@@ -11707,7 +11879,7 @@
           "callees": [
             {
               "displayName": "ConfigurationFileNotFoundError.constructor",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#6873"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#6915"
             }
           ],
           "displayName": "ConfigurationLoaderService.resolveConfigurationPath",
@@ -11818,15 +11990,15 @@
           "callees": [
             {
               "displayName": "ConfigurationService.some(…)",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2537"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2573"
             }
           ],
           "displayName": "ConfigurationService.matchesAnyGlob",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2443",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2479",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 80
+            "line": 81
           },
           "signature": {
             "parameters": [
@@ -11852,15 +12024,15 @@
           "callees": [
             {
               "displayName": "ConfigurationService.matchesAnyGlob",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2443"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2479"
             }
           ],
           "displayName": "ConfigurationService.matchesAnyName",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2665",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2701",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 85
+            "line": 86
           },
           "signature": {
             "parameters": [
@@ -11892,15 +12064,15 @@
           "callees": [
             {
               "displayName": "ConfigurationService.splitSelectionArgument",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#4674"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#4710"
             }
           ],
           "displayName": "ConfigurationService.resolveSelection",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#4274",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#4310",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 137
+            "line": 138
           },
           "signature": {
             "parameters": [
@@ -11920,15 +12092,15 @@
           "callees": [
             {
               "displayName": "ConfigurationService.isProjectNamedOnCommandLine",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2018"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2054"
             }
           ],
           "displayName": "ConfigurationService.isProjectSelected",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5679",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5715",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 177
+            "line": 178
           },
           "signature": {
             "parameters": [
@@ -11952,11 +12124,11 @@
             }
           ],
           "displayName": "ConfigurationService.parseCommaDelimitedOption",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#7714",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#7750",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 238
+            "line": 239
           },
           "signature": {
             "parameters": [
@@ -11980,11 +12152,11 @@
             }
           ],
           "displayName": "ConfigurationService.parseFlagOption",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#7929",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#7965",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 243
+            "line": 244
           },
           "signature": {
             "parameters": [
@@ -12008,11 +12180,11 @@
             }
           ],
           "displayName": "ConfigurationService.parseOptionalOption",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#8119",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#8155",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 248
+            "line": 249
           },
           "signature": {
             "parameters": [
@@ -12036,11 +12208,11 @@
             }
           ],
           "displayName": "ConfigurationService.parsePathOption",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#8331",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#8367",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 253
+            "line": 254
           },
           "signature": {
             "parameters": [
@@ -12060,15 +12232,15 @@
           "callees": [
             {
               "displayName": "ConfigurationPathRequiredError.constructor",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#7365"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#7407"
             }
           ],
           "displayName": "ConfigurationService.requireConfigurationPath",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#8581",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#8617",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 260
+            "line": 261
           },
           "signature": {
             "parameters": [
@@ -12094,15 +12266,15 @@
           "callees": [
             {
               "displayName": "ProjectConfigurationPathRequiredError.constructor",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#7831"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#7873"
             }
           ],
           "displayName": "ConfigurationService.requireProjectConfigurationPath",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#9008",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#9044",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 274
+            "line": 275
           },
           "signature": {
             "parameters": [
@@ -12127,16 +12299,50 @@
           "breadth": 1,
           "callees": [
             {
-              "displayName": "ConfigurationService.resolveGraphOutput",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#3562"
+              "displayName": "ProjectTsconfigPathRequiredError.constructor",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#8404"
             }
           ],
-          "displayName": "ConfigurationService.resolveForWorkspace",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#11121",
+          "displayName": "ConfigurationService.requireProjectTsconfigPath",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#9542",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 344
+            "line": 292
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "projectTsconfigPath",
+                "type": "string | undefined"
+              },
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "surface",
+                "type": "string"
+              }
+            ],
+            "returnType": "string",
+            "text": "(projectTsconfigPath: string | undefined, surface: string): string"
+          }
+        },
+        {
+          "breadth": 1,
+          "callees": [
+            {
+              "displayName": "ConfigurationService.resolveGraphOutput",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#3598"
+            }
+          ],
+          "displayName": "ConfigurationService.resolveForWorkspace",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#11687",
+          "location": {
+            "column": 3,
+            "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
+            "line": 363
           },
           "signature": {
             "parameters": [
@@ -12166,11 +12372,11 @@
             }
           ],
           "displayName": "ConfigurationService.selectMode",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#11531",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#12097",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 357
+            "line": 376
           },
           "signature": {
             "parameters": [
@@ -12194,11 +12400,11 @@
             }
           ],
           "displayName": "ConfigurationService.touchesFiles",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#11759",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#12325",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 364
+            "line": 383
           },
           "signature": {
             "parameters": [
@@ -12227,12 +12433,12 @@
                 "summary": "Reads the flags into what the run writes and what it fails on. See `FlagResolutionService.selectMode` for which combinations are refused and why.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#11531",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#12097",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 357
+                "line": 376
               },
               "signature": {
                 "parameters": [
@@ -12411,12 +12617,12 @@
                 "summary": "Resolves one project's export configuration for one graph type. An excluded project, or one without its own file, resolves to `target: \"none\"`.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#10330",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#10896",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 311
+                "line": 330
               },
               "signature": {
                 "parameters": [
@@ -12438,12 +12644,12 @@
                 "summary": "Whether a project takes part in graph export: matched by `include` or the command line, and not claimed by `exclude`. `exclude` wins over flags.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5063",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5099",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 159
+                "line": 160
               },
               "signature": {
                 "parameters": [
@@ -12465,12 +12671,12 @@
                 "summary": "Whether `--projects` or `--tags` names a project.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2018",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2054",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 65
+                "line": 66
               },
               "signature": {
                 "parameters": [
@@ -12492,12 +12698,12 @@
                 "summary": "Whether a project's name or its root matches at least one glob.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2665",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2701",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 85
+                "line": 86
               },
               "signature": {
                 "parameters": [
@@ -12531,12 +12737,12 @@
                 "summary": "Whether a project's name matches at least one of a list of globs.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2443",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2479",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 80
+                "line": 81
               },
               "signature": {
                 "parameters": [
@@ -12559,12 +12765,12 @@
             },
             {
               "displayName": "ConfigurationService.some(…)",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2537",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2573",
               "isCycle": false,
               "location": {
                 "column": 23,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 81
+                "line": 82
               },
               "signature": {
                 "parameters": [
@@ -12593,12 +12799,12 @@
                 "summary": "Whether a project is in the command line's selection. Naming none selects every project. `include` never reaches the graph or gate, only selections do.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5679",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5715",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 177
+                "line": 178
               },
               "signature": {
                 "parameters": [
@@ -12620,12 +12826,12 @@
                 "summary": "Whether `--projects` or `--tags` names a project.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2018",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2054",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 65
+                "line": 66
               },
               "signature": {
                 "parameters": [
@@ -12647,12 +12853,12 @@
                 "summary": "Whether a project's name or its root matches at least one glob.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2665",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2701",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 85
+                "line": 86
               },
               "signature": {
                 "parameters": [
@@ -12686,12 +12892,12 @@
                 "summary": "Whether a project's name matches at least one of a list of globs.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2443",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2479",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 80
+                "line": 81
               },
               "signature": {
                 "parameters": [
@@ -12714,12 +12920,12 @@
             },
             {
               "displayName": "ConfigurationService.some(…)",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2537",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2573",
               "isCycle": false,
               "location": {
                 "column": 23,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 81
+                "line": 82
               },
               "signature": {
                 "parameters": [
@@ -12748,12 +12954,12 @@
                 "summary": "Loads and validates a configuration file. The path must exist; nothing is searched for, so a typo fails rather than resolving to nothing.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#6108",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#6144",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 190
+                "line": 191
               },
               "signature": {
                 "parameters": [
@@ -12890,12 +13096,12 @@
                 "summary": "Loads one project's own configuration file, or `undefined`. Read only at the configured path under its root, never inherited.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#6660",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#6696",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 206
+                "line": 207
               },
               "signature": {
                 "parameters": [
@@ -12978,12 +13184,12 @@
                 "summary": "Parses a comma-separated list, dropping blanks. Forwarded here, since `ConfigurationService` is the one public service.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#7714",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#7750",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 238
+                "line": 239
               },
               "signature": {
                 "parameters": [
@@ -13061,12 +13267,12 @@
                 "summary": "Parses a path option that falls back to the working directory.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#8331",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#8367",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 253
+                "line": 254
               },
               "signature": {
                 "parameters": [
@@ -13200,12 +13406,12 @@
                 "summary": "Parses a valueless boolean flag, which is present or it is not.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#7929",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#7965",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 243
+                "line": 244
               },
               "signature": {
                 "parameters": [
@@ -13261,12 +13467,12 @@
                 "summary": "Trims an optional string option, treating blank as absent.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#8119",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#8155",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 248
+                "line": 249
               },
               "signature": {
                 "parameters": [
@@ -13322,12 +13528,12 @@
                 "summary": "Returns the main configuration path, refusing a missing or blank one. `surface` names its source in the refusal.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#8581",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#8617",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 260
+                "line": 261
               },
               "signature": {
                 "parameters": [
@@ -13350,12 +13556,12 @@
             },
             {
               "displayName": "ConfigurationPathRequiredError.constructor",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#7365",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#7407",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts",
-                "line": 224
+                "line": 225
               },
               "signature": {
                 "parameters": [
@@ -13384,12 +13590,12 @@
                 "summary": "Returns the per-project configuration path, refusing a missing or blank one. `surface` names its source in the refusal.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#9008",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#9044",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 274
+                "line": 275
               },
               "signature": {
                 "parameters": [
@@ -13412,12 +13618,12 @@
             },
             {
               "displayName": "ProjectConfigurationPathRequiredError.constructor",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#7831",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#7873",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts",
-                "line": 239
+                "line": 240
               },
               "signature": {
                 "parameters": [
@@ -13440,18 +13646,80 @@
           "entryPointKind": "orphan-root",
           "frames": [
             {
+              "displayName": "ConfigurationService.requireProjectTsconfigPath",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Returns the per-project TypeScript configuration path, refusing a missing or blank one. `surface` names its source in the refusal.",
+                "tags": []
+              },
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#9542",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
+                "line": 292
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "projectTsconfigPath",
+                    "type": "string | undefined"
+                  },
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "surface",
+                    "type": "string"
+                  }
+                ],
+                "returnType": "string",
+                "text": "(projectTsconfigPath: string | undefined, surface: string): string"
+              }
+            },
+            {
+              "displayName": "ProjectTsconfigPathRequiredError.constructor",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#8404",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts",
+                "line": 255
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "surface",
+                    "type": "string"
+                  }
+                ],
+                "returnType": "ProjectTsconfigPathRequiredError",
+                "text": "(surface: string): ProjectTsconfigPathRequiredError"
+              }
+            }
+          ],
+          "isLowerBound": true
+        },
+        {
+          "depth": 2,
+          "entryPointKind": "orphan-root",
+          "frames": [
+            {
               "displayName": "ConfigurationService.resolveForWorkspace",
               "documentation": {
                 "isDeprecated": false,
                 "summary": "Resolves the Workspace Graph's export for one graph type. `include` and `exclude` never apply to it.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#11121",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#11687",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 344
+                "line": 363
               },
               "signature": {
                 "parameters": [
@@ -13479,12 +13747,12 @@
                 "summary": "Applies defaults to one graph type's export configuration.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#3562",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#3598",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 113
+                "line": 114
               },
               "signature": {
                 "parameters": [
@@ -13513,12 +13781,12 @@
                 "summary": "Whether a run reads or rewrites the files its exports live in.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#11759",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#12325",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 364
+                "line": 383
               },
               "signature": {
                 "parameters": [
@@ -13565,14 +13833,14 @@
         }
       ],
       "summary": {
-        "callableCount": 69,
+        "callableCount": 71,
         "cyclicComponentCount": 0,
-        "edgeCount": 62,
-        "entryPointCount": 14,
+        "edgeCount": 63,
+        "entryPointCount": 15,
         "fileCount": 23,
         "maximumDepth": 7,
         "projectCount": 1,
-        "unresolvedCallCount": 5
+        "unresolvedCallCount": 6
       }
     },
     {
@@ -16338,15 +16606,15 @@
             },
             {
               "displayName": "ConfigurationService.resolveWords",
-              "id": "projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts#7279"
+              "id": "projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts#7365"
             }
           ],
           "displayName": "ConfigurationService.read",
-          "id": "projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts#3955",
+          "id": "projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts#3995",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 144
+            "line": 145
           },
           "signature": {
             "parameters": [
@@ -16378,11 +16646,11 @@
             }
           ],
           "displayName": "ConfigurationService.resolve",
-          "id": "projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts#4945",
+          "id": "projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts#4985",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 180
+            "line": 181
           },
           "signature": {
             "parameters": [
@@ -16406,19 +16674,19 @@
             },
             {
               "displayName": "ConfigurationService.resolve",
-              "id": "projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts#4945"
+              "id": "projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts#4985"
             },
             {
               "displayName": "ConfigurationService.read",
-              "id": "projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts#3955"
+              "id": "projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts#3995"
             }
           ],
           "displayName": "ConfigurationService.loadConfiguration",
-          "id": "projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts#8421",
+          "id": "projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts#8507",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 292
+            "line": 294
           },
           "signature": {
             "parameters": [
@@ -16507,12 +16775,12 @@
                 "summary": "Loads the run's configuration from the file it names. The scan root is the `rootDirectory` when given, else the file's folder.",
                 "tags": []
               },
-              "id": "projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts#8421",
+              "id": "projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts#8507",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 292
+                "line": 294
               },
               "signature": {
                 "parameters": [
@@ -16638,7 +16906,7 @@
         }
       ],
       "summary": {
-        "callableCount": 13,
+        "callableCount": 14,
         "cyclicComponentCount": 0,
         "edgeCount": 17,
         "entryPointCount": 2,
@@ -18651,14 +18919,14 @@
     }
   ],
   "summary": {
-    "callableCount": 432,
+    "callableCount": 438,
     "cyclicComponentCount": 1,
-    "edgeCount": 359,
-    "entryPointCount": 148,
+    "edgeCount": 363,
+    "entryPointCount": 151,
     "fileCount": 238,
     "maximumDepth": 9,
     "projectCount": 12,
-    "unresolvedCallCount": 34
+    "unresolvedCallCount": 36
   },
   "wideCallables": [
     {
