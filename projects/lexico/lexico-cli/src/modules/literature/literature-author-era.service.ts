@@ -10,13 +10,18 @@ import { LoggerService } from "@codebase/observability";
 import {
   CATALOGUE_IDENTIFIER_PATTERN,
   FALLBACK_AUTHOR_YEARS,
+  WIKIDATA_MAX_ATTEMPTS,
   WIKIDATA_QUERY_URL,
   WIKIDATA_REQUEST_DELAY_MILLISECONDS,
   WIKIDATA_TIMEOUT_MILLISECONDS,
   WIKIDATA_USER_AGENT,
   wikidataResponseSchema,
 } from "./literature.constants";
-import { deriveEra, pickWikidataYears } from "./literature.utilities";
+import {
+  backoffMilliseconds,
+  deriveEra,
+  pickWikidataYears,
+} from "./literature.utilities";
 
 import type { AuthorYears } from "./literature.types";
 import type { Repository } from "typeorm";
@@ -41,6 +46,21 @@ export class LiteratureAuthorEraService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
+
+  /** Fetches a Wikidata query, waiting and trying again while it answers 429, up to a cap. */
+  private async fetchWikidata(url: string): Promise<Response> {
+    for (let attempt = 1; ; attempt++) {
+      const response = await fetch(url, {
+        headers: { "User-Agent": WIKIDATA_USER_AGENT },
+        signal: AbortSignal.timeout(WIKIDATA_TIMEOUT_MILLISECONDS),
+      });
+      if (response.status !== 429 || attempt >= WIKIDATA_MAX_ATTEMPTS)
+        return response;
+      await sleep(
+        backoffMilliseconds(response.headers.get("Retry-After"), attempt),
+      );
+    }
+  }
 
   /** Finds the catalogue folder of one of the author's texts, such as `phi0959`. */
   private async findCatalogueIdentifier(
@@ -81,17 +101,20 @@ export class LiteratureAuthorEraService {
   private async queryWikidata(
     phiNumber: string,
   ): Promise<AuthorYears | undefined> {
-    const query = `SELECT (MIN(?b) AS ?birth) (MIN(?d) AS ?death) (MIN(?f) AS ?floruit) WHERE { ?a wdt:P6941 "${phiNumber}" . OPTIONAL { ?a wdt:P569 ?b } OPTIONAL { ?a wdt:P570 ?d } OPTIONAL { ?a wdt:P1317 ?f } }`;
-    const response = await fetch(
+    const query = [
+      "SELECT ?birth ?birthPrecision ?death ?deathPrecision ?floruit ?floruitPrecision WHERE {",
+      `?a wdt:P6941 "${phiNumber}" .`,
+      "OPTIONAL { ?a p:P569/psv:P569 ?bv . ?bv wikibase:timeValue ?birth ; wikibase:timePrecision ?birthPrecision }",
+      "OPTIONAL { ?a p:P570/psv:P570 ?dv . ?dv wikibase:timeValue ?death ; wikibase:timePrecision ?deathPrecision }",
+      "OPTIONAL { ?a p:P1317/psv:P1317 ?fv . ?fv wikibase:timeValue ?floruit ; wikibase:timePrecision ?floruitPrecision }",
+      "}",
+    ].join(" ");
+    const response = await this.fetchWikidata(
       `${WIKIDATA_QUERY_URL}?format=json&query=${encodeURIComponent(query)}`,
-      {
-        headers: { "User-Agent": WIKIDATA_USER_AGENT },
-        signal: AbortSignal.timeout(WIKIDATA_TIMEOUT_MILLISECONDS),
-      },
     );
     if (!response.ok) throw new Error(`Wikidata answered ${response.status}`);
     const { results } = wikidataResponseSchema.parse(await response.json());
-    return results.bindings[0] && pickWikidataYears(results.bindings[0]);
+    return pickWikidataYears(results.bindings);
   }
 
   /** Keeps the years the source gave, else Wikidata's, else the committed table's. */

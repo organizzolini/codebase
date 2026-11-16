@@ -1,3 +1,5 @@
+import { setTimeout as sleep } from "node:timers/promises";
+
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -179,6 +181,152 @@ describe(LiteratureAuthorEraService, () => {
     );
 
     expect(authors.update).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    [-101, "Archaic"],
+    [-100, "Classical"],
+    [13, "Classical"],
+    [14, "Imperial"],
+    [199, "Imperial"],
+    [200, "Late"],
+    [599, "Late"],
+    [600, "Medieval"],
+    [1299, "Medieval"],
+    [1300, "Neo-Latin"],
+  ])("gives an author dated %i the %s era", async (year, era) => {
+    await dateAuthors(
+      createAuthor("boundary", { endYear: year, startYear: year }),
+    );
+
+    expect(authors.update).toHaveBeenCalledWith(
+      { id: "boundary-id" },
+      { endYear: year, era, startYear: year },
+    );
+  });
+
+  it("reads a year-boundary date from Wikidata as the year it belongs to", async () => {
+    fetchMock.mockResolvedValue(
+      wikidataResponse({
+        birth: "-0106-12-31T00:00:00Z",
+        birthPrecision: "9",
+        death: "-0042-12-05T00:00:00Z",
+        deathPrecision: "11",
+      }),
+    );
+
+    await dateAuthors(
+      createAuthor("cicero"),
+      "https://example.test/data/phi0474/phi053/phi0474.phi053.perseus-lat2.xml",
+    );
+
+    expect(authors.update).toHaveBeenCalledWith(
+      { id: "cicero-id" },
+      { endYear: -43, era: "Classical", startYear: -106 },
+    );
+  });
+
+  it("ignores a date too coarse to name a year", async () => {
+    fetchMock.mockResolvedValue(
+      wikidataResponse({
+        birth: "0100-01-01T00:00:00Z",
+        birthPrecision: "7",
+        death: "0200-01-01T00:00:00Z",
+        deathPrecision: "7",
+      }),
+    );
+
+    await dateAuthors(
+      createAuthor("vague"),
+      "https://example.test/data/phi0861/phi001/phi0861.phi001.perseus-lat2.xml",
+    );
+
+    expect(authors.update).not.toHaveBeenCalled();
+  });
+
+  it("takes the earliest of several claims", async () => {
+    fetchMock.mockResolvedValue(
+      Response.json({
+        results: {
+          bindings: [
+            {
+              birth: { value: "0040-01-01T00:00:00Z" },
+              death: { value: "0100-01-01T00:00:00Z" },
+            },
+            {
+              birth: { value: "0039-01-01T00:00:00Z" },
+              death: { value: "0102-01-01T00:00:00Z" },
+            },
+          ],
+        },
+      }),
+    );
+
+    await dateAuthors(
+      createAuthor("claimed"),
+      "https://example.test/data/phi0862/phi001/phi0862.phi001.perseus-lat2.xml",
+    );
+
+    expect(authors.update).toHaveBeenCalledWith(
+      { id: "claimed-id" },
+      { endYear: 100, era: "Imperial", startYear: 39 },
+    );
+  });
+
+  it("ignores a lone birth, since the ticket takes only a pair or a floruit", async () => {
+    fetchMock.mockResolvedValue(
+      wikidataResponse({ birth: "0040-01-01T00:00:00Z" }),
+    );
+
+    await dateAuthors(
+      createAuthor("lone"),
+      "https://example.test/data/phi0863/phi001/phi0863.phi001.perseus-lat2.xml",
+    );
+
+    expect(authors.update).not.toHaveBeenCalled();
+  });
+
+  it("backs off and retries after HTTP 429, honouring Retry-After", async () => {
+    fetchMock
+      .mockResolvedValueOnce(
+        new Response("", { headers: { "Retry-After": "3" }, status: 429 }),
+      )
+      .mockResolvedValueOnce(
+        wikidataResponse({
+          birth: "0040-01-01T00:00:00Z",
+          death: "0100-01-01T00:00:00Z",
+        }),
+      );
+    vi.mocked(sleep).mockClear();
+
+    await dateAuthors(
+      createAuthor("busy"),
+      "https://example.test/data/phi0864/phi001/phi0864.phi001.perseus-lat2.xml",
+    );
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(vi.mocked(sleep)).toHaveBeenCalledWith(3000);
+    expect(authors.update).toHaveBeenCalledWith(
+      { id: "busy-id" },
+      { endYear: 100, era: "Imperial", startYear: 40 },
+    );
+  });
+
+  it("gives up after a capped number of 429 answers and logs it", async () => {
+    fetchMock.mockResolvedValue(new Response("", { status: 429 }));
+
+    await dateAuthors(
+      createAuthor("blocked"),
+      "https://example.test/data/phi0865/phi001/phi0865.phi001.perseus-lat2.xml",
+    );
+
+    expect(fetchMock).toHaveBeenCalledTimes(4);
+    expect(authors.update).not.toHaveBeenCalled();
+    expect(logger.warn).toHaveBeenCalledWith(
+      "📅 Failed looking up an author on Wikidata",
+      undefined,
+      expect.objectContaining({ reason: "Wikidata answered 429" }),
+    );
   });
 
   it.each([

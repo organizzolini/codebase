@@ -83,3 +83,12 @@ export interface TextAttributes {
   startYear?: number | undefined;
   workIdentifier?: string | undefined;
 }
+
+/** A date or date precision a Wikidata row can carry. */
+export type WikidataField =
+  | "birth"
+  | "birthPrecision"
+  | "death"
+  | "deathPrecision"
+  | "floruit"
+  | "floruitPrecision";

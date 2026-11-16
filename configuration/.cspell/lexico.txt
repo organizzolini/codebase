@@ -333,6 +333,7 @@ vopiscus
 vulgata
 vulgate
 XLII
+wikibase
 zacharias
 zāēīōūȳ
 äˈmiːkʊs

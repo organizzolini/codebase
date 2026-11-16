@@ -130,17 +130,29 @@ export const WIKIDATA_REQUEST_DELAY_MILLISECONDS = 1000;
 
 export const WIKIDATA_TIMEOUT_MILLISECONDS = 15_000;
 
+/** Total tries a lookup makes while Wikidata answers 429. */
+export const WIKIDATA_MAX_ATTEMPTS = 4;
+
+/** Longest wait between tries, however long Wikidata asks. */
+export const WIKIDATA_MAXIMUM_BACKOFF_MILLISECONDS = 30_000;
+
 /** The catalogue folder in a source URL, such as `phi0959` or `stoa0054`. */
-export const CATALOGUE_IDENTIFIER_PATTERN = /\/data\/((?:phi|stoa|tlg)\d+[a-z]?)\//;
+export const CATALOGUE_IDENTIFIER_PATTERN =
+  /\/data\/((?:phi|stoa|tlg)\d+[a-z]?)\//;
+
+const wikidataValueSchema = z.object({ value: z.string() }).optional();
 
 /** One row of a Wikidata response; each field is absent when the match lacks it. */
 export const wikidataResponseSchema = z.object({
   results: z.object({
     bindings: z.array(
       z.object({
-        birth: z.object({ value: z.string() }).optional(),
-        death: z.object({ value: z.string() }).optional(),
-        floruit: z.object({ value: z.string() }).optional(),
+        birth: wikidataValueSchema,
+        birthPrecision: wikidataValueSchema,
+        death: wikidataValueSchema,
+        deathPrecision: wikidataValueSchema,
+        floruit: wikidataValueSchema,
+        floruitPrecision: wikidataValueSchema,
       }),
     ),
   }),
