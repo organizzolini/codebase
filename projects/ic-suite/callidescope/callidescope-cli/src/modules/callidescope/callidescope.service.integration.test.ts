@@ -1,4 +1,3 @@
-import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import {
@@ -10,6 +9,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import {
   createTemporaryDirectory,
   useTemporaryDirectory,
+  writeFileTree,
 } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
@@ -41,24 +41,17 @@ const LIBRARY_CONFIGURATION_PATH = path.join(
  * Adds a project whose tsconfig names a target TypeScript rejects, mirroring the unreadable
  * fixture in `codependix-examples`, beside the projects a run must trace.
  */
-async function addUnreadableProject(workspaceRoot: string): Promise<void> {
+function addUnreadableProject(workspaceRoot: string): void {
   const root = path.join(workspaceRoot, "packages", "broken");
 
-  await mkdir(path.join(root, "src"), { recursive: true });
-  await writeFile(
-    path.join(root, "tsconfig.json"),
-    JSON.stringify({
+  writeFileTree(root, {
+    "src/index.ts": "export function broken(): void {}\n",
+    "tsconfig.json": JSON.stringify({
       compilerOptions: { target: "not-a-real-target" },
       include: ["src/**/*.ts"],
     }),
-    "utf8",
-  );
-  await writeFile(
-    path.join(root, "src", "index.ts"),
-    "export function broken(): void {}\n",
-    "utf8",
-  );
-  await writeProjectConfiguration({ projectRoot: root });
+  });
+  writeProjectConfiguration({ projectRoot: root });
 }
 
 /** Builds a resolved configuration for the fixture workspace. */
@@ -90,12 +83,12 @@ function buildConfiguration(): ResolvedCallidescopeConfiguration {
  * Writes two projects. `library` is reached only through `application`'s imports, so a run
  * started elsewhere must judge it by its own configuration.
  */
-async function buildConfiguredWorkspace(
+function buildConfiguredWorkspace(
   libraryConfiguration: Record<string, unknown>,
-): Promise<string> {
+): string {
   const workspaceRoot = makeWorkspaceRoot("callidescope-project");
 
-  await writeProject({
+  writeProject({
     name: "library",
     sources: {
       // `open` calls something, because a root that calls nothing makes a
@@ -109,11 +102,11 @@ async function buildConfiguredWorkspace(
     },
     workspaceRoot,
   });
-  await writeProjectConfiguration({
+  writeProjectConfiguration({
     overrides: libraryConfiguration,
     projectRoot: path.join(workspaceRoot, "packages", "library"),
   });
-  await writeProject({
+  writeProject({
     name: "application",
     sources: {
       "src/application.main.ts": `
@@ -134,8 +127,8 @@ async function buildConfiguredWorkspace(
  * Writes a chain of dependencies (consumer, application, library) plus an untouched project.
  * A scoped run must follow dependencies down, never up or sideways.
  */
-async function buildLayeredWorkspace(workspaceRoot: string): Promise<string> {
-  await writeProject({
+function buildLayeredWorkspace(workspaceRoot: string): string {
+  writeProject({
     name: "library",
     sources: {
       "src/index.ts": `
@@ -149,7 +142,7 @@ async function buildLayeredWorkspace(workspaceRoot: string): Promise<string> {
   });
   // No manifest: a directory of shared settings, which every project reaches
   // into and none depends on.
-  await writeProject({
+  writeProject({
     name: "settings",
     omitManifest: true,
     sources: {
@@ -157,7 +150,7 @@ async function buildLayeredWorkspace(workspaceRoot: string): Promise<string> {
     },
     workspaceRoot,
   });
-  await writeProject({
+  writeProject({
     name: "application",
     sources: {
       "src/application.main.ts": `
@@ -176,7 +169,7 @@ async function buildLayeredWorkspace(workspaceRoot: string): Promise<string> {
     },
     workspaceRoot,
   });
-  await writeProject({
+  writeProject({
     name: "consumer",
     sources: {
       "src/index.ts": `
@@ -189,7 +182,7 @@ async function buildLayeredWorkspace(workspaceRoot: string): Promise<string> {
     },
     workspaceRoot,
   });
-  await writeProject({
+  writeProject({
     name: "unrelated",
     sources: { "src/index.ts": "export function unrelated(): void {}\n" },
     workspaceRoot,
@@ -202,44 +195,13 @@ async function buildLayeredWorkspace(workspaceRoot: string): Promise<string> {
  * Writes a workspace to disk holding a command that reaches a repository
  * through an injected service — the shape this tool exists to follow.
  */
-async function buildWorkspace(
+function buildWorkspace(
   workspaceRoot = makeWorkspaceRoot("callidescope-trace"),
-): Promise<string> {
+): string {
   const root = path.join(workspaceRoot, "packages", "example");
 
-  await mkdir(path.join(root, "src", "modules", "example"), {
-    recursive: true,
-  });
-  await writeFile(
-    path.join(root, "tsconfig.json"),
-    JSON.stringify({
-      compilerOptions: {
-        experimentalDecorators: true,
-        noLib: true,
-        target: "es2022",
-      },
-      include: ["src/**/*.ts"],
-    }),
-    "utf8",
-  );
-  await writeFile(
-    path.join(root, "src", "modules", "example", "example.service.ts"),
-    `
-      export class Repository {
-        public find(): void { this.open(); }
-        public open(): void {}
-      }
-
-      export class ExampleService {
-        constructor(private readonly repository: Repository) {}
-        public load(): void { this.repository.find(); }
-      }
-    `,
-    "utf8",
-  );
-  await writeFile(
-    path.join(root, "src", "modules", "example", "example.command.ts"),
-    `
+  writeFileTree(root, {
+    "src/modules/example/example.command.ts": `
       import { ExampleService } from "./example.service";
 
       function Command(): ClassDecorator { return () => undefined; }
@@ -250,9 +212,27 @@ async function buildWorkspace(
         public run(): void { this.service.load(); }
       }
     `,
-    "utf8",
-  );
-  await writeProjectConfiguration({ projectRoot: root });
+    "src/modules/example/example.service.ts": `
+      export class Repository {
+        public find(): void { this.open(); }
+        public open(): void {}
+      }
+
+      export class ExampleService {
+        constructor(private readonly repository: Repository) {}
+        public load(): void { this.repository.find(); }
+      }
+    `,
+    "tsconfig.json": JSON.stringify({
+      compilerOptions: {
+        experimentalDecorators: true,
+        noLib: true,
+        target: "es2022",
+      },
+      include: ["src/**/*.ts"],
+    }),
+  });
+  writeProjectConfiguration({ projectRoot: root });
 
   return workspaceRoot;
 }
@@ -282,18 +262,17 @@ function readStackDepth(args: {
  * Writes one project with the fixture compiler options. `omitManifest` skips its
  * `package.json`, marking shared settings nothing depends on.
  */
-async function writeProject(args: {
+function writeProject(args: {
   name: string;
   omitManifest?: boolean;
   sources: Record<string, string>;
   workspaceRoot: string;
-}): Promise<void> {
+}): void {
   const root = path.join(args.workspaceRoot, "packages", args.name);
 
-  await mkdir(root, { recursive: true });
-  await writeFile(
-    path.join(root, "tsconfig.json"),
-    JSON.stringify({
+  writeFileTree(root, {
+    ...(args.omitManifest === true ? {} : { "package.json": "{}" }),
+    "tsconfig.json": JSON.stringify({
       compilerOptions: {
         experimentalDecorators: true,
         noLib: true,
@@ -301,38 +280,27 @@ async function writeProject(args: {
       },
       include: ["src/**/*.ts"],
     }),
-    "utf8",
-  );
-
-  if (args.omitManifest !== true) {
-    await writeFile(path.join(root, "package.json"), "{}", "utf8");
-  }
-
-  await writeProjectConfiguration({ projectRoot: root });
-
-  for (const [name, text] of Object.entries(args.sources)) {
-    await mkdir(path.dirname(path.join(root, name)), { recursive: true });
-    await writeFile(path.join(root, name), text, "utf8");
-  }
+    ...args.sources,
+  });
+  writeProjectConfiguration({ projectRoot: root });
 }
 
 /**
  * Writes one project's complete configuration file. It is JavaScript, not JSON, because JSON
  * cannot spell `undefined`, which is how a fixture says "nothing".
  */
-async function writeProjectConfiguration(args: {
+function writeProjectConfiguration(args: {
   overrides?: Record<string, unknown> | undefined;
   projectRoot: string;
-}): Promise<void> {
+}): void {
   // The run's own rules restated, so a fixture's project file is complete
   // without also being a different set of rules from the one the run uses —
   // which is exactly what `projectDefaults` does in the real workspace.
   const run = buildConfiguration();
   const overrides: Readonly<Record<string, unknown>> = { ...args.overrides };
 
-  await writeFile(
-    path.join(args.projectRoot, PROJECT_CONFIGURATION),
-    `export default {
+  writeFileTree(args.projectRoot, {
+    [PROJECT_CONFIGURATION]: `export default {
       entryPoints: { ...${JSON.stringify(run.entryPoints)}, ...${JSON.stringify(overrides["entryPoints"] ?? {})} },
       exclude: ${JSON.stringify(overrides["exclude"] ?? [])},
       limits: {
@@ -346,25 +314,15 @@ async function writeProjectConfiguration(args: {
         ...${JSON.stringify(overrides["write"] ?? {})},
       },
     };\n`,
-    "utf8",
-  );
+  });
 }
 
 /** Adds one test file to the traced workspace, inside the project's own tree. */
-async function writeTestFile(workspaceRoot: string): Promise<void> {
-  await writeFile(
-    path.join(
-      workspaceRoot,
-      "packages",
-      "example",
-      "src",
-      "modules",
-      "example",
-      "example.service.unit.test.ts",
-    ),
-    "export function assertLoads(): void { assertLoads(); }\n",
-    "utf8",
-  );
+function writeTestFile(workspaceRoot: string): void {
+  writeFileTree(path.join(workspaceRoot, "packages", "example"), {
+    "src/modules/example/example.service.unit.test.ts":
+      "export function assertLoads(): void { assertLoads(); }\n",
+  });
 }
 
 describe(`${CallidescopeService.name} (integration)`, () => {
@@ -377,7 +335,7 @@ describe(`${CallidescopeService.name} (integration)`, () => {
   const getTracedRoot = useTemporaryDirectory("callidescope-traced");
 
   beforeAll(async () => {
-    const workspaceRoot = await buildWorkspace(getTracedRoot());
+    const workspaceRoot = buildWorkspace(getTracedRoot());
 
     tracedWorkspaceRoot = workspaceRoot;
 
@@ -490,9 +448,9 @@ describe(`${CallidescopeService.name} (integration)`, () => {
     // The whole wiring in one run: a file sitting at a project root, read
     // only after discovery has found that root, deciding what the run's own
     // filter had no way to decide.
-    const workspaceRoot = await buildWorkspace();
+    const workspaceRoot = buildWorkspace();
 
-    await writeProjectConfiguration({
+    writeProjectConfiguration({
       overrides: { exclude: ["src/modules/example/example.command.ts"] },
       projectRoot: path.join(workspaceRoot, "packages", "example"),
     });
@@ -511,9 +469,9 @@ describe(`${CallidescopeService.name} (integration)`, () => {
     // The same glob written the other way round. A path that would be right
     // in the run's own configuration names nothing from inside the project,
     // which is what "anchored to the project" costs and buys.
-    const workspaceRoot = await buildWorkspace();
+    const workspaceRoot = buildWorkspace();
 
-    await writeProjectConfiguration({
+    writeProjectConfiguration({
       overrides: {
         exclude: ["packages/example/src/modules/example/example.command.ts"],
       },
@@ -536,9 +494,9 @@ describe(`${CallidescopeService.name} (integration)`, () => {
     // The destinations are read from the same file, at the same moment, as the
     // exclusions and limits above: a run that published against one read and
     // measured against another would be describing two codebases.
-    const workspaceRoot = await buildWorkspace();
+    const workspaceRoot = buildWorkspace();
 
-    await writeProjectConfiguration({
+    writeProjectConfiguration({
       overrides: {
         write: {
           markdown: { heading: "## Calls", path: "docs/CALLS.md" },
@@ -588,9 +546,9 @@ describe(`${CallidescopeService.name} (integration)`, () => {
   it("judges a project by the limit the command line overrode", async () => {
     // Runs the real chain, not `resolveLimits` alone: the defect was an override that reached
     // the run's configuration and stopped, so every unit passed while `--maximum-depth` gated nothing.
-    const workspaceRoot = await buildWorkspace();
+    const workspaceRoot = buildWorkspace();
 
-    await writeProjectConfiguration({
+    writeProjectConfiguration({
       overrides: { limits: { maximumDepth: 7 } },
       projectRoot: path.join(workspaceRoot, "packages", "example"),
     });
@@ -611,9 +569,9 @@ describe(`${CallidescopeService.name} (integration)`, () => {
   it("keeps a project's own limit when no flag overrode it", async () => {
     // The control the case above needs: 3 has to be the flag's answer rather
     // than anything the fixture would have said on its own.
-    const workspaceRoot = await buildWorkspace();
+    const workspaceRoot = buildWorkspace();
 
-    await writeProjectConfiguration({
+    writeProjectConfiguration({
       overrides: { limits: { maximumDepth: 7 } },
       projectRoot: path.join(workspaceRoot, "packages", "example"),
     });
@@ -636,10 +594,10 @@ describe(`${CallidescopeService.name} (integration)`, () => {
     // The fifth `entryPoints` field, and the one that is spent at collection
     // rather than when roots are chosen: a project that asks for its tests
     // gets them walked even though the run said no.
-    const workspaceRoot = await buildWorkspace();
+    const workspaceRoot = buildWorkspace();
 
-    await writeTestFile(workspaceRoot);
-    await writeProjectConfiguration({
+    writeTestFile(workspaceRoot);
+    writeProjectConfiguration({
       overrides: { entryPoints: { includeTests: true } },
       projectRoot: path.join(workspaceRoot, "packages", "example"),
     });
@@ -657,9 +615,9 @@ describe(`${CallidescopeService.name} (integration)`, () => {
   it("leaves a project's test files out when the run said so", async () => {
     // The same workspace with nothing declared, which is what makes the
     // count above the project's own answer rather than the run's.
-    const workspaceRoot = await buildWorkspace();
+    const workspaceRoot = buildWorkspace();
 
-    await writeTestFile(workspaceRoot);
+    writeTestFile(workspaceRoot);
 
     const outcome = await service.trace({
       configuration: buildConfiguration(),
@@ -677,9 +635,9 @@ describe(`${CallidescopeService.name} (integration)`, () => {
     // Fail fast, and fail whole. A partial graph would be published by the
     // caller before it weighed a single finding, so the wrong depths would be
     // committed and only then reported as a failure.
-    const workspaceRoot = await buildWorkspace();
+    const workspaceRoot = buildWorkspace();
 
-    await addUnreadableProject(workspaceRoot);
+    addUnreadableProject(workspaceRoot);
 
     await expect(
       service.trace({
@@ -692,9 +650,9 @@ describe(`${CallidescopeService.name} (integration)`, () => {
   });
 
   it("names the configuration it could not read", async () => {
-    const workspaceRoot = await buildWorkspace();
+    const workspaceRoot = buildWorkspace();
 
-    await addUnreadableProject(workspaceRoot);
+    addUnreadableProject(workspaceRoot);
 
     await expect(
       service.trace({
@@ -710,9 +668,9 @@ describe(`${CallidescopeService.name} (integration)`, () => {
     // The regression this exists for: excluding the project from collected files came too late,
     // since opening its configuration is the step that fails. So `.callidescopeignore` could not
     // stop a run from dying on a fixture written to be broken.
-    const workspaceRoot = await buildWorkspace();
+    const workspaceRoot = buildWorkspace();
 
-    await addUnreadableProject(workspaceRoot);
+    addUnreadableProject(workspaceRoot);
 
     const outcome = await service.trace({
       configuration: {
@@ -739,9 +697,9 @@ describe(`${CallidescopeService.name} (integration)`, () => {
     // What `.callidescopeignore` promises. Excluding the same project only
     // from the collected files would come too late — opening its
     // configuration is the step that fails.
-    const workspaceRoot = await buildWorkspace();
+    const workspaceRoot = buildWorkspace();
 
-    await addUnreadableProject(workspaceRoot);
+    addUnreadableProject(workspaceRoot);
 
     const outcome = await service.trace({
       configuration: {
@@ -768,7 +726,7 @@ describe(`${CallidescopeService.name} (integration)`, () => {
     const getLayeredRoot = useTemporaryDirectory("callidescope-closure");
 
     beforeAll(async () => {
-      layeredWorkspaceRoot = await buildLayeredWorkspace(getLayeredRoot());
+      layeredWorkspaceRoot = buildLayeredWorkspace(getLayeredRoot());
       scoped = await service.trace({
         configuration: buildConfiguration(),
         configurationPath: WORKSPACE_CONFIGURATION_PATH,
@@ -922,7 +880,7 @@ describe(`${CallidescopeService.name} (integration)`, () => {
     }
 
     it("roots the callable its own configuration declared by address", async () => {
-      const workspaceRoot = await buildConfiguredWorkspace({
+      const workspaceRoot = buildConfiguredWorkspace({
         entryPoints: {
           addresses: ["packages/library/src/repository.ts#Repository.open"],
         },
@@ -947,7 +905,7 @@ describe(`${CallidescopeService.name} (integration)`, () => {
       // The criterion the per-project resolution exists for. `library` is in
       // this run only because `application`'s imports reach it, and it is
       // still judged by what it declared rather than by whoever reached it.
-      const workspaceRoot = await buildConfiguredWorkspace({
+      const workspaceRoot = buildConfiguredWorkspace({
         entryPoints: {
           addresses: ["packages/library/src/repository.ts#Repository.open"],
         },
@@ -969,7 +927,7 @@ describe(`${CallidescopeService.name} (integration)`, () => {
     });
 
     it("refuses a project setting a field only the workspace may set", async () => {
-      const workspaceRoot = await buildConfiguredWorkspace({
+      const workspaceRoot = buildConfiguredWorkspace({
         write: { json: { path: "report.json" } },
       });
 
@@ -988,7 +946,7 @@ describe(`${CallidescopeService.name} (integration)`, () => {
       // would otherwise have it read a second time as that package's project
       // configuration, and refused for the very fields it may set as a
       // workspace configuration.
-      const workspaceRoot = await buildConfiguredWorkspace({
+      const workspaceRoot = buildConfiguredWorkspace({
         write: { json: { path: "report.json" } },
       });
 

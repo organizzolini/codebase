@@ -23,10 +23,7 @@ import type { CallidescopeFormatOptions } from "../input/input.types";
 import type { ResolvedCallidescopeConfiguration } from "./configuration.types";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
-// Mocked at the module boundary so the prompt wiring behind the facade is
-// exercised and no test ever reaches for a terminal.
-vi.mock("prompts", () => ({ default: vi.fn() }));
-
+// The shared setup mocks `prompts`, so no test ever reaches for a terminal.
 const promptRunner = vi.mocked(prompts);
 
 // A deliberate misspelling: the example of a `--format` value nobody

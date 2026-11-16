@@ -115,7 +115,7 @@ limits: [
 | `label` | no | the path | What the report calls this limit |
 
 A metric is addressed as its input's name followed by its path within that
-input. Setting `defaultInput` lets an unprefixed path resolve to that input's
+input. Setting `defaultInput` lets an unqualified path resolve to that input's
 metric, but only where no input of a competing name exists — write the input
 name in full wherever an input and a metric group could share one, because
 **an ambiguous path is refused outright, never guessed at**. The same refusal

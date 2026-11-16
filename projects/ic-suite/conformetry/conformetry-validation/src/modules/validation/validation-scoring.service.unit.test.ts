@@ -35,7 +35,7 @@ function buildInstance(args: {
 }): MatchedInstance {
   return {
     instance: {
-      nameStem: "gears",
+      name: "gears",
       path: INSTANCE_PATH,
       ...(args.groupThreshold === undefined
         ? {}
@@ -219,7 +219,7 @@ describe(ValidationScoringService, () => {
       const gears = buildInstance({});
       const widgets: MatchedInstance = {
         ...gears,
-        instance: { ...gears.instance, nameStem: "widgets" },
+        instance: { ...gears.instance, name: "widgets" },
       };
 
       // Both share `Instance.path` — it is the directory the template is laid

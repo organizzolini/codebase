@@ -37,6 +37,7 @@ A `High` that would not fit one reviewable pull request is a planning defect: sp
 ## Fill the Board
 
 - **When you file or plan an issue**, set Effort on every parent issue and standalone issue. Set Priority only when the user gave one; leave it empty and say so in your report when they did not.
+- **Before a pull request leaves draft**, both fields must be filled: `compliance pull-request` fails until the issue it closes has an Effort and the root of that issue's hierarchy has a Priority. A missing Priority is the user's to set, so ask for it rather than choosing one.
 - **When you start work**, set Status to **In Progress** on every layer the work is about to move — the spec, the parent issue, and the commit sub-issue. This replaces the retired `status:in-progress` label. Do it before the first failing test.
 - **When work finishes**, close the issue. The board marks it Done; there is nothing to set.
 - **When you find an open item with no Effort**, estimate it. Do not pad: a wrong Effort is corrected by the next reader, a missing one is not noticed.

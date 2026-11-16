@@ -238,7 +238,7 @@ describe("main end-to-end suite", () => {
 
       expect(written.exitCode).toBe(0);
       expect(readFileSync(path.join(staged, "WORDS.md"), "utf8")).toContain(
-        "- **aspect**:\n- **configure**:\n- **engine**:\n- **src**:\n",
+        "- **aspect**:\n- **configure**:\n- **engine**:\n- **pisces**:\n- **src**:\n",
       );
       expect(checked.exitCode).toBe(0);
     },

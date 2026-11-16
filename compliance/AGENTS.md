@@ -23,7 +23,9 @@ This project owns four commands, each backed by one service per concern:
 - `pull-request` (`src/modules/pull-request/`): merge-group context
   resolution, non-closing parent references and label reconciliation (pull
   request events only), then one aggregated validation of title, body,
-  labels/assignees, and release significance. Merge groups never write. Locally
+  labels/assignees, release significance, and the issues it closes (each passes
+  the issue audit; the issue it is built for has an Effort, and that issue's
+  root has a Priority). Merge groups never write. Locally
   it is read-only unless `write` is given.
 - `issue` (`src/modules/issue/`): labels and assigns a new issue, audits one
   issue, or audits every open issue (`--all`), chosen by event or arguments.
