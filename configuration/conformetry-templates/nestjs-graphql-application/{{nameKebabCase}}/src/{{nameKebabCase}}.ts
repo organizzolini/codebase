@@ -5,6 +5,7 @@ import { createLightship } from "lightship";
 
 import { LoggerService } from "@codebase/observability";
 
+import { CorsService } from "./cors.service";
 import { environmentSchema } from "./{{nameKebabCase}}.constants";
 import { {{namePascalCase}}Module } from "./{{nameKebabCase}}.module";
 
@@ -23,6 +24,10 @@ async function bootstrap(): Promise<void> {
     bufferLogs: true,
     logger,
   });
+
+  app.enableCors(
+    new CorsService().getOptions(environment.{{nameConstantCase}}_CORS_ORIGINS),
+  );
 
   lightship.registerShutdownHandler(async () => {
     await app.close();

@@ -4,6 +4,15 @@ import { z } from "zod";
 
 // 🌱 Add environment schema fields here
 export const environmentSchema = z.object({
+  {{nameConstantCase}}_CORS_ORIGINS: z
+    .string()
+    .default("*")
+    .transform((origins) =>
+      origins
+        .split(",")
+        .map((origin) => origin.trim())
+        .filter((origin) => origin.length > 0),
+    ),
   {{nameConstantCase}}_LIGHTSHIP_PORT: z.coerce.number().default(9000),
   {{nameConstantCase}}_PORT: z.coerce.number().default(3000),
 });

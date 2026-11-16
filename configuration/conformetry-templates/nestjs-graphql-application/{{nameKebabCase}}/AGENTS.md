@@ -23,6 +23,7 @@ nx run {{nameKebabCase}}:start
 - **Pagination**: Relay connections via `nestjs-graphql-connection`
 - **Dataloaders**: `dataloader` (request-scoped, prevents N+1 queries)
 - **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `.constants.ts`)
+- **CORS**: `app.enableCors(new CorsService().getOptions(...))` in the bootstrap, with the origins from `{{nameConstantCase}}_CORS_ORIGINS` (comma separated, `*` by default), so a browser app on another origin can call the API
 - **Logging**: `@codebase/observability` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
 - **Language**: Strict TypeScript
 
@@ -44,6 +45,7 @@ src/
   {{nameKebabCase}}.module.ts     # Root NestJS module (imports GraphQLModule, LoggerModule)
   {{nameKebabCase}}.constants.ts  # Zod environmentSchema for env validation
   {{nameKebabCase}}.types.ts      # Application-scoped TypeScript types
+  cors.service.ts                     # The CORS options the bootstrap enables
   modules/
     sample/                           # Example GraphQL module — replace with your domain
       sample.module.ts
