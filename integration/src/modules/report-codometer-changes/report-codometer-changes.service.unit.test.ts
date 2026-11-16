@@ -4,14 +4,15 @@ import path from "node:path";
 import { ConfigService } from "@nestjs/config";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { buildTestingModule } from "@codebase/testing/nestjs";
-
 import {
+  createTemporaryDirectory,
   failed,
   FakeProcessRunner,
   succeeded,
-  useTemporaryDirectories,
-} from "../../../testing/mocks";
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { TEMPORARY_ROOT } from "../../../testing/mocks";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
 import { ReportCodometerChangesService } from "./report-codometer-changes.service";
@@ -27,7 +28,6 @@ const VIEW = "gh pr view 7 --json=body --jq=.body";
 
 describe(ReportCodometerChangesService, () => {
   const moduleOptions = { mocks: [ConfigService, ProcessRunnerService] };
-  const makeDirectory = useTemporaryDirectories();
 
   afterEach(() => {
     vi.unstubAllEnvs();
@@ -54,7 +54,7 @@ describe(ReportCodometerChangesService, () => {
     outcome: ReportCodometerChangesOutcome;
     runner: FakeProcessRunner;
   }> => {
-    const temporary = makeDirectory();
+    const temporary = createTemporaryDirectory("workspace", TEMPORARY_ROOT);
     const environmentWithDefaults: Record<string, string | undefined> = {
       GITHUB_REPOSITORY: "owner/repository",
       GITHUB_SERVER_URL: "https://github.test",

@@ -3,9 +3,10 @@ import path from "node:path";
 
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { useTemporaryDirectories } from "../../../testing/mocks";
+import { TEMPORARY_ROOT } from "../../../testing/mocks";
 
 import { ProcessRunnerService } from "./process-runner.service";
 
@@ -28,12 +29,13 @@ describe(ProcessRunnerService, () => {
   });
 
   describe("captureToFile", () => {
-    const makeDirectory = useTemporaryDirectories();
-
     it("writes the standard output to the file byte for byte", () => {
       expect.hasAssertions();
 
-      const file = path.join(makeDirectory(), "output.bin");
+      const file = path.join(
+        createTemporaryDirectory("workspace", TEMPORARY_ROOT),
+        "output.bin",
+      );
       const result = service.captureToFile(
         process.execPath,
         [
@@ -50,7 +52,10 @@ describe(ProcessRunnerService, () => {
     it("reports a process that never started as exit code 1", () => {
       expect.hasAssertions();
 
-      const file = path.join(makeDirectory(), "output.bin");
+      const file = path.join(
+        createTemporaryDirectory("workspace", TEMPORARY_ROOT),
+        "output.bin",
+      );
       const result = service.captureToFile(
         "integration-missing-executable",
         [],

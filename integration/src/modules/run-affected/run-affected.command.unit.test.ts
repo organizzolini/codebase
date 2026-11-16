@@ -2,9 +2,9 @@ import { ConfigService } from "@nestjs/config";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
+import { failed, FakeProcessRunner, succeeded } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { failed, FakeProcessRunner, succeeded } from "../../../testing/mocks";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
 import { RunAffectedCommand } from "./run-affected.command";
