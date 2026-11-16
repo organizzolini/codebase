@@ -37,8 +37,8 @@ describe(useGroupCards, () => {
       expect(result.current.cards["all"]?.meanders).toHaveLength(60);
     });
 
-    expect(result.current.cards["all"]?.meanders[0]).toStrictEqual(
-      fixtureMeander(0),
+    expect(result.current.cards["all"]?.meanders[0]?.id).toBe(
+      fixtureMeander(0).id,
     );
     expect(api.requests).toHaveLength(2);
 

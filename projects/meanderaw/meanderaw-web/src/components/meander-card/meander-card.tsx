@@ -80,10 +80,10 @@ export function MeanderCard(
       >
         <img
           alt={`Drawing of meander ${meander.code}`}
-          className={`rounded-md bg-(--surface-sunken) object-contain ${classes.drawing}`}
-          height={classes.size}
+          className={`rounded-md border border-(--line) bg-(--drawing-panel) object-contain ${classes.drawing}`}
+          height={classes.height}
           src={toSvgDataUri(meander.svg)}
-          width={classes.size}
+          width={classes.width}
         />
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <p className="text-sm">

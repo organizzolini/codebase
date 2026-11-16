@@ -4,13 +4,22 @@
 
 **Type**: Server-rendered web application (TanStack Start)
 
-**Purpose**: A gallery of the meanders `meanderaw-api` serves: each as a card with its drawing, shape, Code and characteristics, in a grid or a list, filtered by a nested AND/OR rule tree over any field, sorted by any field, paged by cursor and virtualized. Reads the API at `VITE_MEANDERAW_API_URL` (default `http://localhost:8367/graphql`); view, sort and filter live in the URL search params. GraphQL documents are in `src/graphql/operations/`; `nx run meanderaw-web:codegen` regenerates the typed documents from the API's emitted `src/schema.gql`.
+**Purpose**: A gallery of the meanders `meanderaw-api` serves: each as a card with its drawing, shape, Code and characteristics, in a grid or a list, filtered by a nested AND/OR rule tree over any field, grouped by up to four levels with exact counts, sorted by any field, paged by cursor and virtualized. Reads the API at `VITE_MEANDERAW_API_URL` (default `http://localhost:8367/graphql`); view, sort, group, filter and rows rule live in the URL search params. GraphQL documents are in `src/graphql/operations/`; `nx run meanderaw-web:codegen` regenerates the typed documents from the API's emitted `src/schema.gql`.
 
 ### Run Locally
 
 ```bash
 nx run meanderaw-web:start
 ```
+
+## The Rows Rule
+
+Every filter holds a rows rule, `rows = 4` by default, which the user can change to any numeric comparison (`=`, `≠`, `<`, `≤`, `>`, `≥`, `between`) but never remove.
+
+- It lives in its own `rows` search parameter (`{operator, value}`, Zod-validated). A link with none, or an invalid one, is repaired to `rows = 4` in the address.
+- The request is `AND{ rows rule, group(tree) }` (`toFilterInput(tree, rows)`), so the rule holds whatever the tree's own combinator. Anything that sends a filter (grouping included) must go through `toFilterInput` with the rows rule.
+- The API caps a filter at depth 6 and 128 rules and groups, so the tree is capped at depth 5 and 126 (`MAXIMUM_FILTER_DEPTH`, `MAXIMUM_FILTER_ENTRIES`): the rows rule and the group holding the tree take the rest.
+- The rows chip has no remove button, the builder's remove control for it is disabled, and Clear resets to `rows = 4` with no tree.
 
 ## Architecture Overview
 
@@ -139,3 +148,4 @@ test tiers.
 - [src/routes/\_\_root.tsx](src/routes/__root.tsx): Document shell
 - [vite.config.mts](vite.config.mts): TanStack Start, Tailwind, and React plugins
 - [vitest.config.ts](vitest.config.ts): Test configuration
+- **Grouping**: `group` (up to four fields, repaired in the link) makes the loader read `meanderGroups` through `findGallery`, within the same `toFilterInput(tree, rows)` filter, so the headers' exact counts and the cards agree. `GroupedGallery` renders one virtual flat list of headers and card rows; `useGroupCards` reads a last-level group's cards through `meanders` as its header nears the screen, filtered by the page filter plus one rule per level (an AND filter is spliced in). `fitsGrouping` keeps rows rule, key rules and tree within the API's caps (depth 6, 128 entries); a filter too large to group fails with a message. `parseGroups` validates the response against the levels asked.

@@ -21,6 +21,7 @@ describe("gallery group-by", () => {
     await waitFor(() => {
       expect({ ...router.state.location.search }).toStrictEqual({
         group: ["rowsColumns"],
+        rows: { operator: "eq", value: 4 },
       });
     });
 
@@ -29,6 +30,7 @@ describe("gallery group-by", () => {
     await waitFor(() => {
       expect({ ...router.state.location.search }).toStrictEqual({
         group: ["rowsColumns", "lattice"],
+        rows: { operator: "eq", value: 4 },
       });
     });
 
@@ -37,13 +39,16 @@ describe("gallery group-by", () => {
     await waitFor(() => {
       expect({ ...router.state.location.search }).toStrictEqual({
         group: ["lattice"],
+        rows: { operator: "eq", value: 4 },
       });
     });
 
     fireEvent.click(screen.getByRole("button", { name: "Remove group 1" }));
 
     await waitFor(() => {
-      expect({ ...router.state.location.search }).toStrictEqual({});
+      expect({ ...router.state.location.search }).toStrictEqual({
+        rows: { operator: "eq", value: 4 },
+      });
     });
   });
 

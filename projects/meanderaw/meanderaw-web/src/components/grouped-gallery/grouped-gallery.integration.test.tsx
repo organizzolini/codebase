@@ -32,6 +32,9 @@ function requestedGroups(
   });
 }
 
+/** A link's rows rule that every fixture meander satisfies. */
+const ALL_ROWS = encodeURIComponent('{"operator":"gte","value":1}');
+
 describe("grouped gallery", () => {
   it("shows a header for each group with its exact count, and loads the cards of each", async () => {
     const api = serveMeandersApi(6);
@@ -82,7 +85,10 @@ describe("grouped gallery", () => {
     expect(api.requests[0]?.filter).toStrictEqual({
       combinator: "AND",
       groups: [],
-      rules: [{ field: "isChain", flag: false, operator: "IS" }],
+      rules: [
+        { field: "isChain", flag: false, operator: "IS" },
+        { field: "rows", numbers: [4], operator: "EQ" },
+      ],
     });
   });
 
@@ -109,11 +115,11 @@ describe("grouped gallery", () => {
   });
 
   it("reads a group's cards only as its header comes near the screen", async () => {
-    const api = serveMeandersApi(30);
+    const api = serveMeandersApi(30, 0, (index) => (index % 5) + 1);
 
     await renderRoute(
       getRouter(),
-      `/?group=${encodeURIComponent('["rowsColumns"]')}`,
+      `/?group=${encodeURIComponent('["rowsColumns"]')}&rows=${ALL_ROWS}`,
     );
     await screen.findAllByTestId("meander-card");
 
@@ -131,11 +137,11 @@ describe("grouped gallery", () => {
   });
 
   it("reads a rows × columns group's cards by its rows and its columns", async () => {
-    const api = serveMeandersApi(6);
+    const api = serveMeandersApi(6, 0, (index) => (index % 5) + 1);
 
     await renderRoute(
       getRouter(),
-      `/?group=${encodeURIComponent('["rowsColumns"]')}`,
+      `/?group=${encodeURIComponent('["rowsColumns"]')}&rows=${ALL_ROWS}`,
     );
     await screen.findAllByTestId("meander-card");
 
@@ -145,6 +151,7 @@ describe("grouped gallery", () => {
       rules: [
         { field: "rows", numbers: [1], operator: "EQ" },
         { field: "columns", numbers: [1], operator: "EQ" },
+        { field: "rows", numbers: [1], operator: "GTE" },
       ],
     });
     expect(codesShown()[0]).toBe("01x01y0000");
@@ -175,11 +182,11 @@ describe("grouped gallery", () => {
   it("reads the cards of each group at the filter's largest size, the key rules spliced into an AND filter", async () => {
     serveMeandersApi(6);
     const rule = { field: "rows", operator: "gte", value: 0 };
-    // 127 rules and the one key rule of the grouping fill the API's 128,
-    // which the mock API refuses beyond.
+    // 125 rules, their group, the rows rule and the grouping's one key rule
+    // fill the API's 128, which the mock API refuses beyond.
     const filter = {
       combinator: "and",
-      rules: Array.from({ length: 127 }, () => rule),
+      rules: Array.from({ length: 125 }, () => rule),
     };
 
     await renderRoute(
@@ -217,7 +224,7 @@ describe("grouped gallery", () => {
     serveMeandersApi(6);
     const filter = {
       combinator: "and",
-      rules: Array.from({ length: 128 }, () => ({
+      rules: Array.from({ length: 126 }, () => ({
         field: "rows",
         operator: "gte",
         value: 0,
@@ -234,37 +241,81 @@ describe("grouped gallery", () => {
     expect(alert.textContent).toMatch(/too large/u);
   });
 
-  it("groups within the filter, and orders each group's cards by the sort", async () => {
+  it("groups within the rows rule and the filter, and orders each group's cards by the sort", async () => {
     const api = serveMeandersApi(6);
     const filter = {
       combinator: "and",
-      rules: [{ field: "rows", operator: "gte", value: 3 }],
+      rules: [{ field: "junctionCount", operator: "gte", value: 3 }],
     };
 
     await renderRoute(
       getRouter(),
-      `/?group=${encodeURIComponent('["lattice"]')}&sort=rows&direction=desc&filter=${encodeURIComponent(JSON.stringify(filter))}`,
+      `/?group=${encodeURIComponent('["lattice"]')}&sort=junctionCount&direction=desc&filter=${encodeURIComponent(JSON.stringify(filter))}`,
     );
 
     await screen.findAllByTestId("group-header");
 
     expect(
       screen.getAllByTestId("group-header").map((header) => header.textContent),
-    ).toStrictEqual(["Lattice: 02", "Lattice: 11"]);
-    expect(api.groupRequests[0]?.filter).toMatchObject({ combinator: "AND" });
+    ).toStrictEqual(["Lattice: 01", "Lattice: 11"]);
+
+    // The groups and the cards are asked for within the same rules.
+    for (const request of [api.groupRequests[0], api.requests[0]]) {
+      expect(JSON.stringify(request?.filter)).toContain('"GTE"');
+      expect(JSON.stringify(request?.filter)).toContain(
+        '{"field":"rows","operator":"EQ","numbers":[4]}',
+      );
+    }
 
     await waitFor(() => {
-      expect(codesShown()).toStrictEqual([
-        "01x01y0004",
-        "01x01y0002",
-        "01x01y0003",
-      ]);
+      expect(codesShown()).toStrictEqual(["01x01y0002", "01x01y0003"]);
     });
 
     expect(api.requests[0]).toMatchObject({
-      sort: { direction: "DESC", field: "rows" },
+      sort: { direction: "DESC", field: "junctionCount" },
     });
-    expect(JSON.stringify(api.requests[0]?.filter)).toContain('"GTE"');
+  });
+
+  it("groups only the rows the rows control keeps, and asks again when it changes", async () => {
+    const api = serveMeandersApi(6, 0, (index) => (index % 2) + 3);
+
+    await renderRoute(
+      getRouter(),
+      `/?group=${encodeURIComponent('["rowsColumns"]')}`,
+    );
+    await screen.findAllByTestId("group-header");
+
+    // Rows 4 are the odd positions: 1, 3 and 5, of columns 2, 1 and 3.
+    expect(
+      screen.getAllByTestId("group-header").map((header) => header.textContent),
+    ).toStrictEqual([
+      "Rows × columns: 4 × 11",
+      "Rows × columns: 4 × 21",
+      "Rows × columns: 4 × 31",
+    ]);
+    expect(api.groupRequests).toHaveLength(1);
+
+    fireEvent.click(screen.getByRole("button", { name: "Filter" }));
+
+    const value = await screen.findByLabelText("Rows Value");
+
+    fireEvent.change(value, { target: { value: "3" } });
+    fireEvent.blur(value);
+
+    await waitFor(() => {
+      expect(api.groupRequests).toHaveLength(2);
+    });
+    await waitFor(() => {
+      expect(
+        screen
+          .getAllByTestId("group-header")
+          .map((header) => header.textContent),
+      ).toStrictEqual([
+        "Rows × columns: 3 × 11",
+        "Rows × columns: 3 × 21",
+        "Rows × columns: 3 × 31",
+      ]);
+    });
   });
 
   it("groups from the builder, and opens the same view from the link it wrote", async () => {
@@ -280,10 +331,11 @@ describe("grouped gallery", () => {
     });
 
     expect(screen.getAllByTestId("group-header")[0]?.textContent).toBe(
-      "Rows × columns: 1 × 11",
+      "Rows × columns: 4 × 12",
     );
     expect({ ...router.state.location.search }).toStrictEqual({
       group: ["rowsColumns"],
+      rows: { operator: "eq", value: 4 },
     });
   });
 

@@ -35,6 +35,9 @@ export interface MeandersApi {
   requests: MeandersQueryVariables[];
 }
 
+/** How many rows each fixture meander has, until a test says otherwise. */
+let fixtureRows = (_index: number): number => 4;
+
 /**
  * A group as sent; the fourth level has no `groups`.
  */
@@ -44,7 +47,7 @@ type RawGroup = Omit<GalleryGroup, "groups"> & { groups?: RawGroup[] };
  * The meander at a place in the fixture: every third one is hardcoded and
  * holds the `isChain` pattern, and each holds a junction count.
  */
-export function fixtureMeander(index: number): GalleryMeander {
+export function fixtureMeander(index: number, repeats = 1): GalleryMeander {
   const code = `01x01y${String(index).padStart(4, "0")}`;
   const isChain = index % 3 === 0;
 
@@ -66,8 +69,8 @@ export function fixtureMeander(index: number): GalleryMeander {
     isHardcoded: isChain,
     lattice: index % 2 === 0 ? "0" : "1",
     repeats: 1,
-    rows: (index % 5) + 1,
-    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><title>${code}</title></svg>`,
+    rows: fixtureRows(index),
+    svg: `<svg data-repeats="${repeats}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><title>${code}</title></svg>`,
   };
 }
 
@@ -105,7 +108,12 @@ export const FIXTURE_CHARACTERISTICS: CharacteristicsQuery["characteristics"] =
  * Serves `count` fixture meanders over `Meanders`, paged by cursor as the API
  * does, and returns a handle to watch it.
  */
-export function serveMeandersApi(count = 3, delayMs = 0): MeandersApi {
+export function serveMeandersApi(
+  count = 3,
+  delayMs = 0,
+  rowsOf: (index: number) => number = () => 4,
+): MeandersApi {
+  fixtureRows = rowsOf;
   let failure: string | undefined;
   let meandersFailure: string | undefined;
   const api: MeandersApi = {
@@ -150,7 +158,7 @@ export function serveMeandersApi(count = 3, delayMs = 0): MeandersApi {
         const end = Math.min(start + (variables.first ?? 50), positions.length);
         const edges = positions.slice(start, end).map((position, offset) => ({
           cursor: String(start + offset),
-          node: fixtureMeander(position),
+          node: fixtureMeander(position, variables.repeats ?? 1),
         }));
 
         return HttpResponse.json({

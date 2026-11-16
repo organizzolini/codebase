@@ -15,6 +15,8 @@ import type { ReactNode } from "react";
 export interface FilterValueEditorProperties {
   className?: string;
   field: FilterField;
+  /** Put before each control's label, to tell this editor from another. */
+  labelPrefix?: string;
   onValueChange: (value: FilterValue) => void;
   rule: FilterRule;
 }
@@ -28,7 +30,13 @@ export interface FilterValueEditorProperties {
 export function FilterValueEditor(
   properties: Readonly<FilterValueEditorProperties>,
 ): ReactNode {
-  const { className, field, onValueChange, rule } = properties;
+  const {
+    className,
+    field,
+    labelPrefix = "",
+    onValueChange,
+    rule,
+  } = properties;
   const { value } = rule;
 
   // 🪝 Hooks
@@ -39,7 +47,7 @@ export function FilterValueEditor(
   if (typeof value === "boolean") {
     editor = (
       <select
-        aria-label="Value"
+        aria-label={`${labelPrefix}Value`}
         className="rounded-md border border-(--line) bg-(--surface-raised) px-2 py-1"
         onChange={(event) => {
           onValueChange(event.target.value === "true");
@@ -53,7 +61,7 @@ export function FilterValueEditor(
   } else if (typeof value === "string") {
     editor = (
       <FilterNumberInput
-        label="Value"
+        label={`${labelPrefix}Value`}
         onValueChange={onValueChange}
         value={value}
         isText
@@ -63,7 +71,7 @@ export function FilterValueEditor(
     editor = (
       <FilterNumberInput
         isInteger={field.isInteger}
-        label="Value"
+        label={`${labelPrefix}Value`}
         onValueChange={onValueChange}
         value={value}
       />
@@ -73,7 +81,7 @@ export function FilterValueEditor(
       <>
         <FilterNumberInput
           isInteger={field.isInteger}
-          label="From"
+          label={`${labelPrefix}From`}
           onValueChange={(low) => {
             onValueChange([Number(low), value[1]]);
           }}
@@ -81,7 +89,7 @@ export function FilterValueEditor(
         />
         <FilterNumberInput
           isInteger={field.isInteger}
-          label="To"
+          label={`${labelPrefix}To`}
           onValueChange={(high) => {
             onValueChange([value[0], Number(high)]);
           }}

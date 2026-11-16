@@ -142,4 +142,45 @@ describe(MeandersService, () => {
     expect(catalogFind).toHaveBeenCalledTimes(1);
     expect(bridgeFind).toHaveBeenCalledTimes(1);
   });
+
+  it("draws the tile repeated as many times as asked, and refuses a count out of range", async () => {
+    expect.hasAssertions();
+
+    const { instance, mock } = await buildTestingModule(MeandersService, {
+      mocks: [
+        CodeService,
+        DrawingService,
+        MeanderAggregateService,
+        MeanderFilterService,
+      ],
+      providers: [
+        { provide: getRepositoryToken(Meander), useValue: {} },
+        { provide: getRepositoryToken(Characteristic), useValue: {} },
+        { provide: getRepositoryToken(MeanderCharacteristic), useValue: {} },
+      ],
+    });
+    const parsed = { columns: 2, digits: "01", repeats: 1, rows: 1 };
+    mock(CodeService).parse.mockReturnValue(parsed);
+    mock(DrawingService).render.mockReturnValue("<svg/>");
+    const meander = {
+      code: "01",
+      columns: 2,
+      id: "i",
+      isHardcoded: true,
+      lattice: "0",
+      repeats: 1,
+      rows: 1,
+      symmetricalCodes: [],
+    };
+
+    instance.draw(meander, 6);
+
+    expect(mock(DrawingService).render).toHaveBeenCalledWith({
+      ...parsed,
+      repeats: 6,
+    });
+    expect(() => instance.draw(meander, 0)).toThrow(/from 1 to 12/u);
+    expect(() => instance.draw(meander, 13)).toThrow(/from 1 to 12/u);
+    expect(() => instance.draw(meander, 1.5)).toThrow(/from 1 to 12/u);
+  });
 });

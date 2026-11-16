@@ -16,26 +16,26 @@ describe(fitsGrouping, () => {
     expect(fitsGrouping(undefined, ["rowsColumns", "lattice"])).toBe(true);
   });
 
-  it("counts a level's key rules against the API's size cap, rows × columns twice", () => {
+  it("counts the rows rule, the tree's group and a level's key rules against the API's size cap, rows × columns twice", () => {
     const full: FilterGroup = {
       combinator: "and",
-      rules: Array.from({ length: 126 }, () => RULE),
+      rules: Array.from({ length: 124 }, () => RULE),
     };
 
     expect(fitsGrouping(full, ["lattice", "isHardcoded"])).toBe(true);
     expect(fitsGrouping(full, ["rowsColumns", "lattice"])).toBe(false);
   });
 
-  it("counts the nesting an OR filter gains when it is nested whole", () => {
+  it("counts the nesting the tree gains when it is nested whole", () => {
     let nested: FilterGroup = { combinator: "or", rules: [RULE] };
 
     for (let level = 1; level < MAXIMUM_FILTER_DEPTH; level += 1) {
       nested = { combinator: "or", rules: [nested] };
     }
 
-    expect(fitsGrouping(nested, ["lattice"])).toBe(false);
-    expect(fitsGrouping({ ...nested, combinator: "and" }, ["lattice"])).toBe(
-      true,
-    );
+    expect(fitsGrouping(nested, ["lattice"])).toBe(true);
+    expect(
+      fitsGrouping({ combinator: "or", rules: [nested] }, ["lattice"]),
+    ).toBe(false);
   });
 });

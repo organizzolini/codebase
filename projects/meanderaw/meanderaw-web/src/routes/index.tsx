@@ -7,6 +7,8 @@ import {
 import { useEffect, useMemo } from "react";
 
 import { GalleryError } from "../components/gallery-error/gallery-error";
+import { sanitizeRows } from "../components/gallery-filter-builder/filter-rows.utilities";
+import { DEFAULT_ROWS_FILTER } from "../components/gallery-filter-builder/gallery-filter-builder.constants";
 import {
   createFilterFields,
   sanitizeFilter,
@@ -55,12 +57,15 @@ export const Route = createFileRoute("/")({
   head: () => ({ meta: [{ title: "Meanderaw" }] }),
   validateSearch: (search: Record<string, unknown>) =>
     gallerySearchSchema.parse(search),
-  // The sort and filter are read from the link, so a change to either reads
-  // the first page again.
+  // The sort, filter and rows rule are read from the link, so a change to
+  // any reads the first page again.
   loaderDeps: ({ search }) => ({
     direction: search.direction ?? DEFAULT_SORT_DIRECTION,
     filter: search.filter,
     group: search.group,
+    // Read as the rule it settles to, so adding the default to the link does
+    // not read the first page a second time.
+    rows: sanitizeRows(search.rows),
     sort: search.sort,
   }),
   ssr: false,
@@ -74,14 +79,18 @@ export const Route = createFileRoute("/")({
       deps.filter,
       createFilterFields(characteristics),
     );
+
+    // A link without a valid rows rule gets the default one.
+    const rows = sanitizeRows(deps.rows);
     const { groups, page } = await findGallery({
       direction: deps.direction,
       filter,
       grouping: resolveGrouping(deps.group, createGroupFields(characteristics)),
+      rows,
       sort,
     });
 
-    return { characteristics, filter, groups, page, sort };
+    return { characteristics, filter, groups, page, rows, sort };
   },
 });
 
@@ -141,7 +150,8 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
  */
 function IndexPage(): ReactNode {
   // 🪝 Hooks
-  const { characteristics, filter, groups, page, sort } = Route.useLoaderData();
+  const { characteristics, filter, groups, page, rows, sort } =
+    Route.useLoaderData();
   const {
     direction,
     group,
@@ -151,7 +161,7 @@ function IndexPage(): ReactNode {
     handleViewChange,
     view,
   } = useGallerySearch();
-  const { filter: linkedFilter } = Route.useSearch();
+  const { filter: linkedFilter, rows: linkedRows } = Route.useSearch();
   // While a new sort reads, the cards of the last stay up under a notice.
   const isReloading = useRouterState({
     select: (state: { isLoading: boolean }) => state.isLoading,
@@ -161,10 +171,10 @@ function IndexPage(): ReactNode {
   // What the API is asked, kept steady so the reads do not restart.
   const input = useMemo(
     () => ({
-      filter: toFilterInput(filter),
+      filter: toFilterInput(filter, rows),
       sort: toSortInput(sort, direction),
     }),
-    [direction, filter, sort],
+    [direction, filter, rows, sort],
   );
   const fields = createFilterFields(characteristics);
   const groupFields = createGroupFields(characteristics);
@@ -177,10 +187,13 @@ function IndexPage(): ReactNode {
   // A link carrying rules the catalog cannot answer is replaced by one that
   // does not, so what the address says is what is shown.
   useEffect(() => {
-    if (JSON.stringify(filter) !== JSON.stringify(linkedFilter)) {
-      handleFilterChange(filter);
+    if (
+      JSON.stringify(filter) !== JSON.stringify(linkedFilter) ||
+      JSON.stringify(rows) !== JSON.stringify(linkedRows)
+    ) {
+      handleFilterChange(filter, rows);
     }
-  }, [filter, handleFilterChange, linkedFilter]);
+  }, [filter, handleFilterChange, linkedFilter, linkedRows, rows]);
 
   // A link carrying levels the catalog does not know, or twice, is replaced
   // by one that does not.
@@ -199,7 +212,16 @@ function IndexPage(): ReactNode {
       <GalleryFilters
         fields={fields}
         filter={filter}
-        onFilterChange={handleFilterChange}
+        onClear={() => {
+          handleFilterChange(undefined, DEFAULT_ROWS_FILTER);
+        }}
+        onFilterChange={(next) => {
+          handleFilterChange(next, rows);
+        }}
+        onRowsChange={(next) => {
+          handleFilterChange(filter, next);
+        }}
+        rows={rows}
       />
       <GalleryGroupBy
         fields={groupFields}

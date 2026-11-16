@@ -1,6 +1,13 @@
-import { isWithinLimits } from "../gallery-filter-builder/filter-limits.utilities";
+import {
+  countEntries,
+  measureDepth,
+} from "../gallery-filter-builder/filter-limits.utilities";
 
-import { SHAPE_GROUP_FIELDS } from "./gallery-group-by.constants";
+import {
+  API_MAXIMUM_DEPTH,
+  API_MAXIMUM_ENTRIES,
+  SHAPE_GROUP_FIELDS,
+} from "./gallery-group-by.constants";
 
 import type {
   FilterGroup,
@@ -34,29 +41,27 @@ export function createGroupFields(
 }
 
 /**
- * Whether the key rules joined to the filter stay within the API's caps.
+ * Whether the page's rows rule, the key rules and the filter's tree, nested
+ * whole, stay within the API's caps.
  */
 export function fitsGrouping(
   filter: FilterGroup | undefined,
   grouping: readonly string[],
 ): boolean {
-  if (filter === undefined) {
-    return true;
-  }
-
-  // One rule for a level, two for rows × columns, which names both.
-  const keyRule: FilterRule = { field: "rows", operator: "eq", value: 0 };
+  // The rows rule, then one rule for a level, two for rows × columns.
+  const rule: FilterRule = { field: "rows", operator: "eq", value: 0 };
   const keys = grouping.flatMap((key) =>
-    key === "rowsColumns" ? [keyRule, keyRule] : [keyRule],
+    key === "rowsColumns" ? [rule, rule] : [rule],
   );
-
-  return isWithinLimits({
+  const wrapper: FilterGroup = {
     combinator: "and",
-    rules:
-      filter.combinator === "and"
-        ? [...keys, ...filter.rules]
-        : [...keys, filter],
-  });
+    rules: [rule, ...keys, ...(filter === undefined ? [] : [filter])],
+  };
+
+  return (
+    measureDepth(wrapper) <= API_MAXIMUM_DEPTH &&
+    countEntries(wrapper) <= API_MAXIMUM_ENTRIES
+  );
 }
 
 /**

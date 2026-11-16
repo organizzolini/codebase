@@ -8,6 +8,9 @@
   --surface: oklch(17% 0.02 150deg);
   --surface-raised: oklch(22% 0.025 150deg);
   --surface-sunken: oklch(14% 0.02 150deg);
+
+  /* A pale panel behind a drawing, so its black ink reads at about 18:1. */
+  --drawing-panel: oklch(96% 0.02 150deg);
   --line: oklch(32% 0.03 150deg);
   --ink: oklch(94% 0.015 150deg);
   --ink-muted: oklch(72% 0.03 150deg);

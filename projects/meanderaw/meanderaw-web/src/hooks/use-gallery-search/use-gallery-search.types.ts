@@ -1,4 +1,7 @@
-import type { FilterGroup } from "../../components/gallery-filter-builder/gallery-filter-builder.types";
+import type {
+  FilterGroup,
+  RowsFilter,
+} from "../../components/gallery-filter-builder/gallery-filter-builder.types";
 import type {
   GALLERY_VIEWS,
   SORT_DIRECTIONS,
@@ -24,7 +27,10 @@ export interface UseGallerySearchResult {
   direction: SortDirection;
   /** The fields the cards are grouped by, outermost first; none when flat. */
   group: string[];
-  handleFilterChange: (filter: FilterGroup | undefined) => void;
+  handleFilterChange: (
+    filter: FilterGroup | undefined,
+    rows: RowsFilter,
+  ) => void;
   handleGroupChange: (group: string[]) => void;
   handleSortChange: (
     sort: string | undefined,

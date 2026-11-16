@@ -8,6 +8,8 @@ import {
   measureDepth,
   normalizeRule,
 } from "./filter-limits.utilities";
+import { sanitizeRows } from "./filter-rows.utilities";
+import { DEFAULT_ROWS_FILTER } from "./gallery-filter-builder.constants";
 import {
   addNode,
   changeRuleField,
@@ -171,42 +173,90 @@ describe("gallery filter builder utilities", () => {
   });
 
   describe(toFilterInput, () => {
-    it("words a tree as the API's input, a range low end first", () => {
+    const ROWS_INPUT = { field: "rows", numbers: [4], operator: "EQ" };
+
+    it("aNDs the rows rule with the tree, a range low end first", () => {
       expect(
-        toFilterInput({
-          combinator: "or",
-          rules: [
-            { field: "junctionCount", operator: "between", value: [4, 1] },
-            { field: "lattice", operator: "ne", value: "1" },
-            { combinator: "and", rules: [CHAIN, ROWS] },
-          ],
-        }),
+        toFilterInput(
+          {
+            combinator: "or",
+            rules: [
+              { field: "junctionCount", operator: "between", value: [4, 1] },
+              { field: "lattice", operator: "ne", value: "1" },
+              { combinator: "and", rules: [CHAIN, ROWS] },
+            ],
+          },
+          DEFAULT_ROWS_FILTER,
+        ),
       ).toStrictEqual({
-        combinator: "OR",
+        combinator: "AND",
         groups: [
           {
-            combinator: "AND",
+            combinator: "OR",
+            groups: [
+              {
+                combinator: "AND",
+                rules: [
+                  { field: "isChain", flag: true, operator: "IS" },
+                  { field: "rows", numbers: [2], operator: "EQ" },
+                ],
+              },
+            ],
             rules: [
-              { field: "isChain", flag: true, operator: "IS" },
-              { field: "rows", numbers: [2], operator: "EQ" },
+              { field: "junctionCount", numbers: [1, 4], operator: "BETWEEN" },
+              { field: "lattice", operator: "NE", text: "1" },
             ],
           },
         ],
-        rules: [
-          { field: "junctionCount", numbers: [1, 4], operator: "BETWEEN" },
-          { field: "lattice", operator: "NE", text: "1" },
-        ],
+        rules: [ROWS_INPUT],
       });
     });
 
-    it("gives none for a tree holding no rule", () => {
-      expect(toFilterInput(undefined)).toBeUndefined();
+    it("words a range for the rows rule low end first", () => {
       expect(
-        toFilterInput({
-          combinator: "and",
-          rules: [{ combinator: "or", rules: [] }],
-        }),
-      ).toBeUndefined();
+        toFilterInput(undefined, { operator: "between", value: [6, 2] }).rules,
+      ).toStrictEqual([
+        { field: "rows", numbers: [2, 6], operator: "BETWEEN" },
+      ]);
+    });
+
+    it("sends only the rows rule for a tree holding no rule", () => {
+      const only = { combinator: "AND", rules: [ROWS_INPUT] };
+
+      expect(toFilterInput(undefined, DEFAULT_ROWS_FILTER)).toStrictEqual(only);
+      expect(
+        toFilterInput(
+          { combinator: "and", rules: [{ combinator: "or", rules: [] }] },
+          DEFAULT_ROWS_FILTER,
+        ),
+      ).toStrictEqual(only);
+    });
+  });
+
+  describe(sanitizeRows, () => {
+    it("keeps a number comparison or an ordered range of whole numbers", () => {
+      expect(sanitizeRows({ operator: "gte", value: 3 })).toStrictEqual({
+        operator: "gte",
+        value: 3,
+      });
+      expect(
+        sanitizeRows({ operator: "between", value: [5, 2] }),
+      ).toStrictEqual({ operator: "between", value: [2, 5] });
+    });
+
+    it("falls back to rows = 4 for anything else", () => {
+      for (const rows of [
+        undefined,
+        { operator: "is" as const, value: true },
+        { operator: "eq" as const, value: 1.5 },
+        { operator: "eq" as const, value: 2 ** 60 },
+        { operator: "eq" as const, value: "four" },
+        { operator: "eq" as const, value: [1, 2] as [number, number] },
+        { operator: "between" as const, value: 3 },
+        { operator: "between" as const, value: [1.5, 2] as [number, number] },
+      ]) {
+        expect(sanitizeRows(rows)).toStrictEqual(DEFAULT_ROWS_FILTER);
+      }
     });
   });
 
@@ -298,9 +348,9 @@ describe("gallery filter builder utilities", () => {
     it("is kept, yet neither counted, listed nor sent to the API", () => {
       expect(countRules(waiting)).toBe(1);
       expect(listRules(waiting)).toStrictEqual([{ path: [1], rule: ROWS }]);
-      expect(toFilterInput(waiting)?.rules).toStrictEqual([
-        { field: "rows", numbers: [2], operator: "EQ" },
-      ]);
+      expect(
+        toFilterInput(waiting, DEFAULT_ROWS_FILTER).groups?.[0]?.rules,
+      ).toStrictEqual([{ field: "rows", numbers: [2], operator: "EQ" }]);
       expect(sanitizeFilter(waiting, FIELDS)).toStrictEqual(waiting);
     });
   });
@@ -324,13 +374,13 @@ describe("gallery filter builder utilities", () => {
     });
 
     it("keeps a filter at the caps and drops one past them", () => {
-      expect(isWithinLimits(nested(6))).toBe(true);
-      expect(isWithinLimits(nested(7))).toBe(false);
-      expect(sanitizeFilter(nested(7), FIELDS)).toBeUndefined();
+      expect(isWithinLimits(nested(5))).toBe(true);
+      expect(isWithinLimits(nested(6))).toBe(false);
+      expect(sanitizeFilter(nested(6), FIELDS)).toBeUndefined();
 
       const full: FilterGroup = {
         combinator: "or",
-        rules: Array.from({ length: 128 }, () => ROWS),
+        rules: Array.from({ length: 126 }, () => ROWS),
       };
 
       expect(sanitizeFilter(full, FIELDS)).toStrictEqual(full);

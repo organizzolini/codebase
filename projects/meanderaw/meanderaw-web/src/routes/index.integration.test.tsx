@@ -5,6 +5,7 @@ import { renderRoute } from "@codebase/testing/react";
 
 import { serveMeandersApi } from "../../testing/meanders-api";
 import { scrollWindowTo, setViewportWidth } from "../../testing/viewport";
+import { DEFAULT_ROWS_FILTER } from "../components/gallery-filter-builder/gallery-filter-builder.constants";
 import { getRouter } from "../router";
 
 import { Route } from "./index";
@@ -44,7 +45,7 @@ describe("index", () => {
 
     const [first, second] = cards.map((card) => within(card));
 
-    expect(first?.getByText("1 × 1")).toBeDefined();
+    expect(first?.getByText("4 × 1")).toBeDefined();
     expect(first?.getByText("Hardcoded")).toBeDefined();
     expect(first?.getByText("01x01y0000")).toBeDefined();
     expect(
@@ -68,6 +69,7 @@ describe("index", () => {
 
     await waitFor(() => {
       expect({ ...router.state.location.search }).toStrictEqual({
+        rows: DEFAULT_ROWS_FILTER,
         view: "list",
       });
     });
@@ -81,6 +83,7 @@ describe("index", () => {
 
     await waitFor(() => {
       expect({ ...router.state.location.search }).toStrictEqual({
+        rows: DEFAULT_ROWS_FILTER,
         view: "grid",
       });
     });
@@ -239,24 +242,25 @@ describe("index", () => {
     ]);
 
     fireEvent.change(screen.getByLabelText("Sort by"), {
-      target: { value: "rows" },
+      target: { value: "columns" },
     });
 
     await waitFor(() => {
       expect({ ...router.state.location.search }).toStrictEqual({
         direction: "asc",
-        sort: "rows",
+        rows: DEFAULT_ROWS_FILTER,
+        sort: "columns",
       });
     });
     await waitFor(() => {
       expect(codesShown().slice(0, 2)).toStrictEqual([
         "01x01y0000",
-        "01x01y0005",
+        "01x01y0003",
       ]);
     });
 
     expect(api.requests.at(-1)).toMatchObject({
-      sort: { direction: "ASC", field: "rows" },
+      sort: { direction: "ASC", field: "columns" },
     });
   });
 
@@ -264,18 +268,19 @@ describe("index", () => {
     serveMeandersApi(6);
     const router = getRouter();
 
-    await renderRoute(router, "/?sort=rows");
+    await renderRoute(router, "/?sort=columns");
     await screen.findAllByTestId("meander-card");
 
     fireEvent.click(screen.getByRole("button", { name: "Sort descending" }));
 
     await waitFor(() => {
-      expect(codesShown()[0]).toBe("01x01y0004");
+      expect(codesShown()[0]).toBe("01x01y0002");
     });
 
     expect({ ...router.state.location.search }).toStrictEqual({
       direction: "desc",
-      sort: "rows",
+      rows: DEFAULT_ROWS_FILTER,
+      sort: "columns",
     });
 
     fireEvent.change(screen.getByLabelText("Sort by"), {
@@ -286,7 +291,9 @@ describe("index", () => {
       expect(codesShown()[0]).toBe("01x01y0000");
     });
 
-    expect({ ...router.state.location.search }).toStrictEqual({});
+    expect({ ...router.state.location.search }).toStrictEqual({
+      rows: DEFAULT_ROWS_FILTER,
+    });
   });
 
   it("opens sorted by a characteristic when the link names one, and pages in that sort", async () => {
@@ -353,5 +360,24 @@ describe("index", () => {
     await waitFor(() => {
       expect(screen.queryByRole("status")).toBeNull();
     });
+  });
+
+  it("asks for each drawing with its tile repeated 6 times, on the first page and the next", async () => {
+    const api = serveMeandersApi(100);
+
+    await renderRoute(getRouter(), "/");
+
+    const [image] = await screen.findAllByRole("img");
+    const drawing = decodeURIComponent(image?.getAttribute("src") ?? "");
+
+    expect(drawing).toContain('data-repeats="6"');
+
+    scrollWindowTo(3300);
+
+    await waitFor(() => {
+      expect(api.requests).toHaveLength(2);
+    });
+
+    expect(api.requests.map(({ repeats }) => repeats)).toStrictEqual([6, 6]);
   });
 });

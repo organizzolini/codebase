@@ -12,6 +12,7 @@ import { MAXIMUM_GROUP_LEVELS } from "../gallery-group-by/gallery-group-by.const
 import { fitsGrouping } from "../gallery-group-by/gallery-group-by.utilities";
 
 import {
+  CARD_REPEATS,
   DEFAULT_MEANDERAW_API_URL,
   GALLERY_PAGE_SIZE,
   groupNodeSchema,
@@ -23,7 +24,10 @@ import type {
   MeandersQueryVariables,
 } from "../../graphql/generated/operations";
 import type { SortDirection } from "../../hooks/use-gallery-search/use-gallery-search.types";
-import type { FilterGroup } from "../gallery-filter-builder/gallery-filter-builder.types";
+import type {
+  FilterGroup,
+  RowsFilter,
+} from "../gallery-filter-builder/gallery-filter-builder.types";
 import type {
   GalleryCharacteristic,
   GalleryGroup,
@@ -51,13 +55,14 @@ export async function findGallery(
     direction: SortDirection;
     filter: FilterGroup | undefined;
     grouping: readonly string[];
+    rows: RowsFilter;
     sort: string | undefined;
   }>,
 ): Promise<{
   groups: GalleryGroup[] | undefined;
   page: MeandersPage | undefined;
 }> {
-  const { direction, filter, grouping, sort } = request;
+  const { direction, filter, grouping, rows, sort } = request;
 
   if (grouping.length > 0) {
     if (!fitsGrouping(filter, grouping)) {
@@ -68,7 +73,7 @@ export async function findGallery(
 
     return {
       groups: await findMeanderGroups({
-        filter: toFilterInput(filter),
+        filter: toFilterInput(filter, rows),
         groupBy: grouping.map((field) => ({ field })),
       }),
       page: undefined,
@@ -78,7 +83,7 @@ export async function findGallery(
   return {
     groups: undefined,
     page: await findMeanders({
-      filter: toFilterInput(filter),
+      filter: toFilterInput(filter, rows),
       sort: toSortInput(sort, direction),
     }),
   };
@@ -103,11 +108,12 @@ export async function findMeanderGroups(
  * Reads one page of meanders, from the start or after a cursor.
  */
 export async function findMeanders(
-  variables: Readonly<Omit<MeandersQueryVariables, "first">> = {},
+  variables: Readonly<Omit<MeandersQueryVariables, "first" | "repeats">> = {},
 ): Promise<MeandersPage> {
   const { meanders } = await queryApi(MeandersDocument, {
     ...variables,
     first: GALLERY_PAGE_SIZE,
+    repeats: CARD_REPEATS,
   });
 
   return meanders;

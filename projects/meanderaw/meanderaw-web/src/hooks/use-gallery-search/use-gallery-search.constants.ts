@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import {
   linkedFilterSchema,
+  linkedRowsSchema,
   MAXIMUM_FILTER_TEXT_LENGTH,
 } from "../../components/gallery-filter-builder/gallery-filter-builder.constants";
 import { MAXIMUM_GROUP_LEVELS } from "../../components/gallery-group-by/gallery-group-by.constants";
@@ -49,6 +50,7 @@ export const gallerySearchSchema = z.object({
     )
     .catch([])
     .optional(),
+  rows: linkedRowsSchema.optional(),
   sort: z.coerce.string().min(1).optional(),
   view: z.enum(GALLERY_VIEWS).catch(DEFAULT_GALLERY_VIEW).optional(),
 });

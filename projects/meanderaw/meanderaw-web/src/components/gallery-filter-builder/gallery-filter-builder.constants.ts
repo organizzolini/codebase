@@ -7,6 +7,7 @@ import type {
   FilterFieldType,
   FilterGroup,
   FilterOperator,
+  RowsFilter,
 } from "./gallery-filter-builder.types";
 
 // ♟️ Constants
@@ -35,14 +36,19 @@ export const FILTER_OPERATORS = [
 ] as const satisfies readonly FilterOperator[];
 
 /**
- * How deep groups nest, the root being level 1; the API's limit.
+ * How deep the tree nests: the API's 6 less one.
  */
-export const MAXIMUM_FILTER_DEPTH = 6;
+export const MAXIMUM_FILTER_DEPTH = 5;
 
 /**
- * The most rules and groups a filter holds; the API's limit.
+ * The tree's rule and group cap: 128 less two.
  */
-export const MAXIMUM_FILTER_ENTRIES = 128;
+export const MAXIMUM_FILTER_ENTRIES = 126;
+
+/**
+ * The rows rule a link names none for.
+ */
+export const DEFAULT_ROWS_FILTER: RowsFilter = { operator: "eq", value: 4 };
 
 /**
  * The longest field key or text in a rule; the API's limit.
@@ -105,19 +111,24 @@ export const OPERATORS_BY_TYPE: Record<
 };
 
 /**
+ * The rows field, which every filter requires a rule on.
+ */
+export const ROWS_FILTER_FIELD: FilterField = {
+  category: "shape",
+  description: "How many rows the meander has",
+  isInteger: true,
+  isPattern: false,
+  key: "rows",
+  label: "Rows",
+  type: "number",
+  valueCounts: [],
+};
+
+/**
  * The shape fields a rule may name, in picker order.
  */
 export const SHAPE_FILTER_FIELDS: readonly FilterField[] = [
-  {
-    category: "shape",
-    description: "How many rows the meander has",
-    isInteger: true,
-    isPattern: false,
-    key: "rows",
-    label: "Rows",
-    type: "number",
-    valueCounts: [],
-  },
+  ROWS_FILTER_FIELD,
   {
     category: "shape",
     description: "How many columns the meander has",
@@ -199,6 +210,17 @@ export const filterGroupSchema: z.ZodType<FilterGroup> = z.lazy(() =>
  */
 export const linkedFilterSchema = z.unknown().transform((value) => {
   const parsed = filterGroupSchema.safeParse(value);
+
+  return parsed.success ? parsed.data : undefined;
+});
+
+/**
+ * Reads the rows rule from a link, or none for anything else.
+ */
+export const linkedRowsSchema = z.unknown().transform((value) => {
+  const parsed = filterRuleSchema
+    .pick({ operator: true, value: true })
+    .safeParse(value);
 
   return parsed.success ? parsed.data : undefined;
 });

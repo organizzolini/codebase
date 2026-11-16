@@ -13,3 +13,13 @@ export const SHAPE_GROUP_FIELDS = [
   { key: "lattice", label: "Lattice" },
   { key: "isHardcoded", label: "Hardcoded" },
 ] as const;
+
+/**
+ * The API's cap on filter nesting, the root being level 1.
+ */
+export const API_MAXIMUM_DEPTH = 6;
+
+/**
+ * The API's cap on rules and groups, root excepted.
+ */
+export const API_MAXIMUM_ENTRIES = 128;

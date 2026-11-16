@@ -1,4 +1,5 @@
 import { isWithinLimits, normalizeRule } from "./filter-limits.utilities";
+import { toRowsRule } from "./filter-rows.utilities";
 import {
   OPERATOR_INPUTS,
   OPERATOR_LABELS,
@@ -21,6 +22,7 @@ import type {
   FilterRule,
   FilterRuleEntry,
   FilterValue,
+  RowsFilter,
 } from "./gallery-filter-builder.types";
 
 // 🔏 Private Functions
@@ -280,35 +282,20 @@ export function setRule(path: readonly number[], rule: FilterRule): FilterEdit {
 }
 
 /**
- * Words a tree as the API's filter argument, or none when it holds no rule.
+ * Words the rows rule and the tree as the API's filter argument: the rows
+ * rule ANDed with the tree, whatever the tree's own combinator.
  */
 export function toFilterInput(
   group: FilterGroup | undefined,
-): MeanderFilterGroupInput | undefined {
-  if (group === undefined) {
-    return undefined;
-  }
+  rows: RowsFilter,
+): MeanderFilterGroupInput {
+  const tree = toTreeInput(group);
 
-  const rules: MeanderFilterRuleInput[] = [];
-  const groups: MeanderFilterGroupInput[] = [];
-
-  for (const node of group.rules) {
-    if (!("rules" in node)) {
-      if (isFinished(node)) {
-        rules.push(toRuleInput(node));
-      }
-
-      continue;
-    }
-
-    const nested = toFilterInput(node);
-
-    if (nested !== undefined) {
-      groups.push(nested);
-    }
-  }
-
-  return toGroupInput(group, rules, groups);
+  return {
+    combinator: "AND",
+    rules: [toRuleInput(toRowsRule(rows))],
+    ...(tree !== undefined && { groups: [tree] }),
+  };
 }
 
 /**
@@ -427,6 +414,38 @@ function toRuleInput(rule: FilterRule): MeanderFilterRuleInput {
     numbers:
       typeof value === "number" ? [value] : value.toSorted((a, b) => a - b),
   };
+}
+
+/**
+ * Words a tree as the API's group input, or none when it holds no rule.
+ */
+function toTreeInput(
+  group: FilterGroup | undefined,
+): MeanderFilterGroupInput | undefined {
+  if (group === undefined) {
+    return undefined;
+  }
+
+  const rules: MeanderFilterRuleInput[] = [];
+  const groups: MeanderFilterGroupInput[] = [];
+
+  for (const node of group.rules) {
+    if (!("rules" in node)) {
+      if (isFinished(node)) {
+        rules.push(toRuleInput(node));
+      }
+
+      continue;
+    }
+
+    const nested = toTreeInput(node);
+
+    if (nested !== undefined) {
+      groups.push(nested);
+    }
+  }
+
+  return toGroupInput(group, rules, groups);
 }
 
 /**

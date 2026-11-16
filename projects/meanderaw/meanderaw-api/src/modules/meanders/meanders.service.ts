@@ -20,9 +20,12 @@ import { MeanderAggregateService } from "./aggregates/meander-aggregate.service"
 import { MeanderFilterService } from "./filters/meander-filter.service";
 import {
   cursorSchema,
+  DEFAULT_SVG_REPEATS,
+  MAXIMUM_SVG_REPEATS,
   meandersArgumentsSchema,
   NO_FILTER,
   SHAPE_SORT_FIELDS,
+  svgRepeatsSchema,
 } from "./meanders.constants";
 import { SortDirection } from "./sort-direction.entities";
 
@@ -203,11 +206,29 @@ export class MeandersService {
 
   // 🌎 Public Methods
 
-  /** The meander's drawing, the same SVG document the CLI draws for its Code. */
-  draw(meander: MeanderEntity): string {
-    return this.drawingService.render(
-      this.codeService.parse(meander.code, meander.rows, meander.columns),
+  /**
+   * The meander's drawing, the SVG document the CLI draws for its Code, with
+   * its tile repeated `repeats` times across, from 1 to 12.
+   */
+  draw(meander: MeanderEntity, repeats = DEFAULT_SVG_REPEATS): string {
+    const parsed = svgRepeatsSchema.safeParse(repeats);
+
+    if (!parsed.success) {
+      throw new BadRequestException(
+        `Repeats must be a whole number from 1 to ${MAXIMUM_SVG_REPEATS}.`,
+      );
+    }
+
+    const code = this.codeService.parse(
+      meander.code,
+      meander.rows,
+      meander.columns,
     );
+
+    return this.drawingService.render({
+      ...code,
+      repeats: code.repeats * parsed.data,
+    });
   }
 
   /**

@@ -8,6 +8,12 @@ import {
 } from "../../../testing/filter-api-contract";
 import { FIXTURE_CHARACTERISTICS } from "../../../testing/meanders-api";
 
+import { sanitizeRows } from "./filter-rows.utilities";
+import {
+  DEFAULT_ROWS_FILTER,
+  MAXIMUM_FILTER_DEPTH,
+  MAXIMUM_FILTER_ENTRIES,
+} from "./gallery-filter-builder.constants";
 import {
   createFilterFields,
   sanitizeFilter,
@@ -15,7 +21,11 @@ import {
 } from "./gallery-filter-builder.utilities";
 
 import type { MeanderFilterRuleInput } from "../../graphql/generated/operations";
-import type { FilterGroup, FilterRule } from "./gallery-filter-builder.types";
+import type {
+  FilterGroup,
+  FilterRule,
+  RowsFilter,
+} from "./gallery-filter-builder.types";
 
 const FIELDS = createFilterFields(FIXTURE_CHARACTERISTICS);
 
@@ -43,29 +53,55 @@ describe("the filter input the builder writes", () => {
         },
       ],
     };
-    const input = toFilterInput(sanitizeFilter(filter, FIELDS));
+    const input = toFilterInput(
+      sanitizeFilter(filter, FIELDS),
+      DEFAULT_ROWS_FILTER,
+    );
 
     expect(groupSchema.safeParse(input).success).toBe(true);
   });
 
-  it("is accepted at the API's caps, and the builder's limits are the API's", () => {
+  it("is accepted for every rows rule the builder can write", () => {
+    const writable: RowsFilter[] = [
+      { operator: "eq", value: 4 },
+      { operator: "ne", value: 4 },
+      { operator: "lt", value: 4 },
+      { operator: "lte", value: 4 },
+      { operator: "gt", value: 4 },
+      { operator: "gte", value: 4 },
+      { operator: "between", value: [6, 2] },
+      { operator: "is", value: true },
+      { operator: "eq", value: 1.5 },
+    ];
+
+    for (const rows of writable) {
+      const input = toFilterInput(undefined, sanitizeRows(rows));
+
+      expect(groupSchema.safeParse(input).success).toBe(true);
+    }
+  });
+
+  it("is accepted when the tree is at the builder's caps, which leave room for the rows rule", () => {
     let nested: FilterGroup = {
       combinator: "and",
       rules: [{ field: "rows", operator: "eq", value: 1 }],
     };
 
-    for (let level = 1; level < MAXIMUM_DEPTH; level += 1) {
+    for (let level = 1; level < MAXIMUM_FILTER_DEPTH; level += 1) {
       nested = { combinator: "and", rules: [nested] };
     }
 
     const row: FilterRule = { field: "rows", operator: "eq", value: 1 };
     const wide: FilterGroup = {
       combinator: "or",
-      rules: Array.from({ length: MAXIMUM_ENTRIES }, () => row),
+      rules: Array.from({ length: MAXIMUM_FILTER_ENTRIES }, () => row),
     };
 
     for (const filter of [nested, wide]) {
-      const input = toFilterInput(sanitizeFilter(filter, FIELDS));
+      const input = toFilterInput(
+        sanitizeFilter(filter, FIELDS),
+        DEFAULT_ROWS_FILTER,
+      );
       const { depth, entries } = measure(input);
 
       expect(groupSchema.safeParse(input).success).toBe(true);
