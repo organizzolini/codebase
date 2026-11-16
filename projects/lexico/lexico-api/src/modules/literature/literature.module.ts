@@ -10,6 +10,8 @@ import {
 } from "@codebase/lexico-db";
 
 import { AuthorsResolver } from "./authors.resolver";
+import { LibraryResolver } from "./library.resolver";
+import { LibraryService } from "./library.service";
 import { LinesResolver } from "./lines.resolver";
 import { LiteratureRelationsLoader } from "./literature-relations.loader";
 import { LiteratureRelationsService } from "./literature-relations.service";
@@ -36,6 +38,8 @@ import { WordCandidatesService } from "./word-candidates.service";
     LiteratureService,
     LiteratureRelationsService,
     LiteratureRelationsLoader,
+    LibraryResolver,
+    LibraryService,
     WordCandidatesResolver,
     WordCandidatesService,
   ],

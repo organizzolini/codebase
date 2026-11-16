@@ -10,10 +10,7 @@ export interface AncestorLink {
   readonly origin: string;
 }
 
-/**
- * The `Author` column the API does not expose: its unstructured ingestion
- * metadata.
- */
+/** The `Author` columns the API does not expose: its unstructured ingestion metadata. */
 export type AuthorDatabaseOnlyField = "metadata";
 
 /** The `Author` relation resolvers expose: texts, in title order. */
@@ -159,10 +156,7 @@ export interface SqlCondition {
   readonly sql: string;
 }
 
-/**
- * The `Text` column the API does not expose: its unstructured ingestion
- * metadata.
- */
+/** The `Text` columns the API does not expose: its unstructured ingestion metadata. */
 export type TextDatabaseOnlyField = "metadata";
 
 /** The `Text` relations the API exposes, each as its own GraphQL type. */
