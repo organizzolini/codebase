@@ -26,7 +26,7 @@ dev = [
 [tool.ruff]
 # Extend shared workspace config in configuration
 extend = "../../configuration/pyproject.toml"
-exclude = ["notebooks/**", ".vulture_whitelist.py"]
+exclude = ["notebooks/**", "configuration/.vulture_whitelist.py"]
 extend-include = ["*.ipynb"]
 
 [tool.ruff.lint.flake8-type-checking]

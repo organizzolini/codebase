@@ -65,8 +65,9 @@ projects/affirmancy/
 │   └── output.py            # JSON and markdown writers
 ├── testing/                 # pytest suites, one per module
 ├── output/                  # Generated files (gitignored)
-├── pyproject.toml
-└── searxng.settings.yml
+├── configuration/
+│   └── searxng.settings.yml
+└── pyproject.toml
 ```
 
 ## Subjects

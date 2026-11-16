@@ -1302,7 +1302,7 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{projectRoot}/.vulture_whitelist.py",
+          "{projectRoot}/configuration/.vulture_whitelist.py",
           "{workspaceRoot}/configuration/pyproject.toml",
           "{workspaceRoot}/configuration/uv.lock",
           "python-source",
@@ -1311,7 +1311,7 @@
           }
         ],
         "options": {
-          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" python -m vulture src/ .vulture_whitelist.py --min-confidence 80",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" python -m vulture src/ configuration/.vulture_whitelist.py --min-confidence 80",
           "cwd": "{projectRoot}"
         }
       }
