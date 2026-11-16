@@ -76,7 +76,7 @@ export class InstancesService {
   }): boolean {
     const relativePath = path.relative(
       args.projectRootPath,
-      path.join(args.instance.path, args.instance.nameStem),
+      path.join(args.instance.path, args.instance.name),
     );
 
     return (
@@ -122,13 +122,13 @@ export class InstancesService {
 
     // First-match-wins: an instance two generators both locate is kept once.
     // The file scope is part of the identity, because a service and a resolver
-    // share a name stem yet are different instances of different templates —
+    // share a name yet are different instances of different templates —
     // keyed by name alone, whichever generator came first hid the other.
     const seenInstances = new Set<string>();
     return instances.filter((instance) => {
       const key = [
         instance.path,
-        instance.nameStem,
+        instance.name,
         (instance.fileScope ?? []).join(","),
       ].join(":");
       if (seenInstances.has(key)) {

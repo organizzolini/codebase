@@ -64,7 +64,7 @@ export class CharacteristicContextService {
 
   /**
    * Builds the context for a Code as filed, not reduced to its repeating unit.
-   * Used by the canonical-phase scorer.
+   * Used by the canonical-rotation scorer.
    */
   public createUnreduced(code: Code | CodeObject): CharacteristicContext {
     return this.build(this.parse(code));

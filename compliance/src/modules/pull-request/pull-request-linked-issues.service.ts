@@ -63,7 +63,7 @@ export class PullRequestLinkedIssuesService {
 
   /**
    * The audit failures, then the fields. A sub-issue closed beside its parent
-   * is one of that parent's commits, so only the parent owes the fields.
+   * is that parent's commit, so only the parent owes fields.
    */
   private checkIssue(issue: LinkedIssue, run: LinkedIssuesRun): void {
     const resolution = this.issueMetadataService.resolveFromDocument(

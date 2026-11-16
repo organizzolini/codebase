@@ -88,8 +88,8 @@ export class InstanceDiscoveryMatchingService {
    */
   public buildSubstitutions(instance: Instance): Substitutions {
     return {
-      ...this.renderingService.buildNameSubstitutions(instance.nameStem),
-      name: instance.nameStem,
+      ...this.renderingService.buildNameSubstitutions(instance.name),
+      name: instance.name,
       ...instance.substitutions,
     };
   }

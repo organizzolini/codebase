@@ -148,7 +148,7 @@ describe(PullRequestLinkedIssuesService, () => {
   });
 
   it("names the issue in each audit failure and keeps its fixes", () => {
-    stubGithub("[5]", { 5: { issueType: "Task", labels: ["type:feat"] } });
+    stubGithub("[5]", { 5: { issueType: "Epic", labels: ["type:feat"] } });
 
     const outcome = service.check(context);
 

@@ -105,7 +105,7 @@ describe(InstanceDiscoveryService, () => {
         workingDirectory,
       });
 
-      expect(instances.map((instance) => instance.nameStem)).toStrictEqual([
+      expect(instances.map((instance) => instance.name)).toStrictEqual([
         "gears",
       ]);
     });
@@ -121,7 +121,7 @@ describe(InstanceDiscoveryService, () => {
       expect(instance).toBeDefined();
       expect(
         service.buildSubstitutions({
-          nameStem: "gears",
+          name: "gears",
           path: instance?.path ?? "",
         }),
       ).toMatchObject({ nameKebabCase: "gears" });

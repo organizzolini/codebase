@@ -12,7 +12,11 @@ import {
 } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
+import {
+  buildTestingModule,
+  mockErrorLogEntries,
+  setErrorLogFilePath,
+} from "@codebase/testing/nestjs";
 
 import { resetCommandTestHarness } from "../../../testing/command-harness";
 
@@ -51,16 +55,8 @@ describe(LatinLibraryCommand, () => {
     mkdirMock.mockResolvedValue(undefined);
     appendFileMock.mockResolvedValue(undefined);
 
-    logger.buildErrorLogEntry.mockImplementation((context, error) => {
-      const errorMessage =
-        error instanceof Error ? error.stack || error.message : String(error);
-      return {
-        errorMessage,
-        logLine: `[${new Date().toISOString()}] ${context}: ${errorMessage}\n`,
-      };
-    });
-    (command as unknown as { errorLogFilePath: string }).errorLogFilePath =
-      "/tmp/latin-library-errors.log";
+    mockErrorLogEntries(logger);
+    setErrorLogFilePath(command, "/tmp/latin-library-errors.log");
   });
 
   describe("constructor bootstrap", () => {

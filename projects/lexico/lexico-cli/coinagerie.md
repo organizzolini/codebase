@@ -11,8 +11,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **apicius**: Author slug for the Roman cookery writer Apicius, whose appendicula and excerpta texts the library ingests from Open Greek and Latin.
 - **apuleius**: Short literature slug mapped by the literature constants to the full name Lucius Apuleius Madaurensis.
 - **batch**: Group of rows written in one database operation, such as the single upsert of all Word and form rows.
-- **book**: Work-level grouping unit in ingested texts, set as type book or text by the Latin Library builder and the EDCS provider.
-- **breadth**: Callidescope limit measuring the widest fan-out of direct callees, set as maximumBreadth in the project config.
+- **book**: A division of a literary work, set as type book or text by the Latin Library builder and the EDCS provider.
 - **category**: Grouping page or part-of-speech class; Latin Library category links become Author entities, and the forms builder builds Forms per category.
 - **conjunction**: Part-of-speech tag for conjunctions, which the part-of-speech constants also assign to idioms, particles, and phrases.
 - **coquinaria**: Title of the Apicius text De Re Coquinaria, an ingested Latin cookery book under the apicius data folder.
@@ -28,7 +27,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **ecclesiasticorum**: Part of the Corpus Scriptorum Ecclesiasticorum Latinorum name, the CSEL corpus command and its ingestion module.
 - **element**: Cheerio node a parser callback receives while walking Wiktionary or library HTML, passed to $(element) for selection.
 - **epigraphik**: Prefix of Epigraphik-Datenbank Clauss-Slaby, the inscription source whose command, provider, and chunk schema this CLI reads.
-- **headword**: Wiktionary heading marker, the strong.headword element whose paragraph the lexemes parser iterates to find each lexeme.
 - **iacē**: Classical substitution key matching a Latin stem fragment, rewritten to the j form jacē before phonemes are mapped.
 - **ingest**: Verb for loading one source into the database, as in provider.ingest for each library author the library command selects.
 - **inscription**: Stone-text record from the Epigraphik-Datenbank, whose text the EDCS provider skips when missing and turns into a work.
@@ -54,7 +52,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **perfect**: Verb tense family covering perfect, future perfect, and pluperfect, which the part-of-speech forms service maps by name.
 - **period**: Literary era of an author or work, such as Classical, recorded with the text it was ingested from.
 - **perseus**: Source and command for the Perseus Digital Library, which the perseus stage converts from XML into markdown library works.
-- **phase**: Stage of a multi-step chunk run, such as the chunk phase in EDCS ingestion, where undefined entries are skipped.
 - **pronunciation**: Module and service that derive phonemic and phonetic spellings for each Wiktionary entry, in classical or ecclesiastical mode.
 - **publication**: Word in the `print_publication_date` metadata key, the year a print edition of a library work appeared, which the Perseus and CSEL providers record from the source record when it carries one.
 - **selector**: CSS selector string passed to the test mock Cheerio helper, which selects one element from loaded HTML for assertions.

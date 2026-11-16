@@ -28,8 +28,8 @@ describe("every example configuration this package ships", () => {
       );
     });
 
-    it("refuses an unprefixed path even where only one target was measured", async () => {
-      const run = await gateExample("limits", "unprefixed.config.ts");
+    it("refuses an unqualified path even where only one target was measured", async () => {
+      const run = await gateExample("limits", "unqualified.config.ts");
 
       expect(run.exitCode).toBe(1);
       // The exact sentence both guides quote. `linesOfCode` is real, spelled
@@ -53,7 +53,7 @@ describe("every example configuration this package ships", () => {
       expect(run.standardError).toContain("Compiled.typescript.files");
     });
 
-    it("reads an unprefixed path as the default input's", async () => {
+    it("reads an unqualified path as the default input's", async () => {
       const { report, run } = await gateAndMeasureExample(
         "limits",
         "default-target.config.ts",

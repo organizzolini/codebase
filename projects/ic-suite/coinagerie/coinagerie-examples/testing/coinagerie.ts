@@ -1,8 +1,10 @@
-import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { runSourceCommand } from "@codebase/testing/end-to-end";
+import {
+  runSourceCommand,
+  stageExample as stageDirectory,
+} from "@codebase/testing/end-to-end";
 
 /**
  * Drives the real coinagerie command line over the fixture projects.
@@ -51,11 +53,6 @@ export function readWords(glossary: string): string[] {
   );
 }
 
-/** Removes a staged copy, whether or not the suite that made it passed. */
-export function removeStagedExample(root: string): void {
-  fs.rmSync(root, { force: true, recursive: true });
-}
-
 /**
  * Runs the real command in a staged example as a separate process.
  * `SWC_NODE_PROJECT` names the host's `tsconfig.json`, for Nest's decorator settings.
@@ -87,19 +84,11 @@ export function stageExample(
   exampleName: string,
   extraFiles: Record<string, string> = {},
 ): string {
-  fs.mkdirSync(stagingDirectory, { recursive: true });
-  const root = fs.mkdtempSync(path.join(stagingDirectory, `${exampleName}-`));
-
-  fs.cpSync(path.join(examplesDirectory, exampleName, "project"), root, {
-    recursive: true,
+  return stageDirectory({
+    files: extraFiles,
+    git: true,
+    label: exampleName,
+    parent: stagingDirectory,
+    source: path.join(examplesDirectory, exampleName, "project"),
   });
-  fs.mkdirSync(path.join(root, ".git"));
-
-  for (const [relativePath, contents] of Object.entries(extraFiles)) {
-    const absolutePath = path.join(root, relativePath);
-    fs.mkdirSync(path.dirname(absolutePath), { recursive: true });
-    fs.writeFileSync(absolutePath, contents);
-  }
-
-  return root;
 }

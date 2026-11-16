@@ -1,32 +1,34 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { startVerdaccioPluginRunner } from "@codebase/testing/end-to-end";
+import {
+  installedVersion,
+  usePackedRegistry,
+} from "@codebase/testing/end-to-end";
 
 import type {
   CommandResult,
   ConsumerWorkspace,
-  VerdaccioPluginRunner,
 } from "@codebase/testing/end-to-end";
 
 const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../../../..");
 
-/** The version of `name` this workspace has installed, so a registry release cannot move the leg. */
-function installedVersion(name: string): string {
-  const manifest = JSON.parse(
-    fs.readFileSync(
-      path.join(WORKSPACE_ROOT, "node_modules", name, "package.json"),
-      "utf8",
-    ),
-  ) as { version: string };
-
-  return manifest.version;
-}
-
 describe("the coinagerie plugin installed from a registry", () => {
-  let runner: VerdaccioPluginRunner;
+  const registry = usePackedRegistry({
+    localScopes: ["@coinagerie"],
+    packages: [
+      "@coinagerie/cli",
+      "@coinagerie/configuration",
+      "@coinagerie/core",
+      "@coinagerie/languages",
+      "@coinagerie/nx",
+      "@coinagerie/output",
+      "@coinagerie/vocabulary",
+    ],
+    workspaceRoot: WORKSPACE_ROOT,
+  });
   let workspace: ConsumerWorkspace;
 
   /** Writes a project whose source names `orbit` and `planner`, with a glossary destination. */
@@ -61,32 +63,13 @@ describe("the coinagerie plugin installed from a registry", () => {
   }
 
   beforeAll(async () => {
-    runner = await startVerdaccioPluginRunner({
-      localScopes: ["@coinagerie"],
-    });
-    await runner.publish({
-      packages: [
-        "@coinagerie/cli",
-        "@coinagerie/configuration",
-        "@coinagerie/core",
-        "@coinagerie/languages",
-        "@coinagerie/nx",
-        "@coinagerie/output",
-        "@coinagerie/vocabulary",
-      ],
-      workspaceRoot: WORKSPACE_ROOT,
-    });
-    workspace = await runner.createWorkspace({
-      dependencies: { nx: installedVersion("nx") },
+    workspace = await registry.runner.createWorkspace({
+      dependencies: { nx: installedVersion(WORKSPACE_ROOT, "nx") },
       packages: ["@coinagerie/cli", "@coinagerie/nx"],
     });
     workspace.registerPlugin("@coinagerie/nx");
     writeProject("documented");
     writeProject("undocumented");
-  });
-
-  afterAll(async () => {
-    await runner.stop();
   });
 
   it("passes the check of a project whose glossary covers its words", async () => {

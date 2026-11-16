@@ -3,6 +3,7 @@ import { Injectable } from "@nestjs/common";
 import {
   PARENT_ISSUE_PATTERN,
   ROOT_ISSUE_TYPES,
+  ROOT_TYPE_LIST,
   SUB_ISSUE_TYPE,
 } from "./issue-metadata.constants";
 
@@ -11,7 +12,7 @@ import type { IssueSummary, IssueTypeFacts } from "./issue-metadata.types";
 /**
  * Judges an issue's GitHub Issue Type against its place in the hierarchy.
  *
- * A root issue, with no parent, is a Feature or a Bug. Every sub-issue is a
+ * A root issue, with no parent, is a Feature, a Bug, or a Task. Every sub-issue is a
  * Task. A `Part of #n` line counts as a parent until the issue is linked natively.
  */
 @Injectable()
@@ -26,7 +27,7 @@ export class IssueMetadataTypeService {
 
   // 🔏 Private Methods
 
-  /** A root issue is a Feature or a Bug. */
+  /** A root issue is a Feature, a Bug, or a Task. */
   private checkRoot(
     issueNumber: string,
     issueType: null | string,
@@ -37,7 +38,7 @@ export class IssueMetadataTypeService {
     }
 
     record(
-      `❌ A root issue must have the ${ROOT_ISSUE_TYPES.join(" or ")} issue type (found: ${issueType ?? "none"})`,
+      `❌ A root issue must have the ${ROOT_TYPE_LIST} issue type (found: ${issueType ?? "none"})`,
       ...ROOT_ISSUE_TYPES.map(
         (type) => `gh issue edit ${issueNumber} --type ${type}`,
       ),

@@ -1,7 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
 // See the [limits guide](./README.md).
-/** The `defaultInput` case: an unprefixed path reads as the default input's. */
+/** The `defaultInput` case: an unqualified path reads as the default input's. */
 const codometerConfiguration: CodometerConfiguration = {
   defaultInput: "codebase",
   format: "markdown",

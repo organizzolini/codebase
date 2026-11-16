@@ -1,10 +1,17 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { processFailure } from "@codebase/testing";
+
 import { runCliCommandLine } from "../../../testing/command-line-runner";
-import { mockProcesses, processFailure } from "../../../testing/mocks";
+import { mockProcesses } from "../../../testing/mocks";
+
+import type * as PostgresMocks from "../../../testing/mocks";
 
 vi.mock("node:child_process", async (importOriginal) => {
-  const { mockPostgresChildProcess } = await import("../../../testing/mocks");
+  const { mockPostgresChildProcess } = await vi.importActual<
+    typeof PostgresMocks
+  >("../../../testing/mocks");
+
   return mockPostgresChildProcess(await importOriginal());
 });
 

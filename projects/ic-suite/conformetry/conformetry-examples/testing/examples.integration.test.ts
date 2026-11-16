@@ -6,7 +6,10 @@ import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { createTemporaryDirectory } from "@codebase/testing";
-import { runSourceCommand } from "@codebase/testing/end-to-end";
+import {
+  listExampleNames,
+  runSourceCommand,
+} from "@codebase/testing/end-to-end";
 
 /** This package's root, and the workspace root every command runs from. */
 const packageDirectory = path.resolve(
@@ -16,7 +19,7 @@ const packageDirectory = path.resolve(
 const workspaceRoot = path.resolve(packageDirectory, "..", "..", "..", "..");
 const examplesDirectory = path.join(packageDirectory, "examples");
 
-/** The command-line host the guides run from the root, and the tsconfig it compiles with. */
+/** The command-line host the guides run, and its tsconfig. */
 const CONFORMETRY_ENTRY =
   "projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts";
 const CONFORMETRY_TSCONFIG =
@@ -145,11 +148,7 @@ const guides = ["README.md", "AGENTS.md"].map((name) => ({
 }));
 
 /** Every example directory this package ships, read rather than listed. */
-const exampleDirectories = fs
-  .readdirSync(examplesDirectory, { withFileTypes: true })
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => entry.name)
-  .toSorted();
+const exampleDirectories = listExampleNames(examplesDirectory);
 
 /** As much of `project.json` as this suite reads, and no more. */
 interface ProjectManifest {

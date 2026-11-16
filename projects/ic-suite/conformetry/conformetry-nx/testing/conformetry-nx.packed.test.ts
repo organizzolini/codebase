@@ -1,29 +1,19 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { startVerdaccioPluginRunner } from "@codebase/testing/end-to-end";
+import {
+  installedVersion,
+  usePackedRegistry,
+} from "@codebase/testing/end-to-end";
 
 import type {
   CommandResult,
   ConsumerWorkspace,
-  VerdaccioPluginRunner,
 } from "@codebase/testing/end-to-end";
 
 const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../../../..");
-
-/** The version of `name` this workspace has installed, so a registry release cannot move the leg. */
-function installedVersion(name: string): string {
-  const manifest = JSON.parse(
-    fs.readFileSync(
-      path.join(WORKSPACE_ROOT, "node_modules", name, "package.json"),
-      "utf8",
-    ),
-  ) as { version: string };
-
-  return manifest.version;
-}
 
 const CONFIGURATION = `export default [
   {
@@ -37,7 +27,19 @@ const CONFIGURATION = `export default [
 `;
 
 describe("the conformetry plugin installed from a registry", () => {
-  let runner: VerdaccioPluginRunner;
+  const registry = usePackedRegistry({
+    localScopes: ["@conformetry"],
+    packages: [
+      "@conformetry/configuration",
+      "@conformetry/core",
+      "@conformetry/generation",
+      "@conformetry/languages",
+      "@conformetry/nx",
+      "@conformetry/output",
+      "@conformetry/validation",
+    ],
+    workspaceRoot: WORKSPACE_ROOT,
+  });
   let workspace: ConsumerWorkspace;
 
   /** Resolves a path inside the consumer workspace. */
@@ -89,33 +91,14 @@ describe("the conformetry plugin installed from a registry", () => {
   }
 
   beforeAll(async () => {
-    runner = await startVerdaccioPluginRunner({
-      localScopes: ["@conformetry"],
-    });
-    await runner.publish({
-      packages: [
-        "@conformetry/configuration",
-        "@conformetry/core",
-        "@conformetry/generation",
-        "@conformetry/languages",
-        "@conformetry/nx",
-        "@conformetry/output",
-        "@conformetry/validation",
-      ],
-      workspaceRoot: WORKSPACE_ROOT,
-    });
-    workspace = await runner.createWorkspace({
+    workspace = await registry.runner.createWorkspace({
       dependencies: {
-        nx: installedVersion("nx"),
-        typescript: installedVersion("typescript"),
+        nx: installedVersion(WORKSPACE_ROOT, "nx"),
+        typescript: installedVersion(WORKSPACE_ROOT, "typescript"),
       },
       packages: ["@conformetry/nx"],
     });
     writeWorkspace();
-  });
-
-  afterAll(async () => {
-    await runner.stop();
   });
 
   it("emits the generator plugin, then generates and validates an instance", async () => {
