@@ -1,5 +1,6 @@
 import path from "node:path";
 
+import { ProjectTsconfigPathRequiredError } from "@callidescope/configuration";
 import {
   GraphAssemblyService,
   ProgramConfigurationError,
@@ -72,6 +73,7 @@ function buildConfiguration(): ResolvedCallidescopeConfiguration {
       maximumDepth: 2,
     },
     projectConfigurationPath: PROJECT_CONFIGURATION,
+    projectTsconfigPath: "tsconfig.json",
     write: {
       json: undefined,
       markdown: undefined,
@@ -648,6 +650,49 @@ describe(`${CallidescopeService.name} (integration)`, () => {
         workspaceRoot,
       }),
     ).rejects.toThrow(ProgramConfigurationError);
+  });
+
+  it("finds a project by the tsconfig path it is told, and roots it at the project directory", async () => {
+    const workspaceRoot = makeWorkspaceRoot("callidescope-moved");
+    const root = path.join(workspaceRoot, "packages", "moved");
+
+    writeFileTree(root, {
+      "configuration/tsconfig.json": JSON.stringify({
+        compilerOptions: { noLib: true, target: "es2022" },
+        include: ["../src/**/*.ts"],
+      }),
+      "src/index.ts":
+        "export function run(): void { step(); }\nfunction step(): void {}\n",
+    });
+    writeProjectConfiguration({ projectRoot: root });
+
+    const outcome = await service.trace({
+      configuration: {
+        ...buildConfiguration(),
+        projectTsconfigPath: "configuration/tsconfig.json",
+      },
+      configurationPath: WORKSPACE_CONFIGURATION_PATH,
+      directories: [],
+      workspaceRoot,
+    });
+
+    expect(
+      outcome.result.projects.map((report) => report.projectName),
+    ).toStrictEqual(["packages/moved"]);
+  });
+
+  it("refuses a configuration that names no project tsconfig path", async () => {
+    await expect(
+      service.trace({
+        configuration: {
+          ...buildConfiguration(),
+          projectTsconfigPath: undefined,
+        },
+        configurationPath: WORKSPACE_CONFIGURATION_PATH,
+        directories: [],
+        workspaceRoot: buildWorkspace(),
+      }),
+    ).rejects.toThrow(ProjectTsconfigPathRequiredError);
   });
 
   it("names the configuration it could not read", async () => {

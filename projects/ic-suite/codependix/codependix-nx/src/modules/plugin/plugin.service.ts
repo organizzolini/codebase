@@ -9,6 +9,7 @@ import {
   PLUGIN_OPTION_SURFACE,
   PROJECT_CONFIGURATION_FILENAME,
   PROJECT_PATH_OPTION_SURFACE,
+  PROJECT_TSCONFIG_OPTION_SURFACE,
   WORKSPACE_PROJECT_ROOT,
 } from "./plugin.constants";
 
@@ -93,6 +94,7 @@ export class PluginService {
           "^default",
           `{workspaceRoot}/${pluginOptions.configurationPath}`,
           `{projectRoot}/${pluginOptions.projectConfigurationPath}`,
+          `{projectRoot}/${pluginOptions.projectTsconfigPath}`,
           ...args.toolInputs,
         ],
         options: {},
@@ -124,8 +126,8 @@ export class PluginService {
   }
 
   /**
-   * Resolves plugin options from an untrusted value. `configurationPath` and `projectConfigurationPath`
-   * are required and never searched for: a guess would cache gates across real edits.
+   * Resolves plugin options from an untrusted value. `configurationPath`, `projectConfigurationPath`
+   * and `projectTsconfigPath` are required and never searched for: a guess would cache gates across real edits.
    */
   public resolvePluginOptions(
     args: ResolvePluginOptionsArguments,
@@ -147,6 +149,10 @@ export class PluginService {
           this.readString({ key: "projectConfigurationPath", record }),
           PROJECT_PATH_OPTION_SURFACE,
         ),
+      projectTsconfigPath: this.configurationService.requireProjectTsconfigPath(
+        this.readString({ key: "projectTsconfigPath", record }),
+        PROJECT_TSCONFIG_OPTION_SURFACE,
+      ),
     };
   }
 }

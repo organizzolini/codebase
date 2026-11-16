@@ -75,6 +75,7 @@ describe(ConfigurationLoaderService, () => {
         JSON.stringify({
           include: ["**"],
           projectConfigurationPath: "codependix.config.ts",
+          projectTsconfigPath: "tsconfig.json",
         }),
         "utf8",
       );
@@ -86,6 +87,7 @@ describe(ConfigurationLoaderService, () => {
       ).resolves.toStrictEqual({
         include: ["**"],
         projectConfigurationPath: "codependix.config.ts",
+        projectTsconfigPath: "tsconfig.json",
       });
     });
 

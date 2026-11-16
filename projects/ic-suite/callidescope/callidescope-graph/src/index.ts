@@ -112,7 +112,6 @@ export type { ReadSignatureArguments } from "./modules/signatures/signatures.typ
 export { FileFilterService } from "./modules/workspace/file-filter.service";
 export {
   EXCLUDED_SCAN_DIRECTORY_NAMES,
-  PROJECT_CONFIGURATION_NAME,
   TEST_DIRECTORY_SEGMENT,
   TEST_FILE_PATTERN,
 } from "./modules/workspace/workspace.constants";

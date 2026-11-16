@@ -116,6 +116,7 @@ export async function runBoundaryCheck(
         nestjsModules: { rootModules: args.rootModules },
         projectConfigurationPath: "codependix.config.ts",
         projectGraph: graphPath,
+        projectTsconfigPath: "tsconfig.json",
       }),
     );
 

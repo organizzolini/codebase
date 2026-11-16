@@ -100,9 +100,11 @@ describe(FileFilterService, () => {
     // "nothing ignored" rather than taking the run down.
     const root = createTemporaryDirectory("callidescope-unversioned");
 
-    await mkdir(path.join(root, "configuration"), { recursive: true });
+    await mkdir(path.join(root, "configuration", "ic-suite"), {
+      recursive: true,
+    });
     await writeFile(
-      path.join(root, "configuration", ".callidescopeignore"),
+      path.join(root, "configuration", "ic-suite", ".callidescopeignore"),
       "**/*.test.ts\n",
       "utf8",
     );
@@ -118,7 +120,12 @@ describe(FileFilterService, () => {
       "🔭 Skipped an unreadable ignore file",
       undefined,
       {
-        ignorePath: path.join(root, "configuration", ".callidescopeignore"),
+        ignorePath: path.join(
+          root,
+          "configuration",
+          "ic-suite",
+          ".callidescopeignore",
+        ),
       },
     );
   });

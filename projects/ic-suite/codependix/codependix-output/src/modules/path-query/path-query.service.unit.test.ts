@@ -47,6 +47,7 @@ describe(PathQueryService, () => {
         nestjsRootModules: {},
         projectConfigurationPath: "codependix.config.ts",
         projectGraph: undefined,
+        projectTsconfigPath: "configuration/tsconfig.json",
         selection: { dependencies: true, projects: [], tags: [] },
         workspace: {},
       },

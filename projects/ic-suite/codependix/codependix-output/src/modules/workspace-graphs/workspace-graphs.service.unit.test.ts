@@ -65,6 +65,7 @@ describe(WorkspaceGraphsService, () => {
         nestjsRootModules: {},
         projectConfigurationPath: "codependix.config.ts",
         projectGraph: undefined,
+        projectTsconfigPath: "configuration/tsconfig.json",
         selection: { dependencies: true, projects: [], tags: [] },
         workspace: {},
       },
@@ -207,7 +208,10 @@ describe(WorkspaceGraphsService, () => {
         buildContext({ selectedProjects: selected }),
       );
 
-      expect(typescriptService.discoverProjects).toHaveBeenCalledWith(selected);
+      expect(typescriptService.discoverProjects).toHaveBeenCalledWith(
+        selected,
+        "configuration/tsconfig.json",
+      );
       expect(pythonService.discoverProjects).toHaveBeenCalledWith(selected);
     });
 

@@ -7,7 +7,7 @@
 **Purpose**: <!-- Briefly describe the specific purpose of this service application -->
 
 An Nx plugin. It infers `trace`, `depth`, `breadth`, and `gate` targets onto
-every project holding a `tsconfig.json`, each backed by an executor that runs
+every project holding a tsconfig at `projectTsconfigPath`, each backed by an executor that runs
 callidescope over that project **and its Nx dependencies**, resolved from the
 Nx project graph. `gate` is the one a pipeline is meant to read an exit code
 from, and the only one a project the workspace configuration **excludes** does

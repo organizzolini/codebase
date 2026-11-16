@@ -65,25 +65,25 @@ what a task runner that always names a command spells. `depth`, `breadth`, and
 they are unaffected — and a word that names none of them is refused rather than
 quietly traced.
 
-| Flag | Meaning |
-| ---- | ------- |
-| `--config` | Required. Path to the workspace `callidescope.config.ts`. Nothing is searched for, and a run without it is refused naming the flag |
-| `-d, --directories` | Comma-separated project directories to trace, each holding its own `tsconfig.json`. The projects their imports reach are traced too. Every such directory under the working directory when omitted |
-| `--entry-point-addresses` | Comma-separated `path#name` roots, overriding `entryPoints.addresses` |
-| `--entry-point-decorators` | Comma-separated decorator names, overriding `entryPoints.decorators` |
-| `--exclude` | Comma-separated globs, overriding an authored `exclude`. The tool's own default globs are kept, exactly as they are under a configured `exclude` |
-| `--exclude-callees` | Comma-separated callee patterns, overriding `excludeCallees` |
-| `-f, --format` | `markdown`, `mermaid`, or `json`, for what it prints. Markdown by default. Anything else is refused rather than rewritten |
-| `--include-exported-functions` | `true` or `false`, overriding `entryPoints.includeExportedFunctions`. The bare flag means `true` |
-| `--include-orphans` | `true` or `false`, overriding `entryPoints.includeOrphans`. The bare flag means `true` |
-| `--include-tests` | `true` or `false`, overriding `entryPoints.includeTests`. The bare flag means `true` |
-| `--json` | Where the machine-readable report goes. Overrides the path of a declared `write.json`, and nothing else about it. Needs `--write` or `--check reports` |
-| `-m, --markdown` | Where the markdown block goes. Overrides the path of a declared `write.markdown`, and nothing else about it. Needs `--write` or `--check reports` |
-| `--maximum-breadth` | A number, overriding `limits.maximumBreadth` wherever a project declared one. Refused against a configuration declaring none, because breadth has no default to override |
-| `--maximum-depth` | A number, overriding `limits.maximumDepth` wherever a project declared one |
-| `--mermaid` | Where the diagram goes. Overrides the path of a declared `write.mermaid`, and nothing else about it. Needs `--write` or `--check reports` |
-| `--check` | Fail on a comma-separated set drawn from `breadth`, `depth`, and `reports` |
-| `--write` | Write every configured destination |
+| Flag                           | Meaning                                                                                                                                                                                                                            |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--config`                     | Required. Path to the workspace `callidescope.config.ts`. Nothing is searched for, and a run without it is refused naming the flag                                                                                                 |
+| `-d, --directories`            | Comma-separated project directories to trace, each holding a tsconfig at the configuration's `projectTsconfigPath`. The projects their imports reach are traced too. Every such directory under the working directory when omitted |
+| `--entry-point-addresses`      | Comma-separated `path#name` roots, overriding `entryPoints.addresses`                                                                                                                                                              |
+| `--entry-point-decorators`     | Comma-separated decorator names, overriding `entryPoints.decorators`                                                                                                                                                               |
+| `--exclude`                    | Comma-separated globs, overriding an authored `exclude`. The tool's own default globs are kept, exactly as they are under a configured `exclude`                                                                                   |
+| `--exclude-callees`            | Comma-separated callee patterns, overriding `excludeCallees`                                                                                                                                                                       |
+| `-f, --format`                 | `markdown`, `mermaid`, or `json`, for what it prints. Markdown by default. Anything else is refused rather than rewritten                                                                                                          |
+| `--include-exported-functions` | `true` or `false`, overriding `entryPoints.includeExportedFunctions`. The bare flag means `true`                                                                                                                                   |
+| `--include-orphans`            | `true` or `false`, overriding `entryPoints.includeOrphans`. The bare flag means `true`                                                                                                                                             |
+| `--include-tests`              | `true` or `false`, overriding `entryPoints.includeTests`. The bare flag means `true`                                                                                                                                               |
+| `--json`                       | Where the machine-readable report goes. Overrides the path of a declared `write.json`, and nothing else about it. Needs `--write` or `--check reports`                                                                             |
+| `-m, --markdown`               | Where the markdown block goes. Overrides the path of a declared `write.markdown`, and nothing else about it. Needs `--write` or `--check reports`                                                                                  |
+| `--maximum-breadth`            | A number, overriding `limits.maximumBreadth` wherever a project declared one. Refused against a configuration declaring none, because breadth has no default to override                                                           |
+| `--maximum-depth`              | A number, overriding `limits.maximumDepth` wherever a project declared one                                                                                                                                                         |
+| `--mermaid`                    | Where the diagram goes. Overrides the path of a declared `write.mermaid`, and nothing else about it. Needs `--write` or `--check reports`                                                                                          |
+| `--check`                      | Fail on a comma-separated set drawn from `breadth`, `depth`, and `reports`                                                                                                                                                         |
+| `--write`                      | Write every configured destination                                                                                                                                                                                                 |
 
 Every flag but `--check`, `--write`, `--format`, and `--config` (which is
 required) is an
@@ -102,11 +102,11 @@ code are separate findings, and `--check` names them separately. `depth` is
 callidescope's own word for the magnitude it measures — `limit` belongs to
 codometer, and blurring the two makes the messages unreadable.
 
-| `--check` value | What fails the run |
-| --------------- | ------------------ |
-| `breadth` | A callable calling more callables directly than `limits.maximumBreadth` |
-| `depth` | A call stack deeper than `limits.maximumDepth` |
-| `reports` | A configured destination no longer holding what a fresh run would write |
+| `--check` value | What fails the run                                                      |
+| --------------- | ----------------------------------------------------------------------- |
+| `breadth`       | A callable calling more callables directly than `limits.maximumBreadth` |
+| `depth`         | A call stack deeper than `limits.maximumDepth`                          |
+| `reports`       | A configured destination no longer holding what a fresh run would write |
 
 `--check` refuses a value it does not recognize, and refuses a flag carrying no
 value at all. A set with nothing in it looks exactly like the flag having been
@@ -163,16 +163,16 @@ output — cannot go.
 `--check` chooses which findings about the code fail the run. Two failures are
 not findings about the code at all, and neither waits to be asked:
 
-| Failure | What it means |
-| ------- | ------------- |
-| `🔭 Rejected a project it could not read` | A project's `tsconfig.json` could not be parsed, or a named directory holds none |
-| `🔭 Traced nothing` | The run collected no callables at all |
+| Failure                                   | What it means                                                                                      |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `🔭 Rejected a project it could not read` | A project's tsconfig could not be parsed, or a named directory holds none at `projectTsconfigPath` |
+| `🔭 Traced nothing`                       | The run collected no callables at all                                                              |
 
 Both exist because the alternative is a green gate over a workspace nobody
 looked at. A run reports what it found, so a run that found nothing reports
 nothing — which reads exactly like a clean workspace.
 
-A `tsconfig.json` that will not parse **ends the run where it happens**, before
+A tsconfig that will not parse **ends the run where it happens**, before
 anything is printed and before any destination is touched. It is tempting to
 step over the project and trace the rest, and that is wrong here: destinations
 are written before findings are weighed, so a partial graph would publish
@@ -181,16 +181,15 @@ fail. On the default branch that means committing wrong numbers into every
 project README, which exiting non-zero afterwards does not take back. Ending
 the trace leaves the checkout exactly as the run found it.
 
-A directory named on `--directories` that holds no `tsconfig.json` at all ends
+A directory named on `--directories` that holds no file at `projectTsconfigPath` ends
 the run the same way, and for the same reason. Naming a directory is the caller
 saying it should be traced, so quietly tracing one fewer project than was asked
 for reports depths for a workspace nobody described — and a typo in the list
 passes every gate for having looked at less. The whole-workspace walk cannot
-reach this, since it only ever yields directories a `tsconfig.json` was found
-in.
+reach this, since it only ever yields directories a tsconfig was found in.
 
 A project that should not be read at all is a different question, and
-exclusions answer it. They are applied to the `tsconfig.json` itself, before it
+exclusions answer it. They are applied to the project's tsconfig itself, before it
 is opened — excluding a project's _files_ is too late, because opening its
 configuration is the step that fails. This repository's own
 [`.callidescopeignore`](../../../configuration/.callidescopeignore) names one such
@@ -209,11 +208,11 @@ diagram source to paste somewhere that draws it.
 
 Three destinations, each independent:
 
-| `write` key | What it writes |
-| ----------- | -------------- |
-| `json` | The whole run as JSON, at one path |
-| `markdown` | The whole run, spliced between anchors in one file |
-| `mermaid` | The same report with its stacks drawn instead of printed |
+| `write` key | What it writes                                           |
+| ----------- | -------------------------------------------------------- |
+| `json`      | The whole run as JSON, at one path                       |
+| `markdown`  | The whole run, spliced between anchors in one file       |
+| `mermaid`   | The same report with its stacks drawn instead of printed |
 
 A project's own section is not among them. Each project declares its own
 `write.markdown` in its own `callidescope.config.ts`, so where a section lands
@@ -425,8 +424,8 @@ projects it reaches and why listed one by one.
 ## Scoping by Nx project name
 
 `--directories` takes paths, because callidescope has no idea what workspace
-tool you use — a directory holding a `tsconfig.json` is the whole contract, and
-it holds in a monorepo, a single package, or neither.
+tool you use — a directory holding a tsconfig at the configured
+`projectTsconfigPath` is the whole contract, and it holds in a monorepo, a single package, or neither.
 
 An Nx workspace can hand the selecting to Nx instead, through
 [`@callidescope/nx`](../callidescope-nx/README.md) — a plugin that infers a
@@ -514,15 +513,15 @@ The TypeScript type checker resolves each call site. A call on a
 constructor-injected property needs no special handling: the parameter property
 carries the service's type, and the checker follows it.
 
-| Written as | Resolved by |
-| ---------- | ----------- |
-| `helper()` | The symbol at the callee, unwrapped through import aliases |
-| `this.service.load()` | The symbol at the member name — the injected-dependency case |
-| `provider.ingest()` | Every class structurally satisfying the interface, capped by the implementation-candidate cap |
-| `super.run()` | The base declaration the checker resolves to |
-| `new Thing()` | The constructor, when it has a body |
-| `list.map(callback)` | The callback, as its own frame — `map` itself is external |
-| `target[key]()` | Nothing. Recorded as unfollowable rather than guessed |
+| Written as            | Resolved by                                                                                   |
+| --------------------- | --------------------------------------------------------------------------------------------- |
+| `helper()`            | The symbol at the callee, unwrapped through import aliases                                    |
+| `this.service.load()` | The symbol at the member name — the injected-dependency case                                  |
+| `provider.ingest()`   | Every class structurally satisfying the interface, capped by the implementation-candidate cap |
+| `super.run()`         | The base declaration the checker resolves to                                                  |
+| `new Thing()`         | The constructor, when it has a body                                                           |
+| `list.map(callback)`  | The callback, as its own frame — `map` itself is external                                     |
+| `target[key]()`       | Nothing. Recorded as unfollowable rather than guessed                                         |
 
 Calls into **installed** dependencies are leaves. Whether `Array.prototype.map`
 is deeply implemented says nothing about whether _your_ layering is too deep,
@@ -560,11 +559,11 @@ every measurement instead of showing up.
 Agent skills for coding agents working with callidescope are published in
 [`@callidescope/agents`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/callidescope/callidescope-agents):
 
-| Skill | Description |
-| ----- | ----------- |
-| [`callidescope-trace`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-trace) | Trace the workspace or inspect depth and breadth for named callables |
-| [`callidescope-configure`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-configure) | Configure callidescope flags, rules, and `callidescope.config.ts` |
-| [`callidescope-triage`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-triage) | Triage and resolve depth limit breaches and gate failures |
+| Skill                                                                                                                                                            | Description                                                          |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| [`callidescope-trace`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-trace)         | Trace the workspace or inspect depth and breadth for named callables |
+| [`callidescope-configure`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-configure) | Configure callidescope flags, rules, and `callidescope.config.ts`    |
+| [`callidescope-triage`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-triage)       | Triage and resolve depth limit breaches and gate failures            |
 
 ## Examples
 
@@ -587,14 +586,14 @@ every resolver ends the same way. `jscpd` already covers real duplication.
 
 ## Packages
 
-| Package | Role |
-| ------- | ---- |
-| [`@callidescope/cli`](.) | Orchestrates a run: traces the workspace, plans what to check, and reports |
-| [`@callidescope/configuration`](../callidescope-configuration/README.md) | Reads `callidescope.config.ts` and resolves the limits |
-| [`@callidescope/graph`](../callidescope-graph/README.md) | Builds the call graph from traced source and measures depth and breadth |
-| [`@callidescope/nx`](../callidescope-nx/README.md) | Nx plugin: per-project `trace`/`depth`/`breadth` targets, scoped through the Nx dependency graph |
-| [`@callidescope/output`](../callidescope-output/README.md) | Renders findings into markdown, mermaid, and JSON |
-| [`@callidescope/examples`](../callidescope-examples/README.md) | A traced fixture codebase carrying one worked example of everything above |
+| Package                                                                  | Role                                                                                             |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| [`@callidescope/cli`](.)                                                 | Orchestrates a run: traces the workspace, plans what to check, and reports                       |
+| [`@callidescope/configuration`](../callidescope-configuration/README.md) | Reads `callidescope.config.ts` and resolves the limits                                           |
+| [`@callidescope/graph`](../callidescope-graph/README.md)                 | Builds the call graph from traced source and measures depth and breadth                          |
+| [`@callidescope/nx`](../callidescope-nx/README.md)                       | Nx plugin: per-project `trace`/`depth`/`breadth` targets, scoped through the Nx dependency graph |
+| [`@callidescope/output`](../callidescope-output/README.md)               | Renders findings into markdown, mermaid, and JSON                                                |
+| [`@callidescope/examples`](../callidescope-examples/README.md)           | A traced fixture codebase carrying one worked example of everything above                        |
 
 ## Start
 

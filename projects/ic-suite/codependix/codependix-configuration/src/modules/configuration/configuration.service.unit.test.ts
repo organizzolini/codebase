@@ -16,6 +16,7 @@ import {
   ConfigurationFileNotFoundError,
   ConfigurationPathRequiredError,
   ProjectConfigurationPathRequiredError,
+  ProjectTsconfigPathRequiredError,
 } from "./configuration.constants";
 import { ConfigurationService } from "./configuration.service";
 import { FlagResolutionService } from "./flag-resolution.service";
@@ -34,9 +35,10 @@ async function writeConfiguration(configuration: object): Promise<string> {
   );
 }
 
-/** The one setting a configuration file cannot omit. */
+/** The settings a configuration file cannot omit. */
 const BASE_CONFIGURATION = {
   projectConfigurationPath: "codependix.config.ts",
+  projectTsconfigPath: "tsconfig.json",
 };
 
 /** Writes a configuration file of the given name into a fresh temp directory. */
@@ -130,12 +132,42 @@ describe(ConfigurationService, () => {
     });
   });
 
+  describe("requireProjectTsconfigPath", () => {
+    it("returns a path it was given unchanged", () => {
+      expect(
+        service.requireProjectTsconfigPath(
+          "configuration/tsconfig.json",
+          "`projectTsconfigPath` option",
+        ),
+      ).toBe("configuration/tsconfig.json");
+    });
+
+    it.each([
+      ["absent", undefined],
+      ["empty", ""],
+      ["blank", "   "],
+    ])("refuses a path that is %s, naming the surface", (_name, value) => {
+      expect(() =>
+        service.requireProjectTsconfigPath(
+          value,
+          "`projectTsconfigPath` option",
+        ),
+      ).toThrow(ProjectTsconfigPathRequiredError);
+      expect(() =>
+        service.requireProjectTsconfigPath(
+          value,
+          "`projectTsconfigPath` option",
+        ),
+      ).toThrow("`projectTsconfigPath` option");
+    });
+  });
+
   describe("loading", () => {
     it("reads a TypeScript configuration's default export", async () => {
       const configurationPath = await writeConfigurationFile(
         "codependix.config.ts",
-        `interface Configuration { include: string[]; projectConfigurationPath: string }
-        const configuration: Configuration = { include: ["packages/*"], projectConfigurationPath: "codependix.config.ts" };
+        `interface Configuration { include: string[]; projectConfigurationPath: string; projectTsconfigPath: string }
+        const configuration: Configuration = { include: ["packages/*"], projectConfigurationPath: "codependix.config.ts", projectTsconfigPath: "tsconfig.json" };
         export default configuration;
         `,
       );
@@ -150,7 +182,7 @@ describe(ConfigurationService, () => {
     it("unwraps a CommonJS module's nested default export", async () => {
       const configurationPath = await writeConfigurationFile(
         "codependix.config.cjs",
-        'module.exports = { default: { include: ["packages/*"], projectConfigurationPath: "codependix.config.ts" } };',
+        'module.exports = { default: { include: ["packages/*"], projectConfigurationPath: "codependix.config.ts", projectTsconfigPath: "tsconfig.json" } };',
       );
 
       const configuration = await service.loadConfiguration({
@@ -843,6 +875,34 @@ describe(ConfigurationService, () => {
       expect(
         codependixConfigurationSchema.safeParse({
           projectConfigurationPath: "",
+        }).success,
+      ).toBe(false);
+    });
+  });
+
+  describe("projectTsconfigPath", () => {
+    it("carries the path a configuration named", () => {
+      expect(
+        service.resolveConfiguration({
+          ...BASE_CONFIGURATION,
+          projectTsconfigPath: "configuration/tsconfig.json",
+        }).projectTsconfigPath,
+      ).toBe("configuration/tsconfig.json");
+    });
+
+    it("refuses a configuration that names none", () => {
+      expect(
+        codependixConfigurationSchema.safeParse({
+          projectConfigurationPath: "codependix.config.ts",
+        }).success,
+      ).toBe(false);
+    });
+
+    it("refuses a blank path", () => {
+      expect(
+        codependixConfigurationSchema.safeParse({
+          ...BASE_CONFIGURATION,
+          projectTsconfigPath: "",
         }).success,
       ).toBe(false);
     });

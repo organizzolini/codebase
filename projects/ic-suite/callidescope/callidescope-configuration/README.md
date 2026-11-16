@@ -33,6 +33,7 @@ const callidescopeConfiguration: CallidescopeConfiguration = {
   excludeFrom: ["configuration/ic-suite/.callidescopeignore"],
   limits: { maximumBreadth: 5, maximumDepth: 6 },
   projectConfigurationPath: "callidescope.config.ts",
+  projectTsconfigPath: "tsconfig.json",
 };
 
 export default callidescopeConfiguration;
@@ -41,6 +42,15 @@ export default callidescopeConfiguration;
 `projectConfigurationPath` is required and has no default: a run that traces
 projects with a workspace configuration that leaves it out is refused with a
 `ProjectConfigurationPathMissingError` naming that file. Only the workspace
+configuration may set it.
+
+`projectTsconfigPath` is required the same way: the path of each project's
+TypeScript configuration, relative to the project's root, such as
+`tsconfig.json` or `configuration/tsconfig.json`. A directory is a project when a
+file exists there, and its root is that directory, never the folder the file sits
+in. No file name is assumed and nothing is searched for, so a run that traces
+projects with a workspace configuration that leaves it out is refused with a
+`ProjectTsconfigPathRequiredError` naming that file. Only the workspace
 configuration may set it.
 
 That file is the **workspace** configuration, and every section below describes
@@ -117,11 +127,11 @@ excluded boundary instead of routing around it.
 Two consequences worth knowing before reaching for `exclude`:
 
 - **It cannot un-project a directory.** A project is the directory holding a
-  `tsconfig.json`, and discovery has already happened by the time collection is
-  filtered — so a project cannot exclude its own `tsconfig.json`, and excluding
+  tsconfig at `projectTsconfigPath`, and discovery has already happened by the time
+  collection is filtered — so a project cannot exclude its own tsconfig, and excluding
   every file it holds leaves it a project that traced nothing rather than no
   project at all.
-- **A `tsconfig.json` that will not parse still ends the run**, because it is
+- **A tsconfig that will not parse still ends the run**, because it is
   opened before any of this. Use the run's `exclude` to drop such a project,
   which is settled early enough to keep discovery from opening it at all.
 
@@ -268,8 +278,8 @@ Nothing has been traced or written by the time resolution returns.
 
 Everything above describes the file a run is pointed at — the **workspace**
 configuration. A second file sits at `projectConfigurationPath` under any traced
-project's root, the directory holding the `tsconfig.json` that makes it a
-project. That one path is read for every project, with no search and no upward
+project's root, the directory holding the tsconfig (at `projectTsconfigPath`) that
+makes it a project. That one path is read for every project, with no search and no upward
 walk, and may use any of the supported extensions.
 
 **Every traced project has one, and every one of them is complete.** A traced
@@ -324,7 +334,7 @@ left out. Noise spanning several projects still belongs in the workspace file.
 
 It also filters **collection** and nothing else, exactly as the run's own does —
 see [An exclusion drops the callables, not the file](#an-exclusion-drops-the-callables-not-the-file).
-A project cannot exclude its own `tsconfig.json`, and a call into a file it
+A project cannot exclude its own tsconfig, and a call into a file it
 excluded becomes an unfollowable call rather than vanishing.
 
 Every other field is refused by name before anything is traced.

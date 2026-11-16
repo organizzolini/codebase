@@ -33,7 +33,8 @@ Register it in `nx.json`:
       "options": {
         "configurationPath": "configuration/ic-suite/codependix.config.ts",
         "gateTargetName": "codependix-bound",
-        "projectConfigurationPath": "codependix.config.ts"
+        "projectConfigurationPath": "codependix.config.ts",
+        "projectTsconfigPath": "tsconfig.json"
       }
     }
   ]
@@ -44,6 +45,7 @@ Register it in `nx.json`:
 | ------ | ------- |
 | `configurationPath` | **Required.** Where the codependix configuration lives. Registering the plugin without it fails inference, naming the option; there is no default path |
 | `projectConfigurationPath` | **Required.** Where each project's own configuration file sits, relative to its root. Must match the workspace configuration's setting of that name. Omitting it fails inference, naming the option; there is no default path |
+| `projectTsconfigPath` | **Required.** Where each project's TypeScript configuration sits, relative to its root. Must match the workspace configuration's setting of that name. Omitting it fails inference, naming the option; there is no default path |
 | `gateTargetName` | Name of the inferred gate target. `codependix-bound` when omitted |
 
 The gate runs the command line under the `@swc-node/register` hooks, which
@@ -94,7 +96,7 @@ fails the dependency's own gate instead.
 
 The target is cached. Its inputs are the project's own sources and its
 dependencies' (`default`, `^default`), the workspace configuration the rules
-live in, the project's own configuration file at `projectConfigurationPath`, and the codependix command
+live in, the project's own configuration file at `projectConfigurationPath`, its tsconfig at `projectTsconfigPath`, and the codependix command
 line itself — because no judged project depends on the code that decides its
 verdict, a change to that code would otherwise replay every cached pass:
 

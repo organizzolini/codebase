@@ -32,6 +32,9 @@ const TYPESCRIPT_SEGMENT = "typescript-resolution";
 /** Project exercising every resolution case and every deliberate non-case. */
 const RESOLUTION_PROJECT = "resolution";
 
+/** Where every TypeScript example keeps its tsconfig, relative to its project root. */
+const PROJECT_TSCONFIG_PATH = "tsconfig.json";
+
 /** Project whose `tsconfig.json` the compiler refuses to parse. */
 const BROKEN_PROJECT = "broken";
 
@@ -155,16 +158,17 @@ export function describeOutcome(outcome: ProgramOutcome): string {
 }
 
 /**
- * Describes a project through the real discovery entry point. Any directory with a
- * `tsconfig.json` is a candidate, since no Nx tag is read.
+ * Describes a project through the real discovery entry point. Any directory with a tsconfig at
+ * `PROJECT_TSCONFIG_PATH` is a candidate, since no Nx tag is read.
  */
 export function describeProjectAt(absoluteRoot: string): TypescriptProject {
-  const [project] = typescriptService.discoverProjects([
-    { absoluteRoot, name: path.basename(absoluteRoot) },
-  ]);
+  const [project] = typescriptService.discoverProjects(
+    [{ absoluteRoot, name: path.basename(absoluteRoot) }],
+    PROJECT_TSCONFIG_PATH,
+  );
 
   if (project === undefined) {
-    throw new Error(`No tsconfig.json under ${absoluteRoot}`);
+    throw new Error(`No ${PROJECT_TSCONFIG_PATH} under ${absoluteRoot}`);
   }
 
   return project;

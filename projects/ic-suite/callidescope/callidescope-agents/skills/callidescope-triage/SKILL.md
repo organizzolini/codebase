@@ -15,7 +15,7 @@ occurred is most of the work. Separate them first:
 | A breadth row over the limit              | A **finding**. Split the callable                                                                                                                           |
 | `A configured destination is stale`       | **Drift**. Re-run `--write`                                                                                                                                 |
 | `## Read nothing of its own (0 files)`    | A gate **judged a project whose own files it never read**. Its verdict means nothing                                                                        |
-| `🔭 Rejected a project it could not read` | A `tsconfig.json` **is missing or did not parse**. The trace stopped there                                                                                  |
+| `🔭 Rejected a project it could not read` | A project's tsconfig **is missing at `projectTsconfigPath` or did not parse**. The trace stopped there                                                      |
 | `🔭 Traced nothing`                       | The run **saw no code at all**. Nothing below it means anything                                                                                             |
 | `🔭 Rejected the command line`            | A **mistake** in the flags. Nothing was traced                                                                                                              |
 | `🔭 Rejected a project configuration`     | One project's own configuration **was missing at the configured path, incomplete, or refused** for a field only the workspace may set. Nothing was reported |
@@ -155,7 +155,7 @@ Two things to check, in this order:
    anchored to its root, so one written workspace-relative matches nothing, and
    one written too broadly matches everything. Check the run's `exclude` and
    `excludeFrom` for a pattern covering the whole project as well.
-2. **A project that no longer holds sources its `tsconfig.json` includes.** A
+2. **A project that no longer holds sources its tsconfig includes.** A
    moved or emptied source root reads exactly the same way.
 
 **Do not silence it by dropping the gate.** A project the workspace
@@ -372,9 +372,9 @@ the run's own `exclude` instead.
 
 ## A project it could not read
 
-One project's `tsconfig.json` is missing or did not parse, and the run stopped
+One project's tsconfig is missing or did not parse, and the run stopped
 there. The message carries the path and either the compiler's own diagnostic
-or that the directory holds no `tsconfig.json` at all. `depth` and `breadth`
+or that the directory holds no file at the workspace's `projectTsconfigPath`. `depth` and `breadth`
 raise this too, under the same headline: a lookup traces before it matches, so
 it can reach the same unreadable project a whole-workspace trace always
 could.
@@ -390,11 +390,11 @@ Two ways out, and which one is right depends on why the file does not parse:
 - **The configuration is broken by accident.** Fix it. The message carries the
   compiler's own diagnostic, which usually names the option.
 - **The configuration is broken on purpose.** Some repositories commit a
-  broken `tsconfig.json` as a fixture — this workspace has one in
+  broken tsconfig as a fixture — this workspace has one in
   `codependix-examples`, and repairing it would delete the only place that
   failure is demonstrated. Exclude the project instead, by adding its directory
   to an `excludeFrom` ignore file or an `exclude` glob. Exclusions are applied
-  to the `tsconfig.json` before it is opened, so this really does keep the run
+  to the tsconfig before it is opened, so this really does keep the run
   away from it. Excluding the project's _files_ does not: opening its
   configuration is the step that fails, and that happens first.
 
@@ -406,8 +406,8 @@ own emptiness. It is never a clean result. Work down this list:
 1. **Is the code excluded?** `exclude` globs are additive to the built-in
    defaults, and `excludeFrom` files are easy to forget. An exclusion broad
    enough to cover every project empties the run.
-2. **Is `--directories` pointed where you think?** It takes paths holding their
-   own `tsconfig.json`, not project names.
+2. **Is `--directories` pointed where you think?** It takes paths holding a
+   tsconfig at `projectTsconfigPath`, not project names.
 
 ## A run that found no stacks
 

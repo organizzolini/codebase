@@ -57,6 +57,8 @@ export const projectDefaults = {
 const codependixConfiguration: CodependixConfiguration = {
   /** Where each project's own configuration file sits, relative to its root. */
   projectConfigurationPath: "configuration/codependix.config.ts",
+  /** Where each project's TypeScript configuration sits, relative to its root. */
+  projectTsconfigPath: "tsconfig.json",
   /**
    * Rules every built graph is judged against, keyed by graph level and
    * gated by `--check boundaries` — never by `--check reports`, which is

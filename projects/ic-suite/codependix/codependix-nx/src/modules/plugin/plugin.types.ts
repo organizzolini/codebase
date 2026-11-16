@@ -14,6 +14,11 @@ export interface CodependixPluginOptions {
    * Required; must match the workspace configuration's setting of that name.
    */
   readonly projectConfigurationPath: string;
+  /**
+   * Where each project's TypeScript configuration file sits, relative to its root.
+   * Required; must match the workspace configuration's setting of that name.
+   */
+  readonly projectTsconfigPath: string;
 }
 
 /** An `extends` target: a workspace file, a package, or neither. */

@@ -62,6 +62,7 @@ describe(RunContextService, () => {
       nestjsRootModules: {},
       projectConfigurationPath: "configuration/codependix.config.ts",
       projectGraph: undefined,
+      projectTsconfigPath: "tsconfig.json",
       selection: { dependencies: true, projects: [], tags: [] },
       workspace: {},
     });
@@ -227,6 +228,7 @@ describe(RunContextService, () => {
       nestjsRootModules: {},
       projectConfigurationPath: "codependix.config.ts",
       projectGraph: "artifacts/graph.json",
+      projectTsconfigPath: "tsconfig.json",
       selection: { dependencies: true, projects: [], tags: [] },
       workspace: {},
     });
@@ -319,6 +321,7 @@ describe(RunContextService, () => {
         nestjsRootModules: {},
         projectConfigurationPath: "codependix.config.ts",
         projectGraph: undefined,
+        projectTsconfigPath: "tsconfig.json",
         selection: { dependencies: false, projects: ["widgets"], tags: [] },
         workspace: {},
       });
@@ -357,6 +360,7 @@ describe(RunContextService, () => {
         nestjsRootModules: {},
         projectConfigurationPath: "codependix.config.ts",
         projectGraph: undefined,
+        projectTsconfigPath: "tsconfig.json",
         selection,
         workspace: {},
       };
@@ -472,6 +476,7 @@ describe(RunContextService, () => {
         nestjsRootModules: {},
         projectConfigurationPath: "codependix.config.ts",
         projectGraph: undefined,
+        projectTsconfigPath: "tsconfig.json",
         selection: { dependencies: true, ...selection },
         workspace: {},
       });

@@ -205,6 +205,12 @@ describe(ConfigurationService, () => {
           inputService.requireProjectConfigurationPath.mock.calls[0]?.[0],
       },
       {
+        ask: (subject) => subject.requireProjectTsconfigPath("a", "The option"),
+        name: "requireProjectTsconfigPath",
+        read: ({ inputService }) =>
+          inputService.requireProjectTsconfigPath.mock.calls[0]?.[0],
+      },
+      {
         ask: (subject) => subject.parseOptionalOption("a"),
         name: "parseOptionalOption",
         read: ({ inputService }) =>

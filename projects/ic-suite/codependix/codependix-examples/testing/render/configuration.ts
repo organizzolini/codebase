@@ -52,6 +52,7 @@ const REFUSED_CONFIGURATIONS = [
   {
     configuration: {
       projectConfigurationPath: "codependix.config.ts",
+      projectTsconfigPath: "tsconfig.json",
       workspace: { nxProjects: { target: "both" } },
     },
     title: "A `both` target with no `json` destination",
@@ -59,6 +60,7 @@ const REFUSED_CONFIGURATIONS = [
   {
     configuration: {
       projectConfigurationPath: "codependix.config.ts",
+      projectTsconfigPath: "tsconfig.json",
       workspace: { nxProjects: { target: "json" } },
     },
     title: "A `json` target with no `json` destination",
@@ -66,6 +68,7 @@ const REFUSED_CONFIGURATIONS = [
   {
     configuration: {
       projectConfigurationPath: "codependix.config.ts",
+      projectTsconfigPath: "tsconfig.json",
       workspace: {
         nxProjects: { json: { path: "graph.json" }, target: "both" },
       },
@@ -75,6 +78,7 @@ const REFUSED_CONFIGURATIONS = [
   {
     configuration: {
       projectConfigurationPath: "codependix.config.ts",
+      projectTsconfigPath: "tsconfig.json",
       workspace: { nxProjects: { target: "markdown" } },
     },
     title: "A `markdown` target with no `markdown` destination",
@@ -82,14 +86,20 @@ const REFUSED_CONFIGURATIONS = [
   {
     configuration: {
       projectConfigurationPath: "codependix.config.ts",
+      projectTsconfigPath: "tsconfig.json",
       workspace: { nxProjects: { markdown: {}, target: "markdown" } },
     },
     title: "A `markdown` destination naming neither an anchor nor a path",
   },
   {
-    configuration: {},
+    configuration: { projectTsconfigPath: "tsconfig.json" },
     title:
       "No `projectConfigurationPath`, so nothing says where a project's own file sits",
+  },
+  {
+    configuration: { projectConfigurationPath: "codependix.config.ts" },
+    title:
+      "No `projectTsconfigPath`, so nothing says where a project's TypeScript configuration sits",
   },
 ] as const;
 
@@ -363,6 +373,7 @@ function buildSampleConfiguration(
     exclude: ["applications/*"],
     include: ["packages/*", "codependix-*"],
     projectConfigurationPath: "codependix.config.ts",
+    projectTsconfigPath: "tsconfig.json",
     workspace: {
       nxProjects: {
         markdown: { anchor: "example-workspace" },

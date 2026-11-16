@@ -6,7 +6,7 @@
 
 Canonical documentation for call-stack tracing, configuration, depth and breadth analysis, and report formats is in the
 [`@callidescope/cli` README](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/callidescope/callidescope-cli#readme).
-`@callidescope/cli` is Nx-free on purpose: it takes `--directories`, each one a path holding its own `tsconfig.json`, so it
+`@callidescope/cli` is Nx-free on purpose: it takes `--directories`, each one a path holding a tsconfig at the configured `projectTsconfigPath`, so it
 works in any TypeScript workspace whether or not Nx is anywhere near it. This
 package is the one place in the toolchain that knows Nx exists, and the only
 one that depends on `@nx/devkit`.
@@ -33,7 +33,8 @@ Register it in `nx.json`:
       "plugin": "@callidescope/nx",
       "options": {
         "configurationPath": "configuration/ic-suite/callidescope.config.ts",
-        "projectConfigurationPath": "callidescope.config.ts"
+        "projectConfigurationPath": "callidescope.config.ts",
+        "projectTsconfigPath": "tsconfig.json"
       }
     }
   ]
@@ -44,6 +45,7 @@ Register it in `nx.json`:
 | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `configurationPath`        | Required. Where the workspace callidescope configuration lives, relative to the workspace root (the plugin and every executor resolve it there). Nothing is searched for: a registration that omits it is refused, naming this option. The refusal is decided by `@callidescope/configuration`, which every surface shares                                                                                                                                       |
 | `projectConfigurationPath` | Required. Where each project keeps its own callidescope configuration, relative to the project root. Nothing is searched for: a registration that omits it is refused, naming this option. It must equal the `projectConfigurationPath` the workspace configuration sets, and the plugin refuses a registration that disagrees. The plugin names it in the gate's cache inputs, and Nx fixes `createNodes`'s glob (`**/project.json`) before it reads any option |
+| `projectTsconfigPath`      | Required. Where each project keeps its TypeScript configuration, relative to the project root, such as `tsconfig.json` or `configuration/tsconfig.json`. Nothing is searched for: a registration that omits it is refused, naming this option. It must equal the `projectTsconfigPath` the workspace configuration sets, and the plugin refuses a registration that disagrees. A project holding no file there gets no targets                                   |
 | `traceTargetName`          | Name of the inferred trace target. `callidescope-trace` when omitted                                                                                                                                                                                                                                                                                                                                                                                             |
 | `depthTargetName`          | Name of the inferred depth target. `callidescope-depth` when omitted                                                                                                                                                                                                                                                                                                                                                                                             |
 | `breadthTargetName`        | Name of the inferred breadth target. `callidescope-breadth` when omitted                                                                                                                                                                                                                                                                                                                                                                                         |
@@ -55,7 +57,7 @@ already uses one.
 
 ## Usage
 
-Four targets are inferred onto every project holding a `tsconfig.json`, so
+Four targets are inferred onto every project holding a tsconfig at `projectTsconfigPath`, so
 selection is Nx's job rather than a flag of this package's own:
 
 ```bash
@@ -151,7 +153,7 @@ judge several.
 
 **Files rather than callables**, which is the weaker question and the right
 one. A project can hold files that declare no callable at all — one whose
-`tsconfig.json` names only its own configuration files and its tests is the
+tsconfig names only its own configuration files and its tests is the
 shape, and this repository has five — and those files were read, so a verdict
 on them is a verdict on something. Asking for a callable fails all five for
 holding no functions, which is a finding about nothing. The cost, stated
@@ -169,7 +171,7 @@ because a run measures its dependencies even though it does not judge them.
 
 Two projects are deliberately skipped by all four targets: the **workspace-root
 project**, whose targets would trace everything under one uncacheable task, and
-any project with **no `tsconfig.json`**, whose targets would be permanently
+any project with **no tsconfig at `projectTsconfigPath`**, whose targets would be permanently
 empty. A project the configuration **excludes** — `exclude` or `excludeFrom` in
 the workspace file — additionally gets no `gate`: its own code is never traced,
 so a gate there would own no finding at all and report green for code it never
@@ -206,7 +208,7 @@ can find — an implicit dependency, or an edge that exists only at run time.
 
 The two sets are not the same. The Nx graph gives `callidescope-nx` six
 projects; the import closure reaches seven, adding `codometer-configuration`,
-which this project's `tsconfig.json` pulls in through its own
+which this project's tsconfig pulls in through its own
 `codometer.config.ts` — a file the manifest has no reason to mention.
 
 Dependencies, never dependents: a project's dependents call _into_ it and add

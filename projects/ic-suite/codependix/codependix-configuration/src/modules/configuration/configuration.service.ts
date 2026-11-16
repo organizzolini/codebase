@@ -13,6 +13,7 @@ import {
   DEFAULT_INCLUDE_GLOBS,
   DEFAULT_MARKDOWN_PATH,
   ProjectConfigurationPathRequiredError,
+  ProjectTsconfigPathRequiredError,
   SELECTION_SEPARATOR,
   SUPPORTED_CONFIGURATION_EXTENSIONS,
   UnknownConfigurationFileTypeError,
@@ -286,6 +287,23 @@ export class ConfigurationService {
   }
 
   /**
+   * Returns the per-project TypeScript configuration path, refusing a missing or blank one. `surface` names its source in the refusal.
+   */
+  public requireProjectTsconfigPath(
+    projectTsconfigPath: string | undefined,
+    surface: string,
+  ): string {
+    if (
+      projectTsconfigPath === undefined ||
+      projectTsconfigPath.trim() === ""
+    ) {
+      throw new ProjectTsconfigPathRequiredError(surface);
+    }
+
+    return projectTsconfigPath;
+  }
+
+  /**
    * Fills in every field a configuration file may omit. Exposed so a host can pass an assembled configuration and get the file's shape.
    */
   public resolveConfiguration(
@@ -299,6 +317,7 @@ export class ConfigurationService {
       nestjsRootModules: configuration.nestjsModules?.rootModules ?? {},
       projectConfigurationPath: configuration.projectConfigurationPath,
       projectGraph: configuration.projectGraph,
+      projectTsconfigPath: configuration.projectTsconfigPath,
       selection: this.resolveSelection(selection),
       workspace: configuration.workspace ?? {},
     };

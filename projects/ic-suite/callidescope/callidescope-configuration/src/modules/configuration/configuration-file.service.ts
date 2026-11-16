@@ -237,6 +237,7 @@ export class ConfigurationFileService {
       excludeFrom: configuration.excludeFrom ?? [],
       limits: this.resolveLimits(configuration.limits),
       projectConfigurationPath: configuration.projectConfigurationPath,
+      projectTsconfigPath: configuration.projectTsconfigPath,
       write: {
         json: this.resolveJsonOutput(configuration.write),
         markdown: this.resolveMarkdownDestination(

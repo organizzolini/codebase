@@ -30,6 +30,7 @@ describe(PluginService, () => {
         options: {
           configurationPath: "configuration/codependix.config.ts",
           projectConfigurationPath: "configuration/codependix.config.ts",
+          projectTsconfigPath: "configuration/tsconfig.json",
         },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         toolInputs: ["{workspaceRoot}/tool/src/**/*"],
@@ -51,8 +52,9 @@ describe(PluginService, () => {
                 inputs: [
                   "default",
                   "^default",
-                  "{workspaceRoot}/configuration/ic-suite/codependix.config.ts",
+                  "{workspaceRoot}/configuration/codependix.config.ts",
                   "{projectRoot}/configuration/codependix.config.ts",
+                  "{projectRoot}/configuration/tsconfig.json",
                   "{workspaceRoot}/tool/src/**/*",
                 ],
                 options: {},
@@ -70,6 +72,7 @@ describe(PluginService, () => {
         options: {
           configurationPath: "codependix.config.ts",
           projectConfigurationPath: "codependix.config.ts",
+          projectTsconfigPath: "configuration/tsconfig.json",
         },
         projectConfigurationFiles: [
           "project.json",
@@ -91,6 +94,7 @@ describe(PluginService, () => {
           options: {
             configurationPath: "codependix.config.ts",
             projectConfigurationPath: "codependix.config.ts",
+            projectTsconfigPath: "configuration/tsconfig.json",
           },
           projectConfigurationFiles: ["packages/alpha/codependix.config.ts"],
           toolInputs: ["{workspaceRoot}/tool/src/**/*"],
@@ -107,6 +111,7 @@ describe(PluginService, () => {
           configurationPath: "codependix.config.ts",
           gateTargetName: "boundaries",
           projectConfigurationPath: "codependix.config.ts",
+          projectTsconfigPath: "configuration/tsconfig.json",
         },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         toolInputs: ["{workspaceRoot}/tool/src/**/*"],
@@ -145,12 +150,14 @@ describe(PluginService, () => {
             configurationPath: "configuration/codependix.config.ts",
             gateTargetName: "boundaries",
             projectConfigurationPath: "configuration/codependix.config.ts",
+            projectTsconfigPath: "configuration/tsconfig.json",
           },
         }),
       ).toStrictEqual({
         configurationPath: "configuration/codependix.config.ts",
         gateTargetName: "boundaries",
         projectConfigurationPath: "configuration/codependix.config.ts",
+        projectTsconfigPath: "configuration/tsconfig.json",
       });
     });
 
@@ -170,6 +177,33 @@ describe(PluginService, () => {
 
         expect(() => service.resolvePluginOptions({ options })).toThrow(
           "`projectConfigurationPath`",
+        );
+      },
+    );
+
+    it.each([
+      [
+        "absent",
+        {
+          configurationPath: "codependix.config.ts",
+          projectConfigurationPath: "codependix.config.ts",
+        },
+      ],
+      [
+        "empty",
+        {
+          configurationPath: "codependix.config.ts",
+          projectConfigurationPath: "codependix.config.ts",
+          projectTsconfigPath: "",
+        },
+      ],
+    ])(
+      "refuses a registration whose projectTsconfigPath is %s",
+      (_description, options) => {
+        expect.hasAssertions();
+
+        expect(() => service.resolvePluginOptions({ options })).toThrow(
+          "`projectTsconfigPath`",
         );
       },
     );
@@ -203,12 +237,14 @@ describe(PluginService, () => {
             configurationPath: "codependix.config.ts",
             gateTargetName: 3,
             projectConfigurationPath: "codependix.config.ts",
+            projectTsconfigPath: "configuration/tsconfig.json",
           },
         }),
       ).toStrictEqual({
         configurationPath: "codependix.config.ts",
         gateTargetName: "codependix-bound",
         projectConfigurationPath: "codependix.config.ts",
+        projectTsconfigPath: "configuration/tsconfig.json",
       });
     });
   });

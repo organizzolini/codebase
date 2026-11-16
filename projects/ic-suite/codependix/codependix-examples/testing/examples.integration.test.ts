@@ -78,7 +78,7 @@ describe("codependix examples", () => {
 
       const sections = configuration.buildParseRefusalSections();
 
-      expect(sections).toHaveLength(6);
+      expect(sections).toHaveLength(7);
 
       for (const section of sections) {
         expect(section.body).not.toContain("accepted");

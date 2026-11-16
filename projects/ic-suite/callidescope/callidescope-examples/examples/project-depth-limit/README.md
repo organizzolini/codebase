@@ -28,7 +28,7 @@ number was written in.
 ## What a project may declare, and how
 
 A project configuration is a `callidescope.config.ts` at the project's own root
-— the directory holding the `tsconfig.json` that makes it a project. It may set
+— the directory holding the tsconfig, at the workspace's `projectTsconfigPath`, that makes it a project. It may set
 `entryPoints`, `limits.maximumDepth`, `limits.maximumBreadth`, and `exclude`,
 and nothing else. A file setting anything else is refused by name, before
 anything is traced.

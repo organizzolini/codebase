@@ -40,7 +40,7 @@ in the row above.
 ## Two things had to be true before a limit here meant anything
 
 **It had to be a project.** Limits resolve per project, and a project is a
-directory holding a `tsconfig.json`. This directory has one, which is what lets
+directory holding a tsconfig at the workspace's `projectTsconfigPath` (here `tsconfig.json`). This directory has one, which is what lets
 the [`configuration/ic-suite/callidescope.config.ts`](configuration/ic-suite/callidescope.config.ts) beside it be read as a
 project configuration at all.
 
@@ -126,7 +126,7 @@ still in the `ts.Program` and still type-checked; what changed is that its
 callables were never collected, so a call reaching into it would be an
 unfollowable call rather than one that vanished. That is the run-level
 `exclude`'s behavior too, not a per-project quirk — and it is why no `exclude`
-can un-project a directory. This project cannot exclude the `tsconfig.json` that
+can un-project a directory. This project cannot exclude the tsconfig that
 makes it a project: discovery is settled from the run's own filter, long before
 a project file has been read at all.
 

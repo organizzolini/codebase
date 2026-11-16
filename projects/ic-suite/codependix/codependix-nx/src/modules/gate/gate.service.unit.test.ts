@@ -82,6 +82,7 @@ describe(GateService, () => {
             options: {
               configurationPath: "codependix.config.ts",
               projectConfigurationPath: "codependix.config.ts",
+              projectTsconfigPath: "tsconfig.json",
             },
             plugin: "@codependix/nx",
           },
@@ -210,6 +211,7 @@ describe(GateService, () => {
               options: {
                 configurationPath: "registered.config.ts",
                 projectConfigurationPath: "codependix.config.ts",
+                projectTsconfigPath: "tsconfig.json",
               },
               plugin: "@codependix/nx",
             },

@@ -32,6 +32,11 @@ export interface CodependixConfiguration {
    */
   projectGraph?: string | undefined;
   /**
+   * Where each project's TypeScript configuration file sits, relative to its
+   * root. Required: nothing is searched for.
+   */
+  projectTsconfigPath: string;
+  /**
    * Export configuration for the Workspace Graph, exported once for the whole
    * repository. Unaffected by `include`/`exclude`; `--projects`/`--tags` narrow its nodes.
    */
@@ -210,6 +215,8 @@ export interface ResolvedCodependixConfiguration {
   projectConfigurationPath: string;
   /** A project graph to read instead of the working directory's, if named. */
   projectGraph: string | undefined;
+  /** Where each project's TypeScript configuration sits, relative to its root. */
+  projectTsconfigPath: string;
   /**
    * What `--projects` and `--tags` named, resolved. Carried here so every
    * consumer of the configuration sees the same selection.

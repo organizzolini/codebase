@@ -45,6 +45,7 @@ async function createNodes(
       configurationPath: "configuration/codependix.config.ts",
       gateTargetName: "codependix-bound",
       projectConfigurationPath: "codependix.config.ts",
+      projectTsconfigPath: "tsconfig.json",
     },
     createMock<CreateNodesContext>({ workspaceRoot: "/workspace" }),
   );
@@ -111,6 +112,7 @@ describe("codependixPlugin", () => {
         configurationPath: "configuration/codependix.config.ts",
         gateTargetName: "codependix-bound",
         projectConfigurationPath: "codependix.config.ts",
+        projectTsconfigPath: "tsconfig.json",
       },
       projectConfigurationFiles: [
         "packages/alpha/project.json",

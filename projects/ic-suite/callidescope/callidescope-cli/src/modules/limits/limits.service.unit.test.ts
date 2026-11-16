@@ -5,6 +5,7 @@ import {
   ConfigurationService,
   DEFAULT_MAXIMUM_DEPTH,
   ProjectConfigurationMissingError,
+  ProjectTsconfigPathRequiredError,
 } from "@callidescope/configuration";
 import { FileFilterService, WorkspaceService } from "@callidescope/graph";
 import { createMock } from "@golevelup/ts-vitest";
@@ -79,6 +80,7 @@ function buildConfiguration(
       maximumDepth: DEFAULT_MAXIMUM_DEPTH,
     },
     projectConfigurationPath: "callidescope.config.ts",
+    projectTsconfigPath: "tsconfig.json",
     write: {
       json: undefined,
       markdown: undefined,
@@ -364,6 +366,40 @@ describe(LimitsService, () => {
       QUIET_PROJECT,
       QUIET_PROJECT,
     ]);
+  });
+
+  it("discovers projects by the tsconfig path the configuration names", async () => {
+    discover([]);
+    loadConfigurationFile.mockReset();
+    loadConfigurationFile.mockResolvedValue({
+      authored: {},
+      configuration: buildConfiguration({
+        projectTsconfigPath: "configuration/tsconfig.json",
+      }),
+      path: WORKSPACE_CONFIGURATION_PATH,
+    });
+
+    await service.list({ config: CONFIGURATION_PATH });
+
+    expect(workspaceService.discoverProjects).toHaveBeenCalledWith(
+      expect.objectContaining({
+        projectTsconfigPath: "configuration/tsconfig.json",
+      }),
+    );
+  });
+
+  it("refuses a configuration that names no project tsconfig path", async () => {
+    discover([]);
+    loadConfigurationFile.mockReset();
+    loadConfigurationFile.mockResolvedValue({
+      authored: {},
+      configuration: buildConfiguration({ projectTsconfigPath: undefined }),
+      path: WORKSPACE_CONFIGURATION_PATH,
+    });
+
+    await expect(service.list({ config: CONFIGURATION_PATH })).rejects.toThrow(
+      ProjectTsconfigPathRequiredError,
+    );
   });
 
   it("reads the configuration file the command line named", async () => {

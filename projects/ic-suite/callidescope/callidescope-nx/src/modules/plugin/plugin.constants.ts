@@ -19,6 +19,22 @@ export class ProjectConfigurationPathMismatchError extends Error {
   }
 }
 
+/**
+ * Raised when the registration and the workspace configuration name different project tsconfig paths.
+ */
+export class ProjectTsconfigPathMismatchError extends Error {
+  constructor(args: {
+    configurationPath: string;
+    declared: string | undefined;
+    registered: string;
+  }) {
+    super(
+      `The nx.json registration sets projectTsconfigPath to "${args.registered}", but ${args.configurationPath} sets ${args.declared === undefined ? "none" : `"${args.declared}"`}. Both must name the same path.`,
+    );
+    this.name = "ProjectTsconfigPathMismatchError";
+  }
+}
+
 /** `globalThis` key for the plugin context; one per process. */
 export const PLUGIN_CONTEXT_GLOBAL_KEY = "__callidescopePluginContext";
 
@@ -40,7 +56,7 @@ export const reportUnreadProjects = (projectNames: readonly string[]): string =>
     "Check `exclude` and `excludeFrom` in the workspace callidescope",
     "configuration and `exclude` in the project's own configuration for a",
     "pattern matching everything that project holds, and check that the",
-    "project still holds sources its `tsconfig.json` includes.",
+    "project still holds sources its tsconfig includes.",
   ].join("\n");
 
 /** No code read by a gate's run. Failing beats passing. */

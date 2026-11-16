@@ -56,7 +56,7 @@ const GATED_LEAF_DIRECTORY = `${EXAMPLES_DIRECTORY}/examples/gated-leaf`;
 /** Guides documenting runs beyond the aggregate target, listed by name. */
 const GUIDES_WITH_DOCUMENTED_RUNS = ["gated-leaf"];
 
-/** Example directories with their own `tsconfig.json`, read from disk. */
+/** Example directories holding a tsconfig at the configured path, read from disk. */
 const NESTED_PROJECT_DIRECTORIES = readdirSync(
   path.join(WORKSPACE_ROOT, EXAMPLES_DIRECTORY, "examples"),
   { withFileTypes: true },
@@ -70,7 +70,7 @@ const NESTED_PROJECT_DIRECTORIES = readdirSync(
           EXAMPLES_DIRECTORY,
           "examples",
           entry.name,
-          "tsconfig.json",
+          callidescopeConfiguration.projectTsconfigPath ?? "",
         ),
       ),
   )
@@ -491,7 +491,7 @@ describe("callidescope examples (integration)", () => {
   describe("what the run measured", () => {
     it("traces this package and the projects its imports reach", () => {
       // The closure as a set. Absent projects are the narrowing rule this run exercises:
-      // a project root with a tsconfig.json and no package.json, and the workspace root.
+      // a project root with a tsconfig and no package.json, and the workspace root.
       //
       // Every `*-core` arrives behind its `configuration` package, which moved its result vocabulary into a contracts leaf.
       expect(

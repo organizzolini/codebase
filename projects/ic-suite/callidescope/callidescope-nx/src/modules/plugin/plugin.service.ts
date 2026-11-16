@@ -14,7 +14,6 @@ import { Injectable } from "@nestjs/common";
 
 import {
   CALLIDESCOPE_NX_PLUGIN_NAME,
-  PROJECT_PROGRAM_FILENAME,
   WORKSPACE_PROJECT_ROOT,
 } from "../options/options.constants";
 import { OptionsService } from "../options/options.service";
@@ -22,7 +21,10 @@ import { ProjectsService } from "../projects/projects.service";
 import { RunConfigurationService } from "../run-configuration/run-configuration.service";
 import { VerdictService } from "../verdict/verdict.service";
 
-import { ProjectConfigurationPathMismatchError } from "./plugin.constants";
+import {
+  ProjectConfigurationPathMismatchError,
+  ProjectTsconfigPathMismatchError,
+} from "./plugin.constants";
 
 import type { CallidescopePluginOptions } from "../options/options.types";
 import type {
@@ -74,6 +76,7 @@ export class PluginService {
   private async buildExclusionFilter(args: {
     configurationPath: string;
     projectConfigurationPath: string;
+    projectTsconfigPath: string;
     workspaceRoot: string;
   }): Promise<FileFilter> {
     const configuration = await this.loadWorkspaceConfiguration(
@@ -94,6 +97,17 @@ export class PluginService {
         configurationPath: args.configurationPath,
         declared: configuration.projectConfigurationPath,
         registered: args.projectConfigurationPath,
+      });
+    }
+
+    // The same fact in two places, for the same reason: this registration
+    // decides which projects hold a program, the configuration decides which
+    // are traced.
+    if (configuration.projectTsconfigPath !== args.projectTsconfigPath) {
+      throw new ProjectTsconfigPathMismatchError({
+        configurationPath: args.configurationPath,
+        declared: configuration.projectTsconfigPath,
+        registered: args.projectTsconfigPath,
       });
     }
 
@@ -168,23 +182,25 @@ export class PluginService {
   /** Whether a project's directory holds a TypeScript program to trace. */
   private holdsProgram(args: {
     projectRoot: string;
+    projectTsconfigPath: string;
     workspaceRoot: string;
   }): boolean {
     return existsSync(
-      path.join(args.workspaceRoot, args.projectRoot, PROJECT_PROGRAM_FILENAME),
+      path.join(args.workspaceRoot, args.projectRoot, args.projectTsconfigPath),
     );
   }
 
   /**
-   * Whether the workspace configuration excludes this project, judged by its `tsconfig.json`
+   * Whether the workspace configuration excludes this project, judged by its tsconfig
    * path in POSIX form.
    */
   private isExcludedProject(args: {
     fileFilter: FileFilter;
     projectRoot: string;
+    projectTsconfigPath: string;
   }): boolean {
     return args.fileFilter.isExcluded(
-      path.posix.join(args.projectRoot, PROJECT_PROGRAM_FILENAME),
+      path.posix.join(args.projectRoot, args.projectTsconfigPath),
     );
   }
 
@@ -250,7 +266,7 @@ export class PluginService {
   }
 
   /**
-   * Infers this plugin's targets onto every project holding a `tsconfig.json`, skipping the
+   * Infers this plugin's targets onto every project holding a tsconfig at `projectTsconfigPath`, skipping the
    * workspace root and projects without a program.
    */
   public async inferTargets(
@@ -262,6 +278,7 @@ export class PluginService {
     const fileFilter = await this.buildExclusionFilter({
       configurationPath: pluginOptions.configurationPath,
       projectConfigurationPath: pluginOptions.projectConfigurationPath,
+      projectTsconfigPath: pluginOptions.projectTsconfigPath,
       workspaceRoot: args.workspaceRoot,
     });
     const targetsByProjectRoot = new Map<string, InferredTargets>();
@@ -271,7 +288,11 @@ export class PluginService {
 
       if (
         projectRoot === WORKSPACE_PROJECT_ROOT ||
-        !this.holdsProgram({ projectRoot, workspaceRoot: args.workspaceRoot })
+        !this.holdsProgram({
+          projectRoot,
+          projectTsconfigPath: pluginOptions.projectTsconfigPath,
+          workspaceRoot: args.workspaceRoot,
+        })
       ) {
         continue;
       }
@@ -279,7 +300,11 @@ export class PluginService {
       targetsByProjectRoot.set(
         projectRoot,
         this.buildInferredTargets({
-          isExcluded: this.isExcludedProject({ fileFilter, projectRoot }),
+          isExcluded: this.isExcludedProject({
+            fileFilter,
+            projectRoot,
+            projectTsconfigPath: pluginOptions.projectTsconfigPath,
+          }),
           pluginOptions,
         }),
       );

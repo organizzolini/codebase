@@ -135,6 +135,14 @@ export class ConfigurationService implements ConfigurationFileReader {
     return this.inputService.requireProjectConfigurationPath(path, surface);
   }
 
+  /** Reads the project tsconfig path, refusing an absent or blank one by surface. */
+  public requireProjectTsconfigPath(
+    path: string | undefined,
+    surface: string,
+  ): string {
+    return this.inputService.requireProjectTsconfigPath(path, surface);
+  }
+
   /** Fills in every field a configuration file may leave out. */
   public resolveConfiguration(
     configuration: CallidescopeConfiguration,

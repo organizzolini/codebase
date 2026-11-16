@@ -211,6 +211,7 @@ export class ProjectGraphsService {
   runFileImportsProjects(context: GraphRunContext): GraphRunOutcome {
     const typescriptProjects = this.typescriptService.discoverProjects(
       context.projects,
+      context.configuration.projectTsconfigPath,
     );
     const results: GraphRunOutcome["results"] = [];
     const failures: ProjectRunFailure[] = [];

@@ -61,6 +61,7 @@ export type {
   CallidescopeRunFlags,
   ResolvedRunFlags,
 } from "./modules/flag-resolution/flag-resolution.types";
+export { ProjectTsconfigPathRequiredError } from "./modules/input/input.constants";
 export {
   ConfigurationPathRequiredError,
   InputError,

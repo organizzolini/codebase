@@ -115,6 +115,7 @@ export const PROJECT_CONFIGURATION_FIELD_PERMISSIONS = {
   excludeFrom: "forbidden",
   limits: "permitted",
   projectConfigurationPath: "forbidden",
+  projectTsconfigPath: "forbidden",
   write: {
     json: "forbidden",
     markdown: "permitted",
@@ -239,6 +240,7 @@ export const callidescopeConfigurationSchema = z.strictObject({
   /** Renamed to `write`. */
   output: z.never().optional(),
   projectConfigurationPath: z.string().min(1).optional(),
+  projectTsconfigPath: z.string().min(1).optional(),
   write: writeSchema,
 });
 

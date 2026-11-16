@@ -178,6 +178,7 @@ export const codependixConfigurationSchema = z.object({
   nestjsModules: nestjsModulesConfigurationSchema.optional(),
   projectConfigurationPath: z.string().min(1),
   projectGraph: z.string().optional(),
+  projectTsconfigPath: z.string().min(1),
   workspace: workspaceConfigurationSchema.optional(),
 });
 
@@ -241,5 +242,20 @@ export class ProjectConfigurationPathRequiredError extends Error {
       `A project configuration path is required, but the ${surface} named none: give it where each project's own codependix configuration file sits, relative to the project root.`,
     );
     this.name = "ProjectConfigurationPathRequiredError";
+  }
+}
+
+/**
+ * Raised when no per-project TypeScript configuration path was given.
+ *
+ * Names the setting that should have carried it, so the message says which
+ * one to fix.
+ */
+export class ProjectTsconfigPathRequiredError extends Error {
+  constructor(surface: string) {
+    super(
+      `A project TypeScript configuration path is required, but the ${surface} named none: give it where each project's tsconfig file sits, relative to the project root.`,
+    );
+    this.name = "ProjectTsconfigPathRequiredError";
   }
 }

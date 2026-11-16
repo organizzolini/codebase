@@ -71,7 +71,8 @@
     {
       "options": {
         "configurationPath": "configuration/ic-suite/callidescope.config.ts",
-        "projectConfigurationPath": "configuration/callidescope.config.ts"
+        "projectConfigurationPath": "configuration/callidescope.config.ts",
+        "projectTsconfigPath": "tsconfig.json"
       },
       "plugin": "@callidescope/nx"
     },
@@ -79,7 +80,8 @@
       "options": {
         "configurationPath": "configuration/ic-suite/codependix.config.ts",
         "gateTargetName": "codependix-bound",
-        "projectConfigurationPath": "configuration/codependix.config.ts"
+        "projectConfigurationPath": "configuration/codependix.config.ts",
+        "projectTsconfigPath": "tsconfig.json"
       },
       "plugin": "@codependix/nx"
     },

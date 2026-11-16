@@ -41,7 +41,7 @@ import type {
 } from "@callidescope/graph";
 
 /**
- * Runs one trace of a workspace, from tsconfig files to findings.
+ * Runs one trace of a workspace, from each project's tsconfig to findings.
  */
 @Injectable()
 export class CallidescopeService {
@@ -147,9 +147,15 @@ export class CallidescopeService {
       excludeFrom: args.configuration.excludeFrom,
       workspaceRoot: args.workspaceRoot,
     });
+    const projectTsconfigPath =
+      this.configurationService.requireProjectTsconfigPath(
+        args.configuration.projectTsconfigPath,
+        `The projectTsconfigPath setting of ${args.configurationPath}`,
+      );
     const startingProjects = this.workspaceService.discoverProjects({
       directories: args.directories,
       fileFilter,
+      projectTsconfigPath,
       workspaceRoot: args.workspaceRoot,
     });
     // A run naming no directory already asked for every project, so the walk
@@ -160,6 +166,7 @@ export class CallidescopeService {
         : this.workspaceService.discoverProjects({
             directories: [],
             fileFilter,
+            projectTsconfigPath,
             workspaceRoot: args.workspaceRoot,
           });
     const programSet = this.programService.buildPrograms({

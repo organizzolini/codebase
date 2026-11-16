@@ -120,7 +120,10 @@ export class PathQueryService {
       .discoverProjects(args.context.selectedProjects)
       .map((project) => this.pythonService.buildGraph(project));
     const typescriptGraphs = this.typescriptService
-      .discoverProjects(args.context.selectedProjects)
+      .discoverProjects(
+        args.context.selectedProjects,
+        args.context.configuration.projectTsconfigPath,
+      )
       .map((project) =>
         this.typescriptService.buildGraph(
           this.typescriptService.buildProgram(project),

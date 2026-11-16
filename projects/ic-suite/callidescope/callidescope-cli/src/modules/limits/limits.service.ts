@@ -47,6 +47,7 @@ export class LimitsService {
    */
   private discoverProjects(args: {
     configuration: ResolvedCallidescopeConfiguration;
+    configurationPath: string;
     workspaceRoot: string;
   }): string[] {
     const fileFilter = this.fileFilterService.buildFileFilter({
@@ -59,6 +60,11 @@ export class LimitsService {
       .discoverProjects({
         directories: args.configuration.directories,
         fileFilter,
+        projectTsconfigPath:
+          this.configurationService.requireProjectTsconfigPath(
+            args.configuration.projectTsconfigPath,
+            `The projectTsconfigPath setting of ${args.configurationPath}`,
+          ),
         workspaceRoot: args.workspaceRoot,
       })
       .map((project) => project.name);
@@ -127,7 +133,11 @@ export class LimitsService {
     } = await this.configurationService.loadConfigurationFile({
       configurationPath: options.config,
     });
-    const projects = this.discoverProjects({ configuration, workspaceRoot });
+    const projects = this.discoverProjects({
+      configuration,
+      configurationPath,
+      workspaceRoot,
+    });
     const projectConfigurations =
       await this.configurationService.loadProjectConfigurations({
         projectConfigurationPath: configuration.projectConfigurationPath,

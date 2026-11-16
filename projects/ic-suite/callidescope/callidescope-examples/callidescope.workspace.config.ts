@@ -27,6 +27,8 @@ const callidescopeConfiguration: CallidescopeConfiguration = {
   },
   /** Where each fixture project keeps its own file, relative to its root. */
   projectConfigurationPath: "configuration/callidescope.config.ts",
+  /** Where each fixture project keeps its tsconfig, relative to its root. */
+  projectTsconfigPath: "tsconfig.json",
   write: {
     /** The whole run as JSON, which is the machine-readable shape. */
     json: {

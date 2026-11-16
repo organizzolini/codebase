@@ -5,6 +5,7 @@
  */
 export default {
   projectConfigurationPath: "codependix.config.ts",
+  projectTsconfigPath: "tsconfig.json",
   graphqlSchemas: { target: "markdown" },
   workspace: {
     nxProjects: { markdown: { anchor: "example-nx" }, target: "markdown" },

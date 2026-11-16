@@ -19,6 +19,7 @@ function buildResolved(): ResolvedCodependixConfiguration {
     nestjsRootModules: {},
     projectConfigurationPath: "codependix.config.ts",
     projectGraph: undefined,
+    projectTsconfigPath: "tsconfig.json",
     selection: { dependencies: true, projects: [], tags: [] },
     workspace: {},
   };
@@ -46,6 +47,7 @@ describe(OverrideResolutionService, () => {
       authored: {
         include: ["packages/**"],
         projectConfigurationPath: "codependix.config.ts",
+        projectTsconfigPath: "tsconfig.json",
       },
       overrides: undefined,
       resolved,
@@ -59,6 +61,7 @@ describe(OverrideResolutionService, () => {
       authored: {
         include: ["packages/**"],
         projectConfigurationPath: "codependix.config.ts",
+        projectTsconfigPath: "tsconfig.json",
       },
       overrides: { include: ["applications/**"] },
       resolved: buildResolved(),
@@ -73,6 +76,7 @@ describe(OverrideResolutionService, () => {
         exclude: ["scratch-*"],
         include: ["packages/**"],
         projectConfigurationPath: "codependix.config.ts",
+        projectTsconfigPath: "tsconfig.json",
       },
       overrides: { exclude: ["fixtures-*"] },
       resolved: { ...buildResolved(), exclude: ["scratch-*"] },
@@ -84,7 +88,10 @@ describe(OverrideResolutionService, () => {
   it("refuses to override include the author never declared", () => {
     expect(() =>
       service.applyOverrides({
-        authored: { projectConfigurationPath: "codependix.config.ts" },
+        authored: {
+          projectConfigurationPath: "codependix.config.ts",
+          projectTsconfigPath: "tsconfig.json",
+        },
         overrides: { include: ["applications/**"] },
         resolved: buildResolved(),
       }),
@@ -99,6 +106,7 @@ describe(OverrideResolutionService, () => {
         authored: {
           include: ["packages/**"],
           projectConfigurationPath: "codependix.config.ts",
+          projectTsconfigPath: "tsconfig.json",
         },
         overrides: { exclude: ["fixtures-*"] },
         resolved: buildResolved(),
@@ -110,7 +118,10 @@ describe(OverrideResolutionService, () => {
 
   it("ignores an empty override list, the same as an absent one", () => {
     const applied = service.applyOverrides({
-      authored: { projectConfigurationPath: "codependix.config.ts" },
+      authored: {
+        projectConfigurationPath: "codependix.config.ts",
+        projectTsconfigPath: "tsconfig.json",
+      },
       overrides: { include: [] },
       resolved: buildResolved(),
     });

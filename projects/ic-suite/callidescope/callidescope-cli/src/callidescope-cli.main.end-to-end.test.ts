@@ -115,6 +115,7 @@ function writeWorkspace(projects: Record<string, string>[] = []): string {
       "callidescope.config.json": JSON.stringify({
         limits: { maximumDepth: 6 },
         projectConfigurationPath: "callidescope.config.js",
+        projectTsconfigPath: "tsconfig.json",
       }),
       ...Object.fromEntries(projects.flatMap((files) => Object.entries(files))),
     },

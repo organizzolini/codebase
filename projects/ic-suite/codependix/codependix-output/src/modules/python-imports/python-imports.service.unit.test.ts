@@ -51,6 +51,7 @@ describe(PythonImportsService, () => {
         nestjsRootModules: {},
         projectConfigurationPath: "codependix.config.ts",
         projectGraph: undefined,
+        projectTsconfigPath: "tsconfig.json",
         selection: { dependencies: true, projects: [], tags: [] },
         workspace: {},
       },

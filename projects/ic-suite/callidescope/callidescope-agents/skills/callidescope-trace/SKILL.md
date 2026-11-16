@@ -24,7 +24,8 @@ npx callidescope breadth --config configuration/ic-suite/callidescope.config.ts 
 file: nothing is searched for and nothing is defaulted, so a run that omits it
 is refused naming the flag. **A traced project's own configuration is a different matter**: it
 must exist at the workspace's `projectConfigurationPath` and must be complete, or the run is refused before anything is
-traced — see the `callidescope-configure` skill. What a run _gates_ on and what
+traced — see the `callidescope-configure` skill. Likewise each project's TypeScript configuration is read only at the workspace's
+required `projectTsconfigPath`, relative to the project root. What a run _gates_ on and what
 it _writes_ are both opt-in and both live in that skill; this one is about
 reading the result.
 

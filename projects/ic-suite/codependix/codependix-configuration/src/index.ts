@@ -25,6 +25,7 @@ export {
   DEFAULT_INCLUDE_GLOBS,
   DEFAULT_MARKDOWN_PATH,
   ProjectConfigurationPathRequiredError,
+  ProjectTsconfigPathRequiredError,
   RUN_MODE_CHOICES,
   RUN_MODE_SUBJECT,
   UnknownConfigurationFileTypeError,

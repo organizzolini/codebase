@@ -4,7 +4,7 @@ import type { CallGraphResult } from "@callidescope/core";
 
 /** The shape of a `callidescope.config.ts` default export. */
 export interface CallidescopeConfiguration {
-  /** Project directories to trace, defaulting to every directory with its own `tsconfig.json`. Narrowing it speeds a run. */
+  /** Project directories to trace, defaulting to every directory holding a file at `projectTsconfigPath`. Narrowing it speeds a run. */
   directories?: string[] | undefined;
   entryPoints?: CallidescopeEntryPoints | undefined;
   exclude?: string[] | undefined;
@@ -15,6 +15,8 @@ export interface CallidescopeConfiguration {
   limits?: CallidescopeLimits | undefined;
   /** Where each traced project keeps its own configuration, relative to the project root. Required of a workspace configuration, with no default and no search. */
   projectConfigurationPath?: string | undefined;
+  /** Where each traced project keeps its TypeScript configuration, relative to the project root. Required of a workspace configuration, with no default and no search. */
+  projectTsconfigPath?: string | undefined;
   write?: CallidescopeWriteConfiguration | undefined;
 }
 
@@ -201,6 +203,8 @@ export interface ResolvedCallidescopeConfiguration {
   limits: ResolvedCallidescopeLimits;
   /** Where each traced project keeps its own configuration, as authored. No default, so `undefined` is refused when projects are read. */
   projectConfigurationPath?: string | undefined;
+  /** Where each traced project keeps its TypeScript configuration, as authored. No default, so `undefined` is refused when projects are discovered. */
+  projectTsconfigPath?: string | undefined;
   write: ResolvedCallidescopeWriteConfiguration;
 }
 

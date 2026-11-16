@@ -12,6 +12,9 @@ import { TypescriptProjectConfigurationError } from "./typescript.constants";
 
 import type { TypescriptProject } from "./typescript.types";
 
+/** Where the test projects keep their TypeScript configuration, under their root. */
+const PROJECT_TSCONFIG_PATH = "configuration/tsconfig.json";
+
 /** Writes a project holding one source file, and returns its description. */
 async function buildProject(args: {
   configuration?: string;
@@ -22,12 +25,13 @@ async function buildProject(args: {
   const root = path.join(workspaceRoot, "packages", args.name);
 
   await mkdir(path.join(root, "src"), { recursive: true });
+  await mkdir(path.join(root, "configuration"), { recursive: true });
   await writeFile(
-    path.join(root, "tsconfig.json"),
+    path.join(root, PROJECT_TSCONFIG_PATH),
     args.configuration ??
       JSON.stringify({
         compilerOptions: { moduleResolution: "bundler", noLib: true },
-        include: ["src/**/*.ts"],
+        include: ["../src/**/*.ts"],
       }),
     "utf8",
   );
@@ -41,7 +45,7 @@ async function buildProject(args: {
   return {
     absoluteRoot: root,
     name: args.name,
-    tsconfigPath: path.join(root, "tsconfig.json"),
+    tsconfigPath: path.join(root, PROJECT_TSCONFIG_PATH),
   };
 }
 
@@ -64,31 +68,50 @@ describe(TypescriptProjectService, () => {
     expect(instance).toBeInstanceOf(TypescriptProjectService);
   });
 
-  it("describes a project by its root and Nx name", () => {
+  it("describes a project by its root, Nx name, and configured tsconfig path", () => {
     const described = service.describeProject(
       "/workspace/packages/example",
       "example",
+      PROJECT_TSCONFIG_PATH,
     );
 
     expect(described).toStrictEqual({
       absoluteRoot: "/workspace/packages/example",
       name: "example",
-      tsconfigPath: path.join("/workspace/packages/example", "tsconfig.json"),
+      tsconfigPath: path.join(
+        "/workspace/packages/example",
+        PROJECT_TSCONFIG_PATH,
+      ),
     });
   });
 
-  it("discovers only projects carrying a tsconfig.json", async () => {
+  it("discovers only projects carrying a tsconfig at the configured path", async () => {
     const withConfig = await buildProject({ name: "with-config" });
     const withoutConfigRoot = path.dirname(withConfig.absoluteRoot);
 
-    const discovered = service.discoverProjects([
-      { absoluteRoot: withConfig.absoluteRoot, name: "with-config" },
-      { absoluteRoot: withoutConfigRoot, name: "without-config" },
-    ]);
+    const discovered = service.discoverProjects(
+      [
+        { absoluteRoot: withConfig.absoluteRoot, name: "with-config" },
+        { absoluteRoot: withoutConfigRoot, name: "without-config" },
+      ],
+      PROJECT_TSCONFIG_PATH,
+    );
 
     expect(discovered.map((project) => project.name)).toStrictEqual([
       "with-config",
     ]);
+    expect(discovered[0]?.absoluteRoot).toBe(withConfig.absoluteRoot);
+  });
+
+  it("does not take a tsconfig at the project root for the configured one", async () => {
+    const project = await buildProject({ name: "misplaced" });
+
+    expect(
+      service.discoverProjects(
+        [{ absoluteRoot: project.absoluteRoot, name: "misplaced" }],
+        "tsconfig.json",
+      ),
+    ).toStrictEqual([]);
   });
 
   it("builds a program from a project's tsconfig", async () => {

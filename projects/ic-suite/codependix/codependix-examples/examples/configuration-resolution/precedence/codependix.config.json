@@ -1,5 +1,6 @@
 {
   "projectConfigurationPath": "codependix.config.ts",
+  "projectTsconfigPath": "tsconfig.json",
   "workspace": {
     "nxProjects": {
       "markdown": {

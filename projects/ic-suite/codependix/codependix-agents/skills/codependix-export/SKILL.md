@@ -152,7 +152,7 @@ Each is keyed by name in the configuration:
 | --- | --------------- | --------------------- |
 | `nx` | A project's one-hop Neighborhood — what it depends on, and what depends on it | Every project the Nx graph knows, except the workspace root itself |
 | `nestjs` | A project's NestJS module import graph | Only projects tagged `framework:nestjs` |
-| `imports` | A project's own file-level TypeScript import graph | Every project carrying its own `tsconfig.json` |
+| `imports` | A project's own file-level TypeScript import graph | Every project with a tsconfig at the configured `projectTsconfigPath` |
 | `pythonImports` | The Python equivalent, parsed from `import` / `from ... import` statements | Only projects tagged `language:python` |
 
 The whole-workspace Nx graph is configured separately, under `workspace.nx`.

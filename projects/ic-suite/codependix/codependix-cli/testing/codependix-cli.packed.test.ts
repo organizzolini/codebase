@@ -39,6 +39,7 @@ describe("the packed codependix command", () => {
         include: [],
         projectConfigurationPath: "codependix.config.json",
         projectGraph: "codependix-graph.json",
+        projectTsconfigPath: "tsconfig.json",
         workspace: {
           nxProjects: {
             json: { path: "nx-projects.json" },

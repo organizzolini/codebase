@@ -286,6 +286,31 @@ describe(ConfigurationFileService, () => {
     ).rejects.toThrow("projectConfigurationPath");
   });
 
+  it("carries the project tsconfig path through the file schema and resolution", async () => {
+    const configurationPath = await writeConfiguration({
+      projectTsconfigPath: "configuration/tsconfig.json",
+    });
+
+    const { authored, configuration } = await service.loadConfigurationFile({
+      configurationPath,
+    });
+
+    expect(authored.projectTsconfigPath).toBe("configuration/tsconfig.json");
+    expect(configuration.projectTsconfigPath).toBe(
+      "configuration/tsconfig.json",
+    );
+  });
+
+  it("refuses a blank project tsconfig path", async () => {
+    const configurationPath = await writeConfiguration({
+      projectTsconfigPath: "",
+    });
+
+    await expect(
+      service.loadConfigurationFile({ configurationPath }),
+    ).rejects.toThrow("projectTsconfigPath");
+  });
+
   it("leaves the diagram destination alone until it is asked for", () => {
     expect(
       service.resolveConfiguration({ write: {} }).write.mermaid,

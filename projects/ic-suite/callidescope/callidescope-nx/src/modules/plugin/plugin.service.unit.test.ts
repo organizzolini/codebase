@@ -43,6 +43,9 @@ const CONFIGURATION_PATH = "configuration/callidescope.config.ts";
 /** Where the registration says each project keeps its own configuration. */
 const PROJECT_CONFIGURATION_PATH = "configuration/callidescope.config.ts";
 
+/** Where each fixture project keeps its tsconfig, told rather than assumed. */
+const PROJECT_TSCONFIG_PATH = "configuration/tsconfig.json";
+
 vi.mock("node:fs", async () => {
   const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
     "@codebase/testing/file-system",
@@ -123,6 +126,9 @@ describe(PluginService, () => {
     configurationService.requireProjectConfigurationPath.mockImplementation(
       (path: string | undefined): string => path ?? "",
     );
+    configurationService.requireProjectTsconfigPath.mockImplementation(
+      (path: string | undefined): string => path ?? "",
+    );
     vi.mocked(existsSync).mockReturnValue(true);
     vi.spyOn(projectsService, "readProjectGraph").mockResolvedValue(GRAPH);
     configurationService.loadConfigurationFile.mockResolvedValue({
@@ -131,6 +137,7 @@ describe(PluginService, () => {
         exclude: [],
         excludeFrom: [],
         projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+        projectTsconfigPath: PROJECT_TSCONFIG_PATH,
       }),
       path: "/workspace/callidescope.config.ts",
     });
@@ -207,6 +214,7 @@ describe(PluginService, () => {
         options: {
           configurationPath: CONFIGURATION_PATH,
           projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
         },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         workspaceRoot: "/workspace",
@@ -230,6 +238,7 @@ describe(PluginService, () => {
           configurationPath: CONFIGURATION_PATH,
           gateTargetName: "gate",
           projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
         },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         workspaceRoot: "/workspace",
@@ -250,6 +259,7 @@ describe(PluginService, () => {
         options: {
           configurationPath: CONFIGURATION_PATH,
           projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
         },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         workspaceRoot: "/workspace",
@@ -293,6 +303,7 @@ describe(PluginService, () => {
         options: {
           configurationPath: CONFIGURATION_PATH,
           projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
         },
         projectConfigurationFiles: ["packages/beta/project.json"],
         workspaceRoot: "/workspace",
@@ -314,13 +325,14 @@ describe(PluginService, () => {
       fileFilterService.buildFileFilter.mockReturnValue({
         isExcluded: (candidatePath: string): boolean =>
           candidatePath ===
-          "packages/ic-suite/callidescope/callidescope-examples/tsconfig.json",
+          `packages/ic-suite/callidescope/callidescope-examples/${PROJECT_TSCONFIG_PATH}`,
       });
 
       const targets = await service.inferTargets({
         options: {
           configurationPath: CONFIGURATION_PATH,
           projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
         },
         projectConfigurationFiles: [
           "packages/ic-suite/callidescope/callidescope-examples/project.json",
@@ -358,6 +370,7 @@ describe(PluginService, () => {
         options: {
           configurationPath: CONFIGURATION_PATH,
           projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
         },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         workspaceRoot: "/workspace",
@@ -375,6 +388,7 @@ describe(PluginService, () => {
         options: {
           configurationPath: CONFIGURATION_PATH,
           projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
         },
         projectConfigurationFiles: [
           "packages/alpha/project.json",
@@ -395,6 +409,7 @@ describe(PluginService, () => {
         options: {
           configurationPath: CONFIGURATION_PATH,
           projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
         },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         workspaceRoot: "/workspace",
@@ -415,6 +430,7 @@ describe(PluginService, () => {
             options: {
               configurationPath: CONFIGURATION_PATH,
               projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+              projectTsconfigPath: PROJECT_TSCONFIG_PATH,
             },
             projectConfigurationFiles: ["project.json"],
             workspaceRoot: "/workspace",
@@ -434,6 +450,7 @@ describe(PluginService, () => {
             options: {
               configurationPath: CONFIGURATION_PATH,
               projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+              projectTsconfigPath: PROJECT_TSCONFIG_PATH,
             },
             projectConfigurationFiles: ["applications/affirmancy/project.json"],
             workspaceRoot: "/workspace",
@@ -451,6 +468,7 @@ describe(PluginService, () => {
           exclude: [],
           excludeFrom: [],
           projectConfigurationPath: "limits/callidescope.config.ts",
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
         }),
         path: "/workspace/callidescope.config.ts",
       });
@@ -459,6 +477,7 @@ describe(PluginService, () => {
         options: {
           configurationPath: CONFIGURATION_PATH,
           projectConfigurationPath: "limits/callidescope.config.ts",
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
         },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         workspaceRoot: "/workspace",
@@ -477,11 +496,49 @@ describe(PluginService, () => {
           options: {
             configurationPath: CONFIGURATION_PATH,
             projectConfigurationPath: "elsewhere.config.ts",
+            projectTsconfigPath: PROJECT_TSCONFIG_PATH,
           },
           projectConfigurationFiles: ["packages/alpha/project.json"],
           workspaceRoot: "/workspace",
         }),
       ).rejects.toThrow("elsewhere.config.ts");
+    });
+
+    it("looks for each project's tsconfig at the registered path, and nowhere else", async () => {
+      expect.hasAssertions();
+
+      await service.inferTargets({
+        options: {
+          configurationPath: CONFIGURATION_PATH,
+          projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
+        },
+        projectConfigurationFiles: ["packages/alpha/project.json"],
+        workspaceRoot: "/workspace",
+      });
+
+      expect(existsSync).toHaveBeenCalledWith(
+        `/workspace/packages/alpha/${PROJECT_TSCONFIG_PATH}`,
+      );
+      expect(existsSync).not.toHaveBeenCalledWith(
+        "/workspace/packages/alpha/tsconfig.json",
+      );
+    });
+
+    it("refuses a registration whose tsconfig path disagrees with the workspace configuration", async () => {
+      expect.hasAssertions();
+
+      await expect(
+        service.inferTargets({
+          options: {
+            configurationPath: CONFIGURATION_PATH,
+            projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+            projectTsconfigPath: "tsconfig.json",
+          },
+          projectConfigurationFiles: ["packages/alpha/project.json"],
+          workspaceRoot: "/workspace",
+        }),
+      ).rejects.toThrow("projectTsconfigPath");
     });
   });
 

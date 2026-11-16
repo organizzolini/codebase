@@ -644,6 +644,7 @@ describe(ProjectConfigurationService, () => {
     ["excludeFrom", { excludeFrom: [".callidescopeignore"] }],
     ["excludeCallees", { excludeCallees: ["Logger.log"] }],
     ["projectConfigurationPath", { projectConfigurationPath: "x.config.ts" }],
+    ["projectTsconfigPath", { projectTsconfigPath: "tsconfig.json" }],
   ])(
     "refuses a project configuration that sets %s",
     async (field, configuration) => {

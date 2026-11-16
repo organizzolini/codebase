@@ -23,6 +23,10 @@ export const PLUGIN_OPTION_SURFACE =
 export const PROJECT_PATH_OPTION_SURFACE =
   "`projectConfigurationPath` option on the @codependix/nx plugin's entry in nx.json";
 
+/** Names the missing `projectTsconfigPath`; required, not defaulted. */
+export const PROJECT_TSCONFIG_OPTION_SURFACE =
+  "`projectTsconfigPath` option on the @codependix/nx plugin's entry in nx.json";
+
 /** Workspace root project, skipped: its closure is the whole workspace. */
 export const WORKSPACE_PROJECT_ROOT = ".";
 

@@ -47,6 +47,7 @@ describe("main end-to-end suite", () => {
         "codependix.config.json": JSON.stringify({
           include: [],
           projectConfigurationPath: "codependix.config.json",
+          projectTsconfigPath: "tsconfig.json",
           workspace: {
             nxProjects: {
               json: {
@@ -121,6 +122,7 @@ describe("main end-to-end suite", () => {
           include: [],
           projectConfigurationPath: "codependix.config.json",
           projectGraph: "codependix-graph.json",
+          projectTsconfigPath: "tsconfig.json",
         }),
       });
       const result = await runSourceCommand({

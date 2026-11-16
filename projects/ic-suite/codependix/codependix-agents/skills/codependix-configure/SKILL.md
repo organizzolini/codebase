@@ -67,6 +67,13 @@ Only that path is read, never a parent's file and never a neighbor, and a
 project with no file there produces no per-project output. A configuration
 without `projectConfigurationPath` is rejected.
 
+A project's TypeScript configuration is located the same way: the required
+`projectTsconfigPath` setting gives its path relative to each project's root
+(`"tsconfig.json"`, or `"configuration/tsconfig.json"`). No file name is
+assumed, and a configuration without `projectTsconfigPath` is rejected. The
+project's root stays the directory the tsconfig is resolved against, never the
+folder the tsconfig sits in.
+
 ## `defaults`, never `default`
 
 The field that applies to every project naming no override of its own is
@@ -223,7 +230,7 @@ refused. See `codependix-export` for what that does and does not cover.
 ## Configuring a graph type a project does not have costs nothing
 
 A project that is not a NestJS project never appears in the NestJS pass; a
-project with no `tsconfig.json` never appears in the TypeScript import pass.
+project with no tsconfig at `projectTsconfigPath` never appears in the TypeScript import pass.
 Neither is a failure and neither needs an override, so a single `defaults`
 block naming all four graph types is the normal shape of a
 whole-workspace configuration rather than an over-broad one.
@@ -339,7 +346,8 @@ it is given a `project.json`. Register the plugin once in `nx.json`:
       "options": {
         "configurationPath": "configuration/ic-suite/codependix.config.ts",
         "gateTargetName": "codependix-bound",
-        "projectConfigurationPath": "codependix.config.ts"
+        "projectConfigurationPath": "codependix.config.ts",
+        "projectTsconfigPath": "tsconfig.json"
       }
     }
   ]
@@ -349,8 +357,9 @@ it is given a `project.json`. Register the plugin once in `nx.json`:
 `configurationPath` names the one configuration every gate reads, and it is
 required: a registration without it fails with an error naming the option, and
 no `codependix.config.ts` at the workspace root is assumed. `projectConfigurationPath`
-is required too, and must match the workspace file's setting of that name: it
-names each project's own file for the cache inputs. A gate target can
+and `projectTsconfigPath` are required too, and must match the workspace
+file's settings of those names: they name each project's own file and its
+TypeScript configuration for the cache inputs. A gate target can
 override it with the executor option `configuration` (not Nx's own
 `--configuration` flag, which selects `check` or `write`); a blank value is
 refused, naming that option. Nothing else is configured per project: the rules in `boundaries`
@@ -362,8 +371,8 @@ does need a `tsconfig.json` that emits decorator metadata, because the hooks
 read it from the working directory and NestJS constructor injection depends on
 it.
 
-The gate is cached. A project's own file, at `projectConfigurationPath`, is one of its cache
-inputs, so editing it re-runs that gate. So is the codependix command line
+The gate is cached. A project's own file, at `projectConfigurationPath`, and its tsconfig, at
+`projectTsconfigPath`, are among its cache inputs, so editing it re-runs that gate. So is the codependix command line
 itself: its `package.json` and sources when it is a package of the workspace, or
 its installed version when it comes from a registry. So is the workspace root's
 `tsconfig.json`, which the loader reads. Test files are not inputs, so a

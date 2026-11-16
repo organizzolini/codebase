@@ -34,6 +34,9 @@ const BREACHING_ENTRY_POINT = "readBreachingEntryPoint";
 /** Limits file, in JSON: TypeScript would add an Nx dependency. */
 const CONFIGURATION_FILE_NAME = "callidescope.config.json";
 
+/** Where each fixture project keeps its tsconfig: beside nothing at the root, to prove no name is assumed. */
+const PROJECT_TSCONFIG_PATH = "configuration/tsconfig.json";
+
 /** The name a project declares itself through, which must spell `undefined`. */
 const PROJECT_CONFIGURATION_FILE_NAME = "callidescope.config.js";
 
@@ -69,7 +72,7 @@ const PROJECT_PROGRAM = {
     strict: true,
     target: "esnext",
   },
-  include: ["src/**/*.ts"],
+  include: ["../src/**/*.ts"],
 };
 
 /**
@@ -169,8 +172,11 @@ function writeProject(args: {
 }): void {
   const projectDirectory = path.join(args.workspaceRoot, args.projectRoot);
   mkdirSync(path.join(projectDirectory, "src"), { recursive: true });
+  mkdirSync(path.dirname(path.join(projectDirectory, PROJECT_TSCONFIG_PATH)), {
+    recursive: true,
+  });
   writeFileSync(
-    path.join(projectDirectory, "tsconfig.json"),
+    path.join(projectDirectory, PROJECT_TSCONFIG_PATH),
     JSON.stringify(PROJECT_PROGRAM),
   );
   writeFileSync(
@@ -244,6 +250,7 @@ describe("the gate executor, against a workspace on disk", () => {
       JSON.stringify({
         limits: { maximumDepth: 99 },
         projectConfigurationPath: PROJECT_CONFIGURATION_FILE_NAME,
+        projectTsconfigPath: PROJECT_TSCONFIG_PATH,
       }),
     );
     writeProject({
