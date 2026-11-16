@@ -1,5 +1,17 @@
-query Library($search: String, $page: Int, $pageSize: Int) {
-  library(search: $search, page: $page, pageSize: $pageSize) {
+query Library(
+  $search: String
+  $filters: LibraryFilters
+  $sort: LibrarySort
+  $page: Int
+  $pageSize: Int
+) {
+  library(
+    search: $search
+    filters: $filters
+    sort: $sort
+    page: $page
+    pageSize: $pageSize
+  ) {
     totalCount
     pageCount
     authors {

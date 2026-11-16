@@ -944,6 +944,8 @@ export type WordLexemeEdge = {
 
 export type LibraryQueryVariables = Exact<{
   search?: string | null | undefined;
+  filters?: Schema.LibraryFilters | null | undefined;
+  sort?: Schema.LibrarySort | null | undefined;
   page?: number | null | undefined;
   pageSize?: number | null | undefined;
 }>;
@@ -1016,7 +1018,7 @@ export type TextReaderQuery = { text: { id: string, slug: string, title: string,
  * @example
  * mockLibraryQuery(
  *   ({ query, variables }) => {
- *     const { search, page, pageSize } = variables;
+ *     const { search, filters, sort, page, pageSize } = variables;
  *     return HttpResponse.json({
  *       data: { library }
  *     })

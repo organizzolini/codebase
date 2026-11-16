@@ -8,6 +8,8 @@ import { renderRoute } from "@codebase/testing/react";
 
 import {
   AuthorEra,
+  LibrarySortDirection,
+  LibrarySortField,
   mockLibraryQuery,
   TextCollection,
 } from "../graphql/generated/mocks";
@@ -16,11 +18,13 @@ import { getRouter } from "../router";
 import { Route } from "./library";
 
 import type { LibraryPageResult } from "../components/library-grid/library-grid.types";
+import type { LibraryQueryVariables } from "../graphql/generated/mocks";
 
 type LibraryAuthorRow = LibraryPageResult["authors"][number];
 type LibraryTextRow = LibraryAuthorRow["texts"][number];
 
 const SEARCHES: { page: number; search: string }[] = [];
+const CALLS: LibraryQueryVariables[] = [];
 
 const PARENT = {
   id: "text-aeneid",
@@ -134,8 +138,14 @@ const OVID: LibraryAuthorRow = {
 };
 
 /** The page the API answers for one search, with a fixed page count. */
-function answer(search: string): LibraryPageResult {
-  if (search === "zzz") {
+function answer(
+  search: string,
+  variables: LibraryQueryVariables = {},
+): LibraryPageResult {
+  if (
+    search === "zzz" ||
+    variables.filters?.eras?.includes(AuthorEra.NeoLatin)
+  ) {
     return { authors: [], pageCount: 0, totalCount: 0 };
   }
 
@@ -153,12 +163,16 @@ function answer(search: string): LibraryPageResult {
 describe("library", () => {
   beforeEach(() => {
     SEARCHES.length = 0;
+    CALLS.length = 0;
     graphqlMockServer.use(
       mockLibraryQuery(({ variables }) => {
         const page = variables.page ?? 1;
         const search = variables.search ?? "";
         SEARCHES.push({ page, search });
-        return HttpResponse.json({ data: { library: answer(search) } });
+        CALLS.push(variables);
+        return HttpResponse.json({
+          data: { library: answer(search, variables) },
+        });
       }),
     );
   });
@@ -353,5 +367,262 @@ describe("library", () => {
     const meta = router.state.matches.flatMap((match) => match.meta ?? []);
 
     expect(meta).toContainEqual({ title: "Lexico - Library" });
+  });
+
+  it("sends a ticked filter to the API and the URL", async () => {
+    const router = getRouter();
+    await renderRoute(router, "/library");
+
+    fireEvent.click(await screen.findByRole("checkbox", { name: "Classical" }));
+    fireEvent.click(screen.getByRole("button", { name: "Apply filters" }));
+
+    await waitFor(() =>
+      expect(CALLS.at(-1)?.filters?.eras).toStrictEqual([AuthorEra.Classical]),
+    );
+
+    expect(router.state.location.search.eras).toStrictEqual([
+      AuthorEra.Classical,
+    ]);
+  });
+
+  it("sends typed lists and ranges to the API and the URL", async () => {
+    const router = getRouter();
+    await renderRoute(router, "/library");
+
+    fireEvent.change(await screen.findByLabelText("Provinces"), {
+      target: { value: "Dacia, Syria" },
+    });
+    fireEvent.change(
+      screen.getByLabelText("Author years (negative for BCE) minimum"),
+      {
+        target: { value: "-70" },
+      },
+    );
+    fireEvent.change(screen.getByLabelText("Line count maximum"), {
+      target: { value: "900" },
+    });
+    fireEvent.submit(screen.getByRole("form", { name: "Library filters" }));
+
+    await waitFor(() =>
+      expect(CALLS.at(-1)?.filters).toMatchObject({
+        authorYears: { max: null, min: -70 },
+        lineCount: { max: 900, min: null },
+        provinces: ["Dacia", "Syria"],
+      }),
+    );
+
+    expect({ ...router.state.location.search }).toMatchObject({
+      authorYearsMinimum: -70,
+      lineCountMaximum: 900,
+      provinces: ["Dacia", "Syria"],
+    });
+  });
+
+  it("sends a chosen sort and direction to the API and the URL", async () => {
+    const router = getRouter();
+    await renderRoute(router, "/library");
+
+    fireEvent.change(await screen.findByLabelText("Sort by"), {
+      target: { value: LibrarySortField.TextLineCount },
+    });
+    await waitFor(() =>
+      expect(
+        screen.getByLabelText<HTMLSelectElement>("Direction").disabled,
+      ).toBe(false),
+    );
+    fireEvent.change(screen.getByLabelText("Direction"), {
+      target: { value: LibrarySortDirection.Desc },
+    });
+
+    await waitFor(() =>
+      expect(CALLS.at(-1)?.sort).toStrictEqual({
+        direction: LibrarySortDirection.Desc,
+        field: LibrarySortField.TextLineCount,
+      }),
+    );
+
+    expect({ ...router.state.location.search }).toStrictEqual({
+      direction: LibrarySortDirection.Desc,
+      sort: LibrarySortField.TextLineCount,
+    });
+  });
+
+  it("restores every control from the URL", async () => {
+    const url =
+      "/library?search=vergil&eras=%5B%22CLASSICAL%22%5D&provinces=%5B%22Dacia%22%5D&wordCountMinimum=100&sort=AUTHOR_NAME&direction=DESC";
+    await renderRoute(getRouter(), url);
+
+    await screen.findByText("50 authors");
+
+    expect(
+      screen.getByRole<HTMLInputElement>("checkbox", { name: "Classical" })
+        .checked,
+    ).toBe(true);
+    expect(screen.getByLabelText<HTMLInputElement>("Provinces").value).toBe(
+      "Dacia",
+    );
+    expect(
+      screen.getByLabelText<HTMLInputElement>("Word count minimum").value,
+    ).toBe("100");
+    expect(screen.getByLabelText<HTMLSelectElement>("Sort by").value).toBe(
+      LibrarySortField.AuthorName,
+    );
+    expect(screen.getByLabelText<HTMLSelectElement>("Direction").value).toBe(
+      LibrarySortDirection.Desc,
+    );
+    expect(CALLS.at(-1)).toMatchObject({
+      filters: { eras: [AuthorEra.Classical], provinces: ["Dacia"] },
+      search: "vergil",
+      sort: {
+        direction: LibrarySortDirection.Desc,
+        field: LibrarySortField.AuthorName,
+      },
+    });
+  });
+
+  it("returns to the earlier results with the back button", async () => {
+    const router = getRouter();
+    await renderRoute(router, "/library");
+
+    fireEvent.click(await screen.findByRole("checkbox", { name: "Late" }));
+    fireEvent.click(screen.getByRole("button", { name: "Apply filters" }));
+    await waitFor(() =>
+      expect(CALLS.at(-1)?.filters?.eras).toStrictEqual([AuthorEra.Late]),
+    );
+
+    router.history.back();
+
+    await waitFor(() => expect(CALLS.at(-1)?.filters?.eras).toBeNull());
+    await waitFor(() =>
+      expect(
+        screen.getByRole<HTMLInputElement>("checkbox", { name: "Late" })
+          .checked,
+      ).toBe(false),
+    );
+  });
+
+  it("returns to the first page when a filter changes", async () => {
+    const router = getRouter();
+    await renderRoute(router, "/library?page=2");
+
+    fireEvent.click(await screen.findByRole("checkbox", { name: "Late" }));
+    fireEvent.click(screen.getByRole("button", { name: "Apply filters" }));
+
+    await waitFor(() => expect(SEARCHES.at(-1)?.page).toBe(1));
+
+    expect(router.state.location.search.page).toBeUndefined();
+  });
+
+  it("returns to the first page when the sort changes", async () => {
+    const router = getRouter();
+    await renderRoute(router, "/library?page=2");
+
+    fireEvent.change(await screen.findByLabelText("Sort by"), {
+      target: { value: LibrarySortField.AuthorName },
+    });
+
+    await waitFor(() => expect(SEARCHES.at(-1)?.page).toBe(1));
+
+    expect(router.state.location.search.page).toBeUndefined();
+  });
+
+  it("keeps the filters and sort when a new search is submitted", async () => {
+    const router = getRouter();
+    await renderRoute(
+      router,
+      "/library?eras=%5B%22CLASSICAL%22%5D&sort=AUTHOR_NAME",
+    );
+
+    fireEvent.change(await screen.findByRole("searchbox"), {
+      target: { value: "ecl" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+
+    await waitFor(() => expect(CALLS.at(-1)?.search).toBe("ecl"));
+
+    expect(CALLS.at(-1)?.filters?.eras).toStrictEqual([AuthorEra.Classical]);
+    expect(CALLS.at(-1)?.sort?.field).toBe(LibrarySortField.AuthorName);
+  });
+
+  it("drops invalid filter and sort values to their defaults", async () => {
+    await renderRoute(
+      getRouter(),
+      "/library?eras=%5B%22NOPE%22%5D&collections=PERSEUS&sort=BOGUS&direction=UP&lineCountMinimum=abc&provinces=%5B%5D",
+    );
+
+    await screen.findByText("50 authors");
+
+    expect(CALLS.at(-1)?.sort).toBeNull();
+    expect(CALLS.at(-1)?.filters).toStrictEqual({
+      authorYears: null,
+      collections: null,
+      eras: null,
+      inscriptionTypes: null,
+      inscriptionYears: null,
+      kinds: null,
+      lineCount: null,
+      materials: null,
+      printYears: null,
+      provinces: null,
+      wordCount: null,
+    });
+  });
+
+  it("shows a no-results state that resets the filters but keeps the search", async () => {
+    const router = getRouter();
+    await renderRoute(router, "/library?search=ecl&eras=%5B%22NEO_LATIN%22%5D");
+
+    await expect(
+      screen.findByText("No authors match ecl"),
+    ).resolves.toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "Reset all filters" }));
+
+    await waitFor(() => expect(CALLS.at(-1)?.filters?.eras).toBeNull());
+
+    expect(CALLS.at(-1)?.search).toBe("ecl");
+    expect({ ...router.state.location.search }).toMatchObject({
+      search: "ecl",
+    });
+    expect(router.state.location.search.eras).toBeUndefined();
+  });
+
+  it("names the filters in the no-results state when there is no search", async () => {
+    await renderRoute(getRouter(), "/library?eras=%5B%22NEO_LATIN%22%5D");
+
+    await expect(
+      screen.findByText("No authors match these filters"),
+    ).resolves.toBeDefined();
+  });
+
+  it("opens its filters from a button for a phone", async () => {
+    await renderRoute(getRouter(), "/library");
+
+    const toggle = await screen.findByRole("button", { name: "Filters" });
+
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+
+    fireEvent.click(toggle);
+
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+    expect(toggle.getAttribute("aria-controls")).toBe("library-filter-panel");
+  });
+
+  it("reaches every control with the keyboard", async () => {
+    await renderRoute(getRouter(), "/library");
+
+    const controls = [
+      await screen.findByRole("checkbox", { name: "Classical" }),
+      screen.getByLabelText("Provinces"),
+      screen.getByLabelText("Line count minimum"),
+      screen.getByRole("button", { name: "Apply filters" }),
+      screen.getByLabelText("Sort by"),
+    ];
+
+    for (const control of controls) {
+      control.focus();
+
+      expect(document.activeElement).toBe(control);
+    }
   });
 });
