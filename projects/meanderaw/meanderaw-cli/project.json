@@ -34,6 +34,7 @@
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "eslint": {},
     "form-codebase": {},
     "format-code": {},
     "gate-codebase": {},

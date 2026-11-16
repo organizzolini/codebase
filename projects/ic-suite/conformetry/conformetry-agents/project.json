@@ -8,6 +8,7 @@
     "build-projects": {},
     "codometer": {},
     "deprecate-code": {},
+    "eslint": {},
     "format-code": {},
     "guard-code": {},
     "knip": {},

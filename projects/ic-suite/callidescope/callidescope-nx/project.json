@@ -25,6 +25,7 @@
     "dependency-cruiser": {},
     "deprecate-code": {},
     "end-to-end": {},
+    "eslint": {},
     "format-code": {},
     "guard-code": {},
     "knip": {},

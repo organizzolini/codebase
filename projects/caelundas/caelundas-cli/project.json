@@ -49,6 +49,7 @@
       },
       "outputs": ["{projectRoot}/data/ephemeris"]
     },
+    "eslint": {},
     "format-code": {},
     "guard-code": {},
     "knip": {},

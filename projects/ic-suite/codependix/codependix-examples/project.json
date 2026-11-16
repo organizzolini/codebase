@@ -14,6 +14,7 @@
     "build-projects": {},
     "codometer": {},
     "deprecate-code": {},
+    "eslint": {},
     "examples": {
       "cache": true,
       "configurations": {

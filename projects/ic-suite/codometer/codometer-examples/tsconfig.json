@@ -21,10 +21,5 @@
     "output"
   ],
   "extends": "../../../../configuration/tsconfig.json",
-  "include": [
-    "configuration/*.ts",
-    "eslint.config.ts",
-    "examples/**/*.ts",
-    "testing/**/*.ts"
-  ]
+  "include": ["configuration/*.ts", "examples/**/*.ts", "testing/**/*.ts"]
 }

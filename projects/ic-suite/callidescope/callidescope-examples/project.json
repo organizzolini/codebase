@@ -15,6 +15,7 @@
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "eslint": {},
     "examples": {
       "cache": true,
       "configurations": {

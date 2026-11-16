@@ -867,8 +867,11 @@ export default [
 
   // ⚙️ Main Configuration
   // Core rules for all TS/JS source files: module boundaries, import ordering,
-  // strict TypeScript type safety, naming conventions, and best practices
+  // strict TypeScript type safety, naming conventions, and best practices.
+  // Rooted at the workspace, so its ignores name this file and not the
+  // `configuration/eslint.config.ts` every project keeps beside its own root.
   {
+    basePath: tsconfigRootDir,
     files: [
       "**/*.ts",
       "**/*.tsx",

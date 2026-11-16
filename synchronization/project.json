@@ -92,6 +92,7 @@
         "cwd": "{workspaceRoot}"
       }
     },
+    "eslint": {},
     "format-code": {},
     "guard-code": {},
     "installed-skills": {

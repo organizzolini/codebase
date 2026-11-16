@@ -28,7 +28,6 @@
     "codegen.ts",
     "configuration/*.mts",
     "configuration/*.ts",
-    "eslint.config.ts",
     "src/**/*.js",
     "src/**/*.jsx",
     "src/**/*.ts",

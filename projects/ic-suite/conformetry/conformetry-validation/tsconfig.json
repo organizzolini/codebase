@@ -23,7 +23,6 @@
   "extends": "../../../../configuration/tsconfig.json",
   "include": [
     "configuration/*.ts",
-    "eslint.config.ts",
     "scripts/**/*.ts",
     "src/**/*.ts",
     "src/**/*.tsx",

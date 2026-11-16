@@ -58,6 +58,8 @@ const config: KnipConfig = {
     "@golevelup/ts-vitest", // Conformance-scaffolded test mock utility — imported in testing/mocks.ts which is in ignoreFiles
     "@nestjs/testing", // Conformance-scaffolded test dependency — the testing package's module builder imports it for the tests, so no project file does
     "@nx/eslint-plugin", // Loaded dynamically by Nx ESLint integration
+    "eslint", // Run as a binary by every project's `eslint` target, declared in nx.json
+    "@nx/eslint", // Needed by the `@nx/react` generators nx.json configures with `linter: "eslint"`
     "@nx/vite", // Needed by the `@nx/react` generators nx.json configures with `bundler: "vite"`
     "@nx/vitest", // Vitest generator support beside @nx/vite; targets are declared, not inferred
     // Kept despite knip hinting it is redundant: the hint comes from a
@@ -101,8 +103,9 @@ const config: KnipConfig = {
   // Allow exports that are only used in the same file (common for barrel re-exports)
   ignoreExportsUsedInFile: true,
 
-  // Every project keeps its Vite and Vitest configuration in its `configuration`
-  // folder, which neither plugin looks in by default.
+  // Every project keeps its ESLint, Vite, and Vitest configuration in its
+  // `configuration` folder, which none of the three plugins looks in by default.
+  eslint: { config: ["configuration/eslint.config.ts"] },
   vite: { config: ["configuration/vite.config.{ts,mts}"] },
   vitest: { config: ["configuration/vitest.config.ts"] },
 

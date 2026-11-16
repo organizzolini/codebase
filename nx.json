@@ -62,13 +62,6 @@
   "parallel": 2,
   "plugins": [
     {
-      "exclude": ["configuration/**"],
-      "options": {
-        "targetName": "eslint"
-      },
-      "plugin": "@nx/eslint/plugin"
-    },
-    {
       "options": {
         "configurationPath": "configuration/conformetry.config.ts",
         "validateTargetName": "conformetry-validate"
@@ -361,13 +354,14 @@
         "cache": true,
         "configurations": {
           "check": {
-            "command": "eslint . --cache --cache-strategy content --cache-location \"$NX_WORKSPACE_ROOT/.eslintcache/\""
+            "command": "eslint --config configuration/eslint.config.ts . --cache --cache-strategy content --cache-location \"$NX_WORKSPACE_ROOT/.eslintcache/\""
           },
           "write": {
             "args": "--fix"
           }
         },
         "defaultConfiguration": "check",
+        "executor": "nx:run-commands",
         "filter": {
           "projects": ["tag:language:typescript"]
         },
@@ -402,8 +396,10 @@
           }
         ],
         "options": {
-          "command": "eslint . {args}"
-        }
+          "command": "eslint --config configuration/eslint.config.ts . {args}",
+          "cwd": "{projectRoot}"
+        },
+        "outputs": ["{options.outputFile}"]
       }
     ],
     "fallow": [

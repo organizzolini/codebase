@@ -24,7 +24,6 @@
   "include": [
     "callidescope.workspace.config.ts",
     "configuration/*.ts",
-    "eslint.config.ts",
     "examples/**/*.ts",
     "scripts/**/*.ts",
     "src/**/*.ts",

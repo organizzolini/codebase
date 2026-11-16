@@ -369,10 +369,13 @@
   "eslint.codeActionsOnSave.mode": "problems",
   "eslint.enable": true,
   "eslint.format.enable": false,
+  // Each project keeps its flat config in `configuration/`, which ESLint's own lookup never reaches.
+  "eslint.options": { "overrideConfigFile": "configuration/eslint.config.ts" },
   "eslint.nodePath": "/Users/jimmypaolini/.nvm/versions/node/v24.16.0",
   "eslint.run": "onType",
   "eslint.runtime": "/Users/jimmypaolini/.nvm/versions/node/v24.16.0/bin/node",
   "eslint.useFlatConfig": true,
+  "eslint.workingDirectories": [{ "mode": "auto" }],
   "eslint.validate": [
     "github-actions-workflow",
     "javascript",
