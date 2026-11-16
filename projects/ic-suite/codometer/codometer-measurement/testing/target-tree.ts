@@ -1,6 +1,3 @@
-import { mkdirSync, symlinkSync, writeFileSync } from "node:fs";
-import path from "node:path";
-
 /** Words the generated source cycles through to keep its symbols distinct. */
 const SOURCE_WORDS = [
   "alpha",
@@ -40,25 +37,9 @@ export const TARGET_FIXTURE_FILES: Readonly<Record<string, string>> = {
   "other/index.js": "export const other = 1;\n",
 };
 
-/**
- * Writes the target fixture tree into an empty directory, with a looping symlink and a broken one.
- */
-export function createTargetTree(root: string): string {
-  for (const [relativePath, contents] of Object.entries(TARGET_FIXTURE_FILES)) {
-    const absolutePath = path.join(root, relativePath);
-    mkdirSync(path.dirname(absolutePath), { recursive: true });
-    writeFileSync(absolutePath, contents);
-  }
-
-  symlinkSync(
-    path.join(root, "dist/nested/deep.js"),
-    path.join(root, "dist/link.js"),
-  );
-  symlinkSync(path.join(root, "dist"), path.join(root, "dist/loop"));
-  symlinkSync(
-    path.join(root, "dist/missing.js"),
-    path.join(root, "dist/broken.js"),
-  );
-
-  return root;
-}
+/** Links the target tree holds: a link to a file, a loop to an ancestor, and a broken one. */
+export const TARGET_FIXTURE_SYMLINKS: Readonly<Record<string, string>> = {
+  "dist/broken.js": "dist/missing.js",
+  "dist/link.js": "dist/nested/deep.js",
+  "dist/loop": "dist",
+};

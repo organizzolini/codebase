@@ -5,12 +5,11 @@ import {
   ConfigurationModule,
   ConfigurationService,
 } from "@codometer/configuration";
+import { buildCodeStatistics } from "@codometer/core/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { useTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
-
-import { buildCodeStatistics } from "../../../testing/mocks";
 
 import { LimitsService } from "./limits.service";
 import { MetricIndexService } from "./metric-index.service";

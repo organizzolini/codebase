@@ -34,14 +34,19 @@ import type {
   ProjectReport,
   WideCallableFinding,
 } from "@callidescope/core";
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
 import type { ProjectGraph } from "@nx/devkit";
 
 /** The workspace configuration every run must name. */
 const CONFIGURATION_PATH = "configuration/callidescope.config.ts";
 
-vi.mock("node:fs", () => ({
-  existsSync: vi.fn<() => boolean>(() => true),
-}));
+vi.mock("node:fs", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem();
+});
 
 /** Stubbed run's resolved limits, so forwarded lookups can be pinned. */
 const LIMITS: ProjectLimitsLookup = {

@@ -7,7 +7,7 @@ import type * as cheerio from "cheerio";
 import type { AnyNode } from "domhandler";
 
 /**
- * Extracts etymology text near a headword section and derives participle-origin
+ * Extracts etymology text near a lemma section and derives participle-origin
  * translations when that pattern appears in the prose.
  */
 @Injectable()

@@ -20,7 +20,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **boomerang**: Emoji-keyed glyph image that the calendar draws for one event category, mapped from the boomerang emoji.
 - **border**: Outline drawn around agenda date and group surfaces, through class names that set their edges in the calendar.
 - **boundary**: Index splitting an event summary into its glyph symbols and English name, so the name is cut at that index.
-- **breadth**: Callidescope limit on how many calls a callable fans out to, declared as maximumBreadth in its configuration.
 - **brightness**: Glyph for the maximum brightness event, keyed by a bright emoji and drawn from maximum-brightness-icon.svg.
 - **butterfly**: Emoji-keyed icon image, butterfly-icon.png, the calendar shows for one of its event label symbols.
 - **cancer**: Zodiac sign whose ingress event, such as event-sun-ingress-cancer, the filter tests and collections reference by id.
@@ -39,11 +38,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **daylight**: Event label for the sun above the horizon, mapped to day-icon.svg as its calendar glyph.
 - **decan**: Ten-degree third of a zodiac sign, numbered and drawn with the decan digit keycap in calendar glyphs.
 - **decile**: Aspect of 36 degrees, one tenth of the circle, drawn with its own decile-36 icon image in calendar glyphs.
-- **decuple**: Tenth-harmonic group of 36-degree aspects, labeled a stellium in the CLI symbol map and absent from this project.
+- **decuple**: Stellium label for a cluster of ten bodies, as the CLI's symbol map names it.
 - **degree**: Angle unit for all night sky coordinates, such as the 90-degree default vertical field and full turns.
 - **dignity**: Filter field for planet strength in a sign, such as domicile or exaltation, used as a tag root.
 - **domain**: Tag group recording whether an event belongs to the solar, lunar or planetary sphere, and the Nx domain tag this project carries.
-- **duodecuple**: Twelfth-harmonic group of 30-degree aspects, labeled a stellium in the CLI symbol map and absent from this project.
+- **duodecuple**: Stellium label for a cluster of twelve bodies, as the CLI's symbol map names it.
 - **dusk**: Evening twilight stage, labeled Astronomical Dusk, Astronomical Twilight Evening or Civil Dusk, each with its own icon.
 - **earth**: Earth-centered reference in the Eclipse Frame filter, and the element name of earth signs in the Element filter.
 - **eclipse**: Event type for solar or lunar eclipses, colored red in the Type color scheme and offered in the Eclipse Frame filter.
@@ -61,7 +60,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **gonggong**: A trans-Neptunian dwarf planet whose name no source or test file uses; only the glossary mentions it.
 - **grand**: Part of a three-or-more-body aspect pattern name, like grand trine or grand cross, in the collections and icon table.
 - **hammer**: The event glyph for the hammer emoji, mapped to its PNG icon file in the calendar icon table.
-- **hang**:
+- **hang**: Test option that leaves the mock API unanswered, so a route test can see the loading skeleton.
 - **harmonic**: A numbered aspect family, such as Harmonic 4, whose tags the calendar filters and agenda group under Type.
 - **hebe**: A main-belt asteroid whose name no source or test file uses, leaving only the glossary headword.
 - **hexadecan**: A sixteenth-harmonic point of the zodiac, named by ordinal such as Fifth Hexadecan, which the CLI emits as an event.
@@ -75,7 +74,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **juno**: The asteroid symbol ⚵ mapped to juno-icon.svg in the event glyph table, so that body's events get an icon.
 - **jupiter**: The planet symbol ♃ mapped to jupiter-icon.svg in the event glyph table, and named in glyph test event titles.
 - **kite**: An aspect pattern shape named in the focal body filter, whose emoji 🪁 maps to kite-icon.png.
-- **lamma**: The cross-quarter festival at 135 degrees, emitted as a CLI event and mapped to a PNG icon in the web glyph table.
+- **lammas**: The cross-quarter festival of early August, mapped to its PNG icon in the event glyph table.
 - **latitude**: The observer's north-south angle, read from sky.lat to place the night sky, and a column of each calendar event.
 - **leaf**: A tag or group with no children, which stands for itself: a leaf is its own group at any depth below it.
 - **leo**: The zodiac sign of the lion, whose ♌ glyph maps to leo-icon.svg and tags events as Sign / Leo.
@@ -108,12 +107,12 @@ The words this project uses that the root glossary does not define, regenerated 
 - **opposition**: The 180-degree aspect, harmonic 2, mapped to its own PNG icon in the glyph set.
 - **orcus**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
 - **ostara**: Seasonal festival event, the spring equinox name here, mapped to a PNG icon in the glyph set.
-- **palla**: Asteroid Pallas, named in event labels such as Mars biquintile Pallas, with its own glyph.
+- **pallas**: One of the four asteroids, named in event labels such as Mars biquintile Pallas, with its own glyph.
 - **pentagram**: The star glyph for a five-pointed pattern, mapped to its own PNG icon in the glyph set.
 - **period**: A range of dates, start inclusive and end exclusive, that the calendar shows and reads events for, titled in the toolbar and colored by its own text.
 - **phase**: Lunar or planetary cycle stage, a filter and color field grouping events by cycle position.
 - **pholus**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
-- **pisce**: Zodiac sign whose glyph maps to its own SVG icon, and a constellation listed in the sky menu.
+- **pisces**: Zodiac sign whose glyph maps to its own SVG icon, and a constellation listed in the sky menu.
 - **place**: A position in a color legend where values without one take their color from their own text.
 - **planet**: A celestial body whose glyph, name and events the calendar shows, such as Mars or Jupiter.
 - **pluto**: Dwarf-planet body whose glyph maps to its own SVG icon and appears in event names.
@@ -133,7 +132,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **quiet**: Class string that hides the timeline bar labels, keeping the timeline uncluttered.
 - **quincunx**: The 150-degree minor aspect, mapped to its own PNG icon in the glyph set.
 - **quintile**: The 72-degree aspect, a fifth-harmonic, mapped to its own PNG icon in the glyph set.
-- **quintuple**: Label for the CLI quintuple aspects module, computing five-fold harmonic aspect groupings.
+- **quintuple**: Label for a compound aspect or stellium of five bodies.
 - **radial**: A radialGradient SVG fill, the star glow and ground shading drawn behind the night sky.
 - **rectangle**: Shape word in the Mystic Rectangle aspect name, mapped to its own PNG icon via a door emoji.
 - **retrograde**: Apparent backward motion of a planet, a station event with its own icon in the glyph set.
@@ -155,11 +154,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **south**: The descending lunar node glyph, mapped to its own SVG icon beside the north node.
 - **square**: The 90-degree aspect, a harmonic-four pattern, shown in event names beside its glyph.
 - **star**: Celestial point in the night sky, as in the morning-star and evening-star icons and the sky backdrop.
-- **stellium**: Cluster of three or more bodies in one sign or spot, named by its count and given a glyph icon.
+- **stellium**: Three or more bodies all in conjunction with one another, named by its count and given a glyph icon.
 - **sun**: Central body of the solar system, whose glyph and events label Sun-relative stages and twilight.
 - **synodic**: Planet-with-Sun cycle label, a filter field and tag group for each planet stage.
 - **taurus**: Zodiac sign of the bull, whose glyph maps to its own SVG icon, and a constellation in the sky menu.
-- **temporality**: Derived filter field classing an event as past, ongoing or upcoming relative to the current time.
+- **temporality**: Derived filter field classing an event as Instant or Duration, from whether its start equals its end.
 - **trapeze**: Four-body aspect pattern that no code in this project uses, so only this glossary names it.
 - **tridecile**: The 108-degree aspect, mapped to its own PNG icon in the glyph set.
 - **trine**: The 120-degree aspect, a harmonic-three pattern, shown in event names with a triangle glyph.
@@ -170,9 +169,9 @@ The words this project uses that the root glossary does not define, regenerated 
 - **typhon**: Centaur body name that no code in this project uses, so it survives only as a glossary entry.
 - **undecile**: The 32.7-degree aspect, an eleventh-harmonic pattern, shown in event names with its own SVG icon.
 - **undecuple**: Stellium label for eleven bodies clustered together, mapped to a symbol in the stellium constants.
-- **unfinished**:
+- **unfinished**: A filter rule missing a value it needs, which is left out of the filter sent to the API.
 - **unmeasured**: Stand-in size used before a virtual list is measured, a 720 by 640 default height and width.
-- **unmount**:
+- **unmount**: Remove a rendered component or hook in a test, to check that it cleans up after itself.
 - **uranus**: Ice giant body whose glyph maps to its own SVG icon in the glyph set.
 - **vesta**: Asteroid body whose glyph maps to its own SVG icon in the event glyph set.
 - **vigintile**: A 18-degree aspect, a twentieth-harmonic division, which no code in this project uses.
@@ -181,9 +180,9 @@ The words this project uses that the root glossary does not define, regenerated 
 - **visible**: Shown on screen, such as the visible rows the virtual list computes for its window.
 - **water**: Elemental class of a zodiac sign, one of fire, earth, air or water, offered as a filter value.
 - **weekday**: Calendar day of the week as a grouping and color field, such as Monday through Sunday.
-- **window**: A calendar layout the UI calls a View: agenda, day, three-day, week, month or timeline; also the range of dates (a period) a view reads events for.
+- **window**: A calendar layout the UI calls a View: agenda, day, three-day, week, month or timeline. The range of dates a view reads is a period.
 - **yod**: Compound aspect pattern, the Yod, a Compound Aspect variant in the color path tests.
-- **york**:
+- **york**: Second word of the `America/New_York` time zone that tests render the calendar in.
 - **yule**: Seasonal festival event at the winter solstice, mapped to its own PNG icon in the glyph set.
 - **zenith**: Point directly overhead, shown as an upward-arrow event glyph with its own SVG icon.
 - **zodiac**: Twelve signs along the ecliptic, the sky backdrop default constellation set and a filter group.

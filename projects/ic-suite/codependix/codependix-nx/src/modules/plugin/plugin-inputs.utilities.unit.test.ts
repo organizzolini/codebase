@@ -1,21 +1,14 @@
-import {
-  mkdirSync,
-  mkdtempSync,
-  rmSync,
-  symlinkSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdirSync, symlinkSync } from "node:fs";
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
+
+import { useTemporaryDirectory, writeFileTree } from "@codebase/testing";
 
 import { resolveToolInputs } from "./plugin-inputs.utilities";
 
 import type { ToolInputsLogger } from "./plugin.types";
-
-/** Fixture closures go in gitignored `tmp/`, never the repository's closure. */
-const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../../../tmp");
 
 /** This repository's root, which holds `@codependix/cli` as a workspace package. */
 const WORKSPACE_ROOT = path.resolve(
@@ -64,12 +57,10 @@ function writePackage(args: {
   directory: string;
   manifest: Record<string, unknown>;
 }): void {
-  mkdirSync(path.join(args.directory, "src"), { recursive: true });
-  writeFileSync(
-    path.join(args.directory, "package.json"),
-    JSON.stringify(args.manifest),
-  );
-  writeFileSync(path.join(args.directory, "src/index.js"), "export {};\n");
+  writeFileTree(args.directory, {
+    "package.json": JSON.stringify(args.manifest),
+    "src/index.js": "export {};\n",
+  });
 }
 
 /**
@@ -111,7 +102,7 @@ function writeWorkspace(root: string): void {
     directory: path.join(packages, "misnamed"),
     manifest: { ...exportsEntry, name: "@codependix/renamed" },
   });
-  writeFileSync(path.join(packages, "misnamed/src/package.json"), "{");
+  writeFileTree(packages, { "misnamed/src/package.json": "{" });
 
   link({ from: root, name: "@codependix/cli", to: path.join(packages, "cli") });
   for (const [from, name, to] of [
@@ -129,33 +120,26 @@ function writeWorkspace(root: string): void {
 }
 
 describe(resolveToolInputs, () => {
-  let fixtures: string;
+  const fixtures = useTemporaryDirectory("plugin-inputs");
   let workspaceRoot: string;
   let consumerRoot: string;
   let brokenRoot: string;
 
   beforeAll(() => {
-    mkdirSync(FIXTURE_ROOT, { recursive: true });
-    fixtures = mkdtempSync(path.join(FIXTURE_ROOT, "plugin-inputs-"));
-    workspaceRoot = path.join(fixtures, "workspace");
-    consumerRoot = path.join(fixtures, "consumer");
-    brokenRoot = path.join(fixtures, "broken");
+    workspaceRoot = path.join(fixtures(), "workspace");
+    consumerRoot = path.join(fixtures(), "consumer");
+    brokenRoot = path.join(fixtures(), "broken");
     writeWorkspace(workspaceRoot);
     writeConsumer(consumerRoot);
     // Installed, but with an entry that is not there. A fixture with no
     // command line at all cannot be written inside this repository: Node
     // would climb out of it and find the repository's own.
-    mkdirSync(path.join(brokenRoot, "node_modules/@codependix/cli"), {
-      recursive: true,
+    writeFileTree(brokenRoot, {
+      "node_modules/@codependix/cli/package.json": JSON.stringify({
+        main: "./absent.js",
+        name: "@codependix/cli",
+      }),
     });
-    writeFileSync(
-      path.join(brokenRoot, "node_modules/@codependix/cli/package.json"),
-      JSON.stringify({ main: "./absent.js", name: "@codependix/cli" }),
-    );
-  });
-
-  afterAll(() => {
-    rmSync(fixtures, { force: true, recursive: true });
   });
 
   /** Resolves the inputs as a plugin installed at `root` would. */
@@ -258,7 +242,7 @@ describe(resolveToolInputs, () => {
       resolveToolInputs({
         logger,
         resolveFrom: path.join(workspaceRoot, "index.js"),
-        workspaceRoot: path.join(fixtures, "absent"),
+        workspaceRoot: path.join(fixtures(), "absent"),
       }),
     ).toStrictEqual([]);
     expect(logger.warn).toHaveBeenCalledExactlyOnceWith(

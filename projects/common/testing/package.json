@@ -8,6 +8,7 @@
     "@tanstack/react-router": "catalog:",
     "@testing-library/react": "catalog:",
     "execa": "catalog:",
+    "prompts": "catalog:",
     "react": "catalog:",
     "reflect-metadata": "catalog:",
     "tslib": "catalog:",
@@ -19,6 +20,7 @@
     "@nx/eslint-plugin": "catalog:",
     "@swc/helpers": "catalog:",
     "@types/node": "catalog:",
+    "@types/prompts": "catalog:",
     "@types/react": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "jsdom": "catalog:"
@@ -26,6 +28,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./end-to-end": "./src/end-to-end.ts",
+    "./file-system": "./src/file-system.ts",
     "./nestjs": "./src/nestjs.ts",
     "./react": "./src/react.ts",
     "./react/setup": "./src/react-setup.ts",
@@ -49,6 +52,10 @@
       "./end-to-end": {
         "default": "./dist/src/end-to-end.js",
         "types": "./dist/src/end-to-end.d.ts"
+      },
+      "./file-system": {
+        "default": "./dist/src/file-system.js",
+        "types": "./dist/src/file-system.d.ts"
       },
       "./nestjs": {
         "default": "./dist/src/nestjs.js",

@@ -1,13 +1,14 @@
 import fs from "node:fs";
 
+import prompts from "prompts";
 import { describe, expect, it, vi } from "vitest";
 
 import { promptsMock } from "./modules/mocks/mocks.constants";
 
 // 🧪 Tests
 
-// The project's own `testing/setup.ts` loads `src/setup.ts`, so this file
-// observes the shared setup exactly as a consuming project would.
+// The base Vitest config lists `src/setup.ts` for every project, so this file
+// observes the shared setup exactly as a consuming project does.
 describe("the shared Vitest setup", () => {
   const counter = vi.fn<() => void>();
 
@@ -41,6 +42,10 @@ describe("the shared Vitest setup", () => {
 
   it("answers an unanswered prompt as cancelled again in the next test", async () => {
     await expect(promptsMock({ name: "next" })).resolves.toStrictEqual({});
+  });
+
+  it("mocks prompts with the shared stand-in for every consumer", () => {
+    expect(prompts).toBe(promptsMock);
   });
 
   it("loads reflect-metadata, which Nest decorators need", () => {
