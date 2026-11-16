@@ -55,8 +55,25 @@ describe(DrawingService, () => {
   });
 
   describe("render", () => {
-    it("draws a bare point as a zero-length mark", () => {
-      expect(service.render(code("0", 1))).toContain("M2.5 12.5H2.5");
+    it("draws a bare point as a filled square of the stroke width centered on it, not as a zero-length stroke", () => {
+      const svg = service.render(code("0", 1));
+
+      expect(svg).toContain('<path d="M0 10H5V15H0Z');
+      expect(svg).toContain('" fill="black" stroke="none"/>');
+      expect(svg).not.toContain("M2.5 12.5H2.5");
+    });
+
+    it("gathers every dot into one filled path, after the stroked paths", () => {
+      const svg = service.render(code("00", 2));
+
+      expect(svg).toContain('<path d="M0 10H5V15H0ZM10 10H15V15H10Z');
+      expect(svg.indexOf('stroke="black"')).toBeLessThan(
+        svg.indexOf('stroke="none"'),
+      );
+    });
+
+    it("draws no dot path where every point owns or is reached by an edge", () => {
+      expect(service.render(code("99999", 1))).not.toContain('stroke="none"');
     });
 
     it("draws an owned eastward edge as a one-unit horizontal segment", () => {
@@ -86,14 +103,14 @@ describe(DrawingService, () => {
       const svg = service.render(code("20", 2));
 
       expect(svg).toContain("M2.5 12.5H12.5");
-      expect(svg).toContain("M12.5 12.5H12.5");
+      expect(svg).toContain("M10 10H15V15H10Z");
     });
 
     it("draws every row of a multi-row Code, each one grid unit further down", () => {
       const svg = service.render(code("40", 1));
 
       expect(svg).toContain("M2.5 12.5V22.5");
-      expect(svg).toContain("M2.5 22.5H2.5");
+      expect(svg).toContain("M0 20H5V25H0Z");
     });
 
     it("closes the drawing with a border rule along the top and bottom of the grid", () => {

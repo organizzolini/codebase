@@ -10,7 +10,7 @@ import {
 } from "@codebase/meanderaw-db";
 
 import { catalogEntry, meanderRow } from "../../../testing/fixtures";
-import { GOLDEN_SVG } from "../../../testing/golden-svg";
+import { GOLDEN_DOT_SVG, GOLDEN_SVG } from "../../../testing/golden-svg";
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
   seedMeanderaw,
@@ -481,6 +481,19 @@ describe("meanders resolver end-to-end suite", () => {
       expect(nodes.find(({ code }) => code === "01x01y5")?.svg).toBe(
         GOLDEN_SVG,
       );
+    });
+
+    it("draws a bare point as a filled square the width of the stroke, not as a zero-length stroke", () => {
+      const codes = application.database.module.get(CodeService, {
+        strict: false,
+      });
+      const drawings = application.database.module.get(DrawingService, {
+        strict: false,
+      });
+      const svg = drawings.render(codes.parse("01x04y0003", 4, 1));
+
+      expect(svg).toBe(GOLDEN_DOT_SVG);
+      expect(svg).not.toMatch(/M([\d.]+) [\d.]+H\1[M"]/u);
     });
 
     it("repeats the tile as many times as asked, as wide as that many tiles", async () => {

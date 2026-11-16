@@ -136,6 +136,8 @@ describe(DrawIndexService, () => {
     expect(indexPage.indexOf("isSnake.html")).toBeLessThan(
       indexPage.indexOf("isWhirl.html"),
     );
-    expect(pages["patterns/isSnake.html"]).toContain('<path d="M7.5 37.5H7.5"');
+    expect(pages["patterns/isSnake.html"]).toContain(
+      '<path d="M0 30H15V45H0Z" fill="black" stroke="none"/>',
+    );
   });
 });

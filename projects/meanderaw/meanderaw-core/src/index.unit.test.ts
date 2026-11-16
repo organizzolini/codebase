@@ -24,6 +24,6 @@ describe("drawing services built by hand", () => {
       rows: 5,
     });
 
-    expect(svg).toContain("M2.5 12.5H2.5");
+    expect(svg).toContain("M0 10H5V15H0Z");
   });
 });

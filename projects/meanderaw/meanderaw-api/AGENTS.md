@@ -60,7 +60,7 @@ src/
 testing/
   meanderaw-application.ts    # Serves modules over HTTP from a migrated, seeded Postgres
   fixtures.ts                 # catalogEntry, meanderRow
-  golden-svg.ts               # The SVG the CLI draws for one Code
+  golden-svg.ts               # The SVG the CLI draws for two Codes, one with dots
 ```
 
 ## Development
