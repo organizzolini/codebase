@@ -32,7 +32,7 @@ Effort is the work a pull request carries, measured in planned commits and modul
 | Medium | Two to four commits in one module                            |
 | High   | Five or more commits, or more than one module in one project |
 
-A `High` that would not fit one reviewable pull request is a planning defect: split it into parent issues under a spec before anyone builds it.
+`High` is a normal size, not a signal to split: a large change stays one pull request with more commits. Add a second parent issue only for a mechanical reason — see [One Pull Request by Default](../../../AGENTS.md#one-pull-request-by-default).
 
 ## Fill the Board
 
