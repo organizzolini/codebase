@@ -1,3 +1,5 @@
+import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
+
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
 import {
   afterEach,
@@ -10,30 +12,32 @@ import {
 } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
+import {
+  buildTestingModule,
+  mockErrorLogEntries,
+  setErrorLogFilePath,
+} from "@codebase/testing/nestjs";
 
 import { resetCommandTestHarness } from "../../../testing/command-harness";
 
 import { LatinLibraryCommand } from "./latin-library.command";
 
 import type { LoggerService } from "@codebase/observability";
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
-const { appendFileMock, mkdirMock, readFileMock, writeFileMock } = vi.hoisted(
-  () => ({
-    appendFileMock: vi.fn<() => Promise<void>>(),
-    mkdirMock: vi.fn<() => Promise<void>>(),
-    readFileMock: vi.fn<() => Promise<string>>(),
-    writeFileMock: vi.fn<() => Promise<void>>(),
-  }),
-);
+const appendFileMock = vi.mocked(appendFile);
+const mkdirMock = vi.mocked(mkdir);
+const readFileMock = vi.mocked(readFile);
+const writeFileMock = vi.mocked(writeFile);
 
-vi.mock("node:fs/promises", () => ({
-  appendFile: appendFileMock,
-  mkdir: mkdirMock,
-  readFile: readFileMock,
-  writeFile: writeFileMock,
-}));
+vi.mock("node:fs/promises", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem();
+});
 
 describe(LatinLibraryCommand, () => {
   let command: LatinLibraryCommand;
@@ -51,16 +55,8 @@ describe(LatinLibraryCommand, () => {
     mkdirMock.mockResolvedValue(undefined);
     appendFileMock.mockResolvedValue(undefined);
 
-    logger.buildErrorLogEntry.mockImplementation((context, error) => {
-      const errorMessage =
-        error instanceof Error ? error.stack || error.message : String(error);
-      return {
-        errorMessage,
-        logLine: `[${new Date().toISOString()}] ${context}: ${errorMessage}\n`,
-      };
-    });
-    (command as unknown as { errorLogFilePath: string }).errorLogFilePath =
-      "/tmp/latin-library-errors.log";
+    mockErrorLogEntries(logger);
+    setErrorLogFilePath(command, "/tmp/latin-library-errors.log");
   });
 
   describe("constructor bootstrap", () => {

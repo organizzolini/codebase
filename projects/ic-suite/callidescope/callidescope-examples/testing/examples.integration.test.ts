@@ -1,5 +1,5 @@
-import { execFileSync, spawnSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 import { beforeAll, describe, expect, it } from "vitest";
@@ -7,7 +7,12 @@ import { beforeAll, describe, expect, it } from "vitest";
 import {
   createTemporaryDirectory,
   useTemporaryDirectory,
+  writeFileTree,
 } from "@codebase/testing";
+import {
+  listExampleNames,
+  runSourceCommand,
+} from "@codebase/testing/end-to-end";
 
 import callidescopeConfiguration from "../callidescope.workspace.config.js";
 
@@ -40,13 +45,9 @@ const AGGREGATE_TARGET_NAME = "examples";
 const RUN_IT_COMMAND = `nx run ${readProjectDefinition().name}:${AGGREGATE_TARGET_NAME}`;
 
 /** Every directory under `examples/`, whether or not it is a project. */
-const EXAMPLE_NAMES = readdirSync(
+const EXAMPLE_NAMES = listExampleNames(
   path.join(WORKSPACE_ROOT, EXAMPLES_DIRECTORY, "examples"),
-  { withFileTypes: true },
-)
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => entry.name)
-  .toSorted();
+);
 
 /** The nested project that carries its own limits, and breaches both. */
 const GATED_LEAF_DIRECTORY = `${EXAMPLES_DIRECTORY}/examples/gated-leaf`;
@@ -304,22 +305,21 @@ function runDocumented(command: string): { output: string; status: number } {
  * Traces the fixtures as the Nx target does, into a throwaway report.
  * Must not be named `callidescope.config.ts`.
  */
-function traceFixtures(
+async function traceFixtures(
   temporaryDirectory: string,
   overrides: {
     exclude?: readonly string[];
     limits?: Record<string, number>;
   } = {},
-): CallGraphResult {
+): Promise<CallGraphResult> {
   const reportPath = path.join(temporaryDirectory, "report.json");
   const configurationPath = path.join(
     temporaryDirectory,
     "callidescope.config.json",
   );
 
-  writeFileSync(
-    configurationPath,
-    JSON.stringify({
+  writeFileTree(temporaryDirectory, {
+    "callidescope.config.json": JSON.stringify({
       ...callidescopeConfiguration,
       exclude: [
         ...(callidescopeConfiguration.exclude ?? []),
@@ -328,15 +328,10 @@ function traceFixtures(
       limits: { ...callidescopeConfiguration.limits, ...overrides.limits },
       write: { json: { path: reportPath } },
     }),
-    "utf8",
-  );
+  });
 
-  execFileSync(
-    process.execPath,
-    [
-      "--import",
-      "@swc-node/register/esm-register",
-      "projects/ic-suite/callidescope/callidescope-cli/src/callidescope-cli.main.ts",
+  const { exitCode, stderr } = await runSourceCommand({
+    args: [
       "callidescope",
       "--directories",
       STARTING_DIRECTORIES,
@@ -344,8 +339,12 @@ function traceFixtures(
       configurationPath,
       "--write",
     ],
-    { cwd: WORKSPACE_ROOT, stdio: "ignore" },
-  );
+    directory: WORKSPACE_ROOT,
+    entry:
+      "projects/ic-suite/callidescope/callidescope-cli/src/callidescope-cli.main.ts",
+  });
+
+  expect({ exitCode, stderr }).toStrictEqual({ exitCode: 0, stderr: "" });
 
   return JSON.parse(readFileSync(reportPath, "utf8")) as CallGraphResult;
 }
@@ -355,8 +354,8 @@ describe("callidescope examples (integration)", () => {
 
   const getTraceDirectory = useTemporaryDirectory("callidescope-examples");
 
-  beforeAll(() => {
-    result = traceFixtures(getTraceDirectory());
+  beforeAll(async () => {
+    result = await traceFixtures(getTraceDirectory());
   });
 
   describe("the examples target names every root", () => {
@@ -561,11 +560,11 @@ describe("callidescope examples (integration)", () => {
   });
 
   describe("dependency closure", () => {
-    it("follows a call into a dependency, and stops at the boundary without it", () => {
+    it("follows a call into a dependency, and stops at the boundary without it", async () => {
       // The closure can only be shown to do something by taking one project
       // out of it. The same fixture heads the same stack either way; what
       // changes is how far the stack goes, which is the whole claim.
-      const withoutDependency = traceFixtures(
+      const withoutDependency = await traceFixtures(
         createTemporaryDirectory("callidescope-examples"),
         {
           exclude: [

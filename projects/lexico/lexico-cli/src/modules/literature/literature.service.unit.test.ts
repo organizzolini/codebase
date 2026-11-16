@@ -1,3 +1,6 @@
+import { existsSync, mkdirSync } from "node:fs";
+import { readFile } from "node:fs/promises";
+
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
@@ -15,6 +18,7 @@ import { LiteratureWordNormalizationService } from "./literature-word-normalizat
 import { LiteratureService } from "./literature.service";
 
 import type { IngestTextArguments, LibraryEntry } from "./literature.types";
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
 import type { InsertResult, Repository } from "typeorm";
 
 const fixedDate = new Date("2026-01-01T00:00:00.000Z");
@@ -48,24 +52,25 @@ function createTextFixture(overrides: Partial<Text> = {}): Text {
   return text;
 }
 
-const { existsSyncMock, mkdirSyncMock, readFileMock } = vi.hoisted(() => ({
-  existsSyncMock: vi.fn<() => boolean>(),
-  mkdirSyncMock: vi.fn<(...parameters: unknown[]) => void>(),
-  readFileMock: vi.fn<() => Promise<string>>(),
-}));
-const { existsSync, mkdirSync } = vi.hoisted(() => ({
-  existsSync: existsSyncMock,
-  mkdirSync: mkdirSyncMock,
-}));
+const existsSyncMock = vi.mocked(existsSync);
+const mkdirSyncMock = vi.mocked(mkdirSync);
+const readFileMock = vi.mocked(readFile);
 
-vi.mock("node:fs", () => ({
-  existsSync,
-  mkdirSync,
-}));
+vi.mock("node:fs", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
 
-vi.mock("node:fs/promises", () => ({
-  readFile: readFileMock,
-}));
+  return mockFileSystem();
+});
+
+vi.mock("node:fs/promises", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem();
+});
 
 describe(LiteratureService, () => {
   let service: LiteratureService;

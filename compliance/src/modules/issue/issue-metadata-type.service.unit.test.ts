@@ -23,6 +23,7 @@ describe(IssueMetadataTypeService, () => {
     it.each([
       ["Feature", false],
       ["Bug", false],
+      ["Task", false],
       ["Task", true],
     ])("accepts %s when hasParent is %s", (issueType, hasParent) => {
       expect.hasAssertions();
@@ -46,16 +47,17 @@ describe(IssueMetadataTypeService, () => {
       },
     );
 
-    it.each(["Task", null])("rejects a root typed %s", (issueType) => {
+    it.each(["Epic", null])("rejects a root typed %s", (issueType) => {
       expect.hasAssertions();
 
       const record = vi.fn<(failure: string, ...commands: string[]) => void>();
       service.check("7", { hasParent: false, issueType }, record);
 
       expect(record).toHaveBeenCalledWith(
-        `❌ A root issue must have the Bug or Feature issue type (found: ${issueType ?? "none"})`,
+        `❌ A root issue must have the Bug, Feature, or Task issue type (found: ${issueType ?? "none"})`,
         "gh issue edit 7 --type Bug",
         "gh issue edit 7 --type Feature",
+        "gh issue edit 7 --type Task",
       );
     });
 

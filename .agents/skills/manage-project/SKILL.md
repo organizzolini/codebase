@@ -15,7 +15,7 @@ Its views are one per project area (`caelundas`, `lexico`, `ic-suite`, …), plu
 | Field    | Set on                                                   | Values                    | Who sets it                                      |
 | -------- | -------------------------------------------------------- | ------------------------- | ------------------------------------------------ |
 | Status   | Spec, parent issue, and commit sub-issue                 | Todo, In Progress, Done   | Todo and Done are automatic; you set In Progress |
-| Priority | Spec and any standalone issue                            | Urgent, High, Medium, Low | The user. An agent proposes, never decides       |
+| Priority | Spec and any standalone issue                            | Urgent, High, Medium, Low | The agent that files it; never changed after     |
 | Effort   | Parent issue (one pull request) and any standalone issue | Low, Medium, High         | The agent that plans or files it                 |
 
 Never invent a value outside the list. If a field has no option you need, say so rather than editing the field.
@@ -32,11 +32,25 @@ Effort is the work a pull request carries, measured in planned commits and modul
 | Medium | Two to four commits in one module                            |
 | High   | Five or more commits, or more than one module in one project |
 
-A `High` that would not fit one reviewable pull request is a planning defect: split it into parent issues under a spec before anyone builds it.
+`High` is a normal size, not a signal to split: a large change stays one pull request with more commits. Add a second parent issue only for a mechanical reason — see [One Pull Request by Default](../../../AGENTS.md#one-pull-request-by-default).
+
+### Choosing priority
+
+Priority is how soon the work matters. A value the user gave wins; otherwise pick from this table, and when two rows fit, take the lower one.
+
+| Priority | Shape                                                                         |
+| -------- | ----------------------------------------------------------------------------- |
+| Urgent   | Something broken on `main` or in production, a security hole, or a blocked CI |
+| High     | The user asked for it in this session, or it blocks other planned work        |
+| Medium   | Planned features and improvements with no deadline                            |
+| Low      | Cleanup, nice-to-haves, and backlog ideas                                     |
+
+**Never change a Priority that is already set.** The user re-prioritizes on the board, so a set value may be theirs even on an issue an agent filed. If one looks wrong, say so in your report and leave it.
 
 ## Fill the Board
 
-- **When you file or plan an issue**, set Effort on every parent issue and standalone issue. Set Priority only when the user gave one; leave it empty and say so in your report when they did not.
+- **When you file or plan an issue**, set Effort on every parent issue and standalone issue, and Priority on every root issue (a spec or a standalone issue) as part of filing it: `compliance issue` fails a root issue without one as soon as it opens.
+- **Before a pull request leaves draft**, both fields must be filled: `compliance pull-request` fails until the issue it closes has an Effort and the root of that issue's hierarchy has a Priority. If that root is an older issue with no Priority, fill the empty field from [Choosing priority](#choosing-priority) and say so in your report; never overwrite one that is set.
 - **When you start work**, set Status to **In Progress** on every layer the work is about to move — the spec, the parent issue, and the commit sub-issue. This replaces the retired `status:in-progress` label. Do it before the first failing test.
 - **When work finishes**, close the issue. The board marks it Done; there is nothing to set.
 - **When you find an open item with no Effort**, estimate it. Do not pad: a wrong Effort is corrected by the next reader, a missing one is not noticed.
@@ -67,11 +81,17 @@ set_field() {
 }
 ```
 
-Priority and Effort go through the issue-field endpoint instead, and take the option **name**, not its id. Set Priority only when the user gave a value:
+Priority and Effort go through the issue-field endpoint instead, and take the option **name**, not its id. Read the field first, and write Priority only while it is empty.
+
+**Use `POST`, never `PUT`.** `PUT` replaces every field on the issue with the ones you send, so setting Priority with it silently erases Effort. `POST` adds or updates only the fields you name:
 
 ```bash
+# read: prints the Priority already set, or nothing when it is empty
+gh api repos/Organizzolini/codebase/issues/<number>/issue-field-values \
+  --jq '.[] | select(.issue_field_name == "Priority") | .single_select_option.name'
+# set
 echo '{"issue_field_values":[{"field_id":46460698,"value":"Medium"}]}' |
-  gh api -X PUT repos/Organizzolini/codebase/issues/<number>/issue-field-values --input -
+  gh api -X POST repos/Organizzolini/codebase/issues/<number>/issue-field-values --input -
 # clear it
 gh api -X DELETE repos/Organizzolini/codebase/issues/<number>/issue-field-values/46460698
 ```

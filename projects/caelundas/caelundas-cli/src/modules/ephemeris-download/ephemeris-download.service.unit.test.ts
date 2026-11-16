@@ -1,18 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, type vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
-import { createTemporaryDirectory, stubFetch } from "@codebase/testing";
+import {
+  createTemporaryDirectory,
+  stubFetch,
+  useWorkingDirectory,
+} from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
@@ -50,12 +46,8 @@ describe(EphemerisDownloadService, () => {
 
   beforeEach(() => {
     workingDirectory = createTemporaryDirectory("download");
-    vi.spyOn(process, "cwd").mockReturnValue(workingDirectory);
+    useWorkingDirectory(workingDirectory);
     fetchMock = stubFetch();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   it("resolves with its dependencies", async () => {

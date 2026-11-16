@@ -4,6 +4,7 @@ import { LoggerModule } from "@codebase/observability";
 
 import { IssueAssigningService } from "./issue-assigning.service";
 import { IssueAuditService } from "./issue-audit.service";
+import { IssueFieldsService } from "./issue-fields.service";
 import { IssueGithubService } from "./issue-github.service";
 import { IssueLabelingService } from "./issue-labeling.service";
 import { IssueLabelsService } from "./issue-labels.service";
@@ -16,12 +17,13 @@ import { IssueCommand } from "./issue.command";
 /** Provides the issue compliance command and the services behind it. */
 @Module({
   controllers: [],
-  exports: [IssueCommand, IssueMetadataService],
+  exports: [IssueCommand, IssueFieldsService, IssueMetadataService],
   imports: [LoggerModule],
   providers: [
     IssueAssigningService,
     IssueAuditService,
     IssueCommand,
+    IssueFieldsService,
     IssueGithubService,
     IssueLabelingService,
     IssueLabelsService,

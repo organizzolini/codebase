@@ -1,29 +1,19 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { startVerdaccioPluginRunner } from "@codebase/testing/end-to-end";
+import {
+  installedVersion,
+  usePackedRegistry,
+} from "@codebase/testing/end-to-end";
 
 import type {
   CommandResult,
   ConsumerWorkspace,
-  VerdaccioPluginRunner,
 } from "@codebase/testing/end-to-end";
 
 const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../../../..");
-
-/** The version of `name` this workspace has installed, so a registry release cannot move the leg. */
-function installedVersion(name: string): string {
-  const manifest = JSON.parse(
-    fs.readFileSync(
-      path.join(WORKSPACE_ROOT, "node_modules", name, "package.json"),
-      "utf8",
-    ),
-  ) as { version: string };
-
-  return manifest.version;
-}
 
 /** A project's own configuration, in JavaScript because JSON cannot spell `undefined`. */
 const projectConfiguration = (maximumDepth: number): string => `export default {
@@ -55,7 +45,18 @@ const CHAIN = [
 ].join("\n");
 
 describe("the callidescope plugin installed from a registry", () => {
-  let runner: VerdaccioPluginRunner;
+  const registry = usePackedRegistry({
+    localScopes: ["@callidescope"],
+    packages: [
+      "@callidescope/cli",
+      "@callidescope/configuration",
+      "@callidescope/core",
+      "@callidescope/graph",
+      "@callidescope/nx",
+      "@callidescope/output",
+    ],
+    workspaceRoot: WORKSPACE_ROOT,
+  });
   let workspace: ConsumerWorkspace;
 
   /** Writes a project holding `CHAIN` and the depth limit it is held to. */
@@ -91,24 +92,10 @@ describe("the callidescope plugin installed from a registry", () => {
   }
 
   beforeAll(async () => {
-    runner = await startVerdaccioPluginRunner({
-      localScopes: ["@callidescope"],
-    });
-    await runner.publish({
-      packages: [
-        "@callidescope/cli",
-        "@callidescope/configuration",
-        "@callidescope/core",
-        "@callidescope/graph",
-        "@callidescope/nx",
-        "@callidescope/output",
-      ],
-      workspaceRoot: WORKSPACE_ROOT,
-    });
-    workspace = await runner.createWorkspace({
+    workspace = await registry.runner.createWorkspace({
       dependencies: {
-        nx: installedVersion("nx"),
-        typescript: installedVersion("typescript"),
+        nx: installedVersion(WORKSPACE_ROOT, "nx"),
+        typescript: installedVersion(WORKSPACE_ROOT, "typescript"),
       },
       packages: ["@callidescope/nx"],
     });
@@ -121,10 +108,6 @@ describe("the callidescope plugin installed from a registry", () => {
     );
     writeProject("healthy", 6);
     writeProject("broken", 1);
-  });
-
-  afterAll(async () => {
-    await runner.stop();
   });
 
   it("passes the gate of a project within its depth limit", async () => {

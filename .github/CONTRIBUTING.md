@@ -482,7 +482,7 @@ Commits are validated by commitlint through Husky. See [commit-code](.agents/ski
 
 <!-- scopes-end -->
 
-If a change genuinely spans scopes, list them comma-separated (`feat(lexico,logger): ...`) rather than reaching for an umbrella scope. Better still, keep one project or module per pull request — see [Release Significance](#release-significance) for why.
+If a change spans scopes, list them comma-separated (`feat(lexico,logger): ...`) rather than reaching for an umbrella scope. Spanning scopes is no reason to split a pull request: keep each commit to one project or module and let the title name the fewest scopes that cover them all — see [Release Significance](#release-significance).
 
 ## Release Significance
 
@@ -495,7 +495,7 @@ The release-significance check of `compliance pull-request` reads the branch's c
 - A `feat` commit on a branch titled `chore` or `ci` fails the check — either retitle the pull request as `feat`, or move that commit to its own branch.
 - Mixing `feat` and `fix` work is fine; title it `feat`, since `feat` outranks `fix`. Mixing only breaks when a later commit is _more_ significant than the type already chosen.
 
-This is also why one project or module per pull request is the rule: the fewer concerns a branch carries, the less likely it accumulates a commit that outranks its title.
+A branch that spans several projects is fine: title it at its most significant commit and list the scopes its commits need. Fewer, larger pull requests are preferred — they are one review and one manual test for a single maintainer — and work is split only when it mechanically must be, such as a change that has to deploy before the code that depends on it. See [One Pull Request by Default](../AGENTS.md#one-pull-request-by-default).
 
 ## Issues and Planning
 
@@ -509,7 +509,7 @@ Issue titles follow the same `<type>(<scope>): <gitmoji> <subject>` convention a
 
 The Continuous Compliance workflow checks issue metadata on `opened`, `edited`, `labeled`, and `unlabeled`, and on `opened` first reconciles the labels a submitted form implies. It has its own README badge, and the same issue job also checks that every pull request closes or references an issue (see [Pull Request Process](#pull-request-process)), so a red badge there means an issue or a pull request missing its issue link.
 
-Planned work is filed in three layers — a spec, one parent issue per pull request beneath it, and one sub-issue per planned commit beneath that:
+Planned work is filed in three layers — a spec, one parent issue per pull request beneath it (usually exactly one), and one sub-issue per planned commit beneath that:
 
 ```text
 spec issue          the specification the work came from   (Issue Type: Feature or Bug)
@@ -526,7 +526,7 @@ See [documentation/agents/issue-tracker.md](../documentation/agents/issue-tracke
 1. **Push and open**: `git push -u origin <branch>`, then `gh pr create` and fill in the template. Do not use `--fill` — it substitutes the commit message for the body and drops the four required headings
 2. **Title** follows the commit format — `<type>(<scope>): <gitmoji> <subject>`, checked by the same commitlint configuration, so every commit rule applies. The scope list must share at least one scope with each commit, which is all Comply Code's release-significance check requires. Scope each commit to one project or module and list the fewest scopes that cover every commit, so the squashed header stays short.
 3. **Description** must contain all four headings from [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) verbatim — 🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related — each in its shape: Summary only a single paragraph of at most 48 words, Details only a bulleted list with one marker throughout and at most 512 words, Testing only an ordered list (a step may hold a code block), and Related opening with a `-` list, after which anything may follow. Comply Code runs `compliance pull-request` and fails on a missing or empty section, a section in the wrong shape or over its limit, or a template comment left unfilled
-4. **Issue link**: every pull request must close or reference a GitHub issue through GitHub's own link — `Closes #N` as the first bullet of 🔗 Related, or the Development sidebar. Continuous Compliance runs `compliance pull-request` on pull requests and in the merge queue, reading `gh pr view --json closingIssuesReferences`, so a plain `Related to #N` does not count. Dependabot's pull requests are exempt. Work with no issue gets one before the pull request opens — see the [link-issue skill](../.agents/skills/link-issue/SKILL.md)
+4. **Issue link**: every pull request must close or reference a GitHub issue through GitHub's own link — `Closes #N` as the first bullet of 🔗 Related, or the Development sidebar. Continuous Compliance runs `compliance pull-request` on pull requests and in the merge queue, reading `gh pr view --json closingIssuesReferences`, so a plain `Related to #N` does not count. Pull requests opened by Dependabot or by a GitHub Actions workflow are exempt. Work with no issue gets one before the pull request opens — see the [link-issue skill](../.agents/skills/link-issue/SKILL.md)
 5. **Labels and assignees** must agree with the title: exactly one `type:*` label matching the title's type, exactly the `scope:*` labels the title names and no extras, at least one assignee, and exactly one `source:*` label (`source:agent` or `source:human`) declaring who opened it. The `do-not-merge` label blocks the pull request while present
 6. **Automated checks**: the five workflows in [The Gates](#the-gates) must pass
 7. **Code review**: requires `@JimmyPaolini` approval ([CODEOWNERS](.github/CODEOWNERS))
@@ -536,7 +536,7 @@ Comply Code creates any label missing from the vocabulary when a pull request is
 
 Merges go through a merge queue, and the check workflows run again on the queued merge commit — a pull request that was green on its own can still fail there once `main` has moved underneath it.
 
-A practical way to avoid release-significance failures is to keep one pull request focused to one project/scope whenever possible. If a change really spans scopes, name the fewest that overlap every commit in the title (`type(scope-a,scope-b): …`) or split into separate pull requests.
+To avoid release-significance failures in a pull request that spans scopes, keep each commit to one project or module, name the fewest scopes that overlap every commit in the title (`type(scope-a,scope-b): …`), and title it at the most significant commit. Split into separate pull requests only when the scopes cannot fit the 128-character header or the work must deploy in stages.
 
 A pull request with merge conflicts runs almost none of these workflows — a short list of green checks means nothing was validated. Resolve conflicts before reading the checks as a pass.
 
