@@ -8,12 +8,9 @@ import type {
 } from "./fake-process-runner.types";
 
 /**
- * Answers `capture` and `captureAsync` from a script and records calls, so
- * tests run no process. Structurally satisfies a process runner service.
- *
- * @param script - Answers each command line or `*` prefix.
- * @param streamStatus - Exit code of a streamed call the script omits.
- * @param streamScript - Exit codes for streamed calls, by command line.
+ * Answers `capture` and `captureAsync` from a script of command lines or `*`
+ * prefixes and records every call, so tests run no process. The second and
+ * third arguments script streamed calls.
  */
 export class FakeProcessRunner {
   constructor(
