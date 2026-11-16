@@ -55,7 +55,12 @@ describe(PackageManifestsService, () => {
       return value;
     });
     vi.mocked(writeFileSync).mockImplementation((filePath, content) => {
-      fileContents.set(String(filePath), String(content));
+      fileContents.set(
+        String(filePath),
+        typeof content === "string"
+          ? content
+          : new TextDecoder().decode(content),
+      );
     });
   });
 
