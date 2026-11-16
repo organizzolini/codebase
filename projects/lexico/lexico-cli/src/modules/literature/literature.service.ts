@@ -415,7 +415,14 @@ export class LiteratureService {
     if (parentText) {
       textSaveObject.parentText = { id: parentText.id };
     }
-    Object.assign(textSaveObject, parseText(frontmatterData));
+    const { attributes, invalidFields } = parseText(frontmatterData);
+    if (invalidFields.length > 0) {
+      this.logger.warn("🏷️ Ignoring invalid text fields", undefined, {
+        invalidFields,
+        slug: textSlug,
+      });
+    }
+    Object.assign(textSaveObject, attributes);
     await this.textRepository.upsert(textSaveObject, {
       conflictPaths: ["slug"],
       skipUpdateIfNoValuesChanged: true,

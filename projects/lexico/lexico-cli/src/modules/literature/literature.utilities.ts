@@ -46,16 +46,26 @@ export function mergeAuthor(
 }
 
 /**
- * Maps a text's frontmatter source fields onto its typed columns; invalid input yields none.
+ * Maps a text's frontmatter source fields onto its typed columns, field by field, and names
+ * the fields that were present but invalid so one bad field never drops the rest.
  */
-export function parseText(
-  frontmatter: Record<string, unknown>,
-): TextAttributes {
-  const parsed = textFrontmatterSchema.safeParse(frontmatter);
-  if (!parsed.success) return {};
-  const { print_year, work_identifier, ...rest } = parsed.data;
-  return _.omitBy(
+export function parseText(frontmatter: Record<string, unknown>): {
+  attributes: TextAttributes;
+  invalidFields: string[];
+} {
+  const valid: Record<string, unknown> = {};
+  const invalidFields: string[] = [];
+  for (const [field, schema] of Object.entries(textFrontmatterSchema.shape)) {
+    const value = frontmatter[field];
+    if (value === undefined) continue;
+    const parsed = schema.safeParse(value);
+    if (parsed.success) valid[field] = parsed.data;
+    else invalidFields.push(field);
+  }
+  const { print_year, work_identifier, ...rest } = valid;
+  const attributes = _.omitBy(
     { ...rest, printYear: print_year, workIdentifier: work_identifier },
     (value) => value === undefined,
   );
+  return { attributes, invalidFields };
 }
