@@ -6,6 +6,8 @@ import { librarySearchSchema } from "../components/library-grid/library-grid-api
 import { getLibrary } from "../components/library-grid/library-grid.constants";
 import { LibraryNoResults } from "../components/library-no-results/library-no-results";
 import { LibraryPagination } from "../components/library-pagination/library-pagination";
+import { isPastEnd } from "../components/library-pagination/library-pagination.utilities";
+import { LibraryPastEnd } from "../components/library-past-end/library-past-end";
 import { LibrarySearch } from "../components/library-search/library-search";
 import { LibrarySort } from "../components/library-sort/library-sort";
 
@@ -67,6 +69,7 @@ function LibraryPage(): ReactNode {
   const hasFilters = Object.values(filters).some(
     (value) => value !== undefined,
   );
+  const pastEnd = isPastEnd(page, library.totalCount, library.pageCount);
   const count = `${String(library.totalCount)} ${library.totalCount === 1 ? "author" : "authors"}`;
 
   // 💪 Handlers
@@ -147,6 +150,14 @@ function LibraryPage(): ReactNode {
             handleFilters({});
           }}
           search={search}
+        />
+      ) : pastEnd ? (
+        <LibraryPastEnd
+          onLastPage={() => {
+            handlePage(library.pageCount);
+          }}
+          page={page}
+          pageCount={library.pageCount}
         />
       ) : (
         <>

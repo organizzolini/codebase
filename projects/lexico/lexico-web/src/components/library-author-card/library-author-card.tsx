@@ -71,7 +71,12 @@ export function LibraryAuthorCard(
           />
         </span>
         {author.fullName === null ? null : (
-          <span className="block text-sm">{author.fullName}</span>
+          <LibraryHighlight
+            className="block text-sm"
+            field="fullName"
+            matches={matches}
+            value={author.fullName}
+          />
         )}
         {author.era === null ? null : (
           <span className="block text-sm">{ERA_LABELS[author.era]}</span>

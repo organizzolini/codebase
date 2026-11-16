@@ -19,6 +19,31 @@ describe(LibraryHighlight, () => {
     );
   });
 
+  it("renders a span so it can sit inside a button, heading, or span", () => {
+    render(
+      <LibraryHighlight
+        field="name"
+        matches={[]}
+        value="Ovid"
+      />,
+    );
+
+    expect(screen.getByTestId("library-highlight").tagName).toBe("SPAN");
+  });
+
+  it("renders a div where block content is valid", () => {
+    render(
+      <LibraryHighlight
+        as="div"
+        field="name"
+        matches={[]}
+        value="Ovid"
+      />,
+    );
+
+    expect(screen.getByTestId("library-highlight").tagName).toBe("DIV");
+  });
+
   it("bolds only the ranges matched in its field", () => {
     render(
       <LibraryHighlight

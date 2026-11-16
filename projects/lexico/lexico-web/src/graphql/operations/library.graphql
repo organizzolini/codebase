@@ -43,6 +43,11 @@ query Library(
           type
           collection
           edition
+          editors
+          findSpot
+          inscriptionType
+          material
+          province
           lineCount
           wordCount
           parentText {
