@@ -25,6 +25,7 @@ async function runMain(argv: readonly string[]): Promise<{
     directory: PROJECT_ROOT,
     entry: "src/persistence.main.ts",
     timeout: SPAWN_TIMEOUT_MILLISECONDS,
+    tsconfig: "configuration/tsconfig.json",
   });
 
   return {
