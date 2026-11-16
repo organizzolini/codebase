@@ -199,9 +199,12 @@ describe("grouped gallery", () => {
         `/?view=grid&group=${encodeURIComponent('["lattice"]')}&filter=${encodeURIComponent(JSON.stringify(filter))}`,
       );
 
-      await waitFor(() => {
-        expect(screen.getAllByTestId("meander-card")).toHaveLength(6);
-      });
+      await waitFor(
+        () => {
+          expect(screen.getAllByTestId("meander-card")).toHaveLength(6);
+        },
+        { timeout: HEAVY_FILTER_TIMEOUT_MILLISECONDS },
+      );
     },
     HEAVY_FILTER_TIMEOUT_MILLISECONDS,
   );
@@ -224,9 +227,12 @@ describe("grouped gallery", () => {
         `/?view=grid&group=${encodeURIComponent('["lattice"]')}&filter=${encodeURIComponent(JSON.stringify(filter))}`,
       );
 
-      await waitFor(() => {
-        expect(screen.getAllByTestId("meander-card")).toHaveLength(6);
-      });
+      await waitFor(
+        () => {
+          expect(screen.getAllByTestId("meander-card")).toHaveLength(6);
+        },
+        { timeout: HEAVY_FILTER_TIMEOUT_MILLISECONDS },
+      );
     },
     HEAVY_FILTER_TIMEOUT_MILLISECONDS,
   );

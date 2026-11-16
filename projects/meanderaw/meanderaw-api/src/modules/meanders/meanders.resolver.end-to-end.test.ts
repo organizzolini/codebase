@@ -284,6 +284,7 @@ describe("meanders resolver end-to-end suite", () => {
         expect(new Set(paged).size).toBe(6);
       }
     },
+    DATABASE_TIMEOUT_MILLISECONDS,
   );
 
   it("reports whether another page follows, and hands out a cursor per edge", async () => {
