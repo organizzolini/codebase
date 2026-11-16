@@ -58,7 +58,7 @@ describe(MeandersResolver, () => {
     };
     mock(MeandersService).draw.mockReturnValue("<svg/>");
 
-    expect(instance.svg(meander)).toBe("<svg/>");
-    expect(mock(MeandersService).draw).toHaveBeenCalledWith(meander);
+    expect(instance.svg(meander, 6)).toBe("<svg/>");
+    expect(mock(MeandersService).draw).toHaveBeenCalledWith(meander, 6);
   });
 });

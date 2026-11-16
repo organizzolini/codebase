@@ -27,7 +27,7 @@ export interface MeandersApi {
  * The meander at a place in the fixture: every third one is hardcoded and
  * holds the `isChain` pattern, and each holds a junction count.
  */
-export function fixtureMeander(index: number): GalleryMeander {
+export function fixtureMeander(index: number, repeats = 1): GalleryMeander {
   const code = `01x01y${String(index).padStart(4, "0")}`;
   const isChain = index % 3 === 0;
 
@@ -50,7 +50,7 @@ export function fixtureMeander(index: number): GalleryMeander {
     lattice: index % 2 === 0 ? "0" : "1",
     repeats: 1,
     rows: (index % 5) + 1,
-    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><title>${code}</title></svg>`,
+    svg: `<svg data-repeats="${repeats}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><title>${code}</title></svg>`,
   };
 }
 
@@ -104,7 +104,7 @@ export function serveMeandersApi(count = 3, delayMs = 0): MeandersApi {
           .slice(start, end)
           .map((position, offset) => ({
             cursor: String(start + offset),
-            node: fixtureMeander(position),
+            node: fixtureMeander(position, variables.repeats ?? 1),
           }));
 
         return HttpResponse.json({

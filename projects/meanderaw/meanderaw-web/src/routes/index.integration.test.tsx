@@ -350,4 +350,23 @@ describe("index", () => {
       expect(screen.queryByRole("status")).toBeNull();
     });
   });
+
+  it("asks for each drawing with its tile repeated 6 times, on the first page and the next", async () => {
+    const api = serveMeandersApi(100);
+
+    await renderRoute(getRouter(), "/");
+
+    const [image] = await screen.findAllByRole("img");
+    const drawing = decodeURIComponent(image?.getAttribute("src") ?? "");
+
+    expect(drawing).toContain('data-repeats="6"');
+
+    scrollWindowTo(3300);
+
+    await waitFor(() => {
+      expect(api.requests).toHaveLength(2);
+    });
+
+    expect(api.requests.map(({ repeats }) => repeats)).toStrictEqual([6, 6]);
+  });
 });

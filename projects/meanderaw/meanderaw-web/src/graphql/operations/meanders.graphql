@@ -1,4 +1,9 @@
-query Meanders($first: Int, $after: String, $sort: MeanderSortInput) {
+query Meanders(
+  $first: Int
+  $after: String
+  $sort: MeanderSortInput
+  $repeats: Int
+) {
   meanders(first: $first, after: $after, sort: $sort) {
     totalCount
     pageInfo {
@@ -15,7 +20,7 @@ query Meanders($first: Int, $after: String, $sort: MeanderSortInput) {
         lattice
         repeats
         rows
-        svg
+        svg(repeats: $repeats)
         characteristics {
           isPattern
           key

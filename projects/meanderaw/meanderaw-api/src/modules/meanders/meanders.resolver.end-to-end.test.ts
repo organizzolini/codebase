@@ -483,6 +483,52 @@ describe("meanders resolver end-to-end suite", () => {
       );
     });
 
+    it("repeats the tile as many times as asked, as wide as that many tiles", async () => {
+      expect.hasAssertions();
+
+      const REPEATS_QUERY =
+        "query ($repeats: Int) { meanders(first: 1) { edges { node { code rows columns svg(repeats: $repeats) } } } }";
+      const body = await application.query(REPEATS_QUERY, { repeats: 6 });
+      const [edge] = z
+        .object({
+          meanders: z.object({
+            edges: z.array(
+              z.object({
+                node: z.object({
+                  code: z.string(),
+                  columns: z.number(),
+                  rows: z.number(),
+                  svg: z.string(),
+                }),
+              }),
+            ),
+          }),
+        })
+        .parse(body.data).meanders.edges;
+      const codes = application.database.module.get(CodeService, {
+        strict: false,
+      });
+      const drawings = application.database.module.get(DrawingService, {
+        strict: false,
+      });
+      const node = edge?.node;
+      const one = codes.parse(node?.code ?? "", node?.rows, node?.columns);
+
+      expect(body.errors).toBeUndefined();
+      expect(node?.svg).toBe(drawings.render({ ...one, repeats: 6 }));
+      expect(node?.svg).not.toBe(drawings.render(one));
+    });
+
+    it("refuses repeats outside 1 to 12", async () => {
+      expect.hasAssertions();
+
+      const body = await application.query(
+        "query { meanders(first: 1) { edges { node { svg(repeats: 13) } } } }",
+      );
+
+      expect(body.errors?.[0]?.message).toMatch(/from 1 to 12/u);
+    });
+
     it("renders only the meanders asked for, and none when the query leaves svg out", async () => {
       expect.hasAssertions();
 
