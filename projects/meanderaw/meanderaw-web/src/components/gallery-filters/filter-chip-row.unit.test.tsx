@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { FIXTURE_CHARACTERISTICS } from "../../../testing/meanders-api";
+import { DEFAULT_ROWS_FILTER } from "../gallery-filter-builder/gallery-filter-builder.constants";
 import { createFilterFields } from "../gallery-filter-builder/gallery-filter-builder.utilities";
 
 import { FilterChipRow } from "./filter-chip-row";
@@ -28,6 +29,7 @@ function properties(
     fields: createFilterFields(FIXTURE_CHARACTERISTICS),
     filter: TREE,
     onFilterChange: vi.fn<FilterChipRowProperties["onFilterChange"]>(),
+    rows: DEFAULT_ROWS_FILTER,
     ...overrides,
   };
 }
@@ -51,7 +53,7 @@ describe(FilterChipRow, () => {
 
     expect(
       screen.getAllByRole("listitem").map((item) => item.textContent),
-    ).toStrictEqual(["Rows ≥ 2×", "Chain is true×"]);
+    ).toStrictEqual(["Rows = 4", "Rows ≥ 2×", "Chain is true×"]);
   });
 
   it("removes the rule a chip names, and gives none when it was the last", () => {
@@ -85,9 +87,25 @@ describe(FilterChipRow, () => {
     ]);
   });
 
-  it("draws nothing without a rule", () => {
+  it("draws only the rows chip, with no way to remove it, when the tree holds no rule", () => {
     render(<FilterChipRow {...properties({ filter: undefined })} />);
 
-    expect(screen.queryByTestId("filter-chip-row")).toBeNull();
+    expect(
+      screen.getAllByRole("listitem").map((item) => item.textContent),
+    ).toStrictEqual(["Rows = 4"]);
+    expect(screen.queryByRole("button")).toBeNull();
+  });
+
+  it("words a rows range, low end first", () => {
+    render(
+      <FilterChipRow
+        {...properties({
+          filter: undefined,
+          rows: { operator: "between", value: [2, 6] },
+        })}
+      />,
+    );
+
+    expect(screen.getByText("Rows between 2 and 6")).toBeDefined();
   });
 });

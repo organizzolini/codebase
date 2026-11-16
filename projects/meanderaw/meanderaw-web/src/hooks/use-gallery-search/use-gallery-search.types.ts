@@ -1,4 +1,7 @@
-import type { FilterGroup } from "../../components/gallery-filter-builder/gallery-filter-builder.types";
+import type {
+  FilterGroup,
+  RowsFilter,
+} from "../../components/gallery-filter-builder/gallery-filter-builder.types";
 import type {
   GALLERY_VIEWS,
   SORT_DIRECTIONS,
@@ -22,7 +25,10 @@ export type SortDirection = (typeof SORT_DIRECTIONS)[number];
 export interface UseGallerySearchResult {
   /** Which way the sort runs; ascending when the link names none. */
   direction: SortDirection;
-  handleFilterChange: (filter: FilterGroup | undefined) => void;
+  handleFilterChange: (
+    filter: FilterGroup | undefined,
+    rows: RowsFilter,
+  ) => void;
   handleSortChange: (
     sort: string | undefined,
     direction: SortDirection,

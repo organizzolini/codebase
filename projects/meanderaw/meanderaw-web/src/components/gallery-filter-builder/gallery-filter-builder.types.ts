@@ -83,3 +83,11 @@ export interface FilterRuleEntry {
  * What a rule compares with: a number, range, flag or text.
  */
 export type FilterValue = [number, number] | boolean | number | string;
+
+/**
+ * The rows rule every filter holds: an operator and its value.
+ */
+export interface RowsFilter {
+  operator: FilterOperator;
+  value: FilterValue;
+}

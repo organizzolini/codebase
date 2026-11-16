@@ -7,6 +7,8 @@ import {
 import { useEffect, useMemo } from "react";
 
 import { GalleryError } from "../components/gallery-error/gallery-error";
+import { sanitizeRows } from "../components/gallery-filter-builder/filter-rows.utilities";
+import { DEFAULT_ROWS_FILTER } from "../components/gallery-filter-builder/gallery-filter-builder.constants";
 import {
   createFilterFields,
   sanitizeFilter,
@@ -43,11 +45,14 @@ export const Route = createFileRoute("/")({
   head: () => ({ meta: [{ title: "Meanderaw" }] }),
   validateSearch: (search: Record<string, unknown>) =>
     gallerySearchSchema.parse(search),
-  // The sort and filter are read from the link, so a change to either reads
-  // the first page again.
+  // The sort, filter and rows rule are read from the link, so a change to
+  // any reads the first page again.
   loaderDeps: ({ search }) => ({
     direction: search.direction ?? DEFAULT_SORT_DIRECTION,
     filter: search.filter,
+    // Read as the rule it settles to, so adding the default to the link does
+    // not read the first page a second time.
+    rows: sanitizeRows(search.rows),
     sort: search.sort,
   }),
   ssr: false,
@@ -62,12 +67,14 @@ export const Route = createFileRoute("/")({
       createFilterFields(characteristics),
     );
 
+    // A link without a valid rows rule gets the default one.
+    const rows = sanitizeRows(deps.rows);
     const page = await findMeanders({
-      filter: toFilterInput(filter),
+      filter: toFilterInput(filter, rows),
       sort: toSortInput(sort, deps.direction),
     });
 
-    return { characteristics, filter, page, sort };
+    return { characteristics, filter, page, rows, sort };
   },
 });
 
@@ -98,7 +105,7 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
  */
 function IndexPage(): ReactNode {
   // 🪝 Hooks
-  const { characteristics, filter, page, sort } = Route.useLoaderData();
+  const { characteristics, filter, page, rows, sort } = Route.useLoaderData();
   const {
     direction,
     handleFilterChange,
@@ -106,14 +113,17 @@ function IndexPage(): ReactNode {
     handleViewChange,
     view,
   } = useGallerySearch();
-  const { filter: linkedFilter } = Route.useSearch();
+  const { filter: linkedFilter, rows: linkedRows } = Route.useSearch();
   // While a new sort reads, the cards of the last stay up under a notice.
   const isReloading = useRouterState({
     select: (state: { isLoading: boolean }) => state.isLoading,
   });
 
   // 🏗 Setup
-  const filterInput = useMemo(() => toFilterInput(filter), [filter]);
+  const filterInput = useMemo(
+    () => toFilterInput(filter, rows),
+    [filter, rows],
+  );
   const { hasMore, loadError, loadMore, meanders } = useMeanders(
     page,
     toSortInput(sort, direction),
@@ -127,10 +137,13 @@ function IndexPage(): ReactNode {
   // A link carrying rules the catalog cannot answer is replaced by one that
   // does not, so what the address says is what is shown.
   useEffect(() => {
-    if (JSON.stringify(filter) !== JSON.stringify(linkedFilter)) {
-      handleFilterChange(filter);
+    if (
+      JSON.stringify(filter) !== JSON.stringify(linkedFilter) ||
+      JSON.stringify(rows) !== JSON.stringify(linkedRows)
+    ) {
+      handleFilterChange(filter, rows);
     }
-  }, [filter, handleFilterChange, linkedFilter]);
+  }, [filter, handleFilterChange, linkedFilter, linkedRows, rows]);
 
   // 🏁 Early Returns
 
@@ -141,7 +154,16 @@ function IndexPage(): ReactNode {
       <GalleryFilters
         fields={fields}
         filter={filter}
-        onFilterChange={handleFilterChange}
+        onClear={() => {
+          handleFilterChange(undefined, DEFAULT_ROWS_FILTER);
+        }}
+        onFilterChange={(next) => {
+          handleFilterChange(next, rows);
+        }}
+        onRowsChange={(next) => {
+          handleFilterChange(filter, next);
+        }}
+        rows={rows}
       />
       <div className="flex flex-wrap items-center justify-between gap-3">
         <GalleryToolbar

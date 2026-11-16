@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { FIXTURE_CHARACTERISTICS } from "../../../testing/meanders-api";
 import { setViewportWidth } from "../../../testing/viewport";
+import { DEFAULT_ROWS_FILTER } from "../gallery-filter-builder/gallery-filter-builder.constants";
 import { createFilterFields } from "../gallery-filter-builder/gallery-filter-builder.utilities";
 
 import { GalleryFilters } from "./gallery-filters";
@@ -21,7 +22,10 @@ function properties(
   return {
     fields: createFilterFields(FIXTURE_CHARACTERISTICS),
     filter: undefined,
+    onClear: vi.fn<GalleryFiltersProperties["onClear"]>(),
     onFilterChange: vi.fn<GalleryFiltersProperties["onFilterChange"]>(),
+    onRowsChange: vi.fn<GalleryFiltersProperties["onRowsChange"]>(),
+    rows: DEFAULT_ROWS_FILTER,
     ...overrides,
   };
 }
@@ -64,7 +68,7 @@ describe(GalleryFilters, () => {
     expect(opened(375)).toBe("sheet");
   });
 
-  it("badges the button with the rules in force, and clears them", () => {
+  it("badges the button with the rules of the tree in force, and clears them", () => {
     const filter = properties({ filter: FILTER });
 
     render(<GalleryFilters {...filter} />);
@@ -75,14 +79,23 @@ describe(GalleryFilters, () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Clear" }));
 
-    expect(vi.mocked(filter.onFilterChange).mock.lastCall).toStrictEqual([]);
+    expect(filter.onClear).toHaveBeenCalledTimes(1);
   });
 
-  it("has nothing to clear without a rule", () => {
+  it("has nothing to clear while the tree is empty and rows is its default", () => {
     render(<GalleryFilters {...properties()} />);
 
     expect(
       screen.getByRole("button", { name: "Clear" }).hasAttribute("disabled"),
     ).toBe(true);
+  });
+
+  it("can clear a rows rule that was changed, whatever the tree holds", () => {
+    const filter = properties({ rows: { operator: "gt", value: 2 } });
+
+    render(<GalleryFilters {...filter} />);
+    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
+
+    expect(filter.onClear).toHaveBeenCalledTimes(1);
   });
 });

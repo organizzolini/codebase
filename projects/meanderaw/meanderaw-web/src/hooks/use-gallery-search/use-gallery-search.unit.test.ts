@@ -93,7 +93,7 @@ describe(useGallerySearch, () => {
     });
   });
 
-  it("replaces the link with the filter, keeping the rest of it, and drops it for none", () => {
+  it("replaces the link with the filter and rows rule, keeping the rest of it", () => {
     const navigate = mockNavigate();
     vi.mocked(useSearch).mockReturnValue({});
 
@@ -103,8 +103,10 @@ describe(useGallerySearch, () => {
       rules: [{ field: "rows", operator: "eq" as const, value: 2 }],
     };
 
-    result.current.handleFilterChange(filter);
-    result.current.handleFilterChange(undefined);
+    const rows = { operator: "gte" as const, value: 3 };
+
+    result.current.handleFilterChange(filter, rows);
+    result.current.handleFilterChange(undefined, rows);
 
     const [[first], [second]] = navigate.mock.calls as [
       [NavigateOptions],
@@ -114,9 +116,13 @@ describe(useGallerySearch, () => {
     expect(first.replace).toBe(true);
     expect(first.search({ view: "list" })).toStrictEqual({
       filter,
+      rows,
       view: "list",
     });
-    expect(second.search({ filter })).toStrictEqual({ filter: undefined });
+    expect(second.search({ filter })).toStrictEqual({
+      filter: undefined,
+      rows,
+    });
   });
 
   it("reads a filter from a link, and drops one that is not a tree", () => {
@@ -134,6 +140,18 @@ describe(useGallerySearch, () => {
     ).toStrictEqual({ filter: undefined });
     expect(gallerySearchSchema.parse({ filter: "rows" })).toStrictEqual({
       filter: undefined,
+    });
+  });
+
+  it("reads the rows rule from a link, and drops one that is not a comparison", () => {
+    const rows = { operator: "between", value: [2, 5] };
+
+    expect(gallerySearchSchema.parse({ rows })).toStrictEqual({ rows });
+    expect(
+      gallerySearchSchema.parse({ rows: { operator: "xor" } }),
+    ).toStrictEqual({ rows: undefined });
+    expect(gallerySearchSchema.parse({ rows: 4 })).toStrictEqual({
+      rows: undefined,
     });
   });
 

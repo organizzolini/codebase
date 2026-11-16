@@ -9,7 +9,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **breadth**: Callidescope's count of the direct calls a web callable makes, recorded in the project's Breadth table for its gate.
 - **category**: Where a characteristic is measured (submatrix, path or compound), or `shape` for the shape fields; the filter picker groups and describes fields by it.
 - **characteristic**: A measured property of a meander, listed in the catalog the API's `characteristics` query returns; a card shows the pattern ones it holds and expands to every non-zero value, and the sort control offers each key.
-- **contract**:
+- **contract**: A test that feeds what the builder writes through a mirror of the API's own filter schema, `filter-api-contract.unit.test.ts`, so a rule the builder can write is one the API accepts.
 - **element**: A DOM node the page measures or observes, such as the gallery's root that `useElementBox` in `use-element-box.ts` reads the width of.
 - **estimate**: The guessed height of a row of cards before it is measured, `ROW_ESTIMATES` in `meander-gallery.constants.ts`, which the virtualizer corrects once the row mounts.
 - **fire**: Test helper verb for dispatching a DOM event, as in `fireEvent.click` from testing-library, used to press buttons and change the sort in route tests.

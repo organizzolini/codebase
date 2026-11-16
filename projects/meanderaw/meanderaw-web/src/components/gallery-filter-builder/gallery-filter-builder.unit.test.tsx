@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import { FIXTURE_CHARACTERISTICS } from "../../../testing/meanders-api";
 
 import { GalleryFilterBuilder } from "./gallery-filter-builder";
+import { DEFAULT_ROWS_FILTER } from "./gallery-filter-builder.constants";
 import { createFilterFields } from "./gallery-filter-builder.utilities";
 
 import type { GalleryFilterBuilderProperties } from "./gallery-filter-builder";
@@ -21,6 +22,8 @@ function properties(
     fields: FIELDS,
     filter: undefined,
     onFilterChange: vi.fn<GalleryFilterBuilderProperties["onFilterChange"]>(),
+    onRowsChange: vi.fn<GalleryFilterBuilderProperties["onRowsChange"]>(),
+    rows: DEFAULT_ROWS_FILTER,
     ...overrides,
   };
 }
@@ -88,14 +91,14 @@ describe(GalleryFilterBuilder, () => {
   it("limits how deep groups nest", () => {
     let deep = tree({ field: "rows", operator: "eq", value: 1 });
 
-    for (let level = 0; level < 5; level += 1) {
+    for (let level = 0; level < 4; level += 1) {
       deep = tree(deep);
     }
 
     render(<GalleryFilterBuilder {...properties({ filter: deep })} />);
 
     const innermost = screen.getByRole("group", {
-      name: "Filter group 1.1.1.1.1",
+      name: "Filter group 1.1.1.1",
     });
 
     expect(
@@ -250,7 +253,7 @@ describe(GalleryFilterBuilder, () => {
     const full = properties({
       filter: {
         combinator: "and",
-        rules: Array.from({ length: 128 }, () => ({
+        rules: Array.from({ length: 126 }, () => ({
           field: "rows",
           operator: "eq" as const,
           value: 1,
@@ -331,5 +334,59 @@ describe(GalleryFilterBuilder, () => {
 
     expect(screen.getByText("gone")).toBeDefined();
     expect(screen.queryByLabelText("Operator")).toBeNull();
+  });
+
+  it("holds the rows rule above the tree, changing its operator and value but never removing it", () => {
+    const filter = properties({ rows: { operator: "gte", value: 3 } });
+
+    render(<GalleryFilterBuilder {...filter} />);
+
+    const group = within(
+      screen.getByRole("group", { name: "Required rows filter" }),
+    );
+
+    expect(group.getByLabelText<HTMLInputElement>("Rows Value").value).toBe(
+      "3",
+    );
+    expect(
+      group
+        .getByRole("button", { name: "Remove rows rule" })
+        .hasAttribute("disabled"),
+    ).toBe(true);
+
+    fireEvent.change(group.getByLabelText("Rows operator"), {
+      target: { value: "between" },
+    });
+
+    expect(filter.onRowsChange).toHaveBeenLastCalledWith({
+      operator: "between",
+      value: [3, 3],
+    });
+
+    type(group.getByLabelText("Rows Value"), "6");
+    fireEvent.blur(group.getByLabelText("Rows Value"));
+
+    expect(filter.onRowsChange).toHaveBeenLastCalledWith({
+      operator: "gte",
+      value: 6,
+    });
+    expect(
+      within(group.getByLabelText("Rows operator"))
+        .getAllByRole("option")
+        .map((option) => option.textContent),
+    ).toStrictEqual(["=", "≠", "<", "≤", ">", "≥", "between"]);
+  });
+
+  it("puts a range's ends in order when the rows rule is edited", () => {
+    const filter = properties({ rows: { operator: "between", value: [2, 5] } });
+
+    render(<GalleryFilterBuilder {...filter} />);
+    type(screen.getByLabelText("Rows From"), "9");
+    fireEvent.blur(screen.getByLabelText("Rows From"));
+
+    expect(filter.onRowsChange).toHaveBeenLastCalledWith({
+      operator: "between",
+      value: [5, 9],
+    });
   });
 });

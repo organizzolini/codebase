@@ -1,3 +1,5 @@
+import { toRowsRule } from "../gallery-filter-builder/filter-rows.utilities";
+import { EMPTY_FILTER_GROUP } from "../gallery-filter-builder/gallery-filter-builder.constants";
 import {
   describeRule,
   listRules,
@@ -9,13 +11,14 @@ import { FILTERS_TITLE } from "./gallery-filters.constants";
 import type {
   FilterField,
   FilterGroup,
+  RowsFilter,
 } from "../gallery-filter-builder/gallery-filter-builder.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The tree whose rules are drawn, their fields, and the edit.
+ * The rows rule and the tree drawn, their fields, and the edit.
  */
 export interface FilterChipRowProperties {
   className?: string;
@@ -23,18 +26,19 @@ export interface FilterChipRowProperties {
   filter: FilterGroup | undefined;
   /** Called with the tree left after a chip is removed, none when empty. */
   onFilterChange: (filter: FilterGroup | undefined) => void;
+  /** The rows rule every filter holds; its chip has no remove button. */
+  rows: RowsFilter;
 }
 
 // 🧩 Component
 
 /**
- * Renders one removable chip for each rule of the tree, nested ones
- * included, in a row that wraps.
+ * Renders the rows rule as a chip that stays, then a removable chip for each tree rule.
  */
 export function FilterChipRow(
   properties: Readonly<FilterChipRowProperties>,
 ): ReactNode {
-  const { className, fields, filter, onFilterChange } = properties;
+  const { className, fields, filter, onFilterChange, rows } = properties;
 
   // 🪝 Hooks
 
@@ -46,10 +50,6 @@ export function FilterChipRow(
   // ♻️ Lifecycle
 
   // 🏁 Early Returns
-  if (filter === undefined || entries.length === 0) {
-    return null;
-  }
-
   // 🎨 Markup
   return (
     <div
@@ -60,6 +60,9 @@ export function FilterChipRow(
         aria-label={`Active ${FILTERS_TITLE.toLowerCase()}s`}
         className="flex flex-wrap gap-2"
       >
+        <li className="rounded-full border border-(--line) bg-(--surface-raised) px-3 py-1 text-sm">
+          {describeRule(toRowsRule(rows), fields)}
+        </li>
         {entries.map(({ path, rule }) => {
           const text = describeRule(rule, fields);
 
@@ -73,7 +76,7 @@ export function FilterChipRow(
                 aria-label={`Remove ${text}`}
                 className="rounded-full px-2"
                 onClick={() => {
-                  const next = removeNode(path)(filter);
+                  const next = removeNode(path)(filter ?? EMPTY_FILTER_GROUP);
 
                   onFilterChange(next.rules.length === 0 ? undefined : next);
                 }}

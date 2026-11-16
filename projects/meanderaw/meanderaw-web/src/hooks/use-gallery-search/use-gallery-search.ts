@@ -5,7 +5,10 @@ import {
   DEFAULT_SORT_DIRECTION,
 } from "./use-gallery-search.constants";
 
-import type { FilterGroup } from "../../components/gallery-filter-builder/gallery-filter-builder.types";
+import type {
+  FilterGroup,
+  RowsFilter,
+} from "../../components/gallery-filter-builder/gallery-filter-builder.types";
 import type {
   GalleryView,
   SortDirection,
@@ -28,10 +31,14 @@ export function useGallerySearch(): UseGallerySearchResult {
   const direction = search.direction ?? DEFAULT_SORT_DIRECTION;
 
   // 💪 Handlers
-  const handleFilterChange = (filter: FilterGroup | undefined): void => {
+  // The tree and the rows rule change together, in one navigation.
+  const handleFilterChange = (
+    filter: FilterGroup | undefined,
+    rows: RowsFilter,
+  ): void => {
     void navigate({
       replace: true,
-      search: (previous) => ({ ...previous, filter }),
+      search: (previous) => ({ ...previous, filter, rows }),
     });
   };
   const handleViewChange = (next: GalleryView): void => {
