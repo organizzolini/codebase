@@ -2,6 +2,7 @@ import { useNavigate, useSearch } from "@tanstack/react-router";
 
 import {
   DEFAULT_GALLERY_VIEW,
+  DEFAULT_REPEATS,
   DEFAULT_SORT_DIRECTION,
 } from "./use-gallery-search.constants";
 
@@ -25,12 +26,19 @@ export function useGallerySearch(): UseGallerySearchResult {
   // 🏗 Setup
   const view = search.view ?? DEFAULT_GALLERY_VIEW;
   const direction = search.direction ?? DEFAULT_SORT_DIRECTION;
+  const repeats = search.repeats ?? DEFAULT_REPEATS;
 
   // 💪 Handlers
   const handleViewChange = (next: GalleryView): void => {
     void navigate({
       replace: true,
       search: (previous) => ({ ...previous, view: next }),
+    });
+  };
+  const handleRepeatsChange = (next: number): void => {
+    void navigate({
+      replace: true,
+      search: (previous) => ({ ...previous, repeats: next }),
     });
   };
   // Choosing no field drops both parameters: a direction means nothing alone.
@@ -53,8 +61,10 @@ export function useGallerySearch(): UseGallerySearchResult {
   // 🎁 Result
   return {
     direction,
+    handleRepeatsChange,
     handleSortChange,
     handleViewChange,
+    repeats,
     sort: search.sort,
     view,
   };

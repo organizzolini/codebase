@@ -14,12 +14,12 @@ import type { UseMeandersResult } from "./use-meanders.types";
 // 🧩 Hook
 
 /**
- * Collects the pages after the loaded first, in its sort, by cursor. A new
+ * Collects the pages after the loaded first, in its sort and repeats. A new
  * first page starts over.
  */
 export function useMeanders(
   first: MeandersPage,
-  sort?: MeanderSortInput,
+  query: Readonly<{ repeats: number; sort?: MeanderSortInput | undefined }>,
 ): UseMeandersResult {
   // 🪝 Hooks
   const [loaded, setLoaded] = useState<{
@@ -50,7 +50,7 @@ export function useMeanders(
 
     inFlight.current = first;
     setFailure(undefined);
-    findMeanders({ after: last.pageInfo.endCursor, sort })
+    findMeanders({ after: last.pageInfo.endCursor, ...query })
       .then((next) => {
         if (showing.current === first) {
           setLoaded((previous) => ({
@@ -69,7 +69,7 @@ export function useMeanders(
           inFlight.current = null;
         }
       });
-  }, [first, last, sort]);
+  }, [first, last, query]);
 
   // ♻️ Lifecycle
   useEffect(() => {

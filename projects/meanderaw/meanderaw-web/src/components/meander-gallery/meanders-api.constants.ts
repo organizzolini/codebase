@@ -16,11 +16,6 @@ export const responseSchema = z.object({
 });
 
 /**
- * Times a card's drawing repeats the tile, so the pattern shows.
- */
-export const CARD_REPEATS = 6;
-
-/**
  * How many meanders a page asks for.
  */
 export const GALLERY_PAGE_SIZE = 48;

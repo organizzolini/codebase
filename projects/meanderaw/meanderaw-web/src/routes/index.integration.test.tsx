@@ -21,6 +21,13 @@ function codesShown(): string[] {
     .map((card) => within(card).getByRole("code").textContent);
 }
 
+/** The drawing a card shows, as the Code its image carries, decoded. */
+function drawingOf(position: number): string {
+  const image = screen.getAllByRole("img")[position];
+
+  return decodeURIComponent(image?.getAttribute("src") ?? "");
+}
+
 describe("index", () => {
   it("renders its page", async () => {
     serveMeandersApi();
@@ -202,7 +209,9 @@ describe("index", () => {
     await renderRoute(getRouter(), "/");
     await screen.findAllByTestId("meander-card");
 
-    const options = within(screen.getByRole("combobox")).getAllByRole("option");
+    const options = within(
+      screen.getByRole("combobox", { name: "Sort by" }),
+    ).getAllByRole("option");
 
     expect(options.map((option) => option.textContent)).toStrictEqual([
       "Default order",
@@ -236,7 +245,7 @@ describe("index", () => {
       "01x01y0005",
     ]);
 
-    fireEvent.change(screen.getByRole("combobox"), {
+    fireEvent.change(screen.getByRole("combobox", { name: "Sort by" }), {
       target: { value: "rows" },
     });
 
@@ -276,7 +285,9 @@ describe("index", () => {
       sort: "rows",
     });
 
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "" } });
+    fireEvent.change(screen.getByRole("combobox", { name: "Sort by" }), {
+      target: { value: "" },
+    });
 
     await waitFor(() => {
       expect(codesShown()[0]).toBe("01x01y0000");
@@ -337,7 +348,7 @@ describe("index", () => {
 
     await renderRoute(getRouter(), "/");
     await screen.findAllByTestId("meander-card");
-    fireEvent.change(screen.getByRole("combobox"), {
+    fireEvent.change(screen.getByRole("combobox", { name: "Sort by" }), {
       target: { value: "rows" },
     });
 
@@ -368,5 +379,71 @@ describe("index", () => {
     });
 
     expect(api.requests.map(({ repeats }) => repeats)).toStrictEqual([6, 6]);
+  });
+
+  it("changes the repeats from a labelled control, in the link, the request and the drawing", async () => {
+    const api = serveMeandersApi(3);
+    const router = getRouter();
+
+    await renderRoute(router, "/");
+    await screen.findAllByTestId("meander-card");
+
+    const control = screen.getByRole<HTMLSelectElement>("combobox", {
+      name: "Repeats",
+    });
+
+    expect(control.value).toBe("6");
+
+    fireEvent.change(control, { target: { value: "3" } });
+
+    await waitFor(() => {
+      expect({ ...router.state.location.search }).toStrictEqual({
+        repeats: 3,
+      });
+    });
+    await waitFor(() => {
+      expect(drawingOf(0)).toContain('data-repeats="3"');
+    });
+
+    expect(api.requests.at(-1)).toMatchObject({ repeats: 3 });
+    expect(api.requests.at(-1)?.after).toBeUndefined();
+    expect(screen.getAllByTestId("meander-card")).toHaveLength(3);
+  });
+
+  it("falls back to 6 repeats for a link that names none that is valid", async () => {
+    const api = serveMeandersApi(2);
+
+    await renderRoute(getRouter(), "/?repeats=99");
+    await screen.findAllByTestId("meander-card");
+
+    expect(api.requests[0]?.repeats).toBe(6);
+    expect(drawingOf(0)).toContain('data-repeats="6"');
+  });
+
+  it("falls back to 6 repeats for a link that names text", async () => {
+    const api = serveMeandersApi(2);
+
+    await renderRoute(getRouter(), "/?repeats=abc");
+    await screen.findAllByTestId("meander-card");
+
+    expect(api.requests[0]?.repeats).toBe(6);
+    expect(
+      screen.getByRole<HTMLSelectElement>("combobox", { name: "Repeats" })
+        .value,
+    ).toBe("6");
+  });
+
+  it("opens on the repeats the link names, and pages with them", async () => {
+    const api = serveMeandersApi(100);
+
+    await renderRoute(getRouter(), "/?repeats=2");
+    await screen.findAllByTestId("meander-card");
+    scrollWindowTo(3300);
+
+    await waitFor(() => {
+      expect(api.requests).toHaveLength(2);
+    });
+
+    expect(api.requests.map(({ repeats }) => repeats)).toStrictEqual([2, 2]);
   });
 });

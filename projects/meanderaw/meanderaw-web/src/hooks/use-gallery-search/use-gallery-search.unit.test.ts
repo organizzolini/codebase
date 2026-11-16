@@ -37,8 +37,10 @@ describe(useGallerySearch, () => {
 
     expect(result.current).toStrictEqual({
       direction: "asc",
+      handleRepeatsChange: result.current.handleRepeatsChange,
       handleSortChange: result.current.handleSortChange,
       handleViewChange: result.current.handleViewChange,
+      repeats: 6,
       sort: undefined,
       view: "grid",
     });
@@ -89,6 +91,38 @@ describe(useGallerySearch, () => {
     expect(cleared?.search({ direction: "desc", sort: "rows" })).toStrictEqual({
       direction: undefined,
       sort: undefined,
+    });
+  });
+
+  it("reads the repeats the link names, and replaces the link with the count picked", () => {
+    const navigate = mockNavigate();
+    vi.mocked(useSearch).mockReturnValue({ repeats: 3, view: "list" });
+
+    const { result } = renderHook(() => useGallerySearch());
+    result.current.handleRepeatsChange(9);
+
+    expect(result.current.repeats).toBe(3);
+    expect(navigate.mock.calls[0]?.[0].search({ view: "list" })).toStrictEqual({
+      repeats: 9,
+      view: "list",
+    });
+  });
+
+  it("repairs repeats that are out of range or not a number to 6", () => {
+    expect(gallerySearchSchema.parse({ repeats: 99 })).toStrictEqual({
+      repeats: 6,
+    });
+    expect(gallerySearchSchema.parse({ repeats: "abc" })).toStrictEqual({
+      repeats: 6,
+    });
+    expect(gallerySearchSchema.parse({ repeats: 0 })).toStrictEqual({
+      repeats: 6,
+    });
+    expect(gallerySearchSchema.parse({ repeats: 2.5 })).toStrictEqual({
+      repeats: 6,
+    });
+    expect(gallerySearchSchema.parse({ repeats: 12 })).toStrictEqual({
+      repeats: 12,
     });
   });
 

@@ -4,8 +4,10 @@ import {
   useRouter,
   useRouterState,
 } from "@tanstack/react-router";
+import { useMemo } from "react";
 
 import { GalleryError } from "../components/gallery-error/gallery-error";
+import { GalleryRepeats } from "../components/gallery-repeats/gallery-repeats";
 import { GallerySort } from "../components/gallery-sort/gallery-sort";
 import { resolveSortField } from "../components/gallery-sort/gallery-sort.utilities";
 import { GalleryToolbar } from "../components/gallery-toolbar/gallery-toolbar";
@@ -16,6 +18,7 @@ import {
 } from "../components/meander-gallery/meanders-api.utilities";
 import { useGallerySearch } from "../hooks/use-gallery-search/use-gallery-search";
 import {
+  DEFAULT_REPEATS,
   DEFAULT_SORT_DIRECTION,
   gallerySearchSchema,
 } from "../hooks/use-gallery-search/use-gallery-search.constants";
@@ -39,6 +42,7 @@ export const Route = createFileRoute("/")({
   // The sort is read from the link, so a change to it reads the first page again.
   loaderDeps: ({ search }) => ({
     direction: search.direction ?? DEFAULT_SORT_DIRECTION,
+    repeats: search.repeats ?? DEFAULT_REPEATS,
     sort: search.sort,
   }),
   ssr: false,
@@ -48,10 +52,11 @@ export const Route = createFileRoute("/")({
     // A sort the catalog does not know falls back to the default order.
     const sort = resolveSortField(deps.sort, characteristics);
     const page = await findMeanders({
+      repeats: deps.repeats,
       sort: toSortInput(sort, deps.direction),
     });
 
-    return { characteristics, page, sort };
+    return { characteristics, page, repeats: deps.repeats, sort };
   },
 });
 
@@ -82,19 +87,26 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
  */
 function IndexPage(): ReactNode {
   // 🪝 Hooks
-  const { characteristics, page, sort } = Route.useLoaderData();
-  const { direction, handleSortChange, handleViewChange, view } =
-    useGallerySearch();
+  const { characteristics, page, repeats, sort } = Route.useLoaderData();
+  const {
+    direction,
+    handleRepeatsChange,
+    handleSortChange,
+    handleViewChange,
+    view,
+  } = useGallerySearch();
   // While a new sort reads, the cards of the last stay up under a notice.
   const isReloading = useRouterState({
     select: (state: { isLoading: boolean }) => state.isLoading,
   });
 
-  // 🏗 Setup
-  const { hasMore, loadError, loadMore, meanders } = useMeanders(
-    page,
-    toSortInput(sort, direction),
+  const query = useMemo(
+    () => ({ repeats, sort: toSortInput(sort, direction) }),
+    [direction, repeats, sort],
   );
+
+  // 🏗 Setup
+  const { hasMore, loadError, loadMore, meanders } = useMeanders(page, query);
 
   // 💪 Handlers
 
@@ -111,6 +123,10 @@ function IndexPage(): ReactNode {
           onViewChange={handleViewChange}
           totalCount={page.totalCount}
           view={view}
+        />
+        <GalleryRepeats
+          onRepeatsChange={handleRepeatsChange}
+          repeats={repeats}
         />
         <GallerySort
           characteristics={characteristics}
