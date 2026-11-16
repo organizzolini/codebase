@@ -134,7 +134,7 @@ describe(InstancesService, () => {
 
       expect(instances).toHaveLength(1);
       expect(instances[0]?.path).toContain("packages/widgets/src/modules");
-      expect(instances[0]?.nameStem).toBe("differences");
+      expect(instances[0]?.name).toBe("differences");
     });
 
     it("resolves an untagged group as a workspace glob", async () => {
@@ -159,7 +159,7 @@ describe(InstancesService, () => {
       });
 
       expect(instances).toHaveLength(1);
-      expect(instances[0]?.nameStem).toBe("differences");
+      expect(instances[0]?.name).toBe("differences");
     });
 
     it("carries an instance group's threshold onto the instances it locates", async () => {

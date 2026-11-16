@@ -119,7 +119,7 @@ export class EpigraphikDatenbankClaussSlabyLibraryService {
   /**
    * Processes one workflow step for EDCS library ingestion.
    */
-  private async processSourceChunkPhase(
+  private async processSourceChunkStage(
     chunkFiles: string[],
     sourceDataDirectory: string,
   ): Promise<Map<string, string[]>> {
@@ -254,7 +254,7 @@ export class EpigraphikDatenbankClaussSlabyLibraryService {
   /**
    * Persists generated output for EDCS library ingestion.
    */
-  private async saveEdcsProvincePhase(args: {
+  private async saveEdcsProvinceStage(args: {
     author: Author;
     authorDirectory: string;
     authorSlug: string;
@@ -316,11 +316,11 @@ export class EpigraphikDatenbankClaussSlabyLibraryService {
     );
     const chunkFiles = await this.readSourceChunkFiles(sourceDataDirectory);
     if (!chunkFiles) return [];
-    const provinceData = await this.processSourceChunkPhase(
+    const provinceData = await this.processSourceChunkStage(
       chunkFiles,
       sourceDataDirectory,
     );
-    await this.saveEdcsProvincePhase({
+    await this.saveEdcsProvinceStage({
       author,
       authorDirectory,
       authorSlug,

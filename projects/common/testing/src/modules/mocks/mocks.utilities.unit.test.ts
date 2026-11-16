@@ -11,11 +11,14 @@ import { promptsMock } from "./mocks.constants";
 import {
   answerPrompts,
   mockChildProcess,
+  mockExecFile,
   mockPartially,
+  processFailure,
   stubFetch,
 } from "./mocks.utilities";
 
 import type * as TemporaryDirectory from "../temporary-directory/temporary-directory.utilities";
+import type { ExecFileParameters } from "./mocks.types";
 import type * as ChildProcess from "node:child_process";
 
 // 🧪 Tests
@@ -71,6 +74,49 @@ describe("mocks", () => {
 
       expect(result.status).toBe(7);
       expect(result.stdout.toString()).toBe("staged");
+    });
+  });
+
+  describe(mockExecFile, () => {
+    it("exits as the decide callback says, starting nothing", async () => {
+      const seen: unknown[] = [];
+      const fake = mockExecFile(
+        await vi.importActual<typeof ChildProcess>("node:child_process"),
+        (start) => {
+          seen.push(start);
+          return { stderr: "err", stdout: "out" };
+        },
+      );
+      const callback = vi.fn<ExecFileParameters[3]>();
+
+      fake.execFile("tool", ["--x"], { env: { A: "1" } }, callback);
+
+      expect(seen).toStrictEqual([
+        { args: ["--x"], environment: { A: "1" }, file: "tool" },
+      ]);
+      expect(callback).toHaveBeenCalledWith(null, "out", "err");
+    });
+
+    it("exits silently with success when decide returns nothing", async () => {
+      const fake = mockExecFile(
+        await vi.importActual<typeof ChildProcess>("node:child_process"),
+        () => undefined,
+      );
+      const callback = vi.fn<ExecFileParameters[3]>();
+
+      fake.execFile("tool", [], {}, callback);
+
+      expect(callback).toHaveBeenCalledWith(null, "", "");
+    });
+  });
+
+  describe(processFailure, () => {
+    it("builds an exec error carrying the code and message", () => {
+      expect(processFailure(2, "boom")).toMatchObject({
+        code: 2,
+        message: "boom",
+      });
+      expect(processFailure("ENOENT").message).toBe("Command failed");
     });
   });
 

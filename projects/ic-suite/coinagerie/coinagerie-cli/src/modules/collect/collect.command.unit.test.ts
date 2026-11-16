@@ -24,6 +24,7 @@ import {
   captureExitCode,
   captureOutput,
   createFileTree,
+  useWorkingDirectory,
 } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
@@ -86,7 +87,7 @@ describe(CollectCommand, () => {
     options: CollectCommandOptions,
   ): Promise<string> {
     const fixture = createFileTree(files, { git: true, label: "collect" });
-    vi.spyOn(process, "cwd").mockReturnValue(fixture);
+    useWorkingDirectory(fixture);
     await command.run([], { config: "coinagerie.config.ts", ...options });
     return fixture;
   }

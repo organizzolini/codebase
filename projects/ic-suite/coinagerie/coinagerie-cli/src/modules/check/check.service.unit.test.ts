@@ -30,6 +30,7 @@ function configurationOf(
     fold: undefined,
     include: [],
     outputs,
+    unfolded: [],
   };
 }
 

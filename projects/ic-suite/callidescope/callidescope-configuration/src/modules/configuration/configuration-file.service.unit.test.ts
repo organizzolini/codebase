@@ -1,10 +1,13 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { ZodError } from "zod";
 
-import { createTemporaryDirectory } from "@codebase/testing";
+import {
+  createTemporaryDirectory,
+  useWorkingDirectory,
+} from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationFileService } from "./configuration-file.service";
@@ -429,17 +432,14 @@ describe(ConfigurationFileService, () => {
       JSON.stringify({ limits: { maximumDepth: 11 } }),
       "utf8",
     );
-    const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(directory);
 
-    try {
-      const configuration = await service.loadConfiguration({
-        configurationPath: "callidescope.config.json",
-      });
+    useWorkingDirectory(directory);
 
-      expect(configuration.limits.maximumDepth).toBe(11);
-    } finally {
-      cwdSpy.mockRestore();
-    }
+    const configuration = await service.loadConfiguration({
+      configurationPath: "callidescope.config.json",
+    });
+
+    expect(configuration.limits.maximumDepth).toBe(11);
   });
 
   it("never falls back to the repository root", async () => {
@@ -456,17 +456,14 @@ describe(ConfigurationFileService, () => {
     );
     const nestedDirectory = path.join(repositoryRoot, "packages", "nested");
     await mkdir(nestedDirectory, { recursive: true });
-    const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(nestedDirectory);
 
-    try {
-      await expect(
-        service.loadConfiguration({
-          configurationPath: "callidescope.config.json",
-        }),
-      ).rejects.toThrow(ConfigurationFileNotFoundError);
-    } finally {
-      cwdSpy.mockRestore();
-    }
+    useWorkingDirectory(nestedDirectory);
+
+    await expect(
+      service.loadConfiguration({
+        configurationPath: "callidescope.config.json",
+      }),
+    ).rejects.toThrow(ConfigurationFileNotFoundError);
   });
 
   it("throws when a configuration file has an unreadable extension", async () => {

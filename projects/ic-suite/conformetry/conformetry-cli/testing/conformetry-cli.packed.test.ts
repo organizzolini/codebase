@@ -1,15 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { createTemporaryDirectory } from "@codebase/testing";
-import { createTarballSandboxRunner } from "@codebase/testing/end-to-end";
+import { usePackedSandbox } from "@codebase/testing/end-to-end";
 
-import type {
-  CommandResult,
-  TarballSandboxRunner,
-} from "@codebase/testing/end-to-end";
+import type { CommandResult } from "@codebase/testing/end-to-end";
 
 const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../../../..");
 
@@ -25,7 +22,19 @@ const CONFIGURATION = `export default [
 `;
 
 describe("the packed conformetry command", () => {
-  let sandbox: TarballSandboxRunner;
+  const packed = usePackedSandbox({
+    binary: "conformetry",
+    packages: [
+      "@conformetry/cli",
+      "@conformetry/configuration",
+      "@conformetry/core",
+      "@conformetry/generation",
+      "@conformetry/languages",
+      "@conformetry/output",
+      "@conformetry/validation",
+    ],
+    workspaceRoot: WORKSPACE_ROOT,
+  });
 
   /** Writes a `hello` template and one instance of it; returns the project directory. */
   function writeProject(): string {
@@ -56,39 +65,17 @@ describe("the packed conformetry command", () => {
     directory: string,
     args: readonly string[],
   ): Promise<CommandResult> {
-    return sandbox
-      .command(path.join(sandbox.directory, "node_modules/.bin/conformetry"), [
-        ...args,
-        "--config",
-        path.join(directory, "conformetry.config.ts"),
-      ])
-      .inDirectory(directory)
-      .run();
+    return packed.run(directory, [
+      ...args,
+      "--config",
+      path.join(directory, "conformetry.config.ts"),
+    ]);
   }
-
-  beforeAll(async () => {
-    sandbox = await createTarballSandboxRunner({
-      packages: [
-        "@conformetry/cli",
-        "@conformetry/configuration",
-        "@conformetry/core",
-        "@conformetry/generation",
-        "@conformetry/languages",
-        "@conformetry/output",
-        "@conformetry/validation",
-      ],
-      workspaceRoot: WORKSPACE_ROOT,
-    });
-  });
-
-  afterAll(() => {
-    sandbox.dispose();
-  });
 
   it("lists its commands under --help", async () => {
     expect.hasAssertions();
 
-    const result = await sandbox.command("conformetry", ["--help"]).run();
+    const result = await packed.command("conformetry", ["--help"]).run();
 
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("validate");

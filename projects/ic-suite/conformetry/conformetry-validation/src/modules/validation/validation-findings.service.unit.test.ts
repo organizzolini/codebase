@@ -24,7 +24,7 @@ function buildUnmatched(args: {
 }): UnmatchedInstance {
   return {
     instance: {
-      nameStem: "gears",
+      name: "gears",
       path: "/w/packages/widgets/src/modules",
     },
     reason: args.reason,

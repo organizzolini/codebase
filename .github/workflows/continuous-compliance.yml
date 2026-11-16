@@ -136,6 +136,7 @@ jobs:
     timeout-minutes: 10
     # Runs on Dependabot's pull requests too, so a label or release significance failure
     # shows before the merge queue. The title and body checks exempt them, since Dependabot writes both.
+    # The issue link exempts every pull request a bot opens, a workflow's included.
     if: >-
       (github.event_name == 'push' ||
       github.event_name == 'merge_group' ||

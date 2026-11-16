@@ -31,6 +31,7 @@ The code uses a word the glossary lacks. Decide each named word, one at a time:
 | a real term of the codebase                                      | `--write` adds it bare, then define it (`coinagerie-define`) |
 | a language keyword or boilerplate that means the same everywhere | an `exclude.words` entry, with that reason                   |
 | a headword nobody wrote (`set` from `settings`)                  | a `fold` entry mapping it to the word people mean            |
+| a singular trimmed as if plural (`pisces` losing its `s`)        | an `unfolded` entry naming the word as written               |
 | an accident: a typo, a throwaway name                            | rename it in the code                                        |
 | coming from files that are not the codebase's own words          | an `exclude.paths` glob for generated or vendored files      |
 

@@ -83,7 +83,7 @@ aspect is in orb, the weeks a planet is retrograde.
 | Family | Events |
 | ------ | ------ |
 | Aspects | Major (conjunct, opposite, sextile, square, trine), minor, and harmonic aspects between the Sun, Moon, planets, Chiron, Lilith, four asteroids, the north lunar node, and the lunar apogee; forming, exact, and dissolving moments, and the span between them |
-| Compound aspects | Triple (grand trine, hammer, T-square, yod), quadruple (boomerang, butterfly, cradle, grand cross, hourglass, kite, mystic rectangle), pentagram, hexagram, and stelliums of four or more bodies |
+| Compound aspects | Triple (grand trine, hammer, T-square, yod), quadruple (boomerang, butterfly, cradle, grand cross, hourglass, kite, mystic rectangle), pentagram, hexagram, and stelliums of three or more bodies |
 | Monthly lunar cycle | The eight Moon phases, each as an instant and as the span until the next |
 | Planetary phases | Mercury, Venus, and Mars: conjunctions, Mars's opposition, the greatest elongations of Mercury and Venus, brightest, rise and set, and morning- and evening-star visibility spans |
 | Eclipses | Solar and lunar: begin, maximum, and end |
@@ -141,10 +141,10 @@ not halfway, and its extremes miss New and Full Moon by up to half an hour.
 
 ### Stelliums
 
-A stellium is four or more bodies that are all in conjunction with one
+A stellium is three or more bodies that are all in conjunction with one
 another. Conjunction uses the aspect orb, 8°, and every pair must be within
 it, not just a chain of neighbors. Detection finds each maximal clique of
-pairwise conjunct bodies with four or more members.
+pairwise conjunct bodies with three or more members.
 
 ### Ingresses
 

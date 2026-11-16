@@ -54,24 +54,34 @@ export const keywordExclusions: string[] = [
   ...yamlKeywords,
 ];
 
-/** Folded words and abbreviations, mapped to their spelling. */
+/** Abbreviations and odd singulars, mapped to the word this repository writes. */
 const FOLDED_WORDS = new Map([
   ["arg", "argument"],
-  ["axio", "axios"],
-  ["caelunda", "caelundas"],
   ["char", "character"],
   ["config", "configuration"],
   ["datum", "data"],
   ["dir", "directory"],
   ["env", "environment"],
   ["metadatum", "metadata"],
-  ["nestj", "nestjs"],
   ["postgre", "postgres"],
-  ["protobufj", "protobufjs"],
-  ["rechart", "recharts"],
-  ["vitej", "vitejs"],
-  ["xarg", "xargs"],
 ]);
+
+/** Words that only look plural, listed as written rather than trimmed. */
+export const unfoldedWords: string[] = [
+  "axios",
+  "caelundas",
+  "data",
+  "lammas",
+  "metadata",
+  "nestjs",
+  "pallas",
+  "pisces",
+  "postgres",
+  "protobufjs",
+  "recharts",
+  "vitejs",
+  "xargs",
+];
 
 /**
  * Maps a headword onto the spelling this repository writes it as.
@@ -3156,17 +3166,8 @@ export const patternExclusions: RegExp[] = [
 
 // 🧩 Configuration
 
-/** Settings every project spreads, excluding the root glossary's words. */
-export const coinagerieConfiguration = {
-  exclude: {
-    words: (): (string | RegExp)[] => [
-      ...keywordExclusions,
-      ...commonWordExclusions,
-      ...externalWordExclusions,
-      ...patternExclusions,
-      ...readRootGlossaryWords(),
-    ],
-  },
+/** Everything a project's configuration holds but its exclusions. */
+const sharedConfiguration = {
   fold: foldRepositoryWord,
   outputs: [
     {
@@ -3176,7 +3177,46 @@ export const coinagerieConfiguration = {
       type: "markdown",
     },
   ],
+  unfolded: unfoldedWords,
 } satisfies CoinagerieConfiguration;
 
-/** The shared configuration, for a host that loads this file by its default export. */
-export default coinagerieConfiguration;
+/** Shared words, each defined only in its home project's glossary. */
+const HOME_WORDS = {
+  configuration: ["breadth"],
+  testing: ["dispose", "sandbox"],
+};
+
+/**
+ * Settings a project spreads, excluding root glossary words and other
+ * projects' home words.
+ *
+ * @param home - The project whose home words stay listed
+ */
+export function configureCoinagerie(
+  home?: keyof typeof HOME_WORDS,
+): CoinagerieConfiguration {
+  return {
+    ...sharedConfiguration,
+    exclude: {
+      words: (): (string | RegExp)[] => [
+        ...keywordExclusions,
+        ...commonWordExclusions,
+        ...externalWordExclusions,
+        ...patternExclusions,
+        ...readRootGlossaryWords(),
+        ...Object.entries(HOME_WORDS).flatMap(([project, words]) =>
+          project === home ? [] : words,
+        ),
+      ],
+    },
+  };
+}
+
+/** What every project but the two home projects exports. */
+export const coinagerieConfiguration = configureCoinagerie();
+
+/**
+ * The `configuration` project's own glossary, written into `coinagerie.md`,
+ * and the home of the words callidescope's limits put in every project.
+ */
+export default configureCoinagerie("configuration");

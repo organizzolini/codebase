@@ -134,6 +134,7 @@ export class ConfigurationService {
       fold: configuration.fold,
       include: flags.include ?? configuration.include,
       outputs,
+      unfolded: configuration.unfolded,
     };
   }
 
@@ -244,6 +245,7 @@ export class ConfigurationService {
           : this.guardFold(configuration.fold, args.configurationPath),
       include: configuration.include ?? [...DEFAULT_INCLUDE],
       outputs,
+      unfolded: configuration.unfolded ?? [],
     };
   }
 

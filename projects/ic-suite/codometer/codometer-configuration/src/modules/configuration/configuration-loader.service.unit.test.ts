@@ -5,9 +5,12 @@ import {
   ConfigurationFileNotFoundError,
   UnknownConfigurationFileTypeError,
 } from "@codometer/core";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { createTemporaryDirectory } from "@codebase/testing";
+import {
+  createTemporaryDirectory,
+  useWorkingDirectory,
+} from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationLoaderService } from "./configuration-loader.service";
@@ -125,15 +128,13 @@ describe(ConfigurationLoaderService, () => {
     );
     const nestedDirectory = path.join(repositoryRoot, "packages", "project");
     await mkdir(nestedDirectory, { recursive: true });
-    const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(nestedDirectory);
+    useWorkingDirectory(nestedDirectory);
 
     await expect(
       service.load({
         configurationPath: "configuration/codometer.config.json",
       }),
     ).rejects.toBeInstanceOf(ConfigurationFileNotFoundError);
-
-    cwdSpy.mockRestore();
   });
 
   it("no longer invokes a factory's default export through interop", async () => {
