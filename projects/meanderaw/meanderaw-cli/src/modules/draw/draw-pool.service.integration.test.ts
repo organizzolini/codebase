@@ -1,5 +1,5 @@
 import { ConfigModule } from "@nestjs/config";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
@@ -62,12 +62,16 @@ describe("drawPoolService across worker threads", () => {
   let threaded: DrawPoolService;
 
   beforeAll(async () => {
+    // Each worker's swc loader needs the decorator settings the start target
+    // passes it through this variable.
+    vi.stubEnv("SWC_NODE_PROJECT", "configuration/tsconfig.json");
     inProcess = await compilePool(0);
     threaded = await compilePool(2);
   });
 
   afterAll(async () => {
     await threaded.close();
+    vi.unstubAllEnvs();
   });
 
   it("draws exactly the rows, in exactly the order, a pool with no workers draws", async () => {
