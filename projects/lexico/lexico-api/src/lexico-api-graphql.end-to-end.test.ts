@@ -517,6 +517,7 @@ describe("lexico api graphql end-to-end suite", () => {
       ].toSorted(),
       text: [
         ...AUDIT_FIELDS,
+        "ancestors",
         "author",
         "childTexts",
         "collection",
@@ -533,6 +534,9 @@ describe("lexico api graphql end-to-end suite", () => {
         "province",
         "publisher",
         "recognisedWordCount",
+        "nextText",
+        "parentText",
+        "previousText",
         "slug",
         "startYear",
         "title",

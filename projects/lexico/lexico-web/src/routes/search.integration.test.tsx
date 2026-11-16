@@ -27,6 +27,7 @@ function answer(
   return {
     edges: found.map(([id, score]) => ({
       node: {
+        distance: null,
         enclitic: null,
         identifiers: [],
         lexeme: {

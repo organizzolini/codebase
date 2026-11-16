@@ -219,8 +219,8 @@ catalogs:
       specifier: ^7.0.0
       version: 7.0.0
     '@graphql-codegen/typescript-msw':
-      specifier: ^4.0.2
-      version: 4.0.2
+      specifier: ^5.0.0
+      version: 5.0.0
     '@graphql-codegen/typescript-operations':
       specifier: ^7.0.0
       version: 7.0.0
@@ -1619,7 +1619,7 @@ importers:
         version: 8.0.0(graphql@17.1.0)
       '@graphql-codegen/typescript-msw':
         specifier: 'catalog:'
-        version: 4.0.2(graphql@17.1.0)(msw@2.15.0(@types/node@26.6.2)(typescript@6.0.3))
+        version: 5.0.0(graphql@17.1.0)(msw@2.15.0(@types/node@26.6.2)(typescript@6.0.3))
       '@graphql-codegen/typescript-operations':
         specifier: 'catalog:'
         version: 7.0.0(graphql@17.1.0)
@@ -4539,7 +4539,7 @@ importers:
         version: 7.0.0(graphql@17.1.0)
       '@graphql-codegen/typescript-msw':
         specifier: 'catalog:'
-        version: 4.0.2(graphql@17.1.0)(msw@2.15.0(@types/node@26.6.2)(typescript@6.0.3))
+        version: 5.0.0(graphql@17.1.0)(msw@2.15.0(@types/node@26.6.2)(typescript@6.0.3))
       '@graphql-codegen/typescript-operations':
         specifier: 'catalog:'
         version: 7.0.0(graphql@17.1.0)
@@ -6703,11 +6703,11 @@ packages:
     peerDependencies:
       graphql: ^16.0.0 || ^17.0.0
 
-  '@graphql-codegen/typescript-msw@4.0.2':
-    resolution: {integrity: sha512-okghFcuCxXO+rutVYOCsvzsadODBSzcKheA2inhS2FI+qVbU/KMI4462fFl9d1SU5T+DC3bHzOCh7op9yYS1Ng==}
-    engines: {node: '>= 16.0.0'}
+  '@graphql-codegen/typescript-msw@5.0.0':
+    resolution: {integrity: sha512-WdXRwO8Px8DGmI2zL6vOlqHVQpq8C2cuxY+Fs8iMGPd+KuC1QkIDuaMxkBe1Vtn6EYuI7wXxyANNHwp/d3639A==}
+    engines: {node: '>=22.18.0'}
     peerDependencies:
-      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+      graphql: ^16.0.0 || ^17.0.0
       msw: ^2.0.0
 
   '@graphql-codegen/typescript-operations@7.0.0':
@@ -18954,10 +18954,10 @@ snapshots:
       graphql: 17.1.0
       tslib: 2.8.1
 
-  '@graphql-codegen/typescript-msw@4.0.2(graphql@17.1.0)(msw@2.15.0(@types/node@26.6.2)(typescript@6.0.3))':
+  '@graphql-codegen/typescript-msw@5.0.0(graphql@17.1.0)(msw@2.15.0(@types/node@26.6.2)(typescript@6.0.3))':
     dependencies:
-      '@graphql-codegen/plugin-helpers': 6.3.0(graphql@17.1.0)
-      '@graphql-codegen/visitor-plugin-common': 6.3.0(graphql@17.1.0)
+      '@graphql-codegen/plugin-helpers': 8.0.0(graphql@17.1.0)
+      '@graphql-codegen/visitor-plugin-common': 8.0.0(graphql@17.1.0)
       auto-bind: 4.0.0
       change-case-all: 1.0.15
       graphql: 17.1.0

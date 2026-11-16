@@ -52,4 +52,19 @@ describe("graphql codegen configuration suite", () => {
       "./gen/validation.ts",
     ]);
   });
+
+  it("declares each schema enum once per file that also emits the schema", () => {
+    expect.hasAssertions();
+
+    const config = createGraphqlCodegenConfig({ schema: "schema.gql" });
+
+    expect(config.generates["./src/graphql/generated/mocks.ts"]).toMatchObject({
+      config: { importSchemaTypesFrom: "./src/graphql/generated/mocks" },
+    });
+    expect(
+      config.generates["./src/graphql/generated/operations.ts"],
+    ).toMatchObject({
+      config: { importSchemaTypesFrom: "./src/graphql/generated/operations" },
+    });
+  });
 });

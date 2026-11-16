@@ -423,4 +423,24 @@ describe("literature relations integration suite", () => {
       new Map(),
     );
   });
+
+  it("stops climbing at a cycle in the parent chain instead of looping", async () => {
+    expect.hasAssertions();
+
+    const { cicero } = authors;
+    if (!cicero) {
+      throw new Error("Seeding the authors saved nothing");
+    }
+    const first = await seedText("Cycle One", cicero);
+    const second = await seedText("Cycle Two", cicero, first);
+    await database.repository(Text).update(first.id, {
+      parentText: { id: second.id },
+    });
+
+    const ancestors = await service.findAncestorTexts([second.id]);
+
+    expect(ancestors.get(second.id)?.map((text) => text.id)).toStrictEqual([
+      first.id,
+    ]);
+  });
 });

@@ -9,6 +9,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **batch**: Dataloader term for grouping ID lookups into one query, such as lexemes loaded together in a single batch.
 - **book**: Division of a literary work used as a text locator, such as book one of Vergil's Aeneid in literature fixtures.
 - **boundary**: Inclusive edge of a library range filter, such as the lowest or highest year a filter keeps.
+- **cano**: Latin verb "to sing" seeded as the one-candidate word in the word-card fixture, whose first-person singular form the card describes.
 - **corpus**: Fixture collection of literary texts and lines seeded into the database, used by literature search and lookup tests.
 - **csel**: Collection label for editions ingested from the Corpus Scriptorum Ecclesiasticorum Latinorum catalogue.
 - **cut**: Local name for the page-limit condition that trims a query's rows to the count a page requested.
@@ -32,6 +33,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **recognise**: Stem of recognisedWordCount, the count of a text's Tokens linked to a dictionary Word.
 - **retyped**: Adjective for a GraphQL type whose fields are redeclared as non-null rows, such as LexemeType in the lexico type tests.
 - **spot**: Part of findSpot, the place where an inscription was found.
+- **sibling**: Text under the same parent text as another, ordered as the parent's child texts are listed; the previous and next text link a text to its neighbors.
 - **stem**: Portion of a word the search matches; a headword is found whole or as a stem with its enclitic split off.
 - **term**: Search input string a user types; fuzzy matching applies only to terms above a shortest allowed length.
 - **translation**: English sense of a lexeme, a Translation entity joined to lexemes and returned in search results and lexeme types.
