@@ -17,9 +17,9 @@ describe("{{nameKebabCase}} end-to-end suite", () => {
       expect.hasAssertions();
       expect(
         environmentSchema.parse({
-          {{nameConstantCase}}_CORS_ORIGINS: " http://localhost:3000 , ,http://127.0.0.1:3000",
+          {{nameConstantCase}}_CORS_ORIGINS: " https://app.example.com , ,https://admin.example.com",
         }).{{nameConstantCase}}_CORS_ORIGINS,
-      ).toStrictEqual(["http://localhost:3000", "http://127.0.0.1:3000"]);
+      ).toStrictEqual(["https://app.example.com", "https://admin.example.com"]);
     });
   });
 });

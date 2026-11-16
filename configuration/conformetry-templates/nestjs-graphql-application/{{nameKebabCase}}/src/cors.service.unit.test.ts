@@ -14,8 +14,8 @@ describe(CorsService, () => {
   it("allows only the listed origins otherwise", () => {
     expect.hasAssertions();
 
-    expect(service.getOptions(["http://localhost:3000"])).toStrictEqual({
-      origin: ["http://localhost:3000"],
+    expect(service.getOptions(["https://app.example.com"])).toStrictEqual({
+      origin: ["https://app.example.com"],
     });
   });
 });
