@@ -117,21 +117,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       "A standalone NestJS GraphQL API application template, for a new backend service exposing a GraphQL schema over HTTP",
     inputs: defineInputs({
       name: z.string().describe("Application name in kebab-case"),
-      nameConstantCase: z
-        .string()
-        .describe(
-          "Application name in CONSTANT_CASE, the prefix of its environment variables, e.g. CAELUNDAS_API for caelundas-api",
-        ),
-      type: z
-        .string()
-        .describe(
-          "Directory the application nests under, with a trailing slash: projects/, or a domain folder such as projects/caelundas/",
-        ),
-      workspaceRelativePrefix: z
-        .string()
-        .describe(
-          "Relative climb from the application root back to the workspace root, e.g. ../../ two directories down or ../../../ three directories down",
-        ),
     }),
     instances: [],
     name: "nestjs-graphql-application",

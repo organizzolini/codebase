@@ -6,7 +6,7 @@ import { z } from "zod";
 export const environmentSchema = z.object({
   {{nameConstantCase}}_CORS_ORIGINS: z
     .string()
-    .default("*")
+    .default("")
     .transform((origins) =>
       origins
         .split(",")

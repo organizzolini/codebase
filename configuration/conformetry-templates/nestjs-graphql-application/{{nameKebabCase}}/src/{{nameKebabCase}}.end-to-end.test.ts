@@ -7,7 +7,7 @@ describe("{{nameKebabCase}} end-to-end suite", () => {
     it("applies defaults for an empty config", () => {
       expect.hasAssertions();
       expect(environmentSchema.parse({})).toStrictEqual({
-        {{nameConstantCase}}_CORS_ORIGINS: ["*"],
+        {{nameConstantCase}}_CORS_ORIGINS: [],
         {{nameConstantCase}}_LIGHTSHIP_PORT: 9000,
         {{nameConstantCase}}_PORT: 3000,
       });
