@@ -50,6 +50,7 @@ describe(ConfigurationService, () => {
       fold: undefined,
       include: [...DEFAULT_INCLUDE],
       outputs: [],
+      unfolded: [],
     });
   });
 
@@ -97,6 +98,7 @@ describe(ConfigurationService, () => {
           type: "markdown",
         },
       ],
+      unfolded: [],
     });
   });
 
@@ -203,6 +205,19 @@ describe(ConfigurationService, () => {
     });
 
     expect(exclude.patterns[0]?.flags).toBe("i");
+  });
+
+  it("keeps the unfolded words", async () => {
+    writeConfiguration(
+      "coinagerie.config.ts",
+      'export default { unfolded: ["pisces", "pallas"] };\n',
+    );
+
+    const { unfolded } = await service.loadConfiguration({
+      workingDirectory: directory,
+    });
+
+    expect(unfolded).toStrictEqual(["pisces", "pallas"]);
   });
 
   it("keeps a fold function callable", async () => {
@@ -375,6 +390,14 @@ describe(ConfigurationService, () => {
       "export default { exclude: { words: [/^md\\d{3}$/, true, {}] } };\n",
     ],
     ["a fold that is not a function", 'export default { fold: "aspect" };\n'],
+    [
+      "an unfolded word with a space",
+      'export default { unfolded: ["a b"] };\n',
+    ],
+    [
+      "an unfolded word with a capital",
+      'export default { unfolded: ["Pisces"] };\n',
+    ],
     [
       "an output of an unknown type",
       'export default { outputs: [{ path: "a.txt", type: "text" }] };\n',

@@ -4,6 +4,13 @@ export const MERGE_GROUP_EVENT = "merge_group";
 export const PULL_REQUEST_EVENT = "pull_request";
 
 export const DEPENDABOT_LOGIN = "dependabot[bot]";
+export const GITHUB_ACTIONS_LOGIN = "github-actions[bot]";
+
+/** Authors no issue plans: their pull requests close none. */
+export const UNLINKED_AUTHOR_LOGINS: readonly string[] = [
+  DEPENDABOT_LOGIN,
+  GITHUB_ACTIONS_LOGIN,
+];
 
 /** How to run the command, printed when its input is unusable. */
 export const USAGE_LINES = [

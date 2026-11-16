@@ -4,6 +4,7 @@ import {
   foldRepositoryWord,
   keywordExclusions,
   patternExclusions,
+  unfoldedWords,
 } from "./configuration/coinagerie.config.js";
 
 import type { CoinagerieConfiguration } from "@coinagerie/configuration";
@@ -60,4 +61,5 @@ export default {
       type: "markdown",
     },
   ],
+  unfolded: unfoldedWords,
 } satisfies CoinagerieConfiguration;

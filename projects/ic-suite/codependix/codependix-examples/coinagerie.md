@@ -5,10 +5,9 @@
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **ambient**: Modules marked global that codependix registers implicitly into containers, judged by inbound edge counts in the ambient-modules fixtures.
-- **anchor**: The named comment block in a Markdown README where codependix writes its graph, placed by the anchor-placement examples.
-- **attribution**: How a boundary finding is assigned to the projects it blames, rendered in the boundary-attribution examples.
+- **anchor**: The pair of start and end comment markers that bracket a generated block in a file, so a write replaces only what lies between them.
 - **boundary**: Declared rules judged against each graph, with rendered examples showing which edges and cycles fail a check.
-- **charge**: Assigns a boundary finding to the projects it blames, so a cycle fails every project on it even when only one was named.
+- **charge**: Assign a boundary finding to the projects it blames, so a cycle fails every project on it even when only one was named; shown by the boundary-charges examples.
 - **creation**: The rule that fills in a missing anchor or section during a write, instead of refusing to run.
 - **exploration**: The outcome recorded for one NestJS container explored from its root module, either explored or failed.
 - **forbid**: A boundary rule kind that bans edges from one selector to another, with each violation charged to the edge's source.

@@ -2,6 +2,14 @@
   "boundaries": [
     {
       "start": "2026-01-15T07:48:00Z",
+      "summary": "✨☀️♀️⚶ Sun, Venus, Vesta stellium"
+    },
+    {
+      "start": "2026-01-15T07:48:00Z",
+      "summary": "✨♇♀️⚶ Pluto, Venus, Vesta stellium"
+    },
+    {
+      "start": "2026-01-15T07:48:00Z",
       "summary": "🌟♇☀️♀️⚶ Pluto, Sun, Venus, Vesta stellium"
     },
     {
@@ -30,15 +38,19 @@
     },
     {
       "start": "2026-01-17T19:50:00Z",
-      "summary": "💫♂️☿♇☀️♀️⚶ Mars, Mercury, Pluto, Sun, Venus, Vesta stellium"
-    },
-    {
-      "start": "2026-01-17T19:50:00Z",
       "summary": "⭐♂️☿☀️♀️⚶ Mars, Mercury, Sun, Venus, Vesta stellium"
     },
     {
       "start": "2026-01-17T19:50:00Z",
       "summary": "⭐♂️♇☀️♀️⚶ Mars, Pluto, Sun, Venus, Vesta stellium"
+    },
+    {
+      "start": "2026-01-17T19:50:00Z",
+      "summary": "💫♂️☿♇☀️♀️⚶ Mars, Mercury, Pluto, Sun, Venus, Vesta stellium"
+    },
+    {
+      "start": "2026-01-18T03:04:00Z",
+      "summary": "✨♂️☿🌙 Mars, Mercury, Moon stellium"
     },
     {
       "start": "2026-01-18T03:04:00Z",
@@ -54,11 +66,11 @@
     },
     {
       "start": "2026-01-18T13:12:00Z",
-      "summary": "💫♂️☿🌙♇☀️♀️ Mars, Mercury, Moon, Pluto, Sun, Venus stellium"
+      "summary": "⭐♂️☿🌙☀️♀️ Mars, Mercury, Moon, Sun, Venus stellium"
     },
     {
       "start": "2026-01-18T13:12:00Z",
-      "summary": "⭐♂️☿🌙☀️♀️ Mars, Mercury, Moon, Sun, Venus stellium"
+      "summary": "💫♂️☿🌙♇☀️♀️ Mars, Mercury, Moon, Pluto, Sun, Venus stellium"
     },
     {
       "start": "2026-01-18T13:43:00Z",
@@ -66,15 +78,15 @@
     },
     {
       "start": "2026-01-18T13:43:00Z",
-      "summary": "💫♂️☿🌙♇☀️♀️ Mars, Mercury, Moon, Pluto, Sun, Venus stellium"
+      "summary": "💫♂️☿♇☀️♀️⚶ Mars, Mercury, Pluto, Sun, Venus, Vesta stellium"
     },
     {
       "start": "2026-01-18T13:43:00Z",
-      "summary": "💫♂️☿♇☀️♀️⚶ Mars, Mercury, Pluto, Sun, Venus, Vesta stellium"
+      "summary": "💫♂️☿🌙♇☀️♀️ Mars, Mercury, Moon, Pluto, Sun, Venus stellium"
     },
     {
       "start": "2026-01-19T07:31:00Z",
-      "summary": "💫♂️☿♇☀️♀️⚶ Mars, Mercury, Pluto, Sun, Venus, Vesta stellium"
+      "summary": "🌠♂️☿🌙♇☀️♀️⚶ Mars, Mercury, Moon, Pluto, Sun, Venus, Vesta stellium"
     },
     {
       "start": "2026-01-19T07:31:00Z",
@@ -82,7 +94,7 @@
     },
     {
       "start": "2026-01-19T07:31:00Z",
-      "summary": "🌠♂️☿🌙♇☀️♀️⚶ Mars, Mercury, Moon, Pluto, Sun, Venus, Vesta stellium"
+      "summary": "💫♂️☿♇☀️♀️⚶ Mars, Mercury, Pluto, Sun, Venus, Vesta stellium"
     },
     {
       "start": "2026-01-19T09:26:00Z",
@@ -91,14 +103,18 @@
     {
       "start": "2026-01-19T09:26:00Z",
       "summary": "💫☿🌙♇☀️♀️⚶ Mercury, Moon, Pluto, Sun, Venus, Vesta stellium"
+    },
+    {
+      "start": "2026-01-19T12:29:00Z",
+      "summary": "⭐🌙♇☀️♀️⚶ Moon, Pluto, Sun, Venus, Vesta stellium"
     },
     {
       "start": "2026-01-19T12:29:00Z",
       "summary": "🌟🌙♇♀️⚶ Moon, Pluto, Venus, Vesta stellium"
     },
     {
-      "start": "2026-01-19T12:29:00Z",
-      "summary": "⭐🌙♇☀️♀️⚶ Moon, Pluto, Sun, Venus, Vesta stellium"
+      "start": "2026-01-19T18:57:00Z",
+      "summary": "✨🌙♇⚶ Moon, Pluto, Vesta stellium"
     },
     {
       "start": "2026-01-19T18:57:00Z",
@@ -106,11 +122,11 @@
     },
     {
       "start": "2026-01-24T17:24:00Z",
-      "summary": "⭐♂️☿♇☀️⚶ Mars, Mercury, Pluto, Sun, Vesta stellium"
+      "summary": "⭐☿♇☀️♀️⚶ Mercury, Pluto, Sun, Venus, Vesta stellium"
     },
     {
       "start": "2026-01-24T17:24:00Z",
-      "summary": "⭐☿♇☀️♀️⚶ Mercury, Pluto, Sun, Venus, Vesta stellium"
+      "summary": "⭐♂️☿♇☀️⚶ Mars, Mercury, Pluto, Sun, Vesta stellium"
     },
     {
       "start": "2026-01-24T17:24:00Z",
@@ -498,7 +514,7 @@
     }
   },
   "name": "The January 2026 stellium growing from four bodies to seven and back",
-  "note": "Mars, Mercury, Sun and Venus are pairwise within 8 degrees before 15 January. Vesta is already conjunct with Venus, the Sun and Pluto, and Pluto with Venus, so every boundary below sits inside one conjunction component that is not a clique until 17 January 19:50 UT. Each membership change dissolves the old maximal clique and forms the new one on the same minute. The Mars, Mercury, Sun, Venus stellium is in effect before the first minute listed, so it only dissolves; the two 5-body stelliums formed on 24 January dissolve after the last minute listed. Each minute listed is a boundary T with T-1 and T+1: an edge is in T's registry when its bodies are within orb at T and T+1, because a leg's dissolving event marks its last minute in orb and the registry drops it then.",
+  "note": "Mars, Mercury, Sun and Venus are pairwise within 8 degrees before 15 January. Vesta is already conjunct with Venus, the Sun and Pluto, and Pluto with Venus, so every boundary below sits inside one conjunction component that is not a clique until 17 January 19:50 UT. Each membership change dissolves the old maximal clique and forms the new one on the same minute. The Mars, Mercury, Sun, Venus stellium is in effect before the first minute listed, so it only dissolves; the two 5-body stelliums formed on 24 January dissolve after the last minute listed. Each minute listed is a boundary T with T-1 and T+1: an edge is in T's registry when its bodies are within orb at T and T+1, because a leg's dissolving event marks its last minute in orb and the registry drops it then. A stellium is three or more bodies, so the three-body cliques a listed minute forms or dissolves are boundaries too.",
   "retrieved": "2026-10-08",
   "source": {
     "commandByBody": {

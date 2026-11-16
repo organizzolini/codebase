@@ -10,9 +10,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **batch**: A fixed-size chunk of pattern rows that the database patterns service streams back to a caller one group at a time.
 - **border**: An edge of the unit's grid, which the top and bottom border touch-count characteristics check for ink touching it.
 - **br**: Bottom-right corner digit of the 2x2 window that EmbeddedUCountCharacteristicService reads when counting embedded U shapes.
-- **breadth**: Callidescope's count of the direct calls a callable makes, recorded in the project's Breadth table for the gate.
 - **budget**: The edge budget capping how many edges a Code may hold, which bounds enumeration and sets the corpus's fixed historical cutoff.
-- **canonical**: The phase-normalized form of a Code, the lowest rotation chosen as its identity, scored by the canonical-phase scorer.
+- **canonical**: Chosen as a Code's one identity among its rotations: the rotation with the best tile-crossing score, ties broken by the lowest digits.
 - **category**: A grouping of characteristic evaluators, each in its own service under a category folder and shown with a display name.
 - **characteristic**: A measured property of a Code's repeating unit, computed by one evaluator service from a shared context and stored in the database.
 - **comb**: A pattern characteristic named for a comb-shaped ink layout, computed for each unit by IsCombCharacteristicService.
@@ -38,7 +37,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **negative**: Adjective for a shift below zero, which the Code service reduces modulo the column span rather than refusing.
 - **north**: The top side of a lattice point or unit, one of the four compass sides the Code bits and edge flags name.
 - **orientation**: One of the sixteen orientation names a letter's glyph is evaluated under, such as a flip or a mirror of its base.
-- **phase**: A rotation offset of a Code's repeating unit, which canonical-phase scoring compares to choose the one identity.
 - **piece**: A connected piece of ink that a pattern characteristic counts, such as one branching at exactly three points in the fork check.
 - **place**: A position in a Code's band or grid where a cut or read happens, such as a different cut of the same band.
 - **pure**: Adjective for a tree-shaped ink unit with no loops, as IsPureTreeCharacteristicService checks, and for pure value computation.
@@ -46,7 +44,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **rectangle**: A solid block of inked points, which the rectangle submatrix characteristics count and measure across each unit.
 - **reply**: A DrawWorkerReply message a draw worker posts back to the pool, handled by DrawPoolService when a batch finishes or fails.
 - **representative**: The canonical member standing for a symmetry class, from which the draw worker builds the class and its stored Code.
-- **rotation**: A column shift of a Code's repeating unit, one of the phases that canonical-phase scoring compares to pick an identity.
+- **rotation**: A cyclic column shift of a Code's repeating unit. Every rotation draws the same band; the canonical rotation is the one stored.
 - **south**: The bottom side of a lattice point or unit, one of the four compass sides the Code bits and edge flags name.
 - **square**: Adjective for a square-shaped unit or wave in the test fixtures, such as a square wave whose turns the inflection test counts.
 - **stem**: The part of a letter service class name before its script suffix, which the letter module test extracts with a named regex group.

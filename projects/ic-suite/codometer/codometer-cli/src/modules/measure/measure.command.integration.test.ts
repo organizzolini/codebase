@@ -2,14 +2,11 @@ import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { Test } from "@nestjs/testing";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { captureOutput } from "@codebase/testing";
+import { captureOutput, useTemporaryDirectory } from "@codebase/testing";
 
-import {
-  createFixtureTree,
-  removeFixtureTree,
-} from "../../../testing/fixture-tree";
+import { createFixtureTree } from "../../../testing/fixture-tree";
 import { MainModule } from "../../codometer-cli.module";
 
 import { MeasureCommand } from "./measure.command";
@@ -31,6 +28,7 @@ describe("measure command over a fixture directory", () => {
   let secondReport: string;
   let firstReadme: string;
   let secondReadme: string;
+  const readTemporaryDirectory = useTemporaryDirectory("codometer-fixture");
   let workingDirectory: string;
   let originalWorkingDirectory: string;
 
@@ -60,7 +58,7 @@ describe("measure command over a fixture directory", () => {
 
   beforeAll(async () => {
     originalWorkingDirectory = process.cwd();
-    workingDirectory = createFixtureTree();
+    workingDirectory = createFixtureTree(readTemporaryDirectory());
 
     // The fixture is not a git repository and never becomes one. Discovery
     // that shelled out to `git ls-files` could not measure it at all.
@@ -127,10 +125,6 @@ describe("measure command over a fixture directory", () => {
       codebase?.metrics.map((metric) => [metric.path, metric.value]),
     );
   }, 60_000);
-
-  afterAll(() => {
-    removeFixtureTree(workingDirectory);
-  });
 
   it("measures the files discovery kept", () => {
     expect.hasAssertions();

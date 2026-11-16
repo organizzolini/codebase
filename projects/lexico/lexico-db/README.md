@@ -47,7 +47,7 @@ which are the shared container's admin login. The importing application's
 
 | Entity | Holds |
 | ------ | ----- |
-| `Word` | A headword — the form a reader looks up |
+| `Word` | A lemma — the form a reader looks up |
 | `Lexeme` | A lexical entry, joined to words through `WordLexeme` |
 | `Form` | One inflected form, joined to words through `WordForm` |
 | `Inflection` | How a lexeme inflects |
