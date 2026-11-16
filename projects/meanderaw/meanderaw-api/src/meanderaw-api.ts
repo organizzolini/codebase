@@ -4,6 +4,7 @@ import { createLightship } from "lightship";
 
 import { LoggerService } from "@codebase/observability";
 
+import { CorsService } from "./cors.service";
 import { environmentSchema } from "./meanderaw-api.constants";
 import { MeanderawApiModule } from "./meanderaw-api.module";
 
@@ -27,6 +28,10 @@ async function bootstrap(): Promise<void> {
       bufferLogs: true,
       logger,
     },
+  );
+
+  application.enableCors(
+    new CorsService().getOptions(environment.MEANDERAW_API_CORS_ORIGINS),
   );
 
   lightship.registerShutdownHandler(async () => {

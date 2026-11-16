@@ -12,6 +12,7 @@ import {
 } from "@codebase/meanderaw-db";
 import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
+import { CorsService } from "../src/cors.service";
 import { environmentSchema } from "../src/meanderaw-api.constants";
 
 import type {
@@ -37,6 +38,7 @@ export type GraphqlResponse = z.infer<typeof graphqlResponseSchema>;
 /** The API served over HTTP from a migrated test database. */
 export interface MeanderawApplication {
   readonly database: DatabaseTestingModule;
+  readonly endpoint: string;
   readonly query: (
     document: string,
     variables?: Record<string, unknown>,
@@ -62,10 +64,12 @@ export async function seedMeanderaw(
 
 /**
  * Serves `modules` over Apollo and Express, against a migrated Postgres
- * container on an ephemeral port. Nothing is seeded: call {@link seedMeanderaw}.
+ * container on an ephemeral port, with CORS for `origins` when given. Nothing
+ * is seeded: call {@link seedMeanderaw}.
  */
 export async function startMeanderawApplication(
   modules: readonly Type<unknown>[],
+  origins?: string[],
 ): Promise<MeanderawApplication> {
   const database = await startDatabaseTestingModule({
     database: MeanderawDatabaseModule,
@@ -87,11 +91,16 @@ export async function startMeanderawApplication(
     const application =
       database.module.createNestApplication<INestApplication<Server>>();
 
+    if (origins !== undefined) {
+      application.enableCors(new CorsService().getOptions(origins));
+    }
+
     await application.listen(0, "127.0.0.1");
     const endpoint = `${await application.getUrl()}/graphql`;
 
     return {
       database,
+      endpoint,
       query: async (document, variables): Promise<GraphqlResponse> => {
         const response = await fetch(endpoint, {
           body: JSON.stringify({ query: document, variables }),
