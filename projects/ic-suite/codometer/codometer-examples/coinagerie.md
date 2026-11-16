@@ -4,7 +4,7 @@
 
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
-- **anchor**: Start and end marker comment pair bracketing a generated block in a markdown or YAML file, which a sync rewrites in place.
+- **anchor**: The pair of start and end comment markers that bracket a generated block in a file, so a write replaces only what lies between them.
 - **border**: CSS property in the theme corpus sample whose bottom edge is set to none, measured as ordinary styling.
 - **bundle**: Compiled JavaScript output in the compiled corpus, which this package calls the equivalent of a shipped bundle.
 - **charge**: Fragment of charge or charged, the tax-charging verb in chargeTax and the TypeScript tax utilities corpus sample.
@@ -20,6 +20,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **staleness**: Example showing a committed report that no longer matches a fresh measurement, gated by the check reports command.
 - **statistic**: Named metric codometer computes, such as a badge count or a comment budget, identified by its label in configuration.
 - **unbind**: Refusal outcome when a limit path names nothing measured, shown by the limits examples and their Cannot bind messages.
-- **unprefixed**: A limit path with no target name in front, which codometer cannot bind unless a default input is set.
+- **unqualified**: A limit path with no target name in front, which codometer cannot bind unless a default input is set.
 
 <!-- coinagerie:end -->

@@ -1,9 +1,8 @@
-import fs from "node:fs";
 import path from "node:path";
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { createTemporaryDirectory } from "@codebase/testing";
+import { createFileTree } from "@codebase/testing";
 import { createTarballSandboxRunner } from "@codebase/testing/end-to-end";
 
 import type {
@@ -33,31 +32,21 @@ describe("the packed callidescope command", () => {
 
   /** Writes a workspace of one traceable project; returns the workspace directory. */
   function writeWorkspace(): string {
-    const directory = createTemporaryDirectory("callidescope-packed-project");
-    const project = path.join(directory, "packages/readable");
-
-    fs.mkdirSync(path.join(project, "src"), { recursive: true });
-    fs.writeFileSync(
-      path.join(directory, "callidescope.config.json"),
-      JSON.stringify({ limits: { maximumDepth: 6 } }),
+    return createFileTree(
+      {
+        "callidescope.config.json": JSON.stringify({
+          limits: { maximumDepth: 6 },
+        }),
+        "packages/readable/callidescope.config.js": PROJECT_CONFIGURATION,
+        "packages/readable/src/index.ts":
+          "export function entry(): void {\n  helper();\n}\n\nfunction helper(): void {}\n",
+        "packages/readable/tsconfig.json": JSON.stringify({
+          compilerOptions: { noLib: true, target: "es2022" },
+          include: ["src/**/*.ts"],
+        }),
+      },
+      { label: "callidescope-packed-project" },
     );
-    fs.writeFileSync(
-      path.join(project, "tsconfig.json"),
-      JSON.stringify({
-        compilerOptions: { noLib: true, target: "es2022" },
-        include: ["src/**/*.ts"],
-      }),
-    );
-    fs.writeFileSync(
-      path.join(project, "src/index.ts"),
-      "export function entry(): void {\n  helper();\n}\n\nfunction helper(): void {}\n",
-    );
-    fs.writeFileSync(
-      path.join(project, "callidescope.config.js"),
-      PROJECT_CONFIGURATION,
-    );
-
-    return directory;
   }
 
   /** Runs the installed binary from `directory`, which is outside the sandbox. */

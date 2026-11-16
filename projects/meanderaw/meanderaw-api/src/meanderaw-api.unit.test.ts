@@ -63,8 +63,10 @@ describe("meanderaw api bootstrap suite", () => {
     const listenMock = vi
       .fn<() => Promise<INestApplication>>()
       .mockResolvedValue(undefined as unknown as INestApplication);
+    const enableCorsMock = vi.fn<(options: unknown) => void>();
     const mockApp = createMock<INestApplication>({
       close: closeMock,
+      enableCors: enableCorsMock,
       listen: listenMock,
     });
     const createSpy = vi
@@ -84,6 +86,7 @@ describe("meanderaw api bootstrap suite", () => {
     expect(createLightshipMock).toHaveBeenCalledWith({ port: 9002 });
     expect(loggerConstructorMock).toHaveBeenCalledTimes(1);
     expect(setContextMock).toHaveBeenCalledWith("NestApplication");
+    expect(enableCorsMock).toHaveBeenCalledWith({ origin: "*" });
     expect(listenMock).toHaveBeenCalledWith(8367);
     expect(signalReadyMock).toHaveBeenCalledTimes(1);
     expect(registerShutdownHandlerMock).toHaveBeenCalledTimes(1);
@@ -101,13 +104,17 @@ describe("meanderaw api bootstrap suite", () => {
     expect.hasAssertions();
 
     overrideEnvironment({
+      MEANDERAW_API_CORS_ORIGINS:
+        "http://localhost:2161, http://127.0.0.1:2161",
       MEANDERAW_API_LIGHTSHIP_PORT: "9005",
       MEANDERAW_API_PORT: "9999",
     });
+    const enableCorsMock = vi.fn<(options: unknown) => void>();
     const listenMock = vi
       .fn<() => Promise<INestApplication>>()
       .mockResolvedValue(undefined as unknown as INestApplication);
     const mockApp = createMock<INestApplication>({
+      enableCors: enableCorsMock,
       listen: listenMock,
     });
     const createSpy = vi
@@ -122,5 +129,8 @@ describe("meanderaw api bootstrap suite", () => {
 
     expect(createLightshipMock).toHaveBeenCalledWith({ port: 9005 });
     expect(listenMock).toHaveBeenCalledWith(9999);
+    expect(enableCorsMock).toHaveBeenCalledWith({
+      origin: ["http://localhost:2161", "http://127.0.0.1:2161"],
+    });
   });
 });

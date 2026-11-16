@@ -1,6 +1,6 @@
 import { buildAnchorDocuments } from "./anchor-placement";
-import { buildAttributionDocuments } from "./boundary-attribution";
 import { buildBootFailureDocuments } from "./boundary-boot-failures";
+import { buildChargeDocuments } from "./boundary-charges";
 import { buildBoundaryDocuments } from "./boundary-rules";
 import { buildConfigurationDocuments } from "./configuration";
 import { buildDeliveryDocuments } from "./export-delivery";
@@ -28,7 +28,7 @@ export async function collectDocuments(): Promise<ExampleDocument[]> {
     ...(await buildDeliveryDocuments()),
     ...buildAnchorDocuments(),
     ...buildBoundaryDocuments(),
-    ...(await buildAttributionDocuments()),
+    ...(await buildChargeDocuments()),
     ...(await buildBootFailureDocuments()),
     ...(await buildPathQueriesDocuments()),
   ]);
