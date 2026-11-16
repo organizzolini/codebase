@@ -1,7 +1,8 @@
 import path from "node:path";
 
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
+import { useWorkingDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { SessionBranchNameGitService } from "./session-branch-name-git.service";
@@ -24,10 +25,6 @@ describe(SessionBranchNameService, () => {
     service = built.instance;
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
   it("resolves with its dependencies", async () => {
     expect.hasAssertions();
 
@@ -40,7 +37,7 @@ describe(SessionBranchNameService, () => {
   });
 
   it("reads the pattern the pre-push hook enforces from the workspace root", () => {
-    vi.spyOn(process, "cwd").mockReturnValue(REPOSITORY_ROOT);
+    useWorkingDirectory(REPOSITORY_ROOT);
 
     const rules = service.readBranchNameRules();
 
@@ -52,7 +49,7 @@ describe(SessionBranchNameService, () => {
   // validate-branch-name compiles the pattern without the unicode flag, under
   // which an escape it accepts, such as \-, would be a syntax error here.
   it("compiles the pattern as validate-branch-name does, without flags", () => {
-    vi.spyOn(process, "cwd").mockReturnValue(REPOSITORY_ROOT);
+    useWorkingDirectory(REPOSITORY_ROOT);
 
     expect(service.readBranchNameRules().pattern.flags).toBe("");
   });
