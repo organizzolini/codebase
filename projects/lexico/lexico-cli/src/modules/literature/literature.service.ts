@@ -30,6 +30,12 @@ import {
   TOKEN_SEGMENT_PATTERN,
   WORD_TOKEN_PATTERN,
 } from "./literature.constants";
+import {
+  countTokens,
+  mergeAuthor,
+  parseText,
+  removeReplacedTexts,
+} from "./literature.utilities";
 
 import type {
   IngestTextArguments,
@@ -180,14 +186,6 @@ export class LiteratureService {
       };
     });
   }
-  /**
-   * Returns metadata as a record when present and object-like.
-   */
-  private getMetadataRecord(
-    metadata: null | Record<string, unknown> | undefined,
-  ): Record<string, unknown> {
-    return metadata ?? {};
-  }
 
   /**
    * Gets words cache used by literature ingestion.
@@ -223,6 +221,7 @@ export class LiteratureService {
     const authorEntity = await this.authorRepository.findOneOrFail({
       where: { slug: authorSlug },
     });
+    await removeReplacedTexts(this.textRepository, authorEntity.id, texts);
     const parentTexts = await this.ensureParentTexts(
       authorEntity,
       authorSlug,
@@ -263,6 +262,8 @@ export class LiteratureService {
       tokenEntities.push(...tokens);
     }
     await this.upsertTokens(tokenEntities, text);
+    const counts = countTokens(tokenEntities, savedLines.length);
+    await this.textRepository.update({ id: text.id }, counts);
   }
   /**
    * Ingests text in the literature ingestion pipeline.
@@ -275,12 +276,9 @@ export class LiteratureService {
     const content = await fs.readFile(textPath, "utf8");
     const ast = remark().use(remarkFrontmatter).use(remarkGfm).parse(content);
     const frontmatterData = this.parseFrontmatter(ast);
-    if (frontmatterData["author_metadata"]) {
-      const existingMetadata = this.getMetadataRecord(author.metadata);
-      author.metadata = _.merge(
-        existingMetadata,
-        frontmatterData["author_metadata"],
-      );
+    const authorMetadata = frontmatterData["author_metadata"];
+    if (this.isRecord(authorMetadata)) {
+      Object.assign(author, mergeAuthor(author, authorMetadata));
       await this.authorRepository.save(author);
     }
     const text = await this.saveTextToDatabase({
@@ -340,11 +338,7 @@ export class LiteratureService {
     if (!yamlNode?.value) return {};
     try {
       const parsed: unknown = YAML.parse(yamlNode.value);
-      if (this.isRecord(parsed)) {
-        return parsed;
-      }
-
-      return {};
+      return this.isRecord(parsed) ? parsed : {};
     } catch {
       return {};
     }
@@ -423,6 +417,14 @@ export class LiteratureService {
     if (parentText) {
       textSaveObject.parentText = { id: parentText.id };
     }
+    const { attributes, invalidFields } = parseText(frontmatterData);
+    if (invalidFields.length > 0) {
+      this.logger.warn("🏷️ Ignoring invalid text fields", undefined, {
+        invalidFields,
+        slug: textSlug,
+      });
+    }
+    Object.assign(textSaveObject, attributes);
     await this.textRepository.upsert(textSaveObject, {
       conflictPaths: ["slug"],
       skipUpdateIfNoValuesChanged: true,

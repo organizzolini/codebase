@@ -4,8 +4,21 @@ import type {
   CommandOptionChoice,
   CommandOptionValue,
 } from "../lexico-ingestion/lexico-ingestion.types";
-import type { Author, Text } from "@codebase/lexico-db";
+import type { Author, Text, TextCollection } from "@codebase/lexico-db";
 import type { PhrasingContent } from "mdast";
+
+/** Typed author columns read from author metadata, in entity property names. */
+export interface AuthorAttributes {
+  endYear?: number | undefined;
+  fullName?: string | undefined;
+  startYear?: number | undefined;
+}
+
+/** The years an author lived or flourished, negative for BCE. */
+export interface AuthorYears {
+  endYear: number;
+  startYear: number;
+}
 
 /**
  * Inputs required to ingest one markdown text into the literature entity graph.
@@ -54,3 +67,28 @@ export interface ParsedLabelResult {
   label: string;
   lineNodes: PhrasingContent[];
 }
+
+/** Typed text columns read from frontmatter, in entity property names. */
+export interface TextAttributes {
+  collection?: TextCollection | undefined;
+  edition?: string | undefined;
+  editors?: string | undefined;
+  endYear?: number | undefined;
+  findSpot?: string | undefined;
+  inscriptionType?: string | undefined;
+  material?: string | undefined;
+  printYear?: number | undefined;
+  province?: string | undefined;
+  publisher?: string | undefined;
+  startYear?: number | undefined;
+  workIdentifier?: string | undefined;
+}
+
+/** A date or date precision a Wikidata row can carry. */
+export type WikidataField =
+  | "birth"
+  | "birthPrecision"
+  | "death"
+  | "deathPrecision"
+  | "floruit"
+  | "floruitPrecision";

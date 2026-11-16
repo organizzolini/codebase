@@ -4,7 +4,7 @@ import { type AnyNode, isTag, isText } from "domhandler";
 import _ from "lodash";
 import YAML from "yaml";
 
-import { Author, Text } from "@codebase/lexico-db";
+import { Author, Text, textCollection } from "@codebase/lexico-db";
 
 import { authorIdToName } from "../../literature/literature.constants";
 import {
@@ -224,6 +224,7 @@ export class LatinLibraryBuilder {
   ): Record<string, unknown> {
     const frontmatter: Record<string, unknown> = {
       author: author.slug,
+      collection: textCollection.theLatinLibrary,
       text_metadata: {
         source_url: this.getMetadataString(work.metadata, "sourceUrl") ?? "",
       },

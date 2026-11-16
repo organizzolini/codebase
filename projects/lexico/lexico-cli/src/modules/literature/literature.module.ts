@@ -13,6 +13,7 @@ import { LoggerModule } from "@codebase/observability";
 
 import { NumeralsModule } from "../numerals/numerals.module";
 
+import { LiteratureAuthorEraService } from "./literature-author-era.service";
 import { LiteratureLibraryScanService } from "./literature-library-scan.service";
 import { LiteratureTextIngestionService } from "./literature-text-ingestion.service";
 import { LiteratureWordNormalizationService } from "./literature-word-normalization.service";
@@ -32,6 +33,7 @@ import { LiteratureService } from "./literature.service";
     NumeralsModule,
   ],
   providers: [
+    LiteratureAuthorEraService,
     LiteratureCommand,
     LiteratureLibraryScanService,
     LiteratureService,

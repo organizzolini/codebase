@@ -922,7 +922,10 @@ describe(LiteratureService, () => {
     expect(logger.info).toHaveBeenCalledWith(
       "💾 Saving tokens for text",
       undefined,
-      { count: 2, title: "Aeneid" },
+      {
+        count: 2,
+        title: "Aeneid",
+      },
     );
   });
 
@@ -956,7 +959,174 @@ describe(LiteratureService, () => {
     expect(logger.warn).toHaveBeenCalledWith(
       "📜 Missing lines in text",
       undefined,
-      { slug: "vergil/aeneid" },
+      {
+        slug: "vergil/aeneid",
+      },
+    );
+  });
+
+  it("should record line, word, and recognised word counts after ingesting lines", async () => {
+    vi.spyOn(
+      service as unknown as {
+        getWordsCache: () => Promise<Map<string, string>>;
+      },
+      "getWordsCache",
+    ).mockResolvedValue(new Map());
+    vi.spyOn(
+      service as unknown as {
+        upsertAndFetchLines: (
+          lineEntities: unknown[],
+          text: Text,
+        ) => Promise<Line[]>;
+      },
+      "upsertAndFetchLines",
+    ).mockResolvedValue([
+      { data: "amo", id: "line-1", index: 0 } as Line,
+      { data: "amo", id: "line-2", index: 1 } as Line,
+    ]);
+    vi.spyOn(
+      service as unknown as {
+        extractTokensFromLine: (
+          line: Line,
+          text: Text,
+          wordMap: Map<string, string>,
+        ) => unknown[];
+      },
+      "extractTokensFromLine",
+    )
+      .mockReturnValueOnce([
+        { isPunctuation: false, word: { id: "word-1" } },
+        { isPunctuation: true, word: null },
+      ])
+      .mockReturnValueOnce([{ isPunctuation: false, word: null }]);
+    vi.spyOn(
+      service as unknown as {
+        upsertTokens: (tokenEntities: unknown[], text: Text) => Promise<void>;
+      },
+      "upsertTokens",
+    ).mockResolvedValue(undefined);
+
+    const text = createTextFixture({
+      author: createAuthorFixture({ slug: "vergil" }),
+      id: "text-id",
+      slug: "vergil/aeneid",
+      title: "Aeneid",
+    });
+
+    await (
+      service as unknown as {
+        ingestLines: (
+          textToIngest: Text,
+          ast: { children: unknown[]; type: string },
+        ) => Promise<void>;
+      }
+    ).ingestLines(text, {
+      children: [
+        { children: [{ type: "text", value: "amo" }], type: "paragraph" },
+        { children: [{ type: "text", value: "amo" }], type: "paragraph" },
+      ],
+      type: "root",
+    });
+
+    expect(textRepository.update).toHaveBeenCalledWith(
+      { id: "text-id" },
+      { lineCount: 2, recognisedWordCount: 1, wordCount: 2 },
+    );
+  });
+
+  it("should save typed text attributes from frontmatter with the text", async () => {
+    await (
+      service as unknown as {
+        saveTextToDatabase: (args: Record<string, unknown>) => Promise<Text>;
+      }
+    ).saveTextToDatabase({
+      author: createAuthorFixture({ id: "author-id", slug: "vergil" }),
+      frontmatterData: {
+        collection: "Perseus",
+        print_year: 1901,
+        work_identifier: "urn:cts:latinLit:phi0959",
+      },
+      parentText: undefined,
+      textSlug: "vergil/aeneid",
+      title: "Aeneid",
+    });
+
+    expect(textRepository.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        collection: "Perseus",
+        printYear: 1901,
+        workIdentifier: "urn:cts:latinLit:phi0959",
+      }),
+      expect.anything(),
+    );
+  });
+
+  it("should soft-delete replaced texts before ingesting an EDCS author", async () => {
+    textRepository.find.mockResolvedValueOnce([{ id: "old-part" } as Text]);
+    authorRepository.findOneOrFail.mockResolvedValueOnce(
+      createAuthorFixture({ id: "author-id", slug: "edcs" }),
+    );
+    const ensureSpy = vi
+      .spyOn(
+        service as unknown as { ensureParentTexts: () => Promise<unknown> },
+        "ensureParentTexts",
+      )
+      .mockResolvedValue(new Map());
+    const chunksSpy = vi
+      .spyOn(
+        service as unknown as { ingestTextChunks: () => Promise<void> },
+        "ingestTextChunks",
+      )
+      .mockResolvedValue(undefined);
+
+    await (
+      service as unknown as {
+        ingestAuthorGroup: (
+          authorSlug: string,
+          texts: LibraryEntry[],
+        ) => Promise<void>;
+      }
+    ).ingestAuthorGroup("edcs", [
+      {
+        authorSlug: "edcs",
+        fullPath: "roma/edcs-1.md",
+        pathParts: ["roma"],
+        provider: "epigraphik-datenbank-clauss-slaby",
+        textSlug: "edcs-1",
+        title: "EDCS 1",
+      },
+    ]);
+
+    expect(textRepository.softDelete).toHaveBeenCalledWith(["old-part"]);
+
+    ensureSpy.mockRestore();
+    chunksSpy.mockRestore();
+  });
+
+  it("should keep valid text attributes and log the invalid ones", async () => {
+    await (
+      service as unknown as {
+        saveTextToDatabase: (args: Record<string, unknown>) => Promise<Text>;
+      }
+    ).saveTextToDatabase({
+      author: createAuthorFixture({ id: "author-id", slug: "vergil" }),
+      frontmatterData: { collection: "Perseus", print_year: "unknown" },
+      parentText: undefined,
+      textSlug: "vergil/aeneid",
+      title: "Aeneid",
+    });
+
+    expect(textRepository.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({ collection: "Perseus" }),
+      expect.anything(),
+    );
+    expect(logger.warn).toHaveBeenCalledWith(
+      expect.any(String),
+      undefined,
+      expect.objectContaining({
+        invalidFields: ["print_year"],
+        slug: "vergil/aeneid",
+      }),
     );
   });
 
@@ -1044,7 +1214,9 @@ describe(LiteratureService, () => {
     expect(logger.info).toHaveBeenCalledWith(
       "📜 Parsing lines for text",
       undefined,
-      { title: "Aeneid" },
+      {
+        title: "Aeneid",
+      },
     );
   });
 

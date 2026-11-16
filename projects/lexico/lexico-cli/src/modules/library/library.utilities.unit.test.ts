@@ -5,6 +5,7 @@ import {
   formatLineNumber,
   hasValidTextContent,
   isEnglishBoilerplate,
+  splitTextAttributes,
 } from "./library.utilities";
 
 describe("library.utilities", () => {
@@ -118,6 +119,46 @@ describe("library.utilities", () => {
       );
 
       expect(englishBoilerplate).toBe(false);
+    });
+  });
+
+  describe(splitTextAttributes, () => {
+    it("moves typed source fields out of the remaining metadata", () => {
+      const result = splitTextAttributes("Perseus", {
+        cts_urn: "urn:cts:latinLit:phi0959.phi006.perseus-lat2",
+        editors: ["Editor One", "Editor Two"],
+        print_publication_date: "1901",
+        publisher: "Publisher",
+        sourceUrl: "phi0959/source.xml",
+      });
+
+      expect(result).toStrictEqual({
+        attributes: {
+          collection: "Perseus",
+          editors: "Editor One, Editor Two",
+          print_year: 1901,
+          publisher: "Publisher",
+          work_identifier: "urn:cts:latinLit:phi0959.phi006.perseus-lat2",
+        },
+        remaining: { sourceUrl: "phi0959/source.xml" },
+      });
+    });
+
+    it("omits typed fields the source does not provide", () => {
+      const result = splitTextAttributes("CSEL", { sourceUrl: "x.xml" });
+
+      expect(result).toStrictEqual({
+        attributes: { collection: "CSEL" },
+        remaining: { sourceUrl: "x.xml" },
+      });
+    });
+
+    it("leaves print_year unset when the date has no four-digit year", () => {
+      const result = splitTextAttributes("CSEL", {
+        print_publication_date: "s.d.",
+      });
+
+      expect(result.attributes).toStrictEqual({ collection: "CSEL" });
     });
   });
 });

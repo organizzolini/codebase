@@ -272,6 +272,24 @@ describe(LatinLibraryBuilder, () => {
     expect(frontmatter).not.toHaveProperty("author_metadata");
   });
 
+  it("should set The Latin Library collection on work frontmatter", () => {
+    expect.hasAssertions();
+
+    const author = new Author();
+    author.slug = "vergil";
+    author.metadata = null;
+
+    const work = new Text();
+    work.title = "Aeneid";
+    work.metadata = { sourceUrl: "aeneid.html" };
+
+    expect(
+      latinLibraryBuilder.buildWorkFrontmatter(work, author, undefined),
+    ).toStrictEqual(
+      expect.objectContaining({ collection: "The Latin Library" }),
+    );
+  });
+
   it("should build markdown content and include scraper note for tiny pages", () => {
     expect.hasAssertions();
 
