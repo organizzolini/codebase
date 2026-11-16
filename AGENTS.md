@@ -50,8 +50,9 @@ inherit a larger session model.
 2. **Specify**: Run [to-spec](.agents/skills/to-spec/SKILL.md) only on manual
    request. Scope the spec to land as **one pull request**, and if a
    [mechanical reason](#one-pull-request-by-default) forces a split, name it in
-   the spec. Publish the spec issue as a Feature (or Bug) with `--type`, link it,
-   and **stop**.
+   the spec. Publish the spec issue as a Feature (or Bug) with `--type`, set its
+   Priority with [manage-project](.agents/skills/manage-project/SKILL.md) (never
+   change one already set), link it, and **stop**.
 3. **Decompose**: Run [to-tickets](.agents/skills/to-tickets/SKILL.md) only on
    manual request. By default the breakdown is **one parent issue** — the pull
    request — with one sub-issue per planned commit; read to-tickets' vertical
