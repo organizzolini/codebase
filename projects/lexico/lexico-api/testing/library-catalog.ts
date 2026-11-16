@@ -1,4 +1,4 @@
-/* cspell:words Fasti Sententiae Hagendorn Maro Pompeii Syrus Mynors Tarraco Tarraconensis carmina Carmina heroides Heroides tarraconensis */
+/* cspell:words Fasti Sententiae Hagendorn Maro Pompeii Syrus Mynors Tarraco Tarraconensis Narbonensis carmina Carmina heroides Heroides tarraconensis */
 
 import { Author, Text, textCollection } from "@codebase/lexico-db";
 
@@ -191,4 +191,24 @@ export async function seedLibraryCatalog(
     },
   );
   await texts.save(inscriptions);
+
+  // Two inscriptions of other provinces, types, and materials, dated outside
+  // the main set's range, so the facets list more than one value of each.
+  await texts.save(
+    ["milestone", "altar"].map((inscriptionType, index) =>
+      texts.create({
+        author: edcs,
+        collection: textCollection.edcs,
+        endYear: 310,
+        inscriptionType,
+        material: "limestone",
+        parentText: province,
+        province: "Gallia Narbonensis",
+        slug: `roman-inscriptions/tarraconensis/hd90000${index + 1}`,
+        startYear: 300,
+        title: `HD90000${index + 1}`,
+        type: "text",
+      }),
+    ),
+  );
 }

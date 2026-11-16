@@ -4,8 +4,6 @@ import {
   AuthorEra,
   LibrarySortDirection,
   LibrarySortField,
-  LibraryTextKind,
-  TextCollection,
 } from "../../graphql/generated/operations";
 
 // ♟️ Constants
@@ -31,11 +29,6 @@ const textList = z
 export const libraryFilterShape = {
   authorYearsMaximum: bound,
   authorYearsMinimum: bound,
-  collections: z
-    .array(z.enum(TextCollection))
-    .min(1)
-    .optional()
-    .catch((): undefined => undefined),
   eras: z
     .array(z.enum(AuthorEra))
     .min(1)
@@ -44,11 +37,6 @@ export const libraryFilterShape = {
   inscriptionTypes: textList,
   inscriptionYearsMaximum: bound,
   inscriptionYearsMinimum: bound,
-  kinds: z
-    .array(z.enum(LibraryTextKind))
-    .min(1)
-    .optional()
-    .catch((): undefined => undefined),
   lineCountMaximum: bound,
   lineCountMinimum: bound,
   materials: textList,

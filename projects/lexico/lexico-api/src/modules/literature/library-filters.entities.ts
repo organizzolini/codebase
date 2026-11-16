@@ -1,24 +1,9 @@
-import { Field, InputType, registerEnumType } from "@nestjs/graphql";
+import { Field, InputType } from "@nestjs/graphql";
 
 import { AUTHOR_ERA_MEMBERS } from "./author.entities";
 import { LibraryRangeInput } from "./library-range.entities";
-import { TEXT_COLLECTION_MEMBERS } from "./text.entities";
 
-import type { AuthorEra, TextCollection } from "@codebase/lexico-db";
-
-/**
- * Which kind of Text a library filter keeps: a book, or any other Text. A
- * book is a Text whose type is `book`.
- */
-export enum LibraryTextKind {
-  BOOK = "BOOK",
-  TEXT = "TEXT",
-}
-
-registerEnumType(LibraryTextKind, {
-  description: "Whether a Text is a book or any other Text.",
-  name: "LibraryTextKind",
-});
+import type { AuthorEra } from "@codebase/lexico-db";
 
 /**
  * Filters on the library. Each filter narrows the Texts an author card
@@ -33,12 +18,6 @@ export class LibraryFiltersInput {
     nullable: true,
   })
   public authorYears?: LibraryRangeInput | null;
-
-  @Field(() => [TEXT_COLLECTION_MEMBERS], {
-    description: "Texts from any of these collections.",
-    nullable: true,
-  })
-  public collections?: null | TextCollection[];
 
   @Field(() => [AUTHOR_ERA_MEMBERS], {
     description: "Authors in any of these eras.",
@@ -58,12 +37,6 @@ export class LibraryFiltersInput {
     nullable: true,
   })
   public inscriptionYears?: LibraryRangeInput | null;
-
-  @Field(() => [LibraryTextKind], {
-    description: "Texts of any of these kinds.",
-    nullable: true,
-  })
-  public kinds?: LibraryTextKind[] | null;
 
   @Field(() => LibraryRangeInput, {
     description: "Texts with a line count in this range.",

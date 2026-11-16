@@ -2,6 +2,7 @@ import { Inject } from "@nestjs/common";
 import { Args as Arguments, Query, Resolver } from "@nestjs/graphql";
 
 import { LibraryArguments } from "./library-arguments.entities";
+import { LibraryFacetsType } from "./library-facets.entities";
 import { LibraryPageType } from "./library-page.entities";
 import { LibraryService } from "./library.service";
 import { parseLibraryArguments, toLibraryPageType } from "./library.utilities";
@@ -29,6 +30,15 @@ export class LibraryResolver {
       await this.libraryService.listLibraryPage(
         parseLibraryArguments(arguments_),
       ),
+    );
+  }
+
+  /** The distinct provinces, inscription types, and materials in the data. */
+  @Query(() => LibraryFacetsType, { name: "libraryFacets" })
+  public async libraryFacets(): Promise<LibraryFacetsType> {
+    return Object.assign(
+      new LibraryFacetsType(),
+      await this.libraryService.listLibraryFacets(),
     );
   }
 

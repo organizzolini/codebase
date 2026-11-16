@@ -2,7 +2,6 @@ import { z } from "zod";
 
 import { authorEra, textCollection } from "@codebase/lexico-db";
 
-import { LibraryTextKind } from "./library-filters.entities";
 import {
   LibrarySortDirection,
   LibrarySortField,
@@ -25,9 +24,6 @@ export const LIBRARY_MAX_SEARCH_LENGTH = 200;
 
 /** The most values a list filter may name. */
 export const LIBRARY_MAX_FILTER_VALUES = 100;
-
-/** The `type` a Text carries when it is a book. */
-export const LIBRARY_BOOK_TYPE = "book";
 
 /** The order a library page takes when it names none: authors by name. */
 export const LIBRARY_DEFAULT_SORT = {
@@ -107,12 +103,6 @@ const textSchema = z.string().max(LIBRARY_MAX_SEARCH_LENGTH);
 /** One author era, as the stored value. */
 const eraSchema = z.enum(authorEra);
 
-/** One text collection, as the stored value. */
-const collectionSchema = z.enum(textCollection);
-
-/** One Text kind: a book or any other Text. */
-const kindSchema = z.enum(LibraryTextKind);
-
 /** An inclusive range, with the check that its bounds are in order. */
 const rangeSchema = z
   .object({
@@ -131,17 +121,12 @@ const rangeSchema = z
 const filtersSchema = z
   .object({
     authorYears: rangeSchema.nullish(),
-    collections: z
-      .array(collectionSchema)
-      .max(LIBRARY_MAX_FILTER_VALUES)
-      .nullish(),
     eras: z.array(eraSchema).max(LIBRARY_MAX_FILTER_VALUES).nullish(),
     inscriptionTypes: z
       .array(textSchema)
       .max(LIBRARY_MAX_FILTER_VALUES)
       .nullish(),
     inscriptionYears: rangeSchema.nullish(),
-    kinds: z.array(kindSchema).max(LIBRARY_MAX_FILTER_VALUES).nullish(),
     lineCount: rangeSchema.nullish(),
     materials: z.array(textSchema).max(LIBRARY_MAX_FILTER_VALUES).nullish(),
     printYears: rangeSchema.nullish(),

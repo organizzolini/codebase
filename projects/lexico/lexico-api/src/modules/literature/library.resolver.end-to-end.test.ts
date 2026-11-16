@@ -1,4 +1,4 @@
-/* cspell:words Fasti Syrus Sententiae Maro mynors Tarraconensis */
+/* cspell:words Fasti Syrus Sententiae Maro mynors Tarraconensis Narbonensis */
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
@@ -71,6 +71,17 @@ const LIBRARY = `
           text { title collection edition parentText { title } }
         }
       }
+    }
+  }
+`;
+
+/** Lists the values the data-driven filters offer. */
+const FACETS = `
+  query LibraryFacets {
+    libraryFacets {
+      provinces { value count }
+      inscriptionTypes { value count }
+      materials { value count }
     }
   }
 `;
@@ -408,7 +419,7 @@ describe("library resolver end-to-end suite", () => {
   it("treats an empty list of values as no filter", async () => {
     expect.hasAssertions();
 
-    const page = await library({ filters: { collections: [], eras: [] } });
+    const page = await library({ filters: { eras: [] } });
 
     expect(page.totalCount).toBe(5);
   });
@@ -463,38 +474,6 @@ describe("library resolver end-to-end suite", () => {
     }
   });
 
-  it("narrows each card's texts to the collection filter", async () => {
-    expect.hasAssertions();
-
-    const page = await library({ filters: { collections: ["CSEL"] } });
-    const [card] = page.authors;
-
-    expect(page.totalCount).toBe(1);
-    expect(card?.author.name).toBe("Vergil");
-    expect(card?.textCount).toBe(1);
-    expect(card?.texts.map(({ text }) => text.edition)).toStrictEqual([
-      "CSEL 12",
-    ]);
-  });
-
-  it("filters texts to books or single texts", async () => {
-    expect.hasAssertions();
-
-    const books = await library({ filters: { kinds: ["BOOK"] } });
-    const texts = await library({ filters: { kinds: ["TEXT"] } });
-
-    expect(books.authors.map(({ author }) => author.name)).toStrictEqual([
-      "Roman Inscriptions",
-      "Vergil",
-    ]);
-    expect(books.authors[1]?.texts.map(({ text }) => text.title)).toStrictEqual(
-      ["Book I"],
-    );
-    expect(texts.authors[0]?.texts.map(({ text }) => text.title)).not.toContain(
-      "Book I",
-    );
-  });
-
   it("filters inscriptions by province, type, and material", async () => {
     expect.hasAssertions();
 
@@ -510,6 +489,31 @@ describe("library resolver end-to-end suite", () => {
     expect(province.authors[0]?.textCount).toBe(LIBRARY_INSCRIPTION_COUNT);
     expect(type.totalCount).toBe(0);
     expect(material.authors[0]?.textCount).toBe(LIBRARY_INSCRIPTION_COUNT);
+  });
+
+  it("lists the distinct provinces, types, and materials with counts", async () => {
+    expect.hasAssertions();
+
+    const body = await application.execute(FACETS);
+
+    expect(body.errors).toBeUndefined();
+    expect(body.data).toStrictEqual({
+      libraryFacets: {
+        inscriptionTypes: [
+          { count: 1, value: "altar" },
+          { count: 1, value: "milestone" },
+          { count: LIBRARY_INSCRIPTION_COUNT, value: "tombstone" },
+        ],
+        materials: [
+          { count: 2, value: "limestone" },
+          { count: LIBRARY_INSCRIPTION_COUNT, value: "marble" },
+        ],
+        provinces: [
+          { count: 2, value: "Gallia Narbonensis" },
+          { count: LIBRARY_INSCRIPTION_COUNT, value: "Hispania Tarraconensis" },
+        ],
+      },
+    });
   });
 
   it("filters inscriptions by an inclusive year range that overlaps their dates", async () => {
@@ -550,36 +554,31 @@ describe("library resolver end-to-end suite", () => {
     expect.hasAssertions();
 
     const page = await library({
-      filters: { collections: ["PERSEUS"], eras: ["CLASSICAL"] },
+      filters: { eras: ["CLASSICAL"], printYears: { max: 1970, min: 1960 } },
     });
     const [card] = page.authors;
 
     expect(page.totalCount).toBe(1);
     expect(card?.author.name).toBe("Vergil");
-    expect(card?.textCount).toBe(3);
+    expect(card?.textCount).toBe(1);
   });
 
   it("combines filters with search using AND", async () => {
     expect.hasAssertions();
 
-    const csel = await library({
-      filters: { collections: ["CSEL"] },
-      search: "eclogues",
-    });
-    const latin = await library({
-      filters: { collections: ["THE_LATIN_LIBRARY"] },
-      search: "eclogues",
-    });
-    const byAuthor = await library({
-      filters: { kinds: ["BOOK"] },
+    const printed = await library({
+      filters: { printYears: { max: 1970, min: 1960 } },
       search: "vergil",
     });
+    const none = await library({
+      filters: { printYears: { max: 1970, min: 1960 } },
+      search: "eclogues",
+    });
 
-    expect(csel.authors[0]?.textCount).toBe(1);
-    expect(latin.totalCount).toBe(0);
     expect(
-      byAuthor.authors[0]?.texts.map(({ text }) => text.title),
-    ).toStrictEqual(["Book I"]);
+      printed.authors[0]?.texts.map(({ text }) => text.title),
+    ).toStrictEqual(["Aeneid"]);
+    expect(none.totalCount).toBe(0);
   });
 
   it("counts pages over the filtered authors", async () => {
@@ -673,29 +672,35 @@ describe("library resolver end-to-end suite", () => {
     expect.hasAssertions();
 
     const descending = await library({
-      filters: { collections: ["PERSEUS"] },
       search: "vergil",
       sort: { direction: "DESC", field: "TEXT_TITLE" },
     });
     const ascending = await library({
-      filters: { kinds: ["BOOK"] },
       sort: { direction: "ASC", field: "TEXT_TITLE" },
     });
-    const descendingBooks = await library({
-      filters: { kinds: ["BOOK"] },
+    const descendingAuthors = await library({
       sort: { direction: "DESC", field: "TEXT_TITLE" },
     });
 
     expect(
       descending.authors[0]?.texts.map(({ text }) => text.title),
-    ).toStrictEqual(["Eclogues", "Book I", "Aeneid"]);
+    ).toStrictEqual(["Eclogues", "Eclogues", "Book I", "Aeneid"]);
     expect(ascending.authors.map(({ author }) => author.name)).toStrictEqual([
       "Vergil",
+      "Catullus",
+      "Caesar",
+      "Ovid",
       "Roman Inscriptions",
     ]);
     expect(
-      descendingBooks.authors.map(({ author }) => author.name),
-    ).toStrictEqual(["Roman Inscriptions", "Vergil"]);
+      descendingAuthors.authors.map(({ author }) => author.name),
+    ).toStrictEqual([
+      "Roman Inscriptions",
+      "Caesar",
+      "Ovid",
+      "Vergil",
+      "Catullus",
+    ]);
   });
 
   it("rejects an unknown enum value", async () => {

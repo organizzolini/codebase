@@ -23,7 +23,7 @@ export interface LibraryFilterChoicesProperties {
 // 🧩 Component
 
 /**
- * The filters that pick values: ticked lists of eras, collections, and kinds,
+ * The filters that pick values: a ticked list of eras,
  * and typed lists of provinces, inscription types, and materials.
  */
 export function LibraryFilterChoices(

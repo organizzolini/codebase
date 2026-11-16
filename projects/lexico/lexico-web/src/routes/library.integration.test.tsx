@@ -629,7 +629,7 @@ describe("library", () => {
   it("drops invalid filter and sort values to their defaults", async () => {
     await renderRoute(
       getRouter(),
-      "/library?eras=%5B%22NOPE%22%5D&collections=PERSEUS&sort=BOGUS&direction=UP&lineCountMinimum=abc&provinces=%5B%5D",
+      "/library?eras=%5B%22NOPE%22%5D&sort=BOGUS&direction=UP&lineCountMinimum=abc&provinces=%5B%5D",
     );
 
     await screen.findByText("50 authors");
@@ -637,11 +637,9 @@ describe("library", () => {
     expect(CALLS.at(-1)?.sort).toBeNull();
     expect(CALLS.at(-1)?.filters).toStrictEqual({
       authorYears: null,
-      collections: null,
       eras: null,
       inscriptionTypes: null,
       inscriptionYears: null,
-      kinds: null,
       lineCount: null,
       materials: null,
       printYears: null,

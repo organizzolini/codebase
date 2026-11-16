@@ -32,6 +32,8 @@ import { matchRangesOf, searchPatternsOf } from "./library.utilities";
 
 import type {
   LibraryAuthorRecord,
+  LibraryFacetsRecord,
+  LibraryFacetValueRecord,
   LibraryPageRecord,
   LibraryTextRecord,
   ParsedLibraryArguments,
@@ -144,6 +146,24 @@ export class LibraryService {
   }
 
   /**
+   * The distinct non-null values of one indexed Text column with their
+   * counts, sorted by value. One grouped index scan; no Text is loaded.
+   */
+  private async facetValues(
+    column: "inscription_type" | "material" | "province",
+  ): Promise<LibraryFacetValueRecord[]> {
+    const rows = await this.textRepository
+      .createQueryBuilder("text")
+      .select(`text.${column}`, "value")
+      .addSelect("COUNT(*)", "count")
+      .where(`text.${column} IS NOT NULL`)
+      .groupBy(`text.${column}`)
+      .orderBy(`text.${column}`, "ASC")
+      .getRawMany<{ count: string; value: string }>();
+    return rows.map((row) => ({ count: Number(row.count), value: row.value }));
+  }
+
+  /**
    * Loads the Texts each author carries, in the sort's order and capped per
    * author. A single windowed statement picks the Texts, and then they are
    * loaded by id with their author and book.
@@ -227,6 +247,16 @@ export class LibraryService {
   }
 
   // 🌎 Public Methods
+
+  /** The values present in the data for the province, type, and material filters. */
+  public async listLibraryFacets(): Promise<LibraryFacetsRecord> {
+    const [inscriptionTypes, materials, provinces] = await Promise.all([
+      this.facetValues("inscription_type"),
+      this.facetValues("material"),
+      this.facetValues("province"),
+    ]);
+    return { inscriptionTypes, materials, provinces };
+  }
 
   /**
    * Pages the authors a request keeps, each with its Texts in scope. Authors

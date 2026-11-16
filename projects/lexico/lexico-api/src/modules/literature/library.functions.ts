@@ -1,7 +1,5 @@
-import { LibraryTextKind } from "./library-filters.entities";
 import { LibrarySortDirection } from "./library-sort.entities";
 import {
-  LIBRARY_BOOK_TYPE,
   LIBRARY_SORT_COLUMNS,
   LIBRARY_SORT_RANKS,
   LIBRARY_TEXT_SEARCH_COLUMNS,
@@ -58,9 +56,7 @@ export function firstTextAggregate(
 /** Whether any filter narrows the Texts an author card carries. */
 export function hasTextFilters(filters: LibraryFilters): boolean {
   return (
-    hasValues(filters.collections) ||
     hasValues(filters.inscriptionTypes) ||
-    hasValues(filters.kinds) ||
     hasValues(filters.materials) ||
     hasValues(filters.provinces) ||
     hasRange(filters.inscriptionYears) ||
@@ -140,13 +136,6 @@ export function textFilterClause(
   filters: LibraryFilters,
 ): LibrarySqlClause {
   const clauses: LibrarySqlClause[] = [];
-  if (hasValues(filters.collections)) {
-    clauses.push(
-      sqlClause(`${alias}.collection IN (:...collections)`, {
-        collections: filters.collections,
-      }),
-    );
-  }
   if (hasValues(filters.provinces)) {
     clauses.push(
       sqlClause(`${alias}.province IN (:...provinces)`, {
@@ -169,7 +158,6 @@ export function textFilterClause(
     );
   }
   clauses.push(
-    ...kindClauses(alias, filters.kinds),
     ...overlapClauses(
       [`${alias}.start_year`, `${alias}.end_year`],
       filters.inscriptionYears,
@@ -257,25 +245,6 @@ function hasRange(range: LibraryRange | null | undefined): boolean {
 /** Whether a list filter names any value. */
 function hasValues(values: null | readonly unknown[] | undefined): boolean {
   return (values?.length ?? 0) > 0;
-}
-
-/** Keeps books, or other Texts; both together keep every Text. */
-function kindClauses(
-  alias: string,
-  kinds: LibraryFilters["kinds"],
-): LibrarySqlClause[] {
-  const book = kinds?.includes(LibraryTextKind.BOOK) ?? false;
-  const text = kinds?.includes(LibraryTextKind.TEXT) ?? false;
-  if (book === text) {
-    return [];
-  }
-  return [
-    book
-      ? sqlClause(`${alias}.type = :bookType`, { bookType: LIBRARY_BOOK_TYPE })
-      : sqlClause(`${alias}.type <> :bookType`, {
-          bookType: LIBRARY_BOOK_TYPE,
-        }),
-  ];
 }
 
 /**

@@ -1,8 +1,4 @@
-import {
-  AuthorEra,
-  LibraryTextKind,
-  TextCollection,
-} from "../../graphql/generated/operations";
+import { AuthorEra } from "../../graphql/generated/operations";
 
 // ♟️ Constants
 
@@ -18,24 +14,6 @@ export const LIBRARY_CHECKBOX_FILTERS = [
       { label: "Late", value: AuthorEra.Late },
       { label: "Medieval", value: AuthorEra.Medieval },
       { label: "Neo-Latin", value: AuthorEra.NeoLatin },
-    ],
-  },
-  {
-    key: "collections",
-    label: "Collection",
-    options: [
-      { label: "CSEL", value: TextCollection.Csel },
-      { label: "EDCS", value: TextCollection.Edcs },
-      { label: "Perseus", value: TextCollection.Perseus },
-      { label: "The Latin Library", value: TextCollection.TheLatinLibrary },
-    ],
-  },
-  {
-    key: "kinds",
-    label: "Book or text",
-    options: [
-      { label: "Book", value: LibraryTextKind.Book },
-      { label: "Text", value: LibraryTextKind.Text },
     ],
   },
 ] as const;

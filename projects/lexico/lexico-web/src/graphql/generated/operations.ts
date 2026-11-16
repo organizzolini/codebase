@@ -248,19 +248,33 @@ export type LibraryAuthor = {
   texts: Array<LibraryText>;
 };
 
+export type LibraryFacetValue = {
+  __typename?: 'LibraryFacetValue';
+  /** How many Texts carry this value. */
+  count: Scalars['Int']['output'];
+  /** The stored value. */
+  value: Scalars['String']['output'];
+};
+
+export type LibraryFacets = {
+  __typename?: 'LibraryFacets';
+  /** Distinct inscription types, sorted by value. */
+  inscriptionTypes: Array<LibraryFacetValue>;
+  /** Distinct inscription materials, sorted by value. */
+  materials: Array<LibraryFacetValue>;
+  /** Distinct inscription provinces, sorted by value. */
+  provinces: Array<LibraryFacetValue>;
+};
+
 export type LibraryFilters = {
   /** Authors whose years overlap this range. Authors missing a start or end year are left out, even when the range has one bound. */
   authorYears?: InputMaybe<LibraryRange>;
-  /** Texts from any of these collections. */
-  collections?: InputMaybe<Array<TextCollection>>;
   /** Authors in any of these eras. */
   eras?: InputMaybe<Array<AuthorEra>>;
   /** Inscriptions of any of these EDCS types. */
   inscriptionTypes?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Inscriptions whose dating overlaps this range. Texts missing a start or end year are left out, even when the range has one bound. */
   inscriptionYears?: InputMaybe<LibraryRange>;
-  /** Texts of any of these kinds. */
-  kinds?: InputMaybe<Array<LibraryTextKind>>;
   /** Texts with a line count in this range. */
   lineCount?: InputMaybe<LibraryRange>;
   /** Inscriptions made of any of these materials. */
@@ -334,12 +348,6 @@ export type LibraryText = {
   /** The Text. Its parentText is the book it belongs to, if any. */
   text: Text;
 };
-
-/** Whether a Text is a book or any other Text. */
-export enum LibraryTextKind {
-  Book = 'BOOK',
-  Text = 'TEXT'
-}
 
 export type Line = {
   __typename?: 'Line';
@@ -512,6 +520,7 @@ export type Query = {
   /** Retrieves multiple dictionary lexemes by ID. */
   lexemes: Array<Lexeme>;
   library: LibraryPage;
+  libraryFacets: LibraryFacets;
   lines: LineConnection;
   searchAuthors: AuthorConnection;
   /** Performs English definition and translation search with relevance ranking, returning at most the 200 best-ranked lexemes. */

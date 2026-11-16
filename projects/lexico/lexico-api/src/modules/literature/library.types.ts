@@ -1,14 +1,8 @@
-import type { LibraryTextKind } from "./library-filters.entities";
 import type {
   LibrarySortDirection,
   LibrarySortField,
 } from "./library-sort.entities";
-import type {
-  Author,
-  AuthorEra,
-  Text,
-  TextCollection,
-} from "@codebase/lexico-db";
+import type { Author, AuthorEra, Text } from "@codebase/lexico-db";
 
 /** An author card: the author, what matched, and the Texts it carries. */
 export interface LibraryAuthorRecord {
@@ -18,14 +12,25 @@ export interface LibraryAuthorRecord {
   readonly texts: LibraryTextRecord[];
 }
 
+/** The distinct values of each data-driven filter. */
+export interface LibraryFacetsRecord {
+  readonly inscriptionTypes: LibraryFacetValueRecord[];
+  readonly materials: LibraryFacetValueRecord[];
+  readonly provinces: LibraryFacetValueRecord[];
+}
+
+/** One distinct value of a Text column and how many Texts carry it. */
+export interface LibraryFacetValueRecord {
+  readonly count: number;
+  readonly value: string;
+}
+
 /** Library filters after validation. An absent or empty filter keeps everything. */
 export interface LibraryFilters {
   readonly authorYears?: LibraryRange | null | undefined;
-  readonly collections?: null | readonly TextCollection[] | undefined;
   readonly eras?: null | readonly AuthorEra[] | undefined;
   readonly inscriptionTypes?: null | readonly string[] | undefined;
   readonly inscriptionYears?: LibraryRange | null | undefined;
-  readonly kinds?: null | readonly LibraryTextKind[] | undefined;
   readonly lineCount?: LibraryRange | null | undefined;
   readonly materials?: null | readonly string[] | undefined;
   readonly printYears?: LibraryRange | null | undefined;

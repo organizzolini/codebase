@@ -20,14 +20,12 @@ export async function fetchLibrary(
   const { library } = await queryApi(LibraryDocument, {
     filters: {
       authorYears: toRange(input.authorYearsMinimum, input.authorYearsMaximum),
-      collections: orNull(input.collections),
       eras: orNull(input.eras),
       inscriptionTypes: orNull(input.inscriptionTypes),
       inscriptionYears: toRange(
         input.inscriptionYearsMinimum,
         input.inscriptionYearsMaximum,
       ),
-      kinds: orNull(input.kinds),
       lineCount: toRange(input.lineCountMinimum, input.lineCountMaximum),
       materials: orNull(input.materials),
       printYears: toRange(input.printYearsMinimum, input.printYearsMaximum),

@@ -65,4 +65,24 @@ describe(LibraryResolver, () => {
     await expect(instance.library({ page: 0 })).rejects.toThrow("Too small");
     expect(service.listLibraryPage).not.toHaveBeenCalled();
   });
+
+  it("returns the facets the service lists", async () => {
+    expect.hasAssertions();
+
+    const facets = {
+      inscriptionTypes: [{ count: 2, value: "altar" }],
+      materials: [],
+      provinces: [{ count: 1, value: "Dacia" }],
+    };
+    const service = createMock<LibraryService>({
+      listLibraryFacets: vi
+        .fn<LibraryService["listLibraryFacets"]>()
+        .mockResolvedValue(facets),
+    });
+    const { instance } = await buildTestingModule(LibraryResolver, {
+      providers: [{ provide: LibraryService, useValue: service }],
+    });
+
+    await expect(instance.libraryFacets()).resolves.toMatchObject(facets);
+  });
 });
