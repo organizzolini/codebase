@@ -1,3 +1,7 @@
+import _ from "lodash";
+
+import type { TextCollection } from "@codebase/lexico-db";
+
 /**
  * Clean up common Latin Library boilerplate patterns.
  */
@@ -93,4 +97,35 @@ export function isEnglishBoilerplate(line: string): boolean {
     stopWordCount >= 3 ||
     (words.length > 5 && stopWordCount / words.length > 0.2)
   );
+}
+
+/**
+ * Pulls the typed Text attributes out of extracted source metadata, leaving the rest.
+ */
+export function splitTextAttributes(
+  collection: TextCollection,
+  metadata: Record<string, string | string[] | undefined>,
+): { attributes: Record<string, unknown>; remaining: Record<string, unknown> } {
+  const {
+    cts_urn: workIdentifier,
+    edition,
+    editors,
+    print_publication_date: printDate,
+    publisher,
+    ...remaining
+  } = metadata;
+  const printYear =
+    typeof printDate === "string" ? /\d{4}/.exec(printDate)?.[0] : undefined;
+  const attributes = _.omitBy(
+    {
+      collection,
+      edition,
+      editors: Array.isArray(editors) ? editors.join(", ") : editors,
+      print_year: printYear === undefined ? undefined : Number(printYear),
+      publisher,
+      work_identifier: workIdentifier,
+    },
+    (value) => value === undefined,
+  );
+  return { attributes, remaining };
 }

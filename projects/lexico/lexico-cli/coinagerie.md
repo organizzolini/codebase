@@ -25,6 +25,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **disambiguator**: Numeric index that tells apart lexemes sharing a lemma, saved on each lexeme and used to reload it by lemma.
 - **ecclesiastical**: Pronunciation mode for Ecclesiastical Latin, with its own phoneme map and service used beside the classical one.
 - **ecclesiasticorum**: Part of the Corpus Scriptorum Ecclesiasticorum Latinorum name, the CSEL corpus command and its ingestion module.
+- **edition**: The printed version of a source text, with its editors, publisher, and print year, which tells apart two Texts of one work.
 - **element**: Cheerio node a parser callback receives while walking Wiktionary or library HTML, passed to $(element) for selection.
 - **epigraphik**: Prefix of Epigraphik-Datenbank Clauss-Slaby, the inscription source whose command, provider, and chunk schema this CLI reads.
 - **iacē**: Classical substitution key matching a Latin stem fragment, rewritten to the j form jacē before phonemes are mapped.
@@ -54,6 +55,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **perseus**: Source and command for the Perseus Digital Library, which the perseus stage converts from XML into markdown library works.
 - **pronunciation**: Module and service that derive phonemic and phonetic spellings for each Wiktionary entry, in classical or ecclesiastical mode.
 - **publication**: Word in the `print_publication_date` metadata key, the year a print edition of a library work appeared, which the Perseus and CSEL providers record from the source record when it carries one.
+- **recognise**: Token linked to a dictionary Word, so counted among a Text's recognised words.
 - **selector**: CSS selector string passed to the test mock Cheerio helper, which selects one element from loaded HTML for assertions.
 - **self**: Adjective for a link that points back to its own page, which the Latin Library builder skips as self-referential.
 - **slaby**: Name part of Epigraphik-Datenbank Clauss-Slaby, the EDCS source whose command and chunk schema live in this project.

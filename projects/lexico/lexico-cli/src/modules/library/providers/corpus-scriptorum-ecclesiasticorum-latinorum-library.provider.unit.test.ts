@@ -196,6 +196,58 @@ describe(CorpusScriptorumEcclesiasticorumLatinorumLibraryProvider, () => {
     expect(paragraphs).toStrictEqual(["nested", "outer text"]);
   });
 
+  it("should read the edition statement into metadata", () => {
+    const page = cheerio.load(
+      `<TEI><teiHeader><editionStmt><edition>First edition</edition></editionStmt></teiHeader></TEI>`,
+      { xml: true },
+    );
+    const getMetadata = (
+      corpusScriptorumEcclesiasticorumLatinorumLibraryProvider as unknown as {
+        getMetadata: (page: cheerio.CheerioAPI) => Record<string, string>;
+      }
+    ).getMetadata.bind(
+      corpusScriptorumEcclesiasticorumLatinorumLibraryProvider,
+    );
+
+    expect(getMetadata(page)).toStrictEqual({ edition: "First edition" });
+  });
+
+  it("should write CSEL collection and typed attributes to markdown frontmatter", () => {
+    const buildCselTextContent = (
+      corpusScriptorumEcclesiasticorumLatinorumLibraryProvider as unknown as {
+        buildCselTextContent: (args: {
+          authorSlug: string;
+          metadata: Record<string, string>;
+          paragraphs: string[];
+          rawTitle: string;
+          relativeSourcePath: string;
+        }) => null | string;
+      }
+    ).buildCselTextContent.bind(
+      corpusScriptorumEcclesiasticorumLatinorumLibraryProvider,
+    );
+
+    const markdown = buildCselTextContent({
+      authorSlug: "vergil",
+      metadata: {
+        edition: "First edition",
+        editors: "Editor One, Editor Two",
+        print_publication_date: "1900",
+        publisher: "Publisher",
+      },
+      paragraphs: ["sample content verse"],
+      rawTitle: "Aeneid",
+      relativeSourcePath: "data/aeneid.xml",
+    });
+
+    expect(markdown).toContain("collection: CSEL");
+    expect(markdown).toContain("edition: First edition");
+    expect(markdown).toContain("editors: Editor One, Editor Two");
+    expect(markdown).toContain("print_year: 1900");
+    expect(markdown).toContain("publisher: Publisher");
+    expect(markdown).not.toContain("print_publication_date");
+  });
+
   it("should build markdown content and return null for invalid text", () => {
     const buildCselTextContent = (
       corpusScriptorumEcclesiasticorumLatinorumLibraryProvider as unknown as {
@@ -688,7 +740,9 @@ describe(CorpusScriptorumEcclesiasticorumLatinorumLibraryProvider, () => {
     expect(logger.warn).toHaveBeenCalledWith(
       "📜 Skipping empty or invalid text",
       undefined,
-      { textSlug: "vergil/aeneid" },
+      {
+        textSlug: "vergil/aeneid",
+      },
     );
   });
 

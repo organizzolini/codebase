@@ -1,3 +1,9 @@
+import { z } from "zod";
+
+import { textCollections } from "@codebase/lexico-db";
+
+import type { TextCollection } from "@codebase/lexico-db";
+
 // ♟️ Constants
 
 export const DEFAULT_TEXT_CHUNK_SIZE = 5;
@@ -74,3 +80,22 @@ export const TOKEN_SEGMENT_PATTERN = /[\p{L}]+|[^\p{L}\s]+/gu;
 export const WORD_TOKEN_PATTERN = /^[\p{L}]+$/u;
 
 export const COMBINING_MARKS_PATTERN = /[\u0300-\u036F]/gu;
+
+const knownCollections: readonly unknown[] = textCollections;
+
+/** Source fields a provider writes into a text's frontmatter. */
+export const textFrontmatterSchema = z.object({
+  collection: z.custom<TextCollection>((value) => knownCollections.includes(value)).optional(),
+  edition: z.string().optional(),
+  editors: z.string().optional(),
+  print_year: z.number().int().optional(),
+  publisher: z.string().optional(),
+  work_identifier: z.string().optional(),
+});
+
+/** Dates and full name an author's frontmatter carries. */
+export const authorMetadataSchema = z.object({
+  birth_year: z.number().int().optional(),
+  death_year: z.number().int().optional(),
+  full_name: z.string().optional(),
+});

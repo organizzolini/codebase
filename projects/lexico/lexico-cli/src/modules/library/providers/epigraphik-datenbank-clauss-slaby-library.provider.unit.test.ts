@@ -5,7 +5,7 @@ import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
 // cspell:ignore obj
 import { describe, expect, it, vi } from "vitest";
 
-import { Author, type Text } from "@codebase/lexico-db";
+import { Author, Text } from "@codebase/lexico-db";
 
 import { EpigraphikDatenbankClaussSlabyLibraryProvider } from "./epigraphik-datenbank-clauss-slaby-library.provider";
 
@@ -317,6 +317,40 @@ describe(EpigraphikDatenbankClaussSlabyLibraryProvider, () => {
     });
 
     expect(writeFileMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("should write EDCS collection to inscription frontmatter", async () => {
+    mkdirMock.mockResolvedValue(undefined);
+    writeFileMock.mockResolvedValue(undefined);
+
+    const bookText = new Text();
+    bookText.childTexts = [];
+
+    await (
+      epigraphikDatenbankClaussSlabyLibraryProvider as unknown as {
+        saveEdcsChunkFile: (args: {
+          authorSlug: string;
+          bookDirectory: string;
+          bookSlug: string;
+          bookText: Text;
+          chunk: string[];
+          title: string;
+          titleSlug: string;
+        }) => Promise<void>;
+      }
+    ).saveEdcsChunkFile({
+      authorSlug: "epigraphik-datenbank-clauss-slaby",
+      bookDirectory: "/tmp/library/edcs/hispania",
+      bookSlug: "hispania",
+      bookText,
+      chunk: ["hic situs est"],
+      title: "EDCS-1",
+      titleSlug: "edcs-1",
+    });
+
+    const content = writeFileMock.mock.calls[0]?.[1] as string;
+
+    expect(content).toContain("collection: EDCS");
   });
 
   it("should skip all province chunks when text filter does not match", async () => {

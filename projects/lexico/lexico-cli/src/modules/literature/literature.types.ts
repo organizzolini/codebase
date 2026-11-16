@@ -4,8 +4,15 @@ import type {
   CommandOptionChoice,
   CommandOptionValue,
 } from "../lexico-ingestion/lexico-ingestion.types";
-import type { Author, Text } from "@codebase/lexico-db";
+import type { Author, Text, TextCollection } from "@codebase/lexico-db";
 import type { PhrasingContent } from "mdast";
+
+/** Typed author columns read from author metadata, in entity property names. */
+export interface AuthorAttributes {
+  endYear?: number | undefined;
+  fullName?: string | undefined;
+  startYear?: number | undefined;
+}
 
 /**
  * Inputs required to ingest one markdown text into the literature entity graph.
@@ -53,4 +60,14 @@ export interface LiteratureFilterArguments {
 export interface ParsedLabelResult {
   label: string;
   lineNodes: PhrasingContent[];
+}
+
+/** Typed text columns read from frontmatter, in entity property names. */
+export interface TextAttributes {
+  collection?: TextCollection | undefined;
+  edition?: string | undefined;
+  editors?: string | undefined;
+  printYear?: number | undefined;
+  publisher?: string | undefined;
+  workIdentifier?: string | undefined;
 }

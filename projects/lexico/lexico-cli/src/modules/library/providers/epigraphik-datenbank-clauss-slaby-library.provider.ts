@@ -8,7 +8,7 @@ import { Injectable } from "@nestjs/common";
 import _ from "lodash";
 import YAML from "yaml";
 
-import { Author, Text } from "@codebase/lexico-db";
+import { Author, Text, textCollection } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
 /** Raw EDCS record; `inschriften[0]` holds the HTML-tagged text. */
@@ -194,6 +194,7 @@ export class EpigraphikDatenbankClaussSlabyLibraryProvider {
     bookText.childTexts.push(textEntity);
     const frontmatterObject = {
       author: authorSlug,
+      collection: textCollection.edcs,
       text_metadata: { source_url: "https://db.edcs.eu" },
       title,
       type: "text",
@@ -320,7 +321,9 @@ export class EpigraphikDatenbankClaussSlabyLibraryProvider {
     this.logger.info(
       "🗂️ Reading Epigraphik-Datenbank Clauss-Slaby chunks",
       undefined,
-      { sourceDataDirectory },
+      {
+        sourceDataDirectory,
+      },
     );
     const chunkFiles = await this.readSourceChunkFiles(sourceDataDirectory);
     if (!chunkFiles) return [];
