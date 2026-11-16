@@ -79,7 +79,11 @@ export { Translation } from "./modules/dictionary/entities/translation.entity";
 export { WordForm } from "./modules/dictionary/entities/word-form.entity";
 export { WordLexeme } from "./modules/dictionary/entities/word-lexeme.entity";
 export { Word } from "./modules/dictionary/entities/word.entity";
-export { Author } from "./modules/literature/entities/author.entity";
+export {
+  Author,
+  authorEra,
+  type AuthorEra,
+} from "./modules/literature/entities/author.entity";
 export { Line } from "./modules/literature/entities/line.entity";
 export {
   Text,
