@@ -3,22 +3,23 @@ import fs from "node:fs";
 import { ConfigService } from "@nestjs/config";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { buildTestingModule } from "@codebase/testing/nestjs";
-
 import {
+  createTemporaryDirectory,
   failed,
   FakeProcessRunner,
   succeeded,
-  useTemporaryDirectories,
-  writeFile,
-} from "../../../testing/mocks";
+  writeFileTree,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { TEMPORARY_ROOT } from "../../../testing/mocks";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
 import { ReleaseGroupService } from "./release-group.service";
 
-import type { ScriptedAnswer } from "../../../testing/mocks";
 import type { CapturedProcess } from "../process-runner/process-runner.types";
 import type { ParallelOutcome } from "./release-group.types";
+import type { ScriptedAnswer } from "@codebase/testing";
 
 const SHOW =
   "pnpm exec nx show projects --projects projects/ic-suite/*/*,!codometer-examples --json";
@@ -37,7 +38,6 @@ const graphOf = (roots: Record<string, string>): string =>
   });
 
 describe(ReleaseGroupService, () => {
-  const makeDirectory = useTemporaryDirectories();
   let reportLines: string[];
   let workspace: string;
 
@@ -65,18 +65,16 @@ describe(ReleaseGroupService, () => {
 
   beforeEach(() => {
     reportLines = [];
-    workspace = makeDirectory();
+    workspace = createTemporaryDirectory("workspace", TEMPORARY_ROOT);
     vi.spyOn(process, "cwd").mockReturnValue(workspace);
     vi.spyOn(console, "info").mockImplementation((line: unknown): void => {
       reportLines.push(String(line));
     });
-    writeFile(
-      workspace,
-      "nx.json",
-      JSON.stringify({
+    writeFileTree(workspace, {
+      "nx.json": JSON.stringify({
         release: { projects: ["projects/ic-suite/*/*", "!codometer-examples"] },
       }),
-    );
+    });
   });
 
   afterEach(() => {
@@ -166,11 +164,12 @@ describe(ReleaseGroupService, () => {
     it("reads the name and version of a package", async () => {
       expect.hasAssertions();
 
-      writeFile(
-        workspace,
-        "projects/ic-suite/codometer/cli/package.json",
-        JSON.stringify({ name: "@codometer/cli", version: "1.2.3" }),
-      );
+      writeFileTree(workspace, {
+        "projects/ic-suite/codometer/cli/package.json": JSON.stringify({
+          name: "@codometer/cli",
+          version: "1.2.3",
+        }),
+      });
       const { service: subject } = await createService({});
 
       expect(subject.specifier("projects/ic-suite/codometer/cli")).toBe(
