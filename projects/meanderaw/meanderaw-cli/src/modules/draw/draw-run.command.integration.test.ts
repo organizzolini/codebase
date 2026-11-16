@@ -98,6 +98,7 @@ describe("drawCommand draw run", () => {
   describe("over an empty database", () => {
     let drawRun: DrawRunFixture;
     let brute: Awaited<ReturnType<typeof bruteForceAggregates>>;
+    let derived: Awaited<ReturnType<typeof derivedAbsent>>;
     let rebuilds = 0;
 
     beforeAll(async () => {
@@ -111,6 +112,7 @@ describe("drawCommand draw run", () => {
       rebuilds = rebuild.mock.calls.length;
       // Counted once here, in memory, since it dwarfs the cases that read it.
       brute = await bruteForceAggregates(drawRun.dataSource);
+      derived = await derivedAbsent(drawRun.dataSource);
     }, DRAW_RUN_TIMEOUT_MILLISECONDS);
 
     afterAll(async () => {
@@ -184,10 +186,8 @@ describe("drawCommand draw run", () => {
       );
     });
 
-    it("lets a reader derive every 0 or false bucket from the stored tables, as the shape total minus what is stored", async () => {
-      await expect(derivedAbsent(drawRun.dataSource)).resolves.toStrictEqual(
-        brute.absent,
-      );
+    it("lets a reader derive every 0 or false bucket from the stored tables, as the shape total minus what is stored", () => {
+      expect(derived).toStrictEqual(brute.absent);
     });
 
     it("rebuilds the same tables when the aggregate command runs on its own", async () => {

@@ -16,6 +16,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **flight**: The state of a read that has begun and not ended; `useMeanders` keeps the first page a read is in flight for, so a stale read is dropped.
 - **gallery**: The landing page's virtualized collection of meander cards, rendered by `MeanderGallery` in `meander-gallery.tsx`, in a grid or a list.
 - **gap**: The space between cards, 16 pixels as `GAP_PIXELS` in `meander-gallery.constants.ts`, which the column count allows for.
+- **heavy**: Said of a filter near the API caps, whose every pill renders, so the grouped tests that carry one declare a longer timeout.
 - **ink**: Design token for text color on the dark surface, such as `--ink` and `--ink-muted` in the theme.
 - **lattice**: Which lattice a meander sits on, a text shape field the card shows and the sort and filter fields name.
 - **leaf**: A last-level group, the only kind whose cards the grouped gallery reads, selected by the page filter and one key per level.

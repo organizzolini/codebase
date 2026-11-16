@@ -254,51 +254,55 @@ describe("meander groups end-to-end suite", () => {
     ]);
   });
 
-  it("groups under filters no table covers exactly", async () => {
-    expect.hasAssertions();
+  it(
+    "groups under filters no table covers exactly",
+    async () => {
+      expect.hasAssertions();
 
-    const random = generator(2282);
-    const pick = <T>(items: readonly T[]): T =>
-      items[Math.floor(random() * items.length)] as T;
-    const fields = [
-      "junctionCount",
-      "strokeCount",
-      "isChain",
-      "isLoop",
-      "rowsColumns",
-      "lattice",
-      "isHardcoded",
-    ];
-    const rule = (): Rule =>
-      pick<Rule>([
-        { field: "repeats", numbers: [2], operator: "gte" },
-        { field: "junctionCount", numbers: [1], operator: "lt" },
-        { field: "strokeCount", numbers: [0], operator: "gt" },
-        { field: "isChain", flag: true, operator: "is_not" },
-        { field: "isHardcoded", flag: true, operator: "is" },
-        { field: "rows", numbers: [3], operator: "lte" },
-      ]);
+      const random = generator(2282);
+      const pick = <T>(items: readonly T[]): T =>
+        items[Math.floor(random() * items.length)] as T;
+      const fields = [
+        "junctionCount",
+        "strokeCount",
+        "isChain",
+        "isLoop",
+        "rowsColumns",
+        "lattice",
+        "isHardcoded",
+      ];
+      const rule = (): Rule =>
+        pick<Rule>([
+          { field: "repeats", numbers: [2], operator: "gte" },
+          { field: "junctionCount", numbers: [1], operator: "lt" },
+          { field: "strokeCount", numbers: [0], operator: "gt" },
+          { field: "isChain", flag: true, operator: "is_not" },
+          { field: "isHardcoded", flag: true, operator: "is" },
+          { field: "rows", numbers: [3], operator: "lte" },
+        ]);
 
-    for (let index = 0; index < 25; index += 1) {
-      const levels = Array.from({ length: 1 + (index % 3) }, () =>
-        pick(fields),
-      );
+      for (let index = 0; index < 25; index += 1) {
+        const levels = Array.from({ length: 1 + (index % 3) }, () =>
+          pick(fields),
+        );
 
-      await expectBruteForce(
-        {
-          combinator: pick(["and", "or"]),
-          groups: [
-            {
-              combinator: pick(["and", "or"]),
-              rules: [rule(), rule()],
-            },
-          ],
-          rules: [rule()],
-        },
-        levels,
-      );
-    }
-  });
+        await expectBruteForce(
+          {
+            combinator: pick(["and", "or"]),
+            groups: [
+              {
+                combinator: pick(["and", "or"]),
+                rules: [rule(), rule()],
+              },
+            ],
+            rules: [rule()],
+          },
+          levels,
+        );
+      }
+    },
+    DATABASE_TIMEOUT_MILLISECONDS,
+  );
 
   it("rejects what cannot be grouped by, or too many levels", async () => {
     expect.hasAssertions();

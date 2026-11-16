@@ -35,6 +35,9 @@ function requestedGroups(
 /** A link's rows rule that every fixture meander satisfies. */
 const ALL_ROWS = encodeURIComponent('{"operator":"gte","value":1}');
 
+/** A filter near the caps renders every pill, slowly on CI. */
+const HEAVY_FILTER_TIMEOUT_MILLISECONDS = 30_000;
+
 describe("grouped gallery", () => {
   it("shows a header for each group with its exact count, and loads the cards of each", async () => {
     const api = serveMeandersApi(6);
@@ -179,67 +182,79 @@ describe("grouped gallery", () => {
     expect(notHeld()[1]).toMatchObject({ after: "47" });
   });
 
-  it("reads the cards of each group at the filter's largest size, the key rules spliced into an AND filter", async () => {
-    serveMeandersApi(6);
-    const rule = { field: "rows", operator: "gte", value: 0 };
-    // 125 rules, their group, the rows rule and the grouping's one key rule
-    // fill the API's 128, which the mock API refuses beyond.
-    const filter = {
-      combinator: "and",
-      rules: Array.from({ length: 125 }, () => rule),
-    };
+  it(
+    "reads the cards of each group at the filter's largest size, the key rules spliced into an AND filter",
+    async () => {
+      serveMeandersApi(6);
+      const rule = { field: "rows", operator: "gte", value: 0 };
+      // 125 rules, their group, the rows rule and the grouping's one key rule
+      // fill the API's 128, which the mock API refuses beyond.
+      const filter = {
+        combinator: "and",
+        rules: Array.from({ length: 125 }, () => rule),
+      };
 
-    await renderRoute(
-      getRouter(),
-      `/?view=grid&group=${encodeURIComponent('["lattice"]')}&filter=${encodeURIComponent(JSON.stringify(filter))}`,
-    );
+      await renderRoute(
+        getRouter(),
+        `/?view=grid&group=${encodeURIComponent('["lattice"]')}&filter=${encodeURIComponent(JSON.stringify(filter))}`,
+      );
 
-    await waitFor(() => {
-      expect(screen.getAllByTestId("meander-card")).toHaveLength(6);
-    });
-  });
+      await waitFor(() => {
+        expect(screen.getAllByTestId("meander-card")).toHaveLength(6);
+      });
+    },
+    HEAVY_FILTER_TIMEOUT_MILLISECONDS,
+  );
 
-  it("nests an OR filter whole, and reads its groups' cards at the deepest it can nest", async () => {
-    serveMeandersApi(6);
-    let filter: unknown = {
-      combinator: "or",
-      rules: [{ field: "rows", operator: "gte", value: 0 }],
-    };
+  it(
+    "nests an OR filter whole, and reads its groups' cards at the deepest it can nest",
+    async () => {
+      serveMeandersApi(6);
+      let filter: unknown = {
+        combinator: "or",
+        rules: [{ field: "rows", operator: "gte", value: 0 }],
+      };
 
-    for (let level = 1; level < 5; level += 1) {
-      filter = { combinator: "or", rules: [filter] };
-    }
+      for (let level = 1; level < 5; level += 1) {
+        filter = { combinator: "or", rules: [filter] };
+      }
 
-    await renderRoute(
-      getRouter(),
-      `/?view=grid&group=${encodeURIComponent('["lattice"]')}&filter=${encodeURIComponent(JSON.stringify(filter))}`,
-    );
+      await renderRoute(
+        getRouter(),
+        `/?view=grid&group=${encodeURIComponent('["lattice"]')}&filter=${encodeURIComponent(JSON.stringify(filter))}`,
+      );
 
-    await waitFor(() => {
-      expect(screen.getAllByTestId("meander-card")).toHaveLength(6);
-    });
-  });
+      await waitFor(() => {
+        expect(screen.getAllByTestId("meander-card")).toHaveLength(6);
+      });
+    },
+    HEAVY_FILTER_TIMEOUT_MILLISECONDS,
+  );
 
-  it("says why a filter too large to read the groups' cards cannot be grouped", async () => {
-    serveMeandersApi(6);
-    const filter = {
-      combinator: "and",
-      rules: Array.from({ length: 126 }, () => ({
-        field: "rows",
-        operator: "gte",
-        value: 0,
-      })),
-    };
+  it(
+    "says why a filter too large to read the groups' cards cannot be grouped",
+    async () => {
+      serveMeandersApi(6);
+      const filter = {
+        combinator: "and",
+        rules: Array.from({ length: 126 }, () => ({
+          field: "rows",
+          operator: "gte",
+          value: 0,
+        })),
+      };
 
-    await renderRoute(
-      getRouter(),
-      `/?view=grid&group=${encodeURIComponent('["lattice"]')}&filter=${encodeURIComponent(JSON.stringify(filter))}`,
-    );
+      await renderRoute(
+        getRouter(),
+        `/?view=grid&group=${encodeURIComponent('["lattice"]')}&filter=${encodeURIComponent(JSON.stringify(filter))}`,
+      );
 
-    const alert = await screen.findByRole("alert");
+      const alert = await screen.findByRole("alert");
 
-    expect(alert.textContent).toMatch(/too large/u);
-  });
+      expect(alert.textContent).toMatch(/too large/u);
+    },
+    HEAVY_FILTER_TIMEOUT_MILLISECONDS,
+  );
 
   it("groups within the rows rule and the filter, and orders each group's cards by the sort", async () => {
     const api = serveMeandersApi(6);
