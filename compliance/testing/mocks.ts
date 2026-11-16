@@ -1,7 +1,5 @@
 import { afterEach, beforeEach, vi } from "vitest";
 
-import type { MockInstance } from "vitest";
-
 /**
  * Default test date used across time-sensitive tests.
  */
@@ -20,13 +18,4 @@ export function mockDates(date: Date = DEFAULT_TEST_DATE): void {
   afterEach(() => {
     vi.useRealTimers();
   });
-}
-
-/** Mocks process.exit by throwing an Error with the exit code. */
-export function mockProcessExit(): MockInstance<typeof process.exit> {
-  return vi
-    .spyOn(process, "exit")
-    .mockImplementation((code?: null | number | string): never => {
-      throw new Error(`process.exit:${code ?? 0}`);
-    });
 }
