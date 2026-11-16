@@ -23,16 +23,19 @@ describe("every example configuration this package ships", () => {
     let yamlComments: GatedMeasurement;
     let commentsReport: CodometerReport;
 
-    beforeAll(() => {
-      documentation = gateAndMeasureExample(
+    beforeAll(async () => {
+      documentation = await gateAndMeasureExample(
         "documentation",
         "codometer.config.ts",
       );
-      yamlComments = gateAndMeasureExample(
+      yamlComments = await gateAndMeasureExample(
         "documentation",
         "yaml-comments.config.ts",
       );
-      commentsReport = measureExample("documentation", "comments.config.ts");
+      commentsReport = await measureExample(
+        "documentation",
+        "comments.config.ts",
+      );
     });
 
     it("counts the declarations of each kind that breach their own budget", () => {

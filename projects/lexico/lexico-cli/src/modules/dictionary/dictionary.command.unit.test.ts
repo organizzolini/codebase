@@ -1,3 +1,10 @@
+import {
+  appendFileSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+} from "node:fs";
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
@@ -7,7 +14,10 @@ import { Lexeme, Translation } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 import { expectLoggerContext } from "@codebase/observability/testing";
 import { promptsMock } from "@codebase/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
+import {
+  buildTestingModule,
+  mockErrorLogEntries,
+} from "@codebase/testing/nestjs";
 
 import {
   resetCommandTestHarness,
@@ -21,36 +31,23 @@ import { TranslationsService } from "../translations/translations.service";
 import { DictionaryCommand } from "./dictionary.command";
 
 import type { WiktionaryPage } from "../lexico-ingestion/lexico-ingestion.types";
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { Provider } from "@nestjs/common";
 
-const {
-  appendFileSyncMock,
-  existsSyncMock,
-  mkdirSyncMock,
-  readdirSyncMock,
-  readFileSyncMock,
-} = vi.hoisted(() => ({
-  appendFileSyncMock: vi.fn<(...parameters: unknown[]) => void>(),
-  existsSyncMock: vi.fn<() => boolean>(),
-  mkdirSyncMock: vi.fn<(...parameters: unknown[]) => void>(),
-  readdirSyncMock: vi.fn<() => string[]>(),
-  readFileSyncMock: vi.fn<(filePath?: unknown) => string>(),
-}));
+const appendFileSyncMock = vi.mocked(appendFileSync);
+const existsSyncMock = vi.mocked(existsSync);
+const mkdirSyncMock = vi.mocked(mkdirSync);
+const readdirSyncMock = vi.mocked<(path: string) => string[]>(readdirSync);
+const readFileSyncMock = vi.mocked(readFileSync);
 
-vi.mock("prompts", () => ({
-  default: promptsMock,
-}));
+vi.mock("node:fs", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
 
-vi.mock("node:fs", () => ({
-  default: {
-    appendFileSync: appendFileSyncMock,
-    existsSync: existsSyncMock,
-    mkdirSync: mkdirSyncMock,
-    readdirSync: readdirSyncMock,
-    readFileSync: readFileSyncMock,
-  },
-}));
+  return mockFileSystem();
+});
 
 describe(DictionaryCommand, () => {
   let command: DictionaryCommand;
@@ -131,14 +128,7 @@ describe(DictionaryCommand, () => {
 
     manualService.ingestManual.mockResolvedValue(undefined);
 
-    logger.buildErrorLogEntry.mockImplementation((context, error) => {
-      const errorMessage =
-        error instanceof Error ? error.stack || error.message : String(error);
-      return {
-        errorMessage,
-        logLine: `[${new Date().toISOString()}] ${context}: ${errorMessage}\n`,
-      };
-    });
+    mockErrorLogEntries(logger);
   });
 
   it("resolves with its dependencies", async () => {

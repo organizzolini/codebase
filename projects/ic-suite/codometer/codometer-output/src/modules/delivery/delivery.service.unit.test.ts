@@ -1,12 +1,12 @@
+import {
+  buildCodeStatistics,
+  buildCodometerReport,
+} from "@codometer/core/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { captureOutput } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import {
-  buildCodeStatistics,
-  buildCodometerReport,
-} from "../../../testing/mocks";
 import { JsonService } from "../json/json.service";
 import { MarkdownService } from "../markdown/markdown.service";
 

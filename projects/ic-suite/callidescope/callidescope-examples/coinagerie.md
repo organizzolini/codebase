@@ -5,7 +5,6 @@
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **aggregate**: The umbrella Nx target that runs every example at once, documented separately from the run of each individual example.
-- **breadth**: The count of distinct direct callees one callable has, the limit the gated-leaf fixture exists to exercise.
 - **callable**: Any function or method the tracer can name, as in the fixtures, identified by its declaration rather than its local name.
 - **ingest**: The method that loads a document in the filesystem and structural-interface fixtures, reached through an interface call.
 - **inventory**: A stock-holding service fixture whose reserve method an orders call reaches through an injected dependency.

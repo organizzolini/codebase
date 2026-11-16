@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:6545fe874ac4a0c418b755198dbe35aa3af149d33bc0400a44c8dba7df8053a8",
+  "claims": [
+    {
+      "id": "claim_fd8cff15fa27471499a5a49b694cf1fb",
+      "statement": "Coinagerie is organized as five spine packages: core (shared types), configuration (config loading and resolution), vocabulary (extraction pipeline), output (glossary rendering and comparison), and cli (commands).",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/src/coinagerie-cli.main.ts",
+          "version": "repo-file-v1:sha256:3b34854360fcda854a28e3b2b05c3753d62c070fe2bc53010e8f59ab5c9b7bb0"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts",
+          "version": "repo-file-v1:sha256:64a429326b04913b1b10cab04db9a5b50f4d8811c39e2a3f9229f3cce8353b10"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-core/src/modules/coinagerie-core/coinagerie-core.types.ts",
+          "version": "repo-file-v1:sha256:8cf7a60c208f807a89542ada4544e7bcb54dd5c4697cfa221036ae4cbc4ad546"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-output/src/modules/markdown/markdown.service.ts",
+          "version": "repo-file-v1:sha256:9529964e94423170d724ad29c1111b24633e350415860f47f328b3c4d7b86841"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/vocabulary/vocabulary.service.ts",
+          "version": "repo-file-v1:sha256:ee842a17d41620245dd67b9bd8554e9cac053f15bdfa22db3c0232a31825f3b2"
+        }
+      ]
+    },
+    {
+      "id": "claim_cb2edd75dbc74ddd911b90ba8cbcde51",
+      "statement": "The vocabulary extraction pipeline runs file-by-file: discovery honors .gitignore and config globs, tokenization selects per-extension tokenizers, word splitting handles paths and identifiers with acronym preservation, folding applies singularization then lemmatization then custom fold, and exclusion filters by exact headwords and regex patterns against word or headword.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/discovery/discovery.service.ts",
+          "version": "repo-file-v1:sha256:485726b0a239e54e73c751ef04084a11a9c1a1216627aa4595668c544b7da6dc"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/folding/folding.service.ts",
+          "version": "repo-file-v1:sha256:276c0bf3a2490d5b149e723ca3cb2ba6d51d20a290b08e4a92e223fc67d69f5c"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/vocabulary/vocabulary.service.ts",
+          "version": "repo-file-v1:sha256:ee842a17d41620245dd67b9bd8554e9cac053f15bdfa22db3c0232a31825f3b2"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/words/words.service.ts",
+          "version": "repo-file-v1:sha256:b85d56c5064f9ccbf7c70ec7a2cb7fa4d2bcd22eafd8dfa62b18eb4ce140b7e1"
+        }
+      ]
+    },
+    {
+      "id": "claim_38b57580231c4e0c84e17ded5a614a45",
+      "statement": "Glossary blocks use anchor markers (<!-- coinagerie:start --> / <!-- coinagerie:end -->), a required ## 🪙 Coinagerie heading, optional description prose, and - **word**: definition bullets; parsing is strict and throws MalformedGlossaryError on any anomaly.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-output/src/modules/json/json.service.ts",
+          "version": "repo-file-v1:sha256:5c4980ffd13bcdef52ceee6d9d0cb61cd85ae73e38a2dacbd05e2d7d6f64659c"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-output/src/modules/markdown/markdown.service.ts",
+          "version": "repo-file-v1:sha256:9529964e94423170d724ad29c1111b24633e350415860f47f328b3c4d7b86841"
+        }
+      ]
+    },
+    {
+      "id": "claim_9050875c934040f49034aacdf10389d1",
+      "statement": "Configuration loads from coinagerie.config.ts (or --config), resolves paths relative to the config file's directory, merges CLI flag overrides (include, exclude.paths, output paths, description), evaluates exclude.words functions at load time, and guards the custom fold function.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts",
+          "version": "repo-file-v1:sha256:64a429326b04913b1b10cab04db9a5b50f4d8811c39e2a3f9229f3cce8353b10"
+        }
+      ]
+    },
+    {
+      "id": "claim_20799726f0734a5489e67d77cafde19f",
+      "statement": "The CLI provides collect (print/check/write), batch (multi-project), and supports --check (exit on drift), --write (rewrite preserving definitions), --format json, and flag overrides for include, exclude.paths, output paths.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/src/modules/batch/batch.command.ts",
+          "version": "repo-file-v1:sha256:e33b25c2d00dfda6c0712fe0346a53887d0c22480fcabdc910461bcb5502c250"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/src/modules/collect/collect.command.ts",
+          "version": "repo-file-v1:sha256:bbc9740d322f0d36a84520038034a322c84d6455a9b9f085f85110e204ca93ab"
+        }
+      ]
+    },
+    {
+      "id": "claim_4a021756b330490d926fb72399b33f3f",
+      "statement": "The Nx plugin (@coinagerie/nx) infers a coinagerie:check executor onto every project with a config, groups tasks by mode+command for batch execution via coinagerie batch, and supports nx affected for incremental checks.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.ts",
+          "version": "repo-file-v1:sha256:e1ac3b1615975faac28b5c7c87772bd47e4be24032c288ec0e4a49ac3a79ce74"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts",
+          "version": "repo-file-v1:sha256:c6b2739c2cf1e9e369ca2d6b8c4734185398513a0ade1ae7f38886f3ac5e3855"
+        }
+      ]
+    },
+    {
+      "id": "claim_9856885367ce4678b1b31e7d2cc5f939",
+      "statement": "DeliveryService checks and writes atomically: all destinations are parsed before any write, a parse error aborts the run, write mode reconciles vocabulary with existing definitions (keeping kept words' definitions, dropping stale words), and check mode reports missing and stale words per destination.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-output/src/modules/comparison/comparison.service.ts",
+          "version": "repo-file-v1:sha256:9c8aa38ed97aa2d3225c70249ce70e06b511f5fe9d3cdaf8ce85944ef9a8a978"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-output/src/modules/delivery/delivery.service.ts",
+          "version": "repo-file-v1:sha256:6a77c91f720d864ebbd13b5ec6ff906df911e3b7367e10fb6ba29563d75a47f5"
+        }
+      ]
+    },
+    {
+      "id": "claim_530c6195e3384cea9a41cc6c50d5e71b",
+      "statement": "Core vocabulary terms from CONTEXT.md (Generator, Template, Instance, Language, Fallback, Difference, Error, Conformance) define the domain language used across the toolchain.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md",
+          "version": "repo-file-v1:sha256:57a2926a89f254e483ecdad4f2f4a9ff1c71a76a4f13bd18688c43fddc75f006"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-13T16:30:25.369Z"
+  }
+}

@@ -3,17 +3,21 @@ import path from "node:path";
 
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { useTemporaryDirectory } from "@codebase/testing";
+import { processFailure, useTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
-import { mockProcesses, processFailure } from "../../../testing/mocks";
+import { mockProcesses } from "../../../testing/mocks";
 import { PostgresReferencedTablesError } from "../postgresql-utilities/postgresql-utilities.constants";
 import { PostgresqlUtilitiesService } from "../postgresql-utilities/postgresql-utilities.service";
 
 import type { SpawnedProcess } from "../../../testing/mocks";
+import type * as PostgresMocks from "../../../testing/mocks";
 
 vi.mock("node:child_process", async (importOriginal) => {
-  const { mockPostgresChildProcess } = await import("../../../testing/mocks");
+  const { mockPostgresChildProcess } = await vi.importActual<
+    typeof PostgresMocks
+  >("../../../testing/mocks");
+
   return mockPostgresChildProcess(await importOriginal());
 });
 

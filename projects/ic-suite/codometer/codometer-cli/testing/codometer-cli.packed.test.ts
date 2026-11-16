@@ -1,41 +1,33 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { createTemporaryDirectory } from "@codebase/testing";
-import { createTarballSandboxRunner } from "@codebase/testing/end-to-end";
+import { usePackedSandbox } from "@codebase/testing/end-to-end";
 
-import type { TarballSandboxRunner } from "@codebase/testing/end-to-end";
 import type { CodometerReport } from "@codometer/core";
 
 const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../../../..");
 
 describe("the packed codometer command", () => {
-  let sandbox: TarballSandboxRunner;
-
-  beforeAll(async () => {
-    sandbox = await createTarballSandboxRunner({
-      packages: [
-        "@codometer/cli",
-        "@codometer/configuration",
-        "@codometer/core",
-        "@codometer/languages",
-        "@codometer/measurement",
-        "@codometer/output",
-      ],
-      workspaceRoot: WORKSPACE_ROOT,
-    });
-  });
-
-  afterAll(() => {
-    sandbox.dispose();
+  const packed = usePackedSandbox({
+    binary: "codometer",
+    packages: [
+      "@codometer/cli",
+      "@codometer/configuration",
+      "@codometer/core",
+      "@codometer/languages",
+      "@codometer/measurement",
+      "@codometer/output",
+    ],
+    workspaceRoot: WORKSPACE_ROOT,
   });
 
   it("lists its commands under --help", async () => {
     expect.hasAssertions();
 
-    const result = await sandbox.command("codometer", ["--help"]).run();
+    const result = await packed.command("codometer", ["--help"]).run();
 
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("measure");
@@ -59,16 +51,13 @@ describe("the packed codometer command", () => {
       JSON.stringify({ format: "json" }),
     );
 
-    const result = await sandbox
-      .command(path.join(sandbox.directory, "node_modules/.bin/codometer"), [
-        "measure",
-        "--config",
-        path.join(project, "codometer.config.json"),
-        "--output-json",
-        output,
-      ])
-      .inDirectory(project)
-      .run();
+    const result = await packed.run(project, [
+      "measure",
+      "--config",
+      path.join(project, "codometer.config.json"),
+      "--output-json",
+      output,
+    ]);
 
     expect(result.exitCode).toBe(0);
     expect(result.stderr).toContain("Finished the measurement run");

@@ -1,20 +1,28 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { createTemporaryDirectory } from "@codebase/testing";
-import { createTarballSandboxRunner } from "@codebase/testing/end-to-end";
+import { usePackedSandbox } from "@codebase/testing/end-to-end";
 
-import type {
-  CommandResult,
-  TarballSandboxRunner,
-} from "@codebase/testing/end-to-end";
+import type { CommandResult } from "@codebase/testing/end-to-end";
 
 const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../../../..");
 
 describe("the packed coinagerie command", () => {
-  let sandbox: TarballSandboxRunner;
+  const packed = usePackedSandbox({
+    binary: "coinagerie",
+    packages: [
+      "@coinagerie/cli",
+      "@coinagerie/configuration",
+      "@coinagerie/core",
+      "@coinagerie/languages",
+      "@coinagerie/output",
+      "@coinagerie/vocabulary",
+    ],
+    workspaceRoot: WORKSPACE_ROOT,
+  });
 
   /** Writes a project whose source names `orbit` and `planner`; returns its directory. */
   function writeProject(): string {
@@ -34,36 +42,13 @@ describe("the packed coinagerie command", () => {
     directory: string,
     args: readonly string[],
   ): Promise<CommandResult> {
-    return sandbox
-      .command(path.join(sandbox.directory, "node_modules/.bin/coinagerie"), [
-        ...args,
-      ])
-      .inDirectory(directory)
-      .run();
+    return packed.run(directory, args);
   }
-
-  beforeAll(async () => {
-    sandbox = await createTarballSandboxRunner({
-      packages: [
-        "@coinagerie/cli",
-        "@coinagerie/configuration",
-        "@coinagerie/core",
-        "@coinagerie/languages",
-        "@coinagerie/output",
-        "@coinagerie/vocabulary",
-      ],
-      workspaceRoot: WORKSPACE_ROOT,
-    });
-  });
-
-  afterAll(() => {
-    sandbox.dispose();
-  });
 
   it("lists its commands under --help", async () => {
     expect.hasAssertions();
 
-    const result = await sandbox.command("coinagerie", ["--help"]).run();
+    const result = await packed.command("coinagerie", ["--help"]).run();
 
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("collect");

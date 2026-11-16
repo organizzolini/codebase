@@ -20,10 +20,6 @@ import type { LexicoIngestionCommandOptions } from "./lexico-ingestion.types";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { Provider } from "@nestjs/common";
 
-vi.mock("prompts", () => ({
-  default: promptsMock,
-}));
-
 describe(LexicoIngestionCommand, () => {
   let command: LexicoIngestionCommand;
   let logger: BuiltTestingModule<LexicoIngestionCommand>["logger"];
