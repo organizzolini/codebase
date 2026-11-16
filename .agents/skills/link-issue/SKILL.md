@@ -43,6 +43,8 @@ Pick the Issue Type by position in the hierarchy:
 
 Take the title from the commit convention, `<type>(<scope>): <gitmoji> <subject>`, and apply the labels the Continuous Compliance issue check expects: one `type:*`, one `scope:*` per scope, and `source:agent`. Then set its board fields with [manage-project](../manage-project/SKILL.md): Effort always, and Status In Progress when you are about to start, or are already doing, the work.
 
+**A root issue (one with no parent) needs a Priority before you file it.** `compliance issue` audits every issue as it opens and fails a root issue with no Priority. Priority is the user's call, so ask for it (Urgent, High, Medium, or Low) before filing, then set it in the same call. A Task under a spec owes none.
+
 ```bash
 gh issue create \
   --type Bug \
@@ -52,7 +54,7 @@ gh issue create \
   --body-file /tmp/issue_body.md
 ```
 
-Cloud sessions have no `gh`. Use the GitHub MCP `search_issues` to look first and `issue_write` (`method: create`, with `labels` and `type`) to file.
+Cloud sessions have no `gh`. Use the GitHub MCP `search_issues` to look first and `issue_write` (`method: create`, with `labels`, `type`, and `issue_fields` carrying Effort and, on a root issue, Priority) to file.
 
 ## Backfill
 

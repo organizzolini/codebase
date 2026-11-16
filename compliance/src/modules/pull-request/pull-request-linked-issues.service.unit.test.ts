@@ -2,6 +2,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { IssueFieldsService } from "../issue/issue-fields.service";
 import { IssueMetadataTypeService } from "../issue/issue-metadata-type.service";
 import { IssueMetadataService } from "../issue/issue-metadata.service";
 
@@ -41,7 +42,11 @@ function answer(standardOutput: string, succeeded = true): GithubCliResult {
 /** What PullRequestLinkedIssuesService is built with. */
 const DEPENDENCIES = {
   mocks: [PullRequestGithubService],
-  providers: [IssueMetadataService, IssueMetadataTypeService],
+  providers: [
+    IssueFieldsService,
+    IssueMetadataService,
+    IssueMetadataTypeService,
+  ],
 } satisfies TestingModuleOptions;
 
 describe(PullRequestLinkedIssuesService, () => {
@@ -171,8 +176,8 @@ describe(PullRequestLinkedIssuesService, () => {
       "❌ Issue #1: No Priority issue field",
     ]);
     expect(outcome.remediationCommands).toStrictEqual([
-      `echo '{"issue_field_values":[{"field_id":46460698,"value":"<Low|Medium|High>"}]}' | gh api -X PUT repos/{owner}/{repo}/issues/5/issue-field-values --input -`,
-      `echo '{"issue_field_values":[{"field_id":46460695,"value":"<Urgent|High|Medium|Low>"}]}' | gh api -X PUT repos/{owner}/{repo}/issues/1/issue-field-values --input -`,
+      `echo '{"issue_field_values":[{"field_id":46460698,"value":"<Low|Medium|High>"}]}' | gh api -X POST repos/{owner}/{repo}/issues/5/issue-field-values --input -`,
+      `echo '{"issue_field_values":[{"field_id":46460695,"value":"<Urgent|High|Medium|Low>"}]}' | gh api -X POST repos/{owner}/{repo}/issues/1/issue-field-values --input -`,
     ]);
   });
 

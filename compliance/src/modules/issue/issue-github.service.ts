@@ -8,9 +8,19 @@ import {
   OPEN_ISSUES_QUERY,
   openIssueSummariesSchema,
 } from "./issue-assignees.constants";
+import {
+  ISSUE_FIELD_NAMES_QUERY,
+  issueFieldNamesSchema,
+  OPEN_ISSUE_FIELDS_QUERY,
+  openIssueFieldsSchema,
+} from "./issue-fields.constants";
 import { GITHUB_CLI_BINARY } from "./issue-metadata.constants";
 
 import type { ListUnassignedOpenIssueNumbersResult } from "./issue-assignees.types";
+import type {
+  IssueFieldNamesResult,
+  OpenIssueFieldNamesResult,
+} from "./issue-fields.types";
 import type {
   GithubCliResult,
   IssueSummary,
@@ -36,6 +46,45 @@ export class IssueGithubService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
+
+  /** Whatever was thrown, as the one line a result can carry. */
+  private describeError(error: unknown): string {
+    return error instanceof Error ? error.message : String(error);
+  }
+
+  /** Every open issue's filled field names, from the paginated REST listing. */
+  private listOpenIssueFieldNames(): OpenIssueFieldNamesResult {
+    const result = this.run([
+      "api",
+      "--paginate",
+      OPEN_ISSUES_ENDPOINT,
+      "--jq",
+      OPEN_ISSUE_FIELDS_QUERY,
+    ]);
+
+    if (!result.succeeded) {
+      return { error: this.describeFailure(result), success: false };
+    }
+
+    try {
+      const lines = result.standardOutput.split("\n").filter(Boolean);
+      const entries = lines.map((line) =>
+        openIssueFieldsSchema.parse(JSON.parse(line)),
+      );
+
+      return {
+        fieldNames: new Map(
+          entries.map((entry) => [entry.number, entry.fieldNames]),
+        ),
+        success: true,
+      };
+    } catch (error) {
+      return {
+        error: `Unable to parse the open issue fields: ${this.describeError(error)}`,
+        success: false,
+      };
+    }
+  }
 
   // 🌎 Public Methods
 
@@ -73,7 +122,7 @@ export class IssueGithubService {
     return this.run(["--version"]).available;
   }
 
-  /** Lists all open issues with their number, title, body, and labels. */
+  /** Lists all open issues with their number, title, body, labels, and fields. */
   public listOpenIssues(): ListIssuesResult {
     const result = this.run([
       "issue",
@@ -90,16 +139,31 @@ export class IssueGithubService {
       return { error: this.describeFailure(result), success: false };
     }
 
+    let issues: IssueSummary[];
+
     try {
-      const issues = JSON.parse(result.standardOutput) as IssueSummary[];
-      return { issues, success: true };
+      issues = JSON.parse(result.standardOutput) as IssueSummary[];
     } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
       return {
-        error: `Unable to parse gh issue list output: ${message}`,
+        error: `Unable to parse gh issue list output: ${this.describeError(error)}`,
         success: false,
       };
     }
+
+    const fields = this.listOpenIssueFieldNames();
+
+    if (!fields.success) {
+      return { error: fields.error, success: false };
+    }
+
+    return {
+      issues: issues.map((issue) => {
+        const fieldNames = fields.fieldNames.get(issue.number);
+
+        return fieldNames === undefined ? issue : { ...issue, fieldNames };
+      }),
+      success: true,
+    };
   }
 
   /** Lists unassigned issues from every open issues page, excluding PRs. */
@@ -138,6 +202,34 @@ export class IssueGithubService {
 
       return {
         error: `Unable to parse gh api output: ${message}`,
+        success: false,
+      };
+    }
+  }
+
+  /** The names of the issue fields one issue has a value for. */
+  public readFieldNames(issueNumber: string): IssueFieldNamesResult {
+    const result = this.run([
+      "api",
+      `repos/{owner}/{repo}/issues/${issueNumber}`,
+      "--jq",
+      ISSUE_FIELD_NAMES_QUERY,
+    ]);
+
+    if (!result.succeeded) {
+      return { error: this.describeFailure(result), success: false };
+    }
+
+    try {
+      return {
+        fieldNames: issueFieldNamesSchema.parse(
+          JSON.parse(result.standardOutput),
+        ),
+        success: true,
+      };
+    } catch (error) {
+      return {
+        error: `Unable to parse the issue fields: ${this.describeError(error)}`,
         success: false,
       };
     }
