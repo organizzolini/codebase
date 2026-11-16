@@ -44,14 +44,19 @@ export class PullRequestReleaseSignificanceService {
 
   // 🔏 Private Methods
 
-  /** Every missing-scope failure, one line per scope across all commits. */
-  private describeMissingScopeFailures(
-    missingScopeCommits: ReadonlyMap<string, readonly string[]>,
+  /** The failure for a title that names none of its commits' scopes, if any. */
+  private describeScopeFailure(
+    commitScopes: readonly string[],
+    titleConvention: ConventionalSubject,
   ): string[] {
-    return [...missingScopeCommits.entries()].map(
-      ([scope, shas]) =>
-        `❌ Scope "${scope}" is used in commit${shas.length > 1 ? "s" : ""} ${shas.join(", ")} but missing from the title`,
+    const sharesScope = commitScopes.some((scope) =>
+      titleConvention.scopes.includes(scope),
     );
+    if (commitScopes.length === 0 || sharesScope) {
+      return [];
+    }
+    const named = commitScopes.map((scope) => `"${scope}"`).join(", ");
+    return [`❌ Title shares no scope with its commits, which use ${named}`];
   }
 
   /** The one failure line for a title that understates its most significant commit. */
@@ -70,36 +75,11 @@ export class PullRequestReleaseSignificanceService {
     );
   }
 
-  /**
-   * Commits that share no scope with the title, grouped by scope and SHA.
-   */
-  private findMissingScopes(
-    commits: readonly PullRequestCommit[],
-    titleConvention: ConventionalSubject,
-  ): Map<string, string[]> {
-    const missingScopeCommits = new Map<string, string[]>();
-
-    for (const commit of commits) {
-      if (commit.convention === undefined) {
-        continue;
-      }
-
-      const overlapsTitle = commit.convention.scopes.some((scope) =>
-        titleConvention.scopes.includes(scope),
-      );
-
-      if (overlapsTitle) {
-        continue;
-      }
-
-      for (const scope of commit.convention.scopes) {
-        const shas = missingScopeCommits.get(scope) ?? [];
-        shas.push(commit.sha);
-        missingScopeCommits.set(scope, shas);
-      }
-    }
-
-    return missingScopeCommits;
+  /** Every scope the commits use, once each, in first-seen order. */
+  private findCommitScopes(commits: readonly PullRequestCommit[]): string[] {
+    return [
+      ...new Set(commits.flatMap((commit) => commit.convention?.scopes ?? [])),
+    ];
   }
 
   /** The commit whose own type and scopes rank most release-significant. */
@@ -181,7 +161,7 @@ export class PullRequestReleaseSignificanceService {
   // 🌎 Public Methods
 
   /**
-   * Every way the title understates its commits, by type or by a shared scope.
+   * Every way the title understates its commits: by type, or by naming none of their scopes.
    */
   public checkSignificance(options: {
     readonly commits: readonly PullRequestCommit[];
@@ -194,10 +174,7 @@ export class PullRequestReleaseSignificanceService {
       commits,
       releaseRules,
     );
-    const missingScopeCommits = this.findMissingScopes(
-      commits,
-      titleConvention,
-    );
+    const commitScopes = this.findCommitScopes(commits);
     const failures: string[] = [];
 
     if (
@@ -209,7 +186,7 @@ export class PullRequestReleaseSignificanceService {
       );
     }
 
-    failures.push(...this.describeMissingScopeFailures(missingScopeCommits));
+    failures.push(...this.describeScopeFailure(commitScopes, titleConvention));
 
     return { failures };
   }

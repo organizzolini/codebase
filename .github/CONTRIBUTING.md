@@ -488,7 +488,7 @@ If a change genuinely spans scopes, list them comma-separated (`feat(lexico,logg
 
 This repository squash-merges using the pull request title, so **the title is the only thing semantic-release ever sees**. Every individual commit on the branch is discarded at squash time.
 
-The release-significance check of `compliance pull-request` reads the branch's commits and fails the pull request when the title's type is **less** release-significant than the most significant commit on the branch, or when the title shares no scope overlap with a commit.
+The release-significance check of `compliance pull-request` reads the branch's commits and fails the pull request when the title's type is **less** release-significant than the most significant commit on the branch, or when the title names none of the scopes its commits use.
 
 **Practical effect:** pick the type and scope for the branch as a whole before you start committing, and keep every commit at or below that significance.
 
@@ -524,7 +524,7 @@ See [documentation/agents/issue-tracker.md](../documentation/agents/issue-tracke
 ## Pull Request Process
 
 1. **Push and open**: `git push -u origin <branch>`, then `gh pr create` and fill in the template. Do not use `--fill` — it substitutes the commit message for the body and drops the four required headings
-2. **Title** follows the commit format — `<type>(<scope>): <gitmoji> <subject>`, checked by the same commitlint configuration, so every commit rule applies. The scope list must share at least one scope with each commit, which is all Comply Code's release-significance check requires. Scope each commit to one project or module and list the fewest scopes that cover every commit, so the squashed header stays short.
+2. **Title** follows the commit format — `<type>(<scope>): <gitmoji> <subject>`, checked by the same commitlint configuration, so every commit rule applies. The scope list must name at least one scope its commits use, which is all Comply Code's release-significance check requires. Name the scope or two that best describe the change, so the squashed header stays short.
 3. **Description** must contain all four headings from [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) verbatim — 🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related — each in its shape: Summary only a single paragraph of at most 48 words, Details only a bulleted list with one marker throughout and at most 512 words, Testing only an ordered list (a step may hold a code block), and Related opening with a `-` list, after which anything may follow. Comply Code runs `compliance pull-request` and fails on a missing or empty section, a section in the wrong shape or over its limit, or a template comment left unfilled
 4. **Issue link**: every pull request must close or reference a GitHub issue through GitHub's own link — `Closes #N` as the first bullet of 🔗 Related, or the Development sidebar. Continuous Compliance runs `compliance pull-request` on pull requests and in the merge queue, reading `gh pr view --json closingIssuesReferences`, so a plain `Related to #N` does not count. Pull requests opened by Dependabot or by a GitHub Actions workflow are exempt. Work with no issue gets one before the pull request opens — see the [link-issue skill](../.agents/skills/link-issue/SKILL.md)
 5. **Labels and assignees** must agree with the title: exactly one `type:*` label matching the title's type, exactly the `scope:*` labels the title names and no extras, at least one assignee, and exactly one `source:*` label (`source:agent` or `source:human`) declaring who opened it. The `do-not-merge` label blocks the pull request while present
@@ -536,7 +536,7 @@ Comply Code creates any label missing from the vocabulary when a pull request is
 
 Merges go through a merge queue, and the check workflows run again on the queued merge commit — a pull request that was green on its own can still fail there once `main` has moved underneath it.
 
-A practical way to avoid release-significance failures is to keep one pull request focused to one project/scope whenever possible. If a change really spans scopes, name the fewest that overlap every commit in the title (`type(scope-a,scope-b): …`) or split into separate pull requests.
+A practical way to avoid release-significance failures is to keep one pull request focused to one project/scope whenever possible. If a change really spans scopes, name the one or two that best describe it in the title (`type(scope-a,scope-b): …`), or split it into separate pull requests.
 
 A pull request with merge conflicts runs almost none of these workflows — a short list of green checks means nothing was validated. Resolve conflicts before reading the checks as a pass.
 

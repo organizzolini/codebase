@@ -365,7 +365,7 @@ describe(PullRequestReleaseSignificanceService, () => {
       expect(verdict.failures[0]).toContain("major");
     });
 
-    it("fails when no commit scope overlaps the title", () => {
+    it("fails when the title names none of the commit scopes", () => {
       expect.hasAssertions();
 
       const verdict = service.checkSignificance({
@@ -389,14 +389,39 @@ describe(PullRequestReleaseSignificanceService, () => {
         releaseRules: RELEASE_RULES,
         titleConvention: title(
           service,
+          "feat(compliance): add the release-significance check",
+        ),
+      });
+
+      expect(verdict.failures).toStrictEqual([
+        '❌ Title shares no scope with its commits, which use "validation", "synchronization"',
+      ]);
+    });
+
+    it("passes when the title names one commit scope and leaves out the rest", () => {
+      expect.hasAssertions();
+
+      const verdict = service.checkSignificance({
+        commits: [
+          commit(
+            service,
+            "aaa1111",
+            "feat(validation): add the release-significance check",
+          ),
+          commit(
+            service,
+            "bbb2222",
+            "feat(synchronization): reconcile pull request labels",
+          ),
+        ],
+        releaseRules: RELEASE_RULES,
+        titleConvention: title(
+          service,
           "feat(validation): add the release-significance check",
         ),
       });
 
-      expect(verdict.failures).toHaveLength(1);
-      expect(verdict.failures[0]).toContain(
-        'Scope "synchronization" is used in commits bbb2222, ccc3333',
-      );
+      expect(verdict.failures).toStrictEqual([]);
     });
 
     it("passes when at least one commit scope overlaps the title", () => {
