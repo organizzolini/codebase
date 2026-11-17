@@ -35,7 +35,7 @@ export const CHECK_FAILURE_EXIT_CODES: Record<string, number> = {
   unparsable: 1,
 };
 
-/** The configuration every guide names with `--config`, since none is ever searched for. */
+/** The `--config` every guide names; none is searched for. */
 const CONFIG = ["--config", "coinagerie.config.ts"];
 
 /** Every documented run, in the order the tour reads. */
