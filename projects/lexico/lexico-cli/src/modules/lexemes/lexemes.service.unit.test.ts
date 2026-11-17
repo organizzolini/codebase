@@ -657,6 +657,41 @@ describe(LexemesService, () => {
     expect(saveInflectionMock).toHaveBeenCalledTimes(1);
   });
 
+  it("should replace a saved inflection of another kind instead of reusing its id", async () => {
+    class NounKind {
+      public id = "";
+      public lexeme: unknown;
+      public save = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
+    }
+    class AdjectiveKind {
+      public id = "old-id";
+      public remove = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
+    }
+    const lexeme = new Lexeme();
+    const savedLexeme = new Lexeme();
+    const inflection = new NounKind();
+    const savedInflection = new AdjectiveKind();
+    lexeme.inflection = inflection as unknown as NonNullable<
+      Lexeme["inflection"]
+    >;
+    savedLexeme.inflection = savedInflection as unknown as NonNullable<
+      Lexeme["inflection"]
+    >;
+
+    await (
+      service as unknown as {
+        saveInflection: (
+          inputLexeme: Lexeme,
+          inputSavedLexeme: Lexeme,
+        ) => Promise<void>;
+      }
+    ).saveInflection(lexeme, savedLexeme);
+
+    expect(savedInflection.remove).toHaveBeenCalledTimes(1);
+    expect(inflection.id).toBe("");
+    expect(inflection.save).toHaveBeenCalledTimes(1);
+  });
+
   it("should return early from saveInflection when no inflection exists", async () => {
     const lexeme = new Lexeme();
     lexeme.inflection = null;

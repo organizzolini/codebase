@@ -312,6 +312,12 @@ silius
 slaby
 slug
 soluit
+solutu
+solutum
+solutus
+solvendum
+solvere
+solvisse
 solvit
 sophonias
 spuria

@@ -390,7 +390,7 @@ export class FormsBuilderService {
       forms.push(...this.buildVerbNonFiniteForms(nonFinite, lexeme));
     }
 
-    const verbalNouns = rawForms["verbalNouns"];
+    const verbalNouns = rawForms["verbalNouns"] ?? rawForms["verbalNoun"];
     if (this.guards.isRecord(verbalNouns)) {
       forms.push(...this.buildVerbNounForms(verbalNouns, lexeme));
     }
@@ -414,6 +414,13 @@ export class FormsBuilderService {
     if (this.guards.isRecord(participle)) {
       forms.push(...this.buildParticipleFormsFromRaw(participle, lexeme));
     }
+
+    forms.push(
+      ...this.formsBuilderVerbProvider.buildInfinitiveFormsByTense(
+        nonFiniteData,
+        lexeme,
+      ),
+    );
 
     return forms;
   }

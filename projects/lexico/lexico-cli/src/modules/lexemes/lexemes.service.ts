@@ -205,7 +205,14 @@ export class LexemesService {
   ): Promise<void> {
     if (!lexeme.inflection) return;
     if (savedLexeme.inflection) {
-      lexeme.inflection.id = savedLexeme.inflection.id;
+      // A page that changes the kind of inflection cannot take over its id: that row is another subclass.
+      if (
+        savedLexeme.inflection.constructor === lexeme.inflection.constructor
+      ) {
+        lexeme.inflection.id = savedLexeme.inflection.id;
+      } else {
+        await savedLexeme.inflection.remove();
+      }
     }
     lexeme.inflection.lexeme = savedLexeme;
     await lexeme.inflection.save();
