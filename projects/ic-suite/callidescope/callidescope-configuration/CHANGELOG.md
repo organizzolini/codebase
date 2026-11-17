@@ -1,3 +1,9 @@
+## 0.0.86 (2026-11-17)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-core to 0.0.85
+
 ## 0.0.85 (2026-11-15)
 
 ### 🚀 Features
