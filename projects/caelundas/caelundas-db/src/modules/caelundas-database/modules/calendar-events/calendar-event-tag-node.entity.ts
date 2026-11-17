@@ -1,6 +1,6 @@
 import { Column, Entity, Index, PrimaryColumn } from "typeorm";
 
-import { createBigintTransformer } from "../caelundas-database.utilities";
+import { createBigintTransformer } from "../../caelundas-database.utilities";
 
 /**
  * One row of the `calendar_event_tag_nodes` table: an event and a tag it carries, directly or through a descendant. Derived by `CaelundasDatabaseService.refreshReadModel`.

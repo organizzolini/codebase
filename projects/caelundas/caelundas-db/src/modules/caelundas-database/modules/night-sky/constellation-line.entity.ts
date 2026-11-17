@@ -1,6 +1,6 @@
 import { Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 
-import { createBigintTransformer } from "../caelundas-database.utilities";
+import { createBigintTransformer } from "../../caelundas-database.utilities";
 
 import { Constellation } from "./constellation.entity";
 import { Star } from "./star.entity";

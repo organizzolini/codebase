@@ -5,11 +5,11 @@ import { PostgresqlUpdatableEntity } from "@codebase/persistence";
 import {
   COORDINATE_PRECISION,
   COORDINATE_SCALE,
-} from "../caelundas-database.constants";
+} from "../../caelundas-database.constants";
 import {
   createCoordinateTransformer,
   createMomentTransformer,
-} from "../caelundas-database.utilities";
+} from "../../caelundas-database.utilities";
 
 import type { Moment } from "moment-timezone";
 

@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
 
-import { createBigintTransformer } from "../caelundas-database.utilities";
+import { createBigintTransformer } from "../../caelundas-database.utilities";
 
 /**
  * One row of the `stars` table: a star of the HYG catalog the night sky draws,

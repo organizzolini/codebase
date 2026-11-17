@@ -5,7 +5,7 @@ export default [
   ...baseConfig,
 
   // 🙈 Ignores
-  { ignores: ["src/modules/caelundas-database/migrations/**"] },
+  { ignores: ["migrations/**"] },
 
   // 📦 Dependency Checks
   {

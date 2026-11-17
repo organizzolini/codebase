@@ -23,6 +23,7 @@
   "extends": "../../../../configuration/tsconfig.json",
   "include": [
     "*.ts",
+    "../migrations/**/*.ts",
     "../scripts/**/*.ts",
     "../src/**/*.ts",
     "../src/**/*.tsx",

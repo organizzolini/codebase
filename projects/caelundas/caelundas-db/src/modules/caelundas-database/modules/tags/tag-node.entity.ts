@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
 
-import { createBigintTransformer } from "../caelundas-database.utilities";
+import { createBigintTransformer } from "../../caelundas-database.utilities";
 
 /**
  * One row of the `tag_nodes` table: a tag with its depth, root and path, derived by `refreshReadModel` from the tag closure.

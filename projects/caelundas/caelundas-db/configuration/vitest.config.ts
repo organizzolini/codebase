@@ -13,7 +13,6 @@ export default mergeConfig(
           "src/**/*.constants.ts",
           "src/**/*.module.ts",
           "src/**/*.types.ts",
-          "src/**/migrations/**/*.ts",
         ],
         include: ["src/**/*.ts"],
       },

@@ -1,7 +1,8 @@
 import { Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 
+import { Tag } from "../tags/tag.entity";
+
 import { CalendarEvent } from "./calendar-event.entity";
-import { Tag } from "./tag.entity";
 
 import type { Relation } from "typeorm";
 
