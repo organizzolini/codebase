@@ -14,7 +14,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **disambiguator**: Numeric lexeme field separating homographs that share a lemma, such as two entries spelled the same way.
 - **lexeme**: Dictionary entry for a Latin word, the core entity of the lexicon carrying its lemma, translations, forms, and pronunciation.
 - **literature**: Domain module for authors, texts, lines, tokens, and passages, the largest area of the lexico API's resolvers and services.
-- **negative**: Offset below zero in a pagination cursor, which the offset helpers clamp on encode and ignore on decode.
 - **pronunciation**: Lexeme field recording how a word is pronounced, with phonemes, phonetic spelling, and variant data mapped to GraphQL.
 - **quick**: Word in the README Quick Start heading, introducing the short setup steps for running the lexico API locally.
 - **reader**: Readable view of a line, reduced to what a reader can observe; the reader query selects one line for display.

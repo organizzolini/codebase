@@ -15,6 +15,27 @@ export interface Connection<T> {
 }
 
 /**
+ * A soft-deletable entity, whose nullable base columns may be unloaded.
+ */
+export type DeletableEntityFields = Partial<
+  Pick<DeletableFields, "createdBy" | "deletedAt" | "deletedBy" | "updatedBy">
+> &
+  Pick<DeletableFields, "createdAt" | "id" | "updatedAt">;
+
+/**
+ * The shared base columns every soft-deletable entity exposes.
+ */
+export interface DeletableFields {
+  createdAt: Date;
+  createdBy: null | string | undefined;
+  deletedAt: Date | null | undefined;
+  deletedBy: null | string | undefined;
+  id: string;
+  updatedAt: Date;
+  updatedBy: null | string | undefined;
+}
+
+/**
  * Generic Relay Edge interface.
  */
 export interface Edge<T> {

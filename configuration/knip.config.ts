@@ -178,8 +178,6 @@ const config: KnipConfig = {
         // that knip ignores, so no import reaches it.
         "typeorm",
       ],
-      // Scaffolded by the template; no module imports it yet.
-      ignore: ["src/caelundas-api.entities.ts"],
       project: "src/**/*.ts",
     },
 
@@ -212,12 +210,7 @@ const config: KnipConfig = {
         // Apollo 5's Express integration, which @nestjs/apollo resolves by
         // name at startup; without it GraphQLModule refuses to boot.
         "@as-integrations/express5",
-        // Used only by the entities file below.
-        "@nestjs/typeorm",
-        "typeorm",
       ],
-      // Scaffolded by the template; no module imports it yet.
-      ignore: ["src/lexico-api.entities.ts"],
       project: "src/**/*.ts",
     },
 

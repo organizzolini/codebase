@@ -5,9 +5,9 @@ import {
   mapNullableRelation,
   mapRelation,
   toCursor,
+  toDeletableFields,
 } from "@codebase/interface";
 
-import { toDeletableFields } from "../../deletable.utilities";
 import { toWordType } from "../words/words.utilities";
 
 import { AuthorType } from "./author.entities";

@@ -48,7 +48,6 @@ src/
   caelundas-api.ts            # Bootstrap — do not modify
   caelundas-api.module.ts     # Root NestJS module (imports GraphQLModule, LoggerModule)
   caelundas-api.constants.ts  # Zod environmentSchema for env validation
-  caelundas-api.types.ts      # Application-scoped TypeScript types
   modules/
     cors/                             # The CORS options the bootstrap enables
       cors.module.ts

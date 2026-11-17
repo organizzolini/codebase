@@ -5,6 +5,8 @@ import { PageInfo } from "./graphql-server.entities";
 import type {
   ClassConstructor,
   Connection,
+  DeletableEntityFields,
+  DeletableFields,
   Edge,
 } from "./graphql-server.types";
 
@@ -251,4 +253,21 @@ export function Paginated<T>(
  */
 export function toCursor(data: unknown): string {
   return Buffer.from(JSON.stringify(data), "utf8").toString("base64url");
+}
+
+/**
+ * Copies the shared base columns every soft-deletable entity exposes.
+ */
+export function toDeletableFields(
+  entity: DeletableEntityFields,
+): DeletableFields {
+  return {
+    createdAt: entity.createdAt,
+    createdBy: entity.createdBy,
+    deletedAt: entity.deletedAt,
+    deletedBy: entity.deletedBy,
+    id: entity.id,
+    updatedAt: entity.updatedAt,
+    updatedBy: entity.updatedBy,
+  };
 }

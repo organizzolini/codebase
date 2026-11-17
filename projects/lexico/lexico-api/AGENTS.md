@@ -44,7 +44,6 @@ src/
   lexico-api.ts            # Bootstrap — do not modify
   lexico-api.module.ts     # Root NestJS module (imports GraphQLModule, LoggerModule)
   lexico-api.constants.ts  # Zod environmentSchema for env validation
-  lexico-api.types.ts      # Application-scoped TypeScript types
   modules/
     cors/                             # The CORS options the bootstrap enables
       cors.module.ts

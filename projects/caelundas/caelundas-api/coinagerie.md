@@ -40,7 +40,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **magnitude**: A star's brightness, where a lower number is brighter; `faintestMagnitude` limits which stars are drawn.
 - **middleware**: The NestJS request middleware the API module configures, such as response compression.
 - **moon**: The Moon, as a body named in sample events and tag paths.
-- **negative**:
 - **north**: The direction of positive declination, as in the ecliptic's northernmost point.
 - **obliquity**: The tilt of Earth's axis, about 23.4 degrees, used to convert ecliptic longitude into right ascension and declination.
 - **observer**: The viewer on Earth, whose time zone and position decide which events and which sky are shown.
