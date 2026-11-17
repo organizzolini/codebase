@@ -18,6 +18,7 @@ vi.mock("@tanstack/react-router", () => ({
 }));
 
 const ROW = {
+  childCount: 0,
   matches: [],
   text: {
     collection: TextCollection.Perseus,
@@ -28,7 +29,6 @@ const ROW = {
     inscriptionType: null,
     lineCount: 756,
     material: null,
-    parentText: null,
     province: null,
     slug: "vergil-aeneid-1",
     title: "Book 1",
@@ -55,7 +55,7 @@ describe(LibraryTextLink, () => {
     render(<LibraryTextLink row={ROW} />);
 
     expect(screen.getByText("Perseus · Mynors 1969")).toBeDefined();
-    expect(screen.getByText("756 lines · 9902 words")).toBeDefined();
+    expect(screen.getByText(/756 lines · 9902 words/u)).toBeDefined();
   });
 
   it("bolds the matched part of its collection and edition", () => {
@@ -82,6 +82,7 @@ describe(LibraryTextLink, () => {
     render(
       <LibraryTextLink
         row={{
+          childCount: 0,
           matches: [{ end: 3, field: "province", start: 0 }],
           text: {
             ...ROW.text,

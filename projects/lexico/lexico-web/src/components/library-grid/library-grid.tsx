@@ -1,6 +1,6 @@
 import { LibraryAuthorCard } from "../library-author-card/library-author-card";
 
-import type { LibraryAuthorRow } from "./library-grid.types";
+import type { LibraryAuthorRow, LibraryRequest } from "./library-grid.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -11,7 +11,7 @@ import type { ReactNode } from "react";
 export interface LibraryGridProperties {
   authors: LibraryAuthorRow[];
   className?: string;
-  search: string;
+  query: LibraryRequest;
 }
 
 // 🧩 Component
@@ -22,7 +22,7 @@ export interface LibraryGridProperties {
 export function LibraryGrid(
   properties: Readonly<LibraryGridProperties>,
 ): ReactNode {
-  const { authors, className, search } = properties;
+  const { authors, className, query } = properties;
 
   // 🪝 Hooks
 
@@ -43,10 +43,10 @@ export function LibraryGrid(
       <div className="columns-1 gap-4 sm:columns-2 xl:columns-3">
         {authors.map((row) => (
           <LibraryAuthorCard
-            key={`${row.author.id}:${search}`}
+            key={`${row.author.id}:${query.search}`}
             className="mb-4 break-inside-avoid rounded-lg border bg-card text-card-foreground"
+            query={query}
             row={row}
-            search={search}
           />
         ))}
       </div>

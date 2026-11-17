@@ -1,4 +1,4 @@
-// cspell:ignore Eclogues Maro Metamorphoses Mynors Hirtel
+// cspell:ignore Eclogues Maro Metamorphoses Mynors Hirtel Fasti Carmina Praefatio Prae
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { HttpResponse } from "msw";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -9,8 +9,10 @@ import { renderRoute } from "@codebase/testing/react";
 import {
   AuthorEra,
   LibrarySortField,
+  mockLibraryChildrenQuery,
   mockLibraryFacetsQuery,
   mockLibraryQuery,
+  mockLibraryWorksQuery,
   mockTextReaderQuery,
   TextCollection,
 } from "../graphql/generated/mocks";
@@ -20,102 +22,60 @@ import { Route } from "./library";
 
 import type { LibraryPageResult } from "../components/library-grid/library-grid.types";
 import type {
+  LibraryChildrenQueryVariables,
   LibraryQueryVariables,
+  LibraryWorksQueryVariables,
   TextReaderQuery,
 } from "../graphql/generated/mocks";
 
 type LibraryAuthorRow = LibraryPageResult["authors"][number];
-type LibraryTextRow = LibraryAuthorRow["texts"][number];
+type LibraryTextRow = LibraryAuthorRow["works"][number];
 type ReaderText = NonNullable<TextReaderQuery["text"]>;
 
 const SEARCHES: { page: number; search: string }[] = [];
 const CALLS: LibraryQueryVariables[] = [];
+const CHILD_CALLS: LibraryChildrenQueryVariables[] = [];
+const WORK_CALLS: LibraryWorksQueryVariables[] = [];
 
-const PARENT = {
-  id: "text-aeneid",
-  slug: "vergil-aeneid",
-  title: "Aeneid",
-};
+/** A Text row of the hierarchy, with the fields the card reads. */
+function textRow(
+  id: string,
+  title: string,
+  overrides: Partial<Omit<LibraryTextRow, "text">> & {
+    text?: Partial<LibraryTextRow["text"]>;
+  } = {},
+): LibraryTextRow {
+  return {
+    childCount: 0,
+    matches: [],
+    ...overrides,
+    text: {
+      collection: TextCollection.Perseus,
+      edition: null,
+      editors: null,
+      findSpot: null,
+      id,
+      inscriptionType: null,
+      lineCount: null,
+      material: null,
+      province: null,
+      slug: id,
+      title,
+      type: "text",
+      wordCount: null,
+      ...overrides.text,
+    },
+  };
+}
 
-const AENEID_BOOK_ONE: LibraryTextRow = {
-  matches: [],
-  text: {
-    collection: TextCollection.Perseus,
-    edition: "Mynors 1969",
-    editors: null,
-    findSpot: null,
-    id: "text-aeneid-1",
-    inscriptionType: null,
-    lineCount: 756,
-    material: null,
-    parentText: PARENT,
-    province: null,
-    slug: "vergil-aeneid-1",
-    title: "Book 1",
-    type: "text",
-    wordCount: 9902,
-  },
-};
-
-const AENEID_BOOK_ONE_CSEL: LibraryTextRow = {
-  matches: [],
-  text: {
-    collection: TextCollection.Csel,
-    edition: "Hirtel 1891",
-    editors: null,
-    findSpot: null,
-    id: "text-aeneid-1-csel",
-    inscriptionType: null,
-    lineCount: 756,
-    material: null,
-    parentText: PARENT,
-    province: null,
-    slug: "vergil-aeneid-1-csel",
-    title: "Book 1",
-    type: "text",
-    wordCount: 9800,
-  },
-};
-
-const ECLOGUES: LibraryTextRow = {
+const AENEID = textRow("vergil-aeneid", "Aeneid", { childCount: 12 });
+const ECLOGUES = textRow("vergil-eclogues", "Eclogues", {
   matches: [{ end: 3, field: "title", start: 0 }],
-  text: {
-    collection: TextCollection.TheLatinLibrary,
-    edition: null,
-    editors: null,
-    findSpot: null,
-    id: "text-eclogues",
-    inscriptionType: null,
-    lineCount: 830,
-    material: null,
-    parentText: null,
-    province: null,
-    slug: "vergil-eclogues",
-    title: "Eclogues",
-    type: "text",
-    wordCount: 2000,
-  },
-};
-
-const AENEID_BOOK: LibraryTextRow = {
-  matches: [],
-  text: {
-    collection: TextCollection.Perseus,
-    edition: "Mynors 1969",
-    editors: null,
-    findSpot: null,
-    id: PARENT.id,
-    inscriptionType: null,
-    lineCount: null,
-    material: null,
-    parentText: null,
-    province: null,
-    slug: PARENT.slug,
-    title: PARENT.title,
-    type: "book",
-    wordCount: null,
-  },
-};
+  text: { collection: TextCollection.TheLatinLibrary },
+});
+const METAMORPHOSES = textRow("ovid-metamorphoses", "Metamorphoses", {
+  childCount: 45,
+});
 
 const VERGIL: LibraryAuthorRow = {
   author: {
@@ -128,8 +88,8 @@ const VERGIL: LibraryAuthorRow = {
     startYear: -70,
   },
   matches: [],
-  textCount: 4,
-  texts: [AENEID_BOOK, AENEID_BOOK_ONE, AENEID_BOOK_ONE_CSEL, ECLOGUES],
+  workCount: 2,
+  works: [AENEID, ECLOGUES],
 };
 
 const OVID: LibraryAuthorRow = {
@@ -143,27 +103,29 @@ const OVID: LibraryAuthorRow = {
     startYear: -43,
   },
   matches: [],
-  textCount: 60,
-  texts: [
-    {
-      matches: [],
-      text: {
-        collection: TextCollection.Perseus,
-        edition: null,
-        editors: null,
-        findSpot: null,
-        id: "text-metamorphoses",
-        inscriptionType: null,
-        lineCount: null,
-        material: null,
-        parentText: null,
-        province: null,
-        slug: "ovid-metamorphoses",
-        title: "Metamorphoses",
-        type: "text",
-        wordCount: null,
-      },
-    },
+  workCount: 60,
+  works: [METAMORPHOSES],
+};
+
+/** The children the API answers for each parent: ordered by number, as it orders them. */
+const CHILDREN: Record<string, LibraryTextRow[]> = {
+  "ovid-fasti": Array.from({ length: 150 }, (_, index) =>
+    textRow(`ovid-fasti-${String(index + 1)}`, `Item ${String(index + 1)}`),
+  ),
+  "ovid-metamorphoses": Array.from({ length: 45 }, (_, index) =>
+    textRow(
+      `ovid-metamorphoses-${String(index + 1)}`,
+      `Carmina ${String(index + 1)}`,
+    ),
+  ),
+  "vergil-aeneid": [
+    textRow("vergil-aeneid-praefatio", "Praefatio"),
+    ...Array.from({ length: 11 }, (_, index) =>
+      textRow(
+        `vergil-aeneid-${String(index + 1)}`,
+        `Book ${String(index + 1)}`,
+      ),
+    ),
   ],
 };
 
@@ -201,7 +163,7 @@ function answer(
 
   if (search === "ecl") {
     return {
-      authors: [{ ...VERGIL, matches: [], textCount: 1, texts: [ECLOGUES] }],
+      authors: [{ ...VERGIL, matches: [], workCount: 1, works: [ECLOGUES] }],
       pageCount: 1,
       totalCount: 1,
     };
@@ -214,7 +176,36 @@ describe("library", () => {
   beforeEach(() => {
     SEARCHES.length = 0;
     CALLS.length = 0;
+    CHILD_CALLS.length = 0;
+    WORK_CALLS.length = 0;
     graphqlMockServer.use(
+      mockLibraryChildrenQuery(({ variables }) => {
+        CHILD_CALLS.push(variables);
+        const all = CHILDREN[variables.parentTextId] ?? [];
+        const page = variables.page ?? 1;
+        const texts = all.slice((page - 1) * 100, page * 100);
+        return HttpResponse.json({
+          data: {
+            libraryChildren: {
+              pageCount: Math.ceil(all.length / 100),
+              texts,
+              totalCount: all.length,
+            },
+          },
+        });
+      }),
+      mockLibraryWorksQuery(({ variables }) => {
+        WORK_CALLS.push(variables);
+        return HttpResponse.json({
+          data: {
+            libraryWorks: {
+              pageCount: 2,
+              texts: [textRow("ovid-fasti", "Fasti", { childCount: 150 })],
+              totalCount: 60,
+            },
+          },
+        });
+      }),
       mockLibraryFacetsQuery(() =>
         HttpResponse.json({
           data: {
@@ -253,7 +244,7 @@ describe("library", () => {
     expect(Route.fullPath).toBe("/library");
   });
 
-  it("shows Author cards with era, years, texts, and collections", async () => {
+  it("shows Author cards with era, years, work count, and collections", async () => {
     await renderRoute(getRouter(), "/library");
 
     await expect(
@@ -262,11 +253,24 @@ describe("library", () => {
 
     const card = await screen.findByRole("button", { name: /Vergil/u });
 
-    expect(within(card).getByText("Classical")).toBeDefined();
-    expect(within(card).getByText("70 BCE–19 CE")).toBeDefined();
-    expect(within(card).getByText("4 texts")).toBeDefined();
+    expect(within(card).getByText(/Classical/u)).toBeDefined();
+    expect(within(card).getByText(/70 BCE–19 CE/u)).toBeDefined();
+    expect(within(card).getByText(/2 works/u)).toBeDefined();
     expect(within(card).getByText(/Perseus/u)).toBeDefined();
-    expect(within(card).getByText(/CSEL/u)).toBeDefined();
+    expect(within(card).getByText(/The Latin Library/u)).toBeDefined();
+  });
+
+  it("previews a collapsed card's works in one bullet-separated line", async () => {
+    await renderRoute(getRouter(), "/library");
+
+    await screen.findByRole("button", { name: /Vergil/u });
+
+    expect(
+      screen.getAllByTestId("library-author-preview")[0]?.textContent,
+    ).toBe("Aeneid • Eclogues");
+    expect(
+      screen.getAllByTestId("library-author-preview")[1]?.textContent,
+    ).toBe("Metamorphoses • …");
   });
 
   it("shows the total count with numbered pages", async () => {
@@ -280,7 +284,7 @@ describe("library", () => {
     expect(within(pages).getByRole("button", { name: "Page 3" })).toBeDefined();
   });
 
-  it("expands a card into its books and Texts, labelling duplicate editions", async () => {
+  it("expands a card into its works, linking a work with no children to the Reader", async () => {
     await renderRoute(getRouter(), "/library");
 
     const toggle = await screen.findByRole("button", { name: /Vergil/u });
@@ -291,24 +295,133 @@ describe("library", () => {
 
     expect(toggle.getAttribute("aria-expanded")).toBe("true");
     expect(
-      screen.getByRole("heading", { level: 3, name: "Aeneid" }),
-    ).toBeDefined();
+      screen.getByRole("link", { name: /Eclogues/u }).getAttribute("href"),
+    ).toBe("/texts/vergil-eclogues");
+    expect(screen.getByRole("button", { name: /Aeneid/u })).toBeDefined();
+    expect(CHILD_CALLS).toHaveLength(0);
 
-    const books = screen.getAllByRole("link", { name: /Book 1/u });
+    fireEvent.click(toggle);
 
-    expect(books).toHaveLength(2);
-    expect(books[0]?.getAttribute("href")).toBe("/texts/vergil-aeneid-1");
-    expect(books[1]?.getAttribute("href")).toBe("/texts/vergil-aeneid-1-csel");
-    expect(screen.getByText("Perseus · Mynors 1969")).toBeDefined();
-    expect(screen.getByText("CSEL · Hirtel 1891")).toBeDefined();
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
   });
 
-  it("says how many Texts a card omits when it holds more than it returns", async () => {
+  it("loads a work's children only when it expands, then keeps them", async () => {
+    await renderRoute(getRouter(), "/library");
+
+    fireEvent.click(await screen.findByRole("button", { name: /Vergil/u }));
+
+    const work = screen.getByRole("button", { name: /Aeneid/u });
+
+    expect(work.getAttribute("aria-expanded")).toBe("false");
+    expect(CHILD_CALLS).toHaveLength(0);
+
+    fireEvent.click(work);
+
+    expect(work.getAttribute("aria-expanded")).toBe("true");
+
+    await screen.findByRole("link", { name: "Book 1" });
+
+    expect(CHILD_CALLS).toStrictEqual([
+      { page: 1, pageSize: 100, parentTextId: "vergil-aeneid", search: "" },
+    ]);
+
+    fireEvent.click(work);
+    fireEvent.click(work);
+
+    expect(CHILD_CALLS).toHaveLength(1);
+  });
+
+  it("shows numbered children as small buttons that open the Reader, and the rest as rows", async () => {
+    await renderRoute(getRouter(), "/library");
+
+    fireEvent.click(await screen.findByRole("button", { name: /Vergil/u }));
+    fireEvent.click(screen.getByRole("button", { name: /Aeneid/u }));
+
+    const book = await screen.findByRole("link", { name: "Book 2" });
+
+    expect(book.textContent).toBe("2");
+    expect(book.getAttribute("href")).toBe("/texts/vergil-aeneid-2");
+    expect(
+      screen.getByRole("link", { name: /Praefatio/u }).getAttribute("href"),
+    ).toBe("/texts/vergil-aeneid-praefatio");
+    expect(screen.getAllByRole("link", { name: /^Book \d+$/u })).toHaveLength(
+      11,
+    );
+  });
+
+  it("groups a long numbered run into ranges that each open into buttons", async () => {
     await renderRoute(getRouter(), "/library");
 
     fireEvent.click(await screen.findByRole("button", { name: /Ovid/u }));
+    fireEvent.click(screen.getByRole("button", { name: /Metamorphoses/u }));
 
-    expect(screen.getByText("Showing 1 of 60 texts")).toBeDefined();
+    const first = await screen.findByRole("button", { name: "Carmina 1–20" });
+
+    expect(first.getAttribute("aria-expanded")).toBe("false");
+    expect(screen.getByRole("button", { name: "Carmina 21–40" })).toBeDefined();
+    expect(screen.getByRole("button", { name: "Carmina 41–45" })).toBeDefined();
+    expect(screen.queryByRole("link", { name: "Carmina 21" })).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Carmina 21–40" }));
+
+    expect(first.getAttribute("aria-expanded")).toBe("false");
+    expect(
+      screen.getAllByRole("link", { name: /^Carmina \d+$/u }),
+    ).toHaveLength(20);
+    expect(
+      screen.getByRole("link", { name: "Carmina 40" }).getAttribute("href"),
+    ).toBe("/texts/ovid-metamorphoses-40");
+  });
+
+  it("pages in more children with a load more button", async () => {
+    graphqlMockServer.use(
+      mockLibraryQuery(() =>
+        HttpResponse.json({
+          data: {
+            library: {
+              authors: [
+                {
+                  ...OVID,
+                  workCount: 1,
+                  works: [textRow("ovid-fasti", "Fasti", { childCount: 150 })],
+                },
+              ],
+              pageCount: 1,
+              totalCount: 1,
+            },
+          },
+        }),
+      ),
+    );
+    await renderRoute(getRouter(), "/library");
+
+    fireEvent.click(await screen.findByRole("button", { name: /Ovid/u }));
+    fireEvent.click(screen.getByRole("button", { name: /Fasti/u }));
+
+    await screen.findByRole("button", { name: /Item 1–20/u });
+    fireEvent.click(screen.getByRole("button", { name: "Load more" }));
+
+    await waitFor(() => expect(CHILD_CALLS.at(-1)?.page).toBe(2));
+    await screen.findByRole("button", { name: /Item 141–150/u });
+
+    expect(screen.queryByRole("button", { name: "Load more" })).toBeNull();
+  });
+
+  it("pages in an author's remaining works", async () => {
+    await renderRoute(getRouter(), "/library");
+
+    fireEvent.click(await screen.findByRole("button", { name: /Ovid/u }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Load more works (59 left)" }),
+    );
+
+    await screen.findByRole("button", { name: /Fasti/u });
+
+    expect(WORK_CALLS.at(-1)).toMatchObject({
+      authorId: "author-ovid",
+      page: 2,
+      pageSize: 50,
+    });
   });
 
   it("sends a submitted search to the API and the URL", async () => {
@@ -339,12 +452,54 @@ describe("library", () => {
     expect(screen.getByRole("link", { name: /Eclogues/u })).toBeDefined();
   });
 
-  it("opens a searched card with its matching Texts already shown", async () => {
+  it("opens a searched card, and a work only when its child matched", async () => {
     await renderRoute(getRouter(), "/library?search=ecl");
 
     const toggle = await screen.findByRole("button", { name: /Vergil/u });
 
     expect(toggle.getAttribute("aria-expanded")).toBe("true");
+    expect(CHILD_CALLS).toHaveLength(0);
+  });
+
+  it("opens the work that holds a match nested below the author and marks the child", async () => {
+    graphqlMockServer.use(
+      mockLibraryQuery(() =>
+        HttpResponse.json({
+          data: {
+            library: {
+              authors: [{ ...VERGIL, workCount: 1, works: [AENEID] }],
+              pageCount: 1,
+              totalCount: 1,
+            },
+          },
+        }),
+      ),
+      mockLibraryChildrenQuery(() =>
+        HttpResponse.json({
+          data: {
+            libraryChildren: {
+              pageCount: 1,
+              texts: [
+                textRow("vergil-aeneid-praefatio", "Praefatio", {
+                  matches: [{ end: 4, field: "title", start: 0 }],
+                }),
+              ],
+              totalCount: 1,
+            },
+          },
+        }),
+      ),
+    );
+    await renderRoute(getRouter(), "/library?search=prae");
+
+    await expect(
+      screen.findByText("Prae", { selector: "strong" }),
+    ).resolves.toBeDefined();
+    expect(
+      screen
+        .getByRole("button", { name: /Aeneid/u })
+        .getAttribute("aria-expanded"),
+    ).toBe("true");
   });
 
   it("reads the search and page from the URL", async () => {

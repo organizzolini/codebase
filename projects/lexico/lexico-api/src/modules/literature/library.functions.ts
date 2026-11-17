@@ -103,6 +103,21 @@ export function orderDirection(
 }
 
 /**
+ * Keeps a top-level Text that is in scope itself or has a child in scope,
+ * so a card lists the works that hold a match, not only the match.
+ */
+export function rootScopeClause(
+  alias: string,
+  own: LibrarySqlClause,
+  child: LibrarySqlClause,
+): LibrarySqlClause {
+  return andClauses([
+    sqlClause(`${alias}.parent_text_id IS NULL`),
+    orClauses([own, child]),
+  ]);
+}
+
+/**
  * The sort's attribute as SQL, on the `author` or `text` alias. An enum
  * field becomes a CASE over its explicit rank, so its order never depends on
  * how the database declares the enum.

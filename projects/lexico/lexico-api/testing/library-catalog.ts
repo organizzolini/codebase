@@ -7,6 +7,9 @@ import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 /** How many inscriptions the EDCS author's province holds: more than one author card carries. */
 export const LIBRARY_INSCRIPTION_COUNT = 52;
 
+/** How many numbered books the seeded Fasti holds: more than one range chunk's worth is not needed to test ordering. */
+export const LIBRARY_FASTI_BOOK_COUNT = 12;
+
 /** Seeds a library whose attributes the library query searches, filters, and pages. */
 export async function seedLibraryCatalog(
   database: DatabaseTestingModule,
@@ -141,7 +144,7 @@ export async function seedLibraryCatalog(
       type: "text",
     }),
   );
-  await texts.save(
+  const fasti = await texts.save(
     texts.create({
       author: ovid,
       collection: textCollection.theLatinLibrary,
@@ -150,6 +153,18 @@ export async function seedLibraryCatalog(
       title: "Fasti",
       type: "text",
     }),
+  );
+  await texts.save(
+    Array.from({ length: LIBRARY_FASTI_BOOK_COUNT }, (_, index) =>
+      texts.create({
+        author: ovid,
+        collection: textCollection.theLatinLibrary,
+        parentText: fasti,
+        slug: `ovid/fasti/book-${String(index + 1)}`,
+        title: `Book ${String(index + 1)}`,
+        type: "text",
+      }),
+    ),
   );
   await texts.save(
     texts.create({

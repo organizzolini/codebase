@@ -14,6 +14,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **disambiguator**: Float field on GraphQL search results giving a numeric index that tells apart lexemes sharing a lemma.
 - **edition**:
 - **element**: Generic DOM node in tests, such as a found link whose href is checked to confirm navigation to a route.
+- **fasti**: Ovid's poem on the Roman calendar, used in tests as a work with numbered books.
 - **fire**: Test verb: fireEvent dispatches a DOM event, such as click or focus, on an element rendered under test.
 - **grammar**: Word in code comments naming grammar-book conventions, such as the short labels and case order in form tables.
 - **imperial**:
@@ -37,6 +38,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **selector**: Not used in lexico-web source; tests find elements by role and test id rather than through any selector abstraction.
 - **spot**:
 - **translation**: An English sense of a lexeme, listed as bullets by LexemeTranslations and matched by English search.
+- **unmount**: Removes a rendered component in a test so the same props can render again from a fresh state.
 - **verb**: Part of speech whose forms render as a conjugation table, routed to the VerbForms component when partOfSpeech is verb.
 - **vergil**:
 - **visible**: Tailwind overflow-visible class on the search bar card, so content can extend past the card edges.

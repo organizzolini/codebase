@@ -18,6 +18,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **deletable**: Shared base type for soft-deletable rows, exposing id and audit columns through GraphQL types across modules.
 - **disambiguator**: Numeric lexeme field separating homographs that share a lemma, such as two entries spelled the same way.
 - **edition**: Published version of a Text, such as its series or volume, shown beside its collection in the library.
+- **fasti**: Ovid's poem on the Roman calendar, seeded in the library catalog as a work with twelve numbered books.
 - **imperial**: Era label for authors of the Roman Empire, such as Ovid in the library catalog fixture.
 - **inscription**: Text recording one EDCS inscription, a child of its province book with its own find-spot and dates.
 - **lexeme**: Dictionary entry for a Latin word, the core entity of the lexicon carrying its lemma, translations, forms, and pronunciation.

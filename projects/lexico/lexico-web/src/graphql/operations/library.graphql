@@ -1,3 +1,27 @@
+fragment LibraryTextRow on LibraryText {
+  childCount
+  matches {
+    field
+    start
+    end
+  }
+  text {
+    id
+    slug
+    title
+    type
+    collection
+    edition
+    editors
+    findSpot
+    inscriptionType
+    material
+    province
+    lineCount
+    wordCount
+  }
+}
+
 query Library(
   $search: String
   $filters: LibraryFilters
@@ -29,33 +53,9 @@ query Library(
         start
         end
       }
-      textCount
-      texts {
-        matches {
-          field
-          start
-          end
-        }
-        text {
-          id
-          slug
-          title
-          type
-          collection
-          edition
-          editors
-          findSpot
-          inscriptionType
-          material
-          province
-          lineCount
-          wordCount
-          parentText {
-            id
-            slug
-            title
-          }
-        }
+      workCount
+      works {
+        ...LibraryTextRow
       }
     }
   }

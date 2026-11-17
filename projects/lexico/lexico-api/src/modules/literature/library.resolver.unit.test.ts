@@ -27,7 +27,7 @@ describe(LibraryResolver, () => {
       slug: "vergil",
     });
     const page: LibraryPageRecord = {
-      authors: [{ author, matches: [], textCount: 0, texts: [] }],
+      authors: [{ author, matches: [], workCount: 0, works: [] }],
       pageCount: 3,
       totalCount: 5,
     };

@@ -1,9 +1,15 @@
-import { LibraryHighlight } from "../library-highlight/library-highlight";
+import { useState } from "react";
 
-import { groupTexts } from "./library-author-card.utilities";
-import { LibraryTextLink } from "./library-text-link";
+import { Button } from "@codebase/presentation";
 
-import type { LibraryAuthorRow } from "../library-grid/library-grid.types";
+import { LibraryTextTree } from "../library-text-tree/library-text-tree";
+import { getLibraryWorks } from "../library-text-tree/library-text-tree.constants";
+
+import type {
+  LibraryAuthorRow,
+  LibraryRequest,
+  LibraryTextRow,
+} from "../library-grid/library-grid.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -14,26 +20,48 @@ import type { ReactNode } from "react";
 export interface LibraryAuthorTextsProperties {
   className?: string;
   id: string;
+  query: LibraryRequest;
   row: LibraryAuthorRow;
 }
 
 // 🧩 Component
 
 /**
- * The books and Texts an expanded Author card lists, and how many it omits.
+ * The works an expanded Author card lists as a hierarchy, with a button that
+ * pages in the author's remaining works when the card holds only the first.
  */
 export function LibraryAuthorTexts(
   properties: Readonly<LibraryAuthorTextsProperties>,
 ): ReactNode {
-  const { className, id, row } = properties;
-  const { textCount, texts } = row;
+  const { className, id, query, row } = properties;
 
   // 🪝 Hooks
+  const [more, setMore] = useState<LibraryTextRow[]>([]);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasFailed, setHasFailed] = useState(false);
 
   // 🏗 Setup
-  const entries = groupTexts(texts);
+  const works = [...row.works, ...more];
+  const isMatched = row.matches.length > 0;
 
   // 💪 Handlers
+  const handleMore = async (): Promise<void> => {
+    setIsLoading(true);
+    setHasFailed(false);
+
+    try {
+      const loaded = await getLibraryWorks({
+        data: { ...query, authorId: row.author.id, page: page + 1 },
+      });
+      setMore((current) => [...current, ...loaded.texts]);
+      setPage(page + 1);
+    } catch {
+      setHasFailed(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // ♻️ Lifecycle
 
@@ -46,36 +74,32 @@ export function LibraryAuthorTexts(
       data-testid="library-author-texts"
       id={id}
     >
-      {entries.map((entry) =>
-        entry.kind === "book" ? (
-          <section key={entry.id}>
-            <h3 className="font-medium">
-              <LibraryHighlight
-                className="inline"
-                field="title"
-                matches={entry.matches}
-                value={entry.title}
-              />
-            </h3>
-            <ul className="space-y-2 pl-3">
-              {entry.children.map((child) => (
-                <li key={child.text.id}>
-                  <LibraryTextLink row={child} />
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : (
-          <LibraryTextLink
-            key={entry.row.text.id}
-            row={entry.row}
-          />
-        ),
-      )}
-      {textCount > texts.length ? (
-        <p className="text-sm text-muted-foreground">
-          {`Showing ${String(texts.length)} of ${String(textCount)} texts`}
+      <LibraryTextTree
+        className="space-y-2"
+        depth={0}
+        isAuthorMatched={isMatched}
+        rows={works}
+        search={query.search}
+      />
+      {hasFailed ? (
+        <p
+          className="text-sm"
+          role="alert"
+        >
+          Could not load more works. Try again.
         </p>
+      ) : null}
+      {row.workCount > works.length ? (
+        <Button
+          disabled={isLoading}
+          onClick={() => {
+            void handleMore();
+          }}
+          size="sm"
+          variant="outline"
+        >
+          {`Load more works (${String(row.workCount - works.length)} left)`}
+        </Button>
       ) : null}
     </div>
   );

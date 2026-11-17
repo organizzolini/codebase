@@ -22,8 +22,9 @@ interface LibraryPageNode {
       readonly startYear: null | number;
     };
     readonly matches: MatchNode[];
-    readonly textCount: number;
-    readonly texts: {
+    readonly workCount: number;
+    readonly works: {
+      readonly childCount: number;
       readonly matches: MatchNode[];
       readonly text: {
         readonly collection: null | string;
@@ -65,8 +66,9 @@ const LIBRARY = `
       authors {
         author { name fullName era startYear endYear }
         matches { field start end }
-        textCount
-        texts {
+        workCount
+        works {
+          childCount
           matches { field start end }
           text { title collection edition parentText { title } }
         }
@@ -152,15 +154,17 @@ describe("library resolver end-to-end suite", () => {
       { end: 14, field: "fullName", start: 8 },
       { end: 6, field: "name", start: 0 },
     ]);
-    expect(card?.textCount).toBe(4);
-    expect(card?.texts.map(({ text }) => text.title)).toStrictEqual([
+    expect(card?.workCount).toBe(3);
+    expect(card?.works.map(({ text }) => text.title)).toStrictEqual([
       "Aeneid",
-      "Book I",
       "Eclogues",
       "Eclogues",
     ]);
+    expect(card?.works.map(({ childCount }) => childCount)).toStrictEqual([
+      1, 0, 0,
+    ]);
 
-    for (const { matches } of card?.texts ?? []) {
+    for (const { matches } of card?.works ?? []) {
       expect(matches).toStrictEqual([]);
     }
   });
@@ -185,14 +189,14 @@ describe("library resolver end-to-end suite", () => {
 
     expect(card?.author.name).toBe("Vergil");
     expect(card?.matches).toStrictEqual([]);
-    expect(card?.textCount).toBe(1);
-    expect(card?.texts).toHaveLength(1);
-    expect(card?.texts[0]?.text).toMatchObject({
+    expect(card?.workCount).toBe(1);
+    expect(card?.works).toHaveLength(1);
+    expect(card?.works[0]?.text).toMatchObject({
       collection: "PERSEUS",
       edition: "Oxford Classical Texts",
       title: "Aeneid",
     });
-    expect(card?.texts[0]?.matches).toStrictEqual([
+    expect(card?.works[0]?.matches).toStrictEqual([
       { end: 6, field: "title", start: 0 },
     ]);
   });
@@ -204,9 +208,9 @@ describe("library resolver end-to-end suite", () => {
     const [card] = page.authors;
 
     expect(card?.author.name).toBe("Vergil");
-    expect(card?.texts).toHaveLength(1);
-    expect(card?.texts[0]?.text.edition).toBe("CSEL 12");
-    expect(card?.texts[0]?.matches).toStrictEqual([
+    expect(card?.works).toHaveLength(1);
+    expect(card?.works[0]?.text.edition).toBe("CSEL 12");
+    expect(card?.works[0]?.matches).toStrictEqual([
       { end: 4, field: "collection", start: 0 },
       { end: 4, field: "edition", start: 0 },
     ]);
@@ -220,7 +224,7 @@ describe("library resolver end-to-end suite", () => {
     expect(page.authors.map(({ author }) => author.name)).toStrictEqual([
       "Vergil",
     ]);
-    expect(page.authors[0]?.texts.map(({ matches }) => matches)).toStrictEqual([
+    expect(page.authors[0]?.works.map(({ matches }) => matches)).toStrictEqual([
       [{ end: 6, field: "edition", start: 0 }],
     ]);
   });
@@ -233,10 +237,10 @@ describe("library resolver end-to-end suite", () => {
     expect(page.authors.map(({ author }) => author.name)).toStrictEqual([
       "Ovid",
     ]);
-    expect(page.authors[0]?.texts.map(({ text }) => text.title)).toStrictEqual([
+    expect(page.authors[0]?.works.map(({ text }) => text.title)).toStrictEqual([
       "Fasti",
     ]);
-    expect(page.authors[0]?.texts[0]?.matches).toStrictEqual([
+    expect(page.authors[0]?.works[0]?.matches).toStrictEqual([
       { end: 7, field: "findSpot", start: 0 },
     ]);
   });
@@ -251,13 +255,13 @@ describe("library resolver end-to-end suite", () => {
 
     expect(names).toStrictEqual(["Caesar", "Ovid", "Vergil"]);
     expect(caesar?.matches).toStrictEqual([]);
-    expect(caesar?.texts.map(({ text }) => text.title)).toStrictEqual([
+    expect(caesar?.works.map(({ text }) => text.title)).toStrictEqual([
       "Publius Syrus Sententiae",
     ]);
     expect(vergil?.matches).toStrictEqual([
       { end: 7, field: "fullName", start: 0 },
     ]);
-    expect(vergil?.texts).toHaveLength(4);
+    expect(vergil?.works).toHaveLength(3);
   });
 
   it("accepts a page size of exactly 100", async () => {
@@ -274,10 +278,10 @@ describe("library resolver end-to-end suite", () => {
 
     const page = await library({ search: "mynors" });
 
-    expect(page.authors[0]?.texts.map(({ text }) => text.title)).toStrictEqual([
+    expect(page.authors[0]?.works.map(({ text }) => text.title)).toStrictEqual([
       "Aeneid",
     ]);
-    expect(page.authors[0]?.texts[0]?.matches).toStrictEqual([
+    expect(page.authors[0]?.works[0]?.matches).toStrictEqual([
       { end: 15, field: "editors", start: 9 },
     ]);
   });
@@ -290,27 +294,25 @@ describe("library resolver end-to-end suite", () => {
     expect(page.authors.map(({ author }) => author.name)).toStrictEqual([
       "Caesar",
     ]);
-    expect(page.authors[0]?.texts[0]?.matches).toStrictEqual([
+    expect(page.authors[0]?.works[0]?.matches).toStrictEqual([
       { end: 16, field: "title", start: 9 },
     ]);
   });
 
-  it("matches inscription attributes and carries inscriptions under their book", async () => {
+  it("matches inscription attributes and keeps the province that holds them as one work", async () => {
     expect.hasAssertions();
 
     const page = await library({ search: "hispania" });
     const [card] = page.authors;
 
     expect(card?.author.name).toBe("Roman Inscriptions");
-    expect(card?.textCount).toBe(LIBRARY_INSCRIPTION_COUNT);
-    expect(card?.texts).toHaveLength(50);
-    expect(card?.texts[0]?.text).toMatchObject({
-      parentText: { title: "Tarraconensis" },
-      title: "HD000001",
+    expect(card?.workCount).toBe(1);
+    expect(card?.works).toHaveLength(1);
+    expect(card?.works[0]?.text).toMatchObject({
+      parentText: null,
+      title: "Tarraconensis",
     });
-    expect(card?.texts[0]?.matches).toStrictEqual([
-      { end: 8, field: "province", start: 0 },
-    ]);
+    expect(card?.works[0]?.childCount).toBe(LIBRARY_INSCRIPTION_COUNT + 2);
   });
 
   it("matches the material and inscription type of an inscription", async () => {
@@ -319,13 +321,9 @@ describe("library resolver end-to-end suite", () => {
     const material = await library({ search: "marble" });
     const type = await library({ search: "tombstone" });
 
-    expect(material.authors[0]?.textCount).toBe(LIBRARY_INSCRIPTION_COUNT);
-    expect(material.authors[0]?.texts[0]?.matches).toStrictEqual([
-      { end: 6, field: "material", start: 0 },
-    ]);
-    expect(type.authors[0]?.texts[0]?.matches).toStrictEqual([
-      { end: 9, field: "inscriptionType", start: 0 },
-    ]);
+    expect(material.authors[0]?.workCount).toBe(1);
+    expect(material.authors[0]?.works[0]?.text.title).toBe("Tarraconensis");
+    expect(type.authors[0]?.workCount).toBe(1);
   });
 
   it("leaves out a soft-deleted text", async () => {
@@ -486,9 +484,9 @@ describe("library resolver end-to-end suite", () => {
     expect(province.authors.map(({ author }) => author.name)).toStrictEqual([
       "Roman Inscriptions",
     ]);
-    expect(province.authors[0]?.textCount).toBe(LIBRARY_INSCRIPTION_COUNT);
+    expect(province.authors[0]?.workCount).toBe(1);
     expect(type.totalCount).toBe(0);
-    expect(material.authors[0]?.textCount).toBe(LIBRARY_INSCRIPTION_COUNT);
+    expect(material.authors[0]?.workCount).toBe(1);
   });
 
   it("lists the distinct provinces, types, and materials with counts", async () => {
@@ -526,8 +524,8 @@ describe("library resolver end-to-end suite", () => {
       filters: { inscriptionYears: { max: 99, min: 0 } },
     });
 
-    expect(inside.authors[0]?.textCount).toBe(LIBRARY_INSCRIPTION_COUNT);
-    expect(inside.authors[0]?.texts[0]?.text.title).toBe("HD000001");
+    expect(inside.authors[0]?.workCount).toBe(1);
+    expect(inside.authors[0]?.works[0]?.text.title).toBe("Tarraconensis");
     expect(outside.totalCount).toBe(0);
   });
 
@@ -544,9 +542,9 @@ describe("library resolver end-to-end suite", () => {
       "Vergil",
     ]);
     expect(
-      printed.authors[0]?.texts.map(({ text }) => text.title),
+      printed.authors[0]?.works.map(({ text }) => text.title),
     ).toStrictEqual(["Aeneid"]);
-    expect(lines.authors[0]?.texts[0]?.text.title).toBe("Aeneid");
+    expect(lines.authors[0]?.works[0]?.text.title).toBe("Aeneid");
     expect(words).toMatchObject({ authors: [], totalCount: 0 });
   });
 
@@ -560,7 +558,7 @@ describe("library resolver end-to-end suite", () => {
 
     expect(page.totalCount).toBe(1);
     expect(card?.author.name).toBe("Vergil");
-    expect(card?.textCount).toBe(1);
+    expect(card?.workCount).toBe(1);
   });
 
   it("combines filters with search using AND", async () => {
@@ -576,7 +574,7 @@ describe("library resolver end-to-end suite", () => {
     });
 
     expect(
-      printed.authors[0]?.texts.map(({ text }) => text.title),
+      printed.authors[0]?.works.map(({ text }) => text.title),
     ).toStrictEqual(["Aeneid"]);
     expect(none.totalCount).toBe(0);
   });
@@ -663,8 +661,8 @@ describe("library resolver end-to-end suite", () => {
       "Roman Inscriptions",
     ]);
     expect(
-      descending.authors[0]?.texts.map(({ text }) => text.title),
-    ).toStrictEqual(["Aeneid", "Book I", "Eclogues", "Eclogues"]);
+      descending.authors[0]?.works.map(({ text }) => text.title),
+    ).toStrictEqual(["Aeneid", "Eclogues", "Eclogues"]);
     expect(ascending.authors[0]?.author.name).toBe("Vergil");
   });
 
@@ -683,13 +681,13 @@ describe("library resolver end-to-end suite", () => {
     });
 
     expect(
-      descending.authors[0]?.texts.map(({ text }) => text.title),
-    ).toStrictEqual(["Eclogues", "Eclogues", "Book I", "Aeneid"]);
+      descending.authors[0]?.works.map(({ text }) => text.title),
+    ).toStrictEqual(["Eclogues", "Eclogues", "Aeneid"]);
     expect(ascending.authors.map(({ author }) => author.name)).toStrictEqual([
       "Vergil",
+      "Ovid",
       "Catullus",
       "Caesar",
-      "Ovid",
       "Roman Inscriptions",
     ]);
     expect(

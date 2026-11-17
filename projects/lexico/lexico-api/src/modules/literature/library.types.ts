@@ -4,12 +4,12 @@ import type {
 } from "./library-sort.entities";
 import type { Author, AuthorEra, Text } from "@codebase/lexico-db";
 
-/** An author card: the author, what matched, and the Texts it carries. */
+/** An author card: the author, what matched, and the top-level works it carries. */
 export interface LibraryAuthorRecord {
   readonly author: Author;
   readonly matches: LibraryMatchRange[];
-  readonly textCount: number;
-  readonly texts: LibraryTextRecord[];
+  readonly workCount: number;
+  readonly works: LibraryTextRecord[];
 }
 
 /** The distinct values of each data-driven filter. */
@@ -66,8 +66,16 @@ export interface LibrarySort {
 
 /** A Text a library author card carries, with the spans its search matched. */
 export interface LibraryTextRecord {
+  readonly childCount: number;
   readonly matches: LibraryMatchRange[];
   readonly text: Text;
+}
+
+/** One page of Texts, with how many there are in all. */
+export interface LibraryTextsPageRecord {
+  readonly pageCount: number;
+  readonly texts: LibraryTextRecord[];
+  readonly totalCount: number;
 }
 
 /** Library arguments after validation, with defaults applied. */
@@ -77,4 +85,12 @@ export interface ParsedLibraryArguments {
   readonly pageSize: number;
   readonly search: null | string;
   readonly sort: LibrarySort;
+}
+
+/** Children arguments after validation, with defaults applied. */
+export interface ParsedLibraryChildrenArguments {
+  readonly page: number;
+  readonly pageSize: number;
+  readonly parentTextId: string;
+  readonly search: null | string;
 }

@@ -165,7 +165,7 @@ function LibraryPage(): ReactNode {
           <p className="text-sm text-muted-foreground">{count}</p>
           <LibraryGrid
             authors={library.authors}
-            search={search}
+            query={{ ...filters, direction, search, sort }}
           />
           <LibraryPagination
             onPageChange={handlePage}

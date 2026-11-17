@@ -9,6 +9,7 @@ describe(LibraryAuthorCard, () => {
     render(
       <LibraryAuthorCard
         className="library-author-card"
+        query={{ search: "" }}
         row={{
           author: {
             endYear: null,
@@ -20,10 +21,9 @@ describe(LibraryAuthorCard, () => {
             startYear: null,
           },
           matches: [],
-          textCount: 0,
-          texts: [],
+          workCount: 0,
+          works: [],
         }}
-        search=""
       />,
     );
 
@@ -35,6 +35,7 @@ describe(LibraryAuthorCard, () => {
   it("bolds the matched part of the full name", () => {
     render(
       <LibraryAuthorCard
+        query={{ search: "vergilius" }}
         row={{
           author: {
             endYear: null,
@@ -46,10 +47,9 @@ describe(LibraryAuthorCard, () => {
             startYear: null,
           },
           matches: [{ end: 17, field: "fullName", start: 8 }],
-          textCount: 0,
-          texts: [],
+          workCount: 0,
+          works: [],
         }}
-        search="vergilius"
       />,
     );
 

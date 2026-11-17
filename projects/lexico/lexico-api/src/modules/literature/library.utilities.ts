@@ -4,21 +4,28 @@ import { LibraryAuthorType } from "./library-author.entities";
 import { LibraryMatchType } from "./library-match.entities";
 import { LibraryPageType } from "./library-page.entities";
 import { LibraryTextType } from "./library-text.entities";
+import { LibraryTextsPageType } from "./library-texts-page.entities";
 import {
+  LIBRARY_CHILDREN_PAGE_SIZE,
   LIBRARY_DEFAULT_PAGE_SIZE,
   LIBRARY_DEFAULT_SORT,
   libraryArgumentsSchema,
+  libraryChildrenArgumentsSchema,
 } from "./library.constants";
 import { toAuthorType, toTextType } from "./literature.utilities";
 
 import type { LibraryArguments } from "./library-arguments.entities";
+import type { LibraryChildrenArguments } from "./library-children-arguments.entities";
 import type {
   LibraryAuthorRecord,
   LibraryMatchRange,
   LibraryPageRecord,
   LibraryTextRecord,
+  LibraryTextsPageRecord,
   ParsedLibraryArguments,
+  ParsedLibraryChildrenArguments,
 } from "./library.types";
+import type { ZodError } from "zod";
 
 /**
  * Escapes a search term for a LIKE pattern, so that `%` and `_` match
@@ -71,10 +78,7 @@ export function parseLibraryArguments(
 ): ParsedLibraryArguments {
   const result = libraryArgumentsSchema.safeParse(arguments_);
   if (!result.success) {
-    throw new GraphQLError(
-      result.error.issues[0]?.message ?? "Invalid library arguments",
-      { extensions: { code: "BAD_USER_INPUT" } },
-    );
+    throw badInput(result.error);
   }
   return {
     filters: result.data.filters ?? {},
@@ -85,6 +89,25 @@ export function parseLibraryArguments(
       direction: result.data.sort?.direction ?? LIBRARY_DEFAULT_SORT.direction,
       field: result.data.sort?.field ?? LIBRARY_DEFAULT_SORT.field,
     },
+  };
+}
+
+/**
+ * Validates children arguments at the resolver boundary, like
+ * {@link parseLibraryArguments}.
+ */
+export function parseLibraryChildrenArguments(
+  arguments_: LibraryChildrenArguments,
+): ParsedLibraryChildrenArguments {
+  const result = libraryChildrenArgumentsSchema.safeParse(arguments_);
+  if (!result.success) {
+    throw badInput(result.error);
+  }
+  return {
+    page: result.data.page ?? 1,
+    pageSize: result.data.pageSize ?? LIBRARY_CHILDREN_PAGE_SIZE,
+    parentTextId: result.data.parentTextId,
+    search: normalizeSearch(result.data.search),
   };
 }
 
@@ -112,6 +135,25 @@ export function toLibraryPageType(page: LibraryPageRecord): LibraryPageType {
   });
 }
 
+/** Maps a page of Texts to its GraphQL type. */
+export function toLibraryTextsPageType(
+  page: LibraryTextsPageRecord,
+): LibraryTextsPageType {
+  return Object.assign(new LibraryTextsPageType(), {
+    pageCount: page.pageCount,
+    texts: page.texts.map((text) => toLibraryTextType(text)),
+    totalCount: page.totalCount,
+  });
+}
+
+/** The bad-user-input error that reports every problem in some arguments. */
+function badInput(error: ZodError): GraphQLError {
+  return new GraphQLError(
+    error.issues.map((issue) => issue.message).join("; "),
+    { extensions: { code: "BAD_USER_INPUT" } },
+  );
+}
+
 /** Trims a search, and reads a blank one as no search. */
 function normalizeSearch(search: null | string | undefined): null | string {
   const trimmed = search?.trim() ?? "";
@@ -123,14 +165,15 @@ function toLibraryAuthorType(record: LibraryAuthorRecord): LibraryAuthorType {
   return Object.assign(new LibraryAuthorType(), {
     author: toAuthorType(record.author),
     matches: record.matches.map((range) => toMatchType(range)),
-    textCount: record.textCount,
-    texts: record.texts.map((text) => toLibraryTextType(text)),
+    workCount: record.workCount,
+    works: record.works.map((text) => toLibraryTextType(text)),
   });
 }
 
 /** Maps a Text on an author card to its GraphQL type. */
 function toLibraryTextType(record: LibraryTextRecord): LibraryTextType {
   return Object.assign(new LibraryTextType(), {
+    childCount: record.childCount,
     matches: record.matches.map((range) => toMatchType(range)),
     text: toTextType(record.text),
   });

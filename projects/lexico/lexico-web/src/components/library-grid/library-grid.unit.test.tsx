@@ -9,7 +9,7 @@ describe(LibraryGrid, () => {
       <LibraryGrid
         authors={[]}
         className="library-grid"
-        search=""
+        query={{ search: "" }}
       />,
     );
 
@@ -28,13 +28,13 @@ describe(LibraryGrid, () => {
         startYear: null,
       },
       matches: [],
-      textCount: 0,
-      texts: [],
+      workCount: 0,
+      works: [],
     };
     render(
       <LibraryGrid
         authors={[author]}
-        search=""
+        query={{ search: "" }}
       />,
     );
 

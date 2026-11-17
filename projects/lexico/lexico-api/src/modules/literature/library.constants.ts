@@ -14,10 +14,13 @@ export const LIBRARY_DEFAULT_PAGE_SIZE = 24;
 export const LIBRARY_MAX_PAGE_SIZE = 100;
 
 /**
- * The most Texts one author card carries. `textCount` still reports every
- * matching Text, so a card can say how many it leaves out.
+ * The most top-level works one author card carries. `workCount` still
+ * reports every work in scope, and `libraryWorks` pages the rest.
  */
-export const LIBRARY_TEXTS_PER_AUTHOR = 50;
+export const LIBRARY_WORKS_PER_AUTHOR = 50;
+
+/** The children one `libraryChildren` page holds when it names no size. */
+export const LIBRARY_CHILDREN_PAGE_SIZE = 100;
 
 /** The longest search string, or filter value, a library request may send. */
 export const LIBRARY_MAX_SEARCH_LENGTH = 200;
@@ -142,6 +145,14 @@ const sortSchema = z
     field: z.enum(LibrarySortField),
   })
   .nullish();
+
+/** Validates the arguments of one page of a Text's children. */
+export const libraryChildrenArgumentsSchema = z.object({
+  page: z.number().int().min(1).nullish(),
+  pageSize: z.number().int().min(1).max(LIBRARY_MAX_PAGE_SIZE).nullish(),
+  parentTextId: z.string().min(1),
+  search: textSchema.nullish(),
+});
 
 /** Validates library arguments; absent options take their defaults. */
 export const libraryArgumentsSchema = z.object({

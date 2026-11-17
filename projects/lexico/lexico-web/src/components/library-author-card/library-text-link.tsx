@@ -3,7 +3,11 @@ import { Link } from "@tanstack/react-router";
 import { LibraryHighlight } from "../library-highlight/library-highlight";
 
 import { JOINED_FIELD } from "./library-author-card.constants";
-import { attributeLine, editionLine } from "./library-author-card.utilities";
+import {
+  attributeLine,
+  countsOf,
+  editionLine,
+} from "./library-author-card.utilities";
 
 import type { LibraryTextRow } from "../library-grid/library-grid.types";
 import type { ReactNode } from "react";
@@ -35,10 +39,7 @@ export function LibraryTextLink(
   // 🏗 Setup
   const label = editionLine(row);
   const attributes = attributeLine(row);
-  const counts = [
-    text.lineCount === null ? null : `${String(text.lineCount)} lines`,
-    text.wordCount === null ? null : `${String(text.wordCount)} words`,
-  ].filter((part): part is string => part !== null);
+  const counts = countsOf(text);
 
   // 💪 Handlers
 
@@ -63,14 +64,17 @@ export function LibraryTextLink(
           matches={matches}
           value={text.title}
         />
-        {label.value === "" ? null : (
-          <LibraryHighlight
-            className="block text-xs text-muted-foreground"
-            field={JOINED_FIELD}
-            matches={label.matches}
-            value={label.value}
-          />
-        )}
+        <span className="block text-xs text-muted-foreground">
+          {label.value === "" ? null : (
+            <LibraryHighlight
+              className="inline"
+              field={JOINED_FIELD}
+              matches={label.matches}
+              value={label.value}
+            />
+          )}
+          <span>{label.value === "" ? counts : ` · ${counts}`}</span>
+        </span>
         {attributes.value === "" ? null : (
           <LibraryHighlight
             className="block text-xs text-muted-foreground"
@@ -78,11 +82,6 @@ export function LibraryTextLink(
             matches={attributes.matches}
             value={attributes.value}
           />
-        )}
-        {counts.length === 0 ? null : (
-          <span className="block text-xs text-muted-foreground">
-            {counts.join(" · ")}
-          </span>
         )}
       </Link>
     </div>

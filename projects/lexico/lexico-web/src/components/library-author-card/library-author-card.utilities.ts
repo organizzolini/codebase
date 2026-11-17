@@ -9,11 +9,7 @@ import type {
   LibraryMatchRow,
   LibraryTextRow,
 } from "../library-grid/library-grid.types";
-import type {
-  LibraryBookEntry,
-  LibraryEntry,
-  LibraryJoinedLine,
-} from "./library-author-card.types";
+import type { LibraryJoinedLine } from "./library-author-card.types";
 
 // 🔏 Private Functions
 
@@ -41,6 +37,16 @@ export function collectionsOf(rows: readonly LibraryTextRow[]): string[] {
     }
   }
   return [...collections];
+}
+
+/** A Text's line and word counts as one string, empty when it has neither. */
+export function countsOf(text: LibraryTextRow["text"]): string {
+  return [
+    text.lineCount === null ? "" : `${String(text.lineCount)} lines`,
+    text.wordCount === null ? "" : `${String(text.wordCount)} words`,
+  ]
+    .filter((part) => part !== "")
+    .join(" · ");
 }
 
 /**
@@ -71,49 +77,15 @@ export function formatYears(start: null | number, end: null | number): string {
 }
 
 /**
- * Groups a card's Texts under their books, in the order the API returned them.
- * A Text whose book is not in the card still gets a book entry for it.
+ * The works of a card as one bullet-separated line, each title once, with a
+ * trailing ellipsis when the card holds more works than it lists.
  */
-export function groupTexts(rows: readonly LibraryTextRow[]): LibraryEntry[] {
-  const entries: LibraryEntry[] = [];
-  const books = new Map<string, LibraryBookEntry>();
-  const bookFor = (book: LibraryBookEntry): LibraryBookEntry => {
-    const existing = books.get(book.id);
-    if (existing !== undefined) {
-      return existing;
-    }
-    books.set(book.id, book);
-    entries.push(book);
-    return book;
-  };
-
-  for (const row of rows) {
-    const { matches, text } = row;
-
-    if (text.type === "book") {
-      bookFor({
-        children: [],
-        id: text.id,
-        kind: "book",
-        matches,
-        slug: text.slug,
-        title: text.title,
-      });
-    } else if (text.parentText === null) {
-      entries.push({ kind: "text", row });
-    } else {
-      bookFor({
-        children: [],
-        id: text.parentText.id,
-        kind: "book",
-        matches: [],
-        slug: text.parentText.slug,
-        title: text.parentText.title,
-      }).children.push(row);
-    }
-  }
-
-  return entries;
+export function previewOf(
+  works: readonly LibraryTextRow[],
+  workCount: number,
+): string {
+  const titles = [...new Set(works.map(({ text }) => text.title))];
+  return `${titles.join(" • ")}${workCount > works.length ? " • …" : ""}`;
 }
 
 /** A year as the era labels it: BCE for negative years. */

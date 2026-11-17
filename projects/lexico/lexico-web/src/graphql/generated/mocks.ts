@@ -242,10 +242,10 @@ export type LibraryAuthor = {
   __typename?: 'LibraryAuthor';
   author: Author;
   matches: Array<LibraryMatch>;
-  /** Every Text the card matches, even when texts omits some. */
-  textCount: Scalars['Int']['output'];
-  /** The card's matching Texts, at most 50, in title order. */
-  texts: Array<LibraryText>;
+  /** Every top-level work in scope, even when works omits some. */
+  workCount: Scalars['Int']['output'];
+  /** The card's top-level works in scope, at most 50. A work whose child matches is in scope. */
+  works: Array<LibraryText>;
 };
 
 export type LibraryFacetValue = {
@@ -344,9 +344,18 @@ export enum LibrarySortField {
 
 export type LibraryText = {
   __typename?: 'LibraryText';
+  /** The Texts directly under this one, whatever the search. */
+  childCount: Scalars['Int']['output'];
   matches: Array<LibraryMatch>;
   /** The Text. Its parentText is the book it belongs to, if any. */
   text: Text;
+};
+
+export type LibraryTextsPage = {
+  __typename?: 'LibraryTextsPage';
+  pageCount: Scalars['Int']['output'];
+  texts: Array<LibraryText>;
+  totalCount: Scalars['Int']['output'];
 };
 
 export type Line = {
@@ -520,7 +529,9 @@ export type Query = {
   /** Retrieves multiple dictionary lexemes by ID. */
   lexemes: Array<Lexeme>;
   library: LibraryPage;
+  libraryChildren: LibraryTextsPage;
   libraryFacets: LibraryFacets;
+  libraryWorks: LibraryTextsPage;
   lines: LineConnection;
   searchAuthors: AuthorConnection;
   /** Performs English definition and translation search with relevance ranking, returning at most the 200 best-ranked lexemes. */
@@ -568,6 +579,24 @@ export type QueryLexemesArgs = {
 
 
 export type QueryLibraryArgs = {
+  filters?: InputMaybe<LibraryFilters>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<LibrarySort>;
+};
+
+
+export type QueryLibraryChildrenArgs = {
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  parentTextId: Scalars['ID']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryLibraryWorksArgs = {
+  authorId: Scalars['ID']['input'];
   filters?: InputMaybe<LibraryFilters>;
   page?: InputMaybe<Scalars['Int']['input']>;
   pageSize?: InputMaybe<Scalars['Int']['input']>;
@@ -951,10 +980,34 @@ export type WordLexemeEdge = {
   node: WordLexeme;
 };
 
+export type LibraryChildrenQueryVariables = Exact<{
+  parentTextId: string | number;
+  search?: string | null | undefined;
+  page?: number | null | undefined;
+  pageSize?: number | null | undefined;
+}>;
+
+
+export type LibraryChildrenQuery = { libraryChildren: { totalCount: number, pageCount: number, texts: Array<{ childCount: number, matches: Array<{ field: string, start: number, end: number }>, text: { id: string, slug: string, title: string, type: string, collection: Schema.TextCollection | null, edition: string | null, editors: string | null, findSpot: string | null, inscriptionType: string | null, material: string | null, province: string | null, lineCount: number | null, wordCount: number | null } }> } };
+
 export type LibraryFacetsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type LibraryFacetsQuery = { libraryFacets: { provinces: Array<{ value: string, count: number }>, inscriptionTypes: Array<{ value: string, count: number }>, materials: Array<{ value: string, count: number }> } };
+
+export type LibraryWorksQueryVariables = Exact<{
+  authorId: string | number;
+  search?: string | null | undefined;
+  filters?: Schema.LibraryFilters | null | undefined;
+  sort?: Schema.LibrarySort | null | undefined;
+  page?: number | null | undefined;
+  pageSize?: number | null | undefined;
+}>;
+
+
+export type LibraryWorksQuery = { libraryWorks: { totalCount: number, pageCount: number, texts: Array<{ childCount: number, matches: Array<{ field: string, start: number, end: number }>, text: { id: string, slug: string, title: string, type: string, collection: Schema.TextCollection | null, edition: string | null, editors: string | null, findSpot: string | null, inscriptionType: string | null, material: string | null, province: string | null, lineCount: number | null, wordCount: number | null } }> } };
+
+export type LibraryTextRowFragment = { childCount: number, matches: Array<{ field: string, start: number, end: number }>, text: { id: string, slug: string, title: string, type: string, collection: Schema.TextCollection | null, edition: string | null, editors: string | null, findSpot: string | null, inscriptionType: string | null, material: string | null, province: string | null, lineCount: number | null, wordCount: number | null } };
 
 export type LibraryQueryVariables = Exact<{
   search?: string | null | undefined;
@@ -965,7 +1018,7 @@ export type LibraryQueryVariables = Exact<{
 }>;
 
 
-export type LibraryQuery = { library: { totalCount: number, pageCount: number, authors: Array<{ textCount: number, author: { id: string, slug: string, name: string, fullName: string | null, era: Schema.AuthorEra | null, startYear: number | null, endYear: number | null }, matches: Array<{ field: string, start: number, end: number }>, texts: Array<{ matches: Array<{ field: string, start: number, end: number }>, text: { id: string, slug: string, title: string, type: string, collection: Schema.TextCollection | null, edition: string | null, editors: string | null, findSpot: string | null, inscriptionType: string | null, material: string | null, province: string | null, lineCount: number | null, wordCount: number | null, parentText: { id: string, slug: string, title: string } | null } }> }> } };
+export type LibraryQuery = { library: { totalCount: number, pageCount: number, authors: Array<{ workCount: number, author: { id: string, slug: string, name: string, fullName: string | null, era: Schema.AuthorEra | null, startYear: number | null, endYear: number | null }, matches: Array<{ field: string, start: number, end: number }>, works: Array<{ childCount: number, matches: Array<{ field: string, start: number, end: number }>, text: { id: string, slug: string, title: string, type: string, collection: Schema.TextCollection | null, edition: string | null, editors: string | null, findSpot: string | null, inscriptionType: string | null, material: string | null, province: string | null, lineCount: number | null, wordCount: number | null } }> }> } };
 
 export type SearchEnglishQueryVariables = Exact<{
   query: string;
@@ -1037,6 +1090,28 @@ export type WordCandidatesQuery = { wordCandidates: Array<{ definition: string |
  * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockLibraryChildrenQuery(
+ *   ({ query, variables }) => {
+ *     const { parentTextId, search, page, pageSize } = variables;
+ *     return HttpResponse.json({
+ *       data: { libraryChildren }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockLibraryChildrenQuery = (resolver: GraphQLResponseResolver<LibraryChildrenQuery, LibraryChildrenQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<LibraryChildrenQuery, LibraryChildrenQueryVariables>(
+    'LibraryChildren',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockLibraryFacetsQuery(
  *   ({ query, variables }) => {
  *     return HttpResponse.json({
@@ -1049,6 +1124,28 @@ export type WordCandidatesQuery = { wordCandidates: Array<{ definition: string |
 export const mockLibraryFacetsQuery = (resolver: GraphQLResponseResolver<LibraryFacetsQuery, LibraryFacetsQueryVariables>, options?: RequestHandlerOptions) =>
   graphql.query<LibraryFacetsQuery, LibraryFacetsQueryVariables>(
     'LibraryFacets',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockLibraryWorksQuery(
+ *   ({ query, variables }) => {
+ *     const { authorId, search, filters, sort, page, pageSize } = variables;
+ *     return HttpResponse.json({
+ *       data: { libraryWorks }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockLibraryWorksQuery = (resolver: GraphQLResponseResolver<LibraryWorksQuery, LibraryWorksQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<LibraryWorksQuery, LibraryWorksQueryVariables>(
+    'LibraryWorks',
     resolver,
     options
   )

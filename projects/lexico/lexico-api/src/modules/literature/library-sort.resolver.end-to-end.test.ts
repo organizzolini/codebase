@@ -19,7 +19,7 @@ import {
 interface SortedPage {
   readonly authors: {
     readonly author: { readonly name: string };
-    readonly texts: { readonly text: { readonly title: string } }[];
+    readonly works: { readonly text: { readonly title: string } }[];
   }[];
 }
 
@@ -27,7 +27,7 @@ interface SortedPage {
 const LIBRARY = `
   query Library($search: String, $filters: LibraryFilters, $sort: LibrarySort) {
     library(search: $search, filters: $filters, sort: $sort) {
-      authors { author { name } texts { text { title } } }
+      authors { author { name } works { text { title } } }
     }
   }
 `;
@@ -268,7 +268,7 @@ describe("library sort end-to-end suite", () => {
         });
 
         expect(
-          page.authors[0]?.texts.map(({ text }) => text.title),
+          page.authors[0]?.works.map(({ text }) => text.title),
         ).toStrictEqual([...directed(titles, direction), "Echo"]);
       });
     },
@@ -285,7 +285,7 @@ describe("library sort end-to-end suite", () => {
       });
 
       expect(
-        page.authors[0]?.texts.map(({ text }) => text.title),
+        page.authors[0]?.works.map(({ text }) => text.title),
       ).toStrictEqual(
         directed(["Alpha", "Bravo", "Charlie", "Delta", "Echo"], direction),
       );
