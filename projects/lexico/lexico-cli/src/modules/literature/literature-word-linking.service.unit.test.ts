@@ -31,6 +31,7 @@ const WORDS = new Map(
     "abaestumarer",
     "abæstumatus",
     "me",
+    "meae",
     "mene",
     "bene",
   ].map((data) => [data, `id-${data}`]),
@@ -97,6 +98,11 @@ describe(LiteratureWordLinkingService, () => {
     it("reads e as ae only after every stricter spelling has failed", () => {
       expect(service.resolve("cesar", WORDS)).toBe("id-cesar");
       expect(service.resolve("abestumarer", WORDS)).toBe("id-abaestumarer");
+    });
+
+    it("never reads a word that already has ae or oe as one with e", () => {
+      expect(service.resolve("aeneas", WORDS)).toBeNull();
+      expect(service.resolve("mae", WORDS)).toBeNull();
     });
 
     it("strips an enclitic from a word the dictionary lacks", () => {

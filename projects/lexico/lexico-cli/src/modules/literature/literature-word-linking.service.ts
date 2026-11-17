@@ -131,6 +131,14 @@ export class LiteratureWordLinkingService {
     return ranked[0]?.[1] ?? null;
   }
 
+  /** Reads an e as the ae or oe of a dictionary word, but never a word that already spells one. */
+  private resolveDiphthongs(folded: string, index: WordIndex): null | string {
+    const loose = this.normalization.foldDiphthongs(folded);
+    return loose === folded
+      ? this.pickClosest(index.diphthongs.get(loose), folded)
+      : null;
+  }
+
   /** Looks a normalized word up by its folded spelling. */
   private resolveFolded(
     normalized: string,
@@ -210,10 +218,7 @@ export class LiteratureWordLinkingService {
     return (
       this.resolveFolded(normalized, folded, index) ??
       this.resolveWithoutEnclitic(folded, index) ??
-      this.pickClosest(
-        index.diphthongs.get(this.normalization.foldDiphthongs(folded)),
-        folded,
-      )
+      this.resolveDiphthongs(folded, index)
     );
   }
 }
