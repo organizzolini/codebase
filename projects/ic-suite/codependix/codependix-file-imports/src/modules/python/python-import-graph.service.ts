@@ -3,7 +3,7 @@ import path from "node:path";
 
 import { Injectable } from "@nestjs/common";
 
-import { PythonImportParserService } from "./python-import-parser.service";
+import { PythonImportParserService } from "./modules/import-parser/python-import-parser.service";
 import { PythonProjectService } from "./python-project.service";
 import {
   PYTHON_FILE_EXTENSION,
@@ -12,7 +12,7 @@ import {
   PYTHON_PACKAGE_INIT_FILE_NAME,
 } from "./python.constants";
 
-import type { PythonImportSpecifier } from "./python-import-parser.types";
+import type { PythonImportSpecifier } from "./modules/import-parser/python-import-parser.types";
 import type {
   PythonImportGraph,
   PythonImportGraphEdge,

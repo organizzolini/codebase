@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 
+import { PythonImportParserService } from "./modules/import-parser/python-import-parser.service";
 import { PythonImportGraphService } from "./python-import-graph.service";
-import { PythonImportParserService } from "./python-import-parser.service";
 import { PythonProjectService } from "./python-project.service";
 import { PythonService } from "./python.service";
 
