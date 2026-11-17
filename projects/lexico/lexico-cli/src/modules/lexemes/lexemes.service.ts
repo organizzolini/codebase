@@ -302,9 +302,12 @@ export class LexemesService {
 
   /**
    * Parses one Wiktionary page into lexemes by iterating `p:has(strong.Latn.headword)`
-   * sections and enriching each accepted part of speech.
+   * sections and enriching each accepted part of speech, numbering them from the offset.
    */
-  async parseLexemes(wiktionaryPage: WiktionaryPage): Promise<Lexeme[]> {
+  async parseLexemes(
+    wiktionaryPage: WiktionaryPage,
+    disambiguatorOffset = 0,
+  ): Promise<Lexeme[]> {
     if (!wiktionaryPage.html) return [];
 
     const $ = cheerio.load(wiktionaryPage.html);
@@ -325,7 +328,12 @@ export class LexemesService {
     }
 
     for (const [index, elt] of lemmaElements.entries()) {
-      const lexeme = await this.parseLexemeFromElement({ $, elt, index, word });
+      const lexeme = await this.parseLexemeFromElement({
+        $,
+        elt,
+        index: index + disambiguatorOffset,
+        word,
+      });
       if (lexeme) lexemes.push(lexeme);
     }
 

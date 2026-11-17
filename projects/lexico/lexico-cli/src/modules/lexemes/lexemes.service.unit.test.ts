@@ -329,6 +329,29 @@ describe(LexemesService, () => {
     ]).toStrictEqual([1, 1]);
   });
 
+  it("should number the lexemes of a page from the given offset", async () => {
+    const page: WiktionaryPage = {
+      category: "lemma",
+      href: "x",
+      html: "<p><strong class='Latn headword'>amo</strong></p>",
+      word: "amo",
+    };
+    const parseLexemeFromElementSpy = vi
+      .spyOn(
+        service as unknown as {
+          parseLexemeFromElement: (args: { index: number }) => Promise<null>;
+        },
+        "parseLexemeFromElement",
+      )
+      .mockResolvedValue(null);
+
+    await service.parseLexemes(page, 10);
+
+    expect(parseLexemeFromElementSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ index: 10 }),
+    );
+  });
+
   it("should skip null lexemes from parseLexemeFromElement", async () => {
     const page: WiktionaryPage = {
       category: "lemma",
