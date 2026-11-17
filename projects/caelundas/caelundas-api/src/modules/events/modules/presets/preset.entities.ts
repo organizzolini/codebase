@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql";
 
-import { EventFilterGroupEntity } from "../filters/event-filter.entities";
+import { EventFilterGroupEntity } from "../filtering/event-filter.entities";
 
 // 🧬 Entities
 

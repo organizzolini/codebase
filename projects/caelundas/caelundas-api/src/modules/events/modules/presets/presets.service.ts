@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
 
-import { EventFilterCombinator } from "../filters/event-filter-combinator.entities";
-import { TAG_FIELD_PREFIX } from "../filters/event-filter-fields.constants";
+import { EventFilterCombinator } from "../filtering/event-filter-combinator.entities";
+import { TAG_FIELD_PREFIX } from "../filtering/event-filter-fields.constants";
 
 import { PRESETS } from "./presets.constants";
 
 import type { EventFacetEntity } from "../../event-facet.entities";
-import type { EventFilterRuleEntity } from "../filters/event-filter-rule.entities";
-import type { EventFilterGroupEntity } from "../filters/event-filter.entities";
+import type { EventFilterRuleEntity } from "../filtering/event-filter-rule.entities";
+import type { EventFilterGroupEntity } from "../filtering/event-filter.entities";
 import type {
   PresetGroup,
   PresetRule,

@@ -4,12 +4,12 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EventsResolver } from "./events.resolver";
 import { EventsService } from "./events.service";
-import { EventFilterCalendarFieldsService } from "./modules/filters/event-filter-calendar-fields.service";
-import { EventFilterCombinator } from "./modules/filters/event-filter-combinator.entities";
-import { EventFilterNumbersService } from "./modules/filters/event-filter-numbers.service";
-import { EventFilterParametersService } from "./modules/filters/event-filter-parameters.service";
-import { EventFilterValuesService } from "./modules/filters/event-filter-values.service";
-import { EventFilterService } from "./modules/filters/event-filter.service";
+import { EventFilterCalendarFieldsService } from "./modules/filtering/event-filter-calendar-fields.service";
+import { EventFilterCombinator } from "./modules/filtering/event-filter-combinator.entities";
+import { EventFilterNumbersService } from "./modules/filtering/event-filter-numbers.service";
+import { EventFilterParametersService } from "./modules/filtering/event-filter-parameters.service";
+import { EventFilterValuesService } from "./modules/filtering/event-filter-values.service";
+import { EventFilterService } from "./modules/filtering/event-filter.service";
 import { EventGroupingService } from "./modules/grouping/event-grouping.service";
 import { CalendarWindow } from "./modules/windows/calendar-window.entities";
 

@@ -9,8 +9,8 @@ import {
 } from "./events.constants";
 import { EventsDatasetEntity } from "./events.entities";
 import { EventsService } from "./events.service";
-import { EventFilterGroupEntity } from "./modules/filters/event-filter.entities";
-import { EventFilterService } from "./modules/filters/event-filter.service";
+import { EventFilterGroupEntity } from "./modules/filtering/event-filter.entities";
+import { EventFilterService } from "./modules/filtering/event-filter.service";
 import { EventGroupingEntity } from "./modules/grouping/event-grouping.entities";
 import { EventGroupingService } from "./modules/grouping/event-grouping.service";
 import { PresetEntity } from "./modules/presets/preset.entities";

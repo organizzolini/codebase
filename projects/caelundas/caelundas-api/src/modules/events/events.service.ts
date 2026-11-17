@@ -11,7 +11,7 @@ import {
   FACETS_SQL,
   groupKeysSchema,
 } from "./events.constants";
-import { EventFilterService } from "./modules/filters/event-filter.service";
+import { EventFilterService } from "./modules/filtering/event-filter.service";
 import { EventGroupingService } from "./modules/grouping/event-grouping.service";
 import { PresetsService } from "./modules/presets/presets.service";
 import { WindowsService } from "./modules/windows/windows.service";
@@ -19,7 +19,7 @@ import { WindowsService } from "./modules/windows/windows.service";
 import type { CalendarEventEntity } from "./calendar-event.entities";
 import type { EventFacetEntity } from "./event-facet.entities";
 import type { EventsDatasetEntity } from "./events.entities";
-import type { EventFilterGroup } from "./modules/filters/event-filter.types";
+import type { EventFilterGroup } from "./modules/filtering/event-filter.types";
 import type { EventGroupLevel } from "./modules/grouping/event-grouping.types";
 import type { ResolvedPreset } from "./modules/presets/presets.types";
 import type { PeriodInput } from "./modules/windows/period-input.entities";
