@@ -1,5 +1,5 @@
-import type { LexemeFormRow } from "../lexeme-forms/lexeme-forms.types";
-import type { LexemeInflection } from "../lexeme-header/lexeme-header.types";
+import type { LexemeFormRow } from "../../lexeme/lexeme-forms/lexeme-forms.types";
+import type { LexemeInflection } from "../../lexeme/lexeme-header/lexeme-header.types";
 
 // 🏷️ Types
 

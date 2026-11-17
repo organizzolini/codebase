@@ -1,6 +1,6 @@
-import { AdjectiveForms } from "../adjective-forms/adjective-forms";
-import { NounForms } from "../noun-forms/noun-forms";
-import { VerbForms } from "../verb-forms/verb-forms";
+import { AdjectiveForms } from "../../forms/adjective-forms/adjective-forms";
+import { NounForms } from "../../forms/noun-forms/noun-forms";
+import { VerbForms } from "../../forms/verb-forms/verb-forms";
 
 import { NoForms } from "./no-forms";
 

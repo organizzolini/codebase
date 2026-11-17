@@ -6,7 +6,7 @@ import {
   TableRow,
 } from "@codebase/presentation";
 
-import { ABBREVIATIONS } from "../lexeme-identifiers/lexeme-identifiers.constants";
+import { ABBREVIATIONS } from "../../lexeme/lexeme-identifiers/lexeme-identifiers.constants";
 
 import type { FormsTableAxis } from "./forms-table.types";
 import type { ReactNode } from "react";

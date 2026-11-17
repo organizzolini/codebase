@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { searchDictionary } from "./search.utilities";
 
-import type { LexemeResult } from "../lexeme-card/lexeme-card.types";
+import type { LexemeResult } from "../../lexeme/lexeme-card/lexeme-card.types";
 
 // ♟️ Constants
 

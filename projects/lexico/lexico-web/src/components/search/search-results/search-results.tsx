@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 
 import { useBreakpoint } from "@codebase/presentation";
 
-import { LexemeCard } from "../lexeme-card/lexeme-card";
+import { LexemeCard } from "../../lexeme/lexeme-card/lexeme-card";
 
-import type { LexemeResult } from "../lexeme-card/lexeme-card.types";
-import type { LoadLexemeForms } from "../lexeme-forms/lexeme-forms.types";
+import type { LexemeResult } from "../../lexeme/lexeme-card/lexeme-card.types";
+import type { LoadLexemeForms } from "../../lexeme/lexeme-forms/lexeme-forms.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type

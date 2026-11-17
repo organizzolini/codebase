@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import type { LexemeMatchKind } from "../lexeme-match/lexeme-match.types";
+import type { LexemeMatchKind } from "../../lexeme/lexeme-match/lexeme-match.types";
 import type { ResultNode } from "./search.types";
 
 // ♟️ Constants

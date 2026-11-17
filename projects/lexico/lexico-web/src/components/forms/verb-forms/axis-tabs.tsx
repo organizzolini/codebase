@@ -1,6 +1,6 @@
 import { Tabs, TabsList, TabsTrigger } from "@codebase/presentation";
 
-import { ABBREVIATIONS } from "../lexeme-identifiers/lexeme-identifiers.constants";
+import { ABBREVIATIONS } from "../../lexeme/lexeme-identifiers/lexeme-identifiers.constants";
 
 import { NON_FINITE_ABBREVIATION } from "./verb-forms.constants";
 

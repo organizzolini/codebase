@@ -5,7 +5,7 @@ import { z } from "zod";
 import {
   SearchEnglishDocument,
   SearchLatinDocument,
-} from "../../graphql/generated/operations";
+} from "../../../graphql/generated/operations";
 
 import {
   connectionSchema,
@@ -14,10 +14,10 @@ import {
   SEARCH_PAGE_SIZE,
 } from "./search-api.constants";
 
-import type { LexemeResult } from "../lexeme-card/lexeme-card.types";
-import type { LexemeFormRow } from "../lexeme-forms/lexeme-forms.types";
-import type { LexemeInflection } from "../lexeme-header/lexeme-header.types";
-import type { LexemeMatchInfo } from "../lexeme-match/lexeme-match.types";
+import type { LexemeResult } from "../../lexeme/lexeme-card/lexeme-card.types";
+import type { LexemeFormRow } from "../../lexeme/lexeme-forms/lexeme-forms.types";
+import type { LexemeInflection } from "../../lexeme/lexeme-header/lexeme-header.types";
+import type { LexemeMatchInfo } from "../../lexeme/lexeme-match/lexeme-match.types";
 import type { ApiResponse, ResultNode } from "./search.types";
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
 
