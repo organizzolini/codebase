@@ -13,9 +13,14 @@ import {
   SupineForm,
   Translation,
   WordForm,
+  WordLexeme,
 } from "@codebase/lexico-db";
 
-import { describeForm, toWordCandidates } from "./word-candidates.utilities";
+import {
+  describeForm,
+  toHeadwordCandidates,
+  toWordCandidates,
+} from "./word-candidates.utilities";
 
 /** Builds a lexeme with one translation, its forms attached. */
 function lexeme(lemma: string, data: null | string): Lexeme {
@@ -167,6 +172,38 @@ describe("word candidate utilities", () => {
 
     it("returns no candidates for no word-form links", () => {
       expect(toWordCandidates([])).toStrictEqual([]);
+    });
+  });
+
+  describe(toHeadwordCandidates, () => {
+    /** Links a word to a lexeme, as a word-lexeme row. */
+    function headword(entry: Lexeme): WordLexeme {
+      const wordLexeme = new WordLexeme();
+      wordLexeme.lexeme = entry;
+      return wordLexeme;
+    }
+
+    it("lists a lexeme the word is a headword of, described as its headword", () => {
+      const entry = lexeme("ab", "from");
+      entry.partOfSpeech = "preposition";
+
+      expect(toHeadwordCandidates([headword(entry)], [])).toMatchObject([
+        {
+          definition: "from",
+          description: "headword",
+          lemma: "ab",
+          lexemeId: "ab-id",
+          partOfSpeech: "preposition",
+          translations: ["from"],
+        },
+      ]);
+    });
+
+    it("leaves out a lexeme one of the word's forms already names", () => {
+      const entry = lexeme("arma", "arms");
+      const forms = [link(nominal("nominative", "plural"), entry)];
+
+      expect(toHeadwordCandidates([headword(entry)], forms)).toStrictEqual([]);
     });
   });
 });

@@ -3,7 +3,12 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { describe, expect, it, vi } from "vitest";
 
-import { FiniteVerbForm, Lexeme, WordForm } from "@codebase/lexico-db";
+import {
+  FiniteVerbForm,
+  Lexeme,
+  WordForm,
+  WordLexeme,
+} from "@codebase/lexico-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { WordCandidatesResolver } from "./word-candidates.resolver";
@@ -40,6 +45,9 @@ describe(WordCandidatesResolver, () => {
       findWordFormsForToken: vi
         .fn<WordCandidatesService["findWordFormsForToken"]>()
         .mockResolvedValue([wordForm]),
+      findWordLexemesForToken: vi
+        .fn<WordCandidatesService["findWordLexemesForToken"]>()
+        .mockResolvedValue([]),
     });
 
     const resolver = new WordCandidatesResolver(mockService);
@@ -56,5 +64,39 @@ describe(WordCandidatesResolver, () => {
       },
     ]);
     expect(mockService.findWordFormsForToken).toHaveBeenCalledWith("token-1");
+  });
+
+  it("adds the lexemes a word is a headword of when no form names them", async () => {
+    expect.hasAssertions();
+
+    const lexeme = new Lexeme();
+    lexeme.id = "lexeme-2";
+    lexeme.lemma = "ab";
+    lexeme.partOfSpeech = "preposition";
+    lexeme.translations = [];
+    const wordLexeme = new WordLexeme();
+    wordLexeme.lexeme = lexeme;
+
+    const mockService = createMock<WordCandidatesService>({
+      findWordFormsForToken: vi
+        .fn<WordCandidatesService["findWordFormsForToken"]>()
+        .mockResolvedValue([]),
+      findWordLexemesForToken: vi
+        .fn<WordCandidatesService["findWordLexemesForToken"]>()
+        .mockResolvedValue([wordLexeme]),
+    });
+
+    const resolver = new WordCandidatesResolver(mockService);
+
+    await expect(
+      resolver.wordCandidates({ tokenId: "token-1" }),
+    ).resolves.toMatchObject([
+      {
+        description: "headword",
+        lemma: "ab",
+        lexemeId: "lexeme-2",
+        partOfSpeech: "preposition",
+      },
+    ]);
   });
 });

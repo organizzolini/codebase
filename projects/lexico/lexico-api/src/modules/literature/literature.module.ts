@@ -7,6 +7,7 @@ import {
   Token,
   TypeOrmModule,
   WordForm,
+  WordLexeme,
 } from "@codebase/lexico-db";
 
 import { AuthorsResolver } from "./authors.resolver";
@@ -28,7 +29,9 @@ import { WordCandidatesService } from "./word-candidates.service";
 @Module({
   controllers: [],
   exports: [LiteratureService],
-  imports: [TypeOrmModule.forFeature([Author, Text, Line, Token, WordForm])],
+  imports: [
+    TypeOrmModule.forFeature([Author, Text, Line, Token, WordForm, WordLexeme]),
+  ],
   providers: [
     AuthorsResolver,
     TextsResolver,

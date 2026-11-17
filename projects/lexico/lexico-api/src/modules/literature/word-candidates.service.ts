@@ -4,7 +4,9 @@ import {
   InjectRepository,
   type Repository,
   Token,
+  type Word,
   WordForm,
+  WordLexeme,
 } from "@codebase/lexico-db";
 
 /**
@@ -19,6 +21,8 @@ export class WordCandidatesService {
     private readonly tokenRepository: Repository<Token>,
     @InjectRepository(WordForm)
     private readonly wordFormRepository: Repository<WordForm>,
+    @InjectRepository(WordLexeme)
+    private readonly wordLexemeRepository: Repository<WordLexeme>,
   ) {}
 
   // 🔐 Private Fields
@@ -26,6 +30,15 @@ export class WordCandidatesService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
+
+  /** Finds the word a token is linked to; none for a missing, punctuation, or unlinked token. */
+  private async findWordForToken(tokenId: string): Promise<null | Word> {
+    const token = await this.tokenRepository.findOne({
+      relations: { word: true },
+      where: { id: tokenId },
+    });
+    return !token || token.isPunctuation ? null : (token.word ?? null);
+  }
 
   // 🌎 Public Methods
 
@@ -37,18 +50,29 @@ export class WordCandidatesService {
    * token with no word all return none.
    */
   public async findWordFormsForToken(tokenId: string): Promise<WordForm[]> {
-    const token = await this.tokenRepository.findOne({
-      relations: { word: true },
-      where: { id: tokenId },
-    });
-    if (!token || token.isPunctuation || !token.word) {
-      return [];
-    }
+    const word = await this.findWordForToken(tokenId);
+    if (!word) return [];
 
     return this.wordFormRepository.find({
       order: { form: { lexeme: { translations: { id: "ASC" } } }, id: "ASC" },
       relations: { form: { lexeme: { translations: true } } },
-      where: { word: { id: token.word.id } },
+      where: { word: { id: word.id } },
+    });
+  }
+
+  /**
+   * Returns the lexemes a token's word is the headword of, each with its
+   * translations in the order they were stored. Words such as prepositions
+   * and conjunctions have no forms, so this is the only way to reach them.
+   */
+  public async findWordLexemesForToken(tokenId: string): Promise<WordLexeme[]> {
+    const word = await this.findWordForToken(tokenId);
+    if (!word) return [];
+
+    return this.wordLexemeRepository.find({
+      order: { id: "ASC", lexeme: { translations: { id: "ASC" } } },
+      relations: { lexeme: { translations: true } },
+      where: { word: { id: word.id } },
     });
   }
 }

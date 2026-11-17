@@ -9,6 +9,7 @@ import {
   ParticipleForm,
   SupineForm,
   type WordForm,
+  type WordLexeme,
 } from "@codebase/lexico-db";
 
 import { WordCandidateType } from "./word-candidate.entities";
@@ -28,6 +29,29 @@ export function describeForm(form: Form): string {
     return `${form.tense} ${form.mood} ${form.voice} ${form.person} ${form.number}`;
   }
   return describeVerbalForm(form);
+}
+
+/**
+ * Maps the lexemes a word is a headword of to candidates described as its
+ * headword, leaving out any lexeme the word's forms already name.
+ */
+export function toHeadwordCandidates(
+  wordLexemes: readonly WordLexeme[],
+  wordForms: readonly WordForm[],
+): WordCandidateType[] {
+  const named = new Set(wordForms.map(({ form }) => form.lexeme.id));
+  return wordLexemes
+    .filter(({ lexeme }) => !named.has(lexeme.id))
+    .map(({ lexeme }) =>
+      Object.assign(new WordCandidateType(), {
+        definition: lexeme.translations?.[0]?.data ?? null,
+        description: "headword",
+        lemma: lexeme.lemma,
+        lexemeId: lexeme.id,
+        partOfSpeech: lexeme.partOfSpeech,
+        translations: (lexeme.translations ?? []).map(({ data }) => data),
+      }),
+    );
 }
 
 /**
