@@ -40,7 +40,8 @@ into it — and a relative path is resolved against the working directory alone.
 `codometer.config.ts`. A configuration file is always read as a plain object — exporting a function is
 not recognized and falls back to an empty configuration.
 
-`.gitignore` is already in force through file discovery — a build directory or
+`.gitignore` is already in force through file discovery, including the ones
+above the measured folder up to the repository root — a build directory or
 virtual environment pruned by an ignore file needs no exclusion naming it
 again — and git itself is never invoked, so an unversioned directory measures
 the same way a repository does.

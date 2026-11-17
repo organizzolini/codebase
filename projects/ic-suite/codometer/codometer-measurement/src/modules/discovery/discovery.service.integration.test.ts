@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { useTemporaryDirectory } from "@codebase/testing";
+import { createFileTree, useTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createFixtureTree } from "../../../testing/fixture-tree";
@@ -122,5 +122,51 @@ describe(`${DiscoveryService.name} over a real directory`, () => {
       "README.md",
       "nested/keep.md",
     ]);
+  });
+
+  describe("below a repository root", () => {
+    let service: DiscoveryService;
+
+    beforeAll(async () => {
+      ({ instance: service } = await buildTestingModule(
+        DiscoveryService,
+        DEPENDENCIES,
+      ));
+    });
+
+    /** Discovers a project folder two levels below a fixture repository's root. */
+    function discoverProject(git: boolean): string[] {
+      const root = createFileTree(
+        {
+          ".gitignore": "report.json\noutput/\n",
+          "group/project/output/run.ts": "export const run = 1;\n",
+          "group/project/report.json": "{}\n",
+          "group/project/src/app.ts": "export const app = 1;\n",
+        },
+        { git, label: "discovery-ancestor" },
+      );
+
+      return service.discoverFiles({
+        exclude: [],
+        excludeFrom: [],
+        workingDirectory: `${root}/group/project`,
+      }).files;
+    }
+
+    it("applies the gitignore files between the repository root and the walk", () => {
+      expect.hasAssertions();
+      // A project measured from its own root still leaves out what the
+      // repository's gitignore file names, such as a generated report.
+      expect(discoverProject(true)).toStrictEqual(["src/app.ts"]);
+    });
+
+    it("reads no gitignore above a walk that sits in no repository", () => {
+      expect.hasAssertions();
+      expect(discoverProject(false)).toStrictEqual([
+        "output/run.ts",
+        "report.json",
+        "src/app.ts",
+      ]);
+    });
   });
 });

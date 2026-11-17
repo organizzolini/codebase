@@ -140,10 +140,12 @@ spread [`configuration/ic-suite/codometer.config.ts`](../../../configuration/cod
 ## What gets measured
 
 Discovery walks the directory itself and reads every `.gitignore` it passes,
-so **`.gitignore` is already in force** — a build directory or a virtual
-environment is pruned where its ignore file names it, and no exclusion has to
-name it again. Git is never invoked, so a directory that is not a repository
-at all is measured the same way as one that is.
+plus those above it up to the repository root, so **`.gitignore` is already in
+force** — a build directory or a virtual environment is pruned where its ignore
+file names it, even when one package of a monorepo is measured from its own
+folder, and no exclusion has to name it again. Git is never invoked, so a
+directory that is not a repository at all is measured the same way as one that
+is.
 
 What is measured is the working tree rather than the index: a file that exists
 and is not ignored counts, whether or not it has been committed yet.
