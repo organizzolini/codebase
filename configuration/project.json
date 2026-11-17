@@ -14,13 +14,10 @@
   "name": "configuration",
   "namedInputs": {
     "vendored-skills": [
-      "!{workspaceRoot}/.agents/skills/ask-matt/**",
       "!{workspaceRoot}/.agents/skills/brainstorming/**",
       "!{workspaceRoot}/.agents/skills/callidescope-configure/**",
       "!{workspaceRoot}/.agents/skills/callidescope-trace/**",
       "!{workspaceRoot}/.agents/skills/callidescope-triage/**",
-      "!{workspaceRoot}/.agents/skills/code-review/**",
-      "!{workspaceRoot}/.agents/skills/codebase-design/**",
       "!{workspaceRoot}/.agents/skills/codependix-configure/**",
       "!{workspaceRoot}/.agents/skills/codependix-export/**",
       "!{workspaceRoot}/.agents/skills/codependix-navigate/**",
@@ -35,19 +32,13 @@
       "!{workspaceRoot}/.agents/skills/conformetry-configure/**",
       "!{workspaceRoot}/.agents/skills/conformetry-generate/**",
       "!{workspaceRoot}/.agents/skills/conformetry-validate/**",
-      "!{workspaceRoot}/.agents/skills/diagnosing-bugs/**",
       "!{workspaceRoot}/.agents/skills/dispatching-parallel-agents/**",
-      "!{workspaceRoot}/.agents/skills/domain-modeling/**",
       "!{workspaceRoot}/.agents/skills/finishing-a-development-branch/**",
       "!{workspaceRoot}/.agents/skills/gh-stack/**",
       "!{workspaceRoot}/.agents/skills/github-issues/**",
       "!{workspaceRoot}/.agents/skills/grill-me/**",
-      "!{workspaceRoot}/.agents/skills/grill-with-docs/**",
       "!{workspaceRoot}/.agents/skills/grilling/**",
-      "!{workspaceRoot}/.agents/skills/handoff/**",
       "!{workspaceRoot}/.agents/skills/impeccable/**",
-      "!{workspaceRoot}/.agents/skills/implement/**",
-      "!{workspaceRoot}/.agents/skills/improve-codebase-architecture/**",
       "!{workspaceRoot}/.agents/skills/link-workspace-packages/**",
       "!{workspaceRoot}/.agents/skills/nx-generate/**",
       "!{workspaceRoot}/.agents/skills/nx-import/**",
@@ -59,22 +50,13 @@
       "!{workspaceRoot}/.agents/skills/requesting-code-review/**",
       "!{workspaceRoot}/.agents/skills/research/**",
       "!{workspaceRoot}/.agents/skills/reui/**",
-      "!{workspaceRoot}/.agents/skills/setup-matt-pocock-skills/**",
       "!{workspaceRoot}/.agents/skills/subagent-driven-development/**",
       "!{workspaceRoot}/.agents/skills/systematic-debugging/**",
-      "!{workspaceRoot}/.agents/skills/tdd/**",
-      "!{workspaceRoot}/.agents/skills/teach/**",
       "!{workspaceRoot}/.agents/skills/test-driven-development/**",
-      "!{workspaceRoot}/.agents/skills/to-questionnaire/**",
-      "!{workspaceRoot}/.agents/skills/to-spec/**",
-      "!{workspaceRoot}/.agents/skills/to-tickets/**",
-      "!{workspaceRoot}/.agents/skills/triage/**",
       "!{workspaceRoot}/.agents/skills/using-git-worktrees/**",
       "!{workspaceRoot}/.agents/skills/verification-before-completion/**",
-      "!{workspaceRoot}/.agents/skills/wait-what/**",
       "!{workspaceRoot}/.agents/skills/wayfinder/**",
-      "!{workspaceRoot}/.agents/skills/wizard/**",
-      "!{workspaceRoot}/.agents/skills/writing-for-agents/**",
+      "!{workspaceRoot}/.agents/skills/writing-plans/**",
       "!{workspaceRoot}/.agents/skills/writing-skills/**"
     ],
     "workspace-files": [
@@ -175,34 +157,6 @@
         "{workspaceRoot}/codometer.md",
         "{workspaceRoot}/codometer-report.json"
       ]
-    },
-    "coinagerie": {
-      "cache": true,
-      "configurations": {
-        "check": {
-          "command": "node --import @swc-node/register/esm-register projects/ic-suite/coinagerie/coinagerie-cli/src/coinagerie-cli.main.ts --check"
-        },
-        "write": {
-          "command": "node --import @swc-node/register/esm-register projects/ic-suite/coinagerie/coinagerie-cli/src/coinagerie-cli.main.ts --write"
-        }
-      },
-      "defaultConfiguration": "check",
-      "dependsOn": [],
-      "description": "Check or write the root glossary, `GLOSSARY.md`: the words of every folder that is not a project, which every project's own glossary then leaves out. It runs from the workspace root, where the root `coinagerie.config.ts` is, and not as an inferred target, because the root is not a project and the plugin registration excludes that file so that it does not become one. The inputs are everything no project owns, which is what the root configuration scans, and the tool's own source, so a change to how words are found re-runs the check. `dependsOn` is written out as an empty list so no configuration of this target waits on a build.",
-      "executor": "nx:run-commands",
-      "inputs": [
-        "{workspaceRoot}/configuration/coinagerie.config.ts",
-        "{workspaceRoot}/projects/ic-suite/coinagerie/*/src/**/!(*.test.*|*.spec.*)",
-        "shared-globals",
-        "workspace-unowned"
-      ],
-      "options": {
-        "cwd": "{workspaceRoot}",
-        "env": {
-          "SWC_NODE_PROJECT": "configuration/tsconfig.json"
-        }
-      },
-      "outputs": ["{workspaceRoot}/GLOSSARY.md"]
     },
     "commit-msg": {
       "cache": false,

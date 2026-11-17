@@ -1,7 +1,3 @@
-import { readFileSync } from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-
 import {
   cssKeywords,
   hclKeywords,
@@ -15,29 +11,6 @@ import {
 } from "@coinagerie/languages";
 
 import type { CoinagerieConfiguration } from "@coinagerie/configuration";
-
-// 📖 Glossary
-
-/** Root glossary each project's glossary is written against. */
-const ROOT_GLOSSARY_PATH = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "../GLOSSARY.md",
-);
-
-/** One glossary bullet, `- **word**: definition`, captured down to the word. */
-const GLOSSARY_BULLET_PATTERN = /^- \*\*(?<word>[^\s*]+)\*\*:/u;
-
-/**
- * Every word on a bullet of the root glossary. A missing file throws, so the run
- * names the configuration whose `exclude.words` failed.
- */
-export function readRootGlossaryWords(): string[] {
-  return readFileSync(ROOT_GLOSSARY_PATH, "utf8")
-    .split("\n")
-    .flatMap(
-      (line) => GLOSSARY_BULLET_PATTERN.exec(line)?.groups?.["word"] ?? [],
-    );
-}
 
 // ♟️ Conventions
 
@@ -3172,7 +3145,7 @@ const sharedConfiguration = {
   outputs: [
     {
       description:
-        "The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.",
+        "The words this project uses, regenerated with this project's `coinagerie-check:write` Nx target.",
       path: "coinagerie.md",
       type: "markdown",
     },
@@ -3187,8 +3160,7 @@ const HOME_WORDS = {
 };
 
 /**
- * Settings a project spreads, excluding root glossary words and other
- * projects' home words.
+ * Settings a project spreads, excluding other projects' home words.
  *
  * @param home - The project whose home words stay listed
  */
@@ -3203,7 +3175,6 @@ export function configureCoinagerie(
         ...commonWordExclusions,
         ...externalWordExclusions,
         ...patternExclusions,
-        ...readRootGlossaryWords(),
         ...Object.entries(HOME_WORDS).flatMap(([project, words]) =>
           project === home ? [] : words,
         ),

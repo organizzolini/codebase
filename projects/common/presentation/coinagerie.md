@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
+The words this project uses, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **accept**: Names the cascader's predicate or option type that decides which nodes a commit may accept.
 - **account**: A reui account, meaning the free plan whose daily request allowance governs fetching components through the MCP server.
@@ -10,6 +10,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **alt**: The alt attribute on images, such as empty alt on decorative avatars in the example sidebar.
 - **anchor**: The positioning reference element that a popup or menu attaches to, and the single point codometer measures against.
 - **angle**: The hue angle in degrees that the color-picker converts between rectangular and polar colour coordinates.
+- **application**: A project tagged type:application in the Nx workspace that runs as a deployable program, as opposed to a type:package library.
 - **arm**: The part of the cascader predicate that decides whether a node may be committed, one arm of its commit rule.
 - **aspect**: The aspect ratio component, a ui wrapper that keeps a child at a fixed width-to-height proportion.
 - **band**: A horizontal strip in the data grid, such as the footer band that holds pinned or summary cells.
@@ -18,23 +19,34 @@ The words this project uses that the root glossary does not define, regenerated 
 - **boundary**: The edge limit that a popup or overflow respects, as the example sidebar notes the boundary holds under all eight styles.
 - **br**: The HTML line-break element, used in code-block output to render an empty line with no tokens.
 - **brightness**: The colour-picker brightness channel, one of the axes the picker exposes alongside hue and saturation.
+- **callidescope**: IC-suite toolchain that measures call-stack depth and breadth across the workspace and gates each project's limits.
 - **canonical**: The color-picker function that normalizes colour text into one canonical form before the picker compares or stores it.
 - **cascade**: The stacked, multi-level selection flow of the cascader, where each choice loads and opens the next level.
 - **category**: The file-type category, such as audio, video, or archive, that the reui file-type table assigns to each extension.
+- **codependix**: IC-suite toolchain that exports dependency graphs and enforces boundary rules between projects, modules, and files.
+- **codometer**: IC-suite measurement tool that reports sizes, counts, and comment budgets against configured limits per project.
+- **coinagerie**: Vocabulary toolchain that collects a repository's words and checks or writes their definitions into glossary files.
+- **context**: Background information an agent or reviewer uses to locate and judge a change.
 - **coordinate**: Pointer or screen coordinate used by drag-and-drop in data-grid, calendar, and gantt to place drop indicators.
+- **core**: Central layer of the codebase's module architecture, holding domain vocabulary, shared enums, and error classes that other layers depend on.
 - **counter**: CSS counter that numbers code block lines, plus a counter-driven gutter number that a row patch can replace.
 - **cut**: Cell-selection action that clears the source cells after a copy, applied as a clear-or-cut batch in data-grid.
 - **degree**: Angle unit in gantt arrow geometry, where a 45-degree bend shapes the pointer of a dependency bubble.
+- **deprecate**: Nx code-quality target, deprecate-code, that finds unused or outdated code and dependencies with tools such as knip, sherif, and syncpack in the validate-code step.
+- **depth**: Callidescope metric for the longest call stack, gated per project by maximumDepth in callidescope configuration.
 - **descendant**: CSS and React tree relation in cascader code, where a React descendant can render outside the DOM subtree it belongs to.
 - **design**: Shadcn and Base UI component set this package provides, including the docs picker that marks design-system menus.
 - **dimension**: Word with no occurrence in tracked source, appearing only as a glossary heading and naming no measurement in this project.
+- **dispatch**: Orchestration step where the main session hands each parent issue or ticket to a fresh subagent with its own brief.
 - **element**: DOM node or React element, such as the Base UI element a cascader column renders or the svg element an icon uses.
 - **epoch**: Counter ref in cascader async loading that increments on each request, so stale responses can be detected and dropped.
 - **estimate**: Verb or pre-measurement value in data-grid and cascader virtualization, used to size rows before real measurement.
 - **family**: Pinning family in data-grid, the group of pinned columns whose ids carry a shared prefix above the leaf row.
 - **fire**: Verb for triggering a request or callback, such as a paging fetch that fires once per cursor in cascader async.
+- **fold**: Coinagerie configuration hook that maps a word to its canonical headword, merging families like plurals and spelling variants.
 - **gap**: Tailwind gap utility spacing flex and grid children, used across layout examples and component class lists.
 - **grand**: Word with no occurrence in tracked source, appearing only as a glossary heading and naming no component in this project.
+- **guard**: Nx code-quality target, guard-code, that runs the IC-suite gates and the catalog check on each project in the validate-code step.
 - **hand**: Adverb or verb for manual work, such as hand-authored components or a cursor that the user drags by hand.
 - **handoff**: Filters-builder action where focus passes from one editing step to the next, such as handing focus to the value popover.
 - **holder**: Object that stores timer handles in cascader async, so a pending prefetch timer can be cleared on the next call.
@@ -44,20 +56,26 @@ The words this project uses that the root glossary does not define, regenerated 
 - **instant**: Scroll behavior value that jumps to the target without animation, used by data-grid when moving focus to a cell.
 - **leaf**: Terminal tree node with no children, which cascader selection and data-grid leaf columns treat differently from branches.
 - **letter**: Single character typed for typeahead matching in the cascader, and a letter that a file extension must contain to count.
+- **lexico**: The Latin dictionary product whose web app, ingestion CLI, and entity packages live under projects/lexico.
 - **literature**: Reader typography class in the global stylesheet, a text style for long-form reading that the lexico apps use.
 - **live**: Aria-live regions that announce changes to assistive tech in cascader and data-grid, and live data in example content.
 - **magnitude**: Size of a relative date offset in the filters date editor, parsed from counted text and signed by past or future direction.
+- **map**: Wayfinder's planning artifact for a huge effort, a graph of linked decisions that collapses into a buildable spec when cleared.
+- **modifier**: Composable transform in meanderaw's motif library that adjusts how a Greek meander motif is drawn.
 - **observer**: Browser instance created to react when DOM children or subtrees change, used to re-measure layout after updates.
 - **orientation**: Horizontal or vertical direction of a control such as a slider, separator, or list, exposed as aria-orientation.
 - **period**: Morning or afternoon half of a twelve-hour clock, the am or pm column of the time picker.
+- **phone**: Narrowest viewport size that web layouts and published artifacts must work at, with a 16px side gutter and no horizontal scroll.
 - **place**: Position an item occupies in a layout, such as a spinner that replaces an expander in place within a tree row.
 - **placement**: Where a floating element sits relative to its anchor, such as the header or floating copy button in code block.
 - **presentation**: Name of this package, the shared React component library, and the presentation category used for PowerPoint file types.
 - **preset**: Predefined option list, such as the preset colors a color picker offers as swatches under its default panel.
+- **probe**: Diagnostic experiment in diagnosing-bugs, which must map to a prediction and change one variable at a time.
 - **prop**: Input passed to a React component, such as a styling or behavior prop forwarded through a shadcn wrapper.
 - **qualifier**: Adjective such as last or next in a relative date phrase, parsed from weekday text by the filters date parser.
 - **quarter**: A three-month calendar period, one of the period choices for date filters and the quarter string value.
 - **radius**: Corner rounding value, such as rounded-lg in the shadcn components, which the theme tokens scale per style variant.
+- **refresh**: The Refresh Documentation workflow that regenerates the repository wiki on a schedule, and the reload step after instruction changes.
 - **restrict**: Drag modifier that clamps movement inside a table's bounds, used by the data-grid row drag-and-drop.
 - **reveal**: Cascader reopen mode that navigates the open panel to the level holding the current selection.
 - **rewrite**: Describes a change to row order that could only rewrite hidden order, which is why such rows get no drag grip.
@@ -71,6 +89,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **term**: Single search word that the emoji picker ranks, where an exact match beats a prefix and a prefix beats a substring.
 - **tile**: Square product or workspace mark in the sidebar, sized as a 24px tile that the example scales with its frame.
 - **triple**: Three-element tuple type for a color or matrix row, used in OKLab and color channel conversions.
+- **typecheck**: Nx target that runs type checking per project, driven by the typecheck-code gate in validate-code and CI.
 - **unchanged**: Describes a value that stayed the same, such as a fresh object for an unchanged state that must not rebuild.
 - **velocity**: Pointer speed used in signature pad smoothing and in the drag sizing mode that varies pen width.
 - **visibility**: CSS visibility or content-visibility property, which the code block avoids skipping for measured layout reasons.

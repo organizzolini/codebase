@@ -2,13 +2,14 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
+The words this project uses, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **air**: One of the four sign elements used as a filter field, with a value of fire, earth, air or water.
 - **alt**: Short form in the sky settings key altBottom, the lowest altitude the night sky draws, beneath the horizon.
 - **altitude**: Height of a star above the horizon in degrees, where the pole observer sees altitude equal declination, shown by the night sky.
 - **anchor**: Names a date or position a calendar timeline is laid out from, passed as the anchor date prop to the timeline.
 - **angle**: Degree rotation the night sky star group is drawn at, derived from sidereal time as the sky turns.
+- **application**: A project tagged type:application in the Nx workspace that runs as a deployable program, as opposed to a type:package library.
 - **aquarius**: Zodiac sign and constellation name whose sign glyph maps to its icon file in the calendar glyphs.
 - **aspect**: Angular relationship between two bodies, such as a conjunction or a harmonic, filtered and colored as a tag root.
 - **astraea**: Asteroid whose name the project does not use in code; it appears only in the glossary list here.
@@ -22,15 +23,21 @@ The words this project uses that the root glossary does not define, regenerated 
 - **boundary**: Index splitting an event summary into its glyph symbols and English name, so the name is cut at that index.
 - **brightness**: Glyph for the maximum brightness event, keyed by a bright emoji and drawn from maximum-brightness-icon.svg.
 - **butterfly**: Emoji-keyed icon image, butterfly-icon.png, the calendar shows for one of its event label symbols.
+- **caelundas**: The astronomical calendar product under projects/caelundas: a CLI that detects sky events from Swiss Ephemeris positions, and the database, API, and web calendar that store and show them.
+- **callidescope**: IC-suite toolchain that measures call-stack depth and breadth across the workspace and gates each project's limits.
 - **cancer**: Zodiac sign whose ingress event, such as event-sun-ingress-cancer, the filter tests and collections reference by id.
 - **capricorn**: Zodiac sign whose glyph maps to capricorn-icon.svg, which the calendar icon utilities test checks by name.
 - **cardinal**: Modality value for a zodiac sign, one of cardinal, fixed or mutable, offered as a filter value.
 - **cascade**: Tag picker prop that, when true, makes ticking a parent tag tick the tags beneath it; group picker sets it false.
 - **chiron**: Centaur asteroid whose symbol maps to chiron-icon.svg in the calendar glyph constants and utility tests.
 - **civil**: Twilight stage of dawn or dusk labeled Civil Dawn or Civil Dusk, each with its own calendar glyph icon.
+- **codometer**: IC-suite measurement tool that reports sizes, counts, and comment budgets against configured limits per project.
+- **coinagerie**: Vocabulary toolchain that collects a repository's words and checks or writes their definitions into glossary files.
 - **conjunction**: Aspect at zero degrees between two bodies, with harmonic 1 and its own conjunction-0 icon in the glyph map.
 - **constellation**: Named star pattern the night sky draws with its own lines, from catalog records, listed as folders in the sky menu.
+- **context**: Background information an agent or reviewer uses to locate and judge a change.
 - **contraparallel**: Aspect between bodies with equal declination on opposite sides of the equator; the project lists it only here.
+- **core**: Central layer of the codebase's module architecture, holding domain vocabulary, shared enums, and error classes that other layers depend on.
 - **cradle**: Calendar glyph mapped from the bed emoji to cradle-icon.png, used for one event label in the glyph map.
 - **crescent**: Moon phase between new and quarter, offered as a filter value and drawn with waxing or waning crescent icons.
 - **cut**: Verb for removing or trimming: a view is added or cut from the list, and night sky rings are cut at the window edge.
@@ -40,7 +47,10 @@ The words this project uses that the root glossary does not define, regenerated 
 - **decile**: Aspect of 36 degrees, one tenth of the circle, drawn with its own decile-36 icon image in calendar glyphs.
 - **decuple**: Stellium label for a cluster of ten bodies, as the CLI's symbol map names it.
 - **degree**: Angle unit for all night sky coordinates, such as the 90-degree default vertical field and full turns.
+- **deprecate**: Nx code-quality target, deprecate-code, that finds unused or outdated code and dependencies with tools such as knip, sherif, and syncpack in the validate-code step.
+- **depth**: Callidescope metric for the longest call stack, gated per project by maximumDepth in callidescope configuration.
 - **dignity**: Filter field for planet strength in a sign, such as domicile or exaltation, used as a tag root.
+- **dispatch**: Orchestration step where the main session hands each parent issue or ticket to a fresh subagent with its own brief.
 - **domain**: Tag group recording whether an event belongs to the solar, lunar or planetary sphere, and the Nx domain tag this project carries.
 - **duodecuple**: Stellium label for a cluster of twelve bodies, as the CLI's symbol map names it.
 - **dusk**: Evening twilight stage, labeled Astronomical Dusk, Astronomical Twilight Evening or Civil Dusk, each with its own icon.
@@ -59,6 +69,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **gibbous**: The Moon's phase between quarter and full, as the phase filter and its waxing and waning icons name it.
 - **gonggong**: A trans-Neptunian dwarf planet whose name no source or test file uses; only the glossary mentions it.
 - **grand**: Part of a three-or-more-body aspect pattern name, like grand trine or grand cross, in the collections and icon table.
+- **guard**: Nx code-quality target, guard-code, that runs the IC-suite gates and the catalog check on each project in the validate-code step.
 - **hammer**: The event glyph for the hammer emoji, mapped to its PNG icon file in the calendar icon table.
 - **hang**: Test option that leaves the mock API unanswered, so a route test can see the loading skeleton.
 - **harmonic**: A numbered aspect family, such as Harmonic 4, whose tags the calendar filters and agenda group under Type.
@@ -87,6 +98,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **mag**: The magnitude unit suffix, written as mag after a star's brightness value in the night-sky menu's labels.
 - **magnitude**: A star's brightness on the astronomical scale, lower being brighter, stored per star and capped by the faintest-star setting.
 - **makemake**: A dwarf planet of the Kuiper belt that no source or test file names, leaving only this glossary entry.
+- **map**: Wayfinder's planning artifact for a huge effort, a graph of linked decisions that collapses into a buildable spec when cleared.
 - **mercury**: The innermost planet, named in the calendar's color scheme tests and in a Mercury retrograde filter fixture.
 - **modality**: A zodiac sign's quality, cardinal, fixed or mutable, offered as a filter field and tag group for events.
 - **moon**: Tag path naming the Moon, whose events a without-the-Moon collection excludes from its planetary aspect set.
@@ -166,6 +178,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **triple**: Compound aspect group of three bodies, mapped to the three-body stellium icon.
 - **triseptile**: A 154.29-degree aspect in the seventh-harmonic family, which no code in this project uses.
 - **twilight**: Sun-altitude dusk and dawn stage, a Type value with civil, nautical and astronomical bands.
+- **typecheck**: Nx target that runs type checking per project, driven by the typecheck-code gate in validate-code and CI.
 - **typhon**: Centaur body name that no code in this project uses, so it survives only as a glossary entry.
 - **undecile**: The 32.7-degree aspect, an eleventh-harmonic pattern, shown in event names with its own SVG icon.
 - **undecuple**: Stellium label for eleven bodies clustered together, mapped to a symbol in the stellium constants.
