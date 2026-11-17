@@ -149,7 +149,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     instances: [
       {
         patterns: [
-          "projects/ic-suite/callidescope/callidescope-!(cli|examples)",
+          "projects/ic-suite/callidescope/callidescope-!(agents|cli|examples)",
         ],
         substitutions: {
           type: "projects/ic-suite/callidescope/",
@@ -157,28 +157,36 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
         },
       },
       {
-        patterns: ["projects/ic-suite/codependix/codependix-!(cli|examples)"],
+        patterns: [
+          "projects/ic-suite/codependix/codependix-!(agents|cli|examples)",
+        ],
         substitutions: {
           type: "projects/ic-suite/codependix/",
           workspaceRelativePrefix: "../../../../",
         },
       },
       {
-        patterns: ["projects/ic-suite/codometer/codometer-!(cli|examples)"],
+        patterns: [
+          "projects/ic-suite/codometer/codometer-!(agents|cli|examples)",
+        ],
         substitutions: {
           type: "projects/ic-suite/codometer/",
           workspaceRelativePrefix: "../../../../",
         },
       },
       {
-        patterns: ["projects/ic-suite/coinagerie/coinagerie-!(cli|examples)"],
+        patterns: [
+          "projects/ic-suite/coinagerie/coinagerie-!(agents|cli|examples)",
+        ],
         substitutions: {
           type: "projects/ic-suite/coinagerie/",
           workspaceRelativePrefix: "../../../../",
         },
       },
       {
-        patterns: ["projects/ic-suite/conformetry/conformetry-!(cli|examples)"],
+        patterns: [
+          "projects/ic-suite/conformetry/conformetry-!(agents|cli|examples)",
+        ],
         substitutions: {
           type: "projects/ic-suite/conformetry/",
           workspaceRelativePrefix: "../../../../",

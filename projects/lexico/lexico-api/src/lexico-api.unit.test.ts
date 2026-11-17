@@ -92,7 +92,7 @@ describe("lexico api bootstrap suite", () => {
     expect(createLightshipMock).toHaveBeenCalledWith({ port: 9000 });
     expect(loggerConstructorMock).toHaveBeenCalledTimes(1);
     expect(setContextMock).toHaveBeenCalledWith("NestApplication");
-    expect(listenMock).toHaveBeenCalledWith(5003);
+    expect(listenMock).toHaveBeenCalledWith(3000);
     expect(signalReadyMock).toHaveBeenCalledTimes(1);
     expect(registerShutdownHandlerMock).toHaveBeenCalledTimes(1);
 
