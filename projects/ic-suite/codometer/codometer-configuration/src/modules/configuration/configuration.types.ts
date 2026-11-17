@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-import type { FORMAT_NAMES } from "./configuration-flags.constants";
+import type { FORMAT_NAMES } from "./modules/flags/configuration-flags.constants";
 import type { WriteMarkdownOutput } from "./output.types";
 import type {
   CodometerSeverity,

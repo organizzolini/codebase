@@ -11,8 +11,8 @@ import type {
   CodometerCompression,
   CodometerFormat,
   CodometerSymbolMatcher,
-} from "./configuration.types";
-import type { WriteMarkdownOutput } from "./output.types";
+} from "../../configuration.types";
+import type { WriteMarkdownOutput } from "../../output.types";
 import type {
   CodometerSeverity,
   CodometerStatisticGroup,

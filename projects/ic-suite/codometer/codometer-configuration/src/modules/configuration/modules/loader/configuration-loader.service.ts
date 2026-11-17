@@ -11,10 +11,10 @@ import { Injectable } from "@nestjs/common";
 import { createJiti } from "jiti";
 import { parse as parseJsonc } from "jsonc-parser";
 
-import { SUPPORTED_CONFIGURATION_EXTENSIONS } from "./configuration.constants";
+import { SUPPORTED_CONFIGURATION_EXTENSIONS } from "../../configuration.constants";
 
+import type { LoadConfigurationArguments } from "../../configuration.types";
 import type { LoadedConfigurationModule } from "./configuration-loader.types";
-import type { LoadConfigurationArguments } from "./configuration.types";
 
 /**
  * Reads the codometer configuration file at a path.

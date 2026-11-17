@@ -16,7 +16,7 @@ import type {
   MeasureFormat,
   ModeSelection,
   RunMode,
-} from "./configuration.types";
+} from "../../configuration.types";
 
 /**
  * Reads the command-line flags `ConfigurationService` answers a run from. Commander passes a valueless flag as `true` without calling its parser, so flags shared by several commands follow one rule; a flag only one command takes keeps its own parser.

@@ -5,7 +5,7 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 import { ConfigurationPathRequiredError } from "./configuration-flags.constants";
 import { ConfigurationFlagsService } from "./configuration-flags.service";
 
-import type { MeasureCommandOptions, RunMode } from "./configuration.types";
+import type { MeasureCommandOptions, RunMode } from "../../configuration.types";
 
 describe(ConfigurationFlagsService, () => {
   let service: ConfigurationFlagsService;

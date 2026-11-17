@@ -5,7 +5,7 @@ import {
 import { Injectable } from "@nestjs/common";
 import { z } from "zod";
 
-import { codometerConfigurationSchema } from "./configuration-schema.constants";
+import { codometerConfigurationSchema } from "../../configuration-schema.constants";
 import {
   DEFAULT_CODEBASE_INPUT,
   DEFAULT_CUSTOM_STATISTIC_COLORS,
@@ -22,7 +22,7 @@ import {
   LIMIT_UNIT_MULTIPLIERS,
   LIMIT_VALUE_PATTERN,
   NEGATION_PREFIX,
-} from "./configuration.constants";
+} from "../../configuration.constants";
 
 import type {
   CodometerConfiguration,
@@ -33,7 +33,7 @@ import type {
   CodometerMarkdownOutput,
   CodometerOutput,
   CodometerTreeSelector,
-} from "./configuration.types";
+} from "../../configuration.types";
 import type {
   ResolvedCodometerConfiguration,
   ResolvedCodometerCustomStatistic,

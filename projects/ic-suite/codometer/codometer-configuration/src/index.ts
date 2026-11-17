@@ -1,13 +1,3 @@
-export {
-  CHECK_LIMITS,
-  CHECK_NAMES,
-  CHECK_REPORTS,
-  CHECK_SEPARATOR,
-  ConfigurationPathRequiredError,
-  FORMAT_JSON,
-  FORMAT_MARKDOWN,
-  FORMAT_NAMES,
-} from "./modules/configuration/configuration-flags.constants";
 export { codometerConfigurationSchema } from "./modules/configuration/configuration-schema.constants";
 export {
   CODOMETER_ANALYSES,
@@ -56,11 +46,16 @@ export type {
   ModeSelection,
   RunMode,
 } from "./modules/configuration/configuration.types";
-export type {
-  MarkdownAnchorHelpers,
-  WriteMarkdownOutput,
-  WriteMarkdownOutputArguments,
-} from "./modules/configuration/output.types";
+export {
+  CHECK_LIMITS,
+  CHECK_NAMES,
+  CHECK_REPORTS,
+  CHECK_SEPARATOR,
+  ConfigurationPathRequiredError,
+  FORMAT_JSON,
+  FORMAT_MARKDOWN,
+  FORMAT_NAMES,
+} from "./modules/configuration/modules/flags/configuration-flags.constants";
 export type {
   LoadedConfiguration,
   ResolvedCodometerCommentSelector,
@@ -73,6 +68,11 @@ export type {
   ResolvedCodometerOutput,
   ResolvedCodometerPythonConfiguration,
   ResolvedCodometerTreeSelector,
-} from "./modules/configuration/resolved.types";
+} from "./modules/configuration/modules/resolver/resolved.types";
+export type {
+  MarkdownAnchorHelpers,
+  WriteMarkdownOutput,
+  WriteMarkdownOutputArguments,
+} from "./modules/configuration/output.types";
 // 📤 Exports
 export { CODOMETER_SYMBOL_KINDS } from "@codometer/core";
