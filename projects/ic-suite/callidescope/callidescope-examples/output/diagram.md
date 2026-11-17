@@ -18,7 +18,7 @@
 | --- | --- | --- | --- | --- |
 | `projects/ic-suite/callidescope/callidescope-examples` | 8 | 5 | -3 | 2 |
 | `projects/common/observability` | 6 | 4 | -2 | 2 |
-| `projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf` | 4 | 3 | -1 | 3 |
+| `projects/ic-suite/callidescope/callidescope-examples/examples/limits/gated-leaf` | 4 | 3 | -1 | 3 |
 | `projects/ic-suite/codependix/codependix-configuration` | 7 | 7 | 0 | 4 |
 | `projects/ic-suite/codometer/codometer-configuration` | 9 | 9 | 0 | 4 |
 | `projects/ic-suite/coinagerie/coinagerie-configuration` | 3 | 3 | 0 | 3 |
@@ -144,6 +144,6 @@ flowchart LR
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `GatedLeafService.read` | 3 | `GatedLeafService.parse`, `GatedLeafService.normalize`, `GatedLeafService.finish` | `projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf/gated-leaf.ts:33` |
+| `GatedLeafService.read` | 3 | `GatedLeafService.parse`, `GatedLeafService.normalize`, `GatedLeafService.finish` | `projects/ic-suite/callidescope/callidescope-examples/examples/limits/gated-leaf/gated-leaf.ts:33` |
 
 <!-- callidescope:end -->

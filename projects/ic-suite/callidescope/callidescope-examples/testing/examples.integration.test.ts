@@ -44,36 +44,38 @@ const AGGREGATE_TARGET_NAME = "examples";
 /** Command every guide's `## Run it` block documents, from names. */
 const RUN_IT_COMMAND = `nx run ${readProjectDefinition().name}:${AGGREGATE_TARGET_NAME}`;
 
-/** Every directory under `examples/`, whether or not it is a project. */
-const EXAMPLE_NAMES = listExampleNames(
-  path.join(WORKSPACE_ROOT, EXAMPLES_DIRECTORY, "examples"),
+/** The folder holding every group of examples. */
+const EXAMPLE_GROUPS_DIRECTORY = path.join(
+  WORKSPACE_ROOT,
+  EXAMPLES_DIRECTORY,
+  "examples",
+);
+
+/** Every example as `group/name`, whether or not it is a project. */
+const EXAMPLE_NAMES = listExampleNames(EXAMPLE_GROUPS_DIRECTORY).flatMap(
+  (group) =>
+    listExampleNames(path.join(EXAMPLE_GROUPS_DIRECTORY, group)).map(
+      (name) => `${group}/${name}`,
+    ),
 );
 
 /** The nested project that carries its own limits, and breaches both. */
-const GATED_LEAF_DIRECTORY = `${EXAMPLES_DIRECTORY}/examples/gated-leaf`;
+const GATED_LEAF_DIRECTORY = `${EXAMPLES_DIRECTORY}/examples/limits/gated-leaf`;
 
 /** Guides documenting runs beyond the aggregate target, listed by name. */
-const GUIDES_WITH_DOCUMENTED_RUNS = ["gated-leaf"];
+const GUIDES_WITH_DOCUMENTED_RUNS = ["limits/gated-leaf"];
 
 /** Example directories holding a tsconfig at the configured path, read from disk. */
-const NESTED_PROJECT_DIRECTORIES = readdirSync(
-  path.join(WORKSPACE_ROOT, EXAMPLES_DIRECTORY, "examples"),
-  { withFileTypes: true },
+const NESTED_PROJECT_DIRECTORIES = EXAMPLE_NAMES.filter((exampleName) =>
+  existsSync(
+    path.join(
+      EXAMPLE_GROUPS_DIRECTORY,
+      exampleName,
+      callidescopeConfiguration.projectTsconfigPath ?? "",
+    ),
+  ),
 )
-  .filter(
-    (entry) =>
-      entry.isDirectory() &&
-      existsSync(
-        path.join(
-          WORKSPACE_ROOT,
-          EXAMPLES_DIRECTORY,
-          "examples",
-          entry.name,
-          callidescopeConfiguration.projectTsconfigPath ?? "",
-        ),
-      ),
-  )
-  .map((entry) => `${EXAMPLES_DIRECTORY}/examples/${entry.name}`)
+  .map((exampleName) => `${EXAMPLES_DIRECTORY}/examples/${exampleName}`)
   .toSorted();
 
 /** As much of an Nx project definition as anything here reads. */
@@ -266,7 +268,11 @@ function readReadingOrder(): string[] {
     .at(-1)
     ?.split("\n\n")[0];
 
-  return [...(walkthrough ?? "").matchAll(/\(examples\/([a-z0-9-]+)\/README/g)]
+  return [
+    ...(walkthrough ?? "").matchAll(
+      /\(examples\/([a-z0-9-]+\/[a-z0-9-]+)\/README/g,
+    ),
+  ]
     .map((match) => match[1])
     .filter((exampleName) => exampleName !== undefined);
 }
@@ -276,6 +282,14 @@ function readReadingOrder(): string[] {
  */
 function readRunItCommand(exampleName: string): string {
   return readFences(readGuide(exampleName), "bash")[0] ?? "";
+}
+
+/** The link from one guide's folder to another's: a sibling, or one group over. */
+function relativeGuideLink(from: string, to: string): string {
+  const [fromGroup] = from.split("/");
+  const [toGroup, toName] = to.split("/");
+
+  return fromGroup === toGroup ? `../${toName}` : `../../${to}`;
 }
 
 /**
@@ -431,7 +445,9 @@ describe("callidescope examples (integration)", () => {
           return [
             exampleName,
             readNextLink(exampleName).includes(
-              next === undefined ? "../../README.md" : `../${next}/README.md`,
+              next === undefined
+                ? "../../../README.md"
+                : `${relativeGuideLink(exampleName, next)}/README.md`,
             ),
           ];
         }),

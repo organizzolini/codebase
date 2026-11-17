@@ -14,7 +14,7 @@ const callidescopeConfiguration: CallidescopeProjectConfiguration = {
      * states the surface it means to be measured on.
      */
     addresses: [
-      "projects/ic-suite/callidescope/callidescope-examples/examples/declared-entry-points/declared-entry-points.ts#DeclaredEntryPointsService.collect",
+      "projects/ic-suite/callidescope/callidescope-examples/examples/roots/declared-entry-points/declared-entry-points.ts#DeclaredEntryPointsService.collect",
     ],
     /**
      * The tool's own list, written out rather than imported.

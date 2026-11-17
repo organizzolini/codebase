@@ -1,4 +1,4 @@
-import { normalizeLabel } from "../examples/plain-call/normalize-label.js";
+import { normalizeLabel } from "../examples/resolution/plain-call/normalize-label.js";
 
 // 📤 Exports
 

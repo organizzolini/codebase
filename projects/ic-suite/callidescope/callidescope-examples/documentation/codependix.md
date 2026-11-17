@@ -12,10 +12,12 @@ graph LR
   callidescope_core["callidescope-core"]
   callidescope_examples["callidescope-examples"]
   configuration["configuration"]
+  testing["testing"]
   callidescope_examples -.-> callidescope_cli
   callidescope_examples --> callidescope_configuration
   callidescope_examples --> callidescope_core
   callidescope_examples --> configuration
+  callidescope_examples --> testing
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class callidescope_examples subject
 ```
@@ -34,64 +36,63 @@ _This project defines no NestJS modules to graph._
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
   file_callidescope_workspace_config_ts["callidescope.workspace.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
-  file_examples_base_class_base_class_ts["examples/base-class/base-class.ts"]
-  file_examples_base_class_base_task_ts["examples/base-class/base-task.ts"]
-  file_examples_callback_argument_callback_argument_ts["examples/callback-argument/callback-argument.ts"]
-  file_examples_computed_member_computed_member_ts["examples/computed-member/computed-member.ts"]
-  file_examples_constructed_class_constructed_class_ts["examples/constructed-class/constructed-class.ts"]
-  file_examples_constructed_class_parser_ts["examples/constructed-class/parser.ts"]
-  file_examples_declared_entry_points_declared_entry_points_ts["examples/declared-entry-points/declared-entry-points.ts"]
-  file_examples_deep_stack_deep_stack_ts["examples/deep-stack/deep-stack.ts"]
-  file_examples_dependency_closure_dependency_closure_ts["examples/dependency-closure/dependency-closure.ts"]
-  file_examples_entry_points_entry_points_ts["examples/entry-points/entry-points.ts"]
-  file_examples_forwarding_stack_forwarding_stack_ts["examples/forwarding-stack/forwarding-stack.ts"]
-  file_examples_frame_annotations_frame_annotations_ts["examples/frame-annotations/frame-annotations.ts"]
-  file_examples_gated_leaf_callidescope_config_ts["examples/gated-leaf/callidescope.config.ts"]
-  file_examples_gated_leaf_gated_leaf_generated_ts["examples/gated-leaf/gated-leaf.generated.ts"]
-  file_examples_gated_leaf_gated_leaf_ts["examples/gated-leaf/gated-leaf.ts"]
-  file_examples_implementation_fan_out_api_sink_ts["examples/implementation-fan-out/api-sink.ts"]
-  file_examples_implementation_fan_out_console_sink_ts["examples/implementation-fan-out/console-sink.ts"]
-  file_examples_implementation_fan_out_database_sink_ts["examples/implementation-fan-out/database-sink.ts"]
-  file_examples_implementation_fan_out_file_sink_ts["examples/implementation-fan-out/file-sink.ts"]
-  file_examples_implementation_fan_out_line_sink_ts["examples/implementation-fan-out/line-sink.ts"]
-  file_examples_implementation_fan_out_memory_sink_ts["examples/implementation-fan-out/memory-sink.ts"]
-  file_examples_implementation_fan_out_network_sink_ts["examples/implementation-fan-out/network-sink.ts"]
-  file_examples_implementation_fan_out_queue_sink_ts["examples/implementation-fan-out/queue-sink.ts"]
-  file_examples_implementation_fan_out_stream_sink_ts["examples/implementation-fan-out/stream-sink.ts"]
-  file_examples_implementation_fan_out_telemetry_sink_ts["examples/implementation-fan-out/telemetry-sink.ts"]
-  file_examples_injected_dependency_injected_dependency_module_ts["examples/injected-dependency/injected-dependency.module.ts"]
-  file_examples_injected_dependency_inventory_ts["examples/injected-dependency/inventory.ts"]
-  file_examples_injected_dependency_orders_ts["examples/injected-dependency/orders.ts"]
-  file_examples_mutual_recursion_mutual_recursion_ts["examples/mutual-recursion/mutual-recursion.ts"]
-  file_examples_plain_call_normalize_label_ts["examples/plain-call/normalize-label.ts"]
-  file_examples_plain_call_plain_call_ts["examples/plain-call/plain-call.ts"]
-  file_examples_project_depth_limit_project_depth_limit_ts["examples/project-depth-limit/project-depth-limit.ts"]
-  file_examples_shared_tail_round_to_cents_ts["examples/shared-tail/round-to-cents.ts"]
-  file_examples_structural_interface_structural_interface_ts["examples/structural-interface/structural-interface.ts"]
-  file_examples_structural_interface_structural_provider_ts["examples/structural-interface/structural-provider.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
+  file_examples_limits_gated_leaf_configuration_callidescope_config_ts["examples/limits/gated-leaf/configuration/callidescope.config.ts"]
+  file_examples_limits_gated_leaf_gated_leaf_generated_ts["examples/limits/gated-leaf/gated-leaf.generated.ts"]
+  file_examples_limits_gated_leaf_gated_leaf_ts["examples/limits/gated-leaf/gated-leaf.ts"]
+  file_examples_limits_project_depth_limit_project_depth_limit_ts["examples/limits/project-depth-limit/project-depth-limit.ts"]
+  file_examples_resolution_base_class_base_class_ts["examples/resolution/base-class/base-class.ts"]
+  file_examples_resolution_base_class_base_task_ts["examples/resolution/base-class/base-task.ts"]
+  file_examples_resolution_callback_argument_callback_argument_ts["examples/resolution/callback-argument/callback-argument.ts"]
+  file_examples_resolution_computed_member_computed_member_ts["examples/resolution/computed-member/computed-member.ts"]
+  file_examples_resolution_constructed_class_constructed_class_ts["examples/resolution/constructed-class/constructed-class.ts"]
+  file_examples_resolution_constructed_class_parser_ts["examples/resolution/constructed-class/parser.ts"]
+  file_examples_resolution_dependency_closure_dependency_closure_ts["examples/resolution/dependency-closure/dependency-closure.ts"]
+  file_examples_resolution_implementation_fan_out_api_sink_ts["examples/resolution/implementation-fan-out/api-sink.ts"]
+  file_examples_resolution_implementation_fan_out_console_sink_ts["examples/resolution/implementation-fan-out/console-sink.ts"]
+  file_examples_resolution_implementation_fan_out_database_sink_ts["examples/resolution/implementation-fan-out/database-sink.ts"]
+  file_examples_resolution_implementation_fan_out_file_sink_ts["examples/resolution/implementation-fan-out/file-sink.ts"]
+  file_examples_resolution_implementation_fan_out_line_sink_ts["examples/resolution/implementation-fan-out/line-sink.ts"]
+  file_examples_resolution_implementation_fan_out_memory_sink_ts["examples/resolution/implementation-fan-out/memory-sink.ts"]
+  file_examples_resolution_implementation_fan_out_network_sink_ts["examples/resolution/implementation-fan-out/network-sink.ts"]
+  file_examples_resolution_implementation_fan_out_queue_sink_ts["examples/resolution/implementation-fan-out/queue-sink.ts"]
+  file_examples_resolution_implementation_fan_out_stream_sink_ts["examples/resolution/implementation-fan-out/stream-sink.ts"]
+  file_examples_resolution_implementation_fan_out_telemetry_sink_ts["examples/resolution/implementation-fan-out/telemetry-sink.ts"]
+  file_examples_resolution_injected_dependency_injected_dependency_module_ts["examples/resolution/injected-dependency/injected-dependency.module.ts"]
+  file_examples_resolution_injected_dependency_inventory_ts["examples/resolution/injected-dependency/inventory.ts"]
+  file_examples_resolution_injected_dependency_orders_ts["examples/resolution/injected-dependency/orders.ts"]
+  file_examples_resolution_plain_call_normalize_label_ts["examples/resolution/plain-call/normalize-label.ts"]
+  file_examples_resolution_plain_call_plain_call_ts["examples/resolution/plain-call/plain-call.ts"]
+  file_examples_resolution_structural_interface_structural_interface_ts["examples/resolution/structural-interface/structural-interface.ts"]
+  file_examples_resolution_structural_interface_structural_provider_ts["examples/resolution/structural-interface/structural-provider.ts"]
+  file_examples_roots_declared_entry_points_declared_entry_points_ts["examples/roots/declared-entry-points/declared-entry-points.ts"]
+  file_examples_roots_entry_points_entry_points_ts["examples/roots/entry-points/entry-points.ts"]
+  file_examples_stacks_deep_stack_deep_stack_ts["examples/stacks/deep-stack/deep-stack.ts"]
+  file_examples_stacks_forwarding_stack_forwarding_stack_ts["examples/stacks/forwarding-stack/forwarding-stack.ts"]
+  file_examples_stacks_frame_annotations_frame_annotations_ts["examples/stacks/frame-annotations/frame-annotations.ts"]
+  file_examples_stacks_mutual_recursion_mutual_recursion_ts["examples/stacks/mutual-recursion/mutual-recursion.ts"]
+  file_examples_stacks_shared_tail_round_to_cents_ts["examples/stacks/shared-tail/round-to-cents.ts"]
   file_src_callidescope_examples_main_ts["src/callidescope-examples.main.ts"]
   file_src_index_ts["src/index.ts"]
   file_testing_examples_integration_test_ts["testing/examples.integration.test.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
-  file_examples_base_class_base_class_ts --> file_examples_base_class_base_task_ts
-  file_examples_constructed_class_constructed_class_ts --> file_examples_constructed_class_parser_ts
-  file_examples_deep_stack_deep_stack_ts --> file_examples_shared_tail_round_to_cents_ts
-  file_examples_forwarding_stack_forwarding_stack_ts --> file_examples_shared_tail_round_to_cents_ts
-  file_examples_injected_dependency_injected_dependency_module_ts --> file_examples_injected_dependency_inventory_ts
-  file_examples_injected_dependency_injected_dependency_module_ts --> file_examples_injected_dependency_orders_ts
-  file_examples_injected_dependency_orders_ts --> file_examples_injected_dependency_inventory_ts
-  file_examples_plain_call_plain_call_ts --> file_examples_plain_call_normalize_label_ts
-  file_examples_structural_interface_structural_interface_ts --> file_examples_structural_interface_structural_provider_ts
-  file_src_callidescope_examples_main_ts --> file_examples_injected_dependency_inventory_ts
-  file_src_callidescope_examples_main_ts --> file_examples_injected_dependency_orders_ts
-  file_src_index_ts --> file_examples_plain_call_normalize_label_ts
+  file_examples_resolution_base_class_base_class_ts --> file_examples_resolution_base_class_base_task_ts
+  file_examples_resolution_constructed_class_constructed_class_ts --> file_examples_resolution_constructed_class_parser_ts
+  file_examples_resolution_injected_dependency_injected_dependency_module_ts --> file_examples_resolution_injected_dependency_inventory_ts
+  file_examples_resolution_injected_dependency_injected_dependency_module_ts --> file_examples_resolution_injected_dependency_orders_ts
+  file_examples_resolution_injected_dependency_orders_ts --> file_examples_resolution_injected_dependency_inventory_ts
+  file_examples_resolution_plain_call_plain_call_ts --> file_examples_resolution_plain_call_normalize_label_ts
+  file_examples_resolution_structural_interface_structural_interface_ts --> file_examples_resolution_structural_interface_structural_provider_ts
+  file_examples_stacks_deep_stack_deep_stack_ts --> file_examples_stacks_shared_tail_round_to_cents_ts
+  file_examples_stacks_forwarding_stack_forwarding_stack_ts --> file_examples_stacks_shared_tail_round_to_cents_ts
+  file_src_callidescope_examples_main_ts --> file_examples_resolution_injected_dependency_inventory_ts
+  file_src_callidescope_examples_main_ts --> file_examples_resolution_injected_dependency_orders_ts
+  file_src_index_ts --> file_examples_resolution_plain_call_normalize_label_ts
   file_testing_examples_integration_test_ts --> file_callidescope_workspace_config_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
