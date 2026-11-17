@@ -15,9 +15,11 @@ graph LR
   callidescope_nx["callidescope-nx"]
   callidescope_output["callidescope-output"]
   configuration["configuration"]
+  testing["testing"]
   callidescope_cli --> callidescope_core
   callidescope_configuration --> callidescope_core
   callidescope_core --> configuration
+  callidescope_core --> testing
   callidescope_examples --> callidescope_core
   callidescope_graph --> callidescope_core
   callidescope_nx --> callidescope_core
@@ -41,11 +43,13 @@ flowchart LR
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vite_config_ts["configuration/vite.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_index_unit_test_ts["src/index.unit.test.ts"]
   file_src_modules_callidescope_core_callidescope_core_constants_ts["src/modules/callidescope-core/callidescope-core.constants.ts"]
@@ -53,12 +57,12 @@ graph LR
   file_src_modules_callidescope_core_callidescope_core_service_ts["src/modules/callidescope-core/callidescope-core.service.ts"]
   file_src_modules_callidescope_core_callidescope_core_service_unit_test_ts["src/modules/callidescope-core/callidescope-core.service.unit.test.ts"]
   file_src_modules_callidescope_core_callidescope_core_types_ts["src/modules/callidescope-core/callidescope-core.types.ts"]
+  file_testing_callables_ts["testing/callables.ts"]
+  file_testing_index_ts["testing/index.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vite_config_ts["vite.config.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_index_unit_test_ts --> file_src_index_ts
   file_src_modules_callidescope_core_callidescope_core_module_ts --> file_src_modules_callidescope_core_callidescope_core_service_ts
   file_src_modules_callidescope_core_callidescope_core_service_unit_test_ts --> file_src_modules_callidescope_core_callidescope_core_service_ts
+  file_testing_callables_ts --> file_src_index_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->

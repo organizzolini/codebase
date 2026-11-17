@@ -9,7 +9,9 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 graph LR
   configuration["configuration"]
   conformetry_agents["conformetry-agents"]
+  testing["testing"]
   conformetry_agents --> configuration
+  conformetry_agents --> testing
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class conformetry_agents subject
 ```

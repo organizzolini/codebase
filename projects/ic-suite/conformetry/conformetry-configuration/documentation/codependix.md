@@ -17,9 +17,11 @@ graph LR
   conformetry_nx["conformetry-nx"]
   conformetry_validation["conformetry-validation"]
   synchronization["synchronization"]
+  testing["testing"]
   conformetry_cli --> conformetry_configuration
   conformetry_configuration --> configuration
   conformetry_configuration --> conformetry_core
+  conformetry_configuration --> testing
   conformetry_examples --> conformetry_configuration
   conformetry_generation --> conformetry_configuration
   conformetry_languages --> conformetry_configuration
@@ -59,11 +61,13 @@ flowchart LR
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vite_config_ts["configuration/vite.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_index_unit_test_ts["src/index.unit.test.ts"]
   file_src_modules_configuration_configuration_constants_ts["src/modules/configuration/configuration.constants.ts"]
@@ -112,9 +116,6 @@ graph LR
   file_src_modules_template_discovery_template_discovery_service_unit_test_ts["src/modules/template-discovery/template-discovery.service.unit.test.ts"]
   file_src_modules_template_discovery_template_discovery_types_ts["src/modules/template-discovery/template-discovery.types.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vite_config_ts["vite.config.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_index_unit_test_ts --> file_src_index_ts
   file_src_modules_configuration_configuration_constants_ts --> file_src_modules_configuration_configuration_utilities_ts
   file_src_modules_configuration_configuration_module_ts --> file_src_modules_configuration_configuration_service_ts
@@ -124,6 +125,12 @@ graph LR
   file_src_modules_configuration_configuration_module_ts --> file_src_modules_rendering_rendering_module_ts
   file_src_modules_configuration_configuration_module_ts --> file_src_modules_template_discovery_template_discovery_module_ts
   file_src_modules_configuration_configuration_module_unit_test_ts --> file_src_modules_configuration_configuration_module_ts
+  file_src_modules_configuration_configuration_module_unit_test_ts --> file_src_modules_configuration_configuration_service_ts
+  file_src_modules_configuration_configuration_module_unit_test_ts --> file_src_modules_input_input_module_ts
+  file_src_modules_configuration_configuration_module_unit_test_ts --> file_src_modules_instance_discovery_instance_discovery_module_ts
+  file_src_modules_configuration_configuration_module_unit_test_ts --> file_src_modules_instance_group_instance_group_module_ts
+  file_src_modules_configuration_configuration_module_unit_test_ts --> file_src_modules_rendering_rendering_module_ts
+  file_src_modules_configuration_configuration_module_unit_test_ts --> file_src_modules_template_discovery_template_discovery_module_ts
   file_src_modules_configuration_configuration_service_ts --> file_src_modules_configuration_configuration_constants_ts
   file_src_modules_configuration_configuration_service_ts --> file_src_modules_configuration_configuration_types_ts
   file_src_modules_configuration_configuration_service_ts --> file_src_modules_input_input_prompting_service_ts

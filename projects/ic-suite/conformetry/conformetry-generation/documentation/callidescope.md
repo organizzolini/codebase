@@ -28,25 +28,25 @@ What this project is judged against, as declared in its own `callidescope.config
 **1. `GenerationService.listDirectory`** — depth 2 · orphan-root
 
 ```text
-🚀 GenerationService.listDirectory(directoryPath: string): Promise<DirectoryEntry[]> [projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:40]
-  └─> GenerationService.map(…)(entry: Dirent<string>): { isDirectory: boolean; name: string; } [projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:43]
+🚀 GenerationService.listDirectory(directoryPath: string): Promise<DirectoryEntry[]> [projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:36]
+  └─> GenerationService.map(…)(entry: Dirent<string>): { isDirectory: boolean; name: string; } [projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:39]
 ```
 
 ### Breadth
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `GenerationService.runGenerator` | 4 | `GenerationService.resolveAdapters`, `GenerationService.normalizeInputs`, `GenerationService.buildSubstitutions`, `GenerationService.renderDirectory` | `projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:193` |
-| `GenerationService.renderDirectory` | 2 | `ConfigurationService.renderPath`, `GenerationService.renderFile` | `projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:106` |
-| `GenerationService.listDirectory` | 1 | `GenerationService.map(…)` | `projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:40` |
+| `GenerationService.runGenerator` | 4 | `GenerationService.resolveAdapters`, `GenerationService.normalizeInputs`, `GenerationService.buildSubstitutions`, `GenerationService.renderDirectory` | `projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:188` |
+| `GenerationService.renderDirectory` | 2 | `ConfigurationService.renderPath`, `GenerationService.renderFile` | `projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:101` |
+| `GenerationService.listDirectory` | 1 | `GenerationService.map(…)` | `projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:36` |
 
 <details>
 <summary>2 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `GenerationService.buildSubstitutions` | 1 | `ConfigurationService.buildNameSubstitutions` | `projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:76` |
-| `GenerationService.renderFile` | 1 | `ConfigurationService.renderContent` | `projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:155` |
+| `GenerationService.buildSubstitutions` | 1 | `ConfigurationService.buildNameSubstitutions` | `projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:71` |
+| `GenerationService.renderFile` | 1 | `ConfigurationService.renderContent` | `projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:150` |
 
 </details>
 <!-- callidescope:end -->

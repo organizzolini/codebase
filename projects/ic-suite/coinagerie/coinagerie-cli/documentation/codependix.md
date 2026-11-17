@@ -11,17 +11,21 @@ graph LR
   coinagerie_configuration["coinagerie-configuration"]
   coinagerie_core["coinagerie-core"]
   coinagerie_examples["coinagerie-examples"]
+  coinagerie_nx["coinagerie-nx"]
   coinagerie_output["coinagerie-output"]
   coinagerie_vocabulary["coinagerie-vocabulary"]
   configuration["configuration"]
   observability["observability"]
+  testing["testing"]
   coinagerie_cli --> coinagerie_configuration
   coinagerie_cli --> coinagerie_core
   coinagerie_cli --> coinagerie_output
   coinagerie_cli --> coinagerie_vocabulary
   coinagerie_cli --> configuration
   coinagerie_cli --> observability
+  coinagerie_cli --> testing
   coinagerie_examples -.-> coinagerie_cli
+  coinagerie_nx -.-> coinagerie_cli
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class coinagerie_cli subject
 ```
@@ -105,11 +109,13 @@ _Rounded modules are global: every module can inject them, so their edges are le
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vite_config_ts["configuration/vite.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_coinagerie_cli_constants_ts["src/coinagerie-cli.constants.ts"]
   file_src_coinagerie_cli_main_end_to_end_test_ts["src/coinagerie-cli.main.end-to-end.test.ts"]
   file_src_coinagerie_cli_main_ts["src/coinagerie-cli.main.ts"]
@@ -122,9 +128,11 @@ graph LR
   file_src_modules_batch_batch_command_unit_test_ts["src/modules/batch/batch.command.unit.test.ts"]
   file_src_modules_batch_batch_constants_ts["src/modules/batch/batch.constants.ts"]
   file_src_modules_batch_batch_module_ts["src/modules/batch/batch.module.ts"]
+  file_src_modules_batch_batch_module_unit_test_ts["src/modules/batch/batch.module.unit.test.ts"]
   file_src_modules_batch_batch_types_ts["src/modules/batch/batch.types.ts"]
   file_src_modules_check_check_constants_ts["src/modules/check/check.constants.ts"]
   file_src_modules_check_check_module_ts["src/modules/check/check.module.ts"]
+  file_src_modules_check_check_module_unit_test_ts["src/modules/check/check.module.unit.test.ts"]
   file_src_modules_check_check_service_ts["src/modules/check/check.service.ts"]
   file_src_modules_check_check_service_unit_test_ts["src/modules/check/check.service.unit.test.ts"]
   file_src_modules_check_check_types_ts["src/modules/check/check.types.ts"]
@@ -134,17 +142,14 @@ graph LR
   file_src_modules_collect_collect_command_unit_test_ts["src/modules/collect/collect.command.unit.test.ts"]
   file_src_modules_collect_collect_constants_ts["src/modules/collect/collect.constants.ts"]
   file_src_modules_collect_collect_module_ts["src/modules/collect/collect.module.ts"]
+  file_src_modules_collect_collect_module_unit_test_ts["src/modules/collect/collect.module.unit.test.ts"]
   file_src_modules_collect_collect_types_ts["src/modules/collect/collect.types.ts"]
+  file_testing_coinagerie_cli_packed_test_ts["testing/coinagerie-cli.packed.test.ts"]
   file_testing_examples_ts["testing/examples.ts"]
-  file_testing_fixture_tree_ts["testing/fixture-tree.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
   file_testing_run_command_ts["testing/run-command.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vite_config_ts["vite.config.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_coinagerie_cli_main_end_to_end_test_ts --> file_src_coinagerie_cli_constants_ts
   file_src_coinagerie_cli_main_end_to_end_test_ts --> file_testing_examples_ts
-  file_src_coinagerie_cli_main_end_to_end_test_ts --> file_testing_fixture_tree_ts
   file_src_coinagerie_cli_main_end_to_end_test_ts --> file_testing_run_command_ts
   file_src_coinagerie_cli_main_ts --> file_src_coinagerie_cli_module_ts
   file_src_coinagerie_cli_module_ts --> file_src_coinagerie_cli_constants_ts
@@ -160,8 +165,13 @@ graph LR
   file_src_modules_batch_batch_command_unit_test_ts --> file_src_modules_check_check_types_ts
   file_src_modules_batch_batch_module_ts --> file_src_modules_batch_batch_command_ts
   file_src_modules_batch_batch_module_ts --> file_src_modules_check_check_module_ts
+  file_src_modules_batch_batch_module_unit_test_ts --> file_src_modules_batch_batch_command_ts
+  file_src_modules_batch_batch_module_unit_test_ts --> file_src_modules_batch_batch_module_ts
+  file_src_modules_batch_batch_module_unit_test_ts --> file_src_modules_check_check_module_ts
   file_src_modules_batch_batch_types_ts --> file_src_modules_check_check_types_ts
   file_src_modules_check_check_module_ts --> file_src_modules_check_check_service_ts
+  file_src_modules_check_check_module_unit_test_ts --> file_src_modules_check_check_module_ts
+  file_src_modules_check_check_module_unit_test_ts --> file_src_modules_check_check_service_ts
   file_src_modules_check_check_service_ts --> file_src_modules_check_check_constants_ts
   file_src_modules_check_check_service_ts --> file_src_modules_check_check_types_ts
   file_src_modules_check_check_service_ts --> file_src_modules_check_check_utilities_ts
@@ -169,13 +179,13 @@ graph LR
   file_src_modules_check_check_utilities_ts --> file_src_modules_check_check_constants_ts
   file_src_modules_check_check_utilities_ts --> file_src_modules_check_check_types_ts
   file_src_modules_collect_collect_command_end_to_end_test_ts --> file_testing_examples_ts
-  file_src_modules_collect_collect_command_end_to_end_test_ts --> file_testing_fixture_tree_ts
   file_src_modules_collect_collect_command_end_to_end_test_ts --> file_testing_run_command_ts
   file_src_modules_collect_collect_command_ts --> file_src_modules_collect_collect_constants_ts
   file_src_modules_collect_collect_command_ts --> file_src_modules_collect_collect_types_ts
   file_src_modules_collect_collect_command_unit_test_ts --> file_src_modules_collect_collect_command_ts
   file_src_modules_collect_collect_command_unit_test_ts --> file_src_modules_collect_collect_types_ts
-  file_src_modules_collect_collect_command_unit_test_ts --> file_testing_fixture_tree_ts
   file_src_modules_collect_collect_module_ts --> file_src_modules_collect_collect_command_ts
+  file_src_modules_collect_collect_module_unit_test_ts --> file_src_modules_collect_collect_command_ts
+  file_src_modules_collect_collect_module_unit_test_ts --> file_src_modules_collect_collect_module_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->

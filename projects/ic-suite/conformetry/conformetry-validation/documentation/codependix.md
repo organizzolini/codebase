@@ -15,6 +15,7 @@ graph LR
   conformetry_languages["conformetry-languages"]
   conformetry_nx["conformetry-nx"]
   conformetry_validation["conformetry-validation"]
+  testing["testing"]
   conformetry_cli --> conformetry_validation
   conformetry_examples --> conformetry_validation
   conformetry_nx --> conformetry_validation
@@ -22,6 +23,7 @@ graph LR
   conformetry_validation --> conformetry_configuration
   conformetry_validation --> conformetry_core
   conformetry_validation --> conformetry_languages
+  conformetry_validation --> testing
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class conformetry_validation subject
 ```
@@ -88,11 +90,13 @@ flowchart LR
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vite_config_ts["configuration/vite.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_modules_runner_runner_constants_ts["src/modules/runner/runner.constants.ts"]
   file_src_modules_runner_runner_module_ts["src/modules/runner/runner.module.ts"]
@@ -112,9 +116,6 @@ graph LR
   file_src_modules_validation_validation_service_unit_test_ts["src/modules/validation/validation.service.unit.test.ts"]
   file_src_modules_validation_validation_types_ts["src/modules/validation/validation.types.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vite_config_ts["vite.config.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_modules_runner_runner_module_ts --> file_src_modules_runner_runner_service_ts
   file_src_modules_runner_runner_module_unit_test_ts --> file_src_modules_runner_runner_module_ts
   file_src_modules_runner_runner_module_unit_test_ts --> file_src_modules_runner_runner_service_ts

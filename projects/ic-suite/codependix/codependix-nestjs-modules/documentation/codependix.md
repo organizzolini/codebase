@@ -13,10 +13,12 @@ graph LR
   codependix_output["codependix-output"]
   configuration["configuration"]
   observability["observability"]
+  testing["testing"]
   codependix_boundaries --> codependix_nestjs_modules
   codependix_examples --> codependix_nestjs_modules
   codependix_nestjs_modules --> configuration
   codependix_nestjs_modules --> observability
+  codependix_nestjs_modules --> testing
   codependix_output --> codependix_nestjs_modules
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class codependix_nestjs_modules subject
@@ -42,11 +44,13 @@ _Rounded modules are global: every module can inject them, so their edges are le
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vite_config_ts["configuration/vite.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_index_unit_test_ts["src/index.unit.test.ts"]
   file_src_modules_module_graph_module_graph_constants_ts["src/modules/module-graph/module-graph.constants.ts"]
@@ -70,9 +74,6 @@ graph LR
   file_src_modules_nestjs_project_nestjs_project_types_ts["src/modules/nestjs-project/nestjs-project.types.ts"]
   file_testing_codependix_nestjs_modules_module_ts["testing/codependix-nestjs-modules.module.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vite_config_ts["vite.config.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_index_unit_test_ts --> file_src_index_ts
   file_src_modules_module_graph_module_graph_module_ts --> file_src_modules_module_graph_module_graph_service_ts
   file_src_modules_module_graph_module_graph_module_unit_test_ts --> file_src_modules_module_graph_module_graph_module_ts

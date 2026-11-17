@@ -24,11 +24,12 @@ graph LR
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vite_config_mts["configuration/vite.config.mts"]
   file_src_components_examples_c_sidebar_1_tsx["src/components/examples/c-sidebar-1.tsx"]
   file_src_components_reui_alert_tsx["src/components/reui/alert.tsx"]
   file_src_components_reui_autocomplete_tsx["src/components/reui/autocomplete.tsx"]
@@ -173,7 +174,6 @@ graph LR
   file_src_hooks_use_slider_input_ts["src/hooks/use-slider-input.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_lib_utils_ts["src/lib/utils.ts"]
-  file_vite_config_mts["vite.config.mts"]
   file_src_components_examples_c_sidebar_1_tsx --> file_src_components_ui_avatar_tsx
   file_src_components_examples_c_sidebar_1_tsx --> file_src_components_ui_breadcrumb_tsx
   file_src_components_examples_c_sidebar_1_tsx --> file_src_components_ui_button_tsx

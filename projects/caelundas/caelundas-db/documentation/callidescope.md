@@ -31,5 +31,5 @@ None.
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `CaelundasDatabaseService.refreshReadModel` | 1 | `CaelundasDatabaseService.transaction(…)` | `projects/caelundas/caelundas-db/src/modules/caelundas-database/caelundas-database.service.ts:45` |
+| `CaelundasDatabaseService.refreshReadModel` | 1 | `CaelundasDatabaseService.transaction(…)` | `projects/caelundas/caelundas-db/src/modules/caelundas-database/caelundas-database.service.ts:39` |
 <!-- callidescope:end -->

@@ -15,12 +15,14 @@ graph LR
   codometer_output["codometer-output"]
   configuration["configuration"]
   observability["observability"]
+  testing["testing"]
   codometer_cli --> codometer_configuration
   codometer_cli --> codometer_core
   codometer_cli --> codometer_measurement
   codometer_cli --> codometer_output
   codometer_cli --> configuration
   codometer_cli --> observability
+  codometer_cli --> testing
   codometer_examples -.-> codometer_cli
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class codometer_cli subject
@@ -62,6 +64,7 @@ flowchart LR
   SizeModule
   SqlModule
   TomlModule
+  TreeModule
   TypescriptModule
   YamlModule
   ChangesModule --> ChangesModule
@@ -72,6 +75,7 @@ flowchart LR
   ConfigurationListingModule --> DiscoveryModule
   ConfigurationModule --> ConfigurationListingModule
   ConfigurationModule --> ConfigurationModule
+  CustomizationModule --> TreeModule
   DeliveryModule --> JsonModule
   DeliveryModule --> MarkdownModule
   JupyterModule --> JsonModule
@@ -120,11 +124,13 @@ _Rounded modules are global: every module can inject them, so their edges are le
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vite_config_ts["configuration/vite.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_codometer_cli_constants_ts["src/codometer-cli.constants.ts"]
   file_src_codometer_cli_main_end_to_end_test_ts["src/codometer-cli.main.end-to-end.test.ts"]
   file_src_codometer_cli_main_ts["src/codometer-cli.main.ts"]
@@ -151,13 +157,10 @@ graph LR
   file_src_modules_measure_measure_constants_ts["src/modules/measure/measure.constants.ts"]
   file_src_modules_measure_measure_module_ts["src/modules/measure/measure.module.ts"]
   file_src_modules_measure_measure_types_ts["src/modules/measure/measure.types.ts"]
+  file_testing_codometer_cli_packed_test_ts["testing/codometer-cli.packed.test.ts"]
   file_testing_fixture_tree_ts["testing/fixture-tree.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_testing_target_tree_ts["testing/target-tree.ts"]
   file_testing_vite_library_config_integration_test_ts["testing/vite-library-config.integration.test.ts"]
-  file_vite_config_ts["vite.config.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_codometer_cli_main_end_to_end_test_ts --> file_src_codometer_cli_constants_ts
   file_src_codometer_cli_main_end_to_end_test_ts --> file_testing_fixture_tree_ts
   file_src_codometer_cli_main_ts --> file_src_codometer_cli_module_ts
@@ -180,8 +183,7 @@ graph LR
   file_src_modules_measure_measure_command_integration_test_ts --> file_testing_fixture_tree_ts
   file_src_modules_measure_measure_command_ts --> file_src_modules_measure_measure_types_ts
   file_src_modules_measure_measure_command_unit_test_ts --> file_src_modules_measure_measure_command_ts
-  file_src_modules_measure_measure_command_unit_test_ts --> file_testing_mocks_ts
   file_src_modules_measure_measure_module_ts --> file_src_modules_measure_measure_command_ts
-  file_testing_vite_library_config_integration_test_ts --> file_vite_config_ts
+  file_testing_vite_library_config_integration_test_ts --> file_configuration_vite_config_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->

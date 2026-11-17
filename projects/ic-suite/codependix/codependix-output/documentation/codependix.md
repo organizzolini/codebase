@@ -18,6 +18,7 @@ graph LR
   codependix_output["codependix-output"]
   configuration["configuration"]
   observability["observability"]
+  testing["testing"]
   codependix_cli --> codependix_output
   codependix_examples --> codependix_output
   codependix_output --> codependix_boundaries
@@ -28,6 +29,7 @@ graph LR
   codependix_output --> codependix_nx_projects
   codependix_output --> configuration
   codependix_output --> observability
+  codependix_output --> testing
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class codependix_output subject
 ```
@@ -114,11 +116,13 @@ _Rounded modules are global: every module can inject them, so their edges are le
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vite_config_ts["configuration/vite.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_modules_anchors_anchors_constants_ts["src/modules/anchors/anchors.constants.ts"]
   file_src_modules_anchors_anchors_module_ts["src/modules/anchors/anchors.module.ts"]
@@ -175,9 +179,6 @@ graph LR
   file_src_modules_workspace_graphs_workspace_graphs_service_unit_test_ts["src/modules/workspace-graphs/workspace-graphs.service.unit.test.ts"]
   file_src_modules_workspace_graphs_workspace_graphs_types_ts["src/modules/workspace-graphs/workspace-graphs.types.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vite_config_ts["vite.config.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_modules_anchors_anchors_module_ts --> file_src_modules_anchors_anchors_service_ts
   file_src_modules_anchors_anchors_module_unit_test_ts --> file_src_modules_anchors_anchors_module_ts
   file_src_modules_anchors_anchors_module_unit_test_ts --> file_src_modules_anchors_anchors_service_ts

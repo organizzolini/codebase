@@ -15,9 +15,11 @@ graph LR
   callidescope_nx["callidescope-nx"]
   callidescope_output["callidescope-output"]
   configuration["configuration"]
+  testing["testing"]
   callidescope_cli --> callidescope_configuration
   callidescope_configuration --> callidescope_core
   callidescope_configuration --> configuration
+  callidescope_configuration --> testing
   callidescope_examples --> callidescope_configuration
   callidescope_graph --> callidescope_configuration
   callidescope_nx --> callidescope_configuration
@@ -49,11 +51,13 @@ flowchart LR
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vite_config_ts["configuration/vite.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_index_unit_test_ts["src/index.unit.test.ts"]
   file_src_modules_configuration_configuration_file_module_ts["src/modules/configuration/configuration-file.module.ts"]
@@ -84,9 +88,6 @@ graph LR
   file_src_modules_run_plan_run_plan_service_unit_test_ts["src/modules/run-plan/run-plan.service.unit.test.ts"]
   file_src_modules_run_plan_run_plan_types_ts["src/modules/run-plan/run-plan.types.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vite_config_ts["vite.config.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_index_unit_test_ts --> file_src_index_ts
   file_src_modules_configuration_configuration_file_module_ts --> file_src_modules_configuration_configuration_file_service_ts
   file_src_modules_configuration_configuration_file_service_ts --> file_src_modules_configuration_configuration_constants_ts

@@ -7,7 +7,7 @@ Call stacks traced through `projects/meanderaw/meanderaw-web`, deepest first. Ea
 | Measure | Value |
 | --- | --- |
 | Callables | 5 |
-| Files | 10 |
+| Files | 11 |
 | Calls traced | 0 |
 | Call stacks | 0 |
 | Deepest stack | 0 |

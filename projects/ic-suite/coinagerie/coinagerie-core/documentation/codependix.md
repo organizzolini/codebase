@@ -12,9 +12,11 @@ graph LR
   coinagerie_core["coinagerie-core"]
   coinagerie_output["coinagerie-output"]
   configuration["configuration"]
+  testing["testing"]
   coinagerie_cli --> coinagerie_core
   coinagerie_configuration --> coinagerie_core
   coinagerie_core --> configuration
+  coinagerie_core --> testing
   coinagerie_output --> coinagerie_core
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class coinagerie_core subject
@@ -35,25 +37,27 @@ flowchart LR
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vite_config_ts["configuration/vite.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_index_unit_test_ts["src/index.unit.test.ts"]
   file_src_modules_coinagerie_core_coinagerie_core_constants_ts["src/modules/coinagerie-core/coinagerie-core.constants.ts"]
   file_src_modules_coinagerie_core_coinagerie_core_module_ts["src/modules/coinagerie-core/coinagerie-core.module.ts"]
+  file_src_modules_coinagerie_core_coinagerie_core_module_unit_test_ts["src/modules/coinagerie-core/coinagerie-core.module.unit.test.ts"]
   file_src_modules_coinagerie_core_coinagerie_core_service_ts["src/modules/coinagerie-core/coinagerie-core.service.ts"]
   file_src_modules_coinagerie_core_coinagerie_core_service_unit_test_ts["src/modules/coinagerie-core/coinagerie-core.service.unit.test.ts"]
   file_src_modules_coinagerie_core_coinagerie_core_types_ts["src/modules/coinagerie-core/coinagerie-core.types.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vite_config_ts["vite.config.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_index_unit_test_ts --> file_src_index_ts
   file_src_modules_coinagerie_core_coinagerie_core_constants_ts --> file_src_modules_coinagerie_core_coinagerie_core_types_ts
   file_src_modules_coinagerie_core_coinagerie_core_module_ts --> file_src_modules_coinagerie_core_coinagerie_core_service_ts
+  file_src_modules_coinagerie_core_coinagerie_core_module_unit_test_ts --> file_src_modules_coinagerie_core_coinagerie_core_module_ts
+  file_src_modules_coinagerie_core_coinagerie_core_module_unit_test_ts --> file_src_modules_coinagerie_core_coinagerie_core_service_ts
   file_src_modules_coinagerie_core_coinagerie_core_service_unit_test_ts --> file_src_modules_coinagerie_core_coinagerie_core_service_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->

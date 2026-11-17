@@ -41,16 +41,16 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 mapNullableRelations(…): Mapped[] | null | undefined [projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:169]
    ↳ Maps a nullable to-many relation to its GraphQL types, keeping `null`, and leaving one its query did not join unset, as…
-  └─> mapRelations(…): Mapped[] | undefined [projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:214]
-     ↳ Maps each row of a to-many relation to its GraphQL type, leaving one its query did not join unset, as {@link…
-    └─> map(…)(relation: Entity): Mapped [projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:218]
+  └─> mapRelations(…): Mapped[] | undefined [projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:212]
+     ↳ Maps each row of a to-many relation, leaving unjoined relations unset as {@link mapRelation} does.
+    └─> map(…)(relation: Entity): Mapped [projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:216]
 ```
 
 **3. `Paginated`** — depth ≥ 3 · orphan-root
 
 ```text
-🚀 Paginated(…): ClassConstructor<Connection<T>> [projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:225]
-   ↳ Mixin type factory producing a Relay Connection ObjectType for GraphQL schema generation, named after the node's…
+🚀 Paginated(…): ClassConstructor<Connection<T>> [projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:223]
+   ↳ Mixin producing a Relay Connection ObjectType, named after the node's GraphQL type, which defaults to its class name.
   └─> createEdgeType(…): ClassConstructor<Edge<T>> [projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:46]
      ↳ Mixin type factory producing a Relay Edge ObjectType for GraphQL schema generation, named after the node's GraphQL type…
     └─> Field(…)(): StringConstructor [projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:57]
@@ -61,8 +61,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
 | `createEdgeType` | 2 | `Field(…)`, `Field(…)` | `projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:46` |
-| `mapRelationConnection` | 2 | `createConnection`, `map(…)` | `projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:192` |
-| `map(…)` | 2 | `createEdge`, `encodeOffsetCursor` | `projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:201` |
+| `mapRelationConnection` | 2 | `createConnection`, `map(…)` | `projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:190` |
+| `map(…)` | 2 | `createEdge`, `encodeOffsetCursor` | `projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:199` |
 
 <details>
 <summary>10 more callables</summary>
@@ -77,8 +77,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `mapNullableRelation` | 1 | `mapRelation` | `projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:148` |
 | `mapNullableRelationConnection` | 1 | `mapRelationConnection` | `projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:158` |
 | `mapNullableRelations` | 1 | `mapRelations` | `projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:169` |
-| `mapRelations` | 1 | `map(…)` | `projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:214` |
-| `Paginated` | 1 | `createEdgeType` | `projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:225` |
+| `mapRelations` | 1 | `map(…)` | `projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:212` |
+| `Paginated` | 1 | `createEdgeType` | `projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:223` |
 
 </details>
 <!-- callidescope:end -->

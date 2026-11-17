@@ -9,7 +9,9 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 graph LR
   callidescope_agents["callidescope-agents"]
   configuration["configuration"]
+  testing["testing"]
   callidescope_agents --> configuration
+  callidescope_agents --> testing
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class callidescope_agents subject
 ```

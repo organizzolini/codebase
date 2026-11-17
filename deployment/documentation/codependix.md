@@ -65,11 +65,12 @@ _Rounded modules are global: every module can inject them, so their edges are le
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_deployment_constants_ts["src/deployment.constants.ts"]
   file_src_deployment_main_end_to_end_test_ts["src/deployment.main.end-to-end.test.ts"]
   file_src_deployment_main_ts["src/deployment.main.ts"]
@@ -140,8 +141,6 @@ graph LR
   file_src_modules_version_packages_version_packages_service_unit_test_ts["src/modules/version-packages/version-packages.service.unit.test.ts"]
   file_src_modules_version_packages_version_packages_types_ts["src/modules/version-packages/version-packages.types.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_deployment_main_end_to_end_test_ts --> file_src_deployment_constants_ts
   file_src_deployment_main_ts --> file_src_deployment_module_ts
   file_src_deployment_main_unit_test_ts --> file_src_modules_link_packages_link_packages_module_ts

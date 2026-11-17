@@ -14,11 +14,13 @@ graph LR
   conformetry_examples["conformetry-examples"]
   conformetry_generation["conformetry-generation"]
   conformetry_nx["conformetry-nx"]
+  testing["testing"]
   conformetry_cli --> conformetry_generation
   conformetry_examples --> conformetry_generation
   conformetry_generation --> configuration
   conformetry_generation --> conformetry_configuration
   conformetry_generation --> conformetry_core
+  conformetry_generation --> testing
   conformetry_nx --> conformetry_generation
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class conformetry_generation subject
@@ -55,11 +57,13 @@ flowchart LR
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vite_config_ts["configuration/vite.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_modules_generation_generation_constants_ts["src/modules/generation/generation.constants.ts"]
   file_src_modules_generation_generation_module_ts["src/modules/generation/generation.module.ts"]
@@ -68,11 +72,9 @@ graph LR
   file_src_modules_generation_generation_service_unit_test_ts["src/modules/generation/generation.service.unit.test.ts"]
   file_src_modules_generation_generation_types_ts["src/modules/generation/generation.types.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vite_config_ts["vite.config.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_modules_generation_generation_module_ts --> file_src_modules_generation_generation_service_ts
   file_src_modules_generation_generation_module_unit_test_ts --> file_src_modules_generation_generation_module_ts
+  file_src_modules_generation_generation_module_unit_test_ts --> file_src_modules_generation_generation_service_ts
   file_src_modules_generation_generation_service_ts --> file_src_modules_generation_generation_types_ts
   file_src_modules_generation_generation_service_unit_test_ts --> file_src_modules_generation_generation_service_ts
   file_src_modules_generation_generation_service_unit_test_ts --> file_src_modules_generation_generation_types_ts

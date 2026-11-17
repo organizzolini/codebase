@@ -12,10 +12,12 @@ graph LR
   coinagerie_languages["coinagerie-languages"]
   coinagerie_vocabulary["coinagerie-vocabulary"]
   configuration["configuration"]
+  testing["testing"]
   coinagerie_cli --> coinagerie_vocabulary
   coinagerie_vocabulary --> coinagerie_configuration
   coinagerie_vocabulary --> coinagerie_languages
   coinagerie_vocabulary --> configuration
+  coinagerie_vocabulary --> testing
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class coinagerie_vocabulary subject
 ```
@@ -69,11 +71,13 @@ flowchart LR
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vite_config_ts["configuration/vite.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_index_unit_test_ts["src/index.unit.test.ts"]
   file_src_modules_discovery_discovery_constants_ts["src/modules/discovery/discovery.constants.ts"]
@@ -99,9 +103,6 @@ graph LR
   file_src_modules_words_words_service_unit_test_ts["src/modules/words/words.service.unit.test.ts"]
   file_src_modules_words_words_types_ts["src/modules/words/words.types.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vite_config_ts["vite.config.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_index_unit_test_ts --> file_src_index_ts
   file_src_modules_discovery_discovery_module_ts --> file_src_modules_discovery_discovery_service_ts
   file_src_modules_discovery_discovery_module_ts --> file_src_modules_discovery_ignore_rules_service_ts

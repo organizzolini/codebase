@@ -20,7 +20,7 @@ graph LR
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file__vulture_whitelist_py[".vulture_whitelist.py"]
+  file_configuration__vulture_whitelist_py["configuration/.vulture_whitelist.py"]
   file_src___init___py["src/__init__.py"]
   file_src_grammars_py["src/grammars.py"]
   file_src_models_py["src/models.py"]

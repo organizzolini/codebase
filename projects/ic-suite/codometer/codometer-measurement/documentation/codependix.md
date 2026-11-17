@@ -15,12 +15,14 @@ graph LR
   codometer_output["codometer-output"]
   configuration["configuration"]
   observability["observability"]
+  testing["testing"]
   codometer_cli --> codometer_measurement
   codometer_measurement --> codometer_configuration
   codometer_measurement --> codometer_core
   codometer_measurement --> codometer_languages
   codometer_measurement --> configuration
   codometer_measurement --> observability
+  codometer_measurement --> testing
   codometer_output --> codometer_measurement
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class codometer_measurement subject
@@ -51,8 +53,10 @@ flowchart LR
   SizeModule
   SqlModule
   TomlModule
+  TreeModule
   TypescriptModule
   YamlModule
+  CustomizationModule --> TreeModule
   JupyterModule --> JsonModule
   JupyterModule --> MarkdownModule
   JupyterModule --> PythonModule
@@ -86,11 +90,13 @@ _Rounded modules are global: every module can inject them, so their edges are le
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vite_config_ts["configuration/vite.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_modules_customization_customization_constants_ts["src/modules/customization/customization.constants.ts"]
   file_src_modules_customization_customization_module_ts["src/modules/customization/customization.module.ts"]
@@ -133,18 +139,21 @@ graph LR
   file_src_modules_size_size_service_ts["src/modules/size/size.service.ts"]
   file_src_modules_size_size_service_unit_test_ts["src/modules/size/size.service.unit.test.ts"]
   file_src_modules_size_size_types_ts["src/modules/size/size.types.ts"]
+  file_src_modules_tree_tree_constants_ts["src/modules/tree/tree.constants.ts"]
+  file_src_modules_tree_tree_module_ts["src/modules/tree/tree.module.ts"]
+  file_src_modules_tree_tree_service_ts["src/modules/tree/tree.service.ts"]
+  file_src_modules_tree_tree_service_unit_test_ts["src/modules/tree/tree.service.unit.test.ts"]
+  file_src_modules_tree_tree_types_ts["src/modules/tree/tree.types.ts"]
   file_testing_fixture_tree_ts["testing/fixture-tree.ts"]
-  file_testing_input_tree_ts["testing/input-tree.ts"]
-  file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
   file_testing_target_tree_ts["testing/target-tree.ts"]
-  file_vite_config_ts["vite.config.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_modules_customization_customization_module_ts --> file_src_modules_customization_customization_service_ts
+  file_src_modules_customization_customization_module_ts --> file_src_modules_tree_tree_module_ts
   file_src_modules_customization_customization_module_unit_test_ts --> file_src_modules_customization_customization_module_ts
   file_src_modules_customization_customization_module_unit_test_ts --> file_src_modules_customization_customization_service_ts
   file_src_modules_customization_customization_service_ts --> file_src_modules_customization_customization_types_ts
+  file_src_modules_customization_customization_service_ts --> file_src_modules_tree_tree_service_ts
   file_src_modules_customization_customization_service_unit_test_ts --> file_src_modules_customization_customization_service_ts
+  file_src_modules_customization_customization_service_unit_test_ts --> file_src_modules_tree_tree_service_ts
   file_src_modules_discovery_discovery_module_ts --> file_src_modules_discovery_discovery_service_ts
   file_src_modules_discovery_discovery_module_ts --> file_src_modules_discovery_ignore_rules_service_ts
   file_src_modules_discovery_discovery_service_integration_test_ts --> file_src_modules_discovery_discovery_service_ts
@@ -164,7 +173,7 @@ graph LR
   file_src_modules_discovery_ignore_rules_service_unit_test_ts --> file_src_modules_discovery_ignore_rules_types_ts
   file_src_modules_inputs_inputs_module_ts --> file_src_modules_inputs_inputs_service_ts
   file_src_modules_inputs_inputs_service_integration_test_ts --> file_src_modules_inputs_inputs_service_ts
-  file_src_modules_inputs_inputs_service_integration_test_ts --> file_testing_input_tree_ts
+  file_src_modules_inputs_inputs_service_integration_test_ts --> file_testing_target_tree_ts
   file_src_modules_inputs_inputs_service_ts --> file_src_modules_inputs_inputs_constants_ts
   file_src_modules_inputs_inputs_service_ts --> file_src_modules_inputs_inputs_types_ts
   file_src_modules_inputs_inputs_service_unit_test_ts --> file_src_modules_inputs_inputs_constants_ts
@@ -174,20 +183,16 @@ graph LR
   file_src_modules_limits_limits_service_integration_test_ts --> file_src_modules_limits_limits_service_ts
   file_src_modules_limits_limits_service_integration_test_ts --> file_src_modules_limits_limits_types_ts
   file_src_modules_limits_limits_service_integration_test_ts --> file_src_modules_limits_metric_index_service_ts
-  file_src_modules_limits_limits_service_integration_test_ts --> file_testing_fixture_tree_ts
-  file_src_modules_limits_limits_service_integration_test_ts --> file_testing_mocks_ts
   file_src_modules_limits_limits_service_ts --> file_src_modules_limits_limits_constants_ts
   file_src_modules_limits_limits_service_ts --> file_src_modules_limits_limits_types_ts
   file_src_modules_limits_limits_service_unit_test_ts --> file_src_modules_limits_limits_service_ts
   file_src_modules_limits_limits_service_unit_test_ts --> file_src_modules_limits_limits_types_ts
   file_src_modules_limits_limits_service_unit_test_ts --> file_src_modules_limits_metric_index_service_ts
-  file_src_modules_limits_limits_service_unit_test_ts --> file_testing_mocks_ts
   file_src_modules_limits_limits_types_ts --> file_src_modules_size_size_types_ts
   file_src_modules_limits_metric_index_service_ts --> file_src_modules_limits_limits_constants_ts
   file_src_modules_limits_metric_index_service_ts --> file_src_modules_limits_limits_types_ts
   file_src_modules_limits_metric_index_service_unit_test_ts --> file_src_modules_limits_limits_types_ts
   file_src_modules_limits_metric_index_service_unit_test_ts --> file_src_modules_limits_metric_index_service_ts
-  file_src_modules_limits_metric_index_service_unit_test_ts --> file_testing_mocks_ts
   file_src_modules_measure_measure_module_ts --> file_src_modules_customization_customization_module_ts
   file_src_modules_measure_measure_module_ts --> file_src_modules_discovery_discovery_module_ts
   file_src_modules_measure_measure_module_ts --> file_src_modules_inputs_inputs_module_ts
@@ -211,7 +216,6 @@ graph LR
   file_src_modules_measure_measure_service_unit_test_ts --> file_src_modules_limits_metric_index_service_ts
   file_src_modules_measure_measure_service_unit_test_ts --> file_src_modules_measure_measure_service_ts
   file_src_modules_measure_measure_service_unit_test_ts --> file_src_modules_size_size_service_ts
-  file_src_modules_measure_measure_service_unit_test_ts --> file_testing_mocks_ts
   file_src_modules_measure_measure_types_ts --> file_src_modules_discovery_discovery_types_ts
   file_src_modules_measure_measure_types_ts --> file_src_modules_limits_limits_types_ts
   file_src_modules_measure_measure_types_ts --> file_src_modules_size_size_types_ts
@@ -225,5 +229,9 @@ graph LR
   file_src_modules_size_size_service_ts --> file_src_modules_size_size_types_ts
   file_src_modules_size_size_service_unit_test_ts --> file_src_modules_size_size_constants_ts
   file_src_modules_size_size_service_unit_test_ts --> file_src_modules_size_size_service_ts
+  file_src_modules_tree_tree_module_ts --> file_src_modules_tree_tree_service_ts
+  file_src_modules_tree_tree_service_ts --> file_src_modules_tree_tree_constants_ts
+  file_src_modules_tree_tree_service_ts --> file_src_modules_tree_tree_types_ts
+  file_src_modules_tree_tree_service_unit_test_ts --> file_src_modules_tree_tree_service_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->

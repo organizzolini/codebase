@@ -28,12 +28,12 @@ What this project is judged against, as declared in its own `callidescope.config
 **1. `CallExpression`** — depth 4 · orphan-root
 
 ```text
-🚀 CallExpression(node: SimpleCallExpression & Rule.NodeParentExtension): void [projects/common/observability/src/lib/conventional-log-message.eslint-rule.ts:174]
-  └─> checkMessageArgumentConvention(argument: MessageArgumentShape): ConventionalLogMessageViolation | undefined [projects/common/observability/src/lib/conventional-log-message.eslint-rule.ts:91]
-     ↳ Extracts a message argument's static text, if it has one, and checks it against the logging convention.
-    └─> checkConventionalMessage(text: string): ConventionalLogMessageViolation | undefined [projects/common/observability/src/lib/conventional-log-message.eslint-rule.ts:61]
+🚀 CallExpression(node: SimpleCallExpression & Rule.NodeParentExtension): void [projects/common/observability/src/lib/conventional-log-message.eslint-rule.ts:146]
+  └─> checkMessageArgumentConvention(argument: MessageArgumentShape): ConventionalLogMessageViolation | undefined [projects/common/observability/src/lib/conventional-log-message.eslint-rule.ts:75]
+     ↳ Extracts an argument's static text and checks it.
+    └─> checkConventionalMessage(text: string): ConventionalLogMessageViolation | undefined [projects/common/observability/src/lib/conventional-log-message.eslint-rule.ts:50]
        ↳ Checks a static message's text against the logging convention.
-      └─> parseLogMessage(message: string): ParsedLogMessage [projects/common/observability/src/lib/conventional-log-message.eslint-rule.ts:124]
+      └─> parseLogMessage(message: string): ParsedLogMessage [projects/common/observability/src/lib/conventional-log-message.eslint-rule.ts:108]
          ↳ Splits a leading emoji off a message, leaving prose behind.
 ```
 
@@ -41,7 +41,7 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `checkConventionalMessage` | 2 | `parseLogMessage`, `isConventionalVerb` | `projects/common/observability/src/lib/conventional-log-message.eslint-rule.ts:61` |
-| `CallExpression` | 2 | `isLoggerObjectText`, `checkMessageArgumentConvention` | `projects/common/observability/src/lib/conventional-log-message.eslint-rule.ts:174` |
-| `checkMessageArgumentConvention` | 1 | `checkConventionalMessage` | `projects/common/observability/src/lib/conventional-log-message.eslint-rule.ts:91` |
+| `checkConventionalMessage` | 2 | `parseLogMessage`, `isConventionalVerb` | `projects/common/observability/src/lib/conventional-log-message.eslint-rule.ts:50` |
+| `CallExpression` | 2 | `isLoggerObjectText`, `checkMessageArgumentConvention` | `projects/common/observability/src/lib/conventional-log-message.eslint-rule.ts:146` |
+| `checkMessageArgumentConvention` | 1 | `checkConventionalMessage` | `projects/common/observability/src/lib/conventional-log-message.eslint-rule.ts:75` |
 <!-- callidescope:end -->

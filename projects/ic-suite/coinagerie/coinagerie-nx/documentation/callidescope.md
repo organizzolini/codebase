@@ -6,9 +6,9 @@ Call stacks traced through `projects/ic-suite/coinagerie/coinagerie-nx`, deepest
 
 | Measure | Value |
 | --- | --- |
-| Callables | 35 |
+| Callables | 34 |
 | Files | 22 |
-| Calls traced | 32 |
+| Calls traced | 34 |
 | Call stacks | 3 |
 | Deepest stack | 6 |
 | Stacks through recursion | 0 |
@@ -25,50 +25,50 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Call stacks (depth)
 
-**1. `anonymous`** — depth 6 · orphan-root
+**1. `anonymous`** — depth ≥ 6 · orphan-root
 
 ```text
-🚀 anonymous(…): Promise<CreateNodesResultArray> [projects/ic-suite/coinagerie/coinagerie-nx/src/index.ts:40]
-  └─> PluginService.inferTargets(args: InferTargetsArguments): Map<string, InferredTargets> [projects/ic-suite/coinagerie/coinagerie-nx/src/modules/plugin/plugin.service.ts:112]
-     ↳ Infers a check target onto every project that holds a configuration.
-    └─> OptionsService.resolvePluginOptions(options: unknown): CoinageriePluginOptions [projects/ic-suite/coinagerie/coinagerie-nx/src/modules/options/options.service.ts:82]
-       ↳ Resolves the effective plugin options from an untrusted value.
-      └─> OptionsService.readInputs(options: Record<string, unknown>): PluginInput[] [projects/ic-suite/coinagerie/coinagerie-nx/src/modules/options/options.service.ts:49]
-         ↳ Reads the declared inputs from an untrusted record.
-        └─> OptionsService.flatMap(…)(this: undefined, entry: unknown): PluginInput[] [projects/ic-suite/coinagerie/coinagerie-nx/src/modules/options/options.service.ts:56]
-          └─> OptionsService.isInputObject(value: unknown): value is Exclude<PluginInput, string> [projects/ic-suite/coinagerie/coinagerie-nx/src/modules/options/options.service.ts:31]
+🚀 anonymous(…): Promise<CreateNodesResultArray> [projects/ic-suite/coinagerie/coinagerie-nx/src/index.ts:34]
+  └─> PluginService.inferTargets(args: InferTargetsArguments): Map<string, InferredTargets> [projects/ic-suite/coinagerie/coinagerie-nx/src/modules/plugin/plugin.service.ts:97]
+     ↳ Infers a check target onto each project holding a configuration at the configured path, reading options once per…
+    └─> OptionsService.resolvePluginOptions(options: unknown): CoinageriePluginOptions [projects/ic-suite/coinagerie/coinagerie-nx/src/modules/options/options.service.ts:79]
+       ↳ Resolves the effective plugin options from an untrusted value, throwing when the registration names no…
+      └─> OptionsService.readInputs(options: Record<string, unknown>): PluginInput[] [projects/ic-suite/coinagerie/coinagerie-nx/src/modules/options/options.service.ts:43]
+         ↳ Reads inputs from an untrusted record.
+        └─> OptionsService.flatMap(…)(this: undefined, entry: unknown): PluginInput[] [projects/ic-suite/coinagerie/coinagerie-nx/src/modules/options/options.service.ts:50]
+          └─> OptionsService.isInputObject(value: unknown): value is Exclude<PluginInput, string> [projects/ic-suite/coinagerie/coinagerie-nx/src/modules/options/options.service.ts:30]
              ↳ Narrows an untrusted value to an Nx input object, such as `{ env }`.
 ```
 
 **2. `checkBatchExecutor`** — depth 6 · orphan-root
 
 ```text
-🚀 checkBatchExecutor(…): Promise<Record<string, CheckBatchTaskResult>> [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/batch-executor.ts:19]
-   ↳ Judges every task Nx batched for this executor from one command-line process.
-  └─> runBatch(…): Promise<Record<string, CheckBatchTaskResult>> [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:58]
+🚀 checkBatchExecutor(…): Promise<Record<string, CheckBatchTaskResult>> [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/batch-executor.ts:14]
+   ↳ Judges every Nx-batched task in one command-line process. Each task still passes or fails, and is cached, alone.
+  └─> runBatch(…): Promise<Record<string, CheckBatchTaskResult>> [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:60]
      ↳ Judges every task of a batch, one process per group, each task by its own verdict.
-    └─> runGroup(…): Promise<Record<string, CheckBatchTaskResult>> [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:78]
-       ↳ Judges every task of a group from one process, giving each its own verdict.
-      └─> parseVerdicts(output: ProcessOutput): CheckVerdictRecord[] [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:154]
-         ↳ Reads the verdicts a process printed.
-        └─> isVerdictList(value: unknown): value is CheckVerdictRecord[] [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:120]
+    └─> runGroup(…): Promise<Record<string, CheckBatchTaskResult>> [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:77]
+       ↳ Judges each task of a group from one process. Failure, or a task with no verdict, is never read as a pass.
+      └─> parseVerdicts(output: ProcessOutput): CheckVerdictRecord[] [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:150]
+         ↳ Reads the verdicts a process printed. A run that printed none is an error, never a pass.
+        └─> isVerdictList(value: unknown): value is CheckVerdictRecord[] [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:119]
            ↳ Whether a parsed value is a list of verdicts, as the `batch` command prints them.
-          └─> isVerdictRecord(value: unknown): value is CheckVerdictRecord [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:135]
+          └─> isVerdictRecord(value: unknown): value is CheckVerdictRecord [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:134]
              ↳ Whether a parsed value is one verdict as the `batch` command prints it.
 ```
 
 **3. `checkExecutor`** — depth 5 · orphan-root
 
 ```text
-🚀 checkExecutor(…): Promise<{ success: boolean; }> [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.ts:18]
-   ↳ Judges one project's glossaries against the words its code uses.
-  └─> runGroup(…): Promise<Record<string, CheckBatchTaskResult>> [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:78]
-     ↳ Judges every task of a group from one process, giving each its own verdict.
-    └─> parseVerdicts(output: ProcessOutput): CheckVerdictRecord[] [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:154]
-       ↳ Reads the verdicts a process printed.
-      └─> isVerdictList(value: unknown): value is CheckVerdictRecord[] [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:120]
+🚀 checkExecutor(…): Promise<{ success: boolean; }> [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.ts:14]
+   ↳ Judges one project's glossaries against its code's words.
+  └─> runGroup(…): Promise<Record<string, CheckBatchTaskResult>> [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:77]
+     ↳ Judges each task of a group from one process. Failure, or a task with no verdict, is never read as a pass.
+    └─> parseVerdicts(output: ProcessOutput): CheckVerdictRecord[] [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:150]
+       ↳ Reads the verdicts a process printed. A run that printed none is an error, never a pass.
+      └─> isVerdictList(value: unknown): value is CheckVerdictRecord[] [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:119]
          ↳ Whether a parsed value is a list of verdicts, as the `batch` command prints them.
-        └─> isVerdictRecord(value: unknown): value is CheckVerdictRecord [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:135]
+        └─> isVerdictRecord(value: unknown): value is CheckVerdictRecord [projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:134]
            ↳ Whether a parsed value is one verdict as the `batch` command prints it.
 ```
 
@@ -76,28 +76,27 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `runProcess` | 4 | `buildCommand`, `on(…)`, `on(…)`, `anonymous` | `projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:182` |
-| `PluginService.inferTargets` | 3 | `OptionsService.resolvePluginOptions`, `PluginService.isProject`, `PluginService.buildCheckTarget` | `projects/ic-suite/coinagerie/coinagerie-nx/src/modules/plugin/plugin.service.ts:112` |
-| `anonymous` | 3 | `resolvePluginService`, `PluginService.inferTargets`, `flatMap(…)` | `projects/ic-suite/coinagerie/coinagerie-nx/src/index.ts:40` |
+| `runProcess` | 4 | `buildCommand`, `on(…)`, `on(…)`, `anonymous` | `projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:175` |
+| `OptionsService.resolvePluginOptions` | 3 | `OptionsService.readString`, `ConfigurationPathRequiredError.constructor`, `OptionsService.readInputs` | `projects/ic-suite/coinagerie/coinagerie-nx/src/modules/options/options.service.ts:79` |
+| `PluginService.inferTargets` | 3 | `OptionsService.resolvePluginOptions`, `PluginService.isProject`, `PluginService.buildCheckTarget` | `projects/ic-suite/coinagerie/coinagerie-nx/src/modules/plugin/plugin.service.ts:97` |
 
 <details>
-<summary>13 more callables</summary>
+<summary>12 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `runGroup` | 3 | `parseVerdicts`, `runProcess`, `find(…)` | `projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:78` |
-| `checkExecutor` | 3 | `runGroup`, `map(…)`, `every(…)` | `projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.ts:18` |
-| `OptionsService.readInputs` | 2 | `OptionsService.isUnknownArray`, `OptionsService.flatMap(…)` | `projects/ic-suite/coinagerie/coinagerie-nx/src/modules/options/options.service.ts:49` |
-| `OptionsService.resolvePluginOptions` | 2 | `OptionsService.readString`, `OptionsService.readInputs` | `projects/ic-suite/coinagerie/coinagerie-nx/src/modules/options/options.service.ts:82` |
-| `runBatch` | 2 | `groupTasks`, `runGroup` | `projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:58` |
-| `checkBatchExecutor` | 2 | `runBatch`, `printFailures` | `projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/batch-executor.ts:19` |
-| `OptionsService.flatMap(…)` | 1 | `OptionsService.isInputObject` | `projects/ic-suite/coinagerie/coinagerie-nx/src/modules/options/options.service.ts:56` |
-| `PluginService.buildCheckTarget` | 1 | `PluginService.map(…)` | `projects/ic-suite/coinagerie/coinagerie-nx/src/modules/plugin/plugin.service.ts:49` |
-| `PluginService.isProject` | 1 | `PluginService.isNamedPackage` | `projects/ic-suite/coinagerie/coinagerie-nx/src/modules/plugin/plugin.service.ts:90` |
+| `anonymous` | 3 | `resolvePluginService`, `PluginService.inferTargets`, `flatMap(…)` | `projects/ic-suite/coinagerie/coinagerie-nx/src/index.ts:34` |
+| `runGroup` | 3 | `parseVerdicts`, `runProcess`, `find(…)` | `projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:77` |
+| `checkExecutor` | 3 | `runGroup`, `map(…)`, `every(…)` | `projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.ts:14` |
+| `OptionsService.readInputs` | 2 | `OptionsService.isUnknownArray`, `OptionsService.flatMap(…)` | `projects/ic-suite/coinagerie/coinagerie-nx/src/modules/options/options.service.ts:43` |
+| `runBatch` | 2 | `groupTasks`, `runGroup` | `projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:60` |
+| `checkBatchExecutor` | 2 | `runBatch`, `printFailures` | `projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/batch-executor.ts:14` |
+| `OptionsService.flatMap(…)` | 1 | `OptionsService.isInputObject` | `projects/ic-suite/coinagerie/coinagerie-nx/src/modules/options/options.service.ts:50` |
+| `PluginService.isProject` | 1 | `PluginService.isNamedPackage` | `projects/ic-suite/coinagerie/coinagerie-nx/src/modules/plugin/plugin.service.ts:79` |
 | `resolvePluginService` | 1 | `resolvePluginContext` | `projects/ic-suite/coinagerie/coinagerie-nx/src/modules/plugin/plugin-context.utilities.ts:15` |
-| `buildCommand` | 1 | `quote` | `projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:108` |
-| `isVerdictList` | 1 | `isVerdictRecord` | `projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:120` |
-| `parseVerdicts` | 1 | `isVerdictList` | `projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:154` |
+| `buildCommand` | 1 | `quote` | `projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:107` |
+| `isVerdictList` | 1 | `isVerdictRecord` | `projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:119` |
+| `parseVerdicts` | 1 | `isVerdictList` | `projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts:150` |
 
 </details>
 <!-- callidescope:end -->

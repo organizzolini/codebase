@@ -16,6 +16,7 @@ graph LR
   conformetry_output["conformetry-output"]
   conformetry_validation["conformetry-validation"]
   observability["observability"]
+  testing["testing"]
   conformetry_cli --> configuration
   conformetry_cli --> conformetry_configuration
   conformetry_cli --> conformetry_core
@@ -23,6 +24,7 @@ graph LR
   conformetry_cli --> conformetry_output
   conformetry_cli --> conformetry_validation
   conformetry_cli --> observability
+  conformetry_cli --> testing
   conformetry_examples -.-> conformetry_cli
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class conformetry_cli subject
@@ -121,11 +123,13 @@ _Rounded modules are global: every module can inject them, so their edges are le
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vite_config_ts["configuration/vite.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_conformetry_cli_constants_ts["src/conformetry-cli.constants.ts"]
   file_src_conformetry_cli_main_end_to_end_test_ts["src/conformetry-cli.main.end-to-end.test.ts"]
   file_src_conformetry_cli_main_integration_test_ts["src/conformetry-cli.main.integration.test.ts"]
@@ -155,10 +159,8 @@ graph LR
   file_src_modules_validate_validate_constants_ts["src/modules/validate/validate.constants.ts"]
   file_src_modules_validate_validate_module_ts["src/modules/validate/validate.module.ts"]
   file_src_modules_validate_validate_types_ts["src/modules/validate/validate.types.ts"]
+  file_testing_conformetry_cli_packed_test_ts["testing/conformetry-cli.packed.test.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vite_config_ts["vite.config.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_conformetry_cli_main_end_to_end_test_ts --> file_src_conformetry_cli_constants_ts
   file_src_conformetry_cli_main_integration_test_ts --> file_src_conformetry_cli_module_ts
   file_src_conformetry_cli_main_integration_test_ts --> file_src_modules_generate_generate_command_ts

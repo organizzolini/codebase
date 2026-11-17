@@ -12,8 +12,10 @@ graph LR
   interface["interface"]
   lexico_api["lexico-api"]
   lexico_web["lexico-web"]
+  testing["testing"]
   caelundas_web --> interface
   interface --> configuration
+  interface --> testing
   lexico_api --> interface
   lexico_web --> interface
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
@@ -26,11 +28,12 @@ graph LR
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_modules_graphql_client_graphql_client_constants_ts["src/modules/graphql-client/graphql-client.constants.ts"]
   file_src_modules_graphql_client_graphql_client_types_ts["src/modules/graphql-client/graphql-client.types.ts"]
@@ -49,8 +52,6 @@ graph LR
   file_testing_pagination_pagination_types_ts["testing/pagination/pagination.types.ts"]
   file_testing_pagination_pagination_utilities_ts["testing/pagination/pagination.utilities.ts"]
   file_testing_pagination_pagination_utilities_unit_test_ts["testing/pagination/pagination.utilities.unit.test.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_modules_graphql_client_graphql_client_utilities_ts --> file_src_modules_graphql_client_graphql_client_constants_ts
   file_src_modules_graphql_client_graphql_client_utilities_ts --> file_src_modules_graphql_client_graphql_client_types_ts
   file_src_modules_graphql_client_graphql_client_utilities_unit_test_ts --> file_src_modules_graphql_client_graphql_client_utilities_ts

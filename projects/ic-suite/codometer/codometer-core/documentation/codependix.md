@@ -15,9 +15,11 @@ graph LR
   codometer_measurement["codometer-measurement"]
   codometer_output["codometer-output"]
   configuration["configuration"]
+  testing["testing"]
   codometer_cli --> codometer_core
   codometer_configuration --> codometer_core
   codometer_core --> configuration
+  codometer_core --> testing
   codometer_examples --> codometer_core
   codometer_languages --> codometer_core
   codometer_measurement --> codometer_core
@@ -41,11 +43,13 @@ flowchart LR
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vite_config_ts["configuration/vite.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_index_unit_test_ts["src/index.unit.test.ts"]
   file_src_modules_codometer_core_codometer_core_constants_ts["src/modules/codometer-core/codometer-core.constants.ts"]
@@ -53,13 +57,15 @@ graph LR
   file_src_modules_codometer_core_codometer_core_service_ts["src/modules/codometer-core/codometer-core.service.ts"]
   file_src_modules_codometer_core_codometer_core_service_unit_test_ts["src/modules/codometer-core/codometer-core.service.unit.test.ts"]
   file_src_modules_codometer_core_codometer_core_types_ts["src/modules/codometer-core/codometer-core.types.ts"]
-  file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vite_config_ts["vite.config.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
+  file_testing_code_statistics_code_statistics_utilities_ts["testing/code-statistics/code-statistics.utilities.ts"]
+  file_testing_codometer_report_codometer_report_utilities_ts["testing/codometer-report/codometer-report.utilities.ts"]
+  file_testing_index_ts["testing/index.ts"]
+  file_testing_throw_unknown_throw_unknown_utilities_ts["testing/throw-unknown/throw-unknown.utilities.ts"]
   file_src_index_unit_test_ts --> file_src_index_ts
   file_src_modules_codometer_core_codometer_core_constants_ts --> file_src_modules_codometer_core_codometer_core_types_ts
   file_src_modules_codometer_core_codometer_core_module_ts --> file_src_modules_codometer_core_codometer_core_service_ts
   file_src_modules_codometer_core_codometer_core_service_unit_test_ts --> file_src_modules_codometer_core_codometer_core_service_ts
+  file_testing_code_statistics_code_statistics_utilities_ts --> file_src_index_ts
+  file_testing_codometer_report_codometer_report_utilities_ts --> file_src_index_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->

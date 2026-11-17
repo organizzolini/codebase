@@ -17,12 +17,14 @@ graph LR
   codependix_nx_projects["codependix-nx-projects"]
   codependix_output["codependix-output"]
   configuration["configuration"]
+  testing["testing"]
   codependix_boundaries --> codependix_configuration
   codependix_boundaries --> codependix_core
   codependix_boundaries --> codependix_file_imports
   codependix_boundaries --> codependix_nestjs_modules
   codependix_boundaries --> codependix_nx_projects
   codependix_boundaries --> configuration
+  codependix_boundaries --> testing
   codependix_cli --> codependix_boundaries
   codependix_examples --> codependix_boundaries
   codependix_output --> codependix_boundaries
@@ -71,11 +73,13 @@ _Rounded modules are global: every module can inject them, so their edges are le
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vite_config_ts["configuration/vite.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_modules_boundaries_boundaries_constants_ts["src/modules/boundaries/boundaries.constants.ts"]
   file_src_modules_boundaries_boundaries_module_ts["src/modules/boundaries/boundaries.module.ts"]
@@ -108,9 +112,6 @@ graph LR
   file_src_modules_run_context_run_context_service_unit_test_ts["src/modules/run-context/run-context.service.unit.test.ts"]
   file_src_modules_run_context_run_context_types_ts["src/modules/run-context/run-context.types.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vite_config_ts["vite.config.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_modules_boundaries_boundaries_module_ts --> file_src_modules_boundaries_boundaries_service_ts
   file_src_modules_boundaries_boundaries_module_ts --> file_src_modules_boundaries_boundary_cycles_service_ts
   file_src_modules_boundaries_boundaries_module_ts --> file_src_modules_boundaries_boundary_report_service_ts

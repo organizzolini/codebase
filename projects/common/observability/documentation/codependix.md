@@ -26,6 +26,7 @@ graph LR
   configuration["configuration"]
   conformetry_cli["conformetry-cli"]
   conformetry_nx["conformetry-nx"]
+  deployment["deployment"]
   documentation["documentation"]
   installation["installation"]
   integration["integration"]
@@ -34,7 +35,6 @@ graph LR
   meanderaw_cli["meanderaw-cli"]
   observability["observability"]
   persistence["persistence"]
-  publication["publication"]
   synchronization["synchronization"]
   testing["testing"]
   validation["validation"]
@@ -56,6 +56,7 @@ graph LR
   compliance --> observability
   conformetry_cli --> observability
   conformetry_nx --> observability
+  deployment --> observability
   documentation --> observability
   installation --> observability
   integration --> observability
@@ -64,7 +65,6 @@ graph LR
   meanderaw_cli --> observability
   observability --> configuration
   persistence --> observability
-  publication --> observability
   synchronization --> observability
   testing --> observability
   validation --> observability
@@ -87,11 +87,12 @@ flowchart LR
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_lib_conventional_log_message_eslint_rule_ts["src/lib/conventional-log-message.eslint-rule.ts"]
   file_src_lib_conventional_log_message_eslint_rule_unit_test_ts["src/lib/conventional-log-message.eslint-rule.unit.test.ts"]
@@ -103,10 +104,8 @@ graph LR
   file_src_modules_logger_logger_types_ts["src/modules/logger/logger.types.ts"]
   file_testing_index_ts["testing/index.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
   file_testing_testing_module_testing_module_utilities_ts["testing/testing-module/testing-module.utilities.ts"]
   file_testing_testing_module_testing_module_utilities_unit_test_ts["testing/testing-module/testing-module.utilities.unit.test.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_lib_conventional_log_message_eslint_rule_ts --> file_src_modules_logger_logger_constants_ts
   file_src_lib_conventional_log_message_eslint_rule_unit_test_ts --> file_src_lib_conventional_log_message_eslint_rule_ts
   file_src_modules_logger_logger_module_ts --> file_src_modules_logger_logger_service_ts

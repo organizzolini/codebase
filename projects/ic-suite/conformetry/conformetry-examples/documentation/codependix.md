@@ -15,6 +15,7 @@ graph LR
   conformetry_nx["conformetry-nx"]
   conformetry_output["conformetry-output"]
   conformetry_validation["conformetry-validation"]
+  testing["testing"]
   conformetry_examples --> configuration
   conformetry_examples -.-> conformetry_cli
   conformetry_examples --> conformetry_configuration
@@ -22,6 +23,7 @@ graph LR
   conformetry_examples --> conformetry_nx
   conformetry_examples --> conformetry_output
   conformetry_examples --> conformetry_validation
+  conformetry_examples --> testing
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class conformetry_examples subject
 ```

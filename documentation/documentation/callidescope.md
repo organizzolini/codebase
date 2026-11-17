@@ -30,9 +30,9 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 RefreshDocumentationCommand.run(): Promise<void> [documentation/src/modules/refresh-documentation/refresh-documentation.command.ts:39]
    ↳ Refreshes the documentation, failing the process when that fails.
-  └─> RefreshDocumentationService.refresh(): Promise<boolean> [documentation/src/modules/refresh-documentation/refresh-documentation.service.ts:75]
-     ↳ Updates the wiki from code, starting OpenWiki again after a growing wait when it fails, then puts the `openwiki`…
-    └─> RefreshDocumentationService.exposeWiki(): boolean [documentation/src/modules/refresh-documentation/refresh-documentation.service.ts:48]
+  └─> RefreshDocumentationService.refresh(): Promise<boolean> [documentation/src/modules/refresh-documentation/refresh-documentation.service.ts:71]
+     ↳ Runs OpenWiki, retrying with a growing wait, then restores the `openwiki` symlink.
+    └─> RefreshDocumentationService.exposeWiki(): boolean [documentation/src/modules/refresh-documentation/refresh-documentation.service.ts:47]
        ↳ Replaces the root `openwiki` symlink with the directory it points at.
 ```
 
@@ -40,6 +40,6 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `RefreshDocumentationService.refresh` | 2 | `RefreshDocumentationService.exposeWiki`, `RefreshDocumentationService.restoreWiki` | `documentation/src/modules/refresh-documentation/refresh-documentation.service.ts:75` |
+| `RefreshDocumentationService.refresh` | 2 | `RefreshDocumentationService.exposeWiki`, `RefreshDocumentationService.restoreWiki` | `documentation/src/modules/refresh-documentation/refresh-documentation.service.ts:71` |
 | `RefreshDocumentationCommand.run` | 1 | `RefreshDocumentationService.refresh` | `documentation/src/modules/refresh-documentation/refresh-documentation.command.ts:39` |
 <!-- callidescope:end -->

@@ -12,10 +12,12 @@ graph LR
   coinagerie_core["coinagerie-core"]
   coinagerie_output["coinagerie-output"]
   configuration["configuration"]
+  testing["testing"]
   coinagerie_cli --> coinagerie_output
   coinagerie_output --> coinagerie_configuration
   coinagerie_output --> coinagerie_core
   coinagerie_output --> configuration
+  coinagerie_output --> testing
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class coinagerie_output subject
 ```
@@ -41,11 +43,13 @@ flowchart LR
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vite_config_ts["configuration/vite.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_index_unit_test_ts["src/index.unit.test.ts"]
   file_src_modules_comparison_comparison_constants_ts["src/modules/comparison/comparison.constants.ts"]
@@ -69,9 +73,6 @@ graph LR
   file_src_modules_markdown_markdown_service_unit_test_ts["src/modules/markdown/markdown.service.unit.test.ts"]
   file_src_modules_markdown_markdown_types_ts["src/modules/markdown/markdown.types.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vite_config_ts["vite.config.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_index_unit_test_ts --> file_src_index_ts
   file_src_modules_comparison_comparison_module_ts --> file_src_modules_comparison_comparison_service_ts
   file_src_modules_comparison_comparison_service_ts --> file_src_modules_comparison_comparison_types_ts

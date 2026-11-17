@@ -10,8 +10,10 @@ graph LR
   configuration["configuration"]
   documentation["documentation"]
   observability["observability"]
+  testing["testing"]
   documentation --> configuration
   documentation --> observability
+  documentation --> testing
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class documentation subject
 ```
@@ -38,11 +40,12 @@ _Rounded modules are global: every module can inject them, so their edges are le
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_documentation_constants_ts["src/documentation.constants.ts"]
   file_src_documentation_main_end_to_end_test_ts["src/documentation.main.end-to-end.test.ts"]
   file_src_documentation_main_ts["src/documentation.main.ts"]
@@ -60,8 +63,6 @@ graph LR
   file_src_modules_refresh_documentation_refresh_documentation_service_unit_test_ts["src/modules/refresh-documentation/refresh-documentation.service.unit.test.ts"]
   file_src_modules_refresh_documentation_refresh_documentation_types_ts["src/modules/refresh-documentation/refresh-documentation.types.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_documentation_main_end_to_end_test_ts --> file_src_documentation_constants_ts
   file_src_documentation_main_ts --> file_src_documentation_module_ts
   file_src_documentation_main_unit_test_ts --> file_src_documentation_module_ts
