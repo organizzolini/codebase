@@ -4,6 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { overrideEnvironment } from "@codebase/testing";
 
+import { CorsService } from "./modules/cors/cors.service";
+
 import type { INestApplication } from "@nestjs/common";
 
 const setContextMock = vi.fn<(context: string) => void>();
@@ -67,6 +69,7 @@ describe("caelundas api bootstrap suite", () => {
     const mockApp = createMock<INestApplication>({
       close: closeMock,
       enableCors: enableCorsMock,
+      get: vi.fn<() => CorsService>().mockReturnValue(new CorsService()),
       listen: listenMock,
     });
     const createSpy = vi
@@ -83,11 +86,11 @@ describe("caelundas api bootstrap suite", () => {
       expect.anything(),
       expect.objectContaining({ bufferLogs: true }),
     );
-    expect(createLightshipMock).toHaveBeenCalledWith({ port: 9001 });
+    expect(createLightshipMock).toHaveBeenCalledWith({ port: 9000 });
     expect(loggerConstructorMock).toHaveBeenCalledTimes(1);
     expect(setContextMock).toHaveBeenCalledWith("NestApplication");
-    expect(enableCorsMock).toHaveBeenCalledWith({ origin: "*" });
-    expect(listenMock).toHaveBeenCalledWith(6173);
+    expect(enableCorsMock).toHaveBeenCalledWith({ origin: [] });
+    expect(listenMock).toHaveBeenCalledWith(3000);
     expect(signalReadyMock).toHaveBeenCalledTimes(1);
     expect(registerShutdownHandlerMock).toHaveBeenCalledTimes(1);
 
@@ -115,6 +118,7 @@ describe("caelundas api bootstrap suite", () => {
       .mockResolvedValue(undefined as unknown as INestApplication);
     const mockApp = createMock<INestApplication>({
       enableCors: enableCorsMock,
+      get: vi.fn<() => CorsService>().mockReturnValue(new CorsService()),
       listen: listenMock,
     });
     const createSpy = vi

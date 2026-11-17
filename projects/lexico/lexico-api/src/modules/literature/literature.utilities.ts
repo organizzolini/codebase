@@ -7,7 +7,7 @@ import {
   toCursor,
 } from "@codebase/interface";
 
-import { toDeletableFields } from "../../lexico-api.utilities";
+import { toDeletableFields } from "../../deletable.utilities";
 import { toWordType } from "../words/words.utilities";
 
 import { AuthorType } from "./author.entities";

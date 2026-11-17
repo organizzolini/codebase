@@ -118,7 +118,14 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     inputs: defineInputs({
       name: z.string().describe("Application name in kebab-case"),
     }),
-    instances: [],
+    instances: [
+      {
+        patterns: ["projects/caelundas/caelundas-api"],
+      },
+      {
+        patterns: ["projects/lexico/lexico-api"],
+      },
+    ],
     name: "nestjs-graphql-application",
     templatePath:
       "configuration/conformetry-templates/nestjs-graphql-application",
@@ -139,7 +146,45 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           "Relative climb from the project root back to the workspace root, e.g. ../.. two directories down or ../../../../ four directories down",
         ),
     }),
-    instances: [],
+    instances: [
+      {
+        patterns: [
+          "projects/ic-suite/callidescope/callidescope-!(cli|examples)",
+        ],
+        substitutions: {
+          type: "projects/ic-suite/callidescope/",
+          workspaceRelativePrefix: "../../../../",
+        },
+      },
+      {
+        patterns: ["projects/ic-suite/codependix/codependix-!(cli|examples)"],
+        substitutions: {
+          type: "projects/ic-suite/codependix/",
+          workspaceRelativePrefix: "../../../../",
+        },
+      },
+      {
+        patterns: ["projects/ic-suite/codometer/codometer-!(cli|examples)"],
+        substitutions: {
+          type: "projects/ic-suite/codometer/",
+          workspaceRelativePrefix: "../../../../",
+        },
+      },
+      {
+        patterns: ["projects/ic-suite/coinagerie/coinagerie-!(cli|examples)"],
+        substitutions: {
+          type: "projects/ic-suite/coinagerie/",
+          workspaceRelativePrefix: "../../../../",
+        },
+      },
+      {
+        patterns: ["projects/ic-suite/conformetry/conformetry-!(cli|examples)"],
+        substitutions: {
+          type: "projects/ic-suite/conformetry/",
+          workspaceRelativePrefix: "../../../../",
+        },
+      },
+    ],
     name: "nestjs-service-project",
     templatePath: "configuration/conformetry-templates/nestjs-service-project",
   },

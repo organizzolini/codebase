@@ -4,7 +4,7 @@ import {
   mapRelationConnection,
 } from "@codebase/interface";
 
-import { toDeletableFields } from "../../lexico-api.utilities";
+import { toDeletableFields } from "../../deletable.utilities";
 
 import { toFormType } from "./forms/forms.utilities";
 import { toInflectionType } from "./inflections/inflections.utilities";

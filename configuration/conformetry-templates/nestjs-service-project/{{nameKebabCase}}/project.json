@@ -2,7 +2,7 @@
   "$schema": "{{workspaceRelativePrefix}}node_modules/nx/schemas/project-schema.json",
   "name": "{{nameKebabCase}}",
   "projectType": "library",
-  "sourceRoot": "{{type}}/{{nameKebabCase}}",
+  "sourceRoot": "{{type}}{{nameKebabCase}}",
   "tags": [
     "framework:nestjs",
     "generator:nestjs-service-project",
@@ -11,25 +11,7 @@
     "type:package"
   ],
   "targets": {
-    "build": {
-      "executor": "@nx/js:tsc",
-      "options": {
-        "assets": [
-          {
-            "glob": "README.md",
-            "input": "{{type}}/{{nameKebabCase}}",
-            "output": "."
-          }
-        ],
-        "generatePackageJson": false,
-        "main": "{{type}}/{{nameKebabCase}}/src/index.ts",
-        "outputPath": "{{type}}/{{nameKebabCase}}/dist",
-        "tsConfig": "{{type}}/{{nameKebabCase}}/tsconfig.build.json"
-      },
-      "outputs": [
-        "{options.outputPath}"
-      ]
-    },
+    "build": {},
     "codometer": {},
     "dependency-cruiser": {},
     "knip": {},

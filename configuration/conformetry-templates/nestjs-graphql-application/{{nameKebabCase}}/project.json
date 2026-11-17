@@ -1,7 +1,5 @@
 {
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "sourceRoot": "projects/{{nameKebabCase}}",
   "tags": [
     "framework:nestjs",
     "generator:nestjs-graphql-application",
