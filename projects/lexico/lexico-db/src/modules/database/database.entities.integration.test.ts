@@ -4,10 +4,10 @@ import "reflect-metadata";
 import { createDataSource } from "@codebase/persistence";
 import { startPostgresContainer } from "@codebase/persistence/testing";
 
-import { Author } from "../literature/entities/author.entity";
-import { Line } from "../literature/entities/line.entity";
-import { Text } from "../literature/entities/text.entity";
-import { Token } from "../literature/entities/token.entity";
+import { Author } from "../literature/author.entity";
+import { Line } from "../literature/line.entity";
+import { Text } from "../literature/text.entity";
+import { Token } from "../literature/token.entity";
 
 import {
   LEXICO_DATABASE_ENTITIES,

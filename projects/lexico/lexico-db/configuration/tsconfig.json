@@ -12,5 +12,11 @@
   },
   "exclude": ["../dist", "../node_modules"],
   "extends": "../../../../configuration/tsconfig.json",
-  "include": ["*.ts", "../*.config.mts", "../src/**/*.ts", "../testing/**/*.ts"]
+  "include": [
+    "*.ts",
+    "../*.config.mts",
+    "../migrations/**/*.ts",
+    "../src/**/*.ts",
+    "../testing/**/*.ts"
+  ]
 }

@@ -1,10 +1,10 @@
 import { ChildEntity, Column } from "typeorm";
 
-import { formGerundCaseValues } from "../../../../database/database.constants";
+import { formGerundCaseValues } from "../../../database/database.constants";
 
 import { Form } from "./form.entity";
 
-import type { FormGerundCase } from "../../../../database/database.types";
+import type { FormGerundCase } from "../../../database/database.types";
 
 /** A verbal noun gerund form (genitive, dative, accusative, or ablative case). */
 @ChildEntity("gerund")

@@ -1,10 +1,10 @@
 import { ChildEntity, Column } from "typeorm";
 
-import { prepositionCases } from "../../../../database/database.constants";
+import { prepositionCases } from "../../../database/database.constants";
 
 import { Inflection } from "./inflection.entity";
 
-import type { PrepositionCase } from "../../../../database/database.types";
+import type { PrepositionCase } from "../../../database/database.types";
 
 /**
  * Inflection metadata for preposition lexemes.

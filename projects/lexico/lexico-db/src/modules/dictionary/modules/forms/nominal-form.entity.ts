@@ -3,11 +3,11 @@ import { ChildEntity, Column } from "typeorm";
 import {
   formCaseValues,
   formNumberValues,
-} from "../../../../database/database.constants";
+} from "../../../database/database.constants";
 
 import { Form } from "./form.entity";
 
-import type { FormCase, FormNumber } from "../../../../database/database.types";
+import type { FormCase, FormNumber } from "../../../database/database.types";
 
 /** A declined form for a noun, pronoun, or determiner (case + number). */
 @ChildEntity("nominal")

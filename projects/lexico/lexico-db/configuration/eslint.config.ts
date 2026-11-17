@@ -5,7 +5,7 @@ export default [
   ...baseConfig,
 
   // 🙈 Ignores
-  { ignores: ["src/modules/database/migrations/**"] },
+  { ignores: ["migrations/**"] },
 
   // 📦 Dependency Checks
   {

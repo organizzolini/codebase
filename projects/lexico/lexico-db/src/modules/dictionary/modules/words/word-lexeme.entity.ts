@@ -2,7 +2,7 @@ import { Entity, Index, ManyToOne } from "typeorm";
 
 import { PostgresqlDeletableEntity } from "@codebase/persistence";
 
-import type { Lexeme } from "./lexeme.entity";
+import type { Lexeme } from "../lexemes/lexeme.entity";
 import type { Word } from "./word.entity";
 import type { Relation } from "typeorm";
 

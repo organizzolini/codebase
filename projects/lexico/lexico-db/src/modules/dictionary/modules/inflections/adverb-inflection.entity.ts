@@ -3,14 +3,14 @@ import { ChildEntity, Column } from "typeorm";
 import {
   adverbDegrees,
   adverbTypes,
-} from "../../../../database/database.constants";
+} from "../../../database/database.constants";
 
 import { Inflection } from "./inflection.entity";
 
 import type {
   AdverbDegree,
   AdverbType,
-} from "../../../../database/database.types";
+} from "../../../database/database.types";
 
 /**
  * Inflection metadata for adverb lexemes.

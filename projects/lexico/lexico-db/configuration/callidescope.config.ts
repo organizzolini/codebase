@@ -25,7 +25,7 @@ export default {
    * `configuration/ic-suite/.callidescopeignore`, the only project this path ever
    * matched.
    */
-  exclude: ["src/modules/database/migrations/**"],
+  exclude: ["migrations/**"],
   limits: {
     maximumBreadth: 3,
     maximumDepth: 3,

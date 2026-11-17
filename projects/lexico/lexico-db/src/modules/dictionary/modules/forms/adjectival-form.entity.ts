@@ -4,7 +4,7 @@ import {
   formCaseValues,
   formGenderValues,
   formNumberValues,
-} from "../../../../database/database.constants";
+} from "../../../database/database.constants";
 
 import { Form } from "./form.entity";
 
@@ -12,7 +12,7 @@ import type {
   FormCase,
   FormGender,
   FormNumber,
-} from "../../../../database/database.types";
+} from "../../../database/database.types";
 
 /** A declined form for an adjective (gender + case + number). */
 @ChildEntity("adjectival")

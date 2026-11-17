@@ -3,14 +3,14 @@ import { ChildEntity, Column } from "typeorm";
 import {
   inflectionDeclensionValues,
   nounGenders,
-} from "../../../../database/database.constants";
+} from "../../../database/database.constants";
 
 import { Inflection } from "./inflection.entity";
 
 import type {
   NounDeclension,
   NounGender,
-} from "../../../../database/database.types";
+} from "../../../database/database.types";
 
 /**
  * Inflection metadata for noun lexemes.

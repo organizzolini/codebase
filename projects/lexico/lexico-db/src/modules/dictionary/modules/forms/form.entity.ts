@@ -2,8 +2,8 @@ import { Entity, Index, ManyToOne, OneToMany, TableInheritance } from "typeorm";
 
 import { PostgresqlDeletableEntity } from "@codebase/persistence";
 
-import type { Lexeme } from "../../../entities/lexeme.entity";
-import type { WordForm } from "../../../entities/word-form.entity";
+import type { Lexeme } from "../lexemes/lexeme.entity";
+import type { WordForm } from "../words/word-form.entity";
 
 /**
  * Base single-table-inheritance entity for all lexical forms.

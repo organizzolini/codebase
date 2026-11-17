@@ -3,14 +3,14 @@ import { ChildEntity, Column } from "typeorm";
 import {
   adjectiveDegreeValues,
   inflectionDeclensionValues,
-} from "../../../../database/database.constants";
+} from "../../../database/database.constants";
 
 import { Inflection } from "./inflection.entity";
 
 import type {
   AdjectiveDeclension,
   AdjectiveDegree,
-} from "../../../../database/database.types";
+} from "../../../database/database.types";
 
 /**
  * Inflection metadata for adjective lexemes.

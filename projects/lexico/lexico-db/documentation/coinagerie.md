@@ -9,7 +9,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **db**: The database half of the lexico project's name: the `lexico-db` project that owns the entities, data source and migrations.
 - **degree**: Comparison degree value, comparative, positive, or superlative, stored in the forms and inflections degree enums.
 - **deletable**: Name of the PostgresqlDeletableEntity base class from @codebase/persistence, which gives every entity soft-delete columns.
-- **dictionary**: The src/modules/entities/dictionary folder, holding the Word, Lexeme, Form, Inflection, and Translation entity classes.
+- **dictionary**: The src/modules/dictionary module, whose child modules hold the Word, Lexeme, Form, Inflection, and Translation entity classes.
 - **disambiguator**: Numeric lexeme column that, together with lemma, makes each dictionary entry unique and tells homographs apart.
 - **ecclesiastical**: Pronunciation variant value for Ecclesiastical Latin, one of classical, ecclesiastical, or vulgar in the enum.
 - **generation**: Field generationStrategy in column expectations, one of increment, rowid, or uuid, that the entity service tests check.
