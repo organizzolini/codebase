@@ -40,6 +40,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **decimus**:
 - **degree**: Comparison grade of an adjective or adverb, such as positive, comparative, or superlative, set on manual inflections.
 - **dictionary**: Main ingestion stage that parses cached Wiktionary pages into lexemes, forms, and translations, run by the dictionary command.
+- **diphthong**: Pair of vowels ae or oe, which medieval spelling writes as e, so word linking tries that reading only after stricter spellings fail.
 - **disambiguator**: Numeric index that tells apart lexemes sharing a lemma, saved on each lexeme and used to reload it by lemma.
 - **ecclesiastical**: Pronunciation mode for Ecclesiastical Latin, with its own phoneme map and service used beside the classical one.
 - **ecclesiasticorum**: Part of the Corpus Scriptorum Ecclesiasticorum Latinorum name, the CSEL corpus command and its ingestion module.
@@ -103,6 +104,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **prudentius**:
 - **publication**: Word in the `print_publication_date` metadata key, the year a print edition of a library work appeared, which the Perseus and CSEL providers record from the source record when it carries one.
 - **recognise**: Token linked to a dictionary Word, so counted among a Text's recognised words.
+- **relink**: Link ingested literature words to the dictionary again, without reading any text, run by the literature command with its relink flag.
 - **remigius**:
 - **rufinus**:
 - **saint**:
@@ -121,6 +123,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **trace**: Stack-trace text the logger records with an error, and the call chain callidescope follows when measuring depth.
 - **translation**: Gloss entity for one meaning of a lexeme, saved per lexeme and parsed from the Wiktionary translations list.
 - **undated**:
+- **unlinked**: Literature token with no dictionary Word, which a relink tries to link.
 - **valerius**: Name part shared by the Catullus, Martial, and Valerius Flaccus literature slugs, which each expand to a full Valerius name.
 - **varro**: Literature constants slug for Varro, expanded to marcus terentius varro, whose Res rusticae the library ingests.
 - **vellius**: Literature constants slug expanded to gaius velleius patereculus, the historian whose name the constants supply.

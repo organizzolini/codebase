@@ -10,6 +10,7 @@ import {
 } from "../lexico-ingestion/lexico-ingestion.utilities";
 
 import { LiteratureAuthorEraService } from "./literature-author-era.service";
+import { LiteratureWordLinkingService } from "./literature-word-linking.service";
 import { LiteratureService } from "./literature.service";
 
 import type { CommandOptionChoice } from "../lexico-ingestion/lexico-ingestion.types";
@@ -35,6 +36,7 @@ export class LiteratureCommand extends CommandRunner {
     private readonly logger: LoggerService,
     private readonly helper: LiteratureService,
     private readonly authorEraService: LiteratureAuthorEraService,
+    private readonly wordLinkingService: LiteratureWordLinkingService,
   ) {
     super();
     this.logger.setContext(LiteratureCommand.name);
@@ -130,11 +132,64 @@ export class LiteratureCommand extends CommandRunner {
   }
 
   /**
+   * Ingests the texts selected by the provider, author and text options.
+   */
+  private async ingest(options: LiteratureCommandOptions): Promise<void> {
+    const startTime = performance.now();
+    const library = await this.helper.scanLibrary();
+    if (library.length === 0) {
+      this.logger.warn("📚 Missing texts in the data/library directory");
+      return;
+    }
+    const provider = await this.resolveFilter({
+      choices: await this.getProviderChoices(),
+      label: "Provider",
+      message: "Select the provider",
+      value: options.provider,
+    });
+    const author = await this.resolveFilter({
+      choices: await this.getAuthorChoices(provider),
+      label: "Author",
+      message: "Select the author",
+      value: options.author,
+    });
+    const text = await this.resolveFilter({
+      choices: await this.getTextChoices(provider, author),
+      label: "Text",
+      message: "Select the text",
+      value: options.text,
+    });
+    const textsToIngest = this.selectTextsToIngest({
+      author,
+      library,
+      provider,
+      text,
+    });
+    this.logger.info("📚 Selected texts for ingestion", undefined, {
+      count: textsToIngest.length,
+    });
+    await this.ingestAndDateAuthors(textsToIngest);
+    const endTime = performance.now();
+    const duration = ((endTime - startTime) / 1000).toFixed(2);
+    this.logger.info("📚 Ingested literature", undefined, {
+      durationSeconds: duration,
+    });
+  }
+
+  /**
    * Ingests the selected texts, then dates their authors.
    */
   private async ingestAndDateAuthors(texts: LibraryEntry[]): Promise<void> {
     await this.helper.ingestAllAuthors(texts);
     await this.authorEraService.dateAuthors();
+  }
+
+  /**
+   * Links the words of ingested texts to the dictionary and logs what it linked.
+   */
+  private async relink(): Promise<void> {
+    const summary = await this.wordLinkingService.relinkTokens();
+    this.logger.info("🔗 Relinked literature words", undefined, { ...summary });
   }
 
   /**
@@ -210,6 +265,18 @@ export class LiteratureCommand extends CommandRunner {
   }
 
   /**
+   * Links the words of texts already ingested to the dictionary, reading no
+   * text again.
+   */
+  @Option({
+    description: "Only relink the words of ingested texts to the dictionary",
+    flags: "--relink",
+  })
+  parseRelink(): boolean {
+    return true;
+  }
+
+  /**
    * Passes the `--text` text through to `run`, which validates it against the
    * texts left by the provider and author filters.
    */
@@ -222,7 +289,8 @@ export class LiteratureCommand extends CommandRunner {
   }
 
   /**
-   * Runs literature ingestion for the selected provider/author/text scope.
+   * Runs literature ingestion for the selected provider/author/text scope, or
+   * only relinks ingested words under `--relink`.
    */
   async run(
     _arguments: string[],
@@ -230,44 +298,6 @@ export class LiteratureCommand extends CommandRunner {
   ): Promise<void> {
     this.logger.info("📚 Starting literature ingestion");
     this.logger.info("⚙️ Parsed command options", undefined, { options });
-    const startTime = performance.now();
-    const library = await this.helper.scanLibrary();
-    if (library.length === 0) {
-      this.logger.warn("📚 Missing texts in the data/library directory");
-      return;
-    }
-    const provider = await this.resolveFilter({
-      choices: await this.getProviderChoices(),
-      label: "Provider",
-      message: "Select the provider",
-      value: options.provider,
-    });
-    const author = await this.resolveFilter({
-      choices: await this.getAuthorChoices(provider),
-      label: "Author",
-      message: "Select the author",
-      value: options.author,
-    });
-    const text = await this.resolveFilter({
-      choices: await this.getTextChoices(provider, author),
-      label: "Text",
-      message: "Select the text",
-      value: options.text,
-    });
-    const textsToIngest = this.selectTextsToIngest({
-      author,
-      library,
-      provider,
-      text,
-    });
-    this.logger.info("📚 Selected texts for ingestion", undefined, {
-      count: textsToIngest.length,
-    });
-    await this.ingestAndDateAuthors(textsToIngest);
-    const endTime = performance.now();
-    const duration = ((endTime - startTime) / 1000).toFixed(2);
-    this.logger.info("📚 Ingested literature", undefined, {
-      durationSeconds: duration,
-    });
+    await (options.relink ? this.relink() : this.ingest(options));
   }
 }

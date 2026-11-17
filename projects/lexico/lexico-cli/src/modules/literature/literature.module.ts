@@ -16,6 +16,7 @@ import { NumeralsModule } from "../numerals/numerals.module";
 import { LiteratureAuthorEraService } from "./literature-author-era.service";
 import { LiteratureLibraryScanService } from "./literature-library-scan.service";
 import { LiteratureTextIngestionService } from "./literature-text-ingestion.service";
+import { LiteratureWordLinkingService } from "./literature-word-linking.service";
 import { LiteratureWordNormalizationService } from "./literature-word-normalization.service";
 import { LiteratureCommand } from "./literature.command";
 import { LiteratureService } from "./literature.service";
@@ -38,6 +39,7 @@ import { LiteratureService } from "./literature.service";
     LiteratureLibraryScanService,
     LiteratureService,
     LiteratureTextIngestionService,
+    LiteratureWordLinkingService,
     LiteratureWordNormalizationService,
   ],
 })

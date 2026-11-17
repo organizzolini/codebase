@@ -14,6 +14,7 @@ import { NumeralsService } from "../numerals/numerals.service";
 
 import { LiteratureLibraryScanService } from "./literature-library-scan.service";
 import { LiteratureTextIngestionService } from "./literature-text-ingestion.service";
+import { LiteratureWordLinkingService } from "./literature-word-linking.service";
 import { LiteratureWordNormalizationService } from "./literature-word-normalization.service";
 import { LiteratureService } from "./literature.service";
 
@@ -89,8 +90,12 @@ describe(LiteratureService, () => {
 
   const literatureTextIngestionService =
     createMock<LiteratureTextIngestionService>();
-  const literatureWordNormalizationService =
-    new LiteratureWordNormalizationService();
+  const literatureWordLinkingService = new LiteratureWordLinkingService(
+    createRepositoryMock<Token>(),
+    createRepositoryMock<Word>(),
+    new LiteratureWordNormalizationService(),
+    createMock<LoggerService>(),
+  );
 
   beforeAll(async () => {
     const built = await buildTestingModule(LiteratureService, {
@@ -128,8 +133,8 @@ describe(LiteratureService, () => {
           useValue: literatureTextIngestionService,
         },
         {
-          provide: LiteratureWordNormalizationService,
-          useValue: literatureWordNormalizationService,
+          provide: LiteratureWordLinkingService,
+          useValue: literatureWordLinkingService,
         },
       ],
     });
@@ -244,8 +249,8 @@ describe(LiteratureService, () => {
           useValue: literatureTextIngestionService,
         },
         {
-          provide: LiteratureWordNormalizationService,
-          useValue: literatureWordNormalizationService,
+          provide: LiteratureWordLinkingService,
+          useValue: literatureWordLinkingService,
         },
       ],
     });
@@ -263,7 +268,7 @@ describe(LiteratureService, () => {
       wordRepository,
       literatureLibraryScanService,
       literatureTextIngestionService,
-      literatureWordNormalizationService,
+      literatureWordLinkingService,
       logger,
     );
 
@@ -291,8 +296,8 @@ describe(LiteratureService, () => {
           useValue: literatureTextIngestionService,
         },
         {
-          provide: LiteratureWordNormalizationService,
-          useValue: literatureWordNormalizationService,
+          provide: LiteratureWordLinkingService,
+          useValue: literatureWordLinkingService,
         },
       ],
     });

@@ -18,7 +18,7 @@ import { NumeralsService } from "../numerals/numerals.service";
 
 import { LiteratureLibraryScanService } from "./literature-library-scan.service";
 import { LiteratureTextIngestionService } from "./literature-text-ingestion.service";
-import { LiteratureWordNormalizationService } from "./literature-word-normalization.service";
+import { LiteratureWordLinkingService } from "./literature-word-linking.service";
 import {
   authorIdToName,
   DEFAULT_LINE_CHUNK_SIZE,
@@ -65,7 +65,7 @@ export class LiteratureService {
     private readonly wordRepository: Repository<Word>,
     private readonly literatureLibraryScanService: LiteratureLibraryScanService,
     private readonly literatureTextIngestionService: LiteratureTextIngestionService,
-    private readonly literatureWordNormalizationService: LiteratureWordNormalizationService,
+    private readonly literatureWordLinkingService: LiteratureWordLinkingService,
     private readonly logger: LoggerService,
   ) {
     this.logger.setContext(LiteratureService.name);
@@ -165,13 +165,9 @@ export class LiteratureService {
       const isPunctuation = !WORD_TOKEN_PATTERN.test(data);
       let wordId: null | string = null;
       if (!isPunctuation) {
-        wordId = this.memoizedWordCache.get(data) || null;
+        wordId = this.memoizedWordCache.get(data) ?? null;
         if (!wordId) {
-          const normalized =
-            this.literatureWordNormalizationService.escapeCapitals(
-              this.literatureWordNormalizationService.normalize(data),
-            );
-          wordId = wordMap.get(normalized) || null;
+          wordId = this.literatureWordLinkingService.resolve(data, wordMap);
           this.memoizedWordCache.set(data, wordId);
         }
       }

@@ -40,4 +40,28 @@ describe(LiteratureWordNormalizationService, () => {
       expect(service.normalize("roma")).toBe("roma");
     });
   });
+
+  describe("fold", () => {
+    it("reads u and v as one letter and i and j as one letter", () => {
+      expect(service.fold("Virgo")).toBe("uirgo");
+      expect(service.fold("soluit")).toBe(service.fold("solvit"));
+      expect(service.fold("Iulius")).toBe(service.fold("Julius"));
+    });
+
+    it("spells out the ae and oe ligatures", () => {
+      expect(service.fold("Cæsar")).toBe("caesar");
+      expect(service.fold("Œdipus")).toBe("oedipus");
+    });
+
+    it("strips diacritics", () => {
+      expect(service.fold("Rōmā")).toBe("roma");
+    });
+  });
+
+  describe("foldDiphthongs", () => {
+    it("reads ae and oe as e, as medieval spelling does", () => {
+      expect(service.foldDiphthongs("puellae")).toBe("puelle");
+      expect(service.foldDiphthongs("poena")).toBe("pena");
+    });
+  });
 });

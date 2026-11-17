@@ -79,6 +79,8 @@ export const TOKEN_SEGMENT_PATTERN = /[\p{L}]+|[^\p{L}\s]+/gu;
 
 export const WORD_TOKEN_PATTERN = /^[\p{L}]+$/u;
 
+export const DIPHTHONG_PATTERN = /ae|oe/g;
+
 export const COMBINING_MARKS_PATTERN = /[\u0300-\u036F]/gu;
 
 /** Name of the EDCS library provider. */
@@ -193,3 +195,12 @@ export const FALLBACK_AUTHOR_YEARS: Record<string, [number, number]> = {
   "sidonius-apollinaris": [430, 489],
   tertullian: [155, 220],
 };
+
+/** Enclitics that Latin writes onto the end of a word, as folded spellings. */
+export const ENCLITIC_SUFFIXES = ["que", "ue", "ne"] as const;
+
+/** The fewest letters a word may keep once an enclitic is taken off. */
+export const ENCLITIC_MINIMUM_BASE_LENGTH = 2;
+
+/** How many word types a relink writes at a time. */
+export const RELINK_CHUNK_SIZE = 2000;

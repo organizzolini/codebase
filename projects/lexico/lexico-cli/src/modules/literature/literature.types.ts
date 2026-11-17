@@ -47,6 +47,7 @@ export interface LibraryEntry {
 export interface LiteratureCommandOptions {
   author?: CommandOptionValue;
   provider?: CommandOptionValue;
+  relink?: boolean;
   text?: CommandOptionValue;
 }
 
@@ -66,6 +67,12 @@ export interface LiteratureFilterArguments {
 export interface ParsedLabelResult {
   label: string;
   lineNodes: PhrasingContent[];
+}
+
+/** What a relink did: word types that were unlinked, and how many of them it linked. */
+export interface RelinkSummary {
+  linkedTypes: number;
+  unlinkedTypes: number;
 }
 
 /** Typed text columns read from frontmatter, in entity property names. */
@@ -92,3 +99,9 @@ export type WikidataField =
   | "deathPrecision"
   | "floruit"
   | "floruitPrecision";
+
+/** Dictionary words as `[spelling, id]` pairs, grouped by looser spellings. */
+export interface WordIndex {
+  diphthongs: Map<string, [string, string][]>;
+  folded: Map<string, [string, string][]>;
+}
