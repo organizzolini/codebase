@@ -20,11 +20,13 @@ helm upgrade --install myrelease ./chart
 
 ## Agent Workflow
 
-Work in this repository integrates skills from both
-[mattpocock/skills](https://github.com/mattpocock/skills) and
-[obra/superpowers](https://github.com/obra/superpowers) to clarify, specify,
-track, implement, and review non-trivial features, refactors, and bugfixes with
-strict verification gates.
+Work in this repository runs on the
+[obra/superpowers](https://github.com/obra/superpowers) skills to clarify,
+specify, track, implement, and review non-trivial features, refactors, and
+bugfixes with strict verification gates. This repository's own skills, the
+[ponytail](.agents/skills/ponytail/SKILL.md) family, and
+[grill-me](.agents/skills/grill-me/SKILL.md) and
+[wayfinder](.agents/skills/wayfinder/SKILL.md) fill the gaps around them.
 
 **Planning is human-gated; implementation is continuous.** During planning,
 never chain skills automatically — stop after each step and wait for explicit
@@ -41,23 +43,23 @@ models are reserved for human-selected main sessions; never spawn a subagent on
 Opus/Sol or higher, and always pass the subagent model explicitly so it does not
 inherit a larger session model.
 
-1. **Clarify**: Run [brainstorming](.agents/skills/brainstorming/SKILL.md) with
-   [grill-with-docs](.agents/skills/grill-with-docs/SKILL.md) (domain models/ADRs)
-   or [grill-me](.agents/skills/grill-me/SKILL.md) (plain interview). Follow
-   [grilling](.agents/skills/grilling/SKILL.md) pacing (one numbered frontier
-   with recommendations; ask [ask-matt](.agents/skills/ask-matt/SKILL.md) if
-   unsure). When done, summarize understanding and **stop**.
-2. **Specify**: Run [to-spec](.agents/skills/to-spec/SKILL.md) only on manual
-   request. Publish the spec issue as a Feature (or Bug) with `--type`, link it,
-   and **stop**.
-3. **Decompose**: Run [to-tickets](.agents/skills/to-tickets/SKILL.md) only on
-   manual request. Confirm breakdown, publish tickets/sub-issues with `--type Task`, and **stop**.
-   Reach for [wayfinder](.agents/skills/wayfinder/SKILL.md) if work exceeds one
-   session. (Ignore `writing-plans` / `docs/superpowers/specs/` hand-offs; see
-   [`documentation/agents/issue-tracker.md`](documentation/agents/issue-tracker.md)).
-4. **Handoff**: Run [handoff](.agents/skills/handoff/SKILL.md) only on manual
-   request for multi-session work. Post the `# Handoff` comment on the spec issue
-   (see [Handoffs](#handoffs)) and **stop**.
+1. **Clarify**: Run [brainstorming](.agents/skills/brainstorming/SKILL.md),
+   and [grill-me](.agents/skills/grill-me/SKILL.md) when the plan needs a harder
+   interview. Explore the code through OpenWiki and the source itself (see
+   [OpenWiki](#openwiki)). When the design is approved, summarize it and
+   **stop** instead of writing the spec file brainstorming would write next.
+2. **Specify**: Only on manual request, publish the approved design as the spec
+   issue — a Feature (or Bug) with `--type` — in place of brainstorming's
+   `docs/superpowers/specs/` file, link it, and **stop**.
+3. **Decompose**: Only on manual request, run
+   [writing-plans](.agents/skills/writing-plans/SKILL.md) against the spec issue.
+   Publish its plan as tickets instead of a `docs/superpowers/plans/` file: one
+   parent issue per pull request and one sub-issue per commit, each with
+   `--type Task`, as [`documentation/agents/issue-tracker.md`](documentation/agents/issue-tracker.md)
+   describes. Confirm the breakdown, publish, and **stop**. Reach for
+   [wayfinder](.agents/skills/wayfinder/SKILL.md) if the work exceeds one session.
+4. **Handoff**: Only on manual request for multi-session work, post the
+   `# Handoff` comment on the spec issue (see [Handoffs](#handoffs)) and **stop**.
 5. **Build**: Every pull request closes an issue, so use
    [link-issue](.agents/skills/link-issue/SKILL.md) first: use the planned ticket,
    or file one before starting ad-hoc work. Set each ticket's board Status to In Progress, and its Effort, before testing
@@ -75,17 +77,15 @@ inherit a larger session model.
    - **Smallest change**: Before writing code, run [ponytail](.agents/skills/ponytail/SKILL.md)
      (full level) — skip, reuse, standard library, installed dependency, then minimum new
      code. [Simplicity](#simplicity) says what outranks it.
-   - **TDD loop**: Use [implement](.agents/skills/implement/SKILL.md) with
-     [test-driven-development](.agents/skills/test-driven-development/SKILL.md) (strict
-     red-green cycle) and [tdd](.agents/skills/tdd/SKILL.md) (confirmed seams, public
-     interfaces; refactoring belongs to step 6). Test via `nx run <project>:vitest:<kind>`
-     (see [Testing & Coverage](#testing--coverage)).
+   - **TDD loop**: Use [test-driven-development](.agents/skills/test-driven-development/SKILL.md)
+     (strict red-green cycle, through public interfaces; refactoring belongs to
+     step 6). Test via `nx run <project>:vitest:<kind>` (see
+     [Testing & Coverage](#testing--coverage)).
    - **Debugging**: Use [systematic-debugging](.agents/skills/systematic-debugging/SKILL.md)
-     (root-cause gate) with [diagnosing-bugs](.agents/skills/diagnosing-bugs/SKILL.md).
+     (root-cause gate).
 6. **Review**: Request review via
    [requesting-code-review](.agents/skills/requesting-code-review/SKILL.md) (fresh subagent
-   handed base/head commits), review with [code-review](.agents/skills/code-review/SKILL.md)
-   and [ponytail-review](.agents/skills/ponytail-review/SKILL.md),
+   handed base/head commits), review with [ponytail-review](.agents/skills/ponytail-review/SKILL.md),
    and apply feedback via [receiving-code-review](.agents/skills/receiving-code-review/SKILL.md).
 7. **Validate**: Run [validate-code](.agents/skills/validate-code/SKILL.md) gated by
    [verification-before-completion](.agents/skills/verification-before-completion/SKILL.md).
@@ -317,11 +317,9 @@ which ones exist right now, including the ones installed from other
 repositories.
 
 Writing or editing one — in `.agents/skills/`, or in the four `*-agents`
-packages this repository publishes — is its own task with its own two skills:
+packages this repository publishes — is its own task with its own skill:
 [writing-skills](.agents/skills/writing-skills/SKILL.md) for how a skill is
-built and verified before it ships, and
-[writing-for-agents](.agents/skills/writing-for-agents/SKILL.md) for the prose
-inside it.
+built and verified before it ships.
 
 Instruction-file conventions for Copilot live in [`.github/instructions/`](.github/instructions).
 
@@ -329,21 +327,17 @@ Instruction-file conventions for Copilot live in [`.github/instructions/`](.gith
 
 ### Agent Skills Configuration
 
-The [mattpocock/skills](https://github.com/mattpocock/skills) engineering skills
-read their per-repository configuration from `documentation/agents/`. Edit these files
-directly; re-run `/setup-matt-pocock-skills` only to switch issue trackers or
-start over.
+The vendored skills read their per-repository configuration from
+`documentation/agents/`. Edit these files directly.
 
 | Concern       | Setting                                                                                                                    | Reference                                                                        |
 | ------------- | -------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | Issue tracker | GitHub Issues in `Organizzolini/codebase`, via the `gh` CLI — a spec, then one issue per pull request, then one per commit | [`documentation/agents/issue-tracker.md`](documentation/agents/issue-tracker.md) |
-| Triage labels | The five canonical roles mapped onto this repository's `status:` label family                                              | [`documentation/agents/triage-labels.md`](documentation/agents/triage-labels.md) |
-| Domain docs   | Single-context — one root `CONTEXT.md` plus root `documentation/adr/`                                                      | [`documentation/agents/domain.md`](documentation/agents/domain.md)               |
+| Handoffs      | The `# Handoff` comment posted on a spec issue for multi-session work                                                      | [`documentation/agents/handoffs.md`](documentation/agents/handoffs.md)           |
+| OpenWiki      | The generated evidence index agents read to discover the codebase                                                          | [`documentation/agents/openwiki.md`](documentation/agents/openwiki.md)           |
 
-`CONTEXT.md` and `documentation/adr/` are both populated now.
-[domain-modeling](.agents/skills/domain-modeling/SKILL.md) grows them lazily, as
-terms and decisions actually get resolved — so add to them when a decision
-lands, rather than scaffolding ahead of the work.
+Architecture decision records live in `documentation/adr/`. Add one when a
+decision lands, rather than scaffolding ahead of the work.
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->

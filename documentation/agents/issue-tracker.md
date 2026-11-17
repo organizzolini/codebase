@@ -7,7 +7,7 @@ Issues and specs for this repository live as GitHub issues in [Organizzolini/cod
 Two repository rules override the generic guidance below.
 
 - **Issue and spec titles follow the commit convention** — `<type>(<scope>): <gitmoji> <subject>`, with `type` and `scope` taken from the Conventional Naming tables in [AGENTS.md](../../AGENTS.md). A pull request opened against an issue is validated against the same commitlint configuration, so matching the format on the issue keeps the two aligned. Unlike a pull request title, this is not enforced — a quick backlog-idea title is a normal, intentional shape for an issue.
-- **Apply the `type:*` and `scope:*` labels** that correspond to the title, alongside the triage labels in [triage-labels.md](./triage-labels.md), and one `source:*` label (`source:agent` for an issue an agent files, `source:human` for one a person files through the template).
+- **Apply the `type:*` and `scope:*` labels** that correspond to the title, and one `source:*` label (`source:agent` for an issue an agent files, `source:human` for one a person files through the template).
 
 The single issue template lives at `.github/ISSUE_TEMPLATE/issue.yml`, with required Type and Scope dropdowns kept in sync with `configuration/conventional.config.cjs` by `nx run synchronization:synchronize:write`. `blank_issues_enabled: false` in `.github/ISSUE_TEMPLATE/config.yml` means every human-filed issue goes through it — `gh issue create --template issue.yml` fills it in from the terminal. An agent creating an issue directly through `gh issue create --title ... --body ...` bypasses the form entirely, which is expected: this is the human path, and an agent applies its own `source:agent`, `type:*`, and `scope:*` labels by hand as described above.
 
@@ -27,13 +27,13 @@ Reading or writing the board needs the `project` scope on the `gh` token (`gh au
 
 ## Planning shape: a spec, its pull requests, and their commits
 
-When planning work — `/to-tickets`, `/to-spec`, or any breakdown that lands in
-this tracker — file **one parent issue per pull request**, and **one sub-issue
+When planning work — publishing a spec, turning a `writing-plans` plan into
+tickets, or any breakdown that lands in this tracker — file **one parent issue per pull request**, and **one sub-issue
 per commit** that pull request is expected to contain. Where the breakdown came
 from a spec, that spec is the third layer above both:
 
 ```text
-spec issue                  the output of /to-spec      (Issue Type: Feature or Bug)
+spec issue                  the approved design         (Issue Type: Feature or Bug)
 └── parent issue            one per pull request        (Issue Type: Task)
     └── sub-issue           one per planned commit      (Issue Type: Task)
 ```
@@ -55,7 +55,7 @@ spec issue                  the output of /to-spec      (Issue Type: Feature or 
   sub-issues is where that is cheapest to get right: a `feat` sub-issue under a
   `chore` parent is a retitle now, or a failed check later. See
   [Release Significance](../../AGENTS.md#release-significance).
-- **The spec issue is the parent of every parent issue.** When a grilling
+- **The spec issue is the parent of every parent issue.** When a brainstorming
   session produced a spec, link each pull request issue to it with the same
   native sub-issue relationship, so the spec carries a progress bar over the
   work and each pull request shows what it implements. The spec is never the
@@ -139,8 +139,7 @@ set_field <child> Status "In Progress"
   field marks what is moving, not what is scoped.
 - **Drop `status:ready-for-agent` and `status:ready-for-human` in the same
   step.** Those say the ticket is waiting to be picked up, which stops being
-  true the moment it is — `/triage`'s frontier query and anyone scanning the
-  board both read them that way.
+  true the moment it is.
 - **Closing the issue is the whole of finishing.** The board's built-in
   workflow marks a closed issue Done, so there is nothing to clear. Each layer
   closes at its own moment:
@@ -175,21 +174,9 @@ families, so a `status:*` label neither satisfies nor fails it.
 
 Infer the repo from `git remote -v` — `gh` does this automatically when run inside a clone.
 
-## Pull requests as a triage surface
-
-**PRs as a request surface: no.** _(Set to `yes` if this repo treats external PRs as feature requests; `/triage` reads this flag.)_
-
-When set to `yes`, PRs run through the same labels and states as issues, using the `gh pr` equivalents:
-
-- **Read a PR**: `gh pr view <number> --comments` and `gh pr diff <number>` for the diff.
-- **List external PRs for triage**: `gh pr list --state open --json number,title,body,labels,author,authorAssociation,comments` then keep only `authorAssociation` of `CONTRIBUTOR`, `FIRST_TIME_CONTRIBUTOR`, or `NONE` (drop `OWNER`/`MEMBER`/`COLLABORATOR`).
-- **Comment / label / close**: `gh pr comment`, `gh pr edit --add-label`/`--remove-label`, `gh pr close`.
-
-GitHub shares one number space across issues and PRs, so a bare `#42` may be either — resolve with `gh pr view 42` and fall back to `gh issue view 42`.
-
 ## When a skill says "publish to the issue tracker"
 
-Create a GitHub issue, with its Issue Type set: a spec from `/to-spec` is a `Feature` (or a `Bug` for a defect), and every ticket from `/to-tickets` is a `Task` once linked beneath it. Set `--type` at creation rather than correcting it later.
+Create a GitHub issue, with its Issue Type set: a spec is a `Feature` (or a `Bug` for a defect), and every ticket from a `writing-plans` plan is a `Task` once linked beneath it. Set `--type` at creation rather than correcting it later.
 
 ## When a skill says "fetch the relevant ticket"
 
@@ -198,6 +185,8 @@ Run `gh issue view <number> --comments`.
 ## Wayfinder operations
 
 Used by `/wayfinder`. The **map** is a single issue with **child** issues as tickets.
+
+This repository has no `domain-modeling` skill. Where wayfinder says to call it alongside `grilling`, call `grilling` alone, and record any decision worth keeping as an ADR in `documentation/adr/`.
 
 - **Map**: a single issue labelled `wayfinder:map`, holding the Notes / Decisions-so-far / Fog body. `gh issue create --type Feature --label wayfinder:map`.
 - **Child ticket**: an issue linked to the map as a GitHub sub-issue (`gh api` on the sub-issues endpoint). Where sub-issues aren't enabled, add the child to a task list in the map body and put `Part of #<map>` at the top of the child body. Issue Type: `Task`. Labels: `wayfinder:<type>` (`research`/`prototype`/`grilling`/`task`). Once claimed, the ticket is assigned to the driving dev.

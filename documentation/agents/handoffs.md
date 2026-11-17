@@ -5,13 +5,12 @@ Repository rules for the `# Handoff` comment that [AGENTS.md](../../AGENTS.md) s
 A planning session ends where an implementation session begins, and whatever the
 handoff document does not say, the next agent invents. It is also the only record
 that step 1's approval gate was passed, which is what makes an uninterrupted
-implementation run legitimate. Five repository rules override
-[handoff](../../.agents/skills/handoff/SKILL.md)'s defaults:
+implementation run legitimate. No skill writes it; follow these five rules:
 
-- **Post it as a comment on the spec issue**, not in the operating system's
-  temporary directory the skill defaults to — the next session cannot be pointed
-  at that, and the next reboot may empty it. On the issue, the next session gets
-  the plan, the tickets, and the brief from one link.
+- **Post it as a comment on the spec issue**, never in a temporary directory —
+  the next session cannot be pointed at that, and the next reboot may empty it.
+  On the issue, the next session gets the plan, the tickets, and the brief from
+  one link.
 - **Prescribe the workflow skills, do not suggest them.** A list of skills an
   agent "may find useful" is a list an agent skips. Write a numbered "How to run
   this" section naming each skill in call order:
@@ -24,8 +23,8 @@ implementation run legitimate. Five repository rules override
   for the tickets that are independent, or one at a time down a
   [gh-stack](../../.agents/skills/gh-stack/SKILL.md) chain for the ones that are
   not — and, inside each dispatched ticket,
-  [implement](../../.agents/skills/implement/SKILL.md) and
-  [tdd](../../.agents/skills/tdd/SKILL.md), with subagent-driven-development invoked
+  [test-driven-development](../../.agents/skills/test-driven-development/SKILL.md),
+  with subagent-driven-development invoked
   again at task granularity if that ticket itself splits into several tasks,
   then steps 6–8 of the [Agent Workflow](../../AGENTS.md#agent-workflow). Say plainly that this session is the orchestrator (on a Sonnet/Terra-level model): it
   dispatches tickets to Haiku/Luna-level subagents (or Sonnet/Terra-level only
@@ -34,9 +33,9 @@ implementation run legitimate. Five repository rules override
 - **Answer the two questions those skills otherwise stop and ask.**
   `subagent-driven-development` keys its workspace and ledger off a **plan file
   path**, so say to export the issue's plan to a local scratch file first. And
-  `tdd` will not write a test at an unconfirmed seam, so point it at the spec's
-  Testing Decisions and say to treat those as the confirmation — otherwise a
-  session told to run uninterrupted stops before its first test.
+  point `test-driven-development` at the spec's testing decisions and say to
+  treat those as the seams to test through — otherwise a session told to run
+  uninterrupted stops to ask before its first test.
 - **Say how the work is cut into pull requests, and that every one of them is
   this session's job.** One ticket per pull request, and name each branch or at
   least the type and scope every branch must take — a squashed title is all
