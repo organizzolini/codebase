@@ -126,7 +126,6 @@ catalog:
   cheerio: ^1.0.0
   cheerio-tableparser: ^1.0.1
   class-variance-authority: ^0.7.1
-  clsx: ^2.1.1
   cmdk: ^1.1.1
   commitlint-plugin-gitmoji: ^2.2.6
   commitlint-plugin-tense: ^1.0.10
@@ -200,7 +199,6 @@ catalog:
   stylelint-config-standard: ^41.0.0
   stylelint-config-tailwindcss: ^1.0.1
   syncpack: ^15.3.1
-  tailwind-merge: ^3.6.0
   tailwindcss: ^4.3.0
   tailwindcss-animate: ^1.0.7
   tslib: ^2.8.1

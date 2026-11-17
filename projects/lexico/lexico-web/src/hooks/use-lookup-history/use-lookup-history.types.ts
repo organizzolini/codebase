@@ -3,7 +3,7 @@ import type {
   lookupEntrySchema,
   searchEntrySchema,
 } from "./use-lookup-history.constants";
-import type { z } from "zod";
+import type * as z from "zod/mini";
 
 // 🏷️ Types
 

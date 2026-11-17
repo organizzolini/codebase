@@ -3,7 +3,7 @@ import type {
   getTextInputSchema,
   readerSearchSchema,
 } from "./reader-lines-api.constants";
-import type { z } from "zod";
+import type * as z from "zod/mini";
 
 // 🏷️ Types
 

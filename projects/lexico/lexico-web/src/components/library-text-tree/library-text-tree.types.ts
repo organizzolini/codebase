@@ -5,7 +5,7 @@ import type {
   getLibraryChildrenInputSchema,
   getLibraryWorksInputSchema,
 } from "./library-text-tree-api.constants";
-import type { z } from "zod";
+import type * as z from "zod/mini";
 
 // 🏷️ Types
 

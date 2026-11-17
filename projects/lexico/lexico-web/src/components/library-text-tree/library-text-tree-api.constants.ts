@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod/mini";
 
 import { getLibraryInputSchema } from "../library-grid/library-grid-api.constants";
 
@@ -15,12 +15,12 @@ export const LIBRARY_WORKS_PAGE_SIZE = 50;
 
 /** Validates what getLibraryChildren is called with. */
 export const getLibraryChildrenInputSchema = z.object({
-  page: z.number().int().positive(),
-  parentTextId: z.string().min(1),
+  page: z.int().check(z.positive()),
+  parentTextId: z.string().check(z.minLength(1)),
   search: z.string(),
 });
 
 /** Validates what getLibraryWorks is called with: the library's own page, for one author. */
-export const getLibraryWorksInputSchema = getLibraryInputSchema.extend({
-  authorId: z.string().min(1),
+export const getLibraryWorksInputSchema = z.extend(getLibraryInputSchema, {
+  authorId: z.string().check(z.minLength(1)),
 });

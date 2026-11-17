@@ -25,11 +25,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **literature**: GraphQL type for literature search results, present in generated mocks and operations but not yet rebuilt as a page.
 - **material**:
 - **medieval**:
+- **minify**:
 - **neo**:
 - **observer**: Browser IntersectionObserver the reader watches its load-more button with, so the next page loads as it scrolls into view.
 - **perfect**: Verb tense name for the perfect, abbreviated PERF in identifiers and listed among the finite verb tenses.
 - **perseus**:
-- **preprocess**:
 - **presentation**: Shared component library package @codebase/presentation, built on shadcn/ui, supplying Card, Badge, Tabs and Button.
 - **pronunciation**: Spoken form of a lexeme, a list of phonetic variants with their variant label, rendered in the lexeme pronunciations section.
 - **reader**: Route and components that show one text line by line, with a header, font size control, word hint and sibling links.

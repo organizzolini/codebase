@@ -3,7 +3,7 @@ import type {
   getLibraryInputSchema,
   librarySearchSchema,
 } from "./library-grid-api.constants";
-import type { z } from "zod";
+import type * as z from "zod/mini";
 
 // 🏷️ Types
 

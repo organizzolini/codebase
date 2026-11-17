@@ -1,4 +1,3 @@
-import lodash from "lodash";
 import { Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
@@ -12,6 +11,7 @@ import {
 } from "@codebase/presentation";
 
 import { SEARCH_DEBOUNCE_MILLISECONDS } from "./search-bar.constants";
+import { debounce } from "./search-bar.utilities";
 
 import type { ReactNode, SyntheticEvent } from "react";
 
@@ -48,7 +48,7 @@ export function SearchBar(
 
   // 🏗 Setup
   const debouncedSearch = useMemo(
-    () => lodash.debounce(onSearch, SEARCH_DEBOUNCE_MILLISECONDS),
+    () => debounce(onSearch, SEARCH_DEBOUNCE_MILLISECONDS),
     [onSearch],
   );
 

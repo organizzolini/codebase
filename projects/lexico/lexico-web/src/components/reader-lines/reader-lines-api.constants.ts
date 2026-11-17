@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod/mini";
 
 // ♟️ Constants
 
@@ -7,12 +7,14 @@ export const READER_PAGE_SIZE = 50;
 
 /** Validates what getText is called with. */
 export const getTextInputSchema = z.object({
-  after: z.string().optional(),
-  line: z.number().int().nonnegative().optional(),
+  after: z.optional(z.string()),
+  line: z.optional(z.int().check(z.nonnegative())),
   slug: z.string(),
 });
 
 /** Validates the search parameters the reader's URL carries. */
 export const readerSearchSchema = z.object({
-  line: z.coerce.number().int().nonnegative().optional(),
+  line: z.optional(
+    z.coerce.number().check(z.refine(Number.isInteger), z.nonnegative()),
+  ),
 });

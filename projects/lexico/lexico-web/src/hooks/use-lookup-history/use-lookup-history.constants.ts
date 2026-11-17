@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod/mini";
 
 // ♟️ Constants
 
@@ -10,14 +10,14 @@ export const LOOKUP_HISTORY_CAP = 200;
 
 /** One stored word lookup; a missing kind reads as a lookup. */
 export const lookupEntrySchema = z.object({
-  definition: z.string().nullable(),
+  definition: z.nullable(z.string()),
   form: z.string(),
-  kind: z.literal("lookup").default("lookup"),
-  line: z.number().int().nonnegative(),
+  kind: z._default(z.literal("lookup"), "lookup"),
+  line: z.int().check(z.nonnegative()),
   recordedAt: z.number(),
   slug: z.string(),
-  title: z.string().optional(),
-  token: z.number().int().nonnegative(),
+  title: z.optional(z.string()),
+  token: z.int().check(z.nonnegative()),
   word: z.string(),
 });
 
