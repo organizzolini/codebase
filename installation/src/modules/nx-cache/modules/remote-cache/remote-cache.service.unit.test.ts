@@ -6,17 +6,17 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { enterWorkspace } from "../../../testing/environment";
-import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
-import { captureReport } from "../../../testing/report";
-import { createTemporaryWorkspace } from "../../../testing/temporary-workspace";
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
-import { ReporterService } from "../reporter/reporter.service";
+import { enterWorkspace } from "../../../../../testing/environment";
+import { createFakeProcessRunner } from "../../../../../testing/fake-process-runner";
+import { captureReport } from "../../../../../testing/report";
+import { createTemporaryWorkspace } from "../../../../../testing/temporary-workspace";
+import { ProcessRunnerService } from "../../../process-runner/process-runner.service";
+import { ReporterService } from "../../../reporter/reporter.service";
 
 import { RemoteCacheService } from "./remote-cache.service";
 
-import type { FakeMachine } from "../../../testing/fake-process-runner";
-import type { TemporaryWorkspace } from "../../../testing/temporary-workspace";
+import type { FakeMachine } from "../../../../../testing/fake-process-runner";
+import type { TemporaryWorkspace } from "../../../../../testing/temporary-workspace";
 
 const KEY_LINE =
   "linode-cli object-storage keys-create --label my-mac-local-nx-cache-read-only --bucket_access.bucket_name organizzolini-codebase-nx-cache --bucket_access.region us-iad-2 --bucket_access.permissions read_only --json";

@@ -2,11 +2,10 @@ import { Injectable } from "@nestjs/common";
 
 import { LoggerService } from "@codebase/observability";
 
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
-import { ReporterService } from "../reporter/reporter.service";
-
-import { SoftwareBrewService } from "./software-brew.service";
-import { INFRASTRUCTURE_TOOLS } from "./software.constants";
+import { ProcessRunnerService } from "../../../process-runner/process-runner.service";
+import { ReporterService } from "../../../reporter/reporter.service";
+import { INFRASTRUCTURE_TOOLS } from "../../software.constants";
+import { SoftwareBrewService } from "../platform/software-brew.service";
 
 /**
  * Installs the infrastructure and DevOps command-line tools, then prints the

@@ -2,8 +2,8 @@ import { Module } from "@nestjs/common";
 
 import { LoggerModule } from "@codebase/observability";
 
-import { ProcessRunnerModule } from "../process-runner/process-runner.module";
-import { ReporterModule } from "../reporter/reporter.module";
+import { ProcessRunnerModule } from "../../../process-runner/process-runner.module";
+import { ReporterModule } from "../../../reporter/reporter.module";
 
 import { RemoteCacheCommand } from "./remote-cache.command";
 import { RemoteCacheService } from "./remote-cache.service";

@@ -6,9 +6,8 @@ import { Injectable } from "@nestjs/common";
 
 import { LoggerService } from "@codebase/observability";
 
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
-import { ReporterService } from "../reporter/reporter.service";
-
+import { ProcessRunnerService } from "../../../process-runner/process-runner.service";
+import { ReporterService } from "../../../reporter/reporter.service";
 import {
   PGDG_APT_SOURCE_FILE,
   PGDG_KEY_FILE,
@@ -17,7 +16,7 @@ import {
   POSTGRES_APT_BIN_DIRECTORY,
   POSTGRES_APT_PACKAGE,
   POSTGRES_LINKED_TOOLS,
-} from "./software.constants";
+} from "../../software.constants";
 
 /**
  * Installs the database tools: squawk, the PostgreSQL migration linter, and

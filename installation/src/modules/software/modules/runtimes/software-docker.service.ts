@@ -2,10 +2,9 @@ import { Injectable } from "@nestjs/common";
 
 import { LoggerService } from "@codebase/observability";
 
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
-import { ReporterService } from "../reporter/reporter.service";
-
-import { DOCKER_READINESS_ATTEMPTS } from "./software.constants";
+import { ProcessRunnerService } from "../../../process-runner/process-runner.service";
+import { ReporterService } from "../../../reporter/reporter.service";
+import { DOCKER_READINESS_ATTEMPTS } from "../../software.constants";
 
 /**
  * Installs Docker Desktop and makes sure its daemon is running.

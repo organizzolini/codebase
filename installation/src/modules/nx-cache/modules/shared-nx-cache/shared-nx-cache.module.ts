@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 
 import { LoggerModule } from "@codebase/observability";
 
-import { ReporterModule } from "../reporter/reporter.module";
+import { ReporterModule } from "../../../reporter/reporter.module";
 
 import { SharedNxCacheRemoteService } from "./shared-nx-cache-remote.service";
 import { SharedNxCacheServerService } from "./shared-nx-cache-server.service";

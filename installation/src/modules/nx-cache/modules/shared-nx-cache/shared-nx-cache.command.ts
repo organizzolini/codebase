@@ -3,7 +3,7 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { ReporterService } from "../reporter/reporter.service";
+import { ReporterService } from "../../../reporter/reporter.service";
 
 import { SharedNxCacheServerService } from "./shared-nx-cache-server.service";
 import {

@@ -7,15 +7,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
-import { ReleaseArchivesService } from "../release-archives/release-archives.service";
+import { createFakeProcessRunner } from "../../../../../testing/fake-process-runner";
+import { ProcessRunnerService } from "../../../process-runner/process-runner.service";
+import { ReleaseArchivesService } from "../../../release-archives/release-archives.service";
 
 import { SoftwareDatabaseService } from "./software-database.service";
 import { SoftwareNamedService } from "./software-named.service";
 
-import type { FakeMachine } from "../../../testing/fake-process-runner";
-import type { ReleaseArchiveTool } from "../release-archives/release-archives.types";
+import type { FakeMachine } from "../../../../../testing/fake-process-runner";
+import type { ReleaseArchiveTool } from "../../../release-archives/release-archives.types";
 
 const BINARY_DIRECTORY = path.join(os.homedir(), ".local", "bin");
 

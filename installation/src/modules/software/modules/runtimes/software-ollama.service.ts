@@ -2,15 +2,14 @@ import { Injectable } from "@nestjs/common";
 
 import { LoggerService } from "@codebase/observability";
 
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
-import { ReporterService } from "../reporter/reporter.service";
-
-import { SoftwareBrewService } from "./software-brew.service";
+import { ProcessRunnerService } from "../../../process-runner/process-runner.service";
+import { ReporterService } from "../../../reporter/reporter.service";
 import {
   OLLAMA_DEFAULT_MODEL,
   OLLAMA_READINESS_ATTEMPTS,
   OLLAMA_VERSION_ENDPOINT,
-} from "./software.constants";
+} from "../../software.constants";
+import { SoftwareBrewService } from "../platform/software-brew.service";
 
 /**
  * Installs Ollama, makes sure its daemon is running, and pulls the default

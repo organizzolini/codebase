@@ -2,14 +2,13 @@ import { Injectable } from "@nestjs/common";
 
 import { LoggerService } from "@codebase/observability";
 
-import { UV_WORKSPACE_PROJECT_PATH } from "../dependencies/dependencies.constants";
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
-import { RELEASE_ARCHIVE_TOOLS } from "../release-archives/release-archives.constants";
-import { ReleaseArchivesService } from "../release-archives/release-archives.service";
-import { ReporterService } from "../reporter/reporter.service";
-
-import { SoftwareDatabaseService } from "./software-database.service";
-import { SoftwarePythonService } from "./software-python.service";
+import { UV_WORKSPACE_PROJECT_PATH } from "../../../dependencies/dependencies.constants";
+import { ProcessRunnerService } from "../../../process-runner/process-runner.service";
+import { RELEASE_ARCHIVE_TOOLS } from "../../../release-archives/release-archives.constants";
+import { ReleaseArchivesService } from "../../../release-archives/release-archives.service";
+import { ReporterService } from "../../../reporter/reporter.service";
+import { SoftwarePythonService } from "../runtimes/software-python.service";
+import { SoftwareDatabaseService } from "../tooling/software-database.service";
 
 /**
  * Installs the Linux developer tools a commit and the security gate need.

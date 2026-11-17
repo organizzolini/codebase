@@ -7,11 +7,9 @@ import { ConfigService } from "@nestjs/config";
 
 import { LoggerService } from "@codebase/observability";
 
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
-import { RELEASE_ARCHIVE_TOOLS } from "../release-archives/release-archives.constants";
-import { ReleaseArchivesService } from "../release-archives/release-archives.service";
-
-import { SoftwareDatabaseService } from "./software-database.service";
+import { ProcessRunnerService } from "../../../process-runner/process-runner.service";
+import { RELEASE_ARCHIVE_TOOLS } from "../../../release-archives/release-archives.constants";
+import { ReleaseArchivesService } from "../../../release-archives/release-archives.service";
 import {
   ARCHIVE_TOOL_NAMES,
   archiveToolOnMacMessage,
@@ -20,9 +18,11 @@ import {
   POSTGRES_NOT_18_MESSAGE,
   POSTGRES_VERSION_MARKER,
   unknownNamesMessage,
-} from "./software.constants";
+} from "../../software.constants";
 
-import type { SoftwareEnvironment } from "./software.types";
+import { SoftwareDatabaseService } from "./software-database.service";
+
+import type { SoftwareEnvironment } from "../../software.types";
 
 /**
  * Installs just the tools named: any release-archive tool `software` installs (Linux only), or `postgres-client` (Linux and Mac).

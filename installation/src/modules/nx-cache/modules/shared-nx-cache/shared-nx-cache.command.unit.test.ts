@@ -4,7 +4,7 @@ import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { expectLoggerContext } from "@codebase/observability/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { ReporterService } from "../reporter/reporter.service";
+import { ReporterService } from "../../../reporter/reporter.service";
 
 import { SharedNxCacheServerService } from "./shared-nx-cache-server.service";
 import { SharedNxCacheCommand } from "./shared-nx-cache.command";

@@ -2,11 +2,10 @@ import { Injectable } from "@nestjs/common";
 
 import { LoggerService } from "@codebase/observability";
 
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
-import { ReporterService } from "../reporter/reporter.service";
-
-import { SoftwareBrewService } from "./software-brew.service";
-import { PYTHON_VERSION_CHECK } from "./software.constants";
+import { ProcessRunnerService } from "../../../process-runner/process-runner.service";
+import { ReporterService } from "../../../reporter/reporter.service";
+import { PYTHON_VERSION_CHECK } from "../../software.constants";
+import { SoftwareBrewService } from "../platform/software-brew.service";
 
 /**
  * Installs uv and Python 3.14 or newer.

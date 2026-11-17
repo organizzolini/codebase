@@ -15,12 +15,12 @@ import {
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { createTemporaryWorkspace } from "../../../testing/temporary-workspace";
+import { createTemporaryWorkspace } from "../../../../../testing/temporary-workspace";
 
 import { SharedNxCacheStorageService } from "./shared-nx-cache-storage.service";
 import { TEMPORARY_PREFIX } from "./shared-nx-cache.constants";
 
-import type { TemporaryWorkspace } from "../../../testing/temporary-workspace";
+import type { TemporaryWorkspace } from "../../../../../testing/temporary-workspace";
 
 const DAY = 24 * 60 * 60 * 1000;
 

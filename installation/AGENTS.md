@@ -31,19 +31,19 @@ The commands run on Node, so whatever installs Node cannot be one of them. These
 
 Every command spawns processes only through `ProcessRunnerService` and prints only through `ReporterService`, so a test replaces the whole machine with `testing/fake-process-runner.ts` and runs against a real temporary workspace from `testing/temporary-workspace.ts`. That workspace lives under `node_modules`, never the operating system's temporary directory: a child spawned from there cannot resolve this project's loader on Linux.
 
-| Command               | Module                                    |
-| --------------------- | ----------------------------------------- |
-| `setup`               | `modules/setup`                           |
-| `shell-configuration` | `modules/shell-configuration`             |
-| `software`            | `modules/software` (one service per tool) |
-| `environment-files`   | `modules/environment-files`               |
-| `dependencies`        | `modules/dependencies`                    |
-| `local-services`      | `modules/local-services`                  |
-| `update-reui-skill`   | `modules/update-reui-skill`               |
-| `remote-cache`        | `modules/remote-cache`                    |
-| `shared-nx-cache`     | `modules/shared-nx-cache`                 |
+| Command               | Module                                     |
+| --------------------- | ------------------------------------------ |
+| `setup`               | `modules/setup`                            |
+| `shell-configuration` | `modules/shell-configuration`              |
+| `software`            | `modules/software` (one service per tool)  |
+| `environment-files`   | `modules/environment-files`                |
+| `dependencies`        | `modules/dependencies`                     |
+| `local-services`      | `modules/local-services`                   |
+| `update-reui-skill`   | `modules/update-reui-skill`                |
+| `remote-cache`        | `modules/nx-cache/modules/remote-cache`    |
+| `shared-nx-cache`     | `modules/nx-cache/modules/shared-nx-cache` |
 
-`software` with names, such as `software gitleaks trivy postgres-client`, installs only those, through `modules/software/software-named.service.ts`. The names are any tool installed from a release archive (`helm`, `kubectl`, `terraform`, `gitleaks`, `trivy`, `uv`), which only Linux uses, and `postgres-client` (PostgreSQL 18's `pg_dump` and `pg_restore`), which works on both. They are the same installs `software` makes with no names, so a laptop, a devcontainer, and a CI runner run one version of each; the `setup-codebase` composite action runs it this way after `pnpm install`, with the software its inputs ask for. Naming software changes two things: a tool that cannot be installed fails the run instead of warning, since it was asked for, and the apt steps go through `sudo` when this is not root, as on a runner. It puts `~/.local/bin` first on `PATH`, and in `GITHUB_PATH` when that is set. See [ADR 0030](../documentation/adr/0030-let-software-install-named-tools.md).
+`software` with names, such as `software gitleaks trivy postgres-client`, installs only those, through `modules/software/modules/tooling/software-named.service.ts`. The names are any tool installed from a release archive (`helm`, `kubectl`, `terraform`, `gitleaks`, `trivy`, `uv`), which only Linux uses, and `postgres-client` (PostgreSQL 18's `pg_dump` and `pg_restore`), which works on both. They are the same installs `software` makes with no names, so a laptop, a devcontainer, and a CI runner run one version of each; the `setup-codebase` composite action runs it this way after `pnpm install`, with the software its inputs ask for. Naming software changes two things: a tool that cannot be installed fails the run instead of warning, since it was asked for, and the apt steps go through `sudo` when this is not root, as on a runner. It puts `~/.local/bin` first on `PATH`, and in `GITHUB_PATH` when that is set. See [ADR 0030](../documentation/adr/0030-let-software-install-named-tools.md).
 
 From inside Nx (`nx run installation:start:*`), `dependencies` skips `nx reset`, which would delete the workspace data of the Nx process running it; `installation.sh` runs the command with plain `node`, so the reset happens there.
 

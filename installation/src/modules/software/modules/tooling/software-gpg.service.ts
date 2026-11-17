@@ -6,10 +6,9 @@ import { Injectable } from "@nestjs/common";
 
 import { LoggerService } from "@codebase/observability";
 
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
-import { ReporterService } from "../reporter/reporter.service";
-
-import { NO_KEY_INSTRUCTIONS } from "./software.constants";
+import { ProcessRunnerService } from "../../../process-runner/process-runner.service";
+import { ReporterService } from "../../../reporter/reporter.service";
+import { NO_KEY_INSTRUCTIONS } from "../../software.constants";
 
 /**
  * Installs GPG, points gpg-agent at pinentry-mac, and wires Git commit

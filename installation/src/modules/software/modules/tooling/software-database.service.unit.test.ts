@@ -6,13 +6,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
-import { ReporterService } from "../reporter/reporter.service";
+import { createFakeProcessRunner } from "../../../../../testing/fake-process-runner";
+import { ProcessRunnerService } from "../../../process-runner/process-runner.service";
+import { ReporterService } from "../../../reporter/reporter.service";
 
 import { SoftwareDatabaseService } from "./software-database.service";
 
-import type { FakeMachine } from "../../../testing/fake-process-runner";
+import type { FakeMachine } from "../../../../../testing/fake-process-runner";
 import type * as FileSystem from "node:fs";
 
 const files = vi.hoisted(() => ({

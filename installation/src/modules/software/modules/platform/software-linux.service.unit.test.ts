@@ -3,15 +3,15 @@ import { describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
-import { RELEASE_ARCHIVE_TOOLS } from "../release-archives/release-archives.constants";
-import { ReleaseArchivesService } from "../release-archives/release-archives.service";
-import { ReporterService } from "../reporter/reporter.service";
+import { createFakeProcessRunner } from "../../../../../testing/fake-process-runner";
+import { ProcessRunnerService } from "../../../process-runner/process-runner.service";
+import { RELEASE_ARCHIVE_TOOLS } from "../../../release-archives/release-archives.constants";
+import { ReleaseArchivesService } from "../../../release-archives/release-archives.service";
+import { ReporterService } from "../../../reporter/reporter.service";
+import { SoftwarePythonService } from "../runtimes/software-python.service";
+import { SoftwareDatabaseService } from "../tooling/software-database.service";
 
-import { SoftwareDatabaseService } from "./software-database.service";
 import { SoftwareLinuxService } from "./software-linux.service";
-import { SoftwarePythonService } from "./software-python.service";
 
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
