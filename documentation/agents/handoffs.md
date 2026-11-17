@@ -10,7 +10,8 @@ implementation run legitimate. No skill writes it; follow these five rules:
 - **Post it as a comment on the spec issue**, never in a temporary directory —
   the next session cannot be pointed at that, and the next reboot may empty it.
   On the issue, the next session gets the plan, the tickets, and the brief from
-  one link.
+  one link. Link the spec, tickets, ADRs, and commits rather than restating
+  them, and leave out secrets and personal details.
 - **Prescribe the workflow skills, do not suggest them.** A list of skills an
   agent "may find useful" is a list an agent skips. Write a numbered "How to run
   this" section naming each skill in call order:
