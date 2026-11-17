@@ -274,7 +274,7 @@
     "**/.venv/**",
     "**/projects/lexico/lexico-cli/data/**",
     "**/projects/lexico/lexico-cli/src/modules/library/library.constants.ts",
-    "**/projects/lexico/lexico-cli/src/modules/literature/literature.constants.ts",
+    "**/projects/lexico/lexico-cli/src/modules/lexico-ingestion/modules/literature/literature.constants.ts",
     // Generated GraphQL artifacts are consumed via code generation and tests.
     // They are intentionally excluded from static dead-code analysis.
     "**/projects/lexico/lexico-web/src/graphql/generated/**",
@@ -287,7 +287,7 @@
     // entry point by construction. One carries a `tsconfig.json` the compiler is
     // meant to refuse, and another a module that throws the moment it is
     // imported, so neither belongs in a module graph of this repository's code.
-    "**/projects/ic-suite/codependix/codependix-examples/examples/*/*/**",
+    "**/projects/ic-suite/codependix/codependix-examples/examples/*/*/*/**",
     "**/coverage/**",
     "**/data/library/**",
     "**/data/wikipedia/**",

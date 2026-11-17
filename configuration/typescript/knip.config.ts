@@ -237,7 +237,7 @@ const config: KnipConfig = {
     // entry points stops knip concluding the whole package is dead.
     "projects/ic-suite/codometer/codometer-examples": {
       entry: [
-        "codometer.config.ts",
+        "configuration/codometer.config.ts",
         "examples/**/*.config.ts",
         "testing/**/*.ts",
       ],
@@ -248,14 +248,18 @@ const config: KnipConfig = {
       ignoreDependencies: [
         "@swc-node/register", // Named as a string on the command line testing/codometer.ts spawns, never imported
       ],
-      project: ["codometer.config.ts", "examples/**/*.ts", "testing/**/*.ts"],
+      project: [
+        "configuration/codometer.config.ts",
+        "examples/**/*.ts",
+        "testing/**/*.ts",
+      ],
     },
 
     // coinagerie-examples: Fixture projects and the harness that runs the
     // coinagerie command line over them. The fixtures are read for their
     // words, never imported, so knip is told where the entry points really are.
     "projects/ic-suite/coinagerie/coinagerie-examples": {
-      entry: ["codometer.config.ts", "testing/**/*.ts"],
+      entry: ["configuration/codometer.config.ts", "testing/**/*.ts"],
       ignore: ["examples/**"],
       project: ["testing/**/*.ts"],
     },

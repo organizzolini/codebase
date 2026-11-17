@@ -37,7 +37,7 @@ projects/lexico/lexico-cli/data/
 projects/affirmancy/output/
 projects/meanderaw/meanderaw-cli/output/
 projects/lexico/lexico-cli/src/modules/library/library.constants.ts
-projects/lexico/lexico-cli/src/modules/literature/literature.constants.ts
+projects/lexico/lexico-cli/src/modules/lexico-ingestion/modules/literature/literature.constants.ts
 **/library.json
 
 # 📓 Scratch notes and generator templates
