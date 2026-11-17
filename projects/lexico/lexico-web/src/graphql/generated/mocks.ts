@@ -951,6 +951,11 @@ export type WordLexemeEdge = {
   node: WordLexeme;
 };
 
+export type LibraryFacetsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LibraryFacetsQuery = { libraryFacets: { provinces: Array<{ value: string, count: number }>, inscriptionTypes: Array<{ value: string, count: number }>, materials: Array<{ value: string, count: number }> } };
+
 export type LibraryQueryVariables = Exact<{
   search?: string | null | undefined;
   filters?: Schema.LibraryFilters | null | undefined;
@@ -1026,6 +1031,27 @@ export type WordCandidatesQueryVariables = Exact<{
 
 export type WordCandidatesQuery = { wordCandidates: Array<{ definition: string | null, description: string, lemma: string, lexemeId: string, partOfSpeech: string }> };
 
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockLibraryFacetsQuery(
+ *   ({ query, variables }) => {
+ *     return HttpResponse.json({
+ *       data: { libraryFacets }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockLibraryFacetsQuery = (resolver: GraphQLResponseResolver<LibraryFacetsQuery, LibraryFacetsQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<LibraryFacetsQuery, LibraryFacetsQueryVariables>(
+    'LibraryFacets',
+    resolver,
+    options
+  )
 
 /**
  * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))

@@ -48,7 +48,7 @@ export function LibrarySearch(
       data-testid="library-search"
     >
       <form
-        className="flex flex-wrap items-end gap-2"
+        className="flex items-center gap-2"
         onSubmit={handleSubmit}
         role="search"
       >
@@ -59,7 +59,7 @@ export function LibrarySearch(
           Search the library
         </Label>
         <Input
-          className="max-w-md flex-1"
+          className="min-w-0 flex-1"
           id="library-search"
           onChange={(event) => {
             setDraft(event.target.value);

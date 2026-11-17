@@ -10,67 +10,30 @@ import { LibrarySort } from "./library-sort";
 
 import type { LibrarySortProperties } from "./library-sort";
 
-type LibrarySortHandler = LibrarySortProperties["onSort"];
-
 describe(LibrarySort, () => {
   it("applies its class name", () => {
     render(
       <LibrarySort
         className="library-sort"
-        onSort={vi.fn<LibrarySortHandler>()}
+        onSort={vi.fn<LibrarySortProperties["onSort"]>()}
       />,
     );
 
     expect(screen.getByTestId("library-sort").className).toBe("library-sort");
   });
 
-  it("reports the attribute picked, keeping the direction", () => {
-    const onSort = vi.fn<LibrarySortHandler>();
-    render(
-      <LibrarySort
-        direction={LibrarySortDirection.Desc}
-        onSort={onSort}
-      />,
+  it("chooses an attribute, ascending by default", async () => {
+    const onSort = vi.fn<LibrarySortProperties["onSort"]>();
+    render(<LibrarySort onSort={onSort} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Sort" }));
+    fireEvent.click(
+      await screen.findByRole("menuitemradio", { name: "Author era" }),
     );
-    fireEvent.change(screen.getByLabelText("Sort by"), {
-      target: { value: LibrarySortField.AuthorName },
-    });
 
     expect(onSort).toHaveBeenCalledWith(
-      LibrarySortField.AuthorName,
-      LibrarySortDirection.Desc,
+      LibrarySortField.AuthorEra,
+      LibrarySortDirection.Asc,
     );
-  });
-
-  it("disables the direction until an attribute is picked", () => {
-    render(<LibrarySort onSort={vi.fn<LibrarySortHandler>()} />);
-
-    expect(screen.getByLabelText<HTMLSelectElement>("Direction").disabled).toBe(
-      true,
-    );
-  });
-
-  it("reports the default order when the attribute is cleared", () => {
-    const onSort = vi.fn<LibrarySortHandler>();
-    render(
-      <LibrarySort
-        onSort={onSort}
-        sort={LibrarySortField.AuthorName}
-      />,
-    );
-    fireEvent.change(screen.getByLabelText("Sort by"), {
-      target: { value: "" },
-    });
-
-    expect(onSort).toHaveBeenCalledWith(undefined, undefined);
-  });
-
-  it("shows no direction while no attribute is picked", () => {
-    render(<LibrarySort onSort={vi.fn<LibrarySortHandler>()} />);
-
-    const select = screen.getByLabelText<HTMLSelectElement>("Direction");
-
-    expect(select.value).toBe("");
-    expect(select.selectedOptions[0]?.textContent).not.toBe("Ascending");
   });
 });

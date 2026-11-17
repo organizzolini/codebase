@@ -1,0 +1,16 @@
+query LibraryFacets {
+  libraryFacets {
+    provinces {
+      value
+      count
+    }
+    inscriptionTypes {
+      value
+      count
+    }
+    materials {
+      value
+      count
+    }
+  }
+}

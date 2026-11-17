@@ -1,7 +1,4 @@
-import {
-  LibrarySortDirection,
-  LibrarySortField,
-} from "../../graphql/generated/operations";
+import { LibrarySortField } from "../../graphql/generated/operations";
 
 // ♟️ Constants
 
@@ -34,10 +31,7 @@ export const LIBRARY_SORT_FIELDS = new Map<string, LibrarySortField>(
   LIBRARY_SORT_OPTIONS.map(({ field }) => [field, field]),
 );
 
-/** Each direction by the string a select reports for it. */
-export const LIBRARY_SORT_DIRECTIONS = new Map<string, LibrarySortDirection>(
-  Object.values(LibrarySortDirection).map((direction) => [
-    direction,
-    direction,
-  ]),
+/** Each attribute's wording, by field. */
+export const LIBRARY_SORT_LABELS = new Map<LibrarySortField, string>(
+  LIBRARY_SORT_OPTIONS.map(({ field, label }) => [field, label]),
 );

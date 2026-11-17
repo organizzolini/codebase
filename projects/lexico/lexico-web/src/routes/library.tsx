@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { LibraryFilters } from "../components/library-filters/library-filters";
 import { LibraryGrid } from "../components/library-grid/library-grid";
 import { librarySearchSchema } from "../components/library-grid/library-grid-api.constants";
 import { getLibrary } from "../components/library-grid/library-grid.constants";
@@ -8,8 +7,8 @@ import { LibraryNoResults } from "../components/library-no-results/library-no-re
 import { LibraryPagination } from "../components/library-pagination/library-pagination";
 import { isPastEnd } from "../components/library-pagination/library-pagination.utilities";
 import { LibraryPastEnd } from "../components/library-past-end/library-past-end";
-import { LibrarySearch } from "../components/library-search/library-search";
-import { LibrarySort } from "../components/library-sort/library-sort";
+import { LibraryToolbar } from "../components/library-toolbar/library-toolbar";
+import { getLibraryFacets } from "../components/library-toolbar/library-toolbar-api.constants";
 
 import type {
   GetLibraryInput,
@@ -37,8 +36,14 @@ export const Route = createFileRoute("/library")({
       ],
     };
   },
-  loader: async ({ deps }: { deps: GetLibraryInput }) =>
-    getLibrary({ data: deps }),
+  loader: async ({ deps }: { deps: GetLibraryInput }) => {
+    const [facets, library] = await Promise.all([
+      getLibraryFacets(),
+      getLibrary({ data: deps }),
+    ]);
+
+    return { facets, library };
+  },
   loaderDeps: ({ search }: { search: LibrarySearchParameters }) => ({
     ...search,
     page: search.page ?? 1,
@@ -50,7 +55,7 @@ export const Route = createFileRoute("/library")({
 // 🧩 Component
 
 /**
- * The library page: a search box over a masonry grid of authors, with
+ * The library page: a toolbar of search, filters, and sort over a masonry grid of authors, with
  * numbered pages beneath.
  */
 function LibraryPage(): ReactNode {
@@ -63,7 +68,7 @@ function LibraryPage(): ReactNode {
     sort,
     ...filters
   } = Route.useSearch();
-  const library = Route.useLoaderData();
+  const { facets, library } = Route.useLoaderData();
 
   // 🏗 Setup
   const hasFilters = Object.values(filters).some(
@@ -91,6 +96,9 @@ function LibraryPage(): ReactNode {
         ...next,
       }),
     });
+  };
+  const handleReset = (): void => {
+    void navigate({ search: (previous) => ({ search: previous.search }) });
   };
   const handleSort = (
     nextSort: typeof sort,
@@ -122,22 +130,15 @@ function LibraryPage(): ReactNode {
   return (
     <section className="space-y-6">
       <h1 className="text-3xl font-bold">Library</h1>
-      <LibrarySearch
-        key={search}
-        onSearch={handleSearch}
-        search={search}
-      />
-      <LibraryFilters
-        key={JSON.stringify(filters)}
-        filters={filters}
-        onApply={handleFilters}
-        onReset={() => {
-          handleFilters({});
-        }}
-      />
-      <LibrarySort
+      <LibraryToolbar
         direction={direction}
+        facets={facets}
+        filters={filters}
+        onFilters={handleFilters}
+        onReset={handleReset}
+        onSearch={handleSearch}
         onSort={handleSort}
+        search={search}
         sort={sort}
       />
       {library.totalCount === 0 ? (

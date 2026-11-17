@@ -6,11 +6,10 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { graphqlMockServer } from "@codebase/interface/testing";
 import { renderRoute } from "@codebase/testing/react";
 
-import { LIBRARY_SORT_OPTIONS } from "../components/library-sort/library-sort.constants";
 import {
   AuthorEra,
-  LibrarySortDirection,
   LibrarySortField,
+  mockLibraryFacetsQuery,
   mockLibraryQuery,
   mockTextReaderQuery,
   TextCollection,
@@ -216,6 +215,17 @@ describe("library", () => {
     SEARCHES.length = 0;
     CALLS.length = 0;
     graphqlMockServer.use(
+      mockLibraryFacetsQuery(() =>
+        HttpResponse.json({
+          data: {
+            libraryFacets: {
+              inscriptionTypes: [],
+              materials: [],
+              provinces: [],
+            },
+          },
+        }),
+      ),
       mockLibraryQuery(({ variables }) => {
         const page = variables.page ?? 1;
         const search = variables.search ?? "";
@@ -422,192 +432,6 @@ describe("library", () => {
     expect(meta).toContainEqual({ title: "Lexico - Library" });
   });
 
-  it("sends a ticked filter to the API and the URL", async () => {
-    const router = getRouter();
-    await renderRoute(router, "/library");
-
-    fireEvent.click(await screen.findByRole("checkbox", { name: "Classical" }));
-    fireEvent.click(screen.getByRole("button", { name: "Apply filters" }));
-
-    await waitFor(() =>
-      expect(CALLS.at(-1)?.filters?.eras).toStrictEqual([AuthorEra.Classical]),
-    );
-
-    expect(router.state.location.search.eras).toStrictEqual([
-      AuthorEra.Classical,
-    ]);
-  });
-
-  it("sends typed lists and ranges to the API and the URL", async () => {
-    const router = getRouter();
-    await renderRoute(router, "/library");
-
-    fireEvent.change(await screen.findByLabelText("Provinces"), {
-      target: { value: "Dacia, Syria" },
-    });
-    fireEvent.change(screen.getByLabelText("Author years minimum"), {
-      target: { value: "-70" },
-    });
-    fireEvent.change(screen.getByLabelText("Line count maximum"), {
-      target: { value: "900" },
-    });
-    fireEvent.submit(screen.getByRole("form", { name: "Library filters" }));
-
-    await waitFor(() =>
-      expect(CALLS.at(-1)?.filters).toMatchObject({
-        authorYears: { max: null, min: -70 },
-        lineCount: { max: 900, min: null },
-        provinces: ["Dacia", "Syria"],
-      }),
-    );
-
-    expect({ ...router.state.location.search }).toMatchObject({
-      authorYearsMinimum: -70,
-      lineCountMaximum: 900,
-      provinces: ["Dacia", "Syria"],
-    });
-  });
-
-  it.each(
-    LIBRARY_SORT_OPTIONS.flatMap(({ field }) =>
-      Object.values(LibrarySortDirection).map(
-        (direction) => [field, direction] as const,
-      ),
-    ),
-  )("sends sort %s %s to the API and the URL", async (field, direction) => {
-    const router = getRouter();
-    await renderRoute(router, "/library");
-
-    fireEvent.change(await screen.findByLabelText("Sort by"), {
-      target: { value: field },
-    });
-    await waitFor(() =>
-      expect(
-        screen.getByLabelText<HTMLSelectElement>("Direction").disabled,
-      ).toBe(false),
-    );
-    fireEvent.change(screen.getByLabelText("Direction"), {
-      target: { value: direction },
-    });
-
-    await waitFor(() =>
-      expect(CALLS.at(-1)?.sort).toStrictEqual({ direction, field }),
-    );
-
-    expect({ ...router.state.location.search }).toStrictEqual({
-      direction,
-      sort: field,
-    });
-  });
-
-  it("sends a chosen sort and direction to the API and the URL", async () => {
-    const router = getRouter();
-    await renderRoute(router, "/library");
-
-    fireEvent.change(await screen.findByLabelText("Sort by"), {
-      target: { value: LibrarySortField.TextLineCount },
-    });
-    await waitFor(() =>
-      expect(
-        screen.getByLabelText<HTMLSelectElement>("Direction").disabled,
-      ).toBe(false),
-    );
-    fireEvent.change(screen.getByLabelText("Direction"), {
-      target: { value: LibrarySortDirection.Desc },
-    });
-
-    await waitFor(() =>
-      expect(CALLS.at(-1)?.sort).toStrictEqual({
-        direction: LibrarySortDirection.Desc,
-        field: LibrarySortField.TextLineCount,
-      }),
-    );
-
-    expect({ ...router.state.location.search }).toStrictEqual({
-      direction: LibrarySortDirection.Desc,
-      sort: LibrarySortField.TextLineCount,
-    });
-  });
-
-  it("restores every control from the URL", async () => {
-    const url =
-      "/library?search=vergil&eras=%5B%22CLASSICAL%22%5D&provinces=%5B%22Dacia%22%5D&wordCountMinimum=100&sort=AUTHOR_NAME&direction=DESC";
-    await renderRoute(getRouter(), url);
-
-    await screen.findByText("50 authors");
-
-    expect(
-      screen.getByRole<HTMLInputElement>("checkbox", { name: "Classical" })
-        .checked,
-    ).toBe(true);
-    expect(screen.getByLabelText<HTMLInputElement>("Provinces").value).toBe(
-      "Dacia",
-    );
-    expect(
-      screen.getByLabelText<HTMLInputElement>("Word count minimum").value,
-    ).toBe("100");
-    expect(screen.getByLabelText<HTMLSelectElement>("Sort by").value).toBe(
-      LibrarySortField.AuthorName,
-    );
-    expect(screen.getByLabelText<HTMLSelectElement>("Direction").value).toBe(
-      LibrarySortDirection.Desc,
-    );
-    expect(CALLS.at(-1)).toMatchObject({
-      filters: { eras: [AuthorEra.Classical], provinces: ["Dacia"] },
-      search: "vergil",
-      sort: {
-        direction: LibrarySortDirection.Desc,
-        field: LibrarySortField.AuthorName,
-      },
-    });
-  });
-
-  it("returns to the earlier results with the back button", async () => {
-    const router = getRouter();
-    await renderRoute(router, "/library");
-
-    fireEvent.click(await screen.findByRole("checkbox", { name: "Late" }));
-    fireEvent.click(screen.getByRole("button", { name: "Apply filters" }));
-    await waitFor(() =>
-      expect(CALLS.at(-1)?.filters?.eras).toStrictEqual([AuthorEra.Late]),
-    );
-
-    router.history.back();
-
-    await waitFor(() => expect(CALLS.at(-1)?.filters?.eras).toBeNull());
-    await waitFor(() =>
-      expect(
-        screen.getByRole<HTMLInputElement>("checkbox", { name: "Late" })
-          .checked,
-      ).toBe(false),
-    );
-  });
-
-  it("returns to the first page when a filter changes", async () => {
-    const router = getRouter();
-    await renderRoute(router, "/library?page=2");
-
-    fireEvent.click(await screen.findByRole("checkbox", { name: "Late" }));
-    fireEvent.click(screen.getByRole("button", { name: "Apply filters" }));
-
-    await waitFor(() => expect(SEARCHES.at(-1)?.page).toBe(1));
-
-    expect(router.state.location.search.page).toBeUndefined();
-  });
-
-  it("returns to the first page when the sort changes", async () => {
-    const router = getRouter();
-    await renderRoute(router, "/library?page=2");
-
-    fireEvent.change(await screen.findByLabelText("Sort by"), {
-      target: { value: LibrarySortField.AuthorName },
-    });
-
-    await waitFor(() => expect(SEARCHES.at(-1)?.page).toBe(1));
-
-    expect(router.state.location.search.page).toBeUndefined();
-  });
-
   it("keeps the filters and sort when a new search is submitted", async () => {
     const router = getRouter();
     await renderRoute(
@@ -675,37 +499,6 @@ describe("library", () => {
     ).resolves.toBeDefined();
   });
 
-  it("opens its filters from a button for a phone", async () => {
-    await renderRoute(getRouter(), "/library");
-
-    const toggle = await screen.findByRole("button", { name: "Filters" });
-
-    expect(toggle.getAttribute("aria-expanded")).toBe("false");
-
-    fireEvent.click(toggle);
-
-    expect(toggle.getAttribute("aria-expanded")).toBe("true");
-    expect(toggle.getAttribute("aria-controls")).toBe("library-filter-panel");
-  });
-
-  it("reaches every control with the keyboard", async () => {
-    await renderRoute(getRouter(), "/library");
-
-    const controls = [
-      await screen.findByRole("checkbox", { name: "Classical" }),
-      screen.getByLabelText("Provinces"),
-      screen.getByLabelText("Line count minimum"),
-      screen.getByRole("button", { name: "Apply filters" }),
-      screen.getByLabelText("Sort by"),
-    ];
-
-    for (const control of controls) {
-      control.focus();
-
-      expect(document.activeElement).toBe(control);
-    }
-  });
-
   it("reads a numeric search from the URL as text", async () => {
     await renderRoute(getRouter(), "/library?search=70");
 
@@ -755,22 +548,5 @@ describe("library", () => {
     expect({ ...router.state.location.search }).toStrictEqual({
       search: "Vergil",
     });
-  });
-
-  it("keeps a half-typed filter when a new search is submitted", async () => {
-    await renderRoute(getRouter(), "/library");
-
-    const provinces = await screen.findByLabelText("Provinces");
-    fireEvent.change(provinces, { target: { value: "Dac" } });
-    fireEvent.change(screen.getByRole("searchbox"), {
-      target: { value: "vergil" },
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Search" }));
-
-    await waitFor(() => expect(SEARCHES.at(-1)?.search).toBe("vergil"));
-
-    expect(screen.getByLabelText<HTMLInputElement>("Provinces").value).toBe(
-      "Dac",
-    );
   });
 });

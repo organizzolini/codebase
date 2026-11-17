@@ -1,9 +1,19 @@
-import { Label } from "@codebase/presentation";
+import { ArrowDownUp } from "lucide-react";
+
+import {
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@codebase/presentation";
 
 import { LibrarySortDirection } from "../../graphql/generated/operations";
 
 import {
-  LIBRARY_SORT_DIRECTIONS,
   LIBRARY_SORT_FIELDS,
   LIBRARY_SORT_OPTIONS,
 } from "./library-sort.constants";
@@ -19,18 +29,14 @@ import type { ReactNode } from "react";
 export interface LibrarySortProperties {
   className?: string;
   direction?: LibrarySortDirection | undefined;
-  onSort: (
-    sort: LibrarySortField | undefined,
-    direction: LibrarySortDirection | undefined,
-  ) => void;
+  onSort: (sort?: LibrarySortField, direction?: LibrarySortDirection) => void;
   sort?: LibrarySortField | undefined;
 }
 
 // 🧩 Component
 
 /**
- * The library's sort control: an attribute to order by and a direction. The
- * URL owns both, so the selects only report a change.
+ * The Sort button and its menu of attributes. The API orders by one attribute, so choosing another replaces it, keeping the direction.
  */
 export function LibrarySort(
   properties: Readonly<LibrarySortProperties>,
@@ -42,11 +48,11 @@ export function LibrarySort(
   // 🏗 Setup
 
   // 💪 Handlers
-  const handleField = (value: string): void => {
-    onSort(LIBRARY_SORT_FIELDS.get(value), direction);
-  };
-  const handleDirection = (value: string): void => {
-    onSort(sort, LIBRARY_SORT_DIRECTIONS.get(value));
+  const handleChange = (value: string): void => {
+    onSort(
+      LIBRARY_SORT_FIELDS.get(value),
+      direction ?? LibrarySortDirection.Asc,
+    );
   };
 
   // ♻️ Lifecycle
@@ -59,52 +65,40 @@ export function LibrarySort(
       className={className}
       data-testid="library-sort"
     >
-      <div className="flex flex-wrap items-end gap-2">
-        <div className="space-y-1">
-          <Label htmlFor="library-sort-field">Sort by</Label>
-          <select
-            className="h-9 rounded-md border border-input bg-background px-2 text-sm"
-            id="library-sort-field"
-            onChange={(event) => {
-              handleField(event.target.value);
-            }}
-            value={sort ?? ""}
-          >
-            <option value="">Default order</option>
-            {LIBRARY_SORT_OPTIONS.map((option) => (
-              <option
-                key={option.field}
-                value={option.field}
-              >
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="space-y-1">
-          <Label htmlFor="library-sort-direction">Direction</Label>
-          <select
-            className="h-9 rounded-md border border-input bg-background px-2 text-sm"
-            disabled={sort === undefined}
-            id="library-sort-direction"
-            onChange={(event) => {
-              handleDirection(event.target.value);
-            }}
-            value={
-              sort === undefined ? "" : (direction ?? LibrarySortDirection.Asc)
-            }
-          >
-            <option
-              value=""
-              disabled
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              type="button"
+              variant="outline"
+            />
+          }
+        >
+          <ArrowDownUp aria-hidden="true" />
+          Sort
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="end"
+          className="max-h-96 w-60"
+        >
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>Sort by</DropdownMenuLabel>
+            <DropdownMenuRadioGroup
+              onValueChange={handleChange}
+              value={sort ?? ""}
             >
-              None
-            </option>
-            <option value={LibrarySortDirection.Asc}>Ascending</option>
-            <option value={LibrarySortDirection.Desc}>Descending</option>
-          </select>
-        </div>
-      </div>
+              {LIBRARY_SORT_OPTIONS.map(({ field, label }) => (
+                <DropdownMenuRadioItem
+                  key={field}
+                  value={field}
+                >
+                  {label}
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

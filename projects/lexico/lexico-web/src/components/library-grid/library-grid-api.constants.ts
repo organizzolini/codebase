@@ -47,6 +47,9 @@ export const libraryFilterShape = {
   wordCountMinimum: bound,
 };
 
+/** Validates the filters alone, dropping each bad one. */
+export const libraryFilterSchema = z.object(libraryFilterShape);
+
 /** Validates the search parameters the library URL carries; a bad value falls back to its default. */
 export const librarySearchSchema = z.object({
   ...libraryFilterShape,
