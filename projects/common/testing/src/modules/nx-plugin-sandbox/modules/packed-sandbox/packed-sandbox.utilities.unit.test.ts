@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { startVerdaccioPluginRunner } from "../nx-plugin-sandbox/nx-plugin-sandbox.utilities";
+import { startVerdaccioPluginRunner } from "../../nx-plugin-sandbox.utilities";
 import { createTarballSandboxRunner } from "../tarball-sandbox/tarball-sandbox.utilities";
 
 import {
@@ -9,10 +9,10 @@ import {
   usePackedSandbox,
 } from "./packed-sandbox.utilities";
 
-import type { Command } from "../command/command.types";
-import type { VerdaccioPluginRunner } from "../nx-plugin-sandbox/nx-plugin-sandbox.types";
+import type { Command } from "../../../command/command.types";
+import type { VerdaccioPluginRunner } from "../../nx-plugin-sandbox.types";
 
-vi.mock("../nx-plugin-sandbox/nx-plugin-sandbox.utilities");
+vi.mock("../../nx-plugin-sandbox.utilities");
 vi.mock("../tarball-sandbox/tarball-sandbox.utilities");
 
 const NOT_STARTED = "read before its suite started";

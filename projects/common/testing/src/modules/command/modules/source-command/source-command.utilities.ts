@@ -1,4 +1,4 @@
-import { createCommand } from "../command/command.utilities";
+import { createCommand } from "../../command.utilities";
 
 import type {
   SourceCommandOptions,

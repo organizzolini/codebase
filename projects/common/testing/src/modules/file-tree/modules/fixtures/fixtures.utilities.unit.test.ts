@@ -4,7 +4,7 @@ import { pathToFileURL } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { createTemporaryDirectory } from "../temporary-directory/temporary-directory.utilities";
+import { createTemporaryDirectory } from "../../../temporary-directory/temporary-directory.utilities";
 
 import { loadFixture } from "./fixtures.utilities";
 

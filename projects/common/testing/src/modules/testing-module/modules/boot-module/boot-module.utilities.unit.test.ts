@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 import { describe, expect, it } from "vitest";
 
-import { SampleGreeterService } from "../../../testing/fixtures/sample-greeter.service";
-import { SampleLifecycleModule } from "../../../testing/fixtures/sample-lifecycle.module";
-import { SampleLifecycleService } from "../../../testing/fixtures/sample-lifecycle.service";
+import { SampleGreeterService } from "../../../../../testing/fixtures/sample-greeter.service";
+import { SampleLifecycleModule } from "../../../../../testing/fixtures/sample-lifecycle.module";
+import { SampleLifecycleService } from "../../../../../testing/fixtures/sample-lifecycle.service";
 
 import { bootModule } from "./boot-module.utilities";
 

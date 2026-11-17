@@ -2,13 +2,13 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { REPORT_PROCESS_ENTRY } from "../../../testing/fixtures/report-process.main";
+import { REPORT_PROCESS_ENTRY } from "../../../../../testing/fixtures/report-process.main";
 
 import { runSourceCommand } from "./source-command.utilities";
 
 // 🧪 Tests
 
-const PACKAGE_DIRECTORY = path.resolve(import.meta.dirname, "../../..");
+const PACKAGE_DIRECTORY = path.resolve(import.meta.dirname, "../../../../..");
 const ENTRY = REPORT_PROCESS_ENTRY;
 
 describe(runSourceCommand, () => {

@@ -3,10 +3,10 @@ import path from "node:path";
 
 import { afterAll, beforeAll } from "vitest";
 
-import { startVerdaccioPluginRunner } from "../nx-plugin-sandbox/nx-plugin-sandbox.utilities";
+import { startVerdaccioPluginRunner } from "../../nx-plugin-sandbox.utilities";
 import { createTarballSandboxRunner } from "../tarball-sandbox/tarball-sandbox.utilities";
 
-import type { VerdaccioPluginRunner } from "../nx-plugin-sandbox/nx-plugin-sandbox.types";
+import type { VerdaccioPluginRunner } from "../../nx-plugin-sandbox.types";
 import type { TarballSandboxRunner } from "../tarball-sandbox/tarball-sandbox.types";
 import type {
   PackedRegistry,

@@ -1,4 +1,4 @@
-import type { Command } from "../command/command.types";
+import type { Command } from "../../../command/command.types";
 
 /** The fields of a tarball's `package.json` the sandbox reads. */
 export interface Manifest {

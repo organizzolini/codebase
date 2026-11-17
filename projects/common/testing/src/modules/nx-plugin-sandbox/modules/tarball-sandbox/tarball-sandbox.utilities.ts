@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { createCommand } from "../command/command.utilities";
-import { makeDirectory } from "../temporary-directory/temporary-directory.utilities";
+import { createCommand } from "../../../command/command.utilities";
+import { makeDirectory } from "../../../temporary-directory/temporary-directory.utilities";
 
 import {
   SANDBOX_INSTALL_TIMEOUT_MS,

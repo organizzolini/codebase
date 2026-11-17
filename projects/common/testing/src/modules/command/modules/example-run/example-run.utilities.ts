@@ -3,8 +3,8 @@ import path from "node:path";
 
 import { onTestFinished } from "vitest";
 
-import { writeFileTree } from "../file-tree/file-tree.utilities";
-import { makeDirectory } from "../temporary-directory/temporary-directory.utilities";
+import { writeFileTree } from "../../../file-tree/file-tree.utilities";
+import { makeDirectory } from "../../../temporary-directory/temporary-directory.utilities";
 
 import type { GuideGapOptions, StageExampleOptions } from "./example-run.types";
 

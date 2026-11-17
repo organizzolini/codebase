@@ -3,7 +3,7 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { createFileTree } from "../file-tree/file-tree.utilities";
+import { createFileTree } from "../../../file-tree/file-tree.utilities";
 
 import {
   findGuideGaps,

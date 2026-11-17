@@ -1,5 +1,5 @@
-import type { Command, CommandResult } from "../command/command.types";
-import type { VerdaccioPluginRunner } from "../nx-plugin-sandbox/nx-plugin-sandbox.types";
+import type { Command, CommandResult } from "../../../command/command.types";
+import type { VerdaccioPluginRunner } from "../../nx-plugin-sandbox.types";
 import type {
   TarballSandboxOptions,
   TarballSandboxRunner,

@@ -17,7 +17,7 @@ export {
   createFileTree,
   writeFileTree,
 } from "./modules/file-tree/file-tree.utilities";
-export { loadFixture } from "./modules/fixtures/fixtures.utilities";
+export { loadFixture } from "./modules/file-tree/modules/fixtures/fixtures.utilities";
 export { promptsMock } from "./modules/mocks/mocks.constants";
 export type {
   ChildProcessMock,
@@ -35,9 +35,9 @@ export {
   processFailure,
   stubFetch,
 } from "./modules/mocks/mocks.utilities";
+export { useWorkingDirectory } from "./modules/temporary-directory/modules/working-directory/working-directory.utilities";
 export { TEMPORARY_DIRECTORY_PREFIX } from "./modules/temporary-directory/temporary-directory.constants";
 export {
   createTemporaryDirectory,
   useTemporaryDirectory,
 } from "./modules/temporary-directory/temporary-directory.utilities";
-export { useWorkingDirectory } from "./modules/working-directory/working-directory.utilities";

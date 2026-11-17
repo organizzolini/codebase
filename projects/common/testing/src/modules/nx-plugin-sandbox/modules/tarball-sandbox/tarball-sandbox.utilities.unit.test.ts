@@ -3,8 +3,8 @@ import path from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
-import { createFixtureTarball } from "../../../testing/tarball-fixture";
-import { createTemporaryDirectory } from "../temporary-directory/temporary-directory.utilities";
+import { createFixtureTarball } from "../../../../../testing/tarball-fixture";
+import { createTemporaryDirectory } from "../../../temporary-directory/temporary-directory.utilities";
 
 import {
   createTarballSandboxRunner,
