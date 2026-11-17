@@ -13,7 +13,6 @@ import { createTemporaryWorkspace } from "../../../testing/temporary-workspace";
 import { DependenciesService } from "../dependencies/dependencies.service";
 import { EnvironmentFilesService } from "../environment-files/environment-files.service";
 import { LocalServicesService } from "../local-services/local-services.service";
-import { RemoteCacheService } from "../nx-cache/modules/remote-cache/remote-cache.service";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { ReleaseArchivesService } from "../release-archives/release-archives.service";
 import { ReporterService } from "../reporter/reporter.service";
@@ -29,6 +28,7 @@ import { SoftwareInfraService } from "../software/modules/tooling/software-infra
 import { SoftwareService } from "../software/software.service";
 import { SshSigningService } from "../ssh-signing/ssh-signing.service";
 
+import { RemoteCacheService } from "./modules/remote-cache/remote-cache.service";
 import { SetupCommand } from "./setup.command";
 import { SetupService } from "./setup.service";
 
