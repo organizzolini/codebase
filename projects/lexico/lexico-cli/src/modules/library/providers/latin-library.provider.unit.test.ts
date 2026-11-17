@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
 import * as cheerio from "cheerio";
@@ -15,6 +15,7 @@ import type { AnyNode } from "domhandler";
 
 const mkdirMock = vi.mocked(mkdir);
 const readFileMock = vi.mocked(readFile);
+const statMock = vi.mocked(stat);
 const writeFileMock = vi.mocked(writeFile);
 
 vi.mock("node:fs/promises", async () => {
@@ -987,6 +988,101 @@ describe(LatinLibraryProvider, () => {
       expect.stringContaining("data/latin-library-source/authors/index.html"),
       "utf8",
     );
+  });
+
+  it("should read index.html when a cached source path is a directory", async () => {
+    statMock.mockResolvedValue({ isDirectory: () => true } as never);
+    readFileMock.mockResolvedValue("<html></html>");
+
+    await (
+      latinLibraryProvider as unknown as {
+        readSourceCacheFile: (
+          urlString: string,
+          host: string,
+        ) => Promise<string>;
+      }
+    ).readSourceCacheFile(
+      "https://www.thelatinlibrary.com/addison",
+      "https://www.thelatinlibrary.com/",
+    );
+
+    expect(readFileMock).toHaveBeenCalledWith(
+      expect.stringContaining("data/latin-library-source/addison/index.html"),
+      "utf8",
+    );
+  });
+
+  it("should resolve links on a directory-style author page against that directory", async () => {
+    const author = new Author();
+    author.name = "Addison";
+    author.metadata = { nickname: "addison", sourceUrl: "addison" };
+    author.slug = "addison";
+    author.texts = [];
+
+    vi.spyOn(
+      latinLibraryProvider as unknown as {
+        readSourceCacheFile: (
+          urlString: string,
+          host: string,
+        ) => Promise<string>;
+      },
+      "readSourceCacheFile",
+    ).mockResolvedValue("<html><body></body></html>");
+    latinLibraryBuilder.extractAuthorPageMetadata = vi
+      .fn<(...parameters: unknown[]) => unknown>()
+      .mockReturnValue({}) as never;
+    const collectAuthorTextsSpy = vi
+      .spyOn(
+        latinLibraryProvider as unknown as {
+          collectAuthorTexts: (
+            authorToCollect: Author,
+            cheerioApi: cheerio.CheerioAPI,
+            authorUrlObject: URL,
+          ) => void;
+        },
+        "collectAuthorTexts",
+      )
+      .mockImplementation(() => {});
+
+    await (
+      latinLibraryProvider as unknown as {
+        processAuthorPage: (
+          authorToProcess: Author,
+          host: string,
+        ) => Promise<void>;
+      }
+    ).processAuthorPage(author, "https://www.thelatinlibrary.com/");
+
+    expect(collectAuthorTextsSpy).toHaveBeenCalledWith(
+      author,
+      expect.anything(),
+      expect.objectContaining({ pathname: "/addison/" }),
+    );
+  });
+
+  it("should keep every written path segment short when the title and book are very long", async () => {
+    const heading = "Liber ".repeat(80).trim();
+
+    await (
+      latinLibraryProvider as unknown as {
+        saveWorkTextMarkdown: (arguments_: {
+          authorPath: string;
+          markdown: string;
+          work: Text;
+          workBook: string | undefined;
+        }) => Promise<void>;
+      }
+    ).saveWorkTextMarkdown({
+      authorPath: "data/library/thelatinlibrary/augustine",
+      markdown: "x",
+      work: Object.assign(new Text(), { title: heading }),
+      workBook: heading,
+    });
+
+    const writtenPath = writeFileMock.mock.calls.at(-1)?.[0] as string;
+    const segments = writtenPath.split("/");
+
+    expect(segments.every((segment) => segment.length <= 48)).toBe(true);
   });
 
   it("should write markdown directly under author directory when no book exists", async () => {

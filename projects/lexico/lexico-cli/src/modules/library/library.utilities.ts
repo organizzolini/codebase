@@ -1,4 +1,12 @@
+import { createHash } from "node:crypto";
+
 import _ from "lodash";
+
+import {
+  MAXIMUM_SLUG_SEGMENT_LENGTH,
+  MAXIMUM_TITLE_LENGTH,
+  SLUG_HASH_LENGTH,
+} from "./library.constants";
 
 import type { TextCollection } from "@codebase/lexico-db";
 
@@ -128,4 +136,36 @@ export function splitTextAttributes(
     (value) => value === undefined,
   );
   return { attributes, remaining };
+}
+
+/**
+ * Kebab-cases a name into one slug segment of at most 40 characters. A longer
+ * name is cut at a word boundary and given a short hash of the full name, so
+ * two long names with the same start still get different segments.
+ */
+export function toBoundedSlug(name: string): string {
+  const slug = _.kebabCase(name);
+  if (slug.length <= MAXIMUM_SLUG_SEGMENT_LENGTH) return slug;
+  const hash = createHash("sha1")
+    .update(slug)
+    .digest()
+    .readUInt32BE(0)
+    .toString(36)
+    .padStart(SLUG_HASH_LENGTH, "0")
+    .slice(-SLUG_HASH_LENGTH);
+  const length = MAXIMUM_SLUG_SEGMENT_LENGTH - SLUG_HASH_LENGTH - 1;
+  const boundary = slug.slice(0, length + 1).lastIndexOf("-");
+  const prefix = slug.slice(0, boundary > 0 ? boundary : length);
+  return `${prefix}-${hash}`;
+}
+
+/**
+ * Cuts a title to the 128 characters the text table stores, at a word
+ * boundary, marking the cut with an ellipsis.
+ */
+export function toBoundedTitle(title: string): string {
+  if (title.length <= MAXIMUM_TITLE_LENGTH) return title;
+  const length = MAXIMUM_TITLE_LENGTH - 1;
+  const boundary = title.slice(0, length + 1).lastIndexOf(" ");
+  return `${title.slice(0, boundary > 0 ? boundary : length).trimEnd()}…`;
 }

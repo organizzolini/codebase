@@ -6,6 +6,8 @@ import {
   hasValidTextContent,
   isEnglishBoilerplate,
   splitTextAttributes,
+  toBoundedSlug,
+  toBoundedTitle,
 } from "./library.utilities";
 
 describe("library.utilities", () => {
@@ -159,6 +161,53 @@ describe("library.utilities", () => {
       });
 
       expect(result.attributes).toStrictEqual({ collection: "CSEL" });
+    });
+  });
+
+  describe(toBoundedSlug, () => {
+    it("kebab-cases a short name unchanged in length", () => {
+      expect(toBoundedSlug("De Bello Gallico")).toBe("de-bello-gallico");
+    });
+
+    it("cuts a long name at a word boundary and keeps a hash for uniqueness", () => {
+      const heading = Array.from(
+        { length: 30 },
+        (_, index) => `Liber ${index}`,
+      ).join(" ");
+
+      const slug = toBoundedSlug(heading);
+
+      expect(slug.length).toBeLessThanOrEqual(40);
+      expect(slug).toMatch(/^liber-0-liber-1-liber-2-liber-3-[0-9a-z]{6}$/);
+    });
+
+    it("gives two long names with a shared start different slugs", () => {
+      const start = "Liber ".repeat(20);
+
+      expect(toBoundedSlug(`${start} Primus`)).not.toBe(
+        toBoundedSlug(`${start} Secundus`),
+      );
+    });
+
+    it("is deterministic", () => {
+      const heading = "Liber ".repeat(40);
+
+      expect(toBoundedSlug(heading)).toBe(toBoundedSlug(heading));
+    });
+  });
+
+  describe(toBoundedTitle, () => {
+    it("leaves a title within the limit untouched", () => {
+      expect(toBoundedTitle("Aeneid")).toBe("Aeneid");
+    });
+
+    it("cuts a long title at a word boundary within 128 characters", () => {
+      const title = "Liber ".repeat(60).trim();
+
+      const bounded = toBoundedTitle(title);
+
+      expect(bounded.length).toBeLessThanOrEqual(128);
+      expect(bounded.endsWith("Liber…")).toBe(true);
     });
   });
 });

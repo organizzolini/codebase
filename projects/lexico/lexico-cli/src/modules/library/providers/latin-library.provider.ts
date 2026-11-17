@@ -9,7 +9,11 @@ import _ from "lodash";
 import { Author, Text } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
-import { hasValidTextContent } from "../library.utilities";
+import {
+  hasValidTextContent,
+  toBoundedSlug,
+  toBoundedTitle,
+} from "../library.utilities";
 
 import { LatinLibraryBuilder } from "./latin-library.builder";
 
@@ -59,8 +63,8 @@ export class LatinLibraryProvider {
     if (!bookText) {
       bookText = new Text();
       bookText.type = "book";
-      bookText.title = book;
-      bookText.slug = _.kebabCase(book);
+      bookText.title = toBoundedTitle(book);
+      bookText.slug = toBoundedSlug(book);
       bookText.childTexts = [];
       booksMap.set(book, bookText);
       author.texts.push(bookText);
@@ -189,6 +193,12 @@ export class LatinLibraryProvider {
 
     this.logger.info("👤 Starting author metadata", undefined, { nickname });
     const authorUrlObject = new URL(authorPath, host);
+    // A page named like a folder (/addison) is cached as addison/index.html, and its relative links resolve inside that folder.
+    if (
+      !authorUrlObject.pathname.endsWith("/") &&
+      !path.extname(authorUrlObject.pathname)
+    )
+      authorUrlObject.pathname += "/";
     const authorText = await this.readSourceCacheFile(
       authorUrlObject.href,
       host,
@@ -297,7 +307,13 @@ export class LatinLibraryProvider {
     if (relative.startsWith("/")) relative = relative.slice(1);
     if (!relative) relative = "index.html";
     if (relative.endsWith("/")) relative += "index.html";
-    const targetPath = path.resolve("data", "latin-library-source", relative);
+    let targetPath = path.resolve("data", "latin-library-source", relative);
+    try {
+      const stats = await fs.stat(targetPath);
+      if (stats.isDirectory()) targetPath = path.join(targetPath, "index.html");
+    } catch {
+      // A missing path falls through, so the read reports it.
+    }
     return fs.readFile(targetPath, "utf8");
   }
 
@@ -311,9 +327,9 @@ export class LatinLibraryProvider {
     workBook: string | undefined;
   }): Promise<void> {
     const { authorPath, markdown, work, workBook } = args;
-    const safeTitle = _.kebabCase(work.title);
+    const safeTitle = toBoundedSlug(work.title);
     if (workBook) {
-      const safeBook = _.kebabCase(workBook);
+      const safeBook = toBoundedSlug(workBook);
       const bookPath = path.join(authorPath, safeBook);
       await fs.mkdir(bookPath, { recursive: true });
       await fs.writeFile(
