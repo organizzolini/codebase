@@ -7,15 +7,15 @@ import {
   illuminationBodies as allIlluminationBodies,
 } from "../caelundas/caelundas.constants";
 import { typedFromEntries } from "../caelundas/caelundas.types";
-import { assertEphemerisFilesPresent } from "../ephemeris-download/ephemeris-download.utilities";
 
-import { EphemerisAggregationService } from "./ephemeris-aggregation.service";
-import { EphemerisConstantsService } from "./ephemeris-constants.service";
-import { EphemerisCoordinateService } from "./ephemeris-coordinate.service";
-import { EphemerisHorizonService } from "./ephemeris-horizon.service";
-import { EphemerisPhenomenaService } from "./ephemeris-phenomena.service";
-import { EphemerisTimeService } from "./ephemeris-time.service";
 import { initializeSwissEphemeris } from "./ephemeris.constants";
+import { EphemerisAggregationService } from "./modules/aggregation/ephemeris-aggregation.service";
+import { EphemerisConstantsService } from "./modules/constants-lookup/ephemeris-constants.service";
+import { EphemerisCoordinateService } from "./modules/coordinates/ephemeris-coordinate.service";
+import { assertEphemerisFilesPresent } from "./modules/ephemeris-download/ephemeris-download.utilities";
+import { EphemerisHorizonService } from "./modules/horizon/ephemeris-horizon.service";
+import { EphemerisPhenomenaService } from "./modules/phenomena/ephemeris-phenomena.service";
+import { EphemerisTimeService } from "./modules/time/ephemeris-time.service";
 
 import type { Body } from "../caelundas/caelundas.types";
 import type {

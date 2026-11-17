@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
 
-import { AnnualSolarCycleService } from "../annual-solar-cycle/annual-solar-cycle.service";
 import { AspectsService } from "../aspects/aspects.service";
-import { EclipsesService } from "../eclipses/eclipses.service";
-import { IngressesService } from "../ingresses/ingresses.service";
-import { MonthlyLunarCycleService } from "../monthly-lunar-cycle/monthly-lunar-cycle.service";
-import { PhasesService } from "../phases/phases.service";
-import { RetrogradesService } from "../retrogrades/retrogrades.service";
-import { TwilightsService } from "../twilights/twilights.service";
+import { AnnualSolarCycleService } from "../perfective/modules/annual-solar-cycle/annual-solar-cycle.service";
+import { EclipsesService } from "../perfective/modules/eclipses/eclipses.service";
+import { IngressesService } from "../perfective/modules/ingresses/ingresses.service";
+import { MonthlyLunarCycleService } from "../perfective/modules/monthly-lunar-cycle/monthly-lunar-cycle.service";
+import { PhasesService } from "../perfective/modules/phases/phases.service";
+import { RetrogradesService } from "../perfective/modules/retrogrades/retrogrades.service";
+import { TwilightsService } from "../perfective/modules/twilights/twilights.service";
 
 import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 

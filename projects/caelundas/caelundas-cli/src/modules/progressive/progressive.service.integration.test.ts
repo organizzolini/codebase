@@ -5,9 +5,9 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { LoggerModule } from "@codebase/observability";
 
-import { MajorAspectEventService } from "../major-aspects/major-aspect-event.service";
-import { RetrogradesService } from "../retrogrades/retrogrades.service";
-import { TwilightsService } from "../twilights/twilights.service";
+import { MajorAspectEventService } from "../aspects/modules/major-aspects/major-aspect-event.service";
+import { RetrogradesService } from "../perfective/modules/retrogrades/retrogrades.service";
+import { TwilightsService } from "../perfective/modules/twilights/twilights.service";
 
 import { ProgressiveModule } from "./progressive.module";
 import { ProgressiveService } from "./progressive.service";

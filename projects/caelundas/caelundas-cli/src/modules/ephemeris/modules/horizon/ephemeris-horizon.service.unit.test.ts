@@ -1,0 +1,168 @@
+import moment from "moment-timezone";
+import { azalt } from "sweph";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { EphemerisCoordinateService } from "../coordinates/ephemeris-coordinate.service";
+import { EphemerisTimeService } from "../time/ephemeris-time.service";
+
+import { EphemerisHorizonService } from "./ephemeris-horizon.service";
+
+import type { createMock } from "@golevelup/ts-vitest";
+import type * as Sweph from "sweph";
+
+vi.mock("sweph", async (importOriginal) => {
+  const original = await importOriginal<typeof Sweph>();
+  return {
+    ...original,
+    azalt: vi
+      .fn<(...args: Parameters<typeof azalt>) => ReturnType<typeof azalt>>()
+      .mockReturnValue([180, 45, 44.8]),
+  };
+});
+
+describe(EphemerisHorizonService, () => {
+  let service: EphemerisHorizonService;
+  let coordinateService: ReturnType<
+    typeof createMock<EphemerisCoordinateService>
+  >;
+  let timeService: ReturnType<typeof createMock<EphemerisTimeService>>;
+
+  const testingModuleOptions = {
+    mocks: [EphemerisCoordinateService, EphemerisTimeService],
+  };
+
+  beforeAll(async () => {
+    const { instance, module } = await buildTestingModule(
+      EphemerisHorizonService,
+      testingModuleOptions,
+    );
+
+    service = instance;
+    coordinateService = await module.resolve(EphemerisCoordinateService);
+    timeService = await module.resolve(EphemerisTimeService);
+
+    vi.mocked(coordinateService.getTopocentricBodyCoordinates).mockReturnValue({
+      distance: 0.0025,
+      latitude: 2.47,
+      longitude: 19.09,
+    });
+    vi.mocked(coordinateService.getBodyCoordinatesWithDistance).mockReturnValue(
+      {
+        distance: 1.01,
+        distanceSpeed: 0,
+        latitude: -1.2,
+        longitude: 120.5,
+      },
+    );
+    vi.mocked(timeService.dateToJulianDays).mockReturnValue({
+      julianDayEphemerisTime: 2_460_395.5,
+      julianDayUniversalTime: 2_460_395.499_306,
+    });
+    vi.mocked(timeService.generateMinutes).mockImplementation(
+      (start: moment.Moment, end: moment.Moment) => {
+        const values: moment.Moment[] = [];
+        let current = start.clone();
+        while (current.valueOf() <= end.valueOf()) {
+          values.push(current.clone());
+          current = current.clone().add(1, "minute");
+        }
+        return values;
+      },
+    );
+  });
+
+  describe("computeAzimuthElevationForMinute", () => {
+    it("turns the observer's topocentric position into azimuth/elevation", () => {
+      const result = service.computeAzimuthElevationForMinute({
+        body: "moon",
+        julianDayEphemerisTime: 2_460_395.5,
+        julianDayUniversalTime: 2_460_395.499_306,
+        observerLatitude: 40.7128,
+        observerLongitude: -74.006,
+      });
+
+      expect(
+        coordinateService.getTopocentricBodyCoordinates,
+      ).toHaveBeenCalledWith({
+        body: "moon",
+        julianDayEphemerisTime: 2_460_395.5,
+        observerLatitude: 40.7128,
+        observerLongitude: -74.006,
+      });
+      expect(vi.mocked(azalt).mock.lastCall?.[5]).toStrictEqual([
+        19.09, 2.47, 0.0025,
+      ]);
+      expect(result).toStrictEqual({
+        azimuth: 0,
+        eclipticLatitude: 2.47,
+        eclipticLongitude: 19.09,
+        elevation: 44.8,
+        semidiameter: expect.closeTo(0.266, 3) as number,
+        trueElevation: 45,
+      });
+    });
+
+    it("measures azimuth from North, where Swiss Ephemeris measures it from South", () => {
+      vi.mocked(azalt).mockReturnValueOnce([256.557, 10, 10.1]);
+
+      const result = service.computeAzimuthElevationForMinute({
+        body: "moon",
+        julianDayEphemerisTime: 2_460_395.5,
+        julianDayUniversalTime: 2_460_395.499_306,
+        observerLatitude: 40.7128,
+        observerLongitude: -74.006,
+      });
+
+      expect(result.azimuth).toBeCloseTo(76.557, 6);
+    });
+  });
+
+  describe("computeSemidiameter", () => {
+    it("gives the Sun's angular radius at one astronomical unit", () => {
+      // 695,700 km at 1 AU subtends 15.99 arcminutes.
+      expect(
+        service.computeSemidiameter({ body: "sun", distance: 1 }) * 60,
+      ).toBeCloseTo(15.99, 2);
+    });
+
+    it("gives the Moon's angular radius from its distance", () => {
+      // 1737.4 km at 384,400 km subtends 15.54 arcminutes.
+      expect(
+        service.computeSemidiameter({
+          body: "moon",
+          distance: 384_400 / 149_597_870.7,
+        }) * 60,
+      ).toBeCloseTo(15.54, 2);
+    });
+  });
+
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      EphemerisHorizonService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(EphemerisHorizonService);
+  });
+
+  describe("computeAzimuthElevationForBody", () => {
+    it("returns minute-by-minute azimuth/elevation ephemeris", () => {
+      const result = service.computeAzimuthElevationForBody({
+        body: "sun",
+        end: moment.utc("2024-03-21T00:01:00.000Z"),
+        observerLatitude: 40.7128,
+        observerLongitude: -74.006,
+        start: moment.utc("2024-03-21T00:00:00.000Z"),
+      });
+
+      expect(Object.keys(result)).toHaveLength(2);
+
+      for (const value of Object.values(result)) {
+        expect(value.azimuth).toBe(0);
+        expect(value.elevation).toBe(44.8);
+      }
+    });
+  });
+});

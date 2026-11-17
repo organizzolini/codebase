@@ -301,17 +301,17 @@ src/
 └── modules/
     ├── caelundas/           # Root command — the pipeline
     ├── input/               # Coordinate and date validation, timezone lookup
-    ├── ephemeris/           # Swiss Ephemeris access: positions, horizons, phenomena
-    ├── perfective/          # Exact-moment detection across every event service
+    ├── ephemeris/           # Swiss Ephemeris access: positions, horizons, phenomena;
+    │                        #   child modules include datetime/, math/, ephemeris-download/
+    ├── perfective/          # Exact-moment detection across every event service;
+    │                        #   child modules: eclipses/, phases/, retrogrades/, ingresses/,
+    │                        #   twilights/, daily-cycles/, annual-solar-cycle/, monthly-lunar-cycle/
+    ├── aspects/             # Aspect detection; child modules per aspect family, plus stellium/
     ├── progressive/         # Spans derived from those moments
     ├── night-sky/           # Stars and constellation figures for the web's night sky
     ├── calendar-events/     # Upserting and range queries over stored calendar events
     ├── tags/                # Resolving raw tag strings to nodes of the tag tree
-    ├── calendar/            # iCalendar and JSON rendering and output
-    ├── datetime/, math/     # Time stepping and angular arithmetic
-    └── aspects/, phases/, eclipses/, retrogrades/, ingresses/,
-        annual-solar-cycle/, monthly-lunar-cycle/, daily-cycles/,
-        twilights/, stellium/, …   # One service per event family
+    └── calendar/            # iCalendar and JSON rendering and output
 ```
 
 ## Start

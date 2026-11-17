@@ -64,7 +64,7 @@ src/
       <domain>.types.ts
       <domain>.constants.ts
       <domain>.<tier>.test.ts
-testing/                            # Shared test utilities
+testing/                            # Shared test utilities, by kind (aspects/, pipeline/, reference/, support/)
 ```
 
 **Project Domain Modules**:
@@ -76,11 +76,10 @@ src/modules/
   night-sky/                           # The night-sky command: HYG stars and d3-celestial figures
   calendar-events/                     # Upsert and range queries over the calendar_events table
   tags/                                # Resolving raw tag strings to nodes of the tag tree
-  ephemeris/                           # Swiss Ephemeris access
-  perfective/                          # Exact moment event detection (aspects, phases)
+  ephemeris/                           # Swiss Ephemeris access; child modules: datetime/, math/, ephemeris-download/
+  perfective/                          # Exact moment event detection; child modules: one per event family (eclipses/, phases/, ...)
   progressive/                         # Duration event synthesis (retrogrades)
-  math/                                # Astronomical math utilities
-  <domain>/                            # Other specialized astronomical domain modules
+  aspects/                             # Aspect detection; child modules: major-/minor-/triple-/.../specialty-aspects/, stellium/
 ```
 
 **Key Domain Components**:
@@ -207,7 +206,7 @@ Inspect: `psql` with the `CAELUNDAS_POSTGRES_*` values, then `set search_path to
 
 **Read model**: the migration also creates `tag_nodes`, `calendar_event_tag_nodes` (each tag's depth, root and path, and one row per event and tag with ancestors, `is_direct` marking the tags given) and the view `calendar_event_derived_times`. The two tag tables are stored, not views, because a tag's depth, root and path take a correlated subquery that every grouping would repeat. `CalendarEventsService.upsert` ends each transaction with `CaelundasDatabaseService.refreshReadModel` from `caelundas-db`, inside the transaction that wrote the events and any new tags, so a run leaves the read model current and a failed refresh stores nothing. The view needs no refresh.
 
-**Tests**: integration and end-to-end suites start a Testcontainers Postgres through `startCaelundasDatabase` in `testing/database.ts`, which runs the real migration and connects through `CaelundasDatabaseModule` from `CAELUNDAS_POSTGRES_*`. Docker must be running.
+**Tests**: integration and end-to-end suites start a Testcontainers Postgres through `startCaelundasDatabase` in `testing/support/database.ts`, which runs the real migration and connects through `CaelundasDatabaseModule` from `CAELUNDAS_POSTGRES_*`. Docker must be running.
 
 ## Kubernetes Deployment
 
