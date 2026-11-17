@@ -848,6 +848,51 @@ describe(WiktionaryCommand, () => {
     expect(fetchCategoryPageSpy).toHaveBeenCalledTimes(1);
   });
 
+  it("should not read a reconstruction or appendix entry as the end of the range", async () => {
+    const page = cheerio.load(`
+      <div id="mw-pages">
+        <div class="mw-category">
+          <div class="mw-category-group">
+            <ul>
+              <li><a href="/wiki/Reconstruction:Latin/zzz">Reconstruction:Latin/zzz</a></li>
+              <li><a href="/wiki/amo">amo</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    `);
+    vi.spyOn(
+      command as unknown as {
+        fetchCategoryPage: (urlPath: string) => Promise<cheerio.CheerioAPI>;
+      },
+      "fetchCategoryPage",
+    ).mockResolvedValue(page);
+    const processLinkSpy = vi
+      .spyOn(
+        command as unknown as {
+          processWiktionaryCategoryLink: (
+            element: Element,
+            cheerioApi: cheerio.CheerioAPI,
+            category: string,
+          ) => Promise<void>;
+        },
+        "processWiktionaryCategoryLink",
+      )
+      .mockResolvedValue(undefined);
+
+    await (
+      command as unknown as {
+        ingestCategory: (
+          category: "lemma",
+          startPath?: string,
+          endLemma?: string,
+        ) => Promise<void>;
+      }
+    ).ingestCategory("lemma", undefined, "major");
+
+    expect(processLinkSpy).toHaveBeenCalledTimes(2);
+  });
+
   it("should start every category at the start lemma", async () => {
     const ingestCategorySpy = vi
       .spyOn(

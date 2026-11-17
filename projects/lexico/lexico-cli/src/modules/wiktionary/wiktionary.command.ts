@@ -231,7 +231,12 @@ export class WiktionaryCommand extends CommandRunner {
    * Whether a category entry sorts after the last lemma of a bounded scrape.
    */
   private isPastEnd(word: string, endLemma: string | undefined): boolean {
-    return endLemma !== undefined && word.toLowerCase() > endLemma;
+    return (
+      endLemma !== undefined &&
+      !word.includes("/") &&
+      !/(Reconstruction:)|(Appendix:)/i.test(word) &&
+      word.toLowerCase() > endLemma
+    );
   }
 
   /**
