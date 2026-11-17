@@ -42,6 +42,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **dictionary**: Main ingestion stage that parses cached Wiktionary pages into lexemes, forms, and translations, run by the dictionary command.
 - **diphthong**: Pair of vowels ae or oe, which medieval spelling writes as e, so word linking tries that reading only after stricter spellings fail.
 - **disambiguator**: Numeric index that tells apart lexemes sharing a lemma, saved on each lexeme and used to reload it by lemma.
+- **division**:
 - **ecclesiastical**: Pronunciation mode for Ecclesiastical Latin, with its own phoneme map and service used beside the classical one.
 - **ecclesiasticorum**: Part of the Corpus Scriptorum Ecclesiasticorum Latinorum name, the CSEL corpus command and its ingestion module.
 - **edition**: The printed version of a source text, with its editors, publisher, and print year, which tells apart two Texts of one work.

@@ -673,6 +673,26 @@ describe(PartOfSpeechFormsService, () => {
       expect(table?.length).toBeGreaterThan(0);
     });
 
+    it("prefers the inflection table over an earlier picture label table", () => {
+      const parserWithPrivates = service as unknown as {
+        parseFormTable: (
+          $: cheerio.CheerioAPI,
+          elt: AnyNode,
+        ) => null | string[][];
+      };
+      const $ = cheerio.load(
+        '<p id="entry">entry</p><div><table><tr><td>Click on labels</td></tr></table></div><div><table class="inflection-table"><tr><th>Singular</th></tr><tr><td><span class="Latn">oculus</span></td></tr></table></div>',
+      );
+      const entryNode = $("#entry").get(0);
+      if (!entryNode) {
+        throw new Error("Expected entry node");
+      }
+
+      const table = parserWithPrivates.parseFormTable($, entryNode);
+
+      expect(JSON.stringify(table)).toContain("oculus");
+    });
+
     it("parses empty html tables into an empty matrix", () => {
       const parserWithPrivates = service as unknown as {
         parseFormTable: (
