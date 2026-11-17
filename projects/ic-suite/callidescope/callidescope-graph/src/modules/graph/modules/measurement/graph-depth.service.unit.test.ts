@@ -2,13 +2,13 @@ import { describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { ANALYSIS_MODULES } from "../../../testing/modules";
+import { ANALYSIS_MODULES } from "../../../../../testing/modules";
+import { GraphService } from "../../graph.service";
+import { ComponentsService } from "../traversal/components.service";
 
-import { ComponentsService } from "./components.service";
 import { GraphDepthService } from "./graph-depth.service";
-import { GraphService } from "./graph.service";
 
-import type { DepthMeasurement } from "./graph.types";
+import type { DepthMeasurement } from "../../graph.types";
 import type { CallableId, CallEdge } from "@callidescope/core";
 
 /** Builds an edge between two identifiers. */

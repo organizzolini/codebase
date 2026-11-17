@@ -2,8 +2,8 @@ import { Injectable } from "@nestjs/common";
 
 import { INITIAL_LOW_LINK } from "./components.constants";
 
+import type { CallGraph, CondensedGraph } from "../../graph.types";
 import type { TarjanState, TraversalFrame } from "./components.types";
-import type { CallGraph, CondensedGraph } from "./graph.types";
 import type { CallableId } from "@callidescope/core";
 
 /**

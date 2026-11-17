@@ -4,7 +4,7 @@ import type {
   ComponentDepth,
   DepthMeasurement,
   MeasureDepthArguments,
-} from "./graph.types";
+} from "../../graph.types";
 import type { CallableId } from "@callidescope/core";
 
 /**

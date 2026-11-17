@@ -61,26 +61,11 @@ export type {
   ResolveEntriesArguments,
   UnresolvedEntryPointAddress,
 } from "./modules/entries/entries.types";
-export { MAXIMUM_CALL_ADDRESS_STACKS } from "./modules/graph/address-depth.constants";
-export { AddressDepthService } from "./modules/graph/address-depth.service";
-export type {
-  BuildCallAddressStacksArguments,
-  CallAddressStack,
-  CallAddressTreeResult,
-} from "./modules/graph/address-depth.types";
-export { BreadthService } from "./modules/graph/breadth.service";
-export { INITIAL_LOW_LINK } from "./modules/graph/components.constants";
-export { ComponentsService } from "./modules/graph/components.service";
-export type {
-  TarjanState,
-  TraversalFrame,
-} from "./modules/graph/components.types";
 export { GraphAssemblyService } from "./modules/graph/graph-assembly.service";
 export type {
   AssembledGraph,
   AssembleGraphArguments,
 } from "./modules/graph/graph-assembly.types";
-export { GraphDepthService } from "./modules/graph/graph-depth.service";
 export { GraphModule } from "./modules/graph/graph.module";
 export { GraphService } from "./modules/graph/graph.service";
 export type {
@@ -95,7 +80,22 @@ export type {
   MeasureBreadthArguments,
   MeasureDepthArguments,
 } from "./modules/graph/graph.types";
-export { PathsService } from "./modules/graph/paths.service";
+export { MAXIMUM_CALL_ADDRESS_STACKS } from "./modules/graph/modules/measurement/address-depth.constants";
+export { AddressDepthService } from "./modules/graph/modules/measurement/address-depth.service";
+export type {
+  BuildCallAddressStacksArguments,
+  CallAddressStack,
+  CallAddressTreeResult,
+} from "./modules/graph/modules/measurement/address-depth.types";
+export { BreadthService } from "./modules/graph/modules/measurement/breadth.service";
+export { GraphDepthService } from "./modules/graph/modules/measurement/graph-depth.service";
+export { INITIAL_LOW_LINK } from "./modules/graph/modules/traversal/components.constants";
+export { ComponentsService } from "./modules/graph/modules/traversal/components.service";
+export type {
+  TarjanState,
+  TraversalFrame,
+} from "./modules/graph/modules/traversal/components.types";
+export { PathsService } from "./modules/graph/modules/traversal/paths.service";
 export { CompilerHostService } from "./modules/program/compiler-host.service";
 export { ProgramConfigurationError } from "./modules/program/program.constants";
 export { ProgramModule } from "./modules/program/program.module";

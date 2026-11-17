@@ -1,9 +1,10 @@
 import { Injectable } from "@nestjs/common";
 
-import { MAXIMUM_CALL_ADDRESS_STACKS } from "./address-depth.constants";
-import { PathsService } from "./paths.service";
+import { PathsService } from "../traversal/paths.service";
 
-import type { DiscoveredCallable } from "../callables/callables.types";
+import { MAXIMUM_CALL_ADDRESS_STACKS } from "./address-depth.constants";
+
+import type { DiscoveredCallable } from "../../../callables/callables.types";
 import type {
   AddressDepthTraversalContext,
   AddressDepthTraversalFrame,

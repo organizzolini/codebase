@@ -15,11 +15,13 @@ graph LR
   callidescope_output["callidescope-output"]
   configuration["configuration"]
   observability["observability"]
+  testing["testing"]
   callidescope_cli --> callidescope_graph
   callidescope_graph --> callidescope_configuration
   callidescope_graph --> callidescope_core
   callidescope_graph --> configuration
   callidescope_graph --> observability
+  callidescope_graph --> testing
   callidescope_nx --> callidescope_graph
   callidescope_output --> callidescope_graph
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
@@ -63,11 +65,13 @@ _Rounded modules are global: every module can inject them, so their edges are le
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vite_config_ts["configuration/vite.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_modules_callables_address_constants_ts["src/modules/callables/address.constants.ts"]
   file_src_modules_callables_address_service_ts["src/modules/callables/address.service.ts"]
@@ -106,28 +110,28 @@ graph LR
   file_src_modules_entries_entries_service_ts["src/modules/entries/entries.service.ts"]
   file_src_modules_entries_entries_service_unit_test_ts["src/modules/entries/entries.service.unit.test.ts"]
   file_src_modules_entries_entries_types_ts["src/modules/entries/entries.types.ts"]
-  file_src_modules_graph_address_depth_constants_ts["src/modules/graph/address-depth.constants.ts"]
-  file_src_modules_graph_address_depth_service_ts["src/modules/graph/address-depth.service.ts"]
-  file_src_modules_graph_address_depth_service_unit_test_ts["src/modules/graph/address-depth.service.unit.test.ts"]
-  file_src_modules_graph_address_depth_types_ts["src/modules/graph/address-depth.types.ts"]
-  file_src_modules_graph_breadth_service_ts["src/modules/graph/breadth.service.ts"]
-  file_src_modules_graph_breadth_service_unit_test_ts["src/modules/graph/breadth.service.unit.test.ts"]
-  file_src_modules_graph_components_constants_ts["src/modules/graph/components.constants.ts"]
-  file_src_modules_graph_components_service_ts["src/modules/graph/components.service.ts"]
-  file_src_modules_graph_components_service_unit_test_ts["src/modules/graph/components.service.unit.test.ts"]
-  file_src_modules_graph_components_types_ts["src/modules/graph/components.types.ts"]
   file_src_modules_graph_graph_assembly_service_ts["src/modules/graph/graph-assembly.service.ts"]
   file_src_modules_graph_graph_assembly_service_unit_test_ts["src/modules/graph/graph-assembly.service.unit.test.ts"]
   file_src_modules_graph_graph_assembly_types_ts["src/modules/graph/graph-assembly.types.ts"]
-  file_src_modules_graph_graph_depth_service_ts["src/modules/graph/graph-depth.service.ts"]
-  file_src_modules_graph_graph_depth_service_unit_test_ts["src/modules/graph/graph-depth.service.unit.test.ts"]
   file_src_modules_graph_graph_constants_ts["src/modules/graph/graph.constants.ts"]
   file_src_modules_graph_graph_module_ts["src/modules/graph/graph.module.ts"]
   file_src_modules_graph_graph_service_ts["src/modules/graph/graph.service.ts"]
   file_src_modules_graph_graph_service_unit_test_ts["src/modules/graph/graph.service.unit.test.ts"]
   file_src_modules_graph_graph_types_ts["src/modules/graph/graph.types.ts"]
-  file_src_modules_graph_paths_service_ts["src/modules/graph/paths.service.ts"]
-  file_src_modules_graph_paths_service_unit_test_ts["src/modules/graph/paths.service.unit.test.ts"]
+  file_src_modules_graph_modules_measurement_address_depth_constants_ts["src/modules/graph/modules/measurement/address-depth.constants.ts"]
+  file_src_modules_graph_modules_measurement_address_depth_service_ts["src/modules/graph/modules/measurement/address-depth.service.ts"]
+  file_src_modules_graph_modules_measurement_address_depth_service_unit_test_ts["src/modules/graph/modules/measurement/address-depth.service.unit.test.ts"]
+  file_src_modules_graph_modules_measurement_address_depth_types_ts["src/modules/graph/modules/measurement/address-depth.types.ts"]
+  file_src_modules_graph_modules_measurement_breadth_service_ts["src/modules/graph/modules/measurement/breadth.service.ts"]
+  file_src_modules_graph_modules_measurement_breadth_service_unit_test_ts["src/modules/graph/modules/measurement/breadth.service.unit.test.ts"]
+  file_src_modules_graph_modules_measurement_graph_depth_service_ts["src/modules/graph/modules/measurement/graph-depth.service.ts"]
+  file_src_modules_graph_modules_measurement_graph_depth_service_unit_test_ts["src/modules/graph/modules/measurement/graph-depth.service.unit.test.ts"]
+  file_src_modules_graph_modules_traversal_components_constants_ts["src/modules/graph/modules/traversal/components.constants.ts"]
+  file_src_modules_graph_modules_traversal_components_service_ts["src/modules/graph/modules/traversal/components.service.ts"]
+  file_src_modules_graph_modules_traversal_components_service_unit_test_ts["src/modules/graph/modules/traversal/components.service.unit.test.ts"]
+  file_src_modules_graph_modules_traversal_components_types_ts["src/modules/graph/modules/traversal/components.types.ts"]
+  file_src_modules_graph_modules_traversal_paths_service_ts["src/modules/graph/modules/traversal/paths.service.ts"]
+  file_src_modules_graph_modules_traversal_paths_service_unit_test_ts["src/modules/graph/modules/traversal/paths.service.unit.test.ts"]
   file_src_modules_program_compiler_host_service_ts["src/modules/program/compiler-host.service.ts"]
   file_src_modules_program_compiler_host_service_unit_test_ts["src/modules/program/compiler-host.service.unit.test.ts"]
   file_src_modules_program_program_constants_ts["src/modules/program/program.constants.ts"]
@@ -147,18 +151,17 @@ graph LR
   file_src_modules_workspace_workspace_service_ts["src/modules/workspace/workspace.service.ts"]
   file_src_modules_workspace_workspace_service_unit_test_ts["src/modules/workspace/workspace.service.unit.test.ts"]
   file_src_modules_workspace_workspace_types_ts["src/modules/workspace/workspace.types.ts"]
+  file_testing_discovered_callable_ts["testing/discovered-callable.ts"]
+  file_testing_index_ts["testing/index.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
   file_testing_modules_ts["testing/modules.ts"]
   file_testing_programs_ts["testing/programs.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vite_config_ts["vite.config.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_modules_callables_address_service_ts --> file_src_modules_callables_address_constants_ts
   file_src_modules_callables_address_service_ts --> file_src_modules_callables_address_types_ts
   file_src_modules_callables_address_service_ts --> file_src_modules_callables_callables_types_ts
   file_src_modules_callables_address_service_unit_test_ts --> file_src_modules_callables_address_service_ts
   file_src_modules_callables_address_service_unit_test_ts --> file_src_modules_callables_callables_types_ts
-  file_src_modules_callables_address_service_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_callables_address_service_unit_test_ts --> file_testing_index_ts
   file_src_modules_callables_address_service_unit_test_ts --> file_testing_modules_ts
   file_src_modules_callables_address_types_ts --> file_src_modules_callables_callables_types_ts
   file_src_modules_callables_callable_identity_service_ts --> file_src_modules_callables_callables_constants_ts
@@ -255,89 +258,89 @@ graph LR
   file_src_modules_entries_entries_service_unit_test_ts --> file_src_modules_entries_entries_types_ts
   file_src_modules_entries_entries_service_unit_test_ts --> file_src_modules_graph_graph_service_ts
   file_src_modules_entries_entries_service_unit_test_ts --> file_src_modules_graph_graph_types_ts
-  file_src_modules_entries_entries_service_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_entries_entries_service_unit_test_ts --> file_testing_index_ts
   file_src_modules_entries_entries_service_unit_test_ts --> file_testing_modules_ts
   file_src_modules_entries_entries_service_unit_test_ts --> file_testing_programs_ts
   file_src_modules_entries_entries_types_ts --> file_src_modules_callables_address_types_ts
   file_src_modules_entries_entries_types_ts --> file_src_modules_callables_callables_types_ts
   file_src_modules_entries_entries_types_ts --> file_src_modules_graph_graph_types_ts
-  file_src_modules_graph_address_depth_service_ts --> file_src_modules_callables_callables_types_ts
-  file_src_modules_graph_address_depth_service_ts --> file_src_modules_graph_address_depth_constants_ts
-  file_src_modules_graph_address_depth_service_ts --> file_src_modules_graph_address_depth_types_ts
-  file_src_modules_graph_address_depth_service_ts --> file_src_modules_graph_paths_service_ts
-  file_src_modules_graph_address_depth_service_unit_test_ts --> file_src_modules_callables_callables_types_ts
-  file_src_modules_graph_address_depth_service_unit_test_ts --> file_src_modules_documentation_documentation_service_ts
-  file_src_modules_graph_address_depth_service_unit_test_ts --> file_src_modules_graph_address_depth_service_ts
-  file_src_modules_graph_address_depth_service_unit_test_ts --> file_src_modules_graph_graph_service_ts
-  file_src_modules_graph_address_depth_service_unit_test_ts --> file_src_modules_graph_paths_service_ts
-  file_src_modules_graph_address_depth_service_unit_test_ts --> file_src_modules_signatures_signatures_service_ts
-  file_src_modules_graph_address_depth_service_unit_test_ts --> file_testing_mocks_ts
-  file_src_modules_graph_address_depth_service_unit_test_ts --> file_testing_modules_ts
-  file_src_modules_graph_address_depth_types_ts --> file_src_modules_callables_callables_types_ts
-  file_src_modules_graph_address_depth_types_ts --> file_src_modules_graph_graph_types_ts
-  file_src_modules_graph_breadth_service_ts --> file_src_modules_callables_callables_types_ts
-  file_src_modules_graph_breadth_service_ts --> file_src_modules_graph_graph_types_ts
-  file_src_modules_graph_breadth_service_unit_test_ts --> file_src_modules_graph_breadth_service_ts
-  file_src_modules_graph_breadth_service_unit_test_ts --> file_src_modules_graph_graph_service_ts
-  file_src_modules_graph_breadth_service_unit_test_ts --> file_src_modules_graph_graph_types_ts
-  file_src_modules_graph_breadth_service_unit_test_ts --> file_testing_mocks_ts
-  file_src_modules_graph_breadth_service_unit_test_ts --> file_testing_modules_ts
-  file_src_modules_graph_components_service_ts --> file_src_modules_graph_components_constants_ts
-  file_src_modules_graph_components_service_ts --> file_src_modules_graph_components_types_ts
-  file_src_modules_graph_components_service_ts --> file_src_modules_graph_graph_types_ts
-  file_src_modules_graph_components_service_unit_test_ts --> file_src_modules_graph_components_service_ts
-  file_src_modules_graph_components_service_unit_test_ts --> file_src_modules_graph_graph_service_ts
-  file_src_modules_graph_components_service_unit_test_ts --> file_src_modules_graph_graph_types_ts
-  file_src_modules_graph_components_service_unit_test_ts --> file_testing_modules_ts
   file_src_modules_graph_graph_assembly_service_ts --> file_src_modules_edges_edges_service_ts
-  file_src_modules_graph_graph_assembly_service_ts --> file_src_modules_graph_breadth_service_ts
-  file_src_modules_graph_graph_assembly_service_ts --> file_src_modules_graph_components_service_ts
   file_src_modules_graph_graph_assembly_service_ts --> file_src_modules_graph_graph_assembly_types_ts
-  file_src_modules_graph_graph_assembly_service_ts --> file_src_modules_graph_graph_depth_service_ts
   file_src_modules_graph_graph_assembly_service_ts --> file_src_modules_graph_graph_service_ts
-  file_src_modules_graph_graph_assembly_service_unit_test_ts --> file_src_modules_graph_breadth_service_ts
-  file_src_modules_graph_graph_assembly_service_unit_test_ts --> file_src_modules_graph_components_service_ts
+  file_src_modules_graph_graph_assembly_service_ts --> file_src_modules_graph_modules_measurement_breadth_service_ts
+  file_src_modules_graph_graph_assembly_service_ts --> file_src_modules_graph_modules_measurement_graph_depth_service_ts
+  file_src_modules_graph_graph_assembly_service_ts --> file_src_modules_graph_modules_traversal_components_service_ts
   file_src_modules_graph_graph_assembly_service_unit_test_ts --> file_src_modules_graph_graph_assembly_service_ts
   file_src_modules_graph_graph_assembly_service_unit_test_ts --> file_src_modules_graph_graph_assembly_types_ts
-  file_src_modules_graph_graph_assembly_service_unit_test_ts --> file_src_modules_graph_graph_depth_service_ts
   file_src_modules_graph_graph_assembly_service_unit_test_ts --> file_src_modules_graph_graph_service_ts
+  file_src_modules_graph_graph_assembly_service_unit_test_ts --> file_src_modules_graph_modules_measurement_breadth_service_ts
+  file_src_modules_graph_graph_assembly_service_unit_test_ts --> file_src_modules_graph_modules_measurement_graph_depth_service_ts
+  file_src_modules_graph_graph_assembly_service_unit_test_ts --> file_src_modules_graph_modules_traversal_components_service_ts
   file_src_modules_graph_graph_assembly_service_unit_test_ts --> file_testing_modules_ts
   file_src_modules_graph_graph_assembly_service_unit_test_ts --> file_testing_programs_ts
   file_src_modules_graph_graph_assembly_types_ts --> file_src_modules_callables_callables_types_ts
   file_src_modules_graph_graph_assembly_types_ts --> file_src_modules_graph_graph_types_ts
-  file_src_modules_graph_graph_depth_service_ts --> file_src_modules_graph_graph_types_ts
-  file_src_modules_graph_graph_depth_service_unit_test_ts --> file_src_modules_graph_components_service_ts
-  file_src_modules_graph_graph_depth_service_unit_test_ts --> file_src_modules_graph_graph_depth_service_ts
-  file_src_modules_graph_graph_depth_service_unit_test_ts --> file_src_modules_graph_graph_service_ts
-  file_src_modules_graph_graph_depth_service_unit_test_ts --> file_src_modules_graph_graph_types_ts
-  file_src_modules_graph_graph_depth_service_unit_test_ts --> file_testing_modules_ts
   file_src_modules_graph_graph_module_ts --> file_src_modules_documentation_documentation_module_ts
   file_src_modules_graph_graph_module_ts --> file_src_modules_edges_edges_module_ts
-  file_src_modules_graph_graph_module_ts --> file_src_modules_graph_address_depth_service_ts
-  file_src_modules_graph_graph_module_ts --> file_src_modules_graph_breadth_service_ts
-  file_src_modules_graph_graph_module_ts --> file_src_modules_graph_components_service_ts
   file_src_modules_graph_graph_module_ts --> file_src_modules_graph_graph_assembly_service_ts
-  file_src_modules_graph_graph_module_ts --> file_src_modules_graph_graph_depth_service_ts
   file_src_modules_graph_graph_module_ts --> file_src_modules_graph_graph_service_ts
-  file_src_modules_graph_graph_module_ts --> file_src_modules_graph_paths_service_ts
+  file_src_modules_graph_graph_module_ts --> file_src_modules_graph_modules_measurement_address_depth_service_ts
+  file_src_modules_graph_graph_module_ts --> file_src_modules_graph_modules_measurement_breadth_service_ts
+  file_src_modules_graph_graph_module_ts --> file_src_modules_graph_modules_measurement_graph_depth_service_ts
+  file_src_modules_graph_graph_module_ts --> file_src_modules_graph_modules_traversal_components_service_ts
+  file_src_modules_graph_graph_module_ts --> file_src_modules_graph_modules_traversal_paths_service_ts
   file_src_modules_graph_graph_module_ts --> file_src_modules_signatures_signatures_module_ts
   file_src_modules_graph_graph_service_ts --> file_src_modules_edges_edges_types_ts
   file_src_modules_graph_graph_service_ts --> file_src_modules_graph_graph_types_ts
   file_src_modules_graph_graph_service_unit_test_ts --> file_src_modules_graph_graph_service_ts
   file_src_modules_graph_graph_service_unit_test_ts --> file_testing_modules_ts
-  file_src_modules_graph_paths_service_ts --> file_src_modules_callables_callables_types_ts
-  file_src_modules_graph_paths_service_ts --> file_src_modules_documentation_documentation_service_ts
-  file_src_modules_graph_paths_service_ts --> file_src_modules_graph_graph_types_ts
-  file_src_modules_graph_paths_service_ts --> file_src_modules_signatures_signatures_service_ts
-  file_src_modules_graph_paths_service_unit_test_ts --> file_src_modules_callables_callables_types_ts
-  file_src_modules_graph_paths_service_unit_test_ts --> file_src_modules_documentation_documentation_service_ts
-  file_src_modules_graph_paths_service_unit_test_ts --> file_src_modules_graph_components_service_ts
-  file_src_modules_graph_paths_service_unit_test_ts --> file_src_modules_graph_graph_depth_service_ts
-  file_src_modules_graph_paths_service_unit_test_ts --> file_src_modules_graph_graph_service_ts
-  file_src_modules_graph_paths_service_unit_test_ts --> file_src_modules_graph_paths_service_ts
-  file_src_modules_graph_paths_service_unit_test_ts --> file_src_modules_signatures_signatures_service_ts
-  file_src_modules_graph_paths_service_unit_test_ts --> file_testing_mocks_ts
-  file_src_modules_graph_paths_service_unit_test_ts --> file_testing_modules_ts
+  file_src_modules_graph_modules_measurement_address_depth_service_ts --> file_src_modules_callables_callables_types_ts
+  file_src_modules_graph_modules_measurement_address_depth_service_ts --> file_src_modules_graph_modules_measurement_address_depth_constants_ts
+  file_src_modules_graph_modules_measurement_address_depth_service_ts --> file_src_modules_graph_modules_measurement_address_depth_types_ts
+  file_src_modules_graph_modules_measurement_address_depth_service_ts --> file_src_modules_graph_modules_traversal_paths_service_ts
+  file_src_modules_graph_modules_measurement_address_depth_service_unit_test_ts --> file_src_modules_callables_callables_types_ts
+  file_src_modules_graph_modules_measurement_address_depth_service_unit_test_ts --> file_src_modules_documentation_documentation_service_ts
+  file_src_modules_graph_modules_measurement_address_depth_service_unit_test_ts --> file_src_modules_graph_graph_service_ts
+  file_src_modules_graph_modules_measurement_address_depth_service_unit_test_ts --> file_src_modules_graph_modules_measurement_address_depth_service_ts
+  file_src_modules_graph_modules_measurement_address_depth_service_unit_test_ts --> file_src_modules_graph_modules_traversal_paths_service_ts
+  file_src_modules_graph_modules_measurement_address_depth_service_unit_test_ts --> file_src_modules_signatures_signatures_service_ts
+  file_src_modules_graph_modules_measurement_address_depth_service_unit_test_ts --> file_testing_index_ts
+  file_src_modules_graph_modules_measurement_address_depth_service_unit_test_ts --> file_testing_modules_ts
+  file_src_modules_graph_modules_measurement_address_depth_types_ts --> file_src_modules_callables_callables_types_ts
+  file_src_modules_graph_modules_measurement_address_depth_types_ts --> file_src_modules_graph_graph_types_ts
+  file_src_modules_graph_modules_measurement_breadth_service_ts --> file_src_modules_callables_callables_types_ts
+  file_src_modules_graph_modules_measurement_breadth_service_ts --> file_src_modules_graph_graph_types_ts
+  file_src_modules_graph_modules_measurement_breadth_service_unit_test_ts --> file_src_modules_graph_graph_service_ts
+  file_src_modules_graph_modules_measurement_breadth_service_unit_test_ts --> file_src_modules_graph_graph_types_ts
+  file_src_modules_graph_modules_measurement_breadth_service_unit_test_ts --> file_src_modules_graph_modules_measurement_breadth_service_ts
+  file_src_modules_graph_modules_measurement_breadth_service_unit_test_ts --> file_testing_index_ts
+  file_src_modules_graph_modules_measurement_breadth_service_unit_test_ts --> file_testing_modules_ts
+  file_src_modules_graph_modules_measurement_graph_depth_service_ts --> file_src_modules_graph_graph_types_ts
+  file_src_modules_graph_modules_measurement_graph_depth_service_unit_test_ts --> file_src_modules_graph_graph_service_ts
+  file_src_modules_graph_modules_measurement_graph_depth_service_unit_test_ts --> file_src_modules_graph_graph_types_ts
+  file_src_modules_graph_modules_measurement_graph_depth_service_unit_test_ts --> file_src_modules_graph_modules_measurement_graph_depth_service_ts
+  file_src_modules_graph_modules_measurement_graph_depth_service_unit_test_ts --> file_src_modules_graph_modules_traversal_components_service_ts
+  file_src_modules_graph_modules_measurement_graph_depth_service_unit_test_ts --> file_testing_modules_ts
+  file_src_modules_graph_modules_traversal_components_service_ts --> file_src_modules_graph_graph_types_ts
+  file_src_modules_graph_modules_traversal_components_service_ts --> file_src_modules_graph_modules_traversal_components_constants_ts
+  file_src_modules_graph_modules_traversal_components_service_ts --> file_src_modules_graph_modules_traversal_components_types_ts
+  file_src_modules_graph_modules_traversal_components_service_unit_test_ts --> file_src_modules_graph_graph_service_ts
+  file_src_modules_graph_modules_traversal_components_service_unit_test_ts --> file_src_modules_graph_graph_types_ts
+  file_src_modules_graph_modules_traversal_components_service_unit_test_ts --> file_src_modules_graph_modules_traversal_components_service_ts
+  file_src_modules_graph_modules_traversal_components_service_unit_test_ts --> file_testing_modules_ts
+  file_src_modules_graph_modules_traversal_paths_service_ts --> file_src_modules_callables_callables_types_ts
+  file_src_modules_graph_modules_traversal_paths_service_ts --> file_src_modules_documentation_documentation_service_ts
+  file_src_modules_graph_modules_traversal_paths_service_ts --> file_src_modules_graph_graph_types_ts
+  file_src_modules_graph_modules_traversal_paths_service_ts --> file_src_modules_signatures_signatures_service_ts
+  file_src_modules_graph_modules_traversal_paths_service_unit_test_ts --> file_src_modules_callables_callables_types_ts
+  file_src_modules_graph_modules_traversal_paths_service_unit_test_ts --> file_src_modules_documentation_documentation_service_ts
+  file_src_modules_graph_modules_traversal_paths_service_unit_test_ts --> file_src_modules_graph_graph_service_ts
+  file_src_modules_graph_modules_traversal_paths_service_unit_test_ts --> file_src_modules_graph_modules_measurement_graph_depth_service_ts
+  file_src_modules_graph_modules_traversal_paths_service_unit_test_ts --> file_src_modules_graph_modules_traversal_components_service_ts
+  file_src_modules_graph_modules_traversal_paths_service_unit_test_ts --> file_src_modules_graph_modules_traversal_paths_service_ts
+  file_src_modules_graph_modules_traversal_paths_service_unit_test_ts --> file_src_modules_signatures_signatures_service_ts
+  file_src_modules_graph_modules_traversal_paths_service_unit_test_ts --> file_testing_index_ts
+  file_src_modules_graph_modules_traversal_paths_service_unit_test_ts --> file_testing_modules_ts
   file_src_modules_program_compiler_host_service_unit_test_ts --> file_src_modules_program_compiler_host_service_ts
   file_src_modules_program_compiler_host_service_unit_test_ts --> file_testing_modules_ts
   file_src_modules_program_program_module_ts --> file_src_modules_program_compiler_host_service_ts
@@ -379,7 +382,7 @@ graph LR
   file_src_modules_workspace_workspace_service_unit_test_ts --> file_src_modules_workspace_workspace_service_ts
   file_src_modules_workspace_workspace_service_unit_test_ts --> file_src_modules_workspace_workspace_types_ts
   file_src_modules_workspace_workspace_service_unit_test_ts --> file_testing_modules_ts
-  file_testing_mocks_ts --> file_src_modules_callables_callables_types_ts
+  file_testing_discovered_callable_ts --> file_src_modules_callables_callables_types_ts
   file_testing_modules_ts --> file_src_modules_callables_callables_module_ts
   file_testing_modules_ts --> file_src_modules_classes_classes_module_ts
   file_testing_modules_ts --> file_src_modules_documentation_documentation_module_ts

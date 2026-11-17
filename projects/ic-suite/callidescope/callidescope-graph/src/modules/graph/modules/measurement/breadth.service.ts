@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import type { DiscoveredCallable } from "../callables/callables.types";
+import type { DiscoveredCallable } from "../../../callables/callables.types";
 import type {
   BreadthMeasurement,
   CallableBreadth,
@@ -8,7 +8,7 @@ import type {
   CallableReference,
   CallGraph,
   MeasureBreadthArguments,
-} from "./graph.types";
+} from "../../graph.types";
 import type { CallableId } from "@callidescope/core";
 
 /**

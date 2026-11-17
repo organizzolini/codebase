@@ -2,12 +2,12 @@ import { describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { ANALYSIS_MODULES } from "../../../testing/modules";
+import { ANALYSIS_MODULES } from "../../../../../testing/modules";
+import { GraphService } from "../../graph.service";
 
 import { ComponentsService } from "./components.service";
-import { GraphService } from "./graph.service";
 
-import type { CondensedGraph } from "./graph.types";
+import type { CondensedGraph } from "../../graph.types";
 import type { CallEdge } from "@callidescope/core";
 
 /** Condenses a graph described as `from -> to` pairs. */

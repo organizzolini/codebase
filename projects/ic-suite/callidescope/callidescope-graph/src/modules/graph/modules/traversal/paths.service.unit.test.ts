@@ -3,17 +3,17 @@ import { describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { buildDiscoveredCallable } from "../../../testing";
-import { ANALYSIS_MODULES } from "../../../testing/modules";
-import { DocumentationService } from "../documentation/documentation.service";
-import { SignaturesService } from "../signatures/signatures.service";
+import { buildDiscoveredCallable } from "../../../../../testing";
+import { ANALYSIS_MODULES } from "../../../../../testing/modules";
+import { DocumentationService } from "../../../documentation/documentation.service";
+import { SignaturesService } from "../../../signatures/signatures.service";
+import { GraphService } from "../../graph.service";
+import { GraphDepthService } from "../measurement/graph-depth.service";
 
 import { ComponentsService } from "./components.service";
-import { GraphDepthService } from "./graph-depth.service";
-import { GraphService } from "./graph.service";
 import { PathsService } from "./paths.service";
 
-import type { DiscoveredCallable } from "../callables/callables.types";
+import type { DiscoveredCallable } from "../../../callables/callables.types";
 import type { CallableId, CallEdge } from "@callidescope/core";
 
 /** Builds the callable lookup a path reconstruction reads names from. */

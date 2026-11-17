@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
 
-import { DocumentationService } from "../documentation/documentation.service";
-import { SignaturesService } from "../signatures/signatures.service";
+import { DocumentationService } from "../../../documentation/documentation.service";
+import { SignaturesService } from "../../../signatures/signatures.service";
 
-import type { DiscoveredCallable } from "../callables/callables.types";
-import type { CondensedGraph, DepthMeasurement } from "./graph.types";
+import type { DiscoveredCallable } from "../../../callables/callables.types";
+import type { CondensedGraph, DepthMeasurement } from "../../graph.types";
 import type { CallableId, StackFrame } from "@callidescope/core";
 
 /**
