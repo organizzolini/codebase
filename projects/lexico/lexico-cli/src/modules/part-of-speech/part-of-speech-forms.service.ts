@@ -63,7 +63,11 @@ export class PartOfSpeechFormsService {
   }): string[] {
     const { index, index_, lexeme, table_ } = args;
     const identifiers = this.collectTableIdentifiers(index, index_, table_);
+    const isGendered =
+      ["determiner", "pronoun"].includes(lexeme.partOfSpeech) &&
+      [...identifiers].some((id) => this.isGender(id));
     if (
+      isGendered ||
       ["adjective", "numeral", "participle", "suffix"].includes(
         lexeme.partOfSpeech,
       )

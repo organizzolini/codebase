@@ -477,7 +477,11 @@ export class FormsBuilderService {
     }
 
     if (nominalPartOfSpeechSet.has(pos)) {
-      return this.buildNominalFormsFromRaw(rawForms, lexeme);
+      // A pronoun or determiner declined by gender, such as hic, reads as an adjective does.
+      const genderedForms = this.buildAdjectivalFormsFromRaw(rawForms, lexeme);
+      return genderedForms.length > 0
+        ? genderedForms
+        : this.buildNominalFormsFromRaw(rawForms, lexeme);
     }
 
     if (pos === "verb") {

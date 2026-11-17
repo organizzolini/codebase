@@ -141,6 +141,22 @@ describe(FormsBuilderService, () => {
     expect(forms[0]).toBeInstanceOf(AdjectivalForm);
   });
 
+  it.each(["pronoun", "determiner"] as const)(
+    "should build adjectival forms for a gendered %s table",
+    (partOfSpeech) => {
+      expect.hasAssertions();
+
+      const forms = service.buildFormsForPartOfSpeech(
+        partOfSpeech,
+        { masculine: { nominative: { singular: ["hic"] } } },
+        new Lexeme(),
+      );
+
+      expect(forms).toHaveLength(1);
+      expect(forms[0]).toBeInstanceOf(AdjectivalForm);
+    },
+  );
+
   it("should ignore invalid adjective gender maps", () => {
     expect.hasAssertions();
 

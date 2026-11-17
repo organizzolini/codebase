@@ -81,6 +81,35 @@ describe(PartOfSpeechFormsService, () => {
       });
     });
 
+    it.each(["pronoun", "determiner"] as const)(
+      "orders the gender, case and number of a gendered %s table as an adjective's",
+      (partOfSpeech) => {
+        const parserWithPrivates = service as unknown as {
+          parseFormTable: ($: CheerioAPI, elt: AnyNode) => null | string[][];
+        };
+        vi.spyOn(parserWithPrivates, "parseFormTable").mockReturnValue([
+          ["", "singular", "plural"],
+          ["", "masculine", "masculine"],
+          [
+            "nominative",
+            '<span class="Latn" lang="la">hic</span>',
+            '<span class="Latn" lang="la">hi</span>',
+          ],
+        ]);
+        const { $, element } = loadCheerioElement("<p />", "p");
+
+        const forms = service.parseGenericForms({
+          $,
+          elt: element,
+          lexeme: { partOfSpeech } as Lexeme,
+        });
+
+        expect(forms).toStrictEqual({
+          masculine: { nominative: { plural: ["hi"], singular: ["hic"] } },
+        });
+      },
+    );
+
     it("skips non-latin content cells", () => {
       const parserWithPrivates = service as unknown as {
         parseFormTable: (
