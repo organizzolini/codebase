@@ -1,6 +1,6 @@
 # Gitleaks Configuration
 # Purpose: detect hardcoded secrets (API keys, passwords, tokens) in git history and staged changes.
-# Usage (CI): the secure-code workflow scans history. Local: gitleaks git --staged --config configuration/repository/gitleaks.toml
+# Usage (CI): the secure-code workflow scans history. Local: gitleaks git --staged --config configuration/security/gitleaks.toml
 # @see https://github.com/gitleaks/gitleaks
 
 [extend]

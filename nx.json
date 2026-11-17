@@ -302,14 +302,14 @@
           "^default",
           "{projectRoot}/**/*.ts",
           "{projectRoot}/**/*.tsx",
-          "{workspaceRoot}/configuration/typescript/dependency-cruiser.cjs",
+          "{workspaceRoot}/configuration/dependencies/dependency-cruiser.cjs",
           "default",
           {
             "externalDependencies": ["dependency-cruiser"]
           }
         ],
         "options": {
-          "command": "depcruise {projectRoot}/src --config configuration/typescript/dependency-cruiser.cjs",
+          "command": "depcruise {projectRoot}/src --config configuration/dependencies/dependency-cruiser.cjs",
           "cwd": "{workspaceRoot}"
         }
       }

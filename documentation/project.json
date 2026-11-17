@@ -14,7 +14,7 @@
     "codometer": {},
     "dependency-cruiser": {
       "options": {
-        "command": "depcruise documentation/tooling/src --config configuration/typescript/dependency-cruiser.cjs"
+        "command": "depcruise documentation/tooling/src --config configuration/dependencies/dependency-cruiser.cjs"
       }
     },
     "deprecate-code": {},

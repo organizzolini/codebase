@@ -460,24 +460,24 @@
       "cache": true,
       "configurations": {
         "ci": {
-          "command": "gitleaks git --verbose --redact --config configuration/repository/gitleaks.toml --gitleaks-ignore-path configuration"
+          "command": "gitleaks git --verbose --redact --config configuration/security/gitleaks.toml --gitleaks-ignore-path configuration/security"
         },
         "ci-incremental": {
-          "command": "gitleaks git --log-opts=\"${NX_BASE}..${NX_HEAD}\" --verbose --redact --config configuration/repository/gitleaks.toml --gitleaks-ignore-path configuration"
+          "command": "gitleaks git --log-opts=\"${NX_BASE}..${NX_HEAD}\" --verbose --redact --config configuration/security/gitleaks.toml --gitleaks-ignore-path configuration/security"
         }
       },
       "description": "Detect hardcoded secrets in git history using Gitleaks (detection only). The ci-incremental configuration scopes the scan to NX_BASE..NX_HEAD instead of full history, for push/pull_request/merge_group events where the weekly ci scan already covers everything older.",
       "executor": "nx:run-commands",
       "inputs": [
-        "{workspaceRoot}/configuration/repository/.gitleaksignore",
-        "{workspaceRoot}/configuration/repository/gitleaks.toml",
+        "{workspaceRoot}/configuration/security/.gitleaksignore",
+        "{workspaceRoot}/configuration/security/gitleaks.toml",
         "workspace-files",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "gitleaks git --staged --verbose --redact --config configuration/repository/gitleaks.toml --gitleaks-ignore-path configuration",
+        "command": "gitleaks git --staged --verbose --redact --config configuration/security/gitleaks.toml --gitleaks-ignore-path configuration/security",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -764,10 +764,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "pnpm exec syncpack lint --config configuration/repository/syncpack.config.cjs"
+          "command": "pnpm exec syncpack lint --config configuration/dependencies/syncpack.config.cjs"
         },
         "write": {
-          "command": "pnpm exec syncpack fix --config configuration/repository/syncpack.config.cjs && nx run configuration:oxfmt:write"
+          "command": "pnpm exec syncpack fix --config configuration/dependencies/syncpack.config.cjs && nx run configuration:oxfmt:write"
         }
       },
       "defaultConfiguration": "check",
@@ -775,14 +775,14 @@
       "executor": "nx:run-commands",
       "inputs": [
         "{workspaceRoot}/**/package.json",
-        "{workspaceRoot}/configuration/repository/syncpack.config.cjs",
+        "{workspaceRoot}/configuration/dependencies/syncpack.config.cjs",
         "{workspaceRoot}/pnpm-lock.yaml",
         {
           "externalDependencies": ["syncpack"]
         }
       ],
       "options": {
-        "command": "pnpm exec syncpack lint --config configuration/repository/syncpack.config.cjs",
+        "command": "pnpm exec syncpack lint --config configuration/dependencies/syncpack.config.cjs",
         "cwd": "{workspaceRoot}"
       }
     },

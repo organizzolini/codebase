@@ -128,7 +128,7 @@ const config: KnipConfig = {
         ".devcontainer/scripts/**/*.{js,mjs,ts,sh}",
         "configuration/typescript/vitest.config.ts",
         "configuration/repository/commitlint.config.ts",
-        "configuration/typescript/dependency-cruiser.cjs",
+        "configuration/dependencies/dependency-cruiser.cjs",
         "configuration/eslint.config.ts",
         "configuration/repository/lint-staged.config.ts",
         "configuration/lint/oxfmt.config.ts",
@@ -136,7 +136,7 @@ const config: KnipConfig = {
         "configuration/typescript/fallow.config.jsonc", // fallow static analysis config
         "configuration/lint/prettier.config.ts",
         "configuration/lint/stylelint.config.cjs",
-        "configuration/repository/syncpack.config.cjs",
+        "configuration/dependencies/syncpack.config.cjs",
         "configuration/typescript/vite.library.config.ts",
         "configuration/repository/release.config.cjs",
         "validate-branch-name.config.cjs",
