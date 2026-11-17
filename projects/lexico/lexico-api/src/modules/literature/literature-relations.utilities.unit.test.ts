@@ -135,5 +135,33 @@ describe("literature relations utilities", () => {
         connections.get("parent")?.edges.map((edge) => edge.node.id),
       ).toStrictEqual(["child"]);
     });
+
+    it("pins a page's rows with an array subquery, so the planner reads only those rows before joining", async () => {
+      expect.hasAssertions();
+
+      const repository = createRepositoryMock<Text>();
+      const builder = repository.createQueryBuilder();
+      vi.mocked(builder.getQuery).mockReturnValue("SELECT 1");
+      vi.mocked(builder.getParameters).mockReturnValue({});
+      vi.mocked(builder.getRawMany).mockResolvedValue([]);
+      vi.mocked(builder.getMany).mockResolvedValue([]);
+
+      await paginateQueryByParent(
+        {
+          alias: "text",
+          load: () => builder,
+          parentKey: "text.parent_text_id",
+          parentOf: (text) => text.parentText?.id,
+          repository,
+          sortKey: "text.title",
+        },
+        ["parent"],
+        { first: 5 },
+      );
+
+      expect(builder.andWhere).toHaveBeenCalledWith(
+        expect.stringContaining('text.id = ANY(ARRAY(SELECT "page"."id" FROM'),
+      );
+    });
   });
 });

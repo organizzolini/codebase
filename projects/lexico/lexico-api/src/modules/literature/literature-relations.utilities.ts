@@ -221,7 +221,7 @@ async function findCursorPositions<Entity extends IdentifiedEntity>(
 }
 
 /**
- * Loads every parent's page in one statement, using a window function to number children between the cursors, as `slicePage` does per parent.
+ * Loads every parent's page in one statement. An array subquery pins the page's ids, as a semi join made the planner join every row.
  */
 async function loadPartitionPages<Entity extends IdentifiedEntity>(
   query: PartitionedConnectionQuery<Entity>,
@@ -246,7 +246,7 @@ async function loadPartitionPages<Entity extends IdentifiedEntity>(
   return query
     .load()
     .andWhere(
-      `${query.alias}.id IN (SELECT "page"."id" FROM (${numbered.getQuery()}) "page" WHERE ${cut.sql})`,
+      `${query.alias}.id = ANY(ARRAY(SELECT "page"."id" FROM (${numbered.getQuery()}) "page" WHERE ${cut.sql}))`,
     )
     .setParameters({ ...numbered.getParameters(), ...cut.parameters })
     .orderBy(query.sortKey, "ASC")
