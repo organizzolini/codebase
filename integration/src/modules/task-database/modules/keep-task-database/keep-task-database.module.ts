@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 
 import { LoggerModule } from "@codebase/observability";
 
-import { TaskDatabaseModule } from "../task-database/task-database.module";
+import { TaskDatabaseModule } from "../../task-database.module";
 
 import { KeepTaskDatabaseCommand } from "./keep-task-database.command";
 

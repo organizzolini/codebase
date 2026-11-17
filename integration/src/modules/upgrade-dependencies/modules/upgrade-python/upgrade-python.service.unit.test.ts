@@ -14,7 +14,7 @@ import {
 import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
+import { ProcessRunnerService } from "../../../process-runner/process-runner.service";
 
 import {
   APPLICATION_PYPROJECT,

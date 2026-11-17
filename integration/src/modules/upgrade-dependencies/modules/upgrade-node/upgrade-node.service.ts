@@ -2,7 +2,7 @@ import fs from "node:fs";
 
 import { Injectable } from "@nestjs/common";
 
-import { PackageManifestService } from "../package-manifest/package-manifest.service";
+import { PackageManifestService } from "../../../package-manifest/package-manifest.service";
 
 import {
   NODE_INDEX_URL,

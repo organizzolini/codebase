@@ -13,7 +13,7 @@ import {
 import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { PackageManifestService } from "../package-manifest/package-manifest.service";
+import { PackageManifestService } from "../../../package-manifest/package-manifest.service";
 
 import { UpgradeNodeService } from "./upgrade-node.service";
 

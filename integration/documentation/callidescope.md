@@ -68,11 +68,11 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Runs one upgrade, undoing it if it fails.
     └─> UpgradeDependenciesService.work(step: UpgradeStep): Promise<UpgradeWork> [integration/src/modules/upgrade-dependencies/upgrade-dependencies.service.ts:138]
        ↳ Carries a step out: its commands in order, or its task, which throws on failure.
-      └─> UpgradeNodeService.upgrade(): Promise<string> [integration/src/modules/upgrade-node/upgrade-node.service.ts:55]
+      └─> UpgradeNodeService.upgrade(): Promise<string> [integration/src/modules/upgrade-dependencies/modules/upgrade-node/upgrade-node.service.ts:55]
          ↳ Writes the newest release of the current major, if newer.
-        └─> UpgradeNodeService.fetchReleases(): Promise<string[]> [integration/src/modules/upgrade-node/upgrade-node.service.ts:37]
+        └─> UpgradeNodeService.fetchReleases(): Promise<string[]> [integration/src/modules/upgrade-dependencies/modules/upgrade-node/upgrade-node.service.ts:37]
            ↳ Every release Node.js has published, as `v` and three numbers.
-          └─> UpgradeNodeService.map(…)(release: { version: string; }): string [integration/src/modules/upgrade-node/upgrade-node.service.ts:46]
+          └─> UpgradeNodeService.map(…)(release: { version: string; }): string [integration/src/modules/upgrade-dependencies/modules/upgrade-node/upgrade-node.service.ts:46]
 ```
 
 <details>
@@ -126,21 +126,7 @@ What this project is judged against, as declared in its own `callidescope.config
           └─> map(…)(root: string): string [integration/src/executors/spell-check/spell-check.utilities.ts:12]
 ```
 
-**7. `AdoptTaskDatabaseCommand.run`** — depth 5 · decorated-method
-
-```text
-🚀 AdoptTaskDatabaseCommand.run(): Promise<void> [integration/src/modules/adopt-task-database/adopt-task-database.command.ts:42]
-   ↳ Runs the step and prints what it reports.
-  └─> TaskDatabaseService.adopt(): TaskDatabaseReport [integration/src/modules/task-database/task-database.service.ts:346]
-     ↳ Renames the newest restored database to this machine's id, which Nx opens, and discards the rest.
-    └─> TaskDatabaseService.planAdoption(databases: readonly string[]): AdoptionPlan [integration/src/modules/task-database/task-database.service.ts:245]
-       ↳ Decides what adopting would do, or why it should do nothing.
-      └─> TaskDatabaseService.readMachineId(): string [integration/src/modules/task-database/task-database.service.ts:310]
-         ↳ This machine's id, from the first readable, non-empty id file.
-        └─> TaskDatabaseService.filter(…)(file: string): boolean [integration/src/modules/task-database/task-database.service.ts:314]
-```
-
-**8. `MergeTaskCacheCommand.run`** — depth 5 · decorated-method
+**7. `MergeTaskCacheCommand.run`** — depth 5 · decorated-method
 
 ```text
 🚀 MergeTaskCacheCommand.run(parameters: string[]): Promise<void> [integration/src/modules/merge-task-cache/merge-task-cache.command.ts:44]
@@ -154,7 +140,7 @@ What this project is judged against, as declared in its own `callidescope.config
         └─> TaskDatabaseService.map(…)(name: string): string [integration/src/modules/task-database/task-database.service.ts:214]
 ```
 
-**9. `RunAffectedCommand.run`** — depth 5 · decorated-method
+**8. `RunAffectedCommand.run`** — depth 5 · decorated-method
 
 ```text
 🚀 RunAffectedCommand.run(): Promise<void> [integration/src/modules/run-affected/run-affected.command.ts:53]
@@ -167,6 +153,20 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Lists the files changed between two revisions, or why that failed.
         └─> ProcessRunnerService.capture(executable: string, args: readonly string[]): CapturedProcess [integration/src/modules/process-runner/process-runner.service.ts:42]
            ↳ Runs a command to completion and returns both output streams and the exit code.
+```
+
+**9. `AdoptTaskDatabaseCommand.run`** — depth 5 · decorated-method
+
+```text
+🚀 AdoptTaskDatabaseCommand.run(): Promise<void> [integration/src/modules/task-database/modules/adopt-task-database/adopt-task-database.command.ts:42]
+   ↳ Runs the step and prints what it reports.
+  └─> TaskDatabaseService.adopt(): TaskDatabaseReport [integration/src/modules/task-database/task-database.service.ts:346]
+     ↳ Renames the newest restored database to this machine's id, which Nx opens, and discards the rest.
+    └─> TaskDatabaseService.planAdoption(databases: readonly string[]): AdoptionPlan [integration/src/modules/task-database/task-database.service.ts:245]
+       ↳ Decides what adopting would do, or why it should do nothing.
+      └─> TaskDatabaseService.readMachineId(): string [integration/src/modules/task-database/task-database.service.ts:310]
+         ↳ This machine's id, from the first readable, non-empty id file.
+        └─> TaskDatabaseService.filter(…)(file: string): boolean [integration/src/modules/task-database/task-database.service.ts:314]
 ```
 
 **10. `CleanupCodebaseCommand.run`** — depth 4 · decorated-method
@@ -193,19 +193,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> CollectCodometerBaselineService.toSorted(…)(left: fs.Dirent<string>, right: fs.Dirent<string>): number [integration/src/modules/collect-codometer-baseline/collect-codometer-baseline.service.ts:40]
 ```
 
-**12. `KeepTaskDatabaseCommand.run`** — depth 4 · decorated-method
-
-```text
-🚀 KeepTaskDatabaseCommand.run(): Promise<void> [integration/src/modules/keep-task-database/keep-task-database.command.ts:41]
-   ↳ Runs the step and prints what it reports.
-  └─> TaskDatabaseService.keep(): TaskDatabaseReport [integration/src/modules/task-database/task-database.service.ts:374]
-     ↳ Keeps only the newest database, warning when there was more than one. Several means Nx opened a name of its own again.
-    └─> TaskDatabaseService.list(directory?: string): string[] [integration/src/modules/task-database/task-database.service.ts:205]
-       ↳ Lists every task database in a directory, this cache's by default, in name order, and nothing when there is none.
-      └─> TaskDatabaseService.map(…)(name: string): string [integration/src/modules/task-database/task-database.service.ts:214]
-```
-
-**13. `ReportCodometerChangesCommand.run`** — depth 4 · decorated-method
+**12. `ReportCodometerChangesCommand.run`** — depth 4 · decorated-method
 
 ```text
 🚀 ReportCodometerChangesCommand.run(): Promise<void> [integration/src/modules/report-codometer-changes/report-codometer-changes.command.ts:42]
@@ -218,10 +206,22 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Runs a command to completion and returns both output streams and the exit code.
 ```
 
+**13. `KeepTaskDatabaseCommand.run`** — depth 4 · decorated-method
+
+```text
+🚀 KeepTaskDatabaseCommand.run(): Promise<void> [integration/src/modules/task-database/modules/keep-task-database/keep-task-database.command.ts:41]
+   ↳ Runs the step and prints what it reports.
+  └─> TaskDatabaseService.keep(): TaskDatabaseReport [integration/src/modules/task-database/task-database.service.ts:374]
+     ↳ Keeps only the newest database, warning when there was more than one. Several means Nx opened a name of its own again.
+    └─> TaskDatabaseService.list(directory?: string): string[] [integration/src/modules/task-database/task-database.service.ts:205]
+       ↳ Lists every task database in a directory, this cache's by default, in name order, and nothing when there is none.
+      └─> TaskDatabaseService.map(…)(name: string): string [integration/src/modules/task-database/task-database.service.ts:214]
+```
+
 **14. `VerifyTaskDatabaseCommand.run`** — depth 4 · decorated-method
 
 ```text
-🚀 VerifyTaskDatabaseCommand.run(): Promise<void> [integration/src/modules/verify-task-database/verify-task-database.command.ts:39]
+🚀 VerifyTaskDatabaseCommand.run(): Promise<void> [integration/src/modules/task-database/modules/verify-task-database/verify-task-database.command.ts:39]
    ↳ Runs the step and prints what it reports.
   └─> TaskDatabaseService.verify(): TaskDatabaseReport [integration/src/modules/task-database/task-database.service.ts:429]
      ↳ Discards every database that fails `PRAGMA integrity_check`, since a damaged one saved would be inherited by later jobs.
@@ -294,13 +294,13 @@ What this project is judged against, as declared in its own `callidescope.config
 | `TaskDatabaseService.adopt` | 6 | `TaskDatabaseService.list`, `TaskDatabaseService.planAdoption`, `TaskDatabaseService.discardOthers`, `TaskDatabaseService.rename`, `adoptedMessage`, `TaskDatabaseService.countCachedResults` | `integration/src/modules/task-database/task-database.service.ts:346` |
 | `ImportPrTaskCacheService.import` | 6 | `ImportPrTaskCacheService.read`, `ImportPrTaskCacheService.locate`, `ImportPrTaskCacheService.download`, `importingMessage`, `TaskDatabaseService.merge`, `couldNotImportMessage` | `integration/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts:170` |
 | `judgeGroup` | 6 | `map(…)`, `runKnip`, `attributeIssues`, `failAll`, `filter(…)`, `explain` | `integration/src/executors/knip/batch-executor.ts:104` |
+| `BoundBaseToPushService.bound` | 5 | `BoundBaseToPushService.read`, `noPreviousTipMessage`, `ProcessRunnerService.capture`, `notAncestorMessage`, `boundingMessage` | `integration/src/modules/bound-base-to-push/bound-base-to-push.service.ts:51` |
 | `TaskDatabaseService.checkSource` | 5 | `TaskDatabaseService.list`, `TaskDatabaseService.newest`, `TaskDatabaseService.integrityOf`, `TaskDatabaseService.query`, `TaskDatabaseService.every(…)` | `integration/src/modules/task-database/task-database.service.ts:86` |
 | `TaskDatabaseService.mergeRows` | 5 | `TaskDatabaseService.query`, `TaskDatabaseService.copyMissingOutputs`, `TaskDatabaseService.cacheDirectory`, `TaskDatabaseService.insertRows`, `mergedMessage` | `integration/src/modules/task-database/task-database.service.ts:221` |
 | `TaskDatabaseService.keep` | 5 | `TaskDatabaseService.list`, `TaskDatabaseService.newest`, `TaskDatabaseService.discardOthers`, `duplicateMessage`, `TaskDatabaseService.map(…)` | `integration/src/modules/task-database/task-database.service.ts:374` |
 | `TaskDatabaseService.merge` | 5 | `TaskDatabaseService.checkSource`, `notMergingMessage`, `TaskDatabaseService.planMerge`, `TaskDatabaseService.adoptSource`, `TaskDatabaseService.mergeRows` | `integration/src/modules/task-database/task-database.service.ts:399` |
-| `BoundBaseToPushService.bound` | 5 | `BoundBaseToPushService.read`, `noPreviousTipMessage`, `ProcessRunnerService.capture`, `notAncestorMessage`, `boundingMessage` | `integration/src/modules/bound-base-to-push/bound-base-to-push.service.ts:51` |
 | `ImportPrTaskCacheService.locate` | 5 | `ImportPrTaskCacheService.findPullRequest`, `ImportPrTaskCacheService.require`, `ImportPrTaskCacheService.api`, `artifactQuery`, `noArtifactMessage` | `integration/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts:125` |
-| `UpgradePythonService.upgrade` | 5 | `UpgradePythonService.newest`, `currentVersion`, `withRequiredVersion`, `withToolVersions`, `ProcessRunnerService.captureSequence` | `integration/src/modules/upgrade-python/upgrade-python.service.ts:74` |
+| `UpgradePythonService.upgrade` | 5 | `UpgradePythonService.newest`, `currentVersion`, `withRequiredVersion`, `withToolVersions`, `ProcessRunnerService.captureSequence` | `integration/src/modules/upgrade-dependencies/modules/upgrade-python/upgrade-python.service.ts:74` |
 | `runCodometerBatch` | 5 | `ProcessRunnerService.captureAsync`, `ProcessRunnerService.constructor`, `buildCliArguments`, `map(…)`, `buildCaptureLocation` | `integration/src/executors/codometer/codometer.runner.ts:19` |
 | `judgeGroup` | 5 | `runCspell`, `map(…)`, `chargedRoots`, `map(…)`, `explain` | `integration/src/executors/spell-check/batch-executor.ts:80` |
 | `TaskDatabaseService.planAdoption` | 4 | `TaskDatabaseService.readMachineId`, `TaskDatabaseService.newest`, `noSchemaMessage`, `TaskDatabaseService.directory` | `integration/src/modules/task-database/task-database.service.ts:245` |
@@ -308,7 +308,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `ImportPrTaskCacheService.findPullRequest` | 4 | `ImportPrTaskCacheService.read`, `ImportPrTaskCacheService.require`, `ImportPrTaskCacheService.api`, `untrustedMessage` | `integration/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts:98` |
 | `RunAffectedCommand.run` | 4 | `RunAffectedService.plan`, `RunAffectedCommand.report`, `templateFilesHeading`, `RunAffectedService.execute` | `integration/src/modules/run-affected/run-affected.command.ts:53` |
 | `SetupCodebaseCommand.run` | 4 | `SetupCodebaseCommand.boundBase`, `ImportPrTaskCacheService.import`, `TaskDatabaseService.verify`, `TaskDatabaseService.adopt` | `integration/src/modules/setup-codebase/setup-codebase.command.ts:86` |
-| `UpgradeNodeService.upgrade` | 4 | `UpgradeNodeService.fetchReleases`, `UpgradeNodeService.toSorted(…)`, `UpgradeNodeService.filter(…)`, `PackageManifestService.replace` | `integration/src/modules/upgrade-node/upgrade-node.service.ts:55` |
+| `UpgradeNodeService.upgrade` | 4 | `UpgradeNodeService.fetchReleases`, `UpgradeNodeService.toSorted(…)`, `UpgradeNodeService.filter(…)`, `PackageManifestService.replace` | `integration/src/modules/upgrade-dependencies/modules/upgrade-node/upgrade-node.service.ts:55` |
 | `UpgradeDependenciesService.work` | 4 | `ProcessRunnerService.captureSequence`, `UpgradeNodeService.upgrade`, `UpgradePnpmService.upgrade`, `UpgradePythonService.upgrade` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.service.ts:138` |
 | `UpgradeDependenciesCommand.run` | 4 | `UpgradeDependenciesService.attempt`, `UpgradeDependenciesCommand.conclude`, `UpgradeDependenciesService.finish`, `UpgradeDependenciesCommand.some(…)` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.command.ts:79` |
 | `runCodometerCli` | 4 | `ProcessRunnerService.captureAsync`, `ProcessRunnerService.constructor`, `buildCliArguments`, `buildCaptureLocation` | `integration/src/executors/codometer/codometer.runner.ts:42` |
@@ -329,35 +329,36 @@ What this project is judged against, as declared in its own `callidescope.config
 | `ReportCodometerChangesService.fetchBaseline` | 2 | `ProcessRunnerService.capture`, `baselineSkippedMessage` | `integration/src/modules/report-codometer-changes/report-codometer-changes.service.ts:51` |
 | `RunAffectedService.listChangedFiles` | 2 | `ProcessRunnerService.capture`, `RunAffectedService.filter(…)` | `integration/src/modules/run-affected/run-affected.service.ts:46` |
 | `RunAffectedService.templatesChanged` | 2 | `RunAffectedService.listChangedFiles`, `RunAffectedService.filter(…)` | `integration/src/modules/run-affected/run-affected.service.ts:118` |
-| `UpgradePnpmService.upgrade` | 2 | `ProcessRunnerService.capture`, `PackageManifestService.replace` | `integration/src/modules/upgrade-pnpm/upgrade-pnpm.service.ts:35` |
+| `UpgradePnpmService.upgrade` | 2 | `ProcessRunnerService.capture`, `PackageManifestService.replace` | `integration/src/modules/upgrade-dependencies/modules/upgrade-pnpm/upgrade-pnpm.service.ts:35` |
 | `warningsOf` | 2 | `filter(…)`, `map(…)` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.utilities.ts:83` |
 | `skippedBullet` | 2 | `code`, `reasonOf` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.utilities.ts:126` |
 | `UpgradeDependenciesService.finish` | 2 | `UpgradeDependenciesService.git`, `renderPullRequestBody` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.service.ts:211` |
 | `attributeIssues` | 2 | `readIssueFiles`, `ownerOf` | `integration/src/executors/knip/knip.utilities.ts:9` |
 | `ownerOf` | 2 | `toSorted(…)`, `filter(…)` | `integration/src/executors/knip/knip.utilities.ts:57` |
 | `spellCheckBatchExecutor` | 2 | `judgeGroup`, `printFailures` | `integration/src/executors/spell-check/batch-executor.ts:16` |
+| `ProcessRunnerService.captureSequence` | 1 | `ProcessRunnerService.capture` | `integration/src/modules/process-runner/process-runner.service.ts:98` |
+| `BoundBaseToPushCommand.run` | 1 | `BoundBaseToPushService.bound` | `integration/src/modules/bound-base-to-push/bound-base-to-push.command.ts:40` |
 | `TaskDatabaseService.countCachedResults` | 1 | `TaskDatabaseService.query` | `integration/src/modules/task-database/task-database.service.ts:140` |
 | `TaskDatabaseService.discardOthers` | 1 | `TaskDatabaseService.discard` | `integration/src/modules/task-database/task-database.service.ts:163` |
 | `TaskDatabaseService.integrityOf` | 1 | `TaskDatabaseService.query` | `integration/src/modules/task-database/task-database.service.ts:193` |
 | `TaskDatabaseService.newest` | 1 | `TaskDatabaseService.reduce(…)` | `integration/src/modules/task-database/task-database.service.ts:236` |
 | `TaskDatabaseService.readMachineId` | 1 | `TaskDatabaseService.filter(…)` | `integration/src/modules/task-database/task-database.service.ts:310` |
-| `AdoptTaskDatabaseCommand.run` | 1 | `TaskDatabaseService.adopt` | `integration/src/modules/adopt-task-database/adopt-task-database.command.ts:42` |
-| `ProcessRunnerService.captureSequence` | 1 | `ProcessRunnerService.capture` | `integration/src/modules/process-runner/process-runner.service.ts:98` |
-| `BoundBaseToPushCommand.run` | 1 | `BoundBaseToPushService.bound` | `integration/src/modules/bound-base-to-push/bound-base-to-push.command.ts:40` |
 | `CollectCodometerBaselineService.findReports` | 1 | `CollectCodometerBaselineService.toSorted(…)` | `integration/src/modules/collect-codometer-baseline/collect-codometer-baseline.service.ts:34` |
 | `CollectCodometerBaselineCommand.run` | 1 | `CollectCodometerBaselineService.collect` | `integration/src/modules/collect-codometer-baseline/collect-codometer-baseline.command.ts:42` |
 | `ImportPrTaskCacheService.api` | 1 | `ProcessRunnerService.capture` | `integration/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts:55` |
 | `ImportPrTaskCacheCommand.run` | 1 | `ImportPrTaskCacheService.import` | `integration/src/modules/import-pr-task-cache/import-pr-task-cache.command.ts:42` |
-| `KeepTaskDatabaseCommand.run` | 1 | `TaskDatabaseService.keep` | `integration/src/modules/keep-task-database/keep-task-database.command.ts:41` |
 | `MergeTaskCacheCommand.run` | 1 | `TaskDatabaseService.merge` | `integration/src/modules/merge-task-cache/merge-task-cache.command.ts:44` |
 | `ReportCodometerChangesCommand.run` | 1 | `ReportCodometerChangesService.report` | `integration/src/modules/report-codometer-changes/report-codometer-changes.command.ts:42` |
 | `RunAffectedService.readInputs` | 1 | `RunAffectedService.filter(…)` | `integration/src/modules/run-affected/run-affected.service.ts:77` |
 | `RunAffectedService.execute` | 1 | `ProcessRunnerService.stream` | `integration/src/modules/run-affected/run-affected.service.ts:142` |
 | `SetupCodebaseCommand.boundBase` | 1 | `BoundBaseToPushService.bound` | `integration/src/modules/setup-codebase/setup-codebase.command.ts:57` |
+| `AdoptTaskDatabaseCommand.run` | 1 | `TaskDatabaseService.adopt` | `integration/src/modules/task-database/modules/adopt-task-database/adopt-task-database.command.ts:42` |
+| `KeepTaskDatabaseCommand.run` | 1 | `TaskDatabaseService.keep` | `integration/src/modules/task-database/modules/keep-task-database/keep-task-database.command.ts:41` |
+| `VerifyTaskDatabaseCommand.run` | 1 | `TaskDatabaseService.verify` | `integration/src/modules/task-database/modules/verify-task-database/verify-task-database.command.ts:39` |
 | `PackageManifestService.replace` | 1 | `PackageManifestService.current` | `integration/src/modules/package-manifest/package-manifest.service.ts:44` |
-| `UpgradeNodeService.fetchReleases` | 1 | `UpgradeNodeService.map(…)` | `integration/src/modules/upgrade-node/upgrade-node.service.ts:37` |
-| `withRequiredVersion` | 1 | `nextVersion` | `integration/src/modules/upgrade-python/upgrade-python.utilities.ts:26` |
-| `UpgradePythonService.newest` | 1 | `ProcessRunnerService.capture` | `integration/src/modules/upgrade-python/upgrade-python.service.ts:45` |
+| `UpgradeNodeService.fetchReleases` | 1 | `UpgradeNodeService.map(…)` | `integration/src/modules/upgrade-dependencies/modules/upgrade-node/upgrade-node.service.ts:37` |
+| `withRequiredVersion` | 1 | `nextVersion` | `integration/src/modules/upgrade-dependencies/modules/upgrade-python/upgrade-python.utilities.ts:26` |
+| `UpgradePythonService.newest` | 1 | `ProcessRunnerService.capture` | `integration/src/modules/upgrade-dependencies/modules/upgrade-python/upgrade-python.service.ts:45` |
 | `map(…)` | 1 | `skippedBullet` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.utilities.ts:35` |
 | `map(…)` | 1 | `detailBullet` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.utilities.ts:38` |
 | `map(…)` | 1 | `quoteSkipped` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.utilities.ts:62` |
@@ -366,7 +367,6 @@ What this project is judged against, as declared in its own `callidescope.config
 | `UpgradeDependenciesService.git` | 1 | `ProcessRunnerService.capture` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.service.ts:77` |
 | `UpgradeDependenciesService.snapshot` | 1 | `UpgradeDependenciesService.git` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.service.ts:82` |
 | `UpgradeDependenciesCommand.conclude` | 1 | `skippedAnnotation` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.command.ts:51` |
-| `VerifyTaskDatabaseCommand.run` | 1 | `TaskDatabaseService.verify` | `integration/src/modules/verify-task-database/verify-task-database.command.ts:39` |
 | `judgeAlone` | 1 | `runCodometerCli` | `integration/src/executors/codometer/batch-executor.ts:60` |
 | `map(…)` | 1 | `judgeAlone` | `integration/src/executors/codometer/batch-executor.ts:104` |
 | `codometerExecutor` | 1 | `runCodometerCli` | `integration/src/executors/codometer/executor.ts:13` |

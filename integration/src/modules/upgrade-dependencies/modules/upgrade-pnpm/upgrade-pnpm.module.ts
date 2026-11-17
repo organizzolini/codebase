@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 
-import { PackageManifestModule } from "../package-manifest/package-manifest.module";
-import { ProcessRunnerModule } from "../process-runner/process-runner.module";
+import { PackageManifestModule } from "../../../package-manifest/package-manifest.module";
+import { ProcessRunnerModule } from "../../../process-runner/process-runner.module";
 
 import { UpgradePnpmService } from "./upgrade-pnpm.service";
 

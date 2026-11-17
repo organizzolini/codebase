@@ -3,26 +3,26 @@ import { describe, expect, it } from "vitest";
 import { LoggerModule } from "@codebase/observability";
 import { expectModuleImports } from "@codebase/testing/nestjs";
 
-import { TaskDatabaseModule } from "../task-database/task-database.module";
+import { TaskDatabaseModule } from "../../task-database.module";
 
-import { AdoptTaskDatabaseCommand } from "./adopt-task-database.command";
-import { AdoptTaskDatabaseModule } from "./adopt-task-database.module";
+import { KeepTaskDatabaseCommand } from "./keep-task-database.command";
+import { KeepTaskDatabaseModule } from "./keep-task-database.module";
 
-describe(AdoptTaskDatabaseModule, () => {
+describe(KeepTaskDatabaseModule, () => {
   it("registers expected imports and providers", () => {
     expect.hasAssertions();
 
     const providers = Reflect.getMetadata(
       "providers",
-      AdoptTaskDatabaseModule,
+      KeepTaskDatabaseModule,
     ) as undefined | unknown[];
 
     expectModuleImports(
-      AdoptTaskDatabaseModule,
+      KeepTaskDatabaseModule,
       LoggerModule,
       TaskDatabaseModule,
     );
 
-    expect(providers).toContain(AdoptTaskDatabaseCommand);
+    expect(providers).toContain(KeepTaskDatabaseCommand);
   });
 });

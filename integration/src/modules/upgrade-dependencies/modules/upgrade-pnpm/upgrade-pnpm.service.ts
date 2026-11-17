@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 
-import { PackageManifestService } from "../package-manifest/package-manifest.service";
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
+import { PackageManifestService } from "../../../package-manifest/package-manifest.service";
+import { ProcessRunnerService } from "../../../process-runner/process-runner.service";
 
 import { VERSION_PATTERN } from "./upgrade-pnpm.constants";
 

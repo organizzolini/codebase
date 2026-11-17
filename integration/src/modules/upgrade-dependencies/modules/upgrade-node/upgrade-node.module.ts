@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { PackageManifestModule } from "../package-manifest/package-manifest.module";
+import { PackageManifestModule } from "../../../package-manifest/package-manifest.module";
 
 import { UpgradeNodeService } from "./upgrade-node.service";
 

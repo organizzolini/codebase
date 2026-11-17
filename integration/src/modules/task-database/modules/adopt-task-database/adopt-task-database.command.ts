@@ -3,22 +3,23 @@ import { Command, CommandRunner } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { TaskDatabaseService } from "../task-database/task-database.service";
+import { TaskDatabaseService } from "../../task-database.service";
 
 /**
- * CLI command that keeps only the newest Nx task database, warning when there was more than
- * one.
+ * CLI command that renames the newest restored Nx task database to this
+ * machine's id and discards the rest.
  *
- * Reads `NX_WORKSPACE_DATA_DIRECTORY` and always exits 0: a warning is
- * printed, never a failure, because the cache is an optimization.
+ * Reads `NX_WORKSPACE_DATA_DIRECTORY`, and `MACHINE_ID_FILES` to take the id
+ * from other files than Nx's own. Always exits 0: a warning is printed, never
+ * a failure, because the cache is an optimization.
  */
 @Command({
   description:
-    "Keep only the newest Nx task database, warning when there was more than one",
-  name: "keep-task-database",
+    "Rename the newest restored Nx task database to this machine's id",
+  name: "adopt-task-database",
 })
 @Injectable()
-export class KeepTaskDatabaseCommand extends CommandRunner {
+export class AdoptTaskDatabaseCommand extends CommandRunner {
   // 🏗 Dependency Injection
 
   constructor(
@@ -26,7 +27,7 @@ export class KeepTaskDatabaseCommand extends CommandRunner {
     private readonly logger: LoggerService,
   ) {
     super();
-    this.logger.setContext(KeepTaskDatabaseCommand.name);
+    this.logger.setContext(AdoptTaskDatabaseCommand.name);
   }
 
   // 🔐 Private Fields
@@ -42,7 +43,7 @@ export class KeepTaskDatabaseCommand extends CommandRunner {
     // Nothing here is asynchronous; the base class signature is.
     await Promise.resolve();
 
-    for (const line of this.taskDatabaseService.keep().lines) {
+    for (const line of this.taskDatabaseService.adopt().lines) {
       console.info(line);
     }
   }

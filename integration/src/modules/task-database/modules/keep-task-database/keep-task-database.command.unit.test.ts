@@ -7,12 +7,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { expectLoggerContext } from "@codebase/observability/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { createTaskDatabaseWorkspace } from "../../../testing/mocks";
-import { TaskDatabaseService } from "../task-database/task-database.service";
+import { createTaskDatabaseWorkspace } from "../../../../../testing/mocks";
+import { TaskDatabaseService } from "../../task-database.service";
 
 import { KeepTaskDatabaseCommand } from "./keep-task-database.command";
 
-import type { TaskDatabaseWorkspace } from "../../../testing/mocks";
+import type { TaskDatabaseWorkspace } from "../../../../../testing/mocks";
 
 describe(KeepTaskDatabaseCommand, () => {
   const moduleOptions = { mocks: [TaskDatabaseService] };

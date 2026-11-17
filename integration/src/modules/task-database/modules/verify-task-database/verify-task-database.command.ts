@@ -3,23 +3,20 @@ import { Command, CommandRunner } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { TaskDatabaseService } from "../task-database/task-database.service";
+import { TaskDatabaseService } from "../../task-database.service";
 
 /**
- * CLI command that renames the newest restored Nx task database to this
- * machine's id and discards the rest.
+ * CLI command that discards every Nx task database that fails `PRAGMA integrity_check`.
  *
- * Reads `NX_WORKSPACE_DATA_DIRECTORY`, and `MACHINE_ID_FILES` to take the id
- * from other files than Nx's own. Always exits 0: a warning is printed, never
- * a failure, because the cache is an optimization.
+ * Reads `NX_WORKSPACE_DATA_DIRECTORY` and always exits 0: a warning is
+ * printed, never a failure, because the cache is an optimization.
  */
 @Command({
-  description:
-    "Rename the newest restored Nx task database to this machine's id",
-  name: "adopt-task-database",
+  description: "Discard every Nx task database that fails its integrity check",
+  name: "verify-task-database",
 })
 @Injectable()
-export class AdoptTaskDatabaseCommand extends CommandRunner {
+export class VerifyTaskDatabaseCommand extends CommandRunner {
   // 🏗 Dependency Injection
 
   constructor(
@@ -27,7 +24,7 @@ export class AdoptTaskDatabaseCommand extends CommandRunner {
     private readonly logger: LoggerService,
   ) {
     super();
-    this.logger.setContext(AdoptTaskDatabaseCommand.name);
+    this.logger.setContext(VerifyTaskDatabaseCommand.name);
   }
 
   // 🔐 Private Fields
@@ -43,7 +40,7 @@ export class AdoptTaskDatabaseCommand extends CommandRunner {
     // Nothing here is asynchronous; the base class signature is.
     await Promise.resolve();
 
-    for (const line of this.taskDatabaseService.adopt().lines) {
+    for (const line of this.taskDatabaseService.verify().lines) {
       console.info(line);
     }
   }

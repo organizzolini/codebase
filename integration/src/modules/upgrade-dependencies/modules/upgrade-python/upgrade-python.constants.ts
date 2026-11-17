@@ -1,4 +1,4 @@
-import type { Command } from "../process-runner/process-runner.types";
+import type { Command } from "../../../process-runner/process-runner.types";
 
 // ♟️ Constants
 

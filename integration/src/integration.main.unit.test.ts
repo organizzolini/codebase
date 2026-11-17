@@ -45,17 +45,26 @@ vi.mock("./modules/run-affected/run-affected.module", () => ({
   },
 }));
 
-vi.mock("./modules/verify-task-database/verify-task-database.module", () => ({
-  VerifyTaskDatabaseModule: function VerifyTaskDatabaseModule() {},
-}));
+vi.mock(
+  "./modules/task-database/modules/verify-task-database/verify-task-database.module",
+  () => ({
+    VerifyTaskDatabaseModule: function VerifyTaskDatabaseModule() {},
+  }),
+);
 
-vi.mock("./modules/adopt-task-database/adopt-task-database.module", () => ({
-  AdoptTaskDatabaseModule: function AdoptTaskDatabaseModule() {},
-}));
+vi.mock(
+  "./modules/task-database/modules/adopt-task-database/adopt-task-database.module",
+  () => ({
+    AdoptTaskDatabaseModule: function AdoptTaskDatabaseModule() {},
+  }),
+);
 
-vi.mock("./modules/keep-task-database/keep-task-database.module", () => ({
-  KeepTaskDatabaseModule: function KeepTaskDatabaseModule() {},
-}));
+vi.mock(
+  "./modules/task-database/modules/keep-task-database/keep-task-database.module",
+  () => ({
+    KeepTaskDatabaseModule: function KeepTaskDatabaseModule() {},
+  }),
+);
 
 vi.mock("./modules/bound-base-to-push/bound-base-to-push.module", () => ({
   BoundBaseToPushModule: function BoundBaseToPushModule() {},

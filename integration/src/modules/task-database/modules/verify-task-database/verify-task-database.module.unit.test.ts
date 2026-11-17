@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { LoggerModule } from "@codebase/observability";
 import { expectModuleImports } from "@codebase/testing/nestjs";
 
-import { TaskDatabaseModule } from "../task-database/task-database.module";
+import { TaskDatabaseModule } from "../../task-database.module";
 
 import { VerifyTaskDatabaseCommand } from "./verify-task-database.command";
 import { VerifyTaskDatabaseModule } from "./verify-task-database.module";

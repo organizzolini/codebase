@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { ProcessRunnerModule } from "../process-runner/process-runner.module";
+import { ProcessRunnerModule } from "../../../process-runner/process-runner.module";
 
 import { UpgradePythonService } from "./upgrade-python.service";
 

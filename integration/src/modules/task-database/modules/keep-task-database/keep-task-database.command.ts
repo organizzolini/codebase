@@ -3,20 +3,22 @@ import { Command, CommandRunner } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { TaskDatabaseService } from "../task-database/task-database.service";
+import { TaskDatabaseService } from "../../task-database.service";
 
 /**
- * CLI command that discards every Nx task database that fails `PRAGMA integrity_check`.
+ * CLI command that keeps only the newest Nx task database, warning when there was more than
+ * one.
  *
  * Reads `NX_WORKSPACE_DATA_DIRECTORY` and always exits 0: a warning is
  * printed, never a failure, because the cache is an optimization.
  */
 @Command({
-  description: "Discard every Nx task database that fails its integrity check",
-  name: "verify-task-database",
+  description:
+    "Keep only the newest Nx task database, warning when there was more than one",
+  name: "keep-task-database",
 })
 @Injectable()
-export class VerifyTaskDatabaseCommand extends CommandRunner {
+export class KeepTaskDatabaseCommand extends CommandRunner {
   // 🏗 Dependency Injection
 
   constructor(
@@ -24,7 +26,7 @@ export class VerifyTaskDatabaseCommand extends CommandRunner {
     private readonly logger: LoggerService,
   ) {
     super();
-    this.logger.setContext(VerifyTaskDatabaseCommand.name);
+    this.logger.setContext(KeepTaskDatabaseCommand.name);
   }
 
   // 🔐 Private Fields
@@ -40,7 +42,7 @@ export class VerifyTaskDatabaseCommand extends CommandRunner {
     // Nothing here is asynchronous; the base class signature is.
     await Promise.resolve();
 
-    for (const line of this.taskDatabaseService.verify().lines) {
+    for (const line of this.taskDatabaseService.keep().lines) {
       console.info(line);
     }
   }

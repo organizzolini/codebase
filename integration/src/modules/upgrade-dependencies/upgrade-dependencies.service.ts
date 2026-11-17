@@ -6,10 +6,10 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
-import { UpgradeNodeService } from "../upgrade-node/upgrade-node.service";
-import { UpgradePnpmService } from "../upgrade-pnpm/upgrade-pnpm.service";
-import { UpgradePythonService } from "../upgrade-python/upgrade-python.service";
 
+import { UpgradeNodeService } from "./modules/upgrade-node/upgrade-node.service";
+import { UpgradePnpmService } from "./modules/upgrade-pnpm/upgrade-pnpm.service";
+import { UpgradePythonService } from "./modules/upgrade-python/upgrade-python.service";
 import {
   EMPTY_TREE,
   PULL_REQUEST_BODY_FILE,

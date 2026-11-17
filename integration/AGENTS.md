@@ -61,10 +61,10 @@ one class.
 | `setup-codebase` | `src/modules/setup-codebase` | the `setup-codebase` composite action, right after `pnpm install`; runs the four steps below it |
 | `bound-base-to-push` | `src/modules/bound-base-to-push` | `setup-codebase`, on a push with `nx-base: push-before` |
 | `import-pr-task-cache` | `src/modules/import-pr-task-cache` | `setup-codebase`, in a merge group |
-| `verify-task-database` | `src/modules/verify-task-database` | `setup-codebase` and `cleanup-codebase` |
-| `adopt-task-database` | `src/modules/adopt-task-database` | `setup-codebase` |
+| `verify-task-database` | `src/modules/task-database/modules/verify-task-database` | `setup-codebase` and `cleanup-codebase` |
+| `adopt-task-database` | `src/modules/task-database/modules/adopt-task-database` | `setup-codebase` |
 | `cleanup-codebase` | `src/modules/cleanup-codebase` | the `cleanup-codebase` composite action, before it saves the caches; runs the two steps below it |
-| `keep-task-database` | `src/modules/keep-task-database` | `cleanup-codebase` |
+| `keep-task-database` | `src/modules/task-database/modules/keep-task-database` | `cleanup-codebase` |
 | `merge-task-cache` | `src/modules/merge-task-cache` | nothing in CI: `import-pr-task-cache` merges through the same service; run it by hand with a directory |
 | `run-affected` | `src/modules/run-affected` | the Continuous Integration matrix legs, for every check but Secure |
 | `collect-codometer-baseline` | `src/modules/collect-codometer-baseline` | the `report-integration` composite action, on a green `main` build |
