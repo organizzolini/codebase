@@ -145,12 +145,24 @@ describe("word candidate utilities", () => {
       ]);
     });
 
+    it("lists every translation of the lexeme, in stored order", () => {
+      const arma = lexeme("arma", "arms");
+      arma.translations?.push(new Translation("weapons", arma));
+
+      const candidates = toWordCandidates([
+        link(nominal("nominative", "plural"), arma),
+      ]);
+
+      expect(candidates[0]?.translations).toStrictEqual(["arms", "weapons"]);
+    });
+
     it("returns a null definition when the lexeme has no translation", () => {
       const candidates = toWordCandidates([
         link(nominal("genitive", "singular"), lexeme("rosa", null)),
       ]);
 
       expect(candidates[0]?.definition).toBeNull();
+      expect(candidates[0]?.translations).toStrictEqual([]);
     });
 
     it("returns no candidates for no word-form links", () => {

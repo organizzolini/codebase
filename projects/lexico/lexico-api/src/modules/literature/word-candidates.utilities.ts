@@ -44,6 +44,7 @@ export function toWordCandidates(
       lemma: form.lexeme.lemma,
       lexemeId: form.lexeme.id,
       partOfSpeech: form.lexeme.partOfSpeech,
+      translations: (form.lexeme.translations ?? []).map(({ data }) => data),
     }),
   );
 }

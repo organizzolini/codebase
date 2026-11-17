@@ -8,7 +8,7 @@ import type { PartOfSpeech } from "@codebase/lexico-db";
  */
 @ObjectType("WordCandidate")
 export class WordCandidateType {
-  /** The first English translation of the lexeme, or null when it has none. */
+  /** The lexeme's first English translation, or null when it has none. */
   @Field(() => String, { nullable: true })
   public definition!: null | string;
 
@@ -27,4 +27,8 @@ export class WordCandidateType {
   /** The part of speech of the lexeme. */
   @Field(() => String)
   public partOfSpeech!: PartOfSpeech;
+
+  /** Every English translation of the lexeme, in the order they were stored. */
+  @Field(() => [String])
+  public translations!: string[];
 }
