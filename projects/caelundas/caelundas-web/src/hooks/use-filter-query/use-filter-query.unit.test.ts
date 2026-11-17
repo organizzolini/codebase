@@ -2,11 +2,11 @@ import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { fieldRule, filterGroup } from "../../../testing/event-filters";
-import { EMPTY_EVENT_FILTER } from "../../components/calendar-filters/event-filter-tree.constants";
+import { EMPTY_EVENT_FILTER } from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filter-tree.constants";
 
 import { useFilterQuery } from "./use-filter-query";
 
-import type { EventFilterQuery } from "../../components/calendar-filters/event-filters.types";
+import type { EventFilterQuery } from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filters.types";
 
 describe(useFilterQuery, () => {
   it("returns its result", () => {

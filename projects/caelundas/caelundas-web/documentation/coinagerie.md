@@ -9,6 +9,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **altitude**: Height of a star above the horizon in degrees, where the pole observer sees altitude equal declination, shown by the night sky.
 - **anchor**: Names a date or position a calendar timeline is laid out from, passed as the anchor date prop to the timeline.
 - **angle**: Degree rotation the night sky star group is drawn at, derived from sidereal time as the sky turns.
+- **appearance**:
 - **aquarius**: Zodiac sign and constellation name whose sign glyph maps to its icon file in the calendar glyphs.
 - **aspect**: Angular relationship between two bodies, such as a conjunction or a harmonic, filtered and colored as a tag root.
 - **astraea**: Asteroid whose name the project does not use in code; it appears only in the glossary list here.

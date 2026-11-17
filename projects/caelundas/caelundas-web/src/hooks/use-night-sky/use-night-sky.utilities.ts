@@ -17,9 +17,9 @@ import {
 } from "./night-sky.constants";
 
 import type { NightSkyInput } from "../../graphql/generated/operations";
+import type { WindowSize } from "./hooks/use-window-size/use-window-size.types";
 import type { FieldOfViewMeasurements } from "./night-sky.types";
 import type { NightSkyDrawing, NightSkyOverrides } from "./use-night-sky.types";
-import type { WindowSize } from "./use-window-size.types";
 
 // 🔏 Private Functions
 

@@ -7,9 +7,10 @@ import {
   useSyncExternalStore,
 } from "react";
 
-import { queryApi } from "../../components/events-calendar/events-api.utilities";
+import { queryApi } from "../../components/calendar-display/events-calendar/components/events-api/events-api.utilities";
 import { NightSkyDocument } from "../../graphql/generated/operations";
 
+import { useWindowSize } from "./hooks/use-window-size/use-window-size";
 import {
   describeNightSkyProblems,
   findUnknownConstellationNames,
@@ -20,7 +21,6 @@ import {
   toNightSkyDrawing,
   toNightSkyInput,
 } from "./use-night-sky.utilities";
-import { useWindowSize } from "./use-window-size";
 
 import type { NightSkyQuery } from "../../graphql/generated/operations";
 import type { UseNightSkyResult } from "./use-night-sky.types";
