@@ -8,10 +8,10 @@ import { describe, expect, it, vi } from "vitest";
 import { Lexeme } from "@codebase/lexico-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { LexemeType } from "./lexeme.entities";
 import { ORPHANED_GRAPHQL_TYPES } from "./lexemes.constants";
 import { LexemesResolver } from "./lexemes.resolver";
 import { LexemesService } from "./lexemes.service";
+import { LexemeType } from "./modules/lexeme-queries/lexeme.entities";
 
 describe(LexemesResolver, () => {
   it("resolves with its dependencies", async () => {

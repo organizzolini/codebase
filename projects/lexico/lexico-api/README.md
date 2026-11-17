@@ -13,7 +13,7 @@ nx run lexico-api:vitest
 ## GraphQL types
 
 The API's object types are its own, not lexico-db' TypeORM entities.
-Each one, such as `LexemeType` in `src/modules/lexemes/lexeme.entities.ts`,
+Each one, such as `LexemeType` in `src/modules/lexemes/modules/lexeme-queries/lexeme.entities.ts`,
 implements `GraphQLObjectOf<Entity, Self, DatabaseOnlyField, RelationField>`
 from `src/lexico-api.types.ts`, which fails the typecheck when the type and its
 entity drift apart:

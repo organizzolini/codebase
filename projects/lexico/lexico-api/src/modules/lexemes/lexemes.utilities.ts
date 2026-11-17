@@ -6,12 +6,12 @@ import {
 
 import { toDeletableFields } from "../../lexico-api.utilities";
 
-import { LexemeType } from "./lexeme.entities";
 import { toFormType } from "./modules/forms/forms.utilities";
 import { toInflectionType } from "./modules/inflections/inflections.utilities";
-import { PrincipalPartType } from "./principal-part.entities";
-import { PronunciationType } from "./pronunciation.entities";
-import { TranslationType } from "./translation.entities";
+import { PrincipalPartType } from "./modules/lexeme-details/principal-part.entities";
+import { PronunciationType } from "./modules/lexeme-details/pronunciation.entities";
+import { TranslationType } from "./modules/lexeme-details/translation.entities";
+import { LexemeType } from "./modules/lexeme-queries/lexeme.entities";
 
 import type { LexemeRelationField } from "./lexemes.types";
 import type { GraphQLFields, MappedFields } from "@codebase/interface";

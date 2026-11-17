@@ -1,6 +1,5 @@
 import { describe, expectTypeOf, it } from "vitest";
 
-import type { LexemeType } from "./modules/lexemes/lexeme.entities";
 import type {
   LexemeDatabaseOnlyField,
   LexemeRelationField,
@@ -8,13 +7,14 @@ import type {
 } from "./modules/lexemes/lexemes.types";
 import type { FormType } from "./modules/lexemes/modules/forms/form.entities";
 import type { InflectionType } from "./modules/lexemes/modules/inflections/inflection.entities";
-import type { PronunciationType } from "./modules/lexemes/pronunciation.entities";
-import type { TranslationType } from "./modules/lexemes/translation.entities";
-import type { AuthorType } from "./modules/literature/author.entities";
+import type { PronunciationType } from "./modules/lexemes/modules/lexeme-details/pronunciation.entities";
+import type { TranslationType } from "./modules/lexemes/modules/lexeme-details/translation.entities";
+import type { LexemeType } from "./modules/lexemes/modules/lexeme-queries/lexeme.entities";
 import type {
   AuthorDatabaseOnlyField,
   AuthorResolvedField,
 } from "./modules/literature/literature.types";
+import type { AuthorType } from "./modules/literature/modules/authors/author.entities";
 import type {
   GraphQLFields,
   GraphQLObjectOf,

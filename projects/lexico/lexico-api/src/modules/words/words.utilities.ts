@@ -4,10 +4,10 @@ import { toDeletableFields } from "../../lexico-api.utilities";
 import { toLexemeType } from "../lexemes/lexemes.utilities";
 import { toFormType } from "../lexemes/modules/forms/forms.utilities";
 
-import { LexemeWordFormType } from "./lexeme-word-form.entities";
-import { WordFormType } from "./word-form.entities";
-import { WordLexemeType } from "./word-lexeme.entities";
-import { WordType } from "./word.entities";
+import { LexemeWordFormType } from "./modules/word-forms/lexeme-word-form.entities";
+import { WordFormType } from "./modules/word-forms/word-form.entities";
+import { WordLexemeType } from "./modules/word-lexemes/word-lexeme.entities";
+import { WordType } from "./modules/word-queries/word.entities";
 
 import type {
   WordFormRelationField,

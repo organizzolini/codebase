@@ -10,12 +10,12 @@ import {
   WordLexeme,
 } from "@codebase/lexico-db";
 
-import { LexemeType } from "../lexemes/lexeme.entities";
 import { NominalFormType } from "../lexemes/modules/forms/nominal-form.entities";
+import { LexemeType } from "../lexemes/modules/lexeme-queries/lexeme.entities";
 
-import { WordFormType } from "./word-form.entities";
-import { WordLexemeType } from "./word-lexeme.entities";
-import { WordType } from "./word.entities";
+import { WordFormType } from "./modules/word-forms/word-form.entities";
+import { WordLexemeType } from "./modules/word-lexemes/word-lexeme.entities";
+import { WordType } from "./modules/word-queries/word.entities";
 import {
   toWordFormType,
   toWordLexemeType,

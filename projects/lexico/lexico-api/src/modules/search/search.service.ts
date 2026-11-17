@@ -20,6 +20,7 @@ import {
 } from "../literature/literature.utilities";
 import { MacronsService } from "../macrons/macrons.service";
 
+import { SearchMatchSource } from "./modules/search-results/search.entities";
 import {
   ENGLISH_MATCH_SCORE_EXPRESSION,
   ENGLISH_SEARCH_RESULT_LIMIT,
@@ -31,7 +32,6 @@ import {
   SCORE_PREFIX,
   SCORE_WORD_EXACT,
 } from "./search.constants";
-import { SearchMatchSource } from "./search.entities";
 import {
   decomposeEnclitic,
   formatFormIdentifier,
