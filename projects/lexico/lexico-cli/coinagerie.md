@@ -122,6 +122,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **tibullus**: Literature constants slug expanded to albius tibullus, the elegiac poet whose name the constants supply for lookups.
 - **trace**: Stack-trace text the logger records with an error, and the call chain callidescope follows when measuring depth.
 - **translation**: Gloss entity for one meaning of a lexeme, saved per lexeme and parsed from the Wiktionary translations list.
+- **twin**: Lowercase Wiktionary page that shares its lemma with a capitalized page, such as ambrosius and Ambrosius, so the capitalized page numbers its lexemes above it.
 - **undated**:
 - **unlinked**: Literature token with no dictionary Word, which a relink tries to link.
 - **valerius**: Name part shared by the Catullus, Martial, and Valerius Flaccus literature slugs, which each expand to a full Valerius name.
