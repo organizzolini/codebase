@@ -250,7 +250,7 @@
             "check": true
           },
           "write": {
-            "outputMarkdown": "codometer.md"
+            "outputMarkdown": "documentation/codometer.md"
           }
         },
         "defaultConfiguration": "check",
@@ -630,16 +630,16 @@
       "cache": false,
       "configurations": {
         "extract-sql-all": {
-          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/database' >&2; exit 1; } && node --import @swc-node/register/esm-register synchronization/src/synchronization.main.ts extract-typeorm-migration-sql write --project-root={projectRoot} --module={args.module} --selection=all",
+          "command": "node --import @swc-node/register/esm-register synchronization/src/synchronization.main.ts extract-typeorm-migration-sql write --project-root={projectRoot} --selection=all",
           "cwd": "{workspaceRoot}"
         },
         "extract-sql-latest": {
-          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/database' >&2; exit 1; } && node --import @swc-node/register/esm-register synchronization/src/synchronization.main.ts extract-typeorm-migration-sql write --project-root={projectRoot} --module={args.module} --selection=latest",
+          "command": "node --import @swc-node/register/esm-register synchronization/src/synchronization.main.ts extract-typeorm-migration-sql write --project-root={projectRoot} --selection=latest",
           "cwd": "{workspaceRoot}"
         },
         "generate": {
           "commands": [
-            "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/database' >&2; exit 1; } && node --import @swc-node/register/esm-register node_modules/typeorm/cli.js migration:generate {args.module}/migrations/migration -d {args.module}/data-source.constants.ts",
+            "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/database' >&2; exit 1; } && node --import @swc-node/register/esm-register node_modules/typeorm/cli.js migration:generate migrations/migration -d {args.module}/data-source.constants.ts",
             "nx run {projectName}:migration:extract-sql-latest",
             "nx run {projectName}:lint-code:write",
             "nx run {projectName}:format-code:write"
@@ -656,7 +656,7 @@
           "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/database' >&2; exit 1; } && node --import @swc-node/register/esm-register node_modules/typeorm/cli.js migration:show -d {args.module}/data-source.constants.ts"
         }
       },
-      "description": "Generate, run, revert, or show a database project's TypeORM migrations, or extract their SQL for sqlfluff and squawk. A project opts in with `\"migration\": { \"options\": { \"module\": \"src/modules/database\" } }`, naming the folder of its own database module, which holds the command-line data source at `data-source.constants.ts` and the migrations under `migrations/`; every configuration fails with a message when it is unset. Extra command-line flags are not forwarded to the commands. Never cached: every configuration reads or changes a live database.",
+      "description": "Generate, run, revert, or show a database project's TypeORM migrations, or extract their SQL for sqlfluff and squawk. A project opts in with `\"migration\": { \"options\": { \"module\": \"src/modules/database\" } }`, naming the folder of its own database module, which holds the command-line data source at `data-source.constants.ts`; the configurations that read the data source fail with a message when it is unset. The migrations themselves live in the project's root `migrations/` folder. Extra command-line flags are not forwarded to the commands. Never cached: every configuration reads or changes a live database.",
       "executor": "nx:run-commands",
       "options": {
         "cwd": "{projectRoot}",
@@ -1023,7 +1023,7 @@
           "projects": ["tag:framework:typeorm"]
         },
         "inputs": [
-          "{projectRoot}/src/**/*.sql",
+          "{projectRoot}/migrations/*.sql",
           "{workspaceRoot}/configuration/python/squawk.toml",
           "shared-globals",
           {
@@ -1031,7 +1031,7 @@
           }
         ],
         "options": {
-          "command": "squawk --config configuration/python/squawk.toml '{projectRoot}/src/**/*.sql'",
+          "command": "squawk --config configuration/python/squawk.toml '{projectRoot}/migrations/*.sql'",
           "cwd": "{workspaceRoot}"
         }
       }

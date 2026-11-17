@@ -182,6 +182,14 @@
         {
           "children": [
             {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "migrations"
+        },
+        {
+          "children": [
+            {
               "ruleId": "kebab-case-folder"
             },
             {
@@ -688,20 +696,7 @@
           "name": "modules"
         },
         {
-          "children": [
-            {
-              "ruleId": "entity-file"
-            }
-          ],
-          "name": "entities"
-        },
-        {
-          "children": [
-            {
-              "ruleId": "any-file"
-            }
-          ],
-          "name": "migrations"
+          "ruleId": "entity-file"
         },
         {
           "ruleId": "module-file"

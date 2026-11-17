@@ -10,16 +10,20 @@ A module that outgrows its folder still needs somewhere to go. Codometer's tree 
 
 ## Decision
 
-A module folder holds module files and at most three named folders:
+A module folder holds module files, TypeORM entity files (`*.entity.ts`), and one named folder:
 
 - **`modules/`** holds child module folders, judged by the same rule as any module, so nesting can repeat. A child module is where a module that outgrows its folder splits.
-- **`entities/`** holds TypeORM entity classes, `*.entity.ts`, and nothing else. Persistence documents it as the database module's layout, and entities are found by the `src/**/*.entity.ts` glob, not by their folder.
-- **`migrations/`** holds what the TypeORM command line generates, timestamped, into the folder a project's `migration` target names. Its contents are not hand-arranged, so its files are not judged.
 
-Every other subfolder is refused. The ten modules moved onto this rule: each grouping folder became a child module under `modules/`, the lexico command line's providers became services, and lexico-db's nested `entities/form/` and `entities/inflection/` became the `forms` and `inflections` child modules, each with its own `entities/` folder.
+Every other subfolder is refused, `entities/` and `migrations/` included:
+
+- **Entities live in the module they belong to.** An entity is found by the `src/**/*.entity.ts` glob, never by its folder, so a folder of entities only grouped files by kind. Where a module held more entities than its folder fits, they split into child modules by domain, such as lexico-db's `lexemes` and `words` and caelundas-db's `calendar-events`, `tags`, and `night-sky`.
+- **Migrations live in a `migrations/` folder at the project root.** They are what the TypeORM command line generates, timestamped, and are not hand-arranged, so they sit outside `src/` beside the other generated and configured folders. A project's `migration` target writes there, and both tsconfigs include it.
+
+The ten modules moved onto this rule: each grouping folder became a child module under `modules/`, the lexico command line's providers became services, and lexico-db's nested `entities/form/` and `entities/inflection/` became the `forms` and `inflections` child modules.
 
 ## Consequences
 
 - A module folder's subfolders say what they hold, and every file in a hand-written folder carries a module file suffix.
 - Nesting adds two path segments per level. A tree depth ceiling bounds how far that repeats, and a module nested too deep becomes a package of its own instead.
+- A database module imports its migrations from outside `src/`, so the migrations are compiled with the package rather than discovered at run time.
 - Conformetry's `nestjs-service-module` template still matches `src/modules/*` only, so a child module is not yet judged against a template.

@@ -177,7 +177,7 @@ const config: KnipConfig = {
       // line the `migration` target runs, by path rather than by import.
       entry: [
         "src/modules/database/data-source.constants.ts",
-        "src/modules/database/migrations/**/*.ts",
+        "migrations/**/*.ts",
       ],
       ignore: [
         "output/**", // Generated calendar output files
@@ -206,9 +206,9 @@ const config: KnipConfig = {
       entry: [
         "src/index.ts",
         "src/modules/caelundas-database/data-source.constants.ts",
-        "src/modules/caelundas-database/migrations/**/*.ts",
+        "migrations/**/*.ts",
       ],
-      project: ["src/**/*.ts"],
+      project: ["src/**/*.ts", "migrations/**/*.ts"],
     },
 
     // lexico: TanStack Start SSR web application.
@@ -298,13 +298,13 @@ const config: KnipConfig = {
       entry: [
         "src/index.ts",
         "src/modules/database/data-source.constants.ts",
-        "src/modules/database/migrations/**/*.ts",
+        "migrations/**/*.ts",
       ],
       ignore: [
         "src/modules/dictionary/dictionary.module.ts", // Conformance-generated module stub, not yet exported
         "src/modules/literature/literature.module.ts", // Conformance-generated module stub, not yet exported
       ],
-      project: ["src/**/*.ts"],
+      project: ["src/**/*.ts", "migrations/**/*.ts"],
     },
 
     // lexico-cli: Data ingestion CLI for the Lexico database
@@ -330,9 +330,9 @@ const config: KnipConfig = {
         "src/meanderaw-cli.repl.ts",
         "src/worker.ts",
         "src/modules/database/data-source.constants.ts",
-        "src/modules/database/migrations/**/*.ts",
+        "migrations/**/*.ts",
       ],
-      project: "src/**/*.ts",
+      project: ["src/**/*.ts", "migrations/**/*.ts"],
     },
 
     // logger: Shared pino-backed NestJS LoggerService and LoggerModule
