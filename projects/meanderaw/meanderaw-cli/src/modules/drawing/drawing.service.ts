@@ -2,11 +2,12 @@ import { Inject, Injectable } from "@nestjs/common";
 
 import { CodeService } from "../code/code.service";
 import { GeometryService } from "../geometry/geometry.service";
-import { SvgService } from "../svg/svg.service";
+
+import { SvgService } from "./modules/svg/svg.service";
 
 import type { CodeObject } from "../code/code.types";
 import type { Geometry } from "../geometry/geometry.types";
-import type { Directions } from "../tile/tile.types";
+import type { Directions } from "../geometry/modules/tile/tile.types";
 import type { CanvasPoint } from "./drawing.types";
 
 /**

@@ -13,24 +13,24 @@ import { RunCharacteristicsModule } from "../../../submatrix/modules/run/run-cha
 import { CompoundUtilitiesModule } from "../../compound-utilities.module";
 import { StructureCharacteristicsModule } from "../structure/structure-characteristics.module";
 
-import { IsArcadeCharacteristicService } from "./is-arcade-characteristic.service";
-import { IsBarsCharacteristicService } from "./is-bars-characteristic.service";
-import { IsBoxesCharacteristicService } from "./is-boxes-characteristic.service";
-import { IsChainCharacteristicService } from "./is-chain-characteristic.service";
-import { IsClaspsCharacteristicService } from "./is-clasps-characteristic.service";
-import { IsCombCharacteristicService } from "./is-comb-characteristic.service";
-import { IsCrossCharacteristicService } from "./is-cross-characteristic.service";
-import { IsDotsCharacteristicService } from "./is-dots-characteristic.service";
-import { IsDoubleChainCharacteristicService } from "./is-double-chain-characteristic.service";
-import { IsForkCharacteristicService } from "./is-fork-characteristic.service";
-import { IsLinesCharacteristicService } from "./is-lines-characteristic.service";
-import { IsMeshCharacteristicService } from "./is-mesh-characteristic.service";
-import { IsParallelCharacteristicService } from "./is-parallel-characteristic.service";
-import { IsPureTreeCharacteristicService } from "./is-pure-tree-characteristic.service";
-import { IsSnakeCharacteristicService } from "./is-snake-characteristic.service";
-import { IsSwirlCharacteristicService } from "./is-swirl-characteristic.service";
-import { IsWaterfallsCharacteristicService } from "./is-waterfalls-characteristic.service";
-import { IsWhirlCharacteristicService } from "./is-whirl-characteristic.service";
+import { IsArcadeCharacteristicService } from "./modules/junctions/is-arcade-characteristic.service";
+import { IsCombCharacteristicService } from "./modules/junctions/is-comb-characteristic.service";
+import { IsCrossCharacteristicService } from "./modules/junctions/is-cross-characteristic.service";
+import { IsForkCharacteristicService } from "./modules/junctions/is-fork-characteristic.service";
+import { IsMeshCharacteristicService } from "./modules/junctions/is-mesh-characteristic.service";
+import { IsPureTreeCharacteristicService } from "./modules/junctions/is-pure-tree-characteristic.service";
+import { IsBarsCharacteristicService } from "./modules/plain-strands/is-bars-characteristic.service";
+import { IsDotsCharacteristicService } from "./modules/plain-strands/is-dots-characteristic.service";
+import { IsLinesCharacteristicService } from "./modules/plain-strands/is-lines-characteristic.service";
+import { IsParallelCharacteristicService } from "./modules/plain-strands/is-parallel-characteristic.service";
+import { IsSnakeCharacteristicService } from "./modules/plain-strands/is-snake-characteristic.service";
+import { IsWaterfallsCharacteristicService } from "./modules/plain-strands/is-waterfalls-characteristic.service";
+import { IsBoxesCharacteristicService } from "./modules/windings/is-boxes-characteristic.service";
+import { IsChainCharacteristicService } from "./modules/windings/is-chain-characteristic.service";
+import { IsClaspsCharacteristicService } from "./modules/windings/is-clasps-characteristic.service";
+import { IsDoubleChainCharacteristicService } from "./modules/windings/is-double-chain-characteristic.service";
+import { IsSwirlCharacteristicService } from "./modules/windings/is-swirl-characteristic.service";
+import { IsWhirlCharacteristicService } from "./modules/windings/is-whirl-characteristic.service";
 import { StrandUtilitiesService } from "./strand-utilities.service";
 
 /**

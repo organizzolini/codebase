@@ -1,10 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
 
-import { GraphService } from "../../../graph/graph.service";
-import { BARE_MATRIX_POINT } from "../../../matrix/matrix.constants";
+import { GraphService } from "../../../geometry/modules/graph/graph.service";
+import { BARE_MATRIX_POINT } from "../../../geometry/modules/matrix/matrix.constants";
 
-import type { InkAdjacency } from "../../../graph/graph.types";
-import type { Matrix } from "../../../matrix/matrix.types";
+import type { InkAdjacency } from "../../../geometry/modules/graph/graph.types";
+import type { Matrix } from "../../../geometry/modules/matrix/matrix.types";
 import type { CodeEdge, Connectivity } from "./connectivity.types";
 
 /**

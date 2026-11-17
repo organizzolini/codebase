@@ -7,7 +7,7 @@ import {
 } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../../../code/code.module";
-import { MatrixModule } from "../../../../../matrix/matrix.module";
+import { MatrixModule } from "../../../../../geometry/modules/matrix/matrix.module";
 import { CharacteristicContextService } from "../../../../characteristic-context.service";
 import { SubmatrixUtilitiesService } from "../../submatrix-utilities.service";
 

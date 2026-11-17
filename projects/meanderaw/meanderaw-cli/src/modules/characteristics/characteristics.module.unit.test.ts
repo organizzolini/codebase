@@ -4,7 +4,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../code/code.module";
-import { MatrixModule } from "../matrix/matrix.module";
+import { MatrixModule } from "../geometry/modules/matrix/matrix.module";
 
 import { CharacteristicContextService } from "./characteristic-context.service";
 import {
@@ -13,24 +13,24 @@ import {
   LETTER_CHARACTERISTIC_KEYS,
 } from "./characteristics.constants";
 import { CharacteristicsModule } from "./characteristics.module";
-import { IsArcadeCharacteristicService } from "./modules/compound/modules/pattern/is-arcade-characteristic.service";
-import { IsBarsCharacteristicService } from "./modules/compound/modules/pattern/is-bars-characteristic.service";
-import { IsBoxesCharacteristicService } from "./modules/compound/modules/pattern/is-boxes-characteristic.service";
-import { IsChainCharacteristicService } from "./modules/compound/modules/pattern/is-chain-characteristic.service";
-import { IsClaspsCharacteristicService } from "./modules/compound/modules/pattern/is-clasps-characteristic.service";
-import { IsCombCharacteristicService } from "./modules/compound/modules/pattern/is-comb-characteristic.service";
-import { IsCrossCharacteristicService } from "./modules/compound/modules/pattern/is-cross-characteristic.service";
-import { IsDotsCharacteristicService } from "./modules/compound/modules/pattern/is-dots-characteristic.service";
-import { IsDoubleChainCharacteristicService } from "./modules/compound/modules/pattern/is-double-chain-characteristic.service";
-import { IsForkCharacteristicService } from "./modules/compound/modules/pattern/is-fork-characteristic.service";
-import { IsLinesCharacteristicService } from "./modules/compound/modules/pattern/is-lines-characteristic.service";
-import { IsMeshCharacteristicService } from "./modules/compound/modules/pattern/is-mesh-characteristic.service";
-import { IsParallelCharacteristicService } from "./modules/compound/modules/pattern/is-parallel-characteristic.service";
-import { IsPureTreeCharacteristicService } from "./modules/compound/modules/pattern/is-pure-tree-characteristic.service";
-import { IsSnakeCharacteristicService } from "./modules/compound/modules/pattern/is-snake-characteristic.service";
-import { IsSwirlCharacteristicService } from "./modules/compound/modules/pattern/is-swirl-characteristic.service";
-import { IsWaterfallsCharacteristicService } from "./modules/compound/modules/pattern/is-waterfalls-characteristic.service";
-import { IsWhirlCharacteristicService } from "./modules/compound/modules/pattern/is-whirl-characteristic.service";
+import { IsArcadeCharacteristicService } from "./modules/compound/modules/pattern/modules/junctions/is-arcade-characteristic.service";
+import { IsCombCharacteristicService } from "./modules/compound/modules/pattern/modules/junctions/is-comb-characteristic.service";
+import { IsCrossCharacteristicService } from "./modules/compound/modules/pattern/modules/junctions/is-cross-characteristic.service";
+import { IsForkCharacteristicService } from "./modules/compound/modules/pattern/modules/junctions/is-fork-characteristic.service";
+import { IsMeshCharacteristicService } from "./modules/compound/modules/pattern/modules/junctions/is-mesh-characteristic.service";
+import { IsPureTreeCharacteristicService } from "./modules/compound/modules/pattern/modules/junctions/is-pure-tree-characteristic.service";
+import { IsBarsCharacteristicService } from "./modules/compound/modules/pattern/modules/plain-strands/is-bars-characteristic.service";
+import { IsDotsCharacteristicService } from "./modules/compound/modules/pattern/modules/plain-strands/is-dots-characteristic.service";
+import { IsLinesCharacteristicService } from "./modules/compound/modules/pattern/modules/plain-strands/is-lines-characteristic.service";
+import { IsParallelCharacteristicService } from "./modules/compound/modules/pattern/modules/plain-strands/is-parallel-characteristic.service";
+import { IsSnakeCharacteristicService } from "./modules/compound/modules/pattern/modules/plain-strands/is-snake-characteristic.service";
+import { IsWaterfallsCharacteristicService } from "./modules/compound/modules/pattern/modules/plain-strands/is-waterfalls-characteristic.service";
+import { IsBoxesCharacteristicService } from "./modules/compound/modules/pattern/modules/windings/is-boxes-characteristic.service";
+import { IsChainCharacteristicService } from "./modules/compound/modules/pattern/modules/windings/is-chain-characteristic.service";
+import { IsClaspsCharacteristicService } from "./modules/compound/modules/pattern/modules/windings/is-clasps-characteristic.service";
+import { IsDoubleChainCharacteristicService } from "./modules/compound/modules/pattern/modules/windings/is-double-chain-characteristic.service";
+import { IsSwirlCharacteristicService } from "./modules/compound/modules/pattern/modules/windings/is-swirl-characteristic.service";
+import { IsWhirlCharacteristicService } from "./modules/compound/modules/pattern/modules/windings/is-whirl-characteristic.service";
 import { IsClosedLoopCharacteristicService } from "./modules/compound/modules/structure/is-closed-loop-characteristic.service";
 import { IsSingleArcCharacteristicService } from "./modules/compound/modules/structure/is-single-arc-characteristic.service";
 import { EndsAreLatticeNeighborsCharacteristicService } from "./modules/path/modules/end/ends-are-lattice-neighbors-characteristic.service";
@@ -41,12 +41,12 @@ import { TileCrossingCycleCountCharacteristicService } from "./modules/path/modu
 import { BettiNumber0CountCharacteristicService } from "./modules/path/modules/topology/betti-number-0-count-characteristic.service";
 import { BettiNumber1CountCharacteristicService } from "./modules/path/modules/topology/betti-number-1-count-characteristic.service";
 import { FreeEndCountCharacteristicService } from "./modules/path/modules/topology/free-end-count-characteristic.service";
-import { BottomBorderTouchCountCharacteristicService } from "./modules/path/modules/turn/bottom-border-touch-count-characteristic.service";
 import { InflectionCountCharacteristicService } from "./modules/path/modules/turn/inflection-count-characteristic.service";
 import { MaxMonotonicTurnLengthCharacteristicService } from "./modules/path/modules/turn/max-monotonic-turn-length-characteristic.service";
-import { ReversesAtItsTightestTurnCharacteristicService } from "./modules/path/modules/turn/reverses-at-its-tightest-turn-characteristic.service";
-import { TightestTurnCountCharacteristicService } from "./modules/path/modules/turn/tightest-turn-count-characteristic.service";
-import { TopBorderTouchCountCharacteristicService } from "./modules/path/modules/turn/top-border-touch-count-characteristic.service";
+import { BottomBorderTouchCountCharacteristicService } from "./modules/path/modules/turn/modules/border-touch/bottom-border-touch-count-characteristic.service";
+import { TopBorderTouchCountCharacteristicService } from "./modules/path/modules/turn/modules/border-touch/top-border-touch-count-characteristic.service";
+import { ReversesAtItsTightestTurnCharacteristicService } from "./modules/path/modules/turn/modules/tightest-turn/reverses-at-its-tightest-turn-characteristic.service";
+import { TightestTurnCountCharacteristicService } from "./modules/path/modules/turn/modules/tightest-turn/tightest-turn-count-characteristic.service";
 import { TotalTurnCountCharacteristicService } from "./modules/path/modules/turn/total-turn-count-characteristic.service";
 import { CornerCountCharacteristicService } from "./modules/submatrix/modules/corner/corner-count-characteristic.service";
 import { NorthEastCornerCountCharacteristicService } from "./modules/submatrix/modules/corner/north-east-corner-count-characteristic.service";
@@ -65,16 +65,16 @@ import {
   LETTER_ORIENTATION_NAMES,
   LETTER_SCRIPTS,
 } from "./modules/submatrix/modules/letter/letter.constants";
-import { DensityCharacteristicService } from "./modules/submatrix/modules/point/density-characteristic.service";
-import { DotCountCharacteristicService } from "./modules/submatrix/modules/point/dot-count-characteristic.service";
-import { DoubleHorizontalEdgeCountCharacteristicService } from "./modules/submatrix/modules/point/double-horizontal-edge-count-characteristic.service";
-import { DoubleVerticalEdgeCountCharacteristicService } from "./modules/submatrix/modules/point/double-vertical-edge-count-characteristic.service";
-import { EastEdgeCountCharacteristicService } from "./modules/submatrix/modules/point/east-edge-count-characteristic.service";
-import { EdgeCountCharacteristicService } from "./modules/submatrix/modules/point/edge-count-characteristic.service";
-import { InkPointCountCharacteristicService } from "./modules/submatrix/modules/point/ink-point-count-characteristic.service";
-import { NorthEdgeCountCharacteristicService } from "./modules/submatrix/modules/point/north-edge-count-characteristic.service";
-import { SouthEdgeCountCharacteristicService } from "./modules/submatrix/modules/point/south-edge-count-characteristic.service";
-import { WestEdgeCountCharacteristicService } from "./modules/submatrix/modules/point/west-edge-count-characteristic.service";
+import { EastEdgeCountCharacteristicService } from "./modules/submatrix/modules/point/modules/directional-edge-counts/east-edge-count-characteristic.service";
+import { NorthEdgeCountCharacteristicService } from "./modules/submatrix/modules/point/modules/directional-edge-counts/north-edge-count-characteristic.service";
+import { SouthEdgeCountCharacteristicService } from "./modules/submatrix/modules/point/modules/directional-edge-counts/south-edge-count-characteristic.service";
+import { WestEdgeCountCharacteristicService } from "./modules/submatrix/modules/point/modules/directional-edge-counts/west-edge-count-characteristic.service";
+import { DoubleHorizontalEdgeCountCharacteristicService } from "./modules/submatrix/modules/point/modules/edge-counts/double-horizontal-edge-count-characteristic.service";
+import { DoubleVerticalEdgeCountCharacteristicService } from "./modules/submatrix/modules/point/modules/edge-counts/double-vertical-edge-count-characteristic.service";
+import { EdgeCountCharacteristicService } from "./modules/submatrix/modules/point/modules/edge-counts/edge-count-characteristic.service";
+import { DensityCharacteristicService } from "./modules/submatrix/modules/point/modules/ink-counts/density-characteristic.service";
+import { DotCountCharacteristicService } from "./modules/submatrix/modules/point/modules/ink-counts/dot-count-characteristic.service";
+import { InkPointCountCharacteristicService } from "./modules/submatrix/modules/point/modules/ink-counts/ink-point-count-characteristic.service";
 import { HorizontalRectangleCountCharacteristicService } from "./modules/submatrix/modules/rectangle/horizontal-rectangle-count-characteristic.service";
 import { VerticalRectangleCountCharacteristicService } from "./modules/submatrix/modules/rectangle/vertical-rectangle-count-characteristic.service";
 import { LongestHorizontalRunLengthCharacteristicService } from "./modules/submatrix/modules/run/longest-horizontal-run-length-characteristic.service";

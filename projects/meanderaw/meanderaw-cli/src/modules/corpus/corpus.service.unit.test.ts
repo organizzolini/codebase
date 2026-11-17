@@ -13,7 +13,7 @@ import { DuplicateCorpusCodeError } from "./corpus.constants";
 import { CorpusService } from "./corpus.service";
 
 import type { Meander } from "../database/meander.entity";
-import type { Tile } from "../tile/tile.types";
+import type { Tile } from "../geometry/modules/tile/tile.types";
 import type { CorpusEntry } from "./corpus.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 

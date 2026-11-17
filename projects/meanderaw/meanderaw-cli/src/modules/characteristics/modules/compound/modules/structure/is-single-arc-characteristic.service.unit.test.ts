@@ -3,7 +3,7 @@ import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../../../code/code.module";
-import { MatrixModule } from "../../../../../matrix/matrix.module";
+import { MatrixModule } from "../../../../../geometry/modules/matrix/matrix.module";
 import { CharacteristicContextService } from "../../../../characteristic-context.service";
 import { BettiNumber0CountCharacteristicService } from "../../../path/modules/topology/betti-number-0-count-characteristic.service";
 import { BettiNumber1CountCharacteristicService } from "../../../path/modules/topology/betti-number-1-count-characteristic.service";

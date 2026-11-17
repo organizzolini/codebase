@@ -1,6 +1,9 @@
 import { Injectable } from "@nestjs/common";
 
-import type { Matrix, MatrixPointArm } from "../../../matrix/matrix.types";
+import type {
+  Matrix,
+  MatrixPointArm,
+} from "../../../geometry/modules/matrix/matrix.types";
 import type { SubmatrixWindow } from "../../characteristics.types";
 import type { GlyphCell } from "./submatrix.types";
 

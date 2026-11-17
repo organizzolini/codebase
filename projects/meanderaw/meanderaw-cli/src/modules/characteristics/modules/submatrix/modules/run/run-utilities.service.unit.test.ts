@@ -3,8 +3,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../../../code/code.module";
-import { MatrixModule } from "../../../../../matrix/matrix.module";
-import { MatrixService } from "../../../../../matrix/matrix.service";
+import { MatrixModule } from "../../../../../geometry/modules/matrix/matrix.module";
+import { MatrixService } from "../../../../../geometry/modules/matrix/matrix.service";
 
 import { RunUtilitiesService } from "./run-utilities.service";
 

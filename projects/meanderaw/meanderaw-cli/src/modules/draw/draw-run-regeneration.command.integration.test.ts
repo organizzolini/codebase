@@ -9,7 +9,7 @@ import {
   startDrawRun,
 } from "../../../testing/draw-run";
 
-import { DrawCodeService } from "./draw-code.service";
+import { DrawCodeService } from "./modules/enumeration/draw-code.service";
 
 import type { Meander } from "../database/meander.entity";
 import type * as FileSystemHelpers from "@codebase/testing/file-system";

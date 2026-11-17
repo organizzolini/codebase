@@ -5,7 +5,7 @@ import { LetterUtilitiesService } from "../src/modules/characteristics/modules/s
 import { LETTER_ORIENTATION_NAMES } from "../src/modules/characteristics/modules/submatrix/modules/letter/letter.constants";
 import { SubmatrixUtilitiesService } from "../src/modules/characteristics/modules/submatrix/submatrix-utilities.service";
 import { CodeModule } from "../src/modules/code/code.module";
-import { MatrixModule } from "../src/modules/matrix/matrix.module";
+import { MatrixModule } from "../src/modules/geometry/modules/matrix/matrix.module";
 
 import type {
   CharacteristicEvaluator,

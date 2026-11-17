@@ -2,9 +2,9 @@ import { Module } from "@nestjs/common";
 
 import { CodeModule } from "../code/code.module";
 import { GeometryModule } from "../geometry/geometry.module";
-import { SvgModule } from "../svg/svg.module";
 
 import { DrawingService } from "./drawing.service";
+import { SvgModule } from "./modules/svg/svg.module";
 
 /**
  * Wires up everything that concerns a meander as a drawing:

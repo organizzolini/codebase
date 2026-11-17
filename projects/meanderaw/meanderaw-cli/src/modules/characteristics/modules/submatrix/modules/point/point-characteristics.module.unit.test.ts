@@ -3,15 +3,15 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../../../code/code.module";
-import { MatrixModule } from "../../../../../matrix/matrix.module";
+import { MatrixModule } from "../../../../../geometry/modules/matrix/matrix.module";
 import { CharacteristicContextService } from "../../../../characteristic-context.service";
 
-import { EastEdgeCountCharacteristicService } from "./east-edge-count-characteristic.service";
-import { EdgeCountCharacteristicService } from "./edge-count-characteristic.service";
-import { NorthEdgeCountCharacteristicService } from "./north-edge-count-characteristic.service";
+import { EastEdgeCountCharacteristicService } from "./modules/directional-edge-counts/east-edge-count-characteristic.service";
+import { NorthEdgeCountCharacteristicService } from "./modules/directional-edge-counts/north-edge-count-characteristic.service";
+import { SouthEdgeCountCharacteristicService } from "./modules/directional-edge-counts/south-edge-count-characteristic.service";
+import { WestEdgeCountCharacteristicService } from "./modules/directional-edge-counts/west-edge-count-characteristic.service";
+import { EdgeCountCharacteristicService } from "./modules/edge-counts/edge-count-characteristic.service";
 import { PointCharacteristicsModule } from "./point-characteristics.module";
-import { SouthEdgeCountCharacteristicService } from "./south-edge-count-characteristic.service";
-import { WestEdgeCountCharacteristicService } from "./west-edge-count-characteristic.service";
 
 import type { CharacteristicContext } from "../../../../characteristics.types";
 

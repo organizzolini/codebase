@@ -5,8 +5,8 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { environmentSchema } from "../../meanderaw-cli.constants";
 import { CodeService } from "../code/code.service";
-import { SymmetryService } from "../symmetry/symmetry.service";
-import { TileService } from "../tile/tile.service";
+import { SymmetryService } from "../geometry/modules/symmetry/symmetry.service";
+import { TileService } from "../geometry/modules/tile/tile.service";
 
 import { EnumerationService } from "./enumeration.service";
 import { TileEnumerationService } from "./tile-enumeration.service";

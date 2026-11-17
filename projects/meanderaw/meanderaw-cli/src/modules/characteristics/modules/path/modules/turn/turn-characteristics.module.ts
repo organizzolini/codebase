@@ -4,12 +4,12 @@ import { ConnectivityModule } from "../../../connectivity/connectivity.module";
 import { PointCharacteristicsModule } from "../../../submatrix/modules/point/point-characteristics.module";
 import { PathUtilitiesModule } from "../../path-utilities.module";
 
-import { BottomBorderTouchCountCharacteristicService } from "./bottom-border-touch-count-characteristic.service";
 import { InflectionCountCharacteristicService } from "./inflection-count-characteristic.service";
 import { MaxMonotonicTurnLengthCharacteristicService as MaximumMonotonicTurnLengthCharacteristicService } from "./max-monotonic-turn-length-characteristic.service";
-import { ReversesAtItsTightestTurnCharacteristicService } from "./reverses-at-its-tightest-turn-characteristic.service";
-import { TightestTurnCountCharacteristicService } from "./tightest-turn-count-characteristic.service";
-import { TopBorderTouchCountCharacteristicService } from "./top-border-touch-count-characteristic.service";
+import { BottomBorderTouchCountCharacteristicService } from "./modules/border-touch/bottom-border-touch-count-characteristic.service";
+import { TopBorderTouchCountCharacteristicService } from "./modules/border-touch/top-border-touch-count-characteristic.service";
+import { ReversesAtItsTightestTurnCharacteristicService } from "./modules/tightest-turn/reverses-at-its-tightest-turn-characteristic.service";
+import { TightestTurnCountCharacteristicService } from "./modules/tightest-turn/tightest-turn-count-characteristic.service";
 import { TotalTurnCountCharacteristicService } from "./total-turn-count-characteristic.service";
 
 /**

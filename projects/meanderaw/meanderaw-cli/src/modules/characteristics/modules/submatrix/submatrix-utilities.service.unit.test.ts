@@ -8,7 +8,7 @@ import type {
   Matrix,
   MatrixPoint,
   MatrixPointArm,
-} from "../../../matrix/matrix.types";
+} from "../../../geometry/modules/matrix/matrix.types";
 
 /** A point carrying exactly the named arms. */
 function point(...arms: MatrixPointArm[]): MatrixPoint {

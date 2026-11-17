@@ -4,7 +4,7 @@ import { SubmatrixUtilitiesService } from "../../submatrix-utilities.service";
 
 import { LETTER_ORIENTATION_NAMES, LETTER_SCRIPTS } from "./letter.constants";
 
-import type { Matrix } from "../../../../../matrix/matrix.types";
+import type { Matrix } from "../../../../../geometry/modules/matrix/matrix.types";
 import type {
   CharacteristicContext,
   CharacteristicEvaluator,

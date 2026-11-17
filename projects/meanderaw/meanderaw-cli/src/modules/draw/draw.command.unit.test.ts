@@ -17,13 +17,13 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 import { CorpusService } from "../corpus/corpus.service";
 import { DatabaseService } from "../database/database.service";
 
-import { DrawCodeService } from "./draw-code.service";
-import { DrawEnumerationService } from "./draw-enumeration.service";
-import { DrawIndexService } from "./draw-index.service";
 import { DrawCommand } from "./draw.command";
+import { DrawCodeService } from "./modules/enumeration/draw-code.service";
+import { DrawEnumerationService } from "./modules/enumeration/draw-enumeration.service";
+import { DrawIndexService } from "./modules/index/draw-index.service";
 
 import type { Meander } from "../database/meander.entity";
-import type { MeanderPageContent } from "./draw-index.types";
+import type { MeanderPageContent } from "./modules/index/draw-index.types";
 import type * as FileSystemHelpers from "@codebase/testing/file-system";
 import type {
   BuiltTestingModule,

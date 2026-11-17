@@ -4,9 +4,9 @@ import { EndsOnBorderRulesCharacteristicService } from "../../../path/modules/en
 import { TileCrossingCountCharacteristicService } from "../../../path/modules/tile-crossing/tile-crossing-count-characteristic.service";
 import { BettiNumber0CountCharacteristicService } from "../../../path/modules/topology/betti-number-0-count-characteristic.service";
 import { FreeEndCountCharacteristicService } from "../../../path/modules/topology/free-end-count-characteristic.service";
-import { ReversesAtItsTightestTurnCharacteristicService } from "../../../path/modules/turn/reverses-at-its-tightest-turn-characteristic.service";
-import { DensityCharacteristicService } from "../../../submatrix/modules/point/density-characteristic.service";
-import { DotCountCharacteristicService } from "../../../submatrix/modules/point/dot-count-characteristic.service";
+import { ReversesAtItsTightestTurnCharacteristicService } from "../../../path/modules/turn/modules/tightest-turn/reverses-at-its-tightest-turn-characteristic.service";
+import { DensityCharacteristicService } from "../../../submatrix/modules/point/modules/ink-counts/density-characteristic.service";
+import { DotCountCharacteristicService } from "../../../submatrix/modules/point/modules/ink-counts/dot-count-characteristic.service";
 
 import type { CharacteristicContext } from "../../../../characteristics.types";
 

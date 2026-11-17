@@ -3,10 +3,10 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeService } from "../../../code/code.service";
-import { GraphService } from "../../../graph/graph.service";
-import { MatrixService } from "../../../matrix/matrix.service";
-import { SymmetryService } from "../../../symmetry/symmetry.service";
-import { TileService } from "../../../tile/tile.service";
+import { GraphService } from "../../../geometry/modules/graph/graph.service";
+import { MatrixService } from "../../../geometry/modules/matrix/matrix.service";
+import { SymmetryService } from "../../../geometry/modules/symmetry/symmetry.service";
+import { TileService } from "../../../geometry/modules/tile/tile.service";
 
 import { ConnectivityService } from "./connectivity.service";
 

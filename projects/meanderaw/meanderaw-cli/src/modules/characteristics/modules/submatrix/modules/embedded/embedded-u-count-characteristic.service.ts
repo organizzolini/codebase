@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 
 import { SubmatrixUtilitiesService } from "../../submatrix-utilities.service";
 
-import type { Matrix } from "../../../../../matrix/matrix.types";
+import type { Matrix } from "../../../../../geometry/modules/matrix/matrix.types";
 import type {
   CharacteristicContext,
   CharacteristicEvaluator,
