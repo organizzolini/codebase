@@ -9,9 +9,8 @@ import {
 } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
+import { mockProcessExit } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
-
-import { mockProcessExit } from "../../../testing/mocks";
 
 import { PullRequestContextService } from "./modules/context/pull-request-context.service";
 import { PullRequestLabelVocabularyService } from "./modules/labels/pull-request-label-vocabulary.service";

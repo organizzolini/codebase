@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.4.1](https://github.com/organizzolini/codebase/compare/v6.4.0...v6.4.1) (2026-11-17)
+
+### 🐛 Bug Fixes
+
+* **compliance,dependencies:** 🐛 bump vite from 8.3.7 to 8.3.8 and shorten issue field comments ([#2393](https://github.com/organizzolini/codebase/issues/2393)) ([aa18a07](https://github.com/organizzolini/codebase/commit/aa18a073eb12d6584b90ee25725033861e611331))
+
+### 📝 Documentation
+
+* **documentation:** 📝 prefer one pull request per spec ([#2448](https://github.com/organizzolini/codebase/issues/2448)) ([149fe1c](https://github.com/organizzolini/codebase/commit/149fe1c1e21a2fef4f3772b71ccef1a334c05e2c)), closes [#2447](https://github.com/organizzolini/codebase/issues/2447) [#2447](https://github.com/organizzolini/codebase/issues/2447)
+
 ## [6.4.0](https://github.com/organizzolini/codebase/compare/v6.3.1...v6.4.0) (2026-11-16)
 
 ### ✨ Features

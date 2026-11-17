@@ -1,8 +1,10 @@
 import { spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 
 import { environmentSchema } from "./synchronization.constants";
 
@@ -77,8 +79,7 @@ describe("main end-to-end suite", () => {
     };
 
     beforeEach(() => {
-      mkdirSync(FIXTURE_ROOT, { recursive: true });
-      workspace = mkdtempSync(path.join(FIXTURE_ROOT, "installed-skills-"));
+      workspace = createTemporaryDirectory("installed-skills", FIXTURE_ROOT);
       // `@swc-node/register` reads a `tsconfig.json` at `cwd` exactly, never
       // an ancestor's, so the fixture extends this project's real one.
       writeFileSync(
@@ -90,10 +91,6 @@ describe("main end-to-end suite", () => {
           ),
         }),
       );
-    });
-
-    afterEach(() => {
-      rmSync(workspace, { force: true, recursive: true });
     });
 
     it("prints only the missing-skills report and exits 1", () => {

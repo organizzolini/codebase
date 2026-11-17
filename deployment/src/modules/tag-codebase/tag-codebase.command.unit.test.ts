@@ -5,22 +5,23 @@ import { ConfigService } from "@nestjs/config";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
-
 import {
+  createTemporaryDirectory,
   failed,
   FakeProcessRunner,
   succeeded,
-  useTemporaryDirectories,
-} from "../../../testing/mocks";
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { TEMPORARY_ROOT } from "../../../testing/mocks";
 import { MainTipService } from "../main-tip/main-tip.service";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
 import { TagCodebaseCommand } from "./tag-codebase.command";
 import { TagCodebaseService } from "./tag-codebase.service";
 
-import type { ScriptedAnswer } from "../../../testing/mocks";
 import type { CapturedProcess } from "../process-runner/process-runner.types";
+import type { ScriptedAnswer } from "@codebase/testing";
 
 const SEMANTIC_RELEASE = "env HUSKY=0 pnpm semantic-release";
 
@@ -38,7 +39,6 @@ const gitScript = (
 describe(TagCodebaseCommand, () => {
   const moduleOptions = { mocks: [TagCodebaseService] };
   const originalExitCode = process.exitCode;
-  const makeDirectory = useTemporaryDirectories();
   let environmentFile: string;
   let reportLines: string[];
 
@@ -61,7 +61,10 @@ describe(TagCodebaseCommand, () => {
   beforeEach(() => {
     process.exitCode = undefined;
     reportLines = [];
-    environmentFile = path.join(makeDirectory(), "github-env");
+    environmentFile = path.join(
+      createTemporaryDirectory("workspace", TEMPORARY_ROOT),
+      "github-env",
+    );
     fs.writeFileSync(environmentFile, "");
     vi.stubEnv("GITHUB_ENV", environmentFile);
     vi.spyOn(console, "info").mockImplementation((line: unknown): void => {

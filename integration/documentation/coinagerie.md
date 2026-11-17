@@ -11,6 +11,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **bullet**: A single list item the upgrade-dependencies step adds to its pull request's details section.
 - **charge**: Assign a knip or cspell finding to the workspace root that owns its file, so only a finding charged to a project fails that project.
 - **corrupt**: A task database that fails its integrity check, which CI discards with a warning instead of restoring it.
+- **db**: The file extension of an Nx task database, such as the `other-v3.db` a test writes beside the cache.
 - **explain**: Produce the report of why a project failed, by running that project alone again to get exactly what a single run prints.
 - **rewrite**: Replacing a package.json field's value in place, as package-manifest does for each field it edits.
 - **selector**: A path that narrows a conformetry run to one file, such as its template configuration.

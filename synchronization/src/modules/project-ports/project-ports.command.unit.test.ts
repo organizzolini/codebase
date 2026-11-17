@@ -12,10 +12,12 @@ import {
 } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
-import { createTemporaryDirectory } from "@codebase/testing";
+import {
+  createTemporaryDirectory,
+  expectProcessExitOne,
+} from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { expectProcessExitOne } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
 
 import { ProjectPortsCommand } from "./project-ports.command";
