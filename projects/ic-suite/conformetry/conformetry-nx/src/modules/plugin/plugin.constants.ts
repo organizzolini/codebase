@@ -1,6 +1,6 @@
 // ♟️ Constants
 
-/** Glob for project descriptions; the configuration's path is an option, so no glob can name it. */
+/** Glob for project descriptions; no glob can name the configured path. */
 export const PROJECT_CONFIGURATION_GLOB = "**/project.json";
 
 /** Basename that marks a matched file as an actual project description. */
