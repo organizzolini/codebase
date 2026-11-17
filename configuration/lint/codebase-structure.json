@@ -41,6 +41,14 @@
         {
           "children": [
             {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "documentation"
+        },
+        {
+          "children": [
+            {
               "children": [
                 {
                   "ruleId": "module-folder"
@@ -282,6 +290,14 @@
             }
           ],
           "name": "configuration"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "documentation"
         },
         {
           "children": [
@@ -600,6 +616,14 @@
         {
           "children": [
             {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "documentation"
+        },
+        {
+          "children": [
+            {
               "ruleId": "kebab-case-folder"
             },
             {
@@ -725,6 +749,14 @@
             }
           ],
           "name": "configuration"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "documentation"
         },
         {
           "children": [

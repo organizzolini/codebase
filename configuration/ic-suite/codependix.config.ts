@@ -30,21 +30,21 @@ export const projectDefaults = {
   fileImports: {
     markdown: {
       anchor: "codependix-file-imports",
-      path: "configuration/codependix.md",
+      path: "documentation/codependix.md",
     },
     target: "markdown",
   },
   nestjsModules: {
     markdown: {
       anchor: "codependix-nestjs-modules",
-      path: "configuration/codependix.md",
+      path: "documentation/codependix.md",
     },
     target: "markdown",
   },
   nxProjects: {
     markdown: {
       anchor: "codependix-nx-projects",
-      path: "configuration/codependix.md",
+      path: "documentation/codependix.md",
     },
     target: "markdown",
   },
