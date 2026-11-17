@@ -6,10 +6,11 @@ import type { ReaderLineNode } from "../reader-lines/reader-lines.types";
 /** One reading a clicked word can take, as the word-card lookup answers it. */
 export type WordCandidate = WordCandidatesQuery["wordCandidates"][number];
 
-/** What a finished lookup tells the history: a form and a short definition. */
+/** What a finished lookup tells the history: a form, definition, and lexeme. */
 export interface WordCardLookup {
   definition: null | string;
   form: string;
+  lexemeId: null | string;
 }
 
 /** One candidate with its position and a unique list key. */

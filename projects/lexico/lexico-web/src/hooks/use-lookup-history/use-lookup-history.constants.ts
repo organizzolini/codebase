@@ -13,6 +13,7 @@ export const lookupEntrySchema = z.object({
   definition: z.nullable(z.string()),
   form: z.string(),
   kind: z._default(z.literal("lookup"), "lookup"),
+  lexemeId: z.optional(z.nullable(z.string())),
   line: z.int().check(z.nonnegative()),
   recordedAt: z.number(),
   slug: z.string(),

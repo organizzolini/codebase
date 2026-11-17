@@ -4,6 +4,12 @@ import { describe, expect, it, vi } from "vitest";
 
 import { ReaderHistory } from "./reader-history";
 
+vi.mock("../history-lexeme/history-lexeme", () => ({
+  HistoryLexeme: ({ entry }: Readonly<{ entry: { word: string } }>) => (
+    <div data-testid="history-lexeme">{entry.word} card</div>
+  ),
+}));
+
 import type {
   HistoryEntry,
   LookupEntry,
@@ -34,16 +40,28 @@ const SEARCH: HistoryEntry = {
   recordedAt: 2,
 };
 
+/** The properties every test shares, with one overridable. */
+function properties(
+  overrides: Partial<Parameters<typeof ReaderHistory>[0]> = {},
+): Parameters<typeof ReaderHistory>[0] {
+  return {
+    currentSlug: "vergil-aeneid-1",
+    entries: [],
+    isOpen: true,
+    onClear: vi.fn<() => void>(),
+    onClose: vi.fn<() => void>(),
+    onFocusEntry: vi.fn<(entry: HistoryEntry | null) => void>(),
+    onOpenEntry: vi.fn<(entry: HistoryEntry) => void>(),
+    ...overrides,
+  };
+}
+
 describe(ReaderHistory, () => {
   it("applies its class name", () => {
     render(
       <ReaderHistory
         className="reader-history"
-        currentSlug="vergil-aeneid-1"
-        entries={[]}
-        onClear={vi.fn<() => void>()}
-        onFocusEntry={vi.fn<(entry: HistoryEntry | null) => void>()}
-        onOpenEntry={vi.fn<(entry: HistoryEntry) => void>()}
+        {...properties()}
       />,
     );
 
@@ -52,40 +70,59 @@ describe(ReaderHistory, () => {
     );
   });
 
+  it("is a sidebar that pushes the page, not a dialog with a scrim", () => {
+    render(<ReaderHistory {...properties()} />);
+
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(
+      screen.getByRole("complementary", { name: "History" }),
+    ).toBeDefined();
+  });
+
+  it("renders nothing of its card while closed", () => {
+    render(
+      <ReaderHistory {...properties({ entries: [ENTRY], isOpen: false })} />,
+    );
+
+    expect(screen.queryByText("This text")).toBeNull();
+    expect(
+      screen.getByTestId("reader-history").querySelector("aside")?.dataset[
+        "state"
+      ],
+    ).toBe("closed");
+  });
+
+  it("closes from its close button", () => {
+    const onClose = vi.fn<() => void>();
+    render(<ReaderHistory {...properties({ onClose })} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Close history" }));
+
+    expect(onClose).toHaveBeenCalledExactlyOnceWith();
+  });
+
   it("reports the entry the reader hovers", () => {
     const onFocusEntry = vi.fn<(entry: HistoryEntry | null) => void>();
     render(
-      <ReaderHistory
-        currentSlug="vergil-aeneid-1"
-        entries={[ENTRY]}
-        onClear={vi.fn<() => void>()}
-        onFocusEntry={onFocusEntry}
-        onOpenEntry={vi.fn<(entry: HistoryEntry) => void>()}
-      />,
+      <ReaderHistory {...properties({ entries: [ENTRY], onFocusEntry })} />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "History" }));
     fireEvent.mouseEnter(screen.getByRole("button", { name: /^Arma/u }));
 
     expect(onFocusEntry).toHaveBeenLastCalledWith(ENTRY);
   });
 
-  it("lists only this text's lookups in the This text tab", () => {
+  it("lists only this text's lookups in the This text tab, each with its lexeme card", () => {
     render(
       <ReaderHistory
-        currentSlug="vergil-aeneid-1"
-        entries={[OTHER_TEXT, ENTRY, SEARCH]}
-        onClear={vi.fn<() => void>()}
-        onFocusEntry={vi.fn<(entry: HistoryEntry | null) => void>()}
-        onOpenEntry={vi.fn<(entry: HistoryEntry) => void>()}
+        {...properties({ entries: [OTHER_TEXT, ENTRY, SEARCH] })}
       />,
     );
-
-    fireEvent.click(screen.getByRole("button", { name: "History" }));
 
     expect(screen.getByRole("button", { name: /^Arma/u })).toBeInstanceOf(
       HTMLElement,
     );
+    expect(screen.getByText("Arma card")).toBeDefined();
     expect(screen.queryByRole("button", { name: /^Mutatas/u })).toBeNull();
     expect(screen.queryByRole("button", { name: /^virum/u })).toBeNull();
   });
@@ -93,15 +130,10 @@ describe(ReaderHistory, () => {
   it("lists every entry, labelled by origin, in the All tab", () => {
     render(
       <ReaderHistory
-        currentSlug="vergil-aeneid-1"
-        entries={[OTHER_TEXT, ENTRY, SEARCH]}
-        onClear={vi.fn<() => void>()}
-        onFocusEntry={vi.fn<(entry: HistoryEntry | null) => void>()}
-        onOpenEntry={vi.fn<(entry: HistoryEntry) => void>()}
+        {...properties({ entries: [OTHER_TEXT, ENTRY, SEARCH] })}
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "History" }));
     fireEvent.mouseDown(screen.getByRole("tab", { name: "All" }));
     fireEvent.click(screen.getByRole("tab", { name: "All" }));
 
@@ -116,16 +148,9 @@ describe(ReaderHistory, () => {
   it("opens the entry the reader clicks", () => {
     const onOpenEntry = vi.fn<(entry: HistoryEntry) => void>();
     render(
-      <ReaderHistory
-        currentSlug="vergil-aeneid-1"
-        entries={[SEARCH]}
-        onClear={vi.fn<() => void>()}
-        onFocusEntry={vi.fn<(entry: HistoryEntry | null) => void>()}
-        onOpenEntry={onOpenEntry}
-      />,
+      <ReaderHistory {...properties({ entries: [SEARCH], onOpenEntry })} />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "History" }));
     fireEvent.mouseDown(screen.getByRole("tab", { name: "All" }));
     fireEvent.click(screen.getByRole("tab", { name: "All" }));
     fireEvent.click(screen.getByRole("button", { name: /^virum/u }));
@@ -135,17 +160,8 @@ describe(ReaderHistory, () => {
 
   it("clears the history", () => {
     const onClear = vi.fn<() => void>();
-    render(
-      <ReaderHistory
-        currentSlug="vergil-aeneid-1"
-        entries={[ENTRY]}
-        onClear={onClear}
-        onFocusEntry={vi.fn<(entry: HistoryEntry | null) => void>()}
-        onOpenEntry={vi.fn<(entry: HistoryEntry) => void>()}
-      />,
-    );
+    render(<ReaderHistory {...properties({ entries: [ENTRY], onClear })} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "History" }));
     fireEvent.click(screen.getByRole("button", { name: "Clear history" }));
 
     expect(onClear).toHaveBeenCalledExactlyOnceWith();

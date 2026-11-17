@@ -916,6 +916,7 @@ export type WordCandidate = {
   lemma: Scalars['String']['output'];
   lexemeId: Scalars['ID']['output'];
   partOfSpeech: Scalars['String']['output'];
+  translations: Array<Scalars['String']['output']>;
 };
 
 export type WordForm = {
@@ -979,6 +980,29 @@ export type WordLexemeEdge = {
   /** The item at the end of the edge. */
   node: WordLexeme;
 };
+
+export type LexemeCardQueryVariables = Exact<{
+  id: string | number;
+}>;
+
+
+export type LexemeCardQuery = { lexeme: { id: string, etymology: string | null, lemma: string, partOfSpeech: string, inflection:
+      | { declension: string, degree: string }
+      | { adverbType: string, degree: string }
+      | { declension: string, gender: string }
+      | { case: string }
+      | { conjugation: string, other: string | null }
+      | Record<PropertyKey, never>
+     | null, principalParts: { edges: Array<{ node: { text: Array<string> } }> }, pronunciations: { edges: Array<{ node: { phonetic: string | null, variant: string } }> } | null, translations: { edges: Array<{ node: { data: string } }> } | null, wordForms: { edges: Array<{ node: { id: string, word: string, form:
+            | { __typename: 'AdjectivalForm', case: string, gender: string, number: string }
+            | { __typename: 'AdverbForm', degree: string }
+            | { __typename: 'FiniteVerbForm', mood: string, number: string, person: string, tense: string, voice: string }
+            | { __typename: 'GerundForm', case: string }
+            | { __typename: 'InfinitiveForm', tense: string, voice: string }
+            | { __typename: 'NominalForm', case: string, number: string }
+            | { __typename: 'ParticipleForm', tense: string, voice: string }
+            | { __typename: 'SupineForm', case: string }
+           } }> } } | null };
 
 export type LibraryChildrenQueryVariables = Exact<{
   parentTextId: string | number;
@@ -1075,15 +1099,37 @@ export type TextReaderQueryVariables = Exact<{
 }>;
 
 
-export type TextReaderQuery = { text: { id: string, slug: string, title: string, type: string, author: { name: string, slug: string }, nextText: { slug: string, title: string } | null, parentText: { slug: string, title: string } | null, previousText: { slug: string, title: string } | null, lines: { edges: Array<{ node: { id: string, index: number, label: string, tokens: { edges: Array<{ node: { id: string, index: number, data: string, isPunctuation: boolean } }> } } }>, pageInfo: { endCursor: string | null, hasNextPage: boolean } } } | null };
+export type TextReaderQuery = { text: { id: string, slug: string, title: string, type: string, collection: Schema.TextCollection | null, edition: string | null, editors: string | null, endYear: number | null, findSpot: string | null, inscriptionType: string | null, lineCount: number | null, material: string | null, printYear: number | null, province: string | null, publisher: string | null, startYear: number | null, wordCount: number | null, author: { endYear: number | null, era: Schema.AuthorEra | null, name: string, slug: string, startYear: number | null }, nextText: { slug: string, title: string } | null, parentText: { slug: string, title: string } | null, previousText: { slug: string, title: string } | null, lines: { edges: Array<{ node: { id: string, index: number, label: string, tokens: { edges: Array<{ node: { id: string, index: number, data: string, isPunctuation: boolean } }> } } }>, pageInfo: { endCursor: string | null, hasNextPage: boolean } } } | null };
 
 export type WordCandidatesQueryVariables = Exact<{
   tokenId: string | number;
 }>;
 
 
-export type WordCandidatesQuery = { wordCandidates: Array<{ definition: string | null, description: string, lemma: string, lexemeId: string, partOfSpeech: string }> };
+export type WordCandidatesQuery = { wordCandidates: Array<{ definition: string | null, description: string, lemma: string, lexemeId: string, partOfSpeech: string, translations: Array<string> }> };
 
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockLexemeCardQuery(
+ *   ({ query, variables }) => {
+ *     const { id } = variables;
+ *     return HttpResponse.json({
+ *       data: { lexeme }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockLexemeCardQuery = (resolver: GraphQLResponseResolver<LexemeCardQuery, LexemeCardQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<LexemeCardQuery, LexemeCardQueryVariables>(
+    'LexemeCard',
+    resolver,
+    options
+  )
 
 /**
  * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))

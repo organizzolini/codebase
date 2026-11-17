@@ -13,10 +13,13 @@ import { graphqlMockServer } from "@codebase/interface/testing";
 import { renderRoute } from "@codebase/testing/react";
 
 import {
+  AuthorEra,
+  mockLexemeCardQuery,
   mockSearchEnglishQuery,
   mockSearchLatinQuery,
   mockTextReaderQuery,
   mockWordCandidatesQuery,
+  TextCollection,
 } from "../graphql/generated/mocks";
 import { getRouter } from "../router";
 
@@ -96,15 +99,34 @@ function text(
   const parent = links.parent ?? null;
 
   return {
-    author: { name: "Vergil", slug: "vergil" },
+    author: {
+      endYear: -19,
+      era: AuthorEra.Classical,
+      name: "Vergil",
+      slug: "vergil",
+      startYear: -70,
+    },
+    collection: TextCollection.Perseus,
+    edition: null,
+    editors: null,
+    endYear: null,
+    findSpot: null,
     id: "text-1",
+    inscriptionType: null,
+    lineCount: null,
     lines,
+    material: null,
     nextText: links.next ?? null,
     parentText: parent,
     previousText: links.previous ?? null,
+    printYear: null,
+    province: null,
+    publisher: null,
     slug: "vergil-aeneid-1",
+    startYear: null,
     title: "Book 1",
     type: "text",
+    wordCount: null,
   };
 }
 
@@ -153,6 +175,7 @@ const ARMA: WordCandidate = {
   lemma: "arma",
   lexemeId: "lexeme-arma",
   partOfSpeech: "noun",
+  translations: ["arms", "weapons"],
 };
 const EST_SUM: WordCandidate = {
   definition: "to be",
@@ -160,6 +183,7 @@ const EST_SUM: WordCandidate = {
   lemma: "sum",
   lexemeId: "lexeme-sum",
   partOfSpeech: "verb",
+  translations: ["to be"],
 };
 const EST_EDO: WordCandidate = {
   definition: "to eat",
@@ -167,6 +191,7 @@ const EST_EDO: WordCandidate = {
   lemma: "edo",
   lexemeId: "lexeme-edo",
   partOfSpeech: "verb",
+  translations: ["to eat"],
 };
 
 /** A stored lookup of one word at one token of one line. */
@@ -201,7 +226,7 @@ async function openAll(): Promise<HTMLElement> {
 async function openHistory(): Promise<HTMLElement> {
   fireEvent.click(screen.getByRole("button", { name: "History" }));
 
-  return screen.findByRole("dialog");
+  return screen.findByRole("complementary", { name: "History" });
 }
 
 /** Answers word-card lookups with the given candidates. */
@@ -219,6 +244,9 @@ describe("texts.$slug", () => {
     Element.prototype.scrollIntoView = scrollIntoView;
     scrollIntoView.mockClear();
     stubReader([{ after: null, page: FIRST_PAGE }]);
+    graphqlMockServer.use(
+      mockLexemeCardQuery(() => HttpResponse.json({ data: { lexeme: null } })),
+    );
   });
 
   afterEach(() => {
@@ -232,6 +260,34 @@ describe("texts.$slug", () => {
       screen.findByRole("heading", { level: 1 }),
     ).resolves.toBeDefined();
     expect(Route.fullPath).toBe("/texts/$slug");
+  });
+
+  it("centers the title and lists the text's characteristics beneath it", async () => {
+    await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+
+    const heading = await screen.findByRole("heading", { level: 1 });
+    const facts = screen.getByRole("list", { name: "About this text" });
+
+    expect(heading.className).toContain("text-center");
+    expect(facts.textContent).toContain("Classical");
+    expect(facts.textContent).toContain("Perseus");
+  });
+
+  it("folds the navigation sidebar away while reading and restores it on leaving", async () => {
+    const router = getRouter();
+    await renderRoute(router, "/texts/vergil-aeneid-1");
+
+    await expect(
+      screen.findByRole("button", { name: "Expand" }),
+    ).resolves.toBeDefined();
+
+    await act(async () => {
+      await router.navigate({ to: "/" });
+    });
+
+    await expect(
+      screen.findByRole("button", { name: "Collapse" }),
+    ).resolves.toBeDefined();
   });
 
   it("shows the author, parent book, and title of the text", async () => {
@@ -432,7 +488,7 @@ describe("texts.$slug", () => {
   });
 
   describe("word card", () => {
-    it("opens a card beside a clicked word with its form, definition, and entry link", async () => {
+    it("opens a card beside a clicked word with its form, every translation, and entry link", async () => {
       stubWordCandidates([ARMA]);
       await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
 
@@ -442,6 +498,7 @@ describe("texts.$slug", () => {
 
       expect(within(card).getByText("nominative plural")).toBeDefined();
       expect(within(card).getByText("arms")).toBeDefined();
+      expect(within(card).getByText("weapons")).toBeDefined();
       expect(
         within(card)
           .getByRole("link", { name: "Full entry" })
@@ -589,7 +646,7 @@ describe("texts.$slug", () => {
       });
 
       const panel = await openHistory();
-      const items = within(panel).getAllByRole("listitem");
+      const items = within(panel).getAllByTestId("history-entry");
 
       expect(items).toHaveLength(200);
       expect(items[0]?.textContent.startsWith("Arma")).toBe(true);
@@ -680,11 +737,53 @@ describe("texts.$slug", () => {
 
       const panel = await openHistory();
 
-      expect(within(panel).getAllByRole("listitem")).toHaveLength(1);
+      expect(within(panel).getAllByTestId("history-entry")).toHaveLength(1);
       expect(
         within(panel).getByText("third person singular present"),
       ).toBeDefined();
-      expect(within(panel).getByText("to be")).toBeDefined();
+    });
+
+    it("shows the full dictionary card of each word looked up, as the search page does", async () => {
+      graphqlMockServer.use(
+        mockLexemeCardQuery(({ variables }) =>
+          HttpResponse.json({
+            data: {
+              lexeme: {
+                etymology: null,
+                id: String(variables.id),
+                inflection: null,
+                lemma: "arma",
+                partOfSpeech: "noun",
+                principalParts: { edges: [{ node: { text: ["arma"] } }] },
+                pronunciations: { edges: [] },
+                translations: {
+                  edges: [
+                    { node: { data: "arms" } },
+                    { node: { data: "gear" } },
+                  ],
+                },
+                wordForms: { edges: [] },
+              },
+            },
+          }),
+        ),
+      );
+      globalThis.localStorage.setItem(
+        HISTORY_KEY,
+        JSON.stringify([
+          {
+            ...entry("vergil-aeneid-1", "Arma", 0, 0),
+            lexemeId: "lexeme-arma",
+          },
+        ]),
+      );
+      await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+
+      const panel = await openHistory();
+      const card = await within(panel).findByTestId("lexeme-card");
+
+      expect(within(card).getByText("gear")).toBeDefined();
+      expect(within(card).getByLabelText("nominative plural")).toBeDefined();
     });
 
     it("stops highlighting a hovered entry when the panel closes", async () => {
@@ -699,10 +798,14 @@ describe("texts.$slug", () => {
       fireEvent.mouseEnter(
         within(panel).getByRole("button", { name: /^virumque/u }),
       );
-      fireEvent.click(within(panel).getByRole("button", { name: "Close" }));
+      fireEvent.click(
+        within(panel).getByRole("button", { name: "Close history" }),
+      );
 
       await waitFor(() => {
-        expect(screen.queryByRole("dialog")).toBeNull();
+        expect(
+          screen.queryByRole("button", { name: "Close history" }),
+        ).toBeNull();
       });
 
       expect(
@@ -715,14 +818,16 @@ describe("texts.$slug", () => {
 
       const panel = await openHistory();
 
-      expect(
-        within(panel).getByRole("heading", { name: "History" }),
-      ).toBeDefined();
+      expect(within(panel).getByText("History")).toBeDefined();
 
-      fireEvent.click(within(panel).getByRole("button", { name: "Close" }));
+      fireEvent.click(
+        within(panel).getByRole("button", { name: "Close history" }),
+      );
 
       await waitFor(() => {
-        expect(screen.queryByRole("dialog")).toBeNull();
+        expect(
+          screen.queryByRole("button", { name: "Close history" }),
+        ).toBeNull();
       });
     });
 
@@ -903,7 +1008,7 @@ describe("texts.$slug", () => {
       });
       const panel = await openAll();
 
-      expect(within(panel).getAllByRole("listitem")).toHaveLength(200);
+      expect(within(panel).getAllByTestId("history-entry")).toHaveLength(200);
       expect(within(panel).getByText("Arma")).toBeDefined();
       expect(within(panel).queryByText("query 199")).toBeNull();
     });

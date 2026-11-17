@@ -46,8 +46,8 @@ export interface WordCardProperties {
 
 /**
  * A clicked word and the card beside it, which looks the word up the first
- * time the reader opens it: its form, definition, and entry link, with every
- * candidate listed when the spelling is ambiguous. A focused word scrolls
+ * time the reader opens it: its lemma, form, every translation, and entry link,
+ * with every candidate listed when the spelling is ambiguous. A focused word scrolls
  * into view, and a highlighted word is lit up.
  */
 export function WordCard(properties: Readonly<WordCardProperties>): ReactNode {
@@ -141,9 +141,24 @@ export function WordCard(properties: Readonly<WordCardProperties>): ReactNode {
           ) : null}
           {selected === undefined ? null : (
             <div className="space-y-1">
-              <p className="font-medium">{selected.description}</p>
-              {selected.definition === null ? null : (
-                <p>{selected.definition}</p>
+              <p className="font-medium">
+                {selected.lemma}{" "}
+                <span className="font-normal text-muted-foreground">
+                  {selected.partOfSpeech}
+                </span>
+              </p>
+              <p className="text-muted-foreground">{selected.description}</p>
+              {selected.translations.length === 0 ? null : (
+                <ol
+                  aria-label="Translations"
+                  className="max-h-48 list-decimal space-y-0.5 overflow-y-auto pl-5"
+                >
+                  {selected.translations.map((translation, position) => (
+                    <li key={`${String(position)}-${translation}`}>
+                      {translation}
+                    </li>
+                  ))}
+                </ol>
               )}
               <Link
                 className="underline"

@@ -1,5 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useCallback, useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef as useReference,
+  useState,
+} from "react";
+
+import { Button, useSidebar } from "@codebase/presentation";
 
 import { FontSizeControl } from "../components/font-size-control/font-size-control";
 import {
@@ -87,6 +94,7 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
   const { line } = Route.useSearch();
   const [fontSize, setFontSize] = useState<FontSize>(DEFAULT_FONT_SIZE);
   const [focus, setFocus] = useState<null | ReaderFocus>(null);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const { clear, entries, record } = useLookupHistory();
   const navigate = useNavigate();
 
@@ -96,6 +104,16 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
   const handleFontSize = useCallback((size: FontSize): void => {
     setFontSize(size);
     writeFontSize(size);
+  }, []);
+
+  const handleCloseHistory = useCallback((): void => {
+    setIsHistoryOpen(false);
+    setFocus(null);
+  }, []);
+
+  const handleToggleHistory = useCallback((): void => {
+    setIsHistoryOpen((isOpen) => !isOpen);
+    setFocus(null);
   }, []);
 
   const handleLookup = useCallback(
@@ -142,53 +160,84 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
 
   // 🎨 Markup
   return (
-    <div className="space-y-4">
-      <ReaderHeader
-        author={text.author.name}
-        parent={text.parentText}
-      />
-      <div className="flex items-center justify-between gap-2">
-        <FontSizeControl
-          className="flex gap-2"
-          onChange={handleFontSize}
-          size={fontSize}
+    <div className="flex items-start">
+      <div className="mx-auto min-w-0 max-w-4xl flex-1 space-y-4">
+        <ReaderHeader text={text} />
+        <div className="flex items-center justify-between gap-2">
+          <FontSizeControl
+            className="flex gap-2"
+            onChange={handleFontSize}
+            size={fontSize}
+          />
+          <Button
+            aria-expanded={isHistoryOpen}
+            onClick={handleToggleHistory}
+            variant="outline"
+          >
+            History
+          </Button>
+        </div>
+        <ReaderHint className="flex items-center justify-between gap-4 rounded-md border p-3 text-sm" />
+        <ReaderLines
+          key={`${text.slug}:${String(line)}`}
+          anchor={line}
+          className={`font-serif ${FONT_SIZE_CLASSES[fontSize]}`}
+          focus={focus}
+          initial={text.lines}
+          onLookup={handleLookup}
+          slug={text.slug}
         />
-        <ReaderHistory
-          currentSlug={text.slug}
-          entries={entries}
-          onClear={clear}
-          onFocusEntry={handleFocusEntry}
-          onOpenEntry={handleOpenEntry}
+        <ReaderNavigation
+          className="flex justify-between gap-4"
+          next={text.nextText}
+          previous={text.previousText}
         />
       </div>
-      <ReaderHint className="flex items-center justify-between gap-4 rounded-md border p-3 text-sm" />
-      <ReaderLines
-        key={`${text.slug}:${String(line)}`}
-        anchor={line}
-        className={`space-y-2 font-serif ${FONT_SIZE_CLASSES[fontSize]}`}
-        focus={focus}
-        initial={text.lines}
-        onLookup={handleLookup}
-        slug={text.slug}
-      />
-      <ReaderNavigation
-        className="flex justify-between gap-4"
-        next={text.nextText}
-        previous={text.previousText}
+      <ReaderHistory
+        className="sticky top-4 h-[calc(100svh-2rem)] shrink-0"
+        currentSlug={text.slug}
+        entries={entries}
+        isOpen={isHistoryOpen}
+        onClear={clear}
+        onClose={handleCloseHistory}
+        onFocusEntry={handleFocusEntry}
+        onOpenEntry={handleOpenEntry}
       />
     </div>
   );
 }
 
 /**
- * The reader page, which starts over whenever the route opens another text.
+ * The reader page on a neutral surface, which collapses the application
+ * sidebar while it is open and starts over whenever the route opens another text.
  */
 function TextsSlugPage(): ReactNode {
   const text = Route.useLoaderData();
 
+  // 🪝 Hooks
+  const { open, setOpen } = useSidebar();
+  const sidebar = useReference({ open, setOpen });
+
+  // ♻️ Lifecycle
+  useEffect(() => {
+    sidebar.current = { open, setOpen };
+  });
+  // The page reads best without the navigation beside it, so it folds the
+  // sidebar away on arrival and puts it back as the reader leaves.
+  useEffect(() => {
+    const wasOpen = sidebar.current.open;
+
+    sidebar.current.setOpen(false);
+
+    return (): void => {
+      sidebar.current.setOpen(wasOpen);
+    };
+  }, [sidebar]);
+
+  // 🎨 Markup
   return (
-    <section className="space-y-4">
-      <h1 className="text-3xl font-bold">
+    <section className="-m-4 min-h-svh space-y-4 bg-neutral-950 p-4 md:-ml-2 md:pl-2">
+      <h1 className="text-center text-3xl font-bold">
         {text.title}
         <span className="sr-only"> by {text.author.name}</span>
       </h1>

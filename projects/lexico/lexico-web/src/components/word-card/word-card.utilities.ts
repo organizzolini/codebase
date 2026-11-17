@@ -106,10 +106,14 @@ export function summarizeLookup(
   const reading = chooseCandidate(candidates, chosen);
 
   if (reading !== undefined) {
-    return { definition: reading.definition, form: reading.description };
+    return {
+      definition: reading.definition,
+      form: reading.description,
+      lexemeId: reading.lexemeId,
+    };
   }
   if (hasFailed || candidates === null) {
-    return { definition: null, form: "Lookup failed" };
+    return { definition: null, form: "Lookup failed", lexemeId: null };
   }
   return {
     definition: null,
@@ -117,5 +121,6 @@ export function summarizeLookup(
       candidates.length === 0
         ? "Not in the dictionary"
         : `${String(candidates.length)} possible readings`,
+    lexemeId: null,
   };
 }

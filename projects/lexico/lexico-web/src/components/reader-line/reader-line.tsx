@@ -50,40 +50,48 @@ export function ReaderLine(
       data-testid="reader-line"
       id={`line-${line.index}`}
     >
-      <span className="inline-block w-14 pr-3 text-right text-sm text-muted-foreground">
-        {line.label}
-      </span>
-      {tokens.map((token, position) =>
-        token.isPunctuation ? (
-          <Fragment key={token.id}>{token.data}</Fragment>
-        ) : (
-          <Fragment key={token.id}>
-            {position === 0 ? "" : " "}
-            <WordCard
-              className="inline"
-              isFocused={
-                focus !== null &&
-                focus.line === line.index &&
-                focus.token === token.index
-              }
-              isHighlighted={
-                focus !== null &&
-                focus.word.toLowerCase() === token.data.toLowerCase()
-              }
-              onLookup={(summary) => {
-                onLookup?.({
-                  definition: summary.definition,
-                  form: summary.form,
-                  line: line.index,
-                  token: token.index,
-                  word: token.data,
-                });
-              }}
-              token={token}
-            />
-          </Fragment>
-        ),
-      )}
+      <div className="flex">
+        <span
+          className="w-14 shrink-0 border-r py-1 pr-3 text-right text-sm text-muted-foreground"
+          data-testid="reader-line-gutter"
+        >
+          {line.label}
+        </span>
+        <span className="min-w-0 flex-1 py-1 pl-4">
+          {tokens.map((token, position) =>
+            token.isPunctuation ? (
+              <Fragment key={token.id}>{token.data}</Fragment>
+            ) : (
+              <Fragment key={token.id}>
+                {position === 0 ? "" : " "}
+                <WordCard
+                  className="inline"
+                  isFocused={
+                    focus !== null &&
+                    focus.line === line.index &&
+                    focus.token === token.index
+                  }
+                  isHighlighted={
+                    focus !== null &&
+                    focus.word.toLowerCase() === token.data.toLowerCase()
+                  }
+                  onLookup={(summary) => {
+                    onLookup?.({
+                      definition: summary.definition,
+                      form: summary.form,
+                      lexemeId: summary.lexemeId,
+                      line: line.index,
+                      token: token.index,
+                      word: token.data,
+                    });
+                  }}
+                  token={token}
+                />
+              </Fragment>
+            ),
+          )}
+        </span>
+      </div>
     </div>
   );
 }

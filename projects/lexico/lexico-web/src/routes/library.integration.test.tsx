@@ -131,18 +131,37 @@ const CHILDREN: Record<string, LibraryTextRow[]> = {
 
 /** The Reader's answer for the Aeneid's first book. */
 const READER_TEXT: ReaderText = {
-  author: { name: "Vergil", slug: "vergil" },
+  author: {
+    endYear: -19,
+    era: AuthorEra.Classical,
+    name: "Vergil",
+    slug: "vergil",
+    startYear: -70,
+  },
+  collection: TextCollection.Perseus,
+  edition: null,
+  editors: null,
+  endYear: null,
+  findSpot: null,
   id: "text-aeneid-1",
+  inscriptionType: null,
+  lineCount: null,
   lines: {
     edges: [],
     pageInfo: { endCursor: null, hasNextPage: false },
   },
+  material: null,
   nextText: null,
   parentText: null,
   previousText: null,
+  printYear: null,
+  province: null,
+  publisher: null,
   slug: "vergil-aeneid-1",
+  startYear: null,
   title: "Book 1",
   type: "text",
+  wordCount: null,
 };
 
 /** The page the API answers for one search, with a fixed page count. */

@@ -35,6 +35,15 @@ describe(ReaderLine, () => {
     expect(screen.getByTestId("reader-line").id).toBe("line-0");
   });
 
+  it("rules the line number off from the text with a thin vertical line", () => {
+    render(<ReaderLine line={LINE} />);
+
+    const gutter = screen.getByTestId("reader-line-gutter");
+
+    expect(gutter.textContent).toBe("1.1");
+    expect(gutter.className).toContain("border-r");
+  });
+
   it("renders words as elements and punctuation as plain text", () => {
     render(<ReaderLine line={LINE} />);
 

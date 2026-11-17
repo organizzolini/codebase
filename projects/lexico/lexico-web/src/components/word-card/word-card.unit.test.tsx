@@ -27,6 +27,7 @@ const ARMA: WordCandidate = {
   lemma: "arma",
   lexemeId: "lexeme-arma",
   partOfSpeech: "noun",
+  translations: ["arms", "weapons"],
 };
 
 describe(WordCard, () => {
@@ -65,6 +66,21 @@ describe(WordCard, () => {
     fireEvent.click(word);
 
     await expect(screen.findByText("arms")).resolves.toBeDefined();
+  });
+
+  it("lists every translation of the lexeme with its lemma and form", async () => {
+    vi.mocked(getWordCandidates).mockResolvedValue([ARMA]);
+    render(<WordCard token={TOKEN} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Arma" }));
+
+    const translations = await screen.findByRole("list", {
+      name: "Translations",
+    });
+
+    expect(translations.textContent).toContain("weapons");
+    expect(screen.getByText("nominative plural")).toBeDefined();
+    expect(screen.getByText("arma")).toBeDefined();
   });
 
   it("says the lookup failed, then shows the readings when the reader reopens it", async () => {

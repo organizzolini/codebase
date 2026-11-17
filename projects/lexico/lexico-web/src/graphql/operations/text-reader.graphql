@@ -4,9 +4,25 @@ query TextReader($slug: String!, $first: Int!, $after: String) {
     slug
     title
     type
+    collection
+    edition
+    editors
+    endYear
+    findSpot
+    inscriptionType
+    lineCount
+    material
+    printYear
+    province
+    publisher
+    startYear
+    wordCount
     author {
+      endYear
+      era
       name
       slug
+      startYear
     }
     nextText {
       slug
