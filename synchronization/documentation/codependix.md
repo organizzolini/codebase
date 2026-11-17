@@ -11,9 +11,11 @@ graph LR
   conformetry_configuration["conformetry-configuration"]
   observability["observability"]
   synchronization["synchronization"]
+  testing["testing"]
   synchronization --> configuration
   synchronization --> conformetry_configuration
   synchronization --> observability
+  synchronization --> testing
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class synchronization subject
 ```
@@ -79,11 +81,12 @@ _Rounded modules are global: every module can inject them, so their edges are le
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_src_modules_conformetry_generators_conformetry_generators_command_ts["src/modules/conformetry-generators/conformetry-generators.command.ts"]
   file_src_modules_conformetry_generators_conformetry_generators_command_unit_test_ts["src/modules/conformetry-generators/conformetry-generators.command.unit.test.ts"]
   file_src_modules_conformetry_generators_conformetry_generators_constants_ts["src/modules/conformetry-generators/conformetry-generators.constants.ts"]
@@ -175,8 +178,6 @@ graph LR
   file_src_synchronization_repl_ts["src/synchronization.repl.ts"]
   file_src_synchronization_repl_unit_test_ts["src/synchronization.repl.unit.test.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_src_modules_conformetry_generators_conformetry_generators_command_ts --> file_src_modules_conformetry_generators_conformetry_generators_types_ts
   file_src_modules_conformetry_generators_conformetry_generators_command_ts --> file_src_modules_synchronization_synchronization_service_ts
   file_src_modules_conformetry_generators_conformetry_generators_command_ts --> file_src_modules_synchronization_synchronization_types_ts
