@@ -115,7 +115,7 @@ function selectAllLabels(
 // 🧱 Shared Configuration
 
 /** Counters every project shares: TypeScript file suffixes, then comment budgets. */
-const customStatistics: CodometerCustomStatistic[] = [
+export const customStatistics: CodometerCustomStatistic[] = [
   { label: "Module Files", patterns: ["**/*.module.ts"] },
   { label: "Service Files", patterns: ["**/*.service.ts"] },
   { label: "Command Files", patterns: ["**/*.command.ts"] },
@@ -139,8 +139,37 @@ const customStatistics: CodometerCustomStatistic[] = [
   ...commentBudgets,
 ];
 
+/** Folders the tree ceilings never judge: generated migrations, assets, and vendored UI. */
+const TREE_EXCLUSIONS = [
+  "**/assets",
+  "**/components/reui",
+  "**/components/ui",
+  "**/migrations",
+];
+
+/** Directory ceilings each project gates: entries per folder, and folder depth. */
+const treeStatistics: CodometerCustomStatistic[] = [
+  {
+    label: "Directory Breadth",
+    tree: { exclude: TREE_EXCLUSIONS, maximumBreadth: 12 },
+  },
+  // The deepest folder today, meanderaw-cli's nested characteristics, so
+  // nothing grows deeper; lower it as those modules flatten.
+  {
+    label: "Directory Depth",
+    tree: { exclude: TREE_EXCLUSIONS, maximumDepth: 9 },
+  },
+];
+
+/** Zero-breach directory ceilings; spread back in by projects replacing `limits`. */
+export const directoryLimits: NonNullable<CodometerConfiguration["limits"]> =
+  treeStatistics.map((statistic) => ({
+    metric: `custom.${statistic.label}`,
+    value: 0,
+  }));
+
 /** Zero-breach limit per comment-budget counter, derived from `commentBudgets`. */
-const commentBudgetLimits: CodometerConfiguration["limits"] =
+export const commentBudgetLimits: CodometerConfiguration["limits"] =
   commentBudgets.map((statistic) => ({
     metric: `custom.${statistic.label}`,
     value: 0,
@@ -150,14 +179,14 @@ const commentBudgetLimits: CodometerConfiguration["limits"] =
 export const codometerConfiguration = {
   // Measures every counter declared above, regardless of which output below
   // selects it — an output's own `custom` only picks labels back out of this.
-  custom: customStatistics,
+  custom: [...customStatistics, ...treeStatistics],
   // Target an unqualified limit's metric path belongs to, so the comment
   // budgets below can be written as `custom.<label>` rather than
   // `codebase.custom.<label>`.
   defaultInput: "codebase",
   format: "markdown",
   // A comment budget declared and never limited is a counter, not a cap.
-  limits: commentBudgetLimits,
+  limits: [...commentBudgetLimits, ...directoryLimits],
   // Where each project leaves the report the pull request's Codometer section reads.
   //
   // The `markdown` entry is what `codometer:write` splices into each project's README.
@@ -197,6 +226,10 @@ export const compiledJavaScriptTarget = {
 /** Whole-repository run settings, with no input of its own. */
 const workspaceConfiguration = {
   ...codometerConfiguration,
+  // The tree ceilings gate each project from its own root; the workspace root
+  // and `.github/` hold what their tools require there, so they are not judged.
+  custom: customStatistics,
+  limits: commentBudgetLimits,
   // What this repository does not measure lives in an ignore file, the way
   // every other tool here keeps its exclusions. Files `.gitignore` covers are
   // already absent — discovery reads those files itself — so the ignore file

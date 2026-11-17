@@ -1,6 +1,7 @@
 import {
   codometerConfiguration,
   compiledJavaScriptTarget,
+  directoryLimits,
 } from "../../../../../configuration/ic-suite/codometer.config.js";
 
 export default {
@@ -11,5 +12,8 @@ export default {
       include: ["dist/**/*.js"],
     },
   ],
-  limits: [{ metric: "Compiled JavaScript.size", value: "24 KB" }],
+  limits: [
+    ...directoryLimits,
+    { metric: "Compiled JavaScript.size", value: "24 KB" },
+  ],
 };

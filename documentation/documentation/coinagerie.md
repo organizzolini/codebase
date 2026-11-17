@@ -8,6 +8,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **affirmation**: Generated phrase that the affirmations feature planning documents describe, produced by an LLM from tarot-card references.
 - **band**: Horizontal strip of a meander drawing bounded by two borders, which ADR 0004 and ADR 0006 adjust for crossings and branch families.
 - **border**: Edge of a meander band that ADR 0006 closes on both sides in the branch and parallel families through a MotifService hook.
+- **budget**:
 - **bundle**: Bundle-size measurement that ADR 0003 folds into codometer as a general change report, replacing the separate reporting module.
 - **canonical**: The one form chosen to stand for a meander or its symmetry class, which ADR 0007 and ADR 0014 standardize addressing and rotation around.
 - **cascade**: Refers to the cascading dependents rule in ADR 0017, where a bump to one internal dependency republishes every package depending on it.

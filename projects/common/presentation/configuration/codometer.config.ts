@@ -1,4 +1,7 @@
-import { codometerConfiguration } from "../../../../configuration/ic-suite/codometer.config.js";
+import {
+  codometerConfiguration,
+  directoryLimits,
+} from "../../../../configuration/ic-suite/codometer.config.js";
 
 /**
  * What this component library is measured by.
@@ -41,6 +44,7 @@ export default {
     },
   ],
   limits: [
+    ...directoryLimits,
     { metric: "Library bundle.size", severity: "warn", value: "384 KB" },
     { metric: "Library bundle.size", value: "512 KB" },
   ],

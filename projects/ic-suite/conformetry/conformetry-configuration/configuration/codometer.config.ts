@@ -1,6 +1,7 @@
 import {
   codometerConfiguration,
   compiledJavaScriptTarget,
+  directoryLimits,
 } from "../../../../../configuration/ic-suite/codometer.config.js";
 
 export default {
@@ -12,5 +13,8 @@ export default {
     },
   ],
   // Raised to 32 KB for the template pickers, reserved-name rule, and group-locating rule added here.
-  limits: [{ metric: "Compiled JavaScript.size", value: "32 KB" }],
+  limits: [
+    ...directoryLimits,
+    { metric: "Compiled JavaScript.size", value: "32 KB" },
+  ],
 };

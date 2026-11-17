@@ -1,4 +1,7 @@
-import { codometerConfiguration } from "@codebase/configuration/codometer.config";
+import {
+  codometerConfiguration,
+  directoryLimits,
+} from "@codebase/configuration/codometer.config";
 
 // 🎯 Targets
 
@@ -59,6 +62,7 @@ export default {
     },
   ],
   limits: [
+    ...directoryLimits,
     { metric: "Client entry JavaScript.size", value: "384 KB" },
     { metric: "Client route JavaScript.size", value: "192 KB" },
     { metric: "Client CSS.size", value: "48 KB" },
