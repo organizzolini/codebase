@@ -799,6 +799,94 @@ describe(WiktionaryCommand, () => {
     expect(processLinkSpy).toHaveBeenCalledTimes(2);
   });
 
+  it("should stop at the end lemma instead of following pagination", async () => {
+    const page = cheerio.load(`
+      <div id="mw-pages">
+        <div class="mw-category">
+          <div class="mw-category-group">
+            <ul>
+              <li><a href="/wiki/amo">amo</a></li>
+              <li><a href="/wiki/Zeta">Zeta</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <a href="/wiki/page-2">next page</a>
+    `);
+    const fetchCategoryPageSpy = vi
+      .spyOn(
+        command as unknown as {
+          fetchCategoryPage: (urlPath: string) => Promise<cheerio.CheerioAPI>;
+        },
+        "fetchCategoryPage",
+      )
+      .mockResolvedValue(page);
+    const processLinkSpy = vi
+      .spyOn(
+        command as unknown as {
+          processWiktionaryCategoryLink: (
+            element: Element,
+            cheerioApi: cheerio.CheerioAPI,
+            category: string,
+          ) => Promise<void>;
+        },
+        "processWiktionaryCategoryLink",
+      )
+      .mockResolvedValue(undefined);
+
+    await (
+      command as unknown as {
+        ingestCategory: (
+          category: "lemma",
+          startPath?: string,
+          endLemma?: string,
+        ) => Promise<void>;
+      }
+    ).ingestCategory("lemma", undefined, "major");
+
+    expect(processLinkSpy).toHaveBeenCalledTimes(1);
+    expect(fetchCategoryPageSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("should start every category at the start lemma", async () => {
+    const ingestCategorySpy = vi
+      .spyOn(
+        command as unknown as {
+          ingestCategory: (
+            category: string,
+            startPath?: string,
+            endLemma?: string,
+          ) => Promise<void>;
+        },
+        "ingestCategory",
+      )
+      .mockResolvedValue(undefined);
+
+    await command.ingestWiktionary("major", "Mz");
+
+    expect(ingestCategorySpy).toHaveBeenCalledTimes(4);
+    expect(ingestCategorySpy).toHaveBeenCalledWith(
+      "lemma",
+      "/w/index.php?title=Category:Latin_lemmas&pagefrom=major",
+      "mz",
+    );
+  });
+
+  it("should pass the lemma options of run to the scrape", async () => {
+    const ingestWiktionarySpy = vi
+      .spyOn(command, "ingestWiktionary")
+      .mockResolvedValue(undefined);
+
+    await command.run([], { endLemma: "n", startLemma: "m" });
+
+    expect(ingestWiktionarySpy).toHaveBeenCalledWith("m", "n");
+  });
+
+  it("should return option values unchanged", () => {
+    expect(command.parseStartLemma("m")).toBe("m");
+    expect(command.parseEndLemma("n")).toBe("n");
+  });
+
   it("should ingest all configured categories", async () => {
     existsSyncMock.mockReturnValue(false);
 

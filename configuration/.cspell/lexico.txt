@@ -1,5 +1,7 @@
 abbreviation
 abdias
+abestumarer
+abæstumatus
 acacesium
 aeiouāēīōūȳ
 amandum
@@ -30,6 +32,7 @@ cena
 circumfix
 Clauss
 CSEL
+cæsar
 Datenbank
 decima
 decimo
@@ -39,6 +42,7 @@ domhandler
 dēlektō
 Ecclesiasticorum
 EDCS
+enclitics
 Epigraphik
 amabilis
 amoro
@@ -89,6 +93,7 @@ fuerīs
 fuerītis
 fuerō
 fuimus
+fuisse
 fuissem
 fuissent
 fuisset
@@ -144,11 +149,15 @@ inschriften
 interfix
 interjection
 italicus
+itane
+itaque
 iulius
 iunianus
 iunius
 iustinus
+iuuenis
 iuvenalis
+iuvenis
 IVXLCDM
 jace
 jact
@@ -161,7 +170,9 @@ jonas
 josue
 judicum
 justin
+juuenis
 juvenal
+juvenis
 keˈli
 lamentationes
 latinitas
@@ -182,6 +193,7 @@ Macronizer
 madaurensis
 maio
 malachias
+malariae
 mamerca
 mamercus
 manius
@@ -190,9 +202,11 @@ martialis
 maximus
 MCMXC
 MDCLXVI
+meque
 met
 metadatas
 metamorphoses
+meus
 michaea
 mihi
 mino
@@ -242,9 +256,14 @@ phonetic
 plautus
 plinius
 pliny
+poena
 pollio
 ponto
 pontoalone
+populus
+populusque
+populusue
+populusve
 porcius
 postuma
 postumus
@@ -256,12 +275,17 @@ propertius
 proverb
 provinz
 publius
+puella
+puellae
+puelle
+pumex
 quiintilianus
 quinta
 quintilian
 quintus
 quis
 recognised
+relinks
 relname
 relnamespace
 remedia
@@ -285,6 +309,8 @@ sextus
 silius
 slaby
 slug
+soluit
+solvit
 sophonias
 spuria
 spurius
@@ -311,6 +337,7 @@ tranquillus
 tristia
 tullius
 tʃeˈli
+uirgo
 unknowncase
 unstub
 upenn
@@ -335,6 +362,7 @@ vulgate
 XLII
 wikibase
 zacharias
+zzque
 zāēīōūȳ
 äˈmiːkʊs
 datierung
@@ -342,3 +370,6 @@ fundort
 Grabinschrift
 inschrifttyp
 Marmor
+abaestumarer
+abaestumatus
+œdipus
