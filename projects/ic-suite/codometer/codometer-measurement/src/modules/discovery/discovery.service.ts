@@ -133,7 +133,7 @@ export class DiscoveryService {
   }
 
   /**
-   * Reads the `.gitignore` files above the walk up to the repository root, outermost first, so a project measured from its own folder leaves out what the repository ignores. None outside a repository.
+   * Reads the `.gitignore` files above the walk up to the repository root, outermost first. None outside a repository, or when they ignore the walk's own folder.
    */
   private readAncestorScopes(workingDirectory: string): IgnoreScope[] {
     const ancestors: string[] = [];
@@ -150,7 +150,7 @@ export class DiscoveryService {
       ancestors.unshift(directory);
     }
 
-    return ancestors.flatMap((ancestor) => {
+    const scopes = ancestors.flatMap((ancestor) => {
       const scope = this.ignoreRulesService.readScope({
         base: path
           .relative(ancestor, workingDirectory)
@@ -162,6 +162,10 @@ export class DiscoveryService {
 
       return scope === undefined ? [] : [scope];
     });
+
+    // A folder measured on purpose is never ignored away, even inside an
+    // ignored tree such as a scratch `tmp/`.
+    return this.ignoreRulesService.isIgnored(scopes, "") ? [] : scopes;
   }
 
   /**

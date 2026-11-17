@@ -160,6 +160,28 @@ describe(`${DiscoveryService.name} over a real directory`, () => {
       expect(discoverProject(true)).toStrictEqual(["src/app.ts"]);
     });
 
+    it("drops the rules above a walk whose own folder they ignore", () => {
+      expect.hasAssertions();
+
+      const root = createFileTree(
+        {
+          ".gitignore": "tmp/\nreport.json\n",
+          "tmp/fixture/report.json": "{}\n",
+          "tmp/fixture/src/app.ts": "export const app = 1;\n",
+        },
+        { git: true, label: "discovery-ignored-walk" },
+      );
+
+      // A scratch fixture inside an ignored folder is still measured whole.
+      expect(
+        service.discoverFiles({
+          exclude: [],
+          excludeFrom: [],
+          workingDirectory: `${root}/tmp/fixture`,
+        }).files,
+      ).toStrictEqual(["report.json", "src/app.ts"]);
+    });
+
     it("reads no gitignore above a walk that sits in no repository", () => {
       expect.hasAssertions();
       expect(discoverProject(false)).toStrictEqual([
