@@ -253,7 +253,7 @@
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/**/*.ts",
-        "{workspaceRoot}/projects/**/src/modules/database/migrations/*.ts",
+        "{workspaceRoot}/projects/**/migrations/*.ts",
         "shared-globals"
       ],
       "options": {
