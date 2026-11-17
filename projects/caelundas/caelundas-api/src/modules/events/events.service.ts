@@ -16,9 +16,9 @@ import { EventGroupingService } from "./modules/grouping/event-grouping.service"
 import { PresetsService } from "./modules/presets/presets.service";
 import { WindowsService } from "./modules/windows/windows.service";
 
-import type { CalendarEventEntity } from "./calendar-event.entities";
-import type { EventFacetEntity } from "./event-facet.entities";
 import type { EventsDatasetEntity } from "./events.entities";
+import type { CalendarEventEntity } from "./modules/calendar-event/calendar-event.entities";
+import type { EventFacetEntity } from "./modules/facets/event-facet.entities";
 import type { EventFilterGroup } from "./modules/filtering/event-filter.types";
 import type { EventGroupLevel } from "./modules/grouping/event-grouping.types";
 import type { ResolvedPreset } from "./modules/presets/presets.types";

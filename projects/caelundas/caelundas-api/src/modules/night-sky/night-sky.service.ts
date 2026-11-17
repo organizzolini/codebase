@@ -4,12 +4,12 @@ import { EntityManager } from "typeorm";
 
 import { ConstellationLine, Star } from "@codebase/caelundas-db";
 
-import { NightSkyInputService } from "./night-sky-input.service";
-import { NightSkySiderealTimeService } from "./night-sky-sidereal-time.service";
-import { NightSkySvgService } from "./night-sky-svg.service";
+import { NightSkySiderealTimeService } from "./modules/astronomy/night-sky-sidereal-time.service";
+import { NightSkySvgService } from "./modules/drawing/night-sky-svg.service";
+import { NightSkyInputService } from "./modules/options/night-sky-input.service";
 import { NIGHT_SKY_CACHE_SIZE } from "./night-sky.constants";
 
-import type { NightSkyInput } from "./night-sky-input.entities";
+import type { NightSkyInput } from "./modules/options/night-sky-input.entities";
 import type {
   NightSky,
   NightSkyCatalog,

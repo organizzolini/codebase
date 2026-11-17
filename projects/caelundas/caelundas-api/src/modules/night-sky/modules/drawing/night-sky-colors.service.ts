@@ -4,7 +4,7 @@ import {
   COLOR_DIGITS_PATTERN,
   DEFAULT_OPTIONS,
   STAR_GLOW_DEFINITION,
-} from "./night-sky.constants";
+} from "../../night-sky.constants";
 
 /**
  * Reads the colors a query gives and writes the SVG definitions that use

@@ -2,15 +2,16 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { NightSkyProjectionService } from "../astronomy/night-sky-projection.service";
+
 import { NightSkyColorsService } from "./night-sky-colors.service";
 import { NightSkyLinesService } from "./night-sky-lines.service";
-import { NightSkyProjectionService } from "./night-sky-projection.service";
 
 import type {
   ConstellationSegment,
   LineStyle,
   SkyGeometry,
-} from "./night-sky.types";
+} from "../../night-sky.types";
 
 const STYLE: LineStyle = {
   lineColor: "#ffffff",

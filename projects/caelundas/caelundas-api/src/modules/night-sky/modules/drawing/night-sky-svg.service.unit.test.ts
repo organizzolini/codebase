@@ -3,17 +3,18 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { NightSkyEclipticService } from "../astronomy/night-sky-ecliptic.service";
+import { NightSkyProjectionService } from "../astronomy/night-sky-projection.service";
+import { NightSkySiderealTimeService } from "../astronomy/night-sky-sidereal-time.service";
+import { NightSkyOptionsService } from "../options/night-sky-options.service";
+
 import { NightSkyColorsService } from "./night-sky-colors.service";
-import { NightSkyEclipticService } from "./night-sky-ecliptic.service";
 import { NightSkyLinesService } from "./night-sky-lines.service";
-import { NightSkyOptionsService } from "./night-sky-options.service";
-import { NightSkyProjectionService } from "./night-sky-projection.service";
-import { NightSkySiderealTimeService } from "./night-sky-sidereal-time.service";
 import { NightSkyStarsService } from "./night-sky-stars.service";
 import { NightSkySvgService } from "./night-sky-svg.service";
 import { NightSkyViewService } from "./night-sky-view.service";
 
-import type { StarRow } from "./night-sky.types";
+import type { StarRow } from "../../night-sky.types";
 
 // A field of stars every half hour of right ascension and every four degrees
 // of declination, magnitudes 1 to 5 in turn, so every part of the sky the

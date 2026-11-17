@@ -1,5 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 
+import { EventFilterValuesService } from "../values/event-filter-values.service";
+
 import {
   CALENDAR_FIELD_IDS,
   CALENDAR_OPERATORS,
@@ -9,12 +11,11 @@ import {
 } from "./event-filter-fields.constants";
 import { EventFilterParametersService } from "./event-filter-parameters.service";
 import { CALENDAR_FIELD_SQL } from "./event-filter-sql.constants";
-import { EventFilterValuesService } from "./event-filter-values.service";
 
 import type {
   EventFilterParameters,
   EventFilterRule,
-} from "./event-filter.types";
+} from "../../event-filter.types";
 
 // Each compiler below is handed the value its reader already checked, so
 // none of them calls on to another: the filters' call stacks stay shallow.

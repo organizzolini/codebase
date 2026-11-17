@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 
-import { NightSkyProjectionService } from "./night-sky-projection.service";
 import {
   COLOR_BUCKET_HIGHEST,
   COLOR_BUCKET_LOWEST,
@@ -15,7 +14,8 @@ import {
   STAR_RADIUS_BASE,
   STAR_RADIUS_FLOOR,
   STAR_RADIUS_PER_MAGNITUDE,
-} from "./night-sky.constants";
+} from "../../night-sky.constants";
+import { NightSkyProjectionService } from "../astronomy/night-sky-projection.service";
 
 import type {
   RenderedStar,
@@ -23,7 +23,7 @@ import type {
   SelectedStars,
   SkyGeometry,
   StarRow,
-} from "./night-sky.types";
+} from "../../night-sky.types";
 
 /**
  * Draws the stars: which are bright enough and on a ring the window crosses,

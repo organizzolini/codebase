@@ -4,20 +4,21 @@ import {
   CALENDAR_FIELD_IDS,
   COMPARISONS,
   NUMBER_OPERATORS,
-} from "./event-filter-fields.constants";
-import { EventFilterParametersService } from "./event-filter-parameters.service";
+} from "../query-building/event-filter-fields.constants";
+import { EventFilterParametersService } from "../query-building/event-filter-parameters.service";
 import {
   CALENDAR_FIELD_SQL,
   EVENT_TAG_NUMBERS_SQL,
   TAG_NUMBER_SQL,
-} from "./event-filter-sql.constants";
+} from "../query-building/event-filter-sql.constants";
+
 import { EventFilterValuesService } from "./event-filter-values.service";
 
 import type {
   EventFilterParameters,
   EventFilterRule,
   NumberCondition,
-} from "./event-filter.types";
+} from "../../event-filter.types";
 
 // A rule's compiler reads its operands and builds its condition as two
 // siblings rather than one calling the other, which would add a frame to

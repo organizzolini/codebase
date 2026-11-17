@@ -2,11 +2,12 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { NightSkyColorsService } from "./night-sky-colors.service";
+import { NightSkyColorsService } from "../drawing/night-sky-colors.service";
+
 import { NightSkyEclipticService } from "./night-sky-ecliptic.service";
 import { NightSkyProjectionService } from "./night-sky-projection.service";
 
-import type { EclipticStyle, SkyGeometry } from "./night-sky.types";
+import type { EclipticStyle, SkyGeometry } from "../../night-sky.types";
 
 const STYLE: EclipticStyle = {
   eclipticColor: "#ffb877",

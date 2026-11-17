@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { EventFilterCalendarFieldsService } from "./event-filter-calendar-fields.service";
-import { EventFilterNumbersService } from "./event-filter-numbers.service";
-import { EventFilterParametersService } from "./event-filter-parameters.service";
-import { EventFilterValuesService } from "./event-filter-values.service";
 import { EventFilterService } from "./event-filter.service";
+import { EventFilterCalendarFieldsService } from "./modules/query-building/event-filter-calendar-fields.service";
+import { EventFilterParametersService } from "./modules/query-building/event-filter-parameters.service";
+import { EventFilterNumbersService } from "./modules/values/event-filter-numbers.service";
+import { EventFilterValuesService } from "./modules/values/event-filter-values.service";
 
 import type { EventFilterGroup, EventFilterRule } from "./event-filter.types";
 

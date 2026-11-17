@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { DURATION_BUCKETS } from "../filtering/event-filter-fields.constants";
+import { DURATION_BUCKETS } from "../filtering/modules/query-building/event-filter-fields.constants";
 
 import type { EventGroupLevel } from "./event-grouping.types";
 

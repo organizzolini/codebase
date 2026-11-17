@@ -1,16 +1,16 @@
 import { Inject } from "@nestjs/common";
 import { Args as Arguments, Query, Resolver } from "@nestjs/graphql";
 
-import { CalendarEventEntity } from "./calendar-event.entities";
-import { EventFacetEntity } from "./event-facet.entities";
 import {
   EVENT_FILTER_ARGUMENT_DESCRIPTION,
   EVENT_GROUPING_ARGUMENT_DESCRIPTION,
 } from "./events.constants";
 import { EventsDatasetEntity } from "./events.entities";
 import { EventsService } from "./events.service";
-import { EventFilterGroupEntity } from "./modules/filtering/event-filter.entities";
+import { CalendarEventEntity } from "./modules/calendar-event/calendar-event.entities";
+import { EventFacetEntity } from "./modules/facets/event-facet.entities";
 import { EventFilterService } from "./modules/filtering/event-filter.service";
+import { EventFilterGroupEntity } from "./modules/filtering/modules/rules/event-filter.entities";
 import { EventGroupingEntity } from "./modules/grouping/event-grouping.entities";
 import { EventGroupingService } from "./modules/grouping/event-grouping.service";
 import { PresetEntity } from "./modules/presets/preset.entities";

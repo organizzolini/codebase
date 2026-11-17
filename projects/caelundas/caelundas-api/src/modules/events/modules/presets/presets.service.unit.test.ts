@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { DEFAULT_PRESET_ID, PRESETS } from "./presets.constants";
 import { PresetsService } from "./presets.service";
 
-import type { EventFacetEntity } from "../../event-facet.entities";
+import type { EventFacetEntity } from "../facets/event-facet.entities";
 
 /** A tag root with a tag for each path beneath it, each id `root:path`. */
 function facet(id: string, name: string, paths: string[]): EventFacetEntity {

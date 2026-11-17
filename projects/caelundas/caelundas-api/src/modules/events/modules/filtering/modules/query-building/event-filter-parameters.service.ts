@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 
 import { PLACEHOLDER_PREFIX } from "./event-filter-sql.constants";
 
-import type { EventFilterParameters } from "./event-filter.types";
+import type { EventFilterParameters } from "../../event-filter.types";
 
 /**
  * Binds the values a compiled filter or grouping stands for, the `$n`

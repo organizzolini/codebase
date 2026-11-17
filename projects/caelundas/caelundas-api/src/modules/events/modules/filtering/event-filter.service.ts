@@ -1,17 +1,17 @@
 import { Inject, Injectable } from "@nestjs/common";
 
-import { EventFilterCalendarFieldsService } from "./event-filter-calendar-fields.service";
+import { eventFilterGroupSchema } from "./event-filter.constants";
+import { EventFilterCalendarFieldsService } from "./modules/query-building/event-filter-calendar-fields.service";
 import {
   TAG_FIELD_PREFIX,
   TAG_OPERATOR_NAMES,
   TAG_OPERATORS,
-} from "./event-filter-fields.constants";
-import { EventFilterNumbersService } from "./event-filter-numbers.service";
-import { EventFilterParametersService } from "./event-filter-parameters.service";
-import { EVENT_TAGS_MATCHING_SQL } from "./event-filter-sql.constants";
-import { UUID_PATTERN } from "./event-filter-values.constants";
-import { EventFilterValuesService } from "./event-filter-values.service";
-import { eventFilterGroupSchema } from "./event-filter.constants";
+} from "./modules/query-building/event-filter-fields.constants";
+import { EventFilterParametersService } from "./modules/query-building/event-filter-parameters.service";
+import { EVENT_TAGS_MATCHING_SQL } from "./modules/query-building/event-filter-sql.constants";
+import { EventFilterNumbersService } from "./modules/values/event-filter-numbers.service";
+import { UUID_PATTERN } from "./modules/values/event-filter-values.constants";
+import { EventFilterValuesService } from "./modules/values/event-filter-values.service";
 
 import type {
   CompiledEventFilter,

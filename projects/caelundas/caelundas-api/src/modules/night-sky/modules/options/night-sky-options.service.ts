@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
 
-import { DEFAULT_OPTIONS } from "./night-sky.constants";
+import { DEFAULT_OPTIONS } from "../../night-sky.constants";
 
 import type {
   EclipticStyle,
   LineStyle,
   NightSkyOptions,
   ResolvedNightSkyOptions,
-} from "./night-sky.types";
+} from "../../night-sky.types";
 
 /**
  * Fills the options a caller left out with their defaults.

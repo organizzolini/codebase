@@ -5,10 +5,11 @@
 
 import { Injectable } from "@nestjs/common";
 
+import { NightSkyEclipticService } from "../astronomy/night-sky-ecliptic.service";
+import { NightSkyOptionsService } from "../options/night-sky-options.service";
+
 import { NightSkyColorsService } from "./night-sky-colors.service";
-import { NightSkyEclipticService } from "./night-sky-ecliptic.service";
 import { NightSkyLinesService } from "./night-sky-lines.service";
-import { NightSkyOptionsService } from "./night-sky-options.service";
 import { NightSkyStarsService } from "./night-sky-stars.service";
 import { NightSkyViewService } from "./night-sky-view.service";
 
@@ -20,7 +21,7 @@ import type {
   ResolvedNightSkyOptions,
   SkyGeometry,
   Viewport,
-} from "./night-sky.types";
+} from "../../night-sky.types";
 
 /**
  * Builds the night sky's SVG from the services that frame, draw and color

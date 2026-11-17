@@ -4,7 +4,7 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { NightSkyProjectionService } from "./night-sky-projection.service";
 
-import type { SkyGeometry } from "./night-sky.types";
+import type { SkyGeometry } from "../../night-sky.types";
 
 const GEOMETRY: SkyGeometry = {
   fieldOfView: { clamped: false, degrees: 20, limitDegrees: 40 },

@@ -1,19 +1,19 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { z } from "zod";
 
-import { NightSkyColorsService } from "./night-sky-colors.service";
 import {
   COLOR_DIGITS_PATTERN,
   DEFAULT_OPTIONS,
   MAXIMUM_SIZE_PIXELS,
   MILLISECONDS_PER_MINUTE,
   SIZE_BUCKET_PIXELS,
-} from "./night-sky.constants";
+} from "../../night-sky.constants";
+import { NightSkyColorsService } from "../drawing/night-sky-colors.service";
 
 import type {
   ConstellationSegment,
   ParsedNightSkyInput,
-} from "./night-sky.types";
+} from "../../night-sky.types";
 
 /**
  * Reads what a query asks for: checks it, fills what it left out, and snaps

@@ -1,14 +1,15 @@
 import { Injectable } from "@nestjs/common";
 
-import { NightSkyColorsService } from "./night-sky-colors.service";
-import { NightSkyProjectionService } from "./night-sky-projection.service";
 import {
   CONSTELLATION_LINE_ATTRIBUTES,
   CONSTELLATION_SEGMENT_STEPS,
   DEFAULT_OPTIONS,
   DEGREES_PER_HOUR,
   RADIANS_PER_DEGREE,
-} from "./night-sky.constants";
+} from "../../night-sky.constants";
+import { NightSkyProjectionService } from "../astronomy/night-sky-projection.service";
+
+import { NightSkyColorsService } from "./night-sky-colors.service";
 
 import type {
   ConstellationSegment,
@@ -16,7 +17,7 @@ import type {
   SkyGeometry,
   SkyPoint,
   SkyVector,
-} from "./night-sky.types";
+} from "../../night-sky.types";
 
 /**
  * Draws the constellation figures as lines along the sky's great circles.

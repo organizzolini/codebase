@@ -2,16 +2,17 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { NightSkyProjectionService } from "./night-sky-projection.service";
+import { DEFAULT_OPTIONS } from "../../night-sky.constants";
+import { NightSkyProjectionService } from "../astronomy/night-sky-projection.service";
+
 import { NightSkyStarsService } from "./night-sky-stars.service";
-import { DEFAULT_OPTIONS } from "./night-sky.constants";
 
 import type {
   RenderedStar,
   ResolvedNightSkyOptions,
   SkyGeometry,
   StarRow,
-} from "./night-sky.types";
+} from "../../night-sky.types";
 
 const GEOMETRY: SkyGeometry = {
   fieldOfView: { clamped: false, degrees: 20, limitDegrees: 40 },

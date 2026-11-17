@@ -1,8 +1,15 @@
 import { Injectable } from "@nestjs/common";
 
-import { DEGREES_PER_HOUR, RADIANS_PER_DEGREE } from "./night-sky.constants";
+import {
+  DEGREES_PER_HOUR,
+  RADIANS_PER_DEGREE,
+} from "../../night-sky.constants";
 
-import type { ProjectedPoint, SkyGeometry, SkyPoint } from "./night-sky.types";
+import type {
+  ProjectedPoint,
+  SkyGeometry,
+  SkyPoint,
+} from "../../night-sky.types";
 
 /**
  * Projects points of the sky onto the plane the SVG is drawn on, and cuts

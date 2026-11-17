@@ -2,11 +2,12 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { NightSkyProjectionService } from "./night-sky-projection.service";
-import { NightSkyViewService } from "./night-sky-view.service";
-import { DEFAULT_OPTIONS } from "./night-sky.constants";
+import { DEFAULT_OPTIONS } from "../../night-sky.constants";
+import { NightSkyProjectionService } from "../astronomy/night-sky-projection.service";
 
-import type { ResolvedNightSkyOptions } from "./night-sky.types";
+import { NightSkyViewService } from "./night-sky-view.service";
+
+import type { ResolvedNightSkyOptions } from "../../night-sky.types";
 
 const OPTIONS: ResolvedNightSkyOptions = {
   ...DEFAULT_OPTIONS,

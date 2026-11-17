@@ -6,7 +6,7 @@ import {
   J2000_JULIAN_DAY,
   MILLISECONDS_PER_DAY,
   UNIX_EPOCH_JULIAN_DAY,
-} from "./night-sky.constants";
+} from "../../night-sky.constants";
 
 /**
  * Tells where the sky stands for a place and moment, as sidereal time.

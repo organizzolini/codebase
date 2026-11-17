@@ -2,8 +2,9 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { DEFAULT_OPTIONS } from "../../night-sky.constants";
+
 import { NightSkyOptionsService } from "./night-sky-options.service";
-import { DEFAULT_OPTIONS } from "./night-sky.constants";
 
 describe(NightSkyOptionsService, () => {
   let service: NightSkyOptionsService;

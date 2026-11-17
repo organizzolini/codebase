@@ -5,11 +5,11 @@ import { z } from "zod";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EventsService } from "./events.service";
-import { EventFilterCalendarFieldsService } from "./modules/filtering/event-filter-calendar-fields.service";
-import { EventFilterNumbersService } from "./modules/filtering/event-filter-numbers.service";
-import { EventFilterParametersService } from "./modules/filtering/event-filter-parameters.service";
-import { EventFilterValuesService } from "./modules/filtering/event-filter-values.service";
 import { EventFilterService } from "./modules/filtering/event-filter.service";
+import { EventFilterCalendarFieldsService } from "./modules/filtering/modules/query-building/event-filter-calendar-fields.service";
+import { EventFilterParametersService } from "./modules/filtering/modules/query-building/event-filter-parameters.service";
+import { EventFilterNumbersService } from "./modules/filtering/modules/values/event-filter-numbers.service";
+import { EventFilterValuesService } from "./modules/filtering/modules/values/event-filter-values.service";
 import { EventGroupingService } from "./modules/grouping/event-grouping.service";
 import { PresetsService } from "./modules/presets/presets.service";
 import { CalendarWindow } from "./modules/windows/calendar-window.entities";

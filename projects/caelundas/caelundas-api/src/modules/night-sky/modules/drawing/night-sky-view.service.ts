@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 
-import { NightSkyProjectionService } from "./night-sky-projection.service";
 import {
   DEBUG_LABEL_ATTRIBUTES,
   DEBUG_LINE_ATTRIBUTES,
@@ -10,7 +9,8 @@ import {
   POLE_MARGIN_DEGREES,
   RING_MARGIN,
   SIDEREAL_DAY_SECONDS,
-} from "./night-sky.constants";
+} from "../../night-sky.constants";
+import { NightSkyProjectionService } from "../astronomy/night-sky-projection.service";
 
 import type {
   FieldOfView,
@@ -18,7 +18,7 @@ import type {
   ResolvedNightSkyOptions,
   SkyGeometry,
   Viewport,
-} from "./night-sky.types";
+} from "../../night-sky.types";
 
 /**
  * Frames the sky: how it is projected for the window, how fast it turns, and

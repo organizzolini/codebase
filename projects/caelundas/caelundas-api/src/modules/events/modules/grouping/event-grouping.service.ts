@@ -1,8 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 
-import { TAG_FIELD_PREFIX } from "../filtering/event-filter-fields.constants";
-import { EventFilterParametersService } from "../filtering/event-filter-parameters.service";
-import { UUID_PATTERN } from "../filtering/event-filter-values.constants";
+import { TAG_FIELD_PREFIX } from "../filtering/modules/query-building/event-filter-fields.constants";
+import { EventFilterParametersService } from "../filtering/modules/query-building/event-filter-parameters.service";
+import { UUID_PATTERN } from "../filtering/modules/values/event-filter-values.constants";
 
 import {
   CALENDAR_GROUP_IDS,

@@ -1,7 +1,5 @@
 import { Injectable } from "@nestjs/common";
 
-import { NightSkyColorsService } from "./night-sky-colors.service";
-import { NightSkyProjectionService } from "./night-sky-projection.service";
 import {
   DEFAULT_OPTIONS,
   DEGREES_PER_HOUR,
@@ -9,9 +7,16 @@ import {
   ECLIPTIC_STEP_DEGREES,
   OBLIQUITY_DEGREES,
   RADIANS_PER_DEGREE,
-} from "./night-sky.constants";
+} from "../../night-sky.constants";
+import { NightSkyColorsService } from "../drawing/night-sky-colors.service";
 
-import type { EclipticStyle, SkyGeometry, SkyPoint } from "./night-sky.types";
+import { NightSkyProjectionService } from "./night-sky-projection.service";
+
+import type {
+  EclipticStyle,
+  SkyGeometry,
+  SkyPoint,
+} from "../../night-sky.types";
 
 /**
  * Draws the ecliptic, the Sun's yearly path and the line the zodiac lies

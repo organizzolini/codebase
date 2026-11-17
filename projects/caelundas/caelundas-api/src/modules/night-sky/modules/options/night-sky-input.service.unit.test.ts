@@ -2,10 +2,11 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { NightSkyColorsService } from "./night-sky-colors.service";
+import { NightSkyColorsService } from "../drawing/night-sky-colors.service";
+
 import { NightSkyInputService } from "./night-sky-input.service";
 
-import type { ConstellationSegment } from "./night-sky.types";
+import type { ConstellationSegment } from "../../night-sky.types";
 
 const URSA_MAJOR: ConstellationSegment = {
   from: [11.0621, 61.751],

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { EventFilterParametersService } from "../filtering/event-filter-parameters.service";
+import { EventFilterParametersService } from "../filtering/modules/query-building/event-filter-parameters.service";
 
 import { EventGroupingService } from "./event-grouping.service";
 

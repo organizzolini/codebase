@@ -56,6 +56,7 @@ src/
       health.*.unit.test.ts
     night-sky/                        # The `nightSky` query: the builder, its catalog and cache
       data/night-sky-catalog.json     # Trimmed HYG stars and d3-celestial figures, loaded once at startup
+      modules/                        # astronomy/ (projection maths), drawing/ (stars, lines, colors, SVG, view), options/
     <domain>/                         # Add feature modules here
       <domain>.module.ts
       <domain>.resolver.ts
