@@ -19,17 +19,13 @@
     "target": "esnext",
     "types": ["node", "vitest/globals"]
   },
-  "exclude": [
-    "../tooling/dist",
-    "../tooling/node_modules",
-    "../tooling/output"
-  ],
+  "exclude": ["../dist", "../node_modules", "../output"],
   "extends": "../../configuration/tsconfig.json",
   "include": [
     "*.ts",
-    "../tooling/scripts/**/*.ts",
-    "../tooling/src/**/*.ts",
-    "../tooling/src/**/*.tsx",
-    "../tooling/testing/**/*.ts"
+    "../scripts/**/*.ts",
+    "../src/**/*.ts",
+    "../src/**/*.tsx",
+    "../testing/**/*.ts"
   ]
 }
