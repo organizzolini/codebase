@@ -11,7 +11,7 @@ import { GeometryService } from "../geometry/geometry.service";
 
 import { DrawIndexService } from "./draw-index.service";
 
-import type { Meander } from "../database/entities/meander.entity";
+import type { Meander } from "../database/meander.entity";
 import type { MeanderPageContent } from "./draw-index.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 

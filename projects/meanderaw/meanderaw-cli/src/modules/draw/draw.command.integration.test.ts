@@ -15,13 +15,13 @@ import {
   startDatabaseTestingModule,
 } from "@codebase/persistence/testing";
 
+import { Migration1791160950069 } from "../../../migrations/1791160950069-migration";
+import { Migration1791414023001 } from "../../../migrations/1791414023001-migration";
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
 import { CodeModule } from "../code/code.module";
 import { CorpusService } from "../corpus/corpus.service";
 import { DatabaseModule } from "../database/database.module";
-import { Meander } from "../database/entities/meander.entity";
-import { Migration1791160950069 } from "../database/migrations/1791160950069-migration";
-import { Migration1791414023001 } from "../database/migrations/1791414023001-migration";
+import { Meander } from "../database/meander.entity";
 import { DrawingModule } from "../drawing/drawing.module";
 import { GeometryService } from "../geometry/geometry.service";
 import { GraphService } from "../graph/graph.service";

@@ -17,7 +17,7 @@ import { BAND_REPEAT_COUNT, PAGE_STYLES } from "./draw-index.constants";
 
 import type { PatternCharacteristicKey } from "../characteristics/characteristics.types";
 import type { MeanderPatternShapeCount } from "../database/database.types";
-import type { Meander } from "../database/entities/meander.entity";
+import type { Meander } from "../database/meander.entity";
 import type {
   MeanderPageContent,
   MeanderPageSource,

@@ -7,7 +7,7 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 import { meanderRecord } from "../../../testing/meanders";
 
 import { DatabaseService } from "./database.service";
-import { Meander } from "./entities/meander.entity";
+import { Meander } from "./meander.entity";
 
 import type { MeanderRecord } from "./database.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";

@@ -11,5 +11,5 @@
     "../testing/**"
   ],
   "extends": "./tsconfig.json",
-  "include": ["../src/**/*.ts", "../src/**/*.tsx"]
+  "include": ["../migrations/**/*.ts", "../src/**/*.ts", "../src/**/*.tsx"]
 }

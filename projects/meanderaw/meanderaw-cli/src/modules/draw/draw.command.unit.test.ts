@@ -22,7 +22,7 @@ import { DrawEnumerationService } from "./draw-enumeration.service";
 import { DrawIndexService } from "./draw-index.service";
 import { DrawCommand } from "./draw.command";
 
-import type { Meander } from "../database/entities/meander.entity";
+import type { Meander } from "../database/meander.entity";
 import type { MeanderPageContent } from "./draw-index.types";
 import type * as FileSystemHelpers from "@codebase/testing/file-system";
 import type {

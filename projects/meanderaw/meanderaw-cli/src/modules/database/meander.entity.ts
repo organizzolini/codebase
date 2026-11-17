@@ -2,9 +2,9 @@ import { Column, Entity, Index } from "typeorm";
 
 import { PostgresqlUpdatableEntity } from "@codebase/persistence";
 
-import { BIGINT_NUMBER_TRANSFORMER } from "../database.constants";
+import { BIGINT_NUMBER_TRANSFORMER } from "./database.constants";
 
-import type { StoredCharacteristics } from "../../characteristics/characteristics.types";
+import type { StoredCharacteristics } from "../characteristics/characteristics.types";
 
 /**
  * One row of the `meanders` table: a single meander addressed by its Code.

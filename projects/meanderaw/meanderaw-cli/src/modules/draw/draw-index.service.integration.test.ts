@@ -5,12 +5,12 @@ import {
   startDatabaseTestingModule,
 } from "@codebase/persistence/testing";
 
+import { Migration1791160950069 } from "../../../migrations/1791160950069-migration";
+import { Migration1791414023001 } from "../../../migrations/1791414023001-migration";
 import { meanderRecord } from "../../../testing/meanders";
 import { CodeService } from "../code/code.service";
 import { DatabaseModule } from "../database/database.module";
-import { Meander } from "../database/entities/meander.entity";
-import { Migration1791160950069 } from "../database/migrations/1791160950069-migration";
-import { Migration1791414023001 } from "../database/migrations/1791414023001-migration";
+import { Meander } from "../database/meander.entity";
 import { DrawingService } from "../drawing/drawing.service";
 import { GeometryService } from "../geometry/geometry.service";
 import { SvgService } from "../svg/svg.service";

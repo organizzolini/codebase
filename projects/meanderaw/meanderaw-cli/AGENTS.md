@@ -240,7 +240,7 @@ meanderaw variable carries the `MEANDERAW_` prefix, so the unprefixed `POSTGRES_
 
 **The `meanders` table is built by migrations, never by synchronizing.** `Meander` extends
 `PostgresqlUpdatableEntity`, so its `uuidv7()` id and audit columns come from the shared package, and the
-migrations live in `src/modules/database/migrations/`. After changing the entity run
+migrations live in the project root's `migrations/`. After changing the entity run
 `nx run meanderaw-cli:migration:generate`, and `nx run meanderaw-cli:migration:run` to apply it; the
 `start` target never migrates, so run the migrations before the first draw run. The CLI reads the
 data source `src/modules/database/data-source.constants.ts` exports, and the

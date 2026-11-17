@@ -9,7 +9,7 @@ import { DrawCodeService } from "./draw-code.service";
 import { DrawRecordService } from "./draw-record.service";
 
 import type { MeanderRecord } from "../database/database.types";
-import type { Meander } from "../database/entities/meander.entity";
+import type { Meander } from "../database/meander.entity";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 // 🧪 Tests
