@@ -10,6 +10,7 @@ import {
   environmentSchema,
   GRAPHQL_SCHEMA_FILE,
 } from "./{{nameKebabCase}}.constants";
+import { CorsModule } from "./modules/cors/cors.module";
 
 /**
  * Root NestJS application module for the {{namePascalCase}} GraphQL API.
@@ -28,6 +29,7 @@ import {
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
+    CorsModule,
     LoggerModule,
   ],
 })

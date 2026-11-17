@@ -19,13 +19,13 @@ export interface IssueFieldNamesResult {
   readonly success: boolean;
 }
 
-/** The issue a field rule judges, with its filled fields. */
+/** The issue a field rule judges, and the fields it has filled. */
 export interface IssueFieldTarget {
   readonly fieldNames: readonly string[];
   readonly issueNumber: string;
 }
 
-/** Open issues' filled field names by number, or why unreadable. */
+/** Every open issue's filled field names by number, or why not. */
 export type OpenIssueFieldNamesResult =
   | { readonly error: string; readonly success: false }
   | {

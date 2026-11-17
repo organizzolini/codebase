@@ -7,6 +7,7 @@ import { LoggerService } from "@codebase/observability";
 
 import { environmentSchema } from "./{{nameKebabCase}}.constants";
 import { {{namePascalCase}}Module } from "./{{nameKebabCase}}.module";
+import { CorsService } from "./modules/cors/cors.service";
 
 import type { INestApplication } from "@nestjs/common";
 
@@ -23,6 +24,10 @@ async function bootstrap(): Promise<void> {
     bufferLogs: true,
     logger,
   });
+
+  app.enableCors(
+    app.get(CorsService).getOptions(environment.{{nameConstantCase}}_CORS_ORIGINS),
+  );
 
   lightship.registerShutdownHandler(async () => {
     await app.close();
