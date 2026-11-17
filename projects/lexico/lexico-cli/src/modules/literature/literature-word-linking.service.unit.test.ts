@@ -119,6 +119,15 @@ describe(LiteratureWordLinkingService, () => {
       expect(service.resolve("mene", WORDS)).toBe("id-mene");
     });
 
+    it("picks the alphabetically first of equally close spellings", () => {
+      const tied = new Map([
+        ["ivj", "id-ivj"],
+        ["jvi", "id-jvi"],
+      ]);
+
+      expect(service.resolve("iui", tied)).toBe("id-ivj");
+    });
+
     it("does not strip an enclitic that leaves nothing usable", () => {
       expect(service.resolve("que", WORDS)).toBeNull();
       expect(service.resolve("zzque", WORDS)).toBeNull();

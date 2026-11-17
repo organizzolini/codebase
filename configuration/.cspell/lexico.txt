@@ -159,6 +159,7 @@ iustinus
 iuuenis
 iuvenalis
 iuvenis
+ivj
 IVXLCDM
 jace
 jact
@@ -174,6 +175,7 @@ justin
 juuenis
 juvenal
 juvenis
+jvi
 keˈli
 lamentationes
 latinitas
@@ -316,7 +318,9 @@ solutu
 solutum
 solutus
 solvendum
+solvens
 solvere
+solvi
 solvisse
 solvit
 sophonias

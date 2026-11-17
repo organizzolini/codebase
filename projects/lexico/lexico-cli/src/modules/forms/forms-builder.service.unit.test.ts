@@ -433,6 +433,31 @@ describe(FormsBuilderService, () => {
     expect(forms[0]).toMatchObject({ tense: "perfect", voice: "active" });
   });
 
+  it("should skip invalid tenses, voices, words and non-record entries in a parsed verb table", () => {
+    expect.hasAssertions();
+
+    const forms = service.buildFormsForPartOfSpeech(
+      "verb",
+      {
+        nonFinite: {
+          futurePerfect: { infinitive: { passive: ["solutum fore"] } },
+          perfect: "not-a-record",
+          present: {
+            infinitive: {
+              active: [],
+              invalidVoice: ["solvere"],
+              passive: "solvi",
+            },
+            participle: { active: ["solvens"] },
+          },
+        },
+      },
+      new Lexeme(),
+    );
+
+    expect(forms).toStrictEqual([]);
+  });
+
   it("should build verb noun forms when gerund and supine maps are present", () => {
     expect.hasAssertions();
 
