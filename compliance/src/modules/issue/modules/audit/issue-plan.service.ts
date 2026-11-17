@@ -1,11 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
 import {
-  ALL_ISSUES_FLAG,
-  ALL_ISSUES_SHORT_FLAG,
-  ISSUE_NUMBER_PATTERN,
-} from "./issue-metadata.constants";
-import {
   ISSUE_OPENED_ACTION,
   issueAssigneesSchema,
   issueLabelsSchema,
@@ -13,9 +8,14 @@ import {
   SWEEP_EVENTS,
   USAGE_LINES,
   WRITE_ARGUMENT,
-} from "./issue.constants";
+} from "../../issue.constants";
+import {
+  ALL_ISSUES_FLAG,
+  ALL_ISSUES_SHORT_FLAG,
+  ISSUE_NUMBER_PATTERN,
+} from "../metadata/issue-metadata.constants";
 
-import type { IssuePlanResolution } from "./issue.types";
+import type { IssuePlanResolution } from "../../issue.types";
 
 /** Decides, from the event and the arguments, what one issue run does. */
 @Injectable()

@@ -3,24 +3,25 @@ import { appendFileSync } from "node:fs";
 import { Injectable } from "@nestjs/common";
 
 import {
+  MERGE_GROUP_EVENT,
+  PULL_REQUEST_EVENT,
+  USAGE_LINES,
+} from "../../pull-request.constants";
+import { PullRequestGithubService } from "../github/pull-request-github.service";
+
+import {
   GITHUB_OUTPUT_VARIABLE,
   MERGE_GROUP_HEAD_REF_PATTERN,
   PULL_REQUEST_CONTEXT_QUERY,
   PULL_REQUEST_NUMBER_PATTERN,
   pullRequestContextSchema,
 } from "./pull-request-context.constants";
-import { PullRequestGithubService } from "./pull-request-github.service";
-import {
-  MERGE_GROUP_EVENT,
-  PULL_REQUEST_EVENT,
-  USAGE_LINES,
-} from "./pull-request.constants";
 
-import type { PullRequestContext } from "./pull-request-context.types";
 import type {
   PullRequestInvocation,
   PullRequestResult,
-} from "./pull-request.types";
+} from "../../pull-request.types";
+import type { PullRequestContext } from "./pull-request-context.types";
 
 /**
  * Works out which pull request a run is about, and reads its live state.

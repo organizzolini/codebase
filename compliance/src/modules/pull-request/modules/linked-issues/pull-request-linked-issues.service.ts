@@ -5,25 +5,25 @@ import {
   ISSUE_FIELD_NAMES_QUERY,
   issueFieldNamesSchema,
   PRIORITY_FIELD,
-} from "../issue/issue-fields.constants";
-import { IssueFieldsService } from "../issue/issue-fields.service";
-import { MAX_HIERARCHY_DEPTH } from "../issue/issue-metadata.constants";
-import { IssueMetadataService } from "../issue/issue-metadata.service";
-
+} from "../../../issue/modules/fields/issue-fields.constants";
+import { IssueFieldsService } from "../../../issue/modules/fields/issue-fields.service";
+import { MAX_HIERARCHY_DEPTH } from "../../../issue/modules/metadata/issue-metadata.constants";
+import { IssueMetadataService } from "../../../issue/modules/metadata/issue-metadata.service";
 import {
   issueAncestorSchema,
   linkedIssueNumbersSchema,
-} from "./pull-request-body-links.constants";
-import { PullRequestGithubService } from "./pull-request-github.service";
+} from "../body/pull-request-body-links.constants";
+import { PullRequestGithubService } from "../github/pull-request-github.service";
+
 import { NO_LINKED_ISSUE_MESSAGE } from "./pull-request-linked-issues.constants";
 
-import type { IssueField } from "../issue/issue-fields.types";
-import type { PullRequestContext } from "./pull-request-context.types";
+import type { IssueField } from "../../../issue/modules/fields/issue-fields.types";
+import type { CheckOutcome, PullRequestResult } from "../../pull-request.types";
+import type { PullRequestContext } from "../context/pull-request-context.types";
 import type {
   LinkedIssue,
   LinkedIssuesRun,
 } from "./pull-request-linked-issues.types";
-import type { CheckOutcome, PullRequestResult } from "./pull-request.types";
 
 /**
  * Judges the issues a pull request closes. Each must pass the issue audit,

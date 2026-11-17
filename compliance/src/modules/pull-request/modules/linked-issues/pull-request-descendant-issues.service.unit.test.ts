@@ -2,10 +2,11 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { PullRequestDescendantIssuesService } from "./pull-request-descendant-issues.service";
-import { PullRequestGithubService } from "./pull-request-github.service";
+import { PullRequestGithubService } from "../github/pull-request-github.service";
 
-import type { GithubCliResult } from "./pull-request-github.types";
+import { PullRequestDescendantIssuesService } from "./pull-request-descendant-issues.service";
+
+import type { GithubCliResult } from "../github/pull-request-github.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 function output(standardOutput: string): GithubCliResult {

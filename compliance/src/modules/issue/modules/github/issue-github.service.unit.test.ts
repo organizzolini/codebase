@@ -4,8 +4,9 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { GITHUB_CLI_BINARY } from "../metadata/issue-metadata.constants";
+
 import { IssueGithubService } from "./issue-github.service";
-import { GITHUB_CLI_BINARY } from "./issue-metadata.constants";
 
 import type * as Testing from "@codebase/testing";
 

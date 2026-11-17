@@ -2,16 +2,16 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { PullRequestAncestorIssuesService } from "./pull-request-ancestor-issues.service";
-import { PullRequestBodyService } from "./pull-request-body.service";
-import { PullRequestGithubService } from "./pull-request-github.service";
-import { PullRequestLabelsAssigneesService } from "./pull-request-labels-assignees.service";
-import { PullRequestLinkedIssuesService } from "./pull-request-linked-issues.service";
-import { PullRequestReleaseSignificanceService } from "./pull-request-release-significance.service";
-import { PullRequestTitleService } from "./pull-request-title.service";
+import { PullRequestBodyService } from "./modules/body/pull-request-body.service";
+import { PullRequestGithubService } from "./modules/github/pull-request-github.service";
+import { PullRequestLabelsAssigneesService } from "./modules/labels/pull-request-labels-assignees.service";
+import { PullRequestAncestorIssuesService } from "./modules/linked-issues/pull-request-ancestor-issues.service";
+import { PullRequestLinkedIssuesService } from "./modules/linked-issues/pull-request-linked-issues.service";
+import { PullRequestReleaseSignificanceService } from "./modules/release-significance/pull-request-release-significance.service";
+import { PullRequestTitleService } from "./modules/title/pull-request-title.service";
 import { PullRequestValidationService } from "./pull-request-validation.service";
 
-import type { PullRequestContext } from "./pull-request-context.types";
+import type { PullRequestContext } from "./modules/context/pull-request-context.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 const context: PullRequestContext = {

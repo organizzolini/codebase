@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
 
-import { IssueGithubService } from "./issue-github.service";
-import { IssueMetadataService } from "./issue-metadata.service";
+import { IssueGithubService } from "../github/issue-github.service";
+import { IssueMetadataService } from "../metadata/issue-metadata.service";
 
-import type { MetadataVerdict } from "./issue-metadata.types";
-import type { IssueOutcome } from "./issue.types";
+import type { IssueOutcome } from "../../issue.types";
+import type { MetadataVerdict } from "../metadata/issue-metadata.types";
 
 /** Audits issue metadata and hierarchy, one issue or every open one. */
 @Injectable()

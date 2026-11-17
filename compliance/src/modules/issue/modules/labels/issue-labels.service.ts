@@ -5,9 +5,9 @@ import {
   SCOPE_LABEL_PREFIX,
   TYPE_FIELD_LABEL,
   TYPE_LABEL_PREFIX,
-} from "./issue-metadata.constants";
+} from "../metadata/issue-metadata.constants";
 
-import type { IssueFormAnswers } from "./issue-metadata.types";
+import type { IssueFormAnswers } from "../metadata/issue-metadata.types";
 
 /**
  * Reads a submitted `issue.yml` body and says which labels it implies.

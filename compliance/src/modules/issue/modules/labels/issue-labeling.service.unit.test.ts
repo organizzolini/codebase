@@ -2,7 +2,8 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { IssueGithubService } from "./issue-github.service";
+import { IssueGithubService } from "../github/issue-github.service";
+
 import { IssueLabelingService } from "./issue-labeling.service";
 import { IssueLabelsService } from "./issue-labels.service";
 

@@ -2,10 +2,11 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { IssueAssigningService } from "./issue-assigning.service";
-import { IssueGithubService } from "./issue-github.service";
+import { IssueGithubService } from "../github/issue-github.service";
 
-import type { GithubCliResult } from "./issue-metadata.types";
+import { IssueAssigningService } from "./issue-assigning.service";
+
+import type { GithubCliResult } from "../metadata/issue-metadata.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 const succeeded: GithubCliResult = {

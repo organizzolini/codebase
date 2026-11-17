@@ -5,7 +5,7 @@ import { Injectable } from "@nestjs/common";
 import {
   STEP_SUMMARY_FAILURE_MESSAGE,
   STEP_SUMMARY_VARIABLE,
-} from "./issue-metadata.constants";
+} from "./modules/metadata/issue-metadata.constants";
 
 import type { IssueOutcome } from "./issue.types";
 

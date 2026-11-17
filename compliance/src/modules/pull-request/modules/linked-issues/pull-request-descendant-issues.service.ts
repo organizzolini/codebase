@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 
-import { PullRequestGithubService } from "./pull-request-github.service";
+import { PullRequestGithubService } from "../github/pull-request-github.service";
 
-import type { PullRequestResult } from "./pull-request.types";
+import type { PullRequestResult } from "../../pull-request.types";
 
 /** Finds the open descendants of the issues a pull request closes. */
 @Injectable()

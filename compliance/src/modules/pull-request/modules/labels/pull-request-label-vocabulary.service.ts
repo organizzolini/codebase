@@ -1,14 +1,15 @@
 import { Injectable } from "@nestjs/common";
 
-import { PullRequestGithubService } from "./pull-request-github.service";
+import { PullRequestGithubService } from "../github/pull-request-github.service";
+
 import { LABEL_LIST_LIMIT } from "./pull-request-labels.constants";
 import { PullRequestLabelsService } from "./pull-request-labels.service";
 
+import type { WriteOutcome } from "../../pull-request.types";
 import type {
   ConventionalLabel,
   LabelReconciliationPlan,
 } from "./pull-request-labels.types";
-import type { WriteOutcome } from "./pull-request.types";
 
 /**
  * Reconciles the repository's label vocabulary with `conventional.config.cjs`.

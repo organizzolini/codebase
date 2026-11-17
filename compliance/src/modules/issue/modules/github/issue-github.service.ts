@@ -7,25 +7,25 @@ import {
   OPEN_ISSUES_ENDPOINT,
   OPEN_ISSUES_QUERY,
   openIssueSummariesSchema,
-} from "./issue-assignees.constants";
+} from "../assignees/issue-assignees.constants";
 import {
   ISSUE_FIELD_NAMES_QUERY,
   issueFieldNamesSchema,
   OPEN_ISSUE_FIELDS_QUERY,
   openIssueFieldsSchema,
-} from "./issue-fields.constants";
-import { GITHUB_CLI_BINARY } from "./issue-metadata.constants";
+} from "../fields/issue-fields.constants";
+import { GITHUB_CLI_BINARY } from "../metadata/issue-metadata.constants";
 
-import type { ListUnassignedOpenIssueNumbersResult } from "./issue-assignees.types";
+import type { ListUnassignedOpenIssueNumbersResult } from "../assignees/issue-assignees.types";
 import type {
   IssueFieldNamesResult,
   OpenIssueFieldNamesResult,
-} from "./issue-fields.types";
+} from "../fields/issue-fields.types";
 import type {
   GithubCliResult,
   IssueSummary,
   ListIssuesResult,
-} from "./issue-metadata.types";
+} from "../metadata/issue-metadata.types";
 
 /**
  * Runs the `gh` command-line client and reports what it produced.

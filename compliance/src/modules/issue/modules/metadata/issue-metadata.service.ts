@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 
-import { IssueFieldsService } from "./issue-fields.service";
+import { IssueFieldsService } from "../fields/issue-fields.service";
+
 import { IssueMetadataTypeService } from "./issue-metadata-type.service";
 import {
   CONVENTIONAL_ISSUE_TITLE_PATTERN,

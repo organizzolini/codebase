@@ -1,9 +1,10 @@
 import { Injectable } from "@nestjs/common";
 
-import { DEFAULT_ISSUE_ASSIGNEE } from "./issue-assignees.constants";
-import { IssueGithubService } from "./issue-github.service";
+import { IssueGithubService } from "../github/issue-github.service";
 
-import type { IssueOutcome } from "./issue.types";
+import { DEFAULT_ISSUE_ASSIGNEE } from "./issue-assignees.constants";
+
+import type { IssueOutcome } from "../../issue.types";
 
 /** Assigns the repository owner to issues that have nobody. */
 @Injectable()

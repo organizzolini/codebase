@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-import type { IssueMetadata } from "./issue-metadata.types";
+import type { IssueMetadata } from "../metadata/issue-metadata.types";
 
 /** An organization issue field a compliance check requires. */
 export interface IssueField {

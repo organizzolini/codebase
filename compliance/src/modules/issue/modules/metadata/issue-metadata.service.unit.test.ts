@@ -2,7 +2,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { IssueFieldsService } from "./issue-fields.service";
+import { IssueFieldsService } from "../fields/issue-fields.service";
+
 import { IssueMetadataTypeService } from "./issue-metadata-type.service";
 import { IssueMetadataService } from "./issue-metadata.service";
 

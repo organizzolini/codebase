@@ -2,15 +2,15 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { IssueMetadataService } from "../issue/issue-metadata.service";
+import { IssueMetadataService } from "../../../issue/modules/metadata/issue-metadata.service";
+import { PullRequestBodyLinksService } from "../body/pull-request-body-links.service";
+import { PullRequestGithubService } from "../github/pull-request-github.service";
 
 import { PullRequestAncestorIssuesService } from "./pull-request-ancestor-issues.service";
-import { PullRequestBodyLinksService } from "./pull-request-body-links.service";
 import { PullRequestDescendantIssuesService } from "./pull-request-descendant-issues.service";
-import { PullRequestGithubService } from "./pull-request-github.service";
 
-import type { PullRequestContext } from "./pull-request-context.types";
-import type { GithubCliResult } from "./pull-request-github.types";
+import type { PullRequestContext } from "../context/pull-request-context.types";
+import type { GithubCliResult } from "../github/pull-request-github.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 const context: PullRequestContext = {

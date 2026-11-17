@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 
-import { IssueGithubService } from "./issue-github.service";
+import { IssueGithubService } from "../github/issue-github.service";
+
 import { IssueLabelsService } from "./issue-labels.service";
 
 /** Adds the labels a freshly filed `issue.yml` submission implies. */

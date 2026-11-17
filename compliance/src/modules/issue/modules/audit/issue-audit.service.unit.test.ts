@@ -2,9 +2,10 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { IssueGithubService } from "../github/issue-github.service";
+import { IssueMetadataService } from "../metadata/issue-metadata.service";
+
 import { IssueAuditService } from "./issue-audit.service";
-import { IssueGithubService } from "./issue-github.service";
-import { IssueMetadataService } from "./issue-metadata.service";
 
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 

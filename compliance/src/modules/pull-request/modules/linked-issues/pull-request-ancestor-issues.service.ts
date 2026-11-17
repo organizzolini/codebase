@@ -1,23 +1,23 @@
 import { Injectable } from "@nestjs/common";
 
-import { IssueMetadataService } from "../issue/issue-metadata.service";
-
+import { IssueMetadataService } from "../../../issue/modules/metadata/issue-metadata.service";
+import { UNLINKED_AUTHOR_LOGINS } from "../../pull-request.constants";
 import {
   ISSUE_REFERENCE_PATTERN,
   issueAncestorSchema,
   linkedIssueNumbersSchema,
-} from "./pull-request-body-links.constants";
-import { PullRequestBodyLinksService } from "./pull-request-body-links.service";
-import { PullRequestDescendantIssuesService } from "./pull-request-descendant-issues.service";
-import { PullRequestGithubService } from "./pull-request-github.service";
-import { UNLINKED_AUTHOR_LOGINS } from "./pull-request.constants";
+} from "../body/pull-request-body-links.constants";
+import { PullRequestBodyLinksService } from "../body/pull-request-body-links.service";
+import { PullRequestGithubService } from "../github/pull-request-github.service";
 
-import type { PullRequestContext } from "./pull-request-context.types";
+import { PullRequestDescendantIssuesService } from "./pull-request-descendant-issues.service";
+
 import type {
   CheckOutcome,
   LinkResult,
   PullRequestResult,
-} from "./pull-request.types";
+} from "../../pull-request.types";
+import type { PullRequestContext } from "../context/pull-request-context.types";
 
 /**
  * Links the whole issue hierarchy from a pull request description: a

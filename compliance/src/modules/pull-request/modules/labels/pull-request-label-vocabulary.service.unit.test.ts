@@ -2,11 +2,12 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { PullRequestGithubService } from "./pull-request-github.service";
+import { PullRequestGithubService } from "../github/pull-request-github.service";
+
 import { PullRequestLabelVocabularyService } from "./pull-request-label-vocabulary.service";
 import { PullRequestLabelsService } from "./pull-request-labels.service";
 
-import type { GithubCliResult } from "./pull-request-github.types";
+import type { GithubCliResult } from "../github/pull-request-github.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 const label = { color: "ffffff", description: "d", name: "type: feat" };

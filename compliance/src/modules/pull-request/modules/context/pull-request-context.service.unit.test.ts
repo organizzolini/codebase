@@ -6,11 +6,12 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { PullRequestContextService } from "./pull-request-context.service";
-import { PullRequestGithubService } from "./pull-request-github.service";
+import { PullRequestGithubService } from "../github/pull-request-github.service";
 
+import { PullRequestContextService } from "./pull-request-context.service";
+
+import type { GithubCliResult } from "../github/pull-request-github.types";
 import type { PullRequestContext } from "./pull-request-context.types";
-import type { GithubCliResult } from "./pull-request-github.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 const document = {
