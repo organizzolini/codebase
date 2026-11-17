@@ -4,37 +4,17 @@
 
 The words this project uses, regenerated with this project's `coinagerie-check:write` Nx target.
 
-- **alt**: Alternate text on the Lexico logo image, so screen readers announce the brand name rather than the file.
-- **application**: A project tagged type:application in the Nx workspace that runs as a deployable program, as opposed to a type:package library.
-- **callidescope**: IC-suite toolchain that measures call-stack depth and breadth across the workspace and gates each project's limits.
-- **codependix**: IC-suite toolchain that exports dependency graphs and enforces boundary rules between projects, modules, and files.
-- **codometer**: IC-suite measurement tool that reports sizes, counts, and comment budgets against configured limits per project.
-- **coinagerie**: Vocabulary toolchain that collects a repository's words and checks or writes their definitions into glossary files.
-- **core**: Central layer of the codebase's module architecture, holding domain vocabulary, shared enums, and error classes that other layers depend on.
 - **degree**: Comparison grade of an adjective or adverb, such as positive, shown in lexeme inflection data and header details.
-- **deprecate**: Nx code-quality target, deprecate-code, that finds unused or outdated code and dependencies with tools such as knip, sherif, and syncpack in the validate-code step.
-- **depth**: Callidescope metric for the longest call stack, gated per project by maximumDepth in callidescope configuration.
 - **dictionary**: Latin reference the app searches in Latin and English, shown as the sidebar brand and as each lexeme entry.
 - **disambiguator**: Float field on GraphQL search results giving a numeric index that tells apart lexemes sharing a lemma.
-- **element**: Generic DOM node in tests, such as a found link whose href is checked to confirm navigation to a route.
 - **fire**: Test verb: fireEvent dispatches a DOM event, such as click or focus, on an element rendered under test.
-- **fold**: Coinagerie configuration hook that maps a word to its canonical headword, merging families like plurals and spelling variants.
 - **grammar**: Word in code comments naming grammar-book conventions, such as the short labels and case order in form tables.
-- **guard**: Nx code-quality target, guard-code, that runs the IC-suite gates and the catalog check on each project in the validate-code step.
 - **letter**: Count of extra letters in a fuzzy lemma match, shown in the tooltip for a prefix match beyond the query.
 - **lexeme**: Dictionary entry for one lemma with its forms, pronunciations and etymology, the core record every card shows.
-- **lexico**: The Latin dictionary product whose web app, ingestion CLI, and entity packages live under projects/lexico.
 - **literature**: GraphQL type for literature search results, present in generated mocks and operations but not yet rebuilt as a page.
-- **lookup**: Read-only callidescope query that traces a callable, prints its callers or callees, and never applies a depth or breadth gate.
-- **map**: Wayfinder's planning artifact for a huge effort, a graph of linked decisions that collapses into a buildable spec when cleared.
 - **perfect**: Verb tense name for the perfect, abbreviated PERF in identifiers and listed among the finite verb tenses.
-- **presentation**: Shared component library package @codebase/presentation, built on shadcn/ui, supplying Card, Badge, Tabs and Button.
 - **pronunciation**: Spoken form of a lexeme, a list of phonetic variants with their variant label, rendered in the lexeme pronunciations section.
-- **role**: ARIA role attribute set to navigation on the application sidebar and to search on the search bar form.
-- **selector**: Not used in lexico-web source; tests find elements by role and test id rather than through any selector abstraction.
 - **translation**: An English sense of a lexeme, listed as bullets by LexemeTranslations and matched by English search.
-- **typecheck**: Nx target that runs type checking per project, driven by the typecheck-code gate in validate-code and CI.
-- **validation**: Workspace project and CLI for checks with nothing to write back, such as pull request metadata, catalog pins, and branch or worktree names, printing the fix for each failure.
 - **verb**: Part of speech whose forms render as a conjugation table, routed to the VerbForms component when partOfSpeech is verb.
 - **visible**: Tailwind overflow-visible class on the search bar card, so content can extend past the card edges.
 
