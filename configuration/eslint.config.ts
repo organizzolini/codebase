@@ -107,8 +107,8 @@ const WEB_APPLICATION_FILE_KINDS = [
   "**/*.utilities.ts",
   "**/*.worker.ts",
   "src/client.tsx",
-  "src/components/*/*.tsx",
-  "src/hooks/*/use-*.ts",
+  "src/components/**/*.tsx",
+  "src/hooks/**/use-*.ts",
   "src/modules/*/*.functions.ts",
   "src/routeTree.gen.ts",
   "src/router.tsx",
@@ -160,7 +160,7 @@ function defineWebApplicationFileShape(basePath: string): ConfigWithExtends[] {
           ...RESTRICTED_SYNTAX,
           {
             message:
-              "This file fits no kind a web application allows. Put it in the component or hook folder it belongs to, src/components/<name>/ or src/hooks/use-<name>/, named *.types.ts, *.constants.ts, *.utilities.ts, or *.schemas.ts.",
+              "This file fits no kind a web application allows. Put it in the component or hook folder it belongs to, src/components/<feature>/<name>/ or src/hooks/use-<name>/, named *.types.ts, *.constants.ts, *.utilities.ts, or *.schemas.ts.",
             selector: "Program",
           },
         ],
@@ -197,7 +197,7 @@ function defineWebApplicationFileShape(basePath: string): ConfigWithExtends[] {
     },
     {
       basePath,
-      files: ["src/hooks/*/use-*.ts"],
+      files: ["src/hooks/**/use-*.ts"],
       ignores: HOOK_SIBLING_FILES,
       rules: {
         "no-restricted-syntax": [
@@ -606,7 +606,7 @@ export default [
       "**/data/wiktionary/**",
       "**/data/library/**",
       "**/projects/lexico/lexico-cli/data/**",
-      "**/projects/lexico/lexico-cli/src/modules/literature/literature.constants.ts",
+      "**/projects/lexico/lexico-cli/src/modules/lexico-ingestion/modules/literature/literature.constants.ts",
       "**/projects/lexico/lexico-cli/src/modules/library/library.constants.ts",
       "**/library.json",
     ],
@@ -1299,9 +1299,9 @@ export default [
     ignores: [
       "**/projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.constants.ts",
       "**/projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.constants.ts",
-      "**/projects/lexico/lexico-cli/src/modules/forms/forms.constants.ts",
+      "**/projects/lexico/lexico-cli/src/modules/lexemes/modules/forms/forms.constants.ts",
       "**/projects/lexico/lexico-cli/src/modules/manual/manual.constants.ts",
-      "**/projects/lexico/lexico-cli/src/modules/part-of-speech/part-of-speech.constants.ts",
+      "**/projects/lexico/lexico-cli/src/modules/lexemes/modules/part-of-speech/part-of-speech.constants.ts",
       "**/projects/lexico/lexico-db/src/modules/database/database.constants.ts",
       "**/src/modules/caelundas/caelundas.constants.ts",
       "**/src/modules/postgresql/postgresql.constants.ts",

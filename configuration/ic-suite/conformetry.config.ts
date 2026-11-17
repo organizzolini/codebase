@@ -285,14 +285,14 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
   // test is `.integration.test.tsx` and `index.tsx` fits only its own template.
   {
     description:
-      "A React component folder — the component, its types, constants, and utilities, and its unit test — in src/components of an existing React application",
+      "A React component folder — the component, its types, constants, and utilities, and its unit test — in a feature folder under src/components of an existing React application",
     inputs: defineInputs({
       name: z.string().describe("Component name in kebab-case"),
       project: z.string().describe("Parent project name in kebab-case"),
     }),
     instances: [
       {
-        patterns: ["src/components/*"],
+        patterns: ["src/components/*/*"],
         tags: ["framework:react", "type:application"],
       },
     ],
@@ -313,8 +313,8 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     instances: [
       {
         patterns: [
-          "src/components/*/!(*.test).tsx",
-          "src/components/*/*.unit.test.tsx",
+          "src/components/*/*/!(*.test).tsx",
+          "src/components/*/*/*.unit.test.tsx",
         ],
         tags: ["framework:react", "type:application"],
       },

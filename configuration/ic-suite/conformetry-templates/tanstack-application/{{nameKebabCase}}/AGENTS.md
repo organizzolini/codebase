@@ -31,14 +31,16 @@ src/
     <route>.tsx                  # One file per route, e.g. index.tsx, word.$id.tsx
     <route>.integration.test.tsx # Ignored by the route generator
   components/
-    <component>/
-      <component>.tsx              # The folder's component and its Properties
-      <component>.unit.test.tsx
-      <component>.types.ts
-      <component>.constants.ts
-      <component>.utilities.ts
-      <part>.tsx                   # More components the folder's is built from
-      <module>.<kind>.ts           # Shared code the folder owns, tested beside it
+    <feature>/                   # Components that work together, and nothing else
+      <component>/
+        <component>.tsx            # The folder's component and its Properties
+        <component>.unit.test.tsx
+        <component>.types.ts
+        <component>.constants.ts
+        <component>.utilities.ts
+        <part>.tsx                 # More components the folder's is built from
+        <module>.<kind>.ts         # Shared code the folder owns, tested beside it
+        components/                # Child component folders, shaped like this one
   hooks/
     use-<hook>/
       use-<hook>.ts                # The folder's hook
@@ -46,6 +48,7 @@ src/
       use-<hook>.types.ts
       use-<hook>.constants.ts
       use-<hook>.utilities.ts
+      hooks/                       # Child hook folders, shaped like this one
   modules/
     <feature>/                   # Server functions and the utilities behind them
   styles/

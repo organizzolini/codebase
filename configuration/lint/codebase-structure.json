@@ -276,6 +276,14 @@
     "component-folder": {
       "children": [
         {
+          "children": [
+            {
+              "ruleId": "component-folder"
+            }
+          ],
+          "name": "components"
+        },
+        {
           "ruleId": "component-file"
         }
       ],
@@ -595,6 +603,14 @@
     "hook-folder": {
       "children": [
         {
+          "children": [
+            {
+              "ruleId": "hook-folder"
+            }
+          ],
+          "name": "hooks"
+        },
+        {
           "name": "^use-[a-z0-9-]+(.(constants|schemas|types|utilities))?(.(unit|integration).test)?.ts$"
         },
         {
@@ -758,7 +774,7 @@
             {
               "children": [
                 {
-                  "ruleId": "component-folder"
+                  "ruleId": "component-feature-folder"
                 }
               ],
               "name": "components"
@@ -928,6 +944,14 @@
         }
       ],
       "name": "^[a-z0-9-]+-web$"
+    },
+    "component-feature-folder": {
+      "children": [
+        {
+          "ruleId": "component-folder"
+        }
+      ],
+      "name": "^(?!(dir|err|req|res|utils|ctx|app)$)[a-z0-9-]+$"
     }
   },
   "structure": {

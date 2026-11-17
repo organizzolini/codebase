@@ -33,7 +33,7 @@ yarn.lock
 **/data/wikipedia
 **/projects/lexico/lexico-cli/data
 **/projects/lexico/lexico-cli/data/library/**
-**/projects/lexico/lexico-cli/src/modules/literature/literature.constants.ts
+**/projects/lexico/lexico-cli/src/modules/lexico-ingestion/modules/literature/literature.constants.ts
 **/projects/lexico/lexico-cli/src/modules/library/library.constants.ts
 **/library.json
 
