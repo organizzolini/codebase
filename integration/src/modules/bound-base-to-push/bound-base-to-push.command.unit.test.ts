@@ -5,14 +5,15 @@ import { ConfigService } from "@nestjs/config";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
-
 import {
+  createTemporaryDirectory,
   failed,
   FakeProcessRunner,
   succeeded,
-  useTemporaryDirectories,
-} from "../../../testing/mocks";
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { TEMPORARY_ROOT } from "../../../testing/mocks";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
 import { BoundBaseToPushCommand } from "./bound-base-to-push.command";
@@ -23,7 +24,6 @@ const IS_ANCESTOR = "git merge-base --is-ancestor before1 head1";
 describe(BoundBaseToPushCommand, () => {
   const moduleOptions = { mocks: [BoundBaseToPushService] };
   const originalExitCode = process.exitCode;
-  const makeDirectory = useTemporaryDirectories();
   let printed: string[];
   let githubEnvironment: string;
 
@@ -62,7 +62,10 @@ describe(BoundBaseToPushCommand, () => {
       : "";
 
   beforeEach(() => {
-    githubEnvironment = path.join(makeDirectory(), "github-env");
+    githubEnvironment = path.join(
+      createTemporaryDirectory("workspace", TEMPORARY_ROOT),
+      "github-env",
+    );
     printed = [];
     vi.spyOn(console, "info").mockImplementation((line: string) => {
       printed.push(line);

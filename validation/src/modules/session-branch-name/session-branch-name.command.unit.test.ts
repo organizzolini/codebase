@@ -1,13 +1,14 @@
 import { writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
 import {
   captureExitCode,
   captureOutput,
   createTemporaryDirectory,
+  useWorkingDirectory,
 } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
@@ -82,11 +83,7 @@ describe(SessionBranchNameCommand, () => {
     gitCalls = [];
     exitCode = captureExitCode();
     printed = captureOutput().stdout;
-    vi.spyOn(process, "cwd").mockReturnValue(workspace);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
+    useWorkingDirectory(workspace);
   });
 
   it("resolves with its dependencies", async () => {
@@ -188,7 +185,7 @@ describe(SessionBranchNameCommand, () => {
   });
 
   it("names every valid type and scope from the repository's own configuration", async () => {
-    vi.mocked(process.cwd).mockReturnValue(REPOSITORY_ROOT);
+    useWorkingDirectory(REPOSITORY_ROOT);
     const session = await createCommand(onBranch("Bad_Name"));
 
     await session.run();
@@ -201,7 +198,7 @@ describe(SessionBranchNameCommand, () => {
   });
 
   it("accepts the repository's main branch under its own configuration", async () => {
-    vi.mocked(process.cwd).mockReturnValue(REPOSITORY_ROOT);
+    useWorkingDirectory(REPOSITORY_ROOT);
     const session = await createCommand(onBranch("main"));
 
     await session.run();

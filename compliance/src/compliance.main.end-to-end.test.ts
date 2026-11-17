@@ -2,9 +2,8 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
+import { mockDates } from "@codebase/testing";
 import { runSourceCommand } from "@codebase/testing/end-to-end";
-
-import { mockDates } from "../testing/mocks";
 
 import { environmentSchema } from "./compliance.constants";
 

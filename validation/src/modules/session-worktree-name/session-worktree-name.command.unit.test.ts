@@ -1,13 +1,14 @@
 import { mkdirSync } from "node:fs";
 import path from "node:path";
 
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
 import {
   captureExitCode,
   captureOutput,
   createTemporaryDirectory,
+  useWorkingDirectory,
 } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
@@ -99,7 +100,7 @@ describe(SessionWorktreeNameCommand, () => {
   const enterWorktree = (parent: string, name: string): string => {
     const worktree = path.join(parent, name);
     mkdirSync(worktree, { recursive: true });
-    vi.mocked(process.cwd).mockReturnValue(worktree);
+    useWorkingDirectory(worktree);
     return worktree;
   };
 
@@ -116,11 +117,7 @@ describe(SessionWorktreeNameCommand, () => {
     gitCalls = [];
     exitCode = captureExitCode();
     printed = captureOutput().stdout;
-    vi.spyOn(process, "cwd").mockReturnValue(mainCheckout);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
+    useWorkingDirectory(mainCheckout);
   });
 
   it("resolves with its dependencies", async () => {

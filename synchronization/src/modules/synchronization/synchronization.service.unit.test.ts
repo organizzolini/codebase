@@ -1,6 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
+import { mockProcessExit } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { SynchronizationService } from "./synchronization.service";
@@ -41,9 +42,7 @@ describe(SynchronizationService, () => {
   it("exits the process when mode is invalid", () => {
     const service = new SynchronizationService();
     const loggerService = createMock<LoggerService>();
-    const processExitSpy = vi.spyOn(process, "exit").mockImplementation(() => {
-      throw new Error("process.exit:1");
-    });
+    const processExitSpy = mockProcessExit();
 
     expect(() => {
       service.resolveSynchronizationModeOrExit({
