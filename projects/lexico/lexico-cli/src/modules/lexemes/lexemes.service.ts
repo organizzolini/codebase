@@ -308,6 +308,10 @@ export class LexemesService {
     if (!wiktionaryPage.html) return [];
 
     const $ = cheerio.load(wiktionaryPage.html);
+    // Wiktionary wraps the headword, gender and principal parts in a span, which hid them from every parser below.
+    $("span.headword-line").each((_, line) => {
+      $(line).replaceWith($(line).contents());
+    });
     const word = this.normalize(wiktionaryPage.word);
     const lexemes: Lexeme[] = [];
 

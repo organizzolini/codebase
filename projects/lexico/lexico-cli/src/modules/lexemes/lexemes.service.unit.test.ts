@@ -27,6 +27,7 @@ import { LexemesService } from "./lexemes.service";
 import type { WiktionaryPage } from "../lexico-ingestion/lexico-ingestion.types";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { Provider } from "@nestjs/common";
+import type { AnyNode } from "domhandler";
 import type { Repository } from "typeorm";
 
 describe(LexemesService, () => {
@@ -297,6 +298,35 @@ describe(LexemesService, () => {
 
     expect(result).toStrictEqual([parsedLexeme]);
     expect(parseLexemeFromElementSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("should hand over the headword as a direct child when Wiktionary wraps it in a headword line", async () => {
+    const page: WiktionaryPage = {
+      category: "lemma",
+      href: "x",
+      html: '<p><span class="headword-line"><strong class="Latn headword">malaria</strong> (<i>genitive</i> <b class="Latn">malariae</b>)</span></p>',
+      word: "malaria",
+    };
+    const parseLexemeFromElementSpy = vi
+      .spyOn(
+        service as unknown as {
+          parseLexemeFromElement: (args: {
+            $: cheerio.CheerioAPI;
+            elt: AnyNode;
+          }) => Promise<Lexeme | null>;
+        },
+        "parseLexemeFromElement",
+      )
+      .mockResolvedValue(null);
+
+    await service.parseLexemes(page);
+
+    const call = parseLexemeFromElementSpy.mock.calls[0]?.[0];
+
+    expect([
+      call?.$(call.elt).children("strong.Latn.headword").length,
+      call?.$(call.elt).children("b").length,
+    ]).toStrictEqual([1, 1]);
   });
 
   it("should skip null lexemes from parseLexemeFromElement", async () => {
