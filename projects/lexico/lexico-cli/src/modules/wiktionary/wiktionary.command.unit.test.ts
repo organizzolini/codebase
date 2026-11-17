@@ -856,6 +856,7 @@ describe(WiktionaryCommand, () => {
             <ul>
               <li><a href="/wiki/Reconstruction:Latin/zzz">Reconstruction:Latin/zzz</a></li>
               <li><a href="/wiki/ƚ">ƚ</a></li>
+              <li><a href="/wiki/s̄">s̄</a></li>
               <li><a href="/wiki/amo">amo</a></li>
             </ul>
           </div>
@@ -891,7 +892,7 @@ describe(WiktionaryCommand, () => {
       }
     ).ingestCategory("lemma", undefined, "major");
 
-    expect(processLinkSpy).toHaveBeenCalledTimes(3);
+    expect(processLinkSpy).toHaveBeenCalledTimes(4);
   });
 
   it("should start every category at the start lemma", async () => {
