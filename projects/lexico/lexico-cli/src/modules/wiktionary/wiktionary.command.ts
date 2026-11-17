@@ -233,6 +233,7 @@ export class WiktionaryCommand extends CommandRunner {
   private isPastEnd(word: string, endLemma: string | undefined): boolean {
     return (
       endLemma !== undefined &&
+      /^[A-Za-z]/.test(word) &&
       !word.includes("/") &&
       !/(Reconstruction:)|(Appendix:)/i.test(word) &&
       word.toLowerCase() > endLemma

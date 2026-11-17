@@ -848,13 +848,14 @@ describe(WiktionaryCommand, () => {
     expect(fetchCategoryPageSpy).toHaveBeenCalledTimes(1);
   });
 
-  it("should not read a reconstruction or appendix entry as the end of the range", async () => {
+  it("should not read a reconstruction, appendix or non-Latin-letter entry as the end of the range", async () => {
     const page = cheerio.load(`
       <div id="mw-pages">
         <div class="mw-category">
           <div class="mw-category-group">
             <ul>
               <li><a href="/wiki/Reconstruction:Latin/zzz">Reconstruction:Latin/zzz</a></li>
+              <li><a href="/wiki/ƚ">ƚ</a></li>
               <li><a href="/wiki/amo">amo</a></li>
             </ul>
           </div>
@@ -890,7 +891,7 @@ describe(WiktionaryCommand, () => {
       }
     ).ingestCategory("lemma", undefined, "major");
 
-    expect(processLinkSpy).toHaveBeenCalledTimes(2);
+    expect(processLinkSpy).toHaveBeenCalledTimes(3);
   });
 
   it("should start every category at the start lemma", async () => {
