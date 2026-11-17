@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { OrdersService } from "./orders.service.js";
-import { PaymentsService } from "./payments.service.js";
+import { PaymentsService } from "../checkout/payments.service.js";
 
 describe("placing an order", () => {
   it("takes a payment for what the order totals", async () => {

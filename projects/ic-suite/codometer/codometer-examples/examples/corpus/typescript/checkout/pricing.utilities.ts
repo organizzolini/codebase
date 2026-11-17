@@ -1,4 +1,4 @@
-import { type OrderLine } from "./orders.types.js";
+import { type OrderLine } from "../orders/orders.types.js";
 
 /** Totals one line, which is its quantity at its unit price. */
 export const priceLine = (line: OrderLine): number =>

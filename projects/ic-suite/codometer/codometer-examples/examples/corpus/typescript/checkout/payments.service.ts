@@ -1,4 +1,4 @@
-import { type Order } from "./orders.types.js";
+import { type Order } from "../orders/orders.types.js";
 
 /** A payment taken against an order. */
 export interface Payment {

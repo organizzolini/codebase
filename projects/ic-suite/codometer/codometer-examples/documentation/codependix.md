@@ -12,10 +12,12 @@ graph LR
   codometer_core["codometer-core"]
   codometer_examples["codometer-examples"]
   configuration["configuration"]
+  testing["testing"]
   codometer_examples -.-> codometer_cli
   codometer_examples --> codometer_configuration
   codometer_examples --> codometer_core
   codometer_examples --> configuration
+  codometer_examples --> testing
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class codometer_examples subject
 ```
@@ -28,10 +30,12 @@ _Dashed edges are dependencies Nx inferred from configuration rather than from c
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_examples_compression_brotli_config_ts["examples/compression/brotli.config.ts"]
   file_examples_compression_gzip_config_ts["examples/compression/gzip.config.ts"]
   file_examples_compression_none_config_ts["examples/compression/none.config.ts"]
@@ -71,10 +75,8 @@ graph LR
   file_testing_limits_integration_test_ts["testing/limits.integration.test.ts"]
   file_testing_output_integration_test_ts["testing/output.integration.test.ts"]
   file_testing_run_examples_ts["testing/run-examples.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
   file_testing_write_check_integration_test_ts["testing/write-check.integration.test.ts"]
   file_testing_written_reports_integration_test_ts["testing/written-reports.integration.test.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
   file_testing_corpus_integration_test_ts --> file_testing_codometer_ts
   file_testing_documentation_integration_test_ts --> file_testing_codometer_ts
   file_testing_examples_integration_test_ts --> file_testing_codometer_ts

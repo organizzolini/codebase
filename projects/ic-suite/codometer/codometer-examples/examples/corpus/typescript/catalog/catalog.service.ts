@@ -1,4 +1,4 @@
-import { type Repository } from "./orders.types.js";
+import { type Repository } from "../orders/orders.types.js";
 
 /** Something the catalog sells. */
 export interface CatalogItem {

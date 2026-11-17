@@ -1,4 +1,4 @@
-import { type Order } from "./orders.types.js";
+import { type Order } from "../orders/orders.types.js";
 
 /** Where an order is going and what it costs to get it there. */
 export interface Shipment {
