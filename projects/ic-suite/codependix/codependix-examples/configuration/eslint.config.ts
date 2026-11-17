@@ -9,10 +9,10 @@ export default [
   // modules, self-referential aliases, and `require` calls. Linting them would force them to stop
   // demonstrating their behavior, so they are excluded rather than suppressed.
 
-  // The pattern draws the line: one level under `examples/` is the rendered guide, which stays linted;
-  // two levels down is the subject. That is why the committed graph JSON keeps its `jsonc/sort-array-values` carve-out.
+  // The pattern draws the line: two levels under `examples/` is the rendered guide, which stays linted;
+  // three levels down is the subject. That is why the committed graph JSON keeps its `jsonc/sort-array-values` carve-out.
   {
-    ignores: ["examples/*/*/**"],
+    ignores: ["examples/*/*/*/**"],
   },
 
   // 📦 Dependency Checks

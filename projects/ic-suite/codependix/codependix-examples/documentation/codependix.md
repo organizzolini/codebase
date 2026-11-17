@@ -18,6 +18,7 @@ graph LR
   codependix_output["codependix-output"]
   configuration["configuration"]
   observability["observability"]
+  testing["testing"]
   codependix_examples --> codependix_boundaries
   codependix_examples -.-> codependix_cli
   codependix_examples --> codependix_configuration
@@ -28,6 +29,7 @@ graph LR
   codependix_examples --> codependix_output
   codependix_examples --> configuration
   codependix_examples --> observability
+  codependix_examples --> testing
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class codependix_examples subject
 ```
@@ -46,133 +48,134 @@ _This project defines no NestJS modules to graph._
 <!-- codependix:start name="codependix-file-imports" -->
 ```mermaid
 graph LR
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_coinagerie_config_ts["coinagerie.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_testing_boundary_charges_integration_test_ts["testing/boundary-charges.integration.test.ts"]
   file_testing_examples_integration_test_ts["testing/examples.integration.test.ts"]
   file_testing_graphs_integration_test_ts["testing/graphs.integration.test.ts"]
   file_testing_render_examples_ts["testing/render-examples.ts"]
-  file_testing_render_anchor_placement_ts["testing/render/anchor-placement.ts"]
-  file_testing_render_boundary_charges_ts["testing/render/boundary-charges.ts"]
-  file_testing_render_boundary_boot_failures_ts["testing/render/boundary-boot-failures.ts"]
-  file_testing_render_boundary_rules_ts["testing/render/boundary-rules.ts"]
-  file_testing_render_boundary_run_ts["testing/render/boundary-run.ts"]
+  file_testing_render_boundaries_boundary_boot_failures_ts["testing/render/boundaries/boundary-boot-failures.ts"]
+  file_testing_render_boundaries_boundary_charges_ts["testing/render/boundaries/boundary-charges.ts"]
+  file_testing_render_boundaries_boundary_rules_ts["testing/render/boundaries/boundary-rules.ts"]
+  file_testing_render_boundaries_boundary_run_ts["testing/render/boundaries/boundary-run.ts"]
   file_testing_render_builders_ts["testing/render/builders.ts"]
   file_testing_render_catalog_ts["testing/render/catalog.ts"]
-  file_testing_render_configuration_ts["testing/render/configuration.ts"]
   file_testing_render_document_ts["testing/render/document.ts"]
-  file_testing_render_export_delivery_ts["testing/render/export-delivery.ts"]
-  file_testing_render_graph_levels_ts["testing/render/graph-levels.ts"]
-  file_testing_render_nestjs_graphs_ts["testing/render/nestjs-graphs.ts"]
-  file_testing_render_nx_graphs_ts["testing/render/nx-graphs.ts"]
+  file_testing_render_exports_anchor_placement_ts["testing/render/exports/anchor-placement.ts"]
+  file_testing_render_exports_configuration_ts["testing/render/exports/configuration.ts"]
+  file_testing_render_exports_export_delivery_ts["testing/render/exports/export-delivery.ts"]
+  file_testing_render_graphs_graph_levels_ts["testing/render/graphs/graph-levels.ts"]
+  file_testing_render_graphs_nestjs_graphs_ts["testing/render/graphs/nestjs-graphs.ts"]
+  file_testing_render_graphs_nx_graphs_ts["testing/render/graphs/nx-graphs.ts"]
+  file_testing_render_graphs_python_imports_ts["testing/render/graphs/python-imports.ts"]
+  file_testing_render_graphs_typescript_imports_ts["testing/render/graphs/typescript-imports.ts"]
   file_testing_render_path_queries_ts["testing/render/path-queries.ts"]
   file_testing_render_paths_ts["testing/render/paths.ts"]
-  file_testing_render_python_imports_ts["testing/render/python-imports.ts"]
   file_testing_render_reading_order_ts["testing/render/reading-order.ts"]
   file_testing_render_run_ts["testing/render/run.ts"]
   file_testing_render_types_ts["testing/render/types.ts"]
-  file_testing_render_typescript_imports_ts["testing/render/typescript-imports.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
-  file_testing_boundary_charges_integration_test_ts --> file_testing_render_boundary_charges_ts
-  file_testing_boundary_charges_integration_test_ts --> file_testing_render_boundary_boot_failures_ts
-  file_testing_boundary_charges_integration_test_ts --> file_testing_render_boundary_run_ts
+  file_testing_boundary_charges_integration_test_ts --> file_testing_render_boundaries_boundary_boot_failures_ts
+  file_testing_boundary_charges_integration_test_ts --> file_testing_render_boundaries_boundary_charges_ts
+  file_testing_boundary_charges_integration_test_ts --> file_testing_render_boundaries_boundary_run_ts
   file_testing_boundary_charges_integration_test_ts --> file_testing_render_builders_ts
-  file_testing_examples_integration_test_ts --> file_testing_render_anchor_placement_ts
   file_testing_examples_integration_test_ts --> file_testing_render_builders_ts
   file_testing_examples_integration_test_ts --> file_testing_render_catalog_ts
-  file_testing_examples_integration_test_ts --> file_testing_render_configuration_ts
   file_testing_examples_integration_test_ts --> file_testing_render_document_ts
-  file_testing_examples_integration_test_ts --> file_testing_render_export_delivery_ts
+  file_testing_examples_integration_test_ts --> file_testing_render_exports_anchor_placement_ts
+  file_testing_examples_integration_test_ts --> file_testing_render_exports_configuration_ts
+  file_testing_examples_integration_test_ts --> file_testing_render_exports_export_delivery_ts
   file_testing_examples_integration_test_ts --> file_testing_render_path_queries_ts
   file_testing_examples_integration_test_ts --> file_testing_render_paths_ts
   file_testing_examples_integration_test_ts --> file_testing_render_reading_order_ts
   file_testing_examples_integration_test_ts --> file_testing_render_run_ts
-  file_testing_graphs_integration_test_ts --> file_testing_render_nestjs_graphs_ts
-  file_testing_graphs_integration_test_ts --> file_testing_render_nx_graphs_ts
+  file_testing_graphs_integration_test_ts --> file_testing_render_graphs_nestjs_graphs_ts
+  file_testing_graphs_integration_test_ts --> file_testing_render_graphs_nx_graphs_ts
+  file_testing_graphs_integration_test_ts --> file_testing_render_graphs_python_imports_ts
+  file_testing_graphs_integration_test_ts --> file_testing_render_graphs_typescript_imports_ts
   file_testing_graphs_integration_test_ts --> file_testing_render_paths_ts
-  file_testing_graphs_integration_test_ts --> file_testing_render_python_imports_ts
-  file_testing_graphs_integration_test_ts --> file_testing_render_typescript_imports_ts
   file_testing_render_examples_ts --> file_testing_render_run_ts
-  file_testing_render_anchor_placement_ts --> file_testing_render_builders_ts
-  file_testing_render_anchor_placement_ts --> file_testing_render_document_ts
-  file_testing_render_anchor_placement_ts --> file_testing_render_export_delivery_ts
-  file_testing_render_anchor_placement_ts --> file_testing_render_paths_ts
-  file_testing_render_anchor_placement_ts --> file_testing_render_types_ts
-  file_testing_render_boundary_charges_ts --> file_testing_render_boundary_run_ts
-  file_testing_render_boundary_charges_ts --> file_testing_render_builders_ts
-  file_testing_render_boundary_charges_ts --> file_testing_render_document_ts
-  file_testing_render_boundary_charges_ts --> file_testing_render_nx_graphs_ts
-  file_testing_render_boundary_charges_ts --> file_testing_render_types_ts
-  file_testing_render_boundary_boot_failures_ts --> file_testing_render_boundary_run_ts
-  file_testing_render_boundary_boot_failures_ts --> file_testing_render_document_ts
-  file_testing_render_boundary_boot_failures_ts --> file_testing_render_nestjs_graphs_ts
-  file_testing_render_boundary_boot_failures_ts --> file_testing_render_nx_graphs_ts
-  file_testing_render_boundary_boot_failures_ts --> file_testing_render_paths_ts
-  file_testing_render_boundary_boot_failures_ts --> file_testing_render_types_ts
-  file_testing_render_boundary_rules_ts --> file_testing_render_builders_ts
-  file_testing_render_boundary_rules_ts --> file_testing_render_document_ts
-  file_testing_render_boundary_rules_ts --> file_testing_render_types_ts
-  file_testing_render_boundary_run_ts --> file_testing_render_builders_ts
-  file_testing_render_boundary_run_ts --> file_testing_render_document_ts
-  file_testing_render_boundary_run_ts --> file_testing_render_nx_graphs_ts
-  file_testing_render_catalog_ts --> file_testing_render_anchor_placement_ts
-  file_testing_render_catalog_ts --> file_testing_render_boundary_charges_ts
-  file_testing_render_catalog_ts --> file_testing_render_boundary_boot_failures_ts
-  file_testing_render_catalog_ts --> file_testing_render_boundary_rules_ts
-  file_testing_render_catalog_ts --> file_testing_render_configuration_ts
-  file_testing_render_catalog_ts --> file_testing_render_export_delivery_ts
-  file_testing_render_catalog_ts --> file_testing_render_graph_levels_ts
-  file_testing_render_catalog_ts --> file_testing_render_nestjs_graphs_ts
-  file_testing_render_catalog_ts --> file_testing_render_nx_graphs_ts
+  file_testing_render_boundaries_boundary_boot_failures_ts --> file_testing_render_boundaries_boundary_run_ts
+  file_testing_render_boundaries_boundary_boot_failures_ts --> file_testing_render_document_ts
+  file_testing_render_boundaries_boundary_boot_failures_ts --> file_testing_render_graphs_nestjs_graphs_ts
+  file_testing_render_boundaries_boundary_boot_failures_ts --> file_testing_render_graphs_nx_graphs_ts
+  file_testing_render_boundaries_boundary_boot_failures_ts --> file_testing_render_paths_ts
+  file_testing_render_boundaries_boundary_boot_failures_ts --> file_testing_render_types_ts
+  file_testing_render_boundaries_boundary_charges_ts --> file_testing_render_boundaries_boundary_run_ts
+  file_testing_render_boundaries_boundary_charges_ts --> file_testing_render_builders_ts
+  file_testing_render_boundaries_boundary_charges_ts --> file_testing_render_document_ts
+  file_testing_render_boundaries_boundary_charges_ts --> file_testing_render_graphs_nx_graphs_ts
+  file_testing_render_boundaries_boundary_charges_ts --> file_testing_render_types_ts
+  file_testing_render_boundaries_boundary_rules_ts --> file_testing_render_builders_ts
+  file_testing_render_boundaries_boundary_rules_ts --> file_testing_render_document_ts
+  file_testing_render_boundaries_boundary_rules_ts --> file_testing_render_types_ts
+  file_testing_render_boundaries_boundary_run_ts --> file_testing_render_builders_ts
+  file_testing_render_boundaries_boundary_run_ts --> file_testing_render_document_ts
+  file_testing_render_boundaries_boundary_run_ts --> file_testing_render_graphs_nx_graphs_ts
+  file_testing_render_catalog_ts --> file_testing_render_boundaries_boundary_boot_failures_ts
+  file_testing_render_catalog_ts --> file_testing_render_boundaries_boundary_charges_ts
+  file_testing_render_catalog_ts --> file_testing_render_boundaries_boundary_rules_ts
+  file_testing_render_catalog_ts --> file_testing_render_exports_anchor_placement_ts
+  file_testing_render_catalog_ts --> file_testing_render_exports_configuration_ts
+  file_testing_render_catalog_ts --> file_testing_render_exports_export_delivery_ts
+  file_testing_render_catalog_ts --> file_testing_render_graphs_graph_levels_ts
+  file_testing_render_catalog_ts --> file_testing_render_graphs_nestjs_graphs_ts
+  file_testing_render_catalog_ts --> file_testing_render_graphs_nx_graphs_ts
+  file_testing_render_catalog_ts --> file_testing_render_graphs_python_imports_ts
+  file_testing_render_catalog_ts --> file_testing_render_graphs_typescript_imports_ts
   file_testing_render_catalog_ts --> file_testing_render_path_queries_ts
-  file_testing_render_catalog_ts --> file_testing_render_python_imports_ts
   file_testing_render_catalog_ts --> file_testing_render_reading_order_ts
   file_testing_render_catalog_ts --> file_testing_render_types_ts
-  file_testing_render_catalog_ts --> file_testing_render_typescript_imports_ts
-  file_testing_render_configuration_ts --> file_testing_render_builders_ts
-  file_testing_render_configuration_ts --> file_testing_render_document_ts
-  file_testing_render_configuration_ts --> file_testing_render_paths_ts
-  file_testing_render_configuration_ts --> file_testing_render_types_ts
   file_testing_render_document_ts --> file_testing_render_reading_order_ts
   file_testing_render_document_ts --> file_testing_render_types_ts
-  file_testing_render_export_delivery_ts --> file_testing_render_builders_ts
-  file_testing_render_export_delivery_ts --> file_testing_render_document_ts
-  file_testing_render_export_delivery_ts --> file_testing_render_graph_levels_ts
-  file_testing_render_export_delivery_ts --> file_testing_render_paths_ts
-  file_testing_render_export_delivery_ts --> file_testing_render_types_ts
-  file_testing_render_graph_levels_ts --> file_testing_render_builders_ts
-  file_testing_render_graph_levels_ts --> file_testing_render_nestjs_graphs_ts
-  file_testing_render_graph_levels_ts --> file_testing_render_nx_graphs_ts
-  file_testing_render_graph_levels_ts --> file_testing_render_paths_ts
-  file_testing_render_graph_levels_ts --> file_testing_render_python_imports_ts
-  file_testing_render_graph_levels_ts --> file_testing_render_types_ts
-  file_testing_render_graph_levels_ts --> file_testing_render_typescript_imports_ts
-  file_testing_render_nestjs_graphs_ts --> file_testing_render_builders_ts
-  file_testing_render_nestjs_graphs_ts --> file_testing_render_document_ts
-  file_testing_render_nestjs_graphs_ts --> file_testing_render_paths_ts
-  file_testing_render_nestjs_graphs_ts --> file_testing_render_types_ts
-  file_testing_render_nx_graphs_ts --> file_testing_render_builders_ts
-  file_testing_render_nx_graphs_ts --> file_testing_render_document_ts
-  file_testing_render_nx_graphs_ts --> file_testing_render_types_ts
+  file_testing_render_exports_anchor_placement_ts --> file_testing_render_builders_ts
+  file_testing_render_exports_anchor_placement_ts --> file_testing_render_document_ts
+  file_testing_render_exports_anchor_placement_ts --> file_testing_render_exports_export_delivery_ts
+  file_testing_render_exports_anchor_placement_ts --> file_testing_render_paths_ts
+  file_testing_render_exports_anchor_placement_ts --> file_testing_render_types_ts
+  file_testing_render_exports_configuration_ts --> file_testing_render_builders_ts
+  file_testing_render_exports_configuration_ts --> file_testing_render_document_ts
+  file_testing_render_exports_configuration_ts --> file_testing_render_paths_ts
+  file_testing_render_exports_configuration_ts --> file_testing_render_types_ts
+  file_testing_render_exports_export_delivery_ts --> file_testing_render_builders_ts
+  file_testing_render_exports_export_delivery_ts --> file_testing_render_document_ts
+  file_testing_render_exports_export_delivery_ts --> file_testing_render_graphs_graph_levels_ts
+  file_testing_render_exports_export_delivery_ts --> file_testing_render_paths_ts
+  file_testing_render_exports_export_delivery_ts --> file_testing_render_types_ts
+  file_testing_render_graphs_graph_levels_ts --> file_testing_render_builders_ts
+  file_testing_render_graphs_graph_levels_ts --> file_testing_render_graphs_nestjs_graphs_ts
+  file_testing_render_graphs_graph_levels_ts --> file_testing_render_graphs_nx_graphs_ts
+  file_testing_render_graphs_graph_levels_ts --> file_testing_render_graphs_python_imports_ts
+  file_testing_render_graphs_graph_levels_ts --> file_testing_render_graphs_typescript_imports_ts
+  file_testing_render_graphs_graph_levels_ts --> file_testing_render_paths_ts
+  file_testing_render_graphs_graph_levels_ts --> file_testing_render_types_ts
+  file_testing_render_graphs_nestjs_graphs_ts --> file_testing_render_builders_ts
+  file_testing_render_graphs_nestjs_graphs_ts --> file_testing_render_document_ts
+  file_testing_render_graphs_nestjs_graphs_ts --> file_testing_render_paths_ts
+  file_testing_render_graphs_nestjs_graphs_ts --> file_testing_render_types_ts
+  file_testing_render_graphs_nx_graphs_ts --> file_testing_render_builders_ts
+  file_testing_render_graphs_nx_graphs_ts --> file_testing_render_document_ts
+  file_testing_render_graphs_nx_graphs_ts --> file_testing_render_types_ts
+  file_testing_render_graphs_python_imports_ts --> file_testing_render_builders_ts
+  file_testing_render_graphs_python_imports_ts --> file_testing_render_document_ts
+  file_testing_render_graphs_python_imports_ts --> file_testing_render_paths_ts
+  file_testing_render_graphs_python_imports_ts --> file_testing_render_types_ts
+  file_testing_render_graphs_typescript_imports_ts --> file_testing_render_builders_ts
+  file_testing_render_graphs_typescript_imports_ts --> file_testing_render_document_ts
+  file_testing_render_graphs_typescript_imports_ts --> file_testing_render_paths_ts
+  file_testing_render_graphs_typescript_imports_ts --> file_testing_render_types_ts
   file_testing_render_path_queries_ts --> file_testing_render_builders_ts
   file_testing_render_path_queries_ts --> file_testing_render_document_ts
-  file_testing_render_path_queries_ts --> file_testing_render_nx_graphs_ts
+  file_testing_render_path_queries_ts --> file_testing_render_graphs_nx_graphs_ts
   file_testing_render_path_queries_ts --> file_testing_render_types_ts
-  file_testing_render_python_imports_ts --> file_testing_render_builders_ts
-  file_testing_render_python_imports_ts --> file_testing_render_document_ts
-  file_testing_render_python_imports_ts --> file_testing_render_paths_ts
-  file_testing_render_python_imports_ts --> file_testing_render_types_ts
+  file_testing_render_paths_ts --> file_testing_render_reading_order_ts
   file_testing_render_run_ts --> file_testing_render_builders_ts
   file_testing_render_run_ts --> file_testing_render_catalog_ts
   file_testing_render_run_ts --> file_testing_render_document_ts
   file_testing_render_run_ts --> file_testing_render_paths_ts
   file_testing_render_run_ts --> file_testing_render_types_ts
-  file_testing_render_typescript_imports_ts --> file_testing_render_builders_ts
-  file_testing_render_typescript_imports_ts --> file_testing_render_document_ts
-  file_testing_render_typescript_imports_ts --> file_testing_render_paths_ts
-  file_testing_render_typescript_imports_ts --> file_testing_render_types_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->

@@ -1,6 +1,10 @@
 import { pathQueryService } from "./builders";
 import { fence } from "./document";
-import { ATLAS_CHAIN, buildProjectGraph, readProjects } from "./nx-graphs";
+import {
+  ATLAS_CHAIN,
+  buildProjectGraph,
+  readProjects,
+} from "./graphs/nx-graphs";
 
 import type { ExampleDocument, ExampleSection } from "./types";
 import type { GraphRunContext } from "@codependix/boundaries";
