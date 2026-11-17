@@ -17,7 +17,7 @@ import {
 import type {
   CommentCounter,
   CommentMeasurement,
-} from "../comments/comments.types";
+} from "../../../comments/comments.types";
 import type {
   AnalyzeTypescriptFileArguments,
   TypescriptInput,

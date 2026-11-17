@@ -3,13 +3,13 @@
 import { Injectable } from "@nestjs/common";
 import { LineCounter, Parser } from "yaml";
 
-import { HASH_COMMENT_MARKER_PATTERN } from "./comments.constants";
+import { HASH_COMMENT_MARKER_PATTERN } from "../../comments.constants";
 
 import type {
   CommentToken,
   PositionedToken,
   YamlCommentScan,
-} from "./comments.types";
+} from "../../comments.types";
 
 /* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**

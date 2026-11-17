@@ -1,16 +1,19 @@
 import { Injectable } from "@nestjs/common";
 
-import { SQL_LINE_COMMENT_PATTERN } from "../sql/sql.constants";
+import {
+  HCL_HASH_LINE_COMMENT_PATTERN,
+  HCL_SLASH_LINE_COMMENT_PATTERN,
+} from "../../comments.constants";
 
-import type { CommentToken } from "./comments.types";
+import type { CommentToken } from "../../comments.types";
 
 /* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
- * Reads SQL's `--` and block comments. A line scanner, not a tokenizer, so a `--` inside a string literal is read as a comment, as `SqlService` already reads it. Block comments use `indexOf`, since a regex on an unclosed block goes quadratic.
+ * Reads HCL's `#`, `//`, and block comments, the only language here with three comment forms. Line forms are scanned without string awareness, as `HclService` already does. Block comments use `indexOf`: a regex on an unclosed block goes quadratic.
  */
 @Injectable()
 /* v8 ignore stop */
-export class SqlCommentsService {
+export class HclCommentsService {
   // 🏗 Dependency Injection
 
   constructor() {}
@@ -100,22 +103,25 @@ export class SqlCommentsService {
   // 🌎 Public Methods
 
   /**
-   * Reads every `--` and block comment in order. Block spans come first, so a `--` inside one is dropped rather than measured twice.
+   * Reads every `#`, `//`, and block comment in order. Block spans come first, so a line marker inside one is not measured twice.
    */
   read(content: string): CommentToken[] {
     const blocks = this.readBlocks(content);
-    const lines = this.readMatches(
-      content,
-      SQL_LINE_COMMENT_PATTERN,
-      (source) => source.slice(2),
-    ).filter(
-      (line) =>
-        !blocks.some(
-          (block) => line.start >= block.start && line.start < block.end,
-        ),
-    );
+    const overlapsBlock = (start: number): boolean =>
+      blocks.some((block) => start >= block.start && start < block.end);
 
-    return [...blocks, ...lines]
+    const hashLines = this.readMatches(
+      content,
+      HCL_HASH_LINE_COMMENT_PATTERN,
+      (source) => source.slice(1),
+    ).filter((line) => !overlapsBlock(line.start));
+    const slashLines = this.readMatches(
+      content,
+      HCL_SLASH_LINE_COMMENT_PATTERN,
+      (source) => source.slice(2),
+    ).filter((line) => !overlapsBlock(line.start));
+
+    return [...blocks, ...hashLines, ...slashLines]
       .toSorted((first, second) => first.start - second.start)
       .map(({ token }) => token);
   }

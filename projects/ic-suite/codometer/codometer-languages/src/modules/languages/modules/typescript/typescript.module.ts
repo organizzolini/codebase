@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { CommentsModule } from "../comments/comments.module";
+import { CommentsModule } from "../../../comments/comments.module";
 
 import { DeclarationCommentsService } from "./declaration-comments.service";
 import { TypescriptService } from "./typescript.service";

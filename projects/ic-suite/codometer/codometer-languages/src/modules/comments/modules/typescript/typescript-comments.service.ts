@@ -8,7 +8,7 @@ import {
   JSX_EXTENSIONS,
 } from "./typescript-comments.constants";
 
-import type { CommentToken, TypescriptCommentScan } from "./comments.types";
+import type { CommentToken, TypescriptCommentScan } from "../../comments.types";
 
 /* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**

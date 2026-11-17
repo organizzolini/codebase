@@ -1,14 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import tsCompiler from "typescript";
 
-import { CommentsService } from "../comments/comments.service";
+import { CommentsService } from "../../../comments/comments.service";
 
 import {
   DETACHED_COMMENT_REGEX,
   SYMBOL_KIND_BY_SYNTAX_KIND,
 } from "./typescript.constants";
 
-import type { LabeledCommentMeasurement } from "../comments/comments.types";
+import type { LabeledCommentMeasurement } from "../../../comments/comments.types";
 import type {
   PreparedDeclarationComment,
   TypescriptWalkContext,

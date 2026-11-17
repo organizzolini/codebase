@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-import type { LocatedCommentToken } from "../comments/comments.types";
+import type { LocatedCommentToken } from "../../../comments/comments.types";
 
 /** Arguments accepted by the Python analyzer. */
 export interface AnalyzePythonArguments {

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import postcss from "postcss";
 
-import type { CommentToken } from "./comments.types";
+import type { CommentToken } from "../../comments.types";
 import type { Comment } from "postcss";
 
 /* v8 ignore start -- the decorator helper emits a branch no test can reach */

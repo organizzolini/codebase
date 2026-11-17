@@ -10,7 +10,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { CommentsService } from "../comments/comments.service";
+import { CommentsService } from "../../../comments/comments.service";
 
 import { DeclarationCommentsService } from "./declaration-comments.service";
 import { TypescriptService } from "./typescript.service";
@@ -18,7 +18,7 @@ import { TypescriptService } from "./typescript.service";
 import type {
   CommentCounter,
   CommentMeasurement,
-} from "../comments/comments.types";
+} from "../../../comments/comments.types";
 import type { TypescriptSymbolCounter } from "./typescript.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { CodometerSymbolKind } from "@codometer/core";

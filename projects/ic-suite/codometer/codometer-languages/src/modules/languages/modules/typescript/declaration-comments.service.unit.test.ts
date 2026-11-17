@@ -3,11 +3,11 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { CommentsService } from "../comments/comments.service";
+import { CommentsService } from "../../../comments/comments.service";
 
 import { DeclarationCommentsService } from "./declaration-comments.service";
 
-import type { CommentCounter } from "../comments/comments.types";
+import type { CommentCounter } from "../../../comments/comments.types";
 import type { TypescriptWalkContext } from "./typescript.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
