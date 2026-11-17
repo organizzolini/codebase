@@ -70,18 +70,29 @@ testing/                            # Shared test utilities
 
 ```text
 src/modules/
-  clear/                                   # Truncates all dictionary tables
-  dictionary/                              # Orchestrates full Wiktionary → Lexeme pipeline
-  etymology/                               # Parses etymology sections
-  forms/                                   # Parses inflection tables
+  lexico-ingestion/                        # Root command wiring every ingestion source
+    modules/
+      clear/                               # Truncates all dictionary tables
+      dictionary/                          # Orchestrates full Wiktionary → Lexeme pipeline
+      literature/                          # Ingests literature texts
+      wiktionary/                          # Downloads and stores raw Wiktionary pages
+  library/                                 # Fetches literature library sources
+    modules/
+      corpus-scriptorum-ecclesiasticorum-latinorum/
+      epigraphik-datenbank-clauss-slaby/
+      latin-library/
+      perseus/
   lexemes/                                 # Creates and saves Lexeme entities
+    modules/
+      etymology/                           # Parses etymology sections
+      forms/                               # Parses inflection tables
+      part-of-speech/                      # Detects POS from Wiktionary HTML
+      principal-parts/                     # Parses principal parts
+      pronunciation/                       # Parses pronunciation data
+      translations/                        # Parses and saves Translation entities
+      words/                               # Creates and saves Word entities
   manual/                                  # Ingests manually curated entries
-  part-of-speech/                          # Detects POS from Wiktionary HTML
-  principal-parts/                         # Parses principal parts
-  pronunciation/                           # Parses pronunciation data
-  translations/                            # Parses and saves Translation entities
-  wiktionary/                              # Downloads and stores raw Wiktionary pages
-  words/                                   # Creates and saves Word entities
+  numerals/                                # Parses numerals
 ```
 
 ### Environment Variables
