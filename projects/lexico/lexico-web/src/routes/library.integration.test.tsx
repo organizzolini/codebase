@@ -33,6 +33,7 @@ type LibraryTextRow = LibraryAuthorRow["works"][number];
 type ReaderText = NonNullable<TextReaderQuery["text"]>;
 
 const SEARCHES: { page: number; search: string }[] = [];
+const LIMITS: number[] = [];
 const CALLS: LibraryQueryVariables[] = [];
 const CHILD_CALLS: LibraryChildrenQueryVariables[] = [];
 const WORK_CALLS: LibraryWorksQueryVariables[] = [];
@@ -195,6 +196,7 @@ describe("library", () => {
   beforeEach(() => {
     SEARCHES.length = 0;
     CALLS.length = 0;
+    LIMITS.length = 0;
     CHILD_CALLS.length = 0;
     WORK_CALLS.length = 0;
     graphqlMockServer.use(
@@ -240,6 +242,7 @@ describe("library", () => {
         const page = variables.page ?? 1;
         const search = variables.search ?? "";
         SEARCHES.push({ page, search });
+        LIMITS.push(variables.pageSize ?? 0);
         CALLS.push(variables);
         const found =
           page > 3
@@ -451,7 +454,7 @@ describe("library", () => {
       name: "Search the library",
     });
     fireEvent.change(box, { target: { value: "ecl" } });
-    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    fireEvent.submit(screen.getByRole("search"));
 
     await waitFor(() =>
       expect(SEARCHES.at(-1)).toStrictEqual({ page: 1, search: "ecl" }),
@@ -460,6 +463,63 @@ describe("library", () => {
     expect({ ...router.state.location.search }).toStrictEqual({
       search: "ecl",
     });
+  });
+
+  it("searches as you type, without Enter, and returns to page 1", async () => {
+    const router = getRouter();
+    await renderRoute(router, "/library?page=2");
+
+    fireEvent.change(
+      await screen.findByRole("searchbox", { name: "Search the library" }),
+      { target: { value: "ecl" } },
+    );
+
+    await waitFor(() =>
+      expect(SEARCHES.at(-1)).toStrictEqual({ page: 1, search: "ecl" }),
+    );
+
+    expect({ ...router.state.location.search }).toStrictEqual({
+      search: "ecl",
+    });
+  });
+
+  it("chooses the authors per page, keeps it in the URL, and returns to page 1", async () => {
+    const router = getRouter();
+    await renderRoute(router, "/library?page=2");
+
+    fireEvent.click(await screen.findByRole("button", { name: "Page" }));
+    fireEvent.click(await screen.findByRole("menuitemradio", { name: "50" }));
+
+    await waitFor(() => expect(LIMITS.at(-1)).toBe(50));
+
+    expect(SEARCHES.at(-1)?.page).toBe(1);
+    expect({ ...router.state.location.search }).toStrictEqual({ limit: 50 });
+  });
+
+  it("goes to a page from the Page menu", async () => {
+    const router = getRouter();
+    await renderRoute(router, "/library?limit=10");
+
+    fireEvent.click(await screen.findByRole("button", { name: "Page" }));
+    fireEvent.click(
+      await screen.findByRole("menuitemradio", { name: "Page 3" }),
+    );
+
+    await waitFor(() => expect(SEARCHES.at(-1)?.page).toBe(3));
+
+    expect(LIMITS.at(-1)).toBe(10);
+    expect({ ...router.state.location.search }).toStrictEqual({
+      limit: 10,
+      page: 3,
+    });
+  });
+
+  it("drops an unsupported limit to the default", async () => {
+    await renderRoute(getRouter(), "/library?limit=7");
+
+    await screen.findByText("50 authors");
+
+    expect(LIMITS.at(-1)).toBe(25);
   });
 
   it("bolds only the matched part of a Text title from the API's ranges", async () => {
@@ -616,7 +676,7 @@ describe("library", () => {
     fireEvent.change(await screen.findByRole("searchbox"), {
       target: { value: "ecl" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    fireEvent.submit(screen.getByRole("search"));
 
     await waitFor(() => expect(CALLS.at(-1)?.search).toBe("ecl"));
 

@@ -69,6 +69,7 @@ export function LibrarySort(
         <DropdownMenuTrigger
           render={
             <Button
+              className="bg-card hover:bg-muted dark:bg-card dark:hover:bg-muted"
               type="button"
               variant="outline"
             />

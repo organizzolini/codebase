@@ -1,7 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useCallback } from "react";
 
 import { LibraryGrid } from "../components/library-grid/library-grid";
-import { librarySearchSchema } from "../components/library-grid/library-grid-api.constants";
+import {
+  LIBRARY_PAGE_SIZE,
+  librarySearchSchema,
+} from "../components/library-grid/library-grid-api.constants";
 import { getLibrary } from "../components/library-grid/library-grid.constants";
 import { LibraryNoResults } from "../components/library-no-results/library-no-results";
 import { LibraryPagination } from "../components/library-pagination/library-pagination";
@@ -63,6 +67,7 @@ function LibraryPage(): ReactNode {
   const navigate = Route.useNavigate();
   const {
     direction,
+    limit = LIBRARY_PAGE_SIZE,
     page = 1,
     search = "",
     sort,
@@ -78,19 +83,23 @@ function LibraryPage(): ReactNode {
   const count = `${String(library.totalCount)} ${library.totalCount === 1 ? "author" : "authors"}`;
 
   // 💪 Handlers
-  const handleSearch = (nextSearch: string): void => {
-    void navigate({
-      search: (previous) => ({
-        ...previous,
-        page: undefined,
-        search: nextSearch === "" ? undefined : nextSearch,
-      }),
-    });
-  };
+  const update = useCallback(
+    (patch: Partial<LibrarySearchParameters>): void => {
+      void navigate({ search: (previous) => ({ ...previous, ...patch }) });
+    },
+    [navigate],
+  );
+  const handleSearch = useCallback(
+    (nextSearch: string): void => {
+      update({ page: undefined, search: nextSearch || undefined });
+    },
+    [update],
+  );
   const handleFilters = (next: LibraryFilterParameters): void => {
     void navigate({
       search: (previous) => ({
         direction: previous.direction,
+        limit: previous.limit,
         search: previous.search,
         sort: previous.sort,
         ...next,
@@ -98,28 +107,25 @@ function LibraryPage(): ReactNode {
     });
   };
   const handleReset = (): void => {
-    void navigate({ search: (previous) => ({ search: previous.search }) });
+    void navigate({
+      search: (old) => ({ limit: old.limit, search: old.search }),
+    });
   };
   const handleSort = (
     nextSort: typeof sort,
     nextDirection: typeof direction,
   ): void => {
-    void navigate({
-      search: (previous) => ({
-        ...previous,
-        direction: nextSort === undefined ? undefined : nextDirection,
-        page: undefined,
-        sort: nextSort,
-      }),
+    update({
+      direction: nextSort === undefined ? undefined : nextDirection,
+      page: undefined,
+      sort: nextSort,
     });
   };
+  const handleLimit = (nextLimit: number): void => {
+    update({ limit: nextLimit, page: undefined });
+  };
   const handlePage = (nextPage: number): void => {
-    void navigate({
-      search: (previous) => ({
-        ...previous,
-        page: nextPage === 1 ? undefined : nextPage,
-      }),
-    });
+    update({ page: nextPage === 1 ? undefined : nextPage });
   };
 
   // ♻️ Lifecycle
@@ -134,10 +140,15 @@ function LibraryPage(): ReactNode {
         direction={direction}
         facets={facets}
         filters={filters}
+        limit={limit}
         onFilters={handleFilters}
+        onLimit={handleLimit}
+        onPage={handlePage}
         onReset={handleReset}
         onSearch={handleSearch}
         onSort={handleSort}
+        page={page}
+        pageCount={library.pageCount}
         search={search}
         sort={sort}
       />

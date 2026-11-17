@@ -4,16 +4,16 @@ import { useState } from "react";
 import {
   Badge,
   Button,
-  FilterChip,
   Filters,
   FiltersBuilder,
   flattenFilterRules,
 } from "@codebase/presentation";
 
+import { LibraryPaging } from "../library-paging/library-paging";
 import { LibrarySearch } from "../library-search/library-search";
 import { LibrarySort } from "../library-sort/library-sort";
-import { LibrarySortChip } from "../library-sort/library-sort-chip";
 
+import { LibraryChips } from "./library-chips";
 import { FILTER_BUTTON_LABEL } from "./library-toolbar.constants";
 import {
   createLibraryFilterFields,
@@ -34,17 +34,22 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The facets to offer, the URL's filters, sort, and search, and what to call when each changes.
+ * The facets to offer, the URL's filters, sort, search, and paging, and what to call when each changes.
  */
 export interface LibraryToolbarProperties {
   className?: string;
   direction?: LibrarySortDirection | undefined;
   facets: LibraryFacetsResult;
   filters: LibraryFilterParameters;
+  limit: number;
   onFilters: (filters: LibraryFilterParameters) => void;
+  onLimit: (limit: number) => void;
+  onPage: (page: number) => void;
   onReset: () => void;
   onSearch: (search: string) => void;
   onSort: (sort?: LibrarySortField, direction?: LibrarySortDirection) => void;
+  page: number;
+  pageCount: number;
   search: string;
   sort?: LibrarySortField | undefined;
 }
@@ -52,7 +57,7 @@ export interface LibraryToolbarProperties {
 // 🧩 Component
 
 /**
- * One row of search, Filter menu, and Sort menu, with chips for each active filter and sort beneath. Edits apply at once.
+ * One row of search, Filter, Sort, and Page menus, with chips for each active filter and sort beneath. Edits apply at once.
  */
 export function LibraryToolbar(
   properties: Readonly<LibraryToolbarProperties>,
@@ -62,10 +67,15 @@ export function LibraryToolbar(
     direction,
     facets,
     filters,
+    limit,
     onFilters,
+    onLimit,
+    onPage,
     onReset,
     onSearch,
     onSort,
+    page,
+    pageCount,
     search,
     sort,
   } = properties;
@@ -118,7 +128,6 @@ export function LibraryToolbar(
       >
         <div className="flex flex-wrap items-center gap-2">
           <LibrarySearch
-            key={search}
             className="min-w-64 flex-1"
             onSearch={onSearch}
             search={search}
@@ -126,6 +135,7 @@ export function LibraryToolbar(
           <FiltersBuilder
             trigger={
               <Button
+                className="bg-card hover:bg-muted dark:bg-card dark:hover:bg-muted"
                 type="button"
                 variant="outline"
               >
@@ -148,34 +158,23 @@ export function LibraryToolbar(
             onSort={onSort}
             sort={sort}
           />
+          <LibraryPaging
+            limit={limit}
+            onLimit={onLimit}
+            onPage={onPage}
+            page={page}
+            pageCount={pageCount}
+          />
         </div>
         {isActive ? (
-          <div
-            className="mt-3 flex flex-wrap items-center gap-2"
-            data-testid="library-chips"
-          >
-            {rules.map((rule, index) => (
-              <FilterChip
-                key={rule.id}
-                index={index}
-                rule={rule}
-              />
-            ))}
-            {sort === undefined ? null : (
-              <LibrarySortChip
-                direction={direction}
-                onSort={onSort}
-                sort={sort}
-              />
-            )}
-            <Button
-              onClick={handleReset}
-              type="button"
-              variant="ghost"
-            >
-              Reset
-            </Button>
-          </div>
+          <LibraryChips
+            className="mt-3"
+            direction={direction}
+            onReset={handleReset}
+            onSort={onSort}
+            rules={rules}
+            sort={sort}
+          />
         ) : null}
       </Filters>
     </div>

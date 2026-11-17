@@ -13,10 +13,10 @@ export type GetLibraryInput = z.infer<typeof getLibraryInputSchema>;
 /** One Author card, with its top-level works and match ranges. */
 export type LibraryAuthorRow = LibraryPageResult["authors"][number];
 
-/** The filters the library URL may carry, apart from search, sort, and page. */
+/** The filters the library URL may carry, apart from search, sort, limit, and page. */
 export type LibraryFilterParameters = Omit<
   LibrarySearchParameters,
-  "direction" | "page" | "search" | "sort"
+  "direction" | "limit" | "page" | "search" | "sort"
 >;
 
 /** One match range the API reports for a field's value. */
@@ -26,7 +26,7 @@ export type LibraryMatchRow = LibraryAuthorRow["matches"][number];
 export type LibraryPageResult = LibraryQuery["library"];
 
 /** What the library was asked for, apart from the page: search, filters, and sort. */
-export type LibraryRequest = Omit<GetLibraryInput, "page">;
+export type LibraryRequest = Omit<GetLibraryInput, "limit" | "page">;
 
 /** The search parameters the library URL may carry. */
 export type LibrarySearchParameters = z.infer<typeof librarySearchSchema>;

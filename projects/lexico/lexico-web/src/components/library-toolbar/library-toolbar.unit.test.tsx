@@ -24,10 +24,15 @@ function properties(
   return {
     facets: FACETS,
     filters: {},
+    limit: 25,
     onFilters: vi.fn<LibraryToolbarProperties["onFilters"]>(),
+    onLimit: vi.fn<LibraryToolbarProperties["onLimit"]>(),
+    onPage: vi.fn<LibraryToolbarProperties["onPage"]>(),
     onReset: vi.fn<LibraryToolbarProperties["onReset"]>(),
     onSearch: vi.fn<LibraryToolbarProperties["onSearch"]>(),
     onSort: vi.fn<LibraryToolbarProperties["onSort"]>(),
+    page: 1,
+    pageCount: 3,
     search: "",
     ...overrides,
   };
@@ -45,6 +50,12 @@ describe(LibraryToolbar, () => {
     expect(screen.getByTestId("library-toolbar").className).toBe(
       "library-toolbar",
     );
+  });
+
+  it("offers the Page menu beside Filter and Sort", () => {
+    render(<LibraryToolbar {...properties()} />);
+
+    expect(screen.getByRole("button", { name: "Page" })).toBeDefined();
   });
 
   it("shows no chips when nothing is set", () => {

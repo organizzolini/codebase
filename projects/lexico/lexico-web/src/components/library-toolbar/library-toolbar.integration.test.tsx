@@ -74,7 +74,7 @@ describe("library toolbar", () => {
     );
   });
 
-  it("puts the search box, Filter, and Sort on one row", async () => {
+  it("puts the search box, Filter, Sort, and Page on one row", async () => {
     await renderRoute(getRouter(), "/library");
 
     const toolbar = await screen.findByTestId("library-toolbar");
@@ -83,9 +83,10 @@ describe("library toolbar", () => {
     expect(
       within(row).getByRole("searchbox", { name: "Search the library" }),
     ).toBeDefined();
-    expect(within(row).getByRole("button", { name: "Search" })).toBeDefined();
+    expect(within(row).queryByRole("button", { name: "Search" })).toBeNull();
     expect(within(row).getByRole("button", { name: "Filter" })).toBeDefined();
     expect(within(row).getByRole("button", { name: "Sort" })).toBeDefined();
+    expect(within(row).getByRole("button", { name: "Page" })).toBeDefined();
   });
 
   it("offers every filter attribute in the Filter menu", async () => {
@@ -293,7 +294,7 @@ describe("library toolbar", () => {
     fireEvent.change(screen.getByRole("searchbox"), {
       target: { value: "vergil" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    fireEvent.submit(screen.getByRole("search"));
 
     await waitFor(() => expect(CALLS.at(-1)?.search).toBe("vergil"));
 
@@ -416,7 +417,7 @@ describe("library toolbar", () => {
     fireEvent.change(await screen.findByRole("searchbox"), {
       target: { value: "ecl" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    fireEvent.submit(screen.getByRole("search"));
 
     await waitFor(() => expect(CALLS.at(-1)?.search).toBe("ecl"));
 
@@ -444,9 +445,9 @@ describe("library toolbar", () => {
 
     const controls = [
       await screen.findByRole("searchbox", { name: "Search the library" }),
-      screen.getByRole("button", { name: "Search" }),
       screen.getByRole("button", { name: /^Filter/u }),
       screen.getByRole("button", { name: "Sort" }),
+      screen.getByRole("button", { name: "Page" }),
       screen.getByRole("button", { name: "Era filter options" }),
       screen.getByRole("button", { name: /Switch to descending/u }),
       screen.getByRole("button", { name: "Remove sort" }),

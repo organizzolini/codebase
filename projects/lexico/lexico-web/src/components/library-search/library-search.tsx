@@ -1,6 +1,15 @@
-import { useState } from "react";
+import { Search } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 
-import { Button, Input, Label } from "@codebase/presentation";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  Label,
+} from "@codebase/presentation";
+
+import { SEARCH_DEBOUNCE_MILLISECONDS } from "../search-bar/search-bar.constants";
+import { debounce } from "../search-bar/search-bar.utilities";
 
 import type { ReactNode, SubmitEvent } from "react";
 
@@ -18,8 +27,8 @@ export interface LibrarySearchProperties {
 // 🧩 Component
 
 /**
- * The library's search box. The route keys it by the search it shows, so a
- * change of URL starts the box over from that search.
+ * The library's search box. It searches as you type, once typing pauses, and
+ * at once on Enter. A search that arrives from the URL replaces the draft.
  */
 export function LibrarySearch(
   properties: Readonly<LibrarySearchProperties>,
@@ -28,16 +37,43 @@ export function LibrarySearch(
 
   // 🪝 Hooks
   const [draft, setDraft] = useState(search);
+  const [seenSearch, setSeenSearch] = useState(search);
+  const [sentSearch, setSentSearch] = useState(search);
 
   // 🏗 Setup
+  // The URL leads: a search this box did not send, such as Back or Clear,
+  // replaces the draft, while the echo of one it sent leaves it alone.
+  if (search !== seenSearch) {
+    setSeenSearch(search);
+    if (search !== sentSearch) {
+      setSentSearch(search);
+      setDraft(search);
+    }
+  }
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setSentSearch(value.trim());
+        onSearch(value.trim());
+      }, SEARCH_DEBOUNCE_MILLISECONDS),
+    [onSearch],
+  );
 
   // 💪 Handlers
   const handleSubmit = (event: SubmitEvent<HTMLFormElement>): void => {
     event.preventDefault();
+    debouncedSearch.cancel();
+    setSentSearch(draft.trim());
     onSearch(draft.trim());
   };
 
   // ♻️ Lifecycle
+  useEffect(
+    () => () => {
+      debouncedSearch.cancel();
+    },
+    [debouncedSearch],
+  );
 
   // 🏁 Early Returns
 
@@ -48,7 +84,6 @@ export function LibrarySearch(
       data-testid="library-search"
     >
       <form
-        className="flex items-center gap-2"
         onSubmit={handleSubmit}
         role="search"
       >
@@ -58,17 +93,21 @@ export function LibrarySearch(
         >
           Search the library
         </Label>
-        <Input
-          className="min-w-0 flex-1"
-          id="library-search"
-          onChange={(event) => {
-            setDraft(event.target.value);
-          }}
-          placeholder="Author, title, collection, province…"
-          type="search"
-          value={draft}
-        />
-        <Button type="submit">Search</Button>
+        <InputGroup className="bg-card dark:bg-card">
+          <InputGroupAddon>
+            <Search aria-hidden="true" />
+          </InputGroupAddon>
+          <InputGroupInput
+            id="library-search"
+            onChange={(event) => {
+              setDraft(event.currentTarget.value);
+              debouncedSearch(event.currentTarget.value);
+            }}
+            placeholder="Author, title, collection, province…"
+            type="search"
+            value={draft}
+          />
+        </InputGroup>
       </form>
     </div>
   );

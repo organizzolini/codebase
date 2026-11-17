@@ -21,7 +21,7 @@ export async function fetchLibrary(
   const { library } = await queryApi(LibraryDocument, {
     filters: toFilters(input),
     page: input.page,
-    pageSize: LIBRARY_PAGE_SIZE,
+    pageSize: input.limit ?? LIBRARY_PAGE_SIZE,
     search: input.search,
     sort: toSort(input),
   });

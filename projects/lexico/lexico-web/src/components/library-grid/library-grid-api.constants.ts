@@ -8,8 +8,11 @@ import {
 
 // ♟️ Constants
 
-/** Authors on one library page. */
-export const LIBRARY_PAGE_SIZE = 24;
+/** The authors-per-page choices the Page menu offers. */
+export const LIBRARY_LIMITS: readonly number[] = [10, 25, 50, 100];
+
+/** Authors on one library page unless the URL asks for another limit. */
+export const LIBRARY_PAGE_SIZE = 25;
 
 /** One whole-number bound of a range filter; anything else is dropped. */
 const bound = z.catch(z.optional(z.int()), (): undefined => undefined);
@@ -51,6 +54,14 @@ export const librarySearchSchema = z.object({
     z.optional(z.enum(LibrarySortDirection)),
     (): undefined => undefined,
   ),
+  limit: z.catch(
+    z.optional(
+      z.coerce
+        .number()
+        .check(z.refine((value) => LIBRARY_LIMITS.includes(value))),
+    ),
+    (): undefined => undefined,
+  ),
   page: z.catch(
     z.optional(
       z.coerce.number().check(z.refine(Number.isInteger), z.positive()),
@@ -78,6 +89,7 @@ export const librarySearchSchema = z.object({
 export const getLibraryInputSchema = z.object({
   ...libraryFilterShape,
   direction: librarySearchSchema.shape.direction,
+  limit: librarySearchSchema.shape.limit,
   page: z.int().check(z.positive()),
   search: z.string(),
   sort: librarySearchSchema.shape.sort,

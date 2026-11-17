@@ -18,7 +18,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **fire**: Test verb: fireEvent dispatches a DOM event, such as click or focus, on an element rendered under test.
 - **grammar**: Word in code comments naming grammar-book conventions, such as the short labels and case order in form tables.
 - **imperial**:
-- **inert**:
+- **inert**: HTML attribute set on the closed history sidebar so its links cannot be focused or clicked while it is hidden.
 - **inscription**:
 - **large**: Largest reader font size, one of small, medium and large, remembered in browser storage.
 - **letter**: Count of extra letters in a fuzzy lemma match, shown in the tooltip for a prefix match beyond the query.
