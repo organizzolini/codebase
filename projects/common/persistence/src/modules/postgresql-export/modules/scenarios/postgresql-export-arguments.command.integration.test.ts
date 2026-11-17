@@ -6,8 +6,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { createTemporaryDirectory } from "@codebase/testing";
 
-import { runCliCommandLine } from "../../../testing/command-line-runner";
-import { INTEGRATION_TEST_TIMEOUT_MILLISECONDS } from "../../../testing/fixture-persistence";
+import { runCliCommandLine } from "../../../../../testing/command-line-runner";
+import { INTEGRATION_TEST_TIMEOUT_MILLISECONDS } from "../../../../../testing/fixture-persistence";
 
 import type * as Testing from "@codebase/testing";
 

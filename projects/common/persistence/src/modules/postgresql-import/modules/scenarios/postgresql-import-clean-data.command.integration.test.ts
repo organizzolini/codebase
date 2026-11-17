@@ -6,23 +6,21 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { startPostgresContainer } from "@codebase/persistence/testing";
 import { useTemporaryDirectory } from "@codebase/testing";
 
-import { runCliCommandLine } from "../../../testing/command-line-runner";
+import { runCliCommandLine } from "../../../../../testing/command-line-runner";
 import {
   FIXTURE_DATABASE_TIMEOUT_MILLISECONDS,
   INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   postgresUri,
-} from "../../../testing/fixture-persistence";
-import { mockStandardInputTerminal } from "../../../testing/mocks";
+} from "../../../../../testing/fixture-persistence";
 
 import type { StartedPostgresContainer } from "@codebase/persistence/testing";
 
-describe("postgresql-import --clean --ddl", () => {
-  const setStandardInputTerminal = mockStandardInputTerminal();
+describe("postgresql-import --clean --data", () => {
   let source: StartedPostgresContainer;
   let target: StartedPostgresContainer;
   let sourceDataSource: DataSource;
   let targetDataSource: DataSource;
-  const directory = useTemporaryDirectory("import-clean");
+  const directory = useTemporaryDirectory("import-clean-data");
   let dump: string;
 
   /** Rows of `sql` run against the target. */
@@ -31,7 +29,7 @@ describe("postgresql-import --clean --ddl", () => {
     return result;
   }
 
-  /** `postgresql-import --clean` of `tables` from the dump. */
+  /** `postgresql-import --clean --data` of `tables` from the dump. */
   async function runClean(
     tables: readonly string[],
   ): ReturnType<typeof runCliCommandLine> {
@@ -41,7 +39,6 @@ describe("postgresql-import --clean --ddl", () => {
         "--target-uri",
         postgresUri(target.connection),
         ...tables.flatMap((table) => ["--table", table]),
-        "--ddl",
         "--data",
         "--clean",
         "--file",
@@ -72,9 +69,9 @@ describe("postgresql-import --clean --ddl", () => {
     ]);
 
     await sourceDataSource.query(
-      "CREATE SCHEMA archive; CREATE TABLE archive.notes (id serial PRIMARY KEY, body text NOT NULL UNIQUE); INSERT INTO archive.notes (body) VALUES ('first'), ('second'); CREATE TABLE archive.other (id serial PRIMARY KEY); CREATE TABLE archive.refs (id serial PRIMARY KEY, note_id integer REFERENCES archive.notes (id))",
+      "CREATE SCHEMA archive; CREATE TABLE archive.notes (id integer PRIMARY KEY, body text NOT NULL); INSERT INTO archive.notes VALUES (1, 'first'), (2, 'second'); CREATE TABLE archive.refs (id integer PRIMARY KEY, note_id integer REFERENCES archive.notes (id)); INSERT INTO archive.refs VALUES (10, 2)",
     );
-    dump = path.join(directory(), "notes.dump");
+    dump = path.join(directory(), "archive.dump");
     const exported = await runCliCommandLine({
       argv: [
         "postgresql-export",
@@ -82,8 +79,9 @@ describe("postgresql-import --clean --ddl", () => {
         postgresUri(source.connection),
         "--table",
         "archive.notes",
+        "--table",
+        "archive.refs",
         "--data",
-        "--ddl",
         "--file",
         dump,
       ],
@@ -92,10 +90,9 @@ describe("postgresql-import --clean --ddl", () => {
   }, FIXTURE_DATABASE_TIMEOUT_MILLISECONDS);
 
   beforeEach(async () => {
-    setStandardInputTerminal(false);
-    // The target's notes differs from the dump's: another shape, other rows.
+    // The target holds other rows in the same shape, and a table not dumped.
     await targetDataSource.query(
-      "DROP SCHEMA IF EXISTS archive CASCADE; CREATE SCHEMA archive; CREATE TABLE archive.notes (id serial PRIMARY KEY, stale text); INSERT INTO archive.notes (stale) VALUES ('old'); CREATE TABLE archive.other (id serial PRIMARY KEY, kept text); INSERT INTO archive.other (kept) VALUES ('mine')",
+      "DROP SCHEMA IF EXISTS archive CASCADE; CREATE SCHEMA archive; CREATE TABLE archive.notes (id integer PRIMARY KEY, body text NOT NULL); INSERT INTO archive.notes VALUES (1, 'old'), (3, 'stale'); CREATE TABLE archive.refs (id integer PRIMARY KEY, note_id integer REFERENCES archive.notes (id)); INSERT INTO archive.refs VALUES (20, 1); CREATE TABLE archive.other (id integer PRIMARY KEY, kept text); INSERT INTO archive.other VALUES (1, 'mine')",
     );
   }, INTEGRATION_TEST_TIMEOUT_MILLISECONDS);
 
@@ -105,11 +102,11 @@ describe("postgresql-import --clean --ddl", () => {
   }, INTEGRATION_TEST_TIMEOUT_MILLISECONDS);
 
   it(
-    "replaces the selected table with the dump's, without asking when there is no terminal, and leaves an unselected table alone",
+    "empties the selected tables and refills them from the dump, leaving an unselected table alone",
     async () => {
       expect.hasAssertions();
 
-      const result = await runClean(["archive.notes"]);
+      const result = await runClean(["archive.notes", "archive.refs"]);
 
       expect(result.exitCode).toBe(0);
       await expect(
@@ -119,6 +116,9 @@ describe("postgresql-import --clean --ddl", () => {
         { body: "second", id: 2 },
       ]);
       await expect(
+        rows("SELECT id, note_id FROM archive.refs"),
+      ).resolves.toStrictEqual([{ id: 10, note_id: 2 }]);
+      await expect(
         rows("SELECT kept FROM archive.other"),
       ).resolves.toStrictEqual([{ kept: "mine" }]);
     },
@@ -126,39 +126,45 @@ describe("postgresql-import --clean --ddl", () => {
   );
 
   it(
-    "creates the selected table when the target lacks it",
+    "refuses, naming the unselected table to add, and truncates nothing",
     async () => {
       expect.hasAssertions();
 
-      await targetDataSource.query("DROP TABLE archive.notes");
-
       const result = await runClean(["archive.notes"]);
 
-      expect(result.exitCode).toBe(0);
+      expect(result.exitCode).toBe(1);
+      expect(result.stderr).toContain("--table archive.refs");
+      expect(result.stderr).toContain("Nothing was truncated");
+      expect(result.stderr).not.toContain(target.connection.password);
       await expect(
-        rows("SELECT count(*)::int AS count FROM archive.notes"),
-      ).resolves.toStrictEqual([{ count: 2 }]);
+        rows("SELECT id FROM archive.notes ORDER BY id"),
+      ).resolves.toStrictEqual([{ id: 1 }, { id: 3 }]);
+      await expect(rows("SELECT id FROM archive.refs")).resolves.toStrictEqual([
+        { id: 20 },
+      ]);
     },
     INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   );
 
   it(
-    "is rolled back whole when the drop is refused",
+    "says the tables may be empty when the restore fails after the truncate",
     async () => {
       expect.hasAssertions();
 
-      // refs is not selected, so dropping notes without CASCADE must fail.
+      // The dump's rows break a rule only the target has.
       await targetDataSource.query(
-        "CREATE TABLE archive.refs (id serial PRIMARY KEY, note_id integer REFERENCES archive.notes (id))",
+        "ALTER TABLE archive.notes ADD CONSTRAINT notes_not_first CHECK (body <> 'first')",
       );
 
-      const result = await runClean(["archive.notes"]);
+      const result = await runClean(["archive.notes", "archive.refs"]);
 
       expect(result.exitCode).toBe(1);
-      expect(result.stderr).toContain("Nothing was imported");
+      expect(result.stderr).toContain("may now be empty");
+      expect(result.stderr).toContain("same file");
+      expect(result.stderr).not.toContain(target.connection.password);
       await expect(
-        rows("SELECT stale FROM archive.notes"),
-      ).resolves.toStrictEqual([{ stale: "old" }]);
+        rows("SELECT count(*)::int AS count FROM archive.notes"),
+      ).resolves.toStrictEqual([{ count: 0 }]);
     },
     INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   );

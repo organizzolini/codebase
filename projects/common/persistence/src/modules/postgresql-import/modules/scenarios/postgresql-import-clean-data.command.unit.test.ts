@@ -5,18 +5,18 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { processFailure, useTemporaryDirectory } from "@codebase/testing";
 
-import { runCliCommandLine } from "../../../testing/command-line-runner";
-import { mockProcesses } from "../../../testing/mocks";
-import { PostgresReferencedTablesError } from "../postgresql-utilities/postgresql-utilities.constants";
-import { PostgresqlUtilitiesService } from "../postgresql-utilities/postgresql-utilities.service";
+import { runCliCommandLine } from "../../../../../testing/command-line-runner";
+import { mockProcesses } from "../../../../../testing/mocks";
+import { PostgresReferencedTablesError } from "../../../postgresql-utilities/postgresql-utilities.constants";
+import { PostgresqlUtilitiesService } from "../../../postgresql-utilities/postgresql-utilities.service";
 
-import type { SpawnedProcess } from "../../../testing/mocks";
-import type * as PostgresMocks from "../../../testing/mocks";
+import type { SpawnedProcess } from "../../../../../testing/mocks";
+import type * as PostgresMocks from "../../../../../testing/mocks";
 
 vi.mock("node:child_process", async (importOriginal) => {
   const { mockPostgresChildProcess } = await vi.importActual<
     typeof PostgresMocks
-  >("../../../testing/mocks");
+  >("../../../../../testing/mocks");
 
   return mockPostgresChildProcess(await importOriginal());
 });

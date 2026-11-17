@@ -5,8 +5,8 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { createTemporaryDirectory } from "@codebase/testing";
 
-import { runCliCommandLine } from "../../../testing/command-line-runner";
-import { INTEGRATION_TEST_TIMEOUT_MILLISECONDS } from "../../../testing/fixture-persistence";
+import { runCliCommandLine } from "../../../../../testing/command-line-runner";
+import { INTEGRATION_TEST_TIMEOUT_MILLISECONDS } from "../../../../../testing/fixture-persistence";
 
 const PASSWORD = "hunter2-secret";
 const SETUP_SCRIPT = "scripts/local/software/database.sh";

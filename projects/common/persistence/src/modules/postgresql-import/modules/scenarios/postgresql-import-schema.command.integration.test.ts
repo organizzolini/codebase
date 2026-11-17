@@ -14,14 +14,14 @@ import {
 
 import { createTemporaryDirectory } from "@codebase/testing";
 
-import { runCliCommandLine } from "../../../testing/command-line-runner";
+import { runCliCommandLine } from "../../../../../testing/command-line-runner";
 import {
   FIXTURE_DATABASE_TIMEOUT_MILLISECONDS,
   INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   startFixtureDatabase,
-} from "../../../testing/fixture-persistence";
+} from "../../../../../testing/fixture-persistence";
 
-import type { FixtureDatabase } from "../../../testing/fixture-persistence";
+import type { FixtureDatabase } from "../../../../../testing/fixture-persistence";
 import type * as Testing from "@codebase/testing";
 
 // 🎯 The real execFile, wrapped so a test can see whether any client tool

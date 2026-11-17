@@ -5,8 +5,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { useTemporaryDirectory } from "@codebase/testing";
 
-import { runCliCommandLine } from "../../../testing/command-line-runner";
-import { INTEGRATION_TEST_TIMEOUT_MILLISECONDS } from "../../../testing/fixture-persistence";
+import { runCliCommandLine } from "../../../../../testing/command-line-runner";
+import { INTEGRATION_TEST_TIMEOUT_MILLISECONDS } from "../../../../../testing/fixture-persistence";
 
 const PASSWORD = "hunter2-secret";
 

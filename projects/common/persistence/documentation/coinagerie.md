@@ -12,6 +12,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **identifiable**: The entity base layer that adds a primary id, first in the identifiable, creatable, updatable, deletable chain.
 - **refusal**: A deliberate, explained refusal to run, such as truncate refusing a table that another table still references.
 - **role**: The Postgres role, the database user identity that connections and grants run as, as in the README context table.
+- **scenario**:
 - **trace**: The callidescope call-stack trace that measures depth, with config notes on which callees the trace does not follow.
 - **unqualified**: A table name without a schema prefix, which resolves in the --schema option's search path rather than a fixed schema.
 - **updatable**: The entity base layer that adds update tracking columns, third in the identifiable, creatable, updatable, deletable chain.

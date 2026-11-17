@@ -5,14 +5,14 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { createTemporaryDirectory } from "@codebase/testing";
 
-import { runCliCommandLine } from "../../../testing/command-line-runner";
+import { runCliCommandLine } from "../../../../../testing/command-line-runner";
 import {
   FIXTURE_DATABASE_TIMEOUT_MILLISECONDS,
   INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   startFixtureDatabase,
-} from "../../../testing/fixture-persistence";
+} from "../../../../../testing/fixture-persistence";
 
-import type { FixtureDatabase } from "../../../testing/fixture-persistence";
+import type { FixtureDatabase } from "../../../../../testing/fixture-persistence";
 
 describe("postgresql-export of a table that does not exist", () => {
   let source: FixtureDatabase;

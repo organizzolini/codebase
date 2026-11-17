@@ -4,22 +4,22 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { useTemporaryDirectory } from "@codebase/testing";
 
-import { runCliCommandLine } from "../../../testing/command-line-runner";
-import { mockProcesses } from "../../../testing/mocks";
+import { runCliCommandLine } from "../../../../../testing/command-line-runner";
+import { mockProcesses } from "../../../../../testing/mocks";
 
-import type * as PostgresMocks from "../../../testing/mocks";
-import type * as PostgresqlExportConstants from "./postgresql-export.constants";
+import type * as PostgresMocks from "../../../../../testing/mocks";
+import type * as PostgresqlExportConstants from "../../postgresql-export.constants";
 
 vi.mock("node:child_process", async (importOriginal) => {
   const { mockPostgresChildProcess } = await vi.importActual<
     typeof PostgresMocks
-  >("../../../testing/mocks");
+  >("../../../../../testing/mocks");
 
   return mockPostgresChildProcess(await importOriginal());
 });
 
 /** The plan with one line appended that breaks the logging convention. */
-vi.mock("./postgresql-export.constants", async (importOriginal) => {
+vi.mock("../../postgresql-export.constants", async (importOriginal) => {
   const original = await importOriginal<typeof PostgresqlExportConstants>();
   return {
     ...original,

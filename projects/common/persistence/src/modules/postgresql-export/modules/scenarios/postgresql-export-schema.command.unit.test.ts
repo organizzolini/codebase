@@ -4,15 +4,15 @@ import { describe, expect, it, vi } from "vitest";
 
 import { useTemporaryDirectory } from "@codebase/testing";
 
-import { runCliCommandLine } from "../../../testing/command-line-runner";
-import { mockProcesses } from "../../../testing/mocks";
+import { runCliCommandLine } from "../../../../../testing/command-line-runner";
+import { mockProcesses } from "../../../../../testing/mocks";
 
-import type * as PostgresMocks from "../../../testing/mocks";
+import type * as PostgresMocks from "../../../../../testing/mocks";
 
 vi.mock("node:child_process", async (importOriginal) => {
   const { mockPostgresChildProcess } = await vi.importActual<
     typeof PostgresMocks
-  >("../../../testing/mocks");
+  >("../../../../../testing/mocks");
 
   return mockPostgresChildProcess(await importOriginal());
 });

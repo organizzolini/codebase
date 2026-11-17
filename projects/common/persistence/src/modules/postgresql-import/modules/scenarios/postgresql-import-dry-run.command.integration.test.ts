@@ -6,12 +6,12 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { startPostgresContainer } from "@codebase/persistence/testing";
 import { useTemporaryDirectory } from "@codebase/testing";
 
-import { runCliCommandLine } from "../../../testing/command-line-runner";
+import { runCliCommandLine } from "../../../../../testing/command-line-runner";
 import {
   FIXTURE_DATABASE_TIMEOUT_MILLISECONDS,
   INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   postgresUri,
-} from "../../../testing/fixture-persistence";
+} from "../../../../../testing/fixture-persistence";
 
 import type { StartedPostgresContainer } from "@codebase/persistence/testing";
 
