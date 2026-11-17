@@ -2,13 +2,29 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
+The words this project uses, regenerated with this project's `coinagerie-check:write` Nx target.
 
+- **callidescope**: IC-suite toolchain that measures call-stack depth and breadth across the workspace and gates each project's limits.
+- **codependix**: IC-suite toolchain that exports dependency graphs and enforces boundary rules between projects, modules, and files.
+- **codometer**: IC-suite measurement tool that reports sizes, counts, and comment budgets against configured limits per project.
+- **coinagerie**: Vocabulary toolchain that collects a repository's words and checks or writes their definitions into glossary files.
+- **conformetry**: IC-suite toolchain that scaffolds code from templates with generators and checks that generated files still match them.
+- **context**: Background information an agent or reviewer uses to locate and judge a change.
+- **core**: Central layer of the codebase's module architecture, holding domain vocabulary, shared enums, and error classes that other layers depend on.
 - **corrupt**: Fake behavior flag corruptsLockfile that simulates a restore which damages the lockfile, testing the safety check.
+- **deprecate**: Nx code-quality target, deprecate-code, that finds unused or outdated code and dependencies with tools such as knip, sherif, and syncpack in the validate-code step.
+- **depth**: Callidescope metric for the longest call stack, gated per project by maximumDepth in callidescope configuration.
+- **guard**: Nx code-quality target, guard-code, that runs the IC-suite gates and the catalog check on each project in the validate-code step.
+- **impeccable**: Design tooling suite whose agents and skills, such as asset producer and finish reviewer, drive approved visual builds.
+- **map**: Wayfinder's planning artifact for a huge effort, a graph of linked decisions that collapses into a buildable spec when cleared.
+- **observability**: Shared package at projects/common/observability that provides the pino-backed LoggerService and telemetry used by services.
 - **preset**: Semantic-release preset configuration whose types list conventional-config appends missing commit types into.
 - **publishable**: A package that a release sends to npm, one of the ic-suite packages whose manifest metadata the package-manifests synchronizer keeps in step with the root `package.json`. The `*-agents` and `*-examples` packages are not.
 - **rewrite**: Verb for sync replacing dropdown options, markdown tables, or scope arrays inside marked blocks of source files.
 - **scenario**: Name field for each parameterized test case, such as scenarioName in the conformetry generator command tests.
+- **structure**: The enforced folder layout of the workspace, validated by the structure rule and the devcontainer workspace structure check.
 - **synchronizable**: Interface implemented by each synchronizer command, such as conformetry generators, so one run can dispatch to all of them.
+- **synchronization**: The synchronization project and its Nx target family, which keep VS Code settings, extensions, and devcontainer config matched to their source.
+- **typecheck**: Nx target that runs type checking per project, driven by the typecheck-code gate in validate-code and CI.
 
 <!-- coinagerie:end -->

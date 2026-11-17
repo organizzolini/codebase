@@ -34,7 +34,7 @@ export const LOCAL_REMEDIATION = [
 
 /** Why missing skills matter, printed under the list of them. */
 export const MISSING_SKILLS_CONSEQUENCE =
-  '🚨 The agent workflow in AGENTS.md links to these skills. Until they are restored those links dangle, and user-invoked skills such as "/grill-with-docs" are unavailable.';
+  '🚨 The agent workflow in AGENTS.md links to these skills. Until they are restored those links dangle, and user-invoked skills such as "/grill-me" are unavailable.';
 
 /** How to retry a failed restore, attached to each warning. */
 export const RETRY_HINT = `Retry with '${RESTORE_COMMAND}'`;
