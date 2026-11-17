@@ -39,7 +39,7 @@ import {
   CASCADER_LIST_PAD_CLASS,
   CASCADER_ROOT_KEY,
   CASCADER_ROWS_CLASS,
-  CASCADER_SCROLL_CLASS,
+  CASCADER_PANEL_SCROLL_CLASS,
   collapseCascaderPath,
   createCascaderMoreNode,
   filterCascaderLevel,
@@ -82,7 +82,6 @@ import { mergeProps } from "@base-ui/react/merge-props"
 import { useRender } from "@base-ui/react/use-render"
 
 import { cn } from "cn"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { ChevronDownIcon, XIcon } from "lucide-react"
 
 /** Stable `filteredItems` for a level swap; a fixed identity cannot loop. */
@@ -2849,7 +2848,10 @@ function CascaderList({
           CASCADER_LIST_HEIGHT_CLASS
         )}
       >
-        <ScrollArea className={CASCADER_SCROLL_CLASS}>
+        <div
+          data-slot="scroll-area-viewport"
+          className={CASCADER_PANEL_SCROLL_CLASS}
+        >
           <ComboboxPrimitive.List
             data-slot="cascader-list"
             /* Base UI names the list nothing, so every mode shipped an unnamed
@@ -2872,7 +2874,7 @@ function CascaderList({
             )}
             {...props}
           />
-        </ScrollArea>
+        </div>
       </div>
     </div>
   )

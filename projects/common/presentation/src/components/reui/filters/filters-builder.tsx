@@ -20,7 +20,7 @@ import type {
   CascaderLabels,
   CascaderNode,
 } from "@/components/reui/cascader/cascader-types"
-import { CascaderVirtualItems } from "@/components/reui/cascader/cascader-virtual"
+import { CascaderItems } from "@/components/reui/cascader/cascader-item"
 import {
   filterControlSizes,
   filterReadOnlyProps,
@@ -172,9 +172,9 @@ export function FilterFieldPicker<V, O>({
         <CascaderBreadcrumb />
         <CascaderEmpty />
         <CascaderList>
-          {/* WINDOWED: the picker is where scale lives and nothing here pins.
-            Below the threshold it renders what `CascaderItems` does. */}
-          <CascaderVirtualItems />
+          {/* NOT WINDOWED: a field list is a handful of rows, and windowing
+            would bundle the virtualizer for every consumer. */}
+          <CascaderItems />
         </CascaderList>
         <CascaderFooter />
         <CascaderStatus />

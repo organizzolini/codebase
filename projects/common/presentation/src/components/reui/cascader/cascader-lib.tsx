@@ -47,6 +47,13 @@ export const CASCADER_LIST_PAD_CLASS =
 export const CASCADER_SCROLL_CLASS =
   "size-full min-h-0 **:data-[slot=scroll-area-viewport]:h-full **:data-[slot=scroll-area-viewport]:overscroll-contain **:data-[slot=scroll-area-viewport]:scroll-py-[max(var(--cascader-list-pad,4px),4px)]"
 
+/**
+ * The panel's scrollport: a plain overflow box, so the panel never bundles Base
+ * UI's ScrollArea. It keeps the `scroll-area-viewport` slot the tab order skips.
+ */
+export const CASCADER_PANEL_SCROLL_CLASS =
+  "size-full min-h-0 overflow-y-auto overscroll-contain scroll-py-[max(var(--cascader-list-pad,4px),4px)]"
+
 /** The rows' box; `data-empty:p-0` keeps an empty state from double inset. */
 export const CASCADER_ROWS_CLASS = "p-(--cascader-list-pad,4px) data-empty:p-0"
 

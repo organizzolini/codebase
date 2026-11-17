@@ -2,7 +2,6 @@
 "use client"
 
 import * as React from "react"
-import { FiltersAdvanced } from "@/components/reui/filters/filters-advanced"
 import { FiltersBuilder } from "@/components/reui/filters/filters-builder"
 import { FilterChip } from "@/components/reui/filters/filters-chip"
 import {
@@ -171,22 +170,10 @@ export interface FiltersProps<V = unknown, O = unknown> {
    * Which chrome draws the query. `"basic"` is the flat chip row, joined by an
    * implicit AND and drawing no combinator, because a chip row has nowhere to
    * put a parenthesis, and it draws a nested rule at any depth as a flat chip.
+   * `"advanced"` only tells the chips and menus so: pass `<FiltersAdvanced />`
+   * as children to draw it, so a basic consumer never bundles the builder.
    */
   variant?: "basic" | "advanced"
-  /** Where the advanced builder lives. `"inline"` renders the panel in place. */
-  advancedMode?: "popover" | "inline"
-  /**
-   * Where the panel sits against its trigger. Stating it settles a twin split:
-   * on overflow Base UI flips edges, Radix only shifts along the axis.
-   */
-  advancedAlign?: "start" | "center" | "end"
-  /**
-   * Whether the advanced builder's rows can be REORDERED. Off by default: a
-   * move changes nothing about what the query MEANS, and costs a grip on every
-   * row plus a gesture a touch screen starts by accident. On, drag and
-   * Alt+Arrow move any row but the lone root.
-   */
-  reorderable?: boolean
 
   /**
    * The density of the whole bar, chips included. TWO RUNGS and no `lg`,
@@ -264,9 +251,6 @@ export function Filters<V = unknown, O = unknown>({
   operatorLabels: operatorLabelsProp,
   editors: editorsProp,
   variant = "basic",
-  advancedMode = "popover",
-  advancedAlign = "start",
-  reorderable = false,
   size = "default",
   disabled = false,
   readOnly = false,
@@ -953,22 +937,13 @@ export function Filters<V = unknown, O = unknown>({
         <FilterRenderContext.Provider value={renderContext as never}>
           <FilterRowStateProvider value={rowStateStore}>
             <FilterFocusContext.Provider value={focusStore}>
-              {children ??
-                (variant === "advanced" ? (
-                  <FiltersAdvanced<V, O>
-                    mode={advancedMode}
-                    align={advancedAlign}
-                    trigger={trigger}
-                    reorderable={reorderable}
-                    className={className}
-                  />
-                ) : (
-                  <FiltersRow
-                    trigger={trigger}
-                    showClear={showClear}
-                    className={className}
-                  />
-                ))}
+              {children ?? (
+                <FiltersRow
+                  trigger={trigger}
+                  showClear={showClear}
+                  className={className}
+                />
+              )}
             </FilterFocusContext.Provider>
           </FilterRowStateProvider>
         </FilterRenderContext.Provider>
