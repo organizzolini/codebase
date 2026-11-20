@@ -3,14 +3,14 @@ import path from "node:path";
 
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { createTemporaryDirectory, writeFileTree } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { useTemporaryDirectories, writeFile } from "../../../testing/mocks";
+import { TEMPORARY_ROOT } from "../../../testing/mocks";
 
 import { CollectCodometerBaselineService } from "./collect-codometer-baseline.service";
 
 describe(CollectCodometerBaselineService, () => {
-  const makeDirectory = useTemporaryDirectories();
   let service: CollectCodometerBaselineService;
 
   beforeAll(async () => {
@@ -34,11 +34,11 @@ describe(CollectCodometerBaselineService, () => {
   it("copies each report to the path it was found at", () => {
     expect.hasAssertions();
 
-    const root = makeDirectory();
+    const root = createTemporaryDirectory("workspace", TEMPORARY_ROOT);
 
-    writeFile(root, "projects/a/codometer-report.json", "a");
-    writeFile(root, "projects/ic-suite/b/c/codometer-report.json", "c");
-    writeFile(root, "projects/a/other.json", "not a report");
+    writeFileTree(root, { "projects/a/codometer-report.json": "a" });
+    writeFileTree(root, { "projects/ic-suite/b/c/codometer-report.json": "c" });
+    writeFileTree(root, { "projects/a/other.json": "not a report" });
 
     const report = service.collect(root);
 
@@ -69,16 +69,17 @@ describe(CollectCodometerBaselineService, () => {
   it("skips the examples, dependencies, and the baseline itself", () => {
     expect.hasAssertions();
 
-    const root = makeDirectory();
+    const root = createTemporaryDirectory("workspace", TEMPORARY_ROOT);
 
-    writeFile(root, "projects/a/codometer-report.json", "a");
-    writeFile(
-      root,
-      "projects/ic-suite/codometer/codometer-examples/x/codometer-report.json",
-      "example",
-    );
-    writeFile(root, "node_modules/p/codometer-report.json", "dependency");
-    writeFile(root, ".nx/cache/codometer-report.json", "cache");
+    writeFileTree(root, { "projects/a/codometer-report.json": "a" });
+    writeFileTree(root, {
+      "projects/ic-suite/codometer/codometer-examples/x/codometer-report.json":
+        "example",
+    });
+    writeFileTree(root, {
+      "node_modules/p/codometer-report.json": "dependency",
+    });
+    writeFileTree(root, { ".nx/cache/codometer-report.json": "cache" });
 
     expect(service.collect(root).lines).toStrictEqual([
       "📦 Gathered 1 codometer report into codometer-baseline",
@@ -91,7 +92,7 @@ describe(CollectCodometerBaselineService, () => {
   it("says so, and still makes the directory, when there are no reports", () => {
     expect.hasAssertions();
 
-    const root = makeDirectory();
+    const root = createTemporaryDirectory("workspace", TEMPORARY_ROOT);
 
     expect(service.collect(root).lines).toStrictEqual([
       "ℹ️ No codometer reports were found for this run.",

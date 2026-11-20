@@ -4,26 +4,26 @@ import path from "node:path";
 import { ConfigService } from "@nestjs/config";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { buildTestingModule } from "@codebase/testing/nestjs";
-
 import {
+  createTemporaryDirectory,
   failed,
   FakeProcessRunner,
   succeeded,
-  useTemporaryDirectories,
-} from "../../../testing/mocks";
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { TEMPORARY_ROOT } from "../../../testing/mocks";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
 import { MainTipService } from "./main-tip.service";
 
-import type { ScriptedAnswer } from "../../../testing/mocks";
 import type { CapturedProcess } from "../process-runner/process-runner.types";
+import type { ScriptedAnswer } from "@codebase/testing";
 
 const FETCH = "git fetch --quiet origin main";
 const TIP = "git rev-parse FETCH_HEAD";
 
 describe(MainTipService, () => {
-  const makeDirectory = useTemporaryDirectories();
   let reportLines: string[];
 
   /** Builds the service over a scripted process runner. */
@@ -145,7 +145,10 @@ describe(MainTipService, () => {
     it("sets RELEASE_SUPERSEDED for later steps and says why", async () => {
       expect.hasAssertions();
 
-      const environmentFile = path.join(makeDirectory(), "github-env");
+      const environmentFile = path.join(
+        createTemporaryDirectory("workspace", TEMPORARY_ROOT),
+        "github-env",
+      );
       fs.writeFileSync(environmentFile, "EARLIER=1\n");
       vi.stubEnv("GITHUB_ENV", environmentFile);
       const { service: subject } = await createService({

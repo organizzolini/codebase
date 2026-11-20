@@ -4,9 +4,9 @@ import path from "node:path";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
+import { expectProcessExitOne } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { expectProcessExitOne } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
 
 import { VscodeSettingsCommand } from "./vscode-settings.command";

@@ -29,8 +29,11 @@ Reading or writing the board needs the `project` scope on the `gh` token (`gh au
 
 When planning work — publishing a spec, turning a `writing-plans` plan into
 tickets, or any breakdown that lands in this tracker — file **one parent issue per pull request**, and **one sub-issue
-per commit** that pull request is expected to contain. Where the breakdown came
-from a spec, that spec is the third layer above both:
+per commit** that pull request is expected to contain. A spec normally has
+**exactly one** parent issue: see
+[One Pull Request by Default](../../AGENTS.md#one-pull-request-by-default) for the
+few mechanical reasons, such as deployment order, that justify a second. Where
+the breakdown came from a spec, that spec is the third layer above both:
 
 ```text
 spec issue                  the approved design         (Issue Type: Feature or Bug)
@@ -39,12 +42,14 @@ spec issue                  the approved design         (Issue Type: Feature or 
 ```
 
 - **The parent issue is the pull request.** Its title is the title that pull
-  request will carry, in the commit convention above, and its scope is one
-  project or module — the same bound [Work Scope](../../AGENTS.md#work-scope)
-  puts on a branch. Work that will not fit in one reviewable pull request is two
-  parent issues, not one parent with more sub-issues.
+  request will carry, in the commit convention above, naming the fewest scopes
+  that cover its commits. A large change is one parent with more sub-issues,
+  not more parents: size, a second project, or mixed `feat` and `fix` work never
+  splits it. A second parent issue states the mechanical reason it exists.
 - **Each sub-issue is one commit.** Title it the way that commit message will
-  read, so the branch's history can be written straight off the sub-issue list.
+  read, so the branch's history can be written straight off the sub-issue list,
+  and scope it to one project or module — the bound
+  [Work Scope](../../AGENTS.md#work-scope) puts on a unit of work.
   Link it with GitHub's native sub-issue relationship rather than a task list,
   the same mechanism the wayfinder map uses below.
 - **Keep every sub-issue at or below the parent's release significance.** A
@@ -92,9 +97,9 @@ sub-issues are unavailable, fall back to a task list in the parent body with
 
 **Sequencing is a separate relationship, and it composes.** An issue has one
 parent but any number of blockers, so use native dependencies — described under
-[Wayfinder operations](#wayfinder-operations) — between parent issues wherever
-one genuinely gates another, and along a parent's sub-issues so they chain in
-landing order. Publish blockers first, so each edge can reference an identifier
+[Wayfinder operations](#wayfinder-operations) — along a parent's sub-issues so
+they chain in landing order, and between parent issues in the rare spec that has
+more than one. Publish blockers first, so each edge can reference an identifier
 that already exists.
 
 **Do not look for a "relates to" endpoint.** The GitHub web UI offers one under

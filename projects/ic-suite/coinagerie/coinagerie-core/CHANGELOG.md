@@ -1,3 +1,7 @@
+## 0.0.24 (2026-11-17)
+
+This was a version bump only for coinagerie-core to align it with other projects, there were no code changes.
+
 ## 0.0.23 (2026-11-15)
 
 ### 🚀 Features

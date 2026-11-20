@@ -1,3 +1,9 @@
+## 0.0.88 (2026-11-17)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-core to 0.0.86
+
 ## 0.0.87 (2026-11-15)
 
 ### 🚀 Features

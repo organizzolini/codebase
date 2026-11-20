@@ -16,6 +16,7 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 import { RefreshDocumentationService } from "./refresh-documentation.service";
 
 import type * as Testing from "@codebase/testing";
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
 import type { Stats } from "node:fs";
 
 vi.mock("node:child_process", async (importOriginal) => {
@@ -27,13 +28,13 @@ vi.mock("node:child_process", async (importOriginal) => {
 vi.mock("node:timers/promises", () => ({
   setTimeout: vi.fn<typeof setTimeout>(),
 }));
-vi.mock("node:fs", () => ({
-  lstatSync: vi.fn<typeof lstatSync>(),
-  renameSync: vi.fn<typeof renameSync>(),
-  rmSync: vi.fn<typeof rmSync>(),
-  symlinkSync: vi.fn<typeof symlinkSync>(),
-  unlinkSync: vi.fn<typeof unlinkSync>(),
-}));
+vi.mock("node:fs", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem();
+});
 
 const setTimeoutMock = vi.mocked(setTimeout);
 const spawnSyncMock = vi.mocked(spawnSync);

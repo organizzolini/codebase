@@ -5,9 +5,9 @@ import { ConfigurationService } from "@conformetry/configuration";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
+import { expectProcessExitOne, mockProcessExit } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { expectProcessExitOne, mockProcessExit } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
 
 import { ConformetryGeneratorsCommand } from "./conformetry-generators.command";

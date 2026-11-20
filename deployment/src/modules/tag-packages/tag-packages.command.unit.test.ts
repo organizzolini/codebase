@@ -5,15 +5,16 @@ import { ConfigService } from "@nestjs/config";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
-
 import {
+  createTemporaryDirectory,
   failed,
   FakeProcessRunner,
   succeeded,
-  useTemporaryDirectories,
-  writeFile,
-} from "../../../testing/mocks";
+  writeFileTree,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { TEMPORARY_ROOT } from "../../../testing/mocks";
 import { MainTipService } from "../main-tip/main-tip.service";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { ReleaseGroupService } from "../release-group/release-group.service";
@@ -21,8 +22,8 @@ import { ReleaseGroupService } from "../release-group/release-group.service";
 import { TagPackagesCommand } from "./tag-packages.command";
 import { TagPackagesService } from "./tag-packages.service";
 
-import type { ScriptedAnswer } from "../../../testing/mocks";
 import type { CapturedProcess } from "../process-runner/process-runner.types";
+import type { ScriptedAnswer } from "@codebase/testing";
 
 /** A package in the temporary workspace: its project, version, and tags. */
 interface Fixture {
@@ -38,7 +39,6 @@ const PUSH_LEFTOVERS = "env HUSKY=0 git push origin HEAD:refs/heads/main";
 describe(TagPackagesCommand, () => {
   const moduleOptions = { mocks: [TagPackagesService] };
   const originalExitCode = process.exitCode;
-  const makeDirectory = useTemporaryDirectories();
   let environmentFile: string;
   let reportLines: string[];
   let workspace: string;
@@ -64,11 +64,12 @@ describe(TagPackagesCommand, () => {
     for (const { project, tags = [], version } of fixtures) {
       const root = `projects/ic-suite/tool/${project}`;
       nodes[project] = { data: { root } };
-      writeFile(
-        workspace,
-        `${root}/package.json`,
-        JSON.stringify({ name: `@tool/${project}`, version }),
-      );
+      writeFileTree(workspace, {
+        [`${root}/package.json`]: JSON.stringify({
+          name: `@tool/${project}`,
+          version,
+        }),
+      });
       script[`git tag --list ${project}@*`] = succeeded(
         tags.map((tag) => `${tag}\n`).join(""),
       );
@@ -81,7 +82,9 @@ describe(TagPackagesCommand, () => {
       );
     }
 
-    writeFile(workspace, "graph.json", JSON.stringify({ graph: { nodes } }));
+    writeFileTree(workspace, {
+      "graph.json": JSON.stringify({ graph: { nodes } }),
+    });
 
     return script;
   };
@@ -118,14 +121,14 @@ describe(TagPackagesCommand, () => {
   beforeEach(() => {
     process.exitCode = undefined;
     reportLines = [];
-    workspace = makeDirectory();
+    workspace = createTemporaryDirectory("workspace", TEMPORARY_ROOT);
     vi.spyOn(process, "cwd").mockReturnValue(workspace);
-    writeFile(
-      workspace,
-      "nx.json",
-      JSON.stringify({ release: { projects: ["projects/ic-suite/*/*"] } }),
-    );
-    writeFile(workspace, "pnpm-lock.yaml", "lockfileVersion: '9.0'\n");
+    writeFileTree(workspace, {
+      "nx.json": JSON.stringify({
+        release: { projects: ["projects/ic-suite/*/*"] },
+      }),
+    });
+    writeFileTree(workspace, { "pnpm-lock.yaml": "lockfileVersion: '9.0'\n" });
     environmentFile = path.join(workspace, "github-env");
     fs.writeFileSync(environmentFile, "");
     vi.stubEnv("GITHUB_ENV", environmentFile);
@@ -187,7 +190,9 @@ describe(TagPackagesCommand, () => {
   it("adds only the versioned files that exist", async () => {
     expect.hasAssertions();
 
-    writeFile(workspace, "projects/ic-suite/tool/bumped/CHANGELOG.md", "# 1\n");
+    writeFileTree(workspace, {
+      "projects/ic-suite/tool/bumped/CHANGELOG.md": "# 1\n",
+    });
     const runner = new FakeProcessRunner(
       workspaceOf([{ project: "bumped", version: "1.0.0" }]),
     );
