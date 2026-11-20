@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.5.0](https://github.com/organizzolini/codebase/compare/v6.4.1...v6.5.0) (2026-11-20)
+
+### ✨ Features
+
+* **conformetry,lexico:** ✨ register every nestjs template instance and conform them ([#2456](https://github.com/organizzolini/codebase/issues/2456)) ([bdbab8e](https://github.com/organizzolini/codebase/commit/bdbab8e640166df64280890fad3b9bc80bc1e57a)), closes [#2455](https://github.com/organizzolini/codebase/issues/2455) [#2442](https://github.com/organizzolini/codebase/issues/2442)
+
 ## [6.4.1](https://github.com/organizzolini/codebase/compare/v6.4.0...v6.4.1) (2026-11-17)
 
 ### 🐛 Bug Fixes

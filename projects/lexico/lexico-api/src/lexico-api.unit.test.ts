@@ -5,6 +5,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { overrideEnvironment } from "@codebase/testing";
 
+import { CorsService } from "./modules/cors/cors.service";
+
 import type { INestApplication } from "@nestjs/common";
 
 const setContextMock = vi.fn<(context: string) => void>();
@@ -64,8 +66,11 @@ describe("lexico api bootstrap suite", () => {
     const listenMock = vi
       .fn<() => Promise<INestApplication>>()
       .mockResolvedValue(undefined as unknown as INestApplication);
+    const enableCorsMock = vi.fn<INestApplication["enableCors"]>();
     const mockApp = createMock<INestApplication>({
       close: closeMock,
+      enableCors: enableCorsMock,
+      get: vi.fn().mockReturnValue(new CorsService()),
       listen: listenMock,
     });
     const createSpy = vi
@@ -81,14 +86,13 @@ describe("lexico api bootstrap suite", () => {
     expect(createSpy).toHaveBeenCalledWith(
       expect.anything(),
       expect.any(ExpressAdapter),
-      expect.objectContaining({
-        cors: { credentials: true, origin: ["http://localhost:7797"] },
-      }),
+      expect.objectContaining({ bufferLogs: true }),
     );
+    expect(enableCorsMock).toHaveBeenCalledWith({ origin: [] });
     expect(createLightshipMock).toHaveBeenCalledWith({ port: 9000 });
     expect(loggerConstructorMock).toHaveBeenCalledTimes(1);
     expect(setContextMock).toHaveBeenCalledWith("NestApplication");
-    expect(listenMock).toHaveBeenCalledWith(5003);
+    expect(listenMock).toHaveBeenCalledWith(3000);
     expect(signalReadyMock).toHaveBeenCalledTimes(1);
     expect(registerShutdownHandlerMock).toHaveBeenCalledTimes(1);
 
@@ -112,6 +116,8 @@ describe("lexico api bootstrap suite", () => {
       .fn<() => Promise<INestApplication>>()
       .mockResolvedValue(undefined as unknown as INestApplication);
     const mockApp = createMock<INestApplication>({
+      enableCors: vi.fn<INestApplication["enableCors"]>(),
+      get: vi.fn().mockReturnValue(new CorsService()),
       listen: listenMock,
     });
     const createSpy = vi

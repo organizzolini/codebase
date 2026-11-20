@@ -20,20 +20,20 @@ async function bootstrap(): Promise<void> {
     port: environment.{{nameConstantCase}}_LIGHTSHIP_PORT,
   });
 
-  const app: INestApplication = await NestFactory.create({{namePascalCase}}Module, {
+  const application: INestApplication = await NestFactory.create({{namePascalCase}}Module, {
     bufferLogs: true,
     logger,
   });
 
-  app.enableCors(
-    app.get(CorsService).getOptions(environment.{{nameConstantCase}}_CORS_ORIGINS),
+  application.enableCors(
+    application.get(CorsService).getOptions(environment.{{nameConstantCase}}_CORS_ORIGINS),
   );
 
   lightship.registerShutdownHandler(async () => {
-    await app.close();
+    await application.close();
   });
 
-  await app.listen(environment.{{nameConstantCase}}_PORT);
+  await application.listen(environment.{{nameConstantCase}}_PORT);
   lightship.signalReady();
 
   logger.log(`GraphQL API running on http://localhost:${environment.{{nameConstantCase}}_PORT}/graphql`);

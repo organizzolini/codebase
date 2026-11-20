@@ -9,6 +9,7 @@
     "@nestjs/common": "catalog:ic-suite",
     "ignore": "catalog:",
     "pluralize": "catalog:",
+    "reflect-metadata": "catalog:",
     "wink-lemmatizer": "catalog:"
   },
   "description": "File discovery, word splitting, folding, and exclusion that turn a codebase into a sorted list of headwords",
@@ -21,7 +22,6 @@
     "@types/node": "catalog:",
     "@types/pluralize": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "reflect-metadata": "catalog:",
     "vitest": "catalog:"
   },
   "exports": {
@@ -68,5 +68,5 @@
     "strict": true
   },
   "types": "src/index.ts",
-  "version": "0.0.24"
+  "version": "0.0.25"
 }

@@ -1,3 +1,17 @@
+## 0.0.88 (2026-11-20)
+
+### 🚀 Features
+
+- **conformetry,lexico:** ✨ register every nestjs template instance and conform them ([#2456](https://github.com/organizzolini/codebase/pull/2456), [#2455](https://github.com/organizzolini/codebase/issues/2455))
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.87
+- Updated callidescope-output to 0.0.86
+- Updated callidescope-graph to 0.0.86
+- Updated callidescope-core to 0.0.86
+- Updated callidescope-cli to 0.0.87
+
 ## 0.0.87 (2026-11-17)
 
 ### 🧱 Updated Dependencies

@@ -10,17 +10,13 @@
     "paths": {
       "@golevelup/ts-vitest": [
         "./node_modules/@golevelup/ts-vitest/lib/index.d.ts"
-      ],
-      "eslint-plugin-better-max-params": [
-        "../../configuration/types/eslint-plugin-better-max-params/index.d.ts"
-      ],
-      "codebase/configuration/*": ["../../configuration/*"]
+      ]
     },
     "target": "esnext",
     "types": ["node", "vitest/globals"]
   },
   "exclude": ["dist", "node_modules", "output"],
-  "extends": "../../configuration/tsconfig.json",
+  "extends": "@codebase/configuration/tsconfig.json",
   "include": [
     "codometer.config.ts",
     "coinagerie.config.ts",

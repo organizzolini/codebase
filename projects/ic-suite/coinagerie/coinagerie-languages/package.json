@@ -5,6 +5,7 @@
   },
   "dependencies": {
     "@nestjs/common": "catalog:ic-suite",
+    "reflect-metadata": "catalog:",
     "typescript": "catalog:"
   },
   "description": "Per-language identifier tokenizers and keyword lists for the coinagerie vocabulary toolchain",
@@ -16,7 +17,6 @@
     "@swc/helpers": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "reflect-metadata": "catalog:",
     "vitest": "catalog:"
   },
   "exports": {
@@ -63,5 +63,5 @@
     "strict": true
   },
   "types": "src/index.ts",
-  "version": "0.0.24"
+  "version": "0.0.25"
 }

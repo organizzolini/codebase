@@ -1,7 +1,6 @@
 {
   "dependencies": {
-    "reflect-metadata": "catalog:",
-    "tslib": "catalog:"
+    "reflect-metadata": "catalog:"
   },
   "devDependencies": {
     "@codebase/testing": "workspace:*",
