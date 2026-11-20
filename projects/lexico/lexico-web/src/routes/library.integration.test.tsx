@@ -266,7 +266,7 @@ describe("library", () => {
     expect(Route.fullPath).toBe("/library");
   });
 
-  it("shows Author cards with era, years, work count, and collections", async () => {
+  it("shows Author cards with era, years, work count, but not collections", async () => {
     await renderRoute(getRouter(), "/library");
 
     await expect(
@@ -278,8 +278,8 @@ describe("library", () => {
     expect(within(card).getByText(/Classical/u)).toBeDefined();
     expect(within(card).getByText(/70 BCE–19 CE/u)).toBeDefined();
     expect(within(card).getByText(/2 works/u)).toBeDefined();
-    expect(within(card).getByText(/Perseus/u)).toBeDefined();
-    expect(within(card).getByText(/The Latin Library/u)).toBeDefined();
+    expect(within(card).queryByText(/Perseus/u)).toBeNull();
+    expect(within(card).queryByText(/The Latin Library/u)).toBeNull();
   });
 
   it("previews a collapsed card's works in one bullet-separated line", async () => {

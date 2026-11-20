@@ -51,31 +51,14 @@ describe(LibraryTextLink, () => {
     );
   });
 
-  it("labels the Text with its collection, edition, and counts", () => {
+  it("shows the Text's counts but not its collection or edition", () => {
     render(<LibraryTextLink row={ROW} />);
 
-    expect(screen.getByText("Perseus · Mynors 1969")).toBeDefined();
+    const link = screen.getByTestId("library-text-link");
+
     expect(screen.getByText(/756 lines · 9902 words/u)).toBeDefined();
-  });
-
-  it("bolds the matched part of its collection and edition", () => {
-    render(
-      <LibraryTextLink
-        row={{
-          ...ROW,
-          matches: [
-            { end: 4, field: "collection", start: 0 },
-            { end: 6, field: "edition", start: 0 },
-          ],
-        }}
-      />,
-    );
-
-    expect(screen.getByText("Pers", { selector: "strong" })).toBeDefined();
-    expect(screen.getByText("Mynors", { selector: "strong" })).toBeDefined();
-    expect(screen.getByTestId("library-text-link").textContent).toContain(
-      "Perseus · Mynors 1969",
-    );
+    expect(link.textContent).not.toContain("Perseus");
+    expect(link.textContent).not.toContain("Mynors");
   });
 
   it("shows and bolds an inscription attribute only when it matched", () => {

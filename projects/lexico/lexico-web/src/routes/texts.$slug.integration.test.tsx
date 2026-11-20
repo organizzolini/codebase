@@ -270,7 +270,7 @@ describe("texts.$slug", () => {
 
     expect(heading.className).toContain("text-center");
     expect(facts.textContent).toContain("Classical");
-    expect(facts.textContent).toContain("Perseus");
+    expect(facts.textContent).not.toContain("Perseus");
   });
 
   it("folds the navigation sidebar away while reading and restores it on leaving", async () => {

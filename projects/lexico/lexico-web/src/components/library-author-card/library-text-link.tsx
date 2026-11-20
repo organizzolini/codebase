@@ -3,11 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { LibraryHighlight } from "../library-highlight/library-highlight";
 
 import { JOINED_FIELD } from "./library-author-card.constants";
-import {
-  attributeLine,
-  countsOf,
-  editionLine,
-} from "./library-author-card.utilities";
+import { attributeLine, countsOf } from "./library-author-card.utilities";
 
 import type { LibraryTextRow } from "../library-grid/library-grid.types";
 import type { ReactNode } from "react";
@@ -25,8 +21,8 @@ export interface LibraryTextLinkProperties {
 // 🧩 Component
 
 /**
- * A Text in an Author card, linked into the Reader, labelled with its
- * collection and edition and sized by its line and word counts.
+ * A Text in an Author card, linked into the Reader, sized by its line and
+ * word counts.
  */
 export function LibraryTextLink(
   properties: Readonly<LibraryTextLinkProperties>,
@@ -37,7 +33,6 @@ export function LibraryTextLink(
   // 🪝 Hooks
 
   // 🏗 Setup
-  const label = editionLine(row);
   const attributes = attributeLine(row);
   const counts = countsOf(text);
 
@@ -64,17 +59,7 @@ export function LibraryTextLink(
           matches={matches}
           value={text.title}
         />
-        <span className="block text-xs text-muted-foreground">
-          {label.value === "" ? null : (
-            <LibraryHighlight
-              className="inline"
-              field={JOINED_FIELD}
-              matches={label.matches}
-              value={label.value}
-            />
-          )}
-          <span>{label.value === "" ? counts : ` · ${counts}`}</span>
-        </span>
+        <span className="block text-xs text-muted-foreground">{counts}</span>
         {attributes.value === "" ? null : (
           <LibraryHighlight
             className="block text-xs text-muted-foreground"

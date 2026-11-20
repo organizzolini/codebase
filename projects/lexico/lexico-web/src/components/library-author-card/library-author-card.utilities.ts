@@ -1,6 +1,5 @@
 import {
   ATTRIBUTE_FIELDS,
-  COLLECTION_LABELS,
   JOIN_SEPARATOR,
   JOINED_FIELD,
 } from "./library-author-card.constants";
@@ -28,17 +27,6 @@ export function attributeLine(row: LibraryTextRow): LibraryJoinedLine {
 
 // 🌎 Public Functions
 
-/** The collections a card's Texts come from, labelled, without repeats. */
-export function collectionsOf(rows: readonly LibraryTextRow[]): string[] {
-  const collections = new Set<string>();
-  for (const { text } of rows) {
-    if (text.collection !== null) {
-      collections.add(COLLECTION_LABELS[text.collection] ?? text.collection);
-    }
-  }
-  return [...collections];
-}
-
 /** A Text's line and word counts as one string, empty when it has neither. */
 export function countsOf(text: LibraryTextRow["text"]): string {
   return [
@@ -47,25 +35,6 @@ export function countsOf(text: LibraryTextRow["text"]): string {
   ]
     .filter((part) => part !== "")
     .join(" · ");
-}
-
-/**
- * A Text's collection and edition as one line, or the collection alone when
- * it has no edition. Every label is as long as the collection value the API
- * matched against, so its offsets still index the label.
- */
-export function editionLine(row: LibraryTextRow): LibraryJoinedLine {
-  const { collection, edition } = row.text;
-  return joinFields(
-    [
-      {
-        field: "collection",
-        value: COLLECTION_LABELS[collection ?? ""] ?? collection,
-      },
-      { field: "edition", value: edition },
-    ],
-    row.matches,
-  );
 }
 
 /** A span of years as a card shows it, such as "70 BCE–19 CE". */

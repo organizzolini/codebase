@@ -34,7 +34,7 @@ export const Route = createFileRoute("/library")({
       meta: [
         { title: `Lexico - Library${named}` },
         {
-          content: `Browse Latin authors, their books and texts${search === undefined || search === "" ? "" : ` matching ${search}`}, with their era, dates, and collections`,
+          content: `Browse Latin authors, their books and texts${search === undefined || search === "" ? "" : ` matching ${search}`}, with their era and dates`,
           name: "description",
         },
       ],

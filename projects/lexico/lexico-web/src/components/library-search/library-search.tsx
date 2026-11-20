@@ -103,7 +103,7 @@ export function LibrarySearch(
               setDraft(event.currentTarget.value);
               debouncedSearch(event.currentTarget.value);
             }}
-            placeholder="Author, title, collection, province…"
+            placeholder="Author, title, province…"
             type="search"
             value={draft}
           />

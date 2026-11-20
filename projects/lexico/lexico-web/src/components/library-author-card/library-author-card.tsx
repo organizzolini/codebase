@@ -4,11 +4,7 @@ import { useState } from "react";
 import { LibraryHighlight } from "../library-highlight/library-highlight";
 
 import { ERA_LABELS } from "./library-author-card.constants";
-import {
-  collectionsOf,
-  formatYears,
-  previewOf,
-} from "./library-author-card.utilities";
+import { formatYears, previewOf } from "./library-author-card.utilities";
 import { LibraryAuthorTexts } from "./library-author-texts";
 
 import type {
@@ -45,7 +41,6 @@ export function LibraryAuthorCard(
   const [expanded, setExpanded] = useState(query.search !== "");
 
   // 🏗 Setup
-  const collections = collectionsOf(works);
   const preview = previewOf(works, workCount);
   const years = formatYears(author.startYear, author.endYear);
   const panelId = `library-author-${author.id}`;
@@ -98,11 +93,6 @@ export function LibraryAuthorCard(
               .filter((part) => part !== "")
               .join(" · ")}
           </span>
-          {collections.length === 0 ? null : (
-            <span className="block text-xs text-muted-foreground">
-              {collections.join(", ")}
-            </span>
-          )}
         </span>
         <ChevronRightIcon
           aria-hidden="true"

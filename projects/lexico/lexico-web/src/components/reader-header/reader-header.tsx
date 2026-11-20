@@ -21,7 +21,7 @@ export interface ReaderHeaderProperties {
 
 /**
  * The subheader beneath a text's title: its author and parent work, then its
- * era, collection, dates, and other characteristics, all centered.
+ * era, dates, and other characteristics, all centered.
  */
 export function ReaderHeader(
   properties: Readonly<ReaderHeaderProperties>,

@@ -103,14 +103,16 @@ describe(ReaderHeader, () => {
     expect(screen.getAllByRole("link")).toHaveLength(2);
   });
 
-  it("lists the author's era and dates and the text's collection and lines", () => {
-    render(<ReaderHeader text={textWith()} />);
+  it("lists the author's era and dates and the text's lines, not its source", () => {
+    render(
+      <ReaderHeader
+        text={textWith({ edition: "Second", publisher: "Press" })}
+      />,
+    );
 
     const facts = screen.getByRole("list", { name: "About this text" });
 
-    expect(facts.textContent).toBe(
-      "EraClassicalLived70 BCE–19 BCECollectionPerseusLines9896",
-    );
+    expect(facts.textContent).toBe("EraClassicalLived70 BCE–19 BCELines9896");
   });
 
   it("lists what an inscription adds: its date, province, and material", () => {
