@@ -1,1 +1,1 @@
-export { default } from "../../../../configuration/typescript/vitest.config.ts";
+export { default } from "@codebase/configuration/vitest.config";

@@ -1,3 +1,12 @@
+## 0.0.88 (2026-11-20)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.87
+- Updated codependix-boundaries to 0.0.87
+- Updated codependix-output to 0.0.87
+- Updated codependix-core to 0.0.85
+
 ## 0.0.87 (2026-11-17)
 
 ### 🧱 Updated Dependencies

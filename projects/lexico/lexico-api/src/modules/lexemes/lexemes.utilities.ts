@@ -2,9 +2,8 @@ import {
   mapNullableRelation,
   mapNullableRelationConnection,
   mapRelationConnection,
+  toDeletableFields,
 } from "@codebase/interface";
-
-import { toDeletableFields } from "../../lexico-api.utilities";
 
 import { toFormType } from "./modules/forms/forms.utilities";
 import { toInflectionType } from "./modules/inflections/inflections.utilities";

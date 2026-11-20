@@ -44,7 +44,6 @@ src/
   {{nameKebabCase}}.ts            # Bootstrap — do not modify
   {{nameKebabCase}}.module.ts     # Root NestJS module (imports GraphQLModule, LoggerModule)
   {{nameKebabCase}}.constants.ts  # Zod environmentSchema for env validation
-  {{nameKebabCase}}.types.ts      # Application-scoped TypeScript types
   modules/
     cors/                             # The CORS options the bootstrap enables
       cors.module.ts

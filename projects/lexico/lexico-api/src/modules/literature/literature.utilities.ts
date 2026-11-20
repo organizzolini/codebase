@@ -5,9 +5,9 @@ import {
   mapNullableRelation,
   mapRelation,
   toCursor,
+  toDeletableFields,
 } from "@codebase/interface";
 
-import { toDeletableFields } from "../../lexico-api.utilities";
 import { toWordType } from "../words/words.utilities";
 
 import { ENTITY_ID_PATTERN, LOAD_CHUNK_SIZE } from "./literature.constants";

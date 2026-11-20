@@ -21,6 +21,7 @@ export default [
             "@golevelup/ts-vitest",
             "pino",
             "pino-pretty",
+            "reflect-metadata",
             "typescript",
             "vitest",
           ],

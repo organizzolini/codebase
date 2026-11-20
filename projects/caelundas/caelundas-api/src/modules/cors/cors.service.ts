@@ -7,9 +7,21 @@ import type { CorsOptions } from "@nestjs/common/interfaces/external/cors-option
  */
 @Injectable()
 export class CorsService {
+  // 🏗 Dependency Injection
+
+  constructor() {}
+
+  // 🔐 Private Fields
+
+  // 🔑 Public Fields
+
+  // 🔏 Private Methods
+
+  // 🌎 Public Methods
+
   /**
-   * Builds the CORS options from the allowed origins: `*` allows every
-   * origin, otherwise only the listed ones are echoed back.
+   * CORS options for the allowed origins: `*` allows all, an empty list
+   * none, otherwise only the listed ones.
    */
   public getOptions(origins: string[]): CorsOptions {
     return { origin: origins.includes("*") ? "*" : origins };

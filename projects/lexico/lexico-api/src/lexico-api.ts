@@ -7,13 +7,14 @@ import { LoggerService } from "@codebase/observability";
 
 import { environmentSchema } from "./lexico-api.constants";
 import { LexicoApiModule } from "./lexico-api.module";
+import { CorsService } from "./modules/cors/cors.service";
 
 import type { INestApplication } from "@nestjs/common";
 
 /**
- * Bootstraps the NestJS GraphQL API application.
+ * Boots the GraphQL API with its CORS options and health probes.
  */
-async function main(): Promise<void> {
+async function bootstrap(): Promise<void> {
   const environment = environmentSchema.parse(process.env);
   const logger = new LoggerService();
   logger.setContext("NestApplication");
@@ -27,12 +28,14 @@ async function main(): Promise<void> {
     new ExpressAdapter(),
     {
       bufferLogs: true,
-      cors: {
-        credentials: true,
-        origin: environment.LEXICO_API_CORS_ORIGINS,
-      },
       logger,
     },
+  );
+
+  application.enableCors(
+    application
+      .get(CorsService)
+      .getOptions(environment.LEXICO_API_CORS_ORIGINS),
   );
 
   lightship.registerShutdownHandler(async () => {
@@ -47,4 +50,4 @@ async function main(): Promise<void> {
   );
 }
 
-void main();
+void bootstrap();

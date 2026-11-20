@@ -22,6 +22,7 @@ nx run lexico-api:start
 - **Schema strategy**: Code-first, emitted to `src/schema.gql` beside the root module (`GRAPHQL_SCHEMA_FILE`), whatever the working directory; the file is gitignored
 - **Pagination**: Relay connections via `nestjs-graphql-connection`
 - **Dataloaders**: `dataloader` (request-scoped, prevents N+1 queries)
+- **CORS**: `CorsModule` (`modules/cors`) provides the options the bootstrap enables, from `LEXICO_API_CORS_ORIGINS` (comma separated). No origin is allowed until you list one, so a browser app on another origin is refused by default; `*` allows every origin and suits only a public API
 - **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `.constants.ts`)
 - **Logging**: `@codebase/observability` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
 - **Language**: Strict TypeScript
@@ -43,8 +44,11 @@ src/
   lexico-api.ts            # Bootstrap — do not modify
   lexico-api.module.ts     # Root NestJS module (imports GraphQLModule, LoggerModule)
   lexico-api.constants.ts  # Zod environmentSchema for env validation
-  lexico-api.types.ts      # Application-scoped TypeScript types
   modules/
+    cors/                             # The CORS options the bootstrap enables
+      cors.module.ts
+      cors.service.ts
+      cors.service.unit.test.ts
     sample/                           # Example GraphQL module — replace with your domain
       sample.module.ts
       sample.resolver.ts
