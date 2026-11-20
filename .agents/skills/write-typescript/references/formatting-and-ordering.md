@@ -8,7 +8,7 @@ is a no-op.
 
 80-column print width, 2-space indent, double quotes, semicolons, trailing
 commas everywhere, LF endings, one JSX attribute per line. Configured in
-`configuration/oxfmt.config.ts`. `prettier` stays installed as a supplementary
+`configuration/lint/oxfmt.config.ts`. `prettier` stays installed as a supplementary
 formatter for manual or non-default use; it is not what a target runs.
 
 ```bash

@@ -20,7 +20,12 @@ const SPAWN_PARENT = path.resolve(import.meta.dirname, "..", "tmp");
 const SPAWNED_RUN_TIMEOUT = 30_000;
 
 /** Compiler options for spawned runs; NestJS injection needs decorator metadata. */
-const LOADER_PROJECT = path.resolve(import.meta.dirname, "..", "tsconfig.json");
+const LOADER_PROJECT = path.resolve(
+  import.meta.dirname,
+  "..",
+  "configuration",
+  "tsconfig.json",
+);
 
 /**
  * One project's complete configuration file. JavaScript, not JSON, because JSON cannot
@@ -114,6 +119,8 @@ function writeWorkspace(projects: Record<string, string>[] = []): string {
     {
       "callidescope.config.json": JSON.stringify({
         limits: { maximumDepth: 6 },
+        projectConfigurationPath: "callidescope.config.js",
+        projectTsconfigPath: "tsconfig.json",
       }),
       ...Object.fromEntries(projects.flatMap((files) => Object.entries(files))),
     },

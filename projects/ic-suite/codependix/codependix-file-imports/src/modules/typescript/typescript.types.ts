@@ -20,13 +20,13 @@ export interface TypescriptImportGraphEdge {
   readonly target: string;
 }
 
-/** A project with a `tsconfig.json`; no tag gates it. */
+/** A project with a tsconfig at the configured path; no tag gates it. */
 export interface TypescriptProject {
   /** Absolute path of the project directory. */
   readonly absoluteRoot: string;
   /** Project directory name, which is also the Nx project name. */
   readonly name: string;
-  /** Absolute path of the project's `tsconfig.json`. */
+  /** Absolute path of the project's tsconfig. */
   readonly tsconfigPath: string;
 }
 

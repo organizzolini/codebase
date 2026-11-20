@@ -5,7 +5,7 @@ import {
   keywordExclusions,
   patternExclusions,
   unfoldedWords,
-} from "./configuration/coinagerie.config.js";
+} from "./configuration/ic-suite/coinagerie.config.js";
 
 import type { CoinagerieConfiguration } from "@coinagerie/configuration";
 

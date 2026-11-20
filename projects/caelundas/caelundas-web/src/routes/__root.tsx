@@ -1,6 +1,6 @@
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 
-import { NightSkyBackdropMount } from "../components/night-sky-backdrop/night-sky-backdrop-mount";
+import { NightSkyBackdropMount } from "../components/calendar-appearance/night-sky-backdrop/night-sky-backdrop-mount";
 import applicationCss from "../styles/application.css?url";
 
 import type { ReactNode } from "react";

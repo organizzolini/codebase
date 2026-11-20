@@ -3,7 +3,7 @@ import { DiscoveryModule } from "@nestjs/core";
 
 import { LoggerModule } from "@codebase/observability";
 
-import { EphemerisDownloadModule } from "./modules/ephemeris-download/ephemeris-download.module";
+import { EphemerisDownloadModule } from "./modules/ephemeris/modules/ephemeris-download/ephemeris-download.module";
 
 /**
  * The root of the ephemeris download application: the download command and

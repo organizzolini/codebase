@@ -4,11 +4,11 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeService } from "../code/code.service";
 import { GeometryService } from "../geometry/geometry.service";
-import { SvgService } from "../svg/svg.service";
-import { SymmetryService } from "../symmetry/symmetry.service";
-import { TileService } from "../tile/tile.service";
+import { SymmetryService } from "../geometry/modules/symmetry/symmetry.service";
+import { TileService } from "../geometry/modules/tile/tile.service";
 
 import { DrawingService } from "./drawing.service";
+import { SvgService } from "./modules/svg/svg.service";
 
 import type { CodeObject } from "../code/code.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";

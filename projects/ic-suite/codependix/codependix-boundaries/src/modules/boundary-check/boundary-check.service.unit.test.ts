@@ -113,7 +113,9 @@ describe(BoundaryCheckService, () => {
         exclude: [],
         include: ["**"],
         nestjsRootModules: {},
+        projectConfigurationPath: "codependix.config.ts",
         projectGraph: undefined,
+        projectTsconfigPath: "configuration/tsconfig.json",
         selection: { dependencies: true, projects: [], tags: [] },
         workspace: {},
       },
@@ -610,10 +612,10 @@ describe(BoundaryCheckService, () => {
         ...PROJECTS,
         DEPENDENCY,
       ]);
-      expect(typescriptService.discoverProjects).toHaveBeenCalledWith([
-        ...PROJECTS,
-        DEPENDENCY,
-      ]);
+      expect(typescriptService.discoverProjects).toHaveBeenCalledWith(
+        [...PROJECTS, DEPENDENCY],
+        "configuration/tsconfig.json",
+      );
     });
 
     it("notes a container failure in a dependency, charged to that dependency", async () => {

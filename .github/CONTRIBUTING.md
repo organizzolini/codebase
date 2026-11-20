@@ -246,7 +246,7 @@ Always run tasks through Nx rather than the underlying tool, so caching and the 
 
 ### Python Projects
 
-`affirmancy` is a Python project and does not share the TypeScript tool names. It lives in the shared `uv` workspace declared in `configuration/pyproject.toml`, so its dependencies come from that workspace config and `configuration/uv.lock` rather than a manifest of its own.
+`affirmancy` is a Python project and does not share the TypeScript tool names. It lives in the shared `uv` workspace declared in `configuration/python/pyproject.toml`, so its dependencies come from that workspace config and `configuration/python/uv.lock` rather than a manifest of its own.
 
 | Concern   | TypeScript                   | Python          |
 | --------- | ---------------------------- | --------------- |
@@ -287,7 +287,7 @@ Continuous Integration also runs an `End to End IC Suite` leg, which packs the f
 
 **Never silence an error.** No `eslint-disable`, `@ts-ignore`, `@ts-expect-error`, or `nocheck` comments; no loosening `compilerOptions`; no adding ESLint `ignores` or rule overrides to suppress a specific failure. Triage the root cause instead. Suppression is only acceptable when explicitly requested.
 
-See [configuration/eslint.config.ts](configuration/eslint.config.ts) for the complete rule set, and [configuration/codebase-structure.json](configuration/codebase-structure.json) for the folder and file placement rules — placement is a lint error here, not a preference.
+See [configuration/eslint.config.ts](configuration/eslint.config.ts) for the complete rule set, and [configuration/lint/codebase-structure.json](configuration/lint/codebase-structure.json) for the folder and file placement rules — placement is a lint error here, not a preference.
 
 ### Nx Boundaries
 
@@ -322,7 +322,7 @@ When a file nears 512 lines, split it along the module file suffixes instead of 
 
 ### Coverage Gates
 
-- **Test coverage: 96%** for branches, functions, lines, and statements, from [configuration/vitest.config.ts](configuration/vitest.config.ts). New code needs tests in the same change.
+- **Test coverage: 96%** for branches, functions, lines, and statements, from [configuration/typescript/vitest.config.ts](configuration/typescript/vitest.config.ts). New code needs tests in the same change.
 - **Type coverage** is per project, declared as `typeCoverage.atLeast` in that project's `package.json` — most packages sit at 100 with `strict: true`; the workspace root requires 95. Passing `typecheck` proves nothing about this gate, so run both.
 - **Bundle size** is per project, declared in that project's `codometer.config.ts` and gated by its `codometer` target. A breach fails 👷 Make Projects and names the project.
 
@@ -352,12 +352,12 @@ Every configuration these five read lives in [configuration/](../configuration),
 
 ## Git Hooks (Husky)
 
-Three Husky hooks enforce quality gates locally, from [configuration/.husky/](../configuration/.husky). **Never bypass them with `--no-verify`** — fix the underlying issue instead.
+Three Husky hooks enforce quality gates locally, from [configuration/repository/.husky/](../configuration/repository/.husky). **Never bypass them with `--no-verify`** — fix the underlying issue instead.
 
 | Hook         | Trigger      | What it runs                                                                                                                          | Config                                                                |
 | ------------ | ------------ | ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `pre-commit` | `git commit` | Commit signing configuration check, then **lint-staged**: format (`oxfmt`), lint (`oxlint`), and `typecheck` on the affected projects | [lint-staged.config.ts](../configuration/lint-staged.config.ts)       |
-| `commit-msg` | `git commit` | **commitlint**: validates the Conventional Commits format                                                                             | [commitlint.config.ts](../configuration/commitlint.config.ts)         |
+| `pre-commit` | `git commit` | Commit signing configuration check, then **lint-staged**: format (`oxfmt`), lint (`oxlint`), and `typecheck` on the affected projects | [lint-staged.config.ts](../configuration/repository/lint-staged.config.ts)       |
+| `commit-msg` | `git commit` | **commitlint**: validates the Conventional Commits format                                                                             | [commitlint.config.ts](../configuration/repository/commitlint.config.ts)         |
 | `pre-push`   | `git push`   | **validate-branch-name**, then a commit signature check over the pushed commits                                                       | [validate-branch-name.config.cjs](../validate-branch-name.config.cjs) |
 
 If a hook fails, the git operation is blocked until you fix the error. `pre-commit` writes its full output to `last-lint-staged-output.log`, which is where to look when the terminal output is truncated.
@@ -488,7 +488,7 @@ If a change spans scopes, list them comma-separated (`feat(lexico,logger): ...`)
 
 This repository squash-merges using the pull request title, so **the title is the only thing semantic-release ever sees**. Every individual commit on the branch is discarded at squash time.
 
-The release-significance check of `compliance pull-request` reads the branch's commits and fails the pull request when the title's type is **less** release-significant than the most significant commit on the branch, or when the title shares no scope overlap with a commit.
+The release-significance check of `compliance pull-request` reads the branch's commits and fails the pull request when the title's type is **less** release-significant than the most significant commit on the branch, or when the title names none of the scopes its commits use.
 
 **Practical effect:** pick the type and scope for the branch as a whole before you start committing, and keep every commit at or below that significance.
 
@@ -499,7 +499,7 @@ A branch that spans several projects is fine: title it at its most significant c
 
 ## Issues and Planning
 
-Issues and specs live as GitHub issues in [Organizzolini/codebase](https://github.com/Organizzolini/codebase/issues). Blank issues are disabled, so a human-filed issue goes through the single template, whose Type and Scope dropdowns are kept in step with `configuration/conventional.config.cjs` by a synchronization target:
+Issues and specs live as GitHub issues in [Organizzolini/codebase](https://github.com/Organizzolini/codebase/issues). Blank issues are disabled, so a human-filed issue goes through the single template, whose Type and Scope dropdowns are kept in step with `configuration/repository/conventional.config.cjs` by a synchronization target:
 
 ```bash
 gh issue create --template issue.yml
@@ -524,7 +524,7 @@ See [documentation/agents/issue-tracker.md](../documentation/agents/issue-tracke
 ## Pull Request Process
 
 1. **Push and open**: `git push -u origin <branch>`, then `gh pr create` and fill in the template. Do not use `--fill` — it substitutes the commit message for the body and drops the four required headings
-2. **Title** follows the commit format — `<type>(<scope>): <gitmoji> <subject>`, checked by the same commitlint configuration, so every commit rule applies. The scope list must share at least one scope with each commit, which is all Comply Code's release-significance check requires. Scope each commit to one project or module and list the fewest scopes that cover every commit, so the squashed header stays short.
+2. **Title** follows the commit format — `<type>(<scope>): <gitmoji> <subject>`, checked by the same commitlint configuration, so every commit rule applies. The scope list must name at least one scope its commits use, which is all Comply Code's release-significance check requires. Name the scope or two that best describe the change, so the squashed header stays short.
 3. **Description** must contain all four headings from [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) verbatim — 🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related — each in its shape: Summary only a single paragraph of at most 48 words, Details only a bulleted list with one marker throughout and at most 512 words, Testing only an ordered list (a step may hold a code block), and Related opening with a `-` list, after which anything may follow. Comply Code runs `compliance pull-request` and fails on a missing or empty section, a section in the wrong shape or over its limit, or a template comment left unfilled
 4. **Issue link**: every pull request must close or reference a GitHub issue through GitHub's own link — `Closes #N` as the first bullet of 🔗 Related, or the Development sidebar. Continuous Compliance runs `compliance pull-request` on pull requests and in the merge queue, reading `gh pr view --json closingIssuesReferences`, so a plain `Related to #N` does not count. Pull requests opened by Dependabot or by a GitHub Actions workflow are exempt. Work with no issue gets one before the pull request opens — see the [link-issue skill](../.agents/skills/link-issue/SKILL.md)
 5. **Labels and assignees** must agree with the title: exactly one `type:*` label matching the title's type, exactly the `scope:*` labels the title names and no extras, at least one assignee, and exactly one `source:*` label (`source:agent` or `source:human`) declaring who opened it. The `do-not-merge` label blocks the pull request while present
@@ -532,11 +532,11 @@ See [documentation/agents/issue-tracker.md](../documentation/agents/issue-tracke
 7. **Code review**: requires `@JimmyPaolini` approval ([CODEOWNERS](.github/CODEOWNERS))
 8. **Merge**: squash and merge, then delete the branch
 
-Comply Code creates any label missing from the vocabulary when a pull request is opened or reopened, so a fresh pull request already has the labels it needs. That vocabulary lives in [configuration/conventional.config.cjs](configuration/conventional.config.cjs) and is never hard-coded elsewhere.
+Comply Code creates any label missing from the vocabulary when a pull request is opened or reopened, so a fresh pull request already has the labels it needs. That vocabulary lives in [configuration/repository/conventional.config.cjs](configuration/repository/conventional.config.cjs) and is never hard-coded elsewhere.
 
 Merges go through a merge queue, and the check workflows run again on the queued merge commit — a pull request that was green on its own can still fail there once `main` has moved underneath it.
 
-To avoid release-significance failures in a pull request that spans scopes, keep each commit to one project or module, name the fewest scopes that overlap every commit in the title (`type(scope-a,scope-b): …`), and title it at the most significant commit. Split into separate pull requests only when the scopes cannot fit the 128-character header or the work must deploy in stages.
+To avoid release-significance failures in a pull request that spans scopes, keep each commit to one project or module, name at least one scope the commits use in the title (`type(scope-a,scope-b): …`), and title it at the most significant commit. Split into separate pull requests only when the scopes cannot fit the 128-character header or the work must deploy in stages.
 
 A pull request with merge conflicts runs almost none of these workflows — a short list of green checks means nothing was validated. Resolve conflicts before reading the checks as a pass.
 
@@ -549,7 +549,7 @@ Releases operate at two distinct tiers:
 1. **Workspace Root (Repository)**: Uses [semantic-release](https://semantic-release.gitbook.io/), fully automated on merge to `main` by the 🦸 Continuous Deployment workflow (`push-releases` target). Versioning is fixed — the whole codebase shares one version — and nothing is published to a package registry.
 2. **IC-Suite Packages (Publishable Packages)**: Uses [Nx Release](https://nx.dev/features/manage-releases) to independently version and publish the 36 publishable packages across the five toolchains (`callidescope`, `codependix`, `codometer`, `coinagerie`, `conformetry`). Each package is versioned from its own commit history, and upstream bumps automatically cascade patch bumps to internal dependents. The 10 unpublished packages (`*-agents` and `*-examples` across the five suites) are explicitly excluded in `nx.json` (`release.projects`) in addition to their private manifest flags.
 
-**Version bumps**, from `releaseRules` in [release.config.cjs](../configuration/release.config.cjs) for the codebase and `release.conventionalCommits` in [nx.json](../nx.json) for each package a commit touches:
+**Version bumps**, from `releaseRules` in [release.config.cjs](../configuration/repository/release.config.cjs) for the codebase and `release.conventionalCommits` in [nx.json](../nx.json) for each package a commit touches:
 
 | Type                                                                      | Codebase | IC-suite package              |
 | ------------------------------------------------------------------------- | -------- | ----------------------------- |
@@ -646,7 +646,7 @@ pnpm add -w <package>
 - [.agents/skills](../.agents/skills) — agent skills, the canonical source for every agent entrypoint
 - [Commit Messages Guide](../.agents/skills/commit-code/SKILL.md)
 - [Code Validation Guide](../.agents/skills/validate-code/SKILL.md)
-- [Semantic Release Config](../configuration/release.config.cjs)
+- [Semantic Release Config](../configuration/repository/release.config.cjs)
 - [GitHub Actions Workflows](./workflows)
 - [Gitmoji Reference](https://gitmoji.dev)
 - [Nx Documentation](https://nx.dev)

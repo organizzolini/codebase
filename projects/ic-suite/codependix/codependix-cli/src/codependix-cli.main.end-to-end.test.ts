@@ -19,7 +19,9 @@ const COMMAND_PATH = path.resolve(
 const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../tmp");
 
 /** Every fixture sits one level under `FIXTURE_ROOT`, so this reaches the package's tsconfig. */
-const FIXTURE_TSCONFIG = JSON.stringify({ extends: "../../tsconfig.json" });
+const FIXTURE_TSCONFIG = JSON.stringify({
+  extends: "../../configuration/tsconfig.json",
+});
 
 /** Writes a fixture directory inside the package, with the tsconfig the command line's decorators need. */
 function createFixture(label: string, files: Record<string, string>): string {
@@ -46,6 +48,8 @@ describe("main end-to-end suite", () => {
       const workingDirectory = createFixture("codependix-cli-stream-test", {
         "codependix.config.json": JSON.stringify({
           include: [],
+          projectConfigurationPath: "codependix.config.json",
+          projectTsconfigPath: "tsconfig.json",
           workspace: {
             nxProjects: {
               json: {
@@ -118,7 +122,9 @@ describe("main end-to-end suite", () => {
             nxProjects: [{ kind: "acyclic", name: "no-cycles" }],
           },
           include: [],
+          projectConfigurationPath: "codependix.config.json",
           projectGraph: "codependix-graph.json",
+          projectTsconfigPath: "tsconfig.json",
         }),
       });
       const result = await runSourceCommand({

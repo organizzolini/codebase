@@ -25,10 +25,9 @@ searched for. TypeScript and
 JavaScript files are loaded through [jiti](https://github.com/unjs/jiti), so a
 `.ts` config needs no build step and may import from your workspace.
 
-The path is resolved against the current directory first, then against the
-workspace root — located by walking upward for `pnpm-workspace.yaml` — so a
-config path written relative to the root still resolves from a nested
-directory.
+A relative path is resolved against the current directory and nowhere else:
+no workspace root is looked for. A host that holds a workspace root, such as the
+Nx plugin, resolves the path against it before calling in.
 
 The file default-exports an **array of generator definitions**. It is an array
 rather than a keyed record because a generator's name is already a field, and a

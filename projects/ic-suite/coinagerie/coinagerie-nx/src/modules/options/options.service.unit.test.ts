@@ -1,8 +1,12 @@
+import { ConfigurationPathRequiredError } from "@coinagerie/configuration";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { OptionsService } from "./options.service";
+
+/** A configuration path, as a registration writes it. */
+const PATH = "coinagerie.config.ts";
 
 describe(OptionsService, () => {
   let service: OptionsService;
@@ -26,11 +30,13 @@ describe(OptionsService, () => {
           checkTargetName: "glossary",
           command: "node coinagerie.mjs",
           inputs: ["{workspaceRoot}/GLOSSARY.md"],
+          projectConfigurationPath: "configuration/coinagerie.config.ts",
         }),
       ).toStrictEqual({
         checkTargetName: "glossary",
         command: "node coinagerie.mjs",
         inputs: ["{workspaceRoot}/GLOSSARY.md"],
+        projectConfigurationPath: "configuration/coinagerie.config.ts",
       });
     });
 
@@ -39,16 +45,37 @@ describe(OptionsService, () => {
       ["null", null],
       ["a string", "coinagerie"],
       ["an empty object", {}],
+      ["a non-string path", { projectConfigurationPath: 7 }],
+      ["a blank path", { projectConfigurationPath: "  " }],
+    ])(
+      "refuses to guess the configuration path given %s",
+      (_description, options) => {
+        expect.hasAssertions();
+        expect(() => service.resolvePluginOptions(options)).toThrow(
+          ConfigurationPathRequiredError,
+        );
+        expect(() => service.resolvePluginOptions(options)).toThrow(
+          "projectConfigurationPath is required",
+        );
+      },
+    );
+
+    it.each([
       ["non-string names", { checkTargetName: 7, command: false }],
       ["blank names", { checkTargetName: "  ", command: "" }],
-    ])("falls back to every default given %s", (_description, options) => {
+    ])("falls back to the default names given %s", (_description, options) => {
       expect.hasAssertions();
-
-      // A typo in a registration must not stop the project graph being built.
-      expect(service.resolvePluginOptions(options)).toStrictEqual({
+      // A typo in a name must not stop the project graph being built.
+      expect(
+        service.resolvePluginOptions({
+          ...options,
+          projectConfigurationPath: PATH,
+        }),
+      ).toStrictEqual({
         checkTargetName: "coinagerie-check",
         command: "coinagerie",
         inputs: [],
+        projectConfigurationPath: PATH,
       });
     });
 
@@ -56,11 +83,15 @@ describe(OptionsService, () => {
       expect.hasAssertions();
 
       expect(
-        service.resolvePluginOptions({ command: "pnpm exec coinagerie" }),
+        service.resolvePluginOptions({
+          command: "pnpm exec coinagerie",
+          projectConfigurationPath: PATH,
+        }),
       ).toStrictEqual({
         checkTargetName: "coinagerie-check",
         command: "pnpm exec coinagerie",
         inputs: [],
+        projectConfigurationPath: PATH,
       });
     });
 
@@ -79,9 +110,12 @@ describe(OptionsService, () => {
       "reads the declared inputs from %s",
       (_description, inputs, expected) => {
         expect.hasAssertions();
-        expect(service.resolvePluginOptions({ inputs }).inputs).toStrictEqual(
-          expected,
-        );
+        expect(
+          service.resolvePluginOptions({
+            inputs,
+            projectConfigurationPath: PATH,
+          }).inputs,
+        ).toStrictEqual(expected);
       },
     );
   });

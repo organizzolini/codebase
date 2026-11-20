@@ -1,16 +1,16 @@
-import { buildAnchorDocuments } from "./anchor-placement";
-import { buildBootFailureDocuments } from "./boundary-boot-failures";
-import { buildChargeDocuments } from "./boundary-charges";
-import { buildBoundaryDocuments } from "./boundary-rules";
-import { buildConfigurationDocuments } from "./configuration";
-import { buildDeliveryDocuments } from "./export-delivery";
-import { buildGraphLevelDocuments } from "./graph-levels";
-import { buildNestjsDocuments } from "./nestjs-graphs";
-import { buildNxDocuments } from "./nx-graphs";
+import { buildBootFailureDocuments } from "./boundaries/boundary-boot-failures";
+import { buildChargeDocuments } from "./boundaries/boundary-charges";
+import { buildBoundaryDocuments } from "./boundaries/boundary-rules";
+import { buildAnchorDocuments } from "./exports/anchor-placement";
+import { buildConfigurationDocuments } from "./exports/configuration";
+import { buildDeliveryDocuments } from "./exports/export-delivery";
+import { buildGraphLevelDocuments } from "./graphs/graph-levels";
+import { buildNestjsDocuments } from "./graphs/nestjs-graphs";
+import { buildNxDocuments } from "./graphs/nx-graphs";
+import { buildPythonDocuments } from "./graphs/python-imports";
+import { buildTypescriptDocuments } from "./graphs/typescript-imports";
 import { buildPathQueriesDocuments } from "./path-queries";
-import { buildPythonDocuments } from "./python-imports";
 import { EXAMPLE_ORDER } from "./reading-order";
-import { buildTypescriptDocuments } from "./typescript-imports";
 
 import type { ExampleDocument } from "./types";
 

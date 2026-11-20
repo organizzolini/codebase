@@ -4,7 +4,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../code/code.module";
-import { MatrixModule } from "../matrix/matrix.module";
+import { MatrixModule } from "../geometry/modules/matrix/matrix.module";
 
 import { CharacteristicContextService } from "./characteristic-context.service";
 import {
@@ -15,7 +15,7 @@ import {
   NUMERIC_CHARACTERISTIC_KEYS,
 } from "./characteristics.constants";
 import { CharacteristicsService } from "./characteristics.service";
-import { TileCrossingComponentDeltaCountCharacteristicService } from "./path/tile-crossing/tile-crossing-component-delta-count-characteristic.service";
+import { TileCrossingComponentDeltaCountCharacteristicService } from "./modules/path/modules/tile-crossing/tile-crossing-component-delta-count-characteristic.service";
 
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { ModuleMetadata } from "@nestjs/common";

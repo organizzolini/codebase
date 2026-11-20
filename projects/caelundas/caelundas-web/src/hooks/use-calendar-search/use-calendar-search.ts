@@ -3,8 +3,8 @@ import { useNavigate } from "@tanstack/react-router";
 import {
   AGENDA_DAY_COUNT,
   MAXIMUM_AGENDA_DAYS,
-} from "../../components/events-calendar/calendar-views.constants";
-import { formatCalendarDate } from "../../components/events-calendar/calendar-window.utilities";
+} from "../../components/calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
+import { formatCalendarDate } from "../../components/calendar-display/events-calendar/components/calendar-window/calendar-window.utilities";
 
 import type { CalendarSearch } from "./calendar-search.types";
 import type { UseCalendarSearchResult } from "./use-calendar-search.types";

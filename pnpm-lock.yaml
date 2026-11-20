@@ -743,6 +743,7 @@ overrides:
 
 patchedDependencies:
   nx@24.0.0: 02d747bd93aea300955436be29dc083b9fc89e2ee1bbaca0100d643f925880fc
+  type-coverage-core@2.30.1: 7322577a71fd95a4f131807cdb9e755243c8050852df1c951e1c5a53f344fb81
 
 importers:
 
@@ -1398,6 +1399,9 @@ importers:
         specifier: 'catalog:'
         version: 4.6.7
     devDependencies:
+      '@codebase/configuration':
+        specifier: workspace:*
+        version: link:../../../configuration
       '@codebase/testing':
         specifier: workspace:*
         version: link:../../common/testing
@@ -4288,6 +4292,9 @@ importers:
         specifier: 'catalog:'
         version: 4.6.7
     devDependencies:
+      '@codebase/configuration':
+        specifier: workspace:*
+        version: link:../../../configuration
       '@codebase/testing':
         specifier: workspace:*
         version: link:../../common/testing
@@ -29069,7 +29076,7 @@ snapshots:
     dependencies:
       prelude-ls: 1.2.1
 
-  type-coverage-core@2.30.1(typescript@6.0.3):
+  type-coverage-core@2.30.1(patch_hash=7322577a71fd95a4f131807cdb9e755243c8050852df1c951e1c5a53f344fb81)(typescript@6.0.3):
     dependencies:
       fast-glob: 3.3.3
       minimatch: 11.0.5
@@ -29082,7 +29089,7 @@ snapshots:
     dependencies:
       chalk: 4.1.2
       minimist: 1.2.8
-      type-coverage-core: 2.30.1(typescript@6.0.3)
+      type-coverage-core: 2.30.1(patch_hash=7322577a71fd95a4f131807cdb9e755243c8050852df1c951e1c5a53f344fb81)(typescript@6.0.3)
     transitivePeerDependencies:
       - typescript
 

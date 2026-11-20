@@ -9,7 +9,7 @@ import { useTemporaryDirectory } from "@codebase/testing";
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
   startCaelundasDatabase,
-} from "../../../testing/database";
+} from "../../../testing/support/database";
 
 import { NightSkyModule } from "./night-sky.module";
 import { NightSkyService } from "./night-sky.service";

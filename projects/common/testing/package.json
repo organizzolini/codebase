@@ -85,7 +85,7 @@
     "ignoreFiles": [
       "**/*.test.ts",
       "**/*.test.tsx",
-      "src/modules/route-render/route-render.utilities.tsx"
+      "src/modules/browser-stand-ins/modules/route-render/route-render.utilities.tsx"
     ],
     "strict": true
   },

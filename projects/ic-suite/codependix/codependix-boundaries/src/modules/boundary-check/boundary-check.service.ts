@@ -275,6 +275,7 @@ export class BoundaryCheckService {
       levelArguments: args,
       projects: this.typescriptService.discoverProjects(
         args.context.buildProjects,
+        args.context.configuration.projectTsconfigPath,
       ),
     });
   }

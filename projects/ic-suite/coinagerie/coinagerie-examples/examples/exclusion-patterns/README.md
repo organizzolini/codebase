@@ -7,7 +7,7 @@ can leave out a whole family of headwords.
 
 ```bash
 cd examples/exclusion-patterns/project
-coinagerie
+coinagerie --config coinagerie.config.ts
 ```
 
 It exits 0 and prints three words: `check`, `mdx`, and `src`. The file name

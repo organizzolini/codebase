@@ -2,6 +2,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { TreeService } from "../tree/tree.service";
+
 import { CustomizationService } from "./customization.service";
 
 import type { ResolvedCodometerCustomStatistic } from "@codometer/configuration";
@@ -34,15 +36,59 @@ describe(CustomizationService, () => {
   let service: CustomizationService;
 
   beforeAll(async () => {
-    const { instance } = await buildTestingModule(CustomizationService);
+    const { instance } = await buildTestingModule(CustomizationService, {
+      providers: [TreeService],
+    });
 
     service = instance;
   });
 
   it("resolves with its dependencies", async () => {
-    const { instance } = await buildTestingModule(CustomizationService);
+    const { instance } = await buildTestingModule(CustomizationService, {
+      providers: [TreeService],
+    });
 
     expect(instance).toBeInstanceOf(CustomizationService);
+  });
+
+  it("counts each directory a tree selector's breadth ceiling caught", () => {
+    const [breadth] = service.analyze({
+      commentCounts: {},
+      files,
+      statistics: [
+        buildStatistic({
+          label: "Directory Breadth",
+          tree: { exclude: [], maximumBreadth: 2, maximumDepth: undefined },
+        }),
+      ],
+      symbolCounts: {},
+    });
+
+    expect(breadth?.count).toBe(2);
+    expect(breadth?.instances).toStrictEqual([
+      { file: ".", measured: 3 },
+      { file: "tools/synchronization/src/modules/logger", measured: 3 },
+    ]);
+  });
+
+  it("builds a tree only from the files a tree statistic's patterns claim", () => {
+    const [depth] = service.analyze({
+      commentCounts: {},
+      files,
+      statistics: [
+        buildStatistic({
+          label: "Directory Depth",
+          patterns: ["applications/**"],
+          tree: { exclude: [], maximumBreadth: undefined, maximumDepth: 3 },
+        }),
+      ],
+      symbolCounts: {},
+    });
+
+    expect(depth?.instances).toStrictEqual([
+      { file: "applications/lexico/src/modules", measured: 5 },
+      { file: "applications/lexico/src/routes", measured: 4 },
+    ]);
   });
 
   it("counts the files each configured glob claims", () => {

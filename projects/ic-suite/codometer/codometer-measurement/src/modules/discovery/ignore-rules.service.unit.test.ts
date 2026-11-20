@@ -133,6 +133,22 @@ describe(IgnoreRulesService, () => {
       expect(service.isIgnored(scopes, "output/one.md")).toBe(false);
     });
 
+    it("matches an ancestor rule set against the path from its own folder", () => {
+      expect.hasAssertions();
+
+      const scopes = [
+        service.createScope({
+          base: "projects/app",
+          directory: "",
+          patterns: ["projects/app/report.json", "output/"],
+        }),
+      ];
+
+      expect(service.isIgnored(scopes, "report.json")).toBe(true);
+      expect(service.isIgnored(scopes, "output/")).toBe(true);
+      expect(service.isIgnored(scopes, "src/app.ts")).toBe(false);
+    });
+
     it("never lets a rule set claim its own directory", () => {
       expect.hasAssertions();
 

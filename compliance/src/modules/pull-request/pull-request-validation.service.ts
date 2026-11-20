@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 
-import { PullRequestAncestorIssuesService } from "./pull-request-ancestor-issues.service";
 import {
   BODY_GUIDANCE_LINES,
   BODY_MISSING_MESSAGE,
@@ -10,20 +9,21 @@ import {
   OVERSIZED_SECTIONS_MESSAGE,
   PULL_REQUEST_TEMPLATE_PATH,
   UNFILLED_COMMENTS_MESSAGE,
-} from "./pull-request-body.constants";
-import { PullRequestBodyService } from "./pull-request-body.service";
-import { PullRequestGithubService } from "./pull-request-github.service";
-import { PullRequestLabelsAssigneesService } from "./pull-request-labels-assignees.service";
-import { PullRequestLinkedIssuesService } from "./pull-request-linked-issues.service";
-import { PullRequestReleaseSignificanceService } from "./pull-request-release-significance.service";
-import { PullRequestTitleService } from "./pull-request-title.service";
+} from "./modules/body/pull-request-body.constants";
+import { PullRequestBodyService } from "./modules/body/pull-request-body.service";
+import { PullRequestGithubService } from "./modules/github/pull-request-github.service";
+import { PullRequestLabelsAssigneesService } from "./modules/labels/pull-request-labels-assignees.service";
+import { PullRequestAncestorIssuesService } from "./modules/linked-issues/pull-request-ancestor-issues.service";
+import { PullRequestLinkedIssuesService } from "./modules/linked-issues/pull-request-linked-issues.service";
+import { PullRequestReleaseSignificanceService } from "./modules/release-significance/pull-request-release-significance.service";
+import { PullRequestTitleService } from "./modules/title/pull-request-title.service";
 import {
   DEPENDABOT_LOGIN,
   UNLINKED_AUTHOR_LOGINS,
 } from "./pull-request.constants";
 
-import type { BodyVerdict } from "./pull-request-body.types";
-import type { PullRequestContext } from "./pull-request-context.types";
+import type { BodyVerdict } from "./modules/body/pull-request-body.types";
+import type { PullRequestContext } from "./modules/context/pull-request-context.types";
 import type { CheckOutcome } from "./pull-request.types";
 
 /**

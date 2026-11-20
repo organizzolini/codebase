@@ -4,16 +4,13 @@
 
 The words the repository uses outside its projects, regenerated with `nx run configuration:coinagerie:write`.
 
-- **affirmancy**: A Python Jupyter notebook project that generates affirmations through a LangGraph ReAct agent running on a local Ollama model.
 - **analyzer**: A codometer or callidescope component that inspects one input language's source to produce measurements, such as a TypeScript or Python analyzer.
 - **application**: A project tagged type:application in the Nx workspace that runs as a deployable program, as opposed to a type:package library.
 - **applier**: Subagent role that writes leased live copy-edit batches into source files and returns canonical results to the parent.
 - **caelundas**: The astronomical calendar product under projects/caelundas: a CLI that detects sky events from Swiss Ephemeris positions, and the database, API, and web calendar that store and show them.
 - **callidescope**: IC-suite toolchain that measures call-stack depth and breadth across the workspace and gates each project's limits.
-- **callidescopeignore**: Ignore file, configured at configuration/.callidescopeignore, listing paths the trace skips when measuring call stacks.
 - **codependix**: IC-suite toolchain that exports dependency graphs and enforces boundary rules between projects, modules, and files.
 - **codometer**: IC-suite measurement tool that reports sizes, counts, and comment budgets against configured limits per project.
-- **codometerignore**: Ignore file at configuration/.codometerignore that tells codometer which paths to skip when it measures sizes and counts.
 - **coinagerie**: Vocabulary toolchain that collects a repository's words and checks or writes their definitions into glossary files.
 - **compliance**: The Compliance CLI and Continuous Compliance workflow, which read or update GitHub issues, pull requests, and repository governance metadata.
 - **comply**: The job of the Continuous Compliance workflow that checks pull request metadata and commit message conventions.
@@ -33,10 +30,8 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **infrastructure**: Top-level folder of deployment projects such as Helm charts and Terraform, whose words the root glossary skips.
 - **installation**: Setup process that installs the toolchain and dependencies, run by scripts/installation.sh and the installation project.
 - **ip**: Prefix of the `ip-address` package name in a `pnpm-workspace.yaml` override that raises it to a patched release for a published security advisory.
-- **lexico**: The Latin dictionary product whose web app, ingestion CLI, and entity packages live under projects/lexico.
 - **lookup**: Read-only callidescope query that traces a callable, prints its callers or callees, and never applies a depth or breadth gate.
 - **map**: Wayfinder's planning artifact for a huge effort, a graph of linked decisions that collapses into a buildable spec when cleared.
-- **meander**: Greek key or fret border motif that the meanderaw project generates as SVG from composable motif and modifier definitions.
 - **minimatch**: Glob-matching package that a `pnpm-workspace.yaml` override raises to a patched major release across the whole dependency tree.
 - **mocker**: Last segment of the `@vitest/mocker` package name in a `pnpm-workspace.yaml` override that forces its patched release.
 - **modifier**: Composable transform in meanderaw's motif library that adjusts how a Greek meander motif is drawn.

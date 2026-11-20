@@ -85,9 +85,12 @@ describe(TypescriptService, () => {
       discovered,
     );
 
-    expect(service.discoverProjects(projects)).toBe(discovered);
+    expect(
+      service.discoverProjects(projects, "configuration/tsconfig.json"),
+    ).toBe(discovered);
     expect(typescriptProjectService.discoverProjects).toHaveBeenCalledWith(
       projects,
+      "configuration/tsconfig.json",
     );
   });
 

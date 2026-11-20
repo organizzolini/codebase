@@ -3,8 +3,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { buildTile } from "../../../testing/tiles";
-import { SymmetryService } from "../symmetry/symmetry.service";
-import { TileService } from "../tile/tile.service";
+import { SymmetryService } from "../geometry/modules/symmetry/symmetry.service";
+import { TileService } from "../geometry/modules/tile/tile.service";
 
 import {
   InvalidCodeCharacterError,
@@ -13,7 +13,7 @@ import {
 } from "./code.constants";
 import { CodeService } from "./code.service";
 
-import type { Tile } from "../tile/tile.types";
+import type { Tile } from "../geometry/modules/tile/tile.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 // 🔧 Configuration

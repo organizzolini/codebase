@@ -16,7 +16,7 @@ export const INCLUDE_CONSTRUCTOR_EDGES = true;
 /** Headline a command line the input service refused is reported under. */
 export const REJECTED_COMMAND_LINE = "🔭 Rejected the command line";
 
-/** Headline a project whose `tsconfig.json` could not be read is reported under. */
+/** Headline a project whose tsconfig could not be read is reported under. */
 export const REJECTED_PROJECT = "🔭 Rejected a project it could not read";
 
 /** Headline a project's own refused configuration file is reported under. */

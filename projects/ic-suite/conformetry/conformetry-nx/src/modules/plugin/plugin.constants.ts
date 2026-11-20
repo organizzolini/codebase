@@ -1,8 +1,7 @@
 // ♟️ Constants
 
-/** Glob for configuration and `project.json` files; the daemon needs both. */
-export const PROJECT_CONFIGURATION_GLOB =
-  "**/{project.json,conformetry.config.*}";
+/** Glob for project descriptions; no glob can name the configured path. */
+export const PROJECT_CONFIGURATION_GLOB = "**/project.json";
 
 /** Basename that marks a matched file as an actual project description. */
 export const PROJECT_CONFIGURATION_FILENAME = "project.json";

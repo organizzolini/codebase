@@ -1,6 +1,6 @@
 import { Column, Entity } from "typeorm";
 
-import { PostgresqlDeletableEntity } from "../../src/modules/postgresql/entities/deletable.entity";
+import { PostgresqlDeletableEntity } from "../../src/modules/postgresql/modules/base-entities/deletable.entity";
 
 /**
  * A table for the integration suite: one column of its own, named in camel

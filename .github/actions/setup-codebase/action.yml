@@ -166,7 +166,7 @@ runs:
         # installs nothing, like `build-projects`, would keep a cache with no
         # packages in it for every sync after it.
         enable-cache: ${{ inputs.python-dependencies }}
-        cache-dependency-glob: configuration/uv.lock
+        cache-dependency-glob: configuration/python/uv.lock
         add-problem-matchers: "false"
 
     # Pinned so a runner never upgrades Terraform on its own: the state file records
@@ -185,8 +185,8 @@ runs:
     - name: 🐍 Install Python Dependencies
       if: inputs.uv == 'true' && inputs.python-dependencies == 'true'
       # Syncs every uv workspace member into the shared root `.venv` via the
-      # workspace definition in configuration/pyproject.toml.
-      run: uv sync --frozen --quiet --project configuration
+      # workspace definition in configuration/python/pyproject.toml.
+      run: uv sync --frozen --quiet --project configuration/python
       shell: bash
 
     - name: ♻️ Sync ESLint Cache

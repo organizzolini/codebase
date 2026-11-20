@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { fieldRule, filterGroup } from "../../../testing/event-filters";
-import { EMPTY_EVENT_FILTER } from "../../components/calendar-filters/event-filter-tree.constants";
-import { DEFAULT_PRESET_ID } from "../../components/calendar-filters/presets.constants";
+import { EMPTY_EVENT_FILTER } from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filter-tree.constants";
+import { DEFAULT_PRESET_ID } from "../../components/calendar-query/calendar-filters/components/presets/presets.constants";
 
 import { getDefaultFilter } from "./use-filter-query.utilities";
 

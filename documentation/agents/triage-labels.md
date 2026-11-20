@@ -101,7 +101,7 @@ issue:
 The first two are reconciled onto an issue from its submitted form by the
 `compliance issue` command; `source:*` is applied by hand by whoever or
 whatever opens the issue. All three take their vocabulary from
-`configuration/conventional.config.cjs` and the `pull-request` constants
+`configuration/repository/conventional.config.cjs` and the `pull-request` constants
 beside it, never from a list written out here.
 
 Six `scope:*` labels in the tracker predate that vocabulary and no longer

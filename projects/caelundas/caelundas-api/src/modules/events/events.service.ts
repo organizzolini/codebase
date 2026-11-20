@@ -11,20 +11,20 @@ import {
   FACETS_SQL,
   groupKeysSchema,
 } from "./events.constants";
-import { EventFilterService } from "./filters/event-filter.service";
-import { EventGroupingService } from "./grouping/event-grouping.service";
-import { PresetsService } from "./presets/presets.service";
-import { WindowsService } from "./windows/windows.service";
+import { EventFilterService } from "./modules/filtering/event-filter.service";
+import { EventGroupingService } from "./modules/grouping/event-grouping.service";
+import { PresetsService } from "./modules/presets/presets.service";
+import { WindowsService } from "./modules/windows/windows.service";
 
-import type { CalendarEventEntity } from "./calendar-event.entities";
-import type { EventFacetEntity } from "./event-facet.entities";
 import type { EventsDatasetEntity } from "./events.entities";
-import type { EventFilterGroup } from "./filters/event-filter.types";
-import type { EventGroupLevel } from "./grouping/event-grouping.types";
-import type { ResolvedPreset } from "./presets/presets.types";
-import type { PeriodInput } from "./windows/period-input.entities";
-import type { WindowsArguments } from "./windows/windows-arguments.entities";
-import type { Windows } from "./windows/windows.types";
+import type { CalendarEventEntity } from "./modules/calendar-event/calendar-event.entities";
+import type { EventFacetEntity } from "./modules/facets/event-facet.entities";
+import type { EventFilterGroup } from "./modules/filtering/event-filter.types";
+import type { EventGroupLevel } from "./modules/grouping/event-grouping.types";
+import type { ResolvedPreset } from "./modules/presets/presets.types";
+import type { PeriodInput } from "./modules/windows/period-input.entities";
+import type { WindowsArguments } from "./modules/windows/windows-arguments.entities";
+import type { Windows } from "./modules/windows/windows.types";
 import type { z } from "zod";
 
 /**

@@ -5,9 +5,8 @@ import { Injectable } from "@nestjs/common";
 import ts from "typescript";
 
 import {
+  MIGRATIONS_FOLDER,
   TYPEORM_MIGRATION_FILE_PATTERN,
-  TYPEORM_MIGRATION_SQL_OPTION_MESSAGES,
-  TypeormMigrationSqlOptionsError,
 } from "./typeorm-migration-sql.constants";
 
 import type { SynchronizationMode } from "../synchronization/synchronization.types";
@@ -44,10 +43,9 @@ export class TypeormMigrationSqlExtractorService {
     };
   }
 
-  /** One explicit target from `--directory` or `--project-root` + `--module`. */
+  /** One explicit target from `--directory` or `--project-root`. */
   private explicitTarget({
     directory,
-    module,
     project,
     projectRoot,
   }: TypeormMigrationSqlCommandOptions):
@@ -60,17 +58,11 @@ export class TypeormMigrationSqlExtractorService {
       };
     }
 
-    if (projectRoot !== undefined && module !== undefined) {
+    if (projectRoot !== undefined) {
       return {
-        migrationsDirectory: path.join(projectRoot, module, "migrations"),
+        migrationsDirectory: path.join(projectRoot, MIGRATIONS_FOLDER),
         projectName: project ?? path.basename(projectRoot),
       };
-    }
-
-    if (projectRoot !== undefined || module !== undefined) {
-      throw new TypeormMigrationSqlOptionsError(
-        TYPEORM_MIGRATION_SQL_OPTION_MESSAGES.location,
-      );
     }
 
     return undefined;
@@ -148,16 +140,16 @@ export class TypeormMigrationSqlExtractorService {
     const raw = await readFile(projectJsonPath, "utf8");
     const parsed = JSON.parse(raw) as {
       name?: string;
-      targets?: { migration?: { options?: { module?: string } } };
+      targets?: { migration?: unknown };
     };
     const projectName = parsed.name;
-    const modulePath = parsed.targets?.migration?.options?.module;
-    if (projectName === undefined || modulePath === undefined) return undefined;
+    if (projectName === undefined || parsed.targets?.migration === undefined) {
+      return undefined;
+    }
     if (projectFilter !== undefined && projectName !== projectFilter) {
       return undefined;
     }
     return {
-      modulePath,
       projectName,
       projectRoot: path.dirname(projectJsonPath),
     };
@@ -496,16 +488,12 @@ export class TypeormMigrationSqlExtractorService {
 
     if (options.project !== undefined && filteredTargets.length === 0) {
       throw new Error(
-        `No project named "${options.project}" exposes targets.migration.options.module.`,
+        `No project named "${options.project}" has a migration target.`,
       );
     }
 
     return filteredTargets.map((target) => ({
-      migrationsDirectory: path.join(
-        target.projectRoot,
-        target.modulePath,
-        "migrations",
-      ),
+      migrationsDirectory: path.join(target.projectRoot, MIGRATIONS_FOLDER),
       projectName: target.projectName,
     }));
   }

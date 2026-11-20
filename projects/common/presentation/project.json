@@ -5,11 +5,19 @@
   "sourceRoot": "projects/common/presentation/src",
   "tags": ["framework:react", "language:typescript", "type:package"],
   "targets": {
-    "build": {},
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vite build --config configuration/vite.config.mts",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
     "build-projects": {},
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "eslint": {},
     "format-code": {},
     "guard-code": {},
     "knip": {},
@@ -22,7 +30,7 @@
     "stylelint": {},
     "type-coverage": {
       "options": {
-        "command": "type-coverage --detail > type-coverage-report.txt 2>&1 || (cat type-coverage-report.txt && exit 1)"
+        "command": "type-coverage --project configuration/tsconfig.json --detail > type-coverage-report.txt 2>&1 || (cat type-coverage-report.txt && exit 1)"
       }
     },
     "typecheck": {},

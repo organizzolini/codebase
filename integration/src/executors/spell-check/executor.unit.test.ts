@@ -16,7 +16,7 @@ vi.mock("../../modules/process-runner/process-runner.service", () => ({
   },
 }));
 
-const OPTIONS = { configuration: "configuration/cspell.config.yaml" };
+const OPTIONS = { configuration: "configuration/lint/cspell.config.yaml" };
 
 const CONTEXT: SpellCheckExecutorContext = {
   projectGraph: { nodes: { a: { data: { root: "projects/a" } } } },

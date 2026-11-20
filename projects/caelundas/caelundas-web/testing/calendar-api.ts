@@ -1,11 +1,11 @@
 import { HttpResponse } from "msw";
 
-import { DURATION_BUCKETS } from "../src/components/calendar-filters/event-filters.constants";
 import {
   calendarViewSchema,
   timelineScaleSchema,
-} from "../src/components/events-calendar/calendar-views.constants";
-import { getViewWindows } from "../src/components/events-calendar/calendar-window.utilities";
+} from "../src/components/calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
+import { getViewWindows } from "../src/components/calendar-display/events-calendar/components/calendar-window/calendar-window.utilities";
+import { DURATION_BUCKETS } from "../src/components/calendar-query/calendar-filters/components/event-filter-model/event-filters.constants";
 import {
   mockDatasetQuery,
   mockEventsQuery,

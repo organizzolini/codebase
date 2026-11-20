@@ -7,7 +7,7 @@
 **Purpose**: <!-- Briefly describe the specific purpose of this service application -->
 
 An Nx plugin. It infers `trace`, `depth`, `breadth`, and `gate` targets onto
-every project holding a `tsconfig.json`, each backed by an executor that runs
+every project holding a tsconfig at `projectTsconfigPath`, each backed by an executor that runs
 callidescope over that project **and its Nx dependencies**, resolved from the
 Nx project graph. `gate` is the one a pipeline is meant to read an exit code
 from, and the only one a project the workspace configuration **excludes** does
@@ -241,7 +241,7 @@ See the [write-typescript skill](../../../../.agents/skills/write-typescript/SKI
 ## Troubleshooting
 
 - **Dependency injection failure** — verify the service is `@Injectable()`, exported from its module, and that module is imported by the consuming module.
-- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `src/constants.ts` and to `.env.default`.
+- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `src/constants.ts` and to `configuration/.env.default`.
 
 See the [triage-integration skill](../../../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
 
@@ -252,4 +252,4 @@ See the [triage-integration skill](../../../../.agents/skills/triage-integration
 - [src/constants.ts](src/constants.ts): `environmentSchema` (Zod)
 - `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
 - [project.json](project.json): Nx targets (`build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
-- [.env.default](.env.default): Environment variable template
+- [configuration/.env.default](configuration/.env.default): Environment variable template

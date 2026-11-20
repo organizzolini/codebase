@@ -40,6 +40,12 @@ import type { ProjectGraph } from "@nx/devkit";
 /** The workspace configuration every run must name. */
 const CONFIGURATION_PATH = "configuration/callidescope.config.ts";
 
+/** Where the registration says each project keeps its own configuration. */
+const PROJECT_CONFIGURATION_PATH = "configuration/callidescope.config.ts";
+
+/** Where each fixture project keeps its tsconfig, told rather than assumed. */
+const PROJECT_TSCONFIG_PATH = "configuration/tsconfig.json";
+
 vi.mock("node:fs", async () => {
   const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
     "@codebase/testing/file-system",
@@ -117,6 +123,12 @@ describe(PluginService, () => {
     configurationService.requireConfigurationPath.mockImplementation(
       (path: string | undefined): string => path ?? "",
     );
+    configurationService.requireProjectConfigurationPath.mockImplementation(
+      (path: string | undefined): string => path ?? "",
+    );
+    configurationService.requireProjectTsconfigPath.mockImplementation(
+      (path: string | undefined): string => path ?? "",
+    );
     vi.mocked(existsSync).mockReturnValue(true);
     vi.spyOn(projectsService, "readProjectGraph").mockResolvedValue(GRAPH);
     configurationService.loadConfigurationFile.mockResolvedValue({
@@ -124,6 +136,8 @@ describe(PluginService, () => {
       configuration: createMock<ResolvedCallidescopeConfiguration>({
         exclude: [],
         excludeFrom: [],
+        projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+        projectTsconfigPath: PROJECT_TSCONFIG_PATH,
       }),
       path: "/workspace/callidescope.config.ts",
     });
@@ -197,7 +211,11 @@ describe(PluginService, () => {
       expect.hasAssertions();
 
       const inferred = await service.inferTargets({
-        options: { configurationPath: CONFIGURATION_PATH },
+        options: {
+          configurationPath: CONFIGURATION_PATH,
+          projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
+        },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         workspaceRoot: "/workspace",
       });
@@ -219,6 +237,8 @@ describe(PluginService, () => {
         options: {
           configurationPath: CONFIGURATION_PATH,
           gateTargetName: "gate",
+          projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
         },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         workspaceRoot: "/workspace",
@@ -236,7 +256,11 @@ describe(PluginService, () => {
       expect.hasAssertions();
 
       const targets = await service.inferTargets({
-        options: { configurationPath: CONFIGURATION_PATH },
+        options: {
+          configurationPath: CONFIGURATION_PATH,
+          projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
+        },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         workspaceRoot: "/workspace",
       });
@@ -260,7 +284,7 @@ describe(PluginService, () => {
           // The project's own limits join the workspace's, and they join as a
           // `{projectRoot}` glob: a workspace-wide one would invalidate every
           // project's gate whenever any project changed a limit.
-          inputs: [...INPUTS, "{projectRoot}/callidescope.config.*"],
+          inputs: [...INPUTS, `{projectRoot}/${PROJECT_CONFIGURATION_PATH}`],
           options: { configuration: CONFIGURATION_PATH },
         },
         "callidescope-trace": {
@@ -276,7 +300,11 @@ describe(PluginService, () => {
       expect.hasAssertions();
 
       const targets = await service.inferTargets({
-        options: { configurationPath: CONFIGURATION_PATH },
+        options: {
+          configurationPath: CONFIGURATION_PATH,
+          projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
+        },
         projectConfigurationFiles: ["packages/beta/project.json"],
         workspaceRoot: "/workspace",
       });
@@ -297,11 +325,15 @@ describe(PluginService, () => {
       fileFilterService.buildFileFilter.mockReturnValue({
         isExcluded: (candidatePath: string): boolean =>
           candidatePath ===
-          "packages/ic-suite/callidescope/callidescope-examples/tsconfig.json",
+          `packages/ic-suite/callidescope/callidescope-examples/${PROJECT_TSCONFIG_PATH}`,
       });
 
       const targets = await service.inferTargets({
-        options: { configurationPath: CONFIGURATION_PATH },
+        options: {
+          configurationPath: CONFIGURATION_PATH,
+          projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
+        },
         projectConfigurationFiles: [
           "packages/ic-suite/callidescope/callidescope-examples/project.json",
           "packages/alpha/project.json",
@@ -335,7 +367,11 @@ describe(PluginService, () => {
       // Inference runs while Nx builds the project graph, where a throw stops
       // every command in the workspace rather than one task.
       const targets = await service.inferTargets({
-        options: { configurationPath: CONFIGURATION_PATH },
+        options: {
+          configurationPath: CONFIGURATION_PATH,
+          projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
+        },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         workspaceRoot: "/workspace",
       });
@@ -349,7 +385,11 @@ describe(PluginService, () => {
       expect.hasAssertions();
 
       await service.inferTargets({
-        options: { configurationPath: CONFIGURATION_PATH },
+        options: {
+          configurationPath: CONFIGURATION_PATH,
+          projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
+        },
         projectConfigurationFiles: [
           "packages/alpha/project.json",
           "packages/beta/project.json",
@@ -362,6 +402,24 @@ describe(PluginService, () => {
       );
     });
 
+    it("reads the workspace configuration relative to the workspace root", async () => {
+      expect.hasAssertions();
+
+      await service.inferTargets({
+        options: {
+          configurationPath: CONFIGURATION_PATH,
+          projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
+        },
+        projectConfigurationFiles: ["packages/alpha/project.json"],
+        workspaceRoot: "/workspace",
+      });
+
+      expect(configurationService.loadConfigurationFile).toHaveBeenCalledWith({
+        configurationPath: `/workspace/${CONFIGURATION_PATH}`,
+      });
+    });
+
     it("skips the workspace-root project", async () => {
       expect.hasAssertions();
 
@@ -369,7 +427,11 @@ describe(PluginService, () => {
       await expect(
         service
           .inferTargets({
-            options: { configurationPath: CONFIGURATION_PATH },
+            options: {
+              configurationPath: CONFIGURATION_PATH,
+              projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+              projectTsconfigPath: PROJECT_TSCONFIG_PATH,
+            },
             projectConfigurationFiles: ["project.json"],
             workspaceRoot: "/workspace",
           })
@@ -385,7 +447,11 @@ describe(PluginService, () => {
       await expect(
         service
           .inferTargets({
-            options: { configurationPath: CONFIGURATION_PATH },
+            options: {
+              configurationPath: CONFIGURATION_PATH,
+              projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+              projectTsconfigPath: PROJECT_TSCONFIG_PATH,
+            },
             projectConfigurationFiles: ["applications/affirmancy/project.json"],
             workspaceRoot: "/workspace",
           })
@@ -393,20 +459,86 @@ describe(PluginService, () => {
       ).resolves.toBe(0);
     });
 
-    it("ignores a matched file that is not a project description", async () => {
+    it("reads the project limits from wherever the registration says", async () => {
       expect.hasAssertions();
 
-      // The glob also matches the callidescope configuration, so that editing
-      // it re-runs inference — but it describes no project.
+      configurationService.loadConfigurationFile.mockResolvedValue({
+        authored: {},
+        configuration: createMock<ResolvedCallidescopeConfiguration>({
+          exclude: [],
+          excludeFrom: [],
+          projectConfigurationPath: "limits/callidescope.config.ts",
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
+        }),
+        path: "/workspace/callidescope.config.ts",
+      });
+
+      const targets = await service.inferTargets({
+        options: {
+          configurationPath: CONFIGURATION_PATH,
+          projectConfigurationPath: "limits/callidescope.config.ts",
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
+        },
+        projectConfigurationFiles: ["packages/alpha/project.json"],
+        workspaceRoot: "/workspace",
+      });
+
+      expect(
+        targets.get("packages/alpha")?.["callidescope-restrict"]?.inputs,
+      ).toContain("{projectRoot}/limits/callidescope.config.ts");
+    });
+
+    it("refuses a registration that disagrees with the workspace configuration", async () => {
+      expect.hasAssertions();
+
       await expect(
-        service
-          .inferTargets({
-            options: { configurationPath: CONFIGURATION_PATH },
-            projectConfigurationFiles: ["configuration/callidescope.config.ts"],
-            workspaceRoot: "/workspace",
-          })
-          .then((targets) => targets.size),
-      ).resolves.toBe(0);
+        service.inferTargets({
+          options: {
+            configurationPath: CONFIGURATION_PATH,
+            projectConfigurationPath: "elsewhere.config.ts",
+            projectTsconfigPath: PROJECT_TSCONFIG_PATH,
+          },
+          projectConfigurationFiles: ["packages/alpha/project.json"],
+          workspaceRoot: "/workspace",
+        }),
+      ).rejects.toThrow("elsewhere.config.ts");
+    });
+
+    it("looks for each project's tsconfig at the registered path, and nowhere else", async () => {
+      expect.hasAssertions();
+
+      await service.inferTargets({
+        options: {
+          configurationPath: CONFIGURATION_PATH,
+          projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+          projectTsconfigPath: PROJECT_TSCONFIG_PATH,
+        },
+        projectConfigurationFiles: ["packages/alpha/project.json"],
+        workspaceRoot: "/workspace",
+      });
+
+      expect(existsSync).toHaveBeenCalledWith(
+        `/workspace/packages/alpha/${PROJECT_TSCONFIG_PATH}`,
+      );
+      expect(existsSync).not.toHaveBeenCalledWith(
+        "/workspace/packages/alpha/tsconfig.json",
+      );
+    });
+
+    it("refuses a registration whose tsconfig path disagrees with the workspace configuration", async () => {
+      expect.hasAssertions();
+
+      await expect(
+        service.inferTargets({
+          options: {
+            configurationPath: CONFIGURATION_PATH,
+            projectConfigurationPath: PROJECT_CONFIGURATION_PATH,
+            projectTsconfigPath: "tsconfig.json",
+          },
+          projectConfigurationFiles: ["packages/alpha/project.json"],
+          workspaceRoot: "/workspace",
+        }),
+      ).rejects.toThrow("projectTsconfigPath");
     });
   });
 
@@ -928,7 +1060,7 @@ describe(PluginService, () => {
       });
 
       expect(configurationService.loadConfigurationFile).toHaveBeenCalledWith({
-        configurationPath: "elsewhere.ts",
+        configurationPath: "/workspace/elsewhere.ts",
       });
     });
   });

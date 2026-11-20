@@ -23,7 +23,7 @@ const examplesDirectory = path.join(packageDirectory, "examples");
 const CONFORMETRY_ENTRY =
   "projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts";
 const CONFORMETRY_TSCONFIG =
-  "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json";
+  "projects/ic-suite/conformetry/conformetry-cli/configuration/tsconfig.json";
 
 /** The environment every documented command needs, and nothing more. */
 const COMMAND_ENVIRONMENT = {

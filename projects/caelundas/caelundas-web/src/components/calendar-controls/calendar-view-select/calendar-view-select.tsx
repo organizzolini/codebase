@@ -1,0 +1,148 @@
+import { useSyncExternalStore } from "react";
+
+import {
+  Button,
+  ButtonGroup,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@codebase/presentation";
+
+import {
+  CALENDAR_VIEW_LABELS,
+  CALENDAR_VIEWS,
+} from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
+import { parseCalendarView } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
+import {
+  isDesktopViewport,
+  subscribeToDesktopViewport,
+} from "../../calendar-display/events-calendar/components/calendar-window/calendar-viewport.utilities";
+
+import { VIEW_ICONS } from "./calendar-view-select.constants";
+
+import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
+import type { ReactNode } from "react";
+
+// 🔖 Type
+
+/**
+ * The view shown, its change handler, and the compact layout.
+ */
+export interface CalendarViewSelectProperties {
+  className?: string;
+  /**
+   * Collapses the buttons into one menu, as a phone's toolbar row needs.
+   */
+  compact?: boolean | undefined;
+  onViewChange: (view: CalendarViewName) => void;
+  view: CalendarViewName;
+}
+
+// 🧩 Component
+
+/**
+ * Renders one pressed button per view on a desktop, or a menu button naming the current view on narrower rows.
+ */
+export function CalendarViewSelect(
+  properties: Readonly<CalendarViewSelectProperties>,
+): ReactNode {
+  const { className, compact = false, onViewChange, view } = properties;
+
+  // 🪝 Hooks
+  const isDesktop = useSyncExternalStore(
+    subscribeToDesktopViewport,
+    isDesktopViewport,
+  );
+
+  // 🏗 Setup
+  // Six buttons need a desktop's width; a tablet's row, like a phone's, lists
+  // the views in a menu.
+  const asMenu = compact || !isDesktop;
+
+  // 💪 Handlers
+  // Pressing the view already shown would release it, leaving no value;
+  // that is ignored rather than taken for a change.
+  const handleValueChange = (values: readonly unknown[]): void => {
+    const next = parseCalendarView(values[0]);
+
+    if (next !== undefined) {
+      onViewChange(next);
+    }
+  };
+
+  // ♻️ Lifecycle
+
+  // 🏁 Early Returns
+
+  // 🎨 Markup
+  return (
+    <div
+      className={className}
+      data-testid="calendar-view-select"
+    >
+      {asMenu ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <Button
+                aria-label={`View: ${CALENDAR_VIEW_LABELS[view]}`}
+                size="sm"
+                variant="outline"
+              />
+            }
+          >
+            {CALENDAR_VIEW_LABELS[view]}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuRadioGroup
+              onValueChange={(next: unknown) => {
+                handleValueChange([next]);
+              }}
+              value={view}
+            >
+              {CALENDAR_VIEWS.map((option) => (
+                <DropdownMenuRadioItem
+                  key={option}
+                  value={option}
+                >
+                  {CALENDAR_VIEW_LABELS[option]}
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ) : (
+        <ButtonGroup aria-label="View">
+          {CALENDAR_VIEWS.map((option) => {
+            const Icon = VIEW_ICONS[option];
+
+            return (
+              <Button
+                key={option}
+                aria-pressed={option === view}
+                className={
+                  option === view
+                    ? "bg-accent text-accent-foreground"
+                    : undefined
+                }
+                onClick={() => {
+                  // The view already shown is not a change.
+                  if (option !== view) {
+                    onViewChange(option);
+                  }
+                }}
+                size="sm"
+                variant="outline"
+              >
+                <Icon aria-hidden="true" />
+                {CALENDAR_VIEW_LABELS[option]}
+              </Button>
+            );
+          })}
+        </ButtonGroup>
+      )}
+    </div>
+  );
+}

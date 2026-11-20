@@ -31,9 +31,6 @@ export class UnknownConfigurationFileTypeError extends Error {
   }
 }
 
-/** Marks the workspace root during an upward search from the process cwd. */
-export const WORKSPACE_MANIFEST_FILENAME = "pnpm-workspace.yaml";
-
 /** Extensions the config loader can read. */
 export const SUPPORTED_CONFIGURATION_EXTENSIONS = new Set([
   ".cjs",

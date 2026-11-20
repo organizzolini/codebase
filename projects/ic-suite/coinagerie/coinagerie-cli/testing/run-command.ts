@@ -11,7 +11,7 @@ const COMMAND_PATH = path.resolve(
 
 const PROJECT_TSCONFIG_PATH = path.resolve(
   import.meta.dirname,
-  "../tsconfig.json",
+  "../configuration/tsconfig.json",
 );
 
 /** Gitignored `tmp/`, never system temp: spawns resolve `@swc-node/register` only in-workspace. */

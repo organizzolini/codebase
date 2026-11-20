@@ -1,10 +1,11 @@
 // ♟️ Constants
 
 /** Conformetry templates `.nxignore` hides, so editing one selects no instance. */
-export const TEMPLATE_PATTERN = /^configuration\/conformetry-templates\//u;
+export const TEMPLATE_PATTERN =
+  /^configuration\/ic-suite\/conformetry-templates\//u;
 
 /** Added on template changes, since every instance takes the config. */
-export const TEMPLATE_SELECTOR = "configuration/conformetry.config.ts";
+export const TEMPLATE_SELECTOR = "configuration/ic-suite/conformetry.config.ts";
 
 /** The value of `INCLUDE_TEMPLATES` that selects every instance on a template change. */
 export const INCLUDE_TEMPLATES_VALUE = "true";

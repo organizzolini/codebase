@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "jsx": "react-jsx",
+    "lib": ["DOM", "DOM.Iterable", "ES2022", "ES2023.Array"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "paths": {
+      "@/*": ["../../../common/presentation/src/*"],
+      "@codebase/presentation": ["../../../common/presentation/src/index.ts"]
+    },
+    "target": "ES2022",
+    "types": ["node", "vite/client"]
+  },
+  "exclude": ["../dist", "../node_modules", "../output"],
+  "extends": "../../../../configuration/tsconfig.json",
+  "include": [
+    "*.mts",
+    "*.ts",
+    "../scripts/**/*.ts",
+    "../src/**/*.ts",
+    "../src/**/*.tsx",
+    "../testing/**/*.ts",
+    "../testing/**/*.tsx"
+  ]
+}
