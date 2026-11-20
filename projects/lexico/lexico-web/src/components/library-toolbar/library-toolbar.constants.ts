@@ -1,4 +1,5 @@
 import { AuthorEra } from "../../graphql/generated/operations";
+import { LIBRARY_ATTRIBUTE_ICONS } from "../library-sort/library-sort.constants";
 
 import type { FilterOperator } from "@codebase/presentation";
 
@@ -42,6 +43,19 @@ export const LIBRARY_RANGE_FILTERS = [
   { key: "lineCount", label: "Line count" },
   { key: "wordCount", label: "Word count" },
 ] as const;
+
+/** Each filter's icon, by the key the URL uses for it. */
+export const LIBRARY_FILTER_ICONS = {
+  authorYears: LIBRARY_ATTRIBUTE_ICONS.authorYears,
+  eras: LIBRARY_ATTRIBUTE_ICONS.era,
+  inscriptionTypes: LIBRARY_ATTRIBUTE_ICONS.inscriptionType,
+  inscriptionYears: LIBRARY_ATTRIBUTE_ICONS.inscriptionYears,
+  lineCount: LIBRARY_ATTRIBUTE_ICONS.lineCount,
+  materials: LIBRARY_ATTRIBUTE_ICONS.material,
+  printYears: LIBRARY_ATTRIBUTE_ICONS.printYear,
+  provinces: LIBRARY_ATTRIBUTE_ICONS.province,
+  wordCount: LIBRARY_ATTRIBUTE_ICONS.wordCount,
+} as const;
 
 /** Every filter key that holds a list, in the URL's names. */
 export const LIBRARY_LIST_KEYS: ReadonlySet<string> = new Set([

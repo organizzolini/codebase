@@ -19,6 +19,13 @@ import type { LibraryQueryVariables } from "../../graphql/generated/mocks";
 
 const CALLS: LibraryQueryVariables[] = [];
 
+/** The lucide icon an element wears, as its class name, or empty without one. */
+function iconOf(element: HTMLElement): string {
+  const icon = element.querySelector("svg")?.getAttribute("class") ?? "";
+
+  return /lucide-[\w-]+/u.exec(icon)?.[0] ?? "";
+}
+
 /** Opens the Filter menu and picks one attribute, leaving its condition menu open. */
 async function pickAttribute(attribute: string): Promise<void> {
   fireEvent.click(await screen.findByRole("button", { name: /^Filter/u }));
@@ -313,9 +320,45 @@ describe("library toolbar", () => {
     expect(items.map((item) => item.textContent)).toStrictEqual(
       LIBRARY_SORT_OPTIONS.map(({ label }) => label),
     );
-    expect(
-      new Set(LIBRARY_SORT_OPTIONS.map(({ field }) => field)),
-    ).toStrictEqual(new Set(Object.values(LibrarySortField)));
+    expect(LIBRARY_SORT_OPTIONS.map(({ field }) => field)).not.toContain(
+      "TEXT_COLLECTION",
+    );
+    expect(LIBRARY_SORT_OPTIONS.map(({ field }) => field)).not.toContain(
+      "TEXT_EDITION",
+    );
+  });
+
+  it("gives every Sort and Filter attribute its own icon, shared across both menus", async () => {
+    await renderRoute(getRouter(), "/library");
+
+    fireEvent.click(await screen.findByRole("button", { name: "Filter" }));
+    const filterRows = await screen.findAllByRole("option");
+    const filterIcons = new Map(
+      filterRows.map((option) => [option.textContent, iconOf(option)]),
+    );
+    fireEvent.keyDown(document.activeElement ?? document.body, {
+      key: "Escape",
+    });
+    await settle();
+    fireEvent.click(await screen.findByRole("button", { name: "Sort" }));
+    const sortRows = await screen.findAllByRole("menuitemradio");
+    const sortIcons = new Map(
+      sortRows.map((item) => [item.textContent, iconOf(item)]),
+    );
+
+    expect(new Set(filterIcons.values()).size).toBe(filterIcons.size);
+    expect(new Set(sortIcons.values()).size).toBe(sortIcons.size);
+    expect([...filterIcons.values(), ...sortIcons.values()]).not.toContain("");
+    expect(sortIcons.get("Author era")).toBe(filterIcons.get("Era"));
+    expect(sortIcons.get("Text print year")).toBe(
+      filterIcons.get("Print year"),
+    );
+    expect(sortIcons.get("Text line count")).toBe(
+      filterIcons.get("Line count"),
+    );
+    expect(sortIcons.get("Text word count")).toBe(
+      filterIcons.get("Word count"),
+    );
   });
 
   it("adds an ascending sort chip, flips it, and removes it", async () => {

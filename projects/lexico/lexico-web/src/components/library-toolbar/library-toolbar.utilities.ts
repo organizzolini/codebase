@@ -1,3 +1,5 @@
+import { createElement } from "react";
+
 import {
   createFilterQuery,
   createFilterRule,
@@ -9,6 +11,7 @@ import { libraryFilterSchema } from "../library-grid/library-grid-api.constants"
 import {
   LIBRARY_ERA_OPTIONS,
   LIBRARY_FACET_FILTERS,
+  LIBRARY_FILTER_ICONS,
   LIBRARY_LIST_KEYS,
   LIBRARY_LIST_OPERATORS,
   LIBRARY_RANGE_FILTERS,
@@ -19,6 +22,7 @@ import type { LibraryFilterParameters } from "../library-grid/library-grid.types
 import type {
   LibraryFacetKey,
   LibraryFacetsResult,
+  LibraryFilterKey,
 } from "./library-toolbar.types";
 import type {
   FilterField,
@@ -27,6 +31,7 @@ import type {
   FilterQuery,
   FilterRule,
 } from "@codebase/presentation";
+import type { ReactNode } from "react";
 
 // 🔏 Private Functions
 
@@ -37,19 +42,21 @@ export function createLibraryFilterFields(
   facets: LibraryFacetsResult,
   used: ReadonlySet<string>,
 ): FilterField[] {
-  const range = (key: string, label: string): FilterField => ({
+  const range = (key: LibraryFilterKey, label: string): FilterField => ({
     disabled: used.has(key),
+    icon: toIcon(key),
     id: key,
     label,
     operators: LIBRARY_RANGE_OPERATORS,
     type: "range",
   });
   const list = (
-    key: string,
+    key: LibraryFilterKey,
     label: string,
     options: FilterOption[],
   ): FilterField => ({
     disabled: used.has(key),
+    icon: toIcon(key),
     id: key,
     label,
     operators: LIBRARY_LIST_OPERATORS,
@@ -154,6 +161,11 @@ function toFacetOptions(
     label: value,
     value,
   }));
+}
+
+/** The icon of a filter, the same one its Sort counterpart wears. */
+function toIcon(key: LibraryFilterKey): ReactNode {
+  return createElement(LIBRARY_FILTER_ICONS[key], { "aria-hidden": true });
 }
 
 /** A rule on one field, using that field's only operator. */

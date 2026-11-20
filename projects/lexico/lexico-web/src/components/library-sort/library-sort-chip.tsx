@@ -1,10 +1,11 @@
 import { ArrowDown, ArrowUp, X } from "lucide-react";
+import { createElement } from "react";
 
 import { Button, ButtonGroup, ButtonGroupText } from "@codebase/presentation";
 
 import { LibrarySortDirection } from "../../graphql/generated/operations";
 
-import { LIBRARY_SORT_LABELS } from "./library-sort.constants";
+import { describeSort } from "./library-sort.utilities";
 
 import type { LibrarySortField } from "../../graphql/generated/operations";
 import type { ReactNode } from "react";
@@ -39,7 +40,7 @@ export function LibrarySortChip(
   // 🪝 Hooks
 
   // 🏗 Setup
-  const label = LIBRARY_SORT_LABELS.get(sort) ?? sort;
+  const { icon: AttributeIcon, label } = describeSort(sort);
   const isDescending = direction === LibrarySortDirection.Desc;
   const Icon = isDescending ? ArrowDown : ArrowUp;
 
@@ -59,6 +60,12 @@ export function LibrarySortChip(
         aria-label={`Sort by ${label}, ${isDescending ? "descending" : "ascending"}`}
       >
         <ButtonGroupText className="cursor-default bg-background dark:bg-input/30">
+          {AttributeIcon === undefined
+            ? null
+            : createElement(AttributeIcon, {
+                "aria-hidden": true,
+                className: "text-muted-foreground",
+              })}
           Sort: {label}
         </ButtonGroupText>
         <Button

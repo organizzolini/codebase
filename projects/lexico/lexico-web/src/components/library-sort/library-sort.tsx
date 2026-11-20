@@ -80,7 +80,7 @@ export function LibrarySort(
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"
-          className="max-h-96 w-60"
+          className="max-h-96 w-72"
         >
           <DropdownMenuGroup>
             <DropdownMenuLabel>Sort by</DropdownMenuLabel>
@@ -88,11 +88,16 @@ export function LibrarySort(
               onValueChange={handleChange}
               value={sort ?? ""}
             >
-              {LIBRARY_SORT_OPTIONS.map(({ field, label }) => (
+              {LIBRARY_SORT_OPTIONS.map(({ field, icon: Icon, label }) => (
                 <DropdownMenuRadioItem
                   key={field}
+                  className="gap-2"
                   value={field}
                 >
+                  <Icon
+                    aria-hidden="true"
+                    className="text-muted-foreground"
+                  />
                   {label}
                 </DropdownMenuRadioItem>
               ))}

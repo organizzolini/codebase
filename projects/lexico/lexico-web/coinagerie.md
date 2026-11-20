@@ -16,7 +16,9 @@ The words this project uses that the root glossary does not define, regenerated 
 - **element**: Generic DOM node in tests, such as a found link whose href is checked to confirm navigation to a route.
 - **fasti**: Ovid's poem on the Roman calendar, used in tests as a work with numbered books.
 - **fire**: Test verb: fireEvent dispatches a DOM event, such as click or focus, on an element rendered under test.
+- **gem**: Lucide icon marking the material filter and sort attributes.
 - **grammar**: Word in code comments naming grammar-book conventions, such as the short labels and case order in form tables.
+- **hourglass**: Lucide icon marking the era filter and sort attributes.
 - **imperial**:
 - **inert**: HTML attribute set on the closed history sidebar so its links cannot be focused or clicked while it is hidden.
 - **inscription**:
@@ -32,12 +34,15 @@ The words this project uses that the root glossary does not define, regenerated 
 - **perfect**: Verb tense name for the perfect, abbreviated PERF in identifiers and listed among the finite verb tenses.
 - **perseus**:
 - **presentation**: Shared component library package @codebase/presentation, built on shadcn/ui, supplying Card, Badge, Tabs and Button.
+- **printer**: Lucide icon marking the print year filter and sort attributes.
 - **pronunciation**: Spoken form of a lexeme, a list of phonetic variants with their variant label, rendered in the lexeme pronunciations section.
 - **reader**: Route and components that show one text line by line, with a header, font size control, word hint and sibling links.
 - **recognise**:
 - **role**: ARIA role attribute set to navigation on the application sidebar and to search on the search bar form.
 - **selector**: Not used in lexico-web source; tests find elements by role and test id rather than through any selector abstraction.
 - **spot**:
+- **sunrise**: Lucide icon marking the author start year sort attribute.
+- **sunset**: Lucide icon marking the author end year sort attribute.
 - **translation**: An English sense of a lexeme, listed as bullets by LexemeTranslations and matched by English search.
 - **unmount**: Removes a rendered component in a test so the same props can render again from a fresh state.
 - **verb**: Part of speech whose forms render as a conjugation table, routed to the VerbForms component when partOfSpeech is verb.
