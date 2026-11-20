@@ -96,7 +96,10 @@ inherit a larger session model.
    handed base/head commits), review with [ponytail-review](.agents/skills/ponytail-review/SKILL.md),
    and apply feedback via [receiving-code-review](.agents/skills/receiving-code-review/SKILL.md).
 7. **Validate**: Run [validate-code](.agents/skills/validate-code/SKILL.md) gated by
-   [verification-before-completion](.agents/skills/verification-before-completion/SKILL.md).
+   [verification-before-completion](.agents/skills/verification-before-completion/SKILL.md),
+   then run [ponytail-debt](.agents/skills/ponytail-debt/SKILL.md) and list each
+   `shortcut:` comment the branch adds in the pull request's 📝 Details, so no
+   deferral lands without review.
 8. **Integrate**: Use [finishing-a-development-branch](.agents/skills/finishing-a-development-branch/SKILL.md)
    for the merge/PR decision, executing via [submit-changes](.agents/skills/submit-changes/SKILL.md),
    [commit-code](.agents/skills/commit-code/SKILL.md), and
