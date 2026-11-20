@@ -1,3 +1,14 @@
+## 0.0.25 (2026-11-20)
+
+### 🚀 Features
+
+- **conformetry,lexico:** ✨ register every nestjs template instance and conform them ([#2456](https://github.com/organizzolini/codebase/pull/2456), [#2455](https://github.com/organizzolini/codebase/issues/2455))
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.25
+- Updated coinagerie-languages to 0.0.25
+
 ## 0.0.24 (2026-11-17)
 
 ### 🧱 Updated Dependencies

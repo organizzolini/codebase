@@ -1,3 +1,16 @@
+## 0.0.90 (2026-11-20)
+
+### 🚀 Features
+
+- **conformetry,lexico:** ✨ register every nestjs template instance and conform them ([#2456](https://github.com/organizzolini/codebase/pull/2456), [#2455](https://github.com/organizzolini/codebase/issues/2455))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.89
+- Updated conformetry-generation to 0.0.89
+- Updated conformetry-validation to 0.0.88
+- Updated conformetry-output to 0.0.88
+
 ## 0.0.89 (2026-11-17)
 
 ### 🧱 Updated Dependencies
