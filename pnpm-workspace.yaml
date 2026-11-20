@@ -151,7 +151,7 @@ catalog:
   graphql: ^17.1.0
   husky: ^9.1.7
   graphql-codegen-typescript-validation-schema: ^0.19.0
-  ignore: 7.0.14
+  ignore: 7.0.16
   input-otp: ^1.4.2
   jiti: ^2.7.0
   jsdom: ^31.0.0
@@ -175,7 +175,7 @@ catalog:
   next-themes: ^0.4.6
   number-to-words: ^1.2.4
   nx: ^24.0.0
-  oxfmt: ^0.78.0
+  oxfmt: ^0.79.0
   oxlint: ^1.66.0
   pg: ^8.21.0
   pino: ^10.3.1
