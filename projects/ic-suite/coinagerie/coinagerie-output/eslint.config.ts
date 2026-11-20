@@ -18,6 +18,7 @@ export default [
           ignoredDependencies: [
             "@codebase/testing",
             "@golevelup/ts-vitest",
+            "reflect-metadata",
             "vitest",
           ],
           ignoredFiles: ["{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}"],

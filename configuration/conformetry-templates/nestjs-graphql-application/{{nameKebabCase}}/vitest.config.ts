@@ -1,1 +1,1 @@
-export { default } from "{{workspaceRelativePrefix}}configuration/vitest.config.ts";
+export { default } from "@codebase/configuration/vitest.config";

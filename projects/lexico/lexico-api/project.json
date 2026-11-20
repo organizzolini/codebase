@@ -48,10 +48,10 @@
     "spell-check": {},
     "start": {
       "continuous": true,
-      "description": "Start the LexicoApi GraphQL API with restart on change",
+      "description": "Start the LexicoApi GraphQL API",
       "executor": "nx:run-commands",
       "options": {
-        "command": "node --watch --import @swc-node/register/esm-register src/lexico-api.ts",
+        "command": "node --import @swc-node/register/esm-register src/lexico-api.ts",
         "cwd": "{projectRoot}"
       }
     },

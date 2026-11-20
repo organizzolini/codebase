@@ -210,6 +210,10 @@ const config: KnipConfig = {
         // Apollo 5's Express integration, which @nestjs/apollo resolves by
         // name at startup; without it GraphQLModule refuses to boot.
         "@as-integrations/express5",
+        // Imported only by the tests, which knip no longer reads as entries
+        // now that vitest.config.ts is a package-specifier re-export.
+        "@nestjs/typeorm",
+        "typeorm",
       ],
       project: "src/**/*.ts",
     },
