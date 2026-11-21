@@ -1,3 +1,14 @@
+## 0.0.27 (2026-11-21)
+
+### 💅 Refactors
+
+- **configuration,documentation,synchronization:** ♻️ run the agent workflow on superpowers skills ([#2457](https://github.com/organizzolini/codebase/pull/2457), [#2453](https://github.com/organizzolini/codebase/issues/2453))
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.27
+- Updated coinagerie-languages to 0.0.27
+
 ## 0.0.26 (2026-11-20)
 
 ### 🚀 Features

@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 
 import {
+  CLOSING_REFERENCE_PATTERN,
   ISSUE_REFERENCE_PATTERN,
   PULL_REQUEST_RELATED_HEADING,
 } from "./pull-request-body-links.constants";
@@ -103,5 +104,20 @@ export class PullRequestBodyLinksService {
     );
 
     return lines.join(lineEnding);
+  }
+
+  /**
+   * The issues a description closes with a keyword such as `Closes #12`, once
+   * each, in the order written. REST cannot read GitHub's own list of closing
+   * references, and the repository requires the keyword anyway.
+   */
+  public extractClosingIssueNumbers(body: string): number[] {
+    return [
+      ...new Set(
+        [...body.matchAll(CLOSING_REFERENCE_PATTERN)].map((match) =>
+          Number(match.groups?.["issueNumber"]),
+        ),
+      ),
+    ];
   }
 }

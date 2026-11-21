@@ -1,3 +1,14 @@
+## 0.0.76 (2026-11-21)
+
+### 💅 Refactors
+
+- **configuration,documentation,synchronization:** ♻️ run the agent workflow on superpowers skills ([#2457](https://github.com/organizzolini/codebase/pull/2457), [#2453](https://github.com/organizzolini/codebase/issues/2453))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.89
+- Updated codependix-cli to 0.0.90
+
 ## 0.0.75 (2026-11-20)
 
 ### 🚀 Features

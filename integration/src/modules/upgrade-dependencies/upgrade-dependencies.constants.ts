@@ -89,17 +89,6 @@ export const UPGRADE_STEPS: readonly UpgradeStep[] = [
     ],
     label: "Upgrade skills",
   },
-  {
-    // Impeccable writes a hooks manifest for every harness it detects. Codex is
-    // not one this project uses, and its `.codex/` folder is rejected by the
-    // project-structure lint, so it is removed.
-    commands: [
-      ["npx", "impeccable", "update"],
-      ["rm", "-rf", ".codex/"],
-      FORMAT_UPGRADED_FILES,
-    ],
-    label: "Upgrade Impeccable",
-  },
 ];
 
 /** Printed when a failed step's files could not be put back. */

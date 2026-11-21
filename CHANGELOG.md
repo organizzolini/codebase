@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.6.3](https://github.com/organizzolini/codebase/compare/v6.6.2...v6.6.3) (2026-11-21)
+
+### 🐛 Bug Fixes
+
+* **infrastructure:** 🐛 write the OpenRouter preset with the management key ([#2482](https://github.com/organizzolini/codebase/issues/2482)) ([ecccce2](https://github.com/organizzolini/codebase/commit/ecccce2c14d8bb2b8398ba62c922d0f045437050)), closes [#2481](https://github.com/organizzolini/codebase/issues/2481) [#2477](https://github.com/organizzolini/codebase/issues/2477) [#2478](https://github.com/organizzolini/codebase/issues/2478)
+
+## [6.6.2](https://github.com/organizzolini/codebase/compare/v6.6.1...v6.6.2) (2026-11-21)
+
+### 🐛 Bug Fixes
+
+* **compliance,documentation:** 🐛 read GitHub through repo-scoped REST so pull request compliance runs everywhere ([#2480](https://github.com/organizzolini/codebase/issues/2480)) ([bd5080a](https://github.com/organizzolini/codebase/commit/bd5080a840b29d8014a4e9f38f4d9c4125fa9b69)), closes [#2478](https://github.com/organizzolini/codebase/issues/2478) [#2465](https://github.com/organizzolini/codebase/issues/2465) [#2479](https://github.com/organizzolini/codebase/issues/2479)
+* **infrastructure,configuration:** 🐛 add free fallback models to the documentation refresh preset ([#2478](https://github.com/organizzolini/codebase/issues/2478)) ([ee59ae2](https://github.com/organizzolini/codebase/commit/ee59ae21559adf2c9e7f2cc5d01456273251eca5)), closes [#2477](https://github.com/organizzolini/codebase/issues/2477)
+
+### 📝 Documentation
+
+* **documentation:** 📝 let agents choose an issue's Priority themselves ([#2467](https://github.com/organizzolini/codebase/issues/2467)) ([5cee962](https://github.com/organizzolini/codebase/commit/5cee96279b119f48ac13a3455a7241c6cbe02ef9)), closes [#2466](https://github.com/organizzolini/codebase/issues/2466)
+* **documentation:** 📝 refresh ([#2459](https://github.com/organizzolini/codebase/issues/2459)) ([da56160](https://github.com/organizzolini/codebase/commit/da561605592278a9303f3924b13febec6888f97b))
+
+## [6.6.1](https://github.com/organizzolini/codebase/compare/v6.6.0...v6.6.1) (2026-11-21)
+
+### ♻️ Code Refactoring
+
+* **configuration,documentation,synchronization:** ♻️ run the agent workflow on superpowers skills ([#2457](https://github.com/organizzolini/codebase/issues/2457)) ([f5f968c](https://github.com/organizzolini/codebase/commit/f5f968c314d0aa966175d280b7d81a0167593160)), closes [#2453](https://github.com/organizzolini/codebase/issues/2453) [AGENTS.md#agent-workflow](https://github.com/organizzolini/AGENTS.md/issues/agent-workflow)
+
 ## [6.6.0](https://github.com/organizzolini/codebase/compare/v6.5.0...v6.6.0) (2026-11-21)
 
 ### ✨ Features

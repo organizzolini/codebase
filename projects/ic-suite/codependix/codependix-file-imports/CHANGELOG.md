@@ -1,3 +1,9 @@
+## 0.0.87 (2026-11-21)
+
+### 💅 Refactors
+
+- **configuration,documentation,synchronization:** ♻️ run the agent workflow on superpowers skills ([#2457](https://github.com/organizzolini/codebase/pull/2457), [#2453](https://github.com/organizzolini/codebase/issues/2453))
+
 ## 0.0.86 (2026-11-20)
 
 ### 🚀 Features

@@ -8,31 +8,19 @@ export const BLOCK_START_LABEL = "installed-skills-start";
 /** Body of the comment closing the generated block. */
 export const BLOCK_END_LABEL = "installed-skills-end";
 
-/** Files a skill's installer writes outside its folder, by skill name. */
-export const VENDORED_SKILL_PATHS: Readonly<Record<string, readonly string[]>> =
-  {
-    impeccable: [
-      ".claude/agents/impeccable-*",
-      ".github/agents/impeccable-*",
-      ".github/hooks/impeccable.json",
-    ],
-  };
-
-/** Files naming every skill and its vendored files; each needs markers. */
+/** Files naming every installed skill; each needs markers. */
 export const SKILL_EXCLUSION_FILES: SkillExclusionFile[] = [
   {
     commentPrefix: "#",
     filePath: ".gitattributes",
     renderEntry: (skillName) =>
       `.agents/skills/${skillName}/** linguist-vendored`,
-    renderPath: (glob) => `${glob} linguist-vendored`,
     tool: "Linguist",
   },
   {
     commentPrefix: "#",
     filePath: "configuration/ic-suite/.codometerignore",
     renderEntry: (skillName) => `.agents/skills/${skillName}/`,
-    renderPath: (glob) => glob,
     tool: "codometer",
   },
   {
@@ -42,7 +30,6 @@ export const SKILL_EXCLUSION_FILES: SkillExclusionFile[] = [
     commentPrefix: "//",
     filePath: "configuration/lint/markdownlint-cli2.config.jsonc",
     renderEntry: (skillName) => `    ".agents/skills/${skillName}/**",`,
-    renderPath: (glob) => `    "${glob}",`,
     tool: "markdownlint",
   },
   {
@@ -51,7 +38,6 @@ export const SKILL_EXCLUSION_FILES: SkillExclusionFile[] = [
     commentPrefix: "#",
     filePath: "configuration/lint/.prettierignore",
     renderEntry: (skillName) => `**/.agents/skills/${skillName}/**`,
-    renderPath: (glob) => `**/${glob}`,
     tool: "prettier",
   },
   {
@@ -62,16 +48,6 @@ export const SKILL_EXCLUSION_FILES: SkillExclusionFile[] = [
     commentPrefix: "#",
     filePath: "configuration/lint/cspell.config.yaml",
     renderEntry: (skillName) => `  - "**/.agents/skills/${skillName}/**"`,
-    renderPath: (glob) => `  - "**/${glob}"`,
     tool: "cspell",
-  },
-  {
-    // ESLint's markdown rules already skip `.agents/**`, so only the files a
-    // skill installs elsewhere are listed, as string elements of that rule
-    // block's `ignores` array.
-    commentPrefix: "//",
-    filePath: "configuration/eslint.config.ts",
-    renderPath: (glob) => `      "${glob}",`,
-    tool: "ESLint",
   },
 ];

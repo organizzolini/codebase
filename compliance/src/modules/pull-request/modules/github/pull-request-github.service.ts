@@ -2,7 +2,10 @@ import { spawnSync } from "node:child_process";
 
 import { Injectable } from "@nestjs/common";
 
-import { GITHUB_CLI_BINARY } from "./pull-request-github.constants";
+import {
+  GITHUB_CLI_BINARY,
+  jsonListSchema,
+} from "./pull-request-github.constants";
 
 import type { GithubCliResult } from "./pull-request-github.types";
 
@@ -42,6 +45,39 @@ export class PullRequestGithubService {
   /** Whether the `gh` binary can be executed at all. */
   public isAvailable(): boolean {
     return this.run(["--version"]).available;
+  }
+
+  /**
+   * Every page of a repo-scoped list endpoint, flattened into one JSON array.
+   * Reads through REST only, so it works where GraphQL is blocked.
+   */
+  public readList(endpoint: string): GithubCliResult {
+    const result = this.run(["api", "--paginate", "--slurp", endpoint]);
+
+    if (!result.succeeded) {
+      return result;
+    }
+
+    try {
+      const pages = jsonListSchema.safeParse(
+        JSON.parse(result.standardOutput) as unknown,
+      );
+      const items = pages.success
+        ? pages.data.flatMap((page) => {
+            const list = jsonListSchema.safeParse(page);
+
+            return list.success ? list.data : [];
+          })
+        : [];
+
+      return { ...result, standardOutput: JSON.stringify(items) };
+    } catch (error) {
+      return {
+        ...result,
+        standardError: error instanceof Error ? error.message : String(error),
+        succeeded: false,
+      };
+    }
   }
 
   /** Invokes `gh` with these arguments, capturing each stream on its own. */

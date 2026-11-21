@@ -91,7 +91,7 @@
   "keywords": [],
   "license": "MIT",
   "name": "codebase",
-  "packageManager": "pnpm@12.18.0",
+  "packageManager": "pnpm@12.21.0",
   "release": {
     "extends": "./configuration/repository/release.config.cjs"
   },
@@ -114,5 +114,5 @@
     ]
   },
   "type": "module",
-  "version": "6.6.0"
+  "version": "6.6.3"
 }
