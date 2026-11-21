@@ -397,3 +397,11 @@ nx run affirmancy:ollama --configuration=pull-small   # gemma4:e2b
 ```
 
 **Source**: `repo://projects/affirmancy/README.md#L38-L49`, `repo://projects/affirmancy/AGENTS.md#L67-L74`
+
+---
+
+## Related Pages
+
+- [Affirmancy Domain](../domain/affirmancy.md) — Application architecture, subjects, grammar system
+- [External Services](../integrations/external-services.md) — Other service integrations
+- [Local Development](../operations/local-development.md) — Nx, Docker, and devcontainer workflows

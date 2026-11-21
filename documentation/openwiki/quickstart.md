@@ -133,8 +133,8 @@ nx run <project>:vitest:integration
 docker compose -f infrastructure/docker/docker-compose.yml up -d
 
 # Database migrations (examples)
-nx run lexico-api:migration:run
-nx run caelundas-cli:migration:run
+nx run lexico-db:migration:run
+nx run caelundas-db:migration:run
 nx run meanderaw-cli:migration:run
 
 # Dev servers
@@ -167,7 +167,7 @@ pnpm nx affected --target=vitest --base=main
 1. **Open in dev container** — VS Code will prompt to reopen in the container defined by `.devcontainer/local/devcontainer.json` (Docker-outside-of-Docker, Node 24, Python 3.14, pnpm 11, uv, Nx, Terraform, Helm, kubectl)
 2. **Start infrastructure** — `docker compose -f infrastructure/docker/docker-compose.yml up -d` (Postgres, SearxNG, Open WebUI)
 3. **Pull Ollama model** — `nx run affirmancy:ollama --configuration=pull-small` (gemma4:e2b)
-4. **Run database migrations** — `nx run caelundas-db:migration:run`, `nx run lexico-api:migration:run`, `nx run meanderaw-cli:migration:run`
+4. **Run database migrations** — `nx run caelundas-db:migration:run`, `nx run lexico-db:migration:run`, `nx run meanderaw-cli:migration:run`
 5. **Verify setup** — `nx run lexico-web:start` (http://localhost:3000), `nx run caelundas-web:start`, `nx run meanderaw-web:start`
 
 ---
