@@ -47,14 +47,15 @@ export function formatYears(start: null | number, end: null | number): string {
 
 /**
  * The works of a card as one bullet-separated line, each title once, with a
- * trailing ellipsis when the card holds more works than it lists.
+ * trailing "+N more" when the card holds more works than it lists.
  */
 export function previewOf(
   works: readonly LibraryTextRow[],
   workCount: number,
 ): string {
   const titles = [...new Set(works.map(({ text }) => text.title))];
-  return `${titles.join(" • ")}${workCount > works.length ? " • …" : ""}`;
+  const remaining = workCount - works.length;
+  return `${titles.join(" • ")}${remaining > 0 ? ` • +${String(remaining)} more` : ""}`;
 }
 
 /** A year as the era labels it: BCE for negative years. */

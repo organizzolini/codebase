@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "@codebase/presentation";
 
 import { LibraryTextTree } from "../library-text-tree/library-text-tree";
+import { LIBRARY_WORKS_PAGE_SIZE } from "../library-text-tree/library-text-tree-api.constants";
 import { getLibraryWorks } from "../library-text-tree/library-text-tree.constants";
 
 import type {
@@ -37,7 +38,9 @@ export function LibraryAuthorTexts(
 
   // 🪝 Hooks
   const [more, setMore] = useState<LibraryTextRow[]>([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(
+    Math.max(1, Math.ceil(row.works.length / LIBRARY_WORKS_PAGE_SIZE)),
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [hasFailed, setHasFailed] = useState(false);
 
@@ -81,20 +84,24 @@ export function LibraryAuthorTexts(
         rows={works}
         search={query.search}
       />
-      {hasFailed ? (
-        <p role="alert">Could not load more works. Try again.</p>
-      ) : null}
-      {row.workCount > works.length ? (
-        <Button
-          disabled={isLoading}
-          onClick={() => {
-            void handleMore();
-          }}
-          size="sm"
-          variant="outline"
-        >
-          {`Load more works (${String(row.workCount - works.length)} left)`}
-        </Button>
+      {hasFailed || row.workCount > works.length ? (
+        <div className="space-y-3 pb-4">
+          {hasFailed ? (
+            <p role="alert">Could not load more works. Try again.</p>
+          ) : null}
+          {row.workCount > works.length ? (
+            <Button
+              disabled={isLoading}
+              onClick={() => {
+                void handleMore();
+              }}
+              size="sm"
+              variant="outline"
+            >
+              {`Load more works (${String(row.workCount - works.length)} left)`}
+            </Button>
+          ) : null}
+        </div>
       ) : null}
     </div>
   );

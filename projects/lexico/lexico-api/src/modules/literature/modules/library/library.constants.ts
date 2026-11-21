@@ -18,7 +18,7 @@ export const LIBRARY_MAX_PAGE_SIZE = 100;
  * The most top-level works one author card carries. `workCount` still
  * reports every work in scope, and `libraryWorks` pages the rest.
  */
-export const LIBRARY_WORKS_PER_AUTHOR = 50;
+export const LIBRARY_WORKS_PER_AUTHOR = 200;
 
 /** The children one `libraryChildren` page holds when it names no size. */
 export const LIBRARY_CHILDREN_PAGE_SIZE = 100;

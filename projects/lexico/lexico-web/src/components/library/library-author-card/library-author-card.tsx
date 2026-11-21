@@ -13,6 +13,8 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
+  Frame,
+  FramePanel,
 } from "@codebase/presentation";
 
 import { LibraryHighlight } from "../library-highlight/library-highlight";
@@ -126,6 +128,7 @@ export function LibraryAuthorCard(
                 render={
                   <Button
                     aria-label={`${expanded ? "Collapse" : "Expand"} ${author.name}`}
+                    className="aria-expanded:not-hover:bg-transparent"
                     size="icon-sm"
                     variant="ghost"
                   />
@@ -138,14 +141,23 @@ export function LibraryAuthorCard(
               </CollapsibleTrigger>
             </CardAction>
           </CardHeader>
-          <CardContent>
+          <CardContent className="-mb-(--card-spacing)">
             {expanded ? null : (
-              <p
-                className="line-clamp-3 text-muted-foreground"
-                data-testid="library-author-preview"
+              <Frame
+                className="-mx-4"
+                variant="ghost"
+                dense
+                stacked
               >
-                {preview}
-              </p>
+                <FramePanel>
+                  <p
+                    className="text-muted-foreground"
+                    data-testid="library-author-preview"
+                  >
+                    {preview}
+                  </p>
+                </FramePanel>
+              </Frame>
             )}
             <CollapsibleContent>
               <LibraryAuthorTexts

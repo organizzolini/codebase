@@ -295,7 +295,7 @@ describe("library", () => {
     ).toBe("Aeneid • Eclogues");
     expect(
       screen.getAllByTestId("library-author-preview")[1]?.textContent,
-    ).toBe("Metamorphoses • …");
+    ).toBe("Metamorphoses • +59 more");
   });
 
   it("shows the range of authors on view with numbered pages", async () => {

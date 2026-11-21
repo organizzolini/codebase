@@ -86,4 +86,80 @@ describe(LibraryAuthorCard, () => {
 
     expect(toggle.getAttribute("aria-expanded")).toBe("false");
   });
+
+  it("lists every work in a frame without clamping the lines", () => {
+    const titles = ["Aeneid", "Eclogues", "Georgics", "Culex"];
+    render(
+      <LibraryAuthorCard
+        query={{ search: "" }}
+        row={{
+          author: {
+            endYear: null,
+            era: null,
+            fullName: null,
+            id: "a4",
+            name: "Vergil",
+            slug: "vergil",
+            startYear: null,
+          },
+          matches: [],
+          workCount: titles.length,
+          works: titles.map((title) => ({
+            childCount: 0,
+            matches: [],
+            text: {
+              collection: null,
+              edition: null,
+              editors: null,
+              findSpot: null,
+              id: title,
+              inscriptionType: null,
+              lineCount: null,
+              material: null,
+              province: null,
+              slug: title,
+              title,
+              type: "text",
+              wordCount: null,
+            },
+          })),
+        }}
+      />,
+    );
+    const preview = screen.getByTestId("library-author-preview");
+
+    expect(preview.textContent).toBe(titles.join(" • "));
+    expect(preview.className).not.toContain("line-clamp");
+    expect(preview.closest('[data-slot="frame"]')).not.toBeNull();
+  });
+
+  it("keeps the caret transparent once the card is expanded", () => {
+    render(
+      <LibraryAuthorCard
+        query={{ search: "" }}
+        row={{
+          author: {
+            endYear: null,
+            era: null,
+            fullName: null,
+            id: "a5",
+            name: "Ennius",
+            slug: "ennius",
+            startYear: null,
+          },
+          matches: [],
+          workCount: 0,
+          works: [],
+        }}
+      />,
+    );
+    const toggle = screen.getByRole("button", { name: "Expand Ennius" });
+
+    fireEvent.click(toggle);
+
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+    expect(toggle.className).toContain(
+      "aria-expanded:not-hover:bg-transparent",
+    );
+  });
 });
