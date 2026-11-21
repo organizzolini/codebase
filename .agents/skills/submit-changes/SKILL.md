@@ -221,7 +221,7 @@ After completing all phases, print a summary table:
 | Commit   | `<type>(<scope>): <gitmoji> <subject>` / Skipped (clean)  |
 | PR       | Created `<url>` / Already exists `<url>`                  |
 | Labels   | `type:*`, `scope:*` (one per title scope), `source:agent` |
-| Assignee | `@me` — confirmed via the pull request's REST endpoint                        |
+| Assignee | `@me` — confirmed via the pull request's REST endpoint    |
 
 ## Resources
 

@@ -80,11 +80,11 @@ Merge to `main` starts 🦸 Continuous Deployment (`push-releases`, timeout 32 m
 
 A green run does not prove a release; read the `Releases` job's log and the artifacts. When a release is expected, confirm each of these:
 
-| Artifact                      | Check                                                                                             |
-| ----------------------------- | ------------------------------------------------------------------------------------------------- |
-| Codebase tag + GitHub release | `gh api repos/{owner}/{repo}/releases/latest --jq .tag_name`; a `chore(release): 🔖 tag codebase` commit on `main`                 |
-| Package tags                  | `git fetch --tags`, then `<project>@<version>` for each IC-suite package the pull request touched |
-| npm and GitHub Packages       | `npm view <package> version` matches the tag; the GitHub Packages copy exists                     |
+| Artifact                      | Check                                                                                                              |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Codebase tag + GitHub release | `gh api repos/{owner}/{repo}/releases/latest --jq .tag_name`; a `chore(release): 🔖 tag codebase` commit on `main` |
+| Package tags                  | `git fetch --tags`, then `<project>@<version>` for each IC-suite package the pull request touched                  |
+| npm and GitHub Packages       | `npm view <package> version` matches the tag; the GitHub Packages copy exists                                      |
 
 A superseded or timed-out `Releases` job has a known read and action under "Merge and release" in [known-failures.md](references/known-failures.md). Any other failure is a **raise to the user** with the failing step, root cause, and a fix-forward versus revert recommendation. Never revert, force-push, hand-edit versions or changelogs, or tag by hand.
 
