@@ -2,10 +2,9 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
+The words this project uses, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **archaic**: Era value for the earliest period of Latin, one of the author era enum values.
-- **cascade**: Foreign-key behavior in the migrations, ON DELETE CASCADE, so deleting a parent row also removes its dependent rows.
 - **conjunction**: Part-of-speech value for conjunctions, stored in the lexemes part_of_speech enum with the other word classes.
 - **csel**: Collection value for the Corpus Scriptorum Ecclesiasticorum Latinorum editions, one of the text collection enum values.
 - **db**: The database half of the lexico project's name: the `lexico-db` project that owns the entities, data source and migrations.
@@ -15,11 +14,9 @@ The words this project uses that the root glossary does not define, regenerated 
 - **disambiguator**: Numeric lexeme column that, together with lemma, makes each dictionary entry unique and tells homographs apart.
 - **ecclesiastical**: Pronunciation variant value for Ecclesiastical Latin, one of classical, ecclesiastical, or vulgar in the enum.
 - **edition**: The printed edition a text comes from, recorded on the texts table with its editors, publisher, and print year.
-- **generation**: Field generationStrategy in column expectations, one of increment, rowid, or uuid, that the entity service tests check.
 - **imperial**: Era value for the Imperial period of Latin, one of the author era enum values.
 - **inscription**: An epigraphic text from the EDCS database, stored as its own child text under its province with its find-spot, type, and material.
 - **lexeme**: The Lexeme entity, a lexical entry joined to words, which holds part of speech, etymology, and lemma.
-- **lexico**: The Latin dictionary product whose web app, ingestion CLI, and entity packages live under projects/lexico.
 - **literature**: The literature module: Author, Text, Line, and Token entities that tie classical texts to dictionary words.
 - **material**: Column on the texts table holding what an inscription is made of, such as stone or bronze.
 - **medieval**: Era value for the Medieval period of Latin, one of the author era enum values.
@@ -28,8 +25,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **perseus**: Collection value for the Perseus Digital Library texts, one of the text collection enum values.
 - **pronunciation**: Entity holding a lexeme's classical, ecclesiastical, or vulgar sound variants and transcriptions, one row per variant.
 - **recognise**: Spelling used in recognisedWordCount, the number of a text's tokens linked to a dictionary word.
-- **representative**: Fixture entity that contract tests use to check indexes and unique constraints, such as Text's slug column.
-- **role**: Database login reported by current_user in the integration test, which should be the lexico_username role.
 - **spot**: Second word of find-spot, the place an inscription was found, recorded on the texts table.
 - **translation**: Entity for one English sense of a lexeme, held in the translations table with its full-text search column.
 - **verb**: Part-of-speech value and inflection kind for verbs, covered by VerbInflection and the verb conjugation enum.

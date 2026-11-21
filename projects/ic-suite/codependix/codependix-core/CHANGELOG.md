@@ -1,3 +1,9 @@
+## 0.0.86 (2026-11-20)
+
+### 🚀 Features
+
+- **codometer,configuration:** ✨ cap directory breadth and depth, and keep tool configs in configuration folders ([#2452](https://github.com/organizzolini/codebase/pull/2452), [#2450](https://github.com/organizzolini/codebase/issues/2450))
+
 ## 0.0.85 (2026-11-20)
 
 This was a version bump only for codependix-core to align it with other projects, there were no code changes.

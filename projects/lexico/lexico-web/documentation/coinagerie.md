@@ -2,10 +2,8 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
+The words this project uses, regenerated with this project's `coinagerie-check:write` Nx target.
 
-- **alt**: Alternate text on the Lexico logo image, so screen readers announce the brand name rather than the file.
-- **anchor**: URL line parameter naming the line a reader opens at, and the element id each line carries so it can be scrolled into view.
 - **archaic**:
 - **book**: Child text of a work, such as Book 1 of the Aeneid, whose history label follows its parent work's title.
 - **csel**:
@@ -13,7 +11,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **dictionary**: Latin reference the app searches in Latin and English, shown as the sidebar brand and as each lexeme entry.
 - **disambiguator**: Float field on GraphQL search results giving a numeric index that tells apart lexemes sharing a lemma.
 - **edition**:
-- **element**: Generic DOM node in tests, such as a found link whose href is checked to confirm navigation to a route.
 - **fasti**: Ovid's poem on the Roman calendar, used in tests as a work with numbered books.
 - **fire**: Test verb: fireEvent dispatches a DOM event, such as click or focus, on an element rendered under test.
 - **gem**: Lucide icon marking the material filter and sort attributes.
@@ -25,7 +22,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **large**: Largest reader font size, one of small, medium and large, remembered in browser storage.
 - **letter**: Count of extra letters in a fuzzy lemma match, shown in the tooltip for a prefix match beyond the query.
 - **lexeme**: Dictionary entry for one lemma with its forms, pronunciations and etymology, the core record every card shows.
-- **lexico**:
 - **literature**: GraphQL type for literature search results, present in generated mocks and operations but not yet rebuilt as a page.
 - **material**:
 - **medieval**:
@@ -34,18 +30,13 @@ The words this project uses that the root glossary does not define, regenerated 
 - **observer**: Browser IntersectionObserver the reader watches its load-more button with, so the next page loads as it scrolls into view.
 - **perfect**: Verb tense name for the perfect, abbreviated PERF in identifiers and listed among the finite verb tenses.
 - **perseus**:
-- **presentation**: Shared component library package @codebase/presentation, built on shadcn/ui, supplying Card, Badge, Tabs and Button.
 - **printer**: Lucide icon marking the print year filter and sort attributes.
 - **pronunciation**: Spoken form of a lexeme, a list of phonetic variants with their variant label, rendered in the lexeme pronunciations section.
-- **reader**: Route and components that show one text line by line, with a header, font size control, word hint and sibling links.
 - **recognise**:
-- **role**: ARIA role attribute set to navigation on the application sidebar and to search on the search bar form.
-- **selector**: Not used in lexico-web source; tests find elements by role and test id rather than through any selector abstraction.
 - **spot**:
 - **sunrise**: Lucide icon marking the author start year sort attribute.
 - **sunset**: Lucide icon marking the author end year sort attribute.
 - **translation**: An English sense of a lexeme, listed as bullets by LexemeTranslations and matched by English search.
-- **unmount**: Removes a rendered component in a test so the same props can render again from a fresh state.
 - **verb**: Part of speech whose forms render as a conjugation table, routed to the VerbForms component when partOfSpeech is verb.
 - **vergil**:
 - **visible**: Tailwind overflow-visible class on the search bar card, so content can extend past the card edges.

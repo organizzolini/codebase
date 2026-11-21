@@ -1,3 +1,14 @@
+## 0.0.87 (2026-11-20)
+
+### 🚀 Features
+
+- **codometer,configuration:** ✨ cap directory breadth and depth, and keep tool configs in configuration folders ([#2452](https://github.com/organizzolini/codebase/pull/2452), [#2450](https://github.com/organizzolini/codebase/issues/2450))
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.88
+- Updated callidescope-core to 0.0.87
+
 ## 0.0.86 (2026-11-20)
 
 ### 🧱 Updated Dependencies

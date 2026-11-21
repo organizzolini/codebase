@@ -33,7 +33,7 @@ The `lint-code` Nx target hangs every quality tool off `dependsOn`, so one invoc
 | `markdownlint` | Markdown linting | `configuration/lint/markdownlint-cli2.config.jsonc` |
 | `yamllint` | YAML linting | `configuration/lint/yamllint.yaml` |
 
-`guard-code` also runs `coinagerie-check`, which judges each project's glossary (and the root `GLOSSARY.md`) against the words the code uses. Its `write` pass is what you run to repair it: a new word gains a bare `- **word**:` bullet, which you then define with the [coinagerie-define skill](../coinagerie-define/SKILL.md), and a word the code no longer uses loses its bullet and definition. Never hand-edit the generated listing.
+`guard-code` also runs `coinagerie-check`, which judges each project's glossary against the words the code uses. Its `write` pass is what you run to repair it: a new word gains a bare `- **word**:` bullet, which you then define with the [coinagerie-define skill](../coinagerie-define/SKILL.md), and a word the code no longer uses loses its bullet and definition. Never hand-edit the generated listing.
 
 ## Validation Workflow
 
