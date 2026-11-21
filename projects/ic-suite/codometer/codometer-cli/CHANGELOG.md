@@ -1,3 +1,16 @@
+## 0.0.89 (2026-11-21)
+
+### 💅 Refactors
+
+- **configuration,documentation,synchronization:** ♻️ run the agent workflow on superpowers skills ([#2457](https://github.com/organizzolini/codebase/pull/2457), [#2453](https://github.com/organizzolini/codebase/issues/2453))
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.88
+- Updated codometer-measurement to 0.0.88
+- Updated codometer-output to 0.0.88
+- Updated codometer-core to 0.0.88
+
 ## 0.0.88 (2026-11-20)
 
 ### 🚀 Features
