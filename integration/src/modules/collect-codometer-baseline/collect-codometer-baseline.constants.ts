@@ -3,11 +3,8 @@
 /** Where the baseline of codometer reports is gathered and downloaded to. */
 export const BASELINE_DIRECTORY = "codometer-baseline";
 
-/** The reports a measured project writes beside its sources. */
-export const REPORT_FILE_NAMES: ReadonlySet<string> = new Set([
-  "codometer-report.json",
-  "codometer-weigh-report.json",
-]);
+/** The report every measured project writes beside its sources. */
+export const REPORT_FILE_NAME = "codometer-report.json";
 
 /** Directories that hold no project's own report, so the search skips them. */
 export const SKIPPED_DIRECTORIES: ReadonlySet<string> = new Set([

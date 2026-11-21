@@ -61,7 +61,6 @@ type-coverage-report.txt
 # Bundle Size 📦
 codometer-report.json
 codometer-limit-report.json
-codometer-weigh-report.json
 .bundle-baseline
 .bundle-report.md
 .pull-request-body.md

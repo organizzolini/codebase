@@ -38,13 +38,12 @@ describe(CollectCodometerBaselineService, () => {
 
     writeFileTree(root, { "projects/a/codometer-report.json": "a" });
     writeFileTree(root, { "projects/ic-suite/b/c/codometer-report.json": "c" });
-    writeFileTree(root, { "projects/a/codometer-weigh-report.json": "w" });
     writeFileTree(root, { "projects/a/other.json": "not a report" });
 
     const report = service.collect(root);
 
     expect(report.lines).toStrictEqual([
-      "📦 Gathered 3 codometer reports into codometer-baseline",
+      "📦 Gathered 2 codometer reports into codometer-baseline",
     ]);
     expect(
       fs.readFileSync(

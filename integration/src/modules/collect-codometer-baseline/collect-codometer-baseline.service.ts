@@ -8,7 +8,7 @@ import {
   collectedMessage,
   EXAMPLES_PREFIX,
   NO_REPORTS_MESSAGE,
-  REPORT_FILE_NAMES,
+  REPORT_FILE_NAME,
   SKIPPED_DIRECTORIES,
 } from "./collect-codometer-baseline.constants";
 
@@ -46,7 +46,7 @@ export class CollectCodometerBaselineService {
         reports.push(...this.findReports(root, relative));
       } else if (
         entry.isFile() &&
-        REPORT_FILE_NAMES.has(entry.name) &&
+        entry.name === REPORT_FILE_NAME &&
         !relative.startsWith(EXAMPLES_PREFIX)
       ) {
         reports.push(relative);

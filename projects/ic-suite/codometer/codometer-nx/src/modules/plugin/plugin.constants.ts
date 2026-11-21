@@ -19,7 +19,7 @@ export const LIMIT_REPORT_PATH = "codometer-limit-report.json";
 export const LIMIT_ONLY_INPUTS = ["codebase"] as const;
 
 /** Where a weigh run leaves the report the pull request's section reads. */
-export const WEIGH_REPORT_PATH = "codometer-weigh-report.json";
+export const WEIGH_REPORT_PATH = "codometer-report.json";
 
 /** Where a weigh run writes the badge block, when asked to. */
 export const WEIGH_MARKDOWN_PATH = "documentation/codometer.md";

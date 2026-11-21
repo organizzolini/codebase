@@ -122,22 +122,6 @@ describe(ChangesService, () => {
     );
   });
 
-  it("reads a project's weigh report as well as the default report", () => {
-    const workingDirectory = writeWorkspace({
-      "packages/logging/codometer-weigh-report.json": buildReport([
-        buildMetricTarget({ value: 50 }),
-      ]),
-    });
-
-    service.collect({ baselineDirectory: undefined, workingDirectory });
-
-    expect(logger.debug).toHaveBeenCalledWith(
-      "📂 Found the codometer reports",
-      undefined,
-      { baseline: 0, current: 1 },
-    );
-  });
-
   it("reads a report from every workspace directory", () => {
     const workingDirectory = writeWorkspace({
       "applications/lexico/codometer-report.json": buildReport([

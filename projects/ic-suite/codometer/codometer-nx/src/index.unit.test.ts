@@ -120,16 +120,16 @@ describe("codometerPlugin", () => {
                   inputs: [
                     "production",
                     "^production",
-                    "!{projectRoot}/codometer-weigh-report.json",
+                    "!{projectRoot}/codometer-report.json",
                     "{workspaceRoot}/a.json",
                   ],
                   options: {
                     command: "codometer",
                     config: "codometer.config.ts",
-                    outputJson: "codometer-weigh-report.json",
+                    outputJson: "codometer-report.json",
                   },
                   outputs: [
-                    "{projectRoot}/codometer-weigh-report.json",
+                    "{projectRoot}/codometer-report.json",
                     "{projectRoot}/documentation/codometer.md",
                   ],
                 },
