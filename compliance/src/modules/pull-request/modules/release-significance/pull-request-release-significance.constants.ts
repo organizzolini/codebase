@@ -56,5 +56,5 @@ export const releaseConfigSchema = z.object({
   plugins: z.array(pluginEntrySchema),
 });
 
-/** The shape the REST list of a pull request's commits is read as. */
+/** The shape a REST list of a pull request's commits reads as. */
 export const pullRequestCommitsSchema = z.array(z.unknown());
