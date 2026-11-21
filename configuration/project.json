@@ -96,7 +96,7 @@
     "build-projects": {
       "cache": false,
       "dependsOn": ["codometer"],
-      "description": "Measure the repository and gate the limits it declares over itself. An nx:noop aggregator, the way every project's `build-projects` is. `dependsOn` names `codometer` alone rather than inheriting the targetDefault's `build`: this project builds nothing, and this run measures source. It exists so 👷 Make Projects reaches the repository itself — the workflows under .github belong to no project, so without this nothing gates their comment budgets.",
+      "description": "Measure the repository and gate the limits it declares over itself. An nx:noop aggregator, the way every project's `build-projects` is. `dependsOn` names `codometer` alone rather than inheriting the targetDefault's `build`: this project builds nothing, and this run measures source. It exists so 👷 Build reaches the repository itself — the workflows under .github belong to no project, so without this nothing gates their comment budgets.",
       "executor": "nx:noop"
     },
     "callidescope": {

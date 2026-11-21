@@ -151,12 +151,12 @@ the report from a branch. `configuration:codometer` sits outside that list for t
 same reason. The depth gate is therefore named directly, alongside
 `lint-code` and inside the same `nx affected` invocation, in both places
 that gate: the
-[🧑‍🔧 Lint Codebase](../../../../.github/workflows/lint-code.yml) workflow, so it
+[🔭 Callidescope Restrict](../../../../.github/workflows/continuous-integration.yml) check, so it
 runs on every pull request, and
 [`configuration/repository/lint-staged.config.ts`](../../../configuration/lint-staged.config.ts),
 so it runs on every commit. Depth reads source and needs no build, which is
-what keeps it in the commit path where codometer's limits — read from compiled
-output — cannot go.
+what keeps it in the commit path where codometer's size limits — read from
+compiled output — cannot go.
 
 ### Two failures no flag turns off
 

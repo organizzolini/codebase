@@ -217,7 +217,7 @@
     },
     "trivy-config": {
       "cache": true,
-      "description": "Scan Terraform infrastructure code for misconfigurations using Trivy. Identical to what the Secure Code workflow runs, so a local run reproduces CI exactly. Requires trivy on PATH (the devcontainer installs it; otherwise `brew install trivy`).",
+      "description": "Scan Terraform infrastructure code for misconfigurations using Trivy. Identical to what the Secure check runs, so a local run reproduces CI exactly. Requires trivy on PATH (the devcontainer installs it; otherwise `brew install trivy`).",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/terraform/**/*.tf",
