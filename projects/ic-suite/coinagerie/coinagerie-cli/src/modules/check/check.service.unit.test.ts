@@ -23,12 +23,14 @@ function configurationOf(
   outputs: ResolvedCoinagerieOutput[],
 ): ResolvedCoinagerieConfiguration {
   return {
-    configurationPath: "/workspace/packages/a/coinagerie.config.ts",
+    configurationPath:
+      "/workspace/packages/a/configuration/coinagerie.config.ts",
     directory: "/workspace/packages/a",
     exclude: { paths: [], patterns: [], words: [] },
     fold: undefined,
     include: [],
     outputs,
+    unfolded: [],
   };
 }
 
@@ -73,10 +75,11 @@ describe(CheckService, () => {
   const args = {
     directory: "/workspace/packages/a",
     mode: "check",
+    projectConfigurationPath: "configuration/coinagerie.config.ts",
     workspaceRoot: "/workspace",
   } as const;
 
-  it("loads the configuration from the project's own directory", async () => {
+  it("loads the configuration at the given path, rooted at the project's own directory", async () => {
     expect.hasAssertions();
 
     loadConfiguration.mockResolvedValue(
@@ -90,8 +93,9 @@ describe(CheckService, () => {
     const verdict = await service.run(args);
 
     expect(loadConfiguration).toHaveBeenCalledWith({
-      configurationPath: undefined,
+      configurationPath: "configuration/coinagerie.config.ts",
       overrides: {},
+      rootDirectory: "/workspace/packages/a",
       workingDirectory: "/workspace/packages/a",
     });
     expect(verdict.ok).toBe(true);

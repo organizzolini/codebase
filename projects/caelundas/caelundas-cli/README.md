@@ -83,7 +83,7 @@ aspect is in orb, the weeks a planet is retrograde.
 | Family | Events |
 | ------ | ------ |
 | Aspects | Major (conjunct, opposite, sextile, square, trine), minor, and harmonic aspects between the Sun, Moon, planets, Chiron, Lilith, four asteroids, the north lunar node, and the lunar apogee; forming, exact, and dissolving moments, and the span between them |
-| Compound aspects | Triple (grand trine, hammer, T-square, yod), quadruple (boomerang, butterfly, cradle, grand cross, hourglass, kite, mystic rectangle), pentagram, hexagram, and stelliums of four or more bodies |
+| Compound aspects | Triple (grand trine, hammer, T-square, yod), quadruple (boomerang, butterfly, cradle, grand cross, hourglass, kite, mystic rectangle), pentagram, hexagram, and stelliums of three or more bodies |
 | Monthly lunar cycle | The eight Moon phases, each as an instant and as the span until the next |
 | Planetary phases | Mercury, Venus, and Mars: conjunctions, Mars's opposition, the greatest elongations of Mercury and Venus, brightest, rise and set, and morning- and evening-star visibility spans |
 | Eclipses | Solar and lunar: begin, maximum, and end |
@@ -141,10 +141,10 @@ not halfway, and its extremes miss New and Full Moon by up to half an hour.
 
 ### Stelliums
 
-A stellium is four or more bodies that are all in conjunction with one
+A stellium is three or more bodies that are all in conjunction with one
 another. Conjunction uses the aspect orb, 8°, and every pair must be within
 it, not just a chain of neighbors. Detection finds each maximal clique of
-pairwise conjunct bodies with four or more members.
+pairwise conjunct bodies with three or more members.
 
 ### Ingresses
 
@@ -301,17 +301,17 @@ src/
 └── modules/
     ├── caelundas/           # Root command — the pipeline
     ├── input/               # Coordinate and date validation, timezone lookup
-    ├── ephemeris/           # Swiss Ephemeris access: positions, horizons, phenomena
-    ├── perfective/          # Exact-moment detection across every event service
+    ├── ephemeris/           # Swiss Ephemeris access: positions, horizons, phenomena;
+    │                        #   child modules include datetime/, math/, ephemeris-download/
+    ├── perfective/          # Exact-moment detection across every event service;
+    │                        #   child modules: eclipses/, phases/, retrogrades/, ingresses/,
+    │                        #   twilights/, daily-cycles/, annual-solar-cycle/, monthly-lunar-cycle/
+    ├── aspects/             # Aspect detection; child modules per aspect family, plus stellium/
     ├── progressive/         # Spans derived from those moments
     ├── night-sky/           # Stars and constellation figures for the web's night sky
     ├── calendar-events/     # Upserting and range queries over stored calendar events
     ├── tags/                # Resolving raw tag strings to nodes of the tag tree
-    ├── calendar/            # iCalendar and JSON rendering and output
-    ├── datetime/, math/     # Time stepping and angular arithmetic
-    └── aspects/, phases/, eclipses/, retrogrades/, ingresses/,
-        annual-solar-cycle/, monthly-lunar-cycle/, daily-cycles/,
-        twilights/, stellium/, …   # One service per event family
+    └── calendar/            # iCalendar and JSON rendering and output
 ```
 
 ## Start
@@ -358,4 +358,4 @@ MIT — see [LICENSE](../../../LICENSE).
 
 ## 👔 Conformetry
 
-This project was generated from the [nestjs-command-project](../../../configuration/conformetry-templates/nestjs-command-project) conformetry template.
+This project was generated from the [nestjs-command-project](../../../configuration/ic-suite/conformetry-templates/nestjs-command-project) conformetry template.

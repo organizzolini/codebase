@@ -1,6 +1,4 @@
-Commands that run in CI:
-`publishable-packages-gate` (runs the publishable-packages check only when an
-ic-suite package is affected) and the release steps `version-packages`, `tag-codebase`, `tag-packages`,
+Commands that run in CI: the release steps `version-packages`, `tag-codebase`, `tag-packages`,
 `publish-packages`, and `link-packages`. See
 [AGENTS.md](AGENTS.md).
 

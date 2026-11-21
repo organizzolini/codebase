@@ -1,8 +1,8 @@
-import type { CalendarNavigation } from "../../components/calendar-navigation-group/calendar-navigation-group.types";
+import type { CalendarNavigation } from "../../components/calendar-controls/calendar-navigation-group/calendar-navigation-group.types";
 import type {
   CalendarViewName,
   TimelineScale,
-} from "../../components/events-calendar/calendar-views.types";
+} from "../../components/calendar-display/events-calendar/components/calendar-views/calendar-views.types";
 
 // 🏷️ Types
 

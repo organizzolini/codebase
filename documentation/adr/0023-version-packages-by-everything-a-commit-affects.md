@@ -10,7 +10,7 @@ packages a commit belongs to with the same logic as `nx affected`:
 - `nx.json`, which Nx treats as touching every project;
 - any `{workspaceRoot}` file a target declares as an input, such as the cspell
   dictionaries, `configuration/eslint.config.ts` and
-  `configuration/codebase-structure.json`.
+  `configuration/lint/codebase-structure.json`.
 
 So a releasing commit (`feat`, `fix`, `refactor`, `perf` or `build`) that only
 edits a shared lint config gives all 28 packages a patch. We keep that: a

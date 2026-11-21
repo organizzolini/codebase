@@ -5,9 +5,9 @@ import {
   expectModuleProvides,
 } from "@codebase/testing/nestjs";
 
-import { ConfigurationLoaderService } from "./configuration-loader.service";
 import { ConfigurationModule } from "./configuration.module";
 import { ConfigurationService } from "./configuration.service";
+import { ConfigurationLoaderService } from "./modules/loader/configuration-loader.service";
 
 describe(ConfigurationModule, () => {
   it("exports and provides ConfigurationService", () => {

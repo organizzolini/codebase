@@ -1,4 +1,4 @@
-import type { CalendarViewName } from "../../components/events-calendar/calendar-views.types";
+import type { CalendarViewName } from "../../components/calendar-display/events-calendar/components/calendar-views/calendar-views.types";
 
 // ♟️ Constants
 

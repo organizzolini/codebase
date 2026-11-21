@@ -1,9 +1,7 @@
 // ♟️ Constants
 
-import { CONFIGURATION_FILE_NAMES } from "@coinagerie/configuration";
-
-/** Loader file names as a glob; matches rerun the plugin. */
-export const CONFIGURATION_GLOB = `**/{${CONFIGURATION_FILE_NAMES.join(",")}}`;
+/** Every manifest that can make a folder a project. */
+export const PROJECT_MANIFEST_GLOB = "**/{project.json,package.json}";
 
 /** The file that makes a folder an Nx project on its own. */
 export const PROJECT_JSON_FILENAME = "project.json";

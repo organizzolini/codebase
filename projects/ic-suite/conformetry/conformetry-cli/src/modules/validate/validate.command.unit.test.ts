@@ -16,7 +16,7 @@ import type {
   TemplateDefinition,
 } from "@conformetry/configuration";
 
-const CONFIGURATION_PATH = "configuration/conformetry.config.ts";
+const CONFIGURATION_PATH = "configuration/ic-suite/conformetry.config.ts";
 
 const CONFIGURATION: ConformetryConfiguration = [
   {
@@ -28,7 +28,7 @@ const CONFIGURATION: ConformetryConfiguration = [
 ];
 
 const INSTANCE: Instance = {
-  nameStem: "gears",
+  name: "gears",
   path: "/w/packages/widgets/src/modules",
 };
 
@@ -39,7 +39,7 @@ const TEMPLATE: TemplateDefinition = {
 };
 
 const GADGET_INSTANCE: Instance = {
-  nameStem: "cogs",
+  name: "cogs",
   path: "/w/applications/gadgets/src/modules",
 };
 

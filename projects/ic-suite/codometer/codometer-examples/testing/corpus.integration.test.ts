@@ -28,12 +28,15 @@ import {
 let corpusReport: CodometerReport;
 
 describe("the sample corpus and the counts its guides quote", () => {
-  beforeAll(() => {
-    corpusReport = measure(["--config", packageConfiguration], corpusDirectory);
+  beforeAll(async () => {
+    corpusReport = await measure(
+      ["--config", packageConfiguration],
+      corpusDirectory,
+    );
   });
 
   describe("the sample corpus", () => {
-    it("holds twenty-eight files across twelve language folders", () => {
+    it("holds twenty-eight files across twelve languages", () => {
       const report = corpusReport;
       const codebase = readTarget(report, "codebase");
 
@@ -41,7 +44,7 @@ describe("the sample corpus and the counts its guides quote", () => {
       // this target — a dot file discovery walks into and counts like any other.
       expect(codebase.files).toBe(28);
       expect(codebase.empty).toBe(false);
-      expect(readMetric(report, "codebase", "folders")).toBe(12);
+      expect(readMetric(report, "codebase", "folders")).toBe(16);
       expect(readMetric(report, "codebase", "sourceFiles")).toBe(18);
     });
 
@@ -103,11 +106,11 @@ describe("the sample corpus and the counts its guides quote", () => {
       expect(readMetric(report, "codebase", "javascript.files")).toBe(2);
     });
 
-    it("excludes dot files from a target unless a glob spells one out", () => {
+    it("excludes dot files from a target unless a glob spells one out", async () => {
       // This package's own configuration gates a `Corpus` target declared as
       // `corpus/**`. It holds the 27 samples and not the `.gitignore` beside
       // them, while the codebase target above counts all 28.
-      const report = measure(
+      const report = await measure(
         ["--config", packageConfiguration],
         packageDirectory,
       );
@@ -143,7 +146,7 @@ describe("the sample corpus and the counts its guides quote", () => {
 
       // The JSON analyzer's share, over the envelope: the notebook is a JSON
       // document, so its node count and depth come from the same parser that
-      // measures `corpus/json/catalog.json`.
+      // measures `corpus/configuration/json/catalog.json`.
       expect(readJupyter("totalNodes")).toBe(74);
       expect(readJupyter("maxDepth")).toBe(8);
 
@@ -186,21 +189,19 @@ describe("the sample corpus and the counts its guides quote", () => {
       expect(readPython("decorators")).toBe(2);
     });
 
-    it("agrees with the default interpreter where python3 is adequate", () => {
-      const named = measure(
+    it("agrees with the default interpreter where python3 is adequate", async () => {
+      const named = await measure(
         ["--config", exampleConfiguration("python", "uv.config.ts")],
         corpusDirectory,
       );
-      const byDefault = measure(
+      const byDefault = await measure(
         [
           "--config",
           exampleConfiguration("python", "default-interpreter.config.ts"),
         ],
         corpusDirectory,
       );
-      const readPython = (
-        report: ReturnType<typeof measure>,
-      ): Record<string, number> =>
+      const readPython = (report: CodometerReport): Record<string, number> =>
         Object.fromEntries(
           ["classes", "docstrings", "files", "functions", "protocols"].map(
             (metric) => [
@@ -216,8 +217,8 @@ describe("the sample corpus and the counts its guides quote", () => {
       expect(readPython(byDefault)).toStrictEqual(readPython(named));
     });
 
-    it("reports a corpus with no Python when the interpreter is unreachable", () => {
-      const run = runCodometer(
+    it("reports a corpus with no Python when the interpreter is unreachable", async () => {
+      const run = await runCodometer(
         [
           "--config",
           exampleConfiguration("python", "unreachable-interpreter.config.ts"),
@@ -226,9 +227,7 @@ describe("the sample corpus and the counts its guides quote", () => {
         ],
         corpusDirectory,
       );
-      const report = JSON.parse(run.standardOutput) as ReturnType<
-        typeof measure
-      >;
+      const report = JSON.parse(run.standardOutput) as CodometerReport;
 
       // Not an error — a warning, a clean exit, and a report that describes a
       // repository with no Python in it.
@@ -249,9 +248,9 @@ describe("the sample corpus and the counts its guides quote", () => {
   describe("custom statistics", () => {
     let counters: Record<string, number>;
 
-    beforeAll(() => {
+    beforeAll(async () => {
       counters = readCounters(
-        measure(
+        await measure(
           [
             "--config",
             exampleConfiguration("statistics", "codometer.config.ts"),

@@ -45,7 +45,7 @@
         ],
         "main": "projects/common/observability/src/index.ts",
         "outputPath": "projects/common/observability/dist",
-        "tsConfig": "projects/common/observability/tsconfig.build.json"
+        "tsConfig": "projects/common/observability/configuration/tsconfig.build.json"
       },
       "outputs": ["{options.outputPath}"]
     },
@@ -53,6 +53,7 @@
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "eslint": {},
     "format-code": {},
     "guard-code": {},
     "knip": {},
@@ -67,8 +68,8 @@
       "inputs": [
         "{projectRoot}/**/*.ts",
         "{projectRoot}/**/*.tsx",
+        "{projectRoot}/configuration/tsconfig.json",
         "{projectRoot}/package.json",
-        "{projectRoot}/tsconfig.json",
         "shared-globals",
         "testing-source",
         {
@@ -78,6 +79,7 @@
     },
     "typecheck": {},
     "typecheck-code": {},
+    "vitest": {},
     "yaml-lint": {}
   }
 }

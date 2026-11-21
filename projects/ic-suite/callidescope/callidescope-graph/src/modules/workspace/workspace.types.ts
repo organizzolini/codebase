@@ -21,12 +21,14 @@ export interface BuildProjectFileFilterArguments {
 export interface DiscoverProjectsArguments {
   /**
    * Project directories to trace, workspace-relative or absolute. Every
-   * directory under the workspace root holding its own `tsconfig.json`
+   * directory under the workspace root holding a file at `projectTsconfigPath`
    * when empty.
    */
   readonly directories: readonly string[];
-  /** Judges each project by its `tsconfig.json`, so excluded projects are never read, not even to be refused. */
+  /** Judges each project by its tsconfig, so excluded projects are never read, not even to be refused. */
   readonly fileFilter?: FileFilter | undefined;
+  /** Where each project keeps its tsconfig, relative to the project root. Required; nothing is searched for. */
+  readonly projectTsconfigPath: string;
   readonly workspaceRoot: string;
 }
 
@@ -51,9 +53,9 @@ export interface WalkImportedProjectClosureArguments {
   readonly workspaceProjects: readonly WorkspaceProject[];
 }
 
-/** One project discovered from a directory holding its own `tsconfig.json`. */
+/** One project discovered from a directory holding a tsconfig at `projectTsconfigPath`. */
 export interface WorkspaceProject {
-  /** Absolute path to the project's `tsconfig.json`. */
+  /** Absolute path to the project's tsconfig. */
   readonly configurationPath: string;
   /** Whether the project's root holds a `package.json`, read once at discovery. Consulted per path, so it is data, not a filesystem read. */
   readonly hasPackageManifest: boolean;

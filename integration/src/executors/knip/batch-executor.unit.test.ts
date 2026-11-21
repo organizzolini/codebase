@@ -22,7 +22,7 @@ vi.mock("../../modules/process-runner/process-runner.service", () => ({
 }));
 
 /** The configuration every task of a test names. */
-const CONFIGURATION = "configuration/knip.config.ts";
+const CONFIGURATION = "configuration/typescript/knip.config.ts";
 
 /** The arguments of a batch of one `knip` task per project. */
 function buildArguments(

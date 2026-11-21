@@ -24,7 +24,7 @@
         "generatePackageJson": false,
         "main": "projects/lexico/lexico-db/src/index.ts",
         "outputPath": "projects/lexico/lexico-db/dist",
-        "tsConfig": "projects/lexico/lexico-db/tsconfig.build.json"
+        "tsConfig": "projects/lexico/lexico-db/configuration/tsconfig.build.json"
       },
       "outputs": ["{options.outputPath}"]
     },
@@ -32,12 +32,17 @@
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "eslint": {},
     "format-code": {},
     "guard-code": {},
     "knip": {},
     "lint-code": {},
     "markdown-lint": {},
-    "migration": { "options": { "module": "src/modules/database" } },
+    "migration": {
+      "options": {
+        "module": "src/modules/database"
+      }
+    },
     "oxfmt": {},
     "oxlint": {},
     "prettier": {},
@@ -49,6 +54,7 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "vitest": {},
     "yaml-lint": {}
   }
 }

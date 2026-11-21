@@ -223,9 +223,8 @@ The affected-run steps are commands of the
 | Command | What it does |
 | ------- | ------------ |
 | `bound-base-to-push` | On a CI push with `nx-base: push-before`, after the install, moves `NX_BASE` to the push's previous tip (`BEFORE`), keeping it when that is empty, all zeros, or not an ancestor of `NX_HEAD` |
-| `publishable-packages-gate` | Runs `validation:verify-publishable-packages` whole when an ic-suite package or `validation` is affected and skips otherwise |
 
-Both read everything from the environment, so either can be run
+It reads everything from the environment, so it can be run
 locally:
 
 ```bash

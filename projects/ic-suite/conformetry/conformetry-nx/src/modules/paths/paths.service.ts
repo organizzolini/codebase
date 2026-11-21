@@ -202,12 +202,12 @@ export class PathsService {
     moduleName: string;
   }): string | undefined {
     const instance = args.instances.find((entry) => {
-      return entry.nameStem === args.moduleName;
+      return entry.name === args.moduleName;
     });
 
     return instance === undefined
       ? undefined
-      : path.join(instance.path, instance.nameStem);
+      : path.join(instance.path, instance.name);
   }
 
   /**

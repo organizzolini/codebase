@@ -26,7 +26,8 @@ export function groupTasks(
 
   for (const [id, task] of Object.entries(taskGraph.tasks)) {
     const root = context.projectGraph.nodes[task.target.project]?.data.root;
-    const { command, write }: CheckExecutorOptions = options[id] ?? overrides;
+    const { command, projectConfigurationPath, write }: CheckExecutorOptions =
+      options[id] ?? overrides;
 
     if (root === undefined) {
       failures[id] = {
@@ -37,8 +38,13 @@ export function groupTasks(
     }
 
     const mode = write === true ? "write" : "check";
-    const key = `${mode}\0${command}`;
-    const group = groups.get(key) ?? { command, mode, tasks: [] };
+    const key = `${mode}\0${projectConfigurationPath}\0${command}`;
+    const group = groups.get(key) ?? {
+      command,
+      mode,
+      projectConfigurationPath,
+      tasks: [],
+    };
 
     group.tasks.push({ directory: root, id });
     groups.set(key, group);
@@ -106,7 +112,7 @@ function buildCommand(group: CheckTaskGroup): string {
     directories += ` ${quote(directory)}`;
   }
 
-  return `${group.command} batch${flags}${directories}`;
+  return `${group.command} batch --project-configuration-path ${quote(group.projectConfigurationPath)}${flags}${directories}`;
 }
 
 /** Whether a parsed value is a list of verdicts, as the `batch` command prints them. */

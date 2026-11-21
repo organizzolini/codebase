@@ -25,7 +25,7 @@ codometer --config ../<name>/<file>.config.ts --check limits
 
 | It said | It means | Open |
 | ------- | -------- | ---- |
-| `Cannot bind the limit written against "X": nothing measured answers to it` | The path has no target name on the front, and no `defaultInput` is set. Even one input is not enough — write `codebase.X`. | [`limits/unprefixed.config.ts`](examples/limits/unprefixed.config.ts) |
+| `Cannot bind the limit written against "X": nothing measured answers to it` | The path has no target name on the front, and no `defaultInput` is set. Even one input is not enough — write `codebase.X`. | [`limits/unqualified.config.ts`](examples/limits/unqualified.config.ts) |
 | `it could be the "X" target's "files" metric, or the "codebase" target's "X.files" metric` | An input shares a name with a metric group, and a `defaultInput` makes both readings valid. Write the target name in full. Removing the `defaultInput` also removes the ambiguity. | [`limits/ambiguous.config.ts`](examples/limits/ambiguous.config.ts) |
 | `Cannot bind the limit written against "T.python.files"` on a target that exists | The input does not run the analysis that produces the counter. Add `"language"` to its `analyses`, or limit something it measures. | [`limits/unbound.config.ts`](examples/limits/unbound.config.ts) |
 | `Input "T" matched no files, and a limit is written against its "size" metric` | The glob stopped matching, or the build never ran. Do not "fix" it by removing the limit — the limit is what caught it. | [`limits/empty-target-limited.config.ts`](examples/limits/empty-target-limited.config.ts) |
@@ -112,7 +112,7 @@ codometer-examples/
 ## Do not fix a deliberately broken example
 
 Twelve of this package's configurations are meant to fail, and eleven of them
-exit non-zero on purpose. `limits/unprefixed.config.ts` writes a path that binds to nothing,
+exit non-zero on purpose. `limits/unqualified.config.ts` writes a path that binds to nothing,
 `limits/ambiguous.config.ts` writes a path that reads two ways,
 `limits/empty-target-limited.config.ts` limits a target that matches nothing,
 and `python/unreachable-interpreter.config.ts` names an interpreter that is not

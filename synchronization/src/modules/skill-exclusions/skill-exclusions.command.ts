@@ -12,7 +12,6 @@ import {
   BLOCK_END_LABEL,
   BLOCK_START_LABEL,
   SKILL_EXCLUSION_FILES,
-  VENDORED_SKILL_PATHS,
 } from "./skill-exclusions.constants";
 
 import type {
@@ -101,7 +100,7 @@ export class SkillExclusionsCommand
     };
   }
 
-  /** Reads the skills the lockfile declares, and the files they install. */
+  /** Reads the skills the lockfile declares. */
   private readInputs(): SkillExclusionInputs {
     const lockfilePath = path.join(process.cwd(), "skills-lock.json");
     const { skills = {} } = JSON.parse(
@@ -111,30 +110,17 @@ export class SkillExclusionsCommand
       left.localeCompare(right),
     );
 
-    return {
-      skillNames,
-      vendoredPaths: skillNames.flatMap(
-        (skillName) => VENDORED_SKILL_PATHS[skillName] ?? [],
-      ),
-    };
+    return { skillNames };
   }
 
-  /**
-   * Renders one file's entries in that file's syntax: one line per skill, when
-   * it lists skills, then one per vendored file.
-   */
+  /** Renders one file's entries in that file's syntax: one line per skill. */
   private renderBlock(
     file: SkillExclusionFile,
     inputs: SkillExclusionInputs,
   ): string {
-    const { renderEntry } = file;
-
-    return [
-      ...(renderEntry === undefined
-        ? []
-        : inputs.skillNames.map((skillName) => renderEntry(skillName))),
-      ...inputs.vendoredPaths.map((glob) => file.renderPath(glob)),
-    ].join("\n");
+    return inputs.skillNames
+      .map((skillName) => file.renderEntry(skillName))
+      .join("\n");
   }
 
   /** The comment closing this file's generated block, in its own syntax. */
@@ -163,7 +149,6 @@ export class SkillExclusionsCommand
     this.logger.log("🧩 Updated the skill exclusion lists", undefined, {
       files: SKILL_EXCLUSION_FILES.map((file) => file.filePath),
       skills: inputs.skillNames.length,
-      vendoredPaths: inputs.vendoredPaths.length,
     });
   }
 

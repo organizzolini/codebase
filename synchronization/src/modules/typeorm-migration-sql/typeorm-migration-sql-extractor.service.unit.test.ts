@@ -307,20 +307,6 @@ describe(TypeormMigrationSqlExtractorService, () => {
     );
   });
 
-  it("returns false and logs an error when project-root is passed without module", async () => {
-    const result = await service.synchronize({
-      logger,
-      mode: "check",
-      options: { projectRoot: "projects/lexico/lexico-db" },
-    });
-
-    expect(result).toBe(false);
-    expect(logger.error).toHaveBeenCalledWith(
-      "💥 Failed synchronizing extracted TypeORM migration SQL",
-      expect.stringContaining("Pass --directory <path>"),
-    );
-  });
-
   it("returns false when migration directory has no migration files", async () => {
     const emptyDirectory = createTemporaryDirectory("typeorm-sql-empty");
 
@@ -405,19 +391,16 @@ describe(TypeormMigrationSqlExtractorService, () => {
   it("discovers migration targets from project.json when project name is passed", async () => {
     const workspaceRoot = createTemporaryDirectory("typeorm-sql-workspace");
     const projectRoot = path.join(workspaceRoot, "projects", "alpha");
-    const modulePath = "src/modules/database";
-    const migrationsDirectory = path.join(
-      projectRoot,
-      modulePath,
-      "migrations",
-    );
+    const migrationsDirectory = path.join(projectRoot, "migrations");
     await mkdir(migrationsDirectory, { recursive: true });
     await writeFile(
       path.join(projectRoot, "project.json"),
       JSON.stringify(
         {
           name: "alpha",
-          targets: { migration: { options: { module: modulePath } } },
+          targets: {
+            migration: { options: { module: "src/modules/database" } },
+          },
         },
         null,
         2,
@@ -433,6 +416,53 @@ describe(TypeormMigrationSqlExtractorService, () => {
     expect(targets[0]?.migrationsDirectory.endsWith(migrationsDirectory)).toBe(
       true,
     );
+  });
+
+  it("skips projects with no name or no migration target", async () => {
+    const workspaceRoot = createTemporaryDirectory("typeorm-sql-workspace");
+    const projects = {
+      alpha: { name: "alpha", targets: { migration: {} } },
+      beta: { name: "beta", targets: {} },
+      gamma: { targets: { migration: {} } },
+    };
+    for (const [folder, manifest] of Object.entries(projects)) {
+      const projectRoot = path.join(workspaceRoot, "projects", folder);
+      await mkdir(projectRoot, { recursive: true });
+      await writeFile(
+        path.join(projectRoot, "project.json"),
+        JSON.stringify(manifest),
+        "utf8",
+      );
+    }
+    process.chdir(workspaceRoot);
+
+    const targets = await service.targets({});
+
+    expect(targets.map(({ projectName }) => projectName)).toStrictEqual([
+      "alpha",
+    ]);
+  });
+
+  it("finds a migration project nested one folder under a domain folder", async () => {
+    const workspaceRoot = createTemporaryDirectory("typeorm-sql-workspace");
+    const projectRoot = path.join(workspaceRoot, "projects", "domain", "alpha");
+    await mkdir(projectRoot, { recursive: true });
+    await mkdir(path.join(workspaceRoot, "projects", "domain", "notes"));
+    await writeFile(
+      path.join(projectRoot, "project.json"),
+      JSON.stringify({ name: "alpha", targets: { migration: {} } }),
+      "utf8",
+    );
+    process.chdir(workspaceRoot);
+
+    const targets = await service.targets({});
+
+    expect(targets).toStrictEqual([
+      {
+        migrationsDirectory: path.join(projectRoot, "migrations"),
+        projectName: "alpha",
+      },
+    ]);
   });
 
   it("throws when project filter does not match a migration-enabled project", async () => {
@@ -456,27 +486,14 @@ describe(TypeormMigrationSqlExtractorService, () => {
     process.chdir(workspaceRoot);
 
     await expect(service.targets({ project: "missing" })).rejects.toThrow(
-      'No project named "missing" exposes targets.migration.options.module.',
+      'No project named "missing" has a migration target.',
     );
   });
 
-  it("throws when only project-root is provided without module", async () => {
-    await expect(
-      service.targets({ projectRoot: "projects/lexico/lexico-db" }),
-    ).rejects.toThrow(
-      "Pass --directory <path>, or pass both --project-root <path> and --module <path>, or pass --project <name>.",
-    );
-  });
-
-  it("derives project name from project-root when module is provided", async () => {
+  it("reads the migrations folder at the project root", async () => {
     const workspaceRoot = createTemporaryDirectory("typeorm-sql-workspace");
     const projectRoot = path.join(workspaceRoot, "projects", "alpha");
-    const modulePath = "src/modules/database";
-    const migrationsDirectory = path.join(
-      projectRoot,
-      modulePath,
-      "migrations",
-    );
+    const migrationsDirectory = path.join(projectRoot, "migrations");
     await mkdir(migrationsDirectory, { recursive: true });
     await writeMigrationFile({
       directory: migrationsDirectory,
@@ -491,7 +508,6 @@ describe(TypeormMigrationSqlExtractorService, () => {
       mode: "write",
       options: {
         migration: "1791255787877-migration.ts",
-        module: modulePath,
         projectRoot,
       },
     });

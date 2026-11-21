@@ -1,10 +1,10 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir } from "node:fs/promises";
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { createTemporaryDirectory } from "@codebase/testing";
+import { createFileTree, createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
@@ -27,25 +27,27 @@ const PROJECT: WorkspaceProject = {
  * Writes a workspace with a `tsconfig.json` per relative path, and a `package.json`
  * unless `rootsWithoutManifest` names the root, which no closure can reach.
  */
-async function buildWorkspace(
+function buildWorkspace(
   projectRoots: readonly string[],
-  options: { rootsWithoutManifest?: readonly string[] } = {},
-): Promise<string> {
-  const root = createTemporaryDirectory("callidescope-workspace");
+  options: {
+    rootsWithoutManifest?: readonly string[];
+    tsconfigPath?: string;
+  } = {},
+): string {
   const rootsWithoutManifest = options.rootsWithoutManifest ?? [];
 
-  for (const projectRoot of projectRoots) {
-    const directory = path.join(root, projectRoot);
+  const files: Record<string, string> = {};
 
-    await mkdir(directory, { recursive: true });
-    await writeFile(path.join(directory, "tsconfig.json"), "{}", "utf8");
+  for (const projectRoot of projectRoots) {
+    files[path.join(projectRoot, options.tsconfigPath ?? "tsconfig.json")] =
+      "{}";
 
     if (!rootsWithoutManifest.includes(projectRoot)) {
-      await writeFile(path.join(directory, "package.json"), "{}", "utf8");
+      files[path.join(projectRoot, "package.json")] = "{}";
     }
   }
 
-  return root;
+  return createFileTree(files, { label: "callidescope-workspace" });
 }
 
 const DEPENDENCY_PROJECT: WorkspaceProject = {
@@ -146,26 +148,28 @@ describe(WorkspaceService, () => {
 
   // 📂 Project discovery
 
-  it("traces exactly the directories it was given", async () => {
-    const root = await buildWorkspace(["packages/wanted", "packages/other"]);
+  it("traces exactly the directories it was given", () => {
+    const root = buildWorkspace(["packages/wanted", "packages/other"]);
 
     expect(
       subject
         .discoverProjects({
           directories: ["packages/wanted"],
+          projectTsconfigPath: "tsconfig.json",
           workspaceRoot: root,
         })
         .map((project) => project.name),
     ).toStrictEqual(["packages/wanted"]);
   });
 
-  it("resolves an absolute directory against the workspace root", async () => {
-    const root = await buildWorkspace(["packages/wanted"]);
+  it("resolves an absolute directory against the workspace root", () => {
+    const root = buildWorkspace(["packages/wanted"]);
 
     expect(
       subject
         .discoverProjects({
           directories: [path.join(root, "packages/wanted")],
+          projectTsconfigPath: "tsconfig.json",
           workspaceRoot: root,
         })
         .map((project) => project.name),
@@ -183,6 +187,7 @@ describe(WorkspaceService, () => {
     expect(() =>
       subject.discoverProjects({
         directories: ["packages/untyped"],
+        projectTsconfigPath: "tsconfig.json",
         workspaceRoot: root,
       }),
     ).toThrow(ProgramConfigurationError);
@@ -196,21 +201,70 @@ describe(WorkspaceService, () => {
     expect(() =>
       subject.discoverProjects({
         directories: ["packages/untyped"],
+        projectTsconfigPath: "tsconfig.json",
         workspaceRoot: root,
       }),
     ).toThrow(/packages[\\/]untyped[\\/]tsconfig\.json/);
   });
 
-  it("records whether each discovered project root holds a package.json", async () => {
+  it("finds a project by the tsconfig path it was told, and roots it at the project directory", () => {
+    const root = buildWorkspace(["packages/library", "packages/other"], {
+      tsconfigPath: "configuration/tsconfig.json",
+    });
+
+    const projects = subject.discoverProjects({
+      directories: [],
+      projectTsconfigPath: "configuration/tsconfig.json",
+      workspaceRoot: root,
+    });
+
+    expect(projects.map((project) => project.root)).toStrictEqual([
+      "packages/library",
+      "packages/other",
+    ]);
+    expect(projects[0]?.configurationPath).toBe(
+      path.join(root, "packages/library", "configuration", "tsconfig.json"),
+    );
+  });
+
+  it("does not take a project for one when only a tsconfig.json at its root exists", () => {
+    const root = buildWorkspace(["packages/library"]);
+
+    expect(
+      subject.discoverProjects({
+        directories: [],
+        projectTsconfigPath: "configuration/tsconfig.json",
+        workspaceRoot: root,
+      }),
+    ).toStrictEqual([]);
+  });
+
+  it("refuses a named directory with no tsconfig at the told path", () => {
+    const root = buildWorkspace(["packages/library"]);
+
+    expect(() =>
+      subject.discoverProjects({
+        directories: ["packages/library"],
+        projectTsconfigPath: "configuration/tsconfig.json",
+        workspaceRoot: root,
+      }),
+    ).toThrow(/packages[\\/]library[\\/]configuration[\\/]tsconfig\.json/);
+  });
+
+  it("records whether each discovered project root holds a package.json", () => {
     // Read here, once per project, rather than once per file a program pulled
     // in — and it is what `isClosureDestination` goes on to judge.
-    const root = await buildWorkspace(["packages/library", "packages/shared"], {
+    const root = buildWorkspace(["packages/library", "packages/shared"], {
       rootsWithoutManifest: ["packages/shared"],
     });
 
     expect(
       subject
-        .discoverProjects({ directories: [], workspaceRoot: root })
+        .discoverProjects({
+          directories: [],
+          projectTsconfigPath: "tsconfig.json",
+          workspaceRoot: root,
+        })
         .map((project) => [project.name, project.hasPackageManifest]),
     ).toStrictEqual([
       ["packages/library", true],
@@ -218,8 +272,8 @@ describe(WorkspaceService, () => {
     ]);
   });
 
-  it("finds every tsconfig.json in the workspace when none are named", async () => {
-    const root = await buildWorkspace([
+  it("finds every tsconfig.json in the workspace when none are named", () => {
+    const root = buildWorkspace([
       "applications/app",
       "packages/library",
       "tools/utility",
@@ -227,38 +281,50 @@ describe(WorkspaceService, () => {
 
     expect(
       service
-        .discoverProjects({ directories: [], workspaceRoot: root })
+        .discoverProjects({
+          directories: [],
+          projectTsconfigPath: "tsconfig.json",
+          workspaceRoot: root,
+        })
         .map((project) => project.name),
     ).toStrictEqual(["applications/app", "packages/library", "tools/utility"]);
   });
 
-  it("returns projects in a stable order regardless of the filesystem", async () => {
+  it("returns projects in a stable order regardless of the filesystem", () => {
     // A report's per-project rows read off this order, so an unstable one
     // would make output differ between runs even when nothing changed.
-    const root = await buildWorkspace(["packages/zebra", "packages/alpha"]);
+    const root = buildWorkspace(["packages/zebra", "packages/alpha"]);
 
     expect(
       service
-        .discoverProjects({ directories: [], workspaceRoot: root })
+        .discoverProjects({
+          directories: [],
+          projectTsconfigPath: "tsconfig.json",
+          workspaceRoot: root,
+        })
         .map((project) => project.name),
     ).toStrictEqual(["packages/alpha", "packages/zebra"]);
   });
 
-  it("descends into a project that nests another tsconfig.json beneath it", async () => {
-    const root = await buildWorkspace([
+  it("descends into a project that nests another tsconfig.json beneath it", () => {
+    const root = buildWorkspace([
       "packages/library",
       "packages/library/testing",
     ]);
 
     expect(
       subject
-        .discoverProjects({ directories: [], workspaceRoot: root })
+        .discoverProjects({
+          directories: [],
+          projectTsconfigPath: "tsconfig.json",
+          workspaceRoot: root,
+        })
         .map((project) => project.name),
     ).toStrictEqual(["packages/library", "packages/library/testing"]);
   });
 
-  it("does not descend into node_modules, build output, or dotfiles", async () => {
-    const root = await buildWorkspace([
+  it("does not descend into node_modules, build output, or dotfiles", () => {
+    const root = buildWorkspace([
       "packages/library",
       "node_modules/some-dependency",
       "packages/library/dist",
@@ -267,28 +333,36 @@ describe(WorkspaceService, () => {
 
     expect(
       subject
-        .discoverProjects({ directories: [], workspaceRoot: root })
+        .discoverProjects({
+          directories: [],
+          projectTsconfigPath: "tsconfig.json",
+          workspaceRoot: root,
+        })
         .map((project) => project.name),
     ).toStrictEqual(["packages/library"]);
   });
 
-  it("does not descend into a scaffolding template's placeholder directory", async () => {
-    const root = await buildWorkspace([
+  it("does not descend into a scaffolding template's placeholder directory", () => {
+    const root = buildWorkspace([
       "packages/library",
       "templates/{{nameKebabCase}}",
     ]);
 
     expect(
       subject
-        .discoverProjects({ directories: [], workspaceRoot: root })
+        .discoverProjects({
+          directories: [],
+          projectTsconfigPath: "tsconfig.json",
+          workspaceRoot: root,
+        })
         .map((project) => project.name),
     ).toStrictEqual(["packages/library"]);
   });
 
-  it("drops a project an exclusion names, before reading its tsconfig", async () => {
+  it("drops a project an exclusion names, before reading its tsconfig", () => {
     // The regression this exists for: excluding a project only from the file
     // list is too late, because reading its `tsconfig.json` is what fails.
-    const root = await buildWorkspace(["packages/library", "packages/broken"]);
+    const root = buildWorkspace(["packages/library", "packages/broken"]);
 
     expect(
       subject
@@ -298,19 +372,21 @@ describe(WorkspaceService, () => {
             isExcluded: (relativePath): boolean =>
               relativePath.startsWith("packages/broken/"),
           },
+          projectTsconfigPath: "tsconfig.json",
           workspaceRoot: root,
         })
         .map((project) => project.name),
     ).toStrictEqual(["packages/library"]);
   });
 
-  it("drops a named directory an exclusion also names", async () => {
-    const root = await buildWorkspace(["packages/broken"]);
+  it("drops a named directory an exclusion also names", () => {
+    const root = buildWorkspace(["packages/broken"]);
 
     expect(
       subject.discoverProjects({
         directories: ["packages/broken"],
         fileFilter: { isExcluded: (): boolean => true },
+        projectTsconfigPath: "tsconfig.json",
         workspaceRoot: root,
       }),
     ).toStrictEqual([]);
@@ -320,7 +396,11 @@ describe(WorkspaceService, () => {
     const root = createTemporaryDirectory("callidescope-empty");
 
     expect(
-      subject.discoverProjects({ directories: [], workspaceRoot: root }),
+      subject.discoverProjects({
+        directories: [],
+        projectTsconfigPath: "tsconfig.json",
+        workspaceRoot: root,
+      }),
     ).toStrictEqual([]);
   });
 

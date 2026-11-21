@@ -1,5 +1,5 @@
 /** Branch name rules from `conventional.config.cjs`, checked on pre-push. */
-const { scopes, types } = require("./configuration/conventional.config.cjs");
+const { scopes, types } = require("./configuration/repository/conventional.config.cjs");
 
 const specialBranches = ["main"];
 const automatedPrefixes = [

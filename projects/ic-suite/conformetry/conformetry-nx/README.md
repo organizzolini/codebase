@@ -23,7 +23,7 @@ Register the plugin in `nx.json` and wire the bootstrap into `postinstall`:
     {
       "plugin": "@conformetry/nx",
       "options": {
-        "configurationPath": "configuration/conformetry.config.ts",
+        "configurationPath": "configuration/ic-suite/conformetry.config.ts",
         "validateTargetName": "conformetry-validate"
       }
     }
@@ -41,7 +41,10 @@ no filename is searched for. A plugin entry without it fails with a
 `ConfigurationPathRequiredError` from `@conformetry/configuration` naming the
 option, and so does the bootstrap, which reads it from `nx.json`. The executor
 and the `sync` generator take the same path as a `configuration` option, which
-wins over the registration when both are set.
+wins over the registration when both are set. The path is relative to the
+workspace root, whatever directory a command runs from. The plugin matches only
+`project.json` files, since the configuration's name is an option and no glob
+can name it, so an edit to the configuration alone does not re-run inference.
 
 Then type your configuration as `ConformetryNxConfiguration` rather than
 `ConformetryConfiguration`, so instance groups are checked against what Nx can

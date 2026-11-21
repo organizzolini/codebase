@@ -1,5 +1,5 @@
-import { execFileSync, spawnSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 import { beforeAll, describe, expect, it } from "vitest";
@@ -7,7 +7,12 @@ import { beforeAll, describe, expect, it } from "vitest";
 import {
   createTemporaryDirectory,
   useTemporaryDirectory,
+  writeFileTree,
 } from "@codebase/testing";
+import {
+  listExampleNames,
+  runSourceCommand,
+} from "@codebase/testing/end-to-end";
 
 import callidescopeConfiguration from "../callidescope.workspace.config.js";
 
@@ -39,40 +44,38 @@ const AGGREGATE_TARGET_NAME = "examples";
 /** Command every guide's `## Run it` block documents, from names. */
 const RUN_IT_COMMAND = `nx run ${readProjectDefinition().name}:${AGGREGATE_TARGET_NAME}`;
 
-/** Every directory under `examples/`, whether or not it is a project. */
-const EXAMPLE_NAMES = readdirSync(
-  path.join(WORKSPACE_ROOT, EXAMPLES_DIRECTORY, "examples"),
-  { withFileTypes: true },
-)
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => entry.name)
-  .toSorted();
+/** The folder holding every group of examples. */
+const EXAMPLE_GROUPS_DIRECTORY = path.join(
+  WORKSPACE_ROOT,
+  EXAMPLES_DIRECTORY,
+  "examples",
+);
+
+/** Every example as `group/name`, whether or not it is a project. */
+const EXAMPLE_NAMES = listExampleNames(EXAMPLE_GROUPS_DIRECTORY).flatMap(
+  (group) =>
+    listExampleNames(path.join(EXAMPLE_GROUPS_DIRECTORY, group)).map(
+      (name) => `${group}/${name}`,
+    ),
+);
 
 /** The nested project that carries its own limits, and breaches both. */
-const GATED_LEAF_DIRECTORY = `${EXAMPLES_DIRECTORY}/examples/gated-leaf`;
+const GATED_LEAF_DIRECTORY = `${EXAMPLES_DIRECTORY}/examples/limits/gated-leaf`;
 
 /** Guides documenting runs beyond the aggregate target, listed by name. */
-const GUIDES_WITH_DOCUMENTED_RUNS = ["gated-leaf"];
+const GUIDES_WITH_DOCUMENTED_RUNS = ["limits/gated-leaf"];
 
-/** Example directories with their own `tsconfig.json`, read from disk. */
-const NESTED_PROJECT_DIRECTORIES = readdirSync(
-  path.join(WORKSPACE_ROOT, EXAMPLES_DIRECTORY, "examples"),
-  { withFileTypes: true },
+/** Example directories holding a tsconfig at the configured path, read from disk. */
+const NESTED_PROJECT_DIRECTORIES = EXAMPLE_NAMES.filter((exampleName) =>
+  existsSync(
+    path.join(
+      EXAMPLE_GROUPS_DIRECTORY,
+      exampleName,
+      callidescopeConfiguration.projectTsconfigPath ?? "",
+    ),
+  ),
 )
-  .filter(
-    (entry) =>
-      entry.isDirectory() &&
-      existsSync(
-        path.join(
-          WORKSPACE_ROOT,
-          EXAMPLES_DIRECTORY,
-          "examples",
-          entry.name,
-          "tsconfig.json",
-        ),
-      ),
-  )
-  .map((entry) => `${EXAMPLES_DIRECTORY}/examples/${entry.name}`)
+  .map((exampleName) => `${EXAMPLES_DIRECTORY}/examples/${exampleName}`)
   .toSorted();
 
 /** As much of an Nx project definition as anything here reads. */
@@ -265,7 +268,11 @@ function readReadingOrder(): string[] {
     .at(-1)
     ?.split("\n\n")[0];
 
-  return [...(walkthrough ?? "").matchAll(/\(examples\/([a-z0-9-]+)\/README/g)]
+  return [
+    ...(walkthrough ?? "").matchAll(
+      /\(examples\/([a-z0-9-]+\/[a-z0-9-]+)\/README/g,
+    ),
+  ]
     .map((match) => match[1])
     .filter((exampleName) => exampleName !== undefined);
 }
@@ -275,6 +282,14 @@ function readReadingOrder(): string[] {
  */
 function readRunItCommand(exampleName: string): string {
   return readFences(readGuide(exampleName), "bash")[0] ?? "";
+}
+
+/** The link from one guide's folder to another's: a sibling, or one group over. */
+function relativeGuideLink(from: string, to: string): string {
+  const [fromGroup] = from.split("/");
+  const [toGroup, toName] = to.split("/");
+
+  return fromGroup === toGroup ? `../${toName}` : `../../${to}`;
 }
 
 /**
@@ -304,22 +319,21 @@ function runDocumented(command: string): { output: string; status: number } {
  * Traces the fixtures as the Nx target does, into a throwaway report.
  * Must not be named `callidescope.config.ts`.
  */
-function traceFixtures(
+async function traceFixtures(
   temporaryDirectory: string,
   overrides: {
     exclude?: readonly string[];
     limits?: Record<string, number>;
   } = {},
-): CallGraphResult {
+): Promise<CallGraphResult> {
   const reportPath = path.join(temporaryDirectory, "report.json");
   const configurationPath = path.join(
     temporaryDirectory,
     "callidescope.config.json",
   );
 
-  writeFileSync(
-    configurationPath,
-    JSON.stringify({
+  writeFileTree(temporaryDirectory, {
+    "callidescope.config.json": JSON.stringify({
       ...callidescopeConfiguration,
       exclude: [
         ...(callidescopeConfiguration.exclude ?? []),
@@ -328,15 +342,10 @@ function traceFixtures(
       limits: { ...callidescopeConfiguration.limits, ...overrides.limits },
       write: { json: { path: reportPath } },
     }),
-    "utf8",
-  );
+  });
 
-  execFileSync(
-    process.execPath,
-    [
-      "--import",
-      "@swc-node/register/esm-register",
-      "projects/ic-suite/callidescope/callidescope-cli/src/callidescope-cli.main.ts",
+  const { exitCode, stderr } = await runSourceCommand({
+    args: [
       "callidescope",
       "--directories",
       STARTING_DIRECTORIES,
@@ -344,8 +353,12 @@ function traceFixtures(
       configurationPath,
       "--write",
     ],
-    { cwd: WORKSPACE_ROOT, stdio: "ignore" },
-  );
+    directory: WORKSPACE_ROOT,
+    entry:
+      "projects/ic-suite/callidescope/callidescope-cli/src/callidescope-cli.main.ts",
+  });
+
+  expect({ exitCode, stderr }).toStrictEqual({ exitCode: 0, stderr: "" });
 
   return JSON.parse(readFileSync(reportPath, "utf8")) as CallGraphResult;
 }
@@ -355,8 +368,8 @@ describe("callidescope examples (integration)", () => {
 
   const getTraceDirectory = useTemporaryDirectory("callidescope-examples");
 
-  beforeAll(() => {
-    result = traceFixtures(getTraceDirectory());
+  beforeAll(async () => {
+    result = await traceFixtures(getTraceDirectory());
   });
 
   describe("the examples target names every root", () => {
@@ -432,7 +445,9 @@ describe("callidescope examples (integration)", () => {
           return [
             exampleName,
             readNextLink(exampleName).includes(
-              next === undefined ? "../../README.md" : `../${next}/README.md`,
+              next === undefined
+                ? "../../../README.md"
+                : `${relativeGuideLink(exampleName, next)}/README.md`,
             ),
           ];
         }),
@@ -491,7 +506,7 @@ describe("callidescope examples (integration)", () => {
   describe("what the run measured", () => {
     it("traces this package and the projects its imports reach", () => {
       // The closure as a set. Absent projects are the narrowing rule this run exercises:
-      // a project root with a tsconfig.json and no package.json, and the workspace root.
+      // a project root with a tsconfig and no package.json, and the workspace root.
       //
       // Every `*-core` arrives behind its `configuration` package, which moved its result vocabulary into a contracts leaf.
       expect(
@@ -541,9 +556,9 @@ describe("callidescope examples (integration)", () => {
       // `gated-leaf` declares `exclude: ["*.generated.ts"]`. Counting disk against trace makes this an assertion about the exclusion.
       // A glob anchored to the workspace would match nothing, and the counts would agree.
       const traced = (directory: string): Record<string, number> => ({
-        onDisk: readdirSync(path.join(WORKSPACE_ROOT, directory)).filter(
-          (name) => name.endsWith(".ts"),
-        ).length,
+        onDisk: readdirSync(path.join(WORKSPACE_ROOT, directory), {
+          recursive: true,
+        }).filter((name) => String(name).endsWith(".ts")).length,
         traced: readProjectReport(result, directory).summary.fileCount,
       });
 
@@ -561,11 +576,11 @@ describe("callidescope examples (integration)", () => {
   });
 
   describe("dependency closure", () => {
-    it("follows a call into a dependency, and stops at the boundary without it", () => {
+    it("follows a call into a dependency, and stops at the boundary without it", async () => {
       // The closure can only be shown to do something by taking one project
       // out of it. The same fixture heads the same stack either way; what
       // changes is how far the stack goes, which is the whole claim.
-      const withoutDependency = traceFixtures(
+      const withoutDependency = await traceFixtures(
         createTemporaryDirectory("callidescope-examples"),
         {
           exclude: [

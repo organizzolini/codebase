@@ -1,3 +1,77 @@
+## 0.0.88 (2026-11-21)
+
+### 💅 Refactors
+
+- **configuration,documentation,synchronization:** ♻️ run the agent workflow on superpowers skills ([#2457](https://github.com/organizzolini/codebase/pull/2457), [#2453](https://github.com/organizzolini/codebase/issues/2453))
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.88
+
+## 0.0.87 (2026-11-20)
+
+### 🚀 Features
+
+- **codometer,configuration:** ✨ cap directory breadth and depth, and keep tool configs in configuration folders ([#2452](https://github.com/organizzolini/codebase/pull/2452), [#2450](https://github.com/organizzolini/codebase/issues/2450))
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.87
+
+## 0.0.86 (2026-11-20)
+
+### 🚀 Features
+
+- **conformetry,lexico:** ✨ register every nestjs template instance and conform them ([#2456](https://github.com/organizzolini/codebase/pull/2456), [#2455](https://github.com/organizzolini/codebase/issues/2455))
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.86
+
+## 0.0.85 (2026-11-17)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.85
+
+## 0.0.84 (2026-11-15)
+
+### 🚀 Features
+
+- **coinagerie,configuration,lexico,caelundas,meanderaw,conformetry,codometer,codependix:** ✨ clarify word meanings ([#2373](https://github.com/organizzolini/codebase/pull/2373), [#2372](https://github.com/organizzolini/codebase/issues/2372))
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.84
+
+## 0.0.83 (2026-11-13)
+
+### 💅 Refactors
+
+- **configuration:** ♻️ default vitest coverage and setup in the base config ([#2376](https://github.com/organizzolini/codebase/pull/2376), [#2374](https://github.com/organizzolini/codebase/issues/2374))
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.83
+
+## 0.0.82 (2026-11-12)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.82
+
+## 0.0.81 (2026-11-12)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.81
+
+## 0.0.80 (2026-11-12)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.80
+
 ## 0.0.79 (2026-11-11)
 
 ### 🚀 Features

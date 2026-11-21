@@ -2,19 +2,19 @@ import { Injectable } from "@nestjs/common";
 
 import { LoggerService } from "@codebase/observability";
 
-import { AnnualSolarCycleService } from "../annual-solar-cycle/annual-solar-cycle.service";
 import { AspectsService } from "../aspects/aspects.service";
 import { MARGIN_MINUTES } from "../caelundas/caelundas.constants";
-import { DailyCyclesService } from "../daily-cycles/daily-cycles.service";
-import { DatetimeService } from "../datetime/datetime.service";
-import { EclipsesService } from "../eclipses/eclipses.service";
 import { EphemerisService } from "../ephemeris/ephemeris.service";
-import { IngressesService } from "../ingresses/ingresses.service";
-import { MonthlyLunarCycleService } from "../monthly-lunar-cycle/monthly-lunar-cycle.service";
-import { PhasesService } from "../phases/phases.service";
-import { RetrogradesService } from "../retrogrades/retrogrades.service";
-import { TwilightsService } from "../twilights/twilights.service";
+import { DatetimeService } from "../ephemeris/modules/datetime/datetime.service";
 
+import { AnnualSolarCycleService } from "./modules/annual-solar-cycle/annual-solar-cycle.service";
+import { DailyCyclesService } from "./modules/daily-cycles/daily-cycles.service";
+import { EclipsesService } from "./modules/eclipses/eclipses.service";
+import { IngressesService } from "./modules/ingresses/ingresses.service";
+import { MonthlyLunarCycleService } from "./modules/monthly-lunar-cycle/monthly-lunar-cycle.service";
+import { PhasesService } from "./modules/phases/phases.service";
+import { RetrogradesService } from "./modules/retrogrades/retrogrades.service";
+import { TwilightsService } from "./modules/twilights/twilights.service";
 import { detectorFamilies } from "./perfective.constants";
 
 import type { AspectBodies } from "../aspects/aspects.types";

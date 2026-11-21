@@ -17,6 +17,10 @@ import { toLexemeType } from "../lexemes/lexemes.utilities";
 import { ENTITY_ID_PATTERN } from "../literature/literature.constants";
 
 import {
+  LexemeSearchResult,
+  SearchMatchSource,
+} from "./modules/search-results/search.entities";
+import {
   ENCLITIC_FALSE_POSITIVES,
   ENCLITIC_SUFFIXES,
   ENGLISH_TIER_SOURCES,
@@ -26,7 +30,6 @@ import {
   SCORE_FUZZY,
   SCORE_FUZZY_STEP,
 } from "./search.constants";
-import { LexemeSearchResult, SearchMatchSource } from "./search.entities";
 
 import type { CursorClaim } from "../literature/literature.types";
 import type {
@@ -44,7 +47,7 @@ export function decomposeEnclitic(
 ): EncliticDecompositionResult {
   const normalized = rawQuery.trim().toLowerCase();
   if (ENCLITIC_FALSE_POSITIVES.has(normalized)) {
-    return { enclitic: null, stem: normalized };
+    return { enclitic: null, host: normalized };
   }
 
   for (const suffix of ENCLITIC_SUFFIXES) {
@@ -52,12 +55,12 @@ export function decomposeEnclitic(
     if (normalized.endsWith(suffix) && normalized.length > minimumLength) {
       return {
         enclitic: suffix,
-        stem: normalized.slice(0, -suffix.length),
+        host: normalized.slice(0, -suffix.length),
       };
     }
   }
 
-  return { enclitic: null, stem: normalized };
+  return { enclitic: null, host: normalized };
 }
 
 /**

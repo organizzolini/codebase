@@ -241,7 +241,7 @@ Symbols and logic shared across projects
 **📚 [documentation](documentation)** - NestJS CLI that refreshes the repository documentation from code, and is what the scheduled 🧑‍🏫 Refresh Documentation workflow runs\
 **🏗️ [infrastructure](infrastructure)** - Docker Compose services, the `kubernetes-job` Helm chart, and Terraform for the Linode LKE cluster\
 **🛠️ [installation](installation)** - NestJS CLI that sets up a developer machine once Node is installed: environment files, project dependencies, shell configuration, and the remaining tools\
-**🔁 [integration](integration)** - NestJS CLI for the Continuous Integration plumbing steps: the affected run, the Nx task-cache database, and the publishable-packages gate\
+**🔁 [integration](integration)** - NestJS CLI for the Continuous Integration plumbing steps: the affected run, and the Nx task-cache database\
 **📤 [deployment](deployment)** - NestJS CLI for the Continuous Deployment release steps: versioning, tagging, publishing, and linking the ic-suite packages\
 **↔️ [synchronization](synchronization)** - NestJS CLI that regenerates the workspace's derived configuration and documentation, and fails CI when they drift\
 **✅ [validation](validation)** - NestJS CLI for the repository's one-sided checks, the ones with a check and no write, such as the pull request metadata gate
@@ -281,7 +281,7 @@ Other important files include [CHANGELOG.md](CHANGELOG.md), [SECURITY.md](.githu
 
 ## 👔 Conformetry
 
-Template-driven code generation and conformance validation, templates synced from [configuration/conformetry.config.ts](configuration/conformetry.config.ts) by `nx run synchronization:conformetry-generators:write`.
+Template-driven code generation and conformance validation, templates synced from [configuration/ic-suite/conformetry.config.ts](configuration/ic-suite/conformetry.config.ts) by `nx run synchronization:conformetry-generators:write`.
 
 <!-- conformetry:start -->
 | Template | Description |
@@ -297,7 +297,7 @@ Template-driven code generation and conformance validation, templates synced fro
 | `nestjs-service-file` | A service and unit test file template for an existing NestJS module, without the surrounding module files |
 | `nestjs-resolver-file` | A resolver and unit test file template for an existing NestJS module, without the surrounding module files |
 | `nestjs-service-module` | A plain service module template — module, service, constants, types, and unit test — for an existing NestJS project |
-| `react-component-folder` | A React component folder — the component, its types, constants, and utilities, and its unit test — in src/components of an existing React application |
+| `react-component-folder` | A React component folder — the component, its types, constants, and utilities, and its unit test — in a feature folder under src/components of an existing React application |
 | `react-component-file` | A React component and its unit test, added to an existing component folder of a React application |
 | `react-hook-folder` | A React hook folder — the hook, the result type it returns, its constants and utilities, and its unit test — in src/hooks of an existing React application |
 | `react-hook-file` | A React hook, the result type it returns, and its unit test, added to an existing hook folder of a React application |

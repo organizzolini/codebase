@@ -11,8 +11,8 @@ import {
 import { tiled } from "../../../testing/meanders";
 import { CodeModule } from "../code/code.module";
 import { CodeService } from "../code/code.service";
-import { HISTORICAL_CORPUS } from "../corpus/historical-corpus.constants";
-import { MatrixModule } from "../matrix/matrix.module";
+import { HISTORICAL_CORPUS } from "../corpus/modules/historical/historical-corpus.constants";
+import { MatrixModule } from "../geometry/modules/matrix/matrix.module";
 
 import { CharacteristicContextService } from "./characteristic-context.service";
 import { CHARACTERISTIC_KEYS } from "./characteristics.constants";

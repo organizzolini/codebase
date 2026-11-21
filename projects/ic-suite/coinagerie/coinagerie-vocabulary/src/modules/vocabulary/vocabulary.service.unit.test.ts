@@ -43,12 +43,13 @@ describe(VocabularyService, () => {
     overrides: Partial<ResolvedCoinagerieConfiguration> = {},
   ): ResolvedCoinagerieConfiguration {
     return {
-      configurationPath: undefined,
+      configurationPath: path.join(root, "coinagerie.config.ts"),
       directory: root,
       exclude: { paths: [], patterns: [], words: [] },
       fold: undefined,
       include: [...DEFAULT_INCLUDE],
       outputs: [],
+      unfolded: [],
       ...overrides,
     };
   }

@@ -4,10 +4,7 @@ import path from "node:path";
 import { Injectable } from "@nestjs/common";
 import ts from "typescript";
 
-import {
-  TYPESCRIPT_PROJECT_CONFIG_FILE,
-  TypescriptProjectConfigurationError,
-} from "./typescript.constants";
+import { TypescriptProjectConfigurationError } from "./typescript.constants";
 
 import type {
   TypescriptProject,
@@ -17,8 +14,8 @@ import type {
 /**
  * Discovers the workspace's TypeScript projects and builds a `ts.Program` for each one.
  *
- * Any project with its own `tsconfig.json` is a candidate, since no Nx tag is read. The
- * compiler options come from that file, so module resolution matches `tsc`.
+ * Any project with a tsconfig at the configured path is a candidate, since no Nx tag is read.
+ * The compiler options come from that file, so module resolution matches `tsc`.
  */
 @Injectable()
 export class TypescriptProjectService {
@@ -75,29 +72,37 @@ export class TypescriptProjectService {
     return { host, options: parsed.options, program, project };
   }
 
-  /** Describes a project by its directory and Nx project name. */
-  describeProject(absoluteRoot: string, name: string): TypescriptProject {
+  /** Describes a project by its directory, Nx project name, and tsconfig path under that directory. */
+  describeProject(
+    absoluteRoot: string,
+    name: string,
+    projectTsconfigPath: string,
+  ): TypescriptProject {
     return {
       absoluteRoot,
       name,
-      tsconfigPath: path.join(absoluteRoot, TYPESCRIPT_PROJECT_CONFIG_FILE),
+      tsconfigPath: path.join(absoluteRoot, projectTsconfigPath),
     };
   }
 
   /**
-   * Keeps Nx projects with their own `tsconfig.json`, in input order, which callers sort by name.
+   * Keeps Nx projects with a tsconfig at `projectTsconfigPath` under their root, in input order,
+   * which callers sort by name.
    */
   discoverProjects(
     projects: { absoluteRoot: string; name: string }[],
+    projectTsconfigPath: string,
   ): TypescriptProject[] {
     return projects
       .filter((project) =>
-        existsSync(
-          path.join(project.absoluteRoot, TYPESCRIPT_PROJECT_CONFIG_FILE),
-        ),
+        existsSync(path.join(project.absoluteRoot, projectTsconfigPath)),
       )
       .map((project) =>
-        this.describeProject(project.absoluteRoot, project.name),
+        this.describeProject(
+          project.absoluteRoot,
+          project.name,
+          projectTsconfigPath,
+        ),
       );
   }
 

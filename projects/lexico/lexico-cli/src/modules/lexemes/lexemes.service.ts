@@ -6,24 +6,24 @@ import { Repository } from "typeorm";
 import { Lexeme } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
-import { EtymologyService } from "../etymology/etymology.service";
-import { FormsBuilderService } from "../forms/forms-builder.service";
-import { FormsService } from "../forms/forms.service";
 import { LEXICO_INGESTION_BY_ID } from "../lexico-ingestion/lexico-ingestion.constants";
-import { PartOfSpeechService } from "../part-of-speech/part-of-speech.service";
-import { PrincipalPartsService } from "../principal-parts/principal-parts.service";
-import { PronunciationService } from "../pronunciation/pronunciation.service";
-import { TranslationsService } from "../translations/translations.service";
-import { WordsService } from "../words/words.service";
 
 import { skipPOS, validPOS } from "./lexemes.constants";
+import { EtymologyService } from "./modules/etymology/etymology.service";
+import { FormsService } from "./modules/forms/forms.service";
+import { FormsBuilderService } from "./modules/forms/modules/forms-builder/forms-builder.service";
+import { PartOfSpeechService } from "./modules/part-of-speech/part-of-speech.service";
+import { PrincipalPartsService } from "./modules/principal-parts/principal-parts.service";
+import { PronunciationService } from "./modules/pronunciation/pronunciation.service";
+import { TranslationsService } from "./modules/translations/translations.service";
+import { WordsService } from "./modules/words/words.service";
 
 import type { WiktionaryPage } from "../lexico-ingestion/lexico-ingestion.types";
 import type { PartOfSpeech } from "@codebase/lexico-db";
 import type { AnyNode } from "domhandler";
 
 /**
- * Coordinates conversion of Wiktionary headword sections into persisted `Lexeme`
+ * Coordinates conversion of Wiktionary lemma sections into persisted `Lexeme`
  * graphs, delegating specialized parsing to domain services.
  */
 @Injectable()
@@ -311,16 +311,16 @@ export class LexemesService {
     const word = this.normalize(wiktionaryPage.word);
     const lexemes: Lexeme[] = [];
 
-    const headwordElements = $("p:has(strong.Latn.headword)").toArray();
+    const lemmaElements = $("p:has(strong.Latn.headword)").toArray();
 
-    if (headwordElements.length === 0) {
-      this.logger.warn("🔤 Missing headwords for word", undefined, {
+    if (lemmaElements.length === 0) {
+      this.logger.warn("🔤 Missing lemmas for word", undefined, {
         word: wiktionaryPage.word,
       });
       return [];
     }
 
-    for (const [index, elt] of headwordElements.entries()) {
+    for (const [index, elt] of lemmaElements.entries()) {
       const lexeme = await this.parseLexemeFromElement({ $, elt, index, word });
       if (lexeme) lexemes.push(lexeme);
     }

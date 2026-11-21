@@ -1,4 +1,4 @@
-import { type Dirent, readdirSync } from "node:fs";
+import { type Dirent, existsSync, readdirSync } from "node:fs";
 import path from "node:path";
 
 import { Injectable } from "@nestjs/common";
@@ -123,13 +123,49 @@ export class DiscoveryService {
       absoluteDirectory: args.workingDirectory,
       exclude: args.exclude,
       excludeFromScopes: this.readExcludeFromScopes(args),
-      ignoreScopes: [],
+      ignoreScopes: this.readAncestorScopes(args.workingDirectory),
       relativeDirectory: "",
     });
 
     return files
       .filter((filePath) => !this.isExcluded(filePath, args.exclude))
       .toSorted();
+  }
+
+  /**
+   * Reads the `.gitignore` files above the walk up to the repository root, outermost first. None outside a repository, or when they ignore the walk's own folder.
+   */
+  private readAncestorScopes(workingDirectory: string): IgnoreScope[] {
+    const ancestors: string[] = [];
+    let directory = path.resolve(workingDirectory);
+
+    while (!existsSync(path.join(directory, GIT_DIRECTORY_NAME))) {
+      const parent = path.dirname(directory);
+
+      if (parent === directory) {
+        return [];
+      }
+
+      directory = parent;
+      ancestors.unshift(directory);
+    }
+
+    const scopes = ancestors.flatMap((ancestor) => {
+      const scope = this.ignoreRulesService.readScope({
+        base: path
+          .relative(ancestor, workingDirectory)
+          .split(path.sep)
+          .join("/"),
+        directory: "",
+        filePath: path.join(ancestor, GITIGNORE_FILE_NAME),
+      });
+
+      return scope === undefined ? [] : [scope];
+    });
+
+    // A folder measured on purpose is never ignored away, even inside an
+    // ignored tree such as a scratch `tmp/`.
+    return this.ignoreRulesService.isIgnored(scopes, "") ? [] : scopes;
   }
 
   /**

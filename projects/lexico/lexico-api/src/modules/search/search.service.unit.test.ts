@@ -2,7 +2,7 @@
 
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { Lexeme, Translation, Word } from "@codebase/lexico-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
@@ -32,6 +32,15 @@ function createSearchService(): {
   const wordRepository = createRepositoryMock<Word>();
   const translationRepository = createRepositoryMock<Translation>();
   const logger = createMock<LoggerService>();
+  for (const repository of [
+    lexemeRepository,
+    wordRepository,
+    translationRepository,
+  ] as Repository<never>[]) {
+    const builder = repository.createQueryBuilder();
+    vi.mocked(repository.createQueryBuilder).mockClear();
+    vi.mocked(builder.getMany).mockResolvedValue([]);
+  }
 
   const service = new SearchService(
     lexemeRepository,
@@ -81,7 +90,7 @@ describe(SearchService, () => {
       expect(logger.info).not.toHaveBeenCalled();
     });
 
-    it("ranks the query and its stem with the macrons removed, adding the enclitic's tier", async () => {
+    it("ranks the query and its host with the macrons removed, adding the enclitic's tier", async () => {
       expect.hasAssertions();
 
       const { lexemeQueryBuilder, service } = createSearchService();
@@ -95,9 +104,9 @@ describe(SearchService, () => {
           latinFuzzy0Maximum: 2,
           latinFuzzy1: "canto",
           latinFuzzy1Maximum: 1,
+          latinHost: ["canto"],
           latinPrefix0: "cantoque%",
           latinPrefix1: "canto%",
-          latinStem: ["canto"],
           latinTerms: ["cantoque", "canto"],
         }),
       );
@@ -111,8 +120,8 @@ describe(SearchService, () => {
       await service.searchLatin("in");
 
       expect(lexemeQueryBuilder.setParameters).toHaveBeenCalledWith({
+        latinHost: ["in"],
         latinPrefix0: "in%",
-        latinStem: ["in"],
         latinTerms: ["in"],
       });
     });

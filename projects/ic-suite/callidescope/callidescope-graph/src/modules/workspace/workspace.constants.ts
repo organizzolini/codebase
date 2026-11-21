@@ -12,11 +12,8 @@ export const EXCLUDED_SCAN_DIRECTORY_NAMES = [
   "out",
 ] as const;
 
-/** Project root marker; a lone `tsconfig.json` is shared settings. */
+/** Project root marker; a lone tsconfig is shared settings. */
 export const PACKAGE_MANIFEST_NAME = "package.json";
-
-/** Project-marking file, named once for discovery and exclusions. */
-export const PROJECT_CONFIGURATION_NAME = "tsconfig.json";
 
 /** Test scaffolding directory; reports must not count its files. */
 export const TEST_DIRECTORY_SEGMENT = "testing";

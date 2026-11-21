@@ -1,13 +1,13 @@
 import { Module } from "@nestjs/common";
 
-import { AnnualSolarCycleModule } from "../annual-solar-cycle/annual-solar-cycle.module";
 import { AspectsModule } from "../aspects/aspects.module";
-import { EclipsesModule } from "../eclipses/eclipses.module";
-import { IngressesModule } from "../ingresses/ingresses.module";
-import { MonthlyLunarCycleModule } from "../monthly-lunar-cycle/monthly-lunar-cycle.module";
-import { PhasesModule } from "../phases/phases.module";
-import { RetrogradesModule } from "../retrogrades/retrogrades.module";
-import { TwilightsModule } from "../twilights/twilights.module";
+import { AnnualSolarCycleModule } from "../perfective/modules/annual-solar-cycle/annual-solar-cycle.module";
+import { EclipsesModule } from "../perfective/modules/eclipses/eclipses.module";
+import { IngressesModule } from "../perfective/modules/ingresses/ingresses.module";
+import { MonthlyLunarCycleModule } from "../perfective/modules/monthly-lunar-cycle/monthly-lunar-cycle.module";
+import { PhasesModule } from "../perfective/modules/phases/phases.module";
+import { RetrogradesModule } from "../perfective/modules/retrogrades/retrogrades.module";
+import { TwilightsModule } from "../perfective/modules/twilights/twilights.module";
 
 import { ProgressiveService } from "./progressive.service";
 

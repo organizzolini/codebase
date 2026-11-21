@@ -1,9 +1,9 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
+import { expectProcessExitOne } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { expectProcessExitOne } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
 
 import { ConventionalConfigCommand } from "./conventional-config.command";

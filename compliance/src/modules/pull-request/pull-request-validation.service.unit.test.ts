@@ -2,15 +2,16 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { PullRequestAncestorIssuesService } from "./pull-request-ancestor-issues.service";
-import { PullRequestBodyService } from "./pull-request-body.service";
-import { PullRequestGithubService } from "./pull-request-github.service";
-import { PullRequestLabelsAssigneesService } from "./pull-request-labels-assignees.service";
-import { PullRequestReleaseSignificanceService } from "./pull-request-release-significance.service";
-import { PullRequestTitleService } from "./pull-request-title.service";
+import { PullRequestBodyService } from "./modules/body/pull-request-body.service";
+import { PullRequestGithubService } from "./modules/github/pull-request-github.service";
+import { PullRequestLabelsAssigneesService } from "./modules/labels/pull-request-labels-assignees.service";
+import { PullRequestAncestorIssuesService } from "./modules/linked-issues/pull-request-ancestor-issues.service";
+import { PullRequestLinkedIssuesService } from "./modules/linked-issues/pull-request-linked-issues.service";
+import { PullRequestReleaseSignificanceService } from "./modules/release-significance/pull-request-release-significance.service";
+import { PullRequestTitleService } from "./modules/title/pull-request-title.service";
 import { PullRequestValidationService } from "./pull-request-validation.service";
 
-import type { PullRequestContext } from "./pull-request-context.types";
+import type { PullRequestContext } from "./modules/context/pull-request-context.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 const context: PullRequestContext = {
@@ -30,6 +31,7 @@ const DEPENDENCIES = {
     PullRequestBodyService,
     PullRequestGithubService,
     PullRequestLabelsAssigneesService,
+    PullRequestLinkedIssuesService,
     PullRequestReleaseSignificanceService,
     PullRequestTitleService,
   ],
@@ -40,6 +42,7 @@ describe(PullRequestValidationService, () => {
   let ancestors: PullRequestAncestorIssuesService;
   let body: PullRequestBodyService;
   let github: PullRequestGithubService;
+  let linkedIssues: PullRequestLinkedIssuesService;
   let metadata: PullRequestLabelsAssigneesService;
   let significance: PullRequestReleaseSignificanceService;
   let title: PullRequestTitleService;
@@ -54,6 +57,7 @@ describe(PullRequestValidationService, () => {
     ancestors = built.mock(PullRequestAncestorIssuesService);
     body = built.mock(PullRequestBodyService);
     github = built.mock(PullRequestGithubService);
+    linkedIssues = built.mock(PullRequestLinkedIssuesService);
     metadata = built.mock(PullRequestLabelsAssigneesService);
     significance = built.mock(PullRequestReleaseSignificanceService);
     title = built.mock(PullRequestTitleService);
@@ -65,6 +69,12 @@ describe(PullRequestValidationService, () => {
     vi.mocked(ancestors.verify).mockReturnValue({
       failures: [],
       heading: "hierarchy",
+      remediationCommands: [],
+      successMessage: "ok",
+    });
+    vi.mocked(linkedIssues.check).mockReturnValue({
+      failures: [],
+      heading: "linked",
       remediationCommands: [],
       successMessage: "ok",
     });
@@ -89,14 +99,12 @@ describe(PullRequestValidationService, () => {
       scopes: [],
       type: "feat",
     });
-    vi.mocked(github.run).mockImplementation((arguments_) => ({
+    vi.mocked(github.run).mockReturnValue({
       available: true,
       standardError: "",
-      standardOutput: arguments_.includes("closingIssuesReferences")
-        ? "[5]"
-        : "{}",
+      standardOutput: "{}",
       succeeded: true,
-    }));
+    });
     vi.mocked(github.describeFailure).mockReturnValue("HTTP 500");
     vi.mocked(significance.resolveFromDocument).mockReturnValue({
       commits: [],
@@ -166,47 +174,33 @@ describe(PullRequestValidationService, () => {
     expect(title.check).not.toHaveBeenCalled();
   });
 
-  it("fails when the pull request closes no issue", () => {
-    vi.mocked(github.run).mockImplementation((arguments_) => ({
-      available: true,
-      standardError: "",
-      standardOutput: arguments_.includes("closingIssuesReferences")
-        ? "[]"
-        : "{}",
-      succeeded: true,
-    }));
+  it("exempts a GitHub Actions pull request from the issue link only", () => {
+    const outcomes = service.validate({
+      ...context,
+      author: "github-actions[bot]",
+    });
 
-    const outcome = service.validate(context)[4];
+    expect(outcomes).toHaveLength(5);
+    expect(title.check).toHaveBeenCalledWith(context.title);
+    expect(linkedIssues.check).not.toHaveBeenCalled();
+  });
 
-    expect(outcome?.failures[0]).toContain("No issue is closed");
+  it("reports what the linked-issue check found", () => {
+    vi.mocked(linkedIssues.check).mockReturnValue({
+      failures: ["❌ Issue #5: No Effort issue field"],
+      heading: "linked",
+      remediationCommands: [],
+      successMessage: "ok",
+    });
+
+    expect(service.validate(context)[4]?.failures).toStrictEqual([
+      "❌ Issue #5: No Effort issue field",
+    ]);
   });
 
   it("skips the linked-issue check for a draft pull request", () => {
     expect(service.validate({ ...context, draft: true })).toHaveLength(5);
-  });
-
-  it("fails the linked-issue check when gh cannot read the issues", () => {
-    vi.mocked(github.run).mockReturnValue({
-      available: true,
-      standardError: "",
-      standardOutput: "",
-      succeeded: false,
-    });
-
-    expect(service.validate(context)[4]?.failures[0]).toContain("HTTP 500");
-  });
-
-  it("fails the linked-issue check on unparsable output", () => {
-    vi.mocked(github.run).mockReturnValue({
-      available: true,
-      standardError: "",
-      standardOutput: "nope",
-      succeeded: true,
-    });
-
-    expect(service.validate(context)[4]?.failures[0]).toContain(
-      "Unable to parse the issues closed",
-    );
+    expect(linkedIssues.check).not.toHaveBeenCalled();
   });
 
   it("fails metadata and significance on a title that does not parse", () => {

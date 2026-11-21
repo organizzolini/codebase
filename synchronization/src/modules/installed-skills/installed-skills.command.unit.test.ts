@@ -16,11 +16,11 @@ import { expectLoggerContext } from "@codebase/observability/testing";
 import {
   captureOutput,
   createTemporaryDirectory,
+  expectProcessExitOne,
   overrideEnvironment,
 } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { expectProcessExitOne } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
 
 import {
@@ -164,7 +164,7 @@ describe(InstalledSkillsCommand, () => {
       expect(printed()).toBe(
         [
           "⚠️  Skills declared in skills-lock.json are not installed: alpha",
-          '🚨 The agent workflow in AGENTS.md links to these skills. Until they are restored those links dangle, and user-invoked skills such as "/grill-with-docs" are unavailable.',
+          '🚨 The agent workflow in AGENTS.md links to these skills. Until they are restored those links dangle, and user-invoked skills such as "/grill-me" are unavailable.',
           "",
           "Action required:",
           '1. Restore them with "pnpm exec nx run synchronization:installed-skills:write".',

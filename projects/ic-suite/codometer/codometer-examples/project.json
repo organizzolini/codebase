@@ -9,6 +9,7 @@
     "build-projects": {},
     "codometer": {},
     "deprecate-code": {},
+    "eslint": {},
     "examples": {
       "cache": true,
       "description": "Run every example this package ships, the way its own guide says to, and gate on the exit code that guide promises. This is the smoke gate over all of it — `vitest` is where the numbers and the refusal messages are asserted, in the prose that explains them. It also holds the two completeness checks no assertion about output would catch: a configuration with no expected exit code, and an example directory with no `README.md`.",
@@ -19,7 +20,7 @@
         "default"
       ],
       "options": {
-        "command": "node --import @swc-node/register/esm-register testing/run-examples.ts",
+        "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register testing/run-examples.ts",
         "cwd": "{projectRoot}"
       },
       "outputs": []
@@ -37,6 +38,7 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "vitest": {},
     "yaml-lint": {}
   }
 }

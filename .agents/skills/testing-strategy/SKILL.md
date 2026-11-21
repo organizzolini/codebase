@@ -24,6 +24,9 @@ Use when asked to:
 - Unit: `*.unit.test.ts`
 - Integration: `*.integration.test.ts`
 - End-to-end: `*.end-to-end.test.ts`
+- Packed: `*.packed.test.ts`, run by the `end-to-end` target, which installs the
+  tarballs `pack` leaves in `dist/tarballs` into an isolated sandbox and runs
+  the real executable there
 
 ## Run Tests
 
@@ -31,8 +34,16 @@ Use when asked to:
 nx run <project>:vitest:unit
 nx run <project>:vitest:integration
 nx run <project>:vitest:end-to-end
+nx run <project>:end-to-end    # packed tests: the five ic-suite CLIs and four Nx plugins
 nx affected --target=vitest --base=main
 ```
+
+The `end-to-end` target is separate from `vitest:end-to-end`, which runs
+`*.end-to-end.test.ts` against source. Nine projects opt in by declaring an
+empty `end-to-end` target: the five CLIs install tarballs through
+`createTarballSandboxRunner`, and the four Nx plugins publish to a local
+Verdaccio registry through `startVerdaccioPluginRunner`, both from
+`@codebase/testing/end-to-end`. CI runs them in the `End to End IC Suite` leg.
 
 ## Shared Helpers: `@codebase/testing`
 
@@ -117,7 +128,7 @@ await renderRoute(getRouter(), "/search");
 The conformetry test templates generate tests in this shape, so scaffold with
 `conformetry-generate` and the first test already matches. Projects whose tests
 predate the templates are held to their measured score instead, in the
-`TEST_TEMPLATE_BASELINES` table of `configuration/conformetry.config.ts`. That
+`TEST_TEMPLATE_BASELINES` table of `configuration/ic-suite/conformetry.config.ts`. That
 table only ever shrinks:
 
 1. Migrate one project, or one small group, per pull request.
@@ -145,7 +156,7 @@ If branch coverage is just below threshold, add focused tests for uncovered guar
 
 Additional coverage practices from recent 96% threshold work:
 
-- Keep project Vitest configs thin and inherit shared defaults using `mergeConfig(...)` from `configuration/vitest.config.ts` so threshold changes stay centralized.
+- Keep project Vitest configs thin and inherit shared defaults using `mergeConfig(...)` from `configuration/typescript/vitest.config.ts` so threshold changes stay centralized.
 - Use a hotspot-first loop: generate coverage, sort the lowest branch-coverage files, patch the highest-impact offenders, then re-run coverage.
 - Raise coverage with behavior-first assertions, not synthetic test inflation. Prioritize guard clauses, empty-result paths, fallback branches, and explicit error paths.
 - Add dedicated branch-focused test files for services with dense branching logic so intent stays explicit and regressions are easier to detect after refactors.
@@ -162,7 +173,7 @@ you touched.
 
 | Gate | Threshold | How to run |
 | ---- | --------- | ---------- |
-| Test coverage | 96% branches, functions, lines, statements — set once in `configuration/vitest.config.ts` | `nx run <project>:vitest --configuration=coverage` |
+| Test coverage | 96% branches, functions, lines, statements — set once in `configuration/typescript/vitest.config.ts` | `nx run <project>:vitest --configuration=coverage` |
 | Type coverage | Per project, in that project's own `package.json` as `typeCoverage.atLeast`. Most packages sit at 100 with `strict: true` | `nx run <project>:type-coverage` |
 | Compiled size | Per project, declared in its own `codometer.config.ts`. Only projects that emit something declare one | `nx run <project>:codometer` |
 | Duplication | **Not a gate.** Advisory only, and nothing in CI runs it | `nx run configuration:jscpd` |

@@ -9,14 +9,19 @@ import {
   startDrawRun,
 } from "../../../testing/draw-run";
 import { meanderRecord } from "../../../testing/meanders";
-import { HISTORICAL_CORPUS } from "../corpus/historical-corpus.constants";
+import { HISTORICAL_CORPUS } from "../corpus/modules/historical/historical-corpus.constants";
 
-import { DrawCodeService } from "./draw-code.service";
+import { DrawCodeService } from "./modules/enumeration/draw-code.service";
 
-vi.mock("node:fs/promises", () => ({
-  mkdir: vi.fn<() => Promise<void>>(),
-  writeFile: vi.fn<(path: string, data: unknown) => Promise<void>>(),
-}));
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
+
+vi.mock("node:fs/promises", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem();
+});
 
 /** Starts a fresh draw run over an emptied `meanders` table, with `--code` and logging mocked out. */
 async function startMockedDrawRun(): Promise<DrawRunFixture> {

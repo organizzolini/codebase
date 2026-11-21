@@ -1,5 +1,6 @@
 {
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "implicitDependencies": ["coinagerie-cli"],
   "name": "coinagerie-nx",
   "projectType": "library",
   "sourceRoot": "projects/ic-suite/coinagerie/coinagerie-nx",
@@ -12,11 +13,20 @@
     "type:package"
   ],
   "targets": {
-    "build": {},
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vite build --config configuration/vite.config.ts",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
     "build-projects": {},
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "end-to-end": {},
+    "eslint": {},
     "format-code": {},
     "guard-code": {},
     "knip": {},
@@ -31,6 +41,7 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "vitest": {},
     "yaml-lint": {}
   }
 }

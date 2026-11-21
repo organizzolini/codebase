@@ -79,7 +79,11 @@ describe(GateService, () => {
       JSON.stringify({
         plugins: [
           {
-            options: { configurationPath: "codependix.config.ts" },
+            options: {
+              configurationPath: "codependix.config.ts",
+              projectConfigurationPath: "codependix.config.ts",
+              projectTsconfigPath: "tsconfig.json",
+            },
             plugin: "@codependix/nx",
           },
         ],
@@ -204,7 +208,11 @@ describe(GateService, () => {
         JSON.stringify({
           plugins: [
             {
-              options: { configurationPath: "registered.config.ts" },
+              options: {
+                configurationPath: "registered.config.ts",
+                projectConfigurationPath: "codependix.config.ts",
+                projectTsconfigPath: "tsconfig.json",
+              },
               plugin: "@codependix/nx",
             },
           ],

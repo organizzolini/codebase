@@ -38,10 +38,12 @@ Also check the branch name, the commit messages, and the spec the task came from
 
 Pick the Issue Type by position in the hierarchy:
 
-- No parent (a standalone change): **Bug** when the commit type is `fix`, otherwise **Feature**
+- No parent (a standalone change): **Bug** when the commit type is `fix`, otherwise **Feature**; a **Task** with no parent is also accepted
 - Under a spec or a parent: **Task**
 
-Take the title from the commit convention, `<type>(<scope>): <gitmoji> <subject>`, and apply the labels the Continuous Compliance issue check expects: one `type:*`, one `scope:*` per scope, and `source:agent`. Then set its board fields with [manage-project](../manage-project/SKILL.md): Effort always, and Status In Progress when you are about to start, or are already doing, the work.
+Take the title from the commit convention, `<type>(<scope>): <gitmoji> <subject>`, and apply the labels the Continuous Compliance issue check expects: one `type:*`, one `scope:*` per scope, and `source:agent`. Then set its board fields with [manage-project](../manage-project/SKILL.md): Effort always, Priority on a root issue, and Status In Progress when you are about to start, or are already doing, the work.
+
+**A root issue (one with no parent) needs a Priority before you file it.** `compliance issue` audits every issue as it opens and fails a root issue with no Priority. Use the value the user gave, or else choose one from [manage-project's Choosing priority](../manage-project/SKILL.md#choosing-priority), and set it in the same call. Never change a Priority that is already set. A Task under a spec owes none.
 
 ```bash
 gh issue create \
@@ -52,7 +54,7 @@ gh issue create \
   --body-file /tmp/issue_body.md
 ```
 
-Cloud sessions have no `gh`. Use the GitHub MCP `search_issues` to look first and `issue_write` (`method: create`, with `labels` and `type`) to file.
+Cloud sessions have no `gh`. Use the GitHub MCP `search_issues` to look first and `issue_write` (`method: create`, with `labels`, `type`, and `issue_fields` carrying Effort and, on a root issue, Priority) to file.
 
 ## Backfill
 
@@ -75,6 +77,8 @@ gh pr view <number> --json closingIssuesReferences --jq '.closingIssuesReference
 ```
 
 An empty result means the link is missing: fix the keyword, or add the issue under **Development** in the pull request sidebar. GitHub honors closing keywords only for a pull request whose base is the default branch, so a stacked pull request from [gh-stack](../gh-stack/SKILL.md) may need the sidebar link. Run the command above on every pull request rather than assuming.
+
+The link alone does not pass the check: `compliance pull-request` also audits each closed issue's labels and Issue Type, and wants Effort on the issue and Priority on its root, as [manage-project](../manage-project/SKILL.md) describes.
 
 ## Issue vs Pull Request Content
 

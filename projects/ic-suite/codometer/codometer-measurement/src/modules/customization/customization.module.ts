@@ -1,5 +1,7 @@
 import { Module } from "@nestjs/common";
 
+import { TreeModule } from "../tree/tree.module";
+
 import { CustomizationService } from "./customization.service";
 
 /**
@@ -8,7 +10,7 @@ import { CustomizationService } from "./customization.service";
 @Module({
   controllers: [],
   exports: [CustomizationService],
-  imports: [],
+  imports: [TreeModule],
   providers: [CustomizationService],
 })
 export class CustomizationModule {}

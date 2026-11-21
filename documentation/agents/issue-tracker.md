@@ -7,13 +7,13 @@ Issues and specs for this repository live as GitHub issues in [Organizzolini/cod
 Two repository rules override the generic guidance below.
 
 - **Issue and spec titles follow the commit convention** — `<type>(<scope>): <gitmoji> <subject>`, with `type` and `scope` taken from the Conventional Naming tables in [AGENTS.md](../../AGENTS.md). A pull request opened against an issue is validated against the same commitlint configuration, so matching the format on the issue keeps the two aligned. Unlike a pull request title, this is not enforced — a quick backlog-idea title is a normal, intentional shape for an issue.
-- **Apply the `type:*` and `scope:*` labels** that correspond to the title, alongside the triage labels in [triage-labels.md](./triage-labels.md), and one `source:*` label (`source:agent` for an issue an agent files, `source:human` for one a person files through the template).
+- **Apply the `type:*` and `scope:*` labels** that correspond to the title, and one `source:*` label (`source:agent` for an issue an agent files, `source:human` for one a person files through the template).
 
-The single issue template lives at `.github/ISSUE_TEMPLATE/issue.yml`, with required Type and Scope dropdowns kept in sync with `configuration/conventional.config.cjs` by `nx run synchronization:synchronize:write`. `blank_issues_enabled: false` in `.github/ISSUE_TEMPLATE/config.yml` means every human-filed issue goes through it — `gh issue create --template issue.yml` fills it in from the terminal. An agent creating an issue directly through `gh issue create --title ... --body ...` bypasses the form entirely, which is expected: this is the human path, and an agent applies its own `source:agent`, `type:*`, and `scope:*` labels by hand as described above.
+The single issue template lives at `.github/ISSUE_TEMPLATE/issue.yml`, with required Type and Scope dropdowns kept in sync with `configuration/repository/conventional.config.cjs` by `nx run synchronization:synchronize:write`. `blank_issues_enabled: false` in `.github/ISSUE_TEMPLATE/config.yml` means every human-filed issue goes through it — `gh issue create --template issue.yml` fills it in from the terminal. An agent creating an issue directly through `gh issue create --title ... --body ...` bypasses the form entirely, which is expected: this is the human path, and an agent applies its own `source:agent`, `type:*`, and `scope:*` labels by hand as described above.
 
-- **Set the GitHub Issue Type by position in the hierarchy.** A root issue — one with no parent, whether a spec or a standalone report — is a **Feature** or a **Bug**. Every sub-issue, at any depth, is a **Task**. So a spec is a Feature, and the pull request issues and commit sub-issues beneath it are Tasks. Set it when creating (`gh issue create --type Feature`) or afterwards (`gh issue edit <n> --type Task`). The `compliance issue` check below enforces it, and it is independent of the `type:*` label, which still names the commit type.
+- **Set the GitHub Issue Type by position in the hierarchy.** A root issue — one with no parent, whether a spec or a standalone report — is a **Feature**, a **Bug**, or a standalone **Task**. Every sub-issue, at any depth, is a **Task**. So a spec is a Feature, and the pull request issues and commit sub-issues beneath it are Tasks. Set it when creating (`gh issue create --type Feature`) or afterwards (`gh issue edit <n> --type Task`). The `compliance issue` check below enforces it, and it is independent of the `type:*` label, which still names the commit type.
 
-This is enforced two ways. First, the template's required dropdowns and disabled blank issues stop most drift at the source. Second, the 🦹 Continuous Compliance GitHub Actions workflow runs on an issue's `opened`/`edited`/`labeled`/`unlabeled` events as well as on a weekly scheduled cron (every Friday at 8:18 AM NYC time): the `compliance issue` command (`compliance`) validates issue labels, GitHub Issue Types (roots are Feature or Bug, sub-issues are Task), parent-child hierarchy depths (maximum 3 tiers: Spec → PR → Commit), and release significance constraints across open issues. In addition, the scheduled matrix job runs `audit-files` (`compliance`) to enforce `.github/CODEOWNERS` validity and GitHub Actions workflow security policies. The same command also fails any pull request (Dependabot's excepted) whose `closingIssuesReferences` is empty, on pull requests and in the merge queue. On `opened` the same command reconciles the labels a submitted form implies onto the issue first, so a freshly filed template issue already carries them before the check runs.
+This is enforced two ways. First, the template's required dropdowns and disabled blank issues stop most drift at the source. Second, the 🦹 Continuous Compliance GitHub Actions workflow runs on an issue's `opened`/`edited`/`labeled`/`unlabeled` events as well as on a weekly scheduled cron (every Friday at 8:18 AM NYC time): the `compliance issue` command (`compliance`) validates issue labels, GitHub Issue Types (roots are Feature or Bug, sub-issues are Task), parent-child hierarchy depths (maximum 3 tiers: Spec → PR → Commit), a Priority issue field on every root issue, and release significance constraints across open issues. In addition, the scheduled matrix job runs `audit-files` (`compliance`) to enforce `.github/CODEOWNERS` validity and GitHub Actions workflow security policies. The same command also fails any pull request (Dependabot's, GitHub Actions', and drafts excepted) whose `closingIssuesReferences` is empty or names a non-compliant issue, on pull requests and in the merge queue. On `opened` the same command reconciles the labels a submitted form implies onto the issue first, so a freshly filed template issue already carries them before the check runs.
 
 The README's Continuous Compliance badge is this workflow's own status badge. It validates both issue metadata and repository governance policies across open issues and workflow configurations.
 
@@ -27,24 +27,29 @@ Reading or writing the board needs the `project` scope on the `gh` token (`gh au
 
 ## Planning shape: a spec, its pull requests, and their commits
 
-When planning work — `/to-tickets`, `/to-spec`, or any breakdown that lands in
-this tracker — file **one parent issue per pull request**, and **one sub-issue
-per commit** that pull request is expected to contain. Where the breakdown came
-from a spec, that spec is the third layer above both:
+When planning work — publishing a spec, turning a `writing-plans` plan into
+tickets, or any breakdown that lands in this tracker — file **one parent issue per pull request**, and **one sub-issue
+per commit** that pull request is expected to contain. A spec normally has
+**exactly one** parent issue: see
+[One Pull Request by Default](../../AGENTS.md#one-pull-request-by-default) for the
+few mechanical reasons, such as deployment order, that justify a second. Where
+the breakdown came from a spec, that spec is the third layer above both:
 
 ```text
-spec issue                  the output of /to-spec      (Issue Type: Feature or Bug)
+spec issue                  the approved design         (Issue Type: Feature or Bug)
 └── parent issue            one per pull request        (Issue Type: Task)
     └── sub-issue           one per planned commit      (Issue Type: Task)
 ```
 
 - **The parent issue is the pull request.** Its title is the title that pull
-  request will carry, in the commit convention above, and its scope is one
-  project or module — the same bound [Work Scope](../../AGENTS.md#work-scope)
-  puts on a branch. Work that will not fit in one reviewable pull request is two
-  parent issues, not one parent with more sub-issues.
+  request will carry, in the commit convention above, naming the fewest scopes
+  that cover its commits. A large change is one parent with more sub-issues,
+  not more parents: size, a second project, or mixed `feat` and `fix` work never
+  splits it. A second parent issue states the mechanical reason it exists.
 - **Each sub-issue is one commit.** Title it the way that commit message will
-  read, so the branch's history can be written straight off the sub-issue list.
+  read, so the branch's history can be written straight off the sub-issue list,
+  and scope it to one project or module — the bound
+  [Work Scope](../../AGENTS.md#work-scope) puts on a unit of work.
   Link it with GitHub's native sub-issue relationship rather than a task list,
   the same mechanism the wayfinder map uses below.
 - **Keep every sub-issue at or below the parent's release significance.** A
@@ -55,7 +60,7 @@ spec issue                  the output of /to-spec      (Issue Type: Feature or 
   sub-issues is where that is cheapest to get right: a `feat` sub-issue under a
   `chore` parent is a retitle now, or a failed check later. See
   [Release Significance](../../AGENTS.md#release-significance).
-- **The spec issue is the parent of every parent issue.** When a grilling
+- **The spec issue is the parent of every parent issue.** When a brainstorming
   session produced a spec, link each pull request issue to it with the same
   native sub-issue relationship, so the spec carries a progress bar over the
   work and each pull request shows what it implements. The spec is never the
@@ -92,9 +97,9 @@ sub-issues are unavailable, fall back to a task list in the parent body with
 
 **Sequencing is a separate relationship, and it composes.** An issue has one
 parent but any number of blockers, so use native dependencies — described under
-[Wayfinder operations](#wayfinder-operations) — between parent issues wherever
-one genuinely gates another, and along a parent's sub-issues so they chain in
-landing order. Publish blockers first, so each edge can reference an identifier
+[Wayfinder operations](#wayfinder-operations) — along a parent's sub-issues so
+they chain in landing order, and between parent issues in the rare spec that has
+more than one. Publish blockers first, so each edge can reference an identifier
 that already exists.
 
 **Do not look for a "relates to" endpoint.** The GitHub web UI offers one under
@@ -104,9 +109,15 @@ that can be created programmatically.
 
 ## Every pull request closes an issue
 
-A pull request must close or reference an issue through GitHub's own link: a closing keyword in its body (`Closes #N`, conventionally the first `🔗 Related` bullet) or the Development sidebar. A plain `Related to #N` records no link and does not count. For a planned pull request the issue is its parent Task; for a standalone change it is a root Bug (`fix`) or Feature (anything else).
+A pull request must close or reference an issue through GitHub's own link: a closing keyword in its body (`Closes #N`, conventionally the first `🔗 Related` bullet) or the Development sidebar. A plain `Related to #N` records no link and does not count. For a planned pull request the issue is its parent Task; for a standalone change it is a root Bug (`fix`), Feature (anything else), or Task.
 
-Continuous Compliance enforces this with `compliance pull-request`, which reads `gh pr view --json closingIssuesReferences`. Agents use the [link-issue](../../.agents/skills/link-issue/SKILL.md) skill to find the planned ticket, to file one before ad-hoc work starts, or to backfill one when the work is already done.
+Continuous Compliance enforces this with `compliance pull-request`, which reads `gh pr view --json closingIssuesReferences` and then judges every issue it names:
+
+- **Every closed issue passes the issue audit**: its `type:*`, `scope:*`, and single `source:*` labels, and the Issue Type its place in the hierarchy calls for.
+- **The issue the pull request is built for has an Effort** — the parent Task, or the standalone root. A commit sub-issue closed beside its parent owes no fields of its own.
+- **The root of that issue's hierarchy has a Priority** — the spec above a parent Task, or the standalone issue itself.
+
+The failure lists the `gh api` command that sets each missing field; see [manage-project](../../.agents/skills/manage-project/SKILL.md) for the field values. Agents use the [link-issue](../../.agents/skills/link-issue/SKILL.md) skill to find the planned ticket, to file one before ad-hoc work starts, or to backfill one when the work is already done.
 
 What belongs in the issue versus the pull request description is set out in [link-issue](../../.agents/skills/link-issue/SKILL.md#issue-vs-pull-request-content).
 
@@ -133,14 +144,25 @@ set_field <child> Status "In Progress"
   field marks what is moving, not what is scoped.
 - **Drop `status:ready-for-agent` and `status:ready-for-human` in the same
   step.** Those say the ticket is waiting to be picked up, which stops being
-  true the moment it is — `/triage`'s frontier query and anyone scanning the
-  board both read them that way.
+  true the moment it is.
 - **Closing the issue is the whole of finishing.** The board's built-in
-  workflow marks a closed issue Done, so there is nothing to clear:
+  workflow marks a closed issue Done, so there is nothing to clear. Each layer
+  closes at its own moment:
 
-  ```bash
-  gh issue close <child> --comment "..."
-  ```
+  - **Commit sub-issue**: close it right after its commit lands, quoting the
+    sha. A commit trailer cannot do it, because a squash merge keeps only the
+    pull request's title and body. If review sends the commit back, reopen it.
+
+    ```bash
+    gh issue close <child> --comment "<sha>"
+    ```
+
+  - **Pull request issue**: the pull request's `Closes #N` closes it on merge,
+    so no agent closes it by hand. Stacked on another branch, the link only
+    registers once the pull request's base is `main`.
+  - **Spec**: leave it open until every parent issue is merged and every
+    acceptance item in the spec holds. Then close it with a comment listing the
+    pull requests.
 
 The 🦹 Continuous Compliance workflow reads only the `type:*`, `scope:*`, and `source:*`
 families, so a `status:*` label neither satisfies nor fails it.
@@ -157,21 +179,9 @@ families, so a `status:*` label neither satisfies nor fails it.
 
 Infer the repo from `git remote -v` — `gh` does this automatically when run inside a clone.
 
-## Pull requests as a triage surface
-
-**PRs as a request surface: no.** _(Set to `yes` if this repo treats external PRs as feature requests; `/triage` reads this flag.)_
-
-When set to `yes`, PRs run through the same labels and states as issues, using the `gh pr` equivalents:
-
-- **Read a PR**: `gh pr view <number> --comments` and `gh pr diff <number>` for the diff.
-- **List external PRs for triage**: `gh pr list --state open --json number,title,body,labels,author,authorAssociation,comments` then keep only `authorAssociation` of `CONTRIBUTOR`, `FIRST_TIME_CONTRIBUTOR`, or `NONE` (drop `OWNER`/`MEMBER`/`COLLABORATOR`).
-- **Comment / label / close**: `gh pr comment`, `gh pr edit --add-label`/`--remove-label`, `gh pr close`.
-
-GitHub shares one number space across issues and PRs, so a bare `#42` may be either — resolve with `gh pr view 42` and fall back to `gh issue view 42`.
-
 ## When a skill says "publish to the issue tracker"
 
-Create a GitHub issue, with its Issue Type set: a spec from `/to-spec` is a `Feature` (or a `Bug` for a defect), and every ticket from `/to-tickets` is a `Task` once linked beneath it. Set `--type` at creation rather than correcting it later.
+Create a GitHub issue, with its Issue Type set: a spec is a `Feature` (or a `Bug` for a defect), and every ticket from a `writing-plans` plan is a `Task` once linked beneath it. Set `--type` at creation rather than correcting it later.
 
 ## When a skill says "fetch the relevant ticket"
 
@@ -180,6 +190,8 @@ Run `gh issue view <number> --comments`.
 ## Wayfinder operations
 
 Used by `/wayfinder`. The **map** is a single issue with **child** issues as tickets.
+
+This repository has no `domain-modeling` skill. Where wayfinder says to call it alongside `grilling`, call `grilling` alone, and record any decision worth keeping as an ADR in `documentation/adr/`.
 
 - **Map**: a single issue labelled `wayfinder:map`, holding the Notes / Decisions-so-far / Fog body. `gh issue create --type Feature --label wayfinder:map`.
 - **Child ticket**: an issue linked to the map as a GitHub sub-issue (`gh api` on the sub-issues endpoint). Where sub-issues aren't enabled, add the child to a task list in the map body and put `Part of #<map>` at the top of the child body. Issue Type: `Task`. Labels: `wayfinder:<type>` (`research`/`prototype`/`grilling`/`task`). Once claimed, the ticket is assigned to the driving dev.

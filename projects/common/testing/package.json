@@ -7,21 +7,28 @@
     "@nx/devkit": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@testing-library/react": "catalog:",
+    "execa": "catalog:",
+    "prompts": "catalog:",
     "react": "catalog:",
     "reflect-metadata": "catalog:",
     "tslib": "catalog:",
-    "vitest": "catalog:"
+    "verdaccio": "catalog:",
+    "vitest": "catalog:",
+    "yaml": "catalog:"
   },
   "devDependencies": {
     "@nx/eslint-plugin": "catalog:",
     "@swc/helpers": "catalog:",
     "@types/node": "catalog:",
+    "@types/prompts": "catalog:",
     "@types/react": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "jsdom": "catalog:"
   },
   "exports": {
     ".": "./src/index.ts",
+    "./end-to-end": "./src/end-to-end.ts",
+    "./file-system": "./src/file-system.ts",
     "./nestjs": "./src/nestjs.ts",
     "./react": "./src/react.ts",
     "./react/setup": "./src/react-setup.ts",
@@ -41,6 +48,14 @@
       ".": {
         "default": "./dist/src/index.js",
         "types": "./dist/src/index.d.ts"
+      },
+      "./end-to-end": {
+        "default": "./dist/src/end-to-end.js",
+        "types": "./dist/src/end-to-end.d.ts"
+      },
+      "./file-system": {
+        "default": "./dist/src/file-system.js",
+        "types": "./dist/src/file-system.d.ts"
       },
       "./nestjs": {
         "default": "./dist/src/nestjs.js",
@@ -70,7 +85,7 @@
     "ignoreFiles": [
       "**/*.test.ts",
       "**/*.test.tsx",
-      "src/modules/route-render/route-render.utilities.tsx"
+      "src/modules/browser-stand-ins/modules/route-render/route-render.utilities.tsx"
     ],
     "strict": true
   },

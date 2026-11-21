@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 
+import { findGuideGaps, listExampleNames } from "@codebase/testing/end-to-end";
+
 import {
   corpusDirectory,
   examplesDirectory,
@@ -44,7 +46,7 @@ const EXPECTED_EXIT_CODES: Record<string, number> = {
   "limits/fail.config.ts": 1,
   "limits/unbound.config.ts": 1,
   "limits/units.config.ts": 1,
-  "limits/unprefixed.config.ts": 1,
+  "limits/unqualified.config.ts": 1,
   "limits/unreadable-unit.config.ts": 1,
   "limits/warn.config.ts": 0,
   "output/codometer.config.ts": 0,
@@ -85,17 +87,6 @@ function readConfigurations(exampleName: string): string[] {
   return found.toSorted();
 }
 
-/** Every example directory, alphabetically — the order is the listing's own. */
-function readExampleNames(): string[] {
-  return fs
-    .readdirSync(examplesDirectory, { withFileTypes: true })
-    .filter(
-      (entry) => entry.isDirectory() && !FIXTURE_DIRECTORIES.has(entry.name),
-    )
-    .map((entry) => entry.name)
-    .toSorted();
-}
-
 // 🏃 Running
 
 /** The package guide, read once so the index table can be checked against it. */
@@ -104,7 +95,7 @@ function readPackageGuide(): string {
 }
 
 /** One configuration, run against the corpus and gated on the promised code. */
-function runConfiguration(relativePath: string): boolean {
+async function runConfiguration(relativePath: string): Promise<boolean> {
   const expected = EXPECTED_EXIT_CODES[relativePath];
 
   if (expected === undefined) {
@@ -115,7 +106,7 @@ function runConfiguration(relativePath: string): boolean {
     return false;
   }
 
-  const run = runCodometer(
+  const run = await runCodometer(
     [
       "--config",
       path.join(examplesDirectory, relativePath),
@@ -142,25 +133,21 @@ function runConfiguration(relativePath: string): boolean {
 /**
  * Checks one example: its guide must exist and be linked from the index, and every configuration must hold.
  */
-function runExample(exampleName: string, packageGuide: string): boolean {
+async function runExample(
+  exampleName: string,
+  packageGuide: string,
+): Promise<boolean> {
   console.info(`📁 ${exampleName}`);
 
-  let held = true;
+  const gaps = findGuideGaps(exampleName, { examplesDirectory, packageGuide });
+  let held = gaps.length === 0;
 
-  if (!fs.existsSync(path.join(examplesDirectory, exampleName, "README.md"))) {
-    console.error(`   ❌ ${exampleName} has no README.md`);
-    held = false;
-  }
-
-  if (!packageGuide.includes(`(examples/${exampleName}/README.md)`)) {
-    console.error(
-      `   ❌ ${exampleName} is not linked from the README's index table`,
-    );
-    held = false;
+  for (const gap of gaps) {
+    console.error(`   ❌ ${gap}`);
   }
 
   for (const relativePath of readConfigurations(exampleName)) {
-    if (!runConfiguration(relativePath)) held = false;
+    if (!(await runConfiguration(relativePath))) held = false;
   }
 
   return held;
@@ -168,16 +155,18 @@ function runExample(exampleName: string, packageGuide: string): boolean {
 
 // 🚀 Entry point
 
-const exampleNames = readExampleNames();
+const exampleNames = listExampleNames(examplesDirectory, FIXTURE_DIRECTORIES);
 
 console.info(
   `⏲️ Running ${exampleNames.length} codometer examples over the sample corpus.\n`,
 );
 
 const packageGuide = readPackageGuide();
-const outcomes = exampleNames.map((exampleName) =>
-  runExample(exampleName, packageGuide),
-);
+const outcomes: boolean[] = [];
+
+for (const exampleName of exampleNames) {
+  outcomes.push(await runExample(exampleName, packageGuide));
+}
 
 const documented = new Set(
   exampleNames.flatMap((exampleName) => readConfigurations(exampleName)),

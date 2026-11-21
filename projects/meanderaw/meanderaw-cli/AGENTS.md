@@ -9,7 +9,7 @@
 ### Run Locally
 
 ```bash
-cp .env.default .env  # Fill in required environment variables
+cp configuration/.env.default configuration/.env  # Fill in required environment variables
 nx run meanderaw-cli:start
 ```
 
@@ -53,8 +53,8 @@ does not slow them.
 only those no element of the symmetry group sends lower — one per class, without building
 the rest — and `canonicalTile` folds each to the representative the corpus stores. The
 rest of the class is recorded, not lost: `symmetricalCodes` holds the Codes of its mirror,
-flip, and both, each at its own canonical phase (a column shift is already folded by
-`canonicalPhase`). Drawing a row is the expensive part, so `DrawPoolService` deals each
+flip, and both, each at its own canonical rotation (a column shift is already folded by
+`canonicalRotation`). Drawing a row is the expensive part, so `DrawPoolService` deals each
 shape's minima in batches to `DRAW_WORKERS` threads booted from `src/worker.ts`, sorts
 the rows back into edge-key order, and the main thread inserts them with one prepared
 multi-row `INSERT` per chunk. `DRAW_WORKERS=0` draws in-process, which every suite pins
@@ -240,7 +240,7 @@ meanderaw variable carries the `MEANDERAW_` prefix, so the unprefixed `POSTGRES_
 
 **The `meanders` table is built by migrations, never by synchronizing.** `Meander` extends
 `PostgresqlUpdatableEntity`, so its `uuidv7()` id and audit columns come from the shared package, and the
-migrations live in `src/modules/database/migrations/`. After changing the entity run
+migrations live in the project root's `migrations/`. After changing the entity run
 `nx run meanderaw-cli:migration:generate`, and `nx run meanderaw-cli:migration:run` to apply it; the
 `start` target never migrates, so run the migrations before the first draw run. The CLI reads the
 data source `src/modules/database/data-source.constants.ts` exports, and the
@@ -405,7 +405,7 @@ See the [write-typescript skill](../../../.agents/skills/write-typescript/SKILL.
 - **Command not found at runtime** — ensure the command class is listed in `providers` of its module and the module is imported by the root module.
 - **Dependency injection failure** — verify the service is `@Injectable()`, exported from its module, and that module is imported by the consuming module.
 - **Unrecognized CLI flag** — check that `@Option()` decorators in the command class exactly match the flag names passed.
-- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `src/meanderaw-cli.constants.ts` and to `.env.default`.
+- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `src/meanderaw-cli.constants.ts` and to `configuration/.env.default`.
 
 See the [triage-integration skill](../../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
 
@@ -416,4 +416,4 @@ See the [triage-integration skill](../../../.agents/skills/triage-integration/SK
 - [src/meanderaw-cli.constants.ts](src/meanderaw-cli.constants.ts): `environmentSchema` (Zod)
 - `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
 - [project.json](project.json): Nx targets (`start`, `build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
-- [.env.default](.env.default): Environment variable template
+- [configuration/.env.default](configuration/.env.default): Environment variable template

@@ -1,4 +1,3 @@
-import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { ConfigurationService } from "@conformetry/configuration";
@@ -6,8 +5,10 @@ import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import {
+  createFileTree,
   createTemporaryDirectory,
   useTemporaryDirectory,
+  writeFileTree,
 } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
@@ -18,69 +19,35 @@ import type { RunValidationResult } from "./validation.types";
 import type { TemplateDefinition } from "@conformetry/configuration";
 
 /** Writes an instance directory, optionally dropping the markdown file. */
-async function createInstance(args: {
+function createInstance(args: {
   configuration: string;
   withNotes: boolean;
-}): Promise<string> {
-  const instancePath = path.join(
-    createTemporaryDirectory("validate-instance"),
-    "my-widget",
-  );
-
-  await mkdir(instancePath, { recursive: true });
-  await writeFile(
-    path.join(instancePath, "my-widget.config.json"),
-    args.configuration,
-    "utf8",
-  );
+}): string {
+  const files: Record<string, string> = {
+    "my-widget/my-widget.config.json": args.configuration,
+  };
 
   if (args.withNotes) {
-    await writeFile(
-      path.join(instancePath, "my-widget.notes.md"),
-      "# MyWidget\n",
-      "utf8",
-    );
+    files["my-widget/my-widget.notes.md"] = "# MyWidget\n";
   }
 
-  return instancePath;
+  return path.join(
+    createFileTree(files, { label: "validate-instance" }),
+    "my-widget",
+  );
 }
 /**
  * Writes a one-template root: a JSON file whose shape the instance must match,
  * plus a file the instance is required to have.
  */
-async function createTemplatePath(templatesRoot: string): Promise<string> {
-  const templatePath = path.join(templatesRoot, "widget");
+function createTemplatePath(templatesRoot: string): string {
+  writeFileTree(templatesRoot, {
+    "widget/{{nameKebabCase}}.config.json":
+      '{\n  "kind": "widget",\n  "name": "{{nameKebabCase}}"\n}\n',
+    "widget/{{nameKebabCase}}.notes.md": "# {{namePascalCase}}\n",
+  });
 
-  await mkdir(templatePath, { recursive: true });
-  await writeFile(
-    path.join(templatePath, "{{nameKebabCase}}.config.json"),
-    '{\n  "kind": "widget",\n  "name": "{{nameKebabCase}}"\n}\n',
-    "utf8",
-  );
-  await writeFile(
-    path.join(templatePath, "{{nameKebabCase}}.notes.md"),
-    "# {{namePascalCase}}\n",
-    "utf8",
-  );
-
-  return templatePath;
-}
-
-/** Writes each file under the given directory and returns that directory. */
-async function writeTree(args: {
-  directoryPath: string;
-  files: Record<string, string>;
-}): Promise<string> {
-  const { directoryPath } = args;
-
-  for (const [filePath, content] of Object.entries(args.files)) {
-    await mkdir(path.dirname(path.join(directoryPath, filePath)), {
-      recursive: true,
-    });
-    await writeFile(path.join(directoryPath, filePath), content, "utf8");
-  }
-
-  return directoryPath;
+  return path.join(templatesRoot, "widget");
 }
 
 /** A route whose path no substitution supplies, and a test repeating it. */
@@ -92,17 +59,17 @@ const ROUTE_TEMPLATE_FILES = {
 };
 
 /** Writes a route instance, its test asserting `assertedPath`. */
-async function createRouteInstance(args: {
+function createRouteInstance(args: {
   assertedPath: string;
   routePath: string;
-}): Promise<string> {
-  return writeTree({
-    directoryPath: createTemporaryDirectory("validate-route"),
-    files: {
+}): string {
+  return createFileTree(
+    {
       "word/word.route.test.ts": `it("renders", async () => {\n  await renderRoute("${args.routePath}");\n  expect(readPath()).toBe("${args.assertedPath}");\n});\n`,
       "word/word.route.ts": `export const Route = createFileRoute("${args.routePath}")({});\n`,
     },
-  });
+    { label: "validate-route" },
+  );
 }
 
 describe(ValidationService, () => {
@@ -122,7 +89,7 @@ describe(ValidationService, () => {
     templates = [
       configurationService.collectTemplate({
         name: "widget",
-        templatePath: await createTemplatePath(readTemplatesRoot()),
+        templatePath: createTemplatePath(readTemplatesRoot()),
       }),
     ];
   });
@@ -136,14 +103,14 @@ describe(ValidationService, () => {
   });
 
   describe("validate", () => {
-    it("passes an instance that matches its template", async () => {
-      const instancePath = await createInstance({
+    it("passes an instance that matches its template", () => {
+      const instancePath = createInstance({
         configuration: '{\n  "kind": "widget",\n  "name": "my-widget"\n}\n',
         withNotes: true,
       });
 
       const result = service.validate({
-        instances: [{ nameStem: "my-widget", path: instancePath }],
+        instances: [{ name: "my-widget", path: instancePath }],
         templates,
       });
 
@@ -152,14 +119,14 @@ describe(ValidationService, () => {
       expect(result.checkedPaths).toStrictEqual([instancePath]);
     });
 
-    it("reports a key the template requires and the instance lacks", async () => {
-      const instancePath = await createInstance({
+    it("reports a key the template requires and the instance lacks", () => {
+      const instancePath = createInstance({
         configuration: '{\n  "name": "my-widget"\n}\n',
         withNotes: true,
       });
 
       const result = service.validate({
-        instances: [{ nameStem: "my-widget", path: instancePath }],
+        instances: [{ name: "my-widget", path: instancePath }],
         templates,
       });
 
@@ -167,14 +134,14 @@ describe(ValidationService, () => {
       expect(result.fileResults[0]?.filename).toBe("my-widget.config.json");
     });
 
-    it("reports a file the template requires and the instance lacks", async () => {
-      const instancePath = await createInstance({
+    it("reports a file the template requires and the instance lacks", () => {
+      const instancePath = createInstance({
         configuration: '{\n  "kind": "widget",\n  "name": "my-widget"\n}\n',
         withNotes: false,
       });
 
       const result = service.validate({
-        instances: [{ nameStem: "my-widget", path: instancePath }],
+        instances: [{ name: "my-widget", path: instancePath }],
         templates,
       });
 
@@ -184,14 +151,14 @@ describe(ValidationService, () => {
       );
     });
 
-    it("runs only the languages it was asked for", async () => {
-      const instancePath = await createInstance({
+    it("runs only the languages it was asked for", () => {
+      const instancePath = createInstance({
         configuration: '{\n  "name": "my-widget"\n}\n',
         withNotes: true,
       });
 
       const result = service.validate({
-        instances: [{ nameStem: "my-widget", path: instancePath }],
+        instances: [{ name: "my-widget", path: instancePath }],
         languageNames: ["markdown"],
         templates,
       });
@@ -204,7 +171,7 @@ describe(ValidationService, () => {
       const instancePath = createTemporaryDirectory("validate-empty");
 
       const result = service.validate({
-        instances: [{ nameStem: "nothing", path: instancePath }],
+        instances: [{ name: "nothing", path: instancePath }],
         templates,
       });
 
@@ -226,25 +193,25 @@ describe(ValidationService, () => {
       });
       const configurationService = await module.resolve(ConfigurationService);
 
+      const templatePath = readRouteTemplateRoot();
+
+      writeFileTree(templatePath, ROUTE_TEMPLATE_FILES);
       routeTemplates = [
         configurationService.collectTemplate({
           name: "route",
-          templatePath: await writeTree({
-            directoryPath: readRouteTemplateRoot(),
-            files: ROUTE_TEMPLATE_FILES,
-          }),
+          templatePath,
         }),
       ];
     });
 
-    it("infers the value from the instance and passes a consistent one", async () => {
-      const instancePath = await createRouteInstance({
+    it("infers the value from the instance and passes a consistent one", () => {
+      const instancePath = createRouteInstance({
         assertedPath: "/word/$id",
         routePath: "/word/$id",
       });
 
       const result = service.validate({
-        instances: [{ nameStem: "word", path: instancePath }],
+        instances: [{ name: "word", path: instancePath }],
         templates: routeTemplates,
       });
 
@@ -252,14 +219,14 @@ describe(ValidationService, () => {
       expect(result.ok).toBe(true);
     });
 
-    it("reports a later occurrence holding a different value as a difference", async () => {
-      const instancePath = await createRouteInstance({
+    it("reports a later occurrence holding a different value as a difference", () => {
+      const instancePath = createRouteInstance({
         assertedPath: "/word",
         routePath: "/word/$id",
       });
 
       const result = service.validate({
-        instances: [{ nameStem: "word", path: instancePath }],
+        instances: [{ name: "word", path: instancePath }],
         templates: routeTemplates,
       });
 
@@ -270,17 +237,17 @@ describe(ValidationService, () => {
       );
     });
 
-    it("reports a placeholder no instance node revealed, failing at any threshold", async () => {
-      const instancePath = await writeTree({
-        directoryPath: createTemporaryDirectory("validate-route"),
-        files: {
+    it("reports a placeholder no instance node revealed, failing at any threshold", () => {
+      const instancePath = createFileTree(
+        {
           "word/word.route.test.ts": "it();\n",
           "word/word.route.ts": "export const Route = 1;\n",
         },
-      });
+        { label: "validate-route" },
+      );
 
       const result = service.validate({
-        instances: [{ nameStem: "word", path: instancePath }],
+        instances: [{ name: "word", path: instancePath }],
         templates: routeTemplates,
         threshold: 0,
       });
@@ -297,7 +264,7 @@ describe(ValidationService, () => {
     });
 
     it("tolerates a discovery service that records or prepares nothing", async () => {
-      const instancePath = await createRouteInstance({
+      const instancePath = createRouteInstance({
         assertedPath: "/word/$id",
         routePath: "/word/$id",
       });
@@ -324,7 +291,7 @@ describe(ValidationService, () => {
         const validation = await module.resolve(ValidationService);
 
         return validation.validate({
-          instances: [{ nameStem: "word", path: instancePath }],
+          instances: [{ name: "word", path: instancePath }],
           templates: routeTemplates,
         });
       };
@@ -350,8 +317,8 @@ describe(ValidationService, () => {
       expect(unrecorded.ok).toBe(true);
     });
 
-    it("lets a configured substitution win over inference", async () => {
-      const instancePath = await createRouteInstance({
+    it("lets a configured substitution win over inference", () => {
+      const instancePath = createRouteInstance({
         assertedPath: "/word/$id",
         routePath: "/word/$id",
       });
@@ -359,7 +326,7 @@ describe(ValidationService, () => {
       const result = service.validate({
         instances: [
           {
-            nameStem: "word",
+            name: "word",
             path: instancePath,
             substitutions: { path: "/elsewhere" },
           },
@@ -372,13 +339,13 @@ describe(ValidationService, () => {
   });
 
   describe("caller-supplied options", () => {
-    it("runs only the languages the caller named", async () => {
-      const instancePath = await createInstance({
+    it("runs only the languages the caller named", () => {
+      const instancePath = createInstance({
         configuration: "{}\n",
         withNotes: true,
       });
       const result = service.validate({
-        instances: [{ nameStem: "my-widget", path: instancePath }],
+        instances: [{ name: "my-widget", path: instancePath }],
         languageNames: ["markdown"],
         templates,
       });
@@ -386,12 +353,12 @@ describe(ValidationService, () => {
       expect(result.ok).toBe(true);
     });
 
-    it("runs every language when the filter is empty", async () => {
-      const instancePath = await createInstance({
+    it("runs every language when the filter is empty", () => {
+      const instancePath = createInstance({
         configuration: "{}\n",
         withNotes: true,
       });
-      const instances = [{ nameStem: "my-widget", path: instancePath }];
+      const instances = [{ name: "my-widget", path: instancePath }];
       const filtered = service.validate({
         instances,
         languageNames: [],
@@ -407,7 +374,7 @@ describe(ValidationService, () => {
 
   describe("resilience to a discovery service reporting no prepared documents", () => {
     it("treats no prepared entry for the instance as no documents to compare", async () => {
-      const instancePath = await createInstance({
+      const instancePath = createInstance({
         configuration: '{\n  "kind": "widget",\n  "name": "my-widget"\n}\n',
         withNotes: true,
       });
@@ -442,7 +409,7 @@ describe(ValidationService, () => {
         await overriddenModule.resolve(ValidationService);
 
       const result = serviceUnderTest.validate({
-        instances: [{ nameStem: "my-widget", path: instancePath }],
+        instances: [{ name: "my-widget", path: instancePath }],
         templates,
       });
 

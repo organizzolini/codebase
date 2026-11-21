@@ -38,36 +38,25 @@ describe(ConfigurationService, () => {
     expect(instance).toBeInstanceOf(ConfigurationService);
   });
 
-  it("falls back to every default when no configuration file exists", async () => {
-    const configuration = await service.loadConfiguration({
-      workingDirectory: directory,
-    });
-
-    expect(configuration).toStrictEqual({
-      configurationPath: undefined,
-      directory,
-      exclude: { paths: [], patterns: [], words: [] },
-      fold: undefined,
-      include: [...DEFAULT_INCLUDE],
-      outputs: [],
-    });
-  });
-
-  it("finds a coinagerie.config.ts in the working directory", async () => {
-    const configurationPath = writeConfiguration(
+  it("reads the file at the path it is given, never one it finds", async () => {
+    writeConfiguration(
       "coinagerie.config.ts",
-      'export default { include: ["src/**"] };\n',
+      'export default { include: ["a"] };\n',
+    );
+    writeConfiguration(
+      "configuration/glossary.config.ts",
+      'export default { include: ["b"] };\n',
     );
 
     const configuration = await service.loadConfiguration({
+      configurationPath: "configuration/glossary.config.ts",
       workingDirectory: directory,
     });
 
-    expect(configuration.configurationPath).toBe(configurationPath);
-    expect(configuration.include).toStrictEqual(["src/**"]);
+    expect(configuration.include).toStrictEqual(["b"]);
   });
 
-  it("reads a named file relative to the working directory and roots the run at its folder", async () => {
+  it("reads a file relative to the working directory and roots the run at its folder", async () => {
     const configurationPath = writeConfiguration(
       "nested/coinagerie.config.ts",
       [
@@ -97,7 +86,30 @@ describe(ConfigurationService, () => {
           type: "markdown",
         },
       ],
+      unfolded: [],
     });
+  });
+
+  it("roots the run at the folder it is given, wherever the file is", async () => {
+    writeConfiguration(
+      "project/configuration/coinagerie.config.ts",
+      'export default { outputs: [{ path: "GLOSSARY.md", type: "markdown" }] };\n',
+    );
+
+    const configuration = await service.loadConfiguration({
+      configurationPath: "configuration/coinagerie.config.ts",
+      rootDirectory: path.join(directory, "project"),
+      workingDirectory: path.join(directory, "project"),
+    });
+
+    expect(configuration.directory).toBe(path.join(directory, "project"));
+    expect(configuration.outputs).toStrictEqual([
+      {
+        description: undefined,
+        path: path.join(directory, "project/GLOSSARY.md"),
+        type: "markdown",
+      },
+    ]);
   });
 
   it("resolves exclude.words written as a list", async () => {
@@ -107,6 +119,7 @@ describe(ConfigurationService, () => {
     );
 
     const configuration = await service.loadConfiguration({
+      configurationPath: "coinagerie.config.ts",
       workingDirectory: directory,
     });
 
@@ -125,6 +138,7 @@ describe(ConfigurationService, () => {
       );
 
       const { exclude } = await service.loadConfiguration({
+        configurationPath: "coinagerie.config.ts",
         workingDirectory: directory,
       });
 
@@ -139,6 +153,7 @@ describe(ConfigurationService, () => {
     );
 
     const { exclude } = await service.loadConfiguration({
+      configurationPath: "coinagerie.config.ts",
       workingDirectory: directory,
     });
 
@@ -164,6 +179,7 @@ describe(ConfigurationService, () => {
       );
 
       const { exclude } = await service.loadConfiguration({
+        configurationPath: "coinagerie.config.ts",
         workingDirectory: directory,
       });
 
@@ -182,6 +198,7 @@ describe(ConfigurationService, () => {
     );
 
     const { exclude } = await service.loadConfiguration({
+      configurationPath: "coinagerie.config.ts",
       workingDirectory: directory,
     });
 
@@ -199,10 +216,25 @@ describe(ConfigurationService, () => {
     );
 
     const { exclude } = await service.loadConfiguration({
+      configurationPath: "coinagerie.config.ts",
       workingDirectory: directory,
     });
 
     expect(exclude.patterns[0]?.flags).toBe("i");
+  });
+
+  it("keeps the unfolded words", async () => {
+    writeConfiguration(
+      "coinagerie.config.ts",
+      'export default { unfolded: ["pisces", "pallas"] };\n',
+    );
+
+    const { unfolded } = await service.loadConfiguration({
+      configurationPath: "coinagerie.config.ts",
+      workingDirectory: directory,
+    });
+
+    expect(unfolded).toStrictEqual(["pisces", "pallas"]);
   });
 
   it("keeps a fold function callable", async () => {
@@ -212,6 +244,7 @@ describe(ConfigurationService, () => {
     );
 
     const { fold } = await service.loadConfiguration({
+      configurationPath: "coinagerie.config.ts",
       workingDirectory: directory,
     });
 
@@ -261,7 +294,10 @@ describe(ConfigurationService, () => {
       `export default { ${field} };\n`,
     );
 
-    const loading = service.loadConfiguration({ workingDirectory: directory });
+    const loading = service.loadConfiguration({
+      configurationPath: "coinagerie.config.ts",
+      workingDirectory: directory,
+    });
 
     await expect(loading).rejects.toThrow(InvalidConfigurationError);
     await expect(loading).rejects.toThrow(configurationPath);
@@ -293,6 +329,7 @@ describe(ConfigurationService, () => {
         `export default { fold: ${source} };\n`,
       );
       const { fold } = await service.loadConfiguration({
+        configurationPath: "coinagerie.config.ts",
         workingDirectory: directory,
       });
 
@@ -309,6 +346,7 @@ describe(ConfigurationService, () => {
     );
 
     const configuration = await service.loadConfiguration({
+      configurationPath: "coinagerie.config.ts",
       workingDirectory: directory,
     });
 
@@ -336,6 +374,7 @@ describe(ConfigurationService, () => {
     );
 
     const configuration = await service.loadConfiguration({
+      configurationPath: "coinagerie.config.ts",
       workingDirectory: directory,
     });
 
@@ -349,7 +388,9 @@ describe(ConfigurationService, () => {
     ]);
   });
 
-  it("refuses a named file that does not exist", async () => {
+  it("refuses a file that does not exist, even beside one a search would find", async () => {
+    writeConfiguration("coinagerie.config.ts", "export default {};\n");
+
     await expect(
       service.loadConfiguration({
         configurationPath: "missing.config.ts",
@@ -375,6 +416,14 @@ describe(ConfigurationService, () => {
       "export default { exclude: { words: [/^md\\d{3}$/, true, {}] } };\n",
     ],
     ["a fold that is not a function", 'export default { fold: "aspect" };\n'],
+    [
+      "an unfolded word with a space",
+      'export default { unfolded: ["a b"] };\n',
+    ],
+    [
+      "an unfolded word with a capital",
+      'export default { unfolded: ["Pisces"] };\n',
+    ],
     [
       "an output of an unknown type",
       'export default { outputs: [{ path: "a.txt", type: "text" }] };\n',
@@ -408,7 +457,10 @@ describe(ConfigurationService, () => {
       source,
     );
 
-    const loading = service.loadConfiguration({ workingDirectory: directory });
+    const loading = service.loadConfiguration({
+      configurationPath: "coinagerie.config.ts",
+      workingDirectory: directory,
+    });
 
     await expect(loading).rejects.toThrow(InvalidConfigurationError);
     await expect(loading).rejects.toThrow(configurationPath);
@@ -420,7 +472,10 @@ describe(ConfigurationService, () => {
       "export default { exclude: { words: [/^md\\d{3}$/, true] } };\n",
     );
 
-    const loading = service.loadConfiguration({ workingDirectory: directory });
+    const loading = service.loadConfiguration({
+      configurationPath: "coinagerie.config.ts",
+      workingDirectory: directory,
+    });
 
     await expect(loading).rejects.toThrow(InvalidConfigurationError);
     await expect(loading).rejects.toThrow(configurationPath);
@@ -478,6 +533,7 @@ describe(ConfigurationService, () => {
       writeConfiguration("coinagerie.config.ts", FILE);
 
       const configuration = await service.loadConfiguration({
+        configurationPath: "coinagerie.config.ts",
         overrides: {},
         workingDirectory: directory,
       });
@@ -497,6 +553,7 @@ describe(ConfigurationService, () => {
       writeConfiguration("coinagerie.config.ts", FILE);
 
       const configuration = await service.loadConfiguration({
+        configurationPath: "coinagerie.config.ts",
         overrides: { outputJson: "only.json" },
         workingDirectory: directory,
       });
@@ -510,6 +567,7 @@ describe(ConfigurationService, () => {
       writeConfiguration("coinagerie.config.ts", FILE);
 
       const configuration = await service.loadConfiguration({
+        configurationPath: "coinagerie.config.ts",
         overrides: { description: "Flagged." },
         workingDirectory: directory,
       });
@@ -524,13 +582,15 @@ describe(ConfigurationService, () => {
       ]);
     });
 
-    it("layers flags over the defaults when there is no file", async () => {
+    it("layers flags over the defaults when the file writes nothing", async () => {
+      writeConfiguration("coinagerie.config.ts", "export default {};\n");
+
       const configuration = await service.loadConfiguration({
+        configurationPath: "coinagerie.config.ts",
         overrides: { excludePaths: ["dist"], outputMarkdown: "GLOSSARY.md" },
         workingDirectory: directory,
       });
 
-      expect(configuration.configurationPath).toBeUndefined();
       expect(configuration.include).toStrictEqual([...DEFAULT_INCLUDE]);
       expect(configuration.exclude).toStrictEqual({
         paths: ["dist"],
@@ -547,7 +607,10 @@ describe(ConfigurationService, () => {
     });
 
     it("refuses two flags that name the same file, naming the command line", async () => {
+      writeConfiguration("coinagerie.config.ts", "export default {};\n");
+
       const loading = service.loadConfiguration({
+        configurationPath: "coinagerie.config.ts",
         overrides: { outputJson: "same.md", outputMarkdown: "same.md" },
         workingDirectory: directory,
       });
@@ -562,7 +625,10 @@ describe(ConfigurationService, () => {
       ["a description holding a list item", { description: "- item" }],
       ["an unknown flag", { fold: "x" }],
     ])("refuses %s, naming the command line", async (_case, overrides) => {
+      writeConfiguration("coinagerie.config.ts", "export default {};\n");
+
       const loading = service.loadConfiguration({
+        configurationPath: "coinagerie.config.ts",
         overrides,
         workingDirectory: directory,
       });

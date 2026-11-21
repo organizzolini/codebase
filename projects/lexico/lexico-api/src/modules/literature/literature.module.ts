@@ -2,14 +2,14 @@ import { Module } from "@nestjs/common";
 
 import { Author, Line, Text, Token, TypeOrmModule } from "@codebase/lexico-db";
 
-import { AuthorsResolver } from "./authors.resolver";
-import { LinesResolver } from "./lines.resolver";
-import { LiteratureRelationsLoader } from "./literature-relations.loader";
-import { LiteratureRelationsService } from "./literature-relations.service";
 import { LiteratureResolver } from "./literature.resolver";
 import { LiteratureService } from "./literature.service";
-import { TextsResolver } from "./texts.resolver";
-import { TokensResolver } from "./tokens.resolver";
+import { AuthorsResolver } from "./modules/authors/authors.resolver";
+import { LinesResolver } from "./modules/lines/lines.resolver";
+import { LiteratureRelationsLoader } from "./modules/relations/literature-relations.loader";
+import { LiteratureRelationsService } from "./modules/relations/literature-relations.service";
+import { TextsResolver } from "./modules/texts/texts.resolver";
+import { TokensResolver } from "./modules/tokens/tokens.resolver";
 
 /**
  * Module providing literature browsing, hierarchy, and search endpoints.

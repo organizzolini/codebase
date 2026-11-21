@@ -13,11 +13,20 @@
     "type:package"
   ],
   "targets": {
-    "build": {},
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vite build --config configuration/vite.config.ts",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
     "build-projects": {},
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "end-to-end": {},
+    "eslint": {},
     "format-code": {},
     "guard-code": {},
     "knip": {},
@@ -35,7 +44,7 @@
         "command": "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts",
         "cwd": "{workspaceRoot}",
         "env": {
-          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json"
+          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/configuration/tsconfig.json"
         }
       }
     },
@@ -43,6 +52,7 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "vitest": {},
     "yaml-lint": {}
   }
 }

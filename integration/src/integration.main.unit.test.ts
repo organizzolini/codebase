@@ -45,17 +45,26 @@ vi.mock("./modules/run-affected/run-affected.module", () => ({
   },
 }));
 
-vi.mock("./modules/verify-task-database/verify-task-database.module", () => ({
-  VerifyTaskDatabaseModule: function VerifyTaskDatabaseModule() {},
-}));
+vi.mock(
+  "./modules/task-database/modules/verify-task-database/verify-task-database.module",
+  () => ({
+    VerifyTaskDatabaseModule: function VerifyTaskDatabaseModule() {},
+  }),
+);
 
-vi.mock("./modules/adopt-task-database/adopt-task-database.module", () => ({
-  AdoptTaskDatabaseModule: function AdoptTaskDatabaseModule() {},
-}));
+vi.mock(
+  "./modules/task-database/modules/adopt-task-database/adopt-task-database.module",
+  () => ({
+    AdoptTaskDatabaseModule: function AdoptTaskDatabaseModule() {},
+  }),
+);
 
-vi.mock("./modules/keep-task-database/keep-task-database.module", () => ({
-  KeepTaskDatabaseModule: function KeepTaskDatabaseModule() {},
-}));
+vi.mock(
+  "./modules/task-database/modules/keep-task-database/keep-task-database.module",
+  () => ({
+    KeepTaskDatabaseModule: function KeepTaskDatabaseModule() {},
+  }),
+);
 
 vi.mock("./modules/bound-base-to-push/bound-base-to-push.module", () => ({
   BoundBaseToPushModule: function BoundBaseToPushModule() {},
@@ -68,13 +77,6 @@ vi.mock("./modules/import-pr-task-cache/import-pr-task-cache.module", () => ({
 vi.mock("./modules/merge-task-cache/merge-task-cache.module", () => ({
   MergeTaskCacheModule: function MergeTaskCacheModule() {},
 }));
-
-vi.mock(
-  "./modules/publishable-packages-gate/publishable-packages-gate.module",
-  () => ({
-    PublishablePackagesGateModule: function PublishablePackagesGateModule() {},
-  }),
-);
 
 vi.mock("./modules/cleanup-codebase/cleanup-codebase.module", () => ({
   CleanupCodebaseModule: function CleanupCodebaseModule() {},

@@ -1,24 +1,24 @@
 import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
+import { Migration1791160950069 } from "../migrations/1791160950069-migration";
+import { Migration1791414023001 } from "../migrations/1791414023001-migration";
 import { environmentSchema } from "../src/meanderaw-cli.constants";
 import { CharacteristicsModule } from "../src/modules/characteristics/characteristics.module";
 import { CodeModule } from "../src/modules/code/code.module";
 import { CorpusService } from "../src/modules/corpus/corpus.service";
 import { DatabaseModule } from "../src/modules/database/database.module";
-import { Meander } from "../src/modules/database/entities/meander.entity";
-import { Migration1791160950069 } from "../src/modules/database/migrations/1791160950069-migration";
-import { Migration1791414023001 } from "../src/modules/database/migrations/1791414023001-migration";
-import { DrawEnumerationService } from "../src/modules/draw/draw-enumeration.service";
-import { DrawIndexService } from "../src/modules/draw/draw-index.service";
-import { DrawPoolService } from "../src/modules/draw/draw-pool.service";
-import { DrawRecordService } from "../src/modules/draw/draw-record.service";
-import { DrawWorkerService } from "../src/modules/draw/draw-worker.service";
+import { Meander } from "../src/modules/database/meander.entity";
 import { DrawCommand } from "../src/modules/draw/draw.command";
+import { DrawEnumerationService } from "../src/modules/draw/modules/enumeration/draw-enumeration.service";
+import { DrawRecordService } from "../src/modules/draw/modules/enumeration/draw-record.service";
+import { DrawIndexService } from "../src/modules/draw/modules/index/draw-index.service";
+import { DrawPoolService } from "../src/modules/draw/modules/pool/draw-pool.service";
+import { DrawWorkerService } from "../src/modules/draw/modules/pool/draw-worker.service";
 import { DrawingModule } from "../src/modules/drawing/drawing.module";
 import { EnumerationModule } from "../src/modules/enumeration/enumeration.module";
 import { EnumerationService } from "../src/modules/enumeration/enumeration.service";
 import { GeometryModule } from "../src/modules/geometry/geometry.module";
-import { SymmetryModule } from "../src/modules/symmetry/symmetry.module";
+import { SymmetryModule } from "../src/modules/geometry/modules/symmetry/symmetry.module";
 
 import { DRAW_TEST_EDGE_BUDGET, DRAW_TEST_WORKERS } from "./draw-run-budget";
 

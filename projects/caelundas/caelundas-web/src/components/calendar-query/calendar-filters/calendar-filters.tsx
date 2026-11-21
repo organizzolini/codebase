@@ -1,0 +1,124 @@
+import { ButtonGroup, Filters, useMediaQuery } from "@codebase/presentation";
+
+import { useFilterQuery } from "../../../hooks/use-filter-query/use-filter-query";
+import { PresetPicker } from "../preset-picker/preset-picker";
+
+import {
+  EDITORS,
+  STRIP_CLASS_NAME,
+  TABLET_QUERY,
+} from "./calendar-filters.constants";
+import { renderFiltersButton } from "./calendar-filters.utilities";
+import { countActiveEventFilterRules } from "./components/event-filter-model/event-filter-tree.utilities";
+import { FilterChipRow } from "./components/filter-chip-row/filter-chip-row";
+import { FilterSurface } from "./components/filter-surface/filter-surface";
+
+import type {
+  EventFilterField,
+  EventFilterQuery,
+  EventFilterValue,
+} from "./components/event-filter-model/event-filters.types";
+import type { ResolvedPreset } from "./components/presets/presets.types";
+import type { ReactNode } from "react";
+
+// 🔖 Type
+
+/**
+ * The builder's fields, the link's filter tree, and the edit handler.
+ */
+export interface CalendarFiltersProperties {
+  className?: string;
+  fields: readonly EventFilterField[];
+  filter: EventFilterQuery | undefined;
+  /**
+   * Called with every edit to write back to the link: the whole tree, empty
+   * once nothing is left.
+   */
+  onFilterChange: (filter: EventFilterQuery) => void;
+  /**
+   * The named filters the menu applies in one step, which include the
+   * default one the calendar opens on.
+   */
+  presets?: readonly ResolvedPreset[];
+}
+
+// 🧩 Component
+
+/**
+ * Renders the active filters as chips and the Filters button; edits show at once and only query-changing ones are written to the link.
+ */
+export function CalendarFilters(
+  properties: Readonly<CalendarFiltersProperties>,
+): ReactNode {
+  const {
+    className,
+    fields,
+    filter,
+    onFilterChange,
+    presets = [],
+  } = properties;
+
+  // 🪝 Hooks
+  const isTablet = useMediaQuery(TABLET_QUERY);
+  const { handlePresetSelect, handleQueryChange, query } = useFilterQuery(
+    filter,
+    presets,
+    onFilterChange,
+  );
+  const activeCount = countActiveEventFilterRules(query);
+
+  // 🏗 Setup
+
+  // 💪 Handlers
+
+  // ♻️ Lifecycle
+
+  // 🏁 Early Returns
+
+  // 🎨 Markup
+  return (
+    <div
+      className={className}
+      data-testid="calendar-filters"
+    >
+      <div className={STRIP_CLASS_NAME}>
+        <ButtonGroup aria-label="Filter">
+          <FilterSurface
+            isTablet={isTablet}
+            trigger={renderFiltersButton(
+              activeCount,
+              isTablet && activeCount > 0,
+            )}
+          >
+            <div className="flex flex-col gap-3">
+              <PresetPicker
+                onSelect={handlePresetSelect}
+                presets={presets}
+                query={query}
+              />
+              <Filters<EventFilterValue>
+                advancedMode="inline"
+                editors={EDITORS}
+                fields={[...fields]}
+                onQueryChange={handleQueryChange}
+                query={query}
+                variant="advanced"
+              />
+            </div>
+          </FilterSurface>
+        </ButtonGroup>
+        {isTablet ? (
+          <Filters<EventFilterValue>
+            editors={EDITORS}
+            fields={[...fields]}
+            onQueryChange={handleQueryChange}
+            query={query}
+            size="sm"
+          >
+            <FilterChipRow />
+          </Filters>
+        ) : null}
+      </div>
+    </div>
+  );
+}

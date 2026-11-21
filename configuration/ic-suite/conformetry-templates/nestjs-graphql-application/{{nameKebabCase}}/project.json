@@ -1,0 +1,38 @@
+{
+  "projectType": "application",
+  "tags": [
+    "framework:nestjs",
+    "generator:nestjs-graphql-application",
+    "language:graphql",
+    "language:typescript"
+  ],
+  "targets": {
+    "codometer": {},
+    "dependency-cruiser": {},
+    "deprecate-code": {},
+    "eslint": {},
+    "format-code": {},
+    "guard-code": {},
+    "knip": {},
+    "lint-code": {},
+    "markdown-lint": {},
+    "oxfmt": {},
+    "oxlint": {},
+    "prettier": {},
+    "spell-check": {},
+    "start": {
+      "description": "Start the {{namePascalCase}} GraphQL API",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register src/{{nameKebabCase}}.ts",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test-code": {},
+    "type-coverage": {},
+    "typecheck": {},
+    "typecheck-code": {},
+    "vitest": {},
+    "yaml-lint": {}
+  }
+}

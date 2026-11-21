@@ -1,8 +1,7 @@
+import { buildCodeStatistics } from "@codometer/core/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
-
-import { buildCodeStatistics } from "../../../testing/mocks";
 
 import { MetricIndexService } from "./metric-index.service";
 

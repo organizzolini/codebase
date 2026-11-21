@@ -1,20 +1,20 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir } from "node:fs/promises";
 import path from "node:path";
 
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { createTemporaryDirectory } from "@codebase/testing";
+import { createFileTree } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationFileService } from "./configuration-file.service";
 import {
-  CONFIGURATION_FILE_NAMES,
   DEFAULT_EXCLUDE_GLOBS,
   DEFAULT_MAXIMUM_DEPTH,
   ProjectConfigurationError,
   ProjectConfigurationFieldNotPermittedError,
   ProjectConfigurationIncompleteError,
   ProjectConfigurationMissingError,
+  ProjectConfigurationPathMissingError,
 } from "./configuration.constants";
 import { ProjectConfigurationService } from "./project-configuration.service";
 
@@ -27,8 +27,8 @@ import type {
 /** Workspace file no project sits beside, for named runs. */
 const WORKSPACE_CONFIGURATION_PATH = "/workspace/callidescope.config.ts";
 
-/** The spelling `writeWorkspace` stages every configuration under. */
-const CONFIGURATION_FILE_NAME = CONFIGURATION_FILE_NAMES[3];
+/** The path, relative to a project root, the workspace names and `writeWorkspace` stages every configuration under. */
+const CONFIGURATION_FILE_NAME = "callidescope.config.js";
 
 /**
  * Builds a complete project configuration, so a field that becomes required is added in one place.
@@ -71,6 +71,7 @@ async function resolveWrittenLimits(args: {
   });
   const projectConfigurations = await args.service.loadProjectConfigurations(
     {
+      projectConfigurationPath: CONFIGURATION_FILE_NAME,
       projects: args.projects,
       workspaceConfigurationPath,
       workspaceRoot: args.workspaceRoot,
@@ -125,25 +126,18 @@ function withoutKey(
  * Writes a fresh workspace holding one configuration file per named project. Objects are written
  * as JavaScript, since `undefined` must survive.
  */
-async function writeWorkspace(
-  projects: Record<string, object | string>,
-): Promise<string> {
-  const workspaceRoot = createTemporaryDirectory("callidescope-workspace");
-
-  for (const [project, contents] of Object.entries(projects)) {
-    const projectRoot = path.join(workspaceRoot, project);
-
-    await mkdir(projectRoot, { recursive: true });
-    await writeFile(
-      path.join(projectRoot, CONFIGURATION_FILE_NAME),
-      typeof contents === "string"
-        ? contents
-        : `export default ${serialize(contents)};\n`,
-      "utf8",
-    );
-  }
-
-  return workspaceRoot;
+function writeWorkspace(projects: Record<string, object | string>): string {
+  return createFileTree(
+    Object.fromEntries(
+      Object.entries(projects).map(([project, contents]) => [
+        path.join(project, CONFIGURATION_FILE_NAME),
+        typeof contents === "string"
+          ? contents
+          : `export default ${serialize(contents)};\n`,
+      ]),
+    ),
+    { label: "callidescope-workspace" },
+  );
 }
 
 describe(ProjectConfigurationService, () => {
@@ -171,7 +165,7 @@ describe(ProjectConfigurationService, () => {
   // 🗂️ Discovery
 
   it("resolves the configuration sitting at a project root", async () => {
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       "packages/gated": completeConfiguration({
         limits: { maximumBreadth: undefined, maximumDepth: 3 },
       }),
@@ -179,6 +173,7 @@ describe(ProjectConfigurationService, () => {
 
     const loaded = await service.loadProjectConfigurations(
       {
+        projectConfigurationPath: CONFIGURATION_FILE_NAME,
         projects: ["packages/gated"],
         workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
         workspaceRoot,
@@ -195,7 +190,7 @@ describe(ProjectConfigurationService, () => {
   });
 
   it("never walks upward out of a project root", async () => {
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       ".": completeConfiguration(),
     });
     await mkdir(path.join(workspaceRoot, "packages", "plain"), {
@@ -208,6 +203,7 @@ describe(ProjectConfigurationService, () => {
     await expect(
       service.loadProjectConfigurations(
         {
+          projectConfigurationPath: CONFIGURATION_FILE_NAME,
           projects: ["packages/plain"],
           workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
           workspaceRoot,
@@ -217,10 +213,71 @@ describe(ProjectConfigurationService, () => {
     ).rejects.toThrow(ProjectConfigurationMissingError);
   });
 
+  it("reads each project's file at the path the workspace names, and nowhere else", async () => {
+    const workspaceRoot = writeWorkspace({
+      "packages/gated": completeConfiguration(),
+    });
+    await mkdir(
+      path.join(workspaceRoot, "packages", "moved", "configuration"),
+      {
+        recursive: true,
+      },
+    );
+
+    await expect(
+      service.loadProjectConfigurations(
+        {
+          projectConfigurationPath: path.join(
+            "configuration",
+            CONFIGURATION_FILE_NAME,
+          ),
+          projects: ["packages/gated"],
+          workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
+          workspaceRoot,
+        },
+        configurationService,
+      ),
+    ).rejects.toThrow(ProjectConfigurationMissingError);
+  });
+
+  it("names the file it looked for when a project has none", async () => {
+    const workspaceRoot = writeWorkspace({});
+
+    await expect(
+      service.loadProjectConfigurations(
+        {
+          projectConfigurationPath: "configuration/callidescope.config.ts",
+          projects: ["packages/plain"],
+          workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
+          workspaceRoot,
+        },
+        configurationService,
+      ),
+    ).rejects.toThrow("packages/plain/configuration/callidescope.config.ts");
+  });
+
+  it("refuses a workspace configuration that names no project configuration path", async () => {
+    const workspaceRoot = writeWorkspace({
+      "packages/gated": completeConfiguration(),
+    });
+
+    await expect(
+      service.loadProjectConfigurations(
+        {
+          projectConfigurationPath: undefined,
+          projects: ["packages/gated"],
+          workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
+          workspaceRoot,
+        },
+        configurationService,
+      ),
+    ).rejects.toThrow(ProjectConfigurationPathMissingError);
+  });
+
   // 🧬 Defaults
 
   it("merges nothing into a project configuration", async () => {
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       "packages/gated": completeConfiguration({
         limits: { maximumBreadth: undefined, maximumDepth: 3 },
       }),
@@ -228,6 +285,7 @@ describe(ProjectConfigurationService, () => {
 
     const [loaded] = await service.loadProjectConfigurations(
       {
+        projectConfigurationPath: CONFIGURATION_FILE_NAME,
         projects: ["packages/gated"],
         workspaceConfigurationPath: path.join(
           workspaceRoot,
@@ -250,7 +308,7 @@ describe(ProjectConfigurationService, () => {
   });
 
   it("keeps every limit a project declared for itself", async () => {
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       "packages/gated": completeConfiguration({
         limits: { maximumBreadth: 9, maximumDepth: 3 },
       }),
@@ -258,6 +316,7 @@ describe(ProjectConfigurationService, () => {
 
     const [loaded] = await service.loadProjectConfigurations(
       {
+        projectConfigurationPath: CONFIGURATION_FILE_NAME,
         projects: ["packages/gated"],
         workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
         workspaceRoot,
@@ -271,7 +330,7 @@ describe(ProjectConfigurationService, () => {
   // 🎭 One File, One Role
 
   it("skips the file already loaded as the run's own configuration", async () => {
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       "packages/examples": {
         write: { json: { path: "report.json" } },
       },
@@ -292,6 +351,7 @@ describe(ProjectConfigurationService, () => {
 
     const loaded = await service.loadProjectConfigurations(
       {
+        projectConfigurationPath: CONFIGURATION_FILE_NAME,
         projects: ["packages/examples"],
         workspaceConfigurationPath,
         workspaceRoot,
@@ -303,7 +363,7 @@ describe(ProjectConfigurationService, () => {
   });
 
   it("skips the run's own configuration named relative to the workspace root", async () => {
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       "packages/examples": {
         write: { json: { path: "report.json" } },
       },
@@ -314,6 +374,7 @@ describe(ProjectConfigurationService, () => {
     // path here is resolved against, and not the process cwd.
     const loaded = await service.loadProjectConfigurations(
       {
+        projectConfigurationPath: CONFIGURATION_FILE_NAME,
         projects: ["packages/examples"],
         workspaceConfigurationPath: path.join(
           "packages",
@@ -329,7 +390,7 @@ describe(ProjectConfigurationService, () => {
   });
 
   it("still resolves every other project's file alongside the skipped one", async () => {
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       "packages/examples": {
         write: { json: { path: "report.json" } },
       },
@@ -338,6 +399,7 @@ describe(ProjectConfigurationService, () => {
 
     const loaded = await service.loadProjectConfigurations(
       {
+        projectConfigurationPath: CONFIGURATION_FILE_NAME,
         projects: ["packages/examples", "packages/gated"],
         workspaceConfigurationPath: path.join(
           workspaceRoot,
@@ -358,13 +420,14 @@ describe(ProjectConfigurationService, () => {
   // 🚨 Refusals
 
   it("names the project when its configuration cannot be read", async () => {
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       "packages/broken": "{ not json",
     });
 
     await expect(
       service.loadProjectConfigurations(
         {
+          projectConfigurationPath: CONFIGURATION_FILE_NAME,
           projects: ["packages/broken"],
           workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
           workspaceRoot,
@@ -375,18 +438,18 @@ describe(ProjectConfigurationService, () => {
   });
 
   it("names the project when its configuration threw something that is not an error", async () => {
-    const workspaceRoot = createTemporaryDirectory("callidescope-workspace");
-    const projectRoot = path.join(workspaceRoot, "packages", "broken");
-    await mkdir(projectRoot, { recursive: true });
-    await writeFile(
-      path.join(projectRoot, "callidescope.config.js"),
-      'throw "no configuration here";\n',
-      "utf8",
+    const workspaceRoot = createFileTree(
+      {
+        "packages/broken/callidescope.config.js":
+          'throw "no configuration here";\n',
+      },
+      { label: "callidescope-workspace" },
     );
 
     await expect(
       service.loadProjectConfigurations(
         {
+          projectConfigurationPath: CONFIGURATION_FILE_NAME,
           projects: ["packages/broken"],
           workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
           workspaceRoot,
@@ -397,7 +460,7 @@ describe(ProjectConfigurationService, () => {
   });
 
   it("names the project and the file when a configuration is refused", async () => {
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       "packages/broken": completeConfiguration({
         limits: { maximumBreadth: undefined, maximumDepth: 0 },
       }),
@@ -412,6 +475,7 @@ describe(ProjectConfigurationService, () => {
     await expect(
       service.loadProjectConfigurations(
         {
+          projectConfigurationPath: CONFIGURATION_FILE_NAME,
           projects: ["packages/broken"],
           workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
           workspaceRoot,
@@ -424,7 +488,7 @@ describe(ProjectConfigurationService, () => {
   // 📋 Completeness
 
   it("refuses a traced project that has no configuration file", async () => {
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       "packages/gated": completeConfiguration(),
     });
     await mkdir(path.join(workspaceRoot, "packages", "plain"), {
@@ -434,6 +498,7 @@ describe(ProjectConfigurationService, () => {
     await expect(
       service.loadProjectConfigurations(
         {
+          projectConfigurationPath: CONFIGURATION_FILE_NAME,
           projects: ["packages/gated", "packages/plain"],
           workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
           workspaceRoot,
@@ -441,7 +506,7 @@ describe(ProjectConfigurationService, () => {
         configurationService,
       ),
     ).rejects.toThrow(
-      "packages/plain is traced but has no callidescope.config.ts",
+      "packages/plain is traced but has no callidescope configuration at",
     );
   });
 
@@ -450,11 +515,12 @@ describe(ProjectConfigurationService, () => {
     async (field) => {
       const partial = withoutKey(completeConfiguration(), field);
 
-      const workspaceRoot = await writeWorkspace({
+      const workspaceRoot = writeWorkspace({
         "packages/partial": partial,
       });
       const loading = service.loadProjectConfigurations(
         {
+          projectConfigurationPath: CONFIGURATION_FILE_NAME,
           projects: ["packages/partial"],
           workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
           workspaceRoot,
@@ -485,13 +551,14 @@ describe(ProjectConfigurationService, () => {
         member,
       );
 
-      const workspaceRoot = await writeWorkspace({
+      const workspaceRoot = writeWorkspace({
         "packages/partial": { ...complete, [field]: partial },
       });
 
       await expect(
         service.loadProjectConfigurations(
           {
+            projectConfigurationPath: CONFIGURATION_FILE_NAME,
             projects: ["packages/partial"],
             workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
             workspaceRoot,
@@ -504,7 +571,7 @@ describe(ProjectConfigurationService, () => {
 
   it("refuses a field written as undefined, which says nothing about its members", async () => {
     // A field written as undefined says nothing about its members, so it is refused like a field left out.
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       "packages/hollow": `export default {
         entryPoints: {
           addresses: [],
@@ -520,6 +587,7 @@ describe(ProjectConfigurationService, () => {
     });
     const loading = service.loadProjectConfigurations(
       {
+        projectConfigurationPath: CONFIGURATION_FILE_NAME,
         projects: ["packages/hollow"],
         workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
         workspaceRoot,
@@ -536,12 +604,9 @@ describe(ProjectConfigurationService, () => {
     // breadth, and `mermaid: undefined` says it publishes no diagram. Both are
     // written into the file rather than left out of it, which is the whole
     // distinction completeness buys.
-    const workspaceRoot = createTemporaryDirectory("callidescope-workspace");
-    const projectRoot = path.join(workspaceRoot, "packages", "quiet");
-    await mkdir(projectRoot, { recursive: true });
-    await writeFile(
-      path.join(projectRoot, "callidescope.config.js"),
-      `export default {
+    const workspaceRoot = createFileTree(
+      {
+        "packages/plain/callidescope.config.js": `export default {
         entryPoints: {
           addresses: [],
           decorators: [],
@@ -553,12 +618,14 @@ describe(ProjectConfigurationService, () => {
         limits: { maximumBreadth: undefined, maximumDepth: 4 },
         write: { markdown: undefined, mermaid: undefined },
       };\n`,
-      "utf8",
+      },
+      { label: "callidescope-workspace" },
     );
 
     const loaded = await service.loadProjectConfigurations(
       {
-        projects: ["packages/quiet"],
+        projectConfigurationPath: CONFIGURATION_FILE_NAME,
+        projects: ["packages/plain"],
         workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
         workspaceRoot,
       },
@@ -576,14 +643,17 @@ describe(ProjectConfigurationService, () => {
     ["write.json", { write: { json: { path: "report.json" } } }],
     ["excludeFrom", { excludeFrom: [".callidescopeignore"] }],
     ["excludeCallees", { excludeCallees: ["Logger.log"] }],
+    ["projectConfigurationPath", { projectConfigurationPath: "x.config.ts" }],
+    ["projectTsconfigPath", { projectTsconfigPath: "tsconfig.json" }],
   ])(
     "refuses a project configuration that sets %s",
     async (field, configuration) => {
-      const workspaceRoot = await writeWorkspace({
+      const workspaceRoot = writeWorkspace({
         "packages/broken": configuration,
       });
       const loading = service.loadProjectConfigurations(
         {
+          projectConfigurationPath: CONFIGURATION_FILE_NAME,
           projects: ["packages/broken"],
           workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
           workspaceRoot,
@@ -602,7 +672,7 @@ describe(ProjectConfigurationService, () => {
   );
 
   it("names the project, the field, and the fields a project may set", async () => {
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       "packages/broken": {
         write: { json: { path: "report.json" } },
       },
@@ -611,6 +681,7 @@ describe(ProjectConfigurationService, () => {
     await expect(
       service.loadProjectConfigurations(
         {
+          projectConfigurationPath: CONFIGURATION_FILE_NAME,
           projects: ["packages/broken"],
           workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
           workspaceRoot,
@@ -625,7 +696,7 @@ describe(ProjectConfigurationService, () => {
   });
 
   it("resolves the written destinations a project declared for itself", async () => {
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       "packages/published": completeConfiguration({
         write: {
           markdown: { heading: "## 🔭 Callidescope", path: "README.md" },
@@ -636,6 +707,7 @@ describe(ProjectConfigurationService, () => {
 
     const [loaded] = await service.loadProjectConfigurations(
       {
+        projectConfigurationPath: CONFIGURATION_FILE_NAME,
         projects: ["packages/published"],
         workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
         workspaceRoot,
@@ -651,7 +723,7 @@ describe(ProjectConfigurationService, () => {
   });
 
   it("resolves the addresses a project declared as its own entry points", async () => {
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       "packages/allowed": completeConfiguration({
         entryPoints: {
           addresses: ["packages/allowed/src/index.ts#publicApi"],
@@ -665,6 +737,7 @@ describe(ProjectConfigurationService, () => {
 
     const [loaded] = await service.loadProjectConfigurations(
       {
+        projectConfigurationPath: CONFIGURATION_FILE_NAME,
         projects: ["packages/allowed"],
         workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
         workspaceRoot,
@@ -678,7 +751,7 @@ describe(ProjectConfigurationService, () => {
   });
 
   it("never refuses the run's own workspace configuration for the fields it legitimately sets", async () => {
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       "packages/examples": {
         directories: ["packages"],
         excludeFrom: [".callidescopeignore"],
@@ -698,6 +771,7 @@ describe(ProjectConfigurationService, () => {
 
     const loaded = await service.loadProjectConfigurations(
       {
+        projectConfigurationPath: CONFIGURATION_FILE_NAME,
         projects: ["packages/examples"],
         workspaceConfigurationPath,
         workspaceRoot,
@@ -711,7 +785,7 @@ describe(ProjectConfigurationService, () => {
   // 🎛️ A command-line limit override, applied where a project declared one
 
   it("judges a project by an overriding limit rather than by its own", async () => {
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       ".": { limits: { maximumDepth: 6 } },
       "packages/gated": completeConfiguration({
         limits: { maximumBreadth: 5, maximumDepth: 4 },
@@ -744,7 +818,7 @@ describe(ProjectConfigurationService, () => {
     // The precedence rule where it is actually enforced: a flag overrides what
     // a project chose and never chooses for a project that chose nothing, so
     // `--maximum-breadth` cannot gate a project that opted out of breadth.
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       ".": { limits: { maximumDepth: 6 } },
       "packages/unbounded": completeConfiguration({
         limits: { maximumBreadth: undefined, maximumDepth: 4 },
@@ -767,7 +841,7 @@ describe(ProjectConfigurationService, () => {
   // 📏 Limits resolved per project
 
   it("names the project's own file as the source of both its limits", async () => {
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       ".": { limits: { maximumDepth: 17 } },
       "packages/gated": completeConfiguration({
         limits: { maximumBreadth: 5, maximumDepth: 4 },
@@ -794,7 +868,7 @@ describe(ProjectConfigurationService, () => {
   });
 
   it("keeps a limit higher than the workspace's rather than clamping it", async () => {
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       ".": { limits: { maximumDepth: 6 } },
       "packages/deep": completeConfiguration({
         limits: { maximumBreadth: undefined, maximumDepth: 12 },
@@ -815,7 +889,7 @@ describe(ProjectConfigurationService, () => {
     // The one thing per-field fallback used to do that nothing does now: a
     // project writing `maximumBreadth: undefined` gates no breadth, whatever
     // the workspace declares, because its file is the whole statement.
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       ".": {
         limits: { maximumBreadth: 9, maximumDepth: 17 },
       },
@@ -837,7 +911,7 @@ describe(ProjectConfigurationService, () => {
   });
 
   it("hands the project holding the run's own configuration the workspace's limits", async () => {
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       ".": { limits: { maximumDepth: 17 } },
     });
 
@@ -859,7 +933,7 @@ describe(ProjectConfigurationService, () => {
   // the number that project is judged against, and still belongs to no file.
   // Naming one would tell a reader to go and change a line nobody wrote.
   it("names no file for a limit the workspace file never wrote", async () => {
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       ".": { exclude: ["**/generated/**"] },
     });
 
@@ -878,7 +952,7 @@ describe(ProjectConfigurationService, () => {
   });
 
   it("names every project the run reached", async () => {
-    const workspaceRoot = await writeWorkspace({
+    const workspaceRoot = writeWorkspace({
       ".": { limits: { maximumDepth: 17 } },
       "packages/gated": completeConfiguration({
         limits: { maximumBreadth: undefined, maximumDepth: 4 },

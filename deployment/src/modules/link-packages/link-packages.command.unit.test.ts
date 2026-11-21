@@ -6,23 +6,24 @@ import { ConfigService } from "@nestjs/config";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
-
 import {
+  createTemporaryDirectory,
   failed,
   FakeProcessRunner,
   succeeded,
-  useTemporaryDirectories,
-  writeFile,
-} from "../../../testing/mocks";
+  writeFileTree,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { TEMPORARY_ROOT } from "../../../testing/mocks";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { ReleaseGroupService } from "../release-group/release-group.service";
 
 import { LinkPackagesCommand } from "./link-packages.command";
 import { LinkPackagesService } from "./link-packages.service";
 
-import type { ScriptedAnswer } from "../../../testing/mocks";
 import type { CapturedProcess } from "../process-runner/process-runner.types";
+import type { ScriptedAnswer } from "@codebase/testing";
 
 /** The packages in the temporary workspace, by project. */
 const PACKAGES = { cli: "1.0.0", core: "2.0.0", fresh: "0.1.0" };
@@ -51,7 +52,6 @@ const recordsLine = (project: string): string =>
 describe(LinkPackagesCommand, () => {
   const moduleOptions = { mocks: [LinkPackagesService] };
   const originalExitCode = process.exitCode;
-  const makeDirectory = useTemporaryDirectories();
   let recordBodies: unknown[];
   let outputFile: string;
   let reportLines: string[];
@@ -130,8 +130,8 @@ describe(LinkPackagesCommand, () => {
     process.exitCode = undefined;
     recordBodies = [];
     reportLines = [];
-    workspace = makeDirectory();
-    runnerTemp = makeDirectory();
+    workspace = createTemporaryDirectory("workspace", TEMPORARY_ROOT);
+    runnerTemp = createTemporaryDirectory("workspace", TEMPORARY_ROOT);
     outputFile = path.join(runnerTemp, "github-output");
     fs.writeFileSync(outputFile, "");
     fs.writeFileSync(
@@ -139,17 +139,18 @@ describe(LinkPackagesCommand, () => {
       "@tool/cli@1.0.0\n",
     );
     vi.spyOn(process, "cwd").mockReturnValue(workspace);
-    writeFile(
-      workspace,
-      "nx.json",
-      JSON.stringify({ release: { projects: ["projects/ic-suite/*/*"] } }),
-    );
+    writeFileTree(workspace, {
+      "nx.json": JSON.stringify({
+        release: { projects: ["projects/ic-suite/*/*"] },
+      }),
+    });
     for (const [project, version] of Object.entries(PACKAGES)) {
-      writeFile(
-        workspace,
-        `projects/ic-suite/tool/${project}/package.json`,
-        JSON.stringify({ name: `@tool/${project}`, version }),
-      );
+      writeFileTree(workspace, {
+        [`projects/ic-suite/tool/${project}/package.json`]: JSON.stringify({
+          name: `@tool/${project}`,
+          version,
+        }),
+      });
     }
     vi.stubEnv("GITHUB_OUTPUT", outputFile);
     vi.stubEnv("GITHUB_REPOSITORY", "owner/codebase");

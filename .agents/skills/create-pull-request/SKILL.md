@@ -39,8 +39,8 @@ suffixes do not push the queued commit subject over the header limit.
 
 ### Structure Rules
 
-1. **Type**: Required, lowercase, from [allowed types](../../../configuration/conventional.config.cjs)
-2. **Scope**: Required, lowercase, from [allowed scopes](../../../configuration/conventional.config.cjs)
+1. **Type**: Required, lowercase, from [allowed types](../../../configuration/repository/conventional.config.cjs)
+2. **Scope**: Required, lowercase, from [allowed scopes](../../../configuration/repository/conventional.config.cjs)
 3. **Gitmoji**: Required, emoji at start of subject
 4. **Subject**: Required, lowercase, imperative mood, no period
 
@@ -79,7 +79,7 @@ suffixes do not push the queued commit subject over the header limit.
 | `persistence` | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations |
 | `interface` | Shared GraphQL package: Relay helpers, entity-to-object types, client codegen, and test helpers |
 | `dependencies` | Dependency version changes (upgrades, additions, removals via pnpm) |
-| `deployment` | Deployment CLI: the CI release steps and the publishable-packages gate |
+| `deployment` | Deployment CLI: the CI release steps |
 | `deployments` | GitHub Actions workflows and CI/CD pipeline configuration |
 | `documentation` | Markdown docs, skills, planning files, and AGENTS.md files |
 | `infrastructure` | Helm charts, Terraform configs, and Kubernetes resources |
@@ -140,7 +140,7 @@ Write clear, comprehensive descriptions that help reviewers understand changes. 
 ```markdown
 ## 🌰 Summary
 
-<!-- One plain paragraph of at most 48 words, readable at a glance: what this PR does and why. Title reminder: include every touched scope in the PR title's scope list so release-significance passes. -->
+<!-- One plain paragraph of at most 48 words, readable at a glance: what this PR does and why. Title reminder: the title must name at least one scope its commits use, so release-significance passes. -->
 
 ## 📝 Details
 
@@ -281,7 +281,7 @@ All PRs must pass these checks before merging:
 | PR Title             | `commitlint`                                           | Title follows commit message format                                                                                              |
 | PR Body              | `compliance pull-request`                              | Required sections: 🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related, each in its shape and within its word limit                   |
 | Issue Link           | `compliance pull-request`                              | Pull request closes or references an issue (`closingIssuesReferences` is not empty)                                              |
-| Release Significance | `compliance pull-request`                              | Title's type is at least as significant as the most significant commit, and the title shares at least one scope with each commit |
+| Release Significance | `compliance pull-request`                              | Title's type is at least as significant as the most significant commit, and the title names at least one scope its commits use   |
 | Lint                 | `nx affected --target=lint-code`                       | Every static check: ESLint, oxlint, oxfmt, typecheck, spell-check, knip, and more                                                |
 | Test                 | `nx affected --target=vitest --configuration=coverage` | Unit and integration tests against the coverage gates                                                                            |
 
@@ -385,13 +385,17 @@ This codebase uses **squash merging** by default:
 
 ### Scope Selection: Multi-Scope Title vs Split PR
 
-- Use one focused scope when the branch is mostly one project or concern.
-- Use a multi-scope title (`type(scope-a,scope-b): ...`) only when the change
-  is genuinely coupled and must land together.
-- If you would need many scopes or the title becomes awkward/too long, split
-  into multiple pull requests and keep each title scope-focused.
-- Before opening, verify that every commit scope on the branch is represented by
-  the title scopes; otherwise the release-significance check will fail.
+Prefer one larger pull request over several smaller ones: the single maintainer
+reviews and manually tests it as one change. See
+[One Pull Request by Default](../../../AGENTS.md#one-pull-request-by-default).
+
+- Use one scope when every commit is in one project or concern.
+- Use a multi-scope title (`type(scope-a,scope-b): ...`) whenever the commits
+  span projects — that alone is no reason to split.
+- Split only for a mechanical reason: the scopes cannot fit the 128-character
+  header, one part must deploy before the rest can merge, or the user asked.
+- Before opening, verify that the title names at least one scope its commits
+  use; the release-significance check requires that, not every scope.
 
 ## Pre-Flight Checklist
 

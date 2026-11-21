@@ -4,6 +4,8 @@ import prompts from "prompts";
 import {
   ConfigurationPathRequiredError,
   missingInputError,
+  ProjectConfigurationPathRequiredError,
+  ProjectTsconfigPathRequiredError,
   promptCancelledError,
 } from "./input.constants";
 
@@ -182,6 +184,38 @@ export class InputService {
 
     if (parsed === undefined) {
       throw new ConfigurationPathRequiredError(surface);
+    }
+
+    return parsed;
+  }
+
+  /**
+   * Trims the project configuration path, refusing an absent or blank one, and names the surface it came from.
+   */
+  public requireProjectConfigurationPath(
+    path: string | undefined,
+    surface: string,
+  ): string {
+    const parsed = this.parseOptionalOption(path);
+
+    if (parsed === undefined) {
+      throw new ProjectConfigurationPathRequiredError(surface);
+    }
+
+    return parsed;
+  }
+
+  /**
+   * Trims the project tsconfig path, refusing an absent or blank one, and names the surface it came from.
+   */
+  public requireProjectTsconfigPath(
+    path: string | undefined,
+    surface: string,
+  ): string {
+    const parsed = this.parseOptionalOption(path);
+
+    if (parsed === undefined) {
+      throw new ProjectTsconfigPathRequiredError(surface);
     }
 
     return parsed;

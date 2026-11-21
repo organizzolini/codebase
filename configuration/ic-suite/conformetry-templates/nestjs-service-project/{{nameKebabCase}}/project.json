@@ -1,0 +1,35 @@
+{
+  "$schema": "{{workspaceRelativePrefix}}node_modules/nx/schemas/project-schema.json",
+  "name": "{{nameKebabCase}}",
+  "projectType": "library",
+  "sourceRoot": "{{type}}{{nameKebabCase}}",
+  "tags": [
+    "framework:nestjs",
+    "generator:nestjs-service-project",
+    "language:typescript",
+    "name:{{nameKebabCase}}",
+    "type:package"
+  ],
+  "targets": {
+    "build": {},
+    "codometer": {},
+    "dependency-cruiser": {},
+    "deprecate-code": {},
+    "eslint": {},
+    "format-code": {},
+    "guard-code": {},
+    "knip": {},
+    "lint-code": {},
+    "markdown-lint": {},
+    "oxfmt": {},
+    "oxlint": {},
+    "prettier": {},
+    "spell-check": {},
+    "test-code": {},
+    "type-coverage": {},
+    "typecheck": {},
+    "typecheck-code": {},
+    "vitest": {},
+    "yaml-lint": {}
+  }
+}

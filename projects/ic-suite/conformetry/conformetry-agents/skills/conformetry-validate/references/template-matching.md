@@ -93,11 +93,11 @@ real path:
 
 ```text
   nestjs-service-module (nsm)
-    Template: configuration/conformetry-templates/nestjs-service-module
+    Template: configuration/ic-suite/conformetry-templates/nestjs-service-module
     Instances:
       packages/widgets/src/modules/orders 5/5 files 100%
   nestjs-command-module (ncm)
-    Template: configuration/conformetry-templates/nestjs-command-module
+    Template: configuration/ic-suite/conformetry-templates/nestjs-command-module
     Instances:
       packages/widgets/src/modules/orders 3/5 files 60%
 ```

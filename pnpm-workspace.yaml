@@ -65,14 +65,14 @@ catalog:
   "@commitlint/types": ^21.0.1
   "@eslint-react/eslint-plugin": ^5.8.4
   "@eslint/js": ^10.0.1
-  "@eslint/markdown": ^8.0.2
+  "@eslint/markdown": ^9.0.0
   "@microsoft/api-extractor": ^7.52.1
   "@golevelup/ts-vitest": ^4.0.0
-  "@graphql-codegen/cli": ^7.4.6
-  "@graphql-codegen/typed-document-node": ^7.2.0
-  "@graphql-codegen/typescript": ^6.1.2
+  "@graphql-codegen/cli": ^8.0.0
+  "@graphql-codegen/typed-document-node": ^8.0.0
+  "@graphql-codegen/typescript": ^7.0.0
   "@graphql-codegen/typescript-msw": ^4.0.2
-  "@graphql-codegen/typescript-operations": ^6.1.10
+  "@graphql-codegen/typescript-operations": ^7.0.0
   "@graphql-typed-document-node/core": ^3.2.0
   "@nestjs/apollo": ^14.0.2
   "@nestjs/common": ^11.1.21 || ^12.0.1
@@ -146,11 +146,12 @@ catalog:
   eslint-plugin-tsdoc: ^0.5.2
   eslint-plugin-unicorn: ^64.0.0
   eslint-plugin-yml: ^3.3.2
+  execa: ^10.2.1
   fallow: ^3.24.1
   graphql: ^17.1.0
   husky: ^9.1.7
   graphql-codegen-typescript-validation-schema: ^0.19.0
-  ignore: 7.0.14
+  ignore: 7.0.16
   input-otp: ^1.4.2
   jiti: ^2.7.0
   jsdom: ^31.0.0
@@ -174,7 +175,7 @@ catalog:
   next-themes: ^0.4.6
   number-to-words: ^1.2.4
   nx: ^24.0.0
-  oxfmt: ^0.77.0
+  oxfmt: ^0.79.0
   oxlint: ^1.66.0
   pg: ^8.21.0
   pino: ^10.3.1
@@ -210,8 +211,8 @@ catalog:
   typescript: ^6.0.3
   typescript-eslint: ^8.59.4
   validate-branch-name: ^1.3.2
-  verdaccio: ^7.0.1
-  vite: 8.3.6
+  verdaccio: ^7.1.0
+  vite: 8.3.8
   vite-plugin-dts: ^5.0.1
   vite-plugin-static-copy: ^4.1.1
   vite-tsconfig-paths: ^6.1.1
@@ -250,3 +251,4 @@ catalogs:
     "@nestjs/core": ^11.1.21 || ^12.0.1
 patchedDependencies:
   nx@24.0.0: patches/nx@24.0.0.patch
+  type-coverage-core@2.30.1: patches/type-coverage-core@2.30.1.patch

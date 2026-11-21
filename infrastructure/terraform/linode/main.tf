@@ -5,7 +5,7 @@ terraform {
   # root; see its main.tf. This root manages that bucket, which is safe because
   # the bucket is only imported and never destroyed.
   backend "s3" {
-    key    = "codebase/linode.tfstate"
+    key    = "linode.tfstate"
     region = "us-east-1"
 
     skip_credentials_validation = true

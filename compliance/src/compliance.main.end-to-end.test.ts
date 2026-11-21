@@ -1,9 +1,9 @@
-import { spawnSync } from "node:child_process";
 import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { mockDates } from "../testing/mocks";
+import { mockDates } from "@codebase/testing";
+import { runSourceCommand } from "@codebase/testing/end-to-end";
 
 import { environmentSchema } from "./compliance.constants";
 
@@ -26,19 +26,16 @@ describe("main end-to-end suite", () => {
     });
   });
 
-  it("registers the issue and pull request compliance commands", () => {
-    const result = spawnSync(
-      process.execPath,
-      ["--import", "@swc-node/register/esm-register", COMMAND_PATH, "--help"],
-      {
-        cwd: WORKSPACE_ROOT,
-        encoding: "utf8",
-        env: { ...process.env, FORCE_COLOR: "0", NODE_OPTIONS: "" },
-        timeout: 120_000,
-      },
-    );
+  it("registers the issue and pull request compliance commands", async () => {
+    const result = await runSourceCommand({
+      args: ["--help"],
+      directory: WORKSPACE_ROOT,
+      entry: COMMAND_PATH,
+      environment: { NODE_OPTIONS: "" },
+      timeout: 120_000,
+    });
 
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
 
     for (const command of [
       "audit-files",

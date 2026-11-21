@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CommentsService } from "./comments.service";
-import { HashCommentsService } from "./hash-comments.service";
+import { HashCommentsService } from "./modules/hash/hash-comments.service";
 
 import type { CommentBudget } from "./comments.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";

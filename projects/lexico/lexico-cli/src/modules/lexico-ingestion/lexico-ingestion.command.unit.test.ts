@@ -5,24 +5,20 @@ import { expectLoggerContext } from "@codebase/observability/testing";
 import { promptsMock } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { CorpusScriptorumEcclesiasticorumLatinorumCommand } from "../corpus-scriptorum-ecclesiasticorum-latinorum/corpus-scriptorum-ecclesiasticorum-latinorum.command";
-import { DictionaryCommand } from "../dictionary/dictionary.command";
-import { EpigraphikDatenbankClaussSlabyCommand } from "../epigraphik-datenbank-clauss-slaby/epigraphik-datenbank-clauss-slaby.command";
-import { LatinLibraryCommand } from "../latin-library/latin-library.command";
 import { LibraryCommand } from "../library/library.command";
-import { LiteratureCommand } from "../literature/literature.command";
-import { PerseusCommand } from "../perseus/perseus.command";
-import { WiktionaryCommand } from "../wiktionary/wiktionary.command";
+import { CorpusScriptorumEcclesiasticorumLatinorumCommand } from "../library/modules/corpus-scriptorum-ecclesiasticorum-latinorum/corpus-scriptorum-ecclesiasticorum-latinorum.command";
+import { EpigraphikDatenbankClaussSlabyCommand } from "../library/modules/epigraphik-datenbank-clauss-slaby/epigraphik-datenbank-clauss-slaby.command";
+import { LatinLibraryCommand } from "../library/modules/latin-library/latin-library.command";
+import { PerseusCommand } from "../library/modules/perseus/perseus.command";
 
 import { LexicoIngestionCommand } from "./lexico-ingestion.command";
+import { DictionaryCommand } from "./modules/dictionary/dictionary.command";
+import { LiteratureCommand } from "./modules/literature/literature.command";
+import { WiktionaryCommand } from "./modules/wiktionary/wiktionary.command";
 
 import type { LexicoIngestionCommandOptions } from "./lexico-ingestion.types";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { Provider } from "@nestjs/common";
-
-vi.mock("prompts", () => ({
-  default: promptsMock,
-}));
 
 describe(LexicoIngestionCommand, () => {
   let command: LexicoIngestionCommand;

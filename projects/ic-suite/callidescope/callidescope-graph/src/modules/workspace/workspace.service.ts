@@ -13,7 +13,6 @@ import {
 import {
   EXCLUDED_SCAN_DIRECTORY_NAMES,
   PACKAGE_MANIFEST_NAME,
-  PROJECT_CONFIGURATION_NAME,
   TEST_DIRECTORY_SEGMENT,
   TEST_FILE_PATTERN,
 } from "./workspace.constants";
@@ -40,29 +39,35 @@ export class WorkspaceService {
 
   // 🔏 Private Methods
 
-  /** Walks the whole workspace for every directory holding a `tsconfig.json`. */
-  private findAllProjectDirectories(workspaceRoot: string): string[] {
+  /** Walks the whole workspace for every directory holding a file at `projectTsconfigPath`. */
+  private findAllProjectDirectories(args: {
+    projectTsconfigPath: string;
+    workspaceRoot: string;
+  }): string[] {
     const found: string[] = [];
 
     this.findProjectDirectories({
-      directory: workspaceRoot,
+      directory: args.workspaceRoot,
       found,
-      workspaceRoot,
+      projectTsconfigPath: args.projectTsconfigPath,
+      workspaceRoot: args.workspaceRoot,
     });
 
     return found;
   }
 
   /**
-   * Walks a directory recursively, collecting every subdirectory holding a
-   * `tsconfig.json`, including nested ones.
+   * Walks a directory recursively, collecting every subdirectory holding a file at
+   * `projectTsconfigPath`, including nested ones. The project's root is that directory,
+   * never the folder the file sits in.
    */
   private findProjectDirectories(args: {
     directory: string;
     found: string[];
+    projectTsconfigPath: string;
     workspaceRoot: string;
   }): void {
-    if (existsSync(path.join(args.directory, PROJECT_CONFIGURATION_NAME))) {
+    if (existsSync(path.join(args.directory, args.projectTsconfigPath))) {
       args.found.push(
         this.toWorkspaceRelative({
           absolutePath: args.directory,
@@ -79,6 +84,7 @@ export class WorkspaceService {
       this.findProjectDirectories({
         directory: path.join(args.directory, entry.name),
         found: args.found,
+        projectTsconfigPath: args.projectTsconfigPath,
         workspaceRoot: args.workspaceRoot,
       });
     }
@@ -121,7 +127,7 @@ export class WorkspaceService {
     );
   }
 
-  /** True when an exclusion already names the project's own `tsconfig.json`. */
+  /** True when an exclusion already names the project's own tsconfig. */
   private isExcludedProject(args: {
     configurationPath: string;
     fileFilter: FileFilter | undefined;
@@ -141,7 +147,7 @@ export class WorkspaceService {
 
   /**
    * Resolves the project directories a run will trace. Named directories are trusted,
-   * and one with no `tsconfig.json` ends the run.
+   * and one with no file at `projectTsconfigPath` ends the run.
    */
   public discoverProjects(args: DiscoverProjectsArguments): WorkspaceProject[] {
     const roots =
@@ -152,7 +158,7 @@ export class WorkspaceService {
               workspaceRoot: args.workspaceRoot,
             }),
           )
-        : this.findAllProjectDirectories(args.workspaceRoot);
+        : this.findAllProjectDirectories(args);
 
     const projects: WorkspaceProject[] = [];
 
@@ -160,7 +166,7 @@ export class WorkspaceService {
       const configurationPath = path.join(
         args.workspaceRoot,
         root,
-        PROJECT_CONFIGURATION_NAME,
+        args.projectTsconfigPath,
       );
 
       if (

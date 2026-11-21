@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-/** A `coinagerie.config.ts` default export; paths are relative to its folder. */
+/** A coinagerie configuration default export; paths are relative to the scan root. */
 export interface CoinagerieConfiguration {
   exclude?: CoinagerieExclusions | undefined;
   /**
@@ -15,6 +15,11 @@ export interface CoinagerieConfiguration {
   include?: string[] | undefined;
   /** Where the glossary is kept. With none, a run only prints it. */
   outputs?: CoinagerieOutput[] | undefined;
+  /**
+   * Words listed exactly as written, skipping every fold: `pisces` stays
+   * `pisces` rather than losing its last letter.
+   */
+  unfolded?: string[] | undefined;
 }
 
 /** What a run leaves out, on top of whatever `.gitignore` already ignores. */
@@ -83,15 +88,16 @@ export type FoldWord = (word: string) => string;
 
 /** What `loadConfiguration` is asked for. */
 export interface LoadConfigurationArguments {
-  /**
-   * Command-line config file, relative to the working directory. Without one,
-   * the working directory is searched for `CONFIGURATION_FILE_NAMES`, else
-   * defaults apply.
-   */
-  configurationPath?: string | undefined;
+  /** The configuration file, relative to the working directory; never searched for. */
+  configurationPath: string;
   /** What the command line overrides; nothing when absent. */
   overrides?: ConfigurationOverrides | undefined;
-  /** Absolute path the command was run from. */
+  /**
+   * Absolute folder the run scans, which the file's relative paths resolve from.
+   * Without one, the configuration file's folder.
+   */
+  rootDirectory?: string | undefined;
+  /** Absolute path the command was run from; `configurationPath` resolves from it. */
   workingDirectory: string;
 }
 
@@ -104,10 +110,9 @@ export interface LoadedConfiguration {
 
 /** Every default filled in and every path absolute. */
 export interface ResolvedCoinagerieConfiguration {
-  /** The file read, or `undefined` when the run uses only defaults. */
-  configurationPath: string | undefined;
-  /** The root the run scans: the configuration file's folder, or the
-   * working directory when there is no file. */
+  /** The absolute path of the file read. */
+  configurationPath: string;
+  /** The root the run scans: the given root, else the configuration file's folder. */
   directory: string;
   /**
    * `words` and `patterns` are resolved: a function in the file has been
@@ -121,6 +126,8 @@ export interface ResolvedCoinagerieConfiguration {
   fold: FoldWord | undefined;
   include: string[];
   outputs: ResolvedCoinagerieOutput[];
+  /** Words that skip every fold. */
+  unfolded: string[];
 }
 
 /** A JSON destination whose path has been made absolute. */

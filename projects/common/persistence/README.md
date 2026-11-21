@@ -91,7 +91,7 @@ TypeORM command line finds the file's one `DataSource` export by itself:
 ```ts
 export const meanderawDataSource = createDataSource({
   entities: [Meander],
-  migrations: ["src/modules/database/migrations/*.ts"],
+  migrations: ["migrations/*.ts"],
   project: "meanderaw",
 });
 ```
@@ -136,7 +136,7 @@ conventional paths from:
 | Path                                | Holds                                                      |
 | ----------------------------------- | ---------------------------------------------------------- |
 | `<module>/data-source.constants.ts` | The `createDataSource(...)` the TypeORM command line reads |
-| `<module>/migrations/`              | Each generated migration, and its extracted `.sql`         |
+| `migrations/`                       | Each generated migration, and its extracted `.sql`         |
 
 | Command                                         | Does                                                            |
 | ----------------------------------------------- | --------------------------------------------------------------- |

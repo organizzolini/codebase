@@ -5,15 +5,17 @@ import { ConfigService } from "@nestjs/config";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
+import {
+  failed,
+  FakeProcessRunner,
+  succeeded,
+  writeFileTree,
+} from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   createTaskDatabaseWorkspace,
-  failed,
-  FakeProcessRunner,
   readCachedHashes,
-  succeeded,
-  writeFile,
   writeTaskDatabase,
 } from "../../../testing/mocks";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
@@ -76,7 +78,7 @@ describe(ImportPrTaskCacheCommand, () => {
         hashes,
       );
       for (const hash of hashes) {
-        writeFile(destination, `cache/${hash}`, `output of ${hash}`);
+        writeFileTree(destination, { [`cache/${hash}`]: `output of ${hash}` });
       }
     };
   };

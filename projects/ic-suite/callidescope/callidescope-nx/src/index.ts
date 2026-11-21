@@ -47,7 +47,7 @@ export type {
   ResolvedProjectSelection,
 } from "./modules/projects/projects.types";
 
-/** Infers targets onto each project with a `tsconfig.json`. */
+/** Infers targets onto each project with a tsconfig at `projectTsconfigPath`. */
 const createNodes: CreateNodes = [
   PROJECT_CONFIGURATION_GLOB,
   async (

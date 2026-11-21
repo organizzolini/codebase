@@ -20,13 +20,13 @@ import {
 } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
-import { captureExitCode, captureOutput } from "@codebase/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
-
 import {
-  createFixtureTree,
-  removeFixtureTree,
-} from "../../../testing/fixture-tree";
+  captureExitCode,
+  captureOutput,
+  createFileTree,
+  useWorkingDirectory,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CollectCommand } from "./collect.command";
 
@@ -59,11 +59,11 @@ const CONFIGURATION = {
 };
 const START_ANCHOR = "<!-- coinagerie:start -->";
 const SOURCE = { "main.ts": "const answerValue = 1;\n" };
+const EMPTY_CONFIGURATION = { "coinagerie.config.ts": "export default {};\n" };
 
 describe(CollectCommand, () => {
   let command: CollectCommand;
   let logger: BuiltTestingModule<CollectCommand>["logger"];
-  let root: string | undefined;
   let readExitCode: () => typeof process.exitCode;
 
   beforeAll(async () => {
@@ -79,22 +79,16 @@ describe(CollectCommand, () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
-
-    if (root !== undefined) {
-      removeFixtureTree(root);
-      root = undefined;
-    }
   });
 
-  /** Runs the command in-process with a fixture tree as its working directory. */
+  /** Runs the command in-process with a repository fixture as its working directory. */
   async function runIn(
     files: Record<string, string>,
     options: CollectCommandOptions,
   ): Promise<string> {
-    const fixture = createFixtureTree(files);
-    root = fixture;
-    vi.spyOn(process, "cwd").mockReturnValue(fixture);
-    await command.run([], options);
+    const fixture = createFileTree(files, { git: true, label: "collect" });
+    useWorkingDirectory(fixture);
+    await command.run([], { config: "coinagerie.config.ts", ...options });
     return fixture;
   }
 
@@ -152,11 +146,14 @@ describe(CollectCommand, () => {
   });
 
   it("lets flags name the destinations the file does not", async () => {
-    const fixture = await runIn(SOURCE, {
-      outputJson: "words.json",
-      outputMarkdown: "WORDS.md",
-      write: true,
-    });
+    const fixture = await runIn(
+      { ...EMPTY_CONFIGURATION, ...SOURCE },
+      {
+        outputJson: "words.json",
+        outputMarkdown: "WORDS.md",
+        write: true,
+      },
+    );
 
     expect(
       JSON.parse(readFileSync(path.join(fixture, "words.json"), "utf8")),
@@ -187,7 +184,7 @@ describe(CollectCommand, () => {
       "- **answer**:\n- **main**:\n- **value**:",
     );
 
-    await command.run([], { check: true });
+    await command.run([], { check: true, config: "coinagerie.config.ts" });
 
     expect(readExitCode()).toBeUndefined();
   });
@@ -199,13 +196,26 @@ describe(CollectCommand, () => {
       { check: true },
     ],
     ["both --check and --write", CONFIGURATION, { check: true, write: true }],
-    ["a check with no destination configured", {}, { check: true }],
-    ["a format it does not know", {}, { format: "yaml" }],
-    ["a flag the configuration refuses", {}, { outputJson: "" }],
+    [
+      "a check with no destination configured",
+      EMPTY_CONFIGURATION,
+      { check: true },
+    ],
+    ["a format it does not know", EMPTY_CONFIGURATION, { format: "yaml" }],
+    [
+      "a flag the configuration refuses",
+      EMPTY_CONFIGURATION,
+      { outputJson: "" },
+    ],
     [
       "a configuration file that is not there",
       {},
       { check: true, config: "missing.config.ts" },
+    ],
+    [
+      "a configuration file that is not there, though one is in the working directory",
+      EMPTY_CONFIGURATION,
+      { check: true, config: "configuration/coinagerie.config.ts" },
     ],
     [
       "a glossary it cannot parse",
@@ -224,6 +234,28 @@ describe(CollectCommand, () => {
       expect.stringContaining("🪙"),
       undefined,
       expect.any(Object),
+    );
+  });
+
+  it("refuses to run without --config, never looking for a file", async () => {
+    const output = captureOutput();
+    const fixture = createFileTree(
+      { ...CONFIGURATION, ...SOURCE },
+      { git: true, label: "collect" },
+    );
+
+    vi.spyOn(process, "cwd").mockReturnValue(fixture);
+    await command.run([], { write: true });
+
+    expect(readExitCode()).toBe(1);
+    expect(output.stdout()).toBe("");
+    expect(existsSync(path.join(fixture, "GLOSSARY.md"))).toBe(false);
+    expect(logger.error).toHaveBeenCalledWith(
+      expect.stringContaining("🪙"),
+      undefined,
+      expect.objectContaining<{ reason: string }>({
+        reason: expect.stringContaining("--config is required"),
+      }),
     );
   });
 
@@ -246,7 +278,9 @@ describe(CollectCommand, () => {
       new Error("disk gone"),
     );
 
-    await expect(runIn(SOURCE, {})).rejects.toThrow("disk gone");
+    await expect(
+      runIn({ ...EMPTY_CONFIGURATION, ...SOURCE }, {}),
+    ).rejects.toThrow("disk gone");
   });
 
   it.each([

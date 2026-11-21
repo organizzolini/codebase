@@ -1,0 +1,168 @@
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { CodeModule } from "../../../../../../../code/code.module";
+import { MatrixModule } from "../../../../../../../geometry/modules/matrix/matrix.module";
+import { CharacteristicContextService } from "../../../../../../characteristic-context.service";
+import { BettiNumber1CountCharacteristicService } from "../../../../../path/modules/topology/betti-number-1-count-characteristic.service";
+import { CrossCountCharacteristicService } from "../../../../../submatrix/modules/cross/cross-count-characteristic.service";
+import { ForkCountCharacteristicService } from "../../../../../submatrix/modules/fork/fork-count-characteristic.service";
+import { LongestHorizontalRunLengthCharacteristicService } from "../../../../../submatrix/modules/run/longest-horizontal-run-length-characteristic.service";
+import { LongestVerticalRunLengthCharacteristicService } from "../../../../../submatrix/modules/run/longest-vertical-run-length-characteristic.service";
+import { CompoundUtilitiesService } from "../../../../compound-utilities.service";
+import { PatternCharacteristicsModule } from "../../pattern-characteristics.module";
+import { StrandUtilitiesService } from "../../strand-utilities.service";
+
+import { IsDoubleChainCharacteristicService } from "./is-double-chain-characteristic.service";
+
+import type { CharacteristicContext } from "../../../../../../characteristics.types";
+
+describe(IsDoubleChainCharacteristicService, () => {
+  describe("with the real characteristic services", () => {
+    let contextService: CharacteristicContextService;
+    let service: IsDoubleChainCharacteristicService;
+
+    beforeAll(async () => {
+      const real = await buildTestingModule(CharacteristicContextService, {
+        imports: [CodeModule, PatternCharacteristicsModule, MatrixModule],
+      });
+
+      contextService = real.instance;
+      service = await real.module.resolve(IsDoubleChainCharacteristicService);
+    });
+
+    it.each([
+      { code: "04x03y35634884a339", expected: true, shape: "a double chain" },
+      {
+        code: "06x04y33563361cc25c29a1ca33339",
+        expected: true,
+        shape: "a four-row double chain",
+      },
+      { code: "04x03y356369a5a339", expected: false, shape: "a closed loop" },
+      { code: "04x03y6354c48c8a39", expected: false, shape: "a clasp" },
+    ])("reports $expected for $shape ($code)", ({ code, expected }) => {
+      expect(service.compute(contextService.create(code))).toBe(expected);
+    });
+  });
+
+  describe("with mocked characteristic services", () => {
+    const base = {
+      bettiNumber1Count: 0,
+      columns: 6,
+      crossCount: 0,
+      forkCount: 0,
+      isWrappingReversal: true,
+      longestHorizontalRunLength: 5,
+      longestVerticalRunLength: 2,
+      rows: 4,
+      strandEnds: 2,
+    };
+    const values = { ...base };
+    let service: IsDoubleChainCharacteristicService;
+
+    beforeAll(async () => {
+      const built = await buildTestingModule(
+        IsDoubleChainCharacteristicService,
+        {
+          providers: [
+            CompoundUtilitiesService,
+            {
+              provide: BettiNumber1CountCharacteristicService,
+              useValue: { compute: (): number => values.bettiNumber1Count },
+            },
+            {
+              provide: CrossCountCharacteristicService,
+              useValue: { compute: (): number => values.crossCount },
+            },
+            {
+              provide: ForkCountCharacteristicService,
+              useValue: { compute: (): number => values.forkCount },
+            },
+            {
+              provide: LongestHorizontalRunLengthCharacteristicService,
+              useValue: {
+                compute: (): number => values.longestHorizontalRunLength,
+              },
+            },
+            {
+              provide: LongestVerticalRunLengthCharacteristicService,
+              useValue: {
+                compute: (): number => values.longestVerticalRunLength,
+              },
+            },
+            {
+              provide: StrandUtilitiesService,
+              useValue: {
+                hasStrandEnds: (
+                  ...[, strands]: readonly [CharacteristicContext, number]
+                ): boolean => strands === values.strandEnds,
+                isWrappingReversal: (): boolean => values.isWrappingReversal,
+              },
+            },
+          ],
+        },
+      );
+
+      service = built.instance;
+    });
+
+    beforeEach(() => {
+      Object.assign(values, base);
+    });
+
+    it.each([
+      {
+        change: {},
+        expected: true,
+        reason: "two wrapping strands at pitch 2 rows - 2",
+      },
+      { change: { strandEnds: 1 }, expected: false, reason: "one strand" },
+      { change: { strandEnds: 3 }, expected: false, reason: "three strands" },
+      { change: { forkCount: 1 }, expected: false, reason: "a fork" },
+      { change: { crossCount: 1 }, expected: false, reason: "a cross" },
+      { change: { bettiNumber1Count: 1 }, expected: false, reason: "a cycle" },
+      {
+        change: { columns: 8, longestHorizontalRunLength: 7 },
+        expected: false,
+        reason: "pitch 2 rows",
+      },
+      {
+        change: { isWrappingReversal: false },
+        expected: false,
+        reason: "no wrapping reversal",
+      },
+      {
+        change: { longestHorizontalRunLength: 6 },
+        expected: false,
+        reason: "a full-width horizontal run",
+      },
+      {
+        change: { longestVerticalRunLength: 3 },
+        expected: false,
+        reason: "a vertical run of rows - 1",
+      },
+      {
+        change: { longestVerticalRunLength: 1 },
+        expected: false,
+        reason: "a vertical run of rows - 3",
+      },
+      {
+        change: { longestVerticalRunLength: 0 },
+        expected: false,
+        reason: "no vertical run",
+      },
+    ])("reports $expected for $reason", ({ change, expected }) => {
+      Object.assign(values, change);
+      const { columns, rows } = values;
+      const context: CharacteristicContext = {
+        code: { columns, digits: "0".repeat(rows * columns), repeats: 1, rows },
+        columns,
+        matrix: [],
+        rows,
+      };
+
+      expect(service.compute(context)).toBe(expected);
+    });
+  });
+});

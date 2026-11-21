@@ -8,15 +8,22 @@ import type {
   FoldWord,
 } from "./configuration.types";
 
-/** Config file names searched in the working directory, in order. */
-export const CONFIGURATION_FILE_NAMES = [
-  "coinagerie.config.ts",
-  "coinagerie.config.mts",
-  "coinagerie.config.cts",
-  "coinagerie.config.js",
-  "coinagerie.config.mjs",
-  "coinagerie.config.cjs",
-] as const;
+// 🚨 Errors
+
+/**
+ * Raised when a run names no configuration path.
+ *
+ * Coinagerie never searches for a configuration or assumes one, so the path is
+ * the caller's to supply; the message names the surface that left it out.
+ */
+export class ConfigurationPathRequiredError extends Error {
+  constructor(surface: string) {
+    super(
+      `${surface} is required: coinagerie never searches for or assumes a configuration file. Pass the path to a coinagerie configuration file, such as coinagerie.config.ts.`,
+    );
+    this.name = "ConfigurationPathRequiredError";
+  }
+}
 
 /** Globs for all files, dot-files too, since `*` skips dots. */
 export const DEFAULT_INCLUDE = ["**", "**/.*", "**/.*/**"] as const;
@@ -51,6 +58,14 @@ export const WORD_LIST_SCHEMA = z.array(excludedWordSchema);
 
 /** A `fold` result: text with no whitespace or `*`. */
 export const FOLDED_WORD_SCHEMA = z.string().regex(/^[^\s*]+$/u);
+
+/** An `unfolded` entry: a lowercase word, as every collected word is. */
+const UNFOLDED_WORD_SCHEMA = z
+  .string()
+  .regex(/^[^\s*]+$/u)
+  .refine((word) => word === word.toLowerCase(), {
+    message: "Expected a lowercase word",
+  });
 
 const markdownOutputSchema = z.strictObject({
   description: descriptionSchema.optional(),
@@ -93,4 +108,5 @@ export const CONFIGURATION_SCHEMA: z.ZodType<CoinagerieConfiguration> =
         z.discriminatedUnion("type", [jsonOutputSchema, markdownOutputSchema]),
       )
       .optional(),
+    unfolded: z.array(UNFOLDED_WORD_SCHEMA).optional(),
   });

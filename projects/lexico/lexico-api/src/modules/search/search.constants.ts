@@ -1,6 +1,6 @@
 // ♟️ Constants
 
-import { SearchMatchSource } from "./search.entities";
+import { SearchMatchSource } from "./modules/search-results/search.entities";
 
 /* cspell:words ILIKE absque atque cumque denique FULLTEXT itaque neque neve paene pleraque plerique plerumque quaeque qualiscumque quandocumque quantuscumque quicque quidque quilibet quinque quisque quivis quodque quoque sive ubique undique unusquisque uterque utrimque */
 
@@ -80,7 +80,7 @@ export const ENGLISH_TIER_SOURCES: ReadonlyMap<number, SearchMatchSource> =
     [SCORE_TRANSLATION_PREFIX, SearchMatchSource.TRANSLATION_PREFIX],
   ]);
 
-/** Most headword prefix or fuzzy lexemes ranked per search term. */
+/** Most lemma prefix or fuzzy lexemes ranked per search term. */
 export const LATIN_TIER_RESULT_LIMIT = 50;
 
 /** Ranks a translation match: exact, then prefix, then any other. */

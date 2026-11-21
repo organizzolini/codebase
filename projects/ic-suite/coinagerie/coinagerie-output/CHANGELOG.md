@@ -1,3 +1,86 @@
+## 0.0.27 (2026-11-21)
+
+### 💅 Refactors
+
+- **configuration,documentation,synchronization:** ♻️ run the agent workflow on superpowers skills ([#2457](https://github.com/organizzolini/codebase/pull/2457), [#2453](https://github.com/organizzolini/codebase/issues/2453))
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.27
+- Updated coinagerie-core to 0.0.27
+
+## 0.0.26 (2026-11-20)
+
+### 🚀 Features
+
+- **codometer,configuration:** ✨ cap directory breadth and depth, and keep tool configs in configuration folders ([#2452](https://github.com/organizzolini/codebase/pull/2452), [#2450](https://github.com/organizzolini/codebase/issues/2450))
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.26
+- Updated coinagerie-core to 0.0.26
+
+## 0.0.25 (2026-11-20)
+
+### 🚀 Features
+
+- **conformetry,lexico:** ✨ register every nestjs template instance and conform them ([#2456](https://github.com/organizzolini/codebase/pull/2456), [#2455](https://github.com/organizzolini/codebase/issues/2455))
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.25
+- Updated coinagerie-core to 0.0.25
+
+## 0.0.24 (2026-11-17)
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.24
+- Updated coinagerie-core to 0.0.24
+
+## 0.0.23 (2026-11-15)
+
+### 🚀 Features
+
+- **coinagerie,configuration,lexico,caelundas,meanderaw,conformetry,codometer,codependix:** ✨ clarify word meanings ([#2373](https://github.com/organizzolini/codebase/pull/2373), [#2372](https://github.com/organizzolini/codebase/issues/2372))
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.23
+- Updated coinagerie-core to 0.0.23
+
+## 0.0.22 (2026-11-13)
+
+### 💅 Refactors
+
+- **configuration:** ♻️ default vitest coverage and setup in the base config ([#2376](https://github.com/organizzolini/codebase/pull/2376), [#2374](https://github.com/organizzolini/codebase/issues/2374))
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.22
+- Updated coinagerie-core to 0.0.22
+
+## 0.0.21 (2026-11-12)
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.21
+- Updated coinagerie-core to 0.0.21
+
+## 0.0.20 (2026-11-12)
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.20
+- Updated coinagerie-core to 0.0.20
+
+## 0.0.19 (2026-11-12)
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.19
+- Updated coinagerie-core to 0.0.19
+
 ## 0.0.18 (2026-11-11)
 
 ### 🚀 Features

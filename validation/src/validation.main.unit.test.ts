@@ -5,7 +5,6 @@ import { captureExitCode } from "@codebase/testing";
 
 import type { CatalogManifestsModule } from "./modules/catalog-manifests/catalog-manifests.module";
 import type { LockfileModule } from "./modules/lockfile/lockfile.module";
-import type { PublishablePackagesModule } from "./modules/publishable-packages/publishable-packages.module";
 import type { ReadmeProjectsModule } from "./modules/readme-projects/readme-projects.module";
 import type { SessionBranchNameModule } from "./modules/session-branch-name/session-branch-name.module";
 import type { SessionWorktreeNameModule } from "./modules/session-worktree-name/session-worktree-name.module";
@@ -25,7 +24,6 @@ const loggerServiceMock = createMock<LoggerService>();
 const logToStandardError = vi.fn<() => void>();
 const catalogManifestsModuleMock = createMock<CatalogManifestsModule>();
 const lockfileModuleMock = createMock<LockfileModule>();
-const publishablePackagesModuleMock = createMock<PublishablePackagesModule>();
 const readmeProjectsModuleMock = createMock<ReadmeProjectsModule>();
 const sessionBranchNameModuleMock = createMock<SessionBranchNameModule>();
 const sessionWorktreeNameModuleMock = createMock<SessionWorktreeNameModule>();
@@ -73,12 +71,6 @@ vi.mock("./modules/catalog-manifests/catalog-manifests.module", () => ({
 vi.mock("./modules/lockfile/lockfile.module", () => ({
   LockfileModule: function LockfileModule() {
     return lockfileModuleMock;
-  },
-}));
-
-vi.mock("./modules/publishable-packages/publishable-packages.module", () => ({
-  PublishablePackagesModule: function PublishablePackagesModule() {
-    return publishablePackagesModuleMock;
   },
 }));
 

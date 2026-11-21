@@ -30,13 +30,14 @@
         "generatePackageJson": false,
         "main": "projects/lexico/lexico-api/src/lexico-api.ts",
         "outputPath": "projects/lexico/lexico-api/dist",
-        "tsConfig": "projects/lexico/lexico-api/tsconfig.build.json"
+        "tsConfig": "projects/lexico/lexico-api/configuration/tsconfig.build.json"
       },
       "outputs": ["{options.outputPath}"]
     },
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "eslint": {},
     "format-code": {},
     "guard-code": {},
     "knip": {},
@@ -48,10 +49,10 @@
     "spell-check": {},
     "start": {
       "continuous": true,
-      "description": "Start the LexicoApi GraphQL API with restart on change",
+      "description": "Start the LexicoApi GraphQL API",
       "executor": "nx:run-commands",
       "options": {
-        "command": "node --watch --import @swc-node/register/esm-register src/lexico-api.ts",
+        "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register src/lexico-api.ts",
         "cwd": "{projectRoot}"
       }
     },
@@ -65,6 +66,7 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "vitest": {},
     "yaml-lint": {}
   }
 }

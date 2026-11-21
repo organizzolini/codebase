@@ -12,8 +12,8 @@ import { TileEnumerationService } from "../enumeration/tile-enumeration.service"
 import { DuplicateCorpusCodeError } from "./corpus.constants";
 import { CorpusService } from "./corpus.service";
 
-import type { Meander } from "../database/entities/meander.entity";
-import type { Tile } from "../tile/tile.types";
+import type { Meander } from "../database/meander.entity";
+import type { Tile } from "../geometry/modules/tile/tile.types";
 import type { CorpusEntry } from "./corpus.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
@@ -75,7 +75,7 @@ describe(CorpusService, () => {
       (code) =>
         `${String(code.columns).padStart(2, "0")}x${String(code.rows).padStart(2, "0")}y${code.digits}${code.repeats > 1 ? `r${String(code.repeats).padStart(2, "0")}` : ""}`,
     );
-    vi.mocked(codeService.canonicalPhase).mockImplementation(
+    vi.mocked(codeService.canonicalRotation).mockImplementation(
       (parsed) => parsed,
     );
     vi.mocked(codeService.tile).mockReturnValue(tile);
@@ -120,8 +120,8 @@ describe(CorpusService, () => {
       );
     });
 
-    it("scores each phase by its tile-crossing component delta", async () => {
-      vi.mocked(codeService.canonicalPhase).mockImplementation(
+    it("scores each rotation by its tile-crossing component delta", async () => {
+      vi.mocked(codeService.canonicalRotation).mockImplementation(
         (parsed, score) => {
           score(parsed);
           return parsed;
@@ -185,7 +185,7 @@ describe(CorpusService, () => {
     });
 
     it("looks an entry up by the canonical Code it would be saved under, which carries its shape and repeats", async () => {
-      vi.mocked(codeService.canonicalPhase).mockImplementation((parsed) => ({
+      vi.mocked(codeService.canonicalRotation).mockImplementation((parsed) => ({
         ...parsed,
         digits: "4",
         repeats: 2,

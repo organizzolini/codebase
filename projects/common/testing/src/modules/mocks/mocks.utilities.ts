@@ -2,8 +2,16 @@ import { onTestFinished, vi } from "vitest";
 
 import { promptsMock } from "./mocks.constants";
 
-import type { ChildProcessMock, PromptAnswers } from "./mocks.types";
+import type {
+  ChildProcessMock,
+  ExecFileExit,
+  ExecFileMock,
+  ExecFileParameters,
+  ExecFileStart,
+  PromptAnswers,
+} from "./mocks.types";
 import type * as ChildProcess from "node:child_process";
+import type { ExecException } from "node:child_process";
 
 /**
  * Queues the answers the next `prompts` calls resolve with, one object per
@@ -39,6 +47,30 @@ export function mockChildProcess(
 }
 
 /**
+ * `node:child_process` with `execFile` replaced by a fake that starts nothing:
+ * it asks `decide` how each call exits, then reports that to its callback.
+ */
+export function mockExecFile(
+  actual: typeof ChildProcess,
+  decide: (start: ExecFileStart) => ExecFileExit | undefined,
+): ExecFileMock {
+  return {
+    ...mockChildProcess(actual),
+    execFile: vi.fn(
+      (...[file, args, options, callback]: ExecFileParameters) => {
+        const {
+          error = null,
+          stderr = "",
+          stdout = "",
+        } = decide({ args, environment: options.env, file }) ?? {};
+
+        callback(error, stdout, stderr);
+      },
+    ),
+  };
+}
+
+/**
  * Replaces only the given members of a module, keeping the rest of the real
  * module, for a `vi.mock` factory.
  */
@@ -47,6 +79,17 @@ export function mockPartially<Module extends object>(
   overrides: Partial<Module>,
 ): Module {
   return { ...actual, ...overrides };
+}
+
+/**
+ * An `execFile` error as Node reports it: a process that exited with a
+ * numeric `code`, or one that never started, with a string `code`.
+ */
+export function processFailure(
+  code: number | string,
+  message = "Command failed",
+): ExecException {
+  return Object.assign(new Error(message), { cmd: "", code });
 }
 
 /**

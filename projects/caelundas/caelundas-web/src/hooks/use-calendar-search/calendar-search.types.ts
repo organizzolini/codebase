@@ -1,12 +1,12 @@
-import type { EventFilterQuery } from "../../components/calendar-filters/event-filters.types";
-import type {
-  EventGrouping,
-  EventGroupLevel,
-} from "../../components/calendar-group-by/event-groups.types";
 import type {
   CalendarViewName,
   TimelineScale,
-} from "../../components/events-calendar/calendar-views.types";
+} from "../../components/calendar-display/events-calendar/components/calendar-views/calendar-views.types";
+import type { EventFilterQuery } from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filters.types";
+import type {
+  EventGrouping,
+  EventGroupLevel,
+} from "../../components/calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
 
 /**
  * The calendar's URL search parameters.

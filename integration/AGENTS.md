@@ -9,7 +9,7 @@
 ### Run Locally
 
 ```bash
-cp .env.default .env  # Fill in required environment variables
+cp configuration/.env.default configuration/.env  # Fill in required environment variables
 nx run integration:start
 ```
 
@@ -61,13 +61,12 @@ one class.
 | `setup-codebase` | `src/modules/setup-codebase` | the `setup-codebase` composite action, right after `pnpm install`; runs the four steps below it |
 | `bound-base-to-push` | `src/modules/bound-base-to-push` | `setup-codebase`, on a push with `nx-base: push-before` |
 | `import-pr-task-cache` | `src/modules/import-pr-task-cache` | `setup-codebase`, in a merge group |
-| `verify-task-database` | `src/modules/verify-task-database` | `setup-codebase` and `cleanup-codebase` |
-| `adopt-task-database` | `src/modules/adopt-task-database` | `setup-codebase` |
+| `verify-task-database` | `src/modules/task-database/modules/verify-task-database` | `setup-codebase` and `cleanup-codebase` |
+| `adopt-task-database` | `src/modules/task-database/modules/adopt-task-database` | `setup-codebase` |
 | `cleanup-codebase` | `src/modules/cleanup-codebase` | the `cleanup-codebase` composite action, before it saves the caches; runs the two steps below it |
-| `keep-task-database` | `src/modules/keep-task-database` | `cleanup-codebase` |
+| `keep-task-database` | `src/modules/task-database/modules/keep-task-database` | `cleanup-codebase` |
 | `merge-task-cache` | `src/modules/merge-task-cache` | nothing in CI: `import-pr-task-cache` merges through the same service; run it by hand with a directory |
-| `publishable-packages-gate` | `src/modules/publishable-packages-gate` | the 🤵 Publishable Packages leg of Continuous Integration |
-| `run-affected` | `src/modules/run-affected` | the Continuous Integration matrix legs, for every check but Secure and Publishable Packages |
+| `run-affected` | `src/modules/run-affected` | the Continuous Integration matrix legs, for every check but Secure |
 | `collect-codometer-baseline` | `src/modules/collect-codometer-baseline` | the `report-integration` composite action, on a green `main` build |
 | `report-codometer-changes` | `src/modules/report-codometer-changes` | the `report-integration` composite action, on a pull request's build |
 | `upgrade-dependencies` | `src/modules/upgrade-dependencies` | the `upgrade-dependencies` workflow |
@@ -353,7 +352,7 @@ See the [write-typescript skill](../../.agents/skills/write-typescript/SKILL.md)
 - **Command not found at runtime** — ensure the command class is listed in `providers` of its module and the module is imported by the root module.
 - **Dependency injection failure** — verify the service is `@Injectable()`, exported from its module, and that module is imported by the consuming module.
 - **Unrecognized CLI flag** — check that `@Option()` decorators in the command class exactly match the flag names passed.
-- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `src/integration.constants.ts` and to `.env.default`.
+- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `src/integration.constants.ts` and to `configuration/.env.default`.
 
 See the [triage-integration skill](../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
 
@@ -364,4 +363,4 @@ See the [triage-integration skill](../../.agents/skills/triage-integration/SKILL
 - [src/integration.constants.ts](src/integration.constants.ts): `environmentSchema` (Zod)
 - `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
 - [project.json](project.json): Nx targets (`start`, `build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
-- [.env.default](.env.default): Environment variable template
+- [configuration/.env.default](configuration/.env.default): Environment variable template

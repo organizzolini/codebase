@@ -7,10 +7,11 @@ license: MIT
 # Writing a coinagerie configuration
 
 A configuration is one default-exported **plain object** in
-`coinagerie.config.ts` (or `.mts`, `.cts`, `.js`, `.mjs`, `.cjs`), loaded with
-jiti, so TypeScript works and any field can be computed. Every field is
-optional, and no file at all is valid: the run then scans the working
-directory and prints.
+a coinagerie configuration file such as `coinagerie.config.ts` (any name and
+extension jiti loads), loaded with jiti, so TypeScript works and any field can
+be computed. Every field is optional, but the file is not: every run is given
+its path (`--config`, or the Nx plugin's `projectConfigurationPath`), and
+coinagerie never searches for one.
 
 The schema is strict at every level. A misspelled key fails the run, naming
 the file, instead of being ignored. Exporting a function is refused.
@@ -27,6 +28,7 @@ export default {
     words: [...typescriptKeywords, "src", "index"],
   },
   fold: (word) => (word === "configuration" ? "configure" : word),
+  unfolded: ["pisces"],
   outputs: [
     {
       description: "Words this project uses. Regenerate with `coinagerie --write`.",
@@ -117,6 +119,18 @@ It must be synchronous and return a non-empty string without whitespace or
 `*`. A throw, an empty or non-string result, or a promise fails the run,
 naming the configuration file.
 
+## unfolded
+
+A list of words listed exactly as written. Use it for a word that only looks
+inflected: a singular ending in `s` (`pisces`, `axios`, `nestjs`) that folding
+would strip of its last letter. An unfolded word skips plural and inflection folding
+and `fold`; entries must be lowercase. Prefer it to a `fold` entry that maps
+the trimmed form back.
+
+```ts
+unfolded: ["pisces", "axios"],
+```
+
 ## outputs
 
 An array of destinations. With none, a run only prints, and `--check` and
@@ -162,10 +176,10 @@ child's target, or an edit to it will not re-run their checks.
 
 ## Try before editing
 
-Every field except `exclude.words` and `fold` has a command-line flag that
+Every field except `exclude.words`, `fold`, and `unfolded` has a command-line flag that
 replaces it for one run: `--include`, `--exclude-paths`, `--output-json`,
 `--output-markdown`, `--description`. The `coinagerie-collect` skill has the
-table. A bare `coinagerie` run prints the result of a change without writing
+table. A run with no mode flag prints the result of a change without writing
 anything.
 
 ## When a run rejects the configuration
@@ -181,7 +195,7 @@ anything.
 | `Two outputs name a.json`                   | give each destination its own file                                   |
 | `A description may not hold a list item...` | the description has a `-`, `*`, `+`, or `<!--` line; reword it       |
 | `fold threw on "<word>"`                    | the fold function raised; fix it for that word                       |
-| `Configuration file not found`              | a named `--config` is relative to the working directory              |
+| `Configuration file not found`              | `--config` is relative to the working directory; nothing is searched |
 
 For what to do about a failed check rather than a rejected configuration, use
 the `coinagerie-triage` skill.

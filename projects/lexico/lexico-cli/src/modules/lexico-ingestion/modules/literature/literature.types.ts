@@ -1,0 +1,56 @@
+// 🏷️ Types
+
+import type {
+  CommandOptionChoice,
+  CommandOptionValue,
+} from "../../lexico-ingestion.types";
+import type { Author, Text } from "@codebase/lexico-db";
+import type { PhrasingContent } from "mdast";
+
+/**
+ * Inputs required to ingest one markdown text into the literature entity graph.
+ */
+export interface IngestTextArguments {
+  author: Author;
+  parentText: Text | undefined;
+  textPath: string;
+  textSlugName: string;
+  title: string;
+}
+
+/**
+ * Discovered markdown file metadata collected from `data/library`.
+ */
+export interface LibraryEntry {
+  authorSlug: string;
+  fullPath: string;
+  pathParts: string[];
+  provider: string;
+  textSlug: string;
+  title: string;
+}
+
+/** Optional literature filters; `true` for a bare flag, or absent. */
+export interface LiteratureCommandOptions {
+  author?: CommandOptionValue;
+  provider?: CommandOptionValue;
+  text?: CommandOptionValue;
+}
+
+/**
+ * Inputs for resolving one literature filter from its flag or a prompt.
+ */
+export interface LiteratureFilterArguments {
+  choices: CommandOptionChoice[];
+  label: string;
+  message: string;
+  value: CommandOptionValue;
+}
+
+/**
+ * Parsed line label and associated inline markdown nodes.
+ */
+export interface ParsedLabelResult {
+  label: string;
+  lineNodes: PhrasingContent[];
+}

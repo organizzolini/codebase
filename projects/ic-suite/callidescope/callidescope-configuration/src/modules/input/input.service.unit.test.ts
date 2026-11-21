@@ -12,13 +12,14 @@ import {
 import { overrideEnvironment } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { ConfigurationPathRequiredError } from "./input.constants";
+import {
+  ConfigurationPathRequiredError,
+  ProjectConfigurationPathRequiredError,
+  ProjectTsconfigPathRequiredError,
+} from "./input.constants";
 import { InputService } from "./input.service";
 
-// Mocked at the module boundary so the service's own wiring is exercised and
-// no test ever reaches for a terminal.
-vi.mock("prompts", () => ({ default: vi.fn() }));
-
+// The shared setup mocks `prompts`, so no test ever reaches for a terminal.
 const promptRunner = vi.mocked(prompts);
 
 describe(InputService, () => {
@@ -290,6 +291,58 @@ describe(InputService, () => {
   ])("names the surface it was asked about: %s", (surface) => {
     expect(() => service.requireConfigurationPath(undefined, surface)).toThrow(
       `${surface} is required and names the callidescope configuration file.`,
+    );
+  });
+
+  it("passes a project configuration path through trimmed", () => {
+    expect(
+      service.requireProjectConfigurationPath(
+        "  configuration/callidescope.config.ts ",
+        "The option",
+      ),
+    ).toBe("configuration/callidescope.config.ts");
+  });
+
+  it.each(["   ", "", undefined])(
+    "refuses a project configuration path that is blank or absent: %j",
+    (value) => {
+      expect(() =>
+        service.requireProjectConfigurationPath(value, "The option"),
+      ).toThrow(ProjectConfigurationPathRequiredError);
+    },
+  );
+
+  it("names the surface and the project root the path is relative to", () => {
+    expect(() =>
+      service.requireProjectConfigurationPath(undefined, "The option"),
+    ).toThrow(
+      "The option is required and names where each project keeps its own callidescope configuration, relative to the project root.",
+    );
+  });
+
+  it("passes a project tsconfig path through trimmed", () => {
+    expect(
+      service.requireProjectTsconfigPath(
+        "  configuration/tsconfig.json ",
+        "The option",
+      ),
+    ).toBe("configuration/tsconfig.json");
+  });
+
+  it.each(["   ", "", undefined])(
+    "refuses a project tsconfig path that is blank or absent: %j",
+    (value) => {
+      expect(() =>
+        service.requireProjectTsconfigPath(value, "The option"),
+      ).toThrow(ProjectTsconfigPathRequiredError);
+    },
+  );
+
+  it("names the surface and the project root the tsconfig path is relative to", () => {
+    expect(() =>
+      service.requireProjectTsconfigPath(undefined, "The option"),
+    ).toThrow(
+      "The option is required and names where each project keeps its TypeScript configuration, relative to the project root.",
     );
   });
 

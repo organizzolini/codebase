@@ -47,7 +47,7 @@ required** — codometer never searches for a configuration file and has no
 default one, and a run without the flag is refused with an error naming it:
 
 ```bash
-codometer --config configuration/codometer.config.ts --check limits
+codometer --config configuration/ic-suite/codometer.config.ts --check limits
 ```
 
 | Flag | Purpose |
@@ -126,24 +126,26 @@ cd projects/common/observability && codometer --config codometer.config.ts --che
 The configuration is exactly the file `--config` names: nothing is searched
 for, no ancestor's file is consulted, and nothing is merged, because a merged
 configuration leaves a limit that never applied looking exactly like one that
-did. A relative path is resolved against the working directory, then the
-repository root, so a task runner that sets the working directory to a project
-can still name a workspace file; a path that names no file fails the run.
+did. A relative path is resolved against the working directory alone, so a task
+runner that sets the working directory to a project names a workspace file by
+a path that reaches it from there; a path that names no file fails the run.
 
 A configuration file is always read as a plain object — one exported as a
 function is not recognized, and falls back to an empty configuration, the
 same way a file exporting `42` does. So a project answering for itself writes
 its own `codometer.config.ts`, typically by importing and spreading a shared
 object a workspace root exports, the way this repository's own projects each
-spread [`configuration/codometer.config.ts`](../../../configuration/codometer.config.ts).
+spread [`configuration/ic-suite/codometer.config.ts`](../../../configuration/codometer.config.ts).
 
 ## What gets measured
 
 Discovery walks the directory itself and reads every `.gitignore` it passes,
-so **`.gitignore` is already in force** — a build directory or a virtual
-environment is pruned where its ignore file names it, and no exclusion has to
-name it again. Git is never invoked, so a directory that is not a repository
-at all is measured the same way as one that is.
+plus those above it up to the repository root, so **`.gitignore` is already in
+force** — a build directory or a virtual environment is pruned where its ignore
+file names it, even when one package of a monorepo is measured from its own
+folder, and no exclusion has to name it again. Git is never invoked, so a
+directory that is not a repository at all is measured the same way as one that
+is.
 
 What is measured is the working tree rather than the index: a file that exists
 and is not ignored counts, whether or not it has been committed yet.
@@ -280,7 +282,7 @@ A repository that declares its limits one per project has no single file left
 to read them from. `codometer configuration` is that reading:
 
 ```bash
-codometer configuration --limits --config configuration/codometer.config.ts
+codometer configuration --limits --config configuration/ic-suite/codometer.config.ts
 ```
 
 ```text
@@ -289,9 +291,9 @@ codometer configuration --limits --config configuration/codometer.config.ts
 | projects/common/observability  | `Compiled JavaScript.size`| —     | fail     | 12.00 kB | `projects/common/observability/codometer.config.ts`|
 ```
 
-It walks for every configuration file beneath the directory it is given — in
-any of the formats codometer accepts — and resolves each one **by its own
-path**, so what it reports is what a run naming that file actually sees. The walk
+It walks for every file beneath the directory it is given that is named like
+the `--config` file — `codometer.config.ts` for the command above, never a
+guessed list of names — and resolves each one **by its own path**, so what it reports is what a run naming that file actually sees. The walk
 honors the exclusions of whatever configuration answers for the directory being
 listed, so a configuration inside a dependency or a generator template is never
 listed as something the repository configures.
@@ -301,7 +303,7 @@ exclusions the walk honors — a workspace often states its shared configuration
 in a file every project spreads rather than at its own root:
 
 ```bash
-codometer configuration --limits --config configuration/codometer.config.ts
+codometer configuration --limits --config configuration/ic-suite/codometer.config.ts
 ```
 
 Drop `--limits` to list everything each configuration resolved to: its inputs,
@@ -371,7 +373,7 @@ codometer measures comments in, so expressing "every language at one budget,
 except one language at another" means writing the general budget once per
 covered language rather than once for all of them, leaving the exception for
 its own, narrower selector. See
-[`configuration/codometer.config.ts`](../../../configuration/codometer.config.ts)
+[`configuration/ic-suite/codometer.config.ts`](../../../configuration/codometer.config.ts)
 for how this repository derives one selector per language from its own list of
 comment-bearing languages.
 

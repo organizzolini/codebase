@@ -1,19 +1,19 @@
 import { Module } from "@nestjs/common";
 
 import { CommentsModule } from "../comments/comments.module";
-import { CssModule } from "../css/css.module";
-import { HclModule } from "../hcl/hcl.module";
-import { JsonModule } from "../json/json.module";
-import { JupyterModule } from "../jupyter/jupyter.module";
-import { MarkdownModule } from "../markdown/markdown.module";
-import { PythonModule } from "../python/python.module";
-import { ShellModule } from "../shell/shell.module";
-import { SqlModule } from "../sql/sql.module";
-import { TomlModule } from "../toml/toml.module";
-import { TypescriptModule } from "../typescript/typescript.module";
-import { YamlModule } from "../yaml/yaml.module";
 
 import { LanguagesService } from "./languages.service";
+import { CssModule } from "./modules/css/css.module";
+import { HclModule } from "./modules/hcl/hcl.module";
+import { JsonModule } from "./modules/json/json.module";
+import { JupyterModule } from "./modules/jupyter/jupyter.module";
+import { MarkdownModule } from "./modules/markdown/markdown.module";
+import { PythonModule } from "./modules/python/python.module";
+import { ShellModule } from "./modules/shell/shell.module";
+import { SqlModule } from "./modules/sql/sql.module";
+import { TomlModule } from "./modules/toml/toml.module";
+import { TypescriptModule } from "./modules/typescript/typescript.module";
+import { YamlModule } from "./modules/yaml/yaml.module";
 
 /**
  * NestJS module that gathers every language analyzer behind one service.

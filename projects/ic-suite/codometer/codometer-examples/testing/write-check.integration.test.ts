@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import {
   type CodometerRun,
@@ -31,10 +31,10 @@ interface MatrixWalk {
 
 describe("every example configuration this package ships", () => {
   describe("the output and check matrix", () => {
-    const runRow = (
+    const runRow = async (
       directory: string,
       ...flags: readonly string[]
-    ): CodometerRun =>
+    ): Promise<CodometerRun> =>
       runCodometer(
         [
           "--config",
@@ -44,23 +44,27 @@ describe("every example configuration this package ships", () => {
         directory,
       );
 
-    /** Rows run in order on one shared copy. */
-    let walk: MatrixWalk;
+    /** Rows run in order on one shared copy, walked once by the first test to ask. */
+    let walking: Promise<MatrixWalk> | undefined;
 
-    beforeAll(() => {
-      walk = withCorpusCopy((directory): MatrixWalk => {
+    const readWalk = async (): Promise<MatrixWalk> => {
+      walking ??= withCorpusCopy(async (directory): Promise<MatrixWalk> => {
         const reportPath = path.join(directory, "codometer-report.json");
-        const bare = runRow(directory);
+        const bare = await runRow(directory);
         const bareWroteReport = fs.existsSync(reportPath);
-        const gated = runRow(directory, "--check", "limits");
+        const gated = await runRow(directory, "--check", "limits");
         const gatedWroteReport = fs.existsSync(reportPath);
-        const written = runRow(directory, "--output-json", "--output-markdown");
+        const written = await runRow(
+          directory,
+          "--output-json",
+          "--output-markdown",
+        );
 
         return {
           bare,
           bareWroteReport,
-          checkedReports: runRow(directory, "--check", "reports"),
-          checkedReportsAndLimits: runRow(
+          checkedReports: await runRow(directory, "--check", "reports"),
+          checkedReportsAndLimits: await runRow(
             directory,
             "--check",
             "reports,limits",
@@ -72,9 +76,13 @@ describe("every example configuration this package ships", () => {
           wroteReport: fs.existsSync(reportPath),
         };
       });
-    });
 
-    it("writes only when asked, and gates only when asked", () => {
+      return walking;
+    };
+
+    it("writes only when asked, and gates only when asked", async () => {
+      const walk = await readWalk();
+
       expect(walk.bare.exitCode).toBe(0);
       expect(walk.bareWroteReport).toBe(false);
 
@@ -86,9 +94,9 @@ describe("every example configuration this package ships", () => {
       expect(walk.wroteMarkdown).toBe(true);
     });
 
-    it("produces every report before it fails on a breach", () => {
-      withCorpusCopy((directory) => {
-        const run = runRow(
+    it("produces every report before it fails on a breach", async () => {
+      await withCorpusCopy(async (directory) => {
+        const run = await runRow(
           directory,
           "--output-json",
           "--output-markdown",
@@ -105,14 +113,21 @@ describe("every example configuration this package ships", () => {
       });
     });
 
-    it("compares a written report rather than rewriting it", () => {
+    it("compares a written report rather than rewriting it", async () => {
+      const walk = await readWalk();
+
       expect(walk.checkedReports.exitCode).toBe(0);
       expect(walk.checkedReportsAndLimits.exitCode).toBe(1);
     });
 
-    it("refuses --output-json combined with --check reports", () => {
-      withCorpusCopy((directory) => {
-        const run = runRow(directory, "--output-json", "--check", "reports");
+    it("refuses --output-json combined with --check reports", async () => {
+      await withCorpusCopy(async (directory) => {
+        const run = await runRow(
+          directory,
+          "--output-json",
+          "--check",
+          "reports",
+        );
 
         expect(run.exitCode).toBe(1);
         expect(run.standardError).toContain(
@@ -121,8 +136,8 @@ describe("every example configuration this package ships", () => {
       });
     });
 
-    it("refuses a --check value it does not know", () => {
-      const run = runRow(corpusDirectory, "--check", "everything");
+    it("refuses a --check value it does not know", async () => {
+      const run = await runRow(corpusDirectory, "--check", "everything");
 
       expect(run.exitCode).toBe(1);
       expect(run.standardError).toContain("--check does not accept");
