@@ -26,6 +26,19 @@ registerEnumType(LibrarySortField, {
   name: "LibrarySortField",
 });
 
+/**
+ * An attribute the library's authors are grouped by. Each group leads the
+ * order, so an author's group is readable from the author itself.
+ */
+export enum LibraryGroupField {
+  ERA = "ERA",
+}
+
+registerEnumType(LibraryGroupField, {
+  description: "An attribute the library's authors are grouped by.",
+  name: "LibraryGroupField",
+});
+
 /** The direction a library page is ordered in. */
 export enum LibrarySortDirection {
   ASC = "ASC",

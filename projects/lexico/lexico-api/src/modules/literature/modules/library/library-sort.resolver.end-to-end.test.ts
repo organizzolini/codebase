@@ -25,8 +25,8 @@ interface SortedPage {
 
 /** Orders the library and names each card's author and Texts. */
 const LIBRARY = `
-  query Library($search: String, $filters: LibraryFilters, $sort: LibrarySort) {
-    library(search: $search, filters: $filters, sort: $sort) {
+  query Library($search: String, $filters: LibraryFilters, $sort: [LibrarySort!], $group: [LibraryGroupField!]) {
+    library(search: $search, filters: $filters, sort: $sort, group: $group) {
       authors { author { name } works { text { title } } }
     }
   }
@@ -79,6 +79,9 @@ const TEXT_CASES: readonly [LibrarySortField, readonly string[]][] = [
   [LibrarySortField.TEXT_START_YEAR, ["Bravo", "Alpha", "Delta", "Charlie"]],
   [LibrarySortField.TEXT_WORD_COUNT, ["Delta", "Charlie", "Bravo", "Alpha"]],
 ];
+
+/** Authors sharing an era, to show a second sort breaking the tie. */
+const MULTI_SEARCH = "mls";
 
 /** Lists a sort direction's expected order: descending reverses the values. */
 function directed(
@@ -207,10 +210,32 @@ describe("library sort end-to-end suite", () => {
     textIds.push(echo.id);
   }
 
+  /** Seeds authors that tie on era, so the second sort decides their order. */
+  async function seedTies(): Promise<void> {
+    const authors = application.database.repository(Author);
+    const rows = [
+      ["Mls Ant", "Classical", 10],
+      ["Mls Bee", "Classical", 20],
+      ["Mls Cat", "Imperial", 5],
+    ] as const;
+    for (const [name, era, startYear] of rows) {
+      const saved = await authors.save(
+        authors.create({
+          era,
+          name,
+          slug: name.toLowerCase().replaceAll(" ", "-"),
+          startYear,
+        }),
+      );
+      authorIds.push(saved.id);
+    }
+  }
+
   beforeAll(async () => {
     application = await startLibraryApplication();
     await seedAuthors();
     await seedTexts();
+    await seedTies();
   }, DATABASE_TIMEOUT_MILLISECONDS);
 
   afterAll(async () => {
@@ -243,7 +268,7 @@ describe("library sort end-to-end suite", () => {
 
           const page = await library({
             search: AUTHOR_SEARCH,
-            sort: { direction, field },
+            sort: [{ direction, field }],
           });
           const expected = directed(names, direction);
           // 🔚 Omega has no value for any attribute but its name, so it sorts
@@ -264,7 +289,7 @@ describe("library sort end-to-end suite", () => {
 
         const page = await library({
           search: TEXT_SEARCH,
-          sort: { direction, field },
+          sort: [{ direction, field }],
         });
 
         expect(
@@ -281,7 +306,7 @@ describe("library sort end-to-end suite", () => {
 
       const page = await library({
         search: TEXT_SEARCH,
-        sort: { direction, field: LibrarySortField.TEXT_TITLE },
+        sort: [{ direction, field: LibrarySortField.TEXT_TITLE }],
       });
 
       expect(
@@ -291,4 +316,108 @@ describe("library sort end-to-end suite", () => {
       );
     },
   );
+
+  it.each([
+    [
+      LibrarySortDirection.ASC,
+      LibrarySortDirection.ASC,
+      ["Mls Ant", "Mls Bee", "Mls Cat"],
+    ],
+    [
+      LibrarySortDirection.ASC,
+      LibrarySortDirection.DESC,
+      ["Mls Bee", "Mls Ant", "Mls Cat"],
+    ],
+    [
+      LibrarySortDirection.DESC,
+      LibrarySortDirection.ASC,
+      ["Mls Cat", "Mls Ant", "Mls Bee"],
+    ],
+  ])(
+    "orders by era %s, then by start year %s, in list order",
+    async (eraDirection, yearDirection, names) => {
+      expect.hasAssertions();
+
+      const page = await library({
+        search: MULTI_SEARCH,
+        sort: [
+          { direction: eraDirection, field: LibrarySortField.AUTHOR_ERA },
+          {
+            direction: yearDirection,
+            field: LibrarySortField.AUTHOR_START_YEAR,
+          },
+        ],
+      });
+
+      expect(page.authors.map(({ author }) => author.name)).toStrictEqual(
+        names,
+      );
+    },
+  );
+
+  it("lets the first sort lead when the order of the same two is swapped", async () => {
+    expect.hasAssertions();
+
+    const page = await library({
+      search: MULTI_SEARCH,
+      sort: [
+        {
+          direction: LibrarySortDirection.ASC,
+          field: LibrarySortField.AUTHOR_START_YEAR,
+        },
+        {
+          direction: LibrarySortDirection.ASC,
+          field: LibrarySortField.AUTHOR_ERA,
+        },
+      ],
+    });
+
+    expect(page.authors.map(({ author }) => author.name)).toStrictEqual([
+      "Mls Cat",
+      "Mls Ant",
+      "Mls Bee",
+    ]);
+  });
+
+  it("leads with the group, so its authors keep together, then orders by the sorts", async () => {
+    expect.hasAssertions();
+
+    const page = await library({
+      group: ["ERA"],
+      search: MULTI_SEARCH,
+      sort: [
+        {
+          direction: LibrarySortDirection.ASC,
+          field: LibrarySortField.AUTHOR_START_YEAR,
+        },
+      ],
+    });
+
+    expect(page.authors.map(({ author }) => author.name)).toStrictEqual([
+      "Mls Ant",
+      "Mls Bee",
+      "Mls Cat",
+    ]);
+  });
+
+  it("orders the groups in the direction the era sort names", async () => {
+    expect.hasAssertions();
+
+    const page = await library({
+      group: ["ERA"],
+      search: MULTI_SEARCH,
+      sort: [
+        {
+          direction: LibrarySortDirection.DESC,
+          field: LibrarySortField.AUTHOR_ERA,
+        },
+      ],
+    });
+
+    expect(page.authors.map(({ author }) => author.name)).toStrictEqual([
+      "Mls Cat",
+      "Mls Ant",
+      "Mls Bee",
+    ]);
+  });
 });

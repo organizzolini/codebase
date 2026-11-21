@@ -3,6 +3,7 @@ import { z } from "zod";
 import { authorEra, textCollection } from "@codebase/lexico-db";
 
 import {
+  LibraryGroupField,
   LibrarySortDirection,
   LibrarySortField,
 } from "./library-sort.entities";
@@ -27,6 +28,17 @@ export const LIBRARY_MAX_SEARCH_LENGTH = 200;
 
 /** The most values a list filter may name. */
 export const LIBRARY_MAX_FILTER_VALUES = 100;
+
+/** The most sorts a request may list: one for every sortable attribute. */
+export const LIBRARY_MAX_SORTS = Object.keys(LibrarySortField).length;
+
+/** The sort each group leads the order with. */
+export const LIBRARY_GROUP_SORT_FIELDS: Record<
+  LibraryGroupField,
+  LibrarySortField
+> = {
+  [LibraryGroupField.ERA]: LibrarySortField.AUTHOR_ERA,
+};
 
 /** The order a library page takes when it names none: authors by name. */
 export const LIBRARY_DEFAULT_SORT = {
@@ -138,12 +150,21 @@ const filtersSchema = z
   })
   .nullish();
 
-/** Validates the sort; an absent direction is ascending. */
+/** Validates the sorts, listed in order; an absent direction is ascending. */
 const sortSchema = z
-  .object({
-    direction: z.enum(LibrarySortDirection).nullish(),
-    field: z.enum(LibrarySortField),
-  })
+  .array(
+    z.object({
+      direction: z.enum(LibrarySortDirection).nullish(),
+      field: z.enum(LibrarySortField),
+    }),
+  )
+  .max(LIBRARY_MAX_SORTS)
+  .nullish();
+
+/** Validates the groups, listed outermost first. */
+const groupSchema = z
+  .array(z.enum(LibraryGroupField))
+  .max(Object.keys(LibraryGroupField).length * 2)
   .nullish();
 
 /** Validates the arguments of one page of a Text's children. */
@@ -157,6 +178,7 @@ export const libraryChildrenArgumentsSchema = z.object({
 /** Validates library arguments; absent options take their defaults. */
 export const libraryArgumentsSchema = z.object({
   filters: filtersSchema,
+  group: groupSchema,
   page: z.number().int().min(1).nullish(),
   pageSize: z.number().int().min(1).max(LIBRARY_MAX_PAGE_SIZE).nullish(),
   search: textSchema.nullish(),

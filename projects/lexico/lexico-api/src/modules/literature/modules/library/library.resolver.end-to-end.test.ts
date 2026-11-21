@@ -52,7 +52,7 @@ const LIBRARY = `
     $page: Int
     $pageSize: Int
     $filters: LibraryFilters
-    $sort: LibrarySort
+    $sort: [LibrarySort!]
   ) {
     library(
       search: $search
@@ -595,13 +595,13 @@ describe("library resolver end-to-end suite", () => {
     expect.hasAssertions();
 
     const ascending = await library({
-      sort: { direction: "ASC", field: "AUTHOR_START_YEAR" },
+      sort: [{ direction: "ASC", field: "AUTHOR_START_YEAR" }],
     });
     const descending = await library({
-      sort: { direction: "DESC", field: "AUTHOR_START_YEAR" },
+      sort: [{ direction: "DESC", field: "AUTHOR_START_YEAR" }],
     });
     const byName = await library({
-      sort: { direction: "DESC", field: "AUTHOR_NAME" },
+      sort: [{ direction: "DESC", field: "AUTHOR_NAME" }],
     });
 
     expect(ascending.authors.map(({ author }) => author.name)).toStrictEqual([
@@ -631,7 +631,7 @@ describe("library resolver end-to-end suite", () => {
     expect.hasAssertions();
 
     const page = await library({
-      sort: { direction: "ASC", field: "AUTHOR_ERA" },
+      sort: [{ direction: "ASC", field: "AUTHOR_ERA" }],
     });
 
     expect(page.authors.map(({ author }) => author.name)).toStrictEqual([
@@ -647,10 +647,10 @@ describe("library resolver end-to-end suite", () => {
     expect.hasAssertions();
 
     const descending = await library({
-      sort: { direction: "DESC", field: "TEXT_PRINT_YEAR" },
+      sort: [{ direction: "DESC", field: "TEXT_PRINT_YEAR" }],
     });
     const ascending = await library({
-      sort: { direction: "ASC", field: "TEXT_PRINT_YEAR" },
+      sort: [{ direction: "ASC", field: "TEXT_PRINT_YEAR" }],
     });
 
     expect(descending.authors.map(({ author }) => author.name)).toStrictEqual([
@@ -671,13 +671,13 @@ describe("library resolver end-to-end suite", () => {
 
     const descending = await library({
       search: "vergil",
-      sort: { direction: "DESC", field: "TEXT_TITLE" },
+      sort: [{ direction: "DESC", field: "TEXT_TITLE" }],
     });
     const ascending = await library({
-      sort: { direction: "ASC", field: "TEXT_TITLE" },
+      sort: [{ direction: "ASC", field: "TEXT_TITLE" }],
     });
     const descendingAuthors = await library({
-      sort: { direction: "DESC", field: "TEXT_TITLE" },
+      sort: [{ direction: "DESC", field: "TEXT_TITLE" }],
     });
 
     expect(

@@ -37,6 +37,7 @@ import type {
   LibraryFacetsRecord,
   LibraryFacetValueRecord,
   LibraryPageRecord,
+  LibrarySort,
   LibraryTextRecord,
   LibraryTextsPageRecord,
   ParsedLibraryArguments,
@@ -72,10 +73,10 @@ export class LibraryService {
    * by the aggregate, so a card with no value sorts last.
    */
   private authorOrderKey(
+    sort: LibrarySort,
     query: ParsedLibraryArguments,
     pattern: null | string,
   ): LibrarySqlClause {
-    const { sort } = query;
     if (LIBRARY_SORT_COLUMNS[sort.field].scope === "author") {
       return sqlClause(sortColumnSql(sort.field, "author"));
     }
@@ -280,6 +281,41 @@ export class LibraryService {
   }
 
   /**
+   * The authors in scope, ordered by each sort in list order, then by name
+   * and id so that a page boundary never moves.
+   */
+  private orderedAuthors(
+    scope: LibrarySqlClause,
+    query: ParsedLibraryArguments,
+    pattern: null | string,
+  ): QueryBuilder<Author> {
+    const ordered = this.authorQuery(scope);
+    for (const [index, entry] of query.sort.entries()) {
+      const key = this.authorOrderKey(entry, query, pattern);
+      ordered.setParameters(key.parameters);
+      if (index === 0) {
+        ordered.orderBy(key.sql, orderDirection(entry.direction), "NULLS LAST");
+      } else {
+        ordered.addOrderBy(
+          key.sql,
+          orderDirection(entry.direction),
+          "NULLS LAST",
+        );
+      }
+    }
+    // TypeORM keys its order-by list by expression, so a name tiebreak would
+    // overwrite a name sort's direction; a name key already orders by name.
+    if (
+      !query.sort.some((entry) => entry.field === LibrarySortField.AUTHOR_NAME)
+    ) {
+      ordered.addOrderBy("author.name", "ASC");
+    }
+    return ordered.addOrderBy("author.id", "ASC");
+  }
+
+  // 🌎 Public Methods
+
+  /**
    * The top-level works of the given authors that the request keeps: a work
    * is kept when it, or any child of it, is in scope. Each author's works are
    * then counted or ranked from this base.
@@ -301,8 +337,6 @@ export class LibraryService {
       .andWhere(scope.sql)
       .setParameters(scope.parameters);
   }
-
-  // 🌎 Public Methods
 
   /**
    * One page of the child Texts of a Text, ordered by the number in the
@@ -359,23 +393,14 @@ export class LibraryService {
   public async listLibraryPage(
     query: ParsedLibraryArguments,
   ): Promise<LibraryPageRecord> {
-    const { page, pageSize, sort } = query;
+    const { page, pageSize } = query;
     const { pattern, term } = searchPatternsOf(query.search);
 
     const scope = this.authorScope(query, pattern);
     const totalCount = await this.authorQuery(scope).getCount();
 
-    const key = this.authorOrderKey(query, pattern);
-    const ordered = this.authorQuery(scope)
-      .setParameters(key.parameters)
-      .orderBy(key.sql, orderDirection(sort.direction), "NULLS LAST");
-    // TypeORM keys its order-by list by expression, so a name tiebreak would
-    // overwrite a name sort's direction; the name key already orders by name.
-    if (sort.field !== LibrarySortField.AUTHOR_NAME) {
-      ordered.addOrderBy("author.name", "ASC");
-    }
+    const ordered = this.orderedAuthors(scope, query, pattern);
     const pageRows = await ordered
-      .addOrderBy("author.id", "ASC")
       .offset((page - 1) * pageSize)
       .limit(pageSize)
       .getMany();

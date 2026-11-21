@@ -186,15 +186,17 @@ export function textFilterClause(
 }
 
 /**
- * The order the Texts of a card take: by the sort when it names a Text
- * attribute, then by title. Nulls sort last in both directions.
+ * The order the Texts of a card take: by each sort that names a Text
+ * attribute, in list order, then by title. Nulls sort last in both directions.
  */
-export function textOrderSql(sort: LibrarySort): string {
-  const tieBreak = "text.title ASC, text.id ASC";
-  if (LIBRARY_SORT_COLUMNS[sort.field].scope !== "text") {
-    return tieBreak;
-  }
-  return `${sortColumnSql(sort.field, "text")} ${orderDirection(sort.direction)} NULLS LAST, ${tieBreak}`;
+export function textOrderSql(sorts: readonly LibrarySort[]): string {
+  const keys = sorts
+    .filter((sort) => LIBRARY_SORT_COLUMNS[sort.field].scope === "text")
+    .map(
+      (sort) =>
+        `${sortColumnSql(sort.field, "text")} ${orderDirection(sort.direction)} NULLS LAST`,
+    );
+  return [...keys, "text.title ASC", "text.id ASC"].join(", ");
 }
 
 /**

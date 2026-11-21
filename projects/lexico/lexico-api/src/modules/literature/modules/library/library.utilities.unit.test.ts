@@ -2,6 +2,11 @@
 
 import { describe, expect, it } from "vitest";
 
+import {
+  LibraryGroupField,
+  LibrarySortDirection,
+  LibrarySortField,
+} from "./library-sort.entities";
 import { LIBRARY_DEFAULT_PAGE_SIZE } from "./library.constants";
 import {
   escapeLikePattern,
@@ -20,8 +25,69 @@ describe("library utilities", () => {
         page: 1,
         pageSize: LIBRARY_DEFAULT_PAGE_SIZE,
         search: null,
-        sort: { direction: "ASC", field: "AUTHOR_NAME" },
+        sort: [{ direction: "ASC", field: "AUTHOR_NAME" }],
       });
+    });
+
+    it("keeps every sort in order, defaulting each direction and dropping a repeated attribute", () => {
+      expect.hasAssertions();
+
+      expect(
+        parseLibraryArguments({
+          sort: [
+            {
+              direction: LibrarySortDirection.DESC,
+              field: LibrarySortField.AUTHOR_ERA,
+            },
+            { field: LibrarySortField.AUTHOR_START_YEAR },
+            {
+              direction: LibrarySortDirection.ASC,
+              field: LibrarySortField.AUTHOR_ERA,
+            },
+          ],
+        }).sort,
+      ).toStrictEqual([
+        { direction: "DESC", field: "AUTHOR_ERA" },
+        { direction: "ASC", field: "AUTHOR_START_YEAR" },
+      ]);
+    });
+
+    it("leads the order with each group, ahead of the sorts and in the direction its sort gave", () => {
+      expect.hasAssertions();
+
+      expect(
+        parseLibraryArguments({
+          group: [LibraryGroupField.ERA],
+          sort: [
+            { field: LibrarySortField.AUTHOR_START_YEAR },
+            {
+              direction: LibrarySortDirection.DESC,
+              field: LibrarySortField.AUTHOR_ERA,
+            },
+          ],
+        }).sort,
+      ).toStrictEqual([
+        { direction: "DESC", field: "AUTHOR_ERA" },
+        { direction: "ASC", field: "AUTHOR_START_YEAR" },
+      ]);
+    });
+
+    it("groups ascending and once, leaving the name tiebreak to the query", () => {
+      expect.hasAssertions();
+
+      expect(
+        parseLibraryArguments({
+          group: [LibraryGroupField.ERA, LibraryGroupField.ERA],
+        }).sort,
+      ).toStrictEqual([{ direction: "ASC", field: "AUTHOR_ERA" }]);
+    });
+
+    it("sorts by author name when the sort list is empty", () => {
+      expect.hasAssertions();
+
+      expect(parseLibraryArguments({ sort: [] }).sort).toStrictEqual([
+        { direction: "ASC", field: "AUTHOR_NAME" },
+      ]);
     });
 
     it("trims the search and keeps the page and page size it was given", () => {

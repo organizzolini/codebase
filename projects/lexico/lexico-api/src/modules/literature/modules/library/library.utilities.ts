@@ -5,12 +5,14 @@ import { toAuthorType, toTextType } from "../../literature.utilities";
 import { LibraryAuthorType } from "./library-author.entities";
 import { LibraryMatchType } from "./library-match.entities";
 import { LibraryPageType } from "./library-page.entities";
+import { LibrarySortDirection } from "./library-sort.entities";
 import { LibraryTextType } from "./library-text.entities";
 import { LibraryTextsPageType } from "./library-texts-page.entities";
 import {
   LIBRARY_CHILDREN_PAGE_SIZE,
   LIBRARY_DEFAULT_PAGE_SIZE,
   LIBRARY_DEFAULT_SORT,
+  LIBRARY_GROUP_SORT_FIELDS,
   libraryArgumentsSchema,
   libraryChildrenArgumentsSchema,
 } from "./library.constants";
@@ -18,9 +20,15 @@ import {
 import type { LibraryArguments } from "./library-arguments.entities";
 import type { LibraryChildrenArguments } from "./library-children-arguments.entities";
 import type {
+  LibraryGroupField,
+  LibrarySortField,
+} from "./library-sort.entities";
+import type {
   LibraryAuthorRecord,
   LibraryMatchRange,
   LibraryPageRecord,
+  LibrarySort,
+  LibrarySortRequest,
   LibraryTextRecord,
   LibraryTextsPageRecord,
   ParsedLibraryArguments,
@@ -71,6 +79,39 @@ export function matchRangesOf(
 }
 
 /**
+ * The sorts in the order given, each with its direction, keeping the first of
+ * a repeated attribute. Each group leads, in the direction its own sort gave
+ * or ascending. No sorts means the default.
+ */
+export function normalizeSorts(
+  sorts: null | readonly LibrarySortRequest[] | undefined,
+  groups: null | readonly LibraryGroupField[] | undefined = [],
+): LibrarySort[] {
+  const seen = new Set<LibrarySortField>();
+  const kept: LibrarySort[] = [];
+  const named = sorts ?? [];
+  const leading = (groups ?? []).map((group) => {
+    const field = LIBRARY_GROUP_SORT_FIELDS[group];
+    return {
+      direction:
+        named.find((sort) => sort.field === field)?.direction ??
+        LibrarySortDirection.ASC,
+      field,
+    };
+  });
+  for (const sort of [...leading, ...named]) {
+    if (!seen.has(sort.field)) {
+      seen.add(sort.field);
+      kept.push({
+        direction: sort.direction ?? LibrarySortDirection.ASC,
+        field: sort.field,
+      });
+    }
+  }
+  return kept.length === 0 ? [{ ...LIBRARY_DEFAULT_SORT }] : kept;
+}
+
+/**
  * Validates library arguments at the resolver boundary. Invalid input is
  * reported to the client as a bad user input error.
  */
@@ -86,10 +127,7 @@ export function parseLibraryArguments(
     page: result.data.page ?? 1,
     pageSize: result.data.pageSize ?? LIBRARY_DEFAULT_PAGE_SIZE,
     search: normalizeSearch(result.data.search),
-    sort: {
-      direction: result.data.sort?.direction ?? LIBRARY_DEFAULT_SORT.direction,
-      field: result.data.sort?.field ?? LIBRARY_DEFAULT_SORT.field,
-    },
+    sort: normalizeSorts(result.data.sort, result.data.group),
   };
 }
 

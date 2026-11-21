@@ -64,6 +64,12 @@ export interface LibrarySort {
   readonly field: LibrarySortField;
 }
 
+/** A sort as a request names it, before validation fills in the direction. */
+export interface LibrarySortRequest {
+  readonly direction?: LibrarySortDirection | null | undefined;
+  readonly field: LibrarySortField;
+}
+
 /** A Text a library author card carries, with the spans its search matched. */
 export interface LibraryTextRecord {
   readonly childCount: number;
@@ -84,7 +90,7 @@ export interface ParsedLibraryArguments {
   readonly page: number;
   readonly pageSize: number;
   readonly search: null | string;
-  readonly sort: LibrarySort;
+  readonly sort: readonly LibrarySort[];
 }
 
 /** Children arguments after validation, with defaults applied. */

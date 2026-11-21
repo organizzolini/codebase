@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { LibrarySortField } from "./library-sort.entities";
-import { sortColumnSql } from "./library.functions";
+import {
+  LibrarySortDirection,
+  LibrarySortField,
+} from "./library-sort.entities";
+import { sortColumnSql, textOrderSql } from "./library.functions";
 
 describe("library functions", () => {
   describe(sortColumnSql, () => {
@@ -26,6 +29,44 @@ describe("library functions", () => {
 
       expect(sortColumnSql(LibrarySortField.TEXT_COLLECTION, "sub")).toBe(
         "CASE CAST(sub.collection AS TEXT) WHEN 'Perseus' THEN 0 WHEN 'The Latin Library' THEN 1 WHEN 'CSEL' THEN 2 WHEN 'EDCS' THEN 3 END",
+      );
+    });
+  });
+
+  describe(textOrderSql, () => {
+    it("orders by the title alone when no sort names a Text attribute", () => {
+      expect.hasAssertions();
+
+      expect(
+        textOrderSql([
+          {
+            direction: LibrarySortDirection.DESC,
+            field: LibrarySortField.AUTHOR_NAME,
+          },
+        ]),
+      ).toBe("text.title ASC, text.id ASC");
+    });
+
+    it("applies every Text sort in list order, each with its own direction", () => {
+      expect.hasAssertions();
+
+      expect(
+        textOrderSql([
+          {
+            direction: LibrarySortDirection.DESC,
+            field: LibrarySortField.TEXT_PRINT_YEAR,
+          },
+          {
+            direction: LibrarySortDirection.ASC,
+            field: LibrarySortField.AUTHOR_ERA,
+          },
+          {
+            direction: LibrarySortDirection.ASC,
+            field: LibrarySortField.TEXT_LINE_COUNT,
+          },
+        ]),
+      ).toBe(
+        "text.print_year DESC NULLS LAST, text.line_count ASC NULLS LAST, text.title ASC, text.id ASC",
       );
     });
   });

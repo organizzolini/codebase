@@ -1,7 +1,7 @@
 import { ArgsType as ArgumentsType, Field, Int } from "@nestjs/graphql";
 
 import { LibraryFiltersInput } from "./library-filters.entities";
-import { LibrarySortInput } from "./library-sort.entities";
+import { LibraryGroupField, LibrarySortInput } from "./library-sort.entities";
 
 /** Arguments for one page of the library: search, filters, sort, and page. */
 @ArgumentsType()
@@ -11,6 +11,13 @@ export class LibraryArguments {
     nullable: true,
   })
   public filters?: LibraryFiltersInput | null;
+
+  @Field(() => [LibraryGroupField], {
+    description:
+      "The attributes to group authors by, first is the outermost. Each leads the order.",
+    nullable: true,
+  })
+  public group?: LibraryGroupField[] | null;
 
   @Field(() => Int, {
     description: "The 1-based page to return. Defaults to 1.",
@@ -31,9 +38,10 @@ export class LibraryArguments {
   })
   public search?: null | string;
 
-  @Field(() => LibrarySortInput, {
-    description: "The attribute to order by. Defaults to author name.",
+  @Field(() => [LibrarySortInput], {
+    description:
+      "The attributes to order by, first is the primary key. Defaults to author name.",
     nullable: true,
   })
-  public sort?: LibrarySortInput | null;
+  public sort?: LibrarySortInput[] | null;
 }
