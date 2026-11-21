@@ -73,14 +73,8 @@ describe("index", () => {
       within(toolbar).getByRole("button", { name: /Next/u }),
     ).toBeDefined();
     expect(
-      within(within(toolbar).getByRole("group", { name: "View" })).getByRole(
-        "button",
-        {
-          name: "Month",
-          pressed: true,
-        },
-      ),
-    ).toBeDefined();
+      within(toolbar).getByRole("group", { name: "Calendar" }).textContent,
+    ).toBe("CalendarMonth");
   });
 
   it("shows each event at its time in the observer's zone", async () => {

@@ -2,7 +2,10 @@ import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { readServedApi } from "../../../../../../testing/calendar-api";
-import { findToolbar } from "../../../../../../testing/calendar-page";
+import {
+  findToolbar,
+  pickCalendarView,
+} from "../../../../../../testing/calendar-page";
 import { renderCalendarRoute } from "../../../../../../testing/render-route";
 
 /**
@@ -211,9 +214,7 @@ describe("event grouping", () => {
       groupedAgendaLink("2026-03-04", [{ field: "month" }]),
     );
 
-    fireEvent.click(
-      within(await findToolbar()).getByRole("button", { name: "Timeline" }),
-    );
+    await pickCalendarView("Timeline");
 
     await expect(
       screen.findByTestId("calendar-timeline"),

@@ -12,7 +12,11 @@ import {
   createBusyEvents,
   FIXTURE_EVENTS,
 } from "../../../../../../testing/calendar-fixture";
-import { findToolbar } from "../../../../../../testing/calendar-page";
+import {
+  findToolbar,
+  pickCalendarView,
+  readCalendarView,
+} from "../../../../../../testing/calendar-page";
 import { renderCalendarRoute } from "../../../../../../testing/render-route";
 import { setViewportWidth } from "../../../../../../testing/viewport";
 
@@ -41,20 +45,13 @@ describe("calendar views", () => {
   it("switches to the week view from the toolbar", async () => {
     await renderCalendarRoute("/?date=2026-03-04");
 
-    fireEvent.click(
-      within(await findToolbar()).getByRole("button", { name: "Week" }),
-    );
+    await pickCalendarView("Week");
 
     await expect(
       screen.findByRole("button", { name: /^Mars Conjunct Venus, 10:20\sAM/u }),
     ).resolves.toBeDefined();
     expect(screen.queryByRole("grid", { name: "March 2026" })).toBeNull();
-    expect(
-      within(await findToolbar()).getByRole("button", {
-        name: "Week",
-        pressed: true,
-      }),
-    ).toBeDefined();
+    await expect(readCalendarView()).resolves.toBe("Week");
   });
 
   it.each([
@@ -165,14 +162,7 @@ describe("calendar views", () => {
     setViewportWidth(375);
     await renderCalendarRoute("/?date=2026-03-04");
 
-    fireEvent.click(
-      within(await findToolbar()).getByRole("button", {
-        name: "View: Agenda",
-      }),
-    );
-    fireEvent.click(
-      await screen.findByRole("menuitemradio", { name: "Month" }),
-    );
+    await pickCalendarView("Month");
 
     await expect(
       screen.findByRole("grid", { name: "March 2026" }),

@@ -35,4 +35,4 @@ export const JOINED_BUTTON_CLASS_NAME =
  * Filter and its chips as one strip: flat chip ends, one border between.
  */
 export const STRIP_CLASS_NAME =
-  "flex min-w-0 flex-wrap items-start [&_[data-slot=filter-chip]>*]:rounded-none [&_[data-slot=filter-chip]>*]:border-l-0 [&_[data-slot=filter-chip]:last-child>*:last-child]:rounded-r-lg";
+  "flex min-w-0 flex-wrap items-start [&_[data-slot=filter-chip]>*]:rounded-none [&_[data-slot=filter-chip]>*]:border-l-0 [&_[data-slot=filter-chip]:last-child>*:last-child]:rounded-r-lg [&_[aria-label=Navigate]>:first-child]:rounded-l-none [&_[aria-label=Navigate]>:first-child]:border-l-0 [&_[aria-label=Navigate]>:last-child]:rounded-r-lg data-joined:[&_[aria-label=Navigate]>:last-child]:rounded-r-none";

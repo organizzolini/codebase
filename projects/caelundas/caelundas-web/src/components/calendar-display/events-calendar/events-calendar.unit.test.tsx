@@ -39,7 +39,7 @@ describe(EventsCalendar, () => {
       />,
     );
     const toolbar = screen.getByTestId("calendar-toolbar");
-    const selector = screen.getByRole("button", { name: "Month" });
+    const selector = screen.getByRole("button", { name: "Calendar" });
 
     selector.focus();
 

@@ -21,10 +21,37 @@ export async function findToolbar(): Promise<HTMLElement> {
 }
 
 /**
+ * Picks a calendar view by its label from the toolbar's Calendar menu.
+ */
+export async function pickCalendarView(label: string): Promise<void> {
+  fireEvent.click(
+    within(await findToolbar()).getByRole("button", { name: "Calendar" }),
+  );
+  fireEvent.click(
+    await screen.findByRole(
+      "treeitem",
+      { name: new RegExp(`^${label}`, "u") },
+      BUILDER_WAIT,
+    ),
+  );
+}
+
+/**
  * Picks an option from whichever list the builder has open.
  */
 export async function pickOption(name: RegExp | string): Promise<void> {
   fireEvent.click(await screen.findByRole("option", { name }, BUILDER_WAIT));
+}
+
+/**
+ * What the toolbar's Calendar menu says is shown, such as "Week".
+ */
+export async function readCalendarView(): Promise<string> {
+  const group = await within(await findToolbar()).findByRole("group", {
+    name: "Calendar",
+  });
+
+  return group.textContent.replace(/^Calendar/u, "");
 }
 
 /**

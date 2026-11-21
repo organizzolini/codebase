@@ -1,6 +1,9 @@
+import { useContext } from "react";
+
 import { ButtonGroup, Filters, useMediaQuery } from "@codebase/presentation";
 
 import { useFilterQuery } from "../../../hooks/use-filter-query/use-filter-query";
+import { CalendarNavigationSlot } from "../../calendar-controls/calendar-navigation-group/calendar-navigation-slot.constants";
 
 import {
   EDITORS,
@@ -59,6 +62,7 @@ export function CalendarFilters(
 
   // 🪝 Hooks
   const isTablet = useMediaQuery(TABLET_QUERY);
+  const navigation = useContext(CalendarNavigationSlot);
   const { handleQueryChange, query } = useFilterQuery(
     filter,
     presets,
@@ -80,13 +84,16 @@ export function CalendarFilters(
       className={className}
       data-testid="calendar-filters"
     >
-      <div className={STRIP_CLASS_NAME}>
+      <div
+        className={STRIP_CLASS_NAME}
+        data-joined={isTablet && activeCount > 0 ? "" : undefined}
+      >
         <ButtonGroup aria-label="Filter">
           <FilterSurface
             isTablet={isTablet}
             trigger={renderFiltersButton(
               activeCount,
-              isTablet && activeCount > 0,
+              navigation !== null || (isTablet && activeCount > 0),
             )}
           >
             <div className="flex flex-col gap-3">
@@ -101,6 +108,7 @@ export function CalendarFilters(
             </div>
           </FilterSurface>
         </ButtonGroup>
+        {navigation}
         {isTablet ? (
           <Filters<EventFilterValue>
             editors={EDITORS}

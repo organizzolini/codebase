@@ -6,7 +6,11 @@ import {
   createBusyEvents,
   FIXTURE_EVENTS,
 } from "../../../../testing/calendar-fixture";
-import { findToolbar } from "../../../../testing/calendar-page";
+import {
+  findToolbar,
+  pickCalendarView,
+  readCalendarView,
+} from "../../../../testing/calendar-page";
 import { renderCalendarRoute } from "../../../../testing/render-route";
 
 /**
@@ -39,13 +43,12 @@ describe("calendar timeline", () => {
   it("switches to the timeline from the toolbar", async () => {
     await renderCalendarRoute("/?date=2026-03-04");
 
-    fireEvent.click(
-      within(await findToolbar()).getByRole("button", { name: "Timeline" }),
-    );
+    await pickCalendarView("Timeline");
 
     await expect(
       screen.findByTestId("calendar-timeline"),
     ).resolves.toBeDefined();
+    await expect(readCalendarView()).resolves.toBe("Timeline");
     expect(
       within(await findToolbar()).getByRole("heading", { name: "March 2026" }),
     ).toBeDefined();
