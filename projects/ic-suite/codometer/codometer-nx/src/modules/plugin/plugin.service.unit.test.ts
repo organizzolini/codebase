@@ -261,15 +261,15 @@ describe(PluginService, () => {
         inputs: [
           "production",
           "^production",
-          "!{projectRoot}/codometer-report.json",
+          "!{projectRoot}/codometer-weigh-report.json",
         ],
         options: {
           command: "codometer",
           config: "codometer.config.ts",
-          outputJson: "codometer-report.json",
+          outputJson: "codometer-weigh-report.json",
         },
         outputs: [
-          "{projectRoot}/codometer-report.json",
+          "{projectRoot}/codometer-weigh-report.json",
           "{projectRoot}/documentation/codometer.md",
         ],
       });

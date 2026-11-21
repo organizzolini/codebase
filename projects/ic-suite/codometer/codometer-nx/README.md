@@ -35,10 +35,10 @@ and a file at `projectConfigurationPath`, relative to its root. Nothing else is
 searched for, and a registration without the option fails the graph with
 `projectConfigurationPath is required`.
 
-| Target            | Measures                         | Needs   | Writes                                                  |
-| ----------------- | -------------------------------- | ------- | ------------------------------------------------------- |
-| `codometer-limit` | the `codebase` input, the source | nothing | `codometer-limit-report.json`                           |
-| `codometer-weigh` | every input, compiled output too | `build` | `codometer-report.json`, and with `-c write` the badges |
+| Target            | Measures                         | Needs   | Writes                                                        |
+| ----------------- | -------------------------------- | ------- | ------------------------------------------------------------- |
+| `codometer-limit` | the `codebase` input, the source | nothing | `codometer-limit-report.json`                                 |
+| `codometer-weigh` | every input, compiled output too | `build` | `codometer-weigh-report.json`, and with `-c write` the badges |
 
 `codometer-limit` fails on a breached limit written against the source tree,
 such as comment budgets and folder ceilings. It runs first and fast, because
