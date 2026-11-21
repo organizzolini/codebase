@@ -1,5 +1,5 @@
 // cspell:ignore Maro
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { LibraryAuthorCard } from "./library-author-card";
@@ -54,5 +54,36 @@ describe(LibraryAuthorCard, () => {
     );
 
     expect(screen.getByText("Vergilius", { selector: "strong" })).toBeDefined();
+  });
+
+  it("toggles when the card is clicked outside its controls", () => {
+    render(
+      <LibraryAuthorCard
+        query={{ search: "" }}
+        row={{
+          author: {
+            endYear: null,
+            era: null,
+            fullName: null,
+            id: "a3",
+            name: "Ennius",
+            slug: "ennius",
+            startYear: null,
+          },
+          matches: [],
+          workCount: 1,
+          works: [],
+        }}
+      />,
+    );
+    const toggle = screen.getByRole("button", { name: "Expand Ennius" });
+
+    fireEvent.click(screen.getByTestId("library-author-preview"));
+
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+
+    fireEvent.click(toggle);
+
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
   });
 });

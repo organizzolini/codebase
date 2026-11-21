@@ -13,6 +13,7 @@ component. These are the deliberate exceptions.
 - `src/components/library/library-toolbar/library-toolbar.constants.ts`: `LIBRARY_STRIP_CHIPS` squares every segment of a strip's chips and overlaps their borders so they join the Group or Sort button as one button group, keeping only the last segment's outer corners round, because each chip wraps its segments in a div the button group does not reach.
 - `src/components/library-strip/library-chip/library-chip.constants.ts`: `LIBRARY_TEXT_SEGMENT` gives a read-only segment (a chip label without an action, the page range) the outline button's look without its hover fill.
 - `src/components/library/library-paging/library-paging.constants.ts`: `PAGING_DISABLED_ICON` dims only a step's icon, and the step is `aria-disabled` rather than `disabled`, because the stock disabled style fades the whole button and its border out of the joined strip.
+- `src/components/library/library-author-card/library-author-card.tsx`: the card takes `cursor-pointer` and an `onClick`, so a click anywhere outside a link, button or the expanded texts toggles it; the chevron button stays the keyboard path.
 - `src/components/library/library-toolbar/library-option-menu.tsx`: the popover takes `w-auto p-0`, to fit the cascader's columns and leave their padding to the cascader.
 - `src/components/library/library-grid/library-grid.tsx`: a group heading takes `col-span-full`, to span the whole row of cards.
 - `src/components/library/library-grid/library-group-heading.tsx`: the heading takes `text-xl font-semibold`, to read as a section title.

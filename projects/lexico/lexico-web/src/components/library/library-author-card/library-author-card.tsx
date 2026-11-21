@@ -25,7 +25,7 @@ import type {
   LibraryAuthorRow,
   LibraryRequest,
 } from "../library-grid/library-grid.types";
-import type { ReactNode } from "react";
+import type { MouseEvent, ReactNode } from "react";
 
 // 🔖 Type
 
@@ -65,6 +65,18 @@ export function LibraryAuthorCard(
     setExpanded(open);
   };
 
+  const handleCardClick = (event: MouseEvent<HTMLElement>): void => {
+    const { target } = event;
+    if (!(target instanceof Element)) {
+      return;
+    }
+    const isInteractive = target.closest("a, button, input") !== null;
+    const isInsideTexts = target.closest(`[id="${panelId}"]`) !== null;
+    if (!isInteractive && !isInsideTexts) {
+      setExpanded((open) => !open);
+    }
+  };
+
   // ♻️ Lifecycle
 
   // 🏁 Early Returns
@@ -79,7 +91,10 @@ export function LibraryAuthorCard(
         onOpenChange={handleOpenChange}
         open={expanded}
       >
-        <Card>
+        <Card
+          className="cursor-pointer"
+          onClick={handleCardClick}
+        >
           <CardHeader>
             <CardTitle>
               <LibraryHighlight
