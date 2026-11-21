@@ -213,6 +213,7 @@ locals {
     "💂 Guard",
     "🔭 Callidescope Restrict",
     "🕸️ Codependix Bound",
+    "⏲️ Codometer Limit",
     "👔 Conformetry Validate",
     "👷 Build",
     "🤵 End to End IC Suite",

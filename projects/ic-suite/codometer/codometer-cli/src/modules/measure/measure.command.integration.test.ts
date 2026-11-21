@@ -285,6 +285,69 @@ describe("measure command over a fixture directory", () => {
   // The refusal a run has no way to have produced a destination for, before
   // anything is measured. Last in this file: it rewrites the fixture's own
   // configuration to a bare one naming no output at all.
+  // A compiled input with no build behind it matches nothing, so a limit
+  // written against it fails the run; `--only-inputs` leaves both out.
+  describe("--only-inputs over a project that was never built", () => {
+    const configurationName = "codometer.no-build.config.json";
+
+    beforeAll(() => {
+      writeFileSync(
+        path.join(workingDirectory, configurationName),
+        JSON.stringify({
+          custom: [
+            {
+              comment: { language: "yaml", maximumWords: 10 },
+              label: "Overlong YAML Comments",
+            },
+          ],
+          defaultInput: "codebase",
+          excludeFrom: [".codometerignore"],
+          format: "json",
+          inputs: [
+            {
+              analyses: ["size"],
+              include: ["dist/**/*.js"],
+              name: "Compiled JavaScript",
+            },
+          ],
+          limits: [
+            { metric: "Compiled JavaScript.size", value: "64 KB" },
+            { metric: "custom.Overlong YAML Comments", value: 5 },
+          ],
+        }),
+      );
+    });
+
+    it("fails on the limit written against the missing build", async () => {
+      const { exitCode } = await run({
+        check: "limits",
+        config: configurationName,
+      });
+
+      expect(exitCode).toBe(1);
+    });
+
+    it("passes when only the source input is measured", async () => {
+      const { exitCode } = await run({
+        check: "limits",
+        config: configurationName,
+        onlyInputs: ["codebase"],
+      });
+
+      expect(exitCode).toBe(0);
+    });
+
+    it("still fails on a breach of a limit written against the source input", async () => {
+      const { exitCode } = await run({
+        check: "limits",
+        config: "codometer.config.json",
+        onlyInputs: ["codebase"],
+      });
+
+      expect(exitCode).toBe(1);
+    });
+  });
+
   it("refuses a bare --output-markdown with no configured markdown output", async () => {
     writeFileSync(
       path.join(workingDirectory, "codometer.config.json"),

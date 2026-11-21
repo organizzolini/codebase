@@ -156,7 +156,7 @@ gh pr list --head <branch> --state open
      is expected for a branch that spans projects; split the branch only if
      those scopes cannot fit the 128-character header.
 
-5. Assignee and labels — Validate Conventions rejects a pull request whose metadata disagrees with its title, so set all of this at creation time rather than waiting for the reconciliation step to backfill it:
+5. Assignee and labels — Comply rejects a pull request whose metadata disagrees with its title, so set all of this at creation time rather than waiting for the reconciliation step to backfill it:
    - **Assignee**: `--assignee @me`. A pull request with no assignee fails validation.
    - **Type label**: Exactly one `type:*` label, matching the title's type. Never more than one, never a mismatch.
    - **Scope label(s)**: One `scope:*` label per scope named in the title — if the title carries more than one scope (`type(scope-one,scope-two): …`), add a `--label scope:<name>` for each of them, and no extra `scope:*` label beyond what the title names.
@@ -196,7 +196,7 @@ gh pr list --head <branch> --state open
    gh pr view <branch> --json number,labels,assignees
    ```
 
-   If any expected label or the assignee is missing, add it with `gh pr edit <number> --add-label <label>` / `--add-assignee @me` rather than leaving it to Validate Conventions to catch and fail on.
+   If any expected label or the assignee is missing, add it with `gh pr edit <number> --add-label <label>` / `--add-assignee @me` rather than leaving it to Comply to catch and fail on.
 
 9. Confirm GitHub recorded the issue link:
 

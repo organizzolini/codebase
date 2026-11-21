@@ -260,18 +260,26 @@ The composite targets pick whichever set a project's `language:*` tag selects, s
 
 ### The Gates
 
-Five workflows run on every pull request. Each maps to targets you can run locally before pushing. GitHub shows each with an emoji prefix — 🧑‍🔧 Lint Codebase, 🧑‍🔬 Test Coverage, 🕵️ Secure Code, 👷 Make Projects, 🧑‍⚖️ Comply Code.
+Every pull request runs two workflows, 🧑‍🎤 Continuous Integration and 🦹 Continuous Compliance, and each check below is one job of one of them. GitHub shows each with its emoji prefix. All of them are required on `main`: the ruleset in [infrastructure/terraform/github/main.tf](../infrastructure/terraform/github/main.tf) (`local.required_checks`) is the list, and the merge queue runs them again on the merge result. Each maps to targets you can run locally before pushing.
 
-| Workflow      | Runs                                                                                                                     | Local equivalent                                              |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
-| Lint Codebase | Format, lint, typecheck, type coverage, spelling, markdown, YAML, dead code, conformance, and the synchronization checks | `nx affected --target=lint-code`                              |
-| Test Coverage | Unit, integration, and end-to-end tests with coverage thresholds                                                         | `nx affected --target=test-code`                              |
-| Secure Code   | Secrets, Python AST, dependency vulnerabilities, licenses, infrastructure misconfiguration                               | `nx affected --target=secure-code`                            |
-| Make Projects | Builds every buildable project and gates its declared bundle size                                                        | `nx affected --target=build-projects`                         |
-| Comply Code   | Branch name, pull request title, body, labels, assignees, and release significance                                       | See [Pull Request Process](#pull-request-process)             |
-| Enforce Code  | CODEOWNERS rules and workflow security                                                                                   | `compliance/src/compliance.main.ts audit-files` |
+| Check                    | Runs                                                                                                               | Local equivalent                                                                                  |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| 🧑‍⚕️ Static               | Typecheck and type coverage, formatting, spelling, markdown and YAML, linting, dead code, and dependency checks    | `nx affected --target=typecheck-code,format-code,lint-code,deprecate-code --configuration=check`  |
+| 💂 Guard                 | Catalog manifests, glossaries, the lockfile, project ports, the README project table, and VS Code extensions        | `nx affected --target=guard-code`                                                                 |
+| 🔭 Callidescope Restrict | Call-stack depth and breadth limits                                                                                 | `nx affected --target=callidescope-restrict`                                                      |
+| 🕸️ Codependix Bound      | Dependency boundary rules                                                                                           | `nx affected --target=codependix-bound`                                                           |
+| ⏲️ Codometer Limit       | The codometer limits that need no build: comment budgets and directory breadth and depth                            | `nx affected --target=codometer-limit`                                                            |
+| 👔 Conformetry Validate  | Generated code against the templates it came from                                                                   | `nx affected --target=conformetry-validate`                                                       |
+| 🧑‍🔬 Test (seven checks)  | Unit, integration, and end-to-end tests with coverage thresholds, one check each for Codebase, Common, Affirmancy, Caelundas, IC Suite, Lexico, and Meanderaw | `nx affected --target=test-code --configuration=coverage`                         |
+| 🕵️ Secure                | Secrets, Python AST, dependency vulnerabilities, licenses, infrastructure misconfiguration                          | `nx affected --target=secure-code`                                                                |
+| 👷 Build                 | Builds every buildable project and gates its declared compiled size                                                 | `nx affected --target=build-projects`                                                             |
+| 🤵 End to End IC Suite   | Packs the five ic-suite CLIs and four Nx plugins and runs `*.packed.test.ts` against the installed tarballs         | `nx affected --target=end-to-end`                                                                 |
+| 🧑‍🚀 Infrastructure       | The Terraform plan, posted as a pull request comment; only when `infrastructure/terraform` changes                  | `nx run infrastructure:terraform-plan:<root>`                                                     |
+| 🧑‍🏭 Devcontainer         | Builds and tests the dev container image; only when the dev container changes                                       | `.devcontainer/scripts/test-devcontainer.sh`                                                      |
+| 🧑‍⚖️ Comply               | Branch name, pull request title, body, labels, assignees, linked issue, and release significance                    | See [Pull Request Process](#pull-request-process)                                                 |
+| 👮 Enforce               | CODEOWNERS rules and workflow security                                                                              | `compliance/src/compliance.main.ts audit-files`                                                   |
 
-Continuous Integration also runs an `End to End IC Suite` leg, which packs the five ic-suite CLIs and four Nx plugins and runs `*.packed.test.ts` against the installed tarballs (`nx affected --target=end-to-end`): the CLIs through a tarball sandbox, the plugins through a local Verdaccio registry.
+The End to End IC Suite check runs the CLIs through a tarball sandbox and the plugins through a local Verdaccio registry. A draft pull request skips Continuous Integration entirely, so it shows none of these until it is marked ready. CodeQL's `Analyze` jobs are not in the list; a code-scanning rule on the ruleset covers them.
 
 🚀 Continuous Deployment runs post-merge on `main` to release the workspace and to build and verify the dev container image. Builds are verified before merge, in the merge queue, and a pull request that changes the dev container builds and tests it there too.
 
@@ -324,7 +332,8 @@ When a file nears 512 lines, split it along the module file suffixes instead of 
 
 - **Test coverage: 96%** for branches, functions, lines, and statements, from [configuration/typescript/vitest.config.ts](configuration/typescript/vitest.config.ts). New code needs tests in the same change.
 - **Type coverage** is per project, declared as `typeCoverage.atLeast` in that project's `package.json` — most packages sit at 100 with `strict: true`; the workspace root requires 95. Passing `typecheck` proves nothing about this gate, so run both.
-- **Bundle size** is per project, declared in that project's `codometer.config.ts` and gated by its `codometer` target. A breach fails 👷 Make Projects and names the project.
+- **Compiled size** is per project, declared in that project's `codometer.config.ts` and gated by its `codometer` target. A breach fails 👷 Build and names the project.
+- **Comment budgets and directory ceilings** (12 entries, 9 levels) need no build, so ⏲️ Codometer Limit gates them first, through each project's `codometer-limit` target.
 
 Lowering a threshold to make a change pass is not an option — fix the code.
 
@@ -335,7 +344,7 @@ Five toolchains are developed and published from this repository, and they gate 
 | Toolchain      | What it does                                                                                                                   | What fails a pull request                                                                      |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
 | `conformetry`  | Scaffolds projects, modules, and components from templates, then measures the generated instances back against those templates | `conformetry-validate`, in the 👔 Conformetry Validate check                                   |
-| `codometer`    | Measures a directory — languages, declared conventions, compressed size — against the limits its configuration declares        | that project's `codometer` target, inside Make Projects                                        |
+| `codometer`    | Measures a directory — languages, declared conventions, compressed size — against the limits its configuration declares        | `codometer-limit` in ⏲️ Codometer Limit, and `codometer` (compiled size) in 👷 Build           |
 | `codependix`   | Exports Nx, NestJS module, and file-level import graphs, and judges them against declared boundary rules                       | the inferred per-project `codependix-bound` target, in the 🕸️ Codependix Bound check           |
 | `callidescope` | Traces call stacks through injected dependencies and flags stacks that are too deep or callables that reach too widely         | the inferred per-project `callidescope-restrict` target, in the 🔭 Callidescope Restrict check |
 | `coinagerie`   | Collects the words a codebase uses and keeps a glossary of their definitions in step with the code                             | that project's `coinagerie-check` target, in the 💂 Guard check and the commit hook            |
@@ -393,7 +402,7 @@ Validate before pushing:
 pnpm exec validate-branch-name -t "<branch-name>"
 ```
 
-Only `main` is exempt. Automated prefixes are also accepted: `copilot/*`, `dependabot/*`, `jimmypaolini/copilot/*`, `renovate/*`. Both the pre-push hook and 🧑‍⚖️ Comply Code reject anything else, so an unvalidated branch wastes the push. See [checkout-branch](.agents/skills/checkout-branch/SKILL.md) for deriving a name, and [rename-branch](.agents/skills/rename-branch/SKILL.md) for fixing one.
+Only `main` is exempt. Automated prefixes are also accepted: `copilot/*`, `dependabot/*`, `jimmypaolini/copilot/*`, `renovate/*`. Both the pre-push hook and 🧑‍⚖️ Comply reject anything else, so an unvalidated branch wastes the push. See [checkout-branch](.agents/skills/checkout-branch/SKILL.md) for deriving a name, and [rename-branch](.agents/skills/rename-branch/SKILL.md) for fixing one.
 
 ## Commit Guidelines
 
@@ -524,15 +533,15 @@ See [documentation/agents/issue-tracker.md](../documentation/agents/issue-tracke
 ## Pull Request Process
 
 1. **Push and open**: `git push -u origin <branch>`, then `gh pr create` and fill in the template. Do not use `--fill` — it substitutes the commit message for the body and drops the four required headings
-2. **Title** follows the commit format — `<type>(<scope>): <gitmoji> <subject>`, checked by the same commitlint configuration, so every commit rule applies. The scope list must name at least one scope its commits use, which is all Comply Code's release-significance check requires. Name the scope or two that best describe the change, so the squashed header stays short.
-3. **Description** must contain all four headings from [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) verbatim — 🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related — each in its shape: Summary only a single paragraph of at most 48 words, Details only a bulleted list with one marker throughout and at most 512 words, Testing only an ordered list (a step may hold a code block), and Related opening with a `-` list, after which anything may follow. Comply Code runs `compliance pull-request` and fails on a missing or empty section, a section in the wrong shape or over its limit, or a template comment left unfilled
+2. **Title** follows the commit format — `<type>(<scope>): <gitmoji> <subject>`, checked by the same commitlint configuration, so every commit rule applies. The scope list must name at least one scope its commits use, which is all Comply's release-significance check requires. Name the scope or two that best describe the change, so the squashed header stays short.
+3. **Description** must contain all four headings from [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) verbatim — 🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related — each in its shape: Summary only a single paragraph of at most 48 words, Details only a bulleted list with one marker throughout and at most 512 words, Testing only an ordered list (a step may hold a code block), and Related opening with a `-` list, after which anything may follow. Comply runs `compliance pull-request` and fails on a missing or empty section, a section in the wrong shape or over its limit, or a template comment left unfilled
 4. **Issue link**: every pull request must close or reference a GitHub issue through GitHub's own link — `Closes #N` as the first bullet of 🔗 Related, or the Development sidebar. Continuous Compliance runs `compliance pull-request` on pull requests and in the merge queue, reading `gh pr view --json closingIssuesReferences`, so a plain `Related to #N` does not count. Pull requests opened by Dependabot or by a GitHub Actions workflow are exempt. Work with no issue gets one before the pull request opens — see the [link-issue skill](../.agents/skills/link-issue/SKILL.md)
 5. **Labels and assignees** must agree with the title: exactly one `type:*` label matching the title's type, exactly the `scope:*` labels the title names and no extras, at least one assignee, and exactly one `source:*` label (`source:agent` or `source:human`) declaring who opened it. The `do-not-merge` label blocks the pull request while present
-6. **Automated checks**: the five workflows in [The Gates](#the-gates) must pass
+6. **Automated checks**: every check in [The Gates](#the-gates) must pass
 7. **Code review**: requires `@JimmyPaolini` approval ([CODEOWNERS](.github/CODEOWNERS))
 8. **Merge**: squash and merge, then delete the branch
 
-Comply Code creates any label missing from the vocabulary when a pull request is opened or reopened, so a fresh pull request already has the labels it needs. That vocabulary lives in [configuration/repository/conventional.config.cjs](configuration/repository/conventional.config.cjs) and is never hard-coded elsewhere.
+Comply creates any label missing from the vocabulary when a pull request is opened or reopened, so a fresh pull request already has the labels it needs. That vocabulary lives in [configuration/repository/conventional.config.cjs](configuration/repository/conventional.config.cjs) and is never hard-coded elsewhere.
 
 Merges go through a merge queue, and the check workflows run again on the queued merge commit — a pull request that was green on its own can still fail there once `main` has moved underneath it.
 

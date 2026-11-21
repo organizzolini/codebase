@@ -19,7 +19,7 @@ gh stack merge <top-pr> --yes --squash
 
 ## Step 1 across layers
 
-- Count check names on **every** layer. Six green names is a normal stacked layer (CodeQL and its `Analyze` jobs run only against `main`); a layer missing the four real gates (Lint, Test Coverage, Validate Conventions, Make Projects) is conflicting or draft.
+- Compare check names on **every** layer against the ruleset's required list (see Step 1 in [SKILL.md](../SKILL.md#1-green-ci)). A layer showing only a few names, such as CodeQL and its `Analyze` jobs, which run against `main` as well, is conflicting or draft.
 - Draft pull requests skip Continuous Integration entirely. `gh stack submit` opens drafts, so run `gh pr ready <n>` per layer.
 - After any change to a lower layer, run `nx run <project>:typecheck` on **each** layer above it. A rebase replays cleanly while leaving upper layers type-broken, and vitest stays green because it does not typecheck.
 

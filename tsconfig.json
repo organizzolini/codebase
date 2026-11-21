@@ -125,6 +125,9 @@
       "path": "./projects/ic-suite/codometer/codometer-measurement/configuration/tsconfig.json"
     },
     {
+      "path": "./projects/ic-suite/codometer/codometer-nx/configuration/tsconfig.json"
+    },
+    {
       "path": "./projects/ic-suite/codometer/codometer-output/configuration/tsconfig.json"
     },
     {

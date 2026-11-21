@@ -229,6 +229,11 @@ export interface MeasureCommandOptions {
    */
   inputs?: string[] | undefined;
   /**
+   * The names of the only inputs this run measures, as written. `undefined`
+   * when the flag was never passed at all.
+   */
+  onlyInputs?: string[] | undefined;
+  /**
    * The report's destination, as written: `true` for a bare flag, a string for a path.
    *
    * `undefined` when the flag was never passed.
@@ -240,6 +245,8 @@ export interface MeasureCommandOptions {
    * `undefined` when the flag was never passed.
    */
   outputMarkdown?: string | true | undefined;
+  /** Print each named directory's verdict as a JSON line after the run. */
+  verdicts?: boolean | undefined;
 }
 
 /** What a run prints, derived from the `--format` list. */

@@ -12,7 +12,13 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import type { ReportFindingsArguments, RunPlan } from "./measure.types";
+import { selectInputs } from "./measure.utilities";
+
+import type {
+  MeasureVerdict,
+  ReportFindingsArguments,
+  RunPlan,
+} from "./measure.types";
 import type {
   MeasureCommandOptions,
   ResolvedCodometerConfiguration,
@@ -63,32 +69,6 @@ export class MeasureCommand extends CommandRunner {
       undefined,
       { paths: outputPaths },
     );
-  }
-
-  /**
-   * Replaces every configured input with the `--inputs` globs, measured as the `language` analysis with no other input active.
-   */
-  private applyInputsOverride(
-    configuration: ResolvedCodometerConfiguration,
-    globs: string[] | undefined,
-  ): ResolvedCodometerConfiguration {
-    if (globs === undefined) {
-      return configuration;
-    }
-
-    return {
-      ...configuration,
-      inputs: [
-        {
-          analyses: ["language"],
-          compression: "none",
-          directory: ".",
-          exclude: [],
-          include: globs,
-          name: "Command Line",
-        },
-      ],
-    };
   }
 
   /**
@@ -258,11 +238,11 @@ export class MeasureCommand extends CommandRunner {
       return undefined;
     }
 
-    const configuration = this.applyInputsOverride(
+    const { configuration, errors: inputErrors } = selectInputs(
       loadedConfiguration,
-      options.inputs,
+      options,
     );
-    const formatErrors: string[] = [];
+    const formatErrors: string[] = [...inputErrors];
     const format = this.configurationService.resolveFormat(
       options.format,
       configuration.format,
@@ -349,6 +329,18 @@ export class MeasureCommand extends CommandRunner {
   }
 
   /**
+   * Parses one input name, accumulating them into the array of the only inputs the run measures.
+   */
+  @Option({
+    description:
+      "Names of the only configured inputs to measure; the others, and the limits written against them, are left out",
+    flags: "--only-inputs [names...]",
+  })
+  public parseOnlyInputs(value: string, previous: string[] = []): string[] {
+    return [...previous, value];
+  }
+
+  /**
    * Parses the JSON report destination. `true` when no path is given, meaning the configured path is used.
    */
   @Option({
@@ -372,6 +364,18 @@ export class MeasureCommand extends CommandRunner {
     return value;
   }
 
+  /**
+   * Parses `--verdicts`, which prints each named directory's verdict as one JSON line after the run.
+   */
+  @Option({
+    description:
+      "Print each named directory's verdict as a JSON line after the run, so a caller can tell which one failed",
+    flags: "--verdicts",
+  })
+  public parseVerdicts(): boolean {
+    return true;
+  }
+
   // 🌎 Public Methods
 
   /**
@@ -392,22 +396,28 @@ export class MeasureCommand extends CommandRunner {
       return;
     }
 
-    for (const directory of directories.map((named) => path.resolve(named))) {
-      try {
-        const failed = await this.measureDirectory(
-          options.config === undefined
-            ? options
-            : { ...options, config: path.resolve(directory, options.config) },
-          directory,
-        );
+    const verdicts: MeasureVerdict[] = [];
 
-        process.exitCode = failed ? 1 : process.exitCode;
-      } catch (error: unknown) {
+    for (const directory of directories.map((named) => path.resolve(named))) {
+      const failed = await this.measureDirectory(
+        options.config === undefined
+          ? options
+          : { ...options, config: path.resolve(directory, options.config) },
+        directory,
+      ).catch((error: unknown) => {
         this.logger.error(`📊 Failed to measure ${directory}`, undefined, {
           reason: error instanceof Error ? error.message : String(error),
         });
-        process.exitCode = 1;
-      }
+
+        return true;
+      });
+
+      process.exitCode = failed ? 1 : process.exitCode;
+      verdicts.push({ directory, ok: !failed });
+    }
+
+    if (options.verdicts === true) {
+      process.stdout.write(`${JSON.stringify(verdicts)}\n`);
     }
   }
 }

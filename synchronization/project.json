@@ -12,7 +12,6 @@
   ],
   "targets": {
     "build-projects": {},
-    "codometer": {},
     "conformetry-generators": {
       "cache": true,
       "configurations": {
@@ -24,7 +23,7 @@
         }
       },
       "defaultConfiguration": "check",
-      "description": "Reconciles generated code against the conformetry templates it was scaffolded from. `check` runs on a pull request, because drift is the author's to fix in the same change; `write` runs on the default branch's release, alongside every other derivation. Named on its own by whichever caller wants it — `configuration/repository/lint-staged.config.ts`, the Lint Codebase workflow, and the release workflow — rather than through a shared aggregate, the way `configuration:codometer` and `configuration:callidescope` are named by their own callers.",
+      "description": "Reconciles generated code against the conformetry templates it was scaffolded from. `check` runs on a pull request, because drift is the author's to fix in the same change; `write` runs on the default branch's release, alongside every other derivation. Named on its own by whichever caller wants it — `configuration/repository/lint-staged.config.ts`, the Static check, and the release workflow — rather than through a shared aggregate, the way `configuration:codometer` and `configuration:callidescope` are named by their own callers.",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/**/*.ts",

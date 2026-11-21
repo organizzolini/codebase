@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "additionalProperties": false,
+  "description": "Measure a project with codometer and gate the limits it declares. Batched, so one process measures every project Nx hands it.",
+  "properties": {
+    "check": {
+      "description": "Fail the task when a limit the project declares is breached, after any report is written.",
+      "type": "boolean"
+    },
+    "command": {
+      "description": "Required. The shell command that starts the codometer command line, to which `measure` and its flags are appended.",
+      "type": "string"
+    },
+    "config": {
+      "description": "Required. The codometer configuration file, relative to the project root. It is never searched for.",
+      "type": "string"
+    },
+    "onlyInputs": {
+      "description": "Measure only these configured inputs, by name; the others, and the limits written against them, are left out.",
+      "items": { "type": "string" },
+      "type": "array"
+    },
+    "outputJson": {
+      "description": "Where to write the JSON report, relative to the project root. No report is written without it.",
+      "type": "string"
+    },
+    "outputMarkdown": {
+      "description": "Where to write the markdown badge block, relative to the project root.",
+      "type": "string"
+    }
+  },
+  "required": ["command", "config"],
+  "title": "Codometer measure",
+  "type": "object"
+}

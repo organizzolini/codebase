@@ -1,0 +1,80 @@
+{
+  "author": "Jimmy Paolini",
+  "bugs": {
+    "url": "https://github.com/organizzolini/codebase/issues"
+  },
+  "dependencies": {
+    "@codometer/configuration": "workspace:*",
+    "@nestjs/common": "catalog:ic-suite",
+    "@nestjs/core": "catalog:ic-suite",
+    "@nx/devkit": "catalog:",
+    "reflect-metadata": "catalog:"
+  },
+  "description": "Nx plugin that infers a codometer-limit and a codometer-weigh target for every project with a codometer configuration",
+  "devDependencies": {
+    "@codebase/testing": "workspace:*",
+    "@golevelup/ts-vitest": "catalog:",
+    "@nestjs/testing": "catalog:",
+    "@nx/eslint-plugin": "catalog:",
+    "@swc/helpers": "catalog:",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "vitest": "catalog:"
+  },
+  "executors": "./executors.json",
+  "exports": {
+    ".": "./src/index.ts",
+    "./executors.json": "./executors.json",
+    "./package.json": "./package.json",
+    "./src/executors/*": "./src/executors/*"
+  },
+  "files": [
+    "CHANGELOG.md",
+    "dist",
+    "executors.json",
+    "LICENSE",
+    "README.md",
+    "src/executors/*/schema.json"
+  ],
+  "homepage": "https://github.com/organizzolini/codebase/tree/main/projects/ic-suite/codometer/codometer-nx#readme",
+  "keywords": [
+    "codometer",
+    "limits",
+    "nx",
+    "nx-plugin",
+    "size"
+  ],
+  "license": "MIT",
+  "main": "src/index.ts",
+  "name": "@codometer/nx",
+  "nx": {
+    "executors": "./executors.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "exports": {
+      ".": {
+        "types": "./dist/src/index.d.ts",
+        "default": "./dist/src/index.js"
+      },
+      "./executors.json": "./executors.json",
+      "./package.json": "./package.json",
+      "./src/executors/*": "./dist/src/executors/*.js"
+    },
+    "main": "./dist/src/index.js",
+    "registry": "https://registry.npmjs.org",
+    "types": "./dist/src/index.d.ts"
+  },
+  "repository": {
+    "directory": "projects/ic-suite/codometer/codometer-nx",
+    "type": "git",
+    "url": "git+https://github.com/organizzolini/codebase.git"
+  },
+  "type": "module",
+  "typeCoverage": {
+    "atLeast": 100,
+    "strict": true
+  },
+  "types": "src/index.ts",
+  "version": "0.0.0"
+}

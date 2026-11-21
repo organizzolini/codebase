@@ -94,7 +94,7 @@ describe(PackageManifestsCommand, () => {
   describe("synchronize", () => {
     it("returns true in check mode when all packages are synchronized", async () => {
       const summary: PackageManifestsSummary = {
-        checkedCount: 36,
+        checkedCount: 37,
         failedProjects: [],
         isSynchronized: true,
         succeededProjects: [],
@@ -107,13 +107,13 @@ describe(PackageManifestsCommand, () => {
       expect(logger.info).toHaveBeenCalledWith(
         expect.stringContaining("Verified"),
         undefined,
-        expect.objectContaining({ checkedCount: 36 }),
+        expect.objectContaining({ checkedCount: 37 }),
       );
     });
 
     it("returns false in check mode when packages are out of sync", async () => {
       const summary: PackageManifestsSummary = {
-        checkedCount: 36,
+        checkedCount: 37,
         failedProjects: [
           {
             differences: ['license: expected "MIT", received "undefined"'],
