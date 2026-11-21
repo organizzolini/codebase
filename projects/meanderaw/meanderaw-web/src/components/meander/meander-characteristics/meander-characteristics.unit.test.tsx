@@ -113,7 +113,7 @@ describe(MeanderCharacteristics, () => {
       ).toStrictEqual(["Alpha 8", "Chain", "Closed", "Junction count 3", "+2"]);
     });
 
-    it("lists the rest in a tooltip when the +N pill is hovered or focused", async () => {
+    it("lists the rest as pills in a hover card when the +N pill is focused or hovered", async () => {
       render(
         <MeanderCharacteristics
           activeKeys={[]}
@@ -133,6 +133,14 @@ describe(MeanderCharacteristics, () => {
       expect(
         [...rest.querySelectorAll("li")].map((item) => item.textContent),
       ).toStrictEqual(["Mystery 2", "Zeta 9"]);
+      expect(rest.className).toContain("flex-wrap");
+
+      fireEvent.blur(more);
+      fireEvent.mouseEnter(more);
+
+      await expect(
+        screen.findByTestId("hidden-characteristics"),
+      ).resolves.toBeDefined();
     });
 
     it("puts the active characteristics first and always shows them, past four, the rest under +N", () => {

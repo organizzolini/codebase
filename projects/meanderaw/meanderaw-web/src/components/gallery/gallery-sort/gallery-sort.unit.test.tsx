@@ -104,7 +104,7 @@ describe(GallerySort, () => {
     expect(onSortChange).toHaveBeenCalledExactlyOnceWith(undefined, "asc");
   });
 
-  it("flips the direction with its arrow, which is disabled without a sort", () => {
+  it("flips the direction with its arrow, which is not there without a sort", () => {
     const onSortChange = vi.fn<GallerySortProperties["onSortChange"]>();
     const { rerender } = render(
       <GallerySort {...properties({ field: "rows", onSortChange })} />,
@@ -126,9 +126,8 @@ describe(GallerySort, () => {
     rerender(<GallerySort {...properties({ onSortChange })} />);
 
     expect(
-      screen
-        .getByRole("button", { name: "Sort descending" })
-        .hasAttribute("disabled"),
-    ).toBe(true);
+      screen.queryByRole("button", { name: /^Sort (de|a)scending$/u }),
+    ).toBeNull();
+    expect(screen.getByText("Default order")).toBeDefined();
   });
 });

@@ -1,7 +1,7 @@
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
 } from "@codebase/presentation";
 
 import {
@@ -13,7 +13,6 @@ import type {
   GalleryCharacteristic,
   GalleryMeander,
 } from "../../gallery/meander-gallery/meanders-api.types";
-import type { CharacteristicPill } from "./meander-characteristics.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -32,7 +31,7 @@ export interface MeanderCharacteristicsProperties {
 // 🧩 Component
 
 /**
- * Renders characteristics as pills, active ones first and always shown, at most four otherwise, the rest under a +N tooltip.
+ * Renders characteristics as pills, active ones first and always shown, at most four otherwise, the rest under a +N hover card.
  */
 export function MeanderCharacteristics(
   properties: Readonly<MeanderCharacteristicsProperties>,
@@ -48,12 +47,6 @@ export function MeanderCharacteristics(
   );
 
   // 💪 Handlers
-  const describePill = ({
-    isNumeric,
-    name,
-    value,
-  }: CharacteristicPill): string =>
-    isNumeric ? `${name} ${String(value)}` : name;
 
   // ♻️ Lifecycle
 
@@ -86,8 +79,10 @@ export function MeanderCharacteristics(
         ))}
         {hidden.length === 0 ? null : (
           <li>
-            <Tooltip>
-              <TooltipTrigger
+            <HoverCard>
+              <HoverCardTrigger
+                closeDelay={100}
+                delay={0}
                 render={
                   <button
                     aria-label={`${String(hidden.length)} more characteristics`}
@@ -97,15 +92,32 @@ export function MeanderCharacteristics(
                 }
               >
                 +{hidden.length}
-              </TooltipTrigger>
-              <TooltipContent>
-                <ul data-testid="hidden-characteristics">
-                  {hidden.map((pill) => (
-                    <li key={pill.key}>{describePill(pill)}</li>
-                  ))}
+              </HoverCardTrigger>
+              <HoverCardContent className="w-auto max-w-sm">
+                <ul
+                  className="flex flex-wrap gap-1"
+                  data-testid="hidden-characteristics"
+                >
+                  {hidden.map(
+                    ({ description, isNumeric, key, name, value }) => (
+                      <li
+                        key={key}
+                        className="rounded-full border border-(--line) px-2 py-0.5 text-xs"
+                        title={description}
+                      >
+                        <span className="text-(--ink-muted)">{name}</span>
+                        {isNumeric ? (
+                          <>
+                            {" "}
+                            <strong>{value}</strong>
+                          </>
+                        ) : null}
+                      </li>
+                    ),
+                  )}
                 </ul>
-              </TooltipContent>
-            </Tooltip>
+              </HoverCardContent>
+            </HoverCard>
           </li>
         )}
       </ul>

@@ -250,7 +250,7 @@ function GalleryControls(
       />
       {page === undefined ? null : (
         <GalleryPager
-          className="ml-auto flex shrink-0 items-center gap-2"
+          className="flex shrink-0 items-center gap-2"
           isLoading={paging.isLoading}
           onPage={paging.goTo}
           onSizeChange={handleSizeChange}

@@ -1,7 +1,7 @@
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { useMemo } from "react";
 
-import { Button, ButtonGroup } from "@codebase/presentation";
+import { Button, ButtonGroup, ButtonGroupText } from "@codebase/presentation";
 
 import { GalleryCascader } from "../gallery-cascader/gallery-cascader";
 import { createFieldNodes } from "../gallery-cascader/gallery-cascader.utilities";
@@ -88,24 +88,29 @@ export function GallerySort(
             onToggle={handleToggle}
           />
         </GallerySurface>
-        <Button
-          aria-label={
-            direction === "asc" ? "Sort descending" : "Sort ascending"
-          }
-          disabled={field === undefined}
-          onClick={() => {
-            onSortChange(field, direction === "asc" ? "desc" : "asc");
-          }}
-          size="sm"
-          variant="outline"
-        >
-          {current?.label ?? DEFAULT_ORDER_LABEL}
-          {direction === "asc" ? (
-            <ArrowUp aria-hidden="true" />
-          ) : (
-            <ArrowDown aria-hidden="true" />
-          )}
-        </Button>
+        {field === undefined ? (
+          <ButtonGroupText className="border-border bg-background h-7 text-[0.8rem] dark:border-input dark:bg-input/30">
+            {DEFAULT_ORDER_LABEL}
+          </ButtonGroupText>
+        ) : (
+          <Button
+            aria-label={
+              direction === "asc" ? "Sort descending" : "Sort ascending"
+            }
+            onClick={() => {
+              onSortChange(field, direction === "asc" ? "desc" : "asc");
+            }}
+            size="sm"
+            variant="outline"
+          >
+            {current?.label ?? field}
+            {direction === "asc" ? (
+              <ArrowUp aria-hidden="true" />
+            ) : (
+              <ArrowDown aria-hidden="true" />
+            )}
+          </Button>
+        )}
       </ButtonGroup>
     </div>
   );
