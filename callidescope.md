@@ -6,13 +6,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 8395 |
-| Files | 2807 |
-| Calls traced | 9021 |
-| Call stacks | 2400 |
+| Callables | 8572 |
+| Files | 2849 |
+| Calls traced | 9234 |
+| Call stacks | 2437 |
 | Deepest stack | 17 |
 | Stacks through recursion | 15 |
-| Unfollowable calls | 527 |
+| Unfollowable calls | 564 |
 
 ### Projects
 
@@ -49,13 +49,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/coinagerie/coinagerie-languages` | 4 | 6 | 2 | 3 |
 | `documentation` | 3 | 6 | 3 | 2 |
 | `projects/common/presentation` | 0 | 3 | 3 | 0 |
-| `projects/ic-suite/callidescope/callidescope-configuration` | 5 | 8 | 3 | 7 |
 | `projects/ic-suite/codependix/codependix-output` | 11 | 14 | 3 | 7 |
 | `projects/lexico/lexico-db` | 0 | 3 | 3 | 0 |
 | `projects/lexico/lexico-web` | 6 | 9 | 3 | 8 |
 | `validation` | 5 | 8 | 3 | 4 |
 | `installation` | 13 | 17 | 4 | 8 |
 | `projects/common/interface` | 3 | 7 | 4 | 2 |
+| `projects/ic-suite/callidescope/callidescope-configuration` | 4 | 8 | 4 | 7 |
 | `projects/ic-suite/codependix/codependix-nx-projects` | 0 | 4 | 4 | 8 |
 | `projects/ic-suite/conformetry/conformetry-configuration` | 10 | 14 | 4 | 5 |
 | `projects/ic-suite/codependix/codependix-configuration` | 2 | 7 | 5 | 4 |
@@ -85,8 +85,8 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | over limit | 0 |
 | 0 — at limit | 21 |
 | 1 | 2 |
-| 2–3 | 6 |
-| 4+ | 13 |
+| 2–3 | 5 |
+| 4+ | 14 |
 | no stacks | 17 |
 
 ### Call stacks over the depth limit (0)

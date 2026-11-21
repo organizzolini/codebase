@@ -1,18 +1,18 @@
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CharacteristicContextService } from "../src/modules/characteristics/characteristic-context.service";
-import { LetterUtilitiesService } from "../src/modules/characteristics/submatrix/letter/letter-utilities.service";
-import { LETTER_ORIENTATION_NAMES } from "../src/modules/characteristics/submatrix/letter/letter.constants";
-import { SubmatrixUtilitiesService } from "../src/modules/characteristics/submatrix/submatrix-utilities.service";
+import { LetterUtilitiesService } from "../src/modules/characteristics/modules/submatrix/modules/letter/letter-utilities.service";
+import { LETTER_ORIENTATION_NAMES } from "../src/modules/characteristics/modules/submatrix/modules/letter/letter.constants";
+import { SubmatrixUtilitiesService } from "../src/modules/characteristics/modules/submatrix/submatrix-utilities.service";
 import { CodeModule } from "../src/modules/code/code.module";
-import { MatrixModule } from "../src/modules/matrix/matrix.module";
+import { MatrixModule } from "../src/modules/geometry/modules/matrix/matrix.module";
 
 import type {
   CharacteristicEvaluator,
   CharacteristicEvaluatorGroup,
   SubmatrixWindow,
 } from "../src/modules/characteristics/characteristics.types";
-import type { LetterOrientationName } from "../src/modules/characteristics/submatrix/letter/letter.types";
+import type { LetterOrientationName } from "../src/modules/characteristics/modules/submatrix/modules/letter/letter.types";
 import type { Type } from "@nestjs/common";
 
 /**

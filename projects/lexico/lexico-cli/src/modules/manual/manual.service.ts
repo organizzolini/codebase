@@ -6,8 +6,8 @@ import { Repository } from "typeorm";
 import { type Form, Lexeme, Translation } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
+import { WordsService } from "../lexemes/modules/words/words.service";
 import { NumeralsService } from "../numerals/numerals.service";
-import { WordsService } from "../words/words.service";
 
 import {
   MANUAL_FORM_WORDS,

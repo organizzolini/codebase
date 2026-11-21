@@ -7,8 +7,8 @@ import { expectLoggerContext } from "@codebase/observability/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createRepositoryMock } from "../../../testing/mocks";
+import { WordsService } from "../lexemes/modules/words/words.service";
 import { NumeralsService } from "../numerals/numerals.service";
-import { WordsService } from "../words/words.service";
 
 import { MANUAL_LEXEMES_TO_DELETE } from "./manual.constants";
 import { ManualService } from "./manual.service";

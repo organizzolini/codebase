@@ -22,6 +22,7 @@ import type {
   ReleaseConfig,
   SyncContext,
 } from "./conventional-config.types";
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 function resolveWorkspaceRoot(): string {
@@ -40,22 +41,11 @@ const fileContents = new Map<string, string>();
 const requiredModules = new Map<string, unknown>();
 
 vi.mock("node:fs", async (importOriginal) => {
-  const importedModule = await importOriginal();
-  const module =
-    typeof importedModule === "object" && importedModule !== null
-      ? importedModule
-      : {};
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
 
-  return {
-    ...module,
-    readFileSync: vi.fn<(filePath: string) => string>((filePath: string) => {
-      const value = fileContents.get(filePath);
-      if (value === undefined) {
-        throw new Error(`File not found: ${filePath}`);
-      }
-      return value;
-    }),
-  };
+  return mockFileSystem(await importOriginal());
 });
 
 vi.mock("node:module", () => {
@@ -86,11 +76,11 @@ describe(ConventionalConfigService, () => {
 
   const conventionalConfigFile = path.join(
     workspaceRoot,
-    "configuration/conventional.config.cjs",
+    "configuration/repository/conventional.config.cjs",
   );
   const releaseConfigFile = path.join(
     workspaceRoot,
-    "configuration/release.config.cjs",
+    "configuration/repository/release.config.cjs",
   );
   const settingsFile = path.join(workspaceRoot, ".vscode/settings.json");
   const skillFiles = SYNC_CONVENTIONAL_CONFIG_MARKDOWN_FILES.map((skillFile) =>
@@ -137,6 +127,13 @@ describe(ConventionalConfigService, () => {
     fileContents.clear();
     requiredModules.clear();
     vi.clearAllMocks();
+    vi.mocked(filesystem.readFileSync).mockImplementation((filePath) => {
+      const value = fileContents.get(String(filePath));
+      if (value === undefined) {
+        throw new Error(`File not found: ${String(filePath)}`);
+      }
+      return value;
+    });
 
     requiredModules.set(conventionalConfigFile, conventionalConfig);
     requiredModules.set(releaseConfigFile, releaseConfig);

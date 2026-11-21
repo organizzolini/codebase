@@ -4,9 +4,9 @@ import path from "node:path";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
+import { expectProcessExitOne, mockProcessExit } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { expectProcessExitOne, mockProcessExit } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
 
 import { SkillExclusionsCommand } from "./skill-exclusions.command";
@@ -161,10 +161,10 @@ describe(SkillExclusionsCommand, () => {
     it("covers every tool whose scan reaches .agents/", () => {
       expect(SKILL_EXCLUSION_FILES.map((file) => file.filePath)).toStrictEqual([
         ".gitattributes",
-        "configuration/.codometerignore",
-        "configuration/markdownlint-cli2.config.jsonc",
-        "configuration/.prettierignore",
-        "configuration/cspell.config.yaml",
+        "configuration/ic-suite/.codometerignore",
+        "configuration/lint/markdownlint-cli2.config.jsonc",
+        "configuration/lint/.prettierignore",
+        "configuration/lint/cspell.config.yaml",
         "configuration/eslint.config.ts",
       ]);
       expect(SKILL_EXCLUSION_FILES.map((file) => file.tool)).toStrictEqual([
@@ -180,7 +180,7 @@ describe(SkillExclusionsCommand, () => {
     // A `#` marker in JSONC is a syntax error, so the markers cannot be shared.
     it("delimits the JSONC and TypeScript files with // and every other file with #", () => {
       const slashed = [
-        "configuration/markdownlint-cli2.config.jsonc",
+        "configuration/lint/markdownlint-cli2.config.jsonc",
         "configuration/eslint.config.ts",
       ];
 
@@ -200,7 +200,7 @@ describe(SkillExclusionsCommand, () => {
     it("renders a markdownlint entry as an indented JSONC array element", () => {
       expect(
         entryFor(
-          fileNamed("configuration/markdownlint-cli2.config.jsonc"),
+          fileNamed("configuration/lint/markdownlint-cli2.config.jsonc"),
           "tdd",
         ),
       ).toBe('    ".agents/skills/tdd/**",');
@@ -210,7 +210,7 @@ describe(SkillExclusionsCommand, () => {
     // sequence's indentation, quoted because the glob starts with `*`.
     it("renders a cspell entry as an indented YAML list item", () => {
       expect(
-        entryFor(fileNamed("configuration/cspell.config.yaml"), "tdd"),
+        entryFor(fileNamed("configuration/lint/cspell.config.yaml"), "tdd"),
       ).toBe('  - "**/.agents/skills/tdd/**"');
     });
   });
@@ -292,7 +292,9 @@ describe(SkillExclusionsCommand, () => {
     it("fails when the JSONC file carries the wrong comment syntax", async () => {
       setLockedSkills(["tdd"]);
       setSynchronizedFiles(["tdd"]);
-      const jsonc = fileNamed("configuration/markdownlint-cli2.config.jsonc");
+      const jsonc = fileNamed(
+        "configuration/lint/markdownlint-cli2.config.jsonc",
+      );
 
       fileContents.set(
         resolve(jsonc.filePath),
@@ -310,7 +312,9 @@ describe(SkillExclusionsCommand, () => {
     it("names the markdownlint file when only its block is stale", async () => {
       setLockedSkills(["ask-matt", "tdd"]);
       setSynchronizedFiles(["ask-matt", "tdd"]);
-      const jsonc = fileNamed("configuration/markdownlint-cli2.config.jsonc");
+      const jsonc = fileNamed(
+        "configuration/lint/markdownlint-cli2.config.jsonc",
+      );
       const [startMarker, endMarker] = markers(jsonc);
 
       fileContents.set(
@@ -415,7 +419,9 @@ describe(SkillExclusionsCommand, () => {
     it("keeps the closing marker's own indentation", async () => {
       setLockedSkills(["tdd"]);
       setSynchronizedFiles([]);
-      const jsonc = fileNamed("configuration/markdownlint-cli2.config.jsonc");
+      const jsonc = fileNamed(
+        "configuration/lint/markdownlint-cli2.config.jsonc",
+      );
       const [startMarker, endMarker] = markers(jsonc);
 
       fileContents.set(
@@ -504,7 +510,7 @@ describe(SkillExclusionsCommand, () => {
 
     it("renders each path in the syntax of the file it goes in", () => {
       expect(
-        fileNamed("configuration/cspell.config.yaml").renderPath("a/b-*"),
+        fileNamed("configuration/lint/cspell.config.yaml").renderPath("a/b-*"),
       ).toBe('  - "**/a/b-*"');
       expect(
         fileNamed("configuration/eslint.config.ts").renderPath("a/b-*"),
@@ -518,7 +524,7 @@ describe(SkillExclusionsCommand, () => {
       setLockedSkills(["impeccable"]);
       setSynchronizedFiles(["impeccable"]);
 
-      const cspell = fileNamed("configuration/cspell.config.yaml");
+      const cspell = fileNamed("configuration/lint/cspell.config.yaml");
       const content = fileContents.get(resolve(cspell.filePath)) ?? "";
       const [glob] = impeccablePaths;
 

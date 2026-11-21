@@ -9,7 +9,7 @@
 ### Run Locally
 
 ```bash
-cp .env.default .env  # Fill in required environment variables
+cp configuration/.env.default configuration/.env  # Fill in required environment variables
 nx run documentation:refresh-documentation
 ```
 
@@ -109,7 +109,7 @@ Use the generator to scaffold new domain modules, then implement the service:
 nx g conformetry:nestjs-service-module --name=<domain>
 ```
 
-This creates five files in `src/modules/<domain>/`:
+The generator writes under the project root's `src/modules/<domain>/`. It holds five files:
 
 | File                            | Purpose                                                 |
 | ------------------------------- | ------------------------------------------------------- |
@@ -232,7 +232,7 @@ See the [write-typescript skill](../.agents/skills/write-typescript/SKILL.md) fo
 - **Command not found at runtime** — ensure the command class is listed in `providers` of its module and the module is imported by the root module.
 - **Dependency injection failure** — verify the service is `@Injectable()`, exported from its module, and that module is imported by the consuming module.
 - **Unrecognized CLI flag** — check that `@Option()` decorators in the command class exactly match the flag names passed.
-- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `src/documentation.constants.ts` and to `.env.default`.
+- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `src/documentation.constants.ts` and to `configuration/.env.default`.
 
 See the [triage-integration skill](../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
 
@@ -243,4 +243,4 @@ See the [triage-integration skill](../.agents/skills/triage-integration/SKILL.md
 - [src/documentation.constants.ts](src/documentation.constants.ts): `environmentSchema` (Zod)
 - `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
 - [project.json](project.json): Nx targets (`start`, `build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
-- [.env.default](.env.default): Environment variable template
+- [configuration/.env.default](configuration/.env.default): Environment variable template

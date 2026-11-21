@@ -1,0 +1,432 @@
+import { Injectable } from "@nestjs/common";
+import _ from "lodash";
+
+import { aspectBodies as quadrupleAspectBodies } from "../../../caelundas/caelundas.constants";
+import { bodyDisplayName } from "../../../caelundas/caelundas.types";
+import {
+  symbolByBody,
+  symbolByQuadrupleAspect,
+} from "../../../caelundas/symbol-caelundas.constants";
+import { PHASE_WORD_PATTERN } from "../../aspects.constants";
+import { AspectGraphService } from "../calculation/aspect-graph.service";
+import { AspectPhaseEmojiService } from "../formatting/aspect-phase-emoji.service";
+
+import type {
+  Aspect,
+  AspectPhase,
+  Body,
+  QuadrupleAspect,
+} from "../../../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../../../calendar-events/calendar-events.types";
+import type { AspectBodies } from "../../aspects.types";
+import type { GetQuadrupleAspectEventArguments } from "./quadruple-aspects.types";
+
+/** Primitive helper methods for quadruple-aspect pattern detection and event shaping. */
+@Injectable()
+export class QuadrupleAspectsBaseService {
+  // 🏗 Dependency Injection
+
+  constructor(
+    private readonly aspectGraphService: AspectGraphService,
+    private readonly aspectPhaseEmojiService: AspectPhaseEmojiService,
+  ) {}
+
+  // 🔐 Private Fields
+
+  // 🔑 Public Fields
+
+  // 🔏 Private Methods
+
+  // 🌎 Public Methods
+
+  /**
+   * Creates a bidirectional lookup of each opposition endpoint to its opposite body.
+   */
+  buildGrandCrossOppositeMap(
+    opp1: AspectBodies,
+    opp2: AspectBodies,
+  ): Map<Body, Body> {
+    return new Map<Body, Body>([
+      [opp1.bodies[0], opp1.bodies[1]],
+      [opp1.bodies[1], opp1.bodies[0]],
+      [opp2.bodies[0], opp2.bodies[1]],
+      [opp2.bodies[1], opp2.bodies[0]],
+    ]);
+  }
+
+  /**
+   * Collapses forming+dissolving boundary events into one duration event.
+   */
+  buildProgressiveEvent(
+    formingEvent: DetectedCalendarEvent,
+    dissolvingEvent: DetectedCalendarEvent,
+  ): DetectedCalendarEvent {
+    const tags = formingEvent.tags.filter(
+      (c) => c !== "Forming" && c !== "Perfective" && c !== "Dissolving",
+    );
+    return {
+      description: formingEvent.description.replace(
+        / (forming|exact|dissolving)( \(.*\))?$/i,
+        "",
+      ),
+      end: dissolvingEvent.start,
+      start: formingEvent.start,
+      summary: this.aspectPhaseEmojiService.spanTitle(formingEvent.summary),
+      tags,
+    };
+  }
+
+  /**
+   * Builds the human description and appends focal-body context when present.
+   */
+  buildQuadrupleAspectDescription(args: {
+    bodiesSorted: string[];
+    focalOrApexBody?: Body | undefined;
+    phase: AspectPhase;
+    quadrupleAspect: QuadrupleAspect;
+  }): string {
+    const { bodiesSorted, focalOrApexBody, phase, quadrupleAspect } = args;
+    const base = `${bodiesSorted.join(", ")} ${quadrupleAspect} ${phase}`;
+    return focalOrApexBody
+      ? `${base} (${bodyDisplayName(focalOrApexBody)} focal)`
+      : base;
+  }
+
+  /**
+   * Checks grand cross pattern.
+   */
+  checkGrandCrossPattern(args: {
+    bodyList: Body[];
+    edges: AspectBodies[];
+    opp1: AspectBodies;
+    opp2: AspectBodies;
+  }): boolean {
+    const { bodyList, edges, opp1, opp2 } = args;
+    const aspectsByType = this.groupAspectsByType(edges);
+    const oppositionsAtTime = aspectsByType.get("opposite") || [];
+    const squaresAtTime = aspectsByType.get("square") || [];
+
+    const hasOpp1 = this.haveAspect({
+      aspectType: "opposite",
+      body1: opp1.bodies[0],
+      body2: opp1.bodies[1],
+      edges: oppositionsAtTime,
+    });
+    const hasOpp2 = this.haveAspect({
+      aspectType: "opposite",
+      body1: opp2.bodies[0],
+      body2: opp2.bodies[1],
+      edges: oppositionsAtTime,
+    });
+    if (!hasOpp1 || !hasOpp2) return false;
+
+    const oppositeBodyMap = this.buildGrandCrossOppositeMap(opp1, opp2);
+    return this.verifyGrandCrossSquares(
+      bodyList,
+      oppositeBodyMap,
+      squaresAtTime,
+    );
+  }
+
+  /**
+   * Checks kite pattern.
+   */
+  checkKitePattern(args: {
+    baseBody: Body;
+    edges: AspectBodies[];
+    fourthBody: Body;
+    other0: Body;
+    other1: Body;
+  }): boolean {
+    const { baseBody, edges, fourthBody, other0, other1 } = args;
+    return (
+      this.haveAspect({
+        aspectType: "opposite",
+        body1: baseBody,
+        body2: fourthBody,
+        edges,
+      }) &&
+      this.haveAspect({
+        aspectType: "trine",
+        body1: baseBody,
+        body2: other0,
+        edges,
+      }) &&
+      this.haveAspect({
+        aspectType: "trine",
+        body1: baseBody,
+        body2: other1,
+        edges,
+      }) &&
+      this.haveAspect({
+        aspectType: "trine",
+        body1: other0,
+        body2: other1,
+        edges,
+      }) &&
+      this.haveAspect({
+        aspectType: "sextile",
+        body1: fourthBody,
+        body2: other0,
+        edges,
+      }) &&
+      this.haveAspect({
+        aspectType: "sextile",
+        body1: fourthBody,
+        body2: other1,
+        edges,
+      })
+    );
+  }
+
+  /**
+   * Checks trine triple.
+   */
+  checkTrineTriple(args: {
+    trineI: AspectBodies;
+    trineJ: AspectBodies;
+    trineK: AspectBodies;
+    unionEdges: AspectBodies[];
+  }): null | Set<Body> {
+    const { trineI, trineJ, trineK, unionEdges } = args;
+    const bodies = new Set<Body>([
+      trineI.bodies[0],
+      trineI.bodies[1],
+      trineJ.bodies[0],
+      trineJ.bodies[1],
+      trineK.bodies[0],
+      trineK.bodies[1],
+    ]);
+    if (bodies.size !== 3) return null;
+
+    const [body0, body1, body2] = [...bodies];
+    if (
+      body0 &&
+      body1 &&
+      body2 &&
+      this.haveAspect({
+        aspectType: "trine",
+        body1: body0,
+        body2: body1,
+        edges: unionEdges,
+      }) &&
+      this.haveAspect({
+        aspectType: "trine",
+        body1: body0,
+        body2,
+        edges: unionEdges,
+      }) &&
+      this.haveAspect({ aspectType: "trine", body1, body2, edges: unionEdges })
+    ) {
+      return bodies;
+    }
+    return null;
+  }
+
+  /**
+   * Finds each grand trine once, its bodies in canonical order, however many
+   * trine triples close the same triangle.
+   */
+  findGrandTrines(
+    trines: AspectBodies[],
+    unionEdges: AspectBodies[],
+  ): Set<Body>[] {
+    const grandTrinesByKey = new Map<string, Set<Body>>();
+
+    for (let index = 0; index < trines.length; index++) {
+      const trineI = trines[index];
+      if (!trineI) continue;
+      for (let index_ = index + 1; index_ < trines.length; index_++) {
+        const trineJ = trines[index_];
+        if (!trineJ) continue;
+        for (let index__ = index_ + 1; index__ < trines.length; index__++) {
+          const trineK = trines[index__];
+          if (!trineK) continue;
+          const grandTrine = this.checkTrineTriple({
+            trineI,
+            trineJ,
+            trineK,
+            unionEdges,
+          });
+          if (!grandTrine) continue;
+          const ordered = this.aspectGraphService.canonicalBodyOrder([
+            ...grandTrine,
+          ]);
+          grandTrinesByKey.set(ordered.join("\u001F"), new Set(ordered));
+        }
+      }
+    }
+
+    return [...grandTrinesByKey.values()];
+  }
+
+  /**
+   * Returns the other body in an aspect edge relative to the given body.
+   */
+  getOtherBody(edge: AspectBodies, body: Body): Body | null {
+    if (edge.bodies[0] === body) {
+      return edge.bodies[1];
+    }
+    if (edge.bodies[1] === body) {
+      return edge.bodies[0];
+    }
+    return null;
+  }
+
+  /**
+   * Creates one quadruple-aspect event with normalized tags and symbol-rich summary.
+   */
+  getQuadrupleAspectEvent(
+    eventArguments: GetQuadrupleAspectEventArguments,
+  ): DetectedCalendarEvent {
+    const {
+      body1,
+      body2,
+      body3,
+      body4,
+      focalOrApexBody,
+      phase,
+      quadrupleAspect,
+      timestamp,
+    } = eventArguments;
+    const body1DisplayName = bodyDisplayName(body1);
+    const body2DisplayName = bodyDisplayName(body2);
+    const body3DisplayName = bodyDisplayName(body3);
+    const body4DisplayName = bodyDisplayName(body4);
+    const description = this.buildQuadrupleAspectDescription({
+      bodiesSorted: _.sortBy([
+        body1DisplayName,
+        body2DisplayName,
+        body3DisplayName,
+        body4DisplayName,
+      ]),
+      focalOrApexBody,
+      phase,
+      quadrupleAspect,
+    });
+    const symbolsPart = `${symbolByBody[body1]}${symbolByBody[body2]}${symbolByBody[body3]}${symbolByBody[body4]}`;
+    const summary = `${symbolByQuadrupleAspect[quadrupleAspect]}${symbolsPart} ${description.replace(PHASE_WORD_PATTERN, "")}`;
+    const tags = this.makeQuadrupleAspectTags({
+      body1Capitalized: body1DisplayName,
+      body2Capitalized: body2DisplayName,
+      body3Capitalized: body3DisplayName,
+      body4Capitalized: body4DisplayName,
+      focalOrApexBody,
+      phase,
+      quadrupleAspect,
+    });
+    return {
+      description,
+      end: timestamp,
+      start: timestamp,
+      summary,
+      tags,
+    };
+  }
+
+  /**
+   * Groups aspects by type.
+   */
+  groupAspectsByType<T extends AspectBodies>(edges: T[]): Map<Aspect, T[]> {
+    return this.aspectGraphService.groupAspectsByType(edges);
+  }
+
+  /**
+   * Returns `true` when an undirected body pair has the requested aspect in the edge set.
+   */
+  haveAspect(args: {
+    aspectType: Aspect;
+    body1: Body;
+    body2: Body;
+    edges: AspectBodies[];
+  }): boolean {
+    return this.aspectGraphService.haveAspect(args);
+  }
+
+  /**
+   * Makes progressive group key.
+   */
+  makeProgressiveGroupKey(event: DetectedCalendarEvent): string {
+    const planets = _.sortBy(
+      event.tags.filter((tag) =>
+        quadrupleAspectBodies
+          .map((quadrupleAspectBody) => bodyDisplayName(quadrupleAspectBody))
+          .includes(tag),
+      ),
+    );
+    const aspect = event.tags.find((tag) =>
+      ["Grand Cross", "Kite"].includes(tag),
+    );
+    return `${planets.join("-")}_${aspect}`;
+  }
+
+  /**
+   * Makes quadruple aspect tags.
+   */
+  makeQuadrupleAspectTags(args: {
+    body1Capitalized: string;
+    body2Capitalized: string;
+    body3Capitalized: string;
+    body4Capitalized: string;
+    focalOrApexBody?: Body | undefined;
+    phase: AspectPhase;
+    quadrupleAspect: QuadrupleAspect;
+  }): string[] {
+    const {
+      body1Capitalized,
+      body2Capitalized,
+      body3Capitalized,
+      body4Capitalized,
+      focalOrApexBody,
+      phase,
+      quadrupleAspect,
+    } = args;
+    const tags = [
+      "Astronomy",
+      "Astrology",
+      "Compound Aspect",
+      "Quadruple Aspect",
+      _.startCase(quadrupleAspect),
+      _.startCase(phase),
+      body1Capitalized,
+      body2Capitalized,
+      body3Capitalized,
+      body4Capitalized,
+    ];
+    if (focalOrApexBody) {
+      tags.push(`${bodyDisplayName(focalOrApexBody)} Focal`);
+    }
+    return tags;
+  }
+
+  /**
+   * Verifies grand cross squares.
+   */
+  verifyGrandCrossSquares(
+    bodyList: Body[],
+    oppositeBodyMap: Map<Body, Body>,
+    squareEdges: AspectBodies[],
+  ): boolean {
+    for (const body of bodyList) {
+      const oppositeBody = oppositeBodyMap.get(body) ?? null;
+      if (!oppositeBody) return false;
+
+      const adjacentBodies = bodyList.filter(
+        (b) => b !== body && b !== oppositeBody,
+      );
+      for (const adjBody of adjacentBodies) {
+        if (
+          !this.haveAspect({
+            aspectType: "square",
+            body1: body,
+            body2: adjBody,
+            edges: squareEdges,
+          })
+        ) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+}

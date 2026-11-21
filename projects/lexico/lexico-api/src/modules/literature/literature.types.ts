@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-import type { PaginationArguments } from "../search/pagination-arguments.entities";
+import type { PaginationArguments } from "../search/modules/search-arguments/pagination-arguments.entities";
 import type { Repository, Text } from "@codebase/lexico-db";
 
 /** A text's ancestor link: the text it climbs from, the ancestor, and its distance. */

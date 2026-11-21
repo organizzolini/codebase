@@ -5,45 +5,45 @@ import { LoggerService } from "@codebase/observability";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EphemerisModule } from "../ephemeris/ephemeris.module";
-import { MajorAspectEventService } from "../major-aspects/major-aspect-event.service";
-import { MajorAspectProgressiveService } from "../major-aspects/major-aspect-progressive.service";
-import { MajorAspectsService } from "../major-aspects/major-aspects.service";
-import { MathService } from "../math/math.service";
-import { MinorAspectsComposerService } from "../minor-aspects/minor-aspects-composer.service";
-import { MinorAspectsEventService } from "../minor-aspects/minor-aspects-event.service";
-import { MinorAspectsProgressiveService } from "../minor-aspects/minor-aspects-progressive.service";
-import { MinorAspectsService } from "../minor-aspects/minor-aspects.service";
+import { MathService } from "../ephemeris/modules/math/math.service";
 import { ProgressiveAspectService } from "../progressive/progressive-aspect.service";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
-import { QuadrupleAspectsBaseService } from "../quadruple-aspects/quadruple-aspects-base.service";
-import { QuadrupleAspectsComposerService } from "../quadruple-aspects/quadruple-aspects-composer.service";
-import { QuadrupleAspectsService } from "../quadruple-aspects/quadruple-aspects.service";
-import { QuintupleAspectsComposerService } from "../quintuple-aspects/quintuple-aspects-composer.service";
-import { QuintupleAspectsService } from "../quintuple-aspects/quintuple-aspects.service";
-import { SextupleAspectsComposerService } from "../sextuple-aspects/sextuple-aspects-composer.service";
-import { SextupleAspectsService } from "../sextuple-aspects/sextuple-aspects.service";
-import { SpecialtyAspectsComposerService } from "../specialty-aspects/specialty-aspects-composer.service";
-import { SpecialtyAspectsEventService } from "../specialty-aspects/specialty-aspects-event.service";
-import { SpecialtyAspectsProgressiveService } from "../specialty-aspects/specialty-aspects-progressive.service";
-import { SpecialtyAspectsService } from "../specialty-aspects/specialty-aspects.service";
-import { StelliumService } from "../stellium/stellium.service";
-import { TripleAspectsComposerService } from "../triple-aspects/triple-aspects-composer.service";
-import { TripleAspectsDetectorService } from "../triple-aspects/triple-aspects-detector.service";
-import { TripleAspectsService } from "../triple-aspects/triple-aspects.service";
 
-import { AspectEphemerisService } from "./aspect-ephemeris.service";
-import { AspectEventFormattingService } from "./aspect-event-formatting.service";
-import { AspectGraphService } from "./aspect-graph.service";
-import { AspectPhaseEmojiService } from "./aspect-phase-emoji.service";
-import { AspectsUtilitiesService } from "./aspects-utilities.service";
 import {
   COMPOSITE_ASPECT_DETECTORS_TOKEN,
   PROGRESSIVE_ASPECT_DETECTORS_TOKEN,
   SIMPLE_ASPECT_DETECTORS_TOKEN,
 } from "./aspects.constants";
 import { AspectsService } from "./aspects.service";
-import { CompoundPhaseService } from "./compound-phase.service";
-import { ProgressiveCompoundEventService } from "./progressive-compound-event.service";
+import { AspectEphemerisService } from "./modules/calculation/aspect-ephemeris.service";
+import { AspectGraphService } from "./modules/calculation/aspect-graph.service";
+import { CompoundPhaseService } from "./modules/compound-phases/compound-phase.service";
+import { ProgressiveCompoundEventService } from "./modules/compound-phases/progressive-compound-event.service";
+import { AspectEventFormattingService } from "./modules/formatting/aspect-event-formatting.service";
+import { AspectPhaseEmojiService } from "./modules/formatting/aspect-phase-emoji.service";
+import { MajorAspectEventService } from "./modules/major-aspects/major-aspect-event.service";
+import { MajorAspectProgressiveService } from "./modules/major-aspects/major-aspect-progressive.service";
+import { MajorAspectsService } from "./modules/major-aspects/major-aspects.service";
+import { MinorAspectsComposerService } from "./modules/minor-aspects/minor-aspects-composer.service";
+import { MinorAspectsEventService } from "./modules/minor-aspects/minor-aspects-event.service";
+import { MinorAspectsProgressiveService } from "./modules/minor-aspects/minor-aspects-progressive.service";
+import { MinorAspectsService } from "./modules/minor-aspects/minor-aspects.service";
+import { QuadrupleAspectsBaseService } from "./modules/quadruple-aspects/quadruple-aspects-base.service";
+import { QuadrupleAspectsComposerService } from "./modules/quadruple-aspects/quadruple-aspects-composer.service";
+import { QuadrupleAspectsService } from "./modules/quadruple-aspects/quadruple-aspects.service";
+import { QuintupleAspectsComposerService } from "./modules/quintuple-aspects/quintuple-aspects-composer.service";
+import { QuintupleAspectsService } from "./modules/quintuple-aspects/quintuple-aspects.service";
+import { SextupleAspectsComposerService } from "./modules/sextuple-aspects/sextuple-aspects-composer.service";
+import { SextupleAspectsService } from "./modules/sextuple-aspects/sextuple-aspects.service";
+import { SpecialtyAspectsComposerService } from "./modules/specialty-aspects/specialty-aspects-composer.service";
+import { SpecialtyAspectsEventService } from "./modules/specialty-aspects/specialty-aspects-event.service";
+import { SpecialtyAspectsProgressiveService } from "./modules/specialty-aspects/specialty-aspects-progressive.service";
+import { SpecialtyAspectsService } from "./modules/specialty-aspects/specialty-aspects.service";
+import { StelliumService } from "./modules/stellium/stellium.service";
+import { TripleAspectsComposerService } from "./modules/triple-aspects/triple-aspects-composer.service";
+import { TripleAspectsDetectorService } from "./modules/triple-aspects/triple-aspects-detector.service";
+import { TripleAspectsService } from "./modules/triple-aspects/triple-aspects.service";
+import { AspectsUtilitiesService } from "./modules/utilities/aspects-utilities.service";
 
 import type { Body } from "../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";

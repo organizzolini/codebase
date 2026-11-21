@@ -3,10 +3,10 @@ import { Args as Arguments, Query, Resolver } from "@nestjs/graphql";
 
 import { mapConnection } from "@codebase/interface";
 
-import { LiteratureSearchResult } from "./literature-search-result.entities";
 import { LiteratureService } from "./literature.service";
 import { toAuthorType, toLineType, toTextType } from "./literature.utilities";
-import { SearchLiteratureArguments } from "./search-literature-arguments.entities";
+import { LiteratureSearchResult } from "./modules/search/literature-search-result.entities";
+import { SearchLiteratureArguments } from "./modules/search/search-literature-arguments.entities";
 
 /**
  * GraphQL resolver for aggregated Literature search.

@@ -249,3 +249,4 @@ catalogs:
     "@nestjs/core": ^11.1.21 || ^12.0.1
 patchedDependencies:
   nx@24.0.0: patches/nx@24.0.0.patch
+  type-coverage-core@2.30.1: patches/type-coverage-core@2.30.1.patch

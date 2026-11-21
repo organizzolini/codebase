@@ -39,7 +39,7 @@ export class ConventionalConfigIoService {
 
   private readonly releaseConfigFile = path.join(
     this.workspaceRoot,
-    "configuration/release.config.cjs",
+    "configuration/repository/release.config.cjs",
   );
 
   private readonly requireFromCurrentModule = createRequire(import.meta.url);

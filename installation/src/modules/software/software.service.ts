@@ -5,13 +5,13 @@ import { LoggerService } from "@codebase/observability";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { SshSigningService } from "../ssh-signing/ssh-signing.service";
 
-import { SoftwareDatabaseService } from "./software-database.service";
-import { SoftwareDockerService } from "./software-docker.service";
-import { SoftwareGpgService } from "./software-gpg.service";
-import { SoftwareInfraService } from "./software-infra.service";
-import { SoftwareLinuxService } from "./software-linux.service";
-import { SoftwareOllamaService } from "./software-ollama.service";
-import { SoftwarePythonService } from "./software-python.service";
+import { SoftwareLinuxService } from "./modules/platform/software-linux.service";
+import { SoftwareDockerService } from "./modules/runtimes/software-docker.service";
+import { SoftwareOllamaService } from "./modules/runtimes/software-ollama.service";
+import { SoftwarePythonService } from "./modules/runtimes/software-python.service";
+import { SoftwareDatabaseService } from "./modules/tooling/software-database.service";
+import { SoftwareGpgService } from "./modules/tooling/software-gpg.service";
+import { SoftwareInfraService } from "./modules/tooling/software-infra.service";
 
 /**
  * Installs developer tools after Node, with a different set on each platform.

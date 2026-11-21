@@ -6,18 +6,18 @@ import { describe, expect, it } from "vitest";
 
 import { createTemporaryDirectory } from "@codebase/testing";
 
-import * as anchorPlacement from "./render/anchor-placement";
 import {
   closeConfigurationService,
   getConfigurationService,
 } from "./render/builders";
 import { collectDocuments, orderDocuments } from "./render/catalog";
-import * as configuration from "./render/configuration";
 import { deliverDocuments, renderDocument } from "./render/document";
-import * as exportDelivery from "./render/export-delivery";
+import * as anchorPlacement from "./render/exports/anchor-placement";
+import * as configuration from "./render/exports/configuration";
+import * as exportDelivery from "./render/exports/export-delivery";
 import * as pathQueries from "./render/path-queries";
 import { EXAMPLES_DIRECTORY } from "./render/paths";
-import { EXAMPLE_ORDER } from "./render/reading-order";
+import { EXAMPLE_ORDER, exampleDirectory } from "./render/reading-order";
 import { run, selectMode, USAGE_MESSAGE } from "./render/run";
 
 describe("codependix examples", () => {
@@ -78,7 +78,7 @@ describe("codependix examples", () => {
 
       const sections = configuration.buildParseRefusalSections();
 
-      expect(sections).toHaveLength(5);
+      expect(sections).toHaveLength(7);
 
       for (const section of sections) {
         expect(section.body).not.toContain("accepted");
@@ -305,7 +305,7 @@ describe("codependix examples", () => {
           "utf8",
         );
 
-        expect(guide).toContain(`(examples/${exampleName})`);
+        expect(guide).toContain(`(examples/${exampleDirectory(exampleName)})`);
       },
     );
   });
@@ -467,7 +467,7 @@ describe("codependix examples", () => {
       ).toStrictEqual([]);
       expect(
         readFileSync(
-          path.join(outputDirectory, "graph-levels", "README.md"),
+          path.join(outputDirectory, "graphs", "graph-levels", "README.md"),
           "utf8",
         ),
       ).toContain("# 🗺️ The four graph levels, side by side");

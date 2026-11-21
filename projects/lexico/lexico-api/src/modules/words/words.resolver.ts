@@ -1,9 +1,9 @@
 import { Inject } from "@nestjs/common";
 import { Args as Arguments, Query, Resolver } from "@nestjs/graphql";
 
-import { WordArguments } from "./word-arguments.entities";
-import { WordType } from "./word.entities";
-import { WordsArguments } from "./words-arguments.entities";
+import { WordArguments } from "./modules/word-queries/word-arguments.entities";
+import { WordType } from "./modules/word-queries/word.entities";
+import { WordsArguments } from "./modules/word-queries/words-arguments.entities";
 import { WordsService } from "./words.service";
 import { toWordType } from "./words.utilities";
 

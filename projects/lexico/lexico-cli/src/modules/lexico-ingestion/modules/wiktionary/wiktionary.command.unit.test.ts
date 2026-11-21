@@ -1,0 +1,1094 @@
+import { appendFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
+
+import * as cheerio from "cheerio";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { stubFetch } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { resetCommandTestHarness } from "../../../../../testing/command-harness";
+
+import { WiktionaryCommand } from "./wiktionary.command";
+
+import type * as FileSystemHelpers from "@codebase/testing/file-system";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
+import type { AnyNode, Element } from "domhandler";
+
+const appendFileSyncMock = vi.mocked(appendFileSync);
+const existsSyncMock = vi.mocked(existsSync);
+const mkdirSyncMock = vi.mocked(mkdirSync);
+const writeFileSyncMock = vi.mocked(writeFileSync);
+
+vi.mock("node:fs", async () => {
+  const { mockFileSystem } = await vi.importActual<typeof FileSystemHelpers>(
+    "@codebase/testing/file-system",
+  );
+
+  return mockFileSystem();
+});
+
+describe(WiktionaryCommand, () => {
+  let command: WiktionaryCommand;
+  let logger: BuiltTestingModule<WiktionaryCommand>["logger"];
+
+  beforeAll(async () => {
+    const built = await buildTestingModule(WiktionaryCommand);
+
+    command = built.instance;
+    logger = built.logger;
+  });
+
+  beforeEach(() => {
+    resetCommandTestHarness();
+    existsSyncMock.mockReturnValue(true);
+  });
+
+  const getRequiredElement = (element: Element | undefined): Element => {
+    if (!element) {
+      throw new Error("Expected anchor element");
+    }
+
+    return element;
+  };
+
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(WiktionaryCommand);
+
+    expect(instance).toBeInstanceOf(WiktionaryCommand);
+  });
+
+  it("sets logger context", async () => {
+    await expectLoggerContext(WiktionaryCommand);
+  });
+
+  it("should create output directory when missing", async () => {
+    existsSyncMock.mockReturnValueOnce(false);
+
+    await buildTestingModule(WiktionaryCommand);
+
+    expect(mkdirSyncMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("should escape capitals with underscore", () => {
+    const escaped = (
+      command as unknown as {
+        escapeCapitals: (word: string) => string;
+      }
+    ).escapeCapitals("AbCd");
+
+    expect(escaped).toBe("_ab_cd");
+  });
+
+  it("should write wiktionary entry json with html payload", () => {
+    const entry = {
+      category: "lemma",
+      href: "https://en.wiktionary.org/wiki/amo#Latin",
+      word: "Amo",
+    };
+    const $ = cheerio.load('<div id="Latin"><p>latin content</p></div>');
+    const section = $("#Latin");
+
+    (
+      command as unknown as {
+        saveWiktionaryEntry: (
+          entryToSave: { category: string; href: string; word: string },
+          sectionToSave: cheerio.Cheerio<AnyNode>,
+          cheerioApi: cheerio.CheerioAPI,
+        ) => void;
+      }
+    ).saveWiktionaryEntry(entry, section, $);
+
+    expect(writeFileSyncMock).toHaveBeenCalledTimes(1);
+    expect(logger.info).toHaveBeenCalledWith("💬 Ingested word", undefined, {
+      word: "Amo",
+    });
+  });
+
+  it("should skip reconstruction and appendix links", async () => {
+    const ingestWordSpy = vi.spyOn(
+      command as unknown as {
+        ingestWord: (
+          word: string,
+          urlPath: string,
+          category: string,
+        ) => Promise<void>;
+      },
+      "ingestWord",
+    );
+
+    const $ = cheerio.load(
+      '<a href="/wiki/Reconstruction:foo">Reconstruction:Foo</a>',
+    );
+    const a = getRequiredElement($("a").get(0));
+
+    await (
+      command as unknown as {
+        processWiktionaryCategoryLink: (
+          element: Element,
+          cheerioApi: cheerio.CheerioAPI,
+          category: string,
+        ) => Promise<void>;
+      }
+    ).processWiktionaryCategoryLink(a, $, "lemma");
+
+    expect(ingestWordSpy).not.toHaveBeenCalled();
+  });
+
+  it("should skip links with slash in word", async () => {
+    const ingestWordSpy = vi.spyOn(
+      command as unknown as {
+        ingestWord: (
+          word: string,
+          urlPath: string,
+          category: string,
+        ) => Promise<void>;
+      },
+      "ingestWord",
+    );
+
+    const $ = cheerio.load('<a href="/wiki/amo">am/o</a>');
+    const a = getRequiredElement($("a").get(0));
+
+    await (
+      command as unknown as {
+        processWiktionaryCategoryLink: (
+          element: Element,
+          cheerioApi: cheerio.CheerioAPI,
+          category: string,
+        ) => Promise<void>;
+      }
+    ).processWiktionaryCategoryLink(a, $, "lemma");
+
+    expect(ingestWordSpy).not.toHaveBeenCalled();
+  });
+
+  it("should warn when href points to index page", async () => {
+    existsSyncMock.mockReturnValue(false);
+    await (
+      command as unknown as {
+        ingestWord: (
+          word: string,
+          urlPath: string,
+          category: string,
+        ) => Promise<void>;
+      }
+    ).ingestWord("amo", "/w/index.php?title=amo", "lemma");
+
+    expect(logger.warn).toHaveBeenCalledWith(
+      "🌐 Missing wiktionary page for word",
+      undefined,
+      { word: "amo" },
+    );
+  });
+
+  it("should warn when latin section is missing", async () => {
+    existsSyncMock.mockReturnValue(false);
+    vi.spyOn(
+      command as unknown as {
+        parseLatinSection: (href: string) => Promise<null | {
+          $: cheerio.CheerioAPI;
+          section: cheerio.Cheerio<AnyNode>;
+        }>;
+      },
+      "parseLatinSection",
+    ).mockResolvedValue(null);
+
+    await (
+      command as unknown as {
+        ingestWord: (
+          word: string,
+          urlPath: string,
+          category: string,
+        ) => Promise<void>;
+      }
+    ).ingestWord("amo", "/wiki/amo", "lemma");
+
+    expect(logger.warn).toHaveBeenCalledWith(
+      "🌐 Missing latin entry for word",
+      undefined,
+      { word: "amo" },
+    );
+  });
+
+  it("should save entry when latin section exists", async () => {
+    existsSyncMock.mockReturnValue(false);
+    const $ = cheerio.load('<div id="Latin"><p>latin content</p></div>');
+    const saveWiktionaryEntrySpy = vi.spyOn(
+      command as unknown as {
+        saveWiktionaryEntry: (
+          entry: { category: string; href: string; word: string },
+          section: cheerio.Cheerio<AnyNode>,
+          cheerioApi: cheerio.CheerioAPI,
+        ) => void;
+      },
+      "saveWiktionaryEntry",
+    );
+
+    vi.spyOn(
+      command as unknown as {
+        parseLatinSection: (href: string) => Promise<null | {
+          $: cheerio.CheerioAPI;
+          section: cheerio.Cheerio<AnyNode>;
+        }>;
+      },
+      "parseLatinSection",
+    ).mockResolvedValue({ $, section: $("#Latin") });
+
+    await (
+      command as unknown as {
+        ingestWord: (
+          word: string,
+          urlPath: string,
+          category: string,
+        ) => Promise<void>;
+      }
+    ).ingestWord("amo", "/wiki/amo", "lemma");
+
+    expect(saveWiktionaryEntrySpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("should skip a word whose page is already cached", async () => {
+    existsSyncMock.mockReturnValue(true);
+    const parseLatinSectionSpy = vi.spyOn(
+      command as unknown as {
+        parseLatinSection: (href: string) => Promise<null>;
+      },
+      "parseLatinSection",
+    );
+
+    await (
+      command as unknown as {
+        ingestWord: (
+          word: string,
+          urlPath: string,
+          category: string,
+        ) => Promise<void>;
+      }
+    ).ingestWord("amo", "/wiki/amo", "lemma");
+
+    expect(parseLatinSectionSpy).not.toHaveBeenCalled();
+  });
+
+  it("should identify itself with a user agent when fetching", async () => {
+    const fetchMock = stubFetch(new Response("ok"));
+
+    await (
+      command as unknown as {
+        fetchWithRetry: (url: string, retries: number) => Promise<Response>;
+      }
+    ).fetchWithRetry("https://example.com", 2);
+
+    expect(fetchMock).toHaveBeenCalledWith("https://example.com", {
+      headers: { "User-Agent": expect.stringContaining("lexico-cli") },
+    });
+  });
+
+  it("should return non-429 response immediately in retry fetch", async () => {
+    stubFetch(new Response(null, { status: 200 }));
+
+    const response = await (
+      command as unknown as {
+        fetchWithRetry: (
+          url: string,
+          retries?: number,
+        ) => Promise<{ status: number }>;
+      }
+    ).fetchWithRetry("https://example.com", 2);
+
+    expect(response.status).toBe(200);
+  });
+
+  it("should throw when category page response is not ok", async () => {
+    vi.spyOn(
+      command as unknown as {
+        fetchWithRetry: (
+          url: string,
+          retries?: number,
+        ) => Promise<{ ok: boolean; status: number; statusText: string }>;
+      },
+      "fetchWithRetry",
+    ).mockResolvedValue({
+      ok: false,
+      status: 500,
+      statusText: "Internal Server Error",
+    });
+
+    await expect(
+      (
+        command as unknown as {
+          fetchCategoryPage: (urlPath: string) => Promise<cheerio.CheerioAPI>;
+        }
+      ).fetchCategoryPage("/wiki/start"),
+    ).rejects.toThrow("HTTP 500 Internal Server Error");
+  });
+
+  it("should parse and return category page html when response is ok", async () => {
+    vi.spyOn(
+      command as unknown as {
+        fetchWithRetry: (
+          url: string,
+          retries?: number,
+        ) => Promise<{ ok: boolean; text: () => Promise<string> }>;
+      },
+      "fetchWithRetry",
+    ).mockResolvedValue({
+      ok: true,
+      text: async () =>
+        await Promise.resolve(
+          '<div id="mw-pages"><div class="mw-category"></div></div>',
+        ),
+    });
+
+    const page = await (
+      command as unknown as {
+        fetchCategoryPage: (urlPath: string) => Promise<cheerio.CheerioAPI>;
+      }
+    ).fetchCategoryPage("/wiki/start");
+
+    expect(page("#mw-pages")).toHaveLength(1);
+  });
+
+  it("should retry after rate limit and then return success response", async () => {
+    vi.useFakeTimers();
+    const fetchMock = stubFetch(
+      new Response(null, { headers: { "Retry-After": "0" }, status: 429 }),
+      new Response(null, { status: 200 }),
+    );
+
+    const responsePromise = (
+      command as unknown as {
+        fetchWithRetry: (
+          url: string,
+          retries?: number,
+        ) => Promise<{ status: number }>;
+      }
+    ).fetchWithRetry("https://example.com", 2);
+
+    await vi.advanceTimersByTimeAsync(1);
+    const response = await responsePromise;
+
+    expect(response.status).toBe(200);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+
+    vi.useRealTimers();
+  });
+
+  it("should perform final fetch when retries are exhausted", async () => {
+    vi.useFakeTimers();
+    const fetchMock = stubFetch(
+      new Response(null, { status: 429 }),
+      new Response(null, { status: 429 }),
+      new Response(null, { status: 429 }),
+    );
+
+    const responsePromise = (
+      command as unknown as {
+        fetchWithRetry: (
+          url: string,
+          retries?: number,
+        ) => Promise<{ status: number }>;
+      }
+    ).fetchWithRetry("https://example.com", 1);
+
+    await vi.runAllTimersAsync();
+    const response = await responsePromise;
+
+    expect(response.status).toBe(429);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    expect(logger.warn).toHaveBeenCalledTimes(3);
+    expect(logger.warn).toHaveBeenCalledWith(
+      "🚫 Exhausted retries after a rate limit",
+      undefined,
+      { retries: 1, url: "https://example.com" },
+    );
+
+    vi.useRealTimers();
+  });
+
+  it("should honor Retry-After and cap delay at maximum retry delay", async () => {
+    vi.useFakeTimers();
+    stubFetch(
+      new Response(null, { headers: { "Retry-After": "120" }, status: 429 }),
+      new Response(null, { status: 200 }),
+    );
+
+    const responsePromise = (
+      command as unknown as {
+        fetchWithRetry: (
+          url: string,
+          retries?: number,
+        ) => Promise<{ status: number }>;
+      }
+    ).fetchWithRetry("https://example.com", 1);
+
+    await vi.advanceTimersByTimeAsync(60_000);
+    const response = await responsePromise;
+
+    expect(response.status).toBe(200);
+    expect(logger.warn).toHaveBeenCalledWith(
+      "⏳ Waiting after a rate limit",
+      undefined,
+      { attempt: 0, backoffMilliseconds: 60_000, retries: 1 },
+    );
+
+    vi.useRealTimers();
+  });
+
+  it("should throw when latin section request is not ok", async () => {
+    vi.spyOn(
+      command as unknown as {
+        fetchWithRetry: (
+          url: string,
+          retries?: number,
+        ) => Promise<{ ok: boolean; status: number; statusText: string }>;
+      },
+      "fetchWithRetry",
+    ).mockResolvedValue({
+      ok: false,
+      status: 404,
+      statusText: "Not Found",
+    });
+
+    await expect(
+      (
+        command as unknown as {
+          parseLatinSection: (href: string) => Promise<null | {
+            $: cheerio.CheerioAPI;
+            section: cheerio.Cheerio<AnyNode>;
+          }>;
+        }
+      ).parseLatinSection("https://en.wiktionary.org/wiki/amo#Latin"),
+    ).rejects.toThrow("HTTP 404 Not Found");
+  });
+
+  it("should parse latin section when response contains latin heading", async () => {
+    vi.spyOn(
+      command as unknown as {
+        fetchWithRetry: (
+          url: string,
+          retries?: number,
+        ) => Promise<{ ok: boolean; text: () => Promise<string> }>;
+      },
+      "fetchWithRetry",
+    ).mockResolvedValue({
+      ok: true,
+      text: async () =>
+        await Promise.resolve(
+          '<h2><span id="Latin">Latin</span></h2><p>amo</p><h2>English</h2>',
+        ),
+    });
+
+    const parsed = await (
+      command as unknown as {
+        parseLatinSection: (href: string) => Promise<null | {
+          $: cheerio.CheerioAPI;
+          section: cheerio.Cheerio<AnyNode>;
+        }>;
+      }
+    ).parseLatinSection("https://en.wiktionary.org/wiki/amo#Latin");
+
+    expect(parsed).not.toBeNull();
+    expect(parsed?.section.length).toBeGreaterThan(0);
+  });
+
+  it("should return null when latin section cannot be found", async () => {
+    vi.spyOn(
+      command as unknown as {
+        fetchWithRetry: (
+          url: string,
+          retries?: number,
+        ) => Promise<{ ok: boolean; text: () => Promise<string> }>;
+      },
+      "fetchWithRetry",
+    ).mockResolvedValue({
+      ok: true,
+      text: async () =>
+        await Promise.resolve('<h2><span id="English">English</span></h2>'),
+    });
+
+    const parsed = await (
+      command as unknown as {
+        parseLatinSection: (href: string) => Promise<null | {
+          $: cheerio.CheerioAPI;
+          section: cheerio.Cheerio<AnyNode>;
+        }>;
+      }
+    ).parseLatinSection("https://en.wiktionary.org/wiki/amo#Latin");
+
+    expect(parsed).toBeNull();
+  });
+
+  it("should append error log when word ingestion fails", async () => {
+    vi.spyOn(
+      command as unknown as {
+        ingestWord: (
+          word: string,
+          urlPath: string,
+          category: string,
+        ) => Promise<void>;
+      },
+      "ingestWord",
+    ).mockRejectedValue(new Error("word failure"));
+
+    const $ = cheerio.load('<a href="/wiki/amo">amo</a>');
+    const anchor = $("a").get(0);
+    if (!anchor) {
+      throw new Error("Expected anchor node");
+    }
+
+    await (
+      command as unknown as {
+        processWiktionaryCategoryLink: (
+          element: Element,
+          cheerioApi: cheerio.CheerioAPI,
+          category: string,
+        ) => Promise<void>;
+      }
+    ).processWiktionaryCategoryLink(anchor, $, "lemma");
+
+    expect(logger.error).toHaveBeenCalledWith(
+      "🔤 Failed ingesting word",
+      expect.any(String),
+      { word: "amo" },
+    );
+    expect(appendFileSyncMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("should append error log when word ingestion fails with non-Error value", async () => {
+    vi.spyOn(
+      command as unknown as {
+        ingestWord: (
+          word: string,
+          urlPath: string,
+          category: string,
+        ) => Promise<void>;
+      },
+      "ingestWord",
+    ).mockRejectedValue("word failure string");
+
+    const cheerioApi = cheerio.load('<a href="/wiki/amo">amo</a>');
+    const anchor = cheerioApi("a").get(0);
+    if (!anchor) {
+      throw new Error("Expected anchor node");
+    }
+
+    await (
+      command as unknown as {
+        processWiktionaryCategoryLink: (
+          element: Element,
+          cheerioApi: cheerio.CheerioAPI,
+          category: string,
+        ) => Promise<void>;
+      }
+    ).processWiktionaryCategoryLink(anchor, cheerioApi, "lemma");
+
+    expect(logger.error).toHaveBeenCalledWith(
+      "🔤 Failed ingesting word",
+      expect.any(String),
+      { word: "amo" },
+    );
+    expect(appendFileSyncMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("should process wiktionary category link and wait for request delay", async () => {
+    vi.useFakeTimers();
+
+    const ingestWordSpy = vi
+      .spyOn(
+        command as unknown as {
+          ingestWord: (
+            word: string,
+            urlPath: string,
+            category: string,
+          ) => Promise<void>;
+        },
+        "ingestWord",
+      )
+      .mockResolvedValue(undefined);
+
+    const $ = cheerio.load('<a href="/wiki/amo">amo</a>');
+    const anchor = $("a").get(0);
+    if (!anchor) {
+      throw new Error("Expected anchor node");
+    }
+
+    const promise = (
+      command as unknown as {
+        processWiktionaryCategoryLink: (
+          element: Element,
+          cheerioApi: cheerio.CheerioAPI,
+          category: string,
+        ) => Promise<void>;
+      }
+    ).processWiktionaryCategoryLink(anchor, $, "lemma");
+
+    await vi.advanceTimersByTimeAsync(500);
+    await promise;
+
+    expect(ingestWordSpy).toHaveBeenCalledWith("amo", "/wiki/amo", "lemma");
+
+    vi.useRealTimers();
+  });
+
+  it("should append error log when category ingestion fails", async () => {
+    vi.spyOn(
+      command as unknown as {
+        fetchCategoryPage: (urlPath: string) => Promise<cheerio.CheerioAPI>;
+      },
+      "fetchCategoryPage",
+    ).mockRejectedValue(new Error("category failure"));
+
+    await (
+      command as unknown as {
+        ingestCategory: (
+          category: "lemma",
+          startPath?: string,
+        ) => Promise<void>;
+      }
+    ).ingestCategory("lemma", "/wiki/start");
+
+    expect(logger.error).toHaveBeenCalledWith(
+      "🌐 Failed ingesting category",
+      expect.any(String),
+      expect.objectContaining({ category: "lemma" }),
+    );
+    expect(appendFileSyncMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("should use category error message when error stack is empty", () => {
+    const categoryError = new Error("category message fallback");
+    categoryError.stack = "";
+
+    (
+      command as unknown as {
+        handleCategoryError: (
+          category: "lemma",
+          urlPath: string,
+          error: unknown,
+        ) => void;
+      }
+    ).handleCategoryError("lemma", "/wiki/start", categoryError);
+
+    expect(appendFileSyncMock).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.stringContaining("category message fallback"),
+    );
+  });
+
+  it("should stringify non-Error category failures", () => {
+    (
+      command as unknown as {
+        handleCategoryError: (
+          category: "lemma",
+          urlPath: string,
+          error: unknown,
+        ) => void;
+      }
+    ).handleCategoryError("lemma", "/wiki/start", "category failure string");
+
+    expect(logger.error).toHaveBeenCalledWith(
+      "🌐 Failed ingesting category",
+      "category failure string",
+      expect.objectContaining({ category: "lemma" }),
+    );
+  });
+
+  it("should call process link for category page anchors", async () => {
+    const firstPage = cheerio.load(`
+      <div id="mw-pages">
+        <div class="mw-category">
+          <div class="mw-category-group">
+            <ul><li><a href="/wiki/amo">amo</a></li></ul>
+          </div>
+        </div>
+      </div>
+      <a href="">next page</a>
+    `);
+
+    vi.spyOn(
+      command as unknown as {
+        fetchCategoryPage: (urlPath: string) => Promise<cheerio.CheerioAPI>;
+      },
+      "fetchCategoryPage",
+    ).mockResolvedValue(firstPage);
+
+    const processLinkSpy = vi
+      .spyOn(
+        command as unknown as {
+          processWiktionaryCategoryLink: (
+            element: Element,
+            cheerioApi: cheerio.CheerioAPI,
+            category: string,
+          ) => Promise<void>;
+        },
+        "processWiktionaryCategoryLink",
+      )
+      .mockResolvedValue(undefined);
+
+    await (
+      command as unknown as {
+        ingestCategory: (
+          category: "lemma",
+          startPath?: string,
+        ) => Promise<void>;
+      }
+    ).ingestCategory("lemma", "/wiki/start");
+
+    expect(processLinkSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("should follow pagination from default category start path", async () => {
+    const firstPage = cheerio.load(`
+      <div id="mw-pages">
+        <div class="mw-category">
+          <div class="mw-category-group">
+            <ul><li><a href="/wiki/amo">amo</a></li></ul>
+          </div>
+        </div>
+      </div>
+      <a href="/wiki/page-2">next page</a>
+    `);
+    const secondPage = cheerio.load(`
+      <div id="mw-pages">
+        <div class="mw-category">
+          <div class="mw-category-group">
+            <ul><li><a href="/wiki/video">video</a></li></ul>
+          </div>
+        </div>
+      </div>
+    `);
+
+    const fetchCategoryPageSpy = vi
+      .spyOn(
+        command as unknown as {
+          fetchCategoryPage: (urlPath: string) => Promise<cheerio.CheerioAPI>;
+        },
+        "fetchCategoryPage",
+      )
+      .mockResolvedValueOnce(firstPage)
+      .mockResolvedValueOnce(secondPage);
+
+    const processLinkSpy = vi
+      .spyOn(
+        command as unknown as {
+          processWiktionaryCategoryLink: (
+            element: Element,
+            cheerioApi: cheerio.CheerioAPI,
+            category: string,
+          ) => Promise<void>;
+        },
+        "processWiktionaryCategoryLink",
+      )
+      .mockResolvedValue(undefined);
+
+    await (
+      command as unknown as {
+        ingestCategory: (
+          category: "lemma",
+          startPath?: string,
+        ) => Promise<void>;
+      }
+    ).ingestCategory("lemma");
+
+    expect(fetchCategoryPageSpy).toHaveBeenNthCalledWith(
+      1,
+      expect.stringContaining("Category:Latin_lemmas"),
+    );
+    expect(fetchCategoryPageSpy).toHaveBeenNthCalledWith(2, "/wiki/page-2");
+    expect(processLinkSpy).toHaveBeenCalledTimes(2);
+  });
+
+  it("should stop at the end lemma instead of following pagination", async () => {
+    const page = cheerio.load(`
+      <div id="mw-pages">
+        <div class="mw-category">
+          <div class="mw-category-group">
+            <ul>
+              <li><a href="/wiki/amo">amo</a></li>
+              <li><a href="/wiki/Zeta">Zeta</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <a href="/wiki/page-2">next page</a>
+    `);
+    const fetchCategoryPageSpy = vi
+      .spyOn(
+        command as unknown as {
+          fetchCategoryPage: (urlPath: string) => Promise<cheerio.CheerioAPI>;
+        },
+        "fetchCategoryPage",
+      )
+      .mockResolvedValue(page);
+    const processLinkSpy = vi
+      .spyOn(
+        command as unknown as {
+          processWiktionaryCategoryLink: (
+            element: Element,
+            cheerioApi: cheerio.CheerioAPI,
+            category: string,
+          ) => Promise<void>;
+        },
+        "processWiktionaryCategoryLink",
+      )
+      .mockResolvedValue(undefined);
+
+    await (
+      command as unknown as {
+        ingestCategory: (
+          category: "lemma",
+          startPath?: string,
+          endLemma?: string,
+        ) => Promise<void>;
+      }
+    ).ingestCategory("lemma", undefined, "major");
+
+    expect(processLinkSpy).toHaveBeenCalledTimes(1);
+    expect(fetchCategoryPageSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("should not read a reconstruction, appendix or non-Latin-letter entry as the end of the range", async () => {
+    const page = cheerio.load(`
+      <div id="mw-pages">
+        <div class="mw-category">
+          <div class="mw-category-group">
+            <ul>
+              <li><a href="/wiki/Reconstruction:Latin/zzz">Reconstruction:Latin/zzz</a></li>
+              <li><a href="/wiki/ƚ">ƚ</a></li>
+              <li><a href="/wiki/s̄">s̄</a></li>
+              <li><a href="/wiki/amo">amo</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    `);
+    vi.spyOn(
+      command as unknown as {
+        fetchCategoryPage: (urlPath: string) => Promise<cheerio.CheerioAPI>;
+      },
+      "fetchCategoryPage",
+    ).mockResolvedValue(page);
+    const processLinkSpy = vi
+      .spyOn(
+        command as unknown as {
+          processWiktionaryCategoryLink: (
+            element: Element,
+            cheerioApi: cheerio.CheerioAPI,
+            category: string,
+          ) => Promise<void>;
+        },
+        "processWiktionaryCategoryLink",
+      )
+      .mockResolvedValue(undefined);
+
+    await (
+      command as unknown as {
+        ingestCategory: (
+          category: "lemma",
+          startPath?: string,
+          endLemma?: string,
+        ) => Promise<void>;
+      }
+    ).ingestCategory("lemma", undefined, "major");
+
+    expect(processLinkSpy).toHaveBeenCalledTimes(4);
+  });
+
+  it("should start every category at the start lemma", async () => {
+    const ingestCategorySpy = vi
+      .spyOn(
+        command as unknown as {
+          ingestCategory: (
+            category: string,
+            startPath?: string,
+            endLemma?: string,
+          ) => Promise<void>;
+        },
+        "ingestCategory",
+      )
+      .mockResolvedValue(undefined);
+
+    await command.ingestWiktionary("major", "Mz");
+
+    expect(ingestCategorySpy).toHaveBeenCalledTimes(4);
+    expect(ingestCategorySpy).toHaveBeenCalledWith(
+      "lemma",
+      "/w/index.php?title=Category:Latin_lemmas&pagefrom=major",
+      "mz",
+    );
+  });
+
+  it("should pass the lemma options of run to the scrape", async () => {
+    const ingestWiktionarySpy = vi
+      .spyOn(command, "ingestWiktionary")
+      .mockResolvedValue(undefined);
+
+    await command.run([], { endLemma: "n", startLemma: "m" });
+
+    expect(ingestWiktionarySpy).toHaveBeenCalledWith("m", "n");
+  });
+
+  it("should return option values unchanged", () => {
+    expect(command.parseStartLemma("m")).toBe("m");
+    expect(command.parseEndLemma("n")).toBe("n");
+  });
+
+  it("should ingest all configured categories", async () => {
+    existsSyncMock.mockReturnValue(false);
+
+    const ingestCategorySpy = vi
+      .spyOn(
+        command as unknown as {
+          ingestCategory: (
+            category: string,
+            startPath?: string,
+          ) => Promise<void>;
+        },
+        "ingestCategory",
+      )
+      .mockResolvedValue(undefined);
+
+    await command.ingestWiktionary();
+
+    expect(mkdirSyncMock).toHaveBeenCalledTimes(1);
+    expect(ingestCategorySpy).toHaveBeenCalledTimes(4);
+  });
+
+  it("should not create data directory when it already exists", async () => {
+    existsSyncMock.mockReturnValue(true);
+
+    const ingestCategorySpy = vi
+      .spyOn(
+        command as unknown as {
+          ingestCategory: (
+            category: string,
+            startPath?: string,
+          ) => Promise<void>;
+        },
+        "ingestCategory",
+      )
+      .mockResolvedValue(undefined);
+
+    await command.ingestWiktionary();
+
+    expect(mkdirSyncMock).not.toHaveBeenCalled();
+    expect(ingestCategorySpy).toHaveBeenCalledTimes(4);
+  });
+
+  it("should delegate run to ingestWiktionary", async () => {
+    const ingestWiktionarySpy = vi
+      .spyOn(command, "ingestWiktionary")
+      .mockResolvedValue(undefined);
+
+    await command.run();
+
+    expect(ingestWiktionarySpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("should not append #Latin when href already includes it", async () => {
+    existsSyncMock.mockReturnValue(false);
+    const parseLatinSectionSpy = vi
+      .spyOn(
+        command as unknown as {
+          parseLatinSection: (href: string) => Promise<null | {
+            $: cheerio.CheerioAPI;
+            section: cheerio.Cheerio<AnyNode>;
+          }>;
+        },
+        "parseLatinSection",
+      )
+      .mockResolvedValue(null);
+
+    await (
+      command as unknown as {
+        ingestWord: (
+          word: string,
+          urlPath: string,
+          category: string,
+        ) => Promise<void>;
+      }
+    ).ingestWord("amo", "/wiki/amo#Latin", "lemma");
+
+    expect(parseLatinSectionSpy).toHaveBeenCalledWith(
+      "https://en.wiktionary.org/wiki/amo#Latin",
+    );
+  });
+
+  it("should process category link with missing href using empty fallback", async () => {
+    vi.useFakeTimers();
+
+    const ingestWordSpy = vi
+      .spyOn(
+        command as unknown as {
+          ingestWord: (
+            word: string,
+            urlPath: string,
+            category: string,
+          ) => Promise<void>;
+        },
+        "ingestWord",
+      )
+      .mockResolvedValue(undefined);
+
+    const cheerioApi = cheerio.load("<a>amo</a>");
+    const anchor = cheerioApi("a").get(0);
+    if (!anchor) {
+      throw new Error("Expected anchor node");
+    }
+
+    const processPromise = (
+      command as unknown as {
+        processWiktionaryCategoryLink: (
+          element: Element,
+          cheerioApi: cheerio.CheerioAPI,
+          category: string,
+        ) => Promise<void>;
+      }
+    ).processWiktionaryCategoryLink(anchor, cheerioApi, "lemma");
+
+    await vi.advanceTimersByTimeAsync(500);
+    await processPromise;
+
+    expect(ingestWordSpy).toHaveBeenCalledWith("amo", "", "lemma");
+
+    vi.useRealTimers();
+  });
+
+  it("should use word error message fallback when stack is empty", async () => {
+    const wordError = new Error("word message fallback");
+    wordError.stack = "";
+
+    vi.spyOn(
+      command as unknown as {
+        ingestWord: (
+          word: string,
+          urlPath: string,
+          category: string,
+        ) => Promise<void>;
+      },
+      "ingestWord",
+    ).mockRejectedValue(wordError);
+
+    const cheerioApi = cheerio.load('<a href="/wiki/amo">amo</a>');
+    const anchor = cheerioApi("a").get(0);
+    if (!anchor) {
+      throw new Error("Expected anchor node");
+    }
+
+    await (
+      command as unknown as {
+        processWiktionaryCategoryLink: (
+          element: Element,
+          cheerioApi: cheerio.CheerioAPI,
+          category: string,
+        ) => Promise<void>;
+      }
+    ).processWiktionaryCategoryLink(anchor, cheerioApi, "lemma");
+
+    expect(appendFileSyncMock).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.stringContaining("word message fallback"),
+    );
+  });
+});

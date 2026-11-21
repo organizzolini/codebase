@@ -1,24 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback } from "react";
 
-import { LibraryGrid } from "../components/library-grid/library-grid";
+import { LibraryGrid } from "../components/library/library-grid/library-grid";
 import {
   LIBRARY_PAGE_SIZE,
   librarySearchSchema,
-} from "../components/library-grid/library-grid-api.constants";
-import { getLibrary } from "../components/library-grid/library-grid.constants";
-import { LibraryNoResults } from "../components/library-no-results/library-no-results";
-import { LibraryPagination } from "../components/library-pagination/library-pagination";
-import { isPastEnd } from "../components/library-pagination/library-pagination.utilities";
-import { LibraryPastEnd } from "../components/library-past-end/library-past-end";
-import { LibraryToolbar } from "../components/library-toolbar/library-toolbar";
-import { getLibraryFacets } from "../components/library-toolbar/library-toolbar-api.constants";
+} from "../components/library/library-grid/library-grid-api.constants";
+import { getLibrary } from "../components/library/library-grid/library-grid.constants";
+import { LibraryNoResults } from "../components/library/library-no-results/library-no-results";
+import { LibraryPagination } from "../components/library/library-pagination/library-pagination";
+import { isPastEnd } from "../components/library/library-pagination/library-pagination.utilities";
+import { LibraryPastEnd } from "../components/library/library-past-end/library-past-end";
+import { LibraryToolbar } from "../components/library/library-toolbar/library-toolbar";
+import { getLibraryFacets } from "../components/library/library-toolbar/library-toolbar-api.constants";
 
 import type {
   GetLibraryInput,
   LibraryFilterParameters,
   LibrarySearchParameters,
-} from "../components/library-grid/library-grid.types";
+} from "../components/library/library-grid/library-grid.types";
 import type { ReactNode } from "react";
 
 // 🧭 Route

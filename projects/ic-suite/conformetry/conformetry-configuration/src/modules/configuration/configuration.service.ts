@@ -1,5 +1,4 @@
-import { existsSync } from "node:fs";
-import { access, readFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -19,7 +18,6 @@ import {
   conformetryConfigurationSchema,
   SUPPORTED_CONFIGURATION_EXTENSIONS,
   UnknownConfigurationFileTypeError,
-  WORKSPACE_MANIFEST_FILENAME,
 } from "./configuration.constants";
 
 import type { ResolveGeneratorInputsArguments } from "../input/input.types";
@@ -112,32 +110,6 @@ export class ConfigurationService {
     };
   }
 
-  /**
-   * Walks upward from the cwd to find the workspace manifest.
-   *
-   * Lets a config path resolve from a nested directory.
-   */
-  private async findWorkspaceRoot(): Promise<string | undefined> {
-    let candidateDirectory = path.resolve(process.cwd());
-
-    for (;;) {
-      try {
-        await access(
-          path.join(candidateDirectory, WORKSPACE_MANIFEST_FILENAME),
-        );
-        return candidateDirectory;
-      } catch {
-        const parentDirectory = path.dirname(candidateDirectory);
-
-        if (parentDirectory === candidateDirectory) {
-          return undefined;
-        }
-
-        candidateDirectory = parentDirectory;
-      }
-    }
-  }
-
   /** Loads a config module, choosing the reader by extension. */
   private async loadConfigurationModule(args: {
     configurationPath: string;
@@ -220,7 +192,7 @@ export class ConfigurationService {
   public async loadConformetryConfiguration(
     configurationPath: string,
   ): Promise<ConformetryConfiguration> {
-    const resolvedPath = await this.resolveConfigurationPath(configurationPath);
+    const resolvedPath = this.resolveConfigurationPath(configurationPath);
     const extension = path.extname(resolvedPath).toLowerCase();
 
     if (!SUPPORTED_CONFIGURATION_EXTENSIONS.has(extension)) {
@@ -325,33 +297,12 @@ export class ConfigurationService {
   }
 
   /**
-   * Resolves a config path to the file `loadConformetryConfiguration` reads.
+   * Resolves a config path against the cwd, never searching elsewhere.
    *
-   * Public so hosts resolve the same file, including the workspace-root fallback.
+   * Public so hosts read the same file `loadConformetryConfiguration` does.
    */
-  public async resolveConfigurationPath(
-    configurationPath: string,
-  ): Promise<string> {
-    const absolutePath = path.resolve(configurationPath);
-
-    if (existsSync(absolutePath)) {
-      return absolutePath;
-    }
-
-    const workspaceRoot = await this.findWorkspaceRoot();
-
-    if (workspaceRoot === undefined) {
-      return absolutePath;
-    }
-
-    const workspaceRelativePath = path.resolve(
-      workspaceRoot,
-      configurationPath,
-    );
-
-    return existsSync(workspaceRelativePath)
-      ? workspaceRelativePath
-      : absolutePath;
+  public resolveConfigurationPath(configurationPath: string): string {
+    return path.resolve(configurationPath);
   }
 
   /** Resolves generator inputs from raw command-line arguments. */

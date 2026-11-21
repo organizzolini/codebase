@@ -20,7 +20,7 @@ import { getRouter } from "../router";
 
 import { Route } from "./library";
 
-import type { LibraryPageResult } from "../components/library-grid/library-grid.types";
+import type { LibraryPageResult } from "../components/library/library-grid/library-grid.types";
 import type {
   LibraryChildrenQueryVariables,
   LibraryQueryVariables,

@@ -22,18 +22,6 @@ export const SUPPORTED_CONFIGURATION_EXTENSIONS = new Set([
   ".ts",
 ]);
 
-/** File names a configuration may use; a run always takes `--config`. */
-export const CONFIGURATION_FILE_NAMES = [
-  "codometer.config.ts",
-  "codometer.config.mts",
-  "codometer.config.cts",
-  "codometer.config.js",
-  "codometer.config.mjs",
-  "codometer.config.cjs",
-  "codometer.config.json",
-  "codometer.config.jsonc",
-] as const;
-
 /** Default excluded globs: only what every ecosystem generates. */
 export const DEFAULT_EXCLUDE_GLOBS = [
   "**/.nx/**",
@@ -134,7 +122,7 @@ export const CODOMETER_COMPRESSIONS = [
 
 /** Message for a configuration with no `format`, not the schema's. */
 export const MISSING_FORMAT_MESSAGE =
-  'A codometer configuration must name a `format` of "json" or "markdown", and nothing supplies one for it. Set it in this file, or spread a shared default object that sets it — every run has to be told which report shape it produces, and a directory with no configuration file anywhere above it fails here rather than measuring with a format nobody chose.';
+  'A codometer configuration must name a `format` of "json" or "markdown", and nothing supplies one for it. Set it in this file, or spread a shared default object that sets it — every run has to be told which report shape it produces, and a configuration without one fails here rather than measuring with a format nobody chose.';
 
 /** Report shapes a run may produce. */
 export const CODOMETER_FORMATS = [

@@ -8,35 +8,35 @@ import {
 
 import { Button, useSidebar } from "@codebase/presentation";
 
-import { FontSizeControl } from "../components/font-size-control/font-size-control";
+import { FontSizeControl } from "../components/reader/font-size-control/font-size-control";
 import {
   DEFAULT_FONT_SIZE,
   FONT_SIZE_CLASSES,
-} from "../components/font-size-control/font-size-control.constants";
+} from "../components/reader/font-size-control/font-size-control.constants";
 import {
   readFontSize,
   writeFontSize,
-} from "../components/font-size-control/font-size-control.utilities";
-import { ReaderHeader } from "../components/reader-header/reader-header";
-import { ReaderHint } from "../components/reader-hint/reader-hint";
-import { ReaderHistory } from "../components/reader-history/reader-history";
-import { ReaderLines } from "../components/reader-lines/reader-lines";
-import { readerSearchSchema } from "../components/reader-lines/reader-lines-api.constants";
-import { getText } from "../components/reader-lines/reader-lines.constants";
+} from "../components/reader/font-size-control/font-size-control.utilities";
+import { ReaderHeader } from "../components/reader/reader-header/reader-header";
+import { ReaderHint } from "../components/reader/reader-hint/reader-hint";
+import { ReaderHistory } from "../components/reader/reader-history/reader-history";
+import { ReaderLines } from "../components/reader/reader-lines/reader-lines";
+import { readerSearchSchema } from "../components/reader/reader-lines/reader-lines-api.constants";
+import { getText } from "../components/reader/reader-lines/reader-lines.constants";
 import {
   describeOrigin,
   failNotFound,
-} from "../components/reader-lines/reader-lines.utilities";
-import { ReaderNavigation } from "../components/reader-navigation/reader-navigation";
+} from "../components/reader/reader-lines/reader-lines.utilities";
+import { ReaderNavigation } from "../components/reader/reader-navigation/reader-navigation";
 import { useLookupHistory } from "../hooks/use-lookup-history/use-lookup-history";
 import { isLookupEntry } from "../hooks/use-lookup-history/use-lookup-history.utilities";
 
-import type { FontSize } from "../components/font-size-control/font-size-control.types";
+import type { FontSize } from "../components/reader/font-size-control/font-size-control.types";
 import type {
   ReaderFocus,
   ReaderSearch,
   ReaderText,
-} from "../components/reader-lines/reader-lines.types";
+} from "../components/reader/reader-lines/reader-lines.types";
 import type {
   HistoryEntry,
   WordLookup,

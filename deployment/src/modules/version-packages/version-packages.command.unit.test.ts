@@ -5,15 +5,16 @@ import { ConfigService } from "@nestjs/config";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
-
 import {
+  createTemporaryDirectory,
   failed,
   FakeProcessRunner,
   succeeded,
-  useTemporaryDirectories,
-  writeFile,
-} from "../../../testing/mocks";
+  writeFileTree,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { TEMPORARY_ROOT } from "../../../testing/mocks";
 import { MainTipService } from "../main-tip/main-tip.service";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { ReleaseGroupService } from "../release-group/release-group.service";
@@ -22,8 +23,8 @@ import { TagPackagesService } from "../tag-packages/tag-packages.service";
 import { VersionPackagesCommand } from "./version-packages.command";
 import { VersionPackagesService } from "./version-packages.service";
 
-import type { ScriptedAnswer } from "../../../testing/mocks";
 import type { CapturedProcess } from "../process-runner/process-runner.types";
+import type { ScriptedAnswer } from "@codebase/testing";
 
 const SET_URL =
   "git remote set-url origin https://x-access-token:secret@github.com/owner/codebase.git";
@@ -37,7 +38,6 @@ const ROOT = "projects/ic-suite/tool/bumped";
 describe(VersionPackagesCommand, () => {
   const moduleOptions = { mocks: [VersionPackagesService] };
   const originalExitCode = process.exitCode;
-  const makeDirectory = useTemporaryDirectories();
   let environmentFile: string;
   let reportLines: string[];
   let workspace: string;
@@ -89,19 +89,20 @@ describe(VersionPackagesCommand, () => {
   beforeEach(() => {
     process.exitCode = undefined;
     reportLines = [];
-    workspace = makeDirectory();
+    workspace = createTemporaryDirectory("workspace", TEMPORARY_ROOT);
     vi.spyOn(process, "cwd").mockReturnValue(workspace);
-    writeFile(
-      workspace,
-      "nx.json",
-      JSON.stringify({ release: { projects: ["projects/ic-suite/*/*"] } }),
-    );
-    writeFile(
-      workspace,
-      `${ROOT}/package.json`,
-      JSON.stringify({ name: "@tool/bumped", version: "1.0.0" }),
-    );
-    writeFile(workspace, ".nxignore", NXIGNORE);
+    writeFileTree(workspace, {
+      "nx.json": JSON.stringify({
+        release: { projects: ["projects/ic-suite/*/*"] },
+      }),
+    });
+    writeFileTree(workspace, {
+      [`${ROOT}/package.json`]: JSON.stringify({
+        name: "@tool/bumped",
+        version: "1.0.0",
+      }),
+    });
+    writeFileTree(workspace, { ".nxignore": NXIGNORE });
     environmentFile = path.join(workspace, "github-env");
     fs.writeFileSync(environmentFile, "");
     vi.stubEnv("GITHUB_ENV", environmentFile);

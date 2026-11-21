@@ -65,7 +65,7 @@ export class GenerateCommand extends CommandRunner {
     this.rejectRemovedGeneratorOption(rawArguments);
 
     const configurationPath =
-      await this.configurationService.resolveConfigurationPath(options.config);
+      this.configurationService.resolveConfigurationPath(options.config);
     const configuration =
       await this.configurationService.loadConformetryConfiguration(
         configurationPath,

@@ -1,7 +1,7 @@
 import { renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { MAXIMUM_AGENDA_DAYS } from "../../components/events-calendar/calendar-views.constants";
+import { MAXIMUM_AGENDA_DAYS } from "../../components/calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
 
 import { useCalendarSearch } from "./use-calendar-search";
 

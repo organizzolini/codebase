@@ -187,13 +187,9 @@ export class PluginService {
     configurationDirectoryPath: string;
     definition: GeneratorDefinition;
   }> {
-    const configurationPath =
-      await this.configurationService.resolveConfigurationPath(
-        args.configurationPath,
-      );
     const configuration =
       await this.configurationService.loadConformetryConfiguration(
-        configurationPath,
+        args.configurationPath,
       );
     const definition = configuration.find((generator) => {
       return generator.name === args.generatorName;
@@ -209,7 +205,7 @@ export class PluginService {
     }
 
     return {
-      configurationDirectoryPath: path.dirname(configurationPath),
+      configurationDirectoryPath: path.dirname(args.configurationPath),
       definition: {
         // Forwarded only when declared, as the command line does, so a
         // generator with none reaches the runtime unchanged.
@@ -311,8 +307,12 @@ export class PluginService {
       options: args.options,
       workspaceRoot: args.workspaceRoot,
     });
+    const configurationPath = path.resolve(
+      args.workspaceRoot,
+      pluginOptions.configurationPath,
+    );
     const templateInputs = await this.resolveTemplateInputs({
-      configurationPath: pluginOptions.configurationPath,
+      configurationPath,
     });
     const targetsByProjectRoot = new Map<string, InferredTargets>();
     const discoveryCache = new Map<string, Instance[]>();
@@ -332,7 +332,7 @@ export class PluginService {
       }
 
       const instances = await this.instancesService.findProjectInstances({
-        configurationPath: pluginOptions.configurationPath,
+        configurationPath,
         discoveryCache,
         project,
         workspaceRoot: args.workspaceRoot,
@@ -375,14 +375,18 @@ export class PluginService {
       options: args.options,
       workspaceRoot: args.workspaceRoot,
     });
+    const configurationPath = path.resolve(
+      args.workspaceRoot,
+      pluginOptions.configurationPath,
+    );
     await this.assertPluginInSync({
-      configurationPath: pluginOptions.configurationPath,
+      configurationPath,
       workspaceRoot: args.workspaceRoot,
     });
 
     const { configurationDirectoryPath, definition } =
       await this.resolveGeneratorDefinition({
-        configurationPath: pluginOptions.configurationPath,
+        configurationPath,
         generatorName: args.generatorName,
         workspaceRoot: args.workspaceRoot,
       });
@@ -398,7 +402,7 @@ export class PluginService {
       formatter: adapters.formatter,
       inputs,
       instancePath: await this.pathsService.resolveGenerationPath({
-        configurationPath: pluginOptions.configurationPath,
+        configurationPath,
         generatorName: args.generatorName,
         inputs,
         tree: args.tree,
@@ -426,14 +430,18 @@ export class PluginService {
       surface: EXECUTION_OPTION_SURFACE,
       workspaceRoot: args.workspaceRoot,
     });
+    const configurationPath = path.resolve(
+      args.workspaceRoot,
+      pluginOptions.configurationPath,
+    );
     await this.assertPluginInSync({
-      configurationPath: pluginOptions.configurationPath,
+      configurationPath,
       workspaceRoot: args.workspaceRoot,
     });
 
     const result = this.validationService.validate({
       instances: await this.instancesService.findProjectInstances({
-        configurationPath: pluginOptions.configurationPath,
+        configurationPath,
         project: args.project,
         workspaceRoot: args.workspaceRoot,
       }),
@@ -441,7 +449,7 @@ export class PluginService {
         ? {}
         : { languageNames: args.languageNames }),
       templates: await this.resolveTemplates({
-        configurationPath: pluginOptions.configurationPath,
+        configurationPath,
         workspaceRoot: args.workspaceRoot,
       }),
       ...(args.threshold === undefined ? {} : { threshold: args.threshold }),

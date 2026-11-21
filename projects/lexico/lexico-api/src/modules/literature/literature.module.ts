@@ -10,18 +10,18 @@ import {
   WordLexeme,
 } from "@codebase/lexico-db";
 
-import { AuthorsResolver } from "./authors.resolver";
-import { LibraryResolver } from "./library.resolver";
-import { LibraryService } from "./library.service";
-import { LinesResolver } from "./lines.resolver";
-import { LiteratureRelationsLoader } from "./literature-relations.loader";
-import { LiteratureRelationsService } from "./literature-relations.service";
 import { LiteratureResolver } from "./literature.resolver";
 import { LiteratureService } from "./literature.service";
-import { TextsResolver } from "./texts.resolver";
-import { TokensResolver } from "./tokens.resolver";
-import { WordCandidatesResolver } from "./word-candidates.resolver";
-import { WordCandidatesService } from "./word-candidates.service";
+import { AuthorsResolver } from "./modules/authors/authors.resolver";
+import { LibraryResolver } from "./modules/library/library.resolver";
+import { LibraryService } from "./modules/library/library.service";
+import { LinesResolver } from "./modules/lines/lines.resolver";
+import { LiteratureRelationsLoader } from "./modules/relations/literature-relations.loader";
+import { LiteratureRelationsService } from "./modules/relations/literature-relations.service";
+import { TextsResolver } from "./modules/texts/texts.resolver";
+import { TokensResolver } from "./modules/tokens/tokens.resolver";
+import { WordCandidatesResolver } from "./modules/word-candidates/word-candidates.resolver";
+import { WordCandidatesService } from "./modules/word-candidates/word-candidates.service";
 
 /**
  * Module providing literature browsing, hierarchy, and search endpoints.

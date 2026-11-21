@@ -1,6 +1,6 @@
-import { TileService } from "../src/modules/tile/tile.service";
+import { TileService } from "../src/modules/geometry/modules/tile/tile.service";
 
-import type { Tile } from "../src/modules/tile/tile.types";
+import type { Tile } from "../src/modules/geometry/modules/tile/tile.types";
 
 /**
  * Builds `mosaic` tiles for the tests that need one written out by hand.

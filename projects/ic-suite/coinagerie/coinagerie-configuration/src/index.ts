@@ -1,7 +1,7 @@
 // 📤 Exports
 
 export {
-  CONFIGURATION_FILE_NAMES,
+  ConfigurationPathRequiredError,
   DEFAULT_INCLUDE,
 } from "./modules/configuration/configuration.constants";
 

@@ -3,6 +3,8 @@ export { PageInfo } from "./modules/graphql-server/graphql-server.entities";
 export type {
   ClassConstructor,
   Connection,
+  DeletableEntityFields,
+  DeletableFields,
   Edge,
   GraphQLFields,
   GraphQLObjectOf,
@@ -28,4 +30,5 @@ export {
   mapRelations,
   Paginated,
   toCursor,
+  toDeletableFields,
 } from "./modules/graphql-server/graphql-server.utilities";

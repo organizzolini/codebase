@@ -20,7 +20,7 @@ import { LoggerModule } from "@codebase/observability";
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
   startCaelundasDatabase,
-} from "../../../testing/database";
+} from "../../../testing/support/database";
 
 import { CALENDAR_EVENT_BATCH_SIZE } from "./calendar-events.constants";
 import { CalendarEventsModule } from "./calendar-events.module";

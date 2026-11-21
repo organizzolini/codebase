@@ -4,13 +4,13 @@ import { DocumentationModule } from "../documentation/documentation.module";
 import { EdgesModule } from "../edges/edges.module";
 import { SignaturesModule } from "../signatures/signatures.module";
 
-import { AddressDepthService } from "./address-depth.service";
-import { BreadthService } from "./breadth.service";
-import { ComponentsService } from "./components.service";
 import { GraphAssemblyService } from "./graph-assembly.service";
-import { GraphDepthService } from "./graph-depth.service";
 import { GraphService } from "./graph.service";
-import { PathsService } from "./paths.service";
+import { AddressDepthService } from "./modules/measurement/address-depth.service";
+import { BreadthService } from "./modules/measurement/breadth.service";
+import { GraphDepthService } from "./modules/measurement/graph-depth.service";
+import { ComponentsService } from "./modules/traversal/components.service";
+import { PathsService } from "./modules/traversal/paths.service";
 
 /**
  * Provides graph assembly, cycle condensation, and depth and breadth measurement.

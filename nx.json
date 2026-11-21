@@ -47,14 +47,14 @@
       "{projectRoot}/**/*.ipynb",
       "{projectRoot}/**/*.py",
       "{projectRoot}/pyproject.toml",
-      "{workspaceRoot}/configuration/uv.lock"
+      "{workspaceRoot}/configuration/python/uv.lock"
     ],
     "python-tests": ["{projectRoot}/testing/**/*.py"],
     "shared-globals": ["{workspaceRoot}/configuration/tsconfig.json"],
     "typescript-files": [
       "{projectRoot}/**/*.{ts,tsx,mts,cts}",
       "{projectRoot}/**/*.json",
-      "{projectRoot}/tsconfig*.json",
+      "{projectRoot}/configuration/tsconfig*.json",
       "shared-globals"
     ]
   },
@@ -62,58 +62,39 @@
   "parallel": 2,
   "plugins": [
     {
-      "exclude": ["configuration/**"],
       "options": {
-        "buildTargetName": "build",
-        "devTargetName": "vite-dev",
-        "typecheckTargetName": "typecheck"
-      },
-      "plugin": "@nx/vite/plugin"
-    },
-    {
-      "exclude": ["configuration/**"],
-      "options": {
-        "targetName": "eslint"
-      },
-      "plugin": "@nx/eslint/plugin"
-    },
-    {
-      "exclude": ["configuration/**"],
-      "options": {
-        "testMode": "run",
-        "testTargetName": "vitest"
-      },
-      "plugin": "@nx/vitest"
-    },
-    {
-      "options": {
-        "configurationPath": "configuration/conformetry.config.ts",
+        "configurationPath": "configuration/ic-suite/conformetry.config.ts",
         "validateTargetName": "conformetry-validate"
       },
       "plugin": "@conformetry/nx"
     },
     {
       "options": {
-        "configurationPath": "configuration/callidescope.config.ts"
+        "configurationPath": "configuration/ic-suite/callidescope.config.ts",
+        "projectConfigurationPath": "configuration/callidescope.config.ts",
+        "projectTsconfigPath": "configuration/tsconfig.json"
       },
       "plugin": "@callidescope/nx"
     },
     {
       "options": {
-        "configurationPath": "configuration/codependix.config.ts",
-        "gateTargetName": "codependix-bound"
+        "configurationPath": "configuration/ic-suite/codependix.config.ts",
+        "gateTargetName": "codependix-bound",
+        "projectConfigurationPath": "configuration/codependix.config.ts",
+        "projectTsconfigPath": "configuration/tsconfig.json"
       },
       "plugin": "@codependix/nx"
     },
     {
-      "exclude": ["coinagerie.config.ts"],
+      "exclude": ["package.json"],
       "options": {
         "command": "SWC_NODE_PROJECT=\"$NX_WORKSPACE_ROOT/configuration/tsconfig.json\" node --import @swc-node/register/esm-register \"$NX_WORKSPACE_ROOT/projects/ic-suite/coinagerie/coinagerie-cli/src/coinagerie-cli.main.ts\"",
         "inputs": [
-          "{workspaceRoot}/configuration/coinagerie.config.ts",
+          "{workspaceRoot}/configuration/ic-suite/coinagerie.config.ts",
           "{workspaceRoot}/GLOSSARY.md",
           "{workspaceRoot}/projects/ic-suite/coinagerie/*/src/**/!(*.test.*|*.spec.*)"
-        ]
+        ],
+        "projectConfigurationPath": "configuration/coinagerie.config.ts"
       },
       "plugin": "@coinagerie/nx"
     }
@@ -220,12 +201,12 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock",
           "python-source"
         ],
         "options": {
-          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" bandit -c pyproject.toml -r src/",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" bandit -c pyproject.toml -r src/",
           "cwd": "{projectRoot}"
         }
       }
@@ -242,13 +223,13 @@
       {
         "cache": true,
         "dependsOn": ["^build"],
-        "description": "The `projects/ic-suite/<suite>/` override of the default `build` entry above: every field is identical except the one extra input. Each ic-suite `vite.config.ts` builds from `configuration/vite.library.config.ts`, which belongs to the `configuration` project, so without it a change there neither invalidates a cached build nor makes these packages affected — and Nx release reads that same affected set to decide which packages a commit republishes. Kept as a full second entry because Nx does not merge across matching targetDefaults array entries; the last one whose `filter` matches a project replaces the earlier entry wholesale.",
+        "description": "The `projects/ic-suite/<suite>/` override of the default `build` entry above: every field is identical except the one extra input. Each ic-suite `vite.config.ts` builds from `configuration/typescript/vite.library.config.ts`, which belongs to the `configuration` project, so without it a change there neither invalidates a cached build nor makes these packages affected — and Nx release reads that same affected set to decide which packages a commit republishes. Kept as a full second entry because Nx does not merge across matching targetDefaults array entries; the last one whose `filter` matches a project replaces the earlier entry wholesale.",
         "filter": {
           "projects": ["projects/ic-suite/*/*"]
         },
         "inputs": [
           "^production",
-          "{workspaceRoot}/configuration/vite.library.config.ts",
+          "{workspaceRoot}/configuration/typescript/vite.library.config.ts",
           "dependency-versions",
           "production"
         ]
@@ -269,7 +250,7 @@
             "check": true
           },
           "write": {
-            "outputMarkdown": "codometer.md"
+            "outputMarkdown": "documentation/codometer.md"
           }
         },
         "defaultConfiguration": "check",
@@ -279,19 +260,19 @@
         "inputs": [
           "!{projectRoot}/codometer-report.json",
           "^production",
-          "{workspaceRoot}/configuration/.codometerignore",
-          "{workspaceRoot}/configuration/codometer.config.ts",
+          "{workspaceRoot}/configuration/ic-suite/.codometerignore",
+          "{workspaceRoot}/configuration/ic-suite/codometer.config.ts",
           "{workspaceRoot}/integration/executors.json",
           "{workspaceRoot}/integration/src/executors/codometer/**/!(*.test.*|*.spec.*)",
           "{workspaceRoot}/integration/src/modules/process-runner/process-runner.service.ts",
           "production"
         ],
         "options": {
-          "config": "codometer.config.ts"
+          "config": "configuration/codometer.config.ts"
         },
         "outputs": [
-          "{projectRoot}/codometer.md",
-          "{projectRoot}/codometer-report.json"
+          "{projectRoot}/codometer-report.json",
+          "{projectRoot}/documentation/codometer.md"
         ]
       }
     ],
@@ -307,8 +288,8 @@
           "target": "coinagerie"
         }
       ],
-      "description": "Two things the `@coinagerie/nx` inference does not declare. The `write` configuration of the check target it infers for every project holding a `coinagerie.config.ts`, which writes the glossary instead of judging it. And a dependency on the root glossary's own target, `configuration:coinagerie`, so that the root `GLOSSARY.md` is checked, or written, before any project's glossary is: every project excludes the words the root glossary lists, so a project judged against a stale root glossary would be judged wrongly. Nx forwards an explicit configuration down `dependsOn`, so `-c write` writes the root first and `-c check` checks it first. The plugin infers only the check, so the `write` configuration is added here: it sets the executor's `write` option, which rewrites each glossary instead of judging it.",
-      "outputs": ["{projectRoot}/coinagerie.md"]
+      "description": "Two things the `@coinagerie/nx` inference does not declare. The `write` configuration of the check target it infers for every project holding a configuration at the plugin's `projectConfigurationPath`, which writes the glossary instead of judging it. And a dependency on the root glossary's own target, `configuration:coinagerie`, so that the root `GLOSSARY.md` is checked, or written, before any project's glossary is: every project excludes the words the root glossary lists, so a project judged against a stale root glossary would be judged wrongly. Nx forwards an explicit configuration down `dependsOn`, so `-c write` writes the root first and `-c check` checks it first. The plugin infers only the check, so the `write` configuration is added here: it sets the executor's `write` option, which rewrites each glossary instead of judging it.",
+      "outputs": ["{projectRoot}/documentation/coinagerie.md"]
     },
     "dependency-cruiser": [
       {
@@ -321,14 +302,14 @@
           "^default",
           "{projectRoot}/**/*.ts",
           "{projectRoot}/**/*.tsx",
-          "{workspaceRoot}/configuration/dependency-cruiser.cjs",
+          "{workspaceRoot}/configuration/dependencies/dependency-cruiser.cjs",
           "default",
           {
             "externalDependencies": ["dependency-cruiser"]
           }
         ],
         "options": {
-          "command": "depcruise {projectRoot}/src --config configuration/dependency-cruiser.cjs",
+          "command": "depcruise {projectRoot}/src --config configuration/dependencies/dependency-cruiser.cjs",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -361,12 +342,12 @@
       "executor": "nx:run-commands",
       "inputs": [
         "^production",
-        "{workspaceRoot}/configuration/vitest.packed.config.mts",
+        "{workspaceRoot}/configuration/typescript/vitest.packed.config.mts",
         "default",
         "dependency-versions"
       ],
       "options": {
-        "command": "pnpm exec vitest run --root . --config \"$NX_WORKSPACE_ROOT/configuration/vitest.packed.config.mts\"",
+        "command": "pnpm exec vitest run --root . --config \"$NX_WORKSPACE_ROOT/configuration/typescript/vitest.packed.config.mts\"",
         "cwd": "{projectRoot}"
       }
     },
@@ -375,21 +356,22 @@
         "cache": true,
         "configurations": {
           "check": {
-            "command": "eslint . --cache --cache-strategy content --cache-location \"$NX_WORKSPACE_ROOT/.eslintcache/\""
+            "command": "eslint --config configuration/eslint.config.ts . --cache --cache-strategy content --cache-location \"$NX_WORKSPACE_ROOT/.eslintcache/\""
           },
           "write": {
             "args": "--fix"
           }
         },
         "defaultConfiguration": "check",
+        "executor": "nx:run-commands",
         "filter": {
           "projects": ["tag:language:typescript"]
         },
         "inputs": [
           "!{projectRoot}/.eslintcache/**",
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,html,css,scss,md,mdx,yaml,yml}",
-          "{workspaceRoot}/configuration/codebase-structure.json",
           "{workspaceRoot}/configuration/eslint.config.ts",
+          "{workspaceRoot}/configuration/lint/codebase-structure.json",
           "shared-globals",
           {
             "externalDependencies": [
@@ -416,8 +398,10 @@
           }
         ],
         "options": {
-          "command": "eslint . {args}"
-        }
+          "command": "eslint --config configuration/eslint.config.ts . {args}",
+          "cwd": "{projectRoot}"
+        },
+        "outputs": ["{options.outputFile}"]
       }
     ],
     "fallow": [
@@ -430,7 +414,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/configuration/fallow.config.jsonc",
+          "{workspaceRoot}/configuration/typescript/fallow.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["fallow"]
@@ -448,7 +432,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/configuration/fallow.config.jsonc",
+          "{workspaceRoot}/configuration/typescript/fallow.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["fallow"]
@@ -466,7 +450,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/configuration/fallow.config.jsonc",
+          "{workspaceRoot}/configuration/typescript/fallow.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["fallow"]
@@ -484,7 +468,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/configuration/fallow.config.jsonc",
+          "{workspaceRoot}/configuration/typescript/fallow.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["fallow"]
@@ -502,7 +486,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/configuration/fallow.config.jsonc",
+          "{workspaceRoot}/configuration/typescript/fallow.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["fallow"]
@@ -529,8 +513,8 @@
       "executor": "nx:noop",
       "inputs": [
         "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,css,scss,html,yaml,yml,md,mdx,py,ipynb,sql}",
-        "{workspaceRoot}/configuration/.cspell/**",
-        "{workspaceRoot}/configuration/cspell.config.yaml"
+        "{workspaceRoot}/configuration/lint/.cspell/**",
+        "{workspaceRoot}/configuration/lint/cspell.config.yaml"
       ]
     },
     "guard-code": {
@@ -571,7 +555,7 @@
           "projects": ["tag:language:typescript"]
         },
         "inputs": [
-          "{workspaceRoot}/configuration/knip.config.ts",
+          "{workspaceRoot}/configuration/typescript/knip.config.ts",
           "{workspaceRoot}/integration/executors.json",
           "{workspaceRoot}/integration/src/executors/knip/**/!(*.test.*|*.spec.*)",
           "{workspaceRoot}/integration/src/modules/process-runner/process-runner.service.ts",
@@ -581,7 +565,7 @@
           }
         ],
         "options": {
-          "configuration": "configuration/knip.config.ts"
+          "configuration": "configuration/typescript/knip.config.ts"
         }
       }
     ],
@@ -613,10 +597,10 @@
         "cache": true,
         "configurations": {
           "check": {
-            "command": "markdownlint-cli2 --config configuration/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'"
+            "command": "markdownlint-cli2 --config configuration/lint/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'"
           },
           "write": {
-            "command": "markdownlint-cli2 --fix --config configuration/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'"
+            "command": "markdownlint-cli2 --fix --config configuration/lint/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'"
           }
         },
         "defaultConfiguration": "check",
@@ -630,14 +614,14 @@
         },
         "inputs": [
           "{projectRoot}/**/*.md",
-          "{workspaceRoot}/configuration/markdownlint-cli2.config.jsonc",
+          "{workspaceRoot}/configuration/lint/markdownlint-cli2.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["markdownlint-cli2"]
           }
         ],
         "options": {
-          "command": "markdownlint-cli2 --config configuration/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'",
+          "command": "markdownlint-cli2 --config configuration/lint/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -646,16 +630,16 @@
       "cache": false,
       "configurations": {
         "extract-sql-all": {
-          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/database' >&2; exit 1; } && node --import @swc-node/register/esm-register synchronization/src/synchronization.main.ts extract-typeorm-migration-sql write --project-root={projectRoot} --module={args.module} --selection=all",
+          "command": "node --import @swc-node/register/esm-register synchronization/src/synchronization.main.ts extract-typeorm-migration-sql write --project-root={projectRoot} --selection=all",
           "cwd": "{workspaceRoot}"
         },
         "extract-sql-latest": {
-          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/database' >&2; exit 1; } && node --import @swc-node/register/esm-register synchronization/src/synchronization.main.ts extract-typeorm-migration-sql write --project-root={projectRoot} --module={args.module} --selection=latest",
+          "command": "node --import @swc-node/register/esm-register synchronization/src/synchronization.main.ts extract-typeorm-migration-sql write --project-root={projectRoot} --selection=latest",
           "cwd": "{workspaceRoot}"
         },
         "generate": {
           "commands": [
-            "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/database' >&2; exit 1; } && node --import @swc-node/register/esm-register node_modules/typeorm/cli.js migration:generate {args.module}/migrations/migration -d {args.module}/data-source.constants.ts",
+            "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/database' >&2; exit 1; } && node --import @swc-node/register/esm-register node_modules/typeorm/cli.js migration:generate migrations/migration -d {args.module}/data-source.constants.ts",
             "nx run {projectName}:migration:extract-sql-latest",
             "nx run {projectName}:lint-code:write",
             "nx run {projectName}:format-code:write"
@@ -672,7 +656,7 @@
           "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/database' >&2; exit 1; } && node --import @swc-node/register/esm-register node_modules/typeorm/cli.js migration:show -d {args.module}/data-source.constants.ts"
         }
       },
-      "description": "Generate, run, revert, or show a database project's TypeORM migrations, or extract their SQL for sqlfluff and squawk. A project opts in with `\"migration\": { \"options\": { \"module\": \"src/modules/database\" } }`, naming the folder of its own database module, which holds the command-line data source at `data-source.constants.ts` and the migrations under `migrations/`; every configuration fails with a message when it is unset. Extra command-line flags are not forwarded to the commands. Never cached: every configuration reads or changes a live database.",
+      "description": "Generate, run, revert, or show a database project's TypeORM migrations, or extract their SQL for sqlfluff and squawk. A project opts in with `\"migration\": { \"options\": { \"module\": \"src/modules/database\" } }`, naming the folder of its own database module, which holds the command-line data source at `data-source.constants.ts`; the configurations that read the data source fail with a message when it is unset. The migrations themselves live in the project's root `migrations/` folder. Extra command-line flags are not forwarded to the commands. Never cached: every configuration reads or changes a live database.",
       "executor": "nx:run-commands",
       "options": {
         "cwd": "{projectRoot}",
@@ -697,11 +681,11 @@
         },
         "inputs": [
           "{projectRoot}/src/**/*.ipynb",
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock"
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock"
         ],
         "options": {
-          "command": "find src -name '*.ipynb' -exec uv run --project \"$NX_WORKSPACE_ROOT/configuration\" nbstripout {args} {} +",
+          "command": "find src -name '*.ipynb' -exec uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" nbstripout {args} {} +",
           "cwd": "{projectRoot}"
         }
       }
@@ -724,15 +708,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,html,css,scss,md,mdx,yaml,yml}",
-          "{workspaceRoot}/configuration/.oxfmtignore",
-          "{workspaceRoot}/configuration/oxfmt.config.ts",
+          "{workspaceRoot}/configuration/lint/.oxfmtignore",
+          "{workspaceRoot}/configuration/lint/oxfmt.config.ts",
           "shared-globals",
           {
             "externalDependencies": ["oxfmt"]
           }
         ],
         "options": {
-          "command": "oxfmt -c configuration/oxfmt.config.ts --ignore-path configuration/.oxfmtignore {args} {projectRoot}",
+          "command": "oxfmt -c configuration/lint/oxfmt.config.ts --ignore-path configuration/lint/.oxfmtignore {args} {projectRoot}",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -753,15 +737,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/configuration/.oxlintignore",
-          "{workspaceRoot}/configuration/oxlint.config.ts",
+          "{workspaceRoot}/configuration/lint/.oxlintignore",
+          "{workspaceRoot}/configuration/lint/oxlint.config.ts",
           "shared-globals",
           {
             "externalDependencies": ["oxlint"]
           }
         ],
         "options": {
-          "command": "oxlint --config configuration/oxlint.config.ts --ignore-path \"$PWD/configuration/.oxlintignore\" {args} {projectRoot}/src",
+          "command": "oxlint --config configuration/lint/oxlint.config.ts --ignore-path \"$PWD/configuration/lint/.oxlintignore\" {args} {projectRoot}/src",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -801,15 +785,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,html,css,scss,md,mdx,yaml,yml}",
-          "{workspaceRoot}/configuration/.prettierignore",
-          "{workspaceRoot}/configuration/prettier.config.ts",
+          "{workspaceRoot}/configuration/lint/.prettierignore",
+          "{workspaceRoot}/configuration/lint/prettier.config.ts",
           "shared-globals",
           {
             "externalDependencies": ["prettier"]
           }
         ],
         "options": {
-          "command": "prettier {args} --config configuration/prettier.config.ts --ignore-path configuration/.prettierignore {projectRoot}"
+          "command": "prettier {args} --config configuration/lint/prettier.config.ts --ignore-path configuration/lint/.prettierignore {projectRoot}"
         }
       }
     ],
@@ -821,12 +805,12 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock",
           "python-source"
         ],
         "options": {
-          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" pyright src/",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" pyright src/",
           "cwd": "{projectRoot}"
         }
       }
@@ -836,16 +820,16 @@
         "cache": true,
         "configurations": {
           "coverage": {
-            "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" pytest --cov=src --cov-report=xml:coverage/python.xml --cov-report=term-missing"
+            "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" pytest --cov=src --cov-report=xml:coverage/python.xml --cov-report=term-missing"
           },
           "integration": {
-            "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" pytest -m integration"
+            "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" pytest -m integration"
           },
           "unit": {
-            "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" pytest -m unit"
+            "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" pytest -m unit"
           },
           "watch": {
-            "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" pytest-watch"
+            "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" pytest-watch"
           }
         },
         "executor": "nx:run-commands",
@@ -853,13 +837,13 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock",
           "python-source",
           "python-tests"
         ],
         "options": {
-          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" pytest",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" pytest",
           "cwd": "{projectRoot}"
         }
       }
@@ -873,7 +857,7 @@
           "projects": ["tag:framework:nest-commander"]
         },
         "options": {
-          "command": "node --import @swc-node/register/esm-register src/{projectName}.repl.ts",
+          "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register src/{projectName}.repl.ts",
           "cwd": "{projectRoot}"
         }
       }
@@ -893,12 +877,12 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock",
           "python-source"
         ],
         "options": {
-          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" ruff format {args} .",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" ruff format {args} .",
           "cwd": "{projectRoot}"
         }
       }
@@ -918,12 +902,12 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock",
           "python-source"
         ],
         "options": {
-          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" ruff check {args} .",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" ruff check {args} .",
           "cwd": "{projectRoot}"
         }
       }
@@ -954,8 +938,8 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,css,scss,html,yaml,yml,md,mdx,py,ipynb,sql}",
-          "{workspaceRoot}/configuration/.cspell/**",
-          "{workspaceRoot}/configuration/cspell.config.yaml",
+          "{workspaceRoot}/configuration/lint/.cspell/**",
+          "{workspaceRoot}/configuration/lint/cspell.config.yaml",
           "{workspaceRoot}/integration/executors.json",
           "{workspaceRoot}/integration/src/executors/spell-check/**/!(*.test.*|*.spec.*)",
           "{workspaceRoot}/integration/src/modules/process-runner/process-runner.service.ts",
@@ -965,7 +949,7 @@
           }
         ],
         "options": {
-          "configuration": "configuration/cspell.config.yaml"
+          "configuration": "configuration/lint/cspell.config.yaml"
         }
       }
     ],
@@ -987,15 +971,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.sql",
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock",
           "shared-globals",
           {
             "externalDependencies": []
           }
         ],
         "options": {
-          "command": "uv run --project configuration sqlfluff {args} --config configuration/pyproject.toml {projectRoot}",
+          "command": "uv run --project configuration/python sqlfluff {args} --config configuration/python/pyproject.toml {projectRoot}",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -1018,15 +1002,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.sql",
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock",
           "shared-globals",
           {
             "externalDependencies": []
           }
         ],
         "options": {
-          "command": "uv run --project configuration sqlfluff {args} --config configuration/pyproject.toml {projectRoot}",
+          "command": "uv run --project configuration/python sqlfluff {args} --config configuration/python/pyproject.toml {projectRoot}",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -1039,15 +1023,15 @@
           "projects": ["tag:framework:typeorm"]
         },
         "inputs": [
-          "{projectRoot}/src/**/*.sql",
-          "{workspaceRoot}/configuration/squawk.toml",
+          "{projectRoot}/migrations/*.sql",
+          "{workspaceRoot}/configuration/python/squawk.toml",
           "shared-globals",
           {
             "externalDependencies": ["squawk-cli"]
           }
         ],
         "options": {
-          "command": "squawk --config configuration/squawk.toml '{projectRoot}/src/**/*.sql'",
+          "command": "squawk --config configuration/python/squawk.toml '{projectRoot}/migrations/*.sql'",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -1061,7 +1045,7 @@
           "projects": ["tag:framework:nest-commander"]
         },
         "options": {
-          "command": "node --import @swc-node/register/esm-register src/{projectName}.main.ts {projectName}",
+          "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register src/{projectName}.main.ts {projectName}",
           "cwd": "{projectRoot}"
         }
       }
@@ -1087,10 +1071,10 @@
         "cache": true,
         "configurations": {
           "check": {
-            "command": "stylelint --allow-empty-input --config configuration/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
+            "command": "stylelint --allow-empty-input --config configuration/lint/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
           },
           "write": {
-            "command": "stylelint --allow-empty-input --fix --config configuration/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
+            "command": "stylelint --allow-empty-input --fix --config configuration/lint/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
           }
         },
         "defaultConfiguration": "check",
@@ -1100,7 +1084,7 @@
         },
         "inputs": [
           "{projectRoot}/src/**/*.css",
-          "{workspaceRoot}/configuration/stylelint.config.cjs",
+          "{workspaceRoot}/configuration/lint/stylelint.config.cjs",
           "shared-globals",
           {
             "externalDependencies": [
@@ -1111,17 +1095,17 @@
           }
         ],
         "options": {
-          "command": "stylelint --allow-empty-input --config configuration/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
+          "command": "stylelint --allow-empty-input --config configuration/lint/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
         }
       },
       {
         "cache": true,
         "configurations": {
           "check": {
-            "command": "stylelint --allow-empty-input --config ../../../configuration/stylelint.config.cjs 'src/**/*.css'"
+            "command": "stylelint --allow-empty-input --config ../../../configuration/lint/stylelint.config.cjs 'src/**/*.css'"
           },
           "write": {
-            "command": "stylelint --allow-empty-input --fix --config ../../../configuration/stylelint.config.cjs 'src/**/*.css'"
+            "command": "stylelint --allow-empty-input --fix --config ../../../configuration/lint/stylelint.config.cjs 'src/**/*.css'"
           }
         },
         "defaultConfiguration": "check",
@@ -1139,7 +1123,7 @@
         },
         "inputs": [
           "{projectRoot}/src/**/*.css",
-          "{workspaceRoot}/configuration/stylelint.config.cjs",
+          "{workspaceRoot}/configuration/lint/stylelint.config.cjs",
           "shared-globals",
           {
             "externalDependencies": [
@@ -1150,7 +1134,7 @@
           }
         ],
         "options": {
-          "command": "stylelint --allow-empty-input --config ../../../configuration/stylelint.config.cjs 'src/**/*.css'",
+          "command": "stylelint --allow-empty-input --config ../../../configuration/lint/stylelint.config.cjs 'src/**/*.css'",
           "cwd": "{projectRoot}"
         }
       }
@@ -1176,12 +1160,12 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock",
           "python-source"
         ],
         "options": {
-          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" ty check src/",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" ty check src/",
           "cwd": "{projectRoot}"
         }
       }
@@ -1196,15 +1180,15 @@
         "inputs": [
           "{projectRoot}/**/*.ts",
           "{projectRoot}/**/*.tsx",
+          "{projectRoot}/configuration/tsconfig.json",
           "{projectRoot}/package.json",
-          "{projectRoot}/tsconfig.json",
           "shared-globals",
           {
             "externalDependencies": ["type-coverage", "typescript"]
           }
         ],
         "options": {
-          "command": "type-coverage --detail > type-coverage-report.txt 2>&1 || (cat type-coverage-report.txt && exit 1)",
+          "command": "type-coverage --project configuration/tsconfig.json --detail > type-coverage-report.txt 2>&1 || (cat type-coverage-report.txt && exit 1)",
           "cwd": "{projectRoot}"
         },
         "outputs": ["{projectRoot}/type-coverage-report.txt"]
@@ -1233,7 +1217,7 @@
           }
         ],
         "options": {
-          "command": "node \"$NX_WORKSPACE_ROOT/node_modules/typescript-7/bin/tsc\" --noEmit",
+          "command": "node \"$NX_WORKSPACE_ROOT/node_modules/typescript-7/bin/tsc\" --noEmit -p configuration/tsconfig.json",
           "cwd": "{projectRoot}"
         },
         "outputs": []
@@ -1252,25 +1236,60 @@
       "inputs": ["typescript-files"]
     },
     "vitest": {
+      "cache": true,
       "configurations": {
         "coverage": {
-          "command": "pnpm exec vitest run --coverage --coverage.provider=v8"
+          "command": "pnpm exec vitest run --config configuration/vitest.config.ts --coverage --coverage.provider=v8"
         },
         "end-to-end": {
-          "command": "pnpm exec vitest run end-to-end.test.ts"
+          "command": "pnpm exec vitest run --config configuration/vitest.config.ts end-to-end.test.ts"
         },
         "integration": {
-          "command": "pnpm exec vitest run integration.test.ts"
+          "command": "pnpm exec vitest run --config configuration/vitest.config.ts integration.test.ts"
         },
         "unit": {
-          "command": "pnpm exec vitest run unit.test.ts"
+          "command": "pnpm exec vitest run --config configuration/vitest.config.ts unit.test.ts"
         },
         "watch": {
-          "command": "pnpm exec vitest"
+          "command": "pnpm exec vitest --config configuration/vitest.config.ts"
         }
       },
       "defaultConfiguration": "coverage",
-      "description": "Extra configurations layered onto the vitest target that @nx/vitest infers. The plugin supplies the command, inputs, and outputs. Coverage is the default so that a bare `test-code` run still enforces the thresholds — Nx only propagates a configuration down `dependsOn` when it is named explicitly."
+      "description": "Extra configurations layered onto the vitest target that @nx/vitest infers. The plugin supplies the command, inputs, and outputs. Coverage is the default so that a bare `test-code` run still enforces the thresholds — Nx only propagates a configuration down `dependsOn` when it is named explicitly.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "^production",
+        "default",
+        {
+          "fields": ["compilerOptions"],
+          "json": "{workspaceRoot}/configuration/tsconfig.json"
+        },
+        {
+          "fields": ["compilerOptions"],
+          "json": "{workspaceRoot}/configuration/typescript/tsconfig.workspace.json"
+        },
+        {
+          "fields": ["compilerOptions"],
+          "json": "{workspaceRoot}/projects/common/testing/configuration/tsconfig.json"
+        },
+        "{workspaceRoot}/configuration/typescript/vitest.config.ts",
+        "{workspaceRoot}/projects/common/testing/src/setup.ts",
+        {
+          "env": "CI"
+        },
+        {
+          "dependentTasksOutputFiles": "**/*.js",
+          "transitive": true
+        },
+        {
+          "externalDependencies": ["vitest"]
+        }
+      ],
+      "options": {
+        "command": "pnpm exec vitest run --config configuration/vitest.config.ts",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"]
     },
     "vulture": [
       {
@@ -1285,16 +1304,16 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{projectRoot}/.vulture_whitelist.py",
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock",
+          "{projectRoot}/configuration/.vulture_whitelist.py",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock",
           "python-source",
           {
             "externalDependencies": []
           }
         ],
         "options": {
-          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" python -m vulture src/ .vulture_whitelist.py --min-confidence 80",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration/python\" python -m vulture src/ configuration/.vulture_whitelist.py --min-confidence 80",
           "cwd": "{projectRoot}"
         }
       }
@@ -1312,16 +1331,16 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{yaml,yml}",
-          "{workspaceRoot}/configuration/pyproject.toml",
-          "{workspaceRoot}/configuration/uv.lock",
-          "{workspaceRoot}/configuration/yamllint.yaml",
+          "{workspaceRoot}/configuration/lint/yamllint.yaml",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock",
           "shared-globals",
           {
             "externalDependencies": []
           }
         ],
         "options": {
-          "command": "uv run --project configuration yamllint -c configuration/yamllint.yaml '{projectRoot}'",
+          "command": "uv run --project configuration/python yamllint -c configuration/lint/yamllint.yaml '{projectRoot}'",
           "cwd": "{workspaceRoot}"
         }
       }

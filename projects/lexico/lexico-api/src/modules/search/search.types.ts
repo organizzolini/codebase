@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-import type { SearchMatchSource } from "./search.entities";
+import type { SearchMatchSource } from "./modules/search-results/search.entities";
 import type { Connection } from "@codebase/interface";
 import type { Lexeme } from "@codebase/lexico-db";
 

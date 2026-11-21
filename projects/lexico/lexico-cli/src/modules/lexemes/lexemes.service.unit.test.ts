@@ -13,16 +13,16 @@ import {
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createRepositoryMock } from "../../../testing/mocks";
-import { EtymologyService } from "../etymology/etymology.service";
-import { FormsBuilderService } from "../forms/forms-builder.service";
-import { FormsService } from "../forms/forms.service";
-import { PartOfSpeechService } from "../part-of-speech/part-of-speech.service";
-import { PrincipalPartsService } from "../principal-parts/principal-parts.service";
-import { PronunciationService } from "../pronunciation/pronunciation.service";
-import { TranslationsService } from "../translations/translations.service";
-import { WordsService } from "../words/words.service";
 
 import { LexemesService } from "./lexemes.service";
+import { EtymologyService } from "./modules/etymology/etymology.service";
+import { FormsService } from "./modules/forms/forms.service";
+import { FormsBuilderService } from "./modules/forms/modules/forms-builder/forms-builder.service";
+import { PartOfSpeechService } from "./modules/part-of-speech/part-of-speech.service";
+import { PrincipalPartsService } from "./modules/principal-parts/principal-parts.service";
+import { PronunciationService } from "./modules/pronunciation/pronunciation.service";
+import { TranslationsService } from "./modules/translations/translations.service";
+import { WordsService } from "./modules/words/words.service";
 
 import type { WiktionaryPage } from "../lexico-ingestion/lexico-ingestion.types";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";

@@ -17,6 +17,10 @@ import { toLexemeType } from "../lexemes/lexemes.utilities";
 import { ENTITY_ID_PATTERN } from "../literature/literature.constants";
 
 import {
+  LexemeSearchResult,
+  SearchMatchSource,
+} from "./modules/search-results/search.entities";
+import {
   ENCLITIC_FALSE_POSITIVES,
   ENCLITIC_SUFFIXES,
   ENGLISH_TIER_SOURCES,
@@ -26,7 +30,6 @@ import {
   SCORE_FUZZY,
   SCORE_FUZZY_STEP,
 } from "./search.constants";
-import { LexemeSearchResult, SearchMatchSource } from "./search.entities";
 
 import type { CursorClaim } from "../literature/literature.types";
 import type {

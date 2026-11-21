@@ -5,23 +5,24 @@ import { ConfigService } from "@nestjs/config";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
-
 import {
+  createTemporaryDirectory,
   failed,
   FakeProcessRunner,
   succeeded,
-  useTemporaryDirectories,
-  writeFile,
-} from "../../../testing/mocks";
+  writeFileTree,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { TEMPORARY_ROOT } from "../../../testing/mocks";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { ReleaseGroupService } from "../release-group/release-group.service";
 
 import { PublishPackagesCommand } from "./publish-packages.command";
 import { PublishPackagesService } from "./publish-packages.service";
 
-import type { ScriptedAnswer } from "../../../testing/mocks";
 import type { CapturedProcess } from "../process-runner/process-runner.types";
+import type { ScriptedAnswer } from "@codebase/testing";
 
 const PUBLISH =
   "pnpm -r --filter ./projects/ic-suite/tool/cli --filter ./projects/ic-suite/tool/core publish --provenance --no-git-checks --tag latest --registry https://registry.npmjs.org --report-summary";
@@ -37,7 +38,6 @@ const PACKAGES: Readonly<Record<string, string>> = {
 describe(PublishPackagesCommand, () => {
   const moduleOptions = { mocks: [PublishPackagesService] };
   const originalExitCode = process.exitCode;
-  const makeDirectory = useTemporaryDirectories();
   let home: string;
   let reportLines: string[];
   let runnerTemp: string;
@@ -56,16 +56,14 @@ describe(PublishPackagesCommand, () => {
 
   /** Writes pnpm's summary, as a publish of the given specifiers would. */
   const summarizing = (published: Record<string, string>) => (): void => {
-    writeFile(
-      workspace,
-      "pnpm-publish-summary.json",
-      JSON.stringify({
+    writeFileTree(workspace, {
+      "pnpm-publish-summary.json": JSON.stringify({
         publishedPackages: Object.entries(published).map(([name, version]) => ({
           name,
           version,
         })),
       }),
-    );
+    });
   };
 
   /** Runs the command over the real services and a scripted process runner. */
@@ -88,15 +86,13 @@ describe(PublishPackagesCommand, () => {
     runner.effects["tar -xzf *"] = (args): void => {
       const unpacked = String(args[3]);
       const project = path.basename(unpacked);
-      writeFile(
-        unpacked,
-        "package.json",
-        JSON.stringify({
+      writeFileTree(unpacked, {
+        "package.json": JSON.stringify({
           name: `@tool/${project}`,
           publishConfig: { registry: "https://registry.npmjs.org/" },
           version: PACKAGES[project],
         }),
-      );
+      });
     };
     const { module } = await buildTestingModule(PublishPackagesCommand, {
       providers: [
@@ -114,21 +110,22 @@ describe(PublishPackagesCommand, () => {
   beforeEach(() => {
     process.exitCode = undefined;
     reportLines = [];
-    workspace = makeDirectory();
-    home = makeDirectory();
-    runnerTemp = makeDirectory();
+    workspace = createTemporaryDirectory("workspace", TEMPORARY_ROOT);
+    home = createTemporaryDirectory("workspace", TEMPORARY_ROOT);
+    runnerTemp = createTemporaryDirectory("workspace", TEMPORARY_ROOT);
     vi.spyOn(process, "cwd").mockReturnValue(workspace);
-    writeFile(
-      workspace,
-      "nx.json",
-      JSON.stringify({ release: { projects: ["projects/ic-suite/*/*"] } }),
-    );
+    writeFileTree(workspace, {
+      "nx.json": JSON.stringify({
+        release: { projects: ["projects/ic-suite/*/*"] },
+      }),
+    });
     for (const [project, version] of Object.entries(PACKAGES)) {
-      writeFile(
-        workspace,
-        `projects/ic-suite/tool/${project}/package.json`,
-        JSON.stringify({ name: `@tool/${project}`, version }),
-      );
+      writeFileTree(workspace, {
+        [`projects/ic-suite/tool/${project}/package.json`]: JSON.stringify({
+          name: `@tool/${project}`,
+          version,
+        }),
+      });
     }
     // The user config is written beneath HOME, so never the developer's own.
     vi.stubEnv("HOME", home);
@@ -273,15 +270,13 @@ describe(PublishPackagesCommand, () => {
 
     vi.stubEnv("NPM_REGISTRY", "http://localhost:4873");
     vi.stubEnv("GITHUB_PACKAGES_REGISTRY", "http://localhost:4873");
-    writeFile(
-      workspace,
-      "projects/ic-suite/tool/core/package.json",
-      JSON.stringify({
+    writeFileTree(workspace, {
+      "projects/ic-suite/tool/core/package.json": JSON.stringify({
         name: "@tool/core",
         publishConfig: { registry: "https://registry.npmjs.org/" },
         version: "2.0.0",
       }),
-    );
+    });
     const runner = new FakeProcessRunner(script());
     await runCommand(runner);
 
@@ -324,7 +319,7 @@ describe(PublishPackagesCommand, () => {
 
     const runner = new FakeProcessRunner(script());
     runner.effects[PUBLISH] = (): void => {
-      writeFile(workspace, "pnpm-publish-summary.json", "{}");
+      writeFileTree(workspace, { "pnpm-publish-summary.json": "{}" });
     };
     await runCommand(runner);
 

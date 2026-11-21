@@ -1,3 +1,9 @@
+## 0.0.25 (2026-11-20)
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.25
+
 ## 0.0.24 (2026-11-17)
 
 ### 🧱 Updated Dependencies

@@ -5,18 +5,18 @@ import {
   mapNullableRelation,
   mapRelation,
   toCursor,
+  toDeletableFields,
 } from "@codebase/interface";
 
-import { toDeletableFields } from "../../lexico-api.utilities";
 import { toWordType } from "../words/words.utilities";
 
-import { AuthorType } from "./author.entities";
-import { LineType } from "./line.entities";
 import { ENTITY_ID_PATTERN, LOAD_CHUNK_SIZE } from "./literature.constants";
-import { TextType } from "./text.entities";
-import { TokenType } from "./token.entities";
+import { AuthorType } from "./modules/authors/author.entities";
+import { LineType } from "./modules/lines/line.entities";
+import { TextType } from "./modules/texts/text.entities";
+import { TokenType } from "./modules/tokens/token.entities";
 
-import type { PaginationArguments } from "../search/pagination-arguments.entities";
+import type { PaginationArguments } from "../search/modules/search-arguments/pagination-arguments.entities";
 import type {
   ConnectionQuery,
   CursorClaim,

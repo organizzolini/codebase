@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
 
 import { CodeModule } from "../code/code.module";
-import { SymmetryModule } from "../symmetry/symmetry.module";
-import { TileModule } from "../tile/tile.module";
+import { SymmetryModule } from "../geometry/modules/symmetry/symmetry.module";
+import { TileModule } from "../geometry/modules/tile/tile.module";
 
 import { EnumerationService } from "./enumeration.service";
 import { TileEnumerationService } from "./tile-enumeration.service";

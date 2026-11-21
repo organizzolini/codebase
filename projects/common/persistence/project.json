@@ -1,5 +1,5 @@
 {
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "name": "persistence",
   "projectType": "library",
   "sourceRoot": "projects/common/persistence",
@@ -25,7 +25,7 @@
         "generatePackageJson": false,
         "main": "projects/common/persistence/src/index.ts",
         "outputPath": "projects/common/persistence/dist",
-        "tsConfig": "projects/common/persistence/tsconfig.build.json"
+        "tsConfig": "projects/common/persistence/configuration/tsconfig.build.json"
       },
       "outputs": ["{options.outputPath}"]
     },
@@ -33,6 +33,7 @@
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "eslint": {},
     "format-code": {},
     "guard-code": {},
     "knip": {},
@@ -46,16 +47,16 @@
       "cache": false,
       "configurations": {
         "postgresql-export": {
-          "command": "node --import @swc-node/register/esm-register src/persistence.main.ts postgresql-export {args}"
+          "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register src/persistence.main.ts postgresql-export {args}"
         },
         "postgresql-import": {
-          "command": "node --import @swc-node/register/esm-register src/persistence.main.ts postgresql-import {args}"
+          "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register src/persistence.main.ts postgresql-import {args}"
         }
       },
       "description": "Run the database command line: postgresql-export or postgresql-import selected tables",
       "executor": "nx:run-commands",
       "options": {
-        "command": "node --import @swc-node/register/esm-register src/persistence.main.ts {args}",
+        "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register src/persistence.main.ts {args}",
         "cwd": "{projectRoot}"
       }
     },
@@ -63,6 +64,7 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "vitest": {},
     "yaml-lint": {}
   }
 }

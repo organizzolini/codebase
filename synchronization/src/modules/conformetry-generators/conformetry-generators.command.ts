@@ -19,7 +19,7 @@ import type { ConformetryGeneratorMetadata } from "./conformetry-generators.type
  * CLI command that syncs the conformetry generators table into README.md, the
  * only destination on purpose.
  *
- * Reads configuration/conformetry.config.ts and injects a markdown table
+ * Reads configuration/ic-suite/conformetry.config.ts and injects a markdown table
  * between marker comments. Adding a destination needs its marker pair in that
  * file first, or a run refuses.
  */
@@ -102,12 +102,12 @@ export class ConformetryGeneratorsCommand
   }
 
   /**
-   * Reads configuration/conformetry.config.ts and returns the list of generator metadata.
+   * Reads configuration/ic-suite/conformetry.config.ts and returns the list of generator metadata.
    */
   private async readGenerators(): Promise<ConformetryGeneratorMetadata[]> {
     const configurationPath = path.join(
       process.cwd(),
-      "configuration/conformetry.config.ts",
+      "configuration/ic-suite/conformetry.config.ts",
     );
 
     const configuration =

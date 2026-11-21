@@ -7,19 +7,19 @@ import { useCallback, useEffect, useMemo } from "react";
 
 import { Button } from "@codebase/presentation";
 
-import { RecentHistory } from "../components/recent-history/recent-history";
-import { SearchBar } from "../components/search-bar/search-bar";
-import { SearchLanding } from "../components/search-landing/search-landing";
-import { SearchResults } from "../components/search-results/search-results";
+import { RecentHistory } from "../components/history/recent-history/recent-history";
+import { SearchBar } from "../components/search/search-bar/search-bar";
+import { SearchLanding } from "../components/search/search-landing/search-landing";
+import { SearchResults } from "../components/search/search-results/search-results";
 import {
   getSearch,
   searchSchema,
-} from "../components/search-results/search.constants";
+} from "../components/search/search-results/search.constants";
 import { useLookupHistory } from "../hooks/use-lookup-history/use-lookup-history";
 import { isLookupEntry } from "../hooks/use-lookup-history/use-lookup-history.utilities";
 
-import type { LexemeFormRow } from "../components/lexeme-forms/lexeme-forms.types";
-import type { SearchParameters } from "../components/search-results/search.types";
+import type { LexemeFormRow } from "../components/lexeme/lexeme-forms/lexeme-forms.types";
+import type { SearchParameters } from "../components/search/search-results/search.types";
 import type { HistoryEntry } from "../hooks/use-lookup-history/use-lookup-history.types";
 import type { ReactNode } from "react";
 

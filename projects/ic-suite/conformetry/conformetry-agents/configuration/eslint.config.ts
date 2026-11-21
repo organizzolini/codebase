@@ -1,0 +1,27 @@
+import baseConfig from "../../../../../configuration/eslint.config";
+
+export default [
+  // 🛠️ Base Config
+  ...baseConfig,
+
+  // 📦 Dependency Checks
+  {
+    files: ["**/*.json"],
+    rules: {
+      "@nx/dependency-checks": [
+        "error",
+        {
+          // vitest: named in tsconfig "types"; the rule misreads it as production.
+          // @codebase/testing: test-only devDependency.
+          // reflect-metadata: Nest decorators need it at runtime.
+          ignoredDependencies: [
+            "@codebase/testing",
+            "reflect-metadata",
+            "vitest",
+          ],
+          ignoredFiles: ["{projectRoot}/configuration/**"],
+        },
+      ],
+    },
+  },
+];

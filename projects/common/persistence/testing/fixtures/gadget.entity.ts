@@ -1,6 +1,6 @@
 import { Column, Entity } from "typeorm";
 
-import { PostgresqlIdentifiableEntity } from "../../src/modules/postgresql/entities/identifiable.entity";
+import { PostgresqlIdentifiableEntity } from "../../src/modules/postgresql/modules/base-entities/identifiable.entity";
 
 /**
  * A table no migration creates, with one generated column: what the

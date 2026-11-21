@@ -31,7 +31,8 @@ which maps "codependix said X" to the example that explains X.
 
 ## The examples
 
-Each directory under [`examples/`](examples) is one example, carries its own
+Each directory under a group folder of [`examples/`](examples) (`graphs`, `exports`,
+`boundaries`, `diagnostics`) is one example, carries its own
 `README.md`, and is readable on its own. The subject it graphs sits in that same
 directory.
 
@@ -44,32 +45,42 @@ renderer chains them with, declared once in
 
 | Example | What it settles |
 | ------- | --------------- |
-| [`graph-levels`](examples/graph-levels) | One project graphed at all four levels, so a reader sees what each does and does not say about the same code |
-| [`neighborhood-scope`](examples/neighborhood-scope) | A Neighborhood is one hop each way — plus implicit edges, self-edges, external packages, the root project, the subject highlight |
-| [`ambient-modules`](examples/ambient-modules) | Why a `@Global()` module is drawn without edges, and the two places the rule stops firing |
-| [`preview-mode`](examples/preview-mode) | A `forRootAsync` options factory graphed without ever running |
-| [`container-rooting`](examples/container-rooting) | A real root module, a synthetic one, and one that refuses to load |
-| [`typescript-resolution`](examples/typescript-resolution) | NodeNext specifiers, path aliases, `extends` chains — and the four statements that draw nothing |
-| [`python-scanner`](examples/python-scanner) | Every case the hand-rolled scanner handles, and every case it deliberately refuses |
+| [`graph-levels`](examples/graphs/graph-levels) | One project graphed at all four levels, so a reader sees what each does and does not say about the same code |
+| [`neighborhood-scope`](examples/graphs/neighborhood-scope) | A Neighborhood is one hop each way — plus implicit edges, self-edges, external packages, the root project, the subject highlight |
+| [`ambient-modules`](examples/graphs/ambient-modules) | Why a `@Global()` module is drawn without edges, and the two places the rule stops firing |
+| [`preview-mode`](examples/graphs/preview-mode) | A `forRootAsync` options factory graphed without ever running |
+| [`container-rooting`](examples/graphs/container-rooting) | A real root module, a synthetic one, and one that refuses to load |
+| [`typescript-resolution`](examples/graphs/typescript-resolution) | NodeNext specifiers, path aliases, `extends` chains — and the four statements that draw nothing |
+| [`python-scanner`](examples/graphs/python-scanner) | Every case the hand-rolled scanner handles, and every case it deliberately refuses |
 
 ### Configuring and exporting
 
 | Example | What it settles |
 | ------- | --------------- |
-| [`configuration-resolution`](examples/configuration-resolution) | `defaults` versus an override, the glob lists, the named file versus its neighbor |
-| [`export-targets`](examples/export-targets) | Why `both` is a named target rather than something inferred |
-| [`markdown-modes`](examples/markdown-modes) | An anchored splice, and a standalone file |
-| [`auto-created-sections`](examples/auto-created-sections) | Exactly where a missing `## 🕸️ Codependix` section lands, in every branch |
-| [`check-and-write`](examples/check-and-write) | What each `--check` name gates, what drift is reported as, and the four command lines refused outright |
-| [`boundary-rules`](examples/boundary-rules) | The three rule kinds, judged by the real evaluator — including the implicit edge no lint rule can see |
-| [`boundary-cycles`](examples/boundary-cycles) | A cycle is charged to every project on it, so a cross-project cycle fails both — and naming either finds it |
-| [`boundary-forbidden-edges`](examples/boundary-forbidden-edges) | A `forbid` violation, or an edge no `allow` covers, is charged to the project that owns its source and no other |
-| [`boundary-dependency-notes`](examples/boundary-dependency-notes) | A project that only depends on a finding is told, not failed — and what `--no-dependencies` changes |
-| [`boundary-boot-failures`](examples/boundary-boot-failures) | A container that cannot boot fails its own project and names the project that owns the class it died on |
-| [`refusals`](examples/refusals) | Every refusal, with the reproduction that produces it |
-| [`path-queries`](examples/path-queries) | How `codependix path` traces shortest connecting paths across graph levels in Markdown, JSON, and Mermaid |
-| [`json-exports`](examples/json-exports) | Every graph's JSON shape, and the two workspace rules switched off for these files |
-| [`workspace-drift`](examples/workspace-drift) | Why this repository gates no pull request on `codependix map --check` |
+| [`configuration-resolution`](examples/exports/configuration-resolution) | `defaults` versus an override, the glob lists, the named file versus its neighbor |
+| [`export-targets`](examples/exports/export-targets) | Why `both` is a named target rather than something inferred |
+| [`markdown-modes`](examples/exports/markdown-modes) | An anchored splice, and a standalone file |
+| [`auto-created-sections`](examples/exports/auto-created-sections) | Exactly where a missing `## 🕸️ Codependix` section lands, in every branch |
+| [`check-and-write`](examples/exports/check-and-write) | What each `--check` name gates, what drift is reported as, and the four command lines refused outright |
+| [`json-exports`](examples/exports/json-exports) | Every graph's JSON shape, and the two workspace rules switched off for these files |
+
+### Boundaries
+
+| Example | What it settles |
+| ------- | --------------- |
+| [`boundary-rules`](examples/boundaries/boundary-rules) | The three rule kinds, judged by the real evaluator — including the implicit edge no lint rule can see |
+| [`boundary-cycles`](examples/boundaries/boundary-cycles) | A cycle is charged to every project on it, so a cross-project cycle fails both — and naming either finds it |
+| [`boundary-forbidden-edges`](examples/boundaries/boundary-forbidden-edges) | A `forbid` violation, or an edge no `allow` covers, is charged to the project that owns its source and no other |
+| [`boundary-dependency-notes`](examples/boundaries/boundary-dependency-notes) | A project that only depends on a finding is told, not failed — and what `--no-dependencies` changes |
+| [`boundary-boot-failures`](examples/boundaries/boundary-boot-failures) | A container that cannot boot fails its own project and names the project that owns the class it died on |
+
+### Diagnosing
+
+| Example | What it settles |
+| ------- | --------------- |
+| [`refusals`](examples/diagnostics/refusals) | Every refusal, with the reproduction that produces it |
+| [`path-queries`](examples/diagnostics/path-queries) | How `codependix path` traces shortest connecting paths across graph levels in Markdown, JSON, and Mermaid |
+| [`workspace-drift`](examples/diagnostics/workspace-drift) | Why this repository gates no pull request on `codependix map --check` |
 
 ## Configuring your first export
 
@@ -90,7 +101,7 @@ export default codependixConfiguration;
 ```
 
 Three things about that shape catch people out, and
-[`configuration-resolution`](examples/configuration-resolution) shows each one
+[`configuration-resolution`](examples/exports/configuration-resolution) shows each one
 resolving:
 
 - **A per-project override replaces the default outright.** Naming
@@ -112,7 +123,7 @@ every project in a workspace nobody had hand-placed anchors in.
 
 `--write` now auto-creates the `## 🕸️ Codependix` section, and takes that risk
 in exactly two well-defined places: the end of the file, or the end of a section
-that already exists. [`auto-created-sections`](examples/auto-created-sections)
+that already exists. [`auto-created-sections`](examples/exports/auto-created-sections)
 renders every branch, including a heading a person wrote by hand being reused
 rather than duplicated. Only a project with no `README.md` at all still fails
 outright, and a `--check` against a project that has never had codependix output
@@ -129,8 +140,8 @@ nx run configuration:codependix:write
 `nx run codependix-examples:examples` is the regression gate for every
 documented behavior, and it is stricter than the tests: it compares the
 committed Markdown byte for byte. That matters most for the cases in
-[`typescript-resolution`](examples/typescript-resolution) and
-[`python-scanner`](examples/python-scanner) that exist to _not_ be walked — a
+[`typescript-resolution`](examples/graphs/typescript-resolution) and
+[`python-scanner`](examples/graphs/python-scanner) that exist to _not_ be walked — a
 re-export, a dynamic `import()`, a `require`, an import indented inside a
 function. Each is a claim a resolver or scanner change could silently reverse,
 and a guide quoting a diagram the tool no longer renders is worse than no guide.
@@ -160,20 +171,20 @@ never run over input that exists precisely to look malformed.
 ## Layout
 
 ```text
-examples/<example>/README.md         # The rendered guide, and any JSON export it commits
-examples/<example>/<subject>         # The code being graphed — nested, and scoped out of the linters
+examples/<group>/<example>/README.md # The rendered guide, and any JSON export it commits
+examples/<group>/<example>/<subject> # The code being graphed — nested, and scoped out of the linters
 testing/render-examples.ts           # The `examples` target: regenerates or checks every guide above
 testing/render/                      # One module per example, plus the reading order and emoji
 testing/examples.integration.test.ts # Asserts every claim those guides make
 testing/graphs.integration.test.ts   # Asserts the graphs the guides are rendered from
 ```
 
-The nesting is the rule the tooling reads: one level under `examples/` is the
-rendered guide and its JSON exports, which every linter still checks, and two
+The nesting is the rule the tooling reads: two levels under `examples/` is the
+rendered guide and its JSON exports, which every linter still checks, and three
 levels down is the subject, which is scoped out. That is why the committed
 `codependix-*graph.json` files keep inheriting the two carve-outs
-[`json-exports`](examples/json-exports) describes, while a deliberately broken
-`tsconfig.json` two levels down is nobody's lint failure.
+[`json-exports`](examples/exports/json-exports) describes, while a deliberately broken
+`tsconfig.json` three levels down is nobody's lint failure.
 
 This package declares no `codometer` size limit, because it builds nothing:
 there is no `build` target and therefore no compiled bundle to measure.

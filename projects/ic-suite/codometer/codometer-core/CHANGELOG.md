@@ -1,3 +1,9 @@
+## 0.0.86 (2026-11-20)
+
+### 🚀 Features
+
+- **conformetry,lexico:** ✨ register every nestjs template instance and conform them ([#2456](https://github.com/organizzolini/codebase/pull/2456), [#2455](https://github.com/organizzolini/codebase/issues/2455))
+
 ## 0.0.85 (2026-11-17)
 
 This was a version bump only for codometer-core to align it with other projects, there were no code changes.

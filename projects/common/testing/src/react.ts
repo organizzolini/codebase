@@ -4,4 +4,4 @@ export {
   createServerFunctionStandIn,
   matchMediaStandIn,
 } from "./modules/browser-stand-ins/browser-stand-ins.utilities";
-export { renderRoute } from "./modules/route-render/route-render.utilities";
+export { renderRoute } from "./modules/browser-stand-ins/modules/route-render/route-render.utilities";

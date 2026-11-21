@@ -1,0 +1,344 @@
+import moment from "moment-timezone";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { TEST_TRACK_SPEED } from "../../../../../../../testing/support/eclipse-test.constants";
+import {
+  getTestContactLimit,
+  getTestTotalityLimit,
+  getTrackCoordinates,
+  getTrackWindow,
+} from "../../../../../../../testing/support/eclipse-test.utilities";
+import { EphemerisService } from "../../../../../ephemeris/ephemeris.service";
+import { MathService } from "../../../../../ephemeris/modules/math/math.service";
+import { EclipseEventService } from "../../eclipse-event.service";
+import { EclipseGeometryService } from "../geometry/eclipse-geometry.service";
+import { EclipseTopocentricService } from "../geometry/eclipse-topocentric.service";
+
+import { EclipseCalculationService } from "./eclipse-calculation.service";
+import { EclipseClassificationService } from "./eclipse-classification.service";
+
+import type { EclipsePhase } from "../../../../../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../../../../../calendar-events/calendar-events.types";
+import type { DeepMocked } from "@golevelup/ts-vitest";
+
+/** Minutes on either side of closest approach that a scan covers. */
+const SCAN_MINUTES = 400;
+
+describe(EclipseCalculationService, () => {
+  let service: EclipseCalculationService;
+  let eclipseEventService: DeepMocked<EclipseEventService>;
+  let topocentricService: DeepMocked<EclipseTopocentricService>;
+  let classificationService: EclipseClassificationService;
+
+  const testingModuleOptions = {
+    mocks: [EphemerisService, EclipseEventService, EclipseTopocentricService],
+    providers: [
+      EclipseClassificationService,
+      EclipseGeometryService,
+      MathService,
+    ],
+  };
+
+  beforeAll(async () => {
+    const { instance, module } = await buildTestingModule(
+      EclipseCalculationService,
+      testingModuleOptions,
+    );
+
+    service = instance;
+    eclipseEventService = module.get(EclipseEventService);
+    topocentricService = module.get(EclipseTopocentricService);
+    classificationService = module.get(EclipseClassificationService);
+  });
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      EclipseCalculationService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(EclipseCalculationService);
+  });
+
+  /**
+   * Runs the phase classifier over every minute of a straight track and
+   * returns each phase with the minutes (from closest approach) it fired at.
+   */
+  function scanTrack(
+    kind: "lunar" | "solar",
+    crossTrack: number,
+    tilt = 0,
+  ): Record<EclipsePhase, number[]> {
+    const firedAt: Record<EclipsePhase, number[]> = {
+      beginning: [],
+      ending: [],
+      maximum: [],
+    };
+    for (let minutes = -SCAN_MINUTES; minutes <= SCAN_MINUTES; minutes++) {
+      const { current, next, previous } = getTrackWindow({
+        crossTrack,
+        kind,
+        minutes,
+        tilt,
+      });
+      const phases =
+        kind === "lunar"
+          ? service.getLunarEclipsePhases(current, previous, next)
+          : service.getSolarEclipsePhases(current, previous, next);
+      for (const phase of phases) {
+        firedAt[phase].push(minutes);
+      }
+    }
+    return firedAt;
+  }
+
+  /** Minutes from closest approach to the contact, by Pythagoras on the straight track. */
+  function contactMinutes(kind: "lunar" | "solar", crossTrack: number): number {
+    const limit = getTestContactLimit(kind);
+    return Math.sqrt(limit ** 2 - crossTrack ** 2) / TEST_TRACK_SPEED;
+  }
+
+  describe.each(["lunar", "solar"] as const)("a %s eclipse track", (kind) => {
+    it("begins at P1 and ends at P4, each on the nearest minute", () => {
+      const crossTrack = 0.6;
+      const firedAt = scanTrack(kind, crossTrack);
+      const halfDuration = contactMinutes(kind, crossTrack);
+
+      expect(firedAt.beginning).toStrictEqual([-Math.round(halfDuration)]);
+      expect(firedAt.ending).toStrictEqual([Math.round(halfDuration)]);
+    });
+
+    it("peaks once, at closest approach", () => {
+      expect(scanTrack(kind, 0.6).maximum).toStrictEqual([0]);
+    });
+
+    it("peaks at greatest eclipse, not at conjunction in longitude", () => {
+      // Tilted 0.1 rad, the track meets the target's longitude
+      // 0.6 · tan(0.1) / speed ≈ 7 minutes away from its closest approach.
+      expect(scanTrack(kind, 0.6, 0.1).maximum).toStrictEqual([0]);
+    });
+
+    it("still begins and ends when the Moon only grazes the contact limit", () => {
+      const crossTrack = getTestContactLimit(kind) - 0.01;
+      const firedAt = scanTrack(kind, crossTrack);
+
+      expect(firedAt.beginning).toHaveLength(1);
+      expect(firedAt.maximum).toStrictEqual([0]);
+      expect(firedAt.ending).toHaveLength(1);
+    });
+
+    it("closes an eclipse shorter than a minute", () => {
+      const limit = getTestContactLimit(kind);
+      const crossTrack = Math.sqrt(limit ** 2 - (TEST_TRACK_SPEED / 4) ** 2);
+      const firedAt = scanTrack(kind, crossTrack);
+
+      expect(firedAt.beginning).toHaveLength(1);
+      expect(firedAt.ending).toHaveLength(1);
+      expect(firedAt.ending[0]).toBeGreaterThanOrEqual(
+        firedAt.beginning[0] ?? Number.NaN,
+      );
+    });
+
+    it("reports nothing when the Moon passes outside the contact limit", () => {
+      expect(scanTrack(kind, getTestContactLimit(kind) + 0.01)).toStrictEqual({
+        beginning: [],
+        ending: [],
+        maximum: [],
+      });
+    });
+  });
+
+  describe("getGeocentricEvents", () => {
+    it("builds a lunar event for a lunar contact and no solar event", () => {
+      const minute = moment.utc("2026-03-03T08:44:00.000Z");
+      const solarEvent = { summary: "solar" } as DetectedCalendarEvent;
+      const lunarEvent = { summary: "lunar" } as DetectedCalendarEvent;
+      eclipseEventService.buildSolarEclipseEvent.mockReturnValue(solarEvent);
+      eclipseEventService.buildLunarEclipseEvent.mockReturnValue(lunarEvent);
+      const lunarWindow = getTrackWindow({
+        crossTrack: 0.6,
+        kind: "lunar",
+        minutes: -Math.round(contactMinutes("lunar", 0.6)),
+      });
+
+      const result = service.getGeocentricEvents({
+        currentCoordinates: lunarWindow.current,
+        minute,
+        nextCoordinates: lunarWindow.next,
+        previousCoordinates: lunarWindow.previous,
+      });
+
+      expect(result).toStrictEqual({
+        events: [lunarEvent],
+        lunarPhases: ["beginning"],
+        lunarType: "partial",
+        solarPhases: [],
+        solarType: null,
+      });
+      expect(eclipseEventService.buildLunarEclipseEvent).toHaveBeenCalledWith({
+        date: minute,
+        frame: "geocentric",
+        phase: "beginning",
+        type: "partial",
+      });
+      expect(eclipseEventService.buildSolarEclipseEvent).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("an unsettled eclipse type", () => {
+    it.each([
+      ["solar", "partial"],
+      ["lunar", "penumbral"],
+    ] as const)(
+      "builds a %s event as %s when the classifier cannot settle its type",
+      (kind, fallback) => {
+        const minute = moment.utc("2026-03-03T08:44:00.000Z");
+        const window = getTrackWindow({
+          crossTrack: 0.6,
+          kind,
+          minutes: -Math.round(contactMinutes(kind, 0.6)),
+        });
+        vi.spyOn(
+          classificationService,
+          "getSolarEclipseType",
+        ).mockReturnValueOnce(null);
+        vi.spyOn(
+          classificationService,
+          "getLunarEclipseType",
+        ).mockReturnValueOnce(null);
+        eclipseEventService.buildSolarEclipseEvent.mockReturnValue(
+          {} as DetectedCalendarEvent,
+        );
+        eclipseEventService.buildLunarEclipseEvent.mockReturnValue(
+          {} as DetectedCalendarEvent,
+        );
+
+        const result = service.getGeocentricEvents({
+          currentCoordinates: window.current,
+          minute,
+          nextCoordinates: window.next,
+          previousCoordinates: window.previous,
+        });
+
+        expect(result.events).toHaveLength(1);
+
+        const builderName =
+          kind === "solar"
+            ? "buildSolarEclipseEvent"
+            : "buildLunarEclipseEvent";
+
+        expect(eclipseEventService[builderName]).toHaveBeenCalledWith(
+          expect.objectContaining({ type: fallback }),
+        );
+      },
+    );
+  });
+
+  describe("eclipse type stability", () => {
+    it("keeps one type from P1 through P4 on a track that curves across a type boundary", () => {
+      // The track bends away from the axis toward its ends, so its tangent
+      // at P1 projects a closest approach inside totality while the Moon
+      // passes 0.01° outside it: a per-minute estimate flips type.
+      const closest = getTestTotalityLimit() + 0.01;
+      const bend = 0.02 / 150 ** 2;
+      const at = (minutes: number): ReturnType<typeof getTrackCoordinates> =>
+        getTrackCoordinates({
+          alongTrack: minutes * TEST_TRACK_SPEED,
+          crossTrack: closest + bend * minutes ** 2,
+          kind: "lunar",
+        });
+      const start = moment.utc("2026-03-03T11:34:00.000Z");
+      const typeByPhase: Record<string, string[]> = {};
+
+      for (let minutes = -SCAN_MINUTES; minutes <= SCAN_MINUTES; minutes++) {
+        const { lunarPhases, lunarType } = service.getGeocentricEvents({
+          currentCoordinates: at(minutes),
+          minute: start.clone().add(minutes, "minutes"),
+          nextCoordinates: at(minutes + 1),
+          previousCoordinates: at(minutes - 1),
+        });
+        for (const phase of lunarPhases) {
+          typeByPhase[phase] = [
+            ...(typeByPhase[phase] ?? []),
+            String(lunarType),
+          ];
+        }
+      }
+
+      expect(Object.keys(typeByPhase).toSorted()).toStrictEqual([
+        "beginning",
+        "ending",
+        "maximum",
+      ]);
+      expect(new Set(Object.values(typeByPhase).flat()).size).toBe(1);
+    });
+  });
+
+  describe("getTopocentricEventsForDetect", () => {
+    it("falls back to a penumbral lunar type when none was settled", () => {
+      const window = getTrackWindow({
+        crossTrack: 0.6,
+        kind: "lunar",
+        minutes: 0,
+      });
+      topocentricService.getTopocentricEvents.mockReturnValue([]);
+
+      service.getTopocentricEventsForDetect({
+        coordinates: {
+          currentCoordinates: window.current,
+          nextCoordinates: window.next,
+          previousCoordinates: window.previous,
+        },
+        geocentricPhases: { lunarPhases: [], lunarType: null },
+        minute: moment.utc("2026-03-03T11:34:00.000Z"),
+        moonAzimuthElevationEphemeris: {},
+        sunAzimuthElevationEphemeris: {},
+      });
+
+      expect(topocentricService.getTopocentricEvents).toHaveBeenCalledWith(
+        expect.objectContaining({
+          isLunarMaximum: false,
+          lunarEclipseType: "penumbral",
+        }),
+      );
+    });
+
+    it("passes on the geocentric lunar maximum and type", () => {
+      const window = getTrackWindow({
+        crossTrack: 0.6,
+        kind: "lunar",
+        minutes: 0,
+      });
+      const minute = moment.utc("2026-03-03T11:34:00.000Z");
+      topocentricService.getTopocentricEvents.mockReturnValue([]);
+
+      service.getTopocentricEventsForDetect({
+        coordinates: {
+          currentCoordinates: window.current,
+          nextCoordinates: window.next,
+          previousCoordinates: window.previous,
+        },
+        geocentricPhases: {
+          lunarPhases: ["maximum"],
+          lunarType: "total",
+        },
+        minute,
+        moonAzimuthElevationEphemeris: {},
+        sunAzimuthElevationEphemeris: {},
+      });
+
+      expect(topocentricService.getTopocentricEvents).toHaveBeenCalledWith(
+        expect.objectContaining({
+          isLunarMaximum: true,
+          lunarEclipseType: "total",
+        }),
+      );
+    });
+  });
+});

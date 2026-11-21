@@ -1,12 +1,16 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
-import { SymmetryService } from "../symmetry/symmetry.service";
-import { TileService } from "../tile/tile.service";
+import { SymmetryService } from "../geometry/modules/symmetry/symmetry.service";
+import { TileService } from "../geometry/modules/tile/tile.service";
 
 import { EDGE_BUDGET, OversizedTileError } from "./enumeration.constants";
 
-import type { EdgesDraft, Tile, TileShape } from "../tile/tile.types";
+import type {
+  EdgesDraft,
+  Tile,
+  TileShape,
+} from "../geometry/modules/tile/tile.types";
 import type { EdgeAddress, Environment } from "./enumeration.types";
 
 /**

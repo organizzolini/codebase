@@ -34,13 +34,16 @@ describe(knipExecutor, () => {
     captureAsync.mockResolvedValue({ status: 0, stderr: "", stdout: "" });
 
     await expect(
-      knipExecutor({ configuration: "configuration/knip.config.ts" }, CONTEXT),
+      knipExecutor(
+        { configuration: "configuration/typescript/knip.config.ts" },
+        CONTEXT,
+      ),
     ).resolves.toStrictEqual({ success: true });
     expect(captureAsync).toHaveBeenCalledWith(
       "/workspace/node_modules/.bin/knip",
       [
         "--config",
-        "configuration/knip.config.ts",
+        "configuration/typescript/knip.config.ts",
         "--directory",
         "/workspace",
         "--workspace",
@@ -59,7 +62,10 @@ describe(knipExecutor, () => {
     });
 
     await expect(
-      knipExecutor({ configuration: "configuration/knip.config.ts" }, CONTEXT),
+      knipExecutor(
+        { configuration: "configuration/typescript/knip.config.ts" },
+        CONTEXT,
+      ),
     ).resolves.toStrictEqual({ success: false });
     expect(process.stdout.write).toHaveBeenCalledWith(
       expect.stringContaining("Unused files (1)"),
@@ -72,7 +78,7 @@ describe(knipExecutor, () => {
     captureAsync.mockResolvedValue({ status: 0, stderr: "", stdout: "" });
 
     await knipExecutor(
-      { configuration: "configuration/knip.config.ts", fix: true },
+      { configuration: "configuration/typescript/knip.config.ts", fix: true },
       CONTEXT,
     );
 
@@ -84,7 +90,7 @@ describe(knipExecutor, () => {
 
     await expect(
       knipExecutor(
-        { configuration: "configuration/knip.config.ts" },
+        { configuration: "configuration/typescript/knip.config.ts" },
         { ...CONTEXT, projectName: "missing" },
       ),
     ).rejects.toThrow("no project named missing");
@@ -95,7 +101,7 @@ describe(knipExecutor, () => {
 
     await expect(
       knipExecutor(
-        { configuration: "configuration/knip.config.ts" },
+        { configuration: "configuration/typescript/knip.config.ts" },
         { ...CONTEXT, projectName: undefined },
       ),
     ).rejects.toThrow("must be run against a project");

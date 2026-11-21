@@ -24,11 +24,11 @@
         }
       },
       "defaultConfiguration": "check",
-      "description": "Reconciles generated code against the conformetry templates it was scaffolded from. `check` runs on a pull request, because drift is the author's to fix in the same change; `write` runs on the default branch's release, alongside every other derivation. Named on its own by whichever caller wants it \u2014 `configuration/lint-staged.config.ts`, the Lint Codebase workflow, and the release workflow \u2014 rather than through a shared aggregate, the way `configuration:codometer` and `configuration:callidescope` are named by their own callers.",
+      "description": "Reconciles generated code against the conformetry templates it was scaffolded from. `check` runs on a pull request, because drift is the author's to fix in the same change; `write` runs on the default branch's release, alongside every other derivation. Named on its own by whichever caller wants it — `configuration/repository/lint-staged.config.ts`, the Lint Codebase workflow, and the release workflow — rather than through a shared aggregate, the way `configuration:codometer` and `configuration:callidescope` are named by their own callers.",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/**/*.ts",
-        "{workspaceRoot}/configuration/conformetry.config.ts",
+        "{workspaceRoot}/configuration/ic-suite/conformetry.config.ts",
         "{workspaceRoot}/nx.json",
         "shared-globals"
       ],
@@ -47,7 +47,7 @@
         }
       },
       "defaultConfiguration": "check",
-      "description": "Reconciles derived conventional-commit configuration against `configuration/conventional.config.cjs`. `check` runs on a pull request; `write` runs on the default branch's release.",
+      "description": "Reconciles derived conventional-commit configuration against `configuration/repository/conventional.config.cjs`. `check` runs on a pull request; `write` runs on the default branch's release.",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/**/*.ts",
@@ -59,8 +59,8 @@
         "{workspaceRoot}/.github/CONTRIBUTING.md",
         "{workspaceRoot}/.github/ISSUE_TEMPLATE/issue.yml",
         "{workspaceRoot}/.vscode/settings.json",
-        "{workspaceRoot}/configuration/conventional.config.cjs",
-        "{workspaceRoot}/configuration/release.config.cjs",
+        "{workspaceRoot}/configuration/repository/conventional.config.cjs",
+        "{workspaceRoot}/configuration/repository/release.config.cjs",
         "shared-globals"
       ],
       "options": {
@@ -92,6 +92,7 @@
         "cwd": "{workspaceRoot}"
       }
     },
+    "eslint": {},
     "format-code": {},
     "guard-code": {},
     "installed-skills": {
@@ -184,7 +185,7 @@
       "inputs": [
         "{projectRoot}/**/*.ts",
         "{workspaceRoot}/.github/PULL_REQUEST_TEMPLATE.md",
-        "{workspaceRoot}/configuration/conventional.config.cjs",
+        "{workspaceRoot}/configuration/repository/conventional.config.cjs",
         "shared-globals"
       ],
       "options": {
@@ -227,7 +228,7 @@
         }
       },
       "defaultConfiguration": "check",
-      "description": "Runs every synchronization command in one process \u2014 the only target that does. Not referenced by CI: no workflow or `configuration/lint-staged.config.ts` pattern names `start`, so this exists purely for a human at a terminal who wants to check or write everything in one command, uncached because nothing should ever depend on its result. Each synchronization also runs on its own through its own Nx target \u2014 for example `nx run synchronization:skill-exclusions:check` \u2014 which is what every other caller uses.",
+      "description": "Runs every synchronization command in one process — the only target that does. Not referenced by CI: no workflow or `configuration/repository/lint-staged.config.ts` pattern names `start`, so this exists purely for a human at a terminal who wants to check or write everything in one command, uncached because nothing should ever depend on its result. Each synchronization also runs on its own through its own Nx target — for example `nx run synchronization:skill-exclusions:check` — which is what every other caller uses.",
       "executor": "nx:run-commands",
       "options": {
         "cwd": "{workspaceRoot}"
@@ -252,13 +253,14 @@
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/**/*.ts",
-        "{workspaceRoot}/projects/**/src/modules/database/migrations/*.ts",
+        "{workspaceRoot}/projects/**/migrations/*.ts",
         "shared-globals"
       ],
       "options": {
         "cwd": "{workspaceRoot}"
       }
     },
+    "vitest": {},
     "vscode-extensions": {
       "cache": true,
       "configurations": {

@@ -14,18 +14,6 @@ import type {
   WriteMarkdownOutput,
 } from "./configuration.types";
 
-/** File names in search order. TypeScript first, for type checking. */
-export const CONFIGURATION_FILE_NAMES = [
-  "callidescope.config.ts",
-  "callidescope.config.mts",
-  "callidescope.config.cts",
-  "callidescope.config.js",
-  "callidescope.config.mjs",
-  "callidescope.config.cjs",
-  "callidescope.config.json",
-  "callidescope.config.jsonc",
-] as const;
-
 /** Extensions the configuration loader knows how to read. */
 export const SUPPORTED_CONFIGURATION_EXTENSIONS = new Set([
   ".cjs",
@@ -37,9 +25,6 @@ export const SUPPORTED_CONFIGURATION_EXTENSIONS = new Set([
   ".mts",
   ".ts",
 ]);
-
-/** Repository root markers. `package.json` is absent: every package has one. */
-export const REPOSITORY_ROOT_MARKERS = [".git", "pnpm-workspace.yaml"] as const;
 
 /** Directories no repository wants traced, kept out even when unmentioned. */
 export const DEFAULT_EXCLUDE_GLOBS = [
@@ -129,6 +114,8 @@ export const PROJECT_CONFIGURATION_FIELD_PERMISSIONS = {
   excludeCallees: "forbidden",
   excludeFrom: "forbidden",
   limits: "permitted",
+  projectConfigurationPath: "forbidden",
+  projectTsconfigPath: "forbidden",
   write: {
     json: "forbidden",
     markdown: "permitted",
@@ -252,6 +239,8 @@ export const callidescopeConfigurationSchema = z.strictObject({
   limits: limitsSchema,
   /** Renamed to `write`. */
   output: z.never().optional(),
+  projectConfigurationPath: z.string().min(1).optional(),
+  projectTsconfigPath: z.string().min(1).optional(),
   write: writeSchema,
 });
 
@@ -319,15 +308,29 @@ export class ProjectConfigurationIncompleteError extends Error {
 }
 
 /**
- * Raised when a traced project has no configuration file at all.
+ * Raised when a traced project holds no file at the configured path.
  *
- * A traced project is judged by what its own file says, or by nothing. Inheriting silently, which this replaces, left numbers resolvable only by reading two files.
+ * Names the project and the exact path looked at, since nothing searches for another.
  */
 export class ProjectConfigurationMissingError extends Error {
-  constructor(project: string) {
+  constructor(args: { filePath: string; project: string }) {
     super(
-      `${project} is traced but has no callidescope.config.ts. Every traced project declares its own, spreading the workspace's projectDefaults and overriding what it means to.`,
+      `${args.project} is traced but has no callidescope configuration at ${args.filePath}. Every traced project declares its own there, spreading the workspace's projectDefaults and overriding what it means to.`,
     );
     this.name = "ProjectConfigurationMissingError";
+  }
+}
+
+/**
+ * Raised when the workspace configuration does not say where projects keep theirs.
+ *
+ * Callidescope never searches for or assumes a project's file name.
+ */
+export class ProjectConfigurationPathMissingError extends Error {
+  constructor(workspaceConfigurationPath: string) {
+    super(
+      `${workspaceConfigurationPath} sets no projectConfigurationPath: callidescope never searches for or assumes a project's configuration file. Set it to the path of each project's own file, relative to the project root, such as callidescope.config.ts.`,
+    );
+    this.name = "ProjectConfigurationPathMissingError";
   }
 }

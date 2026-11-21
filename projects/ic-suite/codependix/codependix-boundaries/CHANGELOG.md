@@ -1,3 +1,17 @@
+## 0.0.87 (2026-11-20)
+
+### 🚀 Features
+
+- **conformetry,lexico:** ✨ register every nestjs template instance and conform them ([#2456](https://github.com/organizzolini/codebase/pull/2456), [#2455](https://github.com/organizzolini/codebase/issues/2455))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.85
+- Updated codependix-configuration to 0.0.87
+- Updated codependix-file-imports to 0.0.85
+- Updated codependix-nx-projects to 0.0.86
+- Updated codependix-core to 0.0.85
+
 ## 0.0.86 (2026-11-17)
 
 ### 🧱 Updated Dependencies

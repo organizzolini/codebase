@@ -6,8 +6,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { PythonImportParserService } from "./modules/import-parser/python-import-parser.service";
 import { PythonImportGraphService } from "./python-import-graph.service";
-import { PythonImportParserService } from "./python-import-parser.service";
 import { PythonProjectService } from "./python-project.service";
 import { PYTHON_IMPORT_GRAPH_UNCONNECTED } from "./python.constants";
 

@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { SymmetryModule } from "../symmetry/symmetry.module";
+import { SymmetryModule } from "../geometry/modules/symmetry/symmetry.module";
 
 import { CodeService } from "./code.service";
 

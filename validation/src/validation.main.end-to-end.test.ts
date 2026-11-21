@@ -1,8 +1,10 @@
 import { spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 
 import { environmentSchema } from "./validation.constants";
 
@@ -80,7 +82,7 @@ describe("main end-to-end suite", () => {
         JSON.stringify({
           extends: path.relative(
             directory,
-            path.resolve(import.meta.dirname, "../tsconfig.json"),
+            path.resolve(import.meta.dirname, "../configuration/tsconfig.json"),
           ),
         }),
       );
@@ -100,12 +102,7 @@ describe("main end-to-end suite", () => {
     };
 
     beforeEach(() => {
-      mkdirSync(FIXTURE_ROOT, { recursive: true });
-      fixture = mkdtempSync(path.join(FIXTURE_ROOT, "session-commands-"));
-    });
-
-    afterEach(() => {
-      rmSync(fixture, { force: true, recursive: true });
+      fixture = createTemporaryDirectory("session-commands", FIXTURE_ROOT);
     });
 
     it("prints nothing for a compliant branch and exits 0", () => {

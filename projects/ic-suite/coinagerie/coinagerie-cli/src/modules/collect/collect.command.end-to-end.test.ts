@@ -32,6 +32,12 @@ const CONFIGURATION = {
   ].join("\n"),
 };
 
+/** A configuration that sets nothing but leaving itself out of the scan. */
+const MINIMAL_CONFIGURATION = {
+  "coinagerie.config.ts":
+    'export default { exclude: { paths: ["coinagerie.config.ts"] } };\n',
+};
+
 const JSON_WORDS = ["angle", "aspect", "lunar", "phase", "service", "src"];
 
 /** A JSON glossary whose words are given, each with its definition. */
@@ -73,7 +79,11 @@ describe("collect command with a json destination end-to-end suite", () => {
         FIXTURE_OPTIONS,
       );
 
-      const result = await run(root, ["--check"]);
+      const result = await run(root, [
+        "--config",
+        "coinagerie.config.ts",
+        "--check",
+      ]);
 
       expect(result.exitCode).toBe(1);
       expect(result.standardError).toContain(path.join(root, "glossary.json"));
@@ -97,11 +107,23 @@ describe("collect command with a json destination end-to-end suite", () => {
         FIXTURE_OPTIONS,
       );
 
-      const written = await run(root, ["--write"]);
-      const checked = await run(root, ["--check"]);
+      const written = await run(root, [
+        "--config",
+        "coinagerie.config.ts",
+        "--write",
+      ]);
+      const checked = await run(root, [
+        "--config",
+        "coinagerie.config.ts",
+        "--check",
+      ]);
       const jsonPath = path.join(root, "glossary.json");
       const content = readFileSync(jsonPath, "utf8");
-      const rewritten = await run(root, ["--write"]);
+      const rewritten = await run(root, [
+        "--config",
+        "coinagerie.config.ts",
+        "--write",
+      ]);
 
       expect(written.exitCode).toBe(0);
       expect(content).toBe(
@@ -139,7 +161,11 @@ describe("collect command with a json destination end-to-end suite", () => {
         FIXTURE_OPTIONS,
       );
 
-      const result = await run(root, ["--write"]);
+      const result = await run(root, [
+        "--config",
+        "coinagerie.config.ts",
+        "--write",
+      ]);
 
       expect(result.exitCode).toBe(0);
       expect(
@@ -167,7 +193,11 @@ describe("collect command with a json destination end-to-end suite", () => {
         FIXTURE_OPTIONS,
       );
 
-      const result = await run(root, ["--write"]);
+      const result = await run(root, [
+        "--config",
+        "coinagerie.config.ts",
+        "--write",
+      ]);
 
       expect(result.exitCode).toBe(1);
       expect(result.standardError).toContain(path.join(root, "glossary.json"));
@@ -193,7 +223,11 @@ describe("collect command with a json destination end-to-end suite", () => {
         FIXTURE_OPTIONS,
       );
 
-      const result = await run(root, ["--check"]);
+      const result = await run(root, [
+        "--config",
+        "coinagerie.config.ts",
+        "--check",
+      ]);
 
       expect(result.exitCode).toBe(1);
       expect(existsSync(path.join(root, "README.md"))).toBe(false);
@@ -204,13 +238,20 @@ describe("collect command with a json destination end-to-end suite", () => {
   it(
     "prints flat json to standard output when --format json asks, honoring --exclude-paths",
     async () => {
-      const root = createFileTree(SOURCE, FIXTURE_OPTIONS);
+      const root = createFileTree(
+        { ...SOURCE, ...MINIMAL_CONFIGURATION },
+        FIXTURE_OPTIONS,
+      );
 
       const result = await run(root, [
+        "--config",
+        "coinagerie.config.ts",
         "--format",
         "json",
         "--exclude-paths",
         "tsconfig.json",
+        "--exclude-paths",
+        "coinagerie.config.ts",
       ]);
 
       expect(result.exitCode).toBe(0);
@@ -228,6 +269,7 @@ describe("collect command with a json destination end-to-end suite", () => {
       const root = createFileTree(
         {
           ...SOURCE,
+          ...MINIMAL_CONFIGURATION,
           "other.ts": "const strayName = 1;\n",
         },
         FIXTURE_OPTIONS,
@@ -241,8 +283,18 @@ describe("collect command with a json destination end-to-end suite", () => {
         "WORDS.md",
       ];
 
-      const written = await run(root, [...flags, "--write"]);
-      const checked = await run(root, [...flags, "--check"]);
+      const written = await run(root, [
+        "--config",
+        "coinagerie.config.ts",
+        ...flags,
+        "--write",
+      ]);
+      const checked = await run(root, [
+        "--config",
+        "coinagerie.config.ts",
+        ...flags,
+        "--check",
+      ]);
 
       expect(written.exitCode).toBe(0);
       expect(checked.exitCode).toBe(0);
@@ -268,7 +320,13 @@ describe("collect command with a json destination end-to-end suite", () => {
         FIXTURE_OPTIONS,
       );
 
-      const result = await run(root, ["--output-json", "only.json", "--write"]);
+      const result = await run(root, [
+        "--config",
+        "coinagerie.config.ts",
+        "--output-json",
+        "only.json",
+        "--write",
+      ]);
 
       expect(result.exitCode).toBe(0);
       expect(existsSync(path.join(root, "only.json"))).toBe(true);
@@ -283,9 +341,14 @@ describe("collect command with a json destination end-to-end suite", () => {
   it(
     "sets the markdown description from --description",
     async () => {
-      const root = createFileTree(SOURCE, FIXTURE_OPTIONS);
+      const root = createFileTree(
+        { ...SOURCE, ...MINIMAL_CONFIGURATION },
+        FIXTURE_OPTIONS,
+      );
 
       const result = await run(root, [
+        "--config",
+        "coinagerie.config.ts",
         "--output-markdown",
         "WORDS.md",
         "--description",
@@ -311,9 +374,16 @@ describe("collect command with a json destination end-to-end suite", () => {
   ])(
     "refuses %s",
     async (_case, args) => {
-      const root = createFileTree(SOURCE, FIXTURE_OPTIONS);
+      const root = createFileTree(
+        { ...SOURCE, ...MINIMAL_CONFIGURATION },
+        FIXTURE_OPTIONS,
+      );
 
-      const result = await run(root, args);
+      const result = await run(root, [
+        "--config",
+        "coinagerie.config.ts",
+        ...args,
+      ]);
 
       expect(result.exitCode).toBe(1);
       expect(existsSync(path.join(root, "W.md"))).toBe(false);

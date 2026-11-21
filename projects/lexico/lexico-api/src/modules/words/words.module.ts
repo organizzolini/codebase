@@ -2,11 +2,11 @@ import { Module } from "@nestjs/common";
 
 import { TypeOrmModule, Word, WordForm, WordLexeme } from "@codebase/lexico-db";
 
-import { LexemeWordFormLoader } from "./lexeme-word-form.loader";
-import { LexemeWordFormResolver } from "./lexeme-word-form.resolver";
-import { WordFormResolver } from "./word-form.resolver";
-import { WordLexemeResolver } from "./word-lexeme.resolver";
-import { WordLinkLoader } from "./word-link.loader";
+import { LexemeWordFormLoader } from "./modules/word-forms/lexeme-word-form.loader";
+import { LexemeWordFormResolver } from "./modules/word-forms/lexeme-word-form.resolver";
+import { WordFormResolver } from "./modules/word-forms/word-form.resolver";
+import { WordLexemeResolver } from "./modules/word-lexemes/word-lexeme.resolver";
+import { WordLinkLoader } from "./modules/word-lexemes/word-link.loader";
 import { WordsResolver } from "./words.resolver";
 import { WordsService } from "./words.service";
 
