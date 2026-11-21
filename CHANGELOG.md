@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.6.0](https://github.com/organizzolini/codebase/compare/v6.5.0...v6.6.0) (2026-11-21)
+
+### ✨ Features
+
+* **codometer,configuration:** ✨ cap directory breadth and depth, and keep tool configs in configuration folders ([#2452](https://github.com/organizzolini/codebase/issues/2452)) ([e0c12cb](https://github.com/organizzolini/codebase/commit/e0c12cb27fccde59b1142f0f8f0aedc5e0e0c3cc)), closes [#2450](https://github.com/organizzolini/codebase/issues/2450)
+
 ## [6.5.0](https://github.com/organizzolini/codebase/compare/v6.4.1...v6.5.0) (2026-11-20)
 
 ### ✨ Features
