@@ -1,17 +1,21 @@
 import { useMemo } from "react";
 
 import { useCalendarNavigation } from "../../../hooks/use-calendar-navigation/use-calendar-navigation";
-import { createColorScheme } from "../../calendar-appearance/calendar-color-by/components/calendar-color-schemes/calendar-color-schemes.utilities";
-import { colorEvents } from "../../calendar-appearance/calendar-color-by/components/calendar-colors/calendar-colors.utilities";
 import { CalendarToolbar } from "../../calendar-controls/calendar-toolbar/calendar-toolbar";
-import { createEventGroupFields } from "../../calendar-query/calendar-group-by/components/event-group-model/event-group-fields.utilities";
+import { createEventGroupFields } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 import { CalendarTimeline } from "../calendar-timeline/calendar-timeline";
 
+import { createColorScheme } from "./components/calendar-color-schemes/calendar-color-schemes.utilities";
+import { colorEvents } from "./components/calendar-colors/calendar-colors.utilities";
 import { CalendarGrid } from "./components/calendar-grid/calendar-grid";
-import { VENDORED_SURFACE_CLASS_NAMES } from "./components/calendar-views/calendar-surfaces.constants";
+import {
+  OPAQUE_CLASS_NAMES,
+  VENDORED_SURFACE_CLASS_NAMES,
+} from "./components/calendar-views/calendar-surfaces.constants";
 import { DEFAULT_TIMELINE_SCALE } from "./components/calendar-views/calendar-views.constants";
 
-import type { EventGroupLevel } from "../../calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
+import type { EventGroupLevel } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
+import type { GroupSort } from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type {
   CalendarEventRecord,
   EventFacet,
@@ -68,10 +72,6 @@ export interface EventsCalendarProperties {
    */
   grouping: readonly EventGroupLevel[];
   /**
-   * The menus the toolbar's first row carries: View, Color and Sky.
-   */
-  menus?: ReactNode;
-  /**
    * Called with the new day when the toolbar moves the calendar.
    */
   onDateChange: (date: Date) => void;
@@ -81,13 +81,13 @@ export interface EventsCalendarProperties {
    */
   onShowLater?: (() => void) | undefined;
   /**
-   * Called with the view picked in the toolbar.
-   */
-  onViewChange?: (view: CalendarViewName) => void;
-  /**
    * The span the timeline shows at once; a month when absent.
    */
   scale?: TimelineScale | undefined;
+  /**
+   * How the timeline orders its groups; as built when absent.
+   */
+  sort?: GroupSort | undefined;
   timeZone: string;
   /**
    * The month when absent.
@@ -114,10 +114,9 @@ export function EventsCalendar(
     facets,
     filters,
     grouping,
-    menus,
     onDateChange,
-    onViewChange,
     scale = DEFAULT_TIMELINE_SCALE,
+    sort,
     timeZone,
     view = "month",
   } = properties;
@@ -155,15 +154,12 @@ export function EventsCalendar(
       data-testid="events-calendar"
     >
       <div
-        className={`flex h-full flex-col ${VENDORED_SURFACE_CLASS_NAMES.gridCells}`}
+        className={`flex h-full flex-col ${VENDORED_SURFACE_CLASS_NAMES.gridCells} ${OPAQUE_CLASS_NAMES.buttons} ${OPAQUE_CLASS_NAMES.events} ${OPAQUE_CLASS_NAMES.ganttBars} ${OPAQUE_CLASS_NAMES.labels}`}
       >
         <CalendarToolbar
           compact={compact}
           filters={filters}
-          menus={menus}
           navigation={navigation}
-          onViewChange={onViewChange}
-          view={view}
         />
         {view === "timeline" ? (
           <CalendarTimeline
@@ -176,6 +172,7 @@ export function EventsCalendar(
             onDateChange={onDateChange}
             onNavigationChange={handleNavigationChange}
             scale={scale}
+            sort={sort}
             timeZone={timeZone}
           />
         ) : (

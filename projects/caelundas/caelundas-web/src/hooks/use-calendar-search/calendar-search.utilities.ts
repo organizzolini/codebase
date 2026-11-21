@@ -4,18 +4,19 @@ import {
 } from "../../components/calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
 import { parseCalendarSymbols } from "../../components/calendar-events/event-glyphs/calendar-symbols.utilities";
 import { normalizeEventFilter } from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filter-tree.utilities";
-import { MAXIMUM_GROUP_LEVELS } from "../../components/calendar-query/calendar-group-by/components/event-group-model/event-groups.constants";
+import { MAXIMUM_GROUP_LEVELS } from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.constants";
 
 import {
   agendaDaysSchema,
   calendarDateSchema,
   filterGroupSchema,
   groupLevelSchema,
+  groupSortSchema,
   levelsSchema,
   skySearchValueSchema,
 } from "./calendar-search.constants";
 
-import type { EventGrouping } from "../../components/calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
+import type { EventGrouping } from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type { CalendarSearch, SkySearchValue } from "./calendar-search.types";
 
 /**
@@ -50,6 +51,7 @@ export function readCalendarSearch(
     filter: filter === undefined ? undefined : normalizeEventFilter(filter),
     group: parseGrouping(search["group"]),
     scale: parseTimelineScale(search["scale"]),
+    sort: groupSortSchema.safeParse(search["sort"]).data,
     symbols: parseCalendarSymbols(search["symbols"]),
     view: parseCalendarView(search["view"]),
   };

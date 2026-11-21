@@ -1,4 +1,4 @@
-import type { EventGroupLevel } from "../../calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
+import type { EventGroupLevel } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type { EventFacet } from "../events-calendar/components/calendar-loader/calendar-records.types";
 import type { AgendaListRow, AgendaRow } from "./calendar-agenda.types";
 

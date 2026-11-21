@@ -6,7 +6,12 @@ import {
   createBusyEvents,
   FIXTURE_EVENTS,
 } from "../../../../testing/calendar-fixture";
-import { findToolbar } from "../../../../testing/calendar-page";
+import {
+  findDisplayOption,
+  findToolbar,
+  pickCalendarView,
+  readCalendarView,
+} from "../../../../testing/calendar-page";
 import { renderCalendarRoute } from "../../../../testing/render-route";
 
 /**
@@ -39,13 +44,12 @@ describe("calendar timeline", () => {
   it("switches to the timeline from the toolbar", async () => {
     await renderCalendarRoute("/?date=2026-03-04");
 
-    fireEvent.click(
-      within(await findToolbar()).getByRole("button", { name: "Timeline" }),
-    );
+    await pickCalendarView("Timeline");
 
     await expect(
       screen.findByTestId("calendar-timeline"),
     ).resolves.toBeDefined();
+    await expect(readCalendarView()).resolves.toBe("Timeline");
     expect(
       within(await findToolbar()).getByRole("heading", { name: "March 2026" }),
     ).toBeDefined();
@@ -116,20 +120,7 @@ describe("calendar timeline", () => {
   ])("zooms out from a day to the $scale", async ({ scale, title }) => {
     await renderCalendarRoute("/?view=timeline&scale=day&date=2026-03-04");
 
-    fireEvent.click(
-      within(await findToolbar()).getByRole("button", {
-        name: /^View options/u,
-      }),
-    );
-    fireEvent.click(await screen.findByText("Scale"));
-    fireEvent.click(
-      within(await screen.findByRole("group", { name: "Scale" })).getByRole(
-        "button",
-        {
-          name: scale,
-        },
-      ),
-    );
+    fireEvent.click(await findDisplayOption("Scale", scale));
 
     // The toolbar is drawn again for the new scale, so the page is searched.
     await expect(

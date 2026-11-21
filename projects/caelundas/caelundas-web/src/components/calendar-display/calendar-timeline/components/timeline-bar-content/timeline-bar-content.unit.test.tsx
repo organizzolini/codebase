@@ -35,4 +35,36 @@ describe(TimelineBarContent, () => {
 
     expect(screen.getByText("Mercury retrograde")).toBeDefined();
   });
+
+  it("keeps the label of a span in view at either side of the viewport", () => {
+    const occurrence = {
+      end: new Date("2026-03-09T00:00:00.000Z"),
+      event: {
+        data: {
+          names: ["Moon square Mars"],
+          records: [
+            {
+              durationMinutes: 7200,
+              end: new Date("2026-03-09T00:00:00.000Z"),
+              groups: [],
+              id: "span",
+              start: new Date("2026-03-04T00:00:00.000Z"),
+              summary: "Moon square Mars",
+              tags: [],
+            },
+          ],
+        },
+        title: "Moon square Mars",
+      },
+      start: new Date("2026-03-04T00:00:00.000Z"),
+    } as unknown as TimelineBarContentProperties["occurrence"];
+
+    render(<TimelineBarContent occurrence={occurrence} />);
+
+    const label = screen.getByTestId("calendar-event-chip");
+
+    expect(label.className).toContain("sticky");
+    expect(label.className).toContain("start-1.5");
+    expect(label.className).toContain("end-1.5");
+  });
 });

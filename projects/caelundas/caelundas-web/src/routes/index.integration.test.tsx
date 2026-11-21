@@ -7,6 +7,7 @@ import { readServedApi, serveCalendarApi } from "../../testing/calendar-api";
 import {
   BUILDER_TEST,
   BUILDER_WAIT,
+  findDisplayOption,
   findToolbar,
   pickOption,
   startFilterRule,
@@ -73,14 +74,8 @@ describe("index", () => {
       within(toolbar).getByRole("button", { name: /Next/u }),
     ).toBeDefined();
     expect(
-      within(within(toolbar).getByRole("group", { name: "View" })).getByRole(
-        "button",
-        {
-          name: "Month",
-          pressed: true,
-        },
-      ),
-    ).toBeDefined();
+      within(toolbar).getByRole("group", { name: "Display" }).textContent,
+    ).toBe("DisplayMonth");
   });
 
   it("shows each event at its time in the observer's zone", async () => {
@@ -437,61 +432,49 @@ describe("index", () => {
     expect(within(toolbar).queryByRole("toolbar")).toBeNull();
   });
 
-  it("turns the colors off from the Color menu and the grouping of crowded days from the View menu", async () => {
+  it("turns the colors off and the grouping of crowded days off, and on again, from the Display menu", async () => {
     await renderCalendarRoute("/?date=2026-03-01");
     await screen.findByRole("grid", { name: "March 2026" });
 
-    const seen = new Set<string>();
+    // Both switches start on; each click turns one the other way.
+    const isOn = new Map<string, boolean>();
 
-    for (const [menu, role, name] of [
-      ["Color options", "switch", "Color events"],
-      ["View options", "menuitemcheckbox", "Group similar events"],
-      ["Color options", "switch", "Color events"],
-      ["View options", "menuitemcheckbox", "Group similar events"],
+    for (const [branch, leaf] of [
+      ["Color", "Color events"],
+      ["Crowded days", "Group similar events"],
+      ["Color", "Color events"],
+      ["Crowded days", "Group similar events"],
     ] as const) {
-      fireEvent.click(screen.getByRole("button", { name: menu }));
-      fireEvent.click(await screen.findByRole(role, { name }));
-      // A switch leaves its panel open, where a menu item closes its menu.
-      fireEvent.keyDown(document.activeElement ?? document.body, {
-        key: "Escape",
-      });
-      await waitFor(() => {
-        expect(screen.queryByRole(role, { name })).toBeNull();
-      });
+      const next = !(isOn.get(leaf) ?? true);
 
-      // The link now says so, and the menu reads back what it holds.
-      fireEvent.click(screen.getByRole("button", { name: menu }));
+      fireEvent.click(await findDisplayOption(branch, leaf));
+      isOn.set(leaf, next);
+
+      // The link now says so, and the list reads back what it holds.
       await waitFor(() => {
         expect(
-          screen.getByRole(role, { name }).getAttribute("aria-checked"),
-        ).toBe(seen.has(name) ? "true" : "false");
-      });
-      seen.add(name);
-      fireEvent.keyDown(document.activeElement ?? document.body, {
-        key: "Escape",
+          screen
+            .getByRole("option", { name: new RegExp(`^${leaf}$`, "u") })
+            .getAttribute("aria-selected"),
+        ).toBe(String(next));
       });
     }
   });
 
-  it("switches the symbols to emojis and back from the View menu", async () => {
+  it("switches the symbols to emojis and back from the Display menu", async () => {
     await renderCalendarRoute("/?date=2026-03-01");
     await screen.findByRole("heading", { level: 1 });
 
     for (const name of ["Emojis", "Glyphs"]) {
-      fireEvent.click(screen.getByRole("button", { name: "View options" }));
-      fireEvent.click(await screen.findByRole("menuitemradio", { name }));
+      fireEvent.click(await findDisplayOption("Symbols", name));
 
-      // The link now holds the pick, and the menu reads it back.
-      fireEvent.click(screen.getByRole("button", { name: "View options" }));
+      // The link now holds the pick, and the list reads it back.
       await waitFor(() => {
         expect(
           screen
-            .getByRole("menuitemradio", { name })
-            .getAttribute("aria-checked"),
+            .getByRole("option", { name: new RegExp(`^${name}$`, "u") })
+            .getAttribute("aria-selected"),
         ).toBe("true");
-      });
-      fireEvent.keyDown(document.activeElement ?? document.body, {
-        key: "Escape",
       });
     }
   });

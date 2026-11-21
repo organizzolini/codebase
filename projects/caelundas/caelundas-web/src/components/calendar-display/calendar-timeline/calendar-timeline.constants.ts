@@ -29,7 +29,7 @@ export const TIMELINE_METRICS = {
 // A phone gives the row names a narrow column and the time the rest.
 export const COMPACT_TREE = { minWidth: 120, nameColumnWidth: 104, width: 168 };
 
-export const TREE = { nameColumnWidth: 208, width: 288 };
+export const TREE = { nameColumnWidth: 152, width: 232 };
 
 export const TIMELINE_VIEWPORT =
   '[data-slot="gantt-timeline-pane"] [data-slot="scroll-area-viewport"]';

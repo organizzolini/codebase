@@ -1,4 +1,4 @@
-import { getEventKind } from "../../components/calendar-appearance/calendar-color-by/components/calendar-colors/calendar-colors.utilities";
+import { getEventKind } from "../../components/calendar-display/events-calendar/components/calendar-colors/calendar-colors.utilities";
 import { formatCalendarDate } from "../../components/calendar-display/events-calendar/components/calendar-window/calendar-window.utilities";
 
 import {

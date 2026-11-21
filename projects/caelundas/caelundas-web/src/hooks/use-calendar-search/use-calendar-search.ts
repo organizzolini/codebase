@@ -70,6 +70,9 @@ export function useCalendarSearch(timeZone: string): UseCalendarSearchResult {
     handleScaleChange: (scale) => {
       updateSearch({ scale });
     },
+    handleSortChange: (sort) => {
+      updateSearch({ sort });
+    },
     handleSymbolsChange: (symbols) => {
       updateSearch(
         { symbols: symbols === "emojis" ? "emojis" : undefined },

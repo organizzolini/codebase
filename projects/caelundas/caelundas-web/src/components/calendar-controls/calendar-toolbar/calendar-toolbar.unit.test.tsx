@@ -1,7 +1,12 @@
 import { render, screen } from "@testing-library/react";
+import { useContext } from "react";
 import { describe, expect, it } from "vitest";
 
+import { CalendarNavigationSlot } from "../calendar-navigation-group/calendar-navigation-slot.constants";
+
 import { CalendarToolbar } from "./calendar-toolbar";
+
+import type { ReactNode } from "react";
 
 const NAVIGATION = {
   next: () => {},
@@ -9,6 +14,28 @@ const NAVIGATION = {
   title: "March 2026",
   today: () => {},
 };
+
+/**
+ * Filters that draw the date the toolbar hands them, as the Filter strip does.
+ */
+function FiltersWithDate(): ReactNode {
+  return (
+    <>
+      <button type="button">Filter</button>
+      {useContext(CalendarNavigationSlot)}
+    </>
+  );
+}
+
+/**
+ * Whether the second element comes after the first in the document.
+ */
+function follows(first: Element, second: Element): boolean {
+  return (
+    (first.compareDocumentPosition(second) & Node.DOCUMENT_POSITION_FOLLOWING) >
+    0
+  );
+}
 
 describe(CalendarToolbar, () => {
   it("applies its class name", () => {
@@ -49,52 +76,31 @@ describe(CalendarToolbar, () => {
     ).toBe(false);
   });
 
-  it("gives a phone's menus and filters the row under the title", () => {
+  it("draws the filters on one line, with the date among them", () => {
     render(
       <CalendarToolbar
-        filters={<button type="button">Filters</button>}
-        menus={<button type="button">View</button>}
+        filters={<FiltersWithDate />}
         navigation={NAVIGATION}
-        compact
       />,
     );
 
-    const controls = screen.getByTestId("calendar-toolbar-controls");
+    const row = screen.getByTestId("calendar-toolbar-row");
+    const filter = screen.getByRole("button", { name: "Filter" });
+    const navigate = screen.getByRole("group", { name: "Navigate" });
 
-    for (const name of ["View", "Filters"]) {
-      expect(controls.contains(screen.getByRole("button", { name }))).toBe(
-        true,
-      );
-    }
+    expect(row.contains(filter)).toBe(true);
+    expect(row.contains(navigate)).toBe(true);
+    expect(follows(filter, navigate)).toBe(true);
   });
 
-  it("splits a wide toolbar into menus with the date, then filters with the views", () => {
-    render(
-      <CalendarToolbar
-        filters={<button type="button">Filters</button>}
-        menus={<button type="button">View</button>}
-        navigation={NAVIGATION}
-        onViewChange={() => {}}
-        view="month"
-      />,
-    );
+  it("draws the date itself when there are no filters to carry it", () => {
+    render(<CalendarToolbar navigation={NAVIGATION} />);
 
-    const menus = screen.getByTestId("calendar-toolbar-menus");
-    const filters = screen.getByTestId("calendar-toolbar-filters");
-
-    expect(menus.contains(screen.getByRole("button", { name: "View" }))).toBe(
-      true,
-    );
     expect(
-      menus.contains(screen.getByRole("heading", { name: "March 2026" })),
+      screen
+        .getByTestId("calendar-toolbar-row")
+        .contains(screen.getByRole("group", { name: "Navigate" })),
     ).toBe(true);
-    expect(
-      filters.contains(screen.getByRole("button", { name: "Filters" })),
-    ).toBe(true);
-    expect(
-      filters.contains(screen.getByRole("button", { name: "Month" })),
-    ).toBe(true);
-    expect(screen.queryByTestId("calendar-toolbar-controls")).toBeNull();
   });
 
   it("leaves a phone with no controls a single row", () => {
@@ -122,48 +128,20 @@ describe(CalendarToolbar, () => {
     ).toBe(true);
   });
 
-  it("switches Today off when the days shown include today", () => {
+  it("hides Today when the days shown include today", () => {
     const { rerender } = render(
       <CalendarToolbar navigation={{ ...NAVIGATION, isToday: true }} />,
     );
 
-    expect(screen.getByRole("button", { name: "Today" })).toHaveProperty(
-      "disabled",
-      true,
-    );
+    expect(screen.queryByRole("button", { name: "Today" })).toBeNull();
 
     rerender(
       <CalendarToolbar navigation={{ ...NAVIGATION, isToday: false }} />,
     );
 
-    expect(screen.getByRole("button", { name: "Today" })).toHaveProperty(
-      "disabled",
-      false,
+    expect(screen.getByRole("button", { name: "Today" }).textContent).toBe(
+      "Today",
     );
-  });
-
-  it("draws the date above the filters, and the views after the filters", () => {
-    render(
-      <CalendarToolbar
-        filters={<button type="button">Filter</button>}
-        navigation={NAVIGATION}
-        onViewChange={() => {}}
-        view="month"
-      />,
-    );
-
-    const filter = screen.getByRole("button", { name: "Filter" });
-    const views = screen.getByRole("group", { name: "View" });
-    const navigate = screen.getByRole("group", { name: "Navigate" });
-
-    expect(
-      navigate.compareDocumentPosition(filter) &
-        Node.DOCUMENT_POSITION_FOLLOWING,
-    ).toBeGreaterThan(0);
-    expect(
-      filter.compareDocumentPosition(views) & Node.DOCUMENT_POSITION_FOLLOWING,
-    ).toBeGreaterThan(0);
-    expect(views.contains(filter)).toBe(false);
   });
 
   it("holds the date's width however long the period's name runs", () => {

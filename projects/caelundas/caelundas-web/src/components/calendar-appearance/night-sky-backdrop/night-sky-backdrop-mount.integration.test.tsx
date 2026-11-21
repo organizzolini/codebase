@@ -128,7 +128,7 @@ describe("night sky backdrop", () => {
       backgroundBottomColor: "#0d1533",
       backgroundTopColor: "#04060f",
       bottomAltitudeDegrees: 0,
-      constellations: ["zodiac"],
+      constellations: ["all"],
       debug: false,
       ecliptic: true,
       eclipticColor: "#ffffff",

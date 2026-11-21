@@ -6,7 +6,8 @@ import type { EventFilterQuery } from "../../components/calendar-query/calendar-
 import type {
   EventGrouping,
   EventGroupLevel,
-} from "../../components/calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
+} from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
+import type { GroupSort } from "../../components/calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
 
 /**
  * The calendar's URL search parameters.
@@ -71,6 +72,10 @@ export interface CalendarSearch {
   "sky.surfaceOpacity"?: SkySearchValue | undefined;
   "sky.top"?: SkySearchValue | undefined;
   "sky.vFov"?: SkySearchValue | undefined;
+  /**
+   * How the timeline orders its groups; as built when absent.
+   */
+  sort?: GroupSort | undefined;
   /**
    * `emojis` when events are drawn with their emoji; their icons when absent.
    */

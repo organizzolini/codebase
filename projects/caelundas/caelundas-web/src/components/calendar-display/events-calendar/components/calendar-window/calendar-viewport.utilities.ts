@@ -1,11 +1,4 @@
-import { DESKTOP_QUERY, WIDE_QUERY } from "./calendar-viewport.constants";
-
-/**
- * Whether the page is at least as wide as a desktop, read synchronously.
- */
-export function isDesktopViewport(): boolean {
-  return globalThis.matchMedia(DESKTOP_QUERY).matches;
-}
+import { WIDE_QUERY } from "./calendar-viewport.constants";
 
 /**
  * Whether the page is at least as wide as a tablet, read synchronously so the
@@ -13,14 +6,6 @@ export function isDesktopViewport(): boolean {
  */
 export function isWideViewport(): boolean {
   return globalThis.matchMedia(WIDE_QUERY).matches;
-}
-
-/**
- * Calls back whenever the page crosses the desktop width, and returns how to
- * stop, in the shape `useSyncExternalStore` subscribes with.
- */
-export function subscribeToDesktopViewport(onChange: () => void): () => void {
-  return subscribeToQuery(DESKTOP_QUERY, onChange);
 }
 
 /**

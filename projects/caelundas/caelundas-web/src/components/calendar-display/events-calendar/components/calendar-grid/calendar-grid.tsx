@@ -18,7 +18,7 @@ import { formatCalendarDate } from "../calendar-window/calendar-window.utilities
 import { CalendarGridNavigation } from "./calendar-grid-navigation";
 
 import type { CalendarNavigation } from "../../../../calendar-controls/calendar-navigation-group/calendar-navigation-group.types";
-import type { EventGroupLevel } from "../../../../calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
+import type { EventGroupLevel } from "../../../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type {
   CalendarEventRecord,
   EventFacet,

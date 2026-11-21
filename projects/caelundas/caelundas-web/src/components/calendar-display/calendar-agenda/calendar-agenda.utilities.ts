@@ -1,4 +1,4 @@
-import { buildEventGroups } from "../../calendar-query/calendar-group-by/components/event-group-tree/event-group-tree.utilities";
+import { buildEventGroups } from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.utilities";
 import { AGENDA_DAY_COUNT } from "../events-calendar/components/calendar-views/calendar-views.constants";
 import {
   addCalendarDays,
@@ -19,7 +19,7 @@ import {
 import type {
   EventGroupField,
   EventGrouping,
-} from "../../calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
+} from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type {
   CalendarEventRecord,
   CalendarEventTag,
