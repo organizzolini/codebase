@@ -34,6 +34,10 @@ export interface QueryCascaderProperties {
    */
   multiple?: boolean;
   onValueChange: (value: string[]) => void;
+  /**
+   * Content drawn in place of the list when a branch is opened, by the branch's value; only when drilling.
+   */
+  panels?: Readonly<Record<string, ReactNode>>;
   placeholder: string;
   /**
    * Which rows can be picked; a row that cannot opens its branch when pressed. Every row when several can be picked with a cascade, only leaves otherwise, when absent.
@@ -58,6 +62,7 @@ export function QueryCascader(
     items,
     mode = "tree",
     onValueChange,
+    panels,
     placeholder,
     selectable,
     value,
@@ -70,6 +75,7 @@ export function QueryCascader(
   const panel = (
     <QueryCascaderPanel
       mode={mode}
+      panels={panels}
       placeholder={placeholder}
     />
   );

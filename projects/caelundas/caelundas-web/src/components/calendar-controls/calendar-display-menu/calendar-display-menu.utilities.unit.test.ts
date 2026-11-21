@@ -72,13 +72,14 @@ function createHandlers(): UseCalendarDisplayResult["handlers"] {
 
 describe("calendar-display-menu utilities", () => {
   describe(createDisplayItems, () => {
-    it("offers Symbols, Crowded days, Color and Sky, with a Scale only on the timeline", () => {
+    it("offers Calendar, Symbols, Crowded days, Color and Sky, with a Scale only on the timeline", () => {
       const labels = (view: "month" | "timeline"): string[] =>
         createDisplayItems(FIELDS, { listing: LISTING, view }).map(
           (item) => item.label,
         );
 
       expect(labels("timeline")).toStrictEqual([
+        "Calendar",
         "Scale",
         "Symbols",
         "Crowded days",
@@ -88,13 +89,13 @@ describe("calendar-display-menu utilities", () => {
       expect(labels("month")).not.toContain("Scale");
     });
 
-    it("keeps an icon on the Color and Sky options", () => {
+    it("keeps an icon on the Calendar, Color and Sky options", () => {
       const items = createDisplayItems(FIELDS, {
         listing: LISTING,
         view: "month",
       });
 
-      for (const label of ["Color", "Sky"]) {
+      for (const label of ["Calendar", "Color", "Sky"]) {
         expect(items.find((item) => item.label === label)?.icon).toBeDefined();
       }
     });

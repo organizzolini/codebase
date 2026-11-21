@@ -9,6 +9,7 @@ import {
   CascaderPanel,
   CascaderStatus,
   CascaderVirtualItems,
+  useCascaderState,
 } from "@codebase/presentation";
 
 import type { ReactNode } from "react";
@@ -20,6 +21,10 @@ import type { ReactNode } from "react";
  */
 export interface QueryCascaderPanelProperties {
   mode: "columns" | "drill" | "tree";
+  /**
+   * Content drawn in place of the list when its branch is the one open, by the branch's value.
+   */
+  panels?: Readonly<Record<string, ReactNode>> | undefined;
   placeholder: string;
 }
 
@@ -31,11 +36,22 @@ export interface QueryCascaderPanelProperties {
 export function QueryCascaderPanel(
   properties: Readonly<QueryCascaderPanelProperties>,
 ): ReactNode {
-  const { mode, placeholder } = properties;
+  const { mode, panels = {}, placeholder } = properties;
 
   // 🪝 Hooks
+  const { path } = useCascaderState();
 
   // 🏗 Setup
+  const list =
+    mode === "columns" ? (
+      <CascaderColumns />
+    ) : (
+      <CascaderList>
+        <CascaderVirtualItems />
+      </CascaderList>
+    );
+  const body =
+    (mode === "drill" ? panels[path.at(-1) ?? ""] : undefined) ?? list;
 
   // 💪 Handlers
 
@@ -51,13 +67,7 @@ export function QueryCascaderPanel(
       </CascaderNav>
       <CascaderBreadcrumb />
       <CascaderEmpty />
-      {mode === "columns" ? (
-        <CascaderColumns />
-      ) : (
-        <CascaderList>
-          <CascaderVirtualItems />
-        </CascaderList>
-      )}
+      {body}
       <CascaderFooter />
       <CascaderStatus />
     </CascaderPanel>

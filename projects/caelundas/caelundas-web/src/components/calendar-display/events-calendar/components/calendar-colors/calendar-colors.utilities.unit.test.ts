@@ -83,6 +83,13 @@ describe("calendar colors", () => {
       expect(getEventColor(eventWith(["Planet / Mars"]))).toBeNull();
     });
 
+    it("colors a retrograde period by its own rule", () => {
+      expect(getEventColor(eventWith(["Type / Retrograde Period"]))).toBe(
+        colorOf("Type / Retrograde Period"),
+      );
+      expect(colorOf("Type / Retrograde Period")).not.toBeNull();
+    });
+
     it("gives every rule a distinct color and path", () => {
       expect(new Set(EVENT_COLOR_RULES.map((rule) => rule.color)).size).toBe(
         EVENT_COLOR_RULES.length,

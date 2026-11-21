@@ -64,6 +64,16 @@ export async function findToolbar(): Promise<HTMLElement> {
  */
 export async function pickCalendarView(label: string): Promise<void> {
   await openDisplayMenu();
+
+  const back = screen.queryByRole("button", { name: /^back$/iu });
+
+  if (back !== null) {
+    fireEvent.click(back);
+  }
+
+  fireEvent.click(
+    await screen.findByRole("option", { name: /^Calendar,/u }, BUILDER_WAIT),
+  );
   fireEvent.click(
     await screen.findByRole("button", { name: label }, BUILDER_WAIT),
   );

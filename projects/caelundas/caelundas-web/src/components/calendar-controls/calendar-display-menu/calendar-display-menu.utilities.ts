@@ -1,4 +1,11 @@
-import { Galaxy, Layers, Palette, Ruler, Shapes } from "lucide-react";
+import {
+  CalendarClock,
+  Galaxy,
+  Layers,
+  Palette,
+  Ruler,
+  Shapes,
+} from "lucide-react";
 import { createElement } from "react";
 
 import {
@@ -13,6 +20,8 @@ import {
 import { toGroupLevel } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 
 import {
+  CALENDAR_BRANCH,
+  CALENDAR_VIEW_WORDS,
   CONSTELLATION_CHOICES,
   DEFAULT_COLOR_BY,
   NO_COLOR,
@@ -141,6 +150,13 @@ export function createDisplayItems(
       : [];
 
   return [
+    {
+      children: [{ disabled: true, label: "Views", value: "calendar:views" }],
+      icon: toIcon(CalendarClock),
+      keywords: CALENDAR_VIEW_WORDS,
+      label: "Calendar",
+      value: CALENDAR_BRANCH,
+    },
     ...scale,
     {
       children: [

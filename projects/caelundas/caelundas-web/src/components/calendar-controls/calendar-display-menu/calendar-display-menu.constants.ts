@@ -50,3 +50,20 @@ export const STEP_COUNT = 5;
  * The choice that leaves events uncolored.
  */
 export const NO_COLOR = "none";
+
+/**
+ * The branch whose content is the view toggle group, not a list.
+ */
+export const CALENDAR_BRANCH = "branch:calendar";
+
+/**
+ * The words that find the Calendar branch when searching for a view.
+ */
+export const CALENDAR_VIEW_WORDS: string[] = [
+  "month",
+  "week",
+  "3 days",
+  "day",
+  "agenda",
+  "timeline",
+];

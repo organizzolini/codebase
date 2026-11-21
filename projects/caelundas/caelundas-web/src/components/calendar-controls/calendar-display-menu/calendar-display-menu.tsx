@@ -15,6 +15,7 @@ import { createEventGroupFields } from "../../calendar-query/calendar-group-stri
 import { QueryCascader } from "../../calendar-query/query-cascader/query-cascader";
 
 import {
+  CALENDAR_BRANCH,
   CHIP_CLASS_NAME,
   STRIP_CLASS_NAME,
   TITLE,
@@ -48,7 +49,7 @@ export interface CalendarDisplayMenuProperties {
 // 🧩 Component
 
 /**
- * Renders the Display button, which opens the calendar views as a vertical toggle group beside a searchable Cascader of how the calendar looks, each branch replacing the list when opened, with the Color and Sky options in it; the chip beside it names the view shown and opens the same list.
+ * Renders the Display button, which opens a searchable Cascader of how the calendar looks, each branch replacing the list when opened: Calendar shows the views as a vertical toggle group, and Color and Sky hold their options; the chip beside it names the view shown and opens the same list.
  */
 export function CalendarDisplayMenu(
   properties: Readonly<CalendarDisplayMenuProperties>,
@@ -112,18 +113,22 @@ export function CalendarDisplayMenu(
           <PopoverContent
             align="start"
             aria-label="Display options"
-            className="flex w-auto max-w-[95vw] items-start gap-2 p-2"
+            className="w-72 max-w-[95vw] p-0"
           >
-            <DisplayViewToggle
-              onViewChange={handlers.handleViewChange}
-              view={view}
-            />
             <QueryCascader
               cascade={false}
-              className="w-72"
               items={items}
               mode="drill"
               onValueChange={handleValueChange}
+              panels={{
+                [CALENDAR_BRANCH]: (
+                  <DisplayViewToggle
+                    className="m-2"
+                    onViewChange={handlers.handleViewChange}
+                    view={view}
+                  />
+                ),
+              }}
               placeholder="Search display options"
               value={value}
               multiple

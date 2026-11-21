@@ -53,7 +53,7 @@ export function DisplayViewToggle(
   return (
     <ToggleGroup
       aria-label="Calendar"
-      className={className}
+      className={`w-auto flex-col items-stretch ${className ?? ""}`}
       data-testid="display-view-toggle"
       onValueChange={handleValueChange}
       orientation="vertical"

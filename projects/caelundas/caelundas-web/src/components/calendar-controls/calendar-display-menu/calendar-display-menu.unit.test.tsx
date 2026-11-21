@@ -80,15 +80,14 @@ describe(CalendarDisplayMenu, () => {
     await expect(screen.findByTestId("query-cascader")).resolves.toBeDefined();
   });
 
-  it("nests Color and Sky in its list beside the calendar views", async () => {
+  it("nests Calendar, Color and Sky in its list", async () => {
     render(<CalendarDisplayMenu {...PROPERTIES} />);
     fireEvent.click(screen.getByRole("button", { name: "Display" }));
 
-    for (const label of ["Color", "Sky", "Scale", "Symbols"]) {
+    for (const label of ["Calendar", "Color", "Sky", "Scale", "Symbols"]) {
       await expect(screen.findByText(label)).resolves.toBeDefined();
     }
 
-    expect(screen.getByRole("button", { name: "Agenda" })).toBeDefined();
     expect(screen.queryByText("Color settings…")).toBeNull();
     expect(screen.queryByText("Sky settings…")).toBeNull();
   });
@@ -101,7 +100,9 @@ describe(CalendarDisplayMenu, () => {
 
     expect(display.handlers.handleClustersChange).toHaveBeenCalledWith(false);
 
-    fireEvent.click(screen.getByRole("button", { name: "Week" }));
+    fireEvent.click(screen.getByRole("button", { name: /^back$/iu }));
+    fireEvent.click(await screen.findByText("Calendar"));
+    fireEvent.click(await screen.findByRole("button", { name: "Week" }));
 
     expect(display.handlers.handleViewChange).toHaveBeenCalledWith("week");
   });

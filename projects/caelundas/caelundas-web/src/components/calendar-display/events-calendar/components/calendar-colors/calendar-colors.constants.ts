@@ -29,6 +29,11 @@ export const EVENT_COLOR_RULES: readonly EventColorRule[] = [
   { color: "#10b981", label: "Ingresses", path: "Type / Ingress" },
   { color: "#f97316", label: "Directions", path: "Type / Direction" },
   {
+    color: "#a8a29e",
+    label: "Retrogrades",
+    path: "Type / Retrograde Period",
+  },
+  {
     color: "#06b6d4",
     label: "Planetary phases",
     path: "Type / Planetary Phase",
