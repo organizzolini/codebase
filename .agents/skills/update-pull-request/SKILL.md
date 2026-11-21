@@ -135,6 +135,7 @@ Compose a new title following `<type>(<scope>): <gitmoji> <subject>`:
 - Use imperative mood ("add", "fix", "update", not "added", "fixes", "updates")
 - Lowercase after gitmoji, no trailing period
 - Total length must not exceed 128 characters
+- Name at most 3 scopes; the Comply check rejects a fourth
 
 ### Step 6 — Generate Updated Description
 

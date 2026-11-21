@@ -152,9 +152,10 @@ gh pr list --head <branch> --state open
 4. Pre-flight gate title scopes before creating the PR:
    - Read the commit subjects in this branch and list their scopes.
    - Make sure every commit shares at least one scope with the proposed PR
-     title, naming the fewest scopes that cover them all. A multi-scope title
-     is expected for a branch that spans projects; split the branch only if
-     those scopes cannot fit the 128-character header.
+     title, naming at most three scopes: the ones that carry most of the
+     commits. A multi-scope title is expected for a branch that spans projects,
+     and a fourth scope fails the Comply check; never split a branch over scope
+     count.
 
 5. Assignee and labels — Validate Conventions rejects a pull request whose metadata disagrees with its title, so set all of this at creation time rather than waiting for the reconciliation step to backfill it:
    - **Assignee**: `--assignee @me`. A pull request with no assignee fails validation.

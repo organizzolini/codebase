@@ -482,7 +482,7 @@ Commits are validated by commitlint through Husky. See [commit-code](.agents/ski
 
 <!-- scopes-end -->
 
-If a change spans scopes, list them comma-separated (`feat(lexico,logger): ...`) rather than reaching for an umbrella scope. Spanning scopes is no reason to split a pull request: keep each commit to one project or module and let the title name the fewest scopes that cover them all — see [Release Significance](#release-significance).
+If a change spans scopes, list them comma-separated (`feat(lexico,logger): ...`) rather than reaching for an umbrella scope. A pull request title names **at most three scopes**, which keeps the header under the 128-character limit; 🧑‍⚖️ Comply Code rejects a fourth. Spanning scopes is no reason to split a pull request: keep each commit to one project or module and let the title name up to three of them, the ones that carry most of the work — see [Release Significance](#release-significance).
 
 ## Release Significance
 
@@ -536,7 +536,7 @@ Comply Code creates any label missing from the vocabulary when a pull request is
 
 Merges go through a merge queue, and the check workflows run again on the queued merge commit — a pull request that was green on its own can still fail there once `main` has moved underneath it.
 
-To avoid release-significance failures in a pull request that spans scopes, keep each commit to one project or module, name at least one scope the commits use in the title (`type(scope-a,scope-b): …`), and title it at the most significant commit. Split into separate pull requests only when the scopes cannot fit the 128-character header or the work must deploy in stages.
+To avoid release-significance failures in a pull request that spans scopes, keep each commit to one project or module, name at least one scope the commits use in the title, and at most three (`type(scope-a,scope-b): …`), and title it at the most significant commit. Split into separate pull requests only when the work must deploy in stages or the user asks.
 
 A pull request with merge conflicts runs almost none of these workflows — a short list of green checks means nothing was validated. Resolve conflicts before reading the checks as a pass.
 

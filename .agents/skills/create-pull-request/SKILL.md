@@ -37,6 +37,15 @@ PR titles **must** follow the same format as commit messages:
 Keep titles under 128 characters, and target about 115 or less so merge-queue
 suffixes do not push the queued commit subject over the header limit.
 
+**Name at most 3 scopes.** Every scope adds its name plus a comma to the header,
+and a long list is what pushes a title over 128 characters: a six-scope title
+(`feat(codometer,synchronization,integration,configuration,infrastructure,documentation): …`)
+reached 135 characters and failed commitlint. The Comply check
+(`compliance pull-request`) rejects a fourth scope outright, even when the
+header would fit. When the commits span more, name the three that carry most of
+the work; the release-significance check needs only one scope the commits use,
+not every one. Keep the labels in step: one `scope:*` label per scope named.
+
 ### Structure Rules
 
 1. **Type**: Required, lowercase, from [allowed types](../../../configuration/repository/conventional.config.cjs)
@@ -278,7 +287,7 @@ All PRs must pass these checks before merging:
 | Check                | Command                                                | Description                                                                                                                      |
 | -------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
 | Branch Name          | `validate-branch-name`                                 | Branch follows naming conventions                                                                                                |
-| PR Title             | `commitlint`                                           | Title follows commit message format                                                                                              |
+| PR Title             | `commitlint`, `compliance pull-request`                | Title follows commit message format and names at most 3 scopes                                                                   |
 | PR Body              | `compliance pull-request`                              | Required sections: 🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related, each in its shape and within its word limit                   |
 | Issue Link           | `compliance pull-request`                              | Pull request closes or references an issue (`closingIssuesReferences` is not empty)                                              |
 | Release Significance | `compliance pull-request`                              | Title's type is at least as significant as the most significant commit, and the title names at least one scope its commits use   |
@@ -391,9 +400,10 @@ reviews and manually tests it as one change. See
 
 - Use one scope when every commit is in one project or concern.
 - Use a multi-scope title (`type(scope-a,scope-b): ...`) whenever the commits
-  span projects — that alone is no reason to split.
-- Split only for a mechanical reason: the scopes cannot fit the 128-character
-  header, one part must deploy before the rest can merge, or the user asked.
+  span projects — that alone is no reason to split — but name **at most 3**
+  scopes. Choose the three that carry most of the commits.
+- Split only for a mechanical reason: one part must deploy before the rest can
+  merge, or the user asked. Needing more than three scopes is not one.
 - Before opening, verify that the title names at least one scope its commits
   use; the release-significance check requires that, not every scope.
 
@@ -403,7 +413,7 @@ Before creating the PR, verify:
 
 - [ ] Branch name follows `<type>/<scope>-<description>` format
 - [ ] All changes are committed and pushed to remote
-- [ ] Title follows `<type>(<scope>): <gitmoji> <subject>` format (max 128 chars, target ≤ 115)
+- [ ] Title follows `<type>(<scope>): <gitmoji> <subject>` format (max 128 chars, target ≤ 115, at most 3 scopes)
 - [ ] Subject uses imperative mood and lowercase after gitmoji
 - [ ] Description includes Summary (one paragraph, ≤ 48 words), Details (bullets only, one marker, ≤ 512 words), and Testing (an ordered list only) sections
 - [ ] An issue exists for the work ([link-issue](../link-issue/SKILL.md)), and Related opens with a `-` list whose first bullet is `Closes #N`
