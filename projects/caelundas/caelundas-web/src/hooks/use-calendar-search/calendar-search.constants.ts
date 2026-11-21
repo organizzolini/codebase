@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { MAXIMUM_AGENDA_DAYS } from "../../components/calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
-import { MAXIMUM_GROUP_DEPTH } from "../../components/calendar-query/calendar-group-by/components/event-group-model/event-groups.constants";
+import { MAXIMUM_GROUP_DEPTH } from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.constants";
 
 export const calendarDateSchema = z.iso.date();
 

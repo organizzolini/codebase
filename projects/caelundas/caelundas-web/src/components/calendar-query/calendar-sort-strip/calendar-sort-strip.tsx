@@ -23,7 +23,7 @@ import {
 } from "./calendar-sort-strip.utilities";
 
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
-import type { GroupSort } from "../calendar-group-by/components/event-group-tree/event-group-tree.types";
+import type { GroupSort } from "../calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type

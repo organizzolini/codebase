@@ -1,17 +1,8 @@
 import { useState } from "react";
 
-import {
-  Cascader,
-  CascaderEmpty,
-  CascaderFooter,
-  CascaderInput,
-  CascaderList,
-  CascaderNav,
-  CascaderPanel,
-  CascaderStatus,
-  CascaderVirtualItems,
-} from "@codebase/presentation";
+import { Cascader } from "@codebase/presentation";
 
+import { QueryCascaderPanel } from "./components/query-cascader-panel/query-cascader-panel";
 import { LABELS, NOTHING } from "./query-cascader.constants";
 
 import type { CascaderActionItem, CascaderNode } from "@codebase/presentation";
@@ -33,6 +24,10 @@ export interface QueryCascaderProperties {
   cascade?: boolean;
   className?: string;
   items: readonly CascaderNode[];
+  /**
+   * Whether branches open beneath their parent, as a tree, or in columns to the right; a tree when absent.
+   */
+  mode?: "columns" | "tree";
   /**
    * Whether several can be picked, with a branch ticking all beneath it; one when absent.
    */
@@ -56,6 +51,7 @@ export function QueryCascader(
     cascade = multiple,
     className,
     items,
+    mode = "tree",
     onValueChange,
     placeholder,
     value,
@@ -66,17 +62,10 @@ export function QueryCascader(
 
   // 🏗 Setup
   const panel = (
-    <CascaderPanel>
-      <CascaderNav>
-        <CascaderInput placeholder={placeholder} />
-      </CascaderNav>
-      <CascaderEmpty />
-      <CascaderList>
-        <CascaderVirtualItems />
-      </CascaderList>
-      <CascaderFooter />
-      <CascaderStatus />
-    </CascaderPanel>
+    <QueryCascaderPanel
+      isColumns={mode === "columns"}
+      placeholder={placeholder}
+    />
   );
   const shared = {
     indicator: multiple,
@@ -84,7 +73,6 @@ export function QueryCascader(
     inputValue: query,
     labels: LABELS,
     maxHeight: 288,
-    mode: "tree",
     onInputValueChange: setQuery,
     onOpenChange: NOTHING,
     open: true,
@@ -109,6 +97,7 @@ export function QueryCascader(
           actions={[...actions]}
           cascade={cascade}
           items={[...items]}
+          mode={mode}
           onValueChange={(next) => {
             onValueChange(next);
           }}
@@ -123,6 +112,7 @@ export function QueryCascader(
           {...shared}
           actions={[...actions]}
           items={[...items]}
+          mode={mode}
           onValueChange={(next) => {
             onValueChange([next]);
           }}

@@ -1,6 +1,6 @@
 import type { EventFilterQuery } from "../../../../calendar-query/calendar-filters/components/event-filter-model/event-filters.types";
 import type { ResolvedPreset } from "../../../../calendar-query/calendar-filters/components/presets/presets.types";
-import type { EventGroupLevel } from "../../../../calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
+import type { EventGroupLevel } from "../../../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type {
   CalendarEventRecord,
   EventFacet,

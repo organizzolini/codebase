@@ -12,8 +12,8 @@ import type { EventFacet } from "../../calendar-display/events-calendar/componen
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
 import type { EventFilterQuery } from "../calendar-filters/components/event-filter-model/event-filters.types";
 import type { ResolvedPreset } from "../calendar-filters/components/presets/presets.types";
-import type { EventGroupLevel } from "../calendar-group-by/components/event-group-model/event-groups.types";
-import type { GroupSort } from "../calendar-group-by/components/event-group-tree/event-group-tree.types";
+import type { EventGroupLevel } from "../calendar-group-strip/components/event-group-model/event-groups.types";
+import type { GroupSort } from "../calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type

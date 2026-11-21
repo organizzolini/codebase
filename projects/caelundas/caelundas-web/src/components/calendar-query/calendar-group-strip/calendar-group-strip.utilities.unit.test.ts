@@ -1,15 +1,14 @@
 import { describe, expect, it } from "vitest";
 
-import { createEventGroupFields } from "../calendar-group-by/components/event-group-model/event-group-fields.utilities";
-
 import {
   createGroupItems,
   labelGroupLevel,
   toGrouping,
   toGroupValue,
 } from "./calendar-group-strip.utilities";
+import { createEventGroupFields } from "./components/event-group-model/event-group-fields.utilities";
 
-import type { EventGroupLevel } from "../calendar-group-by/components/event-group-model/event-groups.types";
+import type { EventGroupLevel } from "./components/event-group-model/event-groups.types";
 
 const FIELDS = createEventGroupFields([
   {

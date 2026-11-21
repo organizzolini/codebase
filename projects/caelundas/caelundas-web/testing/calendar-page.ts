@@ -1,4 +1,4 @@
-import { fireEvent, screen, within } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 
 // Building a rule takes a dozen renders of the vendored builder and a reload
 // of the calendar, which a slow continuous integration runner needs time for.
@@ -22,24 +22,28 @@ export async function findDisplayOption(
 ): Promise<HTMLElement> {
   await openDisplayMenu();
 
-  const find = (): HTMLElement | null =>
-    screen.queryByRole("treeitem", { name: new RegExp(`^${leaf}$`, "u") });
+  const leafName = new RegExp(`^${leaf}$`, "u");
 
-  if (find() === null) {
+  if (screen.queryByRole("option", { name: leafName }) === null) {
+    const branchName = new RegExp(`^${branch},`, "u");
+
+    // A branch already opened is a button in the trail, not an option.
     fireEvent.click(
-      await screen.findByRole(
-        "treeitem",
-        { name: new RegExp(`^${branch},`, "u") },
-        BUILDER_WAIT,
-      ),
+      await waitFor(() => {
+        const found =
+          screen.queryByRole("option", { name: branchName }) ??
+          screen.queryByRole("button", { name: branchName });
+
+        if (found === null) {
+          throw new Error(`No branch named ${branch}`);
+        }
+
+        return found;
+      }, BUILDER_WAIT),
     );
   }
 
-  return screen.findByRole(
-    "treeitem",
-    { name: new RegExp(`^${leaf}$`, "u") },
-    BUILDER_WAIT,
-  );
+  return screen.findByRole("option", { name: leafName }, BUILDER_WAIT);
 }
 
 /**

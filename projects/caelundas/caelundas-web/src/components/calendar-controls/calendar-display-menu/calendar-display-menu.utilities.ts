@@ -5,7 +5,6 @@ import {
   Palette,
   Ruler,
   Shapes,
-  Star,
 } from "lucide-react";
 import { createElement } from "react";
 
@@ -13,7 +12,7 @@ import {
   toConstellationsChange,
   toEclipticChange,
   toVisibilityChange,
-} from "../../calendar-appearance/night-sky-menu/night-sky-menu.utilities";
+} from "../../../hooks/use-night-sky/night-sky-controls.utilities";
 import {
   CALENDAR_VIEW_LABELS,
   CALENDAR_VIEWS,
@@ -21,18 +20,24 @@ import {
   TIMELINE_SCALES,
 } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
 import { parseCalendarView } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
-import { toGroupLevel } from "../../calendar-query/calendar-group-by/components/event-group-model/event-group-fields.utilities";
+import { toGroupLevel } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 
 import {
   CONSTELLATION_CHOICES,
   DEFAULT_COLOR_BY,
   VIEW_ICONS,
 } from "./calendar-display-menu.constants";
+import {
+  applySkyLeaf,
+  createSkyItems,
+  toSkyValue,
+} from "./calendar-display-sky.utilities";
 
 import type { UseCalendarDisplayResult } from "../../../hooks/use-calendar-display/use-calendar-display.types";
-import type { SkySearchChange } from "../../calendar-appearance/night-sky-menu/night-sky-menu.types";
+import type { SkySearchChange } from "../../../hooks/use-night-sky/night-sky-controls.types";
+import type { ConstellationListing } from "../../../hooks/use-night-sky/night-sky.types";
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
-import type { EventGroupField } from "../../calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
+import type { EventGroupField } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type { DisplayChoices } from "./calendar-display-menu.types";
 import type { CascaderNode } from "@codebase/presentation";
 import type { LucideIcon } from "lucide-react";
@@ -52,6 +57,11 @@ export function applyDisplayLeaf(
   }>,
 ): void {
   const { choices, fields, handlers, onSkyChange } = context;
+  const skyContext = {
+    listing: choices.listing,
+    onSkyChange,
+    settings: choices.sky,
+  };
   const colon = leaf.indexOf(":");
   const group = colon === -1 ? leaf : leaf.slice(0, colon);
   const value = colon === -1 ? "" : leaf.slice(colon + 1);
@@ -76,6 +86,9 @@ export function applyDisplayLeaf(
     colors: () => {
       handlers.handleColorsChange(!choices.colors);
     },
+    constellation: () => {
+      applySkyLeaf(group, value, skyContext);
+    },
     constellations: () => {
       const choice = CONSTELLATION_CHOICES.find(
         (candidate) => candidate.value === value,
@@ -92,12 +105,17 @@ export function applyDisplayLeaf(
         handlers.handleScaleChange(scale);
       }
     },
+    setting: () => {
+      applySkyLeaf(group, value, skyContext);
+    },
     sky: () => {
-      onSkyChange(
-        value === "ecliptic"
-          ? toEclipticChange(!choices.ecliptic)
-          : toVisibilityChange(choices.skyOff),
-      );
+      if (value === "visible") {
+        onSkyChange(toVisibilityChange(choices.sky.off));
+      } else if (value === "ecliptic") {
+        onSkyChange(toEclipticChange(!choices.sky.ecliptic));
+      } else {
+        applySkyLeaf(group, value, skyContext);
+      }
     },
     symbols: () => {
       handlers.handleSymbolsChange(value === "emojis" ? "emojis" : "glyphs");
@@ -114,8 +132,12 @@ export function applyDisplayLeaf(
  */
 export function createDisplayItems(
   fields: readonly EventGroupField[],
-  view: CalendarViewName,
+  choices: Readonly<{
+    listing: readonly ConstellationListing[];
+    view: CalendarViewName;
+  }>,
 ): CascaderNode[] {
+  const { view } = choices;
   const scale: CascaderNode[] =
     view === "timeline"
       ? [
@@ -180,19 +202,7 @@ export function createDisplayItems(
       value: "branch:color",
     },
     {
-      children: [
-        { label: "Show the sky", value: "sky:visible" },
-        { label: "Ecliptic", value: "sky:ecliptic" },
-        {
-          children: CONSTELLATION_CHOICES.map((choice) => ({
-            label: choice.label,
-            value: `constellations:${choice.value}`,
-          })),
-          icon: toIcon(Star),
-          label: "Constellations",
-          value: "branch:constellations",
-        },
-      ],
+      children: createSkyItems(choices.listing),
       icon: toIcon(Galaxy),
       label: "Sky",
       value: "branch:sky",
@@ -235,9 +245,8 @@ export function toDisplayValue(choices: DisplayChoices): string[] {
     ...(choices.clusters ? ["clusters"] : []),
     ...(choices.colors ? ["colors"] : []),
     `colorBy:${choices.colorBy?.field ?? DEFAULT_COLOR_BY}`,
-    ...(choices.skyOff ? [] : ["sky:visible"]),
-    ...(choices.ecliptic ? ["sky:ecliptic"] : []),
-    `constellations:${describeConstellations(choices.constellations)}`,
+    `constellations:${describeConstellations(choices.sky.constellations)}`,
+    ...toSkyValue(choices.sky, choices.listing),
   ];
 }
 

@@ -112,4 +112,11 @@ describe(CalendarViewStrip, () => {
 
     expect(onSelect).toHaveBeenCalledWith(EMPTY_EVENT_FILTER);
   });
+
+  it("opens its list from the chip as well as the button", async () => {
+    renderStrip(PRESET.filter);
+    fireEvent.click(screen.getByRole("button", { name: "Planet-sign events" }));
+
+    await expect(screen.findByTestId("query-cascader")).resolves.toBeDefined();
+  });
 });

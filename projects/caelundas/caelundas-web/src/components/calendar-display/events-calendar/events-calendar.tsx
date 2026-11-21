@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 
 import { useCalendarNavigation } from "../../../hooks/use-calendar-navigation/use-calendar-navigation";
-import { createColorScheme } from "../../calendar-appearance/calendar-color-by/components/calendar-color-schemes/calendar-color-schemes.utilities";
-import { colorEvents } from "../../calendar-appearance/calendar-color-by/components/calendar-colors/calendar-colors.utilities";
 import { CalendarToolbar } from "../../calendar-controls/calendar-toolbar/calendar-toolbar";
-import { createEventGroupFields } from "../../calendar-query/calendar-group-by/components/event-group-model/event-group-fields.utilities";
+import { createEventGroupFields } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 import { CalendarTimeline } from "../calendar-timeline/calendar-timeline";
 
+import { createColorScheme } from "./components/calendar-color-schemes/calendar-color-schemes.utilities";
+import { colorEvents } from "./components/calendar-colors/calendar-colors.utilities";
 import { CalendarGrid } from "./components/calendar-grid/calendar-grid";
 import {
   OPAQUE_CLASS_NAMES,
@@ -14,8 +14,8 @@ import {
 } from "./components/calendar-views/calendar-surfaces.constants";
 import { DEFAULT_TIMELINE_SCALE } from "./components/calendar-views/calendar-views.constants";
 
-import type { EventGroupLevel } from "../../calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
-import type { GroupSort } from "../../calendar-query/calendar-group-by/components/event-group-tree/event-group-tree.types";
+import type { EventGroupLevel } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
+import type { GroupSort } from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type {
   CalendarEventRecord,
   EventFacet,

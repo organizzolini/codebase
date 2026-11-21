@@ -24,6 +24,10 @@ export interface UseCalendarDisplayResult {
    * Writes a change to the night sky's settings to the link.
    */
   change: (next: Partial<CalendarSearch>) => void;
+  /**
+   * The constellations the sky can draw, which its figures are picked from.
+   */
+  constellations: UseNightSkySettingsResult["constellations"];
   handlers: Pick<
     UseCalendarSearchResult,
     | "handleClustersChange"

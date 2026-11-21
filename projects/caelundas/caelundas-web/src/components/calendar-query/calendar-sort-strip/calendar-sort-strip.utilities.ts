@@ -1,6 +1,6 @@
 import { DEFAULT_ORDER, SORT_OPTIONS } from "./calendar-sort-strip.constants";
 
-import type { GroupSort } from "../calendar-group-by/components/event-group-tree/event-group-tree.types";
+import type { GroupSort } from "../calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type { CascaderNode } from "@codebase/presentation";
 
 // 🔏 Private Functions

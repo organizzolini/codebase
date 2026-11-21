@@ -9,7 +9,6 @@ import {
   PopoverTrigger,
 } from "@codebase/presentation";
 
-import { createEventGroupFields } from "../calendar-group-by/components/event-group-model/event-group-fields.utilities";
 import { QueryCascader } from "../query-cascader/query-cascader";
 
 import { STRIP_CLASS_NAME, TITLE } from "./calendar-group-strip.constants";
@@ -19,11 +18,12 @@ import {
   toGrouping,
   toGroupValue,
 } from "./calendar-group-strip.utilities";
+import { createEventGroupFields } from "./components/event-group-model/event-group-fields.utilities";
 import { GroupLevelChip } from "./components/group-level-chip/group-level-chip";
 
 import type { EventFacet } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
-import type { EventGroupLevel } from "../calendar-group-by/components/event-group-model/event-groups.types";
+import type { EventGroupLevel } from "./components/event-group-model/event-groups.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type

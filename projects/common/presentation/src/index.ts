@@ -6,6 +6,7 @@ export {
   CascaderPanel,
   CascaderStatus,
 } from "./components/reui/cascader/cascader";
+export { CascaderColumns } from "./components/reui/cascader/cascader-columns";
 export { CascaderFooter } from "./components/reui/cascader/cascader-footer";
 export {
   CascaderBreadcrumb,

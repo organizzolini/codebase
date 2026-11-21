@@ -2,7 +2,7 @@ import { getEventLabel } from "../../calendar-events/event-glyphs/components/cal
 import {
   buildEventGroups,
   sortEventGroups,
-} from "../../calendar-query/calendar-group-by/components/event-group-tree/event-group-tree.utilities";
+} from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.utilities";
 
 import {
   ALL_EVENTS_ROW,
@@ -13,8 +13,8 @@ import { getVisibleTimelineRows } from "./components/timeline-window/calendar-ti
 import type {
   EventGroupField,
   EventGrouping,
-} from "../../calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
-import type { GroupSort } from "../../calendar-query/calendar-group-by/components/event-group-tree/event-group-tree.types";
+} from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
+import type { GroupSort } from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type { CalendarEventRecord } from "../events-calendar/components/calendar-loader/calendar-records.types";
 import type {
   PendingGroup,

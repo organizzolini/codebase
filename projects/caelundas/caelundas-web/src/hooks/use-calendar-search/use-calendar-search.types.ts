@@ -7,8 +7,8 @@ import type { EventFilterQuery } from "../../components/calendar-query/calendar-
 import type {
   EventGrouping,
   EventGroupLevel,
-} from "../../components/calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
-import type { GroupSort } from "../../components/calendar-query/calendar-group-by/components/event-group-tree/event-group-tree.types";
+} from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
+import type { GroupSort } from "../../components/calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type { CalendarSearch } from "./calendar-search.types";
 
 // 🏷️ Types

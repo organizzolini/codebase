@@ -454,7 +454,7 @@ describe("index", () => {
       await waitFor(() => {
         expect(
           screen
-            .getByRole("treeitem", { name: new RegExp(`^${leaf}$`, "u") })
+            .getByRole("option", { name: new RegExp(`^${leaf}$`, "u") })
             .getAttribute("aria-selected"),
         ).toBe(String(next));
       });
@@ -472,7 +472,7 @@ describe("index", () => {
       await waitFor(() => {
         expect(
           screen
-            .getByRole("treeitem", { name: new RegExp(`^${name}$`, "u") })
+            .getByRole("option", { name: new RegExp(`^${name}$`, "u") })
             .getAttribute("aria-selected"),
         ).toBe("true");
       });

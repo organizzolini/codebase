@@ -22,7 +22,7 @@ export function useCalendarDisplay(timeZone: string): UseCalendarDisplayResult {
     structuralSharing: true,
   });
   const handlers = useCalendarSearch(timeZone);
-  const { change, settings } = useNightSkySettings();
+  const { change, constellations, settings } = useNightSkySettings();
 
   // 🏗 Setup
 
@@ -33,6 +33,7 @@ export function useCalendarDisplay(timeZone: string): UseCalendarDisplayResult {
   // 🎁 Result
   return {
     change,
+    constellations,
     handlers: {
       handleClustersChange: handlers.handleClustersChange,
       handleColorByChange: handlers.handleColorByChange,

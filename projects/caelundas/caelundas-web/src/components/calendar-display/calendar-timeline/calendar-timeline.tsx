@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Gantt, GanttView } from "@codebase/presentation";
 
 import { useBarDialog } from "../../../hooks/use-bar-dialog/use-bar-dialog";
-import { createEventGroupFields } from "../../calendar-query/calendar-group-by/components/event-group-model/event-group-fields.utilities";
+import { createEventGroupFields } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 import { VENDORED_SURFACE_CLASS_NAMES } from "../events-calendar/components/calendar-views/calendar-surfaces.constants";
 
 import {
@@ -31,8 +31,8 @@ import {
 } from "./components/timeline-window/calendar-timeline-window.utilities";
 
 import type { CalendarNavigation } from "../../calendar-controls/calendar-navigation-group/calendar-navigation-group.types";
-import type { EventGroupLevel } from "../../calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
-import type { GroupSort } from "../../calendar-query/calendar-group-by/components/event-group-tree/event-group-tree.types";
+import type { EventGroupLevel } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
+import type { GroupSort } from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type {
   CalendarEventRecord,
   EventFacet,

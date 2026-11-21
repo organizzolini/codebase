@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { CalendarGroupStrip } from "./calendar-group-strip";
 
-import type { EventGroupLevel } from "../calendar-group-by/components/event-group-model/event-groups.types";
+import type { EventGroupLevel } from "./components/event-group-model/event-groups.types";
 
 const FACETS = [
   {

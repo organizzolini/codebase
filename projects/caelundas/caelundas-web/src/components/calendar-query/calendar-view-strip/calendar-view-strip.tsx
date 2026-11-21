@@ -1,9 +1,9 @@
 import { Eye } from "lucide-react";
+import { useState } from "react";
 
 import {
   Button,
   ButtonGroup,
-  ButtonGroupText,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -50,6 +50,7 @@ export function CalendarViewStrip(
   const { className, onSelect, presets, query } = properties;
 
   // 🪝 Hooks
+  const [isOpen, setIsOpen] = useState(false);
 
   // 🏗 Setup
   const choices = listViewChoices(presets);
@@ -80,7 +81,10 @@ export function CalendarViewStrip(
         aria-label="Saved view"
         className={STRIP_CLASS_NAME}
       >
-        <Popover>
+        <Popover
+          onOpenChange={setIsOpen}
+          open={isOpen}
+        >
           <PopoverTrigger
             render={
               <Button
@@ -111,7 +115,16 @@ export function CalendarViewStrip(
             />
           </PopoverContent>
         </Popover>
-        <ButtonGroupText className={CHIP_CLASS_NAME}>{active}</ButtonGroupText>
+        <Button
+          className={CHIP_CLASS_NAME}
+          onClick={() => {
+            setIsOpen(true);
+          }}
+          size="sm"
+          variant="outline"
+        >
+          {active}
+        </Button>
       </ButtonGroup>
     </div>
   );

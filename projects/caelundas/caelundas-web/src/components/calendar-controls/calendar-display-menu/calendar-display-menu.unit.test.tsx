@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { CalendarDisplayMenu } from "./calendar-display-menu";
@@ -25,6 +25,7 @@ vi.mock(
       useCalendarDisplay: () =>
         ({
           change: display.change,
+          constellations: [],
           handlers: display.handlers,
           sky: readNightSkyOverrides({}),
           state: {
@@ -34,22 +35,6 @@ vi.mock(
             symbols: "glyphs",
           },
         }) as never,
-    };
-  },
-);
-
-vi.mock(
-  import("../../../hooks/use-night-sky/hooks/use-night-sky-settings/use-night-sky-settings"),
-  async () => {
-    const { readNightSkyOverrides } =
-      await import("../../../hooks/use-night-sky/use-night-sky.utilities");
-
-    return {
-      useNightSkySettings: () => ({
-        change: vi.fn<() => void>(),
-        constellations: [],
-        settings: readNightSkyOverrides({}),
-      }),
     };
   },
 );
@@ -88,7 +73,14 @@ describe(CalendarDisplayMenu, () => {
     );
   });
 
-  it("nests Calendar, Color and Sky in its list, with panels for Color and Sky beneath", async () => {
+  it("opens its list from the chip as well as the button", async () => {
+    render(<CalendarDisplayMenu {...PROPERTIES} />);
+    fireEvent.click(screen.getByRole("button", { name: "Timeline" }));
+
+    await expect(screen.findByTestId("query-cascader")).resolves.toBeDefined();
+  });
+
+  it("nests Calendar, Color and Sky in its list, opening each to the right", async () => {
     render(<CalendarDisplayMenu {...PROPERTIES} />);
     fireEvent.click(screen.getByRole("button", { name: "Display" }));
 
@@ -96,8 +88,8 @@ describe(CalendarDisplayMenu, () => {
       await expect(screen.findByText(label)).resolves.toBeDefined();
     }
 
-    expect(screen.getByText("Color settings…")).toBeDefined();
-    expect(screen.getByText("Sky settings…")).toBeDefined();
+    expect(screen.queryByText("Color settings…")).toBeNull();
+    expect(screen.queryByText("Sky settings…")).toBeNull();
   });
 
   it("writes a choice from the list: a switch flips and a view is set", async () => {
@@ -112,29 +104,5 @@ describe(CalendarDisplayMenu, () => {
     fireEvent.click(await screen.findByText("Week"));
 
     expect(display.handlers.handleViewChange).toHaveBeenCalledWith("week");
-  });
-
-  it.each([
-    { action: "Color settings…", title: "Color settings" },
-    { action: "Sky settings…", title: "Sky settings" },
-  ])("opens $title from its footer action", async ({ action, title }) => {
-    render(<CalendarDisplayMenu {...PROPERTIES} />);
-    fireEvent.click(screen.getByRole("button", { name: "Display" }));
-    fireEvent.click(await screen.findByText(action));
-
-    await expect(
-      screen.findByRole("dialog", { name: title }),
-    ).resolves.toBeDefined();
-  });
-
-  it("closes the panel with its close button", async () => {
-    render(<CalendarDisplayMenu {...PROPERTIES} />);
-    fireEvent.click(screen.getByRole("button", { name: "Display" }));
-    fireEvent.click(await screen.findByText("Color settings…"));
-    fireEvent.click(await screen.findByRole("button", { name: "Close" }));
-
-    await waitFor(() => {
-      expect(screen.queryByRole("dialog")).toBeNull();
-    });
   });
 });

@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { CalendarSortStrip } from "./calendar-sort-strip";
 
-import type { GroupSort } from "../calendar-group-by/components/event-group-tree/event-group-tree.types";
+import type { GroupSort } from "../calendar-group-strip/components/event-group-tree/event-group-tree.types";
 
 const NO_SORT = undefined satisfies GroupSort | undefined;
 

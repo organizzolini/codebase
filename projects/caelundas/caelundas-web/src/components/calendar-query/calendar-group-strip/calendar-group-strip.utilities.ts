@@ -1,13 +1,11 @@
-import { toGroupLevel } from "../calendar-group-by/components/event-group-model/event-group-fields.utilities";
-import { MAXIMUM_GROUP_LEVELS } from "../calendar-group-by/components/event-group-model/event-groups.constants";
-import { describeTags } from "../calendar-group-by/components/group-level-row/group-level-row.utilities";
-
-import { TAG_DEPTH } from "./calendar-group-strip.constants";
+import { NAMED_TAGS, TAG_DEPTH } from "./calendar-group-strip.constants";
+import { toGroupLevel } from "./components/event-group-model/event-group-fields.utilities";
+import { MAXIMUM_GROUP_LEVELS } from "./components/event-group-model/event-groups.constants";
 
 import type {
   EventGroupField,
   EventGroupLevel,
-} from "../calendar-group-by/components/event-group-model/event-groups.types";
+} from "./components/event-group-model/event-groups.types";
 import type { CascaderNode } from "@codebase/presentation";
 
 // 🔏 Private Functions
@@ -34,7 +32,7 @@ export function createGroupItems(
 // 🌎 Public Functions
 
 /**
- * The name a level's chip shows: its field's label, or the field's id when the data no longer has it, then the tags it goes by when it goes by some.
+ * The name a level's chip shows: its field's label, or the field's id when the data no longer has it, then the first few tags it goes by when it goes by some.
  */
 export function labelGroupLevel(
   level: EventGroupLevel,
@@ -42,10 +40,19 @@ export function labelGroupLevel(
 ): string {
   const field = fields.find((candidate) => candidate.id === level.field);
   const label = field?.label ?? level.field;
+  const names = (level.tags ?? []).flatMap((tag) => {
+    const option = field?.options.find((candidate) => candidate.value === tag);
 
-  return field !== undefined && (level.tags ?? []).length > 0
-    ? `${label}: ${describeTags(field, level)}`
-    : label;
+    return option === undefined ? [] : [option.label];
+  });
+
+  if (names.length === 0) {
+    return label;
+  }
+
+  const hidden = names.length - NAMED_TAGS;
+
+  return `${label}: ${names.slice(0, NAMED_TAGS).join(", ")}${hidden > 0 ? ` +${String(hidden)}` : ""}`;
 }
 
 /**

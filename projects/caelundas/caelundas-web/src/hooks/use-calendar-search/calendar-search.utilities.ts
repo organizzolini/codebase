@@ -4,7 +4,7 @@ import {
 } from "../../components/calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
 import { parseCalendarSymbols } from "../../components/calendar-events/event-glyphs/calendar-symbols.utilities";
 import { normalizeEventFilter } from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filter-tree.utilities";
-import { MAXIMUM_GROUP_LEVELS } from "../../components/calendar-query/calendar-group-by/components/event-group-model/event-groups.constants";
+import { MAXIMUM_GROUP_LEVELS } from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.constants";
 
 import {
   agendaDaysSchema,
@@ -16,7 +16,7 @@ import {
   skySearchValueSchema,
 } from "./calendar-search.constants";
 
-import type { EventGrouping } from "../../components/calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
+import type { EventGrouping } from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type { CalendarSearch, SkySearchValue } from "./calendar-search.types";
 
 /**

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { createEventGroupFields } from "../../calendar-query/calendar-group-by/components/event-group-model/event-group-fields.utilities";
+import { createEventGroupFields } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 import { VirtualList } from "../virtual-list/virtual-list";
 
 import { AgendaRowContent } from "./agenda-row-content";
@@ -11,7 +11,7 @@ import {
   toGroupedAgendaRows,
 } from "./calendar-agenda.utilities";
 
-import type { EventGroupLevel } from "../../calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
+import type { EventGroupLevel } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type {
   CalendarEventRecord,
   EventFacet,

@@ -68,6 +68,7 @@ describe(useCalendarDisplay, () => {
 
     expect(result.current).toStrictEqual({
       change: expect.any(Function),
+      constellations: expect.any(Array),
       handlers: {
         handleClustersChange: expect.any(Function),
         handleColorByChange: expect.any(Function),
