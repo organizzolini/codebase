@@ -282,9 +282,6 @@ describe("measure command over a fixture directory", () => {
     expect(output.stdout()).toContain(`Lines_of_Code-${linesOfCode}-`);
   });
 
-  // The refusal a run has no way to have produced a destination for, before
-  // anything is measured. Last in this file: it rewrites the fixture's own
-  // configuration to a bare one naming no output at all.
   // A compiled input with no build behind it matches nothing, so a limit
   // written against it fails the run; `--only-inputs` leaves both out.
   describe("--only-inputs over a project that was never built", () => {
@@ -348,6 +345,9 @@ describe("measure command over a fixture directory", () => {
     });
   });
 
+  // The refusal a run has no way to have produced a destination for, before
+  // anything is measured. Last in this file: it rewrites the fixture's own
+  // configuration to a bare one naming no output at all.
   it("refuses a bare --output-markdown with no configured markdown output", async () => {
     writeFileSync(
       path.join(workingDirectory, "codometer.config.json"),

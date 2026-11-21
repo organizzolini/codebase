@@ -1,5 +1,7 @@
 // 📤 Exports
 export { MainModule } from "./codometer-cli.module";
+export { BatchCommand } from "./modules/batch/batch.command";
+export { BatchModule } from "./modules/batch/batch.module";
 export { ChangesCommand } from "./modules/changes/changes.command";
 export { ChangesModule } from "./modules/changes/changes.module";
 export { ConfigurationCommand } from "./modules/configuration/configuration.command";

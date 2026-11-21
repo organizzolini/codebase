@@ -22,6 +22,12 @@ describe(withDefaultCommand, () => {
     ]);
   });
 
+  it("leaves an explicit batch invocation alone", () => {
+    expect(
+      withDefaultCommand(["batch", "--config", "c.ts", "/a"]),
+    ).toStrictEqual(["batch", "--config", "c.ts", "/a"]);
+  });
+
   it("leaves an explicit changes invocation alone", () => {
     expect(
       withDefaultCommand(["changes", "--baseline", ".baseline"]),
