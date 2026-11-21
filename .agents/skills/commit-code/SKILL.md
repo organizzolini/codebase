@@ -262,7 +262,8 @@ Use `-S` and fail immediately if `git verify-commit HEAD` does not succeed.
 Right after the commit lands, close the sub-issue it implements, quoting the sha, as described in [Marking work in progress](../../../documentation/agents/issue-tracker.md#marking-work-in-progress). A footer cannot do it, because a squash merge keeps only the pull request's title and body.
 
 ```bash
-gh issue close <child> --comment "$(git rev-parse --short HEAD)"
+gh api -X POST repos/{owner}/{repo}/issues/<child>/comments -f body="$(git rev-parse --short HEAD)"
+gh api -X PATCH repos/{owner}/{repo}/issues/<child> -f state=closed -f state_reason=completed
 ```
 
 ### Common Pitfalls

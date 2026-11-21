@@ -45,6 +45,7 @@ describe(PullRequestLabelVocabularyService, () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(github.run).mockReturnValue(result(true));
+    vi.mocked(github.readList).mockReturnValue(result(true));
     vi.mocked(github.describeFailure).mockReturnValue("HTTP 403");
     vi.mocked(labels.planReconciliation).mockReturnValue({
       creations: [],
@@ -65,12 +66,12 @@ describe(PullRequestLabelVocabularyService, () => {
   });
 
   it("warns, without failing, when the labels cannot be listed", () => {
-    vi.mocked(github.run).mockReturnValue(result(false));
+    vi.mocked(github.readList).mockReturnValue(result(false));
 
     const outcome = service.reconcile(options);
 
     expect(outcome.failures).toStrictEqual([]);
-    expect(outcome.lines[0]).toContain("gh label list failed");
+    expect(outcome.lines[0]).toContain("listing the repository labels failed");
   });
 
   it("warns when the comparison throws", () => {
@@ -116,14 +117,9 @@ describe(PullRequestLabelVocabularyService, () => {
     expect(lines.join("\n")).toContain("Missing label: type: feat");
     expect(lines.join("\n")).toContain("Drifted label: type: fix");
     expect(lines.at(-1)).toContain("hint");
-    expect(github.run).toHaveBeenCalledExactlyOnceWith([
-      "label",
-      "list",
-      "--limit",
-      "500",
-      "--json",
-      "name,color,description",
-    ]);
+    expect(github.readList).toHaveBeenCalledExactlyOnceWith(
+      "repos/{owner}/{repo}/labels",
+    );
   });
 
   it("creates and updates labels when writing", () => {
@@ -147,9 +143,7 @@ describe(PullRequestLabelVocabularyService, () => {
       staleNames: [],
       updates: [],
     });
-    vi.mocked(github.run)
-      .mockReturnValueOnce(result(true))
-      .mockReturnValueOnce(result(false));
+    vi.mocked(github.run).mockReturnValue(result(false));
 
     expect(service.reconcile({ ...options, write: true }).lines[0]).toContain(
       "gh label create failed for type: feat",
