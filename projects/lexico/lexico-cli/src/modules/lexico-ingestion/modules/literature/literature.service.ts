@@ -16,6 +16,7 @@ import { LoggerService } from "@codebase/observability";
 
 import { NumeralsService } from "../../../numerals/numerals.service";
 
+import { LiteratureWordLinkingService } from "./literature-word-linking.service";
 import {
   authorIdToName,
   DEFAULT_LINE_CHUNK_SIZE,
@@ -27,9 +28,14 @@ import {
   TOKEN_SEGMENT_PATTERN,
   WORD_TOKEN_PATTERN,
 } from "./literature.constants";
+import {
+  countTokens,
+  mergeAuthor,
+  parseText,
+  removeReplacedTexts,
+} from "./literature.utilities";
 import { LiteratureLibraryScanService } from "./modules/text-ingestion/literature-library-scan.service";
 import { LiteratureTextIngestionService } from "./modules/text-ingestion/literature-text-ingestion.service";
-import { LiteratureWordNormalizationService } from "./modules/text-ingestion/literature-word-normalization.service";
 
 import type {
   IngestTextArguments,
@@ -59,7 +65,7 @@ export class LiteratureService {
     private readonly wordRepository: Repository<Word>,
     private readonly literatureLibraryScanService: LiteratureLibraryScanService,
     private readonly literatureTextIngestionService: LiteratureTextIngestionService,
-    private readonly literatureWordNormalizationService: LiteratureWordNormalizationService,
+    private readonly literatureWordLinkingService: LiteratureWordLinkingService,
     private readonly logger: LoggerService,
   ) {
     this.logger.setContext(LiteratureService.name);
@@ -159,13 +165,9 @@ export class LiteratureService {
       const isPunctuation = !WORD_TOKEN_PATTERN.test(data);
       let wordId: null | string = null;
       if (!isPunctuation) {
-        wordId = this.memoizedWordCache.get(data) || null;
+        wordId = this.memoizedWordCache.get(data) ?? null;
         if (!wordId) {
-          const normalized =
-            this.literatureWordNormalizationService.escapeCapitals(
-              this.literatureWordNormalizationService.normalize(data),
-            );
-          wordId = wordMap.get(normalized) || null;
+          wordId = this.literatureWordLinkingService.resolve(data, wordMap);
           this.memoizedWordCache.set(data, wordId);
         }
       }
@@ -179,14 +181,6 @@ export class LiteratureService {
         word: wordId ? { id: wordId } : null,
       };
     });
-  }
-  /**
-   * Returns metadata as a record when present and object-like.
-   */
-  private getMetadataRecord(
-    metadata: null | Record<string, unknown> | undefined,
-  ): Record<string, unknown> {
-    return metadata ?? {};
   }
 
   /**
@@ -223,6 +217,7 @@ export class LiteratureService {
     const authorEntity = await this.authorRepository.findOneOrFail({
       where: { slug: authorSlug },
     });
+    await removeReplacedTexts(this.textRepository, authorEntity.id, texts);
     const parentTexts = await this.ensureParentTexts(
       authorEntity,
       authorSlug,
@@ -263,6 +258,8 @@ export class LiteratureService {
       tokenEntities.push(...tokens);
     }
     await this.upsertTokens(tokenEntities, text);
+    const counts = countTokens(tokenEntities, savedLines.length);
+    await this.textRepository.update({ id: text.id }, counts);
   }
   /**
    * Ingests text in the literature ingestion pipeline.
@@ -275,12 +272,9 @@ export class LiteratureService {
     const content = await fs.readFile(textPath, "utf8");
     const ast = remark().use(remarkFrontmatter).use(remarkGfm).parse(content);
     const frontmatterData = this.parseFrontmatter(ast);
-    if (frontmatterData["author_metadata"]) {
-      const existingMetadata = this.getMetadataRecord(author.metadata);
-      author.metadata = _.merge(
-        existingMetadata,
-        frontmatterData["author_metadata"],
-      );
+    const authorMetadata = frontmatterData["author_metadata"];
+    if (this.isRecord(authorMetadata)) {
+      Object.assign(author, mergeAuthor(author, authorMetadata));
       await this.authorRepository.save(author);
     }
     const text = await this.saveTextToDatabase({
@@ -340,11 +334,7 @@ export class LiteratureService {
     if (!yamlNode?.value) return {};
     try {
       const parsed: unknown = YAML.parse(yamlNode.value);
-      if (this.isRecord(parsed)) {
-        return parsed;
-      }
-
-      return {};
+      return this.isRecord(parsed) ? parsed : {};
     } catch {
       return {};
     }
@@ -423,6 +413,14 @@ export class LiteratureService {
     if (parentText) {
       textSaveObject.parentText = { id: parentText.id };
     }
+    const { attributes, invalidFields } = parseText(frontmatterData);
+    if (invalidFields.length > 0) {
+      this.logger.warn("🏷️ Ignoring invalid text fields", undefined, {
+        invalidFields,
+        slug: textSlug,
+      });
+    }
+    Object.assign(textSaveObject, attributes);
     await this.textRepository.upsert(textSaveObject, {
       conflictPaths: ["slug"],
       skipUpdateIfNoValuesChanged: true,

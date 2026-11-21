@@ -6,6 +6,7 @@ export {
   CascaderPanel,
   CascaderStatus,
 } from "./components/reui/cascader/cascader";
+export { CascaderColumns } from "./components/reui/cascader/cascader-columns";
 export { CascaderFooter } from "./components/reui/cascader/cascader-footer";
 export {
   CascaderBreadcrumb,
@@ -29,6 +30,7 @@ export * from "./components/reui/event-calendar/event-calendar";
 export * from "./components/reui/event-calendar/event-calendar-content";
 export type * from "./components/reui/event-calendar/event-calendar-types";
 export * from "./components/reui/filters/filters";
+export * from "./components/reui/frame";
 // The Gantt's own default view configuration would collide with the event
 // calendar's by name, so only what an application composes is exported.
 export {
@@ -40,6 +42,7 @@ export {
 } from "./components/reui/gantt/gantt";
 export type * from "./components/reui/gantt/gantt-types";
 export * from "./components/reui/gantt/gantt-view";
+export * from "./components/reui/sortable";
 
 // UI Components
 export * from "./components/ui/accordion";

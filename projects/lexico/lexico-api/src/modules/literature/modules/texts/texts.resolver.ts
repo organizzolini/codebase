@@ -42,6 +42,15 @@ export class TextsResolver {
 
   // 🔎 Queries
 
+  /** Resolves a text's ancestors, root first: empty for a top-level text. */
+  @ResolveField(() => [TextType], { name: "ancestors" })
+  public async ancestors(@Parent() text: TextType): Promise<TextType[]> {
+    const ancestors = await this.literatureRelationsLoader.ancestorsByText.load(
+      text.id,
+    );
+    return ancestors.map((ancestor) => toTextType(ancestor));
+  }
+
   /**
    * Pages the child texts under the current text, ordered like the `texts`
    * query. The children of every text in a response are loaded together.
@@ -75,6 +84,18 @@ export class TextsResolver {
   }
 
   /**
+   * Resolves a text's next sibling under the same parent, null at the last
+   * sibling and for a top-level text.
+   */
+  @ResolveField(() => TextType, { name: "nextText", nullable: true })
+  public async nextText(@Parent() text: TextType): Promise<null | TextType> {
+    const { next } = await this.literatureRelationsLoader.siblingsByText.load(
+      text.id,
+    );
+    return mapNullableRelation(next, toTextType) ?? null;
+  }
+
+  /**
    * Resolves a nested text's parent: a joined parent, even null, is used as is; otherwise it is loaded with the response's other parents.
    */
   @ResolveField(() => TextType, { name: "parentText", nullable: true })
@@ -87,6 +108,19 @@ export class TextsResolver {
       text.id,
     );
     return mapNullableRelation(parent, toTextType) ?? null;
+  }
+
+  /**
+   * Resolves a text's previous sibling under the same parent, null at the first
+   * sibling and for a top-level text.
+   */
+  @ResolveField(() => TextType, { name: "previousText", nullable: true })
+  public async previousText(
+    @Parent() text: TextType,
+  ): Promise<null | TextType> {
+    const { previous } =
+      await this.literatureRelationsLoader.siblingsByText.load(text.id);
+    return mapNullableRelation(previous, toTextType) ?? null;
   }
 
   // 🖋️ Mutations

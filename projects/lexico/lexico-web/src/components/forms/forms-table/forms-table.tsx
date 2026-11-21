@@ -50,14 +50,11 @@ export function FormsTable(
       className={className}
       data-testid="forms-table"
     >
-      <div className="-mx-4 overflow-hidden border-y">
+      <div className="overflow-hidden rounded-lg border">
         <Table className="table-fixed">
           <TableBody>
             {rows.map((row, rowIndex) => (
-              <TableRow
-                key={row.key}
-                className="border-b-0 hover:bg-transparent"
-              >
+              <TableRow key={row.key}>
                 {columns.map((column, columnIndex) => {
                   const words = lookup(row.key, column.key);
 
@@ -65,14 +62,13 @@ export function FormsTable(
                     <TableCell
                       key={column.key}
                       className={cn(
-                        "relative h-14 px-2 py-2 text-center whitespace-normal",
-                        rowIndex > 0 && "border-t",
+                        "relative h-14 text-center whitespace-normal",
                         columnIndex > 0 && "border-l",
                       )}
                     >
                       {columnIndex === 0 && (
                         <span
-                          className="pointer-events-none absolute top-1 left-1.5 text-[10px] leading-none text-muted-foreground"
+                          className="pointer-events-none absolute top-1 left-1.5 text-xs leading-none text-muted-foreground"
                           aria-hidden
                         >
                           {ABBREVIATIONS[row.key] ?? row.label}
@@ -80,7 +76,7 @@ export function FormsTable(
                       )}
                       {rowIndex === 0 && (
                         <span
-                          className="pointer-events-none absolute top-1 right-1.5 text-[10px] leading-none text-muted-foreground"
+                          className="pointer-events-none absolute top-1 right-1.5 text-xs leading-none text-muted-foreground"
                           aria-hidden
                         >
                           {ABBREVIATIONS[column.key] ?? column.label}

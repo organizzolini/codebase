@@ -1,0 +1,24 @@
+# Component Exceptions
+
+Lexico uses the shadcn neutral theme and the shadcn and ReUI component defaults.
+Layout classes on our own wrapper elements, and the author cards, the reader
+history panel, and the reader's candidate list, take no override of a shadcn
+component. These are the deliberate exceptions.
+
+- `src/components/library/library-text-tree/library-text-node.tsx`: the panel takes `p-0` so its row is the full-width collapsible trigger, which takes layout classes (`flex`, `px-4`, `py-2`, `hover:bg-muted/50`) so a long title wraps beside its chevron and the row highlights as a whole.
+- `src/components/library/library-author-card/library-text-link.tsx`: the leaf panel takes `p-0` and its link `block px-4 py-2 hover:bg-muted/50`, so the whole panel is the link.
+- `src/components/library/library-text-tree/library-text-tree.tsx`: a nested level takes `[--frame-radius:0px]`, so its stacked panels meet the parent's panel with square corners and one border per level; the nested Frame is `ghost`, `dense`, and `stacked`.
+- `src/components/library/library-text-tree/library-text-children.tsx`: the status text and buttons take `px-3 py-2` and `m-2`, because they sit in a panel outside any Frame padding.
+- `src/components/library/library-toolbar/library-toolbar.constants.ts`: `LIBRARY_FILTER_STRIP` joins the Filter button and every ReUI filter chip into one group, squaring each chip's first and, but for the last chip, last segment and keeping segment text on one line, because each chip is a button group of its own and would otherwise show its rounded border apart from its neighbors; the strip scrolls sideways rather than squeezing.
+- `src/components/library/library-toolbar/library-toolbar.constants.ts`: `LIBRARY_STRIP_CHIPS` squares every segment of a strip's chips and overlaps their borders so they join the Group or Sort button as one button group, keeping only the last segment's outer corners round, because each chip wraps its segments in a div the button group does not reach.
+- `src/components/library-strip/library-chip/library-chip.constants.ts`: `LIBRARY_TEXT_SEGMENT` gives a read-only segment (a chip label without an action, the page range) the outline button's look without its hover fill.
+- `src/components/library/library-paging/library-paging.constants.ts`: `PAGING_DISABLED_ICON` dims only a step's icon, and the step is `aria-disabled` rather than `disabled`, because the stock disabled style fades the whole button and its border out of the joined strip.
+- `src/components/library/library-toolbar/library-option-menu.tsx`: the popover takes `w-auto p-0`, to fit the cascader's columns and leave their padding to the cascader.
+- `src/components/library/library-grid/library-grid.tsx`: a group heading takes `col-span-full`, to span the whole row of cards.
+- `src/components/library/library-grid/library-group-heading.tsx`: the heading takes `text-xl font-semibold`, to read as a section title.
+- `src/components/forms/forms-table/forms-table.tsx`: cells take `relative h-14` and `border-l`, so the corner abbreviations have room and the columns divide.
+- `src/routes/texts.$slug.tsx`: the reader surface takes `bg-amber-50 dark:bg-background`, a warm paper tone in light mode over the dark theme's near-black.
+- `projects/common/presentation/src/components/reui/filters/filters.tsx`: the advanced builder is removed and opt-in through `FiltersAdvanced` children, so basic consumers do not bundle it.
+- `projects/common/presentation/src/components/ui/command.tsx`: the item matches `data-[selected=true]` rather than `data-selected`, because cmdk writes `data-selected="false"` on every other row and the bare variant highlights them all.
+- `projects/common/presentation/src/lib/utils.ts`: `cn` re-exports the shared `cn` package instead of defining it.
+- `projects/common/presentation/src/styles/globals.css`: the shadcn neutral tokens, plus the `--radius-md` token the shared Button needs.

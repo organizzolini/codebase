@@ -4,6 +4,7 @@ import { createDataSource } from "@codebase/persistence";
 
 import { Migration1791164926316 } from "../../../migrations/1791164926316-migration";
 import { Migration1792000000000 } from "../../../migrations/1792000000000-migration";
+import { Migration1794720814951 } from "../../../migrations/1794720814951-migration";
 import { AdjectivalForm } from "../dictionary/modules/forms/adjectival-form.entity";
 import { AdverbForm } from "../dictionary/modules/forms/adverb-form.entity";
 import { FiniteVerbForm } from "../dictionary/modules/forms/finite-verb-form.entity";
@@ -66,6 +67,7 @@ export const LEXICO_DATABASE_ENTITIES = [
 export const LEXICO_DATABASE_MIGRATIONS = [
   Migration1791164926316,
   Migration1792000000000,
+  Migration1794720814951,
 ] as const;
 
 /** TypeORM migration source: reads `LEXICO_POSTGRES_*`, never synchronizes. */

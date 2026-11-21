@@ -2,6 +2,7 @@ import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
 import {
+  Button,
   cn,
   Collapsible,
   CollapsibleContent,
@@ -54,13 +55,17 @@ export function LexemeEtymology(
         onOpenChange={setIsOpen}
         open={isOpen}
       >
-        <CollapsibleTrigger className="flex w-full items-center justify-between text-sm font-medium">
+        <CollapsibleTrigger
+          render={
+            <Button
+              className="w-full justify-between"
+              variant="ghost"
+            />
+          }
+        >
           Etymology
           <ChevronDown
-            className={cn(
-              "size-4 transition-transform",
-              isOpen && "rotate-180",
-            )}
+            className={cn("transition-transform", isOpen && "rotate-180")}
           />
         </CollapsibleTrigger>
         <CollapsibleContent>

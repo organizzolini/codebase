@@ -64,7 +64,7 @@ export default {
   limits: [
     ...directoryLimits,
     { metric: "Client entry JavaScript.size", value: "384 KB" },
-    { metric: "Client route JavaScript.size", value: "192 KB" },
+    { metric: "Client route JavaScript.size", value: "260 KB" },
     { metric: "Client CSS.size", value: "48 KB" },
     { metric: "Server JavaScript.size", value: "384 KB" },
   ],

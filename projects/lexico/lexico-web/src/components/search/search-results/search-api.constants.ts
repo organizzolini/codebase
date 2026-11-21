@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod/mini";
 
 import type { LexemeMatchKind } from "../../lexeme/lexeme-match/lexeme-match.types";
 import type { ResultNode } from "./search.types";

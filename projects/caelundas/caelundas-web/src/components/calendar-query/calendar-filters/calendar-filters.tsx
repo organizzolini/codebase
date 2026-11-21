@@ -2,6 +2,7 @@ import {
   Button,
   ButtonGroup,
   Filters,
+  FiltersAdvanced,
   useMediaQuery,
 } from "@codebase/presentation";
 
@@ -95,13 +96,14 @@ export function CalendarFilters(
               query={query}
             />
             <Filters<EventFilterValue>
-              advancedMode="inline"
               editors={EDITORS}
               fields={[...fields]}
               onQueryChange={handleQueryChange}
               query={query}
               variant="advanced"
-            />
+            >
+              <FiltersAdvanced mode="inline" />
+            </Filters>
           </div>
         </FilterSurface>
         <Button

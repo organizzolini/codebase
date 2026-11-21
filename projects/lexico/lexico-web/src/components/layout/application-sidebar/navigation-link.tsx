@@ -50,7 +50,7 @@ export function NavigationLink(
           render={<Link to={item.href} />}
           tooltip={item.label}
         >
-          <item.icon className="h-5 w-5" />
+          <item.icon />
           <span>{item.label}</span>
         </SidebarMenuButton>
       </SidebarMenuItem>

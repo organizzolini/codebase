@@ -1,6 +1,5 @@
 import { print } from "graphql";
-import lodash from "lodash";
-import { z } from "zod";
+import * as z from "zod/mini";
 
 import {
   SearchEnglishDocument,
@@ -48,6 +47,33 @@ export function describeMatch(match: {
 }
 
 /**
+ * Runs one GraphQL query against the lexico API and returns its data.
+ */
+export async function queryApi<
+  TResult,
+  TVariables extends Record<string, unknown>,
+>(
+  document: TypedDocumentNode<TResult, TVariables>,
+  variables: TVariables,
+): Promise<TResult> {
+  const response = await fetch(
+    process.env["LEXICO_API_URL"] ?? DEFAULT_LEXICO_API_URL,
+    {
+      body: JSON.stringify({ query: print(document), variables }),
+      headers: { "content-type": "application/json" },
+      method: "POST",
+    },
+  );
+  const body = (await response.json()) as ApiResponse;
+
+  if (body.errors?.[0] !== undefined) {
+    throw new Error(body.errors[0].message);
+  }
+
+  return z.custom<TResult>().parse(body.data);
+}
+
+/**
  * Searches Latin and English at once, since a query is not labeled with its language, and merges both results, best match first.
  */
 export async function searchDictionary(query: string): Promise<LexemeResult[]> {
@@ -61,10 +87,14 @@ export async function searchDictionary(query: string): Promise<LexemeResult[]> {
     searchLatin(trimmed),
     searchEnglish(trimmed),
   ]);
-  const best = lodash.uniqBy(
-    lodash.orderBy([...latin, ...english], "score", "desc"),
-    "lexeme.id",
-  );
+  const seen = new Set<string>();
+  const merged = [...latin, ...english];
+  merged.sort(byScoreDescending);
+  const best = merged.filter((node) => {
+    if (seen.has(node.lexeme.id)) return false;
+    seen.add(node.lexeme.id);
+    return true;
+  });
 
   return best.map((node) => toLexemeResult(node, trimmed.toLowerCase()));
 }
@@ -77,8 +107,8 @@ export async function searchEnglish(query: string): Promise<ResultNode[]> {
     first: SEARCH_PAGE_SIZE,
     query,
   });
-  const connection = connectionSchema
-    .optional()
+  const connection = z
+    .optional(connectionSchema)
     .parse(z.record(z.string(), z.unknown()).parse(data)["searchEnglish"]);
 
   return searchLanguage(connection);
@@ -92,8 +122,8 @@ export async function searchLatin(query: string): Promise<ResultNode[]> {
     first: SEARCH_PAGE_SIZE,
     query,
   });
-  const connection = connectionSchema
-    .optional()
+  const connection = z
+    .optional(connectionSchema)
     .parse(z.record(z.string(), z.unknown()).parse(data)["searchLatin"]);
 
   return searchLanguage(connection);
@@ -144,27 +174,10 @@ export function toLexemeResult(node: ResultNode, query: string): LexemeResult {
 }
 
 /**
- * Runs one GraphQL query against the lexico API and returns its data.
+ * Orders nodes best score first; the sort is stable, so ties keep their order.
  */
-async function queryApi<TResult, TVariables extends Record<string, unknown>>(
-  document: TypedDocumentNode<TResult, TVariables>,
-  variables: TVariables,
-): Promise<TResult> {
-  const response = await fetch(
-    process.env["LEXICO_API_URL"] ?? DEFAULT_LEXICO_API_URL,
-    {
-      body: JSON.stringify({ query: print(document), variables }),
-      headers: { "content-type": "application/json" },
-      method: "POST",
-    },
-  );
-  const body = (await response.json()) as ApiResponse;
-
-  if (body.errors?.[0] !== undefined) {
-    throw new Error(body.errors[0].message);
-  }
-
-  return z.custom<TResult>().parse(body.data);
+function byScoreDescending(a: ResultNode, b: ResultNode): number {
+  return b.score - a.score;
 }
 
 /**
@@ -187,7 +200,9 @@ function searchLanguage(
 
   const nodes = connection.edges.map((edge) => edge.node);
 
-  return lodash.orderBy(nodes, "score", "desc");
+  nodes.sort(byScoreDescending);
+
+  return nodes;
 }
 
 /**

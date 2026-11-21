@@ -39,6 +39,9 @@ describe(ManualService, () => {
         ingestLexemeWords: vi
           .fn<(lexeme?: Lexeme) => Promise<void>>()
           .mockResolvedValue(undefined),
+        upsertWordsAndJunctions: vi
+          .fn<(forms: unknown, lexeme: Lexeme) => Promise<void>>()
+          .mockResolvedValue(undefined),
       }),
     },
     {
@@ -302,6 +305,29 @@ describe(ManualService, () => {
         undefined,
         { current: 500, total: 3999 },
       );
+    });
+  });
+
+  describe("createManual forms", () => {
+    it("links the words of the manual forms to the lexeme, marks stripped", async () => {
+      const lexeme = new Lexeme();
+      lexeme.lemma = "omnis";
+      lexeme.disambiguator = 100;
+      lexeme.forms = manualUtilities.buildAdjectivalForms({
+        masculine: { nominative: { plural: ["omnēs"], singular: ["omnis"] } },
+      });
+      lexemesRepository.save.mockResolvedValue(lexeme);
+
+      await service.createManual(lexeme);
+
+      const [formsByWord, linked] =
+        wordsService.upsertWordsAndJunctions.mock.calls.at(-1) ?? [];
+
+      expect(linked).toBe(lexeme);
+      expect([...(formsByWord ?? new Map()).keys()].toSorted()).toStrictEqual([
+        "omnes",
+        "omnis",
+      ]);
     });
   });
 

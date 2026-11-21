@@ -58,17 +58,16 @@ export function AdjectiveForms(
       data-testid="adjective-forms"
     >
       <Tabs
-        className="-mx-4 gap-0"
         onValueChange={(value: unknown) => {
           setSelectedGender(String(value));
         }}
         value={gender}
       >
-        <TabsList className="h-9 w-full gap-0 rounded-none border-t bg-muted p-0 group-data-horizontal/tabs:h-9">
+        <TabsList className="w-full">
           {genders.map((tab) => (
             <TabsTrigger
               key={tab}
-              className="h-full flex-1 rounded-none px-1.5 text-xs capitalize"
+              className="capitalize"
               value={tab}
             >
               {tab}

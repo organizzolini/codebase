@@ -12,10 +12,12 @@ import {
 } from "../../../../../testing/command-harness";
 import { mockStandardInputTerminal } from "../../../../../testing/mocks";
 
+import { LiteratureAuthorEraService } from "./literature-author-era.service";
+import { LiteratureWordLinkingService } from "./literature-word-linking.service";
 import { LiteratureCommand } from "./literature.command";
 import { LiteratureService } from "./literature.service";
 
-import type { LibraryEntry } from "./literature.types";
+import type { LibraryEntry, RelinkSummary } from "./literature.types";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { Provider } from "@nestjs/common";
 
@@ -55,7 +57,17 @@ describe(LiteratureCommand, () => {
     scanLibrary: vi.fn<() => Promise<LibraryEntry[]>>(),
   };
 
+  const authorEraService = {
+    dateAuthors: vi.fn<() => Promise<void>>(),
+  };
+
+  const wordLinkingService = {
+    relinkTokens: vi.fn<() => Promise<RelinkSummary>>(),
+  };
+
   const createProviders = (): Provider[] => [
+    { provide: LiteratureAuthorEraService, useValue: authorEraService },
+    { provide: LiteratureWordLinkingService, useValue: wordLinkingService },
     {
       provide: LiteratureService,
       useValue: literatureService,
@@ -240,6 +252,11 @@ describe(LiteratureCommand, () => {
           LiteratureCommand,
           { provide: LoggerService, useValue: createMock<LoggerService>() },
           { provide: LiteratureService, useValue: literatureService },
+          { provide: LiteratureAuthorEraService, useValue: authorEraService },
+          {
+            provide: LiteratureWordLinkingService,
+            useValue: wordLinkingService,
+          },
         ],
       });
     }
@@ -260,6 +277,25 @@ describe(LiteratureCommand, () => {
 
       expect(ingestedPaths()).toStrictEqual(["/tmp/vergil/aeneid-alt.md"]);
       expect(promptsMock).not.toHaveBeenCalled();
+    });
+
+    it("only relinks the words of the ingested texts under --relink", async () => {
+      wordLinkingService.relinkTokens.mockResolvedValue({
+        linkedTypes: 2,
+        unlinkedTypes: 3,
+      });
+
+      await runLiterature("--relink");
+
+      expect(wordLinkingService.relinkTokens).toHaveBeenCalledExactlyOnceWith();
+      expect(literatureService.ingestAllAuthors).not.toHaveBeenCalled();
+      expect(promptsMock).not.toHaveBeenCalled();
+    });
+
+    it("dates the authors once their texts are ingested", async () => {
+      await runLiterature();
+
+      expect(authorEraService.dateAuthors).toHaveBeenCalledExactlyOnceWith();
     });
 
     it("ingests every text without prompting when standard input is not a terminal", async () => {

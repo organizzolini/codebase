@@ -13,6 +13,8 @@ describe(Logo, () => {
   it("draws the logo at the width asked for, four thirds as tall", () => {
     render(<Logo width={18} />);
 
-    expect(screen.getByAltText("Lexico").getAttribute("height")).toBe("24");
+    expect(
+      screen.getByRole("img", { name: "Lexico" }).getAttribute("height"),
+    ).toBe("24");
   });
 });

@@ -18,32 +18,46 @@ export function createGraphqlCodegenConfig(
     documents = GRAPHQL_CODEGEN_OPERATIONS,
     generatedDirectory = GRAPHQL_CODEGEN_GENERATED_DIRECTORY,
     schema,
+    validators = true,
   } = options;
+
+  const validation: CodegenConfig["generates"][string] = {
+    config: { useTypeImports: true },
+    plugins: [
+      {
+        "typescript-validation-schema": {
+          importFrom: "./operations",
+          schema: "zodv4",
+          useTypeImports: true,
+          withOperationType: true,
+        },
+      },
+    ],
+  };
 
   return {
     documents,
     generates: {
       [`${generatedDirectory}/mocks.ts`]: {
-        config: { useTypeImports: true },
+        config: {
+          importSchemaTypesFrom: `${generatedDirectory}/mocks`,
+          namespacedImportName: "Schema",
+          useTypeImports: true,
+        },
         plugins: ["typescript", "typescript-operations", "typescript-msw"],
       },
       [`${generatedDirectory}/operations.ts`]: {
-        config: { scalars: GRAPHQL_CODEGEN_SCALARS, useTypeImports: true },
+        config: {
+          importSchemaTypesFrom: `${generatedDirectory}/operations`,
+          namespacedImportName: "Schema",
+          scalars: GRAPHQL_CODEGEN_SCALARS,
+          useTypeImports: true,
+        },
         plugins: ["typescript", "typescript-operations", "typed-document-node"],
       },
-      [`${generatedDirectory}/validation.ts`]: {
-        config: { useTypeImports: true },
-        plugins: [
-          {
-            "typescript-validation-schema": {
-              importFrom: "./operations",
-              schema: "zodv4",
-              useTypeImports: true,
-              withOperationType: true,
-            },
-          },
-        ],
-      },
+      ...(validators
+        ? { [`${generatedDirectory}/validation.ts`]: validation }
+        : {}),
     },
     ignoreNoDocuments: false,
     schema,

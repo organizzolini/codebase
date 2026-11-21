@@ -26,7 +26,6 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **ink**: Emoji picker flag set when a glyph measures as drawn by the device font, so the picker knows the emoji is supported.
 - **instant**: Scroll behavior value that jumps to the target without animation, used by data-grid when moving focus to a cell.
 - **letter**: Single character typed for typeahead matching in the cascader, and a letter that a file extension must contain to count.
-- **literature**: Reader typography class in the global stylesheet, a text style for long-form reading that the lexico apps use.
 - **magnitude**: Size of a relative date offset in the filters date editor, parsed from counted text and signed by past or future direction.
 - **modifier**: Composable transform in meanderaw's motif library that adjusts how a Greek meander motif is drawn.
 - **observer**: Browser instance created to react when DOM children or subtrees change, used to re-measure layout after updates.
