@@ -65,7 +65,7 @@ export function GalleryGroupBy(
     >
       <ButtonGroup aria-label={GROUP_TITLE}>
         <GallerySurface
-          contentClassName="w-80 p-1"
+          contentClassName="w-auto min-w-64 gap-0 p-0"
           title={GROUP_TITLE}
           trigger={
             <Button

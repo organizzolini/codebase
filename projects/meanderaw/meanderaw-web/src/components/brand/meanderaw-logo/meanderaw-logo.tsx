@@ -14,7 +14,7 @@ export interface MeanderawLogoProperties {
 // 🧩 Component
 
 /**
- * Renders the Meanderaw logo as a drawing in the current text color; its class sizes it.
+ * Renders the Meanderaw logo in the current text color; its class sets the height, the width follows.
  */
 export function MeanderawLogo(
   properties: Readonly<MeanderawLogoProperties>,
@@ -39,10 +39,12 @@ export function MeanderawLogo(
     >
       <svg
         aria-label="Meanderaw"
-        className="size-full"
+        className="block h-full w-auto"
         fill="none"
+        height="9"
         role="img"
         viewBox="0 0 51 9"
+        width="51"
         xmlns="http://www.w3.org/2000/svg"
       >
         <path

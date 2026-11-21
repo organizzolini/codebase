@@ -7,18 +7,15 @@ import type { FilterLink } from "../gallery-filters/components/filter-query/filt
 // 🏷️ Types
 
 /**
- * A named view: a layout or a saved arrangement.
+ * A named view: a layout, grouping, sort and filter set at once.
  */
 export interface ViewPreset {
   description: string;
   id: string;
-  /** Whether it is how the page opens, so it never names the view. */
-  isDefault?: true;
-  /** Whether it names a layout alone or a saved arrangement. */
-  kind: "layout" | "saved";
   name: string;
-  /** The parts of the state it fixes; the rest stay as they are. */
-  state: Partial<ViewState>;
+  /** The characteristic keys it needs, none of which may be missing. */
+  requires: readonly string[];
+  state: ViewState;
 }
 
 /**
@@ -28,6 +25,6 @@ export interface ViewState {
   direction: (typeof SORT_DIRECTIONS)[number];
   group: readonly string[];
   link: FilterLink;
-  sort: string | undefined;
+  sort: string;
   view: (typeof GALLERY_VIEWS)[number];
 }

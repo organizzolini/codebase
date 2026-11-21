@@ -31,8 +31,3 @@ export const SHAPE_SORT_FIELDS = [
   },
   { description: "The meander's code", key: "code", label: "Code" },
 ] as const;
-
-/**
- * The control's label for the API's own order.
- */
-export const DEFAULT_ORDER_LABEL = "Default order";

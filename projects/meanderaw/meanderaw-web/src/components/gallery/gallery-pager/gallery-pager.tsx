@@ -98,12 +98,14 @@ export function GalleryPager(
         </Popover>
         <Button
           aria-label="Previous page"
+          className="aria-disabled:cursor-not-allowed aria-disabled:text-muted-foreground"
           disabled={position <= 0 || isLoading}
           onClick={() => {
             onPage(position - 1);
           }}
           size="icon-sm"
           variant="outline"
+          focusableWhenDisabled
         >
           <ChevronLeft aria-hidden="true" />
         </Button>
@@ -117,12 +119,14 @@ export function GalleryPager(
         </ButtonGroupText>
         <Button
           aria-label="Next page"
+          className="aria-disabled:cursor-not-allowed aria-disabled:text-muted-foreground"
           disabled={position + 1 >= pageCount || isLoading}
           onClick={() => {
             onPage(position + 1);
           }}
           size="icon-sm"
           variant="outline"
+          focusableWhenDisabled
         >
           <ChevronRight aria-hidden="true" />
         </Button>

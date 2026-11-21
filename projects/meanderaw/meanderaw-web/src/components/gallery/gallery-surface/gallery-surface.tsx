@@ -29,6 +29,10 @@ export interface GallerySurfaceProperties {
   className?: string;
   /** Sizes the popover, which is wide enough for a filter by default. */
   contentClassName?: string;
+  /** Called when it opens or closes. */
+  onOpenChange?: (open: boolean) => void;
+  /** Whether it is open, when the caller holds that. */
+  open?: boolean;
   /** The surface's name, which heads the drawer and the sheet. */
   title: string;
   trigger: ReactElement;
@@ -42,23 +46,35 @@ export interface GallerySurfaceProperties {
 export function GallerySurface(
   properties: Readonly<GallerySurfaceProperties>,
 ): ReactNode {
-  const { children, className, contentClassName, title, trigger } = properties;
+  const {
+    children,
+    className,
+    contentClassName,
+    onOpenChange,
+    open,
+    title,
+    trigger,
+  } = properties;
 
   // 🪝 Hooks
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const isTablet = useMediaQuery(TABLET_QUERY);
 
   // 🏗 Setup
+  const controlled = {
+    ...(onOpenChange === undefined ? {} : { onOpenChange }),
+    ...(open === undefined ? {} : { open }),
+  };
   let surface: ReactNode;
 
   if (isDesktop) {
     surface = (
-      <Popover>
+      <Popover {...controlled}>
         <PopoverTrigger render={trigger} />
         <PopoverContent
           align="start"
           aria-label={title}
-          className={`max-h-[80dvh] max-w-[95vw] gap-3 overflow-y-auto p-3 ${contentClassName ?? "w-[42rem]"}`}
+          className={`max-h-[80dvh] max-w-[95vw] overflow-y-auto ${contentClassName ?? "w-[42rem] gap-3 p-3"}`}
           sideOffset={8}
         >
           {children}
@@ -67,7 +83,10 @@ export function GallerySurface(
     );
   } else if (isTablet) {
     surface = (
-      <Drawer swipeDirection="right">
+      <Drawer
+        swipeDirection="right"
+        {...controlled}
+      >
         <DrawerTrigger render={trigger} />
         <DrawerContent className="data-[swipe-axis=x]:sm:[--drawer-content-width:36rem]">
           <DrawerHeader>
@@ -79,7 +98,7 @@ export function GallerySurface(
     );
   } else {
     surface = (
-      <Sheet>
+      <Sheet {...controlled}>
         <SheetTrigger render={trigger} />
         <SheetContent
           className="max-h-[85dvh]"

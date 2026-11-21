@@ -1,13 +1,12 @@
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { useMemo } from "react";
 
-import { Button, ButtonGroup, ButtonGroupText } from "@codebase/presentation";
+import { Button, ButtonGroup } from "@codebase/presentation";
 
 import { GalleryCascader } from "../gallery-cascader/gallery-cascader";
 import { createFieldNodes } from "../gallery-cascader/gallery-cascader.utilities";
 import { GallerySurface } from "../gallery-surface/gallery-surface";
 
-import { DEFAULT_ORDER_LABEL } from "./gallery-sort.constants";
 import { createSortFields } from "./gallery-sort.utilities";
 
 import type { SortDirection } from "../../../hooks/use-gallery-search/use-gallery-search.types";
@@ -24,8 +23,8 @@ export interface GallerySortProperties {
   characteristics: readonly GalleryCharacteristic[];
   className?: string;
   direction: SortDirection;
-  /** The field sorted by, or none for the default order. */
-  field: string | undefined;
+  /** The field sorted by. */
+  field: string;
   onSortChange: (field: string | undefined, direction: SortDirection) => void;
 }
 
@@ -51,7 +50,7 @@ export function GallerySort(
   const current = fields.find(({ key }) => key === field);
 
   // 💪 Handlers
-  // Ticking the field sorted by clears it: the default order again.
+  // Pressing the field sorted by goes back to the default sort, rows.
   const handleToggle = (key: string): void => {
     onSortChange(key === field ? undefined : key, direction);
   };
@@ -68,7 +67,7 @@ export function GallerySort(
     >
       <ButtonGroup aria-label="Sort">
         <GallerySurface
-          contentClassName="w-80 p-1"
+          contentClassName="w-auto min-w-64 gap-0 p-0"
           title="Sort"
           trigger={
             <Button
@@ -82,35 +81,29 @@ export function GallerySort(
           }
         >
           <GalleryCascader
-            checked={field === undefined ? [] : [field]}
+            checked={[field]}
             items={items}
             label="Sort by"
             onToggle={handleToggle}
           />
         </GallerySurface>
-        {field === undefined ? (
-          <ButtonGroupText className="border-border bg-background h-7 text-[0.8rem] dark:border-input dark:bg-input/30">
-            {DEFAULT_ORDER_LABEL}
-          </ButtonGroupText>
-        ) : (
-          <Button
-            aria-label={
-              direction === "asc" ? "Sort descending" : "Sort ascending"
-            }
-            onClick={() => {
-              onSortChange(field, direction === "asc" ? "desc" : "asc");
-            }}
-            size="sm"
-            variant="outline"
-          >
-            {current?.label ?? field}
-            {direction === "asc" ? (
-              <ArrowUp aria-hidden="true" />
-            ) : (
-              <ArrowDown aria-hidden="true" />
-            )}
-          </Button>
-        )}
+        <Button
+          aria-label={
+            direction === "asc" ? "Sort descending" : "Sort ascending"
+          }
+          onClick={() => {
+            onSortChange(field, direction === "asc" ? "desc" : "asc");
+          }}
+          size="sm"
+          variant="outline"
+        >
+          {current?.label ?? field}
+          {direction === "asc" ? (
+            <ArrowUp aria-hidden="true" />
+          ) : (
+            <ArrowDown aria-hidden="true" />
+          )}
+        </Button>
       </ButtonGroup>
     </div>
   );

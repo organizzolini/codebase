@@ -1,26 +1,31 @@
 import { Eye } from "lucide-react";
+import { useState } from "react";
 
-import { Button, ButtonGroup, ButtonGroupText } from "@codebase/presentation";
+import { Button, ButtonGroup } from "@codebase/presentation";
 
 import { GalleryCascader } from "../gallery-cascader/gallery-cascader";
 import { GallerySurface } from "../gallery-surface/gallery-surface";
 
-import { VIEW_PRESETS } from "./gallery-view.constants";
+import { DisplayStrip } from "./components/display-strip/display-strip";
 import {
   createViewNodes,
+  createViewPresets,
   describeView,
   isPresetActive,
 } from "./gallery-view.utilities";
 
+import type { GalleryCharacteristic } from "../meander-gallery/meanders-api.types";
 import type { ViewState } from "./gallery-view.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The state in force, and what to call to apply a view.
+ * The state, the catalog, and the apply handler.
  */
 export interface GalleryViewProperties {
+  /** The catalog, which decides the presets on offer. */
+  characteristics: readonly GalleryCharacteristic[];
   className?: string;
   current: ViewState;
   onApply: (state: Partial<ViewState>) => void;
@@ -29,22 +34,23 @@ export interface GalleryViewProperties {
 // 🧩 Component
 
 /**
- * Renders the View button, whose cascader lists Layout and Presets with checks, beside the name of the view in force.
+ * Renders the View strip, whose cascader lists named presets, and the Display strip beside it, which sets the layout.
  */
 export function GalleryView(
   properties: Readonly<GalleryViewProperties>,
 ): ReactNode {
-  const { className, current, onApply } = properties;
+  const { characteristics, className, current, onApply } = properties;
 
   // 🪝 Hooks
+  const [open, setOpen] = useState(false);
 
   // 🏗 Setup
-  const items = createViewNodes(VIEW_PRESETS);
+  const presets = createViewPresets(characteristics);
 
   // 💪 Handlers
-  // Pressing a view applies it, whether or not it is already in force.
+  // Pressing a preset applies all of it, whether or not it is in force.
   const handleToggle = (id: string): void => {
-    for (const preset of VIEW_PRESETS) {
+    for (const preset of presets) {
       if (preset.id === id) {
         onApply(preset.state);
       }
@@ -63,7 +69,9 @@ export function GalleryView(
     >
       <ButtonGroup aria-label="View">
         <GallerySurface
-          contentClassName="w-80 p-1"
+          contentClassName="w-auto min-w-64 gap-0 p-0"
+          onOpenChange={setOpen}
+          open={open}
           title="View"
           trigger={
             <Button
@@ -77,18 +85,30 @@ export function GalleryView(
           }
         >
           <GalleryCascader
-            checked={VIEW_PRESETS.filter((preset) =>
-              isPresetActive(preset, current),
-            ).map(({ id }) => id)}
-            items={items}
+            checked={presets
+              .filter((preset) => isPresetActive(preset, current))
+              .map(({ id }) => id)}
+            items={createViewNodes(presets)}
             label="Search views"
             onToggle={handleToggle}
           />
         </GallerySurface>
-        <ButtonGroupText className="border-border bg-background h-7 text-[0.8rem] dark:border-input dark:bg-input/30">
-          {describeView(VIEW_PRESETS, current)}
-        </ButtonGroupText>
+        <Button
+          onClick={() => {
+            setOpen(!open);
+          }}
+          size="sm"
+          variant="outline"
+        >
+          {describeView(presets, current)}
+        </Button>
       </ButtonGroup>
+      <DisplayStrip
+        onViewChange={(view) => {
+          onApply({ view });
+        }}
+        view={current.view}
+      />
     </div>
   );
 }

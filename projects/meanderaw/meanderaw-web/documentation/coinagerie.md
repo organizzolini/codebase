@@ -14,6 +14,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **gallery**:
 - **gap**:
 - **heavy**:
+- **horizontal**:
 - **humanize**:
 - **ink**:
 - **lattice**:

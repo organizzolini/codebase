@@ -70,8 +70,8 @@ export function useGallerySearch(): UseGallerySearchResult {
         ...(state.group !== undefined && {
           group: state.group.length === 0 ? undefined : [...state.group],
         }),
-        ...("sort" in state && {
-          direction: state.sort === undefined ? undefined : state.direction,
+        ...(state.sort !== undefined && {
+          direction: state.direction,
           sort: state.sort,
         }),
       }),

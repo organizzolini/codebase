@@ -16,7 +16,7 @@ function properties(
   return {
     characteristics: CATALOG,
     direction: "asc",
-    field: undefined,
+    field: "rows",
     onSortChange: vi.fn<GallerySortProperties["onSortChange"]>(),
     ...overrides,
   };
@@ -34,11 +34,11 @@ describe(GallerySort, () => {
     expect(screen.getByTestId("gallery-sort").className).toBe("gallery-sort");
   });
 
-  it("shows the field sorted by with an arrow, or the default order", () => {
+  it("shows the field sorted by with an arrow, rows by default", () => {
     const { rerender } = render(<GallerySort {...properties()} />);
 
     expect(screen.getByRole("group", { name: "Sort" }).textContent).toBe(
-      "SortDefault order",
+      "SortRows",
     );
 
     rerender(<GallerySort {...properties({ field: "junctionCount" })} />);
@@ -88,12 +88,12 @@ describe(GallerySort, () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Sort" }));
     fireEvent.click(await screen.findByRole("option", { name: /Shape/u }));
-    fireEvent.click(await screen.findByRole("option", { name: /Rows/u }));
+    fireEvent.click(await screen.findByRole("option", { name: /Columns/u }));
 
-    expect(onSortChange).toHaveBeenCalledExactlyOnceWith("rows", "desc");
+    expect(onSortChange).toHaveBeenCalledExactlyOnceWith("columns", "desc");
   });
 
-  it("goes back to the default order when the field sorted by is pressed again", async () => {
+  it("goes back to the default sort when the field sorted by is pressed again", async () => {
     const onSortChange = vi.fn<GallerySortProperties["onSortChange"]>();
 
     render(<GallerySort {...properties({ field: "rows", onSortChange })} />);
@@ -104,7 +104,7 @@ describe(GallerySort, () => {
     expect(onSortChange).toHaveBeenCalledExactlyOnceWith(undefined, "asc");
   });
 
-  it("flips the direction with its arrow, which is not there without a sort", () => {
+  it("flips the direction with its arrow", () => {
     const onSortChange = vi.fn<GallerySortProperties["onSortChange"]>();
     const { rerender } = render(
       <GallerySort {...properties({ field: "rows", onSortChange })} />,
@@ -122,12 +122,5 @@ describe(GallerySort, () => {
     fireEvent.click(screen.getByRole("button", { name: "Sort ascending" }));
 
     expect(onSortChange).toHaveBeenLastCalledWith("rows", "asc");
-
-    rerender(<GallerySort {...properties({ onSortChange })} />);
-
-    expect(
-      screen.queryByRole("button", { name: /^Sort (de|a)scending$/u }),
-    ).toBeNull();
-    expect(screen.getByText("Default order")).toBeDefined();
   });
 });

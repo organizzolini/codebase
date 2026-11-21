@@ -17,7 +17,7 @@ export const GALLERY_VIEWS = ["grid", "list"] as const;
 /**
  * The view a link opens on when it names none.
  */
-export const DEFAULT_GALLERY_VIEW = "list" as const;
+export const DEFAULT_GALLERY_VIEW = "grid" as const;
 
 /**
  * The two ways a sort runs, as a link names them.
@@ -28,6 +28,11 @@ export const SORT_DIRECTIONS = ["asc", "desc"] as const;
  * The way a sort runs when a link names an invalid direction.
  */
 export const DEFAULT_SORT_DIRECTION = "asc" as const;
+
+/**
+ * The field a link sorts by when it names none.
+ */
+export const DEFAULT_SORT_FIELD = "rows";
 
 /**
  * The fewest times a drawing may repeat its tile.

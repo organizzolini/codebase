@@ -1,45 +1,87 @@
 import { describe, expect, it } from "vitest";
 
-import { DEFAULT_FILTER_LINK } from "../gallery-filters/components/filter-query/filter-query.constants";
+import { FIXTURE_CHARACTERISTICS } from "../../../../testing/meanders-api";
 
-import { VIEW_PRESETS } from "./gallery-view.constants";
-import { describeView, isPresetActive } from "./gallery-view.utilities";
+import { DEFAULT_VIEW_STATE, VIEW_PRESETS } from "./gallery-view.constants";
+import {
+  createViewNodes,
+  createViewPresets,
+  describeView,
+  isPresetActive,
+} from "./gallery-view.utilities";
 
-import type { ViewState } from "./gallery-view.types";
+import type { GalleryCharacteristic } from "../meander-gallery/meanders-api.types";
 
-const STATE: ViewState = {
-  direction: "asc",
-  group: [],
-  link: DEFAULT_FILTER_LINK,
-  sort: undefined,
-  view: "list",
-};
+/** A catalog entry for a key, as the API lists one. */
+function entry(key: string): GalleryCharacteristic {
+  return {
+    category: "path",
+    description: "d",
+    isPattern: false,
+    key,
+    meanderCount: 0,
+    name: key,
+    valueCounts: [],
+    valueType: "number",
+  };
+}
 
 describe("gallery view utilities", () => {
-  describe(describeView, () => {
-    it("names the saved view in force, the default one aside, else the layout", () => {
-      expect(describeView(VIEW_PRESETS, STATE)).toBe("List");
+  describe(createViewPresets, () => {
+    it("leaves out the presets whose characteristics the catalog lacks", () => {
       expect(
-        describeView(VIEW_PRESETS, { ...STATE, group: ["rows", "columns"] }),
-      ).toBe("By rows then columns");
+        createViewPresets(FIXTURE_CHARACTERISTICS).map(({ id }) => id),
+      ).toStrictEqual(["default", "by-rows-columns"]);
+      expect(createViewPresets([])).toHaveLength(2);
+      expect(
+        createViewPresets(
+          ["cornerCount", "bettiNumber0Count"].map((key) => entry(key)),
+        ),
+      ).toHaveLength(VIEW_PRESETS.length);
+    });
+  });
+
+  describe(createViewNodes, () => {
+    it("holds the presets under one parent, each with its description", () => {
+      const [presets] = createViewNodes(VIEW_PRESETS);
+
+      expect(presets?.label).toBe("Presets");
+      expect(presets?.children?.map(({ value }) => value)).toStrictEqual(
+        VIEW_PRESETS.map(({ id }) => id),
+      );
+      expect(presets?.children?.[0]?.description).toContain("A grid");
+    });
+  });
+
+  describe(describeView, () => {
+    it("names the preset in force, else Custom", () => {
+      expect(describeView(VIEW_PRESETS, DEFAULT_VIEW_STATE)).toBe("Default");
       expect(
         describeView(VIEW_PRESETS, {
-          ...STATE,
-          group: ["isChain"],
-          view: "grid",
+          ...DEFAULT_VIEW_STATE,
+          group: ["rows", "columns"],
         }),
-      ).toBe("Grid");
+      ).toBe("By rows then columns");
+      expect(
+        describeView(VIEW_PRESETS, { ...DEFAULT_VIEW_STATE, view: "list" }),
+      ).toBe("Custom");
     });
   });
 
   describe(isPresetActive, () => {
-    it("holds when every part the view fixes is as the state has it", () => {
-      const [grid] = VIEW_PRESETS;
+    it("holds when every part is as the preset has it", () => {
+      const [fallback] = VIEW_PRESETS;
 
-      expect(grid && isPresetActive(grid, { ...STATE, view: "grid" })).toBe(
+      expect(fallback && isPresetActive(fallback, DEFAULT_VIEW_STATE)).toBe(
         true,
       );
-      expect(grid && isPresetActive(grid, STATE)).toBe(false);
+      expect(
+        fallback &&
+          isPresetActive(fallback, {
+            ...DEFAULT_VIEW_STATE,
+            direction: "desc",
+          }),
+      ).toBe(false);
     });
   });
 });

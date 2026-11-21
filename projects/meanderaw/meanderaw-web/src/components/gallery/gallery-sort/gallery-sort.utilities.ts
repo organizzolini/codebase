@@ -1,3 +1,5 @@
+import { DEFAULT_SORT_FIELD } from "../../../hooks/use-gallery-search/use-gallery-search.constants";
+
 import { SHAPE_SORT_FIELDS } from "./gallery-sort.constants";
 
 import type { PickerField } from "../gallery-cascader/gallery-cascader.types";
@@ -32,15 +34,15 @@ export function createSortFields(
 }
 
 /**
- * The sort a link names if it is a shape field or in the catalog, else none.
+ * The sort a link names if it is a shape field or in the catalog, else rows.
  */
 export function resolveSortField(
   sort: string | undefined,
   characteristics: readonly GalleryCharacteristic[],
-): string | undefined {
+): string {
   const known =
     SHAPE_SORT_FIELDS.some(({ key }) => key === sort) ||
     characteristics.some(({ key }) => key === sort);
 
-  return known ? sort : undefined;
+  return known && sort !== undefined ? sort : DEFAULT_SORT_FIELD;
 }

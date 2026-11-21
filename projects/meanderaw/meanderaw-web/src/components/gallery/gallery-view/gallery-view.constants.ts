@@ -1,3 +1,8 @@
+import {
+  DEFAULT_GALLERY_VIEW,
+  DEFAULT_SORT_DIRECTION,
+  DEFAULT_SORT_FIELD,
+} from "../../../hooks/use-gallery-search/use-gallery-search.constants";
 import { DEFAULT_FILTER_LINK } from "../gallery-filters/components/filter-query/filter-query.constants";
 
 import type { ViewPreset, ViewState } from "./gallery-view.types";
@@ -5,15 +10,23 @@ import type { ViewPreset, ViewState } from "./gallery-view.types";
 // ♟️ Constants
 
 /**
- * What each layout is called.
+ * What the page opens on.
  */
-export const LAYOUT_NAMES: Readonly<Record<ViewState["view"], string>> = {
-  grid: "Grid",
-  list: "List",
+export const DEFAULT_VIEW_STATE: ViewState = {
+  direction: DEFAULT_SORT_DIRECTION,
+  group: [],
+  link: DEFAULT_FILTER_LINK,
+  sort: DEFAULT_SORT_FIELD,
+  view: DEFAULT_GALLERY_VIEW,
 };
 
 /**
- * The parts of the state a view may fix.
+ * What the View button says when no preset matches.
+ */
+export const CUSTOM_NAME = "Custom";
+
+/**
+ * The parts of the state a view fixes.
  */
 export const VIEW_STATE_KEYS: readonly (keyof ViewState)[] = [
   "direction",
@@ -24,36 +37,35 @@ export const VIEW_STATE_KEYS: readonly (keyof ViewState)[] = [
 ];
 
 /**
- * The views on offer: the two layouts, then saved arrangements.
+ * The presets, before the catalog is asked.
  */
 export const VIEW_PRESETS: readonly ViewPreset[] = [
   {
-    description: "Cards in a grid, several to a row",
-    id: "grid",
-    kind: "layout",
-    name: "Grid",
-    state: { view: "grid" },
-  },
-  {
-    description: "Cards in a list, one to a row",
-    id: "list",
-    kind: "layout",
-    name: "List",
-    state: { view: "list" },
-  },
-  {
-    description: "The default filter with no grouping: rows = 4, repeats = 12",
+    description: "A grid, ungrouped, rows ascending, rows = 4, repeats = 12",
     id: "default",
-    isDefault: true,
-    kind: "saved",
-    name: "Rows 4, repeats 12",
-    state: { group: [], link: DEFAULT_FILTER_LINK },
+    name: "Default",
+    requires: [],
+    state: DEFAULT_VIEW_STATE,
   },
   {
     description: "Group the meanders by rows, then by columns",
     id: "by-rows-columns",
-    kind: "saved",
     name: "By rows then columns",
-    state: { group: ["rows", "columns"] },
+    requires: [],
+    state: { ...DEFAULT_VIEW_STATE, group: ["rows", "columns"] },
+  },
+  {
+    description: "Sort by corner count, the most first",
+    id: "most-corners",
+    name: "Most corners first",
+    requires: ["cornerCount"],
+    state: { ...DEFAULT_VIEW_STATE, direction: "desc", sort: "cornerCount" },
+  },
+  {
+    description: "Group the meanders by Betti number 0 count",
+    id: "by-betti",
+    name: "By Betti number 0 count",
+    requires: ["bettiNumber0Count"],
+    state: { ...DEFAULT_VIEW_STATE, group: ["bettiNumber0Count"] },
   },
 ];

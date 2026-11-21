@@ -13,9 +13,9 @@ describe("gallery sort", () => {
       expect(resolveSortField("isChain", CATALOG)).toBe("isChain");
     });
 
-    it("drops a field that is neither, and has nothing to drop without one", () => {
-      expect(resolveSortField("nope", CATALOG)).toBeUndefined();
-      expect(resolveSortField(undefined, CATALOG)).toBeUndefined();
+    it("falls back to rows for a field that is neither, or none", () => {
+      expect(resolveSortField("nope", CATALOG)).toBe("rows");
+      expect(resolveSortField(undefined, CATALOG)).toBe("rows");
     });
   });
 

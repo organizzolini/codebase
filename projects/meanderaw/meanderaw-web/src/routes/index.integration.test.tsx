@@ -135,32 +135,34 @@ describe("index", () => {
     });
   });
 
-  it("opens on the list, and switches to the grid and back through the View menu and the link", async () => {
+  it("opens on the grid, and switches to the list and back through the Display menu and the link", async () => {
     serveMeandersApi(3);
     const router = getRouter();
 
     await renderRoute(router, "/");
     await screen.findAllByTestId("meander-card");
 
-    expect(groupText("View")).toBe("ViewList");
+    expect(groupText("Display")).toBe("DisplayGrid");
 
-    await chooseView(/Layout/u, /^Grid/u);
-
-    await waitFor(() => {
-      expect(router.state.location.search.view).toBe("grid");
-    });
-    await waitFor(() => {
-      expect(
-        screen.getByRole("group", { hidden: true, name: "View" }).textContent,
-      ).toBe("ViewGrid");
-    });
-
-    expect(screen.getAllByTestId("meander-card")).toHaveLength(3);
-
+    await openSurface("Display", "Display");
     fireEvent.click(await screen.findByRole("option", { name: /^List/u }));
 
     await waitFor(() => {
       expect(router.state.location.search.view).toBe("list");
+    });
+    await waitFor(() => {
+      expect(
+        screen.getByRole("group", { hidden: true, name: "Display" })
+          .textContent,
+      ).toBe("DisplayList");
+    });
+
+    expect(screen.getAllByTestId("meander-card")).toHaveLength(3);
+
+    fireEvent.click(await screen.findByRole("option", { name: /^Grid/u }));
+
+    await waitFor(() => {
+      expect(router.state.location.search.view).toBe("grid");
     });
   });
 
@@ -187,22 +189,24 @@ describe("index", () => {
     ).toBe("ViewBy rows then columns");
   });
 
-  it("opens on the grid when the link names it", async () => {
+  it("opens on the list when the link names it", async () => {
     serveMeandersApi(2);
 
-    await renderRoute(getRouter(), "/?view=grid");
+    await renderRoute(getRouter(), "/?view=list");
     await screen.findAllByTestId("meander-card");
 
-    expect(groupText("View")).toBe("ViewGrid");
+    expect(groupText("Display")).toBe("DisplayList");
+    expect(groupText("View")).toBe("ViewCustom");
   });
 
-  it("opens on the list for a view it does not know", async () => {
+  it("opens on the grid for a view it does not know", async () => {
     serveMeandersApi(2);
 
     await renderRoute(getRouter(), "/?view=wall");
     await screen.findAllByTestId("meander-card");
 
-    expect(groupText("View")).toBe("ViewList");
+    expect(groupText("Display")).toBe("DisplayGrid");
+    expect(groupText("View")).toBe("ViewDefault");
   });
 
   it("says so when there are no meanders yet", async () => {
@@ -266,6 +270,19 @@ describe("index", () => {
     expect(cardsIn(row)).toHaveLength(1);
   });
 
+  it("sorts by rows ascending when the link names no sort, and says so", async () => {
+    const api = serveMeandersApi(3);
+
+    await renderRoute(getRouter(), "/");
+    await screen.findAllByTestId("meander-card");
+
+    expect(api.requests[0]?.sort).toStrictEqual({
+      direction: "ASC",
+      field: "rows",
+    });
+    expect(groupText("Sort")).toBe("SortRows");
+  });
+
   it("shows the first page of 24 with its range, and no page before it", async () => {
     const api = serveMeandersApi(100);
 
@@ -276,8 +293,10 @@ describe("index", () => {
     expect(api.requests).toHaveLength(1);
     expect(api.requests[0]).toMatchObject({ first: 24 });
     expect(
-      screen.getByRole("button", { name: "Previous page" }),
-    ).toHaveProperty("disabled", true);
+      screen
+        .getByRole("button", { name: "Previous page" })
+        .getAttribute("aria-disabled"),
+    ).toBe("true");
   });
 
   it("pages by cursor with the arrows, reading each page once and showing it alone", async () => {
@@ -316,10 +335,11 @@ describe("index", () => {
       expect(groupText("Pages")).toBe("25 to 30 of 30");
     });
 
-    expect(screen.getByRole("button", { name: "Next page" })).toHaveProperty(
-      "disabled",
-      true,
-    );
+    expect(
+      screen
+        .getByRole("button", { name: "Next page" })
+        .getAttribute("aria-disabled"),
+    ).toBe("true");
   });
 
   it("changes the page size from the Page popover, in the link and the request, starting over", async () => {
@@ -527,8 +547,11 @@ describe("index", () => {
       "01x01y0001",
       "01x01y0002",
     ]);
-    expect(api.requests[0]?.sort).toBeUndefined();
-    expect(groupText("Sort")).toBe("SortDefault order");
+    expect(api.requests[0]?.sort).toStrictEqual({
+      direction: "DESC",
+      field: "rows",
+    });
+    expect(groupText("Sort")).toBe("SortRows");
   });
 
   it("shows why the first page failed, whatever the sort", async () => {

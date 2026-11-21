@@ -18,6 +18,9 @@ describe(MeanderawLogo, () => {
     const logo = screen.getByRole("img", { name: "Meanderaw" });
 
     expect(logo.getAttribute("viewBox")).toBe("0 0 51 9");
+    // Its natural size keeps the 51 to 9 ratio, so no box letterboxes it.
+    expect(logo.getAttribute("width")).toBe("51");
+    expect(logo.getAttribute("height")).toBe("9");
   });
 
   it("strokes in the current text color with square caps", () => {

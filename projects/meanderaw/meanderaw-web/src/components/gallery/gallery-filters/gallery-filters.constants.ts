@@ -15,4 +15,4 @@ export const FILTERS_BUTTON_CLASS_NAME =
  * Squares every join between the Filter button and the chips.
  */
 export const STRIP_CLASS_NAME =
-  "[&>[data-slot=filter-chip]>:first-child]:rounded-l-none [&>[data-slot=filter-chip]>:first-child]:border-l-0 [&>[data-slot=filter-chip]:has(+[data-slot=filter-chip])>[data-slot=dropdown-menu-trigger]]:rounded-r-none";
+  "[&>[data-slot=filter-chip]>:first-child]:rounded-l-none [&>[data-slot=filter-chip]>:first-child]:border-l-0 [&>[data-slot=filter-chip]:has(+[data-slot=filter-chip])>[data-slot=dropdown-menu-trigger]]:rounded-r-none!";

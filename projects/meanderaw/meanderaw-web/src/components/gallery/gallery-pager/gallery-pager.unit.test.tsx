@@ -65,23 +65,27 @@ describe(GalleryPager, () => {
       <GalleryPager {...properties({ pageCount: 2 })} />,
     );
 
-    expect(screen.getByRole("button", { name: "Next page" })).toHaveProperty(
-      "disabled",
-      true,
-    );
+    expect(
+      screen
+        .getByRole("button", { name: "Next page" })
+        .getAttribute("aria-disabled"),
+    ).toBe("true");
 
     rerender(<GalleryPager {...properties({ position: 0 })} />);
 
     expect(
-      screen.getByRole("button", { name: "Previous page" }),
-    ).toHaveProperty("disabled", true);
+      screen
+        .getByRole("button", { name: "Previous page" })
+        .getAttribute("aria-disabled"),
+    ).toBe("true");
 
     rerender(<GalleryPager {...properties({ isLoading: true })} />);
 
-    expect(screen.getByRole("button", { name: "Next page" })).toHaveProperty(
-      "disabled",
-      true,
-    );
+    expect(
+      screen
+        .getByRole("button", { name: "Next page" })
+        .getAttribute("aria-disabled"),
+    ).toBe("true");
     expect(screen.getByText("Loading…")).toBeDefined();
   });
 

@@ -197,7 +197,7 @@ function GalleryControls(
     page: MeandersPage | undefined;
     paging: UseMeandersResult;
     size: number;
-    sort: string | undefined;
+    sort: string;
     view: GalleryView;
   }>,
 ): ReactNode {
@@ -228,6 +228,8 @@ function GalleryControls(
   return (
     <>
       <GalleryViewControl
+        characteristics={characteristics}
+        className="flex flex-wrap items-center gap-2"
         current={{ direction, group: grouping, link, sort, view }}
         onApply={handleViewApply}
       />
@@ -349,9 +351,9 @@ function IndexPage(): ReactNode {
 
   // 🎨 Markup
   return (
-    <section className="flex flex-wrap items-center gap-3 p-4">
-      <h1>
-        <MeanderawLogo className="aspect-51/9 h-9 text-(--ink)" />
+    <section className="flex flex-wrap items-center gap-2 p-4">
+      <h1 className="mr-1">
+        <MeanderawLogo className="h-9 text-(--ink)" />
       </h1>
       <GalleryControls
         characteristics={characteristics}

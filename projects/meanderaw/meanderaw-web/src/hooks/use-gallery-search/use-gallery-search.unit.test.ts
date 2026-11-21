@@ -46,7 +46,7 @@ describe(useGallerySearch, () => {
       repeats: 12,
       size: 24,
       sort: undefined,
-      view: "list",
+      view: "grid",
     });
   });
 
@@ -65,10 +65,10 @@ describe(useGallerySearch, () => {
     result.current.handleViewApply({ group: ["rows", "columns"], link });
     result.current.handleViewApply({ group: [] });
     result.current.handleViewApply({ direction: "desc", sort: "rows" });
-    result.current.handleViewApply({ direction: "asc", sort: undefined });
 
-    const [view, arrangement, ungrouped, sorted, unsorted] =
-      navigate.mock.calls.map(([options]) => options);
+    const [view, arrangement, ungrouped, sorted] = navigate.mock.calls.map(
+      ([options]) => options,
+    );
 
     expect(result.current.view).toBe("grid");
     expect(view?.replace).toBe(true);
@@ -90,12 +90,6 @@ describe(useGallerySearch, () => {
       direction: "desc",
       sort: "rows",
     });
-    expect(unsorted?.search({ direction: "desc", sort: "rows" })).toStrictEqual(
-      {
-        direction: undefined,
-        sort: undefined,
-      },
-    );
   });
 
   it("reads the sort and direction the link names", () => {
@@ -187,7 +181,7 @@ describe(useGallerySearch, () => {
   it("drops a view or direction that is not one of the two, and reads a number as a field", () => {
     expect(
       gallerySearchSchema.parse({ direction: "up", sort: 5, view: "wall" }),
-    ).toStrictEqual({ direction: "asc", sort: "5", view: "list" });
+    ).toStrictEqual({ direction: "asc", sort: "5", view: "grid" });
     expect(gallerySearchSchema.parse({})).toStrictEqual({});
   });
 
