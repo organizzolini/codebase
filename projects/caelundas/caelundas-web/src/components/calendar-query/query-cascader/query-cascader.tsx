@@ -4,6 +4,7 @@ import { Cascader } from "@codebase/presentation";
 
 import { QueryCascaderPanel } from "./components/query-cascader-panel/query-cascader-panel";
 import { LABELS, NOTHING } from "./query-cascader.constants";
+import { resolveSelectable } from "./query-cascader.utilities";
 
 import type { CascaderActionItem, CascaderNode } from "@codebase/presentation";
 import type { ReactNode } from "react";
@@ -34,6 +35,10 @@ export interface QueryCascaderProperties {
   multiple?: boolean;
   onValueChange: (value: string[]) => void;
   placeholder: string;
+  /**
+   * Which rows can be picked; a row that cannot opens its branch when pressed. Every row when several can be picked with a cascade, only leaves otherwise, when absent.
+   */
+  selectable?: ((node: CascaderNode) => boolean) | undefined;
   value: readonly string[];
 }
 
@@ -54,6 +59,7 @@ export function QueryCascader(
     mode = "tree",
     onValueChange,
     placeholder,
+    selectable,
     value,
   } = properties;
 
@@ -101,7 +107,7 @@ export function QueryCascader(
           onValueChange={(next) => {
             onValueChange(next);
           }}
-          selectable={cascade ? "any" : "leaf"}
+          selectable={resolveSelectable(cascade, selectable)}
           value={[...value]}
           multiple
         >

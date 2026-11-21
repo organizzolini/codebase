@@ -9,8 +9,6 @@ import {
   BUILDER_WAIT,
   findDisplayOption,
   findToolbar,
-  pickOption,
-  startFilterRule,
 } from "../../testing/calendar-page";
 import {
   fieldRule,
@@ -322,41 +320,38 @@ describe("index", () => {
     expect(screen.queryByText("No events match the filters")).toBeNull();
   });
 
-  it.each([
-    { size: "a desktop", slot: "popover-content", width: 1280 },
-    { size: "a tablet", slot: "drawer-popup", width: 800 },
-    { size: "a phone", slot: "sheet-content", width: 375 },
-  ])(
-    "opens the filter builder over the calendar on $size",
-    async (viewport) => {
-      setViewportWidth(viewport.width);
-      await renderCalendarRoute("/?date=2026-03-01");
+  it("opens the Filter list over the calendar, with attributes to search", async () => {
+    await renderCalendarRoute("/?date=2026-03-01");
 
-      const toolbar = await findToolbar();
+    fireEvent.click(
+      within(await findToolbar()).getByRole("button", {
+        name: /^Filter(,|$)/u,
+      }),
+    );
 
-      expect(screen.queryByText("No filters yet")).toBeNull();
-
-      fireEvent.click(
-        within(toolbar).getByRole("button", { name: /^Filter(,|$)/u }),
-      );
-
-      const builder = await screen.findByRole("dialog", { name: "Filter" });
-
-      expect(builder.closest(`[data-slot="${viewport.slot}"]`)).not.toBeNull();
-      expect(within(builder).getByText("No filters yet")).toBeDefined();
-    },
-  );
+    await expect(screen.findByTestId("filter-cascader")).resolves.toBeDefined();
+    expect(screen.getByPlaceholderText("Search attributes")).toBeDefined();
+    await expect(
+      screen.findByRole("option", { name: /^Planet/u }),
+    ).resolves.toBeDefined();
+  });
 
   it(
-    "filters the calendar with a rule built in the builder",
+    "filters the calendar by a value ticked in the Filter list",
     BUILDER_TEST,
     async () => {
       await renderCalendarRoute("/?date=2026-03-01");
-      await startFilterRule(/^Planet(?!-)/u, "is any of");
-      await pickOption(/^Mercury/u);
-      fireEvent.keyDown(document.activeElement ?? document.body, {
-        key: "Escape",
-      });
+      fireEvent.click(
+        within(await findToolbar()).getByRole("button", {
+          name: /^Filter(,|$)/u,
+        }),
+      );
+      fireEvent.click(
+        await screen.findByRole("option", { name: /^Planet/u }, BUILDER_WAIT),
+      );
+      fireEvent.click(
+        await screen.findByRole("option", { name: /^Mercury/u }, BUILDER_WAIT),
+      );
 
       // Both at once, so the skeleton a slow reload shows cannot pass for it.
       await waitFor(() => {
@@ -494,34 +489,6 @@ describe("index", () => {
       screen.queryByRole("button", { name: /^Mars Conjunct Venus/u }),
     ).toBeNull();
   });
-
-  it(
-    "filters by a date range picked in the builder",
-    BUILDER_TEST,
-    async () => {
-      await renderCalendarRoute("/?date=2026-03-01");
-      await startFilterRule(/^Date/u, "is between");
-      fireEvent.change(
-        await screen.findByLabelText("Date from", {}, BUILDER_WAIT),
-        {
-          target: { value: "2026-03-25" },
-        },
-      );
-      fireEvent.change(screen.getByLabelText("Date to"), {
-        target: { value: "2026-03-26" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "Apply" }));
-
-      await waitFor(() => {
-        expect(
-          screen.getByRole("button", { name: /^Venus Ingress Aries/u }),
-        ).toBeDefined();
-        expect(
-          screen.queryByRole("button", { name: /^Sun Ingress Aries/u }),
-        ).toBeNull();
-      }, BUILDER_WAIT);
-    },
-  );
 
   describe("sky link parameters", () => {
     it("keeps them through the calendar's own navigation", async () => {

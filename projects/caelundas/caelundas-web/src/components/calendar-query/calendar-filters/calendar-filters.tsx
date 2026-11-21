@@ -1,6 +1,13 @@
 import { useContext } from "react";
 
-import { ButtonGroup, Filters, useMediaQuery } from "@codebase/presentation";
+import {
+  ButtonGroup,
+  Filters,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  useMediaQuery,
+} from "@codebase/presentation";
 
 import { useFilterQuery } from "../../../hooks/use-filter-query/use-filter-query";
 import { CalendarNavigationSlot } from "../../calendar-controls/calendar-navigation-group/calendar-navigation-slot.constants";
@@ -9,11 +16,12 @@ import {
   EDITORS,
   STRIP_CLASS_NAME,
   TABLET_QUERY,
+  TITLE,
 } from "./calendar-filters.constants";
 import { renderFiltersButton } from "./calendar-filters.utilities";
 import { countActiveEventFilterRules } from "./components/event-filter-model/event-filter-tree.utilities";
+import { FilterCascader } from "./components/filter-cascader/filter-cascader";
 import { FilterChipRow } from "./components/filter-chip-row/filter-chip-row";
-import { FilterSurface } from "./components/filter-surface/filter-surface";
 
 import type {
   EventFilterField,
@@ -26,7 +34,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The builder's fields, the link's filter tree, and the edit handler.
+ * The attributes to filter by, the link's filter tree, and the edit handler.
  */
 export interface CalendarFiltersProperties {
   className?: string;
@@ -89,24 +97,26 @@ export function CalendarFilters(
         data-joined={isTablet && activeCount > 0 ? "" : undefined}
       >
         <ButtonGroup aria-label="Filter">
-          <FilterSurface
-            isTablet={isTablet}
-            trigger={renderFiltersButton(
-              activeCount,
-              navigation !== null || (isTablet && activeCount > 0),
-            )}
-          >
-            <div className="flex flex-col gap-3">
-              <Filters<EventFilterValue>
-                advancedMode="inline"
-                editors={EDITORS}
-                fields={[...fields]}
+          <Popover>
+            <PopoverTrigger
+              render={renderFiltersButton(
+                activeCount,
+                navigation !== null || (isTablet && activeCount > 0),
+              )}
+            />
+            <PopoverContent
+              align="start"
+              aria-label={TITLE}
+              className="w-auto max-w-[95vw] overflow-x-auto p-0"
+              sideOffset={8}
+            >
+              <FilterCascader
+                fields={fields}
                 onQueryChange={handleQueryChange}
                 query={query}
-                variant="advanced"
               />
-            </div>
-          </FilterSurface>
+            </PopoverContent>
+          </Popover>
         </ButtonGroup>
         {navigation}
         {isTablet ? (

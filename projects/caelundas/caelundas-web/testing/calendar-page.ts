@@ -61,13 +61,6 @@ export async function pickCalendarView(label: string): Promise<void> {
 }
 
 /**
- * Picks an option from whichever list the builder has open.
- */
-export async function pickOption(name: RegExp | string): Promise<void> {
-  fireEvent.click(await screen.findByRole("option", { name }, BUILDER_WAIT));
-}
-
-/**
  * What the toolbar's Display chip says is shown, such as "Week".
  */
 export async function readCalendarView(): Promise<string> {
@@ -76,33 +69,6 @@ export async function readCalendarView(): Promise<string> {
   });
 
   return group.textContent.replace(/^Display/u, "");
-}
-
-/**
- * Opens the filter builder from the toolbar and starts a new rule on the
- * field and operator named, leaving its value to the test.
- */
-export async function startFilterRule(
-  field: RegExp,
-  operator: string,
-): Promise<HTMLElement> {
-  const toolbar = await findToolbar();
-
-  fireEvent.click(
-    within(toolbar).getByRole("button", { name: /^Filter(,|$)/u }),
-  );
-
-  const builder = await screen.findByRole(
-    "dialog",
-    { name: "Filter" },
-    BUILDER_WAIT,
-  );
-
-  fireEvent.click(within(builder).getByRole("button", { name: "Add filter" }));
-  await pickOption(field);
-  await pickOption(operator);
-
-  return builder;
 }
 
 /**

@@ -109,6 +109,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **pluto**: Dwarf-planet body whose glyph maps to its own SVG icon and appears in event names.
 - **polarity**: Whether a zodiac sign is positive or negative, offered as a filter field and a color group.
 - **pole**: The north celestial pole at the top of the night-sky view, where altitude equals declination.
+- **predicate**:
 - **prograde**: Direction of a planet moving forward through the zodiac, mapped to its own SVG icon.
 - **quadruple**: Stellium label for four bodies clustered together, mapped to a PNG icon in the glyph set.
 - **quaoar**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
