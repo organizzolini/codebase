@@ -4,8 +4,8 @@ title: Ollama & SearxNG Integration (Affirmancy)
 description: Documents the Affirmancy-specific integration where a LangGraph StateGraph pipeline uses SearxNG for metasearch research and Ollama (gemma4:e2b) for generation, with context budget management, model keepalive, and Pydantic validation.
 tags: [affirmancy, ollama, searxng, langgraph, state-graph, metasearch, context-budget, keepalive, pydantic-validation]
 verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-29T03:39:46.432Z
+  - by: openwiki/0.9.0
+    at: 2026-11-20T17:00:25.557Z
 sources:
   - id: openwiki-source-834d9e55d27cecb197701e79
     resource: repo://projects/affirmancy/AGENTS.md
@@ -17,7 +17,7 @@ sources:
     resource: repo://projects/affirmancy/src/affirmancy.ipynb
   - id: openwiki-source-52fc6fd40a69feb907bfd8d5
     resource: repo://projects/affirmancy/src/services.py
-generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-20T17:00:25.557Z" }
 ---
 
 # Ollama & SearxNG Integration (Affirmancy)
@@ -98,8 +98,8 @@ Engines are organized in four tiers by weight, determining deduplication priorit
 The `hostnames` plugin (`searx.plugins.hostnames.SXNGPlugin`) promotes trusted spiritual/occult domains and demotes noise:
 
 - **High priority (~70 domains)**: `sacred-texts.com`, `hermetic.com`, `biddytarot.com`, `labyrinthos.co`, `astro.com`, `cafeastrology.com`, `chabad.org`, `sefaria.org`, `esotericarchives.com`, `crystalvaults.com`, `runesecrets.com`, `norse-mythology.org`, and many more across tarot, lenormand, astrology, chakras, kabbalah, runes, gemstones, numerology, alchemy, solfeggio.
-- **Low priority**: Thin SEO tarot sites, Wikihow, Quora, Facebook, Coursera, dictionary sites, generic horoscope generators.
-- **Remove**: Non-English content farms (zhihu.com), medical sites (clevelandclinic.org), image-only sites (Pinterest), affiliate marketplaces (Etsy, Amazon).
+- **Low priority**: Thin SEO tarot sites (`tarostarot.com`, `thetarotlady.com`), Wikihow, Quora, Facebook, Coursera, dictionary sites (`dictionary.com`, `cambridge.org`, `merriam-webster.com`), generic horoscope generators (`horoscope.com`, `astrology.com`, `keen.com`, `astrologyzone.com`).
+- **Remove**: Non-English content farms (`zhihu.com`), medical sites (`health.clevelandclinic.org`), image-only sites (`pinterest.com`), affiliate marketplaces (`etsy.com`, `amazon.com`).
 
 **Source**: `repo://projects/affirmancy/searxng.settings.yml#L62-L239`
 
