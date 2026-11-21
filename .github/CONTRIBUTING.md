@@ -125,7 +125,7 @@ Alternatively, use the included dev container for a fully configured environment
 
 The repository pins Node through `.nvmrc`, and `package.json` declares `engines.node` to match. `.nvmrc` is declarative and only takes effect after running `nvm use`, or after enabling automatic `nvm` directory switching in your shell. Use the pinned version — newer Node majors have broken this repository's commit hooks in ways that are hard to read from the error output.
 
-pnpm is pinned by `packageManager` in the root `package.json`, so Corepack selects the right version on its own.
+pnpm is pinned by `packageManager` in the root `package.json`. Node 26 no longer bundles Corepack, so install pnpm at that version yourself, for example with `npm install --global pnpm@<version>`.
 
 **Port Forwarding:**
 
