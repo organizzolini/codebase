@@ -12,6 +12,7 @@ import type {
   MeasureBatchTaskResult,
   MeasureExecutorOptions,
   MeasurementGroup,
+  MeasureVerdict,
   ProcessOutput,
 } from "./executor.types";
 
@@ -22,6 +23,7 @@ import type {
 export function buildCommand(args: {
   directories: readonly string[];
   options: MeasureExecutorOptions;
+  verdicts?: boolean;
 }): string {
   const { check, command, config, onlyInputs, outputJson, outputMarkdown } =
     args.options;
@@ -39,6 +41,7 @@ export function buildCommand(args: {
     ...(outputMarkdown === undefined
       ? []
       : ["--output-markdown", quote(outputMarkdown)]),
+    ...(args.verdicts === true ? ["--verdicts"] : []),
     ...args.directories.map((directory) => quote(directory)),
   ].join(" ");
 }
@@ -126,6 +129,26 @@ export async function runProject(args: {
   });
 }
 
+/** Whether a parsed value is one verdict as the command line prints it. */
+function isVerdict(value: unknown): value is MeasureVerdict {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "directory" in value &&
+    typeof value.directory === "string" &&
+    "ok" in value &&
+    typeof value.ok === "boolean"
+  );
+}
+
+/** Whether a parsed value is a list of verdicts. */
+function isVerdictList(value: unknown): value is MeasureVerdict[] {
+  return (
+    Array.isArray(value) &&
+    (value as unknown[]).every((entry) => isVerdict(entry))
+  );
+}
+
 /**
  * Judges one task by measuring its project alone, as before batching.
  */
@@ -147,13 +170,30 @@ async function judgeAlone(args: {
   };
 }
 
+/**
+ * Reads the verdicts `measure --verdicts` printed as its last line, or nothing
+ * when the run crashed before printing them.
+ */
+function parseVerdicts(output: ProcessOutput): MeasureVerdict[] | undefined {
+  const lines = output.stdout.split("\n").filter((line) => line.trim() !== "");
+
+  try {
+    const parsed = JSON.parse(lines.at(-1) ?? "") as unknown;
+
+    return isVerdictList(parsed) ? parsed : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 /** Quotes one argument for the shell the command line is started through. */
 function quote(argument: string): string {
   return `'${argument.replaceAll("'", String.raw`'\''`)}'`;
 }
 
 /**
- * Measures a group in one run; on failure, each task alone, so a breach is charged to its own project.
+ * Measures a group in one run that names each verdict; only a failed or
+ * undecided project is measured again alone, for its report.
  */
 async function runGroup(
   args: MeasurementGroup & { workspaceRoot: string },
@@ -165,24 +205,31 @@ async function runGroup(
         path.join(args.workspaceRoot, task.root),
       ),
       options: args.options,
+      verdicts: true,
     }),
     cwd: args.workspaceRoot,
     environment: { LOG_LEVEL: SILENT_LOG_LEVEL },
     workspaceRoot: args.workspaceRoot,
   });
+  const passed = new Set(
+    (parseVerdicts(batch) ?? [])
+      .filter((verdict) => verdict.ok)
+      .map((verdict) => verdict.directory),
+  );
+  const undecided: BatchedTask[] = [];
 
-  if (batch.status === 0) {
-    for (const task of args.tasks) {
+  for (const task of args.tasks) {
+    if (passed.has(path.resolve(args.workspaceRoot, task.root))) {
       results[task.id] = { success: true, terminalOutput: "" };
+    } else {
+      undecided.push(task);
     }
-
-    return results;
   }
 
   const width = availableParallelism();
 
-  for (let start = 0; start < args.tasks.length; start += width) {
-    const chunk = args.tasks.slice(start, start + width);
+  for (let start = 0; start < undecided.length; start += width) {
+    const chunk = undecided.slice(start, start + width);
     const settled = await Promise.all(
       chunk.map(async (task) => await judgeAlone({ ...args, task })),
     );

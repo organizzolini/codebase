@@ -68,6 +68,12 @@ export interface MeasurementGroup {
   readonly tasks: readonly BatchedTask[];
 }
 
+/** One directory's verdict, as `measure --verdicts` prints it. */
+export interface MeasureVerdict {
+  readonly directory: string;
+  readonly ok: boolean;
+}
+
 /** What a finished process printed on each stream, and how it exited. */
 export interface ProcessOutput {
   readonly status: null | number;

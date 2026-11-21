@@ -7,6 +7,18 @@ console.log(JSON.stringify({
   logLevel: process.env.LOG_LEVEL ?? null,
   words,
 }));
+if (words.includes("--verdicts") && !subject.includes("crash")) {
+  const directories = words.filter((word) => word.startsWith("/"));
+  if (directories.some((directory) => directory.includes("object"))) {
+    console.log("{}");
+  } else if (directories.some((directory) => directory.includes("junk"))) {
+    console.log("[5]");
+  } else {
+    console.log(JSON.stringify(directories
+      .filter((directory) => !directory.includes("silent"))
+      .map((directory) => ({ directory, ok: !directory.includes("bad") }))));
+  }
+}
 if (subject.includes("crash")) {
   console.error("something broke");
   process.exit(2);

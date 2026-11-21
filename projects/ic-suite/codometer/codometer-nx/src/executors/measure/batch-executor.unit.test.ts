@@ -99,6 +99,39 @@ describe(measureBatchExecutor, () => {
     expect(results["c:codometer-limit"]?.success).toBe(true);
   });
 
+  it.each([
+    ["a run that crashed before printing verdicts", "crash-b", false],
+    ["verdicts that are no list", "object-b", true],
+    ["a list holding something that is no verdict", "junk-b", true],
+    ["no verdict for a task", "silent-b", true],
+  ])(
+    "measures each task alone after %s, losing no peer",
+    async (_name, project, alonePasses) => {
+      expect.hasAssertions();
+
+      build(["a", project]);
+
+      const results = await measureBatchExecutor(
+        ...buildArguments(["a", project]),
+      );
+
+      // The peer is measured alone and passes; only the project itself may fail.
+      expect(results["a:codometer-limit"]?.success).toBe(true);
+      expect(results[`${project}:codometer-limit`]?.success).toBe(alonePasses);
+    },
+  );
+
+  it("measures alone only the tasks that failed, not the whole batch", async () => {
+    expect.hasAssertions();
+
+    build(["a", "bad-b", "c"]);
+
+    await measureBatchExecutor(...buildArguments(["a", "bad-b", "c"]));
+
+    // Nx prints only what the batch executor does: one failure, one report.
+    expect(output.stdout().match(/limit breached/g)).toHaveLength(1);
+  });
+
   it("prints a failed task's output under its id, and nothing for a passing one", async () => {
     expect.hasAssertions();
 
