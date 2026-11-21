@@ -247,6 +247,50 @@ describe(MeasureCommand, () => {
       expect(readExitCode()).toBe(1);
     });
 
+    it("prints each directory's verdict when asked, failed ones included", async () => {
+      vi.mocked(measureService.measure)
+        .mockReturnValueOnce({
+          failures: [],
+          indexes: new Map(),
+          inputs: [],
+          limits: [buildBreach("fail")],
+          statistics,
+        })
+        .mockReturnValueOnce({
+          failures: [],
+          indexes: new Map(),
+          inputs: [],
+          limits: [],
+          statistics,
+        });
+      const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+
+      await buildCommand().run(["/a", "/b"], {
+        check: "limits",
+        config: "codometer.config.ts",
+        verdicts: true,
+      });
+
+      expect(write).toHaveBeenCalledWith(
+        `${JSON.stringify([
+          { directory: "/a", ok: false },
+          { directory: "/b", ok: true },
+        ])}\n`,
+      );
+
+      write.mockRestore();
+    });
+
+    it("prints no verdicts unless asked", async () => {
+      const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+
+      await buildCommand().run(["/a"], { config: "codometer.config.ts" });
+
+      expect(write).not.toHaveBeenCalledWith(expect.stringContaining('"ok"'));
+
+      write.mockRestore();
+    });
+
     it("fails the run when a measurement throws and still measures the rest", async () => {
       vi.mocked(measureService.measure).mockImplementationOnce(() => {
         throw new Error("empty target");

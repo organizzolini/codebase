@@ -56,6 +56,7 @@ codometer --config configuration/ic-suite/codometer.config.ts --check limits
 | `--config <path>` | **Required.** The configuration file to read |
 | `-f, --format <format>` | What to print to standard output, one of `json` and `markdown` |
 | `--inputs [globs...]` | Glob array measured in place of every configured input, with no configured input — not even the built-in `codebase` one — active |
+| `--verdicts` | Print each named directory's verdict as a JSON line after the run, so a caller can tell which one failed |
 | `--only-inputs [names...]` | Names of the only configured inputs to measure; the others, and the limits written against them, are left out |
 | `--output-json [path]` | Write the JSON report, at the given path or the configured one |
 | `--output-markdown [path]` | Write the markdown badge block, at the given path or the configured one |
@@ -232,6 +233,11 @@ input. A run that gates only the source limits, with no build behind it, names
 the built-in input: `codometer measure --config codometer.config.ts --check
 limits --only-inputs codebase`. A name no input carries, or the flag beside
 `--inputs`, is refused.
+
+`--verdicts` is for a caller that measures many directories in one process: after
+the run it prints one JSON line, `[{"directory": "/a", "ok": true}, …]`, so the
+caller learns which directory failed without measuring each again. The exit code
+still says only that some directory failed.
 
 ## Limits
 

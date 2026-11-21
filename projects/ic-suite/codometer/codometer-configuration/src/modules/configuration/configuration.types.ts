@@ -245,6 +245,8 @@ export interface MeasureCommandOptions {
    * `undefined` when the flag was never passed.
    */
   outputMarkdown?: string | true | undefined;
+  /** Print each named directory's verdict as a JSON line after the run. */
+  verdicts?: boolean | undefined;
 }
 
 /** What a run prints, derived from the `--format` list. */

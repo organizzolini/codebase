@@ -12,7 +12,13 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import type { ReportFindingsArguments, RunPlan } from "./measure.types";
+import { selectInputs } from "./measure.utilities";
+
+import type {
+  MeasureVerdict,
+  ReportFindingsArguments,
+  RunPlan,
+} from "./measure.types";
 import type {
   MeasureCommandOptions,
   ResolvedCodometerConfiguration,
@@ -63,51 +69,6 @@ export class MeasureCommand extends CommandRunner {
       undefined,
       { paths: outputPaths },
     );
-  }
-
-  /**
-   * Replaces every configured input with the `--inputs` globs, measured as the `language` analysis with no other input active.
-   */
-  private applyInputsOverride(
-    configuration: ResolvedCodometerConfiguration,
-    globs: string[] | undefined,
-  ): ResolvedCodometerConfiguration {
-    if (globs === undefined) {
-      return configuration;
-    }
-
-    return {
-      ...configuration,
-      inputs: [
-        {
-          analyses: ["language"],
-          compression: "none",
-          directory: ".",
-          exclude: [],
-          include: globs,
-          name: "Command Line",
-        },
-      ],
-    };
-  }
-
-  /**
-   * Whether a limit is written against an input: by its name in front of the metric, or unqualified where that input is the default.
-   */
-  private limitTargetsInput(
-    configuration: ResolvedCodometerConfiguration,
-    metric: string,
-    input: string,
-  ): boolean {
-    if (metric.startsWith(`${input}.`)) {
-      return true;
-    }
-
-    const isQualified = configuration.inputs.some((configured) =>
-      metric.startsWith(`${configured.name}.`),
-    );
-
-    return !isQualified && configuration.defaultInput === input;
   }
 
   /**
@@ -277,7 +238,7 @@ export class MeasureCommand extends CommandRunner {
       return undefined;
     }
 
-    const { configuration, errors: inputErrors } = this.selectInputs(
+    const { configuration, errors: inputErrors } = selectInputs(
       loadedConfiguration,
       options,
     );
@@ -319,61 +280,6 @@ export class MeasureCommand extends CommandRunner {
     });
 
     return workingDirectory;
-  }
-
-  /**
-   * Applies `--inputs`, then keeps the inputs `--only-inputs` names and drops the limits written against the others. Refuses an unknown name, and mixing the two.
-   */
-  private selectInputs(
-    loaded: ResolvedCodometerConfiguration,
-    options: MeasureCommandOptions,
-  ): { configuration: ResolvedCodometerConfiguration; errors: string[] } {
-    const configuration = this.applyInputsOverride(loaded, options.inputs);
-    const names = options.onlyInputs;
-
-    if (names === undefined) {
-      return { configuration, errors: [] };
-    }
-
-    if (options.inputs !== undefined) {
-      return {
-        configuration,
-        errors: ["--only-inputs cannot be combined with --inputs"],
-      };
-    }
-
-    const configured = configuration.inputs.map((input) => input.name);
-    const unknown = names.filter((name) => !configured.includes(name));
-
-    if (unknown.length > 0) {
-      const quote = (list: string[]): string =>
-        list.map((name) => `"${name}"`).join(", ");
-
-      return {
-        configuration,
-        errors: [
-          `--only-inputs names no configured input: ${quote(unknown)}. Configured inputs: ${quote(configured)}.`,
-        ],
-      };
-    }
-
-    const dropped = configured.filter((name) => !names.includes(name));
-
-    return {
-      configuration: {
-        ...configuration,
-        inputs: configuration.inputs.filter((input) =>
-          names.includes(input.name),
-        ),
-        limits: configuration.limits.filter(
-          (limit) =>
-            !dropped.some((input) =>
-              this.limitTargetsInput(configuration, limit.metric, input),
-            ),
-        ),
-      },
-      errors: [],
-    };
   }
 
   /**
@@ -458,6 +364,18 @@ export class MeasureCommand extends CommandRunner {
     return value;
   }
 
+  /**
+   * Parses `--verdicts`, which prints each named directory's verdict as one JSON line after the run.
+   */
+  @Option({
+    description:
+      "Print each named directory's verdict as a JSON line after the run, so a caller can tell which one failed",
+    flags: "--verdicts",
+  })
+  public parseVerdicts(): boolean {
+    return true;
+  }
+
   // 🌎 Public Methods
 
   /**
@@ -478,22 +396,28 @@ export class MeasureCommand extends CommandRunner {
       return;
     }
 
-    for (const directory of directories.map((named) => path.resolve(named))) {
-      try {
-        const failed = await this.measureDirectory(
-          options.config === undefined
-            ? options
-            : { ...options, config: path.resolve(directory, options.config) },
-          directory,
-        );
+    const verdicts: MeasureVerdict[] = [];
 
-        process.exitCode = failed ? 1 : process.exitCode;
-      } catch (error: unknown) {
+    for (const directory of directories.map((named) => path.resolve(named))) {
+      const failed = await this.measureDirectory(
+        options.config === undefined
+          ? options
+          : { ...options, config: path.resolve(directory, options.config) },
+        directory,
+      ).catch((error: unknown) => {
         this.logger.error(`📊 Failed to measure ${directory}`, undefined, {
           reason: error instanceof Error ? error.message : String(error),
         });
-        process.exitCode = 1;
-      }
+
+        return true;
+      });
+
+      process.exitCode = failed ? 1 : process.exitCode;
+      verdicts.push({ directory, ok: !failed });
+    }
+
+    if (options.verdicts === true) {
+      process.stdout.write(`${JSON.stringify(verdicts)}\n`);
     }
   }
 }

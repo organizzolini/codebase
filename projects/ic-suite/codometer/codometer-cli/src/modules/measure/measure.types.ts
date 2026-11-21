@@ -11,6 +11,12 @@ import type {
   RunDestinations,
 } from "@codometer/output";
 
+/** One named directory's verdict, as `--verdicts` prints it. */
+export interface MeasureVerdict {
+  directory: string;
+  ok: boolean;
+}
+
 /** Arguments accepted when weighing what a run found. */
 export interface ReportFindingsArguments {
   measurement: MeasurementResult;
