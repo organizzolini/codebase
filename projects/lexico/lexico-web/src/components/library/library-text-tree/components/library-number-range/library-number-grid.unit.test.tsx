@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { LibraryNumberGrid } from "./library-number-grid";
 
-import type { LibraryNumbered } from "./library-text-tree.types";
+import type { LibraryNumbered } from "../../library-text-tree.types";
 
 vi.mock("@tanstack/react-router", () => ({
   Link: (

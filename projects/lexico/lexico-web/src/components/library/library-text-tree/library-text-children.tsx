@@ -81,20 +81,13 @@ export function LibraryTextChildren(
       {renderLevel(rows)}
       {isLoading ? (
         <p
-          className="text-xs text-muted-foreground"
+          className="text-muted-foreground"
           role="status"
         >
           Loading
         </p>
       ) : null}
-      {hasFailed ? (
-        <p
-          className="text-xs"
-          role="alert"
-        >
-          Could not load. Try again.
-        </p>
-      ) : null}
+      {hasFailed ? <p role="alert">Could not load. Try again.</p> : null}
       {hasMore && !isLoading ? (
         <Button
           onClick={() => {

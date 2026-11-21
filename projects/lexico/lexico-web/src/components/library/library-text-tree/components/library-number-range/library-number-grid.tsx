@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router";
 
-import { buttonVariants, cn } from "@codebase/presentation";
+import { buttonVariants } from "@codebase/presentation";
 
-import type { LibraryNumbered } from "./library-text-tree.types";
+import type { LibraryNumbered } from "../../library-text-tree.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -51,13 +51,10 @@ export function LibraryNumberGrid(
                   ? row.text.title
                   : `${row.text.title} (${label})`
               }
-              className={cn(
-                buttonVariants({
-                  size: "icon-sm",
-                  variant: row.matches.length > 0 ? "default" : "outline",
-                }),
-                "h-7 min-w-7 rounded-full border-muted-foreground/40 px-2 dark:border-muted-foreground/40 text-xs",
-              )}
+              className={buttonVariants({
+                size: "sm",
+                variant: row.matches.length > 0 ? "default" : "outline",
+              })}
               params={{ slug: row.text.slug }}
               to="/texts/$slug"
             >

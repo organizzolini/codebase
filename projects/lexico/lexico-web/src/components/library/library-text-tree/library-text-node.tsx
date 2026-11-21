@@ -3,6 +3,8 @@ import { ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
 
 import {
+  Button,
+  buttonVariants,
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
@@ -84,10 +86,17 @@ export function LibraryTextNode(
         open={isOpen}
       >
         <div className="flex items-center gap-1">
-          <CollapsibleTrigger className="group/trigger flex min-w-0 flex-1 items-center gap-1.5 rounded-md px-1 py-1 text-left font-medium hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none">
+          <CollapsibleTrigger
+            render={
+              <Button
+                className="group/trigger h-auto min-w-0 flex-1 justify-start py-1 text-left whitespace-normal"
+                variant="ghost"
+              />
+            }
+          >
             <ChevronRightIcon
               aria-hidden="true"
-              className="size-4 shrink-0 text-muted-foreground transition-transform group-data-[panel-open]/trigger:rotate-90"
+              className="transition-transform group-data-[panel-open]/trigger:rotate-90"
             />
             <LibraryHighlight
               className="min-w-0 break-words"
@@ -95,13 +104,11 @@ export function LibraryTextNode(
               matches={matches}
               value={text.title}
             />
-            <span className="ml-auto shrink-0 text-xs font-normal text-muted-foreground">
-              {childCount}
-            </span>
+            <span className="ml-auto text-muted-foreground">{childCount}</span>
           </CollapsibleTrigger>
           <Link
             aria-label={`Open ${text.title}`}
-            className="shrink-0 rounded-md px-1.5 py-1 text-xs text-muted-foreground underline-offset-4 hover:underline focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+            className={buttonVariants({ size: "sm", variant: "link" })}
             params={{ slug: text.slug }}
             to="/texts/$slug"
           >

@@ -2,6 +2,7 @@
 import { ChevronRightIcon } from "lucide-react";
 
 import {
+  Button,
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
@@ -9,7 +10,7 @@ import {
 
 import { LibraryNumberGrid } from "./library-number-grid";
 
-import type { LibraryNumberGroup } from "./library-text-tree.types";
+import type { LibraryNumberGroup } from "../../library-text-tree.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -51,14 +52,21 @@ export function LibraryNumberRange(
       data-testid="library-number-range"
     >
       <Collapsible defaultOpen={matched}>
-        <CollapsibleTrigger className="group/trigger flex w-full items-center gap-1.5 rounded-md px-1 py-1 text-left text-sm hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none">
+        <CollapsibleTrigger
+          render={
+            <Button
+              className="group/trigger w-full justify-start"
+              variant="ghost"
+            />
+          }
+        >
           <ChevronRightIcon
             aria-hidden="true"
-            className="size-4 shrink-0 text-muted-foreground transition-transform group-data-[panel-open]/trigger:rotate-90"
+            className="transition-transform group-data-[panel-open]/trigger:rotate-90"
           />
           {group.label}
         </CollapsibleTrigger>
-        <CollapsibleContent className="px-1 py-2">
+        <CollapsibleContent className="py-2">
           <LibraryNumberGrid items={group.items} />
         </CollapsibleContent>
       </Collapsible>

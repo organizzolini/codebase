@@ -1,5 +1,5 @@
-import { LibraryNumberGrid } from "./library-number-grid";
-import { LibraryNumberRange } from "./library-number-range";
+import { LibraryNumberGrid } from "./components/library-number-range/library-number-grid";
+import { LibraryNumberRange } from "./components/library-number-range/library-number-range";
 import { LibraryTextNode } from "./library-text-node";
 import { splitLevel } from "./library-text-tree.utilities";
 
