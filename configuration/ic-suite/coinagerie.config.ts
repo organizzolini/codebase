@@ -1,7 +1,3 @@
-import { readFileSync } from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-
 import {
   cssKeywords,
   hclKeywords,
@@ -15,29 +11,6 @@ import {
 } from "@coinagerie/languages";
 
 import type { CoinagerieConfiguration } from "@coinagerie/configuration";
-
-// 📖 Glossary
-
-/** Root glossary each project's glossary is written against. */
-const ROOT_GLOSSARY_PATH = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "../../GLOSSARY.md",
-);
-
-/** One glossary bullet, `- **word**: definition`, captured down to the word. */
-const GLOSSARY_BULLET_PATTERN = /^- \*\*(?<word>[^\s*]+)\*\*:/u;
-
-/**
- * Every word on a bullet of the root glossary. A missing file throws, so the run
- * names the configuration whose `exclude.words` failed.
- */
-export function readRootGlossaryWords(): string[] {
-  return readFileSync(ROOT_GLOSSARY_PATH, "utf8")
-    .split("\n")
-    .flatMap(
-      (line) => GLOSSARY_BULLET_PATTERN.exec(line)?.groups?.["word"] ?? [],
-    );
-}
 
 // ♟️ Conventions
 
@@ -96,33 +69,62 @@ export function foldRepositoryWord(word: string): string {
 
 /** Shared plain English and runtime vocabulary, one string per line. */
 export const commonWordExclusions: string[] = `
-  absolute actual address after afterward again allow alpha although
-  analysis answer anything append array ask assertion assign at attach
-  attempt basename because before better bind block bootstrap buffer bug
-  builder byte call callback can capture cell character child chunk clear
-  close collection color comment compare compile compiler complete compute
-  configure connection console constant contain controller count css
-  custom debug declaration decorator deep define definition describe
-  difference directly disable discover display each edge empty enable
-  encode entity entry equal every exactly example execute exp experimental
-  expression extname extra factory failure fake field filename find finish
-  finite first fixture flag flat force form gitkeep greater handler hide
-  hoist homepage href identifier implementation implicit indent
-  indentation injectable inline inside instance int invalid isolate it
-  item java judge keep kind last lead least length less level link literal
-  load loader locale locate location logger long lower make manifest math
-  maximum md member meta method metric millisecond min miss mkdtemp mock
-  next no non normalize now nullable ok omit once one open optional
-  original other outside own pair parameter part partial pending per pick
-  plain plan point pop position positive present preview previous promise
-  protocol prototype provide publish quote reach readdir real reason
-  recursive reduce reg regex reject relative remove rename repeat replace
-  resolution rest round runner safe score search second section see
-  segment sep separator sequence show signal skip slice so some sort spawn
-  special split spy stack stat statement stdout stop strict stringify stub
-  substitution success summary surface synthetic task temporary text than
-  that the them timer tmpdir touch trim two unstub up valid variable vi
-  visit walk warn what wide without work wrap
+  absolute accept account actual address adopt adoption after afterward
+  again aggregate allow alpha alt although ambient analysis another answer
+  anything append array ask assertion assign at attach attempt attribution
+  baseline basename batch because before better bind block bootstrap buffer
+  bug builder bullet bundle byte call callable callback can canonical
+  capture cascade category cell character charge child chunk clear climb
+  close collection color comment compare compile compiler complete compliant
+  compute configure connection console constant contain contract controller
+  convention corrupt count counter creation css custom date debug
+  declaration decorator deep define definition descendant describe design
+  difference directive directly disable discover display domain due each
+  early edge effort element elsewhere empty enable encode entity entry
+  enumeration equal evaluator every exactly example execute exp experimental
+  expiration explain exploration expression extname extra factory fail
+  failure fake field filename find finish finite first fixture flag flat
+  force form gate generation gitkeep governance greater hand handler hang
+  headroom hide historical hoist holder homepage href identifier
+  implementation implicit indent indentation injectable inline inside
+  instance int invalid inventoried inventory isolate it item java judge keep
+  kind last lead leaf least length lenient less level link literal live load
+  loader locale locate location logger long lookup lower make manifest math
+  maximum md meet member mention meta method metric middleware millisecond
+  min mirror miss mkdtemp mock mod negative next no non normalize now
+  nullable ok omit once one open optional organization orientation original
+  other outside own pair parameter part partial pending per period permit
+  phone pick ping pipeline place placement plain plan point pop populate
+  position positive preamble present preset preview previous probe promise
+  protocol prototype provide publication publish publishable quick quiet
+  quote reach readdir reader real reason rebuild reconcile reconciliation
+  recursive reduce refusal reg regex rehearsal reject relative remove rename
+  repeat replace reply reporter representative resolution rest retire
+  retyped reveal rewrite role round runner safe scenario score search second
+  section secure see segment self sep separator sequence shorthand show
+  sibling signal significance significant skip slice so some sort spawn
+  special specific splice split spy src stack staleness standalone starter
+  stat statement stdout stop strict stringify stub subheading substitution
+  success summary surface synchronizable synthetic task temporary term text
+  than that the them timer tmpdir touch trim triple two unassigned
+  unattributed unbind unbounded unchanged unclaimed unfinished unlinked
+  unmount unowned unqualified unread unrecorded unrestored unstub up valid
+  variable vi visit walk warn what whitespace wide wire without word work
+  wrap
+`
+  .split(/\s+/u)
+  .filter(Boolean);
+
+// 🏷️ Repository names
+
+/** Project, toolchain, and target names the README and AGENTS.md define. */
+const repositoryWordExclusions: string[] = `
+  affirmancy application caelundas callidescope callidescopeignore
+  codependix codometer codometerignore coinagerie compliance conformetry
+  context core deprecate dispatch documentation execa fold guard handoff ic
+  impeccable infrastructure installation kubectl lexico map meanderaw
+  observability pnpm presentation prompt refresh structure suite
+  synchronization triage typecheck validation wiki
 `
   .split(/\s+/u)
   .filter(Boolean);
@@ -2108,6 +2110,7 @@ export const externalWordExclusions: string[] = [
   "promote",
   "pron",
   "pronoun",
+  "prop",
   "propagation",
   "proper",
   "propertius",
@@ -3172,7 +3175,7 @@ const sharedConfiguration = {
   outputs: [
     {
       description:
-        "The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.",
+        "The words this project uses, regenerated with this project's `coinagerie-check:write` Nx target.",
       path: "documentation/coinagerie.md",
       type: "markdown",
     },
@@ -3182,13 +3185,23 @@ const sharedConfiguration = {
 
 /** Shared words, each defined only in its home project's glossary. */
 const HOME_WORDS = {
-  configuration: ["breadth"],
+  configuration: [
+    "anchor",
+    "boundary",
+    "breadth",
+    "budget",
+    "depth",
+    "forbid",
+    "restrict",
+    "selector",
+    "statistic",
+    "trace",
+  ],
   testing: ["dispose", "sandbox"],
 };
 
 /**
- * Settings a project spreads, excluding root glossary words and other
- * projects' home words.
+ * Settings a project spreads, excluding other projects' home words.
  *
  * @param home - The project whose home words stay listed
  */
@@ -3201,9 +3214,9 @@ export function configureCoinagerie(
       words: (): (string | RegExp)[] => [
         ...keywordExclusions,
         ...commonWordExclusions,
+        ...repositoryWordExclusions,
         ...externalWordExclusions,
         ...patternExclusions,
-        ...readRootGlossaryWords(),
         ...Object.entries(HOME_WORDS).flatMap(([project, words]) =>
           project === home ? [] : words,
         ),
@@ -3217,6 +3230,6 @@ export const coinagerieConfiguration = configureCoinagerie();
 
 /**
  * The `configuration` project's own glossary, written into `coinagerie.md`,
- * and the home of the words callidescope's limits put in every project.
+ * and the home of the words every project's IC-suite configuration uses.
  */
 export default configureCoinagerie("configuration");

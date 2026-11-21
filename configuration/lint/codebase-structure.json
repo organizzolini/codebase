@@ -1085,9 +1085,6 @@
         "name": "codometer.md"
       },
       {
-        "name": "coinagerie.config.ts"
-      },
-      {
         "name": "coinagerie.md"
       },
       {
@@ -1106,17 +1103,11 @@
         "name": "configuration"
       },
       {
-        "name": "CONTEXT.md"
-      },
-      {
         "name": "docs"
       },
       {
         "name": "documentation",
         "ruleId": "documentation-project"
-      },
-      {
-        "name": "GLOSSARY.md"
       },
       {
         "ruleId": "infrastructure-project"

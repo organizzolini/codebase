@@ -519,7 +519,7 @@ spec issue          the specification the work came from   (Issue Type: Feature 
 
 A GitHub Issue Type follows an issue's position: a root issue, with no parent, is a **Feature** or a **Bug**, and every sub-issue is a **Task**. The Continuous Compliance issue check fails an issue that breaks this, with the `gh issue edit --type` command that fixes it.
 
-See [documentation/agents/issue-tracker.md](../documentation/agents/issue-tracker.md) and [documentation/agents/triage-labels.md](../documentation/agents/triage-labels.md) for the full conventions.
+See [documentation/agents/issue-tracker.md](../documentation/agents/issue-tracker.md) for the full conventions.
 
 ## Pull Request Process
 
@@ -640,7 +640,6 @@ pnpm add -w <package>
 ## Additional Resources
 
 - [AGENTS.md](../AGENTS.md) — the full conventions reference, mirrored to `.claude/CLAUDE.md` and `.github/copilot-instructions.md`
-- [CONTEXT.md](../CONTEXT.md) — domain model and shared vocabulary
 - [documentation/adr](../documentation/adr) — architecture decision records
 - [documentation/openwiki/quickstart.md](../documentation/openwiki/quickstart.md) — generated code documentation
 - [.agents/skills](../.agents/skills) — agent skills, the canonical source for every agent entrypoint
