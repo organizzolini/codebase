@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:ca3bb4a1c9bc56009499cb0d7f49343bc24c58f812bd5c34582b90ad177b28ee",
+  "pageVersion": "sha256:5fe42806f5d9438f8c9c642fecf2a54eb57cbeafbc61b88e9a163cc2f56026a5",
   "claims": [
     {
       "id": "claim_24456e6e3d964d199b8eeb0802e8fc55",
@@ -25,7 +25,7 @@
       "statement": "SearxNG is configured via searxng.settings.yml with use_default_settings: true, layering custom settings on top of SearxNG's built-in defaults.",
       "evidence": [
         {
-          "resource": "repo://projects/affirmancy/searxng.settings.yml#L10-L12",
+          "resource": "repo://projects/affirmancy/searxng.settings.yml#L8-L10",
           "version": "repo-lines-v1:sha256:62ae50d7652994c86995dac528c5fb87f38aa8b08b3888d4e5a59f901e39bdf5:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGMyNzg1YmMwYmIyODM5ODE4ZDUwYmE5OWJhZjljM2Y2NjMwYTdlZDNmMDRjMzRlZWZhMDJkYzA1NmMyMGI1ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmNiMDg0NTRiN2QzNTIzYTg5MGVkNGZhYTgzOWMxNDJiN2M0MDc2ODFlODA1MzdlNDU1ZjIyOTA0MGNlMTQ0ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzEzMTkxMzc5NDY4ZGUyNmI3ZjdiMzJkZjMyZTlhNzIzMDZjZmM1OTE5Mzc1MTg5MTEzNzAzN2JhMWI5YTU0NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTMzY2VlODI2MWQ5MWM3NTU3OWJlYzgwMGYyMzQxMTgzZTRlNzdmOTdiZTZhYjE0YmRhYzk5YzAzNTExZmNmYyJ9"
         }
       ]
@@ -35,7 +35,7 @@
       "statement": "SearxNG configuration defines 135+ engines across four weight tiers: Tier 1 (wikisource, openlibrary) at weight 2.0 for primary sources; Tier 2 (wikipedia, startpage) at 1.5 for encyclopedic references; Tier 3 (reddit) at 1.2 for practitioner discussions; Tier 4 (duckduckgo 1.0, brave 0.9, bing 0.7) for general web; google and wikidata are disabled.",
       "evidence": [
         {
-          "resource": "repo://projects/affirmancy/searxng.settings.yml#L246-L363",
+          "resource": "repo://projects/affirmancy/searxng.settings.yml#L243-L360",
           "version": "repo-lines-v1:sha256:2d2adbea5ce99366698c5482ca03f2f01cb72e976108b58954a1ac6f99d6ffb2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJiNTlhMWU2OTY2ZGNjMjgyM2NiM2MxYmEwNTBkMjE2MjJlNDBlZTU3Yzg0ODg5YWU2NjI5ZWNmZGY4ZGE2NjQ1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJjNmU0ZWJhOTlmMTllODhjODI5NzE4NTQ3OWQxZjlkYzdhMzMxOTU0ZTcwNzllZGY4MDE2NDFlZTgwMGRlMGE2IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJmYzcwMTQzNWQ3OWM1NzgwODVhZjBiNjA0NjJjNjBlZTc2ZWIxNTRlNGEwMzQ5M2E4OTcxODEyZWU5ZjJkYjVkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
@@ -45,8 +45,8 @@
       "statement": "Hostname boosting promotes ~70 high-priority spiritual/occult domains (sacred-texts.com, hermetic.com, biddytarot.com, astro.com, chabad.org, etc.), demotes thin SEO sites and generic references, and removes non-English content farms, medical sites, image-only sites, and affiliate marketplaces.",
       "evidence": [
         {
-          "resource": "repo://projects/affirmancy/searxng.settings.yml#L62-L239",
-          "version": "repo-lines-v1:sha256:9f0d46489e02f19916cef251760270f41bf2ff3fc0bfb2e0712a29632afc6a96:eyJzZWxlY3RlZExpbmVDb3VudCI6MTc4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIyY2FlYmQ5NDU0OGE1ZDg3Yzc2MWUzYzViNDdkNWY1ZGYwZDk2ZWYxNTQyMjQ4NjE1NWE3Y2VkZTEyNmRmYzk1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI3NTJkZjBiYTgyYzU4MzYyYjI1NTI4ZjRlMDgxNTI3OWUxZjdhOGE3YzE2NjEyMmQ5ZTM3NzU3MTQ0NTU5OGNkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIzM2JkMGQ2ZDYwMmFjODNiOWE4NmRmNjhmZjM3YmM0ZDIyNjRiZDAyY2U0OGZkMGY2ZWRhOTNjZjE0ZWY5NzlhIn0"
+          "resource": "repo://projects/affirmancy/searxng.settings.yml#L62-L240",
+          "version": "repo-lines-v1:sha256:34658f9baa5bdd6575ac3c10634c911eb86a9d785458e39ea3c48c3b88c54ee2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTc5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIzNzU0NGIyMWYxN2IxZWRiNWE3MTQ4ZGQ3YjlkZjIwNGY3NWY5ZDQ1NjVjNWJhYjRmNmJiNDgwZGI1NWRkYjMzIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIyMjJkNjM1YjZkYjQxMjE4OGEwNzgyYjM4NzZjMzYyYmZiZWMyMWEwZjllNmJiMjlkYWE2ZTNlMjM4ZDAwZjZhIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJiYWJhYmZkMjI0ZWZhMTQ2NzgyZjg1OTc3ZjZjZThlYmZmOWRmZmY2NTg0MTAzMzg0OWY4ZGM3ZWUzODAxY2RlIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlZWI4ZDc4M2M5NWY4MTAxYzdmODc3YjY4MDQxNGZlM2Y4MTg5Y2U1M2ZmNWVmNDY3MjQwYzIwM2I2ODkxYTUxIn0"
         }
       ]
     },
@@ -55,11 +55,11 @@
       "statement": "SearxNG rate limiter is disabled (limiter: false) because the instance is only queried by the LangGraph agent, not end users; engine ban times are reduced (5s initial, 30s max) for fast recovery during iterative development.",
       "evidence": [
         {
-          "resource": "repo://projects/affirmancy/searxng.settings.yml#L22-L24",
+          "resource": "repo://projects/affirmancy/searxng.settings.yml#L20-L22",
           "version": "repo-lines-v1:sha256:f8e4cf8569324325eade8f74e573c07bf6c8cc8434f49ddf5f43d04dd287cc68:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTRkY2I4OTRjOTg0Y2FlMGEzNTE5MDE2MDYxZDQ3YTg0MDFlNTc4ZTg1ZDNhZDdiMzA2ZDlhMzc3YjA0NDhhMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTAyZjQ4NmUwYTUxZjdiZTkxYjQxNmRkZTliY2M5ZWVlM2Y3MWQ2MjExOTNhZTIyYWY3ZmY5MWE1MTNhZjBiMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGY2MTg2ZmI1YjJlM2ZiMDViYTg2YjliYTgwNzMyNWViYzcwZTU3MDIxYTUxNzM4NzE1NjMwNDkzMzczZWQzNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGUyY2YzNTNjMzQ0ZDljNGRhYmY4MDZkNTRjZDdiYTQ2NGQ3YzVhODBmNjhjYjE3NmVmYTNmM2QxZWVkZmJkMyJ9"
         },
         {
-          "resource": "repo://projects/affirmancy/searxng.settings.yml#L50-L59",
+          "resource": "repo://projects/affirmancy/searxng.settings.yml#L48-L57",
           "version": "repo-lines-v1:sha256:22057b9f1da3a6179d70d8dff5d290a4cec0b237ba31b036956bbace1af8fcdd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlNzUyMmJiMGEyMzcwYjRlNzZiNDU0YWQ5NzY3ODA0Mjc3MTU2YWM2MmQwZDNiNjQwYzNkMjI5NzE5YjNlMTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY2NTBkZWZlNzVlNWU1ZTk5NGQzYTNjYjUzYWE4MzU1ODdjZjYxMWEzZGFmOWY5YmM3ODQ5NmFkMzgxYWZmNmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3OTFjZDA4ZWExNTU2NTI4ZTA5NGE0OGNmMWJjZDhjNGYxMGIzYjI5NDgzMjI5OTE5MGE0ODc5OTk1ZjI2ZDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkY2JkNTRmZjJmMWYxNmNmMmJmZDg4ZWQxYzAyMTgxZWNkZDA0ZjMzNjIyNDRiNTQ5MmIyYTcyOWIxYTFmNGUifQ"
         }
       ]
@@ -69,7 +69,7 @@
       "statement": "Safe search is disabled (safe_search: 0) because occult/spiritual content is frequently misclassified as unsafe by content filters; autocomplete is disabled since queries are generated by the agent.",
       "evidence": [
         {
-          "resource": "repo://projects/affirmancy/searxng.settings.yml#L36-L41",
+          "resource": "repo://projects/affirmancy/searxng.settings.yml#L34-L39",
           "version": "repo-lines-v1:sha256:75adbd6cb4d65f0f48fa8b070637e5a9fdbac5e145274ea49a65ddda21816f34:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDAzOGIyYjI5Yjg5YjM4ZmQxOTkyYTZkNjdmMmMxYTAyNjIzMDk5NGY5ZDU3MWIzMjlkMjUyM2QzYjBlNmJmYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzkxNmZkODQ4NjljZmQ1MjMwNTA5ODNmNmEwYWZiMTYwOWNhODg1MzFiN2FhYzhkODA4ODNlNjNiYTg0MzhmYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWRiMjVlZmI4ODRkNzY5MTFmYTk4NmQ2YTcyY2Y5NzJkMTU5YWI3OWRlZTYzYmU3ZWJhYjg5N2ExYWU5NDE4YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzE3NTczNWQ3MDQzYmY4ZWUzMzY4OGQyODBlOTNlNzYxODMwOGU3YjNmY2I0MGJmOWNhMWJhYjQyMzcyODNjMyJ9"
         }
       ]
@@ -79,7 +79,7 @@
       "statement": "SearxNG output formats include html (for browser UI) and json (for LangGraph agent's SearxNG tool).",
       "evidence": [
         {
-          "resource": "repo://projects/affirmancy/searxng.settings.yml#L43-L45",
+          "resource": "repo://projects/affirmancy/searxng.settings.yml#L41-L43",
           "version": "repo-lines-v1:sha256:4675a33f773745e1b0fa0ba0e1e866d6f88766c50133c7a174c29241f01c083e:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmY1MWQ5YTQwOGYwYTgzYzZmZGI2ZmY3ZjAwMmQ4MjdmOGNhZTcyM2YwZDNkOWNkODU5OGQzYjdjZTg1MWJlNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDlhMmYyZTNlMmI5YzUzZmQzNzMzODY0MTY1MmNjYWQ5ODU3ZmZiNjJmYTUyZWMxODUzZTQ5Nzc5MDI3MjFmMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2YwZjIwMmYzZmZlNGIxN2YwNWYyZmJlNDViY2ExYmMzYmY3OWYzOGY1MzY2MzY5ZDdlMzg1NDAyZjQyNzlkNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTY5ZTlkOTY5NTNjNmQzMWE1Yzk0OThlOWIxZmVjZTdhZjljMDI1OTEzMmE4ZTIwYjBhZjY3N2Q5OWIyMDI0YSJ9"
         }
       ]
@@ -188,7 +188,7 @@
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.0",
-    "at": "2026-10-29T03:39:46.432Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-20T17:00:25.557Z"
   }
 }

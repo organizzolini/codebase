@@ -154,8 +154,8 @@
     "nx-generate": {
       "source": "nrwl/nx",
       "sourceType": "github",
-      "skillPath": ".agents/skills/nx-generate/SKILL.md",
-      "computedHash": "c1dfe360d6af9ee28f478afa4503c30790138ff1ceff32f18fb4391118a65933"
+      "skillPath": ".cursor/skills/nx-generate/SKILL.md",
+      "computedHash": "fb7c13f96e57d43d9a9b672a24e7486075a76d920301811d5f41f89d3fcce10b"
     },
     "nx-import": {
       "source": "nrwl/nx",
@@ -166,20 +166,20 @@
     "nx-plugins": {
       "source": "nrwl/nx",
       "sourceType": "github",
-      "skillPath": ".agents/skills/nx-plugins/SKILL.md",
+      "skillPath": ".cursor/skills/nx-plugins/SKILL.md",
       "computedHash": "e93d10328f589667d6a7cc71d134c96b3c28ab4a1468eaec7bc29420c950e4e2"
     },
     "nx-run-tasks": {
       "source": "nrwl/nx",
       "sourceType": "github",
-      "skillPath": ".agents/skills/nx-run-tasks/SKILL.md",
+      "skillPath": ".cursor/skills/nx-run-tasks/SKILL.md",
       "computedHash": "e42dec15f588268887d88d606187b0fab9cbb3f90fd4ce41d66d2faffc9295c4"
     },
     "nx-workspace": {
       "source": "nrwl/nx",
       "sourceType": "github",
-      "skillPath": ".agents/skills/nx-workspace/SKILL.md",
-      "computedHash": "32b7b72c54c6644e97ac8c8491e3cfa936afa6f8a86798214258d631367b4add"
+      "skillPath": ".cursor/skills/nx-workspace/SKILL.md",
+      "computedHash": "11fffccac37147da83f936804ba088728e07ffb75fc071597c576e77f7e9d799"
     },
     "ponytail": {
       "source": "DietrichGebert/ponytail",
