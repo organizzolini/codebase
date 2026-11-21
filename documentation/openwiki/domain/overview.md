@@ -1,11 +1,11 @@
 ---
 type: domain-index
 title: Domain Systems Overview
-description: Index page for the four application domains (affirmancy, caelundas, lexico, meanderaw), summarizing each domain's purpose, technology stack, primary outputs, and key dependencies.
-tags: [domain, overview, architecture, application-domains]
+description: Index of the nine domain systems (four application domains + five toolchain domains) with one-line purpose, primary language, runtime targets, and links to detail pages.
+tags: [domain, overview, architecture, application-domains, toolchain-domains]
 verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-29T03:39:46.432Z
+  - by: openwiki/0.9.0
+    at: 2026-11-21T15:47:19.421Z
 sources:
   - id: openwiki-source-65feee223eea8eae1972cca5
     resource: repo://projects/affirmancy/README.md
@@ -13,170 +13,197 @@ sources:
     resource: repo://projects/caelundas/caelundas-cli/README.md
   - id: openwiki-source-bb47f0ae03a5325f0d8fdea7
     resource: repo://projects/common/persistence/README.md
+  - id: openwiki-source-52f2bb7d9c7d2fad35c7c856
+    resource: repo://projects/ic-suite/callidescope/callidescope-cli/README.md
+  - id: openwiki-source-353594b808056ff8dd3dbc28
+    resource: repo://projects/ic-suite/codependix/codependix-cli/README.md
+  - id: openwiki-source-4afd9d23488d0275aa688221
+    resource: repo://projects/ic-suite/codometer/codometer-cli/README.md
+  - id: openwiki-source-03219b76704d24994321965e
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-cli/README.md
+  - id: openwiki-source-15595f87d2b72a10e2cbba47
+    resource: repo://projects/ic-suite/conformetry/conformetry-cli/README.md
+  - id: openwiki-source-c816812d5348f49efc00a840
+    resource: repo://projects/lexico/lexico-api/project.json
   - id: openwiki-source-5e40db637ff9cea3eb6ab5fe
     resource: repo://projects/lexico/lexico-cli/README.md
+  - id: openwiki-source-e0cf0150cb4d3420082c1bed
+    resource: repo://projects/lexico/lexico-web/project.json
   - id: openwiki-source-a6e80b612169ffb94413f377
     resource: repo://projects/meanderaw/meanderaw-cli/README.md
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
-generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-21T15:47:19.421Z" }
 ---
 
 # Domain Systems Overview
 
-This repository contains four independent application domains, each with its own technology stack, data model, and deployment concerns. Three domains (caelundas, lexico, meanderaw) are TypeScript/NestJS applications that share common infrastructure (Postgres/SQLite, Nx workspace, Docker Compose, and the `@codebase/*` shared packages). The fourth domain (affirmancy) is a Python/Jupyter application with its own uv workspace and local LLM stack (Ollama, SearxNG). No domain imports code from another.
+This repository contains **nine independent domain systems**: four application domains and five toolchain domains. No domain imports code from another domain — this is a hard architectural rule enforced by the workspace structure and dependency constraints.
 
-## Summary Table
+## Application Domains (4)
 
-| Domain | Type | Language | Primary Output | Key Dependencies |
-|--------|------|----------|----------------|------------------|
-| [affirmancy](affirmancy.md) | Python/Jupyter CLI + notebook pipeline | Python ≥ 3.11 | Affirmations JSON/Markdown | LangChain, LangGraph, Ollama, SearxNG |
-| [caelundas](caelundas.md) | NestJS CLI + TanStack Start web | TypeScript | `.ics` calendar + JSON | Swiss Ephemeris, SQLite |
-| [lexico](lexico.md) | NestJS CLI + GraphQL API + TanStack Start web | TypeScript | Latin dictionary (Postgres + GraphQL) | Postgres, GraphQL, cheerio, mdast |
-| [meanderaw](meanderaw.md) | NestJS CLI + TanStack Start web | TypeScript | Meander database (Postgres) + HTML pages | Postgres |
+Each application domain is a vertical slice delivering a complete user-facing product: CLI + API + Web + DB (except **affirmancy**, which is CLI + Notebook only).
+
+| Domain | Type | Language | Primary Output | Key Dependencies | Detail |
+|--------|------|----------|----------------|------------------|--------|
+| [affirmancy](affirmancy.md) | Python/Jupyter CLI + notebook pipeline | Python ≥ 3.11 | Affirmations JSON/Markdown | LangChain, LangGraph, Ollama, SearxNG | [affirmancy.md](affirmancy.md) |
+| [caelundas](caelundas.md) | NestJS CLI + GraphQL API + TanStack Start web + Postgres/SQLite | TypeScript | `.ics` calendar + JSON + web UI | Swiss Ephemeris, Postgres, SQLite | [caelundas.md](caelundas.md) |
+| [lexico](lexico.md) | NestJS CLI + GraphQL API + TanStack Start web + Postgres | TypeScript | Latin dictionary (Postgres + GraphQL + web) | Postgres, GraphQL, cheerio, mdast | [lexico.md](lexico.md) |
+| [meanderaw](meanderaw.md) | NestJS CLI + TanStack Start web + Postgres | TypeScript | Meander database (Postgres) + HTML pages | Postgres, TanStack Start | [meanderaw.md](meanderaw.md) |
+
+### Application Domain Vertical Slice Structure
+
+```
+Application Domain
+├── <domain>-cli       # NestJS command-line application (entry point, orchestration)
+├── <domain>-api       # NestJS GraphQL API (caelundas, lexico) — absent in meanderaw, affirmancy
+├── <domain>-web       # TanStack Start SSR React application (caelundas, lexico, meanderaw)
+├── <domain>-db        # @codebase/persistence-backed library: entities, migrations, TypeORM module
+└── (shared)           # @codebase/* packages: persistence, interface, presentation, observability, testing
+```
+
+- **affirmancy** is the exception: Python/Jupyter only, no API, no web, no shared TypeScript packages. It uses its own uv workspace (`configuration/python`) and local LLM stack (Ollama, SearxNG).
+- **caelundas** supports both Postgres (via `@codebase/persistence`) and SQLite (local file) for the CLI calendar generation path; the web/API path uses Postgres.
+- **meanderaw** has no GraphQL API — the web application reads directly from Postgres via the shared persistence layer.
+- All three TypeScript domains share the `@codebase/persistence` package for database connection, base entities (uuidv7, timestamps, soft delete), Testcontainers harness, and migration targets.
+
+## Toolchain Domains (5)
+
+Each toolchain domain is published as an npm package (`@callidescope/cli`, `@codependix/cli`, `@codometer/cli`, `@coinagerie/cli`, `@conformetry/cli`) and follows a **core + cli + nx plugin** structure where applicable:
+
+| Domain | Purpose | Packages | Nx Plugin | Detail |
+|--------|---------|----------|-----------|--------|
+| [callidescope](callidescope.md) | Trace call stacks across a TypeScript monorepo; measure depth/breadth; report paths exceeding limits | `callidescope-core`, `callidescope-cli`, `callidescope-nx` | Yes (`callidescope-nx`) | [callidescope.md](callidescope.md) |
+| [codependix](codependix.md) | Export dependency graphs (Nx, NestJS modules, file imports, Python imports) as JSON/Markdown; gate boundary rules | `codependix-core`, `codependix-cli`, `codependix-nx` | Yes (`codependix-nx`) | [codependix.md](codependix.md) |
+| [codometer](codometer.md) | Measure repository: language stats + project-specific convention counters (services, tests, etc.); badge/JSON output | `codometer-core`, `codometer-cli`, `codometer-nx` | Yes (`codometer-nx`) | [codometer.md](codometer.md) |
+| [coinagerie](coinagerie.md) | Extract every identifier/word from a codebase; maintain a markdown glossary in sync with code | `coinagerie-core`, `coinagerie-cli`, `coinagerie-nx` | Yes (`coinagerie-nx`) | [coinagerie.md](coinagerie.md) |
+| [conformetry](conformetry.md) | Scaffold from templates, then validate existing code against those same templates (structural diff, not textual) | `conformetry-core`, `conformetry-cli`, `conformetry-nx` | Yes (`conformetry-nx`) | [conformetry.md](conformetry.md) |
+
+### Toolchain Domain Structure
+
+```
+Toolchain Domain
+├── <domain>-core       # Pure logic: analysis, graph building, validation, generation (no CLI, no Nx)
+├── <domain>-cli        # NestJS command-line application: entry point, flags, config, output writers
+├── <domain>-nx         # Nx plugin: executors, generators, project integration (optional but present for all 5)
+├── <domain>-configuration   # Shared config types, schema validation (Zod)
+├── <domain>-agents     # AI agent integrations (where applicable)
+├── <domain>-output     # Output formatters (JSON, Markdown, Mermaid, etc.)
+└── (domain-specific)   # e.g., callidescope-graph, codependix-boundaries, codometer-languages, coinagerie-vocabulary, conformetry-generation/validation
+```
+
+All five toolchains:
+- Are **independently installable** via npm (`npm install --save-dev @<domain>/cli`)
+- Require an explicit `--config` path — no config discovery, no defaults
+- Support `--check` (gate on findings) and `--write` (emit artifacts) as separate concerns
+- Produce both human-readable (Markdown, Mermaid) and machine-readable (JSON) output
+- Have Vitest suites and conformetry-generated project structure
+
+## No-Dependency-Between-Domains Rule
+
+> **No domain imports code from another domain.**
+
+This rule applies to both application domains and toolchain domains:
+- Application domains do not import from each other (e.g., `caelundas` never imports `lexico` code)
+- Toolchain domains do not import from each other (e.g., `callidescope` never imports `codependix` code)
+- Application domains do not import from toolchain domains (toolchains are dev dependencies only)
+- Toolchain domains do not import from application domains
+
+Cross-cutting concerns are factored into the **`@codebase/*` shared packages** (persistence, interface, presentation, observability, testing) which are **not domains** — they are infrastructure libraries used by the three TypeScript application domains.
+
+## Shared Infrastructure (`@codebase/*`)
+
+| Package | Purpose |
+|---------|---------|
+| `@codebase/persistence` | Postgres environment schemas (`<PROJECT>_POSTGRES_*`), TypeORM modules, base entities (uuidv7, timestamps, soft delete), Testcontainers harness, migration targets; SQLite equivalents for caelundas |
+| `@codebase/interface` | Shared TypeScript types, Zod schemas, GraphQL scalars |
+| `@codebase/presentation` | Shared React components (shadcn/ui, TanStack Table, etc.), Tailwind config |
+| `@codebase/observability` | Pino logging, Lightship health probes, OpenTelemetry setup |
+| `@codebase/testing` | Testcontainers-backed NestJS testing module, Vitest utilities |
+
+## Domain Detail Pages
+
+Each domain has its own detail page with deep-dive documentation:
+
+- [affirmancy.md](affirmancy.md) — Python/Jupyter affirmation generation pipeline
+- [caelundas.md](caelundas.md) — Astronomical calendar: Swiss Ephemeris, event detection, .ics/JSON output
+- [lexico.md](lexico.md) — Latin dictionary: multi-source ingestion, GraphQL API, TanStack Start web
+- [meanderaw.md](meanderaw.md) — Meander pattern database: procedural generation, Postgres, HTML page rendering
+- [callidescope.md](callidescope.md) — Call stack depth/breadth analysis across monorepo
+- [codependix.md](codependix.md) — Dependency graph export (Nx, NestJS, file imports) + boundary gating
+- [codometer.md](codometer.md) — Repository measurement: language stats + convention counters
+- [coinagerie.md](coinagerie.md) — Codebase glossary extraction and markdown sync
+- [conformetry.md](conformetry.md) — Template scaffolding + structural validation against templates
+
+## Architecture Diagram
+
+<!-- openwiki: mermaid parse failed and this diagram was converted to a text fence so it does not break rendering. Fix the diagram source and restore the mermaid fence. Parser error: Heuristic: an unescaped angle bracket inside a label breaks rendering; rephrase the label. -->
+```text
+graph TB
+    subgraph Applications
+        A1[affirmancy<br/>Python/Jupyter<br/>CLI + Notebook]
+        A2[caelundas<br/>NestJS + TanStack Start<br/>CLI + API + Web + DB]
+        A3[lexico<br/>NestJS + TanStack Start<br/>CLI + API + Web + DB]
+        A4[meanderaw<br/>NestJS + TanStack Start<br/>CLI + Web + DB]
+    end
+
+    subgraph Toolchains
+        T1[callidescope<br/>Core + CLI + Nx Plugin<br/>Call graph analysis]
+        T2[codependix<br/>Core + CLI + Nx Plugin<br/>Dependency graphs + boundaries]
+        T3[codometer<br/>Core + CLI + Nx Plugin<br/>Repo measurement + conventions]
+        T4[coinagerie<br/>Core + CLI + Nx Plugin<br/>Glossary extraction]
+        T5[conformetry<br/>Core + CLI + Nx Plugin<br/>Scaffold + validate templates]
+    end
+
+    subgraph SharedInfrastructure[@codebase/* Shared Packages]
+        SI1[persistence]
+        SI2[interface]
+        SI3[presentation]
+        SI4[observability]
+        SI5[testing]
+    end
+
+    A2 --> SI1 & SI2 & SI3 & SI4 & SI5
+    A3 --> SI1 & SI2 & SI3 & SI4 & SI5
+    A4 --> SI1 & SI2 & SI3 & SI4 & SI5
+
+    style A1 fill:#f9f,stroke:#333
+    style A2 fill:#bbf,stroke:#333
+    style A3 fill:#bbf,stroke:#333
+    style A4 fill:#bbf,stroke:#333
+    style T1 fill:#bfb,stroke:#333
+    style T2 fill:#bfb,stroke:#333
+    style T3 fill:#bfb,stroke:#333
+    style T4 fill:#bfb,stroke:#333
+    style T5 fill:#bfb,stroke:#333
+    style SI1 fill:#ffd,stroke:#333
+    style SI2 fill:#ffd,stroke:#333
+    style SI3 fill:#ffd,stroke:#333
+    style SI4 fill:#ffd,stroke:#333
+    style SI5 fill:#ffd,stroke:#333
+```
+
+## Key Entry Points by Domain
+
+### Application Domains
+
+| Domain | Primary Entry Points |
+|--------|---------------------|
+| **affirmancy** | `nx run affirmancy:ollama --configuration=start`, `nx run infrastructure:searxng:up`, `src/affirmancy.ipynb` |
+| **caelundas** | `nx run caelundas-cli:download-ephemeris`, `nx run caelundas-cli:start`, `nx run caelundas-api:start`, `nx run caelundas-web:start` |
+| **lexico** | `nx run lexico-cli:start` (root pipeline), `nx run lexico-cli:start:dictionary`, `nx run lexico-api:start`, `nx run lexico-web:start` |
+| **meanderaw** | `nx run meanderaw-cli:start` (draw run), `nx run meanderaw-web:start` |
+
+### Toolchain Domains
+
+| Domain | CLI Command | Nx Target |
+|--------|-------------|-----------|
+| **callidescope** | `npx callidescope --config <path> --check depth` | `nx run callidescope-cli:start` |
+| **codependix** | `npx codependix map --config <path> --check boundaries` | `nx run codependix-cli:start` |
+| **codometer** | `npx codometer --config <path> --check limits` | `nx run codometer-cli:start` |
+| **coinagerie** | `npx @coinagerie/cli --config <path> --check` | `nx run coinagerie-cli:start` |
+| **conformetry** | `npx conformetry generate --config <path> --template <name>` / `npx conformetry validate --config <path>` | `nx run conformetry-cli:start` |
 
 ---
 
-## affirmancy
-
-**Purpose:** Generate structured affirmations across every grammatical mood a language offers.
-
-A Python and Jupyter application that generates affirmations for spiritual practices using a LangGraph ReAct agent. The agent researches a subject through SearxNG metasearch, then a locally-hosted `gemma4:e2b` model via Ollama writes affirmations validated against Pydantic models before being saved as JSON and Markdown.
-
-**Key characteristics:**
-
-- **Grammar-first pipeline** — enumerates moods, voices, tenses, aspects, persons, numbers, polarities, and deixis; a single subject yields affirmations phrased as imperatives, optatives, subjunctives, jussives, and more
-- **Subject taxonomy** — categories span tarot, Lenormand, astrological signs/planets/aspects/houses, modalities, chakras, runes, sephiroth, Hebrew letters, kabbalistic worlds, solfeggio frequencies, weekdays, and elements
-- **Local-first LLM** — runs entirely on Ollama with no external API calls; model pulled once via `nx run affirmancy:ollama --configuration=pull-small`
-- **SearxNG integration** — metasearch provides grounding context for each subject before generation
-- **uv workspace member** — shares `configuration/pyproject.toml` and `configuration/uv.lock` with the root `.venv`; sync via `uv sync --project configuration`
-
-**Entry points:**
-
-- `nx run affirmancy:ollama --configuration=start` — starts Ollama
-- `nx run infrastructure:searxng:up` — starts SearxNG
-- `nx run infrastructure:open-webui:up` — starts Open WebUI (optional chat interface)
-- `src/affirmancy.ipynb` — main generation pipeline (run in VS Code)
-- `src/grammars.py` — grammatical axis definitions (`Mood`, `Voice`, `Tense`, `Aspect`, `Person`, `Number`, `Polarity`, `Deixis`, `Form`)
-- `src/models.py` — Pydantic models (`Affirmation`, `GrammarAffirmations`, `SubjectAffirmations`, `ValidationResult`)
-- `src/subjects.py` — `Subject` and `SubjectCategory` declarations
-- `src/prompts.py` — LangChain prompt templates
-- `src/output.py` — JSON and Markdown writers
-
----
-
-## caelundas
-
-**Purpose:** Turn the sky into a calendar — compute planetary positions, detect astronomical events, and render an iCalendar file.
-
-A TypeScript application with two components: a NestJS CLI (`caelundas-cli`) that computes planetary positions minute-by-minute over a date range using the Swiss Ephemeris (JPL DE431 data), detects events (aspects, phases, eclipses, retrogrades, ingresses, solstices, twilights), stores them in SQLite, and renders `.ics` and JSON output; and a TanStack Start SSR web application (`caelundas-web`) for browsing events.
-
-**Key characteristics:**
-
-- **Swiss Ephemeris** — local computation from JPL DE431 data files (no network calls, no API keys, no rate limits); data downloaded once via `nx run caelundas-cli:download-ephemeris`
-- **Two-pass event detection** — *perfective* (exact moments at minute resolution) and *progressive* (spans around exact moments: aspect orbs, retrograde periods)
-- **Comprehensive event families** — aspects (major, minor, harmonic, compound), lunar phases, planetary phases, eclipses, retrogrades, ingresses, annual solar cycle, lunar apsides, daily cycles, twilights
-- **Timezone from coordinates** — derived automatically from observer latitude/longitude to avoid silently wrong sunrise times
-- **SQLite persistence** — `calendar_events` table in `output/database.sqlite` (default), created on first run; schema includes `summary`, `description`, `start`, `end`, `color`, `location`, `latitude`, `longitude`, `timezone`, and tag relationships via `tags`/`tags_closure`/`calendar_event_tags` tables
-- **Idempotent runs** — re-running a range updates rows in place; overlapping ranges update overlap and add new events; runs for different locations add separate rows
-
-**Entry points:**
-
-- `nx run caelundas-cli:download-ephemeris` — one-time ephemeris data download
-- `nx run caelundas-cli:start` — generates calendar (reads `.env` for location/date range)
-- `projects/caelundas/caelundas-web` — TanStack Start web application for browsing events
-
-**Configuration** (via `.env`):
-- `LATITUDE`, `LONGITUDE` — observer coordinates (defaults: Philadelphia)
-- `START_DATE`, `END_DATE` — date range (default: two-month window centered on today)
-- `OUTPUT_DIRECTORY` — output path (default: `./output`)
-- `CAELUNDAS_SQLITE_DATABASE` — SQLite file path (default: `output/database.sqlite`)
-
----
-
-## lexico
-
-**Purpose:** Latin-English dictionary suite — ingest, store, and serve dictionary entries, literature, and etymology.
-
-A TypeScript application with three components: a NestJS CLI for ingestion (`lexico-cli`), a NestJS GraphQL API (`lexico-api`), and a TanStack Start SSR web application (`lexico-web`). The CLI scrapes and parses multiple Latin sources into a shared Postgres schema defined by `lexico-entities`.
-
-**Key characteristics:**
-
-- **Multi-source ingestion** — Dictionary (Lewis & Short), Perseus Digital Library, The Latin Library, CSEL (ecclesiastical Latin), EDCS (epigraphic database), Wiktionary; each source in its own module under `src/modules/`
-- **Resumable dictionary scrape** — `--startLemma` / `--endLemma` flags allow restarting a long scrape from where it left off
-- **Shared schema** — TypeORM entities and migrations in `@codebase/lexico-entities`; ingestion and API cannot drift
-- **GraphQL API** — Relay cursor-based search, exposes dictionary entries, forms, inflections, literature lines/tokens, and work metadata
-- **HTML parsing** — cheerio for HTML, mdast for wiki markup; source layout changes contained to one module
-- **Postgres persistence** — `lexico_development` database, `lexico` schema, `lexico_username` role
-
-**Entry points:**
-
-- `nx run lexico-cli:start` — root pipeline (prompts for stages: `--dictionary`, `--literature`, `--library`, `--wikipedia`, etc.)
-- `nx run lexico-cli:start:dictionary` — dictionary ingestion with lemma range
-- `nx run lexico-cli:start:wiktionary` — Wiktionary dump ingestion
-- `nx run lexico-api:start` — GraphQL API server
-- `nx run lexico-web:dev` — TanStack Start web application
-
-**Individual stage commands:**
-
-| Command | Source |
-|---------|--------|
-| `dictionary` | Dictionary entries, resumable with `--startLemma` / `--endLemma` |
-| `wiktionary` | Wiktionary page dumps |
-| `perseus` | The Perseus Digital Library |
-| `latin-library` | The Latin Library |
-| `corpus-scriptorum-ecclesiasticorum-latinorum` | CSEL, the ecclesiastical Latin corpus |
-| `epigraphik-datenbank-clauss-slaby` | EDCS, the Latin inscription database |
-| `library` | Library and work metadata |
-| `literature` | Lines and tokens for loaded texts |
-| `clear` | Empties ingested tables so a run can start clean |
-
----
-
-## meanderaw
-
-**Purpose:** Enumerate, measure, and classify Greek meander (key/fret) patterns.
-
-A TypeScript application with two components: a NestJS CLI (`meanderaw-cli`) that enumerates every structurally distinct meander within an edge budget, measures topological characteristics (Betti numbers, fork/cross counts, junction types), classifies them, stores rows in Postgres, and renders HTML pattern pages for exploration; and a TanStack Start SSR web application (`meanderaw-web`) for browsing.
-
-**Key characteristics:**
-
-- **Lattice-based enumeration** — walks the space of direction-bit assignments over a lattice rather than drawing named shapes; 30,279 enumerated meanders at 14 shapes
-- **Historical corpus preservation** — 965 hardcoded meanders beyond the edge budget, ingested once from retired file tree and measured identically to enumerated rows
-- **Sparse JSON characteristics** — single `characteristics` jsonb column holds every measured trait (numeric counts only when non-zero, booleans only when true); new characteristics need no schema change
-- **Code-addressed rows** — each meander uniquely identified by its formatted Code (e.g., `02x02y4488`), rows, and columns; unique index on `code` prevents duplicates
-- **Reproducible rendering** — generic renderer draws a meander from its `code`, `rows`, `columns` whenever index pages are built; nothing is stored as SVG
-- **HTML output** — `output/index.html` (jump list) and `output/patterns/*.html` (one page per pattern characteristic) rebuilt on every draw run, gitignored
-- **Postgres persistence** — `meanderaw_development` database, `meanderaw` schema, `meanderaw_username` role; `meanders` table built by migration (never by synchronize)
-
-**Entry points:**
-
-- `nx run meanderaw-cli:migration:run` — builds/updates `meanders` table
-- `nx run meanderaw-cli:start` — full enumeration draw run (clears and regenerates)
-- `nx run meanderaw-cli:start --args="--rows <n> --columns <n> --code <code>"` — single meander draw
-- `projects/meanderaw/meanderaw-web` — TanStack Start SSR web application for browsing
-
-**Meander table columns:**
-- `id` (uuidv7), `code` (text), `rows` (integer), `columns` (integer), `lattice` (text), `repeats` (integer), `is_hardcoded` (boolean), `characteristics` (jsonb)
-
----
-
-## Shared Infrastructure
-
-Three TypeScript domains (caelundas, lexico, meanderaw) use the workspace's shared `@codebase/*` packages. Affirmancy is Python-based and does not consume these packages.
-
-| Package | Purpose | Used By |
-|---------|---------|---------|
-| `@codebase/persistence` | Postgres connection fragments (`<PROJECT>_POSTGRES_*`), TypeORM options/module, base entities, Testcontainers harness, migration targets, export/import; also SQLite fragment for caelundas | caelundas (SQLite), lexico (Postgres), meanderaw (Postgres) |
-| `@codebase/interface` | GraphQL Relay types, cursor helpers, entity-to-GraphQL contract, client codegen config | lexico |
-| `@codebase/presentation` | React component library (shadcn/ui + Base UI primitives) | caelundas-web, lexico-web, meanderaw-web |
-| `@codebase/observability` | Pino-backed NestJS `LoggerService` and `LoggerModule` | caelundas, lexico, meanderaw |
-
-**Database/Schema/Role Convention (PostgreSQL):**
-
-| Context | Database | Schema | Role |
-|---------|----------|--------|------|
-| Local Docker | `<project>_development` | `<project>` | `<project>_username` / `<project>_password` |
-| Testcontainers | `<project>_testing` | `<project>` | same as local |
-
-Each domain gets its own database, schema, and role (e.g., `lexico_development` / `lexico` / `lexico_username`), created by the local Postgres container on first volume start. Caelundas uses SQLite locally (`output/database.sqlite`) but follows the same naming pattern for its Testcontainers testing setup.
+**See also:** [Architecture Overview](../architecture/overview.md) for the broader system context including Nx workspace layout, Docker Compose infrastructure, and deployment topology.
