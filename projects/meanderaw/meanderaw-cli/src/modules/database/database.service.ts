@@ -6,7 +6,7 @@ import {
   MEANDER_INSERT_CHUNK_SIZE,
   MEANDER_READ_BATCH_SIZE,
 } from "./database.constants";
-import { Meander } from "./entities/meander.entity";
+import { Meander } from "./meander.entity";
 
 import type { PatternCharacteristicKey } from "../characteristics/characteristics.types";
 import type {

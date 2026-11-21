@@ -16,7 +16,10 @@ const ROOT = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../../..",
 );
-const OPTIONS = { command: FAKE_COMMAND };
+const OPTIONS = {
+  command: FAKE_COMMAND,
+  projectConfigurationPath: "coinagerie.config.ts",
+};
 
 /** A context for the named project, which the workspace knows as `a` and `bad-b`. */
 function contextFor(projectName: string | undefined): CheckExecutorContext {

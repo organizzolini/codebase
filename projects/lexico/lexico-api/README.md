@@ -13,7 +13,7 @@ nx run lexico-api:vitest
 ## GraphQL types
 
 The API's object types are its own, not lexico-db' TypeORM entities.
-Each one, such as `LexemeType` in `src/modules/lexemes/lexeme.entities.ts`,
+Each one, such as `LexemeType` in `src/modules/lexemes/modules/lexeme-queries/lexeme.entities.ts`,
 implements `GraphQLObjectOf<Entity, Self, DatabaseOnlyField, RelationField>`
 from `src/lexico-api.types.ts`, which fails the typecheck when the type and its
 entity drift apart:
@@ -37,4 +37,4 @@ object types are registered as `ORPHANED_GRAPHQL_TYPES` in
 
 ## 👔 Conformetry
 
-This project was generated from the [nestjs-graphql-application](../../../configuration/conformetry-templates/nestjs-graphql-application) conformetry template.
+This project was generated from the [nestjs-graphql-application](../../../configuration/ic-suite/conformetry-templates/nestjs-graphql-application) conformetry template.

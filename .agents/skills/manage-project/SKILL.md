@@ -36,7 +36,7 @@ Effort is the work a pull request carries, measured in planned commits and modul
 
 ### Choosing priority
 
-Priority is how soon the work matters. A value the user gave wins; otherwise pick from this table, and when two rows fit, take the lower one.
+Priority is how soon the work matters. Decide it yourself and do not ask the user: a value they gave wins; otherwise pick from this table, and when two rows fit, take the lower one.
 
 | Priority | Shape                                                                         |
 | -------- | ----------------------------------------------------------------------------- |
@@ -113,5 +113,4 @@ Do not set a milestone on an issue or pull request unless the user asks. If one 
 ## Resources
 
 - [issue-tracker](../../../documentation/agents/issue-tracker.md) — Issue Types, labels, planning shape, marking work in progress
-- [triage-labels](../../../documentation/agents/triage-labels.md) — the `status:*` triage vocabulary
 - [link-issue skill](../link-issue/SKILL.md) — filing the issue a pull request closes

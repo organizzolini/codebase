@@ -1,5 +1,5 @@
-import { getEventKind } from "../../components/calendar-color-by/calendar-colors.utilities";
-import { formatCalendarDate } from "../../components/events-calendar/calendar-window.utilities";
+import { getEventKind } from "../../components/calendar-appearance/calendar-color-by/components/calendar-colors/calendar-colors.utilities";
+import { formatCalendarDate } from "../../components/calendar-display/events-calendar/components/calendar-window/calendar-window.utilities";
 
 import {
   CLUSTER_ID_PREFIX,
@@ -8,7 +8,7 @@ import {
   MINUTE_MILLISECONDS,
 } from "./calendar-clusters.constants";
 
-import type { CalendarEventRecord } from "../../components/events-calendar/calendar-records.types";
+import type { CalendarEventRecord } from "../../components/calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type {
   ClusteredEvents,
   ClusterOptions,

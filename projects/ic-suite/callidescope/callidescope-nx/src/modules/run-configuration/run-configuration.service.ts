@@ -1,3 +1,5 @@
+import path from "node:path";
+
 import { ConfigurationService } from "@callidescope/configuration";
 import { Injectable } from "@nestjs/common";
 
@@ -34,7 +36,10 @@ export class RunConfigurationService {
     args: LoadRunConfigurationArguments,
   ): Promise<LoadedRunConfiguration> {
     const loaded = await this.configurationService.loadConfigurationFile({
-      configurationPath: args.configurationPath,
+      configurationPath: path.resolve(
+        args.workspaceRoot,
+        args.configurationPath,
+      ),
     });
 
     return { configuration: loaded.configuration, path: loaded.path };

@@ -19,8 +19,8 @@ import {
   symbolByTripleAspect,
   symbolByVenusianPhase,
 } from "../caelundas/symbol-caelundas.constants";
-import { eclipseTypeLabelByType } from "../eclipses/eclipses.constants";
-import { DECAN_TAG_BY_DECAN } from "../ingresses/ingresses.constants";
+import { eclipseTypeLabelByType } from "../perfective/modules/eclipses/eclipses.constants";
+import { DECAN_TAG_BY_DECAN } from "../perfective/modules/ingresses/ingresses.constants";
 
 import { TAG_ROOT } from "./tags.constants";
 import { classifyEvent } from "./tags.utilities";

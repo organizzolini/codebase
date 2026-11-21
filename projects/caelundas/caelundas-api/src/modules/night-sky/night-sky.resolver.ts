@@ -1,7 +1,7 @@
 import { Inject } from "@nestjs/common";
 import { Args as Arguments, Query, Resolver } from "@nestjs/graphql";
 
-import { NightSkyInput } from "./night-sky-input.entities";
+import { NightSkyInput } from "./modules/options/night-sky-input.entities";
 import { NightSkyEntity } from "./night-sky.entities";
 import { NightSkyService } from "./night-sky.service";
 

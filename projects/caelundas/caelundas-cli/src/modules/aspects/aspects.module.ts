@@ -1,28 +1,27 @@
 import { Module } from "@nestjs/common";
 
-import { MajorAspectsModule } from "../major-aspects/major-aspects.module";
-import { MajorAspectsService } from "../major-aspects/major-aspects.service";
-import { MinorAspectsModule } from "../minor-aspects/minor-aspects.module";
-import { MinorAspectsService } from "../minor-aspects/minor-aspects.service";
-import { QuadrupleAspectsModule } from "../quadruple-aspects/quadruple-aspects.module";
-import { QuadrupleAspectsService } from "../quadruple-aspects/quadruple-aspects.service";
-import { QuintupleAspectsModule } from "../quintuple-aspects/quintuple-aspects.module";
-import { QuintupleAspectsService } from "../quintuple-aspects/quintuple-aspects.service";
-import { SextupleAspectsModule } from "../sextuple-aspects/sextuple-aspects.module";
-import { SextupleAspectsService } from "../sextuple-aspects/sextuple-aspects.service";
-import { SpecialtyAspectsModule } from "../specialty-aspects/specialty-aspects.module";
-import { SpecialtyAspectsService } from "../specialty-aspects/specialty-aspects.service";
-import { StelliumModule } from "../stellium/stellium.module";
-import { StelliumService } from "../stellium/stellium.service";
-import { TripleAspectsModule } from "../triple-aspects/triple-aspects.module";
-import { TripleAspectsService } from "../triple-aspects/triple-aspects.service";
-
 import {
   COMPOSITE_ASPECT_DETECTORS_TOKEN,
   PROGRESSIVE_ASPECT_DETECTORS_TOKEN,
   SIMPLE_ASPECT_DETECTORS_TOKEN,
 } from "./aspects.constants";
 import { AspectsService } from "./aspects.service";
+import { MajorAspectsModule } from "./modules/major-aspects/major-aspects.module";
+import { MajorAspectsService } from "./modules/major-aspects/major-aspects.service";
+import { MinorAspectsModule } from "./modules/minor-aspects/minor-aspects.module";
+import { MinorAspectsService } from "./modules/minor-aspects/minor-aspects.service";
+import { QuadrupleAspectsModule } from "./modules/quadruple-aspects/quadruple-aspects.module";
+import { QuadrupleAspectsService } from "./modules/quadruple-aspects/quadruple-aspects.service";
+import { QuintupleAspectsModule } from "./modules/quintuple-aspects/quintuple-aspects.module";
+import { QuintupleAspectsService } from "./modules/quintuple-aspects/quintuple-aspects.service";
+import { SextupleAspectsModule } from "./modules/sextuple-aspects/sextuple-aspects.module";
+import { SextupleAspectsService } from "./modules/sextuple-aspects/sextuple-aspects.service";
+import { SpecialtyAspectsModule } from "./modules/specialty-aspects/specialty-aspects.module";
+import { SpecialtyAspectsService } from "./modules/specialty-aspects/specialty-aspects.service";
+import { StelliumModule } from "./modules/stellium/stellium.module";
+import { StelliumService } from "./modules/stellium/stellium.service";
+import { TripleAspectsModule } from "./modules/triple-aspects/triple-aspects.module";
+import { TripleAspectsService } from "./modules/triple-aspects/triple-aspects.service";
 
 import type {
   CompositeAspectDetector,

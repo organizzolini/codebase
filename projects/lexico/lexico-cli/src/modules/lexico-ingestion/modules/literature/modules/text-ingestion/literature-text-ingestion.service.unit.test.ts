@@ -1,0 +1,283 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { Author, Text } from "@codebase/lexico-db";
+import { LoggerService } from "@codebase/observability";
+import { createTemporaryDirectory } from "@codebase/testing";
+import {
+  buildTestingModule,
+  mockErrorLogEntries,
+} from "@codebase/testing/nestjs";
+
+import { LiteratureTextIngestionService } from "./literature-text-ingestion.service";
+
+import type { IngestTextArguments, LibraryEntry } from "../../literature.types";
+import type { DeepMocked } from "@golevelup/ts-vitest";
+
+describe(LiteratureTextIngestionService, () => {
+  let service: LiteratureTextIngestionService;
+  let logger: DeepMocked<LoggerService>;
+  let logFilePath: string;
+
+  beforeAll(async () => {
+    const built = await buildTestingModule(LiteratureTextIngestionService);
+
+    service = built.instance;
+    logger = built.mock(LoggerService);
+  });
+
+  beforeEach(() => {
+    logFilePath = path.join(
+      createTemporaryDirectory("literature-text-ingestion"),
+      "literature-errors.log",
+    );
+
+    mockErrorLogEntries(logger);
+  });
+
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      LiteratureTextIngestionService,
+    );
+
+    expect(instance).toBeInstanceOf(LiteratureTextIngestionService);
+  });
+
+  it("sets logger context during construction", () => {
+    const initializedService = new LiteratureTextIngestionService(logger);
+
+    expect(initializedService).toBeDefined();
+    expect(logger.setContext).toHaveBeenCalledWith(
+      LiteratureTextIngestionService.name,
+    );
+  });
+
+  describe("ingestTextWithLogging", () => {
+    it("logs start and completion for root text entry", async () => {
+      const ingestTextMock = vi.fn<
+        (args: IngestTextArguments) => Promise<void>
+      >(async (): Promise<void> => {});
+      const authorEntity = new Author();
+      const textEntry: LibraryEntry = {
+        authorSlug: "author",
+        fullPath: "data/library/provider/author/work.md",
+        pathParts: [],
+        provider: "provider",
+        textSlug: "work",
+        title: "Work",
+      };
+
+      await service.ingestTextWithLogging(
+        {
+          ingestText: ingestTextMock,
+        },
+        {
+          authorEntity,
+          authorSlug: "author",
+          currentText: 1,
+          logFilePath,
+          parentTexts: new Map<string, Text>(),
+          textEntry,
+          totalTexts: 2,
+        },
+      );
+
+      expect(ingestTextMock).toHaveBeenCalledWith({
+        author: authorEntity,
+        parentText: undefined,
+        textPath: "data/library/provider/author/work.md",
+        textSlugName: "work",
+        title: "Work",
+      });
+      expect(logger.info).toHaveBeenCalledWith(
+        "📜 Ingesting text",
+        undefined,
+        expect.objectContaining({ hierarchy: "", title: "Work" }),
+      );
+      expect(logger.info).toHaveBeenCalledWith(
+        "📜 Ingested text",
+        undefined,
+        expect.objectContaining({ hierarchy: "", title: "Work" }),
+      );
+      expect(logger.error).not.toHaveBeenCalled();
+    });
+
+    it("resolves parent text hierarchy in logs and ingest arguments", async () => {
+      const ingestTextMock = vi.fn<
+        (args: IngestTextArguments) => Promise<void>
+      >(async (): Promise<void> => {});
+      const authorEntity = new Author();
+      const parentText = new Text();
+      parentText.slug = "author/book-1";
+
+      const textEntry: LibraryEntry = {
+        authorSlug: "author",
+        fullPath: "data/library/provider/author/book-1/chapter-1.md",
+        pathParts: ["book-1"],
+        provider: "provider",
+        textSlug: "chapter-1",
+        title: "Chapter 1",
+      };
+
+      await service.ingestTextWithLogging(
+        {
+          ingestText: ingestTextMock,
+        },
+        {
+          authorEntity,
+          authorSlug: "author",
+          currentText: 2,
+          logFilePath,
+          parentTexts: new Map<string, Text>([["author/book-1", parentText]]),
+          textEntry,
+          totalTexts: 2,
+        },
+      );
+
+      expect(ingestTextMock).toHaveBeenCalledWith({
+        author: authorEntity,
+        parentText,
+        textPath: "data/library/provider/author/book-1/chapter-1.md",
+        textSlugName: "chapter-1",
+        title: "Chapter 1",
+      });
+      expect(logger.info).toHaveBeenCalledWith(
+        "📜 Ingesting text",
+        undefined,
+        expect.objectContaining({ hierarchy: "book-1 / ", title: "Chapter 1" }),
+      );
+      expect(logger.info).toHaveBeenCalledWith(
+        "📜 Ingested text",
+        undefined,
+        expect.objectContaining({ hierarchy: "book-1 / ", title: "Chapter 1" }),
+      );
+    });
+
+    it("logs and appends error details when ingestion fails", async () => {
+      const ingestTextMock = vi.fn<
+        (args: IngestTextArguments) => Promise<void>
+      >(
+        async (): Promise<void> =>
+          await Promise.reject(new Error("ingestion failed")),
+      );
+      const authorEntity = new Author();
+      const textEntry: LibraryEntry = {
+        authorSlug: "author",
+        fullPath: "data/library/provider/author/work.md",
+        pathParts: [],
+        provider: "provider",
+        textSlug: "work",
+        title: "Work",
+      };
+
+      await service.ingestTextWithLogging(
+        {
+          ingestText: ingestTextMock,
+        },
+        {
+          authorEntity,
+          authorSlug: "author",
+          currentText: 1,
+          logFilePath,
+          parentTexts: new Map<string, Text>(),
+          textEntry,
+          totalTexts: 1,
+        },
+      );
+
+      expect(logger.error).toHaveBeenCalledWith(
+        "📜 Failed processing text",
+        expect.any(String),
+        expect.objectContaining({ title: "Work" }),
+      );
+      await expect(readFile(logFilePath, "utf8")).resolves.toStrictEqual(
+        expect.stringContaining("data/library/provider/author/work.md"),
+      );
+      expect(logger.info).toHaveBeenCalledWith(
+        "📜 Ingested text",
+        undefined,
+        expect.objectContaining({ title: "Work" }),
+      );
+    });
+
+    it("handles rejected ingestion failures in failure handling", async () => {
+      const ingestTextMock = vi
+        .fn<(_: IngestTextArguments) => Promise<void>>()
+        .mockRejectedValue("ingestion failed");
+      const authorEntity = new Author();
+      const textEntry: LibraryEntry = {
+        authorSlug: "author",
+        fullPath: "data/library/provider/author/work.md",
+        pathParts: [],
+        provider: "provider",
+        textSlug: "work",
+        title: "Work",
+      };
+
+      await service.ingestTextWithLogging(
+        {
+          ingestText: ingestTextMock,
+        },
+        {
+          authorEntity,
+          authorSlug: "author",
+          currentText: 1,
+          logFilePath,
+          parentTexts: new Map<string, Text>(),
+          textEntry,
+          totalTexts: 1,
+        },
+      );
+
+      expect(logger.error).toHaveBeenCalledWith(
+        "📜 Failed processing text",
+        expect.any(String),
+        expect.objectContaining({ title: "Work" }),
+      );
+      await expect(readFile(logFilePath, "utf8")).resolves.toStrictEqual(
+        expect.stringContaining(
+          "data/library/provider/author/work.md: ingestion failed",
+        ),
+      );
+    });
+
+    it("uses error message fallback when Error stack is empty", async () => {
+      const error = new Error("ingestion failed without stack");
+      error.stack = "";
+
+      const ingestTextMock = vi.fn<
+        (args: IngestTextArguments) => Promise<void>
+      >(async (): Promise<void> => await Promise.reject(error));
+      const authorEntity = new Author();
+      const textEntry: LibraryEntry = {
+        authorSlug: "author",
+        fullPath: "data/library/provider/author/work.md",
+        pathParts: [],
+        provider: "provider",
+        textSlug: "work",
+        title: "Work",
+      };
+
+      await service.ingestTextWithLogging(
+        {
+          ingestText: ingestTextMock,
+        },
+        {
+          authorEntity,
+          authorSlug: "author",
+          currentText: 1,
+          logFilePath,
+          parentTexts: new Map<string, Text>(),
+          textEntry,
+          totalTexts: 1,
+        },
+      );
+
+      await expect(readFile(logFilePath, "utf8")).resolves.toStrictEqual(
+        expect.stringContaining("ingestion failed without stack"),
+      );
+    });
+  });
+});

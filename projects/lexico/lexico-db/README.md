@@ -108,7 +108,8 @@ nx run lexico-db:migration:extract-sql-all    # Emit .sql alongside each migrati
 The `migration` target is the shared one from the root `nx.json` target
 defaults, declared here as
 `"migration": { "options": { "module": "src/modules/database" } }`,
-which names the folder holding `data-source.constants.ts` and `migrations/`;
+which names the folder holding `data-source.constants.ts`; the migrations
+live in the project root's `migrations/`;
 its SQL extraction script lives in
 [`@codebase/persistence`](../../common/persistence/README.md).
 `generate` also extracts the SQL and formats the result, so a generated

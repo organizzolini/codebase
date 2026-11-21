@@ -12,12 +12,12 @@ import { expectLoggerContext } from "@codebase/observability/testing";
 import { mockProcessExit } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { IssueAssigningService } from "./issue-assigning.service";
-import { IssueAuditService } from "./issue-audit.service";
-import { IssueLabelingService } from "./issue-labeling.service";
-import { IssuePlanService } from "./issue-plan.service";
 import { IssueReportService } from "./issue-report.service";
 import { IssueCommand } from "./issue.command";
+import { IssueAssigningService } from "./modules/assignees/issue-assigning.service";
+import { IssueAuditService } from "./modules/audit/issue-audit.service";
+import { IssuePlanService } from "./modules/audit/issue-plan.service";
+import { IssueLabelingService } from "./modules/labels/issue-labeling.service";
 
 import type { IssuePlan } from "./issue.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";

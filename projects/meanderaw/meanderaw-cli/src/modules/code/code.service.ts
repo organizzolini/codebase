@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 
-import { SymmetryService } from "../symmetry/symmetry.service";
+import { SymmetryService } from "../geometry/modules/symmetry/symmetry.service";
 
 import {
   CODE_FORMAT_PATTERN,
@@ -10,7 +10,7 @@ import {
   InvalidCodeLengthError,
 } from "./code.constants";
 
-import type { Directions, Tile } from "../tile/tile.types";
+import type { Directions, Tile } from "../geometry/modules/tile/tile.types";
 import type { Code, CodeObject } from "./code.types";
 
 /**

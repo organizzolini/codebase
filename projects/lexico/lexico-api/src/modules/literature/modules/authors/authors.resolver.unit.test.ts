@@ -1,0 +1,203 @@
+import { createMock } from "@golevelup/ts-vitest";
+import {
+  GraphQLSchemaBuilderModule,
+  GraphQLSchemaFactory,
+} from "@nestjs/graphql";
+import { describe, expect, it, vi } from "vitest";
+
+import { Author, Text } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { LiteratureService } from "../../literature.service";
+import {
+  createEmptyConnection,
+  toAuthorType,
+  toTextType,
+} from "../../literature.utilities";
+import { LiteratureRelationsLoader } from "../relations/literature-relations.loader";
+import { TextsResolver } from "../texts/texts.resolver";
+
+import { AuthorsResolver } from "./authors.resolver";
+
+describe(AuthorsResolver, () => {
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(AuthorsResolver, {
+      mocks: [LiteratureService, LiteratureRelationsLoader],
+    });
+
+    expect(instance).toBeInstanceOf(AuthorsResolver);
+  });
+
+  it("resolves a single author by lookup, including nested field data", async () => {
+    expect.hasAssertions();
+
+    const author = new Author();
+    author.id = "author-1";
+    author.name = "Virgil";
+
+    const text = new Text();
+    text.id = "text-1";
+    text.title = "Aeneid";
+
+    const mockService = createMock<LiteratureService>({
+      findAuthorByLookup: vi
+        .fn<LiteratureService["findAuthorByLookup"]>()
+        .mockResolvedValue(author),
+    });
+    const load = vi
+      .fn<LiteratureRelationsLoader["textsByAuthor"]["load"]>()
+      .mockResolvedValue({
+        ...createEmptyConnection<Text>(),
+        edges: [{ cursor: "t", node: text }],
+        totalCount: 1,
+      });
+
+    const authorsResolver = new AuthorsResolver(
+      mockService,
+      createMock<LiteratureRelationsLoader>({
+        textsByAuthor: createMock<LiteratureRelationsLoader["textsByAuthor"]>({
+          load,
+        }),
+      }),
+    );
+
+    await expect(
+      authorsResolver.author({ id: "author-1" }),
+    ).resolves.toStrictEqual(toAuthorType(author));
+    await expect(
+      authorsResolver.author({ slug: "virgil" }),
+    ).resolves.toStrictEqual(toAuthorType(author));
+    await expect(
+      authorsResolver.author({ lookup: { id: "author-1" } }),
+    ).resolves.toStrictEqual(toAuthorType(author));
+    await expect(
+      authorsResolver.author({ lookup: { slug: "virgil" } }),
+    ).resolves.toStrictEqual(toAuthorType(author));
+    await expect(
+      authorsResolver.resolveAuthorTexts(toAuthorType(author), { first: 1 }),
+    ).resolves.toMatchObject({
+      edges: [{ cursor: "t", node: toTextType(text) }],
+      totalCount: 1,
+    });
+    expect(load).toHaveBeenCalledWith({
+      pagination: { first: 1 },
+      parentId: "author-1",
+    });
+  });
+
+  it("returns a paginated connection for authors", async () => {
+    expect.hasAssertions();
+
+    const author = new Author();
+    author.id = "author-1";
+
+    const mockService = createMock<LiteratureService>({
+      listAuthorsConnection: vi
+        .fn<LiteratureService["listAuthorsConnection"]>()
+        .mockResolvedValue({
+          edges: [{ cursor: "a", node: author }],
+          pageInfo: {
+            endCursor: "a",
+            hasNextPage: false,
+            hasPreviousPage: false,
+            startCursor: "a",
+          },
+          totalCount: 1,
+        }),
+    });
+
+    const authorsResolver = new AuthorsResolver(
+      mockService,
+      createMock<LiteratureRelationsLoader>(),
+    );
+
+    await expect(
+      authorsResolver.authors({
+        after: "cursor-1",
+        before: "cursor-0",
+        first: 10,
+        last: 5,
+      }),
+    ).resolves.toMatchObject({
+      edges: [{ node: toAuthorType(author) }],
+      totalCount: 1,
+    });
+  });
+
+  it("resolves author search results", async () => {
+    expect.hasAssertions();
+
+    const author = new Author();
+    author.id = "author-1";
+
+    const mockService = createMock<LiteratureService>({
+      searchAuthors: vi
+        .fn<LiteratureService["searchAuthors"]>()
+        .mockResolvedValue({
+          edges: [{ cursor: "a", node: author }],
+          pageInfo: {
+            endCursor: "a",
+            hasNextPage: false,
+            hasPreviousPage: false,
+            startCursor: "a",
+          },
+          totalCount: 1,
+        }),
+    });
+
+    const authorsResolver = new AuthorsResolver(
+      mockService,
+      createMock<LiteratureRelationsLoader>(),
+    );
+
+    await expect(
+      authorsResolver.searchAuthors({
+        after: "c-1",
+        before: "c-0",
+        first: 5,
+        last: 2,
+        query: "vir",
+      }),
+    ).resolves.toMatchObject({
+      edges: [{ node: toAuthorType(author) }],
+      totalCount: 1,
+    });
+  });
+
+  it("resolves nullable author lookups", async () => {
+    expect.hasAssertions();
+
+    const authorsResolver = new AuthorsResolver(
+      createMock<LiteratureService>(),
+      createMock<LiteratureRelationsLoader>(),
+    );
+
+    await expect(authorsResolver.author({})).resolves.toBeNull();
+
+    await expect(authorsResolver.author({ lookup: {} })).resolves.toBeNull();
+
+    expect(authorsResolver).toBeInstanceOf(AuthorsResolver);
+  });
+
+  it("exposes authors as a pagination-only listing without a query argument", async () => {
+    expect.hasAssertions();
+
+    const { module } = await buildTestingModule(AuthorsResolver, {
+      imports: [GraphQLSchemaBuilderModule],
+      mocks: [LiteratureService, LiteratureRelationsLoader],
+      providers: [TextsResolver],
+    });
+
+    const schema = await module
+      .get(GraphQLSchemaFactory)
+      .create([AuthorsResolver, TextsResolver]);
+    const fields = schema.getQueryType()?.getFields();
+
+    expect(
+      fields?.["authors"]?.args.map((argument) => argument.name).toSorted(),
+    ).toStrictEqual(["after", "before", "first", "last"]);
+    expect(
+      fields?.["searchAuthors"]?.args.map((argument) => argument.name),
+    ).toContain("query");
+  });
+});

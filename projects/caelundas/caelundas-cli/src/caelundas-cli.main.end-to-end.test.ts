@@ -9,24 +9,24 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { CalendarEvent } from "@codebase/caelundas-db";
 import { LoggerService } from "@codebase/observability";
 
+import { createMajorAspectsService } from "../testing/aspects/major-aspects.utilities";
 import {
   detectable,
   runCalendarCommand,
-} from "../testing/calendar-command.utilities";
+} from "../testing/support/calendar-command.utilities";
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
   startCaelundasDatabase,
-} from "../testing/database";
-import { createMajorAspectsService } from "../testing/major-aspects.utilities";
+} from "../testing/support/database";
 
 import { environmentSchema } from "./caelundas-cli.constants";
 import { CalendarService } from "./modules/calendar/calendar.service";
-import { IngressesService } from "./modules/ingresses/ingresses.service";
+import { MathService } from "./modules/ephemeris/modules/math/math.service";
 import { inputSchema } from "./modules/input/input.constants";
-import { MathService } from "./modules/math/math.service";
+import { IngressesService } from "./modules/perfective/modules/ingresses/ingresses.service";
 import { ProgressiveUtilitiesService } from "./modules/progressive/progressive-utilities.service";
 
-import type { CalendarCommandOutput } from "../testing/calendar-command.types";
+import type { CalendarCommandOutput } from "../testing/support/calendar-command.types";
 import type { EphemerisService } from "./modules/ephemeris/ephemeris.service";
 import type { Environment } from "./modules/input/input.types";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";

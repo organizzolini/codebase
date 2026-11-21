@@ -12,6 +12,8 @@ import {
   DEFAULT_EXPORT_TARGET,
   DEFAULT_INCLUDE_GLOBS,
   DEFAULT_MARKDOWN_PATH,
+  ProjectConfigurationPathRequiredError,
+  ProjectTsconfigPathRequiredError,
   SELECTION_SEPARATOR,
   SUPPORTED_CONFIGURATION_EXTENSIONS,
   UnknownConfigurationFileTypeError,
@@ -200,14 +202,17 @@ export class ConfigurationService {
   }
 
   /**
-   * Loads one project's own `codependix.config.ts`, or `undefined`. Searched for only at its root, never inherited from a parent.
+   * Loads one project's own configuration file, or `undefined`. Read only at the configured path under its root, never inherited.
    */
   public async loadProjectConfiguration(
     args: LoadProjectConfigurationArguments,
   ): Promise<CodependixProjectConfiguration | undefined> {
     const projectRoot = path.resolve(args.projectRoot);
     const resolvedPath =
-      this.configurationLoaderService.findProjectConfigurationFile(projectRoot);
+      this.configurationLoaderService.resolveProjectConfigurationFile({
+        projectConfigurationPath: args.projectConfigurationPath,
+        projectRoot,
+      });
 
     if (resolvedPath === undefined) {
       return undefined;
@@ -265,6 +270,40 @@ export class ConfigurationService {
   }
 
   /**
+   * Returns the per-project configuration path, refusing a missing or blank one. `surface` names its source in the refusal.
+   */
+  public requireProjectConfigurationPath(
+    projectConfigurationPath: string | undefined,
+    surface: string,
+  ): string {
+    if (
+      projectConfigurationPath === undefined ||
+      projectConfigurationPath.trim() === ""
+    ) {
+      throw new ProjectConfigurationPathRequiredError(surface);
+    }
+
+    return projectConfigurationPath;
+  }
+
+  /**
+   * Returns the per-project TypeScript configuration path, refusing a missing or blank one. `surface` names its source in the refusal.
+   */
+  public requireProjectTsconfigPath(
+    projectTsconfigPath: string | undefined,
+    surface: string,
+  ): string {
+    if (
+      projectTsconfigPath === undefined ||
+      projectTsconfigPath.trim() === ""
+    ) {
+      throw new ProjectTsconfigPathRequiredError(surface);
+    }
+
+    return projectTsconfigPath;
+  }
+
+  /**
    * Fills in every field a configuration file may omit. Exposed so a host can pass an assembled configuration and get the file's shape.
    */
   public resolveConfiguration(
@@ -276,7 +315,9 @@ export class ConfigurationService {
       exclude: configuration.exclude ?? [],
       include: configuration.include ?? [...DEFAULT_INCLUDE_GLOBS],
       nestjsRootModules: configuration.nestjsModules?.rootModules ?? {},
+      projectConfigurationPath: configuration.projectConfigurationPath,
       projectGraph: configuration.projectGraph,
+      projectTsconfigPath: configuration.projectTsconfigPath,
       selection: this.resolveSelection(selection),
       workspace: configuration.workspace ?? {},
     };

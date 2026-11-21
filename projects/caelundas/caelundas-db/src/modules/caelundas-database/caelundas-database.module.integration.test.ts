@@ -9,7 +9,7 @@ import {
   CAELUNDAS_DATABASE_ENTITIES,
   CAELUNDAS_DATABASE_MIGRATIONS,
 } from "./data-source.constants";
-import { CalendarEvent } from "./entities/calendar-event.entity";
+import { CalendarEvent } from "./modules/calendar-events/calendar-event.entity";
 
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 import type { Repository } from "typeorm";

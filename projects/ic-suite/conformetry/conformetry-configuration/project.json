@@ -12,11 +12,19 @@
     "type:package"
   ],
   "targets": {
-    "build": {},
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vite build --config configuration/vite.config.ts",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
     "build-projects": {},
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "eslint": {},
     "format-code": {},
     "guard-code": {},
     "knip": {},
@@ -29,7 +37,7 @@
     "spell-check": {},
     "test-code": {
       "inputs": [
-        "{workspaceRoot}/configuration/conformetry.config.ts",
+        "{workspaceRoot}/configuration/ic-suite/conformetry.config.ts",
         "default"
       ]
     },
@@ -54,7 +62,7 @@
         },
         {
           "fields": ["compilerOptions"],
-          "json": "{workspaceRoot}/configuration/tsconfig.workspace.json"
+          "json": "{workspaceRoot}/configuration/typescript/tsconfig.workspace.json"
         },
         {
           "externalDependencies": ["vitest"]
@@ -66,7 +74,7 @@
           "dependentTasksOutputFiles": "**/*.js",
           "transitive": true
         },
-        "{workspaceRoot}/configuration/conformetry.config.ts"
+        "{workspaceRoot}/configuration/ic-suite/conformetry.config.ts"
       ]
     },
     "yaml-lint": {}

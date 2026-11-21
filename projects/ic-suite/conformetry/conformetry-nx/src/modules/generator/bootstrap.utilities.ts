@@ -40,9 +40,12 @@ export async function bootstrapPlugin(
   const files = await generatorService.emitPlugin({
     // Taken from the workspace's own plugin registration rather than assumed:
     // this runs from a `postinstall`, where Nx passes nothing.
-    configurationPath: optionsService.resolveConfigurationPath({
-      nxConfiguration: readNxConfiguration(workspaceRoot),
-    }),
+    configurationPath: path.resolve(
+      workspaceRoot,
+      optionsService.resolveConfigurationPath({
+        nxConfiguration: readNxConfiguration(workspaceRoot),
+      }),
+    ),
     outputPath: DEFAULT_OUTPUT_PATH,
     packageName: DEFAULT_PACKAGE_NAME,
     projects: projectsService.listWorkspaceProjects(workspaceRoot),

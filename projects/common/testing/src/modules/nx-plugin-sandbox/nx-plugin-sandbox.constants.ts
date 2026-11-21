@@ -15,7 +15,7 @@ export const REGISTRY_OPERATION_TIMEOUT_MS = 300_000;
 /** The workspace's Verdaccio config, shared with the `local-registry` target. */
 export const VERDACCIO_CONFIG_PATH = path.resolve(
   import.meta.dirname,
-  "../../../../../../configuration/verdaccio.config.yml",
+  "../../../../../../configuration/repository/verdaccio.config.yml",
 );
 
 /** A larger body limit than Verdaccio's default, for packed tarballs. */

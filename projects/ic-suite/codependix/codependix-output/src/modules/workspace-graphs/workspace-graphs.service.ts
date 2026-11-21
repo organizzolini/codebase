@@ -102,9 +102,10 @@ export class WorkspaceGraphsService {
    */
   private buildTypescriptGraphs(
     selectedProjects: GraphRunContext["selectedProjects"],
+    projectTsconfigPath: string,
   ): TypescriptImportGraph[] {
     return this.typescriptService
-      .discoverProjects(selectedProjects)
+      .discoverProjects(selectedProjects, projectTsconfigPath)
       .map((project) =>
         this.typescriptService.buildGraph(
           this.typescriptService.buildProgram(project),
@@ -164,6 +165,7 @@ export class WorkspaceGraphsService {
 
     const typescriptGraphs = this.buildTypescriptGraphs(
       context.selectedProjects,
+      context.configuration.projectTsconfigPath,
     );
     const pythonGraphs = this.pythonService
       .discoverProjects(context.selectedProjects)

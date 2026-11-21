@@ -14,7 +14,7 @@ import {
   SidebarTrigger,
 } from "@codebase/presentation";
 
-import { ApplicationSidebar } from "../components/application-sidebar/application-sidebar";
+import { ApplicationSidebar } from "../components/layout/application-sidebar/application-sidebar";
 import applicationCss from "../styles/application.css?url";
 
 import type { ReactNode } from "react";

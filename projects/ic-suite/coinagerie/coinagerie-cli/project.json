@@ -13,12 +13,20 @@
     "type:package"
   ],
   "targets": {
-    "build": {},
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vite build --config configuration/vite.config.ts",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
     "build-projects": {},
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
     "end-to-end": {},
+    "eslint": {},
     "format-code": {},
     "guard-code": {},
     "knip": {},
@@ -36,7 +44,7 @@
         "command": "node --import @swc-node/register/esm-register projects/ic-suite/coinagerie/coinagerie-cli/src/coinagerie-cli.main.ts",
         "cwd": "{workspaceRoot}",
         "env": {
-          "SWC_NODE_PROJECT": "projects/ic-suite/coinagerie/coinagerie-cli/tsconfig.json"
+          "SWC_NODE_PROJECT": "projects/ic-suite/coinagerie/coinagerie-cli/configuration/tsconfig.json"
         }
       }
     },
@@ -47,7 +55,7 @@
     "vitest": {
       "inputs": [
         "...",
-        "{workspaceRoot}/configuration/vite.library.config.ts",
+        "{workspaceRoot}/configuration/typescript/vite.library.config.ts",
         "{workspaceRoot}/projects/ic-suite/coinagerie/coinagerie-examples/examples/**",
         {
           "externalDependencies": ["vite"]

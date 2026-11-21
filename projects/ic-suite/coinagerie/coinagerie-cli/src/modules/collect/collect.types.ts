@@ -4,7 +4,7 @@
 export interface CollectCommandOptions {
   /** Fail when any destination's words disagree with the code's. */
   check?: boolean | undefined;
-  /** A configuration file, relative to the working directory. */
+  /** Required: the configuration file, relative to the working directory. */
   config?: string | undefined;
   /** Replaces the description of every markdown destination. */
   description?: string | undefined;

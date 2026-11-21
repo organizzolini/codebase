@@ -31,6 +31,10 @@ export class IgnoreRulesService {
     scope: IgnoreScope,
     relativePath: string,
   ): string | undefined {
+    if (scope.base !== undefined) {
+      return `${scope.base}/${relativePath}`;
+    }
+
     if (scope.directory === "") {
       return relativePath;
     }
@@ -51,6 +55,7 @@ export class IgnoreRulesService {
    */
   createScope(args: CreateIgnoreScopeArguments): IgnoreScope {
     return {
+      ...(args.base === undefined ? {} : { base: args.base }),
       directory: args.directory,
       matcher: ignore({ ignorecase: false }).add(args.patterns),
     };
@@ -92,6 +97,7 @@ export class IgnoreRulesService {
     }
 
     return this.createScope({
+      ...(args.base === undefined ? {} : { base: args.base }),
       directory: args.directory,
       patterns: readFileSync(args.filePath, "utf8").split("\n"),
     });

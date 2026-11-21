@@ -17,10 +17,10 @@ import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
-import { UpgradeNodeService } from "../upgrade-node/upgrade-node.service";
-import { UpgradePnpmService } from "../upgrade-pnpm/upgrade-pnpm.service";
-import { UpgradePythonService } from "../upgrade-python/upgrade-python.service";
 
+import { UpgradeNodeService } from "./modules/upgrade-node/upgrade-node.service";
+import { UpgradePnpmService } from "./modules/upgrade-pnpm/upgrade-pnpm.service";
+import { UpgradePythonService } from "./modules/upgrade-python/upgrade-python.service";
 import { UpgradeDependenciesService } from "./upgrade-dependencies.service";
 
 import type { Command } from "../process-runner/process-runner.types";

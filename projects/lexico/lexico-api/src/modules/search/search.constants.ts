@@ -1,6 +1,6 @@
 // ♟️ Constants
 
-import { SearchMatchSource } from "./search.entities";
+import { SearchMatchSource } from "./modules/search-results/search.entities";
 
 /* cspell:words ILIKE absque atque cumque denique FULLTEXT itaque neque neve paene pleraque plerique plerumque quaeque qualiscumque quandocumque quantuscumque quicque quidque quilibet quinque quisque quivis quodque quoque sive ubique undique unusquisque uterque utrimque */
 

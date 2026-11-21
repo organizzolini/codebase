@@ -3,11 +3,11 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { IssueAssigningService } from "./issue-assigning.service";
-import { IssueAuditService } from "./issue-audit.service";
-import { IssueLabelingService } from "./issue-labeling.service";
-import { IssuePlanService } from "./issue-plan.service";
 import { IssueReportService } from "./issue-report.service";
+import { IssueAssigningService } from "./modules/assignees/issue-assigning.service";
+import { IssueAuditService } from "./modules/audit/issue-audit.service";
+import { IssuePlanService } from "./modules/audit/issue-plan.service";
+import { IssueLabelingService } from "./modules/labels/issue-labeling.service";
 
 import type { IssueOutcome, IssuePlan } from "./issue.types";
 

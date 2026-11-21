@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:d4827f2302e159c169c81eb62b7884b0bc99e51f1bf338adf8b9a0f941499bff",
+  "pageVersion": "sha256:bde6648f42848d2d33f87ba4589dfd2aa791cec6021cca5215923b28d03195f8",
   "claims": [
     {
       "id": "claim_95880b6257564397a792093d780f2e33",
@@ -16,7 +16,7 @@
         },
         {
           "resource": "repo://projects/caelundas/caelundas-cli/README.md",
-          "version": "repo-file-v1:sha256:5b5f886bd01e05b3225e58a9f037ccb58f52eae6e7bd5f3e6f4263b4cd9765ce"
+          "version": "repo-file-v1:sha256:c6dd89187005e5491a31c2702e92ca07313dc6fee1f7618f2ffd0478c6328538"
         },
         {
           "resource": "repo://projects/lexico/lexico-web/package.json",
@@ -42,23 +42,23 @@
         },
         {
           "resource": "repo://projects/ic-suite/callidescope/callidescope-cli/package.json",
-          "version": "repo-file-v1:sha256:1bfe4b48177eb68c45f899e7d6eb9949f10c6989c8744198a48b9e036a89a7be"
+          "version": "repo-file-v1:sha256:623723620854bab065da852d01f1a605a63b184a08b012c687081cc595d8713d"
         },
         {
           "resource": "repo://projects/ic-suite/codependix/codependix-cli/package.json",
-          "version": "repo-file-v1:sha256:250070a110971d6b56faa81ef53b2201e995d58c0853c51718ad7dd4e845dd90"
+          "version": "repo-file-v1:sha256:8320c7bc70b6d4186ca2156c12f79bab60f6e369245de17e83c070c5c837b66d"
         },
         {
           "resource": "repo://projects/ic-suite/codometer/codometer-cli/package.json",
-          "version": "repo-file-v1:sha256:54e6d90d9497e5a4255cc27710ab3353f2a4b10ad9c628e97ac41a5d809c7aad"
+          "version": "repo-file-v1:sha256:9f45f387cec3e1f234bdf4869dddae2f17cb5093eea507cc2463b03df1f0440f"
         },
         {
           "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/package.json",
-          "version": "repo-file-v1:sha256:2622e312de6dd857d3bdd0734b18791cfedb2083e2ffc8cb33c58aecd1a1e238"
+          "version": "repo-file-v1:sha256:703ef73584173ff2f15ffbc09774da6e924281ecc544cbe558e39e4a84ceafe9"
         },
         {
           "resource": "repo://projects/ic-suite/conformetry/conformetry-cli/package.json",
-          "version": "repo-file-v1:sha256:9e07e316ba6dba9b54e05790cb58756b8b4e61b47769acffb31ce4b39b80ed95"
+          "version": "repo-file-v1:sha256:1437d10c3fcdc876a41502158afa30f51177a9b7845d7ef4bb514b2317b33738"
         }
       ]
     },
@@ -72,7 +72,7 @@
         },
         {
           "resource": "repo://projects/common/interface/package.json",
-          "version": "repo-file-v1:sha256:4e096fbc8258660d087c6bdef81ec0fc671689d51db992f4e8a71e1e180d66bb"
+          "version": "repo-file-v1:sha256:f38cc6624ee2efd9db829ac2afa53fb631bd8798474dc3d57a4bbb6cdec61dc3"
         },
         {
           "resource": "repo://projects/common/observability/package.json",
@@ -88,7 +88,7 @@
         },
         {
           "resource": "repo://projects/common/testing/package.json",
-          "version": "repo-file-v1:sha256:aaf61b9da2c34986f1370775d8d211db1baecab66cd1aefae1931b19aa5788a5"
+          "version": "repo-file-v1:sha256:40ce7857e4dd8c8c38159f11987a8b64c3e18309230fb345a4698d0082e160a2"
         }
       ]
     },
@@ -97,8 +97,8 @@
       "statement": "The development workflow defined in AGENTS.md follows an 8-step process: Clarify (brainstorming + grill-with-docs/grill-me), Specify (to-spec), Decompose (to-tickets), Handoff (handoff), Build (implement + TDD + ponytail), Review (requesting-code-review + code-review + ponytail-review), Validate (validate-code + verification-before-completion), Integrate (finishing-a-development-branch + submit-changes + commit-code + create-pull-request).",
       "evidence": [
         {
-          "resource": "repo://AGENTS.md#L21-L101",
-          "version": "repo-lines-v1:sha256:a8db5e64524746e806a1bc002f27f52d59a2efee5b46f7701a937bf0b8bb845c:eyJzZWxlY3RlZExpbmVDb3VudCI6ODEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjN2RiMjQ2NGZlOWYyNzVmZTI5NjEyN2QyNDcwYTJmNmExNDc5MDYxNmE0MjNiZDNhNWUzOGU1MGNiNmEzY2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwZWQxOTNhZWEyODU2NGJjMDA5MmNhYzhmN2ExZjUyN2Q4NmJjMGRmNjhhMzFmYjhlN2E0N2ZiMWJmZmIwMWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUzNjE4YzQ2OTY5ZmQwNWQzNDFmMjdhMzRmNWZjZGI1OWY5NzY4ODM0NjRiZDkwYzk0MzNmZWFlYzM5M2FkNzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU0OWNiYzkwZGIwYzcwNTExNDNiMWJiZWRjZDc4M2IwMDhiMWUwNzYyZDg3NzdhZjczMGZmMTE1MWJjYzc1MDIifQ"
+          "resource": "repo://AGENTS.md#L21-L110",
+          "version": "repo-lines-v1:sha256:61194fe60e9ce7cf4d38f167481615d251a35433e9a44b1096a009c95c3690e5:eyJzZWxlY3RlZExpbmVDb3VudCI6OTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjN2RiMjQ2NGZlOWYyNzVmZTI5NjEyN2QyNDcwYTJmNmExNDc5MDYxNmE0MjNiZDNhNWUzOGU1MGNiNmEzY2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmYjZiYmFhOGE1YjczMTEzNjkyNmUzNDI1MmVkNDg3YTAyYTRjZjliZTRiYWU3OGUwMjAzNDY1NDQwYzE3NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUzNjE4YzQ2OTY5ZmQwNWQzNDFmMjdhMzRmNWZjZGI1OWY5NzY4ODM0NjRiZDkwYzk0MzNmZWFlYzM5M2FkNzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU0OWNiYzkwZGIwYzcwNTExNDNiMWJiZWRjZDc4M2IwMDhiMWUwNzYyZDg3NzdhZjczMGZmMTE1MWJjYzc1MDIifQ"
         }
       ]
     },
@@ -107,7 +107,7 @@
       "statement": "Tests run via `nx run <project>:vitest:<unit|integration>` for TypeScript projects and `pytest` for Python projects; coverage and size gates are strictly enforced.",
       "evidence": [
         {
-          "resource": "repo://AGENTS.md#L247-L249",
+          "resource": "repo://AGENTS.md#L272-L274",
           "version": "repo-lines-v1:sha256:bdfd03257b889db097f342b7e0fd20f9efa3a1a903227da191eb54fa5fdc2977:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWQ5YjdhOThmMmRkODdhYWQ5MzE1YWJmZTEyNzQyNTZiZGJjNjBhMmFlZTdkMjJhYTg4ZDE5MTE1Y2RlYjE1MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTc2Mzc5MWVjN2NkZTE5Mzg1NDhjNmM1MmRhZThhOTg0YzExNGU0YTlkZjUzNGE2YjhmN2RkMWQ3ZTNkOWI3YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYThiZGRjNmVlOTQ1MmFiNDlmZDRjOGI1OTliNjI4ZjdmMjhkMzY5YjQ4NWVkMGQxYTQzNzlmMDQ1YzI0YWY3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzAzN2FhMDgzZWJkOTg4NmI4MDU1NDMwNTJhY2RmNjBmZDBmOGE5ZWYyMmY1MDhlOTk4MWI0ZjYwNGRhNjc4OSJ9"
         }
       ]
@@ -133,6 +133,6 @@
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-13T16:30:25.369Z"
+    "at": "2026-11-20T17:00:25.557Z"
   }
 }

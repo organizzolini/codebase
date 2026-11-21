@@ -16,7 +16,7 @@
       "description": "Build the application for production",
       "executor": "nx:run-commands",
       "options": {
-        "command": "vite build",
+        "command": "vite build --config configuration/vite.config.mts",
         "cwd": "{projectRoot}"
       },
       "outputs": ["{projectRoot}/dist"]
@@ -26,7 +26,7 @@
       "description": "Generate typed GraphQL operations, runtime schemas, and test mocks",
       "executor": "nx:run-commands",
       "inputs": [
-        "{projectRoot}/codegen.ts",
+        "{projectRoot}/configuration/codegen.ts",
         "{projectRoot}/src/graphql/operations/**/*.graphql",
         "{workspaceRoot}/projects/lexico/lexico-api/src/schema.gql"
       ],
@@ -53,6 +53,7 @@
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "eslint": {},
     "format-code": {},
     "guard-code": {},
     "knip": {},
@@ -66,7 +67,7 @@
       "description": "Serve the production build locally",
       "executor": "nx:run-commands",
       "options": {
-        "command": "vite preview",
+        "command": "vite preview --config configuration/vite.config.mts",
         "cwd": "{projectRoot}"
       }
     },
@@ -77,7 +78,7 @@
       "description": "Start the development server with hot reload",
       "executor": "nx:run-commands",
       "options": {
-        "command": "vite dev",
+        "command": "vite dev --config configuration/vite.config.mts",
         "cwd": "{projectRoot}"
       }
     },
@@ -91,6 +92,7 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "vitest": {},
     "yaml-lint": {}
   }
 }

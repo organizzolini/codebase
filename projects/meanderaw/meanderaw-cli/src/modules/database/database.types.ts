@@ -1,7 +1,7 @@
 // 🏷️ Types
 
 import type { PatternCharacteristicKey } from "../characteristics/characteristics.types";
-import type { Meander } from "./entities/meander.entity";
+import type { Meander } from "./meander.entity";
 import type { PostgresqlUpdatableEntity } from "@codebase/persistence";
 
 /** How many rows one pattern characteristic holds for at one shape. */

@@ -41,7 +41,12 @@ async function createNodes(
 
   return await callback(
     projectConfigurationFiles,
-    { gateTargetName: "codependix-bound" },
+    {
+      configurationPath: "configuration/codependix.config.ts",
+      gateTargetName: "codependix-bound",
+      projectConfigurationPath: "codependix.config.ts",
+      projectTsconfigPath: "tsconfig.json",
+    },
     createMock<CreateNodesContext>({ workspaceRoot: "/workspace" }),
   );
 }
@@ -57,7 +62,7 @@ describe("codependixPlugin", () => {
     const [glob] = codependixPlugin.createNodes;
 
     expect(codependixPlugin.name).toBe("@codependix/nx");
-    expect(glob).toBe("**/{project.json,codependix.config.*}");
+    expect(glob).toBe("**/project.json");
   });
 
   it("attaches inferred targets to the project root that owns them", async () => {
@@ -103,7 +108,12 @@ describe("codependixPlugin", () => {
 
     expect(pluginService.inferTargets).toHaveBeenCalledTimes(1);
     expect(pluginService.inferTargets).toHaveBeenCalledWith({
-      options: { gateTargetName: "codependix-bound" },
+      options: {
+        configurationPath: "configuration/codependix.config.ts",
+        gateTargetName: "codependix-bound",
+        projectConfigurationPath: "codependix.config.ts",
+        projectTsconfigPath: "tsconfig.json",
+      },
       projectConfigurationFiles: [
         "packages/alpha/project.json",
         "packages/beta/project.json",

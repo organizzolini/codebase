@@ -47,7 +47,7 @@ export class CheckService {
     if (destinations.length === 0) {
       return {
         ok: false,
-        report: `${REPORT_MARK} Found no glossary destination to ${mode}: ${path.relative(workspaceRoot, configuration.configurationPath ?? "")}`,
+        report: `${REPORT_MARK} Found no glossary destination to ${mode}: ${path.relative(workspaceRoot, configuration.configurationPath)}`,
       };
     }
 
@@ -68,8 +68,9 @@ export class CheckService {
   public async run(args: RunCheckArguments): Promise<CheckVerdict> {
     try {
       const configuration = await this.configurationService.loadConfiguration({
-        configurationPath: undefined,
+        configurationPath: args.projectConfigurationPath,
         overrides: {},
+        rootDirectory: args.directory,
         workingDirectory: args.directory,
       });
       const words = await this.vocabularyService.collect(configuration);

@@ -23,7 +23,7 @@
         ],
         "cwd": "{workspaceRoot}",
         "env": {
-          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json"
+          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/configuration/tsconfig.json"
         },
         "parallel": false
       }
@@ -37,7 +37,7 @@
         "command": "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/case-variants/conformetry.config.ts",
         "cwd": "{workspaceRoot}",
         "env": {
-          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json"
+          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/configuration/tsconfig.json"
         }
       }
     },
@@ -51,7 +51,7 @@
         "command": "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/drift-catalogue/conformetry.config.ts",
         "cwd": "{workspaceRoot}",
         "env": {
-          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json"
+          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/configuration/tsconfig.json"
         }
       }
     },
@@ -63,7 +63,7 @@
         "command": "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-examples/examples/embedding/embed.ts",
         "cwd": "{workspaceRoot}",
         "env": {
-          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json"
+          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/configuration/tsconfig.json"
         }
       }
     },
@@ -90,7 +90,7 @@
         ],
         "cwd": "{workspaceRoot}",
         "env": {
-          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json"
+          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/configuration/tsconfig.json"
         },
         "parallel": false
       }
@@ -105,7 +105,7 @@
         "command": "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/hello-template/conformetry.config.ts",
         "cwd": "{workspaceRoot}",
         "env": {
-          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json"
+          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/configuration/tsconfig.json"
         }
       }
     },
@@ -117,7 +117,7 @@
         "command": "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts generate --template receipt --name mars --directory tmp/conformetry-examples/hooks --config projects/ic-suite/conformetry/conformetry-examples/examples/hooks/conformetry.config.ts",
         "cwd": "{workspaceRoot}",
         "env": {
-          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json"
+          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/configuration/tsconfig.json"
         }
       }
     },
@@ -130,7 +130,7 @@
         "command": "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/language-validators/conformetry.config.ts",
         "cwd": "{workspaceRoot}",
         "env": {
-          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json"
+          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/configuration/tsconfig.json"
         }
       }
     },
@@ -148,7 +148,7 @@
         ],
         "cwd": "{workspaceRoot}",
         "env": {
-          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json"
+          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/configuration/tsconfig.json"
         },
         "parallel": false
       }
@@ -167,7 +167,7 @@
         ],
         "cwd": "{workspaceRoot}",
         "env": {
-          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json"
+          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/configuration/tsconfig.json"
         },
         "parallel": false
       }
@@ -181,7 +181,7 @@
         "command": "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/structural-not-textual/conformetry.config.ts",
         "cwd": "{workspaceRoot}",
         "env": {
-          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json"
+          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/configuration/tsconfig.json"
         }
       }
     },
@@ -197,7 +197,7 @@
         ],
         "cwd": "{workspaceRoot}",
         "env": {
-          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json"
+          "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/configuration/tsconfig.json"
         },
         "parallel": false
       }
@@ -205,6 +205,7 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "vitest": {},
     "yaml-lint": {}
   }
 }

@@ -45,12 +45,16 @@ export class TypescriptService {
 
   /**
    * Filters an already-read list of Nx projects down to the ones carrying
-   * their own `tsconfig.json`, and describes each one.
+   * a tsconfig at `projectTsconfigPath` under their root, and describes each one.
    */
   discoverProjects(
     projects: { absoluteRoot: string; name: string }[],
+    projectTsconfigPath: string,
   ): TypescriptProject[] {
-    return this.typescriptProjectService.discoverProjects(projects);
+    return this.typescriptProjectService.discoverProjects(
+      projects,
+      projectTsconfigPath,
+    );
   }
 
   /** Renders an import graph as a fenced mermaid diagram. */

@@ -59,7 +59,7 @@ pnpm install --frozen-lockfile
 echo "✅ Dependencies installed"
 
 echo "🐍 Syncing Python dependencies with uv..."
-uv sync --frozen --project configuration
+uv sync --frozen --project configuration/python
 echo "✅ Python dependencies synced"
 
 echo "🦭 Resetting Nx cache..."

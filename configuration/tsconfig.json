@@ -37,7 +37,7 @@
       ],
       "codebase/configuration/*": ["./*"],
       "eslint-plugin-better-max-params": [
-        "./types/eslint-plugin-better-max-params/index.d.ts"
+        "./typescript/types/eslint-plugin-better-max-params/index.d.ts"
       ]
     },
     "resolveJsonModule": true,
@@ -57,6 +57,6 @@
   // inherits them, so a package whose source imports one type-checks wherever
   // it is imported from. Naming `files` switches off the default `include`,
   // so the default is spelled out.
-  "files": ["./types/wink-lemmatizer/index.d.ts"],
+  "files": ["./typescript/types/wink-lemmatizer/index.d.ts"],
   "include": ["**/*"]
 }

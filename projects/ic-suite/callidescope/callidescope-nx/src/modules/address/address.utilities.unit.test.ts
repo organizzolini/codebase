@@ -162,7 +162,7 @@ describe(runAddressExecutor, () => {
 
     expect(addressService.runDepth).toHaveBeenCalledWith(
       expect.objectContaining({
-        configurationPath: "elsewhere.ts",
+        configurationPath: "/workspace/elsewhere.ts",
         format: undefined,
       }),
     );

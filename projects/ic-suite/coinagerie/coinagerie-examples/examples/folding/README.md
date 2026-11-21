@@ -8,7 +8,7 @@ all of it.
 
 ```bash
 cd examples/folding/project
-coinagerie
+coinagerie --config coinagerie.config.ts
 ```
 
 It exits 0 and prints five words: `aspect`, `configure`, `engine`, `pisces`,

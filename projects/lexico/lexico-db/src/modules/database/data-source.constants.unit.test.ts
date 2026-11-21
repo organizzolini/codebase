@@ -89,9 +89,7 @@ describe("lexico data source", () => {
 
     expect(options.synchronize).toBe(false);
     expect(options.migrationsRun).toBe(false);
-    expect(options.migrations).toStrictEqual([
-      "src/modules/database/migrations/*.ts",
-    ]);
+    expect(options.migrations).toStrictEqual(["migrations/*.ts"]);
     expect(options.namingStrategy?.tableName("CalendarEvent", "")).toBe(
       "calendar_events",
     );

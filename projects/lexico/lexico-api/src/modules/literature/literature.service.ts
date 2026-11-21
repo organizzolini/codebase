@@ -12,7 +12,7 @@ import {
 
 import { createEmptyConnection, paginateQuery } from "./literature.utilities";
 
-import type { PaginationArguments } from "../search/pagination-arguments.entities";
+import type { PaginationArguments } from "../search/modules/search-arguments/pagination-arguments.entities";
 import type { Connection } from "@codebase/interface";
 
 /**

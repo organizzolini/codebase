@@ -1,15 +1,15 @@
 import { useState } from "react";
 
-import { toEventFilterInput } from "../../components/calendar-filters/event-filter-input.utilities";
+import { toEventFilterInput } from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filter-input.utilities";
 import {
   isSameEventFilter,
   toLinkedEventFilter,
-} from "../../components/calendar-filters/event-filter-tree.utilities";
+} from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filter-tree.utilities";
 
 import { getDefaultFilter } from "./use-filter-query.utilities";
 
-import type { EventFilterQuery } from "../../components/calendar-filters/event-filters.types";
-import type { ResolvedPreset } from "../../components/calendar-filters/presets.types";
+import type { EventFilterQuery } from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filters.types";
+import type { ResolvedPreset } from "../../components/calendar-query/calendar-filters/components/presets/presets.types";
 import type { UseFilterQueryResult } from "./use-filter-query.types";
 
 // 🧩 Hook

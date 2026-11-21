@@ -83,7 +83,7 @@ describe(FileFilterService, () => {
     const root = createTemporaryDirectory("callidescope-ignore");
     const filter = subject.buildFileFilter({
       exclude: [],
-      excludeFrom: ["configuration/.callidescopeignore"],
+      excludeFrom: ["configuration/ic-suite/.callidescopeignore"],
       workspaceRoot: root,
     });
 
@@ -91,7 +91,7 @@ describe(FileFilterService, () => {
     expect(subjectLogger.warn).toHaveBeenCalledWith(
       "🔭 Skipped a missing ignore file",
       undefined,
-      { ignoreFile: "configuration/.callidescopeignore" },
+      { ignoreFile: "configuration/ic-suite/.callidescopeignore" },
     );
   });
 
@@ -100,16 +100,18 @@ describe(FileFilterService, () => {
     // "nothing ignored" rather than taking the run down.
     const root = createTemporaryDirectory("callidescope-unversioned");
 
-    await mkdir(path.join(root, "configuration"), { recursive: true });
+    await mkdir(path.join(root, "configuration", "ic-suite"), {
+      recursive: true,
+    });
     await writeFile(
-      path.join(root, "configuration", ".callidescopeignore"),
+      path.join(root, "configuration", "ic-suite", ".callidescopeignore"),
       "**/*.test.ts\n",
       "utf8",
     );
 
     const filter = subject.buildFileFilter({
       exclude: [],
-      excludeFrom: ["configuration/.callidescopeignore"],
+      excludeFrom: ["configuration/ic-suite/.callidescopeignore"],
       workspaceRoot: root,
     });
 
@@ -118,7 +120,12 @@ describe(FileFilterService, () => {
       "🔭 Skipped an unreadable ignore file",
       undefined,
       {
-        ignorePath: path.join(root, "configuration", ".callidescopeignore"),
+        ignorePath: path.join(
+          root,
+          "configuration",
+          "ic-suite",
+          ".callidescopeignore",
+        ),
       },
     );
   });
@@ -129,7 +136,7 @@ describe(FileFilterService, () => {
     const workspaceRoot = path.resolve(process.cwd(), "..", "..", "..", "..");
     const filter = subject.buildFileFilter({
       exclude: [],
-      excludeFrom: ["configuration/.callidescopeignore"],
+      excludeFrom: ["configuration/ic-suite/.callidescopeignore"],
       workspaceRoot,
     });
 

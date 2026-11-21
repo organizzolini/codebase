@@ -26,4 +26,4 @@ nx run integration:vitest
 
 ## 👔 Conformetry
 
-This project was generated from the [nestjs-command-project](../configuration/conformetry-templates/nestjs-command-project) conformetry template.
+This project was generated from the [nestjs-command-project](../configuration/ic-suite/conformetry-templates/nestjs-command-project) conformetry template.

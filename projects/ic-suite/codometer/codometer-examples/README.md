@@ -64,12 +64,14 @@ inside the corpus would change the very counts these guides quote.
 `examples/corpus/` holds twenty-seven samples across twelve languages, plus the
 `.gitignore` that hides its stand-in build directory. It is small enough to
 count by hand, which is the whole point: a guide saying "four service files"
-is only worth reading if you can check.
+is only worth reading if you can check. The HCL, JSON, TOML and YAML samples
+sit under `configuration/`, and the TypeScript ones are grouped into
+`orders/`, `checkout/` and `catalog/` folders.
 
 | What | Count |
 | ---- | ----- |
 | Files measured | 28 |
-| Folders | 12 |
+| Folders | 16 |
 | Source files | 18 |
 | TypeScript files | 15 |
 | JavaScript files | 2 |
@@ -208,7 +210,7 @@ nx run codometer-examples:codometer:check
 
 ## Notes on the corpus
 
-- **It is not measured with the repository.** `configuration/.codometerignore`
+- **It is not measured with the repository.** `configuration/ic-suite/.codometerignore`
   excludes it, so twenty-seven sample files in twelve languages do not distort
   the statistics of the repository that happens to hold them.
 - **It is not linted like source.** The samples exist to be counted, and several

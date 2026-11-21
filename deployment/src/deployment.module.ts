@@ -17,7 +17,7 @@ import { VersionPackagesModule } from "./modules/version-packages/version-packag
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ".env",
+      envFilePath: "configuration/.env",
       isGlobal: true,
       validate: (config: Record<string, unknown>) =>
         environmentSchema.parse(config),

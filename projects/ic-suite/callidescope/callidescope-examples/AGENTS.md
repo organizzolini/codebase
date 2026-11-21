@@ -18,10 +18,10 @@ nx run callidescope-examples:vitest            # assert every documented finding
 ```
 
 There is no per-example command. Almost every example directory carries no
-`tsconfig.json`, so the package traces as one unit — every example's `## Run it`
+`configuration/tsconfig.json`, so the package traces as one unit — every example's `## Run it`
 names the command above and then says where in `output/` to look. One
 directory is an exception and is a project of its own,
-[`gated-leaf`](examples/gated-leaf/README.md), because a limit resolves per
+[`gated-leaf`](examples/limits/gated-leaf/README.md), because a limit resolves per
 project and that is what it demonstrates.
 
 The run is not confined to this package, though. A scoped run also traces every
@@ -29,30 +29,30 @@ project its imports transitively reach, so this one covers five projects: the
 two it is named at — `projects/ic-suite/callidescope/callidescope-examples` and the nested
 `gated-leaf` — plus `projects/ic-suite/callidescope/callidescope-configuration`,
 `projects/ic-suite/codometer/codometer-configuration`, and `projects/common/observability`. See
-[`dependency-closure`](examples/dependency-closure/README.md).
+[`dependency-closure`](examples/resolution/dependency-closure/README.md).
 
 ## Callidescope said X — open this example
 
 | What the run said | Open | What it means |
 | ----------------- | ---- | ------------- |
-| `🚨 [DEPTH n > limit]` and every frame's summary differs | [`deep-stack`](examples/deep-stack/README.md) | The layering is real. Question whether the stages are all needed; do not delete one layer at a time |
-| `🚨 [DEPTH n > limit]` and a run of frames all say the same thing | [`forwarding-stack`](examples/forwarding-stack/README.md) | Layers that only pass arguments along. Collapse them |
-| `depth ≥ n` rather than `depth n` | [`computed-member`](examples/computed-member/README.md) | Something on the path could not be followed. The number is a floor, not a bug |
-| `Unfollowable calls` above zero | [`computed-member`](examples/computed-member/README.md), [`implementation-fan-out`](examples/implementation-fan-out/README.md) | A computed member name, or a structural expansion dropped for exceeding the implementation-candidate cap |
-| `Stacks through recursion` above zero | [`mutual-recursion`](examples/mutual-recursion/README.md) | A cycle, collapsed before depth was measured. The depth is a floor |
-| A stack headed `· orphan-root` | [`entry-points`](examples/entry-points/README.md) | Nothing claimed the callable. Either dead code, or an entry-point rule your configuration is missing |
-| A stack headed `· declared` | [`declared-entry-points`](examples/declared-entry-points/README.md) | A project named that address in its own `callidescope.config.ts`. That is the surface it asked to be measured on |
-| `declares an entryPoints.addresses entry that resolves to nothing` | [`declared-entry-points`](examples/declared-entry-points/README.md) | A declared address names a callable that has moved or been renamed. Fix the address; the refusal exists so a rename cannot loosen a gate in silence |
-| `which only the workspace configuration may set` | [`project-depth-limit`](examples/project-depth-limit/README.md) | A project's `callidescope.config.ts` reached past `entryPoints`, `limits.maximumDepth`, `limits.maximumBreadth`, and `exclude` |
-| Different findings in one report judged against different limits | [`project-depth-limit`](examples/project-depth-limit/README.md), [`gated-leaf`](examples/gated-leaf/README.md) | Not a bug. A limit belongs to a project, and every project writes its own — so findings against different numbers in one report are different projects' numbers |
-| A project reporting depth 0 while carrying a real chain | [`gated-leaf`](examples/gated-leaf/README.md) | It roots nothing, because everything it owns is called from above. Declare its entry points before giving it a limit |
-| `--check breadth requires at least one project in scope` | [`gated-leaf`](examples/gated-leaf/README.md) | Breadth has no default anywhere. Some project in scope has to declare `limits.maximumBreadth` before the gate can run |
-| A file a project's own `exclude` names, still traced | [`gated-leaf`](examples/gated-leaf/README.md) | A project's globs are anchored to that project's root. A workspace-relative glob in a project file matches nothing; drop the leading path, or move the glob to the run's own configuration |
-| A frame marked `⚠ deprecated`, or printed `(…): T` | [`frame-annotations`](examples/frame-annotations/README.md) | Annotation shortening in the printed tree. `output/report.json` carries the full text |
-| A call resolved to a class that never writes `implements` | [`structural-interface`](examples/structural-interface/README.md) | Structural matching, which is the only thing that works on an arrow-typed property |
-| A frame you did not expect, named for a declaration rather than the local name | [`plain-call`](examples/plain-call/README.md) | The checker unwraps the import alias. A report always names the declaration |
-| A frame, a stack, or a per-project row in a package the run was not pointed at | [`dependency-closure`](examples/dependency-closure/README.md) | A scoped run traces the projects its imports reach. Not a leak — a call into a dependency lands on a frame instead of stopping at the package boundary |
-| A stack that ends at a call into another directory, with no frame for it | [`dependency-closure`](examples/dependency-closure/README.md) | The destination is refused: a project root holding no `package.json` is shared settings rather than a package, and the workspace root contains every project |
+| `🚨 [DEPTH n > limit]` and every frame's summary differs | [`deep-stack`](examples/stacks/deep-stack/README.md) | The layering is real. Question whether the stages are all needed; do not delete one layer at a time |
+| `🚨 [DEPTH n > limit]` and a run of frames all say the same thing | [`forwarding-stack`](examples/stacks/forwarding-stack/README.md) | Layers that only pass arguments along. Collapse them |
+| `depth ≥ n` rather than `depth n` | [`computed-member`](examples/resolution/computed-member/README.md) | Something on the path could not be followed. The number is a floor, not a bug |
+| `Unfollowable calls` above zero | [`computed-member`](examples/resolution/computed-member/README.md), [`implementation-fan-out`](examples/resolution/implementation-fan-out/README.md) | A computed member name, or a structural expansion dropped for exceeding the implementation-candidate cap |
+| `Stacks through recursion` above zero | [`mutual-recursion`](examples/stacks/mutual-recursion/README.md) | A cycle, collapsed before depth was measured. The depth is a floor |
+| A stack headed `· orphan-root` | [`entry-points`](examples/roots/entry-points/README.md) | Nothing claimed the callable. Either dead code, or an entry-point rule your configuration is missing |
+| A stack headed `· declared` | [`declared-entry-points`](examples/roots/declared-entry-points/README.md) | A project named that address in its own `callidescope.config.ts`. That is the surface it asked to be measured on |
+| `declares an entryPoints.addresses entry that resolves to nothing` | [`declared-entry-points`](examples/roots/declared-entry-points/README.md) | A declared address names a callable that has moved or been renamed. Fix the address; the refusal exists so a rename cannot loosen a gate in silence |
+| `which only the workspace configuration may set` | [`project-depth-limit`](examples/limits/project-depth-limit/README.md) | A project's `callidescope.config.ts` reached past `entryPoints`, `limits.maximumDepth`, `limits.maximumBreadth`, and `exclude` |
+| Different findings in one report judged against different limits | [`project-depth-limit`](examples/limits/project-depth-limit/README.md), [`gated-leaf`](examples/limits/gated-leaf/README.md) | Not a bug. A limit belongs to a project, and every project writes its own — so findings against different numbers in one report are different projects' numbers |
+| A project reporting depth 0 while carrying a real chain | [`gated-leaf`](examples/limits/gated-leaf/README.md) | It roots nothing, because everything it owns is called from above. Declare its entry points before giving it a limit |
+| `--check breadth requires at least one project in scope` | [`gated-leaf`](examples/limits/gated-leaf/README.md) | Breadth has no default anywhere. Some project in scope has to declare `limits.maximumBreadth` before the gate can run |
+| A file a project's own `exclude` names, still traced | [`gated-leaf`](examples/limits/gated-leaf/README.md) | A project's globs are anchored to that project's root. A workspace-relative glob in a project file matches nothing; drop the leading path, or move the glob to the run's own configuration |
+| A frame marked `⚠ deprecated`, or printed `(…): T` | [`frame-annotations`](examples/stacks/frame-annotations/README.md) | Annotation shortening in the printed tree. `output/report.json` carries the full text |
+| A call resolved to a class that never writes `implements` | [`structural-interface`](examples/resolution/structural-interface/README.md) | Structural matching, which is the only thing that works on an arrow-typed property |
+| A frame you did not expect, named for a declaration rather than the local name | [`plain-call`](examples/resolution/plain-call/README.md) | The checker unwraps the import alias. A report always names the declaration |
+| A frame, a stack, or a per-project row in a package the run was not pointed at | [`dependency-closure`](examples/resolution/dependency-closure/README.md) | A scoped run traces the projects its imports reach. Not a leak — a call into a dependency lands on a frame instead of stopping at the package boundary |
+| A stack that ends at a call into another directory, with no frame for it | [`dependency-closure`](examples/resolution/dependency-closure/README.md) | The destination is refused: a project root holding no `package.json` is shared settings rather than a package, and the workspace root contains every project |
 | `A configured destination is stale` | [`callidescope.workspace.config.ts`](callidescope.workspace.config.ts) | Run the `write` configuration of whichever project owns the destination |
 | `--check` rejected a value | [README, "The two flags"](README.md#the-two-flags) | The set is drawn from `breadth`, `depth`, and `reports`; an empty `--check` is refused |
 
@@ -69,7 +69,7 @@ callidescope-examples/
 │   └── gated-leaf/                    a nested project, with its own limits
 │       ├── callidescope.config.ts     what that project declares about itself
 │       ├── *.generated.ts             the file this project's own exclude drops
-│       └── tsconfig.json              what makes the directory a project
+│       └── configuration/tsconfig.json  what makes the directory a project
 ├── output/
 │   ├── report.json                    the whole run, machine-readable
 │   ├── report.md                      the printed trees, between anchors
@@ -82,7 +82,7 @@ callidescope-examples/
 ```
 
 - Every directory under `examples/` is one example, readable on its own.
-- **One of them is also a project.** `gated-leaf` holds a `tsconfig.json`,
+- **One of them is also a project.** `gated-leaf` holds a `configuration/tsconfig.json`,
   which is what makes a directory a project and therefore what lets a limit
   belong to it. It is named in the `examples` target's `--directories` rather
   than reached through the closure, and it may not gain a `package.json`: Nx
@@ -92,7 +92,7 @@ callidescope-examples/
 - **No other example needed a project of its own.** A project-declared depth
   limit and a project-declared entry point are already demonstrated by this
   package's own root `callidescope.config.ts` — the root package itself has a
-  `tsconfig.json`, so it was already a discoverable project before this
+  `configuration/tsconfig.json`, so it was already a discoverable project before this
   package's examples were reworked as a set. `project-depth-limit` and
   `declared-entry-points` read from that root configuration and stay plain
   fixtures; only the exclusion criterion needed the extra isolation a nested
@@ -136,7 +136,7 @@ Most of this package is code that would fail review if it were real, and that is
 the point:
 
 - `deep-stack` and `forwarding-stack` both breach `maximumDepth` on purpose.
-  `configuration/.callidescopeignore` is what keeps this package excluded from
+  `configuration/ic-suite/.callidescopeignore` is what keeps this package excluded from
   the inferred `gate` target altogether — the callidescope Nx plugin withholds
   `gate` from an excluded project, since it never traces one. Removing that
   entry stops the exclusion, so the plugin infers `gate` here the same as
@@ -168,7 +168,7 @@ this run deliberately does not ignore them and measures five, so one declared
 number is a pass in the gate and a finding in this report. Do not restructure
 the logger to quiet this run, and do not raise its four — that buys headroom on
 the gate that matters to tidy a fixture package.
-[`dependency-closure`](examples/dependency-closure/README.md) is the example
+[`dependency-closure`](examples/resolution/dependency-closure/README.md) is the example
 that finding belongs to. The three dependency packages the closure reaches all
 declare their own limits now; a finding that used to appear here —
 `ConfigurationService.loadConfiguration` at eight frames against the run's

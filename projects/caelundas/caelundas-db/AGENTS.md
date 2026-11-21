@@ -28,8 +28,8 @@ src/
     caelundas-database.constants.ts      # Project, coordinate scale, read model SQL
     caelundas-database.utilities.ts      # Value transformers
     data-source.constants.ts             # Entities, migrations, caelundasDataSource
-    entities/                            # One *.entity.ts per table or view
-    migrations/                          # The one migration and its .sql pair
+    modules/                             # One *.entity.ts per table or view, by domain
+migrations/                              # The one migration and its .sql pair
 ```
 
 ## Rules

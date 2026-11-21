@@ -128,11 +128,11 @@
       "completedRunId": "e4390f24-ea68-4200-9283-2ea1296a4888"
     },
     "/openwiki/integrations/ollama-searxng.md": {
-      "gitHead": "ba2e160bd2c456999097d7d779135c2a44c4f0c2",
-      "sourceFingerprint": "sha256:4af44f891a8a7815517c068cfd737ee0aaca0488720e165968daa48595d6c7cc",
-      "pageVersion": "sha256:59106e4b6294b72959d39de43ca85b1d57a0762faf4b6256948fb275dbf76530",
-      "completedBy": "openwiki/0.7.0",
-      "completedRunId": "e4390f24-ea68-4200-9283-2ea1296a4888"
+      "pageVersion": "sha256:5fe42806f5d9438f8c9c642fecf2a54eb57cbeafbc61b88e9a163cc2f56026a5",
+      "completedBy": "openwiki/0.9.0",
+      "completedRunId": "9a69ede4-a9c7-4f22-8c70-42c243151284",
+      "gitHead": "4ad7eaf73045d085ce3c27fc63e6290feee6ec9e",
+      "sourceFingerprint": "sha256:51e16f8734023e98a17d34563b302af458c5975882a2ee1aae93079ff628fb1e"
     },
     "/openwiki/integrations/swiss-ephemeris.md": {
       "pageVersion": "sha256:e10427c3b6e062c8906c6f467ba54f93b0ea9317ae977231e909da487efe1b9d",
@@ -156,11 +156,11 @@
       "completedRunId": "708979ae-fbc6-44e9-8839-0e247691464e"
     },
     "/openwiki/quickstart.md": {
-      "pageVersion": "sha256:d4827f2302e159c169c81eb62b7884b0bc99e51f1bf338adf8b9a0f941499bff",
+      "pageVersion": "sha256:bde6648f42848d2d33f87ba4589dfd2aa791cec6021cca5215923b28d03195f8",
       "completedBy": "openwiki/0.9.0",
-      "completedRunId": "1f25fa95-7726-4fb4-882e-e01ecca0888a",
-      "gitHead": "7aaf540169f3c1cd8d58f850e08528ea2d6ac07d",
-      "sourceFingerprint": "sha256:2ba9f0be0add91bb8321243fd1359c7a6ecf8628a91290bd39f41ce60d8c8991"
+      "completedRunId": "9a69ede4-a9c7-4f22-8c70-42c243151284",
+      "gitHead": "4ad7eaf73045d085ce3c27fc63e6290feee6ec9e",
+      "sourceFingerprint": "sha256:51e16f8734023e98a17d34563b302af458c5975882a2ee1aae93079ff628fb1e"
     },
     "/openwiki/testing/affirmancy.md": {
       "gitHead": "653471e9254c3ad16f9e8645f8c168e19a642205",

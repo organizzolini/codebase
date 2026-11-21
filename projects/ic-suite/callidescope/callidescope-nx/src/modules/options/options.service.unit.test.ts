@@ -7,6 +7,8 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 import {
   EXECUTOR_CONFIGURATION_SURFACE,
   PLUGIN_CONFIGURATION_SURFACE,
+  PLUGIN_PROJECT_CONFIGURATION_SURFACE,
+  PLUGIN_PROJECT_TSCONFIG_SURFACE,
 } from "./options.constants";
 import { OptionsService } from "./options.service";
 
@@ -28,6 +30,12 @@ describe(OptionsService, () => {
     vi.mocked(configurationService.requireConfigurationPath).mockImplementation(
       (path: string | undefined): string => path ?? "",
     );
+    vi.mocked(
+      configurationService.requireProjectConfigurationPath,
+    ).mockImplementation((path: string | undefined): string => path ?? "");
+    vi.mocked(
+      configurationService.requireProjectTsconfigPath,
+    ).mockImplementation((path: string | undefined): string => path ?? "");
   });
 
   it("resolves with its dependencies", async () => {
@@ -50,6 +58,8 @@ describe(OptionsService, () => {
           configurationPath: "configuration/callidescope.config.ts",
           depthTargetName: "callidescope-depth",
           gateTargetName: "callidescope-restrict",
+          projectConfigurationPath: "configuration/callidescope.config.ts",
+          projectTsconfigPath: "tsconfig.json",
           traceTargetName: "callidescope-trace",
         }),
       ).toStrictEqual({
@@ -57,6 +67,8 @@ describe(OptionsService, () => {
         configurationPath: "configuration/callidescope.config.ts",
         depthTargetName: "callidescope-depth",
         gateTargetName: "callidescope-restrict",
+        projectConfigurationPath: "configuration/callidescope.config.ts",
+        projectTsconfigPath: "tsconfig.json",
         traceTargetName: "callidescope-trace",
       });
     });
@@ -74,6 +86,8 @@ describe(OptionsService, () => {
         expect(
           service.resolvePluginOptions({
             configurationPath: "callidescope.config.ts",
+            projectConfigurationPath: "callidescope.config.ts",
+            projectTsconfigPath: "tsconfig.json",
             ...extra,
           }),
         ).toStrictEqual({
@@ -81,6 +95,8 @@ describe(OptionsService, () => {
           configurationPath: "callidescope.config.ts",
           depthTargetName: "callidescope-depth",
           gateTargetName: "callidescope-restrict",
+          projectConfigurationPath: "callidescope.config.ts",
+          projectTsconfigPath: "tsconfig.json",
           traceTargetName: "callidescope-trace",
         });
       },
@@ -93,6 +109,8 @@ describe(OptionsService, () => {
         service.resolvePluginOptions({
           configurationPath: "callidescope.config.ts",
           depthTargetName: "callidescope-depth",
+          projectConfigurationPath: "callidescope.config.ts",
+          projectTsconfigPath: "tsconfig.json",
         }),
       ).toMatchObject({
         breadthTargetName: "callidescope-breadth",
@@ -140,6 +158,64 @@ describe(OptionsService, () => {
       expect.hasAssertions();
       expect(PLUGIN_CONFIGURATION_SURFACE).toBe(
         'The "configurationPath" option in the nx.json registration of @callidescope/nx',
+      );
+    });
+  });
+
+  describe("projectConfigurationPath", () => {
+    it.each([
+      ["nothing", undefined, undefined],
+      ["a blank path", { projectConfigurationPath: "" }, undefined],
+      ["a non-string path", { projectConfigurationPath: 7 }, undefined],
+      ["a path", { projectConfigurationPath: "a.ts" }, "a.ts"],
+    ])(
+      "asks the configuration layer about %s",
+      (_description, options, path) => {
+        expect.hasAssertions();
+
+        service.resolvePluginOptions(options);
+
+        expect(
+          configurationService.requireProjectConfigurationPath,
+        ).toHaveBeenCalledWith(path, PLUGIN_PROJECT_CONFIGURATION_SURFACE);
+      },
+    );
+
+    it("names the plugin option and its registration in the surface", () => {
+      expect.hasAssertions();
+      expect(PLUGIN_PROJECT_CONFIGURATION_SURFACE).toBe(
+        'The "projectConfigurationPath" option in the nx.json registration of @callidescope/nx',
+      );
+    });
+  });
+
+  describe("projectTsconfigPath", () => {
+    it.each([
+      ["nothing", undefined, undefined],
+      ["a blank path", { projectTsconfigPath: "" }, undefined],
+      ["a non-string path", { projectTsconfigPath: 7 }, undefined],
+      [
+        "a path",
+        { projectTsconfigPath: "configuration/tsconfig.json" },
+        "configuration/tsconfig.json",
+      ],
+    ])(
+      "asks the configuration layer about %s",
+      (_description, options, path) => {
+        expect.hasAssertions();
+
+        service.resolvePluginOptions(options);
+
+        expect(
+          configurationService.requireProjectTsconfigPath,
+        ).toHaveBeenCalledWith(path, PLUGIN_PROJECT_TSCONFIG_SURFACE);
+      },
+    );
+
+    it("names the plugin option and its registration in the surface", () => {
+      expect.hasAssertions();
+      expect(PLUGIN_PROJECT_TSCONFIG_SURFACE).toBe(
+        'The "projectTsconfigPath" option in the nx.json registration of @callidescope/nx',
       );
     });
   });

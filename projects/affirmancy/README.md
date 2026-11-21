@@ -24,12 +24,12 @@ The devcontainer provides Python 3.14.
 ## Setup
 
 This application is a member of the uv workspace declared in
-`configuration/pyproject.toml`, sharing
-`configuration/uv.lock` and the root `.venv`. Sync from the
+`configuration/python/pyproject.toml`, sharing
+`configuration/python/uv.lock` and the root `.venv`. Sync from the
 repository root and point uv at that workspace config.
 
 ```bash
-uv sync --project configuration
+uv sync --project configuration/python
 ```
 
 ## Quickstart
@@ -65,8 +65,9 @@ projects/affirmancy/
 │   └── output.py            # JSON and markdown writers
 ├── testing/                 # pytest suites, one per module
 ├── output/                  # Generated files (gitignored)
-├── pyproject.toml
-└── searxng.settings.yml
+├── configuration/
+│   └── searxng.settings.yml
+└── pyproject.toml
 ```
 
 ## Subjects
@@ -167,4 +168,4 @@ MIT — see [LICENSE](../../LICENSE).
 
 ## 👔 Conformetry
 
-This project was generated from the [jupyter-notebook-application](../../configuration/conformetry-templates/jupyter-notebook-application) conformetry template.
+This project was generated from the [jupyter-notebook-application](../../configuration/ic-suite/conformetry-templates/jupyter-notebook-application) conformetry template.

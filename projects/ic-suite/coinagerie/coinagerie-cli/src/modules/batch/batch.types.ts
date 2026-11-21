@@ -4,6 +4,8 @@ import type { CheckVerdict } from "../check/check.types";
 
 /** The flags the `batch` command reads. */
 export interface BatchCommandOptions {
+  /** Required: each project's configuration, relative to its directory. */
+  projectConfigurationPath?: string | undefined;
   /** Rewrite each project's glossaries instead of judging them. */
   write?: boolean | undefined;
 }

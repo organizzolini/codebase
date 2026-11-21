@@ -1,0 +1,19 @@
+import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { ProcessRunnerService } from "../../../process-runner/process-runner.service";
+import { ReporterService } from "../../../reporter/reporter.service";
+import { SoftwareBrewService } from "../platform/software-brew.service";
+
+import { SoftwareOllamaService } from "./software-ollama.service";
+
+describe(SoftwareOllamaService, () => {
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(SoftwareOllamaService, {
+      mocks: [ProcessRunnerService, SoftwareBrewService, ReporterService],
+    });
+
+    expect(instance).toBeInstanceOf(SoftwareOllamaService);
+  });
+});

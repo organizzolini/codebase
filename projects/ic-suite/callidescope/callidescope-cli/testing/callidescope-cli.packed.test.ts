@@ -43,6 +43,8 @@ describe("the packed callidescope command", () => {
       {
         "callidescope.config.json": JSON.stringify({
           limits: { maximumDepth: 6 },
+          projectConfigurationPath: "callidescope.config.js",
+          projectTsconfigPath: "tsconfig.json",
         }),
         "packages/readable/callidescope.config.js": PROJECT_CONFIGURATION,
         "packages/readable/src/index.ts":

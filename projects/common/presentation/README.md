@@ -397,7 +397,7 @@ import "@codebase/presentation/styles/globals.css";
 
 ### Import Errors
 
-Verify TypeScript path mapping in `tsconfig.json`:
+Verify TypeScript path mapping in `configuration/tsconfig.json`:
 
 ```json
 {

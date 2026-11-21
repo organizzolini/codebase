@@ -10,6 +10,10 @@ export interface CallidescopePluginOptions {
   readonly depthTargetName: string;
   /** Name of the inferred per-project gate target. */
   readonly gateTargetName: string;
+  /** Where each project keeps its own configuration, project-root relative. No default, and never searched for. */
+  readonly projectConfigurationPath: string;
+  /** Where each project keeps its TypeScript configuration, project-root relative. No default, and never searched for. */
+  readonly projectTsconfigPath: string;
   /** Name of the inferred per-project trace target. */
   readonly traceTargetName: string;
 }

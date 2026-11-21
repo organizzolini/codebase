@@ -8,16 +8,16 @@ import {
 } from "@codebase/caelundas-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { NightSkyColorsService } from "./night-sky-colors.service";
-import { NightSkyEclipticService } from "./night-sky-ecliptic.service";
-import { NightSkyInputService } from "./night-sky-input.service";
-import { NightSkyLinesService } from "./night-sky-lines.service";
-import { NightSkyOptionsService } from "./night-sky-options.service";
-import { NightSkyProjectionService } from "./night-sky-projection.service";
-import { NightSkySiderealTimeService } from "./night-sky-sidereal-time.service";
-import { NightSkyStarsService } from "./night-sky-stars.service";
-import { NightSkySvgService } from "./night-sky-svg.service";
-import { NightSkyViewService } from "./night-sky-view.service";
+import { NightSkyEclipticService } from "./modules/astronomy/night-sky-ecliptic.service";
+import { NightSkyProjectionService } from "./modules/astronomy/night-sky-projection.service";
+import { NightSkySiderealTimeService } from "./modules/astronomy/night-sky-sidereal-time.service";
+import { NightSkyColorsService } from "./modules/drawing/night-sky-colors.service";
+import { NightSkyLinesService } from "./modules/drawing/night-sky-lines.service";
+import { NightSkyStarsService } from "./modules/drawing/night-sky-stars.service";
+import { NightSkySvgService } from "./modules/drawing/night-sky-svg.service";
+import { NightSkyViewService } from "./modules/drawing/night-sky-view.service";
+import { NightSkyInputService } from "./modules/options/night-sky-input.service";
+import { NightSkyOptionsService } from "./modules/options/night-sky-options.service";
 import { NIGHT_SKY_CACHE_SIZE } from "./night-sky.constants";
 import { NightSkyService } from "./night-sky.service";
 

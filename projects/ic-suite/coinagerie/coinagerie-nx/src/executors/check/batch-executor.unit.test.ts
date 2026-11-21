@@ -20,7 +20,10 @@ const ROOT = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../../..",
 );
-const OPTIONS: CheckExecutorOptions = { command: FAKE_COMMAND };
+const OPTIONS: CheckExecutorOptions = {
+  command: FAKE_COMMAND,
+  projectConfigurationPath: "coinagerie.config.ts",
+};
 
 /** A batch of one `coinagerie-check` task per project, each rooted at `packages/<name>`. */
 function buildArguments(

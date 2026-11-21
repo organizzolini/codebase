@@ -40,7 +40,8 @@ projects/affirmancy/
 ├── AGENTS.md
 ├── pyproject.toml
 ├── uv.lock
-├── searxng.settings.yml
+├── configuration/
+│   └── searxng.settings.yml
 └── README.md
 ```
 

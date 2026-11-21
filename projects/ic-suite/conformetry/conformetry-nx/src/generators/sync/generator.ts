@@ -1,5 +1,7 @@
 // 🛠️ Utilities
 
+import path from "node:path";
+
 import {
   DEFAULT_OUTPUT_PATH,
   DEFAULT_PACKAGE_NAME,
@@ -36,11 +38,14 @@ export default async function syncGenerator(
   const files = await generatorService.emitPlugin({
     // Nx registers this as a global sync generator, which receives no plugin
     // options, so the workspace's own registration is read for the path.
-    configurationPath: optionsService.resolveConfigurationPath({
-      configuration: options?.configuration,
-      nxConfiguration: readNxConfiguration(tree),
-      surface: EXECUTION_OPTION_SURFACE,
-    }),
+    configurationPath: path.resolve(
+      tree.root,
+      optionsService.resolveConfigurationPath({
+        configuration: options?.configuration,
+        nxConfiguration: readNxConfiguration(tree),
+        surface: EXECUTION_OPTION_SURFACE,
+      }),
+    ),
     outputPath: options?.outputPath ?? DEFAULT_OUTPUT_PATH,
     packageName: options?.packageName ?? DEFAULT_PACKAGE_NAME,
     projects: projectsService.listWorkspaceProjects(tree.root),

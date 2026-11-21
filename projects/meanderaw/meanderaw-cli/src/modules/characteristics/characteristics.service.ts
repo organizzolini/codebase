@@ -12,7 +12,7 @@ import {
   CharacteristicRegistryError,
   NUMERIC_CHARACTERISTIC_KEYS,
 } from "./characteristics.constants";
-import { TileCrossingComponentDeltaCountCharacteristicService } from "./path/tile-crossing/tile-crossing-component-delta-count-characteristic.service";
+import { TileCrossingComponentDeltaCountCharacteristicService } from "./modules/path/modules/tile-crossing/tile-crossing-component-delta-count-characteristic.service";
 
 import type { Code, CodeObject } from "../code/code.types";
 import type {

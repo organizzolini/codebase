@@ -48,40 +48,41 @@ which maps "callidescope reported X" to the example that explains X.
 
 ## The examples
 
-Each directory under [`examples/`](examples) is one example, carries its own
-`README.md`, and is readable on its own.
+Each directory under a group folder of [`examples/`](examples) (`resolution`,
+`roots`, `stacks`, `limits`) is one example, carries its own `README.md`, and is
+readable on its own.
 
 **The package is traced as one unit, together with its dependency closure.**
-Almost every example directory carries no `tsconfig.json` of its own, so it
+Almost every example directory carries no `configuration/tsconfig.json` of its own, so it
 cannot be traced alone — which is why every example's `## Run it` names the same
 command and then says where in the committed output to look. The one exception
-is deliberate: [gated-leaf](examples/gated-leaf/README.md) _is_ a project of its
+is deliberate: [gated-leaf](examples/limits/gated-leaf/README.md) _is_ a project of its
 own, because what it demonstrates is per-project configuration and a limit
 resolves per project. The run reaches beyond this package in the other
 direction, too: a project's own `tsconfig.json` never lists the packages it
 imports, so a scoped run also traces every project its imports transitively
 reach — otherwise a call leaving the package would land in code no traced
 project owned. Five projects are traced here, and
-[dependency-closure](examples/dependency-closure/README.md) is where that is
+[dependency-closure](examples/resolution/dependency-closure/README.md) is where that is
 worked through. Read them in the order below for a walkthrough:
-[plain-call](examples/plain-call/README.md) →
-[injected-dependency](examples/injected-dependency/README.md) →
-[structural-interface](examples/structural-interface/README.md) →
-[base-class](examples/base-class/README.md) →
-[constructed-class](examples/constructed-class/README.md) →
-[callback-argument](examples/callback-argument/README.md) →
-[dependency-closure](examples/dependency-closure/README.md) →
-[computed-member](examples/computed-member/README.md) →
-[implementation-fan-out](examples/implementation-fan-out/README.md) →
-[mutual-recursion](examples/mutual-recursion/README.md) →
-[entry-points](examples/entry-points/README.md) →
-[declared-entry-points](examples/declared-entry-points/README.md) →
-[deep-stack](examples/deep-stack/README.md) →
-[forwarding-stack](examples/forwarding-stack/README.md) →
-[project-depth-limit](examples/project-depth-limit/README.md) →
-[gated-leaf](examples/gated-leaf/README.md) →
-[shared-tail](examples/shared-tail/README.md) →
-[frame-annotations](examples/frame-annotations/README.md).
+[plain-call](examples/resolution/plain-call/README.md) →
+[injected-dependency](examples/resolution/injected-dependency/README.md) →
+[structural-interface](examples/resolution/structural-interface/README.md) →
+[base-class](examples/resolution/base-class/README.md) →
+[constructed-class](examples/resolution/constructed-class/README.md) →
+[callback-argument](examples/resolution/callback-argument/README.md) →
+[dependency-closure](examples/resolution/dependency-closure/README.md) →
+[computed-member](examples/resolution/computed-member/README.md) →
+[implementation-fan-out](examples/resolution/implementation-fan-out/README.md) →
+[entry-points](examples/roots/entry-points/README.md) →
+[declared-entry-points](examples/roots/declared-entry-points/README.md) →
+[mutual-recursion](examples/stacks/mutual-recursion/README.md) →
+[deep-stack](examples/stacks/deep-stack/README.md) →
+[forwarding-stack](examples/stacks/forwarding-stack/README.md) →
+[shared-tail](examples/stacks/shared-tail/README.md) →
+[frame-annotations](examples/stacks/frame-annotations/README.md) →
+[project-depth-limit](examples/limits/project-depth-limit/README.md) →
+[gated-leaf](examples/limits/gated-leaf/README.md).
 
 ### The resolution table, made executable
 
@@ -90,13 +91,13 @@ One fixture per row of the "How it follows a call" table in
 
 | Fixture | Written as | Resolved to |
 | ------- | ---------- | ----------- |
-| [`plain-call`](examples/plain-call) | `normalize(label)` | `normalizeLabel` — the declaration, unwrapped through the import alias |
-| [`injected-dependency`](examples/injected-dependency) | `this.inventoryService.reserve(…)` | `InventoryService.reserve`, through the constructor parameter's type |
-| [`structural-interface`](examples/structural-interface) | `provider.ingest(document)` | `FilesystemProviderService.ingest` — no `implements`, an arrow-typed property |
-| [`base-class`](examples/base-class) | `super.run()` | `BaseTaskService.run`, the base declaration |
-| [`constructed-class`](examples/constructed-class) | `new ParserService(source)` | `ParserService.constructor`, which has a body |
-| [`callback-argument`](examples/callback-argument) | `entries.map(entry => …)` | The arrow, as its own frame. `map` itself is external |
-| [`computed-member`](examples/computed-member) | `REPORT_HANDLERS[format]()` | Nothing. Recorded as unfollowable rather than guessed |
+| [`plain-call`](examples/resolution/plain-call) | `normalize(label)` | `normalizeLabel` — the declaration, unwrapped through the import alias |
+| [`injected-dependency`](examples/resolution/injected-dependency) | `this.inventoryService.reserve(…)` | `InventoryService.reserve`, through the constructor parameter's type |
+| [`structural-interface`](examples/resolution/structural-interface) | `provider.ingest(document)` | `FilesystemProviderService.ingest` — no `implements`, an arrow-typed property |
+| [`base-class`](examples/resolution/base-class) | `super.run()` | `BaseTaskService.run`, the base declaration |
+| [`constructed-class`](examples/resolution/constructed-class) | `new ParserService(source)` | `ParserService.constructor`, which has a body |
+| [`callback-argument`](examples/resolution/callback-argument) | `entries.map(entry => …)` | The arrow, as its own frame. `map` itself is external |
+| [`computed-member`](examples/resolution/computed-member) | `REPORT_HANDLERS[format]()` | Nothing. Recorded as unfollowable rather than guessed |
 
 The last row is why this package's deepest stack prints as `depth ≥ 8` rather
 than `depth 8`. Eight frames of ordinary forwarding end at a member name that is
@@ -110,7 +111,7 @@ call that leaves the package it was written in — which is the next section.
 
 ### The dependency closure
 
-[`dependency-closure`](examples/dependency-closure) makes the same injected hop
+[`dependency-closure`](examples/resolution/dependency-closure) makes the same injected hop
 as `injected-dependency` and lands in a different package —
 `ConfigurationService.resolveConfiguration`, declared in
 `@callidescope/configuration`. It resolves because a run scoped to one directory
@@ -123,7 +124,7 @@ was named at, and three its imports reached:
 | Project | Reached because |
 | ------- | --------------- |
 | `projects/ic-suite/callidescope/callidescope-examples` | Named — the directory the run was pointed at |
-| `.../examples/gated-leaf` | Named — a nested project, for the reason [gated-leaf](examples/gated-leaf/README.md) gives |
+| `.../examples/limits/gated-leaf` | Named — a nested project, for the reason [gated-leaf](examples/limits/gated-leaf/README.md) gives |
 | `projects/ic-suite/callidescope/callidescope-configuration` | Imported by the fixture, and by [`callidescope.workspace.config.ts`](callidescope.workspace.config.ts) |
 | `projects/ic-suite/codometer/codometer-configuration` | Reached through the shared configuration [`codometer.config.ts`](codometer.config.ts) spreads |
 | `projects/common/observability` | Reached through the shared `configuration/eslint.config.ts` |
@@ -139,7 +140,7 @@ reads and the closure deliberately refuses.
 
 ### The cap on structural matching
 
-[`implementation-fan-out`](examples/implementation-fan-out) declares nine
+[`implementation-fan-out`](examples/resolution/implementation-fan-out) declares nine
 classes satisfying one interface, against an implementation-candidate cap of
 eight. The whole expansion is dropped and
 recorded as unfollowable — not narrowed to a favorite, which would invent a
@@ -156,7 +157,7 @@ from the rest.
 
 ### Recursion
 
-[`mutual-recursion`](examples/mutual-recursion) is a cycle of three. The
+[`mutual-recursion`](examples/stacks/mutual-recursion) is a cycle of three. The
 three collapse into one component before depth is measured, so they contribute
 three frames once.
 
@@ -185,8 +186,8 @@ has a fixture:
 | `lifecycle` | `EntryPointsService.onModuleInit` |
 | `module-bootstrap` | `bootstrap` in [`src/callidescope-examples.main.ts`](src/callidescope-examples.main.ts) |
 | `exported-function` | `normalizeExampleLabel` in [`src/index.ts`](src/index.ts) |
-| `orphan-root` | [`summarizeOrphanedWork`](examples/entry-points/entry-points.ts), which nothing calls |
-| `declared` | [`DeclaredEntryPointsService.collect`](examples/declared-entry-points), whose address this package's own configuration names |
+| `orphan-root` | [`summarizeOrphanedWork`](examples/roots/entry-points/entry-points.ts), which nothing calls |
+| `declared` | [`DeclaredEntryPointsService.collect`](examples/roots/declared-entry-points), whose address this package's own configuration names |
 
 The bootstrap and barrel rules key on the file names `*.main.ts` and
 `src/index.ts`, so those two fixtures are the only files in this package outside
@@ -201,21 +202,21 @@ fixtures have no framework to call them.
 
 `dependency-cruiser` says the same thing from the other direction: it reports
 `no-orphans` against
-[`orphan-root.utilities.ts`](examples/entry-points/entry-points.ts)
+[`orphan-root.utilities.ts`](examples/roots/entry-points/entry-points.ts)
 as a warning on every run of this project. Two tools independently noticing the
 same file is the example working, not a lint failure to chase.
 
 ### Per-project configuration
 
 Every limit callidescope gates on belongs to a **project** rather than to a run,
-and a project is a directory holding a `tsconfig.json`. Three examples cover
+and a project is a directory holding a tsconfig at the workspace's `projectTsconfigPath` (here `configuration/tsconfig.json`). Three examples cover
 what a project may say about itself:
 
 | Example | What it declares | What that changed |
 | ------- | ---------------- | ----------------- |
-| [`declared-entry-points`](examples/declared-entry-points) | `entryPoints.addresses`, in [`callidescope.config.ts`](callidescope.config.ts) at this package's root | A callable with a caller heads a stack of its own, under the `declared` kind |
-| [`project-depth-limit`](examples/project-depth-limit) | `limits.maximumDepth`, in the same file | A six-frame chain is a finding at five and would pass at the six the run supplies |
-| [`gated-leaf`](examples/gated-leaf) | Both fields, plus `limits.maximumBreadth` and `exclude`, in its own nested project | Four frames and three direct callees become findings that no limit above them would ever have reported, and one generated file goes untraced |
+| [`declared-entry-points`](examples/roots/declared-entry-points) | `entryPoints.addresses`, in [`callidescope.config.ts`](callidescope.config.ts) at this package's root | A callable with a caller heads a stack of its own, under the `declared` kind |
+| [`project-depth-limit`](examples/limits/project-depth-limit) | `limits.maximumDepth`, in the same file | A six-frame chain is a finding at five and would pass at the six the run supplies |
+| [`gated-leaf`](examples/limits/gated-leaf) | Both fields, plus `limits.maximumBreadth` and `exclude`, in its own nested project | Four frames and three direct callees become findings that no limit above them would ever have reported, and one generated file goes untraced |
 
 They sit in the reading order above in that order, and one rule does all the
 work: **the workspace number is a default, not a ceiling, and not
@@ -291,7 +292,7 @@ the splice needs.
 
 The diagram is worth drawing only when stacks share tails, so two of these
 fixtures share one:
-[`roundToCents`](examples/shared-tail/round-to-cents.ts) is the last
+[`roundToCents`](examples/stacks/shared-tail/round-to-cents.ts) is the last
 frame of both `DeepStackService.quote` and `ForwardingStackService.handle`, and
 the flowchart shows them converging on it. A single stack drawn alone is a
 straight line, and a straight line is a list with extra steps.
@@ -336,9 +337,9 @@ over exactly the drift this gate exists to catch.
 Two command lines are refused outright:
 
 ```bash
-callidescope --config configuration/callidescope.config.ts --write --check reports   # a report cannot be stale in the run that just wrote it
-callidescope --config configuration/callidescope.config.ts --check lint              # not a finding this tool has
-callidescope --config configuration/callidescope.config.ts --check                   # a gate that cannot fail is a mistake, not a shorthand
+callidescope --config configuration/ic-suite/callidescope.config.ts --write --check reports   # a report cannot be stale in the run that just wrote it
+callidescope --config configuration/ic-suite/callidescope.config.ts --check lint              # not a finding this tool has
+callidescope --config configuration/ic-suite/callidescope.config.ts --check                   # a gate that cannot fail is a mistake, not a shorthand
 ```
 
 ## Acting on a finding
@@ -348,10 +349,10 @@ callidescope --config configuration/callidescope.config.ts --check              
 Depth is a question, not a verdict. Two fixtures are eight frames deep and the
 right answer differs completely:
 
-- [`deep-stack`](examples/deep-stack) — every layer transforms the amount it
+- [`deep-stack`](examples/stacks/deep-stack) — every layer transforms the amount it
   was handed. Nothing here is removable one layer at a time; the question is
   whether pricing needs this many stages at all.
-- [`forwarding-stack`](examples/forwarding-stack) — six of the eight frames
+- [`forwarding-stack`](examples/stacks/forwarding-stack) — six of the eight frames
   are `return this.next(amount)`. Read one file at a time each is the least
   objectionable code there is; read as a stack they are pure overhead, and
   collapsing them costs nothing.
@@ -367,7 +368,7 @@ converts a gate into a record of a decision nobody made.
 
 ### Frame annotations
 
-[`frame-annotations`](examples/frame-annotations) is seven frames, one per
+[`frame-annotations`](examples/stacks/frame-annotations) is seven frames, one per
 shape a comment-trivia reader gets wrong or a renderer has to shorten. The stack
 is deep on purpose: annotations are read only for the frames a report actually
 prints, so a shape has to be inside a reported stack to be demonstrated at all.
@@ -411,7 +412,7 @@ Four decisions are worth making deliberately:
    a wrong-looking label rather than a missing subtree.
 3. **`excludeFrom`.** Point it at a gitignore-syntax file rather than growing
    the configuration. This repository's
-   [`.callidescopeignore`](../../../../configuration/.callidescopeignore) excludes
+   [`.callidescopeignore`](../../../../configuration/ic-suite/.callidescopeignore) excludes
    generated code, template sources, and — the reason it matters here — this
    package, whose fixtures exist to breach the limits the workspace gate
    enforces.
@@ -421,9 +422,9 @@ Four decisions are worth making deliberately:
    Every traced project needs a complete `callidescope.config.ts` of its own —
    spread `projectDefaults` and keep the defaults you mean to keep, override
    what you don't. Add one where the default is telling you nothing, which is
-   what [`gated-leaf`](examples/gated-leaf) is. Write only the limits you
+   what [`gated-leaf`](examples/limits/gated-leaf) is. Write only the limits you
    override, and never spread the workspace limits into a project file — see
-   [`project-depth-limit`](examples/project-depth-limit) for why that is refused.
+   [`project-depth-limit`](examples/limits/project-depth-limit) for why that is refused.
 
 ## Why this package is shaped the way it is
 
@@ -432,15 +433,15 @@ whose entire content is deliberately-shaped fixture code. The answers:
 
 | Check | Answer |
 | ----- | ------ |
-| Workspace depth gate | The package is in [`.callidescopeignore`](../../../../configuration/.callidescopeignore) and traced by its own configuration instead |
+| Workspace depth gate | The package is in [`.callidescopeignore`](../../../../configuration/ic-suite/.callidescopeignore) and traced by its own configuration instead |
 | Published section | Yes — this package declares its own `write.markdown`, because a section reporting the deliberately-bad fixtures is the best example in the package, not noise |
 | Test coverage | Nothing is instrumented. Fixture code exists to be read by the type checker, not executed; what is verified is what callidescope makes of it |
 | `knip` and `fallow` | Every fixture is declared an entry point rather than ignored, so both keep checking dependencies while the orphan-root fixture stops being a finding |
 | `jscpd` | Scoped for this project. The resolution-table fixtures are near-identical by design |
 | `codometer` | No declared size limit: the package is private and never built, so there is no bundle to gate |
-| Nested projects | One example directory, `gated-leaf`, holds a `tsconfig.json` and no `package.json`. The first is what makes it a project with limits of its own; the second is deliberate — Nx infers a project from a nested `package.json`, and a `tsconfig.json` and a `package.json` nested one directory apart would collide with `@nx/enforce-module-boundaries`. It is named in the run's `--directories` instead |
+| Nested projects | One example directory, `gated-leaf`, holds a `configuration/tsconfig.json` and no `package.json`. The first is what makes it a project with limits of its own; the second is deliberate — Nx infers a project from a nested `package.json`, and a `tsconfig.json` and a `package.json` nested one directory apart would collide with `@nx/enforce-module-boundaries`. It is named in the run's `--directories` instead |
 | Nx tags | `type:package`, `framework:nestjs`, `language:typescript`, `name:callidescope-examples`. The NestJS dependency is real — `injected-dependency` is the headline case |
-| Project layout | An `examples/` directory rather than `src/modules/`, matching the other `*-examples` packages. `configuration/codebase-structure.json` declares it |
+| Project layout | An `examples/` directory rather than `src/modules/`, matching the other `*-examples` packages. `configuration/lint/codebase-structure.json` declares it |
 | `conformetry` | Not an instance of any template, and nothing had to be suppressed to keep it that way — see below |
 
 The layout is what keeps this package out of conformance, and it is worth
@@ -463,14 +464,15 @@ callidescope-examples/
 ├── callidescope.config.ts             what this package declares about itself
 ├── callidescope.workspace.config.ts   what traces this package, and the limits it defaults to
 ├── examples/
-│   ├── <name>/
-│   │   ├── README.md                  the guide for this example
-│   │   └── *.ts                       the fixture callables
-│   └── gated-leaf/                    a nested project, with its own limits
-│       ├── callidescope.config.ts     what that project declares about itself
-│       ├── *.generated.ts             the file this project's own exclude drops
-│       ├── tsconfig.json              what makes the directory a project
-│       └── README.md                  the guide, holding that project's own section
+│   ├── <group>/                       resolution, roots, stacks, or limits
+│   │   ├── <name>/
+│   │   │   ├── README.md              the guide for this example
+│   │   │   └── *.ts                   the fixture callables
+│   │   └── gated-leaf/                a nested project, with its own limits (in limits/)
+│   │       ├── configuration/callidescope.config.ts  what that project declares about itself
+│   │       ├── *.generated.ts         the file this project's own exclude drops
+│   │       ├── configuration/tsconfig.json  what makes the directory a project
+│   │       └── README.md              the guide, holding that project's own section
 ├── output/
 │   ├── report.json                    the whole run, machine-readable
 │   ├── report.md                      the printed trees, between anchors
@@ -535,63 +537,63 @@ What this project is judged against, as declared in its own `callidescope.config
 **1. `ComputedMemberService.dispatch`** — depth ≥ 8 · orphan-root
 
 ```text
-🚀 ComputedMemberService.dispatch(format: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/computed-member/computed-member.ts:58]
+🚀 ComputedMemberService.dispatch(format: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/computed-member/computed-member.ts:58]
    ↳ Dispatches a report request to a handler named at runtime.
-  └─> ComputedMemberService.read(format: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/computed-member/computed-member.ts:41]
+  └─> ComputedMemberService.read(format: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/computed-member/computed-member.ts:41]
      ↳ Reads the request's format and passes it on.
-    └─> ComputedMemberService.normalize(format: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/computed-member/computed-member.ts:31]
+    └─> ComputedMemberService.normalize(format: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/computed-member/computed-member.ts:31]
        ↳ Normalizes the requested format before anything routes on it.
-      └─> ComputedMemberService.route(format: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/computed-member/computed-member.ts:46]
+      └─> ComputedMemberService.route(format: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/computed-member/computed-member.ts:46]
          ↳ Routes the request one layer further down.
-        └─> ComputedMemberService.select(format: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/computed-member/computed-member.ts:51]
+        └─> ComputedMemberService.select(format: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/computed-member/computed-member.ts:51]
            ↳ Selects the branch that prepares the format.
-          └─> ComputedMemberService.prepare(format: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/computed-member/computed-member.ts:36]
+          └─> ComputedMemberService.prepare(format: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/computed-member/computed-member.ts:36]
              ↳ Prepares the format string the handler table is keyed by.
-            └─> ComputedMemberService.choose(format: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/computed-member/computed-member.ts:26]
+            └─> ComputedMemberService.choose(format: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/computed-member/computed-member.ts:26]
                ↳ Chooses a handler by name.
-              └─> ComputedMemberService.apply(format: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/computed-member/computed-member.ts:21]
+              └─> ComputedMemberService.apply(format: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/computed-member/computed-member.ts:21]
                  ↳ Applies the selected handler, whichever one that turns out to be.
 ```
 
 **2. `DeepStackService.quote`** — depth 8 · orphan-root
 
 ```text
-🚀 DeepStackService.quote(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:47]
+🚀 DeepStackService.quote(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/deep-stack/deep-stack.ts:47]
    ↳ Quotes one order, priced through every stage below.
-  └─> DeepStackService.validate(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:40]
+  └─> DeepStackService.validate(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/deep-stack/deep-stack.ts:40]
      ↳ Rejects a negative amount before anything else reads it.
-    └─> DeepStackService.removeDiscount(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:30]
+    └─> DeepStackService.removeDiscount(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/deep-stack/deep-stack.ts:30]
        ↳ Removes the tier discount from the validated amount.
-      └─> DeepStackService.resolveTier(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:35]
+      └─> DeepStackService.resolveTier(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/deep-stack/deep-stack.ts:35]
          ↳ Picks the pricing tier the discounted amount falls into.
-        └─> DeepStackService.loadRate(amount: number, tier: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:25]
+        └─> DeepStackService.loadRate(amount: number, tier: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/deep-stack/deep-stack.ts:25]
            ↳ Looks up the tax rate the resolved tier pays.
-          └─> DeepStackService.applyTax(amount: number, rate: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:15]
+          └─> DeepStackService.applyTax(amount: number, rate: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/deep-stack/deep-stack.ts:15]
              ↳ Adds tax at the resolved rate.
-            └─> DeepStackService.convertCurrency(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:20]
+            └─> DeepStackService.convertCurrency(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/deep-stack/deep-stack.ts:20]
                ↳ Converts to the reporting currency and rounds through the shared tail.
-              └─> roundToCents(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/shared-tail/round-to-cents.ts:4]
+              └─> roundToCents(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/shared-tail/round-to-cents.ts:4]
                  ↳ The tail two deep stacks share, so their mermaid diagrams converge.
 ```
 
 **3. `ForwardingStackService.handle`** — depth 8 · orphan-root
 
 ```text
-🚀 ForwardingStackService.handle(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/forwarding-stack/forwarding-stack.ts:48]
+🚀 ForwardingStackService.handle(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/forwarding-stack/forwarding-stack.ts:48]
    ↳ Handles one amount, through six layers that do nothing to it.
-  └─> ForwardingStackService.process(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/forwarding-stack/forwarding-stack.ts:36]
+  └─> ForwardingStackService.process(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/forwarding-stack/forwarding-stack.ts:36]
      ↳ Forwards, unchanged.
-    └─> ForwardingStackService.execute(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/forwarding-stack/forwarding-stack.ts:16]
+    └─> ForwardingStackService.execute(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/forwarding-stack/forwarding-stack.ts:16]
        ↳ Forwards, unchanged.
-      └─> ForwardingStackService.forward(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/forwarding-stack/forwarding-stack.ts:26]
+      └─> ForwardingStackService.forward(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/forwarding-stack/forwarding-stack.ts:26]
          ↳ Forwards, unchanged.
-        └─> ForwardingStackService.perform(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/forwarding-stack/forwarding-stack.ts:31]
+        └─> ForwardingStackService.perform(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/forwarding-stack/forwarding-stack.ts:31]
            ↳ Forwards, unchanged.
-          └─> ForwardingStackService.relay(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/forwarding-stack/forwarding-stack.ts:41]
+          └─> ForwardingStackService.relay(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/forwarding-stack/forwarding-stack.ts:41]
              ↳ Forwards, unchanged.
-            └─> ForwardingStackService.finish(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/forwarding-stack/forwarding-stack.ts:21]
+            └─> ForwardingStackService.finish(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/forwarding-stack/forwarding-stack.ts:21]
                ↳ Rounds the amount, which is the only work on this path.
-              └─> roundToCents(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/shared-tail/round-to-cents.ts:4]
+              └─> roundToCents(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/shared-tail/round-to-cents.ts:4]
                  ↳ The tail two deep stacks share, so their mermaid diagrams converge.
 ```
 
@@ -601,62 +603,62 @@ What this project is judged against, as declared in its own `callidescope.config
 **4. `FrameAnnotationsService.trace`** — depth 7 · orphan-root
 
 ```text
-🚀 FrameAnnotationsService.trace(value: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/frame-annotations/frame-annotations.ts:80]
+🚀 FrameAnnotationsService.trace(value: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/frame-annotations/frame-annotations.ts:80]
    ↳ Traces one value through every annotation shape below.
-  └─> FrameAnnotationsService.render(value: number | string): string | string[] [projects/ic-suite/callidescope/callidescope-examples/examples/frame-annotations/frame-annotations.ts:73]
+  └─> FrameAnnotationsService.render(value: number | string): string | string[] [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/frame-annotations/frame-annotations.ts:73]
      ↳ Renders one value for display. The overloads differ in return type, so the docs live on the signature.
-    └─> FrameAnnotationsService.summarize(rendered: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/frame-annotations/frame-annotations.ts:21]
+    └─> FrameAnnotationsService.summarize(rendered: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/frame-annotations/frame-annotations.ts:21]
        ↳ Collapses a rendered value to something a description can quote.
-      └─> FrameAnnotationsService.describe({ count, name }: DescribeArguments): string [projects/ic-suite/callidescope/callidescope-examples/examples/frame-annotations/frame-annotations.ts:55]
+      └─> FrameAnnotationsService.describe({ count, name }: DescribeArguments): string [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/frame-annotations/frame-annotations.ts:55]
          ↳ Describes a value from a parameter with no name at all in the syntax.
-        └─> FrameAnnotationsService.compose(description: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/frame-annotations/frame-annotations.ts:27]
+        └─> FrameAnnotationsService.compose(description: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/frame-annotations/frame-annotations.ts:27]
            ↳ Joins the parts a description was built from.
-          └─> FrameAnnotationsService.collapseThisSignatureBecauseItRunsLong(…): string [projects/ic-suite/callidescope/callidescope-examples/examples/frame-annotations/frame-annotations.ts:44]
+          └─> FrameAnnotationsService.collapseThisSignatureBecauseItRunsLong(…): string [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/frame-annotations/frame-annotations.ts:44]
              ↳ Takes three parameters whose rendered signature runs past eighty characters, so the printed frame collapses it to `(…):…
-            └─> FrameAnnotationsService.finish(description: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/frame-annotations/frame-annotations.ts:34]
+            └─> FrameAnnotationsService.finish(description: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/frame-annotations/frame-annotations.ts:34]
                ↳ Finishes the chain and returns what the layers above it built, in one long sentence the printed frame shortens and the…
 ```
 
 **5. `ProjectDepthLimitService.judge`** — depth 6 · orphan-root
 
 ```text
-🚀 ProjectDepthLimitService.judge(project: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/project-depth-limit/project-depth-limit.ts:41]
+🚀 ProjectDepthLimitService.judge(project: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/limits/project-depth-limit/project-depth-limit.ts:41]
    ↳ Judges one project, through every stage a resolved limit passes.
-  └─> ProjectDepthLimitService.resolveConfiguration(project: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/project-depth-limit/project-depth-limit.ts:34]
+  └─> ProjectDepthLimitService.resolveConfiguration(project: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/limits/project-depth-limit/project-depth-limit.ts:34]
      ↳ Names the configuration file the project is judged by.
-    └─> ProjectDepthLimitService.readLimit(project: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/project-depth-limit/project-depth-limit.ts:24]
+    └─> ProjectDepthLimitService.readLimit(project: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/limits/project-depth-limit/project-depth-limit.ts:24]
        ↳ Reads the limit whichever configuration file the project settled on.
-      └─> ProjectDepthLimitService.applyLimit(project: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/project-depth-limit/project-depth-limit.ts:14]
+      └─> ProjectDepthLimitService.applyLimit(project: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/limits/project-depth-limit/project-depth-limit.ts:14]
          ↳ Applies the limit the resolved project turned out to declare.
-        └─> ProjectDepthLimitService.reportVerdict(verdict: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/project-depth-limit/project-depth-limit.ts:29]
+        └─> ProjectDepthLimitService.reportVerdict(verdict: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/limits/project-depth-limit/project-depth-limit.ts:29]
            ↳ States the verdict, and where the number behind it came from.
-          └─> ProjectDepthLimitService.readDeclaringFile(project: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/project-depth-limit/project-depth-limit.ts:19]
+          └─> ProjectDepthLimitService.readDeclaringFile(project: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/limits/project-depth-limit/project-depth-limit.ts:19]
              ↳ Reads the file the number the verdict used was written in.
 ```
 
 **6. `FrameAnnotationsService.legacyRender`** — depth 4 · orphan-root
 
 ```text
-🚀 FrameAnnotationsService.legacyRender(value: string): string ⚠ deprecated [projects/ic-suite/callidescope/callidescope-examples/examples/frame-annotations/frame-annotations.ts:64]
+🚀 FrameAnnotationsService.legacyRender(value: string): string ⚠ deprecated [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/frame-annotations/frame-annotations.ts:64]
    ↳ Renders a value the old way.
-  └─> FrameAnnotationsService.compose(description: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/frame-annotations/frame-annotations.ts:27]
+  └─> FrameAnnotationsService.compose(description: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/frame-annotations/frame-annotations.ts:27]
      ↳ Joins the parts a description was built from.
-    └─> FrameAnnotationsService.collapseThisSignatureBecauseItRunsLong(…): string [projects/ic-suite/callidescope/callidescope-examples/examples/frame-annotations/frame-annotations.ts:44]
+    └─> FrameAnnotationsService.collapseThisSignatureBecauseItRunsLong(…): string [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/frame-annotations/frame-annotations.ts:44]
        ↳ Takes three parameters whose rendered signature runs past eighty characters, so the printed frame collapses it to `(…):…
-      └─> FrameAnnotationsService.finish(description: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/frame-annotations/frame-annotations.ts:34]
+      └─> FrameAnnotationsService.finish(description: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/frame-annotations/frame-annotations.ts:34]
          ↳ Finishes the chain and returns what the layers above it built, in one long sentence the printed frame shortens and the…
 ```
 
 **7. `MutualRecursionService.traverse`** — depth 4 · orphan-root
 
 ```text
-🚀 MutualRecursionService.traverse(remaining: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/mutual-recursion/mutual-recursion.ts:32]
+🚀 MutualRecursionService.traverse(remaining: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/mutual-recursion/mutual-recursion.ts:32]
    ↳ Enters the cycle from outside it, so the cluster has a root above it.
-  └─> MutualRecursionService.branch(remaining: number): number (cycle) [projects/ic-suite/callidescope/callidescope-examples/examples/mutual-recursion/mutual-recursion.ts:15]
+  └─> MutualRecursionService.branch(remaining: number): number (cycle) [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/mutual-recursion/mutual-recursion.ts:15]
      ↳ Second of the three, one hop from the leaf.
-    └─> MutualRecursionService.leaf(remaining: number): number (cycle) [projects/ic-suite/callidescope/callidescope-examples/examples/mutual-recursion/mutual-recursion.ts:25]
+    └─> MutualRecursionService.leaf(remaining: number): number (cycle) [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/mutual-recursion/mutual-recursion.ts:25]
        ↳ Third of the three, which calls back to the first.
-      └─> MutualRecursionService.descend(remaining: number): number (cycle) [projects/ic-suite/callidescope/callidescope-examples/examples/mutual-recursion/mutual-recursion.ts:20]
+      └─> MutualRecursionService.descend(remaining: number): number (cycle) [projects/ic-suite/callidescope/callidescope-examples/examples/stacks/mutual-recursion/mutual-recursion.ts:20]
          ↳ First of the three, and the way into the cycle.
 ```
 
@@ -665,48 +667,48 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 bootstrap(): number [projects/ic-suite/callidescope/callidescope-examples/src/callidescope-examples.main.ts:5]
    ↳ `module-bootstrap` entry kind: `bootstrap` or `main` is a root.
-  └─> OrdersService.place(available: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/injected-dependency/orders.ts:21]
+  └─> OrdersService.place(available: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/injected-dependency/orders.ts:21]
      ↳ Places one order against the injected inventory.
-    └─> InventoryService.reserve(available: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/injected-dependency/inventory.ts:9]
+    └─> InventoryService.reserve(available: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/injected-dependency/inventory.ts:9]
        ↳ Reserves one unit and reports the count left behind.
 ```
 
 **9. `CallbackArgumentService.shoutAll`** — depth 3 · orphan-root
 
 ```text
-🚀 CallbackArgumentService.shoutAll(entries: readonly string[]): string[] [projects/ic-suite/callidescope/callidescope-examples/examples/callback-argument/callback-argument.ts:20]
+🚀 CallbackArgumentService.shoutAll(entries: readonly string[]): string[] [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/callback-argument/callback-argument.ts:20]
    ↳ Shouts every entry, through a callback `map` invokes.
-  └─> CallbackArgumentService.map(…)(entry: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/callback-argument/callback-argument.ts:21]
-    └─> CallbackArgumentService.shout(entry: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/callback-argument/callback-argument.ts:13]
+  └─> CallbackArgumentService.map(…)(entry: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/callback-argument/callback-argument.ts:21]
+    └─> CallbackArgumentService.shout(entry: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/callback-argument/callback-argument.ts:13]
        ↳ Upper-cases one entry.
 ```
 
 **10. `DeclaredEntryPointsService.publish`** — depth 3 · orphan-root
 
 ```text
-🚀 DeclaredEntryPointsService.publish(entries: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/declared-entry-points/declared-entry-points.ts:27]
+🚀 DeclaredEntryPointsService.publish(entries: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/roots/declared-entry-points/declared-entry-points.ts:27]
    ↳ Nothing calls this, so nothing had to declare it.
-  └─> DeclaredEntryPointsService.collect(entries: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/declared-entry-points/declared-entry-points.ts:22]
+  └─> DeclaredEntryPointsService.collect(entries: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/roots/declared-entry-points/declared-entry-points.ts:22]
      ↳ The surface this package declares, called from inside it all the same.
-    └─> DeclaredEntryPointsService.render(entries: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/declared-entry-points/declared-entry-points.ts:15]
+    └─> DeclaredEntryPointsService.render(entries: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/roots/declared-entry-points/declared-entry-points.ts:15]
        ↳ Renders whatever was collected, and ends both stacks.
 ```
 
 **11. `EntryPointsService.onModuleInit`** — depth 2 · lifecycle
 
 ```text
-🚀 EntryPointsService.onModuleInit(): string [projects/ic-suite/callidescope/callidescope-examples/examples/entry-points/entry-points.ts:26]
+🚀 EntryPointsService.onModuleInit(): string [projects/ic-suite/callidescope/callidescope-examples/examples/roots/entry-points/entry-points.ts:26]
    ↳ A lifecycle hook a framework calls — the `lifecycle` kind.
-  └─> EntryPointsService.prepareCache(): string [projects/ic-suite/callidescope/callidescope-examples/examples/entry-points/entry-points.ts:19]
+  └─> EntryPointsService.prepareCache(): string [projects/ic-suite/callidescope/callidescope-examples/examples/roots/entry-points/entry-points.ts:19]
      ↳ Does the work a lifecycle hook is called to do.
 ```
 
 **12. `EntryPointsService.readReport`** — depth 2 · decorated-method
 
 ```text
-🚀 EntryPointsService.readReport(): string [projects/ic-suite/callidescope/callidescope-examples/examples/entry-points/entry-points.ts:31]
+🚀 EntryPointsService.readReport(): string [projects/ic-suite/callidescope/callidescope-examples/examples/roots/entry-points/entry-points.ts:31]
    ↳ A decorated method — the `decorated-method` kind.
-  └─> EntryPointsService.buildReport(): string [projects/ic-suite/callidescope/callidescope-examples/examples/entry-points/entry-points.ts:14]
+  └─> EntryPointsService.buildReport(): string [projects/ic-suite/callidescope/callidescope-examples/examples/roots/entry-points/entry-points.ts:14]
      ↳ Builds the body a decorated request handler answers with.
 ```
 
@@ -715,60 +717,60 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 normalizeExampleLabel(label: string): string [projects/ic-suite/callidescope/callidescope-examples/src/index.ts:6]
    ↳ `exported-function` entry kind; the rule keys on `src/`.
-  └─> normalizeLabel(label: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/plain-call/normalize-label.ts:2]
+  └─> normalizeLabel(label: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/plain-call/normalize-label.ts:2]
      ↳ Trims a label and collapses the whitespace inside it.
 ```
 
 **14. `DeclaredEntryPointsService.collect`** — depth 2 · declared
 
 ```text
-🚀 DeclaredEntryPointsService.collect(entries: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/declared-entry-points/declared-entry-points.ts:22]
+🚀 DeclaredEntryPointsService.collect(entries: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/roots/declared-entry-points/declared-entry-points.ts:22]
    ↳ The surface this package declares, called from inside it all the same.
-  └─> DeclaredEntryPointsService.render(entries: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/declared-entry-points/declared-entry-points.ts:15]
+  └─> DeclaredEntryPointsService.render(entries: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/roots/declared-entry-points/declared-entry-points.ts:15]
      ↳ Renders whatever was collected, and ends both stacks.
 ```
 
 **15. `BaseClassService.run`** — depth 2 · orphan-root
 
 ```text
-🚀 BaseClassService.run(): string [projects/ic-suite/callidescope/callidescope-examples/examples/base-class/base-class.ts:16]
+🚀 BaseClassService.run(): string [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/base-class/base-class.ts:16]
    ↳ Extends the base result rather than replacing it.
-  └─> BaseTaskService.run(): string [projects/ic-suite/callidescope/callidescope-examples/examples/base-class/base-task.ts:9]
+  └─> BaseTaskService.run(): string [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/base-class/base-task.ts:9]
      ↳ Reports the work the base class claims to have done.
 ```
 
 **16. `ConstructedClassService.count`** — depth 2 · orphan-root
 
 ```text
-🚀 ConstructedClassService.count(source: string): number [projects/ic-suite/callidescope/callidescope-examples/examples/constructed-class/constructed-class.ts:17]
+🚀 ConstructedClassService.count(source: string): number [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/constructed-class/constructed-class.ts:17]
    ↳ Counts the tokens the constructed parser produced.
-  └─> ParserService.constructor(source: string): ParserService [projects/ic-suite/callidescope/callidescope-examples/examples/constructed-class/parser.ts:9]
+  └─> ParserService.constructor(source: string): ParserService [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/constructed-class/parser.ts:9]
 ```
 
 **17. `DependencyClosureService.allowsDepth`** — depth 2 · orphan-root
 
 ```text
-🚀 DependencyClosureService.allowsDepth(args: { configuration: CallidescopeConfiguration; depth: number; }): boolean [projects/ic-suite/callidescope/callidescope-examples/examples/dependency-closure/dependency-closure.ts:28]
+🚀 DependencyClosureService.allowsDepth(args: { configuration: CallidescopeConfiguration; depth: number; }): boolean [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/dependency-closure/dependency-closure.ts:28]
    ↳ Whether a configuration allows a stack as deep as the one asked about.
-  └─> DependencyClosureService.readDepthLimit(configuration: CallidescopeConfiguration): number [projects/ic-suite/callidescope/callidescope-examples/examples/dependency-closure/dependency-closure.ts:20]
+  └─> DependencyClosureService.readDepthLimit(configuration: CallidescopeConfiguration): number [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/dependency-closure/dependency-closure.ts:20]
      ↳ Reads the depth limit the dependency's own defaulting settles on.
 ```
 
 **18. `PlainCallService.render`** — depth 2 · orphan-root
 
 ```text
-🚀 PlainCallService.render(label: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/plain-call/plain-call.ts:17]
+🚀 PlainCallService.render(label: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/plain-call/plain-call.ts:17]
    ↳ Renders a label through the aliased helper.
-  └─> normalizeLabel(label: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/plain-call/normalize-label.ts:2]
+  └─> normalizeLabel(label: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/plain-call/normalize-label.ts:2]
      ↳ Trims a label and collapses the whitespace inside it.
 ```
 
 **19. `StructuralInterfaceService.ingestDocument`** — depth 2 · orphan-root
 
 ```text
-🚀 StructuralInterfaceService.ingestDocument(provider: StructuralProvider, document: string): number [projects/ic-suite/callidescope/callidescope-examples/examples/structural-interface/structural-interface.ts:17]
+🚀 StructuralInterfaceService.ingestDocument(provider: StructuralProvider, document: string): number [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/structural-interface/structural-interface.ts:17]
    ↳ Ingests one document through whatever satisfies the interface.
-  └─> FilesystemProviderService.ingest(document: string): number [projects/ic-suite/callidescope/callidescope-examples/examples/structural-interface/structural-provider.ts:21]
+  └─> FilesystemProviderService.ingest(document: string): number [projects/ic-suite/callidescope/callidescope-examples/examples/resolution/structural-interface/structural-provider.ts:21]
      ↳ Counts the words one document contributes.
 ```
 
@@ -779,61 +781,61 @@ What this project is judged against, as declared in its own `callidescope.config
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
 | `bootstrap` | 2 | `OrdersService.place`, `OrdersService.constructor` | `projects/ic-suite/callidescope/callidescope-examples/src/callidescope-examples.main.ts:5` |
-| `BaseClassService.run` | 1 | `BaseTaskService.run` | `projects/ic-suite/callidescope/callidescope-examples/examples/base-class/base-class.ts:16` |
-| `CallbackArgumentService.shoutAll` | 1 | `CallbackArgumentService.map(…)` | `projects/ic-suite/callidescope/callidescope-examples/examples/callback-argument/callback-argument.ts:20` |
+| `ProjectDepthLimitService.applyLimit` | 1 | `ProjectDepthLimitService.reportVerdict` | `projects/ic-suite/callidescope/callidescope-examples/examples/limits/project-depth-limit/project-depth-limit.ts:14` |
+| `ProjectDepthLimitService.readLimit` | 1 | `ProjectDepthLimitService.applyLimit` | `projects/ic-suite/callidescope/callidescope-examples/examples/limits/project-depth-limit/project-depth-limit.ts:24` |
 
 <details>
 <summary>48 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `CallbackArgumentService.map(…)` | 1 | `CallbackArgumentService.shout` | `projects/ic-suite/callidescope/callidescope-examples/examples/callback-argument/callback-argument.ts:21` |
-| `ComputedMemberService.choose` | 1 | `ComputedMemberService.apply` | `projects/ic-suite/callidescope/callidescope-examples/examples/computed-member/computed-member.ts:26` |
-| `ComputedMemberService.normalize` | 1 | `ComputedMemberService.route` | `projects/ic-suite/callidescope/callidescope-examples/examples/computed-member/computed-member.ts:31` |
-| `ComputedMemberService.prepare` | 1 | `ComputedMemberService.choose` | `projects/ic-suite/callidescope/callidescope-examples/examples/computed-member/computed-member.ts:36` |
-| `ComputedMemberService.read` | 1 | `ComputedMemberService.normalize` | `projects/ic-suite/callidescope/callidescope-examples/examples/computed-member/computed-member.ts:41` |
-| `ComputedMemberService.route` | 1 | `ComputedMemberService.select` | `projects/ic-suite/callidescope/callidescope-examples/examples/computed-member/computed-member.ts:46` |
-| `ComputedMemberService.select` | 1 | `ComputedMemberService.prepare` | `projects/ic-suite/callidescope/callidescope-examples/examples/computed-member/computed-member.ts:51` |
-| `ComputedMemberService.dispatch` | 1 | `ComputedMemberService.read` | `projects/ic-suite/callidescope/callidescope-examples/examples/computed-member/computed-member.ts:58` |
-| `ConstructedClassService.count` | 1 | `ParserService.constructor` | `projects/ic-suite/callidescope/callidescope-examples/examples/constructed-class/constructed-class.ts:17` |
-| `DeclaredEntryPointsService.collect` | 1 | `DeclaredEntryPointsService.render` | `projects/ic-suite/callidescope/callidescope-examples/examples/declared-entry-points/declared-entry-points.ts:22` |
-| `DeclaredEntryPointsService.publish` | 1 | `DeclaredEntryPointsService.collect` | `projects/ic-suite/callidescope/callidescope-examples/examples/declared-entry-points/declared-entry-points.ts:27` |
-| `DeepStackService.applyTax` | 1 | `DeepStackService.convertCurrency` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:15` |
-| `DeepStackService.convertCurrency` | 1 | `roundToCents` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:20` |
-| `DeepStackService.loadRate` | 1 | `DeepStackService.applyTax` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:25` |
-| `DeepStackService.removeDiscount` | 1 | `DeepStackService.resolveTier` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:30` |
-| `DeepStackService.resolveTier` | 1 | `DeepStackService.loadRate` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:35` |
-| `DeepStackService.validate` | 1 | `DeepStackService.removeDiscount` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:40` |
-| `DeepStackService.quote` | 1 | `DeepStackService.validate` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:47` |
-| `DependencyClosureService.allowsDepth` | 1 | `DependencyClosureService.readDepthLimit` | `projects/ic-suite/callidescope/callidescope-examples/examples/dependency-closure/dependency-closure.ts:28` |
-| `EntryPointsService.onModuleInit` | 1 | `EntryPointsService.prepareCache` | `projects/ic-suite/callidescope/callidescope-examples/examples/entry-points/entry-points.ts:26` |
-| `EntryPointsService.readReport` | 1 | `EntryPointsService.buildReport` | `projects/ic-suite/callidescope/callidescope-examples/examples/entry-points/entry-points.ts:31` |
-| `ForwardingStackService.execute` | 1 | `ForwardingStackService.forward` | `projects/ic-suite/callidescope/callidescope-examples/examples/forwarding-stack/forwarding-stack.ts:16` |
-| `ForwardingStackService.finish` | 1 | `roundToCents` | `projects/ic-suite/callidescope/callidescope-examples/examples/forwarding-stack/forwarding-stack.ts:21` |
-| `ForwardingStackService.forward` | 1 | `ForwardingStackService.perform` | `projects/ic-suite/callidescope/callidescope-examples/examples/forwarding-stack/forwarding-stack.ts:26` |
-| `ForwardingStackService.perform` | 1 | `ForwardingStackService.relay` | `projects/ic-suite/callidescope/callidescope-examples/examples/forwarding-stack/forwarding-stack.ts:31` |
-| `ForwardingStackService.process` | 1 | `ForwardingStackService.execute` | `projects/ic-suite/callidescope/callidescope-examples/examples/forwarding-stack/forwarding-stack.ts:36` |
-| `ForwardingStackService.relay` | 1 | `ForwardingStackService.finish` | `projects/ic-suite/callidescope/callidescope-examples/examples/forwarding-stack/forwarding-stack.ts:41` |
-| `ForwardingStackService.handle` | 1 | `ForwardingStackService.process` | `projects/ic-suite/callidescope/callidescope-examples/examples/forwarding-stack/forwarding-stack.ts:48` |
-| `FrameAnnotationsService.summarize` | 1 | `FrameAnnotationsService.describe` | `projects/ic-suite/callidescope/callidescope-examples/examples/frame-annotations/frame-annotations.ts:21` |
-| `FrameAnnotationsService.compose` | 1 | `FrameAnnotationsService.collapseThisSignatureBecauseItRunsLong` | `projects/ic-suite/callidescope/callidescope-examples/examples/frame-annotations/frame-annotations.ts:27` |
-| `FrameAnnotationsService.collapseThisSignatureBecauseItRunsLong` | 1 | `FrameAnnotationsService.finish` | `projects/ic-suite/callidescope/callidescope-examples/examples/frame-annotations/frame-annotations.ts:44` |
-| `FrameAnnotationsService.describe` | 1 | `FrameAnnotationsService.compose` | `projects/ic-suite/callidescope/callidescope-examples/examples/frame-annotations/frame-annotations.ts:55` |
-| `FrameAnnotationsService.legacyRender` | 1 | `FrameAnnotationsService.compose` | `projects/ic-suite/callidescope/callidescope-examples/examples/frame-annotations/frame-annotations.ts:64` |
-| `FrameAnnotationsService.render` | 1 | `FrameAnnotationsService.summarize` | `projects/ic-suite/callidescope/callidescope-examples/examples/frame-annotations/frame-annotations.ts:73` |
-| `FrameAnnotationsService.trace` | 1 | `FrameAnnotationsService.render` | `projects/ic-suite/callidescope/callidescope-examples/examples/frame-annotations/frame-annotations.ts:80` |
-| `OrdersService.place` | 1 | `InventoryService.reserve` | `projects/ic-suite/callidescope/callidescope-examples/examples/injected-dependency/orders.ts:21` |
-| `MutualRecursionService.branch` | 1 | `MutualRecursionService.leaf` | `projects/ic-suite/callidescope/callidescope-examples/examples/mutual-recursion/mutual-recursion.ts:15` |
-| `MutualRecursionService.descend` | 1 | `MutualRecursionService.branch` | `projects/ic-suite/callidescope/callidescope-examples/examples/mutual-recursion/mutual-recursion.ts:20` |
-| `MutualRecursionService.leaf` | 1 | `MutualRecursionService.descend` | `projects/ic-suite/callidescope/callidescope-examples/examples/mutual-recursion/mutual-recursion.ts:25` |
-| `MutualRecursionService.traverse` | 1 | `MutualRecursionService.descend` | `projects/ic-suite/callidescope/callidescope-examples/examples/mutual-recursion/mutual-recursion.ts:32` |
-| `PlainCallService.render` | 1 | `normalizeLabel` | `projects/ic-suite/callidescope/callidescope-examples/examples/plain-call/plain-call.ts:17` |
-| `ProjectDepthLimitService.applyLimit` | 1 | `ProjectDepthLimitService.reportVerdict` | `projects/ic-suite/callidescope/callidescope-examples/examples/project-depth-limit/project-depth-limit.ts:14` |
-| `ProjectDepthLimitService.readLimit` | 1 | `ProjectDepthLimitService.applyLimit` | `projects/ic-suite/callidescope/callidescope-examples/examples/project-depth-limit/project-depth-limit.ts:24` |
-| `ProjectDepthLimitService.reportVerdict` | 1 | `ProjectDepthLimitService.readDeclaringFile` | `projects/ic-suite/callidescope/callidescope-examples/examples/project-depth-limit/project-depth-limit.ts:29` |
-| `ProjectDepthLimitService.resolveConfiguration` | 1 | `ProjectDepthLimitService.readLimit` | `projects/ic-suite/callidescope/callidescope-examples/examples/project-depth-limit/project-depth-limit.ts:34` |
-| `ProjectDepthLimitService.judge` | 1 | `ProjectDepthLimitService.resolveConfiguration` | `projects/ic-suite/callidescope/callidescope-examples/examples/project-depth-limit/project-depth-limit.ts:41` |
-| `StructuralInterfaceService.ingestDocument` | 1 | `FilesystemProviderService.ingest` | `projects/ic-suite/callidescope/callidescope-examples/examples/structural-interface/structural-interface.ts:17` |
+| `ProjectDepthLimitService.reportVerdict` | 1 | `ProjectDepthLimitService.readDeclaringFile` | `projects/ic-suite/callidescope/callidescope-examples/examples/limits/project-depth-limit/project-depth-limit.ts:29` |
+| `ProjectDepthLimitService.resolveConfiguration` | 1 | `ProjectDepthLimitService.readLimit` | `projects/ic-suite/callidescope/callidescope-examples/examples/limits/project-depth-limit/project-depth-limit.ts:34` |
+| `ProjectDepthLimitService.judge` | 1 | `ProjectDepthLimitService.resolveConfiguration` | `projects/ic-suite/callidescope/callidescope-examples/examples/limits/project-depth-limit/project-depth-limit.ts:41` |
+| `BaseClassService.run` | 1 | `BaseTaskService.run` | `projects/ic-suite/callidescope/callidescope-examples/examples/resolution/base-class/base-class.ts:16` |
+| `CallbackArgumentService.shoutAll` | 1 | `CallbackArgumentService.map(…)` | `projects/ic-suite/callidescope/callidescope-examples/examples/resolution/callback-argument/callback-argument.ts:20` |
+| `CallbackArgumentService.map(…)` | 1 | `CallbackArgumentService.shout` | `projects/ic-suite/callidescope/callidescope-examples/examples/resolution/callback-argument/callback-argument.ts:21` |
+| `ComputedMemberService.choose` | 1 | `ComputedMemberService.apply` | `projects/ic-suite/callidescope/callidescope-examples/examples/resolution/computed-member/computed-member.ts:26` |
+| `ComputedMemberService.normalize` | 1 | `ComputedMemberService.route` | `projects/ic-suite/callidescope/callidescope-examples/examples/resolution/computed-member/computed-member.ts:31` |
+| `ComputedMemberService.prepare` | 1 | `ComputedMemberService.choose` | `projects/ic-suite/callidescope/callidescope-examples/examples/resolution/computed-member/computed-member.ts:36` |
+| `ComputedMemberService.read` | 1 | `ComputedMemberService.normalize` | `projects/ic-suite/callidescope/callidescope-examples/examples/resolution/computed-member/computed-member.ts:41` |
+| `ComputedMemberService.route` | 1 | `ComputedMemberService.select` | `projects/ic-suite/callidescope/callidescope-examples/examples/resolution/computed-member/computed-member.ts:46` |
+| `ComputedMemberService.select` | 1 | `ComputedMemberService.prepare` | `projects/ic-suite/callidescope/callidescope-examples/examples/resolution/computed-member/computed-member.ts:51` |
+| `ComputedMemberService.dispatch` | 1 | `ComputedMemberService.read` | `projects/ic-suite/callidescope/callidescope-examples/examples/resolution/computed-member/computed-member.ts:58` |
+| `ConstructedClassService.count` | 1 | `ParserService.constructor` | `projects/ic-suite/callidescope/callidescope-examples/examples/resolution/constructed-class/constructed-class.ts:17` |
+| `DependencyClosureService.allowsDepth` | 1 | `DependencyClosureService.readDepthLimit` | `projects/ic-suite/callidescope/callidescope-examples/examples/resolution/dependency-closure/dependency-closure.ts:28` |
+| `OrdersService.place` | 1 | `InventoryService.reserve` | `projects/ic-suite/callidescope/callidescope-examples/examples/resolution/injected-dependency/orders.ts:21` |
+| `PlainCallService.render` | 1 | `normalizeLabel` | `projects/ic-suite/callidescope/callidescope-examples/examples/resolution/plain-call/plain-call.ts:17` |
+| `StructuralInterfaceService.ingestDocument` | 1 | `FilesystemProviderService.ingest` | `projects/ic-suite/callidescope/callidescope-examples/examples/resolution/structural-interface/structural-interface.ts:17` |
+| `DeclaredEntryPointsService.collect` | 1 | `DeclaredEntryPointsService.render` | `projects/ic-suite/callidescope/callidescope-examples/examples/roots/declared-entry-points/declared-entry-points.ts:22` |
+| `DeclaredEntryPointsService.publish` | 1 | `DeclaredEntryPointsService.collect` | `projects/ic-suite/callidescope/callidescope-examples/examples/roots/declared-entry-points/declared-entry-points.ts:27` |
+| `EntryPointsService.onModuleInit` | 1 | `EntryPointsService.prepareCache` | `projects/ic-suite/callidescope/callidescope-examples/examples/roots/entry-points/entry-points.ts:26` |
+| `EntryPointsService.readReport` | 1 | `EntryPointsService.buildReport` | `projects/ic-suite/callidescope/callidescope-examples/examples/roots/entry-points/entry-points.ts:31` |
+| `DeepStackService.applyTax` | 1 | `DeepStackService.convertCurrency` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/deep-stack/deep-stack.ts:15` |
+| `DeepStackService.convertCurrency` | 1 | `roundToCents` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/deep-stack/deep-stack.ts:20` |
+| `DeepStackService.loadRate` | 1 | `DeepStackService.applyTax` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/deep-stack/deep-stack.ts:25` |
+| `DeepStackService.removeDiscount` | 1 | `DeepStackService.resolveTier` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/deep-stack/deep-stack.ts:30` |
+| `DeepStackService.resolveTier` | 1 | `DeepStackService.loadRate` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/deep-stack/deep-stack.ts:35` |
+| `DeepStackService.validate` | 1 | `DeepStackService.removeDiscount` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/deep-stack/deep-stack.ts:40` |
+| `DeepStackService.quote` | 1 | `DeepStackService.validate` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/deep-stack/deep-stack.ts:47` |
+| `ForwardingStackService.execute` | 1 | `ForwardingStackService.forward` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/forwarding-stack/forwarding-stack.ts:16` |
+| `ForwardingStackService.finish` | 1 | `roundToCents` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/forwarding-stack/forwarding-stack.ts:21` |
+| `ForwardingStackService.forward` | 1 | `ForwardingStackService.perform` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/forwarding-stack/forwarding-stack.ts:26` |
+| `ForwardingStackService.perform` | 1 | `ForwardingStackService.relay` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/forwarding-stack/forwarding-stack.ts:31` |
+| `ForwardingStackService.process` | 1 | `ForwardingStackService.execute` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/forwarding-stack/forwarding-stack.ts:36` |
+| `ForwardingStackService.relay` | 1 | `ForwardingStackService.finish` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/forwarding-stack/forwarding-stack.ts:41` |
+| `ForwardingStackService.handle` | 1 | `ForwardingStackService.process` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/forwarding-stack/forwarding-stack.ts:48` |
+| `FrameAnnotationsService.summarize` | 1 | `FrameAnnotationsService.describe` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/frame-annotations/frame-annotations.ts:21` |
+| `FrameAnnotationsService.compose` | 1 | `FrameAnnotationsService.collapseThisSignatureBecauseItRunsLong` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/frame-annotations/frame-annotations.ts:27` |
+| `FrameAnnotationsService.collapseThisSignatureBecauseItRunsLong` | 1 | `FrameAnnotationsService.finish` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/frame-annotations/frame-annotations.ts:44` |
+| `FrameAnnotationsService.describe` | 1 | `FrameAnnotationsService.compose` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/frame-annotations/frame-annotations.ts:55` |
+| `FrameAnnotationsService.legacyRender` | 1 | `FrameAnnotationsService.compose` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/frame-annotations/frame-annotations.ts:64` |
+| `FrameAnnotationsService.render` | 1 | `FrameAnnotationsService.summarize` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/frame-annotations/frame-annotations.ts:73` |
+| `FrameAnnotationsService.trace` | 1 | `FrameAnnotationsService.render` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/frame-annotations/frame-annotations.ts:80` |
+| `MutualRecursionService.branch` | 1 | `MutualRecursionService.leaf` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/mutual-recursion/mutual-recursion.ts:15` |
+| `MutualRecursionService.descend` | 1 | `MutualRecursionService.branch` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/mutual-recursion/mutual-recursion.ts:20` |
+| `MutualRecursionService.leaf` | 1 | `MutualRecursionService.descend` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/mutual-recursion/mutual-recursion.ts:25` |
+| `MutualRecursionService.traverse` | 1 | `MutualRecursionService.descend` | `projects/ic-suite/callidescope/callidescope-examples/examples/stacks/mutual-recursion/mutual-recursion.ts:32` |
 | `normalizeExampleLabel` | 1 | `normalizeLabel` | `projects/ic-suite/callidescope/callidescope-examples/src/index.ts:6` |
 
 </details>
@@ -881,41 +883,41 @@ graph LR
   file_codometer_config_ts["codometer.config.ts"]
   file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
-  file_examples_base_class_base_class_ts["examples/base-class/base-class.ts"]
-  file_examples_base_class_base_task_ts["examples/base-class/base-task.ts"]
-  file_examples_callback_argument_callback_argument_ts["examples/callback-argument/callback-argument.ts"]
-  file_examples_computed_member_computed_member_ts["examples/computed-member/computed-member.ts"]
-  file_examples_constructed_class_constructed_class_ts["examples/constructed-class/constructed-class.ts"]
-  file_examples_constructed_class_parser_ts["examples/constructed-class/parser.ts"]
-  file_examples_declared_entry_points_declared_entry_points_ts["examples/declared-entry-points/declared-entry-points.ts"]
-  file_examples_deep_stack_deep_stack_ts["examples/deep-stack/deep-stack.ts"]
-  file_examples_dependency_closure_dependency_closure_ts["examples/dependency-closure/dependency-closure.ts"]
-  file_examples_entry_points_entry_points_ts["examples/entry-points/entry-points.ts"]
-  file_examples_forwarding_stack_forwarding_stack_ts["examples/forwarding-stack/forwarding-stack.ts"]
-  file_examples_frame_annotations_frame_annotations_ts["examples/frame-annotations/frame-annotations.ts"]
-  file_examples_gated_leaf_callidescope_config_ts["examples/gated-leaf/callidescope.config.ts"]
-  file_examples_gated_leaf_gated_leaf_generated_ts["examples/gated-leaf/gated-leaf.generated.ts"]
-  file_examples_gated_leaf_gated_leaf_ts["examples/gated-leaf/gated-leaf.ts"]
-  file_examples_implementation_fan_out_api_sink_ts["examples/implementation-fan-out/api-sink.ts"]
-  file_examples_implementation_fan_out_console_sink_ts["examples/implementation-fan-out/console-sink.ts"]
-  file_examples_implementation_fan_out_database_sink_ts["examples/implementation-fan-out/database-sink.ts"]
-  file_examples_implementation_fan_out_file_sink_ts["examples/implementation-fan-out/file-sink.ts"]
-  file_examples_implementation_fan_out_line_sink_ts["examples/implementation-fan-out/line-sink.ts"]
-  file_examples_implementation_fan_out_memory_sink_ts["examples/implementation-fan-out/memory-sink.ts"]
-  file_examples_implementation_fan_out_network_sink_ts["examples/implementation-fan-out/network-sink.ts"]
-  file_examples_implementation_fan_out_queue_sink_ts["examples/implementation-fan-out/queue-sink.ts"]
-  file_examples_implementation_fan_out_stream_sink_ts["examples/implementation-fan-out/stream-sink.ts"]
-  file_examples_implementation_fan_out_telemetry_sink_ts["examples/implementation-fan-out/telemetry-sink.ts"]
-  file_examples_injected_dependency_injected_dependency_module_ts["examples/injected-dependency/injected-dependency.module.ts"]
-  file_examples_injected_dependency_inventory_ts["examples/injected-dependency/inventory.ts"]
-  file_examples_injected_dependency_orders_ts["examples/injected-dependency/orders.ts"]
-  file_examples_mutual_recursion_mutual_recursion_ts["examples/mutual-recursion/mutual-recursion.ts"]
-  file_examples_plain_call_normalize_label_ts["examples/plain-call/normalize-label.ts"]
-  file_examples_plain_call_plain_call_ts["examples/plain-call/plain-call.ts"]
-  file_examples_project_depth_limit_project_depth_limit_ts["examples/project-depth-limit/project-depth-limit.ts"]
-  file_examples_shared_tail_round_to_cents_ts["examples/shared-tail/round-to-cents.ts"]
-  file_examples_structural_interface_structural_interface_ts["examples/structural-interface/structural-interface.ts"]
-  file_examples_structural_interface_structural_provider_ts["examples/structural-interface/structural-provider.ts"]
+  file_examples_base_class_base_class_ts["examples/resolution/base-class/base-class.ts"]
+  file_examples_base_class_base_task_ts["examples/resolution/base-class/base-task.ts"]
+  file_examples_callback_argument_callback_argument_ts["examples/resolution/callback-argument/callback-argument.ts"]
+  file_examples_computed_member_computed_member_ts["examples/resolution/computed-member/computed-member.ts"]
+  file_examples_constructed_class_constructed_class_ts["examples/resolution/constructed-class/constructed-class.ts"]
+  file_examples_constructed_class_parser_ts["examples/resolution/constructed-class/parser.ts"]
+  file_examples_declared_entry_points_declared_entry_points_ts["examples/roots/declared-entry-points/declared-entry-points.ts"]
+  file_examples_deep_stack_deep_stack_ts["examples/stacks/deep-stack/deep-stack.ts"]
+  file_examples_dependency_closure_dependency_closure_ts["examples/resolution/dependency-closure/dependency-closure.ts"]
+  file_examples_entry_points_entry_points_ts["examples/roots/entry-points/entry-points.ts"]
+  file_examples_forwarding_stack_forwarding_stack_ts["examples/stacks/forwarding-stack/forwarding-stack.ts"]
+  file_examples_frame_annotations_frame_annotations_ts["examples/stacks/frame-annotations/frame-annotations.ts"]
+  file_examples_gated_leaf_callidescope_config_ts["examples/limits/gated-leaf/callidescope.config.ts"]
+  file_examples_gated_leaf_gated_leaf_generated_ts["examples/limits/gated-leaf/gated-leaf.generated.ts"]
+  file_examples_gated_leaf_gated_leaf_ts["examples/limits/gated-leaf/gated-leaf.ts"]
+  file_examples_implementation_fan_out_api_sink_ts["examples/resolution/implementation-fan-out/api-sink.ts"]
+  file_examples_implementation_fan_out_console_sink_ts["examples/resolution/implementation-fan-out/console-sink.ts"]
+  file_examples_implementation_fan_out_database_sink_ts["examples/resolution/implementation-fan-out/database-sink.ts"]
+  file_examples_implementation_fan_out_file_sink_ts["examples/resolution/implementation-fan-out/file-sink.ts"]
+  file_examples_implementation_fan_out_line_sink_ts["examples/resolution/implementation-fan-out/line-sink.ts"]
+  file_examples_implementation_fan_out_memory_sink_ts["examples/resolution/implementation-fan-out/memory-sink.ts"]
+  file_examples_implementation_fan_out_network_sink_ts["examples/resolution/implementation-fan-out/network-sink.ts"]
+  file_examples_implementation_fan_out_queue_sink_ts["examples/resolution/implementation-fan-out/queue-sink.ts"]
+  file_examples_implementation_fan_out_stream_sink_ts["examples/resolution/implementation-fan-out/stream-sink.ts"]
+  file_examples_implementation_fan_out_telemetry_sink_ts["examples/resolution/implementation-fan-out/telemetry-sink.ts"]
+  file_examples_injected_dependency_injected_dependency_module_ts["examples/resolution/injected-dependency/injected-dependency.module.ts"]
+  file_examples_injected_dependency_inventory_ts["examples/resolution/injected-dependency/inventory.ts"]
+  file_examples_injected_dependency_orders_ts["examples/resolution/injected-dependency/orders.ts"]
+  file_examples_mutual_recursion_mutual_recursion_ts["examples/stacks/mutual-recursion/mutual-recursion.ts"]
+  file_examples_plain_call_normalize_label_ts["examples/resolution/plain-call/normalize-label.ts"]
+  file_examples_plain_call_plain_call_ts["examples/resolution/plain-call/plain-call.ts"]
+  file_examples_project_depth_limit_project_depth_limit_ts["examples/limits/project-depth-limit/project-depth-limit.ts"]
+  file_examples_shared_tail_round_to_cents_ts["examples/stacks/shared-tail/round-to-cents.ts"]
+  file_examples_structural_interface_structural_interface_ts["examples/resolution/structural-interface/structural-interface.ts"]
+  file_examples_structural_interface_structural_provider_ts["examples/resolution/structural-interface/structural-provider.ts"]
   file_src_callidescope_examples_main_ts["src/callidescope-examples.main.ts"]
   file_src_index_ts["src/index.ts"]
   file_testing_examples_integration_test_ts["testing/examples.integration.test.ts"]
