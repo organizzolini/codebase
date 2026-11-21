@@ -56,7 +56,7 @@ export function FilterCascader(
     >
       <QueryCascader
         items={items}
-        mode="columns"
+        mode="drill"
         onValueChange={(next) => {
           onQueryChange(toFilterQuery(next, fields, query));
         }}

@@ -72,14 +72,13 @@ function createHandlers(): UseCalendarDisplayResult["handlers"] {
 
 describe("calendar-display-menu utilities", () => {
   describe(createDisplayItems, () => {
-    it("offers Calendar, Symbols, Crowded days, Color and Sky, with a Scale only on the timeline", () => {
+    it("offers Symbols, Crowded days, Color and Sky, with a Scale only on the timeline", () => {
       const labels = (view: "month" | "timeline"): string[] =>
         createDisplayItems(FIELDS, { listing: LISTING, view }).map(
           (item) => item.label,
         );
 
       expect(labels("timeline")).toStrictEqual([
-        "Calendar",
         "Scale",
         "Symbols",
         "Crowded days",
@@ -89,28 +88,27 @@ describe("calendar-display-menu utilities", () => {
       expect(labels("month")).not.toContain("Scale");
     });
 
-    it("keeps an icon on the Calendar, Color and Sky options", () => {
+    it("keeps an icon on the Color and Sky options", () => {
       const items = createDisplayItems(FIELDS, {
         listing: LISTING,
         view: "month",
       });
 
-      for (const label of ["Calendar", "Color", "Sky"]) {
+      for (const label of ["Color", "Sky"]) {
         expect(items.find((item) => item.label === label)?.icon).toBeDefined();
       }
     });
 
-    it("lists each field to color by, after the event kind", () => {
+    it("lists none, the event kind and each field to color by directly under Color", () => {
       const color = createDisplayItems(FIELDS, {
         listing: LISTING,
         view: "month",
       }).find((item) => item.label === "Color");
-      const colorBy = color?.children?.find(
-        (item) => item.label === "Color by",
-      );
 
-      expect(colorBy?.children?.[0]?.value).toBe("colorBy:default");
-      expect(colorBy?.children?.map((item) => item.value)).toContain(
+      expect(
+        color?.children?.map((item) => item.value).slice(0, 2),
+      ).toStrictEqual(["colorBy:none", "colorBy:default"]);
+      expect(color?.children?.map((item) => item.value)).toContain(
         "colorBy:tag:type",
       );
     });
@@ -149,11 +147,9 @@ describe("calendar-display-menu utilities", () => {
       const value = toDisplayValue(CHOICES);
 
       for (const leaf of [
-        "calendar:timeline",
         "scale:month",
         "symbols:glyphs",
         "clusters",
-        "colors",
         "colorBy:default",
         "constellations:all",
         "sky:visible",
@@ -173,9 +169,9 @@ describe("calendar-display-menu utilities", () => {
         view: "week",
       });
 
-      expect(value).toContain("colorBy:tag:type");
       expect(value).not.toContain("clusters");
-      expect(value).not.toContain("colors");
+      expect(value).toContain("colorBy:none");
+      expect(value).not.toContain("colorBy:tag:type");
       expect(value).not.toContain("scale:month");
       expect(value).not.toContain("sky:visible");
       expect(value).not.toContain("sky:ecliptic");
@@ -191,10 +187,7 @@ describe("calendar-display-menu utilities", () => {
   });
 
   describe(applyDisplayLeaf, () => {
-    it("sets the calendar view, the scale and the symbols", () => {
-      expect(
-        apply("calendar:week").handlers.handleViewChange,
-      ).toHaveBeenCalledWith("week");
+    it("sets the scale and the symbols", () => {
       expect(
         apply("scale:year").handlers.handleScaleChange,
       ).toHaveBeenCalledWith("year");
@@ -206,10 +199,7 @@ describe("calendar-display-menu utilities", () => {
       ).toHaveBeenCalledWith("glyphs");
     });
 
-    it("ignores a view or scale it does not know", () => {
-      expect(
-        apply("calendar:narnia").handlers.handleViewChange,
-      ).not.toHaveBeenCalled();
+    it("ignores a scale it does not know", () => {
       expect(
         apply("scale:narnia").handlers.handleScaleChange,
       ).not.toHaveBeenCalled();
@@ -219,8 +209,14 @@ describe("calendar-display-menu utilities", () => {
       expect(
         apply("clusters").handlers.handleClustersChange,
       ).toHaveBeenCalledWith(false);
+    });
+
+    it("turns colors off for none, and on again for any other choice", () => {
       expect(
-        apply("colors", { ...CHOICES, colors: false }).handlers
+        apply("colorBy:none").handlers.handleColorsChange,
+      ).toHaveBeenCalledWith(false);
+      expect(
+        apply("colorBy:default", { ...CHOICES, colors: false }).handlers
           .handleColorsChange,
       ).toHaveBeenCalledWith(true);
     });

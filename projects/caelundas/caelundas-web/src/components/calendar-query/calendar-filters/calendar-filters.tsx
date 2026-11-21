@@ -79,6 +79,7 @@ export function CalendarFilters(
   const activeCount = countActiveEventFilterRules(query);
 
   // 🏗 Setup
+  const isAttached = navigation !== null || (isTablet && activeCount > 0);
 
   // 💪 Handlers
 
@@ -94,15 +95,13 @@ export function CalendarFilters(
     >
       <div
         className={STRIP_CLASS_NAME}
+        data-attached={isAttached ? "" : undefined}
         data-joined={isTablet && activeCount > 0 ? "" : undefined}
       >
         <ButtonGroup aria-label="Filter">
           <Popover>
             <PopoverTrigger
-              render={renderFiltersButton(
-                activeCount,
-                navigation !== null || (isTablet && activeCount > 0),
-              )}
+              render={renderFiltersButton(activeCount, isAttached)}
             />
             <PopoverContent
               align="start"

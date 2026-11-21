@@ -28,7 +28,7 @@ export interface QueryCascaderProperties {
   /**
    * Whether branches open beneath their parent, as a tree, or in columns to the right; a tree when absent.
    */
-  mode?: "columns" | "tree";
+  mode?: "columns" | "drill" | "tree";
   /**
    * Whether several can be picked, with a branch ticking all beneath it; one when absent.
    */
@@ -69,7 +69,7 @@ export function QueryCascader(
   // 🏗 Setup
   const panel = (
     <QueryCascaderPanel
-      isColumns={mode === "columns"}
+      mode={mode}
       placeholder={placeholder}
     />
   );

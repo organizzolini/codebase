@@ -1,3 +1,5 @@
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
 import { Button, ButtonGroup, ButtonGroupText } from "@codebase/presentation";
 
 import { SURFACE_CLASS_NAMES } from "../../calendar-display/events-calendar/components/calendar-views/calendar-surfaces.constants";
@@ -58,12 +60,15 @@ export function CalendarNavigationGroup(
         )}
         <Button
           aria-label="Previous"
-          className="w-9 text-lg leading-none"
+          className="w-9"
           onClick={navigation.prev}
           size="sm"
           variant="outline"
         >
-          ‹
+          <ChevronLeft
+            aria-hidden="true"
+            className="size-5"
+          />
         </Button>
         <ButtonGroupText
           aria-level={2}
@@ -74,12 +79,15 @@ export function CalendarNavigationGroup(
         </ButtonGroupText>
         <Button
           aria-label="Next"
-          className="w-9 text-lg leading-none"
+          className="w-9"
           onClick={navigation.next}
           size="sm"
           variant="outline"
         >
-          ›
+          <ChevronRight
+            aria-hidden="true"
+            className="size-5"
+          />
         </Button>
       </ButtonGroup>
     </div>

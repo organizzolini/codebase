@@ -1,15 +1,3 @@
-import {
-  CalendarDays,
-  CalendarRange,
-  ChartGantt,
-  Columns3,
-  List,
-  Square,
-} from "lucide-react";
-
-import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
-import type { LucideIcon } from "lucide-react";
-
 // ♟️ Constants
 
 export const TITLE = "Display";
@@ -40,18 +28,6 @@ export const CONSTELLATION_CHOICES = [
 export const DEFAULT_COLOR_BY = "default";
 
 /**
- * The icon each calendar view carries in the list.
- */
-export const VIEW_ICONS: Readonly<Record<CalendarViewName, LucideIcon>> = {
-  agenda: List,
-  day: Square,
-  month: CalendarDays,
-  "three-day": Columns3,
-  timeline: ChartGantt,
-  week: CalendarRange,
-};
-
-/**
  * The colors a sky color can be set to from the list, each named.
  */
 export const COLOR_SWATCHES = [
@@ -69,3 +45,8 @@ export const COLOR_SWATCHES = [
  * How many values a numeric setting offers, from its least to its most.
  */
 export const STEP_COUNT = 5;
+
+/**
+ * The choice that leaves events uncolored.
+ */
+export const NO_COLOR = "none";

@@ -427,23 +427,20 @@ describe("index", () => {
     expect(within(toolbar).queryByRole("toolbar")).toBeNull();
   });
 
-  it("turns the colors off and the grouping of crowded days off, and on again, from the Display menu", async () => {
+  it("turns the colors off and on again with Color's None choice, and the grouping of crowded days off and on, from the Display menu", async () => {
     await renderCalendarRoute("/?date=2026-03-01");
     await screen.findByRole("grid", { name: "March 2026" });
 
-    // Both switches start on; each click turns one the other way.
-    const isOn = new Map<string, boolean>();
+    // The grouping starts on; each click turns it the other way. Colors start on Event kind.
+    const steps = [
+      ["Color", "None", true],
+      ["Color", "Event kind", true],
+      ["Crowded days", "Group similar events", false],
+      ["Crowded days", "Group similar events", true],
+    ] as const;
 
-    for (const [branch, leaf] of [
-      ["Color", "Color events"],
-      ["Crowded days", "Group similar events"],
-      ["Color", "Color events"],
-      ["Crowded days", "Group similar events"],
-    ] as const) {
-      const next = !(isOn.get(leaf) ?? true);
-
+    for (const [branch, leaf, isSelected] of steps) {
       fireEvent.click(await findDisplayOption(branch, leaf));
-      isOn.set(leaf, next);
 
       // The link now says so, and the list reads back what it holds.
       await waitFor(() => {
@@ -451,7 +448,7 @@ describe("index", () => {
           screen
             .getByRole("option", { name: new RegExp(`^${leaf}$`, "u") })
             .getAttribute("aria-selected"),
-        ).toBe(String(next));
+        ).toBe(String(isSelected));
       });
     }
   });

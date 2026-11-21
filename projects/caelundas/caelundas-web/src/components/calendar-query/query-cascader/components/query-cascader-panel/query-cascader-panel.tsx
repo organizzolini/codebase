@@ -1,4 +1,5 @@
 import {
+  CascaderBreadcrumb,
   CascaderColumns,
   CascaderEmpty,
   CascaderFooter,
@@ -15,10 +16,10 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The search prompt, and whether branches open in columns to the right.
+ * The search prompt, and how branches open.
  */
 export interface QueryCascaderPanelProperties {
-  isColumns: boolean;
+  mode: "columns" | "drill" | "tree";
   placeholder: string;
 }
 
@@ -30,7 +31,7 @@ export interface QueryCascaderPanelProperties {
 export function QueryCascaderPanel(
   properties: Readonly<QueryCascaderPanelProperties>,
 ): ReactNode {
-  const { isColumns, placeholder } = properties;
+  const { mode, placeholder } = properties;
 
   // 🪝 Hooks
 
@@ -48,8 +49,9 @@ export function QueryCascaderPanel(
       <CascaderNav>
         <CascaderInput placeholder={placeholder} />
       </CascaderNav>
+      <CascaderBreadcrumb />
       <CascaderEmpty />
-      {isColumns ? (
+      {mode === "columns" ? (
         <CascaderColumns />
       ) : (
         <CascaderList>

@@ -26,6 +26,12 @@ export async function findDisplayOption(
 
   if (screen.queryByRole("option", { name: leafName }) === null) {
     const branchName = new RegExp(`^${branch},`, "u");
+    const back = screen.queryByRole("button", { name: /^back$/iu });
+
+    // Another branch is open in place of the list: step out of it first.
+    if (back !== null) {
+      fireEvent.click(back);
+    }
 
     // A branch already opened is a button in the trail, not an option.
     fireEvent.click(
@@ -54,10 +60,13 @@ export async function findToolbar(): Promise<HTMLElement> {
 }
 
 /**
- * Picks a calendar view by its label from the Display menu's Calendar options.
+ * Picks a calendar view by its label from the Display menu's toggle group.
  */
 export async function pickCalendarView(label: string): Promise<void> {
-  fireEvent.click(await findDisplayOption("Calendar", label));
+  await openDisplayMenu();
+  fireEvent.click(
+    await screen.findByRole("button", { name: label }, BUILDER_WAIT),
+  );
 }
 
 /**

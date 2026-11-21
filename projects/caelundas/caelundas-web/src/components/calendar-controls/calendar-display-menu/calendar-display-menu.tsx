@@ -25,6 +25,7 @@ import {
   findToggledLeaf,
   toDisplayValue,
 } from "./calendar-display-menu.utilities";
+import { DisplayViewToggle } from "./components/display-view-toggle/display-view-toggle";
 
 import type { EventFacet } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
@@ -47,7 +48,7 @@ export interface CalendarDisplayMenuProperties {
 // 🧩 Component
 
 /**
- * Renders the Display button, which opens a searchable Cascader of how the calendar looks, its branches opening in columns to the right, with the Calendar, Color and Sky options in it; the chip beside it names the view shown and opens the same list.
+ * Renders the Display button, which opens the calendar views as a vertical toggle group beside a searchable Cascader of how the calendar looks, each branch replacing the list when opened, with the Color and Sky options in it; the chip beside it names the view shown and opens the same list.
  */
 export function CalendarDisplayMenu(
   properties: Readonly<CalendarDisplayMenuProperties>,
@@ -111,12 +112,17 @@ export function CalendarDisplayMenu(
           <PopoverContent
             align="start"
             aria-label="Display options"
-            className="w-auto max-w-[95vw] overflow-x-auto p-0"
+            className="flex w-auto max-w-[95vw] items-start gap-2 p-2"
           >
+            <DisplayViewToggle
+              onViewChange={handlers.handleViewChange}
+              view={view}
+            />
             <QueryCascader
               cascade={false}
+              className="w-72"
               items={items}
-              mode="columns"
+              mode="drill"
               onValueChange={handleValueChange}
               placeholder="Search display options"
               value={value}
