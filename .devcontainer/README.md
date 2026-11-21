@@ -98,7 +98,7 @@ The container uses [Dev Container Features](https://containers.dev/features) for
 ### Custom Installations
 
 - **SQLite**: Installed via `apt-get` in `postCreateCommand` for database querying and management
-- **pnpm**: Activated via Corepack with exact version 10.20.0
+- **pnpm**: Installed by the `pnpm` dev container feature, which Node 26 needs because it no longer bundles Corepack
 
 ## VS Code Extensions
 
@@ -133,7 +133,7 @@ Ports are automatically forwarded to your host machine:
 
 | Hook                | Tasks                                                                         |
 | ------------------- | ----------------------------------------------------------------------------- |
-| `postCreateCommand` | Enable pnpm via Corepack, install dependencies, sync VS Code Machine settings |
+| `postCreateCommand` | Install dependencies, sync VS Code Machine settings                           |
 | `postAttachCommand` | Verify tool versions (node, pnpm, gh, helm)                         |
 
 ## Scripts
@@ -158,7 +158,7 @@ The `test-devcontainer.sh` script in `.devcontainer/scripts/` validates tool ins
 | Container user                | Running as `root`, confirming `containerUser`/`remoteUser`                                    |
 | Environment variables         | `KUBECONFIG`, `NODE_OPTIONS`, `UV_THREADPOOL_SIZE` are set from `remoteEnv`                   |
 | Pinned feature versions       | `gh`, `terraform`, `tflint`, `helm`, `kubectl`, `python3` match `devcontainer.json` pins      |
-| Toolchain dependencies        | `corepack`, `tsx`, `git`, `npm`, `npx` are available                                          |
+| Toolchain dependencies        | `pnpm`, `tsx`, `git`, `npm`, `npx` are available                                              |
 | Post-create artifacts         | `node_modules/` and `.nx/graph.json` exist (validates `postCreateCommand` ran)                |
 | Script permissions            | All `.devcontainer/scripts/*.sh` files are executable                                         |
 | Extensions sync               | `extensions` and `recommendations` arrays in `devcontainer.json` match                        |
@@ -274,11 +274,10 @@ If you still encounter `Could not resolve host` errors:
 
 ### pnpm version mismatch
 
-Corepack should handle this automatically. If issues persist:
+The `pnpm` dev container feature installs the pinned version. If it has drifted, rebuild the container, or install the version `packageManager` names:
 
 ```bash
-corepack enable
-corepack prepare pnpm@10.20.0 --activate
+npm install --global pnpm@<version from package.json packageManager>
 ```
 
 ### Port already in use
