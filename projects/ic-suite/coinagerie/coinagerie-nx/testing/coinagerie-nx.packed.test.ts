@@ -67,7 +67,9 @@ describe("the coinagerie plugin installed from a registry", () => {
       dependencies: { nx: installedVersion(WORKSPACE_ROOT, "nx") },
       packages: ["@coinagerie/cli", "@coinagerie/nx"],
     });
-    workspace.registerPlugin("@coinagerie/nx");
+    workspace.registerPlugin("@coinagerie/nx", {
+      projectConfigurationPath: "coinagerie.config.mjs",
+    });
     writeProject("documented");
     writeProject("undocumented");
   });

@@ -10,6 +10,7 @@ import {
   ProjectConfigurationFieldNotPermittedError,
   ProjectConfigurationIncompleteError,
   ProjectConfigurationMissingError,
+  ProjectConfigurationPathMissingError,
 } from "./configuration.constants";
 
 import type { ConfigurationFileReader } from "./configuration-file.types";
@@ -281,19 +282,30 @@ export class ProjectConfigurationService {
       args.workspaceConfigurationPath,
     );
 
+    if (args.projectConfigurationPath === undefined) {
+      throw new ProjectConfigurationPathMissingError(
+        workspaceConfigurationPath,
+      );
+    }
+
     const loaded: LoadedProjectConfiguration[] = [];
 
     for (const project of args.projects) {
-      const configurationPath = reader.findConfigurationFileAt(
-        path.resolve(args.workspaceRoot, project),
+      const configurationPath = path.resolve(
+        args.workspaceRoot,
+        project,
+        args.projectConfigurationPath,
       );
-
-      if (configurationPath === undefined) {
-        throw new ProjectConfigurationMissingError(project);
-      }
 
       if (configurationPath === workspaceConfigurationPath) {
         continue;
+      }
+
+      if (!reader.configurationFileExists(configurationPath)) {
+        throw new ProjectConfigurationMissingError({
+          filePath: configurationPath,
+          project,
+        });
       }
 
       const projectConfiguration = await this.loadProjectConfiguration({

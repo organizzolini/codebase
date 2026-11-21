@@ -1,7 +1,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { EXAMPLE_EMOJI, nextExample } from "./reading-order";
+import { EXAMPLE_EMOJI, exampleDirectory, nextExample } from "./reading-order";
 
 import type {
   ExampleDocument,
@@ -87,11 +87,14 @@ export function resolveFiles(document: ExampleDocument): ExampleFile[] {
   return [
     {
       content: renderDocument(document),
-      relativePath: path.join(document.id, "README.md"),
+      relativePath: path.join(exampleDirectory(document.id), "README.md"),
     },
     ...document.jsonExports.map((jsonExport) => ({
       content: jsonExport.content,
-      relativePath: path.join(document.id, jsonExport.fileName),
+      relativePath: path.join(
+        exampleDirectory(document.id),
+        jsonExport.fileName,
+      ),
     })),
   ];
 }
@@ -143,8 +146,11 @@ function readFileOrEmpty(filePath: string): string {
 /** The `## Next` body: the following example, or the way back to the guide. */
 function renderNext(id: string): string {
   const following = nextExample(id);
+  const depth = exampleDirectory(id).split("/").length;
 
-  return following === undefined
-    ? "Nothing left — back to the [package guide](../../README.md)."
-    : `[${following}](../${following}/README.md).`;
+  if (following === undefined) {
+    return `Nothing left — back to the [package guide](${"../".repeat(depth + 1)}README.md).`;
+  }
+
+  return `[${following}](${"../".repeat(depth)}${exampleDirectory(following)}/README.md).`;
 }

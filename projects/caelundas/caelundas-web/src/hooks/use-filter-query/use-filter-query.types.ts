@@ -1,4 +1,4 @@
-import type { EventFilterQuery } from "../../components/calendar-filters/event-filters.types";
+import type { EventFilterQuery } from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filters.types";
 
 // 🏷️ Types
 

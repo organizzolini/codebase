@@ -12,13 +12,13 @@ import {
   WordLexeme,
 } from "@codebase/lexico-db";
 
-import { NominalFormType } from "./forms/nominal-form.entities";
-import { NounInflectionType } from "./inflections/noun-inflection.entities";
-import { LexemeType } from "./lexeme.entities";
 import { toLexemeType, toTranslationType } from "./lexemes.utilities";
-import { PrincipalPartType } from "./principal-part.entities";
-import { PronunciationType } from "./pronunciation.entities";
-import { TranslationType } from "./translation.entities";
+import { NominalFormType } from "./modules/forms/nominal-form.entities";
+import { NounInflectionType } from "./modules/inflections/noun-inflection.entities";
+import { PrincipalPartType } from "./modules/lexeme-details/principal-part.entities";
+import { PronunciationType } from "./modules/lexeme-details/pronunciation.entities";
+import { TranslationType } from "./modules/lexeme-details/translation.entities";
+import { LexemeType } from "./modules/lexeme-queries/lexeme.entities";
 
 const CREATED_AT = new Date("2025-01-01T00:00:00Z");
 const UPDATED_AT = new Date("2025-01-02T00:00:00Z");

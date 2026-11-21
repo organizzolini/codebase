@@ -1,17 +1,18 @@
 import { Injectable } from "@nestjs/common";
 
 import { LanguageCommentsService } from "../comments/language-comments.service";
-import { CssService } from "../css/css.service";
-import { HclService } from "../hcl/hcl.service";
-import { JsonService } from "../json/json.service";
-import { JupyterService } from "../jupyter/jupyter.service";
-import { MarkdownService } from "../markdown/markdown.service";
-import { PythonService } from "../python/python.service";
-import { ShellService } from "../shell/shell.service";
-import { SqlService } from "../sql/sql.service";
-import { TomlService } from "../toml/toml.service";
-import { TypescriptService } from "../typescript/typescript.service";
-import { YamlService } from "../yaml/yaml.service";
+
+import { CssService } from "./modules/css/css.service";
+import { HclService } from "./modules/hcl/hcl.service";
+import { JsonService } from "./modules/json/json.service";
+import { JupyterService } from "./modules/jupyter/jupyter.service";
+import { MarkdownService } from "./modules/markdown/markdown.service";
+import { PythonService } from "./modules/python/python.service";
+import { ShellService } from "./modules/shell/shell.service";
+import { SqlService } from "./modules/sql/sql.service";
+import { TomlService } from "./modules/toml/toml.service";
+import { TypescriptService } from "./modules/typescript/typescript.service";
+import { YamlService } from "./modules/yaml/yaml.service";
 
 import type {
   AnalyzeLanguagesArguments,

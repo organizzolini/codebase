@@ -1,5 +1,5 @@
-import { existsSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
@@ -373,7 +373,12 @@ describe(ConfigurationService, () => {
 
   it("loads the workspace configuration", async () => {
     const configuration = await service.loadConformetryConfiguration(
-      "configuration/conformetry.config.ts",
+      fileURLToPath(
+        new URL(
+          "../../../../../../../configuration/ic-suite/conformetry.config.ts",
+          import.meta.url,
+        ),
+      ),
     );
 
     expect(configuration.map((generator) => generator.name)).toStrictEqual(
@@ -387,32 +392,20 @@ describe(ConfigurationService, () => {
   });
 
   describe("resolveConfigurationPath", () => {
-    it("returns an existing absolute path unchanged", async () => {
+    it("returns an absolute path unchanged", () => {
       const configurationPath = writeConfiguration([]);
 
-      await expect(
-        service.resolveConfigurationPath(configurationPath),
-      ).resolves.toBe(configurationPath);
-    });
-
-    it("falls back to the workspace root for a path the cwd lacks", async () => {
-      const resolvedPath = await service.resolveConfigurationPath(
-        "configuration/conformetry.config.ts",
+      expect(service.resolveConfigurationPath(configurationPath)).toBe(
+        configurationPath,
       );
-
-      expect(path.isAbsolute(resolvedPath)).toBe(true);
-      expect(
-        resolvedPath.endsWith(
-          path.join("configuration", "conformetry.config.ts"),
-        ),
-      ).toBe(true);
-      expect(existsSync(resolvedPath)).toBe(true);
     });
 
-    it("resolves a path that exists nowhere against the cwd", async () => {
-      await expect(
-        service.resolveConfigurationPath("nowhere/conformetry.config.json"),
-      ).resolves.toBe(path.resolve("nowhere/conformetry.config.json"));
+    it("resolves a relative path against the cwd only, never the workspace root", () => {
+      expect(
+        service.resolveConfigurationPath(
+          "configuration/ic-suite/conformetry.config.ts",
+        ),
+      ).toBe(path.resolve("configuration/ic-suite/conformetry.config.ts"));
     });
   });
 

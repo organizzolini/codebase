@@ -60,7 +60,9 @@ describe(RunContextService, () => {
       exclude: [],
       include: ["**"],
       nestjsRootModules: {},
+      projectConfigurationPath: "configuration/codependix.config.ts",
       projectGraph: undefined,
+      projectTsconfigPath: "tsconfig.json",
       selection: { dependencies: true, projects: [], tags: [] },
       workspace: {},
     });
@@ -224,7 +226,9 @@ describe(RunContextService, () => {
       exclude: [],
       include: ["**"],
       nestjsRootModules: {},
+      projectConfigurationPath: "codependix.config.ts",
       projectGraph: "artifacts/graph.json",
+      projectTsconfigPath: "tsconfig.json",
       selection: { dependencies: true, projects: [], tags: [] },
       workspace: {},
     });
@@ -315,7 +319,9 @@ describe(RunContextService, () => {
         exclude: [],
         include: ["**"],
         nestjsRootModules: {},
+        projectConfigurationPath: "codependix.config.ts",
         projectGraph: undefined,
+        projectTsconfigPath: "tsconfig.json",
         selection: { dependencies: false, projects: ["widgets"], tags: [] },
         workspace: {},
       });
@@ -352,7 +358,9 @@ describe(RunContextService, () => {
         exclude: [],
         include: ["**"],
         nestjsRootModules: {},
+        projectConfigurationPath: "codependix.config.ts",
         projectGraph: undefined,
+        projectTsconfigPath: "tsconfig.json",
         selection,
         workspace: {},
       };
@@ -466,7 +474,9 @@ describe(RunContextService, () => {
         exclude: [],
         include: ["**"],
         nestjsRootModules: {},
+        projectConfigurationPath: "codependix.config.ts",
         projectGraph: undefined,
+        projectTsconfigPath: "tsconfig.json",
         selection: { dependencies: true, ...selection },
         workspace: {},
       });
@@ -569,9 +579,11 @@ describe(RunContextService, () => {
     });
     expect(context.projectConfigurations.get("reporting")).toBeUndefined();
     expect(configurationService.loadProjectConfiguration).toHaveBeenCalledWith({
+      projectConfigurationPath: "configuration/codependix.config.ts",
       projectRoot: "/workspace/packages/widgets",
     });
     expect(configurationService.loadProjectConfiguration).toHaveBeenCalledWith({
+      projectConfigurationPath: "configuration/codependix.config.ts",
       projectRoot: "/workspace/tools/reporting",
     });
   });

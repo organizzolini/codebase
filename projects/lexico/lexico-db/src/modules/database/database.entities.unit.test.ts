@@ -12,8 +12,8 @@ import {
   getEntityRelations,
   getEntityTableMetadata,
 } from "../../../testing/entity-definition-assertions";
-import { partsOfSpeech } from "../dictionary/entities/part-of-speech.entity";
-import { pronunciationVariants } from "../dictionary/entities/pronunciation.entity";
+import { partsOfSpeech } from "../dictionary/modules/lexemes/part-of-speech.entity";
+import { pronunciationVariants } from "../dictionary/modules/lexemes/pronunciation.entity";
 
 import {
   LEXICO_DATABASE_ENTITIES,

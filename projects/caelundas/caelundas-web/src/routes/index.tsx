@@ -5,38 +5,38 @@ import {
 } from "@tanstack/react-router";
 import { type ReactNode, useMemo, useSyncExternalStore } from "react";
 
-import { CalendarEmpty } from "../components/calendar-empty/calendar-empty";
-import { CalendarError } from "../components/calendar-error/calendar-error";
-import { CalendarFilters } from "../components/calendar-filters/calendar-filters";
-import { createEventFilterFields } from "../components/calendar-filters/event-filter-fields.utilities";
-import { EMPTY_EVENT_FILTER } from "../components/calendar-filters/event-filter-tree.constants";
-import { CalendarMenus } from "../components/calendar-menus/calendar-menus";
-import { CalendarSkeleton } from "../components/calendar-skeleton/calendar-skeleton";
-import { CalendarViewOptions } from "../components/calendar-view-options/calendar-view-options";
-import { loadedKeys } from "../components/events-calendar/calendar-loader.constants";
-import { loadCalendar } from "../components/events-calendar/calendar-loader.utilities";
-import {
-  isWideViewport,
-  subscribeToViewport,
-} from "../components/events-calendar/calendar-viewport.utilities";
+import { CalendarMenus } from "../components/calendar-controls/calendar-menus/calendar-menus";
+import { CalendarViewOptions } from "../components/calendar-controls/calendar-view-options/calendar-view-options";
+import { CalendarEmpty } from "../components/calendar-display/calendar-empty/calendar-empty";
+import { CalendarError } from "../components/calendar-display/calendar-error/calendar-error";
+import { CalendarSkeleton } from "../components/calendar-display/calendar-skeleton/calendar-skeleton";
+import { loadedKeys } from "../components/calendar-display/events-calendar/components/calendar-loader/calendar-loader.constants";
+import { loadCalendar } from "../components/calendar-display/events-calendar/components/calendar-loader/calendar-loader.utilities";
 import {
   AGENDA_DAY_COUNT,
   CALENDAR_VIEW_PERIODS,
   DEFAULT_TIMELINE_SCALE,
-} from "../components/events-calendar/calendar-views.constants";
-import { getDefaultCalendarView } from "../components/events-calendar/calendar-views.utilities";
-import { parseCalendarDate } from "../components/events-calendar/calendar-window.utilities";
-import { EventsCalendar } from "../components/events-calendar/events-calendar";
-import { readTimeZone } from "../components/events-calendar/events-calendar.utilities";
+} from "../components/calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
+import { getDefaultCalendarView } from "../components/calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
+import {
+  isWideViewport,
+  subscribeToViewport,
+} from "../components/calendar-display/events-calendar/components/calendar-window/calendar-viewport.utilities";
+import { parseCalendarDate } from "../components/calendar-display/events-calendar/components/calendar-window/calendar-window.utilities";
+import { EventsCalendar } from "../components/calendar-display/events-calendar/events-calendar";
+import { readTimeZone } from "../components/calendar-display/events-calendar/events-calendar.utilities";
+import {
+  CalendarSymbolsContext,
+  DEFAULT_CALENDAR_SYMBOLS,
+} from "../components/calendar-events/event-glyphs/calendar-symbols.constants";
+import { CalendarFilters } from "../components/calendar-query/calendar-filters/calendar-filters";
+import { createEventFilterFields } from "../components/calendar-query/calendar-filters/components/event-filter-model/event-filter-fields.utilities";
+import { EMPTY_EVENT_FILTER } from "../components/calendar-query/calendar-filters/components/event-filter-model/event-filter-tree.constants";
 import {
   getCalendarReloadKey,
   readCalendarSearch,
   validateCalendarSearch,
 } from "../hooks/use-calendar-search/calendar-search.utilities";
-import {
-  CalendarSymbolsContext,
-  DEFAULT_CALENDAR_SYMBOLS,
-} from "../hooks/use-calendar-search/calendar-symbols.constants";
 import { useCalendarSearch } from "../hooks/use-calendar-search/use-calendar-search";
 
 // 🧭 Route

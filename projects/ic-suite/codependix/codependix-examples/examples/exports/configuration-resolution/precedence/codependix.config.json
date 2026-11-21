@@ -1,0 +1,12 @@
+{
+  "projectConfigurationPath": "codependix.config.ts",
+  "projectTsconfigPath": "tsconfig.json",
+  "workspace": {
+    "nxProjects": {
+      "markdown": {
+        "anchor": "example-nx-from-json"
+      },
+      "target": "markdown"
+    }
+  }
+}

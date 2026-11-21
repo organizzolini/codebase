@@ -8,6 +8,9 @@ import coinageriePlugin, * as pluginExports from "./index";
 import type { FakeWorkspace } from "../testing/fake-workspace";
 import type { CreateNodesContext } from "@nx/devkit";
 
+/** The registration every case runs with, unless it brings its own. */
+const OPTIONS = { projectConfigurationPath: "coinagerie.config.ts" };
+
 describe("coinageriePlugin", () => {
   let workspace: FakeWorkspace | undefined;
 
@@ -23,7 +26,7 @@ describe("coinageriePlugin", () => {
 
     return await callback(
       args.matched,
-      args.options ?? {},
+      args.options ?? OPTIONS,
       createMock<CreateNodesContext>({ workspaceRoot: workspace.root }),
     );
   }
@@ -38,14 +41,12 @@ describe("coinageriePlugin", () => {
     expect(coinageriePlugin.name).toBe("@coinagerie/nx");
   });
 
-  it("matches every file name the coinagerie loader reads", () => {
+  it("matches project manifests, since the configuration path is an option a static glob cannot read", () => {
     expect.hasAssertions();
 
     const [glob] = coinageriePlugin.createNodes;
 
-    expect(glob).toBe(
-      "**/{coinagerie.config.ts,coinagerie.config.mts,coinagerie.config.cts,coinagerie.config.js,coinagerie.config.mjs,coinagerie.config.cjs}",
-    );
+    expect(glob).toBe("**/{project.json,package.json}");
   });
 
   it("exports its public surface", () => {
@@ -75,13 +76,16 @@ describe("coinageriePlugin", () => {
         "packages/alpha/project.json": "{}",
         "packages/beta/project.json": "{}",
       },
-      matched: ["packages/alpha/coinagerie.config.ts"],
-      options: { inputs: ["{workspaceRoot}/GLOSSARY.md"] },
+      matched: ["packages/alpha/project.json", "packages/beta/project.json"],
+      options: {
+        inputs: ["{workspaceRoot}/GLOSSARY.md"],
+        projectConfigurationPath: "coinagerie.config.ts",
+      },
     });
 
     expect(nodes).toStrictEqual([
       [
-        "packages/alpha/coinagerie.config.ts",
+        "packages/alpha/project.json",
         {
           projects: {
             "packages/alpha": {
@@ -91,15 +95,13 @@ describe("coinageriePlugin", () => {
                   executor: "@coinagerie/nx:check",
                   inputs: [
                     "{projectRoot}/coinagerie.config.ts",
-                    "{projectRoot}/coinagerie.config.mts",
-                    "{projectRoot}/coinagerie.config.cts",
-                    "{projectRoot}/coinagerie.config.js",
-                    "{projectRoot}/coinagerie.config.mjs",
-                    "{projectRoot}/coinagerie.config.cjs",
                     "{projectRoot}/**/*",
                     "{workspaceRoot}/GLOSSARY.md",
                   ],
-                  options: { command: "coinagerie" },
+                  options: {
+                    command: "coinagerie",
+                    projectConfigurationPath: "coinagerie.config.ts",
+                  },
                 },
               },
             },
@@ -109,31 +111,28 @@ describe("coinageriePlugin", () => {
     ]);
   });
 
-  it("answers a project holding two configuration files once", async () => {
+  it("answers a project holding two manifests once", async () => {
     expect.hasAssertions();
 
     const nodes = await createNodes({
       files: {
-        "packages/alpha/coinagerie.config.mjs": "",
         "packages/alpha/coinagerie.config.ts": "",
+        "packages/alpha/package.json": '{"name":"alpha"}',
         "packages/alpha/project.json": "{}",
       },
-      matched: [
-        "packages/alpha/coinagerie.config.mjs",
-        "packages/alpha/coinagerie.config.ts",
-      ],
+      matched: ["packages/alpha/package.json", "packages/alpha/project.json"],
     });
 
     expect(nodes).toHaveLength(1);
   });
 
-  it("drops a matched file whose folder is no project", async () => {
+  it("drops a matched manifest whose folder holds no configuration", async () => {
     expect.hasAssertions();
 
     await expect(
       createNodes({
-        files: { "fixtures/sample/coinagerie.config.ts": "" },
-        matched: ["fixtures/sample/coinagerie.config.ts"],
+        files: { "packages/alpha/project.json": "{}" },
+        matched: ["packages/alpha/project.json"],
       }),
     ).resolves.toStrictEqual([]);
   });
@@ -144,5 +143,13 @@ describe("coinageriePlugin", () => {
     await expect(
       createNodes({ files: {}, matched: [] }),
     ).resolves.toStrictEqual([]);
+  });
+
+  it("refuses a registration with no configuration path", async () => {
+    expect.hasAssertions();
+
+    await expect(
+      createNodes({ files: {}, matched: [], options: {} }),
+    ).rejects.toThrow("projectConfigurationPath is required");
   });
 });

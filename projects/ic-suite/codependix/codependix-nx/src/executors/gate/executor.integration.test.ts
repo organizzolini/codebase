@@ -58,7 +58,9 @@ function writeFixtureWorkspace(workspaceRoot: string): void {
           },
         ],
       },
+      projectConfigurationPath: "boundaries.config.json",
       projectGraph: "codependix-graph.json",
+      projectTsconfigPath: "tsconfig.json",
     }),
     "codependix-graph.json": JSON.stringify({
       dependencies: Object.fromEntries(
@@ -85,7 +87,11 @@ function writeFixtureWorkspace(workspaceRoot: string): void {
     "nx.json": JSON.stringify({
       plugins: [
         {
-          options: { configurationPath: "boundaries.config.json" },
+          options: {
+            configurationPath: "boundaries.config.json",
+            projectConfigurationPath: "boundaries.config.json",
+            projectTsconfigPath: "tsconfig.json",
+          },
           plugin: "@codependix/nx",
         },
       ],
@@ -95,7 +101,10 @@ function writeFixtureWorkspace(workspaceRoot: string): void {
     "tsconfig.json": JSON.stringify({
       extends: path.relative(
         workspaceRoot,
-        path.resolve(import.meta.dirname, "../../../tsconfig.json"),
+        path.resolve(
+          import.meta.dirname,
+          "../../../configuration/tsconfig.json",
+        ),
       ),
     }),
   });

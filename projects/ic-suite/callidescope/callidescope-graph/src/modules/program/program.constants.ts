@@ -5,12 +5,12 @@ export const DEPENDENCY_DIRECTORY_NAME = "node_modules";
 
 /** Why a requested trace directory was unusable. */
 export const MISSING_PROJECT_CONFIGURATION_MESSAGE =
-  "the directory holds no tsconfig.json";
+  "the directory holds no tsconfig at the configured projectTsconfigPath";
 
 // 🚨 Errors
 
 /**
- * Raised when a project's `tsconfig.json` is missing or cannot be read.
+ * Raised when a project's tsconfig is missing or cannot be read.
  *
  * Fatal to the whole run, not skipped, since a report is written before its
  * findings are weighed.

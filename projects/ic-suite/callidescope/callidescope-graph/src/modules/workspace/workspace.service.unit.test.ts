@@ -29,14 +29,18 @@ const PROJECT: WorkspaceProject = {
  */
 function buildWorkspace(
   projectRoots: readonly string[],
-  options: { rootsWithoutManifest?: readonly string[] } = {},
+  options: {
+    rootsWithoutManifest?: readonly string[];
+    tsconfigPath?: string;
+  } = {},
 ): string {
   const rootsWithoutManifest = options.rootsWithoutManifest ?? [];
 
   const files: Record<string, string> = {};
 
   for (const projectRoot of projectRoots) {
-    files[path.join(projectRoot, "tsconfig.json")] = "{}";
+    files[path.join(projectRoot, options.tsconfigPath ?? "tsconfig.json")] =
+      "{}";
 
     if (!rootsWithoutManifest.includes(projectRoot)) {
       files[path.join(projectRoot, "package.json")] = "{}";
@@ -151,6 +155,7 @@ describe(WorkspaceService, () => {
       subject
         .discoverProjects({
           directories: ["packages/wanted"],
+          projectTsconfigPath: "tsconfig.json",
           workspaceRoot: root,
         })
         .map((project) => project.name),
@@ -164,6 +169,7 @@ describe(WorkspaceService, () => {
       subject
         .discoverProjects({
           directories: [path.join(root, "packages/wanted")],
+          projectTsconfigPath: "tsconfig.json",
           workspaceRoot: root,
         })
         .map((project) => project.name),
@@ -181,6 +187,7 @@ describe(WorkspaceService, () => {
     expect(() =>
       subject.discoverProjects({
         directories: ["packages/untyped"],
+        projectTsconfigPath: "tsconfig.json",
         workspaceRoot: root,
       }),
     ).toThrow(ProgramConfigurationError);
@@ -194,9 +201,54 @@ describe(WorkspaceService, () => {
     expect(() =>
       subject.discoverProjects({
         directories: ["packages/untyped"],
+        projectTsconfigPath: "tsconfig.json",
         workspaceRoot: root,
       }),
     ).toThrow(/packages[\\/]untyped[\\/]tsconfig\.json/);
+  });
+
+  it("finds a project by the tsconfig path it was told, and roots it at the project directory", () => {
+    const root = buildWorkspace(["packages/library", "packages/other"], {
+      tsconfigPath: "configuration/tsconfig.json",
+    });
+
+    const projects = subject.discoverProjects({
+      directories: [],
+      projectTsconfigPath: "configuration/tsconfig.json",
+      workspaceRoot: root,
+    });
+
+    expect(projects.map((project) => project.root)).toStrictEqual([
+      "packages/library",
+      "packages/other",
+    ]);
+    expect(projects[0]?.configurationPath).toBe(
+      path.join(root, "packages/library", "configuration", "tsconfig.json"),
+    );
+  });
+
+  it("does not take a project for one when only a tsconfig.json at its root exists", () => {
+    const root = buildWorkspace(["packages/library"]);
+
+    expect(
+      subject.discoverProjects({
+        directories: [],
+        projectTsconfigPath: "configuration/tsconfig.json",
+        workspaceRoot: root,
+      }),
+    ).toStrictEqual([]);
+  });
+
+  it("refuses a named directory with no tsconfig at the told path", () => {
+    const root = buildWorkspace(["packages/library"]);
+
+    expect(() =>
+      subject.discoverProjects({
+        directories: ["packages/library"],
+        projectTsconfigPath: "configuration/tsconfig.json",
+        workspaceRoot: root,
+      }),
+    ).toThrow(/packages[\\/]library[\\/]configuration[\\/]tsconfig\.json/);
   });
 
   it("records whether each discovered project root holds a package.json", () => {
@@ -208,7 +260,11 @@ describe(WorkspaceService, () => {
 
     expect(
       subject
-        .discoverProjects({ directories: [], workspaceRoot: root })
+        .discoverProjects({
+          directories: [],
+          projectTsconfigPath: "tsconfig.json",
+          workspaceRoot: root,
+        })
         .map((project) => [project.name, project.hasPackageManifest]),
     ).toStrictEqual([
       ["packages/library", true],
@@ -225,7 +281,11 @@ describe(WorkspaceService, () => {
 
     expect(
       service
-        .discoverProjects({ directories: [], workspaceRoot: root })
+        .discoverProjects({
+          directories: [],
+          projectTsconfigPath: "tsconfig.json",
+          workspaceRoot: root,
+        })
         .map((project) => project.name),
     ).toStrictEqual(["applications/app", "packages/library", "tools/utility"]);
   });
@@ -237,7 +297,11 @@ describe(WorkspaceService, () => {
 
     expect(
       service
-        .discoverProjects({ directories: [], workspaceRoot: root })
+        .discoverProjects({
+          directories: [],
+          projectTsconfigPath: "tsconfig.json",
+          workspaceRoot: root,
+        })
         .map((project) => project.name),
     ).toStrictEqual(["packages/alpha", "packages/zebra"]);
   });
@@ -250,7 +314,11 @@ describe(WorkspaceService, () => {
 
     expect(
       subject
-        .discoverProjects({ directories: [], workspaceRoot: root })
+        .discoverProjects({
+          directories: [],
+          projectTsconfigPath: "tsconfig.json",
+          workspaceRoot: root,
+        })
         .map((project) => project.name),
     ).toStrictEqual(["packages/library", "packages/library/testing"]);
   });
@@ -265,7 +333,11 @@ describe(WorkspaceService, () => {
 
     expect(
       subject
-        .discoverProjects({ directories: [], workspaceRoot: root })
+        .discoverProjects({
+          directories: [],
+          projectTsconfigPath: "tsconfig.json",
+          workspaceRoot: root,
+        })
         .map((project) => project.name),
     ).toStrictEqual(["packages/library"]);
   });
@@ -278,7 +350,11 @@ describe(WorkspaceService, () => {
 
     expect(
       subject
-        .discoverProjects({ directories: [], workspaceRoot: root })
+        .discoverProjects({
+          directories: [],
+          projectTsconfigPath: "tsconfig.json",
+          workspaceRoot: root,
+        })
         .map((project) => project.name),
     ).toStrictEqual(["packages/library"]);
   });
@@ -296,6 +372,7 @@ describe(WorkspaceService, () => {
             isExcluded: (relativePath): boolean =>
               relativePath.startsWith("packages/broken/"),
           },
+          projectTsconfigPath: "tsconfig.json",
           workspaceRoot: root,
         })
         .map((project) => project.name),
@@ -309,6 +386,7 @@ describe(WorkspaceService, () => {
       subject.discoverProjects({
         directories: ["packages/broken"],
         fileFilter: { isExcluded: (): boolean => true },
+        projectTsconfigPath: "tsconfig.json",
         workspaceRoot: root,
       }),
     ).toStrictEqual([]);
@@ -318,7 +396,11 @@ describe(WorkspaceService, () => {
     const root = createTemporaryDirectory("callidescope-empty");
 
     expect(
-      subject.discoverProjects({ directories: [], workspaceRoot: root }),
+      subject.discoverProjects({
+        directories: [],
+        projectTsconfigPath: "tsconfig.json",
+        workspaceRoot: root,
+      }),
     ).toStrictEqual([]);
   });
 

@@ -17,7 +17,7 @@ Hard ESLint errors apply to source files. Test files (`*.test.ts`, `testing/**`)
 When a file nears 512 lines, split it along the module file suffixes (`*.types.ts`, `*.constants.ts`, another `*.service.ts`) instead of raising the limit. Never add a disable comment or edit the threshold to make a file fit.
 
 **Comment blocks are budgeted per block**, declared in
-`configuration/codometer.config.ts` and enforced by codometer rather than ESLint, so a breach names a file and line rather than a rule. A block must satisfy its word and line limits together; there is no character limit, because formatters already hold a line to 80 columns.
+`configuration/ic-suite/codometer.config.ts` and enforced by codometer rather than ESLint, so a breach names a file and line rather than a rule. A block must satisfy its word and line limits together; there is no character limit, because formatters already hold a line to 80 columns.
 
 | Comment | Words | Lines |
 | ------- | ----- | ----- |

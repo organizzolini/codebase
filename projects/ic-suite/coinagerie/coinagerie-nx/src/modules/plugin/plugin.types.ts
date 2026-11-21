@@ -16,11 +16,11 @@ export interface InferredTarget {
 /** One project's inferred targets, keyed by target name. */
 export type InferredTargets = Record<string, InferredTarget>;
 
-/** Arguments for inferring targets from every configuration Nx matched. */
+/** Arguments for inferring targets from every project manifest Nx matched. */
 export interface InferTargetsArguments {
-  /** Every coinagerie configuration Nx matched, workspace-root relative. */
-  readonly configurationFiles: readonly string[];
   readonly options: unknown;
+  /** Every project manifest Nx matched, workspace-root relative. */
+  readonly projectFiles: readonly string[];
   readonly workspaceRoot: string;
 }
 

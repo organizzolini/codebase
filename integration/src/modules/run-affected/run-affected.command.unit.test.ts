@@ -19,7 +19,8 @@ const streamedLines = (runner: FakeProcessRunner): string[] =>
 const MERGE_BASE = "git merge-base base head";
 const DIFF = "git diff --name-only --no-renames --relative abc1234 head";
 const AFFECTED = "exec nx affected --base=base --head=head --target=";
-const TEMPLATE = "configuration/conformetry-templates/service/src/main.ts";
+const TEMPLATE =
+  "configuration/ic-suite/conformetry-templates/service/src/main.ts";
 
 /** A script whose diff lists these files, one per line. */
 const changing = (...files: string[]): Record<string, CapturedProcess> => ({
@@ -170,7 +171,7 @@ describe(RunAffectedCommand, () => {
 
       expect(streamedLines(runner)).toStrictEqual([
         `${AFFECTED}test-code`,
-        "exec nx affected --files=configuration/conformetry.config.ts --target=test-code",
+        "exec nx affected --files=configuration/ic-suite/conformetry.config.ts --target=test-code",
       ]);
       expect(reportLines.join("\n")).toContain(TEMPLATE);
     });

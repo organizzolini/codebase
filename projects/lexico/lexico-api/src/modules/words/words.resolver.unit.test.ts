@@ -8,7 +8,7 @@ import { describe, expect, it, vi } from "vitest";
 import { Word } from "@codebase/lexico-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { WordType } from "./word.entities";
+import { WordType } from "./modules/word-queries/word.entities";
 import { WordsResolver } from "./words.resolver";
 import { WordsService } from "./words.service";
 

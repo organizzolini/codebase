@@ -21,32 +21,32 @@ subject carries no `project.json` and cannot be exported on its own.
 
 Every row is a real rendered file, not prose. If codependix refused something,
 the reproduction that produces that exact message is in
-[`refusals`](examples/refusals).
+[`refusals`](examples/diagnostics/refusals).
 
 | What you were told | Open |
 | ------------------ | ---- |
-| `Found stale codependix exports`, with a list of projects | [`check-and-write`](examples/check-and-write), then [`workspace-drift`](examples/workspace-drift) — an export moves with the workspace, so a branch that changed any project graph fails `--check` for projects it never touched. This repository gates no pull request on it |
-| `AnchorNotFoundError: Anchor "…" not found in …/README.md` | [`auto-created-sections`](examples/auto-created-sections) — the file itself does not exist. A missing _anchor_ is auto-created on `--write`; a missing _file_ is not |
-| A project reported stale that has never had codependix output | [`auto-created-sections`](examples/auto-created-sections) — expected. `--check` reports it as needing a write rather than raising |
-| `A "both" export target needs a json destination.` | [`refusals`](examples/refusals) |
-| `A "markdown" export target needs a markdown destination.` | [`refusals`](examples/refusals) |
-| `A markdown destination needs an anchor, a path, or both` | [`refusals`](examples/refusals), and [`markdown-modes`](examples/markdown-modes) for the four shapes a destination can take |
-| `ConfigurationFileNotFoundError` | [`refusals`](examples/refusals) — `--config` is required and the file it names must exist |
-| `UnknownConfigurationFileTypeError` | [`refusals`](examples/refusals) — the seven readable extensions are listed there |
-| `TypescriptProjectConfigurationError` | [`typescript-resolution`](examples/typescript-resolution) — the compiler's own diagnostics, and why a parse failure is fatal rather than skipped |
-| `💥 Failed running codependix`, naming one project | [`container-rooting`](examples/container-rooting) — one project's failure is isolated; every other project still completed |
-| `Found codependix boundary violations` | [`boundary-rules`](examples/boundary-rules) — a real edge or cycle in real code. Re-running `--write` never fixes one: either the edge goes, or the rule does |
-| A boundary finding names a project you did not edit, or lists several | [`boundary-cycles`](examples/boundary-cycles) — a cycle is charged to every project on it. [`boundary-forbidden-edges`](examples/boundary-forbidden-edges) — a forbidden or uncovered edge is charged to its source only |
-| `in dependency X, not failing` | [`boundary-dependency-notes`](examples/boundary-dependency-notes) — a finding in a dependency of a judged project is a note and the run stays green; naming that project, or one on the cycle, is what fails it |
-| A container boot failure with `(failed in code owned by X)` | [`boundary-boot-failures`](examples/boundary-boot-failures) — the failing container's own project fails, and the owner is read off the error's stack |
-| `--check needs a value` | [`check-and-write`](examples/check-and-write) — `--check` names which finding it gates. Name the set; do not drop the flag |
-| `--check does not accept "…"` | [`check-and-write`](examples/check-and-write) — `limits` is codometer's word and `depth` is callidescope's; only `reports` is shared |
-| `--write cannot be combined with --check reports` | [`check-and-write`](examples/check-and-write) — `--write --check boundaries` is legal, because a boundary has no destination to be stale |
-| A rule you wrote reports nothing | [`boundary-rules`](examples/boundary-rules) — a selector's fields narrow each other, and one naming a field its level does not carry matches nothing rather than everything |
-| A graph came out emptier than the code looks | [`ambient-modules`](examples/ambient-modules) for a rounded module with no edges; [`typescript-resolution`](examples/typescript-resolution) and [`python-scanner`](examples/python-scanner) for the statements deliberately not walked |
-| A project produced no graph at all | [`configuration-resolution`](examples/configuration-resolution) — check `include`/`exclude` and whether a per-project override replaced the default |
-| A NestJS module you expected is missing | [`container-rooting`](examples/container-rooting) — a rooted project is explored from `MainModule` outward, so a module nothing imports is absent |
-| Path query: shortest connecting path between two nodes | [`path-queries`](examples/path-queries) — how `codependix path <from> <to>` finds connecting paths across graph levels |
+| `Found stale codependix exports`, with a list of projects | [`check-and-write`](examples/exports/check-and-write), then [`workspace-drift`](examples/diagnostics/workspace-drift) — an export moves with the workspace, so a branch that changed any project graph fails `--check` for projects it never touched. This repository gates no pull request on it |
+| `AnchorNotFoundError: Anchor "…" not found in …/README.md` | [`auto-created-sections`](examples/exports/auto-created-sections) — the file itself does not exist. A missing _anchor_ is auto-created on `--write`; a missing _file_ is not |
+| A project reported stale that has never had codependix output | [`auto-created-sections`](examples/exports/auto-created-sections) — expected. `--check` reports it as needing a write rather than raising |
+| `A "both" export target needs a json destination.` | [`refusals`](examples/diagnostics/refusals) |
+| `A "markdown" export target needs a markdown destination.` | [`refusals`](examples/diagnostics/refusals) |
+| `A markdown destination needs an anchor, a path, or both` | [`refusals`](examples/diagnostics/refusals), and [`markdown-modes`](examples/exports/markdown-modes) for the four shapes a destination can take |
+| `ConfigurationFileNotFoundError` | [`refusals`](examples/diagnostics/refusals) — `--config` is required and the file it names must exist |
+| `UnknownConfigurationFileTypeError` | [`refusals`](examples/diagnostics/refusals) — the seven readable extensions are listed there |
+| `TypescriptProjectConfigurationError` | [`typescript-resolution`](examples/graphs/typescript-resolution) — the compiler's own diagnostics, and why a parse failure is fatal rather than skipped |
+| `💥 Failed running codependix`, naming one project | [`container-rooting`](examples/graphs/container-rooting) — one project's failure is isolated; every other project still completed |
+| `Found codependix boundary violations` | [`boundary-rules`](examples/boundaries/boundary-rules) — a real edge or cycle in real code. Re-running `--write` never fixes one: either the edge goes, or the rule does |
+| A boundary finding names a project you did not edit, or lists several | [`boundary-cycles`](examples/boundaries/boundary-cycles) — a cycle is charged to every project on it. [`boundary-forbidden-edges`](examples/boundaries/boundary-forbidden-edges) — a forbidden or uncovered edge is charged to its source only |
+| `in dependency X, not failing` | [`boundary-dependency-notes`](examples/boundaries/boundary-dependency-notes) — a finding in a dependency of a judged project is a note and the run stays green; naming that project, or one on the cycle, is what fails it |
+| A container boot failure with `(failed in code owned by X)` | [`boundary-boot-failures`](examples/boundaries/boundary-boot-failures) — the failing container's own project fails, and the owner is read off the error's stack |
+| `--check needs a value` | [`check-and-write`](examples/exports/check-and-write) — `--check` names which finding it gates. Name the set; do not drop the flag |
+| `--check does not accept "…"` | [`check-and-write`](examples/exports/check-and-write) — `limits` is codometer's word and `depth` is callidescope's; only `reports` is shared |
+| `--write cannot be combined with --check reports` | [`check-and-write`](examples/exports/check-and-write) — `--write --check boundaries` is legal, because a boundary has no destination to be stale |
+| A rule you wrote reports nothing | [`boundary-rules`](examples/boundaries/boundary-rules) — a selector's fields narrow each other, and one naming a field its level does not carry matches nothing rather than everything |
+| A graph came out emptier than the code looks | [`ambient-modules`](examples/graphs/ambient-modules) for a rounded module with no edges; [`typescript-resolution`](examples/graphs/typescript-resolution) and [`python-scanner`](examples/graphs/python-scanner) for the statements deliberately not walked |
+| A project produced no graph at all | [`configuration-resolution`](examples/exports/configuration-resolution) — check `include`/`exclude` and whether a per-project override replaced the default |
+| A NestJS module you expected is missing | [`container-rooting`](examples/graphs/container-rooting) — a rooted project is explored from `MainModule` outward, so a module nothing imports is absent |
+| Path query: shortest connecting path between two nodes | [`path-queries`](examples/diagnostics/path-queries) — how `codependix path <from> <to>` finds connecting paths across graph levels |
 
 ## Before changing a graph builder
 
@@ -58,20 +58,20 @@ committed Markdown byte for byte. Two rules follow from that.
   `nx run codependix-examples:examples:write`, and reading the diff. If a
   diagram moved, the guides moved with it.
 - **An accidental behavior change shows up here first.** Every case in
-  [`typescript-resolution`](examples/typescript-resolution) and
-  [`python-scanner`](examples/python-scanner) that exists to _not_ be walked — a
+  [`typescript-resolution`](examples/graphs/typescript-resolution) and
+  [`python-scanner`](examples/graphs/python-scanner) that exists to _not_ be walked — a
   re-export, a dynamic `import()`, a `require`, an import indented inside a
   function — is a claim a resolver or scanner change could silently reverse. A
   failing `examples` check on one of those is a bug report, not a stale
   snapshot.
 
-Never hand-edit an `examples/*/README.md` or an `examples/*/*.json`.
+Never hand-edit an `examples/*/*/README.md` or an `examples/*/*/*.json`.
 
 ## Layout
 
 ```text
-examples/<example>/README.md      # Rendered from the subject beside it
-examples/<example>/<subject>/     # The code being graphed — nested, and scoped out of the linters
+examples/<group>/<example>/README.md # Rendered from the subject beside it
+examples/<group>/<example>/<subject>/ # The code being graphed — nested, and scoped out of the linters
 testing/render-examples.ts        # Entry point: --check or --write
 testing/render/                   # One module per example, plain exported functions
 testing/*.integration.test.ts     # The tests that keep every documented claim true
@@ -89,21 +89,21 @@ than machinery: two fixtures that must sit at `src/*.main.ts` and `src/index.ts`
 because callidescope's entry-point rules key on those file names. Nothing
 here needs that, so nothing here has one.
 
-**The nesting depth is load-bearing.** One level under `examples/` is the
-rendered guide and its JSON exports, which every linter still checks; two levels
+**The nesting depth is load-bearing.** Two levels under `examples/` is the
+rendered guide and its JSON exports, which every linter still checks; three levels
 down is the subject, which `eslint` and `fallow` are scoped out of by the
-`examples/*/*/**` pattern. Putting a subject file directly in an example
+`examples/*/*/*/**` pattern. Putting a subject file directly in an example
 directory would drag it into the lint run.
 
 ## Adding an example
 
-1. **Create `examples/<name>/`** and put the subject in a subdirectory of it,
+1. **Create `examples/<group>/<name>/`** under the group it belongs to (`graphs`, `exports`, `boundaries`, `diagnostics`) and put the subject in a subdirectory of it,
    if the example needs one on disk. Nothing nested there is linted, so shape it
    however the behavior requires.
 2. **Render it** from the matching module in `testing/render/`. Each exports a
    `build*Documents()` returning `ExampleDocument`s whose `id` is the directory
    name.
-3. **Add the `id` to `EXAMPLE_ORDER`** in `testing/render/reading-order.ts` —
+3. **Add the `id` to its group in `EXAMPLE_GROUPS`** in `testing/render/reading-order.ts` —
    the one place the reading order is written down, and what the rendered
    `## Next` links chain through. A document missing from it fails the run
    rather than being silently dropped. Add an entry to `EXAMPLE_EMOJI` beside
@@ -118,15 +118,15 @@ directory would drag it into the lint run.
 Several subjects are malformed on purpose, and each one is the reproduction of a
 refusal or a failure a reader will hit:
 
-- `container-rooting/failing-container` refuses to load, which is how the guide
+- `graphs/container-rooting/failing-container` refuses to load, which is how the guide
   shows that one project failing stops no other.
-- `typescript-resolution/broken` carries a `tsconfig.json` the compiler cannot
+- `graphs/typescript-resolution/broken` carries a `tsconfig.json` the compiler cannot
   parse.
-- `boundary-boot-failures/storefront-catalog` throws as its module file is
+- `boundaries/boundary-boot-failures/storefront-catalog` throws as its module file is
   evaluated, so the application importing it cannot boot and the guide can show
   whose failure that is.
-- `refusals/unsupported-type` names a graph type codependix does not have.
-- `configuration-resolution/unknown-fields` carries a field codependix has no
+- `diagnostics/refusals/unsupported-type` names a graph type codependix does not have.
+- `exports/configuration-resolution/unknown-fields` carries a field codependix has no
   opinion about, to show it is stripped rather than rejected.
 
 Repairing any of them deletes the only place that behavior is demonstrated. If a

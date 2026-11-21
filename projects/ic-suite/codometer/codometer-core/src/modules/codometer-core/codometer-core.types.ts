@@ -106,7 +106,7 @@ export interface CustomStatisticResult {
   /**
    * Where each measured instance was found, per instance.
    *
-   * Unset for a counter that only counts; a `comment` selector fills it.
+   * Unset for a counter that only counts; a `comment` or `tree` selector fills it.
    */
   instances?: CustomStatisticResultInstance[] | undefined;
   label: string;
@@ -119,9 +119,10 @@ export interface CustomStatisticResult {
 
 /** One measured occurrence a per-instance selector found. */
 export interface CustomStatisticResultInstance {
+  /** The file, or for a `tree` selector the directory. */
   file: string;
-  /** 1-indexed line the measured thing starts on. */
-  line: number;
+  /** 1-indexed line the measured thing starts on; unset for a directory. */
+  line?: number | undefined;
   measured: number;
 }
 

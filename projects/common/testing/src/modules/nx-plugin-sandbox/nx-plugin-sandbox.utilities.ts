@@ -7,10 +7,10 @@ import runServer from "verdaccio";
 import { parse } from "yaml";
 
 import { createCommand } from "../command/command.utilities";
-import { TARBALL_DIRECTORY } from "../tarball-sandbox/tarball-sandbox.constants";
-import { findTarballs } from "../tarball-sandbox/tarball-sandbox.utilities";
 import { makeDirectory } from "../temporary-directory/temporary-directory.utilities";
 
+import { TARBALL_DIRECTORY } from "./modules/tarball-sandbox/tarball-sandbox.constants";
+import { findTarballs } from "./modules/tarball-sandbox/tarball-sandbox.utilities";
 import {
   DEFAULT_REGISTRY_TAG,
   REGISTRY_OPERATION_TIMEOUT_MS,

@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react-jsx",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "outDir": "../../../../dist/out-tsc",
+    "paths": {
+      "@/*": ["../../../common/presentation/src/*"],
+      "@codebase/presentation": ["../../../common/presentation/src/index.ts"]
+    },
+    "strict": true,
+    "target": "ES2022",
+    "types": [
+      "@nx/react/typings/cssmodule.d.ts",
+      "@nx/react/typings/image.d.ts",
+      "node",
+      "vite/client"
+    ]
+  },
+  "exclude": ["../dist", "../node_modules", "../output"],
+  "extends": "../../../../configuration/tsconfig.json",
+  "include": [
+    "*.mts",
+    "*.ts",
+    "../src/**/*.js",
+    "../src/**/*.jsx",
+    "../src/**/*.ts",
+    "../src/**/*.tsx",
+    "../testing/**/*.ts",
+    "../testing/**/*.tsx"
+  ]
+}

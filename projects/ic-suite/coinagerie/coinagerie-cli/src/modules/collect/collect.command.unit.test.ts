@@ -59,6 +59,7 @@ const CONFIGURATION = {
 };
 const START_ANCHOR = "<!-- coinagerie:start -->";
 const SOURCE = { "main.ts": "const answerValue = 1;\n" };
+const EMPTY_CONFIGURATION = { "coinagerie.config.ts": "export default {};\n" };
 
 describe(CollectCommand, () => {
   let command: CollectCommand;
@@ -87,7 +88,7 @@ describe(CollectCommand, () => {
   ): Promise<string> {
     const fixture = createFileTree(files, { git: true, label: "collect" });
     useWorkingDirectory(fixture);
-    await command.run([], options);
+    await command.run([], { config: "coinagerie.config.ts", ...options });
     return fixture;
   }
 
@@ -145,11 +146,14 @@ describe(CollectCommand, () => {
   });
 
   it("lets flags name the destinations the file does not", async () => {
-    const fixture = await runIn(SOURCE, {
-      outputJson: "words.json",
-      outputMarkdown: "WORDS.md",
-      write: true,
-    });
+    const fixture = await runIn(
+      { ...EMPTY_CONFIGURATION, ...SOURCE },
+      {
+        outputJson: "words.json",
+        outputMarkdown: "WORDS.md",
+        write: true,
+      },
+    );
 
     expect(
       JSON.parse(readFileSync(path.join(fixture, "words.json"), "utf8")),
@@ -180,7 +184,7 @@ describe(CollectCommand, () => {
       "- **answer**:\n- **main**:\n- **value**:",
     );
 
-    await command.run([], { check: true });
+    await command.run([], { check: true, config: "coinagerie.config.ts" });
 
     expect(readExitCode()).toBeUndefined();
   });
@@ -192,13 +196,26 @@ describe(CollectCommand, () => {
       { check: true },
     ],
     ["both --check and --write", CONFIGURATION, { check: true, write: true }],
-    ["a check with no destination configured", {}, { check: true }],
-    ["a format it does not know", {}, { format: "yaml" }],
-    ["a flag the configuration refuses", {}, { outputJson: "" }],
+    [
+      "a check with no destination configured",
+      EMPTY_CONFIGURATION,
+      { check: true },
+    ],
+    ["a format it does not know", EMPTY_CONFIGURATION, { format: "yaml" }],
+    [
+      "a flag the configuration refuses",
+      EMPTY_CONFIGURATION,
+      { outputJson: "" },
+    ],
     [
       "a configuration file that is not there",
       {},
       { check: true, config: "missing.config.ts" },
+    ],
+    [
+      "a configuration file that is not there, though one is in the working directory",
+      EMPTY_CONFIGURATION,
+      { check: true, config: "configuration/coinagerie.config.ts" },
     ],
     [
       "a glossary it cannot parse",
@@ -217,6 +234,28 @@ describe(CollectCommand, () => {
       expect.stringContaining("🪙"),
       undefined,
       expect.any(Object),
+    );
+  });
+
+  it("refuses to run without --config, never looking for a file", async () => {
+    const output = captureOutput();
+    const fixture = createFileTree(
+      { ...CONFIGURATION, ...SOURCE },
+      { git: true, label: "collect" },
+    );
+
+    vi.spyOn(process, "cwd").mockReturnValue(fixture);
+    await command.run([], { write: true });
+
+    expect(readExitCode()).toBe(1);
+    expect(output.stdout()).toBe("");
+    expect(existsSync(path.join(fixture, "GLOSSARY.md"))).toBe(false);
+    expect(logger.error).toHaveBeenCalledWith(
+      expect.stringContaining("🪙"),
+      undefined,
+      expect.objectContaining<{ reason: string }>({
+        reason: expect.stringContaining("--config is required"),
+      }),
     );
   });
 
@@ -239,7 +278,9 @@ describe(CollectCommand, () => {
       new Error("disk gone"),
     );
 
-    await expect(runIn(SOURCE, {})).rejects.toThrow("disk gone");
+    await expect(
+      runIn({ ...EMPTY_CONFIGURATION, ...SOURCE }, {}),
+    ).rejects.toThrow("disk gone");
   });
 
   it.each([

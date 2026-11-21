@@ -53,7 +53,7 @@ export class TypeormMigrationSqlCommand
   /** Parses `--directory`, the migrations directory to process. */
   @Option({
     description:
-      "Migrations directory to process, e.g. projects/lexico/lexico-db/src/modules/database/migrations",
+      "Migrations directory to process, e.g. projects/lexico/lexico-db/migrations",
     flags: "--directory <path>",
   })
   parseDirectory(value: string): string {
@@ -70,16 +70,6 @@ export class TypeormMigrationSqlCommand
     return value;
   }
 
-  /** Parses `--module`, a project's migration module path. */
-  @Option({
-    description:
-      "Migration module path relative to --project-root, e.g. src/modules/database",
-    flags: "--module <path>",
-  })
-  parseModule(value: string): string {
-    return value;
-  }
-
   /** Parses `--project`, the workspace project name to process. */
   @Option({
     description:
@@ -93,7 +83,7 @@ export class TypeormMigrationSqlCommand
   /** Parses `--project-root`, used with --module to resolve migrations. */
   @Option({
     description:
-      "Project root used with --module to resolve migrations as <project-root>/<module>/migrations",
+      "Project root whose migrations are at <project-root>/migrations",
     flags: "--project-root <path>",
   })
   parseProjectRoot(value: string): string {

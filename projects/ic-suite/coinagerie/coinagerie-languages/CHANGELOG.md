@@ -1,3 +1,9 @@
+## 0.0.26 (2026-11-20)
+
+### 🚀 Features
+
+- **codometer,configuration:** ✨ cap directory breadth and depth, and keep tool configs in configuration folders ([#2452](https://github.com/organizzolini/codebase/pull/2452), [#2450](https://github.com/organizzolini/codebase/issues/2450))
+
 ## 0.0.25 (2026-11-20)
 
 ### 🚀 Features

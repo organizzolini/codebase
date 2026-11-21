@@ -2,7 +2,7 @@
 
 `eslint-plugin-project-structure`'s `folder-structure` rule enforces this
 repository's folder and file placement law from
-`configuration/codebase-structure.json`. It listens only on `Program`, so it
+`configuration/lint/codebase-structure.json`. It listens only on `Program`, so it
 fires only on a file ESLint parsed into a syntax tree — which meant markdown and
 HTML paths were never judged at all. That is how `openwiki/` stayed an undeclared root
 directory, and how a generated `src/index.html` would have gone unnoticed.
@@ -52,5 +52,5 @@ it: the rule is now rebound so that one pass judges every path in the workspace.
   the same reason `markdownlint` and `cspell` exclude them, but their paths are
   still judged.
 - **`projectStructure.cache.json` masks edits.** Delete it, and `.eslintcache/`
-  beside it, before testing a change to `configuration/codebase-structure.json`,
+  beside it, before testing a change to `configuration/lint/codebase-structure.json`,
   or the edit appears to have no effect and the test proves nothing.

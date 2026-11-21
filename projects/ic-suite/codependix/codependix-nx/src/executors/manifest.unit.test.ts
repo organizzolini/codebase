@@ -68,7 +68,7 @@ function resolvePublished(subpath: string): string | undefined {
 }
 
 // The build names its entry points one by one, so a file `executors.json`
-// points at but `vite.config.ts` does not list is in the source and missing
+// points at but `configuration/vite.config.ts` does not list is in the source and missing
 // from the tarball: the plugin then fails to load in every consumer, with
 // nothing in the workspace's own runs to say so.
 describe("executors.json", () => {
@@ -92,7 +92,10 @@ describe("executors.json", () => {
       true,
     );
     expect(
-      readFileSync(path.join(PACKAGE_DIRECTORY, "vite.config.ts"), "utf8"),
+      readFileSync(
+        path.join(PACKAGE_DIRECTORY, "configuration", "vite.config.ts"),
+        "utf8",
+      ),
     ).toContain(`"${subpath}":`);
   });
 });

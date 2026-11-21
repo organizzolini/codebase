@@ -1,9 +1,10 @@
-import { normalizeEventFilter } from "../../components/calendar-filters/event-filter-tree.utilities";
-import { MAXIMUM_GROUP_LEVELS } from "../../components/calendar-group-by/event-groups.constants";
 import {
   parseCalendarView,
   parseTimelineScale,
-} from "../../components/events-calendar/calendar-views.utilities";
+} from "../../components/calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
+import { parseCalendarSymbols } from "../../components/calendar-events/event-glyphs/calendar-symbols.utilities";
+import { normalizeEventFilter } from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filter-tree.utilities";
+import { MAXIMUM_GROUP_LEVELS } from "../../components/calendar-query/calendar-group-by/components/event-group-model/event-groups.constants";
 
 import {
   agendaDaysSchema,
@@ -13,9 +14,8 @@ import {
   levelsSchema,
   skySearchValueSchema,
 } from "./calendar-search.constants";
-import { parseCalendarSymbols } from "./calendar-symbols.utilities";
 
-import type { EventGrouping } from "../../components/calendar-group-by/event-groups.types";
+import type { EventGrouping } from "../../components/calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
 import type { CalendarSearch, SkySearchValue } from "./calendar-search.types";
 
 /**

@@ -1,0 +1,119 @@
+// 🏷️ Types
+
+// What resolution produced, as opposed to what a configuration asked for.
+// This half reads the authoring vocabulary and nothing reads it back, so the
+// two sides cannot form a cycle — the same arrangement `statistics.types.ts`
+// keeps for the measurement half.
+
+import type {
+  CodometerAnalysis,
+  CodometerCommentLanguage,
+  CodometerCompression,
+  CodometerFormat,
+  CodometerSymbolMatcher,
+} from "../../configuration.types";
+import type { WriteMarkdownOutput } from "../../output.types";
+import type {
+  CodometerSeverity,
+  CodometerStatisticGroup,
+  CodometerSymbolKind,
+} from "@codometer/core";
+
+/** A resolved configuration and the absolute `path` it came from. */
+export interface LoadedConfiguration {
+  configuration: ResolvedCodometerConfiguration;
+  path: string;
+}
+
+/** A `comment` selector with its severity filled in. */
+export interface ResolvedCodometerCommentSelector {
+  kind: CodometerSymbolKind | undefined;
+  language: CodometerCommentLanguage | undefined;
+  maximumCharacters: number | undefined;
+  maximumLines: number | undefined;
+  maximumWords: number | undefined;
+  severity: CodometerSeverity;
+}
+
+/** Configuration with every default applied, so analyzers never see gaps. */
+export interface ResolvedCodometerConfiguration {
+  /** Every counter this configuration measures, with defaults applied. */
+  custom: ResolvedCodometerCustomStatistic[];
+  /** Stays `undefined` when nothing named one, so every path must qualify. */
+  defaultInput: string | undefined;
+  exclude: string[];
+  excludeFrom: string[];
+  format: CodometerFormat;
+  inputs: ResolvedCodometerInput[];
+  limits: ResolvedCodometerLimit[];
+  outputs: ResolvedCodometerOutput[];
+  python: ResolvedCodometerPythonConfiguration;
+}
+
+/** A configured counter with its badge color and group filled in. */
+export interface ResolvedCodometerCustomStatistic {
+  color: string;
+  comment: ResolvedCodometerCommentSelector | undefined;
+  group: CodometerStatisticGroup;
+  label: string;
+  /** Empty for a symbol or comment counter naming none, which then searches every file. */
+  patterns: string[];
+  symbols?: CodometerSymbolMatcher | undefined;
+  tree?: ResolvedCodometerTreeSelector | undefined;
+}
+
+/** A named file set: includes claim files, excludes remove them. */
+export interface ResolvedCodometerInput {
+  analyses: CodometerAnalysis[];
+  compression: CodometerCompression;
+  /** `"."` when the input never named one, meaning the process's working directory. */
+  directory: string;
+  exclude: string[];
+  include: string[];
+  name: string;
+}
+
+/** JSON output destination with defaults applied. */
+export interface ResolvedCodometerJsonOutput {
+  custom: ResolvedCodometerCustomStatistic[];
+  indentation: number;
+  path: string;
+  type: "json";
+}
+
+/** A limit with severity set, its value a bare number. */
+export interface ResolvedCodometerLimit {
+  /** Stays `undefined` when none was written; a report falls back to the path. */
+  label: string | undefined;
+  metric: string;
+  severity: CodometerSeverity;
+  value: number;
+}
+
+/** Markdown destination with defaults applied; `write` picks the renderer. */
+export interface ResolvedCodometerMarkdownOutput {
+  custom: ResolvedCodometerCustomStatistic[];
+  description: string | undefined;
+  endMarker: string;
+  path: string | undefined;
+  startMarker: string;
+  type: "markdown";
+  write: undefined | WriteMarkdownOutput;
+}
+
+/** Destination the measured statistics are written to, with defaults applied. */
+export type ResolvedCodometerOutput =
+  | ResolvedCodometerJsonOutput
+  | ResolvedCodometerMarkdownOutput;
+
+/** Python analysis settings with defaults applied. */
+export interface ResolvedCodometerPythonConfiguration {
+  command: string;
+}
+
+/** A `tree` selector with its exclusions always present. */
+export interface ResolvedCodometerTreeSelector {
+  exclude: string[];
+  maximumBreadth: number | undefined;
+  maximumDepth: number | undefined;
+}

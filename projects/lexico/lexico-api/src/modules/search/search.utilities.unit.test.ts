@@ -16,9 +16,12 @@ import {
   SupineForm,
 } from "@codebase/lexico-db";
 
-import { LexemeType } from "../lexemes/lexeme.entities";
+import { LexemeType } from "../lexemes/modules/lexeme-queries/lexeme.entities";
 
-import { LexemeSearchResult, SearchMatchSource } from "./search.entities";
+import {
+  LexemeSearchResult,
+  SearchMatchSource,
+} from "./modules/search-results/search.entities";
 import {
   decomposeEnclitic,
   formatFormIdentifier,

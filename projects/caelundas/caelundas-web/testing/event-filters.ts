@@ -2,7 +2,7 @@ import type {
   EventFilterNode,
   EventFilterQuery,
   EventFilterRule,
-} from "../src/components/calendar-filters/event-filters.types";
+} from "../src/components/calendar-query/calendar-filters/components/event-filter-model/event-filters.types";
 
 /**
  * A rule on any field by its id, complete unless a test leaves something

@@ -5,7 +5,7 @@ import { Injectable } from "@nestjs/common";
 import {
   STEP_SUMMARY_FAILURE_MESSAGE,
   STEP_SUMMARY_VARIABLE,
-} from "./pull-request-github.constants";
+} from "./modules/github/pull-request-github.constants";
 
 import type { CheckOutcome } from "./pull-request.types";
 

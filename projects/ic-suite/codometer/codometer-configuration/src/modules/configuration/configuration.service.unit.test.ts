@@ -9,15 +9,9 @@ import {
 } from "@codometer/core";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import {
-  createTemporaryDirectory,
-  useWorkingDirectory,
-} from "@codebase/testing";
+import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { ConfigurationFlagsService } from "./configuration-flags.service";
-import { ConfigurationLoaderService } from "./configuration-loader.service";
-import { ConfigurationResolverService } from "./configuration-resolver.service";
 import {
   DEFAULT_CUSTOM_STATISTIC_COLORS,
   DEFAULT_INPUT_COMPRESSION,
@@ -30,6 +24,9 @@ import {
   DEFAULT_PYTHON_COMMAND,
 } from "./configuration.constants";
 import { ConfigurationService } from "./configuration.service";
+import { ConfigurationFlagsService } from "./modules/flags/configuration-flags.service";
+import { ConfigurationLoaderService } from "./modules/loader/configuration-loader.service";
+import { ConfigurationResolverService } from "./modules/resolver/configuration-resolver.service";
 
 import type { CodometerConfiguration } from "./configuration.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
@@ -753,6 +750,7 @@ describe(ConfigurationService, () => {
         label: "Services",
         patterns: ["**/*.service.ts"],
         symbols: undefined,
+        tree: undefined,
       },
       {
         color: "ff0000",
@@ -761,6 +759,7 @@ describe(ConfigurationService, () => {
         label: "Modules",
         patterns: ["**/*.module.ts"],
         symbols: undefined,
+        tree: undefined,
       },
     ]);
   });
@@ -823,6 +822,7 @@ describe(ConfigurationService, () => {
       label: "Static Methods",
       patterns: [],
       symbols: { kinds: ["method"], modifiers: ["static"] },
+      tree: undefined,
     });
   });
 
@@ -1275,17 +1275,6 @@ describe(ConfigurationService, () => {
     await expect(
       service.loadConfiguration({
         configurationPath: "configuration/missing.config.ts",
-      }),
-    ).rejects.toBeInstanceOf(ConfigurationFileNotFoundError);
-  });
-
-  it("throws when no repository root holds the relative path either", async () => {
-    const searchDirectory = createTemporaryDirectory("rootless");
-    useWorkingDirectory(searchDirectory);
-
-    await expect(
-      service.loadConfiguration({
-        configurationPath: "configuration/codometer.config.ts",
       }),
     ).rejects.toBeInstanceOf(ConfigurationFileNotFoundError);
   });

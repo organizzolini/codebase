@@ -1,4 +1,7 @@
-import { ConfigurationService } from "@coinagerie/configuration";
+import {
+  ConfigurationPathRequiredError,
+  ConfigurationService,
+} from "@coinagerie/configuration";
 import {
   InvalidConfigurationError,
   MalformedGlossaryError,
@@ -24,12 +27,10 @@ import type {
 } from "@coinagerie/configuration";
 
 /**
- * The `coinagerie` command: collect the vocabulary, then print, check, or write
- * glossaries.
+ * The `coinagerie` command: collects the vocabulary, then prints, checks, or writes glossaries.
  *
- * With no flag, it prints and writes nothing. `--check` exits 1 naming missing
- * and stale words; `--write` rewrites destinations, keeping definitions still
- * in use. A glossary that cannot be parsed stops the run before any write.
+ * `--config` is required and never searched for. `--check` exits 1 naming missing and
+ * stale words; `--write` rewrites destinations, keeping definitions still in use.
  */
 @Command({
   description:
@@ -143,6 +144,13 @@ export class CollectCommand extends CommandRunner {
   private async loadConfiguration(
     options: CollectCommandOptions,
   ): Promise<ResolvedCoinagerieConfiguration | undefined> {
+    if (options.config === undefined) {
+      this.fail("🪙 Rejected the command line", {
+        reason: new ConfigurationPathRequiredError("--config").message,
+      });
+      return undefined;
+    }
+
     try {
       return await this.configurationService.loadConfiguration({
         configurationPath: options.config,
@@ -246,10 +254,10 @@ export class CollectCommand extends CommandRunner {
     return true;
   }
 
-  /** Reads `--config`, a configuration file relative to the working directory. */
+  /** Reads `--config`, the required configuration file, relative to the working directory. */
   @Option({
     description:
-      "Path to a coinagerie configuration file; coinagerie.config.ts in the working directory is used when omitted",
+      "Required. Path to a coinagerie configuration file, relative to the working directory; never searched for",
     flags: "--config <config>",
   })
   public parseConfig(value: string): string {

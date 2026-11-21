@@ -20,9 +20,8 @@ export class CorsService {
   // 🌎 Public Methods
 
   /**
-   * Builds the CORS options from the allowed origins: `*` allows every
-   * origin, an empty list allows none, otherwise only the listed ones are
-   * echoed back.
+   * CORS options for the allowed origins: `*` allows all, an empty list
+   * none, otherwise only the listed ones.
    */
   public getOptions(origins: string[]): CorsOptions {
     return { origin: origins.includes("*") ? "*" : origins };

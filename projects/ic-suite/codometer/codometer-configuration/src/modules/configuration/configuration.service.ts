@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 
-import { ConfigurationFlagsService } from "./configuration-flags.service";
-import { ConfigurationLoaderService } from "./configuration-loader.service";
-import { ConfigurationResolverService } from "./configuration-resolver.service";
+import { ConfigurationFlagsService } from "./modules/flags/configuration-flags.service";
+import { ConfigurationLoaderService } from "./modules/loader/configuration-loader.service";
+import { ConfigurationResolverService } from "./modules/resolver/configuration-resolver.service";
 
 import type {
   CodometerConfiguration,
@@ -15,7 +15,7 @@ import type {
 import type {
   LoadedConfiguration,
   ResolvedCodometerConfiguration,
-} from "./resolved.types";
+} from "./modules/resolver/resolved.types";
 
 /**
  * Answers what a codometer run is configured to do: the file says what to measure, the flags say what to do with it. Composes the loader, resolver and flags services, so commands inject only this class.

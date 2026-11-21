@@ -2,7 +2,6 @@ import path from "node:path";
 
 import {
   ConfigurationService as CodometerConfigurationService,
-  CONFIGURATION_FILE_NAMES,
   DEFAULT_EXCLUDE_GLOBS,
 } from "@codometer/configuration";
 import { DiscoveryService } from "@codometer/measurement";
@@ -39,11 +38,6 @@ export class ConfigurationListingService {
   ) {}
 
   // 🔐 Private Fields
-
-  /** Every name a configuration file may be written under, as a set. */
-  private readonly configurationFileNames = new Set<string>(
-    CONFIGURATION_FILE_NAMES,
-  );
 
   // 🔑 Public Fields
 
@@ -139,7 +133,7 @@ export class ConfigurationListingService {
   }
 
   /**
-   * Finds every configuration file beneath a directory, using the same gitignore-aware walk as a measurement. Exclusions come from the walk root's configuration.
+   * Finds every file beneath a directory named like the given configuration, using the same gitignore-aware walk as a measurement. Exclusions come from the walk root's configuration.
    */
   public async findConfigurationFiles(
     args: DescribeConfigurationsArguments,
@@ -151,9 +145,11 @@ export class ConfigurationListingService {
       workingDirectory: args.workingDirectory,
     });
 
+    const fileName = path.basename(args.configurationPath);
+
     return {
       files: files
-        .filter((file) => this.configurationFileNames.has(path.basename(file)))
+        .filter((file) => path.basename(file) === fileName)
         .toSorted((first, second) => first.localeCompare(second)),
       rootError: exclusions.error,
     };

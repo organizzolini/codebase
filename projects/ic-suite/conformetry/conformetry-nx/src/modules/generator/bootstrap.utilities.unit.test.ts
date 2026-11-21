@@ -195,7 +195,10 @@ describe("bootstrap utilities", () => {
         expect.objectContaining({ nxConfiguration }),
       );
       expect(emitPlugin).toHaveBeenCalledWith({
-        configurationPath: "elsewhere/conformetry.config.ts",
+        configurationPath: path.join(
+          workspaceRoot,
+          "elsewhere/conformetry.config.ts",
+        ),
         outputPath: DEFAULT_OUTPUT_PATH,
         packageName: "conformetry",
         projects: [],

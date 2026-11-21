@@ -47,7 +47,11 @@ describe("every example configuration this package ships", () => {
       expect(
         readMetricInstances(report, "codebase", "custom.Class Comment Budget"),
       ).toStrictEqual([
-        { file: "typescript/catalog.service.ts", line: 18, measured: 8 },
+        {
+          file: "typescript/catalog/catalog.service.ts",
+          line: 18,
+          measured: 8,
+        },
       ]);
       expect(
         readMetricInstances(report, "codebase", "custom.Method Comment Budget"),
@@ -75,7 +79,9 @@ describe("every example configuration this package ships", () => {
       // whichever measurement broke its budget, not one entry per maximum.
       expect(
         readMetricInstances(report, "codebase", "custom.YAML Comment Budget"),
-      ).toStrictEqual([{ file: "yaml/pipeline.yaml", line: 2, measured: 12 }]);
+      ).toStrictEqual([
+        { file: "configuration/yaml/pipeline.yaml", line: 2, measured: 12 },
+      ]);
     });
 
     it("measures every language, and honours a language override", () => {
@@ -92,7 +98,7 @@ describe("every example configuration this package ships", () => {
         { file: "css/theme.css", line: 1, measured: 12 },
       ]);
       expect(readInstances("HCL Comment Budget")).toStrictEqual([
-        { file: "hcl/network.tf", line: 1, measured: 12 },
+        { file: "configuration/hcl/network.tf", line: 1, measured: 12 },
       ]);
       expect(readInstances("Python Comment Budget")).toStrictEqual([
         { file: "python/inventory.py", line: 7, measured: 10 },
@@ -107,10 +113,10 @@ describe("every example configuration this package ships", () => {
         { file: "sql/reporting.sql", line: 1, measured: 7 },
       ]);
       expect(readInstances("TOML Comment Budget")).toStrictEqual([
-        { file: "toml/service.toml", line: 1, measured: 5 },
+        { file: "configuration/toml/service.toml", line: 1, measured: 5 },
       ]);
       expect(readInstances("YAML Comment Budget")).toStrictEqual([
-        { file: "yaml/pipeline.yaml", line: 2, measured: 12 },
+        { file: "configuration/yaml/pipeline.yaml", line: 2, measured: 12 },
       ]);
     });
 

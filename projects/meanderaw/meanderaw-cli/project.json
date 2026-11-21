@@ -26,7 +26,7 @@
         "generatePackageJson": false,
         "main": "projects/meanderaw/meanderaw-cli/src/meanderaw-cli.main.ts",
         "outputPath": "projects/meanderaw/meanderaw-cli/dist",
-        "tsConfig": "projects/meanderaw/meanderaw-cli/tsconfig.build.json"
+        "tsConfig": "projects/meanderaw/meanderaw-cli/configuration/tsconfig.build.json"
       },
       "outputs": ["{options.outputPath}"]
     },
@@ -34,6 +34,7 @@
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "eslint": {},
     "form-codebase": {},
     "format-code": {},
     "gate-codebase": {},
@@ -44,7 +45,9 @@
     "make-projects": {},
     "markdown-lint": {},
     "migration": {
-      "options": { "module": "src/modules/database" }
+      "options": {
+        "module": "src/modules/database"
+      }
     },
     "oxfmt": {},
     "oxlint": {},
@@ -54,7 +57,7 @@
       "description": "Start an interactive NestJS REPL for Meanderaw services",
       "executor": "nx:run-commands",
       "options": {
-        "command": "node --import @swc-node/register/esm-register src/meanderaw-cli.repl.ts",
+        "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register src/meanderaw-cli.repl.ts",
         "cwd": "{projectRoot}"
       }
     },
@@ -64,7 +67,7 @@
     "squawk": {},
     "start": {
       "cache": false,
-      "description": "Run the Meanderaw application, which always writes the Postgres database MEANDERAW_POSTGRES_DATABASE names: with no arguments it clears its meander rows and regenerates a draw run into it \u2014 the lattice's unit space, enumerated and classified, then the historical corpus's hardcoded Codes beyond that budget \u2014 and --args=\"--rows <n> --columns <n> --code <code>\" writes that one row. Nothing else depends on this target, so no aggregate target rewrites the database as a side effect; keep it that way. `build` compiles this project rather than drawing anything, so populating the database is this target's job.",
+      "description": "Run the Meanderaw application, which always writes the Postgres database MEANDERAW_POSTGRES_DATABASE names: with no arguments it clears its meander rows and regenerates a draw run into it — the lattice's unit space, enumerated and classified, then the historical corpus's hardcoded Codes beyond that budget — and --args=\"--rows <n> --columns <n> --code <code>\" writes that one row. Nothing else depends on this target, so no aggregate target rewrites the database as a side effect; keep it that way. `build` compiles this project rather than drawing anything, so populating the database is this target's job.",
       "executor": "nx:run-commands",
       "inputs": [
         "^production",
@@ -74,7 +77,7 @@
         }
       ],
       "options": {
-        "command": "node --import @swc-node/register/esm-register src/meanderaw-cli.main.ts {args}",
+        "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register src/meanderaw-cli.main.ts {args}",
         "cwd": "{projectRoot}"
       }
     },
@@ -85,6 +88,7 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "vitest": {},
     "yaml-lint": {}
   }
 }

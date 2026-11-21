@@ -42,7 +42,7 @@ src/
       postgresql.service.ts           # The TypeORM options factory forRoot hands TypeORM
       postgresql.types.ts
       postgresql.utilities.ts         # postgresEnvironmentSchema, postgresDataSourceOptions, createDataSource, variable names
-      entities/                     # identifiable → creatable → updatable → deletable
+      modules/base-entities/        # identifiable → creatable → updatable → deletable
       postgresql-container.*.ts       # startPostgresContainer, the testing entry's harness
     postgresql-export/              # The postgresql-export command: options, plan, dry run, atomic write
     postgresql-import/              # The postgresql-import command: options, plan, --clean (no prompt), dry run

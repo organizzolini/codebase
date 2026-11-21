@@ -7,7 +7,7 @@ import { LoggerModule } from "@codebase/observability";
 import { environmentSchema } from "./meanderaw-cli.constants";
 import { DrawModule } from "./modules/draw/draw.module";
 import { DrawingModule } from "./modules/drawing/drawing.module";
-import { MatrixModule } from "./modules/matrix/matrix.module";
+import { MatrixModule } from "./modules/geometry/modules/matrix/matrix.module";
 
 /**
  * Root NestJS application module.
@@ -15,7 +15,7 @@ import { MatrixModule } from "./modules/matrix/matrix.module";
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ".env",
+      envFilePath: "configuration/.env",
       isGlobal: true,
       validate: (config: Record<string, unknown>) =>
         environmentSchema.parse(config),

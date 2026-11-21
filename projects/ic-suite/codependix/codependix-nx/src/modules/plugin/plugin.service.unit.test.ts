@@ -27,7 +27,11 @@ describe(PluginService, () => {
       expect.hasAssertions();
 
       const targets = service.inferTargets({
-        options: { configurationPath: "configuration/codependix.config.ts" },
+        options: {
+          configurationPath: "configuration/codependix.config.ts",
+          projectConfigurationPath: "configuration/codependix.config.ts",
+          projectTsconfigPath: "configuration/tsconfig.json",
+        },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         toolInputs: ["{workspaceRoot}/tool/src/**/*"],
         workspaceRoot: "/workspace",
@@ -49,7 +53,8 @@ describe(PluginService, () => {
                   "default",
                   "^default",
                   "{workspaceRoot}/configuration/codependix.config.ts",
-                  "{projectRoot}/codependix.config.*",
+                  "{projectRoot}/configuration/codependix.config.ts",
+                  "{projectRoot}/configuration/tsconfig.json",
                   "{workspaceRoot}/tool/src/**/*",
                 ],
                 options: {},
@@ -64,7 +69,11 @@ describe(PluginService, () => {
       expect.hasAssertions();
 
       const targets = service.inferTargets({
-        options: { configurationPath: "codependix.config.ts" },
+        options: {
+          configurationPath: "codependix.config.ts",
+          projectConfigurationPath: "codependix.config.ts",
+          projectTsconfigPath: "configuration/tsconfig.json",
+        },
         projectConfigurationFiles: [
           "project.json",
           "packages/alpha/project.json",
@@ -82,7 +91,11 @@ describe(PluginService, () => {
       // The glob matches it only so that editing it re-runs inference.
       expect(
         service.inferTargets({
-          options: { configurationPath: "codependix.config.ts" },
+          options: {
+            configurationPath: "codependix.config.ts",
+            projectConfigurationPath: "codependix.config.ts",
+            projectTsconfigPath: "configuration/tsconfig.json",
+          },
           projectConfigurationFiles: ["packages/alpha/codependix.config.ts"],
           toolInputs: ["{workspaceRoot}/tool/src/**/*"],
           workspaceRoot: "/workspace",
@@ -97,6 +110,8 @@ describe(PluginService, () => {
         options: {
           configurationPath: "codependix.config.ts",
           gateTargetName: "boundaries",
+          projectConfigurationPath: "codependix.config.ts",
+          projectTsconfigPath: "configuration/tsconfig.json",
         },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         toolInputs: ["{workspaceRoot}/tool/src/**/*"],
@@ -134,13 +149,64 @@ describe(PluginService, () => {
           options: {
             configurationPath: "configuration/codependix.config.ts",
             gateTargetName: "boundaries",
+            projectConfigurationPath: "configuration/codependix.config.ts",
+            projectTsconfigPath: "configuration/tsconfig.json",
           },
         }),
       ).toStrictEqual({
         configurationPath: "configuration/codependix.config.ts",
         gateTargetName: "boundaries",
+        projectConfigurationPath: "configuration/codependix.config.ts",
+        projectTsconfigPath: "configuration/tsconfig.json",
       });
     });
+
+    it.each([
+      ["absent", { configurationPath: "codependix.config.ts" }],
+      [
+        "empty",
+        {
+          configurationPath: "codependix.config.ts",
+          projectConfigurationPath: "",
+        },
+      ],
+    ])(
+      "refuses a registration whose projectConfigurationPath is %s",
+      (_description, options) => {
+        expect.hasAssertions();
+
+        expect(() => service.resolvePluginOptions({ options })).toThrow(
+          "`projectConfigurationPath`",
+        );
+      },
+    );
+
+    it.each([
+      [
+        "absent",
+        {
+          configurationPath: "codependix.config.ts",
+          projectConfigurationPath: "codependix.config.ts",
+        },
+      ],
+      [
+        "empty",
+        {
+          configurationPath: "codependix.config.ts",
+          projectConfigurationPath: "codependix.config.ts",
+          projectTsconfigPath: "",
+        },
+      ],
+    ])(
+      "refuses a registration whose projectTsconfigPath is %s",
+      (_description, options) => {
+        expect.hasAssertions();
+
+        expect(() => service.resolvePluginOptions({ options })).toThrow(
+          "`projectTsconfigPath`",
+        );
+      },
+    );
 
     it.each([
       ["nothing registered", undefined],
@@ -170,11 +236,15 @@ describe(PluginService, () => {
           options: {
             configurationPath: "codependix.config.ts",
             gateTargetName: 3,
+            projectConfigurationPath: "codependix.config.ts",
+            projectTsconfigPath: "configuration/tsconfig.json",
           },
         }),
       ).toStrictEqual({
         configurationPath: "codependix.config.ts",
         gateTargetName: "codependix-bound",
+        projectConfigurationPath: "codependix.config.ts",
+        projectTsconfigPath: "configuration/tsconfig.json",
       });
     });
   });

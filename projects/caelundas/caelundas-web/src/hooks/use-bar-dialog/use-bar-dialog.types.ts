@@ -1,5 +1,5 @@
-import type { TimelineBar } from "../../components/calendar-timeline/calendar-timeline.types";
-import type { CalendarEventRecord } from "../../components/events-calendar/calendar-records.types";
+import type { TimelineBar } from "../../components/calendar-display/calendar-timeline/calendar-timeline.types";
+import type { CalendarEventRecord } from "../../components/calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { GanttOccurrence } from "@codebase/presentation";
 import type { ReactNode } from "react";
 

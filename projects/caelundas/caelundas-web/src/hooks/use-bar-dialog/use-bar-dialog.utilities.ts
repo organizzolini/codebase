@@ -1,6 +1,6 @@
-import { getEventLabel } from "../../components/event-glyphs/calendar-glyphs.utilities";
+import { getEventLabel } from "../../components/calendar-events/event-glyphs/components/calendar-glyphs/calendar-glyphs.utilities";
 
-import type { TimelineBar } from "../../components/calendar-timeline/calendar-timeline.types";
+import type { TimelineBar } from "../../components/calendar-display/calendar-timeline/calendar-timeline.types";
 import type { OpenedBar } from "./use-bar-dialog.types";
 
 // 🔏 Private Functions

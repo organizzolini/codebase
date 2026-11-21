@@ -85,17 +85,17 @@
       "cache": true,
       "configurations": {
         "write": {
-          "command": "node --import @swc-node/register/esm-register projects/ic-suite/callidescope/callidescope-cli/src/callidescope-cli.main.ts callidescope --config configuration/callidescope.config.ts --write"
+          "command": "node --import @swc-node/register/esm-register projects/ic-suite/callidescope/callidescope-cli/src/callidescope-cli.main.ts callidescope --config configuration/ic-suite/callidescope.config.ts --write"
         }
       },
       "defaultConfiguration": "write",
-      "description": "Publish the workspace call-stack trace: every project's `callidescope.md`, the mermaid diagram, and the JSON report. The only configuration left is `write` — depth checking now runs through the inferred per-project `callidescope-restrict` target, a dependency of `guard-code`, scoped by `nx affected` in the 🔭 Callidescope Restrict check and `configuration/lint-staged.config.ts`, so a pull request and a commit gate the projects a change actually touched rather than the whole workspace. This target still stays out of `lint-code`'s `dependsOn` for the reason it always did, unchanged by that split because `write` is exactly the configuration that remains: Nx forwards an explicit configuration down `dependsOn`, so a target reachable from there would take `write` from `lint-code --configuration=write` and publish the report from a branch. `defaultConfiguration` is `write`, the only configuration left, so a bare `nx run configuration:callidescope` does what `:write` does. Publishing did not fan out the way gating did: one JSON report and one set of README blocks are what the whole workspace needs, and computing either per project would mean rebuilding the same call graph many times for one merged artifact, where gating benefits from being scoped to what changed and publishing does not. Three traced call-graph roots carry no gate of their own and never will, because a gate is inferred onto an Nx project and none of them is one: the three fixture roots under `projects/ic-suite/codependix/codependix-examples/examples/`, which measure depth 0. They keep being traced and published here on the default branch, so a regression in any of them still lands in the report; it only stops failing a pull request. `configuration/` was a fourth until it became an Nx project, and now has an inferred gate of its own. The workspace root is a fifth gap of a different kind and is not one of the four: `configuration/.callidescopeignore` drops it as a project, for the reason recorded there, so the loose maintenance scripts it once owned are traced by nothing at all — which is also why the root project is skipped from gate inference, its scope being the workspace itself. The `callidescope.md` glob is an input because `write` splices into those files: without it, a hand-edited report replays a cached run.",
+      "description": "Publish the workspace call-stack trace: every project's `callidescope.md`, the mermaid diagram, and the JSON report. The only configuration left is `write` — depth checking now runs through the inferred per-project `callidescope-restrict` target, a dependency of `guard-code`, scoped by `nx affected` in the 🔭 Callidescope Restrict check and `configuration/repository/lint-staged.config.ts`, so a pull request and a commit gate the projects a change actually touched rather than the whole workspace. This target still stays out of `lint-code`'s `dependsOn` for the reason it always did, unchanged by that split because `write` is exactly the configuration that remains: Nx forwards an explicit configuration down `dependsOn`, so a target reachable from there would take `write` from `lint-code --configuration=write` and publish the report from a branch. `defaultConfiguration` is `write`, the only configuration left, so a bare `nx run configuration:callidescope` does what `:write` does. Publishing did not fan out the way gating did: one JSON report and one set of README blocks are what the whole workspace needs, and computing either per project would mean rebuilding the same call graph many times for one merged artifact, where gating benefits from being scoped to what changed and publishing does not. Three traced call-graph roots carry no gate of their own and never will, because a gate is inferred onto an Nx project and none of them is one: the three fixture roots under the group folders of `projects/ic-suite/codependix/codependix-examples/examples/`, which measure depth 0. They keep being traced and published here on the default branch, so a regression in any of them still lands in the report; it only stops failing a pull request. `configuration/` was a fourth until it became an Nx project, and now has an inferred gate of its own. The workspace root is a fifth gap of a different kind and is not one of the four: `configuration/ic-suite/.callidescopeignore` drops it as a project, for the reason recorded there, so the loose maintenance scripts it once owned are traced by nothing at all — which is also why the root project is skipped from gate inference, its scope being the workspace itself. The `callidescope.md` glob is an input because `write` splices into those files: without it, a hand-edited report replays a cached run.",
       "executor": "nx:run-commands",
       "inputs": [
         "{workspaceRoot}/**/*.{cts,mts,ts,tsx}",
         "{workspaceRoot}/**/callidescope.md",
-        "{workspaceRoot}/configuration/.callidescopeignore",
-        "{workspaceRoot}/configuration/callidescope.config.ts",
+        "{workspaceRoot}/configuration/ic-suite/.callidescopeignore",
+        "{workspaceRoot}/configuration/ic-suite/callidescope.config.ts",
         "shared-globals"
       ],
       "options": {
@@ -107,16 +107,16 @@
       "cache": true,
       "configurations": {
         "write": {
-          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codependix/codependix-cli/src/codependix-cli.main.ts map --directory . --config configuration/codependix.config.ts --write"
+          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codependix/codependix-cli/src/codependix-cli.main.ts map --directory . --config configuration/ic-suite/codependix.config.ts --write"
         }
       },
       "defaultConfiguration": "write",
-      "description": "Publish the workspace dependency graphs: every project's `callidescope.md`s, and whatever JSON or Markdown destinations the configuration names. The only configuration left is `write` — boundary checking now runs through the inferred per-project `codependix-bound` target, a dependency of `guard-code`, scoped by `nx affected` in the 🔭 Callidescope Restrict check and `configuration/lint-staged.config.ts`, so a pull request and a commit gate the projects a change actually touched rather than the whole workspace. This target stays out of `guard-code`'s and `lint-code`'s `dependsOn`, as `configuration:callidescope` does: Nx forwards an explicit configuration down `dependsOn`, so a target reachable from there would take `write` from `guard-code --configuration=write` and publish the exports from a branch. `defaultConfiguration` is `write`, the only configuration left, so a bare `nx run configuration:codependix` does what `:write` does. Publishing did not fan out the way gating did: one workspace-wide export, whose `## 🕸️ Codependix` anchors in every README must reflect one commit, is what the release needs, and a gate per project would rebuild the same graphs many times for one merged artifact. The release workflow runs it on the default branch, after `callidescope` and the module-graph synchronization have run, so each anchor reflects the same commit those write. The command line still accepts `--check boundaries` and `--check reports`, and nothing in the workspace runs either here: `--check reports` would fail every branch that changed a project graph rather than anything the branch itself did. The `codependix.md` glob is an input because `write` splices Markdown into the anchor blocks of those files.",
+      "description": "Publish the workspace dependency graphs: every project's `callidescope.md`s, and whatever JSON or Markdown destinations the configuration names. The only configuration left is `write` — boundary checking now runs through the inferred per-project `codependix-bound` target, a dependency of `guard-code`, scoped by `nx affected` in the 🔭 Callidescope Restrict check and `configuration/repository/lint-staged.config.ts`, so a pull request and a commit gate the projects a change actually touched rather than the whole workspace. This target stays out of `guard-code`'s and `lint-code`'s `dependsOn`, as `configuration:callidescope` does: Nx forwards an explicit configuration down `dependsOn`, so a target reachable from there would take `write` from `guard-code --configuration=write` and publish the exports from a branch. `defaultConfiguration` is `write`, the only configuration left, so a bare `nx run configuration:codependix` does what `:write` does. Publishing did not fan out the way gating did: one workspace-wide export, whose `## 🕸️ Codependix` anchors in every README must reflect one commit, is what the release needs, and a gate per project would rebuild the same graphs many times for one merged artifact. The release workflow runs it on the default branch, after `callidescope` and the module-graph synchronization have run, so each anchor reflects the same commit those write. The command line still accepts `--check boundaries` and `--check reports`, and nothing in the workspace runs either here: `--check reports` would fail every branch that changed a project graph rather than anything the branch itself did. The `codependix.md` glob is an input because `write` splices Markdown into the anchor blocks of those files.",
       "executor": "nx:run-commands",
       "inputs": [
         "{workspaceRoot}/**/*.{cts,mts,ts,tsx}",
         "{workspaceRoot}/**/codependix.md",
-        "{workspaceRoot}/configuration/codependix.config.ts",
+        "{workspaceRoot}/configuration/ic-suite/codependix.config.ts",
         "shared-globals"
       ],
       "options": {
@@ -128,10 +128,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --config configuration/codometer.config.ts --output-json --check limits"
+          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --config configuration/ic-suite/codometer.config.ts --output-json --check limits"
         },
         "write": {
-          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --config configuration/codometer.config.ts --output-json --output-markdown"
+          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --config configuration/ic-suite/codometer.config.ts --output-json --output-markdown"
         }
       },
       "defaultConfiguration": "check",
@@ -143,8 +143,8 @@
         "{workspaceRoot}/**/*.{cjs,cts,js,json,jsx,mjs,mts,py,ts,tsx}",
         "{workspaceRoot}/**/*.{yaml,yml}",
         "{workspaceRoot}/codometer.md",
-        "{workspaceRoot}/configuration/.codometerignore",
-        "{workspaceRoot}/configuration/codometer.config.ts",
+        "{workspaceRoot}/configuration/ic-suite/.codometerignore",
+        "{workspaceRoot}/configuration/ic-suite/codometer.config.ts",
         "shared-globals"
       ],
       "options": {
@@ -163,7 +163,7 @@
       "description": "Run the commit-msg git hook script (commitlint). Pass the commit message file via --edit=<path>.",
       "executor": "nx:run-commands",
       "options": {
-        "command": "sh configuration/.husky/commit-msg",
+        "command": "sh configuration/repository/.husky/commit-msg",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -172,7 +172,7 @@
       "description": "Validate commit message format with commitlint. The commit-msg hook calls the binary directly to avoid a project graph build; this target is for manual use.",
       "executor": "nx:run-commands",
       "options": {
-        "command": "NODE_OPTIONS='--import=tsx' commitlint --config configuration/commitlint.config.ts --edit {args.edit}",
+        "command": "NODE_OPTIONS='--import=tsx' commitlint --config configuration/repository/commitlint.config.ts --edit {args.edit}",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -181,7 +181,7 @@
       "description": "Run the conformetry generate command from the workspace root",
       "executor": "nx:run-commands",
       "options": {
-        "command": "pnpm exec nx run conformetry-cli:start -- generate --config configuration/conformetry.config.ts {args}",
+        "command": "pnpm exec nx run conformetry-cli:start -- generate --config configuration/ic-suite/conformetry.config.ts {args}",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -205,8 +205,8 @@
         "!{projectRoot}/cspell.config.yaml",
         "!{workspaceRoot}/.eslintcache/**",
         "{projectRoot}/**/*",
-        "{workspaceRoot}/configuration/codebase-structure.json",
         "{workspaceRoot}/configuration/eslint.config.ts",
+        "{workspaceRoot}/configuration/lint/codebase-structure.json",
         "shared-globals",
         "workspace-files",
         {
@@ -241,13 +241,13 @@
       "cache": true,
       "configurations": {
         "json": {
-          "command": "fallow --config configuration/fallow.config.jsonc --format=json"
+          "command": "fallow --config configuration/typescript/fallow.config.jsonc --format=json"
         },
         "markdown": {
-          "command": "fallow --config configuration/fallow.config.jsonc --format=markdown"
+          "command": "fallow --config configuration/typescript/fallow.config.jsonc --format=markdown"
         },
         "pr-comment-github": {
-          "command": "fallow --config configuration/fallow.config.jsonc --format=pr-comment-github"
+          "command": "fallow --config configuration/typescript/fallow.config.jsonc --format=pr-comment-github"
         }
       },
       "description": "Run all fallow static analyses (dead-code, duplicates, health) in advisory mode",
@@ -255,14 +255,14 @@
       "inputs": [
         "!{workspaceRoot}/projects/**/*",
         "{workspaceRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-        "{workspaceRoot}/configuration/fallow.config.jsonc",
+        "{workspaceRoot}/configuration/typescript/fallow.config.jsonc",
         "shared-globals",
         {
           "externalDependencies": ["fallow"]
         }
       ],
       "options": {
-        "command": "fallow --config configuration/fallow.config.jsonc",
+        "command": "fallow --config configuration/typescript/fallow.config.jsonc",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -270,13 +270,13 @@
       "cache": false,
       "configurations": {
         "json": {
-          "command": "fallow audit --config configuration/fallow.config.jsonc --format=json"
+          "command": "fallow audit --config configuration/typescript/fallow.config.jsonc --format=json"
         },
         "markdown": {
-          "command": "fallow audit --config configuration/fallow.config.jsonc --format=markdown"
+          "command": "fallow audit --config configuration/typescript/fallow.config.jsonc --format=markdown"
         },
         "pr-comment-github": {
-          "command": "fallow audit --config configuration/fallow.config.jsonc --format=pr-comment-github"
+          "command": "fallow audit --config configuration/typescript/fallow.config.jsonc --format=pr-comment-github"
         }
       },
       "description": "Fallow audit gate (new-only regression check on changed code) — advisory",
@@ -284,11 +284,11 @@
       "inputs": [
         "!{workspaceRoot}/projects/**/*",
         "{workspaceRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-        "{workspaceRoot}/configuration/fallow.config.jsonc",
+        "{workspaceRoot}/configuration/typescript/fallow.config.jsonc",
         "shared-globals"
       ],
       "options": {
-        "command": "fallow audit --config configuration/fallow.config.jsonc || true",
+        "command": "fallow audit --config configuration/typescript/fallow.config.jsonc || true",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -296,35 +296,35 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "fallow dead-code --config configuration/fallow.config.jsonc"
+          "command": "fallow dead-code --config configuration/typescript/fallow.config.jsonc"
         },
         "json": {
-          "command": "fallow dead-code --config configuration/fallow.config.jsonc --format=json"
+          "command": "fallow dead-code --config configuration/typescript/fallow.config.jsonc --format=json"
         },
         "markdown": {
-          "command": "fallow dead-code --config configuration/fallow.config.jsonc --format=markdown"
+          "command": "fallow dead-code --config configuration/typescript/fallow.config.jsonc --format=markdown"
         },
         "pr-comment-github": {
-          "command": "fallow dead-code --config configuration/fallow.config.jsonc --format=pr-comment-github"
+          "command": "fallow dead-code --config configuration/typescript/fallow.config.jsonc --format=pr-comment-github"
         },
         "write": {
-          "command": "fallow dead-code --config configuration/fallow.config.jsonc"
+          "command": "fallow dead-code --config configuration/typescript/fallow.config.jsonc"
         }
       },
       "defaultConfiguration": "check",
-      "description": "Fallow dead-code analysis (unused files, exports, types, dependencies, unresolved imports) — a `lint-code` gate beside `knip`, whose findings it deliberately mirrors: `configuration/fallow.config.jsonc` carries the same entry points, the same per-file report suppressions, and the same ignored dependencies as `configuration/knip.config.ts`, so a finding one reports the other reports too. The severities `knip` also fails on are `error` in that config; the rest stay `warn` and belong to `fallow-health` and `fallow-duplicates`, which are still advisory. The `write` configuration is identical to `check` because there is nothing to write: removing what this finds is `fallow-fix`, which stays manual-only.",
+      "description": "Fallow dead-code analysis (unused files, exports, types, dependencies, unresolved imports) — a `lint-code` gate beside `knip`, whose findings it deliberately mirrors: `configuration/typescript/fallow.config.jsonc` carries the same entry points, the same per-file report suppressions, and the same ignored dependencies as `configuration/typescript/knip.config.ts`, so a finding one reports the other reports too. The severities `knip` also fails on are `error` in that config; the rest stay `warn` and belong to `fallow-health` and `fallow-duplicates`, which are still advisory. The `write` configuration is identical to `check` because there is nothing to write: removing what this finds is `fallow-fix`, which stays manual-only.",
       "executor": "nx:run-commands",
       "inputs": [
         "!{workspaceRoot}/projects/**/*",
         "{workspaceRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-        "{workspaceRoot}/configuration/fallow.config.jsonc",
+        "{workspaceRoot}/configuration/typescript/fallow.config.jsonc",
         "shared-globals",
         {
           "externalDependencies": ["fallow"]
         }
       ],
       "options": {
-        "command": "fallow dead-code --config configuration/fallow.config.jsonc",
+        "command": "fallow dead-code --config configuration/typescript/fallow.config.jsonc",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -332,13 +332,13 @@
       "cache": true,
       "configurations": {
         "json": {
-          "command": "fallow dupes --config configuration/fallow.config.jsonc --format=json"
+          "command": "fallow dupes --config configuration/typescript/fallow.config.jsonc --format=json"
         },
         "markdown": {
-          "command": "fallow dupes --config configuration/fallow.config.jsonc --format=markdown"
+          "command": "fallow dupes --config configuration/typescript/fallow.config.jsonc --format=markdown"
         },
         "pr-comment-github": {
-          "command": "fallow dupes --config configuration/fallow.config.jsonc --format=pr-comment-github"
+          "command": "fallow dupes --config configuration/typescript/fallow.config.jsonc --format=pr-comment-github"
         }
       },
       "description": "Fallow strict duplication analysis (config-driven) with threshold gating",
@@ -346,14 +346,14 @@
       "inputs": [
         "!{workspaceRoot}/projects/**/*",
         "{workspaceRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-        "{workspaceRoot}/configuration/fallow.config.jsonc",
+        "{workspaceRoot}/configuration/typescript/fallow.config.jsonc",
         "shared-globals",
         {
           "externalDependencies": ["fallow"]
         }
       ],
       "options": {
-        "command": "fallow dupes --config configuration/fallow.config.jsonc",
+        "command": "fallow dupes --config configuration/typescript/fallow.config.jsonc",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -361,10 +361,10 @@
       "cache": false,
       "configurations": {
         "check": {
-          "command": "fallow fix --dry-run --config configuration/fallow.config.jsonc"
+          "command": "fallow fix --dry-run --config configuration/typescript/fallow.config.jsonc"
         },
         "write": {
-          "command": "fallow fix --yes --config configuration/fallow.config.jsonc"
+          "command": "fallow fix --yes --config configuration/typescript/fallow.config.jsonc"
         }
       },
       "defaultConfiguration": "check",
@@ -373,7 +373,7 @@
       "inputs": [
         "!{workspaceRoot}/projects/**/*",
         "{workspaceRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-        "{workspaceRoot}/configuration/fallow.config.jsonc",
+        "{workspaceRoot}/configuration/typescript/fallow.config.jsonc",
         "shared-globals"
       ],
       "options": {
@@ -384,13 +384,13 @@
       "cache": true,
       "configurations": {
         "json": {
-          "command": "fallow health --config configuration/fallow.config.jsonc --format=json || true"
+          "command": "fallow health --config configuration/typescript/fallow.config.jsonc --format=json || true"
         },
         "markdown": {
-          "command": "fallow health --config configuration/fallow.config.jsonc --format=markdown || true"
+          "command": "fallow health --config configuration/typescript/fallow.config.jsonc --format=markdown || true"
         },
         "pr-comment-github": {
-          "command": "fallow health --config configuration/fallow.config.jsonc --format=pr-comment-github || true"
+          "command": "fallow health --config configuration/typescript/fallow.config.jsonc --format=pr-comment-github || true"
         }
       },
       "description": "Fallow code health analysis (complexity, hotspots, maintainability) — advisory",
@@ -398,14 +398,14 @@
       "inputs": [
         "!{workspaceRoot}/projects/**/*",
         "{workspaceRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-        "{workspaceRoot}/configuration/fallow.config.jsonc",
+        "{workspaceRoot}/configuration/typescript/fallow.config.jsonc",
         "shared-globals",
         {
           "externalDependencies": ["fallow"]
         }
       ],
       "options": {
-        "command": "fallow health --config configuration/fallow.config.jsonc || true",
+        "command": "fallow health --config configuration/typescript/fallow.config.jsonc || true",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -414,24 +414,24 @@
       "cache": true,
       "configurations": {
         "ci": {
-          "command": "gitleaks git --verbose --redact --config configuration/gitleaks.toml --gitleaks-ignore-path configuration"
+          "command": "gitleaks git --verbose --redact --config configuration/security/gitleaks.toml --gitleaks-ignore-path configuration/security"
         },
         "ci-incremental": {
-          "command": "gitleaks git --log-opts=\"${NX_BASE}..${NX_HEAD}\" --verbose --redact --config configuration/gitleaks.toml --gitleaks-ignore-path configuration"
+          "command": "gitleaks git --log-opts=\"${NX_BASE}..${NX_HEAD}\" --verbose --redact --config configuration/security/gitleaks.toml --gitleaks-ignore-path configuration/security"
         }
       },
       "description": "Detect hardcoded secrets in git history using Gitleaks (detection only). The ci-incremental configuration scopes the scan to NX_BASE..NX_HEAD instead of full history, for push/pull_request/merge_group events where the weekly ci scan already covers everything older.",
       "executor": "nx:run-commands",
       "inputs": [
-        "{workspaceRoot}/configuration/.gitleaksignore",
-        "{workspaceRoot}/configuration/gitleaks.toml",
+        "{workspaceRoot}/configuration/security/.gitleaksignore",
+        "{workspaceRoot}/configuration/security/gitleaks.toml",
         "workspace-files",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "gitleaks git --staged --verbose --redact --config configuration/gitleaks.toml --gitleaks-ignore-path configuration",
+        "command": "gitleaks git --staged --verbose --redact --config configuration/security/gitleaks.toml --gitleaks-ignore-path configuration/security",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -440,7 +440,7 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "jscpd --config configuration/jscpd.config.json --no-tips --reporters console,threshold projects scripts configuration || true"
+          "command": "jscpd --config configuration/typescript/jscpd.config.json --no-tips --reporters console,threshold projects scripts configuration || true"
         }
       },
       "defaultConfiguration": "check",
@@ -448,7 +448,7 @@
       "executor": "nx:run-commands",
       "inputs": [
         "{workspaceRoot}/configuration/**/*",
-        "{workspaceRoot}/configuration/jscpd.config.json",
+        "{workspaceRoot}/configuration/typescript/jscpd.config.json",
         "{workspaceRoot}/projects/**/*",
         "{workspaceRoot}/scripts/**/*",
         "shared-globals",
@@ -464,17 +464,17 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "knip --config configuration/knip.config.ts --workspace ."
+          "command": "knip --config configuration/typescript/knip.config.ts --workspace ."
         },
         "write": {
-          "command": "knip --config configuration/knip.config.ts --fix --workspace ."
+          "command": "knip --config configuration/typescript/knip.config.ts --fix --workspace ."
         }
       },
       "defaultConfiguration": "check",
       "description": "Check for unused files, dependencies, and exports in workspace root only",
       "executor": "nx:run-commands",
       "inputs": [
-        "{workspaceRoot}/configuration/knip.config.ts",
+        "{workspaceRoot}/configuration/typescript/knip.config.ts",
         "workspace-files",
         {
           "externalDependencies": ["knip", "typescript"]
@@ -504,14 +504,14 @@
       "description": "Run lint-staged on staged files (invoked by the pre-commit git hook)",
       "executor": "nx:run-commands",
       "options": {
-        "command": "NODE_OPTIONS='--import=tsx' lint-staged --config configuration/lint-staged.config.ts --continue-on-error",
+        "command": "NODE_OPTIONS='--import=tsx' lint-staged --config configuration/repository/lint-staged.config.ts --continue-on-error",
         "cwd": "{workspaceRoot}"
       }
     },
     "local-registry": {
       "executor": "@nx/js:verdaccio",
       "options": {
-        "config": "configuration/verdaccio.config.yml",
+        "config": "configuration/repository/verdaccio.config.yml",
         "port": 4873,
         "storage": "tmp/local-registry/storage"
       }
@@ -520,10 +520,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "markdownlint-cli2 --config configuration/markdownlint-cli2.config.jsonc '*.md' '.agents/**/*.md' 'documentation/**/*.md' 'scripts/**/*.md' 'configuration/*.md'"
+          "command": "markdownlint-cli2 --config configuration/lint/markdownlint-cli2.config.jsonc '*.md' '.agents/**/*.md' 'documentation/**/*.md' 'scripts/**/*.md' 'configuration/*.md'"
         },
         "write": {
-          "command": "markdownlint-cli2 --fix --config configuration/markdownlint-cli2.config.jsonc '*.md' '.agents/**/*.md' 'documentation/**/*.md' 'scripts/**/*.md' 'configuration/*.md'"
+          "command": "markdownlint-cli2 --fix --config configuration/lint/markdownlint-cli2.config.jsonc '*.md' '.agents/**/*.md' 'documentation/**/*.md' 'scripts/**/*.md' 'configuration/*.md'"
         }
       },
       "defaultConfiguration": "check",
@@ -533,7 +533,7 @@
         "{projectRoot}/**/*.md",
         "{workspaceRoot}/*.md",
         "{workspaceRoot}/.agents/**/*.md",
-        "{workspaceRoot}/configuration/markdownlint-cli2.config.jsonc",
+        "{workspaceRoot}/configuration/lint/markdownlint-cli2.config.jsonc",
         "{workspaceRoot}/documentation/**/*.md",
         "{workspaceRoot}/scripts/**/*.md",
         "shared-globals",
@@ -550,10 +550,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "oxfmt -c configuration/oxfmt.config.ts --ignore-path configuration/.oxfmtignore {args} '*.ts' '*.js' '*.json' '*.md' 'scripts/' 'documentation/' 'configuration/project.json' 'configuration/*.md'"
+          "command": "oxfmt -c configuration/lint/oxfmt.config.ts --ignore-path configuration/lint/.oxfmtignore {args} '*.ts' '*.js' '*.json' '*.md' 'scripts/' 'documentation/' 'configuration/project.json' 'configuration/*.md'"
         },
         "write": {
-          "command": "oxfmt -c configuration/oxfmt.config.ts --ignore-path configuration/.oxfmtignore {args} '*.ts' '*.js' '*.json' '*.md' 'scripts/' 'documentation/' 'configuration/project.json' 'configuration/*.md'"
+          "command": "oxfmt -c configuration/lint/oxfmt.config.ts --ignore-path configuration/lint/.oxfmtignore {args} '*.ts' '*.js' '*.json' '*.md' 'scripts/' 'documentation/' 'configuration/project.json' 'configuration/*.md'"
         }
       },
       "defaultConfiguration": "check",
@@ -561,8 +561,8 @@
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/**/*",
-        "{workspaceRoot}/configuration/.oxfmtignore",
-        "{workspaceRoot}/configuration/oxfmt.config.ts",
+        "{workspaceRoot}/configuration/lint/.oxfmtignore",
+        "{workspaceRoot}/configuration/lint/oxfmt.config.ts",
         "workspace-files",
         {
           "externalDependencies": ["oxfmt"]
@@ -594,7 +594,7 @@
       "description": "Run the pre-commit git hook script (unstage notepads, lint-staged).",
       "executor": "nx:run-commands",
       "options": {
-        "command": "sh configuration/.husky/pre-commit",
+        "command": "sh configuration/repository/.husky/pre-commit",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -603,7 +603,7 @@
       "description": "Run the pre-push git hook script (branch name validation).",
       "executor": "nx:run-commands",
       "options": {
-        "command": "sh configuration/.husky/pre-push",
+        "command": "sh configuration/repository/.husky/pre-push",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -611,10 +611,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "prettier {args} --config configuration/prettier.config.ts --ignore-path .gitignore --ignore-path configuration/.prettierignore --check --ignore-unknown ."
+          "command": "prettier {args} --config configuration/lint/prettier.config.ts --ignore-path .gitignore --ignore-path configuration/lint/.prettierignore --check --ignore-unknown ."
         },
         "write": {
-          "command": "prettier {args} --config configuration/prettier.config.ts --ignore-path .gitignore --ignore-path configuration/.prettierignore --write --ignore-unknown ."
+          "command": "prettier {args} --config configuration/lint/prettier.config.ts --ignore-path .gitignore --ignore-path configuration/lint/.prettierignore --write --ignore-unknown ."
         }
       },
       "defaultConfiguration": "write",
@@ -627,7 +627,7 @@
         }
       ],
       "options": {
-        "command": "prettier {args} --config configuration/prettier.config.ts --ignore-path .gitignore --ignore-path configuration/.prettierignore --ignore-unknown .",
+        "command": "prettier {args} --config configuration/lint/prettier.config.ts --ignore-path .gitignore --ignore-path configuration/lint/.prettierignore --ignore-unknown .",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -643,21 +643,21 @@
     },
     "shellcheck": {
       "cache": true,
-      "description": "Lint the workspace's own shell: every script under scripts/ and .devcontainer/, the sign-commits skill's script (a skill this repository owns, unlike the vendored ones), and the three husky hooks, which carry no extension and so are named one by one. The file list comes from `git ls-files`, whose `*` crosses directories, so a new script is linted without editing this target. Two shell files stay out on purpose: notepads/notepad.sh is a scratch list of commands rather than a script, and the codometer-examples corpus is a measurement fixture whose content its tests count. The other installed skills under .agents/ are owned upstream and stay out too. configuration/.shellcheck.rc is passed explicitly, since shellcheck only searches each script's own directory and its parents, and the minimum severity is set here because an rc file cannot set it: `style` is the lowest, so nothing is filtered out. configuration/pyproject.toml and configuration/uv.lock are inputs because they pin shellcheck itself: without them, an upgrade replays a cached pass and stops linting. Defined here rather than in nx.json targetDefaults because no other project owns shell scripts.",
+      "description": "Lint the workspace's own shell: every script under scripts/ and .devcontainer/, the sign-commits skill's script (a skill this repository owns, unlike the vendored ones), and the three husky hooks, which carry no extension and so are named one by one. The file list comes from `git ls-files`, whose `*` crosses directories, so a new script is linted without editing this target. Two shell files stay out on purpose: notepads/notepad.sh is a scratch list of commands rather than a script, and the codometer-examples corpus is a measurement fixture whose content its tests count. The other installed skills under .agents/ are owned upstream and stay out too. configuration/repository/.shellcheck.rc is passed explicitly, since shellcheck only searches each script's own directory and its parents, and the minimum severity is set here because an rc file cannot set it: `style` is the lowest, so nothing is filtered out. configuration/python/pyproject.toml and configuration/python/uv.lock are inputs because they pin shellcheck itself: without them, an upgrade replays a cached pass and stops linting. Defined here rather than in nx.json targetDefaults because no other project owns shell scripts.",
       "executor": "nx:run-commands",
       "inputs": [
         "{workspaceRoot}/.agents/skills/sign-commits/scripts/*.sh",
         "{workspaceRoot}/.devcontainer/**/*.sh",
-        "{workspaceRoot}/configuration/.husky/commit-msg",
-        "{workspaceRoot}/configuration/.husky/pre-commit",
-        "{workspaceRoot}/configuration/.husky/pre-push",
-        "{workspaceRoot}/configuration/.shellcheck.rc",
-        "{workspaceRoot}/configuration/pyproject.toml",
-        "{workspaceRoot}/configuration/uv.lock",
+        "{workspaceRoot}/configuration/python/pyproject.toml",
+        "{workspaceRoot}/configuration/python/uv.lock",
+        "{workspaceRoot}/configuration/repository/.husky/commit-msg",
+        "{workspaceRoot}/configuration/repository/.husky/pre-commit",
+        "{workspaceRoot}/configuration/repository/.husky/pre-push",
+        "{workspaceRoot}/configuration/repository/.shellcheck.rc",
         "{workspaceRoot}/scripts/**/*.sh"
       ],
       "options": {
-        "command": "uv run --project configuration shellcheck --rcfile configuration/.shellcheck.rc --severity=style $(git ls-files -- '.agents/skills/sign-commits/scripts/*.sh' '.devcontainer/*.sh' 'scripts/*.sh' configuration/.husky/commit-msg configuration/.husky/pre-commit configuration/.husky/pre-push)",
+        "command": "uv run --project configuration/python shellcheck --rcfile configuration/repository/.shellcheck.rc --severity=style $(git ls-files -- '.agents/skills/sign-commits/scripts/*.sh' '.devcontainer/*.sh' 'scripts/*.sh' configuration/repository/.husky/commit-msg configuration/repository/.husky/pre-commit configuration/repository/.husky/pre-push)",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -697,8 +697,8 @@
         "{workspaceRoot}/.github/**",
         "{workspaceRoot}/.vscode/**",
         "{workspaceRoot}/configuration/**",
-        "{workspaceRoot}/configuration/.cspell/**",
-        "{workspaceRoot}/configuration/cspell.config.yaml",
+        "{workspaceRoot}/configuration/lint/.cspell/**",
+        "{workspaceRoot}/configuration/lint/cspell.config.yaml",
         "{workspaceRoot}/documentation/**",
         "{workspaceRoot}/notepads/**",
         "{workspaceRoot}/planning/**",
@@ -710,7 +710,7 @@
         }
       ],
       "options": {
-        "command": "cspell --config configuration/cspell.config.yaml '*.{ts,tsx,js,jsx,md,yaml,yml,json}' '.agents/**' '.devcontainer/**' '.github/**' '.vscode/**' 'configuration/**' 'documentation/**' 'notepads/**' 'planning/**' 'scripts/**' --no-progress --gitignore --gitignore-root .",
+        "command": "cspell --config configuration/lint/cspell.config.yaml '*.{ts,tsx,js,jsx,md,yaml,yml,json}' '.agents/**' '.devcontainer/**' '.github/**' '.vscode/**' 'configuration/**' 'documentation/**' 'notepads/**' 'planning/**' 'scripts/**' --no-progress --gitignore --gitignore-root .",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -718,10 +718,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "pnpm exec syncpack lint --config configuration/syncpack.config.cjs"
+          "command": "pnpm exec syncpack lint --config configuration/dependencies/syncpack.config.cjs"
         },
         "write": {
-          "command": "pnpm exec syncpack fix --config configuration/syncpack.config.cjs && nx run configuration:oxfmt:write"
+          "command": "pnpm exec syncpack fix --config configuration/dependencies/syncpack.config.cjs && nx run configuration:oxfmt:write"
         }
       },
       "defaultConfiguration": "check",
@@ -729,14 +729,14 @@
       "executor": "nx:run-commands",
       "inputs": [
         "{workspaceRoot}/**/package.json",
-        "{workspaceRoot}/configuration/syncpack.config.cjs",
+        "{workspaceRoot}/configuration/dependencies/syncpack.config.cjs",
         "{workspaceRoot}/pnpm-lock.yaml",
         {
           "externalDependencies": ["syncpack"]
         }
       ],
       "options": {
-        "command": "pnpm exec syncpack lint --config configuration/syncpack.config.cjs",
+        "command": "pnpm exec syncpack lint --config configuration/dependencies/syncpack.config.cjs",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -748,7 +748,7 @@
         "{workspaceRoot}/*.ts",
         "{workspaceRoot}/.devcontainer/scripts/**/*.ts",
         "{workspaceRoot}/configuration/**/*.{ts,tsx}",
-        "{workspaceRoot}/configuration/tsconfig.workspace.json",
+        "{workspaceRoot}/configuration/typescript/tsconfig.workspace.json",
         "{workspaceRoot}/scripts/**/*.ts",
         "shared-globals",
         {
@@ -756,7 +756,7 @@
         }
       ],
       "options": {
-        "command": "type-coverage --at-least 95 --detail --project configuration/tsconfig.workspace.json",
+        "command": "type-coverage --at-least 95 --detail --project configuration/typescript/tsconfig.workspace.json",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -769,7 +769,7 @@
         "{workspaceRoot}/*.ts",
         "{workspaceRoot}/.devcontainer/scripts/**/*.ts",
         "{workspaceRoot}/configuration/**/*.ts",
-        "{workspaceRoot}/configuration/tsconfig.workspace.json",
+        "{workspaceRoot}/configuration/typescript/tsconfig.workspace.json",
         "{workspaceRoot}/scripts/**/*.ts",
         "shared-globals",
         {
@@ -777,7 +777,7 @@
         }
       ],
       "options": {
-        "command": "node \"$NX_WORKSPACE_ROOT/node_modules/typescript-7/bin/tsc\" --noEmit -p configuration/tsconfig.workspace.json",
+        "command": "node \"$NX_WORKSPACE_ROOT/node_modules/typescript-7/bin/tsc\" --noEmit -p configuration/typescript/tsconfig.workspace.json",
         "cwd": "{workspaceRoot}"
       },
       "outputs": []
@@ -803,9 +803,9 @@
       "executor": "nx:run-commands",
       "inputs": [
         "{workspaceRoot}/*.py",
-        "{workspaceRoot}/configuration/pyproject.toml",
-        "{workspaceRoot}/configuration/uv.lock",
-        "{workspaceRoot}/configuration/vulture_whitelist.py",
+        "{workspaceRoot}/configuration/python/pyproject.toml",
+        "{workspaceRoot}/configuration/python/uv.lock",
+        "{workspaceRoot}/configuration/python/vulture_whitelist.py",
         "{workspaceRoot}/projects/affirmancy/pyproject.toml",
         "{workspaceRoot}/scripts/**/*.py",
         "workspace-files",
@@ -814,28 +814,28 @@
         }
       ],
       "options": {
-        "command": "uv run --project configuration vulture . configuration/vulture_whitelist.py --min-confidence 80 --exclude '*/projects/*,*/node_modules/*,*/dist/*,*/coverage/*,*/.venv/*,*/.claude/*'",
+        "command": "uv run --project configuration/python vulture . configuration/python/vulture_whitelist.py --min-confidence 80 --exclude '*/projects/*,*/node_modules/*,*/dist/*,*/coverage/*,*/.venv/*,*/.claude/*'",
         "cwd": "{workspaceRoot}"
       }
     },
     "yaml-lint": {
       "cache": true,
-      "description": "Lint the workspace-root YAML no project reaches: the GitHub Actions workflows, composite action, and issue templates, the devcontainer files, the shared cspell and yamllint configuration, and the pnpm workspace file. The generated pnpm-lock.yaml is left out on purpose, and the Helm templates are skipped by the `**/templates/` ignore in yamllint.yaml because their Go template directives are not valid YAML. The installed skills under .agents/ are owned upstream and stay out. configuration/pyproject.toml and configuration/uv.lock are inputs because they pin yamllint itself: without them, a yamllint upgrade replays a cached pass and stops linting. Defined here rather than in the nx.json targetDefaults entry, which is filtered to language tags this project does not carry.",
+      "description": "Lint the workspace-root YAML no project reaches: the GitHub Actions workflows, composite action, and issue templates, the devcontainer files, the shared cspell and yamllint configuration, and the pnpm workspace file. The generated pnpm-lock.yaml is left out on purpose, and the Helm templates are skipped by the `**/templates/` ignore in yamllint.yaml because their Go template directives are not valid YAML. The installed skills under .agents/ are owned upstream and stay out. configuration/python/pyproject.toml and configuration/python/uv.lock are inputs because they pin yamllint itself: without them, a yamllint upgrade replays a cached pass and stops linting. Defined here rather than in the nx.json targetDefaults entry, which is filtered to language tags this project does not carry.",
       "executor": "nx:run-commands",
       "inputs": [
         "{workspaceRoot}/.devcontainer/**/*.{yaml,yml}",
         "{workspaceRoot}/.github/**/*.{yaml,yml}",
-        "{workspaceRoot}/configuration/cspell.config.yaml",
-        "{workspaceRoot}/configuration/pyproject.toml",
-        "{workspaceRoot}/configuration/uv.lock",
-        "{workspaceRoot}/configuration/yamllint.yaml",
+        "{workspaceRoot}/configuration/lint/cspell.config.yaml",
+        "{workspaceRoot}/configuration/lint/yamllint.yaml",
+        "{workspaceRoot}/configuration/python/pyproject.toml",
+        "{workspaceRoot}/configuration/python/uv.lock",
         "{workspaceRoot}/pnpm-workspace.yaml",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "uv run --project configuration yamllint -c configuration/yamllint.yaml .devcontainer .github configuration/cspell.config.yaml configuration/yamllint.yaml pnpm-workspace.yaml",
+        "command": "uv run --project configuration/python yamllint -c configuration/lint/yamllint.yaml .devcontainer .github configuration/lint/cspell.config.yaml configuration/lint/yamllint.yaml pnpm-workspace.yaml",
         "cwd": "{workspaceRoot}"
       }
     }

@@ -10,11 +10,11 @@ import {
   FIXTURE_ROOT,
 } from "../../../testing/programs";
 
-import { BreadthService } from "./breadth.service";
-import { ComponentsService } from "./components.service";
 import { GraphAssemblyService } from "./graph-assembly.service";
-import { GraphDepthService } from "./graph-depth.service";
 import { GraphService } from "./graph.service";
+import { BreadthService } from "./modules/measurement/breadth.service";
+import { GraphDepthService } from "./modules/measurement/graph-depth.service";
+import { ComponentsService } from "./modules/traversal/components.service";
 
 import type { AssembledGraph } from "./graph-assembly.types";
 

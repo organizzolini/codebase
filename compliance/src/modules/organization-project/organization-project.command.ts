@@ -3,7 +3,7 @@ import { Command, CommandRunner } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { PullRequestGithubService } from "../pull-request/pull-request-github.service";
+import { PullRequestGithubService } from "../pull-request/modules/github/pull-request-github.service";
 
 import {
   COMPLIANCE_REPOSITORY,

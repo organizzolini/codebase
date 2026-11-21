@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 
-import { ConfigurationFlagsService } from "./configuration-flags.service";
-import { ConfigurationLoaderService } from "./configuration-loader.service";
-import { ConfigurationResolverService } from "./configuration-resolver.service";
 import { ConfigurationService } from "./configuration.service";
+import { ConfigurationFlagsService } from "./modules/flags/configuration-flags.service";
+import { ConfigurationLoaderService } from "./modules/loader/configuration-loader.service";
+import { ConfigurationResolverService } from "./modules/resolver/configuration-resolver.service";
 
 /**
  * Provides the configuration layer's one public service.

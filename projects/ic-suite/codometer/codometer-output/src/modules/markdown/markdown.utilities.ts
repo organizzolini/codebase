@@ -6,6 +6,7 @@ import type { MeasurementScope, TargetSize } from "./markdown.types";
 import type {
   CodeStatisticsResult,
   CodometerStatisticGroup,
+  CustomStatisticResultInstance,
 } from "@codometer/core";
 
 /**
@@ -65,7 +66,7 @@ export function buildCustomGroup(statistics: CodeStatisticsResult): string {
 }
 
 /**
- * Renders each custom statistic's breaching instances as its own section, one bullet per file and line.
+ * Renders each custom statistic's breaching instances as its own section, one bullet per file and line, or per directory.
  */
 export function buildCustomStatisticInstancesSection(
   statistics: CodeStatisticsResult,
@@ -75,7 +76,7 @@ export function buildCustomStatisticInstancesSection(
     .map((statistic) => {
       const bullets = (statistic.instances ?? []).map(
         (instance) =>
-          `- \`${instance.file}:${instance.line}\` — measured ${instance.measured}`,
+          `- \`${locateInstance(instance)}\` — measured ${instance.measured}`,
       );
 
       return buildGroup(`📝 ${statistic.label}`, bullets);
@@ -381,4 +382,11 @@ export function formatTargetSize(target: TargetSize): string {
   const size = formatBytes(target.bytes);
 
   return target.compression === "none" ? size : `${size} ${target.compression}`;
+}
+
+/** Where one breach sits: a file and its line, or a directory alone. */
+function locateInstance(instance: CustomStatisticResultInstance): string {
+  return instance.line === undefined
+    ? instance.file
+    : `${instance.file}:${String(instance.line)}`;
 }

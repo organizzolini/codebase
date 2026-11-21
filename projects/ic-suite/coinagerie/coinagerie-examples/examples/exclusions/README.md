@@ -8,7 +8,7 @@ count, and `.gitignore` is always honored on top of them.
 ```bash
 cd examples/exclusions/project
 mkdir scratch && echo 'export const leftoverWord = 1;' > scratch/leftover.ts
-coinagerie
+coinagerie --config coinagerie.config.ts
 ```
 
 It exits 0 and prints four words: `harbor`, `high`, `tide`, and `water`.

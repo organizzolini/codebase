@@ -7,7 +7,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { useTemporaryDirectory } from "@codebase/testing";
 
-import viteConfiguration from "../vite.config.ts";
+import viteConfiguration from "../configuration/vite.config.ts";
 
 import type { LibraryOptions, UserConfig } from "vite";
 

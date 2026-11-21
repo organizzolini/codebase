@@ -76,11 +76,11 @@ describe(ConventionalConfigService, () => {
 
   const conventionalConfigFile = path.join(
     workspaceRoot,
-    "configuration/conventional.config.cjs",
+    "configuration/repository/conventional.config.cjs",
   );
   const releaseConfigFile = path.join(
     workspaceRoot,
-    "configuration/release.config.cjs",
+    "configuration/repository/release.config.cjs",
   );
   const settingsFile = path.join(workspaceRoot, ".vscode/settings.json");
   const skillFiles = SYNC_CONVENTIONAL_CONFIG_MARKDOWN_FILES.map((skillFile) =>

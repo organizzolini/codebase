@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import * as bootFailures from "./render/boundary-boot-failures";
-import * as charges from "./render/boundary-charges";
+import * as bootFailures from "./render/boundaries/boundary-boot-failures";
+import * as charges from "./render/boundaries/boundary-charges";
 import { boundaryOutcomeReportService } from "./render/builders";
 
-import type { BoundaryRun } from "./render/boundary-run";
+import type { BoundaryRun } from "./render/boundaries/boundary-run";
 
 /** The charged projects of a run's violations, finding by finding. */
 function chargedProjects(run: BoundaryRun): (readonly string[])[] {

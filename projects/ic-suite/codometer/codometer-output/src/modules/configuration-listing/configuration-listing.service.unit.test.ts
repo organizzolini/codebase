@@ -91,7 +91,7 @@ describe(ConfigurationListingService, () => {
   });
 
   describe("findConfigurationFiles", () => {
-    it("keeps only files named like a configuration, in every supported format", async () => {
+    it("keeps only files named like the configuration it was given", async () => {
       vi.mocked(
         codometerConfigurationService.loadConfigurationFile,
       ).mockResolvedValue({
@@ -103,7 +103,7 @@ describe(ConfigurationListingService, () => {
           "packages/one/codometer.config.ts",
           "packages/two/codometer.config.cjs",
           "packages/three/codometer.config.json",
-          "packages/four/codometer.config.txt",
+          "packages/four/nested/codometer.config.ts",
           "packages/five/index.ts",
         ]),
       );
@@ -116,9 +116,8 @@ describe(ConfigurationListingService, () => {
           })
           .then((discovered) => discovered.files),
       ).resolves.toStrictEqual([
+        "packages/four/nested/codometer.config.ts",
         "packages/one/codometer.config.ts",
-        "packages/three/codometer.config.json",
-        "packages/two/codometer.config.cjs",
       ]);
     });
 

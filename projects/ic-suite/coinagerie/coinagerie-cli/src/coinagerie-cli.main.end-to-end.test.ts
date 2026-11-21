@@ -12,7 +12,7 @@ import { environmentSchema } from "./coinagerie-cli.constants";
 
 const START = "<!-- coinagerie:start -->";
 
-/** The words of the `zero-config` example, one file per language. */
+/** The words of the `minimal-config` example, one file per language. */
 const POLYGLOT_WORDS = [
   "angle",
   "book",
@@ -96,11 +96,11 @@ describe("main end-to-end suite", () => {
   });
 
   it(
-    "prints the glossary of every language and writes nothing when run with no configuration and no flag",
+    "prints the glossary of every language and writes nothing when run with only a minimal configuration",
     async () => {
-      const staged = stage("zero-config");
+      const staged = stage("minimal-config");
 
-      const result = await run(staged, []);
+      const result = await run(staged, ["--config", "coinagerie.config.ts"]);
       const words = [
         ...result.standardOutput.matchAll(/^- \*\*(.+)\*\*:/gmu),
       ].map(([, word]) => word);
@@ -176,7 +176,11 @@ describe("main end-to-end suite", () => {
     async () => {
       const staged = stage("outputs", { "README.md": "# Fixture\n" });
 
-      const result = await run(staged, ["--write"]);
+      const result = await run(staged, [
+        "--config",
+        "coinagerie.config.ts",
+        "--write",
+      ]);
 
       expect(result.exitCode).toBe(0);
       expect(readFileSync(path.join(staged, "README.md"), "utf8")).toContain(
@@ -226,11 +230,15 @@ describe("main end-to-end suite", () => {
       const staged = stage("folding");
 
       const written = await run(staged, [
+        "--config",
+        "coinagerie.config.ts",
         "--output-markdown",
         "WORDS.md",
         "--write",
       ]);
       const checked = await run(staged, [
+        "--config",
+        "coinagerie.config.ts",
         "--output-markdown",
         "WORDS.md",
         "--check",
@@ -252,7 +260,7 @@ describe("main end-to-end suite", () => {
         "scratch/leftover.ts": "export const leftoverWord = 1;\n",
       });
 
-      const result = await run(staged, []);
+      const result = await run(staged, ["--config", "coinagerie.config.ts"]);
 
       expect(result.exitCode).toBe(0);
       expect(result.standardOutput).toContain(
@@ -297,10 +305,31 @@ describe("main end-to-end suite", () => {
     SPAWN_TIMEOUT,
   );
 
+  it(
+    "refuses a run with no --config, though a configuration sits in the working directory",
+    async () => {
+      const staged = stage("minimal-config");
+      const listing = (): string[] =>
+        readdirSync(staged, { recursive: true }).map(String).toSorted();
+      const before = listing();
+
+      for (const args of [[], ["--write"], ["--check"]]) {
+        const result = await run(staged, args);
+
+        expect(result.exitCode).toBe(1);
+        expect(result.standardOutput).toBe("");
+        expect(result.standardError).toContain("--config is required");
+      }
+
+      expect(listing()).toStrictEqual(before);
+    },
+    SPAWN_TIMEOUT * 3,
+  );
+
   it.each([
-    ["both --check and --write", "zero-config", ["--check", "--write"]],
-    ["--check with no destination configured", "zero-config", ["--check"]],
-    ["--write with no destination configured", "zero-config", ["--write"]],
+    ["both --check and --write", "minimal-config", ["--check", "--write"]],
+    ["--check with no destination configured", "minimal-config", ["--check"]],
+    ["--write with no destination configured", "minimal-config", ["--write"]],
   ])(
     "refuses %s",
     async (_case, exampleName, args) => {
@@ -309,7 +338,11 @@ describe("main end-to-end suite", () => {
         readdirSync(staged, { recursive: true }).map(String).toSorted();
       const before = listing();
 
-      const result = await run(staged, args);
+      const result = await run(staged, [
+        "--config",
+        "coinagerie.config.ts",
+        ...args,
+      ]);
 
       expect(result.exitCode).toBe(1);
       expect(listing()).toStrictEqual(before);

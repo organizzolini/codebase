@@ -1,6 +1,6 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 
-import { NightSkyMeasurementsEntity } from "./night-sky-measurements.entities";
+import { NightSkyMeasurementsEntity } from "./modules/options/night-sky-measurements.entities";
 
 // 🧬 Entities
 

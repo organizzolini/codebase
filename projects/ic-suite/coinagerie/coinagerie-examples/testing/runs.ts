@@ -35,17 +35,20 @@ export const CHECK_FAILURE_EXIT_CODES: Record<string, number> = {
   unparsable: 1,
 };
 
+/** The `--config` every guide names; none is searched for. */
+const CONFIG = ["--config", "coinagerie.config.ts"];
+
 /** Every documented run, in the order the tour reads. */
 export const EXAMPLE_RUNS: ExampleRun[] = [
-  { args: [], example: "zero-config", exitCode: 0 },
+  { args: CONFIG, example: "minimal-config", exitCode: 0 },
   {
-    args: [],
+    args: CONFIG,
     example: "exclusions",
     exitCode: 0,
     extraFiles: EXCLUSIONS_SCRATCH_FILES,
   },
-  { args: [], example: "exclusion-patterns", exitCode: 0 },
-  { args: [], example: "folding", exitCode: 0 },
+  { args: CONFIG, example: "exclusion-patterns", exitCode: 0 },
+  { args: CONFIG, example: "folding", exitCode: 0 },
   {
     args: ["--config", "coinagerie.config.ts", "--check"],
     example: "layered-glossaries",
@@ -56,9 +59,9 @@ export const EXAMPLE_RUNS: ExampleRun[] = [
     example: "layered-glossaries",
     exitCode: 0,
   },
-  { args: ["--check"], example: "outputs", exitCode: 0 },
-  { args: ["--write"], example: "outputs", exitCode: 0 },
-  { args: ["--format", "json"], example: "outputs", exitCode: 0 },
+  { args: [...CONFIG, "--check"], example: "outputs", exitCode: 0 },
+  { args: [...CONFIG, "--write"], example: "outputs", exitCode: 0 },
+  { args: [...CONFIG, "--format", "json"], example: "outputs", exitCode: 0 },
   ...Object.entries(CHECK_FAILURE_EXIT_CODES).map(
     ([name, exitCode]): ExampleRun => ({
       args: ["--config", `${name}.config.ts`, "--check"],
@@ -71,4 +74,5 @@ export const EXAMPLE_RUNS: ExampleRun[] = [
     example: "check-failures",
     exitCode: 1,
   },
+  { args: [], example: "minimal-config", exitCode: 1 },
 ];
