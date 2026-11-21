@@ -43,7 +43,7 @@ export interface CalendarViewMenuProperties {
 // 🧩 Component
 
 /**
- * Renders the View menu: how the calendar looks, its view arrangement, symbol drawing, and crowded-day merging; coloring is elsewhere.
+ * Renders the Display menu: how the calendar looks, its view arrangement, symbol drawing, and crowded-day merging; coloring is elsewhere.
  */
 export function CalendarViewMenu(
   properties: Readonly<CalendarViewMenuProperties>,
@@ -73,19 +73,19 @@ export function CalendarViewMenu(
       className={className}
       data-testid="calendar-view-menu"
     >
-      <ButtonGroup aria-label="View menu">
+      <ButtonGroup aria-label="Display menu">
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
               <Button
-                aria-label="View options"
+                aria-label="Display options"
                 size="sm"
                 variant="outline"
               />
             }
           >
             <Eye aria-hidden="true" />
-            View
+            Display
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="start"

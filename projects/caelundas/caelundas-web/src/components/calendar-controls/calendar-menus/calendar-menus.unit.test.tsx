@@ -35,6 +35,6 @@ describe(CalendarMenus, () => {
       screen
         .getAllByRole("button", { name: /options$/u })
         .map((button) => button.getAttribute("aria-label")),
-    ).toStrictEqual(["View options", "Color options", "Sky options"]);
+    ).toStrictEqual(["Display options", "Color options", "Sky options"]);
   });
 });

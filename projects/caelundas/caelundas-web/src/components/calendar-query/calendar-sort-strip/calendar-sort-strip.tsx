@@ -3,26 +3,23 @@ import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import {
   Button,
   ButtonGroup,
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@codebase/presentation";
 
+import { QueryCascader } from "../query-cascader/query-cascader";
+
 import {
-  ITEM_CLASS_NAME,
   SORT_OPTIONS,
   STRIP_CLASS_NAME,
   TITLE,
 } from "./calendar-sort-strip.constants";
 import {
+  createSortItems,
   flipSortDirection,
-  pickSortKey,
+  toSort,
+  toSortValue,
 } from "./calendar-sort-strip.utilities";
 
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
@@ -44,7 +41,7 @@ export interface CalendarSortStripProperties {
 // 🧩 Component
 
 /**
- * Renders, for the timeline, the Sort button, which opens a searchable list of what to order groups by, joined to a chip that names the sort and flips its direction.
+ * Renders, for the timeline, the Sort button, which opens a searchable list of what to order groups by, each key with its two directions beneath it, joined to a chip that names the sort and flips its direction.
  */
 export function CalendarSortStrip(
   properties: Readonly<CalendarSortStripProperties>,
@@ -54,6 +51,7 @@ export function CalendarSortStrip(
   // 🪝 Hooks
 
   // 🏗 Setup
+  const items = createSortItems();
   const active = SORT_OPTIONS.find((option) => option.key === sort?.key);
 
   // 💪 Handlers
@@ -92,37 +90,14 @@ export function CalendarSortStrip(
             aria-label="Sort by"
             className="w-72 max-w-[90vw] p-0"
           >
-            <Command>
-              <CommandInput placeholder="Sort by" />
-              <CommandList>
-                <CommandEmpty>Nothing to sort by.</CommandEmpty>
-                <CommandGroup>
-                  {SORT_OPTIONS.map((option) => (
-                    <CommandItem
-                      key={option.key}
-                      className={ITEM_CLASS_NAME}
-                      keywords={[option.description]}
-                      onSelect={() => {
-                        onSortChange(pickSortKey(sort, option.key));
-                      }}
-                      value={option.label}
-                    >
-                      <span className="flex min-w-0 flex-col">
-                        <span>{option.label}</span>
-                        <span className="text-muted-foreground truncate text-xs">
-                          {option.description}
-                        </span>
-                      </span>
-                      {sort?.key === option.key ? (
-                        <span className="text-muted-foreground ms-auto text-xs">
-                          Selected
-                        </span>
-                      ) : null}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
+            <QueryCascader
+              items={items}
+              onValueChange={(next) => {
+                onSortChange(toSort(next));
+              }}
+              placeholder="Sort by"
+              value={toSortValue(sort)}
+            />
           </PopoverContent>
         </Popover>
         {sort !== undefined && active !== undefined ? (

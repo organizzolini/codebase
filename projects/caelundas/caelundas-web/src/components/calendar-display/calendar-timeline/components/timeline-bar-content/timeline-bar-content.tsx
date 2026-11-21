@@ -74,7 +74,7 @@ export function TimelineBarContent(
   } else {
     content = (
       <CalendarEventChip
-        className="min-w-0 font-medium"
+        className="sticky start-1.5 end-1.5 min-w-0 max-w-full font-medium"
         event={record}
       />
     );

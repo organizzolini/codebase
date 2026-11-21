@@ -1,7 +1,6 @@
 import { ButtonGroup, Filters, useMediaQuery } from "@codebase/presentation";
 
 import { useFilterQuery } from "../../../hooks/use-filter-query/use-filter-query";
-import { PresetPicker } from "../preset-picker/preset-picker";
 
 import {
   EDITORS,
@@ -60,7 +59,7 @@ export function CalendarFilters(
 
   // 🪝 Hooks
   const isTablet = useMediaQuery(TABLET_QUERY);
-  const { handlePresetSelect, handleQueryChange, query } = useFilterQuery(
+  const { handleQueryChange, query } = useFilterQuery(
     filter,
     presets,
     onFilterChange,
@@ -91,11 +90,6 @@ export function CalendarFilters(
             )}
           >
             <div className="flex flex-col gap-3">
-              <PresetPicker
-                onSelect={handlePresetSelect}
-                presets={presets}
-                query={query}
-              />
               <Filters<EventFilterValue>
                 advancedMode="inline"
                 editors={EDITORS}

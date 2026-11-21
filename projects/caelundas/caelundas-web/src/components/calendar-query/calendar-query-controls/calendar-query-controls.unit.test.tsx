@@ -35,7 +35,7 @@ describe(CalendarQueryControls, () => {
     );
   });
 
-  it("draws Group, Sort, then Filter in the timeline", () => {
+  it("draws View, Group, Sort, then Filter in the timeline", () => {
     render(
       <CalendarQueryControls
         facets={FACETS}
@@ -54,7 +54,7 @@ describe(CalendarQueryControls, () => {
       .getAllByRole("group")
       .map((group) => group.getAttribute("aria-label"));
 
-    expect(names).toStrictEqual(["Group", "Sort", "Filter"]);
+    expect(names).toStrictEqual(["Saved view", "Group", "Sort", "Filter"]);
   });
 
   it("leaves Group out of a view that has no groups", () => {

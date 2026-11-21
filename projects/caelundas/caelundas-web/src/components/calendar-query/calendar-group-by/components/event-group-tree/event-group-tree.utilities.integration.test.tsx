@@ -17,18 +17,6 @@ async function findAgendaHeadings(level: number): Promise<string[]> {
 }
 
 /**
- * Opens the View menu and finds its Group by submenu, which names the
- * grouping.
- */
-async function findGroupBy(): Promise<HTMLElement> {
-  fireEvent.click(
-    within(await findToolbar()).getByRole("button", { name: /^View options/u }),
-  );
-
-  return screen.findByText(/^Group by: /u);
-}
-
-/**
  * The agenda's address for a day grouped by levels, with the grouping as a JSON search parameter.
  */
 function groupedAgendaLink(date: string, grouping: unknown): string {
@@ -36,12 +24,27 @@ function groupedAgendaLink(date: string, grouping: unknown): string {
 }
 
 /**
- * Opens the Group by submenu of the View menu.
+ * Opens the Group menu, a nested checklist of what to group by.
  */
 async function openGroupBy(): Promise<HTMLElement> {
-  fireEvent.click(await findGroupBy());
+  fireEvent.click(
+    within(
+      await within(await findToolbar()).findByRole("group", { name: "Group" }),
+    ).getByRole("button", { name: "Group" }),
+  );
 
-  return screen.findByTestId("calendar-group-by");
+  return screen.findByTestId("query-cascader");
+}
+
+/**
+ * The Group strip's text: its button, then one chip per level of the grouping.
+ */
+async function readGrouping(): Promise<string> {
+  const strip = await within(await findToolbar()).findByRole("group", {
+    name: "Group",
+  });
+
+  return strip.textContent;
 }
 
 // Tested through the `/` route, as the page uses it; each test needs over 5 seconds on a loaded CI runner.
@@ -51,20 +54,14 @@ describe("event grouping", () => {
   it("groups the agenda by type unless told otherwise", async () => {
     await renderCalendarRoute("/?view=agenda&date=2026-03-04");
 
-    const groupBy = await findGroupBy();
-
-    expect(groupBy.textContent).toBe("Group by: Type");
+    await expect(readGrouping()).resolves.toBe("GroupType");
   });
 
   it("reads the events again with the grouping picked", async () => {
     await renderCalendarRoute("/?view=agenda&date=2026-03-04");
     const api = readServedApi();
 
-    fireEvent.click(
-      within(await openGroupBy()).getByRole("button", {
-        name: "Add sub-group",
-      }),
-    );
+    fireEvent.click(within(await openGroupBy()).getByText("Element"));
 
     await waitFor(() => {
       expect(api.requests.events.at(-1)?.grouping?.levels).toHaveLength(2);
@@ -75,10 +72,8 @@ describe("event grouping", () => {
       field: "tag:tag-element",
     });
 
-    await waitFor(() => {
-      expect(screen.getByText(/^Group by: /u).textContent).toBe(
-        "Group by: Type, Element",
-      );
+    await waitFor(async () => {
+      await expect(readGrouping()).resolves.toBe("GroupTypeElement");
     });
   });
 
@@ -145,14 +140,7 @@ describe("event grouping", () => {
       ]),
     );
 
-    const popover = await openGroupBy();
-
-    expect(
-      within(popover).getByRole("button", { name: "Group 1 by" }).textContent,
-    ).toContain("Planet");
-    expect(
-      within(popover).getByRole("button", { name: "Group 2 tags" }).textContent,
-    ).toBe("Level 2");
+    await expect(readGrouping()).resolves.toBe("GroupPlanetType");
     await expect(findAgendaHeadings(4)).resolves.toContain(
       "Major Aspect 1 event",
     );
@@ -162,11 +150,11 @@ describe("event grouping", () => {
     await renderCalendarRoute("/?view=agenda&date=2026-03-04");
 
     fireEvent.click(
-      within(await openGroupBy()).getByRole("button", {
-        name: "Group 1 by",
+      within(await findToolbar()).getByRole("button", {
+        name: "Stop grouping by Type",
       }),
     );
-    fireEvent.click(await screen.findByRole("option", { name: /^Month/u }));
+    fireEvent.click(within(await openGroupBy()).getByText("Month"));
 
     await expect(findAgendaHeadings(3)).resolves.toStrictEqual([
       "February 2026 1 event",
@@ -174,26 +162,24 @@ describe("event grouping", () => {
     ]);
 
     fireEvent.click(
-      within(screen.getByTestId("calendar-group-by")).getByRole("button", {
-        name: "Remove group 1",
+      within(await findToolbar()).getByRole("button", {
+        name: "Stop grouping by Month",
       }),
     );
 
-    await waitFor(() => {
-      expect(screen.getByText(/^Group by: /u).textContent).toBe(
-        "Group by: none",
-      );
+    await waitFor(async () => {
+      await expect(readGrouping()).resolves.toBe("Group");
     });
   });
 
   it.each([
-    { expected: "Group by: Type", group: "not-a-grouping" },
+    { expected: "GroupType", group: "not-a-grouping" },
     {
-      expected: "Group by: Month",
+      expected: "GroupMonth",
       group: [{ field: "tag:tag-moon" }, { field: "month" }],
     },
     {
-      expected: "Group by: Type, Month",
+      expected: "GroupTypeMonth",
       group: [
         { depth: 0, field: "tag:tag-type" },
         { field: 7 },
@@ -201,7 +187,7 @@ describe("event grouping", () => {
       ],
     },
     {
-      expected: "Group by: Element, Month, Planet",
+      expected: "GroupElementMonthPlanet",
       group: [
         { field: "tag:tag-element" },
         { field: "month" },
@@ -216,9 +202,7 @@ describe("event grouping", () => {
         `/?view=agenda&date=2026-03-04&group=${encodeURIComponent(JSON.stringify(group))}`,
       );
 
-      const groupBy = await findGroupBy();
-
-      expect(groupBy.textContent).toBe(expected);
+      await expect(readGrouping()).resolves.toBe(expected);
     },
   );
 
@@ -235,23 +219,16 @@ describe("event grouping", () => {
       screen.findByTestId("calendar-timeline"),
     ).resolves.toBeDefined();
 
-    const groupBy = await findGroupBy();
-
-    expect(groupBy.textContent).toBe("Group by: Month");
+    await expect(readGrouping()).resolves.toBe("GroupMonth");
   });
 
   it("offers grouping only in the views that group", async () => {
     await renderCalendarRoute("/?view=month&date=2026-03-04");
 
-    fireEvent.click(
-      within(await findToolbar()).getByRole("button", {
-        name: /^View options/u,
-      }),
-    );
-    await screen.findByRole("menuitemcheckbox", {
-      name: "Group similar events",
-    });
+    await findToolbar();
 
-    expect(screen.queryByText(/^Group by: /u)).toBeNull();
+    expect(
+      within(await findToolbar()).queryByRole("group", { name: "Group" }),
+    ).toBeNull();
   });
 });

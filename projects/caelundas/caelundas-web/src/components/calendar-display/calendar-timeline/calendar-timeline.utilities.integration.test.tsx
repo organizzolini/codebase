@@ -118,7 +118,7 @@ describe("calendar timeline", () => {
 
     fireEvent.click(
       within(await findToolbar()).getByRole("button", {
-        name: /^View options/u,
+        name: /^Display options/u,
       }),
     );
     fireEvent.click(await screen.findByText("Scale"));

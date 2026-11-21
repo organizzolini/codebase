@@ -39,15 +39,15 @@ describe(CalendarViewMenu, () => {
   it("reads View, with no arrow", () => {
     renderMenu();
 
-    const trigger = screen.getByRole("button", { name: "View options" });
+    const trigger = screen.getByRole("button", { name: "Display options" });
 
-    expect(trigger.textContent).toBe("View");
+    expect(trigger.textContent).toBe("Display");
     expect(trigger.querySelectorAll("svg")).toHaveLength(1);
   });
 
   it("has no presets or colors, which belong elsewhere", async () => {
     renderMenu();
-    fireEvent.click(screen.getByRole("button", { name: "View options" }));
+    fireEvent.click(screen.getByRole("button", { name: "Display options" }));
     await screen.findByRole("menuitemcheckbox", {
       name: "Group similar events",
     });
@@ -59,7 +59,7 @@ describe(CalendarViewMenu, () => {
   it("turns merging off from the menu", async () => {
     const { onClustersChange } = renderMenu();
 
-    fireEvent.click(screen.getByRole("button", { name: "View options" }));
+    fireEvent.click(screen.getByRole("button", { name: "Display options" }));
     fireEvent.click(
       await screen.findByRole("menuitemcheckbox", {
         name: "Group similar events",
@@ -73,7 +73,7 @@ describe(CalendarViewMenu, () => {
     const onSymbolsChange = vi.fn<(symbols: "emojis" | "glyphs") => void>();
 
     renderMenu({ onSymbolsChange });
-    fireEvent.click(screen.getByRole("button", { name: "View options" }));
+    fireEvent.click(screen.getByRole("button", { name: "Display options" }));
 
     const glyphs = await screen.findByRole("menuitemradio", { name: "Glyphs" });
 

@@ -437,7 +437,7 @@ describe("index", () => {
     expect(within(toolbar).queryByRole("toolbar")).toBeNull();
   });
 
-  it("turns the colors off from the Color menu and the grouping of crowded days from the View menu", async () => {
+  it("turns the colors off from the Color menu and the grouping of crowded days from the Display menu", async () => {
     await renderCalendarRoute("/?date=2026-03-01");
     await screen.findByRole("grid", { name: "March 2026" });
 
@@ -445,9 +445,9 @@ describe("index", () => {
 
     for (const [menu, role, name] of [
       ["Color options", "switch", "Color events"],
-      ["View options", "menuitemcheckbox", "Group similar events"],
+      ["Display options", "menuitemcheckbox", "Group similar events"],
       ["Color options", "switch", "Color events"],
-      ["View options", "menuitemcheckbox", "Group similar events"],
+      ["Display options", "menuitemcheckbox", "Group similar events"],
     ] as const) {
       fireEvent.click(screen.getByRole("button", { name: menu }));
       fireEvent.click(await screen.findByRole(role, { name }));
@@ -473,16 +473,16 @@ describe("index", () => {
     }
   });
 
-  it("switches the symbols to emojis and back from the View menu", async () => {
+  it("switches the symbols to emojis and back from the Display menu", async () => {
     await renderCalendarRoute("/?date=2026-03-01");
     await screen.findByRole("heading", { level: 1 });
 
     for (const name of ["Emojis", "Glyphs"]) {
-      fireEvent.click(screen.getByRole("button", { name: "View options" }));
+      fireEvent.click(screen.getByRole("button", { name: "Display options" }));
       fireEvent.click(await screen.findByRole("menuitemradio", { name }));
 
       // The link now holds the pick, and the menu reads it back.
-      fireEvent.click(screen.getByRole("button", { name: "View options" }));
+      fireEvent.click(screen.getByRole("button", { name: "Display options" }));
       await waitFor(() => {
         expect(
           screen

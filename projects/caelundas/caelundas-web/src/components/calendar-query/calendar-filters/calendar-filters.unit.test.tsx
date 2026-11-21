@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { CalendarFilters } from "./calendar-filters";
@@ -57,47 +57,6 @@ describe(CalendarFilters, () => {
       id: "planet-sign-events",
       name: "Planet-sign events",
     };
-
-    it("offers the presets at the top of the filter panel", async () => {
-      render(
-        <CalendarFilters
-          fields={[]}
-          filter={PRESET.filter}
-          onFilterChange={vi.fn<(filter: unknown) => void>()}
-          presets={[PRESET]}
-        />,
-      );
-      fireEvent.click(screen.getByRole("button", { name: /^Filter/u }));
-
-      const picker = await screen.findByRole("combobox", {
-        name: "Preset",
-      });
-
-      expect(picker.textContent).toContain("Planet-sign events");
-    });
-
-    it("applies a preset picked in the filter panel", async () => {
-      const onFilterChange = vi.fn<(filter: unknown) => void>();
-
-      render(
-        <CalendarFilters
-          fields={[]}
-          filter={{ ...PRESET.filter, rules: [] }}
-          onFilterChange={onFilterChange}
-          presets={[PRESET]}
-        />,
-      );
-      fireEvent.click(screen.getByRole("button", { name: /^Filter/u }));
-      fireEvent.click(await screen.findByRole("combobox", { name: "Preset" }));
-      fireEvent.keyDown(
-        await screen.findByRole("option", { name: "Planet-sign events" }),
-        {
-          key: "Enter",
-        },
-      );
-
-      expect(onFilterChange).toHaveBeenCalledWith(PRESET.filter);
-    });
 
     it("goes back to the default preset when the link's filter is dropped", () => {
       const properties = {

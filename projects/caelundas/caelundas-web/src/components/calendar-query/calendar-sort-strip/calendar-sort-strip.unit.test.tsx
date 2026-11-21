@@ -76,23 +76,24 @@ describe(CalendarSortStrip, () => {
     });
   });
 
-  it("sorts by the key picked from the list, ascending", async () => {
+  it("sorts by the direction picked beneath a key", async () => {
     const { onSortChange } = renderStrip(NO_SORT);
 
     fireEvent.click(screen.getByRole("button", { name: "Sort" }));
     fireEvent.click(await screen.findByText("Name"));
+    fireEvent.click(await screen.findByText("Descending"));
 
     expect(onSortChange).toHaveBeenCalledWith({
-      direction: "asc",
+      direction: "desc",
       key: "name",
     });
   });
 
-  it("clears the sort when its own key is picked again", async () => {
+  it("clears the sort with the default order", async () => {
     const { onSortChange } = renderStrip({ direction: "desc", key: "name" });
 
     fireEvent.click(screen.getByRole("button", { name: "Sort" }));
-    fireEvent.click(await screen.findByRole("option", { name: /^Name/u }));
+    fireEvent.click(await screen.findByText("Default order"));
 
     expect(onSortChange).toHaveBeenCalledWith(undefined);
   });
