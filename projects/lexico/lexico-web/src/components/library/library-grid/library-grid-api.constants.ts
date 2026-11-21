@@ -2,6 +2,7 @@ import * as z from "zod/mini";
 
 import {
   AuthorEra,
+  LibraryGroupField,
   LibrarySortDirection,
   LibrarySortField,
 } from "../../../graphql/generated/operations";
@@ -47,11 +48,17 @@ export const libraryFilterShape = {
 /** Validates the filters alone, dropping each bad one. */
 export const libraryFilterSchema = z.object(libraryFilterShape);
 
+/** One sort the URL carries: an attribute and its direction. */
+const librarySortEntrySchema = z.object({
+  direction: z.enum(LibrarySortDirection),
+  field: z.enum(LibrarySortField),
+});
+
 /** Validates the search parameters the library URL carries; a bad value falls back to its default. */
 export const librarySearchSchema = z.object({
   ...libraryFilterShape,
-  direction: z.catch(
-    z.optional(z.enum(LibrarySortDirection)),
+  group: z.catch(
+    z.optional(z.array(z.enum(LibraryGroupField)).check(z.minLength(1))),
     (): undefined => undefined,
   ),
   limit: z.catch(
@@ -80,7 +87,7 @@ export const librarySearchSchema = z.object({
     (): undefined => undefined,
   ),
   sort: z.catch(
-    z.optional(z.enum(LibrarySortField)),
+    z.optional(z.array(librarySortEntrySchema).check(z.minLength(1))),
     (): undefined => undefined,
   ),
 });
@@ -88,7 +95,7 @@ export const librarySearchSchema = z.object({
 /** Validates what getLibrary is called with. */
 export const getLibraryInputSchema = z.object({
   ...libraryFilterShape,
-  direction: librarySearchSchema.shape.direction,
+  group: librarySearchSchema.shape.group,
   limit: librarySearchSchema.shape.limit,
   page: z.int().check(z.positive()),
   search: z.string(),

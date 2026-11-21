@@ -14,6 +14,7 @@ function renderPaging(
     onPage: vi.fn<LibraryPagingProperties["onPage"]>(),
     page: 2,
     pageCount: 4,
+    totalCount: 90,
     ...overrides,
   };
   render(<LibraryPaging {...properties} />);
@@ -21,6 +22,37 @@ function renderPaging(
 }
 
 describe(LibraryPaging, () => {
+  it("shows the range of authors on the page out of the total", () => {
+    renderPaging();
+
+    expect(screen.getByText("26 to 50 of 90")).toBeDefined();
+  });
+
+  it("steps to the previous and next page", () => {
+    const { onPage } = renderPaging();
+
+    fireEvent.click(screen.getByRole("button", { name: "Previous page" }));
+    fireEvent.click(screen.getByRole("button", { name: "Next page" }));
+
+    expect(onPage).toHaveBeenNthCalledWith(1, 1);
+    expect(onPage).toHaveBeenNthCalledWith(2, 3);
+  });
+
+  it("disables the step beyond either end", () => {
+    renderPaging({ page: 1, pageCount: 1 });
+
+    expect(
+      screen
+        .getByRole("button", { name: "Previous page" })
+        .hasAttribute("disabled"),
+    ).toBe(true);
+    expect(
+      screen
+        .getByRole("button", { name: "Next page" })
+        .hasAttribute("disabled"),
+    ).toBe(true);
+  });
+
   it("applies its class name", () => {
     render(
       <LibraryPaging
@@ -30,6 +62,7 @@ describe(LibraryPaging, () => {
         onPage={vi.fn<LibraryPagingProperties["onPage"]>()}
         page={1}
         pageCount={1}
+        totalCount={1}
       />,
     );
 

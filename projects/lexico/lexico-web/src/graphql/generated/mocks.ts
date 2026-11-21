@@ -287,6 +287,11 @@ export type LibraryFilters = {
   wordCount?: InputMaybe<LibraryRange>;
 };
 
+/** An attribute the library's authors are grouped by. */
+export enum LibraryGroupField {
+  Era = 'ERA'
+}
+
 export type LibraryMatch = {
   __typename?: 'LibraryMatch';
   /** Offset just past the match. */
@@ -580,10 +585,11 @@ export type QueryLexemesArgs = {
 
 export type QueryLibraryArgs = {
   filters?: InputMaybe<LibraryFilters>;
+  group?: InputMaybe<Array<LibraryGroupField>>;
   page?: InputMaybe<Scalars['Int']['input']>;
   pageSize?: InputMaybe<Scalars['Int']['input']>;
   search?: InputMaybe<Scalars['String']['input']>;
-  sort?: InputMaybe<LibrarySort>;
+  sort?: InputMaybe<Array<LibrarySort>>;
 };
 
 
@@ -598,10 +604,11 @@ export type QueryLibraryChildrenArgs = {
 export type QueryLibraryWorksArgs = {
   authorId: Scalars['ID']['input'];
   filters?: InputMaybe<LibraryFilters>;
+  group?: InputMaybe<Array<LibraryGroupField>>;
   page?: InputMaybe<Scalars['Int']['input']>;
   pageSize?: InputMaybe<Scalars['Int']['input']>;
   search?: InputMaybe<Scalars['String']['input']>;
-  sort?: InputMaybe<LibrarySort>;
+  sort?: InputMaybe<Array<LibrarySort>>;
 };
 
 
@@ -1023,7 +1030,7 @@ export type LibraryWorksQueryVariables = Exact<{
   authorId: string | number;
   search?: string | null | undefined;
   filters?: Schema.LibraryFilters | null | undefined;
-  sort?: Schema.LibrarySort | null | undefined;
+  sort?: Array<Schema.LibrarySort> | Schema.LibrarySort | null | undefined;
   page?: number | null | undefined;
   pageSize?: number | null | undefined;
 }>;
@@ -1036,7 +1043,8 @@ export type LibraryTextRowFragment = { childCount: number, matches: Array<{ fiel
 export type LibraryQueryVariables = Exact<{
   search?: string | null | undefined;
   filters?: Schema.LibraryFilters | null | undefined;
-  sort?: Schema.LibrarySort | null | undefined;
+  sort?: Array<Schema.LibrarySort> | Schema.LibrarySort | null | undefined;
+  group?: Array<Schema.LibraryGroupField> | Schema.LibraryGroupField | null | undefined;
   page?: number | null | undefined;
   pageSize?: number | null | undefined;
 }>;
@@ -1203,7 +1211,7 @@ export const mockLibraryWorksQuery = (resolver: GraphQLResponseResolver<LibraryW
  * @example
  * mockLibraryQuery(
  *   ({ query, variables }) => {
- *     const { search, filters, sort, page, pageSize } = variables;
+ *     const { search, filters, sort, group, page, pageSize } = variables;
  *     return HttpResponse.json({
  *       data: { library }
  *     })

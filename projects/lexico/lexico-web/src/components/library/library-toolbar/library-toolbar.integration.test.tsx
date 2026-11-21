@@ -1,6 +1,6 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { HttpResponse } from "msw";
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { graphqlMockServer } from "@codebase/interface/testing";
 import { renderRoute } from "@codebase/testing/react";
@@ -46,7 +46,24 @@ async function settle(): Promise<void> {
   });
 }
 
+/** The URL's `sort` value for these attributes and directions, in order. */
+function sortParameter(
+  sorts: [LibrarySortField, LibrarySortDirection][],
+): string {
+  return encodeURIComponent(
+    JSON.stringify(sorts.map(([field, direction]) => ({ direction, field }))),
+  );
+}
+
 describe("library toolbar", () => {
+  // jsdom has no Web Animations, which a closing popover asks about.
+  beforeAll(() => {
+    Object.defineProperty(Element.prototype, "getAnimations", {
+      configurable: true,
+      value: (): Animation[] => [],
+    });
+  });
+
   beforeEach(() => {
     CALLS.length = 0;
     graphqlMockServer.use(
@@ -79,6 +96,10 @@ describe("library toolbar", () => {
         });
       }),
     );
+  });
+
+  afterAll(() => {
+    Reflect.deleteProperty(Element.prototype, "getAnimations");
   });
 
   it("puts the search box, Filter, Sort, and Page on one row", async () => {
@@ -227,11 +248,10 @@ describe("library toolbar", () => {
   });
 
   it("restores every chip from the URL", async () => {
-    const url =
-      "/library?search=vergil&eras=%5B%22CLASSICAL%22%5D&provinces=%5B%22Dacia%22%5D&wordCountMinimum=100&sort=AUTHOR_NAME&direction=DESC";
+    const url = `/library?search=vergil&eras=%5B%22CLASSICAL%22%5D&provinces=%5B%22Dacia%22%5D&wordCountMinimum=100&sort=${sortParameter([[LibrarySortField.AuthorName, LibrarySortDirection.Desc]])}`;
     await renderRoute(getRouter(), url);
 
-    await screen.findByText("50 authors");
+    await screen.findByText("1 to 25 of 50");
 
     expect(
       screen.getByRole("group", { name: /Era is any of Classical/u }),
@@ -245,15 +265,19 @@ describe("library toolbar", () => {
       screen.getByRole("group", { name: /Word count is between/u }),
     ).toBeDefined();
     expect(
-      screen.getByRole("group", { name: "Sort by Author name, descending" }),
+      screen.getByRole("button", {
+        name: /Sort by Author name, descending/u,
+      }),
     ).toBeDefined();
     expect(CALLS.at(-1)).toMatchObject({
       filters: { eras: [AuthorEra.Classical], provinces: ["Dacia"] },
       search: "vergil",
-      sort: {
-        direction: LibrarySortDirection.Desc,
-        field: LibrarySortField.AuthorName,
-      },
+      sort: [
+        {
+          direction: LibrarySortDirection.Desc,
+          field: LibrarySortField.AuthorName,
+        },
+      ],
     });
   });
 
@@ -315,7 +339,7 @@ describe("library toolbar", () => {
 
     fireEvent.click(await screen.findByRole("button", { name: "Sort" }));
 
-    const items = await screen.findAllByRole("menuitemradio");
+    const items = await screen.findAllByRole("option");
 
     expect(items.map((item) => item.textContent)).toStrictEqual(
       LIBRARY_SORT_OPTIONS.map(({ label }) => label),
@@ -341,7 +365,7 @@ describe("library toolbar", () => {
     });
     await settle();
     fireEvent.click(await screen.findByRole("button", { name: "Sort" }));
-    const sortRows = await screen.findAllByRole("menuitemradio");
+    const sortRows = await screen.findAllByRole("option");
     const sortIcons = new Map(
       sortRows.map((item) => [item.textContent, iconOf(item)]),
     );
@@ -367,14 +391,16 @@ describe("library toolbar", () => {
 
     fireEvent.click(await screen.findByRole("button", { name: "Sort" }));
     fireEvent.click(
-      await screen.findByRole("menuitemradio", { name: "Text line count" }),
+      await screen.findByRole("option", { name: "Text line count" }),
     );
 
     await waitFor(() =>
-      expect(CALLS.at(-1)?.sort).toStrictEqual({
-        direction: LibrarySortDirection.Asc,
-        field: LibrarySortField.TextLineCount,
-      }),
+      expect(CALLS.at(-1)?.sort).toStrictEqual([
+        {
+          direction: LibrarySortDirection.Asc,
+          field: LibrarySortField.TextLineCount,
+        },
+      ]),
     );
 
     fireEvent.click(
@@ -382,18 +408,26 @@ describe("library toolbar", () => {
     );
 
     await waitFor(() =>
-      expect(CALLS.at(-1)?.sort).toStrictEqual({
-        direction: LibrarySortDirection.Desc,
-        field: LibrarySortField.TextLineCount,
-      }),
+      expect(CALLS.at(-1)?.sort).toStrictEqual([
+        {
+          direction: LibrarySortDirection.Desc,
+          field: LibrarySortField.TextLineCount,
+        },
+      ]),
     );
 
     expect({ ...router.state.location.search }).toStrictEqual({
-      direction: LibrarySortDirection.Desc,
-      sort: LibrarySortField.TextLineCount,
+      sort: [
+        {
+          direction: LibrarySortDirection.Desc,
+          field: LibrarySortField.TextLineCount,
+        },
+      ],
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "Remove sort" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Remove sort by Text line count" }),
+    );
 
     await waitFor(() => expect(CALLS.at(-1)?.sort).toBeNull());
 
@@ -401,22 +435,82 @@ describe("library toolbar", () => {
     expect(screen.queryByTestId("library-sort-chip")).toBeNull();
   });
 
-  it("replaces the sort chip when another attribute is chosen, keeping the direction", async () => {
-    await renderRoute(getRouter(), "/library?sort=AUTHOR_NAME&direction=DESC");
+  it("applies several sorts in the order they were added, each with its own direction", async () => {
+    await renderRoute(getRouter(), "/library");
 
     fireEvent.click(await screen.findByRole("button", { name: "Sort" }));
+    fireEvent.click(await screen.findByRole("option", { name: "Author era" }));
+    await waitFor(() => expect(CALLS.at(-1)?.sort).toHaveLength(1));
+    fireEvent.click(await screen.findByRole("option", { name: "Author name" }));
+
+    await waitFor(() => expect(CALLS.at(-1)?.sort).toHaveLength(2));
+
     fireEvent.click(
-      await screen.findByRole("menuitemradio", { name: "Author era" }),
+      screen.getAllByRole("button", { name: /Switch to descending/u })[1] ??
+        document.body,
     );
 
     await waitFor(() =>
-      expect(CALLS.at(-1)?.sort).toStrictEqual({
-        direction: LibrarySortDirection.Desc,
-        field: LibrarySortField.AuthorEra,
-      }),
+      expect(CALLS.at(-1)?.sort).toStrictEqual([
+        {
+          direction: LibrarySortDirection.Asc,
+          field: LibrarySortField.AuthorEra,
+        },
+        {
+          direction: LibrarySortDirection.Desc,
+          field: LibrarySortField.AuthorName,
+        },
+      ]),
     );
 
-    expect(screen.getAllByTestId("library-sort-chip")).toHaveLength(1);
+    expect(
+      screen
+        .getAllByTestId("library-sort-chip")
+        .map((chip) => chip.textContent),
+    ).toStrictEqual(["Author era", "Author name"]);
+  });
+
+  it("joins the Filter and Sort buttons to their chips in one group each", async () => {
+    await renderRoute(
+      getRouter(),
+      `/library?eras=%5B%22LATE%22%5D&sort=${sortParameter([[LibrarySortField.AuthorEra, LibrarySortDirection.Asc]])}`,
+    );
+
+    const filter = await screen.findByRole("button", { name: /^Filter/u });
+    const sort = screen.getByRole("button", { name: "Sort" });
+
+    expect(
+      filter.parentElement?.querySelector('[data-slot="filter-chip"]'),
+    ).not.toBeNull();
+    expect(
+      sort.parentElement?.querySelector('[data-testid="library-sort-chip"]'),
+    ).not.toBeNull();
+    expect(screen.queryByRole("button", { name: "Reset" })).toBeNull();
+  });
+
+  it("restores a group from the URL, and adds and removes one from the Group menu", async () => {
+    const router = getRouter();
+    await renderRoute(router, "/library?group=%5B%22ERA%22%5D&page=2");
+
+    await waitFor(() => expect(CALLS.at(-1)?.group).toStrictEqual(["ERA"]));
+
+    expect(screen.getByTestId("library-group-segment").textContent).toBe("Era");
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Remove grouping by Era" }),
+    );
+
+    await waitFor(() => expect(CALLS.at(-1)?.group).toBeNull());
+
+    expect(router.state.location.search.group).toBeUndefined();
+    expect(router.state.location.search.page).toBeUndefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "Group" }));
+    fireEvent.click(await screen.findByRole("option", { name: "Era" }));
+
+    await waitFor(() => expect(CALLS.at(-1)?.group).toStrictEqual(["ERA"]));
+
+    expect(router.state.location.search.group).toStrictEqual(["ERA"]);
   });
 
   it("returns to the first page when the sort changes", async () => {
@@ -424,37 +518,17 @@ describe("library toolbar", () => {
     await renderRoute(router, "/library?page=2");
 
     fireEvent.click(await screen.findByRole("button", { name: "Sort" }));
-    fireEvent.click(
-      await screen.findByRole("menuitemradio", { name: "Author name" }),
-    );
+    fireEvent.click(await screen.findByRole("option", { name: "Author name" }));
 
     await waitFor(() => expect(CALLS.at(-1)?.page).toBe(1));
 
     expect(router.state.location.search.page).toBeUndefined();
   });
 
-  it("resets every filter and the sort but keeps the search", async () => {
-    const router = getRouter();
-    await renderRoute(
-      router,
-      "/library?search=ecl&eras=%5B%22LATE%22%5D&sort=AUTHOR_NAME",
-    );
-
-    fireEvent.click(await screen.findByRole("button", { name: "Reset" }));
-
-    await waitFor(() => expect(CALLS.at(-1)?.sort).toBeNull());
-
-    expect(CALLS.at(-1)?.filters?.eras).toBeNull();
-    expect({ ...router.state.location.search }).toStrictEqual({
-      search: "ecl",
-    });
-    expect(screen.queryByRole("button", { name: "Reset" })).toBeNull();
-  });
-
   it("keeps the filters and sort when a new search is submitted", async () => {
     await renderRoute(
       getRouter(),
-      "/library?eras=%5B%22CLASSICAL%22%5D&sort=AUTHOR_NAME",
+      `/library?eras=%5B%22CLASSICAL%22%5D&sort=${sortParameter([[LibrarySortField.AuthorName, LibrarySortDirection.Asc]])}`,
     );
 
     fireEvent.change(await screen.findByRole("searchbox"), {
@@ -465,25 +539,28 @@ describe("library toolbar", () => {
     await waitFor(() => expect(CALLS.at(-1)?.search).toBe("ecl"));
 
     expect(CALLS.at(-1)?.filters?.eras).toStrictEqual([AuthorEra.Classical]);
-    expect(CALLS.at(-1)?.sort?.field).toBe(LibrarySortField.AuthorName);
+    expect([CALLS.at(-1)?.sort ?? []].flat()[0]?.field).toBe(
+      LibrarySortField.AuthorName,
+    );
   });
 
   it("drops invalid filter and sort values to no chips", async () => {
     await renderRoute(
       getRouter(),
-      "/library?eras=%5B%22NOPE%22%5D&sort=BOGUS&direction=UP&lineCountMinimum=abc&provinces=%5B%5D",
+      "/library?eras=%5B%22NOPE%22%5D&sort=BOGUS&lineCountMinimum=abc&provinces=%5B%5D",
     );
 
-    await screen.findByText("50 authors");
+    await screen.findByText("1 to 25 of 50");
 
     expect(CALLS.at(-1)?.sort).toBeNull();
-    expect(screen.queryByTestId("library-chips")).toBeNull();
+    expect(screen.queryByTestId("library-sort-chip")).toBeNull();
+    expect(screen.queryByTestId("filter-chip")).toBeNull();
   });
 
   it("reaches the toolbar controls and the chips with the keyboard", async () => {
     await renderRoute(
       getRouter(),
-      "/library?eras=%5B%22LATE%22%5D&sort=AUTHOR_NAME",
+      `/library?eras=%5B%22LATE%22%5D&sort=${sortParameter([[LibrarySortField.AuthorName, LibrarySortDirection.Asc]])}`,
     );
 
     const controls = [
@@ -493,8 +570,7 @@ describe("library toolbar", () => {
       screen.getByRole("button", { name: "Page" }),
       screen.getByRole("button", { name: "Era filter options" }),
       screen.getByRole("button", { name: /Switch to descending/u }),
-      screen.getByRole("button", { name: "Remove sort" }),
-      screen.getByRole("button", { name: "Reset" }),
+      screen.getByRole("button", { name: "Remove sort by Author name" }),
     ];
 
     for (const control of controls) {

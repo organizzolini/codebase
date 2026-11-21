@@ -19,6 +19,8 @@ import type {
   LibraryFilterParameters,
   LibrarySearchParameters,
 } from "../components/library/library-grid/library-grid.types";
+import type { LibrarySortEntry } from "../components/library/library-sort/library-sort.types";
+import type { LibraryGroupField } from "../graphql/generated/operations";
 import type { ReactNode } from "react";
 
 // 🧭 Route
@@ -59,14 +61,14 @@ export const Route = createFileRoute("/library")({
 // 🧩 Component
 
 /**
- * The library page: a toolbar of search, filters, and sort over a masonry grid of authors, with
+ * The library page: a toolbar of search, filters, and sort over a grid of authors, with
  * numbered pages beneath.
  */
 function LibraryPage(): ReactNode {
   // 🪝 Hooks
   const navigate = Route.useNavigate();
   const {
-    direction,
+    group,
     limit = LIBRARY_PAGE_SIZE,
     page = 1,
     search = "",
@@ -80,7 +82,6 @@ function LibraryPage(): ReactNode {
     (value) => value !== undefined,
   );
   const pastEnd = isPastEnd(page, library.totalCount, library.pageCount);
-  const count = `${String(library.totalCount)} ${library.totalCount === 1 ? "author" : "authors"}`;
 
   // 💪 Handlers
   const update = useCallback(
@@ -98,7 +99,7 @@ function LibraryPage(): ReactNode {
   const handleFilters = (next: LibraryFilterParameters): void => {
     void navigate({
       search: (previous) => ({
-        direction: previous.direction,
+        group: previous.group,
         limit: previous.limit,
         search: previous.search,
         sort: previous.sort,
@@ -106,19 +107,16 @@ function LibraryPage(): ReactNode {
       }),
     });
   };
-  const handleReset = (): void => {
-    void navigate({
-      search: (old) => ({ limit: old.limit, search: old.search }),
+  const handleGroups = (nextGroups: LibraryGroupField[]): void => {
+    update({
+      group: nextGroups.length === 0 ? undefined : nextGroups,
+      page: undefined,
     });
   };
-  const handleSort = (
-    nextSort: typeof sort,
-    nextDirection: typeof direction,
-  ): void => {
+  const handleSorts = (nextSorts: LibrarySortEntry[]): void => {
     update({
-      direction: nextSort === undefined ? undefined : nextDirection,
       page: undefined,
-      sort: nextSort,
+      sort: nextSorts.length === 0 ? undefined : nextSorts,
     });
   };
   const handleLimit = (nextLimit: number): void => {
@@ -137,20 +135,21 @@ function LibraryPage(): ReactNode {
     <section className="space-y-6">
       <h1 className="text-3xl font-bold">Library</h1>
       <LibraryToolbar
-        direction={direction}
         facets={facets}
         filters={filters}
+        groups={group}
         limit={limit}
         onFilters={handleFilters}
+        onGroups={handleGroups}
         onLimit={handleLimit}
         onPage={handlePage}
-        onReset={handleReset}
         onSearch={handleSearch}
-        onSort={handleSort}
+        onSorts={handleSorts}
         page={page}
         pageCount={library.pageCount}
         search={search}
-        sort={sort}
+        sorts={sort}
+        totalCount={library.totalCount}
       />
       {library.totalCount === 0 ? (
         <LibraryNoResults
@@ -173,10 +172,10 @@ function LibraryPage(): ReactNode {
         />
       ) : (
         <>
-          <p className="text-sm text-muted-foreground">{count}</p>
           <LibraryGrid
             authors={library.authors}
-            query={{ ...filters, direction, search, sort }}
+            groups={group}
+            query={{ ...filters, search, sort }}
           />
           <LibraryPagination
             onPageChange={handlePage}

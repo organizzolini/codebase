@@ -20,6 +20,7 @@ export async function fetchLibrary(
 ): Promise<LibraryPageResult> {
   const { library } = await queryApi(LibraryDocument, {
     filters: toFilters(input),
+    group: input.group ?? null,
     page: input.page,
     pageSize: input.limit ?? LIBRARY_PAGE_SIZE,
     search: input.search,
@@ -47,11 +48,9 @@ export function toFilters(input: Readonly<GetLibraryInput>): LibraryFilters {
   };
 }
 
-/** The sort the URL names, or null for the API's default order. */
-export function toSort(input: Readonly<GetLibraryInput>): LibrarySort | null {
-  return input.sort === undefined
-    ? null
-    : { direction: orNull(input.direction), field: input.sort };
+/** The sorts the URL names, in order, or null for the API's default order. */
+export function toSort(input: Readonly<GetLibraryInput>): LibrarySort[] | null {
+  return input.sort ?? null;
 }
 
 // 🌎 Public Functions

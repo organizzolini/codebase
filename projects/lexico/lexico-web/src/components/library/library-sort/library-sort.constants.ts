@@ -20,6 +20,7 @@ import {
 
 import { LibrarySortField } from "../../../graphql/generated/operations";
 
+import type { LibraryOption } from "../library-toolbar/library-option-menu.types";
 import type { LibrarySortOption } from "./library-sort.types";
 import type { LucideIcon } from "lucide-react";
 
@@ -114,3 +115,11 @@ export const LIBRARY_SORT_OPTIONS: readonly LibrarySortOption[] = [
 export const LIBRARY_SORT_FIELDS = new Map<string, LibrarySortField>(
   LIBRARY_SORT_OPTIONS.map(({ field }) => [field, field]),
 );
+
+/** The sortable attributes as the checklist menu lists them. */
+export const LIBRARY_SORT_MENU_OPTIONS: readonly LibraryOption[] =
+  LIBRARY_SORT_OPTIONS.map(({ field, icon, label }) => ({
+    icon,
+    label,
+    value: field,
+  }));

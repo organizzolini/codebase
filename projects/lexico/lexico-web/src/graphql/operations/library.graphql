@@ -25,7 +25,8 @@ fragment LibraryTextRow on LibraryText {
 query Library(
   $search: String
   $filters: LibraryFilters
-  $sort: LibrarySort
+  $sort: [LibrarySort!]
+  $group: [LibraryGroupField!]
   $page: Int
   $pageSize: Int
 ) {
@@ -33,6 +34,7 @@ query Library(
     search: $search
     filters: $filters
     sort: $sort
+    group: $group
     page: $page
     pageSize: $pageSize
   ) {

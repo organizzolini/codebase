@@ -3,7 +3,10 @@ import { describe, expect, it, vi } from "vitest";
 
 import { createFilterQuery, createFilterRule } from "@codebase/presentation";
 
-import { AuthorEra } from "../../../graphql/generated/operations";
+import {
+  AuthorEra,
+  LibraryGroupField,
+} from "../../../graphql/generated/operations";
 
 import { LibraryToolbar } from "./library-toolbar";
 import {
@@ -26,14 +29,15 @@ function properties(
     filters: {},
     limit: 25,
     onFilters: vi.fn<LibraryToolbarProperties["onFilters"]>(),
+    onGroups: vi.fn<LibraryToolbarProperties["onGroups"]>(),
     onLimit: vi.fn<LibraryToolbarProperties["onLimit"]>(),
     onPage: vi.fn<LibraryToolbarProperties["onPage"]>(),
-    onReset: vi.fn<LibraryToolbarProperties["onReset"]>(),
     onSearch: vi.fn<LibraryToolbarProperties["onSearch"]>(),
-    onSort: vi.fn<LibraryToolbarProperties["onSort"]>(),
+    onSorts: vi.fn<LibraryToolbarProperties["onSorts"]>(),
     page: 1,
     pageCount: 3,
     search: "",
+    totalCount: 90,
     ...overrides,
   };
 }
@@ -58,22 +62,43 @@ describe(LibraryToolbar, () => {
     expect(screen.getByRole("button", { name: "Page" })).toBeDefined();
   });
 
-  it("shows no chips when nothing is set", () => {
+  it("shows the range of authors on view beside the Page menu", () => {
     render(<LibraryToolbar {...properties()} />);
 
-    expect(screen.queryByTestId("library-chips")).toBeNull();
-    expect(screen.queryByRole("button", { name: "Reset" })).toBeNull();
+    expect(screen.getByText("1 to 25 of 90")).toBeDefined();
   });
 
-  it("counts the active filters on the Filter button", () => {
+  it("shows a Group strip with a segment for each active level", () => {
+    render(
+      <LibraryToolbar {...properties({ groups: [LibraryGroupField.Era] })} />,
+    );
+
+    expect(screen.getByRole("button", { name: "Group" })).toBeDefined();
+    expect(screen.getByTestId("library-group-segment").textContent).toBe("Era");
+  });
+
+  it("shows no chips, no Reset, and no count on Filter when nothing is set", () => {
+    render(<LibraryToolbar {...properties()} />);
+
+    expect(screen.queryByTestId("library-sort-chip")).toBeNull();
+    expect(screen.queryByRole("button", { name: "Reset" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Filter" })).toBeDefined();
+  });
+
+  it("joins an active filter to the Filter button as a chip, with no count or Reset", () => {
     render(
       <LibraryToolbar
         {...properties({ filters: { eras: [AuthorEra.Late] } })}
       />,
     );
 
-    expect(screen.getByTestId("library-chips")).toBeDefined();
-    expect(screen.getByRole("button", { name: "Reset" })).toBeDefined();
+    expect(screen.getByRole("button", { name: "Filter" }).textContent).toBe(
+      "Filter",
+    );
+    expect(screen.queryByRole("button", { name: "Reset" })).toBeNull();
+    expect(
+      screen.getByRole("group", { name: /Era is any of Late/u }),
+    ).toBeDefined();
   });
 
   describe("filter utilities", () => {

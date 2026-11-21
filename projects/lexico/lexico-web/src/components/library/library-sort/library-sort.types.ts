@@ -1,4 +1,7 @@
-import type { LibrarySortField } from "../../../graphql/generated/operations";
+import type {
+  LibrarySortDirection,
+  LibrarySortField,
+} from "../../../graphql/generated/operations";
 import type { LucideIcon } from "lucide-react";
 
 // 🏷️ Types
@@ -7,6 +10,12 @@ import type { LucideIcon } from "lucide-react";
 export interface LibrarySortDescription {
   icon?: LucideIcon | undefined;
   label: string;
+}
+
+/** One active sort: an attribute and the direction it orders in. */
+export interface LibrarySortEntry {
+  direction: LibrarySortDirection;
+  field: LibrarySortField;
 }
 
 /** A sortable attribute's field, wording, and icon. */

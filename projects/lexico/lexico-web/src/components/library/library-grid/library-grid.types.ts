@@ -16,7 +16,7 @@ export type LibraryAuthorRow = LibraryPageResult["authors"][number];
 /** The filters the library URL may carry, apart from search, sort, limit, and page. */
 export type LibraryFilterParameters = Omit<
   LibrarySearchParameters,
-  "direction" | "limit" | "page" | "search" | "sort"
+  "group" | "limit" | "page" | "search" | "sort"
 >;
 
 /** One match range the API reports for a field's value. */

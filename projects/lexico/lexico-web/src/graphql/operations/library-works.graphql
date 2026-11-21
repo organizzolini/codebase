@@ -2,7 +2,7 @@ query LibraryWorks(
   $authorId: ID!
   $search: String
   $filters: LibraryFilters
-  $sort: LibrarySort
+  $sort: [LibrarySort!]
   $page: Int
   $pageSize: Int
 ) {

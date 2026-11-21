@@ -1,24 +1,19 @@
-import { ArrowDownUp } from "lucide-react";
+import { ArrowDown, ArrowDownUp, ArrowUp, X } from "lucide-react";
+import { createElement, Fragment } from "react";
 
-import {
-  Button,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from "@codebase/presentation";
+import { Button } from "@codebase/presentation";
 
 import { LibrarySortDirection } from "../../../graphql/generated/operations";
+import { LibraryOptionMenu } from "../library-toolbar/library-option-menu";
 
 import {
   LIBRARY_SORT_FIELDS,
-  LIBRARY_SORT_OPTIONS,
+  LIBRARY_SORT_MENU_OPTIONS,
 } from "./library-sort.constants";
+import { describeSort, flipSort, toggleSort } from "./library-sort.utilities";
 
 import type { LibrarySortField } from "../../../graphql/generated/operations";
+import type { LibrarySortEntry } from "./library-sort.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -28,31 +23,31 @@ import type { ReactNode } from "react";
  */
 export interface LibrarySortProperties {
   className?: string;
-  direction?: LibrarySortDirection | undefined;
-  onSort: (sort?: LibrarySortField, direction?: LibrarySortDirection) => void;
-  sort?: LibrarySortField | undefined;
+  onSorts: (sorts: LibrarySortEntry[]) => void;
+  /** The active sorts, first being the primary key. */
+  sorts?: readonly LibrarySortEntry[] | undefined;
 }
 
 // 🧩 Component
 
 /**
- * The Sort button and its menu of attributes. The API orders by one attribute, so choosing another replaces it, keeping the direction.
+ * The Sort button with its searchable checklist of attributes, joined to a chip for each active sort in the order they apply. A chip's first button flips its direction and its cross removes it; checking an attribute adds it last.
  */
 export function LibrarySort(
   properties: Readonly<LibrarySortProperties>,
 ): ReactNode {
-  const { className, direction, onSort, sort } = properties;
+  const { className, onSorts, sorts = [] } = properties;
 
   // 🪝 Hooks
 
   // 🏗 Setup
 
   // 💪 Handlers
-  const handleChange = (value: string): void => {
-    onSort(
-      LIBRARY_SORT_FIELDS.get(value),
-      direction ?? LibrarySortDirection.Asc,
-    );
+  const handleFlip = (field: LibrarySortField): void => {
+    onSorts(flipSort(sorts, field));
+  };
+  const handleToggle = (field: LibrarySortField): void => {
+    onSorts(toggleSort(sorts, field));
   };
 
   // ♻️ Lifecycle
@@ -65,38 +60,56 @@ export function LibrarySort(
       className={className}
       data-testid="library-sort"
     >
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          render={
-            <Button
-              type="button"
-              variant="outline"
-            />
+      <LibraryOptionMenu
+        icon={ArrowDownUp}
+        label="Sort"
+        onToggle={(value) => {
+          const field = LIBRARY_SORT_FIELDS.get(value);
+          if (field !== undefined) {
+            handleToggle(field);
           }
-        >
-          <ArrowDownUp aria-hidden="true" />
-          Sort
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuGroup>
-            <DropdownMenuLabel>Sort by</DropdownMenuLabel>
-            <DropdownMenuRadioGroup
-              onValueChange={handleChange}
-              value={sort ?? ""}
-            >
-              {LIBRARY_SORT_OPTIONS.map(({ field, icon: Icon, label }) => (
-                <DropdownMenuRadioItem
-                  key={field}
-                  value={field}
-                >
-                  <Icon aria-hidden="true" />
-                  {label}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+        }}
+        options={LIBRARY_SORT_MENU_OPTIONS}
+        selected={new Set(sorts.map(({ field }) => field))}
+        title="Sort by"
+      >
+        {sorts.map(({ direction, field }) => {
+          const { icon: AttributeIcon, label } = describeSort(field);
+          const isDescending = direction === LibrarySortDirection.Desc;
+          const DirectionIcon = isDescending ? ArrowDown : ArrowUp;
+
+          return (
+            <Fragment key={field}>
+              <Button
+                aria-label={`Sort by ${label}, ${isDescending ? "descending" : "ascending"}. Switch to ${isDescending ? "ascending" : "descending"}`}
+                data-testid="library-sort-chip"
+                onClick={() => {
+                  handleFlip(field);
+                }}
+                type="button"
+                variant="outline"
+              >
+                {AttributeIcon === undefined
+                  ? null
+                  : createElement(AttributeIcon, { "aria-hidden": true })}
+                {label}
+                <DirectionIcon aria-hidden="true" />
+              </Button>
+              <Button
+                aria-label={`Remove sort by ${label}`}
+                onClick={() => {
+                  handleToggle(field);
+                }}
+                size="icon"
+                type="button"
+                variant="outline"
+              >
+                <X aria-hidden="true" />
+              </Button>
+            </Fragment>
+          );
+        })}
+      </LibraryOptionMenu>
     </div>
   );
 }

@@ -298,10 +298,10 @@ describe("library", () => {
     ).toBe("Metamorphoses • …");
   });
 
-  it("shows the total count with numbered pages", async () => {
+  it("shows the range of authors on view with numbered pages", async () => {
     await renderRoute(getRouter(), "/library");
 
-    await expect(screen.findByText("50 authors")).resolves.toBeDefined();
+    await expect(screen.findByText("1 to 25 of 50")).resolves.toBeDefined();
 
     const pages = screen.getByRole("navigation", { name: "Library pages" });
 
@@ -520,7 +520,7 @@ describe("library", () => {
   it("drops an unsupported limit to the default", async () => {
     await renderRoute(getRouter(), "/library?limit=7");
 
-    await screen.findByText("50 authors");
+    await screen.findByText("1 to 25 of 50");
 
     expect(LIMITS.at(-1)).toBe(25);
   });
@@ -598,7 +598,7 @@ describe("library", () => {
   it("drops invalid URL values to their defaults", async () => {
     await renderRoute(getRouter(), "/library?page=abc");
 
-    await screen.findByText("50 authors");
+    await screen.findByText("1 to 25 of 50");
 
     expect(SEARCHES.at(-1)).toStrictEqual({ page: 1, search: "" });
   });
@@ -606,7 +606,7 @@ describe("library", () => {
   it("drops a page below one to the first page", async () => {
     await renderRoute(getRouter(), "/library?page=-3");
 
-    await screen.findByText("50 authors");
+    await screen.findByText("1 to 25 of 50");
 
     expect(SEARCHES.at(-1)).toStrictEqual({ page: 1, search: "" });
   });
@@ -673,7 +673,7 @@ describe("library", () => {
     const router = getRouter();
     await renderRoute(
       router,
-      "/library?eras=%5B%22CLASSICAL%22%5D&sort=AUTHOR_NAME",
+      "/library?eras=%5B%22CLASSICAL%22%5D&sort=%5B%7B%22direction%22%3A%22ASC%22%2C%22field%22%3A%22AUTHOR_NAME%22%7D%5D",
     );
 
     fireEvent.change(await screen.findByRole("searchbox"), {
@@ -684,16 +684,18 @@ describe("library", () => {
     await waitFor(() => expect(CALLS.at(-1)?.search).toBe("ecl"));
 
     expect(CALLS.at(-1)?.filters?.eras).toStrictEqual([AuthorEra.Classical]);
-    expect(CALLS.at(-1)?.sort?.field).toBe(LibrarySortField.AuthorName);
+    expect([CALLS.at(-1)?.sort ?? []].flat()[0]?.field).toBe(
+      LibrarySortField.AuthorName,
+    );
   });
 
   it("drops invalid filter and sort values to their defaults", async () => {
     await renderRoute(
       getRouter(),
-      "/library?eras=%5B%22NOPE%22%5D&sort=BOGUS&direction=UP&lineCountMinimum=abc&provinces=%5B%5D",
+      "/library?eras=%5B%22NOPE%22%5D&sort=BOGUS&lineCountMinimum=abc&provinces=%5B%5D",
     );
 
-    await screen.findByText("50 authors");
+    await screen.findByText("1 to 25 of 50");
 
     expect(CALLS.at(-1)?.sort).toBeNull();
     expect(CALLS.at(-1)?.filters).toStrictEqual({
@@ -739,7 +741,7 @@ describe("library", () => {
   it("reads a numeric search from the URL as text", async () => {
     await renderRoute(getRouter(), "/library?search=70");
 
-    await screen.findByText("1 author");
+    await screen.findByText("1 of 1");
 
     expect(SEARCHES.at(-1)).toStrictEqual({ page: 1, search: "70" });
   });
