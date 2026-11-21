@@ -82,7 +82,6 @@ dist/** linguist-generated
 .agents/skills/github-issues/** linguist-vendored
 .agents/skills/grill-me/** linguist-vendored
 .agents/skills/grilling/** linguist-vendored
-.agents/skills/impeccable/** linguist-vendored
 .agents/skills/link-workspace-packages/** linguist-vendored
 .agents/skills/nx-generate/** linguist-vendored
 .agents/skills/nx-import/** linguist-vendored
@@ -106,7 +105,4 @@ dist/** linguist-generated
 .agents/skills/wayfinder/** linguist-vendored
 .agents/skills/writing-plans/** linguist-vendored
 .agents/skills/writing-skills/** linguist-vendored
-.claude/agents/impeccable-* linguist-vendored
-.github/agents/impeccable-* linguist-vendored
-.github/hooks/impeccable.json linguist-vendored
 # installed-skills-end

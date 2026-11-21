@@ -109,7 +109,6 @@ projectStructure.cache.json
 **/.agents/skills/github-issues/**
 **/.agents/skills/grill-me/**
 **/.agents/skills/grilling/**
-**/.agents/skills/impeccable/**
 **/.agents/skills/link-workspace-packages/**
 **/.agents/skills/nx-generate/**
 **/.agents/skills/nx-import/**
@@ -133,9 +132,6 @@ projectStructure.cache.json
 **/.agents/skills/wayfinder/**
 **/.agents/skills/writing-plans/**
 **/.agents/skills/writing-skills/**
-**/.claude/agents/impeccable-*
-**/.github/agents/impeccable-*
-**/.github/hooks/impeccable.json
 # installed-skills-end
 
 # Callidescope writes this report and then checks the file back against what a
