@@ -50,9 +50,9 @@ describe("callidescopePlugin", () => {
     const [glob] = callidescopePlugin.createNodes;
 
     expect(callidescopePlugin.name).toBe("@callidescope/nx");
-    // The configuration joins the glob so that editing a limit re-runs
-    // inference rather than leaving the daemon on a stale result.
-    expect(glob).toBe("**/{project.json,callidescope.config.*}");
+    // Nx fixes a glob before it reads any option, so it names no
+    // configuration file: that path reaches each target's cache inputs instead.
+    expect(glob).toBe("**/project.json");
   });
 
   it("attaches inferred targets to the project root that owns them", async () => {
@@ -83,7 +83,6 @@ describe("callidescopePlugin", () => {
       createNodes([
         "packages/alpha/project.json",
         "applications/affirmancy/project.json",
-        "configuration/callidescope.config.ts",
       ]),
     ).resolves.toHaveLength(1);
   });

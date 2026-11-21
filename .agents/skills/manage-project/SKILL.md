@@ -113,5 +113,4 @@ Do not set a milestone on an issue or pull request unless the user asks. If one 
 ## Resources
 
 - [issue-tracker](../../../documentation/agents/issue-tracker.md) — Issue Types, labels, planning shape, marking work in progress
-- [triage-labels](../../../documentation/agents/triage-labels.md) — the `status:*` triage vocabulary
 - [link-issue skill](../link-issue/SKILL.md) — filing the issue a pull request closes

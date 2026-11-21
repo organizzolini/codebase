@@ -1,12 +1,13 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { beforeAll, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationLoaderService } from "./configuration-loader.service";
+import { ConfigurationFileNotFoundError } from "./configuration.constants";
 
 describe(ConfigurationLoaderService, () => {
   let service: ConfigurationLoaderService;
@@ -17,32 +18,51 @@ describe(ConfigurationLoaderService, () => {
     ));
   });
 
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("resolves with its dependencies", async () => {
     const { instance } = await buildTestingModule(ConfigurationLoaderService);
 
     expect(instance).toBeInstanceOf(ConfigurationLoaderService);
   });
 
-  describe("findProjectConfigurationFile", () => {
-    it("finds a configuration file colocated with the project", async () => {
+  describe("resolveProjectConfigurationFile", () => {
+    it("resolves the configured path against the project root", async () => {
       const directory = createTemporaryDirectory("codependix-loader");
-      const configurationPath = path.join(directory, "codependix.config.json");
+      const configurationPath = path.join(
+        directory,
+        "configuration",
+        "codependix.config.json",
+      );
 
+      await mkdir(path.dirname(configurationPath), { recursive: true });
       await writeFile(configurationPath, "{}", "utf8");
 
-      expect(service.findProjectConfigurationFile(directory)).toBe(
-        configurationPath,
-      );
+      expect(
+        service.resolveProjectConfigurationFile({
+          projectConfigurationPath: "configuration/codependix.config.json",
+          projectRoot: directory,
+        }),
+      ).toBe(configurationPath);
     });
 
-    it("never walks upward", async () => {
-      const root = createTemporaryDirectory("codependix-loader");
-      const nested = path.join(root, "nested");
+    it("returns undefined when nothing exists at the configured path, whatever sits beside it", async () => {
+      const directory = createTemporaryDirectory("codependix-loader");
 
-      await mkdir(nested, { recursive: true });
-      await writeFile(path.join(root, "codependix.config.json"), "{}", "utf8");
+      await writeFile(
+        path.join(directory, "codependix.config.json"),
+        "{}",
+        "utf8",
+      );
 
-      expect(service.findProjectConfigurationFile(nested)).toBeUndefined();
+      expect(
+        service.resolveProjectConfigurationFile({
+          projectConfigurationPath: "configuration/codependix.config.json",
+          projectRoot: directory,
+        }),
+      ).toBeUndefined();
     });
   });
 
@@ -52,7 +72,11 @@ describe(ConfigurationLoaderService, () => {
 
       await writeFile(
         path.join(directory, "codependix.config.json"),
-        JSON.stringify({ include: ["**"] }),
+        JSON.stringify({
+          include: ["**"],
+          projectConfigurationPath: "codependix.config.ts",
+          projectTsconfigPath: "tsconfig.json",
+        }),
         "utf8",
       );
 
@@ -60,7 +84,11 @@ describe(ConfigurationLoaderService, () => {
         service.readAuthoredConfiguration({
           configurationPath: path.join(directory, "codependix.config.json"),
         }),
-      ).resolves.toStrictEqual({ include: ["**"] });
+      ).resolves.toStrictEqual({
+        include: ["**"],
+        projectConfigurationPath: "codependix.config.ts",
+        projectTsconfigPath: "tsconfig.json",
+      });
     });
 
     it("refuses a path naming no file rather than resolving to nothing", async () => {
@@ -96,6 +124,20 @@ describe(ConfigurationLoaderService, () => {
       expect(service.resolveConfigurationPath(configurationPath)).toBe(
         configurationPath,
       );
+    });
+
+    it("never retries a missing relative path from the workspace root", async () => {
+      const workspace = createTemporaryDirectory("codependix-loader");
+      const nested = path.join(workspace, "projects", "nested");
+
+      await mkdir(nested, { recursive: true });
+      await writeFile(path.join(workspace, "pnpm-workspace.yaml"), "", "utf8");
+      await writeFile(path.join(workspace, "codependix.config.json"), "{}");
+      vi.spyOn(process, "cwd").mockReturnValue(nested);
+
+      expect(() =>
+        service.resolveConfigurationPath("codependix.config.json"),
+      ).toThrow(ConfigurationFileNotFoundError);
     });
   });
 });

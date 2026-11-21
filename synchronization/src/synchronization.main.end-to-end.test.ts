@@ -87,7 +87,7 @@ describe("main end-to-end suite", () => {
         JSON.stringify({
           extends: path.relative(
             workspace,
-            path.resolve(import.meta.dirname, "../tsconfig.json"),
+            path.resolve(import.meta.dirname, "../configuration/tsconfig.json"),
           ),
         }),
       );

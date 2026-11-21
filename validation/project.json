@@ -41,6 +41,7 @@
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "eslint": {},
     "format-code": {},
     "guard-code": {},
     "knip": {},
@@ -139,6 +140,7 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "vitest": {},
     "yaml-lint": {}
   }
 }

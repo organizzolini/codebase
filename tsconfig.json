@@ -1,3 +1,212 @@
 {
-  "extends": "./configuration/tsconfig.workspace.json"
+  "extends": "./configuration/typescript/tsconfig.workspace.json",
+  "references": [
+    {
+      "path": "./compliance/configuration/tsconfig.json"
+    },
+    {
+      "path": "./configuration/configuration/tsconfig.json"
+    },
+    {
+      "path": "./deployment/configuration/tsconfig.json"
+    },
+    {
+      "path": "./documentation/configuration/tsconfig.json"
+    },
+    {
+      "path": "./installation/configuration/tsconfig.json"
+    },
+    {
+      "path": "./integration/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/caelundas/caelundas-api/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/caelundas/caelundas-cli/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/caelundas/caelundas-db/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/caelundas/caelundas-web/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/common/interface/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/common/observability/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/common/persistence/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/common/presentation/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/common/testing/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/callidescope/callidescope-agents/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/callidescope/callidescope-cli/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/callidescope/callidescope-configuration/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/callidescope/callidescope-core/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/callidescope/callidescope-examples/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/callidescope/callidescope-graph/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/callidescope/callidescope-nx/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/callidescope/callidescope-output/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/codependix/codependix-agents/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/codependix/codependix-boundaries/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/codependix/codependix-cli/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/codependix/codependix-configuration/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/codependix/codependix-core/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/codependix/codependix-examples/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/codependix/codependix-file-imports/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/codependix/codependix-nestjs-modules/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/codependix/codependix-nx-projects/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/codependix/codependix-nx/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/codependix/codependix-output/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/codometer/codometer-agents/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/codometer/codometer-cli/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/codometer/codometer-configuration/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/codometer/codometer-core/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/codometer/codometer-examples/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/codometer/codometer-languages/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/codometer/codometer-measurement/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/codometer/codometer-output/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/coinagerie/coinagerie-agents/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/coinagerie/coinagerie-cli/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/coinagerie/coinagerie-configuration/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/coinagerie/coinagerie-core/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/coinagerie/coinagerie-examples/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/coinagerie/coinagerie-languages/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/coinagerie/coinagerie-nx/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/coinagerie/coinagerie-output/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/coinagerie/coinagerie-vocabulary/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/conformetry/conformetry-agents/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/conformetry/conformetry-cli/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/conformetry/conformetry-configuration/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/conformetry/conformetry-core/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/conformetry/conformetry-examples/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/conformetry/conformetry-generation/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/conformetry/conformetry-languages/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/conformetry/conformetry-nx/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/conformetry/conformetry-output/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/ic-suite/conformetry/conformetry-validation/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/lexico/lexico-api/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/lexico/lexico-cli/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/lexico/lexico-db/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/lexico/lexico-web/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/meanderaw/meanderaw-cli/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/meanderaw/meanderaw-web/configuration/tsconfig.json"
+    },
+    {
+      "path": "./synchronization/configuration/tsconfig.json"
+    },
+    {
+      "path": "./validation/configuration/tsconfig.json"
+    }
+  ]
 }

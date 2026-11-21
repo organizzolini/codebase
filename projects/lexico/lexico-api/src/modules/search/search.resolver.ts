@@ -3,10 +3,13 @@ import { Args as Arguments, Query, Resolver } from "@nestjs/graphql";
 
 import { mapConnection } from "@codebase/interface";
 
-import { SearchEnglishArguments } from "./search-english-arguments.entities";
-import { SearchLatinArguments } from "./search-latin-arguments.entities";
+import { SearchEnglishArguments } from "./modules/search-arguments/search-english-arguments.entities";
+import { SearchLatinArguments } from "./modules/search-arguments/search-latin-arguments.entities";
+import {
+  LexemeSearchConnection,
+  LexemeSearchResult,
+} from "./modules/search-results/search.entities";
 import { ENGLISH_SEARCH_RESULT_LIMIT } from "./search.constants";
-import { LexemeSearchConnection, LexemeSearchResult } from "./search.entities";
 import { SearchService } from "./search.service";
 import { toLexemeSearchResult } from "./search.utilities";
 

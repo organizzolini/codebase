@@ -4,7 +4,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { DatabaseModule as PersistenceDatabaseModule } from "@codebase/persistence";
 
 import { DatabaseService } from "./database.service";
-import { Meander } from "./entities/meander.entity";
+import { Meander } from "./meander.entity";
 
 /**
  * Wires up the Postgres database every meander is persisted to, through the

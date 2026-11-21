@@ -21,7 +21,7 @@ vi.mock("../../modules/process-runner/process-runner.service", () => ({
 }));
 
 /** The configuration every task of a test names. */
-const CONFIGURATION = "configuration/cspell.config.yaml";
+const CONFIGURATION = "configuration/lint/cspell.config.yaml";
 
 /** The arguments of a batch of one `spell-check` task per project. */
 function buildArguments(

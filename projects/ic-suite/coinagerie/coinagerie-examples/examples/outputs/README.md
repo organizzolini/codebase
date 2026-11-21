@@ -7,9 +7,9 @@ or both, and each destination is judged on its own.
 
 ```bash
 cd examples/outputs/project
-coinagerie --check
-coinagerie --write
-coinagerie --format json
+coinagerie --config coinagerie.config.ts --check
+coinagerie --config coinagerie.config.ts --write
+coinagerie --config coinagerie.config.ts --format json
 ```
 
 The first two exit 0 and leave the files byte for byte as they were. The third

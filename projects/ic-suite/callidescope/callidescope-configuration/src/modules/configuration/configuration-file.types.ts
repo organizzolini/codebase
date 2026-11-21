@@ -7,7 +7,7 @@ import type {
 
 /** File reads `ConfigurationService` needs. Narrow so tests can double them. */
 export interface ConfigurationFileReader {
-  findConfigurationFileAt(directory: string): string | undefined;
+  configurationFileExists(filePath: string): boolean;
   loadConfigurationFile(
     args: LoadConfigurationArguments,
   ): Promise<LoadedCallidescopeConfiguration>;

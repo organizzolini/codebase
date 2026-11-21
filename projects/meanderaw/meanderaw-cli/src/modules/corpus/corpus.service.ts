@@ -11,7 +11,7 @@ import {
   HISTORICAL_CORPUS_EDGE_BUDGET,
 } from "./corpus.constants";
 
-import type { Meander } from "../database/entities/meander.entity";
+import type { Meander } from "../database/meander.entity";
 import type { CorpusEntry } from "./corpus.types";
 
 /**

@@ -79,7 +79,7 @@ start over with every definition empty.
 - **Passes locally, fails in CI.** The scanned sets differ. Suspects: a
   generated or build folder present locally and ignored in CI, or the reverse;
   an uncommitted glossary or configuration; a different working directory. Run
-  a bare `coinagerie --format json` in both and compare.
+  `coinagerie --config <path> --format json` in both and compare.
 - **A cached pass survives an edit.** Under a task runner's cache, a file the
   configuration reads from elsewhere, such as a parent glossary, has to be
   declared as an input of the check.

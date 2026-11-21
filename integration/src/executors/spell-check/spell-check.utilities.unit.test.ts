@@ -6,13 +6,13 @@ describe("spell-check utilities", () => {
   describe(buildCspellArguments, () => {
     it("names the configuration and a glob under each root", () => {
       const built = buildCspellArguments({
-        configuration: "configuration/cspell.config.yaml",
+        configuration: "configuration/lint/cspell.config.yaml",
         roots: ["projects/a", "projects/b"],
       });
 
       expect(built.slice(0, 2)).toStrictEqual([
         "--config",
-        "configuration/cspell.config.yaml",
+        "configuration/lint/cspell.config.yaml",
       ]);
       expect(built).toContain(
         "projects/a/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,css,scss,html,yaml,yml,md,mdx,py,ipynb,sql}",

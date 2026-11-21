@@ -8,7 +8,7 @@ scrapes, parses, and loads the sources behind
 ## Quick Start
 
 ```bash
-cp .env.default .env      # Database connection
+cp configuration/.env.default configuration/.env      # Database connection
 nx run lexico-cli:start
 ```
 
@@ -125,4 +125,4 @@ MIT — see [LICENSE](../../../LICENSE).
 
 ## 👔 Conformetry
 
-This project was generated from the [nestjs-command-project](../../../configuration/conformetry-templates/nestjs-command-project) conformetry template.
+This project was generated from the [nestjs-command-project](../../../configuration/ic-suite/conformetry-templates/nestjs-command-project) conformetry template.

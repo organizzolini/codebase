@@ -1,0 +1,59 @@
+import path from "node:path";
+
+import tailwindcss from "@tailwindcss/vite";
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  build: {
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
+    emptyOutDir: true,
+    outDir: "dist",
+    reportCompressedSize: true,
+    rolldownOptions: {
+      external: ["expo-sqlite"],
+    },
+  },
+  css: {
+    devSourcemap: true,
+    postcss: path.dirname(import.meta.filename),
+  },
+  plugins: [
+    tailwindcss(),
+    // The generated route tree lives under `src/`. Test files sit beside the
+    // routes they test, so the route generator is told to skip them rather than
+    // treat them as routes.
+
+    // Skip test files beside the routes, so the route generator does not treat
+    // them as routes.
+    tanstackStart({
+      router: {
+        generatedRouteTree: "routeTree.gen.ts",
+        routeFileIgnorePattern: String.raw`\.test\.`,
+      },
+    }),
+    // The React plugin must come after the TanStack Start plugin.
+    react(),
+  ],
+  preview: {
+    host: "localhost",
+    port: 7797,
+  },
+  resolve: {
+    alias: {
+      "@": path.resolve(
+        path.dirname(import.meta.dirname),
+        "../../common/presentation/src",
+      ),
+    },
+    tsconfigPaths: true,
+  },
+  root: path.dirname(import.meta.dirname),
+  server: {
+    host: "localhost",
+    port: 7797,
+  },
+});

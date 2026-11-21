@@ -82,7 +82,9 @@ describe(ProjectGraphsService, () => {
         exclude: [],
         include: ["**"],
         nestjsRootModules: {},
+        projectConfigurationPath: "codependix.config.ts",
         projectGraph: undefined,
+        projectTsconfigPath: "configuration/tsconfig.json",
         selection: { dependencies: true, projects: [], tags: [] },
         workspace: {},
       },
@@ -603,6 +605,10 @@ describe(ProjectGraphsService, () => {
 
       service.runFileImportsProjects(buildImportsContext());
 
+      expect(typescriptService.discoverProjects).toHaveBeenCalledWith(
+        expect.anything(),
+        "configuration/tsconfig.json",
+      );
       expect(typescriptService.buildProgram).toHaveBeenCalledWith({
         absoluteRoot: projectRoot,
         name: "codependix-imports",

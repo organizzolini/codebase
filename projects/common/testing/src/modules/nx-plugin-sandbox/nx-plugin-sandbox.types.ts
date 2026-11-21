@@ -1,5 +1,5 @@
 import type { Command, CommandResult } from "../command/command.types";
-import type { TarballSandboxOptions } from "../tarball-sandbox/tarball-sandbox.types";
+import type { TarballSandboxOptions } from "./modules/tarball-sandbox/tarball-sandbox.types";
 
 /** A clean Nx consumer workspace whose installs resolve from the registry. */
 export interface ConsumerWorkspace {

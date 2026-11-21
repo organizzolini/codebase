@@ -24,7 +24,7 @@ In this monorepo (55 projects), adopting task-based affected provides dramatic s
   - `packages/nx/src/native/` (`nativeAffectedTasks` Rust implementation)
 - **Codebase Primary References**:
   - `nx.json` (targetDefaults, namedInputs, plugins)
-  - `configuration/lint-staged.config.ts`
+  - `configuration/repository/lint-staged.config.ts`
   - `.github/workflows/continuous-integration.yml`
   - `.github/actions/run-affected/action.yml`
   - `publication/src/modules/run-affected/run-affected.service.ts`
@@ -56,7 +56,7 @@ Under task-based affected:
 
 ### 2.1 Pre-Commit Bottleneck (`lint-staged.config.ts`)
 
-In `configuration/lint-staged.config.ts`, the hook runs:
+In `configuration/repository/lint-staged.config.ts`, the hook runs:
 
 ```typescript
 pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code,conformetry-validate --configuration=check --parallel=${String(ANALYSIS_PARALLELISM)} --outputStyle=static ${getStagedChangeFlags(files)}
@@ -67,7 +67,7 @@ pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-co
 - **Massive Target Over-Execution**: When staging a single file in project `foo` (even a `README.md` or test), project-based affected marks project `foo` affected for **all 6 targets**. This forces `tsc --noEmit`, `type-coverage`, `guard-code`, and `conformetry-validate` to schedule and evaluate, even when the changed file cannot possibly affect them.
 - **Cascading Across Dependents**: When staging a change in a core library (such as `@callidescope/core` or `@codebase/observability`), project-based affected marks 20+ dependent projects affected. The hook attempts to run `eslint`, `oxlint`, `stylelint`, `spell-check`, and `typecheck` across the entire dependent subtree.
 - **Memory Pressure & Process Kills**: Because dozens of projects are marked affected on shared library commits, the pre-commit hook previously suffered OS kills (exit code 137). Complex workarounds were introduced (`getLocalParallelism()`, argument size splitting) to prevent memory exhaustion.
-- **Template Workaround**: Staging conformetry templates in `configuration/conformetry-templates/` failed to select instance projects under project-based affected because `.nxignore` masked template files. The hook had to implement `getStagedTemplateFlags()` to manually inject `conformetry.config.ts` into `--files`.
+- **Template Workaround**: Staging conformetry templates in `configuration/ic-suite/conformetry-templates/` failed to select instance projects under project-based affected because `.nxignore` masked template files. The hook had to implement `getStagedTemplateFlags()` to manually inject `conformetry.config.ts` into `--files`.
 
 ### 2.2 CI Bottleneck & Custom Workarounds (`run-affected.service.ts`)
 
@@ -155,5 +155,5 @@ Task-based affected relies on the exactness of task `inputs`. Fortunately, this 
 
 ### Phase 4: Streamline Pre-Commit and CI Tooling
 
-- Update `configuration/lint-staged.config.ts` to leverage task-based selection and remove unnecessary file flag workarounds.
+- Update `configuration/repository/lint-staged.config.ts` to leverage task-based selection and remove unnecessary file flag workarounds.
 - Simplify `.github/actions/run-affected/action.yml` and evaluate deprecating or simplifying `publication/src/modules/run-affected/run-affected.service.ts`.

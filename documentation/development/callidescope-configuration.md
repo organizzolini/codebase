@@ -1,6 +1,6 @@
 # Callidescope workspace configuration
 
-The design notes that used to sit in `configuration/callidescope.config.ts` as comments. Each section is the full account behind one short comment in that file.
+The design notes that used to sit in `configuration/ic-suite/callidescope.config.ts` as comments. Each section is the full account behind one short comment in that file.
 
 ## The starting point every project writes down and then overrides
 
@@ -83,7 +83,7 @@ report-freshness gate.
 A project cannot exclude itself this way — discovery finds a project's
 `tsconfig.json` before that project's own `callidescope.config.ts` is ever
 read, so removing a project from tracing has to happen at the workspace's
-own file. `configuration/.callidescopeignore` is where all eight are named,
+own file. `configuration/ic-suite/.callidescopeignore` is where all eight are named,
 beside `projects/ic-suite/callidescope/callidescope-examples` and the other exclusions this
 workspace declares.
 

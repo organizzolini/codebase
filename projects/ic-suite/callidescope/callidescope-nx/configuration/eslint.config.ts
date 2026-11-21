@@ -1,0 +1,33 @@
+import baseConfig from "../../../../../configuration/eslint.config";
+
+export default [
+  // 🛠️ Base Config
+  ...baseConfig,
+
+  // 📦 Dependency Checks
+  {
+    files: ["**/*.json"],
+    rules: {
+      "@nx/dependency-checks": [
+        "error",
+        {
+          // Ignored as build-time or test-only: pino rides inside observability, which Vite
+          // inlined; testing and ts-vitest serve tests; typescript is a peer that consumers
+          // install, unimported here; vitest is referenced via tsconfig "types", which the
+          // rule misreads as production use.
+          ignoredDependencies: [
+            "@codebase/observability",
+            "@codebase/testing",
+            "@golevelup/ts-vitest",
+            "pino",
+            "pino-pretty",
+            "reflect-metadata",
+            "typescript",
+            "vitest",
+          ],
+          ignoredFiles: ["{projectRoot}/configuration/**"],
+        },
+      ],
+    },
+  },
+];

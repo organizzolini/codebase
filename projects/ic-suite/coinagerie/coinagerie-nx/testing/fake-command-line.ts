@@ -1,7 +1,15 @@
 /** Fake command line for `node -e`, with no single quotes. */
 const FAKE_PROGRAM = String.raw`
-const directories = process.argv.slice(2).filter((word) => !word.startsWith("--"));
-const write = process.argv.includes("--write");
+const words = process.argv.slice(2);
+const flagAt = words.indexOf("--project-configuration-path");
+if (flagAt === -1) {
+  console.error("--project-configuration-path is required");
+  process.exit(2);
+}
+const directories = words.filter(
+  (word, index) => !word.startsWith("--") && index !== flagAt + 1,
+);
+const write = words.includes("--write");
 if (directories.some((directory) => directory.includes("crash"))) {
   console.error("something broke");
   process.exit(2);

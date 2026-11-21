@@ -3,7 +3,7 @@ import { Command, CommandRunner } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { SoftwareNamedService } from "./software-named.service";
+import { SoftwareNamedService } from "./modules/tooling/software-named.service";
 import { SoftwareService } from "./software.service";
 
 /**

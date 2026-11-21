@@ -1,6 +1,6 @@
 import { createRouter, type Router } from "@tanstack/react-router";
 
-import { PageNotFound } from "./components/page-not-found/page-not-found";
+import { PageNotFound } from "./components/calendar-display/page-not-found/page-not-found";
 import { routeTree } from "./routeTree.gen";
 
 /**

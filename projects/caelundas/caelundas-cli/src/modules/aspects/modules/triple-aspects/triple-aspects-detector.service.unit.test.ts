@@ -1,0 +1,281 @@
+import moment from "moment-timezone";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { ProgressiveUtilitiesService } from "../../../progressive/progressive-utilities.service";
+import { AspectGraphService } from "../calculation/aspect-graph.service";
+import { CompoundPhaseService } from "../compound-phases/compound-phase.service";
+
+import { TripleAspectsComposerService } from "./triple-aspects-composer.service";
+import { TripleAspectsDetectorService } from "./triple-aspects-detector.service";
+
+import type { Aspect } from "../../../caelundas/caelundas.types";
+import type { AspectBodies } from "../../aspects.types";
+
+describe(TripleAspectsDetectorService, () => {
+  let service: TripleAspectsDetectorService;
+  let compoundPhaseService: CompoundPhaseService;
+  let privateService: {
+    checkTSquareFocalBody: (args: {
+      body1: "sun";
+      body2: "moon";
+      currentAspectBodies: AspectBodies[];
+      focalBody: "mars";
+      minute: unknown;
+      previousAspectBodies: AspectBodies[];
+      unionEdges: AspectBodies[];
+    }) => unknown;
+    checkYodApexBody: (args: {
+      apexBody: "venus";
+      body1: "sun";
+      body2: "moon";
+      currentAspectBodies: AspectBodies[];
+      minute: unknown;
+      previousAspectBodies: AspectBodies[];
+      unionEdges: AspectBodies[];
+    }) => unknown;
+    getUniqueBodyTriplets: (
+      bodies: ("mars" | "moon" | "sun" | undefined)[],
+    ) => unknown;
+    groupAspectsByType: (edges: AspectBodies[]) => Map<Aspect, AspectBodies[]>;
+  };
+
+  const testingModuleOptions = {
+    providers: [
+      TripleAspectsComposerService,
+      AspectGraphService,
+      CompoundPhaseService,
+      ProgressiveUtilitiesService,
+    ],
+  };
+
+  beforeAll(async () => {
+    const { instance, module } = await buildTestingModule(
+      TripleAspectsDetectorService,
+      testingModuleOptions,
+    );
+
+    compoundPhaseService = await module.resolve(CompoundPhaseService);
+    service = instance;
+    privateService = service as unknown as typeof privateService;
+  });
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      TripleAspectsDetectorService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(TripleAspectsDetectorService);
+  });
+
+  describe("groupAspectsByType", () => {
+    it("groups edges by aspect type", () => {
+      const edges: AspectBodies[] = [
+        { aspect: "conjunct", bodies: ["sun", "moon"] },
+        { aspect: "trine", bodies: ["mars", "jupiter"] },
+        { aspect: "conjunct", bodies: ["venus", "saturn"] },
+      ];
+
+      const grouped = privateService.groupAspectsByType(edges);
+
+      expect(grouped.size).toBe(2);
+      expect(grouped.get("conjunct")?.length).toBe(2);
+      expect(grouped.get("trine")?.length).toBe(1);
+    });
+
+    it("skips sparse triplets when one body entry is undefined", () => {
+      const triplets = privateService.getUniqueBodyTriplets([
+        "sun",
+        undefined,
+        "moon",
+      ]);
+
+      expect(triplets).toStrictEqual([]);
+    });
+  });
+
+  describe("composeTSquares", () => {
+    it("detects forming T-Square", () => {
+      const currentMinute = moment.utc("2024-03-21T12:00:00.000Z");
+      const currentAspectBodies: AspectBodies[] = [
+        { aspect: "opposite", bodies: ["sun", "moon"] },
+        { aspect: "square", bodies: ["sun", "mars"] },
+        { aspect: "square", bodies: ["moon", "mars"] },
+      ];
+
+      const events = service.composeTSquares({
+        currentAspectBodies,
+        minute: currentMinute,
+        previousAspectBodies: [],
+      });
+
+      expect(events.length).toBeGreaterThanOrEqual(1);
+      expect(events[0]?.tags).toContain("T Square");
+      expect(events[0]?.tags).toContain("Forming");
+    });
+
+    it("returns no T-Square events when phase transition cannot be determined", () => {
+      const determinePhaseSpy = vi
+        .spyOn(compoundPhaseService, "determineCompoundPhaseFromSnapshots")
+        .mockReturnValue(null);
+      const currentMinute = moment.utc("2024-03-21T12:00:00.000Z");
+      const currentAspectBodies: AspectBodies[] = [
+        { aspect: "opposite", bodies: ["sun", "moon"] },
+        { aspect: "square", bodies: ["sun", "mars"] },
+        { aspect: "square", bodies: ["moon", "mars"] },
+      ];
+
+      const events = service.composeTSquares({
+        currentAspectBodies,
+        minute: currentMinute,
+        previousAspectBodies: [],
+      });
+
+      expect(events).toStrictEqual([]);
+
+      determinePhaseSpy.mockRestore();
+    });
+
+    it("returns null when focal body candidates do not form a full T-Square", () => {
+      const result = privateService.checkTSquareFocalBody({
+        body1: "sun",
+        body2: "moon",
+        currentAspectBodies: [],
+        focalBody: "mars",
+        minute: moment.utc("2024-03-21T12:00:00.000Z"),
+        previousAspectBodies: [],
+        unionEdges: [
+          { aspect: "square", bodies: ["sun", "mars"] },
+          { aspect: "square", bodies: ["moon", "mars"] },
+        ],
+      });
+
+      expect(result).toBeNull();
+    });
+  });
+
+  describe("composeYods", () => {
+    it("detects forming Yod", () => {
+      const currentMinute = moment.utc("2024-03-21T12:00:00.000Z");
+      const currentAspectBodies: AspectBodies[] = [
+        { aspect: "sextile", bodies: ["sun", "moon"] },
+        { aspect: "quincunx", bodies: ["sun", "venus"] },
+        { aspect: "quincunx", bodies: ["moon", "venus"] },
+      ];
+
+      const events = service.composeYods({
+        currentAspectBodies,
+        minute: currentMinute,
+        previousAspectBodies: [],
+      });
+
+      expect(events.length).toBeGreaterThanOrEqual(1);
+      expect(events[0]?.tags).toContain("Yod");
+      expect(events[0]?.tags).toContain("Forming");
+    });
+
+    it("returns no Yod events when apex candidates do not complete a yod", () => {
+      const currentMinute = moment.utc("2024-03-21T12:00:00.000Z");
+      const currentAspectBodies: AspectBodies[] = [
+        { aspect: "sextile", bodies: ["sun", "moon"] },
+        { aspect: "quincunx", bodies: ["sun", "venus"] },
+      ];
+
+      const events = service.composeYods({
+        currentAspectBodies,
+        minute: currentMinute,
+        previousAspectBodies: [],
+      });
+
+      expect(events).toStrictEqual([]);
+    });
+
+    it("returns no Yod events when phase transition cannot be determined", () => {
+      const determinePhaseSpy = vi
+        .spyOn(compoundPhaseService, "determineCompoundPhaseFromSnapshots")
+        .mockReturnValue(null);
+      const currentMinute = moment.utc("2024-03-21T12:00:00.000Z");
+      const currentAspectBodies: AspectBodies[] = [
+        { aspect: "sextile", bodies: ["sun", "moon"] },
+        { aspect: "quincunx", bodies: ["sun", "venus"] },
+        { aspect: "quincunx", bodies: ["moon", "venus"] },
+      ];
+
+      const events = service.composeYods({
+        currentAspectBodies,
+        minute: currentMinute,
+        previousAspectBodies: [],
+      });
+
+      expect(events).toStrictEqual([]);
+
+      determinePhaseSpy.mockRestore();
+    });
+
+    it("returns null when apex candidates do not form a full Yod", () => {
+      const result = privateService.checkYodApexBody({
+        apexBody: "venus",
+        body1: "sun",
+        body2: "moon",
+        currentAspectBodies: [],
+        minute: moment.utc("2024-03-21T12:00:00.000Z"),
+        previousAspectBodies: [],
+        unionEdges: [
+          { aspect: "quincunx", bodies: ["sun", "venus"] },
+          { aspect: "quincunx", bodies: ["moon", "venus"] },
+        ],
+      });
+
+      expect(result).toBeNull();
+    });
+  });
+
+  describe("composeGrandTrines", () => {
+    it("detects forming Grand Trine", () => {
+      const currentMinute = moment.utc("2024-03-21T12:00:00.000Z");
+      const currentAspectBodies: AspectBodies[] = [
+        { aspect: "trine", bodies: ["sun", "moon"] },
+        { aspect: "trine", bodies: ["sun", "mars"] },
+        { aspect: "trine", bodies: ["moon", "mars"] },
+      ];
+
+      const events = service.composeGrandTrines({
+        currentAspectBodies,
+        minute: currentMinute,
+        previousAspectBodies: [],
+      });
+
+      expect(events.length).toBeGreaterThanOrEqual(1);
+      expect(events[0]?.tags).toContain("Grand Trine");
+      expect(events[0]?.tags).toContain("Forming");
+    });
+
+    it("returns no Grand Trine events when phase transition cannot be determined", () => {
+      const determinePhaseSpy = vi
+        .spyOn(compoundPhaseService, "determineCompoundPhaseFromSnapshots")
+        .mockReturnValue(null);
+      const currentMinute = moment.utc("2024-03-21T12:00:00.000Z");
+      const currentAspectBodies: AspectBodies[] = [
+        { aspect: "trine", bodies: ["sun", "moon"] },
+        { aspect: "trine", bodies: ["sun", "mars"] },
+        { aspect: "trine", bodies: ["moon", "mars"] },
+      ];
+
+      const events = service.composeGrandTrines({
+        currentAspectBodies,
+        minute: currentMinute,
+        previousAspectBodies: [],
+      });
+
+      expect(events).toStrictEqual([]);
+
+      determinePhaseSpy.mockRestore();
+    });
+  });
+});

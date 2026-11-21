@@ -2,7 +2,6 @@
 export {
   CALLIDESCOPE_OUTPUT_FORMATS,
   callidescopeConfigurationSchema,
-  CONFIGURATION_FILE_NAMES,
   ConfigurationFileNotFoundError,
   DEFAULT_ENTRY_POINT_DECORATORS,
   DEFAULT_EXCLUDE_GLOBS,
@@ -18,7 +17,7 @@ export {
   ProjectConfigurationFieldNotPermittedError,
   ProjectConfigurationIncompleteError,
   ProjectConfigurationMissingError,
-  REPOSITORY_ROOT_MARKERS,
+  ProjectConfigurationPathMissingError,
   SUPPORTED_CONFIGURATION_EXTENSIONS,
   UnknownConfigurationFileTypeError,
 } from "./modules/configuration/configuration.constants";
@@ -62,10 +61,12 @@ export type {
   CallidescopeRunFlags,
   ResolvedRunFlags,
 } from "./modules/flag-resolution/flag-resolution.types";
+export { ProjectTsconfigPathRequiredError } from "./modules/input/input.constants";
 export {
   ConfigurationPathRequiredError,
   InputError,
   missingInputError,
+  ProjectConfigurationPathRequiredError,
   promptCancelledError,
 } from "./modules/input/input.constants";
 export type { CallidescopeFormatOptions } from "./modules/input/input.types";

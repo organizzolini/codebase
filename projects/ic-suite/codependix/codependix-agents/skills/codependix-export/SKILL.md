@@ -87,13 +87,13 @@ Two options qualify whichever mode was picked, the first of them mandatory:
 
 | Option | Meaning |
 | ------ | ------- |
-| `--config <config>` | **Required.** Path to the codependix configuration file, resolved against the working directory, then the workspace root. Omitting it fails the run; nothing is searched for |
+| `--config <config>` | **Required.** Path to the codependix configuration file, resolved against the working directory alone. Omitting it fails the run; nothing is searched for |
 | `-d, --directory [directory]` | Workspace root whose Nx project graph this run reads. Defaults to the working directory |
 
 ```bash
-codependix map --write --config configuration/codependix.config.ts
-codependix map --check boundaries --directory . --config configuration/codependix.config.ts
-codependix map --check reports --directory . --config configuration/codependix.config.ts
+codependix map --write --config configuration/ic-suite/codependix.config.ts
+codependix map --check boundaries --directory . --config configuration/ic-suite/codependix.config.ts
+codependix map --check reports --directory . --config configuration/ic-suite/codependix.config.ts
 ```
 
 ## Codependix reads the Nx project graph
@@ -152,7 +152,7 @@ Each is keyed by name in the configuration:
 | --- | --------------- | --------------------- |
 | `nx` | A project's one-hop Neighborhood — what it depends on, and what depends on it | Every project the Nx graph knows, except the workspace root itself |
 | `nestjs` | A project's NestJS module import graph | Only projects tagged `framework:nestjs` |
-| `imports` | A project's own file-level TypeScript import graph | Every project carrying its own `tsconfig.json` |
+| `imports` | A project's own file-level TypeScript import graph | Every project with a tsconfig at the configured `projectTsconfigPath` |
 | `pythonImports` | The Python equivalent, parsed from `import` / `from ... import` statements | Only projects tagged `language:python` |
 
 The whole-workspace Nx graph is configured separately, under `workspace.nx`.
@@ -170,8 +170,8 @@ no NestJS container is absent from the NestJS pass rather than failing it.
 Both take a **comma-separated** list, and both do two things at once:
 
 ```bash
-codependix map --write --projects widgets,tools/reporting --config configuration/codependix.config.ts
-codependix map --write --tags framework:nestjs,language:python --config configuration/codependix.config.ts
+codependix map --write --projects widgets,tools/reporting --config configuration/ic-suite/codependix.config.ts
+codependix map --write --tags framework:nestjs,language:python --config configuration/ic-suite/codependix.config.ts
 ```
 
 **They widen what gets exported.** A project participates when _anything_
@@ -290,7 +290,7 @@ the report is all it prints. Without one of those flags a boundaries-only run
 prints nothing, and a run that also exports prints its graphs as it always did.
 
 ```bash
-codependix map --check boundaries --projects lexico-db --format json --config configuration/codependix.config.ts
+codependix map --check boundaries --projects lexico-db --format json --config configuration/ic-suite/codependix.config.ts
 ```
 
 `boundaries.judgedProjects` lists the projects whose findings fail the run.

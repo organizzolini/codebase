@@ -6,17 +6,17 @@ import { Repository } from "typeorm";
 import { Lexeme } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
-import { EtymologyService } from "../etymology/etymology.service";
-import { FormsBuilderService } from "../forms/forms-builder.service";
-import { FormsService } from "../forms/forms.service";
 import { LEXICO_INGESTION_BY_ID } from "../lexico-ingestion/lexico-ingestion.constants";
-import { PartOfSpeechService } from "../part-of-speech/part-of-speech.service";
-import { PrincipalPartsService } from "../principal-parts/principal-parts.service";
-import { PronunciationService } from "../pronunciation/pronunciation.service";
-import { TranslationsService } from "../translations/translations.service";
-import { WordsService } from "../words/words.service";
 
 import { skipPOS, validPOS } from "./lexemes.constants";
+import { EtymologyService } from "./modules/etymology/etymology.service";
+import { FormsService } from "./modules/forms/forms.service";
+import { FormsBuilderService } from "./modules/forms/modules/forms-builder/forms-builder.service";
+import { PartOfSpeechService } from "./modules/part-of-speech/part-of-speech.service";
+import { PrincipalPartsService } from "./modules/principal-parts/principal-parts.service";
+import { PronunciationService } from "./modules/pronunciation/pronunciation.service";
+import { TranslationsService } from "./modules/translations/translations.service";
+import { WordsService } from "./modules/words/words.service";
 
 import type { WiktionaryPage } from "../lexico-ingestion/lexico-ingestion.types";
 import type { PartOfSpeech } from "@codebase/lexico-db";

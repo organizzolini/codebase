@@ -1,0 +1,249 @@
+import { Injectable } from "@nestjs/common";
+import _ from "lodash";
+
+import { LoggerService } from "@codebase/observability";
+
+import { symbolByVenusianPhase } from "../../../../../caelundas/symbol-caelundas.constants";
+import { ProgressiveUtilitiesService } from "../../../../../progressive/progressive-utilities.service";
+import {
+  EVENING_RISE_TAG,
+  EVENING_SET_TAG,
+  MORNING_RISE_TAG,
+  MORNING_SET_TAG,
+  PHASE_EVENT_BASE_TAGS,
+  PHASE_EVENT_TIMEZONE,
+  VENUS_EVENING_VISIBILITY_DESCRIPTION,
+  VENUS_EVENING_VISIBILITY_PAIR_LABEL,
+  VENUS_EVENING_VISIBILITY_SUMMARY,
+  VENUS_MORNING_VISIBILITY_DESCRIPTION,
+  VENUS_MORNING_VISIBILITY_PAIR_LABEL,
+  VENUS_MORNING_VISIBILITY_SUMMARY,
+  VENUSIAN_TAG,
+} from "../../phases.constants";
+import { PhaseCalculationService } from "../calculation/phase-calculation.service";
+
+import type { VenusianPhase } from "../../../../../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../../../../../calendar-events/calendar-events.types";
+import type {
+  BuildPlanetPhaseEventArguments,
+  PhaseParameters,
+  VenusianPhaseEventArguments,
+} from "../../phases.types";
+import type { Moment } from "moment-timezone";
+
+/**
+ * Detects Venusian phase transitions and visibility events.
+ */
+@Injectable()
+export class VenusianPhaseService {
+  // 🏗 Dependency Injection
+
+  constructor(
+    private readonly logger: LoggerService,
+    private readonly phaseCalculationService: PhaseCalculationService,
+    private readonly progressiveUtilitiesService: ProgressiveUtilitiesService,
+  ) {
+    this.logger.setContext(VenusianPhaseService.name);
+  }
+
+  // 🔐 Private Fields
+
+  private static readonly tags = PHASE_EVENT_BASE_TAGS;
+
+  // 🔑 Public Fields
+
+  // 🔏 Private Methods
+
+  /**
+   * Detects venusian evening phases.
+   */
+  private detectVenusianEveningPhases(
+    parameters: PhaseParameters,
+    minute: Moment,
+  ): DetectedCalendarEvent[] {
+    const events: DetectedCalendarEvent[] = [];
+    const checks: [boolean, VenusianPhase][] = [
+      [this.phaseCalculationService.isEveningRise(parameters), "evening rise"],
+      [
+        this.phaseCalculationService.isEasternElongation(parameters),
+        "eastern elongation",
+      ],
+      [
+        this.phaseCalculationService.isEasternBrightest(parameters),
+        "eastern brightest",
+      ],
+      [this.phaseCalculationService.isEveningSet(parameters), "evening set"],
+    ];
+    for (const [condition, phase] of checks) {
+      if (condition) {
+        events.push(this.buildVenusianPhaseEvent({ phase, timestamp: minute }));
+      }
+    }
+    return events;
+  }
+
+  /**
+   * Detects venusian morning phases.
+   */
+  private detectVenusianMorningPhases(
+    parameters: PhaseParameters,
+    minute: Moment,
+  ): DetectedCalendarEvent[] {
+    const events: DetectedCalendarEvent[] = [];
+    const checks: [boolean, VenusianPhase][] = [
+      [this.phaseCalculationService.isMorningRise(parameters), "morning rise"],
+      [
+        this.phaseCalculationService.isWesternBrightest(parameters),
+        "western brightest",
+      ],
+      [
+        this.phaseCalculationService.isWesternElongation(parameters),
+        "western elongation",
+      ],
+      [this.phaseCalculationService.isMorningSet(parameters), "morning set"],
+    ];
+    for (const [condition, phase] of checks) {
+      if (condition) {
+        events.push(this.buildVenusianPhaseEvent({ phase, timestamp: minute }));
+      }
+    }
+    return events;
+  }
+
+  // 🌎 Public Methods
+
+  /**
+   * Creates a calendar event for a Venusian phase in Venus's eight-phase cycle.
+   */
+  buildVenusianPhaseEvent(
+    args: BuildPlanetPhaseEventArguments<VenusianPhase>,
+  ): DetectedCalendarEvent {
+    const { phase, timestamp } = args;
+
+    const phaseCapitalized = _.startCase(phase);
+    const phaseSymbol = symbolByVenusianPhase[phase];
+
+    const description = `Venus ${phaseCapitalized}`;
+    const summary = `♀️${phaseSymbol} ${description}`;
+
+    const dateString = this.phaseCalculationService.formatTimeZoneIso(
+      timestamp,
+      PHASE_EVENT_TIMEZONE,
+    );
+    this.logger.info("🗓️ Built a calendar event", undefined, {
+      at: dateString,
+      summary,
+    });
+
+    const venusianPhaseEvent: DetectedCalendarEvent = {
+      description,
+      end: timestamp,
+      start: timestamp,
+      summary,
+      tags: [...VenusianPhaseService.tags, VENUSIAN_TAG, phaseCapitalized],
+    };
+    return venusianPhaseEvent;
+  }
+
+  /**
+   * Derives venus evening visibility duration event.
+   */
+  getVenusEveningVisibilityDurationEvent(
+    beginning: DetectedCalendarEvent,
+    ending: DetectedCalendarEvent,
+  ): DetectedCalendarEvent {
+    return {
+      description: VENUS_EVENING_VISIBILITY_DESCRIPTION,
+      end: ending.start,
+      start: beginning.start,
+      summary: VENUS_EVENING_VISIBILITY_SUMMARY,
+      tags: [...VenusianPhaseService.tags, VENUSIAN_TAG, "Evening Visibility"],
+    };
+  }
+
+  /**
+   * Derives venusian evening progressive events.
+   */
+  getVenusianEveningProgressiveEvents(
+    events: DetectedCalendarEvent[],
+  ): DetectedCalendarEvent[] {
+    const pairs = this.progressiveUtilitiesService.pairProgressiveEvents(
+      this.phaseCalculationService.filterByTag(events, EVENING_RISE_TAG),
+      this.phaseCalculationService.filterByTag(events, EVENING_SET_TAG),
+      VENUS_EVENING_VISIBILITY_PAIR_LABEL,
+    );
+    return pairs.map(([beginning, ending]) =>
+      this.getVenusEveningVisibilityDurationEvent(beginning, ending),
+    );
+  }
+
+  /**
+   * Derives venusian morning progressive events.
+   */
+  getVenusianMorningProgressiveEvents(
+    events: DetectedCalendarEvent[],
+  ): DetectedCalendarEvent[] {
+    const pairs = this.progressiveUtilitiesService.pairProgressiveEvents(
+      this.phaseCalculationService.filterByTag(events, MORNING_RISE_TAG),
+      this.phaseCalculationService.filterByTag(events, MORNING_SET_TAG),
+      VENUS_MORNING_VISIBILITY_PAIR_LABEL,
+    );
+    return pairs.map(([beginning, ending]) =>
+      this.getVenusMorningVisibilityDurationEvent(beginning, ending),
+    );
+  }
+
+  /**
+   * Produces Venusian morning/evening phase events for one minute.
+   */
+  getVenusianPhaseEvents(
+    args: VenusianPhaseEventArguments,
+  ): DetectedCalendarEvent[] {
+    const {
+      minute,
+      sunCoordinateEphemeris,
+      venusCoordinateEphemeris,
+      venusIlluminationEphemeris,
+    } = args;
+
+    const parameters = this.phaseCalculationService.gatherPhaseParameters({
+      illuminationEphemeris: venusIlluminationEphemeris,
+      minute,
+      planetCoordinateEphemeris: venusCoordinateEphemeris,
+      sunCoordinateEphemeris,
+    });
+
+    return [
+      ...this.detectVenusianMorningPhases(parameters, minute),
+      ...this.detectVenusianEveningPhases(parameters, minute),
+    ];
+  }
+
+  /**
+   * Derives venusian phase progressive events.
+   */
+  getVenusianPhaseProgressiveEvents(
+    events: DetectedCalendarEvent[],
+  ): DetectedCalendarEvent[] {
+    return [
+      ...this.getVenusianMorningProgressiveEvents(events),
+      ...this.getVenusianEveningProgressiveEvents(events),
+    ];
+  }
+
+  /**
+   * Derives venus morning visibility duration event.
+   */
+  getVenusMorningVisibilityDurationEvent(
+    beginning: DetectedCalendarEvent,
+    ending: DetectedCalendarEvent,
+  ): DetectedCalendarEvent {
+    return {
+      description: VENUS_MORNING_VISIBILITY_DESCRIPTION,
+      end: ending.start,
+      start: beginning.start,
+      summary: VENUS_MORNING_VISIBILITY_SUMMARY,
+      tags: [...VenusianPhaseService.tags, VENUSIAN_TAG, "Morning Visibility"],
+    };
+  }
+}

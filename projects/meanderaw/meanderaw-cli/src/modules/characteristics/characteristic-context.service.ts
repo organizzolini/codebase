@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 
 import { CodeService } from "../code/code.service";
-import { MatrixService } from "../matrix/matrix.service";
+import { MatrixService } from "../geometry/modules/matrix/matrix.service";
 
 import type { Code, CodeObject } from "../code/code.types";
 import type { CharacteristicContext } from "./characteristics.types";

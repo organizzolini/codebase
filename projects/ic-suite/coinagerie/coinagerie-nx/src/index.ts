@@ -3,7 +3,7 @@ import path from "node:path";
 
 import { COINAGERIE_NX_PLUGIN_NAME } from "./modules/options/options.constants";
 import { resolvePluginService } from "./modules/plugin/plugin-context.utilities";
-import { CONFIGURATION_GLOB } from "./modules/plugin/plugin.constants";
+import { PROJECT_MANIFEST_GLOB } from "./modules/plugin/plugin.constants";
 
 import type {
   CreateNodes,
@@ -28,39 +28,35 @@ export type {
   InferredTargets,
 } from "./modules/plugin/plugin.types";
 
-/** Infers a check target on each project with a configuration. */
+/** Infers a check target where the configured configuration exists. */
 const createNodes: CreateNodes = [
-  CONFIGURATION_GLOB,
+  PROJECT_MANIFEST_GLOB,
   async (
-    configurationFiles: readonly string[],
+    projectFiles: readonly string[],
     options: unknown,
     context: CreateNodesContext,
   ): Promise<CreateNodesResultArray> => {
     const pluginService = await resolvePluginService();
     const targetsByProjectRoot = pluginService.inferTargets({
-      configurationFiles,
       options,
+      projectFiles,
       workspaceRoot: context.workspaceRoot,
     });
 
     const seenRoots = new Set<string>();
 
-    return configurationFiles.flatMap(
-      (configurationFile): CreateNodesResultArray => {
-        const projectRoot = path.posix.dirname(configurationFile);
-        const targets = targetsByProjectRoot.get(projectRoot);
+    return projectFiles.flatMap((projectFile): CreateNodesResultArray => {
+      const projectRoot = path.posix.dirname(projectFile);
+      const targets = targetsByProjectRoot.get(projectRoot);
 
-        if (targets === undefined || seenRoots.has(projectRoot)) {
-          return [];
-        }
+      if (targets === undefined || seenRoots.has(projectRoot)) {
+        return [];
+      }
 
-        seenRoots.add(projectRoot);
+      seenRoots.add(projectRoot);
 
-        return [
-          [configurationFile, { projects: { [projectRoot]: { targets } } }],
-        ];
-      },
-    );
+      return [[projectFile, { projects: { [projectRoot]: { targets } } }]];
+    });
   },
 ];
 

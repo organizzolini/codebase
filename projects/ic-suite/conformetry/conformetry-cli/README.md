@@ -15,10 +15,10 @@ npm install --save-dev @conformetry/cli
 
 ```bash
 # Scaffold a new module from the `nestjs-service-module` template
-conformetry generate --config configuration/conformetry.config.ts --template nestjs-service-module --name billing
+conformetry generate --config configuration/ic-suite/conformetry.config.ts --template nestjs-service-module --name billing
 
 # Check every existing instance still matches the template it came from
-conformetry validate --config configuration/conformetry.config.ts
+conformetry validate --config configuration/ic-suite/conformetry.config.ts
 ```
 
 ## Why
@@ -77,7 +77,7 @@ missing one before that.
 A template's own inputs are passed as flags alongside these:
 
 ```bash
-conformetry generate --config configuration/conformetry.config.ts --template react-component-folder --name search-bar
+conformetry generate --config configuration/ic-suite/conformetry.config.ts --template react-component-folder --name search-bar
 ```
 
 **Omitting `--template` at a terminal offers a picker** — an autocomplete over
@@ -139,18 +139,18 @@ With `--instances` it answers the other direction — which templates explain a
 given path:
 
 ```bash
-conformetry templates --config configuration/conformetry.config.ts --instances packages/billing/src/modules/billing
+conformetry templates --config configuration/ic-suite/conformetry.config.ts --instances packages/billing/src/modules/billing
 ```
 
 ```text
   nestjs-service-module (nsm)
     Generate a NestJS service module
-    Template: configuration/conformetry-templates/nestjs-service-module
+    Template: configuration/ic-suite/conformetry-templates/nestjs-service-module
     Instances:
       packages/billing/src/modules/billing 5/5 files 100%
   nestjs-command-module (ncm)
     Generate a NestJS command module
-    Template: configuration/conformetry-templates/nestjs-command-module
+    Template: configuration/ic-suite/conformetry-templates/nestjs-command-module
     Instances:
       packages/billing/src/modules/billing 3/5 files 60%
 ```
@@ -170,7 +170,7 @@ one. The complement of the command above: that one asks what standard a path
 answers to, this one asks what generated code exists.
 
 ```bash
-conformetry instances --config configuration/conformetry.config.ts --templates nestjs-service-module
+conformetry instances --config configuration/ic-suite/conformetry.config.ts --templates nestjs-service-module
 ```
 
 ```text
@@ -261,7 +261,7 @@ Conformance scores:
 
   1. file: logger.types.ts — 1/2 requirements met (50.0%)
      Instance: projects/common/observability/src/modules/logger/logger.types.ts
-     Template: configuration/conformetry-templates/nestjs-service-module/{{nameKebabCase}}/{{nameKebabCase}}.types.ts
+     Template: configuration/ic-suite/conformetry-templates/nestjs-service-module/{{nameKebabCase}}/{{nameKebabCase}}.types.ts
 
      1. Missing comment // 🏷️ Types
         Template: Line 1, Column 1
@@ -315,7 +315,7 @@ expected value and a concrete fix:
 ```text
 1. file: billing.service.ts
    Instance: packages/billing/src/modules/billing/billing.service.ts
-   Template: configuration/conformetry-templates/nestjs-service-module/…
+   Template: configuration/ic-suite/conformetry-templates/nestjs-service-module/…
 
    1. Missing required comment
       Instance: line 24
@@ -543,7 +543,7 @@ nx run conformetry-cli:start
 Pass a subcommand and its flags after `--`:
 
 ```bash
-nx run conformetry-cli:start -- validate --config configuration/conformetry.config.ts --languages typescript
+nx run conformetry-cli:start -- validate --config configuration/ic-suite/conformetry.config.ts --languages typescript
 ```
 
 ## Test

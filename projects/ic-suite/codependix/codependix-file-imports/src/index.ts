@@ -9,8 +9,8 @@ export type {
   FileImportsWorkspaceGraph,
   FileImportsWorkspaceGraphEdge,
 } from "./modules/file-imports-workspace-graph/file-imports-workspace-graph.types";
+export { PythonImportParserService } from "./modules/python/modules/import-parser/python-import-parser.service";
 export { PythonImportGraphService } from "./modules/python/python-import-graph.service";
-export { PythonImportParserService } from "./modules/python/python-import-parser.service";
 export { PythonProjectService } from "./modules/python/python-project.service";
 export { PythonModule } from "./modules/python/python.module";
 export { PythonService } from "./modules/python/python.service";

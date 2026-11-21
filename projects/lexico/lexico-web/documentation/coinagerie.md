@@ -1,0 +1,21 @@
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses, regenerated with this project's `coinagerie-check:write` Nx target.
+
+- **degree**: Comparison grade of an adjective or adverb, such as positive, shown in lexeme inflection data and header details.
+- **dictionary**: Latin reference the app searches in Latin and English, shown as the sidebar brand and as each lexeme entry.
+- **disambiguator**: Float field on GraphQL search results giving a numeric index that tells apart lexemes sharing a lemma.
+- **fire**: Test verb: fireEvent dispatches a DOM event, such as click or focus, on an element rendered under test.
+- **grammar**: Word in code comments naming grammar-book conventions, such as the short labels and case order in form tables.
+- **letter**: Count of extra letters in a fuzzy lemma match, shown in the tooltip for a prefix match beyond the query.
+- **lexeme**: Dictionary entry for one lemma with its forms, pronunciations and etymology, the core record every card shows.
+- **literature**: GraphQL type for literature search results, present in generated mocks and operations but not yet rebuilt as a page.
+- **perfect**: Verb tense name for the perfect, abbreviated PERF in identifiers and listed among the finite verb tenses.
+- **pronunciation**: Spoken form of a lexeme, a list of phonetic variants with their variant label, rendered in the lexeme pronunciations section.
+- **translation**: An English sense of a lexeme, listed as bullets by LexemeTranslations and matched by English search.
+- **verb**: Part of speech whose forms render as a conjugation table, routed to the VerbForms component when partOfSpeech is verb.
+- **visible**: Tailwind overflow-visible class on the search bar card, so content can extend past the card edges.
+
+<!-- coinagerie:end -->

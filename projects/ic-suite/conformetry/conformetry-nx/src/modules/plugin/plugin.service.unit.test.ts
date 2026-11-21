@@ -309,6 +309,16 @@ describe(PluginService, () => {
       });
     });
 
+    it("reads a workspace-relative configurationPath from the workspace root, not the cwd", async () => {
+      const targets = await service.inferTargets({
+        options: { configurationPath: "conformetry.config.json" },
+        projectConfigurationFiles: ["packages/widgets/project.json"],
+        workspaceRoot,
+      });
+
+      expect(targets.get("packages/widgets")).toBeDefined();
+    });
+
     it("infers nothing onto a project with no instances", async () => {
       const targets = await service.inferTargets({
         options,

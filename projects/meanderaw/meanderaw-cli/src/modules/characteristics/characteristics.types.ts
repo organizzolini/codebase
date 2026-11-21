@@ -1,7 +1,7 @@
 // 🏷️ Types
 
 import type { CodeObject } from "../code/code.types";
-import type { Matrix } from "../matrix/matrix.types";
+import type { Matrix } from "../geometry/modules/matrix/matrix.types";
 import type {
   BOOLEAN_CHARACTERISTIC_KEYS,
   CHARACTERISTIC_KEYS,

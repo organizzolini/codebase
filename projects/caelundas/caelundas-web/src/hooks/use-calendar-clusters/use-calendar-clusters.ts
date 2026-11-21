@@ -1,7 +1,7 @@
 import { createElement, useCallback, useMemo, useState } from "react";
 
-import { CalendarClusterDialog } from "../../components/calendar-cluster-dialog/calendar-cluster-dialog";
-import { getViewWindows } from "../../components/events-calendar/calendar-window.utilities";
+import { getViewWindows } from "../../components/calendar-display/events-calendar/components/calendar-window/calendar-window.utilities";
+import { CalendarClusterDialog } from "../../components/calendar-events/calendar-cluster-dialog/calendar-cluster-dialog";
 
 import { CLUSTER_ID_PREFIX } from "./calendar-clusters.constants";
 import { clusterEvents } from "./calendar-clusters.utilities";

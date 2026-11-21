@@ -1,0 +1,290 @@
+import { createMock } from "@golevelup/ts-vitest";
+import _ from "lodash";
+import moment from "moment-timezone";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { EphemerisService } from "../../../ephemeris/ephemeris.service";
+
+import { SpecialtyAspectsComposerService } from "./specialty-aspects-composer.service";
+
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
+
+describe(SpecialtyAspectsComposerService, () => {
+  let service: SpecialtyAspectsComposerService;
+  let logger: BuiltTestingModule<SpecialtyAspectsComposerService>["logger"];
+
+  const testingModuleOptions = {
+    providers: [
+      {
+        provide: EphemerisService,
+        useValue: createMock<EphemerisService>({
+          getLongitudesWindow: vi
+            .fn<EphemerisService["getLongitudesWindow"]>()
+            .mockReturnValue({
+              current: 72,
+              next: 73,
+              previous: 71,
+            }),
+        }),
+      },
+    ],
+  };
+
+  beforeAll(async () => {
+    ({ instance: service, logger } = await buildTestingModule(
+      SpecialtyAspectsComposerService,
+      testingModuleOptions,
+    ));
+  });
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      SpecialtyAspectsComposerService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(SpecialtyAspectsComposerService);
+  });
+
+  it("assembles boundary events for every phase", () => {
+    const timestamp = moment.utc("2024-03-21T12:00:00.000Z");
+
+    expect(
+      service.buildSpecialtyAspectEventFromParts({
+        body1Symbol: "☀️",
+        body2Symbol: "🌙",
+        description: "Sun perfective quintile Moon",
+        specialtyAspectSymbol: "⬠",
+        tags: ["Astronomy", "Astrology", "Specialty Aspect"],
+        timestamp,
+      }),
+    ).toStrictEqual(
+      expect.objectContaining({
+        description: "Sun perfective quintile Moon",
+        summary: "☀️⬠🌙 Sun quintile Moon",
+      }),
+    );
+
+    expect(logger.info).toHaveBeenCalledWith(
+      "🗓️ Built a calendar event",
+      undefined,
+      {
+        at: timestamp.toISOString(),
+        summary: "☀️⬠🌙 Sun quintile Moon",
+      },
+    );
+  });
+
+  it("extracts and casts aspect components", () => {
+    expect(
+      service.extractAspectBodiesFromTags([
+        "Astronomy",
+        "Astrology",
+        "Specialty Aspect",
+        "Moon",
+        "Sun",
+        "Quintile",
+      ]),
+    ).toStrictEqual({
+      aspectCapitalized: "Quintile",
+      body1Capitalized: "Moon",
+      body2Capitalized: "Sun",
+    });
+
+    expect(
+      service.extractTypedAspectValues({
+        aspectCapitalized: "Quintile",
+        body1Capitalized: "Moon",
+        body2Capitalized: "Sun",
+        tags: ["Quintile", "Moon", "Sun"],
+      }),
+    ).toStrictEqual({
+      aspect: "quintile",
+      body1: "moon",
+      body2: "sun",
+    });
+  });
+
+  it("builds progressive events and group keys", () => {
+    const minute = moment.utc("2024-03-21T12:00:00.000Z");
+    const beginning = {
+      description: "Sun forming quintile Moon",
+      end: minute,
+      start: minute,
+      summary: "☀️⬠🌙 Sun quintile Moon",
+      tags: [
+        "Astronomy",
+        "Astrology",
+        "Simple Aspect",
+        "Specialty Aspect",
+        "Moon",
+        "Sun",
+        "Quintile",
+        "Forming",
+      ],
+    };
+    const ending = {
+      ...beginning,
+      description: "Sun dissolving quintile Moon",
+      end: minute.clone().add(1, "hour"),
+      start: minute.clone().add(1, "hour"),
+      summary: "☀️⬠🌙 Sun quintile Moon",
+      tags: beginning.tags.map((tag) =>
+        tag === "Forming" ? "Dissolving" : tag,
+      ),
+    };
+
+    expect(
+      service.phaseFields({
+        baseTags: ["Astronomy", "Astrology"],
+        body1Capitalized: "Moon",
+        body2Capitalized: "Sun",
+        phase: "forming",
+        specialtyAspect: "quintile",
+      }),
+    ).toStrictEqual(
+      expect.objectContaining({
+        description: "Moon forming quintile Sun",
+      }),
+    );
+    expect(
+      service.phaseFields({
+        baseTags: ["Astronomy", "Astrology"],
+        body1Capitalized: "Moon",
+        body2Capitalized: "Sun",
+        phase: "perfective",
+        specialtyAspect: "quintile",
+      }),
+    ).toStrictEqual(
+      expect.objectContaining({
+        description: "Moon perfective quintile Sun",
+      }),
+    );
+    expect(
+      service.phaseFields({
+        baseTags: ["Astronomy", "Astrology"],
+        body1Capitalized: "Moon",
+        body2Capitalized: "Sun",
+        phase: "dissolving",
+        specialtyAspect: "quintile",
+      }),
+    ).toStrictEqual(
+      expect.objectContaining({
+        description: "Moon dissolving quintile Sun",
+      }),
+    );
+
+    expect(service.specialtyAspectGroupKey(beginning)).toBe(
+      "Moon-Quintile-Sun",
+    );
+    expect(
+      service.specialtyAspectGroupKey({
+        ...beginning,
+        tags: ["Moon"],
+      }),
+    ).toBe("");
+
+    expect(
+      service.getSpecialtyAspectProgressiveEvent(beginning, ending),
+    ).toStrictEqual(
+      expect.objectContaining({
+        description: "Sun quintile Moon",
+        summary: "☀️⬠🌙 Sun quintile Moon",
+      }),
+    );
+
+    expect(
+      service.getBodyLongitudesWindow({
+        ephemeris: {},
+        minute,
+        nextMinute: minute.clone().add(1, "minute"),
+        previousMinute: minute.clone().subtract(1, "minute"),
+      }),
+    ).toStrictEqual({ current: 72, next: 73, previous: 71 });
+  });
+
+  it("rejects invalid input and formats grouped events", () => {
+    expect(() =>
+      service.extractTypedAspectValues({
+        aspectCapitalized: "Not An Aspect",
+        body1Capitalized: "Moon",
+        body2Capitalized: "Sun",
+        tags: ["Moon", "Sun"],
+      }),
+    ).toThrow("Could not extract typed values");
+
+    expect(() => service.extractAspectBodiesFromTags(["Moon"])).toThrow(
+      "Could not extract aspect info",
+    );
+    expect(() =>
+      service.getSpecialtyAspectProgressiveEvent(
+        {
+          description: "Invalid",
+          end: moment.utc("2024-03-21T12:00:00.000Z"),
+          start: moment.utc("2024-03-21T12:00:00.000Z"),
+          summary: "Invalid",
+          tags: ["Astronomy", "Astrology", "Specialty Aspect", "Moon"],
+        },
+        {
+          description: "Invalid",
+          end: moment.utc("2024-03-21T12:01:00.000Z"),
+          start: moment.utc("2024-03-21T12:01:00.000Z"),
+          summary: "Invalid",
+          tags: ["Astronomy", "Astrology", "Specialty Aspect", "Moon"],
+        },
+      ),
+    ).toThrow("Could not extract aspect info");
+  });
+
+  it("falls back to empty string when sorted body tags contain sparse values", () => {
+    const sortBySpy = vi
+      .spyOn(_, "sortBy")
+      .mockReturnValue([undefined, "Sun"] as unknown);
+
+    expect(
+      service.extractAspectBodiesFromTags([
+        "Astronomy",
+        "Astrology",
+        "Specialty Aspect",
+        "Moon",
+        "Sun",
+        "Quintile",
+      ]),
+    ).toStrictEqual({
+      aspectCapitalized: "Quintile",
+      body1Capitalized: "",
+      body2Capitalized: "Sun",
+    });
+
+    sortBySpy.mockRestore();
+  });
+
+  it("falls back to empty string for the second body when sort output is sparse", () => {
+    const sortBySpy = vi
+      .spyOn(_, "sortBy")
+      .mockReturnValue(["Moon", undefined] as unknown);
+
+    expect(
+      service.extractAspectBodiesFromTags([
+        "Astronomy",
+        "Astrology",
+        "Specialty Aspect",
+        "Moon",
+        "Sun",
+        "Quintile",
+      ]),
+    ).toStrictEqual({
+      aspectCapitalized: "Quintile",
+      body1Capitalized: "Moon",
+      body2Capitalized: "",
+    });
+
+    sortBySpy.mockRestore();
+  });
+});

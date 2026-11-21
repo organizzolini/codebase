@@ -1,3 +1,31 @@
+## 0.0.91 (2026-11-21)
+
+### 💅 Refactors
+
+- **configuration,documentation,synchronization:** ♻️ run the agent workflow on superpowers skills ([#2457](https://github.com/organizzolini/codebase/pull/2457), [#2453](https://github.com/organizzolini/codebase/issues/2453))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.91
+- Updated conformetry-generation to 0.0.91
+- Updated conformetry-validation to 0.0.90
+- Updated conformetry-output to 0.0.90
+- Updated conformetry-core to 0.0.89
+
+## 0.0.90 (2026-11-20)
+
+### 🚀 Features
+
+- **codometer,configuration:** ✨ cap directory breadth and depth, and keep tool configs in configuration folders ([#2452](https://github.com/organizzolini/codebase/pull/2452), [#2450](https://github.com/organizzolini/codebase/issues/2450))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.90
+- Updated conformetry-generation to 0.0.90
+- Updated conformetry-validation to 0.0.89
+- Updated conformetry-output to 0.0.89
+- Updated conformetry-core to 0.0.88
+
 ## 0.0.89 (2026-11-20)
 
 ### 🧱 Updated Dependencies

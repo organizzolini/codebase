@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-import type { PaginationArguments } from "../search/pagination-arguments.entities";
+import type { PaginationArguments } from "../search/modules/search-arguments/pagination-arguments.entities";
 import type { Repository } from "@codebase/lexico-db";
 
 /**

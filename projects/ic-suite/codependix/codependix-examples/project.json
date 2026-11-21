@@ -14,14 +14,15 @@
     "build-projects": {},
     "codometer": {},
     "deprecate-code": {},
+    "eslint": {},
     "examples": {
       "cache": true,
       "configurations": {
         "check": {
-          "command": "node --import @swc-node/register/esm-register testing/render-examples.ts --check"
+          "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register testing/render-examples.ts --check"
         },
         "write": {
-          "command": "node --import @swc-node/register/esm-register testing/render-examples.ts --write"
+          "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register testing/render-examples.ts --write"
         }
       },
       "defaultConfiguration": "check",
@@ -46,6 +47,7 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "vitest": {},
     "yaml-lint": {}
   }
 }

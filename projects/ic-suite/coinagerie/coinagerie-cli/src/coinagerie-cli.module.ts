@@ -14,7 +14,7 @@ import { CollectModule } from "./modules/collect/collect.module";
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ".env",
+      envFilePath: "configuration/.env",
       isGlobal: true,
       validate: (config: Record<string, unknown>) =>
         environmentSchema.parse(config),

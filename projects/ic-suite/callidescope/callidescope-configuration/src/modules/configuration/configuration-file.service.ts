@@ -9,7 +9,6 @@ import { parse as parseJsonc } from "jsonc-parser";
 
 import {
   callidescopeConfigurationSchema,
-  CONFIGURATION_FILE_NAMES,
   ConfigurationFileNotFoundError,
   DEFAULT_ENTRY_POINT_DECORATORS,
   DEFAULT_EXCLUDE_GLOBS,
@@ -19,7 +18,6 @@ import {
   DEFAULT_MAXIMUM_DEPTH,
   DEFAULT_PREVIEW_COUNT,
   DEFAULT_RUN_HEADING,
-  REPOSITORY_ROOT_MARKERS,
   SUPPORTED_CONFIGURATION_EXTENSIONS,
   UnknownConfigurationFileTypeError,
 } from "./configuration.constants";
@@ -55,32 +53,6 @@ export class ConfigurationFileService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
-
-  /**
-   * Finds the repository root by walking up from the cwd, for task runners that start in a project.
-   */
-  private findRepositoryRoot(): string | undefined {
-    let candidateDirectory = path.resolve(process.cwd());
-
-    for (;;) {
-      const directory = candidateDirectory;
-      const isRoot = REPOSITORY_ROOT_MARKERS.some((marker) =>
-        existsSync(path.join(directory, marker)),
-      );
-
-      if (isRoot) {
-        return candidateDirectory;
-      }
-
-      const parentDirectory = path.dirname(candidateDirectory);
-
-      if (parentDirectory === candidateDirectory) {
-        return undefined;
-      }
-
-      candidateDirectory = parentDirectory;
-    }
-  }
 
   /** Loads a configuration module, choosing the reader by extension. */
   private async loadConfigurationModule(args: {
@@ -119,30 +91,15 @@ export class ConfigurationFileService {
       : JSON.parse(configurationContent);
   }
 
-  /** Resolves a configuration path against the cwd, then the repository root. */
+  /** Resolves a configuration path against the working directory, and nothing else. */
   private resolveConfigurationPath(configurationPath: string): string {
     const absolutePath = path.resolve(configurationPath);
 
-    if (existsSync(absolutePath)) {
-      return absolutePath;
-    }
-
-    const repositoryRoot = this.findRepositoryRoot();
-
-    if (repositoryRoot === undefined) {
+    if (!existsSync(absolutePath)) {
       throw new ConfigurationFileNotFoundError(absolutePath);
     }
 
-    const repositoryRelativePath = path.resolve(
-      repositoryRoot,
-      configurationPath,
-    );
-
-    if (!existsSync(repositoryRelativePath)) {
-      throw new ConfigurationFileNotFoundError(absolutePath);
-    }
-
-    return repositoryRelativePath;
+    return absolutePath;
   }
 
   /**
@@ -221,20 +178,9 @@ export class ConfigurationFileService {
 
   // 🌎 Public Methods
 
-  /**
-   * Finds a configuration file directly in one directory, without walking upward.
-   * Walking up would hand every project the workspace file.
-   */
-  public findConfigurationFileAt(directory: string): string | undefined {
-    for (const fileName of CONFIGURATION_FILE_NAMES) {
-      const candidatePath = path.join(directory, fileName);
-
-      if (existsSync(candidatePath)) {
-        return candidatePath;
-      }
-    }
-
-    return undefined;
+  /** Whether a file exists at exactly this path. Nothing is searched for. */
+  public configurationFileExists(filePath: string): boolean {
+    return existsSync(filePath);
   }
 
   /**
@@ -290,6 +236,8 @@ export class ConfigurationFileService {
       excludeCallees: configuration.excludeCallees ?? [],
       excludeFrom: configuration.excludeFrom ?? [],
       limits: this.resolveLimits(configuration.limits),
+      projectConfigurationPath: configuration.projectConfigurationPath,
+      projectTsconfigPath: configuration.projectTsconfigPath,
       write: {
         json: this.resolveJsonOutput(configuration.write),
         markdown: this.resolveMarkdownDestination(

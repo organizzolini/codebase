@@ -6,15 +6,15 @@ import {
   startDatabaseTestingModule,
 } from "@codebase/persistence/testing";
 
+import { Migration1791160950069 } from "../../../migrations/1791160950069-migration";
+import { Migration1791414023001 } from "../../../migrations/1791414023001-migration";
 import { meanderRecord } from "../../../testing/meanders";
 import { CHARACTERISTIC_KEYS } from "../characteristics/characteristics.constants";
 
 import { MEANDER_INSERT_CHUNK_SIZE } from "./database.constants";
 import { DatabaseModule } from "./database.module";
 import { DatabaseService } from "./database.service";
-import { Meander } from "./entities/meander.entity";
-import { Migration1791160950069 } from "./migrations/1791160950069-migration";
-import { Migration1791414023001 } from "./migrations/1791414023001-migration";
+import { Meander } from "./meander.entity";
 
 import type { MeanderRecord } from "./database.types";
 

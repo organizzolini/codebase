@@ -11,6 +11,8 @@ import {
   DEFAULT_TRACE_TARGET_NAME,
   EXECUTOR_CONFIGURATION_SURFACE,
   PLUGIN_CONFIGURATION_SURFACE,
+  PLUGIN_PROJECT_CONFIGURATION_SURFACE,
+  PLUGIN_PROJECT_TSCONFIG_SURFACE,
 } from "./options.constants";
 
 import type { CallidescopePluginOptions } from "./options.types";
@@ -105,8 +107,8 @@ export class OptionsService {
   }
 
   /**
-   * Resolves the effective plugin options from an untrusted value. Only `configurationPath`
-   * has no default, and it is never searched for.
+   * Resolves the effective plugin options from an untrusted value. Only `configurationPath`,
+   * `projectConfigurationPath`, and `projectTsconfigPath` have no default, and none is ever searched for.
    */
   public resolvePluginOptions(options: unknown): CallidescopePluginOptions {
     const record: Record<string, unknown> =
@@ -115,6 +117,16 @@ export class OptionsService {
       this.configurationService.requireConfigurationPath(
         this.readString({ key: "configurationPath", options: record }),
         PLUGIN_CONFIGURATION_SURFACE,
+      );
+    const projectConfigurationPath =
+      this.configurationService.requireProjectConfigurationPath(
+        this.readString({ key: "projectConfigurationPath", options: record }),
+        PLUGIN_PROJECT_CONFIGURATION_SURFACE,
+      );
+    const projectTsconfigPath =
+      this.configurationService.requireProjectTsconfigPath(
+        this.readString({ key: "projectTsconfigPath", options: record }),
+        PLUGIN_PROJECT_TSCONFIG_SURFACE,
       );
 
     return {
@@ -128,6 +140,8 @@ export class OptionsService {
       gateTargetName:
         this.readString({ key: "gateTargetName", options: record }) ??
         DEFAULT_GATE_TARGET_NAME,
+      projectConfigurationPath,
+      projectTsconfigPath,
       traceTargetName:
         this.readString({ key: "traceTargetName", options: record }) ??
         DEFAULT_TRACE_TARGET_NAME,

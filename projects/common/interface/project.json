@@ -23,7 +23,7 @@
         "generatePackageJson": false,
         "main": "projects/common/interface/src/index.ts",
         "outputPath": "projects/common/interface/dist",
-        "tsConfig": "projects/common/interface/tsconfig.build.json"
+        "tsConfig": "projects/common/interface/configuration/tsconfig.build.json"
       },
       "outputs": ["{options.outputPath}"]
     },
@@ -31,6 +31,7 @@
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "eslint": {},
     "format-code": {},
     "guard-code": {},
     "knip": {},
@@ -44,6 +45,7 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "vitest": {},
     "yaml-lint": {}
   }
 }

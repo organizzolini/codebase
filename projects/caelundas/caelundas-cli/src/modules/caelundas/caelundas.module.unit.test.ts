@@ -34,7 +34,7 @@ describe("caelundas module", () => {
       throw new Error("options is undefined");
     }
 
-    expect(options.envFilePath).toBe(".env");
+    expect(options.envFilePath).toBe("configuration/.env");
     expect(options.isGlobal).toBe(true);
     expect(typeof options.validate).toBe("function");
 

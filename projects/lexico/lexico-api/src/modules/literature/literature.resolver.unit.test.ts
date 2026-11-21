@@ -9,14 +9,14 @@ import { createConnection, createEdge } from "@codebase/interface";
 import { Author, Line, Text } from "@codebase/lexico-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { AuthorsResolver } from "./authors.resolver";
-import { LinesResolver } from "./lines.resolver";
-import { LiteratureRelationsLoader } from "./literature-relations.loader";
 import { LiteratureResolver } from "./literature.resolver";
 import { LiteratureService } from "./literature.service";
 import { toAuthorType, toLineType, toTextType } from "./literature.utilities";
-import { TextsResolver } from "./texts.resolver";
-import { TokensResolver } from "./tokens.resolver";
+import { AuthorsResolver } from "./modules/authors/authors.resolver";
+import { LinesResolver } from "./modules/lines/lines.resolver";
+import { LiteratureRelationsLoader } from "./modules/relations/literature-relations.loader";
+import { TextsResolver } from "./modules/texts/texts.resolver";
+import { TokensResolver } from "./modules/tokens/tokens.resolver";
 
 describe(LiteratureResolver, () => {
   it("resolves with its dependencies", async () => {

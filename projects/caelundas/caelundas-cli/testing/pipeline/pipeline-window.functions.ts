@@ -1,0 +1,73 @@
+import { NestFactory } from "@nestjs/core";
+
+import { inputSchema } from "../../src/modules/input/input.constants";
+import { PerfectiveService } from "../../src/modules/perfective/perfective.service";
+import { ProgressiveService } from "../../src/modules/progressive/progressive.service";
+
+import { PipelineWindowModule } from "./pipeline-window.module";
+
+import type {
+  PipelineWindow,
+  PipelineWindowOptions,
+  PipelineWindowRequest,
+} from "./pipeline-window.types";
+
+/** Sweeps started in this process, so shared windows run once. */
+const sweeps = new Map<string, Promise<PipelineWindow>>();
+
+/**
+ * Runs the real perfective and progressive passes over a short Swiss Ephemeris window, without storage; sweeps are cached per request.
+ */
+export async function runPipelineWindow(
+  request: PipelineWindowRequest,
+  options: PipelineWindowOptions = {},
+): Promise<PipelineWindow> {
+  const { families } = options;
+  const key = JSON.stringify([
+    request.latitude,
+    request.longitude,
+    request.startDate,
+    request.endDate,
+    families ? [...families].toSorted() : "all",
+  ]);
+  const cached = sweeps.get(key);
+  if (cached) {
+    return cached;
+  }
+
+  const pending = sweep(request, families);
+  sweeps.set(key, pending);
+  // A failed sweep must not poison later tests that share its window.
+  pending.catch(() => sweeps.delete(key));
+  return pending;
+}
+
+/** Boots the detection application, runs both passes over the request, and shuts it down. */
+async function sweep(
+  request: PipelineWindowRequest,
+  families: PipelineWindowOptions["families"],
+): Promise<PipelineWindow> {
+  const input = inputSchema.parse(request);
+  const context = await NestFactory.createApplicationContext(
+    PipelineWindowModule,
+    { abortOnError: false, logger: false },
+  );
+
+  try {
+    const perfective = context
+      .get(PerfectiveService)
+      .detect(input, families ? { families } : {});
+    const progressive = context.get(ProgressiveService).detect(perfective);
+
+    return {
+      events: [...perfective, ...progressive].toSorted(
+        (a, b) => a.start.valueOf() - b.start.valueOf(),
+      ),
+      input,
+      perfective,
+      progressive,
+    };
+  } finally {
+    await context.close();
+  }
+}

@@ -36,7 +36,7 @@ describe("the sample corpus and the counts its guides quote", () => {
   });
 
   describe("the sample corpus", () => {
-    it("holds twenty-eight files across twelve language folders", () => {
+    it("holds twenty-eight files across twelve languages", () => {
       const report = corpusReport;
       const codebase = readTarget(report, "codebase");
 
@@ -44,7 +44,7 @@ describe("the sample corpus and the counts its guides quote", () => {
       // this target — a dot file discovery walks into and counts like any other.
       expect(codebase.files).toBe(28);
       expect(codebase.empty).toBe(false);
-      expect(readMetric(report, "codebase", "folders")).toBe(12);
+      expect(readMetric(report, "codebase", "folders")).toBe(16);
       expect(readMetric(report, "codebase", "sourceFiles")).toBe(18);
     });
 
@@ -146,7 +146,7 @@ describe("the sample corpus and the counts its guides quote", () => {
 
       // The JSON analyzer's share, over the envelope: the notebook is a JSON
       // document, so its node count and depth come from the same parser that
-      // measures `corpus/json/catalog.json`.
+      // measures `corpus/configuration/json/catalog.json`.
       expect(readJupyter("totalNodes")).toBe(74);
       expect(readJupyter("maxDepth")).toBe(8);
 
