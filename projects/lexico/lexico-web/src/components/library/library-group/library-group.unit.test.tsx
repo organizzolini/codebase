@@ -7,35 +7,8 @@ import { LibraryGroupField } from "../../../graphql/generated/operations";
 import { LibraryGroup } from "./library-group";
 
 import type { LibraryGroupProperties } from "./library-group";
-import type { ReactNode } from "react";
 
 stubAnimations();
-
-// jsdom cannot drag, so a stand-in for Sortable reports the reversed order from a button.
-vi.mock("@codebase/presentation", async (importOriginal) => ({
-  ...(await importOriginal<Record<string, unknown>>()),
-  Sortable: ({
-    children,
-    onValueChange,
-    value,
-  }: {
-    children: ReactNode;
-    onValueChange: (value: string[]) => void;
-    value: string[];
-  }) => (
-    <div>
-      {children}
-      <button
-        onClick={() => {
-          onValueChange(value.map((_, index, all) => all.at(-1 - index) ?? ""));
-        }}
-        type="button"
-      >
-        Reverse
-      </button>
-    </div>
-  ),
-}));
 
 describe(LibraryGroup, () => {
   it("applies its class name", () => {
@@ -59,36 +32,42 @@ describe(LibraryGroup, () => {
     expect(onGroups).toHaveBeenCalledExactlyOnceWith([LibraryGroupField.Era]);
   });
 
-  it("shows a segment for each level and removes one", () => {
+  it("shows a chip for each level, and its menu removes one", async () => {
     const onGroups = vi.fn<LibraryGroupProperties["onGroups"]>();
     render(
       <LibraryGroup
         groups={[LibraryGroupField.Era]}
         onGroups={onGroups}
       />,
-    );
-
-    fireEvent.click(
-      screen.getByRole("button", { name: "Remove grouping by Era" }),
     );
 
     expect(screen.getByTestId("library-chip").textContent).toBe("Era");
+
+    fireEvent.click(screen.getByRole("button", { name: "Options for Era" }));
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
+
     expect(onGroups).toHaveBeenCalledExactlyOnceWith([]);
   });
 
-  it("gives each segment a drag handle, and applies a drag as the new order", () => {
-    const onGroups = vi.fn<LibraryGroupProperties["onGroups"]>();
+  it("cannot move the only level in either direction", async () => {
     render(
       <LibraryGroup
         groups={[LibraryGroupField.Era]}
-        onGroups={onGroups}
+        onGroups={vi.fn<LibraryGroupProperties["onGroups"]>()}
       />,
     );
 
-    expect(screen.getByRole("button", { name: "Reorder Era" })).toBeDefined();
+    fireEvent.click(screen.getByRole("button", { name: "Options for Era" }));
 
-    fireEvent.click(screen.getByRole("button", { name: "Reverse" }));
+    const moveLeft = await screen.findByRole("menuitem", {
+      name: "Move left",
+    });
 
-    expect(onGroups).toHaveBeenCalledExactlyOnceWith([LibraryGroupField.Era]);
+    expect(moveLeft.getAttribute("aria-disabled")).toBe("true");
+    expect(
+      screen
+        .getByRole("menuitem", { name: "Move right" })
+        .getAttribute("aria-disabled"),
+    ).toBe("true");
   });
 });

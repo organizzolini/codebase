@@ -81,7 +81,7 @@ describe(LibraryAuthorTexts, () => {
       />,
     );
 
-    expect(screen.getByRole("link", { name: /Fasti/u })).toBeDefined();
+    expect(screen.getByText("Fasti")).toBeDefined();
     expect(screen.queryByRole("button")).toBeNull();
   });
 

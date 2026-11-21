@@ -63,9 +63,9 @@ export const LIBRARY_LIST_KEYS: ReadonlySet<string> = new Set([
   ...LIBRARY_FACET_FILTERS.map(({ facet }) => facet),
 ]);
 
-/** Joins a strip's chips to its button: each chip overlaps the border before it, squares its left corners, and squares its right corners unless it is last. */
+/** Joins a strip's chips to its button: each chip overlaps the border before it, every segment overlaps the one before it and is squared, and only the last chip's last segment keeps its right corners. */
 export const LIBRARY_STRIP_CHIPS =
-  "[&>div]:flex [&>div]:ml-[-1px] [&>div>div>*]:rounded-l-none [&>div:not(:last-child)>div>*]:rounded-r-none";
+  "[&>div]:flex [&>div]:ml-[-1px] [&>div>*]:rounded-none [&>div>*+*]:ml-[-1px] [&>div:last-child>*:last-child]:rounded-r-lg";
 
 /** Joins the Filter button and every filter chip into one group: a chip's first segment loses its left corners and border, the last segment of every chip but the last loses its right corners, and no segment wraps its text. */
 export const LIBRARY_FILTER_STRIP =

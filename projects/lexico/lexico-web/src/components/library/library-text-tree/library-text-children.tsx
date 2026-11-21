@@ -81,15 +81,23 @@ export function LibraryTextChildren(
       {renderLevel(rows)}
       {isLoading ? (
         <p
-          className="text-muted-foreground"
+          className="px-3 py-2 text-muted-foreground"
           role="status"
         >
           Loading
         </p>
       ) : null}
-      {hasFailed ? <p role="alert">Could not load. Try again.</p> : null}
+      {hasFailed ? (
+        <p
+          className="px-3 py-2"
+          role="alert"
+        >
+          Could not load. Try again.
+        </p>
+      ) : null}
       {hasMore && !isLoading ? (
         <Button
+          className="m-2"
           onClick={() => {
             void handleLoad(page + 1);
           }}
@@ -101,6 +109,7 @@ export function LibraryTextChildren(
       ) : null}
       {hasFailed && !isLoading ? (
         <Button
+          className="m-2"
           onClick={() => {
             void handleLoad(page + 1);
           }}

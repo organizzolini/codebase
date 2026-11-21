@@ -38,19 +38,19 @@ describe(LibraryPaging, () => {
     expect(onPage).toHaveBeenNthCalledWith(2, 3);
   });
 
-  it("disables the step beyond either end", () => {
+  it("marks the step beyond either end aria-disabled, keeping its look", () => {
     renderPaging({ page: 1, pageCount: 1 });
 
     expect(
       screen
         .getByRole("button", { name: "Previous page" })
-        .hasAttribute("disabled"),
-    ).toBe(true);
+        .getAttribute("aria-disabled"),
+    ).toBe("true");
     expect(
       screen
         .getByRole("button", { name: "Next page" })
-        .hasAttribute("disabled"),
-    ).toBe(true);
+        .getAttribute("aria-disabled"),
+    ).toBe("true");
   });
 
   it("applies its class name", () => {

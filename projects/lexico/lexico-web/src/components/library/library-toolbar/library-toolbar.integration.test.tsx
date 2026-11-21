@@ -474,8 +474,9 @@ describe("library toolbar", () => {
     });
 
     fireEvent.click(
-      screen.getByRole("button", { name: "Remove sort by Text line count" }),
+      screen.getByRole("button", { name: "Options for Text line count" }),
     );
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
 
     await waitFor(() => expect(CALLS.at(-1)?.sort).toBeNull());
 
@@ -516,6 +517,30 @@ describe("library toolbar", () => {
     ).toStrictEqual(["Author era", "Author name"]);
   });
 
+  it("moves a sort left from its menu and sends the new order", async () => {
+    await renderRoute(getRouter(), "/library");
+
+    fireEvent.click(await screen.findByRole("button", { name: "Sort" }));
+    await pickSort(/^Author/u, "Author era");
+    await waitFor(() => expect(CALLS.at(-1)?.sort).toHaveLength(1));
+    await pickSort(/^Author/u, "Author name");
+    await waitFor(() => expect(CALLS.at(-1)?.sort).toHaveLength(2));
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Options for Author name" }),
+    );
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Move left" }));
+
+    await waitFor(() =>
+      expect(
+        [CALLS.at(-1)?.sort ?? []].flat().map(({ field }) => field),
+      ).toStrictEqual([
+        LibrarySortField.AuthorName,
+        LibrarySortField.AuthorEra,
+      ]),
+    );
+  });
+
   it("joins the Filter and Sort buttons to their chips in one group each", async () => {
     await renderRoute(
       getRouter(),
@@ -542,9 +567,8 @@ describe("library toolbar", () => {
 
     expect(screen.getByTestId("library-chip").textContent).toBe("Era");
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Remove grouping by Era" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Options for Era" }));
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
 
     await waitFor(() => expect(CALLS.at(-1)?.group).toBeNull());
 
@@ -616,7 +640,7 @@ describe("library toolbar", () => {
       screen.getByRole("button", { name: "Page" }),
       screen.getByRole("button", { name: "Era filter options" }),
       screen.getByRole("button", { name: /Switch to descending/u }),
-      screen.getByRole("button", { name: "Remove sort by Author name" }),
+      screen.getByRole("button", { name: "Options for Author name" }),
     ];
 
     for (const control of controls) {

@@ -1,6 +1,7 @@
 import { ListTree } from "lucide-react";
 
 import { LibraryChip } from "../../library-strip/library-chip/library-chip";
+import { moveValue } from "../../library-strip/library-chip/library-chip.utilities";
 import { LibraryOptionMenu } from "../library-toolbar/library-option-menu";
 
 import {
@@ -31,7 +32,7 @@ export interface LibraryGroupProperties {
 // 🧩 Component
 
 /**
- * The Group button with its searchable checklist of attributes, joined to a draggable chip for each active level in order. Checking an attribute adds a level; dragging a chip reorders the levels and its cross removes one.
+ * The Group button with its searchable checklist of attributes, joined to a chip for each active level in order. Checking an attribute adds a level; a chip's menu moves it left or right, or removes it.
  */
 export function LibraryGroup(
   properties: Readonly<LibraryGroupProperties>,
@@ -57,9 +58,6 @@ export function LibraryGroup(
       <LibraryOptionMenu
         icon={ListTree}
         label="Group"
-        onReorder={(values) => {
-          onGroups(reorderGroups(groups, values));
-        }}
         onToggle={(value) => {
           const field = LIBRARY_GROUP_FIELDS.get(value);
           if (field !== undefined) {
@@ -70,19 +68,24 @@ export function LibraryGroup(
         selected={groups}
         title="Group by"
       >
-        {groups.map((field) => {
+        {groups.map((field, index) => {
           const label = describeGroup(field);
 
           return (
             <LibraryChip
               key={field}
               icon={LIBRARY_GROUP_DETAILS.get(field)?.icon}
+              isFirst={index === 0}
+              isLast={index === groups.length - 1}
               label={label}
+              onMove={(offset) => {
+                onGroups(
+                  reorderGroups(groups, moveValue(groups, index, offset)),
+                );
+              }}
               onRemove={() => {
                 onGroups(toggleGroup(groups, field));
               }}
-              removeLabel={`Remove grouping by ${label}`}
-              value={field}
             />
           );
         })}

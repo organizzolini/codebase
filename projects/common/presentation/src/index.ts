@@ -30,6 +30,7 @@ export * from "./components/reui/event-calendar/event-calendar";
 export * from "./components/reui/event-calendar/event-calendar-content";
 export type * from "./components/reui/event-calendar/event-calendar-types";
 export * from "./components/reui/filters/filters";
+export * from "./components/reui/frame";
 // The Gantt's own default view configuration would collide with the event
 // calendar's by name, so only what an application composes is exported.
 export {

@@ -2,6 +2,7 @@ import { ArrowDown, ArrowDownUp, ArrowUp } from "lucide-react";
 
 import { LibrarySortDirection } from "../../../graphql/generated/operations";
 import { LibraryChip } from "../../library-strip/library-chip/library-chip";
+import { moveValue } from "../../library-strip/library-chip/library-chip.utilities";
 import { LibraryOptionMenu } from "../library-toolbar/library-option-menu";
 
 import {
@@ -34,7 +35,7 @@ export interface LibrarySortProperties {
 // 🧩 Component
 
 /**
- * The Sort button with its searchable checklist of attributes, joined to a draggable chip for each active sort in the order they apply. A chip's label flips its direction, dragging it reorders the sorts, and its cross removes it; checking an attribute adds it last.
+ * The Sort button with its searchable checklist of attributes, joined to a chip for each active sort in the order they apply. A chip's label flips its direction, and its menu moves it left or right, or removes it; checking an attribute adds it last.
  */
 export function LibrarySort(
   properties: Readonly<LibrarySortProperties>,
@@ -66,9 +67,6 @@ export function LibrarySort(
       <LibraryOptionMenu
         icon={ArrowDownUp}
         label="Sort"
-        onReorder={(values) => {
-          onSorts(reorderSorts(sorts, values));
-        }}
         onToggle={(value) => {
           const field = LIBRARY_SORT_FIELDS.get(value);
           if (field !== undefined) {
@@ -79,7 +77,7 @@ export function LibrarySort(
         selected={sorts.map(({ field }) => field)}
         title="Sort by"
       >
-        {sorts.map(({ direction, field }) => {
+        {sorts.map(({ direction, field }, index) => {
           const { icon, label } = describeSort(field);
           const isDescending = direction === LibrarySortDirection.Desc;
           const DirectionIcon = isDescending ? ArrowDown : ArrowUp;
@@ -89,16 +87,28 @@ export function LibrarySort(
               key={field}
               activateLabel={`Sort by ${label}, ${isDescending ? "descending" : "ascending"}. Switch to ${isDescending ? "ascending" : "descending"}`}
               icon={icon}
+              isFirst={index === 0}
+              isLast={index === sorts.length - 1}
               label={label}
               onActivate={() => {
                 handleFlip(field);
               }}
+              onMove={(offset) => {
+                onSorts(
+                  reorderSorts(
+                    sorts,
+                    moveValue(
+                      sorts.map((entry) => entry.field),
+                      index,
+                      offset,
+                    ),
+                  ),
+                );
+              }}
               onRemove={() => {
                 handleToggle(field);
               }}
-              removeLabel={`Remove sort by ${label}`}
               trailing={<DirectionIcon aria-hidden="true" />}
-              value={field}
             />
           );
         })}

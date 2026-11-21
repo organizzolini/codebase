@@ -21,8 +21,8 @@ export interface LibraryTextLinkProperties {
 // 🧩 Component
 
 /**
- * A Text in an Author card, linked into the Reader, sized by its line and
- * word counts.
+ * A Text in an Author card as one link into the Reader,
+ * showing its title and its line and word counts.
  */
 export function LibraryTextLink(
   properties: Readonly<LibraryTextLinkProperties>,
@@ -49,12 +49,12 @@ export function LibraryTextLink(
       data-testid="library-text-link"
     >
       <Link
-        className="block underline-offset-4 hover:underline"
+        className="block px-4 py-2 hover:bg-muted/50"
         params={{ slug: text.slug }}
         to="/texts/$slug"
       >
         <LibraryHighlight
-          className="block"
+          className="block break-words text-sm"
           field="title"
           matches={matches}
           value={text.title}

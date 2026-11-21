@@ -1,5 +1,5 @@
-// cspell:ignore Praefatio
-import { render, screen } from "@testing-library/react";
+// cspell:ignore Praefatio Epistulae Atticum
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { LibraryTextTree } from "./library-text-tree";
@@ -7,10 +7,20 @@ import { LibraryTextTree } from "./library-text-tree";
 import type { LibraryTextRow } from "../library-grid/library-grid.types";
 
 vi.mock("./library-text-tree.constants", () => ({
-  getLibraryChildren: async (): Promise<never> =>
-    new Promise<never>(() => {
+  getLibraryChildren: async ({
+    data,
+  }: Readonly<{ data: { parentTextId: string } }>): Promise<unknown> => {
+    // Epistulae holds Ad Atticum, which holds one letter; the rest never answer.
+    if (data.parentTextId === "Epistulae") {
+      return { texts: [row("Ad Atticum", 1)] };
+    }
+    if (data.parentTextId === "Ad Atticum") {
+      return { texts: [row("Praefatio")] };
+    }
+    return new Promise<never>(() => {
       // Never answers, so an opened work stays loading.
-    }),
+    });
+  },
 }));
 
 vi.mock("@tanstack/react-router", () => ({
@@ -59,7 +69,7 @@ describe(LibraryTextTree, () => {
       <LibraryTextTree
         className="library-text-tree"
         depth={0}
-        rows={[]}
+        rows={[row("Eclogues")]}
         search=""
       />,
     );
@@ -67,6 +77,18 @@ describe(LibraryTextTree, () => {
     expect(screen.getByTestId("library-text-tree").className).toBe(
       "library-text-tree",
     );
+  });
+
+  it("draws nothing for a level with no Texts", () => {
+    render(
+      <LibraryTextTree
+        depth={1}
+        rows={[]}
+        search=""
+      />,
+    );
+
+    expect(screen.queryByTestId("library-text-tree")).toBeNull();
   });
 
   it("shows the works of the top level as rows and expandable groups", () => {
@@ -125,5 +147,30 @@ describe(LibraryTextTree, () => {
         .getByRole("button", { name: /Aeneid/u })
         .getAttribute("aria-expanded"),
     ).toBe("false");
+  });
+
+  it("nests each opened work's children as Frames inside its parent's panel Frame", async () => {
+    render(
+      <LibraryTextTree
+        depth={0}
+        rows={[row("Epistulae", 1)]}
+        search=""
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /Epistulae/u }));
+    fireEvent.click(await screen.findByRole("button", { name: /Ad Atticum/u }));
+    const leaf = await screen.findByRole("link", { name: /Praefatio/u });
+
+    let frames = 0;
+    for (
+      let element = leaf.closest("[data-slot=frame]");
+      element !== null;
+      element = element.parentElement?.closest("[data-slot=frame]") ?? null
+    ) {
+      frames += 1;
+    }
+
+    expect(frames).toBe(3);
   });
 });

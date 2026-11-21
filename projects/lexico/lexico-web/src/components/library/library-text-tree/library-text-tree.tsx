@@ -1,3 +1,5 @@
+import { cn, Frame, FramePanel } from "@codebase/presentation";
+
 import { LibraryNumberGrid } from "./components/library-number-range/library-number-grid";
 import { LibraryNumberRange } from "./components/library-number-range/library-number-range";
 import { LibraryTextNode } from "./library-text-node";
@@ -24,7 +26,7 @@ export interface LibraryTextTreeProperties {
 // 🧩 Component
 
 /**
- * One level of an author's Texts: each as a row or an expandable group, with
+ * One level of an author's Texts as a stacked Frame: each a row or an expandable panel, with
  * numbered leaves gathered into round buttons, in ranges when there are many.
  */
 export function LibraryTextTree(
@@ -46,7 +48,6 @@ export function LibraryTextTree(
   // 💪 Handlers
   const renderLevel = (below: readonly LibraryTextRow[]): ReactNode => (
     <LibraryTextTree
-      className="space-y-2"
       depth={depth + 1}
       rows={below}
       search={search}
@@ -56,6 +57,9 @@ export function LibraryTextTree(
   // ♻️ Lifecycle
 
   // 🏁 Early Returns
+  if (listed.length === 0 && groups.length === 0) {
+    return null;
+  }
 
   // 🎨 Markup
   return (
@@ -63,34 +67,41 @@ export function LibraryTextTree(
       className={className}
       data-testid="library-text-tree"
     >
-      {listed.map((row) => (
-        <LibraryTextNode
-          key={row.text.id}
-          defaultOpen={
-            depth === 0 &&
-            search !== "" &&
-            !isAuthorMatched &&
-            row.childCount > 0 &&
-            row.matches.length === 0
-          }
-          renderLevel={renderLevel}
-          row={row}
-          search={search}
-        />
-      ))}
-      {groups.map((group) =>
-        group.label === "" ? (
-          <LibraryNumberGrid
-            key={group.items[0]?.row.text.id}
-            items={group.items}
-          />
-        ) : (
-          <LibraryNumberRange
-            key={group.label}
-            group={group}
-          />
-        ),
-      )}
+      <Frame
+        className={cn(depth > 0 && "[--frame-radius:0px]")}
+        variant={depth === 0 ? "default" : "ghost"}
+        dense
+        stacked
+      >
+        {listed.map((row) => (
+          <FramePanel
+            key={row.text.id}
+            className="p-0"
+          >
+            <LibraryTextNode
+              defaultOpen={
+                depth === 0 &&
+                search !== "" &&
+                !isAuthorMatched &&
+                row.childCount > 0 &&
+                row.matches.length === 0
+              }
+              renderLevel={renderLevel}
+              row={row}
+              search={search}
+            />
+          </FramePanel>
+        ))}
+        {groups.map((group) => (
+          <FramePanel key={group.label || group.items[0]?.row.text.id}>
+            {group.label === "" ? (
+              <LibraryNumberGrid items={group.items} />
+            ) : (
+              <LibraryNumberRange group={group} />
+            )}
+          </FramePanel>
+        ))}
+      </Frame>
     </div>
   );
 }

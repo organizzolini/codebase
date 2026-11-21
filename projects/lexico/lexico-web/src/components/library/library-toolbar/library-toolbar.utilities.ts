@@ -79,11 +79,6 @@ export function createLibraryFilterFields(
   ];
 }
 
-/** A value as its own id. */
-export function identify(value: string): string {
-  return value;
-}
-
 /**
  * Whether two sets of filters ask the library the same thing.
  */

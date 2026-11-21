@@ -16,7 +16,7 @@ import {
 import { LIBRARY_TEXT_SEGMENT } from "../../library-strip/library-chip/library-chip.constants";
 import { LIBRARY_LIMITS } from "../library-grid/library-grid-api.constants";
 
-import { PAGING_LABEL } from "./library-paging.constants";
+import { PAGING_DISABLED_ICON, PAGING_LABEL } from "./library-paging.constants";
 import { formatRange, listPages } from "./library-paging.utilities";
 
 import type { ReactNode } from "react";
@@ -119,16 +119,21 @@ export function LibraryPaging(
           </DropdownMenuContent>
         </DropdownMenu>
         <Button
+          aria-disabled={page <= 1}
           aria-label="Previous page"
-          disabled={page <= 1}
           onClick={() => {
-            onPage(page - 1);
+            if (page > 1) {
+              onPage(page - 1);
+            }
           }}
           size="icon"
           type="button"
           variant="outline"
         >
-          <ChevronLeft aria-hidden="true" />
+          <ChevronLeft
+            aria-hidden="true"
+            className={PAGING_DISABLED_ICON}
+          />
         </Button>
         <div
           className={LIBRARY_TEXT_SEGMENT}
@@ -137,16 +142,21 @@ export function LibraryPaging(
           {formatRange(page, limit, totalCount)}
         </div>
         <Button
+          aria-disabled={page >= pageCount}
           aria-label="Next page"
-          disabled={page >= pageCount}
           onClick={() => {
-            onPage(page + 1);
+            if (page < pageCount) {
+              onPage(page + 1);
+            }
           }}
           size="icon"
           type="button"
           variant="outline"
         >
-          <ChevronRight aria-hidden="true" />
+          <ChevronRight
+            aria-hidden="true"
+            className={PAGING_DISABLED_ICON}
+          />
         </Button>
       </ButtonGroup>
     </div>

@@ -75,7 +75,6 @@ export function LibraryAuthorTexts(
       id={id}
     >
       <LibraryTextTree
-        className="space-y-2"
         depth={0}
         isAuthorMatched={isMatched}
         rows={works}

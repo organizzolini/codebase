@@ -10,35 +10,13 @@ import {
 import { LibrarySort } from "./library-sort";
 
 import type { LibrarySortProperties } from "./library-sort";
-import type { ReactNode } from "react";
 
 stubAnimations();
 
-// jsdom cannot drag, so a stand-in for Sortable reports the reversed order from a button.
-vi.mock("@codebase/presentation", async (importOriginal) => ({
-  ...(await importOriginal<Record<string, unknown>>()),
-  Sortable: ({
-    children,
-    onValueChange,
-    value,
-  }: {
-    children: ReactNode;
-    onValueChange: (value: string[]) => void;
-    value: string[];
-  }) => (
-    <div>
-      {children}
-      <button
-        onClick={() => {
-          onValueChange(value.map((_, index, all) => all.at(-1 - index) ?? ""));
-        }}
-        type="button"
-      >
-        Reverse
-      </button>
-    </div>
-  ),
-}));
+const TITLE = {
+  direction: LibrarySortDirection.Desc,
+  field: LibrarySortField.TextTitle,
+};
 const ERA = {
   direction: LibrarySortDirection.Asc,
   field: LibrarySortField.AuthorEra,
@@ -98,16 +76,12 @@ describe(LibrarySort, () => {
     expect(onSorts).toHaveBeenCalledWith([]);
   });
 
-  it("shows a chip for each sort in order and flips or removes one", () => {
+  it("shows a chip for each sort in order and flips one from its label", () => {
     const onSorts = vi.fn<LibrarySortProperties["onSorts"]>();
-    const title = {
-      direction: LibrarySortDirection.Desc,
-      field: LibrarySortField.TextTitle,
-    };
     render(
       <LibrarySort
         onSorts={onSorts}
-        sorts={[ERA, title]}
+        sorts={[ERA, TITLE]}
       />,
     );
 
@@ -121,50 +95,65 @@ describe(LibrarySort, () => {
 
     expect(onSorts).toHaveBeenLastCalledWith([
       { ...ERA, direction: LibrarySortDirection.Desc },
-      title,
+      TITLE,
     ]);
-
-    fireEvent.click(
-      screen.getByRole("button", { name: "Remove sort by Text title" }),
-    );
-
-    expect(onSorts).toHaveBeenLastCalledWith([ERA]);
   });
 
-  it("applies a drag as the new order of the sorts, keeping directions", () => {
+  it("moves a sort left or right from its menu, keeping directions", async () => {
     const onSorts = vi.fn<LibrarySortProperties["onSorts"]>();
-    const title = {
-      direction: LibrarySortDirection.Desc,
-      field: LibrarySortField.TextTitle,
-    };
     render(
       <LibrarySort
         onSorts={onSorts}
-        sorts={[ERA, title]}
+        sorts={[ERA, TITLE]}
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Reverse" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Options for Text title" }),
+    );
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Move left" }));
 
-    expect(onSorts).toHaveBeenCalledExactlyOnceWith([title, ERA]);
+    expect(onSorts).toHaveBeenLastCalledWith([TITLE, ERA]);
   });
 
-  it("gives each chip a drag handle and a cross, and a click on the label keeps flipping", () => {
+  it("disables moving the first sort left and the last sort right", async () => {
     render(
       <LibrarySort
         onSorts={vi.fn<LibrarySortProperties["onSorts"]>()}
-        sorts={[ERA]}
+        sorts={[ERA, TITLE]}
       />,
     );
 
+    fireEvent.click(
+      screen.getByRole("button", { name: "Options for Author era" }),
+    );
+
+    const moveLeft = await screen.findByRole("menuitem", {
+      name: "Move left",
+    });
+
+    expect(moveLeft.getAttribute("aria-disabled")).toBe("true");
     expect(
-      screen.getByRole("button", { name: "Reorder Author era" }),
-    ).toBeDefined();
-    expect(
-      screen.getByRole("button", { name: "Remove sort by Author era" }),
-    ).toBeDefined();
-    expect(
-      screen.getByRole("button", { name: /Switch to descending/u }),
-    ).toBeDefined();
+      screen
+        .getByRole("menuitem", { name: "Move right" })
+        .getAttribute("aria-disabled"),
+    ).toBeNull();
+  });
+
+  it("removes a sort from its menu", async () => {
+    const onSorts = vi.fn<LibrarySortProperties["onSorts"]>();
+    render(
+      <LibrarySort
+        onSorts={onSorts}
+        sorts={[ERA, TITLE]}
+      />,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Options for Text title" }),
+    );
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
+
+    expect(onSorts).toHaveBeenLastCalledWith([ERA]);
   });
 });

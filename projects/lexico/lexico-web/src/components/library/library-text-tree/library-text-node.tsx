@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ChevronRightIcon } from "lucide-react";
+import { ArrowUpRightIcon, ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -36,7 +36,8 @@ export interface LibraryTextNodeProperties {
 
 /**
  * One Text in a card. A Text with no children links straight to the Reader;
- * one with children is an accordion that loads them the first time it opens.
+ * one with children expands into a nested Frame of its children,
+ * and loads them the first time it opens.
  */
 export function LibraryTextNode(
   properties: Readonly<LibraryTextNodeProperties>,
@@ -84,8 +85,8 @@ export function LibraryTextNode(
         onOpenChange={handleOpenChange}
         open={isOpen}
       >
-        <div className="flex items-center gap-1">
-          <CollapsibleTrigger className="group/trigger flex min-w-0 flex-1 items-center gap-2 py-1 text-left text-sm">
+        <div className="flex items-center">
+          <CollapsibleTrigger className="group/trigger flex min-w-0 flex-1 items-center gap-2 px-4 py-2 text-left text-sm hover:bg-muted/50">
             <ChevronRightIcon
               aria-hidden="true"
               className="size-4 shrink-0 transition-transform group-data-[panel-open]/trigger:rotate-90"
@@ -100,17 +101,14 @@ export function LibraryTextNode(
           </CollapsibleTrigger>
           <Link
             aria-label={`Open ${text.title}`}
-            className={buttonVariants({ size: "sm", variant: "link" })}
+            className={buttonVariants({ size: "icon-sm", variant: "ghost" })}
             params={{ slug: text.slug }}
             to="/texts/$slug"
           >
-            Open
+            <ArrowUpRightIcon aria-hidden="true" />
           </Link>
         </div>
-        <CollapsibleContent
-          className="space-y-1 pt-1 pl-4"
-          keepMounted
-        >
+        <CollapsibleContent keepMounted>
           {hasOpened ? (
             <LibraryTextChildren
               childCount={childCount}

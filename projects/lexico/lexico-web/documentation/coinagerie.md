@@ -10,6 +10,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **degree**: Comparison grade of an adjective or adverb, such as positive, shown in lexeme inflection data and header details.
 - **dictionary**: Latin reference the app searches in Latin and English, shown as the sidebar brand and as each lexeme entry.
 - **disambiguator**: Float field on GraphQL search results giving a numeric index that tells apart lexemes sharing a lemma.
+- **displace**: The neighbor a library chip trades places with when its menu moves it left or right.
 - **edition**:
 - **fasti**: Ovid's poem on the Roman calendar, used in tests as a work with numbered books.
 - **fire**: Test verb: fireEvent dispatches a DOM event, such as click or focus, on an element rendered under test.
