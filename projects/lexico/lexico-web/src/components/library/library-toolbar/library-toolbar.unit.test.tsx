@@ -74,13 +74,13 @@ describe(LibraryToolbar, () => {
     );
 
     expect(screen.getByRole("button", { name: "Group" })).toBeDefined();
-    expect(screen.getByTestId("library-group-segment").textContent).toBe("Era");
+    expect(screen.getByTestId("library-chip").textContent).toBe("Era");
   });
 
   it("shows no chips, no Reset, and no count on Filter when nothing is set", () => {
     render(<LibraryToolbar {...properties()} />);
 
-    expect(screen.queryByTestId("library-sort-chip")).toBeNull();
+    expect(screen.queryByTestId("library-chip")).toBeNull();
     expect(screen.queryByRole("button", { name: "Reset" })).toBeNull();
     expect(screen.getByRole("button", { name: "Filter" })).toBeDefined();
   });

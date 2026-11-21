@@ -5,7 +5,12 @@ import {
   LibrarySortField,
 } from "../../../graphql/generated/operations";
 
-import { describeSort, flipSort, toggleSort } from "./library-sort.utilities";
+import {
+  describeSort,
+  flipSort,
+  reorderSorts,
+  toggleSort,
+} from "./library-sort.utilities";
 
 const ERA = {
   direction: LibrarySortDirection.Asc,
@@ -56,6 +61,23 @@ describe("library sort utilities", () => {
         direction: LibrarySortDirection.Asc,
         field: LibrarySortField.TextTitle,
       });
+    });
+  });
+
+  describe(reorderSorts, () => {
+    it("orders the sorts as the fields are given, keeping their directions", () => {
+      expect(
+        reorderSorts(
+          [ERA, TITLE],
+          [LibrarySortField.TextTitle, LibrarySortField.AuthorEra],
+        ),
+      ).toStrictEqual([TITLE, ERA]);
+    });
+
+    it("drops a sort the order leaves out, and a field that is not sorted", () => {
+      expect(
+        reorderSorts([ERA, TITLE], ["nonsense", LibrarySortField.TextTitle]),
+      ).toStrictEqual([TITLE]);
     });
   });
 });

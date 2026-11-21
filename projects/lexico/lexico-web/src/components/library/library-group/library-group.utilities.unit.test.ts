@@ -8,6 +8,7 @@ import {
 import {
   describeGroup,
   groupHeading,
+  reorderGroups,
   toggleGroup,
 } from "./library-group.utilities";
 
@@ -59,6 +60,15 @@ describe("library group utilities", () => {
       expect(
         toggleGroup([LibraryGroupField.Era], LibraryGroupField.Era),
       ).toStrictEqual([]);
+    });
+  });
+
+  describe(reorderGroups, () => {
+    it("keeps the levels the order names, dropping what is unknown", () => {
+      expect(
+        reorderGroups([LibraryGroupField.Era], ["nonsense", "ERA"]),
+      ).toStrictEqual([LibraryGroupField.Era]);
+      expect(reorderGroups([], ["ERA"])).toStrictEqual([]);
     });
   });
 });

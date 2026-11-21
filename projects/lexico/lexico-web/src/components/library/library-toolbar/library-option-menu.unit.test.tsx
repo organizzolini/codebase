@@ -5,7 +5,33 @@ import { describe, expect, it, vi } from "vitest";
 import { LibraryOptionMenu } from "./library-option-menu";
 
 import type { LibraryOptionMenuProperties } from "./library-option-menu";
+import type { ReactNode } from "react";
 
+// jsdom cannot drag, so a stand-in for Sortable reports the reversed order from a button.
+vi.mock("@codebase/presentation", async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  Sortable: ({
+    children,
+    onValueChange,
+    value,
+  }: {
+    children: ReactNode;
+    onValueChange: (value: string[]) => void;
+    value: string[];
+  }) => (
+    <div>
+      {children}
+      <button
+        onClick={() => {
+          onValueChange(value.map((_, index, all) => all.at(-1 - index) ?? ""));
+        }}
+        type="button"
+      >
+        Reverse
+      </button>
+    </div>
+  ),
+}));
 const OPTIONS = [
   { icon: Sunrise, label: "Start", value: "start" },
   { icon: Sunset, label: "End", value: "end" },
@@ -18,9 +44,10 @@ function properties(
   return {
     icon: Sunrise,
     label: "Sort",
+    onReorder: vi.fn<LibraryOptionMenuProperties["onReorder"]>(),
     onToggle: vi.fn<LibraryOptionMenuProperties["onToggle"]>(),
     options: OPTIONS,
-    selected: new Set(["end"]),
+    selected: ["end"],
     title: "Sort by",
     ...overrides,
   };
@@ -66,5 +93,18 @@ describe(LibraryOptionMenu, () => {
 
     expect(screen.queryByRole("option", { name: "End" })).toBeNull();
     expect(screen.getByRole("option", { name: "Start" })).toBeDefined();
+  });
+
+  it("reports the checked values in their new order after a drag", () => {
+    const onReorder = vi.fn<LibraryOptionMenuProperties["onReorder"]>();
+    render(
+      <LibraryOptionMenu
+        {...properties({ onReorder, selected: ["end", "start"] })}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Reverse" }));
+
+    expect(onReorder).toHaveBeenCalledExactlyOnceWith(["start", "end"]);
   });
 });

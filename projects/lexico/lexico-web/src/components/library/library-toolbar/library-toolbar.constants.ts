@@ -62,3 +62,7 @@ export const LIBRARY_LIST_KEYS: ReadonlySet<string> = new Set([
   "eras",
   ...LIBRARY_FACET_FILTERS.map(({ facet }) => facet),
 ]);
+
+/** Joins a strip's chips to its button: each chip overlaps the border before it, squares its left corners, and squares its right corners unless it is last. */
+export const LIBRARY_STRIP_CHIPS =
+  "[&>div]:flex [&>div]:ml-[-1px] [&>div>div>*]:rounded-l-none [&>div:not(:last-child)>div>*]:rounded-r-none";

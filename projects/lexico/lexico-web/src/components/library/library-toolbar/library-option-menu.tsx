@@ -11,7 +11,11 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  Sortable,
 } from "@codebase/presentation";
+
+import { LIBRARY_STRIP_CHIPS } from "./library-toolbar.constants";
+import { identify } from "./library-toolbar.utilities";
 
 import type { LibraryOption } from "./library-option-menu.types";
 import type { LucideIcon } from "lucide-react";
@@ -23,15 +27,17 @@ import type { ReactNode } from "react";
  * The button's icon and label, the title and options its menu lists, which are checked, and what to call when one is picked.
  */
 export interface LibraryOptionMenuProperties {
-  /** The segments to join after the button, one for each checked option. */
+  /** The chips to join after the button, one for each checked option, in the order of `selected`. */
   children?: ReactNode;
   className?: string;
   icon: LucideIcon;
   label: string;
+  /** Called with the checked values in their new order after a chip is dragged. */
+  onReorder: (values: string[]) => void;
   onToggle: (value: string) => void;
   options: readonly LibraryOption[];
-  /** The values checked now. */
-  selected: ReadonlySet<string>;
+  /** The values checked now, in the order their chips show. */
+  selected: readonly string[];
   /** What the menu's search box asks, such as "Sort by". */
   title: string;
 }
@@ -39,7 +45,7 @@ export interface LibraryOptionMenuProperties {
 // 🧩 Component
 
 /**
- * A button that opens a searchable checklist of options, first in a button group with the segments it is given joined after it.
+ * A button that opens a searchable checklist of options, first in a sortable button group with the chips it is given joined after it.
  */
 export function LibraryOptionMenu(
   properties: Readonly<LibraryOptionMenuProperties>,
@@ -49,6 +55,7 @@ export function LibraryOptionMenu(
     className,
     icon: Icon,
     label,
+    onReorder,
     onToggle,
     options,
     selected,
@@ -58,6 +65,7 @@ export function LibraryOptionMenu(
   // 🪝 Hooks
 
   // 🏗 Setup
+  const checked = new Set(selected);
 
   // 💪 Handlers
 
@@ -71,7 +79,14 @@ export function LibraryOptionMenu(
       className={className}
       data-testid="library-option-menu"
     >
-      <ButtonGroup>
+      <Sortable
+        className={LIBRARY_STRIP_CHIPS}
+        getItemValue={identify}
+        onValueChange={onReorder}
+        render={<ButtonGroup />}
+        strategy="horizontal"
+        value={[...selected]}
+      >
         <Popover>
           <PopoverTrigger
             render={
@@ -103,7 +118,7 @@ export function LibraryOptionMenu(
                         value={optionLabel}
                       >
                         <Checkbox
-                          checked={selected.has(value)}
+                          checked={checked.has(value)}
                           tabIndex={-1}
                         />
                         <OptionIcon aria-hidden="true" />
@@ -117,7 +132,7 @@ export function LibraryOptionMenu(
           </PopoverContent>
         </Popover>
         {children}
-      </ButtonGroup>
+      </Sortable>
     </div>
   );
 }

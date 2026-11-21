@@ -40,6 +40,7 @@ export {
 } from "./components/reui/gantt/gantt";
 export type * from "./components/reui/gantt/gantt-types";
 export * from "./components/reui/gantt/gantt-view";
+export * from "./components/reui/sortable";
 
 // UI Components
 export * from "./components/ui/accordion";

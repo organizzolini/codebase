@@ -1,6 +1,9 @@
 import { LibrarySortDirection } from "../../../graphql/generated/operations";
 
-import { LIBRARY_SORT_OPTIONS } from "./library-sort.constants";
+import {
+  LIBRARY_SORT_FIELDS,
+  LIBRARY_SORT_OPTIONS,
+} from "./library-sort.constants";
 
 import type { LibrarySortField } from "../../../graphql/generated/operations";
 import type {
@@ -35,6 +38,19 @@ export function flipSort(
         }
       : entry,
   );
+}
+
+/** The sorts in the order the fields are given, dropping a sort the order leaves out and a field not sorted. */
+export function reorderSorts(
+  sorts: readonly LibrarySortEntry[],
+  order: readonly string[],
+): LibrarySortEntry[] {
+  return order.flatMap((value) => {
+    const target = LIBRARY_SORT_FIELDS.get(value);
+    const entry = sorts.find(({ field }) => field === target);
+
+    return entry === undefined ? [] : [entry];
+  });
 }
 
 /** Adds an attribute as the last sort, ascending, or removes it when it is already one. */

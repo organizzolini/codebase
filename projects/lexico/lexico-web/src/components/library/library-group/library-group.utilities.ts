@@ -1,5 +1,6 @@
 import {
   LIBRARY_GROUP_DETAILS,
+  LIBRARY_GROUP_FIELDS,
   LIBRARY_GROUP_VALUES,
 } from "./library-group.constants";
 
@@ -26,6 +27,18 @@ export function groupHeading(
   return groups.length === 0
     ? null
     : groups.map((group) => LIBRARY_GROUP_VALUES[group](row)).join(" / ");
+}
+
+/** The levels in the order the attributes are given, dropping any not grouped. */
+export function reorderGroups(
+  groups: readonly LibraryGroupField[],
+  order: readonly string[],
+): LibraryGroupField[] {
+  return order.flatMap((value) => {
+    const field = LIBRARY_GROUP_FIELDS.get(value);
+
+    return field !== undefined && groups.includes(field) ? [field] : [];
+  });
 }
 
 /** Adds an attribute as the innermost group, or removes it when it is one already. */

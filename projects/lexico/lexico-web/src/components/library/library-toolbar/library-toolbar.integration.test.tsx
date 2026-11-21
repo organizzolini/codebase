@@ -432,7 +432,7 @@ describe("library toolbar", () => {
     await waitFor(() => expect(CALLS.at(-1)?.sort).toBeNull());
 
     expect({ ...router.state.location.search }).toStrictEqual({});
-    expect(screen.queryByTestId("library-sort-chip")).toBeNull();
+    expect(screen.queryByTestId("library-chip")).toBeNull();
   });
 
   it("applies several sorts in the order they were added, each with its own direction", async () => {
@@ -464,9 +464,7 @@ describe("library toolbar", () => {
     );
 
     expect(
-      screen
-        .getAllByTestId("library-sort-chip")
-        .map((chip) => chip.textContent),
+      screen.getAllByTestId("library-chip").map((chip) => chip.textContent),
     ).toStrictEqual(["Author era", "Author name"]);
   });
 
@@ -483,7 +481,7 @@ describe("library toolbar", () => {
       filter.parentElement?.querySelector('[data-slot="filter-chip"]'),
     ).not.toBeNull();
     expect(
-      sort.parentElement?.querySelector('[data-testid="library-sort-chip"]'),
+      sort.parentElement?.querySelector('[data-testid="library-chip"]'),
     ).not.toBeNull();
     expect(screen.queryByRole("button", { name: "Reset" })).toBeNull();
   });
@@ -494,7 +492,7 @@ describe("library toolbar", () => {
 
     await waitFor(() => expect(CALLS.at(-1)?.group).toStrictEqual(["ERA"]));
 
-    expect(screen.getByTestId("library-group-segment").textContent).toBe("Era");
+    expect(screen.getByTestId("library-chip").textContent).toBe("Era");
 
     fireEvent.click(
       screen.getByRole("button", { name: "Remove grouping by Era" }),
@@ -553,7 +551,7 @@ describe("library toolbar", () => {
     await screen.findByText("1 to 25 of 50");
 
     expect(CALLS.at(-1)?.sort).toBeNull();
-    expect(screen.queryByTestId("library-sort-chip")).toBeNull();
+    expect(screen.queryByTestId("library-chip")).toBeNull();
     expect(screen.queryByTestId("filter-chip")).toBeNull();
   });
 

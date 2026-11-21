@@ -9,7 +9,33 @@ import {
 import { LibrarySort } from "./library-sort";
 
 import type { LibrarySortProperties } from "./library-sort";
+import type { ReactNode } from "react";
 
+// jsdom cannot drag, so a stand-in for Sortable reports the reversed order from a button.
+vi.mock("@codebase/presentation", async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  Sortable: ({
+    children,
+    onValueChange,
+    value,
+  }: {
+    children: ReactNode;
+    onValueChange: (value: string[]) => void;
+    value: string[];
+  }) => (
+    <div>
+      {children}
+      <button
+        onClick={() => {
+          onValueChange(value.map((_, index, all) => all.at(-1 - index) ?? ""));
+        }}
+        type="button"
+      >
+        Reverse
+      </button>
+    </div>
+  ),
+}));
 const ERA = {
   direction: LibrarySortDirection.Asc,
   field: LibrarySortField.AuthorEra,
@@ -85,9 +111,7 @@ describe(LibrarySort, () => {
     );
 
     expect(
-      screen
-        .getAllByTestId("library-sort-chip")
-        .map((chip) => chip.textContent),
+      screen.getAllByTestId("library-chip").map((chip) => chip.textContent),
     ).toStrictEqual(["Author era", "Text title"]);
 
     fireEvent.click(
@@ -104,5 +128,42 @@ describe(LibrarySort, () => {
     );
 
     expect(onSorts).toHaveBeenLastCalledWith([ERA]);
+  });
+
+  it("applies a drag as the new order of the sorts, keeping directions", () => {
+    const onSorts = vi.fn<LibrarySortProperties["onSorts"]>();
+    const title = {
+      direction: LibrarySortDirection.Desc,
+      field: LibrarySortField.TextTitle,
+    };
+    render(
+      <LibrarySort
+        onSorts={onSorts}
+        sorts={[ERA, title]}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Reverse" }));
+
+    expect(onSorts).toHaveBeenCalledExactlyOnceWith([title, ERA]);
+  });
+
+  it("gives each chip a drag handle and a cross, and a click on the label keeps flipping", () => {
+    render(
+      <LibrarySort
+        onSorts={vi.fn<LibrarySortProperties["onSorts"]>()}
+        sorts={[ERA]}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", { name: "Reorder Author era" }),
+    ).toBeDefined();
+    expect(
+      screen.getByRole("button", { name: "Remove sort by Author era" }),
+    ).toBeDefined();
+    expect(
+      screen.getByRole("button", { name: /Switch to descending/u }),
+    ).toBeDefined();
   });
 });

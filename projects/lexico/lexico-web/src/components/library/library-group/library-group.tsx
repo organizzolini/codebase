@@ -1,8 +1,6 @@
-import { ListTree, X } from "lucide-react";
-import { createElement } from "react";
+import { ListTree } from "lucide-react";
 
-import { Button } from "@codebase/presentation";
-
+import { LibraryChip } from "../../library-strip/library-chip/library-chip";
 import { LibraryOptionMenu } from "../library-toolbar/library-option-menu";
 
 import {
@@ -10,7 +8,11 @@ import {
   LIBRARY_GROUP_FIELDS,
   LIBRARY_GROUP_MENU_OPTIONS,
 } from "./library-group.constants";
-import { describeGroup, toggleGroup } from "./library-group.utilities";
+import {
+  describeGroup,
+  reorderGroups,
+  toggleGroup,
+} from "./library-group.utilities";
 
 import type { LibraryGroupField } from "../../../graphql/generated/operations";
 import type { ReactNode } from "react";
@@ -29,7 +31,7 @@ export interface LibraryGroupProperties {
 // 🧩 Component
 
 /**
- * The Group button with its searchable checklist of attributes, joined to a segment for each active level in order. Checking an attribute adds a level; a segment's cross removes it.
+ * The Group button with its searchable checklist of attributes, joined to a draggable chip for each active level in order. Checking an attribute adds a level; dragging a chip reorders the levels and its cross removes one.
  */
 export function LibraryGroup(
   properties: Readonly<LibraryGroupProperties>,
@@ -55,6 +57,9 @@ export function LibraryGroup(
       <LibraryOptionMenu
         icon={ListTree}
         label="Group"
+        onReorder={(values) => {
+          onGroups(reorderGroups(groups, values));
+        }}
         onToggle={(value) => {
           const field = LIBRARY_GROUP_FIELDS.get(value);
           if (field !== undefined) {
@@ -62,30 +67,23 @@ export function LibraryGroup(
           }
         }}
         options={LIBRARY_GROUP_MENU_OPTIONS}
-        selected={new Set<string>(groups)}
+        selected={groups}
         title="Group by"
       >
         {groups.map((field) => {
           const label = describeGroup(field);
-          const icon = LIBRARY_GROUP_DETAILS.get(field)?.icon;
 
           return (
-            <Button
+            <LibraryChip
               key={field}
-              aria-label={`Remove grouping by ${label}`}
-              data-testid="library-group-segment"
-              onClick={() => {
+              icon={LIBRARY_GROUP_DETAILS.get(field)?.icon}
+              label={label}
+              onRemove={() => {
                 onGroups(toggleGroup(groups, field));
               }}
-              type="button"
-              variant="outline"
-            >
-              {icon === undefined
-                ? null
-                : createElement(icon, { "aria-hidden": true })}
-              {label}
-              <X aria-hidden="true" />
-            </Button>
+              removeLabel={`Remove grouping by ${label}`}
+              value={field}
+            />
           );
         })}
       </LibraryOptionMenu>

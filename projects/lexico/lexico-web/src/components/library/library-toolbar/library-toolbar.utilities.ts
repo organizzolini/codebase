@@ -77,6 +77,11 @@ export function createLibraryFilterFields(
   ];
 }
 
+/** A value as its own id. */
+export function identify(value: string): string {
+  return value;
+}
+
 /**
  * Whether two sets of filters ask the library the same thing.
  */
@@ -111,6 +116,8 @@ export function toFilterParameters(
   return libraryFilterSchema.parse(raw);
 }
 
+// 🌎 Public Functions
+
 /**
  * Builds the filter tree the URL's filters describe: one rule per filter that is set.
  */
@@ -140,8 +147,6 @@ export function toFilterQuery(
 
   return createFilterQuery(rules);
 }
-
-// 🌎 Public Functions
 
 /** One bound of a range value, or undefined when it is empty. */
 function toBound(value: unknown, index: 0 | 1): number | undefined {

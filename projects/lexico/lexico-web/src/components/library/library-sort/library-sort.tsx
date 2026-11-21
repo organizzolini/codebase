@@ -1,16 +1,19 @@
-import { ArrowDown, ArrowDownUp, ArrowUp, X } from "lucide-react";
-import { createElement, Fragment } from "react";
-
-import { Button } from "@codebase/presentation";
+import { ArrowDown, ArrowDownUp, ArrowUp } from "lucide-react";
 
 import { LibrarySortDirection } from "../../../graphql/generated/operations";
+import { LibraryChip } from "../../library-strip/library-chip/library-chip";
 import { LibraryOptionMenu } from "../library-toolbar/library-option-menu";
 
 import {
   LIBRARY_SORT_FIELDS,
   LIBRARY_SORT_MENU_OPTIONS,
 } from "./library-sort.constants";
-import { describeSort, flipSort, toggleSort } from "./library-sort.utilities";
+import {
+  describeSort,
+  flipSort,
+  reorderSorts,
+  toggleSort,
+} from "./library-sort.utilities";
 
 import type { LibrarySortField } from "../../../graphql/generated/operations";
 import type { LibrarySortEntry } from "./library-sort.types";
@@ -31,7 +34,7 @@ export interface LibrarySortProperties {
 // 🧩 Component
 
 /**
- * The Sort button with its searchable checklist of attributes, joined to a chip for each active sort in the order they apply. A chip's first button flips its direction and its cross removes it; checking an attribute adds it last.
+ * The Sort button with its searchable checklist of attributes, joined to a draggable chip for each active sort in the order they apply. A chip's label flips its direction, dragging it reorders the sorts, and its cross removes it; checking an attribute adds it last.
  */
 export function LibrarySort(
   properties: Readonly<LibrarySortProperties>,
@@ -63,6 +66,9 @@ export function LibrarySort(
       <LibraryOptionMenu
         icon={ArrowDownUp}
         label="Sort"
+        onReorder={(values) => {
+          onSorts(reorderSorts(sorts, values));
+        }}
         onToggle={(value) => {
           const field = LIBRARY_SORT_FIELDS.get(value);
           if (field !== undefined) {
@@ -70,43 +76,30 @@ export function LibrarySort(
           }
         }}
         options={LIBRARY_SORT_MENU_OPTIONS}
-        selected={new Set(sorts.map(({ field }) => field))}
+        selected={sorts.map(({ field }) => field)}
         title="Sort by"
       >
         {sorts.map(({ direction, field }) => {
-          const { icon: AttributeIcon, label } = describeSort(field);
+          const { icon, label } = describeSort(field);
           const isDescending = direction === LibrarySortDirection.Desc;
           const DirectionIcon = isDescending ? ArrowDown : ArrowUp;
 
           return (
-            <Fragment key={field}>
-              <Button
-                aria-label={`Sort by ${label}, ${isDescending ? "descending" : "ascending"}. Switch to ${isDescending ? "ascending" : "descending"}`}
-                data-testid="library-sort-chip"
-                onClick={() => {
-                  handleFlip(field);
-                }}
-                type="button"
-                variant="outline"
-              >
-                {AttributeIcon === undefined
-                  ? null
-                  : createElement(AttributeIcon, { "aria-hidden": true })}
-                {label}
-                <DirectionIcon aria-hidden="true" />
-              </Button>
-              <Button
-                aria-label={`Remove sort by ${label}`}
-                onClick={() => {
-                  handleToggle(field);
-                }}
-                size="icon"
-                type="button"
-                variant="outline"
-              >
-                <X aria-hidden="true" />
-              </Button>
-            </Fragment>
+            <LibraryChip
+              key={field}
+              activateLabel={`Sort by ${label}, ${isDescending ? "descending" : "ascending"}. Switch to ${isDescending ? "ascending" : "descending"}`}
+              icon={icon}
+              label={label}
+              onActivate={() => {
+                handleFlip(field);
+              }}
+              onRemove={() => {
+                handleToggle(field);
+              }}
+              removeLabel={`Remove sort by ${label}`}
+              trailing={<DirectionIcon aria-hidden="true" />}
+              value={field}
+            />
           );
         })}
       </LibraryOptionMenu>

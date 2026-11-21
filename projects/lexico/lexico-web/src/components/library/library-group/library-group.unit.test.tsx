@@ -6,6 +6,33 @@ import { LibraryGroupField } from "../../../graphql/generated/operations";
 import { LibraryGroup } from "./library-group";
 
 import type { LibraryGroupProperties } from "./library-group";
+import type { ReactNode } from "react";
+
+// jsdom cannot drag, so a stand-in for Sortable reports the reversed order from a button.
+vi.mock("@codebase/presentation", async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  Sortable: ({
+    children,
+    onValueChange,
+    value,
+  }: {
+    children: ReactNode;
+    onValueChange: (value: string[]) => void;
+    value: string[];
+  }) => (
+    <div>
+      {children}
+      <button
+        onClick={() => {
+          onValueChange(value.map((_, index, all) => all.at(-1 - index) ?? ""));
+        }}
+        type="button"
+      >
+        Reverse
+      </button>
+    </div>
+  ),
+}));
 
 describe(LibraryGroup, () => {
   it("applies its class name", () => {
@@ -42,7 +69,23 @@ describe(LibraryGroup, () => {
       screen.getByRole("button", { name: "Remove grouping by Era" }),
     );
 
-    expect(screen.getByTestId("library-group-segment").textContent).toBe("Era");
+    expect(screen.getByTestId("library-chip").textContent).toBe("Era");
     expect(onGroups).toHaveBeenCalledExactlyOnceWith([]);
+  });
+
+  it("gives each segment a drag handle, and applies a drag as the new order", () => {
+    const onGroups = vi.fn<LibraryGroupProperties["onGroups"]>();
+    render(
+      <LibraryGroup
+        groups={[LibraryGroupField.Era]}
+        onGroups={onGroups}
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: "Reorder Era" })).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "Reverse" }));
+
+    expect(onGroups).toHaveBeenCalledExactlyOnceWith([LibraryGroupField.Era]);
   });
 });
