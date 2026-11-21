@@ -29,14 +29,16 @@ describe(MeandersResolver, () => {
       instance.meanders({
         after: "c",
         first: 5,
-        sort: { direction: "ASC", field: "rows" },
+        offset: 10,
+        sort: [{ direction: "ASC", field: "rows" }],
       } as never),
     ).resolves.toBe(page);
     expect(mock(MeandersService).find).toHaveBeenCalledWith({
       after: "c",
       filter: undefined,
       first: 5,
-      sort: { direction: "ASC", field: "rows" },
+      offset: 10,
+      sort: [{ direction: "ASC", field: "rows" }],
     });
   });
 

@@ -22,7 +22,7 @@ import {
 } from "../components/gallery/gallery-group-by/gallery-group-by.utilities";
 import { GalleryPager } from "../components/gallery/gallery-pager/gallery-pager";
 import { GallerySort } from "../components/gallery/gallery-sort/gallery-sort";
-import { resolveSortField } from "../components/gallery/gallery-sort/gallery-sort.utilities";
+import { resolveSorts } from "../components/gallery/gallery-sort/gallery-sort.utilities";
 import { GalleryView as GalleryViewControl } from "../components/gallery/gallery-view/gallery-view";
 import { GroupedGallery } from "../components/gallery/grouped-gallery/grouped-gallery";
 import { MeanderGallery } from "../components/gallery/meander-gallery/meander-gallery";
@@ -35,7 +35,6 @@ import { useGallerySearch } from "../hooks/use-gallery-search/use-gallery-search
 import {
   DEFAULT_PAGE_SIZE,
   DEFAULT_REPEATS,
-  DEFAULT_SORT_DIRECTION,
   gallerySearchSchema,
 } from "../hooks/use-gallery-search/use-gallery-search.constants";
 import { toSortInput } from "../hooks/use-gallery-search/use-gallery-search.utilities";
@@ -55,7 +54,7 @@ import type {
 } from "../graphql/generated/operations";
 import type {
   GalleryView,
-  SortDirection,
+  SortEntry,
 } from "../hooks/use-gallery-search/use-gallery-search.types";
 import type { UseMeandersResult } from "../hooks/use-meanders/use-meanders.types";
 import type { ReactNode } from "react";
@@ -75,7 +74,6 @@ export const Route = createFileRoute("/")({
   // The sort, filter and rows rule are read from the link, so a change to
   // any reads the first page again.
   loaderDeps: ({ search }) => ({
-    direction: search.direction ?? DEFAULT_SORT_DIRECTION,
     filter: search.filter,
     group: search.group,
     // Read as the rule it settles to, so adding the default to the link does
@@ -89,8 +87,8 @@ export const Route = createFileRoute("/")({
 
   loader: async ({ deps }) => {
     const characteristics = await findCharacteristics();
-    // A sort the catalog does not know falls back to the default order.
-    const sort = resolveSortField(deps.sort, characteristics);
+    // Sorts the catalog does not know are left out; none left, rows ascending.
+    const sorts = resolveSorts(deps.sort, characteristics);
     // A filter the catalog cannot answer is left out of the read and the page.
     const filter = sanitizeFilter(
       deps.filter,
@@ -100,13 +98,12 @@ export const Route = createFileRoute("/")({
     // A link without a valid rows rule gets the default one.
     const rows = sanitizeRows(deps.rows);
     const { groups, page } = await findGallery({
-      direction: deps.direction,
       filter,
       grouping: resolveGrouping(deps.group, createGroupFields(characteristics)),
       repeats: deps.repeats,
       rows,
       size: deps.size,
-      sort,
+      sorts,
     });
 
     return {
@@ -117,7 +114,7 @@ export const Route = createFileRoute("/")({
       repeats: deps.repeats,
       rows,
       size: deps.size,
-      sort,
+      sorts,
     };
   },
 });
@@ -139,10 +136,10 @@ function GalleryBody(
     query: Readonly<{
       filter: MeanderFilterGroupInput | undefined;
       repeats: number;
-      sort: MeanderSortInput | undefined;
+      sort: MeanderSortInput[];
     }>;
     resetKey: string;
-    sort: string | undefined;
+    sorts: readonly SortEntry[];
     view: GalleryView;
   }>,
 ): ReactNode {
@@ -155,11 +152,11 @@ function GalleryBody(
     paging,
     query,
     resetKey,
-    sort,
+    sorts,
     view,
   } = properties;
   // The characteristics every card shows first, whatever else it holds.
-  const activeKeys = listActiveKeys({ filter, grouping, sort });
+  const activeKeys = listActiveKeys({ filter, grouping, sorts });
 
   return groups === undefined ? (
     <MeanderGallery
@@ -190,27 +187,25 @@ function GalleryBody(
 function GalleryControls(
   properties: Readonly<{
     characteristics: readonly GalleryCharacteristic[];
-    direction: SortDirection;
     groupFields: readonly GroupField[];
     grouping: readonly string[];
     link: FilterLink;
     page: MeandersPage | undefined;
     paging: UseMeandersResult;
     size: number;
-    sort: string;
+    sorts: readonly SortEntry[];
     view: GalleryView;
   }>,
 ): ReactNode {
   const {
     characteristics,
-    direction,
     groupFields,
     grouping,
     link,
     page,
     paging,
     size,
-    sort,
+    sorts,
     view,
   } = properties;
   const {
@@ -230,7 +225,7 @@ function GalleryControls(
       <GalleryViewControl
         characteristics={characteristics}
         className="flex flex-wrap items-center gap-2"
-        current={{ direction, group: grouping, link, sort, view }}
+        current={{ group: grouping, link, sorts, view }}
         onApply={handleViewApply}
       />
       <GalleryGroupBy
@@ -240,9 +235,8 @@ function GalleryControls(
       />
       <GallerySort
         characteristics={characteristics}
-        direction={direction}
-        field={sort}
-        onSortChange={handleSortChange}
+        onSortsChange={handleSortChange}
+        sorts={sorts}
       />
       <GalleryFilters
         className="min-w-0"
@@ -292,9 +286,9 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
  */
 function IndexPage(): ReactNode {
   // 🪝 Hooks
-  const { characteristics, filter, groups, page, repeats, rows, size, sort } =
+  const { characteristics, filter, groups, page, repeats, rows, size, sorts } =
     Route.useLoaderData();
-  const { direction, group, handleFilterChange, handleGroupChange, view } =
+  const { group, handleFilterChange, handleGroupChange, view } =
     useGallerySearch();
   const { filter: linkedFilter, rows: linkedRows } = Route.useSearch();
   // While a new sort reads, the cards of the last stay up under a notice.
@@ -308,9 +302,9 @@ function IndexPage(): ReactNode {
     () => ({
       filter: toFilterInput(filter, rows),
       repeats,
-      sort: toSortInput(sort, direction),
+      sort: toSortInput(sorts),
     }),
-    [direction, filter, repeats, rows, sort],
+    [filter, repeats, rows, sorts],
   );
   const paging = useMeanders(page, { ...input, size });
   const groupFields = useMemo(
@@ -342,7 +336,10 @@ function IndexPage(): ReactNode {
   // A link carrying levels the catalog does not know, or twice, is replaced
   // by one that does not.
   useEffect(() => {
-    if (JSON.stringify(grouping) !== JSON.stringify(group)) {
+    if (
+      group !== undefined &&
+      JSON.stringify(grouping) !== JSON.stringify(group)
+    ) {
       handleGroupChange(grouping);
     }
   }, [group, grouping, handleGroupChange]);
@@ -357,14 +354,13 @@ function IndexPage(): ReactNode {
       </h1>
       <GalleryControls
         characteristics={characteristics}
-        direction={direction}
         groupFields={groupFields}
         grouping={grouping}
         link={link}
         page={page}
         paging={paging}
         size={size}
-        sort={sort}
+        sorts={sorts}
         view={view}
       />
       {isReloading ? (
@@ -384,8 +380,14 @@ function IndexPage(): ReactNode {
           groups={groups}
           paging={paging}
           query={input}
-          resetKey={JSON.stringify({ direction, filter, grouping, rows, sort })}
-          sort={sort}
+          resetKey={JSON.stringify({
+            filter,
+            grouping,
+            repeats,
+            rows,
+            sorts,
+          })}
+          sorts={sorts}
           view={view}
         />
       </div>

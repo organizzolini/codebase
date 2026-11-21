@@ -13,7 +13,7 @@ async function openGroup(): Promise<void> {
 }
 
 describe("gallery group-by", () => {
-  it("ticks and clears levels, keeping them in the link: rows, then columns", async () => {
+  it("ticks and clears levels, keeping them in the link, and groups by rows again with none left", async () => {
     serveMeandersApi(3);
     const router = getRouter();
 
@@ -21,12 +21,6 @@ describe("gallery group-by", () => {
     await screen.findAllByTestId("meander-card");
     await openGroup();
     fireEvent.click(screen.getByRole("option", { name: /Shape/u }));
-    fireEvent.click(screen.getByRole("option", { name: /Rows/u }));
-
-    await waitFor(() => {
-      expect(router.state.location.search.group).toStrictEqual(["rows"]);
-    });
-
     fireEvent.click(screen.getByRole("option", { name: /Columns/u }));
 
     await waitFor(() => {
@@ -47,12 +41,21 @@ describe("gallery group-by", () => {
     });
 
     fireEvent.click(
-      screen.getByRole("button", { hidden: true, name: "Grouped by Columns" }),
+      screen.getByRole("button", {
+        hidden: true,
+        name: "Columns grouping options",
+      }),
     );
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
 
     await waitFor(() => {
       expect(router.state.location.search.group).toBeUndefined();
     });
+
+    // With no level left the page groups by rows again.
+    expect(
+      screen.getByRole("button", { hidden: true, name: "Grouped by Rows" }),
+    ).toBeDefined();
   });
 
   it("opens on the levels a shared link names, leaving out the unknown and the repeated", async () => {

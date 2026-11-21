@@ -20,14 +20,14 @@ describe(listActiveKeys, () => {
           ],
         },
         grouping: ["junctionCount", "rows"],
-        sort: "strokeCount",
+        sorts: [{ direction: "asc", field: "strokeCount" }],
       }).toSorted(),
     ).toStrictEqual(["isChain", "junctionCount", "rows", "strokeCount"]);
   });
 
   it("lists nothing for a page with no grouping, sort or filter", () => {
     expect(
-      listActiveKeys({ filter: undefined, grouping: [], sort: undefined }),
+      listActiveKeys({ filter: undefined, grouping: [], sorts: [] }),
     ).toStrictEqual([]);
   });
 });

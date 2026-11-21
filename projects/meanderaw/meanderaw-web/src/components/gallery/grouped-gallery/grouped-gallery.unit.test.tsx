@@ -27,7 +27,7 @@ function properties(
       },
     ],
     groups: [{ count: 1, field: "columns", groups: [], value: "1" }],
-    query: { filter: undefined, repeats: 12, sort: undefined },
+    query: { filter: undefined, repeats: 12, sort: [] },
     view: "grid",
     ...overrides,
   };

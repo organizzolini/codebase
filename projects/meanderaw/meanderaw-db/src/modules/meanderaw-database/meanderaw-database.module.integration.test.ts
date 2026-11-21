@@ -90,6 +90,7 @@ describe(MeanderawDatabaseModule, () => {
       { name: "Migration1794630084904" },
       { name: "Migration1794700000000" },
       { name: "Migration1794800000000" },
+      { name: "Migration1794900000000" },
     ]);
   });
 });

@@ -13,6 +13,7 @@ import { BIGINT_NUMBER_TRANSFORMER } from "../../meanderaw-database.constants";
 @Entity({ name: "meanders" })
 @Index(["code"], { unique: true })
 @Index(["rows", "columns", "code"])
+@Index(["rows", "code"])
 export class Meander extends PostgresqlUpdatableEntity {
   @Column({ type: "text" })
   code!: string;

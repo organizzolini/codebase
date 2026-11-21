@@ -1,4 +1,11 @@
+import { ArrowDown, ArrowUp } from "lucide-react";
+
 // ♟️ Constants
+
+/**
+ * The arrow that shows each direction.
+ */
+export const DIRECTION_ARROWS = { asc: ArrowUp, desc: ArrowDown } as const;
 
 /**
  * The shape fields a sort may name, each with what it holds.

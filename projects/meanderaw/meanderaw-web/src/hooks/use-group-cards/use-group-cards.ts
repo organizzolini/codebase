@@ -2,7 +2,11 @@ import { useCallback, useRef as useReference, useState } from "react";
 
 import { findMeanders } from "../../components/gallery/meander-gallery/meanders-api.utilities";
 
-import { appendPage, recordFailure } from "./use-group-cards.utilities";
+import {
+  appendPage,
+  planCardsRead,
+  recordFailure,
+} from "./use-group-cards.utilities";
 
 import type {
   GroupCards,
@@ -14,11 +18,11 @@ import type { UseGroupCardsResult } from "./use-group-cards.types";
 // 🧩 Hook
 
 /**
- * Reads each last-level group's cards on request, page by page by cursor, in
- * the sort given. Remount it to start over.
+ * Reads each last-level group's cards on request, page by page, in the sorts
+ * given. Remount it to start over.
  */
 export function useGroupCards(
-  query: Readonly<{ repeats: number; sort: MeanderSortInput | undefined }>,
+  query: Readonly<{ repeats: number; sort: readonly MeanderSortInput[] }>,
 ): UseGroupCardsResult {
   // 🪝 Hooks
   const [cards, setCards] = useState<Readonly<Record<string, GroupCards>>>({});
@@ -43,11 +47,12 @@ export function useGroupCards(
       }
 
       inFlight.current.add(leaf.id);
+
       findMeanders({
-        after: current?.endCursor,
+        ...planCardsRead(current, query.sort.length),
         filter: leaf.filter,
         repeats: query.repeats,
-        sort: query.sort,
+        sort: [...query.sort],
       })
         .then((page) => {
           commit(appendPage(store.current, leaf.id, page));

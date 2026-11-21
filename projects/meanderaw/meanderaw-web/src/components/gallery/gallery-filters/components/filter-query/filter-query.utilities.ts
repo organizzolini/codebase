@@ -4,6 +4,10 @@ import {
   MINIMUM_REPEATS,
 } from "../../../../../hooks/use-gallery-search/use-gallery-search.constants";
 import {
+  createTrails,
+  toFieldPath,
+} from "../../../gallery-cascader/gallery-cascader.utilities";
+import {
   isWithinLimits,
   normalizeRule,
 } from "../filter-model/filter-limits.utilities";
@@ -155,10 +159,10 @@ export function toFilterQuery(
   link: FilterLink,
   fields: readonly FilterField[],
 ): GalleryFilterQuery {
-  const categories = new Map<string, string>();
+  const paths = new Map<string, string[]>();
 
-  for (const field of fields) {
-    categories.set(field.key, field.category);
+  for (const [key, trail] of createTrails(fields)) {
+    paths.set(key, toFieldPath(trail, key));
   }
 
   const { filter, repeats, rows } = link;
@@ -168,7 +172,7 @@ export function toFilterQuery(
     id: ROOT_ID,
     rules: [
       ...toRequiredNodes(rows, repeats),
-      ...toQueryNodes(filter?.rules ?? [], ROOT_ID, categories),
+      ...toQueryNodes(filter?.rules ?? [], ROOT_ID, paths),
     ],
     type: "group",
   };
@@ -347,7 +351,7 @@ function toLinkRule(
 function toQueryNodes(
   nodes: readonly FilterNode[],
   parentId: string,
-  categories: ReadonlyMap<string, string>,
+  paths: ReadonlyMap<string, readonly string[]>,
 ): GalleryFilterNode[] {
   const built: GalleryFilterNode[] = [];
 
@@ -359,13 +363,13 @@ function toQueryNodes(
         ? {
             combinator: node.combinator,
             id,
-            rules: toQueryNodes(node.rules, id, categories),
+            rules: toQueryNodes(node.rules, id, paths),
             type: "group",
           }
         : {
             id,
             operator: node.operator,
-            path: [categories.get(node.field) ?? "shape", node.field],
+            path: [...(paths.get(node.field) ?? ["shape", node.field])],
             type: "rule",
             value: node.value,
           },

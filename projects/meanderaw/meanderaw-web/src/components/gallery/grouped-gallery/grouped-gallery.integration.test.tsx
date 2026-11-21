@@ -292,7 +292,7 @@ describe("grouped gallery", () => {
     });
 
     expect(api.requests[0]).toMatchObject({
-      sort: { direction: "DESC", field: "junctionCount" },
+      sort: [{ direction: "DESC", field: "junctionCount" }],
     });
   });
 
@@ -352,7 +352,7 @@ describe("grouped gallery", () => {
     await screen.findAllByTestId("meander-card");
     fireEvent.click(screen.getByRole("button", { name: "Group" }));
     fireEvent.click(await screen.findByRole("option", { name: /Shape/u }));
-    fireEvent.click(await screen.findByRole("option", { name: /Rows/u }));
+    fireEvent.click(await screen.findByRole("option", { name: /Columns/u }));
 
     await waitFor(() => {
       expect(screen.getAllByTestId("group-header").length).toBeGreaterThan(0);
@@ -362,7 +362,7 @@ describe("grouped gallery", () => {
       "Rows: 46",
     );
     expect(router.state.location.search).toMatchObject({
-      group: ["rows"],
+      group: ["rows", "columns"],
       rows: { operator: "eq", value: 4 },
     });
   });

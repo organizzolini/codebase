@@ -2,7 +2,7 @@ query Meanders(
   $first: Int
   $after: String
   $offset: Int
-  $sort: MeanderSortInput
+  $sort: [MeanderSortInput!]
   $filter: MeanderFilterGroupInput
   $repeats: Int
 ) {

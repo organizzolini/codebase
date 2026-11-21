@@ -16,7 +16,7 @@ export interface PagingQuery {
   filter?: MeanderFilterGroupInput | undefined;
   repeats: number;
   size: number;
-  sort?: MeanderSortInput | undefined;
+  sort?: readonly MeanderSortInput[] | undefined;
 }
 
 /**

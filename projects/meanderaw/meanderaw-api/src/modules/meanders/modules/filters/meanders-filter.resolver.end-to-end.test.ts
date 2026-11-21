@@ -14,7 +14,7 @@ import { MeanderFilterService } from "./meander-filter.service";
 
 import type { MeanderawApplication } from "../../../../../testing/meanderaw-application";
 
-const QUERY = `query ($filter: MeanderFilterGroupInput, $sort: MeanderSortInput, $first: Int, $after: String) {
+const QUERY = `query ($filter: MeanderFilterGroupInput, $sort: [MeanderSortInput!], $first: Int, $after: String) {
   meanders(filter: $filter, sort: $sort, first: $first, after: $after) {
     totalCount
     pageInfo { hasNextPage endCursor }

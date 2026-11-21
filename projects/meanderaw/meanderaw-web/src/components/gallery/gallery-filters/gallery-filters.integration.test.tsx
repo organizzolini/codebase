@@ -55,7 +55,7 @@ describe("gallery filters", () => {
       const api = serveMeandersApi(8);
       const router = getRouter();
 
-      await renderRoute(router, "/");
+      await renderRoute(router, "/?group=%5B%5D");
       await screen.findAllByTestId("meander-card");
 
       expect(pages()).toBe("1 to 8 of 8");
@@ -94,7 +94,7 @@ describe("gallery filters", () => {
 
     await renderRoute(
       getRouter(),
-      `/?filter=${encodeURIComponent(
+      `/?group=%5B%5D&filter=${encodeURIComponent(
         JSON.stringify({
           combinator: "or",
           rules: [
@@ -118,7 +118,7 @@ describe("gallery filters", () => {
 
     await renderRoute(
       getRouter(),
-      `/?filter=${encodeURIComponent(
+      `/?group=%5B%5D&filter=${encodeURIComponent(
         JSON.stringify({
           combinator: "or",
           rules: [
@@ -142,7 +142,7 @@ describe("gallery filters", () => {
 
     await renderRoute(
       getRouter(),
-      `/?filter=${encodeURIComponent(
+      `/?group=%5B%5D&filter=${encodeURIComponent(
         JSON.stringify({
           combinator: "and",
           rules: [
@@ -168,7 +168,7 @@ describe("gallery filters", () => {
 
       await renderRoute(
         router,
-        `/?repeats=6&rows=${encodeURIComponent('{"operator":"gte","value":3}')}`,
+        `/?group=%5B%5D&repeats=6&rows=${encodeURIComponent('{"operator":"gte","value":3}')}`,
       );
       await screen.findAllByTestId("meander-card");
 

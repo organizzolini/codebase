@@ -37,9 +37,15 @@ export class MeandersResolver {
   async meanders(
     @Arguments() arguments_: MeandersArguments,
   ): Promise<MeanderConnection> {
-    const { after, filter, first, sort } = arguments_;
+    const { after, filter, first, offset, sort } = arguments_;
 
-    return this.meandersService.find({ after, filter, first, sort });
+    return this.meandersService.find({
+      after,
+      filter,
+      first,
+      offset,
+      sort,
+    });
   }
 
   // 🖋️ Mutations

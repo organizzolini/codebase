@@ -9,7 +9,7 @@ import {
 import { useGroupCards } from "./use-group-cards";
 
 /** What every read of the cards carries. */
-const QUERY = { repeats: 12, sort: undefined };
+const QUERY = { repeats: 12, sort: [] };
 
 describe(useGroupCards, () => {
   it("returns its result", () => {

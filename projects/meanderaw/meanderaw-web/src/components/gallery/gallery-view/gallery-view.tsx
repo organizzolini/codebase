@@ -14,8 +14,8 @@ import {
   isPresetActive,
 } from "./gallery-view.utilities";
 
+import type { ViewState } from "../../../hooks/use-gallery-search/use-gallery-search.types";
 import type { GalleryCharacteristic } from "../meander-gallery/meanders-api.types";
-import type { ViewState } from "./gallery-view.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type

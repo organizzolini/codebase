@@ -135,6 +135,23 @@ describe(MeanderCard, () => {
     expect(image.style.aspectRatio).toBe("300 / 100");
   });
 
+  it("draws at the size the API made, shrinking to fit but never stretched, so fewer repeats show narrower", () => {
+    render(
+      <MeanderCard
+        activeKeys={[]}
+        catalog={CATALOG}
+        meander={MEANDER}
+        repeats={6}
+      />,
+    );
+
+    const { classList } = screen.getByRole("img");
+
+    expect(classList.contains("max-w-full")).toBe(true);
+    expect(classList.contains("h-auto")).toBe(true);
+    expect(classList.contains("w-full")).toBe(false);
+  });
+
   it("falls back to a stock aspect for a drawing that names no size", () => {
     render(
       <MeanderCard

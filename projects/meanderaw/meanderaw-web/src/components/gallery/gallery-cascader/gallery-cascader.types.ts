@@ -1,6 +1,17 @@
 // 🏷️ Types
 
 /**
+ * Builds a branch from its children, its id and its label.
+ */
+export type BranchBuilder<Node> = (
+  branch: Readonly<{
+    children: Node[];
+    id: string;
+    label: string;
+  }>,
+) => Node;
+
+/**
  * A field the cascader offers, under its category.
  */
 export interface PickerField {

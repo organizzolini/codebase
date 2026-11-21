@@ -22,7 +22,7 @@ import type {
   MeanderGroupsQueryVariables,
   MeandersQueryVariables,
 } from "../../../graphql/generated/operations";
-import type { SortDirection } from "../../../hooks/use-gallery-search/use-gallery-search.types";
+import type { SortEntry } from "../../../hooks/use-gallery-search/use-gallery-search.types";
 import type {
   FilterGroup,
   RowsFilter,
@@ -51,19 +51,18 @@ export async function findCharacteristics(): Promise<GalleryCharacteristic[]> {
  */
 export async function findGallery(
   request: Readonly<{
-    direction: SortDirection;
     filter: FilterGroup | undefined;
     grouping: readonly string[];
     repeats: number;
     rows: RowsFilter;
     size: number;
-    sort: string | undefined;
+    sorts: readonly SortEntry[];
   }>,
 ): Promise<{
   groups: GalleryGroup[] | undefined;
   page: MeandersPage | undefined;
 }> {
-  const { direction, filter, grouping, repeats, rows, size, sort } = request;
+  const { filter, grouping, repeats, rows, size, sorts } = request;
 
   if (grouping.length > 0) {
     if (!fitsGrouping(filter, grouping)) {
@@ -87,7 +86,7 @@ export async function findGallery(
       filter: toFilterInput(filter, rows),
       first: size,
       repeats,
-      sort: toSortInput(sort, direction),
+      sort: toSortInput(sorts),
     }),
   };
 }

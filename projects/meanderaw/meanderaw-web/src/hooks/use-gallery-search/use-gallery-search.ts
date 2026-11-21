@@ -4,14 +4,13 @@ import {
   DEFAULT_GALLERY_VIEW,
   DEFAULT_PAGE_SIZE,
   DEFAULT_REPEATS,
-  DEFAULT_SORT_DIRECTION,
 } from "./use-gallery-search.constants";
 
 import type { FilterLink } from "../../components/gallery/gallery-filters/components/filter-query/filter-query.types";
-import type { ViewState } from "../../components/gallery/gallery-view/gallery-view.types";
 import type {
-  SortDirection,
+  SortEntry,
   UseGallerySearchResult,
+  ViewState,
 } from "./use-gallery-search.types";
 
 // 🧩 Hook
@@ -27,7 +26,6 @@ export function useGallerySearch(): UseGallerySearchResult {
 
   // 🏗 Setup
   const view = search.view ?? DEFAULT_GALLERY_VIEW;
-  const direction = search.direction ?? DEFAULT_SORT_DIRECTION;
   const repeats = search.repeats ?? DEFAULT_REPEATS;
   const size = search.size ?? DEFAULT_PAGE_SIZE;
 
@@ -70,10 +68,7 @@ export function useGallerySearch(): UseGallerySearchResult {
         ...(state.group !== undefined && {
           group: state.group.length === 0 ? undefined : [...state.group],
         }),
-        ...(state.sort !== undefined && {
-          direction: state.direction,
-          sort: state.sort,
-        }),
+        ...(state.sorts !== undefined && { sort: [...state.sorts] }),
       }),
     });
   };
@@ -83,17 +78,13 @@ export function useGallerySearch(): UseGallerySearchResult {
       search: (previous) => ({ ...previous, size: next }),
     });
   };
-  // Choosing no field drops both parameters: a direction means nothing alone.
-  const handleSortChange = (
-    sort: string | undefined,
-    nextDirection: SortDirection,
-  ): void => {
+  // No fields drops the parameter, which the default sort then stands for.
+  const handleSortChange = (sorts: SortEntry[]): void => {
     void navigate({
       replace: true,
       search: (previous) => ({
         ...previous,
-        direction: sort === undefined ? undefined : nextDirection,
-        sort,
+        sort: sorts.length === 0 ? undefined : sorts,
       }),
     });
   };
@@ -102,8 +93,7 @@ export function useGallerySearch(): UseGallerySearchResult {
 
   // 🎁 Result
   return {
-    direction,
-    group: search.group ?? [],
+    group: search.group,
     handleFilterChange,
     handleGroupChange,
     handleSizeChange,
@@ -111,7 +101,7 @@ export function useGallerySearch(): UseGallerySearchResult {
     handleViewApply,
     repeats,
     size,
-    sort: search.sort,
+    sorts: search.sort ?? [],
     view,
   };
 }

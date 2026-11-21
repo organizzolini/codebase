@@ -1,8 +1,11 @@
-import { Layers } from "lucide-react";
+import { ArrowLeft, ArrowRight, Layers, Trash2 } from "lucide-react";
 import { useMemo } from "react";
 
 import { Button, ButtonGroup } from "@codebase/presentation";
 
+import { GallerySegment } from "../gallery-cascader/components/gallery-segment/gallery-segment";
+import { SEGMENT_CLASS } from "../gallery-cascader/components/gallery-segment/gallery-segment.constants";
+import { moveItem } from "../gallery-cascader/components/gallery-segment/gallery-segment.utilities";
 import { GalleryCascader } from "../gallery-cascader/gallery-cascader";
 import { createFieldNodes } from "../gallery-cascader/gallery-cascader.utilities";
 import { GallerySurface } from "../gallery-surface/gallery-surface";
@@ -43,6 +46,9 @@ export function GalleryGroupBy(
 
   // 🏗 Setup
 
+  const labelOf = (key: string): string =>
+    fields.find((field) => field.key === key)?.label ?? key;
+
   // 💪 Handlers
   // Ticking adds a level at the end, up to the most; clearing removes it.
   const handleToggle = (key: string): void => {
@@ -69,11 +75,7 @@ export function GalleryGroupBy(
           title={GROUP_TITLE}
           trigger={
             <Button
-              className={
-                grouping.length === 0
-                  ? undefined
-                  : "in-data-[slot=button-group]:rounded-r-none"
-              }
+              className="in-data-[slot=button-group]:rounded-r-none"
               size="sm"
               variant="outline"
             >
@@ -90,19 +92,40 @@ export function GalleryGroupBy(
             onToggle={handleToggle}
           />
         </GallerySurface>
-        {grouping.map((key) => (
-          <Button
+        {grouping.map((key, index) => (
+          <GallerySegment
             key={key}
-            aria-label={`Grouped by ${fields.find((field) => field.key === key)?.label ?? key}`}
-            onClick={() => {
-              handleToggle(key);
-            }}
-            size="sm"
-            title="Remove this level"
-            variant="outline"
-          >
-            {fields.find((field) => field.key === key)?.label ?? key}
-          </Button>
+            actions={[
+              {
+                icon: ArrowLeft,
+                isDisabled: index === 0,
+                label: "Move left",
+                onSelect: () => {
+                  onGroupingChange(moveItem(grouping, index, -1));
+                },
+              },
+              {
+                icon: ArrowRight,
+                isDisabled: index === grouping.length - 1,
+                label: "Move right",
+                onSelect: () => {
+                  onGroupingChange(moveItem(grouping, index, 1));
+                },
+              },
+              {
+                icon: Trash2,
+                isDestructive: true,
+                label: "Remove",
+                onSelect: () => {
+                  handleToggle(key);
+                },
+              },
+            ]}
+            ariaLabel={`Grouped by ${labelOf(key)}`}
+            className={SEGMENT_CLASS}
+            label={labelOf(key)}
+            menuLabel={`${labelOf(key)} grouping options`}
+          />
         ))}
       </ButtonGroup>
     </div>

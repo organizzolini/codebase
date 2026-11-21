@@ -88,7 +88,7 @@ export function MeanderCard(
         <div className="rounded-md border border-(--line) bg-(--drawing-panel) p-4">
           <img
             alt={`Drawing of meander ${meander.code}`}
-            className="max-h-56 w-full object-contain"
+            className="mx-auto h-auto max-h-56 max-w-full object-contain"
             height={size.height}
             src={toSvgDataUri(meander.svg)}
             style={{ aspectRatio: `${size.width} / ${size.height}` }}

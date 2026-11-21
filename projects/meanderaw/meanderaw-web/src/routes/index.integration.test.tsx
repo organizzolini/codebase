@@ -21,13 +21,9 @@ async function chooseSort(category: RegExp, name: RegExp): Promise<void> {
   fireEvent.click(await screen.findByRole("option", { name }));
 }
 
-/** Picks a view in a parent of the View cascader, opening the surface first. */
-async function chooseView(
-  parent: RegExp,
-  name: RegExp | string,
-): Promise<void> {
+/** Picks a view in the View cascader, opening the surface first. */
+async function chooseView(name: RegExp | string): Promise<void> {
   await openSurface("View", "View");
-  fireEvent.click(await screen.findByRole("option", { name: parent }));
   fireEvent.click(await screen.findByRole("option", { name }));
 }
 
@@ -101,7 +97,7 @@ describe("index", () => {
   it("shows each meander as a card: drawing, Code with its repeats, badge and grouped pills", async () => {
     serveMeandersApi(3);
 
-    await renderRoute(getRouter(), "/");
+    await renderRoute(getRouter(), "/?group=%5B%5D");
 
     const cards = await screen.findAllByTestId("meander-card");
 
@@ -117,6 +113,29 @@ describe("index", () => {
     expect(second?.queryByText("Hardcoded")).toBeNull();
   });
 
+  it("groups by rows when the link names no grouping, and keeps rows when the last level is removed", async () => {
+    const api = serveMeandersApi(3);
+    const router = getRouter();
+
+    await renderRoute(router, "/");
+    await screen.findAllByTestId("meander-card");
+
+    expect(groupText("Group")).toBe("GroupRows");
+    expect(api.groupRequests[0]?.groupBy).toStrictEqual([{ field: "rows" }]);
+    expect(router.state.location.search.group).toBeUndefined();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Rows grouping options" }),
+    );
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
+
+    await waitFor(() => {
+      expect(groupText("Group")).toBe("GroupRows");
+    });
+
+    expect(router.state.location.search.group).toBeUndefined();
+  });
+
   it("copies the Code as shown, with its repeats", async () => {
     const writeText = vi.fn<(text: string) => Promise<void>>(async () => {});
     Object.defineProperty(navigator, "clipboard", {
@@ -125,7 +144,7 @@ describe("index", () => {
     });
     serveMeandersApi(1);
 
-    await renderRoute(getRouter(), "/?repeats=7");
+    await renderRoute(getRouter(), "/?group=%5B%5D&repeats=7");
     fireEvent.click(
       await screen.findByRole("button", { name: /Copy the Code/u }),
     );
@@ -139,7 +158,7 @@ describe("index", () => {
     serveMeandersApi(3);
     const router = getRouter();
 
-    await renderRoute(router, "/");
+    await renderRoute(router, "/?group=%5B%5D");
     await screen.findAllByTestId("meander-card");
 
     expect(groupText("Display")).toBe("DisplayGrid");
@@ -172,7 +191,7 @@ describe("index", () => {
 
     await renderRoute(router, "/?view=grid");
     await screen.findAllByTestId("meander-card");
-    await chooseView(/Presets/u, /By rows then columns/u);
+    await chooseView(/By rows then columns/u);
 
     await waitFor(() => {
       expect(router.state.location.search.group).toStrictEqual([
@@ -192,7 +211,7 @@ describe("index", () => {
   it("opens on the list when the link names it", async () => {
     serveMeandersApi(2);
 
-    await renderRoute(getRouter(), "/?view=list");
+    await renderRoute(getRouter(), "/?group=%5B%5D&view=list");
     await screen.findAllByTestId("meander-card");
 
     expect(groupText("Display")).toBe("DisplayList");
@@ -212,7 +231,7 @@ describe("index", () => {
   it("says so when there are no meanders yet", async () => {
     serveMeandersApi(0);
 
-    await renderRoute(getRouter(), "/");
+    await renderRoute(getRouter(), "/?group=%5B%5D");
 
     await expect(screen.findByTestId("gallery-empty")).resolves.toBeDefined();
     expect(screen.queryAllByTestId("meander-card")).toHaveLength(0);
@@ -222,7 +241,7 @@ describe("index", () => {
     const api = serveMeandersApi(2);
     api.fail("The database is down");
 
-    await renderRoute(getRouter(), "/");
+    await renderRoute(getRouter(), "/?group=%5B%5D");
 
     const alert = await screen.findByRole("alert");
 
@@ -239,7 +258,7 @@ describe("index", () => {
   it("mounts only the rows in view, however many meanders there are", async () => {
     serveMeandersApi(500);
 
-    await renderRoute(getRouter(), "/");
+    await renderRoute(getRouter(), "/?group=%5B%5D");
 
     const mounted = await screen.findAllByTestId("meander-card");
 
@@ -252,7 +271,7 @@ describe("index", () => {
     serveMeandersApi(40);
     setViewportWidth(1280);
 
-    await renderRoute(getRouter(), "/?view=grid");
+    await renderRoute(getRouter(), "/?group=%5B%5D&view=grid");
 
     const [row] = await screen.findAllByTestId("meander-gallery-row");
 
@@ -263,7 +282,7 @@ describe("index", () => {
     serveMeandersApi(40);
     setViewportWidth(375);
 
-    await renderRoute(getRouter(), "/?view=grid");
+    await renderRoute(getRouter(), "/?group=%5B%5D&view=grid");
 
     const [row] = await screen.findAllByTestId("meander-gallery-row");
 
@@ -273,20 +292,19 @@ describe("index", () => {
   it("sorts by rows ascending when the link names no sort, and says so", async () => {
     const api = serveMeandersApi(3);
 
-    await renderRoute(getRouter(), "/");
+    await renderRoute(getRouter(), "/?group=%5B%5D");
     await screen.findAllByTestId("meander-card");
 
-    expect(api.requests[0]?.sort).toStrictEqual({
-      direction: "ASC",
-      field: "rows",
-    });
+    expect(api.requests[0]?.sort).toStrictEqual([
+      { direction: "ASC", field: "rows" },
+    ]);
     expect(groupText("Sort")).toBe("SortRows");
   });
 
   it("shows the first page of 24 with its range, and no page before it", async () => {
     const api = serveMeandersApi(100);
 
-    await renderRoute(getRouter(), "/");
+    await renderRoute(getRouter(), "/?group=%5B%5D");
     await screen.findAllByTestId("meander-card");
 
     expect(groupText("Pages")).toBe("1 to 24 of 100");
@@ -302,7 +320,7 @@ describe("index", () => {
   it("pages by cursor with the arrows, reading each page once and showing it alone", async () => {
     const api = serveMeandersApi(100);
 
-    await renderRoute(getRouter(), "/");
+    await renderRoute(getRouter(), "/?group=%5B%5D");
     await screen.findAllByTestId("meander-card");
     fireEvent.click(screen.getByRole("button", { name: "Next page" }));
 
@@ -327,7 +345,7 @@ describe("index", () => {
   it("has no next arrow past the last page", async () => {
     serveMeandersApi(30);
 
-    await renderRoute(getRouter(), "/");
+    await renderRoute(getRouter(), "/?group=%5B%5D");
     await screen.findAllByTestId("meander-card");
     fireEvent.click(screen.getByRole("button", { name: "Next page" }));
 
@@ -346,7 +364,7 @@ describe("index", () => {
     const api = serveMeandersApi(100);
     const router = getRouter();
 
-    await renderRoute(router, "/");
+    await renderRoute(router, "/?group=%5B%5D");
     await screen.findAllByTestId("meander-card");
     fireEvent.click(screen.getByRole("button", { name: /Page$/u }));
     fireEvent.click(
@@ -369,7 +387,7 @@ describe("index", () => {
   it("goes straight to a page typed in the Page popover, by an offset", async () => {
     const api = serveMeandersApi(100);
 
-    await renderRoute(getRouter(), "/");
+    await renderRoute(getRouter(), "/?group=%5B%5D");
     await screen.findAllByTestId("meander-card");
     fireEvent.click(screen.getByRole("button", { name: /Page$/u }));
     fireEvent.change(await screen.findByLabelText("Page number"), {
@@ -387,7 +405,7 @@ describe("index", () => {
   it("opens on the page size the link names", async () => {
     const api = serveMeandersApi(100);
 
-    await renderRoute(getRouter(), "/?size=48");
+    await renderRoute(getRouter(), "/?group=%5B%5D&size=48");
     await screen.findAllByTestId("meander-card");
 
     expect(api.requests[0]).toMatchObject({ first: 48 });
@@ -397,7 +415,7 @@ describe("index", () => {
   it("shows why the next page failed, and reads it again when asked", async () => {
     const api = serveMeandersApi(100);
 
-    await renderRoute(getRouter(), "/");
+    await renderRoute(getRouter(), "/?group=%5B%5D");
     await screen.findAllByTestId("meander-card");
     api.fail("The database is down");
     fireEvent.click(screen.getByRole("button", { name: "Next page" }));
@@ -420,7 +438,7 @@ describe("index", () => {
   it("offers the shape fields and the catalog to sort by in a cascader, by category, with their descriptions", async () => {
     serveMeandersApi(3);
 
-    await renderRoute(getRouter(), "/");
+    await renderRoute(getRouter(), "/?group=%5B%5D");
     await screen.findAllByTestId("meander-card");
     await openSurface("Sort", "Sort");
 
@@ -454,7 +472,7 @@ describe("index", () => {
     const api = serveMeandersApi(6);
     const router = getRouter();
 
-    await renderRoute(router, "/");
+    await renderRoute(router, "/?group=%5B%5D");
     await screen.findAllByTestId("meander-card");
 
     // The list mounts only the rows in view and a few past them.
@@ -470,10 +488,10 @@ describe("index", () => {
     await closeSurface();
 
     await waitFor(() => {
-      expect(router.state.location.search).toMatchObject({
-        direction: "asc",
-        sort: "columns",
-      });
+      expect(router.state.location.search.sort).toStrictEqual([
+        { direction: "asc", field: "rows" },
+        { direction: "asc", field: "columns" },
+      ]);
     });
     await waitFor(() => {
       expect(codesShown().slice(0, 2)).toStrictEqual([
@@ -483,43 +501,52 @@ describe("index", () => {
     });
 
     expect(api.requests.at(-1)).toMatchObject({
-      sort: { direction: "ASC", field: "columns" },
+      sort: [
+        { direction: "ASC", field: "rows" },
+        { direction: "ASC", field: "columns" },
+      ],
     });
   });
 
-  it("flips the direction in the link and the request, and drops both with the default order", async () => {
+  it("flips the direction of a field from its menu, in the link and the request, and drops the sort with its last field", async () => {
     serveMeandersApi(6);
     const router = getRouter();
 
-    await renderRoute(router, "/?sort=columns");
+    await renderRoute(router, "/?group=%5B%5D&sort=columns");
     await screen.findAllByTestId("meander-card");
 
-    fireEvent.click(screen.getByRole("button", { name: "Sort descending" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Columns sorting options" }),
+    );
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Reverse" }));
 
     await waitFor(() => {
       expect(codesShown()[0]).toBe("01x01y0002");
     });
 
-    expect(router.state.location.search).toMatchObject({
-      direction: "desc",
-      sort: "columns",
-    });
+    expect(router.state.location.search.sort).toStrictEqual([
+      { direction: "desc", field: "columns" },
+    ]);
 
-    await chooseSort(/Shape/u, /Columns/u);
-    await closeSurface();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Columns sorting options" }),
+    );
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
 
     await waitFor(() => {
       expect(codesShown()[0]).toBe("01x01y0000");
     });
 
     expect(router.state.location.search.sort).toBeUndefined();
-    expect(router.state.location.search.direction).toBeUndefined();
   });
 
   it("opens sorted by a characteristic when the link names one, and pages in that sort", async () => {
     const api = serveMeandersApi(100);
 
-    await renderRoute(getRouter(), "/?sort=junctionCount&direction=desc");
+    await renderRoute(
+      getRouter(),
+      "/?group=%5B%5D&sort=junctionCount&direction=desc",
+    );
     await screen.findAllByTestId("meander-card");
 
     expect(groupText("Sort")).toBe("SortJunction count");
@@ -532,14 +559,44 @@ describe("index", () => {
 
     expect(api.requests[1]).toMatchObject({
       after: "23",
-      sort: { direction: "DESC", field: "junctionCount" },
+      sort: [{ direction: "DESC", field: "junctionCount" }],
+    });
+  });
+
+  it("pages by offset, not cursor, when several fields sort", async () => {
+    const api = serveMeandersApi(100);
+    const sort = encodeURIComponent(
+      JSON.stringify([
+        { direction: "desc", field: "junctionCount" },
+        { direction: "asc", field: "rows" },
+      ]),
+    );
+
+    await renderRoute(getRouter(), `/?group=%5B%5D&sort=${sort}`);
+    await screen.findAllByTestId("meander-card");
+
+    expect(groupText("Sort")).toBe("SortJunction countRows");
+
+    fireEvent.click(screen.getByRole("button", { name: "Next page" }));
+
+    await waitFor(() => {
+      expect(api.requests).toHaveLength(2);
+    });
+
+    expect(api.requests[1]).toMatchObject({
+      after: null,
+      offset: 24,
+      sort: [
+        { direction: "DESC", field: "junctionCount" },
+        { direction: "ASC", field: "rows" },
+      ],
     });
   });
 
   it("falls back to the default order when the link names a sort that is not a field", async () => {
     const api = serveMeandersApi(3);
 
-    await renderRoute(getRouter(), "/?sort=nope&direction=desc");
+    await renderRoute(getRouter(), "/?group=%5B%5D&sort=nope&direction=desc");
     await screen.findAllByTestId("meander-card");
 
     expect(codesShown()).toStrictEqual([
@@ -547,10 +604,9 @@ describe("index", () => {
       "01x01y0001",
       "01x01y0002",
     ]);
-    expect(api.requests[0]?.sort).toStrictEqual({
-      direction: "DESC",
-      field: "rows",
-    });
+    expect(api.requests[0]?.sort).toStrictEqual([
+      { direction: "ASC", field: "rows" },
+    ]);
     expect(groupText("Sort")).toBe("SortRows");
   });
 
@@ -558,7 +614,7 @@ describe("index", () => {
     const api = serveMeandersApi(3);
     api.fail("The database is down");
 
-    await renderRoute(getRouter(), "/?sort=rows");
+    await renderRoute(getRouter(), "/?group=%5B%5D&sort=rows");
 
     const alert = await screen.findByRole("alert");
 
@@ -569,7 +625,7 @@ describe("index", () => {
   it("says it is loading while a new sort reads, keeping the cards up", async () => {
     serveMeandersApi(3, 150);
 
-    await renderRoute(getRouter(), "/");
+    await renderRoute(getRouter(), "/?group=%5B%5D");
     await screen.findAllByTestId("meander-card");
     await chooseSort(/Shape/u, /Rows/u);
 
@@ -585,7 +641,7 @@ describe("index", () => {
   it("asks for each drawing with its tile repeated 12 times, on the first page and the next", async () => {
     const api = serveMeandersApi(100);
 
-    await renderRoute(getRouter(), "/");
+    await renderRoute(getRouter(), "/?group=%5B%5D");
 
     const [image] = await screen.findAllByAltText(/^Drawing of meander/u);
     const drawing = decodeURIComponent(image?.getAttribute("src") ?? "");
@@ -605,7 +661,7 @@ describe("index", () => {
     const api = serveMeandersApi(3);
     const router = getRouter();
 
-    await renderRoute(router, "/");
+    await renderRoute(router, "/?group=%5B%5D");
     await screen.findAllByTestId("meander-card");
 
     const chips = screen.getByRole("group", { name: "Filter" });
@@ -629,10 +685,31 @@ describe("index", () => {
     expect(screen.getAllByTestId("meander-card")).toHaveLength(3);
   });
 
+  it("reads the cards of every group again with the new repeats, when grouped", async () => {
+    const api = serveMeandersApi(3);
+    const router = getRouter();
+
+    await renderRoute(router, "/");
+    await screen.findAllByTestId("meander-card");
+
+    expect(drawingOf(0)).toContain('data-repeats="12"');
+
+    await setRepeats("3");
+
+    await waitFor(() => {
+      expect(drawingOf(0)).toContain('data-repeats="3"');
+    });
+
+    expect(router.state.location.search.repeats).toBe(3);
+    expect(api.requests.at(-1)).toMatchObject({ repeats: 3 });
+    expect(api.requests.map(({ repeats }) => repeats)).toStrictEqual([12, 3]);
+    expect(screen.getAllByTestId("meander-card")).toHaveLength(3);
+  });
+
   it("falls back to 12 repeats for a link that names 25", async () => {
     const api = serveMeandersApi(2);
 
-    await renderRoute(getRouter(), "/?repeats=25");
+    await renderRoute(getRouter(), "/?group=%5B%5D&repeats=25");
     await screen.findAllByTestId("meander-card");
 
     expect(api.requests[0]?.repeats).toBe(12);
@@ -642,7 +719,7 @@ describe("index", () => {
   it("accepts 24 repeats, the most the API allows", async () => {
     const api = serveMeandersApi(1);
 
-    await renderRoute(getRouter(), "/?repeats=24");
+    await renderRoute(getRouter(), "/?group=%5B%5D&repeats=24");
     await screen.findAllByTestId("meander-card");
 
     expect(api.requests[0]?.repeats).toBe(24);
@@ -652,7 +729,7 @@ describe("index", () => {
   it("falls back to 12 repeats for a link that names text", async () => {
     const api = serveMeandersApi(2);
 
-    await renderRoute(getRouter(), "/?repeats=abc");
+    await renderRoute(getRouter(), "/?group=%5B%5D&repeats=abc");
     await screen.findAllByTestId("meander-card");
 
     expect(api.requests[0]?.repeats).toBe(12);
@@ -664,7 +741,7 @@ describe("index", () => {
   it("opens on the repeats the link names, and pages with them", async () => {
     const api = serveMeandersApi(100);
 
-    await renderRoute(getRouter(), "/?repeats=2");
+    await renderRoute(getRouter(), "/?group=%5B%5D&repeats=2");
     await screen.findAllByTestId("meander-card");
     fireEvent.click(screen.getByRole("button", { name: "Next page" }));
 

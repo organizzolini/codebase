@@ -1,7 +1,8 @@
-import { DEFAULT_SORT_FIELD } from "../../../hooks/use-gallery-search/use-gallery-search.constants";
+import { DEFAULT_SORTS } from "../../../hooks/use-gallery-search/use-gallery-search.constants";
 
 import { SHAPE_SORT_FIELDS } from "./gallery-sort.constants";
 
+import type { SortEntry } from "../../../hooks/use-gallery-search/use-gallery-search.types";
 import type { PickerField } from "../gallery-cascader/gallery-cascader.types";
 import type { GalleryCharacteristic } from "../meander-gallery/meanders-api.types";
 
@@ -34,15 +35,24 @@ export function createSortFields(
 }
 
 /**
- * The sort a link names if it is a shape field or in the catalog, else rows.
+ * The sorts a link names that are shape fields or in the catalog, each once;
+ * rows ascending when none is left.
  */
-export function resolveSortField(
-  sort: string | undefined,
+export function resolveSorts(
+  sorts: readonly SortEntry[] | undefined,
   characteristics: readonly GalleryCharacteristic[],
-): string {
-  const known =
-    SHAPE_SORT_FIELDS.some(({ key }) => key === sort) ||
-    characteristics.some(({ key }) => key === sort);
+): SortEntry[] {
+  const kept: SortEntry[] = [];
 
-  return known && sort !== undefined ? sort : DEFAULT_SORT_FIELD;
+  for (const entry of sorts ?? []) {
+    const known =
+      SHAPE_SORT_FIELDS.some(({ key }) => key === entry.field) ||
+      characteristics.some(({ key }) => key === entry.field);
+
+    if (known && !kept.some(({ field }) => field === entry.field)) {
+      kept.push(entry);
+    }
+  }
+
+  return kept.length === 0 ? [...DEFAULT_SORTS] : kept;
 }

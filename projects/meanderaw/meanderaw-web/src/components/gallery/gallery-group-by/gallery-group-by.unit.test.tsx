@@ -51,7 +51,13 @@ describe(GalleryGroupBy, () => {
         .map(
           (button) => button.getAttribute("aria-label") ?? button.textContent,
         ),
-    ).toStrictEqual(["Group", "Grouped by Rows", "Grouped by Chain"]);
+    ).toStrictEqual([
+      "Group",
+      "Grouped by Rows",
+      "Rows grouping options",
+      "Grouped by Chain",
+      "Chain grouping options",
+    ]);
   });
 
   it("labels a level by its key when no field is called that", () => {
@@ -62,7 +68,7 @@ describe(GalleryGroupBy, () => {
     ).toBe("mystery");
   });
 
-  it("removes a level with its button", () => {
+  it("moves and removes a level from its menu, refusing a move past an end", async () => {
     const onGroupingChange =
       vi.fn<GalleryGroupByProperties["onGroupingChange"]>();
 
@@ -71,9 +77,36 @@ describe(GalleryGroupBy, () => {
         {...properties({ grouping: ["rows", "isChain"], onGroupingChange })}
       />,
     );
-    fireEvent.click(screen.getByRole("button", { name: "Grouped by Rows" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Rows grouping options" }),
+    );
 
-    expect(onGroupingChange).toHaveBeenCalledExactlyOnceWith(["isChain"]);
+    const item = await screen.findByRole("menuitem", { name: "Move left" });
+
+    expect(item.getAttribute("aria-disabled")).toBe("true");
+
+    fireEvent.click(screen.getByRole("menuitem", { name: "Move right" }));
+
+    expect(onGroupingChange).toHaveBeenLastCalledWith(["isChain", "rows"]);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Chain grouping options" }),
+    );
+
+    const last = await screen.findByRole("menuitem", { name: "Move right" });
+
+    expect(last.getAttribute("aria-disabled")).toBe("true");
+
+    fireEvent.click(screen.getByRole("menuitem", { name: "Move left" }));
+
+    expect(onGroupingChange).toHaveBeenLastCalledWith(["isChain", "rows"]);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Rows grouping options" }),
+    );
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
+
+    expect(onGroupingChange).toHaveBeenLastCalledWith(["isChain"]);
   });
 
   it("opens a cascader of the fields, categories first with shape leading, behind a Group by search", async () => {

@@ -343,26 +343,27 @@ function refuseInput(
 }
 
 /**
- * Fixture positions in a sort's order, ties by position; position order
- * with no sort.
+ * Fixture positions in the order of the sorts, first to last, ties by
+ * position; position order with no sort.
  */
 function sortedPositions(
   count: number,
-  sort: MeanderSortInput | null | undefined,
+  sort: MeanderSortInput | MeanderSortInput[] | null | undefined,
 ): number[] {
   const positions = Array.from({ length: count }, (_, position) => position);
-
-  if (sort === null || sort === undefined) {
-    return positions;
-  }
-
-  const sign = sort.direction === "DESC" ? -1 : 1;
+  const sorts = sort === null || sort === undefined ? [] : [sort].flat();
 
   return positions.toSorted((left, right) => {
-    const a = sortValue(fixtureMeander(left), sort.field);
-    const b = sortValue(fixtureMeander(right), sort.field);
+    for (const { direction, field } of sorts) {
+      const a = sortValue(fixtureMeander(left), field);
+      const b = sortValue(fixtureMeander(right), field);
 
-    return a === b ? left - right : sign * (a < b ? -1 : 1);
+      if (a !== b) {
+        return (direction === "DESC" ? -1 : 1) * (a < b ? -1 : 1);
+      }
+    }
+
+    return left - right;
   });
 }
 

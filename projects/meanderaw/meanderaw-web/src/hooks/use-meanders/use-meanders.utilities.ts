@@ -20,18 +20,22 @@ export function canGoTo(
 }
 
 /**
- * How to read a page: after the cursor of the page before it, if that was read, else past an offset.
+ * How to read a page: after the cursor before it when one sort orders it,
+ * else past an offset.
  */
 export function planRead(
   request: Readonly<{
     first: MeandersPage;
     pages: Readonly<Record<number, MeandersPage>>;
     size: number;
+    sorts: number;
     target: number;
   }>,
 ): { after: null | string; offset: number } {
-  const { first, pages, size, target } = request;
-  const before = target === 1 ? first : pages[target - 1];
+  const { first, pages, size, sorts, target } = request;
+  // A cursor holds one sort's place; several are paged by offset.
+  const before =
+    sorts > 1 ? undefined : target === 1 ? first : pages[target - 1];
 
   return {
     after: before?.pageInfo.endCursor ?? null,
@@ -63,7 +67,7 @@ export function readPage(
     first: query.size,
     offset,
     repeats: query.repeats,
-    sort: query.sort,
+    sort: query.sort === undefined ? undefined : [...query.sort],
   })
     .then((read) => {
       if (showing.current === first) {

@@ -40,9 +40,14 @@ describe("gallery group by", () => {
           createGroupFields(FIXTURE_CHARACTERISTICS),
         ),
       ).toStrictEqual(["columns", "isChain"]);
-      expect(
-        resolveGrouping(undefined, createGroupFields(FIXTURE_CHARACTERISTICS)),
-      ).toStrictEqual([]);
+    });
+
+    it("groups by rows when the link names no grouping, and reads flat for an empty list", () => {
+      const fields = createGroupFields(FIXTURE_CHARACTERISTICS);
+
+      expect(resolveGrouping(undefined, fields)).toStrictEqual(["rows"]);
+      expect(resolveGrouping([], fields)).toStrictEqual([]);
+      expect(resolveGrouping(["nonsense"], fields)).toStrictEqual([]);
     });
   });
 

@@ -20,6 +20,32 @@ export const LABELS: Partial<CascaderLabels> = {
 export const CATEGORY_PREFIX = "category:";
 
 /**
+ * The category whose characteristics are nested by sub-category.
+ */
+export const NESTED_CATEGORY = "submatrix";
+
+/**
+ * How many characteristics the category holds before it nests.
+ */
+export const NESTING_THRESHOLD = 48;
+
+/**
+ * The branch that holds every script's letters.
+ */
+export const LETTER_BRANCH = "Letter";
+
+/**
+ * Reads a lettered name: letter, compass word, script.
+ */
+export const LETTER_NAME =
+  /^(.+?) (?:Northeast|Northwest|Southeast|Southwest)(?: (?:Half|Quarter|Three Quarter))? (\S+) Count$/u;
+
+/**
+ * The words a name ends with that say how it is measured.
+ */
+export const MEASURE_SUFFIX = /\s+(?:Count|Length)$/u;
+
+/**
  * A handler that does nothing.
  */
 export const NOTHING = (): void => {};

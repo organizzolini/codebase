@@ -15,9 +15,8 @@ function properties(
 ): GallerySortProperties {
   return {
     characteristics: CATALOG,
-    direction: "asc",
-    field: "rows",
-    onSortChange: vi.fn<GallerySortProperties["onSortChange"]>(),
+    onSortsChange: vi.fn<GallerySortProperties["onSortsChange"]>(),
+    sorts: [{ direction: "asc", field: "rows" }],
     ...overrides,
   };
 }
@@ -34,22 +33,36 @@ describe(GallerySort, () => {
     expect(screen.getByTestId("gallery-sort").className).toBe("gallery-sort");
   });
 
-  it("shows the field sorted by with an arrow, rows by default", () => {
-    const { rerender } = render(<GallerySort {...properties()} />);
-
-    expect(screen.getByRole("group", { name: "Sort" }).textContent).toBe(
-      "SortRows",
+  it("shows each field sorted by as a segment with a menu, in order", () => {
+    render(
+      <GallerySort
+        {...properties({
+          sorts: [
+            { direction: "asc", field: "rows" },
+            { direction: "desc", field: "junctionCount" },
+          ],
+        })}
+      />,
     );
 
-    rerender(<GallerySort {...properties({ field: "junctionCount" })} />);
-
-    expect(screen.getByRole("group", { name: "Sort" }).textContent).toBe(
-      "SortJunction count",
-    );
+    expect(
+      screen.getByRole("button", { name: "Sorted by Rows, ascending" }),
+    ).toBeDefined();
+    expect(
+      screen.getByRole("button", {
+        name: "Sorted by Junction count, descending",
+      }),
+    ).toBeDefined();
+    expect(
+      screen.getByRole("button", { name: "Rows sorting options" }),
+    ).toBeDefined();
+    expect(
+      screen.getByRole("button", { name: "Junction count sorting options" }),
+    ).toBeDefined();
   });
 
   it("opens a cascader of the shape fields and the catalog by category, behind a Sort by search, with their descriptions", async () => {
-    render(<GallerySort {...properties({ field: "rows" })} />);
+    render(<GallerySort {...properties()} />);
     fireEvent.click(screen.getByRole("button", { name: "Sort" }));
 
     await expect(
@@ -80,47 +93,82 @@ describe(GallerySort, () => {
     ]);
   });
 
-  it("sorts by the field pressed, keeping the direction", async () => {
-    const onSortChange = vi.fn<GallerySortProperties["onSortChange"]>();
+  it("adds a field ascending after the ones sorted by when it is ticked", async () => {
+    const onSortsChange = vi.fn<GallerySortProperties["onSortsChange"]>();
 
-    render(
-      <GallerySort {...properties({ direction: "desc", onSortChange })} />,
-    );
+    render(<GallerySort {...properties({ onSortsChange })} />);
     fireEvent.click(screen.getByRole("button", { name: "Sort" }));
     fireEvent.click(await screen.findByRole("option", { name: /Shape/u }));
     fireEvent.click(await screen.findByRole("option", { name: /Columns/u }));
 
-    expect(onSortChange).toHaveBeenCalledExactlyOnceWith("columns", "desc");
+    expect(onSortsChange).toHaveBeenCalledExactlyOnceWith([
+      { direction: "asc", field: "rows" },
+      { direction: "asc", field: "columns" },
+    ]);
   });
 
-  it("goes back to the default sort when the field sorted by is pressed again", async () => {
-    const onSortChange = vi.fn<GallerySortProperties["onSortChange"]>();
+  it("drops a field when it is ticked again", async () => {
+    const onSortsChange = vi.fn<GallerySortProperties["onSortsChange"]>();
 
-    render(<GallerySort {...properties({ field: "rows", onSortChange })} />);
+    render(<GallerySort {...properties({ onSortsChange })} />);
     fireEvent.click(screen.getByRole("button", { name: "Sort" }));
     fireEvent.click(await screen.findByRole("option", { name: /Shape/u }));
     fireEvent.click(await screen.findByRole("option", { name: /Rows/u }));
 
-    expect(onSortChange).toHaveBeenCalledExactlyOnceWith(undefined, "asc");
+    expect(onSortsChange).toHaveBeenCalledExactlyOnceWith([]);
   });
 
-  it("flips the direction with its arrow", () => {
-    const onSortChange = vi.fn<GallerySortProperties["onSortChange"]>();
-    const { rerender } = render(
-      <GallerySort {...properties({ field: "rows", onSortChange })} />,
+  it("never reverses a field when its segment is pressed", () => {
+    const onSortsChange = vi.fn<GallerySortProperties["onSortsChange"]>();
+
+    render(<GallerySort {...properties({ onSortsChange })} />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Sorted by Rows, ascending" }),
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Sort descending" }));
+    expect(onSortsChange).not.toHaveBeenCalled();
+  });
 
-    expect(onSortChange).toHaveBeenLastCalledWith("rows", "desc");
+  it("moves, reverses and removes a field from its menu, refusing a move past an end", async () => {
+    const onSortsChange = vi.fn<GallerySortProperties["onSortsChange"]>();
+    const sorts = [
+      { direction: "asc", field: "rows" },
+      { direction: "desc", field: "columns" },
+    ] as const;
 
-    rerender(
-      <GallerySort
-        {...properties({ direction: "desc", field: "rows", onSortChange })}
-      />,
+    render(<GallerySort {...properties({ onSortsChange, sorts })} />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Columns sorting options" }),
     );
-    fireEvent.click(screen.getByRole("button", { name: "Sort ascending" }));
 
-    expect(onSortChange).toHaveBeenLastCalledWith("rows", "asc");
+    const item = await screen.findByRole("menuitem", { name: "Move right" });
+
+    expect(item.getAttribute("aria-disabled")).toBe("true");
+
+    fireEvent.click(screen.getByRole("menuitem", { name: "Move left" }));
+
+    expect(onSortsChange).toHaveBeenLastCalledWith([
+      { direction: "desc", field: "columns" },
+      { direction: "asc", field: "rows" },
+    ]);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Columns sorting options" }),
+    );
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Reverse" }));
+
+    expect(onSortsChange).toHaveBeenLastCalledWith([
+      { direction: "asc", field: "rows" },
+      { direction: "asc", field: "columns" },
+    ]);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Columns sorting options" }),
+    );
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
+
+    expect(onSortsChange).toHaveBeenLastCalledWith([
+      { direction: "asc", field: "rows" },
+    ]);
   });
 });

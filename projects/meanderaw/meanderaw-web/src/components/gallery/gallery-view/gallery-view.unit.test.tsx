@@ -57,10 +57,9 @@ describe(GalleryView, () => {
     );
   });
 
-  it("opens a cascader of presets with their descriptions from either segment, checking the one in force", async () => {
+  it("opens a flat cascader of views with their descriptions from either segment, checking the one in force", async () => {
     render(<GalleryView {...properties()} />);
     fireEvent.click(screen.getByRole("button", { name: "Default" }));
-    fireEvent.click(await screen.findByRole("option", { name: /Presets/u }));
 
     const options = await screen.findAllByRole("option");
 
@@ -78,7 +77,6 @@ describe(GalleryView, () => {
 
     render(<GalleryView {...properties({ onApply })} />);
     fireEvent.click(screen.getByRole("button", { name: "View" }));
-    fireEvent.click(await screen.findByRole("option", { name: /Presets/u }));
     fireEvent.click(
       await screen.findByRole("option", { name: /By rows then columns/u }),
     );
@@ -110,7 +108,6 @@ describe(GalleryView, () => {
       />,
     );
     fireEvent.click(screen.getByRole("button", { name: "View" }));
-    fireEvent.click(await screen.findByRole("option", { name: /Presets/u }));
 
     await expect(
       screen.findByRole("option", { name: /Most corners first/u }),

@@ -12,6 +12,8 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 import { MeandersService } from "./meanders.service";
 import { MeanderAggregateService } from "./modules/aggregates/meander-aggregate.service";
 import { MeanderFilterService } from "./modules/filters/meander-filter.service";
+import { toCursor } from "./modules/pagination/meanderaw-api.utilities";
+import { SortDirection } from "./modules/sorting/sort-direction.entities";
 
 /** Builds the service over repositories that are never reached. */
 async function buildService(): Promise<MeandersService> {
@@ -236,5 +238,149 @@ describe(MeandersService, () => {
     expect(limit).toHaveBeenCalledWith(25);
     expect(skipped.pageInfo.hasPreviousPage).toBe(true);
     expect(first.pageInfo.hasPreviousPage).toBe(false);
+  });
+
+  it("refuses a cursor with several sorts, which need an offset", async () => {
+    expect.hasAssertions();
+
+    const service = await buildService();
+
+    await expect(
+      service.find({
+        after: "c",
+        sort: [
+          { direction: SortDirection.ASC, field: "rows" },
+          { direction: SortDirection.DESC, field: "columns" },
+        ],
+      }),
+    ).rejects.toThrow(/offset/i);
+  });
+
+  it("orders by every sort in turn, then by Code, a characteristic through its own join", async () => {
+    expect.hasAssertions();
+
+    const orderBy = vi.fn<(column: string, direction: string) => unknown>();
+    const addOrderBy = vi.fn<(column: string, direction: string) => unknown>();
+    const leftJoin = vi.fn<(...joined: unknown[]) => unknown>();
+    const builder: Record<string, unknown> = {};
+
+    Object.assign(builder, {
+      addOrderBy: addOrderBy.mockReturnValue(builder),
+      addSelect: vi.fn<() => unknown>().mockReturnValue(builder),
+      getRawAndEntities: vi
+        .fn<() => Promise<unknown>>()
+        .mockResolvedValue({ entities: [], raw: [] }),
+      leftJoin: leftJoin.mockReturnValue(builder),
+      limit: vi.fn<() => unknown>().mockReturnValue(builder),
+      offset: vi.fn<() => unknown>().mockReturnValue(builder),
+      orderBy: orderBy.mockReturnValue(builder),
+    });
+
+    const { instance, mock } = await buildTestingModule(MeandersService, {
+      mocks: [
+        CodeService,
+        DrawingService,
+        MeanderAggregateService,
+        MeanderFilterService,
+      ],
+      providers: [
+        {
+          provide: getRepositoryToken(Meander),
+          useValue: { createQueryBuilder: () => builder },
+        },
+        {
+          provide: getRepositoryToken(Characteristic),
+          useValue: {
+            findOneBy: vi
+              .fn<() => Promise<unknown>>()
+              .mockResolvedValue({ id: 7 }),
+          },
+        },
+        { provide: getRepositoryToken(MeanderCharacteristic), useValue: {} },
+      ],
+    });
+
+    mock(MeanderAggregateService).total.mockResolvedValue(0);
+
+    await instance.find({
+      sort: [
+        { direction: SortDirection.DESC, field: "rows" },
+        { direction: SortDirection.ASC, field: "junctionCount" },
+      ],
+    });
+
+    expect(orderBy).toHaveBeenCalledExactlyOnceWith("meander.rows", "DESC");
+    expect(addOrderBy.mock.calls).toStrictEqual([
+      ["COALESCE(bridge1.value, 0)", "ASC"],
+      ["meander.code", "ASC"],
+    ]);
+    expect(leftJoin).toHaveBeenCalledExactlyOnceWith(
+      MeanderCharacteristic,
+      "bridge1",
+      "bridge1.characteristicId = :characteristicId1 AND bridge1.meanderId = meander.id",
+      { characteristicId1: 7 },
+    );
+  });
+
+  it.each([
+    [
+      "a shape field, then the Code of the tie",
+      "rows",
+      "(meander.rows > :cursorValue OR (meander.rows = :cursorValue AND meander.code > :cursorCode))",
+    ],
+    ["the Code itself, alone", "code", "meander.code > :cursorCode"],
+  ])("keeps the rows after a cursor by %s", async (_name, field, condition) => {
+    expect.hasAssertions();
+
+    const andWhere = vi.fn<(...conditions: unknown[]) => unknown>();
+    const builder: Record<string, unknown> = {};
+
+    Object.assign(builder, {
+      addOrderBy: vi.fn<() => unknown>().mockReturnValue(builder),
+      andWhere: andWhere.mockReturnValue(builder),
+      getRawAndEntities: vi
+        .fn<() => Promise<unknown>>()
+        .mockResolvedValue({ entities: [], raw: [] }),
+      limit: vi.fn<() => unknown>().mockReturnValue(builder),
+      offset: vi.fn<() => unknown>().mockReturnValue(builder),
+      orderBy: vi.fn<() => unknown>().mockReturnValue(builder),
+    });
+
+    const { instance, mock } = await buildTestingModule(MeandersService, {
+      mocks: [
+        CodeService,
+        DrawingService,
+        MeanderAggregateService,
+        MeanderFilterService,
+      ],
+      providers: [
+        {
+          provide: getRepositoryToken(Meander),
+          useValue: { createQueryBuilder: () => builder },
+        },
+        { provide: getRepositoryToken(Characteristic), useValue: {} },
+        { provide: getRepositoryToken(MeanderCharacteristic), useValue: {} },
+      ],
+    });
+
+    mock(MeanderAggregateService).total.mockResolvedValue(0);
+
+    const after = toCursor({
+      code: "01x01y3",
+      direction: SortDirection.ASC,
+      field,
+      filter: "none",
+      value: 2,
+    });
+
+    await instance.find({
+      after,
+      sort: [{ direction: SortDirection.ASC, field }],
+    });
+
+    expect(andWhere).toHaveBeenCalledExactlyOnceWith(condition, {
+      cursorCode: "01x01y3",
+      cursorValue: 2,
+    });
   });
 });

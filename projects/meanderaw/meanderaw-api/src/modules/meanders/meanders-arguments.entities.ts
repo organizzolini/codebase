@@ -35,9 +35,9 @@ export class MeandersArgs {
   })
   offset?: number;
 
-  @Field(() => MeanderSortInput, {
+  @Field(() => [MeanderSortInput], {
     description: SORT_ARGUMENT_DESCRIPTION,
     nullable: true,
   })
-  sort?: MeanderSortInput | null;
+  sort?: MeanderSortInput[] | null;
 }

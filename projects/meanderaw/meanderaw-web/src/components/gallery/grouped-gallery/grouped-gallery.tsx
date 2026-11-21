@@ -39,11 +39,11 @@ export interface GroupedGalleryProperties {
   className?: string;
   fields: readonly GroupField[];
   groups: readonly GalleryGroup[];
-  /** What every group's cards are read with: the page's filter, repeats, sort. */
+  /** What every group's cards are read with: the page's filter, repeats, sorts. */
   query: Readonly<{
     filter: MeanderFilterGroupInput | undefined;
     repeats: number;
-    sort: MeanderSortInput | undefined;
+    sort: readonly MeanderSortInput[];
   }>;
   view: GalleryView;
 }

@@ -2,20 +2,35 @@ import { describe, expect, it } from "vitest";
 
 import { FIXTURE_CHARACTERISTICS } from "../../../../testing/meanders-api";
 
-import { createSortFields, resolveSortField } from "./gallery-sort.utilities";
+import { createSortFields, resolveSorts } from "./gallery-sort.utilities";
 
 const CATALOG = FIXTURE_CHARACTERISTICS;
 
 describe("gallery sort", () => {
-  describe(resolveSortField, () => {
-    it("keeps a shape field and a key in the catalog", () => {
-      expect(resolveSortField("rows", CATALOG)).toBe("rows");
-      expect(resolveSortField("isChain", CATALOG)).toBe("isChain");
+  describe(resolveSorts, () => {
+    it("keeps shape fields and keys in the catalog, once each, in order", () => {
+      expect(
+        resolveSorts(
+          [
+            { direction: "desc", field: "isChain" },
+            { direction: "asc", field: "rows" },
+            { direction: "desc", field: "isChain" },
+          ],
+          CATALOG,
+        ),
+      ).toStrictEqual([
+        { direction: "desc", field: "isChain" },
+        { direction: "asc", field: "rows" },
+      ]);
     });
 
-    it("falls back to rows for a field that is neither, or none", () => {
-      expect(resolveSortField("nope", CATALOG)).toBe("rows");
-      expect(resolveSortField(undefined, CATALOG)).toBe("rows");
+    it("falls back to rows ascending when none is left", () => {
+      const rows = [{ direction: "asc", field: "rows" }];
+
+      expect(
+        resolveSorts([{ direction: "asc", field: "nope" }], CATALOG),
+      ).toStrictEqual(rows);
+      expect(resolveSorts(undefined, CATALOG)).toStrictEqual(rows);
     });
   });
 

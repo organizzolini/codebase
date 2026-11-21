@@ -53,7 +53,13 @@ export function useMeanders(
     }
 
     readPage({
-      ...planRead({ first, pages, size: query.size, target }),
+      ...planRead({
+        first,
+        pages,
+        size: query.size,
+        sorts: query.sort?.length ?? 0,
+        target,
+      }),
       fallback: position,
       first,
       position: target,

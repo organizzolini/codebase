@@ -1,6 +1,9 @@
 import { CARD_MIN_WIDTH_PIXELS, GAP_PIXELS } from "./meander-gallery.constants";
 
-import type { GalleryView } from "../../../hooks/use-gallery-search/use-gallery-search.types";
+import type {
+  GalleryView,
+  SortEntry,
+} from "../../../hooks/use-gallery-search/use-gallery-search.types";
 import type { FilterGroup } from "../gallery-filters/components/filter-model/filter-model.types";
 import type { GalleryMeander } from "./meanders-api.types";
 
@@ -28,13 +31,13 @@ export function listActiveKeys(
   request: Readonly<{
     filter: FilterGroup | undefined;
     grouping: readonly string[];
-    sort: string | undefined;
+    sorts: readonly SortEntry[];
   }>,
 ): string[] {
   const keys = new Set<string>(request.grouping);
 
-  if (request.sort !== undefined) {
-    keys.add(request.sort);
+  for (const { field } of request.sorts) {
+    keys.add(field);
   }
 
   // A stack rather than recursion keeps the frames flat however deep it nests.

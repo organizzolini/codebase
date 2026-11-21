@@ -36,8 +36,7 @@ describe(useGallerySearch, () => {
     const { result } = renderHook(() => useGallerySearch());
 
     expect(result.current).toStrictEqual({
-      direction: "asc",
-      group: [],
+      group: undefined,
       handleFilterChange: result.current.handleFilterChange,
       handleGroupChange: result.current.handleGroupChange,
       handleSizeChange: result.current.handleSizeChange,
@@ -45,7 +44,7 @@ describe(useGallerySearch, () => {
       handleViewApply: result.current.handleViewApply,
       repeats: 12,
       size: 24,
-      sort: undefined,
+      sorts: [],
       view: "grid",
     });
   });
@@ -64,7 +63,9 @@ describe(useGallerySearch, () => {
     result.current.handleViewApply({ view: "list" });
     result.current.handleViewApply({ group: ["rows", "columns"], link });
     result.current.handleViewApply({ group: [] });
-    result.current.handleViewApply({ direction: "desc", sort: "rows" });
+    result.current.handleViewApply({
+      sorts: [{ direction: "desc", field: "rows" }],
+    });
 
     const [view, arrangement, ungrouped, sorted] = navigate.mock.calls.map(
       ([options]) => options,
@@ -87,40 +88,40 @@ describe(useGallerySearch, () => {
       group: undefined,
     });
     expect(sorted?.search({})).toStrictEqual({
-      direction: "desc",
-      sort: "rows",
+      sort: [{ direction: "desc", field: "rows" }],
     });
   });
 
-  it("reads the sort and direction the link names", () => {
+  it("reads the sorts the link names", () => {
     mockNavigate();
-    vi.mocked(useSearch).mockReturnValue({ direction: "desc", sort: "rows" });
+    vi.mocked(useSearch).mockReturnValue({
+      sort: [{ direction: "desc", field: "rows" }],
+    });
 
     const { result } = renderHook(() => useGallerySearch());
 
-    expect(result.current.sort).toBe("rows");
-    expect(result.current.direction).toBe("desc");
+    expect(result.current.sorts).toStrictEqual([
+      { direction: "desc", field: "rows" },
+    ]);
   });
 
-  it("replaces the link with the sort picked, and drops the direction with no field", () => {
+  it("replaces the link with the sorts picked, and drops the parameter with none", () => {
     const navigate = mockNavigate();
     vi.mocked(useSearch).mockReturnValue({ view: "list" });
 
     const { result } = renderHook(() => useGallerySearch());
-    result.current.handleSortChange("rows", "desc");
-    result.current.handleSortChange(undefined, "desc");
+    result.current.handleSortChange([{ direction: "desc", field: "rows" }]);
+    result.current.handleSortChange([]);
 
     const [picked, cleared] = navigate.mock.calls.map(([options]) => options);
 
     expect(picked?.search({ view: "list" })).toStrictEqual({
-      direction: "desc",
-      sort: "rows",
+      sort: [{ direction: "desc", field: "rows" }],
       view: "list",
     });
-    expect(cleared?.search({ direction: "desc", sort: "rows" })).toStrictEqual({
-      direction: undefined,
-      sort: undefined,
-    });
+    expect(
+      cleared?.search({ sort: [{ direction: "desc", field: "rows" }] }),
+    ).toStrictEqual({ sort: undefined });
   });
 
   it("reads the repeats the link names", () => {
@@ -181,7 +182,23 @@ describe(useGallerySearch, () => {
   it("drops a view or direction that is not one of the two, and reads a number as a field", () => {
     expect(
       gallerySearchSchema.parse({ direction: "up", sort: 5, view: "wall" }),
-    ).toStrictEqual({ direction: "asc", sort: "5", view: "grid" });
+    ).toStrictEqual({
+      sort: [{ direction: "asc", field: "5" }],
+      view: "grid",
+    });
+    expect(
+      gallerySearchSchema.parse({ direction: "desc", sort: "rows" }),
+    ).toStrictEqual({ sort: [{ direction: "desc", field: "rows" }] });
+    expect(
+      gallerySearchSchema.parse({
+        sort: [{ direction: "desc", field: "rows" }, { field: "columns" }],
+      }),
+    ).toStrictEqual({
+      sort: [
+        { direction: "desc", field: "rows" },
+        { direction: "asc", field: "columns" },
+      ],
+    });
     expect(gallerySearchSchema.parse({})).toStrictEqual({});
   });
 

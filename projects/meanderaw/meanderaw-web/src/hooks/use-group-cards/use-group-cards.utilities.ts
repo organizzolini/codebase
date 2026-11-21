@@ -40,6 +40,19 @@ export function appendPage(
 }
 
 /**
+ * How to read a group's next page: after the cursor of the last, or past the
+ * cards held when several sorts leave no cursor.
+ */
+export function planCardsRead(
+  current: Readonly<GroupCards> | undefined,
+  sorts: number,
+): { after?: null | string | undefined; offset?: number } {
+  return sorts <= 1
+    ? { after: current?.endCursor }
+    : { offset: current?.meanders.length ?? 0 };
+}
+
+/**
  * Keeps a failed read with the group, with what was read before it.
  */
 export function recordFailure(

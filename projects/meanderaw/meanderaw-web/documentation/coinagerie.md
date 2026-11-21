@@ -18,12 +18,14 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **humanize**:
 - **ink**:
 - **lattice**:
+- **letter**:
 - **meander**:
 - **ne**:
 - **observer**:
 - **pager**:
 - **radius**:
 - **sound**:
+- **submatrix**:
 - **usable**:
 - **visible**:
 - **window**:

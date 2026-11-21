@@ -2,7 +2,10 @@ import {
   MAXIMUM_REPEATS,
   MINIMUM_REPEATS,
 } from "../../../../../hooks/use-gallery-search/use-gallery-search.constants";
-import { humanizeCategory } from "../../../gallery-cascader/gallery-cascader.utilities";
+import {
+  createTrails,
+  nestBranches,
+} from "../../../gallery-cascader/gallery-cascader.utilities";
 import {
   DEFAULT_OPERATORS,
   REPEATS_FILTER_FIELD,
@@ -31,36 +34,26 @@ import type {
 // 🔏 Private Functions
 
 /**
- * Builds the Filters component's fields: a branch per category, shape first,
- * each holding its fields; rows and repeats lead the shape.
+ * Builds the Filters fields: a branch per category, shape first, a large
+ * submatrix nested; rows and repeats lead the shape.
  */
 export function createFilterQueryFields(
   fields: readonly FilterField[],
 ): GalleryFilterField[] {
-  const categories = new Map<string, GalleryFilterField[]>();
-  const ordered = [ROWS_FILTER_FIELD, REPEATS_FILTER_FIELD, ...fields].toSorted(
-    (left, right) =>
-      rankCategory(left.category).localeCompare(rankCategory(right.category)),
+  const all = [ROWS_FILTER_FIELD, REPEATS_FILTER_FIELD, ...fields];
+  const trails = createTrails(all);
+
+  return nestBranches<GalleryFilterField>(
+    all.map((field) => ({
+      leaf: toQueryField(field),
+      trail: trails.get(field.key) ?? [field.category],
+    })),
+    ({ children, id, label }): GalleryFilterField => ({
+      fields: children,
+      id,
+      label,
+    }),
   );
-
-  for (const field of ordered) {
-    const leaves = categories.get(field.category) ?? [];
-
-    leaves.push(toQueryField(field));
-    categories.set(field.category, leaves);
-  }
-
-  const branches: GalleryFilterField[] = [];
-
-  for (const [category, leaves] of categories) {
-    branches.push({
-      fields: leaves,
-      id: category,
-      label: humanizeCategory(category),
-    });
-  }
-
-  return branches;
 }
 
 /**
@@ -76,13 +69,6 @@ function operatorsOf(field: FilterField): FilterOperator[] {
   }
 
   return field.type === "text" ? TEXT_FIELD_OPERATORS : NUMBER_FIELD_OPERATORS;
-}
-
-/**
- * Orders a category: the shape fields first, then the catalog's by name.
- */
-function rankCategory(category: string): string {
-  return category === "shape" ? "" : category;
 }
 
 /**

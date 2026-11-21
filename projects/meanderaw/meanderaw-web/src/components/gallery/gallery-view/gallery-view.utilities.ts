@@ -4,8 +4,9 @@ import {
   VIEW_STATE_KEYS,
 } from "./gallery-view.constants";
 
+import type { ViewState } from "../../../hooks/use-gallery-search/use-gallery-search.types";
 import type { GalleryCharacteristic } from "../meander-gallery/meanders-api.types";
-import type { ViewPreset, ViewState } from "./gallery-view.types";
+import type { ViewPreset } from "./gallery-view.types";
 import type { CascaderNode } from "@codebase/presentation";
 
 // 🔏 Private Functions
@@ -13,23 +14,17 @@ import type { CascaderNode } from "@codebase/presentation";
 // 🌎 Public Functions
 
 /**
- * Builds the cascader's tree of views: Presets, holding each with its description.
+ * Builds the cascader's list of views: each preset a leaf with its description.
  */
 export function createViewNodes(
   presets: readonly ViewPreset[],
 ): CascaderNode[] {
-  return [
-    {
-      children: presets.map((preset): CascaderNode => ({
-        description: preset.description,
-        keywords: [preset.description],
-        label: preset.name,
-        value: preset.id,
-      })),
-      label: "Presets",
-      value: "presets",
-    },
-  ];
+  return presets.map((preset): CascaderNode => ({
+    description: preset.description,
+    keywords: [preset.description],
+    label: preset.name,
+    value: preset.id,
+  }));
 }
 
 /**

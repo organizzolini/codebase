@@ -7,6 +7,7 @@ import { Migration1791414023001 } from "../../../migrations/1791414023001-migrat
 import { Migration1794630084904 } from "../../../migrations/1794630084904-migration";
 import { Migration1794700000000 } from "../../../migrations/1794700000000-migration";
 import { Migration1794800000000 } from "../../../migrations/1794800000000-migration";
+import { Migration1794900000000 } from "../../../migrations/1794900000000-migration";
 
 import { MEANDERAW_PROJECT } from "./meanderaw-database.constants";
 import { AggregateMarker } from "./modules/aggregate/aggregate-marker.entity";
@@ -37,6 +38,7 @@ export const MEANDERAW_DATABASE_MIGRATIONS = [
   Migration1794630084904,
   Migration1794700000000,
   Migration1794800000000,
+  Migration1794900000000,
 ] as const;
 
 /** TypeORM CLI data source; reads only `MEANDERAW_POSTGRES_*`, never syncs. */

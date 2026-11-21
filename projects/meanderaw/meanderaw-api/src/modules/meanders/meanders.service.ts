@@ -33,6 +33,7 @@ import type { MeanderEntity } from "./meanders.entities";
 import type {
   Cursor,
   MeandersArguments,
+  SortOrder,
   SortTarget,
   SortValue,
 } from "./meanders.types";
@@ -67,49 +68,64 @@ export class MeandersService {
 
   // 🔏 Private Methods
 
-  /** The query for the rows after a cursor, in the sort's order, then id order. */
+  /** Keeps the rows past a cursor in the first sort's order. */
+  private applyCursor(
+    query: SelectQueryBuilder<Meander>,
+    cursor: Cursor | null,
+    first: { expression: string | undefined; order: SortOrder | undefined },
+  ): void {
+    const { expression, order } = first;
+
+    if (cursor === null || order === undefined || expression === undefined) {
+      return;
+    }
+
+    const beyond = order.direction === SortDirection.DESC ? "<" : ">";
+
+    query.andWhere(
+      this.isCode(order.target)
+        ? `meander.code ${beyond} :cursorCode`
+        : `(${expression} ${beyond} :cursorValue OR (${expression} = :cursorValue AND meander.code > :cursorCode))`,
+      { cursorCode: cursor.code, cursorValue: cursor.value },
+    );
+  }
+
+  /** The query for the rows after a cursor, in the sorts' order, then Code order. */
   private buildQuery(arguments_: {
     cursor: Cursor | null;
-    direction: SortDirection;
     filter: CompiledMeanderFilter | null;
-    target: SortTarget;
+    orders: readonly SortOrder[];
   }): SelectQueryBuilder<Meander> {
-    const { cursor, direction, filter, target } = arguments_;
+    const { cursor, filter, orders } = arguments_;
     const query = this.meanderRepository.createQueryBuilder("meander");
-    let expression = "meander.id";
+    const expressions: string[] = [];
 
-    if (target.kind === "shape") {
-      expression = `meander.${target.column}`;
-    } else if (target.kind === "characteristic") {
-      expression = "COALESCE(bridge.value, 0)";
-      query
-        .leftJoin(
-          MeanderCharacteristic,
-          "bridge",
-          "bridge.characteristicId = :characteristicId AND bridge.meanderId = meander.id",
-          { characteristicId: target.characteristicId },
-        )
-        .addSelect(expression, "sort_value");
+    for (const [index, { target }] of orders.entries()) {
+      expressions.push(this.joinSort(query, index, target));
     }
 
-    if (cursor !== null) {
-      const beyond = direction === SortDirection.DESC ? "<" : ">";
-
-      query.andWhere(
-        target.kind === "id"
-          ? "meander.id > :cursorId"
-          : `(${expression} ${beyond} :cursorValue OR (${expression} = :cursorValue AND meander.id > :cursorId))`,
-        { cursorId: cursor.id, cursorValue: cursor.value },
-      );
-    }
+    this.applyCursor(query, cursor, {
+      expression: expressions[0],
+      order: orders[0],
+    });
 
     if (filter !== null) {
       query.andWhere(filter.where, filter.parameters);
     }
 
-    query.orderBy(expression, direction);
+    for (const [index, order] of orders.entries()) {
+      const column = expressions[index] ?? "meander.code";
 
-    return target.kind === "id" ? query : query.addOrderBy("meander.id", "ASC");
+      if (index === 0) {
+        query.orderBy(column, order.direction);
+      } else {
+        query.addOrderBy(column, order.direction);
+      }
+    }
+
+    return orders.some(({ target }) => this.isCode(target))
+      ? query
+      : query.addOrderBy("meander.code", "ASC");
   }
 
   /** Every meander the filter keeps, counted exactly: from the aggregate tables when they cover it, else from the meanders. */
@@ -165,14 +181,60 @@ export class MeandersService {
     return cursor;
   }
 
-  /** Reads what the sort names, refusing a field that is neither shape nor characteristic. */
-  private async resolveTarget(
-    sort: MeanderSortInput | null | undefined,
-  ): Promise<SortTarget> {
-    if (sort === null || sort === undefined) {
-      return { kind: "id" };
+  /** Whether the sort orders by the Code itself, which no tie can follow. */
+  private isCode(target: SortTarget): boolean {
+    return target.kind === "shape" && target.column === "code";
+  }
+
+  /** The SQL a sort target orders by, joining its bridge when it needs one. */
+  private joinSort(
+    query: SelectQueryBuilder<Meander>,
+    index: number,
+    target: SortOrder["target"],
+  ): string {
+    if (target.kind === "shape") {
+      return `meander.${target.column}`;
     }
 
+    const expression = `COALESCE(bridge${index}.value, 0)`;
+
+    query
+      .leftJoin(
+        MeanderCharacteristic,
+        `bridge${index}`,
+        `bridge${index}.characteristicId = :characteristicId${index} AND bridge${index}.meanderId = meander.id`,
+        { [`characteristicId${index}`]: target.characteristicId },
+      )
+      .addSelect(expression, `sort_value${index}`);
+
+    return expression;
+  }
+
+  /** The orders the sorts name, or Code order alone when none is named. */
+  private async resolveOrders(
+    sorts: readonly MeanderSortInput[],
+  ): Promise<SortOrder[]> {
+    const orders: SortOrder[] = [];
+
+    for (const entry of sorts) {
+      orders.push({
+        direction: entry.direction,
+        target: await this.resolveTarget(entry),
+      });
+    }
+
+    return orders.length === 0
+      ? [
+          {
+            direction: SortDirection.ASC,
+            target: { column: "code", kind: "shape" },
+          },
+        ]
+      : orders;
+  }
+
+  /** Reads what the sort names, refusing a field that is neither shape nor characteristic. */
+  private async resolveTarget(sort: MeanderSortInput): Promise<SortTarget> {
     const column = SHAPE_SORT_FIELDS.find((field) => field === sort.field);
 
     if (column !== undefined) {
@@ -200,7 +262,7 @@ export class MeandersService {
       return meander[target.column];
     }
 
-    return target.kind === "id" ? null : joined;
+    return joined;
   }
 
   // 🌎 Public Methods
@@ -231,7 +293,7 @@ export class MeandersService {
   }
 
   /**
-   * One page after a cursor, then past an offset, sorted by the sort, then id; the total is exact.
+   * One page after a cursor, then past an offset, sorted by the sort, then Code; the total is exact.
    */
   async find(arguments_: MeandersArguments): Promise<MeanderConnection> {
     const parsed = meandersArgumentsSchema.safeParse(arguments_);
@@ -241,27 +303,32 @@ export class MeandersService {
     }
 
     const { after, first, offset, sort } = parsed.data;
+    const sorts = sort ?? [];
+
+    if (sorts.length > 1 && after !== null && after !== undefined) {
+      throw new BadRequestException(
+        "A cursor needs one sort; page with an offset for several.",
+      );
+    }
+
     const filter =
       arguments_.filter === null || arguments_.filter === undefined
         ? null
         : await this.filterService.compile(arguments_.filter);
-    const direction = sort?.direction ?? SortDirection.ASC;
+    const [primary] = sorts;
+    const direction = primary?.direction ?? SortDirection.ASC;
     const filterHash = filter?.hash ?? NO_FILTER;
     const cursor = this.decodeCursor(after, {
       direction,
-      field: sort?.field ?? "id",
+      field: primary?.field ?? "code",
       filter: filterHash,
     });
-    const target = await this.resolveTarget(sort);
-    const { entities, raw } = await this.buildQuery({
-      cursor,
-      direction,
-      filter,
-      target,
-    })
+    const orders = await this.resolveOrders(sorts);
+    const { entities, raw } = await this.buildQuery({ cursor, filter, orders })
       .offset(offset)
       .limit(first + 1)
-      .getRawAndEntities<{ sort_value: SortValue }>();
+      .getRawAndEntities<{ sort_value0: SortValue }>();
+    const [firstOrder] = orders;
 
     return createConnection<MeanderEntity>({
       edges: entities.slice(0, first).map((meander, index) =>
@@ -277,11 +344,18 @@ export class MeandersService {
             symmetricalCodes: meander.symmetricalCodes,
           },
           toCursor({
+            code: meander.code,
             direction,
-            field: sort?.field ?? "id",
+            field: primary?.field ?? "code",
             filter: filterHash,
-            id: meander.id,
-            value: this.sortValue(meander, target, raw[index]?.sort_value),
+            value:
+              firstOrder === undefined
+                ? null
+                : this.sortValue(
+                    meander,
+                    firstOrder.target,
+                    raw[index]?.sort_value0,
+                  ),
           }),
         ),
       ),

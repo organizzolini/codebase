@@ -1,22 +1,22 @@
 import {
   DEFAULT_GALLERY_VIEW,
-  DEFAULT_SORT_DIRECTION,
-  DEFAULT_SORT_FIELD,
+  DEFAULT_GROUP_FIELD,
+  DEFAULT_SORTS,
 } from "../../../hooks/use-gallery-search/use-gallery-search.constants";
 import { DEFAULT_FILTER_LINK } from "../gallery-filters/components/filter-query/filter-query.constants";
 
-import type { ViewPreset, ViewState } from "./gallery-view.types";
+import type { ViewState } from "../../../hooks/use-gallery-search/use-gallery-search.types";
+import type { ViewPreset } from "./gallery-view.types";
 
 // ♟️ Constants
 
 /**
- * What the page opens on.
+ * What the page opens on: grouped by rows, a grid, rows ascending.
  */
 export const DEFAULT_VIEW_STATE: ViewState = {
-  direction: DEFAULT_SORT_DIRECTION,
-  group: [],
+  group: [DEFAULT_GROUP_FIELD],
   link: DEFAULT_FILTER_LINK,
-  sort: DEFAULT_SORT_FIELD,
+  sorts: DEFAULT_SORTS,
   view: DEFAULT_GALLERY_VIEW,
 };
 
@@ -29,10 +29,9 @@ export const CUSTOM_NAME = "Custom";
  * The parts of the state a view fixes.
  */
 export const VIEW_STATE_KEYS: readonly (keyof ViewState)[] = [
-  "direction",
   "group",
   "link",
-  "sort",
+  "sorts",
   "view",
 ];
 
@@ -41,7 +40,7 @@ export const VIEW_STATE_KEYS: readonly (keyof ViewState)[] = [
  */
 export const VIEW_PRESETS: readonly ViewPreset[] = [
   {
-    description: "A grid, ungrouped, rows ascending, rows = 4, repeats = 12",
+    description: "Grouped by rows, rows ascending, rows = 4, repeats = 12",
     id: "default",
     name: "Default",
     requires: [],
@@ -59,7 +58,10 @@ export const VIEW_PRESETS: readonly ViewPreset[] = [
     id: "most-corners",
     name: "Most corners first",
     requires: ["cornerCount"],
-    state: { ...DEFAULT_VIEW_STATE, direction: "desc", sort: "cornerCount" },
+    state: {
+      ...DEFAULT_VIEW_STATE,
+      sorts: [{ direction: "desc", field: "cornerCount" }],
+    },
   },
   {
     description: "Group the meanders by Betti number 0 count",

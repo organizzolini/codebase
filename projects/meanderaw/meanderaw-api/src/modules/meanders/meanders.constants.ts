@@ -26,6 +26,9 @@ export const svgRepeatsSchema = z
 /** The most meanders one page may hold. */
 export const MAXIMUM_PAGE_SIZE = 200;
 
+/** The most fields one sort may name. */
+export const MAXIMUM_SORTS = 4;
+
 /** The most meanders one query may skip. */
 export const MAXIMUM_OFFSET = 2_000_000_000;
 
@@ -41,7 +44,7 @@ export const SHAPE_SORT_FIELDS = [
 
 /** What the `meanders` query describes, for the schema. */
 export const MEANDERS_QUERY_DESCRIPTION =
-  "A page of meanders, sorted by any characteristic or shape field, ties broken by id. A missing characteristic value sorts as 0 or false. Pagination is by keyset cursor.";
+  "A page of meanders, sorted by any characteristic or shape field, ties broken by Code. A missing characteristic value sorts as 0 or false. Pagination is by keyset cursor.";
 
 /** What the `filter` argument describes, for the schema. */
 export const FILTER_ARGUMENT_DESCRIPTION =
@@ -49,7 +52,7 @@ export const FILTER_ARGUMENT_DESCRIPTION =
 
 /** What the `sort` argument describes, for the schema. */
 export const SORT_ARGUMENT_DESCRIPTION =
-  "A shape field (code, rows, columns, lattice, repeats, isHardcoded) or a characteristic key, and a direction. Without it, meanders come in id order.";
+  "Fields to sort by, in order, each a shape field (code, rows, columns, lattice, repeats, isHardcoded) or a characteristic key with a direction. Several fields allow no cursor: page with offset. Without it, meanders come in Code order.";
 
 /** What a cursor records as its filter when the query had none. */
 export const NO_FILTER = "none";
@@ -65,18 +68,21 @@ export const meandersArgumentsSchema = z.object({
     .default(DEFAULT_PAGE_SIZE),
   offset: z.number().int().min(0).max(MAXIMUM_OFFSET).default(0),
   sort: z
-    .object({
-      direction: z.enum(SortDirection),
-      field: z.string().min(1).max(MAXIMUM_TEXT_LENGTH),
-    })
+    .array(
+      z.object({
+        direction: z.enum(SortDirection),
+        field: z.string().min(1).max(MAXIMUM_TEXT_LENGTH),
+      }),
+    )
+    .max(MAXIMUM_SORTS)
     .nullish(),
 });
 
-/** A cursor's sort, filter, last value and id. */
+/** A cursor's sort, filter, last value and Code. */
 export const cursorSchema = z.object({
+  code: z.string().min(1).max(MAXIMUM_TEXT_LENGTH),
   direction: z.enum(SortDirection),
   field: z.string().max(MAXIMUM_TEXT_LENGTH),
   filter: z.string().max(MAXIMUM_TEXT_LENGTH),
-  id: z.uuid(),
   value: z.union([z.boolean(), z.number(), z.string()]).nullish(),
 });

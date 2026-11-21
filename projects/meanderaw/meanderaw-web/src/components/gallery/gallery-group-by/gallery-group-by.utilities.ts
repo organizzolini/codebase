@@ -1,3 +1,4 @@
+import { DEFAULT_GROUP_FIELD } from "../../../hooks/use-gallery-search/use-gallery-search.constants";
 import {
   countEntries,
   measureDepth,
@@ -69,7 +70,8 @@ export function fitsGrouping(
 }
 
 /**
- * Keeps the levels a catalog can group by, once each, in order.
+ * Keeps the levels the catalog groups by, once each; rows when the link
+ * names none, flat when it names an empty list.
  */
 export function resolveGrouping(
   grouping: readonly string[] | undefined,
@@ -77,7 +79,7 @@ export function resolveGrouping(
 ): string[] {
   const kept: string[] = [];
 
-  for (const key of grouping ?? []) {
+  for (const key of grouping ?? [DEFAULT_GROUP_FIELD]) {
     if (fields.some((field) => field.key === key) && !kept.includes(key)) {
       kept.push(key);
     }

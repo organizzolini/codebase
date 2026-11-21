@@ -21,8 +21,8 @@ import { MeandersModule } from "./meanders.module";
 
 import type { MeanderawApplication } from "../../../testing/meanderaw-application";
 
-const MEANDERS_QUERY = `query ($sort: MeanderSortInput, $first: Int, $after: String) {
-  meanders(sort: $sort, first: $first, after: $after) {
+const MEANDERS_QUERY = `query ($sort: [MeanderSortInput!], $first: Int, $after: String, $offset: Int) {
+  meanders(sort: $sort, first: $first, after: $after, offset: $offset) {
     totalCount
     pageInfo { hasNextPage endCursor }
     edges { cursor node { id code rows columns lattice repeats isHardcoded symmetricalCodes } }
@@ -72,7 +72,6 @@ const MEANDERS = [
 /** Sends the meanders query over HTTP to a migrated, seeded Postgres. */
 describe("meanders resolver end-to-end suite", () => {
   let application: MeanderawApplication;
-  let idOrder: string[];
 
   /** Runs the query and parses the page it returns. */
   async function page(
@@ -86,14 +85,18 @@ describe("meanders resolver end-to-end suite", () => {
   }
 
   /** Follows `after` cursors, `first` meanders at a time, to the last page. */
-  async function walk(sort: null | Sort, first: number): Promise<string[]> {
+  async function walk(
+    sort: null | Sort,
+    first: number,
+    total: number = MEANDERS.length,
+  ): Promise<string[]> {
     const codes: string[] = [];
     let after: null | string = null;
 
     for (;;) {
       const current = await page({ after, first, sort });
 
-      expect(current.totalCount).toBe(MEANDERS.length);
+      expect(current.totalCount).toBe(total);
 
       codes.push(...current.edges.map(({ node }) => node.code));
 
@@ -105,11 +108,8 @@ describe("meanders resolver end-to-end suite", () => {
     }
   }
 
-  /** The codes, regrouped into id order. */
-  const inIdOrder = (codes: readonly string[]): string[] =>
-    codes.toSorted(
-      (left, right) => idOrder.indexOf(left) - idOrder.indexOf(right),
-    );
+  /** The codes, regrouped into Code order, how a tie reads. */
+  const inCodeOrder = (codes: readonly string[]): string[] => codes.toSorted();
 
   beforeAll(async () => {
     application = await startMeanderawApplication([MeandersModule]);
@@ -170,21 +170,18 @@ describe("meanders resolver end-to-end suite", () => {
     );
     const everything = await page({ first: 200 });
 
-    idOrder = everything.edges.map(({ node }) => node.code);
-
-    expect(idOrder).toHaveLength(6);
+    expect(everything.edges).toHaveLength(6);
   });
 
-  it("serves every meander in id order by default, with an exact total", async () => {
+  it("serves every meander in Code order by default, with an exact total", async () => {
     expect.hasAssertions();
 
     const everything = await page({ first: 200 });
 
     expect(everything.totalCount).toBe(6);
     expect(everything.pageInfo.hasNextPage).toBe(false);
-    expect(idOrder).toHaveLength(6);
-    expect(everything.edges.map(({ node }) => node.id)).toStrictEqual(
-      everything.edges.map(({ node }) => node.id).toSorted(),
+    expect(everything.edges.map(({ node }) => node.code)).toStrictEqual(
+      MEANDERS.map(({ code }) => code),
     );
     expect(everything.edges[0]?.node).toMatchObject({
       columns: 1,
@@ -194,7 +191,7 @@ describe("meanders resolver end-to-end suite", () => {
     });
   });
 
-  it("sorts a characteristic ascending, a missing value as 0, ties by id", async () => {
+  it("sorts a characteristic ascending, a missing value as 0, ties by Code", async () => {
     expect.hasAssertions();
 
     const sorted = await walk(
@@ -203,13 +200,13 @@ describe("meanders resolver end-to-end suite", () => {
     );
 
     expect(sorted).toStrictEqual([
-      ...inIdOrder(["01x01y2", "01x01y5"]),
-      ...inIdOrder(["01x01y1", "01x01y4"]),
-      ...inIdOrder(["01x01y0", "01x01y3"]),
+      ...inCodeOrder(["01x01y2", "01x01y5"]),
+      ...inCodeOrder(["01x01y1", "01x01y4"]),
+      ...inCodeOrder(["01x01y0", "01x01y3"]),
     ]);
   });
 
-  it("sorts a characteristic descending, ties still by id ascending", async () => {
+  it("sorts a characteristic descending, ties still by Code ascending", async () => {
     expect.hasAssertions();
 
     const sorted = await walk(
@@ -218,9 +215,9 @@ describe("meanders resolver end-to-end suite", () => {
     );
 
     expect(sorted).toStrictEqual([
-      ...inIdOrder(["01x01y0", "01x01y3"]),
-      ...inIdOrder(["01x01y1", "01x01y4"]),
-      ...inIdOrder(["01x01y2", "01x01y5"]),
+      ...inCodeOrder(["01x01y0", "01x01y3"]),
+      ...inCodeOrder(["01x01y1", "01x01y4"]),
+      ...inCodeOrder(["01x01y2", "01x01y5"]),
     ]);
   });
 
@@ -230,8 +227,8 @@ describe("meanders resolver end-to-end suite", () => {
     const sorted = await walk({ direction: "DESC", field: "isChain" }, 200);
 
     expect(sorted).toStrictEqual([
-      ...inIdOrder(["01x01y0", "01x01y3"]),
-      ...inIdOrder(["01x01y1", "01x01y2", "01x01y4", "01x01y5"]),
+      ...inCodeOrder(["01x01y0", "01x01y3"]),
+      ...inCodeOrder(["01x01y1", "01x01y2", "01x01y4", "01x01y5"]),
     ]);
   });
 
@@ -242,20 +239,20 @@ describe("meanders resolver end-to-end suite", () => {
       walk({ direction: "DESC", field: "rows" }, 200),
     ).resolves.toStrictEqual([
       "01x01y3",
-      ...inIdOrder(["01x01y0", "01x01y2", "01x01y5"]),
-      ...inIdOrder(["01x01y1", "01x01y4"]),
+      ...inCodeOrder(["01x01y0", "01x01y2", "01x01y5"]),
+      ...inCodeOrder(["01x01y1", "01x01y4"]),
     ]);
     await expect(
       walk({ direction: "ASC", field: "lattice" }, 200),
     ).resolves.toStrictEqual([
-      ...inIdOrder(["01x01y0", "01x01y1", "01x01y2"]),
-      ...inIdOrder(["01x01y3", "01x01y4", "01x01y5"]),
+      ...inCodeOrder(["01x01y0", "01x01y1", "01x01y2"]),
+      ...inCodeOrder(["01x01y3", "01x01y4", "01x01y5"]),
     ]);
     await expect(
       walk({ direction: "DESC", field: "isHardcoded" }, 200),
     ).resolves.toStrictEqual([
-      ...inIdOrder(["01x01y0", "01x01y2", "01x01y4"]),
-      ...inIdOrder(["01x01y1", "01x01y3", "01x01y5"]),
+      ...inCodeOrder(["01x01y0", "01x01y2", "01x01y4"]),
+      ...inCodeOrder(["01x01y1", "01x01y3", "01x01y5"]),
     ]);
     await expect(
       walk({ direction: "DESC", field: "code" }, 200),
@@ -572,5 +569,83 @@ describe("meanders resolver end-to-end suite", () => {
 
       render.mockRestore();
     });
+  });
+
+  it("sorts by several fields in turn, ties by Code", async () => {
+    expect.hasAssertions();
+
+    const sorted = await page({
+      first: 200,
+      sort: [
+        { direction: "DESC", field: "junctionCount" },
+        { direction: "ASC", field: "rows" },
+      ],
+    });
+
+    // Junction count 3 (rows 2, then 3), 1 (rows 1, 1), then 0 (rows 2, 2).
+    expect(sorted.edges.map(({ node }) => node.code)).toStrictEqual([
+      "01x01y0",
+      "01x01y3",
+      ...inCodeOrder(["01x01y1", "01x01y4"]),
+      ...inCodeOrder(["01x01y2", "01x01y5"]),
+    ]);
+  });
+
+  it("pages past an offset, in the order of several sorts", async () => {
+    expect.hasAssertions();
+
+    const sort = [
+      { direction: "DESC", field: "junctionCount" },
+      { direction: "ASC", field: "rows" },
+    ];
+    const everything = await page({ first: 200, sort });
+    const rest = await page({ first: 2, offset: 4, sort });
+
+    expect(rest.totalCount).toBe(6);
+    expect(rest.pageInfo.hasNextPage).toBe(false);
+    expect(rest.edges.map(({ node }) => node.code)).toStrictEqual(
+      everything.edges.slice(4).map(({ node }) => node.code),
+    );
+  });
+
+  it("refuses a cursor with several sorts", async () => {
+    expect.hasAssertions();
+
+    const first = await page({ first: 1 });
+    const body = await application.query(MEANDERS_QUERY, {
+      after: first.pageInfo.endCursor,
+      sort: [
+        { direction: "ASC", field: "rows" },
+        { direction: "ASC", field: "columns" },
+      ],
+    });
+
+    expect(body.errors?.[0]?.message).toContain("offset");
+  });
+
+  it("breaks ties by Code, not by the order the meanders were stored in", async () => {
+    expect.hasAssertions();
+
+    const database = application.database.module.get(MeanderawDatabaseService);
+
+    // The later Code is stored first, and is hardcoded, as the corpus is.
+    await database.saveAll([
+      meanderRow({ code: "01x01z9", isHardcoded: true, rows: 1 }),
+    ]);
+    await database.saveAll([
+      meanderRow({ code: "01x01z1", isHardcoded: false, rows: 1 }),
+    ]);
+
+    const sort = [{ direction: "ASC", field: "rows" }];
+    const everything = await page({ first: 200, sort });
+    const ones = everything.edges
+      .filter(({ node }) => node.rows === 1)
+      .map(({ node }) => node.code);
+
+    expect(ones).toStrictEqual(["01x01y1", "01x01y4", "01x01z1", "01x01z9"]);
+
+    const walked = await walk({ direction: "ASC", field: "rows" }, 3, 8);
+
+    expect(walked.filter((code) => ones.includes(code))).toStrictEqual(ones);
   });
 });

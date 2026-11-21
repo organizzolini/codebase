@@ -42,14 +42,14 @@ describe("gallery view utilities", () => {
   });
 
   describe(createViewNodes, () => {
-    it("holds the presets under one parent, each with its description", () => {
-      const [presets] = createViewNodes(VIEW_PRESETS);
+    it("lists the presets flat, each with its description", () => {
+      const nodes = createViewNodes(VIEW_PRESETS);
 
-      expect(presets?.label).toBe("Presets");
-      expect(presets?.children?.map(({ value }) => value)).toStrictEqual(
+      expect(nodes.map(({ value }) => value)).toStrictEqual(
         VIEW_PRESETS.map(({ id }) => id),
       );
-      expect(presets?.children?.[0]?.description).toContain("A grid");
+      expect(nodes.some(({ children }) => children !== undefined)).toBe(false);
+      expect(nodes[0]?.description).toContain("Grouped by rows");
     });
   });
 
@@ -79,7 +79,7 @@ describe("gallery view utilities", () => {
         fallback &&
           isPresetActive(fallback, {
             ...DEFAULT_VIEW_STATE,
-            direction: "desc",
+            sorts: [{ direction: "desc", field: "rows" }],
           }),
       ).toBe(false);
     });
