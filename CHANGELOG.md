@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.6.3](https://github.com/organizzolini/codebase/compare/v6.6.2...v6.6.3) (2026-11-21)
+
+### 🐛 Bug Fixes
+
+* **infrastructure:** 🐛 write the OpenRouter preset with the management key ([#2482](https://github.com/organizzolini/codebase/issues/2482)) ([ecccce2](https://github.com/organizzolini/codebase/commit/ecccce2c14d8bb2b8398ba62c922d0f045437050)), closes [#2481](https://github.com/organizzolini/codebase/issues/2481) [#2477](https://github.com/organizzolini/codebase/issues/2477) [#2478](https://github.com/organizzolini/codebase/issues/2478)
+
 ## [6.6.2](https://github.com/organizzolini/codebase/compare/v6.6.1...v6.6.2) (2026-11-21)
 
 ### 🐛 Bug Fixes
