@@ -2,7 +2,6 @@ export {
   MEANDERAW_DATABASE_ENTITIES,
   MEANDERAW_DATABASE_MIGRATIONS,
 } from "./modules/meanderaw-database/data-source.constants";
-export { MeanderawDatabaseAggregatesService } from "./modules/meanderaw-database/meanderaw-database-aggregates.service";
 // 📤 Exports
 export {
   BIGINT_NUMBER_TRANSFORMER,
@@ -23,6 +22,7 @@ export { AggregateMarker } from "./modules/meanderaw-database/modules/aggregate/
 export { CharacteristicPairCount } from "./modules/meanderaw-database/modules/aggregate/characteristic-pair-count.entity";
 export { CharacteristicShapeCount } from "./modules/meanderaw-database/modules/aggregate/characteristic-shape-count.entity";
 export { CharacteristicValueCount } from "./modules/meanderaw-database/modules/aggregate/characteristic-value-count.entity";
+export { MeanderawDatabaseAggregatesService } from "./modules/meanderaw-database/modules/aggregate/meanderaw-database-aggregates.service";
 export { ShapeCount } from "./modules/meanderaw-database/modules/aggregate/shape-count.entity";
 export { Characteristic } from "./modules/meanderaw-database/modules/characteristic/characteristic.entity";
 export { MeanderCharacteristic } from "./modules/meanderaw-database/modules/characteristic/meander-characteristic.entity";

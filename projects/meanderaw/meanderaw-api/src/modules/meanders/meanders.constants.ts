@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { SortDirection } from "./sort-direction.entities";
+import { SortDirection } from "./modules/sorting/sort-direction.entities";
 
 // ♟️ Constants
 

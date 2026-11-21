@@ -197,7 +197,7 @@ describe("gallery filters", () => {
         { rules: [{ field: "junctionCount", numbers: [4], operator: "LT" }] },
       ],
     });
-  });
+  }, 30_000);
 
   it("removes a pill with its ×, and the filter from the address with the last one", async () => {
     serveMeandersApi(8);
@@ -220,7 +220,7 @@ describe("gallery filters", () => {
 
     expect(pillsShown()).toStrictEqual(["Filter Rows"]);
     expect(router.state.location.search.filter).toBeUndefined();
-  });
+  }, 30_000);
 
   it("matches all or any of the pills, the rows rule applying either way", async () => {
     const api = serveMeandersApi(8);

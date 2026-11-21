@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import { FilterAttributeSearch } from "./filter-attribute-search";
-import { FilterOperandEditor } from "./filter-operand-editor";
+import { FilterAttributeSearch } from "./components/filter-attribute-search/filter-attribute-search";
+import { FilterOperandEditor } from "./components/filter-operand-editor/filter-operand-editor";
 import { createRule } from "./gallery-filter-builder.utilities";
 
 import type { FilterField, FilterRule } from "./gallery-filter-builder.types";

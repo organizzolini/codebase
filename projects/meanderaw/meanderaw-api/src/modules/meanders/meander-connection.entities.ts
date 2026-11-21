@@ -1,8 +1,7 @@
 import { ObjectType } from "@nestjs/graphql";
 
-import { Paginated } from "../../meanderaw-api.utilities";
-
 import { MeanderEntity } from "./meanders.entities";
+import { Paginated } from "./modules/pagination/meanderaw-api.utilities";
 
 /** A page of meanders, with page info and an exact total. */
 @ObjectType({ description: "A page of meanders." })

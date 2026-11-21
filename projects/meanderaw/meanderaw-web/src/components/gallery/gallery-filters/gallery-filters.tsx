@@ -14,8 +14,8 @@ import {
   setCombinator,
 } from "../gallery-filter-builder/gallery-filter-builder.utilities";
 
-import { FilterPillRow } from "./filter-pill-row";
-import { FilterSurface } from "./filter-surface";
+import { FilterPillRow } from "./components/filter-pill-row/filter-pill-row";
+import { FilterSurface } from "./components/filter-surface/filter-surface";
 
 import type {
   FilterEdit,

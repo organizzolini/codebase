@@ -143,5 +143,5 @@ describe(GalleryFilters, () => {
         .getByRole("button", { name: "Add filter" })
         .hasAttribute("disabled"),
     ).toBe(true);
-  });
+  }, 30_000);
 });

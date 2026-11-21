@@ -12,8 +12,8 @@ import {
 } from "@codebase/meanderaw-db";
 import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
-import { CorsService } from "../src/cors.service";
 import { environmentSchema } from "../src/meanderaw-api.constants";
+import { CorsService } from "../src/modules/cors/cors.service";
 
 import type {
   CharacteristicRecord,

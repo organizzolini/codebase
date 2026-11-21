@@ -4,9 +4,9 @@ import { createLightship } from "lightship";
 
 import { LoggerService } from "@codebase/observability";
 
-import { CorsService } from "./cors.service";
 import { environmentSchema } from "./meanderaw-api.constants";
 import { MeanderawApiModule } from "./meanderaw-api.module";
+import { CorsService } from "./modules/cors/cors.service";
 
 import type { INestApplication } from "@nestjs/common";
 

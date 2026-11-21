@@ -10,13 +10,6 @@ import {
 } from "@codebase/meanderaw-db";
 
 import {
-  createConnection,
-  createEdge,
-  fromCursor,
-  toCursor,
-} from "../../meanderaw-api.utilities";
-
-import {
   cursorSchema,
   DEFAULT_SVG_REPEATS,
   MAXIMUM_SVG_REPEATS,
@@ -27,11 +20,15 @@ import {
 } from "./meanders.constants";
 import { MeanderAggregateService } from "./modules/aggregates/meander-aggregate.service";
 import { MeanderFilterService } from "./modules/filters/meander-filter.service";
-import { SortDirection } from "./sort-direction.entities";
+import {
+  createConnection,
+  createEdge,
+  fromCursor,
+  toCursor,
+} from "./modules/pagination/meanderaw-api.utilities";
+import { SortDirection } from "./modules/sorting/sort-direction.entities";
 
-import type { MeanderCharacteristicValueEntity } from "./meander-characteristic-value.entities";
 import type { MeanderConnection } from "./meander-connection.entities";
-import type { MeanderSortInput } from "./meander-sort.entities";
 import type { MeanderEntity } from "./meanders.entities";
 import type {
   Cursor,
@@ -39,7 +36,9 @@ import type {
   SortTarget,
   SortValue,
 } from "./meanders.types";
+import type { MeanderCharacteristicValueEntity } from "./modules/characteristics/meander-characteristic-value.entities";
 import type { CompiledMeanderFilter } from "./modules/filters/meander-filter.types";
+import type { MeanderSortInput } from "./modules/sorting/meander-sort.entities";
 import type { Repository, SelectQueryBuilder } from "typeorm";
 
 /** Pages through the meanders, filtered by a rule tree and sorted by any shape field or characteristic. */

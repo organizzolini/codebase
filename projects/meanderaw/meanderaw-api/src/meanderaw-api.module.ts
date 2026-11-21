@@ -12,6 +12,7 @@ import {
   GRAPHQL_SCHEMA_FILE,
 } from "./meanderaw-api.constants";
 import { CharacteristicsModule } from "./modules/characteristics/characteristics.module";
+import { CorsModule } from "./modules/cors/cors.module";
 import { MeanderGroupsModule } from "./modules/meander-groups/meander-groups.module";
 import { MeandersModule } from "./modules/meanders/meanders.module";
 
@@ -35,6 +36,7 @@ import { MeandersModule } from "./modules/meanders/meanders.module";
     MeanderawDatabaseModule,
     LoggerModule,
     CharacteristicsModule,
+    CorsModule,
     MeandersModule,
     MeanderGroupsModule,
   ],
