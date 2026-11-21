@@ -88,7 +88,6 @@ projects/ic-suite/codometer/codometer-examples/examples/corpus/
 .agents/skills/github-issues/
 .agents/skills/grill-me/
 .agents/skills/grilling/
-.agents/skills/impeccable/
 .agents/skills/link-workspace-packages/
 .agents/skills/nx-generate/
 .agents/skills/nx-import/
@@ -112,9 +111,6 @@ projects/ic-suite/codometer/codometer-examples/examples/corpus/
 .agents/skills/wayfinder/
 .agents/skills/writing-plans/
 .agents/skills/writing-skills/
-.claude/agents/impeccable-*
-.github/agents/impeccable-*
-.github/hooks/impeccable.json
 # installed-skills-end
 
 # generated GraphQL client output (nobody writes these comments)

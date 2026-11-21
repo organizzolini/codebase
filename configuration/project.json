@@ -38,7 +38,6 @@
       "!{workspaceRoot}/.agents/skills/github-issues/**",
       "!{workspaceRoot}/.agents/skills/grill-me/**",
       "!{workspaceRoot}/.agents/skills/grilling/**",
-      "!{workspaceRoot}/.agents/skills/impeccable/**",
       "!{workspaceRoot}/.agents/skills/link-workspace-packages/**",
       "!{workspaceRoot}/.agents/skills/nx-generate/**",
       "!{workspaceRoot}/.agents/skills/nx-import/**",
