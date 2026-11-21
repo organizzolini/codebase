@@ -8,7 +8,10 @@ import { CalendarTimeline } from "../calendar-timeline/calendar-timeline";
 import { CalendarToolbar } from "../calendar-toolbar/calendar-toolbar";
 
 import { CalendarGrid } from "./calendar-grid";
-import { VENDORED_SURFACE_CLASS_NAMES } from "./calendar-surfaces.constants";
+import {
+  OPAQUE_CLASS_NAMES,
+  VENDORED_SURFACE_CLASS_NAMES,
+} from "./calendar-surfaces.constants";
 import { DEFAULT_TIMELINE_SCALE } from "./calendar-views.constants";
 
 import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
@@ -149,7 +152,7 @@ export function EventsCalendar(
       data-testid="events-calendar"
     >
       <div
-        className={`flex h-full flex-col ${VENDORED_SURFACE_CLASS_NAMES.gridCells}`}
+        className={`flex h-full flex-col ${VENDORED_SURFACE_CLASS_NAMES.gridCells} ${OPAQUE_CLASS_NAMES.buttons} ${OPAQUE_CLASS_NAMES.events} ${OPAQUE_CLASS_NAMES.ganttBars} ${OPAQUE_CLASS_NAMES.labels}`}
       >
         <CalendarToolbar
           compact={compact}

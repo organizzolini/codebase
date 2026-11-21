@@ -1,16 +1,14 @@
-import {
-  Button,
-  ButtonGroup,
-  Filters,
-  useMediaQuery,
-} from "@codebase/presentation";
+import { ButtonGroup, Filters, useMediaQuery } from "@codebase/presentation";
 
 import { useFilterQuery } from "../../hooks/use-filter-query/use-filter-query";
 import { PresetPicker } from "../preset-picker/preset-picker";
 
-import { EDITORS, TABLET_QUERY } from "./calendar-filters.constants";
+import {
+  EDITORS,
+  STRIP_CLASS_NAME,
+  TABLET_QUERY,
+} from "./calendar-filters.constants";
 import { renderFiltersButton } from "./calendar-filters.utilities";
-import { EMPTY_EVENT_FILTER } from "./event-filter-tree.constants";
 import { countActiveEventFilterRules } from "./event-filter-tree.utilities";
 import { FilterChipRow } from "./filter-chip-row";
 import { FilterSurface } from "./filter-surface";
@@ -83,49 +81,44 @@ export function CalendarFilters(
       className={className}
       data-testid="calendar-filters"
     >
-      <ButtonGroup aria-label="Filter">
-        <FilterSurface
-          isTablet={isTablet}
-          trigger={renderFiltersButton(activeCount)}
-        >
-          <div className="flex flex-col gap-3">
-            <PresetPicker
-              onSelect={handlePresetSelect}
-              presets={presets}
-              query={query}
-            />
-            <Filters<EventFilterValue>
-              advancedMode="inline"
-              editors={EDITORS}
-              fields={[...fields]}
-              onQueryChange={handleQueryChange}
-              query={query}
-              variant="advanced"
-            />
-          </div>
-        </FilterSurface>
-        <Button
-          disabled={activeCount === 0}
-          onClick={() => {
-            handlePresetSelect(EMPTY_EVENT_FILTER);
-          }}
-          size="sm"
-          variant="outline"
-        >
-          Clear
-        </Button>
-      </ButtonGroup>
-      {isTablet ? (
-        <Filters<EventFilterValue>
-          editors={EDITORS}
-          fields={[...fields]}
-          onQueryChange={handleQueryChange}
-          query={query}
-          size="sm"
-        >
-          <FilterChipRow />
-        </Filters>
-      ) : null}
+      <div className={STRIP_CLASS_NAME}>
+        <ButtonGroup aria-label="Filter">
+          <FilterSurface
+            isTablet={isTablet}
+            trigger={renderFiltersButton(
+              activeCount,
+              isTablet && activeCount > 0,
+            )}
+          >
+            <div className="flex flex-col gap-3">
+              <PresetPicker
+                onSelect={handlePresetSelect}
+                presets={presets}
+                query={query}
+              />
+              <Filters<EventFilterValue>
+                advancedMode="inline"
+                editors={EDITORS}
+                fields={[...fields]}
+                onQueryChange={handleQueryChange}
+                query={query}
+                variant="advanced"
+              />
+            </div>
+          </FilterSurface>
+        </ButtonGroup>
+        {isTablet ? (
+          <Filters<EventFilterValue>
+            editors={EDITORS}
+            fields={[...fields]}
+            onQueryChange={handleQueryChange}
+            query={query}
+            size="sm"
+          >
+            <FilterChipRow />
+          </Filters>
+        ) : null}
+      </div>
     </div>
   );
 }

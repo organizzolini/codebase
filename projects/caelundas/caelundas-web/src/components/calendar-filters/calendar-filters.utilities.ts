@@ -1,9 +1,13 @@
 import { ListFilter } from "lucide-react";
 import { createElement } from "react";
 
-import { Badge, Button } from "@codebase/presentation";
+import { Button } from "@codebase/presentation";
 
-import { FILTERS_BUTTON_CLASS_NAME, TITLE } from "./calendar-filters.constants";
+import {
+  FILTERS_BUTTON_CLASS_NAME,
+  JOINED_BUTTON_CLASS_NAME,
+  TITLE,
+} from "./calendar-filters.constants";
 
 import type { ReactElement } from "react";
 
@@ -12,9 +16,12 @@ import type { ReactElement } from "react";
 // 🌎 Public Functions
 
 /**
- * The Filters button, badged with the count of finished rules; an element, not a component, so the surface's trigger can clone it.
+ * The Filters button, squared on its right when chips join it; an element, not a component, so the surface's trigger can clone it.
  */
-export function renderFiltersButton(activeCount: number): ReactElement {
+export function renderFiltersButton(
+  activeCount: number,
+  joined: boolean,
+): ReactElement {
   return createElement(
     Button,
     {
@@ -24,22 +31,13 @@ export function renderFiltersButton(activeCount: number): ReactElement {
       // so the group's joining styles are applied to the trigger here, under
       // the same variant as the button's own rounding inside a group, which
       // would otherwise win.
-      className: FILTERS_BUTTON_CLASS_NAME,
+      className: joined
+        ? `${FILTERS_BUTTON_CLASS_NAME} ${JOINED_BUTTON_CLASS_NAME}`
+        : FILTERS_BUTTON_CLASS_NAME,
       size: "sm",
       variant: "outline",
     },
     createElement(ListFilter, { "aria-hidden": "true" }),
     TITLE,
-    activeCount === 0
-      ? null
-      : createElement(
-          Badge,
-          {
-            "aria-hidden": "true",
-            className: "tabular-nums",
-            variant: "secondary",
-          },
-          activeCount,
-        ),
   );
 }

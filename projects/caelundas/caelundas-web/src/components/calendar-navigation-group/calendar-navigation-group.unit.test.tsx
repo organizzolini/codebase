@@ -66,15 +66,12 @@ describe(CalendarNavigationGroup, () => {
     expect(screen.getByRole("heading").className).not.toContain("w-60");
   });
 
-  it("switches Today off while the days shown include today", () => {
+  it("hides Today while the days shown include today", () => {
     const { rerender } = render(
       <CalendarNavigationGroup navigation={{ ...NAVIGATION, isToday: true }} />,
     );
 
-    expect(screen.getByRole("button", { name: "Today" })).toHaveProperty(
-      "disabled",
-      true,
-    );
+    expect(screen.queryByRole("button", { name: "Today" })).toBeNull();
 
     rerender(
       <CalendarNavigationGroup
@@ -82,9 +79,8 @@ describe(CalendarNavigationGroup, () => {
       />,
     );
 
-    expect(screen.getByRole("button", { name: "Today" })).toHaveProperty(
-      "disabled",
-      false,
+    expect(screen.getByRole("button", { name: "Today" }).textContent).toBe(
+      "Today",
     );
   });
 

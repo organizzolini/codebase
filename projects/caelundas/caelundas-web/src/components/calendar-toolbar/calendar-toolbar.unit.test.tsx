@@ -122,23 +122,19 @@ describe(CalendarToolbar, () => {
     ).toBe(true);
   });
 
-  it("switches Today off when the days shown include today", () => {
+  it("hides Today when the days shown include today", () => {
     const { rerender } = render(
       <CalendarToolbar navigation={{ ...NAVIGATION, isToday: true }} />,
     );
 
-    expect(screen.getByRole("button", { name: "Today" })).toHaveProperty(
-      "disabled",
-      true,
-    );
+    expect(screen.queryByRole("button", { name: "Today" })).toBeNull();
 
     rerender(
       <CalendarToolbar navigation={{ ...NAVIGATION, isToday: false }} />,
     );
 
-    expect(screen.getByRole("button", { name: "Today" })).toHaveProperty(
-      "disabled",
-      false,
+    expect(screen.getByRole("button", { name: "Today" }).textContent).toBe(
+      "Today",
     );
   });
 

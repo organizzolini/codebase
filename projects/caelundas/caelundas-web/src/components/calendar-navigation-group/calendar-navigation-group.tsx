@@ -47,14 +47,15 @@ export function CalendarNavigationGroup(
       data-testid="calendar-navigation-group"
     >
       <ButtonGroup aria-label="Navigate">
-        <Button
-          disabled={navigation.isToday === true}
-          onClick={navigation.today}
-          size="sm"
-          variant="outline"
-        >
-          Today
-        </Button>
+        {navigation.isToday === true ? null : (
+          <Button
+            onClick={navigation.today}
+            size="sm"
+            variant="outline"
+          >
+            Today
+          </Button>
+        )}
         <Button
           aria-label="Previous"
           className="w-9 text-lg leading-none"
