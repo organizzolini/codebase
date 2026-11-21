@@ -265,6 +265,55 @@ describe(ConfigurationFileService, () => {
     expect(configuration.write.markdown?.heading).toBe("### Deep");
   });
 
+  it("carries the project configuration path through the file schema", async () => {
+    const configurationPath = await writeConfiguration({
+      projectConfigurationPath: "configuration/callidescope.config.ts",
+    });
+
+    const { authored } = await service.loadConfigurationFile({
+      configurationPath,
+    });
+
+    expect(authored.projectConfigurationPath).toBe(
+      "configuration/callidescope.config.ts",
+    );
+  });
+
+  it("refuses a blank project configuration path", async () => {
+    const configurationPath = await writeConfiguration({
+      projectConfigurationPath: "",
+    });
+
+    await expect(
+      service.loadConfigurationFile({ configurationPath }),
+    ).rejects.toThrow("projectConfigurationPath");
+  });
+
+  it("carries the project tsconfig path through the file schema and resolution", async () => {
+    const configurationPath = await writeConfiguration({
+      projectTsconfigPath: "configuration/tsconfig.json",
+    });
+
+    const { authored, configuration } = await service.loadConfigurationFile({
+      configurationPath,
+    });
+
+    expect(authored.projectTsconfigPath).toBe("configuration/tsconfig.json");
+    expect(configuration.projectTsconfigPath).toBe(
+      "configuration/tsconfig.json",
+    );
+  });
+
+  it("refuses a blank project tsconfig path", async () => {
+    const configurationPath = await writeConfiguration({
+      projectTsconfigPath: "",
+    });
+
+    await expect(
+      service.loadConfigurationFile({ configurationPath }),
+    ).rejects.toThrow("projectTsconfigPath");
+  });
+
   it("leaves the diagram destination alone until it is asked for", () => {
     expect(
       service.resolveConfiguration({ write: {} }).write.mermaid,
@@ -371,28 +420,20 @@ describe(ConfigurationFileService, () => {
     ).rejects.toThrow(ConfigurationFileNotFoundError);
   });
 
-  // 🌳 Repository-root resolution
+  // 📍 Working-directory resolution
   //
-  // A task runner sets the cwd to the project rather than the workspace, so a
-  // path given relative to the repository root has to survive being resolved
-  // from somewhere below it.
+  // A relative path means relative to the working directory and nothing else:
+  // a host that runs elsewhere resolves it against its own root before calling.
 
-  it("resolves a path relative to the repository root", async () => {
-    const repositoryRoot = createTemporaryDirectory("callidescope-repository");
+  it("resolves a relative path against the working directory", async () => {
+    const directory = createTemporaryDirectory("callidescope-cwd");
     await writeFile(
-      path.join(repositoryRoot, "pnpm-workspace.yaml"),
-      "packages: []\n",
-      "utf8",
-    );
-    const nestedDirectory = path.join(repositoryRoot, "packages", "nested");
-    await mkdir(nestedDirectory, { recursive: true });
-    await writeFile(
-      path.join(repositoryRoot, "callidescope.config.json"),
+      path.join(directory, "callidescope.config.json"),
       JSON.stringify({ limits: { maximumDepth: 11 } }),
       "utf8",
     );
 
-    useWorkingDirectory(nestedDirectory);
+    useWorkingDirectory(directory);
 
     const configuration = await service.loadConfiguration({
       configurationPath: "callidescope.config.json",
@@ -401,29 +442,22 @@ describe(ConfigurationFileService, () => {
     expect(configuration.limits.maximumDepth).toBe(11);
   });
 
-  it("throws when the path is missing at the repository root too", async () => {
+  it("never falls back to the repository root", async () => {
     const repositoryRoot = createTemporaryDirectory("callidescope-repository");
     await writeFile(
       path.join(repositoryRoot, "pnpm-workspace.yaml"),
       "packages: []\n",
       "utf8",
     );
+    await writeFile(
+      path.join(repositoryRoot, "callidescope.config.json"),
+      JSON.stringify({ limits: { maximumDepth: 11 } }),
+      "utf8",
+    );
+    const nestedDirectory = path.join(repositoryRoot, "packages", "nested");
+    await mkdir(nestedDirectory, { recursive: true });
 
-    useWorkingDirectory(repositoryRoot);
-
-    await expect(
-      service.loadConfiguration({
-        configurationPath: "callidescope.config.json",
-      }),
-    ).rejects.toThrow(ConfigurationFileNotFoundError);
-  });
-
-  it("throws when no repository root is found above the working directory", async () => {
-    // A temp directory has no `.git` or `pnpm-workspace.yaml` anywhere above
-    // it, so the upward walk reaches the filesystem root and gives up.
-    const directory = createTemporaryDirectory("callidescope-rootless");
-
-    useWorkingDirectory(directory);
+    useWorkingDirectory(nestedDirectory);
 
     await expect(
       service.loadConfiguration({
@@ -600,17 +634,14 @@ describe(ConfigurationFileService, () => {
     expect(loaded.configuration.limits.maximumDepth).toBe(9);
   });
 
-  it("finds a configuration file sitting directly in a directory", async () => {
+  it("reports whether a file exists at an exact path", async () => {
     const configurationPath = await writeConfiguration({});
 
+    expect(service.configurationFileExists(configurationPath)).toBe(true);
     expect(
-      service.findConfigurationFileAt(path.dirname(configurationPath)),
-    ).toBe(configurationPath);
-  });
-
-  it("finds nothing in a directory holding no configuration file", () => {
-    const directory = createTemporaryDirectory("callidescope-empty");
-
-    expect(service.findConfigurationFileAt(directory)).toBeUndefined();
+      service.configurationFileExists(
+        path.join(path.dirname(configurationPath), "absent.config.ts"),
+      ),
+    ).toBe(false);
   });
 });

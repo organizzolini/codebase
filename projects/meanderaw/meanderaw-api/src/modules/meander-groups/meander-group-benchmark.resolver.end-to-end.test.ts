@@ -39,7 +39,7 @@ const computed = (filter: unknown): Record<string, unknown> => ({
 /**
  * Opt-in: seeds MEANDERAW_BENCHMARK_MEANDERS meanders and about 3.5 bridge
  * rows each, times each covered request against the same request forced onto
- * the computed path, and prints the medians ADR 0035 quotes.
+ * the computed path, and prints the medians ADR 0037 quotes.
  */
 describe.skipIf(MEANDERS === 0)("meander groups benchmark", () => {
   it("compares the aggregate tables with computed counts", async () => {

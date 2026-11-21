@@ -80,17 +80,19 @@ export class RunContextService {
   }
 
   /**
-   * Loads each project's codependix.config.ts, keyed by name. A project with no file is normal, so it maps to `undefined` rather than failing.
+   * Loads each project's own configuration file at the configured path, keyed by name. A project with no file is normal, so it maps to `undefined` rather than failing.
    */
-  private async loadProjectConfigurations(
-    projects: NxProject[],
-  ): Promise<Map<string, CodependixProjectConfiguration | undefined>> {
+  private async loadProjectConfigurations(args: {
+    projectConfigurationPath: string;
+    projects: NxProject[];
+  }): Promise<Map<string, CodependixProjectConfiguration | undefined>> {
     const entries = await Promise.all(
-      projects.map(
+      args.projects.map(
         async (project) =>
           [
             project.name,
             await this.configurationService.loadProjectConfiguration({
+              projectConfigurationPath: args.projectConfigurationPath,
               projectRoot: project.absoluteRoot,
             }),
           ] as const,
@@ -221,8 +223,10 @@ export class RunContextService {
       graph,
       workingDirectory,
     );
-    const projectConfigurations =
-      await this.loadProjectConfigurations(projects);
+    const projectConfigurations = await this.loadProjectConfigurations({
+      projectConfigurationPath: configuration.projectConfigurationPath,
+      projects,
+    });
 
     return {
       ...this.resolveProjectSets({

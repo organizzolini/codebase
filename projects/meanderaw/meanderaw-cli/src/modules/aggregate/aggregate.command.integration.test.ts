@@ -13,7 +13,7 @@ import {
   type DrawRunFixture,
   startDrawRun,
 } from "../../../testing/draw-run";
-import { DrawCodeService } from "../draw/draw-code.service";
+import { DrawCodeService } from "../draw/modules/enumeration/draw-code.service";
 
 /** Shapes written for these cases: enough meanders to make every table non-trivial, few enough to stay quick. */
 const SHAPE_COUNT = 3;

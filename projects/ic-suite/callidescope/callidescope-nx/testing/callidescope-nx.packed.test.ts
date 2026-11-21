@@ -101,10 +101,16 @@ describe("the callidescope plugin installed from a registry", () => {
     });
     workspace.registerPlugin("@callidescope/nx", {
       configurationPath: "callidescope.config.json",
+      projectConfigurationPath: "callidescope.config.js",
+      projectTsconfigPath: "tsconfig.json",
     });
     fs.writeFileSync(
       path.join(workspace.directory, "callidescope.config.json"),
-      JSON.stringify({ limits: { maximumDepth: 6 } }),
+      JSON.stringify({
+        limits: { maximumDepth: 6 },
+        projectConfigurationPath: "callidescope.config.js",
+        projectTsconfigPath: "tsconfig.json",
+      }),
     );
     writeProject("healthy", 6);
     writeProject("broken", 1);

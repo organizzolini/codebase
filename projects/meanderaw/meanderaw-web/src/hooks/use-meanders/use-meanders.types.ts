@@ -1,4 +1,4 @@
-import type { GalleryMeander } from "../../components/meander-gallery/meanders-api.types";
+import type { GalleryMeander } from "../../components/gallery/meander-gallery/meanders-api.types";
 
 // 🏷️ Types
 

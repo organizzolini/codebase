@@ -3,13 +3,13 @@ import { Module } from "@nestjs/common";
 import { CodeModule, DrawingModule } from "@codebase/meanderaw-core";
 import { MeanderawDatabaseModule } from "@codebase/meanderaw-db";
 
-import { MeanderAggregateService } from "./aggregates/meander-aggregate.service";
-import { MeanderFilterPlanService } from "./filters/meander-filter-plan.service";
-import { MeanderFilterService } from "./filters/meander-filter.service";
 import { MeanderCharacteristicsLoader } from "./meander-characteristics.loader";
 import { MeanderCharacteristicsResolver } from "./meander-characteristics.resolver";
 import { MeandersResolver } from "./meanders.resolver";
 import { MeandersService } from "./meanders.service";
+import { MeanderAggregateService } from "./modules/aggregates/meander-aggregate.service";
+import { MeanderFilterPlanService } from "./modules/filters/meander-filter-plan.service";
+import { MeanderFilterService } from "./modules/filters/meander-filter.service";
 
 /**
  * Serves the `meanders` query from the tables `MeanderawDatabaseModule` opens,

@@ -9,7 +9,7 @@
 ### Run Locally
 
 ```bash
-cp .env.default .env  # Fill in required environment variables
+cp configuration/.env.default configuration/.env  # Fill in required environment variables
 nx run meanderaw-cli:start
 ```
 
@@ -107,7 +107,7 @@ have.
 **Every Characteristic is a catalog row and, where it holds, a bridge row, and a missing row
 means zero or `false`.** No Characteristic has a column of its own, so adding one needs no
 schema change — see
-[ADR 0032](../../../documentation/adr/0032-store-characteristics-in-a-catalog-and-a-bridge.md).
+[ADR 0034](../../../documentation/adr/0034-store-characteristics-in-a-catalog-and-a-bridge.md).
 Raw SQL reads one by joining `meander_characteristics` to `characteristics` on its key; a
 meander with no row for it holds 0, so a zero filter needs an anti-join.
 
@@ -241,7 +241,7 @@ meanderaw variable carries the `MEANDERAW_` prefix, so the unprefixed `POSTGRES_
 
 **The `meanders` table is built by migrations, never by synchronizing.** `Meander` extends
 `PostgresqlUpdatableEntity`, so its `uuidv7()` id and audit columns come from the shared package, and the
-migrations live in `projects/meanderaw/meanderaw-db/src/modules/meanderaw-database/migrations/`. After changing the entity run
+migrations live in `projects/meanderaw/meanderaw-db/migrations/`. After changing the entity run
 `nx run meanderaw-db:migration:generate`, and `nx run meanderaw-db:migration:run` to apply it; the
 `start` target never migrates, so run the migrations before the first draw run. The CLI reads its
 data source from `@codebase/meanderaw-db`, whose `migration` target finds it through the `module` option.
@@ -405,7 +405,7 @@ See the [write-typescript skill](../../../.agents/skills/write-typescript/SKILL.
 - **Command not found at runtime** — ensure the command class is listed in `providers` of its module and the module is imported by the root module.
 - **Dependency injection failure** — verify the service is `@Injectable()`, exported from its module, and that module is imported by the consuming module.
 - **Unrecognized CLI flag** — check that `@Option()` decorators in the command class exactly match the flag names passed.
-- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `src/meanderaw-cli.constants.ts` and to `.env.default`.
+- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `src/meanderaw-cli.constants.ts` and to `configuration/.env.default`.
 
 See the [triage-integration skill](../../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
 
@@ -416,4 +416,4 @@ See the [triage-integration skill](../../../.agents/skills/triage-integration/SK
 - [src/meanderaw-cli.constants.ts](src/meanderaw-cli.constants.ts): `environmentSchema` (Zod)
 - `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
 - [project.json](project.json): Nx targets (`start`, `build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
-- [.env.default](.env.default): Environment variable template
+- [configuration/.env.default](configuration/.env.default): Environment variable template

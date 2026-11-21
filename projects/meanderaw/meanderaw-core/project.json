@@ -24,7 +24,7 @@
         "generatePackageJson": false,
         "main": "projects/meanderaw/meanderaw-core/src/index.ts",
         "outputPath": "projects/meanderaw/meanderaw-core/dist",
-        "tsConfig": "projects/meanderaw/meanderaw-core/tsconfig.build.json"
+        "tsConfig": "projects/meanderaw/meanderaw-core/configuration/tsconfig.build.json"
       },
       "outputs": ["{options.outputPath}"]
     },
@@ -32,6 +32,7 @@
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "eslint": {},
     "format-code": {},
     "guard-code": {},
     "knip": {},
@@ -45,6 +46,7 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "vitest": {},
     "yaml-lint": {}
   }
 }

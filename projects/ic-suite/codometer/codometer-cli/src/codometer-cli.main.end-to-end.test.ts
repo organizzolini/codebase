@@ -18,7 +18,7 @@ const COMMAND_PATH = path.resolve(import.meta.dirname, "codometer-cli.main.ts");
 const PROJECT_DIRECTORY = path.resolve(import.meta.dirname, "..");
 
 /** Resolves the workspace's TypeScript path aliases for every spawned run. */
-const TSCONFIG = path.join(PROJECT_DIRECTORY, "tsconfig.json");
+const TSCONFIG = path.join(PROJECT_DIRECTORY, "configuration", "tsconfig.json");
 
 /** Runs the command line from the project's directory with these arguments. */
 async function runCommand(
@@ -145,7 +145,7 @@ describe("main end-to-end suite", () => {
       const result = await runCommand([
         "configuration",
         "--config",
-        path.join(workingDirectory, "missing.config.json"),
+        path.join(workingDirectory, "missing", "codometer.config.json"),
         "--directory",
         workingDirectory,
         "--limits",

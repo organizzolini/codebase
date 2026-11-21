@@ -6,7 +6,7 @@
 
 Canonical documentation for call-stack tracing, configuration, depth and breadth analysis, and report formats is in the
 [`@callidescope/cli` README](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/callidescope/callidescope-cli#readme).
-`@callidescope/cli` is Nx-free on purpose: it takes `--directories`, each one a path holding its own `tsconfig.json`, so it
+`@callidescope/cli` is Nx-free on purpose: it takes `--directories`, each one a path holding a tsconfig at the configured `projectTsconfigPath`, so it
 works in any TypeScript workspace whether or not Nx is anywhere near it. This
 package is the one place in the toolchain that knows Nx exists, and the only
 one that depends on `@nx/devkit`.
@@ -32,20 +32,24 @@ Register it in `nx.json`:
     {
       "plugin": "@callidescope/nx",
       "options": {
-        "configurationPath": "configuration/callidescope.config.ts"
+        "configurationPath": "configuration/ic-suite/callidescope.config.ts",
+        "projectConfigurationPath": "callidescope.config.ts",
+        "projectTsconfigPath": "tsconfig.json"
       }
     }
   ]
 }
 ```
 
-| Option | Meaning |
-| ------ | ------- |
-| `configurationPath` | Required. Where the workspace callidescope configuration lives. Nothing is searched for: a registration that omits it is refused, naming this option. The refusal is decided by `@callidescope/configuration`, which every surface shares |
-| `traceTargetName` | Name of the inferred trace target. `callidescope-trace` when omitted |
-| `depthTargetName` | Name of the inferred depth target. `callidescope-depth` when omitted |
-| `breadthTargetName` | Name of the inferred breadth target. `callidescope-breadth` when omitted |
-| `gateTargetName` | Name of the inferred gate target. `callidescope-restrict` when omitted |
+| Option                     | Meaning                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `configurationPath`        | Required. Where the workspace callidescope configuration lives, relative to the workspace root (the plugin and every executor resolve it there). Nothing is searched for: a registration that omits it is refused, naming this option. The refusal is decided by `@callidescope/configuration`, which every surface shares                                                                                                                                       |
+| `projectConfigurationPath` | Required. Where each project keeps its own callidescope configuration, relative to the project root. Nothing is searched for: a registration that omits it is refused, naming this option. It must equal the `projectConfigurationPath` the workspace configuration sets, and the plugin refuses a registration that disagrees. The plugin names it in the gate's cache inputs, and Nx fixes `createNodes`'s glob (`**/project.json`) before it reads any option |
+| `projectTsconfigPath`      | Required. Where each project keeps its TypeScript configuration, relative to the project root, such as `tsconfig.json` or `configuration/tsconfig.json`. Nothing is searched for: a registration that omits it is refused, naming this option. It must equal the `projectTsconfigPath` the workspace configuration sets, and the plugin refuses a registration that disagrees. A project holding no file there gets no targets                                   |
+| `traceTargetName`          | Name of the inferred trace target. `callidescope-trace` when omitted                                                                                                                                                                                                                                                                                                                                                                                             |
+| `depthTargetName`          | Name of the inferred depth target. `callidescope-depth` when omitted                                                                                                                                                                                                                                                                                                                                                                                             |
+| `breadthTargetName`        | Name of the inferred breadth target. `callidescope-breadth` when omitted                                                                                                                                                                                                                                                                                                                                                                                         |
+| `gateTargetName`           | Name of the inferred gate target. `callidescope-restrict` when omitted                                                                                                                                                                                                                                                                                                                                                                                           |
 
 All inferred targets default to `callidescope-*` names to avoid generic task
 labels in Nx lists. Rename any of them from the registration if a workspace
@@ -53,7 +57,7 @@ already uses one.
 
 ## Usage
 
-Four targets are inferred onto every project holding a `tsconfig.json`, so
+Four targets are inferred onto every project holding a tsconfig at `projectTsconfigPath`, so
 selection is Nx's job rather than a flag of this package's own:
 
 ```bash
@@ -71,12 +75,12 @@ nx run callidescope-nx:callidescope-breadth --addresses="src/foo.service.ts#FooS
 nx run callidescope-nx:callidescope-depth --addresses="src/a.service.ts#A.b,src/c.service.ts#C.d"
 ```
 
-| Target | Answers |
-| ------ | ------- |
-| `callidescope-restrict` | Whether anything in the project broke the limits it is held to |
-| `callidescope-trace` | Every call stack in the project, and which ones broke a limit |
-| `callidescope-depth` | Every stack above and below each callable — callers up to a root, callees down to a leaf |
-| `callidescope-breadth` | Each callable's direct callers and callees, side by side |
+| Target                  | Answers                                                                                  |
+| ----------------------- | ---------------------------------------------------------------------------------------- |
+| `callidescope-restrict` | Whether anything in the project broke the limits it is held to                           |
+| `callidescope-trace`    | Every call stack in the project, and which ones broke a limit                            |
+| `callidescope-depth`    | Every stack above and below each callable — callers up to a root, callees down to a leaf |
+| `callidescope-breadth`  | Each callable's direct callers and callees, side by side                                 |
 
 `depth` and `breadth` take the same `<file>#<qualified-name>` addresses the
 `callidescope` command does — the form every printed stack already uses — and
@@ -139,7 +143,7 @@ all — fails both.
 **Asked per judged project, not of the whole run**, because narrowing the
 verdict made those two different questions. A project with dependencies has a
 non-empty run whatever became of its own sources, so an `exclude` that
-over-matches — which a project's own `callidescope.config.*` may write — leaves
+over-matches — which a project's own configuration may write — leaves
 it owning no report content, owning no finding, and passing green over code
 nothing read. Demonstrated: `projects/ic-suite/codometer/codometer-output` given
 `{"exclude": ["**"]}` of its own traces its dependency's 102 callables and
@@ -149,7 +153,7 @@ judge several.
 
 **Files rather than callables**, which is the weaker question and the right
 one. A project can hold files that declare no callable at all — one whose
-`tsconfig.json` names only its own configuration files and its tests is the
+tsconfig names only its own configuration files and its tests is the
 shape, and this repository has five — and those files were read, so a verdict
 on them is a verdict on something. Asking for a callable fails all five for
 holding no functions, which is a finding about nothing. The cost, stated
@@ -160,14 +164,14 @@ Two adjacent cases fail alongside it, each saying what happened rather than
 failing mutely: a run that read **nothing at all**, which is what an unread
 leaf project looks like, and an Nx selection that resolved to **no directory**.
 
-Its cache key names the project's own `callidescope.config.*` alongside the
+Its cache key names the project's own file, `{projectRoot}/<projectConfigurationPath>`, alongside the
 workspace configuration, so editing one project's limits re-runs that project's
 gate and no other project's. A dependency's sources are covered by `^default`,
 because a run measures its dependencies even though it does not judge them.
 
 Two projects are deliberately skipped by all four targets: the **workspace-root
 project**, whose targets would trace everything under one uncacheable task, and
-any project with **no `tsconfig.json`**, whose targets would be permanently
+any project with **no tsconfig at `projectTsconfigPath`**, whose targets would be permanently
 empty. A project the configuration **excludes** — `exclude` or `excludeFrom` in
 the workspace file — additionally gets no `gate`: its own code is never traced,
 so a gate there would own no finding at all and report green for code it never
@@ -189,7 +193,7 @@ project's own boundary would measure the wrong thing.
 program for every project the directories it was given transitively import, so
 a call into a dependency resolves to a real frame whether or not Nx is
 involved. Measured on this package,
-`callidescope --config configuration/callidescope.config.ts --directories projects/ic-suite/callidescope/callidescope-nx` and
+`callidescope --config configuration/ic-suite/callidescope.config.ts --directories projects/ic-suite/callidescope/callidescope-nx` and
 `nx run callidescope-nx:trace` report the same 575 callables across 185 files
 in 7 projects.
 
@@ -204,7 +208,7 @@ can find — an implicit dependency, or an edge that exists only at run time.
 
 The two sets are not the same. The Nx graph gives `callidescope-nx` six
 projects; the import closure reaches seven, adding `codometer-configuration`,
-which this project's `tsconfig.json` pulls in through its own
+which this project's tsconfig pulls in through its own
 `codometer.config.ts` — a file the manifest has no reason to mention.
 
 Dependencies, never dependents: a project's dependents call _into_ it and add
@@ -223,14 +227,14 @@ nx run logging:depth --addresses="a.ts#A.b" --projects=callidescope-cli
 
 All three executors take the same scoping options.
 
-| Option | Meaning |
-| ------ | ------- |
-| `addresses` | `depth` and `breadth` only, and required: the callables to look up, comma-separated |
-| `projects` | Nx project names to resolve against, replacing the target's own project |
-| `tags` | Nx project tags, selecting every project carrying **any** of them |
-| `withDependencies` | Widen along the Nx dependency graph. `true` by default |
-| `format` | `markdown`, `mermaid`, or `json` |
-| `configuration` | Required, and written onto every inferred target from the registration's `configurationPath`. A hand-written target must name it itself, or is refused naming this option |
+| Option             | Meaning                                                                                                                                                                   |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `addresses`        | `depth` and `breadth` only, and required: the callables to look up, comma-separated                                                                                       |
+| `projects`         | Nx project names to resolve against, replacing the target's own project                                                                                                   |
+| `tags`             | Nx project tags, selecting every project carrying **any** of them                                                                                                         |
+| `withDependencies` | Widen along the Nx dependency graph. `true` by default                                                                                                                    |
+| `format`           | `markdown`, `mermaid`, or `json`                                                                                                                                          |
+| `configuration`    | Required, and written onto every inferred target from the registration's `configurationPath`. A hand-written target must name it itself, or is refused naming this option |
 
 `--projects` and `--tags` union rather than intersect, and a project reached
 both ways is still traced once. `--tags` matches **any** of the tags given,
@@ -263,7 +267,10 @@ const names = projectsService.resolveDependencyClosure({
   graph,
   projectNames: ["callidescope-cli"],
 });
-const directories = projectsService.toDirectories({ graph, projectNames: names });
+const directories = projectsService.toDirectories({
+  graph,
+  projectNames: names,
+});
 ```
 
 `readProjectGraph` is the only method that touches Nx at run time; every
@@ -272,13 +279,13 @@ a workspace to build one from.
 
 ## Packages
 
-| Package | Role |
-| ------- | ---- |
-| [`@callidescope/nx`](.) | Nx plugin: per-project trace targets, resolved through the Nx graph |
-| [`@callidescope/cli`](../callidescope-cli/README.md) | Orchestrates a run: traces the workspace, plans what to check, and reports |
-| [`@callidescope/configuration`](../callidescope-configuration/README.md) | Reads `callidescope.config.ts` and resolves the limits |
-| [`@callidescope/graph`](../callidescope-graph/README.md) | Builds the call graph from traced source and measures depth and breadth |
-| [`@callidescope/output`](../callidescope-output/README.md) | Renders findings into markdown, mermaid, and JSON |
+| Package                                                                  | Role                                                                       |
+| ------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| [`@callidescope/nx`](.)                                                  | Nx plugin: per-project trace targets, resolved through the Nx graph        |
+| [`@callidescope/cli`](../callidescope-cli/README.md)                     | Orchestrates a run: traces the workspace, plans what to check, and reports |
+| [`@callidescope/configuration`](../callidescope-configuration/README.md) | Reads `callidescope.config.ts` and resolves the limits                     |
+| [`@callidescope/graph`](../callidescope-graph/README.md)                 | Builds the call graph from traced source and measures depth and breadth    |
+| [`@callidescope/output`](../callidescope-output/README.md)               | Renders findings into markdown, mermaid, and JSON                          |
 
 ## Test
 

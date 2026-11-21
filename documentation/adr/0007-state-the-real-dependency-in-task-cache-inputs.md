@@ -25,8 +25,8 @@ target name the dependency it actually has.
   per-target `{"externalDependencies": [...]}` entry, which hashes the resolved
   versions of exactly those packages — what `typecheck` had always done with
   `typescript`. Python targets need nothing, already declaring
-  `{workspaceRoot}/configuration/pyproject.toml` and
-  `{workspaceRoot}/configuration/uv.lock`. A target that
+  `{workspaceRoot}/configuration/python/pyproject.toml` and
+  `{workspaceRoot}/configuration/python/uv.lock`. A target that
   genuinely depends on every dependency uses the `dependency-versions`
   namedInput, as `build` does, because a bundle really does change when any
   dependency does.

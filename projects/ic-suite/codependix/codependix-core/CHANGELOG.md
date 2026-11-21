@@ -1,3 +1,23 @@
+## 0.0.87 (2026-11-21)
+
+### 💅 Refactors
+
+- **configuration,documentation,synchronization:** ♻️ run the agent workflow on superpowers skills ([#2457](https://github.com/organizzolini/codebase/pull/2457), [#2453](https://github.com/organizzolini/codebase/issues/2453))
+
+## 0.0.86 (2026-11-20)
+
+### 🚀 Features
+
+- **codometer,configuration:** ✨ cap directory breadth and depth, and keep tool configs in configuration folders ([#2452](https://github.com/organizzolini/codebase/pull/2452), [#2450](https://github.com/organizzolini/codebase/issues/2450))
+
+## 0.0.85 (2026-11-20)
+
+This was a version bump only for codependix-core to align it with other projects, there were no code changes.
+
+## 0.0.84 (2026-11-17)
+
+This was a version bump only for codependix-core to align it with other projects, there were no code changes.
+
 ## 0.0.83 (2026-11-15)
 
 ### 🚀 Features

@@ -3,10 +3,23 @@ export type { CapturedOutput } from "./modules/capture/capture.types";
 export {
   captureExitCode,
   captureOutput,
+  expectProcessExitOne,
+  mockProcessExit,
 } from "./modules/capture/capture.utilities";
 export { DEFAULT_TEST_DATE } from "./modules/clock/clock.constants";
 export { mockDates } from "./modules/clock/clock.utilities";
 export { overrideEnvironment } from "./modules/environment/environment.utilities";
+export { FakeProcessRunner } from "./modules/fake-process-runner/fake-process-runner.service";
+export type {
+  FakeProcessResult,
+  RecordedCall,
+  ScriptedAnswer,
+  ScriptedEffect,
+} from "./modules/fake-process-runner/fake-process-runner.types";
+export {
+  failed,
+  succeeded,
+} from "./modules/fake-process-runner/fake-process-runner.utilities";
 export type {
   FileSystemFunctions,
   FileSystemMock,
@@ -17,7 +30,7 @@ export {
   createFileTree,
   writeFileTree,
 } from "./modules/file-tree/file-tree.utilities";
-export { loadFixture } from "./modules/fixtures/fixtures.utilities";
+export { loadFixture } from "./modules/file-tree/modules/fixtures/fixtures.utilities";
 export { promptsMock } from "./modules/mocks/mocks.constants";
 export type {
   ChildProcessMock,
@@ -35,9 +48,9 @@ export {
   processFailure,
   stubFetch,
 } from "./modules/mocks/mocks.utilities";
+export { useWorkingDirectory } from "./modules/temporary-directory/modules/working-directory/working-directory.utilities";
 export { TEMPORARY_DIRECTORY_PREFIX } from "./modules/temporary-directory/temporary-directory.constants";
 export {
   createTemporaryDirectory,
   useTemporaryDirectory,
 } from "./modules/temporary-directory/temporary-directory.utilities";
-export { useWorkingDirectory } from "./modules/working-directory/working-directory.utilities";

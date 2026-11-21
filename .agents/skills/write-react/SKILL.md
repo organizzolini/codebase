@@ -38,7 +38,7 @@ that holds anything else:
 
 | File | Holds only |
 | ---- | ---------- |
-| `src/components/<folder>/<name>.tsx` | Imports, one exported component, and its exported `<Name>Properties` |
+| `src/components/<feature>/<folder>/<name>.tsx` | Imports, one exported component, and its exported `<Name>Properties` |
 | `src/hooks/<folder>/use-<name>.ts` | Imports and one exported hook |
 | `src/routes/<route>.tsx` | Imports, the exported `Route`, and the components it renders |
 | `*.types.ts` | Types and interfaces |
@@ -47,12 +47,17 @@ that holds anything else:
 
 `src/` holds `components/`, `hooks/`, and `routes/`, and every component and
 hook sits in a folder of its own with its `.types.ts`, `.constants.ts`, and
-`.utilities.ts`, the way a NestJS service sits in its module. The folder
+`.utilities.ts`, the way a NestJS service sits in its module. `src/components/`
+holds feature folders — components that work together, such as the calendar's
+views — and each feature folder holds component folders. A component folder
+that outgrows twelve entries moves its parts into child component folders
+under its own `components/`, and a hook folder into child hook folders under
+`hooks/`, the way a module nests child modules under `modules/`. The folder
 generators write all of them; the file generators add another component or
 hook to a folder that exists, so a component can still be split into parts.
 Code several components or hooks share goes in the folder that owns it most
 naturally, under its own name, such as `calendar-window.utilities.ts` inside
-`src/components/events-calendar/`. `constants/`, `types/`, `utilities/`, and
+`src/components/calendar-display/events-calendar/`. `constants/`, `types/`, `utilities/`, and
 `lib/` folders are not allowed, and any other `.ts` file in `src/` — a barrel
 `index.ts`, a loose helper — fails as a kind it is not. A folder's own
 constants, types, or utilities file may hold only its section markers until

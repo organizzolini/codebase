@@ -4,10 +4,8 @@ import { toCursor } from "@codebase/interface";
 import { Author, Line, Text, Token, Word } from "@codebase/lexico-db";
 
 import { createRepositoryMock } from "../../../testing/mocks";
-import { WordType } from "../words/word.entities";
+import { WordType } from "../words/modules/word-queries/word.entities";
 
-import { AuthorType } from "./author.entities";
-import { LineType } from "./line.entities";
 import { LOAD_CHUNK_SIZE } from "./literature.constants";
 import {
   createEmptyConnection,
@@ -18,8 +16,10 @@ import {
   toTextType,
   toTokenType,
 } from "./literature.utilities";
-import { TextType } from "./text.entities";
-import { TokenType } from "./token.entities";
+import { AuthorType } from "./modules/authors/author.entities";
+import { LineType } from "./modules/lines/line.entities";
+import { TextType } from "./modules/texts/text.entities";
+import { TokenType } from "./modules/tokens/token.entities";
 
 import type { ConnectionQuery, PageReadRow } from "./literature.types";
 

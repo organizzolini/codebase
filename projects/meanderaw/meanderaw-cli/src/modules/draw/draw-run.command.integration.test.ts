@@ -19,9 +19,9 @@ import {
   CHARACTERISTIC_KEYS,
   PATTERN_CHARACTERISTIC_KEYS,
 } from "../characteristics/characteristics.constants";
-import { HISTORICAL_CORPUS } from "../corpus/historical-corpus.constants";
+import { HISTORICAL_CORPUS } from "../corpus/modules/historical/historical-corpus.constants";
 
-import { DrawCodeService } from "./draw-code.service";
+import { DrawCodeService } from "./modules/enumeration/draw-code.service";
 
 const { writes } = vi.hoisted(() => ({ writes: new Map<string, string>() }));
 

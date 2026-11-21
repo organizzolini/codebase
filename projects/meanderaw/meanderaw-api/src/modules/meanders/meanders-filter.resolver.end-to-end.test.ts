@@ -9,8 +9,8 @@ import {
   startMeanderawApplication,
 } from "../../../testing/meanderaw-application";
 
-import { MeanderFilterService } from "./filters/meander-filter.service";
 import { MeandersModule } from "./meanders.module";
+import { MeanderFilterService } from "./modules/filters/meander-filter.service";
 
 import type { MeanderawApplication } from "../../../testing/meanderaw-application";
 

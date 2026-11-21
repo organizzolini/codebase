@@ -1,4 +1,4 @@
-import { LETTER_ORIENTATION_NAMES } from "./submatrix/letter/letter.constants";
+import { LETTER_ORIENTATION_NAMES } from "./modules/submatrix/modules/letter/letter.constants";
 
 import type { CharacteristicRecord } from "@codebase/meanderaw-db";
 

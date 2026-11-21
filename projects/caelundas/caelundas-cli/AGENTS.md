@@ -11,7 +11,7 @@ Generate astronomical event calendars using NASA's JPL Horizons API (Outputs: iC
 ### Run Locally
 
 ```bash
-cp .env.default .env  # Fill in required environment variables
+cp configuration/.env.default configuration/.env  # Fill in required environment variables
 nx run caelundas-cli:start
 ```
 
@@ -64,7 +64,7 @@ src/
       <domain>.types.ts
       <domain>.constants.ts
       <domain>.<tier>.test.ts
-testing/                            # Shared test utilities
+testing/                            # Shared test utilities, by kind (aspects/, pipeline/, reference/, support/)
 ```
 
 **Project Domain Modules**:
@@ -76,11 +76,10 @@ src/modules/
   night-sky/                           # The night-sky command: HYG stars and d3-celestial figures
   calendar-events/                     # Upsert and range queries over the calendar_events table
   tags/                                # Resolving raw tag strings to nodes of the tag tree
-  ephemeris/                           # Swiss Ephemeris access
-  perfective/                          # Exact moment event detection (aspects, phases)
+  ephemeris/                           # Swiss Ephemeris access; child modules: datetime/, math/, ephemeris-download/
+  perfective/                          # Exact moment event detection; child modules: one per event family (eclipses/, phases/, ...)
   progressive/                         # Duration event synthesis (retrogrades)
-  math/                                # Astronomical math utilities
-  <domain>/                            # Other specialized astronomical domain modules
+  aspects/                             # Aspect detection; child modules: major-/minor-/triple-/.../specialty-aspects/, stellium/
 ```
 
 **Key Domain Components**:
@@ -207,7 +206,7 @@ Inspect: `psql` with the `CAELUNDAS_POSTGRES_*` values, then `set search_path to
 
 **Read model**: the migration also creates `tag_nodes`, `calendar_event_tag_nodes` (each tag's depth, root and path, and one row per event and tag with ancestors, `is_direct` marking the tags given) and the view `calendar_event_derived_times`. The two tag tables are stored, not views, because a tag's depth, root and path take a correlated subquery that every grouping would repeat. `CalendarEventsService.upsert` ends each transaction with `CaelundasDatabaseService.refreshReadModel` from `caelundas-db`, inside the transaction that wrote the events and any new tags, so a run leaves the read model current and a failed refresh stores nothing. The view needs no refresh.
 
-**Tests**: integration and end-to-end suites start a Testcontainers Postgres through `startCaelundasDatabase` in `testing/database.ts`, which runs the real migration and connects through `CaelundasDatabaseModule` from `CAELUNDAS_POSTGRES_*`. Docker must be running.
+**Tests**: integration and end-to-end suites start a Testcontainers Postgres through `startCaelundasDatabase` in `testing/support/database.ts`, which runs the real migration and connects through `CaelundasDatabaseModule` from `CAELUNDAS_POSTGRES_*`. Docker must be running.
 
 ## Kubernetes Deployment
 
@@ -414,7 +413,7 @@ See the [write-typescript skill](../../../.agents/skills/write-typescript/SKILL.
 - **Command not found at runtime** — ensure the command class is listed in `providers` of its module and the module is imported by the root module.
 - **Dependency injection failure** — verify the service is `@Injectable()`, exported from its module, and that module is imported by the consuming module.
 - **Unrecognized CLI flag** — check that `@Option()` decorators in the command class exactly match the flag names passed.
-- **Env var validation error on startup** — add the missing variable to environmentSchema in src/caelundas-cli.constants.ts and to .env.default.
+- **Env var validation error on startup** — add the missing variable to environmentSchema in src/caelundas-cli.constants.ts and to configuration/.env.default.
 - **TypeORM entity not found** — register the entity via `TypeOrmModule.forFeature([MyEntity])` in the module that uses it.
 
 See the [triage-integration skill](../../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
@@ -433,7 +432,7 @@ See the [triage-integration skill](../../../.agents/skills/triage-integration/SK
 - [src/caelundas-cli.constants.ts](src/caelundas-cli.constants.ts): environmentSchema (Zod)
 - `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
 - [project.json](project.json): Nx targets (`start`, `build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
-- [.env.default](.env.default): Environment variable template
+- [configuration/.env.default](configuration/.env.default): Environment variable template
 
 **Project Files**:
 

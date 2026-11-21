@@ -4,8 +4,8 @@ import {
   linkedFilterSchema,
   linkedRowsSchema,
   MAXIMUM_FILTER_TEXT_LENGTH,
-} from "../../components/gallery-filter-builder/gallery-filter-builder.constants";
-import { MAXIMUM_GROUP_LEVELS } from "../../components/gallery-group-by/gallery-group-by.constants";
+} from "../../components/gallery/gallery-filter-builder/gallery-filter-builder.constants";
+import { MAXIMUM_GROUP_LEVELS } from "../../components/gallery/gallery-group-by/gallery-group-by.constants";
 
 // ♟️ Constants
 

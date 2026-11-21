@@ -8,6 +8,7 @@ import { LexicoDatabaseModule } from "@codebase/lexico-db";
 import { LoggerModule } from "@codebase/observability";
 
 import { environmentSchema, GRAPHQL_SCHEMA_FILE } from "./lexico-api.constants";
+import { CorsModule } from "./modules/cors/cors.module";
 import { HealthModule } from "./modules/health/health.module";
 import { ORPHANED_GRAPHQL_TYPES } from "./modules/lexemes/lexemes.constants";
 import { LexemesModule } from "./modules/lexemes/lexemes.module";
@@ -16,12 +17,12 @@ import { SearchModule } from "./modules/search/search.module";
 import { WordsModule } from "./modules/words/words.module";
 
 /**
- * Root NestJS application module for the Lexico GraphQL API.
+ * Root NestJS application module for the LexicoApi GraphQL API.
  */
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ".env",
+      envFilePath: "configuration/.env",
       isGlobal: true,
       validate: (config: Record<string, unknown>) =>
         environmentSchema.parse(config),
@@ -35,6 +36,7 @@ import { WordsModule } from "./modules/words/words.module";
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
+    CorsModule,
     LexicoDatabaseModule,
     LoggerModule,
     HealthModule,

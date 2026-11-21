@@ -56,6 +56,10 @@ describe("conformetryPlugin", () => {
   });
 
   describe("createNodes", () => {
+    it("matches project descriptions only, never a configuration file name", () => {
+      expect(conformetryPlugin.createNodes[0]).toBe("**/project.json");
+    });
+
     it("attaches the inferred target to the project that holds instances", async () => {
       await expect(
         createNodes(["packages/widgets/project.json"]),

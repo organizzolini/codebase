@@ -1,0 +1,14 @@
+diff --git a/dist/tsconfig.js b/dist/tsconfig.js
+index d0ceb06af415208f5411044614db393915d9ca70..c587ff31dab57da67c8c2a6566f974f8d043bf7c 100644
+--- a/dist/tsconfig.js
++++ b/dist/tsconfig.js
+@@ -18,6 +18,9 @@ async function getProjectRootNamesAndCompilerOptions(project) {
+     if (errors && errors.length > 0) {
+         throw errors;
+     }
++    if (compilerOptions.paths && compilerOptions.baseUrl === undefined) {
++        compilerOptions.pathsBasePath = path.resolve(dirname);
++    }
+     const rootNames = await getRootNames(config, dirname);
+     if (compilerOptions.baseUrl) {
+         if (compilerOptions.baseUrl === '.'

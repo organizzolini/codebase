@@ -13,12 +13,12 @@ import { LoggerService } from "@codebase/observability";
 
 import { CharacteristicsService } from "../characteristics/characteristics.service";
 import { CorpusService } from "../corpus/corpus.service";
-import { HISTORICAL_CORPUS } from "../corpus/historical-corpus.constants";
+import { HISTORICAL_CORPUS } from "../corpus/modules/historical/historical-corpus.constants";
 
-import { DrawCodeService } from "./draw-code.service";
-import { DrawEnumerationService } from "./draw-enumeration.service";
-import { DrawIndexService } from "./draw-index.service";
 import { IncompleteCodeDrawingError } from "./draw.constants";
+import { DrawCodeService } from "./modules/enumeration/draw-code.service";
+import { DrawEnumerationService } from "./modules/enumeration/draw-enumeration.service";
+import { DrawIndexService } from "./modules/index/draw-index.service";
 
 import type { DrawCommandOptions } from "./draw.types";
 

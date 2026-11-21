@@ -34,11 +34,11 @@ import { CharacteristicsModule } from "../characteristics/characteristics.module
 import { CorpusService } from "../corpus/corpus.service";
 import { GraphService } from "../graph/graph.service";
 
-import { DrawCodeService } from "./draw-code.service";
-import { DrawEnumerationService } from "./draw-enumeration.service";
-import { DrawIndexService } from "./draw-index.service";
-import { DrawRecordService } from "./draw-record.service";
 import { DrawCommand } from "./draw.command";
+import { DrawCodeService } from "./modules/enumeration/draw-code.service";
+import { DrawEnumerationService } from "./modules/enumeration/draw-enumeration.service";
+import { DrawRecordService } from "./modules/enumeration/draw-record.service";
+import { DrawIndexService } from "./modules/index/draw-index.service";
 
 import type { Repository } from "typeorm";
 

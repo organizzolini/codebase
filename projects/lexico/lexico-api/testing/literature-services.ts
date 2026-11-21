@@ -1,8 +1,8 @@
 import { Author, Line, Text, Token } from "@codebase/lexico-db";
 
-import { LiteratureRelationsLoader } from "../src/modules/literature/literature-relations.loader";
-import { LiteratureRelationsService } from "../src/modules/literature/literature-relations.service";
 import { LiteratureService } from "../src/modules/literature/literature.service";
+import { LiteratureRelationsLoader } from "../src/modules/literature/modules/relations/literature-relations.loader";
+import { LiteratureRelationsService } from "../src/modules/literature/modules/relations/literature-relations.service";
 
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 

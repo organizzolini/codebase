@@ -8,11 +8,11 @@ import { DependenciesService } from "../dependencies/dependencies.service";
 import { EnvironmentFilesService } from "../environment-files/environment-files.service";
 import { LocalServicesService } from "../local-services/local-services.service";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
-import { RemoteCacheService } from "../remote-cache/remote-cache.service";
 import { ReporterService } from "../reporter/reporter.service";
 import { ShellConfigurationService } from "../shell-configuration/shell-configuration.service";
 import { SoftwareService } from "../software/software.service";
 
+import { RemoteCacheService } from "./modules/remote-cache/remote-cache.service";
 import { STARTUP_FILES } from "./setup.constants";
 
 /**

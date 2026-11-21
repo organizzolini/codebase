@@ -26,7 +26,7 @@
         "generatePackageJson": false,
         "main": "projects/meanderaw/meanderaw-db/src/index.ts",
         "outputPath": "projects/meanderaw/meanderaw-db/dist",
-        "tsConfig": "projects/meanderaw/meanderaw-db/tsconfig.build.json"
+        "tsConfig": "projects/meanderaw/meanderaw-db/configuration/tsconfig.build.json"
       },
       "outputs": ["{options.outputPath}"]
     },
@@ -34,6 +34,7 @@
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "eslint": {},
     "format-code": {},
     "guard-code": {},
     "knip": {},
@@ -48,11 +49,14 @@
     "oxlint": {},
     "prettier": {},
     "spell-check": {},
+    "sqlfluff-format": {},
+    "sqlfluff-lint": {},
     "squawk": {},
     "test-code": {},
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "vitest": {},
     "yaml-lint": {}
   }
 }

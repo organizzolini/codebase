@@ -1,0 +1,43 @@
+import baseConfig from "../../../../configuration/eslint.config";
+
+export default [
+  // 🛠️ Base Config
+  ...baseConfig,
+
+  // 🚫 Project Ignores
+  // Exclude shadcn/ui generated components (auto-generated, not hand-authored)
+  {
+    ignores: ["src/components/**", "src/lib/**", "src/hooks/**"],
+  },
+
+  // 🧭 Self-referential path alias
+  // The base config forbids aliases back into a project's own directory, but
+  // `components.json` declares `@/components`, `@/hooks`, and `@/lib`, and the
+  // shadcn CLI emits `@/` imports on every add. Relative paths would be undone.
+  {
+    files: ["configuration/tsconfig.json"],
+    rules: {
+      "no-restricted-syntax": "off",
+    },
+  },
+
+  // 📦 Dependency Checks
+  {
+    files: ["**/*.json"],
+    rules: {
+      "@nx/dependency-checks": [
+        "error",
+        {
+          // tailwindcss-animate: required only by configuration/tailwind.config.cjs.
+          ignoredDependencies: [
+            "vite",
+            "@vitejs/plugin-react",
+            "vite-plugin-dts",
+            "tailwindcss-animate",
+          ],
+          ignoredFiles: ["{projectRoot}/configuration/**"],
+        },
+      ],
+    },
+  },
+];

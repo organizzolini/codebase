@@ -14,7 +14,7 @@ import {
   PATTERN_CHARACTERISTIC_KEYS,
 } from "./characteristics.constants";
 import { CharacteristicsService } from "./characteristics.service";
-import { TileCrossingComponentDeltaCountCharacteristicService } from "./path/tile-crossing/tile-crossing-component-delta-count-characteristic.service";
+import { TileCrossingComponentDeltaCountCharacteristicService } from "./modules/path/modules/tile-crossing/tile-crossing-component-delta-count-characteristic.service";
 
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { ModuleMetadata } from "@nestjs/common";

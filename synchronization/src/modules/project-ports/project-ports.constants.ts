@@ -17,11 +17,15 @@ export const PORT_HASH_OFFSET = 1000;
 /** Where each application kind declares its port, found by name suffix. */
 export const PORT_SOURCES: readonly PortSource[] = [
   {
-    filePath: ".env.default",
+    filePath: "configuration/.env.default",
     pattern: /^\w+_API_PORT=(\d+)$/m,
     suffix: "-api",
   },
-  { filePath: "vite.config.mts", pattern: /\bport:\s*(\d+)/, suffix: "-web" },
+  {
+    filePath: "configuration/vite.config.mts",
+    pattern: /\bport:\s*(\d+)/,
+    suffix: "-web",
+  },
 ];
 
 /** Only port lines are rewritten, so an unrelated `3000` stays. */

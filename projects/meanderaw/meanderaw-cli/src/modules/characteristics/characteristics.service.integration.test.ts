@@ -14,7 +14,7 @@ import {
   LEGACY_TILE_CROSSING_COMPONENT_DELTAS,
 } from "../../../testing/legacy-characteristics";
 import { tiled } from "../../../testing/meanders";
-import { HISTORICAL_CORPUS } from "../corpus/historical-corpus.constants";
+import { HISTORICAL_CORPUS } from "../corpus/modules/historical/historical-corpus.constants";
 
 import { CharacteristicContextService } from "./characteristic-context.service";
 import { CHARACTERISTIC_KEYS } from "./characteristics.constants";

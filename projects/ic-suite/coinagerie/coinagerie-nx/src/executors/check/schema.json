@@ -6,13 +6,17 @@
       "description": "Required. The shell command that starts the coinagerie command line, to which the batch command and its project folders are appended.",
       "type": "string"
     },
+    "projectConfigurationPath": {
+      "description": "Required. Where each project keeps its coinagerie configuration, relative to the project's root, such as coinagerie.config.ts. It is never searched for.",
+      "type": "string"
+    },
     "write": {
       "default": false,
       "description": "Rewrite each glossary to hold exactly the code's words, keeping definitions, instead of failing when one disagrees.",
       "type": "boolean"
     }
   },
-  "required": ["command"],
+  "required": ["command", "projectConfigurationPath"],
   "title": "Coinagerie check",
   "type": "object"
 }

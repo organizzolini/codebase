@@ -33,8 +33,8 @@
   "name": "meanderaw-web",
   "private": true,
   "scripts": {
-    "codegen": "graphql-codegen --config codegen.ts",
-    "codegen:watch": "graphql-codegen --config codegen.ts --watch"
+    "codegen": "graphql-codegen --config configuration/codegen.ts",
+    "codegen:watch": "graphql-codegen --config configuration/codegen.ts --watch"
   },
   "type": "module",
   "typeCoverage": {

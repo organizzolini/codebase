@@ -3,15 +3,14 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { Lexeme } from "@codebase/lexico-db";
 
-import { EtymologyModule } from "../etymology/etymology.module";
-import { FormsModule } from "../forms/forms.module";
-import { PartOfSpeechModule } from "../part-of-speech/part-of-speech.module";
-import { PrincipalPartsModule } from "../principal-parts/principal-parts.module";
-import { PronunciationModule } from "../pronunciation/pronunciation.module";
-import { TranslationsModule } from "../translations/translations.module";
-import { WordsModule } from "../words/words.module";
-
 import { LexemesService } from "./lexemes.service";
+import { EtymologyModule } from "./modules/etymology/etymology.module";
+import { FormsModule } from "./modules/forms/forms.module";
+import { PartOfSpeechModule } from "./modules/part-of-speech/part-of-speech.module";
+import { PrincipalPartsModule } from "./modules/principal-parts/principal-parts.module";
+import { PronunciationModule } from "./modules/pronunciation/pronunciation.module";
+import { TranslationsModule } from "./modules/translations/translations.module";
+import { WordsModule } from "./modules/words/words.module";
 
 /**
  * Wires POS detection, pronunciation parsing, and full Wiktionary entry

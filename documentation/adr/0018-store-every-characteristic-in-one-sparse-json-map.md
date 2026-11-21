@@ -1,6 +1,6 @@
 # 0018: Store Every Characteristic in One Sparse JSON Map
 
-Partly superseded by [ADR 0032](0032-store-characteristics-in-a-catalog-and-a-bridge.md): the `jsonb` column is replaced by a catalog table and a bridge table. A missing value still means zero or false.
+Partly superseded by [ADR 0034](0034-store-characteristics-in-a-catalog-and-a-bridge.md): the `jsonb` column is replaced by a catalog table and a bridge table. A missing value still means zero or false.
 
 ## Context
 

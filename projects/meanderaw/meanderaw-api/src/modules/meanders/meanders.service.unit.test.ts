@@ -9,9 +9,9 @@ import {
 } from "@codebase/meanderaw-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { MeanderAggregateService } from "./aggregates/meander-aggregate.service";
-import { MeanderFilterService } from "./filters/meander-filter.service";
 import { MeandersService } from "./meanders.service";
+import { MeanderAggregateService } from "./modules/aggregates/meander-aggregate.service";
+import { MeanderFilterService } from "./modules/filters/meander-filter.service";
 
 /** Builds the service over repositories that are never reached. */
 async function buildService(): Promise<MeandersService> {

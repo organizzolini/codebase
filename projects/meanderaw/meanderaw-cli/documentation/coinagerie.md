@@ -1,0 +1,49 @@
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses, regenerated with this project's `coinagerie-check:write` Nx target.
+
+- **arcade**: A pattern characteristic for a unit with no cross or bare dot, computed by IsArcadeCharacteristicService for each unit.
+- **arm**: One arm of a letter's ink, a stroke end the letter utilities count and sum through LetterUtilitiesService.reduce.
+- **band**: The cyclic strip of a Code's repeating unit that characteristics read as a graph, and that drawing cuts at a width.
+- **border**: An edge of the unit's grid, which the top and bottom border touch-count characteristics check for ink touching it.
+- **br**: Bottom-right corner digit of the 2x2 window that EmbeddedUCountCharacteristicService reads when counting embedded U shapes.
+- **brute**:
+- **characteristic**: A measured property of a Code's repeating unit, computed by one evaluator service from a shared context and stored in the database.
+- **comb**: A pattern characteristic named for a comb-shaped ink layout, computed for each unit by IsCombCharacteristicService.
+- **coordinate**: A band or pixel position rounded and trimmed before drawing, as the draw index and drawing services format each path coordinate.
+- **corpus**: The historical set of meander Codes ingested from the retired file tree, split by CorpusService into preserved and enumerated halves.
+- **db**:
+- **degree**: The number of ink edges meeting a point, which path and end characteristics read to find degree-one ends and degree-two runs.
+- **fork**: A point with three branches of ink, which IsForkCharacteristicService and the fork submatrix count for each unit.
+- **hebrew**: The Hebrew script, whose letter shapes such as dalet get their own letter characteristics services with orientation evaluators.
+- **horizontal**: Adjective for left-to-right runs and rectangles, such as horizontal rectangle counts and the longest horizontal run length.
+- **ingest**: CorpusService.ingest, which takes the historical corpus entries and writes them into the database before the draw run.
+- **ink**: The inked points of a unit, the strokes a Code draws, which nearly every characteristic counts, walks, or measures.
+- **lattice**: The rows-by-columns grid of points and edges that a Code spells, the structure every meander and characteristic is measured on.
+- **letter**: A script glyph whose ink is characterized by a letter service with sixteen orientation evaluators, held in the letter submatrix folder.
+- **meander**: Greek key or fret border motif that the meanderaw project generates as SVG from composable motif and modifier definitions.
+- **mesh**: A pattern characteristic named for a mesh of crossed strands, computed for each unit by IsMeshCharacteristicService.
+- **minima**: The canonical orbit minimum of each symmetry class, which draw pool cuts into batches for worker threads to draw.
+- **north**: The top side of a lattice point or unit, one of the four compass sides the Code bits and edge flags name.
+- **piece**: A connected piece of ink that a pattern characteristic counts, such as one branching at exactly three points in the fork check.
+- **pure**: Adjective for a tree-shaped ink unit with no loops, as IsPureTreeCharacteristicService checks, and for pure value computation.
+- **quarter**: Suffix in corner keys such as Quarter and ThreeQuarter, naming a partial corner count, and also a quarter turn of a unit.
+- **rectangle**: A solid block of inked points, which the rectangle submatrix characteristics count and measure across each unit.
+- **rotation**: A cyclic column shift of a Code's repeating unit. Every rotation draws the same band; the canonical rotation is the one stored.
+- **south**: The bottom side of a lattice point or unit, one of the four compass sides the Code bits and edge flags name.
+- **square**: Adjective for a square-shaped unit or wave in the test fixtures, such as a square wave whose turns the inflection test counts.
+- **stem**: The part of a letter service class name before its script suffix, which the letter module test extracts with a named regex group.
+- **strand**: A maximal run of ink through degree-two points, which StrandUtilitiesService cuts out of a repeat for the strand characteristics.
+- **submatrix**: A folder of characteristic evaluators that read one sub-window of a Code's unit, such as point, letter, corner, or rectangle.
+- **swirl**: A pattern characteristic for a unit whose strands wind one way, computed by IsSwirlCharacteristicService for each Code.
+- **tally**:
+- **tian**: Romanized name of a Hanzi glyph whose orientations get a letter characteristics service class with sixteen evaluators.
+- **tile**: A square cell of the lattice with its four direction bits, handled by TileService and TileCrossingCharacteristicsModule.
+- **tu**: Romanized name of a Hanzi glyph whose orientations get a letter characteristics service class with sixteen evaluators.
+- **waterfall**: A pattern characteristic named for a waterfall of stacked strands, computed by IsWaterfallsCharacteristicService for each unit.
+- **whirl**: A pattern characteristic for a unit whose strands wind in a whirl, computed by IsWhirlCharacteristicService for each Code.
+- **window**: The rectangle of cells of a letter's matrix that a characteristic reads, or the part of a Code an address names to draw.
+
+<!-- coinagerie:end -->

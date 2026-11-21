@@ -1,0 +1,32 @@
+{
+  "$schema": "{{workspaceRelativePrefix}}node_modules/nx/schemas/project-schema.json",
+  "name": "{{nameKebabCase}}",
+  "sourceRoot": "{{type}}{{nameKebabCase}}",
+  "tags": [
+    "framework:nest-commander",
+    "framework:nestjs",
+    "generator:nestjs-command-project",
+    "language:typescript"
+  ],
+  "targets": {
+    "codometer": {},
+    "dependency-cruiser": {},
+    "deprecate-code": {},
+    "eslint": {},
+    "format-code": {},
+    "guard-code": {},
+    "knip": {},
+    "lint-code": {},
+    "markdown-lint": {},
+    "oxfmt": {},
+    "oxlint": {},
+    "prettier": {},
+    "spell-check": {},
+    "test-code": {},
+    "type-coverage": {},
+    "typecheck": {},
+    "typecheck-code": {},
+    "vitest": {},
+    "yaml-lint": {}
+  }
+}

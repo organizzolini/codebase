@@ -4,7 +4,7 @@ import type { CallGraphResult } from "@callidescope/core";
 
 /** The shape of a `callidescope.config.ts` default export. */
 export interface CallidescopeConfiguration {
-  /** Project directories to trace, defaulting to every directory with its own `tsconfig.json`. Narrowing it speeds a run. */
+  /** Project directories to trace, defaulting to every directory holding a file at `projectTsconfigPath`. Narrowing it speeds a run. */
   directories?: string[] | undefined;
   entryPoints?: CallidescopeEntryPoints | undefined;
   exclude?: string[] | undefined;
@@ -13,6 +13,10 @@ export interface CallidescopeConfiguration {
   /** Gitignore-syntax files listing paths to leave untraced. */
   excludeFrom?: string[] | undefined;
   limits?: CallidescopeLimits | undefined;
+  /** Where each traced project keeps its own configuration, relative to the project root. Required of a workspace configuration, with no default and no search. */
+  projectConfigurationPath?: string | undefined;
+  /** Where each traced project keeps its TypeScript configuration, relative to the project root. Required of a workspace configuration, with no default and no search. */
+  projectTsconfigPath?: string | undefined;
   write?: CallidescopeWriteConfiguration | undefined;
 }
 
@@ -107,7 +111,7 @@ export interface CallidescopeWriteConfiguration {
 
 /** Arguments accepted by the configuration loader. */
 export interface LoadConfigurationArguments {
-  /** The workspace configuration file, relative to the cwd or the repository root. */
+  /** The workspace configuration file, relative to the cwd. */
   configurationPath: string;
 }
 
@@ -132,6 +136,8 @@ export interface LoadedProjectConfiguration {
 
 /** Arguments accepted by the project configuration loader. */
 export interface LoadProjectConfigurationsArguments {
+  /** Where each project keeps its file, relative to its root, as the workspace configuration wrote it. Refused when `undefined`. */
+  projectConfigurationPath: string | undefined;
   /** Workspace-relative project roots to look beside. */
   projects: readonly string[];
   /** The run's own configuration file, resolved against `workspaceRoot`. A file read as the run's own is never also read as a project's. */
@@ -195,6 +201,10 @@ export interface ResolvedCallidescopeConfiguration {
   excludeCallees: string[];
   excludeFrom: string[];
   limits: ResolvedCallidescopeLimits;
+  /** Where each traced project keeps its own configuration, as authored. No default, so `undefined` is refused when projects are read. */
+  projectConfigurationPath?: string | undefined;
+  /** Where each traced project keeps its TypeScript configuration, as authored. No default, so `undefined` is refused when projects are discovered. */
+  projectTsconfigPath?: string | undefined;
   write: ResolvedCallidescopeWriteConfiguration;
 }
 

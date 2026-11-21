@@ -15,7 +15,6 @@ export interface MigrationSqlStatements {
 
 /** Parsed migration options from one project.json file. */
 export interface TypeormMigrationParsedProjectTarget {
-  readonly modulePath: string;
   readonly projectName: string;
   readonly projectRoot: string;
 }
@@ -33,7 +32,6 @@ export type TypeormMigrationSelection = "all" | "latest";
 export interface TypeormMigrationSqlCommandOptions {
   directory?: string;
   migration?: string;
-  module?: string;
   project?: string;
   projectRoot?: string;
   selection?: TypeormMigrationSelection;

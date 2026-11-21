@@ -5,8 +5,8 @@ import { renderRoute } from "@codebase/testing/react";
 
 import { serveMeandersApi } from "../../testing/meanders-api";
 import { scrollWindowTo, setViewportWidth } from "../../testing/viewport";
-import { DEFAULT_ROWS_FILTER } from "../components/gallery-filter-builder/gallery-filter-builder.constants";
-import { ROW_ESTIMATES } from "../components/meander-gallery/meander-gallery.constants";
+import { DEFAULT_ROWS_FILTER } from "../components/gallery/gallery-filter-builder/gallery-filter-builder.constants";
+import { ROW_ESTIMATES } from "../components/gallery/meander-gallery/meander-gallery.constants";
 import { getRouter } from "../router";
 
 import { Route } from "./index";

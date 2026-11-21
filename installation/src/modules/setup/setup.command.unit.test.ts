@@ -15,20 +15,20 @@ import { EnvironmentFilesService } from "../environment-files/environment-files.
 import { LocalServicesService } from "../local-services/local-services.service";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { ReleaseArchivesService } from "../release-archives/release-archives.service";
-import { RemoteCacheService } from "../remote-cache/remote-cache.service";
 import { ReporterService } from "../reporter/reporter.service";
 import { ShellConfigurationService } from "../shell-configuration/shell-configuration.service";
-import { SoftwareBrewService } from "../software/software-brew.service";
-import { SoftwareDatabaseService } from "../software/software-database.service";
-import { SoftwareDockerService } from "../software/software-docker.service";
-import { SoftwareGpgService } from "../software/software-gpg.service";
-import { SoftwareInfraService } from "../software/software-infra.service";
-import { SoftwareLinuxService } from "../software/software-linux.service";
-import { SoftwareOllamaService } from "../software/software-ollama.service";
-import { SoftwarePythonService } from "../software/software-python.service";
+import { SoftwareBrewService } from "../software/modules/platform/software-brew.service";
+import { SoftwareLinuxService } from "../software/modules/platform/software-linux.service";
+import { SoftwareDockerService } from "../software/modules/runtimes/software-docker.service";
+import { SoftwareOllamaService } from "../software/modules/runtimes/software-ollama.service";
+import { SoftwarePythonService } from "../software/modules/runtimes/software-python.service";
+import { SoftwareDatabaseService } from "../software/modules/tooling/software-database.service";
+import { SoftwareGpgService } from "../software/modules/tooling/software-gpg.service";
+import { SoftwareInfraService } from "../software/modules/tooling/software-infra.service";
 import { SoftwareService } from "../software/software.service";
 import { SshSigningService } from "../ssh-signing/ssh-signing.service";
 
+import { RemoteCacheService } from "./modules/remote-cache/remote-cache.service";
 import { SetupCommand } from "./setup.command";
 import { SetupService } from "./setup.service";
 
@@ -101,7 +101,7 @@ describe(SetupCommand, () => {
     fs.writeFileSync(path.join(workspace.root, ".env.default"), "ROOT=1\n");
     const { command: subject, commands } = await createCommand({
       responses: {
-        "git ls-files --cached --others --exclude-standard -- .env.default */.env.default :!:configuration/conformetry-templates/**":
+        "git ls-files --cached --others --exclude-standard -- .env.default */.env.default :!:configuration/ic-suite/conformetry-templates/**":
           { stdout: ".env.default\n" },
       },
     });

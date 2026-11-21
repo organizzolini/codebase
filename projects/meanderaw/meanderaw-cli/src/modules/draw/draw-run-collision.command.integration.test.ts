@@ -9,9 +9,9 @@ import {
   startDrawRun,
 } from "../../../testing/draw-run";
 import { meanderRecord } from "../../../testing/meanders";
-import { HISTORICAL_CORPUS } from "../corpus/historical-corpus.constants";
+import { HISTORICAL_CORPUS } from "../corpus/modules/historical/historical-corpus.constants";
 
-import { DrawCodeService } from "./draw-code.service";
+import { DrawCodeService } from "./modules/enumeration/draw-code.service";
 
 import type * as FileSystemHelpers from "@codebase/testing/file-system";
 

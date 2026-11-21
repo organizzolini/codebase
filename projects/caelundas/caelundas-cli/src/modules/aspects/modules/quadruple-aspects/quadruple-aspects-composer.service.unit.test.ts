@@ -1,0 +1,196 @@
+import moment from "moment-timezone";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { ProgressiveUtilitiesService } from "../../../progressive/progressive-utilities.service";
+import { AspectGraphService } from "../calculation/aspect-graph.service";
+import { CompoundPhaseService } from "../compound-phases/compound-phase.service";
+import { AspectPhaseEmojiService } from "../formatting/aspect-phase-emoji.service";
+
+import { QuadrupleAspectsBaseService } from "./quadruple-aspects-base.service";
+import { QuadrupleAspectsComposerService } from "./quadruple-aspects-composer.service";
+
+import type { Aspect } from "../../../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../../../calendar-events/calendar-events.types";
+import type { AspectBodies } from "../../aspects.types";
+
+describe(QuadrupleAspectsComposerService, () => {
+  let service: QuadrupleAspectsComposerService;
+  let baseService: QuadrupleAspectsBaseService;
+
+  const testingModuleOptions = {
+    providers: [
+      CompoundPhaseService,
+      QuadrupleAspectsBaseService,
+      AspectGraphService,
+      AspectPhaseEmojiService,
+      ProgressiveUtilitiesService,
+    ],
+  };
+
+  beforeAll(async () => {
+    const { instance, module } = await buildTestingModule(
+      QuadrupleAspectsComposerService,
+      testingModuleOptions,
+    );
+
+    service = instance;
+    baseService = await module.resolve(QuadrupleAspectsBaseService);
+  });
+
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      QuadrupleAspectsComposerService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(QuadrupleAspectsComposerService);
+  });
+
+  it("returns no grand crosses when minimum opposition/square counts are not met", () => {
+    const minute = moment.utc("2024-03-21T12:00:00.000Z");
+
+    const events = service.composeGrandCrosses({
+      currentAspectBodies: [{ aspect: "opposite", bodies: ["sun", "moon"] }],
+      minute,
+      previousAspectBodies: [],
+    });
+
+    expect(events).toStrictEqual([]);
+  });
+
+  it("returns null when a grand-cross candidate does not contain four unique bodies", () => {
+    const result = service.tryBuildGrandCross({
+      current: [],
+      minute: moment.utc("2024-03-21T12:00:00.000Z"),
+      opp1: { aspect: "opposite", bodies: ["sun", "moon"] },
+      opp2: { aspect: "opposite", bodies: ["sun", "mars"] },
+      previous: [],
+      unionEdges: [],
+    });
+
+    expect(result).toBeNull();
+  });
+
+  it("collects progressive events from forming to dissolving", () => {
+    const progressiveEvents: DetectedCalendarEvent[] = [];
+    const forming: DetectedCalendarEvent = {
+      description: "forming",
+      end: moment.utc("2024-03-21T10:00:00.000Z"),
+      start: moment.utc("2024-03-21T10:00:00.000Z"),
+      summary: "forming",
+      tags: ["Quadruple Aspect", "Grand Cross", "Forming"],
+    };
+    const dissolving: DetectedCalendarEvent = {
+      description: "dissolving",
+      end: moment.utc("2024-03-21T14:00:00.000Z"),
+      start: moment.utc("2024-03-21T14:00:00.000Z"),
+      summary: "dissolving",
+      tags: ["Quadruple Aspect", "Grand Cross", "Dissolving"],
+    };
+
+    service.collectProgressiveEventsFromGroup(
+      [forming, dissolving],
+      progressiveEvents,
+    );
+
+    expect(progressiveEvents).toHaveLength(1);
+    expect(progressiveEvents[0]?.start).toStrictEqual(forming.start);
+    expect(progressiveEvents[0]?.end).toStrictEqual(dissolving.start);
+  });
+
+  it("skips non-dissolving candidates before pairing a dissolving boundary", () => {
+    const progressiveEvents: DetectedCalendarEvent[] = [];
+    const forming: DetectedCalendarEvent = {
+      description: "forming",
+      end: moment.utc("2024-03-21T10:00:00.000Z"),
+      start: moment.utc("2024-03-21T10:00:00.000Z"),
+      summary: "forming",
+      tags: ["Quadruple Aspect", "Grand Cross", "Forming"],
+    };
+    const perfective: DetectedCalendarEvent = {
+      description: "perfective",
+      end: moment.utc("2024-03-21T12:00:00.000Z"),
+      start: moment.utc("2024-03-21T12:00:00.000Z"),
+      summary: "perfective",
+      tags: ["Quadruple Aspect", "Grand Cross", "Perfective"],
+    };
+    const dissolving: DetectedCalendarEvent = {
+      description: "dissolving",
+      end: moment.utc("2024-03-21T14:00:00.000Z"),
+      start: moment.utc("2024-03-21T14:00:00.000Z"),
+      summary: "dissolving",
+      tags: ["Quadruple Aspect", "Grand Cross", "Dissolving"],
+    };
+
+    service.collectProgressiveEventsFromGroup(
+      [forming, perfective, dissolving],
+      progressiveEvents,
+    );
+
+    expect(progressiveEvents).toHaveLength(1);
+  });
+
+  it("continues when opposition entries are sparse", () => {
+    const minute = moment.utc("2024-03-21T12:00:00.000Z");
+    const sparseOppositions: AspectBodies[] = [];
+    sparseOppositions[1] = { aspect: "opposite", bodies: ["sun", "moon"] };
+    sparseOppositions[2] = {
+      aspect: "opposite",
+      bodies: ["mars", "jupiter"],
+    };
+    const groupedAspects = new Map<Aspect, AspectBodies[]>([
+      ["opposite", sparseOppositions],
+      [
+        "square",
+        [
+          { aspect: "square", bodies: ["sun", "mars"] },
+          { aspect: "square", bodies: ["sun", "jupiter"] },
+          { aspect: "square", bodies: ["moon", "mars"] },
+          { aspect: "square", bodies: ["moon", "jupiter"] },
+        ],
+      ],
+    ]);
+    const groupAspectsByTypeSpy = vi
+      .spyOn(baseService, "groupAspectsByType")
+      .mockReturnValue(groupedAspects);
+    const collectGrandCrossesForOpp1Spy = vi
+      .spyOn(service, "collectGrandCrossesForOpp1")
+      .mockReturnValue([]);
+
+    const events = service.composeGrandCrosses({
+      currentAspectBodies: [],
+      minute,
+      previousAspectBodies: [],
+    });
+
+    expect(events).toStrictEqual([]);
+    expect(collectGrandCrossesForOpp1Spy).toHaveBeenCalledTimes(2);
+    expect(collectGrandCrossesForOpp1Spy).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({
+        minute,
+        startIndex: 2,
+      }),
+    );
+    expect(collectGrandCrossesForOpp1Spy).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        minute,
+        startIndex: 3,
+      }),
+    );
+
+    groupAspectsByTypeSpy.mockRestore();
+    collectGrandCrossesForOpp1Spy.mockRestore();
+  });
+
+  it("collects no progressive events from an empty group", () => {
+    const progressiveEvents: DetectedCalendarEvent[] = [];
+
+    service.collectProgressiveEventsFromGroup([], progressiveEvents);
+
+    expect(progressiveEvents).toStrictEqual([]);
+  });
+});

@@ -3,13 +3,13 @@ import { Command, CommandRunner } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { PullRequestAncestorIssuesService } from "./pull-request-ancestor-issues.service";
-import { PullRequestContextService } from "./pull-request-context.service";
-import { PullRequestLabelVocabularyService } from "./pull-request-label-vocabulary.service";
+import { PullRequestContextService } from "./modules/context/pull-request-context.service";
+import { PullRequestLabelVocabularyService } from "./modules/labels/pull-request-label-vocabulary.service";
+import { PullRequestAncestorIssuesService } from "./modules/linked-issues/pull-request-ancestor-issues.service";
 import { PullRequestReportService } from "./pull-request-report.service";
 import { PullRequestValidationService } from "./pull-request-validation.service";
 
-import type { PullRequestContext } from "./pull-request-context.types";
+import type { PullRequestContext } from "./modules/context/pull-request-context.types";
 
 /**
  * CLI command that writes, then validates, one pull request.

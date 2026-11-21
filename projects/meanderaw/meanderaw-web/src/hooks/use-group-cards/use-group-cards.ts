@@ -1,13 +1,13 @@
 import { useCallback, useRef as useReference, useState } from "react";
 
-import { findMeanders } from "../../components/meander-gallery/meanders-api.utilities";
+import { findMeanders } from "../../components/gallery/meander-gallery/meanders-api.utilities";
 
 import { appendPage, recordFailure } from "./use-group-cards.utilities";
 
 import type {
   GroupCards,
   GroupLeaf,
-} from "../../components/grouped-gallery/grouped-gallery.types";
+} from "../../components/gallery/grouped-gallery/grouped-gallery.types";
 import type { MeanderSortInput } from "../../graphql/generated/operations";
 import type { UseGroupCardsResult } from "./use-group-cards.types";
 

@@ -2,7 +2,7 @@
 
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { Lexeme, Translation, Word } from "@codebase/lexico-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
@@ -32,6 +32,15 @@ function createSearchService(): {
   const wordRepository = createRepositoryMock<Word>();
   const translationRepository = createRepositoryMock<Translation>();
   const logger = createMock<LoggerService>();
+  for (const repository of [
+    lexemeRepository,
+    wordRepository,
+    translationRepository,
+  ] as Repository<never>[]) {
+    const builder = repository.createQueryBuilder();
+    vi.mocked(repository.createQueryBuilder).mockClear();
+    vi.mocked(builder.getMany).mockResolvedValue([]);
+  }
 
   const service = new SearchService(
     lexemeRepository,

@@ -13,14 +13,14 @@ import {
 import { meanderRecord } from "../../../testing/meanders";
 
 import { MEANDERAW_DATABASE_MIGRATIONS } from "./data-source.constants";
-import { Characteristic } from "./entities/characteristic.entity";
-import { Meander } from "./entities/meander.entity";
 import {
   MEANDER_INSERT_CHUNK_SIZE,
   UnknownCharacteristicError,
 } from "./meanderaw-database.constants";
 import { MeanderawDatabaseModule } from "./meanderaw-database.module";
 import { MeanderawDatabaseService } from "./meanderaw-database.service";
+import { Characteristic } from "./modules/characteristic/characteristic.entity";
+import { Meander } from "./modules/meander/meander.entity";
 
 import type { MeanderRecord } from "./meanderaw-database.types";
 

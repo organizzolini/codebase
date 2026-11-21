@@ -9,7 +9,7 @@ import {
 import type {
   FilterGroup,
   RowsFilter,
-} from "../../components/gallery-filter-builder/gallery-filter-builder.types";
+} from "../../components/gallery/gallery-filter-builder/gallery-filter-builder.types";
 import type {
   GalleryView,
   SortDirection,

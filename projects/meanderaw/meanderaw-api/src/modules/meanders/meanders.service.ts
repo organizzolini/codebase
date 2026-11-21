@@ -16,8 +16,6 @@ import {
   toCursor,
 } from "../../meanderaw-api.utilities";
 
-import { MeanderAggregateService } from "./aggregates/meander-aggregate.service";
-import { MeanderFilterService } from "./filters/meander-filter.service";
 import {
   cursorSchema,
   DEFAULT_SVG_REPEATS,
@@ -27,9 +25,10 @@ import {
   SHAPE_SORT_FIELDS,
   svgRepeatsSchema,
 } from "./meanders.constants";
+import { MeanderAggregateService } from "./modules/aggregates/meander-aggregate.service";
+import { MeanderFilterService } from "./modules/filters/meander-filter.service";
 import { SortDirection } from "./sort-direction.entities";
 
-import type { CompiledMeanderFilter } from "./filters/meander-filter.types";
 import type { MeanderCharacteristicValueEntity } from "./meander-characteristic-value.entities";
 import type { MeanderConnection } from "./meander-connection.entities";
 import type { MeanderSortInput } from "./meander-sort.entities";
@@ -40,6 +39,7 @@ import type {
   SortTarget,
   SortValue,
 } from "./meanders.types";
+import type { CompiledMeanderFilter } from "./modules/filters/meander-filter.types";
 import type { Repository, SelectQueryBuilder } from "typeorm";
 
 /** Pages through the meanders, filtered by a rule tree and sorted by any shape field or characteristic. */

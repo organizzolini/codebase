@@ -22,14 +22,14 @@
     "typescript-eslint": "catalog:"
   },
   "exports": {
-    "./callidescope.config": "./callidescope.config.ts",
-    "./codependix.config": "./codependix.config.ts",
-    "./codometer.config": "./codometer.config.ts",
-    "./coinagerie.config": "./coinagerie.config.ts",
+    "./callidescope.config": "./ic-suite/callidescope.config.ts",
+    "./codependix.config": "./ic-suite/codependix.config.ts",
+    "./codometer.config": "./ic-suite/codometer.config.ts",
+    "./coinagerie.config": "./ic-suite/coinagerie.config.ts",
     "./eslint.config": "./eslint.config.ts",
     "./package.json": "./package.json",
     "./tsconfig.json": "./tsconfig.json",
-    "./vitest.config": "./vitest.config.ts"
+    "./vitest.config": "./typescript/vitest.config.ts"
   },
   "license": "MIT",
   "name": "@codebase/configuration",

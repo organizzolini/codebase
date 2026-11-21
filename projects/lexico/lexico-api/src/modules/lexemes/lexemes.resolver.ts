@@ -1,11 +1,11 @@
 import { Inject } from "@nestjs/common";
 import { Args as Arguments, Query, Resolver } from "@nestjs/graphql";
 
-import { LexemeArguments } from "./lexeme-arguments.entities";
-import { LexemeType } from "./lexeme.entities";
-import { LexemesArguments } from "./lexemes-arguments.entities";
 import { LexemesService } from "./lexemes.service";
 import { toLexemeType } from "./lexemes.utilities";
+import { LexemeArguments } from "./modules/lexeme-queries/lexeme-arguments.entities";
+import { LexemeType } from "./modules/lexeme-queries/lexeme.entities";
+import { LexemesArguments } from "./modules/lexeme-queries/lexemes-arguments.entities";
 
 /**
  * GraphQL resolver exposing dictionary lexeme queries.

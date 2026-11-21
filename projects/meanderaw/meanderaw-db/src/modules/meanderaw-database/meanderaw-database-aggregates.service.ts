@@ -2,14 +2,14 @@ import { Injectable } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 
-import { AggregateMarker } from "./entities/aggregate-marker.entity";
-import { CharacteristicPairCount } from "./entities/characteristic-pair-count.entity";
-import { CharacteristicShapeCount } from "./entities/characteristic-shape-count.entity";
-import { CharacteristicValueCount } from "./entities/characteristic-value-count.entity";
-import { Characteristic } from "./entities/characteristic.entity";
-import { MeanderCharacteristic } from "./entities/meander-characteristic.entity";
-import { Meander } from "./entities/meander.entity";
-import { ShapeCount } from "./entities/shape-count.entity";
+import { AggregateMarker } from "./modules/aggregate/aggregate-marker.entity";
+import { CharacteristicPairCount } from "./modules/aggregate/characteristic-pair-count.entity";
+import { CharacteristicShapeCount } from "./modules/aggregate/characteristic-shape-count.entity";
+import { CharacteristicValueCount } from "./modules/aggregate/characteristic-value-count.entity";
+import { ShapeCount } from "./modules/aggregate/shape-count.entity";
+import { Characteristic } from "./modules/characteristic/characteristic.entity";
+import { MeanderCharacteristic } from "./modules/characteristic/meander-characteristic.entity";
+import { Meander } from "./modules/meander/meander.entity";
 
 import type { EntityManager } from "typeorm";
 

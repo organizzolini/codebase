@@ -8,9 +8,7 @@ import { createJiti } from "jiti";
 
 import {
   codependixConfigurationSchema,
-  CONFIGURATION_FILE_NAMES,
   ConfigurationFileNotFoundError,
-  REPOSITORY_ROOT_MARKERS,
   SUPPORTED_CONFIGURATION_EXTENSIONS,
   UnknownConfigurationFileTypeError,
 } from "./configuration.constants";
@@ -50,47 +48,6 @@ export class ConfigurationLoaderService {
   }
 
   // 🌎 Public Methods
-
-  /**
-   * Looks for a project's own configuration file at its root only, never upward, which would find the workspace's.
-   */
-  public findProjectConfigurationFile(projectRoot: string): string | undefined {
-    for (const fileName of CONFIGURATION_FILE_NAMES) {
-      const candidatePath = path.join(projectRoot, fileName);
-
-      if (existsSync(candidatePath)) {
-        return candidatePath;
-      }
-    }
-
-    return undefined;
-  }
-
-  /**
-   * Walks upward from the cwd to the workspace root, so a task runner's nested cwd still resolves configuration paths.
-   */
-  public findWorkspaceRoot(): string | undefined {
-    let candidateDirectory = path.resolve(process.cwd());
-
-    for (;;) {
-      const directory = candidateDirectory;
-      const isRoot = REPOSITORY_ROOT_MARKERS.some((marker) =>
-        existsSync(path.join(directory, marker)),
-      );
-
-      if (isRoot) {
-        return candidateDirectory;
-      }
-
-      const parentDirectory = path.dirname(candidateDirectory);
-
-      if (parentDirectory === candidateDirectory) {
-        return undefined;
-      }
-
-      candidateDirectory = parentDirectory;
-    }
-  }
 
   /** Loads a configuration module, choosing the reader by extension. */
   public async loadConfigurationModule(args: {
@@ -137,26 +94,30 @@ export class ConfigurationLoaderService {
     );
   }
 
-  /** Resolves a configuration path against the cwd, then the workspace root. */
+  /** Resolves a configuration path against the cwd alone, and refuses a path naming no file. */
   public resolveConfigurationPath(configurationPath: string): string {
     const absolutePath = path.resolve(configurationPath);
 
-    if (existsSync(absolutePath)) {
-      return absolutePath;
-    }
-
-    const workspaceRoot = this.findWorkspaceRoot();
-
-    if (workspaceRoot === undefined) {
+    if (!existsSync(absolutePath)) {
       throw new ConfigurationFileNotFoundError(absolutePath);
     }
 
-    const rootRelativePath = path.resolve(workspaceRoot, configurationPath);
+    return absolutePath;
+  }
 
-    if (!existsSync(rootRelativePath)) {
-      throw new ConfigurationFileNotFoundError(absolutePath);
-    }
+  /**
+   * Resolves a project's configuration file from its root and the configured relative path.
+   * Nothing else is tried: a project may have none, so no file there is `undefined`.
+   */
+  public resolveProjectConfigurationFile(args: {
+    projectConfigurationPath: string;
+    projectRoot: string;
+  }): string | undefined {
+    const resolvedPath = path.resolve(
+      args.projectRoot,
+      args.projectConfigurationPath,
+    );
 
-    return rootRelativePath;
+    return existsSync(resolvedPath) ? resolvedPath : undefined;
   }
 }

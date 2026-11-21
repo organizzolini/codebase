@@ -3,8 +3,8 @@ import { parentPort } from "node:worker_threads";
 
 import { NestFactory } from "@nestjs/core";
 
-import { DrawWorkerModule } from "./modules/draw/draw-worker.module";
-import { DrawWorkerService } from "./modules/draw/draw-worker.service";
+import { DrawWorkerModule } from "./modules/draw/modules/pool/draw-worker.module";
+import { DrawWorkerService } from "./modules/draw/modules/pool/draw-worker.service";
 
 import type {
   DrawWorkerReply,

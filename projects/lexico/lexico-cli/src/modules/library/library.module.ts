@@ -4,12 +4,12 @@ import { LoggerModule } from "@codebase/observability";
 
 import { LibraryCommand } from "./library.command";
 import { LIBRARY_PROVIDERS_TOKEN } from "./library.constants";
-import { CorpusScriptorumEcclesiasticorumLatinorumLibraryProvider } from "./providers/corpus-scriptorum-ecclesiasticorum-latinorum-library.provider";
-import { EpigraphikDatenbankClaussSlabyLibraryProvider } from "./providers/epigraphik-datenbank-clauss-slaby-library.provider";
-import { LatinLibraryBuilder } from "./providers/latin-library.builder";
-import { LatinLibraryProvider } from "./providers/latin-library.provider";
-import { PerseusLibraryTextExtractionProvider } from "./providers/perseus-library-text-extraction.provider";
-import { PerseusLibraryProvider } from "./providers/perseus-library.provider";
+import { CorpusScriptorumEcclesiasticorumLatinorumLibraryService } from "./modules/corpus-scriptorum-ecclesiasticorum-latinorum/corpus-scriptorum-ecclesiasticorum-latinorum-library.service";
+import { EpigraphikDatenbankClaussSlabyLibraryService } from "./modules/epigraphik-datenbank-clauss-slaby/epigraphik-datenbank-clauss-slaby-library.service";
+import { LatinLibraryBuilderService } from "./modules/latin-library/latin-library-builder.service";
+import { LatinLibraryService } from "./modules/latin-library/latin-library.service";
+import { PerseusLibraryTextExtractionService } from "./modules/perseus/perseus-library-text-extraction.service";
+import { PerseusLibraryService } from "./modules/perseus/perseus-library.service";
 
 import type { LibrarySourceProvider } from "./library.types";
 
@@ -22,25 +22,25 @@ import type { LibrarySourceProvider } from "./library.types";
   imports: [LoggerModule],
   providers: [
     LibraryCommand,
-    CorpusScriptorumEcclesiasticorumLatinorumLibraryProvider,
-    EpigraphikDatenbankClaussSlabyLibraryProvider,
-    LatinLibraryBuilder,
-    LatinLibraryProvider,
-    PerseusLibraryProvider,
-    PerseusLibraryTextExtractionProvider,
+    CorpusScriptorumEcclesiasticorumLatinorumLibraryService,
+    EpigraphikDatenbankClaussSlabyLibraryService,
+    LatinLibraryBuilderService,
+    LatinLibraryService,
+    PerseusLibraryService,
+    PerseusLibraryTextExtractionService,
     {
       inject: [
-        CorpusScriptorumEcclesiasticorumLatinorumLibraryProvider,
-        EpigraphikDatenbankClaussSlabyLibraryProvider,
-        LatinLibraryProvider,
-        PerseusLibraryProvider,
+        CorpusScriptorumEcclesiasticorumLatinorumLibraryService,
+        EpigraphikDatenbankClaussSlabyLibraryService,
+        LatinLibraryService,
+        PerseusLibraryService,
       ],
       provide: LIBRARY_PROVIDERS_TOKEN,
       useFactory: (
-        corpusScriptorumEcclesiasticorumLatinorum: CorpusScriptorumEcclesiasticorumLatinorumLibraryProvider,
-        epigraphikDatenbankClaussSlaby: EpigraphikDatenbankClaussSlabyLibraryProvider,
-        latinLibrary: LatinLibraryProvider,
-        perseus: PerseusLibraryProvider,
+        corpusScriptorumEcclesiasticorumLatinorum: CorpusScriptorumEcclesiasticorumLatinorumLibraryService,
+        epigraphikDatenbankClaussSlaby: EpigraphikDatenbankClaussSlabyLibraryService,
+        latinLibrary: LatinLibraryService,
+        perseus: PerseusLibraryService,
       ): LibrarySourceProvider[] => {
         return [
           corpusScriptorumEcclesiasticorumLatinorum,

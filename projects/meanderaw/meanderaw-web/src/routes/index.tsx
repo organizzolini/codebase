@@ -6,30 +6,30 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, useMemo } from "react";
 
-import { GalleryError } from "../components/gallery-error/gallery-error";
-import { sanitizeRows } from "../components/gallery-filter-builder/filter-rows.utilities";
-import { DEFAULT_ROWS_FILTER } from "../components/gallery-filter-builder/gallery-filter-builder.constants";
+import { GalleryError } from "../components/gallery/gallery-error/gallery-error";
+import { sanitizeRows } from "../components/gallery/gallery-filter-builder/filter-rows.utilities";
+import { DEFAULT_ROWS_FILTER } from "../components/gallery/gallery-filter-builder/gallery-filter-builder.constants";
 import {
   createFilterFields,
   sanitizeFilter,
   toFilterInput,
-} from "../components/gallery-filter-builder/gallery-filter-builder.utilities";
-import { GalleryFilters } from "../components/gallery-filters/gallery-filters";
-import { GalleryGroupBy } from "../components/gallery-group-by/gallery-group-by";
+} from "../components/gallery/gallery-filter-builder/gallery-filter-builder.utilities";
+import { GalleryFilters } from "../components/gallery/gallery-filters/gallery-filters";
+import { GalleryGroupBy } from "../components/gallery/gallery-group-by/gallery-group-by";
 import {
   createGroupFields,
   resolveGrouping,
-} from "../components/gallery-group-by/gallery-group-by.utilities";
-import { GalleryRepeats } from "../components/gallery-repeats/gallery-repeats";
-import { GallerySort } from "../components/gallery-sort/gallery-sort";
-import { resolveSortField } from "../components/gallery-sort/gallery-sort.utilities";
-import { GalleryToolbar } from "../components/gallery-toolbar/gallery-toolbar";
-import { GroupedGallery } from "../components/grouped-gallery/grouped-gallery";
-import { MeanderGallery } from "../components/meander-gallery/meander-gallery";
+} from "../components/gallery/gallery-group-by/gallery-group-by.utilities";
+import { GalleryRepeats } from "../components/gallery/gallery-repeats/gallery-repeats";
+import { GallerySort } from "../components/gallery/gallery-sort/gallery-sort";
+import { resolveSortField } from "../components/gallery/gallery-sort/gallery-sort.utilities";
+import { GalleryToolbar } from "../components/gallery/gallery-toolbar/gallery-toolbar";
+import { GroupedGallery } from "../components/gallery/grouped-gallery/grouped-gallery";
+import { MeanderGallery } from "../components/gallery/meander-gallery/meander-gallery";
 import {
   findCharacteristics,
   findGallery,
-} from "../components/meander-gallery/meanders-api.utilities";
+} from "../components/gallery/meander-gallery/meanders-api.utilities";
 import { useGallerySearch } from "../hooks/use-gallery-search/use-gallery-search";
 import {
   DEFAULT_REPEATS,
@@ -39,12 +39,12 @@ import {
 import { toSortInput } from "../hooks/use-gallery-search/use-gallery-search.utilities";
 import { useMeanders } from "../hooks/use-meanders/use-meanders";
 
-import type { GroupField } from "../components/gallery-group-by/gallery-group-by.types";
+import type { GroupField } from "../components/gallery/gallery-group-by/gallery-group-by.types";
 import type {
   GalleryCharacteristic,
   GalleryGroup,
   MeandersPage,
-} from "../components/meander-gallery/meanders-api.types";
+} from "../components/gallery/meander-gallery/meanders-api.types";
 import type {
   MeanderFilterGroupInput,
   MeanderSortInput,

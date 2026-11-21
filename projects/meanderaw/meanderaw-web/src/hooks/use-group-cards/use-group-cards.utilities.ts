@@ -1,5 +1,5 @@
-import type { GroupCards } from "../../components/grouped-gallery/grouped-gallery.types";
-import type { MeandersPage } from "../../components/meander-gallery/meanders-api.types";
+import type { GroupCards } from "../../components/gallery/grouped-gallery/grouped-gallery.types";
+import type { MeandersPage } from "../../components/gallery/meander-gallery/meanders-api.types";
 
 // 🔏 Private Functions
 

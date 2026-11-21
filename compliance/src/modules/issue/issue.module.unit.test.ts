@@ -7,17 +7,17 @@ import {
   expectModuleProvides,
 } from "@codebase/testing/nestjs";
 
-import { IssueAssigningService } from "./issue-assigning.service";
-import { IssueAuditService } from "./issue-audit.service";
-import { IssueGithubService } from "./issue-github.service";
-import { IssueLabelingService } from "./issue-labeling.service";
-import { IssueLabelsService } from "./issue-labels.service";
-import { IssueMetadataTypeService } from "./issue-metadata-type.service";
-import { IssueMetadataService } from "./issue-metadata.service";
-import { IssuePlanService } from "./issue-plan.service";
 import { IssueReportService } from "./issue-report.service";
 import { IssueCommand } from "./issue.command";
 import { IssueModule } from "./issue.module";
+import { IssueAssigningService } from "./modules/assignees/issue-assigning.service";
+import { IssueAuditService } from "./modules/audit/issue-audit.service";
+import { IssuePlanService } from "./modules/audit/issue-plan.service";
+import { IssueGithubService } from "./modules/github/issue-github.service";
+import { IssueLabelingService } from "./modules/labels/issue-labeling.service";
+import { IssueLabelsService } from "./modules/labels/issue-labels.service";
+import { IssueMetadataTypeService } from "./modules/metadata/issue-metadata-type.service";
+import { IssueMetadataService } from "./modules/metadata/issue-metadata.service";
 
 describe(IssueModule, () => {
   it("imports the logger", () => {

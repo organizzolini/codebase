@@ -12,13 +12,13 @@ import { CharacteristicsModule } from "../characteristics/characteristics.module
 import { CorpusModule } from "../corpus/corpus.module";
 import { EnumerationModule } from "../enumeration/enumeration.module";
 
-import { DrawCodeService } from "./draw-code.service";
-import { DrawEnumerationService } from "./draw-enumeration.service";
-import { DrawIndexService } from "./draw-index.service";
-import { DrawPoolService } from "./draw-pool.service";
-import { DrawRecordService } from "./draw-record.service";
-import { DrawWorkerService } from "./draw-worker.service";
 import { DrawCommand } from "./draw.command";
+import { DrawCodeService } from "./modules/enumeration/draw-code.service";
+import { DrawEnumerationService } from "./modules/enumeration/draw-enumeration.service";
+import { DrawRecordService } from "./modules/enumeration/draw-record.service";
+import { DrawIndexService } from "./modules/index/draw-index.service";
+import { DrawPoolService } from "./modules/pool/draw-pool.service";
+import { DrawWorkerService } from "./modules/pool/draw-worker.service";
 
 /**
  * Registers the `draw` command and the services it runs: enumeration,

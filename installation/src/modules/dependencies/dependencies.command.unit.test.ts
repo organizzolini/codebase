@@ -23,7 +23,7 @@ import type { ProcessOptions } from "../process-runner/process-runner.types";
 const INSTALL_STEPS = [
   "pnpm install",
   "nx reset",
-  "uv sync --project configuration",
+  "uv sync --project configuration/python",
   "terraform init",
 ];
 const CREDENTIALS = [

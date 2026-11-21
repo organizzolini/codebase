@@ -11,14 +11,14 @@ import { createConnection, createEdge } from "@codebase/interface";
 import { Lexeme } from "@codebase/lexico-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { LexemeType } from "../lexemes/lexeme.entities";
 import { ORPHANED_GRAPHQL_TYPES } from "../lexemes/lexemes.constants";
+import { LexemeType } from "../lexemes/modules/lexeme-queries/lexeme.entities";
 
 import {
   LexemeSearchConnection,
   LexemeSearchResult,
   SearchMatchSource,
-} from "./search.entities";
+} from "./modules/search-results/search.entities";
 import { SearchResolver } from "./search.resolver";
 import { SearchService } from "./search.service";
 

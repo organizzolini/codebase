@@ -10,13 +10,10 @@ export const TYPESCRIPT_IMPORT_GRAPH_MERMAID_HEADER = "graph LR";
 export const TYPESCRIPT_IMPORT_GRAPH_UNCONNECTED =
   "_This project has no internal file imports._";
 
-/** File name that marks a project as TypeScript. */
-export const TYPESCRIPT_PROJECT_CONFIG_FILE = "tsconfig.json";
-
 // 🚨 Errors
 
 /**
- * Raised when a project's `tsconfig.json` cannot be parsed.
+ * Raised when a project's tsconfig cannot be parsed.
  *
  * Parsing failures are fatal rather than skipped: a project silently dropped
  * from the export makes `codependix map --check` unable to tell a genuinely empty

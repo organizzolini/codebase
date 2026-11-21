@@ -49,7 +49,7 @@ except `pull-request-labels` — are **derivations**: committed files derived
 from configuration a pull request can also change, so `check` runs on a pull
 request and `write` runs on the default branch's release. The
 [🧑‍🔧 Lint Codebase](../../.github/workflows/lint-code.yml) workflow and
-[`configuration/lint-staged.config.ts`](../../configuration/lint-staged.config.ts)
+[`configuration/repository/lint-staged.config.ts`](../../configuration/lint-staged.config.ts)
 each name every derivation target directly alongside `lint-code` in one
 `nx affected` invocation, rather than reaching them through
 [`lint-code`](../../AGENTS.md#code-quality)'s `dependsOn` — Nx forwards an
@@ -72,23 +72,23 @@ target, on `opened`/`reopened`, and nothing else names it.
 
 ## What it synchronizes
 
-| Command                      | Source                                  | Destination                                                                                           |
-| ---------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `conformetry-generators`     | `configuration/conformetry.config.ts`   | The generator table in `AGENTS.md`, between marker comments                                           |
-| `conventional-config`        | `configuration/conventional.config.cjs` | The commit type and scope tables, commitlint, and release configuration                               |
-| `devcontainer-configuration` | `.devcontainer/local/devcontainer.json` | The shared fields of `.devcontainer/cloud/devcontainer.json`                                          |
-| `installed-skills`           | `skills-lock.json`                      | The installed skills in `.agents/skills/`, restored from their sources. Run by `postinstall`          |
-| `project-ports`              | Each `*-api` and `*-web` name           | The port in `vite.config.mts` or `.env.default`, and the lines about it in the domain folder          |
-| `pull-request-labels`        | `configuration/conventional.config.cjs` | This repository's `type:`, `scope:`, and `source:` labels on GitHub. Needs credentials                |
-| `pull-request-template`      | `.github/PULL_REQUEST_TEMPLATE.md`      | The template embedded in the PR skill files                                                           |
-| `skill-exclusions`           | `skills-lock.json`                      | Installed skills and their vendored files, in six tool files                                          |
-| `vscode-extensions`          | `.vscode/extensions.json`               | The `extensions`, `recommendations`, and `unwantedRecommendations` lists of both devcontainer configs |
-| `vscode-settings`            | `.vscode/settings.json`                 | The VS Code Machine settings in a devcontainer. Left out of `start`: only a devcontainer has them     |
+| Command                      | Source                                             | Destination                                                                                           |
+| ---------------------------- | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `conformetry-generators`     | `configuration/ic-suite/conformetry.config.ts`     | The generator table in `AGENTS.md`, between marker comments                                           |
+| `conventional-config`        | `configuration/repository/conventional.config.cjs` | The commit type and scope tables, commitlint, and release configuration                               |
+| `devcontainer-configuration` | `.devcontainer/local/devcontainer.json`            | The shared fields of `.devcontainer/cloud/devcontainer.json`                                          |
+| `installed-skills`           | `skills-lock.json`                                 | The installed skills in `.agents/skills/`, restored from their sources. Run by `postinstall`          |
+| `project-ports`              | Each `*-api` and `*-web` name                      | The port in `vite.config.mts` or `.env.default`, and the lines about it in the domain folder          |
+| `pull-request-labels`        | `configuration/repository/conventional.config.cjs` | This repository's `type:`, `scope:`, and `source:` labels on GitHub. Needs credentials                |
+| `pull-request-template`      | `.github/PULL_REQUEST_TEMPLATE.md`                 | The template embedded in the PR skill files                                                           |
+| `skill-exclusions`           | `skills-lock.json`                                 | Installed skills and their vendored files, in six tool files                                          |
+| `vscode-extensions`          | `.vscode/extensions.json`                          | The `extensions`, `recommendations`, and `unwantedRecommendations` lists of both devcontainer configs |
+| `vscode-settings`            | `.vscode/settings.json`                            | The VS Code Machine settings in a devcontainer. Left out of `start`: only a devcontainer has them     |
 
 ### Pull request labels
 
 `pull-request-labels` is the odd one out: its destination is GitHub rather than
-a file. It reads `configuration/conventional.config.cjs` and reconciles the
+a file. It reads `configuration/repository/conventional.config.cjs` and reconciles the
 repository's labels against it — every `type:<name>`, every lowercased
 `scope:<name>`, and the three `do-not-merge`, `source:agent`, and
 `source:human` labels that no configuration derives. It creates what is missing
@@ -134,7 +134,7 @@ reads has changed, and each caller decides for itself which targets belong in
 which invocation:
 
 - [🧑‍🔧 Lint Codebase](../../.github/workflows/lint-code.yml) and
-  [`configuration/lint-staged.config.ts`](../../configuration/lint-staged.config.ts)
+  [`configuration/repository/lint-staged.config.ts`](../../configuration/lint-staged.config.ts)
   each name every derivation target directly alongside `lint-code` in one
   `nx affected` invocation, so a pull request and a commit both check drift.
 - The release workflow runs every derivation's `write` configuration through

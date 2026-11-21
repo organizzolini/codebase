@@ -1,3 +1,5 @@
+import path from "node:path";
+
 import { createTree } from "nx/src/generators/testing-utils/create-tree";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -104,7 +106,10 @@ describe(syncGenerator, () => {
 
     expect(emitPlugin).toHaveBeenCalledWith(
       expect.objectContaining({
-        configurationPath: "elsewhere/conformetry.config.ts",
+        configurationPath: path.resolve(
+          tree.root,
+          "elsewhere/conformetry.config.ts",
+        ),
       }),
     );
   });
@@ -132,7 +137,10 @@ describe(syncGenerator, () => {
     });
 
     expect(emitPlugin).toHaveBeenCalledWith({
-      configurationPath: "custom/conformetry.config.ts",
+      configurationPath: path.resolve(
+        tree.root,
+        "custom/conformetry.config.ts",
+      ),
       outputPath: "custom/out",
       packageName: "@acme/conformetry-nx",
       projects: [],

@@ -2,14 +2,14 @@ import { describe, expect, it } from "vitest";
 
 import { environmentSchema } from "./lexico-api.constants";
 
-describe("lexico api end-to-end suite", () => {
+describe("lexico-api end-to-end suite", () => {
   describe("environment schema e2e", () => {
     it("applies defaults for an empty config", () => {
       expect.hasAssertions();
       expect(environmentSchema.parse({})).toStrictEqual({
-        LEXICO_API_CORS_ORIGINS: ["http://localhost:7797"],
+        LEXICO_API_CORS_ORIGINS: [],
         LEXICO_API_LIGHTSHIP_PORT: 9000,
-        LEXICO_API_PORT: 5003,
+        LEXICO_API_PORT: 3000,
         LEXICO_POSTGRES_DATABASE: "lexico_development",
         LEXICO_POSTGRES_HOST: "localhost",
         LEXICO_POSTGRES_PASSWORD: "lexico_password",
@@ -34,6 +34,16 @@ describe("lexico api end-to-end suite", () => {
         LEXICO_POSTGRES_USERNAME: "lexico_username",
       });
       expect(environment).not.toHaveProperty("POSTGRES_DB");
+    });
+
+    it("splits and trims the listed CORS origins", () => {
+      expect.hasAssertions();
+      expect(
+        environmentSchema.parse({
+          LEXICO_API_CORS_ORIGINS:
+            " https://app.example.com , ,https://admin.example.com",
+        }).LEXICO_API_CORS_ORIGINS,
+      ).toStrictEqual(["https://app.example.com", "https://admin.example.com"]);
     });
 
     it("splits comma-separated CORS origins and drops blank entries", () => {

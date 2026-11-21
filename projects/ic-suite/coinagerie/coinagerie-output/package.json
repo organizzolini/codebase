@@ -6,7 +6,8 @@
   "dependencies": {
     "@coinagerie/configuration": "workspace:*",
     "@coinagerie/core": "workspace:*",
-    "@nestjs/common": "catalog:ic-suite"
+    "@nestjs/common": "catalog:ic-suite",
+    "reflect-metadata": "catalog:"
   },
   "description": "Renders and parses the markdown and JSON glossaries and compares them with the vocabulary of a codebase",
   "devDependencies": {
@@ -17,7 +18,6 @@
     "@swc/helpers": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "reflect-metadata": "catalog:",
     "vitest": "catalog:"
   },
   "exports": {
@@ -64,5 +64,5 @@
     "strict": true
   },
   "types": "src/index.ts",
-  "version": "0.0.23"
+  "version": "0.0.27"
 }

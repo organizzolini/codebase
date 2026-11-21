@@ -1,7 +1,7 @@
 import type {
   GroupCards,
   GroupLeaf,
-} from "../../components/grouped-gallery/grouped-gallery.types";
+} from "../../components/gallery/grouped-gallery/grouped-gallery.types";
 
 // 🏷️ Types
 

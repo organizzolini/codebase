@@ -17,12 +17,12 @@ import { AggregateCommand } from "../src/modules/aggregate/aggregate.command";
 import { CharacteristicsModule } from "../src/modules/characteristics/characteristics.module";
 import { CharacteristicsService } from "../src/modules/characteristics/characteristics.service";
 import { CorpusService } from "../src/modules/corpus/corpus.service";
-import { DrawEnumerationService } from "../src/modules/draw/draw-enumeration.service";
-import { DrawIndexService } from "../src/modules/draw/draw-index.service";
-import { DrawPoolService } from "../src/modules/draw/draw-pool.service";
-import { DrawRecordService } from "../src/modules/draw/draw-record.service";
-import { DrawWorkerService } from "../src/modules/draw/draw-worker.service";
 import { DrawCommand } from "../src/modules/draw/draw.command";
+import { DrawEnumerationService } from "../src/modules/draw/modules/enumeration/draw-enumeration.service";
+import { DrawRecordService } from "../src/modules/draw/modules/enumeration/draw-record.service";
+import { DrawIndexService } from "../src/modules/draw/modules/index/draw-index.service";
+import { DrawPoolService } from "../src/modules/draw/modules/pool/draw-pool.service";
+import { DrawWorkerService } from "../src/modules/draw/modules/pool/draw-worker.service";
 import { EnumerationModule } from "../src/modules/enumeration/enumeration.module";
 import { EnumerationService } from "../src/modules/enumeration/enumeration.service";
 

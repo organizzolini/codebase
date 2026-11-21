@@ -15,7 +15,7 @@ import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { InventoriedTemplate } from "@conformetry/core";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
-const CONFIGURATION_PATH = "configuration/conformetry.config.ts";
+const CONFIGURATION_PATH = "configuration/ic-suite/conformetry.config.ts";
 
 /** Discovery reports absolute paths, so the fixtures do too. */
 const GEARS_PATH = path.join(

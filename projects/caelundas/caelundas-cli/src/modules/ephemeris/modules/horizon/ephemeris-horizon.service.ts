@@ -1,0 +1,121 @@
+import { Injectable } from "@nestjs/common";
+import { azalt } from "sweph";
+
+import {
+  ECLIPTIC_TO_HORIZONTAL_FLAG,
+  KILOMETERS_PER_ASTRONOMICAL_UNIT,
+  radiusKilometersByHorizonBody,
+} from "../../ephemeris.constants";
+import { EphemerisCoordinateService } from "../coordinates/ephemeris-coordinate.service";
+import { EphemerisTimeService } from "../time/ephemeris-time.service";
+
+import type {
+  AzimuthElevationEphemeris,
+  AzimuthElevationEphemerisBody,
+  HorizonPosition,
+} from "../../ephemeris.types";
+import type { Moment } from "moment-timezone";
+
+/**
+ * Horizontal coordinate (azimuth, elevation) calculations for observer-relative positions.
+ */
+@Injectable()
+export class EphemerisHorizonService {
+  // 🏗 Dependency Injection
+
+  constructor(
+    private readonly coordinate: EphemerisCoordinateService,
+    private readonly time: EphemerisTimeService,
+  ) {}
+
+  // 🔐 Private Fields
+
+  // 🔑 Public Fields
+
+  // 🔏 Private Methods
+
+  // 🌎 Public Methods
+
+  /**
+   * Minute-by-minute azimuth and apparent elevation for a body at the observer's
+   * location; azimuth runs clockwise from North.
+   */
+  public computeAzimuthElevationForBody(args: {
+    body: AzimuthElevationEphemerisBody;
+    end: Moment;
+    observerLatitude: number;
+    observerLongitude: number;
+    start: Moment;
+  }): AzimuthElevationEphemeris {
+    const { body, end, observerLatitude, observerLongitude, start } = args;
+    const ephemeris: AzimuthElevationEphemeris = {};
+    for (const date of this.time.generateMinutes(start, end)) {
+      const { julianDayEphemerisTime, julianDayUniversalTime } =
+        this.time.dateToJulianDays(date);
+      ephemeris[date.toISOString()] = this.computeAzimuthElevationForMinute({
+        body,
+        julianDayEphemerisTime,
+        julianDayUniversalTime,
+        observerLatitude,
+        observerLongitude,
+      });
+    }
+    return ephemeris;
+  }
+
+  /**
+   * Horizontal coordinates for a body at one moment, with parallax applied;
+   * Swiss Ephemeris measures azimuth from South, so it is turned to North.
+   */
+  public computeAzimuthElevationForMinute(args: {
+    body: AzimuthElevationEphemerisBody;
+    julianDayEphemerisTime: number;
+    julianDayUniversalTime: number;
+    observerLatitude: number;
+    observerLongitude: number;
+  }): HorizonPosition {
+    const {
+      body,
+      julianDayEphemerisTime,
+      julianDayUniversalTime,
+      observerLatitude,
+      observerLongitude,
+    } = args;
+    const { distance, latitude, longitude } =
+      this.coordinate.getTopocentricBodyCoordinates({
+        body,
+        julianDayEphemerisTime,
+        observerLatitude,
+        observerLongitude,
+      });
+    const azaltResult = azalt(
+      julianDayUniversalTime,
+      ECLIPTIC_TO_HORIZONTAL_FLAG,
+      [observerLongitude, observerLatitude, 0],
+      0,
+      0,
+      [longitude, latitude, distance],
+    );
+    return {
+      azimuth: (azaltResult[0] + 180) % 360,
+      eclipticLatitude: latitude,
+      eclipticLongitude: longitude,
+      elevation: azaltResult[2],
+      semidiameter: this.computeSemidiameter({ body, distance }),
+      trueElevation: azaltResult[1],
+    };
+  }
+
+  /**
+   * Computes the Sun's or the Moon's angular radius, in degrees, from its distance in AU.
+   */
+  public computeSemidiameter(args: {
+    body: AzimuthElevationEphemerisBody;
+    distance: number;
+  }): number {
+    const { body, distance } = args;
+    const radius = radiusKilometersByHorizonBody[body];
+    const distanceKilometers = distance * KILOMETERS_PER_ASTRONOMICAL_UNIT;
+    return (Math.asin(radius / distanceKilometers) * 180) / Math.PI;
+  }
+}

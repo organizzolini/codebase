@@ -62,7 +62,7 @@ twelve words against a maximum of five breaches — which is why the maxima are
 separate fields rather than one `maximum` steered by a `unit`. But both
 maxima belong to **one counter**, so a block that breaches either is one
 breach, not two: the counter's `custom.YAML Comment Budget` metric counts 1,
-with one instance at `yaml/pipeline.yaml:2`, measured at 12 — the words
+with one instance at `configuration/yaml/pipeline.yaml:2`, measured at 12 — the words
 figure that broke its budget.
 
 Both kinds of budget — one naming `kind`, one naming `language` — reach the
@@ -104,12 +104,12 @@ codometer --config ../documentation/comments.config.ts --format json
 ```
 
 Six more read exactly the same way, one instance apiece:
-`custom.HCL Comment Budget` at `hcl/network.tf:1` measured 12,
+`custom.HCL Comment Budget` at `configuration/hcl/network.tf:1` measured 12,
 `custom.Python Comment Budget` at `python/inventory.py:7` measured 10,
 `custom.Shell Comment Budget` at `shell/release.sh:2` measured 11,
 `custom.SQL Comment Budget` at `sql/reporting.sql:1` measured 7,
-`custom.TOML Comment Budget` at `toml/service.toml:1` measured 5, and
-`custom.YAML Comment Budget` at `yaml/pipeline.yaml:2` measured 12.
+`custom.TOML Comment Budget` at `configuration/toml/service.toml:1` measured 5, and
+`custom.YAML Comment Budget` at `configuration/yaml/pipeline.yaml:2` measured 12.
 `custom.TypeScript Comment Budget` is the one that holds, at `value: 0` with an
 empty `instances`.
 

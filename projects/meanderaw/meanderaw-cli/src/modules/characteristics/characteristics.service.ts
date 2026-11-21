@@ -14,7 +14,7 @@ import {
   NUMERIC_CHARACTERISTIC_KEYS,
   PATTERN_CHARACTERISTIC_KEY_SET,
 } from "./characteristics.constants";
-import { TileCrossingComponentDeltaCountCharacteristicService } from "./path/tile-crossing/tile-crossing-component-delta-count-characteristic.service";
+import { TileCrossingComponentDeltaCountCharacteristicService } from "./modules/path/modules/tile-crossing/tile-crossing-component-delta-count-characteristic.service";
 
 import type {
   BooleanCharacteristicKey,

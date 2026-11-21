@@ -1,6 +1,8 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { exampleDirectory } from "./reading-order";
+
 // ♟️ Constants
 
 /** This package's root, resolved from this file, not the cwd. */
@@ -13,8 +15,9 @@ export const PROJECT_ROOT_DIRECTORY = path.resolve(
 export const EXAMPLES_DIRECTORY = path.join(PROJECT_ROOT_DIRECTORY, "examples");
 
 /** Resolves one example subject's absolute root. */
-export const resolveExample = (...segments: string[]): string =>
-  path.join(EXAMPLES_DIRECTORY, ...segments);
+export const resolveExample = (
+  ...[id, ...segments]: [id: string, ...segments: string[]]
+): string => path.join(EXAMPLES_DIRECTORY, exampleDirectory(id), ...segments);
 
 /** Anchor-name prefix; examples must never print real `codependix-*` names. */
 export const EXAMPLE_ANCHOR_PREFIX = "example";

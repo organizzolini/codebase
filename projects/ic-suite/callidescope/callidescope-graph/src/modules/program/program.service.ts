@@ -21,7 +21,7 @@ import type {
 } from "./program.types";
 
 /**
- * Turns each project's `tsconfig.json` into a program and a type checker.
+ * Turns each project's tsconfig into a program and a type checker.
  *
  * One program per project, not one merged program, is a correctness decision.
  * Projects disagree about `jsx`, `lib`, `types`, and `paths`; merging them changes

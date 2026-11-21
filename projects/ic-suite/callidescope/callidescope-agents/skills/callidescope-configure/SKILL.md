@@ -30,8 +30,8 @@ leaves every committed report exactly as it found it.
 | Flag                                                                                                                          | Meaning                                                                                                                                                                                 |
 | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `-a, --addresses`                                                                                                             | Comma-separated callable addresses, each `<file>#<qualified-name>`. `depth` and `breadth` only. Prompted for when omitted                                                               |
-| `--config`                                                                                                                    | Required. Path to the workspace `callidescope.config.ts`. Never searched for; omitting it is refused naming the flag                                                                    |
-| `-d, --directories`                                                                                                           | Comma-separated project directories to trace, each holding its own `tsconfig.json`                                                                                                      |
+| `--config`                                                                                                                    | Required. Path to the workspace configuration file, relative to the working directory. Never searched for; omitting it is refused naming the flag                                       |
+| `-d, --directories`                                                                                                           | Comma-separated project directories to trace, each holding a tsconfig at `projectTsconfigPath`                                                                                          |
 | `--entry-point-addresses`, `--entry-point-decorators`, `--include-exported-functions`, `--include-orphans`, `--include-tests` | Override the matching `entryPoints` field. The two lists are comma-separated; the three switches take `true` or `false`, or the bare flag for `true`                                    |
 | `--exclude`, `--exclude-callees`                                                                                              | Comma-separated globs and callee patterns, overriding the **authored** field. The tool's own default exclusions are folded back in, exactly as they are under a configured `exclude`    |
 | `-f, --format`                                                                                                                | `markdown`, `mermaid`, or `json`, for what it prints. Markdown by default. Anything else is refused rather than rewritten. Command-line only — no configuration field corresponds to it |
@@ -59,9 +59,8 @@ one place, `FlagResolutionService`, under one rule:
 `--check`, `--write`, and `--format` are mode or presentation and are never
 written into the configuration. `--config` is neither: it is **required**, never
 defaulted or searched for, and chooses the file everything else is resolved
-against, so it has done its whole job before the rest of resolution runs.
-Every other flag is an override, and an
-override answers a question the configuration already asked: a path flag
+against, so it has done its whole job before the rest of resolution runs. Every
+other flag is an override, answering a question the configuration already asked: a path flag
 replaces only the `path` of a destination already declared, keeping its
 heading, description, anchors, and hooks; `--maximum-breadth` cannot conjure a
 limit a project's own file left unset, the same way `--json` cannot conjure a
@@ -97,7 +96,7 @@ depth reads source and needs no build, which is what keeps it cheap enough for
 a commit hook.
 
 ```bash
-npx callidescope --config configuration/callidescope.config.ts --check depth
+npx callidescope --config configuration/ic-suite/callidescope.config.ts --check depth
 ```
 
 **In an Nx workspace, prefer the per-project `gate` target to this flag.** A
@@ -116,7 +115,7 @@ drift they did not cause. Publish on the default branch instead, where nothing
 else competes to rewrite the same block:
 
 ```bash
-npx callidescope --config configuration/callidescope.config.ts --write
+npx callidescope --config configuration/ic-suite/callidescope.config.ts --write
 ```
 
 `--write --check reports` is **refused outright**: a report cannot be stale in
@@ -128,20 +127,15 @@ branch.
 ### `--directories`, and why a run is slow without it
 
 The difference between a whole-workspace analysis and a check that finishes in
-seconds. Each directory named needs its own `tsconfig.json`, and the programs
-built are those plus every project they transitively import, so a call into a
-dependency still resolves to a real frame:
+seconds. Each directory named needs a tsconfig at the workspace's `projectTsconfigPath`, and the programs built are those plus every project they transitively import, so a call into a dependency still resolves to a real frame:
 
 ```bash
-npx callidescope --config configuration/callidescope.config.ts -d packages/foo,packages/bar --check depth
+npx callidescope --config configuration/ic-suite/callidescope.config.ts -d packages/foo,packages/bar --check depth
 ```
 
-Omit it and callidescope walks the working directory for every `tsconfig.json`
-it finds — the workspace-wide picture, not an answer about one package.
+Omit it and callidescope walks the working directory for every directory holding a file at `projectTsconfigPath` — the workspace-wide picture, not an answer about one package.
 
-It takes **paths**, not project names: callidescope knows nothing of workspace
-tooling, and a directory holding a `tsconfig.json` is the whole contract. The
-same list can be set once as `directories` in the workspace configuration file.
+It takes **paths**, not project names: callidescope knows nothing of workspace tooling, and a directory holding a tsconfig at `projectTsconfigPath` is the whole contract. The same list can be set once as `directories` in the workspace configuration file.
 
 There is a real trade-off when narrowing a `breadth` lookup: **callers outside
 the named directories and the closure below them do not exist to the run**,
@@ -186,27 +180,30 @@ an argument would read as a green one.
 
 ## The workspace configuration file
 
-Any of `callidescope.config.{ts,mts,cts,js,mjs,cjs,json,jsonc}`, TypeScript
-first because it gets type checking. This is the **workspace** configuration,
-the file a run is pointed at with the required `--config` (an Nx target's
-`configuration`, the plugin's `configurationPath`), never searched for: `configuration/callidescope.config.ts` here.
+A `.ts` (preferred, for type checking), `.mts`, `.cts`, `.js`, `.mjs`, `.cjs`,
+`.json`, or `.jsonc` file. The **workspace** configuration is the file a run is
+pointed at with the required `--config` (an Nx target's `configuration`, the
+plugin's `configurationPath`), never searched for: `configuration/ic-suite/callidescope.config.ts`.
 
 ```ts
 import { type CallidescopeConfiguration } from "@callidescope/configuration";
 
 const callidescopeConfiguration: CallidescopeConfiguration = {
-  excludeFrom: ["configuration/.callidescopeignore"],
+  excludeFrom: ["configuration/ic-suite/.callidescopeignore"],
   limits: { maximumDepth: 6 },
+  projectConfigurationPath: "configuration/callidescope.config.ts",
+  projectTsconfigPath: "tsconfig.json",
 };
 
 export default callidescopeConfiguration;
 ```
 
-The whole surface is seven top-level keys: `directories`, `entryPoints`,
-`exclude`, `excludeCallees`, `excludeFrom`, `limits`, and `write`. The
-workspace file also exports `projectDefaults` alongside its default export —
-a separate binding, not a member of this type — for a project's own
-`callidescope.config.ts` to spread.
+The whole surface is nine top-level keys: `directories`, `entryPoints`,
+`exclude`, `excludeCallees`, `excludeFrom`, `limits`, `write`, and the two
+required paths, `projectConfigurationPath` and `projectTsconfigPath` (workspace
+file only; the Nx plugin's options of the same names must equal them). The
+workspace file also exports `projectDefaults`, a separate binding, for each
+project file to spread.
 
 ### `limits`
 
@@ -312,7 +309,7 @@ Two tools, for two different questions:
 drops _edges_, and reaching for the first when you meant the second deletes
 real findings. Neither leaves the `ts.Program`: an excluded file is still
 compiled, a call into it becomes unfollowable rather than vanishing, and no
-`exclude` can un-project a directory holding a `tsconfig.json`. A project's own
+`exclude` can un-project a directory holding a tsconfig at `projectTsconfigPath`. A project's own
 `exclude` behaves the same way.
 
 ### `directories`
@@ -370,9 +367,10 @@ current.
 
 ## Every traced project's own configuration is required and complete
 
-A second `callidescope.config.ts` sits at each traced project's own root, the
-directory holding the `tsconfig.json` that makes it a project, found by name in
-that directory alone with no upward walk, in any of the same eight extensions.
+Each traced project (the directory holding a tsconfig at `projectTsconfigPath`) keeps a second
+file at the path `projectConfigurationPath` names, relative to that root, with
+no default, no name search, and no upward walk. Omitting it is refused by name,
+and the Nx plugin's option of the same name must equal it.
 
 **Every traced project has one, and every one of them is complete.** A traced
 project with no configuration file at all is refused by name, and so is a file
@@ -480,7 +478,7 @@ file it used to live in. The `limits` command is where it is reviewable as a
 set instead:
 
 ```bash
-npx callidescope limits --config configuration/callidescope.config.ts
+npx callidescope limits --config configuration/ic-suite/callidescope.config.ts
 ```
 
 A markdown table, one row per project per limit — `Project`, `Limit`, `Value`,

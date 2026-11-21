@@ -8,9 +8,9 @@ import { type DrawRunFixture, startDrawRun } from "../../../testing/draw-run";
 import { meanderRecord } from "../../../testing/meanders";
 import { CHARACTERISTIC_KEYS } from "../characteristics/characteristics.constants";
 
-import { DrawCodeService } from "./draw-code.service";
-import { DrawEnumerationService } from "./draw-enumeration.service";
-import { DrawIndexService } from "./draw-index.service";
+import { DrawCodeService } from "./modules/enumeration/draw-code.service";
+import { DrawEnumerationService } from "./modules/enumeration/draw-enumeration.service";
+import { DrawIndexService } from "./modules/index/draw-index.service";
 
 import type { CharacteristicRecord } from "@codebase/meanderaw-db";
 

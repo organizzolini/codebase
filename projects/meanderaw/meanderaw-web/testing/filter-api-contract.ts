@@ -4,7 +4,7 @@ import type { MeanderFilterRuleInput } from "../src/graphql/generated/operations
 
 // The rules below mirror `meanderFilterRuleSchema` and
 // `meanderFilterGroupSchema` in meanderaw-api's
-// `modules/meanders/filters/meander-filter.constants.ts`, which an application
+// `modules/meanders/modules/filters/meander-filter.constants.ts`, which an application
 // cannot be imported from here. Keep them in step with it: a rule the builder
 // can write is a rule the API must accept. The mock API and the contract test
 // both judge by it.

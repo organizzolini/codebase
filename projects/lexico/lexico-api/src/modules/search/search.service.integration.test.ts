@@ -29,7 +29,7 @@ import {
 } from "../../../testing/database";
 import { MacronsService } from "../macrons/macrons.service";
 
-import { SearchMatchSource } from "./search.entities";
+import { SearchMatchSource } from "./modules/search-results/search.entities";
 import { SearchService } from "./search.service";
 
 import type { LexemeSearchMatch } from "./search.types";

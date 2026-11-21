@@ -2,10 +2,10 @@ import { Injectable } from "@nestjs/common";
 
 import { EdgesService } from "../edges/edges.service";
 
-import { BreadthService } from "./breadth.service";
-import { ComponentsService } from "./components.service";
-import { GraphDepthService } from "./graph-depth.service";
 import { GraphService } from "./graph.service";
+import { BreadthService } from "./modules/measurement/breadth.service";
+import { GraphDepthService } from "./modules/measurement/graph-depth.service";
+import { ComponentsService } from "./modules/traversal/components.service";
 
 import type {
   AssembledGraph,

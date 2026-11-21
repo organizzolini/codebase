@@ -5,7 +5,7 @@ import { attributeIssues, buildKnipArguments } from "./knip.utilities";
 describe("knip utilities", () => {
   describe(buildKnipArguments, () => {
     const base = {
-      configuration: "configuration/knip.config.ts",
+      configuration: "configuration/typescript/knip.config.ts",
       directory: "/workspace",
       fix: false,
       format: "native",
@@ -17,7 +17,7 @@ describe("knip utilities", () => {
         buildKnipArguments({ ...base, roots: ["projects/a", "projects/b"] }),
       ).toStrictEqual([
         "--config",
-        "configuration/knip.config.ts",
+        "configuration/typescript/knip.config.ts",
         "--directory",
         "/workspace",
         "--workspace",

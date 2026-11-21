@@ -9,8 +9,8 @@ import {
   MeanderCharacteristic,
 } from "@codebase/meanderaw-db";
 
-import { MeanderAggregateService } from "../meanders/aggregates/meander-aggregate.service";
-import { MeanderFilterService } from "../meanders/filters/meander-filter.service";
+import { MeanderAggregateService } from "../meanders/modules/aggregates/meander-aggregate.service";
+import { MeanderFilterService } from "../meanders/modules/filters/meander-filter.service";
 
 import {
   groupByArgumentsSchema,
@@ -18,7 +18,7 @@ import {
   SHAPE_GROUP_FIELDS,
 } from "./meander-groups.constants";
 
-import type { CompiledMeanderFilter } from "../meanders/filters/meander-filter.types";
+import type { CompiledMeanderFilter } from "../meanders/modules/filters/meander-filter.types";
 import type { MeanderGroupEntity } from "./meander-groups.entities";
 import type {
   GroupCount,

@@ -10,7 +10,7 @@ import {
 
 import { useMeanders } from "./use-meanders";
 
-import type { MeandersPage } from "../../components/meander-gallery/meanders-api.types";
+import type { MeandersPage } from "../../components/gallery/meander-gallery/meanders-api.types";
 
 /** A page of fixture meanders from `start` to `end`, with more after it. */
 function pageOf(

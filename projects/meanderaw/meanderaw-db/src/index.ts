@@ -2,14 +2,6 @@ export {
   MEANDERAW_DATABASE_ENTITIES,
   MEANDERAW_DATABASE_MIGRATIONS,
 } from "./modules/meanderaw-database/data-source.constants";
-export { AggregateMarker } from "./modules/meanderaw-database/entities/aggregate-marker.entity";
-export { CharacteristicPairCount } from "./modules/meanderaw-database/entities/characteristic-pair-count.entity";
-export { CharacteristicShapeCount } from "./modules/meanderaw-database/entities/characteristic-shape-count.entity";
-export { CharacteristicValueCount } from "./modules/meanderaw-database/entities/characteristic-value-count.entity";
-export { Characteristic } from "./modules/meanderaw-database/entities/characteristic.entity";
-export { MeanderCharacteristic } from "./modules/meanderaw-database/entities/meander-characteristic.entity";
-export { Meander } from "./modules/meanderaw-database/entities/meander.entity";
-export { ShapeCount } from "./modules/meanderaw-database/entities/shape-count.entity";
 export { MeanderawDatabaseAggregatesService } from "./modules/meanderaw-database/meanderaw-database-aggregates.service";
 // 📤 Exports
 export {
@@ -27,3 +19,11 @@ export type {
   MeanderShape,
   StoredCharacteristicValues,
 } from "./modules/meanderaw-database/meanderaw-database.types";
+export { AggregateMarker } from "./modules/meanderaw-database/modules/aggregate/aggregate-marker.entity";
+export { CharacteristicPairCount } from "./modules/meanderaw-database/modules/aggregate/characteristic-pair-count.entity";
+export { CharacteristicShapeCount } from "./modules/meanderaw-database/modules/aggregate/characteristic-shape-count.entity";
+export { CharacteristicValueCount } from "./modules/meanderaw-database/modules/aggregate/characteristic-value-count.entity";
+export { ShapeCount } from "./modules/meanderaw-database/modules/aggregate/shape-count.entity";
+export { Characteristic } from "./modules/meanderaw-database/modules/characteristic/characteristic.entity";
+export { MeanderCharacteristic } from "./modules/meanderaw-database/modules/characteristic/meander-characteristic.entity";
+export { Meander } from "./modules/meanderaw-database/modules/meander/meander.entity";

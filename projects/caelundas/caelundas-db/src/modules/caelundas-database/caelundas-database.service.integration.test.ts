@@ -9,12 +9,12 @@ import {
   CAELUNDAS_DATABASE_ENTITIES,
   CAELUNDAS_DATABASE_MIGRATIONS,
 } from "./data-source.constants";
-import { CalendarEventDerivedTime } from "./entities/calendar-event-derived-time.entity";
-import { CalendarEventTagNode } from "./entities/calendar-event-tag-node.entity";
-import { CalendarEventTag } from "./entities/calendar-event-tag.entity";
-import { CalendarEvent } from "./entities/calendar-event.entity";
-import { TagNode } from "./entities/tag-node.entity";
-import { Tag } from "./entities/tag.entity";
+import { CalendarEventDerivedTime } from "./modules/calendar-events/calendar-event-derived-time.entity";
+import { CalendarEventTagNode } from "./modules/calendar-events/calendar-event-tag-node.entity";
+import { CalendarEventTag } from "./modules/calendar-events/calendar-event-tag.entity";
+import { CalendarEvent } from "./modules/calendar-events/calendar-event.entity";
+import { TagNode } from "./modules/tags/tag-node.entity";
+import { Tag } from "./modules/tags/tag.entity";
 
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 import type { TreeRepository } from "typeorm";

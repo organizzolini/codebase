@@ -12,7 +12,7 @@ import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { ConformetryConfiguration } from "@conformetry/configuration";
 import type { GeneratorHook } from "@conformetry/core";
 
-const CONFIGURATION_PATH = "configuration/conformetry.config.ts";
+const CONFIGURATION_PATH = "configuration/ic-suite/conformetry.config.ts";
 
 const CONFIGURATION: ConformetryConfiguration = [
   {
@@ -51,8 +51,7 @@ describe(GenerateCommand, () => {
   beforeEach(() => {
     readExitCode = captureExitCode();
     vi.mocked(configurationService.resolveConfigurationPath).mockImplementation(
-      async (configurationPath: string) =>
-        await Promise.resolve(`/workspace/${configurationPath}`),
+      (configurationPath: string) => `/workspace/${configurationPath}`,
     );
     vi.mocked(
       configurationService.loadConformetryConfiguration,
@@ -101,12 +100,11 @@ describe(GenerateCommand, () => {
     });
 
     it("hands the runtime the absolute directory of the resolved configuration", async () => {
-      // The resolution is the service's: it falls back to the workspace root,
-      // so a relative `--config` and the directory it names can disagree with
-      // anything the command could work out from the flag alone.
-      vi.mocked(
-        configurationService.resolveConfigurationPath,
-      ).mockResolvedValue("/workspace/configuration/conformetry.config.ts");
+      // The resolution is the service's, so the command takes the directory
+      // from what it returns rather than from the flag.
+      vi.mocked(configurationService.resolveConfigurationPath).mockReturnValue(
+        "/workspace/configuration/conformetry.config.ts",
+      );
 
       await command.run([], {
         config: CONFIGURATION_PATH,

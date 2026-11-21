@@ -14,7 +14,6 @@ import { Injectable } from "@nestjs/common";
 
 import {
   CALLIDESCOPE_NX_PLUGIN_NAME,
-  PROJECT_PROGRAM_FILENAME,
   WORKSPACE_PROJECT_ROOT,
 } from "../options/options.constants";
 import { OptionsService } from "../options/options.service";
@@ -23,8 +22,8 @@ import { RunConfigurationService } from "../run-configuration/run-configuration.
 import { VerdictService } from "../verdict/verdict.service";
 
 import {
-  PROJECT_CONFIGURATION_FILENAME,
-  PROJECT_LIMITS_INPUT,
+  ProjectConfigurationPathMismatchError,
+  ProjectTsconfigPathMismatchError,
 } from "./plugin.constants";
 
 import type { CallidescopePluginOptions } from "../options/options.types";
@@ -39,6 +38,7 @@ import type {
   RunTraceResult,
 } from "./plugin.types";
 import type { TraceOutcome } from "@callidescope/cli";
+import type { ResolvedCallidescopeConfiguration } from "@callidescope/configuration";
 import type { FileFilter } from "@callidescope/graph";
 
 /**
@@ -75,22 +75,47 @@ export class PluginService {
    */
   private async buildExclusionFilter(args: {
     configurationPath: string;
+    projectConfigurationPath: string;
+    projectTsconfigPath: string;
     workspaceRoot: string;
   }): Promise<FileFilter> {
-    try {
-      const { configuration } =
-        await this.configurationService.loadConfigurationFile({
-          configurationPath: args.configurationPath,
-        });
+    const configuration = await this.loadWorkspaceConfiguration(
+      path.resolve(args.workspaceRoot, args.configurationPath),
+    );
 
-      return this.fileFilterService.buildFileFilter({
-        exclude: configuration.exclude,
-        excludeFrom: configuration.excludeFrom,
-        workspaceRoot: args.workspaceRoot,
-      });
-    } catch {
+    if (configuration === undefined) {
       return { isExcluded: (): boolean => false };
     }
+
+    // The registration's path keys the cache and the configuration's path
+    // drives the trace, so two values for one fact would judge a project by
+    // one file and cache it by another.
+    if (
+      configuration.projectConfigurationPath !== args.projectConfigurationPath
+    ) {
+      throw new ProjectConfigurationPathMismatchError({
+        configurationPath: args.configurationPath,
+        declared: configuration.projectConfigurationPath,
+        registered: args.projectConfigurationPath,
+      });
+    }
+
+    // The same fact in two places, for the same reason: this registration
+    // decides which projects hold a program, the configuration decides which
+    // are traced.
+    if (configuration.projectTsconfigPath !== args.projectTsconfigPath) {
+      throw new ProjectTsconfigPathMismatchError({
+        configurationPath: args.configurationPath,
+        declared: configuration.projectTsconfigPath,
+        registered: args.projectTsconfigPath,
+      });
+    }
+
+    return this.fileFilterService.buildFileFilter({
+      exclude: configuration.exclude,
+      excludeFrom: configuration.excludeFrom,
+      workspaceRoot: args.workspaceRoot,
+    });
   }
 
   /**
@@ -111,6 +136,9 @@ export class PluginService {
       "^default",
       `{workspaceRoot}/${pluginOptions.configurationPath}`,
     ];
+    // Per project rather than workspace-wide, so one project's edit to its
+    // limits never invalidates another's gate.
+    const projectConfigurationInput = `{projectRoot}/${pluginOptions.projectConfigurationPath}`;
     // Every executor requires the path, so it is written onto each target
     // rather than left for a run to look up: there is nowhere else it could
     // come from, since nothing searches for it.
@@ -145,7 +173,7 @@ export class PluginService {
       [pluginOptions.gateTargetName]: {
         cache: true,
         executor: `${CALLIDESCOPE_NX_PLUGIN_NAME}:gate`,
-        inputs: [...inputs, PROJECT_LIMITS_INPUT],
+        inputs: [...inputs, projectConfigurationInput],
         options,
       },
     };
@@ -154,24 +182,42 @@ export class PluginService {
   /** Whether a project's directory holds a TypeScript program to trace. */
   private holdsProgram(args: {
     projectRoot: string;
+    projectTsconfigPath: string;
     workspaceRoot: string;
   }): boolean {
     return existsSync(
-      path.join(args.workspaceRoot, args.projectRoot, PROJECT_PROGRAM_FILENAME),
+      path.join(args.workspaceRoot, args.projectRoot, args.projectTsconfigPath),
     );
   }
 
   /**
-   * Whether the workspace configuration excludes this project, judged by its `tsconfig.json`
+   * Whether the workspace configuration excludes this project, judged by its tsconfig
    * path in POSIX form.
    */
   private isExcludedProject(args: {
     fileFilter: FileFilter;
     projectRoot: string;
+    projectTsconfigPath: string;
   }): boolean {
     return args.fileFilter.isExcluded(
-      path.posix.join(args.projectRoot, PROJECT_PROGRAM_FILENAME),
+      path.posix.join(args.projectRoot, args.projectTsconfigPath),
     );
+  }
+
+  /** Loads the workspace configuration, or `undefined` when it cannot be read. */
+  private async loadWorkspaceConfiguration(
+    configurationPath: string,
+  ): Promise<ResolvedCallidescopeConfiguration | undefined> {
+    try {
+      const { configuration } =
+        await this.configurationService.loadConfigurationFile({
+          configurationPath,
+        });
+
+      return configuration;
+    } catch {
+      return undefined;
+    }
   }
 
   /**
@@ -220,7 +266,7 @@ export class PluginService {
   }
 
   /**
-   * Infers this plugin's targets onto every project holding a `tsconfig.json`, skipping the
+   * Infers this plugin's targets onto every project holding a tsconfig at `projectTsconfigPath`, skipping the
    * workspace root and projects without a program.
    */
   public async inferTargets(
@@ -231,23 +277,22 @@ export class PluginService {
     );
     const fileFilter = await this.buildExclusionFilter({
       configurationPath: pluginOptions.configurationPath,
+      projectConfigurationPath: pluginOptions.projectConfigurationPath,
+      projectTsconfigPath: pluginOptions.projectTsconfigPath,
       workspaceRoot: args.workspaceRoot,
     });
     const targetsByProjectRoot = new Map<string, InferredTargets>();
 
     for (const projectConfigurationFile of args.projectConfigurationFiles) {
-      if (
-        path.basename(projectConfigurationFile) !==
-        PROJECT_CONFIGURATION_FILENAME
-      ) {
-        continue;
-      }
-
       const projectRoot = path.dirname(projectConfigurationFile);
 
       if (
         projectRoot === WORKSPACE_PROJECT_ROOT ||
-        !this.holdsProgram({ projectRoot, workspaceRoot: args.workspaceRoot })
+        !this.holdsProgram({
+          projectRoot,
+          projectTsconfigPath: pluginOptions.projectTsconfigPath,
+          workspaceRoot: args.workspaceRoot,
+        })
       ) {
         continue;
       }
@@ -255,7 +300,11 @@ export class PluginService {
       targetsByProjectRoot.set(
         projectRoot,
         this.buildInferredTargets({
-          isExcluded: this.isExcludedProject({ fileFilter, projectRoot }),
+          isExcluded: this.isExcludedProject({
+            fileFilter,
+            projectRoot,
+            projectTsconfigPath: pluginOptions.projectTsconfigPath,
+          }),
           pluginOptions,
         }),
       );

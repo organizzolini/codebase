@@ -9,9 +9,9 @@ import { characteristicRecords } from "../../../testing/characteristics";
 import { meanderRecord } from "../../../testing/meanders";
 
 import { MEANDERAW_DATABASE_MIGRATIONS } from "./data-source.constants";
-import { Meander } from "./entities/meander.entity";
 import { MeanderawDatabaseModule } from "./meanderaw-database.module";
 import { MeanderawDatabaseService } from "./meanderaw-database.service";
+import { Meander } from "./modules/meander/meander.entity";
 
 // 🧪 Tests
 

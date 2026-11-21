@@ -52,9 +52,9 @@ export class ConfigurationService implements ConfigurationFileReader {
 
   // 🌎 Public Methods
 
-  /** Finds a configuration file sitting directly at one directory. */
-  public findConfigurationFileAt(directory: string): string | undefined {
-    return this.configurationFileService.findConfigurationFileAt(directory);
+  /** Whether a file exists at exactly this path. */
+  public configurationFileExists(filePath: string): boolean {
+    return this.configurationFileService.configurationFileExists(filePath);
   }
 
   /**
@@ -125,6 +125,22 @@ export class ConfigurationService implements ConfigurationFileReader {
     surface: string,
   ): string {
     return this.inputService.requireConfigurationPath(path, surface);
+  }
+
+  /** Reads the project configuration path, refusing an absent or blank one by surface. */
+  public requireProjectConfigurationPath(
+    path: string | undefined,
+    surface: string,
+  ): string {
+    return this.inputService.requireProjectConfigurationPath(path, surface);
+  }
+
+  /** Reads the project tsconfig path, refusing an absent or blank one by surface. */
+  public requireProjectTsconfigPath(
+    path: string | undefined,
+    surface: string,
+  ): string {
+    return this.inputService.requireProjectTsconfigPath(path, surface);
   }
 
   /** Fills in every field a configuration file may leave out. */

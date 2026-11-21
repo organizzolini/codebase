@@ -43,7 +43,7 @@ async function main(): Promise<void> {
     { abortOnError: false, logger: false },
   );
   const configurationService = context.get(ConfigurationService);
-  const configurationPath = await configurationService.resolveConfigurationPath(
+  const configurationPath = configurationService.resolveConfigurationPath(
     "projects/ic-suite/conformetry/conformetry-examples/examples/embedding/conformetry.config.ts",
   );
   const configuration =

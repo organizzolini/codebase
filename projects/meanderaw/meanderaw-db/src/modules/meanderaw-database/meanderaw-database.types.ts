@@ -1,7 +1,7 @@
 // 🏷️ Types
 
-import type { Characteristic } from "./entities/characteristic.entity";
-import type { Meander } from "./entities/meander.entity";
+import type { Characteristic } from "./modules/characteristic/characteristic.entity";
+import type { Meander } from "./modules/meander/meander.entity";
 import type { PostgresqlUpdatableEntity } from "@codebase/persistence";
 
 /** A catalog row, minus the columns the database owns. */

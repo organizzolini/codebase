@@ -2,6 +2,8 @@ import path from "node:path";
 
 import { Injectable } from "@nestjs/common";
 
+import { TreeService } from "../tree/tree.service";
+
 import type { CustomizationInput } from "./customization.types";
 import type { ResolvedCodometerCustomStatistic } from "@codometer/configuration";
 import type { CustomStatisticResult } from "@codometer/core";
@@ -14,13 +16,13 @@ import type {
 /**
  * Counts the conventions a repository holds itself to. Which counters apply comes from configuration, not this package.
  *
- * Files are measured here; declaration and comment counts arrive from `@codometer/languages`.
+ * Files and directories are measured here; declaration and comment counts arrive from `@codometer/languages`.
  */
 @Injectable()
 export class CustomizationService {
   // 🏗 Dependency Injection
 
-  constructor() {}
+  constructor(private readonly treeService: TreeService) {}
 
   // 🔐 Private Fields
 
@@ -50,6 +52,45 @@ export class CustomizationService {
     };
   }
 
+  /** Turn a `tree`-selector statistic's breaching directories into its result. */
+  private buildTreeResult(
+    statistic: ResolvedCodometerCustomStatistic,
+    files: string[],
+  ): CustomStatisticResult {
+    const { tree } = statistic;
+    const judged =
+      statistic.patterns.length === 0
+        ? files
+        : files.filter((filePath) =>
+            statistic.patterns.some((pattern) =>
+              path.matchesGlob(filePath, pattern),
+            ),
+          );
+    const breaches =
+      tree?.maximumBreadth === undefined
+        ? this.treeService.measureDepth({
+            exclude: tree?.exclude ?? [],
+            files: judged,
+            maximum: tree?.maximumDepth ?? 0,
+          })
+        : this.treeService.measureBreadth({
+            exclude: tree.exclude,
+            files: judged,
+            maximum: tree.maximumBreadth,
+          });
+
+    return {
+      color: statistic.color,
+      count: breaches.length,
+      group: statistic.group,
+      instances: breaches.map((breach) => ({
+        file: breach.directory,
+        measured: breach.measured,
+      })),
+      label: statistic.label,
+    };
+  }
+
   /**
    * Counts the files claimed by at least one glob; a file matching several globs counts once.
    */
@@ -71,6 +112,10 @@ export class CustomizationService {
     return statistics.map((statistic) => {
       if (statistic.comment !== undefined) {
         return this.buildCommentResult(statistic, commentCounts);
+      }
+
+      if (statistic.tree !== undefined) {
+        return this.buildTreeResult(statistic, files);
       }
 
       return {

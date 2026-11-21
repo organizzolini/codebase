@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { captureExitCode, captureOutput } from "./capture.utilities";
+import {
+  captureExitCode,
+  captureOutput,
+  expectProcessExitOne,
+  mockProcessExit,
+} from "./capture.utilities";
 
 // 🧪 Tests
 
@@ -59,6 +64,36 @@ describe("capture", () => {
       expect(process.exitCode).toBe(3);
 
       process.exitCode = realExitCode;
+    });
+  });
+
+  describe(mockProcessExit, () => {
+    it("makes process.exit throw an error carrying the code", () => {
+      mockProcessExit();
+
+      expect(() => process.exit(2)).toThrow("process.exit:2");
+      expect(() => process.exit()).toThrow("process.exit:0");
+    });
+
+    it("returns the spy, so a test can assert the calls", () => {
+      const exitSpy = mockProcessExit();
+
+      expect(() => process.exit(1)).toThrow("process.exit:1");
+      expect(exitSpy).toHaveBeenCalledWith(1);
+    });
+  });
+
+  describe(expectProcessExitOne, () => {
+    it("passes when the action exits with code 1", async () => {
+      await expect(
+        expectProcessExitOne(() => process.exit(1)),
+      ).resolves.toBeUndefined();
+    });
+
+    it("rejects when the action does not exit with code 1", async () => {
+      await expect(expectProcessExitOne(() => process.exit(2))).rejects.toThrow(
+        "process.exit:2",
+      );
     });
   });
 });

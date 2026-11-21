@@ -5,9 +5,9 @@ import {
   useState,
 } from "react";
 
-import { findMeanders } from "../../components/meander-gallery/meanders-api.utilities";
+import { findMeanders } from "../../components/gallery/meander-gallery/meanders-api.utilities";
 
-import type { MeandersPage } from "../../components/meander-gallery/meanders-api.types";
+import type { MeandersPage } from "../../components/gallery/meander-gallery/meanders-api.types";
 import type {
   MeanderFilterGroupInput,
   MeanderSortInput,

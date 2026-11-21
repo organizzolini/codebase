@@ -3,10 +3,10 @@ import { Module } from "@nestjs/common";
 import { LoggerModule } from "@codebase/observability";
 
 import { ProcessRunnerModule } from "../process-runner/process-runner.module";
-import { UpgradeNodeModule } from "../upgrade-node/upgrade-node.module";
-import { UpgradePnpmModule } from "../upgrade-pnpm/upgrade-pnpm.module";
-import { UpgradePythonModule } from "../upgrade-python/upgrade-python.module";
 
+import { UpgradeNodeModule } from "./modules/upgrade-node/upgrade-node.module";
+import { UpgradePnpmModule } from "./modules/upgrade-pnpm/upgrade-pnpm.module";
+import { UpgradePythonModule } from "./modules/upgrade-python/upgrade-python.module";
 import { UpgradeDependenciesCommand } from "./upgrade-dependencies.command";
 import { UpgradeDependenciesService } from "./upgrade-dependencies.service";
 

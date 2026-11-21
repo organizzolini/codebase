@@ -2,9 +2,9 @@ import { ConfigService } from "@nestjs/config";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
+import { failed, FakeProcessRunner, succeeded } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { failed, FakeProcessRunner, succeeded } from "../../../testing/mocks";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
 import { RunAffectedCommand } from "./run-affected.command";
@@ -19,7 +19,8 @@ const streamedLines = (runner: FakeProcessRunner): string[] =>
 const MERGE_BASE = "git merge-base base head";
 const DIFF = "git diff --name-only --no-renames --relative abc1234 head";
 const AFFECTED = "exec nx affected --base=base --head=head --target=";
-const TEMPLATE = "configuration/conformetry-templates/service/src/main.ts";
+const TEMPLATE =
+  "configuration/ic-suite/conformetry-templates/service/src/main.ts";
 
 /** A script whose diff lists these files, one per line. */
 const changing = (...files: string[]): Record<string, CapturedProcess> => ({
@@ -170,7 +171,7 @@ describe(RunAffectedCommand, () => {
 
       expect(streamedLines(runner)).toStrictEqual([
         `${AFFECTED}test-code`,
-        "exec nx affected --files=configuration/conformetry.config.ts --target=test-code",
+        "exec nx affected --files=configuration/ic-suite/conformetry.config.ts --target=test-code",
       ]);
       expect(reportLines.join("\n")).toContain(TEMPLATE);
     });

@@ -55,7 +55,7 @@ defining by a synonym that is itself undefined.
 4. **Several meanings.** Define the dominant one and name the other in the same
    definition. A word that only completes a larger name (`service` in
    `HoldService`) is defined by how this codebase uses the suffix.
-5. **Check the file still parses.** Run `coinagerie --check`. Definitions never
+5. **Check the file still parses.** Run `coinagerie --config <path> --check`. Definitions never
    change a check's verdict, but a parse failure shows up there.
 
 ## Formats

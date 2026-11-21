@@ -4,8 +4,8 @@ import { describe, expect, it } from "vitest";
 import { Characteristic, Meander } from "@codebase/meanderaw-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { MeanderAggregateService } from "../meanders/aggregates/meander-aggregate.service";
-import { MeanderFilterService } from "../meanders/filters/meander-filter.service";
+import { MeanderAggregateService } from "../meanders/modules/aggregates/meander-aggregate.service";
+import { MeanderFilterService } from "../meanders/modules/filters/meander-filter.service";
 
 import { MeanderGroupsService } from "./meander-groups.service";
 

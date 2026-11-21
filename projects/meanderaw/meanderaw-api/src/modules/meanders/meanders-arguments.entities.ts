@@ -1,11 +1,11 @@
 import { ArgsType as ArgumentsType, Field, Int } from "@nestjs/graphql";
 
-import { MeanderFilterGroupInput } from "./filters/meander-filter.entities";
 import { MeanderSortInput } from "./meander-sort.entities";
 import {
   FILTER_ARGUMENT_DESCRIPTION,
   SORT_ARGUMENT_DESCRIPTION,
 } from "./meanders.constants";
+import { MeanderFilterGroupInput } from "./modules/filters/meander-filter.entities";
 
 /** What a `meanders` query asks for. */
 @ArgumentsType()

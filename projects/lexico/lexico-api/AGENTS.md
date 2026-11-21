@@ -9,7 +9,7 @@
 ### Run Locally
 
 ```bash
-cp .env.default .env  # Fill in required environment variables
+cp configuration/.env.default configuration/.env  # Fill in required environment variables
 nx run lexico-api:start
 ```
 
@@ -22,6 +22,7 @@ nx run lexico-api:start
 - **Schema strategy**: Code-first, emitted to `src/schema.gql` beside the root module (`GRAPHQL_SCHEMA_FILE`), whatever the working directory; the file is gitignored
 - **Pagination**: Relay connections via `nestjs-graphql-connection`
 - **Dataloaders**: `dataloader` (request-scoped, prevents N+1 queries)
+- **CORS**: `CorsModule` (`modules/cors`) provides the options the bootstrap enables, from `LEXICO_API_CORS_ORIGINS` (comma separated). No origin is allowed until you list one, so a browser app on another origin is refused by default; `*` allows every origin and suits only a public API
 - **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `.constants.ts`)
 - **Logging**: `@codebase/observability` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
 - **Language**: Strict TypeScript
@@ -43,8 +44,11 @@ src/
   lexico-api.ts            # Bootstrap — do not modify
   lexico-api.module.ts     # Root NestJS module (imports GraphQLModule, LoggerModule)
   lexico-api.constants.ts  # Zod environmentSchema for env validation
-  lexico-api.types.ts      # Application-scoped TypeScript types
   modules/
+    cors/                             # The CORS options the bootstrap enables
+      cors.module.ts
+      cors.service.ts
+      cors.service.unit.test.ts
     sample/                           # Example GraphQL module — replace with your domain
       sample.module.ts
       sample.resolver.ts
@@ -272,7 +276,7 @@ See the [write-typescript skill](../../../.agents/skills/write-typescript/SKILL.
 - **Dependency injection failure** — verify the service is `@Injectable()`, exported from its module, and that module is imported by the consuming module.
 - **GraphQL schema not generating** — ensure `autoSchemaFile` is set to `GRAPHQL_SCHEMA_FILE` in `GraphQLModule.forRoot()` and all types use `@ObjectType()`, `@Field()`, etc.
 - **N+1 query problem** — use DataLoaders for all relation fields in resolvers.
-- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `.constants.ts` and to `.env.default`.
+- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `.constants.ts` and to `configuration/.env.default`.
 
 See the [triage-integration skill](../../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
 
@@ -284,4 +288,4 @@ See the [triage-integration skill](../../../.agents/skills/triage-integration/SK
 - `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
 - [src/modules/sample/sample.module.ts](src/modules/sample/sample.module.ts): Example GraphQL module
 - [project.json](project.json): Nx targets (`start`, `test`, `lint`, `typecheck`, `format`)
-- [.env.default](.env.default): Environment variable template
+- [configuration/.env.default](configuration/.env.default): Environment variable template

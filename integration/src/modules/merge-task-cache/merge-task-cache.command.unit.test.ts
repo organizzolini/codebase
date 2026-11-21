@@ -6,12 +6,12 @@ import { ConfigService } from "@nestjs/config";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
+import { writeFileTree } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   createTaskDatabaseWorkspace,
   readCachedHashes,
-  writeFile,
   writeTaskDatabase,
 } from "../../../testing/mocks";
 import { TaskDatabaseService } from "../task-database/task-database.service";
@@ -99,12 +99,12 @@ describe(MergeTaskCacheCommand, () => {
       "shared",
       "ours",
     ]);
-    writeFile(cache, "shared", "our shared output");
-    writeFile(cache, "terminalOutputs/shared", "our log");
+    writeFileTree(cache, { shared: "our shared output" });
+    writeFileTree(cache, { "terminalOutputs/shared": "our log" });
     writeTaskDatabase(sourceDatabase("other-v3.db"), ["shared", "theirs"]);
-    writeFile(source, "cache/shared", "their shared output");
-    writeFile(source, "cache/theirs/out.txt", "their output");
-    writeFile(source, "cache/terminalOutputs/theirs", "their log");
+    writeFileTree(source, { "cache/shared": "their shared output" });
+    writeFileTree(source, { "cache/theirs/out.txt": "their output" });
+    writeFileTree(source, { "cache/terminalOutputs/theirs": "their log" });
 
     await runCommand(source);
 
@@ -130,7 +130,7 @@ describe(MergeTaskCacheCommand, () => {
 
     writeTaskDatabase(path.join(workspace.directory, "runner1-v3.db"), []);
     writeTaskDatabase(sourceDatabase("other-v3.db"), ["theirs"]);
-    writeFile(source, "cache/theirs", "their output");
+    writeFileTree(source, { "cache/theirs": "their output" });
     const when = new Date("2025-01-02T03:04:05Z");
 
     fs.utimesSync(path.join(source, "cache/theirs"), when, when);
@@ -183,7 +183,7 @@ describe(MergeTaskCacheCommand, () => {
     expect.hasAssertions();
 
     writeTaskDatabase(sourceDatabase("other-v3.db"), ["theirs"]);
-    writeFile(source, "cache/theirs", "their output");
+    writeFileTree(source, { "cache/theirs": "their output" });
 
     await runCommand(source);
 
@@ -202,7 +202,7 @@ describe(MergeTaskCacheCommand, () => {
 
     writeTaskDatabase(path.join(workspace.directory, "runner1-v3.db"), []);
     writeTaskDatabase(sourceDatabase("other-v3.db"), ["theirs"]);
-    writeFile(source, "cache/theirs", "their output");
+    writeFileTree(source, { "cache/theirs": "their output" });
 
     await runCommand(source);
     await runCommand(source);
@@ -225,20 +225,22 @@ describe(MergeTaskCacheCommand, () => {
     [
       "it has no task database",
       (): void => {
-        writeFile(source, "cache/theirs", "their output");
+        writeFileTree(source, { "cache/theirs": "their output" });
       },
     ],
     [
       "its task database is corrupt",
       (): void => {
-        writeFile(source, "cache/theirs", "their output");
-        writeFile(source, "workspace-data/other-v3.db", "not a database");
+        writeFileTree(source, { "cache/theirs": "their output" });
+        writeFileTree(source, {
+          "workspace-data/other-v3.db": "not a database",
+        });
       },
     ],
     [
       "its task database has an unfamiliar schema",
       (): void => {
-        writeFile(source, "cache/theirs", "their output");
+        writeFileTree(source, { "cache/theirs": "their output" });
         fs.mkdirSync(path.join(source, "workspace-data"), { recursive: true });
         const connection = new DatabaseSync(sourceDatabase("other-v3.db"));
 
@@ -249,7 +251,7 @@ describe(MergeTaskCacheCommand, () => {
     [
       "its schema (4.db) differs from this cache's (3.db)",
       (): void => {
-        writeFile(source, "cache/theirs", "their output");
+        writeFileTree(source, { "cache/theirs": "their output" });
         writeTaskDatabase(sourceDatabase("other-v4.db"), ["theirs"]);
       },
     ],
@@ -277,9 +279,9 @@ describe(MergeTaskCacheCommand, () => {
 
     writeTaskDatabase(path.join(workspace.directory, "runner1-v3.db"), []);
     writeTaskDatabase(sourceDatabase("other-v3.db"), ["theirs"]);
-    writeFile(source, "cache/theirs/out.txt", "their output");
+    writeFileTree(source, { "cache/theirs/out.txt": "their output" });
     // A file where the output's directory belongs stops the copy.
-    writeFile(cache, "theirs", "in the way");
+    writeFileTree(cache, { theirs: "in the way" });
 
     await runCommand(source);
 
@@ -297,7 +299,7 @@ describe(MergeTaskCacheCommand, () => {
     const target = path.join(workspace.directory, "runner1-v3.db");
 
     writeTaskDatabase(target, ["ours"]);
-    writeFile(source, "cache/theirs", "their output");
+    writeFileTree(source, { "cache/theirs": "their output" });
     fs.mkdirSync(path.join(source, "workspace-data"), { recursive: true });
     const connection = new DatabaseSync(sourceDatabase("other-v3.db"));
 

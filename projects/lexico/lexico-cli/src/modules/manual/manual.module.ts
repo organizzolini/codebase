@@ -3,8 +3,8 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { Lexeme } from "@codebase/lexico-db";
 
+import { WordsModule } from "../lexemes/modules/words/words.module";
 import { NumeralsModule } from "../numerals/numerals.module";
-import { WordsModule } from "../words/words.module";
 
 import { ManualService } from "./manual.service";
 

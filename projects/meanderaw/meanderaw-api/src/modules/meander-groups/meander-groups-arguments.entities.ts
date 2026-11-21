@@ -1,6 +1,6 @@
 import { ArgsType as ArgumentsType, Field } from "@nestjs/graphql";
 
-import { MeanderFilterGroupInput } from "../meanders/filters/meander-filter.entities";
+import { MeanderFilterGroupInput } from "../meanders/modules/filters/meander-filter.entities";
 
 import { MeanderGroupLevelInput } from "./meander-group-level.entities";
 import { GROUP_BY_ARGUMENT_DESCRIPTION } from "./meander-groups.constants";

@@ -1,0 +1,143 @@
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+
+import {
+  CodeService,
+  DrawingService,
+  GeometryService,
+  SvgService,
+  SymmetryService,
+  TileService,
+} from "@codebase/meanderaw-core";
+import {
+  Meander,
+  MEANDERAW_DATABASE_MIGRATIONS,
+  MeanderawDatabaseModule,
+  MeanderawDatabaseService,
+} from "@codebase/meanderaw-db";
+import {
+  type DatabaseTestingModule,
+  startDatabaseTestingModule,
+} from "@codebase/persistence/testing";
+
+import { meanderRecord } from "../../../../../testing/meanders";
+
+import { DrawIndexService } from "./draw-index.service";
+
+import type { MeanderRecord } from "@codebase/meanderaw-db";
+
+/**
+ * Drives `DrawIndexService.build` against a real TypeORM connection to a
+ * throwaway Postgres container seeded with a small, deliberately
+ * constructed set of rows, per spec #813's Testing Decisions for this seam.
+ *
+ * The module is booted by `startDatabaseTestingModule`, which points
+ * `MeanderawDatabaseModule` at a fresh, isolated database instead of the
+ * local one, the same way `database.service.integration.test.ts`
+ * does.
+ */
+describe(DrawIndexService, () => {
+  let database: DatabaseTestingModule;
+  let databaseService: MeanderawDatabaseService;
+  let service: DrawIndexService;
+
+  beforeAll(async () => {
+    database = await startDatabaseTestingModule({
+      database: MeanderawDatabaseModule,
+      entities: [Meander],
+      migrations: [...MEANDERAW_DATABASE_MIGRATIONS],
+      project: "meanderaw",
+      providers: [
+        DrawIndexService,
+        CodeService,
+        DrawingService,
+        GeometryService,
+        SymmetryService,
+        SvgService,
+        TileService,
+      ],
+    });
+
+    service = await database.module.resolve(DrawIndexService);
+    databaseService = database.module.get(MeanderawDatabaseService);
+    await databaseService.syncCharacteristics(
+      ["isDots", "isSnake", "isWhirl"].map((key) => ({
+        category: "compound",
+        description: `Whether ${key} holds.`,
+        documentationUrl: null,
+        formula: null,
+        isPattern: true,
+        key,
+        name: key,
+        valueType: "boolean",
+      })),
+    );
+  });
+
+  afterAll(async () => {
+    await database.close();
+  });
+
+  /** Defaults for the row fields a case does not test. */
+  const record = (
+    overrides: Partial<MeanderRecord> & Pick<MeanderRecord, "code">,
+  ): MeanderRecord => meanderRecord({ rows: 1, ...overrides });
+
+  it("builds one page per held pattern from the committed rows, and an index linking them", async () => {
+    await databaseService.save(
+      record({
+        characteristics: { isSnake: true },
+        code: "01x01y0",
+        lattice: "0",
+      }),
+    );
+    await databaseService.save(
+      record({
+        characteristics: { isDots: true, isWhirl: true },
+        code: "01x01y1",
+        lattice: "1",
+      }),
+    );
+    await databaseService.save(record({ code: "01x01y2", lattice: "2" }));
+
+    const built = await service.build();
+    const pages: Record<string, string> = {};
+
+    for (const [path, content] of Object.entries(built)) {
+      pages[path] = "";
+
+      for await (const piece of content) {
+        pages[path] += piece;
+      }
+    }
+
+    expect(Object.keys(pages).toSorted()).toStrictEqual([
+      "index.html",
+      "patterns/isDots.html",
+      "patterns/isSnake.html",
+      "patterns/isWhirl.html",
+    ]);
+    expect(pages["patterns/isSnake.html"]).toContain('<section id="isSnake">');
+    expect(pages["patterns/isSnake.html"]).toContain(
+      "<figcaption>1×1 · 01x01y0 (isSnake)</figcaption>",
+    );
+    expect(pages["patterns/isDots.html"]).toContain("01x01y1");
+    expect(pages["patterns/isWhirl.html"]).toContain("01x01y1");
+    expect(pages["patterns/isWhirl.html"]).toContain("(isDots, isWhirl)");
+    expect(Object.values(pages).join("")).not.toContain("01x01y2");
+
+    const indexPage = pages["index.html"] ?? "";
+
+    expect(indexPage).toContain(
+      '<a href="patterns/isSnake.html">isSnake</a> <span>1</span>',
+    );
+    expect(indexPage.indexOf("isDots.html")).toBeLessThan(
+      indexPage.indexOf("isSnake.html"),
+    );
+    expect(indexPage.indexOf("isSnake.html")).toBeLessThan(
+      indexPage.indexOf("isWhirl.html"),
+    );
+    expect(pages["patterns/isSnake.html"]).toContain(
+      '<path d="M0 30H15V45H0Z" fill="black" stroke="none"/>',
+    );
+  });
+});

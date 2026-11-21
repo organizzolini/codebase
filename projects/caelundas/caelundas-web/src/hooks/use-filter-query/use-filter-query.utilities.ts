@@ -1,8 +1,8 @@
-import { EMPTY_EVENT_FILTER } from "../../components/calendar-filters/event-filter-tree.constants";
-import { DEFAULT_PRESET_ID } from "../../components/calendar-filters/presets.constants";
+import { EMPTY_EVENT_FILTER } from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filter-tree.constants";
+import { DEFAULT_PRESET_ID } from "../../components/calendar-query/calendar-filters/components/presets/presets.constants";
 
-import type { EventFilterQuery } from "../../components/calendar-filters/event-filters.types";
-import type { ResolvedPreset } from "../../components/calendar-filters/presets.types";
+import type { EventFilterQuery } from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filters.types";
+import type { ResolvedPreset } from "../../components/calendar-query/calendar-filters/components/presets/presets.types";
 
 // 🔏 Private Functions
 

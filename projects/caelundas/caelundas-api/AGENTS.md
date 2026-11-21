@@ -4,12 +4,14 @@
 
 **Type**: Node.js HTTP API server (NestJS + Apollo GraphQL)
 
-**Purpose**: Serve the astronomical events `caelundas-cli` writes to the Caelundas Postgres to `caelundas-web` over GraphQL, reading them through `CaelundasDatabaseModule` from `@codebase/caelundas-db`. It answers the `health` query and `nightSky`, which draws the animated star-field backdrop; the calendar queries arrive in later pull requests. Runs locally on `CAELUNDAS_API_PORT` (default 6173).
+**Purpose**: <!-- Briefly describe the specific purpose of this GraphQL API -->
+
+**Details**: Serve the astronomical events `caelundas-cli` writes to the Caelundas Postgres to `caelundas-web` over GraphQL, reading them through `CaelundasDatabaseModule` from `@codebase/caelundas-db`. It answers the `health` query and `nightSky`, which draws the animated star-field backdrop; the calendar queries arrive in later pull requests. Runs locally on `CAELUNDAS_API_PORT` (default 6173).
 
 ### Run Locally
 
 ```bash
-cp .env.default .env  # Fill in required environment variables
+cp configuration/.env.default configuration/.env  # Fill in required environment variables
 nx run caelundas-api:start
 ```
 
@@ -24,7 +26,8 @@ nx run caelundas-api:start
 - **Dataloaders**: `dataloader` (request-scoped, prevents N+1 queries)
 - **Database**: Postgres through `CaelundasDatabaseModule` (`@codebase/caelundas-db`, which wraps the shared `DatabaseModule` from `@codebase/persistence`); no file is opened. Connects as `caelundas_username` to `caelundas_development`.`caelundas` with the `CAELUNDAS_POSTGRES_*` variables, which `environmentSchema` takes from `postgresEnvironmentSchema({ project: "caelundas" })`. Migrations run separately with `nx run caelundas-db:migration:run`
 - **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `.constants.ts`)
-- **CORS**: `application.enableCors(new CorsService().getOptions(...))` in the bootstrap, with the origins from `CAELUNDAS_API_CORS_ORIGINS` (comma separated, default `*`). The CORS middleware answers the browser's `OPTIONS` preflight before Apollo sees it, so Apollo's CSRF prevention (which would answer it with 400) never runs
+- **CORS**: `CorsModule` (`modules/cors`) provides the options the bootstrap enables, from `CAELUNDAS_API_CORS_ORIGINS` (comma separated). No origin is allowed until you list one, so a browser app on another origin is refused by default; `*` allows every origin and suits only a public API
+- **CORS wiring**: `app.enableCors(app.get(CorsService).getOptions(...))` in the bootstrap, with the origins from `CAELUNDAS_API_CORS_ORIGINS` (comma separated, default empty; `.env.default` lists the web app's dev origins). The CORS middleware answers the browser's `OPTIONS` preflight before Apollo sees it, so Apollo's CSRF prevention (which would answer it with 400) never runs
 - **Logging**: `@codebase/observability` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
 - **Language**: Strict TypeScript
 
@@ -43,6 +46,45 @@ src/caelundas-api.ts
 ```text
 src/
   caelundas-api.ts            # Bootstrap — do not modify
+  caelundas-api.module.ts     # Root NestJS module (imports GraphQLModule, LoggerModule)
+  caelundas-api.constants.ts  # Zod environmentSchema for env validation
+  modules/
+    cors/                             # The CORS options the bootstrap enables
+      cors.module.ts
+      cors.service.ts
+      cors.service.unit.test.ts
+    sample/                           # Example GraphQL module — replace with your domain
+      sample.module.ts
+      sample.resolver.ts
+      sample.service.ts
+      sample.loader.ts
+      sample.entities.ts
+      sample.inputs.ts
+      sample.args.ts
+      sample.factories.ts
+      sample.constants.ts
+      sample.types.ts
+      sample.*.unit.test.ts
+    <domain>/                         # Add feature modules here
+      <domain>.module.ts
+      <domain>.resolver.ts
+      <domain>.service.ts
+      <domain>.loader.ts
+      <domain>.entities.ts
+      <domain>.inputs.ts
+      <domain>.args.ts
+      <domain>.factories.ts
+      <domain>.constants.ts
+      <domain>.types.ts
+      <domain>.<tier>.test.ts
+testing/                              # Shared test utilities
+```
+
+The layout this API has, with its own modules:
+
+```text
+src/
+  caelundas-api.ts            # Bootstrap — do not modify
   caelundas-api.module.ts     # Root NestJS module (imports GraphQLModule, CaelundasDatabaseModule, LoggerModule)
   caelundas-api.constants.ts  # Zod environmentSchema for env validation
   cors.service.ts             # The CORS options the bootstrap enables
@@ -56,6 +98,7 @@ src/
       health.*.unit.test.ts
     night-sky/                        # The `nightSky` query: the builder, its catalog and cache
       data/night-sky-catalog.json     # Trimmed HYG stars and d3-celestial figures, loaded once at startup
+      modules/                        # astronomy/ (projection maths), drawing/ (stars, lines, colors, SVG, view), options/
     <domain>/                         # Add feature modules here
       <domain>.module.ts
       <domain>.resolver.ts
@@ -90,7 +133,6 @@ This creates 13 files in `src/modules/<domain>/`. After generation:
      imports: [
        ConfigModule.forRoot({ ... }),
        GraphQLModule.forRoot<ApolloDriverConfig>({ ... }),
-       CaelundasDatabaseModule,
        LoggerModule,
        MyDomainModule,   // ← add here
      ],
@@ -120,8 +162,10 @@ Outputs structured JSON in production (`NODE_ENV=production`) and pretty-printed
 
 ### GraphQL Playground
 
-The GraphQL playground is available at `http://localhost:6173/graphql` in development.
+The GraphQL playground is available at `http://localhost:3000/graphql` in development.
 Disabled automatically in production (`NODE_ENV=production`).
+
+The port is `CAELUNDAS_API_PORT`; `.env.default` sets 6173 for local runs.
 
 ### Key Commands
 
@@ -272,7 +316,7 @@ See the [write-typescript skill](../../../.agents/skills/write-typescript/SKILL.
 - **Dependency injection failure** — verify the service is `@Injectable()`, exported from its module, and that module is imported by the consuming module.
 - **GraphQL schema not generating** — ensure `autoSchemaFile` is set to `GRAPHQL_SCHEMA_FILE` in `GraphQLModule.forRoot()` and all types use `@ObjectType()`, `@Field()`, etc.
 - **N+1 query problem** — use DataLoaders for all relation fields in resolvers.
-- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `.constants.ts` and to `.env.default`.
+- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `.constants.ts` and to `configuration/.env.default`.
 
 See the [triage-integration skill](../../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
 
@@ -282,6 +326,7 @@ See the [triage-integration skill](../../../.agents/skills/triage-integration/SK
 - [src/caelundas-api.module.ts](src/caelundas-api.module.ts): Root NestJS module
 - [src/caelundas-api.constants.ts](src/caelundas-api.constants.ts): `environmentSchema` (Zod)
 - `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
+- `src/modules/sample/sample.module.ts`: Example GraphQL module
 - [src/modules/health/health.module.ts](src/modules/health/health.module.ts): The `health` query module
 - [project.json](project.json): Nx targets (`start`, `test`, `lint`, `typecheck`, `format`)
-- [.env.default](.env.default): Environment variable template
+- [configuration/.env.default](configuration/.env.default): Environment variable template

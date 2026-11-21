@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.6.1](https://github.com/organizzolini/codebase/compare/v6.6.0...v6.6.1) (2026-11-21)
+
+### ♻️ Code Refactoring
+
+* **configuration,documentation,synchronization:** ♻️ run the agent workflow on superpowers skills ([#2457](https://github.com/organizzolini/codebase/issues/2457)) ([f5f968c](https://github.com/organizzolini/codebase/commit/f5f968c314d0aa966175d280b7d81a0167593160)), closes [#2453](https://github.com/organizzolini/codebase/issues/2453) [AGENTS.md#agent-workflow](https://github.com/organizzolini/AGENTS.md/issues/agent-workflow)
+
+## [6.6.0](https://github.com/organizzolini/codebase/compare/v6.5.0...v6.6.0) (2026-11-21)
+
+### ✨ Features
+
+* **codometer,configuration:** ✨ cap directory breadth and depth, and keep tool configs in configuration folders ([#2452](https://github.com/organizzolini/codebase/issues/2452)) ([e0c12cb](https://github.com/organizzolini/codebase/commit/e0c12cb27fccde59b1142f0f8f0aedc5e0e0c3cc)), closes [#2450](https://github.com/organizzolini/codebase/issues/2450)
+
+## [6.5.0](https://github.com/organizzolini/codebase/compare/v6.4.1...v6.5.0) (2026-11-20)
+
+### ✨ Features
+
+* **conformetry,lexico:** ✨ register every nestjs template instance and conform them ([#2456](https://github.com/organizzolini/codebase/issues/2456)) ([bdbab8e](https://github.com/organizzolini/codebase/commit/bdbab8e640166df64280890fad3b9bc80bc1e57a)), closes [#2455](https://github.com/organizzolini/codebase/issues/2455) [#2442](https://github.com/organizzolini/codebase/issues/2442)
+
+## [6.4.1](https://github.com/organizzolini/codebase/compare/v6.4.0...v6.4.1) (2026-11-17)
+
+### 🐛 Bug Fixes
+
+* **compliance,dependencies:** 🐛 bump vite from 8.3.7 to 8.3.8 and shorten issue field comments ([#2393](https://github.com/organizzolini/codebase/issues/2393)) ([aa18a07](https://github.com/organizzolini/codebase/commit/aa18a073eb12d6584b90ee25725033861e611331))
+
+### 📝 Documentation
+
+* **documentation:** 📝 prefer one pull request per spec ([#2448](https://github.com/organizzolini/codebase/issues/2448)) ([149fe1c](https://github.com/organizzolini/codebase/commit/149fe1c1e21a2fef4f3772b71ccef1a334c05e2c)), closes [#2447](https://github.com/organizzolini/codebase/issues/2447) [#2447](https://github.com/organizzolini/codebase/issues/2447)
+
 ## [6.4.0](https://github.com/organizzolini/codebase/compare/v6.3.1...v6.4.0) (2026-11-16)
 
 ### ✨ Features

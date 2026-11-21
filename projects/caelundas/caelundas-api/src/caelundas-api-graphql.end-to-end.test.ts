@@ -4,7 +4,8 @@ import { Test } from "@nestjs/testing";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { z } from "zod";
 
-import { CorsService } from "./cors.service";
+import { CorsModule } from "./modules/cors/cors.module";
+import { CorsService } from "./modules/cors/cors.service";
 import { HealthModule } from "./modules/health/health.module";
 
 import type { INestApplication } from "@nestjs/common";
@@ -28,12 +29,13 @@ describe("caelundas api graphql end-to-end suite", () => {
           driver: ApolloDriver,
           playground: false,
         }),
+        CorsModule,
         HealthModule,
       ],
     }).compile();
 
     application = module.createNestApplication<INestApplication<Server>>();
-    application.enableCors(new CorsService().getOptions([webOrigin]));
+    application.enableCors(module.get(CorsService).getOptions([webOrigin]));
     await application.listen(0);
     url = `${await application.getUrl()}/graphql`;
   });

@@ -127,7 +127,7 @@ WHERE NOT EXISTS (
 
 A Characteristic added, renamed, or removed needs no schema change: the next draw run
 rewrites the catalog, and a removed one takes its bridge rows with it. See
-[ADR 0032](../../../documentation/adr/0032-store-characteristics-in-a-catalog-and-a-bridge.md).
+[ADR 0034](../../../documentation/adr/0034-store-characteristics-in-a-catalog-and-a-bridge.md).
 
 **Nothing checks the database against a fresh draw run.** A drift check used to
 run on every commit, and a `drawingHash` column fed it; both are gone, for now — see
@@ -319,4 +319,4 @@ above 6 rows.
 
 ## 👔 Conformetry
 
-This project was generated from the [nestjs-command-project](../../../configuration/conformetry-templates/nestjs-command-project) conformetry template.
+This project was generated from the [nestjs-command-project](../../../configuration/ic-suite/conformetry-templates/nestjs-command-project) conformetry template.

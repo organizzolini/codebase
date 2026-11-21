@@ -18,9 +18,11 @@ export interface Difference {
 
 /** Arguments for running one project's check or write. */
 export interface RunCheckArguments {
-  /** The project's folder, absolute: where its configuration is read from. */
+  /** The project's folder, absolute: the root its run scans. */
   readonly directory: string;
   readonly mode: CheckMode;
+  /** The project's configuration, relative to `directory`; never searched for. */
+  readonly projectConfigurationPath: string;
   /** The workspace root, which paths in the report are relative to. */
   readonly workspaceRoot: string;
 }

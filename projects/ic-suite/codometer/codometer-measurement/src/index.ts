@@ -44,3 +44,9 @@ export type {
   AnalyzeSizeArguments,
   SizeResult,
 } from "./modules/size/size.types";
+export { TreeModule } from "./modules/tree/tree.module";
+export { TreeService } from "./modules/tree/tree.service";
+export type {
+  MeasureTreeArguments,
+  TreeBreach,
+} from "./modules/tree/tree.types";

@@ -4,17 +4,15 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { assertEphemerisFilesPresent } from "../ephemeris-download/ephemeris-download.utilities";
-
-import { EphemerisAggregationService } from "./ephemeris-aggregation.service";
-import { EphemerisConstantsService } from "./ephemeris-constants.service";
-import { EphemerisCoordinateService } from "./ephemeris-coordinate.service";
-import { EphemerisHorizonService } from "./ephemeris-horizon.service";
-import { EphemerisPhenomenaService } from "./ephemeris-phenomena.service";
-import { EphemerisTimeService } from "./ephemeris-time.service";
 import { EphemerisService } from "./ephemeris.service";
+import { EphemerisAggregationService } from "./modules/aggregation/ephemeris-aggregation.service";
+import { EphemerisConstantsService } from "./modules/constants-lookup/ephemeris-constants.service";
+import { EphemerisCoordinateService } from "./modules/coordinates/ephemeris-coordinate.service";
+import { assertEphemerisFilesPresent } from "./modules/ephemeris-download/ephemeris-download.utilities";
+import { EphemerisHorizonService } from "./modules/horizon/ephemeris-horizon.service";
+import { EphemerisPhenomenaService } from "./modules/phenomena/ephemeris-phenomena.service";
+import { EphemerisTimeService } from "./modules/time/ephemeris-time.service";
 
-import type * as EphemerisDownloadUtilities from "../ephemeris-download/ephemeris-download.utilities";
 import type * as EphemerisConstantsModule from "./ephemeris.constants";
 import type {
   AzimuthElevationEphemeris,
@@ -27,10 +25,11 @@ import type {
   EphemerisFeatureSets,
   JulianDays,
 } from "./internal-ephemeris.types";
+import type * as EphemerisDownloadUtilities from "./modules/ephemeris-download/ephemeris-download.utilities";
 import type { Moment } from "moment-timezone";
 
 vi.mock(
-  "../ephemeris-download/ephemeris-download.utilities",
+  "./modules/ephemeris-download/ephemeris-download.utilities",
   async (importOriginal) => {
     const original = await importOriginal<typeof EphemerisDownloadUtilities>();
     return {

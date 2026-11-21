@@ -5,8 +5,8 @@ import {
   DOWNLOAD_COMMAND,
   EPHEMERIS_FIRST_YEAR,
   EPHEMERIS_LAST_YEAR,
-} from "../ephemeris-download/ephemeris-download.constants";
-import { resolveEphemerisDirectory } from "../ephemeris-download/ephemeris-download.utilities";
+} from "./modules/ephemeris-download/ephemeris-download.constants";
+import { resolveEphemerisDirectory } from "./modules/ephemeris-download/ephemeris-download.utilities";
 
 import type { Asteroid, Node, Planet } from "../caelundas/caelundas.types";
 import type {

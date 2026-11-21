@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-import type { FORMAT_NAMES } from "./configuration-flags.constants";
+import type { FORMAT_NAMES } from "./modules/flags/configuration-flags.constants";
 import type { WriteMarkdownOutput } from "./output.types";
 import type {
   CodometerSeverity,
@@ -102,7 +102,7 @@ export interface CodometerConfiguration {
   python?: CodometerPythonConfiguration | undefined;
 }
 
-/** A counter over `patterns`, `symbols`, or `comment`. */
+/** A counter over `patterns`, `symbols`, `comment`, or `tree`. */
 export interface CodometerCustomStatistic {
   /** Badge color, as a shields.io hexadecimal triplet. */
   color?: string | undefined;
@@ -116,6 +116,7 @@ export interface CodometerCustomStatistic {
   label: string;
   patterns?: string[] | undefined;
   symbols?: CodometerSymbolMatcher | undefined;
+  tree?: CodometerTreeSelector | undefined;
 }
 
 /** Unit a documentation length is measured in. */
@@ -195,9 +196,23 @@ export interface CodometerSymbolMatcher {
   modifiers?: CodometerSymbolModifier[] | undefined;
 }
 
+/**
+ * One ceiling every directory of the measured tree is held to: its breadth or its depth.
+ *
+ * Its count is how many directories broke it.
+ */
+export interface CodometerTreeSelector {
+  /** Directory globs exempt from the ceiling, with their descendants. */
+  exclude?: string[] | undefined;
+  /** Entries one directory may hold directly, files and folders alike. */
+  maximumBreadth?: number | undefined;
+  /** Folders deep a directory may sit below the measured root. */
+  maximumDepth?: number | undefined;
+}
+
 /** Arguments accepted when loading a configuration file. */
 export interface LoadConfigurationArguments {
-  /** The configuration file, relative to the cwd or the repository root. */
+  /** The configuration file, absolute or relative to the working directory. */
   configurationPath: string;
 }
 

@@ -1,8 +1,8 @@
 // 🏷️ Types
 
-import type { MeanderFilterGroupInput } from "./filters/meander-filter.entities";
 import type { MeanderSortInput } from "./meander-sort.entities";
 import type { cursorSchema, SHAPE_SORT_FIELDS } from "./meanders.constants";
+import type { MeanderFilterGroupInput } from "./modules/filters/meander-filter.entities";
 import type { z } from "zod";
 
 /** What a cursor carries, as read back. */

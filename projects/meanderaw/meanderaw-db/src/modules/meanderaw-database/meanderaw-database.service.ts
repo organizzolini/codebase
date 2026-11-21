@@ -2,16 +2,16 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
-import { AggregateMarker } from "./entities/aggregate-marker.entity";
-import { Characteristic } from "./entities/characteristic.entity";
-import { MeanderCharacteristic } from "./entities/meander-characteristic.entity";
-import { Meander } from "./entities/meander.entity";
 import {
   CHARACTERISTIC_INSERT_CHUNK_SIZE,
   MEANDER_INSERT_CHUNK_SIZE,
   MEANDER_READ_BATCH_SIZE,
   UnknownCharacteristicError,
 } from "./meanderaw-database.constants";
+import { AggregateMarker } from "./modules/aggregate/aggregate-marker.entity";
+import { Characteristic } from "./modules/characteristic/characteristic.entity";
+import { MeanderCharacteristic } from "./modules/characteristic/meander-characteristic.entity";
+import { Meander } from "./modules/meander/meander.entity";
 
 import type {
   CharacteristicRecord,

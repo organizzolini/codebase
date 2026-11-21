@@ -6,7 +6,7 @@ import { serveGraphqlApi } from "./graphql-api";
 import type {
   GalleryGroup,
   GalleryMeander,
-} from "../src/components/meander-gallery/meanders-api.types";
+} from "../src/components/gallery/meander-gallery/meanders-api.types";
 import type {
   CharacteristicsQuery,
   CharacteristicsQueryVariables,

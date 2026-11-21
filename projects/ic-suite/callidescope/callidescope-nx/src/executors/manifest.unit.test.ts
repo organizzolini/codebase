@@ -155,7 +155,10 @@ describe("executors.json", () => {
       true,
     );
     expect(
-      readFileSync(path.join(PACKAGE_DIRECTORY, "vite.config.ts"), "utf8"),
+      readFileSync(
+        path.join(PACKAGE_DIRECTORY, "configuration", "vite.config.ts"),
+        "utf8",
+      ),
     ).toContain(`"${subpath}":`);
   });
 

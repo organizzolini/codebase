@@ -4,7 +4,7 @@ import { fixtureMeander } from "../../../testing/meanders-api";
 
 import { appendPage } from "./use-group-cards.utilities";
 
-import type { MeandersPage } from "../../components/meander-gallery/meanders-api.types";
+import type { MeandersPage } from "../../components/gallery/meander-gallery/meanders-api.types";
 
 /** A page of fixture meanders. */
 function pageOf(...positions: number[]): MeandersPage {

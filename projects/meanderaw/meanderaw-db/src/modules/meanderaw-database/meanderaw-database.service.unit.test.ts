@@ -6,9 +6,9 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { meanderRecord } from "../../../testing/meanders";
 
-import { Characteristic } from "./entities/characteristic.entity";
-import { Meander } from "./entities/meander.entity";
 import { MeanderawDatabaseService } from "./meanderaw-database.service";
+import { Characteristic } from "./modules/characteristic/characteristic.entity";
+import { Meander } from "./modules/meander/meander.entity";
 
 import type { MeanderRecord } from "./meanderaw-database.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";

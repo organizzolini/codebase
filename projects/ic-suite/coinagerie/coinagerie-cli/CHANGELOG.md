@@ -1,3 +1,47 @@
+## 0.0.27 (2026-11-21)
+
+### 💅 Refactors
+
+- **configuration,documentation,synchronization:** ♻️ run the agent workflow on superpowers skills ([#2457](https://github.com/organizzolini/codebase/pull/2457), [#2453](https://github.com/organizzolini/codebase/issues/2453))
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.27
+- Updated coinagerie-vocabulary to 0.0.27
+- Updated coinagerie-output to 0.0.27
+- Updated coinagerie-core to 0.0.27
+
+## 0.0.26 (2026-11-20)
+
+### 🚀 Features
+
+- **codometer,configuration:** ✨ cap directory breadth and depth, and keep tool configs in configuration folders ([#2452](https://github.com/organizzolini/codebase/pull/2452), [#2450](https://github.com/organizzolini/codebase/issues/2450))
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.26
+- Updated coinagerie-vocabulary to 0.0.26
+- Updated coinagerie-output to 0.0.26
+- Updated coinagerie-core to 0.0.26
+
+## 0.0.25 (2026-11-20)
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.25
+- Updated coinagerie-vocabulary to 0.0.25
+- Updated coinagerie-output to 0.0.25
+- Updated coinagerie-core to 0.0.25
+
+## 0.0.24 (2026-11-17)
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.24
+- Updated coinagerie-vocabulary to 0.0.24
+- Updated coinagerie-output to 0.0.24
+- Updated coinagerie-core to 0.0.24
+
 ## 0.0.23 (2026-11-15)
 
 ### 🚀 Features
