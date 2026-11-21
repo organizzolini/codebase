@@ -29,9 +29,24 @@ Completion: each item below holds, or is fixed and noted. Read the pull request 
 
 ## 1. Green CI
 
-Completion: `gh pr view <n> --json mergeable,mergeStateStatus` reports `MERGEABLE` and `CLEAN`, and all 11 required contexts have passed (Format, Typecheck, Secure, Test, Test Meanderaw, Test IC Suite, Guard, Build, Lint, Deprecate, Comply).
+Completion: `gh pr view <n> --json mergeable,mergeStateStatus` reports `MERGEABLE` and `CLEAN`, and every required check has passed.
 
-A check **count** proves nothing: a conflicting pull request runs no `pull_request` workflows, so a short green list means unvalidated. Confirm `MERGEABLE` first, then count the check **names**.
+The required list lives in the repository ruleset, so read it rather than trust a copy in this file, which drifts as legs are added and split:
+
+```bash
+gh api repos/<owner>/<repo>/rules/branches/main \
+  --jq '.[] | select(.type=="required_status_checks") | .parameters.required_status_checks[].context' | sort
+gh api repos/<owner>/<repo>/commits/<head-sha>/check-runs --paginate \
+  --jq '.check_runs[] | "\(.conclusion // .status)\t\(.name)"' | sort
+```
+
+Every name in the first list must appear as `success` in the second. The ruleset is defined in [infrastructure/terraform/github/main.tf](../../../infrastructure/terraform/github/main.tf) (`local.required_checks`), and each name is a job of 🧑‍🎤 Continuous Integration (a matrix leg, written `<emoji> <name>`) or 🦹 Continuous Compliance. A few things to know when reading them:
+
+- 🧑‍⚕️ Static runs typecheck, format, lint and deprecate together, and tests are one `🧑‍🔬 Test <group>` check per project group, so no check is called Format, Typecheck, Lint, Deprecate or plain Test.
+- CodeQL and its `Analyze` jobs are not required checks (a code-scanning rule covers them), and 🧑‍💼 Issue is skipped on pull requests; both can show without being in the ruleset.
+- Continuous Integration skips a draft entirely, so a draft shows none of the required names.
+
+A check **count** proves nothing: a conflicting pull request runs no `pull_request` workflows, so a short green list means unvalidated. Confirm `MERGEABLE` first, then compare the check **names** against the ruleset.
 
 For each red check, diagnose with [triage-integration](../triage-integration/SKILL.md), then choose a tier:
 
@@ -41,7 +56,7 @@ For each red check, diagnose with [triage-integration](../triage-integration/SKI
 | **Raise to the user** | moving, renaming, or adding modules; edits reaching a second project; dependency, lockfile, tsconfig, or limit changes; deleting or weakening a test; ADR-level or interface changes; a failure with no clear root cause             | Stop. Report the failing check, root cause, and a recommended fix                                                              |
 | **Re-run**            | a flaky cause listed in [known-failures.md](references/known-failures.md), or a runner timeout or cancellation with no code cause                                                                                                    | `gh run rerun <id> --failed`, once                                                                                             |
 
-- A failing metadata check (`Validate Conventions`, `Comply`) needs a fresh event, not a re-run, which replays the frozen payload.
+- A failing metadata check (`Comply`) needs a fresh event, not a re-run, which replays the frozen payload.
 - Fix root causes only. Suppression comments, loosened compiler options, lint ignores, raised limits, and `--no-verify` are all off the table.
 - Every pushed fix gets a Conventional Commit and a signature. Mention each fix in the pull request thread so the reviewer sees what moved after approval; if a fix changes what the pull request does or its title's type, run [update-pull-request](../update-pull-request/SKILL.md).
 
