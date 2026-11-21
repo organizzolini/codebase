@@ -7,7 +7,7 @@ import { LibraryFacetsType } from "./library-facets.entities";
 import { LibraryPageType } from "./library-page.entities";
 import { LibraryTextsPageType } from "./library-texts-page.entities";
 import { LibraryWorksArguments } from "./library-works-arguments.entities";
-import { LIBRARY_WORKS_PER_AUTHOR } from "./library.constants";
+import { LIBRARY_WORKS_PAGE_SIZE } from "./library.constants";
 import { LibraryService } from "./library.service";
 import {
   parseLibraryArguments,
@@ -74,7 +74,7 @@ export class LibraryResolver {
         authorId,
         parseLibraryArguments({
           ...rest,
-          pageSize: rest.pageSize ?? LIBRARY_WORKS_PER_AUTHOR,
+          pageSize: rest.pageSize ?? LIBRARY_WORKS_PAGE_SIZE,
         }),
       ),
     );

@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { Author } from "@codebase/lexico-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { LIBRARY_WORKS_PAGE_SIZE } from "./library.constants";
 import { LibraryResolver } from "./library.resolver";
 import { LibraryService } from "./library.service";
 
@@ -84,5 +85,32 @@ describe(LibraryResolver, () => {
     });
 
     await expect(instance.libraryFacets()).resolves.toMatchObject(facets);
+  });
+
+  it("pages an author's works at a size the arguments accept by default", async () => {
+    expect.hasAssertions();
+
+    const service = createMock<LibraryService>({
+      listLibraryWorks: vi
+        .fn<LibraryService["listLibraryWorks"]>()
+        .mockResolvedValue({ pageCount: 0, texts: [], totalCount: 0 }),
+    });
+    const { instance } = await buildTestingModule(LibraryResolver, {
+      providers: [{ provide: LibraryService, useValue: service }],
+    });
+
+    await instance.libraryWorks({ authorId: "author-1" });
+    await instance.libraryWorks({ authorId: "author-1", pageSize: 10 });
+
+    expect(service.listLibraryWorks).toHaveBeenNthCalledWith(
+      1,
+      "author-1",
+      expect.objectContaining({ pageSize: LIBRARY_WORKS_PAGE_SIZE }),
+    );
+    expect(service.listLibraryWorks).toHaveBeenNthCalledWith(
+      2,
+      "author-1",
+      expect.objectContaining({ pageSize: 10 }),
+    );
   });
 });

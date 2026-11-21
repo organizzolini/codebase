@@ -20,6 +20,9 @@ export const LIBRARY_MAX_PAGE_SIZE = 100;
  */
 export const LIBRARY_WORKS_PER_AUTHOR = 200;
 
+/** The works one `libraryWorks` page holds when it names no size. */
+export const LIBRARY_WORKS_PAGE_SIZE = 50;
+
 /** The children one `libraryChildren` page holds when it names no size. */
 export const LIBRARY_CHILDREN_PAGE_SIZE = 100;
 
