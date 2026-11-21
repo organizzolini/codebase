@@ -1,13 +1,12 @@
 import {
   Button,
   ButtonGroup,
-  Checkbox,
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
+  Cascader,
+  CascaderColumns,
+  CascaderEmpty,
+  CascaderInput,
+  CascaderNav,
+  CascaderPanel,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -15,7 +14,7 @@ import {
 } from "@codebase/presentation";
 
 import { LIBRARY_STRIP_CHIPS } from "./library-toolbar.constants";
-import { identify } from "./library-toolbar.utilities";
+import { identify, toCascaderItems } from "./library-toolbar.utilities";
 
 import type { LibraryOption } from "./library-option-menu.types";
 import type { LucideIcon } from "lucide-react";
@@ -65,7 +64,7 @@ export function LibraryOptionMenu(
   // 🪝 Hooks
 
   // 🏗 Setup
-  const checked = new Set(selected);
+  const items = toCascaderItems(options);
 
   // 💪 Handlers
 
@@ -101,34 +100,29 @@ export function LibraryOptionMenu(
           </PopoverTrigger>
           <PopoverContent
             align="start"
-            className="w-80 p-0"
+            className="w-auto p-0"
           >
-            <Command>
-              <CommandInput placeholder={`${title}...`} />
-              <CommandList>
-                <CommandEmpty>No match.</CommandEmpty>
-                <CommandGroup heading={title}>
-                  {options.map(
-                    ({ icon: OptionIcon, label: optionLabel, value }) => (
-                      <CommandItem
-                        key={value}
-                        onSelect={() => {
-                          onToggle(value);
-                        }}
-                        value={optionLabel}
-                      >
-                        <Checkbox
-                          checked={checked.has(value)}
-                          tabIndex={-1}
-                        />
-                        <OptionIcon aria-hidden="true" />
-                        <span className="whitespace-nowrap">{optionLabel}</span>
-                      </CommandItem>
-                    ),
-                  )}
-                </CommandGroup>
-              </CommandList>
-            </Command>
+            <Cascader
+              items={items}
+              mode="columns"
+              onValueChange={(_values, { node }) => {
+                if (node !== null) {
+                  onToggle(node.value);
+                }
+              }}
+              searchScope="deep"
+              value={[...selected]}
+              inline
+              multiple
+            >
+              <CascaderPanel>
+                <CascaderNav>
+                  <CascaderInput placeholder={`${title}...`} />
+                </CascaderNav>
+                <CascaderColumns />
+                <CascaderEmpty>No match.</CascaderEmpty>
+              </CascaderPanel>
+            </Cascader>
           </PopoverContent>
         </Popover>
         {children}

@@ -3,14 +3,16 @@ import { createElement } from "react";
 
 import {
   Button,
-  ButtonGroupText,
+  cn,
   SortableItem,
   SortableItemHandle,
 } from "@codebase/presentation";
 
 import {
+  LIBRARY_CHIP_CONTROL,
   LIBRARY_CHIP_ICON_FADE,
   LIBRARY_CHIP_REVEAL,
+  LIBRARY_TEXT_SEGMENT,
 } from "./library-chip.constants";
 
 import type { LucideIcon } from "lucide-react";
@@ -89,6 +91,7 @@ export function LibraryChip(
   return (
     <div
       className={className}
+      data-slot="library-chip"
       data-testid="library-chip"
     >
       <SortableItem
@@ -99,7 +102,12 @@ export function LibraryChip(
         value={value}
       >
         {onActivate === undefined ? (
-          <ButtonGroupText>{content}</ButtonGroupText>
+          <div
+            className={LIBRARY_TEXT_SEGMENT}
+            data-slot="button"
+          >
+            {content}
+          </div>
         ) : (
           <Button
             aria-label={activateLabel}
@@ -112,13 +120,13 @@ export function LibraryChip(
             {content}
           </Button>
         )}
-        <div className="pointer-events-none absolute inset-x-1 inset-y-0 flex items-center justify-between">
+        <div className="pointer-events-none absolute inset-x-2.5 inset-y-0 flex items-center justify-between">
           <SortableItemHandle
             render={
               <Button
                 aria-label={`Reorder ${label}`}
-                className={LIBRARY_CHIP_REVEAL}
-                size="icon-xs"
+                className={cn(LIBRARY_CHIP_CONTROL, LIBRARY_CHIP_REVEAL)}
+                size="xs"
                 type="button"
                 variant="ghost"
               />
@@ -128,11 +136,11 @@ export function LibraryChip(
           </SortableItemHandle>
           <Button
             aria-label={removeLabel}
-            className={LIBRARY_CHIP_REVEAL}
+            className={cn(LIBRARY_CHIP_CONTROL, LIBRARY_CHIP_REVEAL)}
             onClick={() => {
               onRemove();
             }}
-            size="icon-xs"
+            size="xs"
             type="button"
             variant="ghost"
           >

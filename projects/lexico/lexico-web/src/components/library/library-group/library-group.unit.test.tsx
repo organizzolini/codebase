@@ -1,12 +1,15 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+import { stubAnimations } from "../../../../testing/animations";
 import { LibraryGroupField } from "../../../graphql/generated/operations";
 
 import { LibraryGroup } from "./library-group";
 
 import type { LibraryGroupProperties } from "./library-group";
 import type { ReactNode } from "react";
+
+stubAnimations();
 
 // jsdom cannot drag, so a stand-in for Sortable reports the reversed order from a button.
 vi.mock("@codebase/presentation", async (importOriginal) => ({

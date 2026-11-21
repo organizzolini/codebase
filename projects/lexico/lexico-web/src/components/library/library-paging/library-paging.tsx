@@ -3,7 +3,6 @@ import { ChevronLeft, ChevronRight, Rows3 } from "lucide-react";
 import {
   Button,
   ButtonGroup,
-  ButtonGroupText,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
@@ -14,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@codebase/presentation";
 
+import { LIBRARY_TEXT_SEGMENT } from "../../library-strip/library-chip/library-chip.constants";
 import { LIBRARY_LIMITS } from "../library-grid/library-grid-api.constants";
 
 import { PAGING_LABEL } from "./library-paging.constants";
@@ -130,9 +130,12 @@ export function LibraryPaging(
         >
           <ChevronLeft aria-hidden="true" />
         </Button>
-        <ButtonGroupText>
+        <div
+          className={LIBRARY_TEXT_SEGMENT}
+          data-slot="button"
+        >
           {formatRange(page, limit, totalCount)}
-        </ButtonGroupText>
+        </div>
         <Button
           aria-label="Next page"
           disabled={page >= pageCount}

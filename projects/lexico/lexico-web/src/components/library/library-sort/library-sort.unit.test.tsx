@@ -1,6 +1,7 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+import { stubAnimations } from "../../../../testing/animations";
 import {
   LibrarySortDirection,
   LibrarySortField,
@@ -10,6 +11,8 @@ import { LibrarySort } from "./library-sort";
 
 import type { LibrarySortProperties } from "./library-sort";
 import type { ReactNode } from "react";
+
+stubAnimations();
 
 // jsdom cannot drag, so a stand-in for Sortable reports the reversed order from a button.
 vi.mock("@codebase/presentation", async (importOriginal) => ({
@@ -63,7 +66,8 @@ describe(LibrarySort, () => {
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Sort" }));
-    fireEvent.click(await screen.findByRole("option", { name: "Text title" }));
+    fireEvent.click(await screen.findByRole("option", { name: /^Text/u }));
+    fireEvent.click(await screen.findByRole("option", { name: /Text title/u }));
 
     expect(onSorts).toHaveBeenCalledWith([
       ERA,
@@ -84,13 +88,10 @@ describe(LibrarySort, () => {
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Sort" }));
-    const era = await screen.findByRole("option", {
-      name: "Author era",
-    });
+    fireEvent.click(await screen.findByRole("option", { name: /^Author/u }));
+    const era = await screen.findByRole("option", { name: /Author era/u });
 
-    expect(within(era).getByRole("checkbox").getAttribute("aria-checked")).toBe(
-      "true",
-    );
+    expect(era.getAttribute("aria-selected")).toBe("true");
 
     fireEvent.click(era);
 

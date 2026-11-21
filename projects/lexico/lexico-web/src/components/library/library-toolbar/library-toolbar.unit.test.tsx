@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { createFilterQuery, createFilterRule } from "@codebase/presentation";
 
+import { stubAnimations } from "../../../../testing/animations";
 import {
   AuthorEra,
   LibraryGroupField,
@@ -17,6 +18,8 @@ import {
 
 import type { LibraryToolbarProperties } from "./library-toolbar";
 import type { FilterRule } from "@codebase/presentation";
+
+stubAnimations();
 
 const FACETS = { inscriptionTypes: [], materials: [], provinces: [] };
 

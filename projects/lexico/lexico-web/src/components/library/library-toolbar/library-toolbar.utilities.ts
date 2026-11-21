@@ -19,12 +19,14 @@ import {
 } from "./library-toolbar.constants";
 
 import type { LibraryFilterParameters } from "../library-grid/library-grid.types";
+import type { LibraryOption } from "./library-option-menu.types";
 import type {
   LibraryFacetKey,
   LibraryFacetsResult,
   LibraryFilterKey,
 } from "./library-toolbar.types";
 import type {
+  CascaderNode,
   FilterField,
   FilterOperator,
   FilterOption,
@@ -92,6 +94,20 @@ export function isSameFilters(
   return JSON.stringify(left) === JSON.stringify(right);
 }
 
+/** The options as the cascader's nodes, an option's icon drawn as its node's. */
+export function toCascaderItems(
+  options: readonly LibraryOption[],
+): CascaderNode[] {
+  return options.map(({ children, icon, label, value }) => ({
+    icon: createElement(icon, { "aria-hidden": true }),
+    label,
+    value,
+    ...(children === undefined ? {} : { children: toCascaderItems(children) }),
+  }));
+}
+
+// 🌎 Public Functions
+
 /**
  * Reads the URL's filters from a filter tree, skipping chips still missing their condition or value.
  */
@@ -115,8 +131,6 @@ export function toFilterParameters(
 
   return libraryFilterSchema.parse(raw);
 }
-
-// 🌎 Public Functions
 
 /**
  * Builds the filter tree the URL's filters describe: one rule per filter that is set.

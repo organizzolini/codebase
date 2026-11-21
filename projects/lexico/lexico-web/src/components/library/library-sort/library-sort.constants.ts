@@ -116,10 +116,51 @@ export const LIBRARY_SORT_FIELDS = new Map<string, LibrarySortField>(
   LIBRARY_SORT_OPTIONS.map(({ field }) => [field, field]),
 );
 
-/** The sortable attributes as the checklist menu lists them. */
-export const LIBRARY_SORT_MENU_OPTIONS: readonly LibraryOption[] =
-  LIBRARY_SORT_OPTIONS.map(({ field, icon, label }) => ({
-    icon,
-    label,
-    value: field,
-  }));
+/** The sortable attributes as the menu lists them, one by one. */
+const LIBRARY_SORT_LEAVES = new Map<LibrarySortField, LibraryOption>(
+  LIBRARY_SORT_OPTIONS.map(({ field, icon, label }) => [
+    field,
+    { icon, label, value: field },
+  ]),
+);
+
+/** The leaves of one category, in the order given. */
+const leavesOf = (fields: readonly LibrarySortField[]): LibraryOption[] =>
+  fields.flatMap((field) => LIBRARY_SORT_LEAVES.get(field) ?? []);
+
+/** The sortable attributes as the nested menu lists them: Author, Text, and Inscription, each holding its attributes. */
+export const LIBRARY_SORT_MENU_OPTIONS: readonly LibraryOption[] = [
+  {
+    children: leavesOf([
+      LibrarySortField.AuthorName,
+      LibrarySortField.AuthorFullName,
+      LibrarySortField.AuthorEra,
+      LibrarySortField.AuthorStartYear,
+      LibrarySortField.AuthorEndYear,
+    ]),
+    icon: LIBRARY_ATTRIBUTE_ICONS.authorName,
+    label: "Author",
+    value: "category-author",
+  },
+  {
+    children: leavesOf([
+      LibrarySortField.TextTitle,
+      LibrarySortField.TextPrintYear,
+      LibrarySortField.TextLineCount,
+      LibrarySortField.TextWordCount,
+      LibrarySortField.TextRecognisedWordCount,
+    ]),
+    icon: LIBRARY_ATTRIBUTE_ICONS.textTitle,
+    label: "Text",
+    value: "category-text",
+  },
+  {
+    children: leavesOf([
+      LibrarySortField.TextStartYear,
+      LibrarySortField.TextEndYear,
+    ]),
+    icon: LIBRARY_ATTRIBUTE_ICONS.material,
+    label: "Inscription",
+    value: "category-inscription",
+  },
+];

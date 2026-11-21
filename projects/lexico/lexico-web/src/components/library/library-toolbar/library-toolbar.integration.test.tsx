@@ -5,6 +5,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { graphqlMockServer } from "@codebase/interface/testing";
 import { renderRoute } from "@codebase/testing/react";
 
+import { stubAnimations } from "../../../../testing/animations";
 import {
   AuthorEra,
   LibrarySortDirection,
@@ -17,13 +18,46 @@ import { LIBRARY_SORT_OPTIONS } from "../library-sort/library-sort.constants";
 
 import type { LibraryQueryVariables } from "../../../graphql/generated/mocks";
 
+stubAnimations();
+
 const CALLS: LibraryQueryVariables[] = [];
+
+/** A Sort category's row, an option in the first column and a button once its column is open. */
+async function findCategory(category: RegExp): Promise<HTMLElement> {
+  return waitFor(() => {
+    const row =
+      screen.queryByRole("option", { name: category }) ??
+      screen.queryByRole("button", { name: category });
+    if (row === null) {
+      throw new Error("No category row yet");
+    }
+
+    return row;
+  });
+}
 
 /** The lucide icon an element wears, as its class name, or empty without one. */
 function iconOf(element: HTMLElement): string {
   const icon = element.querySelector("svg")?.getAttribute("class") ?? "";
 
   return /lucide-[\w-]+/u.exec(icon)?.[0] ?? "";
+}
+
+/** Every Sort attribute's row, found by opening each category's column in turn. */
+async function openSortRows(): Promise<Map<string, HTMLElement>> {
+  const rows = new Map<string, HTMLElement>();
+  for (const category of [/^Author/u, /^Text/u, /^Inscription/u]) {
+    fireEvent.click(await findCategory(category));
+    await settle();
+    for (const { label } of LIBRARY_SORT_OPTIONS) {
+      const row = screen.queryByRole("option", { name: label });
+      if (row !== null) {
+        rows.set(label, row);
+      }
+    }
+  }
+
+  return rows;
 }
 
 /** Opens the Filter menu and picks one attribute, leaving its condition menu open. */
@@ -36,6 +70,15 @@ async function pickAttribute(attribute: string): Promise<void> {
 /** Picks the condition of the chip whose menu is open. */
 async function pickCondition(condition: string): Promise<void> {
   fireEvent.click(await screen.findByRole("option", { name: condition }));
+  await settle();
+}
+
+/** Opens a Sort category's column and checks one attribute in it, leaving the menu open. */
+async function pickSort(category: RegExp, attribute: string): Promise<void> {
+  if (screen.queryByRole("option", { name: attribute }) === null) {
+    fireEvent.click(await findCategory(category));
+  }
+  fireEvent.click(await screen.findByRole("option", { name: attribute }));
   await settle();
 }
 
@@ -339,10 +382,18 @@ describe("library toolbar", () => {
 
     fireEvent.click(await screen.findByRole("button", { name: "Sort" }));
 
-    const items = await screen.findAllByRole("option");
+    const categories = await screen.findAllByRole("option");
 
-    expect(items.map((item) => item.textContent)).toStrictEqual(
-      LIBRARY_SORT_OPTIONS.map(({ label }) => label),
+    expect(
+      categories.map((item) => item.textContent.split(",").at(0)),
+    ).toStrictEqual(["Author", "Text", "Inscription"]);
+
+    const rows = await openSortRows();
+    const labels = [...rows.keys()];
+
+    expect(labels).toHaveLength(LIBRARY_SORT_OPTIONS.length);
+    expect(labels).toStrictEqual(
+      expect.arrayContaining(LIBRARY_SORT_OPTIONS.map(({ label }) => label)),
     );
     expect(LIBRARY_SORT_OPTIONS.map(({ field }) => field)).not.toContain(
       "TEXT_COLLECTION",
@@ -365,9 +416,8 @@ describe("library toolbar", () => {
     });
     await settle();
     fireEvent.click(await screen.findByRole("button", { name: "Sort" }));
-    const sortRows = await screen.findAllByRole("option");
     const sortIcons = new Map(
-      sortRows.map((item) => [item.textContent, iconOf(item)]),
+      [...(await openSortRows())].map(([label, item]) => [label, iconOf(item)]),
     );
 
     expect(new Set(filterIcons.values()).size).toBe(filterIcons.size);
@@ -390,9 +440,7 @@ describe("library toolbar", () => {
     await renderRoute(router, "/library");
 
     fireEvent.click(await screen.findByRole("button", { name: "Sort" }));
-    fireEvent.click(
-      await screen.findByRole("option", { name: "Text line count" }),
-    );
+    await pickSort(/^Text/u, "Text line count");
 
     await waitFor(() =>
       expect(CALLS.at(-1)?.sort).toStrictEqual([
@@ -439,9 +487,9 @@ describe("library toolbar", () => {
     await renderRoute(getRouter(), "/library");
 
     fireEvent.click(await screen.findByRole("button", { name: "Sort" }));
-    fireEvent.click(await screen.findByRole("option", { name: "Author era" }));
+    await pickSort(/^Author/u, "Author era");
     await waitFor(() => expect(CALLS.at(-1)?.sort).toHaveLength(1));
-    fireEvent.click(await screen.findByRole("option", { name: "Author name" }));
+    await pickSort(/^Author/u, "Author name");
 
     await waitFor(() => expect(CALLS.at(-1)?.sort).toHaveLength(2));
 
@@ -516,7 +564,7 @@ describe("library toolbar", () => {
     await renderRoute(router, "/library?page=2");
 
     fireEvent.click(await screen.findByRole("button", { name: "Sort" }));
-    fireEvent.click(await screen.findByRole("option", { name: "Author name" }));
+    await pickSort(/^Author/u, "Author name");
 
     await waitFor(() => expect(CALLS.at(-1)?.page).toBe(1));
 

@@ -1,11 +1,15 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { Sunrise, Sunset } from "lucide-react";
 import { describe, expect, it, vi } from "vitest";
+
+import { stubAnimations } from "../../../../testing/animations";
 
 import { LibraryOptionMenu } from "./library-option-menu";
 
 import type { LibraryOptionMenuProperties } from "./library-option-menu";
 import type { ReactNode } from "react";
+
+stubAnimations();
 
 // jsdom cannot drag, so a stand-in for Sortable reports the reversed order from a button.
 vi.mock("@codebase/presentation", async (importOriginal) => ({
@@ -74,9 +78,7 @@ describe(LibraryOptionMenu, () => {
     fireEvent.click(screen.getByRole("button", { name: "Sort" }));
     const end = await screen.findByRole("option", { name: "End" });
 
-    expect(within(end).getByRole("checkbox").getAttribute("aria-checked")).toBe(
-      "true",
-    );
+    expect(end.getAttribute("aria-selected")).toBe("true");
 
     fireEvent.click(screen.getByRole("option", { name: "Start" }));
 
@@ -106,5 +108,34 @@ describe(LibraryOptionMenu, () => {
     fireEvent.click(screen.getByRole("button", { name: "Reverse" }));
 
     expect(onReorder).toHaveBeenCalledExactlyOnceWith(["start", "end"]);
+  });
+
+  it("opens a category into its own column and reports a pick from it", async () => {
+    const onToggle = vi.fn<LibraryOptionMenuProperties["onToggle"]>();
+    render(
+      <LibraryOptionMenu
+        {...properties({
+          onToggle,
+          options: [
+            {
+              children: OPTIONS,
+              icon: Sunrise,
+              label: "Years",
+              value: "years",
+            },
+          ],
+          selected: [],
+        })}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Sort" }));
+    fireEvent.click(await screen.findByRole("option", { name: /^Years/u }));
+
+    expect(onToggle).not.toHaveBeenCalled();
+
+    fireEvent.click(await screen.findByRole("option", { name: "End" }));
+
+    expect(onToggle).toHaveBeenCalledExactlyOnceWith("end");
   });
 });

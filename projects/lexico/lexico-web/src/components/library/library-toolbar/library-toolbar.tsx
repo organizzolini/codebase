@@ -15,7 +15,10 @@ import { LibraryPaging } from "../library-paging/library-paging";
 import { LibrarySearch } from "../library-search/library-search";
 import { LibrarySort } from "../library-sort/library-sort";
 
-import { FILTER_BUTTON_LABEL } from "./library-toolbar.constants";
+import {
+  FILTER_BUTTON_LABEL,
+  LIBRARY_FILTER_STRIP,
+} from "./library-toolbar.constants";
 import {
   createLibraryFilterFields,
   isSameFilters,
@@ -136,7 +139,7 @@ export function LibraryToolbar(
               onSorts={onSorts}
               sorts={sorts}
             />
-            <ButtonGroup className="[&>[data-slot=filter-chip]>:first-child]:rounded-l-none [&>[data-slot=filter-chip]>:first-child]:border-l-0">
+            <ButtonGroup className={LIBRARY_FILTER_STRIP}>
               <FiltersBuilder
                 trigger={
                   <Button

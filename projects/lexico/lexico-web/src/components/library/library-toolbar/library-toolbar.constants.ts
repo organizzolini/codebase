@@ -66,3 +66,7 @@ export const LIBRARY_LIST_KEYS: ReadonlySet<string> = new Set([
 /** Joins a strip's chips to its button: each chip overlaps the border before it, squares its left corners, and squares its right corners unless it is last. */
 export const LIBRARY_STRIP_CHIPS =
   "[&>div]:flex [&>div]:ml-[-1px] [&>div>div>*]:rounded-l-none [&>div:not(:last-child)>div>*]:rounded-r-none";
+
+/** Joins the Filter button and every filter chip into one group: a chip's first segment loses its left corners and border, the last segment of every chip but the last loses its right corners, and no segment wraps its text. */
+export const LIBRARY_FILTER_STRIP =
+  "max-w-full overflow-x-auto [&>[data-slot=filter-chip]>*]:whitespace-nowrap [&>[data-slot=filter-chip]>:first-child]:rounded-l-none [&>[data-slot=filter-chip]>:first-child]:border-l-0 [&>[data-slot=filter-chip]:not(:last-child)>:last-child]:rounded-r-none!";
