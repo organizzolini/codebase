@@ -69,7 +69,6 @@ export function LibrarySort(
         <DropdownMenuTrigger
           render={
             <Button
-              className="bg-card hover:bg-muted dark:bg-card dark:hover:bg-muted"
               type="button"
               variant="outline"
             />
@@ -78,10 +77,7 @@ export function LibrarySort(
           <ArrowDownUp aria-hidden="true" />
           Sort
         </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="end"
-          className="max-h-96 w-72"
-        >
+        <DropdownMenuContent align="end">
           <DropdownMenuGroup>
             <DropdownMenuLabel>Sort by</DropdownMenuLabel>
             <DropdownMenuRadioGroup
@@ -91,13 +87,9 @@ export function LibrarySort(
               {LIBRARY_SORT_OPTIONS.map(({ field, icon: Icon, label }) => (
                 <DropdownMenuRadioItem
                   key={field}
-                  className="gap-2"
                   value={field}
                 >
-                  <Icon
-                    aria-hidden="true"
-                    className="text-muted-foreground"
-                  />
+                  <Icon aria-hidden="true" />
                   {label}
                 </DropdownMenuRadioItem>
               ))}

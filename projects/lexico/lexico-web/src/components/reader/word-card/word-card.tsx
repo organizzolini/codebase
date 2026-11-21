@@ -116,7 +116,6 @@ export function WordCard(properties: Readonly<WordCardProperties>): ReactNode {
         </PopoverTrigger>
         <PopoverContent
           align="start"
-          className="w-72 max-w-[calc(100vw-2rem)] space-y-2 text-sm"
           data-testid="word-card-content"
           side="bottom"
         >

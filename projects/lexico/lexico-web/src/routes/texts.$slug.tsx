@@ -177,7 +177,7 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
             History
           </Button>
         </div>
-        <ReaderHint className="flex items-center justify-between gap-4 rounded-md border p-3 text-sm" />
+        <ReaderHint />
         <ReaderLines
           key={`${text.slug}:${String(line)}`}
           anchor={line}
@@ -188,7 +188,6 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
           slug={text.slug}
         />
         <ReaderNavigation
-          className="flex justify-between gap-4"
           next={text.nextText}
           previous={text.previousText}
         />
@@ -236,7 +235,9 @@ function TextsSlugPage(): ReactNode {
 
   // 🎨 Markup
   return (
-    <section className="-m-4 min-h-svh space-y-4 bg-neutral-950 p-4 md:-ml-2 md:pl-2">
+    // The reader page stays on the dark theme's near-black canvas in light
+    // mode too, a requested exception for reading, so it re-scopes the theme.
+    <section className="dark -m-4 min-h-svh space-y-4 bg-background p-4 text-foreground md:-ml-2 md:pl-2">
       <h1 className="text-center text-3xl font-bold">
         {text.title}
         <span className="sr-only"> by {text.author.name}</span>

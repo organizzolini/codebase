@@ -64,7 +64,6 @@ export function LibraryPaging(
         <DropdownMenuTrigger
           render={
             <Button
-              className="bg-card hover:bg-muted dark:bg-card dark:hover:bg-muted"
               type="button"
               variant="outline"
             />
@@ -73,10 +72,7 @@ export function LibraryPaging(
           <Rows3 aria-hidden="true" />
           {PAGING_LABEL}
         </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="end"
-          className="max-h-96 w-48"
-        >
+        <DropdownMenuContent align="end">
           <DropdownMenuGroup>
             <DropdownMenuLabel>Per page</DropdownMenuLabel>
             <DropdownMenuRadioGroup

@@ -108,7 +108,7 @@ export function ApplicationSidebar(
                 onClick={toggleSidebar}
                 tooltip="Toggle sidebar"
               >
-                <PanelLeft className="h-5 w-5" />
+                <PanelLeft />
                 <span>{state === "expanded" ? "Collapse" : "Expand"}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>

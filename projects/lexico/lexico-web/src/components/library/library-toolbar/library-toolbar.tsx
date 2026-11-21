@@ -135,7 +135,6 @@ export function LibraryToolbar(
           <FiltersBuilder
             trigger={
               <Button
-                className="bg-card hover:bg-muted dark:bg-card dark:hover:bg-muted"
                 type="button"
                 variant="outline"
               >
@@ -144,7 +143,6 @@ export function LibraryToolbar(
                 {rules.length === 0 ? null : (
                   <Badge
                     aria-hidden="true"
-                    className="tabular-nums"
                     variant="secondary"
                   >
                     {rules.length}

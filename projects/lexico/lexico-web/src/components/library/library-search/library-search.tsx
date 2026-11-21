@@ -93,7 +93,7 @@ export function LibrarySearch(
         >
           Search the library
         </Label>
-        <InputGroup className="bg-card dark:bg-card">
+        <InputGroup>
           <InputGroupAddon>
             <Search aria-hidden="true" />
           </InputGroupAddon>

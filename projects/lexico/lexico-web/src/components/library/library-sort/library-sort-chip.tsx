@@ -59,18 +59,14 @@ export function LibrarySortChip(
       <ButtonGroup
         aria-label={`Sort by ${label}, ${isDescending ? "descending" : "ascending"}`}
       >
-        <ButtonGroupText className="cursor-default bg-background dark:bg-input/30">
+        <ButtonGroupText>
           {AttributeIcon === undefined
             ? null
-            : createElement(AttributeIcon, {
-                "aria-hidden": true,
-                className: "text-muted-foreground",
-              })}
+            : createElement(AttributeIcon, { "aria-hidden": true })}
           Sort: {label}
         </ButtonGroupText>
         <Button
           aria-label={`Direction: ${isDescending ? "descending" : "ascending"}. Switch to ${isDescending ? "ascending" : "descending"}`}
-          className="bg-background text-muted-foreground dark:bg-input/30"
           onClick={() => {
             onSort(
               sort,
@@ -87,7 +83,6 @@ export function LibrarySortChip(
         </Button>
         <Button
           aria-label="Remove sort"
-          className="bg-background dark:bg-input/30"
           onClick={() => {
             onSort();
           }}

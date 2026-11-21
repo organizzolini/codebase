@@ -1,6 +1,14 @@
 import { ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@codebase/presentation";
+
 import { LibraryHighlight } from "../library-highlight/library-highlight";
 
 import { ERA_LABELS } from "./library-author-card.constants";
@@ -60,61 +68,66 @@ export function LibraryAuthorCard(
       className={className}
       data-testid="library-author-card"
     >
-      <button
-        aria-controls={panelId}
-        aria-expanded={expanded}
-        className="group/toggle flex w-full items-start gap-2 p-4 text-left"
-        onClick={handleToggle}
-        type="button"
-      >
-        <span className="min-w-0 flex-1 space-y-0.5">
-          <span className="block text-lg font-semibold">
-            <LibraryHighlight
-              className="inline"
-              field="name"
-              matches={matches}
-              value={author.name}
+      <Card>
+        <CardHeader>
+          <button
+            aria-controls={panelId}
+            aria-expanded={expanded}
+            className="group/toggle flex w-full items-start gap-2 text-left"
+            onClick={handleToggle}
+            type="button"
+          >
+            <span className="min-w-0 flex-1">
+              <CardTitle>
+                <LibraryHighlight
+                  className="inline"
+                  field="name"
+                  matches={matches}
+                  value={author.name}
+                />
+              </CardTitle>
+              {author.fullName === null ? null : (
+                <LibraryHighlight
+                  className="block"
+                  field="fullName"
+                  matches={matches}
+                  value={author.fullName}
+                />
+              )}
+              <CardDescription>
+                {[
+                  author.era === null ? "" : ERA_LABELS[author.era],
+                  years,
+                  `${String(workCount)} ${workCount === 1 ? "work" : "works"}`,
+                ]
+                  .filter((part) => part !== "")
+                  .join(" · ")}
+              </CardDescription>
+            </span>
+            <ChevronRightIcon
+              aria-hidden="true"
+              className="shrink-0 transition-transform group-aria-expanded/toggle:rotate-90"
             />
-          </span>
-          {author.fullName === null ? null : (
-            <LibraryHighlight
-              className="block text-sm"
-              field="fullName"
-              matches={matches}
-              value={author.fullName}
+          </button>
+        </CardHeader>
+        <CardContent>
+          {expanded ? (
+            <LibraryAuthorTexts
+              className="space-y-3 border-t pt-4"
+              id={panelId}
+              query={query}
+              row={row}
             />
+          ) : (
+            <p
+              className="line-clamp-3 text-muted-foreground"
+              data-testid="library-author-preview"
+            >
+              {preview}
+            </p>
           )}
-          <span className="block text-xs text-muted-foreground">
-            {[
-              author.era === null ? "" : ERA_LABELS[author.era],
-              years,
-              `${String(workCount)} ${workCount === 1 ? "work" : "works"}`,
-            ]
-              .filter((part) => part !== "")
-              .join(" · ")}
-          </span>
-        </span>
-        <ChevronRightIcon
-          aria-hidden="true"
-          className="mt-1 size-5 shrink-0 text-muted-foreground transition-transform group-aria-expanded/toggle:rotate-90"
-        />
-      </button>
-      {expanded ? null : (
-        <p
-          className="line-clamp-3 px-4 pb-4 text-sm text-muted-foreground"
-          data-testid="library-author-preview"
-        >
-          {preview}
-        </p>
-      )}
-      {expanded ? (
-        <LibraryAuthorTexts
-          className="space-y-3 border-t p-4"
-          id={panelId}
-          query={query}
-          row={row}
-        />
-      ) : null}
+        </CardContent>
+      </Card>
     </div>
   );
 }

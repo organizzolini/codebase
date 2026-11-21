@@ -1,4 +1,4 @@
-import { Badge, cn } from "@codebase/presentation";
+import { Badge } from "@codebase/presentation";
 
 import { ABBREVIATIONS } from "./lexeme-identifiers.constants";
 
@@ -60,14 +60,7 @@ export function LexemeIdentifiers(
               .join(" ")}
           </Badge>
         ))}
-        {enclitic && (
-          <Badge
-            className={cn("normal-case")}
-            variant="secondary"
-          >
-            +{enclitic}
-          </Badge>
-        )}
+        {enclitic && <Badge variant="secondary">+{enclitic}</Badge>}
       </div>
     </div>
   );

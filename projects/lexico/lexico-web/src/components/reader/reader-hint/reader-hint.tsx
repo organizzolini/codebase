@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { Button } from "@codebase/presentation";
+import {
+  Alert,
+  AlertAction,
+  AlertDescription,
+  Button,
+} from "@codebase/presentation";
 
 import { isHintSeen, markHintSeen } from "./reader-hint.utilities";
 
@@ -52,15 +57,21 @@ export function ReaderHint(
     <div
       className={className}
       data-testid="reader-hint"
-      role="note"
     >
-      <p>Tip: words are clickable, so you can look any of them up.</p>
-      <Button
-        onClick={handleDismiss}
-        variant="outline"
-      >
-        Got it
-      </Button>
+      <Alert role="note">
+        <AlertDescription>
+          Tip: words are clickable, so you can look any of them up.
+        </AlertDescription>
+        <AlertAction>
+          <Button
+            onClick={handleDismiss}
+            size="sm"
+            variant="outline"
+          >
+            Got it
+          </Button>
+        </AlertAction>
+      </Alert>
     </div>
   );
 }

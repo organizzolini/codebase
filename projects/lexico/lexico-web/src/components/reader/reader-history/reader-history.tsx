@@ -3,6 +3,7 @@ import { XIcon } from "lucide-react";
 import {
   Button,
   Card,
+  CardAction,
   CardContent,
   CardHeader,
   CardTitle,
@@ -82,26 +83,28 @@ export function ReaderHistory(
         inert={!isOpen}
       >
         {isOpen ? (
-          <Card className="ml-auto h-full w-96 max-w-[calc(100vw-2rem)] gap-3 py-4 shadow-lg">
-            <CardHeader className="flex items-center justify-between gap-2">
+          <Card className="h-full w-96 max-w-[calc(100vw-2rem)]">
+            <CardHeader>
               <CardTitle>History</CardTitle>
-              <Button
-                aria-label="Close history"
-                onClick={() => {
-                  onClose();
-                }}
-                size="icon"
-                variant="ghost"
-              >
-                <XIcon aria-hidden="true" />
-              </Button>
+              <CardAction>
+                <Button
+                  aria-label="Close history"
+                  onClick={() => {
+                    onClose();
+                  }}
+                  size="icon"
+                  variant="ghost"
+                >
+                  <XIcon aria-hidden="true" />
+                </Button>
+              </CardAction>
             </CardHeader>
-            <CardContent className="flex min-h-0 flex-1 flex-col gap-3">
+            <CardContent className="flex min-h-0 flex-1 flex-col gap-4">
               <Tabs
-                className="flex min-h-0 flex-1 flex-col"
+                className="min-h-0 flex-1"
                 defaultValue="this-text"
               >
-                <TabsList className="h-8 w-full">
+                <TabsList className="w-full">
                   <TabsTrigger value="this-text">This text</TabsTrigger>
                   <TabsTrigger value="all">All</TabsTrigger>
                 </TabsList>

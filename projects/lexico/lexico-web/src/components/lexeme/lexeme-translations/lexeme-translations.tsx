@@ -2,6 +2,7 @@ import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
 import {
+  Button,
   cn,
   Collapsible,
   CollapsibleContent,
@@ -57,18 +58,20 @@ export function LexemeTranslations(
         open={isOpen}
       >
         <CollapsibleTrigger
-          className="flex w-full items-center justify-between text-sm font-medium"
           disabled={folded.length === 0}
+          render={
+            <Button
+              className="w-full justify-between"
+              variant="ghost"
+            />
+          }
         >
           Translations
           {folded.length > 0 && (
-            <span className="flex items-center gap-1 text-xs font-normal text-muted-foreground">
+            <span className="flex items-center gap-1 text-muted-foreground">
               {!isOpen && `+${String(folded.length)} more`}
               <ChevronDown
-                className={cn(
-                  "size-4 transition-transform",
-                  isOpen && "rotate-180",
-                )}
+                className={cn("transition-transform", isOpen && "rotate-180")}
               />
             </span>
           )}

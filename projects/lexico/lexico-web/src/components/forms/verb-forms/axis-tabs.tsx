@@ -44,13 +44,12 @@ export function AxisTabs(properties: Readonly<AxisTabsProperties>): ReactNode {
       data-testid="axis-tabs"
     >
       <Tabs
-        className="-mx-4 gap-0"
         onValueChange={(next: unknown) => {
           onChange(String(next));
         }}
         value={value}
       >
-        <TabsList className="h-9 w-full gap-0 rounded-none border-t bg-muted p-0 group-data-horizontal/tabs:h-9">
+        <TabsList className="w-full">
           {options.map((option) => {
             const name = option.replaceAll(/([A-Z])/gu, " $1").toLowerCase();
 
@@ -58,7 +57,6 @@ export function AxisTabs(properties: Readonly<AxisTabsProperties>): ReactNode {
               <TabsTrigger
                 key={option}
                 aria-label={name}
-                className="h-full flex-1 rounded-none px-0.5 text-xs"
                 title={name}
                 value={option}
               >

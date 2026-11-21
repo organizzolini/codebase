@@ -82,12 +82,7 @@ export function LibraryAuthorTexts(
         search={query.search}
       />
       {hasFailed ? (
-        <p
-          className="text-sm"
-          role="alert"
-        >
-          Could not load more works. Try again.
-        </p>
+        <p role="alert">Could not load more works. Try again.</p>
       ) : null}
       {row.workCount > works.length ? (
         <Button

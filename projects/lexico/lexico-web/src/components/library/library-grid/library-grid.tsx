@@ -44,7 +44,7 @@ export function LibraryGrid(
         {authors.map((row) => (
           <LibraryAuthorCard
             key={`${row.author.id}:${query.search}`}
-            className="mb-4 break-inside-avoid rounded-lg border bg-card text-card-foreground"
+            className="mb-4 break-inside-avoid"
             query={query}
             row={row}
           />

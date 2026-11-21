@@ -91,13 +91,17 @@ export function LexemeForms(
         onOpenChange={handleOpenChange}
         open={isOpen}
       >
-        <CollapsibleTrigger className="flex w-full items-center justify-between text-sm font-medium capitalize">
+        <CollapsibleTrigger
+          render={
+            <Button
+              className="w-full justify-between capitalize"
+              variant="ghost"
+            />
+          }
+        >
           {tableKind}
           <ChevronDown
-            className={cn(
-              "size-4 transition-transform",
-              isOpen && "rotate-180",
-            )}
+            className={cn("transition-transform", isOpen && "rotate-180")}
           />
         </CollapsibleTrigger>
         <CollapsibleContent>

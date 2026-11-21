@@ -49,7 +49,7 @@ export function LibraryTextLink(
       data-testid="library-text-link"
     >
       <Link
-        className="block rounded-md underline-offset-4 hover:underline focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+        className="block underline-offset-4 hover:underline"
         params={{ slug: text.slug }}
         to="/texts/$slug"
       >
