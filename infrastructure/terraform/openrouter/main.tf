@@ -85,11 +85,9 @@ resource "openrouter_guardrail_key_assignment" "refresh_documentation" {
   key_hash     = openrouter_api_key.refresh_documentation.hash
 }
 
-# The provider has no preset resource, so the preset is written through
-# OpenRouter's preset endpoint, which accepts only a management key and writes
-# into the workspace named in the body. The ranked list is `models`: OpenRouter tries
-# the first and falls down the list on rate limits, downtime, context-length
-# errors and moderation flags. A new version is saved whenever the list changes.
+# The provider has no preset resource, so a management key writes the preset
+# through OpenRouter's endpoint. `models` is the ranked list: OpenRouter falls
+# down it on rate limits, downtime, context errors and moderation flags.
 resource "terraform_data" "refresh_documentation_preset" {
   triggers_replace = [var.models, var.preset_slug]
 

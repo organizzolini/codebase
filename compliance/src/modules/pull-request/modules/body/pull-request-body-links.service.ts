@@ -108,8 +108,7 @@ export class PullRequestBodyLinksService {
 
   /**
    * The issues a description closes with a keyword such as `Closes #12`, once
-   * each, in the order written. REST cannot read GitHub's own list of closing
-   * references, and the repository requires the keyword anyway.
+   * each, in written order.
    */
   public extractClosingIssueNumbers(body: string): number[] {
     return [

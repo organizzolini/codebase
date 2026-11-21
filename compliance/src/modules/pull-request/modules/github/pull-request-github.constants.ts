@@ -5,7 +5,7 @@ import { z } from "zod";
 /** The `gh` binary live reads run, so tests can shadow it. */
 export const GITHUB_CLI_BINARY = "gh";
 
-/** A JSON array of anything, which is all a page of REST results is read as. */
+/** A JSON array of anything: all a REST page is read as. */
 export const jsonListSchema = z.array(z.unknown());
 
 /** The variable GitHub Actions sets to the step summary file. */
