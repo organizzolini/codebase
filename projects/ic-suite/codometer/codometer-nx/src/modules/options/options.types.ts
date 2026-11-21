@@ -4,7 +4,7 @@ import type { TargetConfiguration } from "@nx/devkit";
 
 /** Options accepted from this plugin's `nx.json` registration. */
 export interface CodometerPluginOptions {
-  /** The shell command that starts codometer, before `measure`. */
+  /** The shell command that starts codometer, before `batch`. */
   readonly command: string;
   /** Extra cache inputs for every inferred target, in Nx's syntax. */
   readonly inputs: readonly PluginInput[];

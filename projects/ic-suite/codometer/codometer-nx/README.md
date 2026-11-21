@@ -53,7 +53,7 @@ request reads.
 | `projectConfigurationPath` | required          | Each project's configuration, relative to its root        |
 | `limitTargetName`          | `codometer-limit` | Name of the source-only target                            |
 | `weighTargetName`          | `codometer-weigh` | Name of the packaged-size target                          |
-| `command`                  | `codometer`       | What runs; `measure` and its flags are appended           |
+| `command`                  | `codometer`       | What runs; `batch` and its flags are appended             |
 | `inputs`                   | none              | Extra cache inputs added to every inferred target (below) |
 
 Every project file is a cache input of `codometer-limit`, and `production` plus
@@ -68,8 +68,9 @@ measurement when the tool changes, declare it as an input, for example
 `{ "externalDependencies": ["@codometer/cli"] }`.
 
 The executor, `@codometer/nx:measure`, is batched: Nx hands it every project of a
-run, and it measures them from one process. A breach fails only its own project,
-which is measured again alone to get its report.
+run, and it measures them from one `codometer batch` process, which reports a
+verdict and the failing lines for each project. A breach fails only its own
+project, and nothing is measured twice.
 
 ## Test
 

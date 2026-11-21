@@ -51,91 +51,51 @@ describe(measureBatchExecutor, () => {
     ];
   }
 
-  /** Makes the workspace hold a folder for each project. */
-  function build(names: string[]): void {
-    workspace = createFakeWorkspace(
-      Object.fromEntries(names.map((name) => [`packages/${name}/.keep`, ""])),
-    );
-  }
-
   beforeEach(() => {
     vi.clearAllMocks();
     output = captureOutput();
+    workspace = createFakeWorkspace({});
   });
 
   afterEach(() => {
     workspace.remove();
   });
 
-  it("passes every task from one process when the run passes", async () => {
+  it("judges every task from one process, each by its own verdict and report", async () => {
     expect.hasAssertions();
-
-    build(["a", "b"]);
-
-    const results = await measureBatchExecutor(...buildArguments(["a", "b"]));
-
-    expect(results).toStrictEqual({
-      "a:codometer-limit": { success: true, terminalOutput: "" },
-      "b:codometer-limit": { success: true, terminalOutput: "" },
-    });
-    // One run for both: the directories follow the flags, and the log is silenced.
-    expect(output.stdout()).toBe("");
-  });
-
-  it("charges a breach to the task that has it, measuring the others alone", async () => {
-    expect.hasAssertions();
-
-    build(["a", "bad-b", "c"]);
 
     const results = await measureBatchExecutor(
       ...buildArguments(["a", "bad-b", "c"]),
     );
 
-    expect(results["a:codometer-limit"]?.success).toBe(true);
-    expect(results["bad-b:codometer-limit"]).toStrictEqual({
-      success: false,
-      terminalOutput: expect.stringContaining("limit breached") as string,
+    expect(results).toStrictEqual({
+      "a:codometer-limit": { success: true, terminalOutput: "" },
+      "bad-b:codometer-limit": {
+        success: false,
+        terminalOutput: "limit breached",
+      },
+      "c:codometer-limit": { success: true, terminalOutput: "" },
     });
-    expect(results["c:codometer-limit"]?.success).toBe(true);
   });
 
-  it.each([
-    ["a run that crashed before printing verdicts", "crash-b", false],
-    ["verdicts that are no list", "object-b", true],
-    ["a list holding something that is no verdict", "junk-b", true],
-    ["no verdict for a task", "silent-b", true],
-  ])(
-    "measures each task alone after %s, losing no peer",
-    async (_name, project, alonePasses) => {
-      expect.hasAssertions();
-
-      build(["a", project]);
-
-      const results = await measureBatchExecutor(
-        ...buildArguments(["a", project]),
-      );
-
-      // The peer is measured alone and passes; only the project itself may fail.
-      expect(results["a:codometer-limit"]?.success).toBe(true);
-      expect(results[`${project}:codometer-limit`]?.success).toBe(alonePasses);
-    },
-  );
-
-  it("measures alone only the tasks that failed, not the whole batch", async () => {
+  it("runs the batch command once with the flags and every directory, logging nothing", async () => {
     expect.hasAssertions();
 
-    build(["a", "bad-b", "c"]);
+    const [taskGraph, , overrides, context] = buildArguments(["a", "b"]);
 
-    await measureBatchExecutor(...buildArguments(["a", "bad-b", "c"]));
+    await measureBatchExecutor(
+      taskGraph,
+      {},
+      { ...overrides, check: true, onlyInputs: ["codebase"] },
+      context,
+    );
 
-    // Nx prints only what the batch executor does: one failure, one report.
-    expect(output.stdout().match(/limit breached/g)).toHaveLength(1);
+    // The fake echoes what it was started with, ahead of its verdicts.
+    expect(output.stdout()).toBe("");
   });
 
-  it("prints a failed task's output under its id, and nothing for a passing one", async () => {
+  it("prints a failed task's report under its id, and nothing for a passing one", async () => {
     expect.hasAssertions();
-
-    build(["a", "bad-b"]);
 
     await measureBatchExecutor(...buildArguments(["a", "bad-b"]));
 
@@ -150,23 +110,56 @@ describe(measureBatchExecutor, () => {
   it("measures tasks that ask for different things in processes of their own", async () => {
     expect.hasAssertions();
 
-    build(["a", "bad-b"]);
-
     const results = await measureBatchExecutor(
       ...buildArguments(["a", "bad-b"], {
         "a:codometer-limit": { ...OPTIONS, check: true },
       }),
     );
 
-    // `a` asked for a gate and `bad-b` did not, so a breach reaches only `bad-b`.
     expect(results["a:codometer-limit"]?.success).toBe(true);
     expect(results["bad-b:codometer-limit"]?.success).toBe(false);
   });
 
-  it("fails a task whose project the graph does not know without losing its peers", async () => {
+  it("fails a task the process gave no verdict, without losing its peers", async () => {
     expect.hasAssertions();
 
-    build(["b"]);
+    const results = await measureBatchExecutor(
+      ...buildArguments(["a", "silent-b"]),
+    );
+
+    expect(results["a:codometer-limit"]?.success).toBe(true);
+    expect(results["silent-b:codometer-limit"]).toStrictEqual({
+      success: false,
+      terminalOutput: expect.stringContaining("No verdict") as string,
+    });
+  });
+
+  it.each([
+    [
+      "a run that crashed before printing verdicts",
+      "crash-b",
+      "something broke",
+    ],
+    ["verdicts that are no list", "object-b", "No verdict"],
+    ["a list holding something that is no verdict", "junk-b", "No verdict"],
+  ])(
+    "fails every task of a group after %s, saying what it printed",
+    async (_name, project, text) => {
+      expect.hasAssertions();
+
+      const results = await measureBatchExecutor(
+        ...buildArguments(["a", project]),
+      );
+
+      expect(
+        Object.values(results).map((result) => result.success),
+      ).toStrictEqual([false, false]);
+      expect(results["a:codometer-limit"]?.terminalOutput).toContain(text);
+    },
+  );
+
+  it("fails a task whose project the graph does not know without losing its peers", async () => {
+    expect.hasAssertions();
 
     const [taskGraph, options, overrides, context] = buildArguments(["a", "b"]);
     const results = await measureBatchExecutor(taskGraph, options, overrides, {
@@ -181,8 +174,6 @@ describe(measureBatchExecutor, () => {
 
   it("starts nothing for a batch of no tasks", async () => {
     expect.hasAssertions();
-
-    build([]);
 
     await expect(
       measureBatchExecutor(...buildArguments([])),

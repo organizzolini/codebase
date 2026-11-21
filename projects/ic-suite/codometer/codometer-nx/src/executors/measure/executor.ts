@@ -1,6 +1,6 @@
 // 🛠️ Utilities
 
-import { runProject } from "./executor.utilities";
+import { runGroup } from "./executor.utilities";
 
 import type {
   MeasureExecutorContext,
@@ -30,13 +30,14 @@ export default async function measureExecutor(
     throw new Error(`Unknown project: ${projectName}.`);
   }
 
-  const result = await runProject({
+  const results = await runGroup({
     options,
-    root: projectConfiguration.root,
+    tasks: [{ id: projectName, root: projectConfiguration.root }],
     workspaceRoot: context.root,
   });
+  const result = results[projectName] ?? { success: false, terminalOutput: "" };
 
-  process.stdout.write(`${result.stdout}${result.stderr}`);
+  process.stdout.write(`${result.terminalOutput}\n`);
 
-  return { success: result.status === 0 };
+  return { success: result.success };
 }

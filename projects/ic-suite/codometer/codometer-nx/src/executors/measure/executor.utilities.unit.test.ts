@@ -20,7 +20,7 @@ describe("the measure executor's utilities", () => {
           },
         }),
       ).toBe(
-        "codometer measure --only-inputs 'codebase' --config 'configuration/codometer.config.ts' --output-json 'codometer-limit-report.json' --check limits --output-markdown 'documentation/codometer.md' '/w/a' '/w/b'",
+        "codometer batch --only-inputs 'codebase' --config 'configuration/codometer.config.ts' --output-json 'codometer-limit-report.json' --check limits --output-markdown 'documentation/codometer.md' '/w/a' '/w/b'",
       );
     });
 
@@ -32,7 +32,7 @@ describe("the measure executor's utilities", () => {
           directories: [],
           options: { command: "codometer", config: "c.ts" },
         }),
-      ).toBe("codometer measure --config 'c.ts'");
+      ).toBe("codometer batch --config 'c.ts'");
     });
 
     it("quotes a single quote in a path for the shell", () => {

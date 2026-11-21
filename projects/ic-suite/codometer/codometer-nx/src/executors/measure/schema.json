@@ -8,7 +8,7 @@
       "type": "boolean"
     },
     "command": {
-      "description": "Required. The shell command that starts the codometer command line, to which `measure` and its flags are appended.",
+      "description": "Required. The shell command that starts the codometer command line, to which `batch` and its flags are appended.",
       "type": "string"
     },
     "config": {

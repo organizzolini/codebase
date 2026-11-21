@@ -1,13 +1,11 @@
 // 🛠️ Utilities
 
 import { spawn } from "node:child_process";
-import { availableParallelism } from "node:os";
 import path from "node:path";
 
 import { SILENT_LOG_LEVEL } from "./executor.constants";
 
 import type {
-  BatchedTask,
   MeasureBatchExecutorArguments,
   MeasureBatchTaskResult,
   MeasureExecutorOptions,
@@ -23,14 +21,13 @@ import type {
 export function buildCommand(args: {
   directories: readonly string[];
   options: MeasureExecutorOptions;
-  verdicts?: boolean;
 }): string {
   const { check, command, config, onlyInputs, outputJson, outputMarkdown } =
     args.options;
 
   return [
     command,
-    "measure",
+    "batch",
     ...(onlyInputs === undefined
       ? []
       : ["--only-inputs", ...onlyInputs.map((name) => quote(name))]),
@@ -41,7 +38,6 @@ export function buildCommand(args: {
     ...(outputMarkdown === undefined
       ? []
       : ["--output-markdown", quote(outputMarkdown)]),
-    ...(args.verdicts === true ? ["--verdicts"] : []),
     ...args.directories.map((directory) => quote(directory)),
   ].join(" ");
 }
@@ -113,20 +109,44 @@ export async function runBatch(
 }
 
 /**
- * Measures one project from its own root, which is how a project's limits
- * address their paths, and returns what the command line printed.
+ * Measures a group in one run, judging each project by its verdict and report;
+ * one given none fails with what the run printed.
  */
-export async function runProject(args: {
-  options: MeasureExecutorOptions;
-  root: string;
-  workspaceRoot: string;
-}): Promise<ProcessOutput> {
-  return await runProcess({
-    command: buildCommand({ directories: [], options: args.options }),
-    cwd: path.join(args.workspaceRoot, args.root),
-    environment: {},
+export async function runGroup(
+  args: MeasurementGroup & { workspaceRoot: string },
+): Promise<Record<string, MeasureBatchTaskResult>> {
+  const batch = await runProcess({
+    command: buildCommand({
+      directories: args.tasks.map((task) =>
+        path.join(args.workspaceRoot, task.root),
+      ),
+      options: args.options,
+    }),
+    cwd: args.workspaceRoot,
+    environment: { LOG_LEVEL: SILENT_LOG_LEVEL },
     workspaceRoot: args.workspaceRoot,
   });
+  const verdicts = parseVerdicts(batch) ?? [];
+
+  return Object.fromEntries(
+    args.tasks.map((task): [string, MeasureBatchTaskResult] => {
+      const verdict = verdicts.find(
+        ({ directory }) =>
+          directory === path.resolve(args.workspaceRoot, task.root),
+      );
+
+      return [
+        task.id,
+        verdict === undefined
+          ? {
+              success: false,
+              terminalOutput:
+                `No verdict for ${task.root}.\n${batch.stderr}${batch.stdout}`.trim(),
+            }
+          : { success: verdict.ok, terminalOutput: verdict.report },
+      ];
+    }),
+  );
 }
 
 /** Whether a parsed value is one verdict as the command line prints it. */
@@ -137,7 +157,9 @@ function isVerdict(value: unknown): value is MeasureVerdict {
     "directory" in value &&
     typeof value.directory === "string" &&
     "ok" in value &&
-    typeof value.ok === "boolean"
+    typeof value.ok === "boolean" &&
+    "report" in value &&
+    typeof value.report === "string"
   );
 }
 
@@ -150,29 +172,8 @@ function isVerdictList(value: unknown): value is MeasureVerdict[] {
 }
 
 /**
- * Judges one task by measuring its project alone, as before batching.
- */
-async function judgeAlone(args: {
-  options: MeasureExecutorOptions;
-  task: BatchedTask;
-  workspaceRoot: string;
-}): Promise<MeasureBatchTaskResult> {
-  const alone = await runProject({
-    options: args.options,
-    root: args.task.root,
-    workspaceRoot: args.workspaceRoot,
-  });
-
-  return {
-    success: alone.status === 0,
-    terminalOutput:
-      alone.status === 0 ? "" : `${alone.stdout}${alone.stderr}`.trim(),
-  };
-}
-
-/**
- * Reads the verdicts `measure --verdicts` printed as its last line, or nothing
- * when the run crashed before printing them.
+ * Reads the verdicts `codometer batch` printed as its last line, or nothing when
+ * the run crashed before printing them.
  */
 function parseVerdicts(output: ProcessOutput): MeasureVerdict[] | undefined {
   const lines = output.stdout.split("\n").filter((line) => line.trim() !== "");
@@ -189,60 +190,6 @@ function parseVerdicts(output: ProcessOutput): MeasureVerdict[] | undefined {
 /** Quotes one argument for the shell the command line is started through. */
 function quote(argument: string): string {
   return `'${argument.replaceAll("'", String.raw`'\''`)}'`;
-}
-
-/**
- * Measures a group in one run that names each verdict; only a failed or
- * undecided project is measured again alone, for its report.
- */
-async function runGroup(
-  args: MeasurementGroup & { workspaceRoot: string },
-): Promise<Record<string, MeasureBatchTaskResult>> {
-  const results: Record<string, MeasureBatchTaskResult> = {};
-  const batch = await runProcess({
-    command: buildCommand({
-      directories: args.tasks.map((task) =>
-        path.join(args.workspaceRoot, task.root),
-      ),
-      options: args.options,
-      verdicts: true,
-    }),
-    cwd: args.workspaceRoot,
-    environment: { LOG_LEVEL: SILENT_LOG_LEVEL },
-    workspaceRoot: args.workspaceRoot,
-  });
-  const passed = new Set(
-    (parseVerdicts(batch) ?? [])
-      .filter((verdict) => verdict.ok)
-      .map((verdict) => verdict.directory),
-  );
-  const undecided: BatchedTask[] = [];
-
-  for (const task of args.tasks) {
-    if (passed.has(path.resolve(args.workspaceRoot, task.root))) {
-      results[task.id] = { success: true, terminalOutput: "" };
-    } else {
-      undecided.push(task);
-    }
-  }
-
-  const width = availableParallelism();
-
-  for (let start = 0; start < undecided.length; start += width) {
-    const chunk = undecided.slice(start, start + width);
-    const settled = await Promise.all(
-      chunk.map(async (task) => await judgeAlone({ ...args, task })),
-    );
-
-    for (const [index, task] of chunk.entries()) {
-      results[task.id] = settled[index] ?? {
-        success: false,
-        terminalOutput: "",
-      };
-    }
-  }
-
-  return results;
 }
 
 /**

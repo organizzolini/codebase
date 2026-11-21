@@ -50,7 +50,7 @@ export interface MeasureExecutorContext {
 export interface MeasureExecutorOptions {
   /** Fail the task when a limit it declares is breached. */
   readonly check?: boolean | undefined;
-  /** The shell command that starts the `codometer` command line. */
+  /** The shell command that starts the `codometer` command line, before `batch`. */
   readonly command: string;
   /** The configuration file, relative to the project root. */
   readonly config: string;
@@ -68,10 +68,12 @@ export interface MeasurementGroup {
   readonly tasks: readonly BatchedTask[];
 }
 
-/** One directory's verdict, as `measure --verdicts` prints it. */
+/** One directory's verdict, as `codometer batch` prints it. */
 export interface MeasureVerdict {
   readonly directory: string;
   readonly ok: boolean;
+  /** What failed the directory, as plain lines; empty when it passed. */
+  readonly report: string;
 }
 
 /** What a finished process printed on each stream, and how it exited. */
