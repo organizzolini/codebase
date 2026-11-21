@@ -38,9 +38,14 @@ export function buildCliArguments(args: {
     "@swc-node/register/esm-register",
     path.join(args.workspaceRoot, CODOMETER_CLI_MAIN),
     "measure",
+    // Ahead of `--config`, which ends the list: a variadic flag would
+    // otherwise take the directories after it for input names.
+    ...(args.options.onlyInputs === undefined
+      ? []
+      : ["--only-inputs", ...args.options.onlyInputs]),
     "--config",
     args.options.config,
-    "--output-json",
+    ...(args.options.outputJson === false ? [] : ["--output-json"]),
     ...(args.options.check === true ? ["--check", "limits"] : []),
     ...(args.options.outputMarkdown === undefined
       ? []
@@ -55,5 +60,7 @@ export function describeOptions(options: CodometerExecutorOptions): string {
     options.config,
     options.check === true,
     options.outputMarkdown ?? null,
+    options.onlyInputs ?? null,
+    options.outputJson !== false,
   ]);
 }

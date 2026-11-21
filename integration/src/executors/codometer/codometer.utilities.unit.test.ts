@@ -39,6 +39,42 @@ describe("codometer utilities", () => {
       ).toStrictEqual(expect.arrayContaining(["--check", "limits"]));
     });
 
+    it("writes no report when the task turns it off", () => {
+      expect.hasAssertions();
+
+      expect(
+        buildCliArguments({
+          ...BASE,
+          options: { ...BASE.options, outputJson: false },
+        }),
+      ).not.toContain("--output-json");
+    });
+
+    it("names the only inputs ahead of the next flag, so they cannot swallow a directory", () => {
+      expect.hasAssertions();
+
+      const cliArguments = buildCliArguments({
+        ...BASE,
+        directories: ["/a"],
+        options: { ...BASE.options, onlyInputs: ["codebase", "Other"] },
+      });
+      const start = cliArguments.indexOf("--only-inputs");
+
+      expect(cliArguments.slice(start, start + 4)).toStrictEqual([
+        "--only-inputs",
+        "codebase",
+        "Other",
+        "--config",
+      ]);
+      expect(cliArguments.at(-1)).toBe("/a");
+    });
+
+    it("leaves the inputs alone when the task names none", () => {
+      expect.hasAssertions();
+
+      expect(buildCliArguments(BASE)).not.toContain("--only-inputs");
+    });
+
     it("writes the badge block only when the task names a file for it", () => {
       expect.hasAssertions();
 
@@ -91,6 +127,15 @@ describe("codometer utilities", () => {
       );
       expect(describeOptions({ check: true, config: "c" })).not.toBe(
         describeOptions({ config: "c", outputMarkdown: "c.md" }),
+      );
+      expect(describeOptions({ config: "c" })).not.toBe(
+        describeOptions({ config: "c", onlyInputs: ["codebase"] }),
+      );
+      expect(describeOptions({ config: "c" })).not.toBe(
+        describeOptions({ config: "c", outputJson: false }),
+      );
+      expect(describeOptions({ config: "c" })).toBe(
+        describeOptions({ config: "c", outputJson: true }),
       );
     });
   });

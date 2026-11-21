@@ -35,6 +35,10 @@ export interface CodometerExecutorOptions {
   readonly check?: boolean | undefined;
   /** The configuration file, relative to the project root. */
   readonly config: string;
+  /** The only inputs to measure; the others, and their limits, are left out. */
+  readonly onlyInputs?: readonly string[] | undefined;
+  /** Whether to write the JSON report. On unless `false`. */
+  readonly outputJson?: boolean | undefined;
   /** Where to write the markdown badge block, relative to the project root. */
   readonly outputMarkdown?: string | undefined;
 }
