@@ -36,7 +36,7 @@ Effort is the work a pull request carries, measured in planned commits and modul
 
 ### Choosing priority
 
-Priority is how soon the work matters. A value the user gave wins; otherwise pick from this table, and when two rows fit, take the lower one.
+Priority is how soon the work matters. Decide it yourself and do not ask the user: a value they gave wins; otherwise pick from this table, and when two rows fit, take the lower one.
 
 | Priority | Shape                                                                         |
 | -------- | ----------------------------------------------------------------------------- |
