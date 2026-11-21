@@ -23,13 +23,22 @@ variable "workspace_id" {
 }
 
 variable "models" {
-  description = "Models OpenRouter may route to, ranked: the first is tried first and each later one is a fallback. List only :free models to keep requests free."
+  description = "Models OpenRouter may route to, ranked: the first is tried first and each later one is a fallback when it is rate-limited, down or rejects the request. Only :free models are allowed, to keep requests free. Each needs tool calling and 16,384 output tokens, which the documentation refresh asks for, and the fallbacks come from other providers than the first."
   type        = list(string)
-  default     = ["nvidia/nemotron-3-ultra-550b-a55b:free"]
+  default = [
+    "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "google/gemma-4-31b-it:free",
+    "inclusionai/ling-3.2-flash:free",
+  ]
 
   validation {
     condition     = length(var.models) > 0
     error_message = "List at least one model."
+  }
+
+  validation {
+    condition     = alltrue([for model in var.models : endswith(model, ":free")])
+    error_message = "List only :free models, so requests stay free."
   }
 }
 
