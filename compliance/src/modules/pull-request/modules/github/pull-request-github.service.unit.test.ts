@@ -56,6 +56,70 @@ describe(PullRequestGithubService, () => {
     expect(instance).toBeInstanceOf(PullRequestGithubService);
   });
 
+  describe("readList", () => {
+    it("reads every page of a repo-scoped endpoint over REST", () => {
+      expect.hasAssertions();
+
+      completeWith({ stdout: "[[1,2],[3]]" });
+
+      expect(service.readList("repos/{owner}/{repo}/labels")).toStrictEqual({
+        available: true,
+        standardError: "",
+        standardOutput: "[1,2,3]",
+        succeeded: true,
+      });
+      expect(spawnSync).toHaveBeenCalledWith(
+        GITHUB_CLI_BINARY,
+        ["api", "--paginate", "--slurp", "repos/{owner}/{repo}/labels"],
+        { encoding: "utf8" },
+      );
+    });
+
+    it("passes a failed read through untouched", () => {
+      expect.hasAssertions();
+
+      completeWith({ status: 1, stderr: "HTTP 403" });
+
+      expect(service.readList("repos/{owner}/{repo}/labels")).toStrictEqual({
+        available: true,
+        standardError: "HTTP 403",
+        standardOutput: "",
+        succeeded: false,
+      });
+    });
+
+    it("flattens nothing from a document that is not a list of pages", () => {
+      expect.hasAssertions();
+
+      completeWith({ stdout: '{"message":"nope"}' });
+
+      expect(
+        service.readList("repos/{owner}/{repo}/labels").standardOutput,
+      ).toBe("[]");
+    });
+
+    it("skips a page that is not a list", () => {
+      expect.hasAssertions();
+
+      completeWith({ stdout: '[[1],"x",[2]]' });
+
+      expect(
+        service.readList("repos/{owner}/{repo}/labels").standardOutput,
+      ).toBe("[1,2]");
+    });
+
+    it("reports output that is not JSON as a failed read", () => {
+      expect.hasAssertions();
+
+      completeWith({ stdout: "not json" });
+
+      const result = service.readList("repos/{owner}/{repo}/labels");
+
+      expect(result.succeeded).toBe(false);
+      expect(result.standardError).toContain("JSON");
+    });
+  });
+
   describe("run", () => {
     it("invokes gh with the arguments it was given", () => {
       expect.hasAssertions();
