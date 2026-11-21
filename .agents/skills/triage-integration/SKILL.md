@@ -158,8 +158,8 @@ gh run view <run-id> --log-failed
 If no logs are provided, fetch ALL failing runs for the current PR:
 
 ```bash
-gh pr checks --json name,state,link \
-  --jq '.[] | select(.state == "FAILURE") | "\(.name) \(.link)"'
+gh api "repos/{owner}/{repo}/commits/$(git rev-parse HEAD)/check-runs" \
+  --jq '.check_runs[] | select(.conclusion == "failure") | "\(.name) \(.html_url)"'
 ```
 
 Parse the `<run-id>` from the link and fetch the logs for each failure.

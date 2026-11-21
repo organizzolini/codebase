@@ -28,8 +28,8 @@ This skill is the single place that decides **which issue** a change belongs to.
 Search before filing, so a duplicate is never created:
 
 ```bash
-gh issue list --state open --search "<keywords from the change>"
-gh issue list --state all --search "<keywords>" --limit 10
+gh api -X GET search/issues -f q='repo:organizzolini/codebase is:issue is:open <keywords from the change>' --jq '.items[] | "#\(.number) \(.title)"'
+gh api -X GET search/issues -f q='repo:organizzolini/codebase is:issue <keywords>' -f per_page=10 --jq '.items[] | "#\(.number) \(.title)"'
 ```
 
 Also check the branch name, the commit messages, and the spec the task came from. A planned pull request has **one parent Task issue** (see [issue-tracker](../../../documentation/agents/issue-tracker.md#planning-shape-a-spec-its-pull-requests-and-their-commits)); that parent is the issue the pull request closes. Never close a spec or a commit sub-issue from a pull request that does not finish it.
@@ -46,12 +46,12 @@ Take the title from the commit convention, `<type>(<scope>): <gitmoji> <subject>
 **A root issue (one with no parent) needs a Priority before you file it.** `compliance issue` audits every issue as it opens and fails a root issue with no Priority. Use the value the user gave, or else choose one from [manage-project's Choosing priority](../manage-project/SKILL.md#choosing-priority), and set it in the same call. Never change a Priority that is already set. A Task under a spec owes none.
 
 ```bash
-gh issue create \
-  --type Bug \
-  --title "fix(caelundas): 🐛 correct timezone offset in ephemeris" \
-  --label type:fix --label scope:caelundas \
-  --label source:agent \
-  --body-file /tmp/issue_body.md
+gh api repos/{owner}/{repo}/issues \
+  -f type=Bug \
+  -f title="fix(caelundas): 🐛 correct timezone offset in ephemeris" \
+  -f 'labels[]=type:fix' -f 'labels[]=scope:caelundas' \
+  -f 'labels[]=source:agent' \
+  -F body=@/tmp/issue_body.md
 ```
 
 Cloud sessions have no `gh`. Use the GitHub MCP `search_issues` to look first and `issue_write` (`method: create`, with `labels`, `type`, and `issue_fields` carrying Effort and, on a root issue, Priority) to file.
@@ -73,10 +73,10 @@ Put the closing keyword in the pull request body as the **first bullet of 🔗 R
 Then confirm GitHub recorded it:
 
 ```bash
-gh pr view <number> --json closingIssuesReferences --jq '.closingIssuesReferences[].number'
+gh api repos/{owner}/{repo}/pulls/<number> --jq .body | grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?):? +#[0-9]+'
 ```
 
-An empty result means the link is missing: fix the keyword, or add the issue under **Development** in the pull request sidebar. GitHub honors closing keywords only for a pull request whose base is the default branch, so a stacked pull request from [gh-stack](../gh-stack/SKILL.md) may need the sidebar link. Run the command above on every pull request rather than assuming.
+An empty result means the link is missing: fix the keyword. REST cannot see a link made only under **Development** in the pull request sidebar, and `compliance pull-request` reads the keyword too, so keep it in the body. GitHub honors closing keywords only for a pull request whose base is the default branch, so a stacked pull request from [gh-stack](../gh-stack/SKILL.md) may also need the sidebar link. Run the command above on every pull request rather than assuming.
 
 The link alone does not pass the check: `compliance pull-request` also audits each closed issue's labels and Issue Type, and wants Effort on the issue and Priority on its root, as [manage-project](../manage-project/SKILL.md) describes.
 

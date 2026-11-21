@@ -135,4 +135,45 @@ describe(PullRequestBodyLinksService, () => {
       "Pull request body is missing ## 🔗 Related",
     );
   });
+
+  describe("extractClosingIssueNumbers", () => {
+    it("reads the issues a description closes with a keyword", () => {
+      expect.hasAssertions();
+      expect(
+        service.extractClosingIssueNumbers(
+          "## 🔗 Related\n\n- Closes #12\n- Fixes #7\n- resolved #3",
+        ),
+      ).toStrictEqual([12, 7, 3]);
+    });
+
+    it("accepts every form of the keyword and an optional colon", () => {
+      expect.hasAssertions();
+      expect(
+        service.extractClosingIssueNumbers(
+          "close #1 closes #2 closed #3 fix #4 fixes #5 fixed #6 resolve #7 resolves #8 resolved #9 Closes: #10",
+        ),
+      ).toStrictEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    });
+
+    it("names each issue once, in the order written", () => {
+      expect.hasAssertions();
+      expect(
+        service.extractClosingIssueNumbers("Closes #5\nFixes #3\nCloses #5"),
+      ).toStrictEqual([5, 3]);
+    });
+
+    it("ignores an issue mentioned without a closing keyword", () => {
+      expect.hasAssertions();
+      expect(
+        service.extractClosingIssueNumbers(
+          "- Related to #4\n- See #9\n- Disclosed #6",
+        ),
+      ).toStrictEqual([]);
+    });
+
+    it("reads nothing from an empty description", () => {
+      expect.hasAssertions();
+      expect(service.extractClosingIssueNumbers("")).toStrictEqual([]);
+    });
+  });
 });
