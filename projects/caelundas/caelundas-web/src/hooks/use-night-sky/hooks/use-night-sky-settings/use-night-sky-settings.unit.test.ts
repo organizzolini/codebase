@@ -39,7 +39,7 @@ describe(useNightSkySettings, () => {
       constellations: expect.any(Array),
       settings: expect.objectContaining({ latitudeDegrees: 51.5 }),
     });
-    expect(result.current.settings.constellations).toStrictEqual(["zodiac"]);
+    expect(result.current.settings.constellations).toStrictEqual(["all"]);
     expect(result.current.constellations).toHaveLength(88);
     expect(
       result.current.constellations.filter(({ zodiac }) => zodiac),

@@ -19,7 +19,7 @@ describe(CalendarFilters, () => {
     );
   });
 
-  it("joins Filter and Clear in one button group, square where they meet", () => {
+  it("has no Clear button and shows no count on Filter", () => {
     render(
       <CalendarFilters
         fields={[]}
@@ -30,14 +30,11 @@ describe(CalendarFilters, () => {
 
     const group = screen.getByRole("group", { name: "Filter" });
     const filter = screen.getByRole("button", { name: "Filter" });
-    const clear = screen.getByRole("button", { name: "Clear" });
 
-    expect(group.dataset["slot"]).toBe("button-group");
-    expect(group.contains(filter) && group.contains(clear)).toBe(true);
-    expect(filter.className).toContain(
-      "in-data-[slot=button-group]:rounded-r-none",
-    );
-    expect(group.lastElementChild).toBe(clear);
+    expect(screen.queryByRole("button", { name: "Clear" })).toBeNull();
+    expect(group.contains(filter)).toBe(true);
+    expect(filter.textContent).toBe("Filter");
+    expect(filter.className).not.toContain("rounded-r-none");
   });
 
   describe("presets", () => {
@@ -102,40 +99,6 @@ describe(CalendarFilters, () => {
       expect(onFilterChange).toHaveBeenCalledWith(PRESET.filter);
     });
 
-    it("clears every filter with the Clear button", () => {
-      const onFilterChange = vi.fn<(filter: unknown) => void>();
-
-      render(
-        <CalendarFilters
-          fields={[]}
-          filter={PRESET.filter}
-          onFilterChange={onFilterChange}
-          presets={[PRESET]}
-        />,
-      );
-      fireEvent.click(screen.getByRole("button", { name: "Clear" }));
-
-      expect(onFilterChange).toHaveBeenCalledWith(
-        expect.objectContaining({ rules: [] }),
-      );
-    });
-
-    it("leaves Clear off while nothing is filtered", () => {
-      render(
-        <CalendarFilters
-          fields={[]}
-          filter={{ ...PRESET.filter, rules: [] }}
-          onFilterChange={vi.fn<(filter: unknown) => void>()}
-          presets={[PRESET]}
-        />,
-      );
-
-      expect(screen.getByRole("button", { name: "Clear" })).toHaveProperty(
-        "disabled",
-        true,
-      );
-    });
-
     it("goes back to the default preset when the link's filter is dropped", () => {
       const properties = {
         fields: [],
@@ -158,9 +121,8 @@ describe(CalendarFilters, () => {
 
       // The preset offered is not the default one, so nothing is left
       // filtered.
-      expect(screen.getByRole("button", { name: "Clear" })).toHaveProperty(
-        "disabled",
-        true,
+      expect(screen.getByRole("button", { name: "Filter" }).textContent).toBe(
+        "Filter",
       );
     });
   });

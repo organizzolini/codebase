@@ -8,7 +8,10 @@ import { createEventGroupFields } from "../../calendar-query/calendar-group-by/c
 import { CalendarTimeline } from "../calendar-timeline/calendar-timeline";
 
 import { CalendarGrid } from "./components/calendar-grid/calendar-grid";
-import { VENDORED_SURFACE_CLASS_NAMES } from "./components/calendar-views/calendar-surfaces.constants";
+import {
+  OPAQUE_CLASS_NAMES,
+  VENDORED_SURFACE_CLASS_NAMES,
+} from "./components/calendar-views/calendar-surfaces.constants";
 import { DEFAULT_TIMELINE_SCALE } from "./components/calendar-views/calendar-views.constants";
 
 import type { EventGroupLevel } from "../../calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
@@ -155,7 +158,7 @@ export function EventsCalendar(
       data-testid="events-calendar"
     >
       <div
-        className={`flex h-full flex-col ${VENDORED_SURFACE_CLASS_NAMES.gridCells}`}
+        className={`flex h-full flex-col ${VENDORED_SURFACE_CLASS_NAMES.gridCells} ${OPAQUE_CLASS_NAMES.buttons} ${OPAQUE_CLASS_NAMES.events} ${OPAQUE_CLASS_NAMES.ganttBars} ${OPAQUE_CLASS_NAMES.labels}`}
       >
         <CalendarToolbar
           compact={compact}

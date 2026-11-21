@@ -108,25 +108,29 @@ describe("night sky menu", () => {
     await openNightSkyMenu();
     await openConstellations();
 
-    fireEvent.click(screen.getByRole("checkbox", { name: "Zodiac" }));
+    fireEvent.click(
+      screen.getByRole("checkbox", { name: "Other constellations" }),
+    );
 
     await waitFor(() => {
-      expect(readSearch()).toMatchObject({ "sky.constellations": "none" });
+      expect(readSearch()).toMatchObject({ "sky.constellations": "zodiac" });
     });
     await waitFor(() => {
       expect(api.requests.nightSky.at(-1)?.constellations).toStrictEqual([
-        "none",
+        "zodiac",
       ]);
     });
 
-    fireEvent.click(screen.getByRole("checkbox", { name: "Zodiac" }));
+    fireEvent.click(
+      screen.getByRole("checkbox", { name: "Other constellations" }),
+    );
 
     await waitFor(() => {
       expect(readSearch()).not.toHaveProperty("sky.constellations");
     });
     await waitFor(() => {
       expect(api.requests.nightSky.at(-1)?.constellations).toStrictEqual([
-        "zodiac",
+        "all",
       ]);
     });
   });
@@ -188,8 +192,8 @@ describe("night sky menu", () => {
     expect(readSearch()).toMatchObject({ "sky.debug": true });
   });
 
-  it.each(["all", "none"])(
-    "resets sky.constellations=%s to the zodiac, the default, with a bare link",
+  it.each(["zodiac", "none"])(
+    "resets sky.constellations=%s to all, the default, with a bare link",
     async (words) => {
       await renderCalendarRoute(
         `/?date=2026-03-01&sky.constellations=${words}`,
@@ -204,37 +208,28 @@ describe("night sky menu", () => {
         expect(readSearch()).not.toHaveProperty("sky.constellations");
       });
 
-      expect(
-        screen
-          .getByRole("checkbox", { name: "Zodiac" })
-          .getAttribute("aria-checked"),
-      ).toBe("true");
-      expect(
-        screen
-          .getByRole("checkbox", { name: "Other constellations" })
-          .getAttribute("aria-checked"),
-      ).toBe("false");
-      expect(
-        screen
-          .getAllByRole("checkbox")
-          .filter(
-            (checkbox) => checkbox.getAttribute("aria-checked") === "true",
-          ),
-      ).toHaveLength(13);
+      for (const folder of ["Zodiac", "Other constellations"]) {
+        expect(
+          screen
+            .getByRole("checkbox", { name: folder })
+            .getAttribute("aria-checked"),
+        ).toBe("true");
+      }
+
       expect(
         Object.keys(readSearch()).filter((key) => key.startsWith("sky")),
       ).toStrictEqual([]);
 
       await waitFor(() => {
         expect(api.requests.nightSky.at(-1)?.constellations).toStrictEqual([
-          "zodiac",
+          "all",
         ]);
       });
     },
   );
 
   it("toggles all twelve zodiac figures from their folder, dashed when some show", async () => {
-    await renderCalendarRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01&sky.constellations=zodiac");
     await openNightSkyMenu();
     await openConstellations();
 
@@ -263,12 +258,12 @@ describe("night sky menu", () => {
     fireEvent.click(screen.getByRole("checkbox", { name: "Zodiac" }));
 
     await waitFor(() => {
-      expect(readSearch()).not.toHaveProperty("sky.constellations");
+      expect(readSearch()).toMatchObject({ "sky.constellations": "zodiac" });
     });
   });
 
-  it("writes all once every folder is checked", async () => {
-    await renderCalendarRoute("/?date=2026-03-01");
+  it("removes the key once every folder is checked, all being the default", async () => {
+    await renderCalendarRoute("/?date=2026-03-01&sky.constellations=zodiac");
     await openNightSkyMenu();
     await openConstellations();
 
@@ -277,18 +272,18 @@ describe("night sky menu", () => {
     );
 
     await waitFor(() => {
-      expect(readSearch()).toMatchObject({ "sky.constellations": "all" });
+      expect(readSearch()).not.toHaveProperty("sky.constellations");
     });
   });
 
-  it("asks for the ecliptic and the zodiac's figures at the defaults", async () => {
+  it("asks for the ecliptic and every figure at the defaults", async () => {
     await renderCalendarRoute("/?date=2026-03-01");
     const api = readServedApi();
 
     await findSky();
 
     expect(api.requests.nightSky[0]).toMatchObject({
-      constellations: ["zodiac"],
+      constellations: ["all"],
       ecliptic: true,
     });
   });
