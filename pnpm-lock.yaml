@@ -204,8 +204,8 @@ catalogs:
       specifier: ^10.0.1
       version: 10.0.1
     '@eslint/markdown':
-      specifier: ^8.0.2
-      version: 8.0.3
+      specifier: ^9.0.0
+      version: 9.0.0
     '@golevelup/ts-vitest':
       specifier: ^4.0.0
       version: 4.0.0
@@ -1056,7 +1056,7 @@ importers:
         version: 10.0.1(eslint@10.11.0(jiti@2.7.0)(supports-color@8.1.1))
       '@eslint/markdown':
         specifier: 'catalog:'
-        version: 8.0.3(supports-color@8.1.1)
+        version: 9.0.0(supports-color@8.1.1)
       '@nx/eslint-plugin':
         specifier: 'catalog:'
         version: 24.0.0(@babel/traverse@7.29.8(supports-color@8.1.1))(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@8.1.1)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23))(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3))(eslint-config-prettier@10.1.8(eslint@10.11.0(jiti@2.7.0)(supports-color@8.1.1)))(eslint@10.11.0(jiti@2.7.0)(supports-color@8.1.1))(nx@24.0.0(patch_hash=02d747bd93aea300955436be29dc083b9fc89e2ee1bbaca0100d643f925880fc)(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@8.1.1)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23)))(supports-color@8.1.1)(typescript@6.0.3)(verdaccio@7.1.0(supports-color@8.1.1)(typanion@3.14.0))
@@ -6528,8 +6528,8 @@ packages:
     resolution: {integrity: sha512-QywQuszQh77pIXCsq998c8hbhSTI/azTty1Z6N53dmAudKHhy573j3yvRLsX2BSp8YpLtoCEG8E9DJe+8zUh4A==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@eslint/markdown@8.0.3':
-    resolution: {integrity: sha512-rBTSSShrq7e4O+PWfeE4azH4/CWPNrC+VGxBXiW00o3vYVJnznsZiDayj3KC9JztIMVRZxZHn2nrDIUau/4j7A==}
+  '@eslint/markdown@9.0.0':
+    resolution: {integrity: sha512-287jt3NwhChN7TLsWq44IB5vUAKwwNXafzLlR1CMcQK5/4mAwbwwAzqr/S7gCYRRJOSHCgGXzIV9uPCh1P810A==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
   '@eslint/object-schema@2.1.7':
@@ -18706,7 +18706,7 @@ snapshots:
 
   '@eslint/js@9.39.5': {}
 
-  '@eslint/markdown@8.0.3(supports-color@8.1.1)':
+  '@eslint/markdown@9.0.0(supports-color@8.1.1)':
     dependencies:
       '@eslint/core': 1.2.1
       '@eslint/plugin-kit': 0.7.3
