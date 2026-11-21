@@ -13,6 +13,7 @@
   "targets": {
     "build-projects": {},
     "codometer": {},
+    "codometer-limit": {},
     "deprecate-code": {},
     "eslint": {},
     "examples": {

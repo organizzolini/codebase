@@ -276,6 +276,32 @@
         ]
       }
     ],
+    "codometer-limit": [
+      {
+        "cache": true,
+        "description": "Gate the codometer limits that need no build: comment budgets, directory breadth and depth, and every other limit written against the source tree. The `codometer` target also gates compiled sizes, so it depends on `build`; this one runs the same batch executor with `onlyInputs: [\"codebase\"]`, leaving out every compiled input and the limits written against it, so it can run first and fast. It checks and writes nothing (`outputJson: false`): the full report belongs to `codometer`, and a source-only run must not replace it. It measures every file in the project, tests and documentation included, because the budgets and folder entries count them, so its inputs are `default`, not `production`; the ignore files, the workspace configuration, the executor, and the codometer packages are inputs too, so a change to how the limits are judged re-runs every project.",
+        "executor": "integration:codometer",
+        "inputs": [
+          "!{projectRoot}/codometer-report.json",
+          "!{projectRoot}/documentation/codometer.md",
+          "default",
+          "{workspaceRoot}/.gitignore",
+          "{workspaceRoot}/configuration/ic-suite/.codometerignore",
+          "{workspaceRoot}/configuration/ic-suite/codometer.config.ts",
+          "{workspaceRoot}/integration/executors.json",
+          "{workspaceRoot}/integration/src/executors/codometer/**/!(*.test.*|*.spec.*)",
+          "{workspaceRoot}/integration/src/modules/process-runner/process-runner.service.ts",
+          "{workspaceRoot}/projects/ic-suite/codometer/*/src/**/!(*.test.*|*.spec.*)"
+        ],
+        "options": {
+          "check": true,
+          "config": "configuration/codometer.config.ts",
+          "onlyInputs": ["codebase"],
+          "outputJson": false
+        },
+        "outputs": []
+      }
+    ],
     "coinagerie-check": {
       "configurations": {
         "write": {

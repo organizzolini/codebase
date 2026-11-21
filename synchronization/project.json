@@ -13,6 +13,7 @@
   "targets": {
     "build-projects": {},
     "codometer": {},
+    "codometer-limit": {},
     "conformetry-generators": {
       "cache": true,
       "configurations": {

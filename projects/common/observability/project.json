@@ -51,6 +51,7 @@
     },
     "build-projects": {},
     "codometer": {},
+    "codometer-limit": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
     "eslint": {},
