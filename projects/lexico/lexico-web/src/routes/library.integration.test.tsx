@@ -273,7 +273,10 @@ describe("library", () => {
       screen.findByRole("heading", { level: 1, name: "Library" }),
     ).resolves.toBeDefined();
 
-    const card = await screen.findByRole("button", { name: /Vergil/u });
+    const toggle = await screen.findByRole("button", { name: /Vergil/u });
+    const card =
+      toggle.closest<HTMLElement>('[data-testid="library-author-card"]') ??
+      toggle;
 
     expect(within(card).getByText(/Classical/u)).toBeDefined();
     expect(within(card).getByText(/70 BCE–19 CE/u)).toBeDefined();

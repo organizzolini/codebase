@@ -7,7 +7,6 @@ import {
 } from "react";
 
 import {
-  Button,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -124,16 +123,16 @@ export function WordCard(properties: Readonly<WordCardProperties>): ReactNode {
             <ul className="space-y-1">
               {listReadings(candidates).map(({ candidate, key, position }) => (
                 <li key={key}>
-                  <Button
-                    className="h-auto w-full justify-start whitespace-normal py-1 text-left"
+                  <button
+                    className="w-full rounded-md p-2 text-left hover:bg-accent"
                     onClick={() => {
                       setChosen(position);
                       onLookup?.(summarizeLookup(candidates, false, position));
                     }}
-                    variant="ghost"
+                    type="button"
                   >
                     {candidate.lemma}, {candidate.description}
-                  </Button>
+                  </button>
                 </li>
               ))}
             </ul>

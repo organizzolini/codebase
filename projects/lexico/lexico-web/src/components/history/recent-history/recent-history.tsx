@@ -1,4 +1,11 @@
-import { Button } from "@codebase/presentation";
+import {
+  Button,
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@codebase/presentation";
 
 import { HistoryList } from "../history-list/history-list";
 
@@ -47,20 +54,31 @@ export function RecentHistory(
       className={className}
       data-testid="recent-history"
     >
-      <h2 className="text-lg font-semibold">Recent</h2>
-      <HistoryList
-        emptyMessage=""
-        entries={entries}
-        onOpenEntry={onOpenEntry}
-      />
-      <Button
-        onClick={() => {
-          onClear();
-        }}
-        variant="outline"
-      >
-        Clear history
-      </Button>
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            <h2>Recent</h2>
+          </CardTitle>
+          <CardAction>
+            <Button
+              onClick={() => {
+                onClear();
+              }}
+              size="sm"
+              variant="outline"
+            >
+              Clear history
+            </Button>
+          </CardAction>
+        </CardHeader>
+        <CardContent>
+          <HistoryList
+            emptyMessage=""
+            entries={entries}
+            onOpenEntry={onOpenEntry}
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 }

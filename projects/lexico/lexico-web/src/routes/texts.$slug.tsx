@@ -237,9 +237,9 @@ function TextsSlugPage(): ReactNode {
 
   // 🎨 Markup
   return (
-    // The reader page stays on the dark theme's near-black canvas in light
-    // mode too, a requested exception for reading, so it re-scopes the theme.
-    <section className="dark -m-4 min-h-svh space-y-4 bg-background p-4 text-foreground md:-ml-2 md:pl-2">
+    // A warm paper surface in the light theme and the neutral near-black
+    // background in the dark one, so the page follows the theme on <html>.
+    <section className="-m-4 min-h-svh space-y-4 bg-amber-50 p-4 text-foreground md:-ml-2 md:pl-2 dark:bg-background">
       <h1 className="text-center text-3xl font-bold">
         {text.title}
         <span className="sr-only"> by {text.author.name}</span>

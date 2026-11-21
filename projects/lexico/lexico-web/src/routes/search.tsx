@@ -146,22 +146,22 @@ function SearchPage(): ReactNode {
 
   // 🎨 Markup
   return (
-    <section className="space-y-4">
+    <section
+      className={`space-y-6 ${query === "" ? "mx-auto w-full max-w-2xl" : ""}`}
+    >
       <h1 className="sr-only">Search</h1>
+      {query === "" ? <SearchLanding /> : null}
       <SearchBar
         initialQuery={query}
         isLoading={isLoading}
         onSearch={handleSearch}
       />
       {query === "" ? (
-        <>
-          <SearchLanding />
-          <RecentHistory
-            entries={entries}
-            onClear={clear}
-            onOpenEntry={handleOpenEntry}
-          />
-        </>
+        <RecentHistory
+          entries={entries}
+          onClear={clear}
+          onOpenEntry={handleOpenEntry}
+        />
       ) : (
         <SearchResults
           loadForms={handleLoadForms}

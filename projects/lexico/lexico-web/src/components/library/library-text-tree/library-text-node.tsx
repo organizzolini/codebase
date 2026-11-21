@@ -3,7 +3,6 @@ import { ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
 
 import {
-  Button,
   buttonVariants,
   Collapsible,
   CollapsibleContent,
@@ -86,17 +85,10 @@ export function LibraryTextNode(
         open={isOpen}
       >
         <div className="flex items-center gap-1">
-          <CollapsibleTrigger
-            render={
-              <Button
-                className="group/trigger h-auto min-w-0 flex-1 justify-start py-1 text-left whitespace-normal"
-                variant="ghost"
-              />
-            }
-          >
+          <CollapsibleTrigger className="group/trigger flex min-w-0 flex-1 items-center gap-2 py-1 text-left text-sm">
             <ChevronRightIcon
               aria-hidden="true"
-              className="transition-transform group-data-[panel-open]/trigger:rotate-90"
+              className="size-4 shrink-0 transition-transform group-data-[panel-open]/trigger:rotate-90"
             />
             <LibraryHighlight
               className="min-w-0 break-words"

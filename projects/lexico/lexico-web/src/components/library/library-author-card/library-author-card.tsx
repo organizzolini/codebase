@@ -2,11 +2,17 @@ import { ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
 
 import {
+  Badge,
+  Button,
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
 } from "@codebase/presentation";
 
 import { LibraryHighlight } from "../library-highlight/library-highlight";
@@ -52,10 +58,11 @@ export function LibraryAuthorCard(
   const preview = previewOf(works, workCount);
   const years = formatYears(author.startYear, author.endYear);
   const panelId = `library-author-${author.id}`;
+  const era = author.era === null ? null : ERA_LABELS[author.era];
 
   // 💪 Handlers
-  const handleToggle = (): void => {
-    setExpanded((current) => !current);
+  const handleOpenChange = (open: boolean): void => {
+    setExpanded(open);
   };
 
   // ♻️ Lifecycle
@@ -68,24 +75,21 @@ export function LibraryAuthorCard(
       className={className}
       data-testid="library-author-card"
     >
-      <Card>
-        <CardHeader>
-          <button
-            aria-controls={panelId}
-            aria-expanded={expanded}
-            className="group/toggle flex w-full items-start gap-2 text-left"
-            onClick={handleToggle}
-            type="button"
-          >
-            <span className="min-w-0 flex-1">
-              <CardTitle>
-                <LibraryHighlight
-                  className="inline"
-                  field="name"
-                  matches={matches}
-                  value={author.name}
-                />
-              </CardTitle>
+      <Collapsible
+        onOpenChange={handleOpenChange}
+        open={expanded}
+      >
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              <LibraryHighlight
+                className="inline"
+                field="name"
+                matches={matches}
+                value={author.name}
+              />
+            </CardTitle>
+            <CardDescription>
               {author.fullName === null ? null : (
                 <LibraryHighlight
                   className="block"
@@ -94,40 +98,51 @@ export function LibraryAuthorCard(
                   value={author.fullName}
                 />
               )}
-              <CardDescription>
-                {[
-                  author.era === null ? "" : ERA_LABELS[author.era],
-                  years,
-                  `${String(workCount)} ${workCount === 1 ? "work" : "works"}`,
-                ]
-                  .filter((part) => part !== "")
-                  .join(" · ")}
-              </CardDescription>
-            </span>
-            <ChevronRightIcon
-              aria-hidden="true"
-              className="shrink-0 transition-transform group-aria-expanded/toggle:rotate-90"
-            />
-          </button>
-        </CardHeader>
-        <CardContent>
-          {expanded ? (
-            <LibraryAuthorTexts
-              className="space-y-3 border-t pt-4"
-              id={panelId}
-              query={query}
-              row={row}
-            />
-          ) : (
-            <p
-              className="line-clamp-3 text-muted-foreground"
-              data-testid="library-author-preview"
-            >
-              {preview}
-            </p>
-          )}
-        </CardContent>
-      </Card>
+              {[
+                years,
+                `${String(workCount)} ${workCount === 1 ? "work" : "works"}`,
+              ]
+                .filter((part) => part !== "")
+                .join(" · ")}
+            </CardDescription>
+            <CardAction className="flex items-center gap-2">
+              {era === null ? null : <Badge variant="secondary">{era}</Badge>}
+              <CollapsibleTrigger
+                render={
+                  <Button
+                    aria-label={`${expanded ? "Collapse" : "Expand"} ${author.name}`}
+                    size="icon-sm"
+                    variant="ghost"
+                  />
+                }
+              >
+                <ChevronRightIcon
+                  aria-hidden="true"
+                  className="transition-transform group-data-[panel-open]/button:rotate-90"
+                />
+              </CollapsibleTrigger>
+            </CardAction>
+          </CardHeader>
+          <CardContent>
+            {expanded ? null : (
+              <p
+                className="line-clamp-3 text-muted-foreground"
+                data-testid="library-author-preview"
+              >
+                {preview}
+              </p>
+            )}
+            <CollapsibleContent>
+              <LibraryAuthorTexts
+                className="space-y-3 pt-2"
+                id={panelId}
+                query={query}
+                row={row}
+              />
+            </CollapsibleContent>
+          </CardContent>
+        </Card>
+      </Collapsible>
     </div>
   );
 }

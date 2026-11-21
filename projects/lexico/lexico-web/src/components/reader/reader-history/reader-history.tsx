@@ -38,7 +38,7 @@ export interface ReaderHistoryProperties {
 // 🧩 Component
 
 /**
- * The history sidebar: a full-height card on the right edge that opens by
+ * The history sidebar: a scrolling card on the right edge that opens by
  * pushing the page aside, with no overlay. Its This text tab lists the words
  * looked up in this text, newest first, each with its dictionary card; its
  * All tab lists every lookup and search, labelled by origin.
@@ -78,12 +78,12 @@ export function ReaderHistory(
     >
       <aside
         aria-label="History"
-        className={`h-full overflow-hidden transition-[width,margin] duration-300 ease-in-out motion-reduce:transition-none ${isOpen ? "ml-4 w-96 max-w-[calc(100vw-2rem)]" : "ml-0 w-0"}`}
+        className={`h-full transition-[width,margin] duration-300 ease-in-out motion-reduce:transition-none ${isOpen ? "ml-4 w-96 max-w-[calc(100vw-2rem)] overflow-y-auto" : "ml-0 w-0"}`}
         data-state={isOpen ? "open" : "closed"}
         inert={!isOpen}
       >
         {isOpen ? (
-          <Card className="h-full w-96 max-w-[calc(100vw-2rem)]">
+          <Card>
             <CardHeader>
               <CardTitle>History</CardTitle>
               <CardAction>
@@ -99,19 +99,13 @@ export function ReaderHistory(
                 </Button>
               </CardAction>
             </CardHeader>
-            <CardContent className="flex min-h-0 flex-1 flex-col gap-4">
-              <Tabs
-                className="min-h-0 flex-1 flex-col"
-                defaultValue="this-text"
-              >
-                <TabsList className="w-full">
+            <CardContent className="space-y-4">
+              <Tabs defaultValue="this-text">
+                <TabsList>
                   <TabsTrigger value="this-text">This text</TabsTrigger>
                   <TabsTrigger value="all">All</TabsTrigger>
                 </TabsList>
-                <TabsContent
-                  className="min-h-0 flex-1 overflow-y-auto"
-                  value="this-text"
-                >
+                <TabsContent value="this-text">
                   <HistoryList
                     emptyMessage="No words looked up in this text yet."
                     entries={thisText}
@@ -120,10 +114,7 @@ export function ReaderHistory(
                     showLexemes
                   />
                 </TabsContent>
-                <TabsContent
-                  className="min-h-0 flex-1 overflow-y-auto"
-                  value="all"
-                >
+                <TabsContent value="all">
                   <HistoryList
                     emptyMessage="No words looked up or searches yet."
                     entries={entries}

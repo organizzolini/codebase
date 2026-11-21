@@ -17,7 +17,7 @@ export interface LibraryGridProperties {
 // 🧩 Component
 
 /**
- * The library's Author cards in a masonry grid, expanded when a search is on.
+ * The library's Author cards in a grid, expanded when a search is on.
  */
 export function LibraryGrid(
   properties: Readonly<LibraryGridProperties>,
@@ -40,11 +40,10 @@ export function LibraryGrid(
       className={className}
       data-testid="library-grid"
     >
-      <div className="columns-1 gap-4 sm:columns-2 xl:columns-3">
+      <div className="grid items-start gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {authors.map((row) => (
           <LibraryAuthorCard
             key={`${row.author.id}:${query.search}`}
-            className="mb-4 break-inside-avoid"
             query={query}
             row={row}
           />
