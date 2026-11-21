@@ -76,7 +76,7 @@ describe(LibrarySort, () => {
     expect(onSorts).toHaveBeenCalledWith([]);
   });
 
-  it("shows a chip for each sort in order and flips one from its label", () => {
+  it("shows a chip for each sort in order and reverses one from its menu", async () => {
     const onSorts = vi.fn<LibrarySortProperties["onSorts"]>();
     render(
       <LibrarySort
@@ -90,8 +90,9 @@ describe(LibrarySort, () => {
     ).toStrictEqual(["Author era", "Text title"]);
 
     fireEvent.click(
-      screen.getByRole("button", { name: /Switch to descending/u }),
+      screen.getByRole("button", { name: "Options for Author era" }),
     );
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Reverse" }));
 
     expect(onSorts).toHaveBeenLastCalledWith([
       { ...ERA, direction: LibrarySortDirection.Desc },

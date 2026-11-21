@@ -93,26 +93,27 @@ describe(LibraryChip, () => {
     }
   });
 
-  it("is a plain label with no button when it has nothing to do on a click", () => {
-    renderChip();
+  it("is a plain label with no button, showing its trailing arrow", () => {
+    renderChip({ trailing: <span>arrow</span> });
 
-    expect(screen.queryByRole("button", { name: /Switch/u })).toBeNull();
+    expect(screen.getAllByRole("button")).toHaveLength(1);
+    expect(screen.getByTestId("library-chip").textContent).toContain("arrow");
   });
 
-  it("makes its label a button that calls back when it has an action", () => {
-    const onActivate =
-      vi.fn<NonNullable<LibraryChipProperties["onActivate"]>>();
-    renderChip({
-      activateLabel: "Switch to descending",
-      onActivate,
-      trailing: <span>arrow</span>,
-    });
+  it("offers Reverse in its menu only when it has a direction", async () => {
+    const onReverse = vi.fn<NonNullable<LibraryChipProperties["onReverse"]>>();
+    renderChip({ onReverse });
+    await openMenu();
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Switch to descending" }),
-    );
+    fireEvent.click(screen.getByRole("menuitem", { name: "Reverse" }));
 
-    expect(onActivate).toHaveBeenCalledExactlyOnceWith();
-    expect(screen.getByTestId("library-chip").textContent).toContain("arrow");
+    expect(onReverse).toHaveBeenCalledExactlyOnceWith();
+  });
+
+  it("leaves Reverse out of the menu of a chip with no direction", async () => {
+    renderChip();
+    await openMenu();
+
+    expect(screen.queryByRole("menuitem", { name: "Reverse" })).toBeNull();
   });
 });

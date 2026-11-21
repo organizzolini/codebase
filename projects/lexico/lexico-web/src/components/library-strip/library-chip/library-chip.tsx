@@ -1,4 +1,10 @@
-import { ArrowLeft, ArrowRight, EllipsisVertical, X } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpDown,
+  EllipsisVertical,
+  X,
+} from "lucide-react";
 import { createElement } from "react";
 
 import {
@@ -17,11 +23,9 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * One chip of a strip: its icon and wording, an optional action for a click on its label, and what its menu does to move or remove it.
+ * One chip of a strip: its icon and wording, a read-only label, and what its menu does to move, reverse, or remove it.
  */
 export interface LibraryChipProperties {
-  /** The aria-label of the label button, when it has an action. */
-  activateLabel?: string;
   className?: string;
   icon?: LucideIcon | undefined;
   /** Whether the chip leads its strip, so it cannot move left. */
@@ -29,11 +33,11 @@ export interface LibraryChipProperties {
   /** Whether the chip ends its strip, so it cannot move right. */
   isLast: boolean;
   label: string;
-  /** What a click on the label does; without it the label is plain text. */
-  onActivate?: () => void;
   /** Called with -1 or 1 when the menu moves the chip left or right. */
   onMove: (offset: -1 | 1) => void;
   onRemove: () => void;
+  /** Flips the chip's direction from the menu; without it the menu has no Reverse, as for a group. */
+  onReverse?: () => void;
   /** Shown after the label, such as a sort's direction arrow. */
   trailing?: ReactNode;
 }
@@ -41,21 +45,20 @@ export interface LibraryChipProperties {
 // 🧩 Component
 
 /**
- * A chip that joins its neighbors in a strip: the icon and label, then a permanent ellipsis segment whose menu moves the chip left or right, or removes it.
+ * A chip that joins its neighbors in a strip: the icon and label, then a permanent ellipsis segment whose menu moves the chip left or right, reverses it when it has a direction, or removes it.
  */
 export function LibraryChip(
   properties: Readonly<LibraryChipProperties>,
 ): ReactNode {
   const {
-    activateLabel,
     className,
     icon,
     isFirst,
     isLast,
     label,
-    onActivate,
     onMove,
     onRemove,
+    onReverse,
     trailing,
   } = properties;
 
@@ -83,25 +86,12 @@ export function LibraryChip(
       data-slot="library-chip"
       data-testid="library-chip"
     >
-      {onActivate === undefined ? (
-        <div
-          className={LIBRARY_TEXT_SEGMENT}
-          data-slot="button"
-        >
-          {content}
-        </div>
-      ) : (
-        <Button
-          aria-label={activateLabel}
-          onClick={() => {
-            onActivate();
-          }}
-          type="button"
-          variant="outline"
-        >
-          {content}
-        </Button>
-      )}
+      <div
+        className={LIBRARY_TEXT_SEGMENT}
+        data-slot="button"
+      >
+        {content}
+      </div>
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
@@ -134,6 +124,16 @@ export function LibraryChip(
             <ArrowRight aria-hidden="true" />
             Move right
           </DropdownMenuItem>
+          {onReverse === undefined ? null : (
+            <DropdownMenuItem
+              onClick={() => {
+                onReverse();
+              }}
+            >
+              <ArrowUpDown aria-hidden="true" />
+              Reverse
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem
             onClick={() => {
               onRemove();

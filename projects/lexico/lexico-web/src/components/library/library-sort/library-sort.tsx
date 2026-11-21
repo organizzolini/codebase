@@ -35,7 +35,7 @@ export interface LibrarySortProperties {
 // 🧩 Component
 
 /**
- * The Sort button with its searchable checklist of attributes, joined to a chip for each active sort in the order they apply. A chip's label flips its direction, and its menu moves it left or right, or removes it; checking an attribute adds it last.
+ * The Sort button with its searchable checklist of attributes, joined to a chip for each active sort in the order they apply. A chip's label shows its direction, and its menu moves it left or right, reverses it, or removes it; checking an attribute adds it last.
  */
 export function LibrarySort(
   properties: Readonly<LibrarySortProperties>,
@@ -85,14 +85,10 @@ export function LibrarySort(
           return (
             <LibraryChip
               key={field}
-              activateLabel={`Sort by ${label}, ${isDescending ? "descending" : "ascending"}. Switch to ${isDescending ? "ascending" : "descending"}`}
               icon={icon}
               isFirst={index === 0}
               isLast={index === sorts.length - 1}
               label={label}
-              onActivate={() => {
-                handleFlip(field);
-              }}
               onMove={(offset) => {
                 onSorts(
                   reorderSorts(
@@ -107,6 +103,9 @@ export function LibrarySort(
               }}
               onRemove={() => {
                 handleToggle(field);
+              }}
+              onReverse={() => {
+                handleFlip(field);
               }}
               trailing={<DirectionIcon aria-hidden="true" />}
             />

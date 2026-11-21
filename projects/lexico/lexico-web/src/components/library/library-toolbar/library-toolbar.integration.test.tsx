@@ -82,6 +82,14 @@ async function pickSort(category: RegExp, attribute: string): Promise<void> {
   await settle();
 }
 
+/** Opens a sort chip's ellipsis menu and picks Reverse. */
+async function reverseSort(label: string): Promise<void> {
+  fireEvent.click(
+    await screen.findByRole("button", { name: `Options for ${label}` }),
+  );
+  fireEvent.click(await screen.findByRole("menuitem", { name: "Reverse" }));
+}
+
 /** Lets a menu or popover finish opening before the next step. */
 async function settle(): Promise<void> {
   await new Promise((resolve) => {
@@ -308,10 +316,8 @@ describe("library toolbar", () => {
       screen.getByRole("group", { name: /Word count is between/u }),
     ).toBeDefined();
     expect(
-      screen.getByRole("button", {
-        name: /Sort by Author name, descending/u,
-      }),
-    ).toBeDefined();
+      screen.getByTestId("library-sort").querySelector("svg.lucide-arrow-down"),
+    ).not.toBeNull();
     expect(CALLS.at(-1)).toMatchObject({
       filters: { eras: [AuthorEra.Classical], provinces: ["Dacia"] },
       search: "vergil",
@@ -451,9 +457,7 @@ describe("library toolbar", () => {
       ]),
     );
 
-    fireEvent.click(
-      await screen.findByRole("button", { name: /Switch to descending/u }),
-    );
+    await reverseSort("Text line count");
 
     await waitFor(() =>
       expect(CALLS.at(-1)?.sort).toStrictEqual([
@@ -494,10 +498,7 @@ describe("library toolbar", () => {
 
     await waitFor(() => expect(CALLS.at(-1)?.sort).toHaveLength(2));
 
-    fireEvent.click(
-      screen.getAllByRole("button", { name: /Switch to descending/u })[1] ??
-        document.body,
-    );
+    await reverseSort("Author name");
 
     await waitFor(() =>
       expect(CALLS.at(-1)?.sort).toStrictEqual([
@@ -639,7 +640,6 @@ describe("library toolbar", () => {
       screen.getByRole("button", { name: "Sort" }),
       screen.getByRole("button", { name: "Page" }),
       screen.getByRole("button", { name: "Era filter options" }),
-      screen.getByRole("button", { name: /Switch to descending/u }),
       screen.getByRole("button", { name: "Options for Author name" }),
     ];
 
