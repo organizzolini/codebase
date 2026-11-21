@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { HistoryIcon } from "lucide-react";
 import {
   useCallback,
   useEffect,
@@ -174,6 +175,7 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
             onClick={handleToggleHistory}
             variant="outline"
           >
+            <HistoryIcon aria-hidden="true" />
             History
           </Button>
         </div>

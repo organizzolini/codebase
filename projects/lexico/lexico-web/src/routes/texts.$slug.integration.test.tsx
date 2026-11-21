@@ -360,7 +360,10 @@ describe("texts.$slug", () => {
   it("remembers the font size chosen in this browser", async () => {
     await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
 
-    fireEvent.click(await screen.findByRole("button", { name: "Larger text" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Display" }));
+    fireEvent.click(
+      await screen.findByRole("menuitem", { name: "Larger text" }),
+    );
 
     expect(globalThis.localStorage.getItem(FONT_SIZE_KEY)).toBe("large");
   });

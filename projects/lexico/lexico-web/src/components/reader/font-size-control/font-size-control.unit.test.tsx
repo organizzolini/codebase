@@ -25,7 +25,7 @@ describe(FontSizeControl, () => {
     );
   });
 
-  it("asks for the next size up or down", () => {
+  it("asks for the next size up or down", async () => {
     const onChange = vi.fn<(size: FontSize) => void>();
 
     render(
@@ -34,8 +34,11 @@ describe(FontSizeControl, () => {
         size="medium"
       />,
     );
-    fireEvent.click(screen.getByRole("button", { name: "Larger text" }));
-    fireEvent.click(screen.getByRole("button", { name: "Smaller text" }));
+    fireEvent.click(screen.getByRole("button", { name: "Display" }));
+    fireEvent.click(
+      await screen.findByRole("menuitem", { name: "Larger text" }),
+    );
+    fireEvent.click(screen.getByRole("menuitem", { name: "Smaller text" }));
 
     expect(onChange).toHaveBeenNthCalledWith(1, "large");
     expect(onChange).toHaveBeenNthCalledWith(2, "small");

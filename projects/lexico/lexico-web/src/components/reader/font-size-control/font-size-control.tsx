@@ -1,4 +1,12 @@
-import { Button } from "@codebase/presentation";
+import { EyeIcon } from "lucide-react";
+
+import {
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@codebase/presentation";
 
 import { stepFontSize } from "./font-size-control.utilities";
 
@@ -19,7 +27,7 @@ export interface FontSizeControlProperties {
 // 🧩 Component
 
 /**
- * Buttons that make the reader's text smaller or larger.
+ * The Display button and its menu, which makes the reader's text smaller or larger.
  */
 export function FontSizeControl(
   properties: Readonly<FontSizeControlProperties>,
@@ -42,24 +50,39 @@ export function FontSizeControl(
       className={className}
       data-testid="font-size-control"
     >
-      <Button
-        disabled={size === "small"}
-        onClick={() => {
-          onChange(stepFontSize(size, -1));
-        }}
-        variant="outline"
-      >
-        Smaller text
-      </Button>
-      <Button
-        disabled={size === "large"}
-        onClick={() => {
-          onChange(stepFontSize(size, 1));
-        }}
-        variant="outline"
-      >
-        Larger text
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              type="button"
+              variant="outline"
+            />
+          }
+        >
+          <EyeIcon aria-hidden="true" />
+          Display
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          <DropdownMenuItem
+            closeOnClick={false}
+            disabled={size === "small"}
+            onClick={() => {
+              onChange(stepFontSize(size, -1));
+            }}
+          >
+            Smaller text
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            closeOnClick={false}
+            disabled={size === "large"}
+            onClick={() => {
+              onChange(stepFontSize(size, 1));
+            }}
+          >
+            Larger text
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

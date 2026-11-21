@@ -101,7 +101,7 @@ export function ReaderHistory(
             </CardHeader>
             <CardContent className="flex min-h-0 flex-1 flex-col gap-4">
               <Tabs
-                className="min-h-0 flex-1"
+                className="min-h-0 flex-1 flex-col"
                 defaultValue="this-text"
               >
                 <TabsList className="w-full">
