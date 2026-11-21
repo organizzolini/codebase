@@ -69,4 +69,4 @@ export const LIBRARY_STRIP_CHIPS =
 
 /** Joins the Filter button and every filter chip into one group: a chip's first segment loses its left corners and border, the last segment of every chip but the last loses its right corners, and no segment wraps its text. */
 export const LIBRARY_FILTER_STRIP =
-  "max-w-full overflow-x-auto [&>[data-slot=filter-chip]>*]:whitespace-nowrap [&>[data-slot=filter-chip]>:first-child]:rounded-l-none [&>[data-slot=filter-chip]>:first-child]:border-l-0 [&>[data-slot=filter-chip]:not(:last-child)>:last-child]:rounded-r-none!";
+  "max-w-full shrink-0 overflow-x-auto [&>[data-slot=filter-chip]>*]:whitespace-nowrap [&>[data-slot=filter-chip]>:first-child]:rounded-l-none [&>[data-slot=filter-chip]>:first-child]:border-l-0 [&>[data-slot=filter-chip]:not(:last-child)>:last-child]:rounded-r-none!";

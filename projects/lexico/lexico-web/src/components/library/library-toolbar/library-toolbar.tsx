@@ -61,7 +61,7 @@ export interface LibraryToolbarProperties {
 // 🧩 Component
 
 /**
- * A search box over a wrapping row of Group, Sort, Filter, and Page strips. Each active group, sort, and filter is a segment joined to its button, and the Page strip steps through the range on view. Edits apply at once.
+ * A wrapping row of a search box and the Group, Sort, Filter, and Page strips; the search shrinks to its minimum before a strip wraps. Each active group, sort, and filter is a segment joined to its button, and the Page strip steps through the range on view. Edits apply at once.
  */
 export function LibraryToolbar(
   properties: Readonly<LibraryToolbarProperties>,
@@ -125,49 +125,51 @@ export function LibraryToolbar(
         onQueryChange={handleQueryChange}
         query={query}
       >
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <LibrarySearch
+            className="min-w-64 flex-1"
             onSearch={onSearch}
             search={search}
           />
-          <div className="flex flex-wrap items-center gap-2">
-            <LibraryGroup
-              groups={groups}
-              onGroups={onGroups}
+          <LibraryGroup
+            className="shrink-0"
+            groups={groups}
+            onGroups={onGroups}
+          />
+          <LibrarySort
+            className="shrink-0"
+            onSorts={onSorts}
+            sorts={sorts}
+          />
+          <ButtonGroup className={LIBRARY_FILTER_STRIP}>
+            <FiltersBuilder
+              trigger={
+                <Button
+                  type="button"
+                  variant="outline"
+                >
+                  <ListFilter aria-hidden="true" />
+                  {FILTER_BUTTON_LABEL}
+                </Button>
+              }
             />
-            <LibrarySort
-              onSorts={onSorts}
-              sorts={sorts}
-            />
-            <ButtonGroup className={LIBRARY_FILTER_STRIP}>
-              <FiltersBuilder
-                trigger={
-                  <Button
-                    type="button"
-                    variant="outline"
-                  >
-                    <ListFilter aria-hidden="true" />
-                    {FILTER_BUTTON_LABEL}
-                  </Button>
-                }
+            {rules.map((rule, index) => (
+              <FilterChip
+                key={rule.id}
+                index={index}
+                rule={rule}
               />
-              {rules.map((rule, index) => (
-                <FilterChip
-                  key={rule.id}
-                  index={index}
-                  rule={rule}
-                />
-              ))}
-            </ButtonGroup>
-            <LibraryPaging
-              limit={limit}
-              onLimit={onLimit}
-              onPage={onPage}
-              page={page}
-              pageCount={pageCount}
-              totalCount={totalCount}
-            />
-          </div>
+            ))}
+          </ButtonGroup>
+          <LibraryPaging
+            className="shrink-0"
+            limit={limit}
+            onLimit={onLimit}
+            onPage={onPage}
+            page={page}
+            pageCount={pageCount}
+            totalCount={totalCount}
+          />
         </div>
       </Filters>
     </div>

@@ -59,6 +59,16 @@ describe(LibraryToolbar, () => {
     );
   });
 
+  it("lets the search shrink to a minimum before the strips wrap", () => {
+    render(<LibraryToolbar {...properties()} />);
+
+    const search = screen.getByTestId("library-search");
+
+    expect(search.className).toContain("flex-1");
+    expect(search.className).toContain("min-w-64");
+    expect(search.parentElement?.className).toContain("flex-wrap");
+  });
+
   it("offers the Page menu beside Filter and Sort", () => {
     render(<LibraryToolbar {...properties()} />);
 

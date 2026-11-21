@@ -69,7 +69,7 @@ export function LibraryTextTree(
     >
       <Frame
         className={cn(depth > 0 && "[--frame-radius:0px]")}
-        variant={depth === 0 ? "default" : "ghost"}
+        variant="ghost"
         dense
         stacked
       >
