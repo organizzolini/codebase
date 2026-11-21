@@ -11,8 +11,6 @@
   ],
   "targets": {
     "bandit": {},
-    "codometer": {},
-    "codometer-limit": {},
     "lint-codebase": {},
     "markdown-lint": {},
     "nbstripout": {},

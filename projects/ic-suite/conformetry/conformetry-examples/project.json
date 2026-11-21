@@ -41,8 +41,6 @@
         }
       }
     },
-    "codometer": {},
-    "codometer-limit": {},
     "deprecate-code": {},
     "drift-catalogue": {
       "cache": false,

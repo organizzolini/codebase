@@ -6,8 +6,6 @@
   "tags": ["language:typescript", "name:codependix-agents", "type:package"],
   "targets": {
     "build-projects": {},
-    "codometer": {},
-    "codometer-limit": {},
     "deprecate-code": {},
     "eslint": {},
     "format-code": {},

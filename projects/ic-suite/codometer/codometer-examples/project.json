@@ -7,8 +7,6 @@
   "tags": ["language:typescript", "name:codometer-examples", "type:package"],
   "targets": {
     "build-projects": {},
-    "codometer": {},
-    "codometer-limit": {},
     "deprecate-code": {},
     "eslint": {},
     "examples": {

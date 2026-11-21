@@ -360,6 +360,21 @@ const MODULE_BOUNDARIES = {
       ],
       sourceTag: "name:codometer-cli",
     },
+    // The Nx plugin sits on top of the whole chain and nothing in the
+    // chain may depend back on it, which keeps `@nx/devkit` out of
+    // every package that measures a codebase.
+    {
+      onlyDependOnLibsWithTags: [
+        "name:codometer-cli",
+        "name:codometer-configuration",
+        "name:codometer-core",
+        "name:codometer-measurement",
+        "name:codometer-output",
+        "name:observability",
+        "name:testing",
+      ],
+      sourceTag: "name:codometer-nx",
+    },
     // Coinagerie package graph, on the ic-suite spine:
     // `core <- configuration <- languages <- vocabulary <- output <- cli`.
     // No coinagerie package depends on another toolchain.
