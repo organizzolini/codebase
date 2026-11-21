@@ -7,28 +7,21 @@ import {
   DropdownMenuSubTrigger,
 } from "@codebase/presentation";
 
-import { CalendarGroupBy } from "../../calendar-query/calendar-group-by/calendar-group-by";
-import { createEventGroupFields } from "../../calendar-query/calendar-group-by/components/event-group-model/event-group-fields.utilities";
 import { CalendarScaleSelect } from "../calendar-scale-select/calendar-scale-select";
 
-import type { EventFacet } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type {
   CalendarViewName,
   TimelineScale,
 } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
-import type { EventGroupLevel } from "../../calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The view, its grouping and scale, and the change handlers.
+ * The view, its scale, and the change handler.
  */
 export interface CalendarViewOptionsProperties {
   className?: string;
-  facets: readonly EventFacet[];
-  grouping: readonly EventGroupLevel[];
-  onGroupingChange: (grouping: EventGroupLevel[]) => void;
   onScaleChange: (scale: TimelineScale) => void;
   scale: TimelineScale;
   view: CalendarViewName;
@@ -37,37 +30,22 @@ export interface CalendarViewOptionsProperties {
 // 🧩 Component
 
 /**
- * Renders the View menu's arrangement of the view: Group by for agenda and timeline, and Scale for the timeline; nothing else draws.
+ * Renders the View menu's arrangement of the view: Scale, for the timeline alone; nothing else draws.
  */
 export function CalendarViewOptions(
   properties: Readonly<CalendarViewOptionsProperties>,
 ): ReactNode {
-  const {
-    className,
-    facets,
-    grouping,
-    onGroupingChange,
-    onScaleChange,
-    scale,
-    view,
-  } = properties;
+  const { className, onScaleChange, scale, view } = properties;
 
   // 🪝 Hooks
 
   // 🏗 Setup
-  const canGroup = view === "agenda" || view === "timeline";
-  const fields = createEventGroupFields(facets);
-  const groupLabels = grouping.map(
-    (level) =>
-      fields.find((field) => field.id === level.field)?.label ?? level.field,
-  );
-
   // 💪 Handlers
 
   // ♻️ Lifecycle
 
   // 🏁 Early Returns
-  if (!canGroup) {
+  if (view !== "timeline") {
     return null;
   }
 
@@ -81,28 +59,14 @@ export function CalendarViewOptions(
         <DropdownMenuLabel>Arrange</DropdownMenuLabel>
       </DropdownMenuGroup>
       <DropdownMenuSub>
-        <DropdownMenuSubTrigger>
-          Group by: {groupLabels.length === 0 ? "none" : groupLabels.join(", ")}
-        </DropdownMenuSubTrigger>
-        <DropdownMenuSubContent>
-          <CalendarGroupBy
-            facets={facets}
-            grouping={grouping}
-            onGroupingChange={onGroupingChange}
+        <DropdownMenuSubTrigger>Scale</DropdownMenuSubTrigger>
+        <DropdownMenuSubContent className="p-1">
+          <CalendarScaleSelect
+            onScaleChange={onScaleChange}
+            scale={scale}
           />
         </DropdownMenuSubContent>
       </DropdownMenuSub>
-      {view === "timeline" ? (
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Scale</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent className="p-1">
-            <CalendarScaleSelect
-              onScaleChange={onScaleChange}
-              scale={scale}
-            />
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-      ) : null}
       <DropdownMenuSeparator />
     </div>
   );

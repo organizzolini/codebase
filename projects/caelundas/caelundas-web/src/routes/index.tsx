@@ -29,9 +29,8 @@ import {
   CalendarSymbolsContext,
   DEFAULT_CALENDAR_SYMBOLS,
 } from "../components/calendar-events/event-glyphs/calendar-symbols.constants";
-import { CalendarFilters } from "../components/calendar-query/calendar-filters/calendar-filters";
-import { createEventFilterFields } from "../components/calendar-query/calendar-filters/components/event-filter-model/event-filter-fields.utilities";
 import { EMPTY_EVENT_FILTER } from "../components/calendar-query/calendar-filters/components/event-filter-model/event-filter-tree.constants";
+import { CalendarQueryControls } from "../components/calendar-query/calendar-query-controls/calendar-query-controls";
 import {
   getCalendarReloadKey,
   readCalendarSearch,
@@ -104,7 +103,6 @@ function IndexPage(): ReactNode {
     select: readCalendarSearch,
     structuralSharing: true,
   });
-  const fields = useMemo(() => createEventFilterFields(facets), [facets]);
   const isWide = useSyncExternalStore(subscribeToViewport, isWideViewport);
   // While a reload runs, the notice of why the last window was empty would
   // speak for days no longer shown, so it waits for the new answer.
@@ -166,12 +164,15 @@ function IndexPage(): ReactNode {
           events={events}
           facets={facets}
           filters={
-            <CalendarFilters
+            <CalendarQueryControls
               className="contents"
-              fields={fields}
+              facets={facets}
               filter={filter}
+              grouping={grouping}
               onFilterChange={handleFilterChange}
+              onGroupingChange={handleGroupingChange}
               presets={presets}
+              view={view}
             />
           }
           grouping={grouping}
@@ -189,9 +190,6 @@ function IndexPage(): ReactNode {
               symbols={search.symbols}
               viewOptions={
                 <CalendarViewOptions
-                  facets={facets}
-                  grouping={grouping}
-                  onGroupingChange={handleGroupingChange}
                   onScaleChange={handleScaleChange}
                   scale={search.scale ?? DEFAULT_TIMELINE_SCALE}
                   view={view}

@@ -9,18 +9,7 @@ import type {
   CalendarViewName,
   TimelineScale,
 } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
-import type { EventGroupLevel } from "../../calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
 import type { ReactNode } from "react";
-
-const FACETS = [
-  {
-    id: "type",
-    name: "Type",
-    values: [
-      { count: 1, depth: 1, id: "aspect", name: "Aspect", path: "Aspect" },
-    ],
-  },
-];
 
 // The options belong inside a dropdown menu, so each is drawn in one held open.
 function OpenMenu(properties: Readonly<{ children: ReactNode }>): ReactNode {
@@ -31,23 +20,13 @@ function OpenMenu(properties: Readonly<{ children: ReactNode }>): ReactNode {
   );
 }
 
-function renderOptions(
-  view: CalendarViewName,
-  grouping: EventGroupLevel[] = [],
-): {
-  onGroupingChange: ReturnType<
-    typeof vi.fn<(grouping: EventGroupLevel[]) => void>
-  >;
+function renderOptions(view: CalendarViewName): {
   onScaleChange: ReturnType<typeof vi.fn<(scale: TimelineScale) => void>>;
 } {
-  const onGroupingChange = vi.fn<(grouping: EventGroupLevel[]) => void>();
   const onScaleChange = vi.fn<(scale: TimelineScale) => void>();
 
   render(
     <CalendarViewOptions
-      facets={FACETS}
-      grouping={grouping}
-      onGroupingChange={onGroupingChange}
       onScaleChange={onScaleChange}
       scale="month"
       view={view}
@@ -55,7 +34,7 @@ function renderOptions(
     { wrapper: OpenMenu },
   );
 
-  return { onGroupingChange, onScaleChange };
+  return { onScaleChange };
 }
 
 describe(CalendarViewOptions, () => {
@@ -63,12 +42,9 @@ describe(CalendarViewOptions, () => {
     render(
       <CalendarViewOptions
         className="calendar-view-options"
-        facets={FACETS}
-        grouping={[]}
-        onGroupingChange={() => {}}
         onScaleChange={() => {}}
         scale="month"
-        view="agenda"
+        view="timeline"
       />,
       { wrapper: OpenMenu },
     );
@@ -78,46 +54,20 @@ describe(CalendarViewOptions, () => {
     );
   });
 
-  it.each(["month", "week", "three-day", "day"] as const)(
+  it.each(["agenda", "month", "week", "three-day", "day"] as const)(
     "has nothing to arrange in the %s view",
     (view) => {
       renderOptions(view);
 
       expect(screen.queryByTestId("calendar-view-options")).toBeNull();
-      expect(screen.queryByText(/^Group by/u)).toBeNull();
       expect(screen.queryByText("Scale")).toBeNull();
     },
   );
 
-  it("offers grouping, but no scale, in the agenda", () => {
-    renderOptions("agenda");
-
-    expect(screen.getByText("Group by: none")).toBeDefined();
-    expect(screen.queryByText("Scale")).toBeNull();
-  });
-
-  it("names the grouping on its submenu", () => {
-    renderOptions("agenda", [{ depth: 1, field: "tag:type" }]);
-
-    expect(screen.getByText("Group by: Type")).toBeDefined();
-  });
-
-  it("offers grouping and a scale in the timeline", () => {
+  it("offers a scale in the timeline", () => {
     renderOptions("timeline");
 
-    expect(screen.getByText("Group by: none")).toBeDefined();
     expect(screen.getByText("Scale")).toBeDefined();
-  });
-
-  it("edits the grouping from its submenu", async () => {
-    const { onGroupingChange } = renderOptions("agenda");
-
-    fireEvent.click(screen.getByText("Group by: none"));
-    fireEvent.click(await screen.findByRole("button", { name: "Add group" }));
-
-    expect(onGroupingChange).toHaveBeenCalledWith([
-      { depth: 1, field: "tag:type" },
-    ]);
   });
 
   it("picks the scale from its submenu", async () => {
@@ -127,11 +77,5 @@ describe(CalendarViewOptions, () => {
     fireEvent.click(await screen.findByRole("button", { name: "Week" }));
 
     expect(onScaleChange).toHaveBeenCalledWith("week");
-  });
-
-  it("names a group by its field when the data no longer has it", () => {
-    renderOptions("agenda", [{ field: "retired-field" }]);
-
-    expect(screen.getByText(/retired-field/u)).toBeDefined();
   });
 });
