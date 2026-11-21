@@ -4,12 +4,6 @@ variable "openrouter_management_key" {
   sensitive   = true
 }
 
-variable "openrouter_api_key" {
-  description = "The refresh-documentation key's value, used only to write the preset. Terraform cannot read the value of a key it imported."
-  type        = string
-  sensitive   = true
-}
-
 variable "refresh_documentation_key_name" {
   description = "Name of the existing OpenRouter key to import for the refresh-documentation job."
   type        = string
