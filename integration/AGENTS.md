@@ -127,7 +127,6 @@ once per project pays its start-up once per project.
 
 | Executor      | Replaces                                      | Source                      |
 | ------------- | --------------------------------------------- | --------------------------- |
-| `codometer`   | `codometer measure` in the project's root     | `src/executors/codometer`   |
 | `knip`        | `knip --workspace <root>`, once per project   | `src/executors/knip`        |
 | `spell-check` | `cspell '<root>/**'`, once per project        | `src/executors/spell-check` |
 
@@ -148,18 +147,8 @@ exit passes every task; a failing exit with no finding under any root asked abou
 fails every task. A failed task is run again by itself for cspell's own report,
 which the batch executor prints under the task id.
 
-`codometer` runs one `codometer measure --config <config> --output-json … <root> <root> …`
-for every task Nx batches: `measure` takes directories as arguments, measures
-each as a run started inside it would be, and writes each one's report and badge
-block under its own root. Its exit code says only that some directory failed, so
-a clean exit passes every task and a failing one judges each task by running its
-project alone, a few at a time, through the same command line from its own root,
-which also gets codometer's own report for the batch executor to print under the
-task id. The batch runs with `LOG_LEVEL=silent`. It never imports codometer:
-callidescope gates this project at a depth of six across its dependency
-closure, and a call into codometer's measurement is fifteen frames deep. Tasks
-that ask for different measurements (`check` against `write`) are separate runs.
-With `--batch=false` each project runs the command line as before.
+Codometer's executor lives with its Nx plugin, `@codometer/nx`, the way
+coinagerie's does; `codometer-limit` and `codometer-weigh` are inferred from it.
 
 An executor here is plain functions rather than a NestJS service, since Nx calls
 it directly, and it declares only the fields of Nx's context it reads, so this
