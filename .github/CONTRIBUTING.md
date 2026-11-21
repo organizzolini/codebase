@@ -115,7 +115,7 @@ Alternatively, use the included dev container for a fully configured environment
 
 | Tool       | Version                     | Purpose                                                      |
 | ---------- | --------------------------- | ------------------------------------------------------------ |
-| Node.js    | 24.16.0                     | JavaScript runtime                                           |
+| Node.js    | 26.13.1                     | JavaScript runtime                                           |
 | pnpm       | 11.2.2                      | Package manager                                              |
 | Terraform  | latest                      | Infrastructure provisioning (Linode)                         |
 | kubectl    | latest                      | Kubernetes cluster management                                |
