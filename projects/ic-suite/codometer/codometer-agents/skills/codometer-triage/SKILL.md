@@ -124,6 +124,9 @@ current.
 
 `--inputs [globs...]` is independent of `--check` too — narrowing a `measure`
 run to exactly the given globs does not change whether it gates or writes.
+So is `--only-inputs [names...]`, which drops the other inputs and the limits
+written against them; an "input matched no files" failure from a project that was
+never built is how to tell the two limit groups apart.
 There is no `--directory` on `measure`: a run always measures the process's
 own working directory. The `configuration` subcommand is the one place
 `-d, --directory` still exists, for listing what a directory's configuration

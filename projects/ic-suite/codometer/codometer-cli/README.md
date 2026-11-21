@@ -56,6 +56,7 @@ codometer --config configuration/ic-suite/codometer.config.ts --check limits
 | `--config <path>` | **Required.** The configuration file to read |
 | `-f, --format <format>` | What to print to standard output, one of `json` and `markdown` |
 | `--inputs [globs...]` | Glob array measured in place of every configured input, with no configured input — not even the built-in `codebase` one — active |
+| `--only-inputs [names...]` | Names of the only configured inputs to measure; the others, and the limits written against them, are left out |
 | `--output-json [path]` | Write the JSON report, at the given path or the configured one |
 | `--output-markdown [path]` | Write the markdown badge block, at the given path or the configured one |
 
@@ -223,6 +224,14 @@ fails the run rather than counting as zero bytes.
 `--inputs [globs...]` on the command line replaces every configured input for
 that one run, running only `language` analysis over exactly the globs given —
 with no other input, not even the built-in `codebase` one, active.
+
+`--only-inputs [names...]` narrows instead of replacing: it keeps the configured
+inputs it names and drops the rest, along with every limit written against a
+dropped input, whether qualified by its name or unqualified under that default
+input. A run that gates only the source limits, with no build behind it, names
+the built-in input: `codometer measure --config codometer.config.ts --check
+limits --only-inputs codebase`. A name no input carries, or the flag beside
+`--inputs`, is refused.
 
 ## Limits
 

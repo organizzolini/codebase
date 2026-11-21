@@ -92,6 +92,25 @@ export class MeasureCommand extends CommandRunner {
   }
 
   /**
+   * Whether a limit is written against an input: by its name in front of the metric, or unqualified where that input is the default.
+   */
+  private limitTargetsInput(
+    configuration: ResolvedCodometerConfiguration,
+    metric: string,
+    input: string,
+  ): boolean {
+    if (metric.startsWith(`${input}.`)) {
+      return true;
+    }
+
+    const isQualified = configuration.inputs.some((configured) =>
+      metric.startsWith(`${configured.name}.`),
+    );
+
+    return !isQualified && configuration.defaultInput === input;
+  }
+
+  /**
    * Measure one directory and return whether the run failed. Sets no exit
    * code, so `run` can measure many directories in one process.
    */
@@ -258,11 +277,11 @@ export class MeasureCommand extends CommandRunner {
       return undefined;
     }
 
-    const configuration = this.applyInputsOverride(
+    const { configuration, errors: inputErrors } = this.selectInputs(
       loadedConfiguration,
-      options.inputs,
+      options,
     );
-    const formatErrors: string[] = [];
+    const formatErrors: string[] = [...inputErrors];
     const format = this.configurationService.resolveFormat(
       options.format,
       configuration.format,
@@ -300,6 +319,61 @@ export class MeasureCommand extends CommandRunner {
     });
 
     return workingDirectory;
+  }
+
+  /**
+   * Applies `--inputs`, then keeps the inputs `--only-inputs` names and drops the limits written against the others. Refuses an unknown name, and mixing the two.
+   */
+  private selectInputs(
+    loaded: ResolvedCodometerConfiguration,
+    options: MeasureCommandOptions,
+  ): { configuration: ResolvedCodometerConfiguration; errors: string[] } {
+    const configuration = this.applyInputsOverride(loaded, options.inputs);
+    const names = options.onlyInputs;
+
+    if (names === undefined) {
+      return { configuration, errors: [] };
+    }
+
+    if (options.inputs !== undefined) {
+      return {
+        configuration,
+        errors: ["--only-inputs cannot be combined with --inputs"],
+      };
+    }
+
+    const configured = configuration.inputs.map((input) => input.name);
+    const unknown = names.filter((name) => !configured.includes(name));
+
+    if (unknown.length > 0) {
+      const quote = (list: string[]): string =>
+        list.map((name) => `"${name}"`).join(", ");
+
+      return {
+        configuration,
+        errors: [
+          `--only-inputs names no configured input: ${quote(unknown)}. Configured inputs: ${quote(configured)}.`,
+        ],
+      };
+    }
+
+    const dropped = configured.filter((name) => !names.includes(name));
+
+    return {
+      configuration: {
+        ...configuration,
+        inputs: configuration.inputs.filter((input) =>
+          names.includes(input.name),
+        ),
+        limits: configuration.limits.filter(
+          (limit) =>
+            !dropped.some((input) =>
+              this.limitTargetsInput(configuration, limit.metric, input),
+            ),
+        ),
+      },
+      errors: [],
+    };
   }
 
   /**
@@ -345,6 +419,18 @@ export class MeasureCommand extends CommandRunner {
     flags: "--inputs [globs...]",
   })
   public parseInputs(value: string, previous: string[] = []): string[] {
+    return [...previous, value];
+  }
+
+  /**
+   * Parses one input name, accumulating them into the array of the only inputs the run measures.
+   */
+  @Option({
+    description:
+      "Names of the only configured inputs to measure; the others, and the limits written against them, are left out",
+    flags: "--only-inputs [names...]",
+  })
+  public parseOnlyInputs(value: string, previous: string[] = []): string[] {
     return [...previous, value];
   }
 

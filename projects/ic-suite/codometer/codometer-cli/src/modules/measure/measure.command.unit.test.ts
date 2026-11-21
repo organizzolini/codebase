@@ -418,6 +418,132 @@ describe(MeasureCommand, () => {
     });
   });
 
+  describe("--only-inputs", () => {
+    const compiledInput: ResolvedCodometerInput = {
+      analyses: ["size"],
+      compression: "gzip",
+      directory: ".",
+      exclude: [],
+      include: ["dist/**/*.js"],
+      name: "Compiled JavaScript",
+    };
+    const sourceLimit = {
+      label: undefined,
+      metric: "custom.Comment Budget",
+      severity: "fail" as const,
+      value: 0,
+    };
+    const sizeLimit = {
+      label: undefined,
+      metric: "Compiled JavaScript.size",
+      severity: "fail" as const,
+      value: 4000,
+    };
+
+    /** A configuration with a source input and a compiled one, each limited. */
+    function buildTwoInputs(): ResolvedCodometerConfiguration {
+      const configuration = buildConfiguration();
+
+      return {
+        ...configuration,
+        defaultInput: "codebase",
+        inputs: [...configuration.inputs, compiledInput],
+        limits: [sourceLimit, sizeLimit],
+      };
+    }
+
+    /** Asserts the measurement was handed a configuration with these parts. */
+    function expectMeasured(
+      expected: Partial<ResolvedCodometerConfiguration>,
+    ): void {
+      expect(measureService.measure).toHaveBeenCalledExactlyOnceWith(
+        expect.objectContaining<Partial<MeasureArguments>>({
+          configuration:
+            expect.objectContaining<Partial<ResolvedCodometerConfiguration>>(
+              expected,
+            ),
+        }),
+      );
+    }
+
+    beforeEach(() => {
+      vi.spyOn(configurationService, "loadConfiguration").mockResolvedValue(
+        buildTwoInputs(),
+      );
+    });
+
+    it("measures only the named inputs", async () => {
+      expect.hasAssertions();
+
+      await run({ onlyInputs: ["codebase"] });
+
+      expectMeasured({ inputs: buildConfiguration().inputs });
+    });
+
+    it("drops the limits written against an input it left out", async () => {
+      expect.hasAssertions();
+
+      await run({ onlyInputs: ["codebase"] });
+
+      expectMeasured({ limits: [sourceLimit] });
+    });
+
+    it("keeps an unqualified limit when the default input is named", async () => {
+      expect.hasAssertions();
+
+      await run({ onlyInputs: ["Compiled JavaScript"] });
+
+      expectMeasured({ inputs: [compiledInput], limits: [sizeLimit] });
+    });
+
+    it("leaves every input alone when the flag is never passed", async () => {
+      expect.hasAssertions();
+
+      await run();
+
+      expectMeasured({
+        inputs: buildTwoInputs().inputs,
+        limits: buildTwoInputs().limits,
+      });
+    });
+
+    it("refuses a name no configured input carries", async () => {
+      await run({ onlyInputs: ["Missing"] });
+
+      expect(measureService.measure).not.toHaveBeenCalled();
+      expect(readExitCode()).toBe(1);
+      expect(loggerService.error).toHaveBeenCalledWith(
+        "📊 Rejected the command line",
+        undefined,
+        expect.objectContaining({
+          reasons: [
+            expect.stringContaining(
+              'names no configured input: "Missing". Configured inputs: "codebase", "Compiled JavaScript".',
+            ),
+          ],
+        }),
+      );
+    });
+
+    it("refuses to combine with --inputs", async () => {
+      await run({ inputs: ["src/**/*.ts"], onlyInputs: ["codebase"] });
+
+      expect(measureService.measure).not.toHaveBeenCalled();
+      expect(readExitCode()).toBe(1);
+      expect(loggerService.error).toHaveBeenCalledWith(
+        "📊 Rejected the command line",
+        undefined,
+        expect.objectContaining({
+          reasons: [
+            expect.stringContaining(
+              "--only-inputs cannot be combined with --inputs",
+            ),
+          ],
+        }),
+      );
+    });
+  });
+
   describe("--format", () => {
     it("prints the badges when the run touches no file", async () => {
       await run();
@@ -668,6 +794,13 @@ describe(MeasureCommand, () => {
       expect(command.parseOutputJson(true)).toBe(true);
       expect(command.parseOutputMarkdown("README.md")).toBe("README.md");
       expect(command.parseOutputMarkdown(true)).toBe(true);
+    });
+
+    it("accumulates every --only-inputs name into one array", () => {
+      const first = command.parseOnlyInputs("codebase", undefined);
+      const second = command.parseOnlyInputs("Compiled JavaScript", first);
+
+      expect(second).toStrictEqual(["codebase", "Compiled JavaScript"]);
     });
 
     it("accumulates every --inputs value into one array", () => {
