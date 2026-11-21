@@ -72,10 +72,6 @@ export interface EventsCalendarProperties {
    */
   grouping: readonly EventGroupLevel[];
   /**
-   * The menus the toolbar's first row carries: View, Color and Sky.
-   */
-  menus?: ReactNode;
-  /**
    * Called with the new day when the toolbar moves the calendar.
    */
   onDateChange: (date: Date) => void;
@@ -84,10 +80,6 @@ export interface EventsCalendarProperties {
    * more.
    */
   onShowLater?: (() => void) | undefined;
-  /**
-   * Called with the view picked in the toolbar.
-   */
-  onViewChange?: (view: CalendarViewName) => void;
   /**
    * The span the timeline shows at once; a month when absent.
    */
@@ -122,9 +114,7 @@ export function EventsCalendar(
     facets,
     filters,
     grouping,
-    menus,
     onDateChange,
-    onViewChange,
     scale = DEFAULT_TIMELINE_SCALE,
     sort,
     timeZone,
@@ -169,10 +159,7 @@ export function EventsCalendar(
         <CalendarToolbar
           compact={compact}
           filters={filters}
-          menus={menus}
           navigation={navigation}
-          onViewChange={onViewChange}
-          view={view}
         />
         {view === "timeline" ? (
           <CalendarTimeline

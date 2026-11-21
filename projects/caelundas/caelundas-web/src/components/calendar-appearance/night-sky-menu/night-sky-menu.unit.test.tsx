@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { NightSkyMenu } from "./night-sky-menu";
@@ -28,10 +28,8 @@ describe(NightSkyMenu, () => {
     );
   });
 
-  it("opens from its Sky button onto every group, with no headings, and its Default button", async () => {
+  it("shows every group, with no headings, and its Default button", async () => {
     render(<NightSkyMenu />);
-
-    fireEvent.click(screen.getByRole("button", { name: "Sky options" }));
 
     await screen.findByRole("group", { name: "Night sky settings" });
 
@@ -56,8 +54,6 @@ describe(NightSkyMenu, () => {
 
   it("offers an opacity slider for the sky and one for the calendar over it", async () => {
     render(<NightSkyMenu />);
-
-    fireEvent.click(screen.getByRole("button", { name: "Sky options" }));
 
     await screen.findByRole("group", { name: "Night sky settings" });
 

@@ -49,19 +49,8 @@ describe(CalendarColorMenu, () => {
     );
   });
 
-  it("reads Color beside its palette, with no arrow", () => {
-    renderMenu();
-
-    const trigger = screen.getByRole("button", { name: "Color options" });
-
-    expect(trigger.textContent).toBe("Color");
-    expect(trigger.querySelectorAll("svg")).toHaveLength(1);
-  });
-
   it("turns colors off, showing their state in the switch", async () => {
     const { onColorsChange } = renderMenu();
-
-    fireEvent.click(screen.getByRole("button", { name: "Color options" }));
 
     const toggle = await screen.findByRole("switch", { name: "Color events" });
 
@@ -74,8 +63,6 @@ describe(CalendarColorMenu, () => {
 
   it("shows what the events are colored by in the panel, with its legend", async () => {
     renderMenu(false);
-    fireEvent.click(screen.getByRole("button", { name: "Color options" }));
-
     const toggle = await screen.findByRole("switch", { name: "Color events" });
 
     expect(toggle.getAttribute("aria-checked")).toBe("false");

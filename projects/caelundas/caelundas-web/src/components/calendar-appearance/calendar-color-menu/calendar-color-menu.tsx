@@ -1,20 +1,7 @@
-import { Palette } from "lucide-react";
-
-import {
-  Button,
-  ButtonGroup,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-  FieldSet,
-  Label,
-  Switch,
-} from "@codebase/presentation";
+import { FieldSet, Label, Switch } from "@codebase/presentation";
 
 import { CalendarColorBy } from "../calendar-color-by/calendar-color-by";
 import { keepKeysInPanel } from "../night-sky-menu/night-sky-menu.utilities";
-
-import { PANEL_CLASS_NAME } from "./calendar-color-menu.constants";
 
 import type { EventFacet } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { EventGroupLevel } from "../../calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
@@ -37,7 +24,7 @@ export interface CalendarColorMenuProperties {
 // 🧩 Component
 
 /**
- * Renders the toolbar's Color menu: a switch that colors the events, then what they are colored by, with its legend.
+ * Renders the Color settings: a switch that colors the events, then what they are colored by, with its legend.
  */
 export function CalendarColorMenu(
   properties: Readonly<CalendarColorMenuProperties>,
@@ -67,48 +54,26 @@ export function CalendarColorMenu(
       className={className}
       data-testid="calendar-color-menu"
     >
-      <ButtonGroup aria-label="Color menu">
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <Button
-                aria-label="Color options"
-                size="sm"
-                variant="outline"
-              />
-            }
-          >
-            <Palette aria-hidden="true" />
-            Color
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="start"
-            className={PANEL_CLASS_NAME}
-            sideOffset={8}
-          >
-            <FieldSet
-              aria-label="Color settings"
-              className="flex flex-col gap-2 p-2"
-              onKeyDown={keepKeysInPanel}
-            >
-              <Label className="justify-between text-xs">
-                Color events
-                <Switch
-                  checked={colors}
-                  onCheckedChange={(checked: boolean) => {
-                    onColorsChange(checked);
-                  }}
-                />
-              </Label>
-              <CalendarColorBy
-                colorBy={colorBy}
-                facets={facets}
-                onColorByChange={onColorByChange}
-              />
-            </FieldSet>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </ButtonGroup>
+      <FieldSet
+        aria-label="Color settings"
+        className="flex flex-col gap-2 p-2"
+        onKeyDown={keepKeysInPanel}
+      >
+        <Label className="justify-between text-xs">
+          Color events
+          <Switch
+            checked={colors}
+            onCheckedChange={(checked: boolean) => {
+              onColorsChange(checked);
+            }}
+          />
+        </Label>
+        <CalendarColorBy
+          colorBy={colorBy}
+          facets={facets}
+          onColorByChange={onColorByChange}
+        />
+      </FieldSet>
     </div>
   );
 }

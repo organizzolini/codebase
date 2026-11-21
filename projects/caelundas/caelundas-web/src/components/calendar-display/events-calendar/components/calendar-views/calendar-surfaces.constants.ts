@@ -7,7 +7,7 @@ export const SURFACE_CLASS_NAMES = {
   agendaDate: "bg-muted",
   agendaGroup: "bg-background",
   emptyCard: "bg-background/(--surface-opacity)",
-  navigationTitle: "bg-background",
+  navigationTitle: "bg-background dark:bg-input/30",
   timeGutter: "bg-background",
 } as const;
 

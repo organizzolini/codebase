@@ -12,6 +12,7 @@ import {
 import { QueryCascader } from "../query-cascader/query-cascader";
 
 import {
+  CHIP_CLASS_NAME,
   CUSTOM_ID,
   STRIP_CLASS_NAME,
   TITLE,
@@ -99,14 +100,7 @@ export function CalendarViewStrip(
             <QueryCascader
               items={items}
               onValueChange={([picked]) => {
-                const filter =
-                  picked === undefined
-                    ? undefined
-                    : getViewFilter(presets, picked);
-
-                if (filter !== undefined) {
-                  onSelect(filter);
-                }
+                onSelect(getViewFilter(presets, picked));
               }}
               placeholder="Search views"
               value={
@@ -117,7 +111,7 @@ export function CalendarViewStrip(
             />
           </PopoverContent>
         </Popover>
-        <ButtonGroupText>{active}</ButtonGroupText>
+        <ButtonGroupText className={CHIP_CLASS_NAME}>{active}</ButtonGroupText>
       </ButtonGroup>
     </div>
   );

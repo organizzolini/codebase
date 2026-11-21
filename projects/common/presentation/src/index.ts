@@ -13,6 +13,7 @@ export {
   CascaderNav,
 } from "./components/reui/cascader/cascader-nav";
 export type {
+  CascaderActionItem,
   CascaderLabels,
   CascaderNode,
 } from "./components/reui/cascader/cascader-types";

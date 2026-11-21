@@ -14,7 +14,7 @@ import {
 
 import { LABELS, NOTHING } from "./query-cascader.constants";
 
-import type { CascaderNode } from "@codebase/presentation";
+import type { CascaderActionItem, CascaderNode } from "@codebase/presentation";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -23,6 +23,14 @@ import type { ReactNode } from "react";
  * The nested choices, the ones picked, the search prompt, and the change handler.
  */
 export interface QueryCascaderProperties {
+  /**
+   * Commands pinned below the list, such as opening a panel of settings.
+   */
+  actions?: readonly CascaderActionItem[];
+  /**
+   * Whether ticking a branch ticks everything beneath it, as picking several does by default; only when several can be picked.
+   */
+  cascade?: boolean;
   className?: string;
   items: readonly CascaderNode[];
   /**
@@ -43,9 +51,11 @@ export function QueryCascader(
   properties: Readonly<QueryCascaderProperties>,
 ): ReactNode {
   const {
+    actions = [],
+    multiple = false,
+    cascade = multiple,
     className,
     items,
-    multiple = false,
     onValueChange,
     placeholder,
     value,
@@ -96,13 +106,14 @@ export function QueryCascader(
       {multiple ? (
         <Cascader
           {...shared}
+          actions={[...actions]}
+          cascade={cascade}
           items={[...items]}
           onValueChange={(next) => {
             onValueChange(next);
           }}
-          selectable="any"
+          selectable={cascade ? "any" : "leaf"}
           value={[...value]}
-          cascade
           multiple
         >
           {panel}
@@ -110,9 +121,10 @@ export function QueryCascader(
       ) : (
         <Cascader
           {...shared}
+          actions={[...actions]}
           items={[...items]}
           onValueChange={(next) => {
-            onValueChange(next === "" ? [] : [next]);
+            onValueChange([next]);
           }}
           value={value[0] ?? ""}
         >

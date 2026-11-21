@@ -3,6 +3,8 @@ import { Fragment } from "react";
 
 import { Button, ButtonGroupText } from "@codebase/presentation";
 
+import { CHIP_CLASS_NAME } from "../../calendar-group-strip.constants";
+
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -38,7 +40,7 @@ export function GroupLevelChip(
   // 🎨 Markup
   return (
     <Fragment>
-      <ButtonGroupText>{label}</ButtonGroupText>
+      <ButtonGroupText className={CHIP_CLASS_NAME}>{label}</ButtonGroupText>
       <Button
         aria-label={`Stop grouping by ${label}`}
         onClick={() => {

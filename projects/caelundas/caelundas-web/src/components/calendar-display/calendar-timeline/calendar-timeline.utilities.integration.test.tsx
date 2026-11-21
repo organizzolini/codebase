@@ -7,6 +7,7 @@ import {
   FIXTURE_EVENTS,
 } from "../../../../testing/calendar-fixture";
 import {
+  findDisplayOption,
   findToolbar,
   pickCalendarView,
   readCalendarView,
@@ -119,20 +120,7 @@ describe("calendar timeline", () => {
   ])("zooms out from a day to the $scale", async ({ scale, title }) => {
     await renderCalendarRoute("/?view=timeline&scale=day&date=2026-03-04");
 
-    fireEvent.click(
-      within(await findToolbar()).getByRole("button", {
-        name: /^Display options/u,
-      }),
-    );
-    fireEvent.click(await screen.findByText("Scale"));
-    fireEvent.click(
-      within(await screen.findByRole("group", { name: "Scale" })).getByRole(
-        "button",
-        {
-          name: scale,
-        },
-      ),
-    );
+    fireEvent.click(await findDisplayOption("Scale", scale));
 
     // The toolbar is drawn again for the new scale, so the page is searched.
     await expect(

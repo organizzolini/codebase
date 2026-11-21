@@ -246,12 +246,6 @@ export const RESET_SKY_KEYS: readonly SkyParameterKey[] = [
 ];
 
 /**
- * Panel: four columns wide, one on a phone.
- */
-export const PANEL_CLASS_NAME =
-  "w-[min(20rem,calc(100vw-1rem))] md:w-[min(40rem,calc(100vw-1rem))] lg:w-[min(68rem,calc(100vw-1rem))] max-h-(--available-height) overflow-y-auto";
-
-/**
  * Keys the panel passes up: Escape closes, Tab leaves.
  */
 export const MENU_KEYS: ReadonlySet<string> = new Set(["Escape", "Tab"]);

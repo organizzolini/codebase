@@ -32,17 +32,15 @@ export function findActiveViewId(
 }
 
 /**
- * The filter tree a choice applies: its preset's, or none for every event.
+ * The filter tree a choice applies: its preset's, or none for every event, which also stands for a choice the presets no longer have.
  */
 export function getViewFilter(
   presets: readonly ResolvedPreset[],
-  id: string,
-): EventFilterQuery | undefined {
-  if (id === ALL_EVENTS_ID) {
-    return EMPTY_EVENT_FILTER;
-  }
-
-  return presets.find((preset) => preset.id === id)?.filter;
+  id: string | undefined,
+): EventFilterQuery {
+  return (
+    presets.find((preset) => preset.id === id)?.filter ?? EMPTY_EVENT_FILTER
+  );
 }
 
 /**

@@ -1,7 +1,14 @@
-import { cleanup, fireEvent, screen, waitFor } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { readServedApi } from "../../../../testing/calendar-api";
+import { findToolbar } from "../../../../testing/calendar-page";
 import { renderCalendarRoute } from "../../../../testing/render-route";
 import { getRouter } from "../../../router";
 import { NightSkyBackdropMount } from "../night-sky-backdrop/night-sky-backdrop-mount";
@@ -58,7 +65,12 @@ async function openConstellations(): Promise<void> {
  * Opens the toolbar's Sky menu.
  */
 async function openNightSkyMenu(): Promise<void> {
-  fireEvent.click(await screen.findByRole("button", { name: "Sky options" }));
+  fireEvent.click(
+    await within(await findToolbar()).findByRole("button", {
+      name: "Display",
+    }),
+  );
+  fireEvent.click(await screen.findByText("Sky settings…"));
   await screen.findByRole("group", { name: "Night sky settings" });
 }
 

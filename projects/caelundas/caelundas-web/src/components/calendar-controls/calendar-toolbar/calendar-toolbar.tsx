@@ -1,16 +1,15 @@
 import { CalendarNavigationGroup } from "../calendar-navigation-group/calendar-navigation-group";
 import { CalendarNavigationSlot } from "../calendar-navigation-group/calendar-navigation-slot.constants";
 
-import { createViewsMenu, hasContent } from "./calendar-toolbar.utilities";
+import { hasContent } from "./calendar-toolbar.utilities";
 
-import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
 import type { CalendarNavigation } from "../calendar-navigation-group/calendar-navigation-group.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The toolbar's navigation, plus the menus and filters it shows.
+ * The toolbar's navigation, plus the controls it shows.
  */
 export interface CalendarToolbarProperties {
   className?: string;
@@ -19,38 +18,27 @@ export interface CalendarToolbarProperties {
    */
   compact?: boolean | undefined;
   /**
-   * Drawn after the menus, on the same line: the View, Group and Sort
-   * strips, then Filter with the date selector and the filters' chips.
+   * Drawn on one line: the View, Display, Group and Sort strips, then Filter
+   * with the date selector and the filters' chips.
    */
   filters?: ReactNode;
-  /**
-   * Drawn after the Calendar menu, on the same line: Display, Color and Sky.
-   */
-  menus?: ReactNode;
   navigation: CalendarNavigation;
-  /**
-   * Called with the view picked; the Calendar menu is left out without it.
-   */
-  onViewChange?: ((view: CalendarViewName) => void) | undefined;
-  view?: CalendarViewName | undefined;
 }
 
 // 🧩 Component
 
 /**
- * Renders the toolbar's controls on one line, wrapping when cramped: the Calendar menu, the menus, then the strips, with the date selector joined to Filter; a phone's date takes its own row.
+ * Renders the toolbar's controls on one line, wrapping when cramped, with the date selector joined to the Filter strip; a phone's date takes its own row.
  */
 export function CalendarToolbar(
   properties: Readonly<CalendarToolbarProperties>,
 ): ReactNode {
-  const { className, compact, filters, menus, navigation, onViewChange, view } =
-    properties;
+  const { className, compact, filters, navigation } = properties;
 
   // 🪝 Hooks
 
   // 🏗 Setup
   const hasFilters = hasContent(filters);
-  const viewsMenu = createViewsMenu(view, onViewChange);
 
   // 💪 Handlers
 
@@ -75,15 +63,12 @@ export function CalendarToolbar(
               compact
             />
           </div>
-          {viewsMenu}
         </div>
       ) : (
         <div
           className="flex min-w-0 flex-wrap items-start gap-2 px-2 py-2 [&_[data-slot=button]]:active:translate-y-0!"
           data-testid="calendar-toolbar-row"
         >
-          {viewsMenu}
-          {menus}
           <CalendarNavigationSlot
             value={
               hasFilters ? (
@@ -101,14 +86,13 @@ export function CalendarToolbar(
           )}
         </div>
       )}
-      {compact && (hasFilters || hasContent(menus)) ? (
+      {compact && hasFilters ? (
         // A phone's row has no room beside the title for the controls, so
         // they take a row under it, wrapping onto more rows if they outgrow it.
         <div
           className="flex min-w-0 flex-wrap items-center gap-2 px-2 pb-2 [&_[data-slot=button]]:active:translate-y-0!"
           data-testid="calendar-toolbar-controls"
         >
-          {menus}
           {filters}
         </div>
       ) : null}

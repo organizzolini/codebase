@@ -5,8 +5,7 @@ import {
 } from "@tanstack/react-router";
 import { type ReactNode, useMemo, useSyncExternalStore } from "react";
 
-import { CalendarMenus } from "../components/calendar-controls/calendar-menus/calendar-menus";
-import { CalendarViewOptions } from "../components/calendar-controls/calendar-view-options/calendar-view-options";
+import { CalendarDisplayMenu } from "../components/calendar-controls/calendar-display-menu/calendar-display-menu";
 import { CalendarEmpty } from "../components/calendar-display/calendar-empty/calendar-empty";
 import { CalendarError } from "../components/calendar-display/calendar-error/calendar-error";
 import { CalendarSkeleton } from "../components/calendar-display/calendar-skeleton/calendar-skeleton";
@@ -15,7 +14,6 @@ import { loadCalendar } from "../components/calendar-display/events-calendar/com
 import {
   AGENDA_DAY_COUNT,
   CALENDAR_VIEW_PERIODS,
-  DEFAULT_TIMELINE_SCALE,
 } from "../components/calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
 import { getDefaultCalendarView } from "../components/calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
 import {
@@ -122,16 +120,10 @@ function IndexPage(): ReactNode {
   // 💪 Handlers
   const {
     getShowLater,
-    handleClustersChange,
-    handleColorByChange,
-    handleColorsChange,
     handleDateChange,
     handleFilterChange,
     handleGroupingChange,
-    handleScaleChange,
     handleSortChange,
-    handleSymbolsChange,
-    handleViewChange,
   } = useCalendarSearch(timeZone);
   // The agenda grows a month at a time, up to a year, in place: the link
   // is replaced rather than pushed, and the rows already listed stay put.
@@ -165,6 +157,15 @@ function IndexPage(): ReactNode {
           filters={
             <CalendarQueryControls
               className="contents"
+              display={
+                <CalendarDisplayMenu
+                  className="contents"
+                  colorBy={colorBy}
+                  facets={facets}
+                  timeZone={timeZone}
+                  view={view}
+                />
+              }
               facets={facets}
               filter={search.filter}
               grouping={grouping}
@@ -177,30 +178,8 @@ function IndexPage(): ReactNode {
             />
           }
           grouping={grouping}
-          menus={
-            <CalendarMenus
-              className="contents"
-              clusters={search.clusters !== false}
-              colorBy={colorBy}
-              colors={search.colors !== false}
-              facets={facets}
-              onClustersChange={handleClustersChange}
-              onColorByChange={handleColorByChange}
-              onColorsChange={handleColorsChange}
-              onSymbolsChange={handleSymbolsChange}
-              symbols={search.symbols}
-              viewOptions={
-                <CalendarViewOptions
-                  onScaleChange={handleScaleChange}
-                  scale={search.scale ?? DEFAULT_TIMELINE_SCALE}
-                  view={view}
-                />
-              }
-            />
-          }
           onDateChange={handleDateChange}
           onShowLater={handleShowLater}
-          onViewChange={handleViewChange}
           scale={search.scale}
           sort={search.sort}
           timeZone={timeZone}

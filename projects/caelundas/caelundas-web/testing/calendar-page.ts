@@ -14,6 +14,35 @@ export const BUILDER_TEST = { timeout: 30_000 };
 export const BUILDER_WAIT = { timeout: 10_000 };
 
 /**
+ * Finds a leaf of the Display menu under a branch, opening the menu and the branch as needed.
+ */
+export async function findDisplayOption(
+  branch: string,
+  leaf: string,
+): Promise<HTMLElement> {
+  await openDisplayMenu();
+
+  const find = (): HTMLElement | null =>
+    screen.queryByRole("treeitem", { name: new RegExp(`^${leaf}$`, "u") });
+
+  if (find() === null) {
+    fireEvent.click(
+      await screen.findByRole(
+        "treeitem",
+        { name: new RegExp(`^${branch},`, "u") },
+        BUILDER_WAIT,
+      ),
+    );
+  }
+
+  return screen.findByRole(
+    "treeitem",
+    { name: new RegExp(`^${leaf}$`, "u") },
+    BUILDER_WAIT,
+  );
+}
+
+/**
  * Finds the calendar's one toolbar row.
  */
 export async function findToolbar(): Promise<HTMLElement> {
@@ -21,19 +50,10 @@ export async function findToolbar(): Promise<HTMLElement> {
 }
 
 /**
- * Picks a calendar view by its label from the toolbar's Calendar menu.
+ * Picks a calendar view by its label from the Display menu's Calendar options.
  */
 export async function pickCalendarView(label: string): Promise<void> {
-  fireEvent.click(
-    within(await findToolbar()).getByRole("button", { name: "Calendar" }),
-  );
-  fireEvent.click(
-    await screen.findByRole(
-      "treeitem",
-      { name: new RegExp(`^${label}`, "u") },
-      BUILDER_WAIT,
-    ),
-  );
+  fireEvent.click(await findDisplayOption("Calendar", label));
 }
 
 /**
@@ -44,14 +64,14 @@ export async function pickOption(name: RegExp | string): Promise<void> {
 }
 
 /**
- * What the toolbar's Calendar menu says is shown, such as "Week".
+ * What the toolbar's Display chip says is shown, such as "Week".
  */
 export async function readCalendarView(): Promise<string> {
   const group = await within(await findToolbar()).findByRole("group", {
-    name: "Calendar",
+    name: "Display",
   });
 
-  return group.textContent.replace(/^Calendar/u, "");
+  return group.textContent.replace(/^Display/u, "");
 }
 
 /**
@@ -79,4 +99,17 @@ export async function startFilterRule(
   await pickOption(operator);
 
   return builder;
+}
+
+/**
+ * Opens the toolbar's Display menu unless it is open already.
+ */
+async function openDisplayMenu(): Promise<void> {
+  if (screen.queryByTestId("query-cascader") === null) {
+    fireEvent.click(
+      within(await findToolbar()).getByRole("button", { name: "Display" }),
+    );
+  }
+
+  await screen.findByTestId("query-cascader", {}, BUILDER_WAIT);
 }

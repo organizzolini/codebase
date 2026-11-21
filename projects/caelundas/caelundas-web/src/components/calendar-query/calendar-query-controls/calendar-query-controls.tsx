@@ -23,6 +23,10 @@ import type { ReactNode } from "react";
  */
 export interface CalendarQueryControlsProperties {
   className?: string;
+  /**
+   * Drawn after View, before Group: the Display menu.
+   */
+  display?: ReactNode;
   facets: readonly EventFacet[];
   filter: EventFilterQuery | undefined;
   grouping: readonly EventGroupLevel[];
@@ -37,13 +41,14 @@ export interface CalendarQueryControlsProperties {
 // 🧩 Component
 
 /**
- * Renders what asks the calendar a question, in a row: which view, how to group, how to sort, then what to filter by.
+ * Renders what asks the calendar a question, in a row: which view, how the calendar looks, how to group, how to sort, then what to filter by.
  */
 export function CalendarQueryControls(
   properties: Readonly<CalendarQueryControlsProperties>,
 ): ReactNode {
   const {
     className,
+    display,
     facets,
     filter,
     grouping,
@@ -80,6 +85,7 @@ export function CalendarQueryControls(
         presets={presets}
         query={filter ?? getDefaultFilter(presets)}
       />
+      {display}
       <CalendarGroupStrip
         className="contents"
         facets={facets}

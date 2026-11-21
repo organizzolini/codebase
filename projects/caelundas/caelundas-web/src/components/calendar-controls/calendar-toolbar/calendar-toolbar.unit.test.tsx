@@ -76,48 +76,20 @@ describe(CalendarToolbar, () => {
     ).toBe(false);
   });
 
-  it("gives a phone's menus and filters the row under the title", () => {
-    render(
-      <CalendarToolbar
-        filters={<button type="button">Filters</button>}
-        menus={<button type="button">View</button>}
-        navigation={NAVIGATION}
-        compact
-      />,
-    );
-
-    const controls = screen.getByTestId("calendar-toolbar-controls");
-
-    for (const name of ["View", "Filters"]) {
-      expect(controls.contains(screen.getByRole("button", { name }))).toBe(
-        true,
-      );
-    }
-  });
-
-  it("draws the Calendar menu, the menus, then the filters, with the date among them, on one line", () => {
+  it("draws the filters on one line, with the date among them", () => {
     render(
       <CalendarToolbar
         filters={<FiltersWithDate />}
-        menus={<button type="button">Display</button>}
         navigation={NAVIGATION}
-        onViewChange={() => {}}
-        view="month"
       />,
     );
 
     const row = screen.getByTestId("calendar-toolbar-row");
-    const calendar = screen.getByRole("group", { name: "Calendar" });
-    const display = screen.getByRole("button", { name: "Display" });
     const filter = screen.getByRole("button", { name: "Filter" });
     const navigate = screen.getByRole("group", { name: "Navigate" });
 
-    for (const part of [calendar, display, filter, navigate]) {
-      expect(row.contains(part)).toBe(true);
-    }
-
-    expect(follows(calendar, display)).toBe(true);
-    expect(follows(display, filter)).toBe(true);
+    expect(row.contains(filter)).toBe(true);
+    expect(row.contains(navigate)).toBe(true);
     expect(follows(filter, navigate)).toBe(true);
   });
 

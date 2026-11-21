@@ -59,6 +59,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **hebe**: A main-belt asteroid whose name no source or test file uses, leaving only the glossary headword.
 - **hexadecan**: A sixteenth-harmonic point of the zodiac, named by ordinal such as Fifth Hexadecan, which the CLI emits as an event.
 - **hexagram**: The dotted six-pointed star emoji, mapped to its PNG icon in the calendar icon table.
+- **horizontal**:
 - **hourglass**: The ⏳ emoji event glyph, mapped to its PNG icon in the calendar icon table.
 - **hygiea**: A main-belt asteroid no source or test file names, so this headword lives only in the glossary.
 - **imbolc**: The cross-quarter festival of early February, mapped to its PNG icon in the event glyph table.
@@ -119,6 +120,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **rectangle**: Shape word in the Mystic Rectangle aspect name, mapped to its own PNG icon via a door emoji.
 - **retrograde**: Apparent backward motion of a planet, a station event with its own icon in the glyph set.
 - **rise**: A planet stage relative to the Sun, such as rising or setting, in the planetary phase filter.
+- **ruler**:
 - **samhain**: Seasonal festival event at a cross-quarter day, mapped to its own PNG icon in the glyph set.
 - **saturn**: Ringed planet whose glyph and aspect events, such as Mars squares, appear across the calendar.
 - **scorpio**: Zodiac sign of the scorpion, whose glyph maps to its own SVG icon in the glyph set.

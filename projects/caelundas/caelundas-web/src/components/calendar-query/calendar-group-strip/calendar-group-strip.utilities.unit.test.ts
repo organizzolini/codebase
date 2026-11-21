@@ -33,6 +33,20 @@ const DAY: EventGroupLevel = { field: "day" };
 
 describe("calendar-group-strip utilities", () => {
   describe(createGroupItems, () => {
+    it("nests tags that carry no depth, description or keywords at the top", () => {
+      const [item] = createGroupItems([
+        {
+          description: "Bare",
+          id: "tag:bare",
+          label: "Bare",
+          levels: [["Tag"]],
+          options: [{ label: "Tag", value: "tag" }],
+        },
+      ]);
+
+      expect(item?.children).toStrictEqual([{ label: "Tag", value: "tag" }]);
+    });
+
     it("nests a tag root's tags under it, and leaves a derived field a leaf", () => {
       const items = createGroupItems(FIELDS);
       const type = items.find((item) => item.value === "tag:type");
@@ -50,6 +64,12 @@ describe("calendar-group-strip utilities", () => {
   });
 
   describe(toGroupValue, () => {
+    it("ticks only the field of a level whose field the data no longer has", () => {
+      expect(toGroupValue([{ field: "retired" }], FIELDS)).toStrictEqual([
+        "retired",
+      ]);
+    });
+
     it("ticks a field alone, a first-level tag root with all its tags, and a tag choice by its tags", () => {
       expect(toGroupValue([DAY], FIELDS)).toStrictEqual(["day"]);
       expect(toGroupValue([TYPE], FIELDS)).toStrictEqual([
@@ -65,6 +85,17 @@ describe("calendar-group-strip utilities", () => {
   });
 
   describe(toGrouping, () => {
+    it("reads a ticked derived field, and drops one no longer ticked", () => {
+      expect(toGrouping(["day"], [], FIELDS)).toStrictEqual([{ field: "day" }]);
+      expect(toGrouping(["week"], [DAY], FIELDS)).toStrictEqual([
+        { field: "week" },
+      ]);
+    });
+
+    it("reads a tag root ticked alone as a first-level level", () => {
+      expect(toGrouping(["tag:type"], [], FIELDS)).toStrictEqual([TYPE]);
+    });
+
     it("reads a ticked tag root as a first-level level, and a partly ticked one as its tags", () => {
       expect(
         toGrouping(["tag:type", "aspect", "major", "ingress"], [], FIELDS),
