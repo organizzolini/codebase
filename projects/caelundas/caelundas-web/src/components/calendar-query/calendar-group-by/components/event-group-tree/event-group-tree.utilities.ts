@@ -17,6 +17,7 @@ import type {
   GroupBucket,
   GroupDescription,
   GroupParent,
+  GroupSort,
 } from "./event-group-tree.types";
 
 /**
@@ -64,6 +65,49 @@ export function buildEventGroups(
   }
 
   return roots;
+}
+
+/**
+ * Orders every level of a group tree by a sort; the groups as built when there is none.
+ */
+export function sortEventGroups(
+  nodes: EventGroupNode[],
+  sort: GroupSort | undefined,
+): EventGroupNode[] {
+  if (sort === undefined) {
+    return nodes;
+  }
+
+  const sign = sort.direction === "asc" ? 1 : -1;
+  const measure = (node: EventGroupNode): number | string => {
+    if (sort.key === "count") {
+      return node.count;
+    }
+
+    return sort.key === "first"
+      ? (node.events[0]?.start.getTime() ?? 0)
+      : node.label;
+  };
+  const compare = (left: EventGroupNode, right: EventGroupNode): number => {
+    const [one, other] = [measure(left), measure(right)];
+
+    return (
+      sign *
+      (typeof one === "string"
+        ? one.localeCompare(String(other))
+        : one - Number(other))
+    );
+  };
+  const sorted = nodes.toSorted(compare);
+  // A loop rather than recursion keeps the stack flat however deep it goes.
+  const pending = [...sorted];
+
+  for (let node = pending.pop(); node !== undefined; node = pending.pop()) {
+    node.children = node.children.toSorted(compare);
+    pending.push(...node.children);
+  }
+
+  return sorted;
 }
 
 /**

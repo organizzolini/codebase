@@ -32,6 +32,7 @@ import {
 
 import type { CalendarNavigation } from "../../calendar-controls/calendar-navigation-group/calendar-navigation-group.types";
 import type { EventGroupLevel } from "../../calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
+import type { GroupSort } from "../../calendar-query/calendar-group-by/components/event-group-tree/event-group-tree.types";
 import type {
   CalendarEventRecord,
   EventFacet,
@@ -76,6 +77,10 @@ export interface CalendarTimelineProperties {
    * to a year in months; a month when absent.
    */
   scale?: GanttScale;
+  /**
+   * How the rows are ordered, at every level; as built when absent.
+   */
+  sort?: GroupSort | undefined;
   timeZone: string;
 }
 
@@ -97,6 +102,7 @@ export function CalendarTimeline(
     onDateChange,
     onNavigationChange,
     scale = "month",
+    sort,
     timeZone,
   } = properties;
 
@@ -115,8 +121,8 @@ export function CalendarTimeline(
   const zoom = zoomed.scale === scale ? zoomed.zoom : 1;
   const fields = useMemo(() => createEventGroupFields(facets), [facets]);
   const rows = useMemo(
-    () => toTimelineRows(events, grouping, fields),
-    [events, fields, grouping],
+    () => toTimelineRows(events, grouping, { fields, sort }),
+    [events, fields, grouping, sort],
   );
   // Overlapping bars are moved into lanes, so nothing is drawn over anything.
   const layout = useMemo(

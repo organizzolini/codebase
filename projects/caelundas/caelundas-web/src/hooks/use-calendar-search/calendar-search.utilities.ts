@@ -11,6 +11,7 @@ import {
   calendarDateSchema,
   filterGroupSchema,
   groupLevelSchema,
+  groupSortSchema,
   levelsSchema,
   skySearchValueSchema,
 } from "./calendar-search.constants";
@@ -50,6 +51,7 @@ export function readCalendarSearch(
     filter: filter === undefined ? undefined : normalizeEventFilter(filter),
     group: parseGrouping(search["group"]),
     scale: parseTimelineScale(search["scale"]),
+    sort: groupSortSchema.safeParse(search["sort"]).data,
     symbols: parseCalendarSymbols(search["symbols"]),
     view: parseCalendarView(search["view"]),
   };

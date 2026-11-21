@@ -104,8 +104,7 @@ function IndexPage(): ReactNode {
     structuralSharing: true,
   });
   const isWide = useSyncExternalStore(subscribeToViewport, isWideViewport);
-  // While a reload runs, the notice of why the last window was empty would
-  // speak for days no longer shown, so it waits for the new answer.
+  // While a reload runs, the notice of why the window was empty waits for the new answer.
   const isReloading = Route.useMatch({
     select: (match) => match.isFetching !== false,
   });
@@ -117,7 +116,6 @@ function IndexPage(): ReactNode {
   );
 
   // 🏗 Setup
-  const { filter } = search;
   const view = search.view ?? getDefaultCalendarView(isWide);
   const timeZone = readTimeZone(dataset);
 
@@ -131,6 +129,7 @@ function IndexPage(): ReactNode {
     handleFilterChange,
     handleGroupingChange,
     handleScaleChange,
+    handleSortChange,
     handleSymbolsChange,
     handleViewChange,
   } = useCalendarSearch(timeZone);
@@ -167,11 +166,13 @@ function IndexPage(): ReactNode {
             <CalendarQueryControls
               className="contents"
               facets={facets}
-              filter={filter}
+              filter={search.filter}
               grouping={grouping}
               onFilterChange={handleFilterChange}
               onGroupingChange={handleGroupingChange}
+              onSortChange={handleSortChange}
               presets={presets}
+              sort={search.sort}
               view={view}
             />
           }
@@ -201,6 +202,7 @@ function IndexPage(): ReactNode {
           onShowLater={handleShowLater}
           onViewChange={handleViewChange}
           scale={search.scale}
+          sort={search.sort}
           timeZone={timeZone}
           view={view}
         />

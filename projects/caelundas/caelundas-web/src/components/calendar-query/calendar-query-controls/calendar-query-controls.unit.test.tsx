@@ -23,7 +23,9 @@ describe(CalendarQueryControls, () => {
         grouping={[]}
         onFilterChange={() => {}}
         onGroupingChange={() => {}}
+        onSortChange={() => {}}
         presets={[]}
+        sort={undefined}
         view="timeline"
       />,
     );
@@ -33,7 +35,7 @@ describe(CalendarQueryControls, () => {
     );
   });
 
-  it("draws Group before Filter where the view can be grouped", () => {
+  it("draws Group, Sort, then Filter in the timeline", () => {
     render(
       <CalendarQueryControls
         facets={FACETS}
@@ -41,7 +43,9 @@ describe(CalendarQueryControls, () => {
         grouping={[]}
         onFilterChange={() => {}}
         onGroupingChange={() => {}}
+        onSortChange={() => {}}
         presets={[]}
+        sort={undefined}
         view="timeline"
       />,
     );
@@ -50,7 +54,7 @@ describe(CalendarQueryControls, () => {
       .getAllByRole("group")
       .map((group) => group.getAttribute("aria-label"));
 
-    expect(names).toStrictEqual(["Group", "Filter"]);
+    expect(names).toStrictEqual(["Group", "Sort", "Filter"]);
   });
 
   it("leaves Group out of a view that has no groups", () => {
@@ -61,7 +65,9 @@ describe(CalendarQueryControls, () => {
         grouping={[]}
         onFilterChange={() => {}}
         onGroupingChange={() => {}}
+        onSortChange={() => {}}
         presets={[]}
+        sort={undefined}
         view="week"
       />,
     );

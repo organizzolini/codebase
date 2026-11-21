@@ -62,3 +62,8 @@ export const skySearchValueSchema = z.union([
   z.number(),
   z.string(),
 ]);
+
+export const groupSortSchema = z.object({
+  direction: z.enum(["asc", "desc"]),
+  key: z.enum(["count", "first", "name"]),
+});

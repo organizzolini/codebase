@@ -8,7 +8,10 @@ import {
 import { createEventGroupFields } from "../event-group-model/event-group-fields.utilities";
 import { formatDerivedKey } from "../event-group-model/event-group-labels.utilities";
 
-import { buildEventGroups } from "./event-group-tree.utilities";
+import {
+  buildEventGroups,
+  sortEventGroups,
+} from "./event-group-tree.utilities";
 
 import type {
   EventGrouping,
@@ -150,5 +153,66 @@ describe("event group tree", () => {
         expect(formatDerivedKey(field, key)).toBe(expected);
       },
     );
+  });
+
+  describe(sortEventGroups, () => {
+    function node(
+      label: string,
+      count: number,
+      first: string,
+      children: EventGroupNode[] = [],
+    ): EventGroupNode {
+      return {
+        children,
+        count,
+        events: [
+          { start: new Date(first) } as EventGroupNode["events"][number],
+        ],
+        id: label,
+        key: label,
+        label,
+        level: 0,
+        path: [label],
+      };
+    }
+
+    const labels = (nodes: EventGroupNode[]): string[] =>
+      nodes.map((current) => current.label);
+    const nodes = (): EventGroupNode[] => [
+      node("Mars", 5, "2026-03-01"),
+      node("Venus", 9, "2026-01-01"),
+      node("Moon", 2, "2026-02-01"),
+    ];
+
+    it("leaves the groups as built when there is no sort", () => {
+      expect(labels(sortEventGroups(nodes(), undefined))).toStrictEqual([
+        "Mars",
+        "Venus",
+        "Moon",
+      ]);
+    });
+
+    it.each([
+      [{ direction: "asc", key: "name" }, ["Mars", "Moon", "Venus"]],
+      [{ direction: "desc", key: "name" }, ["Venus", "Moon", "Mars"]],
+      [{ direction: "desc", key: "count" }, ["Venus", "Mars", "Moon"]],
+      [{ direction: "asc", key: "first" }, ["Venus", "Moon", "Mars"]],
+    ] as const)("orders by %j", (sort, expected) => {
+      expect(labels(sortEventGroups(nodes(), sort))).toStrictEqual(expected);
+    });
+
+    it("orders the groups under each group too", () => {
+      const [parent] = sortEventGroups(
+        [
+          node("Aspect", 3, "2026-01-01", [
+            node("Z", 1, "2026-01-01"),
+            node("A", 2, "2026-01-02"),
+          ]),
+        ],
+        { direction: "asc", key: "name" },
+      );
+
+      expect(labels(parent?.children ?? [])).toStrictEqual(["A", "Z"]);
+    });
   });
 });

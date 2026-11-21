@@ -29,3 +29,16 @@ export interface GroupParent {
   events: readonly CalendarEventRecord[];
   id: string;
 }
+
+/**
+ * How the timeline orders its groups, at every level.
+ */
+export interface GroupSort {
+  direction: "asc" | "desc";
+  key: GroupSortKey;
+}
+
+/**
+ * What groups are ordered by: their name, how many events, or the first one's time.
+ */
+export type GroupSortKey = "count" | "first" | "name";

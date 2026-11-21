@@ -15,6 +15,7 @@ import {
 import { DEFAULT_TIMELINE_SCALE } from "./components/calendar-views/calendar-views.constants";
 
 import type { EventGroupLevel } from "../../calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
+import type { GroupSort } from "../../calendar-query/calendar-group-by/components/event-group-tree/event-group-tree.types";
 import type {
   CalendarEventRecord,
   EventFacet,
@@ -91,6 +92,10 @@ export interface EventsCalendarProperties {
    * The span the timeline shows at once; a month when absent.
    */
   scale?: TimelineScale | undefined;
+  /**
+   * How the timeline orders its groups; as built when absent.
+   */
+  sort?: GroupSort | undefined;
   timeZone: string;
   /**
    * The month when absent.
@@ -121,6 +126,7 @@ export function EventsCalendar(
     onDateChange,
     onViewChange,
     scale = DEFAULT_TIMELINE_SCALE,
+    sort,
     timeZone,
     view = "month",
   } = properties;
@@ -179,6 +185,7 @@ export function EventsCalendar(
             onDateChange={onDateChange}
             onNavigationChange={handleNavigationChange}
             scale={scale}
+            sort={sort}
             timeZone={timeZone}
           />
         ) : (
