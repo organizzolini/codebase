@@ -1,4 +1,4 @@
-import { Library, Search } from "lucide-react";
+import { History, Library, Search } from "lucide-react";
 
 import type { NavigationItem } from "./application-sidebar.types";
 
@@ -10,4 +10,5 @@ import type { NavigationItem } from "./application-sidebar.types";
 export const navigationItems: NavigationItem[] = [
   { href: "/search", icon: Search, label: "Search" },
   { href: "/library", icon: Library, label: "Library" },
+  { href: "/history", icon: History, label: "History" },
 ];

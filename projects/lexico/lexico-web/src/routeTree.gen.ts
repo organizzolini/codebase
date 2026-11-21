@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as HistoryRouteImport } from './routes/history'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as TextsSlugRouteImport } from './routes/texts.$slug'
@@ -17,6 +18,11 @@ import { Route as TextsSlugRouteImport } from './routes/texts.$slug'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LibraryRoute = LibraryRouteImport.update({
@@ -37,12 +43,14 @@ const TextsSlugRoute = TextsSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/history': typeof HistoryRoute
   '/library': typeof LibraryRoute
   '/search': typeof SearchRoute
   '/texts/$slug': typeof TextsSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/history': typeof HistoryRoute
   '/library': typeof LibraryRoute
   '/search': typeof SearchRoute
   '/texts/$slug': typeof TextsSlugRoute
@@ -50,20 +58,22 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/history': typeof HistoryRoute
   '/library': typeof LibraryRoute
   '/search': typeof SearchRoute
   '/texts/$slug': typeof TextsSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/library' | '/search' | '/texts/$slug'
+  fullPaths: '/' | '/history' | '/library' | '/search' | '/texts/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/library' | '/search' | '/texts/$slug'
-  id: '__root__' | '/' | '/library' | '/search' | '/texts/$slug'
+  to: '/' | '/history' | '/library' | '/search' | '/texts/$slug'
+  id: '__root__' | '/' | '/history' | '/library' | '/search' | '/texts/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  HistoryRoute: typeof HistoryRoute
   LibraryRoute: typeof LibraryRoute
   SearchRoute: typeof SearchRoute
   TextsSlugRoute: typeof TextsSlugRoute
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/library': {
@@ -104,6 +121,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  HistoryRoute: HistoryRoute,
   LibraryRoute: LibraryRoute,
   SearchRoute: SearchRoute,
   TextsSlugRoute: TextsSlugRoute,

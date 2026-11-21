@@ -7,7 +7,6 @@ import { useCallback, useEffect, useMemo } from "react";
 
 import { Button } from "@codebase/presentation";
 
-import { RecentHistory } from "../components/history/recent-history/recent-history";
 import { SearchBar } from "../components/search/search-bar/search-bar";
 import { SearchLanding } from "../components/search/search-landing/search-landing";
 import { SearchResults } from "../components/search/search-results/search-results";
@@ -16,11 +15,9 @@ import {
   searchSchema,
 } from "../components/search/search-results/search.constants";
 import { useLookupHistory } from "../hooks/use-lookup-history/use-lookup-history";
-import { isLookupEntry } from "../hooks/use-lookup-history/use-lookup-history.utilities";
 
 import type { LexemeFormRow } from "../components/lexeme/lexeme-forms/lexeme-forms.types";
 import type { SearchParameters } from "../components/search/search-results/search.types";
-import type { HistoryEntry } from "../hooks/use-lookup-history/use-lookup-history.types";
 import type { ReactNode } from "react";
 
 // 🧭 Route
@@ -91,7 +88,7 @@ function SearchPage(): ReactNode {
   const navigate = Route.useNavigate();
   const { query = "" } = Route.useSearch();
   const results = Route.useLoaderData();
-  const { clear, entries, recordSearch } = useLookupHistory();
+  const { recordSearch } = useLookupHistory();
   const isLoading = useRouterState({
     select: (state: { isLoading: boolean }) => state.isLoading,
   });
@@ -120,20 +117,6 @@ function SearchPage(): ReactNode {
       await Promise.resolve(formsByLexeme.get(lexemeId) ?? []),
     [formsByLexeme],
   );
-  const handleOpenEntry = useCallback(
-    (entry: HistoryEntry): void => {
-      if (isLookupEntry(entry)) {
-        void navigate({
-          params: { slug: entry.slug },
-          search: { line: entry.line },
-          to: "/texts/$slug",
-        });
-      } else {
-        void navigate({ search: { query: entry.query } });
-      }
-    },
-    [navigate],
-  );
 
   // ♻️ Lifecycle
   useEffect(() => {
@@ -147,21 +130,16 @@ function SearchPage(): ReactNode {
   // 🎨 Markup
   return (
     <section
-      className={`space-y-6 ${query === "" ? "mx-auto w-full max-w-2xl" : ""}`}
+      className={`space-y-4 ${query === "" ? "flex min-h-[calc(100svh-2rem)] flex-col" : ""}`}
     >
       <h1 className="sr-only">Search</h1>
-      {query === "" ? <SearchLanding /> : null}
       <SearchBar
         initialQuery={query}
         isLoading={isLoading}
         onSearch={handleSearch}
       />
       {query === "" ? (
-        <RecentHistory
-          entries={entries}
-          onClear={clear}
-          onOpenEntry={handleOpenEntry}
-        />
+        <SearchLanding className="flex flex-1 items-center justify-center" />
       ) : (
         <SearchResults
           loadForms={handleLoadForms}
