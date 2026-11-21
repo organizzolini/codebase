@@ -20,6 +20,13 @@ export default defineConfig({
     react(),
   ],
   resolve: {
+    // The vendored components import each other through `@/`.
+    alias: {
+      "@": path.resolve(
+        path.dirname(import.meta.dirname),
+        "../../common/presentation/src",
+      ),
+    },
     tsconfigPaths: true,
   },
   root: path.dirname(import.meta.dirname),

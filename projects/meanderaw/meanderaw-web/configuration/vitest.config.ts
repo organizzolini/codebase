@@ -9,6 +9,12 @@ import vitestConfig from "@codebase/configuration/vitest.config";
 export default mergeConfig(
   vitestConfig,
   defineConfig({
+    // The vendored components import each other through `@/`.
+    resolve: {
+      alias: {
+        "@": `${import.meta.dirname}/../../../common/presentation/src`,
+      },
+    },
     test: {
       coverage: {
         exclude: [

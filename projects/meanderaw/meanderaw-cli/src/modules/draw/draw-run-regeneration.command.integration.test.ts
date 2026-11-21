@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
 
+import { bridgeRows } from "../../../testing/bridge";
 import {
   DRAW_RUN_TIMEOUT_MILLISECONDS,
   type DrawRunFixture,
@@ -11,7 +12,7 @@ import {
 
 import { DrawCodeService } from "./modules/enumeration/draw-code.service";
 
-import type { Meander } from "../database/meander.entity";
+import type { Meander } from "@codebase/meanderaw-db";
 import type * as FileSystemHelpers from "@codebase/testing/file-system";
 
 vi.mock("node:fs/promises", async () => {
@@ -65,6 +66,7 @@ describe("drawCommand draw run", () => {
         await drawRun.command.run([], {});
 
         const fresh = await drawRun.repository.find({ order: { code: "ASC" } });
+        const freshBridge = await bridgeRows(drawRun.dataSource);
 
         await expect(drawRun.command.run([], {})).resolves.not.toThrow();
 
@@ -75,6 +77,9 @@ describe("drawCommand draw run", () => {
         expect(regenerated).toHaveLength(fresh.length);
         expect(regenerated.map((row) => withoutRowIdentity(row))).toStrictEqual(
           fresh.map((row) => withoutRowIdentity(row)),
+        );
+        await expect(bridgeRows(drawRun.dataSource)).resolves.toStrictEqual(
+          freshBridge,
         );
       },
       DRAW_RUN_TIMEOUT_MILLISECONDS,

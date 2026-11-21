@@ -9,25 +9,30 @@ import {
   vi,
 } from "vitest";
 
+import {
+  CodeModule,
+  DrawingModule,
+  GeometryService,
+  MatrixModule,
+  SvgService,
+  TileService,
+} from "@codebase/meanderaw-core";
+import {
+  Meander,
+  MEANDERAW_DATABASE_MIGRATIONS,
+  MeanderawDatabaseModule,
+  MeanderawDatabaseService,
+} from "@codebase/meanderaw-db";
 import { LoggerService } from "@codebase/observability";
 import {
   type DatabaseTestingModule,
   startDatabaseTestingModule,
 } from "@codebase/persistence/testing";
 
-import { Migration1791160950069 } from "../../../migrations/1791160950069-migration";
-import { Migration1791414023001 } from "../../../migrations/1791414023001-migration";
+import { storedCharacteristics } from "../../../testing/bridge";
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
-import { CodeModule } from "../code/code.module";
 import { CorpusService } from "../corpus/corpus.service";
-import { DatabaseModule } from "../database/database.module";
-import { Meander } from "../database/meander.entity";
-import { DrawingModule } from "../drawing/drawing.module";
-import { SvgService } from "../drawing/modules/svg/svg.service";
-import { GeometryService } from "../geometry/geometry.service";
-import { GraphService } from "../geometry/modules/graph/graph.service";
-import { MatrixModule } from "../geometry/modules/matrix/matrix.module";
-import { TileService } from "../geometry/modules/tile/tile.service";
+import { GraphService } from "../graph/graph.service";
 
 import { DrawCommand } from "./draw.command";
 import { DrawCodeService } from "./modules/enumeration/draw-code.service";
@@ -45,7 +50,7 @@ import type { Repository } from "typeorm";
  * graph.
  *
  * The module is booted by `startDatabaseTestingModule`, which points
- * `DatabaseModule` at a fresh, migrated schema instead of the
+ * `MeanderawDatabaseModule` at a fresh, migrated schema instead of the
  * local database.
  */
 describe("drawCommand --code mode", () => {
@@ -55,10 +60,10 @@ describe("drawCommand --code mode", () => {
 
   beforeAll(async () => {
     database = await startDatabaseTestingModule({
-      database: DatabaseModule,
+      database: MeanderawDatabaseModule,
       entities: [Meander],
       imports: [CharacteristicsModule, CodeModule, DrawingModule, MatrixModule],
-      migrations: [Migration1791160950069, Migration1791414023001],
+      migrations: [...MEANDERAW_DATABASE_MIGRATIONS],
       project: "meanderaw",
       providers: [
         DrawCommand,
@@ -96,7 +101,7 @@ describe("drawCommand --code mode", () => {
   beforeEach(async () => {
     // The migrated schema persists across the cases one container serves,
     // so each case starts from an empty table.
-    await repository.clear();
+    await database.module.get(MeanderawDatabaseService).clear();
   });
 
   afterAll(async () => {
@@ -121,8 +126,12 @@ describe("drawCommand --code mode", () => {
       repeats: 1,
       rows: 2,
     });
-    expect(rows[0]?.characteristics).not.toHaveProperty("crossCount");
-    expect(rows[0]?.characteristics).not.toHaveProperty("forkCount");
+    await expect(
+      storedCharacteristics(database.dataSource, "02x02y3c9a"),
+    ).resolves.not.toHaveProperty("crossCount");
+    await expect(
+      storedCharacteristics(database.dataSource, "02x02y3c9a"),
+    ).resolves.not.toHaveProperty("forkCount");
     expect(rows[0]).not.toHaveProperty("pitch");
   });
 
@@ -154,12 +163,16 @@ describe("drawCommand --code mode", () => {
 
     expect(rows).toHaveLength(1);
     expect(rows[0]).toMatchObject({
-      characteristics: { forkCount: 1 },
       code: "01x01ye",
       lattice: "e",
       repeats: 1,
     });
-    expect(rows[0]?.characteristics).not.toHaveProperty("crossCount");
+    await expect(
+      storedCharacteristics(database.dataSource, "01x01ye"),
+    ).resolves.toMatchObject({ forkCount: 1 });
+    await expect(
+      storedCharacteristics(database.dataSource, "01x01ye"),
+    ).resolves.not.toHaveProperty("crossCount");
   });
 
   it("refuses a --code drawing missing --columns", async () => {

@@ -1,23 +1,25 @@
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
+import {
+  CodeService,
+  DrawingService,
+  GeometryService,
+} from "@codebase/meanderaw-core";
+import { MeanderawDatabaseService } from "@codebase/meanderaw-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { meanderRecord } from "../../../../../testing/meanders";
 import { PATTERN_CHARACTERISTIC_KEYS } from "../../../characteristics/characteristics.constants";
-import { CodeService } from "../../../code/code.service";
-import { DatabaseService } from "../../../database/database.service";
-import { DrawingService } from "../../../drawing/drawing.service";
-import { GeometryService } from "../../../geometry/geometry.service";
 
 import { DrawIndexService } from "./draw-index.service";
 
-import type { Meander } from "../../../database/meander.entity";
 import type { MeanderPageContent } from "./draw-index.types";
+import type { MeanderHolding } from "@codebase/meanderaw-db";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 /** Mocked database, with stubbed parser and drawing. */
 const MODULE_OPTIONS: TestingModuleOptions = {
-  mocks: [DatabaseService],
+  mocks: [MeanderawDatabaseService],
   providers: [
     GeometryService,
     {
@@ -45,13 +47,13 @@ const MODULE_OPTIONS: TestingModuleOptions = {
  * `draw-index.service.integration.test.ts` covers `build` against a real one.
  */
 describe(DrawIndexService, () => {
-  let databaseService: DatabaseService;
+  let databaseService: MeanderawDatabaseService;
   let service: DrawIndexService;
 
   /** Defaults for the row fields a case does not test. */
   const meander = (
-    overrides: Partial<Meander> & Pick<Meander, "code">,
-  ): Meander => ({
+    overrides: Partial<MeanderHolding> & Pick<MeanderHolding, "code">,
+  ): MeanderHolding => ({
     ...meanderRecord({ code: overrides.code, lattice: "3c9a" }),
     createdAt: new Date(0),
     id: "01a107d6-cff8-7238-8684-a2a863bc6928",
@@ -63,7 +65,7 @@ describe(DrawIndexService, () => {
     const built = await buildTestingModule(DrawIndexService, MODULE_OPTIONS);
 
     service = built.instance;
-    databaseService = built.mock(DatabaseService);
+    databaseService = built.mock(MeanderawDatabaseService);
   });
 
   it("resolves with its dependencies", async () => {

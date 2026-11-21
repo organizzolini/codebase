@@ -1,1 +1,78 @@
 @import "tailwindcss";
+@import "@codebase/presentation/styles/globals.css";
+
+/*
+ * Design tokens, dark with a slight green tint: every neutral leans toward
+ * hue 150. Markup reads them as `bg-(--surface)`, `text-(--ink-muted)`.
+ */
+:root {
+  --surface: oklch(17% 0.02 150deg);
+  --surface-raised: oklch(22% 0.025 150deg);
+  --surface-sunken: oklch(14% 0.02 150deg);
+
+  /* A pale panel behind a drawing, so its black ink reads at about 18:1. */
+  --drawing-panel: oklch(96% 0.02 150deg);
+  --line: oklch(32% 0.03 150deg);
+  --ink: oklch(94% 0.015 150deg);
+  --ink-muted: oklch(72% 0.03 150deg);
+
+  /* Not `--accent`: the shared components own that name, as a bare HSL triplet. */
+  --brand: oklch(78% 0.15 150deg);
+  --brand-ink: oklch(18% 0.03 150deg);
+  --danger: oklch(72% 0.17 25deg);
+  --radius-card: 0.75rem;
+
+  color-scheme: dark;
+}
+
+/*
+ * The shared components' tokens, which their Tailwind theme reads as
+ * `hsl(var(--background))`, so each is the HSL triplet of the token above
+ * it is named for, and the shared components wear the same green.
+ */
+:root,
+.dark {
+  /* --surface */
+  --background: 132 33% 5%;
+
+  /* --ink */
+  --foreground: 129 22% 91%;
+
+  /* --surface-raised */
+  --card: 132 25% 9%;
+  --card-foreground: 129 22% 91%;
+  --popover: 132 25% 9%;
+  --popover-foreground: 129 22% 91%;
+
+  /* --brand and --brand-ink */
+  --primary: 135 54% 61%;
+  --primary-foreground: 133 49% 6%;
+  --ring: 135 54% 61%;
+
+  /* A step above --surface-raised, for hovers and highlights */
+  --secondary: 132 23% 13%;
+  --secondary-foreground: 129 22% 91%;
+  --muted: 132 23% 13%;
+  --accent: 132 23% 15%;
+  --accent-foreground: 129 22% 91%;
+
+  /* --ink-muted */
+  --muted-foreground: 130 10% 63%;
+
+  /* --danger */
+  --destructive: 3 97% 71%;
+
+  /* --line */
+  --border: 131 16% 19%;
+  --input: 131 16% 19%;
+}
+
+/*
+ * The command list marks every option it does not highlight with
+ * `data-selected="false"`, which the shared components' `data-selected:`
+ * utility reads as present, so every option showed highlighted. Only the
+ * highlighted one keeps the fill.
+ */
+[data-slot="command-item"][data-selected="false"] {
+  background-color: transparent;
+}
