@@ -195,7 +195,7 @@
     "ghcr.io/devcontainers/features/node:1": {
       "nodeGypDependencies": true,
       "nvmVersion": "latest",
-      "version": "24"
+      "version": "26"
     },
     "ghcr.io/devcontainers/features/python:1": {
       "enableShared": true,
