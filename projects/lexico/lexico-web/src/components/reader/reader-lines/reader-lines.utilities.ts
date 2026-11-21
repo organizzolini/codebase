@@ -5,6 +5,7 @@ import { queryApi } from "../../search/search-results/search.utilities";
 
 import { READER_PAGE_SIZE } from "./reader-lines-api.constants";
 
+import type { TextDraft } from "../../../hooks/use-lookup-history/use-lookup-history.types";
 import type {
   GetTextInput,
   LineConnection,
@@ -79,6 +80,18 @@ export function mergeLines(
   return {
     edges: [...loaded.edges, ...next.edges],
     pageInfo: next.pageInfo,
+  };
+}
+
+/**
+ * What the history keeps of a text the reader opened: its slug, the title
+ * naming its parent work, and its author.
+ */
+export function textDraft(text: Readonly<ReaderText>): TextDraft {
+  return {
+    authorName: text.author.name,
+    slug: text.slug,
+    title: describeOrigin(text),
   };
 }
 

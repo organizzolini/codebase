@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { HttpResponse } from "msw";
 import { beforeEach, describe, expect, it } from "vitest";
 
@@ -22,6 +22,13 @@ const LOOKUP = {
   token: 0,
   word: "Arma",
 };
+const TEXT = {
+  authorName: "Julius Caesar",
+  kind: "text",
+  recordedAt: 1,
+  slug: "text-1",
+  title: "De Bello Gallico",
+};
 const SEARCH = { kind: "search", query: "amo", recordedAt: 2 };
 
 describe("history", () => {
@@ -29,30 +36,40 @@ describe("history", () => {
     globalThis.localStorage.clear();
   });
 
-  it("shows what was recently looked up and searched on the history page", async () => {
+  it("shows every kind of interaction as a card", async () => {
     globalThis.localStorage.setItem(
       HISTORY_KEY,
-      JSON.stringify([LOOKUP, SEARCH]),
+      JSON.stringify([LOOKUP, SEARCH, TEXT]),
     );
 
     await renderRoute(getRouter(), "/history");
 
-    const recent = await screen.findByTestId("recent-history");
-
+    await expect(screen.findAllByTestId("history-card")).resolves.toHaveLength(
+      3,
+    );
+    expect(screen.getByText("Arma")).toBeDefined();
+    expect(screen.getByText(/Aeneid, Book 1/u)).toBeDefined();
+    expect(screen.getByText("Searched for amo")).toBeDefined();
     expect(
-      within(recent).getByRole("heading", { name: "Recent" }),
+      screen.getByText("Opened De Bello Gallico by Julius Caesar"),
     ).toBeDefined();
-    expect(within(recent).getByText("Arma")).toBeDefined();
-    expect(within(recent).getByText("Aeneid, Book 1")).toBeDefined();
-    expect(within(recent).getByText("amo")).toBeDefined();
   });
 
-  it("says so while there is no history", async () => {
-    await renderRoute(getRouter(), "/history");
+  it("opens a recorded text from its card", async () => {
+    graphqlMockServer.use(
+      mockTextReaderQuery(() => HttpResponse.json({ data: { text: null } })),
+    );
+    globalThis.localStorage.setItem(HISTORY_KEY, JSON.stringify([TEXT]));
+    const router = getRouter();
+    await renderRoute(router, "/history");
 
-    await screen.findByTestId("history-empty");
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Open De Bello Gallico" }),
+    );
 
-    expect(screen.queryByTestId("recent-history")).toBeNull();
+    await waitFor(() => {
+      expect(router.state.location.pathname).toBe("/texts/text-1");
+    });
   });
 
   it("reruns a recent search when it is clicked", async () => {
@@ -60,7 +77,7 @@ describe("history", () => {
     const router = getRouter();
     await renderRoute(router, "/history");
 
-    fireEvent.click(await screen.findByRole("button", { name: /^amo/u }));
+    fireEvent.click(await screen.findByRole("button", { name: "Open amo" }));
 
     await waitFor(() => {
       expect(router.state.location.search).toMatchObject({ query: "amo" });
@@ -75,7 +92,7 @@ describe("history", () => {
     const router = getRouter();
     await renderRoute(router, "/history");
 
-    fireEvent.click(await screen.findByRole("button", { name: /^Arma/u }));
+    fireEvent.click(await screen.findByRole("button", { name: "Open Arma" }));
 
     await waitFor(() => {
       expect(router.state.location.pathname).toBe("/texts/vergil-aeneid-1");
@@ -96,7 +113,7 @@ describe("history", () => {
     );
 
     await waitFor(() => {
-      expect(screen.queryByTestId("recent-history")).toBeNull();
+      expect(screen.queryByTestId("history-card")).toBeNull();
     });
 
     expect(globalThis.localStorage.getItem(HISTORY_KEY)).toBe("[]");

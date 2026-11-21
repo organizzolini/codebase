@@ -9,12 +9,14 @@ import {
   readLookupHistory,
   recordLookup,
   recordSearch,
+  recordText,
   writeLookupHistory,
 } from "./use-lookup-history.utilities";
 
 import type {
   HistoryEntry,
   LookupDraft,
+  TextDraft,
   UseLookupHistoryResult,
 } from "./use-lookup-history.types";
 
@@ -22,7 +24,7 @@ import type {
 
 /**
  * The history this browser keeps, newest first, with functions to record a
- * word lookup or a search and to clear the history.
+ * word lookup, a search, or a text opening and to clear the history.
  */
 export function useLookupHistory(): UseLookupHistoryResult {
   // 🪝 Hooks
@@ -52,6 +54,13 @@ export function useLookupHistory(): UseLookupHistoryResult {
     [replace],
   );
 
+  const recordTextOpening = useCallback(
+    (draft: TextDraft): void => {
+      replace(recordText(latest.current, draft, Date.now()));
+    },
+    [replace],
+  );
+
   const clear = useCallback((): void => {
     replace([]);
   }, [replace]);
@@ -63,5 +72,11 @@ export function useLookupHistory(): UseLookupHistoryResult {
   }, []);
 
   // 🎁 Result
-  return { clear, entries, record, recordSearch: recordSearchQuery };
+  return {
+    clear,
+    entries,
+    record,
+    recordSearch: recordSearchQuery,
+    recordText: recordTextOpening,
+  };
 }

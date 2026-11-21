@@ -10,6 +10,8 @@ import type {
   LookupDraft,
   LookupEntry,
   SearchDraft,
+  TextDraft,
+  TextEntry,
 } from "./use-lookup-history.types";
 
 // 🔏 Private Functions
@@ -19,6 +21,13 @@ import type {
  */
 export function isLookupEntry(entry: HistoryEntry): entry is LookupEntry {
   return entry.kind === "lookup";
+}
+
+/**
+ * Whether a history entry is the opening of a text, narrowing its type.
+ */
+export function isTextEntry(entry: HistoryEntry): entry is TextEntry {
+  return entry.kind === "text";
 }
 
 /**
@@ -81,6 +90,30 @@ export function recordSearch(
     entry,
     ...entries.filter((kept) => !isSameSearch(kept, draft)),
   ]);
+}
+
+/**
+ * Puts a text opening at the top, unless the newest entry already opens the
+ * same text, and drops the oldest entries beyond the cap.
+ */
+export function recordText(
+  entries: readonly HistoryEntry[],
+  draft: TextDraft,
+  now: number,
+): HistoryEntry[] {
+  const [newest] = entries;
+
+  if (
+    newest !== undefined &&
+    isTextEntry(newest) &&
+    newest.slug === draft.slug
+  ) {
+    return [...entries];
+  }
+
+  const entry: HistoryEntry = { ...draft, kind: "text", recordedAt: now };
+
+  return capped([entry, ...entries]);
 }
 
 /**

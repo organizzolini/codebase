@@ -27,10 +27,14 @@ import { getText } from "../components/reader/reader-lines/reader-lines.constant
 import {
   describeOrigin,
   failNotFound,
+  textDraft,
 } from "../components/reader/reader-lines/reader-lines.utilities";
 import { ReaderNavigation } from "../components/reader/reader-navigation/reader-navigation";
 import { useLookupHistory } from "../hooks/use-lookup-history/use-lookup-history";
-import { isLookupEntry } from "../hooks/use-lookup-history/use-lookup-history.utilities";
+import {
+  isLookupEntry,
+  isTextEntry,
+} from "../hooks/use-lookup-history/use-lookup-history.utilities";
 
 import type { FontSize } from "../components/reader/font-size-control/font-size-control.types";
 import type {
@@ -96,7 +100,7 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
   const [fontSize, setFontSize] = useState<FontSize>(DEFAULT_FONT_SIZE);
   const [focus, setFocus] = useState<null | ReaderFocus>(null);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-  const { clear, entries, record } = useLookupHistory();
+  const { clear, entries, record, recordText } = useLookupHistory();
   const navigate = useNavigate();
 
   // 🏗 Setup
@@ -137,7 +141,9 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
 
   const handleOpenEntry = useCallback(
     (entry: HistoryEntry): void => {
-      if (!isLookupEntry(entry)) {
+      if (isTextEntry(entry)) {
+        void navigate({ params: { slug: entry.slug }, to: "/texts/$slug" });
+      } else if (!isLookupEntry(entry)) {
         void navigate({ search: { query: entry.query }, to: "/search" });
       } else if (entry.slug === text.slug) {
         document.querySelector(`#line-${entry.line}`)?.scrollIntoView();
@@ -156,6 +162,10 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
   useEffect(() => {
     setFontSize(readFontSize() ?? DEFAULT_FONT_SIZE);
   }, []);
+  // After the hook's own load of the history, so the opening joins it.
+  useEffect(() => {
+    recordText(textDraft(text));
+  }, [recordText, text]);
 
   // 🏁 Early Returns
 

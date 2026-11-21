@@ -32,6 +32,7 @@ describe(useLookupHistory, () => {
       entries: [],
       record: expect.any(Function),
       recordSearch: expect.any(Function),
+      recordText: expect.any(Function),
     });
   });
 
@@ -65,6 +66,35 @@ describe(useLookupHistory, () => {
     expect(result.current.entries).toStrictEqual([
       expect.objectContaining({ kind: "search", query: "ARMA" }),
       expect.objectContaining({ kind: "search", query: "virum" }),
+    ]);
+  });
+
+  it("records a text opening and skips an immediate repeat of the same text", () => {
+    const { result } = renderHook(() => useLookupHistory());
+    const opening = {
+      authorName: "Julius Caesar",
+      slug: "text-1",
+      title: "De Bello Gallico",
+    };
+
+    act(() => {
+      result.current.recordText(opening);
+      result.current.recordText(opening);
+    });
+
+    expect(result.current.entries).toStrictEqual([
+      expect.objectContaining({ ...opening, kind: "text" }),
+    ]);
+
+    act(() => {
+      result.current.recordSearch("arma");
+      result.current.recordText(opening);
+    });
+
+    expect(result.current.entries.map((entry) => entry.kind)).toStrictEqual([
+      "text",
+      "search",
+      "text",
     ]);
   });
 
@@ -149,7 +179,7 @@ describe(useLookupHistory, () => {
 
     expect(
       result.current.entries.map((entry) =>
-        entry.kind === "lookup" ? entry.word : entry.query,
+        entry.kind === "lookup" ? entry.word : "other",
       ),
     ).toStrictEqual(["virumque", "Arma"]);
   });

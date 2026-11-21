@@ -14,7 +14,7 @@ export interface LogoProperties {
 // 🧩 Component
 
 /**
- * Render the Lexico brand logo at a configurable width, in the current text
+ * Render the Lexico brand logo, as wide as the box its class gives it, in the current text
  * color so it reads on any surface in light and dark themes.
  */
 export function Logo(properties: Readonly<LogoProperties>): ReactNode {
@@ -40,6 +40,7 @@ export function Logo(properties: Readonly<LogoProperties>): ReactNode {
     >
       <svg
         aria-label="Lexico"
+        className="h-auto w-full"
         fill="currentColor"
         height={height}
         role="img"

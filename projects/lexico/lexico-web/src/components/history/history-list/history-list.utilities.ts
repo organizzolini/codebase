@@ -1,4 +1,7 @@
-import { isLookupEntry } from "../../../hooks/use-lookup-history/use-lookup-history.utilities";
+import {
+  isLookupEntry,
+  isTextEntry,
+} from "../../../hooks/use-lookup-history/use-lookup-history.utilities";
 
 import type { HistoryEntry } from "../../../hooks/use-lookup-history/use-lookup-history.types";
 
@@ -7,7 +10,7 @@ import type { HistoryEntry } from "../../../hooks/use-lookup-history/use-lookup-
 // 🌎 Public Functions
 
 /**
- * The grey detail beside the title: the form of a lookup, nothing for a search.
+ * The grey detail beside the title: the form of a lookup, nothing otherwise.
  */
 export function entryDetail(entry: HistoryEntry): string {
   return isLookupEntry(entry) ? entry.form : "";
@@ -17,8 +20,12 @@ export function entryDetail(entry: HistoryEntry): string {
  * A key that is unique among history entries.
  */
 export function entryKey(entry: HistoryEntry): string {
-  return isLookupEntry(entry)
-    ? `lookup-${entry.slug}-${entry.line}-${entry.token}`
+  if (isLookupEntry(entry)) {
+    return `lookup-${entry.slug}-${entry.line}-${entry.token}`;
+  }
+
+  return isTextEntry(entry)
+    ? `text-${entry.slug}-${String(entry.recordedAt)}`
     : `search-${entry.query.toLowerCase()}`;
 }
 
@@ -26,12 +33,21 @@ export function entryKey(entry: HistoryEntry): string {
  * Where an entry came from, shown beneath it.
  */
 export function entryOrigin(entry: HistoryEntry): string {
-  return isLookupEntry(entry) ? (entry.title ?? entry.slug) : "Search";
+  if (isLookupEntry(entry)) {
+    return entry.title ?? entry.slug;
+  }
+
+  return isTextEntry(entry) ? `Opened text by ${entry.authorName}` : "Search";
 }
 
 /**
- * The bold line an entry shows: the word looked up, or the search query.
+ * The bold line an entry shows: the word looked up, the search query, or the
+ * title of the text opened.
  */
 export function entryTitle(entry: HistoryEntry): string {
-  return isLookupEntry(entry) ? entry.word : entry.query;
+  if (isLookupEntry(entry)) {
+    return entry.word;
+  }
+
+  return isTextEntry(entry) ? entry.title : entry.query;
 }

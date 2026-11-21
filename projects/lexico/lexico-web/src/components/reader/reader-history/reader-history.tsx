@@ -13,7 +13,10 @@ import {
   TabsTrigger,
 } from "@codebase/presentation";
 
-import { isLookupEntry } from "../../../hooks/use-lookup-history/use-lookup-history.utilities";
+import {
+  isLookupEntry,
+  isTextEntry,
+} from "../../../hooks/use-lookup-history/use-lookup-history.utilities";
 import { HistoryList } from "../../history/history-list/history-list";
 
 import type { HistoryEntry } from "../../../hooks/use-lookup-history/use-lookup-history.types";
@@ -60,6 +63,7 @@ export function ReaderHistory(
   // 🪝 Hooks
 
   // 🏗 Setup
+  const lookupsAndSearches = entries.filter((entry) => !isTextEntry(entry));
   const thisText = entries.filter(
     (entry) => isLookupEntry(entry) && entry.slug === currentSlug,
   );
@@ -117,7 +121,7 @@ export function ReaderHistory(
                 <TabsContent value="all">
                   <HistoryList
                     emptyMessage="No words looked up or searches yet."
-                    entries={entries}
+                    entries={lookupsAndSearches}
                     onFocusEntry={onFocusEntry}
                     onOpenEntry={onOpenEntry}
                     showLexemes

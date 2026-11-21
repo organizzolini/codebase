@@ -368,6 +368,24 @@ describe("texts.$slug", () => {
     expect(globalThis.localStorage.getItem(FONT_SIZE_KEY)).toBe("large");
   });
 
+  it("records the opening of a text in the history", async () => {
+    await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
+
+    await screen.findByRole("button", { name: "Got it" });
+
+    expect(
+      JSON.parse(
+        globalThis.localStorage.getItem("lexico-lookup-history") ?? "[]",
+      ),
+    ).toStrictEqual([
+      expect.objectContaining({
+        authorName: "Vergil",
+        kind: "text",
+        slug: "vergil-aeneid-1",
+      }),
+    ]);
+  });
+
   it("shows the word hint once per browser", async () => {
     await renderRoute(getRouter(), "/texts/vergil-aeneid-1");
 
@@ -651,10 +669,11 @@ describe("texts.$slug", () => {
       const panel = await openHistory();
       const items = within(panel).getAllByTestId("history-entry");
 
-      expect(items).toHaveLength(200);
+      // The opening of the text takes a slot too, so one more entry is dropped.
+      expect(items).toHaveLength(199);
       expect(items[0]?.textContent.startsWith("Arma")).toBe(true);
-      expect(within(panel).queryByText("word199")).toBeNull();
-      expect(within(panel).getByText("word198")).toBeDefined();
+      expect(within(panel).queryByText("word198")).toBeNull();
+      expect(within(panel).getByText("word197")).toBeDefined();
     });
 
     it("keeps history across reloads", async () => {
@@ -1011,9 +1030,10 @@ describe("texts.$slug", () => {
       });
       const panel = await openAll();
 
-      expect(within(panel).getAllByTestId("history-entry")).toHaveLength(200);
+      // The opening of the text takes a slot, but the panel leaves it out.
+      expect(within(panel).getAllByTestId("history-entry")).toHaveLength(199);
       expect(within(panel).getByText("Arma")).toBeDefined();
-      expect(within(panel).queryByText("query 199")).toBeNull();
+      expect(within(panel).queryByText("query 198")).toBeNull();
     });
 
     it("clears lookups and searches together", async () => {

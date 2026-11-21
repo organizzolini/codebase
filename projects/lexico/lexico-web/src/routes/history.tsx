@@ -1,9 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback } from "react";
 
-import { RecentHistory } from "../components/history/recent-history/recent-history";
+import { Button } from "@codebase/presentation";
+
+import { HistoryCard } from "../components/history/history-card/history-card";
+import { entryKey } from "../components/history/history-list/history-list.utilities";
 import { useLookupHistory } from "../hooks/use-lookup-history/use-lookup-history";
-import { isLookupEntry } from "../hooks/use-lookup-history/use-lookup-history.utilities";
+import {
+  isLookupEntry,
+  isTextEntry,
+} from "../hooks/use-lookup-history/use-lookup-history.utilities";
 
 import type { HistoryEntry } from "../hooks/use-lookup-history/use-lookup-history.types";
 import type { ReactNode } from "react";
@@ -40,7 +46,9 @@ function HistoryPage(): ReactNode {
   // 💪 Handlers
   const handleOpenEntry = useCallback(
     (entry: HistoryEntry): void => {
-      if (isLookupEntry(entry)) {
+      if (isTextEntry(entry)) {
+        void navigate({ params: { slug: entry.slug }, to: "/texts/$slug" });
+      } else if (isLookupEntry(entry)) {
         void navigate({
           params: { slug: entry.slug },
           search: { line: entry.line },
@@ -59,21 +67,36 @@ function HistoryPage(): ReactNode {
 
   // 🎨 Markup
   return (
-    <section className="mx-auto w-full max-w-2xl space-y-4">
-      <h1 className="sr-only">History</h1>
+    <section className="mx-auto grid w-full max-w-2xl grid-cols-[1fr_auto] items-center gap-4">
+      <h1 className="text-2xl font-semibold">History</h1>
+      {entries.length === 0 ? null : (
+        <Button
+          onClick={() => {
+            clear();
+          }}
+          variant="outline"
+        >
+          Clear history
+        </Button>
+      )}
       {entries.length === 0 ? (
         <p
-          className="text-center text-muted-foreground"
+          className="col-span-full text-muted-foreground"
           data-testid="history-empty"
         >
-          No words looked up or searches yet.
+          No words looked up, searches, or texts opened yet.
         </p>
       ) : (
-        <RecentHistory
-          entries={entries}
-          onClear={clear}
-          onOpenEntry={handleOpenEntry}
-        />
+        <ul className="col-span-full space-y-3">
+          {entries.map((entry) => (
+            <li key={entryKey(entry)}>
+              <HistoryCard
+                entry={entry}
+                onOpen={handleOpenEntry}
+              />
+            </li>
+          ))}
+        </ul>
       )}
     </section>
   );
