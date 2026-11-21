@@ -1,4 +1,16 @@
-import { MAXIMUM_GROUP_LEVELS } from "./gallery-group-by.constants";
+import { Layers } from "lucide-react";
+import { useMemo } from "react";
+
+import { Button, ButtonGroup } from "@codebase/presentation";
+
+import { GalleryCascader } from "../gallery-cascader/gallery-cascader";
+import { createFieldNodes } from "../gallery-cascader/gallery-cascader.utilities";
+import { GallerySurface } from "../gallery-surface/gallery-surface";
+
+import {
+  GROUP_TITLE,
+  MAXIMUM_GROUP_LEVELS,
+} from "./gallery-group-by.constants";
 
 import type { GroupField } from "./gallery-group-by.types";
 import type { ReactNode } from "react";
@@ -19,8 +31,7 @@ export interface GalleryGroupByProperties {
 // 🧩 Component
 
 /**
- * Renders each level as a field picker and a remove button, and a button
- * that adds a level.
+ * Renders the Group button, whose cascader ticks fields into levels, and a button beside it for each level.
  */
 export function GalleryGroupBy(
   properties: Readonly<GalleryGroupByProperties>,
@@ -28,22 +39,18 @@ export function GalleryGroupBy(
   const { className, fields, grouping, onGroupingChange } = properties;
 
   // 🪝 Hooks
+  const items = useMemo(() => createFieldNodes(fields), [fields]);
 
   // 🏗 Setup
-  const unused = fields.filter(({ key }) => !grouping.includes(key));
-  const [nextField] = unused;
 
   // 💪 Handlers
-  const replaceLevel = (index: number, key?: string): void => {
-    onGroupingChange(
-      grouping.flatMap((current, position) => {
-        if (position !== index) {
-          return [current];
-        }
-
-        return key === undefined ? [] : [key];
-      }),
-    );
+  // Ticking adds a level at the end, up to the most; clearing removes it.
+  const handleToggle = (key: string): void => {
+    if (grouping.includes(key)) {
+      onGroupingChange(grouping.filter((level) => level !== key));
+    } else {
+      onGroupingChange([...grouping, key].slice(0, MAXIMUM_GROUP_LEVELS));
+    }
   };
 
   // ♻️ Lifecycle
@@ -56,63 +63,48 @@ export function GalleryGroupBy(
       className={className}
       data-testid="gallery-group-by"
     >
-      <div className="flex flex-wrap items-center gap-2 text-sm">
-        {grouping.length === 0 ? (
-          <span className="text-(--ink-muted)">Not grouped</span>
-        ) : null}
-        {grouping.map((key, index) => (
-          <div
-            key={key}
-            className="flex items-center gap-1"
-          >
-            <label className="flex items-center gap-2">
-              {index === 0 ? "Group by" : "Then by"}
-              <select
-                aria-label={`Group ${String(index + 1)} by`}
-                className="rounded-md border border-(--line) bg-(--surface-raised) px-2 py-1"
-                onChange={(event) => {
-                  replaceLevel(index, event.target.value);
-                }}
-                value={key}
-              >
-                {fields
-                  .filter(
-                    (field) => field.key === key || unused.includes(field),
-                  )
-                  .map((field) => (
-                    <option
-                      key={field.key}
-                      value={field.key}
-                    >
-                      {field.label}
-                    </option>
-                  ))}
-              </select>
-            </label>
-            <button
-              aria-label={`Remove group ${String(index + 1)}`}
-              className="rounded-md border border-(--line) px-2 py-1"
-              onClick={() => {
-                replaceLevel(index);
-              }}
-              type="button"
+      <ButtonGroup aria-label={GROUP_TITLE}>
+        <GallerySurface
+          contentClassName="w-80 p-1"
+          title={GROUP_TITLE}
+          trigger={
+            <Button
+              className={
+                grouping.length === 0
+                  ? undefined
+                  : "in-data-[slot=button-group]:rounded-r-none"
+              }
+              size="sm"
+              variant="outline"
             >
-              ×
-            </button>
-          </div>
-        ))}
-        {grouping.length < MAXIMUM_GROUP_LEVELS && nextField !== undefined ? (
-          <button
-            className="rounded-md border border-(--line) px-3 py-1"
+              <Layers aria-hidden="true" />
+              {GROUP_TITLE}
+            </Button>
+          }
+        >
+          <GalleryCascader
+            checked={grouping}
+            items={items}
+            label="Group by"
+            max={MAXIMUM_GROUP_LEVELS}
+            onToggle={handleToggle}
+          />
+        </GallerySurface>
+        {grouping.map((key) => (
+          <Button
+            key={key}
+            aria-label={`Grouped by ${fields.find((field) => field.key === key)?.label ?? key}`}
             onClick={() => {
-              onGroupingChange([...grouping, nextField.key]);
+              handleToggle(key);
             }}
-            type="button"
+            size="sm"
+            title="Remove this level"
+            variant="outline"
           >
-            {grouping.length === 0 ? "Group cards" : "Add sub-group"}
-          </button>
-        ) : null}
-      </div>
+            {fields.find((field) => field.key === key)?.label ?? key}
+          </Button>
+        ))}
+      </ButtonGroup>
     </div>
   );
 }

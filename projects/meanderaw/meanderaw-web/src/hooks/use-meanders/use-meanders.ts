@@ -1,82 +1,67 @@
-import {
-  useCallback,
-  useEffect,
-  useRef as useReference,
-  useState,
-} from "react";
+import { useEffect, useRef as useReference, useState } from "react";
 
-import { findMeanders } from "../../components/gallery/meander-gallery/meanders-api.utilities";
+import {
+  canGoTo,
+  planRead,
+  readPage,
+  resolvePaging,
+} from "./use-meanders.utilities";
 
 import type { MeandersPage } from "../../components/gallery/meander-gallery/meanders-api.types";
 import type {
-  MeanderFilterGroupInput,
-  MeanderSortInput,
-} from "../../graphql/generated/operations";
-import type { UseMeandersResult } from "./use-meanders.types";
+  PagingQuery,
+  PagingState,
+  UseMeandersResult,
+} from "./use-meanders.types";
 
 // 🧩 Hook
 
 /**
- * Collects the pages after the loaded first, in its sort, filter and repeats.
- * A new first page starts over.
+ * Pages through meanders, each page read once and kept; a new first page starts over.
  */
 export function useMeanders(
-  first: MeandersPage,
-  query: Readonly<{
-    filter?: MeanderFilterGroupInput | undefined;
-    repeats: number;
-    sort?: MeanderSortInput | undefined;
-  }>,
+  first: MeandersPage | undefined,
+  query: Readonly<PagingQuery>,
 ): UseMeandersResult {
   // 🪝 Hooks
-  const [loaded, setLoaded] = useState<{
-    first: MeandersPage;
-    pages: readonly MeandersPage[];
-  }>({ first, pages: [] });
-  const [failure, setFailure] = useState<{
-    error: unknown;
-    first: MeandersPage;
-  }>();
-  // The first page a read is in flight for, and the one now showing: a read
-  // belongs to the first page it began under, whatever shows when it ends.
-  const inFlight = useReference<MeandersPage | null>(null);
+  const [state, setState] = useState<PagingState>({
+    first,
+    pages: {},
+    position: 0,
+  });
+  // The first page now showing: a read belongs to the first page it began
+  // under, whatever shows when it ends.
   const showing = useReference(first);
 
   // 🏗 Setup
-  const pages = loaded.first === first ? loaded.pages : [];
-  const last = pages.at(-1) ?? first;
-  const meanders = [first, ...pages].flatMap((page) =>
-    page.edges.map(({ node }) => node),
+  const { isLoading, page, pageCount, pages, position } = resolvePaging(
+    first,
+    state,
+    query.size,
   );
 
   // 💪 Handlers
-  const loadMore = useCallback((): void => {
-    if (inFlight.current === first || !last.pageInfo.hasNextPage) {
+  const goTo = (target: number): void => {
+    if (first === undefined || !canGoTo({ isLoading, pageCount, target })) {
       return;
     }
 
-    inFlight.current = first;
-    setFailure(undefined);
-    findMeanders({ after: last.pageInfo.endCursor, ...query })
-      .then((next) => {
-        if (showing.current === first) {
-          setLoaded((previous) => ({
-            first,
-            pages: [...(previous.first === first ? previous.pages : []), next],
-          }));
-        }
-      })
-      .catch((error: unknown) => {
-        if (showing.current === first) {
-          setFailure({ error, first });
-        }
-      })
-      .finally(() => {
-        if (inFlight.current === first) {
-          inFlight.current = null;
-        }
-      });
-  }, [first, last, query]);
+    setState({ first, pages, position: target });
+
+    if (target === 0 || pages[target] !== undefined) {
+      return;
+    }
+
+    readPage({
+      ...planRead({ first, pages, size: query.size, target }),
+      fallback: position,
+      first,
+      position: target,
+      query,
+      setState,
+      showing,
+    });
+  };
 
   // ♻️ Lifecycle
   useEffect(() => {
@@ -85,9 +70,17 @@ export function useMeanders(
 
   // 🎁 Result
   return {
-    hasMore: last.pageInfo.hasNextPage,
-    loadError: failure?.first === first ? failure.error : undefined,
-    loadMore,
-    meanders,
+    goTo,
+    isLoading,
+    loadError: state.first === first ? state.failure?.error : undefined,
+    meanders: page?.edges.map(({ node }) => node) ?? [],
+    next: () => {
+      goTo(position + 1);
+    },
+    pageCount,
+    position,
+    previous: () => {
+      goTo(position - 1);
+    },
   };
 }

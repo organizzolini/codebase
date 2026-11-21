@@ -1,16 +1,12 @@
 import { useWindowVirtualizer } from "@tanstack/react-virtual";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 
 import { useElementBox } from "../../../hooks/use-element-box/use-element-box";
 import { MeanderCard } from "../../meander/meander-card/meander-card";
 import { GalleryEmpty } from "../gallery-empty/gallery-empty";
 import { GalleryError } from "../gallery-error/gallery-error";
 
-import {
-  LOAD_AHEAD_ROWS,
-  OVERSCAN_ROWS,
-  ROW_ESTIMATES,
-} from "./meander-gallery.constants";
+import { OVERSCAN_ROWS, ROW_ESTIMATES } from "./meander-gallery.constants";
 import { getColumnCount, toRows } from "./meander-gallery.utilities";
 
 import type { GalleryView } from "../../../hooks/use-gallery-search/use-gallery-search.types";
@@ -23,15 +19,16 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * Meanders so far, the catalog, how to read more, the view.
+ * The page's meanders, the catalog, active keys, and the view.
  */
 export interface MeanderGalleryProperties {
+  /** Characteristics the page is grouped, sorted or filtered by. */
+  activeKeys: readonly string[];
   catalog: readonly GalleryCharacteristic[];
   className?: string;
-  hasMore: boolean;
   loadError: unknown;
   meanders: readonly GalleryMeander[];
-  onLoadMore: () => void;
+  onRetry: () => void;
   repeats: number;
   view: GalleryView;
 }
@@ -39,19 +36,18 @@ export interface MeanderGalleryProperties {
 // 🧩 Component
 
 /**
- * Renders the meanders as virtualized rows of cards, asking for the next page
- * as the last rows come near.
+ * Renders the meanders of one page as virtualized rows of cards.
  */
 export function MeanderGallery(
   properties: Readonly<MeanderGalleryProperties>,
 ): ReactNode {
   const {
+    activeKeys,
     catalog,
     className,
-    hasMore,
     loadError,
     meanders,
-    onLoadMore,
+    onRetry,
     repeats,
     view,
   } = properties;
@@ -69,17 +65,10 @@ export function MeanderGallery(
 
   // 🏗 Setup
   const items = virtualizer.getVirtualItems();
-  const lastIndex = items.at(-1)?.index ?? -1;
-  const isNearEnd = lastIndex >= rows.length - LOAD_AHEAD_ROWS;
 
   // 💪 Handlers
 
   // ♻️ Lifecycle
-  useEffect(() => {
-    if (hasMore && isNearEnd && loadError === undefined) {
-      onLoadMore();
-    }
-  }, [hasMore, isNearEnd, loadError, onLoadMore, rows.length]);
 
   // 🏁 Early Returns
   if (meanders.length === 0) {
@@ -112,6 +101,7 @@ export function MeanderGallery(
             {rows[item.index]?.map((meander) => (
               <MeanderCard
                 key={meander.id}
+                activeKeys={activeKeys}
                 catalog={catalog}
                 meander={meander}
                 repeats={repeats}
@@ -124,7 +114,7 @@ export function MeanderGallery(
         <GalleryError
           className="pt-2"
           error={loadError}
-          onRetry={onLoadMore}
+          onRetry={onRetry}
         />
       )}
     </div>

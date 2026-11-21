@@ -82,18 +82,8 @@ export function buildGroupedItems(
  * Words a key as a person reads it.
  */
 function describeKey(field: GroupField | undefined, value: string): string {
-  if (field?.key === "rowsColumns") {
-    return value.replace("x", " × ");
-  }
-
   if (field?.type === "boolean") {
-    const isHeld = value === "true";
-
-    if (field.key === "isHardcoded") {
-      return isHeld ? "Yes" : "No";
-    }
-
-    return isHeld ? "Held" : "Not held";
+    return value === "true" ? "Held" : "Not held";
   }
 
   return value;
@@ -108,24 +98,11 @@ function toKeyRules(
   type: GroupField["type"] | undefined,
   value: string,
 ): MeanderFilterRuleInput[] {
-  if (field === "rowsColumns") {
-    const [rows = "0", columns = "0"] = value.split("x");
-
-    return [
-      { field: "rows", numbers: [Number(rows)], operator: "EQ" },
-      { field: "columns", numbers: [Number(columns)], operator: "EQ" },
-    ];
-  }
-
   if (type === "boolean") {
     return [{ field, flag: value === "true", operator: "IS" }];
   }
 
-  return [
-    type === "text"
-      ? { field, operator: "EQ", text: value }
-      : { field, numbers: [Number(value)], operator: "EQ" },
-  ];
+  return [{ field, numbers: [Number(value)], operator: "EQ" }];
 }
 
 // 🌎 Public Functions

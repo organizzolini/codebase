@@ -1,41 +1,77 @@
 import { describe, expect, it } from "vitest";
 
-import { MAXIMUM_FILTER_DEPTH } from "../gallery-filter-builder/gallery-filter-builder.constants";
+import { FIXTURE_CHARACTERISTICS } from "../../../../testing/meanders-api";
+import { MAXIMUM_FILTER_DEPTH } from "../gallery-filters/components/filter-model/filter-model.constants";
 
-import { fitsGrouping } from "./gallery-group-by.utilities";
+import {
+  createGroupFields,
+  fitsGrouping,
+  resolveGrouping,
+} from "./gallery-group-by.utilities";
 
 import type {
   FilterGroup,
   FilterRule,
-} from "../gallery-filter-builder/gallery-filter-builder.types";
+} from "../gallery-filters/components/filter-model/filter-model.types";
 
-const RULE: FilterRule = { field: "rows", operator: "eq", value: 1 };
+const RULE: FilterRule = { field: "columns", operator: "eq", value: 1 };
 
-describe(fitsGrouping, () => {
-  it("fits any grouping with no filter", () => {
-    expect(fitsGrouping(undefined, ["rowsColumns", "lattice"])).toBe(true);
+describe("gallery group by", () => {
+  describe(createGroupFields, () => {
+    it("lists rows and columns, then every characteristic, each with its category and kind", () => {
+      expect(
+        createGroupFields(FIXTURE_CHARACTERISTICS).map(
+          ({ category, key, label, type }) => [category, key, label, type],
+        ),
+      ).toStrictEqual([
+        ["shape", "rows", "Rows", "number"],
+        ["shape", "columns", "Columns", "number"],
+        ["submatrix", "isChain", "Chain", "boolean"],
+        ["path", "junctionCount", "Junction count", "number"],
+      ]);
+    });
   });
 
-  it("counts the rows rule, the tree's group and a level's key rules against the API's size cap, rows × columns twice", () => {
-    const full: FilterGroup = {
-      combinator: "and",
-      rules: Array.from({ length: 124 }, () => RULE),
-    };
-
-    expect(fitsGrouping(full, ["lattice", "isHardcoded"])).toBe(true);
-    expect(fitsGrouping(full, ["rowsColumns", "lattice"])).toBe(false);
+  describe(resolveGrouping, () => {
+    it("keeps the levels the catalog can group by, once each, in order", () => {
+      expect(
+        resolveGrouping(
+          ["columns", "nonsense", "columns", "lattice", "isChain"],
+          createGroupFields(FIXTURE_CHARACTERISTICS),
+        ),
+      ).toStrictEqual(["columns", "isChain"]);
+      expect(
+        resolveGrouping(undefined, createGroupFields(FIXTURE_CHARACTERISTICS)),
+      ).toStrictEqual([]);
+    });
   });
 
-  it("counts the nesting the tree gains when it is nested whole", () => {
-    let nested: FilterGroup = { combinator: "or", rules: [RULE] };
+  describe(fitsGrouping, () => {
+    it("fits any grouping with no filter", () => {
+      expect(fitsGrouping(undefined, ["rows", "columns"])).toBe(true);
+    });
 
-    for (let level = 1; level < MAXIMUM_FILTER_DEPTH; level += 1) {
-      nested = { combinator: "or", rules: [nested] };
-    }
+    it("counts the rows rule, the tree's group and a rule for each level against the API's size cap", () => {
+      const full: FilterGroup = {
+        combinator: "and",
+        rules: Array.from({ length: 124 }, () => RULE),
+      };
 
-    expect(fitsGrouping(nested, ["lattice"])).toBe(true);
-    expect(
-      fitsGrouping({ combinator: "or", rules: [nested] }, ["lattice"]),
-    ).toBe(false);
+      expect(fitsGrouping(full, ["rows", "columns"])).toBe(true);
+      expect(fitsGrouping(full, ["rows", "columns", "isChain"])).toBe(false);
+    });
+
+    it("counts the nesting the tree gains when it is nested whole", () => {
+      let nested: FilterGroup = { combinator: "or", rules: [RULE] };
+
+      for (let level = 1; level < MAXIMUM_FILTER_DEPTH; level += 1) {
+        nested = { combinator: "or", rules: [nested] };
+      }
+
+      expect(fitsGrouping(nested, ["rows"])).toBe(true);
+      expect(
+        fitsGrouping({ combinator: "or", rules: [nested] }, ["rows"]),
+      ).toBe(false);
+    });
   });
 });

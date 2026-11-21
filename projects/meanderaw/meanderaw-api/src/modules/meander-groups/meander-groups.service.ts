@@ -60,7 +60,7 @@ export class MeanderGroupsService {
 
     for (const [index, level] of levels.entries()) {
       const alias = `bridge${index}`;
-      let expression = `meander.${level.kind === "shape" ? "isHardcoded" : "id"}`;
+      let expression = `meander.${level.kind === "shape" ? level.field : "id"}`;
 
       if (level.kind === "characteristic") {
         query.leftJoin(
@@ -72,8 +72,6 @@ export class MeanderGroupsService {
         expression = level.isBoolean
           ? `COALESCE(${alias}.value, 0) > 0`
           : `COALESCE(${alias}.value, 0)`;
-      } else if (level.field === "lattice") {
-        expression = "meander.lattice";
       } else if (level.field === "rowsColumns") {
         expression = "CONCAT(meander.rows, 'x', meander.columns)";
       }

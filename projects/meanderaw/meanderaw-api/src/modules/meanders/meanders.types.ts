@@ -13,6 +13,7 @@ export interface MeandersArguments {
   readonly after?: null | string | undefined;
   readonly filter?: MeanderFilterGroupInput | null | undefined;
   readonly first?: number | undefined;
+  readonly offset?: number | undefined;
   readonly sort?: MeanderSortInput | null | undefined;
 }
 

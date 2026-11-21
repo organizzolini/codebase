@@ -67,6 +67,7 @@ describe(MeanderCard, () => {
   it("applies its class name", () => {
     render(
       <MeanderCard
+        activeKeys={[]}
         catalog={CATALOG}
         className="meander-card"
         meander={MEANDER}
@@ -80,6 +81,7 @@ describe(MeanderCard, () => {
   it("shows the Code with the repeats on the end, and no shape line", () => {
     render(
       <MeanderCard
+        activeKeys={[]}
         catalog={CATALOG}
         meander={MEANDER}
         repeats={12}
@@ -94,6 +96,7 @@ describe(MeanderCard, () => {
   it("shows the badge only for a hardcoded meander", () => {
     const { rerender } = render(
       <MeanderCard
+        activeKeys={[]}
         catalog={CATALOG}
         meander={MEANDER}
         repeats={6}
@@ -104,6 +107,7 @@ describe(MeanderCard, () => {
 
     rerender(
       <MeanderCard
+        activeKeys={[]}
         catalog={CATALOG}
         meander={{ ...MEANDER, isHardcoded: false }}
         repeats={6}
@@ -116,6 +120,7 @@ describe(MeanderCard, () => {
   it("keeps the real aspect of the drawing the API made", () => {
     render(
       <MeanderCard
+        activeKeys={[]}
         catalog={CATALOG}
         meander={MEANDER}
         repeats={6}
@@ -133,6 +138,7 @@ describe(MeanderCard, () => {
   it("falls back to a stock aspect for a drawing that names no size", () => {
     render(
       <MeanderCard
+        activeKeys={[]}
         catalog={CATALOG}
         meander={{ ...MEANDER, svg: "<svg></svg>" }}
         repeats={6}
@@ -142,20 +148,16 @@ describe(MeanderCard, () => {
     expect(screen.getByRole("img").getAttribute("width")).toBe("256");
   });
 
-  it("shows the characteristics as grouped pills", () => {
+  it("shows the characteristics as pills", () => {
     render(
       <MeanderCard
+        activeKeys={[]}
         catalog={CATALOG}
         meander={MEANDER}
         repeats={6}
       />,
     );
 
-    expect(
-      screen
-        .getAllByRole("group")
-        .map((group) => group.getAttribute("aria-label")),
-    ).toStrictEqual(["Patterns", "Path"]);
     expect(screen.getByText("Junction count").closest("li")?.textContent).toBe(
       "Junction count 3",
     );
@@ -168,6 +170,7 @@ describe(MeanderCard, () => {
     );
     render(
       <MeanderCard
+        activeKeys={[]}
         catalog={CATALOG}
         meander={MEANDER}
         repeats={12}
@@ -199,6 +202,7 @@ describe(MeanderCard, () => {
     );
     render(
       <MeanderCard
+        activeKeys={[]}
         catalog={CATALOG}
         meander={MEANDER}
         repeats={6}
@@ -219,6 +223,7 @@ describe(MeanderCard, () => {
     stubClipboard(vi.fn<(text: string) => Promise<void>>(async () => {}));
     const { unmount } = render(
       <MeanderCard
+        activeKeys={[]}
         catalog={CATALOG}
         meander={MEANDER}
         repeats={6}

@@ -1,7 +1,7 @@
 import {
   countEntries,
   measureDepth,
-} from "../gallery-filter-builder/filter-limits.utilities";
+} from "../gallery-filters/components/filter-model/filter-limits.utilities";
 
 import {
   API_MAXIMUM_DEPTH,
@@ -12,7 +12,7 @@ import {
 import type {
   FilterGroup,
   FilterRule,
-} from "../gallery-filter-builder/gallery-filter-builder.types";
+} from "../gallery-filters/components/filter-model/filter-model.types";
 import type { GalleryCharacteristic } from "../meander-gallery/meanders-api.types";
 import type { GroupField } from "./gallery-group-by.types";
 
@@ -27,16 +27,22 @@ export function createGroupFields(
   characteristics: readonly GalleryCharacteristic[],
 ): GroupField[] {
   return [
-    ...SHAPE_GROUP_FIELDS.map(({ key, label }): GroupField => ({
+    ...SHAPE_GROUP_FIELDS.map(({ description, key, label }): GroupField => ({
+      category: "shape",
+      description,
       key,
       label,
-      type: key === "isHardcoded" ? "boolean" : "text",
+      type: "number",
     })),
-    ...characteristics.map(({ key, name, valueType }): GroupField => ({
-      key,
-      label: name,
-      type: valueType === "boolean" ? "boolean" : "number",
-    })),
+    ...characteristics.map(
+      ({ category, description, key, name, valueType }): GroupField => ({
+        category,
+        description,
+        key,
+        label: name,
+        type: valueType === "boolean" ? "boolean" : "number",
+      }),
+    ),
   ];
 }
 
@@ -48,11 +54,9 @@ export function fitsGrouping(
   filter: FilterGroup | undefined,
   grouping: readonly string[],
 ): boolean {
-  // The rows rule, then one rule for a level, two for rows × columns.
+  // The rows rule, then one rule for each level.
   const rule: FilterRule = { field: "rows", operator: "eq", value: 0 };
-  const keys = grouping.flatMap((key) =>
-    key === "rowsColumns" ? [rule, rule] : [rule],
-  );
+  const keys = grouping.map(() => rule);
   const wrapper: FilterGroup = {
     combinator: "and",
     rules: [rule, ...keys, ...(filter === undefined ? [] : [filter])],

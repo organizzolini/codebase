@@ -7,7 +7,7 @@ import {
   MeandersDocument,
 } from "../../../graphql/generated/operations";
 import { toSortInput } from "../../../hooks/use-gallery-search/use-gallery-search.utilities";
-import { toFilterInput } from "../gallery-filter-builder/gallery-filter-builder.utilities";
+import { toFilterInput } from "../gallery-filters/components/filter-model/filter-model.utilities";
 import { MAXIMUM_GROUP_LEVELS } from "../gallery-group-by/gallery-group-by.constants";
 import { fitsGrouping } from "../gallery-group-by/gallery-group-by.utilities";
 
@@ -26,7 +26,7 @@ import type { SortDirection } from "../../../hooks/use-gallery-search/use-galler
 import type {
   FilterGroup,
   RowsFilter,
-} from "../gallery-filter-builder/gallery-filter-builder.types";
+} from "../gallery-filters/components/filter-model/filter-model.types";
 import type {
   GalleryCharacteristic,
   GalleryGroup,
@@ -56,13 +56,14 @@ export async function findGallery(
     grouping: readonly string[];
     repeats: number;
     rows: RowsFilter;
+    size: number;
     sort: string | undefined;
   }>,
 ): Promise<{
   groups: GalleryGroup[] | undefined;
   page: MeandersPage | undefined;
 }> {
-  const { direction, filter, grouping, repeats, rows, sort } = request;
+  const { direction, filter, grouping, repeats, rows, size, sort } = request;
 
   if (grouping.length > 0) {
     if (!fitsGrouping(filter, grouping)) {
@@ -84,6 +85,7 @@ export async function findGallery(
     groups: undefined,
     page: await findMeanders({
       filter: toFilterInput(filter, rows),
+      first: size,
       repeats,
       sort: toSortInput(sort, direction),
     }),
@@ -110,11 +112,11 @@ export async function findMeanderGroups(
  * with its tile repeated as asked.
  */
 export async function findMeanders(
-  variables: Readonly<Omit<MeandersQueryVariables, "first">>,
+  variables: Readonly<MeandersQueryVariables>,
 ): Promise<MeandersPage> {
   const { meanders } = await queryApi(MeandersDocument, {
     ...variables,
-    first: GALLERY_PAGE_SIZE,
+    first: variables.first ?? GALLERY_PAGE_SIZE,
   });
 
   return meanders;

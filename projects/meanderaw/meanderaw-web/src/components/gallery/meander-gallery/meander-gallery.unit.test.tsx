@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import {
@@ -15,11 +15,11 @@ function properties(
   overrides: Partial<MeanderGalleryProperties> = {},
 ): MeanderGalleryProperties {
   return {
+    activeKeys: [],
     catalog: FIXTURE_CHARACTERISTICS,
-    hasMore: false,
     loadError: undefined,
     meanders: [fixtureMeander(0), fixtureMeander(1), fixtureMeander(2)],
-    onLoadMore: vi.fn<() => void>(),
+    onRetry: vi.fn<() => void>(),
     repeats: 12,
     view: "grid",
     ...overrides,
@@ -61,34 +61,18 @@ describe(MeanderGallery, () => {
     expect(screen.getByTestId("gallery-empty")).toBeDefined();
   });
 
-  it("asks for the next page when the end is in view, and not when there is none", () => {
-    const onLoadMore = vi.fn<() => void>();
-    const { unmount } = render(
-      <MeanderGallery {...properties({ hasMore: true, onLoadMore })} />,
-    );
-
-    expect(onLoadMore).toHaveBeenCalledWith();
-
-    unmount();
-    onLoadMore.mockClear();
-    render(<MeanderGallery {...properties({ onLoadMore })} />);
-
-    expect(onLoadMore).not.toHaveBeenCalled();
-  });
-
-  it("shows why a page failed instead of asking again, with a way to retry", () => {
-    const onLoadMore = vi.fn<() => void>();
+  it("shows why a page failed, with a way to read it again", () => {
+    const onRetry = vi.fn<() => void>();
     render(
       <MeanderGallery
-        {...properties({
-          hasMore: true,
-          loadError: new Error("boom"),
-          onLoadMore,
-        })}
+        {...properties({ loadError: new Error("boom"), onRetry })}
       />,
     );
 
-    expect(onLoadMore).not.toHaveBeenCalled();
     expect(screen.getByRole("alert").textContent).toMatch(/boom/u);
+
+    fireEvent.click(screen.getByRole("button", { name: "Try again" }));
+
+    expect(onRetry).toHaveBeenCalledExactlyOnceWith();
   });
 });

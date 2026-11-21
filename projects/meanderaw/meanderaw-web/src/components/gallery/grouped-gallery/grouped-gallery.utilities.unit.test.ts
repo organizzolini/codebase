@@ -4,11 +4,20 @@ import { buildGroupedItems } from "./grouped-gallery.utilities";
 
 import type { GroupField } from "../gallery-group-by/gallery-group-by.types";
 
+/** A field of a grouping, with the words a picker needs but a header does not. */
+function field(
+  key: string,
+  label: string,
+  type: GroupField["type"],
+): GroupField {
+  return { category: "test", description: label, key, label, type };
+}
+
 const FIELDS: GroupField[] = [
-  { key: "rowsColumns", label: "Rows × columns", type: "text" },
-  { key: "isHardcoded", label: "Hardcoded", type: "boolean" },
-  { key: "isChain", label: "Chain", type: "boolean" },
-  { key: "junctionCount", label: "Junction count", type: "number" },
+  field("rows", "Rows", "number"),
+  field("isHardcoded", "Hardcoded", "boolean"),
+  field("isChain", "Chain", "boolean"),
+  field("junctionCount", "Junction count", "number"),
 ];
 
 describe(buildGroupedItems, () => {
@@ -49,16 +58,16 @@ describe(buildGroupedItems, () => {
     ]);
   });
 
-  it("words the keys of the shape fields, and selects a leaf by every level and the filter", () => {
+  it("words the keys of a number and a flag, and selects a leaf by every level and the filter", () => {
     const pending = buildGroupedItems(
       [
         {
           count: 2,
-          field: "rowsColumns",
+          field: "rows",
           groups: [
             { count: 2, field: "isHardcoded", groups: [], value: "true" },
           ],
-          value: "3x4",
+          value: "3",
         },
       ],
       {
@@ -72,11 +81,11 @@ describe(buildGroupedItems, () => {
       },
     )[2];
     const headers = buildGroupedItems(
-      [{ count: 2, field: "rowsColumns", groups: [], value: "3x4" }],
+      [{ count: 2, field: "rows", groups: [], value: "3" }],
       { cards: {}, columns: 1, fields: FIELDS, filter: undefined },
     );
 
-    expect(headers[0]).toMatchObject({ label: "Rows × columns: 3 × 4" });
+    expect(headers[0]).toMatchObject({ label: "Rows: 3" });
     expect(pending).toMatchObject({
       kind: "pending",
       leaf: {
@@ -85,9 +94,43 @@ describe(buildGroupedItems, () => {
           groups: [{ combinator: "OR" }],
           rules: [
             { field: "rows", numbers: [3], operator: "EQ" },
-            { field: "columns", numbers: [4], operator: "EQ" },
             { field: "isHardcoded", flag: true, operator: "IS" },
           ],
+        },
+      },
+    });
+  });
+
+  it("names a header by the group's field when no field is called that", () => {
+    expect(
+      buildGroupedItems(
+        [{ count: 1, field: "mystery", groups: [], value: "2" }],
+        {
+          cards: {},
+          columns: 1,
+          fields: FIELDS,
+          filter: undefined,
+        },
+      )[0],
+    ).toMatchObject({ label: "mystery: 2" });
+  });
+
+  it("splices an AND filter that holds no rules into the leaf's own", () => {
+    const leaf = buildGroupedItems(
+      [{ count: 1, field: "isHardcoded", groups: [], value: "true" }],
+      {
+        cards: {},
+        columns: 1,
+        fields: FIELDS,
+        filter: { combinator: "AND", groups: [] },
+      },
+    ).at(1);
+
+    expect(leaf).toMatchObject({
+      leaf: {
+        filter: {
+          combinator: "AND",
+          rules: [{ field: "isHardcoded", flag: true, operator: "IS" }],
         },
       },
     });
@@ -149,7 +192,7 @@ describe(buildGroupedItems, () => {
       "cards",
       "cards",
     ]);
-    expect(reading[0]).toMatchObject({ label: "Hardcoded: No" });
+    expect(reading[0]).toMatchObject({ label: "Hardcoded: Not held" });
   });
 
   it("splices an AND filter into the leaf's own rules, and nests any other whole", () => {

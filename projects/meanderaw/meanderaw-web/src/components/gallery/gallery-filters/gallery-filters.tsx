@@ -1,88 +1,63 @@
-import { useState } from "react";
+import { useMemo } from "react";
 
-import { countEntries } from "../gallery-filter-builder/filter-limits.utilities";
-import { GalleryFilterBuilder } from "../gallery-filter-builder/gallery-filter-builder";
+import { ButtonGroup, Filters, FiltersBuilder } from "@codebase/presentation";
+
+import { useFilterQuery } from "../../../hooks/use-filter-query/use-filter-query";
+
+import { FilterChipRow } from "./components/filter-chip-row/filter-chip-row";
+import { createFilterQueryFields } from "./components/filter-query/filter-fields.utilities";
 import {
-  DEFAULT_ROWS_FILTER,
-  EMPTY_FILTER_GROUP,
-  filterCombinatorSchema,
-  MAXIMUM_FILTER_ENTRIES,
-} from "../gallery-filter-builder/gallery-filter-builder.constants";
-import {
-  addNode,
-  countRules,
-  setCombinator,
-} from "../gallery-filter-builder/gallery-filter-builder.utilities";
+  countActiveRules,
+  isQueryAllowed,
+} from "./components/filter-query/filter-query.utilities";
+import { FILTERS_TITLE, STRIP_CLASS_NAME } from "./gallery-filters.constants";
+import { renderFiltersButton } from "./gallery-filters.utilities";
 
-import { FilterPillRow } from "./components/filter-pill-row/filter-pill-row";
-import { FilterSurface } from "./components/filter-surface/filter-surface";
-
+import type { FilterField } from "./components/filter-model/filter-model.types";
 import type {
-  FilterEdit,
-  FilterField,
-  FilterGroup,
-  FilterRule,
-  RowsFilter,
-} from "../gallery-filter-builder/gallery-filter-builder.types";
+  FilterLink,
+  GalleryFilterQuery,
+  GalleryFilterValue,
+} from "./components/filter-query/filter-query.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The attributes, tree, rows rule, and edits.
+ * The fields, the link, and its change handler.
  */
 export interface GalleryFiltersProperties {
   className?: string;
   fields: readonly FilterField[];
-  filter: FilterGroup | undefined;
-  /** Called to reset the tree to none and the rows rule to its default. */
-  onClear: () => void;
-  /** Called with the whole tree after every edit, none once it is empty. */
-  onFilterChange: (filter?: FilterGroup) => void;
-  /** Called with the rows rule after every edit of it. */
-  onRowsChange: (rows: RowsFilter) => void;
-  /** The rows rule every filter holds, which cannot be removed. */
-  rows: RowsFilter;
+  link: FilterLink;
+  /** Called with what the link holds, whenever an edit changes it. */
+  onLinkChange: (link: FilterLink) => void;
 }
 
 // 🧩 Component
 
 /**
- * Renders the Filter button and popup, a Match select, Clear, and a pill for each filter.
+ * Renders one button group: the Filter button, whose popover picks an attribute, and a chip for each rule, edited in its own popover.
  */
 export function GalleryFilters(
   properties: Readonly<GalleryFiltersProperties>,
 ): ReactNode {
-  const {
-    className,
-    fields,
-    filter,
-    onClear,
-    onFilterChange,
-    onRowsChange,
-    rows,
-  } = properties;
+  const { className, fields, link, onLinkChange } = properties;
 
   // 🪝 Hooks
-  const [isOpen, setIsOpen] = useState(false);
+  const { handleQueryChange, query } = useFilterQuery(
+    link,
+    fields,
+    onLinkChange,
+  );
+  const queryFields = useMemo(() => createFilterQueryFields(fields), [fields]);
 
   // 🏗 Setup
-  const root = filter ?? EMPTY_FILTER_GROUP;
-  const activeCount = countRules(root);
-  const isDefault =
-    activeCount === 0 &&
-    JSON.stringify(rows) === JSON.stringify(DEFAULT_ROWS_FILTER);
+  const activeCount = countActiveRules(query, fields);
 
   // 💪 Handlers
-  const handleEdit = (edit: FilterEdit): void => {
-    const next = edit(root);
-
-    onFilterChange(next.rules.length === 0 ? undefined : next);
-  };
-  const handleAdd = (rule: FilterRule): void => {
-    handleEdit(addNode([], rule));
-    setIsOpen(false);
-  };
+  const handleBeforeChange = (next: GalleryFilterQuery): boolean =>
+    isQueryAllowed(next, fields);
 
   // ♻️ Lifecycle
 
@@ -94,55 +69,21 @@ export function GalleryFilters(
       className={className}
       data-testid="gallery-filters"
     >
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-wrap items-center gap-2">
-          <FilterSurface
-            activeCount={activeCount}
-            isOpen={isOpen}
-            onOpenChange={setIsOpen}
-          >
-            <GalleryFilterBuilder
-              fields={fields}
-              isFull={countEntries(root) >= MAXIMUM_FILTER_ENTRIES}
-              onAdd={handleAdd}
-            />
-          </FilterSurface>
-          {root.rules.length > 1 && (
-            <select
-              aria-label="Match"
-              className="rounded-md border border-(--line) bg-(--surface-raised) px-2 py-1 text-sm"
-              onChange={(event) => {
-                handleEdit(
-                  setCombinator(
-                    [],
-                    filterCombinatorSchema.parse(event.target.value),
-                  ),
-                );
-              }}
-              title="Rows always applies, whichever you pick"
-              value={root.combinator}
-            >
-              <option value="and">Match all</option>
-              <option value="or">Match any</option>
-            </select>
-          )}
-          <button
-            className="rounded-md border border-(--line) px-3 py-1 text-sm disabled:opacity-50"
-            disabled={isDefault}
-            onClick={onClear}
-            type="button"
-          >
-            Clear
-          </button>
-        </div>
-        <FilterPillRow
-          fields={fields}
-          filter={filter}
-          onEdit={handleEdit}
-          onRowsChange={onRowsChange}
-          rows={rows}
-        />
-      </div>
+      <Filters<GalleryFilterValue>
+        fields={queryFields}
+        onBeforeQueryChange={handleBeforeChange}
+        onQueryChange={handleQueryChange}
+        query={query}
+        size="sm"
+      >
+        <ButtonGroup
+          aria-label={FILTERS_TITLE}
+          className={STRIP_CLASS_NAME}
+        >
+          <FiltersBuilder trigger={renderFiltersButton(activeCount)} />
+          <FilterChipRow />
+        </ButtonGroup>
+      </Filters>
     </div>
   );
 }

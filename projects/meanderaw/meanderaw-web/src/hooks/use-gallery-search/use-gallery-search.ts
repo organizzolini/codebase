@@ -2,16 +2,14 @@ import { useNavigate, useSearch } from "@tanstack/react-router";
 
 import {
   DEFAULT_GALLERY_VIEW,
+  DEFAULT_PAGE_SIZE,
   DEFAULT_REPEATS,
   DEFAULT_SORT_DIRECTION,
 } from "./use-gallery-search.constants";
 
+import type { FilterLink } from "../../components/gallery/gallery-filters/components/filter-query/filter-query.types";
+import type { ViewState } from "../../components/gallery/gallery-view/gallery-view.types";
 import type {
-  FilterGroup,
-  RowsFilter,
-} from "../../components/gallery/gallery-filter-builder/gallery-filter-builder.types";
-import type {
-  GalleryView,
   SortDirection,
   UseGallerySearchResult,
 } from "./use-gallery-search.types";
@@ -31,16 +29,20 @@ export function useGallerySearch(): UseGallerySearchResult {
   const view = search.view ?? DEFAULT_GALLERY_VIEW;
   const direction = search.direction ?? DEFAULT_SORT_DIRECTION;
   const repeats = search.repeats ?? DEFAULT_REPEATS;
+  const size = search.size ?? DEFAULT_PAGE_SIZE;
 
   // 💪 Handlers
-  // The tree and the rows rule change together, in one navigation.
-  const handleFilterChange = (
-    filter: FilterGroup | undefined,
-    rows: RowsFilter,
-  ): void => {
+  // The tree, the rows rule and the repeats change together, in one
+  // navigation.
+  const handleFilterChange = (link: FilterLink): void => {
     void navigate({
       replace: true,
-      search: (previous) => ({ ...previous, filter, rows }),
+      search: (previous) => ({
+        ...previous,
+        filter: link.filter,
+        repeats: link.repeats,
+        rows: link.rows,
+      }),
     });
   };
   // No levels drops the parameter, so a flat gallery has a clean link.
@@ -53,16 +55,32 @@ export function useGallerySearch(): UseGallerySearchResult {
       }),
     });
   };
-  const handleViewChange = (next: GalleryView): void => {
+  // Applies the parts a named view fixes, in one navigation.
+  const handleViewApply = (state: Partial<ViewState>): void => {
     void navigate({
       replace: true,
-      search: (previous) => ({ ...previous, view: next }),
+      search: (previous) => ({
+        ...previous,
+        ...(state.view !== undefined && { view: state.view }),
+        ...(state.link !== undefined && {
+          filter: state.link.filter,
+          repeats: state.link.repeats,
+          rows: state.link.rows,
+        }),
+        ...(state.group !== undefined && {
+          group: state.group.length === 0 ? undefined : [...state.group],
+        }),
+        ...("sort" in state && {
+          direction: state.sort === undefined ? undefined : state.direction,
+          sort: state.sort,
+        }),
+      }),
     });
   };
-  const handleRepeatsChange = (next: number): void => {
+  const handleSizeChange = (next: number): void => {
     void navigate({
       replace: true,
-      search: (previous) => ({ ...previous, repeats: next }),
+      search: (previous) => ({ ...previous, size: next }),
     });
   };
   // Choosing no field drops both parameters: a direction means nothing alone.
@@ -88,10 +106,11 @@ export function useGallerySearch(): UseGallerySearchResult {
     group: search.group ?? [],
     handleFilterChange,
     handleGroupChange,
-    handleRepeatsChange,
+    handleSizeChange,
     handleSortChange,
-    handleViewChange,
+    handleViewApply,
     repeats,
+    size,
     sort: search.sort,
     view,
   };

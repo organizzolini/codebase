@@ -1,11 +1,18 @@
 query Meanders(
   $first: Int
   $after: String
+  $offset: Int
   $sort: MeanderSortInput
   $filter: MeanderFilterGroupInput
   $repeats: Int
 ) {
-  meanders(first: $first, after: $after, sort: $sort, filter: $filter) {
+  meanders(
+    first: $first
+    after: $after
+    offset: $offset
+    sort: $sort
+    filter: $filter
+  ) {
     totalCount
     pageInfo {
       endCursor

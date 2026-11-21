@@ -146,9 +146,9 @@ export function serveMeandersApi(
         }
 
         const start =
-          variables.after === null || variables.after === undefined
+          (variables.after === null || variables.after === undefined
             ? 0
-            : Number(variables.after) + 1;
+            : Number(variables.after) + 1) + (variables.offset ?? 0);
         const positions = sortedPositions(count, variables.sort).filter(
           (position) =>
             variables.filter === null ||

@@ -1,17 +1,29 @@
-import { groupCharacteristics } from "./meander-characteristics.utilities";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@codebase/presentation";
+
+import {
+  listCharacteristics,
+  splitPills,
+} from "./meander-characteristics.utilities";
 
 import type {
   GalleryCharacteristic,
   GalleryMeander,
 } from "../../gallery/meander-gallery/meanders-api.types";
+import type { CharacteristicPill } from "./meander-characteristics.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The characteristics a meander holds, and the catalog that categorizes them.
+ * The held characteristics, the catalog, and the active keys.
  */
 export interface MeanderCharacteristicsProperties {
+  /** Characteristics the page is grouped, sorted or filtered by: always shown. */
+  activeKeys: readonly string[];
   catalog: readonly GalleryCharacteristic[];
   characteristics: GalleryMeander["characteristics"];
   className?: string;
@@ -20,24 +32,35 @@ export interface MeanderCharacteristicsProperties {
 // 🧩 Component
 
 /**
- * Renders the characteristics a meander holds as pills, in a labelled group
- * for the patterns and one for each catalog category.
+ * Renders characteristics as pills, active ones first and always shown, at most four otherwise, the rest under a +N tooltip.
  */
 export function MeanderCharacteristics(
   properties: Readonly<MeanderCharacteristicsProperties>,
 ): ReactNode {
-  const { catalog, characteristics, className } = properties;
+  const { activeKeys, catalog, characteristics, className } = properties;
 
   // 🪝 Hooks
 
   // 🏗 Setup
-  const groups = groupCharacteristics(characteristics, catalog);
+  const { hidden, shown } = splitPills(
+    listCharacteristics(characteristics, catalog, activeKeys),
+    activeKeys,
+  );
 
   // 💪 Handlers
+  const describePill = ({
+    isNumeric,
+    name,
+    value,
+  }: CharacteristicPill): string =>
+    isNumeric ? `${name} ${String(value)}` : name;
 
   // ♻️ Lifecycle
 
   // 🏁 Early Returns
+  if (shown.length === 0) {
+    return null;
+  }
 
   // 🎨 Markup
   return (
@@ -45,33 +68,47 @@ export function MeanderCharacteristics(
       className={className}
       data-testid="meander-characteristics"
     >
-      {groups.map(({ label, pills }) => (
-        <div
-          key={label}
-          aria-label={label}
-          className="mt-2 first:mt-0"
-          role="group"
-        >
-          <h4 className="text-xs text-(--ink-muted)">{label}</h4>
-          <ul className="mt-1 flex flex-wrap gap-1">
-            {pills.map(({ description, isNumeric, key, name, value }) => (
-              <li
-                key={key}
-                className="rounded-full border border-(--line) px-2 py-0.5 text-xs"
-                title={description}
+      <ul className="flex flex-wrap gap-1">
+        {shown.map(({ description, isNumeric, key, name, value }) => (
+          <li
+            key={key}
+            className="rounded-full border border-(--line) px-2 py-0.5 text-xs"
+            title={description}
+          >
+            <span className="text-(--ink-muted)">{name}</span>
+            {isNumeric ? (
+              <>
+                {" "}
+                <strong>{value}</strong>
+              </>
+            ) : null}
+          </li>
+        ))}
+        {hidden.length === 0 ? null : (
+          <li>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <button
+                    aria-label={`${String(hidden.length)} more characteristics`}
+                    className="rounded-full border border-(--line) px-2 py-0.5 text-xs text-(--ink-muted)"
+                    type="button"
+                  />
+                }
               >
-                <span className="text-(--ink-muted)">{name}</span>
-                {isNumeric ? (
-                  <>
-                    {" "}
-                    <strong>{value}</strong>
-                  </>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+                +{hidden.length}
+              </TooltipTrigger>
+              <TooltipContent>
+                <ul data-testid="hidden-characteristics">
+                  {hidden.map((pill) => (
+                    <li key={pill.key}>{describePill(pill)}</li>
+                  ))}
+                </ul>
+              </TooltipContent>
+            </Tooltip>
+          </li>
+        )}
+      </ul>
     </div>
   );
 }

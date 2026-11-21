@@ -6,12 +6,24 @@
 export const MAXIMUM_GROUP_LEVELS = 4;
 
 /**
- * The shape fields a grouping may name, each with a label.
+ * The title of the group surface and the Group button.
+ */
+export const GROUP_TITLE = "Group";
+
+/**
+ * The shape fields a grouping may name, each with what it holds.
  */
 export const SHAPE_GROUP_FIELDS = [
-  { key: "rowsColumns", label: "Rows × columns" },
-  { key: "lattice", label: "Lattice" },
-  { key: "isHardcoded", label: "Hardcoded" },
+  {
+    description: "How many rows the meander has",
+    key: "rows",
+    label: "Rows",
+  },
+  {
+    description: "How many columns the meander has",
+    key: "columns",
+    label: "Columns",
+  },
 ] as const;
 
 /**

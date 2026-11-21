@@ -26,6 +26,9 @@ export const svgRepeatsSchema = z
 /** The most meanders one page may hold. */
 export const MAXIMUM_PAGE_SIZE = 200;
 
+/** The most meanders one query may skip. */
+export const MAXIMUM_OFFSET = 2_000_000_000;
+
 /** The shape fields a sort may name besides a characteristic key. */
 export const SHAPE_SORT_FIELDS = [
   "code",
@@ -60,6 +63,7 @@ export const meandersArgumentsSchema = z.object({
     .min(1)
     .max(MAXIMUM_PAGE_SIZE)
     .default(DEFAULT_PAGE_SIZE),
+  offset: z.number().int().min(0).max(MAXIMUM_OFFSET).default(0),
   sort: z
     .object({
       direction: z.enum(SortDirection),

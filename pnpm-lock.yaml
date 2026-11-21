@@ -4863,6 +4863,9 @@ importers:
 
   projects/meanderaw/meanderaw-web:
     dependencies:
+      '@codebase/presentation':
+        specifier: workspace:*
+        version: link:../../common/presentation
       '@graphql-codegen/cli':
         specifier: 'catalog:'
         version: 8.0.0(@types/node@26.6.2)(graphql@17.1.0)(typescript@6.0.3)
@@ -4881,6 +4884,9 @@ importers:
       graphql:
         specifier: 'catalog:'
         version: 17.1.0
+      lucide-react:
+        specifier: 'catalog:'
+        version: 1.48.0(react@19.3.0)
       react:
         specifier: 'catalog:'
         version: 19.3.0

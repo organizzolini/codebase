@@ -175,6 +175,33 @@ describe(MeanderAggregateService, () => {
     await expect(total(MeanderFilterOperator.NE, [1])).resolves.toBe(7);
   });
 
+  it("counts meanders by each shape field from the shape rows", async () => {
+    expect.hasAssertions();
+
+    const { service } = await buildService(built());
+
+    await expect(service.shapeCounts(null, "rows")).resolves.toStrictEqual(
+      new Map([
+        ["1", 4],
+        ["2", 6],
+      ]),
+    );
+    await expect(service.shapeCounts(null, "columns")).resolves.toStrictEqual(
+      new Map([
+        ["1", 4],
+        ["2", 6],
+      ]),
+    );
+    await expect(
+      service.shapeCounts(null, "rowsColumns"),
+    ).resolves.toStrictEqual(
+      new Map([
+        ["1x1", 4],
+        ["2x2", 6],
+      ]),
+    );
+  });
+
   it("refuses a total when the rows exceed the shapes", async () => {
     expect.hasAssertions();
 

@@ -15,9 +15,18 @@ function properties(
   overrides: Partial<GroupedGalleryProperties> = {},
 ): GroupedGalleryProperties {
   return {
+    activeKeys: [],
     catalog: FIXTURE_CHARACTERISTICS,
-    fields: [{ key: "lattice", label: "Lattice", type: "text" }],
-    groups: [{ count: 1, field: "lattice", groups: [], value: "0" }],
+    fields: [
+      {
+        category: "shape",
+        description: "How many columns the meander has",
+        key: "columns",
+        label: "Columns",
+        type: "number",
+      },
+    ],
+    groups: [{ count: 1, field: "columns", groups: [], value: "1" }],
     query: { filter: undefined, repeats: 12, sort: undefined },
     view: "grid",
     ...overrides,

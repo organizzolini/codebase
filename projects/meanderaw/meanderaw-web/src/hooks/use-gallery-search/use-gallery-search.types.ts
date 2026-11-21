@@ -1,7 +1,5 @@
-import type {
-  FilterGroup,
-  RowsFilter,
-} from "../../components/gallery/gallery-filter-builder/gallery-filter-builder.types";
+import type { FilterLink } from "../../components/gallery/gallery-filters/components/filter-query/filter-query.types";
+import type { ViewState } from "../../components/gallery/gallery-view/gallery-view.types";
 import type {
   GALLERY_VIEWS,
   SORT_DIRECTIONS,
@@ -27,19 +25,18 @@ export interface UseGallerySearchResult {
   direction: SortDirection;
   /** The fields the cards are grouped by, outermost first; none when flat. */
   group: string[];
-  handleFilterChange: (
-    filter: FilterGroup | undefined,
-    rows: RowsFilter,
-  ) => void;
+  handleFilterChange: (link: FilterLink) => void;
   handleGroupChange: (group: string[]) => void;
-  handleRepeatsChange: (repeats: number) => void;
+  handleSizeChange: (size: number) => void;
   handleSortChange: (
     sort: string | undefined,
     direction: SortDirection,
   ) => void;
-  handleViewChange: (view: GalleryView) => void;
+  handleViewApply: (state: Partial<ViewState>) => void;
   /** How many times each drawing repeats its tile. */
   repeats: number;
+  /** How many cards a page of a flat gallery holds. */
+  size: number;
   /** The field the cards are sorted by, or none for the API's own order. */
   sort: string | undefined;
   view: GalleryView;

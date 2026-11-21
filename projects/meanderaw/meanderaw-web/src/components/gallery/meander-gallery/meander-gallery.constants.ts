@@ -19,8 +19,3 @@ export const ROW_ESTIMATES = { grid: 480, list: 520 } as const;
  * Rows kept mounted past the visible ones, each side.
  */
 export const OVERSCAN_ROWS = 2;
-
-/**
- * How near the end, in rows, the next page is asked for.
- */
-export const LOAD_AHEAD_ROWS = 3;

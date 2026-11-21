@@ -1,7 +1,14 @@
-import {
-  DEFAULT_ORDER_LABEL,
-  SHAPE_SORT_FIELDS,
-} from "./gallery-sort.constants";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
+import { useMemo } from "react";
+
+import { Button, ButtonGroup } from "@codebase/presentation";
+
+import { GalleryCascader } from "../gallery-cascader/gallery-cascader";
+import { createFieldNodes } from "../gallery-cascader/gallery-cascader.utilities";
+import { GallerySurface } from "../gallery-surface/gallery-surface";
+
+import { DEFAULT_ORDER_LABEL } from "./gallery-sort.constants";
+import { createSortFields } from "./gallery-sort.utilities";
 
 import type { SortDirection } from "../../../hooks/use-gallery-search/use-gallery-search.types";
 import type { GalleryCharacteristic } from "../meander-gallery/meanders-api.types";
@@ -25,8 +32,7 @@ export interface GallerySortProperties {
 // 🧩 Component
 
 /**
- * Renders the sort control: a field picker over the shape fields and the
- * catalog, and a button that flips the direction.
+ * Renders the Sort button, whose cascader picks the field, and the field with an arrow that flips the direction.
  */
 export function GallerySort(
   properties: Readonly<GallerySortProperties>,
@@ -35,15 +41,19 @@ export function GallerySort(
     properties;
 
   // 🪝 Hooks
+  const fields = useMemo(
+    () => createSortFields(characteristics),
+    [characteristics],
+  );
+  const items = useMemo(() => createFieldNodes(fields), [fields]);
 
   // 🏗 Setup
+  const current = fields.find(({ key }) => key === field);
 
   // 💪 Handlers
-  const handleFieldChange = (value: string): void => {
-    onSortChange(value === "" ? undefined : value, direction);
-  };
-  const handleDirectionToggle = (): void => {
-    onSortChange(field, direction === "asc" ? "desc" : "asc");
+  // Ticking the field sorted by clears it: the default order again.
+  const handleToggle = (key: string): void => {
+    onSortChange(key === field ? undefined : key, direction);
   };
 
   // ♻️ Lifecycle
@@ -56,51 +66,47 @@ export function GallerySort(
       className={className}
       data-testid="gallery-sort"
     >
-      <div className="flex items-center gap-2 text-sm">
-        <label className="flex items-center gap-2">
-          Sort by
-          <select
-            className="rounded-md border border-(--line) bg-(--surface-raised) px-2 py-1"
-            onChange={(event) => {
-              handleFieldChange(event.target.value);
-            }}
-            value={field ?? ""}
-          >
-            <option value="">{DEFAULT_ORDER_LABEL}</option>
-            <optgroup label="Shape">
-              {SHAPE_SORT_FIELDS.map(({ key, label }) => (
-                <option
-                  key={key}
-                  value={key}
-                >
-                  {label}
-                </option>
-              ))}
-            </optgroup>
-            <optgroup label="Characteristics">
-              {characteristics.map(({ key, name }) => (
-                <option
-                  key={key}
-                  value={key}
-                >
-                  {name}
-                </option>
-              ))}
-            </optgroup>
-          </select>
-        </label>
-        <button
+      <ButtonGroup aria-label="Sort">
+        <GallerySurface
+          contentClassName="w-80 p-1"
+          title="Sort"
+          trigger={
+            <Button
+              className="in-data-[slot=button-group]:rounded-r-none"
+              size="sm"
+              variant="outline"
+            >
+              <ArrowUpDown aria-hidden="true" />
+              Sort
+            </Button>
+          }
+        >
+          <GalleryCascader
+            checked={field === undefined ? [] : [field]}
+            items={items}
+            label="Sort by"
+            onToggle={handleToggle}
+          />
+        </GallerySurface>
+        <Button
           aria-label={
             direction === "asc" ? "Sort descending" : "Sort ascending"
           }
-          className="rounded-md border border-(--line) px-3 py-1 disabled:opacity-50"
           disabled={field === undefined}
-          onClick={handleDirectionToggle}
-          type="button"
+          onClick={() => {
+            onSortChange(field, direction === "asc" ? "desc" : "asc");
+          }}
+          size="sm"
+          variant="outline"
         >
-          {direction === "asc" ? "Ascending" : "Descending"}
-        </button>
-      </div>
+          {current?.label ?? DEFAULT_ORDER_LABEL}
+          {direction === "asc" ? (
+            <ArrowUp aria-hidden="true" />
+          ) : (
+            <ArrowDown aria-hidden="true" />
+          )}
+        </Button>
+      </ButtonGroup>
     </div>
   );
 }

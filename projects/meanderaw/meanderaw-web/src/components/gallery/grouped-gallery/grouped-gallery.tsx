@@ -32,6 +32,8 @@ import type { ReactNode } from "react";
  * The groups with their counts, what selects their cards, and the view.
  */
 export interface GroupedGalleryProperties {
+  /** Characteristics the page is grouped, sorted or filtered by. */
+  activeKeys: readonly string[];
   /** The catalog, which groups each card's pills. */
   catalog: readonly GalleryCharacteristic[];
   className?: string;
@@ -55,7 +57,8 @@ export interface GroupedGalleryProperties {
 export function GroupedGallery(
   properties: Readonly<GroupedGalleryProperties>,
 ): ReactNode {
-  const { catalog, className, fields, groups, query, view } = properties;
+  const { activeKeys, catalog, className, fields, groups, query, view } =
+    properties;
 
   // 🪝 Hooks
   const { setElement, top, width } = useElementBox();
@@ -143,6 +146,7 @@ export function GroupedGallery(
               style={{ top: row.start - top }}
             >
               <GroupedItem
+                activeKeys={activeKeys}
                 catalog={catalog}
                 columns={columns}
                 item={item}

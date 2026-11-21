@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { FIXTURE_CHARACTERISTICS } from "../../../../testing/meanders-api";
@@ -8,7 +8,13 @@ import { createGroupFields } from "./gallery-group-by.utilities";
 
 import type { GalleryGroupByProperties } from "./gallery-group-by";
 
-/** The properties a builder needs, over the fixture catalog. */
+/** Opens the Group surface. */
+async function openGroup(): Promise<void> {
+  fireEvent.click(screen.getByRole("button", { name: "Group" }));
+  await screen.findByRole("dialog", { name: "Group" });
+}
+
+/** The properties the control needs, over the fixture catalog. */
 function properties(
   overrides: Partial<GalleryGroupByProperties> = {},
 ): GalleryGroupByProperties {
@@ -34,61 +40,80 @@ describe(GalleryGroupBy, () => {
     );
   });
 
-  it("says it is not grouped, and adds the first unused field", () => {
-    const onGroupingChange =
-      vi.fn<GalleryGroupByProperties["onGroupingChange"]>();
-    render(<GalleryGroupBy {...properties({ onGroupingChange })} />);
-
-    expect(screen.getByText("Not grouped")).toBeDefined();
-
-    fireEvent.click(screen.getByRole("button", { name: "Group cards" }));
-
-    expect(onGroupingChange).toHaveBeenCalledWith(["rowsColumns"]);
-  });
-
-  it("changes and removes a level, offering only unused fields", () => {
-    const onGroupingChange =
-      vi.fn<GalleryGroupByProperties["onGroupingChange"]>();
+  it("shows a button for each level beside Group, in order, labelled by its field", () => {
     render(
-      <GalleryGroupBy
-        {...properties({
-          grouping: ["rowsColumns", "isChain"],
-          onGroupingChange,
-        })}
-      />,
+      <GalleryGroupBy {...properties({ grouping: ["rows", "isChain"] })} />,
     );
 
     expect(
-      within(screen.getByLabelText("Group 1 by"))
-        .getAllByRole("option")
-        .map((option) => option.textContent),
-    ).toStrictEqual([
-      "Rows × columns",
-      "Lattice",
-      "Hardcoded",
-      "Junction count",
-    ]);
-
-    fireEvent.change(screen.getByLabelText("Group 1 by"), {
-      target: { value: "lattice" },
-    });
-
-    expect(onGroupingChange).toHaveBeenLastCalledWith(["lattice", "isChain"]);
-
-    fireEvent.click(screen.getByRole("button", { name: "Remove group 2" }));
-
-    expect(onGroupingChange).toHaveBeenLastCalledWith(["rowsColumns"]);
+      screen
+        .getAllByRole("button")
+        .map(
+          (button) => button.getAttribute("aria-label") ?? button.textContent,
+        ),
+    ).toStrictEqual(["Group", "Grouped by Rows", "Grouped by Chain"]);
   });
 
-  it("offers no more levels at the most", () => {
+  it("labels a level by its key when no field is called that", () => {
+    render(<GalleryGroupBy {...properties({ grouping: ["mystery"] })} />);
+
+    expect(
+      screen.getByRole("button", { name: "Grouped by mystery" }).textContent,
+    ).toBe("mystery");
+  });
+
+  it("removes a level with its button", () => {
+    const onGroupingChange =
+      vi.fn<GalleryGroupByProperties["onGroupingChange"]>();
+
     render(
       <GalleryGroupBy
-        {...properties({
-          grouping: ["rowsColumns", "lattice", "isHardcoded", "isChain"],
-        })}
+        {...properties({ grouping: ["rows", "isChain"], onGroupingChange })}
       />,
     );
+    fireEvent.click(screen.getByRole("button", { name: "Grouped by Rows" }));
 
-    expect(screen.queryByRole("button", { name: /Add/u })).toBeNull();
+    expect(onGroupingChange).toHaveBeenCalledExactlyOnceWith(["isChain"]);
+  });
+
+  it("opens a cascader of the fields, categories first with shape leading, behind a Group by search", async () => {
+    render(<GalleryGroupBy {...properties()} />);
+    await openGroup();
+
+    expect(screen.getByPlaceholderText("Group by")).toBeDefined();
+    expect(
+      screen.getAllByRole("option").map((option) => option.textContent),
+    ).toStrictEqual([
+      expect.stringContaining("Shape"),
+      expect.stringContaining("Path"),
+      expect.stringContaining("Submatrix"),
+    ]);
+  });
+
+  it("ticks a field into a level at the end, and clears it out", async () => {
+    const onGroupingChange =
+      vi.fn<GalleryGroupByProperties["onGroupingChange"]>();
+    const { rerender } = render(
+      <GalleryGroupBy {...properties({ onGroupingChange })} />,
+    );
+
+    await openGroup();
+    fireEvent.click(screen.getByRole("option", { name: /Shape/u }));
+    fireEvent.click(screen.getByRole("option", { name: /Rows/u }));
+
+    expect(onGroupingChange).toHaveBeenLastCalledWith(["rows"]);
+
+    rerender(
+      <GalleryGroupBy
+        {...properties({ grouping: ["rows"], onGroupingChange })}
+      />,
+    );
+    fireEvent.click(screen.getByRole("option", { name: /Columns/u }));
+
+    expect(onGroupingChange).toHaveBeenLastCalledWith(["rows", "columns"]);
+
+    fireEvent.click(screen.getByRole("option", { name: /Rows/u }));
+
+    expect(onGroupingChange).toHaveBeenLastCalledWith([]);
   });
 });

@@ -231,8 +231,7 @@ export class MeandersService {
   }
 
   /**
-   * One page after a cursor, in the sort's order then id order. A missing
-   * characteristic value sorts as 0. The total is exact.
+   * One page after a cursor, then past an offset, sorted by the sort, then id; the total is exact.
    */
   async find(arguments_: MeandersArguments): Promise<MeanderConnection> {
     const parsed = meandersArgumentsSchema.safeParse(arguments_);
@@ -241,7 +240,7 @@ export class MeandersService {
       throw new BadRequestException(parsed.error.message);
     }
 
-    const { after, first, sort } = parsed.data;
+    const { after, first, offset, sort } = parsed.data;
     const filter =
       arguments_.filter === null || arguments_.filter === undefined
         ? null
@@ -260,6 +259,7 @@ export class MeandersService {
       filter,
       target,
     })
+      .offset(offset)
       .limit(first + 1)
       .getRawAndEntities<{ sort_value: SortValue }>();
 
@@ -286,7 +286,7 @@ export class MeandersService {
         ),
       ),
       hasNextPage: entities.length > first,
-      hasPreviousPage: after !== null && after !== undefined,
+      hasPreviousPage: (after !== null && after !== undefined) || offset > 0,
       totalCount: await this.count(filter),
     });
   }

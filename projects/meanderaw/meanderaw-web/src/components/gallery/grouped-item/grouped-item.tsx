@@ -16,6 +16,8 @@ import type { ReactNode } from "react";
  * The row, the catalog, its columns, repeats, and a retry.
  */
 export interface GroupedItemProperties {
+  /** Characteristics the page is grouped, sorted or filtered by. */
+  activeKeys: readonly string[];
   catalog: readonly GalleryCharacteristic[];
   className?: string;
   columns: number;
@@ -32,7 +34,8 @@ export interface GroupedItemProperties {
 export function GroupedItem(
   properties: Readonly<GroupedItemProperties>,
 ): ReactNode {
-  const { catalog, className, columns, item, onRetry, repeats } = properties;
+  const { activeKeys, catalog, className, columns, item, onRetry, repeats } =
+    properties;
 
   // 🪝 Hooks
 
@@ -79,6 +82,7 @@ export function GroupedItem(
           {item.meanders.map((meander) => (
             <MeanderCard
               key={meander.id}
+              activeKeys={activeKeys}
               catalog={catalog}
               meander={meander}
               repeats={repeats}

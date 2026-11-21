@@ -15,6 +15,7 @@ function properties(
   overrides: Partial<GroupedItemProperties> = {},
 ): GroupedItemProperties {
   return {
+    activeKeys: [],
     catalog: FIXTURE_CHARACTERISTICS,
     columns: 2,
     item: {

@@ -6,32 +6,34 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, useMemo } from "react";
 
+import { MeanderawLogo } from "../components/brand/meanderaw-logo/meanderaw-logo";
 import { GalleryError } from "../components/gallery/gallery-error/gallery-error";
-import { sanitizeRows } from "../components/gallery/gallery-filter-builder/filter-rows.utilities";
-import { DEFAULT_ROWS_FILTER } from "../components/gallery/gallery-filter-builder/gallery-filter-builder.constants";
 import {
   createFilterFields,
   sanitizeFilter,
   toFilterInput,
-} from "../components/gallery/gallery-filter-builder/gallery-filter-builder.utilities";
+} from "../components/gallery/gallery-filters/components/filter-model/filter-model.utilities";
+import { sanitizeRows } from "../components/gallery/gallery-filters/components/filter-model/filter-rows.utilities";
 import { GalleryFilters } from "../components/gallery/gallery-filters/gallery-filters";
 import { GalleryGroupBy } from "../components/gallery/gallery-group-by/gallery-group-by";
 import {
   createGroupFields,
   resolveGrouping,
 } from "../components/gallery/gallery-group-by/gallery-group-by.utilities";
-import { GalleryRepeats } from "../components/gallery/gallery-repeats/gallery-repeats";
+import { GalleryPager } from "../components/gallery/gallery-pager/gallery-pager";
 import { GallerySort } from "../components/gallery/gallery-sort/gallery-sort";
 import { resolveSortField } from "../components/gallery/gallery-sort/gallery-sort.utilities";
-import { GalleryToolbar } from "../components/gallery/gallery-toolbar/gallery-toolbar";
+import { GalleryView as GalleryViewControl } from "../components/gallery/gallery-view/gallery-view";
 import { GroupedGallery } from "../components/gallery/grouped-gallery/grouped-gallery";
 import { MeanderGallery } from "../components/gallery/meander-gallery/meander-gallery";
+import { listActiveKeys } from "../components/gallery/meander-gallery/meander-gallery.utilities";
 import {
   findCharacteristics,
   findGallery,
 } from "../components/gallery/meander-gallery/meanders-api.utilities";
 import { useGallerySearch } from "../hooks/use-gallery-search/use-gallery-search";
 import {
+  DEFAULT_PAGE_SIZE,
   DEFAULT_REPEATS,
   DEFAULT_SORT_DIRECTION,
   gallerySearchSchema,
@@ -39,6 +41,8 @@ import {
 import { toSortInput } from "../hooks/use-gallery-search/use-gallery-search.utilities";
 import { useMeanders } from "../hooks/use-meanders/use-meanders";
 
+import type { FilterGroup } from "../components/gallery/gallery-filters/components/filter-model/filter-model.types";
+import type { FilterLink } from "../components/gallery/gallery-filters/components/filter-query/filter-query.types";
 import type { GroupField } from "../components/gallery/gallery-group-by/gallery-group-by.types";
 import type {
   GalleryCharacteristic,
@@ -49,7 +53,11 @@ import type {
   MeanderFilterGroupInput,
   MeanderSortInput,
 } from "../graphql/generated/operations";
-import type { GalleryView } from "../hooks/use-gallery-search/use-gallery-search.types";
+import type {
+  GalleryView,
+  SortDirection,
+} from "../hooks/use-gallery-search/use-gallery-search.types";
+import type { UseMeandersResult } from "../hooks/use-meanders/use-meanders.types";
 import type { ReactNode } from "react";
 
 // 🧭 Route
@@ -74,6 +82,7 @@ export const Route = createFileRoute("/")({
     // not read the first page a second time.
     repeats: search.repeats ?? DEFAULT_REPEATS,
     rows: sanitizeRows(search.rows),
+    size: search.size ?? DEFAULT_PAGE_SIZE,
     sort: search.sort,
   }),
   ssr: false,
@@ -96,6 +105,7 @@ export const Route = createFileRoute("/")({
       grouping: resolveGrouping(deps.group, createGroupFields(characteristics)),
       repeats: deps.repeats,
       rows,
+      size: deps.size,
       sort,
     });
 
@@ -106,43 +116,13 @@ export const Route = createFileRoute("/")({
       page,
       repeats: deps.repeats,
       rows,
+      size: deps.size,
       sort,
     };
   },
 });
 
 // 🧩 Component
-
-/**
- * Renders the flat gallery, reading its pages after the first by cursor.
- */
-function FlatGallery(
-  properties: Readonly<{
-    catalog: readonly GalleryCharacteristic[];
-    page: MeandersPage;
-    query: Readonly<{
-      filter: MeanderFilterGroupInput | undefined;
-      repeats: number;
-      sort: MeanderSortInput | undefined;
-    }>;
-    view: GalleryView;
-  }>,
-): ReactNode {
-  const { catalog, page, query, view } = properties;
-  const { hasMore, loadError, loadMore, meanders } = useMeanders(page, query);
-
-  return (
-    <MeanderGallery
-      catalog={catalog}
-      hasMore={hasMore}
-      loadError={loadError}
-      meanders={meanders}
-      onLoadMore={loadMore}
-      repeats={query.repeats}
-      view={view}
-    />
-  );
-}
 
 /**
  * Renders the pages of a flat gallery, or the groups of a grouped one, which
@@ -152,35 +132,136 @@ function GalleryBody(
   properties: Readonly<{
     catalog: readonly GalleryCharacteristic[];
     fields: readonly GroupField[];
+    filter: FilterGroup | undefined;
+    grouping: readonly string[];
     groups: GalleryGroup[] | undefined;
-    page: MeandersPage | undefined;
+    paging: UseMeandersResult;
     query: Readonly<{
       filter: MeanderFilterGroupInput | undefined;
       repeats: number;
       sort: MeanderSortInput | undefined;
     }>;
     resetKey: string;
+    sort: string | undefined;
     view: GalleryView;
   }>,
 ): ReactNode {
-  const { catalog, fields, groups, page, query, resetKey, view } = properties;
+  const {
+    catalog,
+    fields,
+    filter,
+    grouping,
+    groups,
+    paging,
+    query,
+    resetKey,
+    sort,
+    view,
+  } = properties;
+  // The characteristics every card shows first, whatever else it holds.
+  const activeKeys = listActiveKeys({ filter, grouping, sort });
 
-  return groups === undefined && page !== undefined ? (
-    <FlatGallery
+  return groups === undefined ? (
+    <MeanderGallery
+      activeKeys={activeKeys}
       catalog={catalog}
-      page={page}
-      query={query}
+      loadError={paging.loadError}
+      meanders={paging.meanders}
+      onRetry={paging.next}
+      repeats={query.repeats}
       view={view}
     />
   ) : (
     <GroupedGallery
       key={resetKey}
+      activeKeys={activeKeys}
       catalog={catalog}
       fields={fields}
-      groups={groups ?? []}
+      groups={groups}
       query={query}
       view={view}
     />
+  );
+}
+
+/**
+ * Renders the toolbar's controls, which flow inline: View, Group, Sort, the filter strip, and the pager.
+ */
+function GalleryControls(
+  properties: Readonly<{
+    characteristics: readonly GalleryCharacteristic[];
+    direction: SortDirection;
+    groupFields: readonly GroupField[];
+    grouping: readonly string[];
+    link: FilterLink;
+    page: MeandersPage | undefined;
+    paging: UseMeandersResult;
+    size: number;
+    sort: string | undefined;
+    view: GalleryView;
+  }>,
+): ReactNode {
+  const {
+    characteristics,
+    direction,
+    groupFields,
+    grouping,
+    link,
+    page,
+    paging,
+    size,
+    sort,
+    view,
+  } = properties;
+  const {
+    handleFilterChange,
+    handleGroupChange,
+    handleSizeChange,
+    handleSortChange,
+    handleViewApply,
+  } = useGallerySearch();
+  const fields = useMemo(
+    () => createFilterFields(characteristics),
+    [characteristics],
+  );
+
+  return (
+    <>
+      <GalleryViewControl
+        current={{ direction, group: grouping, link, sort, view }}
+        onApply={handleViewApply}
+      />
+      <GalleryGroupBy
+        fields={groupFields}
+        grouping={grouping}
+        onGroupingChange={handleGroupChange}
+      />
+      <GallerySort
+        characteristics={characteristics}
+        direction={direction}
+        field={sort}
+        onSortChange={handleSortChange}
+      />
+      <GalleryFilters
+        className="min-w-0"
+        fields={fields}
+        link={link}
+        onLinkChange={handleFilterChange}
+      />
+      {page === undefined ? null : (
+        <GalleryPager
+          className="ml-auto flex shrink-0 items-center gap-2"
+          isLoading={paging.isLoading}
+          onPage={paging.goTo}
+          onSizeChange={handleSizeChange}
+          pageCount={paging.pageCount}
+          position={paging.position}
+          shown={paging.meanders.length}
+          size={size}
+          total={page.totalCount}
+        />
+      )}
+    </>
   );
 }
 
@@ -209,18 +290,10 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
  */
 function IndexPage(): ReactNode {
   // 🪝 Hooks
-  const { characteristics, filter, groups, page, repeats, rows, sort } =
+  const { characteristics, filter, groups, page, repeats, rows, size, sort } =
     Route.useLoaderData();
-  const {
-    direction,
-    group,
-    handleFilterChange,
-    handleGroupChange,
-    handleRepeatsChange,
-    handleSortChange,
-    handleViewChange,
-    view,
-  } = useGallerySearch();
+  const { direction, group, handleFilterChange, handleGroupChange, view } =
+    useGallerySearch();
   const { filter: linkedFilter, rows: linkedRows } = Route.useSearch();
   // While a new sort reads, the cards of the last stay up under a notice.
   const isReloading = useRouterState({
@@ -237,8 +310,16 @@ function IndexPage(): ReactNode {
     }),
     [direction, filter, repeats, rows, sort],
   );
-  const fields = createFilterFields(characteristics);
-  const groupFields = createGroupFields(characteristics);
+  const paging = useMeanders(page, { ...input, size });
+  const groupFields = useMemo(
+    () => createGroupFields(characteristics),
+    [characteristics],
+  );
+  // What the link holds of the filter, in the order the editor compares it.
+  const link = useMemo(
+    () => ({ filter, repeats, rows }),
+    [filter, repeats, rows],
+  );
   // A level the catalog does not know is left out of the page.
   const grouping = resolveGrouping(group, groupFields);
 
@@ -252,9 +333,9 @@ function IndexPage(): ReactNode {
       JSON.stringify(filter) !== JSON.stringify(linkedFilter) ||
       JSON.stringify(rows) !== JSON.stringify(linkedRows)
     ) {
-      handleFilterChange(filter, rows);
+      handleFilterChange(link);
     }
-  }, [filter, handleFilterChange, linkedFilter, linkedRows, rows]);
+  }, [filter, handleFilterChange, link, linkedFilter, linkedRows, rows]);
 
   // A link carrying levels the catalog does not know, or twice, is replaced
   // by one that does not.
@@ -268,64 +349,44 @@ function IndexPage(): ReactNode {
 
   // 🎨 Markup
   return (
-    <section className="flex flex-col gap-4 p-4">
-      <h1 className="text-xl">Meanderaw</h1>
-      <GalleryFilters
-        fields={fields}
-        filter={filter}
-        onClear={() => {
-          handleFilterChange(undefined, DEFAULT_ROWS_FILTER);
-        }}
-        onFilterChange={(next) => {
-          handleFilterChange(next, rows);
-        }}
-        onRowsChange={(next) => {
-          handleFilterChange(filter, next);
-        }}
-        rows={rows}
-      />
-      <GalleryGroupBy
-        fields={groupFields}
+    <section className="flex flex-wrap items-center gap-3 p-4">
+      <h1>
+        <MeanderawLogo className="aspect-51/9 h-9 text-(--ink)" />
+      </h1>
+      <GalleryControls
+        characteristics={characteristics}
+        direction={direction}
+        groupFields={groupFields}
         grouping={grouping}
-        onGroupingChange={handleGroupChange}
+        link={link}
+        page={page}
+        paging={paging}
+        size={size}
+        sort={sort}
+        view={view}
       />
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <GalleryToolbar
-          onViewChange={handleViewChange}
-          totalCount={
-            page?.totalCount ??
-            (groups ?? []).reduce((total, { count }) => total + count, 0)
-          }
-          view={view}
-        />
-        <GalleryRepeats
-          onRepeatsChange={handleRepeatsChange}
-          repeats={repeats}
-        />
-        <GallerySort
-          characteristics={characteristics}
-          direction={direction}
-          field={sort}
-          onSortChange={handleSortChange}
-        />
-      </div>
       {isReloading ? (
         <p
-          className="text-sm text-(--ink-muted)"
+          className="w-full text-sm text-muted-foreground"
           role="status"
         >
           Loading…
         </p>
       ) : null}
-      <GalleryBody
-        catalog={characteristics}
-        fields={groupFields}
-        groups={groups}
-        page={page}
-        query={input}
-        resetKey={JSON.stringify({ direction, filter, grouping, rows, sort })}
-        view={view}
-      />
+      <div className="mt-2 w-full">
+        <GalleryBody
+          catalog={characteristics}
+          fields={groupFields}
+          filter={filter}
+          grouping={grouping}
+          groups={groups}
+          paging={paging}
+          query={input}
+          resetKey={JSON.stringify({ direction, filter, grouping, rows, sort })}
+          sort={sort}
+          view={view}
+        />
+      </div>
     </section>
   );
 }

@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { MeanderCharacteristics } from "./meander-characteristics";
@@ -49,6 +49,7 @@ describe(MeanderCharacteristics, () => {
   it("applies its class name", () => {
     render(
       <MeanderCharacteristics
+        activeKeys={[]}
         catalog={CATALOG}
         characteristics={HELD}
         className="meander-characteristics"
@@ -60,29 +61,25 @@ describe(MeanderCharacteristics, () => {
     );
   });
 
-  it("groups the pills, the patterns first and then each category by name", () => {
+  it("lists every characteristic as a pill by name in one list", () => {
     render(
       <MeanderCharacteristics
+        activeKeys={[]}
         catalog={CATALOG}
         characteristics={HELD}
       />,
     );
 
     expect(
-      screen
-        .getAllByRole("group")
-        .map((group) => group.getAttribute("aria-label")),
-    ).toStrictEqual(["Patterns", "Other", "Path"]);
-    expect(
-      within(screen.getByRole("group", { name: "Path" }))
-        .getAllByRole("listitem")
-        .map((pill) => pill.textContent),
-    ).toStrictEqual(["Closed", "Junction count 3"]);
+      screen.getAllByRole("listitem").map((pill) => pill.textContent),
+    ).toStrictEqual(["Chain", "Closed", "Junction count 3", "Mystery 2"]);
+    expect(screen.queryAllByRole("group")).toHaveLength(0);
   });
 
   it("shows a number's value and a boolean's name alone, with the catalog's description as the title", () => {
     render(
       <MeanderCharacteristics
+        activeKeys={[]}
         catalog={CATALOG}
         characteristics={HELD}
       />,
@@ -95,14 +92,94 @@ describe(MeanderCharacteristics, () => {
     expect(screen.getByText("2").tagName).toBe("STRONG");
   });
 
+  describe("past four", () => {
+    const MANY = [
+      ...HELD,
+      { isPattern: false, key: "zeta", name: "Zeta", value: 9 },
+      { isPattern: false, key: "alpha", name: "Alpha", value: 8 },
+    ];
+
+    it("shows the first four by name, and the rest under a +N pill", () => {
+      render(
+        <MeanderCharacteristics
+          activeKeys={[]}
+          catalog={CATALOG}
+          characteristics={MANY}
+        />,
+      );
+
+      expect(
+        screen.getAllByRole("listitem").map((pill) => pill.textContent),
+      ).toStrictEqual(["Alpha 8", "Chain", "Closed", "Junction count 3", "+2"]);
+    });
+
+    it("lists the rest in a tooltip when the +N pill is hovered or focused", async () => {
+      render(
+        <MeanderCharacteristics
+          activeKeys={[]}
+          catalog={CATALOG}
+          characteristics={MANY}
+        />,
+      );
+
+      const more = screen.getByRole("button", {
+        name: "2 more characteristics",
+      });
+
+      fireEvent.focus(more);
+
+      const rest = await screen.findByTestId("hidden-characteristics");
+
+      expect(
+        [...rest.querySelectorAll("li")].map((item) => item.textContent),
+      ).toStrictEqual(["Mystery 2", "Zeta 9"]);
+    });
+
+    it("puts the active characteristics first and always shows them, past four, the rest under +N", () => {
+      render(
+        <MeanderCharacteristics
+          activeKeys={["zeta", "mystery", "junctionCount", "alpha", "isClosed"]}
+          catalog={CATALOG}
+          characteristics={MANY}
+        />,
+      );
+
+      expect(
+        screen.getAllByRole("listitem").map((pill) => pill.textContent),
+      ).toStrictEqual([
+        "Alpha 8",
+        "Closed",
+        "Junction count 3",
+        "Mystery 2",
+        "Zeta 9",
+        "+1",
+      ]);
+    });
+
+    it("fills up to four with the others by name when few are active", () => {
+      render(
+        <MeanderCharacteristics
+          activeKeys={["zeta"]}
+          catalog={CATALOG}
+          characteristics={MANY}
+        />,
+      );
+
+      expect(
+        screen.getAllByRole("listitem").map((pill) => pill.textContent),
+      ).toStrictEqual(["Zeta 9", "Alpha 8", "Chain", "Closed", "+2"]);
+    });
+  });
+
   it("shows nothing for a meander that holds none", () => {
     render(
       <MeanderCharacteristics
+        activeKeys={[]}
         catalog={CATALOG}
         characteristics={[]}
       />,
     );
 
-    expect(screen.queryAllByRole("group")).toHaveLength(0);
+    expect(screen.queryByTestId("meander-characteristics")).toBeNull();
   });
 });

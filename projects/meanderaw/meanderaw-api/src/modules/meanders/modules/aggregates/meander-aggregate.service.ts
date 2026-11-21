@@ -151,6 +151,16 @@ export class MeanderAggregateService {
     );
   }
 
+  /** The key a shape counts under for a shape field: a number, a lattice, or RxC. */
+  private shapeKey(
+    shape: AggregateShape,
+    field: "columns" | "lattice" | "rows" | "rowsColumns",
+  ): string {
+    return field === "rowsColumns"
+      ? `${shape.rows}x${shape.columns}`
+      : String(shape[field]);
+  }
+
   /** The stored value counts among the meanders of the shapes a scope keeps. */
   private async shapeValues(
     manager: EntityManager,
@@ -223,12 +233,12 @@ export class MeanderAggregateService {
   // 🌎 Public Methods
 
   /**
-   * The count of each shape key (`rowsColumns` or `lattice`) among the
+   * The count of each shape key (`rows`, `columns`, `rowsColumns` or `lattice`) among the
    * meanders a filter keeps; null when no table covers it.
    */
   async shapeCounts(
     filter: AggregateFilter,
-    field: "lattice" | "rowsColumns",
+    field: "columns" | "lattice" | "rows" | "rowsColumns",
   ): Promise<Map<string, number> | null> {
     const scope = this.classify(filter);
 
@@ -242,8 +252,7 @@ export class MeanderAggregateService {
       for (const row of shapes.filter((shape) =>
         this.shapeKept(scope, shape),
       )) {
-        const key =
-          field === "lattice" ? row.lattice : `${row.rows}x${row.columns}`;
+        const key = this.shapeKey(row, field);
 
         counts.set(key, (counts.get(key) ?? 0) + row.meanderCount);
       }

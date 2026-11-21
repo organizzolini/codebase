@@ -144,6 +144,8 @@ describe("meander groups end-to-end suite", () => {
     ["strokeCount"],
     ["isChain"],
     ["rowsColumns"],
+    ["rows"],
+    ["columns"],
     ["lattice"],
     ["isHardcoded"],
   ])(
@@ -242,6 +244,7 @@ describe("meander groups end-to-end suite", () => {
 
     await expectBruteForce(null, ["isChain", "rowsColumns"]);
     await expectBruteForce(null, ["junctionCount", "lattice", "isLoop"]);
+    await expectBruteForce(null, ["rows", "columns", "junctionCount"]);
     await expectBruteForce(
       only({ field: "isChain", flag: true, operator: "is" }),
       ["isLoop", "junctionCount"],

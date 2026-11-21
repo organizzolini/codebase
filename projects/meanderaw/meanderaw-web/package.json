@@ -1,11 +1,13 @@
 {
   "dependencies": {
+    "@codebase/presentation": "workspace:*",
     "@graphql-codegen/cli": "catalog:",
     "@graphql-typed-document-node/core": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-start": "catalog:",
     "@tanstack/react-virtual": "catalog:",
     "graphql": "catalog:",
+    "lucide-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "zod": "catalog:"

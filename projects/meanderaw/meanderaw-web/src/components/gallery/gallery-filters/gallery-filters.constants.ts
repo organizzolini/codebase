@@ -1,18 +1,18 @@
 // ♟️ Constants
 
 /**
- * The title of the filter popup and the Filters button.
+ * The title of the filter surface and the Filter button.
  */
 export const FILTERS_TITLE = "Filter";
 
 /**
- * What can take focus inside the popup.
+ * Joins Filter to Clear: square right, raised on focus.
  */
-export const FOCUSABLE_SELECTOR =
-  "button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])";
+export const FILTERS_BUTTON_CLASS_NAME =
+  "in-data-[slot=button-group]:rounded-r-none focus-visible:relative focus-visible:z-10";
 
 /**
- * How the popup is placed and sized.
+ * Squares every join between the Filter button and the chips.
  */
-export const POPUP_CLASS_NAME =
-  "absolute top-full left-0 z-30 mt-2 flex w-[26rem] max-w-[calc(100vw-2rem)] flex-col gap-3 rounded-md border border-(--line) bg-(--surface) p-3 shadow-lg";
+export const STRIP_CLASS_NAME =
+  "[&>[data-slot=filter-chip]>:first-child]:rounded-l-none [&>[data-slot=filter-chip]>:first-child]:border-l-0 [&>[data-slot=filter-chip]:not(:last-child)>:last-child]:rounded-r-none";

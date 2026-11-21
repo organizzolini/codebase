@@ -1,11 +1,6 @@
 // ♟️ Constants
 
 /**
- * The label of the group of pattern characteristics, which comes first.
+ * The most pills shown before the rest go under +N.
  */
-export const PATTERNS_LABEL = "Patterns";
-
-/**
- * The category of a characteristic the catalog does not list.
- */
-export const UNKNOWN_CATEGORY = "other";
+export const MAXIMUM_PILLS = 4;

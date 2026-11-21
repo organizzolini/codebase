@@ -4,7 +4,7 @@ import {
   linkedFilterSchema,
   linkedRowsSchema,
   MAXIMUM_FILTER_TEXT_LENGTH,
-} from "../../components/gallery/gallery-filter-builder/gallery-filter-builder.constants";
+} from "../../components/gallery/gallery-filters/components/filter-model/filter-model.constants";
 import { MAXIMUM_GROUP_LEVELS } from "../../components/gallery/gallery-group-by/gallery-group-by.constants";
 
 // ♟️ Constants
@@ -45,6 +45,16 @@ export const MAXIMUM_REPEATS = 24;
 export const DEFAULT_REPEATS = 12;
 
 /**
+ * The page sizes on offer.
+ */
+export const PAGE_SIZES: readonly number[] = [12, 24, 48];
+
+/**
+ * The page size a link opens on by default.
+ */
+export const DEFAULT_PAGE_SIZE = 24;
+
+/**
  * Validates the link's search parameters, repairing invalid ones.
  */
 export const gallerySearchSchema = z.object({
@@ -73,6 +83,11 @@ export const gallerySearchSchema = z.object({
     .catch(DEFAULT_REPEATS)
     .optional(),
   rows: linkedRowsSchema.optional(),
+  size: z.coerce
+    .number()
+    .refine((size) => PAGE_SIZES.includes(size))
+    .catch(DEFAULT_PAGE_SIZE)
+    .optional(),
   sort: z.coerce.string().min(1).optional(),
   view: z.enum(GALLERY_VIEWS).catch(DEFAULT_GALLERY_VIEW).optional(),
 });

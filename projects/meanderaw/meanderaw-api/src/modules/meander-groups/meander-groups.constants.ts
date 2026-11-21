@@ -10,8 +10,10 @@ export const MAXIMUM_FIELD_LENGTH = 512;
 
 /** The levels that are not a characteristic key. */
 export const SHAPE_GROUP_FIELDS = [
+  "columns",
   "isHardcoded",
   "lattice",
+  "rows",
   "rowsColumns",
 ] as const;
 
@@ -21,7 +23,7 @@ export const MEANDER_GROUPS_QUERY_DESCRIPTION =
 
 /** What the `groupBy` argument describes, for the schema. */
 export const GROUP_BY_ARGUMENT_DESCRIPTION =
-  "The levels, outermost first: rowsColumns, lattice, isHardcoded or a characteristic key.";
+  "The levels, outermost first: rows, columns, rowsColumns, lattice, isHardcoded or a characteristic key.";
 
 /** What a `meanderGroups` query may ask for, checked at the API boundary. */
 export const groupByArgumentsSchema = z

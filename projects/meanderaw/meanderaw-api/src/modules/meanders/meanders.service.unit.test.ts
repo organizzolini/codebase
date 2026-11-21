@@ -183,4 +183,58 @@ describe(MeandersService, () => {
     expect(() => instance.draw(meander, 25)).toThrow(/from 1 to 24/u);
     expect(() => instance.draw(meander, 1.5)).toThrow(/from 1 to 24/u);
   });
+
+  it("refuses an offset below 0 before it reads anything", async () => {
+    expect.hasAssertions();
+
+    const service = await buildService();
+
+    await expect(service.find({ offset: -1 })).rejects.toThrow(/offset|>=0/i);
+  });
+
+  it("skips the offset before the page, and reports a page before it", async () => {
+    expect.hasAssertions();
+
+    const offset = vi.fn<(skip: number) => unknown>();
+    const limit = vi.fn<(take: number) => unknown>();
+    const builder: Record<string, unknown> = {};
+
+    Object.assign(builder, {
+      addOrderBy: vi.fn<() => unknown>().mockReturnValue(builder),
+      getRawAndEntities: vi
+        .fn<() => Promise<unknown>>()
+        .mockResolvedValue({ entities: [], raw: [] }),
+      limit: limit.mockReturnValue(builder),
+      offset: offset.mockReturnValue(builder),
+      orderBy: vi.fn<() => unknown>().mockReturnValue(builder),
+    });
+
+    const { instance, mock } = await buildTestingModule(MeandersService, {
+      mocks: [
+        CodeService,
+        DrawingService,
+        MeanderAggregateService,
+        MeanderFilterService,
+      ],
+      providers: [
+        {
+          provide: getRepositoryToken(Meander),
+          useValue: { createQueryBuilder: () => builder },
+        },
+        { provide: getRepositoryToken(Characteristic), useValue: {} },
+        { provide: getRepositoryToken(MeanderCharacteristic), useValue: {} },
+      ],
+    });
+
+    mock(MeanderAggregateService).total.mockResolvedValue(0);
+
+    const skipped = await instance.find({ first: 24, offset: 48 });
+    const first = await instance.find({ first: 24 });
+
+    expect(offset).toHaveBeenNthCalledWith(1, 48);
+    expect(offset).toHaveBeenNthCalledWith(2, 0);
+    expect(limit).toHaveBeenCalledWith(25);
+    expect(skipped.pageInfo.hasPreviousPage).toBe(true);
+    expect(first.pageInfo.hasPreviousPage).toBe(false);
+  });
 });

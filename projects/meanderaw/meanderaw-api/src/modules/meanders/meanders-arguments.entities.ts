@@ -28,6 +28,13 @@ export class MeandersArgs {
   })
   first?: number;
 
+  @Field(() => Int, {
+    description:
+      "How many meanders to skip first, after the cursor if there is one; to jump to a page.",
+    nullable: true,
+  })
+  offset?: number;
+
   @Field(() => MeanderSortInput, {
     description: SORT_ARGUMENT_DESCRIPTION,
     nullable: true,

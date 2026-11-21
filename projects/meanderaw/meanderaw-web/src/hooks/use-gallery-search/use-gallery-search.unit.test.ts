@@ -40,30 +40,62 @@ describe(useGallerySearch, () => {
       group: [],
       handleFilterChange: result.current.handleFilterChange,
       handleGroupChange: result.current.handleGroupChange,
-      handleRepeatsChange: result.current.handleRepeatsChange,
+      handleSizeChange: result.current.handleSizeChange,
       handleSortChange: result.current.handleSortChange,
-      handleViewChange: result.current.handleViewChange,
+      handleViewApply: result.current.handleViewApply,
       repeats: 12,
+      size: 24,
       sort: undefined,
       view: "list",
     });
   });
 
-  it("replaces the link with the view picked, keeping the rest of it", () => {
+  it("applies only the parts a named view fixes, keeping the rest of the link", () => {
     const navigate = mockNavigate();
     vi.mocked(useSearch).mockReturnValue({ view: "grid" });
 
     const { result } = renderHook(() => useGallerySearch());
-    result.current.handleViewChange("list");
+    const link = {
+      filter: undefined,
+      repeats: 12,
+      rows: { operator: "eq" as const, value: 4 },
+    };
 
-    const options = navigate.mock.calls[0]?.[0];
+    result.current.handleViewApply({ view: "list" });
+    result.current.handleViewApply({ group: ["rows", "columns"], link });
+    result.current.handleViewApply({ group: [] });
+    result.current.handleViewApply({ direction: "desc", sort: "rows" });
+    result.current.handleViewApply({ direction: "asc", sort: undefined });
+
+    const [view, arrangement, ungrouped, sorted, unsorted] =
+      navigate.mock.calls.map(([options]) => options);
 
     expect(result.current.view).toBe("grid");
-    expect(options?.replace).toBe(true);
-    expect(options?.search({ other: 1 })).toStrictEqual({
+    expect(view?.replace).toBe(true);
+    expect(view?.search({ other: 1 })).toStrictEqual({
       other: 1,
       view: "list",
     });
+    expect(arrangement?.search({ view: "grid" })).toStrictEqual({
+      filter: undefined,
+      group: ["rows", "columns"],
+      repeats: 12,
+      rows: { operator: "eq", value: 4 },
+      view: "grid",
+    });
+    expect(ungrouped?.search({ group: ["rows"] })).toStrictEqual({
+      group: undefined,
+    });
+    expect(sorted?.search({})).toStrictEqual({
+      direction: "desc",
+      sort: "rows",
+    });
+    expect(unsorted?.search({ direction: "desc", sort: "rows" })).toStrictEqual(
+      {
+        direction: undefined,
+        sort: undefined,
+      },
+    );
   });
 
   it("reads the sort and direction the link names", () => {
@@ -97,17 +129,37 @@ describe(useGallerySearch, () => {
     });
   });
 
-  it("reads the repeats the link names, and replaces the link with the count picked", () => {
-    const navigate = mockNavigate();
+  it("reads the repeats the link names", () => {
+    mockNavigate();
     vi.mocked(useSearch).mockReturnValue({ repeats: 3, view: "list" });
 
     const { result } = renderHook(() => useGallerySearch());
-    result.current.handleRepeatsChange(9);
 
     expect(result.current.repeats).toBe(3);
+  });
+
+  it("reads the page size the link names, and replaces the link with the size picked", () => {
+    const navigate = mockNavigate();
+    vi.mocked(useSearch).mockReturnValue({ size: 48 });
+
+    const { result } = renderHook(() => useGallerySearch());
+    result.current.handleSizeChange(12);
+
+    expect(result.current.size).toBe(48);
     expect(navigate.mock.calls[0]?.[0].search({ view: "list" })).toStrictEqual({
-      repeats: 9,
+      size: 12,
       view: "list",
+    });
+  });
+
+  it("repairs a page size that is not on offer to 24", () => {
+    expect(gallerySearchSchema.parse({ size: 12 })).toStrictEqual({ size: 12 });
+    expect(gallerySearchSchema.parse({ size: "48" })).toStrictEqual({
+      size: 48,
+    });
+    expect(gallerySearchSchema.parse({ size: 30 })).toStrictEqual({ size: 24 });
+    expect(gallerySearchSchema.parse({ size: "abc" })).toStrictEqual({
+      size: 24,
     });
   });
 
@@ -139,7 +191,7 @@ describe(useGallerySearch, () => {
     expect(gallerySearchSchema.parse({})).toStrictEqual({});
   });
 
-  it("replaces the link with the filter and rows rule, keeping the rest of it", () => {
+  it("replaces the link with the filter, rows rule and repeats, keeping the rest of it", () => {
     const navigate = mockNavigate();
     vi.mocked(useSearch).mockReturnValue({});
 
@@ -151,8 +203,8 @@ describe(useGallerySearch, () => {
 
     const rows = { operator: "gte" as const, value: 3 };
 
-    result.current.handleFilterChange(filter, rows);
-    result.current.handleFilterChange(undefined, rows);
+    result.current.handleFilterChange({ filter, repeats: 6, rows });
+    result.current.handleFilterChange({ filter: undefined, repeats: 12, rows });
 
     const [[first], [second]] = navigate.mock.calls as [
       [NavigateOptions],
@@ -162,11 +214,13 @@ describe(useGallerySearch, () => {
     expect(first.replace).toBe(true);
     expect(first.search({ view: "list" })).toStrictEqual({
       filter,
+      repeats: 6,
       rows,
       view: "list",
     });
     expect(second.search({ filter })).toStrictEqual({
       filter: undefined,
+      repeats: 12,
       rows,
     });
   });

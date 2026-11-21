@@ -21,6 +21,8 @@ import type { ReactNode } from "react";
  * The meander, the catalog categorizing its pills, and its repeats.
  */
 export interface MeanderCardProperties {
+  /** Characteristics the page is grouped, sorted or filtered by. */
+  activeKeys: readonly string[];
   catalog: readonly GalleryCharacteristic[];
   className?: string;
   meander: GalleryMeander;
@@ -31,12 +33,12 @@ export interface MeanderCardProperties {
 
 /**
  * Renders one meander: its drawing on top, then its Code and the
- * characteristics it holds as grouped pills.
+ * characteristics it holds as pills.
  */
 export function MeanderCard(
   properties: Readonly<MeanderCardProperties>,
 ): ReactNode {
-  const { catalog, className, meander, repeats } = properties;
+  const { activeKeys, catalog, className, meander, repeats } = properties;
 
   // 🪝 Hooks
   const [copy, setCopy] = useState<"copied" | "failed" | "idle">("idle");
@@ -83,14 +85,16 @@ export function MeanderCard(
       data-testid="meander-card"
     >
       <article className="flex flex-col gap-3 rounded-(--radius-card) border border-(--line) bg-(--surface-raised) p-3">
-        <img
-          alt={`Drawing of meander ${meander.code}`}
-          className="max-h-64 w-full rounded-md border border-(--line) bg-(--drawing-panel) object-contain"
-          height={size.height}
-          src={toSvgDataUri(meander.svg)}
-          style={{ aspectRatio: `${size.width} / ${size.height}` }}
-          width={size.width}
-        />
+        <div className="rounded-md border border-(--line) bg-(--drawing-panel) p-4">
+          <img
+            alt={`Drawing of meander ${meander.code}`}
+            className="max-h-56 w-full object-contain"
+            height={size.height}
+            src={toSvgDataUri(meander.svg)}
+            style={{ aspectRatio: `${size.width} / ${size.height}` }}
+            width={size.width}
+          />
+        </div>
         <p className="flex items-center gap-2">
           <code
             className="flex min-w-0 flex-1 text-sm"
@@ -100,7 +104,7 @@ export function MeanderCard(
             <span className="shrink-0">r{repeats}</span>
           </code>
           {meander.isHardcoded ? (
-            <span className="rounded-full bg-(--accent) px-2 py-0.5 text-xs text-(--accent-ink)">
+            <span className="rounded-full bg-(--brand) px-2 py-0.5 text-xs text-(--brand-ink)">
               Hardcoded
             </span>
           ) : null}
@@ -114,6 +118,7 @@ export function MeanderCard(
           </button>
         </p>
         <MeanderCharacteristics
+          activeKeys={activeKeys}
           catalog={catalog}
           characteristics={meander.characteristics}
         />

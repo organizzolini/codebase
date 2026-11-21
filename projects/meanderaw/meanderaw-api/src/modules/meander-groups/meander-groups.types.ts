@@ -17,4 +17,9 @@ export type GroupLevel =
     };
 
 /** A shape field a level may name besides a characteristic key. */
-export type ShapeGroupField = "isHardcoded" | "lattice" | "rowsColumns";
+export type ShapeGroupField =
+  | "columns"
+  | "isHardcoded"
+  | "lattice"
+  | "rows"
+  | "rowsColumns";
