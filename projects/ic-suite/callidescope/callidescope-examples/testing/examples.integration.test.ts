@@ -12,6 +12,7 @@ import {
 import {
   listExampleNames,
   runSourceCommand,
+  withoutNodeWarnings,
 } from "@codebase/testing/end-to-end";
 
 import callidescopeConfiguration from "../callidescope.workspace.config.js";
@@ -358,7 +359,10 @@ async function traceFixtures(
       "projects/ic-suite/callidescope/callidescope-cli/src/callidescope-cli.main.ts",
   });
 
-  expect({ exitCode, stderr }).toStrictEqual({ exitCode: 0, stderr: "" });
+  expect({ exitCode, stderr: withoutNodeWarnings(stderr) }).toStrictEqual({
+    exitCode: 0,
+    stderr: "",
+  });
 
   return JSON.parse(readFileSync(reportPath, "utf8")) as CallGraphResult;
 }
