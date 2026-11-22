@@ -31,5 +31,13 @@ export type LibraryRequest = Omit<GetLibraryInput, "limit" | "page">;
 /** The search parameters the library URL may carry. */
 export type LibrarySearchParameters = z.infer<typeof librarySearchSchema>;
 
+/**
+ * A run of authors under one group heading, or none.
+ */
+export interface LibrarySection {
+  heading: null | string;
+  rows: LibraryAuthorRow[];
+}
+
 /** One Text in a card's hierarchy, with its child count and match ranges. */
 export type LibraryTextRow = LibraryAuthorRow["works"][number];

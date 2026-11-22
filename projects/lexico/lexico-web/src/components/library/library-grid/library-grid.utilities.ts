@@ -1,14 +1,21 @@
 import { LibraryDocument } from "../../../graphql/generated/operations";
 import { queryApi } from "../../search/search-results/search.utilities";
+import { groupHeading } from "../library-group/library-group.utilities";
 
 import { LIBRARY_PAGE_SIZE } from "./library-grid-api.constants";
 
 import type {
   LibraryFilters,
+  LibraryGroupField,
   LibraryRange,
   LibrarySort,
 } from "../../../graphql/generated/operations";
-import type { GetLibraryInput, LibraryPageResult } from "./library-grid.types";
+import type {
+  GetLibraryInput,
+  LibraryAuthorRow,
+  LibraryPageResult,
+  LibrarySection,
+} from "./library-grid.types";
 
 // 🔏 Private Functions
 
@@ -30,6 +37,30 @@ export async function fetchLibrary(
   return library;
 }
 
+/**
+ * The authors in runs that share a heading, one section each, or a single
+ * headless section when nothing is grouped.
+ */
+export function sectionsOf(
+  authors: readonly LibraryAuthorRow[],
+  groups: readonly LibraryGroupField[],
+): LibrarySection[] {
+  const sections: LibrarySection[] = [];
+
+  for (const row of authors) {
+    const heading = groupHeading(row, groups);
+    const last = sections.at(-1);
+
+    if (last?.heading === heading) {
+      last.rows.push(row);
+    } else {
+      sections.push({ heading, rows: [row] });
+    }
+  }
+
+  return sections;
+}
+
 /** The filters the URL names, as the API reads them. */
 export function toFilters(input: Readonly<GetLibraryInput>): LibraryFilters {
   return {
@@ -48,12 +79,12 @@ export function toFilters(input: Readonly<GetLibraryInput>): LibraryFilters {
   };
 }
 
+// 🌎 Public Functions
+
 /** The sorts the URL names, in order, or null for the API's default order. */
 export function toSort(input: Readonly<GetLibraryInput>): LibrarySort[] | null {
   return input.sort ?? null;
 }
-
-// 🌎 Public Functions
 
 /** Null for an unset filter, which is how the API reads "no filter". */
 function orNull<T>(value: T | undefined): null | T {

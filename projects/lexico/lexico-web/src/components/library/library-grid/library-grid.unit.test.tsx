@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   AuthorEra,
@@ -29,6 +29,18 @@ function rowOf(name: string, era: AuthorEra | null): LibraryAuthorRow {
 }
 
 describe(LibraryGrid, () => {
+  beforeEach(() => {
+    vi.stubGlobal("matchMedia", () => ({
+      addEventListener: vi.fn<() => void>(),
+      matches: true,
+      removeEventListener: vi.fn<() => void>(),
+    }));
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   it("applies its class name", () => {
     render(
       <LibraryGrid

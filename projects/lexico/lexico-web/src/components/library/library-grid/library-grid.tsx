@@ -1,8 +1,7 @@
-import { Fragment } from "react";
-
+import { Masonry } from "../../layout/masonry/masonry";
 import { LibraryAuthorCard } from "../library-author-card/library-author-card";
-import { groupHeading } from "../library-group/library-group.utilities";
 
+import { sectionsOf } from "./library-grid.utilities";
 import { LibraryGroupHeading } from "./library-group-heading";
 
 import type { LibraryGroupField } from "../../../graphql/generated/operations";
@@ -35,6 +34,7 @@ export function LibraryGrid(
   // 🪝 Hooks
 
   // 🏗 Setup
+  const sections = sectionsOf(authors, groups);
 
   // 💪 Handlers
 
@@ -48,31 +48,28 @@ export function LibraryGrid(
       className={className}
       data-testid="library-grid"
     >
-      <div className="grid items-start gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {authors.map((row, index) => {
-          const heading = groupHeading(row, groups);
-          const previous = authors[index - 1];
-          const showHeading =
-            heading !== null &&
-            (previous === undefined ||
-              groupHeading(previous, groups) !== heading);
-
-          return (
-            <Fragment key={`${row.author.id}:${query.search}`}>
-              {showHeading ? (
-                <LibraryGroupHeading
-                  className="col-span-full"
-                  heading={heading}
-                />
-              ) : null}
+      {sections.map((section) => (
+        <section
+          key={`${section.heading ?? ""}:${section.rows[0]?.author.id}:${query.search}`}
+          className="mb-4"
+        >
+          {section.heading === null ? null : (
+            <LibraryGroupHeading
+              className="mb-4"
+              heading={section.heading}
+            />
+          )}
+          <Masonry>
+            {section.rows.map((row) => (
               <LibraryAuthorCard
+                key={`${row.author.id}:${query.search}`}
                 query={query}
                 row={row}
               />
-            </Fragment>
-          );
-        })}
-      </div>
+            ))}
+          </Masonry>
+        </section>
+      ))}
     </div>
   );
 }

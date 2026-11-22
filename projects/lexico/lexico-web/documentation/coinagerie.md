@@ -17,6 +17,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **gem**: Lucide icon marking the material filter and sort attributes.
 - **grammar**: Word in code comments naming grammar-book conventions, such as the short labels and case order in form tables.
 - **hourglass**: Lucide icon marking the era filter and sort attributes.
+- **htmlu**:
 - **imperial**:
 - **inert**: HTML attribute set on the closed history sidebar so its links cannot be focused or clicked while it is hidden.
 - **inscription**:
@@ -24,6 +25,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **letter**: Count of extra letters in a fuzzy lemma match, shown in the tooltip for a prefix match beyond the query.
 - **lexeme**: Dictionary entry for one lemma with its forms, pronunciations and etymology, the core record every card shows.
 - **literature**: GraphQL type for literature search results, present in generated mocks and operations but not yet rebuilt as a page.
+- **masonry**: Layout dealing cards round-robin into side-by-side columns so none leaves a gap, shared by the search results and the library grid.
 - **material**:
 - **medieval**:
 - **minify**:
@@ -40,6 +42,5 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **translation**: An English sense of a lexeme, listed as bullets by LexemeTranslations and matched by English search.
 - **verb**: Part of speech whose forms render as a conjugation table, routed to the VerbForms component when partOfSpeech is verb.
 - **vergil**:
-- **visible**: Tailwind overflow-visible class on the search bar card, so content can extend past the card edges.
 
 <!-- coinagerie:end -->
