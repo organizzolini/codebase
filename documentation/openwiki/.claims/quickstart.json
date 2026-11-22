@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:0e2bf4de266076bc6f26aded518137ca75611b52fcc0be00a3059f38dd69bc01",
+  "pageVersion": "sha256:a21ef7d65f5963917cc90247f78a4cd2c01b0474332735e7997ea3cc38ce6612",
   "claims": [
     {
       "id": "claim_95880b6257564397a792093d780f2e33",
@@ -107,7 +107,7 @@
       "statement": "Tests run via `nx run <project>:vitest:<unit|integration>` for TypeScript projects and `pytest` for Python projects; coverage and size gates are strictly enforced.",
       "evidence": [
         {
-          "resource": "repo://AGENTS.md#L275-L277",
+          "resource": "repo://AGENTS.md#L274-L276",
           "version": "repo-lines-v1:sha256:bdfd03257b889db097f342b7e0fd20f9efa3a1a903227da191eb54fa5fdc2977:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWQ5YjdhOThmMmRkODdhYWQ5MzE1YWJmZTEyNzQyNTZiZGJjNjBhMmFlZTdkMjJhYTg4ZDE5MTE1Y2RlYjE1MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTc2Mzc5MWVjN2NkZTE5Mzg1NDhjNmM1MmRhZThhOTg0YzExNGU0YTlkZjUzNGE2YjhmN2RkMWQ3ZTNkOWI3YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYThiZGRjNmVlOTQ1MmFiNDlmZDRjOGI1OTliNjI4ZjdmMjhkMzY5YjQ4NWVkMGQxYTQzNzlmMDQ1YzI0YWY3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzAzN2FhMDgzZWJkOTg4NmI4MDU1NDMwNTJhY2RmNjBmZDBmOGE5ZWYyMmY1MDhlOTk4MWI0ZjYwNGRhNjc4OSJ9"
         }
       ]
@@ -118,11 +118,11 @@
       "evidence": [
         {
           "resource": "repo://.devcontainer/cloud/devcontainer.json",
-          "version": "repo-file-v1:sha256:79717bafc59ba5e4d65792d68550e59ac2247e52e2381abf417994cf8ae604e8"
+          "version": "repo-file-v1:sha256:00ad5b60c63aafeb3e51946ee8e9b0910457b6aaf645a0fe63569cc73537eef9"
         },
         {
           "resource": "repo://.devcontainer/local/devcontainer.json",
-          "version": "repo-file-v1:sha256:69dfda904fe8bdfba0c1dd395e851fc95dbcbfd14af92ed638298401bd225c56"
+          "version": "repo-file-v1:sha256:a404485146e5eb5649204717b4859108675338aaccf66413837e152eee51b4c6"
         },
         {
           "resource": "repo://infrastructure/docker/docker-compose.yml#L1-L96",
@@ -133,6 +133,6 @@
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-22T00:18:20.862Z"
+    "at": "2026-11-22T17:40:37.367Z"
   }
 }
