@@ -6,7 +6,7 @@ export const COMMITLINT_ARGUMENTS = [
   "configuration/repository/commitlint.config.ts",
 ] as const;
 
-/** The most scopes a pull request title may name, so the header stays under 128 characters. */
+/** The most scopes a pull request title may name. */
 export const MAXIMUM_TITLE_SCOPES = 3;
 
 /** Pulls the comma-separated scopes out of `type(scopes)!: subject`. */
