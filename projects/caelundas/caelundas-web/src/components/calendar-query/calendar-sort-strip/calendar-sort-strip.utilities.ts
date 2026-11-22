@@ -1,59 +1,101 @@
-import { DEFAULT_ORDER, SORT_OPTIONS } from "./calendar-sort-strip.constants";
+import { labelGroupLevel } from "../calendar-group-strip/calendar-group-strip.utilities";
 
+import { SORT_OPTIONS } from "./calendar-sort-strip.constants";
+
+import type {
+  EventGroupField,
+  EventGrouping,
+} from "../calendar-group-strip/components/event-group-model/event-groups.types";
 import type { GroupSort } from "../calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type { CascaderNode } from "@codebase/presentation";
 
 // 🔏 Private Functions
 
+/**
+ * The nested choices: each key with its two directions beneath it.
+ */
+export function createSortItems(): CascaderNode[] {
+  return SORT_OPTIONS.map((option) => ({
+    children: [
+      { label: "Ascending", value: `${option.key}:asc` },
+      { label: "Descending", value: `${option.key}:desc` },
+    ],
+    description: option.description,
+    keywords: [option.label],
+    label: option.label,
+    value: option.key,
+  }));
+}
+
 // 🌎 Public Functions
 
 /**
- * The nested choices: the default order, then each key with its two directions beneath it.
+ * The same sorts with the one at an index turned the other way round.
  */
-export function createSortItems(): CascaderNode[] {
-  return [
-    {
-      description: "The groups as they were built.",
-      label: "Default order",
-      value: DEFAULT_ORDER,
-    },
-    ...SORT_OPTIONS.map((option) => ({
-      children: [
-        { label: "Ascending", value: `${option.key}:asc` },
-        { label: "Descending", value: `${option.key}:desc` },
-      ],
-      description: option.description,
-      keywords: [option.label],
-      label: option.label,
-      value: option.key,
-    })),
-  ];
+export function flipSortAt(
+  sorts: readonly GroupSort[],
+  index: number,
+): GroupSort[] {
+  return sorts.map((sort, position) =>
+    position === index
+      ? { ...sort, direction: sort.direction === "asc" ? "desc" : "asc" }
+      : sort,
+  );
 }
 
 /**
- * The same sort the other way round.
+ * The name of the default sort: the first group it orders, or the groups' names when there are none.
  */
-export function flipSortDirection(sort: GroupSort): GroupSort {
-  return { ...sort, direction: sort.direction === "asc" ? "desc" : "asc" };
+export function labelDefaultSort(
+  grouping: EventGrouping,
+  fields: readonly EventGroupField[],
+): string {
+  const [first] = grouping;
+
+  return first === undefined ? "Name" : labelGroupLevel(first, fields);
 }
 
 /**
- * The sort a ticked value means; none for the default order.
+ * The sorts after a click in the list: the one ticked is added, replacing the other direction of its key, and the one cleared is taken out; none when none are left.
  */
-export function toSort(value: readonly string[]): GroupSort | undefined {
-  const [key, direction] = (value[0] ?? "").split(":");
+export function toSorts(
+  next: readonly string[],
+  previous: readonly GroupSort[],
+): GroupSort[] | undefined {
+  const before = toSortValue(previous);
+  const leaf = [
+    ...before.filter((value) => !next.includes(value)),
+    ...next.filter((value) => !before.includes(value)),
+  ][0];
+  const picked = leaf === undefined ? undefined : parseSortLeaf(leaf);
+
+  if (leaf === undefined || picked === undefined) {
+    return previous.length === 0 ? undefined : [...previous];
+  }
+
+  const rest = previous.filter((sort) => sort.key !== picked.key);
+  const sorts = next.includes(leaf)
+    ? [...rest, picked]
+    : previous.filter((sort) => `${sort.key}:${sort.direction}` !== leaf);
+
+  return sorts.length === 0 ? undefined : sorts;
+}
+
+/**
+ * The values ticked for sorts: each one's key and direction.
+ */
+export function toSortValue(sorts: readonly GroupSort[]): string[] {
+  return sorts.map((sort) => `${sort.key}:${sort.direction}`);
+}
+
+/**
+ * The sort a ticked value names, or nothing for a stale value.
+ */
+function parseSortLeaf(leaf: string): GroupSort | undefined {
+  const [key, direction] = leaf.split(":");
   const option = SORT_OPTIONS.find((candidate) => candidate.key === key);
 
   return option === undefined || (direction !== "asc" && direction !== "desc")
     ? undefined
     : { direction, key: option.key };
-}
-
-/**
- * The value ticked for a sort: its key and direction, or the default order for none.
- */
-export function toSortValue(sort: GroupSort | undefined): string[] {
-  return sort === undefined
-    ? [DEFAULT_ORDER]
-    : [`${sort.key}:${sort.direction}`];
 }

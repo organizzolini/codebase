@@ -174,6 +174,7 @@ export function CalendarGrid(
           {view === "agenda" ? (
             <CalendarAgenda
               className="min-h-0 flex-1 border-t"
+              clusters={clusters}
               events={events}
               facets={facets}
               grouping={grouping}

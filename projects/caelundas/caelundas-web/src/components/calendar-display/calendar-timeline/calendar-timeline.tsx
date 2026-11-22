@@ -4,6 +4,7 @@ import { Gantt, GanttView } from "@codebase/presentation";
 
 import { useBarDialog } from "../../../hooks/use-bar-dialog/use-bar-dialog";
 import { createEventGroupFields } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
+import { DEFAULT_SORTS } from "../../calendar-query/calendar-sort-strip/calendar-sort-strip.constants";
 import { VENDORED_SURFACE_CLASS_NAMES } from "../events-calendar/components/calendar-views/calendar-surfaces.constants";
 
 import {
@@ -80,7 +81,7 @@ export interface CalendarTimelineProperties {
   /**
    * How the rows are ordered, at every level; as built when absent.
    */
-  sort?: GroupSort | undefined;
+  sort?: readonly GroupSort[] | undefined;
   timeZone: string;
 }
 
@@ -121,7 +122,8 @@ export function CalendarTimeline(
   const zoom = zoomed.scale === scale ? zoomed.zoom : 1;
   const fields = useMemo(() => createEventGroupFields(facets), [facets]);
   const rows = useMemo(
-    () => toTimelineRows(events, grouping, { fields, sort }),
+    () =>
+      toTimelineRows(events, grouping, { fields, sort: sort ?? DEFAULT_SORTS }),
     [events, fields, grouping, sort],
   );
   // Overlapping bars are moved into lanes, so nothing is drawn over anything.

@@ -9,6 +9,7 @@ import {
   PopoverTrigger,
 } from "@codebase/presentation";
 
+import { moveListItem } from "../chip-menu/chip-menu.utilities";
 import { QueryCascader } from "../query-cascader/query-cascader";
 
 import { STRIP_CLASS_NAME, TITLE } from "./calendar-group-strip.constants";
@@ -102,10 +103,24 @@ export function CalendarGroupStrip(
             />
           </PopoverContent>
         </Popover>
-        {grouping.map((level) => (
+        {grouping.map((level, index) => (
           <GroupLevelChip
             key={level.field}
             label={labelGroupLevel(level, fields)}
+            onMoveLeft={
+              index === 0
+                ? undefined
+                : () => {
+                    onGroupingChange(moveListItem(grouping, index, -1));
+                  }
+            }
+            onMoveRight={
+              index === grouping.length - 1
+                ? undefined
+                : () => {
+                    onGroupingChange(moveListItem(grouping, index, 1));
+                  }
+            }
             onRemove={() => {
               onGroupingChange(
                 grouping.filter((other) => other.field !== level.field),

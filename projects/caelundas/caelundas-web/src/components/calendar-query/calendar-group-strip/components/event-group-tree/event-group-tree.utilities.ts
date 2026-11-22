@@ -68,35 +68,26 @@ export function buildEventGroups(
 }
 
 /**
- * Orders every level of a group tree by a sort; the groups as built when there is none.
+ * Orders every level of a group tree by sorts, the first sort first and each later one breaking its ties; the groups as built when there are none.
  */
 export function sortEventGroups(
   nodes: EventGroupNode[],
-  sort: GroupSort | undefined,
+  sorts: readonly GroupSort[] | undefined,
 ): EventGroupNode[] {
-  if (sort === undefined) {
+  if (sorts === undefined || sorts.length === 0) {
     return nodes;
   }
 
-  const sign = sort.direction === "asc" ? 1 : -1;
-  const measure = (node: EventGroupNode): number | string => {
-    if (sort.key === "count") {
-      return node.count;
+  const compare = (left: EventGroupNode, right: EventGroupNode): number => {
+    for (const sort of sorts) {
+      const result = compareBy(sort, left, right);
+
+      if (result !== 0) {
+        return result;
+      }
     }
 
-    return sort.key === "first"
-      ? (node.events[0]?.start.getTime() ?? 0)
-      : node.label;
-  };
-  const compare = (left: EventGroupNode, right: EventGroupNode): number => {
-    const [one, other] = [measure(left), measure(right)];
-
-    return (
-      sign *
-      (typeof one === "string"
-        ? one.localeCompare(String(other))
-        : one - Number(other))
-    );
+    return 0;
   };
   const sorted = nodes.toSorted(compare);
   // A loop rather than recursion keeps the stack flat however deep it goes.
@@ -135,6 +126,26 @@ function collectGroups(
   }
 
   return [...buckets.values()];
+}
+
+/**
+ * How two groups order under one sort.
+ */
+function compareBy(
+  sort: GroupSort,
+  left: EventGroupNode,
+  right: EventGroupNode,
+): number {
+  const sign = sort.direction === "asc" ? 1 : -1;
+
+  if (sort.key === "name") {
+    return sign * left.label.localeCompare(right.label);
+  }
+
+  const measure = (node: EventGroupNode): number =>
+    sort.key === "count" ? node.count : (node.events[0]?.start.getTime() ?? 0);
+
+  return sign * (measure(left) - measure(right));
 }
 
 /**

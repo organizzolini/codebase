@@ -198,7 +198,32 @@ describe("event group tree", () => {
       [{ direction: "desc", key: "count" }, ["Venus", "Mars", "Moon"]],
       [{ direction: "asc", key: "first" }, ["Venus", "Moon", "Mars"]],
     ] as const)("orders by %j", (sort, expected) => {
-      expect(labels(sortEventGroups(nodes(), sort))).toStrictEqual(expected);
+      expect(labels(sortEventGroups(nodes(), [sort]))).toStrictEqual(expected);
+    });
+
+    it("breaks the ties of one sort with the next", () => {
+      const tied = [
+        node("Mars", 5, "2026-03-01"),
+        node("Moon", 5, "2026-02-01"),
+        node("Venus", 9, "2026-01-01"),
+      ];
+
+      expect(
+        labels(
+          sortEventGroups(tied, [
+            { direction: "asc", key: "count" },
+            { direction: "desc", key: "name" },
+          ]),
+        ),
+      ).toStrictEqual(["Moon", "Mars", "Venus"]);
+    });
+
+    it("leaves the groups as built for an empty list of sorts", () => {
+      expect(labels(sortEventGroups(nodes(), []))).toStrictEqual([
+        "Mars",
+        "Venus",
+        "Moon",
+      ]);
     });
 
     it("orders the groups under each group too", () => {
@@ -209,7 +234,7 @@ describe("event group tree", () => {
             node("A", 2, "2026-01-02"),
           ]),
         ],
-        { direction: "asc", key: "name" },
+        [{ direction: "asc", key: "name" }],
       );
 
       expect(labels(parent?.children ?? [])).toStrictEqual(["A", "Z"]);

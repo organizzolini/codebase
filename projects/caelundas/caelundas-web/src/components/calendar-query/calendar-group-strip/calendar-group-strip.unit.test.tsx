@@ -66,14 +66,25 @@ describe(CalendarGroupStrip, () => {
     expect(group.textContent).toBe("GroupType");
   });
 
-  it("takes a level out with its chip", () => {
+  it("takes a level out from its ellipsis menu", async () => {
     const { onGroupingChange } = renderStrip([TYPE]);
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Stop grouping by Type" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Type options" }));
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
 
     expect(onGroupingChange).toHaveBeenCalledWith([]);
+  });
+
+  it("moves a level left or right from its menu", async () => {
+    const other: EventGroupLevel = { depth: 1, field: "tag:other" };
+    const { onGroupingChange } = renderStrip([TYPE, other]);
+
+    fireEvent.click(screen.getByRole("button", { name: "Type options" }));
+    fireEvent.click(
+      await screen.findByRole("menuitem", { name: "Move right" }),
+    );
+
+    expect(onGroupingChange).toHaveBeenLastCalledWith([other, TYPE]);
   });
 
   it("adds a level from the searchable list", async () => {

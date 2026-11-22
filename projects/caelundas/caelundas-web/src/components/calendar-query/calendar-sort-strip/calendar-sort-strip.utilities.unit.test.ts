@@ -2,23 +2,28 @@ import { describe, expect, it } from "vitest";
 
 import {
   createSortItems,
-  flipSortDirection,
-  toSort,
+  flipSortAt,
+  labelDefaultSort,
+  toSorts,
   toSortValue,
 } from "./calendar-sort-strip.utilities";
 
+import type { GroupSort } from "../calendar-group-strip/components/event-group-tree/event-group-tree.types";
+
+const NAME_ASC: GroupSort = { direction: "asc", key: "name" };
+const COUNT_DESC: GroupSort = { direction: "desc", key: "count" };
+
 describe("calendar-sort-strip utilities", () => {
   describe(createSortItems, () => {
-    it("offers the default order, then each key with a direction beneath it", () => {
+    it("offers each key with a direction beneath it", () => {
       const items = createSortItems();
 
       expect(items.map((item) => item.value)).toStrictEqual([
-        "default",
         "name",
         "count",
         "first",
       ]);
-      expect(items[2]?.children?.map((child) => child.value)).toStrictEqual([
+      expect(items[1]?.children?.map((child) => child.value)).toStrictEqual([
         "count:asc",
         "count:desc",
       ]);
@@ -26,41 +31,62 @@ describe("calendar-sort-strip utilities", () => {
   });
 
   describe(toSortValue, () => {
-    it("ticks the key and direction, or the default order for no sort", () => {
-      expect(toSortValue({ direction: "desc", key: "count" })).toStrictEqual([
+    it("ticks each sort's key and direction", () => {
+      expect(toSortValue([NAME_ASC, COUNT_DESC])).toStrictEqual([
+        "name:asc",
         "count:desc",
       ]);
-      expect(toSortValue(undefined)).toStrictEqual(["default"]);
+      expect(toSortValue([])).toStrictEqual([]);
     });
   });
 
-  describe(toSort, () => {
-    it("reads a key and direction, and nothing for the default order or a stale value", () => {
-      expect(toSort(["first:asc"])).toStrictEqual({
-        direction: "asc",
-        key: "first",
-      });
-      expect(toSort(["default"])).toBeUndefined();
-      expect(toSort(["narnia:asc"])).toBeUndefined();
-      expect(toSort(["name:sideways"])).toBeUndefined();
-      expect(toSort([])).toBeUndefined();
+  describe(toSorts, () => {
+    it("adds a sort ticked in the list after the others", () => {
+      expect(toSorts(["name:asc", "count:desc"], [NAME_ASC])).toStrictEqual([
+        NAME_ASC,
+        COUNT_DESC,
+      ]);
+    });
+
+    it("replaces the other direction of a key ticked again", () => {
+      expect(
+        toSorts(
+          ["name:asc", "name:desc", "count:desc"],
+          [NAME_ASC, COUNT_DESC],
+        ),
+      ).toStrictEqual([COUNT_DESC, { direction: "desc", key: "name" }]);
+    });
+
+    it("takes out a sort that is cleared, and gives none when none are left", () => {
+      expect(toSorts(["name:asc"], [NAME_ASC, COUNT_DESC])).toStrictEqual([
+        NAME_ASC,
+      ]);
+      expect(toSorts([], [NAME_ASC])).toBeUndefined();
+    });
+
+    it("ignores a stale value, or no change", () => {
+      expect(toSorts(["narnia:asc"], [])).toBeUndefined();
+      expect(toSorts(["name:sideways"], [])).toBeUndefined();
+      expect(toSorts(["name:asc"], [NAME_ASC])).toStrictEqual([NAME_ASC]);
     });
   });
 
-  describe(flipSortDirection, () => {
-    it("turns the same sort the other way round", () => {
-      expect(
-        flipSortDirection({ direction: "asc", key: "name" }),
-      ).toStrictEqual({
-        direction: "desc",
-        key: "name",
-      });
-      expect(
-        flipSortDirection({ direction: "desc", key: "name" }),
-      ).toStrictEqual({
-        direction: "asc",
-        key: "name",
-      });
+  describe(flipSortAt, () => {
+    it("turns only the sort at the index the other way round", () => {
+      expect(flipSortAt([NAME_ASC, COUNT_DESC], 1)).toStrictEqual([
+        NAME_ASC,
+        { direction: "asc", key: "count" },
+      ]);
+      expect(flipSortAt([NAME_ASC], 0)).toStrictEqual([
+        { direction: "desc", key: "name" },
+      ]);
+    });
+  });
+
+  describe(labelDefaultSort, () => {
+    it("names the first group, or the names of groups with none", () => {
+      expect(labelDefaultSort([], [])).toBe("Name");
+      expect(labelDefaultSort([{ field: "tag:type" }], [])).toBe("tag:type");
     });
   });
 });

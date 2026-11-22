@@ -3,23 +3,32 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { CalendarSortStrip } from "./calendar-sort-strip";
 
+import type { EventGroupLevel } from "../calendar-group-strip/components/event-group-model/event-groups.types";
 import type { GroupSort } from "../calendar-group-strip/components/event-group-tree/event-group-tree.types";
 
-const NO_SORT = undefined satisfies GroupSort | undefined;
+const NO_SORT = undefined satisfies readonly GroupSort[] | undefined;
+const NAME_ASC: GroupSort = { direction: "asc", key: "name" };
+const COUNT_DESC: GroupSort = { direction: "desc", key: "count" };
 
 function renderStrip(
-  sort: GroupSort | undefined,
-  view: "timeline" | "week" = "timeline",
+  sort: readonly GroupSort[] | undefined,
+  options: Readonly<{
+    grouping?: readonly EventGroupLevel[];
+    view?: "timeline" | "week";
+  }> = {},
 ): {
-  onSortChange: ReturnType<typeof vi.fn<(sort: GroupSort | undefined) => void>>;
+  onSortChange: ReturnType<
+    typeof vi.fn<(sort: GroupSort[] | undefined) => void>
+  >;
 } {
-  const onSortChange = vi.fn<(sort: GroupSort | undefined) => void>();
+  const onSortChange = vi.fn<(sort: GroupSort[] | undefined) => void>();
 
   render(
     <CalendarSortStrip
+      grouping={options.grouping ?? []}
       onSortChange={onSortChange}
       sort={sort}
-      view={view}
+      view={options.view ?? "timeline"}
     />,
   );
 
@@ -48,53 +57,93 @@ describe(CalendarSortStrip, () => {
   });
 
   it("draws nothing outside the timeline, which orders by time", () => {
-    renderStrip(undefined, "week");
+    renderStrip(NO_SORT, { view: "week" });
 
     expect(screen.queryByTestId("calendar-sort-strip")).toBeNull();
   });
 
-  it("shows only the Sort button while nothing is sorted", () => {
-    renderStrip(NO_SORT);
+  it("shows a default chip for the first group while nothing is sorted", () => {
+    renderStrip(NO_SORT, { grouping: [{ field: "tag:type" }] });
 
-    expect(screen.getByRole("group", { name: "Sort" }).textContent).toBe(
-      "Sort",
-    );
+    expect(
+      screen.getByRole("button", {
+        name: "Sorted by tag:type, ascending; reverse",
+      }),
+    ).toBeDefined();
+    expect(screen.queryByRole("button", { name: /options$/u })).toBeNull();
   });
 
-  it("names the sort on a chip that reverses it", () => {
-    const { onSortChange } = renderStrip({ direction: "asc", key: "count" });
+  it("sorts the default chip's groups the other way when it is pressed", () => {
+    const { onSortChange } = renderStrip(NO_SORT);
 
     fireEvent.click(
       screen.getByRole("button", {
-        name: "Sorted by Event count, ascending; reverse",
+        name: "Sorted by Name, ascending; reverse",
       }),
     );
 
-    expect(onSortChange).toHaveBeenCalledWith({
-      direction: "desc",
-      key: "count",
-    });
+    expect(onSortChange).toHaveBeenCalledWith([
+      { direction: "desc", key: "name" },
+    ]);
   });
 
-  it("sorts by the direction picked beneath a key", async () => {
-    const { onSortChange } = renderStrip(NO_SORT);
+  it("names each sort on a chip that reverses it", () => {
+    const { onSortChange } = renderStrip([COUNT_DESC]);
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Sorted by Event count, descending; reverse",
+      }),
+    );
+
+    expect(onSortChange).toHaveBeenCalledWith([
+      { direction: "asc", key: "count" },
+    ]);
+  });
+
+  it("adds a sort from the list", async () => {
+    const { onSortChange } = renderStrip([NAME_ASC]);
 
     fireEvent.click(screen.getByRole("button", { name: "Sort" }));
-    fireEvent.click(await screen.findByText("Name"));
+    fireEvent.click(await screen.findByText("Event count"));
     fireEvent.click(await screen.findByText("Descending"));
 
-    expect(onSortChange).toHaveBeenCalledWith({
-      direction: "desc",
-      key: "name",
-    });
+    expect(onSortChange).toHaveBeenCalledWith([NAME_ASC, COUNT_DESC]);
   });
 
-  it("clears the sort with the default order", async () => {
-    const { onSortChange } = renderStrip({ direction: "desc", key: "name" });
+  it("moves a sort right, and left, from its ellipsis menu", async () => {
+    const { onSortChange } = renderStrip([NAME_ASC, COUNT_DESC]);
 
-    fireEvent.click(screen.getByRole("button", { name: "Sort" }));
-    fireEvent.click(await screen.findByText("Default order"));
+    fireEvent.click(screen.getByRole("button", { name: "Name options" }));
+    fireEvent.click(
+      await screen.findByRole("menuitem", { name: "Move right" }),
+    );
 
-    expect(onSortChange).toHaveBeenCalledWith(undefined);
+    expect(onSortChange).toHaveBeenLastCalledWith([COUNT_DESC, NAME_ASC]);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Event count options" }),
+    );
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Move left" }));
+
+    expect(onSortChange).toHaveBeenLastCalledWith([COUNT_DESC, NAME_ASC]);
+  });
+
+  it("removes a sort from its ellipsis menu, and clears the last one", async () => {
+    const { onSortChange } = renderStrip([NAME_ASC, COUNT_DESC]);
+
+    fireEvent.click(screen.getByRole("button", { name: "Name options" }));
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
+
+    expect(onSortChange).toHaveBeenLastCalledWith([COUNT_DESC]);
+  });
+
+  it("clears the sorts when the only one is removed", async () => {
+    const { onSortChange } = renderStrip([NAME_ASC]);
+
+    fireEvent.click(screen.getByRole("button", { name: "Name options" }));
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
+
+    expect(onSortChange.mock.lastCall).toStrictEqual([undefined]);
   });
 });

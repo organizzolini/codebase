@@ -32,9 +32,9 @@ export interface CalendarQueryControlsProperties {
   grouping: readonly EventGroupLevel[];
   onFilterChange: (filter: EventFilterQuery) => void;
   onGroupingChange: (grouping: EventGroupLevel[]) => void;
-  onSortChange: (sort: GroupSort | undefined) => void;
+  onSortChange: (sort: readonly GroupSort[] | undefined) => void;
   presets: readonly ResolvedPreset[];
-  sort: GroupSort | undefined;
+  sort: readonly GroupSort[] | undefined;
   view: CalendarViewName;
 }
 
@@ -95,6 +95,8 @@ export function CalendarQueryControls(
       />
       <CalendarSortStrip
         className="contents"
+        facets={facets}
+        grouping={grouping}
         onSortChange={onSortChange}
         sort={sort}
         view={view}

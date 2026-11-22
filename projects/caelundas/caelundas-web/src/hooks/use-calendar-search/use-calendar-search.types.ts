@@ -28,7 +28,7 @@ export interface UseCalendarSearchResult {
   handleFilterChange: (filter: EventFilterQuery) => void;
   handleGroupingChange: (grouping: EventGrouping) => void;
   handleScaleChange: (scale: TimelineScale) => void;
-  handleSortChange: (sort: GroupSort | undefined) => void;
+  handleSortChange: (sort: readonly GroupSort[] | undefined) => void;
   handleSymbolsChange: (symbols: CalendarSymbols) => void;
   handleViewChange: (view: CalendarViewName) => void;
   /**

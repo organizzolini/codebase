@@ -1,3 +1,5 @@
+import type { GroupSort } from "../calendar-group-strip/components/event-group-tree/event-group-tree.types";
+
 // ♟️ Constants
 
 export const TITLE = "Sort";
@@ -30,6 +32,8 @@ export const STRIP_CLASS_NAME =
   "[&>*:not(:first-child)]:rounded-l-none [&>*:not(:first-child)]:border-l-0 [&>*:not(:last-child)]:rounded-r-none";
 
 /**
- * The choice that clears the sort, which leaves the groups as built.
+ * The sort when none is chosen: the first group's names, A to Z.
  */
-export const DEFAULT_ORDER = "default";
+export const DEFAULT_SORTS: readonly GroupSort[] = [
+  { direction: "asc", key: "name" },
+];

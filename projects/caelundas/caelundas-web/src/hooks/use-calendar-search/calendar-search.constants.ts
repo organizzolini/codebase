@@ -67,3 +67,5 @@ export const groupSortSchema = z.object({
   direction: z.enum(["asc", "desc"]),
   key: z.enum(["count", "first", "name"]),
 });
+
+export const groupSortsSchema = z.array(groupSortSchema);

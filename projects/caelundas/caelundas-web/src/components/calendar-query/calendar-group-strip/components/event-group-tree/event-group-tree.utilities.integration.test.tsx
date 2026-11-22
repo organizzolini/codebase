@@ -153,10 +153,9 @@ describe("event grouping", () => {
     await renderCalendarRoute("/?view=agenda&date=2026-03-04");
 
     fireEvent.click(
-      within(await findToolbar()).getByRole("button", {
-        name: "Stop grouping by Type",
-      }),
+      within(await findToolbar()).getByRole("button", { name: "Type options" }),
     );
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
     fireEvent.click(within(await openGroupBy()).getByText("Month"));
 
     await expect(findAgendaHeadings(3)).resolves.toStrictEqual([
@@ -166,9 +165,10 @@ describe("event grouping", () => {
 
     fireEvent.click(
       within(await findToolbar()).getByRole("button", {
-        name: "Stop grouping by Month",
+        name: "Month options",
       }),
     );
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
 
     await waitFor(async () => {
       await expect(readGrouping()).resolves.toBe("Group");

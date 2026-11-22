@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { createEventGroupFields } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 import { VirtualList } from "../virtual-list/virtual-list";
@@ -26,6 +26,10 @@ import type { ReactNode } from "react";
  */
 export interface CalendarAgendaProperties {
   className?: string;
+  /**
+   * Whether similar events on a day are gathered under an opening row.
+   */
+  clusters?: boolean | undefined;
   events: readonly CalendarEventRecord[];
   /**
    * The tag roots the data has, which name the groups.
@@ -53,6 +57,7 @@ export function CalendarAgenda(
 ): ReactNode {
   const {
     className,
+    clusters = false,
     events,
     facets = NO_FACETS,
     grouping = NO_GROUPING,
@@ -61,23 +66,40 @@ export function CalendarAgenda(
   } = properties;
 
   // 🪝 Hooks
+  const [expanded, setExpanded] = useState<ReadonlySet<string>>(new Set());
   const hasLater = onShowLater !== undefined;
   const fields = useMemo(() => createEventGroupFields(facets), [facets]);
   const rows = useMemo(
     (): AgendaListRow[] => [
-      ...toGroupedAgendaRows(events, range, { fields, levels: grouping }),
+      ...toGroupedAgendaRows(events, range, {
+        cluster: clusters ? { expanded } : undefined,
+        fields,
+        levels: grouping,
+      }),
       ...(hasLater ? [LATER_ROW] : []),
     ],
-    [events, fields, grouping, hasLater, range],
+    [clusters, events, expanded, fields, grouping, hasLater, range],
   );
 
   // 🏗 Setup
 
   // 💪 Handlers
+  const handleToggleCluster = (id: string): void => {
+    setExpanded((previous) => {
+      const next = new Set(previous);
+
+      if (!next.delete(id)) {
+        next.add(id);
+      }
+
+      return next;
+    });
+  };
   const renderRow = (row: AgendaListRow): ReactNode => (
     <AgendaRowContent
       dayLevel={grouping.length}
       onShowLater={onShowLater}
+      onToggleCluster={handleToggleCluster}
       row={row}
       timeZone={range.timeZone}
     />

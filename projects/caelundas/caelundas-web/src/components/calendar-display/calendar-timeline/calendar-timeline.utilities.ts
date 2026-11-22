@@ -59,7 +59,7 @@ export function toTimelineRows(
   grouping: EventGrouping,
   options: Readonly<{
     fields: readonly EventGroupField[];
-    sort?: GroupSort | undefined;
+    sort?: readonly GroupSort[] | undefined;
   }>,
 ): TimelineRows {
   const { fields, sort } = options;

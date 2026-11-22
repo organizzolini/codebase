@@ -73,9 +73,9 @@ export interface CalendarSearch {
   "sky.top"?: SkySearchValue | undefined;
   "sky.vFov"?: SkySearchValue | undefined;
   /**
-   * How the timeline orders its groups; as built when absent.
+   * How the timeline orders its groups, the first sort first; by the first group's name when absent.
    */
-  sort?: GroupSort | undefined;
+  sort?: readonly GroupSort[] | undefined;
   /**
    * `emojis` when events are drawn with their emoji; their icons when absent.
    */

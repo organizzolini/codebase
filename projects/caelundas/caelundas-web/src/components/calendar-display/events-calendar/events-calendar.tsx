@@ -87,7 +87,7 @@ export interface EventsCalendarProperties {
   /**
    * How the timeline orders its groups; as built when absent.
    */
-  sort?: GroupSort | undefined;
+  sort?: readonly GroupSort[] | undefined;
   timeZone: string;
   /**
    * The month when absent.

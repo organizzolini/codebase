@@ -96,9 +96,10 @@ describe("calendar views", () => {
   });
 
   it("renders only the agenda rows on screen", async () => {
-    await renderCalendarRoute(`/?view=agenda&date=2026-03-10${UNGROUPED}`, {
-      api: withBusyEvents("2026-03-10T14:00:00.000Z", 500),
-    });
+    await renderCalendarRoute(
+      `/?view=agenda&date=2026-03-10${UNGROUPED}&clusters=false`,
+      { api: withBusyEvents("2026-03-10T14:00:00.000Z", 500) },
+    );
 
     const agenda = await screen.findByRole("region", { name: "Agenda" });
     const shown = within(agenda).getAllByRole("article");
@@ -106,6 +107,27 @@ describe("calendar views", () => {
     expect(shown[1]?.getAttribute("aria-label")).toBe("Busy Event 1, 10:00 AM");
     expect(shown.length).toBeGreaterThan(5);
     expect(shown.length).toBeLessThan(50);
+  });
+
+  it("gathers similar agenda events under a row that opens", async () => {
+    await renderCalendarRoute(`/?view=agenda&date=2026-03-10${UNGROUPED}`, {
+      api: withBusyEvents("2026-03-10T14:00:00.000Z", 500),
+    });
+
+    const agenda = await screen.findByRole("region", { name: "Agenda" });
+    const toggle = await within(agenda).findByRole("button", {
+      expanded: false,
+    });
+
+    expect(within(agenda).getAllByRole("article").length).toBeLessThan(10);
+
+    fireEvent.click(toggle);
+
+    await waitFor(() => {
+      expect(
+        within(agenda).getAllByRole("button", { expanded: true }),
+      ).toContain(toggle);
+    });
   });
 
   it("opens a busy day's overflow as a windowed list", async () => {

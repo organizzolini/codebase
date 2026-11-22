@@ -11,12 +11,13 @@ import {
   calendarDateSchema,
   filterGroupSchema,
   groupLevelSchema,
-  groupSortSchema,
+  groupSortsSchema,
   levelsSchema,
   skySearchValueSchema,
 } from "./calendar-search.constants";
 
 import type { EventGrouping } from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
+import type { GroupSort } from "../../components/calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type { CalendarSearch, SkySearchValue } from "./calendar-search.types";
 
 /**
@@ -51,7 +52,7 @@ export function readCalendarSearch(
     filter: filter === undefined ? undefined : normalizeEventFilter(filter),
     group: parseGrouping(search["group"]),
     scale: parseTimelineScale(search["scale"]),
-    sort: groupSortSchema.safeParse(search["sort"]).data,
+    sort: parseSorts(search["sort"]),
     symbols: parseCalendarSymbols(search["symbols"]),
     view: parseCalendarView(search["view"]),
   };
@@ -104,4 +105,15 @@ function parseGrouping(value: unknown): EventGrouping | undefined {
  */
 function parseSkyValue(value: unknown): SkySearchValue | undefined {
   return skySearchValueSchema.safeParse(value).data;
+}
+
+/**
+ * Reads the sorts from the link, one object or a list of them, first sort first; none when there are none.
+ */
+function parseSorts(value: unknown): GroupSort[] | undefined {
+  const sorts = groupSortsSchema.safeParse(
+    Array.isArray(value) ? value : [value],
+  ).data;
+
+  return sorts === undefined || sorts.length === 0 ? undefined : sorts;
 }

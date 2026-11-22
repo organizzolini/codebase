@@ -1,4 +1,5 @@
 import { buildEventGroups } from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.utilities";
+import { getEventKind } from "../events-calendar/components/calendar-colors/calendar-colors.utilities";
 import { AGENDA_DAY_COUNT } from "../events-calendar/components/calendar-views/calendar-views.constants";
 import {
   addCalendarDays,
@@ -6,6 +7,7 @@ import {
 } from "../events-calendar/components/calendar-window/calendar-window.utilities";
 
 import {
+  AGENDA_CLUSTER_MINIMUM,
   AGENDA_ROW_HEIGHTS,
   EVENT_COUNT_RULES,
   EVENT_ROW_BASE_HEIGHT,
@@ -25,6 +27,8 @@ import type {
   CalendarEventTag,
 } from "../events-calendar/components/calendar-loader/calendar-records.types";
 import type {
+  AgendaClustering,
+  AgendaEventRow,
   AgendaListRow,
   AgendaRange,
   AgendaRow,
@@ -72,6 +76,10 @@ export function getAgendaRowHeight(row: AgendaListRow, width: number): number {
 export function getAgendaRowKey(row: AgendaListRow): string {
   if (row.kind === "group") {
     return row.node.id;
+  }
+
+  if (row.kind === "cluster") {
+    return row.id;
   }
 
   if (row.kind === "later") {
@@ -126,8 +134,16 @@ export function toAgendaRows(
 
     if (listing !== null) {
       const rows = byDay.get(listing.day) ?? [];
+      const kindLabel = getEventKind(record)?.label ?? "Other";
 
-      rows.push({ group, kind: "event", ongoing: listing.ongoing, record });
+      rows.push({
+        clusterKey: `${listing.ongoing ? "ongoing" : "day"}|${kindLabel}`,
+        group,
+        kind: "event",
+        kindLabel,
+        ongoing: listing.ongoing,
+        record,
+      });
       byDay.set(listing.day, rows);
     }
   }
@@ -144,12 +160,15 @@ export function toGroupedAgendaRows(
   events: readonly CalendarEventRecord[],
   range: AgendaRange,
   grouping: Readonly<{
+    cluster?: AgendaClustering | undefined;
     fields: readonly EventGroupField[];
     levels: EventGrouping;
   }>,
 ): AgendaRow[] {
+  const { cluster } = grouping;
+
   if (grouping.levels.length === 0) {
-    return toAgendaRows(events, range);
+    return clusterAgendaRows(toAgendaRows(events, range), cluster);
   }
 
   const listed = events.filter(
@@ -173,7 +192,75 @@ export function toGroupedAgendaRows(
     }
   }
 
-  return rows;
+  return clusterAgendaRows(rows, cluster);
+}
+
+/**
+ * Gathers each day's similar events under a row that opens, when clustering; the rows as they are otherwise.
+ */
+function clusterAgendaRows(
+  rows: readonly AgendaRow[],
+  cluster: AgendaClustering | undefined,
+): AgendaRow[] {
+  if (cluster === undefined) {
+    return [...rows];
+  }
+
+  const result: AgendaRow[] = [];
+  let day = "";
+  let events: AgendaEventRow[] = [];
+
+  for (const row of rows) {
+    if (row.kind === "event") {
+      events.push(row);
+    } else {
+      result.push(...clusterDayRows(events, cluster, day), row);
+      events = [];
+      day = row.kind === "day" ? row.day : day;
+    }
+  }
+
+  return [...result, ...clusterDayRows(events, cluster, day)];
+}
+
+/**
+ * Gathers a day's events of one kind, ongoing or not, into a cluster row when there are enough of them, listing the events beneath it only while it is open.
+ */
+function clusterDayRows(
+  rows: readonly AgendaEventRow[],
+  cluster: AgendaClustering,
+  day: string,
+): AgendaRow[] {
+  const counts = countKinds(rows);
+  const seen = new Set<string>();
+  const result: AgendaRow[] = [];
+
+  for (const row of rows) {
+    const key = row.clusterKey;
+
+    if (!isClustered(key, counts)) {
+      result.push(row);
+      continue;
+    }
+
+    const id = `${row.group ?? ""}|${day}|${key}`;
+
+    if (!seen.has(key)) {
+      seen.add(key);
+      result.push(
+        toClusterRow(row, id, {
+          count: counts.get(key) ?? 0,
+          expanded: cluster.expanded.has(id),
+        }),
+      );
+    }
+
+    if (cluster.expanded.has(id)) {
+      result.push(row);
+    }
+  }
+
+  return result;
 }
 
 /**
@@ -187,6 +274,21 @@ function compareStarts(
     left.start.getTime() - right.start.getTime() ||
     left.summary.localeCompare(right.summary)
   );
+}
+
+/**
+ * How many of a day's events there are of each kind, told apart by whether they were already under way.
+ */
+function countKinds(rows: readonly AgendaEventRow[]): Map<string, number> {
+  const counts = new Map<string, number>();
+
+  for (const row of rows) {
+    const key = row.clusterKey;
+
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+
+  return counts;
 }
 
 /**
@@ -206,4 +308,32 @@ function getAgendaListing(
   const day = ongoing ? from : startDay;
 
   return day >= from && day < through ? { day, ongoing } : null;
+}
+
+/**
+ * Whether enough of a day's events share a kind to be gathered.
+ */
+function isClustered(
+  key: string,
+  counts: ReadonlyMap<string, number>,
+): boolean {
+  return (counts.get(key) ?? 0) >= AGENDA_CLUSTER_MINIMUM;
+}
+
+/**
+ * The row that stands for a cluster, led by an event of its kind.
+ */
+function toClusterRow(
+  first: AgendaEventRow,
+  id: string,
+  size: Readonly<{ count: number; expanded: boolean }>,
+): AgendaRow {
+  return {
+    ...size,
+    group: first.group,
+    id,
+    kind: "cluster",
+    label: `${first.ongoing ? "Ongoing " : ""}${first.kindLabel}`,
+    ongoing: first.ongoing,
+  };
 }
