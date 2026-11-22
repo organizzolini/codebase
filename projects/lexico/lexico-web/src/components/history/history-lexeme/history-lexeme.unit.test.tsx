@@ -30,9 +30,9 @@ const ENTRY: LookupEntry = {
 const RESULT: LexemeResult = {
   forms: [],
   id: "lexeme-arma",
-  identifiers: ["nominative plural"],
   lemma: "arma",
   match: { kind: "exact-form" },
+  matchedForms: [{ groups: [["nominative", "plural"]], text: "arma" }],
   partOfSpeech: "noun",
   principalParts: ["arma"],
   pronunciations: [],

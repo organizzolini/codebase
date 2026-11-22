@@ -4,8 +4,6 @@ export const FINITE_KIND = "FiniteVerbForm";
 
 export const MOODS = ["indicative", "subjunctive", "imperative"];
 
-export const NON_FINITE_ABBREVIATION = "NONF";
-
 export const NON_FINITE_TAB = "non-finite";
 
 export const NUMBER_AXES = ["singular", "plural"].map((number) => ({

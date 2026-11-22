@@ -1,14 +1,12 @@
-import { Card, CardContent, Separator } from "@codebase/presentation";
+import { Card, CardContent } from "@codebase/presentation";
 
 import { LexemeEtymology } from "../lexeme-etymology/lexeme-etymology";
 import { LexemeForms } from "../lexeme-forms/lexeme-forms";
 import { LexemeHeader } from "../lexeme-header/lexeme-header";
-import { LexemeIdentifiers } from "../lexeme-identifiers/lexeme-identifiers";
 import { LexemeMatch } from "../lexeme-match/lexeme-match";
+import { LexemeMatchedForms } from "../lexeme-matched-forms/lexeme-matched-forms";
 import { LexemePronunciations } from "../lexeme-pronunciations/lexeme-pronunciations";
 import { LexemeTranslations } from "../lexeme-translations/lexeme-translations";
-
-import { FORM_MATCHES } from "./lexeme-card.constants";
 
 import type { LoadLexemeForms } from "../lexeme-forms/lexeme-forms.types";
 import type { LexemeResult } from "./lexeme-card.types";
@@ -29,7 +27,7 @@ export interface LexemeCardProperties {
 // 🧩 Component
 
 /**
- * One dictionary entry: its parts, inflection, pronunciation, meaning, and origin, plus the matched inflected form, if any.
+ * One dictionary entry: its parts, inflection, pronunciation, meaning, and origin, plus the inflected forms the search matched, if any.
  */
 export function LexemeCard(
   properties: Readonly<LexemeCardProperties>,
@@ -39,8 +37,6 @@ export function LexemeCard(
   // 🪝 Hooks
 
   // 🏗 Setup
-  const matchedForm =
-    result.source !== undefined && FORM_MATCHES.has(result.source);
 
   // 💪 Handlers
 
@@ -69,14 +65,11 @@ export function LexemeCard(
           partOfSpeech={result.partOfSpeech}
           principalParts={result.principalParts}
         />
-        <Separator />
         <CardContent>
-          {matchedForm && (
-            <LexemeIdentifiers
-              enclitic={result.enclitic}
-              identifiers={result.identifiers}
-            />
-          )}
+          <LexemeMatchedForms
+            enclitic={result.enclitic}
+            matches={result.matchedForms}
+          />
           <LexemeTranslations translations={result.translations} />
           <LexemeForms
             lexemeId={result.id}

@@ -784,7 +784,21 @@ describe("texts.$slug", () => {
                     { node: { data: "gear" } },
                   ],
                 },
-                wordForms: { edges: [] },
+                wordForms: {
+                  edges: [
+                    {
+                      node: {
+                        form: {
+                          __typename: "NominalForm",
+                          case: "nominative",
+                          number: "plural",
+                        },
+                        id: "form-arma",
+                        word: "arma",
+                      },
+                    },
+                  ],
+                },
               },
             },
           }),
@@ -805,7 +819,8 @@ describe("texts.$slug", () => {
       const card = await within(panel).findByTestId("lexeme-card");
 
       expect(within(card).getByText("gear")).toBeDefined();
-      expect(within(card).getByLabelText("nominative plural")).toBeDefined();
+      expect(within(card).getByText("NOM")).toBeDefined();
+      expect(within(card).getByText("PL")).toBeDefined();
     });
 
     it("stops highlighting a hovered entry when the panel closes", async () => {

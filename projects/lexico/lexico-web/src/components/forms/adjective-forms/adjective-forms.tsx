@@ -15,6 +15,7 @@ import {
   FORMS_TAB,
   FORMS_TAB_LIST,
 } from "../forms-table/forms-table.constants";
+import { InflectionTag } from "../inflection-tag/inflection-tag";
 
 import { CASES, GENDERS, NUMBERS } from "./adjective-forms.constants";
 
@@ -89,10 +90,11 @@ export function AdjectiveForms(
               {genders.map((tab) => (
                 <TabsTrigger
                   key={tab}
-                  className={`${FORMS_TAB} capitalize`}
+                  aria-label={tab}
+                  className={FORMS_TAB}
                   value={tab}
                 >
-                  {tab}
+                  <InflectionTag value={tab} />
                 </TabsTrigger>
               ))}
             </TabsList>

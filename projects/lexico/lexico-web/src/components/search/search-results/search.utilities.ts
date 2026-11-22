@@ -5,6 +5,7 @@ import {
   SearchEnglishDocument,
   SearchLatinDocument,
 } from "../../../graphql/generated/operations";
+import { matchForms } from "../../lexeme/lexeme-matched-forms/lexeme-matched-forms.utilities";
 
 import {
   connectionSchema,
@@ -145,14 +146,14 @@ export function toLexemeInflection(
  * One result as the page shows it, from one as the API returns it.
  */
 export function toLexemeResult(node: ResultNode, query: string): LexemeResult {
-  const { distance, enclitic, identifiers, lexeme, source } = node;
+  const { distance, enclitic, lexeme, source } = node;
+  const forms = toLexemeForms(lexeme);
 
   return {
     enclitic: enclitic ?? null,
     etymology: lexeme.etymology,
-    forms: toLexemeForms(lexeme),
+    forms,
     id: lexeme.id,
-    identifiers,
     inflection: toLexemeInflection(lexeme.inflection),
     lemma: lexeme.lemma,
     match: describeMatch({
@@ -161,6 +162,7 @@ export function toLexemeResult(node: ResultNode, query: string): LexemeResult {
       query,
       source,
     }),
+    matchedForms: matchForms(forms, query, enclitic),
     partOfSpeech: lexeme.partOfSpeech,
     principalParts: lexeme.principalParts.edges.flatMap(({ node: part }) =>
       part.text.slice(0, 1),

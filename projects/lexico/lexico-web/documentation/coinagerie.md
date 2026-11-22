@@ -31,10 +31,12 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **minify**:
 - **neo**:
 - **observer**: Browser IntersectionObserver the reader watches its load-more button with, so the next page loads as it scrolls into view.
+- **opus**: Latin noun, "work", whose nominative, vocative and accusative singular share one spelling, the sample for a matched form with several readings.
 - **perfect**: Verb tense name for the perfect, abbreviated PERF in identifiers and listed among the finite verb tenses.
 - **perseus**:
 - **printer**: Lucide icon marking the print year filter and sort attributes.
 - **pronunciation**: Spoken form of a lexeme, a list of phonetic variants with their variant label, rendered in the lexeme pronunciations section.
+- **radius**: Pill badge prop choosing rounded-corner or fully round ends, set to full for inflection tags.
 - **recognise**:
 - **spot**:
 - **sunrise**: Lucide icon marking the author start year sort attribute.

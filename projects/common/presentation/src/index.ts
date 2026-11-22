@@ -1,5 +1,9 @@
 // ReUI Components
 export {
+  Badge as PillBadge,
+  type BadgeProps as PillBadgeProps,
+} from "./components/reui/badge";
+export {
   Cascader,
   CascaderEmpty,
   CascaderList,

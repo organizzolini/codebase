@@ -22,7 +22,7 @@ import type { HistoryLexemeInput } from "./history-lexeme.types";
 export async function findHistoryLexeme(
   input: Readonly<HistoryLexemeInput>,
 ): Promise<LexemeResult | null> {
-  const { form, lexemeId, word } = input;
+  const { lexemeId, word } = input;
 
   if (lexemeId === undefined || lexemeId === null) {
     const [best] = await searchDictionary(word);
@@ -40,7 +40,7 @@ export async function findHistoryLexeme(
     {
       distance: null,
       enclitic: null,
-      identifiers: form === undefined || form === null ? [] : [form],
+      identifiers: [],
       lexeme: z.custom<ResultNode["lexeme"]>().parse(lexeme),
       score: 1,
       source: "WORD_EXACT",

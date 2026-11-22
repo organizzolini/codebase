@@ -1,12 +1,10 @@
 import { Tabs, TabsList, TabsTrigger } from "@codebase/presentation";
 
-import { ABBREVIATIONS } from "../../lexeme/lexeme-identifiers/lexeme-identifiers.constants";
 import {
   FORMS_TAB,
   FORMS_TAB_LIST,
 } from "../forms-table/forms-table.constants";
-
-import { NON_FINITE_ABBREVIATION } from "./verb-forms.constants";
+import { InflectionTag } from "../inflection-tag/inflection-tag";
 
 import type { ReactNode } from "react";
 
@@ -23,7 +21,7 @@ export interface AxisTabsProperties {
 // 🧩 Component
 
 /**
- * One row of tabs for a conjugation axis, such as moods, each tab abbreviated and carrying its full name for hover.
+ * One row of tabs for a conjugation axis, such as moods, each tab a colored pill and carrying its full name for hover.
  */
 export function AxisTabs(properties: Readonly<AxisTabsProperties>): ReactNode {
   const { className, onChange, options, value } = properties;
@@ -68,7 +66,7 @@ export function AxisTabs(properties: Readonly<AxisTabsProperties>): ReactNode {
                 title={name}
                 value={option}
               >
-                {ABBREVIATIONS[option] ?? NON_FINITE_ABBREVIATION}
+                <InflectionTag value={option} />
               </TabsTrigger>
             );
           })}

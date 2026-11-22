@@ -6,7 +6,7 @@ import {
   TableRow,
 } from "@codebase/presentation";
 
-import { ABBREVIATIONS } from "../../lexeme/lexeme-identifiers/lexeme-identifiers.constants";
+import { InflectionTag } from "../inflection-tag/inflection-tag";
 
 import type { FormsTableAxis } from "./forms-table.types";
 import type { ReactNode } from "react";
@@ -67,18 +67,18 @@ export function FormsTable(
                   >
                     {columnIndex === 0 && (
                       <span
-                        className="pointer-events-none absolute top-1 left-1.5 text-xs leading-none text-muted-foreground"
+                        className="pointer-events-none absolute top-1 left-1.5"
                         aria-hidden
                       >
-                        {ABBREVIATIONS[row.key] ?? row.label}
+                        <InflectionTag value={row.key} />
                       </span>
                     )}
                     {rowIndex === 0 && (
                       <span
-                        className="pointer-events-none absolute top-1 right-1.5 text-xs leading-none text-muted-foreground"
+                        className="pointer-events-none absolute top-1 right-1.5"
                         aria-hidden
                       >
-                        {ABBREVIATIONS[column.key] ?? column.label}
+                        <InflectionTag value={column.key} />
                       </span>
                     )}
                     <span className="sr-only">
