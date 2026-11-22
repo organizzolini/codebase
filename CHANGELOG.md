@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.7.0](https://github.com/organizzolini/codebase/compare/v6.6.3...v6.7.0) (2026-11-22)
+
+### ✨ Features
+
+* **compliance,documentation,meanderaw:** ✨ limit pull request titles to three scopes and cut recurring CI failures ([#2484](https://github.com/organizzolini/codebase/issues/2484)) ([a7e1612](https://github.com/organizzolini/codebase/commit/a7e16124aa3fc6f4de9b15ecddf48218ced00c97)), closes [#2483](https://github.com/organizzolini/codebase/issues/2483)
+
+### 🐛 Bug Fixes
+
+* **callidescope,compliance,configuration,dependencies,documentation,infrastructure,scripts,testing:** ⬆️ move to Node 26 ([#2475](https://github.com/organizzolini/codebase/issues/2475)) ([4ba8b97](https://github.com/organizzolini/codebase/commit/4ba8b974f4ee9d4a9cb29fd979b519bec909ed4a)), closes [#2463](https://github.com/organizzolini/codebase/issues/2463) [#2480](https://github.com/organizzolini/codebase/issues/2480) [#2474](https://github.com/organizzolini/codebase/issues/2474) [#2463](https://github.com/organizzolini/codebase/issues/2463)
+* **configuration,deployment:** 🐛 release through semantic-release's API over the configuration project's config ([#2488](https://github.com/organizzolini/codebase/issues/2488)) ([509bed2](https://github.com/organizzolini/codebase/commit/509bed242aa6bea3629f6016f3814a340f6aab9c)), closes [#2487](https://github.com/organizzolini/codebase/issues/2487) [#2475](https://github.com/organizzolini/codebase/issues/2475)
+
+### 📝 Documentation
+
+* **documentation:** 📝 refresh ([#2476](https://github.com/organizzolini/codebase/issues/2476)) ([de6c685](https://github.com/organizzolini/codebase/commit/de6c6858ad4c48a00f2d9a47e375d90d9913ab3a))
+* **documentation:** 📝 refresh openwiki from current source ([#2486](https://github.com/organizzolini/codebase/issues/2486)) ([b7be8db](https://github.com/organizzolini/codebase/commit/b7be8db9387ac7b13d32940a41192333bb3ad0a8)), closes [#2485](https://github.com/organizzolini/codebase/issues/2485)
+
 ## [6.6.3](https://github.com/organizzolini/codebase/compare/v6.6.2...v6.6.3) (2026-11-21)
 
 ### 🐛 Bug Fixes

@@ -3,6 +3,9 @@ type: Reference
 title: Development Workflow
 description: End-to-end development workflow covering the 8-step agent process, project-scoped work rules, Nx commands, code validation gates, pull request compliance, and integration procedures.
 tags: [workflow, agent, nx, validation, pull-request, testing, ci-cd]
+verified:
+  - by: openwiki/0.9.0
+    at: 2026-11-22T17:40:37.367Z
 sources:
   - id: openwiki-source-328f959db511ad93fac4d300
     resource: repo://.agents/skills/brainstorming/SKILL.md
@@ -28,10 +31,7 @@ sources:
     resource: repo://AGENTS.md
   - id: openwiki-source-cbd6c49eeb76f47b10c7a008
     resource: repo://compliance/src/modules/pull-request/pull-request-validation.service.ts
-generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
-verified:
-  - by: openwiki/0.9.0
-    at: 2026-11-22T00:18:20.862Z
+generated: { by: "openwiki/0.9.0", at: "2026-11-22T17:40:37.367Z" }
 ---
 
 # Development Workflow
@@ -101,185 +101,128 @@ Request review via `requesting-code-review` (a fresh subagent handed base and he
 
 ## Step 7: Validate
 
-Run `validate-code` gated by `verification-before-completion`, then run `ponytail-debt` and list each `shortcut:` comment the branch adds in the pull request's Details, so no deferral lands without review.
+Run `validate-code` gated by `verification-before-completion`, then run `ponytail-debt` and list each debt item. All automated checks must pass with evidence before claiming completion.
 
-### Validation Workflow
-
-**Auto-fix:**
 ```bash
+# Auto-fix all format, lint, and unused-code issues
 pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=write --base=main
-```
-For new or untracked files `nx affected` does not pick up:
-```bash
-pnpm exec nx run <project>:typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=write
-```
 
-**Verify:**
-```bash
+# Verify no issues remain — all checks must pass
 pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check --base=main
 ```
-**All checks must pass before committing.** Triage failures with the `triage-integration` skill. For a touched TypeScript project that defines a `type-coverage` target, run both `typecheck` and `type-coverage`; test coverage is 96% for branches, functions, lines and statements (`nx run <project>:vitest --configuration=coverage`).
 
-### Verification Before Completion
+For new/untracked files not yet picked up by `nx affected`:
+```bash
+pnpm exec nx run <project>:typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=write
+pnpm exec nx run <project>:typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check
+```
 
-**Core principle:** evidence before claims. Identify the command that proves the claim, run it in full, read the whole output and exit code, and only then make the claim. No "should work" or "probably".
+**Do not commit until both commands pass cleanly.** If they fail, use the `triage-integration` skill to diagnose and fix the errors.
 
 ## Step 8: Integrate
 
-Use `finishing-a-development-branch` for the merge or PR decision, executing through `submit-changes`, `commit-code` and `create-pull-request`; read its test step as `nx affected --target=vitest --base=main`. Do not run raw Git commands for worktrees, branches, commits or pull requests: the skills enforce this repository's conventions.
-
-## Nx Commands Reference
-
-Always run tasks through Nx for caching and task graph benefits.
-
-| Operation | Command |
-|-----------|---------|
-| Run affected lint/typecheck/format/deprecate/guard (auto-fix) | `nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=write --base=main` |
-| Run affected lint/typecheck/format/deprecate/guard (check) | `nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check --base=main` |
-| Run tests for a project | `nx run <project>:vitest:<unit\|integration\|e2e>` |
-| Run tests with coverage | `nx run <project>:vitest --configuration=coverage` |
-| Run typecheck for a project | `nx run <project>:typecheck` |
-| Run type coverage for a project | `nx run <project>:type-coverage` |
-| Run affected tests | `nx affected --target=vitest --base=main` |
-| Build affected projects | `nx affected --target=build-projects --base=main` |
-| Secure code check | `nx affected --target=secure-code --base=main` |
-
-**Note:** There is no `test` target in this workspace — it is `vitest` for TypeScript and `pytest` for Python, both reachable through `test-code`.
+Use `finishing-a-development-branch` for the merge/PR decision, executing via `submit-changes`, `commit-code`, and `create-pull-request`. Read its test step as `nx affected --target=vitest --base=main`.
 
 ## Project-Scoped Work
 
-- When coding or refactoring, focus on **one project at a time**, or for sufficiently large requests only one module or folder at a time.
-- If a request spans multiple projects or scopes, complete the first project end-to-end before starting the next — **as commits on the same branch**, not as separate pull requests.
-- If the work is truly independent across projects, split it into separate subagents or passes so each agent stays project-scoped.
-- Keep each **commit** to one project or module even when its pull request spans several, so the title can name the fewest scopes that cover every commit and carry the type of the most significant one.
+Project-scoped work is mandatory: focus on one project at a time, complete it end-to-end before starting the next (as commits on the same branch), keep each commit to one project or module, and avoid mixing unrelated project changes in one context.
+
+- When coding or refactoring, focus on one project at a time, or for sufficiently large requests only one module/folder at a time.
+- If a request spans multiple projects or scopes, complete the first project end-to-end before starting the next one — as commits on the same branch, not as separate pull requests (see [One Pull Request by Default](#one-pull-request-by-default)).
+- If the work is truly independent across projects, split it into separate subagents (using a Haiku/Luna-level model, or a Sonnet/Terra-level model only when really necessary) or separate passes so each agent stays project-scoped.
+- Avoid mixing unrelated project changes in one context unless the task is explicitly orchestrating them.
+- Keep each commit to one project or module even when its pull request spans several, so the title can name at most three scopes and carry the type of the most significant one — see [Release Significance](#release-significance).
+
+## Release Significance
+
+The PR title determines the semantic-release bump. Ensure the PR title's type is at least as significant as the highest commit on the branch.
+
+| Type | Codebase | IC-suite package |
+|------|----------|------------------|
+| Breaking change (`!` after scope, or `BREAKING CHANGE:` footer) | Major | Minor while `0.x`, then major |
+| `feat` | Minor | Patch while `0.x`, then minor |
+| `fix`, `perf`, `refactor`, `build` | Patch | Patch |
+| `ci`, `revert` | Patch | None |
+| `docs`, `style`, `test`, `chore` | None | None |
+| Any type with `no-release` scope | None | As its type |
 
 ## Pull Request Compliance
 
-Every PR description must carry all **4 mandatory sections** with real content and no unfilled placeholder comments:
+Every pull request must include four mandatory sections with specific shapes and limits:
 
-| Section | Shape | Limit |
-|---------|-------|-------|
-| `## 🌰 Summary` | One plain paragraph | ≤ 48 words |
-| `## 📝 Details` | Bulleted list, one marker throughout | ≤ 512 words |
-| `## 🧪 Testing` | Ordered list (code blocks indented under step) | — |
-| `## 🔗 Related` | Leading-dash list (`-`), then anything may follow | — |
+1. **🌰 Summary** — one paragraph, at most 48 words
+2. **📝 Details** — bulleted list, one marker throughout, at most 512 words
+3. **🧪 Testing** — ordered list (a step may hold a code block)
+4. **🔗 Related** — leading-dash list (items start with `-`); the first bullet must be `Closes #N` (GitHub's own link) to satisfy the issue-link requirement
 
-**Never omit `🔗 Related`** — link to specs, files, or documentation if no issue exists.
-
-Validate the PR once it exists (read-only) and fix what it reports before requesting review:
+A PR is validated once it exists with:
 ```bash
-NODE_OPTIONS='' node --import @swc-node/register/esm-register compliance/src/compliance.main.ts pull-request <number>
+node --import @swc-node/register/esm-register compliance/src/compliance.main.ts pull-request <number>
 ```
 
-Set all required metadata at creation:
-- `--assignee @me`
-- `--label type:<type>`
-- `--label scope:<scope>`
-- `--label source:agent`
+Metadata requirements:
+- Title follows `<type>(<scope>): <gitmoji> <subject>` (Conventional Commits)
+- Exactly one `type:*` label matching the title's type
+- Exactly the `scope:*` labels the title names (at least one, at most three) and no extras
+- At least one assignee
+- Exactly one `source:*` label (`source:agent` or `source:human`)
+- The `do-not-merge` label blocks the pull request while present
 
-### Branch Naming Guidelines
+## Nx Commands Reference
 
-**Required format:** `<type>/<scope>-<description>` — all three parts required.
-
-- **Type and scope** must be exact values from the closed vocabulary in `configuration/repository/conventional.config.cjs`. An invented scope fails validation even when the branch name reads well.
-- **Description** is kebab-case matching `[a-z0-9-]+` — no uppercase, underscores, dots, or extra slashes.
-
-**Examples**: `feat/lexico-user-auth`, `fix/caelundas-timezone-bug`, `docs/documentation-contributing-guide`
-
-Validate before pushing:
+### Validation Gates
 ```bash
-pnpm exec validate-branch-name -t "<branch-name>"
+# Auto-fix (write mode)
+pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=write --base=main
+
+# Verify (check mode) — all must pass
+pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check --base=main
+
+# Per-project (for new/untracked files)
+pnpm exec nx run <project>:typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=write
+pnpm exec nx run <project>:typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check
 ```
 
-Only `main` is exempt. Automated prefixes are also accepted: `copilot/*`, `dependabot/*`, `jimmypaolini/copilot/*`, `renovate/*`. Both the pre-push hook and 🧑‍⚖️ Comply Code reject anything else.
+### Testing
+```bash
+nx run <project>:vitest:unit        # Unit tests
+nx run <project>:vitest:integration # Integration tests
+nx run <project>:vitest:end-to-end  # End-to-end tests
+nx run <project>:vitest --configuration=coverage  # Coverage gate
+```
 
-### Commit Guidelines
+### Affected Commands
+```bash
+# Run tests on affected projects
+nx affected --target=vitest --base=main
 
-Format: `<type>(<scope>): <gitmoji> <subject>` — a single line, max 128 characters.
+# Run static checks on affected projects
+nx affected --target=static-code --base=main
+```
 
-- **Type and scope** come from `configuration/repository/conventional.config.cjs`, both lowercase
-- **Gitmoji required** as the first token of the subject
-- Subject is lowercase, present-imperative (`add`, not `added` or `adds`), with no trailing period
-- **Body and footer are forbidden**, except lines that are exactly `Co-authored-by:` or `Claude-Session:` trailers. Everything else belongs in the subject or the pull request description
-- Never list multiple changes — summarize at a higher level, or split the commit
+### Build & Integration
+```bash
+pnpm exec nx run <project>:build
+pnpm exec nx run <project>:typecheck
+pnpm exec nx run <project>:type-coverage  # Type coverage gate (when target exists)
+```
 
-Common gitmojis: ✨ `feat` · 🐛 `fix` · 📝 `docs` · 🧪 `test` · ♻️ `refactor` · 🎨 `style` · ⚡️ `perf` · 🔧 `chore` · 👷 `ci` · 📦 `build` · ⏪ `revert`
+## Continuous Integration Gates
 
-**Breaking changes**: add `!` after the scope, or a `BREAKING CHANGE:` footer.
+The CI workflow runs these independent legs in parallel:
 
-### Types and Scopes
+| Target | Name | Emoji | Description |
+|--------|------|-------|-------------|
+| `static-code` | Static | 🧑‍⚕️ | typecheck-code, format-code, lint-code, deprecate-code |
+| `guard-code` | Guard | 💂 | catalog-manifests, coinagerie-check, lockfile, project-ports, readme-projects, vscode-extensions |
+| `callidescope-restrict` | Callidescope Restrict | 🔭 | Call-stack depth/breadth limits |
+| `codependix-bound` | Codependix Bound | 🕸️ | Dependency-graph boundary rules |
+| `conformetry-validate` | Conformetry Validate | 👔 | Generated code against templates |
+| `test-code` (sharded) | Test Codebase / Test Common / Test Affirmancy / Test Caelundas / Test IC Suite / Test Lexico / Test Meanderaw | 🧑‍🔬 | Vitest with coverage gates |
+| `secure-code` | Secure | 🕵️ | gitleaks + trivy security scans |
+| `build-projects` | Build | 👷 | Build all projects |
+| `end-to-end` | End to End IC Suite | 🤵 | CLI sandbox tests |
+| `plan-terraform` | Infrastructure | 🧑‍🚀 | Terraform plan for OpenRouter, GitHub, Linode |
+| `build-devcontainer` | Devcontainer | 🧑‍🏭 | Build and test devcontainer image |
 
-The valid types (feat, fix, docs, test, refactor, style, perf, chore, ci, build, revert) and the closed scope vocabulary live in `configuration/repository/conventional.config.cjs`, the single source of truth for commitlint, branch validation, release rules and VS Code autocomplete. The scope list deliberately collapses each toolchain to one name (callidescope, codependix, codometer, coinagerie, conformetry) rather than one per package, so deriving a scope from a directory name is how an invented scope fails validation. If a change genuinely spans scopes, list them comma-separated (`feat(lexico,lexico-db): …`) rather than reaching for an umbrella scope.
-
-### Release Significance
-
-This repository squash-merges using the pull request title, so **the title is the only thing semantic-release ever sees**. Every individual commit on the branch is discarded at squash time.
-
-The `pull-request-release-significance` check reads the branch's commits and fails the pull request when the title's type is **less** release-significant than the most significant commit on the branch, or when the title shares no scope overlap with a commit.
-
-**Practical effect:** pick the type and scope for the branch as a whole, and title it at the most significant commit.
-
-- A `feat` commit on a branch titled `chore` or `ci` fails the check — retitle the pull request as `feat`.
-- Mixing `feat` and `fix` work is fine; title it `feat`, since `feat` outranks `fix`. The squash then bumps every package it touches by that type, which is accepted.
-
-
-## Git Hooks (Husky)
-
-Three Husky hooks enforce quality gates locally, from `configuration/repository/.husky/`. **Never bypass them with `--no-verify`** — fix the underlying issue instead, and never run `husky` from a worktree (it rewrites the shared `core.hooksPath` and silently disables the main checkout's hooks).
-
-| Hook | Trigger | What it runs | Config |
-|------|---------|--------------|--------|
-| `pre-commit` | `git commit` | Commit signing configuration check, then **lint-staged**: format, lint, typecheck, spelling and more on staged files | `configuration/repository/lint-staged.config.ts` |
-| `commit-msg` | `git commit` | **commitlint**: validates the Conventional Commits format | `configuration/repository/commitlint.config.ts` |
-| `pre-push` | `git push` | **validate-branch-name**, then a commit signature check over the pushed commits | `validate-branch-name.config.cjs` |
-
-If a hook fails, the git operation is blocked until you fix the error. `pre-commit` writes its full output to `last-lint-staged-output.log`, which is where to look when the terminal output is truncated.
-
-## Working in a Git Worktree
-
-Worktrees are the normal way to run several branches side by side here, and three traps are specific to this repository.
-
-- **`pnpm-lock.yaml` goes dirty on its own.** `pnpm install` or `lint-code --write` rewrites the `projects/JimmyPaolini` entry, because a placeholder `package.json` is inconsistently present across checkouts. Revert the lockfile rather than trying to reconcile it.
-- **Never run `git submodule update --init` for `projects/JimmyPaolini`.** That submodule is deliberately left uninitialized everywhere, locally and in CI. A `-` prefix in `git submodule status` is expected here, not broken.
-- **The stash stack is shared with every other worktree.** A bare `git stash pop` can take someone else's work. Prefer a temporary commit, or `git stash push -u -m "<unique-tag>"` and `git stash apply <sha>`.
-
-The branch name is not free-form in a worktree either — derive one from the tables above and validate it before creating anything, since an unvalidated branch cannot be pushed. If the branch already exists locally, attach a worktree to it rather than creating a second branch. See [using-git-worktrees](../../.agents/skills/using-git-worktrees/SKILL.md).
-
-## Validation Gates (CI Workflows)
-
-The Continuous Integration matrix runs one leg per gate on every pull request (see the CI/CD page for the full list): Static (typecheck, format, lint, deprecate), Guard, Callidescope Restrict, Codependix Bound, Conformetry Validate, a Test leg per project group, Secure, Build (which includes codometer), End to End IC Suite, Infrastructure and Devcontainer. The Continuous Compliance workflow separately runs Issue, Enforce and Comply (branch name, PR title, body, labels, assignees, release significance).
-
-## IC-Suite Toolchains
-
-Five in-house toolchains measure this workspace and gate what they measure:
-
-| Toolchain | What It Does | What Fails a PR |
-|-----------|--------------|-----------------|
-| `conformetry` | Scaffolds from templates, measures generated instances against templates | `conformetry-validate` (👔 Conformetry Validate leg) |
-| `codometer` | Measures directories against declared limits (size, counts, comments) | The project's `codometer` target inside `build-projects` (👷 Build leg) |
-| `codependix` | Exports import graphs, judges against boundary rules | Per-project `codependix-bound` (🕸️ Codependix Bound leg) |
-| `callidescope` | Traces call stacks, flags too-deep or too-wide stacks | Per-project `callidescope-restrict` (🔭 Callidescope Restrict leg) |
-| `coinagerie` | Lists the words the code uses and keeps a glossary in step | Per-project `coinagerie-check` (💂 Guard leg) |
-
-**Generate rather than hand-craft** — code written in a shape a template already describes starts life failing conformance. Use `nx g conformetry:<generator>`.
-
-## Skills Reference by Step
-
-| Step | Primary Skill | Supporting Skills |
-|------|---------------|-------------------|
-| 1. Clarify | `brainstorming` | `grill-me`, `grilling` |
-| 2. Specify | (spec issue) | `manage-project`, `link-issue` |
-| 3. Decompose | `writing-plans` | `wayfinder` (if work exceeds one session) |
-| 4. Handoff | (`# Handoff` comment) | — |
-| 5. Build | `link-issue`, `ponytail` | `test-driven-development`, `systematic-debugging`, `subagent-driven-development`, `dispatching-parallel-agents`, `gh-stack`, `using-git-worktrees` |
-| 6. Review | `requesting-code-review` | `ponytail-review`, `receiving-code-review` |
-| 7. Validate | `validate-code` | `verification-before-completion`, `ponytail-debt`, `triage-integration` |
-| 8. Integrate | `finishing-a-development-branch` | `submit-changes`, `commit-code`, `create-pull-request` |
-
-## Related Pages
-
-- [Local Development](../operations/local-development.md) — Setup, commands, tooling
-- [CI/CD Pipeline](../workflows/ci-cd.md) — GitHub Actions workflows and gates
-- [Code Quality](../workflows/code-quality.md) — Linting, formatting, type coverage, size limits
-- [Release Process](../workflows/release.md) — Semantic release, versioning, publishing
-- [Scaffolding](../workflows/scaffolding.md) — Conformetry generators and templates
+The merge queue re-runs all checks on the queued merge commit — a PR green on its own can still fail once `main` has moved underneath it.

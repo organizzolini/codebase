@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:3f5984db9498460efa433f0fe2b3be332bfe16af0bb24f70300f1d45eb92cb0f",
+  "pageVersion": "sha256:d9bb03d53c44dd0b70e3b4b9179f3ea3f10d95a2fdbe241957b71cc790ae5fb8",
   "claims": [
     {
       "id": "claim_a93fe81f330c4f9d88d7f2357150dd9d",
@@ -16,7 +16,7 @@
         },
         {
           "resource": "repo://projects/meanderaw/meanderaw-web/configuration/vitest.config.ts",
-          "version": "repo-file-v1:sha256:5bfe63843de54571a362928da34a6d2bbb3b19e583a50dce2dcf72aab8e7279b"
+          "version": "repo-file-v1:sha256:9e228b0d33315a2a9226f6c427718f0244919bc189d30f7d8edcc2a6cf7daffc"
         }
       ]
     },
@@ -35,8 +35,8 @@
       "statement": "meanderaw-web's vitest configuration uses the jsdom environment and excludes server function files (*.functions.ts), router internals, and the root layout from coverage because createServerFn only runs inside the TanStack Start runtime.",
       "evidence": [
         {
-          "resource": "repo://projects/meanderaw/meanderaw-web/configuration/vitest.config.ts#L1-L30",
-          "version": "repo-lines-v1:sha256:5bfe63843de54571a362928da34a6d2bbb3b19e583a50dce2dcf72aab8e7279b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4ZjE2ZDJhMWMyYTVhNWE0YzU1NzkwYTMwZTQ0NTRjNTdiOGI1YjBlMGUxYTE4ZjI1N2UxNTY1OWI0NDQ2ODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5OTY3ZWMxZWQzODM2ZjhlYjE3YWZmMTcyYjViZmVmN2RlNjA0ODVhNDM5YzZjYTExYzU5MWUxNzU1NzM5YWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://projects/meanderaw/meanderaw-web/configuration/vitest.config.ts#L1-L36",
+          "version": "repo-lines-v1:sha256:9e228b0d33315a2a9226f6c427718f0244919bc189d30f7d8edcc2a6cf7daffc:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4ZjE2ZDJhMWMyYTVhNWE0YzU1NzkwYTMwZTQ0NTRjNTdiOGI1YjBlMGUxYTE4ZjI1N2UxNTY1OWI0NDQ2ODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5OTY3ZWMxZWQzODM2ZjhlYjE3YWZmMTcyYjViZmVmN2RlNjA0ODVhNDM5YzZjYTExYzU5MWUxNzU1NzM5YWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -209,6 +209,6 @@
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-22T00:18:20.862Z"
+    "at": "2026-11-22T17:40:37.367Z"
   }
 }

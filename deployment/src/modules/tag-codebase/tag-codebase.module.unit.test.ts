@@ -7,7 +7,7 @@ import {
 } from "@codebase/testing/nestjs";
 
 import { MainTipModule } from "../main-tip/main-tip.module";
-import { ProcessRunnerModule } from "../process-runner/process-runner.module";
+import { SemanticReleaseModule } from "../semantic-release/semantic-release.module";
 
 import { TagCodebaseCommand } from "./tag-codebase.command";
 import { TagCodebaseModule } from "./tag-codebase.module";
@@ -21,7 +21,7 @@ describe(TagCodebaseModule, () => {
       TagCodebaseModule,
       LoggerModule,
       MainTipModule,
-      ProcessRunnerModule,
+      SemanticReleaseModule,
     );
     expectModuleProvides(
       TagCodebaseModule,
