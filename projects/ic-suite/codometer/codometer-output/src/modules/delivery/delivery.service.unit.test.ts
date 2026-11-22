@@ -40,6 +40,7 @@ function buildMode(overrides: Partial<RunMode> = {}): RunMode {
   return {
     checksLimits: false,
     checksReports: false,
+    checksWeigh: false,
     writesJson: false,
     writesMarkdown: false,
     ...overrides,

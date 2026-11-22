@@ -18,14 +18,17 @@ export class ConfigurationPathRequiredError extends Error {
   }
 }
 
-/** What `--check limits` fails on: a breached failing limit. */
+/** What `--check limits` fails on: a breached failing limit on the source tree, the `codebase` input. */
 export const CHECK_LIMITS = "limits";
+
+/** What `--check weigh` fails on: a breached failing limit on a declared input, such as a build's size. */
+export const CHECK_WEIGH = "weigh";
 
 /** What `--check reports` fails on: a stale written report. */
 export const CHECK_REPORTS = "reports";
 
 /** Everything `--check` accepts, in error-message order. */
-export const CHECK_NAMES = [CHECK_LIMITS, CHECK_REPORTS];
+export const CHECK_NAMES = [CHECK_LIMITS, CHECK_WEIGH, CHECK_REPORTS];
 
 /** How a `--check` value is written: one comma-separated set, no spaces needed. */
 export const CHECK_SEPARATOR = ",";

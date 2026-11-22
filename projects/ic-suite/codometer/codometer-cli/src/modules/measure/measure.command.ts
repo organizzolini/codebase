@@ -12,7 +12,12 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { applyInputsOverride, describeFindings } from "./measure.utilities";
+import {
+  applyInputsOverride,
+  describeFindings,
+  enforcedFailures,
+  scopeToMode,
+} from "./measure.utilities";
 
 import type {
   MeasureOutcome,
@@ -156,7 +161,7 @@ export class MeasureCommand extends CommandRunner {
     return { rejected: reasons };
   }
 
-  /** Report every breached limit, and say whether one of them fails the run. */
+  /** Report every breached limit, and say whether one the run checks fails it. */
   private reportBreaches(args: ReportFindingsArguments): boolean {
     const breached = args.measurement.limits.filter((limit) => limit.breached);
     const failing = breached.filter((limit) => limit.severity === "fail");
@@ -174,7 +179,7 @@ export class MeasureCommand extends CommandRunner {
       });
     }
 
-    return args.mode.checksLimits && failing.length > 0;
+    return enforcedFailures(args).length > 0;
   }
 
   /**
@@ -191,6 +196,7 @@ export class MeasureCommand extends CommandRunner {
 
     return (
       args.mode.checksLimits ||
+      args.mode.checksWeigh ||
       args.mode.checksReports ||
       args.mode.writesJson ||
       args.mode.writesMarkdown
@@ -245,9 +251,9 @@ export class MeasureCommand extends CommandRunner {
       return loadedConfiguration;
     }
 
-    const configuration = applyInputsOverride(
-      loadedConfiguration,
-      options.inputs,
+    const configuration = scopeToMode(
+      applyInputsOverride(loadedConfiguration, options.inputs),
+      mode,
     );
     const formatErrors: string[] = [];
     const format = this.configurationService.resolveFormat(
@@ -294,7 +300,7 @@ export class MeasureCommand extends CommandRunner {
    * Parses the set of checks to fail on. A `--check` with no value is refused later rather than silently becoming write mode.
    */
   @Option({
-    description: `Fail on a comma-separated set drawn from "reports" and "limits"`,
+    description: `Fail on a comma-separated set drawn from "limits" (the source tree), "weigh" (the declared builds) and "reports"`,
     flags: "--check [check]",
   })
   public parseCheck(value: string): string {

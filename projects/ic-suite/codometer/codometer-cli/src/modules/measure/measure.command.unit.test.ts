@@ -28,6 +28,7 @@ import type {
   MeasureCommandOptions,
   ResolvedCodometerConfiguration,
   ResolvedCodometerInput,
+  ResolvedCodometerLimit,
 } from "@codometer/configuration";
 import type { EvaluatedLimit, MeasureArguments } from "@codometer/measurement";
 import type {
@@ -47,7 +48,7 @@ function buildBreach(severity: EvaluatedLimit["severity"]): EvaluatedLimit {
     measured: 4529,
     metric: "size",
     severity,
-    target: "compiled",
+    target: "codebase",
   };
 }
 
@@ -464,6 +465,95 @@ describe(MeasureCommand, () => {
     });
   });
 
+  describe("which inputs a check measures", () => {
+    const compiledInput: ResolvedCodometerInput = {
+      analyses: ["size"],
+      compression: "gzip",
+      directory: ".",
+      exclude: [],
+      include: ["dist/**/*.js"],
+      name: "compiled",
+    };
+
+    const sourceLimit: ResolvedCodometerLimit = {
+      label: "Comments",
+      metric: "custom.Comments",
+      severity: "fail",
+      value: 0,
+    };
+    const buildLimit: ResolvedCodometerLimit = {
+      label: "Size",
+      metric: "compiled.size",
+      severity: "fail",
+      value: 10,
+    };
+
+    /** A configuration with the source tree and a build, each with a limit. */
+    function buildTwoInputs(): ResolvedCodometerConfiguration {
+      const configuration = buildConfiguration();
+
+      return {
+        ...configuration,
+        defaultInput: "codebase",
+        inputs: [...configuration.inputs, compiledInput],
+        limits: [sourceLimit, buildLimit],
+      };
+    }
+
+    beforeEach(() => {
+      vi.spyOn(configurationService, "loadConfiguration").mockResolvedValue(
+        buildTwoInputs(),
+      );
+    });
+
+    it("measures only the source tree for --check limits, leaving out a build and its limits", async () => {
+      await run({ check: "limits" });
+
+      expect(measureService.measure).toHaveBeenCalledExactlyOnceWith(
+        expect.objectContaining<Partial<MeasureArguments>>({
+          configuration: expect.objectContaining<
+            Partial<ResolvedCodometerConfiguration>
+          >({
+            inputs: buildConfiguration().inputs,
+            limits: [sourceLimit],
+          }),
+        }),
+      );
+    });
+
+    it.each([["weigh"], ["limits,weigh"], [undefined]])(
+      "measures every input for --check %s",
+      async (check) => {
+        await run({ check });
+
+        expect(measureService.measure).toHaveBeenCalledExactlyOnceWith(
+          expect.objectContaining<Partial<MeasureArguments>>({
+            configuration: expect.objectContaining<
+              Partial<ResolvedCodometerConfiguration>
+            >({
+              inputs: buildTwoInputs().inputs,
+              limits: buildTwoInputs().limits,
+            }),
+          }),
+        );
+      },
+    );
+
+    it("keeps an unqualified limit on the default input when scoping to the source tree", async () => {
+      await run({ check: "limits" });
+
+      expect(measureService.measure).toHaveBeenCalledWith(
+        expect.objectContaining<Partial<MeasureArguments>>({
+          configuration: expect.objectContaining<
+            Partial<ResolvedCodometerConfiguration>
+          >({
+            limits: [expect.objectContaining({ metric: "custom.Comments" })],
+          }),
+        }),
+      );
+    });
+  });
+
   describe("--format", () => {
     it("prints the badges when the run touches no file", async () => {
       await run();
@@ -645,6 +735,34 @@ describe(MeasureCommand, () => {
       measured([buildBreach("fail")]);
 
       await run({ check: "limits" });
+
+      expect(readExitCode()).toBe(1);
+    });
+
+    it("fails a run that weighs on a failing breach in a declared input, and not one that only checks limits", async () => {
+      measured([{ ...buildBreach("fail"), target: "compiled" }]);
+
+      await run({ check: "limits" });
+
+      expect(readExitCode()).toBe(0);
+
+      await run({ check: "weigh" });
+
+      expect(readExitCode()).toBe(1);
+    });
+
+    it("does not fail a weigh run on a failing breach in the source tree", async () => {
+      measured([buildBreach("fail")]);
+
+      await run({ check: "weigh" });
+
+      expect(readExitCode()).toBe(0);
+    });
+
+    it("fails a run that checks both on a breach in either", async () => {
+      measured([{ ...buildBreach("fail"), target: "compiled" }]);
+
+      await run({ check: "limits,weigh" });
 
       expect(readExitCode()).toBe(1);
     });

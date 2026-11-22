@@ -53,14 +53,14 @@ the same way a repository does.
 `--output-json`, `--output-markdown`, `--check`, and `--format` are asked for
 separately, and none of them turns another on:
 
-| Invocation | Writes | Fails on staleness | Fails on a breach |
-| ---------- | ------ | ------------------ | ------------------ |
-| `codometer --config <path>` | no | no | no |
-| `codometer --config <path> --check limits` | no | no | yes |
-| `codometer --config <path> --check reports` | no | yes | no |
-| `codometer --config <path> --check limits,reports` | no | yes | yes |
-| `codometer --config <path> --output-json` | yes | no | no |
-| `codometer --config <path> --output-json --check limits` | yes | no | yes, after writing |
+| Invocation                                               | Writes | Fails on staleness | Fails on a breach  |
+| -------------------------------------------------------- | ------ | ------------------ | ------------------ |
+| `codometer --config <path>`                              | no     | no                 | no                 |
+| `codometer --config <path> --check limits`               | no     | no                 | yes                |
+| `codometer --config <path> --check reports`              | no     | yes                | no                 |
+| `codometer --config <path> --check limits,reports`       | no     | yes                | yes                |
+| `codometer --config <path> --output-json`                | yes    | no                 | no                 |
+| `codometer --config <path> --output-json --check limits` | yes    | no                 | yes, after writing |
 
 `--output-json`/`--output-markdown` passed **bare** write wherever the
 resolved configuration's own output of that kind declares, and are refused
@@ -78,7 +78,9 @@ code says no.
 
 A **breach** and **staleness** are different findings, never reported as one. A
 `warn`-severity breach prints and leaves the exit code alone; a `fail`-severity
-breach exits `1`, and only where `--check limits` asked for a gate at all. For
+breach exits `1`, and only where `--check limits` (the source tree) or
+`--check weigh` (the declared builds, such as compiled output) asked for a gate
+at all. `--check limits` needs no build; `--check weigh` does. For
 what to do about either, reach for the `codometer-triage` skill.
 
 ```yaml
@@ -103,7 +105,14 @@ each breaching block was found:
       "metrics": [
         {
           "instances": null,
-          "limits": [{ "breached": false, "label": null, "severity": "fail", "value": 500 }],
+          "limits": [
+            {
+              "breached": false,
+              "label": null,
+              "severity": "fail",
+              "value": 500
+            }
+          ],
           "name": "codebase.typescript.interfaces",
           "path": "typescript.interfaces",
           "unit": null,
@@ -111,7 +120,9 @@ each breaching block was found:
         },
         {
           "instances": [{ "file": "src/main.ts", "line": 4, "measured": 214 }],
-          "limits": [{ "breached": true, "label": null, "severity": "fail", "value": 0 }],
+          "limits": [
+            { "breached": true, "label": null, "severity": "fail", "value": 0 }
+          ],
           "name": "codebase.custom.TypeScript Comment Budget",
           "path": "custom.TypeScript Comment Budget",
           "unit": null,

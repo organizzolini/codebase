@@ -111,7 +111,7 @@ async function runConfiguration(relativePath: string): Promise<boolean> {
       "--config",
       path.join(examplesDirectory, relativePath),
       "--check",
-      "limits",
+      "limits,weigh",
     ],
     corpusDirectory,
   );

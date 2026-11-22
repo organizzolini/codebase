@@ -52,7 +52,7 @@ codometer --config configuration/ic-suite/codometer.config.ts --check limits
 
 | Flag                       | Purpose                                                                                                                          |
 | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `--check [set]`            | Fail on a comma-separated set drawn from `reports` and `limits`                                                                  |
+| `--check [set]`            | Fail on a comma-separated set drawn from `limits`, `weigh` and `reports`                                                         |
 | `--config <path>`          | **Required.** The configuration file to read                                                                                     |
 | `-f, --format <format>`    | What to print to standard output, one of `json` and `markdown`                                                                   |
 | `--inputs [globs...]`      | Glob array measured in place of every configured input, with no configured input — not even the built-in `codebase` one — active |
@@ -99,7 +99,15 @@ rather than one run at a time.
 
 A **breach** and **staleness** are different findings and are never reported as
 one. A `warn` breach is printed and leaves the exit code alone; a `fail` breach
-exits 1, but only where `--check limits` asked for a gate.
+exits 1, but only where `--check limits` or `--check weigh` asked for a gate.
+
+`--check limits` gates the limits written against the source tree, the built-in
+`codebase` input, and measures nothing else, so it needs no build. `--check
+weigh` gates the limits written against every other declared input, such as the
+size of a build's output, so it needs that output to exist. Together,
+`--check limits,weigh`, they gate every limit. `--inputs` replaces the
+configured inputs with raw globs that no limit is written against, so it is
+refused beside either.
 
 `--check reports` compares a committed report against a fresh measurement, so it
 is only as stable as the numbers it re-measures. Compressed sizes are
