@@ -12,12 +12,9 @@ import {
 import { createEventGroupFields } from "../calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 import { moveListItem } from "../chip-menu/chip-menu.utilities";
 import { QueryCascader } from "../query-cascader/query-cascader";
+import { JOINED_STRIP_CLASS_NAME } from "../query-cascader/query-cascader.constants";
 
-import {
-  SORT_OPTIONS,
-  STRIP_CLASS_NAME,
-  TITLE,
-} from "./calendar-sort-strip.constants";
+import { SORT_OPTIONS, TITLE } from "./calendar-sort-strip.constants";
 import {
   createSortItems,
   flipSortAt,
@@ -89,7 +86,7 @@ export function CalendarSortStrip(
     >
       <ButtonGroup
         aria-label={TITLE}
-        className={STRIP_CLASS_NAME}
+        className={JOINED_STRIP_CLASS_NAME}
       >
         <Popover>
           <PopoverTrigger

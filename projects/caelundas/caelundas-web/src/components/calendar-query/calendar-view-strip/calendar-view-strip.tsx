@@ -10,11 +10,11 @@ import {
 } from "@codebase/presentation";
 
 import { QueryCascader } from "../query-cascader/query-cascader";
+import { JOINED_STRIP_CLASS_NAME } from "../query-cascader/query-cascader.constants";
 
 import {
   CHIP_CLASS_NAME,
   CUSTOM_ID,
-  STRIP_CLASS_NAME,
   TITLE,
 } from "./calendar-view-strip.constants";
 import {
@@ -79,7 +79,7 @@ export function CalendarViewStrip(
     >
       <ButtonGroup
         aria-label="Saved view"
-        className={STRIP_CLASS_NAME}
+        className={JOINED_STRIP_CLASS_NAME}
       >
         <Popover
           onOpenChange={setIsOpen}

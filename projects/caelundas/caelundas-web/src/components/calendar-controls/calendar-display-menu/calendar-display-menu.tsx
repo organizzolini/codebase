@@ -13,11 +13,11 @@ import { useCalendarDisplay } from "../../../hooks/use-calendar-display/use-cale
 import { CALENDAR_VIEW_LABELS } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
 import { createEventGroupFields } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 import { QueryCascader } from "../../calendar-query/query-cascader/query-cascader";
+import { JOINED_STRIP_CLASS_NAME } from "../../calendar-query/query-cascader/query-cascader.constants";
 
 import {
   CALENDAR_BRANCH,
   CHIP_CLASS_NAME,
-  STRIP_CLASS_NAME,
   TITLE,
 } from "./calendar-display-menu.constants";
 import {
@@ -26,7 +26,7 @@ import {
   findToggledLeaf,
   toDisplayValue,
 } from "./calendar-display-menu.utilities";
-import { DisplayViewToggle } from "./components/display-view-toggle/display-view-toggle";
+import { DisplayViewRadios } from "./components/display-view-radios/display-view-radios";
 
 import type { EventFacet } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
@@ -49,7 +49,7 @@ export interface CalendarDisplayMenuProperties {
 // 🧩 Component
 
 /**
- * Renders the Display button, which opens a searchable Cascader of how the calendar looks, each branch replacing the list when opened: Calendar shows the views as a vertical toggle group, and Color and Sky hold their options; the chip beside it names the view shown and opens the same list.
+ * Renders the Display button, which opens a searchable Cascader of how the calendar looks, each branch replacing the list when opened: Calendar shows the views as a vertical radio group, and Color and Sky hold their options; the chip beside it names the view shown and opens the same list.
  */
 export function CalendarDisplayMenu(
   properties: Readonly<CalendarDisplayMenuProperties>,
@@ -93,7 +93,7 @@ export function CalendarDisplayMenu(
     >
       <ButtonGroup
         aria-label={TITLE}
-        className={STRIP_CLASS_NAME}
+        className={JOINED_STRIP_CLASS_NAME}
       >
         <Popover
           onOpenChange={setIsOpen}
@@ -122,8 +122,7 @@ export function CalendarDisplayMenu(
               onValueChange={handleValueChange}
               panels={{
                 [CALENDAR_BRANCH]: (
-                  <DisplayViewToggle
-                    className="m-2"
+                  <DisplayViewRadios
                     onViewChange={handlers.handleViewChange}
                     view={view}
                   />

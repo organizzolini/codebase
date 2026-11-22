@@ -75,7 +75,7 @@ export async function pickCalendarView(label: string): Promise<void> {
     await screen.findByRole("option", { name: /^Calendar,/u }, BUILDER_WAIT),
   );
   fireEvent.click(
-    await screen.findByRole("button", { name: label }, BUILDER_WAIT),
+    await screen.findByRole("radio", { name: label }, BUILDER_WAIT),
   );
 }
 

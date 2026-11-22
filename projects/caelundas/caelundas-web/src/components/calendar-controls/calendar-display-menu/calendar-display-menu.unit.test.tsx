@@ -102,8 +102,22 @@ describe(CalendarDisplayMenu, () => {
 
     fireEvent.click(screen.getByRole("button", { name: /^back$/iu }));
     fireEvent.click(await screen.findByText("Calendar"));
-    fireEvent.click(await screen.findByRole("button", { name: "Week" }));
+    fireEvent.click(await screen.findByRole("radio", { name: "Week" }));
 
     expect(display.handlers.handleViewChange).toHaveBeenCalledWith("week");
+  });
+
+  it("finds a view by searching for it", async () => {
+    render(<CalendarDisplayMenu {...PROPERTIES} />);
+    fireEvent.click(screen.getByRole("button", { name: "Display" }));
+    fireEvent.change(
+      await screen.findByPlaceholderText("Search display options"),
+      {
+        target: { value: "agenda" },
+      },
+    );
+    fireEvent.click(await screen.findByRole("option", { name: /^Agenda/u }));
+
+    expect(display.handlers.handleViewChange).toHaveBeenCalledWith("agenda");
   });
 });

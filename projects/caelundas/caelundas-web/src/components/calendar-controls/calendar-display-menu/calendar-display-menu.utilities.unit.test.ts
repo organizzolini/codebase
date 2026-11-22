@@ -114,6 +114,22 @@ describe("calendar-display-menu utilities", () => {
       );
     });
 
+    it("lists the views beneath Calendar", () => {
+      const calendar = createDisplayItems(FIELDS, {
+        listing: LISTING,
+        view: "month",
+      }).find((item) => item.label === "Calendar");
+
+      expect(calendar?.children?.map((item) => item.value)).toStrictEqual([
+        "calendar:month",
+        "calendar:week",
+        "calendar:three-day",
+        "calendar:day",
+        "calendar:agenda",
+        "calendar:timeline",
+      ]);
+    });
+
     it("nests the sky's settings and figures under Sky", () => {
       const sky = createDisplayItems(FIELDS, {
         listing: LISTING,
@@ -188,6 +204,15 @@ describe("calendar-display-menu utilities", () => {
   });
 
   describe(applyDisplayLeaf, () => {
+    it("sets the calendar view, and ignores one it does not know", () => {
+      expect(
+        apply("calendar:week").handlers.handleViewChange,
+      ).toHaveBeenCalledWith("week");
+      expect(
+        apply("calendar:narnia").handlers.handleViewChange,
+      ).not.toHaveBeenCalled();
+    });
+
     it("sets the scale and the symbols", () => {
       expect(
         apply("scale:year").handlers.handleScaleChange,

@@ -14,14 +14,16 @@ import {
   toVisibilityChange,
 } from "../../../hooks/use-night-sky/night-sky-controls.utilities";
 import {
+  CALENDAR_VIEW_LABELS,
+  CALENDAR_VIEWS,
   TIMELINE_SCALE_LABELS,
   TIMELINE_SCALES,
 } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
+import { parseCalendarView } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
 import { toGroupLevel } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 
 import {
   CALENDAR_BRANCH,
-  CALENDAR_VIEW_WORDS,
   CONSTELLATION_CHOICES,
   DEFAULT_COLOR_BY,
   NO_COLOR,
@@ -31,6 +33,7 @@ import {
   createSkyItems,
   toSkyValue,
 } from "./calendar-display-sky.utilities";
+import { VIEW_ICONS } from "./components/display-view-radios/display-view-radios.constants";
 
 import type { UseCalendarDisplayResult } from "../../../hooks/use-calendar-display/use-calendar-display.types";
 import type { SkySearchChange } from "../../../hooks/use-night-sky/night-sky-controls.types";
@@ -65,6 +68,13 @@ export function applyDisplayLeaf(
   const group = colon === -1 ? leaf : leaf.slice(0, colon);
   const value = colon === -1 ? "" : leaf.slice(colon + 1);
   const actions: Readonly<Record<string, () => void>> = {
+    calendar: () => {
+      const view = parseCalendarView(value);
+
+      if (view !== undefined) {
+        handlers.handleViewChange(view);
+      }
+    },
     clusters: () => {
       handlers.handleClustersChange(!choices.clusters);
     },
@@ -151,9 +161,12 @@ export function createDisplayItems(
 
   return [
     {
-      children: [{ disabled: true, label: "Views", value: "calendar:views" }],
+      children: CALENDAR_VIEWS.map((value) => ({
+        icon: toIcon(VIEW_ICONS[value]),
+        label: CALENDAR_VIEW_LABELS[value],
+        value: `calendar:${value}`,
+      })),
       icon: toIcon(CalendarClock),
-      keywords: CALENDAR_VIEW_WORDS,
       label: "Calendar",
       value: CALENDAR_BRANCH,
     },
@@ -225,6 +238,7 @@ export function findToggledLeaf(
  */
 export function toDisplayValue(choices: DisplayChoices): string[] {
   return [
+    `calendar:${choices.view}`,
     ...(choices.view === "timeline" ? [`scale:${choices.scale}`] : []),
     `symbols:${choices.symbols}`,
     ...(choices.clusters ? ["clusters"] : []),

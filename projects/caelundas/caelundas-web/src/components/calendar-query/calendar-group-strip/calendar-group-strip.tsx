@@ -11,8 +11,9 @@ import {
 
 import { moveListItem } from "../chip-menu/chip-menu.utilities";
 import { QueryCascader } from "../query-cascader/query-cascader";
+import { JOINED_STRIP_CLASS_NAME } from "../query-cascader/query-cascader.constants";
 
-import { STRIP_CLASS_NAME, TITLE } from "./calendar-group-strip.constants";
+import { TITLE } from "./calendar-group-strip.constants";
 import {
   createGroupItems,
   labelGroupLevel,
@@ -73,7 +74,7 @@ export function CalendarGroupStrip(
     >
       <ButtonGroup
         aria-label={TITLE}
-        className={STRIP_CLASS_NAME}
+        className={JOINED_STRIP_CLASS_NAME}
       >
         <Popover>
           <PopoverTrigger

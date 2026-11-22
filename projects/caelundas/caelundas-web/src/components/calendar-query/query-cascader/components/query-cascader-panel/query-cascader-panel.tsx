@@ -39,7 +39,7 @@ export function QueryCascaderPanel(
   const { mode, panels = {}, placeholder } = properties;
 
   // 🪝 Hooks
-  const { path } = useCascaderState();
+  const { path, query } = useCascaderState();
 
   // 🏗 Setup
   const list =
@@ -51,7 +51,9 @@ export function QueryCascaderPanel(
       </CascaderList>
     );
   const body =
-    (mode === "drill" ? panels[path.at(-1) ?? ""] : undefined) ?? list;
+    (mode === "drill" && query === ""
+      ? panels[path.at(-1) ?? ""]
+      : undefined) ?? list;
 
   // 💪 Handlers
 
