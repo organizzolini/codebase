@@ -2,7 +2,7 @@
 
 /** One issue as the linked-issue check reads it. */
 export interface LinkedIssue {
-  /** Its `gh issue view` document, for the issue audit to read. */
+  /** Its REST document, reshaped for the issue audit to read. */
   readonly document: string;
   /** The names of the issue fields that hold a value. */
   readonly fieldNames: readonly string[];

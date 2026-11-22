@@ -19,17 +19,17 @@ Every wait is bounded. After **3 failed attempts at the same failure**, or when 
 
 ## Preflight
 
-Completion: each item below holds, or is fixed and noted. Read the pull request with `gh pr view <n> --json isDraft,title,body,labels,assignees,commits,reviewDecision`.
+Completion: each item below holds, or is fixed and noted. Read the pull request through [repo-scoped REST](../../../documentation/agents/issue-tracker.md#repo-scoped-rest-instead-of-graphql), never `gh pr view`, which runs GraphQL: `gh api repos/{owner}/{repo}/pulls/<n>` for `draft`, `title`, `body`, `labels`, `assignees` and `mergeable_state`, `…/pulls/<n>/commits` for its commits, and `…/pulls/<n>/reviews` for reviews.
 
-- **Ready for review**: `isDraft` is false. Continuous Integration skips drafts, so a draft shows no failures and no passes. Fix with `gh pr ready <n>`.
-- **Metadata**: all four description headings (🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related) carry real content; one `type:*` label matching the title's type; `scope:*` labels exactly matching the title's scopes; one `source:*` label; an assignee. Fix with `gh pr edit`.
+- **Ready for review**: `draft` is false. Continuous Integration skips drafts, so a draft shows no failures and no passes. Fix with `gh api -X POST repos/{owner}/{repo}/pulls/<n>/ccr/ready_for_review` in a Claude Code session, or `gh pr ready <n>` elsewhere.
+- **Metadata**: all four description headings (🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related) carry real content; one `type:*` label matching the title's type; `scope:*` labels exactly matching the title's scopes; one `source:*` label; an assignee. Fix with `gh api -X PATCH repos/{owner}/{repo}/pulls/<n>` for the title and body, and `gh api -X POST repos/{owner}/{repo}/issues/<n>/labels` or `…/assignees` for labels and assignees.
 - **Title significance**: the title's type is at least as significant as the highest commit on the branch, because the squashed title alone decides the release.
 - **Signatures**: every commit reads `verified: true` from the API (`gh api repos/<owner>/<repo>/pulls/<n>/commits --jq '.[].commit.verification.verified'`), since `required_signatures` is a repository rule. Local `git log %G?` is unreliable without the signer's public key. Unsigned commits go through [sign-commits](../sign-commits/SKILL.md).
 - **Review**: [CODEOWNERS](../../../.github/CODEOWNERS) names `@JimmyPaolini` as sole owner, and GitHub asks no one to approve a pull request its sole owner authored, so an empty `reviewDecision` is fine for their own. For another author, an approval from `@JimmyPaolini` must be on record, or stop and report. Never request, dismiss, or route around a review.
 
 ## 1. Green CI
 
-Completion: `gh pr view <n> --json mergeable,mergeStateStatus` reports `MERGEABLE` and `CLEAN`, and every required check has passed.
+Completion: `gh api repos/{owner}/{repo}/pulls/<n> --jq '[.mergeable, .mergeable_state]'` prints `[true,"clean"]`, and every required check has passed.
 
 The required list lives in the repository ruleset, so read it rather than trust a copy in this file, which drifts as legs are added and split:
 
@@ -78,13 +78,14 @@ Completion: the pull request's state is `MERGED`.
 Enqueue once step 1 holds, the Preflight review condition holds, no `do-not-merge` label is present, and review threads are resolved:
 
 ```bash
-gh pr merge <n> --squash --auto          # standalone pull request
+gh api -X PUT repos/{owner}/{repo}/pulls/<n>/ccr/auto_merge -f merge_method=squash   # standalone pull request, Claude Code session
+gh pr merge <n> --squash --auto          # standalone pull request, anywhere else
 gh stack merge <top-pr> --yes --squash   # stack: gh pr merge cannot merge one
 ```
 
 A missing required review or an unresolved thread is a **raise to the user**; never route around it, and never pass `--admin`.
 
-The queue re-runs the check workflows on a merge commit built from `main` plus the queued pull requests (`merge_group` events; minimum wait 6 minutes, response timeout 32). Watch with `gh run list --event merge_group` and `gh pr view <n> --json state,mergeStateStatus`. A pull request ejected from the queue returns to step 1 with the failing run's logs; usually `main` moved, so step 2 applies. Re-enqueue after the fix.
+The queue re-runs the check workflows on a merge commit built from `main` plus the queued pull requests (`merge_group` events; minimum wait 6 minutes, response timeout 32). Watch with `gh run list --event merge_group` and `gh api repos/{owner}/{repo}/pulls/<n> --jq '[.state, .merged]'`. A queued pull request reports no `auto_merge`, so judge it by that state and the queue run, not by `auto_merge`. A pull request ejected from the queue returns to step 1 with the failing run's logs; usually `main` moved, so step 2 applies. Re-enqueue after the fix.
 
 ## 4. Deploy and release
 
@@ -94,11 +95,11 @@ Merge to `main` starts 🦸 Continuous Deployment (`push-releases`, timeout 32 m
 
 A green run does not prove a release; read the `Releases` job's log and the artifacts. When a release is expected, confirm each of these:
 
-| Artifact                      | Check                                                                                             |
-| ----------------------------- | ------------------------------------------------------------------------------------------------- |
-| Codebase tag + GitHub release | `gh release list --limit 3`; a `chore(release): 🔖 tag codebase` commit on `main`                 |
-| Package tags                  | `git fetch --tags`, then `<project>@<version>` for each IC-suite package the pull request touched |
-| npm and GitHub Packages       | `npm view <package> version` matches the tag; the GitHub Packages copy exists                     |
+| Artifact                      | Check                                                                                                              |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Codebase tag + GitHub release | `gh api repos/{owner}/{repo}/releases/latest --jq .tag_name`; a `chore(release): 🔖 tag codebase` commit on `main` |
+| Package tags                  | `git fetch --tags`, then `<project>@<version>` for each IC-suite package the pull request touched                  |
+| npm and GitHub Packages       | `npm view <package> version` matches the tag; the GitHub Packages copy exists                                      |
 
 A superseded or timed-out `Releases` job has a known read and action under "Merge and release" in [known-failures.md](references/known-failures.md). Any other failure is a **raise to the user** with the failing step, root cause, and a fix-forward versus revert recommendation. Never revert, force-push, hand-edit versions or changelogs, or tag by hand.
 
@@ -120,7 +121,7 @@ A check that cannot be run is reported as skipped with the reason, never as pass
 
 Completion: nothing is left claiming the work is in flight, and nothing the run created is left on the machine. Run only after step 5 passes.
 
-- **Issues**: `gh issue close <n> --comment "<pull request and release>"` each issue the pull request finished (a closed issue is the done signal, and the board marks it Done by itself). An issue the pull request only advances stays In Progress. Close a parent spec only when every pull request under it is merged.
+- **Issues**: Close each issue the pull request finished with `gh api -X POST repos/{owner}/{repo}/issues/<n>/comments -f body="<pull request and release>"`, then `gh api -X PATCH repos/{owner}/{repo}/issues/<n> -f state=closed -f state_reason=completed` (a closed issue is the done signal, and the board marks it Done by itself). An issue the pull request only advances stays In Progress. Close a parent spec only when every pull request under it is merged.
 
 ### Local cleanup
 

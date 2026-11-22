@@ -20,11 +20,13 @@ helm upgrade --install myrelease ./chart
 
 ## Agent Workflow
 
-Work in this repository integrates skills from both
-[mattpocock/skills](https://github.com/mattpocock/skills) and
-[obra/superpowers](https://github.com/obra/superpowers) to clarify, specify,
-track, implement, and review non-trivial features, refactors, and bugfixes with
-strict verification gates.
+Work in this repository runs on the
+[obra/superpowers](https://github.com/obra/superpowers) skills to clarify,
+specify, track, implement, and review non-trivial features, refactors, and
+bugfixes with strict verification gates. This repository's own skills, the
+[ponytail](.agents/skills/ponytail/SKILL.md) family, and
+[grill-me](.agents/skills/grill-me/SKILL.md) and
+[wayfinder](.agents/skills/wayfinder/SKILL.md) fill the gaps around them.
 
 **Planning is human-gated; implementation is continuous.** During planning,
 never chain skills automatically — stop after each step and wait for explicit
@@ -41,31 +43,31 @@ models are reserved for human-selected main sessions; never spawn a subagent on
 Opus/Sol or higher, and always pass the subagent model explicitly so it does not
 inherit a larger session model.
 
-1. **Clarify**: Run [brainstorming](.agents/skills/brainstorming/SKILL.md) with
-   [grill-with-docs](.agents/skills/grill-with-docs/SKILL.md) (domain models/ADRs)
-   or [grill-me](.agents/skills/grill-me/SKILL.md) (plain interview). Follow
-   [grilling](.agents/skills/grilling/SKILL.md) pacing (one numbered frontier
-   with recommendations; ask [ask-matt](.agents/skills/ask-matt/SKILL.md) if
-   unsure). When done, summarize understanding and **stop**.
-2. **Specify**: Run [to-spec](.agents/skills/to-spec/SKILL.md) only on manual
-   request. Scope the spec to land as **one pull request**, and if a
-   [mechanical reason](#one-pull-request-by-default) forces a split, name it in
-   the spec. Publish the spec issue as a Feature (or Bug) with `--type`, set its
-   Priority with [manage-project](.agents/skills/manage-project/SKILL.md) (never
-   change one already set), link it, and **stop**.
-3. **Decompose**: Run [to-tickets](.agents/skills/to-tickets/SKILL.md) only on
-   manual request. By default the breakdown is **one parent issue** — the pull
-   request — with one sub-issue per planned commit; read to-tickets' vertical
-   slices as those commit sub-issues, not as separate tickets. Add a second
-   parent issue only for a reason listed in
+1. **Clarify**: Run [brainstorming](.agents/skills/brainstorming/SKILL.md),
+   and [grill-me](.agents/skills/grill-me/SKILL.md) when the plan needs a harder
+   interview. Explore the code through OpenWiki and the source itself (see
+   [OpenWiki](#openwiki)). When the design is approved, summarize it and
+   **stop** instead of writing the spec file brainstorming would write next.
+2. **Specify**: Only on manual request, publish the approved design as the spec
+   issue — a Feature (or Bug) with `--type` — in place of brainstorming's
+   `docs/superpowers/specs/` file. Scope the spec to land as **one pull
+   request**, and if a [mechanical reason](#one-pull-request-by-default) forces a
+   split, name it in the spec. Set its Priority with
+   [manage-project](.agents/skills/manage-project/SKILL.md) (never change one
+   already set), link it, and **stop**.
+3. **Decompose**: Only on manual request, run
+   [writing-plans](.agents/skills/writing-plans/SKILL.md) against the spec issue.
+   Publish its plan as tickets instead of a `docs/superpowers/plans/` file, as
+   [`documentation/agents/issue-tracker.md`](documentation/agents/issue-tracker.md)
+   describes. By default that is **one parent issue** — the pull request — with
+   one sub-issue per planned commit, each with `--type Task`; read the plan's
+   tasks as those commit sub-issues, not as separate tickets. Add a second parent
+   issue only for a reason listed in
    [One Pull Request by Default](#one-pull-request-by-default), and say which.
-   Confirm breakdown, publish tickets/sub-issues with `--type Task`, and **stop**.
-   Reach for [wayfinder](.agents/skills/wayfinder/SKILL.md) if work exceeds one
-   session. (Ignore `writing-plans` / `docs/superpowers/specs/` hand-offs; see
-   [`documentation/agents/issue-tracker.md`](documentation/agents/issue-tracker.md)).
-4. **Handoff**: Run [handoff](.agents/skills/handoff/SKILL.md) only on manual
-   request for multi-session work. Post the `# Handoff` comment on the spec issue
-   (see [Handoffs](#handoffs)) and **stop**.
+   Confirm the breakdown, publish, and **stop**. Reach for
+   [wayfinder](.agents/skills/wayfinder/SKILL.md) if the work exceeds one session.
+4. **Handoff**: Only on manual request for multi-session work, post the
+   `# Handoff` comment on the spec issue (see [Handoffs](#handoffs)) and **stop**.
 5. **Build**: Every pull request closes an issue, so use
    [link-issue](.agents/skills/link-issue/SKILL.md) first: use the planned ticket,
    or file one before starting ad-hoc work. Set each ticket's board Status to In Progress, and its Effort, before testing
@@ -83,20 +85,21 @@ inherit a larger session model.
    - **Smallest change**: Before writing code, run [ponytail](.agents/skills/ponytail/SKILL.md)
      (full level) — skip, reuse, standard library, installed dependency, then minimum new
      code. [Simplicity](#simplicity) says what outranks it.
-   - **TDD loop**: Use [implement](.agents/skills/implement/SKILL.md) with
-     [test-driven-development](.agents/skills/test-driven-development/SKILL.md) (strict
-     red-green cycle) and [tdd](.agents/skills/tdd/SKILL.md) (confirmed seams, public
-     interfaces; refactoring belongs to step 6). Test via `nx run <project>:vitest:<kind>`
-     (see [Testing & Coverage](#testing--coverage)).
+   - **TDD loop**: Use [test-driven-development](.agents/skills/test-driven-development/SKILL.md)
+     (strict red-green cycle, through public interfaces; refactoring belongs to
+     step 6). Test via `nx run <project>:vitest:<kind>` (see
+     [Testing & Coverage](#testing--coverage)).
    - **Debugging**: Use [systematic-debugging](.agents/skills/systematic-debugging/SKILL.md)
-     (root-cause gate) with [diagnosing-bugs](.agents/skills/diagnosing-bugs/SKILL.md).
+     (root-cause gate).
 6. **Review**: Request review via
    [requesting-code-review](.agents/skills/requesting-code-review/SKILL.md) (fresh subagent
-   handed base/head commits), review with [code-review](.agents/skills/code-review/SKILL.md)
-   and [ponytail-review](.agents/skills/ponytail-review/SKILL.md),
+   handed base/head commits), review with [ponytail-review](.agents/skills/ponytail-review/SKILL.md),
    and apply feedback via [receiving-code-review](.agents/skills/receiving-code-review/SKILL.md).
 7. **Validate**: Run [validate-code](.agents/skills/validate-code/SKILL.md) gated by
-   [verification-before-completion](.agents/skills/verification-before-completion/SKILL.md).
+   [verification-before-completion](.agents/skills/verification-before-completion/SKILL.md),
+   then run [ponytail-debt](.agents/skills/ponytail-debt/SKILL.md) and list each
+   `shortcut:` comment the branch adds in the pull request's 📝 Details, so no
+   deferral lands without review.
 8. **Integrate**: Use [finishing-a-development-branch](.agents/skills/finishing-a-development-branch/SKILL.md)
    for the merge/PR decision, executing via [submit-changes](.agents/skills/submit-changes/SKILL.md),
    [commit-code](.agents/skills/commit-code/SKILL.md), and
@@ -123,9 +126,10 @@ together. Prefer fewer, larger pull requests, and do not split for any of these:
 
 - **Size** — a long branch is fine. Keep it readable through commits, one per
   sub-issue, each scoped to one project or module.
-- **Several projects or scopes** — list them in the title
-  (`feat(lexico,lexico-db): …`), naming the fewest scopes that cover every
-  commit.
+- **Several projects or scopes** — list up to three in the title
+  (`feat(lexico,lexico-db): …`), the ones that carry most of the work. The
+  Comply check rejects a title naming more than three; the release-significance
+  check needs only one scope the commits use, never every scope.
 - **Mixed significance** — title it at the most significant commit (`feat`
   outranks `fix`); see
   [Release Significance](.github/CONTRIBUTING.md#release-significance). The
@@ -138,8 +142,6 @@ issue:
   merge: a Terraform change Continuous Deployment applies first, a database
   migration the following code relies on (expand before contract), or a package
   version that must be on a registry before something installs it from there.
-- **The title cannot hold it** — the scopes the commits need do not fit
-  commitlint's 128-character header even at their fewest.
 - **The user asked for separate pull requests.**
 
 #### When a spec does split
@@ -215,7 +217,7 @@ invented scope fails validation.
 - If a request spans multiple projects or scopes, complete the first project end-to-end before starting the next one — as commits on the same branch, not as separate pull requests (see [One Pull Request by Default](#one-pull-request-by-default)).
 - If the work is truly independent across projects, split it into separate subagents (using a Haiku/Luna-level model, or a Sonnet/Terra-level model only when really necessary) or separate passes so each agent stays project-scoped.
 - Avoid mixing unrelated project changes in one context unless the task is explicitly orchestrating them.
-- Keep each commit to one project or module even when its pull request spans several, so the title can name the fewest scopes that cover every commit and carry the type of the most significant one — see [Release Significance](.github/CONTRIBUTING.md#release-significance).
+- Keep each commit to one project or module even when its pull request spans several, so the title can name at most three scopes and carry the type of the most significant one — see [Release Significance](.github/CONTRIBUTING.md#release-significance).
 
 ## Code Quality & Conventions
 
@@ -290,12 +292,13 @@ For naming conventions, abbreviations, formatting, and language-specific rules, 
 
 - **Follow the [Code of Conduct](.github/CODE_OF_CONDUCT.md)** in every commit, pull request, issue, and comment. It covers agents.
 - **Never bypass git hooks** with `--no-verify` — fix the underlying issue instead.
+- **Use repo-scoped REST, not GraphQL-backed `gh` commands.** Read and write GitHub with `gh api repos/{owner}/{repo}/…`, not `gh pr view`, `gh issue view`, `gh pr create`, `gh label list` or `gh project`, which call GraphQL and fail in a Claude Code session. The REST equivalents are in [`documentation/agents/issue-tracker.md`](documentation/agents/issue-tracker.md#repo-scoped-rest-instead-of-graphql).
 - **Do not run signing-check scripts manually**; Husky already runs these.
 - **Never run `git submodule update --init` for `projects/JimmyPaolini`.** That submodule is deliberately uninitialized everywhere. If `pnpm install` rewrites its `pnpm-lock.yaml` entry, **revert the lockfile** rather than reconciling it.
 - **Release Significance:** The PR title determines the semantic-release bump. Ensure the PR title's type is at least as significant as the highest commit on the branch.
 - **Pull Request Compliance:**
   - Every PR must close or reference a GitHub issue through GitHub's own link (`Closes #N` as the first `🔗 Related` bullet, or the Development sidebar). Work done without one gets an issue backfilled with [link-issue](.agents/skills/link-issue/SKILL.md) before the PR opens.
-  - That issue must itself pass compliance: `type:*`, `scope:*`, and `source:*` labels, the Issue Type for its hierarchy position, an Effort, and a Priority on its root (the issue itself, or its spec). **Ask the user for the Priority before filing a root issue**, since it is theirs to choose and the issue audit fails without it. See [manage-project](.agents/skills/manage-project/SKILL.md).
+  - That issue must itself pass compliance: `type:*`, `scope:*`, and `source:*` labels, the Issue Type for its hierarchy position, an Effort, and a Priority on its root (the issue itself, or its spec). **Choose the Priority yourself when you file a root issue**, since the issue audit fails without one: use the user's value if they gave one, otherwise pick from [manage-project](.agents/skills/manage-project/SKILL.md#choosing-priority), and never ask for it or change one that is already set.
   - Every PR description must carry all 4 mandatory sections (`## 🌰 Summary`, `## 📝 Details`, `## 🧪 Testing`, `## 🔗 Related`) with real content and no unfilled placeholder comments. Never omit `🔗 Related`: its first bullet is the `Closes #N` issue link, followed by any specs, files, or documentation.
   - Each section has one shape: Summary is only one plain paragraph of at most 48 words, Details is only a bulleted list with one marker and at most 512 words, Testing is only an ordered list (indent code blocks under a step), and Related opens with a `-` list, after which anything may follow.
   - Validate the PR once it exists with `NODE_OPTIONS='' node --import @swc-node/register/esm-register compliance/src/compliance.main.ts pull-request <number>` (read-only) and fix what it reports before requesting review.
@@ -342,11 +345,9 @@ which ones exist right now, including the ones installed from other
 repositories.
 
 Writing or editing one — in `.agents/skills/`, or in the four `*-agents`
-packages this repository publishes — is its own task with its own two skills:
+packages this repository publishes — is its own task with its own skill:
 [writing-skills](.agents/skills/writing-skills/SKILL.md) for how a skill is
-built and verified before it ships, and
-[writing-for-agents](.agents/skills/writing-for-agents/SKILL.md) for the prose
-inside it.
+built and verified before it ships.
 
 Instruction-file conventions for Copilot live in [`.github/instructions/`](.github/instructions).
 
@@ -354,21 +355,17 @@ Instruction-file conventions for Copilot live in [`.github/instructions/`](.gith
 
 ### Agent Skills Configuration
 
-The [mattpocock/skills](https://github.com/mattpocock/skills) engineering skills
-read their per-repository configuration from `documentation/agents/`. Edit these files
-directly; re-run `/setup-matt-pocock-skills` only to switch issue trackers or
-start over.
+The vendored skills read their per-repository configuration from
+`documentation/agents/`. Edit these files directly.
 
 | Concern       | Setting                                                                                                                                       | Reference                                                                        |
 | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | Issue tracker | GitHub Issues in `Organizzolini/codebase`, via the `gh` CLI — a spec, then one issue per pull request (usually just one), then one per commit | [`documentation/agents/issue-tracker.md`](documentation/agents/issue-tracker.md) |
-| Triage labels | The five canonical roles mapped onto this repository's `status:` label family                                                                 | [`documentation/agents/triage-labels.md`](documentation/agents/triage-labels.md) |
-| Domain docs   | Single-context — one root `CONTEXT.md` plus root `documentation/adr/`                                                                         | [`documentation/agents/domain.md`](documentation/agents/domain.md)               |
+| Handoffs      | The `# Handoff` comment posted on a spec issue for multi-session work                                                                         | [`documentation/agents/handoffs.md`](documentation/agents/handoffs.md)           |
+| OpenWiki      | The generated evidence index agents read to discover the codebase                                                                             | [`documentation/agents/openwiki.md`](documentation/agents/openwiki.md)           |
 
-`CONTEXT.md` and `documentation/adr/` are both populated now.
-[domain-modeling](.agents/skills/domain-modeling/SKILL.md) grows them lazily, as
-terms and decisions actually get resolved — so add to them when a decision
-lands, rather than scaffolding ahead of the work.
+Architecture decision records live in `documentation/adr/`. Add one when a
+decision lands, rather than scaffolding ahead of the work.
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->

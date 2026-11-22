@@ -16,14 +16,13 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 import { TEMPORARY_ROOT } from "../../../testing/mocks";
 import { MainTipService } from "../main-tip/main-tip.service";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
+import { SemanticReleaseService } from "../semantic-release/semantic-release.service";
 
 import { TagCodebaseCommand } from "./tag-codebase.command";
 import { TagCodebaseService } from "./tag-codebase.service";
 
 import type { CapturedProcess } from "../process-runner/process-runner.types";
 import type { ScriptedAnswer } from "@codebase/testing";
-
-const SEMANTIC_RELEASE = "env HUSKY=0 pnpm semantic-release";
 
 /** Answers every git call a step-aside check and its report make. */
 const gitScript = (
@@ -42,24 +41,32 @@ describe(TagCodebaseCommand, () => {
   let environmentFile: string;
   let reportLines: string[];
 
-  /** Runs the command over the real services and a scripted process runner. */
-  const runCommand = async (runner: FakeProcessRunner): Promise<void> => {
+  const release = vi.fn<SemanticReleaseService["release"]>();
+
+  /** Runs the command over a scripted runner and a fake release. */
+  const runCommand = async (
+    runner: FakeProcessRunner,
+    options?: { dryRun?: boolean },
+  ): Promise<void> => {
     const { module } = await buildTestingModule(TagCodebaseCommand, {
       providers: [
         MainTipService,
         TagCodebaseService,
         { provide: ConfigService, useValue: new ConfigService() },
         { provide: ProcessRunnerService, useValue: runner },
+        { provide: SemanticReleaseService, useValue: { release } },
       ],
     });
 
     const subject = await module.resolve(TagCodebaseCommand);
 
-    await subject.run();
+    await subject.run([], options);
   };
 
   beforeEach(() => {
     process.exitCode = undefined;
+    release.mockReset();
+    release.mockResolvedValue(true);
     reportLines = [];
     environmentFile = path.join(
       createTemporaryDirectory("workspace", TEMPORARY_ROOT),
@@ -103,9 +110,7 @@ describe(TagCodebaseCommand, () => {
     const runner = new FakeProcessRunner(gitScript(["base"]));
     await runCommand(runner);
 
-    expect(runner.streamed).toStrictEqual([
-      { args: ["HUSKY=0", "pnpm", "semantic-release"], executable: "env" },
-    ]);
+    expect(release).toHaveBeenCalledExactlyOnceWith();
     expect(fs.readFileSync(environmentFile, "utf8")).toBe("");
     expect(process.exitCode).toBe(0);
   });
@@ -116,7 +121,7 @@ describe(TagCodebaseCommand, () => {
     const runner = new FakeProcessRunner(gitScript(["newer"]));
     await runCommand(runner);
 
-    expect(runner.streamed).toHaveLength(0);
+    expect(release).not.toHaveBeenCalled();
     expect(fs.readFileSync(environmentFile, "utf8")).toBe(
       "RELEASE_SUPERSEDED=true\n",
     );
@@ -129,12 +134,12 @@ describe(TagCodebaseCommand, () => {
   it("steps aside after a failed release when main moved meanwhile", async () => {
     expect.hasAssertions();
 
-    const runner = new FakeProcessRunner(gitScript(["base", "newer"]), 0, {
-      [SEMANTIC_RELEASE]: 1,
-    });
+    release.mockResolvedValue(false);
+
+    const runner = new FakeProcessRunner(gitScript(["base", "newer"]));
     await runCommand(runner);
 
-    expect(runner.streamed).toHaveLength(1);
+    expect(release).toHaveBeenCalledExactlyOnceWith();
     expect(fs.readFileSync(environmentFile, "utf8")).toBe(
       "RELEASE_SUPERSEDED=true\n",
     );
@@ -144,12 +149,34 @@ describe(TagCodebaseCommand, () => {
   it("fails when semantic-release fails and main has not moved", async () => {
     expect.hasAssertions();
 
-    const runner = new FakeProcessRunner(gitScript(["base"]), 0, {
-      [SEMANTIC_RELEASE]: 1,
-    });
+    release.mockResolvedValue(false);
+
+    const runner = new FakeProcessRunner(gitScript(["base"]));
     await runCommand(runner);
 
     expect(fs.readFileSync(environmentFile, "utf8")).toBe("");
+    expect(process.exitCode).toBe(1);
+  });
+
+  it("previews the release on --dry-run without looking at main", async () => {
+    expect.hasAssertions();
+
+    const runner = new FakeProcessRunner({});
+    await runCommand(runner, { dryRun: true });
+
+    expect(release).toHaveBeenCalledExactlyOnceWith({ dryRun: true });
+    expect(fs.readFileSync(environmentFile, "utf8")).toBe("");
+    expect(process.exitCode).toBe(0);
+  });
+
+  it("fails a --dry-run preview that does not finish", async () => {
+    expect.hasAssertions();
+
+    release.mockResolvedValue(false);
+
+    const runner = new FakeProcessRunner({});
+    await runCommand(runner, { dryRun: true });
+
     expect(process.exitCode).toBe(1);
   });
 

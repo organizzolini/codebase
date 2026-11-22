@@ -4,20 +4,20 @@ title: Ollama & SearxNG Integration (Affirmancy)
 description: Documents the Affirmancy-specific integration where a LangGraph StateGraph pipeline uses SearxNG for metasearch research and Ollama (gemma4:e2b) for generation, with context budget management, model keepalive, and Pydantic validation.
 tags: [affirmancy, ollama, searxng, langgraph, state-graph, metasearch, context-budget, keepalive, pydantic-validation]
 verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-29T03:39:46.432Z
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 sources:
   - id: openwiki-source-834d9e55d27cecb197701e79
     resource: repo://projects/affirmancy/AGENTS.md
+  - id: openwiki-source-c9ed018631133e53dc4fa845
+    resource: repo://projects/affirmancy/configuration/searxng.settings.yml
   - id: openwiki-source-aa414ec11f49c0bd0511815c
     resource: repo://projects/affirmancy/project.json
-  - id: openwiki-source-e6649d4abfe6e57dbc354632
-    resource: repo://projects/affirmancy/searxng.settings.yml
   - id: openwiki-source-de400b0e93cead15077457ba
     resource: repo://projects/affirmancy/src/affirmancy.ipynb
   - id: openwiki-source-52fc6fd40a69feb907bfd8d5
     resource: repo://projects/affirmancy/src/services.py
-generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 ---
 
 # Ollama & SearxNG Integration (Affirmancy)
@@ -91,17 +91,17 @@ Engines are organized in four tiers by weight, determining deduplication priorit
 | **Tier 4: General Web** | `duckduckgo` (1.0), `brave` (0.9), `bing` (0.7) | 0.7–1.0 | Broad coverage; independent indexes prioritized over commercial |
 | **Disabled** | `google`, `wikidata` | — | Google redundant with Startpage; Wikidata returns structured data, not prose |
 
-**Source**: `repo://projects/affirmancy/searxng.settings.yml#L246-L363`
+**Source**: `repo://projects/affirmancy/configuration/searxng.settings.yml#L246-L363`
 
 ### Hostname Boosting — Curated Spiritual Sources
 
 The `hostnames` plugin (`searx.plugins.hostnames.SXNGPlugin`) promotes trusted spiritual/occult domains and demotes noise:
 
 - **High priority (~70 domains)**: `sacred-texts.com`, `hermetic.com`, `biddytarot.com`, `labyrinthos.co`, `astro.com`, `cafeastrology.com`, `chabad.org`, `sefaria.org`, `esotericarchives.com`, `crystalvaults.com`, `runesecrets.com`, `norse-mythology.org`, and many more across tarot, lenormand, astrology, chakras, kabbalah, runes, gemstones, numerology, alchemy, solfeggio.
-- **Low priority**: Thin SEO tarot sites, Wikihow, Quora, Facebook, Coursera, dictionary sites, generic horoscope generators.
-- **Remove**: Non-English content farms (zhihu.com), medical sites (clevelandclinic.org), image-only sites (Pinterest), affiliate marketplaces (Etsy, Amazon).
+- **Low priority**: Thin SEO tarot sites (`tarostarot.com`, `thetarotlady.com`), Wikihow, Quora, Facebook, Coursera, dictionary sites (`dictionary.com`, `cambridge.org`, `merriam-webster.com`), generic horoscope generators (`horoscope.com`, `astrology.com`, `keen.com`, `astrologyzone.com`).
+- **Remove**: Non-English content farms (`zhihu.com`), medical sites (`health.clevelandclinic.org`), image-only sites (`pinterest.com`), affiliate marketplaces (`etsy.com`, `amazon.com`).
 
-**Source**: `repo://projects/affirmancy/searxng.settings.yml#L62-L239`
+**Source**: `repo://projects/affirmancy/configuration/searxng.settings.yml#L62-L239`
 
 ### Rate Limiting & Resilience
 
@@ -114,7 +114,7 @@ The `hostnames` plugin (`searx.plugins.hostnames.SXNGPlugin`) promotes trusted s
 | `outgoing.request_timeout` | `8.0` seconds | Higher than default 2.0s; slow engines still return useful content for LLM |
 | `outgoing.max_request_timeout` | `15.0` seconds | Upper bound |
 
-**Source**: `repo://projects/affirmancy/searxng.settings.yml#L22-L51`, `repo://projects/affirmancy/searxng.settings.yml#L240-L244`
+**Source**: `repo://projects/affirmancy/configuration/searxng.settings.yml#L22-L51`, `repo://projects/affirmancy/configuration/searxng.settings.yml#L240-L244`
 
 ### Safe Search & Output Formats
 
@@ -312,7 +312,7 @@ searxng:
   ports:
     - 8889:8080
   volumes:
-    - ../../projects/affirmancy/searxng.settings.yml:/etc/searxng/settings.yml:ro
+    - ../../projects/affirmancy/configuration/searxng.settings.yml:/etc/searxng/settings.yml:ro
   environment:
     SEARXNG_BASE_URL: http://localhost:8889
   healthcheck:

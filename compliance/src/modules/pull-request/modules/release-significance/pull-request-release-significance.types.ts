@@ -15,12 +15,11 @@ export interface PullRequestCommit {
   readonly subject: string;
 }
 
-/** The title and commits, or the reason there are none. */
+/** The commits, or the reason there are none. */
 export type PullRequestCommitsResolution =
   | {
       readonly commits: readonly PullRequestCommit[];
       readonly resolved: true;
-      readonly title: string;
     }
   | { readonly failure: string; readonly resolved: false };
 

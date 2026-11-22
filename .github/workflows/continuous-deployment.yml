@@ -314,9 +314,7 @@ jobs:
           matrix.target.id == 'push-releases' &&
           env.RELEASE_SUPERSEDED != 'true'
         run: |
-          pnpm exec nx run-many \
-            --target=coinagerie \
-            --target=coinagerie-check \
+          pnpm exec nx run-many --target=coinagerie-check \
             --configuration=write
 
       # semantic-release versions and tags the codebase itself, and creates the
@@ -407,7 +405,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_STATE_SECRET_ACCESS_KEY }}
           AWS_ENDPOINT_URL_S3: ${{ secrets.TERRAFORM_STATE_ENDPOINT }}
           TF_STATE_BUCKET: ${{ secrets.TERRAFORM_STATE_BUCKET }}
-          TF_VAR_openrouter_api_key: ${{ secrets.OPENROUTER_API_KEY }}
           TF_VAR_openrouter_management_key: ${{ secrets.OPENROUTER_MANAGEMENT_KEY }}
           TF_VAR_state_bucket: ${{ secrets.TERRAFORM_STATE_BUCKET }}
           TF_VAR_github_token: ${{ secrets.GH_TOKEN }}

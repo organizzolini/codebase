@@ -22,7 +22,7 @@ const skipped = [
   },
   {
     changes: "",
-    label: "Upgrade Impeccable",
+    label: "Upgrade Python dependencies",
     skipped: { exitCode: 7, tail: "boom" },
     warnings: [],
   },
@@ -120,7 +120,9 @@ describe("upgrade-dependencies utilities", () => {
           "- ⚠️ **Upgrade node** skipped (exit 1) and undone: `no mature version`",
         ),
       ).toBe(true);
-      expect(details).toContain("**Upgrade Impeccable** skipped (exit 7)");
+      expect(details).toContain(
+        "**Upgrade Python dependencies** skipped (exit 7)",
+      );
     });
 
     it("closes with each skipped step's error in a collapsed block", () => {

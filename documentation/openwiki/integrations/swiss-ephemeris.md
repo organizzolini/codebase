@@ -8,28 +8,28 @@ sources:
     resource: repo://projects/caelundas/caelundas-cli/AGENTS.md
   - id: openwiki-source-365913b525ddd217ee2335b6
     resource: repo://projects/caelundas/caelundas-cli/README.md
-  - id: openwiki-source-25040a3784f18b890673b934
-    resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.command.ts
-  - id: openwiki-source-f1b6ed7a420bf27f9762675e
-    resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.constants.ts
-  - id: openwiki-source-a5d8f4d4980ee1192c31a360
-    resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.service.ts
-  - id: openwiki-source-4b2a7c84cda2b81178df846c
-    resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.utilities.ts
-  - id: openwiki-source-f49667a9c8a9384967f375f9
-    resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-aggregation.service.ts
   - id: openwiki-source-201258b93de74dbab274c0ec
     resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.constants.ts
   - id: openwiki-source-39525b7782afc593454331a3
     resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts
   - id: openwiki-source-6fa9f3125917dbde67d0f887
     resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.utilities.ts
+  - id: openwiki-source-c4215a52495eb048e3f02755
+    resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/modules/aggregation/ephemeris-aggregation.service.ts
+  - id: openwiki-source-4a8b4ce6cde2de6788b8c23a
+    resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/modules/ephemeris-download/ephemeris-download.command.ts
+  - id: openwiki-source-a08e93f58297ffb23e94abed
+    resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/modules/ephemeris-download/ephemeris-download.constants.ts
+  - id: openwiki-source-aa829bf3352cd5a05754b2bb
+    resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/modules/ephemeris-download/ephemeris-download.service.ts
+  - id: openwiki-source-f30e054754ad448bc93e8c09
+    resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/modules/ephemeris-download/ephemeris-download.utilities.ts
   - id: openwiki-source-edceb0d5d036b656596819fc
     resource: repo://projects/caelundas/caelundas-cli/src/modules/input/input.constants.ts
-generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-13T16:30:25.369Z
+    at: 2026-11-22T00:18:20.862Z
 ---
 
 # Swiss Ephemeris Integration
@@ -162,7 +162,7 @@ EphemerisService (orchestrator)
 └── EphemerisAggregationService  → single-pass computation for all bodies
 ```
 
-`EphemerisAggregationService` computes all four ephemeris types (coordinates, distance, illumination, azimuth/elevation) for all bodies in one pass, eliminating redundant `calc()` calls — saves ~6,000 calls/day for inner planets.
+`EphemerisAggregationService` computes coordinates, distance, illumination, and azimuth/elevation for all bodies in a single pass, eliminating redundant `calc()` calls.
 
 ## Configuration
 

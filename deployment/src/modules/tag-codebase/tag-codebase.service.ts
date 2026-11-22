@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 
 import { MainTipService } from "../main-tip/main-tip.service";
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
+import { SemanticReleaseService } from "../semantic-release/semantic-release.service";
 
-import { SEMANTIC_RELEASE } from "./tag-codebase.constants";
+import type { TagCodebaseOptions } from "./tag-codebase.types";
 
 /**
  * Versions and tags the codebase with semantic-release, in one `chore(release)`
@@ -19,7 +19,7 @@ export class TagCodebaseService {
 
   constructor(
     private readonly mainTipService: MainTipService,
-    private readonly processRunner: ProcessRunnerService,
+    private readonly semanticReleaseService: SemanticReleaseService,
   ) {}
 
   // 🔐 Private Fields
@@ -31,10 +31,16 @@ export class TagCodebaseService {
   // 🌎 Public Methods
 
   /**
-   * Runs semantic-release, or steps aside when `main` has moved. Skips Husky's
-   * hooks, which only repeat checks the merge queue already ran.
+   * Runs semantic-release, or steps aside when `main` has moved. A dry run only
+   * previews, so it skips that check. Husky's hooks stay off.
    */
-  public run(): number {
+  public async run(options: TagCodebaseOptions = {}): Promise<number> {
+    if (options.dryRun === true) {
+      return (await this.semanticReleaseService.release({ dryRun: true }))
+        ? 0
+        : 1;
+    }
+
     const base = this.mainTipService.head();
 
     if (this.mainTipService.hasMovedFrom(base)) {
@@ -43,7 +49,7 @@ export class TagCodebaseService {
       return 0;
     }
 
-    if (this.processRunner.stream("env", SEMANTIC_RELEASE) === 0) {
+    if (await this.semanticReleaseService.release()) {
       return 0;
     }
 

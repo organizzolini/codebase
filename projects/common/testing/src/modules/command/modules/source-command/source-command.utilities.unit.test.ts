@@ -3,6 +3,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { REPORT_PROCESS_ENTRY } from "../../../../../testing/fixtures/report-process.main";
+import { withoutNodeWarnings } from "../../command.utilities";
 
 import { runSourceCommand } from "./source-command.utilities";
 
@@ -20,7 +21,7 @@ describe(runSourceCommand, () => {
     });
 
     expect(result.exitCode).toBe(0);
-    expect(result.stderr).toBe("diagnostic");
+    expect(withoutNodeWarnings(result.stderr)).toBe("diagnostic");
     expect(JSON.parse(result.stdout)).toMatchObject({
       args: ["alpha", "beta"],
       cwd: PACKAGE_DIRECTORY,

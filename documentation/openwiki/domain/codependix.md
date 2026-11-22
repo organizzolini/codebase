@@ -3,10 +3,10 @@ type: "Reference"
 title: "Codependix — Dependency Graph Boundary Enforcement"
 openwiki_generated: true
 sources:
-  - id: openwiki-source-3813a8d6b5fb514dbe957652
-    resource: repo://configuration/codependix.config.ts
-  - id: openwiki-source-39c3295efc089133e87a9c80
-    resource: repo://CONTEXT.md
+  - id: openwiki-source-d7ee8504ef5ff061b38f1613
+    resource: repo://configuration/ic-suite/codependix.config.ts
+  - id: openwiki-source-6ba748254f38112b13d529da
+    resource: repo://nx.json
   - id: openwiki-source-d811a4654b67981e2f126cdc
     resource: repo://projects/ic-suite/codependix/codependix-agents/package.json
   - id: openwiki-source-5cc5472d0c88610e9964a56e
@@ -15,6 +15,8 @@ sources:
     resource: repo://projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts
   - id: openwiki-source-824c9da02a58cc5b2f5aef5c
     resource: repo://projects/ic-suite/codependix/codependix-cli/package.json
+  - id: openwiki-source-353594b808056ff8dd3dbc28
+    resource: repo://projects/ic-suite/codependix/codependix-cli/README.md
   - id: openwiki-source-7888f6ea89a05e862cf0cc3b
     resource: repo://projects/ic-suite/codependix/codependix-cli/src/modules/map/map.command.ts
   - id: openwiki-source-a07ad5c6915dc545e2f0ed18
@@ -43,13 +45,18 @@ sources:
     resource: repo://projects/ic-suite/codependix/codependix-nx/package.json
   - id: openwiki-source-9b4779d4466d7946f7bbe7ad
     resource: repo://projects/ic-suite/codependix/codependix-nx/src/index.ts
+  - id: openwiki-source-efbfd4f54eb17eb1b9688072
+    resource: repo://projects/ic-suite/codependix/codependix-nx/src/modules/gate/gate.service.ts
   - id: openwiki-source-8d0ef4d2753bdda36b8e1fe0
     resource: repo://projects/ic-suite/codependix/codependix-output/package.json
   - id: openwiki-source-528aefa82940a2461607775d
     resource: repo://projects/ic-suite/codependix/codependix-output/src/modules/anchors/anchors.constants.ts
   - id: openwiki-source-85734f7a2391f7ab05c18061
     resource: repo://projects/ic-suite/codependix/codependix-output/src/modules/anchors/anchors.service.ts
-generated: { by: "openwiki/0.7.0", at: "2026-10-24T21:02:40.299Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+verified:
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 ---
 
 
@@ -59,7 +66,7 @@ generated: { by: "openwiki/0.7.0", at: "2026-10-24T21:02:40.299Z" }
 
 ## Architecture Overview
 
-The toolchain consists of **10 npm packages** under `projects/ic-suite/codependix/`, each with a single responsibility:
+The toolchain consists of **11 packages** (nine published, plus the non-publishable agents and examples) under `projects/ic-suite/codependix/`, each with a single responsibility:
 
 | Package | Purpose | Published as |
 |---------|---------|--------------|
@@ -71,7 +78,7 @@ The toolchain consists of **10 npm packages** under `projects/ic-suite/codependi
 | **codependix-examples** | 21 subject projects built to be graphed, each carrying the guide codependix renders from it | `@codependix/examples` (private) |
 | **codependix-file-imports** | Builds file-level import graphs — TypeScript (`ts.Program`) and Python (`import`/`from … import` parsing) | `@codependix/file-imports` |
 | **codependix-nestjs-modules** | Explores a NestJS container and builds its module graph | `@codependix/nestjs-modules` |
-| **codependix-nx** | Nx plugin inferring a per-project `codependix-gate` target that checks boundaries over a project's Nx dependency closure | `@codependix/nx` |
+| **codependix-nx** | Nx plugin inferring a per-project `codependix-bound` target that checks boundaries over a project's Nx dependency closure | `@codependix/nx` |
 | **codependix-nx-projects** | Builds a project's one-hop Nx dependency neighborhood from the Nx project graph | `@codependix/nx-projects` |
 | **codependix-output** | Renders every graph as JSON/Markdown/mermaid, routes to configured destinations, splices anchor blocks | `@codependix/output` |
 
@@ -106,7 +113,7 @@ flowchart TD
     end
 
     subgraph NxPlugin["codependix-nx (Nx plugin)"]
-        Gate["GateService\ninfers codependix-gate target\nper project"]
+        Gate["GateService\ninfers codependix-bound target\nper project"]
     end
 
     MapCmd --> ConfigSvc
@@ -123,7 +130,7 @@ flowchart TD
 
 ## Core Vocabulary
 
-The toolchain defines precise terminology (from `CONTEXT.md:249-286`):
+The toolchain defines precise terminology (from the toolchain's own READMEs and configuration):
 
 | Term | Definition |
 |------|------------|
@@ -153,7 +160,7 @@ Codependix builds and exports graphs at three independent levels:
 - **Exports per project**: Module graph rooted at the application's `MainModule` (or synthetic root for libraries)
 - **Exports workspace**: Workspace Graph aggregating all modules
 - **Boundary selectors**: `id` (class name) globs only — no file path, no tags
-- **Known limitation**: Two same-named modules in different packages collapse into one node, so `acyclic` rules at this level report name collisions as self-loops (see `configuration/codependix.config.ts:161-170`)
+- **Known limitation**: Two same-named modules in different packages collapse into one node, so `acyclic` rules at this level report name collisions as self-loops (see `configuration/ic-suite/codependix.config.ts:161-170`)
 
 ### 3. File Imports (`fileImports`)
 - **Built by**: `codependix-file-imports`
@@ -197,9 +204,9 @@ A selector stating **no field at all is refused** (not read as "every node") —
 - `implicit: false` — only explicit edges (from import statements)
 - Unset — judges both (stricter than ESLint's `@nx/enforce-module-boundaries` which sees only explicit edges)
 
-This is why the ic-suite `codependix.config.ts` duplicates the 32 `depConstraints` from ESLint: codependix sees both explicit and implicit edges, so it gates at least as much, and sometimes more (e.g., `conformetry-examples` declares an implicit dependency on `conformetry-cli` that no import backs — caught only by codependix with `edges: { implicit: false }`).
+This is why the ic-suite `codependix.config.ts` duplicates the `depConstraints` from ESLint: codependix sees both explicit and implicit edges, so it gates at least as much, and sometimes more (e.g., `conformetry-examples` declares an implicit dependency on `conformetry-cli` that no import backs — caught only by codependix with `edges: { implicit: false }`).
 
-### Example Rules (from `configuration/codependix.config.ts`)
+### Example Rules (from `configuration/ic-suite/codependix.config.ts`)
 
 ```typescript
 // File-level: types files must not import services
@@ -252,12 +259,12 @@ graph TD
 | `--write` with missing anchor | Auto-creates `## 🕸️ Codependix` section (or appends to existing), inserts `### <subheading>` + anchor block |
 | `--check reports` with missing anchor | Reports as stale (difference: "graph") |
 | `--check reports` with drifted content | Reports as stale (difference: "graph" or "formatting") |
-| Renaming an anchor | **Two-place change required**: rename in `projectDefaults` **and** re-splice every README in the same commit. A half-done rename leaves orphaned blocks that fail `markdown-lint` in the version commit's `prepare` hook, blocking the release. |
+| Renaming an anchor | **Two-place change required**: rename in `projectDefaults` **and** re-splice every file that carries the blocks in the same commit. A half-done rename leaves orphaned blocks that fail `markdown-lint` in the version commit's `prepare` hook, blocking the release. |
 
 ### Per-Project vs Workspace Exports
 
-- **Per-project**: A project opts in by creating its own `codependix.config.ts` spreading `projectDefaults` (from `configuration/codependix.config.ts`). Exports go to the project's `README.md` under `## 🕸️ Codependix` with subheadings (`### Nx Neighborhood`, etc.).
-- **Workspace**: Exported once to the root `README.md` under the same heading, using the same three anchor names. No per-project config needed — controlled by the root `codependix.config.ts`'s `workspace` section.
+- **Per-project**: A project opts in by creating its own `codependix.config.ts` spreading `projectDefaults` (from `configuration/ic-suite/codependix.config.ts`). Exports go to the project's `documentation/codependix.md` under `## 🕸️ Codependix` with subheadings (`### Nx Neighborhood`, etc.).
+- **Workspace**: Exported once to the root `codependix.md` with the same three anchor names, using the same three anchor names. No per-project config needed — controlled by the root `codependix.config.ts`'s `workspace` section.
 
 ## CLI — `codependix` Command
 
@@ -291,7 +298,7 @@ This split mirrors `callidescope`'s `--check depth` vs `--check reports`.
 
 ## Nx Plugin — `@codependix/nx`
 
-The Nx plugin infers a `codependix-gate` target onto **every project** (except the workspace root) that runs `BoundaryCheckService` over that project's Nx dependency closure.
+The Nx plugin infers a `codependix-bound` target onto **every project** (except the workspace root) that runs `BoundaryCheckService` over that project's Nx dependency closure.
 
 - **Inference**: `createNodes` in `codependix-nx/src/index.ts` matches `project.json` files, resolves plugin options + tool inputs + tsconfig inputs once, infers targets per project root.
 - **Executor**: `gate` executor (defined in `executors.json`) loads `BoundaryCheckService` and runs it with the project's selection.
@@ -301,7 +308,7 @@ This lets Nx Cloud / affected commands run boundary checks only for changed proj
 
 ## Configuration — `codependix.config.ts`
 
-The root `codependix.config.ts` (at `configuration/codependix.config.ts`) is the **single source of truth** for boundary rules and workspace-level exports. It exports:
+The root `codependix.config.ts` (at `configuration/ic-suite/codependix.config.ts`) is the **single source of truth** for boundary rules and workspace-level exports. It exports:
 
 - `projectDefaults` — per-project export config (anchor names, target: markdown) that projects spread into their own `codependix.config.ts`
 - `boundaries` — all rules for all three levels (see examples above)

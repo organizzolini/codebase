@@ -4,9 +4,11 @@ title: Affirmancy Testing
 description: Documents affirmancy's pytest suites, test organization, type checking, notebook output stripping, LangGraph agent testing patterns, and Ollama/SearxNG mocking strategies.
 tags: [affirmancy, testing, pytest, type-checking, notebooks, langgraph, ollama, searxng]
 verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-29T03:39:46.432Z
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 sources:
+  - id: openwiki-source-6ba748254f38112b13d529da
+    resource: repo://nx.json
   - id: openwiki-source-f361a9dd9b028b78e5690b6b
     resource: repo://projects/affirmancy/pyproject.toml
   - id: openwiki-source-de400b0e93cead15077457ba
@@ -27,7 +29,7 @@ sources:
     resource: repo://projects/affirmancy/testing/test_services.py
   - id: openwiki-source-4c172bf9a04a8dafe2a723fe
     resource: repo://projects/affirmancy/testing/test_subjects.py
-generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 ---
 
 # Affirmancy Testing
@@ -72,7 +74,7 @@ The project exposes Nx targets for common test workflows:
 - `nx run affirmancy:pytest` — all tests
 - `nx run affirmancy:pytest:unit` — only unit tests
 - `nx run affirmancy:pytest:integration` — only integration tests
-- `nx run affirmancy:test-coverage` — all tests + coverage report
+- `nx run affirmancy:pytest:coverage` — all tests + coverage report (XML for CI)
 
 ## Pytest Configuration
 
@@ -114,7 +116,7 @@ Or via Nx: `nx run affirmancy:typecheck` (runs both in parallel).
 
 Jupyter notebooks in `src/` (e.g., `affirmancy.ipynb`, `prices.ipynb`, `semantics.ipynb`) have their outputs stripped on commit by `nbstripout`. This ensures diffs show code changes rather than the last run's results.
 
-The tool is configured as a dev dependency in `pyproject.toml` and installed in the shared workspace. No manual action is needed — it runs automatically on `git commit`.
+The tool is a dev dependency in `pyproject.toml` installed in the shared workspace, and the `nbstripout` Nx target runs it over every notebook in `src/`: its `check` configuration (the default) verifies the outputs are stripped and its `write` configuration strips them.
 
 ## LangGraph Agent Testing Patterns
 
@@ -319,14 +321,14 @@ Verifies:
 The test environment includes several static analysis tools:
 
 - **ruff**: linting and formatting (extends shared workspace config, excludes notebooks)
-- **vulture**: dead code detection (excludes `.vulture_whitelist.py`)
+- **vulture**: dead code detection (reads `configuration/.vulture_whitelist.py`)
 - **bandit**: security linting (excludes `testing/`, `output/`, `notebooks/`, skips B101)
 
 Run all checks via:
 
 ```bash
-nx run affirmancy:lint-codebase
-nx run affirmancy:form-codebase
+nx run affirmancy:lint-code
+nx run affirmancy:format-code
 ```
 
 Or individually: `nx run affirmancy:ruff-lint`, `nx run affirmancy:vulture`, `nx run affirmancy:bandit`.

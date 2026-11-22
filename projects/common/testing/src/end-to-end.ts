@@ -3,6 +3,7 @@ export type { Command, CommandResult } from "./modules/command/command.types";
 export {
   createCommand,
   sanitizeEnvironment,
+  withoutNodeWarnings,
 } from "./modules/command/command.utilities";
 export type {
   GuideGapOptions,

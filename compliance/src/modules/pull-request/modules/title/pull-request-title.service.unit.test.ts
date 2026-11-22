@@ -76,4 +76,38 @@ describe(PullRequestTitleService, () => {
 
     expect(service.check("bad")[0]).toContain("Conventional Commits");
   });
+
+  it("passes a title that names three scopes", () => {
+    vi.mocked(spawnSync).mockReturnValue(completion({ status: 0 }));
+
+    expect(service.check("feat(a,b,c): ✨ add")).toStrictEqual([]);
+  });
+
+  it("fails a title that names four scopes, even when commitlint passes", () => {
+    vi.mocked(spawnSync).mockReturnValue(completion({ status: 0 }));
+
+    const [message] = service.check("feat(a,b,c,d): ✨ add");
+
+    expect(message).toContain("4 scopes (a, b, c, d)");
+  });
+
+  it("counts a breaking-change title's scopes too", () => {
+    vi.mocked(spawnSync).mockReturnValue(completion({ status: 0 }));
+
+    expect(service.check("feat(a,b,c,d)!: ✨ add")).toHaveLength(1);
+  });
+
+  it("reports commitlint and the scope count together", () => {
+    vi.mocked(spawnSync).mockReturnValue(
+      completion({ status: 1, stdout: "too long" }),
+    );
+
+    expect(service.check("feat(a,b,c,d): ✨ add")).toHaveLength(2);
+  });
+
+  it("does not count a title with no scope", () => {
+    vi.mocked(spawnSync).mockReturnValue(completion({ status: 0 }));
+
+    expect(service.check("feat: ✨ add")).toStrictEqual([]);
+  });
 });

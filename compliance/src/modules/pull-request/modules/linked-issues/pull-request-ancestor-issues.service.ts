@@ -5,12 +5,12 @@ import { UNLINKED_AUTHOR_LOGINS } from "../../pull-request.constants";
 import {
   ISSUE_REFERENCE_PATTERN,
   issueAncestorSchema,
-  linkedIssueNumbersSchema,
 } from "../body/pull-request-body-links.constants";
 import { PullRequestBodyLinksService } from "../body/pull-request-body-links.service";
 import { PullRequestGithubService } from "../github/pull-request-github.service";
 
 import { PullRequestDescendantIssuesService } from "./pull-request-descendant-issues.service";
+import { ISSUE_DOCUMENT_QUERY } from "./pull-request-linked-issues.constants";
 
 import type {
   CheckOutcome,
@@ -132,36 +132,16 @@ export class PullRequestAncestorIssuesService {
     }
   }
 
-  /** The issues GitHub lists as closed by the pull request. */
-  private readLinked(number: number): PullRequestResult<number[]> {
-    return this.readJson(
-      [
-        "pr",
-        "view",
-        String(number),
-        "--json",
-        "closingIssuesReferences",
-        "--jq",
-        "[.closingIssuesReferences[].number]",
-      ],
-      (document) => linkedIssueNumbersSchema.parse(document),
-      `issues closed by pull request ${String(number)}`,
-    );
-  }
-
   /** The parent of one issue, from GitHub's hierarchy or its body. */
   private readParent(
     issueNumber: number,
   ): PullRequestResult<number | undefined> {
     return this.readJson(
       [
-        "issue",
-        "view",
-        String(issueNumber),
-        "--json",
-        "body,parent",
+        "api",
+        `repos/{owner}/{repo}/issues/${String(issueNumber)}`,
         "--jq",
-        "{body: .body, parent: .parent}",
+        ISSUE_DOCUMENT_QUERY,
       ],
       (document) => {
         const issue = issueAncestorSchema.parse(document);
@@ -262,27 +242,23 @@ export class PullRequestAncestorIssuesService {
 
   /** Links ancestors in the description, writing it back when it changed. */
   public link(context: PullRequestContext): LinkResult {
-    const linked = this.readLinked(context.number);
+    const linked = this.pullRequestBodyLinksService.extractClosingIssueNumbers(
+      context.body,
+    );
 
-    if (!linked.ok) {
-      return this.unchanged(context, [], [linked.failure]);
-    }
-
-    if (linked.value.length === 0) {
+    if (linked.length === 0) {
       return this.unchanged(context, [
         "ℹ️ No linked issues; no ancestor references to add",
       ]);
     }
 
-    const ancestors = this.collectAncestors(linked.value);
+    const ancestors = this.collectAncestors(linked);
 
     if (!ancestors.ok) {
       return this.unchanged(context, [], [ancestors.failure]);
     }
 
-    const descendants = this.pullRequestDescendantIssuesService.collect(
-      linked.value,
-    );
+    const descendants = this.pullRequestDescendantIssuesService.collect(linked);
 
     if (!descendants.ok) {
       return this.unchanged(context, [], [descendants.failure]);
@@ -312,13 +288,10 @@ export class PullRequestAncestorIssuesService {
       return { ...base, failures: [] };
     }
 
-    const linked = this.readLinked(context.number);
-
-    if (!linked.ok) {
-      return { ...base, failures: [linked.failure] };
-    }
-
-    const ancestors = this.collectAncestors(linked.value);
+    const linked = this.pullRequestBodyLinksService.extractClosingIssueNumbers(
+      context.body,
+    );
+    const ancestors = this.collectAncestors(linked);
 
     if (!ancestors.ok) {
       return { ...base, failures: [ancestors.failure] };

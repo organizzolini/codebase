@@ -3,6 +3,9 @@ name: 🤖 Setup Copilot
 on:
   workflow_dispatch:
   push:
+    # Branches only: a `paths` filter is not applied to a tag push, so without
+    # this every release tag ran a job meant only for edits to this file.
+    branches: ["**"]
     paths:
       - .github/workflows/copilot-setup-steps.yml
   pull_request:

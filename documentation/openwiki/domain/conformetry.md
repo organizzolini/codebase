@@ -5,14 +5,20 @@ description: Template-driven code generation and conformance validation toolchai
 tags: [conformetry, generation, validation, scaffolding, nx-plugin, code-quality]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-13T16:30:25.369Z
+    at: 2026-11-22T00:18:20.862Z
 sources:
-  - id: openwiki-source-39c3295efc089133e87a9c80
-    resource: repo://CONTEXT.md
   - id: openwiki-source-282d7529a5691107948d463c
     resource: repo://documentation/adr/0006-hold-every-conformetry-language-in-one-package.md
   - id: openwiki-source-1c93486ff1df6379518854cc
     resource: repo://documentation/adr/0011-hold-one-path-law-for-every-project-type.md
+  - id: openwiki-source-1bd2cf1e4f05398afbe13eb6
+    resource: repo://projects/ic-suite/conformetry/conformetry-configuration/README.md
+  - id: openwiki-source-4174975f2c56d6225735940e
+    resource: repo://projects/ic-suite/conformetry/conformetry-core/README.md
+  - id: openwiki-source-44d29a9aef7a1365b97f86be
+    resource: repo://projects/ic-suite/conformetry/conformetry-generation/README.md
+  - id: openwiki-source-a1bf10d242711b28feffa241
+    resource: repo://projects/ic-suite/conformetry/conformetry-languages/README.md
   - id: openwiki-source-b771dcecb9f32073f2170dc8
     resource: repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/languages/languages.service.ts
   - id: openwiki-source-81f625f97ec89030f878cc2b
@@ -25,14 +31,14 @@ sources:
     resource: repo://projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation.service.ts
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
-generated: { by: "openwiki/0.9.0", at: "2026-11-13T16:30:25.369Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 ---
 
 # Conformetry
 
 **Conformetry** is the monorepo's template-driven generation and conformance validation toolchain. It replaces ad-hoc scaffolding and manual consistency checks with a single, versioned contract: a **Generator** pairs a **Template** with declared **Inputs**; rendering the template produces an **Instance** on disk; **Languages** compare the instance back to the template structurally; **Validation** reports **Differences** (missing template elements) and **Errors** (severe differences) with a **Conformance** score (0–1) that gates CI.
 
-The toolchain is split into ten packages under `projects/ic-suite/conformetry/`, published as `@conformetry/*`, plus the configuration file at `configuration/conformetry.config.ts` and 17 templates under `configuration/conformetry-templates/`.
+The toolchain is split into ten packages under `projects/ic-suite/conformetry/`, published as `@conformetry/*`, plus the configuration file at `configuration/ic-suite/conformetry.config.ts` and 17 templates under `configuration/ic-suite/conformetry-templates/`.
 
 ---
 
@@ -46,14 +52,13 @@ The toolchain is split into ten packages under `projects/ic-suite/conformetry/`,
 | **Language** | The comparison engine for one family of file types, selected by file extension, that measures an instance against its template structurally (AST-aware where possible). | Rule, validator rule, check |
 | **Fallback** | The line-by-line text comparison that every file extension no Language claims is routed to. An unclaimed extension is never skipped — the Fallback is the floor under a validation run, not a gap in it. | Default language, catch-all, unhandled |
 | **Difference** | Something a template declares that its instance lacks. Content the instance adds is never a difference. | Finding, violation, failure |
-| **Error** | A difference severe enough to fail a validation run (governed by per-type weights and the generator's `threshold`). | Finding, issue |
 | **Conformance** | How completely an instance carries what its template declares, expressed as a score from 0 to 1. | Compliance, passing, matching |
 
 ---
 
 ## The 17 Templates
 
-Defined in `configuration/conformetry.config.ts`, each with a `templatePath` under `configuration/conformetry-templates/`:
+Defined in `configuration/ic-suite/conformetry.config.ts`, each with a `templatePath` under `configuration/ic-suite/conformetry-templates/`:
 
 ### Project-Level Generators (workspace-root instances)
 
@@ -233,7 +238,7 @@ The Nx plugin provides two integration points:
 
 ### 1. `createNodes` (Project Graph Inference)
 
-- Reads `configuration/conformetry.config.ts` once per workspace.
+- Reads `configuration/ic-suite/conformetry.config.ts` once per workspace.
 - For each generator, resolves its instance groups against Nx projects:
   - **Workspace groups** (`tags: undefined`) — globs relative to workspace root.
   - **Project groups** (`tags: string[]`) — globs relative to each matching project's root.
@@ -253,7 +258,7 @@ The Nx plugin provides two integration points:
 ### Configuration Shape for Nx
 
 ```ts
-// configuration/conformetry.config.ts
+// configuration/ic-suite/conformetry.config.ts
 export type ConformetryNxConfiguration = ConformetryNxGeneratorDefinition[];
 
 interface ConformetryNxGeneratorDefinition {
@@ -271,7 +276,7 @@ type ConformetryNxInstanceGroup =
   | ConformetryNxProjectInstanceGroup;   // patterns?: string[]; tags: string[]
 ```
 
-The single-path-law principle (ADR 0011): `configuration/codebase-structure.json` holds universal path/naming rules; conformetry owns per-type shape via tags and validation.
+The single-path-law principle (ADR 0011): `configuration/lint/codebase-structure.json` holds universal path/naming rules; conformetry owns per-type shape via tags and validation.
 
 ---
 
@@ -350,7 +355,7 @@ One file is usually covered by several instances (e.g., `logger.service.ts` reac
 
 | Extension Point | How to Extend |
 |-----------------|---------------|
-| **New Generator** | Add entry to `configuration/conformetry.config.ts` with `name`, `templatePath`, `inputs`, `instances`, optional `threshold`. Template folder under `configuration/conformetry-templates/<name>/` with `{{placeholder}}` files. |
+| **New Generator** | Add entry to `configuration/ic-suite/conformetry.config.ts` with `name`, `templatePath`, `inputs`, `instances`, optional `threshold`. Template folder under `configuration/ic-suite/conformetry-templates/<name>/` with `{{placeholder}}` files. |
 | **New Language** | Add module under `conformetry-languages/src/modules/<lang>/`, implement `ConformetryLanguageValidator`, register in `LanguagesService.claimingLanguages()`. Declares `fileExtensions` in its descriptor. |
 | **Custom Generator Hooks** | In generator definition, add `hooks: { preGenerate?: (ctx) => Promise<void>; postGenerate?: (ctx) => Promise<void> }`. Context provides `generatorName`, `inputs`, `instancePath`, `templatePath`, `fs`. |
 | **Custom Output Format** | Implement `FormatterAdapter` (from `conformetry-generation`) and pass to `GenerationService`; or extend `ReportingService` in `conformetry-output`. |
@@ -363,7 +368,7 @@ One file is usually covered by several instances (e.g., `logger.service.ts` reac
 
 ### Configuration File
 
-`configuration/conformetry.config.ts` — loads as `ConformetryNxConfiguration` array. Each entry:
+`configuration/ic-suite/conformetry.config.ts` — loads as `ConformetryNxConfiguration` array. Each entry:
 
 ```ts
 {
@@ -449,8 +454,8 @@ nx affected --target=conformetry-validate
 
 | File | Purpose |
 |------|---------|
-| `configuration/conformetry.config.ts` | Generator definitions, inputs, instance groups, thresholds |
-| `configuration/conformetry-templates/*/` | 17 template folders with `{{placeholder}}` files |
+| `configuration/ic-suite/conformetry.config.ts` | Generator definitions, inputs, instance groups, thresholds |
+| `configuration/ic-suite/conformetry-templates/*/` | 17 template folders with `{{placeholder}}` files |
 | `projects/ic-suite/conformetry/conformetry-core/src/modules/conformetry-core/conformetry-core.types.ts` | Core contracts (`ConformetryDifference`, `ConformetryLanguageValidator`, `InstanceScore`, etc.) |
 | `projects/ic-suite/conformetry/conformetry-languages/src/modules/languages/languages.service.ts` | Language resolution, fallback widening |
 | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation.service.ts` | Validation orchestration, scoring, deduplication |

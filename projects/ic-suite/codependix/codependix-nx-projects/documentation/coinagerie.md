@@ -2,10 +2,8 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
+The words this project uses, regenerated with this project's `coinagerie-check:write` Nx target.
 
-- **affirmancy**:
-- **lexico**:
 - **neighborhood**: One project's immediate Nx dependencies and dependents, drawn as its one-hop graph and exported as a diagram.
 
 <!-- coinagerie:end -->

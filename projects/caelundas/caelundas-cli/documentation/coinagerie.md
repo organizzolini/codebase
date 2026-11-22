@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
+The words this project uses, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **aggregation**: The ephemeris pipeline stage that merges per-minute body positions into one series, run by EphemerisAggregationService.
 - **air**: Element name in the tag dimensions, under which signs such as Aquarius, Gemini, and Libra are grouped for classification.
@@ -28,16 +28,13 @@ The words this project uses that the root glossary does not define, regenerated 
 - **azalt**: Swiss Ephemeris azalt function that converts ecliptic positions to azimuth and altitude in the horizon ephemeris service.
 - **azimuth**: Compass bearing of a body along the horizon, one of the horizon ephemeris fields the calendar can carry.
 - **band**: Latitude band index used by the night-sky projection code to bin star vertices and find their neighbors.
-- **batch**: A group of calendar event rows or migration steps processed together in one pass by the persistence layer.
 - **beltane**: The Beltane cross-quarter event, built by the annual solar cycle service on the day between the spring equinox and solstice.
 - **biquintile**: Harmonic aspect of 144 degrees, defined in the caelundas constants and detected by the specialty aspects service.
 - **boomerang**: Quadruple compound pattern mapped to a returning-arrow glyph in the symbol constants, one of the compound shapes detected.
-- **boundary**: An edge of an interval or range, such as a sign, a twilight, or a date-range limit checked by input validation.
 - **brightness**: Apparent magnitude of a planet, used in phase calculations, and the weight of a symbol that grows with the planets involved.
 - **brilliancy**: Greatest brilliancy, the magnitude minimum of a planet, which the phase calculation service detects for Venus and Mars.
 - **butterfly**: Quadruple compound pattern mapped to a butterfly glyph in the symbol constants, one of the compound shapes detected.
 - **cancer**: Zodiac sign Cancer, used as a sign name in ingress seed rows such as event-sun-ingress-cancer.
-- **canonical**: The fixed key order for a body pair, so an aspect key is the same regardless of which body comes first.
 - **capricorn**: Zodiac sign Capricorn, the sign name the ingresses service returns for longitude 270 degrees in the end-to-end test.
 - **chiron**: The body Chiron, tracked alongside the planets in aspects and listed in the caelundas body constants.
 - **civil**: First of three twilight kinds, with nautical and astronomical, that the twilight module emits to mark dawn and dusk.
@@ -57,20 +54,16 @@ The words this project uses that the root glossary does not define, regenerated 
 - **declination**: Angle north or south of the celestial equator, used as the star catalog's dec coordinate in night-sky figures.
 - **decuple**: Stellium of ten bodies in conjunction, labeled decuple stellium and drawn with its own symbol in calendar events.
 - **degree**: Angular unit of ecliptic longitude, in which signs span 30 degrees, decans 10, and every orb and threshold is set.
-- **descendant**: A tag below another in its dimension tree, linked to its ancestors through the tags_closure table for classification queries.
 - **designation**: IAU abbreviation such as UMa that identifies a constellation, keyed as the constellation table's primary identifier.
 - **dignity**: A planet's standing in a sign, such as domicile, exaltation, or peregrine, which tag-dimensions uses to rank sign ingress tags.
 - **dimension**: One root of the tag tree, grouping related tags such as Motion or Season, so each event carries one tag per root.
 - **disc**: Apparent circular face of the Sun or Moon as seen from the observer, whose radius decides eclipse overlap geometry.
-- **domain**: Feature-level grouping of services under src/modules, such as ephemeris, calendar, or tags, that each own one job.
 - **dubhe**: Alpha Ursae Majoris, a bright catalog star that night-sky unit tests use as a fixture.
 - **duodecuple**: Stellium of twelve bodies in conjunction, labeled duodecuple stellium and assigned its own symbol in the stellium constants.
 - **dusk**: Evening twilight moment when the Sun sinks through a depression angle, closing civil, nautical, or astronomical evening light.
-- **early**: Name of a sample event in the end-to-end test, placed before the others in time.
 - **earth**: Home planet of the observer, whose orbit sets perihelion and aphelion and whose shadow causes lunar eclipses.
 - **eclipse**: Obscuration of the Sun or Moon by Earth's or the Moon's shadow, detected as begin, maximum, and end moments.
 - **ecliptic**: Plane of Earth's orbit against which every body's longitude and latitude are measured, the zodiac's reference frame.
-- **element**: One of the Fire, Earth, Air, and Water classes of a zodiac sign, a root tag node in the tag tree.
 - **elevation**: Altitude of a body above the observer's horizon in degrees, the value that sets sunrise, twilight, and daily cycle thresholds.
 - **elongation**: Angle between a planet and the Sun as seen from Earth, measured signed or unsigned, timing Mercury and Venus greatest elongations.
 - **ephemeris**: Table of computed body positions over time, produced locally by Swiss Ephemeris from JPL DE431 data files.
@@ -112,7 +105,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **kite**: Quadruple aspect pattern: a grand trine with a fourth body opposite one trine body, named in calendar event summaries.
 - **lammas**: The August cross-quarter day in the annual solar cycle, built by the Lammas event builder.
 - **latitude**: Angle north or south of the reference plane in degrees, also the observer's LATITUDE setting from -90 to 90.
-- **leaf**: Terminal tag node with no children in a dimension tree, the most specific label an event is filed under in the tags table.
 - **leo**: Zodiac sign and constellation named Leo, one of the twelve signs an event can be tagged with.
 - **libra**: Zodiac sign mapped to its own symbol in the caelundas symbol table and listed as a constellation in the night-sky seed.
 - **lilith**: Lunar body tracked as the mean lunar apogee, a smooth average that sits alongside the osculating lunar apogee.
@@ -150,9 +142,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **perihelion**: Solar apsis event at Earth's closest approach to the Sun, built by the annual solar cycle events service.
 - **phase**: Stage of a body's cycle relative to the Sun, covering Moon phases and planetary phase events in this calendar.
 - **phenomenon**: Singular form of phenomena, the ephemeris service group that computes illumination, magnitude, and horizon events.
-- **pipeline**: Ordered sequence of stages the caelundas command runs, from input parsing through to calendar output.
 - **pisces**: Zodiac sign spanning 330 to 360 degrees of longitude, named in the night-sky seed as Psc.
-- **place**: Plain word for a location, where each stored calendar event is keyed by its latitude and longitude.
 - **planet**: Tag category grouping the bodies events are about. Unlike the astronomical term, it includes the Sun and Moon. Named Planet in the events seed data.
 - **planetary**: Describes phase and direction events of the non-luminary planets, such as Mercury's conjunctions or Mars's opposition.
 - **pluto**: Dwarf planet in the caelundas body list, tracked for aspects, ingresses, and stellium detection.
@@ -168,7 +158,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **ra**: Right ascension column in the night-sky star catalog, the equatorial coordinate that positions each star.
 - **radial**: Describes motion along the line from Earth to a body, whose sign change marks each lunar or solar apsis.
 - **radius**: Apparent angular size of the Sun or Moon's disc, which the daily-cycle timing accounts for at rise and set.
-- **rebuild**: Refresh the read model after an upsert, once per upsert rather than once per batch.
 - **rectangle**: Compound configuration formed by two oppositions joined by four sextiles, named in the aspect constants.
 - **refraction**: Atmospheric bending of light near the horizon, a 34 arcminute correction applied to rise and set times.
 - **retrograde**: Apparent backward motion of a planet across the sky, detected as stations and the periods between them.
@@ -176,7 +165,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **sagittarius**: Zodiac sign and constellation spanning 240 to 270 degrees of longitude, listed as Sgr in the night-sky seed.
 - **samhain**: Celtic cross-quarter day falling near November 1, built by the annual solar cycle events service.
 - **saturn**: A body in the caelundas list, a slow outer planet whose positions, stations, and aspects come from the ephemeris.
-- **scenario**: Hand-built ephemeris fixture that unit tests install through setScenarioEphemeris to drive a detector without Swiss Ephemeris data.
 - **scorpio**: The eighth zodiac sign, spanning 210 to 240 degrees of longitude, mapped to the Water element and its symbol.
 - **season**: Tag dimension naming the solar-cycle season an event falls in, such as spring, summer, autumn, or winter, in the tag tree.
 - **semidiameter**: Angular radius of the Sun or Moon disc, added to the horizon altitude when daily cycles compute rise, set, and upper-limb times.
@@ -211,10 +199,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **tilt**: Inclination of the Moon's shadow track relative to the ecliptic, a parameter of the eclipse geometry tests.
 - **topocentric**: Describes positions and rise times seen from the observer's location rather than Earth's centre, used for horizon and local eclipse events.
 - **totality**: Phase of a total eclipse when the Sun or Moon is fully covered, classified by the eclipse calculation and classification services.
-- **trace**: Verb for following constellation lines through catalog star vertices, as in traceConstellationLines in the night-sky module.
 - **tredecile**: Specialty aspect at exactly 108 degrees, detected by the specialty-aspects module from the harmonic division of the circle.
 - **trine**: Major aspect at exactly 120 degrees of separation, one of the five major aspects and the base of grand trine patterns.
-- **triple**: Compound aspect of three bodies, such as grand trine, hammer, T-square, or yod, detected by the triple-aspects module.
 - **twilight**: The time when the Sun is below the horizon but still lights the sky, at dawn and at dusk, with civil, nautical, and astronomical boundaries computed by the twilights module.
 - **umbral**: Adjective for the darkest eclipse shadow, the umbra, used in magnitude and contact timing for eclipse classification.
 - **undecile**: Specialty aspect at about 32.73 degrees, one eleventh of a circle, detected by the specialty-aspects module.
