@@ -193,10 +193,25 @@ describe(clusterEvents, () => {
   });
 
   it.each([
+    ["retrograde periods", "Type / Retrograde Period", "retrograde periods"],
+    ["sign ingresses", "Type / Ingress / Sign Ingress", "ingresses"],
+  ])("merges %s like aspects", (_name, path, kind) => {
+    const clustered = clusterEvents(
+      [
+        event("a", "2026-03-03T10:00:00Z", "2026-03-03T10:00:00Z", path),
+        event("b", "2026-03-03T10:10:00Z", "2026-03-03T10:10:00Z", path),
+      ],
+      OPTIONS,
+    );
+
+    expect(clustered.events).toHaveLength(1);
+    expect(clustered.events[0]?.summary).toContain(kind.split(" ")[0] ?? "");
+  });
+
+  it.each([
     ["twilights", "Type / Twilight / Civil Dawn"],
     ["a direction", "Type / Direction / Retrograde"],
     ["a daily cycle", "Type / Cycle / Daily Solar Cycle / Sunrise"],
-    ["an ingress", "Type / Ingress / Sign Ingress"],
     ["an event of no kind", "Planet / Mars"],
   ])("never merges %s, however close they start", (_name, path) => {
     const events = [
