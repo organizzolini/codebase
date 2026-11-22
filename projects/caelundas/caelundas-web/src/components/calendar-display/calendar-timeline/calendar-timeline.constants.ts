@@ -38,3 +38,9 @@ export const TIMELINE_VIEWPORT =
  * The one row an ungrouped timeline draws every event in.
  */
 export const ALL_EVENTS_ROW = { id: "all", title: "All events" } as const;
+
+/**
+ * A row's event count drawn as a solid pill, so the sky shows through the tree pane around it.
+ */
+export const COUNT_PILL_CLASS_NAME =
+  "bg-background rounded-md border px-2 py-0.5";

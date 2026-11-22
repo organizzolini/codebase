@@ -1,3 +1,5 @@
+import { createElement } from "react";
+
 import { getEventLabel } from "../../calendar-events/event-glyphs/components/calendar-glyphs/calendar-glyphs.utilities";
 import {
   buildEventGroups,
@@ -6,6 +8,7 @@ import {
 
 import {
   ALL_EVENTS_ROW,
+  COUNT_PILL_CLASS_NAME,
   TIMELINE_VIEWPORT,
 } from "./calendar-timeline.constants";
 import { getVisibleTimelineRows } from "./components/timeline-window/calendar-timeline-window.utilities";
@@ -44,7 +47,12 @@ export function toCountColumns(
     {
       align: "end",
       id: "events",
-      render: (context) => counts.get(context.resource.id),
+      render: (context) =>
+        createElement(
+          "span",
+          { className: COUNT_PILL_CLASS_NAME },
+          counts.get(context.resource.id),
+        ),
       title: "Events",
       width: 64,
     },

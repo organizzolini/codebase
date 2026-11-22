@@ -179,7 +179,7 @@ export function CalendarTimeline(
     >
       <Gantt<TimelineBar>
         barLabel="auto"
-        className={`h-full ${LANE_ROWS} ${VENDORED_SURFACE_CLASS_NAMES.ganttHeaders} ${VENDORED_SURFACE_CLASS_NAMES.ganttScrollbars}`}
+        className={`h-full ${LANE_ROWS} ${VENDORED_SURFACE_CLASS_NAMES.ganttHeaders} ${VENDORED_SURFACE_CLASS_NAMES.ganttScrollbars} ${VENDORED_SURFACE_CLASS_NAMES.ganttTreePills}`}
         columns={columns}
         date={anchor}
         events={shownBars}
