@@ -120,4 +120,24 @@ describe(WordCard, () => {
       screen.findByText(/Looking up the word/u),
     ).resolves.toBeDefined();
   });
+
+  it("records the lookup but opens no card while the history is open", async () => {
+    vi.mocked(getWordCandidates).mockResolvedValue([ARMA]);
+    const onLookup = vi.fn<(lookup: unknown) => void>();
+    render(
+      <WordCard
+        onLookup={onLookup}
+        token={TOKEN}
+        isHistoryOpen
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Arma" }));
+
+    await waitFor(() => {
+      expect(onLookup).toHaveBeenCalledTimes(1);
+    });
+
+    expect(screen.queryByTestId("word-card-content")).toBeNull();
+  });
 });

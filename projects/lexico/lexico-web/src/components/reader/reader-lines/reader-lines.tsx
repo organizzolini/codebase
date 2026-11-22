@@ -26,6 +26,7 @@ export interface ReaderLinesProperties {
   className?: string;
   focus?: null | ReaderFocus | undefined;
   initial: LineConnection;
+  isHistoryOpen?: boolean | undefined;
   onLookup?: ((lookup: WordLookup) => void) | undefined;
   slug: string;
 }
@@ -44,6 +45,7 @@ export function ReaderLines(
     className,
     focus = null,
     initial,
+    isHistoryOpen = false,
     onLookup,
     slug,
   } = properties;
@@ -119,6 +121,7 @@ export function ReaderLines(
         <ReaderLine
           key={edge.node.id}
           focus={focus}
+          isHistoryOpen={isHistoryOpen}
           line={edge.node}
           onLookup={onLookup}
         />

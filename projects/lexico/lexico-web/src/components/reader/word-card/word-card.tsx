@@ -37,6 +37,8 @@ export interface WordCardProperties {
   className?: string;
   isFocused?: boolean;
   isHighlighted?: boolean;
+  /** The history sidebar shows each lookup, so no card opens over the text. */
+  isHistoryOpen?: boolean;
   onLookup?: (lookup: WordCardLookup) => void;
   token: WordCardToken;
 }
@@ -51,11 +53,13 @@ export interface WordCardProperties {
  */
 export function WordCard(properties: Readonly<WordCardProperties>): ReactNode {
   const { className, isFocused, isHighlighted, onLookup, token } = properties;
+  const isSuppressed = properties.isHistoryOpen === true;
 
   // 🪝 Hooks
   const [candidates, setCandidates] = useState<null | WordCandidate[]>(null);
   const [hasFailed, setHasFailed] = useState(false);
   const [chosen, setChosen] = useState<null | number>(null);
+  const [isOpen, setIsOpen] = useState(false);
   const root = useReference<HTMLDivElement>(null);
 
   // 🏗 Setup
@@ -64,11 +68,11 @@ export function WordCard(properties: Readonly<WordCardProperties>): ReactNode {
 
   // 💪 Handlers
   const handleOpenChange = useCallback(
-    (isOpen: boolean): void => {
-      if (!isOpen) {
+    (isOpening: boolean): void => {
+      setIsOpen(isOpening && !isSuppressed);
+      if (!isOpening) {
         return;
       }
-
       if (candidates !== null) {
         onLookup?.(summarizeLookup(candidates, false, chosen));
         return;
@@ -86,7 +90,7 @@ export function WordCard(properties: Readonly<WordCardProperties>): ReactNode {
         },
       );
     },
-    [candidates, chosen, onLookup, token.id],
+    [candidates, chosen, isSuppressed, onLookup, token.id],
   );
 
   // ♻️ Lifecycle
@@ -105,7 +109,10 @@ export function WordCard(properties: Readonly<WordCardProperties>): ReactNode {
       className={className}
       data-testid="word-card"
     >
-      <Popover onOpenChange={handleOpenChange}>
+      <Popover
+        onOpenChange={handleOpenChange}
+        open={isOpen}
+      >
         <PopoverTrigger
           {...highlightProperties(isHighlighted === true)}
           data-testid="reader-token"

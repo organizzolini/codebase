@@ -17,6 +17,7 @@ import type { ReactNode } from "react";
 export interface ReaderLineProperties {
   className?: string;
   focus?: null | ReaderFocus;
+  isHistoryOpen?: boolean | undefined;
   line: ReaderLineNode;
   onLookup?: ((lookup: WordLookup) => void) | undefined;
 }
@@ -30,7 +31,13 @@ export interface ReaderLineProperties {
 export function ReaderLine(
   properties: Readonly<ReaderLineProperties>,
 ): ReactNode {
-  const { className, focus = null, line, onLookup } = properties;
+  const {
+    className,
+    focus = null,
+    isHistoryOpen = false,
+    line,
+    onLookup,
+  } = properties;
 
   // 🪝 Hooks
 
@@ -75,6 +82,7 @@ export function ReaderLine(
                     focus !== null &&
                     focus.word.toLowerCase() === token.data.toLowerCase()
                   }
+                  isHistoryOpen={isHistoryOpen}
                   onLookup={(summary) => {
                     onLookup?.({
                       definition: summary.definition,

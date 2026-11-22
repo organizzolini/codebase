@@ -197,6 +197,7 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
           className={`font-serif ${FONT_SIZE_CLASSES[fontSize]}`}
           focus={focus}
           initial={text.lines}
+          isHistoryOpen={isHistoryOpen}
           onLookup={handleLookup}
           slug={text.slug}
         />
