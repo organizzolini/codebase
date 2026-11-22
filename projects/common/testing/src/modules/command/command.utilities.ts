@@ -3,6 +3,7 @@ import { execa } from "execa";
 import {
   DEFAULT_COMMAND_TIMEOUT_MS,
   INHERITED_ENVIRONMENT_KEYS,
+  NODE_WARNING_PATTERN,
 } from "./command.constants";
 
 import type { Command } from "./command.types";
@@ -72,4 +73,12 @@ export function sanitizeEnvironment(
   });
 
   return { ...Object.fromEntries(inherited), ...overrides };
+}
+
+/**
+ * Removes the warnings Node prints to a child's stderr, so a test can assert
+ * on what the command wrote.
+ */
+export function withoutNodeWarnings(stderr: string): string {
+  return stderr.replace(NODE_WARNING_PATTERN, "");
 }

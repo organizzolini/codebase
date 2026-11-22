@@ -1,11 +1,45 @@
 import { describe, expect, it } from "vitest";
 
 import { INHERITED_ENVIRONMENT_KEYS } from "./command.constants";
-import { createCommand, sanitizeEnvironment } from "./command.utilities";
+import {
+  createCommand,
+  sanitizeEnvironment,
+  withoutNodeWarnings,
+} from "./command.utilities";
 
 // 🧪 Tests
 
 describe("command", () => {
+  describe(withoutNodeWarnings, () => {
+    const WARNING =
+      "(node:4713) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n" +
+      "(Use `node --trace-deprecation ...` to show where the warning was created)\n";
+
+    it("drops a Node warning and its trace hint, keeping what the command wrote", () => {
+      expect(withoutNodeWarnings(`diagnostic${WARNING}`)).toBe("diagnostic");
+    });
+
+    it("drops a warning that sits between two lines of real output", () => {
+      expect(withoutNodeWarnings(`first\n${WARNING}second\n`)).toBe(
+        "first\nsecond\n",
+      );
+    });
+
+    it("drops every warning when Node prints several", () => {
+      expect(withoutNodeWarnings(WARNING + WARNING)).toBe("");
+    });
+
+    it("leaves output that merely mentions a warning untouched", () => {
+      const output = "Warning: the cache is cold\n";
+
+      expect(withoutNodeWarnings(output)).toBe(output);
+    });
+
+    it("leaves empty output empty", () => {
+      expect(withoutNodeWarnings("")).toBe("");
+    });
+  });
+
   describe(sanitizeEnvironment, () => {
     it("keeps only the inherited keys and drops everything else", () => {
       const environment = sanitizeEnvironment({
