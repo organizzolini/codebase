@@ -109,7 +109,7 @@ describe(measureBatchExecutor, () => {
 
     const results = await measureBatchExecutor(
       ...buildArguments(["a", "bad-b"], {
-        "a:codometer-limit": { ...OPTIONS, check: true },
+        "a:codometer-limit": { ...OPTIONS, check: "limits" },
       }),
     );
 

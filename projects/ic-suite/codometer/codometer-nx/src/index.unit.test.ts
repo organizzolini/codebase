@@ -96,7 +96,7 @@ describe("codometerPlugin", () => {
                   executor: "@codometer/nx:measure",
                   inputs: ["default", "{workspaceRoot}/a.json"],
                   options: {
-                    check: true,
+                    check: "limits",
                     command: "codometer",
                     config: "codometer.config.ts",
                   },
@@ -105,7 +105,7 @@ describe("codometerPlugin", () => {
                 "codometer-weigh": {
                   cache: true,
                   configurations: {
-                    check: { check: true },
+                    check: { check: "weigh" },
                     write: { outputMarkdown: true },
                   },
                   defaultConfiguration: "check",

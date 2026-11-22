@@ -48,8 +48,8 @@ export interface MeasureExecutorContext {
 
 /** Options the measure executor accepts, as `schema.json` describes them. */
 export interface MeasureExecutorOptions {
-  /** Fail the task when a limit it declares is breached. */
-  readonly check?: boolean | undefined;
+  /** What to fail the task on, as `--check` takes it: `limits`, `weigh` or both. */
+  readonly check?: string | undefined;
   /** The shell command that starts the `codometer` command line, before `measure`. */
   readonly command: string;
   /** The configuration file, relative to the project root. */

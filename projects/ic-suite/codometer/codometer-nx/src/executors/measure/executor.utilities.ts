@@ -16,8 +16,8 @@ import type {
 } from "./executor.types";
 
 /**
- * The shell command of one measurement: its directories first, then the flags.
- * The bare `--output-*` flags come last, since each would otherwise take a following directory as its path.
+ * The shell command of one measurement: directories first, then the flags,
+ * the bare `--output-*` ones last so they take no directory as a path.
  */
 export function buildCommand(args: {
   directories: readonly string[];
@@ -31,7 +31,7 @@ export function buildCommand(args: {
     ...args.directories.map((directory) => quote(directory)),
     "--config",
     quote(config),
-    ...(check === true ? ["--check", "limits"] : []),
+    ...(check === undefined ? [] : ["--check", quote(check)]),
     ...(outputJson === true ? ["--output-json"] : []),
     ...(outputMarkdown === true ? ["--output-markdown"] : []),
   ].join(" ");
@@ -42,7 +42,7 @@ export function describeOptions(options: MeasureExecutorOptions): string {
   return JSON.stringify([
     options.command,
     options.config,
-    options.check === true,
+    options.check ?? null,
     options.outputJson === true,
     options.outputMarkdown === true,
   ]);
@@ -103,8 +103,8 @@ export async function runBatch(
 }
 
 /**
- * Measures a group in one run, judging each project by its verdict and report;
- * one given none fails with what the run printed. A lone project is measured from its own root and judged by the exit code.
+ * Measures a group in one run, judging each project by its verdict; a lone
+ * project is judged by its exit code.
  */
 export async function runGroup(
   args: MeasurementGroup & { workspaceRoot: string },

@@ -11,7 +11,7 @@ describe("the measure executor's utilities", () => {
         buildCommand({
           directories: ["/w/a", "/w/b"],
           options: {
-            check: true,
+            check: "limits",
             command: "codometer",
             config: "configuration/codometer.config.ts",
             outputJson: true,
@@ -19,7 +19,7 @@ describe("the measure executor's utilities", () => {
           },
         }),
       ).toBe(
-        "codometer measure '/w/a' '/w/b' --config 'configuration/codometer.config.ts' --check limits --output-json --output-markdown",
+        "codometer measure '/w/a' '/w/b' --config 'configuration/codometer.config.ts' --check 'limits' --output-json --output-markdown",
       );
     });
 
@@ -55,7 +55,7 @@ describe("the measure executor's utilities", () => {
       expect(describeOptions(base)).toBe(describeOptions({ ...base }));
 
       for (const changed of [
-        { check: true },
+        { check: "limits" },
         { outputJson: true },
         { outputMarkdown: true },
         { config: "d.ts" },

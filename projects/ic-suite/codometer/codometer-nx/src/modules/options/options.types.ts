@@ -8,12 +8,6 @@ export interface CodometerPluginOptions {
   readonly command: string;
   /** Extra cache inputs for every inferred target, in Nx's syntax. */
   readonly inputs: readonly PluginInput[];
-  /**
-   * Where a project keeps the configuration its limit run reads, relative to
-   * its root, when that differs from its main one. A project without the file
-   * uses `projectConfigurationPath`.
-   */
-  readonly limitConfigurationPath?: string | undefined;
   /** Name of the inferred per-project source-only limit target. */
   readonly limitTargetName: string;
   /** Required. Each project's configuration path, relative to its root. */

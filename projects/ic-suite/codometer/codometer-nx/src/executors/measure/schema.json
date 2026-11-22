@@ -4,8 +4,8 @@
   "description": "Measure a project with codometer and gate the limits it declares. Batched, so one process measures every project Nx hands it.",
   "properties": {
     "check": {
-      "description": "Fail the task when a limit the project declares is breached, after any report is written.",
-      "type": "boolean"
+      "description": "What to fail the task on, as the command line's --check takes it: limits for the source tree, weigh for the declared builds, or both.",
+      "type": "string"
     },
     "command": {
       "description": "Required. The shell command that starts the codometer command line, to which `measure` and its flags are appended.",

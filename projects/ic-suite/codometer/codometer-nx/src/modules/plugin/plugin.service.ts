@@ -41,23 +41,26 @@ export class PluginService {
   // 🔏 Private Methods
 
   /**
-   * The source-only gate: it reads a configuration with no compiled input, so it needs no build, and writes nothing.
+   * The source gate: `--check limits` measures the source tree alone, so it needs no build, and writes nothing.
    */
   private buildLimitTarget(
     pluginOptions: CodometerPluginOptions,
-    config: string,
   ): InferredTarget {
     return {
       cache: true,
       executor: "@codometer/nx:measure",
       inputs: [LIMIT_INPUT, ...pluginOptions.inputs],
-      options: { check: true, command: pluginOptions.command, config },
+      options: {
+        check: "limits",
+        command: pluginOptions.command,
+        config: pluginOptions.projectConfigurationPath,
+      },
       outputs: [],
     };
   }
 
   /**
-   * The packaged-size gate: it waits for the build, since compiled sizes are read from its output.
+   * The build gate: `--check weigh` waits for the build, since sizes are read from its output.
    */
   private buildWeighTarget(
     pluginOptions: CodometerPluginOptions,
@@ -65,7 +68,7 @@ export class PluginService {
     return {
       cache: true,
       configurations: {
-        check: { check: true },
+        check: { check: "weigh" },
         write: { outputMarkdown: true },
       },
       defaultConfiguration: "check",
@@ -121,25 +124,6 @@ export class PluginService {
     );
   }
 
-  /**
-   * The configuration a project's limit run reads: its own limit configuration when it has one, else its main one.
-   */
-  private resolveLimitConfiguration(args: {
-    pluginOptions: CodometerPluginOptions;
-    projectRoot: string;
-    workspaceRoot: string;
-  }): string {
-    const { limitConfigurationPath, projectConfigurationPath } =
-      args.pluginOptions;
-
-    return limitConfigurationPath !== undefined &&
-      existsSync(
-        path.join(args.workspaceRoot, args.projectRoot, limitConfigurationPath),
-      )
-      ? limitConfigurationPath
-      : projectConfigurationPath;
-  }
-
   // 🌎 Public Methods
 
   /**
@@ -169,14 +153,7 @@ export class PluginService {
         )
       ) {
         targetsByProjectRoot.set(projectRoot, {
-          [pluginOptions.limitTargetName]: this.buildLimitTarget(
-            pluginOptions,
-            this.resolveLimitConfiguration({
-              pluginOptions,
-              projectRoot,
-              workspaceRoot: args.workspaceRoot,
-            }),
-          ),
+          [pluginOptions.limitTargetName]: this.buildLimitTarget(pluginOptions),
           [pluginOptions.weighTargetName]: this.buildWeighTarget(pluginOptions),
         });
       }

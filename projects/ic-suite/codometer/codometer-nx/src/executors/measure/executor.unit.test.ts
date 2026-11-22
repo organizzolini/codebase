@@ -12,7 +12,7 @@ import type { MeasureExecutorContext } from "./executor.types";
 import type { CapturedOutput } from "@codebase/testing";
 
 const OPTIONS = {
-  check: true,
+  check: "limits",
   command: FAKE_COMMAND,
   config: "codometer.config.ts",
   outputJson: true,

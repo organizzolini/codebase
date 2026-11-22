@@ -226,7 +226,7 @@ describe(PluginService, () => {
         .get("packages/alpha");
     }
 
-    it("infers a source-only limit target that gates the main configuration, needs no build and writes nothing", () => {
+    it("infers a source limit target that checks the source tree, needs no build and writes nothing", () => {
       expect.hasAssertions();
 
       const target = inferAlpha()?.["codometer-limit"];
@@ -235,7 +235,7 @@ describe(PluginService, () => {
         cache: true,
         executor: "@codometer/nx:measure",
         options: {
-          check: true,
+          check: "limits",
           command: "codometer",
           config: "codometer.config.ts",
         },
@@ -244,42 +244,13 @@ describe(PluginService, () => {
       expect(target?.dependsOn).toBeUndefined();
     });
 
-    it("points the limit target at the project's limit configuration when it holds one", () => {
-      expect.hasAssertions();
-
-      const targets = inferAlpha({
-        ...OPTIONS,
-        limitConfigurationPath: "configuration/codometer.config.ts",
-      });
-
-      expect(targets?.["codometer-limit"]?.options["config"]).toBe(
-        "configuration/codometer.config.ts",
-      );
-      expect(targets?.["codometer-weigh"]?.options["config"]).toBe(
-        "codometer.config.ts",
-      );
-    });
-
-    it("falls back to the main configuration when the project holds no limit configuration", () => {
-      expect.hasAssertions();
-
-      const targets = inferAlpha({
-        ...OPTIONS,
-        limitConfigurationPath: "configuration/absent.config.ts",
-      });
-
-      expect(targets?.["codometer-limit"]?.options["config"]).toBe(
-        "codometer.config.ts",
-      );
-    });
-
     it("infers a packaged-size weigh target that waits for the build and keeps the report", () => {
       expect.hasAssertions();
 
       expect(inferAlpha()?.["codometer-weigh"]).toStrictEqual({
         cache: true,
         configurations: {
-          check: { check: true },
+          check: { check: "weigh" },
           write: { outputMarkdown: true },
         },
         defaultConfiguration: "check",
