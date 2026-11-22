@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.8.1](https://github.com/organizzolini/codebase/compare/v6.8.0...v6.8.1) (2026-11-22)
+
+### 🐛 Bug Fixes
+
+* **integration,codometer:** 🐛 keep a complete codometer baseline so pull request reports compare against main ([#2495](https://github.com/organizzolini/codebase/issues/2495)) ([2afe9cb](https://github.com/organizzolini/codebase/commit/2afe9cb8dcc2a1deae17babb5a8488b844bb9f11)), closes [#2493](https://github.com/organizzolini/codebase/issues/2493)
+
 ## [6.8.0](https://github.com/organizzolini/codebase/compare/v6.7.0...v6.8.0) (2026-11-22)
 
 ### ✨ Features
