@@ -17,6 +17,7 @@ function properties(
   return {
     activeKeys: [],
     catalog: FIXTURE_CHARACTERISTICS,
+    isFiltered: false,
     loadError: undefined,
     meanders: [fixtureMeander(0), fixtureMeander(1), fixtureMeander(2)],
     onRetry: vi.fn<() => void>(),
@@ -59,6 +60,16 @@ describe(MeanderGallery, () => {
     render(<MeanderGallery {...properties({ meanders: [] })} />);
 
     expect(screen.getByTestId("gallery-empty")).toBeDefined();
+  });
+
+  it("says no meander matches when a filter narrows them to none", () => {
+    render(
+      <MeanderGallery {...properties({ isFiltered: true, meanders: [] })} />,
+    );
+
+    expect(screen.getByTestId("gallery-empty").textContent).toMatch(
+      /No meanders match these filters/u,
+    );
   });
 
   it("shows why a page failed, with a way to read it again", () => {

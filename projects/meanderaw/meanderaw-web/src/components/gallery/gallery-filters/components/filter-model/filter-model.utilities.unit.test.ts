@@ -12,7 +12,6 @@ import { DEFAULT_ROWS_FILTER } from "./filter-model.constants";
 import {
   countRules,
   createFilterFields,
-  describeField,
   sanitizeFilter,
   toFilterInput,
 } from "./filter-model.utilities";
@@ -144,25 +143,6 @@ describe("filter model utilities", () => {
       ]) {
         expect(sanitizeRows(rows)).toStrictEqual(DEFAULT_ROWS_FILTER);
       }
-    });
-  });
-
-  describe(describeField, () => {
-    it("words what a field measures, where, its kind and its first counts", () => {
-      expect(describeField(FIELD("columns"))).toBe(
-        "How many columns the meander has · shape · number",
-      );
-      expect(
-        describeField({
-          ...FIELD("junctionCount"),
-          valueCounts: Array.from({ length: 8 }, (_, value) => ({
-            meanderCount: 1000,
-            value,
-          })),
-        }),
-      ).toContain(
-        "0: 1,000, 1: 1,000, 2: 1,000, 3: 1,000, 4: 1,000, 5: 1,000, …",
-      );
     });
   });
 

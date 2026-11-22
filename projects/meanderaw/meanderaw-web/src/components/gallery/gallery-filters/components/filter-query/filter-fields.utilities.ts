@@ -11,7 +11,6 @@ import {
   REPEATS_FILTER_FIELD,
   ROWS_FILTER_FIELD,
 } from "../filter-model/filter-model.constants";
-import { describeField } from "../filter-model/filter-model.utilities";
 
 import {
   BOOLEAN_FIELD_OPERATORS,
@@ -81,7 +80,7 @@ function toQueryField(field: FilterField): GalleryFilterField {
 
   return {
     defaultOperator: DEFAULT_OPERATORS[field.type],
-    description: describeField(field),
+    description: field.description,
     id: field.key,
     label: field.label,
     operators: operatorsOf(field),

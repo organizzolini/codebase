@@ -4,7 +4,12 @@ import { useState } from "react";
 import { Button, ButtonGroup } from "@codebase/presentation";
 
 import { GALLERY_VIEWS } from "../../../../../hooks/use-gallery-search/use-gallery-search.constants";
+import { STRIP_CLASS } from "../../../gallery-cascader/components/gallery-segment/gallery-segment.constants";
 import { GalleryCascader } from "../../../gallery-cascader/gallery-cascader";
+import {
+  DESCRIPTION_CLASS,
+  SURFACE_PICKER_CLASS,
+} from "../../../gallery-cascader/gallery-cascader.constants";
 import { GallerySurface } from "../../../gallery-surface/gallery-surface";
 
 import { LAYOUT_NAMES, LAYOUT_NODES } from "./display-strip.constants";
@@ -57,9 +62,12 @@ export function DisplayStrip(
       className={className}
       data-testid="display-strip"
     >
-      <ButtonGroup aria-label="Display">
+      <ButtonGroup
+        aria-label="Display"
+        className={STRIP_CLASS}
+      >
         <GallerySurface
-          contentClassName="w-auto min-w-64 gap-0 p-0"
+          contentClassName={SURFACE_PICKER_CLASS}
           onOpenChange={setOpen}
           open={open}
           title="Display"
@@ -76,6 +84,7 @@ export function DisplayStrip(
         >
           <GalleryCascader
             checked={[view]}
+            className={DESCRIPTION_CLASS}
             items={LAYOUT_NODES}
             label="Search layouts"
             onToggle={handleToggle}

@@ -64,32 +64,6 @@ export function createFilterFields(
   return fields;
 }
 
-/**
- * Words a field for its picker: what it measures, where, its kind and how
- * many meanders hold each of its first values.
- */
-export function describeField(field: FilterField): string {
-  const parts = [
-    field.description,
-    field.category,
-    field.type,
-    ...(field.isPattern ? ["pattern"] : []),
-  ];
-  const counts: string[] = [];
-
-  for (const { meanderCount, value } of field.valueCounts.slice(0, 6)) {
-    counts.push(`${String(value)}: ${meanderCount.toLocaleString("en-US")}`);
-  }
-
-  if (counts.length === 0) {
-    return parts.join(" · ");
-  }
-
-  const more = field.valueCounts.length > counts.length ? ", …" : "";
-
-  return `${parts.join(" · ")} · meanders by value ${counts.join(", ")}${more}`;
-}
-
 // 🌎 Public Functions
 
 /**

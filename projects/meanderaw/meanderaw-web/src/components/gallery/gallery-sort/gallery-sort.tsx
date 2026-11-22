@@ -11,14 +11,21 @@ import { Button, ButtonGroup } from "@codebase/presentation";
 
 import { MAXIMUM_SORTS } from "../../../hooks/use-gallery-search/use-gallery-search.constants";
 import { GallerySegment } from "../gallery-cascader/components/gallery-segment/gallery-segment";
-import { SEGMENT_CLASS } from "../gallery-cascader/components/gallery-segment/gallery-segment.constants";
+import {
+  SEGMENT_CLASS,
+  STRIP_CLASS,
+} from "../gallery-cascader/components/gallery-segment/gallery-segment.constants";
 import { moveItem } from "../gallery-cascader/components/gallery-segment/gallery-segment.utilities";
 import { GalleryCascader } from "../gallery-cascader/gallery-cascader";
+import {
+  DESCRIPTION_CLASS,
+  SURFACE_PICKER_CLASS,
+} from "../gallery-cascader/gallery-cascader.constants";
 import { createFieldNodes } from "../gallery-cascader/gallery-cascader.utilities";
 import { GallerySurface } from "../gallery-surface/gallery-surface";
 
 import { DIRECTION_ARROWS } from "./gallery-sort.constants";
-import { createSortFields } from "./gallery-sort.utilities";
+import { createSortFields, reverseSort } from "./gallery-sort.utilities";
 
 import type { SortEntry } from "../../../hooks/use-gallery-search/use-gallery-search.types";
 import type { GalleryCharacteristic } from "../meander-gallery/meanders-api.types";
@@ -75,13 +82,7 @@ export function GallerySort(
   };
 
   const handleReverse = (index: number): void => {
-    onSortsChange(
-      sorts.map((entry, position) =>
-        position === index
-          ? { ...entry, direction: entry.direction === "asc" ? "desc" : "asc" }
-          : entry,
-      ),
-    );
+    onSortsChange(reverseSort(sorts, index));
   };
 
   // ♻️ Lifecycle
@@ -94,9 +95,12 @@ export function GallerySort(
       className={className}
       data-testid="gallery-sort"
     >
-      <ButtonGroup aria-label="Sort">
+      <ButtonGroup
+        aria-label="Sort"
+        className={STRIP_CLASS}
+      >
         <GallerySurface
-          contentClassName="w-auto min-w-64 gap-0 p-0"
+          contentClassName={SURFACE_PICKER_CLASS}
           title="Sort"
           trigger={
             <Button
@@ -111,6 +115,7 @@ export function GallerySort(
         >
           <GalleryCascader
             checked={sorts.map(({ field }) => field)}
+            className={DESCRIPTION_CLASS}
             items={items}
             label="Sort by"
             max={MAXIMUM_SORTS}

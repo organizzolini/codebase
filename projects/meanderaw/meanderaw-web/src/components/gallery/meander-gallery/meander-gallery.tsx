@@ -26,6 +26,8 @@ export interface MeanderGalleryProperties {
   activeKeys: readonly string[];
   catalog: readonly GalleryCharacteristic[];
   className?: string;
+  /** Whether a filter narrows the meanders, for the empty notice. */
+  isFiltered: boolean;
   loadError: unknown;
   meanders: readonly GalleryMeander[];
   onRetry: () => void;
@@ -45,6 +47,7 @@ export function MeanderGallery(
     activeKeys,
     catalog,
     className,
+    isFiltered,
     loadError,
     meanders,
     onRetry,
@@ -72,7 +75,7 @@ export function MeanderGallery(
 
   // 🏁 Early Returns
   if (meanders.length === 0) {
-    return <GalleryEmpty />;
+    return <GalleryEmpty isFiltered={isFiltered} />;
   }
 
   // 🎨 Markup

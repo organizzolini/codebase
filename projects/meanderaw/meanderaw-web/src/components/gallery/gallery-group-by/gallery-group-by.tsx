@@ -4,9 +4,16 @@ import { useMemo } from "react";
 import { Button, ButtonGroup } from "@codebase/presentation";
 
 import { GallerySegment } from "../gallery-cascader/components/gallery-segment/gallery-segment";
-import { SEGMENT_CLASS } from "../gallery-cascader/components/gallery-segment/gallery-segment.constants";
+import {
+  SEGMENT_CLASS,
+  STRIP_CLASS,
+} from "../gallery-cascader/components/gallery-segment/gallery-segment.constants";
 import { moveItem } from "../gallery-cascader/components/gallery-segment/gallery-segment.utilities";
 import { GalleryCascader } from "../gallery-cascader/gallery-cascader";
+import {
+  DESCRIPTION_CLASS,
+  SURFACE_PICKER_CLASS,
+} from "../gallery-cascader/gallery-cascader.constants";
 import { createFieldNodes } from "../gallery-cascader/gallery-cascader.utilities";
 import { GallerySurface } from "../gallery-surface/gallery-surface";
 
@@ -69,9 +76,12 @@ export function GalleryGroupBy(
       className={className}
       data-testid="gallery-group-by"
     >
-      <ButtonGroup aria-label={GROUP_TITLE}>
+      <ButtonGroup
+        aria-label={GROUP_TITLE}
+        className={STRIP_CLASS}
+      >
         <GallerySurface
-          contentClassName="w-auto min-w-64 gap-0 p-0"
+          contentClassName={SURFACE_PICKER_CLASS}
           title={GROUP_TITLE}
           trigger={
             <Button
@@ -86,6 +96,7 @@ export function GalleryGroupBy(
         >
           <GalleryCascader
             checked={grouping}
+            className={DESCRIPTION_CLASS}
             items={items}
             label="Group by"
             max={MAXIMUM_GROUP_LEVELS}

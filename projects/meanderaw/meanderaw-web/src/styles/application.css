@@ -76,3 +76,71 @@
 [data-slot="command-item"][data-selected="false"] {
   background-color: transparent;
 }
+
+/*
+ * A toolbar strip folds onto lines: its segments are the flex items, each on
+ * one line, 0.5rem between lines and none between segments, one shared
+ * border, square corners but the very first left and last right. Doubled
+ * selectors outweigh the chips' own rules.
+ */
+@layer components {
+  .gallery-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0 !important;
+    width: auto;
+    max-width: 100%;
+    padding: 0 1px 0 0;
+    white-space: nowrap;
+  }
+
+  .gallery-strip [data-slot="filter-chip"],
+  .gallery-strip [data-slot="gallery-segment"] {
+    display: contents;
+  }
+
+  .gallery-strip.gallery-strip
+    :is(button, [data-slot="button-group-text"])[data-slot][data-slot] {
+    border-left-width: 1px !important;
+    border-radius: 0 !important;
+    margin: 0 -1px 0 0;
+  }
+
+  .gallery-strip.gallery-strip
+    > :first-child:is(
+      button,
+      [data-slot="button-group-text"]
+    )[data-slot][data-slot] {
+    border-bottom-left-radius: var(--radius-lg, 0.5rem) !important;
+    border-top-left-radius: var(--radius-lg, 0.5rem) !important;
+  }
+
+  .gallery-strip.gallery-strip
+    > :last-child:is(
+      button,
+      [data-slot="button-group-text"]
+    )[data-slot][data-slot] {
+    border-bottom-right-radius: var(--radius-lg, 0.5rem) !important;
+    border-top-right-radius: var(--radius-lg, 0.5rem) !important;
+  }
+
+  .gallery-strip.gallery-strip
+    > :first-child
+    > :first-child:is(
+      button,
+      [data-slot="button-group-text"]
+    )[data-slot][data-slot] {
+    border-bottom-left-radius: var(--radius-lg, 0.5rem) !important;
+    border-top-left-radius: var(--radius-lg, 0.5rem) !important;
+  }
+
+  .gallery-strip.gallery-strip
+    > :last-child
+    > :last-child:is(
+      button,
+      [data-slot="button-group-text"]
+    )[data-slot][data-slot] {
+    border-bottom-right-radius: var(--radius-lg, 0.5rem) !important;
+    border-top-right-radius: var(--radius-lg, 0.5rem) !important;
+  }
+}

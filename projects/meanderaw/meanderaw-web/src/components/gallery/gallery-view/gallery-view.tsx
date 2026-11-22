@@ -3,7 +3,12 @@ import { useState } from "react";
 
 import { Button, ButtonGroup } from "@codebase/presentation";
 
+import { STRIP_CLASS } from "../gallery-cascader/components/gallery-segment/gallery-segment.constants";
 import { GalleryCascader } from "../gallery-cascader/gallery-cascader";
+import {
+  DESCRIPTION_CLASS,
+  SURFACE_PICKER_CLASS,
+} from "../gallery-cascader/gallery-cascader.constants";
 import { GallerySurface } from "../gallery-surface/gallery-surface";
 
 import { DisplayStrip } from "./components/display-strip/display-strip";
@@ -67,9 +72,12 @@ export function GalleryView(
       className={className}
       data-testid="gallery-view"
     >
-      <ButtonGroup aria-label="View">
+      <ButtonGroup
+        aria-label="View"
+        className={STRIP_CLASS}
+      >
         <GallerySurface
-          contentClassName="w-auto min-w-64 gap-0 p-0"
+          contentClassName={SURFACE_PICKER_CLASS}
           onOpenChange={setOpen}
           open={open}
           title="View"
@@ -88,6 +96,7 @@ export function GalleryView(
             checked={presets
               .filter((preset) => isPresetActive(preset, current))
               .map(({ id }) => id)}
+            className={DESCRIPTION_CLASS}
             items={createViewNodes(presets)}
             label="Search views"
             onToggle={handleToggle}

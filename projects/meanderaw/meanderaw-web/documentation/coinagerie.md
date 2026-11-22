@@ -20,6 +20,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **letter**:
 - **meander**:
 - **ne**:
+- **nowrap**:
 - **observer**:
 - **pager**:
 - **radius**:

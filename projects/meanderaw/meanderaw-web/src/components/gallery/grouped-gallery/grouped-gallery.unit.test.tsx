@@ -32,6 +32,7 @@ function properties(
       { count: 1, field: "columns", groups: [], value: "2" },
       { count: 1, field: "columns", groups: [], value: "3" },
     ],
+    isFiltered: false,
     loadError: undefined,
     meanders: [fixtureMeander(0), fixtureMeander(1), fixtureMeander(2)],
     offset: 0,

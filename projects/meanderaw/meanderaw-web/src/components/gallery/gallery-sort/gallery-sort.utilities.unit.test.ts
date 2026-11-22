@@ -2,11 +2,35 @@ import { describe, expect, it } from "vitest";
 
 import { FIXTURE_CHARACTERISTICS } from "../../../../testing/meanders-api";
 
-import { createSortFields, resolveSorts } from "./gallery-sort.utilities";
+import {
+  createSortFields,
+  resolveSorts,
+  reverseSort,
+} from "./gallery-sort.utilities";
 
 const CATALOG = FIXTURE_CHARACTERISTICS;
 
 describe("gallery sort", () => {
+  describe(reverseSort, () => {
+    it("flips the one sort at a place, leaving the others", () => {
+      expect(
+        reverseSort(
+          [
+            { direction: "asc", field: "rows" },
+            { direction: "desc", field: "columns" },
+          ],
+          1,
+        ),
+      ).toStrictEqual([
+        { direction: "asc", field: "rows" },
+        { direction: "asc", field: "columns" },
+      ]);
+      expect(
+        reverseSort([{ direction: "asc", field: "rows" }], 0),
+      ).toStrictEqual([{ direction: "desc", field: "rows" }]);
+    });
+  });
+
   describe(resolveSorts, () => {
     it("keeps shape fields and keys in the catalog, once each, in order", () => {
       expect(

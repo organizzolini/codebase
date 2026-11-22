@@ -9,6 +9,8 @@ import {
   DropdownMenuTrigger,
 } from "@codebase/presentation";
 
+import { STRIP_CLASS } from "../gallery-cascader/components/gallery-segment/gallery-segment.constants";
+
 import { PageList } from "./components/page-list/page-list";
 import { PageSizes } from "./components/page-sizes/page-sizes";
 import { RANGE_SEGMENT } from "./gallery-pager.constants";
@@ -72,7 +74,10 @@ export function GalleryPager(
       className={className}
       data-testid="gallery-pager"
     >
-      <ButtonGroup aria-label="Pages">
+      <ButtonGroup
+        aria-label="Pages"
+        className={STRIP_CLASS}
+      >
         <DropdownMenu>
           <DropdownMenuTrigger
             render={

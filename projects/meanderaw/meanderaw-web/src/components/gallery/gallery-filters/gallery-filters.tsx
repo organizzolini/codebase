@@ -3,6 +3,8 @@ import { useMemo } from "react";
 import { ButtonGroup, Filters, FiltersBuilder } from "@codebase/presentation";
 
 import { useFilterQuery } from "../../../hooks/use-filter-query/use-filter-query";
+import { STRIP_CLASS } from "../gallery-cascader/components/gallery-segment/gallery-segment.constants";
+import { PICKER_CLASS } from "../gallery-cascader/gallery-cascader.constants";
 
 import { FilterChipRow } from "./components/filter-chip-row/filter-chip-row";
 import { createFilterQueryFields } from "./components/filter-query/filter-fields.utilities";
@@ -10,7 +12,7 @@ import {
   countActiveRules,
   isQueryAllowed,
 } from "./components/filter-query/filter-query.utilities";
-import { FILTERS_TITLE, STRIP_CLASS_NAME } from "./gallery-filters.constants";
+import { FILTERS_TITLE } from "./gallery-filters.constants";
 import { renderFiltersButton } from "./gallery-filters.utilities";
 
 import type { FilterField } from "./components/filter-model/filter-model.types";
@@ -70,6 +72,7 @@ export function GalleryFilters(
       data-testid="gallery-filters"
     >
       <Filters<GalleryFilterValue>
+        fieldPickerClassName={PICKER_CLASS}
         fields={queryFields}
         onBeforeQueryChange={handleBeforeChange}
         onQueryChange={handleQueryChange}
@@ -78,7 +81,7 @@ export function GalleryFilters(
       >
         <ButtonGroup
           aria-label={FILTERS_TITLE}
-          className={STRIP_CLASS_NAME}
+          className={STRIP_CLASS}
         >
           <FiltersBuilder trigger={renderFiltersButton(activeCount)} />
           <FilterChipRow />

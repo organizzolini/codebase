@@ -8,6 +8,7 @@ import { useEffect, useMemo } from "react";
 
 import { MeanderawLogo } from "../components/brand/meanderaw-logo/meanderaw-logo";
 import { GalleryError } from "../components/gallery/gallery-error/gallery-error";
+import { DEFAULT_ROWS_FILTER } from "../components/gallery/gallery-filters/components/filter-model/filter-model.constants";
 import {
   createFilterFields,
   sanitizeFilter,
@@ -136,6 +137,7 @@ function GalleryBody(
     filter: FilterGroup | undefined;
     grouping: readonly string[];
     groups: GalleryGroup[] | undefined;
+    isFiltered: boolean;
     paging: UseMeandersResult;
     repeats: number;
     size: number;
@@ -149,6 +151,7 @@ function GalleryBody(
     filter,
     grouping,
     groups,
+    isFiltered,
     paging,
     repeats,
     size,
@@ -166,6 +169,7 @@ function GalleryBody(
         <MeanderGallery
           activeKeys={activeKeys}
           catalog={catalog}
+          isFiltered={isFiltered}
           loadError={paging.loadError}
           meanders={paging.meanders}
           onRetry={paging.retry}
@@ -179,6 +183,7 @@ function GalleryBody(
           fields={fields}
           grouping={grouping}
           groups={groups}
+          isFiltered={isFiltered}
           loadError={paging.loadError}
           meanders={paging.meanders}
           offset={(paging.range.first - 1) * size}
@@ -409,6 +414,10 @@ function IndexPage(): ReactNode {
           filter={filter}
           grouping={loaded}
           groups={groups}
+          isFiltered={
+            (filter?.rules.length ?? 0) > 0 ||
+            JSON.stringify(rows) !== JSON.stringify(DEFAULT_ROWS_FILTER)
+          }
           paging={paging}
           repeats={repeats}
           size={size}

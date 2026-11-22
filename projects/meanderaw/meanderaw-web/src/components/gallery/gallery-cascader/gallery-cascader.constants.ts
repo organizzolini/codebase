@@ -49,3 +49,19 @@ export const MEASURE_SUFFIX = /\s+(?:Count|Length)$/u;
  * A handler that does nothing.
  */
 export const NOTHING = (): void => {};
+
+/**
+ * Wraps each description to two lines.
+ */
+export const DESCRIPTION_CLASS =
+  "[&_span.text-xs]:line-clamp-2 [&_span.text-xs]:break-words [&_span.text-xs]:whitespace-normal";
+
+/**
+ * Bounds a picker's width, and wraps its descriptions.
+ */
+export const PICKER_CLASS = `w-80 min-w-64 max-w-[min(28rem,90vw)] ${DESCRIPTION_CLASS}`;
+
+/**
+ * The picker class for a surface's content, without padding or gap.
+ */
+export const SURFACE_PICKER_CLASS = `${PICKER_CLASS} gap-0 p-0`;

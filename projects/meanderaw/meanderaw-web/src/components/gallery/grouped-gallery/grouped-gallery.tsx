@@ -39,6 +39,8 @@ export interface GroupedGalleryProperties {
   grouping: readonly string[];
   /** Every group of the filtered meanders, with its exact count. */
   groups: readonly GalleryGroup[];
+  /** Whether a filter narrows the meanders, for the empty notice. */
+  isFiltered: boolean;
   loadError: unknown;
   /** The meanders of the pages showing, ordered by the levels, then the sorts. */
   meanders: readonly GalleryMeander[];
@@ -64,6 +66,7 @@ export function GroupedGallery(
     fields,
     grouping,
     groups,
+    isFiltered,
     loadError,
     meanders,
     offset,
@@ -108,7 +111,7 @@ export function GroupedGallery(
 
   // 🏁 Early Returns
   if (meanders.length === 0) {
-    return <GalleryEmpty />;
+    return <GalleryEmpty isFiltered={isFiltered} />;
   }
 
   // 🎨 Markup

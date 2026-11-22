@@ -246,6 +246,42 @@ describe("index", () => {
     expect(screen.queryAllByTestId("meander-card")).toHaveLength(0);
   });
 
+  it("says no meander matches, not that none are stored, when a filter leaves none", async () => {
+    serveMeandersApi(3);
+    const filter = encodeURIComponent(
+      JSON.stringify({
+        combinator: "and",
+        rules: [{ field: "columns", operator: "eq", value: 9 }],
+      }),
+    );
+
+    await renderRoute(getRouter(), `/?group=%5B%5D&filter=${filter}`);
+
+    const notice = await screen.findByTestId("gallery-empty");
+
+    expect(notice.textContent).toMatch(/No meanders match these filters/u);
+  });
+
+  it("folds every strip onto lines as one-line segments", async () => {
+    serveMeandersApi(3);
+
+    await renderRoute(getRouter(), "/");
+    await screen.findAllByTestId("meander-card");
+
+    for (const name of [
+      "View",
+      "Display",
+      "Group",
+      "Sort",
+      "Filter",
+      "Pages",
+    ]) {
+      expect(screen.getByRole("group", { name }).className).toContain(
+        "gallery-strip",
+      );
+    }
+  });
+
   it("shows why the load failed, and loads again when asked", async () => {
     const api = serveMeandersApi(2);
     api.fail("The database is down");

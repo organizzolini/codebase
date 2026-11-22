@@ -56,3 +56,17 @@ export function resolveSorts(
 
   return kept.length === 0 ? [...DEFAULT_SORTS] : kept;
 }
+
+/**
+ * Flips the direction of the sort at a place, leaving the rest as they are.
+ */
+export function reverseSort(
+  sorts: readonly SortEntry[],
+  index: number,
+): SortEntry[] {
+  return sorts.map((entry, position) =>
+    position === index
+      ? { ...entry, direction: entry.direction === "asc" ? "desc" : "asc" }
+      : entry,
+  );
+}
