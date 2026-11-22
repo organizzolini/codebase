@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:8f3acebd90b73eb1833ce3b02cf13613c9a497374f2b966a1a7fab85e3d45e32",
+  "pageVersion": "sha256:9fa13c2246840fbe370ad039ffa493c87929c2491def7b714a2d039cf32278a1",
   "claims": [
     {
       "id": "claim_e121b6d5ed5f4ad09d0d24bad4bb38e0",
@@ -69,11 +69,11 @@
       "statement": "Three services are required: Ollama on port 11434, Open WebUI on port 3001, and SearxNG on port 8889, with environment variables OLLAMA_HOST and SEARXNG_HOST for configuration.",
       "evidence": [
         {
-          "resource": "repo://projects/affirmancy/AGENTS.md#L90-L96",
+          "resource": "repo://projects/affirmancy/AGENTS.md#L91-L97",
           "version": "repo-lines-v1:sha256:9c38978b752ca8cd7bf4d52e9ffce5f256e7e4cea68cdb17952f075cacac716e:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDFiNDJkNTcxYWU4MTRkYTNhNDg3MzYyNDRmYTA0YThiNDQzNjU2OGRjMDc3ZmRkNWM4NjdiYzcyOWJkZjVmMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDBhMWRiODM2M2Q5MDVkYzNkYWRlYmRlZjg1MDI2OTJjMDcwNGZkZjY4MmQxMDNmYmE3ZTc2MjhhOGE5MmI0MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWIzNTdjNmUzMWY4OWE2OTkxNzdmYTEyOWExYmRkY2MxZTU3YjNiZjJhZmQ0YmMwMzA2N2JlNjM1OGMyZDEzOCJ9"
         },
         {
-          "resource": "repo://projects/affirmancy/README.md#L135-L147",
+          "resource": "repo://projects/affirmancy/README.md#L136-L148",
           "version": "repo-lines-v1:sha256:aaf1319a37f1e6c8181766185f80c93f9dbf89423ed771f72d4fb7322313e17a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2ODAzZDE4YjQ4ZDdmZjAzOWMxYWZjNTllODM4MzRjMjA5YTJkMjg1ZTk5ZWY5MzdjY2U4NzJhZDQ3M2UyMzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkN2FmNzgyNWY3YzM0YTM2MjU3ZTRiNWYwZDAyZjFlYTI2YzY4M2E0ZjczZWNhZmNjODdkYTg3OWUxZTZkODciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI3YTQyNDczZTBmZGRhYjc3OTlkN2UxZGY3YzBmMmIzMDhlNWNkYzY4ZmJhNzk0ZGI3ZjY5ZGYxNDIxNDdlMjEifQ"
         }
       ]
@@ -83,7 +83,7 @@
       "statement": "Nx targets include ruff-lint, ruff-format, pyright, ty, pytest (unit/integration), test-coverage, vulture, bandit, nbstripout, and ollama (start/stop/pull-small/pull-medium/pull-large).",
       "evidence": [
         {
-          "resource": "repo://projects/affirmancy/README.md#L101-L115",
+          "resource": "repo://projects/affirmancy/README.md#L102-L116",
           "version": "repo-lines-v1:sha256:7cbe08c73719c1cef00ccc0d688d11005fd324a7a11d2535e1157391ec8f5a93:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkYTEzZjdhOGIyZTIxMzdlODgyNDZhZjc2MWFiNjEzMWY5YzBhM2Y0MzQzNjVhNWJiZTc4MjYwMjE4NWEyNzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNhMmQyOTFiNWQ5MDJiNGZkZDEwYzJhNzIxZDQxNjMyNzNlYjQ2YTEyZWI3ZTE5ZjA1NjYzZjhmYWY1ZDYwMWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg1NzZjNGE5M2ZlN2FjZmRmNzJlYzM5ZWFjOWU0MzYzOTE4ZDgyZWJhNDNhNDc0Mjc0ZWNkZmZiMzBmNTVkMzEifQ"
         },
         {
@@ -136,15 +136,15 @@
     },
     {
       "id": "claim_3b3ec1ad3fc94a65888416d40c810223",
-      "statement": "The SearxNG configuration (searxng.settings.yml) disables safe_search, uses hostname plugin with high_priority patterns for spiritual/occult sources (sacred-texts.com, hermetic.com, biddytarot.com, etc.), and reduces engine ban times for development.",
+      "statement": "The SearxNG configuration (projects/affirmancy/configuration/searxng.settings.yml, mounted by the Compose searxng service) layers on upstream defaults, disables safe_search, uses the hostnames plugin with high_priority patterns for spiritual and occult sources (sacred-texts.com, hermetic.com, biddytarot.com, and others), and shortens engine ban times for development.",
       "evidence": [
         {
-          "resource": "repo://projects/affirmancy/searxng.settings.yml#L10-L60",
-          "version": "repo-lines-v1:sha256:d1b92a44f3394a65a4f28be054022c25c691832511a96314723e4e08b685da45:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjMjc4NWJjMGJiMjgzOTgxOGQ1MGJhOTliYWY5YzNmNjYzMGE3ZWQzZjA0YzM0ZWVmYTAyZGMwNTZjMjBiNWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxMzE5MTM3OTQ2OGRlMjZiN2Y3YjMyZGYzMmU5YTcyMzA2Y2ZjNTkxOTM3NTE4OTExMzcwMzdiYTFiOWE1NDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkNmFiMGQ0Y2NkMDFhZjdhYzQ0ODFkZTQzZWMwOTIxMzAxYjQ1YTVmZmIyODIwMDNiMDk0YTU4ZDdmNmQ2OGIifQ"
+          "resource": "repo://infrastructure/docker/docker-compose.yml#L50-L60",
+          "version": "repo-lines-v1:sha256:000a8d175c78b48566f215e46c3ef4cc8bbbf26d074235b1c2ccd83c021b30bf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4NDE0YWIyNDMzNDMzMzM0Nzc4MDAxNjEzNTIzOGQwYTQ4YTAwZWY3ZWE3NzI2OTIzODgwMzg4YWMxMzNjNDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlNDAzZjY1NGRmZjViOGJiY2M2NDBjMzU5ZjQzZTBjYThiYWFjMjBiMjRiN2U2OWY5MjhkNmY1MTMxNTBkYTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBhNjJkMjQwMzA1NzJiZjQwMGQ0M2E1MDY1ODgwOTA0OWM3MDlkNmM3ZWFkYzIxMzQxNjljMDk3ZTNkYjcxZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2ZGE5NWFjYzMzYTliNDc3ZTIxYzY5MjgxY2IwOTE0M2U3MTJhMzcxZjgxM2E1NDkwNzU2NDE1MmQ0ZTNlZjcifQ"
         },
         {
-          "resource": "repo://projects/affirmancy/searxng.settings.yml#L68-L100",
-          "version": "repo-lines-v1:sha256:c9502382fdb2415cf2130471405cadd9afa18a600dbb92ba541470c596a3145f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwN2UwZDUxNTYzOWIxYTlhY2Y5NDllM2JkYjNmOWMwNWE1NWQyMjYzYzIyNjgzNjVjZTQxZWE5Yzg0Y2U4MjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzZTEyOWEwYzhmNTM5MjkyNmZiOWM3MmFmYzJjMjQwZTQ4Zjc5ODVmOGYzODkyOGNjNjU4Yzg5MzFkZTkyOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUyMGM3NDUwNDA4Y2RkZGEwOTQ4ODA4OWU0OGUxYzM5OWQxZmM5NDJhMTM5ODg4MTE0YmUyMjgzNjJhOGNlMjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZhMzM5MTU2MDJkMjYzZDI1MzZjZjBiMWFmNTA2NDEwMGVlMTIzMGMyODkxMTVlYzAzYzFjMTYyMGNhNmUyNDcifQ"
+          "resource": "repo://projects/affirmancy/configuration/searxng.settings.yml#L1-L90",
+          "version": "repo-lines-v1:sha256:76dba44aabbe58437693aedfbfca5bce550f8e2fd1b1a07ca3fe835f6eba74ed:eyJzZWxlY3RlZExpbmVDb3VudCI6OTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcyODE4ZWM5MmEwMzIyOWEyODM2MjI4NzdhNjQ0ZWY0NzY5ZDZhYWNiYmRjMjBlMjUyMTVhMTFjZjAzNDA1OWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczYzIwODhkZWExOTc1OWNlZjNhN2JhOGY0ZTAzNTNmNGRjMzA3N2JjNmNlODg3NGE5ZDdiMjliMzM3ZmIyYzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc0ZGQ5MjZjMmU2YjIwZWU4NTBhMjg3Yjk4OTc0OWUwOWFkY2RjZGM2YjE2ZjNmMmNhMjgzYzVhZmRhYWJhMDIifQ"
         }
       ]
     },
@@ -186,7 +186,7 @@
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.0",
-    "at": "2026-10-29T03:39:46.432Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-22T00:18:20.862Z"
   }
 }

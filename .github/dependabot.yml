@@ -56,14 +56,13 @@ updates:
       - dependency-name: eslint-plugin-unicorn
         update-types: [version-update:semver-major]
 
-  # One lockfile covers every uv workspace member.
-  #
-  # Dependabot's uv support is newer and has an open upstream bug
-  # (dependabot-core#14004) matching this shape. Treat the first pull requests as
-  # a trial. If it misbehaves, the weekly `uv lock --upgrade` in
-  # upgrade-dependencies.yml is the fallback.
+  # One lockfile covers every uv workspace member and lives in configuration/python;
+  # a directory with no pyproject.toml fails every run with "No files found".
+  # Dependabot's uv support is newer, with an open upstream bug
+  # (dependabot-core#14004). If it misbehaves, upgrade-dependencies.yml's weekly
+  # `uv lock --upgrade` is the fallback.
   - package-ecosystem: uv
-    directory: /configuration
+    directory: /configuration/python
     schedule:
       interval: weekly
       day: friday

@@ -6,7 +6,9 @@ export const PULL_REQUEST_RELATED_HEADING = "## 🔗 Related";
 
 export const ISSUE_REFERENCE_PATTERN = /#(?<issueNumber>[1-9]\d*)\b/gu;
 
-export const linkedIssueNumbersSchema = z.array(z.number().int().positive());
+/** A closing keyword GitHub honors, then the same-repository issue it closes. */
+export const CLOSING_REFERENCE_PATTERN =
+  /\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?):?\s+#(?<issueNumber>[1-9]\d*)\b/giu;
 
 export const issueAncestorSchema = z.object({
   body: z.string().nullable(),

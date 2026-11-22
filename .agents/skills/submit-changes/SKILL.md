@@ -127,7 +127,7 @@ git push --set-upstream origin <branch>
 **Skip if:** A PR already exists for the current branch:
 
 ```bash
-gh pr list --head <branch> --state open
+gh api "repos/{owner}/{repo}/pulls?head={owner}:<branch>&state=open" --jq '.[].number'
 ```
 
 1. Title: Same format as the commit message — `<type>(<scope>): <gitmoji> <subject>`.
@@ -152,9 +152,10 @@ gh pr list --head <branch> --state open
 4. Pre-flight gate title scopes before creating the PR:
    - Read the commit subjects in this branch and list their scopes.
    - Make sure every commit shares at least one scope with the proposed PR
-     title, naming the fewest scopes that cover them all. A multi-scope title
-     is expected for a branch that spans projects; split the branch only if
-     those scopes cannot fit the 128-character header.
+     title, naming at most three scopes: the ones that carry most of the
+     commits. A multi-scope title is expected for a branch that spans projects,
+     and a fourth scope fails the Comply check; never split a branch over scope
+     count.
 
 5. Assignee and labels — Validate Conventions rejects a pull request whose metadata disagrees with its title, so set all of this at creation time rather than waiting for the reconciliation step to backfill it:
    - **Assignee**: `--assignee @me`. A pull request with no assignee fails validation.
@@ -165,23 +166,25 @@ gh pr list --head <branch> --state open
 6. Create the PR:
 
    ```bash
-   gh pr create \
-     --title "<type>(<scope>): <gitmoji> <subject>" \
-     --body-file /tmp/pr_body.md \
-     --base main \
-     --assignee @me \
-     --label type:<type> \
-     --label scope:<scope> \
-     --label source:agent
+   pr_number="$(gh api repos/{owner}/{repo}/pulls \
+     -f title="<type>(<scope>): <gitmoji> <subject>" \
+     -F body=@/tmp/pr_body.md \
+     -f head=<branch> \
+     -f base=main \
+     --jq .number)"
+   gh api -X POST "repos/{owner}/{repo}/issues/${pr_number}/labels" \
+     -f 'labels[]=type:<type>' -f 'labels[]=scope:<scope>' -f 'labels[]=source:agent'
+   gh api -X POST "repos/{owner}/{repo}/issues/${pr_number}/assignees" \
+     -f "assignees[]=$(gh api user --jq .login)"
    rm /tmp/pr_body.md
    ```
 
-   Repeat `--label scope:<name>` for each additional scope the title names.
+   Repeat `-f 'labels[]=scope:<name>'` for each additional scope the title names. This uses [repo-scoped REST](../../../documentation/agents/issue-tracker.md#repo-scoped-rest-instead-of-graphql), which also works where `gh pr create` cannot.
 
 7. Hard gate before finishing: validate the created PR (its title, body, labels, and release significance).
 
    ```bash
-   pr_number="$(gh pr view <branch> --json number --jq .number)"
+   pr_number="$(gh api "repos/{owner}/{repo}/pulls?head={owner}:<branch>&state=open" --jq '.[0].number')"
    NODE_OPTIONS='' node --import @swc-node/register/esm-register \
      compliance/src/compliance.main.ts pull-request \
      "${pr_number}"
@@ -193,15 +196,15 @@ gh pr list --head <branch> --state open
 8. Confirm the metadata actually landed — a label GitHub silently drops (typo, not-yet-created) fails CI just as surely as never adding it:
 
    ```bash
-   gh pr view <branch> --json number,labels,assignees
+   gh api repos/{owner}/{repo}/pulls/"${pr_number}" --jq '{number, labels: [.labels[].name], assignees: [.assignees[].login]}'
    ```
 
-   If any expected label or the assignee is missing, add it with `gh pr edit <number> --add-label <label>` / `--add-assignee @me` rather than leaving it to Validate Conventions to catch and fail on.
+   If any expected label or the assignee is missing, add it with `gh api -X POST repos/{owner}/{repo}/issues/<number>/labels -f 'labels[]=<label>'` or `…/assignees -f 'assignees[]=<login>'` rather than leaving it to Validate Conventions to catch and fail on.
 
 9. Confirm GitHub recorded the issue link:
 
    ```bash
-   gh pr view <branch> --json closingIssuesReferences --jq '.closingIssuesReferences[].number'
+   gh api repos/{owner}/{repo}/pulls/"${pr_number}" --jq .body | grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?):? +#[0-9]+'
    ```
 
    An empty result means the link is missing: fix the `Closes #N` keyword, or add the issue under Development in the pull request sidebar (a stacked pull request, whose base is not `main`, may need that). See [link-issue](../link-issue/SKILL.md#link-it).
@@ -219,7 +222,7 @@ After completing all phases, print a summary table:
 | Commit   | `<type>(<scope>): <gitmoji> <subject>` / Skipped (clean)  |
 | PR       | Created `<url>` / Already exists `<url>`                  |
 | Labels   | `type:*`, `scope:*` (one per title scope), `source:agent` |
-| Assignee | `@me` — confirmed via `gh pr view`                        |
+| Assignee | `@me` — confirmed via the pull request's REST endpoint    |
 
 ## Resources
 

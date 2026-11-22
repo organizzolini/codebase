@@ -4,29 +4,33 @@ title: Meanderaw Testing
 description: Documents testing infrastructure for meanderaw-cli and meanderaw-web, covering vitest configuration, historical corpus test set, enumeration logic, characteristic measurement, database integration tests with testcontainers, and web rendering tests.
 tags: [testing, meanderaw, vitest, integration, database, historical-corpus]
 verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-29T03:39:46.432Z
+  - by: openwiki/0.9.0
+    at: 2026-11-22T17:40:37.367Z
 sources:
   - id: openwiki-source-6315af249215d8768fb68811
     resource: repo://.github/workflows/continuous-integration.yml
-  - id: openwiki-source-7a89510ce877b9983c90453f
-    resource: repo://configuration/vitest.config.ts
+  - id: openwiki-source-0144ea531e31aa5c07ef9da9
+    resource: repo://configuration/typescript/vitest.config.ts
   - id: openwiki-source-cb614db653b869e1d972f0f7
     resource: repo://documentation/adr/0013-hold-the-historical-corpus-as-a-test-set.md
-  - id: openwiki-source-a688f65f433758aea382c292
-    resource: repo://projects/common/persistence/src/modules/postgresql/postgresql-container.utilities.ts
-  - id: openwiki-source-4808dd4ba16cde901f5bc82f
-    resource: repo://projects/common/persistence/testing/persistence-testing.utilities.ts
+  - id: openwiki-source-d43cf1b76d511df31f2fb62d
+    resource: repo://projects/common/persistence/testing/database-testing/database-testing.utilities.ts
+  - id: openwiki-source-c647017e373aa4231d115310
+    resource: repo://projects/common/persistence/testing/postgres-container/postgres-container.utilities.ts
+  - id: openwiki-source-2c67f00b1368b333e4a9e639
+    resource: repo://projects/meanderaw/meanderaw-cli/configuration/vitest.config.ts
+  - id: openwiki-source-658b96e541fd4dc288f011e4
+    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/corpus/corpus.constants.ts
   - id: openwiki-source-f6fca1a50278c67112e9cc2c
     resource: repo://projects/meanderaw/meanderaw-cli/src/modules/corpus/corpus.service.ts
-  - id: openwiki-source-ac9abc9491999e2e8962ecd4
-    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/corpus/historical-corpus.constants.ts
-  - id: openwiki-source-b1677a691c253dc8225edc22
-    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/draw/draw-pool.service.integration.test.ts
+  - id: openwiki-source-4e67a38f76da3b9b464dcd0d
+    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/corpus/modules/historical/historical-corpus.constants.ts
   - id: openwiki-source-ae9a38ff624a7d01fa2cbd93
     resource: repo://projects/meanderaw/meanderaw-cli/src/modules/draw/draw-run-collision.command.integration.test.ts
   - id: openwiki-source-d2bcabd613e9901cd5519864
     resource: repo://projects/meanderaw/meanderaw-cli/src/modules/draw/draw-run.command.integration.test.ts
+  - id: openwiki-source-031cf0330aa4db759a81b68e
+    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/draw/modules/pool/draw-pool.service.integration.test.ts
   - id: openwiki-source-672aff72681ba7e697f7f493
     resource: repo://projects/meanderaw/meanderaw-cli/testing/draw-run-budget.ts
   - id: openwiki-source-41bb487c303b25bd36fe1fcf
@@ -37,15 +41,13 @@ sources:
     resource: repo://projects/meanderaw/meanderaw-cli/testing/meanders.ts
   - id: openwiki-source-23927d707236bf2773e0650f
     resource: repo://projects/meanderaw/meanderaw-cli/testing/tiles.ts
-  - id: openwiki-source-322411f15eb767453390f5be
-    resource: repo://projects/meanderaw/meanderaw-cli/vitest.config.ts
+  - id: openwiki-source-8bb7c66c44ae8ddf67fb82c9
+    resource: repo://projects/meanderaw/meanderaw-web/configuration/vitest.config.ts
   - id: openwiki-source-7dfbad913a99a1f268e48f67
     resource: repo://projects/meanderaw/meanderaw-web/src/routes/index.integration.test.tsx
-  - id: openwiki-source-5d6dd2a3bd56ed7b85007917
-    resource: repo://projects/meanderaw/meanderaw-web/testing/render-route.tsx
-  - id: openwiki-source-b17018e99ba1a5502f1a4a5d
-    resource: repo://projects/meanderaw/meanderaw-web/vitest.config.ts
-generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
+  - id: openwiki-source-c24e988570567743e3ccec6a
+    resource: repo://projects/meanderaw/meanderaw-web/testing/setup.ts
+generated: { by: "openwiki/0.9.0", at: "2026-11-22T17:40:37.367Z" }
 ---
 
 # Meanderaw Testing
@@ -56,7 +58,7 @@ This page documents the testing architecture for the meanderaw project, which co
 
 ### Shared Base Configuration
 
-The root `configuration/vitest.config.ts` provides the shared baseline:
+The root `configuration/typescript/vitest.config.ts` provides the shared baseline:
 
 - **Coverage thresholds**: 96% across branches, functions, lines, statements
 - **Test file patterns**: `src/**/*.test.{ts,tsx}` and `testing/**/*.test.{ts,tsx}`
@@ -67,7 +69,7 @@ The root `configuration/vitest.config.ts` provides the shared baseline:
 
 #### meanderaw-cli
 
-`projects/meanderaw/meanderaw-cli/vitest.config.ts` extends the base with:
+`projects/meanderaw/meanderaw-cli/configuration/vitest.config.ts` extends the base with:
 
 - **Extended timeouts**: `hookTimeout: 120_000` (2 min) for container startup + migrations; `testTimeout: 60_000` (1 min) for exhaustive enumeration tests
 - **Coverage exclusion**: `src/**/*.test.ts` excluded from coverage
@@ -76,10 +78,12 @@ The CLI tests are **not fast unit tests** — they exhaustively enumerate the mo
 
 #### meanderaw-web
 
-`projects/meanderaw/meanderaw-web/vitest.config.ts` extends the base with:
+`projects/meanderaw/meanderaw-web/configuration/vitest.config.ts` extends the base with:
 
 - **Environment**: `jsdom` for React component testing
-- **Coverage exclusions**: Server function files (`*.functions.ts`), router internals, root layout — because `createServerFn` only runs inside the Start runtime; the logic they delegate to is tested in each module's `.utilities.ts`
+- **Test timeout**: `testTimeout: 15_000` (15 seconds) — gallery filter tests drive jsdom menus, and a CI runner under load has timed three of them out at five seconds
+- **Coverage exclusions**: Server function files (`*.functions.ts`), router internals (`router.tsx`, `routeTree.gen.ts`), client entry (`client.tsx`), and root layout (`__root.tsx`) — because `createServerFn` only runs inside the Start runtime; the logic they delegate to is tested in each module's `.utilities.ts`
+- **Setup file**: `./testing/setup.ts` (runs after the shared setup the base config lists)
 
 ---
 
@@ -120,7 +124,7 @@ The corpus is **evidence, and evidence can be wrong**. A family rule that disagr
 
 ### Corpus Ingestion in Draw Runs
 
-`CorpusService` ingests the historical corpus into the `meanders` database table **through the exact same pipeline** used for enumerated meanders (generic reader → canonical phase → `CharacteristicsService.compute`). Only the Code comes from the corpus; all characteristics are measured fresh.
+`CorpusService` ingests the historical corpus into the `meanders` database table **through the exact same pipeline** used for enumerated meanders (generic reader → canonical rotation → `CharacteristicsService.compute`). Only the Code comes from the corpus; all characteristics are measured fresh.
 
 **Which entries are ingested is computed, not listed:**
 
@@ -206,7 +210,7 @@ The `legacy-characteristics.ts` fixtures provide end-to-end regression for the f
 
 ### Database Integration Tests (Testcontainers)
 
-The CLI uses **Testcontainers** via `@codebase/persistence/testing` to spin up real Postgres 18 containers for integration tests. The key utility is `startDatabaseTestingModule()` from `projects/common/persistence/testing/persistence-testing.utilities.ts`:
+The CLI uses **Testcontainers** via `@codebase/persistence/testing` to spin up real Postgres 18 containers for integration tests. The key utility is `startDatabaseTestingModule()` from `projects/common/persistence/testing/database-testing/database-testing.utilities.ts`:
 
 ```typescript
 const database = await startDatabaseTestingModule({
@@ -254,7 +258,7 @@ The full draw run test (`draw-run.command.integration.test.ts`) drives the **ent
 #### Draw Run Budget
 
 `projects/meanderaw/meanderaw-cli/testing/draw-run-budget.ts` pins test budgets:
-- `DRAW_TEST_EDGE_BUDGET = 12` — below app default (24 = millions of rows); 12 walks every code path with ~30k rows
+- `DRAW_TEST_EDGE_BUDGET = 12` — below the app default of 24; 12 walks every code path far faster
 - `DRAW_TEST_WORKERS = 0` — in-process drawing; real threads tested separately in `draw-pool.service.integration.test.ts`
 
 The budget lives in a file importing nothing so a suite can read it inside `vi.hoisted`, before any module whose `ConfigModule.forRoot` validates the environment at import time has loaded.
@@ -281,22 +285,23 @@ Located in `projects/meanderaw/meanderaw-web/testing/`:
 
 | File | Purpose |
 |------|---------|
-| `setup.ts` | `@testing-library/react` cleanup after each test |
-| `render-route.tsx` | Renders TanStack Start router at a path, running loaders/head |
+| `setup.ts` | Imports the shared jsdom setup, `@codebase/testing/react/setup` (Testing Library cleanup) |
 
-`render-route.tsx` creates a memory history, updates the router, awaits `router.load()`, and renders `<RouterProvider>`. The real `__root` route renders `<html>` which can't mount in a test `<div>`, so it's mocked to a bare root route.
+Routes render through the shared `renderRoute(router, path)` from `@codebase/testing/react`, which creates a memory history, loads the router, and renders `<RouterProvider>`. The real `__root` route renders `<html>` which can't mount in a test `<div>`, so the helper renders routes under a bare root.
 
 ### Web Integration Test
 
 `projects/meanderaw/meanderaw-web/src/routes/index.integration.test.tsx` demonstrates the pattern:
 
 ```tsx
-import { renderRoute } from "../../testing/render-route";
+import { renderRoute } from "@codebase/testing/react";
+
+import { getRouter } from "../router";
 import { Route } from "./index";
 
 describe("index", () => {
   it("renders its page", async () => {
-    await renderRoute("/");
+    await renderRoute(getRouter(), "/");
     await expect(screen.findByRole("heading", { level: 1 })).resolves.toBeDefined();
     expect(Route.fullPath).toBe("/");
   });
@@ -320,13 +325,15 @@ This tests:
 
 ## CI Test Sharding
 
-The GitHub Actions workflow (`.github/workflows/continuous-integration.yml`) shards tests into four legs that together cover every project once, so none waits for a free `--parallel` slot behind the slow ones:
+The GitHub Actions workflow (`.github/workflows/continuous-integration.yml`) shards `test-code` into one leg per project group (Test Codebase, Test Common, Test Affirmancy, Test Caelundas, Test IC Suite, Test Lexico and **Test Meanderaw**) so none waits for a free `--parallel` slot behind the slow ones. The **Test Meanderaw** leg selects the meanderaw projects using `exclude: "*,!projects/meanderaw/**"` with the shard `meanderaw`.
 
-| Leg | Target | Exclude | Shard |
-|-----|--------|---------|-------|
-| Test | `test-code` | meanderaw-cli, caelundas, ic-suite | — |
+Meanderaw has its own leg because its suite is not a set of fast unit tests: the exhaustive enumeration at edge budget 12 with real Postgres containers renders tens of thousands of documents per run, and it took over seven minutes uncached beside the rest.
+
+| Test Leg | Target | Exclude Pattern | Shard |
+|----------|--------|-----------------|-------|
+| Test Codebase | `test-code` | (no exclude) | — |
 | Test Caelundas | `test-code` | `*,!projects/caelundas/**` | caelundas |
-| **Test Meanderaw** | `test-code` | `*,!meanderaw-cli` | **meanderaw-cli** |
+| **Test Meanderaw** | `test-code` | `*,!projects/meanderaw/**` | **meanderaw** |
 | Test IC Suite | `test-code` | `*,!projects/ic-suite/**` | ic-suite |
 
 Meanderaw runs alone because it took over seven minutes uncached beside the rest (about three minutes alone). Its suite is not a set of fast unit tests — the exhaustive enumeration at edge budget 12 with real Postgres containers produces tens of thousands of real documents, and that is the work happening, not a hang.

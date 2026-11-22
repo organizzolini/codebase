@@ -2,9 +2,17 @@ import { spawnSync } from "node:child_process";
 
 import { Injectable } from "@nestjs/common";
 
-import { COMMITLINT_ARGUMENTS } from "./pull-request-title.constants";
+import {
+  COMMITLINT_ARGUMENTS,
+  MAXIMUM_TITLE_SCOPES,
+  TITLE_SCOPES_PATTERN,
+  tooManyScopesMessage,
+} from "./pull-request-title.constants";
 
-/** Checks a pull request title against the Conventional Commits config. */
+/**
+ * Checks a pull request title against the Conventional Commits config, and
+ * against the limit on how many scopes it may name.
+ */
 @Injectable()
 export class PullRequestTitleService {
   // 🏗 Dependency Injection
@@ -17,10 +25,20 @@ export class PullRequestTitleService {
 
   // 🔏 Private Methods
 
-  // 🌎 Public Methods
+  /** The one line that says a title names more scopes than the limit, or none. */
+  private static checkScopeCount(title: string): string[] {
+    const scopes = (TITLE_SCOPES_PATTERN.exec(title)?.[1] ?? "")
+      .split(",")
+      .map((scope) => scope.trim())
+      .filter((scope) => scope !== "");
+
+    return scopes.length > MAXIMUM_TITLE_SCOPES
+      ? [tooManyScopesMessage(scopes)]
+      : [];
+  }
 
   /** Every commitlint complaint about this title, one line each. */
-  public check(title: string): string[] {
+  private checkCommitlint(title: string): string[] {
     const completion = spawnSync("npx", [...COMMITLINT_ARGUMENTS], {
       encoding: "utf8",
       input: title,
@@ -42,5 +60,15 @@ export class PullRequestTitleService {
     return lines.length === 0
       ? ["❌ Pull request title does not follow Conventional Commits"]
       : lines;
+  }
+
+  // 🌎 Public Methods
+
+  /** Every complaint about this title, one line each. */
+  public check(title: string): string[] {
+    return [
+      ...this.checkCommitlint(title),
+      ...PullRequestTitleService.checkScopeCount(title),
+    ];
   }
 }

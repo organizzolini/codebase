@@ -4,11 +4,9 @@ title: "Callidescope Domain Model"
 description: "Domain model documentation for callidescope call stack tracing toolchain: call graph, stack, frame, finding vocabulary, depth/breadth measurement, gate semantics, findings charged to projects."
 tags: ["callidescope", "call-graph", "depth-gate", "breadth-gate", "nx-plugin", "typescript", "monorepo"]
 verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-29T03:39:46.432Z
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 sources:
-  - id: openwiki-source-39c3295efc089133e87a9c80
-    resource: repo://CONTEXT.md
   - id: openwiki-source-272e6330a965456c65689825
     resource: repo://documentation/adr/0006-narrow-callidescope-to-depth-and-breadth.md
   - id: openwiki-source-de5c3366bd35796a359ef4ff
@@ -27,22 +25,28 @@ sources:
     resource: repo://projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.types.ts
   - id: openwiki-source-71d4ac9dea561df97e89e1bd
     resource: repo://projects/ic-suite/callidescope/callidescope-core/package.json
-  - id: openwiki-source-d7c1c622d0f7759cfca70f17
-    resource: repo://projects/ic-suite/callidescope/callidescope-examples/callidescope.config.ts
+  - id: openwiki-source-16a1ac173c256869465cd108
+    resource: repo://projects/ic-suite/callidescope/callidescope-core/README.md
+  - id: openwiki-source-e68173ddf368cd3a8c551071
+    resource: repo://projects/ic-suite/callidescope/callidescope-examples/configuration/callidescope.config.ts
   - id: openwiki-source-3f969b49058498449ad6d703
     resource: repo://projects/ic-suite/callidescope/callidescope-examples/package.json
   - id: openwiki-source-40761a15a4535892f802ed8c
     resource: repo://projects/ic-suite/callidescope/callidescope-graph/package.json
+  - id: openwiki-source-804595676bd6cc82a740d4b1
+    resource: repo://projects/ic-suite/callidescope/callidescope-graph/src/modules/classes/classes.constants.ts
   - id: openwiki-source-54dc75274e948d2fc77bd189
     resource: repo://projects/ic-suite/callidescope/callidescope-graph/src/modules/entries/entries.service.ts
-  - id: openwiki-source-02bcdd448121e90495c96c50
-    resource: repo://projects/ic-suite/callidescope/callidescope-graph/src/modules/graph/breadth.service.ts
   - id: openwiki-source-1abc93c992c1f176226554ef
     resource: repo://projects/ic-suite/callidescope/callidescope-graph/src/modules/graph/graph-assembly.service.ts
-  - id: openwiki-source-e0b8f8a5346aa87775674d97
-    resource: repo://projects/ic-suite/callidescope/callidescope-graph/src/modules/graph/graph-depth.service.ts
+  - id: openwiki-source-96dde3ef73fc401070001103
+    resource: repo://projects/ic-suite/callidescope/callidescope-graph/src/modules/graph/modules/measurement/breadth.service.ts
+  - id: openwiki-source-a87466b27d4de2a0ce5af00d
+    resource: repo://projects/ic-suite/callidescope/callidescope-graph/src/modules/graph/modules/measurement/graph-depth.service.ts
   - id: openwiki-source-94131101127cb22ee840d15b
     resource: repo://projects/ic-suite/callidescope/callidescope-nx/package.json
+  - id: openwiki-source-2e06e915cb519e5d24518cdc
+    resource: repo://projects/ic-suite/callidescope/callidescope-nx/README.md
   - id: openwiki-source-bc8f29fb181c173738ef9e79
     resource: repo://projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts
   - id: openwiki-source-beecaccda01cd86d1bdbda6c
@@ -51,7 +55,9 @@ sources:
     resource: repo://projects/ic-suite/callidescope/callidescope-output/src/modules/output-markdown/output-markdown.service.ts
   - id: openwiki-source-2d2a3413bebc1fa8e760d957
     resource: repo://projects/ic-suite/callidescope/callidescope-output/src/modules/report-findings/report-findings.service.ts
-generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
+  - id: openwiki-source-e8e3a37bd7281b946bb14a8e
+    resource: repo://projects/ic-suite/callidescope/callidescope-output/src/modules/report/mermaid-report.service.ts
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 ---
 
 # Callidescope
@@ -66,7 +72,7 @@ Published as **8 npm packages** under the `@callidescope` scope:
 - [`@callidescope/core`](repo://projects/ic-suite/callidescope/callidescope-core) — The contracts leaf: the call graph, stack, frame, and finding vocabulary every other package speaks
 - [`@callidescope/examples`](repo://projects/ic-suite/callidescope/callidescope-examples) — A small codebase built to be traced, carrying one worked example per rule, finding, and output
 - [`@callidescope/graph`](repo://projects/ic-suite/callidescope/callidescope-graph) — Builds the call graph from traced TypeScript source and measures its depth and breadth
-- [`@callidescope/nx`](repo://projects/ic-suite/callidescope/callidescope-nx) — Nx plugin inferring per-project `trace`, `depth`, `breadth`, and `gate` targets that follow the Nx dependency graph
+- [`@callidescope/nx`](repo://projects/ic-suite/callidescope/callidescope-nx) — Nx plugin inferring per-project `callidescope-trace`, `callidescope-depth`, `callidescope-breadth`, and `callidescope-restrict` targets that follow the Nx dependency graph
 - [`@callidescope/output`](repo://projects/ic-suite/callidescope/callidescope-output) — Renders call-graph findings into markdown, mermaid, and JSON output formats
 
 ---
@@ -83,8 +89,7 @@ The toolchain uses precise vocabulary. The terms below are the ones the code, re
 | **Breadth** | Distinct callables one callable calls directly, and the other thing callidescope gates. Measured for every callable whether or not a limit exists to exceed. | Fan-out, width, spread |
 | **Entry Point** | A callable that roots a stack, because a framework, a runtime, or nothing at all calls it. `declared` is the only kind a person chose; every other kind is inferred from a decorator, a file name, an export, or from nothing having called it. | Root, caller, top-level |
 
-<!-- openwiki: broken internal link [../architecture/adr/0006-narrow-callidescope-to-depth-and-breadth.md] file "../architecture/adr/0006-narrow-callidescope-to-depth-and-breadth.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-**Key distinction**: Callidescope has no notion of a **module** and measures no **cohesion**. It once derived a `<project>:<subtree>` module identifier to report module spread and misplaced callables against; both findings and the identifier were removed — see [ADR 0006](../architecture/adr/0006-narrow-callidescope-to-depth-and-breadth.md). A callable belongs to a **project** and to a file, and to nothing between them.
+**Key distinction**: Callidescope has no notion of a **module** and measures no **cohesion**. It once derived a `<project>:<subtree>` module identifier to report module spread and misplaced callables against; both findings and the identifier were removed — see `documentation/adr/0006-narrow-callidescope-to-depth-and-breadth.md`. A callable belongs to a **project** and to a file, and to nothing between them.
 
 ---
 
@@ -213,8 +218,7 @@ Builds the call graph from traced TypeScript source and measures its depth and b
 
 **Breadth measurement**: Distinct direct callees per callable, measured on the raw graph (no condensation needed; breadth is well-defined even in cycles).
 
-<!-- openwiki: broken internal link [../architecture/adr/0006-narrow-callidescope-to-depth-and-breadth.md] file "../architecture/adr/0006-narrow-callidescope-to-depth-and-breadth.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-**Implementation-candidate cap** (`MAXIMUM_IMPLEMENTATION_CANDIDATES = 8`): Where structural interface resolution stops guessing. Not a configuration field — it belongs with the resolution it governs. See [ADR 0006](../architecture/adr/0006-narrow-callidescope-to-depth-and-breadth.md).
+**Implementation-candidate cap** (`MAXIMUM_IMPLEMENTATION_CANDIDATES = 8`): Where structural interface resolution stops guessing. Not a configuration field — it belongs with the resolution it governs. See `documentation/adr/0006-narrow-callidescope-to-depth-and-breadth.md`.
 
 Source: `repo://projects/ic-suite/callidescope/callidescope-graph/src/modules/graph/graph.service.ts`, `repo://projects/ic-suite/callidescope/callidescope-graph/src/modules/graph/graph-assembly.service.ts`, `repo://projects/ic-suite/callidescope/callidescope-graph/src/modules/entries/entries.service.ts`
 
@@ -242,16 +246,16 @@ Infers per-project targets onto every project holding a `tsconfig.json` (except 
 
 | Target | Executor | Purpose |
 |--------|----------|---------|
-| `trace` | `@callidescope/nx:trace` | Traces the resolved directories and renders the report |
-| `depth` | `@callidescope/nx:depth` | Prints the deepest stack below one address |
-| `breadth` | `@callidescope/nx:breadth` | Prints the direct callees of one address |
-| `gate` | `@callidescope/nx:gate` | Traces and judges findings against limits; fails on violations |
+| `callidescope-trace` | `@callidescope/nx:trace` | Traces the resolved directories and renders the report |
+| `callidescope-depth` | `@callidescope/nx:depth` | Prints the deepest stack below one address |
+| `callidescope-breadth` | `@callidescope/nx:breadth` | Prints the direct callees of one address |
+| `callidescope-restrict` | `@callidescope/nx:gate` | Traces and judges findings against limits; fails on violations (formerly named `callidescope-gate`; `gateTargetName` renames it) |
 
 **Scope resolution**: Selection widened along the Nx dependency graph by default (`withDependencies: true`). A trace reaches into the dependencies of what it was pointed at — a call into a dependency lands on a frame instead of stopping at the package boundary.
 
-**Judging**: Only the projects the run was scoped to are judged. A trace reaches into dependencies, but a finding there belongs to the task named after the project that owns it. `nx affected --target=gate` selects the gate for changed projects and their dependents.
+**Judging**: Only the projects the run was scoped to are judged. A trace reaches into dependencies, but a finding there belongs to the task named after the project that owns it. `nx affected --target=callidescope-restrict` selects the gate for changed projects and their dependents.
 
-**Inferred targets**: Cacheable (`cache: true`), inputs include `default`, `^default`, and the workspace configuration path. Excluded projects get the three reporting targets but not `gate`.
+**Inferred targets**: Cacheable (`cache: true`), inputs include `default`, `^default`, and the workspace configuration path. Excluded projects get the three reporting targets but not the restrict gate.
 
 Source: `repo://projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts`, `repo://projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.types.ts`
 
@@ -281,9 +285,9 @@ Source: `repo://projects/ic-suite/callidescope/callidescope-agents/README.md`
 
 ### `@callidescope/examples` — Worked Examples
 
-A traceable codebase carrying one worked example per rule, finding, and output. Each example is a small TypeScript project demonstrating one behavior (e.g., `declared-entry-points`, `project-depth-limit`, `implementation-fan-out`). The examples package has its own `callidescope.config.ts` with `maximumDepth: 5` (one tighter than the workspace default of 6) so its fixtures breach deliberately.
+A traceable codebase carrying one worked example per rule, finding, and output. Each example is a small TypeScript project demonstrating one behavior (e.g., `declared-entry-points`, `project-depth-limit`, `implementation-fan-out`). The examples package has its own project configuration (`configuration/callidescope.config.ts`) with `maximumDepth: 5` (one tighter than the examples' own workspace configuration, `callidescope.workspace.config.ts`, which says 6) so its fixtures breach deliberately.
 
-Source: `repo://projects/ic-suite/callidescope/callidescope-examples/callidescope.config.ts`, `repo://projects/ic-suite/callidescope/callidescope-examples/README.md`
+Source: `repo://projects/ic-suite/callidescope/callidescope-examples/configuration/callidescope.config.ts`, `repo://projects/ic-suite/callidescope/callidescope-examples/README.md`
 
 ---
 
@@ -336,7 +340,7 @@ export default callidescopeConfiguration;
 A project configuration (at project root, spreads `projectDefaults` from workspace config):
 
 ```ts
-import { projectDefaults } from "../../configuration/callidescope.config.js";
+import { projectDefaults } from "../../configuration/ic-suite/callidescope.config.js";
 
 export default {
   ...projectDefaults,
@@ -349,14 +353,13 @@ export default {
 };
 ```
 
-<!-- openwiki: broken internal link [../architecture/adr/0007-complete-project-configurations.md] file "../architecture/adr/0007-complete-project-configurations.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-**Every traced project has one, and every one is complete.** A traced project with no file at all is refused by name, as is a file that leaves a field out. `maximumBreadth: undefined` is a project saying outright it gates depth and not breadth — the one statement an absent field could never distinguish from a project that forgot. Nothing is inherited; the spread puts every number in the project's own file where a reader can see it. See [ADR 0007](../architecture/adr/0007-complete-project-configurations.md).
+**Every traced project has one, and every one is complete.** A traced project with no file at all is refused by name, as is a file that leaves a field out. `maximumBreadth: undefined` is a project saying outright it gates depth and not breadth — the one statement an absent field could never distinguish from a project that forgot. Nothing is inherited; the spread puts every number in the project's own file where a reader can see it. See `documentation/adr/0007-complete-project-configurations.md`.
 
 ---
 
 ## Nx Plugin: Inferred Targets
 
-The plugin infers four targets onto each eligible project:
+The plugin infers four targets onto each eligible project (target names are configurable; these are the defaults):
 
 ```mermaid
 graph LR
@@ -370,19 +373,19 @@ graph LR
     GATE --> JUDGE[Judge Against Project Limits]
 ```
 
-- **`trace`** — Full trace with rendered report (markdown/mermaid/json)
-- **`depth <address>`** — Deepest stack below one address
-- **`breadth <address>`** — Direct callees of one address
-- **`gate`** — Trace + judge; fails on `deepStacks` (always) and `wideCallables` (where `maximumBreadth` declared)
+- **`callidescope-trace`** — Full trace with rendered report (markdown/mermaid/json)
+- **`callidescope-depth`** (`--addresses`) — Deepest stack below one address
+- **`callidescope-breadth`** (`--addresses`) — Direct callees of one address
+- **`callidescope-restrict`** — Trace + judge; fails on `deepStacks` (always) and `wideCallables` (where `maximumBreadth` declared)
 
 **Usage:**
 
 ```bash
 # Gate changed projects and their dependents
-nx affected --target=gate
+nx affected --target=callidescope-restrict
 
 # Full workspace trace to console
-nx run-many --target=trace --all
+nx run-many --target=callidescope-trace --all
 
 # Write reports to configured destinations (on default branch)
 nx run configuration:callidescope:write
@@ -394,28 +397,28 @@ nx run configuration:callidescope:write
 
 ```bash
 # Full workspace trace (default command)
-callidescope --config configuration/callidescope.config.ts
+callidescope --config configuration/ic-suite/callidescope.config.ts
 
 # Check depth gate only
-callidescope --config configuration/callidescope.config.ts --check depth
+callidescope --config configuration/ic-suite/callidescope.config.ts --check depth
 
 # Check breadth gate only
-callidescope --config configuration/callidescope.config.ts --check breadth
+callidescope --config configuration/ic-suite/callidescope.config.ts --check breadth
 
 # Check report staleness
-callidescope --config configuration/callidescope.config.ts --check reports
+callidescope --config configuration/ic-suite/callidescope.config.ts --check reports
 
 # Write all configured destinations
-callidescope --config configuration/callidescope.config.ts --write
+callidescope --config configuration/ic-suite/callidescope.config.ts --write
 
 # Scope to specific projects
-callidescope --config configuration/callidescope.config.ts --directories packages/alpha,packages/beta
+callidescope --config configuration/ic-suite/callidescope.config.ts --directories packages/alpha,packages/beta
 
 # Override limits for one run
-callidescope --config configuration/callidescope.config.ts --maximum-depth 10 --maximum-breadth 12
+callidescope --config configuration/ic-suite/callidescope.config.ts --maximum-depth 10 --maximum-breadth 12
 
 # Output format
-callidescope --config configuration/callidescope.config.ts --format mermaid
+callidescope --config configuration/ic-suite/callidescope.config.ts --format mermaid
 ```
 
 **Two failures no flag turns off:**
@@ -472,16 +475,16 @@ A marker-delimited block spliced into a file:
 Same block, stacks drawn as flowchart:
 
 <!-- openwiki: mermaid parse failed and this diagram was converted to a text fence so it does not break rendering. Fix the diagram source and restore the mermaid fence. Parser error: Heuristic: an unescaped angle bracket inside a label breaks rendering; rephrase the label. -->
-```text
+```mermaid
 flowchart TD
-    AlphaCommand_run["AlphaCommand.run<br/>alpha.command.ts:42"]
-    AlphaService_process["AlphaService.process<br/>alpha.service.ts:18"]
-    PipelineStage_execute["PipelineStage.execute<br/>pipeline.stage.ts:27"]
-    Transformer_transform["Transformer.transform<br/>transformer.ts:55"]
-    Validator_validate["Validator.validate<br/>validator.ts:12"]
-    Normalizer_normalize["Normalizer.normalize<br/>normalizer.ts:8"]
-    Persister_persist["Persister.persist<br/>persister.ts:14"]
-    Notifier_notify["Notifier.notify<br/>notifier.ts:9"]
+    AlphaCommand_run["AlphaCommand.run - alpha.command.ts:42"]
+    AlphaService_process["AlphaService.process - alpha.service.ts:18"]
+    PipelineStage_execute["PipelineStage.execute - pipeline.stage.ts:27"]
+    Transformer_transform["Transformer.transform - transformer.ts:55"]
+    Validator_validate["Validator.validate - validator.ts:12"]
+    Normalizer_normalize["Normalizer.normalize - normalizer.ts:8"]
+    Persister_persist["Persister.persist - persister.ts:14"]
+    Notifier_notify["Notifier.notify - notifier.ts:9"]
 
     AlphaCommand_run --> AlphaService_process
     AlphaService_process --> PipelineStage_execute
@@ -522,20 +525,16 @@ Machine-readable `CallGraphResult`:
 - **Breadth gate** — Judged only where a project declares `maximumBreadth`. A callable calling more distinct callees directly than `maximumBreadth` fails.
 - **Report staleness** — Separate check (`--check reports`); a configured destination no longer holding what a fresh run would write fails.
 
-**Per-project ownership**: A run scoped to project `alpha` traces `alpha` and its dependencies. Findings in `beta` (a dependency) belong to `beta`'s gate, not `alpha`'s. `nx affected --target=gate` selects the right gates.
+**Per-project ownership**: A run scoped to project `alpha` traces `alpha` and its dependencies. Findings in `beta` (a dependency) belong to `beta`'s gate, not `alpha`'s. `nx affected --target=callidescope-restrict` selects the right gates.
 
 ---
 
 ## Related Pages
 
 - [IC Suite Architecture](../architecture/ic-suite.md) — Overall architecture of the ic-suite toolchain
-<!-- openwiki: broken internal link [../testing/callidescope.md] file "../testing/callidescope.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [Callidescope Testing](../testing/callidescope.md) — Testing strategies for callidescope
 - [Code Quality Workflows](../workflows/code-quality.md) — How callidescope integrates into quality gates
-<!-- openwiki: broken internal link [../architecture/adr/0006-narrow-callidescope-to-depth-and-breadth.md] file "../architecture/adr/0006-narrow-callidescope-to-depth-and-breadth.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [ADR 0006](../architecture/adr/0006-narrow-callidescope-to-depth-and-breadth.md) — Decision to narrow to depth and breadth only
-<!-- openwiki: broken internal link [../architecture/adr/0007-complete-project-configurations.md] file "../architecture/adr/0007-complete-project-configurations.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [ADR 0007](../architecture/adr/0007-complete-project-configurations.md) — Decision for complete project configurations
+- `documentation/adr/0006-narrow-callidescope-to-depth-and-breadth.md` — Decision to narrow to depth and breadth only
+- `documentation/adr/0007-complete-project-configurations.md` — Decision for complete project configurations
 
 ---
 

@@ -48,7 +48,7 @@ export class PullRequestLabelsService {
 
   // 🌎 Public Methods
 
-  /** Reads the labels `gh label list --json name,color,description` returned. */
+  /** Reads the labels the REST list of the repository's labels returned. */
   public parseRepositoryLabels(listing: string): ConventionalLabel[] {
     return repositoryLabelsSchema.parse(JSON.parse(listing) as unknown);
   }

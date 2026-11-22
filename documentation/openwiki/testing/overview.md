@@ -4,8 +4,8 @@ title: "Testing Strategy Overview"
 description: "High-level testing strategy: test targets (vitest:unit, vitest:integration, vitest:end-to-end), coverage gates, the testing-strategy skill, and CI test sharding. Explains persistence testing helpers (testcontainers Postgres) and MSW/GraphQL codegen for lexico-web."
 tags: ["testing", "strategy", "ci", "vitest", "coverage", "testcontainers", "graphql", "msw"]
 verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-29T03:39:46.432Z
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 sources:
   - id: openwiki-source-ab09db9d0408f67f5441bda9
     resource: repo://.agents/skills/test-driven-development/SKILL.md
@@ -17,25 +17,29 @@ sources:
     resource: repo://.github/workflows/continuous-integration.yml
   - id: openwiki-source-8037e2358a2c4f9b2c722a11
     resource: repo://AGENTS.md
+  - id: openwiki-source-0144ea531e31aa5c07ef9da9
+    resource: repo://configuration/typescript/vitest.config.ts
   - id: openwiki-source-9352839a473daa8b8f2309be
     resource: repo://projects/common/interface/src/modules/graphql-client/graphql-client.constants.ts
   - id: openwiki-source-882dec87f9be719705f89e96
     resource: repo://projects/common/interface/src/modules/graphql-client/graphql-client.utilities.ts
-  - id: openwiki-source-c226aa5c7f690262741b3f25
-    resource: repo://projects/common/interface/testing/graphql-mock-server.ts
+  - id: openwiki-source-fb04b392a5b00efed2344b4b
+    resource: repo://projects/common/interface/testing/graphql-mock-server/graphql-mock-server.utilities.ts
   - id: openwiki-source-656ec5fd6b299f80e2256a7b
     resource: repo://projects/common/interface/testing/index.ts
-  - id: openwiki-source-79e7b4ee4ecfb08c4edc2d59
-    resource: repo://projects/common/interface/testing/pagination.ts
-  - id: openwiki-source-a688f65f433758aea382c292
-    resource: repo://projects/common/persistence/src/modules/postgresql/postgresql-container.utilities.ts
-  - id: openwiki-source-4808dd4ba16cde901f5bc82f
-    resource: repo://projects/common/persistence/testing/persistence-testing.utilities.ts
-  - id: openwiki-source-6dfd545d8e86700444b57ad8
-    resource: repo://projects/lexico/lexico-web/codegen.ts
+  - id: openwiki-source-6bccd99d3ce37c9033902b3b
+    resource: repo://projects/common/interface/testing/pagination/pagination.utilities.ts
+  - id: openwiki-source-d43cf1b76d511df31f2fb62d
+    resource: repo://projects/common/persistence/testing/database-testing/database-testing.utilities.ts
+  - id: openwiki-source-c647017e373aa4231d115310
+    resource: repo://projects/common/persistence/testing/postgres-container/postgres-container.utilities.ts
+  - id: openwiki-source-7d76dc1f51d3cdefccb6bde3
+    resource: repo://projects/common/testing/README.md
+  - id: openwiki-source-1174ba92a7794a5880ff3068
+    resource: repo://projects/lexico/lexico-web/configuration/codegen.ts
   - id: openwiki-source-cbca90a5ed54cecf99d6ea3f
     resource: repo://projects/lexico/lexico-web/README.md
-generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 ---
 
 # Testing Strategy Overview
@@ -60,6 +64,7 @@ The TDD cycle is non-negotiable for new features, bug fixes, refactoring, and be
 | **Unit** | `*.unit.test.ts` | Isolated, fast, mocked dependencies. Tests one unit of behavior. |
 | **Integration** | `*.integration.test.ts` | Real Postgres via Testcontainers, real module wiring, selective mocks for external I/O. |
 | **End-to-end** | `*.end-to-end.test.ts` | Full application stack (rare). |
+| **Packed** | `*.packed.test.ts` | Runs under the separate `end-to-end` target, which installs the tarballs `pack` leaves in `dist/tarballs` into an isolated sandbox and runs the real executable there. |
 
 Test files live beside the code they test (e.g., `src/modules/search/search.service.integration.test.ts`).
 
@@ -76,6 +81,9 @@ nx run <project>:vitest:integration
 
 # End-to-end tests for a project
 nx run <project>:vitest:end-to-end
+
+# Packed tests: the five ic-suite CLIs and four Nx plugins (a separate target from vitest:end-to-end)
+nx run <project>:end-to-end
 
 # All affected tests (unit + integration + e2e) — standard CI and local validation
 nx affected --target=vitest --base=main
@@ -133,7 +141,7 @@ See the [testing-mocks skill](.agents/skills/testing-mocks/SKILL.md) for complet
 
 ## Shared Test Helpers
 
-Two shared packages export testing utilities used across projects:
+Shared helpers live in `@codebase/testing` (temporary directories, output capture, environment overrides, the fixed clock, `buildTestingModule`, `renderRoute`, the tarball sandbox and Verdaccio plugin runners) and in the `/testing` entries of the common packages that own them:
 
 ### `@codebase/interface/testing`
 
@@ -223,7 +231,7 @@ await database.close(); // closes module, stops container, restores process.env
 
 ## Lexico-Web GraphQL Codegen
 
-The `lexico-web` project uses GraphQL Code Generator to produce typed client artifacts from the `lexico-api` schema. The configuration lives in `projects/lexico/lexico-web/codegen.ts` and delegates to `@codebase/interface/client`'s `createGraphqlCodegenConfig`.
+The `lexico-web` project uses GraphQL Code Generator to produce typed client artifacts from the `lexico-api` schema. The configuration lives in `projects/lexico/lexico-web/configuration/codegen.ts` and delegates to `@codebase/interface/client`'s `createGraphqlCodegenConfig`.
 
 **Output artifacts** (generated into `src/graphql/generated/`):
 - **`operations.ts`** — Typed operation documents (TypeScript + `typescript-operations` + `typed-document-node`). Every `.graphql` file under `src/graphql/operations/**` becomes a typed `TypedDocumentNode` with inferred variables and result types.
@@ -233,10 +241,10 @@ The `lexico-web` project uses GraphQL Code Generator to produce typed client art
 **Scalars** are mapped to wire representation: `DateTime` and `ID` both serialize as `string` in JSON.
 
 ```ts
-// projects/lexico/lexico-web/codegen.ts
+// projects/lexico/lexico-web/configuration/codegen.ts
 import { createGraphqlCodegenConfig } from "@codebase/interface/client";
 
-const config = createGraphqlCodegenConfig({
+const config: CodegenConfig = createGraphqlCodegenConfig({
   schema: "../lexico-api/src/schema.gql",
 });
 
@@ -253,25 +261,25 @@ The generated MSW mock helpers are consumed via `@codebase/interface/testing` (s
 
 ## CI Test Sharding
 
-The Continuous Integration workflow (`.github/workflows/continuous-integration.yml`) splits the test target into **four parallel shards** to avoid long-running jobs and resource contention:
+The Continuous Integration workflow (`.github/workflows/continuous-integration.yml`) splits the `test-code` target into **parallel legs, one per project group**, to avoid long-running jobs and resource contention:
 
-| Shard | NX Exclude Pattern | Projects Covered |
-|-------|-------------------|------------------|
-| **general** (default `test-code` job) | `meanderaw-cli,projects/caelundas/**,projects/ic-suite/**` | All other projects |
-| **caelundas** | `*,!projects/caelundas/**` | `projects/caelundas/**` (requires ephemeris download) |
-| **meanderaw** | `*,!meanderaw-cli` | `meanderaw-cli` (heavy integration suite) |
-| **ic-suite** | `*,!projects/ic-suite/**` | `projects/ic-suite/**` (37 packages) |
+| Leg | Shard | Projects covered |
+|-----|-------|------------------|
+| **Test Codebase** | `codebase` | Everything not in another leg (new projects start here) |
+| **Test Common** | `common` | `projects/common/**` (installs the Postgres client) |
+| **Test Affirmancy** | `affirmancy` | `projects/affirmancy/**` |
+| **Test Caelundas** | `caelundas` | `projects/caelundas/**` |
+| **Test IC Suite** | `ic-suite` | `projects/ic-suite/**` |
+| **Test Lexico** | `lexico` | `projects/lexico/**` (installs the Postgres client) |
+| **Test Meanderaw** | `meanderaw` | `projects/meanderaw/**` |
 
-Each shard runs `nx affected --target=vitest --configuration=coverage` with its exclude pattern. A shard with no affected projects runs nothing. The `postgres-client` tool is installed only for the `test-code` target (the general shard); other shards inherit it through their setup.
+Each leg runs `nx affected --target=vitest --configuration=coverage` with its exclude pattern, and a leg with no affected projects runs nothing. The packed `end-to-end` target runs in its own `End to End IC Suite` leg.
 
 ## References
 
-<!-- openwiki: broken internal link [.agents/skills/testing-strategy/SKILL.md] file ".agents/skills/testing-strategy/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [Testing Strategy Skill](.agents/skills/testing-strategy/SKILL.md) — test types, naming, Nx commands, coverage gates, mocking patterns
-<!-- openwiki: broken internal link [.agents/skills/test-driven-development/SKILL.md] file ".agents/skills/test-driven-development/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [Test-Driven Development Skill](.agents/skills/test-driven-development/SKILL.md) — TDD rules, red-green-refactor cycle, verification checklist, common rationalizations
-<!-- openwiki: broken internal link [.agents/skills/testing-mocks/SKILL.md] file ".agents/skills/testing-mocks/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [Testing Mocks Skill](.agents/skills/testing-mocks/SKILL.md) — `createMock<T>()` patterns, NestJS DI integration, anti-patterns
+- Testing Strategy Skill (`.agents/skills/testing-strategy/SKILL.md`) — test types, naming, Nx commands, coverage gates, mocking patterns
+- Test-Driven Development Skill (`.agents/skills/test-driven-development/SKILL.md`) — TDD rules, red-green-refactor cycle, verification checklist, common rationalizations
+- Testing Mocks Skill (`.agents/skills/testing-mocks/SKILL.md`) — `createMock<T>()` patterns, NestJS DI integration, anti-patterns
 - [Integration Testing Patterns](integration.md) — detailed Testcontainers and GraphQL mock server usage
 - [Affirmancy Testing](affirmancy.md)
 - [Caelundas Testing](caelundas.md)

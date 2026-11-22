@@ -1,22 +1,26 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:6545fe874ac4a0c418b755198dbe35aa3af149d33bc0400a44c8dba7df8053a8",
+  "pageVersion": "sha256:d1d7ecb450b5cb9efd7163b22f2694504782c252c2ad3e2badacabe5465b603e",
   "claims": [
     {
       "id": "claim_fd8cff15fa27471499a5a49b694cf1fb",
-      "statement": "Coinagerie is organized as five spine packages: core (shared types), configuration (config loading and resolution), vocabulary (extraction pipeline), output (glossary rendering and comparison), and cli (commands).",
+      "statement": "Coinagerie follows the IC-Suite five-layer spine with seven published packages: core (shared types), configuration (config loading and resolution), languages and vocabulary (analysis: per-language tokenizers, and the extraction pipeline), output (glossary rendering and comparison), cli (commands) and nx (the Nx plugin).",
       "evidence": [
         {
           "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/src/coinagerie-cli.main.ts",
           "version": "repo-file-v1:sha256:3b34854360fcda854a28e3b2b05c3753d62c070fe2bc53010e8f59ab5c9b7bb0"
         },
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts",
-          "version": "repo-file-v1:sha256:64a429326b04913b1b10cab04db9a5b50f4d8811c39e2a3f9229f3cce8353b10"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts#L1-L307",
+          "version": "repo-lines-v1:sha256:5e144c8b60bfb9d6a21e6a620024f994cc786904e16cb1823cec8bd6c60920d8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzA3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIxMjk5NGU1NjEyNTBlNDU2Y2Q5N2M1YzI3Mjc3MDhlMzlhMGZmMmMyNTZkMTQ2MjBhNDZjNzk3NzU2NTU0MmEyIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         },
         {
           "resource": "repo://projects/ic-suite/coinagerie/coinagerie-core/src/modules/coinagerie-core/coinagerie-core.types.ts",
           "version": "repo-file-v1:sha256:8cf7a60c208f807a89542ada4544e7bcb54dd5c4697cfa221036ae4cbc4ad546"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-languages/src/modules/languages/languages.service.ts",
+          "version": "repo-file-v1:sha256:9581990b000df38c9ed1b644cce6c5699d4476ebaae60c09d1472374a14e075a"
         },
         {
           "resource": "repo://projects/ic-suite/coinagerie/coinagerie-output/src/modules/markdown/markdown.service.ts",
@@ -30,15 +34,15 @@
     },
     {
       "id": "claim_cb2edd75dbc74ddd911b90ba8cbcde51",
-      "statement": "The vocabulary extraction pipeline runs file-by-file: discovery honors .gitignore and config globs, tokenization selects per-extension tokenizers, word splitting handles paths and identifiers with acronym preservation, folding applies singularization then lemmatization then custom fold, and exclusion filters by exact headwords and regex patterns against word or headword.",
+      "statement": "The vocabulary extraction pipeline runs file by file: discovery honors .gitignore and the configuration globs, tokenization selects a per-extension tokenizer, word splitting handles paths and identifiers with acronym preservation, folding applies singularization then lemmatization then the custom fold function, and exclusion filters by exact headwords and regex patterns.",
       "evidence": [
         {
           "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/discovery/discovery.service.ts",
           "version": "repo-file-v1:sha256:485726b0a239e54e73c751ef04084a11a9c1a1216627aa4595668c544b7da6dc"
         },
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/folding/folding.service.ts",
-          "version": "repo-file-v1:sha256:276c0bf3a2490d5b149e723ca3cb2ba6d51d20a290b08e4a92e223fc67d69f5c"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/folding/folding.service.ts#L1-L55",
+          "version": "repo-lines-v1:sha256:2f62f1f07d04f3f0f6004dffc6a52719a13d1b494aa12370b9cff1b9457ef289:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3ZDFmMjUyYTcwZjhjNjRlZWNjMDk2ZjkyNDU2NDFiNDljODhhODgwMzU4NDdjMjE5N2VjM2E5N2M4OTQ3YzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
           "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/vocabulary/vocabulary.service.ts",
@@ -66,39 +70,55 @@
     },
     {
       "id": "claim_9050875c934040f49034aacdf10389d1",
-      "statement": "Configuration loads from coinagerie.config.ts (or --config), resolves paths relative to the config file's directory, merges CLI flag overrides (include, exclude.paths, output paths, description), evaluates exclude.words functions at load time, and guards the custom fold function.",
+      "statement": "Configuration loads from the file named by the required --config, resolves paths relative to that file's directory, merges CLI flag overrides, evaluates exclude.words functions at load time, and guards the custom fold function.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts",
-          "version": "repo-file-v1:sha256:64a429326b04913b1b10cab04db9a5b50f4d8811c39e2a3f9229f3cce8353b10"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/README.md#L1-L40",
+          "version": "repo-lines-v1:sha256:928a4ef66fa5eab392ceecb995f11b1e34acee86654dbccdf68eaff58d66ef52:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwOTEzMjlmMDIwNTk4N2YyOGRlZmE4ZDVmOGI4ZTU2ZDlkNWEyMmRjYTk4MTY0ZDFkMTU4OGU5M2RjYzQ4ZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI3OTZkYjI0YjEzOGVmNDRhNDRkNmVhNDg5NDk2MjVhN2NiM2M1ZjU2ZWNkOGUxNTg4OWEzOWU1MTk2ODhiNzgifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts#L1-L307",
+          "version": "repo-lines-v1:sha256:5e144c8b60bfb9d6a21e6a620024f994cc786904e16cb1823cec8bd6c60920d8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzA3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIxMjk5NGU1NjEyNTBlNDU2Y2Q5N2M1YzI3Mjc3MDhlMzlhMGZmMmMyNTZkMTQ2MjBhNDZjNzk3NzU2NTU0MmEyIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_20799726f0734a5489e67d77cafde19f",
-      "statement": "The CLI provides collect (print/check/write), batch (multi-project), and supports --check (exit on drift), --write (rewrite preserving definitions), --format json, and flag overrides for include, exclude.paths, output paths.",
+      "statement": "The CLI provides a collect command (print, check or write), a batch command for several projects, and a check module; it supports --check (exit on drift), --write (rewrite preserving definitions), --format, and flag overrides for include, exclude paths and output paths.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/src/modules/batch/batch.command.ts",
-          "version": "repo-file-v1:sha256:e33b25c2d00dfda6c0712fe0346a53887d0c22480fcabdc910461bcb5502c250"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/src/modules/batch/batch.command.ts#L1-L98",
+          "version": "repo-lines-v1:sha256:a0bc0bdb9c9d419f1f8bfcd657c248b5450627048ab331bfcf4b0a87fdff4a63:eyJzZWxlY3RlZExpbmVDb3VudCI6OTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwY2JiMzU4Mzk2MWRjMWRhZDc0YWMwNjZhOWQ1MDE5YWUxMTJiMDMwN2U4ODFkYTAxY2ZmYjZkYmUzYzNlMjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/src/modules/collect/collect.command.ts",
-          "version": "repo-file-v1:sha256:bbc9740d322f0d36a84520038034a322c84d6455a9b9f085f85110e204ca93ab"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/src/modules/check/check.service.ts",
+          "version": "repo-file-v1:sha256:89b90e2710c6eeb8362f8b5a7ce9d88d406f5cddbd243461b3200536490252c7"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/src/modules/collect/collect.command.ts#L1-L366",
+          "version": "repo-lines-v1:sha256:a6a8fbfece165fa285540258453af97bed406330abbc707cb8bbff93d934de08:eyJzZWxlY3RlZExpbmVDb3VudCI6MzY2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlODIwMDk2NGE5Nzg2MzU1MjJiMmFiMDkwYzY1MDY1ZDhlZjhlODVjNDczMGJiMmViMDQ2MGQzNGM2NzdkZGJiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_4a021756b330490d926fb72399b33f3f",
-      "statement": "The Nx plugin (@coinagerie/nx) infers a coinagerie:check executor onto every project with a config, groups tasks by mode+command for batch execution via coinagerie batch, and supports nx affected for incremental checks.",
+      "statement": "The Nx plugin (@coinagerie/nx) infers a coinagerie-check target onto every project with a configuration, groups tasks by mode and command for batch execution via coinagerie batch, and supports nx affected for incremental checks.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.ts",
-          "version": "repo-file-v1:sha256:e1ac3b1615975faac28b5c7c87772bd47e4be24032c288ec0e4a49ac3a79ce74"
+          "resource": "repo://nx.json#L276-L285",
+          "version": "repo-lines-v1:sha256:91337ef45591a37870c98cdf97aed398c30dddac58222dcc752e406be29ad6dc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNjJmNjBkODU5MGE1NzljZjQ2ZjhkNjczNzhjNGM1NzJiOTYyY2VjY2RiOTBjN2E1ZjdiNDJiOTYwNzgyYTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2NmI2ZDM2ZjU5ZDdmMTgwMGQ0OTEyYTMzNDQxY2NmMWUzYjU5N2YyNDA3MTQ1ZDY5ZWEzY2Q4NzA5NzUwNjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIzMzAzNGYwZGFkZDRhMGVlZDkyNjQwNGYxY2U2ZDZlYjc1MDEwOGMzMTQ2MGFiMGFmZDFiYjI0ODU0YjZhYmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhYTY0NDQ1OGFmNDUxZDFkMmUyMDQyODQ5YTE0YzQ5MzM2Y2VkMzFkYTVmMmYzMWU4ZTg4MzQxZTYxNmQwZmUifQ"
         },
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts",
-          "version": "repo-file-v1:sha256:c6b2739c2cf1e9e369ca2d6b8c4734185398513a0ade1ae7f38886f3ac5e3855"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/batch-executor.ts",
+          "version": "repo-file-v1:sha256:cbc51e587119e57d2ca4725f02800d687cc4a2ac62dfb0d95b908205c2582603"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.ts#L1-L50",
+          "version": "repo-lines-v1:sha256:5a7abd7edcdf7ecbd0322c1725cec1e9f6c6733012d1ffe027cd131d21654489:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2YmU3ODIxNjcyOWMyYWQ2NGU0ZDJmYjlkNDJmNzgyZWIxYTE1NzdjMTdkNTdhYmNhM2NiZTViMjA4Zjc3Y2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.utilities.ts#L1-L200",
+          "version": "repo-lines-v1:sha256:f456bde3390380ad29d8c8a1e585642dd0e223471a9135023a64dc60f21c720c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0NmJlNzgyMTY3MjljMmFkNjRlNGQyZmI5ZDQyZjc4MmViMWExNTc3YzE3ZDU3YWJjYTNjYmU1YjIwOGY3N2NkIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
@@ -117,18 +137,22 @@
       ]
     },
     {
-      "id": "claim_530c6195e3384cea9a41cc6c50d5e71b",
-      "statement": "Core vocabulary terms from CONTEXT.md (Generator, Template, Instance, Language, Fallback, Difference, Error, Conformance) define the domain language used across the toolchain.",
+      "id": "claim_1751c57298d0417e8357b74bf52f4281",
+      "statement": "A coinagerie glossary is kept in step with the code: a word the code uses with no glossary entry, and an entry for a word the code no longer uses, both fail --check; --write rewrites every glossary while keeping existing definitions.",
       "evidence": [
         {
-          "resource": "repo://CONTEXT.md",
-          "version": "repo-file-v1:sha256:57a2926a89f254e483ecdad4f2f4a9ff1c71a76a4f13bd18688c43fddc75f006"
+          "resource": "repo://nx.json#L276-L285",
+          "version": "repo-lines-v1:sha256:91337ef45591a37870c98cdf97aed398c30dddac58222dcc752e406be29ad6dc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNjJmNjBkODU5MGE1NzljZjQ2ZjhkNjczNzhjNGM1NzJiOTYyY2VjY2RiOTBjN2E1ZjdiNDJiOTYwNzgyYTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2NmI2ZDM2ZjU5ZDdmMTgwMGQ0OTEyYTMzNDQxY2NmMWUzYjU5N2YyNDA3MTQ1ZDY5ZWEzY2Q4NzA5NzUwNjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIzMzAzNGYwZGFkZDRhMGVlZDkyNjQwNGYxY2U2ZDZlYjc1MDEwOGMzMTQ2MGFiMGFmZDFiYjI0ODU0YjZhYmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhYTY0NDQ1OGFmNDUxZDFkMmUyMDQyODQ5YTE0YzQ5MzM2Y2VkMzFkYTVmMmYzMWU4ZTg4MzQxZTYxNmQwZmUifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/README.md#L1-L40",
+          "version": "repo-lines-v1:sha256:928a4ef66fa5eab392ceecb995f11b1e34acee86654dbccdf68eaff58d66ef52:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwOTEzMjlmMDIwNTk4N2YyOGRlZmE4ZDVmOGI4ZTU2ZDlkNWEyMmRjYTk4MTY0ZDFkMTU4OGU5M2RjYzQ4ZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI3OTZkYjI0YjEzOGVmNDRhNDRkNmVhNDg5NDk2MjVhN2NiM2M1ZjU2ZWNkOGUxNTg4OWEzOWU1MTk2ODhiNzgifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-13T16:30:25.369Z"
+    "at": "2026-11-22T00:18:20.862Z"
   }
 }

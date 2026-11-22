@@ -192,22 +192,18 @@ describe(PullRequestReleaseSignificanceService, () => {
     });
   });
 
-  describe("resolveFromDocument", () => {
-    it("reads the title and commits out of a gh pr view document", () => {
+  describe("resolveFromCommits", () => {
+    it("reads the commits out of the REST list of a pull request's commits", () => {
       expect.hasAssertions();
 
-      const document = JSON.stringify({
-        commits: [
-          {
-            messageBody: "",
-            messageHeadline: "feat(lexico): add moon phases",
-            oid: "abcdef1234567890",
-          },
-        ],
-        title: "feat(lexico): ✨ add moon phases",
-      });
+      const document = JSON.stringify([
+        {
+          commit: { message: "feat(lexico): add moon phases" },
+          sha: "abcdef1234567890",
+        },
+      ]);
 
-      expect(service.resolveFromDocument(document)).toStrictEqual({
+      expect(service.resolveFromCommits(document)).toStrictEqual({
         commits: [
           {
             convention: {
@@ -220,46 +216,54 @@ describe(PullRequestReleaseSignificanceService, () => {
           },
         ],
         resolved: true,
-        title: "feat(lexico): ✨ add moon phases",
       });
+    });
+
+    it("reads a breaking change from the body under the subject", () => {
+      expect.hasAssertions();
+
+      const document = JSON.stringify([
+        {
+          commit: {
+            message:
+              "feat(lexico): add moon phases\n\nBREAKING CHANGE: the phase enum is gone",
+          },
+          sha: "abcdef1234567890",
+        },
+      ]);
+      const resolution = service.resolveFromCommits(document);
+
+      expect(resolution.resolved).toBe(true);
+      expect(
+        resolution.resolved && resolution.commits[0]?.convention?.breaking,
+      ).toBe(true);
     });
 
     it("falls back to default attributes when commit fields are not strings", () => {
       expect.hasAssertions();
 
-      const document = JSON.stringify({
-        commits: [
-          {
-            messageBody: 123,
-            messageHeadline: null,
-            oid: false,
-          },
-        ],
-        title: "feat(lexico): ✨ add moon phases",
-      });
+      const document = JSON.stringify([
+        { commit: { message: 123 }, sha: false },
+        { commit: "not a record", sha: null },
+      ]);
 
-      expect(service.resolveFromDocument(document)).toStrictEqual({
+      expect(service.resolveFromCommits(document)).toStrictEqual({
         commits: [
-          {
-            convention: undefined,
-            sha: "",
-            subject: "",
-          },
+          { convention: undefined, sha: "", subject: "" },
+          { convention: undefined, sha: "", subject: "" },
         ],
         resolved: true,
-        title: "feat(lexico): ✨ add moon phases",
       });
     });
 
     it("skips a commit whose subject does not parse", () => {
       expect.hasAssertions();
 
-      const document = JSON.stringify({
-        commits: [{ messageHeadline: "Merge branch 'main'", oid: "0000000" }],
-        title: "chore(codebase): 🔧 merge",
-      });
+      const document = JSON.stringify([
+        { commit: { message: "Merge branch 'main'" }, sha: "0000000" },
+      ]);
 
-      const resolution = service.resolveFromDocument(document);
+      const resolution = service.resolveFromCommits(document);
 
       expect(resolution.resolved).toBe(true);
       expect(resolution.resolved && resolution.commits[0]).toStrictEqual({
@@ -272,7 +276,7 @@ describe(PullRequestReleaseSignificanceService, () => {
     it("reports a document that is not valid JSON", () => {
       expect.hasAssertions();
 
-      const resolution = service.resolveFromDocument("not json");
+      const resolution = service.resolveFromCommits("not json");
 
       expect(resolution).toStrictEqual({
         failure: expect.stringContaining("Unable to parse") as unknown,
@@ -280,29 +284,28 @@ describe(PullRequestReleaseSignificanceService, () => {
       });
     });
 
-    it("reads an empty title and no commits from a document missing both", () => {
+    it("reads no commits from an empty list", () => {
       expect.hasAssertions();
-      expect(service.resolveFromDocument("{}")).toStrictEqual({
+      expect(service.resolveFromCommits("[]")).toStrictEqual({
         commits: [],
         resolved: true,
-        title: "",
       });
     });
 
-    it("handles a non-object JSON document gracefully", () => {
+    it("reads no commits from a document that is not a list", () => {
       expect.hasAssertions();
-      expect(service.resolveFromDocument('"not-an-object"')).toStrictEqual({
+      expect(service.resolveFromCommits('"not-a-list"')).toStrictEqual({
         commits: [],
         resolved: true,
-        title: "",
       });
     });
 
-    it("reads a blank subject and sha from a commit entry missing its fields", () => {
+    it("reads a blank subject and sha from an entry missing its fields", () => {
       expect.hasAssertions();
 
-      const document = JSON.stringify({ commits: ["not a record", {}] });
-      const resolution = service.resolveFromDocument(document);
+      const resolution = service.resolveFromCommits(
+        JSON.stringify(["not a record", {}]),
+      );
 
       expect(resolution.resolved).toBe(true);
       expect(resolution.resolved && resolution.commits).toStrictEqual([

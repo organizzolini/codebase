@@ -1,32 +1,32 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:ec167c5bcba3a66a161263bb329f42e10afc3d951110490770478af0d34853d0",
+  "pageVersion": "sha256:3e160008fbe94d33ce84e3cb795986e4886dd753a2affe8330c4bd675cdc277f",
   "claims": [
     {
       "id": "claim_f2d8f5c69bcb47a3bf537471aa335dc3",
       "statement": "Releases are fully automated on merge to main via the Continuous Deployment workflow's Releases target.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/continuous-deployment.yml#L208-L216",
-          "version": "repo-lines-v1:sha256:d235ada7b0a7f1a8a48e118efa69ae864d51b3cee4a11ae5cf7f27c90b357bc5:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjU1MTQ3MzMzZGZiYmMwNmYwZDRmNmZjYjc4OWIyMTBlMGZlODhmM2IzZmY4NTg0NWE5NjQ1ZDU5NjYxY2Q2NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjZlNDUwNjRiMTc3YmVlYWU1YmM4MGJlNzYxNGE3YzYyOTIwMTI0MmVmNmJmZTAwZDAzYjU4YzQzODVkNDM1NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjBiNmI5NzBmOTQyMDllZmNmMjQ1MzI1YWNhZDczYjViMDg2MWM5MzQzZDkyNzUxY2NkYmZiNjRiNjAxMDQwNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWYxZGNiYmQ0ZTI2Y2JiMTBmNjM3MTdhNDJmMWRhOTJiODAyN2IwNmZmNTU4NmQzM2NiOWFhZTBmNWZhY2IyMyJ9"
+          "resource": "repo://.github/workflows/continuous-deployment.yml#L210-L260",
+          "version": "repo-lines-v1:sha256:2e508cae5c80ae45a49ed353f5fb046195d8c0def68aa4787bcf015bbc8fa0ab:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEyYWVkMWU1NDNiYmVlMTMxOTViYTExNjNiODAzYzgwZDFiYzI3NThkYjVjNmVhYjI3MWQyMzliYmRhMGRkNjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5OTVhZDZjMzAwODFhNGE0ZWU0ZDU4ZTVlYjM4MTk5ZWY4YjBjYmQyN2E3YjM0MzM4ZjE1MGNiN2FmZGI5NDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYyMDIwMmQ4MWY4M2FmNTlkZjJiZWNlOTE2YTY4NGI2OWVlNDFiYjk5MzJlNDIwNTE5MzBlNmExNzI3ZGNlY2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVkNDA3NDMwNTI0YWEwOTNiMGU1YjMwZTFmMmE3ZWE4NWM1MjA3ZTJkYTFiMGE5ZTNkYWQxZWJmNDg4ODBlNTgifQ"
         },
         {
-          "resource": "repo://.github/workflows/continuous-deployment.yml#L39-L65",
-          "version": "repo-lines-v1:sha256:ffb915299e543559686bd67b25d315babdffe3e895bbbeaf0f3530c6a3434240:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5ZDgwMTU0ZWQ0MmZjNWM3NzliMTMzMTU3OGI1OGI4OWM4MDFlYWNlNzRmMjRjZDQ4ZWI0YTIzNTc5NDBhOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmYmViYTJmY2YyNzdhNDg2OGIzYmZlMWVkNzYxNTM5NTE2Zjk4ZDI0NGRkNGUwMDQ5YzEwMzUzODQyMDg0ODAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQwNTRmZTFhODk0YmJhNDc3MGQzOTYzMGI4MzcyZDM3NjE5Nzg4NzRhNmE3ZDAyNDRlMDk1MWJkYjdjNDJjYjAifQ"
+          "resource": "repo://.github/workflows/continuous-deployment.yml#L40-L72",
+          "version": "repo-lines-v1:sha256:08ff755b84c1300f77e6485cab5301b71f679a29741e0f96f384bb4897eec413:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzNzY5ZmJhMTJjZmM4MmIwYjgwYTlkMmY3MjdmYmYxYzUwZTRiYTdiMzE3YmNkYjU0MjA4NzE5Mjg0NzhkZTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE2MGJmOTQyYTU5ZWFkYWQ4OTkwYTAxODdkZTgzM2RiYzFjMGMxNjZhZWU5ZWNkZTFlOWMzMjM5MzA4MGQzYjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRkMTRhNTRiZGU2ZWQxNjcxZmYxNDk1MzE2MzY3ZDJmYWM5YzM4NWQwMzE2NTkzNmI2MzM5MDNkZmU5MTUwYjUifQ"
         }
       ]
     },
     {
       "id": "claim_6b8af30c135f4e0a935a2aebc972e6ca",
-      "statement": "The repository operates at two release tiers: semantic-release for the root version (v* tags) and Nx Release for 29 publishable ic-suite packages (project@version tags).",
+      "statement": "The repository operates at two release tiers: semantic-release for the root version (v* tags) and Nx Release for the 36 publishable ic-suite packages (project@version tags).",
       "evidence": [
         {
-          "resource": "repo://configuration/release.config.cjs#L8-L10",
-          "version": "repo-lines-v1:sha256:fbc1c8ea35a0f4d16c0f3d399dd4eabd2f5771d1f7787da799e31ab3766731f7:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2YyMTM4ZTgyOTRjNTI2OTY3YzBkZDVjN2QxY2I2MzY4YjgzNTQxMTlkOTExOWUzODgyM2EwMmYzZDRhMTlhYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2QxMTkwNDllOGUxZTJlMTdjYTU0MDY3ZTQzZmY3NWQ3OTFiOGE3NTI0MTAyODNmOWMyZDE2ZjIwMDQyY2YwMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjA1ZTY4YTkwODE5NGY3MjY0MjI0OWI0MjIxNDg1MTRkNDVmMTFkZjg2NTY5MGVhMjg5ZjE2NWUyYWRlNDAwNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2VlODQzMDdhNzAzMmQzZjhiZDI1OWJhNmMxYjQ2NmIzYzljMzljMTk5YTA2OTI5ZjdkMThhOTNkNTRjYjBlMCJ9"
+          "resource": "repo://configuration/repository/release.config.cjs#L1-L40",
+          "version": "repo-lines-v1:sha256:9c9367a16b560e45e92fc11b9189f3f351ba00a79a5cfe56915ab369f6982033:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5M2FiODE0ZWQ4NjgzMTU4NjQ1NmMyY2M2M2I4MDE1ZTM4NTE1YTM4ODBkODBhMGQ2ODU1OTk3YzZjOGE2MDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkMTA4NjE0ZmY2NzU1OTQ4OWQzZTAyZGIxZDZjYmRlNWUxODhhYmJlYjg0MGI2ZmVjNjJiOGVlMDcwNjM2MTgifQ"
         },
         {
-          "resource": "repo://nx.json#L119-L176",
-          "version": "repo-lines-v1:sha256:f8300ef3884d45bd82957395f5d36ee76ca1e09d99e049fc99b557a398595173:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmMmEyZjQzNGE3YzRlYmQ5MzQxZjE1YzVjM2Y3OTEyMmU3ZjllMjcxMzQ5OWYwZjg0N2VlOWRlZTk2MjIxNzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3Y2Q2YjM3N2I3OTI2OThjZmRmYjdmMTE0YWVkZjJkNjAyZjM0NDhhNzk3MTdjZGY5NzM3ODQwYmEwMTI3MDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwZTc2MjBiNzBkMWE5MTlhNzZlMGM3OTc1NmNkMTNjYzRiZDliM2VkY2FhNjQ1N2E4NThkOWFlZDQ0NTM5OWIifQ"
+          "resource": "repo://nx.json#L111-L175",
+          "version": "repo-lines-v1:sha256:d5ff536740cf213585eb565942b97a62bb5d88da38d255fae5d47947632bccd0:eyJzZWxlY3RlZExpbmVDb3VudCI6NjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmMmEyZjQzNGE3YzRlYmQ5MzQxZjE1YzVjM2Y3OTEyMmU3ZjllMjcxMzQ5OWYwZjg0N2VlOWRlZTk2MjIxNzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxMDk1OTY1MmMwZDdkOTJlZTg0YTFmNzU0NDJkYjc0OTU4MWY1ZTZlMDFiMDljY2E0NjY3NWFkOWFmMTE4ZmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3Y2Q2YjM3N2I3OTI2OThjZmRmYjdmMTE0YWVkZjJkNjAyZjM0NDhhNzk3MTdjZGY5NzM3ODQwYmEwMTI3MDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMwMGY3YjJkODA1N2I1ZTFlMjVjNWI5NTMyYTM1ZmQ5ZjEzNmRkZjVmMTI3ZGU3NTQ2ODljMzQ5YmU5MWRlMzgifQ"
         }
       ]
     },
@@ -39,92 +39,88 @@
           "version": "repo-lines-v1:sha256:c293dee491da1292d3bb04db460b5014361c3db28f407282d58532142188d649:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc0YTA3Mjg5MzQ2NTVmNzZlYjc1ZTMyZjBlMTQwMWU2NWUyODZjNmZlNWQyOGIwODA4MjA4ZmI1MmYxMTVjZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYxZGY5MmY5NTk3YWYyY2Y5MzA0NTNkZDE5Zjg2ZTY1ZjNhNGZhNDYyMDNiYzdhYTFkOTg4ZTgyNjQzOWNjZDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI4NjdiZjA1MjJmNmFjYzQwYjU0MGVkNjdmOWI0OTgwY2ZkZjhkODhmMTQyOTFmOWU2NzY0NTI4ZjM0YjhkNjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVmNzMyODlkZTFiYjVlM2E4NDM0Y2ZmMzYxNjczOGY4NWU3ZDQzMmM5MTM2Y2E4MDk0MGI0NTk4MGE4YWViOGUifQ"
         },
         {
-          "resource": "repo://nx.json#L167-L176",
+          "resource": "repo://nx.json#L161-L170",
           "version": "repo-lines-v1:sha256:c0377181d2326e891c3b9316b024fa012606154252c5d63157ae8281621654dc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0YWQyZjNkNmM5ZWQ4ZWU3OGQ4MTEzOGY2YjA4MmQ1MmJjOWY0OWMzYjQwYzdiYzM5Yzk5MmNlYzE1Nzg2MTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYTFhMDY4NThjZTczMTUzYTU2NjNhZWNhZGNiZjg0MTA5MzE2YWE3ZmUyNGY0YTllNjE0NDBmYTM1MjBhNDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwZTc2MjBiNzBkMWE5MTlhNzZlMGM3OTc1NmNkMTNjYzRiZDliM2VkY2FhNjQ1N2E4NThkOWFlZDQ0NTM5OWIifQ"
         }
       ]
     },
     {
       "id": "claim_b174ff4d49294905bbb4ae13bfab9142",
-      "statement": "The 8 non-publishable packages (*-agents and *-examples) are explicitly excluded from Nx Release in nx.json.",
+      "statement": "The 10 non-publishable packages (*-agents and *-examples) are explicitly excluded from Nx Release in nx.json.",
       "evidence": [
         {
-          "resource": "repo://nx.json#L156-L166",
-          "version": "repo-lines-v1:sha256:f69619c59f501faefaef9fccd695f42ae6294a966810af17ef70e404b01ed154:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1NWYzZmJiOGJlZTE0NWJmOGZlNGY2NjRkNDllMzgzNDYxYjQ0NGFjYzliYWY1YmYwMzRlZTZlM2ViZWI3MDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2M2Q1MzVjZTM4MDYzZDZiNGM1MWQ4YzM4NmE3ZjliM2U1ODBhMTRhMTBjMDdiMTk4ZGZhZjE5YzkzYTNiZmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmZDM2MmRiMWFkOGNmZThkZWU1MGQxZDhhZTZjZWE3ZmM1ZTIzYWFmYmY0Y2NmNWUzM2FlZWMyNzQ0Y2FjZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5ZjI1NmMzNThkNWUwOTM0YWNmYjI3YTUzZjdlM2FjOWYzM2VjMDdmNGE0ZDg0NjU4ZWFlN2Q1OTJjOGM2ZjkifQ"
+          "resource": "repo://nx.json#L148-L162",
+          "version": "repo-lines-v1:sha256:4de32d4db44eab58577362e21efba29c938ec6a42290c2462cfda38fe63ab91b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1NWYzZmJiOGJlZTE0NWJmOGZlNGY2NjRkNDllMzgzNDYxYjQ0NGFjYzliYWY1YmYwMzRlZTZlM2ViZWI3MDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhMDUzNmZlMDAyYmYzNDgwYjRjMTdlMTRkMjczMTcwMjU2N2IwNjJjMmMwYmJiMTMyZDEwYmZmZjFkYmMxNzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmZDM2MmRiMWFkOGNmZThkZWU1MGQxZDhhZTZjZWE3ZmM1ZTIzYWFmYmY0Y2NmNWUzM2FlZWMyNzQ0Y2FjZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxOTVhOTJjNDg4NTIzN2I0ZjI0YjU4ZGZjZDdlNDdiNjY0NjNkNTQyOWE0Y2M2OTgyZmI4OTY2MGE2ZWE4Y2IifQ"
         }
       ]
     },
     {
       "id": "claim_b4ce83f35ceb475fbdcfd5a3d9da2a54",
-      "statement": "Step 1 runs nx release --skip-publish to version packages and write changelogs without committing.",
+      "statement": "Step 1 versions packages with Nx Release (skipping publish) and writes changelogs without committing.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/continuous-deployment.yml#L235-L254",
-          "version": "repo-lines-v1:sha256:08cc1d0ee318d50e1344360f2e5d812e570464ebac89de6c5ea8c61d6cac51e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxM2NmN2RhZTIwOWI2OGZjMDRlYzYyZjhlNDkyYjgwNjY2ZTE3MzE3YzFlYWM2YmQ3MmQ4YWYxNTVmNzNmZGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzNTgyYWNlNWQzODE3ZTExNzMzM2UyZTQ4NTc5NjMwYzRjYjliNmUyNjIxMDQ5NmFmNTI2YzQzM2NiYTg1MDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjliMzljZDQyZjkyNzU0NjMyZDM4NmNhYTM1NWI0ODY3YjcxMjQ2Yjk1NWUxYTE5M2I3OWIyZjA4NjJkYjNhZTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFkYzQ4NjgyZWEwNjIzZWM2ODcyYjZhZGUwNTMwZjk3ODdhMzUyMjdhZDhmNmI4ODNiY2QyZTRiMjkyMzkxYjAifQ"
+          "resource": "repo://.github/workflows/continuous-deployment.yml#L244-L256",
+          "version": "repo-lines-v1:sha256:2ade5cc517a9befb9081b981e1a598ff8e027152b4c3ca4c5c35447e6ece45cb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljNjZhZWI0YTViODAwODEwMjY2Y2I4NmQ5YzcwOGU4NDg2NzNlZDE5OWUzMmVhMTIwMTNlODAwN2NlZjU4ZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjliMzljZDQyZjkyNzU0NjMyZDM4NmNhYTM1NWI0ODY3YjcxMjQ2Yjk1NWUxYTE5M2I3OWIyZjA4NjJkYjNhZTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIwMzc3OGQ4MzNiYzczZjhmNzRlMzBkNzk0ZWU1NDJhMDA1NTI0ODYwYWJiMjFjODI4N2JiMzM2OTc4MDQ5OGMifQ"
         },
         {
-          "resource": "repo://publication/src/modules/version-packages/version-packages.service.ts#L24-L41",
-          "version": "repo-lines-v1:sha256:ac4055ec1fcc35abec3e7742e4250c68dd52ca4e3a6a2fb94bd58498741365cb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU4MjNhZWEwNWZkODk1ODFmY2RiOTRiN2YyY2ZhMjY3YWRmMTU3MGQzNDVlOTIyM2Q0M2M0NDNiYmZlYjdhYTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJlYTliZWRiM2I4ZmFiZGJlODhiNGYyMmY0YmFhYzJmMTI4NzFhMmExOTU1NTNlYmVkNTE3MGQ1ZWY1YWIwOTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzMDdiZTE4OWMzY2Y2NjVlOTA3OTZhYjc2MGUyMTcyMzMzOGEzOTFlNWE5ZDZkNTE1Yjc2YWY1ZGZiMDg0MjAifQ"
+          "resource": "repo://deployment/src/modules/version-packages/version-packages.service.ts#L1-L115",
+          "version": "repo-lines-v1:sha256:7b0b771408956ee6c108a55f41dab80a2dc03d03bf90afd16faa9796cd31dc8f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1ZmI0ODUwN2E0YjljZDZhZTEwZDRkY2VjNTRiYWIyOTVlMjNlMDVlMDhmZjY5OWViMTljY2FjNzQ0ZDEwZTA5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_d73f0e46a5014cad979c602f4efa533c",
-      "statement": "Step 2 runs semantic-release which bumps the root version, updates root CHANGELOG.md, commits everything (including package versions/changelogs from step 1) as one release commit, tags it v<version>, and creates the GitHub release.",
+      "statement": "Step 2 runs semantic-release, which bumps the root version, updates the root CHANGELOG.md, commits everything (including the package versions and changelogs from step 1) as one release commit, tags it v<version>, and creates the GitHub release.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/continuous-deployment.yml#L310-L326",
-          "version": "repo-lines-v1:sha256:bb95a5d0918e1ad324130816aed3b4713019de857190d7908537fdf929bb68d0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1MjBlZTdiN2FmMzQ5NmNmMDMwYTEyMzFiMWVmNTY2ZjQ0ZTNhYzg2MDZlMzlhNDExMjQxNmY5YjU2ZjYzNTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwMDM1MGM1NjQ4NTRhZGMxNmNhZjYxMWE5MGNlOWQ0Nzc1Zjg2N2I2NTVhM2ZhMGQ3N2EzM2I1ZjNjYzM4NzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ2MWUwOTQxMGMzNTM2ODM3ZGMzZTEzYTM3YzY3NWVhMTI1ODhiMTg3N2I0NWI3MGQ3ZThmMWQ5OWRkMmU3MWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJlMWQxZTgzOTI2NmVhMDhkOTVlODBhZjJmODJhNzYwZDNhZGE1YWQ0YzQyZWYzNDA3YjM5MDY1MTUzN2ZkOWIifQ"
+          "resource": "repo://.github/workflows/continuous-deployment.yml#L318-L342",
+          "version": "repo-lines-v1:sha256:63320cab62ac535b0a74cdd8f3f7772991e91ac494400c0143fc67ddf61c89fc:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmZGQzNmZlM2FhZjk3NzMyMjhkNGJkOTEyNjhlYWVkMzg4M2RjOGE2NWZhYTgwYmRhOWM4NzkzYTlmNzUyODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3MGY1ODVhODVmOGIwOGRmZGU4YWI4OGFhYmUzNTQ1ODExODI2ZDgyZWMwNWY4ZmI0OTBhNzAwN2JmMzAxMTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE2Y2U5OGUxM2IyNDUzMjQyYWU0YmFlY2VmMjFlNWZkNTI1NzgyNmJhNmU1Y2M0YjE4N2YwMmZkOGYyNTU0ZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdmNmRhZGY0ZGFlNWNhNGNlMzEzMDA4MTM5MDIwZjdmMzUzYjYxZjFlZmQ1ZDgzMTg0OGM1MWRmMDc5Y2NkNWYifQ"
         },
         {
-          "resource": "repo://configuration/release.config.cjs#L148-L184",
-          "version": "repo-lines-v1:sha256:4af7016007c6e91694702e35d9cd91617df17b0d3c17fbc4bb9c4bbec0fe0736:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViZWQ1N2E3Mjk1NGY3NjNjZDE1NzYxMjU2NzhjZGIwOWIxOTY4YjNmNDhhZjAwNGI5ODI1MTYxNDdhODk4ODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2M2Q1MzVjZTM4MDYzZDZiNGM1MWQ4YzM4NmE3ZjliM2U1ODBhMTRhMTBjMDdiMTk4ZGZhZjE5YzkzYTNiZmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmZDk5MDc5ZjZhMzdiMjMzZTg4MDM4YmY1MzFkYzE4YTE0YTY0Njc3MmU4MDBhNzE4NmM5OTZhMjE5MzJhNDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmYjRmZGRmYzU4OWMxZDU1MDVlZDI1NDgyNWRiNGIxMmU3MWUxN2M1MmIyNWNhMjVlODNhMTQyZDhmOGQ3MzIifQ"
+          "resource": "repo://configuration/repository/release.config.cjs#L40-L115",
+          "version": "repo-lines-v1:sha256:c0dfa16ce1f36618cd4df824723ac3a011218d61ca0b296f758d758addc7dd07:eyJzZWxlY3RlZExpbmVDb3VudCI6NzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5M2FiODE0ZWQ4NjgzMTU4NjQ1NmMyY2M2M2I4MDE1ZTM4NTE1YTM4ODBkODBhMGQ2ODU1OTk3YzZjOGE2MDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMWQxYTYzMzkwMjI5Yzc5ODM0N2U4M2EwNDA1NDQxYzk0MDAwMzUyODRhZDE2OGMxYmY2Y2RmMWQ3MGEzNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZjYjAwMjlhZTlhMzU4ZWE2ZWRiNDU2NDgzODEzY2ExYjkyYTg1MjZmYzFhYTE1YTY2NmRjYzVkNGU0YmUxMjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_3042e970a0f544a49888f5889332b14f",
-      "statement": "Step 3 tags each newly versioned package <project>@<version> on the release commit and pushes tags six at a time due to GitHub's 6-ref push limit, with retries; missing tags are pushed by the next run.",
+      "statement": "Step 3 tags each newly versioned package <project>@<version> on the release commit and pushes the tags six at a time because GitHub rejects pushes over six refs, with retries; missing tags are pushed by the next run.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/continuous-deployment.yml#L328-L342",
-          "version": "repo-lines-v1:sha256:63174e906a7936a80285ec24b7467a87c40ec6dd3d940308a9055ff5e87f5fd0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlN2ViYjY5MmIxZmZiZjFiMGI0MjFmNWY1MGU1N2I1MzUxZTEyYzQwMzdkZjA2MzI3ZjMwN2U1NTA5MDA0YTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4MWY3YzRmOTk0ODBmZTBkOTdmOTQxNGRmYzNkNDQ1Nzc2NjBiOTQzZjI4MTYxZDYwZDIxM2EwOTk3YTNjMDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmMDZjNjMwZmVjYjBjZDIwMDM4Zjc5Y2NlMDM4YTJhZGQ4Y2RhYTE3MDRiZjU0YzdmZWVkNGMyOWQwYzJhZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjczMDRlOTFmN2NiMzM5OGM2Zjc3ZWMwODVlNDMwYTA3NjYxMTQyMmNjYzM5NTlkYTdmZjhkYWQzM2E3ZmEwZDYifQ"
+          "resource": "repo://.github/workflows/continuous-deployment.yml#L338-L356",
+          "version": "repo-lines-v1:sha256:4cb1ec51832f6a76acc41fcd2f2ecf7695c6f0d33fbe9a7ad823120fffc7b0bc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlN2ViYjY5MmIxZmZiZjFiMGI0MjFmNWY1MGU1N2I1MzUxZTEyYzQwMzdkZjA2MzI3ZjMwN2U1NTA5MDA0YTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxYmVkNmQzYjliNmY2ZWQxZjdkN2ZjNDdhM2JmMDBlNWVhNTg0OGQ1NjYyODgzOWE0OGE4MzVlMDVmMDJlYWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVjMjNjYzk0YjY1MTdjZjdiNmNkNjZlOTE5NTBhMTdlMDJmOWM1MmVmODI0ZjVjYWJiOTBkOGM4M2E0MDY3NjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM5ZjI2NzQyMWY2ZWE0NDMwOGM1YjQzM2Y2NWNkMDc2NTA2ZDc4NDIwOWE0NGE5NzViMGE4MjU2NDQzMmNiNzEifQ"
         },
         {
-          "resource": "repo://publication/src/modules/tag-packages/tag-packages.service.ts#L168-L189",
-          "version": "repo-lines-v1:sha256:7e1c9518c369b9f805651d7249591de459c9d85e425519c8672e623227a007c9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyNzcyYjBlOGJkMDY3MmZiYjQwZDkxMjBhNzBiOGY3ZmMwYTRiYmJlMDE0ZDk0NTJlNDkxZjc0ZWViNjIwZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmYzFkOWFjOWRkN2MxMWNkMDhlZDhmMWMwNGVjY2Y4ZmU5MWE5YzliMmQxZWNlNmJlMjJlNjRhNzgyYjViZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA2ZDAxNTQzMzlmZjJmMDFhNzAxMTViMGZmZTRiN2VjZjgyYWRmZmI0YjBjYzJhOWZkOGQxOTFmZTdjYTUxYzUifQ"
-        },
-        {
-          "resource": "repo://publication/src/modules/tag-packages/tag-packages.service.ts#L28-L45",
-          "version": "repo-lines-v1:sha256:470b111fe7a37548b564150b619584083e411d917005b5ce3fc7b2e792de5e28:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4YjFjNGFhNmM5MGJlNmFlNzE5MWE2OTVjMDJhNjcxNjg1NDBiZTllYzY4MWZlNWFkMmYxZGMzOWNjNTU1Y2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIxZGI2YTJjYWVhM2VmYTU4N2FiNGI0OGE3NjAwNzg4ZGEwNWQwODdiOTAxOTczNWViNjQyZjg2NmZlZDE2ZmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2MDJkZjlhYzg3YTg3YmNlMzUzMzFlZGJlZjMzZGRlZGIxOTk0NTlkNTkwMmU5OTY1ODM1ZWRkZDhmMTUwYzUifQ"
+          "resource": "repo://deployment/src/modules/tag-packages/tag-packages.service.ts#L1-L285",
+          "version": "repo-lines-v1:sha256:0df17a6a30ba3ae427d431ffb3721b379f837437f38e2a97678993dfb9d96895:eyJzZWxlY3RlZExpbmVDb3VudCI6Mjg1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1ZmI0ODUwN2E0YjljZDZhZTEwZDRkY2VjNTRiYWIyOTVlMjNlMDVlMDhmZjY5OWViMTljY2FjNzQ0ZDEwZTA5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_fd45435693a745298cbe61d7d23137d7",
-      "statement": "Step 4 publishes packages to npm using pnpm -r publish --provenance because pnpm honors provenance only via the --provenance flag which Nx cannot pass.",
+      "statement": "Step 4 publishes packages to npm with pnpm and the --provenance flag, because Nx cannot pass the provenance flag pnpm honors; a rehearsal run omits provenance.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/continuous-deployment.yml#L344-L361",
-          "version": "repo-lines-v1:sha256:35a4c92f9af6915b1651af405496c24a5b692941d29f0d835803250317063b58:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2MjY4MDVlNTQ2MGFlZDY4ZTFmMzU4OTM3ODUzZTIxZTg3OGE2MjJlZTlkYjg3YzE0NWNiZTYyZTI0MzIzYTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwOGI1ZjE1YmZlZWY2N2Y2NjMzNDUxODgzZDFmNjk5MmI0ZmEzZGI1YWQ4MjEwYjk5ZmNlNzc5YmIwNDgwMzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1N2Q1NGZlOTQ0NmM2ZDVmMDRmNDI5NzFkNGRjMDdjNDYzN2VhZjYxNjUyZjY5OTYzNDI1MWIxNDViZTEzNWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNjYjNmOGQ5ZDRjNTM4OGFiNjNiN2ZiMjY0MDA4N2MzNjc4NGFjN2I2MWZlN2Q3NjZkNzQ4NTQ4YWM3ZTNmYjUifQ"
+          "resource": "repo://.github/workflows/continuous-deployment.yml#L354-L372",
+          "version": "repo-lines-v1:sha256:9c70498dc123fffe8a088fd04a09cfa48f902f28c6e221609b9424af86a6cf99:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViOGEwODA3NmQ0ZDM0YThhNzFiMTBiYWRjOGYzZGU0MmFmZmEzNDIzZjVhZGY5OTUyMjRkMTM1OGI1MjhkY2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNmZTBkMjkxOWQ4MzFhYWFkOWU4Y2E4Yzc3MmM4YWVmNTMzYjM3ZmViYTE0ZTM2MDZlMGQ1YTJjYzkyNWVkNWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAxZGY0NmI5OGJlOWI2MTA1NTIzYmM3ZjNmYjg5NGZkNjU0NzdjMzYyMGNmZWM2YjM1OTc1OGU2MGY5MThkNDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3ZDU4OTE5ZTZkMTY1NmU0NThhMDFmZDZkNTBlNzg2OGU3YTNlNzg3OTY5M2U4ODEyY2I5NjlkZjgxM2E0NDQifQ"
         },
         {
-          "resource": "repo://publication/src/modules/publish-packages/publish-packages.service.ts#L189-L199",
-          "version": "repo-lines-v1:sha256:e7d38ab5bd1e2dd7084880ce3f7598203f1c3fe9b0b86b2842690cdb2c9adc17:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExOWIxMzdlMjFiODA1OGFhNzQ2Y2ZiOTgzYTc1NTBlMmQzNTBhMzhjOWZjYTczODk4YWEwNjJlMWE5YzY5OGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc2M2Y2YTMzZWI4YmYwMzk2NTQ5Y2RkZTg3MWM4MGU5MWFiZGQ0MDA3YmMzNDAxNzQ1OGM0Y2ZkZTlmNjM3NGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRmNzU1MDZiYTEyYWU2MmZmMDdkZTBhNGYwNzQ2NmU2OWJkOGJjNjBmYzRkMjM1MDk3NTA2ZjVkMjRmYzQ4MmYifQ"
+          "resource": "repo://deployment/src/modules/publish-packages/publish-packages.service.ts#L150-L210",
+          "version": "repo-lines-v1:sha256:92dd962c297489170d5637280bdc3c6e4c581c3f4c5d0c9bab7b5672f85f642d:eyJzZWxlY3RlZExpbmVDb3VudCI6NjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjMzVkOGEyMDc4MTk3MzQ0MWQyZjEwYTIwMGJlMzZhMzcwMTBlZjEzNjY0ZTkwZDczNGJmOWM5MzVhY2FlNDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0MTYxM2IxYmQ2MDM0M2JjZjUyNWFmN2VhYTRjN2RjMjU0ODQzMDViZjc4NjJmMDc1Mzk0MDg4ZTc2YmZlNjkifQ"
         }
       ]
     },
     {
       "id": "claim_648a7125ef8e497fa88b5d35b593f325",
-      "statement": "Step 5 mirrors each published package to GitHub Packages under the owner's scope (e.g., @codometer/cli → @organizzolini/codometer-cli); npm remains the canonical install registry.",
+      "statement": "The publish step also mirrors each published package to GitHub Packages under the owner's scope (for example @codometer/cli becomes @organizzolini/codometer-cli); npm remains the canonical install registry.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/continuous-deployment.yml#L344-L350",
-          "version": "repo-lines-v1:sha256:8300bc0613e2299f0521d1c7193dd133f1b605a278e5c689907e71824b1ca34b:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzYyNjgwNWU1NDYwYWVkNjhlMWYzNTg5Mzc4NTNlMjFlODc4YTYyMmVlOWRiODdjMTQ1Y2JlNjJlMjQzMjNhMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTFjZWNmY2ZiYTYwNTFiYzRjZWNmNTRkNTk3NTllMDlkMGM2OWNmZjQwNGU3ZDE0ZjA3NjYzODE3MmUxOTkxMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjU3ZDU0ZmU5NDQ2YzZkNWYwNGY0Mjk3MWQ0ZGMwN2M0NjM3ZWFmNjE2NTJmNjk5NjM0MjUxYjE0NWJlMTM1ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTdmYzM0YzQ5NWU3OTg1MWZiMzk2MGJhMWY0MjNmNmU0ZTllMGU4Mjg1ZDdjYjdlNGExZmQ3Yjk2ZmU5MWM0MCJ9"
+          "resource": "repo://.github/workflows/continuous-deployment.yml#L354-L372",
+          "version": "repo-lines-v1:sha256:9c70498dc123fffe8a088fd04a09cfa48f902f28c6e221609b9424af86a6cf99:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViOGEwODA3NmQ0ZDM0YThhNzFiMTBiYWRjOGYzZGU0MmFmZmEzNDIzZjVhZGY5OTUyMjRkMTM1OGI1MjhkY2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNmZTBkMjkxOWQ4MzFhYWFkOWU4Y2E4Yzc3MmM4YWVmNTMzYjM3ZmViYTE0ZTM2MDZlMGQ1YTJjYzkyNWVkNWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAxZGY0NmI5OGJlOWI2MTA1NTIzYmM3ZjNmYjg5NGZkNjU0NzdjMzYyMGNmZWM2YjM1OTc1OGU2MGY5MThkNDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3ZDU4OTE5ZTZkMTY1NmU0NThhMDFmZDZkNTBlNzg2OGU3YTNlNzg3OTY5M2U4ODEyY2I5NjlkZjgxM2E0NDQifQ"
         },
         {
-          "resource": "repo://publication/src/modules/publish-packages/publish-packages.service.ts#L162-L170",
-          "version": "repo-lines-v1:sha256:ca60fd9f9800dab8242e841fdccc949578b0572970714fbb6f1b7a09b5c48932:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGYyYTJmOTk2ZjA4ZTY4MGJkMjkyMTM1YTZmYTQ5NzhiZGEyNmU2MDJkODRmMzNjYjFkNTk0Nzc1ZDQzMDRiNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmE2MmFkNjQ0NzhlMjM5ZWVkNDBjMzFiMjVmN2FhNmU1ODZkNWFiZjE4NmRiMzE4NDJiODVlMTYxNjgyZWNjZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTNiYTJiMjRkYjJhMTUyMjA1YTY3MDY2ZmM0NzQ2YmQ4ODdmYTUwNzk3OGZjN2Q0MzFiNTg2MTcyYWE0YzU5OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzc1ZGNhMmFlOGNmMGFlYTIxZmZhYzEyNjZkZTZkMjg0ODUyYTEzMTYzYTNlNDhjNDBkZDU4NjMzMGEyOWEyYyJ9"
+          "resource": "repo://deployment/src/modules/publish-packages/publish-packages.service.ts#L150-L180",
+          "version": "repo-lines-v1:sha256:e08f598a0c5e45977b5b64e99e675e5bc788c3433f809e20de9d78c91594c18b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlYTRhNThhNTIxNDQ4NGIxNzI0MDcyNGE3MDU3NzU3ZmJiN2E4YzdjY2QyOTBlZjRmODE5M2ViZTA0ZjFlMzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjMzVkOGEyMDc4MTk3MzQ0MWQyZjEwYTIwMGJlMzZhMzcwMTBlZjEzNjY0ZTkwZDczNGJmOWM5MzVhY2FlNDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzZmYwZjBkZTNmN2Q5YWNlNDU2NDZjODlmZTBhNjFmMTBlNjA3ZTFjMDBmNjM1NjE1Yjc3NDc3M2M5ODg1NTYifQ"
         }
       ]
     },
@@ -133,12 +129,12 @@
       "statement": "Step 6 creates storage records on the organization's Linked artifacts page for each npm version and adds GitHub build-provenance attestations via actions/attest for versions published in the current run.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/continuous-deployment.yml#L363-L393",
-          "version": "repo-lines-v1:sha256:5844ecc19f15ccae214cfe55ff23d277afe2bad7a7a05428221022d964cdcb18:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhOGNjODYwNjNjNzMyNjQ4N2MzYzJkZDZlZDQ3MWFhYTg3YzczZjUwNDBiMWJiOWVmZWU1OGM0ODY5ZGIzODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2ODQ0Zjk1ODIxZDEwZTlmZDVjOGEzZjYyYzY5NzgyZTQzMTkwYjc1OWZkMGZiZmZlODgxZGQ0MGIxN2NhZTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmMWU3MDY1YTExODgzNGY3YThkNTIwNDZiMjFhYmNkZDM5MGYyODNiMmYzN2YzMjExOTUwODY4NzA0MWE2OGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA0OWNiNjEzNDk5MjJiOTdjMGVkMjBjNTliZmZkNzc1MWNjNTUxYmQ5MzU4ZDMzOTQyMTY0YWI0NmIzNTgzZDUifQ"
+          "resource": "repo://.github/workflows/continuous-deployment.yml#L372-L396",
+          "version": "repo-lines-v1:sha256:4009048cf556ffbad226ee5e3b5856b02d789345efe223dbeffbf5cc6b721edf:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNmZTBkMjkxOWQ4MzFhYWFkOWU4Y2E4Yzc3MmM4YWVmNTMzYjM3ZmViYTE0ZTM2MDZlMGQ1YTJjYzkyNWVkNWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxNTgwY2ZiMWJlNWUzOGZhMzU0MGY3ZDY4NTVjZDY4MDRhZDBkYThlZmU1MTA0NzNmNTRhMGY0NzU0NTMyMDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM1MjE1ZjlhNzdhYmVlMDY5NThkZmJhZWY4ZDc1ODFhMDQwODNiNDNiOGE5NzhlODNkYTg0YzYwNjA3YTk2MjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzMzNlMTQxN2RlZDIxNTlmZjg4ZmI5MzYxMWYyMDczN2I4Yzc4ZmVkZmE5MGY5MTNjYjliNzgwZGFlZDVmOGEifQ"
         },
         {
-          "resource": "repo://publication/src/modules/link-packages/link-packages.service.ts#L31-L40",
-          "version": "repo-lines-v1:sha256:988de03c9b4a8c42e6e7dad3726d7310edf9f54f63b2995a12fc07da5dbb0079:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiYzA4ZTNjZmQ5NTAwYjExOWViNWQ3MmQ0MWZjNTdlMGFhMTIwMmM1ZTcyM2MyNWJkNDUyZjExOWY5MjgxMTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjljYzY0NTBhNThjMzcwYWNiNTZjZTEzNTY3NmJmNjVhMTA3ZWY3NzliMWI3NzI3MTgwOGFlNDM0MjVkZDQ3NmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ1OTU3MjFhNGY2NGI4YTQwNmUxMWE2Y2QzYmVkMDQzMGRhODg4YjRjNWUyZmE0MTM1MTIyY2Q2ZjBlYjA3MTUifQ"
+          "resource": "repo://deployment/src/modules/link-packages/link-packages.service.ts#L1-L282",
+          "version": "repo-lines-v1:sha256:9023a1e2c9bc3e32d7dd3d36d6605f7ac16f43d275c57567d941e5bfe03efa91:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwMTNlZTkyNjc2N2E0YTY0MDE3YWRlMzRkOTA4YzMzOTdmNTg4OWIwYmI1YzgxYTExOTlkYjk0MTJkODRlYmI3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
@@ -158,37 +154,37 @@
     },
     {
       "id": "claim_76ae2866d1e74cbfb36fd99e7dd4788b",
-      "statement": "When main moves during a release run, the run steps aside by setting RELEASE_SUPERSEDED; the newer commit's run releases everything.",
+      "statement": "When main moves during a release run, the run steps aside (later steps skip, RELEASE_SUPERSEDED) and the newer commit's run releases everything.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/continuous-deployment.yml#L119-L132",
-          "version": "repo-lines-v1:sha256:99e3a2f9606664d1d24df6f865c5851c8062d232d3425b452e52db66d9c8307a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhODYxZWIzNTFlY2Y1MWFmY2RjNmZlMTQ5OTYwYWFjYTFjOTI4ODg2ZDI5ZDlkMjhjN2UzYTIyZmFhZDc2ZWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4ZjIxODFiOWIzNDA0OTRjNzljYzBiNmNiNTUxYjJiMjY0NDFiYWZlMTRlYzc3ZDhjNzc3MDIyMWE2MWE0ZmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVkYWFlYjdkMjA5ZjI0YzJjMTVjMTcyZjhmMWE2NTE4NTRlM2NiNWFkYmYyODQ1MzFmZGZjM2RjOWQ3MGJmMTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVhZTI3ZTRjNTc3YWZlYjkwOGNhZTBmZTIzNjBlMDFkMmNjZjM1YmQ5MGJmMDJkMDc3MGU2M2ZiMTY1NzQ5YjUifQ"
+          "resource": "repo://.github/workflows/continuous-deployment.yml#L100-L125",
+          "version": "repo-lines-v1:sha256:b86bcb7153a11e47805044107c4b4e73357e15a1dfc738091cb353f488b80c93:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxYjA3MTFmNmVjNTA4ZDhkNmY3ODhlMDE5MjdiNjlkYWVmMTNhYzE1Njg5MDhiMTJlYjA4YWRmNWIzMGU0YjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyMDQ5MWJkZmMwMWFmZjE1YjMzYmI2YTEyMGM5ZDQ0MTVkNmU3YTYzN2JhY2U5NmE3MmVlZGVmZTY3NmMyYjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkZDFlNTQ2MmU1NDcwZjkyYTQ0OGEzNGNmMmE3Y2Y4Y2FiNmNhNjJkZTUxZGYyMDVhOWIwZWEzOTdhZjAwNTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmZjUzY2IwMmQ1YjVkODRhMTk4OGQ2YjZiMWRjNmJkMDJkZDBiODU5ODc2NDM0Zjg4NjgxZWMxYjk2MjFlNWEifQ"
         },
         {
-          "resource": "repo://.github/workflows/continuous-deployment.yml#L236-L245",
-          "version": "repo-lines-v1:sha256:fbbf8217ec038bf90777482c72c26b1eb922c9c65f2829b0d646caf608639393:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwYzVjNmNhZDAzNTY5ZWU0N2VmNjZiYjA1ODY4ZTgwNjMyNDE5ZTI1NmRjM2Y0MzgyM2QyZmZjNTg0N2VmZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1MzZhMzI1N2QwNWIyZjQ1MzYwYTIxZjUyNThhZDVmNWQ4ZDg4ZTJjZDc1NjljY2RjNDA2ZWJiNmVmNjVkODQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBhNTAwNzBlMzZmYjQxOGQ2MzQ4MTUyMjQ4YWNhNGU5YzZhNTVlNjE4YzNlYWU0MmQ5NjMxZjU3N2M5ZDA2YTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQyMmIwMTMwM2JkMzgxMDRlNDhkY2IyYjRkOGNlY2VjYzU3NTE0NWRiMGI2NzY1Y2MyZWQyZGFkM2U2Mzk2MTAifQ"
+          "resource": "repo://.github/workflows/continuous-deployment.yml#L240-L260",
+          "version": "repo-lines-v1:sha256:018b03ba05e81851ddeb765d81835d9b4df3454669a5aba28563cee9b268d633:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2MWZlMGU5NDcxZmZhNzYwNDJhNjdiZGMwMGY2YmQ1ZmU4YTkxNDViNTY0Mjk1ZDIyYzFiNTA2NzdkYTg4MGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5OTVhZDZjMzAwODFhNGE0ZWU0ZDU4ZTVlYjM4MTk5ZWY4YjBjYmQyN2E3YjM0MzM4ZjE1MGNiN2FmZGI5NDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ4MzY3YjllOTcxYmZjY2QwODhkZmQzYWFiYTJiMzdjNjNhNjRiOGQwZTYwNjIzNzI4MDQzNjU2YzAzMDRhZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVkNDA3NDMwNTI0YWEwOTNiMGU1YjMwZTFmMmE3ZWE4NWM1MjA3ZTJkYTFiMGE5ZTNkYWQxZWJmNDg4ODBlNTgifQ"
         },
         {
-          "resource": "repo://publication/src/modules/version-packages/version-packages.service.ts#L105-L126",
-          "version": "repo-lines-v1:sha256:611be111c45866090bc3bcf92fe0d1f938d1a3ed83cb4d4100c42dc50ab66f39:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzNDBiNzM0MmU3Y2MwNjEzN2RlYjNkN2M2ZDJmZDUwZDg0ZjlkM2YyNzU1YWEwMWVlOTMxZGIyNzQyOWJhNjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE5MzZmZjcxZTM0NWZjN2M4MWUyY2NhZWUwMDMyMjk1N2FiNWViYWRlOWI1N2QxODNhMmNhYzkxOThhMDY5NDQifQ"
+          "resource": "repo://deployment/src/modules/version-packages/version-packages.service.ts#L1-L115",
+          "version": "repo-lines-v1:sha256:7b0b771408956ee6c108a55f41dab80a2dc03d03bf90afd16faa9796cd31dc8f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1ZmI0ODUwN2E0YjljZDZhZTEwZDRkY2VjNTRiYWIyOTVlMjNlMDVlMDhmZjY5OWViMTljY2FjNzQ0ZDEwZTA5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_f04461b61849447393cf49994b21fd40",
-      "statement": "The PR title determines the semantic-release bump because the repository squash-merges using the PR title; the title's type must be at least as release-significant as the most significant commit on the branch, and its scope list must overlap with every commit's scopes.",
+      "statement": "The PR title determines the semantic-release bump because the repository squash-merges using the PR title; the title's type must be at least as release-significant as the most significant commit on the branch, and its scope list must overlap with the commits' scopes.",
       "evidence": [
         {
-          "resource": "repo://.github/CONTRIBUTING.md#L480-L482",
-          "version": "repo-lines-v1:sha256:49916ae3f0159139fdf2ca90bb15793ef7bdb36a78c61edec6cd40eb060fd76f:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDBkMDNhZmQwOGQ2YWZiMDc0MDY2NzMzMTcwYzUzM2FlNTVkMjJkNDhmZGNhOGQyNjRhYmJjMGU1MzBhNmEzYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjFmOTUxYmQ2MWZkMjMzOTM0ZjlhMTk0OWEwNDM3ZmY1YmRjNmQxMDdmNzVhOWFmOWYwNzA3M2M2MDBkNDExNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjc1MTExOWFjZTdlYTA5NWQ2Mjc4NWY5YzkxODQ1ZGUwY2NkNDQ4NGYwMzgzZjVmZmM4MzliMmM1YjhiYjk5YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODUyNzUxNzM4ODg1YTY0YTM4NzRhNDA4ZDRjNGE2MTJmY2U1MjEwZWZiNzVkMWVmZjc5MTgyNzZmN2U0ZWVlOCJ9"
+          "resource": "repo://.github/CONTRIBUTING.md#L487-L500",
+          "version": "repo-lines-v1:sha256:124f557bbdd54321a8890ce2732afc6541d8cf7f90ac7bfca006ee95cd144732:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExZjQ4YjNiZWQ0ODhjNGI2YjM0MDc4ZmUzYzNkMDVkOTdmYWI0MDc4ODdiMDIzZTU2NzVhNTE3MTQ3NDVjYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1ZGU5NDdmYmM5MDgzODk2N2VmYmNhNjgzYzY2ZTAzNDI1ZTdkNmJmM2YzZjQ5MTExMjRlZDE2NmZhYzczMjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwNjIzYmNmMDIzZWZhMDFjNjU1NzMzMmE2Nzc3MGE3MzM1OWYwMDNjMjcwYjRlMWRkNDZlNWQ0NjM5ODQ2YzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdjMDFjNGUxYWE2YjViODgzYmE3NjdiMDE2YzkxMmZhYWI5ZTJjZWIyYmQ4YTFmMmUzODlhODk1YzY0NzJiZDAifQ"
         },
         {
-          "resource": "repo://AGENTS.md#L251-L251",
-          "version": "repo-lines-v1:sha256:a8d327ea7f5110707bfbd95dafbbfe902d9d01ed327dfd5a480adc065d471403:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYThkMzI3ZWE3ZjUxMTA3MDdiZmJkOTVkYWZiYmZlOTAyZDlkMDFlZDMyN2RmZDVhNDgwYWRjMDY1ZDQ3MTQwMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYThkMzI3ZWE3ZjUxMTA3MDdiZmJkOTVkYWZiYmZlOTAyZDlkMDFlZDMyN2RmZDVhNDgwYWRjMDY1ZDQ3MTQwMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDY1YzU0YTU3N2ZjZDM4ZDZmNGY0Yzk0ZjQwMGRjOWJkNmU4MzA1MDcwNmU0OTQ3NDAyNDE0NWY0ODM2NWJiNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmYzYzM0NmE5NGRiNDcwNjI2ZjA1ODgwYzIwZTA5YTMwNTBkYTNhYWJjMTgxM2JmMzUwMTdmMjI5MmIzZTA1MCJ9"
+          "resource": "repo://AGENTS.md#L283-L308",
+          "version": "repo-lines-v1:sha256:dd5c831bb54cb48f99b4db06caafb538e345e37cd5345de97a036078e4d02946:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhNGFlNWEzOTBkZTgxM2EyOGFiN2Y1MzY1ZDcyNzM4ZTU3NTdiYWMzNGIyNzRiZDZmZDZkZDg0NjExNTEwZTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUyMDczODRiMzdmMzFmM2Q5NmYyYmI1NWNjMjllZmIxZjE0MjhiYTY4M2Y4OTIxNzI5MTE4YjBmMzg2ODZiMTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRiNWU5OTkxMjlmZmM0MzI0N2Y3Nzg3MTFiOWE2ZDFkZjIxMmUzNmI2ZDU0NDA3YTJmMDg0NTM0YzVjZjBkYWEifQ"
         },
         {
-          "resource": "repo://validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts#L60-L73",
-          "version": "repo-lines-v1:sha256:f980a62f89d7d0b3cc26222a367e1907e39662aa05867a19e996260d8d3c586d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU4ODA3NDg1NTQxZWM1YzRhZjQ5NWYzYjg0YmQ2M2EwYjg1ZGZjYTdlMTZiODNmMWQ1YjcwM2E4OTRmZWQxM2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkYjNlN2NkMGMzYTYyMzA0NzY2ODE2MWQxMDRlOTlkODYyMDljYTNlNzc1NGEyNWIxMTlhNDkwNzg3ODA0MjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVhOTI5M2ZkODA1NGI2ZTQ3MjQ4MzczZjM5ZjRkZDc3ODAwMTA1ZWI3NTgzNDg2ODcyNTQyODVjZDEyODJiNzgifQ"
+          "resource": "repo://compliance/src/modules/pull-request/pull-request-validation.service.ts",
+          "version": "repo-file-v1:sha256:296cbd11c75f05ebc3be27374c68cb72fda475f24db9f8122379d182592f737a"
         }
       ]
     },
@@ -197,12 +193,12 @@
       "statement": "A new publishable package requires \"version\": \"0.0.0\" in its package.json because Nx treats the manifest version as the already-released version and bumps from it using the package's whole commit history; starting at 0.0.0 makes the first release 0.0.1 for patch-level history or 0.1.0 for breaking changes.",
       "evidence": [
         {
-          "resource": "repo://documentation/development/release-process.md#L16-L16",
-          "version": "repo-lines-v1:sha256:8ea602a6b56a7e2efb16ceecd1a895107b1578b374d65708af6aa8ae336075e4:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGVhNjAyYTZiNTZhN2UyZWZiMTZjZWVjZDFhODk1MTA3YjE1NzhiMzc0ZDY1NzA4YWY2YWE4YWUzMzYwNzVlNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGVhNjAyYTZiNTZhN2UyZWZiMTZjZWVjZDFhODk1MTA3YjE1NzhiMzc0ZDY1NzA4YWY2YWE4YWUzMzYwNzVlNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmM0NTAyZGE4OGM2MWIxZTY5ZTA4MjExODdkMmFiNzkxOGExNmJkNzRhODQ0NzRhNzJhOTVhN2RlOWFlMWIyNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+          "resource": "repo://deployment/src/modules/tag-packages/tag-packages.constants.ts#L1-L37",
+          "version": "repo-lines-v1:sha256:95970669de59149ade6fb24615cc59a83504e3957a09a27c83c664607bdb557b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3MGZmMzZkMjAwMTI2YjhjZTZmYzYwYmI2NzZhMWY3ZGJiNWQ3NDUyMTA2YWE4N2YzYjVmOTljMzE4NzBhMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlYmIwMGVmZjBjN2JlYjcxMTZiYzcyYjg2NzRmMGRiOWMzMmQzMGVhODJhZGY2YTEzYmNiZjMxMmM5MWQ3MWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://publication/src/modules/tag-packages/tag-packages.constants.ts#L23-L24",
-          "version": "repo-lines-v1:sha256:99169fe4d275cda37c7e9c5ab72f4c8b7d3fac391e434979694bec04f2368c82:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGQwZjY0MDYzMzg4NDVhYWYxNDg2MDY5NzUxMTU2YWM2M2MzYmY2NjJhNWM3NzljYzkyNTVmZGI1NjRjMzM5MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2M0MDYxNTI2MDk3MjdlODg4OTZmZWM2NTFiNDc1MDVkOTBiZDAwMjJhMzNiNTNhMWMwNTFkMTM0MTM4ZTJhYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODc0MTU2ZjMyYmFmNWU0ZDI4YjAwZThmNGYxYjBiMTY2YWI3ZTQyZTVhNDI2Y2Y3YTIxMzIzM2U0Yjk2NTQ2NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2YzZjIyNWMyODJiYjk4Zjg1ZmI3OTQwZTdhMzYxZmQzYmJmNGU1NmQ4ZjM3YjU5NzhkOTg3MmYxMDI1OTY3YyJ9"
+          "resource": "repo://documentation/development/release-process.md#L1-L16",
+          "version": "repo-lines-v1:sha256:5437ee9f7905c0789eacde00bbb982b42bff8c2a750613156f694579f54c33f2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhNjk4NzA3ZDQwM2U4ZmQ0MTJhNjk1YzMyNDY0MWFjYjc4ZWQ1NTc3ZjM5MzhiNDQ1OTdmMWMzY2Q0YzI5YTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlYTYwMmE2YjU2YTdlMmVmYjE2Y2VlY2QxYTg5NTEwN2IxNTc4YjM3NGQ2NTcwOGFmNmFhOGFlMzM2MDc1ZTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -211,22 +207,22 @@
       "statement": "The dual versioning scheme separates concerns: Nx Release owns per-package versions (tagged <project>@<version>) with independent versioning and cascading dependents via updateDependents: auto, while semantic-release owns the single root version (tagged v<version>) and creates the only GitHub releases.",
       "evidence": [
         {
-          "resource": "repo://configuration/release.config.cjs#L8-L10",
-          "version": "repo-lines-v1:sha256:fbc1c8ea35a0f4d16c0f3d399dd4eabd2f5771d1f7787da799e31ab3766731f7:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2YyMTM4ZTgyOTRjNTI2OTY3YzBkZDVjN2QxY2I2MzY4YjgzNTQxMTlkOTExOWUzODgyM2EwMmYzZDRhMTlhYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2QxMTkwNDllOGUxZTJlMTdjYTU0MDY3ZTQzZmY3NWQ3OTFiOGE3NTI0MTAyODNmOWMyZDE2ZjIwMDQyY2YwMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjA1ZTY4YTkwODE5NGY3MjY0MjI0OWI0MjIxNDg1MTRkNDVmMTFkZjg2NTY5MGVhMjg5ZjE2NWUyYWRlNDAwNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2VlODQzMDdhNzAzMmQzZjhiZDI1OWJhNmMxYjQ2NmIzYzljMzljMTk5YTA2OTI5ZjdkMThhOTNkNTRjYjBlMCJ9"
+          "resource": "repo://configuration/repository/release.config.cjs#L1-L40",
+          "version": "repo-lines-v1:sha256:9c9367a16b560e45e92fc11b9189f3f351ba00a79a5cfe56915ab369f6982033:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5M2FiODE0ZWQ4NjgzMTU4NjQ1NmMyY2M2M2I4MDE1ZTM4NTE1YTM4ODBkODBhMGQ2ODU1OTk3YzZjOGE2MDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkMTA4NjE0ZmY2NzU1OTQ4OWQzZTAyZGIxZDZjYmRlNWUxODhhYmJlYjg0MGI2ZmVjNjJiOGVlMDcwNjM2MTgifQ"
         },
         {
-          "resource": "repo://documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md#L24-L26",
-          "version": "repo-lines-v1:sha256:624b860399c475c4d948aff554f6780636b8a48b1dd9a7df784ff41fd08b5b01:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmRhOWJmYjI0OTFhMTBiOTIzOTFjYWVmZWU2ZDUwMGQyMGU4MmU5NWYxOGFiNTgxMjMwNjlmMTM4MWE3NzEwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjhjN2ZkYTE2NTE2Yjk3YzA5OWZkM2Y0ZjBlNjM1MDVmYmNmYjY1NWZlYWZlMjEyMDc3NTAxMmRmZTRiYzgyNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjVjZWQ3MzcwZTBkZjhiZWNkMTM1MzIxOTJiY2QxMzZlODdkMGY3ZWM5ZDkzODA2MGI3NDI1NTZhYjYzNjU3ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2ZiOGZhYjZiZDg5NDM0NjdjNGQ4ZjQxMjhkNzg4YTczMzMzMjdjYjFmYjE4YjhlZGM4MTNjNmUwNWUwNzY3NiJ9"
+          "resource": "repo://documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md",
+          "version": "repo-file-v1:sha256:33646e424c9af5688d2e860be69782f7ac712942a3ee595280d14b441b8220ba"
         },
         {
-          "resource": "repo://nx.json#L167-L176",
-          "version": "repo-lines-v1:sha256:c0377181d2326e891c3b9316b024fa012606154252c5d63157ae8281621654dc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0YWQyZjNkNmM5ZWQ4ZWU3OGQ4MTEzOGY2YjA4MmQ1MmJjOWY0OWMzYjQwYzdiYzM5Yzk5MmNlYzE1Nzg2MTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYTFhMDY4NThjZTczMTUzYTU2NjNhZWNhZGNiZjg0MTA5MzE2YWE3ZmUyNGY0YTllNjE0NDBmYTM1MjBhNDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwZTc2MjBiNzBkMWE5MTlhNzZlMGM3OTc1NmNkMTNjYzRiZDliM2VkY2FhNjQ1N2E4NThkOWFlZDQ0NTM5OWIifQ"
+          "resource": "repo://nx.json#L111-L180",
+          "version": "repo-lines-v1:sha256:4c1e8b9a743562273cccff6ca241c29e6f403592816e7e93b61fa180e3576ba9:eyJzZWxlY3RlZExpbmVDb3VudCI6NzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmMmEyZjQzNGE3YzRlYmQ5MzQxZjE1YzVjM2Y3OTEyMmU3ZjllMjcxMzQ5OWYwZjg0N2VlOWRlZTk2MjIxNzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3MjA1Yzc4NDQ5MWRlZjA4YmI2MmI5NTdjNzlhY2JmZjI1NjJhYjdiNDg3ZWNlZDQ3MjNlOTMzMGVmMGM3MjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3Y2Q2YjM3N2I3OTI2OThjZmRmYjdmMTE0YWVkZjJkNjAyZjM0NDhhNzk3MTdjZGY5NzM3ODQwYmEwMTI3MDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVjNzFhNzY2ZGFkNTdkZDkwMDM4YmJhMjQ2Y2RjYjNiYTRiZWU0MzRmYWJlYzY2NGQ3Y2UyNzYwNzI0ZjAwNTAifQ"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.0",
-    "at": "2026-10-26T01:23:39.729Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-22T00:18:20.862Z"
   }
 }

@@ -36,7 +36,7 @@ Effort is the work a pull request carries, measured in planned commits and modul
 
 ### Choosing priority
 
-Priority is how soon the work matters. A value the user gave wins; otherwise pick from this table, and when two rows fit, take the lower one.
+Priority is how soon the work matters. Decide it yourself and do not ask the user: a value they gave wins; otherwise pick from this table, and when two rows fit, take the lower one.
 
 | Priority | Shape                                                                         |
 | -------- | ----------------------------------------------------------------------------- |
@@ -57,7 +57,7 @@ Priority is how soon the work matters. A value the user gave wins; otherwise pic
 
 ## Set a Field
 
-Look the ids up by name each time; they are not stable enough to copy into a script. `gh project item-edit` needs the project id, the item id, the field id, and the option id.
+This is the one GitHub write with no REST equivalent: project boards are GraphQL only. Where GraphQL is blocked, as in a Claude Code session, skip the board write and say so in the report. Priority and Effort are issue fields and go through REST, below. Look the ids up by name each time; they are not stable enough to copy into a script. `gh project item-edit` needs the project id, the item id, the field id, and the option id.
 
 ```bash
 # set_field <issue-number> <Field> <Option>   e.g. set_field 2187 Status "In Progress"

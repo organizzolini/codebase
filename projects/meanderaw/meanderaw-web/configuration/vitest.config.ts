@@ -31,6 +31,12 @@ export default mergeConfig(
       environment: "jsdom",
       // Runs after the shared setup the base config lists.
       setupFiles: ["./testing/setup.ts"],
+      /**
+       * Fifteen seconds per test, where Vitest's default is five: the gallery
+       * filter tests drive jsdom menus, and a CI runner under load has timed
+       * three of them out at five seconds.
+       */
+      testTimeout: 15_000,
     },
   }),
 );
