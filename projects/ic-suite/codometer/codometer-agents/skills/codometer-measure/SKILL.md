@@ -29,10 +29,8 @@ runner would resolve. If a workspace runs it per project, that iteration is the
 runner's job, not codometer's. `--inputs [globs...]` narrows a single run to
 exactly the globs given, running only `language` analysis over them, with no
 configured input — not even the built-in `codebase` one — active.
-`--only-inputs [names...]` keeps the named configured inputs instead, and drops
-the others with the limits written against them, so
-`--check limits --only-inputs codebase` gates the source limits without the
-compiled output a size limit needs.
+A run that must leave a configured input out, such as a gate that runs before
+any build, names a configuration that does not declare it.
 
 ## Naming the configuration
 

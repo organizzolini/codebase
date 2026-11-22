@@ -5,13 +5,7 @@
  * Bare help flags are left alone.
  */
 export function withDefaultCommand(argv: readonly string[]): string[] {
-  const commandNames = new Set([
-    "batch",
-    "changes",
-    "configuration",
-    "help",
-    "measure",
-  ]);
+  const commandNames = new Set(["changes", "configuration", "help", "measure"]);
   const helpFlags = new Set(["--help", "-h"]);
   const [firstArgument] = argv;
 

@@ -1,88 +1,12 @@
 // 🛠️ Utilities
 
 import type { ReportFindingsArguments } from "./measure.types";
-import type {
-  MeasureCommandOptions,
-  ResolvedCodometerConfiguration,
-} from "@codometer/configuration";
-
-/**
- * Says what failed a run as plain lines: each failing limit, each part that could not be measured, each stale report.
- */
-export function describeFindings(args: ReportFindingsArguments): string {
-  const limits = args.measurement.limits
-    .filter((limit) => limit.breached && limit.severity === "fail")
-    .map(
-      (limit) =>
-        `Breached ${limit.metric}: measured ${String(limit.measured)}, limit ${String(limit.limit)}`,
-    );
-  const failures = args.measurement.failures.map(
-    (failure) => `Failed to measure ${failure.subject}: ${failure.reason}`,
-  );
-  const stale = args.stalePaths.map((stalePath) => `Stale report ${stalePath}`);
-
-  return [...limits, ...failures, ...stale].join("\n");
-}
-
-/**
- * Applies `--inputs`, then keeps the inputs `--only-inputs` names and drops the limits written against the others. Refuses an unknown name, and mixing the two.
- */
-export function selectInputs(
-  loaded: ResolvedCodometerConfiguration,
-  options: MeasureCommandOptions,
-): { configuration: ResolvedCodometerConfiguration; errors: string[] } {
-  const configuration = applyInputsOverride(loaded, options.inputs);
-  const names = options.onlyInputs;
-
-  if (names === undefined) {
-    return { configuration, errors: [] };
-  }
-
-  if (options.inputs !== undefined) {
-    return {
-      configuration,
-      errors: ["--only-inputs cannot be combined with --inputs"],
-    };
-  }
-
-  const configured = configuration.inputs.map((input) => input.name);
-  const unknown = names.filter((name) => !configured.includes(name));
-
-  if (unknown.length > 0) {
-    const quote = (list: string[]): string =>
-      list.map((name) => `"${name}"`).join(", ");
-
-    return {
-      configuration,
-      errors: [
-        `--only-inputs names no configured input: ${quote(unknown)}. Configured inputs: ${quote(configured)}.`,
-      ],
-    };
-  }
-
-  const dropped = configured.filter((name) => !names.includes(name));
-
-  return {
-    configuration: {
-      ...configuration,
-      inputs: configuration.inputs.filter((input) =>
-        names.includes(input.name),
-      ),
-      limits: configuration.limits.filter(
-        (limit) =>
-          !dropped.some((input) =>
-            limitTargetsInput(configuration, limit.metric, input),
-          ),
-      ),
-    },
-    errors: [],
-  };
-}
+import type { ResolvedCodometerConfiguration } from "@codometer/configuration";
 
 /**
  * Replaces every configured input with the `--inputs` globs, measured as the `language` analysis with no other input active.
  */
-function applyInputsOverride(
+export function applyInputsOverride(
   configuration: ResolvedCodometerConfiguration,
   globs: string[] | undefined,
 ): ResolvedCodometerConfiguration {
@@ -106,20 +30,19 @@ function applyInputsOverride(
 }
 
 /**
- * Whether a limit is written against an input: by its name in front of the metric, or unqualified where that input is the default.
+ * Says what failed a run as plain lines: each failing limit, each part that could not be measured, each stale report.
  */
-function limitTargetsInput(
-  configuration: ResolvedCodometerConfiguration,
-  metric: string,
-  input: string,
-): boolean {
-  if (metric.startsWith(`${input}.`)) {
-    return true;
-  }
-
-  const isQualified = configuration.inputs.some((configured) =>
-    metric.startsWith(`${configured.name}.`),
+export function describeFindings(args: ReportFindingsArguments): string {
+  const limits = args.measurement.limits
+    .filter((limit) => limit.breached && limit.severity === "fail")
+    .map(
+      (limit) =>
+        `Breached ${limit.metric}: measured ${String(limit.measured)}, limit ${String(limit.limit)}`,
+    );
+  const failures = args.measurement.failures.map(
+    (failure) => `Failed to measure ${failure.subject}: ${failure.reason}`,
   );
+  const stale = args.stalePaths.map((stalePath) => `Stale report ${stalePath}`);
 
-  return !isQualified && configuration.defaultInput === input;
+  return [...limits, ...failures, ...stale].join("\n");
 }

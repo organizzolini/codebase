@@ -8,7 +8,6 @@ import { DiscoveryModule } from "@nestjs/core";
 import { LoggerModule } from "@codebase/observability";
 
 import { environmentSchema } from "./codometer-cli.constants";
-import { BatchModule } from "./modules/batch/batch.module";
 import { ChangesModule } from "./modules/changes/changes.module";
 import { ConfigurationModule as CodometerCliConfigurationModule } from "./modules/configuration/configuration.module";
 import { MeasureModule } from "./modules/measure/measure.module";
@@ -26,7 +25,6 @@ import { MeasureModule } from "./modules/measure/measure.module";
     }),
     DiscoveryModule,
     LoggerModule,
-    BatchModule,
     ChangesModule,
     CodometerCliConfigurationModule,
     MeasureModule,

@@ -12,10 +12,11 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { describeFindings, selectInputs } from "./measure.utilities";
+import { applyInputsOverride, describeFindings } from "./measure.utilities";
 
 import type {
   MeasureOutcome,
+  MeasureVerdict,
   ReportFindingsArguments,
   RunPlan,
   RunRejection,
@@ -70,6 +71,50 @@ export class MeasureCommand extends CommandRunner {
       undefined,
       { paths: outputPaths },
     );
+  }
+
+  /**
+   * Measure one directory and say whether the run failed, and why. Sets no
+   * exit code, so many directories can be measured in one process.
+   */
+  private async measureDirectory(
+    options: MeasureCommandOptions,
+    workingDirectory: string,
+  ): Promise<MeasureOutcome> {
+    const plan = await this.resolveRunPlan(options, workingDirectory);
+
+    if ("rejected" in plan) {
+      return { failed: true, report: plan.rejected.join("\n") };
+    }
+
+    const { configuration, consoleMarkdown, destinations, format, mode } = plan;
+    const outputPaths = this.destinationsService.listOutputPaths({
+      destinations,
+      workingDirectory,
+    });
+
+    this.announceOutputPaths(outputPaths);
+
+    const measurement: MeasurementResult = this.measureService.measure({
+      configuration,
+      outputPaths,
+      workingDirectory,
+    });
+    const report = this.reportService.build(measurement);
+    const stalePaths = this.deliveryService.deliver({
+      consoleMarkdown,
+      destinations,
+      format,
+      measurement,
+      mode,
+      report,
+      scope: this.destinationsService.selectScope(workingDirectory),
+    });
+
+    const findings = { measurement, mode, stalePaths };
+    const failed = this.reportFindings(findings);
+
+    return { failed, report: failed ? describeFindings(findings) : "" };
   }
 
   /**
@@ -200,11 +245,11 @@ export class MeasureCommand extends CommandRunner {
       return loadedConfiguration;
     }
 
-    const { configuration, errors: inputErrors } = selectInputs(
+    const configuration = applyInputsOverride(
       loadedConfiguration,
-      options,
+      options.inputs,
     );
-    const formatErrors: string[] = [...inputErrors];
+    const formatErrors: string[] = [];
     const format = this.configurationService.resolveFormat(
       options.format,
       configuration.format,
@@ -241,50 +286,6 @@ export class MeasureCommand extends CommandRunner {
     });
 
     return workingDirectory;
-  }
-
-  /**
-   * Measure one directory and say whether the run failed, and why. Sets no
-   * exit code, so many directories can be measured in one process.
-   */
-  async measureDirectory(
-    options: MeasureCommandOptions,
-    workingDirectory: string,
-  ): Promise<MeasureOutcome> {
-    const plan = await this.resolveRunPlan(options, workingDirectory);
-
-    if ("rejected" in plan) {
-      return { failed: true, report: plan.rejected.join("\n") };
-    }
-
-    const { configuration, consoleMarkdown, destinations, format, mode } = plan;
-    const outputPaths = this.destinationsService.listOutputPaths({
-      destinations,
-      workingDirectory,
-    });
-
-    this.announceOutputPaths(outputPaths);
-
-    const measurement: MeasurementResult = this.measureService.measure({
-      configuration,
-      outputPaths,
-      workingDirectory,
-    });
-    const report = this.reportService.build(measurement);
-    const stalePaths = this.deliveryService.deliver({
-      consoleMarkdown,
-      destinations,
-      format,
-      measurement,
-      mode,
-      report,
-      scope: this.destinationsService.selectScope(workingDirectory),
-    });
-
-    const findings = { measurement, mode, stalePaths };
-    const failed = this.reportFindings(findings);
-
-    return { failed, report: failed ? describeFindings(findings) : "" };
   }
 
   // 🌎 Public Methods
@@ -336,18 +337,6 @@ export class MeasureCommand extends CommandRunner {
   }
 
   /**
-   * Parses one input name, accumulating them into the array of the only inputs the run measures.
-   */
-  @Option({
-    description:
-      "Names of the only configured inputs to measure; the others, and the limits written against them, are left out",
-    flags: "--only-inputs [names...]",
-  })
-  public parseOnlyInputs(value: string, previous: string[] = []): string[] {
-    return [...previous, value];
-  }
-
-  /**
    * Parses the JSON report destination. `true` when no path is given, meaning the configured path is used.
    */
   @Option({
@@ -390,6 +379,8 @@ export class MeasureCommand extends CommandRunner {
       return;
     }
 
+    const verdicts: MeasureVerdict[] = [];
+
     for (const directory of directories.map((named) => path.resolve(named))) {
       const outcome = await this.measureDirectory(
         options.config === undefined
@@ -397,14 +388,23 @@ export class MeasureCommand extends CommandRunner {
           : { ...options, config: path.resolve(directory, options.config) },
         directory,
       ).catch((error: unknown) => {
+        const reason = error instanceof Error ? error.message : String(error);
+
         this.logger.error(`📊 Failed to measure ${directory}`, undefined, {
-          reason: error instanceof Error ? error.message : String(error),
+          reason,
         });
 
-        return { failed: true };
+        return { failed: true, report: reason };
       });
 
       process.exitCode = outcome.failed ? 1 : process.exitCode;
+      verdicts.push({ directory, ok: !outcome.failed, report: outcome.report });
+    }
+
+    // One directory keeps standard output for its report; a caller measuring
+    // several has no single report to pipe, and needs to know who failed.
+    if (verdicts.length > 1) {
+      process.stdout.write(`${JSON.stringify(verdicts)}\n`);
     }
   }
 }

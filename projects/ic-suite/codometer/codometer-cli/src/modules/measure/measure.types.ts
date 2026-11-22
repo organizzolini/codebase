@@ -17,6 +17,14 @@ export interface MeasureOutcome {
   report: string;
 }
 
+/** One directory's verdict, as printed after a run that named directories. */
+export interface MeasureVerdict {
+  directory: string;
+  ok: boolean;
+  /** What failed the directory, as plain lines; empty when it passed. */
+  report: string;
+}
+
 /** Arguments accepted when weighing what a run found. */
 export interface ReportFindingsArguments {
   measurement: MeasurementResult;

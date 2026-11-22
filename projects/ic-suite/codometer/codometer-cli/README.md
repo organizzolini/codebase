@@ -56,7 +56,6 @@ codometer --config configuration/ic-suite/codometer.config.ts --check limits
 | `--config <path>`          | **Required.** The configuration file to read                                                                                     |
 | `-f, --format <format>`    | What to print to standard output, one of `json` and `markdown`                                                                   |
 | `--inputs [globs...]`      | Glob array measured in place of every configured input, with no configured input — not even the built-in `codebase` one — active |
-| `--only-inputs [names...]` | Names of the only configured inputs to measure; the others, and the limits written against them, are left out                    |
 | `--output-json [path]`     | Write the JSON report, at the given path or the configured one                                                                   |
 | `--output-markdown [path]` | Write the markdown badge block, at the given path or the configured one                                                          |
 
@@ -225,21 +224,16 @@ fails the run rather than counting as zero bytes.
 that one run, running only `language` analysis over exactly the globs given —
 with no other input, not even the built-in `codebase` one, active.
 
-`--only-inputs [names...]` narrows instead of replacing: it keeps the configured
-inputs it names and drops the rest, along with every limit written against a
-dropped input, whether qualified by its name or unqualified under that default
-input. A run that gates only the source limits, with no build behind it, names
-the built-in input: `codometer measure --config codometer.config.ts --check
-limits --only-inputs codebase`. A name no input carries, or the flag beside
-`--inputs`, is refused.
+Measuring only part of what a project declares is a configuration choice, not a
+flag: a run that must not read compiled output points `--config` at a
+configuration that leaves that input out.
 
-## Many directories, one process
+## Many directories at once
 
-`codometer batch` is `measure` for a caller that measures many directories and
-needs to know which one failed. It takes the directories as arguments and
-`--config`, `--check`, `--only-inputs`, `--output-json` and `--output-markdown`
-as `measure` does, measures each as a run started inside it would be, and
-prints one JSON line with a verdict per directory:
+`codometer measure a b c` measures each directory as a run started inside it
+would be, from one process, so a runner pays the start-up once. When it names
+more than one directory it prints a JSON line after the runs, a verdict for
+each:
 
 ```json
 [
@@ -253,9 +247,8 @@ prints one JSON line with a verdict per directory:
 ```
 
 `report` says what failed a directory, in plain lines, and is empty when it
-passed. The exit code is 1 when any directory failed. This is what
-`@codometer/nx` runs, so a breach is charged to its own project with its report
-and nothing is measured twice.
+passed. The exit code is 1 when any directory failed. With a single directory,
+standard output stays free for its report.
 
 ## Limits
 
