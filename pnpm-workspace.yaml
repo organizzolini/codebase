@@ -191,7 +191,7 @@ catalog:
   remark: ^15.0.1
   remark-frontmatter: ^5.0.0
   remark-gfm: ^4.0.1
-  semantic-release: ^25.0.3
+  semantic-release: ^26.0.1
   sonner: ^2.0.7
   squawk-cli: ^2.55.0
   sweph: ^2.10.3-b-1
