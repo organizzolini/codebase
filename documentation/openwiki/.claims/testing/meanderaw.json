@@ -1,154 +1,146 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:9b8052dd081f05275ffafb36ead09003af9c68693cd5fa9ec2effdcf63be7e13",
+  "pageVersion": "sha256:3f5984db9498460efa433f0fe2b3be332bfe16af0bb24f70300f1d45eb92cb0f",
   "claims": [
     {
       "id": "claim_a93fe81f330c4f9d88d7f2357150dd9d",
-      "statement": "meanderaw-cli and meanderaw-web both use vitest as the test runner with project-specific configurations merged from a shared base configuration at /configuration/vitest.config.ts",
+      "statement": "meanderaw-cli and meanderaw-web both use vitest as the test runner with project-specific configurations (in each project's configuration/ folder) merged from a shared base configuration in configuration/typescript/vitest.config.ts.",
       "evidence": [
         {
-          "resource": "repo://configuration/vitest.config.ts",
-          "version": "repo-file-v1:sha256:5f81eea44d01a60000532bbbf1baf8ec4e6bd99de5ee6a9b121763a4cb9818fc"
+          "resource": "repo://configuration/typescript/vitest.config.ts#L1-L47",
+          "version": "repo-lines-v1:sha256:4b3a9930044f0a10becea9456aad730a13b84b254f52a811e68c8032c8bb56fa:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyYjRjMDAxZjgzOWQxYTZlM2NmNzY1MDY4YjU0ZWIzZGI3NWUxOGYyODQ3MTAzZjA2OWEzNWJhZGQyZDBjM2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5NjE0M2EwZTBlNDQ1OTgxMTkyZTlkMzIzODFhYzNmOWM5ZTExNTg0NmVjNzdhNmMxZjhlNjRhZGVmYjZhODgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/vitest.config.ts",
-          "version": "repo-file-v1:sha256:b1f28078ca2b0c2cee579d4c5ea7829968b5b5efa770691bd40d39a7d021be55"
+          "resource": "repo://projects/meanderaw/meanderaw-cli/configuration/vitest.config.ts",
+          "version": "repo-file-v1:sha256:d6b699b3396fdf9b08026035acfdaaf9f9c49fac8e294b814e40ee5b19e114e8"
         },
         {
-          "resource": "repo://projects/meanderaw/meanderaw-web/vitest.config.ts",
-          "version": "repo-file-v1:sha256:b7e259039d0cf7586478758713549f7c85cfb958e3b2a9d8c890312c679340d8"
+          "resource": "repo://projects/meanderaw/meanderaw-web/configuration/vitest.config.ts",
+          "version": "repo-file-v1:sha256:5bfe63843de54571a362928da34a6d2bbb3b19e583a50dce2dcf72aab8e7279b"
         }
       ]
     },
     {
       "id": "claim_284a38ece2194350aa86d4853554e1fd",
-      "statement": "meanderaw-cli vitest configuration sets hookTimeout to 120,000ms and testTimeout to 60,000ms to accommodate exhaustive enumeration tests that render tens of thousands of real documents per test run",
+      "statement": "meanderaw-cli's vitest configuration sets hookTimeout to 120,000ms and testTimeout to 60,000ms to accommodate exhaustive enumeration tests that render tens of thousands of real documents per test run.",
       "evidence": [
         {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/vitest.config.ts#L13-L46",
-          "version": "repo-lines-v1:sha256:c71a6fcd980120c91fd9199b10219b16b39f9516637ce920b509631b1f10d7f4:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjZTMzZTY3YzdmZDE5MTM2MTViNjQ1ZjgxZjY5MWU3OWJhMjg0Nzg4MmMxNmU5N2UxOTllODMyOGZhZGU5YzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmMGNkYjk3MmE3YmZiN2VkMjQ2ZjlmZjY3MjM4NWU1NWY0OTY4ZmMxMTA0M2RjNWI2ODRkNTFkZmEzMWRiY2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhY2JiNDU3ZDI1NjBmNmI0ZjQ5NjczN2IyNDRmYWJlZjRkYzQzMWYzZGNkOThkYmYxMmEwMmM0N2YxYzIyNjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYjgyYWIwZTNjZGNjYTJjZTJiOWRlZTA5MTQ4NmJlOWIxMzlkODc1OTU3MzQxNGNiZjQ2OWMwNDg4YThlZWEifQ"
+          "resource": "repo://projects/meanderaw/meanderaw-cli/configuration/vitest.config.ts#L1-L48",
+          "version": "repo-lines-v1:sha256:d6b699b3396fdf9b08026035acfdaaf9f9c49fac8e294b814e40ee5b19e114e8:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4ZjE2ZDJhMWMyYTVhNWE0YzU1NzkwYTMwZTQ0NTRjNTdiOGI1YjBlMGUxYTE4ZjI1N2UxNTY1OWI0NDQ2ODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5OTY3ZWMxZWQzODM2ZjhlYjE3YWZmMTcyYjViZmVmN2RlNjA0ODVhNDM5YzZjYTExYzU5MWUxNzU1NzM5YWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_b92f15cc523d4f0f85b86c3b09d7fb1a",
-      "statement": "meanderaw-web vitest configuration uses jsdom environment and excludes server function files (*.functions.ts), router internals, and root layout from coverage because createServerFn only runs inside the TanStack Start runtime",
+      "statement": "meanderaw-web's vitest configuration uses the jsdom environment and excludes server function files (*.functions.ts), router internals, and the root layout from coverage because createServerFn only runs inside the TanStack Start runtime.",
       "evidence": [
         {
-          "resource": "repo://projects/meanderaw/meanderaw-web/vitest.config.ts#L5-L28",
-          "version": "repo-lines-v1:sha256:8ef51a07334cd331efecef258d9e3fb246f82910ca5b1d7899522f3f1f48389d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5YWJlZGQ4NDI4MDQ4ZGYyNzBmOWJjMzBmNmQ1NTFkYWQ4NGZkZGE4MTlkNGMzOTlmZTY5MmVhMmNjNDA3NmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmMGNkYjk3MmE3YmZiN2VkMjQ2ZjlmZjY3MjM4NWU1NWY0OTY4ZmMxMTA0M2RjNWI2ODRkNTFkZmEzMWRiY2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc1NDRhYTBiN2E3ZDFmMzhjNTU4MmU2ODNmMTJhZGYzODY1ZTJjYmU5NDM3ZmQ3Y2EyODVmNjAwNDU1ZjFjMTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYjgyYWIwZTNjZGNjYTJjZTJiOWRlZTA5MTQ4NmJlOWIxMzlkODc1OTU3MzQxNGNiZjQ2OWMwNDg4YThlZWEifQ"
+          "resource": "repo://projects/meanderaw/meanderaw-web/configuration/vitest.config.ts#L1-L30",
+          "version": "repo-lines-v1:sha256:5bfe63843de54571a362928da34a6d2bbb3b19e583a50dce2dcf72aab8e7279b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4ZjE2ZDJhMWMyYTVhNWE0YzU1NzkwYTMwZTQ0NTRjNTdiOGI1YjBlMGUxYTE4ZjI1N2UxNTY1OWI0NDQ2ODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5OTY3ZWMxZWQzODM2ZjhlYjE3YWZmMTcyYjViZmVmN2RlNjA0ODVhNDM5YzZjYTExYzU5MWUxNzU1NzM5YWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_a153591ca026442593538d0044f4c575",
-      "statement": "meanderaw-cli testing utilities in projects/meanderaw/meanderaw-cli/testing/ provide type-safe fixture builders for Characteristics, MeanderRecord, and Tile objects with zero-value constants for every characteristic key",
+      "statement": "meanderaw-cli testing utilities in projects/meanderaw/meanderaw-cli/testing/ provide type-safe fixture builders for Characteristics, MeanderRecord and Tile objects with zero-value constants for every characteristic key.",
       "evidence": [
         {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/testing/meanders.ts#L25-L75",
-          "version": "repo-lines-v1:sha256:75348a7067293eae925dc68f8ef9b600b150c9f9e02403a01f4a7f0deb20e234:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjNWIyYjQ0OGQ4OTViYjg0NmY5YTlhZmJhNDIxYTlhMDY3YzczZDhmNjVhNjUyOTEwZTM2NzhmNjZlYzY2NGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMWQxYTYzMzkwMjI5Yzc5ODM0N2U4M2EwNDA1NDQxYzk0MDAwMzUyODRhZDE2OGMxYmY2Y2RmMWQ3MGEzNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYzZDE4YmFlMjIwY2I3NmQ0NGM0YTA4Mzg3NDQ3NDBlZTZlYzFlMzgzZmM1ZDNkMzc4ZTkzYzJmMWY4MmI3ZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY4MDBhMjE4OTJhODUzMWVlNDE1NTgxNDBmNmEzYmNjMWFlOThlMjY1ZWEzMDdhYWQwYWEzY2ZkNzdmZGEwOTAifQ"
+          "resource": "repo://projects/meanderaw/meanderaw-cli/testing/meanders.ts#L1-L167",
+          "version": "repo-lines-v1:sha256:dd37e079674c1b2de11be1731f398093a89c882ff52181e11fd0cc03ef740c88:eyJzZWxlY3RlZExpbmVDb3VudCI6MTY3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJhYThlODFlZGU2MDFjNzkyZDQxMjU3ZGYyNjQ0ZGIzZDViMjY5Y2FjNWU4YjdhM2JjZWQ4NDc4ZTUwYjg2ZjNlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         },
         {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/testing/tiles.ts#L23-L56",
-          "version": "repo-lines-v1:sha256:c36b96732180d18320b480bb349123dbdeec6c5c7eab7cbc1fa50914ccd7706f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZWYwMWJjMDhkYmMzYjYzZTRlNzVlYTNkMjZhNWI5NDE4OTE4NzdlMjdhZDg5MTMyOWM4NDExZDdkOGRjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFhZGQ3MDMyYTI0OWM4NjlkOTY1M2M5MWEyYjM0NzMzMWNhNzE5NjVkNzVjNmZkOWU2MDhlYzA2MTYyYjUzMzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFhMWQxYTYzMzkwMjI5Yzc5ODM0N2U4M2EwNDA1NDQxYzk0MDAwMzUyODRhZDE2OGMxYmY2Y2RmMWQ3MGEzNzAifQ"
+          "resource": "repo://projects/meanderaw/meanderaw-cli/testing/tiles.ts#L1-L48",
+          "version": "repo-lines-v1:sha256:ebceb19638e630b7a0dd2d8c226ace0e1e0e0aa3dc6d560b7f762669cb522fc5:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkMjg0Zjg1NGU2MWE2ZWMyY2RmMzE5MzFhYzM2ZjNiMjJmNDUyMmRlZGRlYjY3OTBlNWZhMjU5N2Q5NDBiMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMWQxYTYzMzkwMjI5Yzc5ODM0N2U4M2EwNDA1NDQxYzk0MDAwMzUyODRhZDE2OGMxYmY2Y2RmMWQ3MGEzNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_6839e542fbee431ca7523b6bc4d2ee77",
-      "statement": "Legacy characteristic values from the retired monolithic CharacteristicsService are captured in legacy-characteristics.ts as space-separated fixture lines to pin the new evaluator architecture to exact historical values",
+      "statement": "Legacy characteristic values from the retired monolithic CharacteristicsService are captured in legacy-characteristics.ts as fixture lines to pin the evaluator architecture to exact historical values.",
       "evidence": [
         {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/testing/legacy-characteristics.ts#L1-L51",
-          "version": "repo-lines-v1:sha256:9fcbf5fecaa1236560f443f4c7c53471afa48476efeb4cf40c7eb31eb847a3eb:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjZGM3NmQxMmU1MzA0ZDMwNzllZGI1Zjg5MDAwN2VhMDVmMjI2ZTRkOTNiNjk1Njg0NjBjYWZhZjgwMDc0NGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlMGQyMWI0MTkxODQ4NWE1MmRjOGU5YjU1M2EyZmE3NWQ2YjkzYjZhYTU4ZWU4ZWVhOTllZGRkYzY0MTc4MTUifQ"
-        },
-        {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/testing/legacy-characteristics.ts#L53-L99",
-          "version": "repo-lines-v1:sha256:b9313144fac75a590d6fc06683791480ee2f7aaa8c06dd38eaa92526dce9233a:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMWYwNWJiYmYwODVlODg1NWNhNWE0MmNmODc1MzI3OWU3NzU0MzlkNDlmNzM5NTVjNmNhZTViNDk4ZjhlNzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzMjNhZmUxOTI5NGNlYzQxYjE1OWZmNzkyOGQwMzJhMjQzNGM0OWU2ODQyYmRlMWY3NTQyMjcwZTU1MjdmMTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYxZTk2NTNiZWY5YjJmYzQ1ODFkZjdkOTlhMzE2NDBkMmUwYTUxMDc4NTE5YmUwOTc4NDljMmU5MTBjMGVkOWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIxYTg3MDY1OGQ1OWQwY2E2ZWJjNTc3OWJiOWQ0MTcyOTgxODQwYzdkZWQ5ZGVkMGIwMTVmNWVjMjJjMzRiMTgifQ"
+          "resource": "repo://projects/meanderaw/meanderaw-cli/testing/legacy-characteristics.ts#L1-L242",
+          "version": "repo-lines-v1:sha256:1df01940ab1ba4a2d573d6403b0022cc135c5584fd9a0b1ed266e93ad5fd9d6b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlYWYyMmNmMDczMjU5MmMyNDcxNDFjYmU2MWVmYTExMDEyNjEyZjVhMzEyMmI5YWY5YmJhZjUyZjU3MjRkMTk0IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJhYTFkMWE2MzM5MDIyOWM3OTgzNDdlODNhMDQwNTQ0MWM5NDAwMDM1Mjg0YWQxNjhjMWJmNmNkZjFkNzBhMzcwIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_ad8195f22f94437fabf72b48083b5b7a",
-      "statement": "Letter characteristic testing uses a LetterHarness that compiles a Nest testing module with the letter's CharacteristicEvaluatorGroup and reads 16 orientation evaluators per positional form by name",
+      "statement": "Letter characteristic testing uses a LetterHarness that compiles a Nest testing module with the letter's CharacteristicEvaluatorGroup and reads 16 orientation evaluators per positional form by name.",
       "evidence": [
         {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/testing/letters.ts#L15-L77",
-          "version": "repo-lines-v1:sha256:f4b8092fa709eb31306b36c0dde417ef392425f27a49d9580592ec8e15eecf12:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFlNDQ3MDc5NWQ2ZTk1ZjNlNDFhMDIwNzVlOTMxZDYzMTY1OWIzNTkxMDYyOTQ1Y2ZiYTQ3ZWYyZWIxYWU1NjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFhZGQ3MDMyYTI0OWM4NjlkOTY1M2M5MWEyYjM0NzMzMWNhNzE5NjVkNzVjNmZkOWU2MDhlYzA2MTYyYjUzMzAifQ"
-        },
-        {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/testing/letters.ts#L91-L174",
-          "version": "repo-lines-v1:sha256:972b39856fca560c818c7cafb6addca85225556e1364d772f1a0670ca546a262:eyJzZWxlY3RlZExpbmVDb3VudCI6ODQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYTljNmExNjgyMDg1NWQ5Yjk2ODgyOWFmZmE1NmU5Mzk5N2RkY2RmMjg0NjI1ZTZiZWNlYmIyYWI3Y2M4NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5ZWMzZjc0NzQ4YzBjYTEyOWEzNzQ5NTI4YmJhZjAyYzE1MDU3NDRkM2ZhYTVkZDFiNjFiZjZlMDZlMTViMzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+          "resource": "repo://projects/meanderaw/meanderaw-cli/testing/letters.ts#L1-L166",
+          "version": "repo-lines-v1:sha256:afc0584601831024fc772beb309fa41412521fe62fb3753adf953de94e91e134:eyJzZWxlY3RlZExpbmVDb3VudCI6MTY2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwODU1NjI1MTNmMTk3NjI1M2Q5NzZiZmEyOWNiOTA0ZDU2NWU2ZDc2ODE4YzZhMzcwNTc0NTViNjZmOGIxMjZlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_e7bbb018d1514b2bb9cc45a9861a4a7e",
-      "statement": "Database integration tests use Testcontainers via @codebase/persistence/testing to start real Postgres 18 containers, run project migrations, and compile Nest testing modules connected via PostgresqlModule.forRoot",
+      "statement": "Database integration tests use Testcontainers via @codebase/persistence/testing to start real Postgres 18 containers, run project migrations, and compile Nest testing modules connected via PostgresqlModule.forRoot.",
       "evidence": [
         {
-          "resource": "repo://projects/common/persistence/src/modules/postgresql/postgresql-container.utilities.ts#L33-L80",
-          "version": "repo-lines-v1:sha256:b64c625511b019b511ee593c33de7389e627fdfeeee1d408165bd4afbc612aaa:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYTAwNzRmMGI5YjdmNjMzM2VmYWNjZGJlMTYyNDMyZDVlNTdmYWFhY2ZlOGI1ZGQ0MWVhMTRhZTA2ZWJkMWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJhZTRkNWFiYWZjNTQyZGZhMzZlMmE5MjU3MmZhODBkMWU2ZDVmZTcxZTFkNDZkOGQ0MWQ4OGNhNGYwNGUyMTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3Y2NmMmVhZWYxNDNlNmU4OWYxZDRiZWFkNzljNmE1MTk1OGFiYzM3YTY5ZjU5NWU1MDk4MzI5YjEyNDEyNzMifQ"
+          "resource": "repo://projects/common/persistence/testing/database-testing/database-testing.utilities.ts#L1-L95",
+          "version": "repo-lines-v1:sha256:25196ff70be0376870638d1db24af6a62cf0fd9bac6b48ed7ff88696da66e315:eyJzZWxlY3RlZExpbmVDb3VudCI6OTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjMzgyYjVkMzhhYmRiODNmYTgwYTBiMGNiNjEyMzkxOThkMDk2MjVlODQyMGQ5YzNlNTkzODNmMmVmN2FiZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/common/persistence/testing/persistence-testing.utilities.ts#L43-L99",
-          "version": "repo-lines-v1:sha256:ea27bc36ca110e8b86790037462afd36c3fbeabf86f201afbb14e68b00cd8452:eyJzZWxlY3RlZExpbmVDb3VudCI6NTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwODdlMzRhNjNjZWFkNTQ1YmM1YzRmZWEwZmZiNmFhYWU4Y2Q5NTg5NDY4YTBiYTIyNmEwYTljMDcwMGVkMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRkYTk3NDgyZWE4MWRjZDk0NGI4ZWMxNjU2NDJmOWM3YzY4OGYxZmU0NWQ1ZDU0ZDA3ZjU0MzQwMjU3YmIwZjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3OTI5ZTkxZTBmOTljM2U4MjVkZTY5YjQzNWZiNjQ4NGQxYjBhMWRmMmY0NjU2MWFiZjFhMjlmMDQxODhiODgifQ"
+          "resource": "repo://projects/common/persistence/testing/postgres-container/postgres-container.utilities.ts#L1-L120",
+          "version": "repo-lines-v1:sha256:fc2458446163c10a16fb117ab4ca11a1f05fb48858bd9dc800ccafd759277a89:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkMWIwNDRmOGY5OWY1YzhmZTI4NWIwMTUwMmJjNjQ2YWZmMDY4OGQwMzIyMzk2ZGU0OTc5MjY1ZmIzM2Y0MDkxIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_232c509a0ed64cf68ea58291a441e59f",
-      "statement": "Full draw run integration test (draw-run.command.integration.test.ts) drives the entire pipeline against a real database: generalized enumeration at edge budget 12 (~30k rows) plus historical corpus ingestion (~1k hardcoded entries), both writing through the same unique index on lattice address with collision detection",
+      "statement": "The full draw run integration test (draw-run.command.integration.test.ts) drives the entire pipeline against a real database: generalized enumeration at edge budget 12 plus historical corpus ingestion, both writing through the same unique index on lattice address with collision detection.",
       "evidence": [
         {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/draw/draw-run.command.integration.test.ts#L59-L99",
-          "version": "repo-lines-v1:sha256:6437b1dc0e8b06890884b8fc2d6f132cc806f986d4f10b5c3d8be7e7bc7a91ff:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiMTI5MjgxYzMwOTU1YjQ3NGRhZDk3YzRjNTljM2M0MDJiOWRmNTJlNWZiNzFjNzNiZThjMmY4YmFlM2ZiZWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5ZWMzZjc0NzQ4YzBjYTEyOWEzNzQ5NTI4YmJhZjAyYzE1MDU3NDRkM2ZhYTVkZDFiNjFiZjZlMDZlMTViMzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY0ZDRmMjI4NzY3ZTAyNWQ1MzNlNjFmYTRhNDY0YzA4NWJmNmI3ZTMzMDE0ZGE1OTY5ZDlkODcxYzkwNmEwYjAifQ"
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/draw/draw-run.command.integration.test.ts#L1-L146",
+          "version": "repo-lines-v1:sha256:b5d1a7426c03eda89b295259ea5bee001d82c3793360864965dc68b0441844b8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQ2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIyMGI0OTFhZDdmM2RkNzRmOTdmMmM2ZjJiY2E0NTM3MjVkMmI3N2YyNTZjZDk4OTRmOTYwM2Y0YmVlZmNhZjVjIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         },
         {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/testing/draw-run-budget.ts#L1-L31",
-          "version": "repo-lines-v1:sha256:f2ad6790b6ff6f0c091df03059109ec22895765d6f180aa5a5cdeaab97f3b2ea:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY0MGMzY2M0ODI0NWE1NTYyNzFlM2Y1M2M5NGJkNzA2N2YwN2Q5YzIxZDFmY2NkMzRmMGVlZThjNDMwZWE3M2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://projects/meanderaw/meanderaw-cli/testing/draw-run-budget.ts#L1-L5",
+          "version": "repo-lines-v1:sha256:e3fdcc2418fa902002489ab5f6279ab7ef6a4a0cf8eb718ae03ad0756f5bb9c4:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWMwOGFkZjBkMTgxYTY2ZGM1Mzg5ZTk1YzA1Zjg3ZThiM2JjZWViNGEyZjgyODE4OGE4Nzg4ODM5NTIxYTQwOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjQwYzNjYzQ4MjQ1YTU1NjI3MWUzZjUzYzk0YmQ3MDY3ZjA3ZDljMjFkMWZjY2QzNGYwZWVlOGM0MzBlYTczZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
         }
       ]
     },
     {
       "id": "claim_785f627af77144579fc1dee244f3e21f",
-      "statement": "Draw run test budget is pinned at DRAW_TEST_EDGE_BUDGET=12 and DRAW_TEST_WORKERS=0 to walk every code path in ~1 second per run while real worker threads are tested separately in draw-pool.service.integration.test.ts",
+      "statement": "The draw run test budget is pinned at DRAW_TEST_EDGE_BUDGET=12 and DRAW_TEST_WORKERS=0 so suites walk every code path quickly, while real worker threads are tested separately in draw-pool.service.integration.test.ts.",
       "evidence": [
         {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/draw/draw-pool.service.integration.test.ts#L53-L78",
-          "version": "repo-lines-v1:sha256:fd8e3763f392c3f24f7cb8a4fc4639b32999ad682ba3657f026704ed92449741:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3MTY5YjI4ZGNjZWY1ZDc3ZWZhMzY3MDMzM2U3OTU2MjU0NzU5M2U3M2VkYjljMWZlZWYwOGQ3OGI5OThkOGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/draw/modules/pool/draw-pool.service.integration.test.ts#L1-L87",
+          "version": "repo-lines-v1:sha256:5b36b2d1a948273858c88e9d72cc9c61953ac6e08c972fdff4cd534b144b2b8c:eyJzZWxlY3RlZExpbmVDb3VudCI6ODcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjMzgyYjVkMzhhYmRiODNmYTgwYTBiMGNiNjEyMzkxOThkMDk2MjVlODQyMGQ5YzNlNTkzODNmMmVmN2FiZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/testing/draw-run-budget.ts#L1-L31",
-          "version": "repo-lines-v1:sha256:f2ad6790b6ff6f0c091df03059109ec22895765d6f180aa5a5cdeaab97f3b2ea:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY0MGMzY2M0ODI0NWE1NTYyNzFlM2Y1M2M5NGJkNzA2N2YwN2Q5YzIxZDFmY2NkMzRmMGVlZThjNDMwZWE3M2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://projects/meanderaw/meanderaw-cli/testing/draw-run-budget.ts#L1-L5",
+          "version": "repo-lines-v1:sha256:e3fdcc2418fa902002489ab5f6279ab7ef6a4a0cf8eb718ae03ad0756f5bb9c4:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWMwOGFkZjBkMTgxYTY2ZGM1Mzg5ZTk1YzA1Zjg3ZThiM2JjZWViNGEyZjgyODE4OGE4Nzg4ODM5NTIxYTQwOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjQwYzNjYzQ4MjQ1YTU1NjI3MWUzZjUzYzk0YmQ3MDY3ZjA3ZDljMjFkMWZjY2QzNGYwZWVlOGM0MzBlYTczZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
         }
       ]
     },
     {
       "id": "claim_471af68ad7474fc3be3eb8bd43b0f551",
-      "statement": "meanderaw-web testing uses renderRoute helper that creates memory history, updates the TanStack Start router, awaits router.load(), and renders RouterProvider with a mocked bare root route since the real __root renders <html>",
+      "statement": "meanderaw-web tests use the shared renderRoute helper from @codebase/testing/react, which creates memory history, loads the TanStack Start router, and renders RouterProvider under a bare root route since the real __root renders <html>.",
       "evidence": [
         {
-          "resource": "repo://projects/meanderaw/meanderaw-web/src/routes/index.integration.test.tsx#L1-L16",
-          "version": "repo-lines-v1:sha256:e851c7c772a928e073211053c464af7d595c125dee1f5ea71ca830a23c74e525:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliMDJiN2QwYzY0ZDg5NjY2YTBjYjU0MmY2NWU4MjkyZjczYzJkNjMxNjk0M2Q4MDgwNDRkYTgyZDNlNWMwMTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+          "resource": "repo://projects/meanderaw/meanderaw-web/src/routes/index.integration.test.tsx#L1-L19",
+          "version": "repo-lines-v1:sha256:672d1466295d7ecab9cb214090b9534ccc42b8b8e32552d32960a1c69d193424:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliMDJiN2QwYzY0ZDg5NjY2YTBjYjU0MmY2NWU4MjkyZjczYzJkNjMxNjk0M2Q4MDgwNDRkYTgyZDNlNWMwMTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/meanderaw/meanderaw-web/testing/render-route.tsx#L15-L30",
-          "version": "repo-lines-v1:sha256:a2a663b66a1c86473611735886d6f7316443c9afadd66fed14b78f6a4df2e036:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQwMTZlNWI4NGI5MjYyNTY3ZjE1MGEwNjY4OTc4OWNkYWE5MGVhNzJjZDRhNmQzZjkxZDZlNDUyNTFhOWYzMzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://projects/meanderaw/meanderaw-web/testing/setup.ts#L1-L1",
+          "version": "repo-lines-v1:sha256:3e32d1a4d6cdbcc693102da98a0f25bd76556fa380bc311c19e647a2dfe688e3:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2UzMmQxYTRkNmNkYmNjNjkzMTAyZGE5OGEwZjI1YmQ3NjU1NmZhMzgwYmMzMTFjMTllNjQ3YTJkZmU2ODhlMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2UzMmQxYTRkNmNkYmNjNjkzMTAyZGE5OGEwZjI1YmQ3NjU1NmZhMzgwYmMzMTFjMTllNjQ3YTJkZmU2ODhlMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
         }
       ]
     },
     {
       "id": "claim_a3d8227c0cf242f184dfd5e50c69e3c2",
-      "statement": "The historical corpus (HISTORICAL_CORPUS) is a committed test set of 1,184 meander drawings extracted from the retired output/ filesystem tree at commit ab3c4526b^, where each entry carries its Code, shape, and an array of every family name the tree filed it under (filedUnder), preserving contradictions rather than resolving them.",
+      "statement": "The historical corpus (HISTORICAL_CORPUS) is a committed test set of 1,184 meander drawings extracted from the retired output/ filesystem tree at commit ab3c4526b^, where each entry carries its Code, shape, and an array of every family name the tree filed it under, preserving contradictions rather than resolving them.",
       "evidence": [
         {
           "resource": "repo://documentation/adr/0013-hold-the-historical-corpus-as-a-test-set.md#L1-L50",
           "version": "repo-lines-v1:sha256:d520bfa0168867f13d1cd4854b1f345f8856b532ebde9d0835b9f1f90986b438:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4MDNiNTFhZjExMDM1NTBhYWE2MzgwNDMwMGUzZDZlOTE0OTY0OGUxM2IwMmM0MjRlZDMyODRiZjg2OTdmYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1MmVlOTMwNTM1YjYzNzU0MzhjNDM1YzkyMmVjNjkyN2NiYzhmY2NjMTY2YTgzM2Y0NDlhMTIxZjFjMWM2MGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQyODA1NzMzOGIyNWIzMDYxZjIzYWU5ZTJhMDJkYWFhOWE5YWViYTU3ZmRhZTk1Y2Q5OGYzYjJiZjUyNDI3NjIifQ"
         },
         {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/corpus/historical-corpus.constants.ts#L17-L48",
-          "version": "repo-lines-v1:sha256:8bf4dba6e252ff0ba0995b6678e7280e630d899a2a6d57f0ec4c19ee416383df:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRkYzc1MjViMDBlYTc4MWQyMDQxOWM4Y2I0Y2E0YWVhMjc3MzBkZjU4NTQ1OTY0YzY0YTEyNjM0MDQ1OTgxOTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/corpus/modules/historical/historical-corpus.constants.ts#L1-L30",
+          "version": "repo-lines-v1:sha256:67527b21c518a32bf0e755a49fdb4af9dc5e72a612f622883ee667e0aff0264b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3MGZmMzZkMjAwMTI2YjhjZTZmYzYwYmI2NzZhMWY3ZGJiNWQ3NDUyMTA2YWE4N2YzYjVmOTljMzE4NzBhMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -168,15 +160,19 @@
     },
     {
       "id": "claim_602538b27d584e56ae06b358868b0ad3",
-      "statement": "CorpusService ingests the historical corpus through the exact same pipeline as enumerated meanders (generic reader → canonical phase → CharacteristicsService.compute), measuring all characteristics fresh; which entries are preserved as hardcoded rows is computed from two bounds (HISTORICAL_CORPUS_EDGE_BUDGET=16 and DRAW_MINIMUM_ROWS), not listed, yielding exactly 1,026 preserved entries that match the retired constants files.",
+      "statement": "CorpusService ingests the historical corpus through the same pipeline as enumerated meanders (generic reader, canonical rotation, characteristic measurement), measuring all characteristics fresh; which entries are preserved as hardcoded rows is computed from two bounds (HISTORICAL_CORPUS_EDGE_BUDGET of 16 and DRAW_MINIMUM_ROWS), not listed, yielding the 1,026 preserved entries the retired constants files held.",
       "evidence": [
         {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/corpus/corpus.service.ts#L17-L52",
-          "version": "repo-lines-v1:sha256:783d66523f3089b48167489ab0e26ef41e3d9dca506abce75805af5e3ebd386a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkZWUzYTdhNGY2MTIwMzkzMThjMzdjMmYyZTQyMTQzN2Y1ZTQ2ZjRmOTc3Mjc2MGEyM2RjZTY2OTNlMjg2MGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRhZDliZGRiNGZiOWVmNzAxMTkwYjVkZWRiZmQ3M2U3OTRmYjEzMWZiODgwMWNlZTUzYTM0ZDIwMjI3YmRmZjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU0MTVhZTIzNjAzODMxMmVmYzEzZDZkMjE3NjZhNGRhZWM2MTE5NDdiODA5ZTNmODQ5MDJkOTY3YjM0OTg4ZmYifQ"
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/corpus/corpus.constants.ts#L1-L22",
+          "version": "repo-lines-v1:sha256:52721dc93ad59220411575638a6bd12ea54878ef9516618475dcdda5a7b1fb3d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3MGZmMzZkMjAwMTI2YjhjZTZmYzYwYmI2NzZhMWY3ZGJiNWQ3NDUyMTA2YWE4N2YzYjVmOTljMzE4NzBhMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/corpus/corpus.service.ts#L75-L100",
-          "version": "repo-lines-v1:sha256:bde75ac4f26b372117bab3716ffd4ea48ca48f89d97e3a8f2dc5f1999e52a23c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjMThjODc4YmFlNGM0NDE4MTY1ODBjZWY1MWNkYzhhNmQzNWE3M2EwYmZjY2UxMDU4M2EzNmYwZjE4Y2E0NWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdmMjE1NTMwNDdiODk5ZDcwMjBlMmRkZmMxNzJlMjI4ZDZjNjk1MGViMGE1NGE0ZWRlZTJjZDNiNDQ5MDlmNDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk1M2NkZjlkNjE5ZTc2M2ZlZDM2OGJmODM1Nzc1NjJlM2Y5MjY3NDJjMmEwOTdhZGNhODViY2Y3MWVmMmQ2MWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZjZDdmMWU2YzNhNWUxMWE3MDBiZGRkZTBjODVjMzc0NGNkY2Y5YzQ1OGMwOWRkMTM5ZWViMGNiOWY1Y2FjMGQifQ"
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/corpus/corpus.service.ts#L1-L116",
+          "version": "repo-lines-v1:sha256:4fcd40dd0ee26bfa40803240901e99b34b8c99a2a821eb1f383e4ff2e72624bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJmZTM4NzlhMzAyZmVhMThhZmNmMjI5ZjNlYTYxOTEyYzI0ZWNiMDk2NTIzZGU3MGIwNzg0MmE3OTQ0YmRlYzI0IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        },
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/draw/draw-run.command.integration.test.ts#L30-L40",
+          "version": "repo-lines-v1:sha256:9f5aaa25f0c848c1016fb5ae60cc1fb32154a2365bea68c91cda603823c259bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4Y2Y0YzAyNWY4YmVhNzcwZmFjYTdlMjg3OTk0ZTc3NmM2ZjFiZDZiZjYzMGNmY2JkNzVjZDRhMWZlZTg5NzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2YjFjZWZiYzc2Y2M2MDU3YTlhNDAwYzVmZTY0MWQ5MmNmN2RkOTBjNmJlN2EwMDNlODExMWNjZWYxMzIyMTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkzZTk0Y2YyMjM2NWQ0MzMwMWQyNmM1ZjNhMGRjZjUxNjZhNGMwOGQ3MTc3NjBlM2VkZThjZDUyYzM2ZWRkNzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVkOTNmNzgyYmE0YTMzNWEwMDEyNjkzZDljMmM1MzcxNWUwNTI3YWEzZjcxMmM0NmYxNjMwYzM0ODYzNzgwZWMifQ"
         }
       ]
     },
@@ -185,34 +181,34 @@
       "statement": "Draw run integration tests use a separate collision test file (draw-run-collision.command.integration.test.ts) and regeneration test file (draw-run-regeneration.command.integration.test.ts) so vitest runs their draw runs in parallel rather than sequentially, each with its own 300-second timeout.",
       "evidence": [
         {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/draw/draw-run-collision.command.integration.test.ts#L29-L50",
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/draw/draw-run-collision.command.integration.test.ts#L34-L55",
           "version": "repo-lines-v1:sha256:7c05d9920690cffb265ddb3e2893c3fd8a4b791a1949e724b267aed238eb5733:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5ODI0Y2Y4MGEwM2ZiMjM0ZDliNWY4NjQzMjk1YjNjYWE4MTMxZDU4MjY0OWE2ODJkNTljZTg3ZDA2ODY0NTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5ZWMzZjc0NzQ4YzBjYTEyOWEzNzQ5NTI4YmJhZjAyYzE1MDU3NDRkM2ZhYTVkZDFiNjFiZjZlMDZlMTViMzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU0MjZjNTIwNWQ2MGM3MTVmN2U0Y2U5OTJjZDA0YTZjZmQyM2FmZDBiY2M2OGZjOTQ4MzUyMjVjMWEwMDM4ZGEifQ"
         }
       ]
     },
     {
       "id": "claim_df8feaf1c23a418f94c3dca9a19b7cf5",
-      "statement": "Draw pool service integration test (draw-pool.service.integration.test.ts) proves real worker thread equivalence by compiling one pool with 0 workers (in-process) and one with 2 workers, then asserting the threaded pool draws exactly the same rows in the same order as the in-process pool for a given shape.",
+      "statement": "The draw pool service integration test (draw-pool.service.integration.test.ts) proves real worker thread equivalence by compiling one pool with 0 workers (in-process) and one with 2 workers, then asserting the threaded pool draws exactly the same rows in the same order for a given shape.",
       "evidence": [
         {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/draw/draw-pool.service.integration.test.ts#L53-L78",
-          "version": "repo-lines-v1:sha256:fd8e3763f392c3f24f7cb8a4fc4639b32999ad682ba3657f026704ed92449741:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3MTY5YjI4ZGNjZWY1ZDc3ZWZhMzY3MDMzM2U3OTU2MjU0NzU5M2U3M2VkYjljMWZlZWYwOGQ3OGI5OThkOGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/draw/modules/pool/draw-pool.service.integration.test.ts#L1-L87",
+          "version": "repo-lines-v1:sha256:5b36b2d1a948273858c88e9d72cc9c61953ac6e08c972fdff4cd534b144b2b8c:eyJzZWxlY3RlZExpbmVDb3VudCI6ODcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjMzgyYjVkMzhhYmRiODNmYTgwYTBiMGNiNjEyMzkxOThkMDk2MjVlODQyMGQ5YzNlNTkzODNmMmVmN2FiZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_8be9b099b3b1467f89ba9526cb072f42",
-      "statement": "GitHub Actions CI shards test execution into four legs (Test, Test Caelundas, Test Meanderaw, Test IC Suite) with meanderaw-cli running alone in its own shard because its exhaustive enumeration with real Postgres containers takes ~7 minutes uncached (~3 minutes warm) and would block other projects.",
+      "statement": "GitHub Actions CI shards test-code into one leg per project group, with meanderaw getting its own Test Meanderaw leg (shard meanderaw, selecting projects/meanderaw/**) because its exhaustive enumeration with real Postgres containers took over seven minutes uncached beside the rest.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/continuous-integration.yml#L66-L94",
-          "version": "repo-lines-v1:sha256:573d183bc962cdc30776e2bae4e02ebc9f1ce50ad7525e543019d57bc8e71a4f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5NWM3MGU4NDgxNWNkMGYyZGYxYTAzNzg1YjM3ODdkY2Y0NzEwZWZiMzg1M2U4OTYzNjNlZDRlMjJhNDIyMTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3OTAxYWI2MDNiNTgwODM3NDJjMjc2YWUwZjBlN2Q3M2NiY2NhYjk0NDBiNTY4ZDNhMDUwYjFmMTc1Y2YxMGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyYjdjNGQyMGJhNmQzOWU3Yjk2NmZhNzFhOGFiZTljMGY2Njk4MmQwN2ViNmYyYTZlZmMxNzRiOTQyNjZkOWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJjNDgyOGNkN2UwMDMwODgwMjU3NzBhYTg3OWM5ZmJjMDc0YTI4NzgyNzUwMGI4MTg5ZTIzYTdiZDg4ZGVjOTYifQ"
+          "resource": "repo://.github/workflows/continuous-integration.yml#L83-L130",
+          "version": "repo-lines-v1:sha256:e03034e1d97e600612b87ec2a61dfec78694bf0f545bfd7527fc5066ae786cfa:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjMjU4MjJhMDk0YzQ5M2Y1YTA0YTdjZjRhNDdhODJlOTA1MWQyYTdhZDMyNGUzODRiMGRhZjEyMDVkZWVhNzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMmY5MmExN2FiOWIyMTcwOTM3NDcwMWI0NWRkZjA0ZGQ5ZWIyODVhMTk2NTE1ODJmNDFjYmQ4Y2Y1MDU1NGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4YzMzMmRlZGRlNzBlYzM1MjA2Y2MxMzU0OTc4Mzc4YjgzYmY5YzdhZGM0ZGU3NTVhYzYxZGE1OWY3YjU0NzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwNzZiOTZkMmEzMDIzZGVjNTcxNzc1MGRjNzQ3NTY3NDAxN2U2MDM4NDI2ZWI4MTM5MjUyODg3YTE1MDU5YTMifQ"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.0",
-    "at": "2026-10-29T03:39:46.432Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-22T00:18:20.862Z"
   }
 }

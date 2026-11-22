@@ -1,82 +1,90 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:05d4643195f1d571703027de6c4a3b2f4cb4cc56f59fd64223bfd32547a1bf53",
+  "pageVersion": "sha256:b3dedac7446d3ba89367277043deb9445663a789cf703c4d2aba7bed95c61840",
   "claims": [
     {
       "id": "claim_6773f21309e348839765c8af3241484e",
-      "statement": "The workspace provides a shared Testcontainers Postgres harness via @codebase/persistence/testing that starts a postgres:18-alpine container with project-specific role/database/schema and runs the project's real migrations before tests begin.",
+      "statement": "The workspace provides a shared Testcontainers Postgres harness via @codebase/persistence/testing that starts a postgres:18-alpine container with a project-specific role, database and schema and runs the project's real migrations before tests begin.",
       "evidence": [
         {
-          "resource": "repo://projects/common/persistence/src/modules/postgresql/postgresql-container.utilities.ts",
-          "version": "repo-file-v1:sha256:051cf5f26b62c0d0975cb9cb2f02d5d9a6c52ffbda48d8432ef8f28e4e802885"
+          "resource": "repo://projects/common/persistence/testing/database-testing/database-testing.utilities.ts#L1-L95",
+          "version": "repo-lines-v1:sha256:25196ff70be0376870638d1db24af6a62cf0fd9bac6b48ed7ff88696da66e315:eyJzZWxlY3RlZExpbmVDb3VudCI6OTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjMzgyYjVkMzhhYmRiODNmYTgwYTBiMGNiNjEyMzkxOThkMDk2MjVlODQyMGQ5YzNlNTkzODNmMmVmN2FiZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/common/persistence/testing/persistence-testing.utilities.ts",
-          "version": "repo-file-v1:sha256:678c0f4fc556bfe0d446b8ca78a5f1f416b892bc5d3ab957d2daf48824f263aa"
+          "resource": "repo://projects/common/persistence/testing/postgres-container/postgres-container.utilities.ts#L1-L120",
+          "version": "repo-lines-v1:sha256:fc2458446163c10a16fb117ab4ca11a1f05fb48858bd9dc800ccafd759277a89:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkMWIwNDRmOGY5OWY1YzhmZTI4NWIwMTUwMmJjNjQ2YWZmMDY4OGQwMzIyMzk2ZGU0OTc5MjY1ZmIzM2Y0MDkxIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_3726aad362504a1cb0204ea523e2a1f3",
-      "statement": "startDatabaseTestingModule wraps startPostgresContainer and compiles a NestJS testing module with global ConfigModule, PostgresqlModule.forRoot, TypeOrmModule.forFeature, and the test's imports/providers, connecting through the exact same wiring as production.",
+      "statement": "startDatabaseTestingModule wraps startPostgresContainer and compiles a NestJS testing module with a global ConfigModule, PostgresqlModule.forRoot (or the project's own database module), TypeOrmModule.forFeature, and the test's imports and providers, connecting through the same wiring as production.",
       "evidence": [
         {
-          "resource": "repo://projects/common/persistence/testing/persistence-testing.utilities.ts#L43-L99",
-          "version": "repo-lines-v1:sha256:ea27bc36ca110e8b86790037462afd36c3fbeabf86f201afbb14e68b00cd8452:eyJzZWxlY3RlZExpbmVDb3VudCI6NTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwODdlMzRhNjNjZWFkNTQ1YmM1YzRmZWEwZmZiNmFhYWU4Y2Q5NTg5NDY4YTBiYTIyNmEwYTljMDcwMGVkMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRkYTk3NDgyZWE4MWRjZDk0NGI4ZWMxNjU2NDJmOWM3YzY4OGYxZmU0NWQ1ZDU0ZDA3ZjU0MzQwMjU3YmIwZjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3OTI5ZTkxZTBmOTljM2U4MjVkZTY5YjQzNWZiNjQ4NGQxYjBhMWRmMmY0NjU2MWFiZjFhMjlmMDQxODhiODgifQ"
+          "resource": "repo://projects/common/persistence/testing/database-testing/database-testing.utilities.ts#L1-L95",
+          "version": "repo-lines-v1:sha256:25196ff70be0376870638d1db24af6a62cf0fd9bac6b48ed7ff88696da66e315:eyJzZWxlY3RlZExpbmVDb3VudCI6OTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjMzgyYjVkMzhhYmRiODNmYTgwYTBiMGNiNjEyMzkxOThkMDk2MjVlODQyMGQ5YzNlNTkzODNmMmVmN2FiZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_b8af936912374c3780cae1d8567a6e31",
-      "statement": "The @codebase/interface/testing package provides a GraphQL Mock Server (MSW-based) with startGraphqlMockServer, resetGraphqlMockServer, stopGraphqlMockServer lifecycle and typed handlers from GraphQL Code Generator for client integration tests.",
+      "statement": "The @codebase/interface/testing package provides an MSW-based GraphQL mock server with startGraphqlMockServer, resetGraphqlMockServer and stopGraphqlMockServer lifecycle functions and typed handlers from GraphQL Code Generator for client integration tests.",
       "evidence": [
         {
-          "resource": "repo://projects/common/interface/testing/graphql-mock-server.ts",
-          "version": "repo-file-v1:sha256:df1743a43798ca8bea1fe75b0ac21c666cc2900c45e9582e99c048b6cfcd6e4f"
+          "resource": "repo://projects/common/interface/testing/graphql-mock-server/graphql-mock-server.utilities.ts#L1-L24",
+          "version": "repo-lines-v1:sha256:f43c8bb8d663ca998a22ae9c6c8e369ec83a04b2ca72ebde223b06fa503ef2aa:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4OWE0YWU3ZmRiYjg1MDU1YjIxZGQ2NWNhYTE4NDg4ZjM1M2Q4MGZmNTY3MDJkMjMxNzAyMmFlMWEzMmIxZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://projects/common/interface/testing/index.ts",
+          "version": "repo-file-v1:sha256:a3eac567b2291faadbe2c9c4135b5df57b8c53ec6a00a6b4472e5529be23d80e"
         }
       ]
     },
     {
       "id": "claim_0eb35e6fb6fd481bb1a31b24d9b04c6f",
-      "statement": "Server-side pagination is validated against an in-memory oracle (paginateArray, expectedPage, paginationMatrix, summarize) that generates a comprehensive matrix of cursor/count combinations including edge cases like outsider IDs, undecodable cursors, and crossed after/before pairs.",
+      "statement": "Server-side pagination is validated against an in-memory oracle (paginateArray, expectedPage, paginationMatrix, summarize) that generates a matrix of cursor and count combinations including edge cases like outsider IDs, undecodable cursors and crossed after/before pairs.",
       "evidence": [
         {
-          "resource": "repo://projects/common/interface/testing/pagination.ts",
-          "version": "repo-file-v1:sha256:f74071a41cb30fc04f1bc0f0212b73af1e78cdd301aefad9c24c0fd4954968a0"
+          "resource": "repo://projects/common/interface/testing/index.ts",
+          "version": "repo-file-v1:sha256:a3eac567b2291faadbe2c9c4135b5df57b8c53ec6a00a6b4472e5529be23d80e"
+        },
+        {
+          "resource": "repo://projects/common/interface/testing/pagination/pagination.utilities.ts#L1-L203",
+          "version": "repo-lines-v1:sha256:362318467a408e69513ec81db9c3a3cacdb500f10235ce2b84f12ff40d55ab87:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAzLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlODIwMDk2NGE5Nzg2MzU1MjJiMmFiMDkwYzY1MDY1ZDhlZjhlODVjNDczMGJiMmViMDQ2MGQzNGM2NzdkZGJiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_64955b8d2b8d4fb1855880ba8d97180d",
-      "statement": "Nx affected testing (nx affected --target=vitest --base=main) runs all vitest configurations (unit, integration, e2e) for changed projects and their dependents, used as the standard command in CI, pre-push hooks, and validate-code skill.",
+      "statement": "Nx affected testing (nx affected --target=vitest --base=main) runs the vitest configurations for changed projects and their dependents, and is the standard command in CI, pre-push hooks and the validate-code skill.",
       "evidence": [
         {
-          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L28-L33",
-          "version": "repo-lines-v1:sha256:029a2155044d6d35d6dee2ba29e07ec2735a4aac3efedc219beeab5d757e2b9f:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWRlMmY1MzI4ZWU2ZTgwNTBlOGFhZmQ4ZGM4NjlhMDY5Y2Q5NTg0ZWRhYWY1NGZlNTg5ZDczYzNiN2RjZDc5OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWVlMmIwNDc4Njg1NDhiMWM3ODhkOTI1NDZkNjIyNTdmZDU5ZDgyZjJlMDc2NDk2NTc2NmE3ODAyZjc0ZGFiOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDE0ZmU1YTc5NGM4Y2EzN2E4MmJjMmZmYWMzNDljZDg3ODc0YmNmNTIxZjM1OTU4ZDM2MzMyYTM5Y2EwMzM3NCJ9"
+          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L28-L45",
+          "version": "repo-lines-v1:sha256:0edda7eb6cb4409327e75da8122c593becdf896a4f051696d897b1a18c27cbdb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmOTYxNTU4MDE3OTc2YzgzZjU3ZTk1NDIyN2MyNWYxMjY2OGRjMGEwNTJjZTI0YTMwMWRjMmQzYmVmNTEzMTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlMTIwZGM5MDAzYjJmMDMxNTc1OTkyM2FmNDI0N2MwYjBlOTY3MmIyYzFlNjgwODE3YzBmMGIwNGMxZTVjMjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2MjdjNmRjYjgyZmRlYTdjMTMwMTllZDdkMTU4NDYzMTkwYjA1MGMyM2MzNjAxMmY1MTM0NmExMDc4YTZlM2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA2MTZiZWI4MjZlMzY4YmIyNjQ2ZTQ0MjUyZmFmZjFiMDQ4OTI1OThhOWMzYzE0NGJiOWZjYTc5Yzc0Njc2MTgifQ"
         }
       ]
     },
     {
       "id": "claim_4ca8cfdf88f74dcc8de8b40ef74da369",
-      "statement": "CI splits the test-code target into four parallel legs (Test, Test Caelundas, Test Meanderaw, Test IC Suite) with different exclude/shard configurations so slow projects don't block faster ones, each running with --configuration=coverage and --parallel=4.",
+      "statement": "CI splits the test-code target into parallel legs per project group (Test Codebase, Test Common, Test Affirmancy, Test Caelundas, Test IC Suite, Test Lexico, Test Meanderaw) with different exclude and shard configurations so slow projects don't block faster ones.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/continuous-integration.yml#L76-L94",
-          "version": "repo-lines-v1:sha256:70f93165384f19fe2b9111004e6ff6571db95b8b1378c84a25352226c0f2e295:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlN2JlMDdjMjI1OTNhN2RhNGQ1MTBlNGI1ZTMzZGVkMjgyN2ZlNzU4NzY4NzcxYzg3ZWYwMDI0YTExZDUwY2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3OTAxYWI2MDNiNTgwODM3NDJjMjc2YWUwZjBlN2Q3M2NiY2NhYjk0NDBiNTY4ZDNhMDUwYjFmMTc1Y2YxMGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU2YWIxYmExY2FkMDVjYThkMTk2OGRiNWQ0YWIzYmYxNDY1NjNlNzkyOWJlZGIxOTc1M2YyYzc4YWRlMTkzOTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJjNDgyOGNkN2UwMDMwODgwMjU3NzBhYTg3OWM5ZmJjMDc0YTI4NzgyNzUwMGI4MTg5ZTIzYTdiZDg4ZGVjOTYifQ"
+          "resource": "repo://.github/workflows/continuous-integration.yml#L83-L130",
+          "version": "repo-lines-v1:sha256:e03034e1d97e600612b87ec2a61dfec78694bf0f545bfd7527fc5066ae786cfa:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjMjU4MjJhMDk0YzQ5M2Y1YTA0YTdjZjRhNDdhODJlOTA1MWQyYTdhZDMyNGUzODRiMGRhZjEyMDVkZWVhNzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMmY5MmExN2FiOWIyMTcwOTM3NDcwMWI0NWRkZjA0ZGQ5ZWIyODVhMTk2NTE1ODJmNDFjYmQ4Y2Y1MDU1NGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4YzMzMmRlZGRlNzBlYzM1MjA2Y2MxMzU0OTc4Mzc4YjgzYmY5YzdhZGM0ZGU3NTVhYzYxZGE1OWY3YjU0NzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwNzZiOTZkMmEzMDIzZGVjNTcxNzc1MGRjNzQ3NTY3NDAxN2U2MDM4NDI2ZWI4MTM5MjUyODg3YTE1MDU5YTMifQ"
         }
       ]
     },
     {
       "id": "claim_1e47907007a6449eb562395db9d24333",
-      "statement": "Integration tests combine real Postgres via Testcontainers with selective mocking of external services using @golevelup/ts-vitest's createMock<T>(), mocking filesystem/HTTP while keeping database real, and using getRepositoryToken for repository mocks in NestJS DI.",
+      "statement": "Integration tests combine a real Postgres via Testcontainers with selective mocking of external services using @golevelup/ts-vitest's createMock, mocking filesystem and HTTP while keeping the database real.",
       "evidence": [
         {
-          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L95-L118",
-          "version": "repo-lines-v1:sha256:0736078fc2c3648dac19584ba79bcf2680b7faceed39329affe611079e7bbb82:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhkOGE3ZDAyYjEzMTRlYWNhNDMxODVkMTMyMTIwNWJlNzliZjQzMjNiMWU5MTE2MjJjOGQ2Y2RlNTM4Mzk0MDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwYzdlMmZmZTliZDJhODQ4ZjQ1NmYxN2ZkMTNiNTUxZTExN2E2YzQ2ZWE1NWM2MDkxYjY5NjcwN2I1ODYzYWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUxMzNjMmIzNjcyY2NiMTZjNDUzMzIzNGU2NGI4MjA5NzNhMDBjMmFjZjZkMzdkYmFlNWZlZjgzMThhY2E1YWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNkMjAxMjE1ODJjMmI3MTNlZGQ3NDdhZjY0MzhkMWQ2YjBhNTVmZGIyODA4NTFlYWYxYWRjZTgxZTMzMWY5MjIifQ"
+          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L80-L130",
+          "version": "repo-lines-v1:sha256:993140118019ddb8424a3f521008305b0dfa3164b5710ae8b464eff9072932fa:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5N2UzMTFhYjFjMmYzOTJlZmI5NDE3OGVkYzg5YWY2YjRiMWFiNzExOTUwYWNiNDEzZjhkN2QxZmI4ZmFhNWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliZmI3ZDQ4ZjE2YTcwZjhmZTk0MTc5ODI0YWY3MGJhOTJhYmEyMDI3NzcxZmZjYTlmNTMzZTNiZDNiY2UzNjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVjZTdiMzI2NDhkODY2YmQyMmZhNGU2OTRkNDA3NTY3MTFiODllYjE1MWY3YzUzYTEwNjRiNzhiMDNkMzAxMDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzMWE2OTA1NTYwMzc2ZDIxODkyNGZkNzIxNTc2ZThjOGMyMDA0NTI2MTJmMjJhYmNjOWM1MWEwODUzY2MwM2UifQ"
         },
         {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/draw/draw-run.command.integration.test.ts#L15-L57",
-          "version": "repo-lines-v1:sha256:0af2dd98770f59dca6327479ef39f12011be16709995caf9b7b92551ccccff2d:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhNDBjMjBkMzVkYzVmNDEyZDEwMzEwYzlkYmM3OGQ2MjkwOTUyNGJhYTJmNDZmMmM3OGM0MjhmMWNhZjk3ODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxNmNhMzU2YmIzNDBlZWYyM2NhOWNlNzNmMzgxYjkyNjAwN2M2NWMwY2MyZjE4YzBiMTcyNzFhNmRmNDA0MGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY3NTQzM2JiNDFhNWZlMTYxMzQ4ZDc5MTJiZDlhMDdjMzg0NmQ2MTgzMmMzZDZmNmMwODBiZTBkMTQ0ZWMzYzUifQ"
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/draw/draw-run.command.integration.test.ts#L1-L146",
+          "version": "repo-lines-v1:sha256:b5d1a7426c03eda89b295259ea5bee001d82c3793360864965dc68b0441844b8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQ2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIyMGI0OTFhZDdmM2RkNzRmOTdmMmM2ZjJiY2E0NTM3MjVkMmI3N2YyNTZjZDk4OTRmOTYwM2Y0YmVlZmNhZjVjIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
@@ -85,24 +93,24 @@
       "statement": "The integration project itself has an end-to-end test that spawns the real CLI entrypoint and verifies the NestJS command container boots and all 12 CI commands are registered.",
       "evidence": [
         {
-          "resource": "repo://integration/src/integration.main.end-to-end.test.ts#L35-L115",
-          "version": "repo-lines-v1:sha256:ecac527ab466890c824545f95e6d61733e5a4e0646c1ef5b3779ae6e3ef7d7ab:eyJzZWxlY3RlZExpbmVDb3VudCI6ODEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjliZWM2YjllMzE4NjIyMTQzMGEyZjA4OTc5ZmIxN2JlMDYxMzUyYmZiY2IyMmUxM2RmMWE0NDBjMzEzNTUyMzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+          "resource": "repo://integration/src/integration.main.end-to-end.test.ts#L1-L107",
+          "version": "repo-lines-v1:sha256:040e23852f4f5b4d5001f09fbd36e6b7ad9056bfb60c3d7b818e3b5114b3b6b5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjYjBhOGNiMjk2ZGM4NTVjOGY0M2VmNGM3YjE1Zjg3ZDljODU2Y2E0MmYyOGNjZmIxYzA3YjEyMWY0OGViZWQ0IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_b278568da5e24940ab71cd4902683d96",
-      "statement": "The triage-integration skill provides step-by-step procedures for diagnosing CI integration failures locally (lint-staged, husky hooks) and remotely (GitHub Actions), with specific fix commands for each failing target type (typecheck, lint, format, spell-check, sync, lockfile, commitlint, branch-name).",
+      "statement": "The triage-integration skill provides step-by-step procedures for diagnosing CI integration failures locally (lint-staged, husky hooks) and remotely (GitHub Actions), with fix guidance for each failing target type.",
       "evidence": [
         {
-          "resource": "repo://.agents/skills/triage-integration/SKILL.md#L130-L370",
-          "version": "repo-lines-v1:sha256:70d301a0afd6373fa78f9670a44fde457cf5ea0302d5706317e2f0de5d80fc4c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJmYWY3OGYwNmI3YzkxMmJiNWJkZjRhMmMyMDA5MTA0NzFkZTQ4MTBkZDAxY2JkN2JiMTg4ZjkyNWY3ZTNiNmI2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJiMzU3NzliNzk3NTUxZTk1ODlmMGJkMGNlZDYwMWI2NGQyNTc1NjVmZWM4MzhjMjEzYTc0NzYxMGMxNDM0OTQ5IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIyNGUyNzZmMGExZmQwMzQxOTdlZTAzMTlhNTNjYjVmYjA4MTMwZDQwNzM0OTM2MDc0ZWY0ODQ1ZjA1MDEyNTIxIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0MDljODgyNjVlNzc5ZDg5YjhjN2QzOTQ0NTc0YTcyOWQ4MDYxODYwOWZhZTMxODVkYWZiM2U0NmUwNTA4ZDFmIn0"
+          "resource": "repo://.agents/skills/triage-integration/SKILL.md#L100-L400",
+          "version": "repo-lines-v1:sha256:4b0f9884bc81baf8cd5176078d81b2a7d942e35a49de0f860dbee66cfe710955:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkYjA3ZDljZmY0NmI2M2MzMmZhM2IzODg1NTg5ZWZkZTc3ZjlhMDM0MjI1NTgwNDVmMjM3NGJlNDMxNTQyNzAxIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIxMmJiMzRkMDRmZmM4ZjEyZmQ3ZDNhNjk4ODhmNDU5NzE3ZDA4YzU5MTRlMjlkNTA1MTEyOTc2MzY1NmNkZmE1IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJmNmRlYWFiNTZlOTI2ZDMyMjA1NTIzNjE4MzFhY2I3ZTBhNTUzZDQ4OTVmNzc1YmMwMmIyMGMxYjYyZjgxMjU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIwZDBjMzdiZTNiOThjMzQyZDJiYmE3Mzc5YjgzNzdjODI3ZWFiY2UwYWUwZDk5NjVmODg1NTViOTY1ODY5YWY4In0"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.0",
-    "at": "2026-10-29T03:39:46.432Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-22T00:18:20.862Z"
   }
 }

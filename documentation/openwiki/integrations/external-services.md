@@ -4,8 +4,8 @@ title: "External Service Integrations"
 description: "Overview of all external service integrations: Ollama (local LLM for Affirmancy), SearxNG (metasearch for Affirmancy), Swiss Ephemeris (astronomical data for Caelundas), PostgreSQL (shared container for Lexico and Meanderaw), and Open WebUI (chat interface for Ollama)."
 tags: ["integrations", "external-services", "ollama", "searxng", "postgres", "swiss-ephemeris", "open-webui"]
 verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-29T03:39:46.432Z
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 sources:
   - id: openwiki-source-b1fbe7ba8fb86efe70b945c0
     resource: repo://documentation/planning/2026-02-27-feature-affirmations-application-1.plan.md
@@ -13,15 +13,15 @@ sources:
     resource: repo://infrastructure/docker/docker-compose.yml
   - id: openwiki-source-e84c9845fa1929e0b3fde349
     resource: repo://infrastructure/README.md
+  - id: openwiki-source-c9ed018631133e53dc4fa845
+    resource: repo://projects/affirmancy/configuration/searxng.settings.yml
   - id: openwiki-source-aa414ec11f49c0bd0511815c
     resource: repo://projects/affirmancy/project.json
   - id: openwiki-source-65feee223eea8eae1972cca5
     resource: repo://projects/affirmancy/README.md
-  - id: openwiki-source-e6649d4abfe6e57dbc354632
-    resource: repo://projects/affirmancy/searxng.settings.yml
   - id: openwiki-source-365913b525ddd217ee2335b6
     resource: repo://projects/caelundas/caelundas-cli/README.md
-generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 ---
 
 # External Service Integrations
@@ -34,7 +34,7 @@ This page documents the external services that the codebase integrates with, inc
 |---------|---------|---------|------------|---------------|
 | **Ollama** | Local LLM inference (`gemma4:e2b`) | Affirmancy | 11434 | `nx run affirmancy:ollama` (host-managed) |
 | **PostgreSQL** | Primary datastore | Lexico, Meanderaw | 5432 | `nx run infrastructure:postgres:up` |
-| **SearxNG** | Metasearch (curated engines) | Affirmancy | 8889 | `nx run infrastructure:searxng:up` + `projects/affirmancy/searxng.settings.yml` |
+| **SearxNG** | Metasearch (curated engines) | Affirmancy | 8889 | `nx run infrastructure:searxng:up` + `projects/affirmancy/configuration/searxng.settings.yml` |
 | **Swiss Ephemeris** | JPL DE431 astronomical data | Caelundas | N/A (local files) | `nx run caelundas-cli:download-ephemeris` |
 | **Open WebUI** | Browser chat interface for Ollama | Affirmancy (manual use) | 3001 | `nx run infrastructure:open-webui:up` |
 
@@ -100,13 +100,13 @@ Returns the list of locally available models.
 | **Image** | `postgres:18-alpine` |
 | **Container name** | `postgres` |
 | **Volume** | `postgres_data:/var/lib/postgresql` |
-| **Projects** | `lexico`, `meanderaw` |
+| **Projects** | `caelundas`, `lexico`, `meanderaw` |
 
 ### Configuration
 
 Defined in `infrastructure/docker/docker-compose.yml`:
 
-- **POSTGRES_PROJECTS**: `lexico meanderaw` — each project gets a `<project>_username` role, `<project>_development` database, and `<project>` schema
+- **POSTGRES_PROJECTS**: `caelundas lexico meanderaw` — each project gets a `<project>_username` role, `<project>_development` database, and `<project>` schema
 - **env_file**: `../../.env` — admin credentials (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`)
 - **Init script**: Inline config `postgres-databases` creates roles/databases/schemas when volume is empty
 
@@ -154,11 +154,11 @@ Runs every 10s with 5s timeout, 5 retries.
 | **Port** | 8889 (maps to container port 8080) |
 | **Image** | `searxng/searxng:latest` |
 | **Container name** | `searxng` |
-| **Settings file** | `projects/affirmancy/searxng.settings.yml` (mounted read-only) |
+| **Settings file** | `projects/affirmancy/configuration/searxng.settings.yml` (mounted read-only) |
 
 ### Configuration Highlights
 
-The settings file (`projects/affirmancy/searxng.settings.yml`) uses `use_default_settings: true` to inherit SearxNG defaults, overriding only what's needed:
+The settings file (`projects/affirmancy/configuration/searxng.settings.yml`) uses `use_default_settings: true` to inherit SearxNG defaults, overriding only what's needed:
 
 #### General
 - **Instance name**: `Affirmancy SearxNG`

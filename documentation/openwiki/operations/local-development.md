@@ -8,8 +8,8 @@ sources:
     resource: repo://.devcontainer/README.md
   - id: openwiki-source-2fe644645addbb5d683744e9
     resource: repo://.env.default
-  - id: openwiki-source-7a238773a33bfa517e4a1925
-    resource: repo://configuration/pyproject.toml
+  - id: openwiki-source-6f998d83c145b9379bd4ec08
+    resource: repo://configuration/python/pyproject.toml
   - id: openwiki-source-5af1e140a8c8b0f50fd8ad35
     resource: repo://infrastructure/docker/docker-compose.yml
   - id: openwiki-source-20adfbd947778ab4f8c79dfb
@@ -22,19 +22,22 @@ sources:
     resource: repo://pnpm-workspace.yaml
   - id: openwiki-source-65feee223eea8eae1972cca5
     resource: repo://projects/affirmancy/README.md
-  - id: openwiki-source-ff39bf7091d4164b7610dff3
-    resource: repo://projects/caelundas/caelundas-cli/.env.default
+  - id: openwiki-source-bfc67abb6a9bedba78f585cd
+    resource: repo://projects/caelundas/caelundas-cli/configuration/.env.default
   - id: openwiki-source-365913b525ddd217ee2335b6
     resource: repo://projects/caelundas/caelundas-cli/README.md
-  - id: openwiki-source-e5dd7c210542971c10f4aeba
-    resource: repo://projects/lexico/lexico-cli/.env.default
+  - id: openwiki-source-74efd1b4fbc60ac637a3d639
+    resource: repo://projects/lexico/lexico-cli/configuration/.env.default
   - id: openwiki-source-5e40db637ff9cea3eb6ab5fe
     resource: repo://projects/lexico/lexico-cli/README.md
-  - id: openwiki-source-a106a461b02c44c1c748438d
-    resource: repo://projects/meanderaw/meanderaw-cli/.env.default
+  - id: openwiki-source-13fd90ad26a1489c04561ff4
+    resource: repo://projects/meanderaw/meanderaw-cli/configuration/.env.default
   - id: openwiki-source-a6e80b612169ffb94413f377
     resource: repo://projects/meanderaw/meanderaw-cli/README.md
-generated: { by: "openwiki/0.7.0", at: "2026-10-24T21:02:40.299Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+verified:
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 ---
 
 # Local Development Setup
@@ -113,8 +116,8 @@ After building the container, verify the setup:
 
 ```bash
 # 1. Check tool versions
-node --version          # Should output v22.20.0
-pnpm --version          # Should output 10.20.0
+node --version          # Should output the version in .nvmrc (v24.22.3)
+pnpm --version          # Should output the packageManager version in package.json (12.21.0)
 gh --version            # Should output gh version X.Y.Z
 helm version --short    # Should output vX.Y.Z
 kubectl version --client # Should output client version
@@ -220,17 +223,17 @@ cp .env.default .env
 
 ### Project-Specific `.env` Files
 
-Each project has its own `.env.default` that must be copied to `.env` (gitignored) in the project directory:
+Each project has its own `configuration/.env.default` that must be copied to `configuration/.env` (gitignored) in the project directory:
 
 ```bash
 # Caelundas
-cp projects/caelundas/caelundas-cli/.env.default projects/caelundas/caelundas-cli/.env
+cp projects/caelundas/caelundas-cli/configuration/.env.default projects/caelundas/caelundas-cli/configuration/.env
 
 # Lexico
-cp projects/lexico/lexico-cli/.env.default projects/lexico/lexico-cli/.env
+cp projects/lexico/lexico-cli/configuration/.env.default projects/lexico/lexico-cli/configuration/.env
 
 # Meanderaw
-cp projects/meanderaw/meanderaw-cli/.env.default projects/meanderaw/meanderaw-cli/.env
+cp projects/meanderaw/meanderaw-cli/configuration/.env.default projects/meanderaw/meanderaw-cli/configuration/.env
 ```
 
 Project `.env` files contain project-prefixed database variables (e.g., `CAELUNDAS_POSTGRES_*`, `LEXICO_POSTGRES_*`, `MEANDERAW_POSTGRES_*`) that default to the local container's per-project role, database, and schema. The `MEANDERAW_` prefix keeps them apart from the unprefixed `POSTGRES_*` variables the workspace root's `.env` sets as the container's admin login, which Nx also loads into every task and which meanderaw never reads.
@@ -249,10 +252,10 @@ This installs dependencies for all projects in the pnpm workspace (defined in `p
 
 ### Python (uv)
 
-Python projects are managed as a uv workspace declared in `configuration/pyproject.toml`, sharing `configuration/uv.lock` and the root `.venv`. Sync from the repository root and point uv at that workspace config:
+Python projects are managed as a uv workspace declared in `configuration/python/pyproject.toml`, sharing `configuration/python/uv.lock` and the root `.venv`. Sync from the repository root and point uv at that workspace config:
 
 ```bash
-uv sync --project configuration
+uv sync --project configuration/python
 ```
 
 This installs all Python project members (currently `projects/affirmancy`) and dev tools (ruff, pyright, pytest, sqlfluff, etc.) into the shared `.venv`.
@@ -298,7 +301,7 @@ Astronomical calendar generation using Swiss Ephemeris, storing events in Postgr
 nx run caelundas-cli:download-ephemeris
 
 # 2. Configure your observer location and date range
-cp projects/caelundas/caelundas-cli/.env.default projects/caelundas/caelundas-cli/.env
+cp projects/caelundas/caelundas-cli/configuration/.env.default projects/caelundas/caelundas-cli/configuration/.env
 
 # 3. Create the calendar_events table (needs the local Postgres container running)
 nx run caelundas-cli:migration:run
@@ -315,7 +318,7 @@ NestJS CLI application that scrapes, parses, and loads dictionary sources into P
 
 **Quick Start:**
 ```bash
-cp projects/lexico/lexico-cli/.env.default projects/lexico/lexico-cli/.env      # Database connection
+cp projects/lexico/lexico-cli/configuration/.env.default projects/lexico/lexico-cli/configuration/.env      # Database connection
 nx run lexico-cli:start
 ```
 
@@ -384,7 +387,7 @@ The container uses Docker-in-Docker (DinD) with an isolated Docker daemon:
 Corepack should handle this automatically. If issues persist:
 ```bash
 corepack enable
-corepack prepare pnpm@10.20.0 --activate
+corepack prepare pnpm@12.21.0 --activate
 ```
 
 ### Port already in use

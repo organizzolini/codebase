@@ -4,17 +4,19 @@ title: Affirmancy — Affirmation Generation Pipeline
 description: Python LangGraph ReAct agent that researches spiritual subjects via SearxNG, generates affirmations across 9 grammatical axes using gemma4:e2b via Ollama, validates with Pydantic, and writes JSON/markdown output.
 tags: [affirmancy, langgraph, ollama, searxng, pydantic, spiritual-practices, affirmations]
 verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-29T03:39:46.432Z
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 sources:
+  - id: openwiki-source-5af1e140a8c8b0f50fd8ad35
+    resource: repo://infrastructure/docker/docker-compose.yml
   - id: openwiki-source-834d9e55d27cecb197701e79
     resource: repo://projects/affirmancy/AGENTS.md
+  - id: openwiki-source-c9ed018631133e53dc4fa845
+    resource: repo://projects/affirmancy/configuration/searxng.settings.yml
   - id: openwiki-source-aa414ec11f49c0bd0511815c
     resource: repo://projects/affirmancy/project.json
   - id: openwiki-source-65feee223eea8eae1972cca5
     resource: repo://projects/affirmancy/README.md
-  - id: openwiki-source-e6649d4abfe6e57dbc354632
-    resource: repo://projects/affirmancy/searxng.settings.yml
   - id: openwiki-source-de400b0e93cead15077457ba
     resource: repo://projects/affirmancy/src/affirmancy.ipynb
   - id: openwiki-source-a2f679f5203c524c717c7b87
@@ -27,7 +29,7 @@ sources:
     resource: repo://projects/affirmancy/src/subjects.py
   - id: openwiki-source-29bc3185c9e8810f2d6f2941
     resource: repo://projects/affirmancy/testing/test_services.py
-generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 ---
 
 # Affirmancy — Affirmation Generation Pipeline
@@ -254,7 +256,7 @@ All use:
 
 ## SearxNG Configuration
 
-The `searxng.settings.yml` configures a private instance layered on upstream defaults (`use_default_settings: true`):
+The `configuration/searxng.settings.yml` file configures a private instance layered on upstream defaults (`use_default_settings: true`):
 
 ### Key Settings
 - **Hostname boosting** (`hostnames:` plugin): 100+ high-priority patterns for spiritual sources (sacred-texts.com, hermetic.com, biddytarot.com, labyrinthos.co, chabad.org, sefaria.org, runesecrets.com, crystalvaults.com, etc.)
@@ -282,9 +284,7 @@ Targets defined in `nx.json` (inherited via `targetDefaults`) and `pyproject.tom
 | `bandit` | `bandit -r src` | Security linter |
 | `nbstripout` | `nbstripout src/*.ipynb` | Strip notebook outputs |
 | `typecheck` | `pyright` + `ty` (parallel) | Composite type checking |
-| `lint` | `ruff-lint` + `bandit` + `vulture` | Composite linting |
-| `format` | `ruff-format` + `nbstripout` | Composite formatting |
-| `gate` | `typecheck` + `lint` + `pytest` | Full quality gate |
+| `lint-code` / `format-code` / `typecheck-code` / `guard-code` / `test-code` | — | The workspace-wide aggregators every project exposes; the Python tools above run behind them |
 
 ### Service Management Targets
 
@@ -323,7 +323,8 @@ projects/affirmancy/
 ├── AGENTS.md
 ├── pyproject.toml
 ├── uv.lock
-├── searxng.settings.yml
+├── configuration/
+│   └── searxng.settings.yml
 └── README.md
 ```
 

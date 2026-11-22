@@ -4,56 +4,56 @@ title: "Codometer — Repository Measurement & Limits"
 description: "Domain model documentation for the codometer repository measurement toolchain: file sizes, symbol counts, comment budgets, custom counters, limits enforcement, badge generation, gate semantics, and CI integration."
 tags: ["codometer", "measurement", "limits", "code-quality", "ci", "configuration"]
 verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-29T03:39:46.432Z
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 sources:
-  - id: openwiki-source-90b02c1b2d7e834e85fa1f3a
-    resource: repo://configuration/codometer.config.ts
-  - id: openwiki-source-39c3295efc089133e87a9c80
-    resource: repo://CONTEXT.md
+  - id: openwiki-source-50b667bfcf0ee4b4daed851d
+    resource: repo://configuration/ic-suite/codometer.config.ts
   - id: openwiki-source-508eb0c2c694b607008ce871
     resource: repo://documentation/adr/0001-absorb-size-limit-into-codometer.md
   - id: openwiki-source-a43934029d64432deb809f9c
     resource: repo://documentation/adr/0003-fold-bundle-reporting-into-codometer.md
   - id: openwiki-source-d0a636aedee2b4cb64837599
     resource: repo://projects/ic-suite/codometer/codometer-agents/package.json
-  - id: openwiki-source-dba5e75bb5ab81fcea2af4ed
-    resource: repo://projects/ic-suite/codometer/codometer-cli/codometer.config.ts
+  - id: openwiki-source-db23a103a1f76612490ef860
+    resource: repo://projects/ic-suite/codometer/codometer-cli/configuration/codometer.config.ts
   - id: openwiki-source-3ae2ebeca3adb1785fa98c4c
     resource: repo://projects/ic-suite/codometer/codometer-cli/package.json
-  - id: openwiki-source-0f96ba77a90f6d451ba97b58
-    resource: repo://projects/ic-suite/codometer/codometer-configuration/codometer.config.ts
+  - id: openwiki-source-3acbc037bdf283d32774e477
+    resource: repo://projects/ic-suite/codometer/codometer-configuration/configuration/codometer.config.ts
   - id: openwiki-source-dd32d7d11876d0f208356c5a
     resource: repo://projects/ic-suite/codometer/codometer-configuration/package.json
+  - id: openwiki-source-8d82a562d546b3c423a69fe8
+    resource: repo://projects/ic-suite/codometer/codometer-configuration/README.md
   - id: openwiki-source-28eef958d68cd5a89fc9c310
     resource: repo://projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.types.ts
-  - id: openwiki-source-57bed08758a3c53f9dfecfa1
-    resource: repo://projects/ic-suite/codometer/codometer-core/codometer.config.ts
+  - id: openwiki-source-032bb37158d317a7d6bb2ff0
+    resource: repo://projects/ic-suite/codometer/codometer-core/configuration/codometer.config.ts
   - id: openwiki-source-c7a5f2ab14fd1b98eb4c824e
     resource: repo://projects/ic-suite/codometer/codometer-core/package.json
-  - id: openwiki-source-d47205dda536f965192ce4c2
-    resource: repo://projects/ic-suite/codometer/codometer-examples/codometer.config.ts
+  - id: openwiki-source-90de55eb14b25832940ad64d
+    resource: repo://projects/ic-suite/codometer/codometer-core/README.md
   - id: openwiki-source-b0b9836199a8c6edbaace0cd
     resource: repo://projects/ic-suite/codometer/codometer-examples/package.json
-  - id: openwiki-source-aedc1b62ee715ff95580367e
-    resource: repo://projects/ic-suite/codometer/codometer-languages/codometer.config.ts
+  - id: openwiki-source-e6f1c6a5c5272e1d5de8b072
+    resource: repo://projects/ic-suite/codometer/codometer-languages/configuration/codometer.config.ts
   - id: openwiki-source-706ddd0d6e64ecb571bb87d0
     resource: repo://projects/ic-suite/codometer/codometer-languages/package.json
   - id: openwiki-source-f1721cecf2c1bf04b569e0c7
     resource: repo://projects/ic-suite/codometer/codometer-languages/src/index.ts
   - id: openwiki-source-28ad2cbc418e3f462420fde0
     resource: repo://projects/ic-suite/codometer/codometer-languages/src/modules/languages/languages.service.ts
-  - id: openwiki-source-8bec39296dbf15a4728b3da6
-    resource: repo://projects/ic-suite/codometer/codometer-measurement/codometer.config.ts
+  - id: openwiki-source-c8f658aebe3223a091cb870e
+    resource: repo://projects/ic-suite/codometer/codometer-measurement/configuration/codometer.config.ts
   - id: openwiki-source-e080c77e8c093b18ceadf879
     resource: repo://projects/ic-suite/codometer/codometer-measurement/package.json
   - id: openwiki-source-1d1d3c69ab10e9efd7e6383d
     resource: repo://projects/ic-suite/codometer/codometer-measurement/src/modules/limits/limits.service.ts
-  - id: openwiki-source-9b21a104ba370f528e03f806
-    resource: repo://projects/ic-suite/codometer/codometer-output/codometer.config.ts
+  - id: openwiki-source-640bb5f7eb4cfb5c80eb728d
+    resource: repo://projects/ic-suite/codometer/codometer-output/configuration/codometer.config.ts
   - id: openwiki-source-82d3b97a35b04159ad303f8f
     resource: repo://projects/ic-suite/codometer/codometer-output/package.json
-generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 ---
 
 # Codometer — Repository Measurement & Limits
@@ -225,7 +225,7 @@ The built-in `codebase` input measures the repository root (every file not ignor
 
 ### Example: Shared Configuration
 
-The workspace-level [`configuration/codometer.config.ts`](repo://configuration/codometer.config.ts) exports a shared `codometerConfiguration` object that every project spreads:
+The workspace-level `configuration/ic-suite/codometer.config.ts` exports a shared `codometerConfiguration` object that every project spreads:
 
 ```typescript
 export const codometerConfiguration = {
@@ -248,7 +248,7 @@ export const codometerConfiguration = {
       label: "Static Methods",
       symbols: { kinds: ["method"], modifiers: ["static"] },
     },
-    // Comment budgets: 128 words per block for most languages, 256 for shell
+    // Comment budgets: 48 words and 8 lines per block for most languages, shell 48 words and 16 lines, JSDoc budgets per declaration kind
     ...commentBudgets,
   ],
   // Unqualified limits resolve to this input
@@ -436,21 +436,21 @@ flowchart TD
 
 ## Comment Budgets
 
-Comment budgets are declared as `comment` custom statistics with a `language` and one of `maximumWords` (prose words after stripping markers), `maximumLines`, or `maximumCharacters`. Each language's budget is written separately — no inheritance — so "every language at 128 words, except shell at 256" means writing eight selectors. The budget is per **comment block** (a run of comment lines ended by a blank line), not per line or per file.
+Comment budgets are declared as `comment` custom statistics with a `language` and one of `maximumWords` (prose words after stripping markers), `maximumLines`, or `maximumCharacters`. Each language's budget is written separately — no inheritance — so "every language at 48 words" means writing one budget per language (the shared configuration generates them). The budget is per **comment block** (a run of comment lines ended by a blank line), not per line or per file.
 
 A comment-budget counter's `value` is the **count of blocks that exceeded the budget**, not the word total. The gate is therefore a limit of `value: 0` on the `custom.<label>` metric. Each breaching block appears in the metric's `instances` array with file, line, and measured count.
 
 ```typescript
-// From configuration/codometer.config.ts
+// From configuration/ic-suite/codometer.config.ts
 const generalCommentBudgets = CODOMETER_COMMENT_LANGUAGES
   .filter(l => l !== "shell")
   .map(language => ({
-    comment: { language, maximumWords: 128 },
+    comment: { language, maximumLines: 8, maximumWords: 48 },
     label: `${COMMENT_LANGUAGE_LABELS[language]} Comment Budget`,
   }));
 
 const shellCommentBudget = {
-  comment: { language: "shell", maximumWords: 256 },
+  comment: { language: "shell", maximumLines: 16, maximumWords: 48 },
   label: "Shell Comment Budget",
 };
 ```
@@ -461,7 +461,7 @@ Codemeter is integrated into the repository's Continuous Integration pipeline:
 
 | Workflow | Job | Command |
 |----------|-----|---------|
-| **Continuous Integration** | `build-projects` (👷 Build) | `nx run configuration:codometer:write` via `integration/src/integration.main.ts run-affected` |
+| **Continuous Integration** | `build-projects` (👷 Build) | `build`, then the per-project `codometer` target in its `check` configuration |
 | **Continuous Deployment** | `push-releases` | `nx run-many --target=codometer --configuration=write --exclude=configuration` then `nx run configuration:codometer:write` |
 
 The `build-projects` job depends on codometer because every publishable package declares a `size` limit on its compiled JavaScript output (`Compiled JavaScript.size`). A breach fails the Build job and names the project.

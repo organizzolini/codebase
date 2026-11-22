@@ -1,14 +1,22 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:564808dc93019d18edcb25853d77745c3d103bd9994bc4021dcda393ef25ad4c",
+  "pageVersion": "sha256:e429ba78a63e7f58c3806843a41b22fd787230c83de767349fc13e048077a312",
   "claims": [
     {
       "id": "claim_ff8afaf5ab934fa5a4f1b86668eaf53e",
-      "statement": "Codemeter defines seven core domain concepts: Target (named file set), Analysis (language/size), Metric (named number), Limit (declared max), Breach (exceeds limit), Severity (fail/warn), Staleness (committed output drift).",
+      "statement": "Codometer defines seven core domain concepts: Target (named file set), Analysis (language/size), Metric (named number), Limit (declared max), Breach (exceeds limit), Severity (fail or warn), and Staleness (committed output drift).",
       "evidence": [
         {
-          "resource": "repo://CONTEXT.md#L49-L83",
-          "version": "repo-lines-v1:sha256:496da42397dbcca118d049503f46162a9863bf7e364806775a6e8b04dd1ee13c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhYzFlNTJkYzUxNWExMjIwY2MxZDAzMzc1NGM2ZjAzZjcyZTJiMzUwNWI0ZWU5ODU0OGUyNDlmNGE5OWE3NGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlMTNkM2ZmZjc5NDc2ZTQ5MGI2ODhkMWI2ZWM4MGY2ZTFkMjQ0M2M5MDlkYWM4OTg2NzNmMWQxY2FjMzk2OWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlY2RmNWI1NDFmODBkMjU4MTUyZTgzZjM5OGFhNTM5NWJmM2Q5ODA1Yjc2MTk2MmM0N2Q1OWRkZjI4MjhiZmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI1YjFhZGQ5OTcxMmNiZjllMmFjZjU0ZmQzNGNhNGI2ZGIyZjc1N2U3ZjBkM2RkNTA3N2JhOWNiOTA0MGNlYTMifQ"
+          "resource": "repo://projects/ic-suite/codometer/codometer-configuration/README.md#L1-L120",
+          "version": "repo-lines-v1:sha256:b5d7c50ec6c6d34a6cab7f275bfe9763c0af0f015016b9c2dcbd97dd73e9fe4d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI2ZjA2MTQyOWNhMzhmMTcxZTgzMzA4NDc3NzVjYzE3OTUxMjRiZmY4NDFhOTk3ZjczNjUzOTljMTJkZDE5YjM5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIxNGZiNTExNTU3MzA1YWQxYmI4NmEwMzFkMjY3NmQ5NzM1OGVmODRlZTkzNjE1NGY2ZjY2OTJlMDVjMzA2NDZiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJiNjU3MDA1MTFhYzg3MTMyODA3MDUwOTIxMjdiNTA2ODI1NGMxZmNhNDc2YTMxNGE0MmNhZjRmMTYyOWM4ZDg0In0"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.types.ts#L1-L120",
+          "version": "repo-lines-v1:sha256:2363c2ba3dc17452c69198d84d1e537f015601ec7336609d4ae38bb18a791bcf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI4MDVlNDRjZmUyOTVkNGM1NDU0OTI5ZDA4MDFkNGQxNWMyOTE0NTllMWI1ZDNmZWVhNGU5MWMyNjBjMTc1Y2RlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIxZmViMTA3YjgxZjMwY2I3MDJmYWZhYmFhZjhhNDU4MjQxY2FlNzE0Mzc4NmFiNzg1ZTBkMzM3Y2E5OGQ0NWYyIn0"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codometer/codometer-core/README.md#L1-L24",
+          "version": "repo-lines-v1:sha256:1b6bfbd45119317e55be67b307df080c035114f752d789afbfba1eb8d9a482e9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhM2VhOTI1Y2ExOWEyZjk5OGQxNDY4YmZlOGJiYWQ3ZWNjMTBmNGZhNWI2OWE2NjJkYmZiMmI3MmY1MTM2ZjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwZWFmNzRhMDQzMmU5ZjU0ZGExNTMxNTgxNTVlMTcwZGVhZDg0ZDA0YWVmNTlkZTc3NjhkMmY3YmJjNDMzNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -17,46 +25,42 @@
       "statement": "The codometer-languages package routes a single analyze() call to eleven language analyzers: TypeScript/JavaScript, Python, JSON/JSONC, Markdown, Jupyter Notebooks, CSS, HCL, Shell, SQL, TOML, YAML.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/codometer/codometer-languages/src/index.ts",
-          "version": "repo-file-v1:sha256:7ce38bdeaa9541088f931e58f199e53765a350d101644c63d7f1f149bd6b4a63"
+          "resource": "repo://projects/ic-suite/codometer/codometer-languages/src/index.ts#L1-L97",
+          "version": "repo-lines-v1:sha256:4bcc9f1e54ad9fbd13da5af4253737e2a83cc98b96eabd05acc23e6bb55554bb:eyJzZWxlY3RlZExpbmVDb3VudCI6OTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjYjc3M2JjNTMwZDNjZTE5ZDFkZjM4OTNlZmNhNmU4ZjI1OGM5ODViZTc5YmI4ZTIyMDEyMDE2Y2NhNTY2YzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExZTFjNWUxZTBhZDY5OTMyZGEyM2RlNjNhYTVlMmI2MjVlNGFmODU3MTdhYzhiYTdlMjlhZTkwODM3MzQ5YWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/ic-suite/codometer/codometer-languages/src/modules/languages/languages.service.ts#L30-L100",
-          "version": "repo-lines-v1:sha256:3c59b59a30d0e2e98479a9a4e55e774830c40861dd3c5276837eb27ab42c576c:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwOWY1ODczYTZjYmFjNDQxNDA1YzEzNjUyNTU2YTE4MzgwZWViNTNmMGQwMjIxYjQ5ZDUwNmE5ZjY4YzBmODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3MjEwM2U5MGEzNzIxNGJhYmNjNGQyNjU5NDU5MDU0YThkZDUwMTk1NjdhNmQ3MjZmMDRjMTI4Njk0ZmIzYmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyYzUwMzM1ZTk4OGZhMGEwMmE5MDg5ODhkNDM4MDVlY2ZkODI3YTI0NDBhMDcwNmNjMzcyZDc1YzI0OWY0ZDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwZGVjMDUzMDZmZTk0M2NjNmJkZjk3NDQ5MTQzZjk5ODcwMDc0NGMzMzExMjY1ZmIxZWY3Zjc0OTNlYWNmNTQifQ"
+          "resource": "repo://projects/ic-suite/codometer/codometer-languages/src/modules/languages/languages.service.ts#L1-L125",
+          "version": "repo-lines-v1:sha256:d04fa5cb78e94c9ae3738ab877b598295f2e80f6561cf1bc0a40db6e84972137:eyJzZWxlY3RlZExpbmVDb3VudCI6MTI1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0N2QxZjI1MmE3MGY4YzY0ZWVjYzA5NmY5MjQ1NjQxYjQ5Yzg4YTg4MDM1ODQ3YzIxOTdlYzNhOTdjODk0N2M0IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_4e5e8fcbc885487badb5a1303ab95b52",
-      "statement": "Codemeter enforces a round-size convention for limits: values are powers of two or three times a power of two (4, 6, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256, 384, 512 KB).",
+      "statement": "Codometer's project configurations follow a round-size convention for compiled-size limits: values are powers of two or three times a power of two (3, 24, 32, 48 and 64 KB across the codometer packages).",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/codometer/codometer-cli/codometer.config.ts#L14-L14",
-          "version": "repo-lines-v1:sha256:7f8e6a1f5c594d92201fec8fc2bbec48881c6242cdf99c0b4b8a18abd0d474a4:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2Y4ZTZhMWY1YzU5NGQ5MjIwMWZlYzhmYzJiYmVjNDg4ODFjNjI0MmNkZjk5YzBiNGI4YTE4YWJkMGQ0NzRhNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2Y4ZTZhMWY1YzU5NGQ5MjIwMWZlYzhmYzJiYmVjNDg4ODFjNjI0MmNkZjk5YzBiNGI4YTE4YWJkMGQ0NzRhNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjIxZDI1ZmRjY2E4ODAyYjE4NWQ1ZmNjZjNjMDE1Y2E0MjI0YWMyZTM1MmQ5YmMxNzVmNGU0MDg3ZThjYzVkNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWExZDFhNjMzOTAyMjljNzk4MzQ3ZTgzYTA0MDU0NDFjOTQwMDAzNTI4NGFkMTY4YzFiZjZjZGYxZDcwYTM3MCJ9"
+          "resource": "repo://projects/ic-suite/codometer/codometer-cli/configuration/codometer.config.ts",
+          "version": "repo-file-v1:sha256:8a6aa2f39113532ca29653f2a80f4623533fe63fcad3d5a0bb939fe9db70fbb2"
         },
         {
-          "resource": "repo://projects/ic-suite/codometer/codometer-configuration/codometer.config.ts#L14-L14",
-          "version": "repo-lines-v1:sha256:5939dc0896b0171dc4a38d2dd2218352989240f0b5e4e05c86982cad9adf6842:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTkzOWRjMDg5NmIwMTcxZGM0YTM4ZDJkZDIyMTgzNTI5ODkyNDBmMGI1ZTRlMDVjODY5ODJjYWQ5YWRmNjg0MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTkzOWRjMDg5NmIwMTcxZGM0YTM4ZDJkZDIyMTgzNTI5ODkyNDBmMGI1ZTRlMDVjODY5ODJjYWQ5YWRmNjg0MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjIxZDI1ZmRjY2E4ODAyYjE4NWQ1ZmNjZjNjMDE1Y2E0MjI0YWMyZTM1MmQ5YmMxNzVmNGU0MDg3ZThjYzVkNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWExZDFhNjMzOTAyMjljNzk4MzQ3ZTgzYTA0MDU0NDFjOTQwMDAzNTI4NGFkMTY4YzFiZjZjZGYxZDcwYTM3MCJ9"
+          "resource": "repo://projects/ic-suite/codometer/codometer-configuration/configuration/codometer.config.ts",
+          "version": "repo-file-v1:sha256:2cf8b6214e8e3f2d417d4776dd3f5ef8dfba9fafc58cd498d53fd44828ac9f9f"
         },
         {
-          "resource": "repo://projects/ic-suite/codometer/codometer-core/codometer.config.ts#L14-L14",
-          "version": "repo-lines-v1:sha256:83bde97147ccff44f5581b132accaea8af6a131cdb9dce2500ae376a6086283b:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODNiZGU5NzE0N2NjZmY0NGY1NTgxYjEzMmFjY2FlYThhZjZhMTMxY2RiOWRjZTI1MDBhZTM3NmE2MDg2MjgzYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODNiZGU5NzE0N2NjZmY0NGY1NTgxYjEzMmFjY2FlYThhZjZhMTMxY2RiOWRjZTI1MDBhZTM3NmE2MDg2MjgzYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjIxZDI1ZmRjY2E4ODAyYjE4NWQ1ZmNjZjNjMDE1Y2E0MjI0YWMyZTM1MmQ5YmMxNzVmNGU0MDg3ZThjYzVkNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWExZDFhNjMzOTAyMjljNzk4MzQ3ZTgzYTA0MDU0NDFjOTQwMDAzNTI4NGFkMTY4YzFiZjZjZGYxZDcwYTM3MCJ9"
+          "resource": "repo://projects/ic-suite/codometer/codometer-core/configuration/codometer.config.ts",
+          "version": "repo-file-v1:sha256:769f26951f81d4bb913bbe5f5ca4b3898680e81ae6f624dfffb2dacb33aaa296"
         },
         {
-          "resource": "repo://projects/ic-suite/codometer/codometer-examples/codometer.config.ts#L72-L72",
-          "version": "repo-lines-v1:sha256:ddf11b7e1957521f167fd3bd4b3bbf8ee08ff5277045d37e0b4fa18884df8269:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGRmMTFiN2UxOTU3NTIxZjE2N2ZkM2JkNGIzYmJmOGVlMDhmZjUyNzcwNDVkMzdlMGI0ZmExODg4NGRmODI2OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGRmMTFiN2UxOTU3NTIxZjE2N2ZkM2JkNGIzYmJmOGVlMDhmZjUyNzcwNDVkMzdlMGI0ZmExODg4NGRmODI2OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjJiMDkzNmY5M2E0NzMwN2UxMmRjYTkxY2EwYzRmN2Q0ZDIyNDM2YWI5MzI5MTNjNWI5YTg1MDIwZWVmMDVhZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzkxMGVhNTJmZmZiYWJjMDI4MmI0OGIzNTMyNGFhMThjZWEzY2YyOTM3MjE0Mjc1NmVhODU3NDYwMDlhNDY4NiJ9"
+          "resource": "repo://projects/ic-suite/codometer/codometer-languages/configuration/codometer.config.ts",
+          "version": "repo-file-v1:sha256:8a6aa2f39113532ca29653f2a80f4623533fe63fcad3d5a0bb939fe9db70fbb2"
         },
         {
-          "resource": "repo://projects/ic-suite/codometer/codometer-languages/codometer.config.ts#L14-L14",
-          "version": "repo-lines-v1:sha256:7f8e6a1f5c594d92201fec8fc2bbec48881c6242cdf99c0b4b8a18abd0d474a4:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2Y4ZTZhMWY1YzU5NGQ5MjIwMWZlYzhmYzJiYmVjNDg4ODFjNjI0MmNkZjk5YzBiNGI4YTE4YWJkMGQ0NzRhNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2Y4ZTZhMWY1YzU5NGQ5MjIwMWZlYzhmYzJiYmVjNDg4ODFjNjI0MmNkZjk5YzBiNGI4YTE4YWJkMGQ0NzRhNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjIxZDI1ZmRjY2E4ODAyYjE4NWQ1ZmNjZjNjMDE1Y2E0MjI0YWMyZTM1MmQ5YmMxNzVmNGU0MDg3ZThjYzVkNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWExZDFhNjMzOTAyMjljNzk4MzQ3ZTgzYTA0MDU0NDFjOTQwMDAzNTI4NGFkMTY4YzFiZjZjZGYxZDcwYTM3MCJ9"
+          "resource": "repo://projects/ic-suite/codometer/codometer-measurement/configuration/codometer.config.ts",
+          "version": "repo-file-v1:sha256:b4ad0ee1b6fa48ae870e35c674bd78cfc43248d75f2da3dfb3dd4b2408eeda78"
         },
         {
-          "resource": "repo://projects/ic-suite/codometer/codometer-measurement/codometer.config.ts#L14-L14",
-          "version": "repo-lines-v1:sha256:4e9e38d7bc7b67a5366bb0d2af4b1a0a5d81f5f27f017c037095b1b79cb98ecc:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGU5ZTM4ZDdiYzdiNjdhNTM2NmJiMGQyYWY0YjFhMGE1ZDgxZjVmMjdmMDE3YzAzNzA5NWIxYjc5Y2I5OGVjYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGU5ZTM4ZDdiYzdiNjdhNTM2NmJiMGQyYWY0YjFhMGE1ZDgxZjVmMjdmMDE3YzAzNzA5NWIxYjc5Y2I5OGVjYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjIxZDI1ZmRjY2E4ODAyYjE4NWQ1ZmNjZjNjMDE1Y2E0MjI0YWMyZTM1MmQ5YmMxNzVmNGU0MDg3ZThjYzVkNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWExZDFhNjMzOTAyMjljNzk4MzQ3ZTgzYTA0MDU0NDFjOTQwMDAzNTI4NGFkMTY4YzFiZjZjZGYxZDcwYTM3MCJ9"
-        },
-        {
-          "resource": "repo://projects/ic-suite/codometer/codometer-output/codometer.config.ts#L14-L14",
-          "version": "repo-lines-v1:sha256:f77d91051ba97cfd4fc293436fa1c73f087dba191368aa48d98c1d2df8ec74b4:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjc3ZDkxMDUxYmE5N2NmZDRmYzI5MzQzNmZhMWM3M2YwODdkYmExOTEzNjhhYTQ4ZDk4YzFkMmRmOGVjNzRiNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjc3ZDkxMDUxYmE5N2NmZDRmYzI5MzQzNmZhMWM3M2YwODdkYmExOTEzNjhhYTQ4ZDk4YzFkMmRmOGVjNzRiNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjIxZDI1ZmRjY2E4ODAyYjE4NWQ1ZmNjZjNjMDE1Y2E0MjI0YWMyZTM1MmQ5YmMxNzVmNGU0MDg3ZThjYzVkNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWExZDFhNjMzOTAyMjljNzk4MzQ3ZTgzYTA0MDU0NDFjOTQwMDAzNTI4NGFkMTY4YzFiZjZjZGYxZDcwYTM3MCJ9"
+          "resource": "repo://projects/ic-suite/codometer/codometer-output/configuration/codometer.config.ts",
+          "version": "repo-file-v1:sha256:d2a7716853e527cb142ca331d726f8744990fd5ff00187c7506b4a328180603e"
         }
       ]
     },
@@ -82,73 +86,73 @@
     },
     {
       "id": "claim_edc39dcd519b427c8c3ebc0416592223",
-      "statement": "Limits are absolute (no baseline/floor), carry severity (fail/warn default fail), and are evaluated against exactly one metric; ambiguous or unbound paths fail the run.",
+      "statement": "Limits are absolute (no baseline or floor), carry a severity (fail or warn, default fail), and are evaluated against exactly one metric; ambiguous or unbound paths fail the run.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.types.ts#L270-L307",
-          "version": "repo-lines-v1:sha256:367bb26a250478ecaeb50b94c99317394f74edd9603eba886d3a080dfb24b193:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlODc5OGZjYTYwY2I3MTU3N2Q3NjBkYWQzMDRjM2NmNTVlZjYxYWZkOWVkZWU4ZmI3Y2Q2MWJlOTNkMzA3MzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3OTI5ZTkxZTBmOTljM2U4MjVkZTY5YjQzNWZiNjQ4NGQxYjBhMWRmMmY0NjU2MWFiZjFhMjlmMDQxODhiODgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU2MmM0M2FlYWNhNmI2YTkyNzY0YjRiMDFkNTRlMmRkMmQ5OGJjMjY5ODU5NmViYTQ5MjM5NWQ3OWUzZDcwOGYifQ"
+          "resource": "repo://projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.types.ts#L180-L260",
+          "version": "repo-lines-v1:sha256:eddfb2daba0ced5a503c951000a33ebb848c6d693dd2c4f91988a7bf7636c91f:eyJzZWxlY3RlZExpbmVDb3VudCI6ODEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0NTNhMDAwZDA0MGFlMGNmZTdiNWU4MjQxN2IzMWUyZDM4Njg4ODgzMmFhZGU5NDhjMDk1MDM5ZDM3Yzc1NjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU2MjU1YjgxNjA0NjEwNDJiOTE2ODNlMDUxMjk0ZTFiOTRlZDE1ZjY1M2M2YzQ3ZjhjNjI2MGJhMmIwNWI5NTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/ic-suite/codometer/codometer-measurement/src/modules/limits/limits.service.ts#L190-L230",
-          "version": "repo-lines-v1:sha256:ffd8bdc82d1591228e8bd98b7750fc1a5f49f99c78bfac9f27fb701cc8abf2e4:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjZDliYTQ0ODI1MzQ4MTc2MmM3MDQ5YjlmZjJhMDU1MWM2YWYwOWNjY2M5Njk5ZGI3N2MyMGViYjM2MGY5OTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxNjkzOTRjYjZmYWJlYjQyMWRlYmJjNTQ0NzNhNjdlYjRkZGViNGI4YTc0ZjM4MTMzODVkMGZkYWIyYjdkNmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+          "resource": "repo://projects/ic-suite/codometer/codometer-measurement/src/modules/limits/limits.service.ts#L1-L208",
+          "version": "repo-lines-v1:sha256:5fc4d1f41334663691ce9507a7699d8bd48ffb959d8f0b6294e48675d2ff1755:eyJzZWxlY3RlZExpbmVDb3VudCI6MjA4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0N2QxZjI1MmE3MGY4YzY0ZWVjYzA5NmY5MjQ1NjQxYjQ5Yzg4YTg4MDM1ODQ3YzIxOTdlYzNhOTdjODk0N2M0IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_b72791c9c4dc48ea9923fa0b83d20f62",
-      "statement": "Comment budgets are per-block (run of comment lines ended by blank line), measured in maximumWords/maximumLines/maximumCharacters, declared separately per language with no inheritance.",
+      "statement": "Comment budgets are per block (a run of comment lines ended by a blank line), measured in maximumWords, maximumLines or maximumCharacters, and declared separately per language with no inheritance; the shared configuration sets plain blocks to 48 words and 8 lines (shell 16 lines) plus JSDoc budgets per declaration kind.",
       "evidence": [
         {
-          "resource": "repo://configuration/codometer.config.ts#L43-L56",
-          "version": "repo-lines-v1:sha256:badfbc59abbde82cf4ac4d326724d45f87baad7c7b25036779aa4364f3e51995:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3MmE0MjkzODJiMmUxNDcxOGUwZTM3YjA1NzBhOGExNzAyOTkxZmNkODQ5OGNkODQwNjBhOGJmNGYwNTAxN2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmNjYyZDI3YjdhY2E4YmQ0OTdjNTFjOGE2ZTQwYTNjYzdlYzE4MzdlOTUxNmFjMTM4YWNiZTA4N2EzNWUxY2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk0NTU2M2VjMzRmZDA4YmI3YWI3MWQxMzY2ODc3MjQ3OTBkNGY1MzJhZTg2MTBmZWZkYWQzMjExMjk3MDVkYjMifQ"
+          "resource": "repo://configuration/ic-suite/codometer.config.ts#L13-L110",
+          "version": "repo-lines-v1:sha256:0695d5cad1836675a7e953d5d5aa5c42879601bce3227a6a21427ba1ba365372:eyJzZWxlY3RlZExpbmVDb3VudCI6OTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRmMjdiYTU4ZjVmYmY0ZjEwYTlkY2UyYWMzYTA4NmIzZDgyYjJhNjVjMGZlNGQ5ZDM3MDMxNjVlNjQyYTViYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3MjhiMDg1Nzg4ODRmMGFhMDJkMmI4OGIwYTkyZDZkZDRmNDg5MGZhMWM2YThhYjgxMDEwNzY0MzQzYjllMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRhZTU0YjJkOWU0YTA0NDU5OTlhMTJlYzEyYzM3NDJjZmYxYmZjN2QyYzdlOGQyNzAxOGRkMWQwNTcwM2QzZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkYjA4NmFhMjVjN2RhNTRiN2E4YzgwYzgxYWNiMjYzZGQwNTc0NTI1OWM5ZWNkZWI5MGM2MjYzMDI0YWI1MTEifQ"
         },
         {
-          "resource": "repo://projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.types.ts#L74-L85",
-          "version": "repo-lines-v1:sha256:1f3239bf3b4b12a834f0885de116e7ed312defb362c8cc23752b4f29e65dd0b4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzMjA1NzgwMGIyNjgxOWIzYzNjMzA5MmJiZTQzZWNjZDM0YjExYjM0MmM5N2MwNzBhNWZjYTBjYTY4OWYzOGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJhOTZlOGVkNTQ3ZjFkNWUxMjhhNTMyMzc5YmJiNmRiNTVjMGIxNTE1MWUzN2NiN2JmMjliMTBlZmIwM2QyYjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5OTFhZjZkMmQ4Y2M0OTJjYjMxM2ZiM2IxZTliYjljNTI1NTRmMmU2ZjMwNjEyNjA1YzM4YzI0NGJkNGFkMmYifQ"
+          "resource": "repo://projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.types.ts#L60-L110",
+          "version": "repo-lines-v1:sha256:7eff21a4fecdd307a370bf9c86a292283c18220988cbea46e510bbb93c852a84:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg3NjgxYjE2ZTc5OTFlMjg0NzM2ODZkNjNmZDdmOGQwZjEyOGEzYmU3ZGExNzEyMjk0YTMwZThiM2Q2ODJjYzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0ZjY2MGE1OWY2NTg2MWUwNzk4OGIzNjA5MzNlZGRhOTZlMDNmMmNmOWVlZTJmOGVmZTgzNDBhYTk5ODI3ZWQifQ"
         }
       ]
     },
     {
       "id": "claim_cfdf85ac53af4fa09f0e00af20baed1c",
-      "statement": "Codemeter consists of eight independently publishable npm packages: codometer-agents, codometer-cli, codometer-configuration, codometer-core, codometer-examples, codometer-languages, codometer-measurement, codometer-output.",
+      "statement": "Codometer consists of eight packages: codometer-agents, codometer-cli, codometer-configuration, codometer-core, codometer-examples, codometer-languages, codometer-measurement, codometer-output (the agents and examples packages are not published to npm).",
       "evidence": [
         {
           "resource": "repo://projects/ic-suite/codometer/codometer-agents/package.json",
-          "version": "repo-file-v1:sha256:561cf0c5e9a903bf41ef25dc8a086762583f09345f8fc396ddfec29b00f08ae9"
+          "version": "repo-file-v1:sha256:91d2930f63e8d8a206077e27b633675a6d934f8c3edef9df26aa541505448674"
         },
         {
           "resource": "repo://projects/ic-suite/codometer/codometer-cli/package.json",
-          "version": "repo-file-v1:sha256:ad44b3e5ccb8bf6025078953880c846a6304c7be4be7f47961d4a6517465eed9"
+          "version": "repo-file-v1:sha256:05aa8215d7671fc5fa283ff09b620f7cb8a9865f5c2572f5283eee5484df414d"
         },
         {
           "resource": "repo://projects/ic-suite/codometer/codometer-configuration/package.json",
-          "version": "repo-file-v1:sha256:ecc35d440c261c9368c4e5e6bd2e87a3f84b75146bb306d3bcda6ce089367a4a"
+          "version": "repo-file-v1:sha256:d42ae6b02991e7a6ec075d85ac82f93f88f0b3bdfa42f58341aa3db91e31ae5a"
         },
         {
           "resource": "repo://projects/ic-suite/codometer/codometer-core/package.json",
-          "version": "repo-file-v1:sha256:8eecd7810387f2d174243f82e805f2163ce22be8f748ba0a2ceddbc397ecd778"
+          "version": "repo-file-v1:sha256:39923300517fb53d30cb8d58902269cd41f9832d04b1f6fb93c946ad674ebe53"
         },
         {
           "resource": "repo://projects/ic-suite/codometer/codometer-examples/package.json",
-          "version": "repo-file-v1:sha256:b3f67f1031201ecaca194cdf12672b58656b43f932aa15cbc2ac3aa6adf73211"
+          "version": "repo-file-v1:sha256:28a16c0caa35828f8427643791c283b55a6ebcc6db5b6ca1c5d3b8ff0a9ef537"
         },
         {
           "resource": "repo://projects/ic-suite/codometer/codometer-languages/package.json",
-          "version": "repo-file-v1:sha256:e457c5734a9f8218b30fb22e6657debfc8ee98c0264f16ecffd8ceb739ee5e12"
+          "version": "repo-file-v1:sha256:f65dd3d5eee59c8fc5a7f74b4e46eb68ca2c7b1e1a7d28631e62c257e96a1611"
         },
         {
           "resource": "repo://projects/ic-suite/codometer/codometer-measurement/package.json",
-          "version": "repo-file-v1:sha256:38d2992cd0d0a5ace9cec201fadf918f278749c8b5e08abb017b1470d4dc96a6"
+          "version": "repo-file-v1:sha256:920ab4b4d26c4a34fedcc86b503edc4ccb5121c3c11913306d78d6ada25d740c"
         },
         {
           "resource": "repo://projects/ic-suite/codometer/codometer-output/package.json",
-          "version": "repo-file-v1:sha256:ba4ee27e09850d569cc7c28b7e29ac736ed5f28963e104d91bd7e7ca47aa8737"
+          "version": "repo-file-v1:sha256:79138578f28d0242b95183a52f6a91bad198143c4c684f88ec447bb3beafe3d2"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.0",
-    "at": "2026-10-29T03:39:46.432Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-22T00:18:20.862Z"
   }
 }

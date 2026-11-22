@@ -5,7 +5,7 @@ description: Entry point for the OpenWiki. Provides a task-oriented map routing 
 tags: [quickstart, overview, navigation]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-20T17:00:25.557Z
+    at: 2026-11-22T00:18:20.862Z
 sources:
   - id: openwiki-source-7ce83b1fa051a437b5baffc6
     resource: repo://.devcontainer/cloud/devcontainer.json
@@ -13,8 +13,8 @@ sources:
     resource: repo://.devcontainer/local/devcontainer.json
   - id: openwiki-source-8037e2358a2c4f9b2c722a11
     resource: repo://AGENTS.md
-  - id: openwiki-source-39c3295efc089133e87a9c80
-    resource: repo://CONTEXT.md
+  - id: openwiki-source-2611f82c4debd12996455857
+    resource: repo://documentation/adr/0013-name-the-ic-suite-layers.md
   - id: openwiki-source-5af1e140a8c8b0f50fd8ad35
     resource: repo://infrastructure/docker/docker-compose.yml
   - id: openwiki-source-65feee223eea8eae1972cca5
@@ -47,7 +47,7 @@ sources:
     resource: repo://projects/meanderaw/meanderaw-cli/README.md
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
-generated: { by: "openwiki/0.9.0", at: "2026-11-20T17:00:25.557Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 ---
 
 # Quickstart
@@ -61,7 +61,7 @@ Welcome to the OpenWiki for this pnpm + Nx monorepo of personal applications, sh
 | **Understand the big picture** | [Architecture Overview](architecture/overview.md) — five domains, five toolchains, common packages, infrastructure |
 | **Explore a specific domain** | [Domain Systems Overview](domain/overview.md) — affirmancy, caelundas, lexico, meanderaw, IC-Suite toolchains |
 | **Set up my local machine** | [Local Development Setup](operations/local-development.md) — dev container, Docker Compose, env files |
-| **Start a new feature or fix** | [Development Workflow](workflows/development.md) — 8-step agent workflow (clarify → specify → decompose → handoff → build → review → validate → integrate) |
+| **Start a new feature or fix** | [Development Workflow](workflows/development.md) — 8-step agent workflow (clarify → specify → decompose → handoff → build → review → validate → integrate), one pull request per spec by default |
 | **Run tests / check quality** | [Testing Strategy Overview](testing/overview.md) — `nx run <project>:vitest:<unit\|integration>`, coverage gates |
 | **Deploy or operate in production** | [Infrastructure & Deployment](architecture/infrastructure.md) — Helm, Terraform, Docker Compose, CI/CD |
 | **Scaffold a new project/module/file** | [Scaffolding & Generators](workflows/scaffolding.md) — conformetry generators via Nx |
@@ -101,13 +101,13 @@ All domain projects depend on the **common packages** but never on each other. I
 
 Each follows the **five-layer spine** (ADR 0013): `core → configuration → analysis → output → cli` (with Nx plugins for callidescope, codependix, conformetry, coinagerie).
 
-| Toolchain | Purpose | Published Packages |
-|-----------|---------|-------------------|
-| **callidescope** | Call stack depth/breadth through injected deps | 7 |
-| **codependix** | Dependency graphs (Nx/NestJS/file) + boundary rules | 10 |
-| **codometer** | Measure TS/JS/Python/JSON/md/notebooks; enforce limits | 7 |
-| **conformetry** | Template-driven generation; validate instances vs templates | 9 |
-| **coinagerie** | Vocabulary extraction, folding, glossary synchronization | 8 |
+| Toolchain | Purpose | Packages (published) |
+|-----------|---------|----------------------|
+| **callidescope** | Call stack depth/breadth through injected deps | 8 (6) |
+| **codependix** | Dependency graphs (Nx/NestJS/file) + boundary rules | 11 (9) |
+| **codometer** | Measure TS/JS/Python/JSON/md/notebooks; enforce limits | 8 (6) |
+| **conformetry** | Template-driven generation; validate instances vs templates | 10 (8) |
+| **coinagerie** | Vocabulary extraction, folding, glossary synchronization | 9 (7) |
 
 Toolchains share only `observability`. Configuration tooling (`configuration/`, `synchronization/`) consumes IC-Suite.
 
@@ -138,8 +138,8 @@ nx run caelundas-db:migration:run
 nx run meanderaw-cli:migration:run
 
 # Dev servers
-nx run lexico-web:start          # TanStack Start at localhost:3000
-nx run caelundas-web:start
+nx run lexico-web:start          # TanStack Start at localhost:7797 (needs lexico-api)
+nx run caelundas-web:start         # localhost:8967 (needs caelundas-api)
 nx run meanderaw-web:start
 
 # Run affected tests
@@ -164,11 +164,11 @@ pnpm nx affected --target=vitest --base=main
 
 ## Getting Started Checklist
 
-1. **Open in dev container** — VS Code will prompt to reopen in the container defined by `.devcontainer/local/devcontainer.json` (Docker-outside-of-Docker, Node 24, Python 3.14, pnpm 11, uv, Nx, Terraform, Helm, kubectl)
+1. **Open in dev container** — VS Code will prompt to reopen in the container defined by `.devcontainer/local/devcontainer.json` (Docker-outside-of-Docker, Node 24, Python 3.14, pnpm 12, uv, Nx, Terraform, Helm, kubectl)
 2. **Start infrastructure** — `docker compose -f infrastructure/docker/docker-compose.yml up -d` (Postgres, SearxNG, Open WebUI)
 3. **Pull Ollama model** — `nx run affirmancy:ollama --configuration=pull-small` (gemma4:e2b)
 4. **Run database migrations** — `nx run caelundas-db:migration:run`, `nx run lexico-db:migration:run`, `nx run meanderaw-cli:migration:run`
-5. **Verify setup** — `nx run lexico-web:start` (http://localhost:3000), `nx run caelundas-web:start`, `nx run meanderaw-web:start`
+5. **Verify setup** — `nx run lexico-web:start` (http://localhost:7797), `nx run caelundas-web:start` (http://localhost:8967), `nx run meanderaw-web:start`
 
 ---
 

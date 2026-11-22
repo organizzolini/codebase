@@ -4,20 +4,28 @@ title: "Coinagerie — Vocabulary Toolchain"
 openwiki_generated: true
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-13T16:30:25.369Z
+    at: 2026-11-22T00:18:20.862Z
 sources:
-  - id: openwiki-source-39c3295efc089133e87a9c80
-    resource: repo://CONTEXT.md
+  - id: openwiki-source-6ba748254f38112b13d529da
+    resource: repo://nx.json
+  - id: openwiki-source-03219b76704d24994321965e
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-cli/README.md
   - id: openwiki-source-891e1a729f5665b0c461ca2d
     resource: repo://projects/ic-suite/coinagerie/coinagerie-cli/src/coinagerie-cli.main.ts
   - id: openwiki-source-e88a57a59db0c7003bd7e6e9
     resource: repo://projects/ic-suite/coinagerie/coinagerie-cli/src/modules/batch/batch.command.ts
+  - id: openwiki-source-76ff6d5a5b9d4686faf3c3d8
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-cli/src/modules/check/check.service.ts
   - id: openwiki-source-bcb29827817333e76fecb88a
     resource: repo://projects/ic-suite/coinagerie/coinagerie-cli/src/modules/collect/collect.command.ts
   - id: openwiki-source-0a5a655f30fb8accbecf1a5b
     resource: repo://projects/ic-suite/coinagerie/coinagerie-configuration/src/modules/configuration/configuration.service.ts
   - id: openwiki-source-716163e5de98b2fc26d09a34
     resource: repo://projects/ic-suite/coinagerie/coinagerie-core/src/modules/coinagerie-core/coinagerie-core.types.ts
+  - id: openwiki-source-303b0f9061d941804ecb55da
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-languages/src/modules/languages/languages.service.ts
+  - id: openwiki-source-c92722aad66e50edf965723f
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/batch-executor.ts
   - id: openwiki-source-ec58b4a005694bc7d1f21103
     resource: repo://projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.ts
   - id: openwiki-source-3328637eac79e5589ae1ad3f
@@ -38,7 +46,7 @@ sources:
     resource: repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/vocabulary/vocabulary.service.ts
   - id: openwiki-source-bddf27016584b016332c14b7
     resource: repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/words/words.service.ts
-generated: { by: "openwiki/0.9.0", at: "2026-11-13T16:30:25.369Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 ---
 
 
@@ -50,17 +58,18 @@ generated: { by: "openwiki/0.9.0", at: "2026-11-13T16:30:25.369Z" }
 
 ## Architecture Overview
 
-Coinagerie is organized as five spine packages, each with a single responsibility:
+Coinagerie follows the IC-Suite five-layer spine, with seven published packages (plus the non-publishable agents and examples), each with a single responsibility:
 
 | Package | Responsibility |
 |---------|----------------|
 | `@coinagerie/core` | Shared types: `Glossary`, `GlossaryDifference`, `VocabularyReport`, error classes (`InvalidConfigurationError`, `MalformedGlossaryError`, `ConfigurationFileNotFoundError`). |
 | `@coinagerie/configuration` | Loads, validates, and resolves `coinagerie.config.ts`. Merges CLI flags, makes paths absolute, evaluates `exclude.words` functions, and guards the custom `fold` function. |
+| `@coinagerie/languages` | Per-language tokenizers (CSS, HCL, JSON, Python, shell, SQL, TOML, TypeScript, YAML) that extract identifiers from file content, plus the language keyword lists the shared configuration excludes. |
 | `@coinagerie/vocabulary` | Extraction pipeline: discovers files, tokenizes per language, splits paths and identifiers into words, folds words, applies exclusions, sorts and deduplicates. |
 | `@coinagerie/output` | Renders and parses glossary blocks (markdown and JSON), compares vocabulary against destinations, writes reconciled glossaries while preserving definitions. |
 | `@coinagerie/cli` | Commands: `collect` (print/check/write), `batch` (multi-project). Wires the pipeline together and handles terminal output. |
 
-An Nx plugin `@coinagerie/nx` provides a `check` executor that infers a `coinagerie` target on every configured project, enabling `nx affected` to judge only touched projects.
+An Nx plugin `@coinagerie/nx` provides a `check` executor that infers a `coinagerie-check` target on every configured project, enabling `nx affected` to judge only touched projects.
 
 ---
 
@@ -94,7 +103,7 @@ flowchart TD
 
 ### Tokenization
 
-`LanguagesService` selects a tokenizer by file extension. Each tokenizer extracts identifiers (variable names, function names, class names, keys, enum members) from the file content. If no tokenizer claims the extension, only the file path contributes words.
+`LanguagesService` (in `@coinagerie/languages`) selects a tokenizer by file extension. Each tokenizer extracts identifiers (variable names, function names, class names, keys, enum members) from the file content. If no tokenizer claims the extension, only the file path contributes words.
 
 ### Word Splitting
 
@@ -246,13 +255,13 @@ The `@coinagerie/nx` plugin provides a `check` executor that is **inferred onto 
 
 ```bash
 # Check all projects
-nx run-many -t coinagerie:check
+nx run-many -t coinagerie-check
 
 # Check only affected projects
-nx affected -t coinagerie:check
+nx affected -t coinagerie-check
 
 # Write glossaries for affected projects
-nx affected -t coinagerie:check --write=true
+nx affected -t coinagerie-check --configuration=write
 ```
 
 ### Executor Options
@@ -268,20 +277,15 @@ The executor groups tasks by `(mode, command)` so projects sharing the same comm
 
 ---
 
-## Core Vocabulary (from CONTEXT.md)
+## Core Vocabulary
 
-Coinagerie itself uses a controlled vocabulary defined in the repository's `CONTEXT.md`. These terms shape the domain language across the toolchain:
-
-| Term | Meaning | Avoid |
-|------|---------|-------|
-| **Generator** | A named pairing of a template with the inputs needed to render it | Schematic, scaffold, blueprint |
-| **Template** | A folder of ordinary files that a generator renders, and the standard every instance is measured against | Rule, fixture, boilerplate |
-| **Instance** | Generated code on disk that a template explains | Copy, output, generated folder |
-| **Language** | The comparison engine for one family of file types, selected by extension | Rule, validator rule, check |
-| **Fallback** | Line-by-line text comparison for unclaimed extensions; the floor under validation | Default language, catch-all |
-| **Difference** | Something a template declares that its instance lacks; extra content is never a difference | Finding, violation, failure |
-| **Error** | A difference severe enough to fail a validation run | Finding, issue |
-| **Conformance** | How completely an instance carries what its template declares | Compliance, passing, matching |
+| Term | Meaning |
+|------|---------|
+| **Word** | One lowercase piece of an identifier, object key, enum member, folder name or file name, at least two characters and not a bare number |
+| **Headword** | The form a word folds into: its singular, then its lemma, then the configuration's optional `fold` mapping |
+| **Vocabulary** | The sorted, deduplicated headwords a project uses |
+| **Glossary** | The markdown or JSON block, in a declared destination, that defines each headword; kept in step with the vocabulary by `--check` and `--write` |
+| **Missing / stale word** | A headword the code uses with no glossary entry, and an entry for a headword the code no longer uses; either fails `--check` |
 
 ---
 

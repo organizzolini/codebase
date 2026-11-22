@@ -4,19 +4,19 @@ title: "Project Structure & Conventions"
 description: "Documents the project organization conventions: projects/ layout, domain grouping, type:application vs type:package tags, Nx project.json structure, commit scope vocabulary, and conformetry-generated project scaffolding."
 tags: ["projects", "structure", "conventions", "nx", "conformetry", "commit-scopes"]
 verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-29T03:39:46.432Z
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 sources:
-  - id: openwiki-source-d5a2a32b7849ae8b44301e20
-    resource: repo://.agents/skills/nx-generate/SKILL.md
   - id: openwiki-source-57b81e54d1113287ebfdf6f8
     resource: repo://.github/CONTRIBUTING.md
   - id: openwiki-source-8037e2358a2c4f9b2c722a11
     resource: repo://AGENTS.md
-  - id: openwiki-source-641cd559130234bc7c89a631
-    resource: repo://configuration/codebase-structure.json
-  - id: openwiki-source-257acfa6e234c02c3a7536c7
-    resource: repo://configuration/conventional.config.cjs
+  - id: openwiki-source-6419221f89e7a55a996f3dab
+    resource: repo://configuration/ic-suite/conformetry.config.ts
+  - id: openwiki-source-9b9076abf66a0dae469df67a
+    resource: repo://configuration/lint/codebase-structure.json
+  - id: openwiki-source-88d392538d77c16468248185
+    resource: repo://configuration/repository/conventional.config.cjs
   - id: openwiki-source-6ba748254f38112b13d529da
     resource: repo://nx.json
   - id: openwiki-source-aa414ec11f49c0bd0511815c
@@ -35,7 +35,7 @@ sources:
     resource: repo://validation/src/modules/readme-projects/readme-projects.constants.ts
   - id: openwiki-source-e1d0a10546b987017406e0f9
     resource: repo://validation/src/modules/readme-projects/readme-projects.service.ts
-generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 ---
 
 # Project Structure & Conventions
@@ -48,16 +48,15 @@ Every workspace project lives under `projects/`. There are **three nesting patte
 
 | Pattern | Path Example | Used By |
 |---------|--------------|---------|
-| **Direct** | `projects/<project>` | `affirmancy`, `caelundas`, `meanderaw` |
-| **Domain-nested** | `projects/<domain>/<project>` | `lexico/lexico-web`, `lexico/lexico-api`, `lexico/lexico-entities`, `lexico/lexico-cli` |
+| **Direct** | `projects/<project>` | `affirmancy` |
+| **Domain-nested** | `projects/<domain>/<project>` | `lexico/lexico-web`, `lexico/lexico-api`, `lexico/lexico-db`, `lexico/lexico-cli`, `caelundas/caelundas-api`, `meanderaw/meanderaw-cli`, and the shared `common/*` packages |
 | **IC-suite nested** | `projects/ic-suite/<toolchain>/<project>` | `ic-suite/callidescope/callidescope-cli`, `ic-suite/codependix/codependix-core`, `ic-suite/codometer/codometer-measurement`, `ic-suite/conformetry/conformetry-configuration` |
 
 A project is **any directory containing its own `package.json`**. Grouping folders (`projects/lexico/`, `projects/ic-suite/callidescope/`) do not have `package.json` and are not projects themselves.
 
-The ESLint rule `project-structure` (configuration in `configuration/codebase-structure.json`) enforces this layout. It defines two project archetypes — `codebase-project` and `documentation-project` — each with a prescribed set of child folders (`src/modules`, `src/components`, `src/lib`, `testing`, `scripts`, `examples`, etc.). A file directly in `projects/` or in a grouping folder is a lint error, not a style preference.
+The ESLint rule `project-structure` (configuration in `configuration/lint/codebase-structure.json`) enforces this layout. It defines two project archetypes — `codebase-project` and `documentation-project` — each with a prescribed set of child folders (`src/modules`, `src/components`, `src/lib`, `testing`, `scripts`, `examples`, etc.). A file directly in `projects/` or in a grouping folder is a lint error, not a style preference.
 
-<!-- openwiki: broken internal link [documentation/adr/0024-nest-every-project-under-projects.md] file "documentation/adr/0024-nest-every-project-under-projects.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-This layout is codified in [ADR 0024](documentation/adr/0024-nest-every-project-under-projects.md).
+This layout is codified in `documentation/adr/0024-nest-every-project-under-projects.md` (ADR 0024).
 
 ## Project Type: `type:application` vs `type:package`
 
@@ -89,8 +88,7 @@ This command discovers projects by scanning for `package.json` files under `proj
 
 ## README Project Table & Validation
 
-<!-- openwiki: broken internal link [projects/lexico/lexico-web] file "projects/lexico/lexico-web" does not exist. Fix the href or restore the target, then delete this comment. -->
-The root `README.md` carries an annotated table — one row per project, with a link to the project's directory (e.g., `[lexico-web](projects/lexico/lexico-web)`). The table is kept in sync by the `readme-projects` target:
+The root `README.md` carries an annotated table — one row per project, with a link to the project's directory (e.g., a link to `projects/lexico/lexico-web`). The table is kept in sync by the `readme-projects` target:
 
 ```bash
 nx run validation:readme-projects
@@ -100,13 +98,14 @@ This validation (implemented in `validation/src/modules/readme-projects/`) scans
 
 ## Commit Scopes Are Not Projects
 
-A **commit scope** comes from a **closed vocabulary** defined in `configuration/conventional.config.cjs` (the single source of truth for commitlint, branch validation, release rules, and VS Code autocomplete). The scope list deliberately **collapses each toolchain to a single name**:
+A **commit scope** comes from a **closed vocabulary** defined in `configuration/repository/conventional.config.cjs` (the single source of truth for commitlint, branch validation, release rules, and VS Code autocomplete). The scope list deliberately **collapses each toolchain to a single name**:
 
 | Toolchain Prefix | Collapses To Scope |
 |------------------|-------------------|
 | `callidescope-*` | `callidescope` |
 | `codependix-*` | `codependix` |
 | `codometer-*` | `codometer` |
+| `coinagerie-*` | `coinagerie` |
 | `conformetry-*` | `conformetry` |
 
 For example, a change to `callidescope-cli`, `callidescope-core`, and `callidescope-graph` in one commit all use the scope `callidescope`. Deriving a scope from a directory name (e.g., `callidescope-cli`) is how an invented scope fails validation.
@@ -121,17 +120,17 @@ Other scopes exist for cross-cutting concerns: `ic-suite`, `affirmancy`, `caelun
 nx g conformetry:<generator> --name=<name> --project=<project> [--dry-run]
 ```
 
-Generators fall into three tiers:
+Generators fall into three tiers, all declared in `configuration/ic-suite/conformetry.config.ts`:
 
 - **Project generators** (create new Nx projects): `jupyter-notebook-application`, `nestjs-command-project`, `nestjs-graphql-application`, `nestjs-service-project`, `tanstack-application`
-- **Module generators** (add a module inside an existing project): `nestjs-command-module`, `nestjs-dataloader-module`, `nestjs-graphql-module`, `nestjs-service-module`, `tanstack-server-function`
-- **File generators** (add files inside an existing module): `nestjs-service-file`, `nestjs-resolver-file`, `react-component`, `react-hook`, `tanstack-route`
+- **Module generators** (add a module or folder inside an existing project): `nestjs-command-module`, `nestjs-dataloader-module`, `nestjs-graphql-module`, `nestjs-service-module`, `react-component-folder`, `react-hook-folder`, `tanstack-server-function`
+- **File generators** (add single files inside an existing module): `nestjs-service-file`, `nestjs-resolver-file`, `react-component-file`, `react-hook-file`, `tanstack-route`
 
-Templates live in `configuration/conformetry-templates/` and are synced from `configuration/conformetry.config.ts` by running `nx run synchronization:conformetry-generators:write`. Code written in a shape a template already describes starts life failing conformance; generating ensures correct placement and structure from the start.
+Templates live in `configuration/ic-suite/conformetry-templates/` and are synced from `configuration/ic-suite/conformetry.config.ts` by running `nx run synchronization:conformetry-generators:write`. Code written in a shape a template already describes starts life failing conformance; generating ensures correct placement and structure from the start.
 
 ## Related Pages
 
 - [Architecture Overview](../architecture/overview.md) — system dependency graphs and package relationships
-- [IC Suite Architecture](../architecture/ic-suite.md) — callidescope, codependix, codometer, conformetry toolchains
+- [IC Suite Architecture](../architecture/ic-suite.md) — callidescope, codependix, codometer, coinagerie, conformetry toolchains
 - [Development Workflow](../workflows/development.md) — coding conventions, quality gates, and PR process
 - [Scaffolding & Generators](../workflows/scaffolding.md) — detailed generator reference with examples

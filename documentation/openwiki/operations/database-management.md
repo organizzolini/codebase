@@ -4,13 +4,15 @@ title: Database Management
 description: Documents Postgres database operations including migrations, schema/project/role conventions, moving data between databases (export/import), and Testcontainers for integration testing.
 tags: [database, postgres, migrations, testcontainers, export-import, operations]
 verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-29T03:39:46.432Z
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 sources:
   - id: openwiki-source-fde0a41d410be4adddc7d9c3
     resource: repo://documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md
   - id: openwiki-source-e84c9845fa1929e0b3fde349
     resource: repo://infrastructure/README.md
+  - id: openwiki-source-3a9867dedac0acd2f55b360d
+    resource: repo://projects/caelundas/caelundas-db/README.md
   - id: openwiki-source-de4dffad77fdd24cedfe1707
     resource: repo://projects/common/persistence/project.json
   - id: openwiki-source-bb47f0ae03a5325f0d8fdea7
@@ -19,15 +21,15 @@ sources:
     resource: repo://projects/common/persistence/src/modules/postgresql-export/postgresql-export.command.ts
   - id: openwiki-source-554d553372fdf135d48804d7
     resource: repo://projects/common/persistence/src/modules/postgresql-import/postgresql-import.command.ts
-  - id: openwiki-source-a688f65f433758aea382c292
-    resource: repo://projects/common/persistence/src/modules/postgresql/postgresql-container.utilities.ts
   - id: openwiki-source-79618aae32d9845bfacb091d
     resource: repo://projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts
   - id: openwiki-source-02fa1cfa852d65c0cb15fcaf
     resource: repo://projects/common/persistence/src/persistence.main.ts
-  - id: openwiki-source-4808dd4ba16cde901f5bc82f
-    resource: repo://projects/common/persistence/testing/persistence-testing.utilities.ts
-generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
+  - id: openwiki-source-d43cf1b76d511df31f2fb62d
+    resource: repo://projects/common/persistence/testing/database-testing/database-testing.utilities.ts
+  - id: openwiki-source-c647017e373aa4231d115310
+    resource: repo://projects/common/persistence/testing/postgres-container/postgres-container.utilities.ts
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 ---
 
 # Database Management
@@ -52,7 +54,7 @@ Every project owns its own database, schema, and role. The database name carries
 
 **Project name rules:** Lowercase letters, digits, and underscores, starting with a letter, so the name can prefix a variable and name a database unquoted.
 
-**Reference:** [ADR 0022: Give Every Database Project Its Own Database, Schema, and Role](../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md)
+**Reference:** `documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md` (ADR 0022: Give Every Database Project Its Own Database, Schema, and Role)
 
 ### meanderaw Exception
 
@@ -118,8 +120,7 @@ Run from the workspace root or the project directory:
 
 **Search path pinning:** Every pooled connection pins its session's `search_path` to the project's schema alone (no `public`). Unqualified SQL lands in the project's schema or fails if the schema is missing. TypeORM's `current_schema()` fallback also names the project's schema.
 
-<!-- openwiki: broken internal link [../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md#migrations-everywhere] heading anchor "migrations-everywhere" does not exist in "../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md". Fix the href or restore the target, then delete this comment. -->
-**Reference:** [ADR 0022, Migrations section](../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md#migrations-everywhere)
+**Reference:** `documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md` (ADR 0022, Migrations section)
 
 ---
 
@@ -258,8 +259,7 @@ When the modules under test import the project's own database module, pass it as
 
 **Dependency note:** Testcontainers and `@nestjs/testing` are dependencies of this entry. `dependency-cruiser`'s `no-test-imports-in-app` rule lets only a `testing/` path import test tooling, so import it only from tests and `testing/` harnesses. Docker must be running.
 
-<!-- openwiki: broken internal link [../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md#integration-tests-need-docker-as-they-already-did-and-every-suite-now-also-exercises-the-projects-migrations] heading anchor "integration-tests-need-docker-as-they-already-did-and-every-suite-now-also-exercises-the-projects-migrations" does not exist in "../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md". Fix the href or restore the target, then delete this comment. -->
-**Reference:** [ADR 0022, Integration tests section](../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md#integration-tests-need-docker-as-they-already-did-and-every-suite-now-also-exercises-the-projects-migrations)
+**Reference:** `documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md` (ADR 0022, Integration tests section)
 
 ---
 
@@ -272,8 +272,7 @@ The shared `postgresDataSourceOptions` factory **hard-codes** `synchronize: fals
 
 This is enforced by unit tests in `postgresql.utilities.unit.test.ts` and documented in the AGENTS.md guardrails.
 
-<!-- openwiki: broken internal link [../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md#no-migrations-on-application-start] heading anchor "no-migrations-on-application-start" does not exist in "../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md". Fix the href or restore the target, then delete this comment. -->
-**Reference:** [ADR 0022, No migrations on application start](../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md#no-migrations-on-application-start)
+**Reference:** `documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md` (ADR 0022, No migrations on application start)
 
 ---
 
@@ -305,34 +304,6 @@ The script stops at the first object that already exists, so name **only the pro
 See the meanderaw exception section above for the special case.
 
 Confirm with `\l` (databases), `\dn` (schemas), and `\du` (roles) in `psql`.
-
----
-
-## SQLite Support
-
-The same `@codebase/persistence` package provides SQLite support for projects that don't need Postgres (e.g., caelundas). The APIs mirror the Postgres ones:
-
-- `SqliteModule.forRoot({ entities, migrations, project })`
-- `createSqliteDataSource({ entities, migrations, project })`
-- `sqliteEnvironmentSchema({ project })`
-- `SqliteIdentifiableEntity`, `SqliteCreatableEntity`, etc.
-
-### Key Differences from Postgres
-
-| Aspect | PostgreSQL | SQLite |
-| --- | --- | --- |
-| Connection | Host, port, database, schema, role | File path only (`<project>.sqlite` or `:memory:`) |
-| Writers | Multiple, pooled | Single writer (better-sqlite3 is synchronous) |
-| Migrations at runtime | Never (`migrationsRun: false`) | Run on `forRoot` if given (single writer avoids races) |
-| Folder creation | N/A | Created on start if missing |
-| Schema/role/search_path | Yes, pinned to project schema | None |
-| Native UUID/timestamptz/numeric | Yes | No — TypeORM refuses them at connect time |
-| Column comments | Yes | No |
-| ID generation | `uuidv7()` (DB default) | `uuid` v4 (TypeORM generates on `save`) |
-| Timestamps | `timestamptz` | `datetime` (UTC text `YYYY-MM-DD HH:MM:SS[.SSS]`) |
-| Partial index syntax | Postgres (`::` casts, `now()`) | SQLite (no casts, `1`/`0` for booleans) |
-
-**Reference:** [Persistence README — SQLite section](../../projects/common/persistence/README.md#sqlite)
 
 ---
 
