@@ -12,7 +12,6 @@ const config: KnipConfig = {
     "**/callidescope.config.ts",
     "**/codependix.config.ts",
     "**/codometer.config.ts",
-    "**/codometer.limit.config.ts",
     "**/coinagerie.config.ts",
     "notepads/**",
   ],

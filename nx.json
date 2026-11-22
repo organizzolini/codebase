@@ -95,7 +95,6 @@
           "{workspaceRoot}/projects/ic-suite/codometer/*/src/**/!(*.test.*|*.spec.*)",
           "{workspaceRoot}/projects/ic-suite/codometer/codometer-nx/executors.json"
         ],
-        "limitConfigurationPath": "configuration/codometer.limit.config.ts",
         "projectConfigurationPath": "configuration/codometer.config.ts"
       },
       "plugin": "@codometer/nx"
