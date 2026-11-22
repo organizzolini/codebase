@@ -1,10 +1,16 @@
-import { fireEvent, screen, waitFor, within } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { renderRoute } from "@codebase/testing/react";
 
 import { serveMeandersApi } from "../../testing/meanders-api";
-import { setViewportWidth } from "../../testing/viewport";
+import { reachEnd, setViewportWidth } from "../../testing/viewport";
 import { getRouter } from "../router";
 
 import { Route } from "./index";
@@ -203,9 +209,12 @@ describe("index", () => {
     expect(
       screen.getByRole("button", { hidden: true, name: "Grouped by Rows" }),
     ).toBeDefined();
-    expect(
-      screen.getByRole("group", { hidden: true, name: "View" }).textContent,
-    ).toBe("ViewBy rows then columns");
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("group", { hidden: true, name: "View" }).textContent,
+      ).toBe("ViewBy rows then columns");
+    });
   });
 
   it("opens on the list when the link names it", async () => {
@@ -317,19 +326,25 @@ describe("index", () => {
     ).toBe("true");
   });
 
-  it("pages by cursor with the arrows, reading each page once and showing it alone", async () => {
+  it("pages by offset with the arrows, reading each page once and showing it alone", async () => {
     const api = serveMeandersApi(100);
+    const scrollTo = vi.spyOn(globalThis, "scrollTo");
 
     await renderRoute(getRouter(), "/?group=%5B%5D");
     await screen.findAllByTestId("meander-card");
+    scrollTo.mockClear();
     fireEvent.click(screen.getByRole("button", { name: "Next page" }));
 
     await waitFor(() => {
       expect(groupText("Pages")).toBe("25 to 48 of 100");
     });
+    await waitFor(() => {
+      expect(codesShown()[0]).toBe("01x01y0024");
+    });
 
-    expect(api.requests[1]).toMatchObject({ after: "23", first: 24 });
-    expect(codesShown()[0]).toBe("01x01y0024");
+    expect(api.requests[1]).toMatchObject({ first: 24, offset: 24 });
+    // Moving to another page scrolls to the top.
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0 });
 
     fireEvent.click(screen.getByRole("button", { name: "Previous page" }));
 
@@ -340,17 +355,83 @@ describe("index", () => {
 
     expect(groupText("Pages")).toBe("25 to 48 of 100");
     expect(api.requests).toHaveLength(2);
+
+    scrollTo.mockRestore();
   });
 
-  it("has no next arrow past the last page", async () => {
+  it("adds the next page at the bottom of the page, selecting both, and keeps the scroll place", async () => {
+    const api = serveMeandersApi(100);
+    const scrollTo = vi.spyOn(globalThis, "scrollTo");
+
+    await renderRoute(getRouter(), "/?group=%5B%5D");
+    await screen.findAllByTestId("meander-card");
+    scrollTo.mockClear();
+    act(() => {
+      reachEnd();
+    });
+
+    await waitFor(() => {
+      expect(groupText("Pages")).toBe("1 to 48 of 100");
+    });
+    await waitFor(() => {
+      expect(api.requests).toHaveLength(2);
+    });
+
+    expect(api.requests[1]).toMatchObject({ first: 24, offset: 24 });
+    expect(scrollTo).not.toHaveBeenCalled();
+
+    // The next arrow selects the page after the window alone.
+    fireEvent.click(screen.getByRole("button", { name: "Next page" }));
+
+    expect(groupText("Pages")).toBe("49 to 72 of 100");
+
+    scrollTo.mockRestore();
+  });
+
+  it("checks every page of the window in the Page menu, and goes back to one alone", async () => {
+    serveMeandersApi(100);
+
+    await renderRoute(getRouter(), "/?group=%5B%5D");
+    await screen.findAllByTestId("meander-card");
+    act(() => {
+      reachEnd();
+    });
+    await waitFor(() => {
+      expect(groupText("Pages")).toBe("1 to 48 of 100");
+    });
+    fireEvent.click(screen.getByRole("button", { name: /Page$/u }));
+
+    const checked = (): (null | string)[] =>
+      screen
+        .getAllByRole("menuitemcheckbox")
+        .filter((item) => item.getAttribute("aria-checked") === "true")
+        .map(({ textContent }) => textContent);
+
+    await waitFor(() => {
+      expect(checked()).toStrictEqual(["Page 1", "Page 2"]);
+    });
+
+    fireEvent.click(screen.getByRole("menuitemcheckbox", { name: "Page 2" }));
+
+    await waitFor(() => {
+      expect(groupText("Pages")).toBe("25 to 48 of 100");
+    });
+    await waitFor(() => {
+      expect(checked()).toStrictEqual(["Page 2"]);
+    });
+  });
+
+  it("has no next arrow past the last page, and the last page shortens the range", async () => {
     serveMeandersApi(30);
 
     await renderRoute(getRouter(), "/?group=%5B%5D");
     await screen.findAllByTestId("meander-card");
-    fireEvent.click(screen.getByRole("button", { name: "Next page" }));
+    act(() => {
+      reachEnd();
+    });
 
     await waitFor(() => {
-      expect(groupText("Pages")).toBe("25 to 30 of 30");
+      expect(groupText("Pages")).toBe("1 to 30 of 30");
     });
 
     expect(
@@ -360,19 +441,20 @@ describe("index", () => {
     ).toBe("true");
   });
 
-  it("changes the page size from the Page popover, in the link and the request, starting over", async () => {
+  it("changes the page size from the Page menu, in the link and the request, starting over from page 1", async () => {
     const api = serveMeandersApi(100);
     const router = getRouter();
 
     await renderRoute(router, "/?group=%5B%5D");
     await screen.findAllByTestId("meander-card");
+    act(() => {
+      reachEnd();
+    });
+    await waitFor(() => {
+      expect(groupText("Pages")).toBe("1 to 48 of 100");
+    });
     fireEvent.click(screen.getByRole("button", { name: /Page$/u }));
-    fireEvent.click(
-      within(await screen.findByRole("group", { name: "Per page" })).getByRole(
-        "button",
-        { name: "12" },
-      ),
-    );
+    fireEvent.click(await screen.findByRole("menuitemradio", { name: "12" }));
 
     await waitFor(() => {
       expect(router.state.location.search.size).toBe(12);
@@ -384,22 +466,43 @@ describe("index", () => {
     expect(api.requests.at(-1)).toMatchObject({ first: 12 });
   });
 
-  it("goes straight to a page typed in the Page popover, by an offset", async () => {
+  it("goes straight to a page picked in the Page menu, by an offset, selecting it alone", async () => {
     const api = serveMeandersApi(100);
 
     await renderRoute(getRouter(), "/?group=%5B%5D");
     await screen.findAllByTestId("meander-card");
     fireEvent.click(screen.getByRole("button", { name: /Page$/u }));
-    fireEvent.change(await screen.findByLabelText("Page number"), {
-      target: { value: "4" },
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Go" }));
+    fireEvent.click(
+      await screen.findByRole("menuitemcheckbox", { name: "Page 4" }),
+    );
 
     await waitFor(() => {
       expect(groupText("Pages")).toBe("73 to 96 of 100");
     });
 
-    expect(api.requests.at(-1)).toMatchObject({ after: null, offset: 72 });
+    expect(api.requests.at(-1)).toMatchObject({ offset: 72 });
+  });
+
+  it("goes back to the first page when the sort changes", async () => {
+    serveMeandersApi(100);
+
+    await renderRoute(getRouter(), "/?group=%5B%5D");
+    await screen.findAllByTestId("meander-card");
+    act(() => {
+      reachEnd();
+    });
+    await waitFor(() => {
+      expect(groupText("Pages")).toBe("1 to 48 of 100");
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Next page" }));
+    await waitFor(() => {
+      expect(groupText("Pages")).toBe("49 to 72 of 100");
+    });
+    await chooseSort(/Path/u, /Junction count/u);
+
+    await waitFor(() => {
+      expect(groupText("Pages")).toBe("1 to 24 of 100");
+    });
   });
 
   it("opens on the page size the link names", async () => {
@@ -432,7 +535,7 @@ describe("index", () => {
       expect(screen.queryByRole("alert")).toBeNull();
     });
 
-    expect(api.requests.at(-1)).toMatchObject({ after: "23" });
+    expect(api.requests.at(-1)).toMatchObject({ offset: 24 });
   });
 
   it("offers the shape fields and the catalog to sort by in a cascader, by category, with their descriptions", async () => {
@@ -558,12 +661,12 @@ describe("index", () => {
     });
 
     expect(api.requests[1]).toMatchObject({
-      after: "23",
+      offset: 24,
       sort: [{ direction: "DESC", field: "junctionCount" }],
     });
   });
 
-  it("pages by offset, not cursor, when several fields sort", async () => {
+  it("pages by offset in the order of several sorts", async () => {
     const api = serveMeandersApi(100);
     const sort = encodeURIComponent(
       JSON.stringify([
@@ -584,7 +687,6 @@ describe("index", () => {
     });
 
     expect(api.requests[1]).toMatchObject({
-      after: null,
       offset: 24,
       sort: [
         { direction: "DESC", field: "junctionCount" },

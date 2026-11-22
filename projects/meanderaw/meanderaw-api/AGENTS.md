@@ -73,7 +73,7 @@ Scaffold with the `nestjs-service-module` template, then add the resolver and en
 
 ### Sorting and Paging
 
-- A sort names a shape field or a characteristic key. A missing characteristic value sorts as 0 or false (a left join on the bridge's primary key), and ties break by id ascending.
+- A sort names a shape field or a characteristic key, up to 8 in all (`MAXIMUM_SORTS`): the web gallery asks for up to four group levels, then four sorts of its own. A missing characteristic value sorts as 0 or false (a left join on the bridge's primary key), and ties break by id ascending.
 - A cursor carries the sort field, direction, last value and id. A cursor used with a different sort is refused with a 400, never answered with a wrong page.
 - `totalCount` is the sum of `shape_counts`, or an exact count of `meanders` while no aggregate has run.
 

@@ -10,7 +10,15 @@ import type {
 // 🏷️ Types
 
 /**
- * What the hook asks the API for, besides the cursor.
+ * The consecutive pages showing, from 1.
+ */
+export interface PageWindow {
+  first: number;
+  last: number;
+}
+
+/**
+ * What the hook asks the API for, besides the offset.
  */
 export interface PagingQuery {
   filter?: MeanderFilterGroupInput | undefined;
@@ -20,34 +28,41 @@ export interface PagingQuery {
 }
 
 /**
- * The first page, pages read after it, place showing, and failure.
+ * The first page, pages read after it, window showing, and failure.
  */
 export interface PagingState {
-  failure?: undefined | { error: unknown };
-  first: MeandersPage | undefined;
-  /** The pages read after the first, by their place from 1. */
+  /** Why the last read failed, and the window it was for. */
+  failure?: undefined | { error: unknown; range: PageWindow };
+  first: MeandersPage;
+  /** The pages read after the first, by their number from 2. */
   pages: Readonly<Record<number, MeandersPage>>;
-  position: number;
+  range: PageWindow;
 }
 
 /**
- * The page of meanders showing, and how to move between pages.
+ * The meanders of the pages showing, and how to move between pages.
  */
 export interface UseMeandersResult {
-  /** Shows any page by its place from 0, reading it unless it was read already. */
-  goTo: (position: number) => void;
-  /** Whether the page asked for is still being read. */
+  /** Adds the page after the window to it, keeping the scroll place. */
+  append: () => void;
+  /** Whether a page waits after the window, none under way or failed. */
+  hasMore: boolean;
+  /** Whether a page of the window is still being read. */
   isLoading: boolean;
   /** Why the last read failed, until the next try. */
   loadError: unknown;
-  /** The meanders of the page showing. */
+  /** The meanders of the window's pages read so far, in order. */
   meanders: readonly GalleryMeander[];
-  /** Shows the next page. */
+  /** Shows the page after the window alone. */
   next: () => void;
   /** How many pages the meanders fill. */
   pageCount: number;
-  /** The place of the page showing, from 0. */
-  position: number;
-  /** Shows the page before. */
+  /** Shows the page before the window alone. */
   previous: () => void;
+  /** The consecutive pages showing. */
+  range: PageWindow;
+  /** Reads the pages the last failure wanted again. */
+  retry: () => void;
+  /** Shows one page alone, from 1, and scrolls to the top. */
+  select: (page: number) => void;
 }

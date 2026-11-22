@@ -26,8 +26,8 @@ export const svgRepeatsSchema = z
 /** The most meanders one page may hold. */
 export const MAXIMUM_PAGE_SIZE = 200;
 
-/** The most fields one sort may name. */
-export const MAXIMUM_SORTS = 4;
+/** The most fields one sort may name: four group levels, four sorts. */
+export const MAXIMUM_SORTS = 8;
 
 /** The most meanders one query may skip. */
 export const MAXIMUM_OFFSET = 2_000_000_000;

@@ -1,5 +1,5 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import {
   fixtureMeander,
@@ -24,39 +24,35 @@ function pageOf(start: number, end: number): MeandersPage {
 
 const QUERY = { repeats: 6, size: 2 };
 
+/** The Codes of the meanders showing. */
+function codesOf(meanders: readonly { code: string }[]): string[] {
+  return meanders.map(({ code }) => code);
+}
+
 describe(useMeanders, () => {
   it("returns its result", () => {
     const first = pageOf(0, 2);
     const { result } = renderHook(() => useMeanders(first, QUERY));
 
     expect(result.current).toStrictEqual({
-      goTo: result.current.goTo,
+      append: result.current.append,
+      hasMore: true,
       isLoading: false,
       loadError: undefined,
       meanders: first.edges.map(({ node }) => node),
       next: result.current.next,
       pageCount: 50,
-      position: 0,
       previous: result.current.previous,
+      range: { first: 1, last: 1 },
+      retry: result.current.retry,
+      select: result.current.select,
     });
   });
 
-  it("shows nothing for no first page, as a grouped gallery has none", () => {
-    const { result } = renderHook(() => useMeanders(undefined, QUERY));
-
-    expect(result.current.meanders).toStrictEqual([]);
-    expect(result.current.pageCount).toBe(0);
-
-    act(() => {
-      result.current.next();
-    });
-
-    expect(result.current.position).toBe(0);
-  });
-
-  it("reads the next page by the last one's cursor, as many meanders as the size, and shows it alone", async () => {
+  it("reads the next page past an offset, as many meanders as the size, and shows it alone", async () => {
     const api = serveMeandersApi(100);
     const first = pageOf(0, 2);
+    const scrollTo = vi.spyOn(globalThis, "scrollTo");
     const { result } = renderHook(() => useMeanders(first, QUERY));
 
     act(() => {
@@ -64,45 +60,115 @@ describe(useMeanders, () => {
     });
 
     expect(result.current.isLoading).toBe(true);
+    expect(result.current.hasMore).toBe(false);
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0 });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
     });
 
-    expect(api.requests[0]).toMatchObject({ after: "1", first: 2, repeats: 6 });
-    expect(api.requests[0]?.offset).toBe(0);
-    expect(result.current.position).toBe(1);
-    expect(result.current.meanders.map(({ code }) => code)).toStrictEqual([
+    expect(api.requests[0]).toMatchObject({ first: 2, offset: 2, repeats: 6 });
+    expect(result.current.range).toStrictEqual({ first: 2, last: 2 });
+    expect(codesOf(result.current.meanders)).toStrictEqual([
       "01x01y0002",
       "01x01y0003",
     ]);
+
+    scrollTo.mockRestore();
   });
 
-  it("jumps to a page not read before it by an offset, then steps on by cursor", async () => {
+  it("appends the page after the window without scrolling, keeping the pages before it", async () => {
+    const api = serveMeandersApi(100);
+    const first = pageOf(0, 2);
+    const scrollTo = vi.spyOn(globalThis, "scrollTo");
+    const { result } = renderHook(() => useMeanders(first, QUERY));
+
+    act(() => {
+      result.current.append();
+    });
+
+    // The page showing stays while the next is read.
+    expect(result.current.isLoading).toBe(true);
+    expect(codesOf(result.current.meanders)).toStrictEqual([
+      "01x01y0000",
+      "01x01y0001",
+    ]);
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(scrollTo).not.toHaveBeenCalled();
+    expect(api.requests[0]).toMatchObject({ offset: 2 });
+    expect(result.current.range).toStrictEqual({ first: 1, last: 2 });
+    expect(codesOf(result.current.meanders)).toStrictEqual([
+      "01x01y0000",
+      "01x01y0001",
+      "01x01y0002",
+      "01x01y0003",
+    ]);
+
+    act(() => {
+      result.current.append();
+    });
+    await waitFor(() => {
+      expect(result.current.range.last).toBe(3);
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.meanders).toHaveLength(6);
+
+    scrollTo.mockRestore();
+  });
+
+  it("selects the page after a window of several, and the page before it, alone", async () => {
+    serveMeandersApi(100);
+    const first = pageOf(0, 2);
+    const { result } = renderHook(() => useMeanders(first, QUERY));
+
+    act(() => {
+      result.current.select(3);
+    });
+    act(() => {
+      result.current.append();
+    });
+    await waitFor(() => {
+      expect(result.current.range).toStrictEqual({ first: 3, last: 4 });
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    act(() => {
+      result.current.next();
+    });
+
+    expect(result.current.range).toStrictEqual({ first: 5, last: 5 });
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+    act(() => {
+      result.current.previous();
+    });
+
+    expect(result.current.range).toStrictEqual({ first: 4, last: 4 });
+  });
+
+  it("jumps to a page not read before by its offset, reading it once", async () => {
     const api = serveMeandersApi(100);
     const first = pageOf(0, 2);
     const { result } = renderHook(() => useMeanders(first, QUERY));
 
     act(() => {
-      result.current.goTo(10);
+      result.current.select(10);
+      result.current.select(10);
     });
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
     });
 
-    expect(api.requests[0]).toMatchObject({ after: null, offset: 20 });
-    expect(result.current.meanders[0]?.code).toBe("01x01y0020");
-
-    act(() => {
-      result.current.next();
-    });
-    await waitFor(() => {
-      expect(result.current.position).toBe(11);
-      expect(result.current.isLoading).toBe(false);
-    });
-
-    expect(api.requests[1]).toMatchObject({ after: "21", offset: 0 });
-    expect(result.current.meanders[0]?.code).toBe("01x01y0022");
+    expect(api.requests).toHaveLength(1);
+    expect(api.requests[0]).toMatchObject({ offset: 18 });
+    expect(result.current.meanders[0]?.code).toBe("01x01y0018");
   });
 
   it("goes back to a page read already without reading it again", async () => {
@@ -120,7 +186,7 @@ describe(useMeanders, () => {
       result.current.previous();
     });
 
-    expect(result.current.position).toBe(0);
+    expect(result.current.range).toStrictEqual({ first: 1, last: 1 });
     expect(result.current.meanders).toStrictEqual(
       first.edges.map(({ node }) => node),
     );
@@ -129,7 +195,7 @@ describe(useMeanders, () => {
       result.current.next();
     });
 
-    expect(result.current.position).toBe(1);
+    expect(result.current.range).toStrictEqual({ first: 2, last: 2 });
     expect(api.requests).toHaveLength(1);
   });
 
@@ -140,40 +206,89 @@ describe(useMeanders, () => {
 
     act(() => {
       result.current.previous();
-      result.current.goTo(2);
+      result.current.select(3);
+      result.current.append();
+      result.current.append();
     });
 
-    expect(result.current.position).toBe(0);
+    expect(result.current.range.first).toBe(1);
+    expect(result.current.range.last).toBeLessThanOrEqual(2);
     expect(result.current.pageCount).toBe(2);
   });
 
-  it("reports a failed read, stays on the page it was on, and reads again on the next try", async () => {
+  it("has nothing more to ask for once the window reaches the last page", async () => {
+    serveMeandersApi(3);
+    const first = { ...pageOf(0, 2), totalCount: 3 };
+    const { result } = renderHook(() => useMeanders(first, QUERY));
+
+    act(() => {
+      result.current.append();
+    });
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.hasMore).toBe(false);
+  });
+
+  it("reports a failed read, steps back to the window it was on, and reads again on retry", async () => {
     const api = serveMeandersApi(100);
     const first = pageOf(0, 2);
     const { result } = renderHook(() => useMeanders(first, QUERY));
 
     api.failMeanders("boom");
     act(() => {
-      result.current.next();
+      result.current.append();
     });
 
     await waitFor(() => {
       expect(result.current.loadError).toBeInstanceOf(Error);
     });
 
-    expect(result.current.position).toBe(0);
+    expect(result.current.range).toStrictEqual({ first: 1, last: 1 });
+    expect(result.current.hasMore).toBe(false);
 
     api.recover();
     act(() => {
-      result.current.next();
+      result.current.retry();
     });
 
     await waitFor(() => {
-      expect(result.current.position).toBe(1);
+      expect(result.current.range).toStrictEqual({ first: 1, last: 2 });
       expect(result.current.isLoading).toBe(false);
     });
 
     expect(result.current.loadError).toBeUndefined();
+  });
+
+  it("does nothing to retry when nothing failed", () => {
+    const first = pageOf(0, 2);
+    const { result } = renderHook(() => useMeanders(first, QUERY));
+
+    act(() => {
+      result.current.retry();
+    });
+
+    expect(result.current.range).toStrictEqual({ first: 1, last: 1 });
+  });
+
+  it("keeps the window it moved on to when an earlier read fails", async () => {
+    const api = serveMeandersApi(100, 30);
+    const first = pageOf(0, 2);
+    const { result } = renderHook(() => useMeanders(first, QUERY));
+
+    api.failMeanders("boom");
+    act(() => {
+      result.current.select(5);
+    });
+    act(() => {
+      result.current.select(1);
+    });
+    await waitFor(() => {
+      expect(result.current.loadError).toBeInstanceOf(Error);
+    });
+
+    expect(result.current.range).toStrictEqual({ first: 1, last: 1 });
   });
 
   it("starts over on a new first page, forgetting the pages read under the old one", async () => {
@@ -187,7 +302,7 @@ describe(useMeanders, () => {
       result.current.next();
     });
     await waitFor(() => {
-      expect(result.current.position).toBe(1);
+      expect(result.current.range.first).toBe(2);
       expect(result.current.isLoading).toBe(false);
     });
 
@@ -195,7 +310,7 @@ describe(useMeanders, () => {
 
     rerender({ first: second });
 
-    expect(result.current.position).toBe(0);
+    expect(result.current.range).toStrictEqual({ first: 1, last: 1 });
     expect(result.current.meanders).toStrictEqual(
       second.edges.map(({ node }) => node),
     );
@@ -219,7 +334,7 @@ describe(useMeanders, () => {
       setTimeout(resolve, 80);
     });
 
-    expect(result.current.position).toBe(0);
+    expect(result.current.range).toStrictEqual({ first: 1, last: 1 });
     expect(result.current.meanders).toStrictEqual(
       second.edges.map(({ node }) => node),
     );
@@ -242,6 +357,6 @@ describe(useMeanders, () => {
     });
 
     expect(result.current.loadError).toBeUndefined();
-    expect(result.current.position).toBe(0);
+    expect(result.current.range).toStrictEqual({ first: 1, last: 1 });
   });
 });

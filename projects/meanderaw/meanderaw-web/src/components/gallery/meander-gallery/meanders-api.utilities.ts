@@ -9,7 +9,7 @@ import {
 import { toSortInput } from "../../../hooks/use-gallery-search/use-gallery-search.utilities";
 import { toFilterInput } from "../gallery-filters/components/filter-model/filter-model.utilities";
 import { MAXIMUM_GROUP_LEVELS } from "../gallery-group-by/gallery-group-by.constants";
-import { fitsGrouping } from "../gallery-group-by/gallery-group-by.utilities";
+import { toSequenceSorts } from "../gallery-group-by/gallery-group-by.utilities";
 
 import {
   DEFAULT_MEANDERAW_API_URL,
@@ -46,8 +46,8 @@ export async function findCharacteristics(): Promise<GalleryCharacteristic[]> {
 }
 
 /**
- * Reads the groups of a grouped page, whose cards come later, or the
- * first page of a flat one.
+ * Reads the groups of a grouped gallery, when it is grouped, with its first
+ * page of meanders, ordered by the levels, then the sorts.
  */
 export async function findGallery(
   request: Readonly<{
@@ -60,35 +60,26 @@ export async function findGallery(
   }>,
 ): Promise<{
   groups: GalleryGroup[] | undefined;
-  page: MeandersPage | undefined;
+  page: MeandersPage;
 }> {
   const { filter, grouping, repeats, rows, size, sorts } = request;
-
-  if (grouping.length > 0) {
-    if (!fitsGrouping(filter, grouping)) {
-      throw new Error(
-        "This filter is too large to read the cards of its groups; remove a rule or a group level.",
-      );
-    }
-
-    return {
-      groups: await findMeanderGroups({
-        filter: toFilterInput(filter, rows),
-        groupBy: grouping.map((field) => ({ field })),
-      }),
-      page: undefined,
-    };
-  }
-
-  return {
-    groups: undefined,
-    page: await findMeanders({
-      filter: toFilterInput(filter, rows),
+  const input = toFilterInput(filter, rows);
+  const [groups, page] = await Promise.all([
+    grouping.length === 0
+      ? undefined
+      : findMeanderGroups({
+          filter: input,
+          groupBy: grouping.map((field) => ({ field })),
+        }),
+    findMeanders({
+      filter: input,
       first: size,
       repeats,
-      sort: toSortInput(sorts),
+      sort: toSortInput(toSequenceSorts(grouping, sorts)),
     }),
-  };
+  ]);
+
+  return { groups, page };
 }
 
 /**

@@ -19,6 +19,13 @@ describe("gallery group-by", () => {
 
     await renderRoute(router, "/");
     await screen.findAllByTestId("meander-card");
+    // The link gains the rows rule it opened on, before the page is changed.
+    await waitFor(() => {
+      expect(router.state.location.search.rows).toStrictEqual({
+        operator: "eq",
+        value: 4,
+      });
+    });
     await openGroup();
     fireEvent.click(screen.getByRole("option", { name: /Shape/u }));
     fireEvent.click(screen.getByRole("option", { name: /Columns/u }));
@@ -30,10 +37,11 @@ describe("gallery group-by", () => {
       ]);
     });
 
-    expect(
-      screen.getByRole("button", { hidden: true, name: "Grouped by Rows" }),
-    ).toBeDefined();
-
+    // The level shows once the page has read, so the next tick builds on it.
+    await screen.findByRole("button", {
+      hidden: true,
+      name: "Grouped by Columns",
+    });
     fireEvent.click(screen.getByRole("option", { name: /Rows/u }));
 
     await waitFor(() => {

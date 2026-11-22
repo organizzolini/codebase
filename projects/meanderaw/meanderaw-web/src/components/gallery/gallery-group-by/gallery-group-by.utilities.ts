@@ -1,19 +1,8 @@
 import { DEFAULT_GROUP_FIELD } from "../../../hooks/use-gallery-search/use-gallery-search.constants";
-import {
-  countEntries,
-  measureDepth,
-} from "../gallery-filters/components/filter-model/filter-limits.utilities";
 
-import {
-  API_MAXIMUM_DEPTH,
-  API_MAXIMUM_ENTRIES,
-  SHAPE_GROUP_FIELDS,
-} from "./gallery-group-by.constants";
+import { SHAPE_GROUP_FIELDS } from "./gallery-group-by.constants";
 
-import type {
-  FilterGroup,
-  FilterRule,
-} from "../gallery-filters/components/filter-model/filter-model.types";
+import type { SortEntry } from "../../../hooks/use-gallery-search/use-gallery-search.types";
 import type { GalleryCharacteristic } from "../meander-gallery/meanders-api.types";
 import type { GroupField } from "./gallery-group-by.types";
 
@@ -48,28 +37,6 @@ export function createGroupFields(
 }
 
 /**
- * Whether the page's rows rule, the key rules and the filter's tree, nested
- * whole, stay within the API's caps.
- */
-export function fitsGrouping(
-  filter: FilterGroup | undefined,
-  grouping: readonly string[],
-): boolean {
-  // The rows rule, then one rule for each level.
-  const rule: FilterRule = { field: "rows", operator: "eq", value: 0 };
-  const keys = grouping.map(() => rule);
-  const wrapper: FilterGroup = {
-    combinator: "and",
-    rules: [rule, ...keys, ...(filter === undefined ? [] : [filter])],
-  };
-
-  return (
-    measureDepth(wrapper) <= API_MAXIMUM_DEPTH &&
-    countEntries(wrapper) <= API_MAXIMUM_ENTRIES
-  );
-}
-
-/**
  * Keeps the levels the catalog groups by, once each; rows when the link
  * names none, flat when it names an empty list.
  */
@@ -86,4 +53,18 @@ export function resolveGrouping(
   }
 
   return kept;
+}
+
+/**
+ * The sorts that make one sequence: each level ascending, then the person's
+ * sorts, less any on a level.
+ */
+export function toSequenceSorts(
+  grouping: readonly string[],
+  sorts: readonly SortEntry[],
+): SortEntry[] {
+  return [
+    ...grouping.map((field): SortEntry => ({ direction: "asc", field })),
+    ...sorts.filter(({ field }) => !grouping.includes(field)),
+  ];
 }

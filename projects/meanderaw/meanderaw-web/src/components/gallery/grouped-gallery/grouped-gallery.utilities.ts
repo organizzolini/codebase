@@ -1,158 +1,191 @@
 import { toRows } from "../meander-gallery/meander-gallery.utilities";
 
-import type {
-  MeanderFilterGroupInput,
-  MeanderFilterRuleInput,
-} from "../../../graphql/generated/operations";
 import type { GroupField } from "../gallery-group-by/gallery-group-by.types";
-import type { GalleryGroup } from "../meander-gallery/meanders-api.types";
 import type {
-  GroupCards,
+  GalleryGroup,
+  GalleryMeander,
+} from "../meander-gallery/meanders-api.types";
+import type {
   GroupedItem,
-  GroupLeaf,
+  GroupExtent,
+  GroupStep,
 } from "./grouped-gallery.types";
 
 // 🔏 Private Functions
 
 /**
- * Lays the groups out as one flat list, depth first: each header, then a
- * last-level group's cards and a stand-in for the unread.
+ * Lays the meanders out as one flat list: rows of cards, and a header for
+ * each level wherever a group's keys change.
  */
 export function buildGroupedItems(
-  groups: readonly GalleryGroup[],
+  meanders: readonly GalleryMeander[],
   context: Readonly<{
-    cards: Readonly<Record<string, GroupCards>>;
     columns: number;
+    extents: ReadonlyMap<string, GroupExtent>;
     fields: readonly GroupField[];
-    filter: MeanderFilterGroupInput | undefined;
+    grouping: readonly string[];
+    /** How many meanders come before the first of these, over every page. */
+    offset: number;
   }>,
 ): GroupedItem[] {
+  const { columns, fields, grouping } = context;
   const items: GroupedItem[] = [];
-  // A stack rather than recursion keeps the frames flat however deep the
-  // grouping goes.
-  const stack = groups
-    .map((group) => ({
-      depth: 0,
-      group,
-      id: "",
-      rules: [] as MeanderFilterRuleInput[],
-    }))
-    .toReversed();
+  // The levels of the meander before, and the cards since its header.
+  const state = { previous: [] as GroupStep[], run: [] as GalleryMeander[] };
 
-  for (let next = stack.pop(); next !== undefined; next = stack.pop()) {
-    const { depth, group } = next;
-    const field = context.fields.find(({ key }) => key === group.field);
-    const id = `${next.id}/${group.field}=${group.value}`;
-    const rules = [
-      ...next.rules,
-      ...toKeyRules(group.field, field?.type, group.value),
-    ];
+  for (const meander of meanders) {
+    const steps = readSteps(meander, grouping, fields);
+    const level = steps.findIndex(
+      ({ id }, depth) => id !== state.previous[depth]?.id,
+    );
 
-    items.push({
-      count: group.count,
-      depth,
-      key: id,
-      kind: "header",
-      label: `${field?.label ?? group.field}: ${describeKey(field, group.value)}`,
-    });
-
-    const children = group.groups;
-
-    if (children.length > 0) {
-      stack.push(
-        ...children
-          .map((child) => ({ depth: depth + 1, group: child, id, rules }))
-          .toReversed(),
+    if (level !== -1) {
+      items.push(
+        ...toCardRows(state.run, columns, items.length),
+        ...toHeaders(steps, level, {
+          extents: context.extents,
+          isFirst: state.previous.length === 0,
+          offset: context.offset,
+        }),
       );
-      continue;
+      state.run = [];
     }
 
-    const leaf: GroupLeaf = {
-      filter: toLeafFilter(context.filter, rules),
-      id,
-    };
-
-    items.push(...toLeafItems(leaf, context.cards[id], context.columns));
+    state.run.push(meander);
+    state.previous = steps;
   }
 
+  items.push(...toCardRows(state.run, columns, items.length));
+
   return items;
+}
+
+/**
+ * Notes each group's exact count, and how many meanders come before it, by
+ * the id its header carries.
+ */
+export function indexGroups(
+  groups: readonly GalleryGroup[],
+): Map<string, GroupExtent> {
+  const extents = new Map<string, GroupExtent>();
+  let start = 0;
+  // A stack rather than recursion keeps the frames flat however deep the
+  // grouping goes.
+  const stack = groups.map((group) => ({ group, parent: "" })).toReversed();
+
+  for (let next = stack.pop(); next !== undefined; next = stack.pop()) {
+    const { group, parent } = next;
+    const id = `${parent}/${group.field}=${group.value}`;
+
+    extents.set(id, { count: group.count, start });
+
+    if (group.groups.length === 0) {
+      start += group.count;
+    } else {
+      stack.push(
+        ...group.groups
+          .map((child) => ({ group: child, parent: id }))
+          .toReversed(),
+      );
+    }
+  }
+
+  return extents;
 }
 
 /**
  * Words a key as a person reads it.
  */
 function describeKey(field: GroupField | undefined, value: string): string {
-  if (field?.type === "boolean") {
-    return value === "true" ? "Held" : "Not held";
+  if (field?.type !== "boolean") {
+    return value;
   }
 
-  return value;
+  return value === "true" ? "Held" : "Not held";
 }
 
 /**
- * The rules that select one key of a level, a missing value reading 0 or
- * false as the API does.
+ * What a meander holds for a level: a characteristic it does not hold counts
+ * as 0.
  */
-function toKeyRules(
-  field: string,
-  type: GroupField["type"] | undefined,
-  value: string,
-): MeanderFilterRuleInput[] {
-  if (type === "boolean") {
-    return [{ field, flag: value === "true", operator: "IS" }];
+function readHeld(meander: GalleryMeander, field: string): number {
+  if (field === "rows") {
+    return meander.rows;
   }
 
-  return [{ field, numbers: [Number(value)], operator: "EQ" }];
+  if (field === "columns") {
+    return meander.columns;
+  }
+
+  return meander.characteristics.find(({ key }) => key === field)?.value ?? 0;
+}
+
+/**
+ * The levels a meander falls under, outermost first, each with the id the
+ * group's header carries.
+ */
+function readSteps(
+  meander: GalleryMeander,
+  grouping: readonly string[],
+  fields: readonly GroupField[],
+): GroupStep[] {
+  const steps: GroupStep[] = [];
+  let id = "";
+
+  for (const name of grouping) {
+    const field = fields.find(({ key }) => key === name);
+    const held = readHeld(meander, name);
+    // As the API words the group: a boolean reads true or false.
+    const key =
+      field?.type === "boolean" ? String(Boolean(held)) : String(held);
+
+    id = `${id}/${name}=${key}`;
+    steps.push({ field, id, key, name });
+  }
+
+  return steps;
 }
 
 // 🌎 Public Functions
 
 /**
- * The filter for a last-level group's cards: its key rules and the page's
- * filter, an AND one spliced in and any other nested.
+ * Splits cards into rows of the columns, keyed by their place in the list.
  */
-function toLeafFilter(
-  filter: MeanderFilterGroupInput | undefined,
-  rules: readonly MeanderFilterRuleInput[],
-): MeanderFilterGroupInput {
-  if (filter === undefined) {
-    return { combinator: "AND", groups: [], rules: [...rules] };
-  }
-
-  return filter.combinator === "AND"
-    ? {
-        combinator: "AND",
-        groups: [...(filter.groups ?? [])],
-        rules: [...rules, ...(filter.rules ?? [])],
-      }
-    : { combinator: "AND", groups: [filter], rules: [...rules] };
+function toCardRows(
+  run: readonly GalleryMeander[],
+  columns: number,
+  place: number,
+): GroupedItem[] {
+  return toRows(run, columns).map((row, index): GroupedItem => ({
+    key: `cards#${String(place + index)}`,
+    kind: "cards",
+    meanders: row,
+  }));
 }
 
 /**
- * The rows under a last-level header: its cards read so far, then a failure
- * or a stand-in for the rest.
+ * The headers of the levels from the first that changed, a group continued
+ * when it began before the pages showing.
  */
-function toLeafItems(
-  leaf: GroupLeaf,
-  cards: GroupCards | undefined,
-  columns: number,
+function toHeaders(
+  steps: readonly GroupStep[],
+  level: number,
+  context: Readonly<{
+    extents: ReadonlyMap<string, GroupExtent>;
+    isFirst: boolean;
+    offset: number;
+  }>,
 ): GroupedItem[] {
-  const rows = toRows(cards?.meanders ?? [], columns).map(
-    (meanders, index): GroupedItem => ({
-      key: `${leaf.id}#${String(index)}`,
-      kind: "cards",
-      meanders,
-    }),
-  );
+  return steps.slice(level).map((step, index): GroupedItem => {
+    const extent = context.extents.get(step.id);
 
-  if (cards?.error !== undefined) {
-    return [
-      ...rows,
-      { error: cards.error, key: `${leaf.id}#error`, kind: "error", leaf },
-    ];
-  }
-
-  return cards === undefined || cards.hasMore
-    ? [...rows, { key: `${leaf.id}#pending`, kind: "pending", leaf }]
-    : rows;
+    return {
+      count: extent?.count ?? 0,
+      depth: level + index,
+      isContinued: context.isFirst && (extent?.start ?? 0) < context.offset,
+      key: step.id,
+      kind: "header",
+      label: `${step.field?.label ?? step.name}: ${describeKey(step.field, step.key)}`,
+    };
+  });
 }

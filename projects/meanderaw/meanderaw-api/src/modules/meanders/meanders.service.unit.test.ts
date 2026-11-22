@@ -9,6 +9,7 @@ import {
 } from "@codebase/meanderaw-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { MAXIMUM_SORTS, meandersArgumentsSchema } from "./meanders.constants";
 import { MeandersService } from "./meanders.service";
 import { MeanderAggregateService } from "./modules/aggregates/meander-aggregate.service";
 import { MeanderFilterService } from "./modules/filters/meander-filter.service";
@@ -238,6 +239,41 @@ describe(MeandersService, () => {
     expect(limit).toHaveBeenCalledWith(25);
     expect(skipped.pageInfo.hasPreviousPage).toBe(true);
     expect(first.pageInfo.hasPreviousPage).toBe(false);
+  });
+
+  it("takes as many sorts as four group levels and four sorts of a gallery need", () => {
+    expect.hasAssertions();
+
+    const sort = (
+      count: number,
+    ): { direction: SortDirection; field: string }[] =>
+      Array.from({ length: count }, () => ({
+        direction: SortDirection.ASC,
+        field: "rows",
+      }));
+
+    expect(MAXIMUM_SORTS).toBe(8);
+    expect(meandersArgumentsSchema.safeParse({ sort: sort(8) }).success).toBe(
+      true,
+    );
+    expect(meandersArgumentsSchema.safeParse({ sort: sort(9) }).success).toBe(
+      false,
+    );
+  });
+
+  it("refuses more sorts than the maximum before it reads anything", async () => {
+    expect.hasAssertions();
+
+    const service = await buildService();
+
+    await expect(
+      service.find({
+        sort: Array.from({ length: 9 }, () => ({
+          direction: SortDirection.ASC,
+          field: "rows",
+        })),
+      }),
+    ).rejects.toThrow(/too big|<=8|8 element/i);
   });
 
   it("refuses a cursor with several sorts, which need an offset", async () => {

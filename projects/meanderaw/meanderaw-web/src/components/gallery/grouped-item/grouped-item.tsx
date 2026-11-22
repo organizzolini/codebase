@@ -1,19 +1,15 @@
 import { MeanderCard } from "../../meander/meander-card/meander-card";
-import { GalleryError } from "../gallery-error/gallery-error";
 
 import { HEADINGS } from "./grouped-item.constants";
 
-import type {
-  GroupedItem as GroupedRow,
-  GroupLeaf,
-} from "../grouped-gallery/grouped-gallery.types";
+import type { GroupedItem as GroupedRow } from "../grouped-gallery/grouped-gallery.types";
 import type { GalleryCharacteristic } from "../meander-gallery/meanders-api.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The row, the catalog, its columns, repeats, and a retry.
+ * The row, the catalog, its columns, and repeats.
  */
 export interface GroupedItemProperties {
   /** Characteristics the page is grouped, sorted or filtered by. */
@@ -22,20 +18,18 @@ export interface GroupedItemProperties {
   className?: string;
   columns: number;
   item: GroupedRow;
-  onRetry: (leaf: GroupLeaf) => void;
   repeats: number;
 }
 
 // 🧩 Component
 
 /**
- * Renders one row of the grouped list: a header, cards, or a status.
+ * Renders one row of the grouped list: a header, or cards.
  */
 export function GroupedItem(
   properties: Readonly<GroupedItemProperties>,
 ): ReactNode {
-  const { activeKeys, catalog, className, columns, item, onRetry, repeats } =
-    properties;
+  const { activeKeys, catalog, className, columns, item, repeats } = properties;
 
   // 🪝 Hooks
 
@@ -62,7 +56,12 @@ export function GroupedItem(
           data-testid="group-header"
           style={{ paddingLeft: `${String(item.depth * 16)}px` }}
         >
-          <span>{item.label}</span>
+          <span>
+            {item.label}
+            {item.isContinued ? (
+              <span className="text-sm text-(--ink-muted)"> (continued)</span>
+            ) : null}
+          </span>
           <span
             className="text-sm text-(--ink-muted)"
             data-testid="group-count"
@@ -70,8 +69,7 @@ export function GroupedItem(
             {item.count.toLocaleString("en-US")}
           </span>
         </Heading>
-      ) : null}
-      {item.kind === "cards" ? (
+      ) : (
         <div
           className="grid gap-4"
           data-testid="group-cards-row"
@@ -89,18 +87,7 @@ export function GroupedItem(
             />
           ))}
         </div>
-      ) : null}
-      {item.kind === "pending" ? (
-        <p className="text-sm text-(--ink-muted)">Loading…</p>
-      ) : null}
-      {item.kind === "error" ? (
-        <GalleryError
-          error={item.error}
-          onRetry={() => {
-            onRetry(item.leaf);
-          }}
-        />
-      ) : null}
+      )}
     </div>
   );
 }

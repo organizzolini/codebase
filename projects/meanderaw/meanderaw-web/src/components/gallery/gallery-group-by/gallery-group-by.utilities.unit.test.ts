@@ -1,20 +1,12 @@
 import { describe, expect, it } from "vitest";
 
 import { FIXTURE_CHARACTERISTICS } from "../../../../testing/meanders-api";
-import { MAXIMUM_FILTER_DEPTH } from "../gallery-filters/components/filter-model/filter-model.constants";
 
 import {
   createGroupFields,
-  fitsGrouping,
   resolveGrouping,
+  toSequenceSorts,
 } from "./gallery-group-by.utilities";
-
-import type {
-  FilterGroup,
-  FilterRule,
-} from "../gallery-filters/components/filter-model/filter-model.types";
-
-const RULE: FilterRule = { field: "columns", operator: "eq", value: 1 };
 
 describe("gallery group by", () => {
   describe(createGroupFields, () => {
@@ -51,32 +43,30 @@ describe("gallery group by", () => {
     });
   });
 
-  describe(fitsGrouping, () => {
-    it("fits any grouping with no filter", () => {
-      expect(fitsGrouping(undefined, ["rows", "columns"])).toBe(true);
-    });
-
-    it("counts the rows rule, the tree's group and a rule for each level against the API's size cap", () => {
-      const full: FilterGroup = {
-        combinator: "and",
-        rules: Array.from({ length: 124 }, () => RULE),
-      };
-
-      expect(fitsGrouping(full, ["rows", "columns"])).toBe(true);
-      expect(fitsGrouping(full, ["rows", "columns", "isChain"])).toBe(false);
-    });
-
-    it("counts the nesting the tree gains when it is nested whole", () => {
-      let nested: FilterGroup = { combinator: "or", rules: [RULE] };
-
-      for (let level = 1; level < MAXIMUM_FILTER_DEPTH; level += 1) {
-        nested = { combinator: "or", rules: [nested] };
-      }
-
-      expect(fitsGrouping(nested, ["rows"])).toBe(true);
+  describe(toSequenceSorts, () => {
+    it("puts each level first, ascending, then the person's sorts", () => {
       expect(
-        fitsGrouping({ combinator: "or", rules: [nested] }, ["rows"]),
-      ).toBe(false);
+        toSequenceSorts(
+          ["rows", "columns"],
+          [{ direction: "desc", field: "junctionCount" }],
+        ),
+      ).toStrictEqual([
+        { direction: "asc", field: "rows" },
+        { direction: "asc", field: "columns" },
+        { direction: "desc", field: "junctionCount" },
+      ]);
+    });
+
+    it("drops a sort on a level, which the level orders already", () => {
+      expect(
+        toSequenceSorts(["rows"], [{ direction: "desc", field: "rows" }]),
+      ).toStrictEqual([{ direction: "asc", field: "rows" }]);
+    });
+
+    it("is the person's sorts alone for a flat gallery", () => {
+      expect(
+        toSequenceSorts([], [{ direction: "desc", field: "rows" }]),
+      ).toStrictEqual([{ direction: "desc", field: "rows" }]);
     });
   });
 });

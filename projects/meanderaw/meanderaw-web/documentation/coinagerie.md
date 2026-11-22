@@ -13,7 +13,6 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **fractional**:
 - **gallery**:
 - **gap**:
-- **heavy**:
 - **horizontal**:
 - **humanize**:
 - **ink**:
@@ -28,6 +27,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **submatrix**:
 - **usable**:
 - **visible**:
+- **watcher**:
 - **window**:
 
 <!-- coinagerie:end -->

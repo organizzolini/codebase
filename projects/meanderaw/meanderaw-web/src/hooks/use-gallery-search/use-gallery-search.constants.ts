@@ -54,7 +54,7 @@ export const DEFAULT_REPEATS = 12;
 /**
  * The page sizes on offer.
  */
-export const PAGE_SIZES: readonly number[] = [12, 24, 48];
+export const PAGE_SIZES: readonly number[] = [12, 24, 48, 96];
 
 /**
  * The page size a link opens on by default.

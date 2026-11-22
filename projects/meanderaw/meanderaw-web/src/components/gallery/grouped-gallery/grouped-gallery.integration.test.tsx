@@ -1,13 +1,17 @@
-import { fireEvent, screen, waitFor, within } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { renderRoute } from "@codebase/testing/react";
 
 import { serveMeandersApi } from "../../../../testing/meanders-api";
-import { scrollWindowTo } from "../../../../testing/viewport";
+import { reachEnd } from "../../../../testing/viewport";
 import { getRouter } from "../../../router";
-
-import type { MeandersQueryVariables } from "../../../graphql/generated/operations";
 
 /** The cards in one row of the gallery, none for a row that is not there. */
 function cardsIn(row: HTMLElement | undefined): HTMLElement[] {
@@ -21,25 +25,11 @@ function codesShown(): string[] {
     .map((card) => within(card).getByRole("code").textContent);
 }
 
-/** The groups the cards of which were read, as the rows × columns of each. */
-function requestedGroups(
-  requests: readonly MeandersQueryVariables[],
-): string[] {
-  return requests.map((request) => {
-    const [rows, columns] = request.filter?.rules ?? [];
-
-    return `${String(rows?.numbers?.[0])}x${String(columns?.numbers?.[0])}`;
-  });
-}
-
 /** A link's rows rule that every fixture meander satisfies. */
 const ALL_ROWS = encodeURIComponent('{"operator":"gte","value":1}');
 
-/** A filter near the caps renders every pill, slowly on CI. */
-const HEAVY_FILTER_TIMEOUT_MILLISECONDS = 30_000;
-
 describe("grouped gallery", () => {
-  it("shows a header for each group with its exact count, and loads the cards of each", async () => {
+  it("shows a header for each group with its exact count, and the cards of each in one read", async () => {
     const api = serveMeandersApi(6);
 
     await renderRoute(
@@ -57,9 +47,19 @@ describe("grouped gallery", () => {
     await waitFor(() => {
       expect(screen.getAllByTestId("meander-card")).toHaveLength(6);
     });
+
+    // One read asks for the cards in the order of the groups, then the sort.
+    expect(api.requests).toHaveLength(1);
+    expect(api.requests[0]).toMatchObject({
+      first: 24,
+      sort: [
+        { direction: "ASC", field: "columns" },
+        { direction: "ASC", field: "rows" },
+      ],
+    });
   });
 
-  it("keeps the 0 or false bucket as its own group, and loads its cards", async () => {
+  it("keeps the 0 or false bucket as its own group, ahead of the held ones", async () => {
     const api = serveMeandersApi(6);
 
     await renderRoute(
@@ -84,12 +84,14 @@ describe("grouped gallery", () => {
       ]);
     });
 
-    expect(api.requests[0]?.filter).toStrictEqual({
-      combinator: "AND",
-      groups: [],
-      rules: [
-        { field: "isChain", flag: false, operator: "IS" },
-        { field: "rows", numbers: [4], operator: "EQ" },
+    expect(api.requests[0]).toMatchObject({
+      filter: {
+        combinator: "AND",
+        rules: [{ field: "rows", numbers: [4], operator: "EQ" }],
+      },
+      sort: [
+        { direction: "ASC", field: "isChain" },
+        { direction: "ASC", field: "rows" },
       ],
     });
   });
@@ -116,29 +118,7 @@ describe("grouped gallery", () => {
     ]);
   });
 
-  it("reads a group's cards only as its header comes near the screen", async () => {
-    const api = serveMeandersApi(30, 0, (index) => (index % 5) + 1);
-
-    await renderRoute(
-      getRouter(),
-      `/?view=grid&group=${encodeURIComponent('["rows","columns"]')}&rows=${ALL_ROWS}`,
-    );
-    await screen.findAllByTestId("meander-card");
-
-    const before = requestedGroups(api.requests);
-
-    expect(before).toContain("1x1");
-    expect(before.length).toBeLessThan(15);
-    expect(before).not.toContain("5x3");
-
-    scrollWindowTo(6000);
-
-    await waitFor(() => {
-      expect(requestedGroups(api.requests)).toContain("5x3");
-    });
-  });
-
-  it("reads the cards of a rows then columns group by its rows and its columns", async () => {
+  it("orders the cards by every level, then the sort, as one sequence", async () => {
     const api = serveMeandersApi(6, 0, (index) => (index % 5) + 1);
 
     await renderRoute(
@@ -147,121 +127,67 @@ describe("grouped gallery", () => {
     );
     await screen.findAllByTestId("meander-card");
 
-    expect(api.requests[0]?.filter).toStrictEqual({
-      combinator: "AND",
-      groups: [],
-      rules: [
-        { field: "rows", numbers: [1], operator: "EQ" },
-        { field: "columns", numbers: [1], operator: "EQ" },
-        { field: "rows", numbers: [1], operator: "GTE" },
-      ],
-    });
+    expect(api.requests[0]?.sort).toStrictEqual([
+      { direction: "ASC", field: "rows" },
+      { direction: "ASC", field: "columns" },
+    ]);
     expect(codesShown()[0]).toBe("01x01y0000r12");
   });
 
-  it("reads a group's next page as its last rows come near", async () => {
-    const api = serveMeandersApi(120);
-    const notHeld = (): MeandersQueryVariables[] =>
-      api.requests.filter(({ filter }) => filter?.rules?.[0]?.flag === false);
+  it("adds the next page to the window at the bottom of the page, growing the range", async () => {
+    const api = serveMeandersApi(30, 0, (index) => (index < 7 ? 1 : 2));
 
     await renderRoute(
       getRouter(),
-      `/?view=grid&group=${encodeURIComponent('["isChain"]')}`,
+      `/?view=grid&size=12&group=${encodeURIComponent('["rows"]')}&rows=${ALL_ROWS}`,
     );
     await screen.findAllByTestId("meander-card");
 
-    expect(notHeld()).toHaveLength(1);
+    expect(screen.getByText("1 to 12 of 30")).toBeDefined();
 
-    scrollWindowTo(5200);
-
-    await waitFor(() => {
-      expect(notHeld().length).toBeGreaterThan(1);
+    act(() => {
+      reachEnd();
     });
 
-    expect(notHeld()[1]).toMatchObject({ after: "47" });
+    await waitFor(() => {
+      expect(screen.getByText("1 to 24 of 30")).toBeDefined();
+    });
+    await waitFor(() => {
+      expect(api.requests).toHaveLength(2);
+    });
+
+    expect(api.requests.map(({ offset }) => offset ?? 0)).toStrictEqual([
+      0, 12,
+    ]);
+    // The first group keeps its header, with the count of all its meanders.
+    expect(screen.getAllByTestId("group-header")[0]?.textContent).toBe(
+      "Rows: 17",
+    );
   });
 
-  it(
-    "reads the cards of each group at the filter's largest size, the key rules spliced into an AND filter",
-    async () => {
-      serveMeandersApi(6);
-      const rule = { field: "columns", operator: "gte", value: 0 };
-      // 125 rules, their group, the rows rule and the grouping's one key rule
-      // fill the API's 128, which the mock API refuses beyond.
-      const filter = {
-        combinator: "and",
-        rules: Array.from({ length: 125 }, () => rule),
-      };
+  it("shows a group again, as continued, on a page the group runs onto", async () => {
+    serveMeandersApi(30, 0, (index) => (index < 7 ? 1 : 2));
 
-      await renderRoute(
-        getRouter(),
-        `/?view=grid&group=${encodeURIComponent('["columns"]')}&filter=${encodeURIComponent(JSON.stringify(filter))}`,
-      );
+    await renderRoute(
+      getRouter(),
+      `/?view=grid&size=12&group=${encodeURIComponent('["rows"]')}&rows=${ALL_ROWS}`,
+    );
+    await screen.findAllByTestId("meander-card");
+    fireEvent.click(screen.getByRole("button", { name: "Next page" }));
 
-      await waitFor(
-        () => {
-          expect(screen.getAllByTestId("meander-card")).toHaveLength(6);
-        },
-        { timeout: HEAVY_FILTER_TIMEOUT_MILLISECONDS },
-      );
-    },
-    HEAVY_FILTER_TIMEOUT_MILLISECONDS,
-  );
+    await waitFor(() => {
+      expect(screen.getByText("13 to 24 of 30")).toBeDefined();
+    });
+    await waitFor(() => {
+      expect(screen.getAllByTestId("meander-card")).toHaveLength(12);
+    });
 
-  it(
-    "nests an OR filter whole, and reads its groups' cards at the deepest it can nest",
-    async () => {
-      serveMeandersApi(6);
-      let filter: unknown = {
-        combinator: "or",
-        rules: [{ field: "columns", operator: "gte", value: 0 }],
-      };
+    expect(
+      screen.getAllByTestId("group-header").map((header) => header.textContent),
+    ).toStrictEqual(["Rows: 2 (continued)23"]);
+  });
 
-      for (let level = 1; level < 5; level += 1) {
-        filter = { combinator: "or", rules: [filter] };
-      }
-
-      await renderRoute(
-        getRouter(),
-        `/?view=grid&group=${encodeURIComponent('["columns"]')}&filter=${encodeURIComponent(JSON.stringify(filter))}`,
-      );
-
-      await waitFor(
-        () => {
-          expect(screen.getAllByTestId("meander-card")).toHaveLength(6);
-        },
-        { timeout: HEAVY_FILTER_TIMEOUT_MILLISECONDS },
-      );
-    },
-    HEAVY_FILTER_TIMEOUT_MILLISECONDS,
-  );
-
-  it(
-    "says why a filter too large to read the groups' cards cannot be grouped",
-    async () => {
-      serveMeandersApi(6);
-      const filter = {
-        combinator: "and",
-        rules: Array.from({ length: 126 }, () => ({
-          field: "columns",
-          operator: "gte",
-          value: 0,
-        })),
-      };
-
-      await renderRoute(
-        getRouter(),
-        `/?view=grid&group=${encodeURIComponent('["columns"]')}&filter=${encodeURIComponent(JSON.stringify(filter))}`,
-      );
-
-      const alert = await screen.findByRole("alert");
-
-      expect(alert.textContent).toMatch(/too large/u);
-    },
-    HEAVY_FILTER_TIMEOUT_MILLISECONDS,
-  );
-
-  it("groups within the rows rule and the filter, and orders each group's cards by the sort", async () => {
+  it("groups within the rows rule and the filter, and orders the cards by the levels, then the sort", async () => {
     const api = serveMeandersApi(6);
     const filter = {
       combinator: "and",
@@ -292,7 +218,10 @@ describe("grouped gallery", () => {
     });
 
     expect(api.requests[0]).toMatchObject({
-      sort: [{ direction: "DESC", field: "junctionCount" }],
+      sort: [
+        { direction: "ASC", field: "columns" },
+        { direction: "DESC", field: "junctionCount" },
+      ],
     });
   });
 
@@ -307,8 +236,11 @@ describe("grouped gallery", () => {
 
     // Rows 4 are the odd positions: 1, 3 and 5, of columns 2, 1 and 3.
     expect(
-      screen.getAllByTestId("group-header").map((header) => header.textContent),
-    ).toStrictEqual(["Rows: 43", "Columns: 11", "Columns: 21", "Columns: 31"]);
+      screen
+        .getAllByTestId("group-header")
+        .slice(0, 3)
+        .map((header) => header.textContent),
+    ).toStrictEqual(["Rows: 43", "Columns: 11", "Columns: 21"]);
     expect(api.groupRequests).toHaveLength(1);
     expect(api.groupRequests[0]?.groupBy).toStrictEqual([
       { field: "rows" },
@@ -334,13 +266,9 @@ describe("grouped gallery", () => {
       expect(
         screen
           .getAllByTestId("group-header")
+          .slice(0, 3)
           .map((header) => header.textContent),
-      ).toStrictEqual([
-        "Rows: 33",
-        "Columns: 11",
-        "Columns: 21",
-        "Columns: 31",
-      ]);
+      ).toStrictEqual(["Rows: 33", "Columns: 11", "Columns: 21"]);
     });
   });
 
@@ -391,7 +319,7 @@ describe("grouped gallery", () => {
     await expect(screen.findByTestId("gallery-empty")).resolves.toBeDefined();
   });
 
-  it("shows why a group's cards failed to load, and reads them again when asked", async () => {
+  it("shows why the meanders failed to load, and reads them again when asked", async () => {
     const api = serveMeandersApi(6);
     api.failMeanders("The database is down");
 
@@ -400,15 +328,12 @@ describe("grouped gallery", () => {
       `/?view=grid&group=${encodeURIComponent('["columns"]')}`,
     );
 
-    const [alert] = await screen.findAllByRole("alert");
+    const alert = await screen.findByRole("alert");
 
-    expect(alert?.textContent).toMatch(/The database is down/u);
+    expect(alert.textContent).toMatch(/The database is down/u);
 
     api.recover();
-
-    for (const retry of screen.getAllByRole("button", { name: "Try again" })) {
-      fireEvent.click(retry);
-    }
+    fireEvent.click(screen.getByRole("button", { name: "Try again" }));
 
     await waitFor(() => {
       expect(screen.getAllByTestId("meander-card").length).toBeGreaterThan(0);

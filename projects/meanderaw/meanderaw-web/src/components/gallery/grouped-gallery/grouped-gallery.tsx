@@ -2,8 +2,8 @@ import { useWindowVirtualizer } from "@tanstack/react-virtual";
 import { useEffect, useMemo } from "react";
 
 import { useElementBox } from "../../../hooks/use-element-box/use-element-box";
-import { useGroupCards } from "../../../hooks/use-group-cards/use-group-cards";
 import { GalleryEmpty } from "../gallery-empty/gallery-empty";
+import { GalleryError } from "../gallery-error/gallery-error";
 import { GroupedItem } from "../grouped-item/grouped-item";
 import {
   OVERSCAN_ROWS,
@@ -11,25 +11,22 @@ import {
 } from "../meander-gallery/meander-gallery.constants";
 import { getColumnCount } from "../meander-gallery/meander-gallery.utilities";
 
-import { HEADER_ESTIMATE, STATUS_ESTIMATE } from "./grouped-gallery.constants";
-import { buildGroupedItems } from "./grouped-gallery.utilities";
+import { HEADER_ESTIMATE } from "./grouped-gallery.constants";
+import { buildGroupedItems, indexGroups } from "./grouped-gallery.utilities";
 
-import type {
-  MeanderFilterGroupInput,
-  MeanderSortInput,
-} from "../../../graphql/generated/operations";
 import type { GalleryView } from "../../../hooks/use-gallery-search/use-gallery-search.types";
 import type { GroupField } from "../gallery-group-by/gallery-group-by.types";
 import type {
   GalleryCharacteristic,
   GalleryGroup,
+  GalleryMeander,
 } from "../meander-gallery/meanders-api.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The groups with their counts, what selects their cards, and the view.
+ * The meanders, the groups with their counts, and the view.
  */
 export interface GroupedGalleryProperties {
   /** Characteristics the page is grouped, sorted or filtered by. */
@@ -38,53 +35,62 @@ export interface GroupedGalleryProperties {
   catalog: readonly GalleryCharacteristic[];
   className?: string;
   fields: readonly GroupField[];
+  /** The levels the meanders are ordered by first, outermost first. */
+  grouping: readonly string[];
+  /** Every group of the filtered meanders, with its exact count. */
   groups: readonly GalleryGroup[];
-  /** What every group's cards are read with: the page's filter, repeats, sorts. */
-  query: Readonly<{
-    filter: MeanderFilterGroupInput | undefined;
-    repeats: number;
-    sort: readonly MeanderSortInput[];
-  }>;
+  loadError: unknown;
+  /** The meanders of the pages showing, ordered by the levels, then the sorts. */
+  meanders: readonly GalleryMeander[];
+  /** How many meanders come before the first, over every page. */
+  offset: number;
+  onRetry: () => void;
+  repeats: number;
   view: GalleryView;
 }
 
 // 🧩 Component
 
 /**
- * Renders the groups as one virtualized list of headers and rows of cards,
- * reading a group's cards as its header comes near.
+ * Renders the meanders of the pages showing as one virtualized list of rows of cards, a header wherever a group begins.
  */
 export function GroupedGallery(
   properties: Readonly<GroupedGalleryProperties>,
 ): ReactNode {
-  const { activeKeys, catalog, className, fields, groups, query, view } =
-    properties;
+  const {
+    activeKeys,
+    catalog,
+    className,
+    fields,
+    grouping,
+    groups,
+    loadError,
+    meanders,
+    offset,
+    onRetry,
+    repeats,
+    view,
+  } = properties;
 
   // 🪝 Hooks
   const { setElement, top, width } = useElementBox();
-  const { cards, load } = useGroupCards(query);
   const columns = getColumnCount(width, view);
+  const extents = useMemo(() => indexGroups(groups), [groups]);
   const items = useMemo(
     () =>
-      buildGroupedItems(groups, {
-        cards,
+      buildGroupedItems(meanders, {
         columns,
+        extents,
         fields,
-        filter: query.filter,
+        grouping,
+        offset,
       }),
-    [cards, columns, fields, groups, query.filter],
+    [columns, extents, fields, grouping, meanders, offset],
   );
   const virtualizer = useWindowVirtualizer({
     count: items.length,
-    estimateSize: (index) => {
-      const kind = items[index]?.kind;
-
-      if (kind === "header") {
-        return HEADER_ESTIMATE;
-      }
-
-      return kind === "cards" ? ROW_ESTIMATES[view] : STATUS_ESTIMATE;
-    },
+    estimateSize: (index) =>
+      items[index]?.kind === "header" ? HEADER_ESTIMATE : ROW_ESTIMATES[view],
     getItemKey: (index) => items[index]?.key ?? index,
     overscan: OVERSCAN_ROWS,
     scrollMargin: top,
@@ -100,18 +106,8 @@ export function GroupedGallery(
     virtualizer.measure();
   }, [columns, view, virtualizer]);
 
-  useEffect(() => {
-    for (const { index } of visible) {
-      const item = items[index];
-
-      if (item?.kind === "pending") {
-        load(item.leaf);
-      }
-    }
-  }, [items, load, visible]);
-
   // 🏁 Early Returns
-  if (groups.length === 0) {
+  if (meanders.length === 0) {
     return <GalleryEmpty />;
   }
 
@@ -122,14 +118,6 @@ export function GroupedGallery(
       className={className}
       data-testid="grouped-gallery"
     >
-      <p
-        className="sr-only"
-        role="status"
-      >
-        {visible.some(({ index }) => items[index]?.kind === "pending")
-          ? "Loading groups…"
-          : ""}
-      </p>
       <ul
         className="relative"
         style={{ height: virtualizer.getTotalSize() }}
@@ -150,13 +138,19 @@ export function GroupedGallery(
                 catalog={catalog}
                 columns={columns}
                 item={item}
-                onRetry={load}
-                repeats={query.repeats}
+                repeats={repeats}
               />
             </li>
           );
         })}
       </ul>
+      {loadError === undefined ? null : (
+        <GalleryError
+          className="pt-2"
+          error={loadError}
+          onRetry={onRetry}
+        />
+      )}
     </div>
   );
 }

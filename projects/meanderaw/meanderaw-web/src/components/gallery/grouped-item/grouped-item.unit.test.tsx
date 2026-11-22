@@ -1,5 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 
 import {
   FIXTURE_CHARACTERISTICS,
@@ -21,11 +21,11 @@ function properties(
     item: {
       count: 1234,
       depth: 1,
+      isContinued: false,
       key: "k",
       kind: "header",
       label: "Lattice: 0",
     },
-    onRetry: vi.fn<GroupedItemProperties["onRetry"]>(),
     repeats: 12,
     ...overrides,
   };
@@ -60,7 +60,14 @@ describe(GroupedItem, () => {
     rerender(
       <GroupedItem
         {...properties({
-          item: { count: 1, depth: 9, key: "k", kind: "header", label: "x" },
+          item: {
+            count: 1,
+            depth: 9,
+            isContinued: false,
+            key: "k",
+            kind: "header",
+            label: "x",
+          },
         })}
       />,
     );
@@ -68,38 +75,41 @@ describe(GroupedItem, () => {
     expect(screen.getByRole("heading", { level: 6 })).toBeDefined();
   });
 
-  it("shows a row of cards, a stand-in, and a failure to retry", () => {
-    const onRetry = vi.fn<GroupedItemProperties["onRetry"]>();
-    const leaf = { filter: undefined, id: "k" };
-    const { rerender } = render(
+  it("marks a group that began before the pages showing as continued", () => {
+    const { rerender } = render(<GroupedItem {...properties()} />);
+
+    expect(screen.queryByText(/continued/u)).toBeNull();
+
+    rerender(
+      <GroupedItem
+        {...properties({
+          item: {
+            count: 1234,
+            depth: 1,
+            isContinued: true,
+            key: "k",
+            kind: "header",
+            label: "Lattice: 0",
+          },
+        })}
+      />,
+    );
+
+    expect(screen.getByTestId("group-header").textContent).toBe(
+      "Lattice: 0 (continued)1,234",
+    );
+  });
+
+  it("shows a row of cards in the columns it is given", () => {
+    render(
       <GroupedItem
         {...properties({
           item: { key: "k", kind: "cards", meanders: [fixtureMeander(0)] },
-          onRetry,
         })}
       />,
     );
 
     expect(screen.getAllByTestId("meander-card")).toHaveLength(1);
-
-    rerender(
-      <GroupedItem
-        {...properties({ item: { key: "k", kind: "pending", leaf }, onRetry })}
-      />,
-    );
-
-    expect(screen.getByText("Loading…")).toBeDefined();
-
-    rerender(
-      <GroupedItem
-        {...properties({
-          item: { error: new Error("down"), key: "k", kind: "error", leaf },
-          onRetry,
-        })}
-      />,
-    );
-    fireEvent.click(screen.getByRole("button", { name: "Try again" }));
-
-    expect(onRetry).toHaveBeenCalledWith(leaf);
+    expect(screen.queryByTestId("group-header")).toBeNull();
   });
 });

@@ -608,6 +608,29 @@ describe("meanders resolver end-to-end suite", () => {
     );
   });
 
+  it("takes up to eight sorts and refuses a ninth", async () => {
+    expect.hasAssertions();
+
+    const fields = [
+      "rows",
+      "columns",
+      "lattice",
+      "isHardcoded",
+      "repeats",
+      "junctionCount",
+      "rows",
+      "columns",
+    ];
+    const sort = fields.map((field) => ({ direction: "ASC", field }));
+    const eight = await page({ first: 200, sort });
+    const nine = await application.query(MEANDERS_QUERY, {
+      sort: [...sort, { direction: "ASC", field: "code" }],
+    });
+
+    expect(eight.totalCount).toBe(6);
+    expect(nine.errors).toHaveLength(1);
+  });
+
   it("refuses a cursor with several sorts", async () => {
     expect.hasAssertions();
 

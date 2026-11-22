@@ -8,6 +8,9 @@ export const ELEMENT_HEIGHT = 300;
 
 let viewportWidth = DESKTOP_WIDTH;
 
+/** The elements watched for coming into view, by the callback watching. */
+const watchers = new Map<Element, IntersectionObserverCallback>();
+
 /**
  * Answers every element's size from the viewport a test sets, and tells each
  * watching resize observer the size of what it starts to watch.
@@ -26,6 +29,15 @@ export function installViewport(): void {
     get: () => ELEMENT_HEIGHT,
   });
   Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
+    configurable: true,
+    get: () => viewportWidth,
+  });
+  // A scrolling element, such as a menu's list, is measured by its client box.
+  Object.defineProperty(Element.prototype, "clientHeight", {
+    configurable: true,
+    get: () => ELEMENT_HEIGHT,
+  });
+  Object.defineProperty(Element.prototype, "clientWidth", {
     configurable: true,
     get: () => viewportWidth,
   });
@@ -51,17 +63,51 @@ export function installViewport(): void {
 
     unobserve = (): void => {};
   };
+  watchers.clear();
+  globalThis.IntersectionObserver = class {
+    constructor(private readonly callback: IntersectionObserverCallback) {}
+    disconnect = (): void => {
+      for (const [target, callback] of watchers) {
+        if (callback === this.callback) {
+          watchers.delete(target);
+        }
+      }
+    };
+    observe = (target: Element): void => {
+      watchers.set(target, this.callback);
+    };
+    readonly root = null;
+    readonly rootMargin = "";
+    readonly scrollMargin = "";
+    takeRecords = (): IntersectionObserverEntry[] => [];
+    readonly thresholds = [];
+    unobserve = (target: Element): void => {
+      watchers.delete(target);
+    };
+  };
 }
 
 /**
- * Scrolls the window to a distance from the top, telling every scroll listener.
+ * Tells every watcher that its element came into view, as scrolling to the
+ * end of the page does.
  */
-export function scrollWindowTo(top: number): void {
-  Object.defineProperty(globalThis, "scrollY", {
-    configurable: true,
-    value: top,
-  });
-  globalThis.dispatchEvent(new Event("scroll"));
+export function reachEnd(): void {
+  for (const [target, callback] of watchers) {
+    callback(
+      [
+        {
+          boundingClientRect: new DOMRect(),
+          intersectionRatio: 1,
+          intersectionRect: new DOMRect(),
+          isIntersecting: true,
+          rootBounds: null,
+          target,
+          time: 0,
+        },
+      ],
+      new IntersectionObserver(callback),
+    );
+  }
 }
 
 /**

@@ -1,34 +1,38 @@
-import type { MeanderFilterGroupInput } from "../../../graphql/generated/operations";
+import type { GroupField } from "../gallery-group-by/gallery-group-by.types";
 import type { GalleryMeander } from "../meander-gallery/meanders-api.types";
 
 // 🏷️ Types
 
 /**
- * The meanders of a last-level group, as far as read.
- */
-export interface GroupCards {
-  /** Where the next page starts, once one is read. */
-  endCursor: null | string | undefined;
-  /** Why the last read failed, until the next try. */
-  error: unknown;
-  /** Whether more wait after those read. */
-  hasMore: boolean;
-  meanders: readonly GalleryMeander[];
-}
-
-/**
  * A row of the flat list.
  */
 export type GroupedItem =
-  | { count: number; depth: number; key: string; kind: "header"; label: string }
-  | { error: unknown; key: string; kind: "error"; leaf: GroupLeaf }
-  | { key: string; kind: "cards"; meanders: readonly GalleryMeander[] }
-  | { key: string; kind: "pending"; leaf: GroupLeaf };
+  | {
+      count: number;
+      depth: number;
+      /** Whether the group began before the pages showing. */
+      isContinued: boolean;
+      key: string;
+      kind: "header";
+      label: string;
+    }
+  | { key: string; kind: "cards"; meanders: readonly GalleryMeander[] };
 
 /**
- * A last-level group and the filter that selects its cards.
+ * A group's exact count, and where it starts in the sequence.
  */
-export interface GroupLeaf {
-  filter: MeanderFilterGroupInput | undefined;
+export interface GroupExtent {
+  count: number;
+  /** How many meanders come before it, over every page. */
+  start: number;
+}
+
+/**
+ * One level a meander falls under: its key and group id.
+ */
+export interface GroupStep {
+  field: GroupField | undefined;
   id: string;
+  key: string;
+  name: string;
 }

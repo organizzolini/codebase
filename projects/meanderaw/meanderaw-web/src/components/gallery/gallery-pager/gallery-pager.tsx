@@ -3,13 +3,15 @@ import { ChevronLeft, ChevronRight, Rows3 } from "lucide-react";
 import {
   Button,
   ButtonGroup,
-  ButtonGroupText,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@codebase/presentation";
 
-import { PageMenu } from "./components/page-menu/page-menu";
+import { PageList } from "./components/page-list/page-list";
+import { PageSizes } from "./components/page-sizes/page-sizes";
+import { RANGE_SEGMENT } from "./gallery-pager.constants";
 import { describeRange } from "./gallery-pager.utilities";
 
 import type { ReactNode } from "react";
@@ -17,19 +19,19 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The page showing, how many there are, and the paging handlers.
+ * The pages showing, how many there are, and the paging handlers.
  */
 export interface GalleryPagerProperties {
   className?: string;
-  isLoading: boolean;
-  onPage: (position: number) => void;
+  /** The first page showing, from 1. */
+  first: number;
+  /** The last page showing, from 1. */
+  last: number;
+  /** Shows one page alone, from 1. */
+  onPage: (page: number) => void;
   onSizeChange: (size: number) => void;
   /** How many pages the meanders fill. */
   pageCount: number;
-  /** The place of the page showing, from 0. */
-  position: number;
-  /** How many meanders the page showing holds. */
-  shown: number;
   /** How many meanders a full page holds. */
   size: number;
   total: number;
@@ -38,19 +40,18 @@ export interface GalleryPagerProperties {
 // 🧩 Component
 
 /**
- * Renders the Page button, whose popover sets the size and goes to a page, joined to chevrons around the range.
+ * Renders the Page button, whose menu sets the size and goes to a page, joined to chevrons around the range.
  */
 export function GalleryPager(
   properties: Readonly<GalleryPagerProperties>,
 ): ReactNode {
   const {
     className,
-    isLoading,
+    first,
+    last,
     onPage,
     onSizeChange,
     pageCount,
-    position,
-    shown,
     size,
     total,
   } = properties;
@@ -72,8 +73,8 @@ export function GalleryPager(
       data-testid="gallery-pager"
     >
       <ButtonGroup aria-label="Pages">
-        <Popover>
-          <PopoverTrigger
+        <DropdownMenu>
+          <DropdownMenuTrigger
             render={
               <Button
                 size="sm"
@@ -83,25 +84,27 @@ export function GalleryPager(
           >
             <Rows3 aria-hidden="true" />
             Page
-          </PopoverTrigger>
-          <PopoverContent
-            align="end"
-            className="w-64 gap-3"
-          >
-            <PageMenu
-              onPage={onPage}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <PageSizes
               onSizeChange={onSizeChange}
-              pageCount={pageCount}
               size={size}
             />
-          </PopoverContent>
-        </Popover>
+            <DropdownMenuSeparator />
+            <PageList
+              first={first}
+              last={last}
+              onPage={onPage}
+              pageCount={pageCount}
+            />
+          </DropdownMenuContent>
+        </DropdownMenu>
         <Button
           aria-label="Previous page"
           className="aria-disabled:cursor-not-allowed aria-disabled:text-muted-foreground"
-          disabled={position <= 0 || isLoading}
+          disabled={first <= 1}
           onClick={() => {
-            onPage(position - 1);
+            onPage(first - 1);
           }}
           size="icon-sm"
           variant="outline"
@@ -109,20 +112,19 @@ export function GalleryPager(
         >
           <ChevronLeft aria-hidden="true" />
         </Button>
-        <ButtonGroupText
+        <div
           aria-live="polite"
-          className="border-border bg-background h-7 text-[0.8rem] tabular-nums dark:border-input dark:bg-input/30"
+          className={RANGE_SEGMENT}
+          data-slot="button"
         >
-          {isLoading
-            ? "Loading…"
-            : describeRange({ position, shown, size, total })}
-        </ButtonGroupText>
+          {describeRange({ first, last, size, total })}
+        </div>
         <Button
           aria-label="Next page"
           className="aria-disabled:cursor-not-allowed aria-disabled:text-muted-foreground"
-          disabled={position + 1 >= pageCount || isLoading}
+          disabled={last >= pageCount}
           onClick={() => {
-            onPage(position + 1);
+            onPage(last + 1);
           }}
           size="icon-sm"
           variant="outline"

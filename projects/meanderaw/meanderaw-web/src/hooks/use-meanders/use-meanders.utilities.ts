@@ -1,7 +1,11 @@
 import { findMeanders } from "../../components/gallery/meander-gallery/meanders-api.utilities";
 
 import type { MeandersPage } from "../../components/gallery/meander-gallery/meanders-api.types";
-import type { PagingQuery, PagingState } from "./use-meanders.types";
+import type {
+  PageWindow,
+  PagingQuery,
+  PagingState,
+} from "./use-meanders.types";
 import type { RefObject as ReferenceObject } from "react";
 
 // 🔏 Private Functions
@@ -9,111 +13,119 @@ import type { RefObject as ReferenceObject } from "react";
 // 🌎 Public Functions
 
 /**
- * Whether a place may be shown: a page that exists, while no read is under way.
+ * Whether a window may be shown: pages that exist, in order.
  */
-export function canGoTo(
-  request: Readonly<{ isLoading: boolean; pageCount: number; target: number }>,
-): boolean {
-  const { isLoading, pageCount, target } = request;
-
-  return !isLoading && target >= 0 && target < pageCount;
+export function fitsWindow(range: PageWindow, pageCount: number): boolean {
+  return (
+    range.first >= 1 && range.first <= range.last && range.last <= pageCount
+  );
 }
 
 /**
- * How to read a page: after the cursor before it when one sort orders it,
- * else past an offset.
+ * Lists the pages of a window not read yet, by their number from 2.
  */
-export function planRead(
-  request: Readonly<{
-    first: MeandersPage;
-    pages: Readonly<Record<number, MeandersPage>>;
-    size: number;
-    sorts: number;
-    target: number;
-  }>,
-): { after: null | string; offset: number } {
-  const { first, pages, size, sorts, target } = request;
-  // A cursor holds one sort's place; several are paged by offset.
-  const before =
-    sorts > 1 ? undefined : target === 1 ? first : pages[target - 1];
+export function listMissing(
+  range: PageWindow,
+  pages: Readonly<Record<number, MeandersPage>>,
+): number[] {
+  const missing: number[] = [];
 
-  return {
-    after: before?.pageInfo.endCursor ?? null,
-    offset: before === undefined ? target * size : 0,
-  };
+  for (let page = Math.max(range.first, 2); page <= range.last; page += 1) {
+    if (pages[page] === undefined) {
+      missing.push(page);
+    }
+  }
+
+  return missing;
 }
 
 /**
- * Reads a page after a cursor or past an offset and keeps it; a failed read steps back.
+ * Reads a page past the offset its number makes and keeps it; a failed read
+ * keeps its error and steps back.
  */
-export function readPage(
+export async function readPage(
   request: Readonly<{
-    after: null | string;
-    fallback: number;
+    fallback: PageWindow;
     first: MeandersPage;
-    offset: number;
-    position: number;
+    page: number;
     query: Readonly<PagingQuery>;
     setState: (update: (previous: PagingState) => PagingState) => void;
     showing: Readonly<ReferenceObject<MeandersPage | undefined>>;
+    target: PageWindow;
   }>,
-): void {
-  const { after, fallback, first, offset, position, query, setState, showing } =
-    request;
+): Promise<void> {
+  const { fallback, first, page, query, setState, showing, target } = request;
 
-  findMeanders({
-    after,
+  return findMeanders({
     filter: query.filter,
     first: query.size,
-    offset,
+    offset: (page - 1) * query.size,
     repeats: query.repeats,
     sort: query.sort === undefined ? undefined : [...query.sort],
   })
     .then((read) => {
       if (showing.current === first) {
         setState((previous) => ({
-          first,
-          pages: { ...previous.pages, [position]: read },
-          position: previous.position,
+          ...previous,
+          pages: { ...previous.pages, [page]: read },
         }));
       }
     })
     .catch((error: unknown) => {
       if (showing.current === first) {
         setState((previous) => ({
-          failure: { error },
-          first,
-          pages: previous.pages,
-          position: fallback,
+          ...previous,
+          failure: { error, range: target },
+          // Steps back only if the window failing is still the one showing.
+          range:
+            previous.range.first === target.first &&
+            previous.range.last === target.last
+              ? fallback
+              : previous.range,
         }));
       }
     });
 }
 
 /**
- * Reads the page showing out of the state: it, whether it loads, and the page count.
+ * Reads the window showing out of the state: the meanders of its pages read,
+ * whether any waits, and the page count.
  */
 export function resolvePaging(
-  first: MeandersPage | undefined,
+  first: MeandersPage,
   state: PagingState,
   size: number,
 ): {
   isLoading: boolean;
-  page: MeandersPage | undefined;
+  meanders: MeandersPage["edges"][number]["node"][];
   pageCount: number;
   pages: Readonly<Record<number, MeandersPage>>;
-  position: number;
+  range: PageWindow;
 } {
   const isCurrent = state.first === first;
-  const position = isCurrent ? state.position : 0;
+  const range = isCurrent ? state.range : { first: 1, last: 1 };
   const pages = isCurrent ? state.pages : {};
-  const page = position === 0 ? first : pages[position];
+  const meanders: MeandersPage["edges"][number]["node"][] = [];
+  let isLoading = false;
+
+  for (let number = range.first; number <= range.last; number += 1) {
+    const page = number === 1 ? first : pages[number];
+
+    if (page === undefined) {
+      isLoading = true;
+      continue;
+    }
+
+    for (const { node } of page.edges) {
+      meanders.push(node);
+    }
+  }
 
   return {
-    isLoading: first !== undefined && page === undefined,
-    page,
-    pageCount: Math.ceil((first?.totalCount ?? 0) / size),
+    isLoading,
+    meanders,
+    pageCount: Math.ceil(first.totalCount / size),
     pages,
-    position,
+    range,
   };
 }
