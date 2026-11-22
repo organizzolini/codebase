@@ -1,3 +1,7 @@
+## 0.0.89 (2026-11-22)
+
+This was a version bump only for callidescope-core to align it with other projects, there were no code changes.
+
 ## 0.0.88 (2026-11-21)
 
 ### 💅 Refactors

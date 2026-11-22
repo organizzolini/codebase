@@ -4,6 +4,8 @@ title: Local Development Setup
 description: Complete local development environment including dev container, Docker Compose services, Nx targets, environment files, dependency installation, and project-specific quickstarts.
 tags: [devcontainer, docker-compose, nx, environment, quickstart]
 sources:
+  - id: openwiki-source-36b751a4c96b6d4e9193da92
+    resource: repo://.devcontainer/local/devcontainer.json
   - id: openwiki-source-9bdedb6b4cae230293bf415c
     resource: repo://.devcontainer/README.md
   - id: openwiki-source-2fe644645addbb5d683744e9
@@ -34,10 +36,10 @@ sources:
     resource: repo://projects/meanderaw/meanderaw-cli/configuration/.env.default
   - id: openwiki-source-a6e80b612169ffb94413f377
     resource: repo://projects/meanderaw/meanderaw-cli/README.md
-generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-22T17:40:37.367Z" }
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-22T00:18:20.862Z
+    at: 2026-11-22T17:40:37.367Z
 ---
 
 # Local Development Setup
@@ -72,7 +74,7 @@ The container uses [Dev Container Features](https://containers.dev/features) for
 
 | Feature | Version | Purpose | Config |
 |---------|---------|---------|--------|
-| `typescript-node:22` | Base | Node.js 22 with TypeScript support | Both |
+| `typescript-node:26` | Base | Node.js 26 with TypeScript support | Both |
 | `docker-in-docker` | 2 | Isolated Docker daemon inside container (DinD) | Cloud only |
 | `docker-outside-of-docker` | 1 | Mounts host Docker socket (DooD) | Local only |
 | `github-cli` | 1 | `gh` command for GitHub operations | Both |
@@ -102,9 +104,9 @@ Ports are automatically forwarded to your host machine:
 1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and [VS Code Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 2. Open the codebase folder in VS Code
 3. Open the command palette (`Ctrl/Cmd+Shift+P`) → **Dev Containers: Reopen in Container**
-4. When prompted, choose:
+4. When prompted to select a configuration, choose:
    - **Codebase Devcontainer (Local)** — for local development (Docker outside of Docker)
-   - **Codebase Devcontainer (Cloud)** — for GitHub Codespaces or isolated Docker (Docker in Docker)
+   - **Codebase Devcontainer (Cloud)** — for GitHub Codespaces or if you want isolated Docker (Docker in Docker)
 5. Wait for container build (~2-3 minutes first time, cached after)
 6. Terminal opens with all tools ready
 
@@ -116,8 +118,8 @@ After building the container, verify the setup:
 
 ```bash
 # 1. Check tool versions
-node --version          # Should output the version in .nvmrc (v24.22.3)
-pnpm --version          # Should output the packageManager version in package.json (12.21.0)
+node --version          # Should output v26.13.1 (per .nvmrc and engines.node in package.json)
+pnpm --version          # Should output 12.21.0 (per packageManager in package.json)
 gh --version            # Should output gh version X.Y.Z
 helm version --short    # Should output vX.Y.Z
 kubectl version --client # Should output client version
@@ -388,6 +390,13 @@ Corepack should handle this automatically. If issues persist:
 ```bash
 corepack enable
 corepack prepare pnpm@12.21.0 --activate
+```
+
+### Node.js version mismatch
+The dev container installs Node.js 26 via the typescript-node feature. If you need a different version:
+```bash
+nvm install 26.13.1
+nvm use 26.13.1
 ```
 
 ### Port already in use
