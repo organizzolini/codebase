@@ -17,7 +17,7 @@ export const SKIPPED_DIRECTORIES: ReadonlySet<string> = new Set([
 /** The artifact the baseline is uploaded as, and later downloaded by name. */
 export const BASELINE_ARTIFACT = "codometer-reports-main";
 
-/** The file that makes a folder a project, whose report belongs in the baseline. */
+/** The file that makes a folder a project. */
 export const PROJECT_FILE_NAME = "project.json";
 
 export const NO_REPORTS_MESSAGE =

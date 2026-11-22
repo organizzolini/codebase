@@ -25,12 +25,9 @@ import type { Environment } from "../../integration.types";
 import type { CollectCodometerBaselineReport } from "./collect-codometer-baseline.types";
 
 /**
- * Gathers every project's codometer report into the baseline directory, keeping
- * each at the path it was found, so a later pull request can diff against it.
- *
- * A push builds only the projects it affects, so it starts from the earlier
- * baseline and overlays what it measured: the baseline stays complete, and
- * a project is dropped only once it no longer exists.
+ * Gathers project reports into the baseline directory at the paths found,
+ * laid over the earlier baseline: a push builds only what it affects, and a
+ * project is dropped only once it no longer exists.
  */
 @Injectable()
 export class CollectCodometerBaselineService {

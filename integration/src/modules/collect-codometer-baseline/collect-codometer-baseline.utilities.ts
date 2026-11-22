@@ -3,7 +3,7 @@
 import { BASELINE_ARTIFACT } from "./collect-codometer-baseline.constants";
 
 /**
- * The `gh` arguments that name the run holding the newest unexpired baseline artifact on `main`, found by the artifact itself, so a run that uploaded none cannot hide it.
+ * The `gh` arguments naming the run of the newest unexpired baseline artifact on `main`.
  */
 export function buildFindBaselineArguments(repository: string): string[] {
   return [
