@@ -21,7 +21,7 @@ import type { CapturedProcess } from "../process-runner/process-runner.types";
 import type { ReportCodometerChangesOutcome } from "./report-codometer-changes.types";
 
 const LIST =
-  "gh run list --workflow=continuous-integration.yml --branch=main --status=success --limit=1 --json=databaseId --jq=.[0].databaseId";
+  'gh api repos/owner/repository/actions/artifacts?name=codometer-reports-main&per_page=30 --jq=[.artifacts[] | select(.expired == false and .workflow_run.head_branch == "main")][0].workflow_run.id';
 const DOWNLOAD =
   "gh run download 4242 --name=codometer-reports-main --dir=codometer-baseline";
 const VIEW = "gh pr view 7 --json=body --jq=.body";
@@ -137,11 +137,28 @@ describe(ReportCodometerChangesService, () => {
 
     expect(outcome.exitCode).toBe(0);
     expect(outcome.lines).toStrictEqual([
-      "ℹ️ No successful main run to compare against yet.",
+      "ℹ️ No codometer baseline from main to compare against yet.",
     ]);
     expect(runner.streamed[0]?.args).not.toContain(
       "--baseline=codometer-baseline",
     );
+  });
+
+  it("looks for the baseline with no repository named when the environment names none", async () => {
+    expect.hasAssertions();
+
+    const noRepository = LIST.replace("repos/owner/repository", "repos/");
+    const { outcome } = await report(
+      {
+        "gh pr edit *": succeeded(),
+        [noRepository]: succeeded(""),
+        [VIEW]: succeeded("body"),
+      },
+      0,
+      { GITHUB_REPOSITORY: undefined },
+    );
+
+    expect(outcome.exitCode).toBe(0);
   });
 
   it.each([
