@@ -1,5 +1,3 @@
-import { toRows } from "../meander-gallery/meander-gallery.utilities";
-
 import type { GroupField } from "../gallery-group-by/gallery-group-by.types";
 import type {
   GalleryGroup,
@@ -20,7 +18,6 @@ import type {
 export function buildGroupedItems(
   meanders: readonly GalleryMeander[],
   context: Readonly<{
-    columns: number;
     extents: ReadonlyMap<string, GroupExtent>;
     fields: readonly GroupField[];
     grouping: readonly string[];
@@ -28,7 +25,7 @@ export function buildGroupedItems(
     offset: number;
   }>,
 ): GroupedItem[] {
-  const { columns, fields, grouping } = context;
+  const { fields, grouping } = context;
   const items: GroupedItem[] = [];
   // The levels of the meander before, and the cards since its header.
   const state = { previous: [] as GroupStep[], run: [] as GalleryMeander[] };
@@ -41,7 +38,7 @@ export function buildGroupedItems(
 
     if (level !== -1) {
       items.push(
-        ...toCardRows(state.run, columns, items.length),
+        ...toCards(state.run, items.length),
         ...toHeaders(steps, level, {
           extents: context.extents,
           isFirst: state.previous.length === 0,
@@ -55,7 +52,7 @@ export function buildGroupedItems(
     state.previous = steps;
   }
 
-  items.push(...toCardRows(state.run, columns, items.length));
+  items.push(...toCards(state.run, items.length));
 
   return items;
 }
@@ -146,22 +143,16 @@ function readSteps(
   return steps;
 }
 
-// 🌎 Public Functions
-
 /**
- * Splits cards into rows of the columns, keyed by their place in the list.
+ * The cards under one header as one item, none for no cards, keyed by place.
  */
-function toCardRows(
-  run: readonly GalleryMeander[],
-  columns: number,
-  place: number,
-): GroupedItem[] {
-  return toRows(run, columns).map((row, index): GroupedItem => ({
-    key: `cards#${String(place + index)}`,
-    kind: "cards",
-    meanders: row,
-  }));
+function toCards(run: readonly GalleryMeander[], place: number): GroupedItem[] {
+  return run.length === 0
+    ? []
+    : [{ key: `cards#${String(place)}`, kind: "cards", meanders: run }];
 }
+
+// 🌎 Public Functions
 
 /**
  * The headers of the levels from the first that changed, a group continued

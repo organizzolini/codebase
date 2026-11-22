@@ -7,6 +7,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **aspect**:
 - **border**:
 - **characteristic**:
+- **deal**:
 - **estimate**:
 - **fire**:
 - **flight**:
@@ -18,6 +19,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **ink**:
 - **lattice**:
 - **letter**:
+- **masonry**:
 - **meander**:
 - **ne**:
 - **nowrap**:
@@ -27,7 +29,6 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **sound**:
 - **submatrix**:
 - **usable**:
-- **visible**:
 - **watcher**:
 - **window**:
 

@@ -5,7 +5,6 @@ import type {
   SortEntry,
 } from "../../../hooks/use-gallery-search/use-gallery-search.types";
 import type { FilterGroup } from "../gallery-filters/components/filter-model/filter-model.types";
-import type { GalleryMeander } from "./meanders-api.types";
 
 // 🔏 Private Functions
 
@@ -54,20 +53,4 @@ export function listActiveKeys(
   }
 
   return [...keys];
-}
-
-/**
- * Splits the meanders into rows of `size`, the last holding what is left.
- */
-export function toRows(
-  meanders: readonly GalleryMeander[],
-  size: number,
-): GalleryMeander[][] {
-  const rows: GalleryMeander[][] = [];
-
-  for (let start = 0; start < meanders.length; start += size) {
-    rows.push(meanders.slice(start, start + size));
-  }
-
-  return rows;
 }

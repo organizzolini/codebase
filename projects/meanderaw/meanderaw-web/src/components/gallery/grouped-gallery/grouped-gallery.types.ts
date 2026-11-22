@@ -4,7 +4,7 @@ import type { GalleryMeander } from "../meander-gallery/meanders-api.types";
 // 🏷️ Types
 
 /**
- * A row of the flat list.
+ * A header, or the cards under one, of the flat list.
  */
 export type GroupedItem =
   | {

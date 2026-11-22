@@ -41,19 +41,17 @@ describe(MeanderGallery, () => {
     );
   });
 
-  it("lays a row of cards across the width, as many as fit", () => {
+  it("deals the cards across as many columns as fit", () => {
     render(<MeanderGallery {...properties()} />);
 
-    const rows = screen.getAllByTestId("meander-gallery-row");
-
-    expect(rows).toHaveLength(1);
+    expect(screen.getAllByTestId("masonry-column")).toHaveLength(3);
     expect(screen.getAllByTestId("meander-card")).toHaveLength(3);
   });
 
-  it("puts one card in each row of the list", () => {
+  it("puts every card in the one column of the list", () => {
     render(<MeanderGallery {...properties({ view: "list" })} />);
 
-    expect(screen.getAllByTestId("meander-gallery-row")).toHaveLength(3);
+    expect(screen.getAllByTestId("masonry-column")).toHaveLength(1);
   });
 
   it("says so when there are none", () => {

@@ -69,7 +69,6 @@ describe("grouped gallery utilities", () => {
       // Rows 4 throughout; columns are 1, 2, 3, 1, 2 and 3.
       const meanders = [0, 3, 1, 4, 2, 5].map((index) => fixtureMeander(index));
       const items = buildGroupedItems(meanders, {
-        columns: 4,
         extents: indexGroups([
           {
             count: 6,
@@ -98,11 +97,10 @@ describe("grouped gallery utilities", () => {
       ]);
     });
 
-    it("splits a group's cards into rows of the columns, keyed by their place", () => {
+    it("keeps a group's cards together as one item, keyed by their place", () => {
       const items = buildGroupedItems(
         [0, 1, 2].map((index) => fixtureMeander(index)),
         {
-          columns: 2,
           extents: new Map([["/rows=4", { count: 3, start: 0 }]]),
           fields: FIELDS,
           grouping: ["rows"],
@@ -110,15 +108,10 @@ describe("grouped gallery utilities", () => {
         },
       );
 
-      expect(items.map(({ key }) => key)).toStrictEqual([
-        "/rows=4",
-        "cards#1",
-        "cards#2",
-      ]);
+      expect(items.map(({ key }) => key)).toStrictEqual(["/rows=4", "cards#1"]);
       expect(items.map((item) => wordItem(item))).toStrictEqual([
         "0:Rows: 4:3",
-        "01",
-        "2",
+        "012",
       ]);
     });
 
@@ -126,7 +119,6 @@ describe("grouped gallery utilities", () => {
       const items = buildGroupedItems(
         [2, 3].map((index) => fixtureMeander(index)),
         {
-          columns: 4,
           extents: indexGroups([
             {
               count: 4,
@@ -152,7 +144,6 @@ describe("grouped gallery utilities", () => {
 
     it("starts a group on the page's first meander as new when the page begins with it", () => {
       const items = buildGroupedItems([fixtureMeander(0)], {
-        columns: 4,
         extents: indexGroups([leaf("columns", "1", 5)]),
         fields: FIELDS,
         grouping: ["columns"],
@@ -169,7 +160,6 @@ describe("grouped gallery utilities", () => {
       // Meander 0 holds a chain and junction count 1; meander 1 holds junction
       // count 2 alone.
       const items = buildGroupedItems([fixtureMeander(1), fixtureMeander(0)], {
-        columns: 4,
         extents: new Map(),
         fields: FIELDS,
         grouping: ["isChain", "junctionCount"],
@@ -200,7 +190,6 @@ describe("grouped gallery utilities", () => {
 
     it("names a header by the group's field when no field is called that", () => {
       const items = buildGroupedItems([fixtureMeander(0)], {
-        columns: 4,
         extents: new Map(),
         fields: [],
         grouping: ["mystery"],
@@ -210,11 +199,10 @@ describe("grouped gallery utilities", () => {
       expect(items.map((item) => wordItem(item))[0]).toBe("0:mystery: 0:0");
     });
 
-    it("is only rows of cards for a flat list, with no headers", () => {
+    it("is only the cards for a flat list, with no headers", () => {
       const items = buildGroupedItems(
         [0, 1, 2].map((index) => fixtureMeander(index)),
         {
-          columns: 2,
           extents: new Map(),
           fields: FIELDS,
           grouping: [],
@@ -222,13 +210,12 @@ describe("grouped gallery utilities", () => {
         },
       );
 
-      expect(items.map((item) => wordItem(item))).toStrictEqual(["01", "2"]);
+      expect(items.map((item) => wordItem(item))).toStrictEqual(["012"]);
     });
 
     it("is empty for no meanders", () => {
       expect(
         buildGroupedItems([], {
-          columns: 2,
           extents: new Map(),
           fields: FIELDS,
           grouping: ["rows"],

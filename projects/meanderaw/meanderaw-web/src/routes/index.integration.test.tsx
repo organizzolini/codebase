@@ -300,38 +300,40 @@ describe("index", () => {
     );
   });
 
-  it("mounts only the rows in view, however many meanders there are", async () => {
+  it("mounts one page of cards however many meanders there are", async () => {
     serveMeandersApi(500);
 
     await renderRoute(getRouter(), "/?group=%5B%5D");
 
     const mounted = await screen.findAllByTestId("meander-card");
 
-    expect(mounted.length).toBeGreaterThan(0);
-    expect(mounted.length).toBeLessThan(25);
+    expect(mounted).toHaveLength(24);
     expect(groupText("Pages")).toBe("1 to 24 of 500");
   });
 
-  it("puts as many cards in a row as the width holds", async () => {
+  it("deals the cards into as many columns as the width holds, each column its own flow", async () => {
     serveMeandersApi(40);
     setViewportWidth(1280);
 
     await renderRoute(getRouter(), "/?group=%5B%5D&view=grid");
+    await screen.findAllByTestId("meander-card");
 
-    const [row] = await screen.findAllByTestId("meander-gallery-row");
+    const columns = screen.getAllByTestId("masonry-column");
 
-    expect(cardsIn(row)).toHaveLength(3);
+    expect(columns).toHaveLength(3);
+    expect(columns.map((column) => cardsIn(column).length)).toStrictEqual([
+      8, 8, 8,
+    ]);
   });
 
-  it("puts one card in a row on a phone", async () => {
+  it("puts every card in one column on a phone", async () => {
     serveMeandersApi(40);
     setViewportWidth(375);
 
     await renderRoute(getRouter(), "/?group=%5B%5D&view=grid");
+    await screen.findAllByTestId("meander-card");
 
-    const [row] = await screen.findAllByTestId("meander-gallery-row");
-
-    expect(cardsIn(row)).toHaveLength(1);
+    expect(screen.getAllByTestId("masonry-column")).toHaveLength(1);
   });
 
   it("sorts by rows ascending when the link names no sort, and says so", async () => {
@@ -611,6 +613,7 @@ describe("index", () => {
     const api = serveMeandersApi(6);
     const router = getRouter();
 
+    setViewportWidth(375);
     await renderRoute(router, "/?group=%5B%5D");
     await screen.findAllByTestId("meander-card");
 

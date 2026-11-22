@@ -10,7 +10,7 @@ import { describe, expect, it } from "vitest";
 import { renderRoute } from "@codebase/testing/react";
 
 import { serveMeandersApi } from "../../../../testing/meanders-api";
-import { reachEnd } from "../../../../testing/viewport";
+import { reachEnd, setViewportWidth } from "../../../../testing/viewport";
 import { getRouter } from "../../../router";
 
 /** The cards in one row of the gallery, none for a row that is not there. */
@@ -62,6 +62,8 @@ describe("grouped gallery", () => {
   it("keeps the 0 or false bucket as its own group, ahead of the held ones", async () => {
     const api = serveMeandersApi(6);
 
+    // One column, so the cards read in the order they are laid out.
+    setViewportWidth(375);
     await renderRoute(
       getRouter(),
       `/?view=grid&group=${encodeURIComponent('["isChain"]')}`,
@@ -295,7 +297,7 @@ describe("grouped gallery", () => {
     });
   });
 
-  it("groups the list view too, one card to a row", async () => {
+  it("groups the list view too, one column of cards", async () => {
     serveMeandersApi(6);
 
     await renderRoute(
@@ -303,9 +305,11 @@ describe("grouped gallery", () => {
       `/?view=list&group=${encodeURIComponent('["columns"]')}`,
     );
 
-    const [row] = await screen.findAllByTestId("group-cards-row");
+    const columns = await screen.findAllByTestId("masonry-column");
 
-    expect(cardsIn(row)).toHaveLength(1);
+    // One column to each group of cards.
+    expect(columns).toHaveLength(3);
+    expect(cardsIn(columns[0]).length).toBeGreaterThan(0);
   });
 
   it("says so when no meander is left to group", async () => {

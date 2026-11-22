@@ -51,10 +51,10 @@ export const MEASURE_SUFFIX = /\s+(?:Count|Length)$/u;
 export const NOTHING = (): void => {};
 
 /**
- * Wraps each description to two lines.
+ * Wraps each description, a truncated small span, to two lines.
  */
 export const DESCRIPTION_CLASS =
-  "[&_span.text-xs]:line-clamp-2 [&_span.text-xs]:break-words [&_span.text-xs]:whitespace-normal";
+  "[&_span.truncate.text-xs]:line-clamp-2 [&_span.truncate.text-xs]:break-words [&_span.truncate.text-xs]:whitespace-normal";
 
 /**
  * Bounds a picker's width, and wraps its descriptions.

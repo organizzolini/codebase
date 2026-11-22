@@ -1,13 +1,10 @@
-import { useWindowVirtualizer } from "@tanstack/react-virtual";
-import { useMemo } from "react";
-
 import { useElementBox } from "../../../hooks/use-element-box/use-element-box";
+import { Masonry } from "../../layout/masonry/masonry";
 import { MeanderCard } from "../../meander/meander-card/meander-card";
 import { GalleryEmpty } from "../gallery-empty/gallery-empty";
 import { GalleryError } from "../gallery-error/gallery-error";
 
-import { OVERSCAN_ROWS, ROW_ESTIMATES } from "./meander-gallery.constants";
-import { getColumnCount, toRows } from "./meander-gallery.utilities";
+import { getColumnCount } from "./meander-gallery.utilities";
 
 import type { GalleryView } from "../../../hooks/use-gallery-search/use-gallery-search.types";
 import type {
@@ -38,7 +35,7 @@ export interface MeanderGalleryProperties {
 // 🧩 Component
 
 /**
- * Renders the meanders of one page as virtualized rows of cards.
+ * Renders the meanders of the pages showing as a masonry of cards.
  */
 export function MeanderGallery(
   properties: Readonly<MeanderGalleryProperties>,
@@ -56,18 +53,10 @@ export function MeanderGallery(
   } = properties;
 
   // 🪝 Hooks
-  const { setElement, top, width } = useElementBox();
+  const { setElement, width } = useElementBox();
   const columns = getColumnCount(width, view);
-  const rows = useMemo(() => toRows(meanders, columns), [meanders, columns]);
-  const virtualizer = useWindowVirtualizer({
-    count: rows.length,
-    estimateSize: () => ROW_ESTIMATES[view],
-    overscan: OVERSCAN_ROWS,
-    scrollMargin: top,
-  });
 
   // 🏗 Setup
-  const items = virtualizer.getVirtualItems();
 
   // 💪 Handlers
 
@@ -85,34 +74,17 @@ export function MeanderGallery(
       className={className}
       data-testid="meander-gallery"
     >
-      <ul
-        className="relative"
-        style={{ height: virtualizer.getTotalSize() }}
-      >
-        {items.map((item) => (
-          <li
-            key={item.key}
-            ref={virtualizer.measureElement}
-            className="absolute left-0 grid w-full gap-4 pb-4"
-            data-index={item.index}
-            data-testid="meander-gallery-row"
-            style={{
-              gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-              top: item.start - top,
-            }}
-          >
-            {rows[item.index]?.map((meander) => (
-              <MeanderCard
-                key={meander.id}
-                activeKeys={activeKeys}
-                catalog={catalog}
-                meander={meander}
-                repeats={repeats}
-              />
-            ))}
-          </li>
+      <Masonry columns={columns}>
+        {meanders.map((meander) => (
+          <MeanderCard
+            key={meander.id}
+            activeKeys={activeKeys}
+            catalog={catalog}
+            meander={meander}
+            repeats={repeats}
+          />
         ))}
-      </ul>
+      </Masonry>
       {loadError === undefined ? null : (
         <GalleryError
           className="pt-2"

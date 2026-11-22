@@ -1,3 +1,4 @@
+import { Masonry } from "../../layout/masonry/masonry";
 import { MeanderCard } from "../../meander/meander-card/meander-card";
 
 import { HEADINGS } from "./grouped-item.constants";
@@ -70,13 +71,7 @@ export function GroupedItem(
           </span>
         </Heading>
       ) : (
-        <div
-          className="grid gap-4"
-          data-testid="group-cards-row"
-          style={{
-            gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-          }}
-        >
+        <Masonry columns={columns}>
           {item.meanders.map((meander) => (
             <MeanderCard
               key={meander.id}
@@ -86,7 +81,7 @@ export function GroupedItem(
               repeats={repeats}
             />
           ))}
-        </div>
+        </Masonry>
       )}
     </div>
   );
