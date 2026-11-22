@@ -5,14 +5,16 @@ description: "Documents the testing approach for the Coinagerie vocabulary toolc
 tags: ["testing", "coinagerie", "vocabulary", "glossary", "integration", "unit", "fixtures"]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-13T16:30:25.369Z
+    at: 2026-11-22T00:18:20.862Z
 sources:
+  - id: openwiki-source-146038c965029e9cdb787e14
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-cli/configuration/vitest.config.ts
   - id: openwiki-source-c782c5f4d341f62f31fe8aab
     resource: repo://projects/ic-suite/coinagerie/coinagerie-cli/package.json
   - id: openwiki-source-cb8ea6fd8e68fb0f16b0e7e6
     resource: repo://projects/ic-suite/coinagerie/coinagerie-cli/testing/coinagerie-cli.packed.test.ts
-  - id: openwiki-source-a97f211c5ee4212bdc22a403
-    resource: repo://projects/ic-suite/coinagerie/coinagerie-cli/vitest.config.ts
+  - id: openwiki-source-15f3036c83c5c3226c3adb12
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-examples/configuration/vitest.config.ts
   - id: openwiki-source-31ea8c6f11daca322fa216fd
     resource: repo://projects/ic-suite/coinagerie/coinagerie-examples/project.json
   - id: openwiki-source-c8b7d99bf6b40ca5c69d264c
@@ -21,8 +23,8 @@ sources:
     resource: repo://projects/ic-suite/coinagerie/coinagerie-examples/testing/run-examples.ts
   - id: openwiki-source-7a131128109833bdb63e9a41
     resource: repo://projects/ic-suite/coinagerie/coinagerie-examples/testing/runs.ts
-  - id: openwiki-source-ad6cdc93253302e42ff0c7fa
-    resource: repo://projects/ic-suite/coinagerie/coinagerie-examples/vitest.config.ts
+  - id: openwiki-source-fd5a7207dc2eee266f96846a
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-languages/configuration/vitest.config.ts
   - id: openwiki-source-d33e44f6901d7d4ceb3e57a7
     resource: repo://projects/ic-suite/coinagerie/coinagerie-languages/src/modules/css/css.service.unit.test.ts
   - id: openwiki-source-316d4a6ddfb90ca45669f3f6
@@ -41,8 +43,8 @@ sources:
     resource: repo://projects/ic-suite/coinagerie/coinagerie-languages/src/modules/typescript/typescript.service.unit.test.ts
   - id: openwiki-source-d4f062129c82d76b6e718cc9
     resource: repo://projects/ic-suite/coinagerie/coinagerie-languages/src/modules/yaml/yaml.service.unit.test.ts
-  - id: openwiki-source-fb06a921f6d361711b29d81d
-    resource: repo://projects/ic-suite/coinagerie/coinagerie-languages/vitest.config.ts
+  - id: openwiki-source-d9beb5e3b1172ee0958ece67
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-output/configuration/vitest.config.ts
   - id: openwiki-source-347c68f86a13b6e7135295c1
     resource: repo://projects/ic-suite/coinagerie/coinagerie-output/package.json
   - id: openwiki-source-3a3a2838d2fe0c4a69fbc396
@@ -53,8 +55,8 @@ sources:
     resource: repo://projects/ic-suite/coinagerie/coinagerie-output/src/modules/json/json.service.unit.test.ts
   - id: openwiki-source-ca0b640deef8aa0bba6169b6
     resource: repo://projects/ic-suite/coinagerie/coinagerie-output/src/modules/markdown/markdown.service.unit.test.ts
-  - id: openwiki-source-578c11f723ca47c50bf8b81b
-    resource: repo://projects/ic-suite/coinagerie/coinagerie-output/vitest.config.ts
+  - id: openwiki-source-b8296c6a1f153d2490c9a361
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/configuration/vitest.config.ts
   - id: openwiki-source-8c0b95231e8cdb31b9cc8c5f
     resource: repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/package.json
   - id: openwiki-source-e0ce648d3104cf4b33e8d245
@@ -65,9 +67,7 @@ sources:
     resource: repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/vocabulary/vocabulary.service.unit.test.ts
   - id: openwiki-source-f79d9d1e2be203a6739ca67e
     resource: repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/words/words.service.unit.test.ts
-  - id: openwiki-source-e908b018afd1faac2f61c3a8
-    resource: repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/vitest.config.ts
-generated: { by: "openwiki/0.9.0", at: "2026-11-13T16:30:25.369Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 ---
 
 # Coinagerie Testing
@@ -83,7 +83,7 @@ Coinagerie tests are organized by package, each with its own `vitest` configurat
 | `@coinagerie/cli` | `nx run coinagerie-cli:vitest:unit` | CLI packing and end-to-end command tests |
 | `@coinagerie/vocabulary` | `nx run coinagerie-vocabulary:vitest:unit` | Discovery, tokenization, word splitting, folding, exclusion |
 | `@coinagerie/output` | `nx run coinagerie-output:vitest:unit` | Markdown/JSON rendering, comparison, anchor block splicing |
-| `@coinagerie/languages` | `nx run coinagerie-languages:vitest:unit` | Tokenizers for TypeScript, Python, JSON, YAML, TOML, Shell, SQL, HCL, CSS, Markdown, Jupyter |
+| `@coinagerie/languages` | `nx run coinagerie-languages:vitest:unit` | Tokenizers for TypeScript, Python, JSON, YAML, TOML, Shell, SQL, HCL, CSS |
 | `@coinagerie/examples` | `nx run coinagerie-examples:examples` | Integration smoke gate over documented example runs |
 
 All packages require **100% type coverage** (`typeCoverage.atLeast: 100`, `strict: true`) and **96% code coverage** on branches, functions, lines, and statements.

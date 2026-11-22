@@ -5,23 +5,31 @@ description: Explains the conformetry generator/template/instance model that gov
 tags: [conformetry, architecture, scaffolding, generation, validation]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-13T16:30:25.369Z
+    at: 2026-11-22T00:18:20.862Z
 sources:
-  - id: openwiki-source-39c3295efc089133e87a9c80
-    resource: repo://CONTEXT.md
+  - id: openwiki-source-6419221f89e7a55a996f3dab
+    resource: repo://configuration/ic-suite/conformetry.config.ts
   - id: openwiki-source-1bd2cf1e4f05398afbe13eb6
     resource: repo://projects/ic-suite/conformetry/conformetry-configuration/README.md
+  - id: openwiki-source-4174975f2c56d6225735940e
+    resource: repo://projects/ic-suite/conformetry/conformetry-core/README.md
   - id: openwiki-source-a033555e7818814ad59b515e
     resource: repo://projects/ic-suite/conformetry/conformetry-core/src/modules/conformetry-core/conformetry-core.types.ts
+  - id: openwiki-source-44d29a9aef7a1365b97f86be
+    resource: repo://projects/ic-suite/conformetry/conformetry-generation/README.md
+  - id: openwiki-source-a1bf10d242711b28feffa241
+    resource: repo://projects/ic-suite/conformetry/conformetry-languages/README.md
   - id: openwiki-source-b771dcecb9f32073f2170dc8
     resource: repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/languages/languages.service.ts
   - id: openwiki-source-81f625f97ec89030f878cc2b
     resource: repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/scoring/scoring.constants.ts
   - id: openwiki-source-3d221ffc410cbd19ba51c7a8
     resource: repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/scoring/scoring.service.ts
+  - id: openwiki-source-3093fa3b9f24698d974b3a07
+    resource: repo://projects/ic-suite/conformetry/conformetry-validation/README.md
   - id: openwiki-source-9c39b5d57dccbc31a8952ba4
     resource: repo://projects/ic-suite/conformetry/conformetry-validation/src/modules/runner/runner.service.ts
-generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 ---
 # Generator / Template / Instance Model
 
@@ -36,7 +44,7 @@ flowchart LR
     subgraph Generate["Generation"]
         IN["Inputs from CLI or config\nname=my-service"]
         SUB["Substitutions resolved\nnameKebabCase=my-service\nnamePascalCase=MyService"]
-        RENDER["Mustache render\nconfiguration/conformetry-templates/\nnestjs-service-module\n→ projects/my-service/src/modules/"]
+        RENDER["Mustache render\nconfiguration/ic-suite/conformetry-templates/\nnestjs-service-module\n→ projects/my-service/src/modules/"]
     end
 
     subgraph Instance["Instance (on disk)"]
@@ -75,9 +83,9 @@ A **Template** is a directory of ordinary files containing Mustache placeholders
 - **Placeholder capture** — during validation, placeholders whose values weren't supplied in configuration are inferred from the instance (first alignment wins) so the template can be re-rendered and compared faithfully
 - **Directory vs file output** — a template producing a folder (e.g., `{{nameKebabCase}}/service.ts`) is matched against directory instances; a template producing loose files is matched against file instances
 
-Templates live under `configuration/conformetry-templates/` and are referenced by `templatePath` in the generator registry.
+Templates live under `configuration/ic-suite/conformetry-templates/` and are referenced by `templatePath` in the generator registry.
 
-Example template structure (`configuration/conformetry-templates/nestjs-service-module/{{nameKebabCase}}/{{nameKebabCase}}.module.ts`):
+Example template structure (`configuration/ic-suite/conformetry-templates/nestjs-service-module/{{nameKebabCase}}/{{nameKebabCase}}.module.ts`):
 
 ```ts
 import { Module } from "@nestjs/common";
@@ -114,7 +122,7 @@ The lifecycle is:
 ```bash
 # CLI example
 conformetry generate \
-  --config configuration/conformetry.config.ts \
+  --config configuration/ic-suite/conformetry.config.ts \
   --template nestjs-service-module \
   --name billing \
   --directory projects/lexico/billing/src/modules
@@ -151,10 +159,10 @@ An **Instance** is the on-disk artifact that a generator produced (or that a dev
 Instances are **discovered**, not recorded. The generator definition declares `instances` groups with glob patterns and optional per-group substitutions:
 
 ```ts
-// From configuration/conformetry.config.ts
+// From configuration/ic-suite/conformetry.config.ts
 {
   name: "nestjs-command-project",
-  templatePath: "configuration/conformetry-templates/nestjs-command-project",
+  templatePath: "configuration/ic-suite/conformetry-templates/nestjs-command-project",
   inputs: defineInputs({
     name: z.string(),
     type: z.string(),
@@ -186,7 +194,7 @@ Groups can be **workspace globs** (no tags) or **tag-scoped** (Nx plugin only):
 // Module/file generator — instances found by tags on Nx projects
 {
   name: "nestjs-service-module",
-  templatePath: "configuration/conformetry-templates/nestjs-service-module",
+  templatePath: "configuration/ic-suite/conformetry-templates/nestjs-service-module",
   inputs: defineInputs({
     name: z.string(),
     project: z.string(),
@@ -239,7 +247,7 @@ Validation closes the loop. For each matched instance:
 
 ### Language Modules and Comparison Strategies
 
-The comparison is implemented per-language in `@conformetry/languages`:
+"Language" here means a validator for one file format; the word "plugin" is reserved for the Nx plugin. The comparison is implemented per-language in `@conformetry/languages`:
 
 - **TypeScript**: `TypescriptTreeService.compareTree` walks syntax trees in parallel. The template is a **structural subset** requirement: every declaration it makes must exist somewhere in the instance, but the instance may add anything and order members freely. Weight = subtree node count (a missing class costs its whole subtree).
 - **Markdown**: `MarkdownTreeService.compareContainer` walks mdast trees. Order-preserving but not position-locked: each template node matches any instance sibling; the last match anchors the error location for what follows. Weight = subtree node count.
@@ -248,38 +256,40 @@ The comparison is implemented per-language in `@conformetry/languages`:
 - **Jupyter**: `JupyterService` validates envelope as JSON, then delegates cells to Markdown/Python validators.
 - **Text**: `TextService` compares line-by-line with duplicate awareness (treats repeated identical lines as one requirement).
 
-Language validators implement `ConformetryLanguageValidator` (descriptor + `validateDocument`). The `LanguagesService` resolves validators for the extensions present in a run; unclaimed extensions fall back to text comparison.
+Language validators implement `ConformetryLanguageValidator` (descriptor + `validateDocument`). The `LanguagesService` resolves validators for the extensions present in a run; unclaimed extensions are never skipped: they are routed to the **Fallback**, the text Language widened to claim them and compared line by line, which is why the text Language is a floor under every run rather than one option among several.
 
 ---
 
 ## Generator Registry
 
-The generator registry is declared in `configuration/conformetry.config.ts`. Each entry binds a template directory, input definitions (Zod schemas converted to JSON Schema), and instance groups with patterns and optional per-group substitutions.
+The generator registry is declared in `configuration/ic-suite/conformetry.config.ts`. Each entry binds a template directory, input definitions (Zod schemas converted to JSON Schema), and instance groups with patterns and optional per-group substitutions.
 
 ### Project-level generators (create new projects)
 
 | Generator | Template | Description |
 |-----------|----------|-------------|
-| `jupyter-notebook-application` | `configuration/conformetry-templates/jupyter-notebook-application` | Standalone Python application with Jupyter notebook entry point, pytest/pyright/ruff, shared uv workspace venv |
-| `nestjs-command-project` | `configuration/conformetry-templates/nestjs-command-project` | Standalone NestJS CLI application on nest-commander |
-| `nestjs-graphql-application` | `configuration/conformetry-templates/nestjs-graphql-application` | Standalone NestJS GraphQL API application over HTTP |
-| `nestjs-service-project` | `configuration/conformetry-templates/nestjs-service-project` | Standalone NestJS library package for internal workspace code |
-| `tanstack-application` | `configuration/conformetry-templates/tanstack-application` | Standalone TanStack Start web application (SSR, file-based routes, Tailwind, Vitest) |
+| `jupyter-notebook-application` | `configuration/ic-suite/conformetry-templates/jupyter-notebook-application` | Standalone Python application with Jupyter notebook entry point, pytest/pyright/ruff, shared uv workspace venv |
+| `nestjs-command-project` | `configuration/ic-suite/conformetry-templates/nestjs-command-project` | Standalone NestJS CLI application on nest-commander |
+| `nestjs-graphql-application` | `configuration/ic-suite/conformetry-templates/nestjs-graphql-application` | Standalone NestJS GraphQL API application over HTTP |
+| `nestjs-service-project` | `configuration/ic-suite/conformetry-templates/nestjs-service-project` | Standalone NestJS library package for internal workspace code |
+| `tanstack-application` | `configuration/ic-suite/conformetry-templates/tanstack-application` | Standalone TanStack Start web application (SSR, file-based routes, Tailwind, Vitest) |
 
 ### Module/file generators (add to existing projects)
 
 | Generator | Template | Target | Tags |
 |-----------|----------|--------|------|
-| `nestjs-command-module` | `configuration/conformetry-templates/nestjs-command-module` | `src/modules/*` | `framework:nest-commander` |
-| `nestjs-dataloader-module` | `configuration/conformetry-templates/nestjs-dataloader-module` | `src/modules/*` | `framework:nestjs`, `language:graphql` |
-| `nestjs-graphql-module` | `configuration/conformetry-templates/nestjs-graphql-module` | `src/modules/*` | `framework:nestjs`, `language:graphql` |
-| `nestjs-resolver-file` | `configuration/conformetry-templates/nestjs-resolver-file` | `src/modules/*.resolver.ts` | `framework:nestjs`, `language:graphql` |
-| `nestjs-service-file` | `configuration/conformetry-templates/nestjs-service-file` | `src/modules/*.service.ts` | `framework:nestjs` |
-| `nestjs-service-module` | `configuration/conformetry-templates/nestjs-service-module` | `src/modules/*` | `framework:nestjs` |
-| `react-component` | `configuration/conformetry-templates/react-component` | `src/components/` | `framework:react` |
-| `react-hook` | `configuration/conformetry-templates/react-hook` | `src/hooks/` | `framework:react` |
-| `tanstack-route` | `configuration/conformetry-templates/tanstack-route` | `src/routes/` | `framework:tanstack-start` |
-| `tanstack-server-function` | `configuration/conformetry-templates/tanstack-server-function` | `src/modules/*` | `framework:tanstack-start` |
+| `nestjs-command-module` | `configuration/ic-suite/conformetry-templates/nestjs-command-module` | `src/modules/*` | `framework:nest-commander` |
+| `nestjs-dataloader-module` | `configuration/ic-suite/conformetry-templates/nestjs-dataloader-module` | `src/modules/*` | `framework:nestjs`, `language:graphql` |
+| `nestjs-graphql-module` | `configuration/ic-suite/conformetry-templates/nestjs-graphql-module` | `src/modules/*` | `framework:nestjs`, `language:graphql` |
+| `nestjs-resolver-file` | `configuration/ic-suite/conformetry-templates/nestjs-resolver-file` | `src/modules/*.resolver.ts` | `framework:nestjs`, `language:graphql` |
+| `nestjs-service-file` | `configuration/ic-suite/conformetry-templates/nestjs-service-file` | `src/modules/*.service.ts` | `framework:nestjs` |
+| `nestjs-service-module` | `configuration/ic-suite/conformetry-templates/nestjs-service-module` | `src/modules/*` | `framework:nestjs` |
+| `react-component-folder` | `configuration/ic-suite/conformetry-templates/react-component-folder` | `src/components/*/*` | `framework:react`, `type:application` |
+| `react-component-file` | `configuration/ic-suite/conformetry-templates/react-component-file` | `src/components/*/*/*.tsx` and its unit test | `framework:react`, `type:application` |
+| `react-hook-folder` | `configuration/ic-suite/conformetry-templates/react-hook-folder` | `src/hooks/*` | `framework:react`, `type:application` |
+| `react-hook-file` | `configuration/ic-suite/conformetry-templates/react-hook-file` | `src/hooks/*/use-*.ts` | `framework:react`, `type:application` |
+| `tanstack-route` | `configuration/ic-suite/conformetry-templates/tanstack-route` | `src/routes/` | `framework:tanstack-start` |
+| `tanstack-server-function` | `configuration/ic-suite/conformetry-templates/tanstack-server-function` | `src/modules/*` | `framework:tanstack-start` |
 
 ---
 
@@ -305,7 +315,7 @@ Scoring arithmetic lives in `ScoringService.calculateScore` (edge cases: empty t
 
 The complete loop from generator declaration to continuous validation:
 
-1. **Declare** — Author adds a generator entry to `configuration/conformetry.config.ts` (template path, inputs, instance groups)
+1. **Declare** — Author adds a generator entry to `configuration/ic-suite/conformetry.config.ts` (template path, inputs, instance groups)
 2. **Generate** — Run `conformetry generate` (CLI) or `nx g` (Nx plugin) with inputs; template rendered to instance directory
 3. **Discover** — Validation finds instances via globs in `instances` groups (CLI) or per-project via tags (Nx plugin)
 4. **Match** — Each instance weighed against all templates; best fit wins (`no-match` / `ambiguous` reported explicitly)

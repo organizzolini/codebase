@@ -4,8 +4,10 @@ title: Meanderaw — Greek Meander Enumeration & Classification
 description: CLI application that enumerates Greek key/fret patterns into Postgres by lattice address (Code), measures structural characteristics and classifies compound pattern booleans, then streams HTML index pages to disk for exploration via a web app.
 tags: [meanderaw, greek-meander, enumeration, postgres, classification, pattern-generation]
 sources:
-  - id: openwiki-source-f06ea58f0c5e89bd4694952c
-    resource: repo://documentation/adr/0014-give-every-meander-a-canonical-phase.md
+  - id: openwiki-source-f92b169b2e80254fdaaeb390
+    resource: repo://documentation/adr/0014-give-every-meander-a-canonical-rotation.md
+  - id: openwiki-source-5c83e312a5d1e4287713dc7c
+    resource: repo://documentation/adr/0018-store-every-characteristic-in-one-sparse-json-map.md
   - id: openwiki-source-9cf51fe4b0da373914e95bf3
     resource: repo://documentation/adr/0020-store-meanders-in-postgres.md
   - id: openwiki-source-a0469017ebf26d7dec53a3bb
@@ -20,17 +22,20 @@ sources:
     resource: repo://projects/meanderaw/meanderaw-cli/src/modules/code/code.service.ts
   - id: openwiki-source-6d825c6e6c04e655b8871e4a
     resource: repo://projects/meanderaw/meanderaw-cli/src/modules/database/database.service.ts
-  - id: openwiki-source-69605df3064da7760db0b640
-    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/database/entities/meander.entity.ts
-  - id: openwiki-source-9a130645e22c0f670dbce0ae
-    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/draw/draw-index.service.ts
+  - id: openwiki-source-8df4a215eb17550635dafd06
+    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/database/meander.entity.ts
+  - id: openwiki-source-4192494055a2ea09f8a75602
+    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/draw/modules/index/draw-index.service.ts
   - id: openwiki-source-60b305fbaae19507838e8393
     resource: repo://projects/meanderaw/meanderaw-cli/src/modules/drawing/drawing.service.ts
   - id: openwiki-source-578ca54f8ef879d697e4f3af
     resource: repo://projects/meanderaw/meanderaw-cli/src/modules/enumeration/tile-enumeration.service.ts
-  - id: openwiki-source-b50d57ab455eabfb405e8c93
-    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/symmetry/symmetry.service.ts
-generated: { by: "openwiki/0.7.0", at: "2026-10-24T21:02:40.299Z" }
+  - id: openwiki-source-3644ddec58cdb0367d4271fd
+    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/geometry/modules/symmetry/symmetry.service.ts
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+verified:
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 ---
 
 # Meanderaw — Greek Meander Enumeration & Classification
@@ -52,7 +57,7 @@ Every meander is addressed by its **Code**, a self-contained string that encodes
 
 Example: `02x02y4488` — a 2×2 lattice whose four points spell `4 4 8 8` (south, south, north, north).
 
-**Canonical phase.** A meander repeats horizontally; shifting its columns cyclically yields the same infinite band. `CodeService.canonicalPhase` chooses the phase that **minimizes the tile-crossing component delta** (the number of edges crossing tile boundaries), breaking ties by lexicographically smallest digit string. This canonical phase is the one stored in the `code` column, so two drawings that differ only by a horizontal shift share the same Code.
+**Canonical rotation.** A meander repeats horizontally; shifting its columns cyclically yields the same infinite band. `CodeService.canonicalRotation` chooses the rotation that **minimizes the tile-crossing component delta** (the number of edges crossing tile boundaries), breaking ties by lexicographically smallest digit string. This canonical rotation is the one stored in the `code` column, so two drawings that differ only by a horizontal shift share the same Code.
 
 The formatted Code is the meander's entire identity: the unique index over `code` is the only uniqueness constraint in the schema. The `lattice`, `rows`, and `columns` columns are denormalized copies for filtering and ordering.
 
@@ -69,14 +74,14 @@ Table: `meanderaw.meanders` (schema `meanderaw`, database `meanderaw_development
 | `lattice` | `text` | Bare hexadecimal digits (no `rows`/`columns` prefix) |
 | `repeats` | `bigint` | How many times the unit repeats (default 1) |
 | `is_hardcoded` | `boolean` | `true` = historical corpus row or `--code` drawing; `false` = enumerated |
-| `symmetrical_codes` | `text[]` | Codes of the mirror, flip, and mirror+flip at their own canonical phases, sorted; empty when all reflections map the meander to itself |
+| `symmetrical_codes` | `text[]` | Codes of the mirror, flip, and mirror+flip at their own canonical rotations, sorted; empty when all reflections map the meander to itself |
 | `characteristics` | `jsonb` | **Sparse map of every measured Characteristic**; numeric keys present only when non-zero, boolean keys present only when `true`; missing key = zero or `false` |
 
 All columns are snake_case via the shared `SnakeNamingStrategy` so raw SQL never quotes them.
 
 ### The `characteristics` Map
 
-The `jsonb` column holds **every Characteristic** in a single sparse map. This design (per [ADR 0018](../../documentation/adr/0018-store-every-characteristic-in-one-sparse-json-map.md)) allows adding, renaming, or removing a Characteristic without a schema migration.
+The `jsonb` column holds **every Characteristic** in a single sparse map. This design (per `documentation/adr/0018-store-every-characteristic-in-one-sparse-json-map.md`) allows adding, renaming, or removing a Characteristic without a schema migration.
 
 - **Numeric Characteristics** (structural counts): `forkCount`, `crossCount`, `dotCount`, `bettiNumber0Count`, letter glyph counts (`aSoutheastLatinCount`, `daletSouthwestHalfHebrewCount`, …)
 - **Boolean Characteristics** (structural properties): `isDots`, `isReducible`, `hasTJunctions`, `hasXJunctions`, `isWhirl`, `isArcade`, `isBars`, `isBoxes`, `isChain`, `isClasps`, `isComb`, `isCross`, `isDoubleChain`, `isFork`, `isLines`, `isMesh`, `isParallel`, `isPureTree`, `isSnake`, `isSwirl`, `isWaterfalls`, `reversesAtItsTightestTurn`
@@ -110,7 +115,7 @@ The `meanders` table is partitioned by `is_hardcoded` into two disjoint halves t
 - A shape past the budget is **refused** rather than enumerated slowly
 - Enumeration walks every edge assignment as a bitmask (`2 ** edges` assignments) and keeps **only those no symmetry element sends lower** — `TileEnumerationService.orbitMinima` uses `SymmetryService.edgePermutations` as byte lookup tables so the walk never builds the full class
 - `SymmetryService.canonicalTile` folds each kept minimum to the representative the corpus stores (minimizing a `signature` based on point `rank` then `edgeKey`)
-- The rest of the symmetry class is recorded in `symmetrical_codes` (mirror, flip, both at their canonical phases) — not lost, just folded
+- The rest of the symmetry class is recorded in `symmetrical_codes` (mirror, flip, both at their canonical rotations) — not lost, just folded
 - Drawing is the expensive step, so `DrawPoolService` deals each shape's minima in batches to `DRAW_WORKERS` threads (`src/worker.ts`), sorts results back into edge-key order, and the main thread bulk-inserts with one prepared multi-row `INSERT` per chunk (`MEANDER_INSERT_CHUNK_SIZE` bounded by Postgres's 65,535 parameter limit)
 
 **Duplicate lattice address within one half is a build failure** — the unique index over `code` refuses the second insert. Across halves the hardcoded row wins by ingestion order.
@@ -129,7 +134,7 @@ isDoubleChain, isFork, isLines, isMesh, isParallel, isPureTree, isSnake,
 isSwirl, isWaterfalls, isWhirl
 ```
 
-A meander can hold several patterns or none; most of the enumerated space holds none — this is the design, not a gap. Adding a pattern means adding an evaluator and its key to `PATTERN_CHARACTERISTIC_KEYS`, never a motif service or a stored column ([ADR 0023](../../documentation/adr/0023-filter-meanders-by-characteristics-alone.md)).
+A meander can hold several patterns or none; most of the enumerated space holds none — this is the design, not a gap. Adding a pattern means adding an evaluator and its key to `PATTERN_CHARACTERISTIC_KEYS`, never a motif service or a stored column (`documentation/adr/0023-filter-meanders-by-characteristics-alone.md`).
 
 ### Structural Characteristics
 
@@ -199,15 +204,13 @@ At the default budget (24 edges) the pages total **~7.7 GB** (`cross.html` alone
 
 | ADR | Title | Relevance |
 |-----|-------|-----------|
-<!-- openwiki: broken internal link [../../documentation/adr/0004-assign-one-direction-per-tile-edge.md] file "../../documentation/adr/0004-assign-one-direction-per-tile-edge.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-| [0004](../../documentation/adr/0004-assign-one-direction-per-tile-edge.md) | Assign One Direction Per Tile Edge | Tile crossing definition used by canonical phase scoring |
-<!-- openwiki: broken internal link [../../documentation/adr/0014-canonical-phase-is-the-crossing-minimum.md] file "../../documentation/adr/0014-canonical-phase-is-the-crossing-minimum.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-| [0014](../../documentation/adr/0014-canonical-phase-is-the-crossing-minimum.md) | Canonical Phase Is the Crossing Minimum | Canonical phase minimizes tile-crossing component delta |
-| [0018](../../documentation/adr/0018-store-every-characteristic-in-one-sparse-json-map.md) | Store Every Characteristic in One Sparse JSON Map | Single `jsonb` column for all Characteristics |
-| [0020](../../documentation/adr/0020-store-meanders-in-postgres.md) | Store Meanders in Postgres | Postgres over committed SQLite; uuidv7 ids; snake_case; jsonb characteristics |
-| [0021](../../documentation/adr/0021-stop-committing-the-meander-pages.md) | Stop Committing the Meander Pages | Pages streamed to gitignored output/; async iterable pieces; counts first |
-| [0022](../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md) | Give Every Database Project Its Own Database Schema and Role | `meanderaw` schema, `meanderaw_username` role, migrations not synchronize |
-| [0023](../../documentation/adr/0023-filter-meanders-by-characteristics-alone.md) | Filter Meanders by Characteristics Alone | No families/labels; pattern characteristics are compound booleans |
+| `0004` | Draw Crossings as a One-Pitch Interlace Break | Channel invariant and the `cross` family's interrupted crossings |
+| `0014` | Give Every Meander a Canonical Rotation | Canonical rotation minimizes the tile-crossing component delta |
+| `0018` | Store Every Characteristic in One Sparse JSON Map | Single `jsonb` column for all Characteristics |
+| `0020` | Store Meanders in Postgres | Postgres over committed SQLite; uuidv7 ids; snake_case; jsonb characteristics |
+| `0021` | Stop Committing the Meander Pages | Pages streamed to gitignored output/; async iterable pieces; counts first |
+| `0022` | Give Every Database Project Its Own Database Schema and Role | `meanderaw` schema, `meanderaw_username` role, migrations not synchronize |
+| `0023` | Filter Meanders by Characteristics Alone | No families/labels; pattern characteristics are compound booleans |
 
 ## Local Development
 

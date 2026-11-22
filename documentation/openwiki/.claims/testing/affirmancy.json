@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:2d0df972ca4ad07a55f68ea8845dc1de77f7c8a828af7aa56ac0352ebeef120f",
+  "pageVersion": "sha256:44af3a09a0b1386476e597318c9765c86da8d518049aa73d59e56ed2dcf8f7b8",
   "claims": [
     {
       "id": "claim_1053e543f1a74034844598751fda5337",
@@ -44,11 +44,15 @@
     },
     {
       "id": "claim_0adca6d268744d4aab67f37424a584d1",
-      "statement": "Nx targets exist for pytest (all, unit, integration) and test-coverage",
+      "statement": "The shared pytest Nx target has unit, integration, coverage and watch configurations, selected by the unit and integration markers declared in pyproject.toml.",
       "evidence": [
         {
-          "resource": "repo://projects/affirmancy/pyproject.toml",
-          "version": "repo-file-v1:sha256:e274fd34270aa35c2e3a4abf3dab67789448299b18245d116c00ab82965886ce"
+          "resource": "repo://nx.json#L1-L1000",
+          "version": "repo-lines-v1:sha256:66f1b5ef2c3b5c0b7a8361380c03c4954e07281f47b03c93d05430bb53ed8ca3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAwMCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTZmYjA4ZmRhMWFjYjk1N2I2MTE2YmQzNzgxMWExZmU0MWEwMTYxMWMwNjMxZWRiZjc4NmQ2ODg5YTI3YTU1YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTM3Zjk0ZDIyMWE5ZTcyZWEyNjA0MWYyMTYwOTNkYWNlNzRkZWIzODU2MWIyMmI5MmMwYzNjZjE4YTQ0MmQ5MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTliNDE2YmUyNWMxODY1NjgxZmEzMTIzNTVmYWNjZmFmNmE4NzlkNDZjNzFlYjBhZWE5ZDdkN2RlYmY5YThjNyJ9"
+        },
+        {
+          "resource": "repo://projects/affirmancy/pyproject.toml#L75-L90",
+          "version": "repo-lines-v1:sha256:4ceb936d051bfe262245b9315adaeab46d9f2228ed34981e3dc3b9e423d99950:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0ODYwOWY0ZmE1NjIxZTA1ZDMwY2NkNGIxNDIxOWZhYjQwYmEzOWMzMzQ5MTdjOTFiNjZhM2EwNWMzN2QyNTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4YTU3ZjVjNzgwMDhiYWRhMzYwYmU1OTRiNDA1MTMxM2IwNWMxZDY5ZGI3ODJmYjIyYWM1MTc5YmVmMDk2YTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVkOTU0YzJlZDBmZWI3OTY4NzI0ZjE4ZjQ4MWJmMTc5MDA1OWQ3ZDA0MTY3ODY3ODUwOWY4NDVlYjE4Yzg0ZWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI0MzU3M2Y4YmViZTIwNTU1ZTNkNzJlZjEzYzQwN2M3MzllMWRmNGIyMTZiMzM3YTg0NTZmNDk1MTMyM2E3NDUifQ"
         }
       ]
     },
@@ -64,11 +68,15 @@
     },
     {
       "id": "claim_33a62a6f2f0040dd911f7b21c511757c",
-      "statement": "Jupyter notebooks in src/ have outputs stripped on commit by nbstripout configured as dev dependency",
+      "statement": "Jupyter notebooks in src/ have outputs stripped by nbstripout, a dev dependency, through the nbstripout Nx target, whose check configuration verifies and whose write configuration strips.",
       "evidence": [
         {
-          "resource": "repo://projects/affirmancy/pyproject.toml#L23-L33",
-          "version": "repo-lines-v1:sha256:981907dff6bae7a242c33a05a5d978bd6d44f17c0705e856d0a0184c9ee411e1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4YTMzZjViNmM5Y2Y4ODc0ZGE5Mjg0NmZlM2JiZDM5Yzc3ZmRmODM5NWViNWI4NDJjYTcwNWRkNWIxNDNkMzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5NDE2ZTA5Zjc4YmEzMTZjMDMyNTY4MjEzYjg1NWVlNzU2ZTQxNTY1ZDkxOGYwOTUxOWM4MWZkNjIwZjQwNjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ0ODA2M2Y5NTFlNTIwMzgwNzYyMDQxM2ZjYjAxZTU4YjY5YjBlM2M1N2RiMmJmYmViZTI2NTFmNjY5OTgzZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI5MDViZGVkMDY0NDAxOTgyODQ5MGIxZDU2YzkwNmE0OGE5OGMyMDNiZTE2OTAzYjRmZjUyMDJiOTU0ZmI2YWUifQ"
+          "resource": "repo://nx.json#L1-L1000",
+          "version": "repo-lines-v1:sha256:66f1b5ef2c3b5c0b7a8361380c03c4954e07281f47b03c93d05430bb53ed8ca3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAwMCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTZmYjA4ZmRhMWFjYjk1N2I2MTE2YmQzNzgxMWExZmU0MWEwMTYxMWMwNjMxZWRiZjc4NmQ2ODg5YTI3YTU1YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTM3Zjk0ZDIyMWE5ZTcyZWEyNjA0MWYyMTYwOTNkYWNlNzRkZWIzODU2MWIyMmI5MmMwYzNjZjE4YTQ0MmQ5MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTliNDE2YmUyNWMxODY1NjgxZmEzMTIzNTVmYWNjZmFmNmE4NzlkNDZjNzFlYjBhZWE5ZDdkN2RlYmY5YThjNyJ9"
+        },
+        {
+          "resource": "repo://projects/affirmancy/pyproject.toml#L19-L32",
+          "version": "repo-lines-v1:sha256:f7797addd2cb9b2d9473ba38e93cf663dabaa60f8b6e66426db687a479f82410:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiODgyYTE3OTYwZGRkNzI2M2FhNzdlOTk5MjI0MDQxNGZmNDg3NjM4N2E0OTMxN2U1MWI3ZjUzNDk4OGQ4ZmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmY2IzMzMxMmU1NmExZTdkODljNTE4YTQ0N2IxZTA0MjEyYTNjMzEzZTc3ZDMxOTJkM2Y0YzE3NDEwMTViNzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1NzllYTQ5Y2FkN2E1ZGE5MTJiMzQzMGE0ZDdjMzI0NTg2NjVmZTE4ZTM5ZjY2NmM3OTQ0NmU4MDUzZjRlYzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5YWJmY2ZhNjAwMTEwNDI3YmRjNWU1MmI0YzQ3OTQ4MTgxNGU5MTRmY2FmODA5YTg4Mjg0N2M3YmM1YzY0MzcifQ"
         },
         {
           "resource": "repo://projects/affirmancy/src/affirmancy.ipynb",
@@ -200,21 +208,21 @@
     },
     {
       "id": "claim_3cc774df84354dd88df87bca6b033ea2",
-      "statement": "Linting tools: ruff (extends workspace config, excludes notebooks), vulture (excludes .vulture_whitelist.py), bandit (excludes testing/output/notebooks, skips B101)",
+      "statement": "Linting tools: ruff (extends the workspace config in configuration/python, excludes notebooks and the vulture whitelist), vulture (reads configuration/.vulture_whitelist.py), and bandit (excludes testing, output and notebooks, skips B101).",
       "evidence": [
         {
-          "resource": "repo://projects/affirmancy/pyproject.toml#L43-L56",
-          "version": "repo-lines-v1:sha256:b77dfccb77084bf1ac2b8fa79e46bfa5490308eff77f6deaa57088ec97b30642:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3NDVmYWI4NmIxMjFkYzg1YjRmNzg2NzMzOWExM2ZlZTgwNGM4YTAyZjQ3MTA2NTcyZjJiZjA2NjRkNTk1MWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwOTc5OTY2OGEwYzk4NGJmN2ViZGYyYTY2ZjdmN2JjOTY4MjdiZTcxOWFiYWI4ZjcxMTg1YTUwOGIxZDFkYzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI4YmY0MjNlNjFjOTY2NDFkMzEwY2UzYjM4ODQxNzQzNTlkMmNkMmRkNGVhMzkzMjE1MTcyNzJkMWFhOTM3YjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVmNzJhYWU1MDY4Mzg2YmRiOTM1NjA3YWE4ODhlODQwYzJiNDg1ZmNjMTQwZDZkZmI0MjliMmQxMWViODIxZGMifQ"
+          "resource": "repo://projects/affirmancy/pyproject.toml#L38-L48",
+          "version": "repo-lines-v1:sha256:59109630d5c4cb803ef93d8f7f402370f131b84b1fce79640fd0ff1494645221:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFiZTliODJlZmYxODhiYWJhYzRmYzBlMmM5OWQ4YmY3YTQ4ZWExMzA3NTQ0YmNmMDMyYmNlM2VjNTdhM2U3NzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM4ZmNjYTg5NDQyMjc5N2VlNjk5MDYzOWYyNDBiYjFkYjRiMzkxYTJjN2I5M2Y4N2NlODEyNTVhYmZkNjM2ODIifQ"
         },
         {
-          "resource": "repo://projects/affirmancy/pyproject.toml#L83-L85",
-          "version": "repo-lines-v1:sha256:832555f526c0492c87515d14b9cb0f5af7f7606ccf625bd354c14be45ef6364f:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzVjZTM3NTVkNTk2OTYxYjJjNWQyOWNmNWUxNjUwNWIwODk5Y2E3ODE1NTI3MzQ3YmFlYTQyZTU0ODBkZGE4YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDUwODJmZjk4ZjRkMzViNTA2ZTY4NzlkZjQ1NzBhNzExZGQyM2Q2NzM5YTU4NjQ2NGQzNTcyZjk2ZWVhYmU1OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWExMzA4ZGE4ZjE4YTBmNjRlY2UzZGU2YmIxMTUwNjNjY2U4YjNmMDMyMTE1MTQ1MjI5ZGM5OWZhODVjYzQxMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzUwMWE1OWQzMjYyMDA1YzVhMTM2ZWE3ZTBkNDM4MmZhNmEyZWNmMTUxMzlkYzU3OTRiMGE5ZDM1NzgxNzc1YiJ9"
+          "resource": "repo://projects/affirmancy/pyproject.toml#L66-L70",
+          "version": "repo-lines-v1:sha256:69f5aa6af5d0c9fdde6556858065b2730a14d09c00ba8c764c174c5d62a154f3:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzhhZWYwNDMwMTEwMzg2MTUzM2QwMzA4ZWYyM2RhMDM4YTljMDI3ODBmY2Y3NzE5ZmE2MjI0N2ZjYTQ3MGYwZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTc5MDBkMGEzMzdlMmZmNzRlY2FhOTQ0OTFiZmE1MjQ0OWMyODBiZjIxNWI5NjYyM2Y3ZjQzMWQyMjMxOTRkYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTA2MDNmZTFiZWJmYmQzMGU0ZTAzOTlmNzVmMjlmYzliNTg3YTNlZWZlMGMyMTQxYmU4MGNhMmE4OWM2YzU2NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWIxMWYwM2M0OTdjMmJmM2Q4N2RkMzA4YTk3Y2NjM2YxMmZiN2FiZGY5ZWM2NDY1ZTI0OGUwMTk5ZjY5YWM1OSJ9"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.0",
-    "at": "2026-10-29T03:39:46.432Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-22T00:18:20.862Z"
   }
 }

@@ -5,14 +5,14 @@ description: How to scaffold new projects, modules, and files using conformetry 
 tags: [scaffolding, generators, conformetry, nx, project-creation, module-creation, file-creation]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-13T16:30:25.369Z
+    at: 2026-11-22T00:18:20.862Z
 sources:
   - id: openwiki-source-d5a2a32b7849ae8b44301e20
     resource: repo://.agents/skills/nx-generate/SKILL.md
   - id: openwiki-source-8037e2358a2c4f9b2c722a11
     resource: repo://AGENTS.md
-  - id: openwiki-source-75161601af5a39bb60abb392
-    resource: repo://configuration/conformetry.config.ts
+  - id: openwiki-source-6419221f89e7a55a996f3dab
+    resource: repo://configuration/ic-suite/conformetry.config.ts
   - id: openwiki-source-1c93486ff1df6379518854cc
     resource: repo://documentation/adr/0011-hold-one-path-law-for-every-project-type.md
   - id: openwiki-source-f7338b666d73b255add2354c
@@ -27,12 +27,12 @@ sources:
     resource: repo://README.md
   - id: openwiki-source-843e28d83578389126912d89
     resource: repo://synchronization/project.json
-generated: { by: "openwiki/0.9.0", at: "2026-11-13T16:30:25.369Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 ---
 
 # Scaffolding with Conformetry
 
-This page documents how to create new projects, modules, and files using the **conformetry** generator system. Conformetry is the workspace's template-driven code generation and conformance validation system. Its templates live in `configuration/conformetry-templates/` and are defined in `configuration/conformetry.config.ts`. The Nx plugin generators are synced by running `nx run synchronization:conformetry-generators:write`.
+This page documents how to create new projects, modules, and files using the **conformetry** generator system. Conformetry is the workspace's template-driven code generation and conformance validation system. Its templates live in `configuration/ic-suite/conformetry-templates/` and are defined in `configuration/ic-suite/conformetry.config.ts`. The Nx plugin generators are synced by running `nx run synchronization:conformetry-generators:write`.
 
 > **Always invoke the `nx-generate` skill first** before exploring or calling MCP tools when scaffolding new artifacts. The skill handles generator discovery, dry-runs, and verification.
 
@@ -57,7 +57,7 @@ Conformetry generators fall into three tiers. As of the current configuration, t
 
 ## All 17 Generators
 
-All generators are defined in `configuration/conformetry.config.ts`.
+All generators are defined in `configuration/ic-suite/conformetry.config.ts`.
 
 ### Project Generators (5)
 
@@ -165,10 +165,10 @@ The conformetry CLI can also be invoked directly, which is useful outside Nx or 
 
 ```bash
 # Scaffold a new module from the nestjs-service-module template
-conformetry generate --config configuration/conformetry.config.ts --template nestjs-service-module --name billing --directory projects/my-project/src/modules
+conformetry generate --config configuration/ic-suite/conformetry.config.ts --template nestjs-service-module --name billing --directory projects/my-project/src/modules
 
 # Check every existing instance still matches the template it came from
-conformetry validate --config configuration/conformetry.config.ts
+conformetry validate --config configuration/ic-suite/conformetry.config.ts
 ```
 
 ### Interactive Template Picker
@@ -194,13 +194,13 @@ Conformetry validates that generated files conform to their templates. The same 
 
 ```bash
 # Validate all instances against their templates
-conformetry validate --config configuration/conformetry.config.ts
+conformetry validate --config configuration/ic-suite/conformetry.config.ts
 
 # Validate specific templates
-conformetry validate --config configuration/conformetry.config.ts --templates nestjs-service-module,react-component-file
+conformetry validate --config configuration/ic-suite/conformetry.config.ts --templates nestjs-service-module,react-component-file
 
 # Validate specific instance paths
-conformetry validate --config configuration/conformetry.config.ts --instances projects/common/observability/src/modules/logger
+conformetry validate --config configuration/ic-suite/conformetry.config.ts --instances projects/common/observability/src/modules/logger
 ```
 
 This command runs in CI as part of the `guard-code` target. It exits non-zero when any instance scores below its threshold (default: 100% — perfect match).
@@ -236,13 +236,13 @@ The configuration service (`@conformetry/configuration`) expands globs to discov
 
 A template whose instances are scoped by project tags **cannot be located by the CLI host** (`conformetry validate`) — tag resolution belongs to the Nx plugin, and the CLI host locates instances by glob alone. Such groups are left out rather than expanded from the working directory. Run those through `@conformetry/nx`, or pass `--instances` with explicit paths.
 
-## Generator Declaration (configuration/conformetry.config.ts)
+## Generator Declaration (configuration/ic-suite/conformetry.config.ts)
 
-Each generator in `configuration/conformetry.config.ts` declares:
+Each generator in `configuration/ic-suite/conformetry.config.ts` declares:
 
 - **`name`** — Unique generator identifier (used as `nx g conformetry:<name>`)
 - **`description`** — Shown in picker and help
-- **`templatePath`** — Path under `configuration/conformetry-templates/`
+- **`templatePath`** — Path under `configuration/ic-suite/conformetry-templates/`
 - **`inputs`** — Zod schema defining the generator's CLI options (converted to JSON Schema for Nx)
 - **`instances`** — Array of instance groups defining where existing instances live
 
@@ -272,12 +272,12 @@ instances: [
 
 ## Template Structure
 
-Templates live in `configuration/conformetry-templates/<generator-name>/` and use `{{placeholder}}` syntax (double braces) for substitution. Both file contents and file paths are rendered.
+Templates live in `configuration/ic-suite/conformetry-templates/<generator-name>/` and use `{{placeholder}}` syntax (double braces) for substitution. Both file contents and file paths are rendered.
 
 ### Project Template Example (`nestjs-service-project`)
 
 ```
-configuration/conformetry-templates/nestjs-service-project/
+configuration/ic-suite/conformetry-templates/nestjs-service-project/
 └── {{nameKebabCase}}/
     ├── .env.default
     ├── .gitignore
@@ -303,7 +303,7 @@ configuration/conformetry-templates/nestjs-service-project/
 ### Module Template Example (`nestjs-service-module`)
 
 ```
-configuration/conformetry-templates/nestjs-service-module/
+configuration/ic-suite/conformetry-templates/nestjs-service-module/
 └── {{nameKebabCase}}/
     ├── {{nameKebabCase}}.constants.ts
     ├── {{nameKebabCase}}.module.ts
@@ -315,7 +315,7 @@ configuration/conformetry-templates/nestjs-service-module/
 ### File Template Example (`react-component-file`)
 
 ```
-configuration/conformetry-templates/react-component-file/
+configuration/ic-suite/conformetry-templates/react-component-file/
 ├── {{nameKebabCase}}.tsx
 └── {{nameKebabCase}}.unit.test.tsx
 ```
@@ -345,7 +345,7 @@ nx run synchronization:conformetry-generators:check
 nx run synchronization:conformetry-generators:write
 ```
 
-The synchronization target is defined in `synchronization/project.json`. It runs `synchronization/src/synchronization.main.ts conformetry-generators write` which reads `configuration/conformetry.config.ts` and emits the Nx plugin to `projects/ic-suite/conformetry/conformetry-nx/`.
+The synchronization target is defined in `synchronization/project.json`. It runs `synchronization/src/synchronization.main.ts conformetry-generators write` which reads `configuration/ic-suite/conformetry.config.ts` and emits the Nx plugin to `projects/ic-suite/conformetry/conformetry-nx/`.
 
 The emitted plugin exposes a `sync` generator (see `projects/ic-suite/conformetry/conformetry-nx/generators.json`) and provides:
 - Inferred `conformetry-validate` targets on projects that hold instances
@@ -373,24 +373,19 @@ If the generator created a new project, also run `nx run-many --target=typecheck
 
 ## Workflow: nx-generate Skill
 
-When scaffolding, **invoke the `nx-generate` skill immediately**. It enforces:
+When scaffolding, **invoke the `nx-generate` skill immediately**. Its flow:
 
-1. **Discover generators** — `nx list conformetry` or `nx list @nx/<plugin>`
-2. **Match to request** — Prefer local workspace generators (`conformetry:*`) over external plugin generators
-3. **Read generator source** — The schema alone is insufficient; understand what files are created and side effects
-4. **Examine existing patterns** — Look at similar artifacts in the repo for naming, structure, config
-5. **Dry-run** — Verify file placement before committing
-6. **Run generator** — Use `--no-interactive`
-7. **Format & verify** — `nx format --fix` then run relevant checks (typecheck, lint, test)
+1. **Discover generators** — `nx list conformetry` or `nx list @nx/<plugin>`, then match one to the request (prefer local workspace generators, `conformetry:*`, over external plugin generators)
+2. **Pre-execution checklist** — fetch the generator schema, read its source (the schema alone is insufficient: understand what files are created and side effects), reevaluate whether the generator is right, understand the repository's context, and validate the required options
+3. **Execute** — optionally dry-run to verify file placement, then run the generator (non-interactively), handling failures
+4. **Post-generation** — modify the generated code if needed, format it, and run verification (typecheck, lint, test), handling failures
 
 See the full skill at `.agents/skills/nx-generate/SKILL.md`.
 
 ## ADR References
 
-<!-- openwiki: broken internal link [../architecture/decisions/0011-hold-one-path-law-for-every-project-type.md] file "../architecture/decisions/0011-hold-one-path-law-for-every-project-type.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- **ADR 0011** — [Hold one path law for every project type](../architecture/decisions/0011-hold-one-path-law-for-every-project-type.md): The universal path/naming law lives in `configuration/codebase-structure.json`; per-type shape is enforced by conformetry via tags, not by folder name.
-<!-- openwiki: broken internal link [../architecture/decisions/0025-run-the-workspace-tools-from-a-configuration-project.md] file "../architecture/decisions/0025-run-the-workspace-tools-from-a-configuration-project.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- **ADR 0025** — [Run the workspace tools from a configuration project](../architecture/decisions/0025-run-the-workspace-tools-from-a-configuration-project.md): The `configuration` project holds workspace tool configuration; the conformetry Nx plugin is emitted to `projects/ic-suite/conformetry/conformetry-nx/` by the `synchronization` project.
+- **ADR 0011** — `documentation/adr/0011-hold-one-path-law-for-every-project-type.md`: The universal path/naming law lives in `configuration/lint/codebase-structure.json`; per-type shape is enforced by conformetry via tags, not by folder name.
+- **ADR 0025** — `documentation/adr/0025-run-the-workspace-tools-from-a-configuration-project.md`: The `configuration` project holds workspace tool configuration; the conformetry Nx plugin is emitted to `projects/ic-suite/conformetry/conformetry-nx/` by the `synchronization` project.
 
 ## Related Pages
 

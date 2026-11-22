@@ -1,12 +1,16 @@
 ---
 type: "Reference"
 title: "Shared Common Packages"
-description: "Documents the four shared packages under projects/common/ (persistence, interface, presentation, observability) that application domains depend on. Covers exports, consumption patterns, conventions, and integration summary."
-tags: ["architecture", "shared-packages", "persistence", "interface", "presentation", "observability", "nestjs", "graphql", "react", "typescript"]
+description: "Documents the five shared packages under projects/common/ (persistence, interface, presentation, observability, testing) that application domains depend on. Covers exports, consumption patterns, conventions, and integration summary."
+tags: ["architecture", "shared-packages", "persistence", "interface", "presentation", "observability", "testing", "nestjs", "graphql", "react", "typescript"]
 verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-29T03:39:46.432Z
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 sources:
+  - id: openwiki-source-f361a9dd9b028b78e5690b6b
+    resource: repo://projects/affirmancy/pyproject.toml
+  - id: openwiki-source-36479a80e22b61585b1d9433
+    resource: repo://projects/caelundas/caelundas-web/package.json
   - id: openwiki-source-cffe8ea3d9a4c39bbbf89d4a
     resource: repo://projects/common/interface/README.md
   - id: openwiki-source-6228a9f29d999a77afe10ec5
@@ -17,29 +21,39 @@ sources:
     resource: repo://projects/common/observability/README.md
   - id: openwiki-source-bd4b5f31d98b6c0775de7f91
     resource: repo://projects/common/observability/src/index.ts
+  - id: openwiki-source-0e05ea22dcbd2f661a174c15
+    resource: repo://projects/common/observability/src/modules/logger/logger.service.ts
   - id: openwiki-source-bb47f0ae03a5325f0d8fdea7
     resource: repo://projects/common/persistence/README.md
   - id: openwiki-source-c3821f4c6ec468f6b0393856
     resource: repo://projects/common/persistence/src/index.ts
+  - id: openwiki-source-1d84a8d1eed884bcb7450dd0
+    resource: repo://projects/common/persistence/testing/index.ts
   - id: openwiki-source-c18a7ce09889bd3ec62f1758
     resource: repo://projects/common/presentation/README.md
   - id: openwiki-source-7b85ba904058735d68cb0e02
     resource: repo://projects/common/presentation/src/index.ts
+  - id: openwiki-source-7d76dc1f51d3cdefccb6bde3
+    resource: repo://projects/common/testing/README.md
+  - id: openwiki-source-affc5fef12f3dc4e6cf9d982
+    resource: repo://projects/lexico/lexico-api/package.json
+  - id: openwiki-source-fe3ba70f2fede89429666c72
+    resource: repo://projects/meanderaw/meanderaw-cli/package.json
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
-generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 ---
 
 # Shared Common Packages
 
-The codebase maintains four shared packages under `projects/common/` that application domains (Lexico, Caelundas, Meanderaw, Affirmancy) depend on. Each package exports a focused set of utilities, types, and modules through a single entry point, and applications consume them via workspace protocol imports (e.g., `@codebase/persistence`).
+The codebase maintains five shared packages under `projects/common/` that the TypeScript application domains (Lexico, Caelundas, Meanderaw) depend on. Each package exports a focused set of utilities, types, and modules, and applications consume them via workspace protocol imports (e.g., `@codebase/persistence`). Affirmancy is a Python project and uses none of them.
 
 ---
 
 ## Persistence (`@codebase/persistence`)
 
 **Path:** `projects/common/persistence`  
-**Purpose:** The single Postgres and SQLite integration every database-backed project uses. It provides the environment variable schemas, TypeORM connection options and NestJS modules, base entities, a Testcontainers harness, the `migration` Nx target, and a `database` CLI for moving tables between databases.
+**Purpose:** The single Postgres integration every database-backed project uses (Lexico, Meanderaw, and Caelundas all keep their tables in Postgres). It provides the environment variable schema, TypeORM connection options and NestJS module, base entities, a Testcontainers harness, the `migration` Nx target, and a `database` CLI for moving tables between Postgres databases.
 
 ### Primary Exports (PostgreSQL)
 
@@ -52,16 +66,6 @@ The codebase maintains four shared packages under `projects/common/` that applic
 | `PostgresqlIdentifiableEntity` / `PostgresqlCreatableEntity` / `PostgresqlUpdatableEntity` / `PostgresqlDeletableEntity` | Base entities: uuidv7 id, created/updated/deleted timestamps, soft delete |
 | `startPostgresContainer` | Testcontainers Postgres 18 container laid out like local Docker |
 | `startDatabaseTestingModule` | Nest testing module connected to a migrated container |
-
-### Primary Exports (SQLite)
-
-| Export | Purpose |
-|--------|---------|
-| `sqliteEnvironmentSchema` | Zod fragment for `<PROJECT>_SQLITE_DATABASE` variable |
-| `sqliteConnection` / `sqliteDataSourceOptions` | Connection and TypeORM options for `better-sqlite3` driver |
-| `SqliteModule.forRoot` | NestJS module wiring SQLite through `ConfigService` |
-| `createSqliteDataSource` | `DataSource` for CLI migrations |
-| `SqliteIdentifiableEntity` / `SqliteCreatableEntity` / `SqliteUpdatableEntity` / `SqliteDeletableEntity` | Base entities: application-generated uuid id, datetime columns |
 
 ### Database / Schema / Role Naming Convention (PostgreSQL)
 
@@ -109,30 +113,6 @@ The schema carries no environment suffix; only the database name changes.
    });
    ```
 
-### How Applications Consume It (SQLite)
-
-For Caelundas (and any project using SQLite):
-
-```ts
-import { sqliteEnvironmentSchema, SqliteModule } from "@codebase/persistence";
-
-export const environmentSchema = z.object({
-  ...sqliteEnvironmentSchema({ project: "caelundas" }),
-});
-
-// In database module
-@Module({
-  imports: [
-    SqliteModule.forRoot({
-      entities: [CalendarEvent],
-      migrations: [CreateCalendarEvents1767225600000],
-      project: "caelundas",
-    }),
-  ],
-})
-export class CaelundasDatabaseModule {}
-```
-
 ### Critical Conventions
 
 - **Never synchronize or run migrations on application start.** `synchronize` and `migrationsRun` are both `false` in the provided options. Migrations run as a separate step via the `migration` Nx target.
@@ -150,7 +130,7 @@ Paths derived from `module`:
 - `<module>/data-source.constants.ts` — the `createDataSource(...)` export
 - `<module>/migrations/` — generated migrations and extracted `.sql`
 
-Commands: `migration:generate`, `migration:run`, `migration:revert`, `migration:show`, `migration:extract-sql-latest`, `migration:extract-sql-all`.
+Commands: `migration:generate`, `migration:run`, `migration:revert`, `migration:show`, `migration:extract-sql-latest`, `migration:extract-sql-all`. The two extract targets run the `synchronization` command `extract-typeorm-migration-sql`, and `migration:generate` ends by running `lint-code:write`.
 
 ### Database CLI
 
@@ -162,12 +142,12 @@ Each table's entity extends the narrowest base it needs, so a table without soft
 
 | Base | Adds |
 |------|------|
-| `PostgresqlIdentifiableEntity` / `SqliteIdentifiableEntity` | `id` — uuidv7 (Postgres) or application-generated uuid (SQLite) |
-| `PostgresqlCreatableEntity` / `SqliteCreatableEntity` | `createdAt` (`timestamptz`/`datetime`) and nullable `createdBy` (`uuid`) |
-| `PostgresqlUpdatableEntity` / `SqliteUpdatableEntity` | `updatedAt` (`timestamptz`/`datetime`) and nullable `updatedBy` (`uuid`) |
-| `PostgresqlDeletableEntity` / `SqliteDeletableEntity` | `deletedAt` (`timestamptz`/`datetime`, soft delete) and nullable `deletedBy` |
+| `PostgresqlIdentifiableEntity` | `id` — a `uuid` the database assigns with Postgres 18's `uuidv7()` |
+| `PostgresqlCreatableEntity` | `createdAt` (`timestamptz`) and nullable `createdBy` (`uuid`) |
+| `PostgresqlUpdatableEntity` | `updatedAt` (`timestamptz`) and nullable `updatedBy` (`uuid`) |
+| `PostgresqlDeletableEntity` | `deletedAt` (`timestamptz`, soft delete) and nullable `deletedBy` |
 
-They are plain TypeORM, with no GraphQL; a project that exposes them over GraphQL adds its `@Field` decorators in a thin layer of its own. Nothing fills the `*By` columns but the application. No entity names a schema: it comes from `<PROJECT>_POSTGRES_SCHEMA` (Postgres) or the single SQLite file.
+They are plain TypeORM, with no GraphQL; a project that exposes them over GraphQL adds its `@Field` decorators in a thin layer of its own. Nothing fills the `*By` columns but the application, so a command-line writer with no user identity leaves them empty. No entity names a schema: it comes from `<PROJECT>_POSTGRES_SCHEMA`.
 
 ### Integration Tests
 
@@ -210,6 +190,7 @@ For an API built on `@nestjs/graphql`:
 | `PageInfo` | Relay page info object type |
 | `Paginated`, `createEdgeType` | Mixins that build a node's Relay connection and edge object types |
 | `createConnection`, `createEdge`, `mapConnection` | Build and map Relay connections |
+| `toDeletableFields` | Maps an entity's soft-delete columns onto its GraphQL object |
 | `toCursor`, `fromCursor`, `fromCursorSafe`, `encodeOffsetCursor`, `decodeOffsetCursor` | Opaque and offset cursors |
 | `mapRelation`, `mapRelations`, `mapRelationConnection`, `mapNullable*` | Map an entity's relations, keeping `null` and unjoined relations |
 | `Connection`, `Edge`, `GraphQLFields`, `GraphQLObjectOf`, `MappedFields`, `RelationKey`, ... | Types, including the entity-to-GraphQL-object contract |
@@ -320,7 +301,7 @@ Add the global CSS import to the root layout (e.g., `src/routes/__root.tsx` in a
 | `LoggerService` | Transient-scoped, `pino`-backed logger implementing Nest's `LoggerService` |
 | `LoggerModule` | `@Global()` module providing and exporting `LoggerService` |
 
-Also exports types: `LogData`, `ParsedLogMessage`
+Also exports types: `LogData`, `LoggerServiceContract`, `ParsedLogMessage`
 
 ### How Applications Consume It
 
@@ -359,10 +340,31 @@ Also exports types: `LogData`, `ParsedLogMessage`
 
 ### File Logging Helpers
 
+Both are methods on `LoggerService`, not separate exports:
+
 | Method | Returns |
 |--------|---------|
 | `buildErrorLogEntry(context, error)` | `{ errorMessage, logLine }` — normalizes `unknown` errors |
 | `createTimestampedOutputLogFilePath(prefix)` | `<cwd>/output/<prefix>-<ISO timestamp>.log`, creating `output/` |
+
+---
+
+## Testing (`@codebase/testing`)
+
+**Path:** `projects/common/testing`
+**Purpose:** The shared test code every project's tests import, held once as subpath exports instead of copied into each project: temporary directories, output and exit-code capture, environment overrides, the fixed clock, fixtures, and mocks.
+
+| Entry | Holds |
+|-------|-------|
+| `@codebase/testing` | Temporary directories, output and exit-code capture, environment overrides, the fixed clock, fixtures, mocks |
+| `@codebase/testing/setup` | The shared Vitest setup file the base config lists |
+| `@codebase/testing/end-to-end` | Tarball sandbox and Verdaccio plugin runners that test packed packages as a consumer installs them |
+| `@codebase/testing/file-system` | The `mockFileSystem` factory helper, kept free of `node:fs` imports |
+| `@codebase/testing/nestjs` | The testing-module builder, module-wiring assertions, and the Nx workspace tree |
+| `@codebase/testing/react` | The route-render helper and the `createServerFn` and `matchMedia` stand-ins |
+| `@codebase/testing/react/setup` | The shared jsdom setup |
+
+Most TypeScript projects list it as a development dependency (see the consumer list below). Its `nestjs` entry depends on `@codebase/observability`, which in turn uses `@codebase/testing` for its own tests, so the two form a workspace dependency cycle that pnpm warns about.
 
 ---
 
@@ -371,22 +373,17 @@ Also exports types: `LogData`, `ParsedLogMessage`
 ```mermaid
 graph LR
   subgraph "Application Domains"
-    Lexico[Lexico API / Web / CLI]
-    Caelundas[Caelundas CLI]
+    Lexico[Lexico API / Web / CLI / DB]
+    Caelundas[Caelundas API / Web / CLI / DB]
     Meanderaw[Meanderaw CLI / Web]
-    Affirmancy[Affirmancy]
   end
 
   subgraph "Common Packages"
-    Persistence[🐘 persistence\n@codebase/persistence]
-    Interface[✉️ interface\n@codebase/interface]
-    Presentation[🎨 presentation\n@codebase/presentation]
-    Observability[👀 observability\n@codebase/observability]
-  end
-
-  subgraph "Infrastructure"
-    Configuration[configuration]
-    Infrastructure[infrastructure]
+    Persistence[🐘 persistence]
+    Interface[✉️ interface]
+    Presentation[🎨 presentation]
+    Observability[👀 observability]
+    Testing[🧪 testing]
   end
 
   Lexico --> Persistence
@@ -396,26 +393,21 @@ graph LR
 
   Caelundas --> Persistence
   Caelundas --> Interface
+  Caelundas --> Presentation
   Caelundas --> Observability
 
   Meanderaw --> Persistence
-  Meanderaw --> Interface
-  Meanderaw --> Presentation
   Meanderaw --> Observability
 
-  Affirmancy --> Persistence
-  Affirmancy --> Observability
-
-  Persistence --> Configuration
-  Interface --> Configuration
-  Presentation --> Configuration
-  Observability --> Configuration
+  Persistence --> Observability
+  Testing --> Observability
 ```
 
-Each domain combines the packages it needs:
-- **Lexico:** all four (full-stack GraphQL API + web UI)
-- **Caelundas:** persistence, interface, observability (CLI + GraphQL API)
-- **Meanderaw:** persistence, interface, presentation, observability (CLI + web UI)
-- **Affirmancy:** persistence, observability (CLI only)
+Which project in each domain depends on which package (from each `package.json`):
 
-All common packages depend on `configuration` for shared tooling (ESLint, TypeScript, Vitest, Nx targets).
+- **Persistence:** `lexico-api`, `lexico-cli`, `lexico-db`, `caelundas-api`, `caelundas-cli`, `caelundas-db`, `meanderaw-cli`
+- **Interface:** `lexico-api`, `lexico-web`, `caelundas-web`
+- **Presentation:** `lexico-web`, `caelundas-web`
+- **Observability:** `lexico-api`, `lexico-cli`, `caelundas-api`, `caelundas-cli`, `meanderaw-cli`, and `persistence` itself
+- **Testing:** `lexico-*`, `caelundas-*`, `meanderaw-cli`, `meanderaw-web`, and the `interface`, `observability`, and `persistence` packages
+- **Affirmancy:** Python, with none of these

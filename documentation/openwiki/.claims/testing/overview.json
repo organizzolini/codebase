@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:6f8210d04c94c046d8db5d328848f49c95796a4b524596544919a722abd1f315",
+  "pageVersion": "sha256:e30e99a89dbf6c285c21fe545b5105c4309f0d6cdca04736b9ec9cd7c11b6f7d",
   "claims": [
     {
       "id": "claim_6ba1f48fb60e4cdc8e8e767e2f7a6779",
@@ -15,7 +15,7 @@
           "version": "repo-lines-v1:sha256:031b244f6ed07c7a06d64229680e97312a6b428c17614806c9821bac98fd05f4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjYzE2NmNmNTM0OTU0MTVhMjZkNDNlMTIyNTQxNmE5Y2E4NDdhZWRlYjgzYjA3MTExMjBiMTNlYTQ1MzI3Nzc3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwMTI0MmM5NTk0ZTU5YTViNzVjMjViZGQ4NmRjZDBmMWQ5YzZmMmQ1MmU0OTVhMjZhNGU1MGRjMWUzZWNhYTE5IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI4ODA5MThhYzY0MzA3MDQwMzAwNDMyNzhhYmIxNjcwMDFjNjgzNDNmYzVhM2FkZjdmODJiNjE2OTUyOWI4NGFmIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI5NGE5NDQ5MWY4MzU3Y2VlNDQwNTZmZmVmZmJmMmZiNzhiODRhODNjZjQzMzU5MDk3ZWQxOGI0MTMyNDZkY2FjIn0"
         },
         {
-          "resource": "repo://AGENTS.md#L228-L231",
+          "resource": "repo://AGENTS.md#L275-L278",
           "version": "repo-lines-v1:sha256:b31256ea911e0a54b80a77077722e661f782cf15e8bc80765b548886bcf1b288:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWQ5YjdhOThmMmRkODdhYWQ5MzE1YWJmZTEyNzQyNTZiZGJjNjBhMmFlZTdkMjJhYTg4ZDE5MTE1Y2RlYjE1MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYThiZGRjNmVlOTQ1MmFiNDlmZDRjOGI1OTliNjI4ZjdmMjhkMzY5YjQ4NWVkMGQxYTQzNzlmMDQ1YzI0YWY3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODA2NDcxNmY3YzAzOGRlZjRiOTRjMzY5MjAyNDc2NjIwNDUxZDI0ZTgzZmE2ZjJkZTkwYTRiOWJkZDMzZDkyZCJ9"
         }
       ]
@@ -33,56 +33,56 @@
           "version": "repo-lines-v1:sha256:befcaa738db89f478f309e834a990edd07ad1388785d09e6d99bdabc2ef1141c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxOWRhNjBhNjEyOTAwNzkyZTZkNTg0MGU2YWU2OTc3YjhhMTdhZDU0NzVlYzJjNThkNzU5NmM2ZDFkYzIxNTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhZjQ1M2M4MWI0ZjI0YWY0NDdhZDk5MmQwZjc3NzVkMDAyODczZDFmMTQ3MmQyMzk1N2M0ZjdlNmZjMmUxYjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1YzljNTJlZmIwYzZiZjQyYTM2OTAwZTM2YzQzMDgzY2ZlMDBiODExODc3YjYxOTZhN2IyMDIyYzMzZDliZWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNjNWJiMDQ2Yzg4NzRkYWMzOTUwZjgzNGQ5MmEzMTNlYjM4ZGRiNWFhNWQzMmMxZmNmMDNlZTZmNDJhMTIyMzUifQ"
         },
         {
-          "resource": "repo://AGENTS.md#L228-L231",
+          "resource": "repo://AGENTS.md#L275-L278",
           "version": "repo-lines-v1:sha256:b31256ea911e0a54b80a77077722e661f782cf15e8bc80765b548886bcf1b288:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWQ5YjdhOThmMmRkODdhYWQ5MzE1YWJmZTEyNzQyNTZiZGJjNjBhMmFlZTdkMjJhYTg4ZDE5MTE1Y2RlYjE1MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYThiZGRjNmVlOTQ1MmFiNDlmZDRjOGI1OTliNjI4ZjdmMjhkMzY5YjQ4NWVkMGQxYTQzNzlmMDQ1YzI0YWY3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODA2NDcxNmY3YzAzOGRlZjRiOTRjMzY5MjAyNDc2NjIwNDUxZDI0ZTgzZmE2ZjJkZTkwYTRiOWJkZDMzZDkyZCJ9"
         }
       ]
     },
     {
       "id": "claim_b0819b80d7c2484c9200a7f268b9d20e",
-      "statement": "Three test types exist with standardized naming: unit tests (*.unit.test.ts) for isolated fast tests with mocked dependencies; integration tests (*.integration.test.ts) for real Postgres via Testcontainers with real module wiring and selective mocks; end-to-end tests (*.end-to-end.test.ts) for full application stack (rare).",
+      "statement": "Test types have standardized naming: unit tests (*.unit.test.ts) for isolated fast tests with mocked dependencies; integration tests (*.integration.test.ts) for real Postgres via Testcontainers with real module wiring and selective mocks; end-to-end tests (*.end-to-end.test.ts) for the full application stack (rare); and packed tests (*.packed.test.ts) run by the separate end-to-end target against installed tarballs.",
       "evidence": [
         {
-          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L20-L25",
-          "version": "repo-lines-v1:sha256:1a681b8971abab4569726431814c3c3c3d32246589dc05394c809a2545d5e099:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmYzNThhNTdjYjgzNmE3OWQzZTdmZTk0ZjdlZmNiN2ZmZDYxODRmYmI5MDFkODg1NTQ4MTVlZmZlZGFmYTQ2ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTI2MmFhZDViNjNmZThjN2Y0ODI2ZDFmOGYwNDBmNTkyMGE1OTI4ZDgyZDRhYWVmZWExMjM1YTFlZmJhY2IzYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmRmNTQ0NDBiNDg2ZTMwMGYzNWFiMDAwNTYxZWFlNTAwZDI1Mjk5NGM4NWE0Yzg0MDAzYzA0M2U2NTk5YWUwMCJ9"
+          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L22-L52",
+          "version": "repo-lines-v1:sha256:eedbed1cdc1afcb8824c9be28c04f36dad74dd3c88e0e29eccf558ad31d5fcb2:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmMzU4YTU3Y2I4MzZhNzlkM2U3ZmU5NGY3ZWZjYjdmZmQ2MTg0ZmJiOTAxZDg4NTU0ODE1ZWZmZWRhZmE0NmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiZjEyYWUwYmM3NmM2MGQyMWQ3NjVhZGNhYjgyZmQwYjdjODQyYWUwMGE5YzhlYjYyOTcwMDUzYzJkMmNjNjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBkZDEwZjEyOWEzYWY1MzVjNGZiNmViYTEzNmVlNzE2MDMxZmIyNjg2NGUyMGVjZDA3OGVlNzJhNzU5NjQ4NTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4OWEzNTNiNTIwZjUzZmFhNzkxNDcwMWMwNzkwNDdiZDM2Nzg4YTc1YWQ2YTBiODFlYmVlOTRhMWYwOGVmNTAifQ"
         }
       ]
     },
     {
       "id": "claim_1313c4752dcf490aa7ce86a11b136c0d",
-      "statement": "Tests are executed via Nx targets per project: nx run <project>:vitest:unit, nx run <project>:vitest:integration, nx run <project>:vitest:end-to-end. The standard CI and local validation command is nx affected --target=vitest --base=main which runs all vitest configurations for affected projects and their dependents.",
+      "statement": "Tests are executed via Nx targets per project: nx run <project>:vitest:unit, nx run <project>:vitest:integration, nx run <project>:vitest:end-to-end, and nx run <project>:end-to-end for packed tests. The standard CI and local validation command is nx affected --target=vitest --base=main which runs all vitest configurations for affected projects and their dependents.",
       "evidence": [
         {
-          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L26-L33",
-          "version": "repo-lines-v1:sha256:1c870b27e68a09c080fed5f8baeefdc915bcebf00b88862194ec21da06c130bb:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODY4ZWU4ZGJiNzBiYTczMDhjNzdiYzlmOWMzMTdkNDc1YzJkMzc1ZDNkNGIzNDg2ZTRmZGNjNDhiMmZhZDk2YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjQwZWEyOTViMWI4ODRjNmZkNTE4NTYxZmRlYTFhYjU3YjY2YTFhOGYxY2ZjNDdjOWYyMmI4YWNmYzc3ZTA3MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDE0ZmU1YTc5NGM4Y2EzN2E4MmJjMmZmYWMzNDljZDg3ODc0YmNmNTIxZjM1OTU4ZDM2MzMyYTM5Y2EwMzM3NCJ9"
+          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L28-L52",
+          "version": "repo-lines-v1:sha256:488295d35bd42bf6918d44a40171be466819e6385cde566ed29689ea1505b8ca:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmOTYxNTU4MDE3OTc2YzgzZjU3ZTk1NDIyN2MyNWYxMjY2OGRjMGEwNTJjZTI0YTMwMWRjMmQzYmVmNTEzMTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiZjEyYWUwYmM3NmM2MGQyMWQ3NjVhZGNhYjgyZmQwYjdjODQyYWUwMGE5YzhlYjYyOTcwMDUzYzJkMmNjNjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2MjdjNmRjYjgyZmRlYTdjMTMwMTllZDdkMTU4NDYzMTkwYjA1MGMyM2MzNjAxMmY1MTM0NmExMDc4YTZlM2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4OWEzNTNiNTIwZjUzZmFhNzkxNDcwMWMwNzkwNDdiZDM2Nzg4YTc1YWQ2YTBiODFlYmVlOTRhMWYwOGVmNTAifQ"
         }
       ]
     },
     {
       "id": "claim_173d819cfc4243589a55b81a26196cce",
-      "statement": "Four quality gates must pass: test coverage (96% branches/functions/lines/statements from configuration/vitest.config.ts), type coverage (per-project in package.json as typeCoverage.atLeast, most at 100% with strict:true), compiled size (per-project in codometer.config.ts), and duplication (advisory only via jscpd). Lowering any threshold to pass CI is not allowed.",
+      "statement": "Four quality gates must pass: test coverage (96% branches, functions, lines and statements from configuration/typescript/vitest.config.ts), type coverage (per project in package.json as typeCoverage.atLeast, most at 100 with strict: true), compiled size (per project in codometer.config.ts), and duplication (advisory only via jscpd). Lowering any threshold to pass CI is not allowed.",
       "evidence": [
         {
-          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L35-L70",
-          "version": "repo-lines-v1:sha256:12c6159aed45ce83ae2c0fb20ca48fbb0a79b802fd31f4ae0753eb71482f1ef0:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzOGY3ZTFhY2QwZDgwZmQ0NDAyNmQ5ZDc2NmFmNzc2MTMzMjQwOWNmYmI4OWFhNjFhYjI1MzcyYTJhMDc1MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhOGI0OTAxOTdhMzUxNzAyZjJhODE4YzlmMTlmMjMxMTIzYWU5NGIyYTIyMDVhZjAyNzZlYzc5NmY4M2YzYmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJlN2Y5NzU2YzI4ZTgyYjEyN2I3MjgwOGY4YmU4MjQzMmRkNWYwZjE1NGZlNzAwMDYwNDM4NTk1ZmUwYjkzNjIifQ"
+          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L170-L215",
+          "version": "repo-lines-v1:sha256:76d9cca982305e23d2d65230d3ad46ba18a556eacfc77960c9e92f7015415302:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4NjY5ZWI5MDk2ZmQ2ZTRkMDdiMDMwZDk2OTM0OTZmNDg1MTZkNmJhNTI3MzEyYTc3ZTA3NzVkNGM3ODc0ZDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhkYWFhMmJhZGY4ZjBlYWUyYjQ1ZGIzOWY3ZTg5YWFjYjM2YWUxMTAwYTQ0MmNkZGI3MmM0NWNkMzMzNjhlMWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY0ZmZkOWI1NTg4ZjVmMWVhYjUyNjI3ZjUxZGE0YjZjZWYwOWFjZDEzNTBlOGJmNDJiMmVlNmVjZjU3NGZmY2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFiZTY2MzFmYTgwNjhmMGM5NTg3MTI2NGE2YjJmYTJjYzFhYTBhNWM1ZTA2ODA2NDJiNDUxNDBkMjFkZTBjOTcifQ"
         },
         {
-          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L83-L85",
-          "version": "repo-lines-v1:sha256:1d26140f2987ef5914a250f4497116fc7b60b16f25fddf27a699750b6cd64f49:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGRmNzY2NWUzZGZlOGJkN2Y0YmEyMGMwNTg3ZWVkYTQwNmI4MWFhYjY2MmY2NDU2NGFmMDUwZjk4ZmIyYjE5YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTY4MDU0Mzc2OTY0N2Y3MmE4OGU5M2Y2OTY3NjkxNzdiODVhNmZmZTM5ZTJkODE4N2I5YWNjMGE5MGNkMTI1ZiJ9"
+          "resource": "repo://AGENTS.md#L225-L260",
+          "version": "repo-lines-v1:sha256:75f3b14ed6efcb4aab6ddb41e32ab426f45aa4a55fdd3ee6762f099220daf49b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhNThlMTRkMmY3MGUzMzMzMTU5NTQxZWJiOGFlMGZmYTg3NTMwNjkxMTMzMTUwNDgyZTg1MDIyNDQ2MWQ1ZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3MDYwNTJjMmQxNjQxNjU4NWU1M2U1Njg4NjRjZjU3MmUyNzMyOWI1NDVjN2MzNzYzMDUxNzhjOWQyZDA1ZjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI3YTU2Mjc2ZTFhMzRhZTlmY2U5NzM1OGNhNWNhZDcxM2Q4NzZmM2FhN2Q5NDIxMDQ2ZTVhODQ0YjRmZWVkZWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUxMmNjZmRiYzdkMzY2MWU0NjFhZmJlM2EwZTJmOTdkNjcyZDI0Zjc2Zjg4ZmNmMzQwOGFiMzg5ZWQ3NjQyYWEifQ"
         },
         {
-          "resource": "repo://AGENTS.md#L228-L231",
-          "version": "repo-lines-v1:sha256:b31256ea911e0a54b80a77077722e661f782cf15e8bc80765b548886bcf1b288:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWQ5YjdhOThmMmRkODdhYWQ5MzE1YWJmZTEyNzQyNTZiZGJjNjBhMmFlZTdkMjJhYTg4ZDE5MTE1Y2RlYjE1MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYThiZGRjNmVlOTQ1MmFiNDlmZDRjOGI1OTliNjI4ZjdmMjhkMzY5YjQ4NWVkMGQxYTQzNzlmMDQ1YzI0YWY3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODA2NDcxNmY3YzAzOGRlZjRiOTRjMzY5MjAyNDc2NjIwNDUxZDI0ZTgzZmE2ZjJkZTkwYTRiOWJkZDMzZDkyZCJ9"
+          "resource": "repo://configuration/typescript/vitest.config.ts#L20-L30",
+          "version": "repo-lines-v1:sha256:90d533b2901f83bd4ca7cc98ce1abb637ad74b2179f44fd5234a7913deffe626:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhZWQzYzgwOTQ5YmJhZTExM2Q2ODY5ZmM0MDBkNmVmM2QzNmQzMzQ2NDFkOWFiZDM0MTcwNjE1YTQzNTRhZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1ZjExMjI3ODRlZTEzMWY3ZTdlMzk4OTE0MTM2ZjBjMGE3OTgxODdlNjU5NzQyN2U2ZTU5YmZjOTUwNzU5NGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImExMDMyYzU0ZWRkYzFjMDZlNTZkYzM5M2U1MmU5MDAyZjNiMWY1MmI1OTFlZDJhNGFjMGUyZjY0OTQ4MTJmYmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMzMjE1MzRiMDdlMTFmMmUyZWQ0MjhiOWMzYjVlMWE0NjY1YTFmY2RhODc4MDQ4OTYyNmQ3MTgwYTZmNzI3ZmUifQ"
         }
       ]
     },
     {
       "id": "claim_2467739c5be74373891dba069f1b19cb",
-      "statement": "Coverage practices: after structural refactors always re-run coverage; if branch coverage is below threshold, add focused tests for uncovered guard/fallback branches first; use hotspot-first loop (generate coverage, sort lowest branch-coverage files, patch highest-impact offenders, re-run); raise coverage with behavior-first assertions not synthetic inflation; keep Vitest configs thin inheriting from configuration/vitest.config.ts via mergeConfig; run CI-shaped command locally before PR: nx affected --target=vitest --configuration=coverage --base=main.",
+      "statement": "Coverage practices: after structural refactors always re-run coverage; if branch coverage is below threshold, add focused tests for uncovered guard and fallback branches first; use a hotspot-first loop; raise coverage with behavior-first assertions, not synthetic inflation; keep Vitest configs thin, inheriting from configuration/typescript/vitest.config.ts via mergeConfig; run the CI-shaped command locally before a PR: nx affected --target=vitest --configuration=coverage --base=main.",
       "evidence": [
         {
-          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L43-L56",
-          "version": "repo-lines-v1:sha256:ca05c4283930e2a4de6c2fc9702cebacd63fc1e569581db6f7ad22e2520699d3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhkZjllMmY4ZDZiNDEzOGYzYjIzZmQwMTJiMjg0YjViOTYxZTc5MmJhNTNjZWIwYjljOTZjNDUwMWRjOWNlYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY2N2Q1MWRkMDhhZDA3NmM3YzU0ODkzOTYwYzM5ODhmMWQ0NjFkODZkZDUzNzRlMzUwNmM5NjgxMjQ0MGNlNmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1Mzk1OTI4YWI1MzcyNzg5NjljMTI0ZDRhYTNjNmE4N2YzNTJlY2M5NTQwYTFhZDAzNGE2YWMxY2U0MjM1NWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY0ZmZkOWI1NTg4ZjVmMWVhYjUyNjI3ZjUxZGE0YjZjZWYwOWFjZDEzNTBlOGJmNDJiMmVlNmVjZjU3NGZmY2YifQ"
+          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L140-L170",
+          "version": "repo-lines-v1:sha256:c64ceca482e47f9d27f089e3f08340faca617ee44b125ea2c8922ed8d55a38b7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjMjBmZWM0MmExZmUwMzk1YzBmMDM3YzM1ZDcxOTVjNGY3Nzk0OTQ2YzYxYTYzZjBlMmM0MzZmOTA3OTNlNDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4NjY5ZWI5MDk2ZmQ2ZTRkMDdiMDMwZDk2OTM0OTZmNDg1MTZkNmJhNTI3MzEyYTc3ZTA3NzVkNGM3ODc0ZDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYzYWUyNzQ0ZDUwZWRmOGQ1NjQxNDc1MDk4OTBkMTQ3Y2VjNDhiYjIyNjFjYTA0MGIyZDIxMDQ1MzBhODYzNjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg5M2YwMTZmMmU1N2JkOGU2ODVhODYyNzVkY2Y1YjJlMGM2MmY2MzZhOGYzODk5ZTAyY2RmNjQ1MWYwNzhlNjIifQ"
         }
       ]
     },
@@ -134,89 +134,95 @@
     },
     {
       "id": "claim_48a78c6830c94332a408ce019c5d37ee",
-      "statement": "@codebase/interface/testing exports graphqlMockServer (MSW server for client GraphQL tests) with lifecycle: startGraphqlMockServer() starts MSW with onUnhandledRequest:error, resetGraphqlMockServer() calls resetHandlers(), stopGraphqlMockServer() calls close(). Client tests add typed handlers via graphqlMockServer.use() using GraphQL Code Generator mocks.",
+      "statement": "@codebase/interface/testing exports graphqlMockServer (an MSW server for client GraphQL tests) with start, reset and stop lifecycle functions; client tests add typed handlers via graphqlMockServer.use() using GraphQL Code Generator mocks.",
       "evidence": [
         {
-          "resource": "repo://projects/common/interface/testing/graphql-mock-server.ts#L5-L30",
-          "version": "repo-lines-v1:sha256:cf07107c41f28b6a569f4915901bbc2520d6a24599f348001d0abfb907160a3a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjODMxNGU0NjAzYzNhMTAyODU2MzM2ODNmODAyYjdlNGQ4YjI1MGFjNTNmNDJmMDk1M2U0YWViYWU4MGY4ZGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzNzJmZGVkYmIxODRmMWVmOGFiYjg1NjNhMWJhOGY0MGM5MGMwMDYxN2U0NmU3YzA5M2RiMmUzMWQwNmE1ZDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRiYTRiNGUxZWVhYmIyZWRiZmZmNjdiNTI4YmEwZDliNTgzZTg3YWRlMTMwNDljZjEwY2QxNWIxZTlmYmRmZmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+          "resource": "repo://projects/common/interface/testing/graphql-mock-server/graphql-mock-server.utilities.ts#L1-L24",
+          "version": "repo-lines-v1:sha256:f43c8bb8d663ca998a22ae9c6c8e369ec83a04b2ca72ebde223b06fa503ef2aa:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4OWE0YWU3ZmRiYjg1MDU1YjIxZGQ2NWNhYTE4NDg4ZjM1M2Q4MGZmNTY3MDJkMjMxNzAyMmFlMWEzMmIxZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/common/interface/testing/index.ts#L1-L10",
-          "version": "repo-lines-v1:sha256:ce31c46cae1fddfc49089db7aec52d4ff5146d7d8dde242e8c4ddfdc92c73027:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExNzQ0MjkwOTg3MDNlNjM0Y2M2NjRlNDk3NWQxNGFjNDkxMjc0OWU1MTYyNGFiMWEzNTNiZTI0NzNmOWMxMGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiNzQwOTIyMGQxNzU4MzE2NGQ5NTUzNDVmZjgxMDdmNTE3YTQ5NTdiZjJhZTU2MzQwZjZmMmMwNmNhYTQwM2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBmNTljOWM4ZDhkZDJlZGU0MWRlODU3MTZkNjZiMmFlMTJiNzJmNDI0MmFhM2U1MDI5ZTY0YjE1ZDE0NTNmNmMifQ"
+          "resource": "repo://projects/common/interface/testing/index.ts#L1-L17",
+          "version": "repo-lines-v1:sha256:a3eac567b2291faadbe2c9c4135b5df57b8c53ec6a00a6b4472e5529be23d80e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhOWZlOThiM2RmYWFiMTgzNjQzODQ4ZWZhYWQxZmJjOTNlZjE0ZTI0ZGFjNDZlZDJiNjk2YmFmMzYwZjVhNGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyZTMyZmY1MzcwOWYyMzg4ZDYxZGI4Y2YwN2MxZDQ5MDVmNzE5MjQ0YTNhNzU1ZDUyN2RjMGE4MjE4YjE0MjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_76df69aa4be9467f93726651e81226f7",
-      "statement": "@codebase/interface/testing provides server-side pagination oracle: paginateArray() slices arrays per Relay args as ground truth; expectedPage() returns PageSummary for a request; paginationMatrix() generates comprehensive cursor/count test matrix (first/middle/last cursors, outsider ID, undecodable/non-canonical cursors, ordered/equal/crossed after/before pairs, various limits); summarize() reduces GraphQL connection to PageSummary. Integration tests assert SQL pagination matches oracle on every boundary.",
+      "statement": "@codebase/interface/testing provides a server-side pagination oracle: paginateArray() slices arrays per Relay args as ground truth; expectedPage() returns a PageSummary for a request; paginationMatrix() generates a cursor and count test matrix; summarize() reduces a GraphQL connection to a PageSummary. Integration tests assert SQL pagination matches the oracle on every boundary.",
       "evidence": [
         {
-          "resource": "repo://projects/common/interface/testing/index.ts#L1-L10",
-          "version": "repo-lines-v1:sha256:ce31c46cae1fddfc49089db7aec52d4ff5146d7d8dde242e8c4ddfdc92c73027:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExNzQ0MjkwOTg3MDNlNjM0Y2M2NjRlNDk3NWQxNGFjNDkxMjc0OWU1MTYyNGFiMWEzNTNiZTI0NzNmOWMxMGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiNzQwOTIyMGQxNzU4MzE2NGQ5NTUzNDVmZjgxMDdmNTE3YTQ5NTdiZjJhZTU2MzQwZjZmMmMwNmNhYTQwM2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBmNTljOWM4ZDhkZDJlZGU0MWRlODU3MTZkNjZiMmFlMTJiNzJmNDI0MmFhM2U1MDI5ZTY0YjE1ZDE0NTNmNmMifQ"
+          "resource": "repo://projects/common/interface/testing/index.ts#L1-L17",
+          "version": "repo-lines-v1:sha256:a3eac567b2291faadbe2c9c4135b5df57b8c53ec6a00a6b4472e5529be23d80e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhOWZlOThiM2RmYWFiMTgzNjQzODQ4ZWZhYWQxZmJjOTNlZjE0ZTI0ZGFjNDZlZDJiNjk2YmFmMzYwZjVhNGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyZTMyZmY1MzcwOWYyMzg4ZDYxZGI4Y2YwN2MxZDQ5MDVmNzE5MjQ0YTNhNzU1ZDUyN2RjMGE4MjE4YjE0MjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/common/interface/testing/pagination.ts#L73-L94",
-          "version": "repo-lines-v1:sha256:68287f7d78b9a2512f4028c1726282b20571c9613f8dc897d383b0f5e2c86bf3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhY2U1MDM0MGYyM2NiZWQ4ZjhkOTlmZGYwZjcyMGYzNmY0MDZhZjMxYjMxMGVhMDZmNWY5NjQ2ZjU3MGUyNTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImViY2UwN2IzMmFhZDQ1YTMxZGQxOGNmZDk5OWQzOGI2ZmM5ZGE4NTI4OWQ1OWFhOGQwMmE0OTc0YTFlOGFlZWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU4YTA2NDI0ODFmYmNlYjczYzIzZDA0ODBhYzQ2N2JiMzU4YmE0MTk1YTBiMDhiYzdlYjZhOWU4ZTAzZThhYWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIzNTcxY2RkZDA2Y2JjMTc0NjVlZjE3YTZlM2MxMmIyZTg4OWJlNWVhMThlMjNjODk4ZWNlNjMxYzllMTU4OTQifQ"
+          "resource": "repo://projects/common/interface/testing/pagination/pagination.utilities.ts#L1-L203",
+          "version": "repo-lines-v1:sha256:362318467a408e69513ec81db9c3a3cacdb500f10235ce2b84f12ff40d55ab87:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAzLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlODIwMDk2NGE5Nzg2MzU1MjJiMmFiMDkwYzY1MDY1ZDhlZjhlODVjNDczMGJiMmViMDQ2MGQzNGM2NzdkZGJiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_9283944daefc4c1aadb1a00aee69ad83",
-      "statement": "@codebase/persistence/testing exports startPostgresContainer() starting throwaway postgres:18-alpine container (with Docker Hub mirror fallback) matching local Docker layout: <project>_username role, <project>_testing database, <project> schema, runs real migrations before tests. Returns connection and environment for ConfigModule/PostgresqlModule. startDatabaseTestingModule() wraps it and compiles Nest testing module with ConfigModule, PostgresqlModule.forRoot (or project's database module), TypeOrmModule.forFeature(entities), and additional imports/providers. Both require Docker.",
+      "statement": "@codebase/persistence/testing exports startPostgresContainer() starting a throwaway postgres:18-alpine container matching the local Docker layout (<project>_username role, <project>_testing database, <project> schema) and startDatabaseTestingModule(), which wraps it and compiles a Nest testing module with ConfigModule, PostgresqlModule.forRoot (or the project's database module), TypeOrmModule.forFeature(entities) and additional imports and providers. Both require Docker.",
       "evidence": [
         {
-          "resource": "repo://projects/common/persistence/src/modules/postgresql/postgresql-container.utilities.ts#L33-L80",
-          "version": "repo-lines-v1:sha256:b64c625511b019b511ee593c33de7389e627fdfeeee1d408165bd4afbc612aaa:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYTAwNzRmMGI5YjdmNjMzM2VmYWNjZGJlMTYyNDMyZDVlNTdmYWFhY2ZlOGI1ZGQ0MWVhMTRhZTA2ZWJkMWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJhZTRkNWFiYWZjNTQyZGZhMzZlMmE5MjU3MmZhODBkMWU2ZDVmZTcxZTFkNDZkOGQ0MWQ4OGNhNGYwNGUyMTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3Y2NmMmVhZWYxNDNlNmU4OWYxZDRiZWFkNzljNmE1MTk1OGFiYzM3YTY5ZjU5NWU1MDk4MzI5YjEyNDEyNzMifQ"
+          "resource": "repo://projects/common/persistence/testing/database-testing/database-testing.utilities.ts#L1-L95",
+          "version": "repo-lines-v1:sha256:25196ff70be0376870638d1db24af6a62cf0fd9bac6b48ed7ff88696da66e315:eyJzZWxlY3RlZExpbmVDb3VudCI6OTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjMzgyYjVkMzhhYmRiODNmYTgwYTBiMGNiNjEyMzkxOThkMDk2MjVlODQyMGQ5YzNlNTkzODNmMmVmN2FiZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/common/persistence/testing/persistence-testing.utilities.ts#L20-L53",
-          "version": "repo-lines-v1:sha256:7c78b3cc13afca76c32c468b341a66f87bbce686b6344db7365943dd82f61ecb:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0MmY3ODI0Y2QyYjg0OTEzNGE4NzQ1MTk4OWMyOTcyOTYyNDUyMjEyNGZjNjI0ZjI1NjhkZWYyNzExMzgzNDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxYmI2MDIzOWI5OTFmZGM2YmY2ODFmZDZkYzAyYmZlN2ZlOTNjZWEzMjYwM2JhNWVkNGZjYmVkNTc1NjQxNWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJhNWFmOGRmYmNkNWE1ZjEyZjc3OTAwYWZlYmEwZGY1NTA4ZGExMmMxYzBmZTRlNGFiZTIyZGRmZDJkMzFhY2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNiZmM4ZjQ2MTk4OGQ2MThhMzNjYzRmMDQ0Y2M0ZDI1NTA5ZDFhMjlmNjcxMGZiOTdjOWU3YzhlMDJkMDAzOTYifQ"
+          "resource": "repo://projects/common/persistence/testing/postgres-container/postgres-container.utilities.ts#L1-L120",
+          "version": "repo-lines-v1:sha256:fc2458446163c10a16fb117ab4ca11a1f05fb48858bd9dc800ccafd759277a89:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkMWIwNDRmOGY5OWY1YzhmZTI4NWIwMTUwMmJjNjQ2YWZmMDY4OGQwMzIyMzk2ZGU0OTc5MjY1ZmIzM2Y0MDkxIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_0e05e79c65ec40bca4e2a358a2924a85",
-      "statement": "Lexico-web uses GraphQL Code Generator via @codebase/interface/client's createGraphqlCodegenConfig to produce three typed artifacts in src/graphql/generated/: operations.ts (typed document nodes with typescript-operations + typed-document-node), validation.ts (Zod v4 schemas for variables and results with withOperationType: true, importing from ./operations), and mocks.ts (MSW handlers via typescript-msw with mock<OperationName>Query/Mutation helpers). Scalars DateTime and ID are mapped to string wire representation. Generation runs via nx run lexico-web:codegen (one-shot) or nx run lexico-web:codegen-watch (watch mode).",
+      "statement": "lexico-web uses GraphQL Code Generator through @codebase/interface/client's createGraphqlCodegenConfig (configured in its configuration/codegen.ts) to produce typed artifacts in src/graphql/generated/: operations, Zod validation schemas, and MSW mock handlers; generation runs via nx run lexico-web:codegen or nx run lexico-web:codegen-watch.",
       "evidence": [
         {
-          "resource": "repo://projects/common/interface/src/modules/graphql-client/graphql-client.constants.ts#L1-L22",
-          "version": "repo-lines-v1:sha256:556afdd4515b52a8acbfb648f9b20a6edf95cff72b2c1bc24a9f8bd7fb49cbeb:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://projects/common/interface/src/modules/graphql-client/graphql-client.constants.ts#L1-L13",
+          "version": "repo-lines-v1:sha256:c1e23f75ab24e638fde20129df5e043a8519fb94341888681f84a4f8da998681:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjMmM0N2VhNWI5ZjkyMGE5ZGE5NDM4Y2E0NzIyOTYyYzkyYzMzYTkxM2JkMTY3NjNhNzczZWFmOWQ1YTQxZmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/common/interface/src/modules/graphql-client/graphql-client.utilities.ts#L15-L51",
-          "version": "repo-lines-v1:sha256:49c67b9e4c7d5b519cf7226ad1878d5064258ae8b65ec48d1debe57a22789e4a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2NDY2NGU3MDQwMGMxNGM4ZjQ1NjBjNTA1MGRhMTgzNzY3Y2Y4OGIzMGI5MWE1Y2VjNGRhNGRmYzdjOTA5OTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg2ZjBmNGRhMmFjNjM1YjMyYjQ3NTdiMWNiYzAyNTFjNmE3NGNjNjk2MTUxOTAxNDU4ZTcyMjFkODIxYTcxN2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+          "resource": "repo://projects/common/interface/src/modules/graphql-client/graphql-client.utilities.ts#L1-L51",
+          "version": "repo-lines-v1:sha256:c6c5cb5ac59ae61ad7589f163352b31fe890dedd7a6d7b69389f967d177fb5b9:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4MjAwOTY0YTk3ODYzNTUyMmIyYWIwOTBjNjUwNjVkOGVmOGU4NWM0NzMwYmIyZWIwNDYwZDM0YzY3N2RkYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/lexico/lexico-web/README.md#L38-L40",
-          "version": "repo-lines-v1:sha256:0d635c040814a43165257447fe0351934a7a4eb16e6ead4626bb9d08c0f1187a:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmI0Y2RjMTQ3NDQ2NmVlNjIwZjkzMzc5NDk2ZmY4M2U1MmRhODNiNzJmMDg0NDNlZmQ2N2Y5MjBkYzI4YjgzMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmExMDllNGU5MzBkOWZiOTA0MWY0ZmM3YWY0YzlmNGI2OThlYzZiOGI0NWEzYWRiZGUzNjY3MTllMTUwMjFkNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDJhZTM2NjllZWMxMjU5MzQ0ZTkyOWRkZWJlY2M3ZmU2YmJlYjIzOGZkMGZkZDE3YzMxOTA0MzE1Zjc0NDUzMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjk3ZjI3ZWJlYTc0NDBmZjgxNDgzM2NmMTk4NTNiNjViNDY3NmYyZWFjZDhlNGM5YTE2NDFlY2JmNzE3Mjc0NyJ9"
+          "resource": "repo://projects/lexico/lexico-web/README.md#L28-L45",
+          "version": "repo-lines-v1:sha256:3dd1fb9708540e7c861232fc12c23f111400f37ab329f733434c7ee3c0d8cf05:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkZTJmNTMyOGVlNmU4MDUwZThhYWZkOGRjODY5YTA2OWNkOTU4NGVkYWFmNTRmZTU4OWQ3M2MzYjdkY2Q3OTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzZDc4ZjA2YzE0MDc0MzhmNTRkYjkzMzBjZjJmMWIwMDgyMjE0YzQwNDdkMDFmN2UyNzNmN2YzMTc3YjViMzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVhYjg4ZDlmNzA1ZTc3NjI1ZGY5NjhlMDRjOTg2MTQ4ZTkzNTVjZDZiODhjMjk4Mjk1NzFhOGZjNzNlZGY5ZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZhZGZjZWU4ODVlOTZlM2NjMzgyNmIxZjFmY2QwOTQzYzc2ODM0ZjFmZGVhNTJhNDlhNjFkYzI1MWYzYzcwYzUifQ"
         },
         {
-          "resource": "repo://projects/lexico/lexico-web/README.md#L67-L69",
-          "version": "repo-lines-v1:sha256:6f0c09573a6dfdd2ce8c09db3020120b3357f3fe10e0efde4606d817691f6e22:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjkyOGU2OWY1ZjRjODk4OTM2NWM0OWJmOTFmODE1M2IxMDI0YmE4MDAwYTc4MmQzNGU2NjBkNDEyN2U5YzVkNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTAwNTAwYmRiODA1NzFmOWE2MDNmOTE1ZWM4ZDc3MmExNjFhZDZlOTdhNGIyMzNlMWFiY2M0ODJlOTM5NDMyYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjNmMzc1ZDAwZGEzNmJjZGFjOGUxNjE5MjE5OGZkZmU3ZDc2ZmJjZDRmNTBiYmQzN2QyNTcwNmUyMTc2OWU0OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDEyYmIyZmM3YzFjZWFhMTk3NjA4NThlN2VkOWNmYWU1NTA0NjFjNjBjN2RlNzQ4NDFmMjIzMTU0MjVlMzZkMiJ9"
-        },
-        {
-          "resource": "repo://projects/lexico/lexico-web/codegen.ts",
-          "version": "repo-file-v1:sha256:87bd5e311df586096e0d54af4b2fb9e37da6755a7474e991eef71568c6c7e58a"
+          "resource": "repo://projects/lexico/lexico-web/configuration/codegen.ts#L1-L9",
+          "version": "repo-lines-v1:sha256:87bd5e311df586096e0d54af4b2fb9e37da6755a7474e991eef71568c6c7e58a:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGRlY2NlYzVlZGM3NmU2MzliOWUwNzBiZjA4MzdiMjU4ZmExY2VlMzAxNDg0ZDA2ZTk3ZmRmM2IzYzQwYjA3MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2JmOTNmZmE0ODg2YTk3ZjJmYjUwOTMxOTI0Y2FkNjU1MjZkZGMzYWMwMDg2Yzk4NGQ3YTQxZmQwZTBkMjUzYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
         }
       ]
     },
     {
       "id": "claim_01da2e1e55a94d58bd8e17b624f5d9fb",
-      "statement": "CI test execution is sharded into four parallel jobs in .github/workflows/continuous-integration.yml: general (default test-code job excluding meanderaw-cli, caelundas, ic-suite), caelundas (only projects/caelundas/**, runs separately due to ephemeris download), meanderaw (only meanderaw-cli, heavy integration suite), and ic-suite (only projects/ic-suite/**, 37 packages). Each shard runs nx affected --target=vitest --configuration=coverage with its exclude pattern. The postgres-client tool is installed only for the general test-code target (where matrix.check.shard is not set).",
+      "statement": "CI test execution is sharded into parallel legs per project group in .github/workflows/continuous-integration.yml: Test Codebase, Test Common, Test Affirmancy, Test Caelundas, Test IC Suite, Test Lexico and Test Meanderaw, each running nx affected --target=vitest --configuration=coverage with its exclude pattern; the Postgres client is installed for the common and lexico legs.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/continuous-integration.yml#L226-L228",
-          "version": "repo-lines-v1:sha256:04a7da28f9d58c0db9915e076d192e887b69cea5d010bc177f30516f96c7154e:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWQ0MzYxNjEzODdhMjRkNDMxMTNjNmM4OTFkN2ViZmQ2NmQ5ZDAyMGZkMTViNmU1NzYwMDRjOGI1ODNmZjE4YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2Y4MTc3OTIyMjNiMzZlMjZlNjI0NTQ5OWUxNTVmYWVlNTA4NzBmOTkzYTdhNTU0OWM5NjM5ODE5NmNkODE5ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmI3YTg4YWFlNmI0MmM0MmUwOTYxOTE4MTZiNGIxMWE1MmY0NmVlYjdhZjY2MjA1OWY5OGZlOWVkMzgwNjc3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWI3ZDA4YmUzNTVmNmU4MDVmNDBlYWExMmNkOTA0OWY0NmI2YTg0MWUyN2M1Y2M2YTkwZTZlOGUzZGI1MGYyMCJ9"
+          "resource": "repo://.github/workflows/continuous-integration.yml#L83-L130",
+          "version": "repo-lines-v1:sha256:e03034e1d97e600612b87ec2a61dfec78694bf0f545bfd7527fc5066ae786cfa:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjMjU4MjJhMDk0YzQ5M2Y1YTA0YTdjZjRhNDdhODJlOTA1MWQyYTdhZDMyNGUzODRiMGRhZjEyMDVkZWVhNzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMmY5MmExN2FiOWIyMTcwOTM3NDcwMWI0NWRkZjA0ZGQ5ZWIyODVhMTk2NTE1ODJmNDFjYmQ4Y2Y1MDU1NGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4YzMzMmRlZGRlNzBlYzM1MjA2Y2MxMzU0OTc4Mzc4YjgzYmY5YzdhZGM0ZGU3NTVhYzYxZGE1OWY3YjU0NzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwNzZiOTZkMmEzMDIzZGVjNTcxNzc1MGRjNzQ3NTY3NDAxN2U2MDM4NDI2ZWI4MTM5MjUyODg3YTE1MDU5YTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_96b91e4cb9a34d039bc8bdffbba2d7ed",
+      "statement": "@codebase/testing holds the shared test helpers (temporary directories, output capture, environment overrides, fixed clock, buildTestingModule, renderRoute, tarball sandbox and Verdaccio plugin runners) as subpath exports, and depends on nothing in the workspace but @codebase/observability.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L55-L110",
+          "version": "repo-lines-v1:sha256:e23bdc14dc9325b504239c8e3f26147503f0a78b54f69160fca373173188c664:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ5NGE4ZDEwMjJmZTc4ZmFlMjA2YzkyYjRkNjlmOGNjMTk2YzJmY2IwNmE4NjQyZTliYjUzOWNhZWI3MzM4ZTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZiYTQ2ZGZjNGE5MDcwMTQ0MjU5MDA0MGVjZmUyMjNlMjMyNzkxNzgxOGExMTZjYWMyOWQxMjFkYjQ0ZDBhNDMifQ"
         },
         {
-          "resource": "repo://.github/workflows/continuous-integration.yml#L76-L94",
-          "version": "repo-lines-v1:sha256:70f93165384f19fe2b9111004e6ff6571db95b8b1378c84a25352226c0f2e295:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlN2JlMDdjMjI1OTNhN2RhNGQ1MTBlNGI1ZTMzZGVkMjgyN2ZlNzU4NzY4NzcxYzg3ZWYwMDI0YTExZDUwY2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3OTAxYWI2MDNiNTgwODM3NDJjMjc2YWUwZjBlN2Q3M2NiY2NhYjk0NDBiNTY4ZDNhMDUwYjFmMTc1Y2YxMGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU2YWIxYmExY2FkMDVjYThkMTk2OGRiNWQ0YWIzYmYxNDY1NjNlNzkyOWJlZGIxOTc1M2YyYzc4YWRlMTkzOTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJjNDgyOGNkN2UwMDMwODgwMjU3NzBhYTg3OWM5ZmJjMDc0YTI4NzgyNzUwMGI4MTg5ZTIzYTdiZDg4ZGVjOTYifQ"
+          "resource": "repo://projects/common/testing/README.md#L1-L25",
+          "version": "repo-lines-v1:sha256:a92c3ccf3aef223feda5e30fd3e0684e2eb8ceb8558a81d732f07d89b06f2d64:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiNzc0ZmE0OWRkZTA2ZTY5NTI1Y2MyZDg2YTcyMGExZmIxZTJkOGY1MjVjZGY0NGM0MjVmNmQzODhmMTI2Y2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRmMWI1Y2Q2NmMyZDYxZGFkMjQ3ODNjYzkyNzg2MWFiZTk3ZmYzYTkzMzQxNjI3NjZkZDUyYTBiOGU3MTJjZDIifQ"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.0",
-    "at": "2026-10-29T03:39:46.432Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-22T00:18:20.862Z"
   }
 }

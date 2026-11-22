@@ -69,8 +69,8 @@ spec issue                  the approved design         (Issue Type: Feature or 
 ```
 
 - **The parent issue is the pull request.** Its title is the title that pull
-  request will carry, in the commit convention above, naming the fewest scopes
-  that cover its commits. A large change is one parent with more sub-issues,
+  request will carry, in the commit convention above, naming at most three
+  scopes, the ones that carry most of its commits. A large change is one parent with more sub-issues,
   not more parents: size, a second project, or mixed `feat` and `fix` work never
   splits it. A second parent issue states the mechanical reason it exists.
 - **Each sub-issue is one commit.** Title it the way that commit message will

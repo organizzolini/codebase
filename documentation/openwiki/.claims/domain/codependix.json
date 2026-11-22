@@ -1,68 +1,68 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:02e15e8993daf38310a3a5ebbee56504bd5a86f7413ab7c59fa96b91101cf144",
+  "pageVersion": "sha256:64011c046c040b1fff3511d636c2ea4fd0c97141b7d4b05f8b3c6d1a9526fa46",
   "claims": [
     {
       "id": "claim_201e624108354da59ae13ae50efbc1ec",
-      "statement": "Codependix is a toolchain of 10 npm packages under projects/ic-suite/codependix/, each with a single responsibility: agents, boundaries, cli, configuration, core, examples, file-imports, nestjs-modules, nx, nx-projects, output.",
+      "statement": "Codependix is a toolchain of 11 packages under projects/ic-suite/codependix/, each with a single responsibility: agents, boundaries, cli, configuration, core, examples, file-imports, nestjs-modules, nx, nx-projects, output (the agents and examples packages are not published).",
       "evidence": [
         {
           "resource": "repo://projects/ic-suite/codependix/codependix-agents/package.json",
-          "version": "repo-file-v1:sha256:44fe07396ffcf10715934fede4ef8a74330701b3c540eedb99a2cd7b7c4d8606"
+          "version": "repo-file-v1:sha256:125319eebb2161ba523c8bb72865ca67ff487af30de7f33b59177cabe8c32219"
         },
         {
           "resource": "repo://projects/ic-suite/codependix/codependix-boundaries/package.json",
-          "version": "repo-file-v1:sha256:68333451f5f8ad9889c17e8f4747ce69923db9f2244cfcc19208586b6ad28b9a"
+          "version": "repo-file-v1:sha256:6904dadfda3589406af36b8a9e226cdcdfaa74cf37694d6cce6093b9cd853e8e"
         },
         {
           "resource": "repo://projects/ic-suite/codependix/codependix-cli/package.json",
-          "version": "repo-file-v1:sha256:3a99cb195ebb188d8d0370623ff99ab9086d07322f896866639541fe33aa8bf1"
+          "version": "repo-file-v1:sha256:9c65feabef94a9118a693c5fda2cd6523cad8e6cd713e6e0d0e74682f55f6d4a"
         },
         {
           "resource": "repo://projects/ic-suite/codependix/codependix-configuration/package.json",
-          "version": "repo-file-v1:sha256:ebba64bcd90a035ce3fe7805e51cf12a548405a87cfebb71a441d7019456c449"
+          "version": "repo-file-v1:sha256:6549dbbd9539b715bb991403be524d894d1e978e3572ca37502bd831336ce1df"
         },
         {
           "resource": "repo://projects/ic-suite/codependix/codependix-core/package.json",
-          "version": "repo-file-v1:sha256:c5f5a268ed0ec9464622893b79cbc62a238e377744ea71079328bfc718cb7a3c"
+          "version": "repo-file-v1:sha256:9c6400637e705c2e34abae2c8ee90e79a08374a1844326c3ded527205141bb04"
         },
         {
           "resource": "repo://projects/ic-suite/codependix/codependix-examples/package.json",
-          "version": "repo-file-v1:sha256:6468a4ea501843ffd23f301dac15c304add4697d6a00f742b28914a9df144dc7"
+          "version": "repo-file-v1:sha256:ff7719f6886b6a6a862ae9dacdb95ef5d25b1612b7f9becfd79a7284c743d16a"
         },
         {
           "resource": "repo://projects/ic-suite/codependix/codependix-file-imports/package.json",
-          "version": "repo-file-v1:sha256:01cdc98f3d0c8bed7e36ef2716fd67d4a33e17977c6e4a29d5973767c1802a5b"
+          "version": "repo-file-v1:sha256:7d305c7bc16a46ea51bd0e24cfcc780f7178a41a497d5514bc42c9dbee431e2c"
         },
         {
           "resource": "repo://projects/ic-suite/codependix/codependix-nestjs-modules/package.json",
-          "version": "repo-file-v1:sha256:23c1a800062ee0f262ab6a5ca105c642468b598ea37ec4582e9312653bbb4b6d"
+          "version": "repo-file-v1:sha256:8bea4bd573730bcad14bc176120c87cb1e934302281eccec50c62f704d32cac1"
         },
         {
           "resource": "repo://projects/ic-suite/codependix/codependix-nx-projects/package.json",
-          "version": "repo-file-v1:sha256:c14f061f883069aaaca0749bcb9ffd3e40cafd560a0e7fc746fed399bc024118"
+          "version": "repo-file-v1:sha256:2ede2bcc8c8219fb87910ce97cbbbd7154025b121480bd86871892cb0287580c"
         },
         {
           "resource": "repo://projects/ic-suite/codependix/codependix-nx/package.json",
-          "version": "repo-file-v1:sha256:65829c700198f3df29dd53c7e42c64c1b073e51b9f552bdbe8157c00e76a4969"
+          "version": "repo-file-v1:sha256:0805836345353bdf4189839be7aa69653f1e9915fd28dcd73ec0d3f935f9e238"
         },
         {
           "resource": "repo://projects/ic-suite/codependix/codependix-output/package.json",
-          "version": "repo-file-v1:sha256:0142ecadd11f12de7717008ae455e0f90fb911615218c5031bf29897b50530fd"
+          "version": "repo-file-v1:sha256:d02570e8b7dd8d800924918b057e3cd4505ce08befa4b04ecc15c3afb54aac27"
         }
       ]
     },
     {
       "id": "claim_d75e25a75afe40c6972353ec9b1b2af2",
-      "statement": "Codependix builds dependency graphs at three independent levels: Nx projects (codependix-nx-projects), NestJS modules (codependix-nestjs-modules), and file imports (codependix-file-imports for TypeScript and Python).",
+      "statement": "Codependix builds dependency graphs at three independent levels: Nx projects (codependix-nx-projects), NestJS modules (codependix-nestjs-modules), and file imports (codependix-file-imports).",
       "evidence": [
         {
-          "resource": "repo://configuration/codependix.config.ts#L98-L101",
-          "version": "repo-lines-v1:sha256:5a8482887ab8fed28386122eaba7fc1c50a25dc68c8e0c28e8a47ed433fe45d1:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjRkMjE3MDk4YjViNWFlYjkyZDhmOGE0MDQxNzU0OGQyZDkzZGJkNWM2YzRjM2IxMGExZTg4YWY2M2M1OTdmMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTUyZmYwMWZlMzliYTVjNmQwODYwY2E4MTZjZDQwY2VlNGMyYzNjNWUyNzc5OWZiYWVhNGE4YjA2YTE5ZDE4NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZThmZWRjM2Y0MzI5YzA2YzEwMTkyNzkwYzcwZTM4ZThjNjVhMjQ0OTQxYzQ3ZDM3MGNmNmIxM2E4Mjc5YjQ1MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGUzMWJlYmY1NjAxOGZhYzI5YTUxMDU2OGNhODE3MzBiMmFiMjNhN2E4YTJiYjUwNTY3MTA2MWRlZWNmNGYyZCJ9"
+          "resource": "repo://configuration/ic-suite/codependix.config.ts#L7-L60",
+          "version": "repo-lines-v1:sha256:7f10c0a626105c475bb9ef852b52aecb3f9edfff85357021bf593c7df757666c:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzZTBkMDhiMTJiZjYwM2QxNmJhNjg2MDdlODgxNDQ4ZDRiNzRlZWNmM2IzOGUxNDViM2QxYmUxYTJmOWEzYjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2YTRiMDJjMWY4NjQyNWM0ZGU2N2NkZTc4YzkxYmYyZDYwMWFkMTVkNDc4NDZlNDViOTAzM2E2YmY2N2IzYmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGRmYTlkMTUyNDBiNTMyOTY0MjJhMTFlMGQzNjI3YjQ1ZGM4Y2RlNDVkNTYwNGQ4MDJhOTIyNzU3MmQ0OTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzYjI4NjljMmMwYjk2YTNhMzlmOThkZDRlODRiMjE5ODA5MWY4YWRjMjEyOTgxZWJhZDRiYWIwNjEyMGUxNGQifQ"
         },
         {
           "resource": "repo://projects/ic-suite/codependix/codependix-file-imports/src/index.ts",
-          "version": "repo-file-v1:sha256:afccbd13e09178c7380242506c53995c8e28574efa3d9cc7dae49f821b502b53"
+          "version": "repo-file-v1:sha256:32caf37c28c98d99154178cf9415b9c4f81885087b6ce080cb6675fc75d54e36"
         },
         {
           "resource": "repo://projects/ic-suite/codependix/codependix-nestjs-modules/src/index.ts",
@@ -76,91 +76,107 @@
     },
     {
       "id": "claim_2af84c1fb18745d684ebfd100bc2a746",
-      "statement": "Boundary rules are declared in codependix.config.ts under boundaries keyed by graph level, with three rule kinds: allow (reports edges leaving 'from' for targets not in 'to'), forbid (reports edges from 'from' to 'to'), and acyclic (reports cycles where all nodes match the selector).",
+      "statement": "Boundary rules are declared in codependix.config.ts under boundaries keyed by graph level, with three rule kinds: allow (reports edges leaving from for targets not in to), forbid (reports edges from from to to), and acyclic (reports cycles where all nodes match the selector).",
       "evidence": [
         {
-          "resource": "repo://configuration/codependix.config.ts#L172-L202",
-          "version": "repo-lines-v1:sha256:e62bd5348c1affb584db7222159448bb1d96e58c756fe8cb3ac3a132b171afd5:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5MmRhYjlkZTk3MjdjZjQ1ZDY4MzliZmFhZjhkNGRlYzllNjgwMDAwZTcxYzZmMjllYmM5ODNlNTk2N2I5ZDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2M2Q1MzVjZTM4MDYzZDZiNGM1MWQ4YzM4NmE3ZjliM2U1ODBhMTRhMTBjMDdiMTk4ZGZhZjE5YzkzYTNiZmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFhN2I2ODZlMzRhNmE0MGZkZjYzN2UzNjlmYzFjYjQ1ZDdhOTZkZGVhYjE0MDc4NjgzNzgzMjAyYjlmYmI0NGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNjZjc4MzMzYzJlMTliMDhjNzgyMTIwMzlkY2E1ZjA5NTNkODY3MzA5MWI5ZmMxNzk4NjBjYTY2ZmQ2YjE2OWEifQ"
+          "resource": "repo://configuration/ic-suite/codependix.config.ts#L150-L215",
+          "version": "repo-lines-v1:sha256:95dc4b21a6a009a636c05a38de2e8f53c844384b823dfd81870b814b29acd1f7:eyJzZWxlY3RlZExpbmVDb3VudCI6NjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4NmNhYzMxNDNjZWEyNjkwZDNlNmRjNTczODE4MDI5Yjk5ZDU5ZGJmNGFjNWY3NGE1NGI1Yjk4MmZmMjVlMTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxYTAxMmY1YTZiYTY5YzBiYWFkNTM0NGEwYWUyMWFlMGVjODVjNTRhMmVjY2ZlZTNmMzljYTYyNTQyMGU2NzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjYWFkZjdiODhlODI5MWNiOGE4NGViYWUzODE5ZjJhZTI0MWIwODU4MmJmNWVhYzEyYWQ3MjdhOTRiOTM1ZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRkNDdlYjQ5NzIyNWY4MDlkNGFlZDRjYjE1N2U2MjljMDllMTQxN2MwNTAwZmY5NjM0NDViZDI0ZGIwODc0MzQifQ"
         },
         {
-          "resource": "repo://projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-boundaries.types.ts#L28-L83",
-          "version": "repo-lines-v1:sha256:91901b85c0bab897a2c322b208e580f11c585bfb38807fdfc8bceccb6db6adb4:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVmNDFkYmY4ZDE1YTRlYTc5MmRiMzUzNTNiNTM2YTE2YmVmMDQxNzVlMmJmNmZkMDdjZmYwYTVkMDZkYmU5ZTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkMGQwNDZmN2ZmZGU1ZTIyMTAyOGU3OGVjZWFlOGViN2YxMDk3NTZlODUxNWIyZmRhODZhYjMwODVlNDIxNjcifQ"
+          "resource": "repo://projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-boundaries.types.ts#L1-L89",
+          "version": "repo-lines-v1:sha256:d68684acbfd5fe48a97e05bbb37ad172d77ca2ace43a3cc306d34ba06a9bfb6b:eyJzZWxlY3RlZExpbmVDb3VudCI6ODksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwNWU0NGNmZTI5NWQ0YzU0NTQ5MjlkMDgwMWQ0ZDE1YzI5MTQ1OWUxYjVkM2ZlZWE0ZTkxYzI2MGMxNzVjZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_a487d5f7943a4e61970821ca978acb9c",
-      "statement": "Codependix uses its own named anchor syntax (<!-- codependix:start name=\"...\" --> / <!-- codependix:end name=\"...\" -->) for splicing exports into Markdown, independent of conformetry's template mechanism.",
+      "statement": "Codependix uses its own named anchor syntax (<!-- codependix:start name=\"...\" --> and <!-- codependix:end name=\"...\" -->) for splicing exports into Markdown, independent of conformetry's template mechanism.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/codependix/codependix-output/src/modules/anchors/anchors.constants.ts#L3-L16",
-          "version": "repo-lines-v1:sha256:fb1b2419539963254cfce490169e350f763ff61106bd3671a586d10d534757b0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzZWY2OTcwMjkyMWY1MDQxMjRjNGE5YjY4MzMyOGE2NDRlOTZkNjZmZWVhMTk1Y2Q2ZjEyY2I2MmE0NDk5YzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgwZWFlODM0OTZlNjE2NDM0YmEyNzMzNzM2Yzg2NDk1M2Y4NzkyMGIyNDZkOTlmYzg3MTc0YmQzZDk4Zjc2MmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5ZWVhNzRjMjM1YWI3YTMwNTRmYTEwNjA5MTJmYWY3MjQ4ODczNTIwZDIwMGQwZjZjOGQxYWQ0NjI3NGE0NjkifQ"
+          "resource": "repo://projects/ic-suite/codependix/codependix-output/src/modules/anchors/anchors.constants.ts#L1-L25",
+          "version": "repo-lines-v1:sha256:de4f41dd53f49389aac6012a8403045385ce6509a0675817fe512c6c287c0a94:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3MGZmMzZkMjAwMTI2YjhjZTZmYzYwYmI2NzZhMWY3ZGJiNWQ3NDUyMTA2YWE4N2YzYjVmOTljMzE4NzBhMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/ic-suite/codependix/codependix-output/src/modules/anchors/anchors.service.ts#L16-L24",
-          "version": "repo-lines-v1:sha256:c0c9621c8e2fc8a34bfd1b6910f3f47f647010280a6f50e7e72a70e2ee342fec:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWFmMjJjZjA3MzI1OTJjMjQ3MTQxY2JlNjFlZmExMTAxMjYxMmY1YTMxMjJiOWFmOWJiYWY1MmY1NzI0ZDE5NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTg2MjhlZmU2OWJhZjZiYmI2OWQ1MmQ3NjI0NDU4OWFmMWZmOTk5NjBjNGZiZmQ0Mzk1NTkxMGRhOGNjZTNlNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2U2MTU1YzM2Y2E0ZjUxNzExM2MxNDM1ZTVhMmE4YTljZmU5NTZiNTgwMDFmOTBhODM4NWU0ZjhjYjY4OTgwNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGExMDRiZWRjMWNlMGE4NTI1ODI0ZGEzOWE3NDdjODA0MzE1ZDk1ZmMxZGEyNzA0ZjU0MGM3MWFmZDNmYzNhYSJ9"
+          "resource": "repo://projects/ic-suite/codependix/codependix-output/src/modules/anchors/anchors.service.ts#L1-L60",
+          "version": "repo-lines-v1:sha256:36e27b5ffe9fac35d2d6cae282efc52e03add5667066d6d7b2069751a72d021b:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3ZDFmMjUyYTcwZjhjNjRlZWNjMDk2ZjkyNDU2NDFiNDljODhhODgwMzU4NDdjMjE5N2VjM2E5N2M4OTQ3YzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkOTVhMjMzMGRkMjQ2NjUxYWU0YjMyMDY5OWJmZjNlM2MyNDNjOGNjNWE4NDE1NDc2OGVjNThkYWIxMWY4NjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1MzYzNGVmYzU3YTBlNjVjN2U4MTZlYWRhYzJhMjRmODAyNzk0OGQ4ZGY2MzUwODY0ZmI1Y2FkNzUyN2Y5MTkifQ"
         }
       ]
     },
     {
       "id": "claim_64900c393f9b41cbbf449a3723533d71",
-      "statement": "The CLI provides two independent check modes: --check boundaries (gates boundary violations, runs on every PR) and --check reports (gates stale exports, runs on default branch), mirroring callidescope's depth/reports split.",
+      "statement": "The CLI provides two independent check modes: --check boundaries (gates boundary violations, runs on every PR) and --check reports (gates stale exports, runs on the default branch), mirroring callidescope's check split.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/codependix/codependix-cli/src/modules/map/map.command.ts#L35-L50",
-          "version": "repo-lines-v1:sha256:b78fa39425d19f245704d78bf9f607b1e2539c4a66185946eba934b02d1771cb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmNjRhMjViOTZmMTFhMzM4Nzg5NGZjNmMyMGQ3Y2JjODg3OGYzODBjMTRjNjVhZjgxMjQ3NDVjYzZmMjQ5OGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3ZjllMDU4ZGQ1MWJjODNlYjJiZTAyNDhkZWY5MDJlNmYzZjRhOTM1Mjg5ZTdkODFkZGE3ZGU1NWQyMGI0ZmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNiM2EzMzIxMTFjNGYzODhjNzZhNWFjYTYyODRiMzI2NzFmYjhhZTRlYzZlMWRiNGY5MDgxZjEzYjY5N2UwMTIifQ"
+          "resource": "repo://projects/ic-suite/codependix/codependix-cli/src/modules/map/map.command.ts#L205-L220",
+          "version": "repo-lines-v1:sha256:8062b5163576f699e2c80a0756d3aee412b7f65c47c102ab0dcc6e52cadef933:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkNmIxMWFlNzQ3ODRhNjE3ZTIyMmExYmFhMDEzYTc2NDk1ZGQ1MGNlNzgyOWU2OTdmN2FmNmZlNzA2NDQ0NmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzNDBiNzM0MmU3Y2MwNjEzN2RlYjNkN2M2ZDJmZDUwZDg0ZjlkM2YyNzU1YWEwMWVlOTMxZGIyNzQyOWJhNjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJhYzg3MjY3ZWZiYjA3ZjBkMDE5YWE0MWU1MDMxMTU3YjY0MTFkY2QzYTJlYmQzMjY5NzVlNjkzNTBjMTBkZTcifQ"
         },
         {
-          "resource": "repo://projects/ic-suite/codependix/codependix-core/src/modules/codependix-core/codependix-core.types.ts#L80-L94",
-          "version": "repo-lines-v1:sha256:c43c88eb899288cc69272912c65fc7997965f3831ecf3d9a295c0fb8b7554235:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNhZjY1NmJhNjQ4ZmViMTJkYzAxYzg5ZTlkOWU3YzFiNTg1ZGM5ZDFjOTI3N2RjN2YwMDRkNGVhYTQxOTA5YzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQwMDBmNjA5ZDcxYmVjZTU1ZTdmZTI4MjZhMTFhNWRkMzVjYjM3NDRkYThkMTVhNjg3MGE0NjY4ZmFhY2JmNjUifQ"
+          "resource": "repo://projects/ic-suite/codependix/codependix-core/src/modules/codependix-core/codependix-core.types.ts#L1-L71",
+          "version": "repo-lines-v1:sha256:43d3c1b3c04d6db52f54a13e4c2bedbf9b09c307087a1cd87cfa7395a991a9aa:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwNWU0NGNmZTI5NWQ0YzU0NTQ5MjlkMDgwMWQ0ZDE1YzI5MTQ1OWUxYjVkM2ZlZWE0ZTkxYzI2MGMxNzVjZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlM2VmNWIxYWM0NDA0ZmVhODNmMjU2ZWNkYzA2YzUzODEyOTBiOGU2NjQ2ODQzN2FlNjA5YWFiODU5YzNhODEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_0fe7b3f5c78d413886b78672bf5d9252",
-      "statement": "The @codependix/nx Nx plugin infers a codependix-gate target onto every project that runs BoundaryCheckService over that project's Nx dependency closure.",
+      "statement": "The @codependix/nx Nx plugin infers the codependix-bound gate target (gateTargetName in nx.json) onto every project, running BoundaryCheckService over that project's Nx dependency closure.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/codependix/codependix-nx/src/index.ts#L33-L82",
-          "version": "repo-lines-v1:sha256:f59e51c797f44ac5a324d86b998b123e06f65bb939ba46eb3a57a2ecbd40053d:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3YWY5MjkyNzA2MTcyZmNlNmE2YzRjYzFkNzQyZTQ1MzY1NGE2YzhkZWRiZDE1M2I2ZjcyMDRkZDAwMmRhMTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUxNGE2NTVkODE4YzcxN2QwYTljNGJkMTU3NzRmOGEwZGQ4MzdmNDE0NTEyZWJkY2ZjMGQyOWRjNzRlMTFjNWEifQ"
+          "resource": "repo://nx.json#L79-L87",
+          "version": "repo-lines-v1:sha256:559f9ed330013c429b59db9cc2e3203bca656cd0a57691ce731bbb6fd0857fc2:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjljYTg5MWJmZjdhYzFmN2NlYWFlNDBlZjA1MTA2NmJlOWVmZTQ3YjRlNDI4MWU4NmMzMTliZTJjNTVlYmNlNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWYwY2RiOTcyYTdiZmI3ZWQyNDZmOWZmNjcyMzg1ZTU1ZjQ5NjhmYzExMDQzZGM1YjY4NGQ1MWRmYTMxZGJjYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDcxMGE2ZDQzMDE5NWU3ZGUyZDdiN2Q3OWUyZTFlZmM4NDVlODg3ODkwZDU0NWRhNGQ4Y2M5ZGZhMzE0YTUxNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzZhM2UwZjY2OTk4OGYwOThjMWFiNWFlNTViNWVlZjhmZjk0ZTM0NDE3ODcxOTk1YmM0ZDYxMTkyYWY3YmRjZCJ9"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codependix/codependix-nx/src/index.ts#L1-L80",
+          "version": "repo-lines-v1:sha256:cd38936cfaad5bb2472d34090fe1155294d6e98f4d8594abf29290079fcb1968:eyJzZWxlY3RlZExpbmVDb3VudCI6ODAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjYjc3M2JjNTMwZDNjZTE5ZDFkZjM4OTNlZmNhNmU4ZjI1OGM5ODViZTc5YmI4ZTIyMDEyMDE2Y2NhNTY2YzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzMTg1OGViNzUxMWFlNzI0MWZmNzQ0ZjE4ZWI0NTI1ZDkxMjU4ODNiNmY1OGY4ZGYyYmY5MmQ5NGExYzg5ZjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codependix/codependix-nx/src/modules/gate/gate.service.ts#L1-L229",
+          "version": "repo-lines-v1:sha256:69910093c4dce77ac7e4395bac95c76838105bf6b747814562052838d0a57206:eyJzZWxlY3RlZExpbmVDb3VudCI6MjI5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJhYjI4OGYzZGI2YjM3M2ZhZTQ0NDVkZGE4Njg5ZjNlNGQ3ODMxNWI5MjA2Mzc3NDVlYjM1MmU0MTExZjA0NzZiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_5874e6a78289448dadf5ccbfa62e4959",
-      "statement": "The root codependix.config.ts exports projectDefaults (per-project anchor config), boundaries (all rules for three levels), include: [\"**\"] (all projects participate in workspace graphs and boundary checking), nestjsModules.rootModules (application root module mapping), and workspace (workspace-level export config).",
+      "statement": "The root configuration/ic-suite/codependix.config.ts exports projectDefaults (per-project anchor config), boundaries (rules for each level), include: [\"**\"] (all projects participate in workspace graphs and boundary checking), nestjsModules.rootModules (application root module mapping), and workspace (workspace-level export config).",
       "evidence": [
         {
-          "resource": "repo://configuration/codependix.config.ts#L172-L733",
-          "version": "repo-lines-v1:sha256:410f59e425d2b4228b22b784dbf2500646b3aafa003cd707477edb4d554d33c6:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJmOTJkYWI5ZGU5NzI3Y2Y0NWQ2ODM5YmZhYWY4ZDRkZWM5ZTY4MDAwMGU3MWM2ZjI5ZWJjOTgzZTU5NjdiOWQ3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0ZDVjZDJmYjRmM2RmODg0NTE1MjU1YjM5NTIzZjJmOGI1NDcyYmVlYTlmNTY2ZmZjYTIwNGRiODAyNTYxMDQxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIxYTdiNjg2ZTM0YTZhNDBmZGY2MzdlMzY5ZmMxY2I0NWQ3YTk2ZGRlYWIxNDA3ODY4Mzc4MzIwMmI5ZmJiNDRkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI2ZmQxMzcwZTZhMzJkYWRmYjk5MzZlNjYyYjcwZDMwMjdmMGEwYTY0YTM0MDVjY2RhYTM0MzcwM2Y1YzY3NTVlIn0"
+          "resource": "repo://configuration/ic-suite/codependix.config.ts#L155-L180",
+          "version": "repo-lines-v1:sha256:9a8ac5c099fa5c82042609dc055a341c0116c74bfb8448e2dae1bedc5c259a83:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5MmRhYjlkZTk3MjdjZjQ1ZDY4MzliZmFhZjhkNGRlYzllNjgwMDAwZTcxYzZmMjllYmM5ODNlNTk2N2I5ZDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlODgwMDI2ZTc0MjY5ZGQyZjMzYzE0NGM3MGUxYTI4Yzc1MGI0ZDRiZTEwZjI0ZWI3OGU1YmNlMDVlOGMyZGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFhN2I2ODZlMzRhNmE0MGZkZjYzN2UzNjlmYzFjYjQ1ZDdhOTZkZGVhYjE0MDc4NjgzNzgzMjAyYjlmYmI0NGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFmMjkxY2JlMTIyNmU4MGE5ZTE4OTQ0YmQyYTk5YTA5NjBmNmNlY2I3NDNlNjJjZjcyYjNiNzIzMzc2MGQwZTcifQ"
         },
         {
-          "resource": "repo://configuration/codependix.config.ts#L29-L64",
-          "version": "repo-lines-v1:sha256:62a67b08ded0be15aa12ef5c5995e7b957fb929f0acbb33650cf1c641ddbd3e9:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzZTBkMDhiMTJiZjYwM2QxNmJhNjg2MDdlODgxNDQ4ZDRiNzRlZWNmM2IzOGUxNDViM2QxYmUxYTJmOWEzYjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI0ZjAyNTY3YWEwM2FhMzE5MDM3YmJhZTQ3YWRmMTYyMjU4MjgxNTAyMzE4YzMzYWRjMmIyODNkOWE4MmViZTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgwMjAwYmY0MTUxZTU3ZWY5MmY4YmEwMTU4ODBjMTdkMTJjYWE1MzJkYjk1NzMyZmRhY2I1NDZlYTQ0OGJkNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE4MGQxM2YzZDZhMWNhMjUyYTZjMDJlYTkxZjQ3NjhkYmEwMjQzZWVmNDFkNzA1MWU2MDE4MWY0ZTc0Y2Y5ODAifQ"
+          "resource": "repo://configuration/ic-suite/codependix.config.ts#L7-L60",
+          "version": "repo-lines-v1:sha256:7f10c0a626105c475bb9ef852b52aecb3f9edfff85357021bf593c7df757666c:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzZTBkMDhiMTJiZjYwM2QxNmJhNjg2MDdlODgxNDQ4ZDRiNzRlZWNmM2IzOGUxNDViM2QxYmUxYTJmOWEzYjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2YTRiMDJjMWY4NjQyNWM0ZGU2N2NkZTc4YzkxYmYyZDYwMWFkMTVkNDc4NDZlNDViOTAzM2E2YmY2N2IzYmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGRmYTlkMTUyNDBiNTMyOTY0MjJhMTFlMGQzNjI3YjQ1ZGM4Y2RlNDVkNTYwNGQ4MDJhOTIyNzU3MmQ0OTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzYjI4NjljMmMwYjk2YTNhMzlmOThkZDRlODRiMjE5ODA5MWY4YWRjMjEyOTgxZWJhZDRiYWIwNjEyMGUxNGQifQ"
         },
         {
-          "resource": "repo://configuration/codependix.config.ts#L746-L828",
-          "version": "repo-lines-v1:sha256:dea1bf02b3cc2ca66f667b25749c7199c7115cc2e3a922d04000ca824d4a69bc:eyJzZWxlY3RlZExpbmVDb3VudCI6ODMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxODViNzJlYmQxMGQ5NGFmZTMyNzVjN2E4MDRlMGU4NjA2MjI3MzI3NmI0ZDEyMDFmYzNhZTI2OThjODlkY2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3OGY3OGQ2ZDZmNDFjOWZiODViZTJlNTIzMjE0ZjQ5MTk5NzBlOTEzMzkwODNjZTNmYzBmOWVhN2Q2NDhiNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwOGRiZTcyMjViMjA3NDk0NzZlNDNkODY4YWZhMzVlMjFiMzkxYzkwZjNjMGJjYmI2OGQ1NDA2ZDNiYzUzMTUifQ"
+          "resource": "repo://configuration/ic-suite/codependix.config.ts#L868-L969",
+          "version": "repo-lines-v1:sha256:bde1a2abb2202224c8f85599c8f0404e7e8c4e1efb955522b6c14a4044210ebe:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkMjczMWNhZjhlZWM1YmU2MGZmYTNiZDNkMjkwNmU3OGUyNTBlYjBjN2UzZDNiYzBiZWMzYzQ2OTI1M2EzN2JlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI1ZDMzNDcyOGRkMmRmODBhNTAzOWU5NmM1NThlNGU1OWY2YWI4N2M0M2RiZmE1YTY0MjNmYWQyNmVkN2ViMGI0IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI1MmRjZjM2YzI4ZTE4NGRjOWIyYmUzOTJjOTg5YmYyZjkyMjllNTdlYjc2NzViMGJhNjY1ZTI1MGIxMjRhNTRkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_95a1672f2049439dbcf34c6748a0994b",
-      "statement": "Codependix deliberately duplicates ESLint's 32 depConstraints as boundary rules because codependix reads the Nx project graph (seeing implicit edges) while ESLint reads import statements (seeing only explicit edges), so codependix gates at least as much and sometimes more.",
+      "statement": "Codependix deliberately duplicates ESLint's depConstraints as boundary rules because codependix reads the Nx project graph (seeing implicit edges) while ESLint reads import statements (seeing only explicit edges), so codependix gates at least as much and sometimes more.",
       "evidence": [
         {
-          "resource": "repo://configuration/codependix.config.ts#L126-L148",
-          "version": "repo-lines-v1:sha256:2b1dc1d565f3bab39c7a1d5341b3d5c1e67a7c265c7fdf151a7316497c5f8498:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhNjg5YTI1NDg2ZTdlYzk5MGNlODYxOTdjNzc1MWJiODA5OWVmNDIzNTllNTQ4ZDFhN2Q0MWJmMWU5ZmUyYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc1MWI5MzU1YjgwY2I2OTc1NTk0ZDRkMTU2MGUxOWM5ZTljM2YzM2I0ZmU4ZjRhOGFjYjllMDA3YWRiMDcwOGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM4MmU5MGVlNDc2YTE2MjE0NjJiZmY3NTVkMzZiOTkzNTA3NWQ5MTJkNTA5NGI1OWJjNTNjOGJjNmFhZTljNjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI4NGZhYTIxN2FiNjdiZTgxN2U1YTc3NDQ0OTAyODdhY2FiNjJlNjY5Y2ZiZThmYTY0MWNlNzY2NTA1ZWUyZTAifQ"
+          "resource": "repo://configuration/ic-suite/codependix.config.ts#L100-L150",
+          "version": "repo-lines-v1:sha256:2fecd26250ed0b82b6e51fbe38192832e41d9b9be14f1e0c55bf8660b9449b0e:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZlNDM3N2I1MWM0MzE4NzBmZjIwM2I2YTE1N2UzZjdlMzVhNTFhNTM4MTIzZjIyYTZmMDMzYmQ1ZDRhZmRkODkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4NmNhYzMxNDNjZWEyNjkwZDNlNmRjNTczODE4MDI5Yjk5ZDU5ZGJmNGFjNWY3NGE1NGI1Yjk4MmZmMjVlMTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc3ZWQwYjMwYjNhNTQyYzMzZmFhMzU4Nzg0NTE2ZmFjMjEwMjM2YTZlYThkNmQ3MzUzN2JkODNhMjZiNjk1OTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY4Y2ZjN2I3YmJjMDE1ZDhiY2FkYmFhZDgyYzA1YzEyYTUwNjNhZjRiODU3NGVmZDFjM2FmNjA5MWQwNWU2YjAifQ"
         }
       ]
     },
     {
       "id": "claim_d753cb086e674971933640220bee0c80",
-      "statement": "Core vocabulary is strictly defined: Graph (one level built by one package), Neighborhood (project's one-hop deps/dependents), Workspace Graph (whole-repo graph exported once), Export (descriptive JSON/Markdown, never breached), Boundary (prescriptive allow/forbid/acyclic rules producing violations), Anchor (codependix-owned comment markers independent of conformetry).",
+      "statement": "Core vocabulary: Graph (one level built by one package), Neighborhood (a project's one-hop dependencies and dependents), Workspace Graph (the whole-repo graph exported once), Export (descriptive JSON or Markdown), Boundary (prescriptive allow, forbid or acyclic rules producing violations), and Anchor (codependix-owned comment markers independent of conformetry).",
       "evidence": [
         {
-          "resource": "repo://CONTEXT.md#L249-L286",
-          "version": "repo-lines-v1:sha256:e1b15091d069f7a793a650160bab859266beb59c9ac8179704b18a8338bd6d9f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiOWMxNjVlMWE3NmRmMmMyNjFlYTdhMDExNzU4YzMyYTVkZmIzNDM3MTJiYzM3MzBkM2ZhOWJiOGM1ZGQyYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4YzVlNjUyYTRhODNkNWZlYjM3Mzg1Yjk5MWM3YTEwNzZhOTIzN2U4OTcwNGUyOWRlNjIxNmNmZWI2YmFhMGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFmM2UwYmU2Mzk4ZDRjZTJlY2VlZDJmZmZhNTBiMzIwOWRiMmJkYTQ0NThmNTIwNTdiOGYwZmY0MjUxM2ZkNDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEwZDhkNTgyNWZjMmQ1ZmMwYzVjODFiMzcyMjk3NDcyODU1NjZlZTQ4MDE3YzIxYjFiY2FhYmRkZDFmZWQyNjAifQ"
+          "resource": "repo://projects/ic-suite/codependix/codependix-cli/README.md#L1-L20",
+          "version": "repo-lines-v1:sha256:58b90240637aae4586434f4abcd9eb04f3d486b5fe9f6690e55737091085891d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2ZDVmODBhNmFkMmE2ZmQzYmExMTZjMDE1MmRjM2Y4NDU3YWI5ZTNhMzE4MDYzZDIwZTNlMGY4ODBiNWRkN2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkZTJmNTMyOGVlNmU4MDUwZThhYWZkOGRjODY5YTA2OWNkOTU4NGVkYWFmNTRmZTU4OWQ3M2MzYjdkY2Q3OTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg1Y2U5ODc3NjJlODk0ZWM2MWNjYWUzODVkOWE2OTdkMGJlMTk0Y2NkYTRjNzVkNTgzYmU4ZGI0NjAxMWY0NmEifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codependix/codependix-cli/README.md#L190-L205",
+          "version": "repo-lines-v1:sha256:629599965a8a1f1b15b30e89352a073aa9f0c960fbbbee619189a7a1c2b411b6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI2MWQwZThjN2NjMGNlYjgyODdmZjM1NGZkZjQyZjY1MmZkZTU1NjQ2N2FkNDlmMWNmMDlkN2VkOGVjZjAxNjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0NDg2YWMxOWQ0ZGI3M2RmMWQ2NGMzYzQ3MThlODgwOGU1YzBjOWI0YTcwNGFhYTdhYTZhZGJmODc5OTBlYzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU5ZmRkZDMxMzc1ZTQzNjhjOGE1YjllNDdmZmZjZjY1NTJhMDcyNGRiOGQ1YzNjNTZiZDIyY2Y1NDVhZDRkMTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZmOTI3ZDkzZmQ3MjVkMDhkYTM2ZWYzNGVlZGJiNDNmMGYyMzE2ZDc3ZjQ0NzUyZTM4MGIwYjYyNjllNmUyZWUifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codependix/codependix-output/src/modules/anchors/anchors.constants.ts#L1-L25",
+          "version": "repo-lines-v1:sha256:de4f41dd53f49389aac6012a8403045385ce6509a0675817fe512c6c287c0a94:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3MGZmMzZkMjAwMTI2YjhjZTZmYzYwYmI2NzZhMWY3ZGJiNWQ3NDUyMTA2YWE4N2YzYjVmOTljMzE4NzBhMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -169,34 +185,34 @@
       "statement": "A boundary selector with no fields (id, path, project, tags) is refused rather than interpreted as matching every node, preventing typos from becoming workspace-wide rules.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-boundaries.types.ts#L115-L138",
-          "version": "repo-lines-v1:sha256:b34d6d6a67c12feda7d4225c77354a4febe2a55910992be3c5af1c11f5d01731:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3OGQ2NGI5ZTgxYmVmZjUzNWE5YzQyMjg3MzgzYTM1N2UyY2JmY2U3ZGE4MzQ0NmNkMWJkODQ4YjBkZTE4ZjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM5MGNjMTc4NzUxMDBhMTAyYTVmODU3ZjE0NDg3MGY4Zjg4ZTQwM2JlM2Q0YzM5MWVlNDI5NzE1YTA5ODUzNWEifQ"
+          "resource": "repo://projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration-boundaries.types.ts#L55-L89",
+          "version": "repo-lines-v1:sha256:d38eb6327f38983cf2011eaff6bb72b1ad5a1965422eed4ce3304655d75172b8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhZDcxNTQ5N2FiNTEyZWJjZjYxZDZiMzc4YmM5YTY0Mzc2OTA2ZWE2ZGNjYzVjNjVmNTFiYjlmZjhkNTNmNjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMwNTJjNzNmZWJlOGQxYjAzZTYyZjgxYWFjMGRlYTQ1NjE1MWUzYzBkMTE4YTE3YWE2NmRhYzFhOGFmMzQ5NWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_7bc38db5c70144588827563cdd41eafa",
-      "statement": "A graph level with no declared rules is never built at all — judging NestJS requires booting containers, judging TypeScript requires building ts.Program — so a workspace declaring only Nx rules pays for neither.",
+      "statement": "A graph level with no declared rules is never built at all, since judging NestJS requires booting containers and judging TypeScript requires building a ts.Program, so a workspace declaring only Nx rules pays for neither.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts#L37-L49",
-          "version": "repo-lines-v1:sha256:c6b98b2059feea4bb0330a570a233a76870b60eb372307b520f0194b203311ee:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzNGUwNzg5NDEzNGE3NjhhMzE5MTc0MDMzNWMyNzM1YTc4YzU2NWYyNTA2ZTgzZWJhZjlhMzhjZDg4YTc0OTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3OTk0MWY1NjI0NTEyYjI1NmY3YjM3MzkzMzk2MWY5Y2Q3NzgzYjA5MzI5YzJjYmVjNDk1NDIxYzUzMTVlM2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE3NDhiMThjMDZmMWM0ZjQ1YzcyMDlmYTE5YzQ0OTM2NzU1NTJlOTcwZTg3OGIwZDQzNDIzMjA2YzhjZTYzNWIifQ"
+          "resource": "repo://projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts#L1-L315",
+          "version": "repo-lines-v1:sha256:bdaaa9eb6b098e14e9f5cd9ca51ed7baaea8839c9ab720c0e36dd0c4b9ed2996:eyJzZWxlY3RlZExpbmVDb3VudCI6MzE1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjMzJiZmRmOTg2YWRlZmE1YzY1MmNmMjZjNzNlNDQ2NDU1MGJmYTAwMGUzMGE1NjNlYTNiYjRjMjVkYzFlNTUwIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_317d0b40daca410fa45ea0c03f9391c7",
-      "statement": "Anchor renaming requires a two-place coordinated commit: rename in projectDefaults and re-splice every README in the same commit; a half-done rename leaves orphaned blocks that fail markdown-lint in the version commit's prepare hook, blocking the release.",
+      "statement": "Anchor renaming requires a two-place coordinated commit: rename in projectDefaults and re-splice every file carrying the blocks in the same commit; a half-done rename leaves orphaned blocks that fail markdown-lint in the version commit's prepare hook, blocking the release.",
       "evidence": [
         {
-          "resource": "repo://configuration/codependix.config.ts#L30-L50",
-          "version": "repo-lines-v1:sha256:1c83778f6d882afa5b21efef14b010483badc19f98fb3c346293a145c4177043:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyMmU3OTI4YmIyZWM1N2I0YmM0NzAzYzI3MGFjNDZkZmIyYWExODRlNWFmZTFiZjg2MzgyY2ZmZDIwNzliMDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlhYjc5Mzc0YzE2MjkzNzE0ZWU2MzFjYWUzMThhZGI1NWRmMDUxNzkzN2M3MjE5MzM1NjBiZDE5MTI1ZDYxMGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZjZGZhMWQwM2JkZTk4YmVhYTNkMWFkOTE0NjQ2ODUxOGY2NTM0ZjFiM2M5M2ZiZTUyOTU2NmM0ZGQ1Yzk0OTUifQ"
+          "resource": "repo://configuration/ic-suite/codependix.config.ts#L7-L35",
+          "version": "repo-lines-v1:sha256:f94c5264d630b1a66ce7b6c54f202791d1d96bd2c7f495b186a67d91d280e2da:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzZTBkMDhiMTJiZjYwM2QxNmJhNjg2MDdlODgxNDQ4ZDRiNzRlZWNmM2IzOGUxNDViM2QxYmUxYTJmOWEzYjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyNmNjYTBiNmQ1ZDUxYWYyNDk5ODdjM2FkODIxNzg2YTY3NGFlZjAyNzdiN2U4MWRmMDYwOWQ1ODU0MWQ5ZTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGRmYTlkMTUyNDBiNTMyOTY0MjJhMTFlMGQzNjI3YjQ1ZGM4Y2RlNDVkNTYwNGQ4MDJhOTIyNzU3MmQ0OTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI4NTgyZGE0ZDQxZmZjMGMzMzAyNWUwNzA0MTZjNmEzYTM2Yjk3Yjk0ZGEzZGE5ZmIyMDQ4ZDEyZjNlMTA2NjgifQ"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.0",
-    "at": "2026-10-24T21:02:40.299Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-22T00:18:20.862Z"
   }
 }

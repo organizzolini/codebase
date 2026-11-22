@@ -5,8 +5,10 @@ description: Documents Docker Compose services (PostgreSQL, SearxNG, Open WebUI)
 tags: [infrastructure, deployment, kubernetes, helm, terraform, docker-compose, linode, github-actions, ci-cd]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-13T16:30:25.369Z
+    at: 2026-11-22T17:40:37.367Z
 sources:
+  - id: openwiki-source-105f2705156f283beb3d513c
+    resource: repo://.github/workflows/continuous-deployment.yml
   - id: openwiki-source-6315af249215d8768fb68811
     resource: repo://.github/workflows/continuous-integration.yml
   - id: openwiki-source-fde0a41d410be4adddc7d9c3
@@ -33,15 +35,13 @@ sources:
     resource: repo://infrastructure/terraform/github/main.tf
   - id: openwiki-source-0833021253fa2e80686f2baa
     resource: repo://infrastructure/terraform/linode/main.tf
-  - id: openwiki-source-70a46f66a844130692fc95fa
-    resource: repo://infrastructure/terraform/linode/outputs.tf
+  - id: openwiki-source-92124e9c9f7ecf8e6e08e16a
+    resource: repo://infrastructure/terraform/linode/variables.tf
   - id: openwiki-source-ad8f24a926b937b23fb1bc38
     resource: repo://infrastructure/terraform/main.tf
   - id: openwiki-source-fee95c572f00c778206fb7e0
     resource: repo://infrastructure/terraform/openrouter/main.tf
-  - id: openwiki-source-0aba2796cdeec5dfca2ad43b
-    resource: repo://infrastructure/terraform/variables.tf
-generated: { by: "openwiki/0.9.0", at: "2026-11-13T16:30:25.369Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-22T17:40:37.367Z" }
 ---
 
 # Infrastructure & Deployment
@@ -56,10 +56,9 @@ The `infrastructure/` directory contains three independent deployment layers:
 |-------|------------|---------|
 | **Local services** | Docker Compose | PostgreSQL, SearxNG, Open WebUI for local development |
 | **Kubernetes workloads** | Helm (`kubernetes-job`) | Reusable chart for batch Jobs with optional PVC storage |
-| **Cluster & services provisioning** | Terraform | Linode LKE cluster, OpenRouter workspace/keys/presets, GitHub repository settings, Linode Object Storage bucket for Terraform state and Nx cache |
+| **Cluster & services provisioning** | Terraform | Linode LKE cluster, OpenRouter workspace/guardrail/key/preset, GitHub repository settings, `main` ruleset, Actions variables and secrets, Linode Object Storage buckets for Terraform state and the shared Nx cache |
 
-<!-- openwiki: broken internal link [../project.json] file "../project.json" does not exist. Fix the href or restore the target, then delete this comment. -->
-These layers are orchestrated through [Nx targets](../project.json) defined in `infrastructure/project.json`.
+These layers are orchestrated through Nx targets defined in `infrastructure/project.json`.
 
 ---
 
@@ -119,7 +118,7 @@ nx run infrastructure:postgres:up
 docker exec -e POSTGRES_PROJECTS=<project> postgres sh /docker-entrypoint-initdb.d/databases.sh
 ```
 
-The script stops at the first `CREATE` whose object already exists, so name only the projects the volume lacks. For meanderaw (whose database existed from an earlier ADR), a manual `ALTER DATABASE` is needed instead of `CREATE DATABASE` — see [ADR 0022](../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md).
+The script stops at the first `CREATE` whose object already exists, so name only the projects the volume lacks. For meanderaw (whose database existed from an earlier ADR), a manual `ALTER DATABASE` is needed instead of `CREATE DATABASE` — see `documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md`.
 
 ---
 
@@ -185,7 +184,7 @@ infrastructure/terraform/
 ├── main.tf                 # Linode LKE cluster (linode_lke_cluster)
 ├── variables.tf            # linode_token, linode_region, linode_kubernetes_engine_cluster_id
 ├── openrouter/             # OpenRouter workspace, API key, guardrail, ranked-model preset
-├── github/                 # GitHub repository settings, main ruleset, Actions variables
+├── github/                 # GitHub repository settings, main ruleset, Actions variables and secrets
 └── linode/                 # Object Storage buckets: Terraform state + shared Nx cache
 ```
 
@@ -206,20 +205,25 @@ Provisions a Linode Kubernetes Engine cluster:
 
 Manages OpenRouter resources using the `OpenRouterTeam/openrouter` provider:
 
-- **Workspace**: Imports existing workspace by `workspace_id`
-- **Guardrail**: `refresh-documentation` — restricts models via `allowed_models` and sets monthly USD spend limit
-- **API Key**: Imports existing `refresh-documentation` key by name (value stays in `OPENROUTER_API_KEY` secret)
-- **Preset**: Written via `local-exec` provisioner to OpenRouter's API; ranked fallback list defined in `models` variable; changes to `models` or `preset_slug` replace the resource
+- **Workspace**: Imports existing workspace by `workspace_id` via `data` + `import` blocks
+- **Guardrail**: `refresh-documentation` — restricts models via `allowed_models` and sets monthly USD spend limit (`reset_interval = "monthly"`)
+- **API Key**: Imports existing `refresh-documentation` key by name (value stays in `OPENROUTER_API_KEY` secret); `limit` and `limit_reset` intentionally omitted to preserve existing key settings
+- **Management key**: The provider and the preset write authenticate with `openrouter_management_key` (`OPENROUTER_MANAGEMENT_KEY` in CI); OpenRouter rejects an inference key for the preset
+- **Guardrail assignment**: `openrouter_guardrail_key_assignment` ties the guardrail to the imported key
+- **Preset**: Written via `local-exec` provisioner to OpenRouter's preset endpoint; ranked fallback list defined in `models` variable; changes to `models` or `preset_slug` replace the resource (`triggers_replace`)
 - **Output**: `refresh_documentation_model` — the preset slug used by the Refresh Documentation workflow
 
 ### 3. GitHub (`github/`)
 
-Manages GitHub repository settings using the `integrations/github` provider (requires fine-grained token with Variables/Secrets write):
+Manages GitHub repository settings using the `integrations/github` provider. CI reads the `GH_TOKEN` repository secret, which needs Administration and Variables write on this repository because `GITHUB_TOKEN` cannot be granted either.
 
+- **Repository**: `github_repository.codebase`, imported as configured (merge methods, features), with `prevent_destroy`; plus Dependabot security updates and vulnerability alerts
+- **`main` ruleset**: `github_repository_ruleset.main`, imported; the provider cannot express the `code_quality` rule or the unattributed-changes approval, so `terraform_data.main_ruleset_unsupported_rules` patches both back through the GitHub REST API whenever the ruleset updates
 - **Actions variables** sourced from other roots' outputs:
   - `OPENWIKI_MODEL_ID` ← OpenRouter preset slug
   - `NX_CACHE_BUCKET`, `NX_CACHE_ENDPOINT`, `NX_CACHE_REGION` ← Linode Nx cache bucket
-- Uses `terraform_remote_state` data sources to read outputs from `openrouter` and `linode` roots (wrapped in `try()` for PR planning before roots apply)
+- **Actions secrets**: the Nx cache read-only and read-write access and secret keys (`NX_CACHE_READ_ONLY_*`, `NX_CACHE_READ_WRITE_*`), read from the linode root's outputs
+- Uses `terraform_remote_state` data sources to read outputs from the `openrouter` and `linode` roots (wrapped in `try()` for PR planning before roots apply)
 
 ### 4. Linode Object Storage (`linode/`)
 
@@ -229,8 +233,8 @@ Manages the Object Storage bucket that holds **all Terraform state** and the **s
 - **State key** (`linode_object_storage_key.state`): Access key for the state bucket, imported by numeric ID, `prevent_destroy = true`
 - **New state bucket** (`linode_object_storage_bucket.terraform_state`): Target bucket `organizzolini-codebase-terraform-state` for migration (Linode cannot rename buckets)
 - **New state key** (`linode_object_storage_key.terraform_state`): Access key for new bucket; secret readable via `terraform output`
-- **Nx cache bucket** (`linode_object_storage_bucket.nx_cache`): Separate bucket for shared Nx cache
-- **Nx cache keys**: Read-only key (for PR runs) and read-write key (for trusted main runs)
+- **Nx cache bucket** (`linode_object_storage_bucket.nx_cache`): Separate bucket for shared Nx cache, lifecycle rule expires unused entries after 30 days
+- **Nx cache keys**: A read-only key (for PR runs), a local read-only key (imported by ID, secret never in outputs), a read-write key (for trusted main runs), plus a provisioner key Terraform uses for the bucket itself that never reaches the outputs or CI
 
 **Outputs** (all sensitive where appropriate):
 - `nx_cache_bucket`, `nx_cache_endpoint` — for Nx cache configuration
@@ -272,13 +276,13 @@ The state is moving from `organizzolini` to `organizzolini-codebase-terraform-st
 
 ### Continuous Integration (`.github/workflows/continuous-integration.yml`)
 
-- **`helm-lint`** and **`compose-config`** run in the **Lint** leg (`nx run infrastructure:helm-lint` and `nx run infrastructure:compose-config`).
+- **`helm-lint`** and **`compose-config`** run as part of `lint-code`, which depends on both (`nx run infrastructure:helm-lint` and `nx run infrastructure:compose-config`).
 - **`plan-terraform`** target runs for PRs changing `infrastructure/terraform/**`, comments plan output on the PR.
 - **`build-devcontainer`** runs for PRs changing devcontainer, `.env.default`, CI workflows, or docker-compose.
 
 ### Continuous Deployment
 
-- Applies Terraform roots in order: `openrouter` → `github` → `linode` (enforced by workflow).
+- Applies Terraform roots in order: `openrouter` → `linode` → `github` (enforced by workflow; the github root reads the linode root's outputs, so linode applies first).
 - Pushes devcontainer image on main.
 - Uses GitHub secrets for all sensitive values (Linode token, OpenRouter keys, Terraform backend credentials).
 
@@ -294,20 +298,3 @@ The state is moving from `organizzolini` to `organizzolini-codebase-terraform-st
 | Terraform plan shows changes after state move | Secrets not updated to new bucket credentials; verify all four `TERRAFORM_STATE_*` secrets |
 
 ---
-
-## Key Files
-
-- `infrastructure/docker/docker-compose.yml` — Local services definition
-- `infrastructure/project.json` — Nx targets for all infrastructure operations
-- `infrastructure/helm/kubernetes-job/Chart.yaml` — Helm chart metadata
-- `infrastructure/helm/kubernetes-job/values/base.yaml` — Helm chart defaults
-- `infrastructure/helm/kubernetes-job/templates/job.yaml` — Job template
-- `infrastructure/helm/kubernetes-job/templates/pvc.yaml` — PVC template
-- `infrastructure/helm/kubernetes-job/templates/_helpers.tpl` — Helm helpers
-- `infrastructure/terraform/main.tf` — LKE cluster definition
-- `infrastructure/terraform/variables.tf` — LKE variables
-- `infrastructure/terraform/openrouter/main.tf` — OpenRouter resources
-- `infrastructure/terraform/github/main.tf` — GitHub resources
-- `infrastructure/terraform/linode/main.tf` — Linode Object Storage buckets/keys
-- `infrastructure/terraform/linode/outputs.tf` — Outputs for CI/CD secrets
-- `documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md` — PostgreSQL multi-project ADR
