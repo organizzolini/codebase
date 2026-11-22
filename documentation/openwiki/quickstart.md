@@ -5,7 +5,7 @@ description: Entry point for the OpenWiki. Provides a task-oriented map routing 
 tags: [quickstart, overview, navigation]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-22T00:18:20.862Z
+    at: 2026-11-22T17:40:37.367Z
 sources:
   - id: openwiki-source-7ce83b1fa051a437b5baffc6
     resource: repo://.devcontainer/cloud/devcontainer.json
@@ -47,7 +47,7 @@ sources:
     resource: repo://projects/meanderaw/meanderaw-cli/README.md
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
-generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-22T17:40:37.367Z" }
 ---
 
 # Quickstart
@@ -139,7 +139,7 @@ nx run meanderaw-cli:migration:run
 
 # Dev servers
 nx run lexico-web:start          # TanStack Start at localhost:7797 (needs lexico-api)
-nx run caelundas-web:start         # localhost:8967 (needs caelundas-api)
+nx run caelundas-web:start       # localhost:8967 (needs caelundas-api)
 nx run meanderaw-web:start
 
 # Run affected tests
@@ -164,7 +164,7 @@ pnpm nx affected --target=vitest --base=main
 
 ## Getting Started Checklist
 
-1. **Open in dev container** — VS Code will prompt to reopen in the container defined by `.devcontainer/local/devcontainer.json` (Docker-outside-of-Docker, Node 24, Python 3.14, pnpm 12, uv, Nx, Terraform, Helm, kubectl)
+1. **Open in dev container** — VS Code will prompt to reopen in the container defined by `.devcontainer/local/devcontainer.json` (Docker-outside-of-Docker for local, Docker-in-Docker for cloud; Node 26, Python 3.14, pnpm 11/12, uv, Nx 22, Terraform 1.14, Helm 4.1, kubectl 1.35)
 2. **Start infrastructure** — `docker compose -f infrastructure/docker/docker-compose.yml up -d` (Postgres, SearxNG, Open WebUI)
 3. **Pull Ollama model** — `nx run affirmancy:ollama --configuration=pull-small` (gemma4:e2b)
 4. **Run database migrations** — `nx run caelundas-db:migration:run`, `nx run lexico-db:migration:run`, `nx run meanderaw-cli:migration:run`

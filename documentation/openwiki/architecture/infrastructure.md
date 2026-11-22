@@ -5,7 +5,7 @@ description: Documents Docker Compose services (PostgreSQL, SearxNG, Open WebUI)
 tags: [infrastructure, deployment, kubernetes, helm, terraform, docker-compose, linode, github-actions, ci-cd]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-22T00:18:20.862Z
+    at: 2026-11-22T17:40:37.367Z
 sources:
   - id: openwiki-source-105f2705156f283beb3d513c
     resource: repo://.github/workflows/continuous-deployment.yml
@@ -41,7 +41,7 @@ sources:
     resource: repo://infrastructure/terraform/main.tf
   - id: openwiki-source-fee95c572f00c778206fb7e0
     resource: repo://infrastructure/terraform/openrouter/main.tf
-generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-22T17:40:37.367Z" }
 ---
 
 # Infrastructure & Deployment
@@ -205,12 +205,12 @@ Provisions a Linode Kubernetes Engine cluster:
 
 Manages OpenRouter resources using the `OpenRouterTeam/openrouter` provider:
 
-- **Workspace**: Imports existing workspace by `workspace_id`
-- **Guardrail**: `refresh-documentation` — restricts models via `allowed_models` and sets monthly USD spend limit
-- **API Key**: Imports existing `refresh-documentation` key by name (value stays in `OPENROUTER_API_KEY` secret)
+- **Workspace**: Imports existing workspace by `workspace_id` via `data` + `import` blocks
+- **Guardrail**: `refresh-documentation` — restricts models via `allowed_models` and sets monthly USD spend limit (`reset_interval = "monthly"`)
+- **API Key**: Imports existing `refresh-documentation` key by name (value stays in `OPENROUTER_API_KEY` secret); `limit` and `limit_reset` intentionally omitted to preserve existing key settings
 - **Management key**: The provider and the preset write authenticate with `openrouter_management_key` (`OPENROUTER_MANAGEMENT_KEY` in CI); OpenRouter rejects an inference key for the preset
 - **Guardrail assignment**: `openrouter_guardrail_key_assignment` ties the guardrail to the imported key
-- **Preset**: Written via `local-exec` provisioner to OpenRouter's preset endpoint; ranked fallback list defined in `models` variable; changes to `models` or `preset_slug` replace the resource
+- **Preset**: Written via `local-exec` provisioner to OpenRouter's preset endpoint; ranked fallback list defined in `models` variable; changes to `models` or `preset_slug` replace the resource (`triggers_replace`)
 - **Output**: `refresh_documentation_model` — the preset slug used by the Refresh Documentation workflow
 
 ### 3. GitHub (`github/`)
@@ -233,8 +233,8 @@ Manages the Object Storage bucket that holds **all Terraform state** and the **s
 - **State key** (`linode_object_storage_key.state`): Access key for the state bucket, imported by numeric ID, `prevent_destroy = true`
 - **New state bucket** (`linode_object_storage_bucket.terraform_state`): Target bucket `organizzolini-codebase-terraform-state` for migration (Linode cannot rename buckets)
 - **New state key** (`linode_object_storage_key.terraform_state`): Access key for new bucket; secret readable via `terraform output`
-- **Nx cache bucket** (`linode_object_storage_bucket.nx_cache`): Separate bucket for shared Nx cache
-- **Nx cache keys**: A read-only key (for PR runs), a local read-only key, and a read-write key (for trusted main runs), plus a provisioner key Terraform uses for the bucket itself that never reaches the outputs or CI. The bucket expires unused entries after 30 days
+- **Nx cache bucket** (`linode_object_storage_bucket.nx_cache`): Separate bucket for shared Nx cache, lifecycle rule expires unused entries after 30 days
+- **Nx cache keys**: A read-only key (for PR runs), a local read-only key (imported by ID, secret never in outputs), a read-write key (for trusted main runs), plus a provisioner key Terraform uses for the bucket itself that never reaches the outputs or CI
 
 **Outputs** (all sensitive where appropriate):
 - `nx_cache_bucket`, `nx_cache_endpoint` — for Nx cache configuration
@@ -298,20 +298,3 @@ The state is moving from `organizzolini` to `organizzolini-codebase-terraform-st
 | Terraform plan shows changes after state move | Secrets not updated to new bucket credentials; verify all four `TERRAFORM_STATE_*` secrets |
 
 ---
-
-## Key Files
-
-- `infrastructure/docker/docker-compose.yml` — Local services definition
-- `infrastructure/project.json` — Nx targets for all infrastructure operations
-- `infrastructure/helm/kubernetes-job/Chart.yaml` — Helm chart metadata
-- `infrastructure/helm/kubernetes-job/values/base.yaml` — Helm chart defaults
-- `infrastructure/helm/kubernetes-job/templates/job.yaml` — Job template
-- `infrastructure/helm/kubernetes-job/templates/pvc.yaml` — PVC template
-- `infrastructure/helm/kubernetes-job/templates/_helpers.tpl` — Helm helpers
-- `infrastructure/terraform/main.tf` — LKE cluster definition
-- `infrastructure/terraform/variables.tf` — LKE variables
-- `infrastructure/terraform/openrouter/main.tf` — OpenRouter resources
-- `infrastructure/terraform/github/main.tf` — GitHub resources
-- `infrastructure/terraform/linode/main.tf` — Linode Object Storage buckets/keys
-- `infrastructure/terraform/linode/outputs.tf` — Outputs for CI/CD secrets
-- `documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md` — PostgreSQL multi-project ADR

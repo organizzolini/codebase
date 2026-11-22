@@ -5,7 +5,7 @@ description: Documents testing infrastructure for meanderaw-cli and meanderaw-we
 tags: [testing, meanderaw, vitest, integration, database, historical-corpus]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-22T00:18:20.862Z
+    at: 2026-11-22T17:40:37.367Z
 sources:
   - id: openwiki-source-6315af249215d8768fb68811
     resource: repo://.github/workflows/continuous-integration.yml
@@ -47,7 +47,7 @@ sources:
     resource: repo://projects/meanderaw/meanderaw-web/src/routes/index.integration.test.tsx
   - id: openwiki-source-c24e988570567743e3ccec6a
     resource: repo://projects/meanderaw/meanderaw-web/testing/setup.ts
-generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-22T17:40:37.367Z" }
 ---
 
 # Meanderaw Testing
@@ -58,7 +58,7 @@ This page documents the testing architecture for the meanderaw project, which co
 
 ### Shared Base Configuration
 
-The root `configuration/vitest.config.ts` provides the shared baseline:
+The root `configuration/typescript/vitest.config.ts` provides the shared baseline:
 
 - **Coverage thresholds**: 96% across branches, functions, lines, statements
 - **Test file patterns**: `src/**/*.test.{ts,tsx}` and `testing/**/*.test.{ts,tsx}`
@@ -69,7 +69,7 @@ The root `configuration/vitest.config.ts` provides the shared baseline:
 
 #### meanderaw-cli
 
-`projects/meanderaw/meanderaw-cli/vitest.config.ts` extends the base with:
+`projects/meanderaw/meanderaw-cli/configuration/vitest.config.ts` extends the base with:
 
 - **Extended timeouts**: `hookTimeout: 120_000` (2 min) for container startup + migrations; `testTimeout: 60_000` (1 min) for exhaustive enumeration tests
 - **Coverage exclusion**: `src/**/*.test.ts` excluded from coverage
@@ -78,10 +78,12 @@ The CLI tests are **not fast unit tests** — they exhaustively enumerate the mo
 
 #### meanderaw-web
 
-`projects/meanderaw/meanderaw-web/vitest.config.ts` extends the base with:
+`projects/meanderaw/meanderaw-web/configuration/vitest.config.ts` extends the base with:
 
 - **Environment**: `jsdom` for React component testing
-- **Coverage exclusions**: Server function files (`*.functions.ts`), router internals, root layout — because `createServerFn` only runs inside the Start runtime; the logic they delegate to is tested in each module's `.utilities.ts`
+- **Test timeout**: `testTimeout: 15_000` (15 seconds) — gallery filter tests drive jsdom menus, and a CI runner under load has timed three of them out at five seconds
+- **Coverage exclusions**: Server function files (`*.functions.ts`), router internals (`router.tsx`, `routeTree.gen.ts`), client entry (`client.tsx`), and root layout (`__root.tsx`) — because `createServerFn` only runs inside the Start runtime; the logic they delegate to is tested in each module's `.utilities.ts`
+- **Setup file**: `./testing/setup.ts` (runs after the shared setup the base config lists)
 
 ---
 
@@ -208,7 +210,7 @@ The `legacy-characteristics.ts` fixtures provide end-to-end regression for the f
 
 ### Database Integration Tests (Testcontainers)
 
-The CLI uses **Testcontainers** via `@codebase/persistence/testing` to spin up real Postgres 18 containers for integration tests. The key utility is `startDatabaseTestingModule()` from `projects/common/persistence/testing/persistence-testing.utilities.ts`:
+The CLI uses **Testcontainers** via `@codebase/persistence/testing` to spin up real Postgres 18 containers for integration tests. The key utility is `startDatabaseTestingModule()` from `projects/common/persistence/testing/database-testing/database-testing.utilities.ts`:
 
 ```typescript
 const database = await startDatabaseTestingModule({
@@ -323,14 +325,15 @@ This tests:
 
 ## CI Test Sharding
 
-The GitHub Actions workflow (`.github/workflows/continuous-integration.yml`) shards `test-code` into one leg per project group (Test Codebase, Test Common, Test Affirmancy, Test Caelundas, Test IC Suite, Test Lexico and **Test Meanderaw**) so none waits for a free `--parallel` slot behind the slow ones. The Test Meanderaw leg selects `projects/meanderaw/**` (`*,!projects/meanderaw/**` as an exclude list) with the shard `meanderaw`.
+The GitHub Actions workflow (`.github/workflows/continuous-integration.yml`) shards `test-code` into one leg per project group (Test Codebase, Test Common, Test Affirmancy, Test Caelundas, Test IC Suite, Test Lexico and **Test Meanderaw**) so none waits for a free `--parallel` slot behind the slow ones. The **Test Meanderaw** leg selects the meanderaw projects using `exclude: "*,!projects/meanderaw/**"` with the shard `meanderaw`.
 
 Meanderaw has its own leg because its suite is not a set of fast unit tests: the exhaustive enumeration at edge budget 12 with real Postgres containers renders tens of thousands of documents per run, and it took over seven minutes uncached beside the rest.
 
------|--------|---------|-------|
-| Test | `test-code` | meanderaw-cli, caelundas, ic-suite | — |
+| Test Leg | Target | Exclude Pattern | Shard |
+|----------|--------|-----------------|-------|
+| Test Codebase | `test-code` | (no exclude) | — |
 | Test Caelundas | `test-code` | `*,!projects/caelundas/**` | caelundas |
-| **Test Meanderaw** | `test-code` | `*,!meanderaw-cli` | **meanderaw-cli** |
+| **Test Meanderaw** | `test-code` | `*,!projects/meanderaw/**` | **meanderaw** |
 | Test IC Suite | `test-code` | `*,!projects/ic-suite/**` | ic-suite |
 
 Meanderaw runs alone because it took over seven minutes uncached beside the rest (about three minutes alone). Its suite is not a set of fast unit tests — the exhaustive enumeration at edge budget 12 with real Postgres containers produces tens of thousands of real documents, and that is the work happening, not a hang.
