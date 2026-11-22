@@ -66,7 +66,10 @@ export function AxisTabs(properties: Readonly<AxisTabsProperties>): ReactNode {
                 title={name}
                 value={option}
               >
-                <InflectionTag value={option} />
+                <InflectionTag
+                  selected={option === value}
+                  value={option}
+                />
               </TabsTrigger>
             );
           })}

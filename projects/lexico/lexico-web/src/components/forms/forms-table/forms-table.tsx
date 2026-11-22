@@ -8,6 +8,8 @@ import {
 
 import { InflectionTag } from "../inflection-tag/inflection-tag";
 
+import { FORMS_ROW } from "./forms-table.constants";
+
 import type { FormsTableAxis } from "./forms-table.types";
 import type { ReactNode } from "react";
 
@@ -53,7 +55,10 @@ export function FormsTable(
       <Table className="table-fixed">
         <TableBody>
           {rows.map((row, rowIndex) => (
-            <TableRow key={row.key}>
+            <TableRow
+              key={row.key}
+              className={FORMS_ROW}
+            >
               {columns.map((column, columnIndex) => {
                 const words = lookup(row.key, column.key);
 

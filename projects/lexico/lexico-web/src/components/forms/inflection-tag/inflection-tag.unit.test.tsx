@@ -26,8 +26,27 @@ describe(InflectionTag, () => {
   });
 
   it("shows a value without a short form as written", () => {
-    render(<InflectionTag value="gerund" />);
+    render(<InflectionTag value="unlisted" />);
 
-    expect(screen.getByText("gerund")).toBeDefined();
+    expect(screen.getByText("unlisted")).toBeDefined();
+  });
+
+  it("marks a selected tag, which stays unmarked otherwise", () => {
+    render(
+      <>
+        <InflectionTag
+          value="active"
+          selected
+        />
+        <InflectionTag value="passive" />
+      </>,
+    );
+
+    expect(Object.hasOwn(screen.getByText("ACT").dataset, "selected")).toBe(
+      true,
+    );
+    expect(Object.hasOwn(screen.getByText("PASS").dataset, "selected")).toBe(
+      false,
+    );
   });
 });

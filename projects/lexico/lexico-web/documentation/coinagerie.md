@@ -41,6 +41,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **spot**:
 - **sunrise**: Lucide icon marking the author start year sort attribute.
 - **sunset**: Lucide icon marking the author end year sort attribute.
+- **tabulate**: Group forms into a table by a row key and a column key, as nonFiniteSections does for infinitives, participles, gerund and supine.
 - **translation**: An English sense of a lexeme, listed as bullets by LexemeTranslations and matched by English search.
 - **verb**: Part of speech whose forms render as a conjugation table, routed to the VerbForms component when partOfSpeech is verb.
 - **vergil**:

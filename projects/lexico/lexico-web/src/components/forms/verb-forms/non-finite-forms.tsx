@@ -1,11 +1,15 @@
-import { FINITE_KIND, NON_FINITE_NAMES } from "./verb-forms.constants";
+import { Marker, MarkerContent } from "@codebase/presentation";
+
+import { FormsTable } from "../forms-table/forms-table";
+
+import { nonFiniteSections } from "./verb-forms.utilities";
 
 import type { VerbFormRow } from "./verb-forms.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/** A verb's forms, with those lacking a person listed. */
+/** A verb's forms, with those lacking a person tabled. */
 export interface NonFiniteFormsProperties {
   className?: string;
   rows: VerbFormRow[];
@@ -14,8 +18,8 @@ export interface NonFiniteFormsProperties {
 // 🧩 Component
 
 /**
- * The forms that have no person, such as infinitives, participles, gerunds and
- * supines, each named for its kind and what sets it apart.
+ * The forms with no person, stacked as tables under a divider each: infinitives
+ * and participles by tense and voice, then gerund and supine by case.
  */
 export function NonFiniteForms(
   properties: Readonly<NonFiniteFormsProperties>,
@@ -25,7 +29,7 @@ export function NonFiniteForms(
   // 🪝 Hooks
 
   // 🏗 Setup
-  const nonFinite = rows.filter((row) => row.kind !== FINITE_KIND);
+  const sections = nonFiniteSections(rows);
 
   // 💪 Handlers
 
@@ -39,28 +43,24 @@ export function NonFiniteForms(
       className={className}
       data-testid="non-finite-forms"
     >
-      <dl className="space-y-1 text-sm">
-        {nonFinite.map((row) => (
-          <div
-            key={`${row.kind}${row.tense}${row.voice}${row.case}${row.word}`}
-            className="flex justify-between gap-4"
-          >
-            <dt className="text-muted-foreground capitalize">
-              {[
-                NON_FINITE_NAMES[row.kind] ?? row.kind,
-                row.tense,
-                row.voice,
-                row.case,
-              ]
-                .filter(Boolean)
-                .join(" ")
-                .replaceAll(/([A-Z])/gu, " $1")
-                .toLowerCase()}
-            </dt>
-            <dd>{row.word}</dd>
-          </div>
-        ))}
-      </dl>
+      {sections.map((section) => (
+        <section key={section.label}>
+          <Marker className="px-3 py-1">
+            <MarkerContent className="capitalize">
+              {section.label}
+            </MarkerContent>
+            <span
+              className="min-w-0 flex-1 border-t border-border"
+              aria-hidden
+            />
+          </Marker>
+          <FormsTable
+            columns={section.columns}
+            lookup={section.lookup}
+            rows={section.rows}
+          />
+        </section>
+      ))}
     </div>
   );
 }

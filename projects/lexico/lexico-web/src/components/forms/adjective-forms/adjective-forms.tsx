@@ -94,7 +94,10 @@ export function AdjectiveForms(
                   className={FORMS_TAB}
                   value={tab}
                 >
-                  <InflectionTag value={tab} />
+                  <InflectionTag
+                    selected={tab === gender}
+                    value={tab}
+                  />
                 </TabsTrigger>
               ))}
             </TabsList>

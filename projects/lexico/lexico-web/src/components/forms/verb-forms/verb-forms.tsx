@@ -77,14 +77,8 @@ export function VerbForms(
             options={voices}
             value={voice}
           />
-        </FramePanel>
-        {voice === NON_FINITE_TAB ? (
-          <FramePanel>
-            <NonFiniteForms rows={rows} />
-          </FramePanel>
-        ) : (
-          <>
-            <FramePanel className={FLUSH_PANEL}>
+          {voice !== NON_FINITE_TAB && (
+            <>
               <AxisTabs
                 onChange={(next) => {
                   setSelection({ ...selection, mood: next });
@@ -92,8 +86,6 @@ export function VerbForms(
                 options={moods}
                 value={mood}
               />
-            </FramePanel>
-            <FramePanel className={FLUSH_PANEL}>
               <AxisTabs
                 onChange={(next) => {
                   setSelection({ ...selection, tense: next });
@@ -101,22 +93,26 @@ export function VerbForms(
                 options={tenses}
                 value={tense}
               />
-            </FramePanel>
-            <FramePanel className={FLUSH_PANEL}>
-              <FormsTable
-                columns={NUMBER_AXES}
-                lookup={(person, number) =>
-                  tenseRows
-                    .filter(
-                      (row) => row.person === person && row.number === number,
-                    )
-                    .map((row) => row.word)
-                }
-                rows={PERSON_AXES}
-              />
-            </FramePanel>
-          </>
-        )}
+            </>
+          )}
+        </FramePanel>
+        <FramePanel className={FLUSH_PANEL}>
+          {voice === NON_FINITE_TAB ? (
+            <NonFiniteForms rows={rows} />
+          ) : (
+            <FormsTable
+              columns={NUMBER_AXES}
+              lookup={(person, number) =>
+                tenseRows
+                  .filter(
+                    (row) => row.person === person && row.number === number,
+                  )
+                  .map((row) => row.word)
+              }
+              rows={PERSON_AXES}
+            />
+          )}
+        </FramePanel>
       </Frame>
     </div>
   );

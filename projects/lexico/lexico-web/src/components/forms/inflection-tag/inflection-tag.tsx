@@ -11,6 +11,8 @@ import type { ReactNode } from "react";
  */
 export interface InflectionTagProperties {
   className?: string;
+  /** Whether the tag's tab is the chosen one: solid and bold. */
+  selected?: boolean;
   /** The grammatical value, such as "nominative" or "futurePerfect". */
   value: string;
 }
@@ -18,17 +20,17 @@ export interface InflectionTagProperties {
 // 🧩 Component
 
 /**
- * A grammatical value as a small pill, colored by its category and carrying its full name for hover.
+ * A grammatical value as a small pill, colored by its category and carrying its full name for hover; solid and bold when selected.
  */
 export function InflectionTag(
   properties: Readonly<InflectionTagProperties>,
 ): ReactNode {
-  const { className, value } = properties;
+  const { className, selected = false, value } = properties;
 
   // 🪝 Hooks
 
   // 🏗 Setup
-  const { label, name, variant } = describeTag(value);
+  const { label, name, variant } = describeTag(value, selected);
 
   // 💪 Handlers
 
@@ -43,6 +45,8 @@ export function InflectionTag(
       data-testid="inflection-tag"
     >
       <PillBadge
+        className={selected ? "font-semibold" : undefined}
+        data-selected={selected ? "" : undefined}
         radius="full"
         size="sm"
         title={name}

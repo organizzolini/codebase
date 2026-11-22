@@ -11,6 +11,7 @@ export type TagCategory =
   | "number"
   | "person"
   | "tense"
+  | "verbal"
   | "voice";
 
 /** What a tag shows: its short label, spoken name, and badge color. */

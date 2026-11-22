@@ -13,6 +13,11 @@ describe(describeTag, () => {
   });
 
   it("outlines a value it does not know", () => {
-    expect(describeTag("gerund").variant).toBe("outline");
+    expect(describeTag("unlisted").variant).toBe("outline");
+  });
+
+  it("turns a category's light badge solid when selected", () => {
+    expect(describeTag("present").variant).toBe("warning-light");
+    expect(describeTag("present", true).variant).toBe("warning");
   });
 });
