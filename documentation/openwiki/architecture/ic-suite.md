@@ -1,26 +1,22 @@
 ---
 type: "Reference"
 title: "IC Suite Toolchains"
-description: "Documents the four independently versioned IC-Suite toolchains (callidescope, codependix, codometer, conformetry) following the five-layer spine architecture. Covers package structure, CLI usage, Nx targets, CI gate flow, and integration patterns."
+description: "Documents the five independently versioned IC-Suite toolchains (callidescope, codependix, codometer, coinagerie, conformetry) following the five-layer spine architecture. Covers package structure, CLI usage, Nx targets, CI gate flow, and integration patterns."
 tags: ["architecture", "ic-suite", "toolchains", "nx", "ci"]
 verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-29T03:39:46.432Z
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 sources:
   - id: openwiki-source-6315af249215d8768fb68811
     resource: repo://.github/workflows/continuous-integration.yml
-  - id: openwiki-source-48a713d0bd8fc974cfeb0441
-    resource: repo://configuration/callidescope.config.ts
-  - id: openwiki-source-3813a8d6b5fb514dbe957652
-    resource: repo://configuration/codependix.config.ts
-  - id: openwiki-source-90b02c1b2d7e834e85fa1f3a
-    resource: repo://configuration/codometer.config.ts
-  - id: openwiki-source-75161601af5a39bb60abb392
-    resource: repo://configuration/conformetry.config.ts
-  - id: openwiki-source-94b83dabf792dd60b2023736
-    resource: repo://configuration/project.json
-  - id: openwiki-source-39c3295efc089133e87a9c80
-    resource: repo://CONTEXT.md
+  - id: openwiki-source-a6afdf06930846474873c4aa
+    resource: repo://configuration/ic-suite/callidescope.config.ts
+  - id: openwiki-source-d7ee8504ef5ff061b38f1613
+    resource: repo://configuration/ic-suite/codependix.config.ts
+  - id: openwiki-source-50b667bfcf0ee4b4daed851d
+    resource: repo://configuration/ic-suite/codometer.config.ts
+  - id: openwiki-source-6419221f89e7a55a996f3dab
+    resource: repo://configuration/ic-suite/conformetry.config.ts
   - id: openwiki-source-2611f82c4debd12996455857
     resource: repo://documentation/adr/0013-name-the-ic-suite-layers.md
   - id: openwiki-source-b42e459b34f258e0cbfab07f
@@ -29,30 +25,30 @@ sources:
     resource: repo://nx.json
   - id: openwiki-source-f45834e39c42c6991e4c7485
     resource: repo://projects/ic-suite/callidescope/callidescope-cli/src/modules/callidescope/callidescope.command.ts
-  - id: openwiki-source-acc120b5d24d8b674e327cbe
-    resource: repo://projects/ic-suite/callidescope/callidescope-cli/src/modules/callidescope/callidescope.service.ts
-  - id: openwiki-source-51e03273bac4336f316a0939
-    resource: repo://projects/ic-suite/callidescope/callidescope-nx/src/executors/gate/executor.ts
   - id: openwiki-source-7888f6ea89a05e862cf0cc3b
     resource: repo://projects/ic-suite/codependix/codependix-cli/src/modules/map/map.command.ts
-  - id: openwiki-source-85da15e0167ebbba2176a63f
-    resource: repo://projects/ic-suite/codependix/codependix-nx/src/executors/gate/executor.ts
+  - id: openwiki-source-d0a636aedee2b4cb64837599
+    resource: repo://projects/ic-suite/codometer/codometer-agents/package.json
   - id: openwiki-source-b2ac8b68d3252c13108556d1
     resource: repo://projects/ic-suite/codometer/codometer-cli/src/modules/measure/measure.command.ts
+  - id: openwiki-source-03219b76704d24994321965e
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-cli/README.md
+  - id: openwiki-source-30d75b38e319b302ec825e0e
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-languages/project.json
+  - id: openwiki-source-570f4b453a6a63a61dce6558
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/project.json
+  - id: openwiki-source-1670ae66cc1e701c73f30206
+    resource: repo://projects/ic-suite/conformetry/conformetry-cli/src/modules/generate/generate.command.ts
   - id: openwiki-source-e765f25b516b999424539342
     resource: repo://projects/ic-suite/conformetry/conformetry-cli/src/modules/validate/validate.command.ts
-  - id: openwiki-source-41d402c4941aa1275a7eec3b
-    resource: repo://projects/ic-suite/conformetry/conformetry-nx/src/executors/validate/executor.ts
-  - id: openwiki-source-23775c3de52f3ab95a13cb8b
-    resource: repo://README.md
-generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 ---
 
 # IC Suite Toolchains
 
-The **IC-Suite** is a family of four independently versioned, command-line toolchains published from this workspace: **callidescope**, **codependix**, **codometer**, and **conformetry**. Each suite is a product, not a directory — its packages version independently but are documented and discovered as one thing, named for the command a user runs (`callidescope`, `codependix`, `codometer`, `conformetry`).
+The **IC-Suite** is a family of five independently versioned, command-line toolchains published from this workspace: **callidescope**, **codependix**, **codometer**, **coinagerie**, and **conformetry**. Each suite is a product, not a directory — its packages version independently but are documented and discovered as one thing, named for the command a user runs (`callidescope`, `codependix`, `codometer`, `coinagerie`, `conformetry`).
 
-All four suites share the same five-layer architectural spine, each layer depending only downward:
+All five suites share the same five-layer architectural spine, each layer depending only downward:
 
 ```
 core → configuration → analysis → output → cli
@@ -60,8 +56,7 @@ core → configuration → analysis → output → cli
                                      └─ nx (optional plugin layer, tagged layer:cli)
 ```
 
-<!-- openwiki: broken internal link [../documentation/adr/0013-name-the-ic-suite-layers.md] file "../documentation/adr/0013-name-the-ic-suite-layers.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-This convergence was deliberately landed as vocabulary first ([ADR 0013](../documentation/adr/0013-name-the-ic-suite-layers.md)), with `layer:*` tags applied in follow-up pull requests per toolchain.
+This convergence was deliberately landed as vocabulary first (`documentation/adr/0013-name-the-ic-suite-layers.md`), with `layer:*` tags applied in follow-up pull requests per toolchain.
 
 ## Five-Layer Spine
 
@@ -75,7 +70,7 @@ This convergence was deliberately landed as vocabulary first ([ADR 0013](../docu
 
 ### The `nx` plugin layer
 
-Where a suite provides an Nx plugin (`@callidescope/nx`, `@codependix/nx`, `@conformetry/nx`), it sits **above `cli`** and carries `layer:cli` — not a sixth tag. This keeps the spine at five layers and the generic boundary rules at four. The `nx` plugin is a second host for the same underlying toolchain, not a new layer stacked above it.
+Where a suite provides an Nx plugin (`@callidescope/nx`, `@codependix/nx`, `@coinagerie/nx`, `@conformetry/nx`), it sits **above `cli`** and carries `layer:cli` — not a sixth tag. This keeps the spine at five layers and the generic boundary rules at four. The `nx` plugin is a second host for the same underlying toolchain, not a new layer stacked above it.
 
 ### Core-versus-configuration test
 
@@ -87,7 +82,7 @@ Under this test `CodeStatisticsResult` belongs in `core` and `WriteMarkdownOutpu
 
 ### Analysis layer does not converge on a name
 
-Every other layer converges on one name across all four toolchains. The **analysis layer deliberately does not**: forcing it to would produce a sixty-file blob in codometer's case, where "analysis" would have to cover language measurement, size measurement, and everything else the tool does in one package. It stays named for what it analyzes — governed by a rule instead of a shared noun:
+Every other layer converges on one name across all five toolchains. The **analysis layer deliberately does not**: forcing it to would produce a sixty-file blob in codometer's case, where "analysis" would have to cover language measurement, size measurement, and everything else the tool does in one package. It stays named for what it analyzes — governed by a rule instead of a shared noun:
 
 > **One package per independently usable analyzer, named for what it analyzes.**
 
@@ -96,6 +91,7 @@ Every other layer converges on one name across all four toolchains. The **analys
 | callidescope | `callidescope-graph` |
 | codependix | `codependix-boundaries`, `codependix-file-imports`, `codependix-nestjs-modules`, `codependix-nx-projects` |
 | codometer | `codometer-languages`, `codometer-measurement` |
+| coinagerie | `coinagerie-languages`, `coinagerie-vocabulary` |
 | conformetry | `conformetry-generation`, `conformetry-languages`, `conformetry-validation` |
 
 ## Per-Suite Package Structure
@@ -129,12 +125,11 @@ Reads what each project depends on, renders graphs as JSON/Markdown/mermaid, gat
 | `@codependix/boundaries` | `analysis` | ✅ | Validates forbid/allow rules, detects cycles across all graph levels |
 | `@codependix/output` | `output` | ✅ | Renders graphs as JSON, Markdown, mermaid, splices anchor blocks |
 | `@codependix/cli` | `cli` | ✅ | Host exporting graphs and gating boundaries |
-| `@codependix/nx` | `cli` (nx plugin) | ✅ | Nx plugin inferring per-project `codependix-gate` target |
+| `@codependix/nx` | `cli` (nx plugin) | ✅ | Nx plugin inferring per-project `codependix-bound` target |
 | `@codependix/agents` | *(none)* | ❌ | Agent skills, travel via `skills-lock.json` |
 | `@codependix/examples` | *(none)* | ❌ | 21 subjects built to be graphed, each carrying rendered guide |
 
-<!-- openwiki: broken internal link [../documentation/adr/0013-name-the-ic-suite-layers.md#the-accepted-codependix-nx-projects-wart] file "../documentation/adr/0013-name-the-ic-suite-layers.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-> **Note on `codependix-nx-projects`**: It keeps its name even though it collides with the `nx` plugin layer. It is an **analysis-layer** graph builder that *reads* the Nx project graph, not a plugin registered in `nx.json`. This is a documented, deliberate exception ([ADR 0013](../documentation/adr/0013-name-the-ic-suite-layers.md#the-accepted-codependix-nx-projects-wart)).
+> **Note on `codependix-nx-projects`**: It keeps its name even though it collides with the `nx` plugin layer. It is an **analysis-layer** graph builder that *reads* the Nx project graph, not a plugin registered in `nx.json`. This is a documented, deliberate exception (`documentation/adr/0013-name-the-ic-suite-layers.md`).
 
 ### codometer — Repository measurement toolchain
 
@@ -168,6 +163,22 @@ Scaffolds files from templates and validates implementations against them.
 | `@conformetry/agents` | *(none)* | ❌ | Agent skills, travel via `skills-lock.json` |
 | `@conformetry/examples` | *(none)* | ❌ | 11 runnable examples with config, templates, instances, guides (CI-executed) |
 
+### coinagerie — Vocabulary toolchain
+
+Lists every word the codebase uses (identifiers, object keys, enum members, folder and file names, split into lowercase words) and keeps a markdown glossary of them in step with the code.
+
+| Package | Layer | Publishes | Purpose |
+|---------|-------|-----------|---------|
+| `@coinagerie/core` | `core` | ✅ | Domain vocabulary: words, glossary and finding types |
+| `@coinagerie/configuration` | `configuration` | ✅ | Reads `coinagerie.config.ts`: includes, exclusions, folds, glossary destinations |
+| `@coinagerie/languages` | `analysis` | ✅ | Per-language word extraction and language keyword lists |
+| `@coinagerie/vocabulary` | `analysis` | ✅ | Collects the vocabulary and compares it with the glossaries |
+| `@coinagerie/output` | `output` | ✅ | Markdown and JSON glossary destinations |
+| `@coinagerie/cli` | `cli` | ✅ | Host: prints, `--check`s or `--write`s the glossary |
+| `@coinagerie/nx` | `cli` (nx plugin) | ✅ | Nx plugin inferring the per-project `coinagerie-check` target |
+| `@coinagerie/agents` | *(none)* | ❌ | Agent skills, travel via `skills-lock.json` |
+| `@coinagerie/examples` | *(none)* | ❌ | Fixture projects with worked examples |
+
 ## Publishable vs Non-Publishable Packages
 
 Each suite has **publishable packages** (sent to npm on release) and **non-publishable packages** (never published):
@@ -186,18 +197,17 @@ A package outside the publishable set is held by the first two, never by only on
 
 ## Independent Versioning with Cascading Dependents
 
-<!-- openwiki: broken internal link [../documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md] file "../documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-The 29 publishable packages across the four suites version independently using **Nx Release** (`nx release`) with `projectsRelationship: "independent"` ([ADR 0017](../documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md)).
+The 36 publishable packages across the five suites version independently using **Nx Release** (`nx release`) with `projectsRelationship: "independent"` (`documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md`).
 
 - **Conventional commits** determine semver bump specifiers for every package a commit affects.
 - **Cascade**: When a dependency package is bumped, Nx Release automatically cascades a **patch version bump** (`updateDependents: "auto"`) and updates manifest dependency constraints across all internal dependents.
 - **Per-package git tags and changelogs**: Each package generates an independent tag (`{projectName}@{version}`, e.g., `conformetry-cli@0.1.0`) and maintains its own release notes.
-- **Explicit exclusions**: The 8 non-publishable packages (`*-agents`, `*-examples`) are excluded in `nx.json` `release.projects` configuration.
+- **Explicit exclusions**: The 10 non-publishable packages (`*-agents`, `*-examples`) are excluded in `nx.json` `release.projects` configuration.
 
 ### Two Release Tiers
 
 1. **Repository root release**: Root monorepo uses `semantic-release` on merges to `main` for fixed-version repository releases (e.g., `v2.20.0`). No packages published to npm.
-2. **Publishable packages release**: 29 library packages use `nx release` with independent versioning and per-package tags.
+2. **Publishable packages release**: 36 library packages use `nx release` with independent versioning and per-package tags.
 
 ## Per-Toolchain Operational Reference
 
@@ -205,10 +215,10 @@ The 29 publishable packages across the four suites version independently using *
 
 **What it measures**: Call-stack depth (longest chain of nested calls) and breadth (fan-out: number of direct callees per callable) for every traced entry point in a project and its Nx dependencies.
 
-**Configuration file**: `callidescope.config.ts` (per-project, spreading `projectDefaults` from `configuration/callidescope.config.ts`)
+**Configuration file**: `callidescope.config.ts` (per-project, spreading `projectDefaults` from `configuration/ic-suite/callidescope.config.ts`)
 
 ```ts
-import { projectDefaults } from "../../../configuration/callidescope.config.js";
+import { projectDefaults } from "../../../configuration/ic-suite/callidescope.config.js";
 
 export default {
   ...projectDefaults,
@@ -216,7 +226,7 @@ export default {
 };
 ```
 
-**Workspace defaults**: `configuration/callidescope.config.ts` exports `projectDefaults` (entry-point decorators, exclude patterns, output destinations) and `workspaceLimits` (depth 17, breadth 2) — the latter serves only as a starting point for new projects; every existing traced project declares its own boundary-tested numbers. A project declaring a higher number keeps it — nothing clamps it down.
+**Workspace defaults**: `configuration/ic-suite/callidescope.config.ts` exports `projectDefaults` (entry-point decorators, exclude patterns, output destinations) and `workspaceLimits` (depth 17, breadth 2) — the latter serves only as a starting point for new projects; every existing traced project declares its own boundary-tested numbers. A project declaring a higher number keeps it — nothing clamps it down.
 
 **CLI command**:
 ```bash
@@ -235,12 +245,12 @@ callidescope --config <path> [--check depth,breadth,reports] [--write] [--format
 - `callidescope-trace` — Print every call stack above/below each callable
 - `callidescope-depth` — Print stacks for a single callable
 - `callidescope-breadth` — Print one callable's direct callers/callees
-- `callidescope-gate` — **Fail** if any traced call stack exceeds the project's declared limits (the gate CI reads)
+- `callidescope-restrict` — **Fail** if any traced call stack exceeds the project's declared limits (the gate CI reads; formerly `callidescope-gate`)
 
 **Gate semantics**:
 - The gate runs over the project **and its Nx dependencies** (the trace follows the dependency graph).
 - Only findings **charged to the project itself** fail its gate. A breach in a dependency fails that dependency's own gate.
-- `nx affected -t callidescope-gate` scopes the gate to changed projects, so CI only runs what matters.
+- `nx affected -t callidescope-restrict` scopes the gate to changed projects, so CI only runs what matters.
 - A project with no traced files (empty scope) **fails** rather than passes — a green gate without a trace would be misleading.
 
 **Findings charged to projects**: Each finding (`DeepStack`, `WideCallable`) carries the project that owns the callable. The gate counts only findings whose `projectName` matches the project under test.
@@ -251,10 +261,10 @@ callidescope --config <path> [--check depth,breadth,reports] [--write] [--format
 
 **What it measures**: Three graph levels — file imports (TypeScript/JS), NestJS modules, and Nx projects — and validates forbid/allow rules and cycle detection across all levels.
 
-**Configuration file**: `codependix.config.ts` (workspace-level at `configuration/codependix.config.ts`; per-project configs spread `projectDefaults` for README anchor blocks)
+**Configuration file**: `codependix.config.ts` (workspace-level at `configuration/ic-suite/codependix.config.ts`; per-project configs spread `projectDefaults` for README anchor blocks)
 
-**Boundary rules** (from `configuration/codependix.config.ts`):
-- **Generic `layer:*` rules** — Apply to all four toolchains: a layer may reach its own layer and every layer beneath it (e.g., `layer:analysis` → `layer:analysis`, `layer:output`, `layer:cli`).
+**Boundary rules** (from `configuration/ic-suite/codependix.config.ts`):
+- **Generic `layer:*` rules** — Apply to all five toolchains: a layer may reach its own layer and every layer beneath it (e.g., `layer:analysis` → `layer:analysis`, `layer:output`, `layer:cli`).
 - **Per-package `name:*` rules** — Tighten generic rules, catching mis-tagged packages and cross-toolchain edges (`layer:*` cannot express `suite:*` tags).
 - Rules are ANDed: every rule must pass. Rules are verified to hold across all projects before being written; a red rule on arrival is a backlog item, not a gate.
 
@@ -271,11 +281,11 @@ codependix map --config <path> [--check boundaries,reports] [--write] [--format 
 | `--format` | Output format for stdout |
 
 **Nx target** (inferred by `@codependix/nx`):
-- `codependix-gate` — **Fail** if any boundary rule is broken in the graphs built over the project and its dependencies. Only findings charged to the project itself cause a failure.
+- `codependix-bound` — **Fail** if any boundary rule is broken in the graphs built over the project and its dependencies. Only findings charged to the project itself cause a failure.
 
 **Gate semantics**:
 - Graphs are built over the project **and everything it depends on**.
-- `nx affected -t codependix-gate` scopes to changed projects.
+- `nx affected -t codependix-bound` scopes to changed projects.
 - The workspace-wide `configuration:codependix` target is **write-only** (regenerates README graphs on the default branch during release) and is not reachable from `guard-code`.
 
 **Findings charged to projects**: Each boundary violation (`ForbidViolation`, `AllowViolation`, `Cycle`) carries the project that owns the importing file/module. The gate counts only violations whose `projectName` matches the project under test.
@@ -286,11 +296,12 @@ codependix map --config <path> [--check boundaries,reports] [--write] [--format 
 
 **What it measures**: File sizes (lines, bytes), symbol counts (functions, classes, methods, static methods), and comment-block word counts per language. Custom counters for project conventions (Module Files, Service Files, Unit Tests, etc.).
 
-**Configuration file**: `codometer.config.ts` (per-project, spreading shared `codometerConfiguration` from `configuration/codometer.config.ts`)
+**Configuration file**: `codometer.config.ts` (per-project, spreading shared `codometerConfiguration` from `configuration/ic-suite/codometer.config.ts`)
 
-**Shared configuration** (`configuration/codometer.config.ts`):
+**Shared configuration** (`configuration/ic-suite/codometer.config.ts`):
 - **Custom statistics**: File-name patterns (`.module.ts`, `.service.ts`, `.command.ts`, etc.), symbol kinds (`static` methods), and comment budgets per language.
-- **Comment budgets**: 128 words per block for all languages; 256 words for shell (looser for header documentation).
+- **Comment budgets**: plain comment blocks are capped at 48 words and 8 lines per language, shell at 48 words and 16 lines, and each JSDoc declaration kind has its own smaller cap (class and file headers get the most).
+- **Directory tree limits**: folder breadth is capped at 12 entries and nesting depth at 9.
 - **Limits**: Zero-tolerance (`value: 0`) on each comment budget's `custom.<label>` metric — counts blocks exceeding the budget.
 - **Outputs**: JSON report (`codometer-report.json`) and Markdown badges in `README.md`.
 
@@ -307,13 +318,13 @@ codometer measure --config <path> [--check limits] [--output-json] [--output-mar
 | `--inputs <globs>` | Override configured inputs for a one-off run |
 
 **Nx target** (defined in `nx.json` under `targetDefaults.codometer` with multiple overrides for different project depths):
-- Configuration `check`: `measure --config codometer.config.ts --output-json --check limits`
-- Configuration `write`: `measure --config codometer.config.ts --output-json --output-markdown README.md`
+- Configuration `check`: gates the project's declared limits and writes the report the pull request's Codometer section reads
+- Configuration `write`: writes the markdown report to `documentation/codometer.md`
 - Runs from the project root (`cwd: "{projectRoot}"`) so `--config codometer.config.ts` resolves the project's own file and limits address paths like `Compiled JavaScript.size`.
 
 **Enforced limits**:
 - **Max 512 lines per file** — enforced by codometer limits on file-size metrics.
-- **Max 128 words per comment block** (256 for shell) — enforced by comment-budget counters with `maximumWords` and zero-tolerance limits.
+- **Max 48 words per plain comment block** (and 8 lines; shell gets 16 lines) — enforced by comment-budget counters with `maximumWords` and zero-tolerance limits.
 
 **Gate semantics**:
 - `codometer:check` writes the JSON report then fails if any declared limit is exceeded.
@@ -328,23 +339,24 @@ codometer measure --config <path> [--check limits] [--output-json] [--output-mar
 
 **What it measures**: Validates that generated code matches its declared template. Computes a similarity score (0–100) per instance against its template, using language-aware comparison (AST for TS/JS/Python, token-based for others).
 
-**Configuration file**: `conformetry.config.ts` (workspace-level at `configuration/conformetry.config.ts`)
+**Configuration file**: `conformetry.config.ts` (workspace-level at `configuration/ic-suite/conformetry.config.ts`)
 
-**Workspace configuration** defines generator groups (e.g., `jupyter-notebook-application`, `nestjs-command-project`, `react-component`) with:
-- Template paths under `configuration/conformetry-templates/`
+**Workspace configuration** defines generator groups (e.g., `jupyter-notebook-application`, `nestjs-command-project`, `nestjs-graphql-application`, `react-component-folder`, `tanstack-route`) with:
+- Template paths under `configuration/ic-suite/conformetry-templates/`
 - Input schemas (Zod → JSON Schema for generator prompts)
 - Instance globs and optional per-group substitutions
 - Thresholds (minimum score to pass)
 
 **CLI command**:
 ```bash
-conformetry validate --config <path> [--check] [--templates <names>] [--instances <globs>]
+conformetry validate --config <path> [--templates <names>] [--instances <globs>] [--languages <names>] [--threshold <ratio>]
 conformetry generate --config <path> [--template <name>] [--inputs <json>]
 ```
 
 | Flag | Purpose |
 |------|---------|
-| `validate --check` | Fail if any instance scores below its threshold (the gate) |
+| `validate --threshold` | Minimum similarity ratio an instance must reach; validation fails an instance below it (the gate) |
+| `validate --languages` | Narrow validation to specific languages |
 | `validate --templates` | Narrow validation to specific templates |
 | `validate --instances` | Override instance globs for a one-off run |
 | `generate` | Scaffold new files from a template (interactive prompts for inputs) |
@@ -355,67 +367,42 @@ conformetry generate --config <path> [--template <name>] [--inputs <json>]
 **Gate semantics**:
 - `nx affected -t conformetry-validate` scopes validation to changed projects.
 - The `threshold` option (per instance group in config) controls how much divergence is tolerated before failing.
-- Generated code (e.g., shadcn UI components) is excluded via pattern lists (`SHADCN_GENERATED_PATTERNS`) because editing vendored CLI output would be overwritten on the next `shadcn add`.
 
 **Findings charged to projects**: Each validation result carries the `instancePath` and `templateName`. The gate fails the project owning the instance path when the score falls below the group's threshold.
 
 ---
 
-## CI Gate Flow
+### coinagerie — Vocabulary and Glossaries
 
-The following sequence diagram shows how the toolchains gate a pull request in CI. There are **two separate gate paths**:
+**What it measures**: The words the code uses — identifiers, object keys, enum members, folder names and file names, split into lowercase words — against the markdown glossaries that define them. A word the code uses with no glossary entry, and an entry for a word the code no longer uses, both fail the check.
 
-1. **`guard-code`** — Runs callidescope, codependix, and conformetry gates per affected project (plus other workspace integrity checks)
-2. **`build-projects`** — Runs codometer measurement as part of every build
+**Configuration file**: `coinagerie.config.ts` (workspace-level at `configuration/ic-suite/coinagerie.config.ts`; each project's own file sits in its `configuration/` folder). `--config` is required: coinagerie never searches for a configuration.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Dev as Developer
-    participant PR as Pull Request
-    participant NX as Nx Affected
-    participant CAL as callidescope-gate
-    participant DEP as codependix-gate
-    participant CON as conformetry-validate
-    participant CAT as catalog-manifests
-    participant LCK as lockfile
-    participant PRT as project-ports
-    participant RDP as readme-projects
-    participant VSC as vscode-extensions
-    participant BLD as build-projects
-    participant COD as codometer:check
-    participant GH as GitHub Checks
-
-    Dev->>PR: Push branch
-    PR->>NX: nx affected -t guard-code
-    par Parallel per affected project
-        NX->>CAL: callidescope --check depth,breadth
-        CAL-->>NX: depth/breadth findings per project
-        NX->>DEP: codependix map --check boundaries
-        DEP-->>NX: boundary violations per project
-        NX->>CON: conformetry validate --check
-        CON-->>NX: conformance scores per project
-    end
-    NX->>CAT: Validate catalog manifests
-    NX->>LCK: Validate lockfile integrity
-    NX->>PRT: Validate project ports
-    NX->>RDP: Validate README projects
-    NX->>VSC: Validate VS Code extensions
-    NX-->>GH: Aggregated pass/fail (guard-code)
-    GH-->>PR: Status checks (green/red)
-
-    Note over Dev,BLD: Separate gate path for codometer
-    PR->>NX: nx affected -t build-projects
-    NX->>BLD: build + codometer
-    par Parallel per affected project
-        BLD->>COD: codometer measure --check limits
-        COD-->>NX: limit breaches per project
-    end
-    NX-->>GH: Aggregated pass/fail (build-projects)
-    GH-->>PR: Status checks (green/red)
+**CLI command**:
+```bash
+coinagerie --config <path>            # print the glossary block, write nothing
+coinagerie --config <path> --check    # exit 1 naming missing and stale words
+coinagerie --config <path> --write    # rewrite every glossary, keeping definitions
 ```
 
-**Caption**: CI gate sequence. `nx affected -t guard-code` runs callidescope, codependix, and conformetry gates plus workspace integrity checks in parallel per affected project. Separately, `nx affected -t build-projects` runs the build plus codometer measurement. Each toolchain reports findings charged to each project, and Nx aggregates results into GitHub status checks.
+**Nx target** (inferred by `@coinagerie/nx`): `coinagerie-check`, with a `write` configuration that rewrites the glossary at `documentation/coinagerie.md`. A bare entry for a new word passes; definitions are written by hand with the `coinagerie-define` skill, because the check judges which words are listed, not whether they are defined.
+
+---
+
+## CI Gate Flow
+
+Pull requests are gated by the matrix in `.github/workflows/continuous-integration.yml`. Each toolchain's gate runs as its own leg over the affected projects, so a red check names the toolchain that failed:
+
+| CI leg | Nx target | Toolchain |
+|--------|-----------|-----------|
+| 🧑‍⚕️ Static | `typecheck-code`, `format-code`, `lint-code`, `deprecate-code` | — |
+| 💂 Guard | `catalog-manifests`, `coinagerie-check`, `lockfile`, `project-ports`, `readme-projects`, `vscode-extensions` (its `targets` list must equal `guard-code`'s `dependsOn`, less the gates with legs of their own) | coinagerie, workspace integrity |
+| Callidescope Restrict | `callidescope-restrict` (sharded) | callidescope |
+| 🕸️ Codependix Bound | `codependix-bound` | codependix |
+| 👔 Conformetry Validate | `conformetry-validate` | conformetry |
+| 👷 Build | `build-projects` = `build` then `codometer` | codometer |
+
+Every gate charges its findings to the project that owns them and fails only that project, so `nx affected` scopes each leg to what a change touched, and GitHub shows one status check per leg.
 
 ### The `guard-code` Aggregator
 
@@ -430,22 +417,23 @@ Defined in `nx.json` under `targetDefaults.guard-code`, this `nx:noop` target de
   },
   "defaultConfiguration": "check",
   "dependsOn": [
-    "callidescope-gate",
+    "callidescope-restrict",
     "catalog-manifests",
-    "codependix-gate",
+    "codependix-bound",
+    "coinagerie-check",
     "conformetry-validate",
     "lockfile",
     "project-ports",
     "readme-projects",
     "vscode-extensions"
   ],
-  "description": "Aggregator for guard-code. `callidescope-gate` and `codependix-gate` are the inferred per-project gates, call-stack depth and dependency boundaries; neither has configurations, so the one `guard-code` is run with falls through to their defaults. `codependix-gate` builds its graphs over the project it is run for and that project's dependencies, charges each finding to the project that owns it, and fails only for a finding charged to that project, so `nx affected` scopes it to the projects a change touched. The workspace-wide `configuration:codependix` target is not reachable from here: it is write-only, and the release workflow runs it on the default branch.",
+  "description": "Aggregator for guard-code. `callidescope-restrict` and `codependix-bound` are the inferred per-project gates, call-stack depth and dependency boundaries; neither has configurations, so the one `guard-code` is run with falls through to their defaults. `coinagerie-check` is the inferred per-project glossary gate. `codependix-bound` builds its graphs over the project it is run for and that project's dependencies, charges each finding to the project that owns it, and fails only for a finding charged to that project, so `nx affected` scopes it to the projects a change touched. The workspace-wide `configuration:codependix` target is not reachable from here: it is write-only, and the release workflow runs it on the default branch.",
   "executor": "nx:noop",
   "inputs": ["default"]
 }
 ```
 
-Running `nx run <project>:guard-code` (or `nx affected -t guard-code`) executes all three IC-Suite gates plus workspace integrity checks for the affected projects. Neither `callidescope-gate` nor `codependix-gate` has configurations, so the configuration passed to `guard-code` falls through to their defaults.
+Running `nx run <project>:guard-code` (or `nx affected -t guard-code`) executes the four gating IC-Suite toolchains (all but codometer) plus workspace integrity checks for the affected projects. Neither `callidescope-restrict` nor `codependix-bound` has configurations, so the configuration passed to `guard-code` falls through to their defaults.
 
 ### The `build-projects` Aggregator
 
@@ -456,21 +444,15 @@ Running `nx run <project>:guard-code` (or `nx affected -t guard-code`) executes 
 }
 ```
 
-Every build is measured by codometer; a size-limit breach fails the build.
+Every build is measured by codometer; a size-limit breach fails the build. The `codometer` target runs through the `integration:codometer` executor, with a `check` configuration that gates the project's limit and a `write` configuration that writes `documentation/codometer.md`.
 
 ### Pre-Commit Hooks
 
-`lint-staged` (configured in `configuration/lint-staged.config.ts`) runs on every staged file:
-
-```bash
-nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code,conformetry-validate --configuration=check --parallel=4 --base=HEAD --head=<staged-commit>
-```
-
-This runs the full quality suite including `guard-code` (hence callidescope, codependix, conformetry gates) before commit. Note: `conformetry-validate` is invoked separately (not through `guard-code`) and `codometer` is not part of the pre-commit gate — it runs in `build-projects` during CI.
+`lint-staged` (configured in `configuration/repository/lint-staged.config.ts`) runs `nx affected` over the staged changes, selecting projects the way CI does, with the same `lint-code` target family that the `validate-code` skill runs. `codometer` is not part of the pre-commit gate; it runs in `build-projects` during CI.
 
 ### CI Workflow
 
-GitHub Actions (`.github/workflows/continuous-integration.yml`) runs the same `nx affected` command on pull requests. The `validate-code` skill documents the full local validation workflow:
+GitHub Actions (`.github/workflows/continuous-integration.yml`) runs the matrix above on pull requests. The `validate-code` skill documents the full local validation workflow:
 
 1. **Auto-fix** — `nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=write --base=main`
 2. **Verify** — `nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check --base=main`
@@ -481,12 +463,11 @@ All checks must pass before proceeding. Failures are triaged with the `triage-in
 
 ## No-Shared-Package Constraint
 
-<!-- openwiki: broken internal link [../documentation/adr/0013-name-the-ic-suite-layers.md#the-no-shared-package-constraint] file "../documentation/adr/0013-name-the-ic-suite-layers.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-The four toolchains share nothing today but a logger, and the layer vocabulary **must not change that**. No cross-toolchain `@ic-suite/*` package is created. The common `ConfigurationService` shape is a **convention, not an imported type** — each toolchain's `core` declares its own structurally identical shape, and no toolchain imports that shape from anywhere else. A later session that "simplifies" the four toolchains onto a shared dependency is undoing this decision, not completing it ([ADR 0013](../documentation/adr/0013-name-the-ic-suite-layers.md#the-no-shared-package-constraint)).
+The five toolchains share nothing today but a logger, and the layer vocabulary **must not change that**. No cross-toolchain `@ic-suite/*` package is created. The common `ConfigurationService` shape is a **convention, not an imported type** — each toolchain's `core` declares its own structurally identical shape, and no toolchain imports that shape from anywhere else. A later session that "simplifies" the five toolchains onto a shared dependency is undoing this decision, not completing it (`documentation/adr/0013-name-the-ic-suite-layers.md`).
 
 ## Integration with Workspace
 
-- **Nx plugins** (`callidescope-nx`, `codependix-nx`, `conformetry-nx`) integrate each suite into the Nx workspace, inferring per-project targets that follow the Nx dependency graph.
+- **Nx plugins** (`callidescope-nx`, `codependix-nx`, `coinagerie-nx`, `conformetry-nx`) integrate each suite into the Nx workspace, inferring per-project targets that follow the Nx dependency graph.
 - **Agents** (`*-agents`) are skill packages installed back from `skills-lock.json` like any other vendored skill — they do not participate in the five-layer spine.
 - **Examples** (`*-examples`) are test fixtures executed by CI so guides cannot rot; they are deliberately non-publishable.
 - **Inline compilation**: Where one workspace package's code is compiled into another's build output, the published tarball carries it without naming it as a dependency. The dependency stays a single package in the workspace.

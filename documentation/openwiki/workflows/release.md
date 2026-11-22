@@ -10,8 +10,20 @@ sources:
     resource: repo://.github/workflows/continuous-deployment.yml
   - id: openwiki-source-8037e2358a2c4f9b2c722a11
     resource: repo://AGENTS.md
-  - id: openwiki-source-8b3afa19acb17914a58dded3
-    resource: repo://configuration/release.config.cjs
+  - id: openwiki-source-cbd6c49eeb76f47b10c7a008
+    resource: repo://compliance/src/modules/pull-request/pull-request-validation.service.ts
+  - id: openwiki-source-70c07817764b8e76381afb35
+    resource: repo://configuration/repository/release.config.cjs
+  - id: openwiki-source-9050ec531fdfc219cce5d467
+    resource: repo://deployment/src/modules/link-packages/link-packages.service.ts
+  - id: openwiki-source-c53a5dd04b554f9b6c1ef99e
+    resource: repo://deployment/src/modules/publish-packages/publish-packages.service.ts
+  - id: openwiki-source-944d708934ad3b8ac905b752
+    resource: repo://deployment/src/modules/tag-packages/tag-packages.constants.ts
+  - id: openwiki-source-ffb3479b9d9d8ab20701c837
+    resource: repo://deployment/src/modules/tag-packages/tag-packages.service.ts
+  - id: openwiki-source-2b0ca4274d34718ef635e448
+    resource: repo://deployment/src/modules/version-packages/version-packages.service.ts
   - id: openwiki-source-97a6b16797389e96d8f2c425
     resource: repo://documentation/adr/0016-inline-logger-into-published-packages.md
   - id: openwiki-source-b42e459b34f258e0cbfab07f
@@ -20,23 +32,14 @@ sources:
     resource: repo://documentation/development/release-process.md
   - id: openwiki-source-6ba748254f38112b13d529da
     resource: repo://nx.json
-  - id: openwiki-source-946ec89b1bfb69ca9e4f59aa
-    resource: repo://publication/src/modules/link-packages/link-packages.service.ts
-  - id: openwiki-source-b0db28b0e85226073d8f1915
-    resource: repo://publication/src/modules/publish-packages/publish-packages.service.ts
-  - id: openwiki-source-44d538acf37b0d483c71fdae
-    resource: repo://publication/src/modules/tag-packages/tag-packages.constants.ts
-  - id: openwiki-source-25f41164acd961929d3c4cbb
-    resource: repo://publication/src/modules/tag-packages/tag-packages.service.ts
-  - id: openwiki-source-b5468ca0b2773b8c34e743e2
-    resource: repo://publication/src/modules/version-packages/version-packages.service.ts
-  - id: openwiki-source-becef891dbc56230c5b6e585
-    resource: repo://validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts
-generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+verified:
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 ---
 # Release Process
 
-Releases are fully automated on merge to `main`. The process runs in the **Continuous Deployment** workflow (`.github/workflows/continuous-deployment.yml`) as the **🦸 Releases** target. It coordinates Nx Release for the 29 publishable ic-suite packages and semantic-release for the single codebase version, so a release lands on `main` as one commit that carries both the root version and every package version.
+Releases are fully automated on merge to `main`. The process runs in the **Continuous Deployment** workflow (`.github/workflows/continuous-deployment.yml`) as the **🦸 Releases** target. It coordinates Nx Release for the 36 publishable ic-suite packages and semantic-release for the single codebase version, so a release lands on `main` as one commit that carries both the root version and every package version.
 
 ## Overview
 
@@ -47,11 +50,11 @@ The repository operates at two distinct release tiers:
 | Repository root | semantic-release | Root `package.json` version | `v<version>` (e.g., `v2.34.0`) | No |
 | Publishable packages | Nx Release | Each ic-suite package independently | `<project>@<version>` (e.g., `codometer-core@0.1.0`) | Yes |
 
-Only the 29 **publishable packages** across the four IC suites (`conformetry`, `codometer`, `callidescope`, `codependix`) are published. The 8 non-publishable packages (`*-agents` and `*-examples`) are explicitly excluded in `nx.json` and never reach npm.
+Only the 36 **publishable packages** across the five IC suites (`callidescope`, `codependix`, `codometer`, `coinagerie`, `conformetry`) are published. The 10 non-publishable packages (`*-agents` and `*-examples`) are explicitly excluded in `nx.json` and never reach npm.
 
 ### Dual Versioning Scheme
 
-- **Nx Release owns per-package versions**: Each of the 29 publishable packages gets its own independent version derived from conventional commits affecting that package (reach determined by the dependency graph as described in ADR 0023). Tags follow the pattern `<projectName>@{version}` (e.g., `conformetry-cli@0.1.0`). Each package maintains its own `CHANGELOG.md` that ships inside the published package.
+- **Nx Release owns per-package versions**: Each of the 36 publishable packages gets its own independent version derived from conventional commits affecting that package (reach determined by the dependency graph as described in ADR 0023). Tags follow the pattern `<projectName>@{version}` (e.g., `conformetry-cli@0.1.0`). Each package maintains its own `CHANGELOG.md` that ships inside the published package.
 - **semantic-release owns the root version**: The repository root has a single version (`v<version>`, e.g., `v2.34.0`) that semantic-release bumps based on the squashed merge commit. This is the only GitHub release created; the README version badge points at the latest `v*` tag.
 
 The two versioning systems are independent: a codebase release may happen without any package releasing (if only non-publishable code changed), and packages may release without a codebase release (if a `no-release` commit bumps packages but not the root).
@@ -65,6 +68,8 @@ The `pull-request-release-significance` check enforces that the PR title's type 
 Release significance order (highest to lowest): `BREAKING CHANGE`/`!` → `feat` (minor) → `fix`/`perf`/`refactor`/`build`/`ci` (patch) → `docs`/`style`/`test`/`chore` (none). The `no-release` scope suppresses any bump.
 
 ## The 6 Release Steps
+
+Between the version step and the tagging step the workflow also builds every project and regenerates committed output (call traces, dependency graphs, generator inventory, synchronized config, codometer measurements, coinagerie glossaries) so the release commit carries it; the six steps below are the release proper.
 
 ### 1. 🏷️ Version Packages (`nx release --skip-publish`)
 
@@ -129,7 +134,7 @@ A new publishable package needs `"version": "0.0.0"` added to its `package.json`
 
 ## Independent Package Versioning with Cascading Dependents
 
-The 29 publishable packages are versioned **independently** using Nx Release (`projectsRelationship: "independent"`), not in lockstep across the repository or per suite. Conventional commits determine the semver bump for every package a commit affects (reach determined by the dependency graph as described in ADR 0023), and Nx Release **automatically cascades patch version bumps to internal dependents** within the publishable packages (`updateDependents: "auto"` in `nx.json`).
+The 36 publishable packages are versioned **independently** using Nx Release (`projectsRelationship: "independent"`), not in lockstep across the repository or per suite. Conventional commits determine the semver bump for every package a commit affects (reach determined by the dependency graph as described in ADR 0023), and Nx Release **automatically cascades patch version bumps to internal dependents** within the publishable packages (`updateDependents: "auto"` in `nx.json`).
 
 This decouples the release cycle of public npm packages from the monorepo's internal applications and tools, while guaranteeing internal consistency across multi-package suites without manual bump tracking.
 

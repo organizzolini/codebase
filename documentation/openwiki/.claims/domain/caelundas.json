@@ -1,142 +1,146 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:a6a6a18c322f36b0c0f2c2ea53a074179a0da6b63d1d97fbf83fd03542aa225e",
+  "pageVersion": "sha256:b5d3c322932d2bca394f9cfa5a14e64342fee56a3762ed6bbb15990cc2ae30b2",
   "claims": [
     {
       "id": "claim_93144164231c422d91ca0724b3c4258b",
-      "statement": "Caelundas is a NestJS CLI application that computes planetary positions via Swiss Ephemeris (JPL DE431), detects astronomical events in two passes (perfective and progressive), stores them in Postgres, and renders .ics and JSON calendar files.",
+      "statement": "Caelundas computes planetary positions via Swiss Ephemeris (JPL DE431), detects astronomical events in two passes (perfective and progressive), stores them in Postgres, and renders .ics and JSON calendar files; the domain is four projects: caelundas-cli, caelundas-db, caelundas-api and caelundas-web.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/AGENTS.md#L1-L50",
-          "version": "repo-lines-v1:sha256:5d40acccb8c2d182dda4c4c3f626084419443e1bd5b9b85158b1f1ca6c0a9708:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkYTlkNTI1ZTdiMzhkMWJmZWIyNTIxM2U2NTAzYjBjNDQzYTk3ZjNjZjdlYTA2ODcwYmYwMjk5MjQ5NGQ1MWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE5YmIzY2ZmMTZjNzYwZWFjMjg0NzAzYmU5OTdiMDhlYzFmM2EyNzY5YWMxZDkzMWY1MTNhZDAzMDI0NmU1NDYifQ"
+          "resource": "repo://projects/caelundas/caelundas-api/README.md#L1-L8",
+          "version": "repo-lines-v1:sha256:15f2e645251f0b4d15bebeef2208a9b2894d7b82c212c5301f1939182d2f175e:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGI0YWMyNWQ4OTIyZTJiMTJiNmIyMDY0OWRjZGI0YjIwZmQxNzRhZGQzNDA2NmJhZTZjYTczZTdhZGEwYTk0ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODcxM2RiZWMyM2U3ZWE2NmYwZGE2NmQ5OWQ0YzQ2ZDJjYWMxNzgwYTExNTNjZDgyMzQzZGYwOTkyODU1MTQ4YyJ9"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L1-L10",
-          "version": "repo-lines-v1:sha256:898c0440fbe90927a9a66ef90460426f2e7c0ffa4b36a91e544a7a7fcf893dda:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5MmI4ODk5NjMyOGQ1MGQyODJjOTlkNDdjNjU2NWU5ZDBlMmM0MmNhODA2NTRhNDUxM2JhZGMwYjQ3MTg1MzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI0N2E0MjJkNWUwNmQ1ZWU0NWQwNThhZDQ5MDZhNWU1NzgwMzk0ZjEyYzA1MTA3OTMwYmZiZjU4ODI2YTUxYTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVhYjg4ZDlmNzA1ZTc3NjI1ZGY5NjhlMDRjOTg2MTQ4ZTkzNTVjZDZiODhjMjk4Mjk1NzFhOGZjNzNlZGY5ZGUifQ"
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L1-L12",
+          "version": "repo-lines-v1:sha256:fb7403d57264bfc0b975200fde438341b6e4879599420536881a285a5176f12f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5MmI4ODk5NjMyOGQ1MGQyODJjOTlkNDdjNjU2NWU5ZDBlMmM0MmNhODA2NTRhNDUxM2JhZGMwYjQ3MTg1MzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyOWE0OTAwZTI5MmM0NTU0YTQwNTliOWRkMThmOTY1YzgxYzJmMWUxMmZjNDhlODY4MmFlMzI2MzAyOWNiYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllZWIwMDBjZmNjYmY1YjgyNzlmNDJhNWZhYmUzNGY0YzA0Njk5YmI2ZGYzODNkNTMzMTk5ZWQxMjk3N2E5ZDAifQ"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L71-L80",
+          "version": "repo-lines-v1:sha256:6e181ead1119a7274ca3763476113f23a9be1f5005965d28e5c3ef3eaa2cd3bd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0M2YxNjMwNzg0Mjk3M2YwODg3ZjFmNTA0OWQyZmYyMWM3MmMwYjNhODY2MTMyZjc3YmU1OWVmMWFjZDY2MmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5NjkzMWI1NDg3MGRjMjcwNjdkZGUwODE5OTM3MDdiZGMxNGI3OWQzZGM2MWJmMmUwZGJiN2IwOWE4NzY4MGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcwMjk0OWMzYjBlMmYyYjc2NGQxYTVjMzFmOTk1M2M4Y2IxYWY0YTZlNGM0ODg5YzQ1YmIzYmIxNjA0MDRiNTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFmMzFmMjdhMWE1NDg1NDM1ZThjMTU2NjViNGUzYWZjYTIyZDRhMDYxODllOGYzNjJmMmQ2YTVjZGFiM2RkOTYifQ"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-db/README.md#L1-L12",
+          "version": "repo-lines-v1:sha256:55463f938916dc427efdbd214116d74f35914de5c9734ddd656050c9468e4822:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2NjIzMWQyMDZjNTg1Njc4NmRlYTA5YTk1ZGJiZjlmODA5Njc5NDZkY2YzOGIxNDFjMGJlNjM3ZmRkMjQ0NTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVhMmJmODIwNzg0MzY0NmQ4MDFjZWFhMjI4YmVlNzNiYjdiNmVhYWIyNWFkMzkyMjM3MDI0ZTYzYTIwNmJjYjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMxZGI3ODExOTY4MzNlMDhmNTZjZjY5NDc2MjA5MzYyMzgzODgzYjQ3NDQ5ZWE1ZmRjODA3ODhhNDAzYjBiNjQifQ"
         }
       ]
     },
     {
       "id": "claim_bbaade4c316e489d86bacb06fa0051cb",
-      "statement": "The CLI uses 40+ NestJS domain modules organized under src/modules/, including core modules (Input, Math, Ephemeris, Calendar, Database, CalendarEvents, Datetime), event family modules (Aspects, MajorAspects, MinorAspects, Triple/Quadruple/Quintuple/SextupleAspects, SpecialtyAspects, Stellium, Eclipses, Retrogrades, Ingresses, DailyCycles, MonthlyLunarCycle, AnnualSolarCycle, Twilights, Phases), and pipeline modules (Perfective, Progressive).",
+      "statement": "The CLI is organized under src/modules/ as: caelundas (root command), input, ephemeris (with datetime, math and ephemeris-download children), perfective (with eclipses, phases, retrogrades, ingresses, twilights, daily-cycles, annual-solar-cycle and monthly-lunar-cycle children), aspects (with stellium), progressive, night-sky, calendar-events, tags, and calendar.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/AGENTS.md#L70-L84",
-          "version": "repo-lines-v1:sha256:abb5909280fe5229bf47f21f32ff008fcfd6d7ce8386dbf13f45b5ecfdaf6573:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2MDdhMGE0NGM2MWY0M2ZmZmIwYmFkMmRkMTlkMGFiNDUyODhiZGU3MWNjOWU3OGU3MDIxN2NlODI2ZGEwNDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI2YTdlMjhkNDZmMTliOGUxNWNjYzJhNTA3OTE3YmZmNjc1MmIyOGEwYTE3NWVmMzI2MTliM2Y0NGI2MTEwZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk4NzY1NDg5ZWNhNDdkMjUwZGQ5MjQyMDJiNTFiZGUxZjUwYjQxMDg1ODUzNGIwNjMxY2NiNTIxZDFmNWMxNjQifQ"
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L295-L316",
+          "version": "repo-lines-v1:sha256:9eacd6c77ba999c2fa221476a01cfd125ff23dd5c244a05992b1c0f92de662b0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzZDc4ZjA2YzE0MDc0MzhmNTRkYjkzMzBjZjJmMWIwMDgyMjE0YzQwNDdkMDFmN2UyNzNmN2YzMTc3YjViMzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3NjMyMGViYWNlYjI3ZTAwZGIwZjYwMmNkNGQyMDhlNGEyYTJhOThmNGQwZGFkZTE2MTA1OWIwY2ZiNGU1N2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFlNGQ0ZmNhODVhYTJiOTY5MmFkNGQ1MTQ3NDdhYmEyMzAzY2QxODVhYWE0YTQwOTk4MDk1ZDZiNjFhZWU0ODUifQ"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.module.ts#L1-L71",
-          "version": "repo-lines-v1:sha256:ecd6596f9a5a441f464ab4cc390083f723e209be7ca7c50c750eb70e0f6852cc:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3Y2MzNTVkYTFlM2Q2MGFmZWIyNjVlMGE5YTdiYWJkMDJkMDdmZGVkMzY4Y2RhZmRjMDI5NzliNmU5MjdmZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1ODBiNzY1MThkYWU5NzlmYWViZDAyMzY3YTI5MjkyYTUwZDk3NjA5MjI1MWEzOGE2Y2UzMDg4MGJhNDI4MjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVhZTg1YWZhMzA4YWFiY2MxODBiZDA2YTA1ZTFmMzkyZjc1NTU4YmMzODViZjdmZTUwNzViY2FkNjQzMGNmM2QifQ"
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.module.ts#L1-L72",
+          "version": "repo-lines-v1:sha256:4d25d908a69e3ba4b62c3e5f1ac19dc3368f541629586ac3023a3045fee45c9b:eyJzZWxlY3RlZExpbmVDb3VudCI6NzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3Y2MzNTVkYTFlM2Q2MGFmZWIyNjVlMGE5YTdiYWJkMDJkMDdmZGVkMzY4Y2RhZmRjMDI5NzliNmU5MjdmZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVhZTg1YWZhMzA4YWFiY2MxODBiZDA2YTA1ZTFmMzkyZjc1NTU4YmMzODViZjdmZTUwNzViY2FkNjQzMGNmM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_d33ea5723f864517a364cafe5d103db8",
-      "statement": "Configuration is driven by environment variables validated via Zod schema: LATITUDE, LONGITUDE, START_DATE, END_DATE, OUTPUT_DIRECTORY, plus CAELUNDAS_POSTGRES_* for database; timezone is derived from coordinates via @photostructure/tz-lookup, not configured separately.",
+      "statement": "Configuration is driven by environment variables validated via Zod schema: LATITUDE, LONGITUDE, START_DATE, END_DATE, OUTPUT_DIRECTORY, plus CAELUNDAS_POSTGRES_* for the database; timezone is derived from coordinates, not configured separately.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L28-L48",
-          "version": "repo-lines-v1:sha256:c9a1bcb8fb32cd0f8b05e37bd75680538ad01c828b5d1a0b5a43fe3f5ddfa75e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmMjc2NGI4MjViNGI5NDE3ZGJmNjM3YTcwYjRlOTViZTAxZTBmNDU2MjYxMzQxODlmNDdkOWIwYzA0NmQwYzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3ZjFjN2E0M2MzMmFmNjc4ZDIzYWZmODViMmI5ZGY1MGU4NDM2MGUwMTE1ZThmZjc5NzdiMmUyNGNiZGMyMGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU3OTBhZTFiMDgzZjAzOGYwYWZkNDE0YWVlZDNmOWE3Yjc2M2M1YWZlZjZiZmNmYjNiZWI1MTM1NGU4N2MwM2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1NzE1ODUxY2U4NzU4YmUwNTJhYjU0MWM4ZjZlMjlhMTcwYzlkN2Y0ZDg2NzRiODc1MmI0NGU1NmQwNDU0MzUifQ"
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L36-L60",
+          "version": "repo-lines-v1:sha256:31f95714f889ecb31ce685cecfffa05fd51f25ee0a39563d9a57887f8faabc6a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmMjc2NGI4MjViNGI5NDE3ZGJmNjM3YTcwYjRlOTViZTAxZTBmNDU2MjYxMzQxODlmNDdkOWIwYzA0NmQwYzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU3OTBhZTFiMDgzZjAzOGYwYWZkNDE0YWVlZDNmOWE3Yjc2M2M1YWZlZjZiZmNmYjNiZWI1MTM1NGU4N2MwM2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNmZjA4YzMyMTEzZDVjMjA2YTgzM2VhZjk5YTNlYzhkYjlmYjZkNzkxMGQwN2FjYzVjNTk5YzUwZGRmYTcwY2QifQ"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/input/input.constants.ts#L1-L81",
-          "version": "repo-lines-v1:sha256:d6377cf346f71df19a816a42554ba616d41e98fdd08d3ad5aa1c16e644daac60:eyJzZWxlY3RlZExpbmVDb3VudCI6ODEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3MGZmMzZkMjAwMTI2YjhjZTZmYzYwYmI2NzZhMWY3ZGJiNWQ3NDUyMTA2YWE4N2YzYjVmOTljMzE4NzBhMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/input/input.constants.ts#L1-L60",
+          "version": "repo-lines-v1:sha256:18cb16829ff86c4026c2e0b52682dd15fd3a500cefe9277ae9f633f6784bed59:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3MGZmMzZkMjAwMTI2YjhjZTZmYzYwYmI2NzZhMWY3ZGJiNWQ3NDUyMTA2YWE4N2YzYjVmOTljMzE4NzBhMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_c2f8dce785714def9500a40b41d8cfbe",
-      "statement": "Swiss Ephemeris data files (seas_18.se1, sepl_18.se1, semo_18.se1 covering 1800-2399) are downloaded to data/ephemeris/ via nx run caelundas-cli:download-ephemeris; the run fails fast with EphemerisFilesMissingError if any file is missing or empty, preventing silent fallback to the less precise built-in ephemeris.",
+      "statement": "Swiss Ephemeris data files (seas_18.se1, sepl_18.se1, semo_18.se1) are downloaded to data/ephemeris/ via nx run caelundas-cli:download-ephemeris; the run stops before it starts with EphemerisFilesMissingError if any file is missing, preventing silent fallback to the less precise built-in ephemeris.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L50-L58",
-          "version": "repo-lines-v1:sha256:a9f28055e000fd3ec4e77825af63ddb651504c7c40bad95a5dfda2aeda9368b5:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTY1NzIzYzUyMjBjMWRjN2ZjMThkOTliNmNlNjMwZjAwZDQxMDMzZmRlNzc2ZTY4NjVlYmI2MGU0ZDhiNjg2NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjU1ZDAzNjAxNzYwYmIyZjlhNDU5YTQyMTMzNWQxZjQ3ZmIwMTZiMDg1ZTU4MzkwMjA5ZDY2OTNkODc3MDRkYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTVkNzkyNTM1MWNmYzJhN2E2NTY2NWJkNTRkNWZlY2U0YjVhNDk2YzZkOWIwZDViYTliZDFiOTljZjRjMzZhYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGZmNDIxMjgwYmNhOWQ0Y2ZkNWRkMThmNTliYjY3NmQ1MzI4OTk2YWVhMjUyNmE1OTcwOGFjYTZlYjI2ZWI1NiJ9"
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L61-L70",
+          "version": "repo-lines-v1:sha256:a1f63fe65ad612a45ef58354e4f0df397df1d103a3727042a3f3c85127309dbe:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2NTcyM2M1MjIwYzFkYzdmYzE4ZDk5YjZjZTYzMGYwMGQ0MTAzM2ZkZTc3NmU2ODY1ZWJiNjBlNGQ4YjY4NjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ZDc5MjUzNTFjZmMyYTdhNjU2NjViZDU0ZDVmZWNlNGI1YTQ5NmM2ZDliMGQ1YmE5YmQxYjk5Y2Y0YzM2YWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllZWJkM2JjOGNhOTM0ZDY5ODRkY2IwMTUzYjIxMjc1YzQzYzFkOTA0ZTcwYzE2NTZlMjEyNDIyZjI5MTg5ZjkifQ"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.constants.ts#L1-L52",
-          "version": "repo-lines-v1:sha256:9c75f990e8e5136ac77be2ee0b85a4a81b60a5d4c5eb03bc50079081ae6a6e5c:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3MGZmMzZkMjAwMTI2YjhjZTZmYzYwYmI2NzZhMWY3ZGJiNWQ3NDUyMTA2YWE4N2YzYjVmOTljMzE4NzBhMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/modules/ephemeris-download/ephemeris-download.constants.ts#L1-L45",
+          "version": "repo-lines-v1:sha256:0f9d02c5db68db70a2634148c73903bcdac20e77329df22a2a2505325bb90acd:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3MGZmMzZkMjAwMTI2YjhjZTZmYzYwYmI2NzZhMWY3ZGJiNWQ3NDUyMTA2YWE4N2YzYjVmOTljMzE4NzBhMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/modules/ephemeris-download/ephemeris-download.utilities.ts#L1-L51",
+          "version": "repo-lines-v1:sha256:2afed565dbb505076a5d8676068e10ab6bc1019db1d249281b3a14a299f78b8d:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmYjQ4NTA3YTRiOWNkNmFlMTBkNGRjZWM1NGJhYjI5NWUyM2UwNWUwOGZmNjk5ZWIxOWNjYWM3NDRkMTBlMDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_339df25323034cad9e04371154982496",
-      "statement": "Event detection runs in two passes: PerfectiveService scans minute-by-minute for exact moments (aspects perfecting, stations, ingresses, eclipse maxima, phase crossings, twilight boundaries); ProgressiveService pairs forming/dissolving or begin/end boundaries from perfective events into duration spans (aspect orbs, retrograde periods, eclipse spans, sign dwell times, phase spans, daylight/twilight/night spans).",
+      "statement": "Event detection runs in two passes: PerfectiveService scans the ephemerides minute by minute for exact moments, and ProgressiveService turns those moments into duration spans by fanning out to each domain service's detectProgressive (aspects, retrogrades, eclipses, ingresses, monthly lunar cycle, twilights, phases, annual solar cycle).",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L60-L71",
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L71-L82",
           "version": "repo-lines-v1:sha256:31de64ed8bc838638c6e4810983d49cb63432e2c05ba0a1cdf00a45ac7d576f2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0M2YxNjMwNzg0Mjk3M2YwODg3ZjFmNTA0OWQyZmYyMWM3MmMwYjNhODY2MTMyZjc3YmU1OWVmMWFjZDY2MmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcwMjk0OWMzYjBlMmYyYjc2NGQxYTVjMzFmOTk1M2M4Y2IxYWY0YTZlNGM0ODg5YzQ1YmIzYmIxNjA0MDRiNTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY0NDZlZGNhYzc3Njg5MjI2ZGEzNjY3YjhmODA4YWI5OGEyYWE1MTUyNzFhYWY0YTYxNTgyNGMxMzRlZmY1YjUifQ"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/perfective/perfective.service.ts#L1-L273",
-          "version": "repo-lines-v1:sha256:3aee1e9658e6a4008b95c894a5c7cd5eb171c4e14f7f07e14ac76ba085531d85:eyJzZWxlY3RlZExpbmVDb3VudCI6MjczLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0N2QxZjI1MmE3MGY4YzY0ZWVjYzA5NmY5MjQ1NjQxYjQ5Yzg4YTg4MDM1ODQ3YzIxOTdlYzNhOTdjODk0N2M0IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIyN2U1Nzg4ZDVkOWQ3M2QyNGE4MWRiYzBhNWE3NGJmYTgyYzljM2IzYWY5OWU1MmFmNzk2ZTkwYjQ2OGE4YTNkIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MSwiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIn0"
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/perfective/perfective.service.ts#L1-L270",
+          "version": "repo-lines-v1:sha256:129d9c5dd48ad6b6db12a3b6145a71a1708e389ce33bd9e115838b734536fc84:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0N2QxZjI1MmE3MGY4YzY0ZWVjYzA5NmY5MjQ1NjQxYjQ5Yzg4YTg4MDM1ODQ3YzIxOTdlYzNhOTdjODk0N2M0IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/progressive/progressive.service.ts#L1-L58",
-          "version": "repo-lines-v1:sha256:a4a2d6552ae8393806687caecf31a695fdb708153fc1ee16422e5fe610e34a32:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3ZDFmMjUyYTcwZjhjNjRlZWNjMDk2ZjkyNDU2NDFiNDljODhhODgwMzU4NDdjMjE5N2VjM2E5N2M4OTQ3YzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/progressive/progressive.service.ts#L40-L59",
+          "version": "repo-lines-v1:sha256:fd0067988b444b1ba2da844d078e249c8b66fd6a474c5848c196e10eb9db16f2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4Nzk2ZjRhY2EzYTIyMDNjZTdmNzExNTBkZTU0ZTUyYjNjOTI2ODk5OWVlNTA1NjkxN2FhOTQxMzBhNjE5N2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzZDZkZjI5MTUzZmFiMjRmZmYxZGY3ZWYzZDI2ODZhNjhiMjU4OTc3YzkyYTViNDUzOGRkNTI2ODA0YTIzYWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_1bcfaec4dc9d4fc6a9cbcf6e0b084dd3",
-      "statement": "Eleven event families are detected: Aspects (major/minor/harmonic/compound), Compound aspects (triple/quadruple/quintuple/sextuple/stellium), Monthly lunar cycle (8 phases), Planetary phases (Mercury/Venus/Mars), Eclipses (solar/lunar), Retrogrades, Ingresses (sign/decan/peak), Annual solar cycle, Lunar apsides, Daily cycles, Twilights.",
+      "statement": "The README lists eleven event families: aspects, compound aspects, monthly lunar cycle, planetary phases, eclipses, retrogrades, ingresses, annual solar cycle, lunar apsides, daily cycles, and twilights.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L72-L84",
-          "version": "repo-lines-v1:sha256:8967ab37d5764faab902d3c116c96ea3cd70793ec0488643119a43c15b8906d9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3MzcyNGE4ODIwZTQyOTRhZGQ5OTJhMmU1ZjRmMWZlMTZlYWFlNzBhN2NkMDZlMTE1NTUyNGE3ZmQ0ZjNiZDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkOTg4Mjk2NzQ1MzgwMGY1YjNkYTE5ODY2MDkxNWUzMTRmMjU1YzNiNmNjZmQ0Njg2NjBhNTQ2OTYwMzI4ZGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBkOWJjMjk1YWJmNzc3YWYzODFkMTY2NDU3MDUwMjBkYmM3YTNlYzNhNmQyYjczMDM2YjE3MGU0YzlmYmViNDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE3ZmM0NTI4N2Y3MGJiNTVjZDUwNGY1MWFhNTgyMThlYTUwYzc5MGRlODZhYzRhM2ZhNzA5YTdkMzg4N2JmZmQifQ"
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L71-L96",
+          "version": "repo-lines-v1:sha256:5069ee06b5b3ca55814cb713c2bce5b4fd716e9f3ca618812fda73e3f63c1dd4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0M2YxNjMwNzg0Mjk3M2YwODg3ZjFmNTA0OWQyZmYyMWM3MmMwYjNhODY2MTMyZjc3YmU1OWVmMWFjZDY2MmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcwMjk0OWMzYjBlMmYyYjc2NGQxYTVjMzFmOTk1M2M4Y2IxYWY0YTZlNGM0ODg5YzQ1YmIzYmIxNjA0MDRiNTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA3ZWJhYzNmZTM1ZjE1ZmEyZmJhOTk0NWM4MjJkYWE4NDk0YWVmYzkzM2ZjYmM2OGFhMmMwN2UxZTFjNWJkMTYifQ"
         }
       ]
     },
     {
       "id": "claim_c227e482f462437b8bd5adc00cc0f5d3",
-      "statement": "The companion web application (caelundas-web) is a TanStack Start server-rendered React 19 app with Tailwind CSS 4, file-based routing from src/routes/, connecting to the same Postgres database to browse stored events.",
+      "statement": "The companion web application (caelundas-web) is a TanStack Start server-rendered React app with file-based routing from src/routes/ that holds no data of its own: every event, facet, filter collection, calendar window and night-sky star comes from the caelundas-api GraphQL API.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-web/AGENTS.md#L1-L114",
-          "version": "repo-lines-v1:sha256:5d4a3eee096292825f2ba24155a8f0c9a3f76cbdc85adeaa009fb4b315508a5f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE0LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjZDZmMmE4Mzk4MjRkZDBmN2I4ZDM2NjJjMDBiMjUzNzYzNWZiY2QyZmU5ZDZmYTI1YTI3NTFmMzViMjUzNGMzIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIyM2ExNjU1NWI2ZGVhZGQyNjBjYTcyYzkyYmQ3NDZmNmIwYzhmNjhiYjE2OWRhZGM0NTFiNzY1MTRiMjNiZDY2IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJmZmQxZWMwNmU3ODVmZTI3ZGNjZGZiNmU0OThlZDcwNmU3ZTY0OTFkOTg1NDZjNTIzM2EwZmY0NmNhZWQ2ZjY2In0"
+          "resource": "repo://projects/caelundas/caelundas-web/README.md#L1-L12",
+          "version": "repo-lines-v1:sha256:6b56ae9aeefaadaef56fb7e6cc70a426956231eb9e163196fe0015ff480abdfd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwYzBmMDRiOTU1MWE5Y2I0YjA4ZjQxN2U2ZTZmYzc3YTAzZGJiZjIxMmQ3MzUzOTllYmNhMDlkNjRiMjRkMWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwMGM5NzY2MTBhODJiNGNhNDgzMzY0NzY0NmQ0ODNiZTIxMDczMDU1YjI1MDVhYjY5OGViYzU0N2ZhMDBkMGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRkZGFjY2M5YmIzNjdmNzFkYzdhNWM1NmEwNGYxZjVjYzA0NTBmYWVmNzg5YjllMzUzMDUwOTEwYzBlZjIzNzcifQ"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-web/src/routes/index.tsx#L1-L222",
-          "version": "repo-lines-v1:sha256:c7f71716775a16cb5b14c2fffe4ade8d0cb60c6a9fa71dccf4a59286db4e2f9d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlODIwMDk2NGE5Nzg2MzU1MjJiMmFiMDkwYzY1MDY1ZDhlZjhlODVjNDczMGJiMmViMDQ2MGQzNGM2NzdkZGJiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+          "resource": "repo://projects/caelundas/caelundas-web/src/routes/index.tsx#L1-L100",
+          "version": "repo-lines-v1:sha256:f6ce07f876028e7de6b88359c356b5996aa1c22906ea397b4b2d18056b92091e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlODIwMDk2NGE5Nzg2MzU1MjJiMmFiMDkwYzY1MDY1ZDhlZjhlODVjNDczMGJiMmViMDQ2MGQzNGM2NzdkZGJiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJkZjQyMzAxYTNiMDMwMjYyODBhMDA4ODJmNmQ2Mjk3NGNhOTA0YmRlOGE4ZGJmOTBlNzUwZWU4Njg1MTNkZmM2IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI5YjdhYmIxNzBkNzFmMzA0YTdjZDBiOWU3NThjMDU4MjZmZDFhNDAwYzY5NTUyMzljYmU1MTVhZWFlYWZmNmVhIn0"
         }
       ]
     },
     {
       "id": "claim_d1faaa022da445e396033a71838a1382",
-      "statement": "Caelundas uses SQLite (not Postgres) as its database, with the file at CAELUNDAS_SQLITE_DATABASE (default output/database.sqlite), and the same file is bundled into the caelundas-web static build for browser queries via sqlite-wasm.",
+      "statement": "Caelundas stores its events in Postgres, not SQLite: the caelundas schema of caelundas_development, read through CAELUNDAS_POSTGRES_* variables, with the schema defined once in the caelundas-db library and the move recorded in ADR 0031.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L169-L250",
-          "version": "repo-lines-v1:sha256:6c36843f83ed4afdccfb272bdada507d62fac8d8fcb3103b23a539c4e3a8bb27:eyJzZWxlY3RlZExpbmVDb3VudCI6ODIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZGYzNzFhZjMxNTE5MTE5ODZjM2ZiYWVmNGIyNWJlMWVjZTVhNWM2OGU1MmU1YmVmZWUzODMxMDdiMTQwNGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5ZTFiYTQ1ODc0MDU5MTY5ZDlhZWJhYzVkZWM3MjVjODQzMTFkMmE4Yjg2MTNlOTI1NmRkODJhM2UxZmYwYTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5ZjZjMWYyZjc3NjYxNWRjOWUyNWM3MmE1MGY5NzdlYTJjODUzZTI1YWI5MDdkZGYzZDg2YTM0Zjg2MmEyOTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA0MzM5YzQ5YTJmZjE3MjE3MGYxZWU1YjNkYTA3ZDRlYmU2YmY1ZGNkODIwMmJlNTVjOGJmYmRkNGU4NjdmOWIifQ"
+          "resource": "repo://documentation/adr/0031-move-caelundas-from-sqlite-to-postgres.md",
+          "version": "repo-file-v1:sha256:fac9df00612986d7bb8a86b1c46d212fefa4f8683b9b104be4b29756799efdff"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L40-L43",
-          "version": "repo-lines-v1:sha256:c9f8769f48d3870d5e93b5090c2b41f75cb477a0f313f465cd79cf387200aaca:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDQ4ZWRkM2MzODk3NWExYTY0ZDljZjE2OWEzMTdiM2YyNTFmNjc5ODk3N2Q5YTEwZjIzNTdlNmU2NmQzMTU2MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDNiODE5MTFhZThjNDlhYmVjZTY2ZTZiMGVkM2E4YzZhYmJhMWQ5YTk4NDQ4OTk4OTNhODdmNWRkYzllZWQ3YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDVkNGU4NWM3YTY1YzM0YWIxNTY5MWI1ZjZlODUwNGZkNTAyODg0MWU2YzgyZjc4M2JmZTA1NDI2ZmJkYTI3MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmU3NWRlOWU0MWQwOGEzZGQ5MmNlNzI4YWJmZmRiNThiNTc4ODFkYTY2YzI3YTM3YjkzZmY3NTIyOTA4NjMyZCJ9"
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L36-L48",
+          "version": "repo-lines-v1:sha256:7bd9fffa5629d45e57cff51880c318743b361f07711085c5fef0d25f895e36bc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmMjc2NGI4MjViNGI5NDE3ZGJmNjM3YTcwYjRlOTViZTAxZTBmNDU2MjYxMzQxODlmNDdkOWIwYzA0NmQwYzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxYzRhOTRjN2QyMGYzZWFmM2YzY2MwOTI5ZDZhMTliYzM2YjkyMDI2ODQ4YjQ3Y2FkOTZkOGY1YzdjYzQ3ZTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU3OTBhZTFiMDgzZjAzOGYwYWZkNDE0YWVlZDNmOWE3Yjc2M2M1YWZlZjZiZmNmYjNiZWI1MTM1NGU4N2MwM2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc0ZTdhZjY5YjBmMWI5Mjg0ZmJmZWU1OGFmZTk1YWJiMWQ0NTcyNjQ0MjVmZTVhODM3NTNiMTQ0MTIwN2ZiNDgifQ"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/database/database.module.ts#L10-L20",
-          "version": "repo-lines-v1:sha256:20172ca0844aa7f91eadf51d2d164c9e33aeadfab53cc81fbf99adcb3b4093bd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3MmE0MjkzODJiMmUxNDcxOGUwZTM3YjA1NzBhOGExNzAyOTkxZmNkODQ5OGNkODQwNjBhOGJmNGYwNTAxN2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1ZjZiNjA2NGYxMjM2ODQwOWJlZDhjZTNjYmRkYmJkMjRiZWFhNzQzNjc0N2NkOTgzMTYwOGEwOTdhYjAwMWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZhZWZlMmQxOGRkMWZlMjc4M2RjY2E0OWVkYWUwZTRhMTNhN2RhNGY0YWE2MTNhM2I4MTE3NDM3MTA1ZGM0YjQifQ"
-        },
-        {
-          "resource": "repo://projects/caelundas/caelundas-web/AGENTS.md#L20-L55",
-          "version": "repo-lines-v1:sha256:3805470e0ce51ed2bedd5bc1293696b8aeea1d0bc765144a3fff1dd1678cfcbb:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiZDZiMDcxNDY0NDgxNDNiNzU3ZDViOGI4YTkxNTk4ZmFlNzRhYTE1Nzc3MDM0NjM0ZmI0OGE5N2VlNzQzOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFiZTY5ODJiYWE2Yjg1ZDRiNDFlMzMxYmQ2MWQwZDcxYTE4MGMzMDRhZDgxNzgzMDg4MDYyMTc1NzI3NDJmODUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4ZWIwZWFjOWExY2ZiZTMwOWY4NDhiYjNjOGUyNGM2NDZmNjQwODdjZTM5MzY1MjkxZjQyNWQ2ODM3OWRjMzMifQ"
+          "resource": "repo://projects/caelundas/caelundas-db/README.md#L1-L45",
+          "version": "repo-lines-v1:sha256:09551fd33268677bf6bb08cb6ad6bff7d614d29d3928ff9e2973f13db1dcaec9:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2NjIzMWQyMDZjNTg1Njc4NmRlYTA5YTk1ZGJiZjlmODA5Njc5NDZkY2YzOGIxNDFjMGJlNjM3ZmRkMjQ0NTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4NjU3NTQ3ZDU1ZWQ5NWEwYzFhNTUyNDBiMWFkZjBkOGZjYzBmNjU2YTQ3NzU0MDJkZWE0MTZkNDgyOTMyNDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjExODExZGExYWRmNmFkMDQ3ZGJkZDg4YzIyZTZkZmZiZmM1MzYyYTNmN2Y0NDI1ZGM4NzkyNjczOTkxMTk2NTYifQ"
         }
       ]
     },
     {
       "id": "claim_e1e7736d56da4c27b1412b081509cf00",
-      "statement": "The calendar_events table uses a natural key of (summary, start, end, latitude, longitude) with upsert semantics — re-runs update rows in place (updated_at advances, created_at unchanged), overlapping ranges update overlap and add new events, second locations add their own rows, and edge-spanning events are included in range files.",
+      "statement": "The calendar_events table is unique on the natural key (summary, start, end, latitude, longitude) with upsert semantics: re-runs update rows in place (updated_at advances, created_at unchanged), overlapping ranges update the overlap and add new events, second locations add their own rows, and edge-spanning events are included in range files.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L185-L193",
-          "version": "repo-lines-v1:sha256:fe9b7759306be5d25d5da918c6de7659e50742f64e113691d0338f59a165aef3:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmZjOWMwYWNjOWZjZWYyY2I3MTllZTkwOGZhYjljOTg3ZmE3ZTMwODRiNjQwMmFkYmU3YThkM2Q0MzFhMmI3NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWMzOGQ4NWQ0MjZjYTdmN2ViOWI0MjI2MjM4OGZmMjU0NGI4MzcyNTgwYmMxYTE1ZTRkYTI5NzEzOWVjMTY2NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDczNmI2NzAxYjc5MzM4NDc1ZDhkZDFlNmRmM2NjMzk0ZDllNzZjZmIyMWJmZjJlNjM3YjgxNjU3ZGU4ZTM3NiJ9"
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L180-L215",
+          "version": "repo-lines-v1:sha256:5b5c01281a54e1c89ad03e50f411894386b6cd0fd110adaae47cb8d37ddb424e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZGYzNzFhZjMxNTE5MTE5ODZjM2ZiYWVmNGIyNWJlMWVjZTVhNWM2OGU1MmU1YmVmZWUzODMxMDdiMTQwNGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1YjAxNzU2MjQwYTVhYjQyYjdkMTRkZDhiN2E2NzU2YjMwYzQ3MTRjY2U0OWU0NzY4NDc2MzNjOGRmMzVlNjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5ZjZjMWYyZjc3NjYxNWRjOWUyNWM3MmE1MGY5NzdlYTJjODUzZTI1YWI5MDdkZGYzZDg2YTM0Zjg2MmEyOTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyNzAyYWI1MjYzZDVkNDZjMjBlOWVlODQ4MzMwNTg3OGE0OTA5ZWU0ODVkNmQ5ZDZiMmM1NzQyYjE2N2Q3MzcifQ"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts#L91-L97",
-          "version": "repo-lines-v1:sha256:6b6bef598e365bfaa2b347120c2e1854fee02db03d7d4bc0c50dd29b3e74b022:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGY4NWVjNGFlOGY2YjZhMGE3NWI3MDZlNjI5Njg1MTk5NzQyMDQ2ZGRkNGI4ODc1NDg2YzU3ZjNiNTdiZDVkOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzI0NTI2MjIxZTE5ZTYxYTZmODcyYzBhNzE5NzYyMTAwNTFlMWVmYWI0MGE5NmQ5OTJjYjg2YjM0ZDllMzQzZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDllOTFjMGRiZDAwOWM2OTlkOTMxYjQ4MGEwYmViYjBlYWI4NDU1MzdlOGFlMDE2MjE3Y2M5ODM5YWYzMzQyMSJ9"
-        },
-        {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/database/entities/calendar-event.entity.ts#L32-L39",
-          "version": "repo-lines-v1:sha256:f29bbd9691ce1d015dcaaee04a5e6b50d1d2cef6138c204d3d6ed6769da18b10:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2M2OWI0YmVjMzZjNTg0YTkyOTk3NmZlZGQ0MWQ5OGE0NmM1ZGJjNTM2OWFjZTczOWQ1ZGM0NWUzM2NjOTYzMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTYzYWFlMzlhZDU5ZmFmMzJkM2EwNDU4Yjg5MzQ2ZThlODhlOTFmZGQ0MDQ1NDAzYTg4YTA2N2ViNTYyOTk2MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmQyM2U5MzUyNTczOTc5ZjJmYjhmM2Y1YzE4Y2M1MTUwMmIwOWEwMDdjOGYwNDc4MTcxYmI0YzJkYTU0NzY4MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmZkNWJlZGJhY2M0MTZiMmE5NmQyZDZmMDFhNGI5NDJkYWY4OTAzMzc1YWE0MGQ5ODUzOTJjZWQyMGNiMDIxNCJ9"
+          "resource": "repo://projects/caelundas/caelundas-db/src/modules/caelundas-database/modules/calendar-events/calendar-event.entity.ts#L17-L40",
+          "version": "repo-lines-v1:sha256:0d3650318cfcc7a0f8f5b323ba5f1438e2d132a31eeac43642c350f793e73152:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2MGU0YTJkY2M0NzQ4MWM1ZmY1ZDY2MGU2NGI0ZWQ3NzExYTM3MjBhNTA5YTVlNWM4OWUyMjk1NTExOTllYzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5OWVlOTZjNWQ0ODUzNWI3ZjVhM2RjN2QyYmE0YmU4N2RhYTNlMDZhZjRhMGI0YmM5OTE1N2MzODBkOGI1M2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhmMjc3YjI2Y2ZiMWU5Y2NmMTk1MDljMzEwZTNjZTJmN2NiYWQ5NWFmZDY2MjQzMGEwMDcxNjMzNDRjODgxY2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRjYWQyMzg5YmM3MzdiMWQ2MjY0MTdjOTBhOGU5N2Q3MjgxZTM1YjYxYWYzNDgzODMxZjQyYmVhOGJjOTk1ZGMifQ"
         }
       ]
     },
@@ -145,11 +149,11 @@
       "statement": "The timezone is derived from coordinates via @photostructure/tz-lookup in the input validation schema (input.constants.ts), not configured separately; supported dates are 1900-01-01 to 2100-12-31 based on JPL DE431 data coverage.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L45-L48",
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L56-L59",
           "version": "repo-lines-v1:sha256:aa1fee3809a997d553b1e751068de997d4f113ea319cad8b2fb8e49ea35ab018:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmQyMTEzNDY4NjU1OTk0ODVlYTdhZGI0ZWE0NThkNWJmMzE3MThjYjg0Y2JkYWM2OGJmOGQ2OTY2NTgwOWRmMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzdmMWM3YTQzYzMyYWY2NzhkMjNhZmY4NWIyYjlkZjUwZTg0MzYwZTAxMTVlOGZmNzk3N2IyZTI0Y2JkYzIwYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2U1MTFjMGQ5YTYyMDhjMjdjMDdhOWIwZjY5MDZjZjE0M2U4OTk3YWIxNGI0MjFiNDlkM2I3MjQyYzg3Yjk4OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDU3MTU4NTFjZTg3NThiZTA1MmFiNTQxYzhmNmUyOWExNzBjOWQ3ZjRkODY3NGI4NzUyYjQ0ZTU2ZDA0NTQzNSJ9"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/input/input.constants.ts#L56-L65",
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/input/input.constants.ts#L35-L44",
           "version": "repo-lines-v1:sha256:d1db4c1558d1b4558a53e229b3ddbf0f7b962a7b24102c5515e64e622a0821e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiZjE0ZmZjODQ4NWQ1ZjQ3OTVjMWUzZjRmMjRjMjcyZTE1YTk5MmYxZDUyNzIzNWRkY2QxYmQ3MjhhMTBlYmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkOWUxMjU0NjQyNTU3NmQzZGVhZThjOWI5ZGJmMTI4ZDVkNmRkYWY1ZDdmZTg1NzkzNDkyN2RlZmZhM2I5ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZmNjU0OWRiNDY4ZmFhNjQwMGRmYWFiNzZiY2ZkMTU3NGNmMmJhZWRjYmJiZTYyYTE1ZjUxODIyZDljODBlNGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImExMTEwNzNiZGQ4OTJjYWZlYjU3MzkxOTlmNzM5ZGQyNzI1MjFiZTMyYmFkMTgzNTgyNmEyMjVlNjM5ODFhZGEifQ"
         },
         {
@@ -160,27 +164,19 @@
     },
     {
       "id": "claim_4e59ac22268647bfbac644993b1c8b9c",
-      "statement": "Ephemeris download uses three JPL DE431 files (seas_18.se1, sepl_18.se1, semo_18.se1) from 1800-2399, downloaded via nx run caelundas-cli:download-ephemeris into data/ephemeris/ with .part suffix atomic writes; missing files cause EphemerisFilesMissingError at startup rather than falling back to built-in Moshier ephemeris.",
+      "statement": "Ephemeris download fetches three JPL DE431 files (seas_18.se1, sepl_18.se1, semo_18.se1) from the swisseph GitHub repository into data/ephemeris/ with .part suffix atomic writes; missing files cause EphemerisFilesMissingError rather than falling back to the built-in Moshier ephemeris.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L50-L58",
-          "version": "repo-lines-v1:sha256:a9f28055e000fd3ec4e77825af63ddb651504c7c40bad95a5dfda2aeda9368b5:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTY1NzIzYzUyMjBjMWRjN2ZjMThkOTliNmNlNjMwZjAwZDQxMDMzZmRlNzc2ZTY4NjVlYmI2MGU0ZDhiNjg2NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjU1ZDAzNjAxNzYwYmIyZjlhNDU5YTQyMTMzNWQxZjQ3ZmIwMTZiMDg1ZTU4MzkwMjA5ZDY2OTNkODc3MDRkYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTVkNzkyNTM1MWNmYzJhN2E2NTY2NWJkNTRkNWZlY2U0YjVhNDk2YzZkOWIwZDViYTliZDFiOTljZjRjMzZhYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGZmNDIxMjgwYmNhOWQ0Y2ZkNWRkMThmNTliYjY3NmQ1MzI4OTk2YWVhMjUyNmE1OTcwOGFjYTZlYjI2ZWI1NiJ9"
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L61-L70",
+          "version": "repo-lines-v1:sha256:a1f63fe65ad612a45ef58354e4f0df397df1d103a3727042a3f3c85127309dbe:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2NTcyM2M1MjIwYzFkYzdmYzE4ZDk5YjZjZTYzMGYwMGQ0MTAzM2ZkZTc3NmU2ODY1ZWJiNjBlNGQ4YjY4NjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ZDc5MjUzNTFjZmMyYTdhNjU2NjViZDU0ZDVmZWNlNGI1YTQ5NmM2ZDliMGQ1YmE5YmQxYjk5Y2Y0YzM2YWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllZWJkM2JjOGNhOTM0ZDY5ODRkY2IwMTUzYjIxMjc1YzQzYzFkOTA0ZTcwYzE2NTZlMjEyNDIyZjI5MTg5ZjkifQ"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.constants.ts#L30-L34",
-          "version": "repo-lines-v1:sha256:c89847fa2e07d7dd0114bcd145acf5cd4640ab86ceecc00a74f0423632ba04dd:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDRhNmE5ODA2NWQxNWQxMDg3ZGNhYzhlN2YzZWE0M2RkMmRkMjQ1NzZlZjg2ZDRjYTZjN2NjYWY3ZDExMzEwOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzI4YjM0ZjFlY2FiMTNiOTA4NDJhMmRhOTFhZmIzMDBhNDk5YmU2Yzk3NTQyNzEzN2QyZmFjZDdkNjY5ZjlkNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzRmNjhiMzAwYzU3ZjE0MDRlMDU1OWZjYzMyZmEzNWFiYjliNDU0MjhiMjM2MTMzNDUyMGI2YWQ1MzU1NGQ0NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmQzYWY1NmUzZTI2MDBjODMyYjE5MjU2NDMxOTMxODkwOTVjNzRjNzU1YmJhNDk5ZjM3NmIzODlkYmI1M2I5YiJ9"
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/modules/ephemeris-download/ephemeris-download.constants.ts#L1-L45",
+          "version": "repo-lines-v1:sha256:0f9d02c5db68db70a2634148c73903bcdac20e77329df22a2a2505325bb90acd:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3MGZmMzZkMjAwMTI2YjhjZTZmYzYwYmI2NzZhMWY3ZGJiNWQ3NDUyMTA2YWE4N2YzYjVmOTljMzE4NzBhMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.constants.ts#L36-L50",
-          "version": "repo-lines-v1:sha256:adaa6b1509f7ec282650357aa47b132ab0e298a0de32e8083f4693cdf3c7e660:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4MjJmOTkwMjEzM2RlY2NlN2ZmZTlmNjVmYzA0OTFjMmQ1NWVlZDkwYmRiMDExNTNiYjQwM2U5NDg2OTM0ZDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlZTc1YTI2MDJhYTI0MjEwOWViYzNmNTE2Mzg4MTI4YjBiN2FkZDI0OWEyZjVkODAxMWE4MTZkMGM0MDQ1OWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI3MzVlMzc5Nzc3NjVmMTYyMGViYjJlYzE2YzI1MmU4OWFiNzdlZGFiYWYyNTg2OTUxNWVlZGZlOTYwNzVhMTQifQ"
-        },
-        {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.constants.ts#L8-L12",
-          "version": "repo-lines-v1:sha256:1f05aad14ef0e161ede668953f5796d74eb01549e8472d1c59eac7ee27f79b04:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGZmMWZmNDM5ZjU4NmMwMzQyYWU4YTRmNTk3ODkzMmE1N2JhOTY2OTgyNTM5N2Y3ZmMzMzk4Mzg3ZDFhNGE3NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmNkYzc2ZDEyZTUzMDRkMzA3OWVkYjVmODkwMDA3ZWEwNWYyMjZlNGQ5M2I2OTU2ODQ2MGNhZmFmODAwNzQ0YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2VkZjEyMGY0ZTcyODU3NjIxMGQ4N2ZmMThiZTkyOTMyZTI5NWFlODY3NjU1MjY0OWQ4Y2FlZDAzMzIzMzllMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjQxM2MzNTgzNjNhZjMxZTZjNzhhYjQyMDcxM2NiMmIwMzA0ODI0NDA2NjE3ZmRmMmU1MDBkODY1Yzk1YzZjMCJ9"
-        },
-        {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.service.ts#L39-L88",
-          "version": "repo-lines-v1:sha256:8bdc950db997d7153ac88f46f98e7e377d5788ab950a34898e8c5f2c78953a2c:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2OWQ5YWJiNDVmZWIzNjhhOTU1OTVjMmU4Y2RjNThhYjY3MGJlNjIzN2JhNjZiNWM4YjhlZmY4YmRlNGEzODciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk1M2NkZjlkNjE5ZTc2M2ZlZDM2OGJmODM1Nzc1NjJlM2Y5MjY3NDJjMmEwOTdhZGNhODViY2Y3MWVmMmQ2MWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdjZTkwZTg2OWEyZDM4MTg3Nzk3ZTkwYmRjYzg1NzcwNGI2NjFkNDk2ODA2NzFjZjYzZThkZTExZDBmNGIyMDYifQ"
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/modules/ephemeris-download/ephemeris-download.service.ts#L1-L94",
+          "version": "repo-lines-v1:sha256:4168bb39611260e82dd4b1f426b6c3733955c1447fa44701646b2a7bb7252848:eyJzZWxlY3RlZExpbmVDb3VudCI6OTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0YmNhOGRiZDMxODIwN2I2YzBkMzhhNDQ2ZTUxY2U0NmE2ZTRkMDQ5OTZjNzk1MGIzNzFkYzFjOWI2ODRmYTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -189,11 +185,11 @@
       "statement": "Two-pass detection: PerfectiveService scans minute-by-minute for exact moments (aspects, eclipses, stations, ingresses, phases, cycles, twilights, daily events) while maintaining rolling aspect state; ProgressiveService consumes perfective events and pairs them into duration spans (orb windows, retrograde periods, eclipse visibility, sign/decan spans, phase-to-phase, Daylight/Night).",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L62-L71",
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L73-L82",
           "version": "repo-lines-v1:sha256:8e3750ee3acac2d122aa002e69922bc4b4d8e537fd6aa41b896f53145f080289:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyZWNhNjhlMGU2MDFhYzFiZDlkMjg1NjQzNTBiYmY2ZGIyOWViNzFjMmExMmM1YmUzNDM0M2U1MzRiZDBjMmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhmZjQyMTI4MGJjYTlkNGNmZDVkZDE4ZjU5YmI2NzZkNTMyODk5NmFlYTI1MjZhNTk3MDhhY2E2ZWIyNmViNTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY0NDZlZGNhYzc3Njg5MjI2ZGEzNjY3YjhmODA4YWI5OGEyYWE1MTUyNzFhYWY0YTYxNTgyNGMxMzRlZmY1YjUifQ"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.command.ts#L76-L90",
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.command.ts#L64-L78",
           "version": "repo-lines-v1:sha256:6612a9a8d29557ad58448251e78a94910ff09f92109fcaf4f78dbce8a43a65fa:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzMzlhNTExNzg0MTU3YWJlMjNmY2IyYmZlZDQxODczNzg5NjYyNmUzYTJjNGVkZmRmYjc5NmYwNjkwNTIyYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ1N2M5Y2VkYzA4ZjhkOTZiMmNjOTA0ZWJlNmNlMmZkZGZmNDY1YzVkYmZlMTQwMDRmNzAyYzkyYTY3ODA1ZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQxNTI2YjdmOWEyOWI5NWNhNmYxYzg4MzU4Mjc0OWY4ZGQ1MTI4NGM4NTNlYWM2NjhjZWVhMGQ3NzJjYTgzOTQifQ"
         },
         {
@@ -208,25 +204,63 @@
     },
     {
       "id": "claim_5e23fcc2d0304c1f84090e834c97ba84",
-      "statement": "The caelundas-web app is a TanStack Start SSR React 19 app with file-based routing from src/routes/, Tailwind CSS 4, ReUI calendar from @codebase/presentation, and reads a SQLite file bundled at build time via sqlite-wasm in a Web Worker, with all queries defined in src/lib/events-database/events-database.ts behind an EventsDatabase interface.",
+      "statement": "caelundas-web calls the caelundas-api GraphQL endpoint (VITE_CAELUNDAS_API_URL, default http://localhost:6173/graphql) through a client generated by GraphQL Code Generator into src/graphql/generated/ from documents in src/graphql/operations/, uses the ReUI event calendar from @codebase/presentation, and draws a night-sky backdrop from the API's nightSky query.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-web/AGENTS.md#L1-L72",
-          "version": "repo-lines-v1:sha256:f2e2e936f6c3780b95acd0c83b245866d99dedf6d6c39a7e69297dae6084130e:eyJzZWxlY3RlZExpbmVDb3VudCI6NzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkNmYyYTgzOTgyNGRkMGY3YjhkMzY2MmMwMGIyNTM3NjM1ZmJjZDJmZTlkNmZhMjVhMjc1MWYzNWIyNTM0YzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkOWI1YTBhNWJiNDUxMmVjZGMyMmU2MTcwNTE0MjU5ZGVhOTAwNzA4MjMwOTQ1ZjBlYTMwZGJhYTI1OTllZjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE5YmIzY2ZmMTZjNzYwZWFjMjg0NzAzYmU5OTdiMDhlYzFmM2EyNzY5YWMxZDkzMWY1MTNhZDAzMDI0NmU1NDYifQ"
+          "resource": "repo://projects/caelundas/caelundas-web/README.md#L1-L60",
+          "version": "repo-lines-v1:sha256:bbe2ae927dc4449f4e01280fb24098e1a16c68856ca3e0b9c6bf793ebb8fca33:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwYzBmMDRiOTU1MWE5Y2I0YjA4ZjQxN2U2ZTZmYzc3YTAzZGJiZjIxMmQ3MzUzOTllYmNhMDlkNjRiMjRkMWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2MDk4NzFiM2U5ZmNlMGYyY2QwYzBkNDQ5ZGRhMjZhZDdmYTYzODc5ZjlkZjU0OWY0ZTdlOGMwZjgxNjJiYWUifQ"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts#L47-L90",
-          "version": "repo-lines-v1:sha256:7edf4a50a017248b7f462e402511c88098d9ac36fb0bdca35b2e19d57de51af0:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQzMTE3MjE1NjRkODJmMDkxYTlmZTdjNzk1Y2QzMWNjMTZmY2NhNWEyN2NiMmNiYTRmZDRhODQwMjFlMGI3ZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlMTIzODQ0YTg5OWI0NzRlMmI4YjcxYjNjMGUyNGMxMDc1YTVkZjY2MTA3ZWIwZThiNzJlM2UyOTYwYzQwZmIifQ"
+          "resource": "repo://projects/caelundas/caelundas-web/README.md#L120-L130",
+          "version": "repo-lines-v1:sha256:daf5ff9d1c7c27fef5d61cee84f71d263384bf2be92ee6ccfba92d58024f30da:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyODc5OTY5YjVmYTg2NDliMTAyYzFjNDM0M2VkMzgzZDNlODA0NWQ0OWJjOTIxNjljZjE5NWI2NGNjMTQxODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5OGVjOWY5N2UxMThmOTdiMGU4MWYyYjQ5NTE0YmM1MTNmZjczZWQ3OTIxNzdiMjAxODMzZmI4MDc5ZGMzZGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRhNTJlMWIzNWM5YTk1NDM1MDE3YTMxNDRjZTJmOGQ5MjI2ZjVjMTJkZmM2ZDY0ZjhjNjBiZjlkYmU3NGYzOGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-web/src/routes/index.tsx#L35-L68",
-          "version": "repo-lines-v1:sha256:b58ead8dc80d37c1e623642704d10ef0d5ffd3d312a93ed379f82ab6b41d6d37:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjYmQ0ZTEwOGRiMzgzNDdmYjExYzc0ODA4ZTM0MWJkZWZiOGY2YzUxNmI5NjFiZjI3YTU4ZWVkYTJlZDY3ZTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVjOGZkY2VhMjdmYmJkYmM5OTFlZmNjYmE0NjI1NzY4MDRiNDA4MGI2ODJmZTZmZjRmMzFmNDg2YTgxMjQwODgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEyMDAzODA1YWNjOTI4YzVhYzA0NGEwY2U4NDk0ZWZmZGNiMGM2ZjZhNDBkMzUzYzlkYjU5OTc0ZDQxMjFjMjUifQ"
+          "resource": "repo://projects/caelundas/caelundas-web/src/routes/index.tsx#L1-L100",
+          "version": "repo-lines-v1:sha256:f6ce07f876028e7de6b88359c356b5996aa1c22906ea397b4b2d18056b92091e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlODIwMDk2NGE5Nzg2MzU1MjJiMmFiMDkwYzY1MDY1ZDhlZjhlODVjNDczMGJiMmViMDQ2MGQzNGM2NzdkZGJiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJkZjQyMzAxYTNiMDMwMjYyODBhMDA4ODJmNmQ2Mjk3NGNhOTA0YmRlOGE4ZGJmOTBlNzUwZWU4Njg1MTNkZmM2IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI5YjdhYmIxNzBkNzFmMzA0YTdjZDBiOWU3NThjMDU4MjZmZDFhNDAwYzY5NTUyMzljYmU1MTVhZWFlYWZmNmVhIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_25145bd4d6f942978862b0c4cd53f02d",
+      "statement": "caelundas-api is a NestJS Apollo GraphQL application with a code-first schema emitted to src/schema.gql, Relay connections and request-scoped dataloaders; it reads the Caelundas Postgres through CaelundasDatabaseModule and allows cross-origin requests only from CAELUNDAS_API_CORS_ORIGINS.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-api/AGENTS.md#L1-L45",
+          "version": "repo-lines-v1:sha256:3e4c6556d8dccc153a23d4b995c4f851aad1dc498017ac449b92e8ef113e14bc:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljMThjNDFkYmZmNDU3ZmIyMDllMjA5NmE0ZDgxYTA5MjM3ZDUwMmNmNWVkOWI2NjE0OWYwMWExNjc5N2M2OGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFmYjA5YzlhMGFjMTBiOTQ4OWZlYTY2ZDA4ZDQ4YzliMzNhYTk3NWQ1MmY2MGU1Zjk5MDBiYWY3ZjFkNWQxNWQifQ"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-api/README.md#L1-L10",
+          "version": "repo-lines-v1:sha256:5d1fca12117dbca3c07f68ef80d607285f16a0ba05f97e71fd103ba43f636977:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRiNGFjMjVkODkyMmUyYjEyYjZiMjA2NDlkY2RiNGIyMGZkMTc0YWRkMzQwNjZiYWU2Y2E3M2U3YWRhMGE5NGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkYTU4ZTMxYzgxMTIyZTNmMDUyZDNlYzg4OGUzNzc3NzFkYzAzZDg2ODJhMjJkNjljZDE4ZjE0YTlmNDNjOGYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9e9cf9b3e08840a8ad2f9bcea87baef7",
+      "statement": "The caelundas-db library rebuilds the derived tag tables (tag_nodes and calendar_event_tag_nodes) with CaelundasDatabaseService.refreshReadModel inside the same transaction that wrote the events; calendar_event_derived_times is a plain view.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L240-L262",
+          "version": "repo-lines-v1:sha256:e94744e0f618ba2d4ff1ae12f0a410020c2a58f5a7bd222e508a3120c67dd7c9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3ZjViZTE3ZjliNmYzZTllMzVhMGRlNTdhZjEzMTBlMWNiMjFkMWU2MWI2NmViZWQ3NjkxMDJkOWNhYTI3ZWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyZmQ3YjFhOTliNTAyN2FkZTZjZTI5NzIzZmFhODBhOTgwMmNhMTg3ZmU3YzZhODJhNzJiODhjNmRmNDA1MGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNmZGFmY2YzZmNiMWE4ZWI5NWZhMTgwOThmNWE2MGMzZDMxM2VhODZhNjI1N2IwY2M4MTQ1MDE4NjZjNDAwNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlmNGQzMTM5ODBmNzgxNTk4OWM4OGNhY2EwYmI1ZjNjYzEyZjhjYTdkZmRjYjI1MmYwZjViMDAxMzA0N2YxMjEifQ"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-db/README.md#L60-L90",
+          "version": "repo-lines-v1:sha256:9d654604f888c46dda2166af3ff781b6aac76c495184a6a1cd559ccece264769:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlNTAwNDNkYjdjNzdjYzU1ZTFjNGUzMGFhYmQzOGU0ZWE4MjczOTEwOTJkNTQ4NGMwYzUyZDhiZTM2MGIxNDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM0NDAwY2M2YTFlMDk4NWEyYmMwODI0YjdjNDdiZDM3MmM3MTU0YmVmOWNjMWJiZTg3NzEwODhlMmI1MTVhNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU5YTYzNTQxODE1NzhjZDZiZDY5ZGRlYTI4MmQxZTc5ZTdiY2NkMTYyNWRiMTBjYzQxZDgyNjBlODdhYzRiZjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e3255fbd1e294bd1b7c092267753a94d",
+      "statement": "The night-sky command fills the stars, constellations and constellation_lines tables from the HYG star database v4.1 and d3-celestial files downloaded beforehand, replacing earlier rows in one transaction; caelundas-api reads them at startup.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L265-L294",
+          "version": "repo-lines-v1:sha256:3cd7515c6a4d4719851a63835b2a95caf9abfa3dad7387737dc268b7197c769f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzM2RhNTA2NzBhZTcxZjFiYjhkZTM1YjM0MjczMDUyYzUzYWZjNjgxZWNhZWM5ZGE2NmFkOTI3ODlkYjYzZTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZhOTJmOTY0NmRiNjE3YTQ3NThkOGZjMTkzMzIxOGYwN2M3MmQ0YmI5NmUwY2I2OWRjNTdiNWY5MDAzNzNlZmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVhZjVmNjFlZWI3OTY1YThkMjk0MWZmZjRmMDJlNmZkMzhlNDU3MDIzZDA0ZTM3ODI1MDgyOWZlM2EyYzU1N2EifQ"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.0",
-    "at": "2026-10-29T03:39:46.432Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-22T00:18:20.862Z"
   }
 }

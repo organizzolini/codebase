@@ -1,74 +1,74 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:bde6648f42848d2d33f87ba4589dfd2aa791cec6021cca5215923b28d03195f8",
+  "pageVersion": "sha256:0e2bf4de266076bc6f26aded518137ca75611b52fcc0be00a3059f38dd69bc01",
   "claims": [
     {
       "id": "claim_95880b6257564397a792093d780f2e33",
-      "statement": "The repository contains four application domains under projects/: affirmancy (Python LangGraph agent with 1 project), caelundas (NestJS CLI + API + DB + TanStack Start web with 4 projects), lexico (NestJS CLI + GraphQL API + DB + TanStack Start web with 4 projects), and meanderaw (NestJS CLI + TanStack Start web with 2 projects).",
+      "statement": "The repository contains four application domains under projects/: affirmancy (a Python LangGraph agent, 1 project), caelundas (NestJS CLI, API and database package plus a TanStack Start web app, 4 projects), lexico (NestJS CLI, GraphQL API and database package plus a TanStack Start web app, 4 projects), and meanderaw (NestJS CLI plus a TanStack Start web app, 2 projects).",
       "evidence": [
         {
-          "resource": "repo://README.md#L101-L150",
-          "version": "repo-lines-v1:sha256:e0c7cbf91f9d521745d78ee87c61d2bdf788bce0159f0af689ac9a6312de7df1:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmNTBjOWE5NDI3Y2RhZjUzMzA4Y2M3YzAyNmFhZjc3ZmY4ZDk5OTA1YjJmMDk5MmFlNWU2YjA1MTM4YTg4NDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExMDdlZmI4ZjhmZGFiZjUxOWRmYjdkOTFmMDZlZjUyOTk3YzAyMDBkMGFkNGU5Nzc2OTE3Mzg5MWJlZWY3ODIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyZWQ0ODkzOTY0ZGNiOWM3MTU0Y2Y3YWFkODAxZjgyNGRiZGI1MTQ5NmJmNGExMmZmNjYxMGIxOTI1MTI4ZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYyZWJkMGM3NWU5ZThkNTUzYWQxNTY3ZGUyNTQ4MTZkNTgwNThlODVlMzE2MWQ0N2E0Mjk2NzEyZDEwMDFjNjQifQ"
+          "resource": "repo://README.md#L125-L175",
+          "version": "repo-lines-v1:sha256:663b0748657abd7d03af1011445cfacd273d3a76fed19e3197e24503d3c23611:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMTBiZGE5MmY3MjM0OTg4MTg3ZWZiMGYwY2Q2ODkyZDE5YzFlM2YxM2I4MGM3MDYyNmQyM2U5MTUwOWU2ZWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxNzc5YWY2YWMzNjk4Mjc5ZmExMGI3ZGQ1MGJhZTg5MTIzZTg0YjkxM2I1ODY4ZTg0Mjc1MTJlOWNlZTEwM2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU2ZWUzMDIwMDkyZjc1NTI1OGQwZjNiZTc5YzFkM2U3M2UxOThmMjJlM2E5MDg3N2E4YWRhN2FjOTc1ODdmMDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3MDFjMGFiMzVhOTVmM2NmYzkxM2NjOWI2YWFiMDU2NTE0NmE3MmMxNjVlMzU5MzYxYjQ2YWRiMDc5ODUwYmQifQ"
         },
         {
-          "resource": "repo://projects/affirmancy/README.md",
-          "version": "repo-file-v1:sha256:d3b1839ba46bae583fc6dd72ca7aa73b22d84dceeb768db0efe68b1ff21c7d68"
+          "resource": "repo://projects/affirmancy/README.md#L1-L30",
+          "version": "repo-lines-v1:sha256:d34458ce7e618f1561b7912026ce5cd38b176ef2c0d976c978f9eea9610af2df:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmNDA1ZWU2MjRmODVhNjQ1MmIyMTI3YWExYmNjYjMzYjFjOGNiYjRhMTFiMWYxNDM4NTAzNGM4YzRlNDYwNGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEyMjg1NzgzZDJkMDhlY2EzZGQ3ODQzZThhNDA1NzI4NWRhMzY1YWEzOWM2NTg2YjE0NjUyOGY3NGU5NTkzODMifQ"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/README.md",
-          "version": "repo-file-v1:sha256:c6dd89187005e5491a31c2702e92ca07313dc6fee1f7618f2ffd0478c6328538"
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L1-L12",
+          "version": "repo-lines-v1:sha256:fb7403d57264bfc0b975200fde438341b6e4879599420536881a285a5176f12f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5MmI4ODk5NjMyOGQ1MGQyODJjOTlkNDdjNjU2NWU5ZDBlMmM0MmNhODA2NTRhNDUxM2JhZGMwYjQ3MTg1MzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyOWE0OTAwZTI5MmM0NTU0YTQwNTliOWRkMThmOTY1YzgxYzJmMWUxMmZjNDhlODY4MmFlMzI2MzAyOWNiYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllZWIwMDBjZmNjYmY1YjgyNzlmNDJhNWZhYmUzNGY0YzA0Njk5YmI2ZGYzODNkNTMzMTk5ZWQxMjk3N2E5ZDAifQ"
         },
         {
           "resource": "repo://projects/lexico/lexico-web/package.json",
-          "version": "repo-file-v1:sha256:1789de87ddedcbd8092385505142c505a5969537786648a621b34202bb293e39"
+          "version": "repo-file-v1:sha256:82f88883d400d167721a772734c9e7a0d581620e7208fac5ae10cd63a8d7a67c"
         },
         {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/README.md",
-          "version": "repo-file-v1:sha256:4ec9aaa5c775e38ca6519fac0d75fb63da4f77aa42b66467173273033387187a"
+          "resource": "repo://projects/meanderaw/meanderaw-cli/README.md#L1-L30",
+          "version": "repo-lines-v1:sha256:3f9749281b9d80df7fcadbb48d322d22dc83ae8d6296dd763e64b11e48131eba:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRiNGFjMjVkODkyMmUyYjEyYjZiMjA2NDlkY2RiNGIyMGZkMTc0YWRkMzQwNjZiYWU2Y2E3M2U3YWRhMGE5NGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyNzg1ZjlhMTlmNWVmOWIxMjAwYWUzYjNjYjQ5N2ZlYzQ3NDVmMjM2YmNlNmE0MTg1MzQyZTY5ODNkOTYxMTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRkYzQ1NDM1NTUyZjMwZmU1NjEyMjc4OWVmMjExODk4YWNhYmRlOTQzZTA5NDM0NjJiNDljNGE1ZmU1YWU2N2QifQ"
         }
       ]
     },
     {
       "id": "claim_8afeec476f754e9ca84e5adb1debfb65",
-      "statement": "The IC-Suite under projects/ic-suite/ contains five independently versioned toolchains: callidescope (call stack tracing), codependix (dependency graph export), codometer (repository measurement), conformetry (template generation & validation), and coinagerie (vocabulary glossary management), each following a five-layer spine (core → configuration → analysis → output → cli) per ADR 0013.",
+      "statement": "The IC-Suite under projects/ic-suite/ contains five independently versioned toolchains: callidescope (call stack tracing), codependix (dependency graph export), codometer (repository measurement), conformetry (template generation and validation), and coinagerie (vocabulary glossary management), each following a five-layer spine (core, configuration, analysis, output, cli) per ADR 0013.",
       "evidence": [
         {
-          "resource": "repo://CONTEXT.md#L311-L339",
-          "version": "repo-lines-v1:sha256:130847f617263591359f7ed141c6f94a91c50ea5fa6d30a92ba8dac803fb387a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmODUxMjcyODA1OTk2M2M0NDY3YTE5YzlmYmQ4ZjU1MmZhMDZkNzY0ZDI1MWRhYmQ5OTgyYmJkZjkxY2RiYzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczYjM1NDZmMDY3NzliYjUyNGRmYzIyZDU2ZDZiZjBhM2E1Y2E1MWEwYmU2MzgyNGY1ZjI3NDM1YTIwODA4ZjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEyY2Y1NTQ1MGFkM2RiMmIzNDYzMzkzMGRiZDMyNjQ1NWNhNGI1MWMwNzkzMGYzYmI1NmRhMjUyOGEwODJmNmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcxZTg1NjExNjFhMGQxM2U1MDNiNDNmMzZiMTE4OWUzMjA4ODhjMzMxMTc5YmJiNTA5ZDJlZDRhNDliNmEwOGQifQ"
+          "resource": "repo://README.md#L165-L260",
+          "version": "repo-lines-v1:sha256:7a2bdbf0e7fb92cc958d5e4ae2f4d49e74286e88b8788a0eed41ce8fa1d18a56:eyJzZWxlY3RlZExpbmVDb3VudCI6OTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxOTllYTI4YTQ5ODc3MzI0ZWIzZDI3MmY1Yjk0YjI1ZmEzYmE3NzkyNjM2NTYxZGUwYzc0M2JiM2I1OTA0MjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY2NzVkYmY5YjQ5Mzk5NDc0MmFjNDc0ZTM2MjdmMmFhNmMyMjgxNzRmNzM2MmYwYmIzZjEzYjRkZGQ0YWQ0OGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhlNDUyZmFiYTRlMDU0NmY3ZjRmMjM4YTg2MmZjMzlhZTM1NzEwZDllZjMzZTRhMGI5ODRmOGM4NTk0ZDNmZWQifQ"
         },
         {
-          "resource": "repo://README.md#L150-L250",
-          "version": "repo-lines-v1:sha256:3f58c0d148da92b51956c374328dd14a39e3b577648dd6c83f16eb3a1f387b09:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJhMTA3ZWZiOGY4ZmRhYmY1MTlkZmI3ZDkxZjA2ZWY1Mjk5N2MwMjAwZDBhZDRlOTc3NjkxNzM4OTFiZWVmNzgyIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI0NDljMWU4YTViNGQ1N2M5NjA2ZGRjMjFiNDI3YjlhZjMyOTE4NDNhMjU2YTNkNDAwOWM3NjhlNjI0MzRlZDkxIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIwZTVhOWNkOTkyODc4NWY2MGUzZGZlOWI5YzliYWI1NTMxYTE3MjRmNTIwOGM4MTJkNzYxMzkwOTliODYwMzJiIn0"
+          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L14-L34",
+          "version": "repo-lines-v1:sha256:a3333ecf4fd1203515f2746f9a213cec24f729311962991298d01b7f07a4e317:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0NmQxYjY0MTU1MDc5ZmZmNjFhNTliMDczYWQ5YzdmNjlmNmQ2NDFhNDg3ZmQ0OTRjNTZjNTA3MzliZTM4MGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYwZDg4ZWNjYWU2Mjg4OTFlNDUyODljZmYwZTQ4MzU4ZGQ0ZDg5Y2E1ZmZlZWQwMjQzYmYxYmRlNzc1ZTI2OTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYwNDhmNGRkZWYxZjk4NmUxN2MxNDVjY2VlZTBkODU1ZGU3OGU0MzM0OTRjM2ZlMDM0NTQ1ZTk3YzU3YzY2MDMifQ"
         },
         {
           "resource": "repo://projects/ic-suite/callidescope/callidescope-cli/package.json",
-          "version": "repo-file-v1:sha256:623723620854bab065da852d01f1a605a63b184a08b012c687081cc595d8713d"
+          "version": "repo-file-v1:sha256:3db9e4da0c95d62de0c3af7a58673ff2a35731576906cf584da9e6d4730d8f8d"
         },
         {
           "resource": "repo://projects/ic-suite/codependix/codependix-cli/package.json",
-          "version": "repo-file-v1:sha256:8320c7bc70b6d4186ca2156c12f79bab60f6e369245de17e83c070c5c837b66d"
+          "version": "repo-file-v1:sha256:9c65feabef94a9118a693c5fda2cd6523cad8e6cd713e6e0d0e74682f55f6d4a"
         },
         {
           "resource": "repo://projects/ic-suite/codometer/codometer-cli/package.json",
-          "version": "repo-file-v1:sha256:9f45f387cec3e1f234bdf4869dddae2f17cb5093eea507cc2463b03df1f0440f"
+          "version": "repo-file-v1:sha256:05aa8215d7671fc5fa283ff09b620f7cb8a9865f5c2572f5283eee5484df414d"
         },
         {
           "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/package.json",
-          "version": "repo-file-v1:sha256:703ef73584173ff2f15ffbc09774da6e924281ecc544cbe558e39e4a84ceafe9"
+          "version": "repo-file-v1:sha256:c40a4e448cca23189e0ee29a376e8b75594004683a6c3610c72d6be1b71cb0b3"
         },
         {
           "resource": "repo://projects/ic-suite/conformetry/conformetry-cli/package.json",
-          "version": "repo-file-v1:sha256:1437d10c3fcdc876a41502158afa30f51177a9b7845d7ef4bb514b2317b33738"
+          "version": "repo-file-v1:sha256:e6b0f65ed77c0cd99b39013f4a40fed3e44c21ac4dc35e200def9f4d8a971473"
         }
       ]
     },
     {
       "id": "claim_457514d4613047b68e91b73508b5606d",
-      "statement": "Five common shared packages under projects/common/ provide shared infrastructure: persistence (Postgres, TypeORM, Testcontainers), interface (GraphQL Relay types), presentation (React components), observability (Pino logger), and testing (Vitest setup, NestJS/React/Postgres/GraphQL test adapters).",
+      "statement": "Five common shared packages under projects/common/ provide shared infrastructure: persistence (Postgres, TypeORM, Testcontainers), interface (GraphQL Relay types), presentation (React components), observability (Pino logger), and testing (shared Vitest setup and NestJS, React, Postgres and GraphQL test helpers).",
       "evidence": [
         {
-          "resource": "repo://README.md#L250-L280",
-          "version": "repo-lines-v1:sha256:b275467f8a4b33be0e6e358f8554b6d0ef483601ff6617e6fc412bda6f45da15:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3NTVmODUzYTEwMGVkMzVhNjE3NzQ3MzdkZDk1YmE2ODkyYzYwN2ZlMGQyNWMwZTVmNjg1ZDAyZDVjMTg4MmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQzOThkNmVkNmY5YzdiNDViODQ0YTNhZTc2OGY1NTkzNjcyZjJlMmM4OTk4Zjg1NjJjYmQ2ZGE1MTdlNWFhMWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJhNWI5YjA4ZDk2N2UyN2U1YzEzYTYyYzQxNTIzNWQyOTM2Y2Y2NjQyZDY2MjlhZWYyMTIyNTgzZTFjZDI2MWEifQ"
+          "resource": "repo://README.md#L250-L290",
+          "version": "repo-lines-v1:sha256:28887d173f81fd2d3c275afeb6c8d5fc886f20aa8dbe22c8d5b1e606b76906a7:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2OWFhZjAzNzM4MDRhMGI1N2NmZTczMGQ3YmFmNTMyZDA2YTc4YmMyNDg1NDQxMDFmZDIyMzk0YTAxYjA3ODQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQzOThkNmVkNmY5YzdiNDViODQ0YTNhZTc2OGY1NTkzNjcyZjJlMmM4OTk4Zjg1NjJjYmQ2ZGE1MTdlNWFhMWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIyODY1NzAzOGIxMzRiMzgxNTFjMTFlNmFlNGViODY2OWViZDM0OTJjNmU4ZDlhYzlmZmRlNzlkMGJmYTc0YmYifQ"
         },
         {
           "resource": "repo://projects/common/interface/package.json",
@@ -88,17 +88,17 @@
         },
         {
           "resource": "repo://projects/common/testing/package.json",
-          "version": "repo-file-v1:sha256:40ce7857e4dd8c8c38159f11987a8b64c3e18309230fb345a4698d0082e160a2"
+          "version": "repo-file-v1:sha256:fa10e12328bf746f0619ba53e0c1365f8bd0c94fd849c0bbcc2295de16271828"
         }
       ]
     },
     {
       "id": "claim_524e8fc055a742fbadbda23949dd477e",
-      "statement": "The development workflow defined in AGENTS.md follows an 8-step process: Clarify (brainstorming + grill-with-docs/grill-me), Specify (to-spec), Decompose (to-tickets), Handoff (handoff), Build (implement + TDD + ponytail), Review (requesting-code-review + code-review + ponytail-review), Validate (validate-code + verification-before-completion), Integrate (finishing-a-development-branch + submit-changes + commit-code + create-pull-request).",
+      "statement": "The development workflow defined in AGENTS.md follows an 8-step process: Clarify (brainstorming, grill-me), Specify (spec issue), Decompose (writing-plans), Handoff, Build (link-issue, ponytail, TDD), Review (requesting-code-review, ponytail-review), Validate (validate-code, verification-before-completion, ponytail-debt), and Integrate (finishing-a-development-branch, submit-changes, commit-code, create-pull-request), with one pull request per spec by default.",
       "evidence": [
         {
-          "resource": "repo://AGENTS.md#L21-L110",
-          "version": "repo-lines-v1:sha256:61194fe60e9ce7cf4d38f167481615d251a35433e9a44b1096a009c95c3690e5:eyJzZWxlY3RlZExpbmVDb3VudCI6OTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjN2RiMjQ2NGZlOWYyNzVmZTI5NjEyN2QyNDcwYTJmNmExNDc5MDYxNmE0MjNiZDNhNWUzOGU1MGNiNmEzY2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmYjZiYmFhOGE1YjczMTEzNjkyNmUzNDI1MmVkNDg3YTAyYTRjZjliZTRiYWU3OGUwMjAzNDY1NDQwYzE3NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUzNjE4YzQ2OTY5ZmQwNWQzNDFmMjdhMzRmNWZjZGI1OWY5NzY4ODM0NjRiZDkwYzk0MzNmZWFlYzM5M2FkNzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU0OWNiYzkwZGIwYzcwNTExNDNiMWJiZWRjZDc4M2IwMDhiMWUwNzYyZDg3NzdhZjczMGZmMTE1MWJjYzc1MDIifQ"
+          "resource": "repo://AGENTS.md#L21-L118",
+          "version": "repo-lines-v1:sha256:d9ccb63b1ec119ff82e7208a67f3ebefc7fc1ffb20ef238ee4892041eafb28c9:eyJzZWxlY3RlZExpbmVDb3VudCI6OTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjN2RiMjQ2NGZlOWYyNzVmZTI5NjEyN2QyNDcwYTJmNmExNDc5MDYxNmE0MjNiZDNhNWUzOGU1MGNiNmEzY2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUzNjE4YzQ2OTY5ZmQwNWQzNDFmMjdhMzRmNWZjZGI1OWY5NzY4ODM0NjRiZDkwYzk0MzNmZWFlYzM5M2FkNzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ3MGU5OGY3ZTIzZjBhM2NjNWFmYWEzZTBlMGQ3YWU4MTEwMDI5ZWIwZmQzMTc0ZDA5NWMxMDBjNDY0YzUxY2IifQ"
         }
       ]
     },
@@ -107,14 +107,14 @@
       "statement": "Tests run via `nx run <project>:vitest:<unit|integration>` for TypeScript projects and `pytest` for Python projects; coverage and size gates are strictly enforced.",
       "evidence": [
         {
-          "resource": "repo://AGENTS.md#L272-L274",
+          "resource": "repo://AGENTS.md#L275-L277",
           "version": "repo-lines-v1:sha256:bdfd03257b889db097f342b7e0fd20f9efa3a1a903227da191eb54fa5fdc2977:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWQ5YjdhOThmMmRkODdhYWQ5MzE1YWJmZTEyNzQyNTZiZGJjNjBhMmFlZTdkMjJhYTg4ZDE5MTE1Y2RlYjE1MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTc2Mzc5MWVjN2NkZTE5Mzg1NDhjNmM1MmRhZThhOTg0YzExNGU0YTlkZjUzNGE2YjhmN2RkMWQ3ZTNkOWI3YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYThiZGRjNmVlOTQ1MmFiNDlmZDRjOGI1OTliNjI4ZjdmMjhkMzY5YjQ4NWVkMGQxYTQzNzlmMDQ1YzI0YWY3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzAzN2FhMDgzZWJkOTg4NmI4MDU1NDMwNTJhY2RmNjBmZDBmOGE5ZWYyMmY1MDhlOTk4MWI0ZjYwNGRhNjc4OSJ9"
         }
       ]
     },
     {
       "id": "claim_439fadfac4a946f0acd8d899d7ca6609",
-      "statement": "Local development uses a dev container (Docker-outside-of-Docker for local, Docker-in-Docker for cloud) with Docker Compose services for Postgres, SearxNG, and Open WebUI.",
+      "statement": "Local development uses a dev container (Docker-outside-of-Docker for local, Docker-in-Docker for cloud) with Docker Compose services for Postgres, SearxNG and Open WebUI.",
       "evidence": [
         {
           "resource": "repo://.devcontainer/cloud/devcontainer.json",
@@ -125,14 +125,14 @@
           "version": "repo-file-v1:sha256:69dfda904fe8bdfba0c1dd395e851fc95dbcbfd14af92ed638298401bd225c56"
         },
         {
-          "resource": "repo://infrastructure/docker/docker-compose.yml",
-          "version": "repo-file-v1:sha256:c94b3a62a7df511ee8b06e13cad84e42b9eacc2750a3af7899c543df3dceee27"
+          "resource": "repo://infrastructure/docker/docker-compose.yml#L1-L96",
+          "version": "repo-lines-v1:sha256:abcf802c28d781618360397bf400050cbb893ddb56f6fe172d931af8b9f27789:eyJzZWxlY3RlZExpbmVDb3VudCI6OTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyNmQ3MTY0MTFhY2YzMzRlYTY0ZDRhNWE5MGEzOTg1MTg4ODc4Y2Y3ZTljYzcyNzNhOWVjMTE1Zjc2NGVhNDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4NTFlNzA4MjkyNjFjOWNkYmRmMWM3YTBiZGViOTM1NzBmZjljNmY1MmU4YmFmMGMxZDA4OWMxNDExOWYzMTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-20T17:00:25.557Z"
+    "at": "2026-11-22T00:18:20.862Z"
   }
 }

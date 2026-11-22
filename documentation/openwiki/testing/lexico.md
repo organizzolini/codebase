@@ -4,17 +4,21 @@ title: Lexico Testing
 description: Documents lexico's testing strategy across its CLI, web, API, and entities packages using vitest, GraphQL mock servers, testcontainers for Postgres, and React Testing Library.
 tags: [testing, lexico, vitest, graphql, testcontainers, react-testing-library]
 verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-29T03:39:46.432Z
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 sources:
-  - id: openwiki-source-c226aa5c7f690262741b3f25
-    resource: repo://projects/common/interface/testing/graphql-mock-server.ts
-  - id: openwiki-source-4808dd4ba16cde901f5bc82f
-    resource: repo://projects/common/persistence/testing/persistence-testing.utilities.ts
+  - id: openwiki-source-fb04b392a5b00efed2344b4b
+    resource: repo://projects/common/interface/testing/graphql-mock-server/graphql-mock-server.utilities.ts
+  - id: openwiki-source-d43cf1b76d511df31f2fb62d
+    resource: repo://projects/common/persistence/testing/database-testing/database-testing.utilities.ts
+  - id: openwiki-source-0f5884c35255bb2fdbdf4700
+    resource: repo://projects/lexico/lexico-api/configuration/vitest.config.ts
   - id: openwiki-source-5941305f85850497c69b4b90
     resource: repo://projects/lexico/lexico-api/testing/author-text-application.ts
   - id: openwiki-source-e333ff138b80fb25ac5c837b
     resource: repo://projects/lexico/lexico-api/testing/author-text-catalog.ts
+  - id: openwiki-source-4c401cda8dafa7f504abdfae
+    resource: repo://projects/lexico/lexico-api/testing/database.ts
   - id: openwiki-source-53b69eb1c1be9d9e2e9908b9
     resource: repo://projects/lexico/lexico-api/testing/graphql-application.ts
   - id: openwiki-source-931363c6f5149c0713ec1280
@@ -27,35 +31,27 @@ sources:
     resource: repo://projects/lexico/lexico-api/testing/reading-passage.ts
   - id: openwiki-source-319f71514ed17e9d88071e3a
     resource: repo://projects/lexico/lexico-api/testing/relay-connection-walk.ts
-  - id: openwiki-source-75ac35aaad6df33076ee8763
-    resource: repo://projects/lexico/lexico-api/testing/setup.ts
   - id: openwiki-source-a096d23536f18081c5f5e693
     resource: repo://projects/lexico/lexico-api/testing/word-lookups.ts
-  - id: openwiki-source-185c158beec1749f854032b9
-    resource: repo://projects/lexico/lexico-api/vitest.config.ts
+  - id: openwiki-source-a940f3afbe351816194157ea
+    resource: repo://projects/lexico/lexico-cli/configuration/vitest.config.ts
   - id: openwiki-source-f8a91499153a8ad6af0a64a6
     resource: repo://projects/lexico/lexico-cli/testing/command-harness.ts
   - id: openwiki-source-f4137c6e39c9b2ae35ea6f43
     resource: repo://projects/lexico/lexico-cli/testing/mocks.ts
-  - id: openwiki-source-10e0af1182e16146cc6e573c
-    resource: repo://projects/lexico/lexico-cli/testing/setup.ts
-  - id: openwiki-source-6165f3a0d7eb09788d0cf5bd
-    resource: repo://projects/lexico/lexico-cli/vitest.config.ts
-  - id: openwiki-source-f83e010925a0641b1e318a65
-    resource: repo://projects/lexico/lexico-entities/src/modules/entities/entities.module.integration.test.ts
-  - id: openwiki-source-e1bca19e105caebed53977d0
-    resource: repo://projects/lexico/lexico-entities/testing/entity-definition-assertions.ts
-  - id: openwiki-source-f8b0268cfe9fb710540dac8b
-    resource: repo://projects/lexico/lexico-entities/testing/setup.ts
+  - id: openwiki-source-005b9828b5c7157a3c7ed44c
+    resource: repo://projects/lexico/lexico-db/src/modules/database/database.entities.integration.test.ts
+  - id: openwiki-source-2d136d9694b769f300d2a4d8
+    resource: repo://projects/lexico/lexico-db/src/modules/database/database.module.integration.test.ts
+  - id: openwiki-source-c045047f522293751de1ac56
+    resource: repo://projects/lexico/lexico-db/testing/entity-definition-assertions.ts
+  - id: openwiki-source-e88a583329f0fa0a7421ddff
+    resource: repo://projects/lexico/lexico-web/configuration/vitest.config.ts
   - id: openwiki-source-b9108d2fc15726287e4f9485
     resource: repo://projects/lexico/lexico-web/src/routes/search.integration.test.tsx
-  - id: openwiki-source-2f30e0452aaed0b78a567808
-    resource: repo://projects/lexico/lexico-web/testing/render-route.tsx
   - id: openwiki-source-a57103ba766db49a188a1605
     resource: repo://projects/lexico/lexico-web/testing/setup.ts
-  - id: openwiki-source-738b809e6d406b19e0524546
-    resource: repo://projects/lexico/lexico-web/vitest.config.ts
-generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 ---
 
 # Lexico Testing
@@ -68,7 +64,7 @@ Lexico organizes its tests into four packages, each with a testing module that p
 |---------|--------------------|---------------|
 | `lexico-api` | `projects/lexico/lexico-api/testing/` | `startLexicoGraphqlApplication`, `startAuthorTextApplication`, `startReadingApplication` |
 | `lexico-cli` | `projects/lexico/lexico-cli/testing/` | `createCommandTestHarness`, `runCommandLine` |
-| `lexico-entities` | `projects/lexico/lexico-entities/testing/` | `entity-definition-assertions.ts` for TypeORM metadata validation |
+| `lexico-db` | `projects/lexico/lexico-db/testing/` | `entity-definition-assertions.ts` for TypeORM metadata validation |
 | `lexico-web` | `projects/lexico/lexico-web/testing/` | `renderRoute` for TanStack Start route integration |
 
 ---
@@ -243,14 +239,14 @@ Helper functions include `getEntityRelationMetadata`, `getEntityRelations`, `get
 
 ### Integration Tests with Testcontainers
 
-`entities.module.integration.test.ts` spins up a real Postgres container via `@codebase/persistence/testing` and verifies:
+`database.module.integration.test.ts` spins up a real Postgres container via `@codebase/persistence/testing` and verifies:
 
 1. **Module graph evaluation**: Each entity file imports cleanly under SWC with decorator metadata emitted
 2. **Service integration**: `EntitiesService` CRUD operations against real database
 3. **Migration compatibility**: Schema generated by migrations matches entity decorators
 
 ```typescript
-// From entities.module.integration.test.ts
+// From database.module.integration.test.ts
 async function importInFreshProcess(modulePath: string): Promise<string> {
   return new Promise((resolve, reject) => {
     execFile(
@@ -289,31 +285,26 @@ The web package tests routes using TanStack Start's router with an in-memory his
 
 ### Route Rendering Harness
 
+Routes render through the shared `renderRoute(router, path)` helper from `@codebase/testing/react`, which gives the router a `createMemoryHistory({ initialEntries: [path] })`, loads it, and renders it with React Testing Library:
+
 ```typescript
-// From render-route.tsx
-export async function renderRoute(path: string): Promise<void> {
-  const router = getRouter();
-  router.update({
-    ...router.options,
-    history: createMemoryHistory({ initialEntries: [path] }),
-    scrollRestoration: false,
-  });
-  await router.load();
-  render(<RouterProvider router={router} />);
-}
+// From search.integration.test.tsx
+import { renderRoute } from "@codebase/testing/react";
+
+await renderRoute(getRouter(), "/search?query=amo");
 ```
 
-The real root renders a whole `<html>` document, which cannot mount inside a test's `<div>`, so routes are rendered under a bare root created by mocking `src/routes/__root`.
+The real root renders a whole `<html>` document, which cannot mount inside a test's `<div>`, so the shared helper renders routes under a bare root.
 
 ### Global Test Setup
 
-`setup.ts` configures the test environment:
+`lexico-web/testing/setup.ts` extends the shared jsdom setup (`@codebase/testing/react/setup`):
 
-1. **Mocks `createServerFn`** from `@tanstack/react-start` to call handlers directly (server functions don't run in test environment)
-2. **Stubs `window.matchMedia`** for components that read it on render
-3. **Starts/stops MSW GraphQL mock server** from `@codebase/interface/testing`:
+1. **Stands in for `createServerFn`** from `@tanstack/react-start` with the shared `createServerFunctionStandIn`, which hands the handler back to be called directly (server functions only run inside the Start runtime)
+2. **Stubs `window.matchMedia`** with the shared `matchMediaStandIn`
+3. **Starts/stops the MSW GraphQL mock server** from `@codebase/interface/testing`:
    - `beforeAll`: `startGraphqlMockServer()`
-   - `afterEach`: `cleanup()` + `resetGraphqlMockServer()`
+   - `afterEach`: `resetGraphqlMockServer()`
    - `afterAll`: `stopGraphqlMockServer()`
 
 ### Integration Test Example
@@ -332,7 +323,7 @@ function stubSearch(latin: [string, number][], english: [string, number][]): voi
 
 it("shows Latin and English matches together, best first", async () => {
   stubSearch([["amo", 2], ["amor", 1]], [["love", 3], ["amo", 5]]);
-  await renderRoute("/search?query=amo");
+  await renderRoute(getRouter(), "/search?query=amo");
   const cards = await screen.findAllByTestId("lexeme-card");
   expect(cards.map((card) => card.textContent)).toStrictEqual([
     expect.stringContaining("amo"),
@@ -370,7 +361,7 @@ nx run lexico-api:vitest
 nx run lexico-cli:vitest
 
 # Entities
-nx run lexico-entities:vitest
+nx run lexico-db:vitest
 
 # Web
 nx run lexico-web:vitest
@@ -398,7 +389,7 @@ nx run interface:vitest
 | **Unit** | `*.unit.test.ts` | `createCommandTestHarness`, mocked sub-commands |
 | **End-to-end** | `*.end-to-end.test.ts` | `runCommandLine` with real nest-commander runner |
 
-### lexico-entities
+### lexico-db
 
 | Category | Examples | Uses |
 |----------|----------|------|

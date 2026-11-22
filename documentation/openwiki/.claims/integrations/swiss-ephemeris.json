@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:e10427c3b6e062c8906c6f467ba54f93b0ea9317ae977231e909da487efe1b9d",
+  "pageVersion": "sha256:5cf40125ec1cc31b322cfa9a7a0e0158cb3f0cbd660a443e37b5ed792fb24ab7",
   "claims": [
     {
       "id": "claim_2a3ca15c9b8e4701adcf0fe8cf0f57ba",
       "statement": "Caelundas uses the Swiss Ephemeris library (sweph npm package) to compute planetary positions locally from JPL DE431 data files with no network calls, API keys, or rate limits.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/AGENTS.md#L108-L108",
+          "resource": "repo://projects/caelundas/caelundas-cli/AGENTS.md#L107-L107",
           "version": "repo-lines-v1:sha256:72e3f3cbb57bcff12e05af8137fbb8eb104e54ef5a87338f60e62beb0bb911be:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzJlM2YzY2JiNTdiY2ZmMTJlMDVhZjgxMzdmYmI4ZWIxMDRlNTRlZjVhODczMzhmNjBlNjJiZWIwYmI5MTFiZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzJlM2YzY2JiNTdiY2ZmMTJlMDVhZjgxMzdmYmI4ZWIxMDRlNTRlZjVhODczMzhmNjBlNjJiZWIwYmI5MTFiZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjhjYjMwZTFkNDVjZGRkOTI1YWZjZWQzYjYzYzg2MDI4NWEwZDU0ZDUxYWRmMDEzZmRiMmQyMjZlMTMxYzYwOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTU1ZjEzZjI0ODU5MjQyNjdjZWYxN2M4MDU5NTM0MjU5ZjU2OTcwODVjMDk1YzQ3Mjc1ZTFmMmU2YWZiZDc2NyJ9"
         },
         {
@@ -18,19 +18,15 @@
     },
     {
       "id": "claim_ae8d88e0c0b0483788d2ad43bf721703",
-      "statement": "Three binary data files (seas_18.se1, sepl_18.se1, semo_18.se1) covering years 1800-2399 are required and downloaded via 'nx run caelundas-cli:download-ephemeris' into data/ephemeris/.",
+      "statement": "Three binary data files (seas_18.se1, sepl_18.se1, semo_18.se1) are required and downloaded via 'nx run caelundas-cli:download-ephemeris' into data/ephemeris/.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L65-L66",
-          "version": "repo-lines-v1:sha256:b775b23c28d25e720494b824889e476763f295ea0869137587676c2992232532:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODU1MmQ2MDEwYWNiZmIyZjY0YjJlMjI2ZWYwYTIzODA3Y2IzNDM1ODFlMWU5OGI0MWE3OGRjNjc3YThhNGQwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjQ3Yzg0OWUyNjgxNDcwNTRiNmRiNTczNGIwMjU4ZDE5ZWRlMTcxNWEyNjEwYzBjZjhmZTkxYmZlYWQwZmFhZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2U3YjYyNTljZTU1NGZmYjNmYjA0MGU4ZTBmYjYyMzU0ZDVlMjJhOGExODIzOGM5N2JhZjM5NmYyOGRhNDY0MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTQyM2IwNDgxMTQ4NzdkZjgyZTk1MzVmMWMyZmU0YmZhYzU2ZjEyMDA5ZTlmMWRlODY2ZmMzYjYyZjFkYjQ3ZSJ9"
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L61-L70",
+          "version": "repo-lines-v1:sha256:a1f63fe65ad612a45ef58354e4f0df397df1d103a3727042a3f3c85127309dbe:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2NTcyM2M1MjIwYzFkYzdmYzE4ZDk5YjZjZTYzMGYwMGQ0MTAzM2ZkZTc3NmU2ODY1ZWJiNjBlNGQ4YjY4NjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ZDc5MjUzNTFjZmMyYTdhNjU2NjViZDU0ZDVmZWNlNGI1YTQ5NmM2ZDliMGQ1YmE5YmQxYjk5Y2Y0YzM2YWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllZWJkM2JjOGNhOTM0ZDY5ODRkY2IwMTUzYjIxMjc1YzQzYzFkOTA0ZTcwYzE2NTZlMjEyNDIyZjI5MTg5ZjkifQ"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.constants.ts#L23-L27",
-          "version": "repo-lines-v1:sha256:c89847fa2e07d7dd0114bcd145acf5cd4640ab86ceecc00a74f0423632ba04dd:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDRhNmE5ODA2NWQxNWQxMDg3ZGNhYzhlN2YzZWE0M2RkMmRkMjQ1NzZlZjg2ZDRjYTZjN2NjYWY3ZDExMzEwOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzI4YjM0ZjFlY2FiMTNiOTA4NDJhMmRhOTFhZmIzMDBhNDk5YmU2Yzk3NTQyNzEzN2QyZmFjZDdkNjY5ZjlkNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzRmNjhiMzAwYzU3ZjE0MDRlMDU1OWZjYzMyZmEzNWFiYjliNDU0MjhiMjM2MTMzNDUyMGI2YWQ1MzU1NGQ0NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmQzYWY1NmUzZTI2MDBjODMyYjE5MjU2NDMxOTMxODkwOTVjNzRjNzU1YmJhNDk5ZjM3NmIzODlkYmI1M2I5YiJ9"
-        },
-        {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.constants.ts#L4-L8",
-          "version": "repo-lines-v1:sha256:1f05aad14ef0e161ede668953f5796d74eb01549e8472d1c59eac7ee27f79b04:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGZmMWZmNDM5ZjU4NmMwMzQyYWU4YTRmNTk3ODkzMmE1N2JhOTY2OTgyNTM5N2Y3ZmMzMzk4Mzg3ZDFhNGE3NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmNkYzc2ZDEyZTUzMDRkMzA3OWVkYjVmODkwMDA3ZWEwNWYyMjZlNGQ5M2I2OTU2ODQ2MGNhZmFmODAwNzQ0YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2VkZjEyMGY0ZTcyODU3NjIxMGQ4N2ZmMThiZTkyOTMyZTI5NWFlODY3NjU1MjY0OWQ4Y2FlZDAzMzIzMzllMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjQxM2MzNTgzNjNhZjMxZTZjNzhhYjQyMDcxM2NiMmIwMzA0ODI0NDA2NjE3ZmRmMmU1MDBkODY1Yzk1YzZjMCJ9"
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/modules/ephemeris-download/ephemeris-download.constants.ts#L1-L45",
+          "version": "repo-lines-v1:sha256:0f9d02c5db68db70a2634148c73903bcdac20e77329df22a2a2505325bb90acd:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3MGZmMzZkMjAwMTI2YjhjZTZmYzYwYmI2NzZhMWY3ZGJiNWQ3NDUyMTA2YWE4N2YzYjVmOTljMzE4NzBhMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -39,12 +35,12 @@
       "statement": "The download command writes files atomically via .part temporary files, skips existing non-empty files, and runs from a separate entry point that does not require a database connection.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.command.ts#L12-L14",
-          "version": "repo-lines-v1:sha256:c80237789fc6ebe18b23faf8b2ef7ad197943abc2bccf80411120a3e971e71ca:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzhlOTRlZGQyNWVkMzEzNTUxM2VmYzM2NWQ5N2MwY2RjMzMwNGI5MTQ2ZjAwNWU5MGQwYzdkY2E4YjNiY2UyMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE0YTRhODg1ZmFmMGUwZDE4NTU4MDVlNWQyY2ZiMDM0NGYyMzk4YmU5MDU4NGQ5MWU5YjA4YWUwOTUzYjI4OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDhhZWI0ZmRmZjE3YmNiODZkNjhiOGVhNTQyZTg2OWUzN2I1YTNmODc1OTk2NTAzOTBiN2UyOWUyMWFhMzIxZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzVlMDZiZDAyNGY4ZTE0NzA0MjdlMWQ5ZDIxMjI5ZTU4NGFiOWU2NjU3NzkwZDU4YjFjYzA4MWI5OTY1ZTkyYiJ9"
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/modules/ephemeris-download/ephemeris-download.command.ts#L1-L45",
+          "version": "repo-lines-v1:sha256:18c8a6421ac26e74859b56ce3c195314feba2ffb92b3ec5b723f44a1c710f853:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3ZDFmMjUyYTcwZjhjNjRlZWNjMDk2ZjkyNDU2NDFiNDljODhhODgwMzU4NDdjMjE5N2VjM2E5N2M4OTQ3YzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.service.ts#L35-L63",
-          "version": "repo-lines-v1:sha256:cb7f064681a6aed4435d0be98a81197a44db50e5ab430dfdc0c38808f0f06f6e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk1M2NkZjlkNjE5ZTc2M2ZlZDM2OGJmODM1Nzc1NjJlM2Y5MjY3NDJjMmEwOTdhZGNhODViY2Y3MWVmMmQ2MWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzNDBiNzM0MmU3Y2MwNjEzN2RlYjNkN2M2ZDJmZDUwZDg0ZjlkM2YyNzU1YWEwMWVlOTMxZGIyNzQyOWJhNjMifQ"
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/modules/ephemeris-download/ephemeris-download.service.ts#L1-L94",
+          "version": "repo-lines-v1:sha256:4168bb39611260e82dd4b1f426b6c3733955c1447fa44701646b2a7bb7252848:eyJzZWxlY3RlZExpbmVDb3VudCI6OTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0YmNhOGRiZDMxODIwN2I2YzBkMzhhNDQ2ZTUxY2U0NmE2ZTRkMDQ5OTZjNzk1MGIzNzFkYzFjOWI2ODRmYTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -67,12 +63,12 @@
       "statement": "If any ephemeris data file is missing or empty, EphemerisFilesMissingError is thrown naming each missing file and the download command.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.constants.ts#L29-L45",
-          "version": "repo-lines-v1:sha256:b593062c02fbe1b0b4040d87fc8edb259ec05adf27b742b86fbc3eefe45760b9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlZTc1YTI2MDJhYTI0MjEwOWViYzNmNTE2Mzg4MTI4YjBiN2FkZDI0OWEyZjVkODAxMWE4MTZkMGM0MDQ1OWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/modules/ephemeris-download/ephemeris-download.constants.ts#L1-L45",
+          "version": "repo-lines-v1:sha256:0f9d02c5db68db70a2634148c73903bcdac20e77329df22a2a2505325bb90acd:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3MGZmMzZkMjAwMTI2YjhjZTZmYzYwYmI2NzZhMWY3ZGJiNWQ3NDUyMTA2YWE4N2YzYjVmOTljMzE4NzBhMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.utilities.ts#L20-L28",
-          "version": "repo-lines-v1:sha256:c267e7818bc3588dfbf55b7ce2b5d92ebd6d056358164ab215907f3415d40cbb:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzJkNzhhYTQyNTYxMTI2NTE3OGI2ZjY5ZWI2YTc4MzJkMDM4N2U0Y2ZkZTJkODlkNzQ4ODg0ZGU0MDNmMWUyYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzk3YTQ4Y2RiNTAxNWJmZWI5Y2UzMTkzMzgwMTIxOWYzZDcyZTBkOWI2ZDhjYzVkOGVhOGQ2NzU5YTBmMDUzMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjYxOTRkOTZiZmZhNzcwMmYwZWEyYjIxMzlmMzcwZjcyYjU2YjJhNjRmZDRkMDQ4ZWU1NjlmOGRmZTQyNjZjNSJ9"
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/modules/ephemeris-download/ephemeris-download.utilities.ts#L1-L51",
+          "version": "repo-lines-v1:sha256:2afed565dbb505076a5d8676068e10ab6bc1019db1d249281b3a14a299f78b8d:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmYjQ4NTA3YTRiOWNkNmFlMTBkNGRjZWM1NGJhYjI5NWUyM2UwNWUwOGZmNjk5ZWIxOWNjYWM3NDRkMTBlMDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -126,21 +122,21 @@
     },
     {
       "id": "claim_b4d40965812841f684f2b7fde3a0b29b",
-      "statement": "EphemerisAggregationService computes coordinates, distance, illumination, and azimuth/elevation for all bodies in a single pass, eliminating redundant calc() calls (~6,000 calls/day saved for inner planets).",
+      "statement": "EphemerisAggregationService computes coordinates, distance, illumination, and azimuth/elevation for all bodies in a single pass, eliminating redundant calc() calls.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-aggregation.service.ts#L100-L155",
-          "version": "repo-lines-v1:sha256:92319b718922c3f434dee87690e203fce939b33a4bf60cae53da06730c56fb96:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmYWY4NTkxOWJiNWNmYzM1NWJmYzdlYTBkMjc5Y2UwNzliYjhhNjkwZGQwYjQ4NzZlODg4Njk4OWQwMWE2MTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwYTM3ZGY3ODZjYzAxMWUyNzBkMDJhZWZmNjIzYzFjNmZjZDU2MWNhMDg5Njc1ZGM2NDY4MDg0ZjE2YjQyNDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVhOTI5M2ZkODA1NGI2ZTQ3MjQ4MzczZjM5ZjRkZDc3ODAwMTA1ZWI3NTgzNDg2ODcyNTQyODVjZDEyODJiNzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQxMGRjOTgxMTBmZmIyOTZhOGExMGQzMzMyMTZiMDA4MTczNmUyMjdiNzNjY2I0YjZmZGYxYTEyYjZhMTMxOTQifQ"
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts#L90-L110",
+          "version": "repo-lines-v1:sha256:a9e217d49296b78f40f27814a68b26bf0c684b0275334cd360f382e189f1f36f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5ZWUxYzRlZGI0NTNiNGZkMjE2NmYzNDc2YmMxMDgzZmZhMjc2NDE1OWNhYjM4OGI4NWExNjgzNWFhMWVlYzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMyMjMyYTY3MzkxYjU5ODMzMGRhMzU4MzNjM2NjMzEyMmU0ZGZmYjNkMWQxMTU4MDYzMGQxYjI2ZGMwOTQyYTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE5Njc2MzhkZGQxNzEyYmJjY2EzODAyNTMxNWVlNmIyMzEzNTQyOTgwZjMxOThiMTljZmE2ZTRiNDRhMzBlM2MifQ"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts#L94-L100",
-          "version": "repo-lines-v1:sha256:b951708318ade2fabf6bf9e861f17a0f70d4bd9e50593cef52b745c48beaba46:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGYyYTJmOTk2ZjA4ZTY4MGJkMjkyMTM1YTZmYTQ5NzhiZGEyNmU2MDJkODRmMzNjYjFkNTk0Nzc1ZDQzMDRiNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg4YzYwZDJjYzVjMWJkZGU3OWQ4ZThiNDFlMWNkZTVhOGEzYzVmMjc2MzNmMjk1ZWMyZmI0NzA5NmVmYzFjZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODM0MGI3MzQyZTdjYzA2MTM3ZGViM2Q3YzZkMmZkNTBkODRmOWQzZjI3NTVhYTAxZWU5MzFkYjI3NDI5YmE2MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzA4YWFjZmNjMTdjOGE0MjMwYWFjN2ViZjljNDZjYWVlNDYxN2YzOWNlZDExZjJjZDRhYjlhMjAxNjgwZDUzZiJ9"
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/modules/aggregation/ephemeris-aggregation.service.ts#L45-L130",
+          "version": "repo-lines-v1:sha256:38742db37398d239b3bae90f3f1453f2d47b2a808fa6e151a9b03fa19553af01:eyJzZWxlY3RlZExpbmVDb3VudCI6ODYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwMjM2YjYzOGRkMzY3MTA3MGRjOGQxNzA3NGVmYzc3NDdjZGRiNTRkY2EzYTIzOTM1MTk5OGI4ZWUyZWNlMzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZlMzAwNDk0ZTg2MGE0YWE1N2I2MDNhMDI5NmNjNjUzNGMwYTA0ZjliMjc1ZTVjMmFhNTIyM2Q0Y2RhMWZmY2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY3Y2MzNjY4ZDkxYzljODA3YjZiODBkM2Y5MGYwOGFlMGUzNTIxZWUyZTdlOTZiZGJhYTQwODUxNWEzM2QyNDgifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-13T16:30:25.369Z"
+    "at": "2026-11-22T00:18:20.862Z"
   }
 }

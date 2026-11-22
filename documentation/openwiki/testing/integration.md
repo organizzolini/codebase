@@ -3,8 +3,8 @@ type: "Reference"
 title: "Integration Testing"
 openwiki_generated: true
 verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-29T03:39:46.432Z
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 sources:
   - id: openwiki-source-db7eb71a3306403209a370a4
     resource: repo://.agents/skills/testing-strategy/SKILL.md
@@ -14,17 +14,19 @@ sources:
     resource: repo://.github/workflows/continuous-integration.yml
   - id: openwiki-source-bbab45af4bebcbd50cf915b0
     resource: repo://integration/src/integration.main.end-to-end.test.ts
-  - id: openwiki-source-c226aa5c7f690262741b3f25
-    resource: repo://projects/common/interface/testing/graphql-mock-server.ts
-  - id: openwiki-source-79e7b4ee4ecfb08c4edc2d59
-    resource: repo://projects/common/interface/testing/pagination.ts
-  - id: openwiki-source-a688f65f433758aea382c292
-    resource: repo://projects/common/persistence/src/modules/postgresql/postgresql-container.utilities.ts
-  - id: openwiki-source-4808dd4ba16cde901f5bc82f
-    resource: repo://projects/common/persistence/testing/persistence-testing.utilities.ts
+  - id: openwiki-source-fb04b392a5b00efed2344b4b
+    resource: repo://projects/common/interface/testing/graphql-mock-server/graphql-mock-server.utilities.ts
+  - id: openwiki-source-656ec5fd6b299f80e2256a7b
+    resource: repo://projects/common/interface/testing/index.ts
+  - id: openwiki-source-6bccd99d3ce37c9033902b3b
+    resource: repo://projects/common/interface/testing/pagination/pagination.utilities.ts
+  - id: openwiki-source-d43cf1b76d511df31f2fb62d
+    resource: repo://projects/common/persistence/testing/database-testing/database-testing.utilities.ts
+  - id: openwiki-source-c647017e373aa4231d115310
+    resource: repo://projects/common/persistence/testing/postgres-container/postgres-container.utilities.ts
   - id: openwiki-source-d2bcabd613e9901cd5519864
     resource: repo://projects/meanderaw/meanderaw-cli/src/modules/draw/draw-run.command.integration.test.ts
-generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 ---
 
 
@@ -227,25 +229,21 @@ The `nx affected --target=vitest` command runs **all** vitest configurations (un
 - **Correctness**: Nx computes the project graph and knows which projects transitively depend on what changed
 - **CI efficiency**: The same command runs locally and in CI with identical semantics
 
-## CI Integration Test Sharding (4 Legs)
+## CI Integration Test Sharding (7 Legs)
 
-In CI, the `test-code` target is split into four parallel legs so no single leg waits for the slowest projects. This is configured in `.github/workflows/continuous-integration.yml`:
+In CI, the `test-code` target is split into parallel legs, one per project group, so no single leg waits for the slowest projects. This is configured in the matrix of `.github/workflows/continuous-integration.yml`:
 
-| Leg | Name | Shard | Excludes |
-|-----|------|-------|----------|
-| 1 | Test | — | `meanderaw-cli`, `projects/caelundas/**`, `projects/ic-suite/**` |
-| 2 | Test Caelundas | `caelundas` | `*,!projects/caelundas/**` |
-| 3 | Test Meanderaw | `meanderaw-cli` | `*,!meanderaw-cli` |
-| 4 | Test IC Suite | `ic-suite` | `*,!projects/ic-suite/**` |
+| Leg | Shard | Selects |
+|-----|-------|---------|
+| Test Codebase | `codebase` | Everything not in another leg (new projects stay here until explicitly split out) |
+| Test Common | `common` | `projects/common/**` (installs the Postgres client) |
+| Test Affirmancy | `affirmancy` | `projects/affirmancy/**` |
+| Test Caelundas | `caelundas` | `projects/caelundas/**` |
+| Test IC Suite | `ic-suite` | `projects/ic-suite/**` |
+| Test Lexico | `lexico` | `projects/lexico/**` (installs the Postgres client) |
+| Test Meanderaw | `meanderaw` | `projects/meanderaw/**` |
 
-**Rationale (from CI workflow comments):**
-- Meanderaw alone took over seven minutes uncached beside the rest, and about three minutes alone
-- ic-suite's 37 packages were most of what remained
-- Caelundas's command line cannot start until its ephemeris download finishes, so it ran last and alone for four more minutes
-- The fourth leg ("everything else") keeps the `Test` name branch protection has always required
-- A leg with nothing affected runs nothing
-
-Each leg runs with `--configuration=coverage` and `--parallel=4`. The `setup-codebase` composite action installs the Postgres client only for the primary `test-code` leg (`matrix.check.target == 'test-code' && !matrix.check.shard`).
+Each leg selects its projects with an `exclude` list (`"*,!projects/<group>/**"` for a group leg), and a leg with nothing affected runs nothing. The workflow comments record why the split exists: a few groups, such as the IC suite and meanderaw, dominated the wall-clock time of a single leg.
 
 ## Mocking Patterns in Integration Tests
 

@@ -1,22 +1,18 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:d621963dffd899fef1121a6c1b8c96bdf23795d5e1d1d84a30e4ab4f7635dd5b",
+  "pageVersion": "sha256:540a85fd51fa81ec4e73ededab212791803cc4940500a0dd86909557af1b9675",
   "claims": [
     {
       "id": "claim_ff5540c9dcf54d78959182fda4d52e17",
-      "statement": "The infrastructure directory contains three independent deployment layers: local Docker Compose services (PostgreSQL, SearxNG, Open WebUI), a reusable Helm chart (kubernetes-job) for batch Job deployments with PVC storage, and Terraform configuration with four roots (main for Linode LKE cluster, openrouter for OpenRouter workspace/keys/presets, github for GitHub repository settings and Actions variables, linode for Object Storage buckets holding Terraform state and shared Nx cache).",
+      "statement": "The infrastructure directory contains three independent deployment layers: local Docker Compose services (PostgreSQL, SearxNG, Open WebUI), a reusable Helm chart (kubernetes-job) for batch Job deployments with PVC storage, and Terraform with four roots (main for the Linode LKE cluster, openrouter for the OpenRouter workspace, guardrail, key and preset, github for repository settings, the main ruleset and Actions variables and secrets, linode for Object Storage buckets holding Terraform state and the shared Nx cache).",
       "evidence": [
         {
-          "resource": "repo://infrastructure/AGENTS.md",
-          "version": "repo-file-v1:sha256:05f771bee9148b0ddcf9ce2d1c295b3d40e8061a73f6bbe4742e1afee88ac70a"
-        },
-        {
-          "resource": "repo://infrastructure/README.md",
-          "version": "repo-file-v1:sha256:2ec9549f3ac3d9c8f08b6ed6db06d8a00ed1eb002365dc48fc9bc80d1b5b6a60"
+          "resource": "repo://infrastructure/README.md#L1-L20",
+          "version": "repo-lines-v1:sha256:338e07d400f6aaf84a22fe4331380103fabbc6baa9a1cc5abbefe52fdd263cee:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiNjA4NTY4OTg0N2EyMzNlM2JjOGU0Zjk1OGI1MjBkZDdiYzE2ZDAwZDdiMjA1OTAxZTlhMzVhMzA4ZDIzNDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJiOTI4MmEwNzg0MTMwMDM1ZjY1MjBmYzA0MDMyNjYxZWQyN2U0N2U3Mzk3NGVhYTg5YzUwNzQxNWE3ZjM2ODMifQ"
         },
         {
           "resource": "repo://infrastructure/project.json",
-          "version": "repo-file-v1:sha256:9a3c184e7184752ce32efc8609e108547012b2a89a4d5eeeb44ad258a2564294"
+          "version": "repo-file-v1:sha256:6813a66490da2e79c7269cdbf39e8ec3ed5e802554a1bdcf3a000fd52a32c5d9"
         },
         {
           "resource": "repo://infrastructure/terraform/github/main.tf",
@@ -32,7 +28,7 @@
         },
         {
           "resource": "repo://infrastructure/terraform/openrouter/main.tf",
-          "version": "repo-file-v1:sha256:148f30e6d2e423f7a44ed70f0ea66b500c4bf4b9ef1b5172a6a1ab1da1b0360c"
+          "version": "repo-file-v1:sha256:62fa263e91ce33f8c1b625b517659c5affe84fbe0e0da10e3f44b9d53d72f407"
         }
       ]
     },
@@ -41,12 +37,12 @@
       "statement": "Three local services are managed via Nx targets: postgres (up/down/recreate), searxng (up/down/open), and open-webui (up/down/open), all using docker-compose.yml at infrastructure/docker/docker-compose.yml.",
       "evidence": [
         {
-          "resource": "repo://infrastructure/docker/docker-compose.yml",
-          "version": "repo-file-v1:sha256:c94b3a62a7df511ee8b06e13cad84e42b9eacc2750a3af7899c543df3dceee27"
+          "resource": "repo://infrastructure/README.md#L99-L106",
+          "version": "repo-lines-v1:sha256:1f1f186b2a8b77b735f3a0a486675e157431bf74f7023cd2a82c73e3e2d57381:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2JiNDQyZjU5N2QyOGZhZDI0ZjFlNTk1NDIzMzljYWMyMDFlNzcxZTY2MTI0ZjAyZmUwODMyODA2OTA3MzM1NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTM0MDBjYTU2NjVjZDBkNzE3MzU5YTgyM2E3OWZkNzIwZjcyMjY5NWZjODc0ODY5OTQ4ZTU1NjUzY2YwYzkzNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWJkZDc5YjE1OTVmNGUxYzc2NjljNDNmMTUzODU0MmE0MDZlNzM2Zjg3MDQ2YmU3M2ZkNjJhZTRkZWJiYWJmZiJ9"
         },
         {
-          "resource": "repo://infrastructure/project.json#L56-L93",
-          "version": "repo-lines-v1:sha256:525f14ab3c7437971191f3e9f854e2360c3cd6fcacdca09cb41fe85f1fe11dd8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyOTIzYTJkNDliNjQ0ZGU0ZTBiZTU5ZDgzMTcwYzRhOWMyYzUwMTE4OTcxYjFiMTcxYmY1NGNiZDNhYWUyNmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmMGNkYjk3MmE3YmZiN2VkMjQ2ZjlmZjY3MjM4NWU1NWY0OTY4ZmMxMTA0M2RjNWI2ODRkNTFkZmEzMWRiY2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI4OTNjMmQ5MTIzZDZiOWY5NzAyMTllYjM1MWY5ZDU1NzliN2RkYzRmMzkxM2Q3ZDRjNzk4MDYwOGFkYTY3MzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVkOTQ5OWI5MGNhYWVhZTM1YTBiY2MzOGNlZjgzM2QyZjE5MWY5NDc3ZDQ5OTdiNDQ1OTZkMTgxZWMzMDQyOGIifQ"
+          "resource": "repo://infrastructure/docker/docker-compose.yml#L1-L75",
+          "version": "repo-lines-v1:sha256:a9650f6ab321e9652d77de785a9bf42486fe316f2bf71c633350394cdf49cf35:eyJzZWxlY3RlZExpbmVDb3VudCI6NzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyNmQ3MTY0MTFhY2YzMzRlYTY0ZDRhNWE5MGEzOTg1MTg4ODc4Y2Y3ZTljYzcyNzNhOWVjMTE1Zjc2NGVhNDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViZGUyMGNlNDgzOTE3MjRmMzEyOWYzZTFkNGM5NGY2ZGM4MGZjYzUzMWJjN2UwYTUyN2NlOWFlNWYxYjY2ODQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVjYjczODMyZDgxNzU1YmYxNmVmOWRiNTFmMjM4N2M0NDcxMDhlNTUxYmE4Y2U5NjFkNDhiZDE0ZDlmOGI1YzYifQ"
         }
       ]
     },
@@ -55,12 +51,12 @@
       "statement": "The PostgreSQL Compose service uses a Compose config (postgres-databases) that installs an executable init script at /docker-entrypoint-initdb.d/databases.sh, which runs only on an empty volume and creates a role, database, and schema for each project listed in POSTGRES_PROJECTS (currently caelundas, lexico, meanderaw).",
       "evidence": [
         {
-          "resource": "repo://infrastructure/README.md#L56-L74",
-          "version": "repo-lines-v1:sha256:d72bb76e02991d43e3fe23f9715d153e4586edb576e0b62ae68cea55a1111337:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZDg5NDk2NTU3NTgxOGNlM2YyNDg0ZjZlNGI5Njc5MWE5YTEyOWZjMjE1NmM0ODYxZWQ0NTlmNjE5ODAxNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ZTg2M2Q1Y2UwNzlkMDE5N2UzNjhlZTU0OTM1YjNhMjc1MGQwYjRlMWZhOTkyMzJlMzE3YjVjMDA3OWVkYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU1MDYxNmViMDdlNjdkZjBmZjlhNjAwNmNjMzhiNTI5YmJiMjlhOWM4MjQyNDdjOWI1YTUyY2M4NDUwYjdjZjYifQ"
+          "resource": "repo://infrastructure/README.md#L55-L80",
+          "version": "repo-lines-v1:sha256:4e9921c955905f44a3bf0c094b0c9c54e4473559f1badb52a50723eb2f584c2b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3MDdiNGU5NDI4ODdmODkxZDhiNGFkZGUxOThjMjNlYmEwZDllMTVmNmJjNzAxNDk1YjJjMDMyYmY0MzU1NDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMzNWFlOGI4NDNlMmMyMWEyY2I4ZjMwODI5OWViMzEwMmY3ZWZmOTE4Y2ZiNGU2ZjAxNzlkMWMyMmIyNzFkMGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRhYzMzOTIxZmQ2NWZmZDZjN2Q4ZDI5OGMzNTk1NzU0ODJhMmJiYzVhYjU0Mzg1NWFkNzM4NGRmNDBjZjVmYTMifQ"
         },
         {
           "resource": "repo://infrastructure/docker/docker-compose.yml#L26-L96",
-          "version": "repo-lines-v1:sha256:026002fd5e4a445ba1463c329061eb0834d54bb51531e8da0d12448a3702f80b:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwZjhkYzgzYTlkMTA3NzQxZTUzNjRhZTBjZjZmNDg1OTU3MDIyMDkwMzExMjIwYWFmOTAxOGI4NzcwZmUxNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4NTFlNzA4MjkyNjFjOWNkYmRmMWM3YTBiZGViOTM1NzBmZjljNmY1MmU4YmFmMGMxZDA4OWMxNDExOWYzMTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmNjgwNjVjN2IzOGFlOWNlMmJiNGNhNWEzZDY2ZDliZjJhOTY2MTQxOWU1YTY1YjM0ZmFhODRhYjBhNWNkODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "version": "repo-lines-v1:sha256:cc9be38bbd96875f59599b6d6153317faa528adff3f1a8de4bc14c2f18eb04bf:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwZjhkYzgzYTlkMTA3NzQxZTUzNjRhZTBjZjZmNDg1OTU3MDIyMDkwMzExMjIwYWFmOTAxOGI4NzcwZmUxNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4NTFlNzA4MjkyNjFjOWNkYmRmMWM3YTBiZGViOTM1NzBmZjljNmY1MmU4YmFmMGMxZDA4OWMxNDExOWYzMTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmNjgwNjVjN2IzOGFlOWNlMmJiNGNhNWEzZDY2ZDliZjJhOTY2MTQxOWU1YTY1YjM0ZmFhODRhYjBhNWNkODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -116,31 +112,23 @@
     },
     {
       "id": "claim_a216c323e88142a59e3d12fd67f55bc2",
-      "statement": "Terraform at infrastructure/terraform/ provisions a Linode LKE cluster (linode_lke_cluster resource) with label lexico-prod, Kubernetes version 1.34, a g6-standard-1 node pool (count 1, autoscaler min 1/max 3), requiring linode_token variable and outputting sensitive kubeconfig. Additional Terraform roots manage OpenRouter (workspace, guardrail, API key, ranked-model preset), GitHub (repository settings, main ruleset, Actions variables sourced from other roots), and Linode Object Storage (state bucket with migration to new bucket, Nx cache bucket with read-only and read-write keys).",
+      "statement": "Terraform at infrastructure/terraform/ provisions a Linode LKE cluster (linode_lke_cluster, label lexico-prod, a g6-standard-1 node pool with count 1 and autoscaler min 1/max 3) and outputs a sensitive kubeconfig. Additional roots manage OpenRouter (workspace, guardrail, key assignment, ranked-model preset written with a management key), GitHub (repository settings, main ruleset, Actions variables and secrets sourced from other roots), and Linode Object Storage (state buckets, and an Nx cache bucket with read-only and read-write keys).",
       "evidence": [
         {
-          "resource": "repo://infrastructure/terraform/github/main.tf",
-          "version": "repo-file-v1:sha256:5515e6d7615a343cba1397c04a125af167bacbba122fc1a85f110e7fd47d1bb2"
+          "resource": "repo://infrastructure/terraform/github/main.tf#L50-L135",
+          "version": "repo-lines-v1:sha256:e352963e967e8f04fddc73bab9b4e363867ac15dc8ea2392e79c458d9a6e758e:eyJzZWxlY3RlZExpbmVDb3VudCI6ODYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxNmMwOWFhMTk5ODQwZmZkMDdjOTllMTE5YTBkNjhlYzY5NmQ2MDAzNzQ0ZjIzZWVhNTg1ZjZjMzdmYjZhZjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIxN2RmZWEzOWY1ZTQxMGJlY2RlMWRmMDA3YzIxZTk4MGVlOGIzMDdkNTlmOTRmN2U2NDkyYTA4NmU1NmMzOWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNmMzhiMzk3MmE1YTg0NTBjMWFlNDQ4MDE4YzU0OWU3MWU1ZmFhY2ViZTA5MTkxZjdkMjljZjRjNTlhNTg2ZDMifQ"
         },
         {
-          "resource": "repo://infrastructure/terraform/linode/main.tf",
-          "version": "repo-file-v1:sha256:db3d011087b417a51737ed943086538e5955a82f2a8a5ef38b19126b36945455"
+          "resource": "repo://infrastructure/terraform/linode/main.tf#L36-L170",
+          "version": "repo-lines-v1:sha256:02f57cb8e9972fe2060a4ca5e3085d7a4b778ea73645ac13d871e5621d490dc1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTM1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJhYmY1OGM3ZmFhZjQ3MTcxMTVjNjA5YzJlYWY2ZmU4MjM4OWMzZTBmOTllNjQ0MDc0MzBmODdjNTQxZDQyNDVhIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJiMTA2ZjI4MDFhNjg0YWVhOTZkYzVhYzAwNDg3MjNjM2I0YjdmNDc5NWJkZTc2ZjEwMzZkZTQ1ZjM0NjYyYmFiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI1MjViMTg2OGQyN2JjYTQwNzhhZWM2OGM0ZjRhYTY1MjA0MjM3NmE4M2U0YzFmNGNiMDA3YmMyNTlmZjJhYjMyIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI5ZjRjZmIzYjk3Mzg0YTM0NGY4ZWEyZWJmNmQzMmU5OGQ3YmExMTRmZjEzODlmNGMwM2FlZGZhZmIwNGI1MjA3In0"
         },
         {
-          "resource": "repo://infrastructure/terraform/linode/outputs.tf",
-          "version": "repo-file-v1:sha256:d5c339d58656141b031fc6c18a9e1c3b68e120cb65546cefb0dddb775e20138f"
+          "resource": "repo://infrastructure/terraform/main.tf#L10-L35",
+          "version": "repo-lines-v1:sha256:4c31342e96b5313d133dd54016ac7d4b1fdf6f3e69e1223bc9689d3af2aa4ed2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4NmU2MWUzMWNlMzJiYWE2ZjYzN2E0ZDM1NDcwMTkwZTk0ZjUzZTlkN2Y2N2QzNjdhNTU4OWU3MzkxNDU4NzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://infrastructure/terraform/main.tf",
-          "version": "repo-file-v1:sha256:ef575fe619ad29efb668b1eafc7896db0e1e019b52e428605c7f69b15094084d"
-        },
-        {
-          "resource": "repo://infrastructure/terraform/openrouter/main.tf",
-          "version": "repo-file-v1:sha256:148f30e6d2e423f7a44ed70f0ea66b500c4bf4b9ef1b5172a6a1ab1da1b0360c"
-        },
-        {
-          "resource": "repo://infrastructure/terraform/variables.tf",
-          "version": "repo-file-v1:sha256:97c02a6f12694549db9489b0b6633d1b6b45dae2fbae9b78d7ae92bd33425120"
+          "resource": "repo://infrastructure/terraform/openrouter/main.tf#L29-L115",
+          "version": "repo-lines-v1:sha256:441f77e13e1d4b1d7f47e929fe589504316f62e6b599edabfe03303578cb86c3:eyJzZWxlY3RlZExpbmVDb3VudCI6ODcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2YjJmMGU4YWM5NTFjYzFhN2YwOTFiYjNhZjUyOGNmZjlmZTY1ODVmZmU5ZmJjNjM5YTg5YmEyN2Y2MmJlOGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhlODE1MThlODYyMGIwMDdkODNiNDMwZGZkNTllMTU3Mzk5N2IwNzY0MTkyNDAwMDhiMGFjNzViODA2NjBkOTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -153,11 +141,11 @@
           "version": "repo-lines-v1:sha256:1aa3023e2227a68144bf07355a6ff4ff7bdb28b3c7fc5b1100b42e1257ddc434:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWUxNWYyNTQ2MDJkNWZlOTUwNTRmMWJiNTRmMWRhNmIwOThlMDFjNzZmMTg3NzBlNTFkZGRjNDZlN2MwODllMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDhhYWMzNmNiOWEzYjZiZmVmMGEyOTZjNTgxYTA1N2FkYjc0ZWJhNTk5NjdkODMxNjkzM2IyZmJjOGNkYmE2MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDE2NjU4NzEyMmNkMTU2YzQ1MmVlNjYwOGJkZTM3YTljM2MyMzYwMmU2OTFiMzcxYzhhYWRjMTM1MjEyYzU1MyJ9"
         },
         {
-          "resource": "repo://infrastructure/project.json#L19-L33",
+          "resource": "repo://infrastructure/project.json#L20-L34",
           "version": "repo-lines-v1:sha256:7d4432a24b986e431f7f66c3b314e39ad5e087caf0ee0267caf8f9920cc4bf87:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljMzc2YjA5MmNkNmViZTUxNTNmYjNmMGRkYzExNzNkMGExM2M1ODcyMDgxN2U5OGEzYTcyZWJmMTM5YTQwYzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmMGNkYjk3MmE3YmZiN2VkMjQ2ZjlmZjY3MjM4NWU1NWY0OTY4ZmMxMTA0M2RjNWI2ODRkNTFkZmEzMWRiY2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU3ZjZmZjQ4NTlhNDE0MDQ3NDE3NTAzYzUyN2Y4ZWI4YzdlZTE1N2FiNzAyYzM5MDBjMjE5MWY4Mjg5OTAwNGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJlNDMzOTU2MzI3ZjU5ZWY4MTkxZDgyYzZiOTM3OWQ4Zjg0ZjhmZGZiYjcwOGNhOTRlYmQyM2UxNGQ4ZmE2Y2EifQ"
         },
         {
-          "resource": "repo://infrastructure/project.json#L9-L16",
+          "resource": "repo://infrastructure/project.json#L10-L17",
           "version": "repo-lines-v1:sha256:90718eb1b0a462b4de38fed740a020f08fe2e310e5285dedc3e0587162104979:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDgyZDBmYzAyZWVhMzM1YTkzNTI1ODExNzBkMDQ4ZGJjYzhkZmU4ZGM1MTkyOWQxMmRiOTczZGRiNzgxZmU2NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWYwY2RiOTcyYTdiZmI3ZWQyNDZmOWZmNjcyMzg1ZTU1ZjQ5NjhmYzExMDQzZGM1YjY4NGQ1MWRmYTMxZGJjYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODBlNTkzODBkYzJlMjdkZjQyYTVmYmJjMGUwNjU4ZDdmYmUxYTgyM2E0NTFjYjg5N2I4ZDAyYmFmMTdiYzBjNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWM5YTY3MDdhNDUwNjBhMzU0NWRlMGExOTMxMTUxM2U3NzU5ZGZjMmVkMmVlNjZiZTIwMjIwOTk4NjA0MjNhMSJ9"
         }
       ]
@@ -204,55 +192,47 @@
     },
     {
       "id": "claim_b1b91cc9cd2f43aeb1bd332567caa881",
-      "statement": "All Terraform roots share an S3-compatible backend pointing to a Linode Object Storage bucket, configured via environment variables (TF_STATE_BUCKET, AWS_ENDPOINT_URL_S3, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY) with AWS validation skipped. No state locking is used; CI serializes applies via a workflow concurrency group. The linode root manages both the Terraform state bucket (with migration from organizzolini to organizzolini-codebase-terraform-state) and a separate Nx cache bucket with read-only and read-write access keys.",
+      "statement": "All Terraform roots share an S3-compatible backend pointing at a Linode Object Storage bucket, configured through TF_STATE_BUCKET, AWS_ENDPOINT_URL_S3 and AWS credential environment variables with AWS validation skipped; CI serializes applies with a workflow concurrency group rather than state locking. The linode root manages the original state bucket (organizzolini), the new state bucket (organizzolini-codebase-terraform-state) and a separate Nx cache bucket with scoped access keys.",
       "evidence": [
         {
-          "resource": "repo://infrastructure/README.md",
-          "version": "repo-file-v1:sha256:2ec9549f3ac3d9c8f08b6ed6db06d8a00ed1eb002365dc48fc9bc80d1b5b6a60"
+          "resource": "repo://infrastructure/terraform/github/main.tf#L1-L28",
+          "version": "repo-lines-v1:sha256:52898378d72bb582e08072b41328662d394eef2aecd0c1d3adaad886ff52ee00:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjNjE2MWZiZmU1YjM2ZTA4MGFhOThlMGI4MDQzNGIyZjUzNDczN2EzMzEyYmVhYWNkYjkxMjU5OGYxZDUwZmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiMDhkOWU5MGNkM2FkMWE1MGViMmYyNzIxMzJhMmJmNDU1YmY3NTg2ZmU5MjRlMWY2OTQxMDEwYWRhYzY3YTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZhNWJmNWM3NzA3NDI3YzljZDc3NDc0YzJlNjcxZDljMzY0YzM1MWNmODUyM2ZjZmUwMzc3ZDI2OWFiMDQ4YjIifQ"
         },
         {
-          "resource": "repo://infrastructure/terraform/github/main.tf",
-          "version": "repo-file-v1:sha256:5515e6d7615a343cba1397c04a125af167bacbba122fc1a85f110e7fd47d1bb2"
+          "resource": "repo://infrastructure/terraform/linode/main.tf#L1-L170",
+          "version": "repo-lines-v1:sha256:f6ff3290b7f209a3d4525391c77c368777cfb2998e200c3996e9bf1ffff8e9dd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJhYzYxNjFmYmZlNWIzNmUwODBhYTk4ZTBiODA0MzRiMmY1MzQ3MzdhMzMxMmJlYWFjZGI5MTI1OThmMWQ1MGZhIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJiMTA2ZjI4MDFhNjg0YWVhOTZkYzVhYzAwNDg3MjNjM2I0YjdmNDc5NWJkZTc2ZjEwMzZkZTQ1ZjM0NjYyYmFiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI5ZjRjZmIzYjk3Mzg0YTM0NGY4ZWEyZWJmNmQzMmU5OGQ3YmExMTRmZjEzODlmNGMwM2FlZGZhZmIwNGI1MjA3In0"
         },
         {
-          "resource": "repo://infrastructure/terraform/linode/main.tf",
-          "version": "repo-file-v1:sha256:db3d011087b417a51737ed943086538e5955a82f2a8a5ef38b19126b36945455"
+          "resource": "repo://infrastructure/terraform/linode/variables.tf#L7-L29",
+          "version": "repo-lines-v1:sha256:6c45fe713103038a11e8024d1688b6b00b0d02d7d473b004fe071bcd7a98b4b6:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3NzgwNzg1Njc0ODM0ZDczOTE4YTc1NDQ1NzFhMDc0NjMyNTM3NjljOGE2ZDMxNjJlZDhmM2MyMDc4NzA2M2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM2N2IzOGQ2MThmYTkwZTZiZWUzZGE2NWJkMmZiYzQyMWNmNmNmMGE1YWMxMmE3NzRlZmRmNTAwNWFiY2RhNDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://infrastructure/terraform/linode/outputs.tf",
-          "version": "repo-file-v1:sha256:d5c339d58656141b031fc6c18a9e1c3b68e120cb65546cefb0dddb775e20138f"
-        },
-        {
-          "resource": "repo://infrastructure/terraform/main.tf",
-          "version": "repo-file-v1:sha256:ef575fe619ad29efb668b1eafc7896db0e1e019b52e428605c7f69b15094084d"
-        },
-        {
-          "resource": "repo://infrastructure/terraform/openrouter/main.tf",
-          "version": "repo-file-v1:sha256:148f30e6d2e423f7a44ed70f0ea66b500c4bf4b9ef1b5172a6a1ab1da1b0360c"
+          "resource": "repo://infrastructure/terraform/openrouter/main.tf#L1-L28",
+          "version": "repo-lines-v1:sha256:c5a7093e6e455234e3d24d465a85e5184871ab6fbd56e211467fe6d01def49d7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjNjE2MWZiZmU1YjM2ZTA4MGFhOThlMGI4MDQzNGIyZjUzNDczN2EzMzEyYmVhYWNkYjkxMjU5OGYxZDUwZmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2MzRkYjQ4ZmFiYjAzYzViZjlhMzc4OTdiZDNjYmZlZDExZDY0M2U0NDc2MzNlMDM2MDM3NDIwNDFlZTg0ZDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJlMzQ1NzUwZmNhMjk0MjgwYTM3ZjZhNDdiNmQzZmNlNWQ3Yzg0NTU5OTAwOTVlN2M2N2MxMWM1ZWQwMjZlYjMifQ"
         }
       ]
     },
     {
       "id": "claim_9a6a1e41e0f0479ca02d99d71a443c26",
-      "statement": "GitHub Actions CI runs helm-lint and compose-config in the Lint leg via nx run infrastructure:helm-lint and nx run infrastructure:compose-config. The plan-terraform target runs for PRs changing infrastructure/terraform/** and comments the plan output. Continuous Deployment applies Terraform roots in order: openrouter → github → linode, using GitHub secrets for all sensitive values.",
+      "statement": "CI runs helm-lint and compose-config as dependencies of lint-code, and a plan-terraform leg for changes under infrastructure/terraform/**. Continuous Deployment applies the Terraform roots in the order openrouter, linode, github, using GitHub secrets for sensitive values.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/continuous-integration.yml",
-          "version": "repo-file-v1:sha256:9a87d4a6126422f46bf43e65c8b374e21a57c863a4f91a6c1e0aade4e42cbbaa"
+          "resource": "repo://.github/workflows/continuous-deployment.yml#L395-L420",
+          "version": "repo-lines-v1:sha256:fe1e19659fc123f39f2e9d9c44a64dbbb87e14350cedb489445914ad6c19500d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5MzM3OWQ4ZDlkOTM3MWY2NmNkNmRhNGJiNWUwZDhkMzQ0ZDAxY2YwNGVkN2RjZTY5M2I3ZDRlNTkxN2VmODEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZhM2RmNThmZDQ4ZDI5ODk4ZTUzYjk2MDRjZjA2ZGE5MDYxOTM4NTZhZjBkNzdmYTA0ZDcyYzYzZDI5NzRkZTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRjZDdkNDNiYTM3NDQ1NzU4YzY0ODc1Njc0OTkxZDkyYmIzMmVjNmIwMTMwNjAyZWVmZGI2OWJiNzZiNjc2M2YifQ"
         },
         {
-          "resource": "repo://infrastructure/README.md",
-          "version": "repo-file-v1:sha256:2ec9549f3ac3d9c8f08b6ed6db06d8a00ed1eb002365dc48fc9bc80d1b5b6a60"
+          "resource": "repo://.github/workflows/continuous-integration.yml#L125-L150",
+          "version": "repo-lines-v1:sha256:5cfb3beedad3a49c7fa358e7bbe033a86536e569e3aa370b7ef6265b8f40dc09:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3OWU5YzI0OWQzNDQ3NmJmOGE5MjA2YzI3NGUzMzhmNTY4ZTBlYjRlYjI2OTM2ODFmMWQyMjJkZTZjM2Y4MmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg2MDc1YzUwYzNkMTA3MTc5M2NmYTA4YjViMDliYjYwOWZjZDAxNDA1NGVjY2UxYzBmYzQ2YWU2ZTM1N2Q4NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmZmI4MjljYTkwMDM0ZTRjNjVlMzlkMjZmY2YzZjQzZmQxY2M3YTMzMDQwN2M2YTUxOTU1NGE1MGY3ODdlODgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkNDU2ZjhiMDBiNTJhMmQyNDYwZTkzNzQ5MDZlNzQ4YjhiZTNlNWFkZWM3OGIwYjFmYWI0ZmY4YWYyZjdlNDcifQ"
         },
         {
-          "resource": "repo://infrastructure/project.json",
-          "version": "repo-file-v1:sha256:9a3c184e7184752ce32efc8609e108547012b2a89a4d5eeeb44ad258a2564294"
+          "resource": "repo://infrastructure/README.md#L85-L110",
+          "version": "repo-lines-v1:sha256:826e816a1b857d34898f63e0eecaa1411434de0fb1eb3669eeada227a4464a53:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5ZjA1NTg1Nzg3ZDEyM2Y1YjU0YTUyNmFjNmYyZTI4MzI2ZGY1YTVlZjQwOGE3OWFlYTc3M2NhZDcyNDE1YzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmNDQ4YzdhNmQwMzFjMzNmMTdjMzRjMTIyNjYyOTgyMjM2Y2UyYjgxYTUwZWMxMzdiZGQ0MzVlNjU5ODc1ZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEzODYxZWNjYjFlZmZlODNkOTBjNjY3ZmNhYTlhMTY3ODY0MDdlY2MzN2E5N2IxZTMxMjU2YTBjZTNjOTAxYTIifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-13T16:30:25.369Z"
+    "at": "2026-11-22T00:18:20.862Z"
   }
 }

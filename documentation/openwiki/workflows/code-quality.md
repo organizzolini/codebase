@@ -1,8 +1,8 @@
 ---
 type: workflow
 title: Code Quality Gates
-description: Documents the four IC-Suite quality gates (callidescope depth/breadth, codependix boundaries, codometer limits, conformetry conformance) and their integration into CI via Nx targets.
-tags: [ic-suite, quality-gates, nx, ci, callidescope, codependix, codometer, conformetry]
+description: Documents the IC-Suite quality gates (callidescope depth/breadth, codependix boundaries, codometer limits, coinagerie glossary, conformetry conformance) and their integration into CI via Nx targets.
+tags: [ic-suite, quality-gates, nx, ci, callidescope, codependix, codometer, coinagerie, conformetry]
 sources:
   - id: openwiki-source-cb3df90b3af3b7ee2f16c98e
     resource: repo://.agents/skills/triage-integration/SKILL.md
@@ -10,20 +10,22 @@ sources:
     resource: repo://.agents/skills/validate-code/SKILL.md
   - id: openwiki-source-8037e2358a2c4f9b2c722a11
     resource: repo://AGENTS.md
-  - id: openwiki-source-3813a8d6b5fb514dbe957652
-    resource: repo://configuration/codependix.config.ts
-  - id: openwiki-source-90b02c1b2d7e834e85fa1f3a
-    resource: repo://configuration/codometer.config.ts
-  - id: openwiki-source-495621117b1d7a0a282d1a02
-    resource: repo://configuration/lint-staged.config.ts
+  - id: openwiki-source-d7ee8504ef5ff061b38f1613
+    resource: repo://configuration/ic-suite/codependix.config.ts
+  - id: openwiki-source-50b667bfcf0ee4b4daed851d
+    resource: repo://configuration/ic-suite/codometer.config.ts
+  - id: openwiki-source-25ae594e3d51a8bd1e2791c2
+    resource: repo://configuration/repository/lint-staged.config.ts
   - id: openwiki-source-6ba748254f38112b13d529da
     resource: repo://nx.json
   - id: openwiki-source-52f2bb7d9c7d2fad35c7c856
     resource: repo://projects/ic-suite/callidescope/callidescope-cli/README.md
+  - id: openwiki-source-f45834e39c42c6991e4c7485
+    resource: repo://projects/ic-suite/callidescope/callidescope-cli/src/modules/callidescope/callidescope.command.ts
+  - id: openwiki-source-2e06e915cb519e5d24518cdc
+    resource: repo://projects/ic-suite/callidescope/callidescope-nx/README.md
   - id: openwiki-source-51e03273bac4336f316a0939
     resource: repo://projects/ic-suite/callidescope/callidescope-nx/src/executors/gate/executor.ts
-  - id: openwiki-source-3a9a91a5f64207a13d1e2208
-    resource: repo://projects/ic-suite/callidescope/callidescope-nx/src/modules/options/options.constants.ts
   - id: openwiki-source-bc8f29fb181c173738ef9e79
     resource: repo://projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts
   - id: openwiki-source-353594b808056ff8dd3dbc28
@@ -32,30 +34,30 @@ sources:
     resource: repo://projects/ic-suite/codependix/codependix-nx/src/executors/gate/executor.ts
   - id: openwiki-source-9b4779d4466d7946f7bbe7ad
     resource: repo://projects/ic-suite/codependix/codependix-nx/src/index.ts
-  - id: openwiki-source-b593e5d7e490983f5d4f1d20
-    resource: repo://projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin.constants.ts
   - id: openwiki-source-4afd9d23488d0275aa688221
     resource: repo://projects/ic-suite/codometer/codometer-cli/README.md
+  - id: openwiki-source-03219b76704d24994321965e
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-cli/README.md
   - id: openwiki-source-15595f87d2b72a10e2cbba47
     resource: repo://projects/ic-suite/conformetry/conformetry-cli/README.md
-  - id: openwiki-source-41d402c4941aa1275a7eec3b
-    resource: repo://projects/ic-suite/conformetry/conformetry-nx/src/executors/validate/executor.ts
   - id: openwiki-source-a4bfc8509bbcb70fdbb31e1c
     resource: repo://projects/ic-suite/conformetry/conformetry-nx/src/index.ts
-  - id: openwiki-source-7e59c3975b6db494b3e4650b
-    resource: repo://projects/ic-suite/conformetry/conformetry-nx/src/modules/options/options.constants.ts
-generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+verified:
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 ---
 
 # Code Quality Gates
 
-This workspace enforces four in-house toolchains that measure the codebase and gate what they measure. Each toolchain has its own **gating word** — the metric it decides — and is integrated into the Nx task graph so CI fails when a gate is breached.
+This workspace enforces five in-house toolchains that measure the codebase and gate what they measure. Each toolchain has its own **gating word** — the metric it decides — and is integrated into the Nx task graph so CI fails when a gate is breached.
 
 | Toolchain | Gating Word | What It Gates | Nx Target(s) |
 |-----------|-------------|---------------|--------------|
-| **callidescope** | `depth` / `breadth` | Call-stack depth and breadth | `callidescope-trace`, `callidescope-depth`, `callidescope-breadth`, `callidescope-gate` |
-| **codependix** | `boundaries` | Dependency-graph boundary rules | `codependix-gate` |
+| **callidescope** | `depth` / `breadth` | Call-stack depth and breadth | `callidescope-trace`, `callidescope-depth`, `callidescope-breadth`, `callidescope-restrict` |
+| **codependix** | `boundaries` | Dependency-graph boundary rules | `codependix-bound` |
 | **codometer** | `limits` | File sizes, symbol counts, comment-block length | `codometer` (configurations: `check`, `write`) |
+| **coinagerie** | `words` | A glossary entry for every word the code uses, and none for a word it no longer uses | `coinagerie-check` (configurations: default, `write`) |
 | **conformetry** | `threshold` | Generated code conformance to templates | `conformetry-validate` |
 
 ---
@@ -64,16 +66,16 @@ This workspace enforces four in-house toolchains that measure the codebase and g
 
 | Tool | What It Measures | CLI Flag for Gate | Breach vs Staleness | Where It Runs (CI/Local) | Config Location |
 |------|------------------|-------------------|---------------------|---------------------------|-----------------|
-| **callidescope** | Call-stack depth & breadth across project + Nx deps | `--check depth,breadth` (breach)<br>`--check reports` (staleness) | **Breach** = `--check depth,breadth` (branch gate)<br>**Staleness** = `--check reports` (default branch only) | CI: `nx affected -t callidescope-gate`<br>Local: same via `lint-staged` → `guard-code` | Project: `callidescope.config.ts`<br>Workspace: `configuration/callidescope.config.ts` |
-| **codependix** | Dependency boundaries (file imports, NestJS modules, Nx projects) | `--check boundaries` (breach)<br>`--check reports` (staleness) | **Breach** = `--check boundaries` (branch gate)<br>**Staleness** = `--check reports` (default branch only) | CI: `nx affected -t codependix-gate`<br>Local: same via `lint-staged` → `guard-code` | Project: `codependix.config.ts`<br>Workspace: `configuration/codependix.config.ts` |
-| **codometer** | File size, symbol counts, comment-block words (runs on compiled output) | `--check limits` (breach)<br>`--check reports` (staleness) | **Breach** = `--check limits` (branch gate, via `build-projects`)<br>**Staleness** = `--check reports` (default branch only, via `configuration:codometer:write`) | CI: `nx affected -t build-projects` (includes `codometer:check`)<br>Local: `nx run <project>:codometer:check` | Project: `codometer.config.ts`<br>Workspace: `configuration/codometer.config.ts` |
+| **callidescope** | Call-stack depth & breadth across project + Nx deps | `--check depth,breadth` (breach)<br>`--check reports` (staleness) | **Breach** = `--check depth,breadth` (branch gate)<br>**Staleness** = `--check reports` (default branch only) | CI: `nx affected -t callidescope-restrict`<br>Local: same via `lint-staged` → `guard-code` | Project: `callidescope.config.ts`<br>Workspace: `configuration/callidescope.config.ts` |
+| **codependix** | Dependency boundaries (file imports, NestJS modules, Nx projects) | `--check boundaries` (breach)<br>`--check reports` (staleness) | **Breach** = `--check boundaries` (branch gate)<br>**Staleness** = `--check reports` (default branch only) | CI: `nx affected -t codependix-bound`<br>Local: same via `lint-staged` → `guard-code` | Project: `codependix.config.ts`<br>Workspace: `configuration/ic-suite/codependix.config.ts` |
+| **codometer** | File size, symbol counts, comment-block words (runs on compiled output) | `--check limits` (breach)<br>`--check reports` (staleness) | **Breach** = `--check limits` (branch gate, via `build-projects`)<br>**Staleness** = `--check reports` (default branch only, via `configuration:codometer:write`) | CI: `nx affected -t build-projects` (includes `codometer:check`)<br>Local: `nx run <project>:codometer:check` | Project: `codometer.config.ts`<br>Workspace: `configuration/ic-suite/codometer.config.ts` |
 | **conformetry** | Template conformance score (structural AST comparison) | `--threshold` (breach, defaults to 1.0 = perfect) | **Breach only** = score < `threshold` (branch gate)<br>No staleness concept — generated code is either conformant or not | CI: `nx affected -t conformetry-validate`<br>Local: same via `lint-staged` → `guard-code` | Workspace: `configuration/conformetry.config.ts`<br>Per-project inferred via plugin |
 
 ---
 
 ## The Two-Gate Pattern: Breach Gates vs Staleness Gates
 
-**All four tools share the same gate topology:**
+**The four measuring tools share the same gate topology (coinagerie's `--check` is its own breach-style check):**
 
 | Gate Kind | CLI Name | Runs On | Purpose |
 |-----------|----------|---------|---------|
@@ -85,7 +87,7 @@ This workspace enforces four in-house toolchains that measure the codebase and g
 - `--check depth,breadth,limits,boundaries` — **never writes**, only reads and fails. Leaves committed reports untouched.
 - `--check reports` — **never reads** on a branch; only runs on `main` where the workspace-wide `write` target publishes fresh reports.
 - `--write --check reports` is **refused** by all tools: a report cannot be stale in the run that just wrote it.
-- The Nx aggregator `guard-code` depends on `callidescope-gate`, `codependix-gate`, `conformetry-validate` — **all breach gates**. It has no `write` configuration for these.
+- The Nx aggregator `guard-code` depends on `callidescope-restrict`, `codependix-bound`, `conformetry-validate` — **all breach gates**. It has no `write` configuration for these.
 - `codometer:check` (breach) runs in `build-projects` on every build; `codometer:write` (staleness) runs on `main` during release via `configuration:codometer`.
 
 ---
@@ -101,7 +103,7 @@ This workspace enforces four in-house toolchains that measure the codebase and g
 | `callidescope-trace` | `@callidescope/nx:trace` | Print every call stack above and below each callable in the project and its Nx dependencies. |
 | `callidescope-depth` | `@callidescope/nx:depth` | Print every call stack above and below a single callable. |
 | `callidescope-breadth` | `@callidescope/nx:breadth` | Print one callable's direct callers and callees. |
-| `callidescope-gate` | `@callidescope/nx:gate` | **Fail** if any traced call stack exceeds the project's declared `maximumDepth` or `maximumBreadth`. This is the gate CI reads. |
+| `callidescope-restrict` | `@callidescope/nx:gate` | **Fail** if any traced call stack exceeds the project's declared `maximumDepth` or `maximumBreadth`. This is the gate CI reads. |
 
 ### Configuration
 
@@ -122,7 +124,7 @@ The workspace-level `workspaceLimits` (depth 17, breadth 2) serves only as a sta
 
 - The gate runs over the project **and its Nx dependencies** (the trace follows the dependency graph).
 - Only findings **charged to the project itself** fail its gate. A breach in a dependency fails that dependency's own gate.
-- `nx affected -t callidescope-gate` scopes the gate to changed projects, so CI only runs what matters.
+- `nx affected -t callidescope-restrict` scopes the gate to changed projects, so CI only runs what matters.
 - A project with no traced files (empty scope) **fails** rather than passes — a green gate without a trace would be misleading.
 
 ---
@@ -135,13 +137,13 @@ The workspace-level `workspaceLimits` (depth 17, breadth 2) serves only as a sta
 
 | Target | Executor | Description |
 |--------|----------|-------------|
-| `codependix-gate` | `@codependix/nx:gate` | **Fail** if any boundary rule is broken in the graphs built over the project and its dependencies. Only findings charged to the project itself cause a failure. |
+| `codependix-bound` | `@codependix/nx:gate` | **Fail** if any boundary rule is broken in the graphs built over the project and its dependencies. Only findings charged to the project itself cause a failure. |
 
 ### Boundary Rules
 
-Rules are defined in `configuration/codependix.config.ts` under `boundaries`. They are ANDed: every rule must pass. Two layers of rules exist:
+Rules are defined in `configuration/ic-suite/codependix.config.ts` under `boundaries`. They are ANDed: every rule must pass. Two layers of rules exist:
 
-1. **Generic `layer:*` rules** — apply to all four toolchains: a layer may reach its own layer and every layer beneath it.
+1. **Generic `layer:*` rules** — apply to all five toolchains: a layer may reach its own layer and every layer beneath it.
 2. **Per-package `name:*` rules** — tighten the generic rules, catching mis-tagged packages and cross-toolchain edges (`layer:*` cannot express `suite:*` tags).
 
 Rules are verified to hold across all projects before being written; a red rule on arrival is a backlog item, not a gate.
@@ -149,7 +151,7 @@ Rules are verified to hold across all projects before being written; a red rule 
 ### Gate Semantics
 
 - Graphs are built over the project **and everything it depends on**.
-- `nx affected -t codependix-gate` scopes to changed projects.
+- `nx affected -t codependix-bound` scopes to changed projects.
 - The workspace-wide `configuration:codependix` target is **write-only** (regenerates README graphs on the default branch during release) and is not reachable from `guard-code`.
 
 ---
@@ -170,8 +172,8 @@ The target is defined in `nx.json` under `targetDefaults.codometer` with multipl
 ### Enforced Limits
 
 - **Max 512 lines per file** — enforced by codometer limits on file-size metrics.
-- **Max 128 words per comment block** — enforced by comment-budget counters (`comment: { language, maximumWords: 128 }`) with a `value: 0` limit on each budget's `custom.<label>` metric. Shell scripts get 256 words.
-- Every project declares its own `codometer.config.ts` spreading the shared `codometerConfiguration` from `configuration/codometer.config.ts`, which defines the counters and the zero-tolerance limits.
+- **Max 48 words per plain comment block** (8 lines; shell gets 16 lines) — enforced by comment-budget counters (`comment: { language, maximumLines: 8, maximumWords: 48 }`) with a `value: 0` limit on each budget's `custom.<label>` metric. Shell scripts get 256 words.
+- Every project declares its own `codometer.config.ts` spreading the shared `codometerConfiguration` from `configuration/ic-suite/codometer.config.ts`, which defines the counters and the zero-tolerance limits.
 
 ### Gate Semantics
 
@@ -211,7 +213,7 @@ The workspace enforces two hard size limits, measured and gated by **codometer**
 | Limit | Value | Enforcement |
 |-------|-------|-------------|
 | Lines per file | **512** | File-size metrics in `codometer.config.ts` custom statistics |
-| Words per comment block | **128** (256 for shell) | Comment-budget counters with `maximumWords` and zero-tolerance limits |
+| Words per comment block | **48** (plain blocks, with JSDoc budgets per declaration kind) | Comment-budget counters with `maximumWords` and zero-tolerance limits |
 
 **Suppression comments are forbidden** — `// eslint-disable`, `@ts-ignore`, and similar escapes are not permitted. Fix the root cause instead (split files, refactor, rewrite comments).
 
@@ -226,10 +228,11 @@ Defined in `nx.json` under `targetDefaults.guard-code`, this `nx:noop` target de
 ```json
 "guard-code": {
   "dependsOn": [
-    "callidescope-gate",
-    "codependix-gate",
-    "conformetry-validate",
+    "callidescope-restrict",
     "catalog-manifests",
+    "codependix-bound",
+    "coinagerie-check",
+    "conformetry-validate",
     "lockfile",
     "project-ports",
     "readme-projects",
@@ -239,7 +242,7 @@ Defined in `nx.json` under `targetDefaults.guard-code`, this `nx:noop` target de
 }
 ```
 
-Running `nx run <project>:guard-code` (or `nx affected -t guard-code`) executes all four IC-Suite gates for the affected projects. Neither `callidescope-gate` nor `codependix-gate` has configurations, so the configuration passed to `guard-code` falls through to their defaults.
+Running `nx run <project>:guard-code` (or `nx affected -t guard-code`) executes the callidescope, codependix, coinagerie and conformetry gates for the affected projects. Neither `callidescope-restrict` nor `codependix-bound` has configurations, so the configuration passed to `guard-code` falls through to their defaults.
 
 ### The `build-projects` Aggregator
 
@@ -254,17 +257,11 @@ Every build is measured by codometer; a size-limit breach fails the build.
 
 ### Pre-Commit Hooks
 
-`lint-staged` (configured in `configuration/lint-staged.config.ts`) runs on every staged file:
-
-```bash
-nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check --parallel=4 --base=HEAD --head=<staged-commit>
-```
-
-This runs the full quality suite including `guard-code` (hence all four IC-Suite gates) before commit.
+`lint-staged` (configured in `configuration/repository/lint-staged.config.ts`) runs `nx affected` over the staged changes, selecting projects the way CI does, with the same `lint-code` target family; the `guard-code` gates (callidescope, codependix, coinagerie and conformetry) are part of what it runs before a commit.
 
 ### CI Workflow
 
-GitHub Actions (`.github/workflows/continuous-integration.yml`) runs the same `nx affected` command on pull requests. The `validate-code` skill documents the full local validation workflow:
+GitHub Actions (`.github/workflows/continuous-integration.yml`) runs each gate as its own leg of the CI matrix on pull requests. The `validate-code` skill documents the full local validation workflow:
 
 1. **Auto-fix** — `nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=write --base=main`
 2. **Verify** — `nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check --base=main`
