@@ -39,7 +39,7 @@ export function NonFiniteForms(
       className={className}
       data-testid="non-finite-forms"
     >
-      <dl className="space-y-1 pt-3 text-sm">
+      <dl className="space-y-1 text-sm">
         {nonFinite.map((row) => (
           <div
             key={`${row.kind}${row.tense}${row.voice}${row.case}${row.word}`}

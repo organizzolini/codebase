@@ -1,6 +1,9 @@
 import { useState } from "react";
 
+import { Frame, FramePanel } from "@codebase/presentation";
+
 import { FormsTable } from "../forms-table/forms-table";
+import { FLUSH_PANEL, FORMS_FRAME } from "../forms-table/forms-table.constants";
 
 import { AxisTabs } from "./axis-tabs";
 import { NonFiniteForms } from "./non-finite-forms";
@@ -59,46 +62,62 @@ export function VerbForms(
       className={className}
       data-testid="verb-forms"
     >
-      <div>
-        <AxisTabs
-          onChange={(next) => {
-            setSelection({ ...selection, voice: next });
-          }}
-          options={voices}
-          value={voice}
-        />
+      <Frame
+        className={FORMS_FRAME}
+        spacing="xs"
+        variant="ghost"
+        dense
+        stacked
+      >
+        <FramePanel className={FLUSH_PANEL}>
+          <AxisTabs
+            onChange={(next) => {
+              setSelection({ ...selection, voice: next });
+            }}
+            options={voices}
+            value={voice}
+          />
+        </FramePanel>
         {voice === NON_FINITE_TAB ? (
-          <NonFiniteForms rows={rows} />
+          <FramePanel>
+            <NonFiniteForms rows={rows} />
+          </FramePanel>
         ) : (
           <>
-            <AxisTabs
-              onChange={(next) => {
-                setSelection({ ...selection, mood: next });
-              }}
-              options={moods}
-              value={mood}
-            />
-            <AxisTabs
-              onChange={(next) => {
-                setSelection({ ...selection, tense: next });
-              }}
-              options={tenses}
-              value={tense}
-            />
-            <FormsTable
-              columns={NUMBER_AXES}
-              lookup={(person, number) =>
-                tenseRows
-                  .filter(
-                    (row) => row.person === person && row.number === number,
-                  )
-                  .map((row) => row.word)
-              }
-              rows={PERSON_AXES}
-            />
+            <FramePanel className={FLUSH_PANEL}>
+              <AxisTabs
+                onChange={(next) => {
+                  setSelection({ ...selection, mood: next });
+                }}
+                options={moods}
+                value={mood}
+              />
+            </FramePanel>
+            <FramePanel className={FLUSH_PANEL}>
+              <AxisTabs
+                onChange={(next) => {
+                  setSelection({ ...selection, tense: next });
+                }}
+                options={tenses}
+                value={tense}
+              />
+            </FramePanel>
+            <FramePanel className={FLUSH_PANEL}>
+              <FormsTable
+                columns={NUMBER_AXES}
+                lookup={(person, number) =>
+                  tenseRows
+                    .filter(
+                      (row) => row.person === person && row.number === number,
+                    )
+                    .map((row) => row.word)
+                }
+                rows={PERSON_AXES}
+              />
+            </FramePanel>
           </>
         )}
-      </div>
+      </Frame>
     </div>
   );
 }

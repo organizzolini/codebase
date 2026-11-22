@@ -50,61 +50,59 @@ export function FormsTable(
       className={className}
       data-testid="forms-table"
     >
-      <div className="overflow-hidden rounded-lg border">
-        <Table className="table-fixed">
-          <TableBody>
-            {rows.map((row, rowIndex) => (
-              <TableRow key={row.key}>
-                {columns.map((column, columnIndex) => {
-                  const words = lookup(row.key, column.key);
+      <Table className="table-fixed">
+        <TableBody>
+          {rows.map((row, rowIndex) => (
+            <TableRow key={row.key}>
+              {columns.map((column, columnIndex) => {
+                const words = lookup(row.key, column.key);
 
-                  return (
-                    <TableCell
-                      key={column.key}
-                      className={cn(
-                        "relative h-14 text-center whitespace-normal",
-                        columnIndex > 0 && "border-l",
-                      )}
-                    >
-                      {columnIndex === 0 && (
-                        <span
-                          className="pointer-events-none absolute top-1 left-1.5 text-xs leading-none text-muted-foreground"
-                          aria-hidden
-                        >
-                          {ABBREVIATIONS[row.key] ?? row.label}
-                        </span>
-                      )}
-                      {rowIndex === 0 && (
-                        <span
-                          className="pointer-events-none absolute top-1 right-1.5 text-xs leading-none text-muted-foreground"
-                          aria-hidden
-                        >
-                          {ABBREVIATIONS[column.key] ?? column.label}
-                        </span>
-                      )}
-                      <span className="sr-only">
-                        {row.label} {column.label}:{" "}
+                return (
+                  <TableCell
+                    key={column.key}
+                    className={cn(
+                      "relative h-14 text-center whitespace-normal",
+                      columnIndex > 0 && "border-l",
+                    )}
+                  >
+                    {columnIndex === 0 && (
+                      <span
+                        className="pointer-events-none absolute top-1 left-1.5 text-xs leading-none text-muted-foreground"
+                        aria-hidden
+                      >
+                        {ABBREVIATIONS[row.key] ?? row.label}
                       </span>
-                      {words.length === 0 ? (
-                        <span className="text-muted-foreground">–</span>
-                      ) : (
-                        words.map((word) => (
-                          <div
-                            key={word}
-                            className="break-words"
-                          >
-                            {word}
-                          </div>
-                        ))
-                      )}
-                    </TableCell>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+                    )}
+                    {rowIndex === 0 && (
+                      <span
+                        className="pointer-events-none absolute top-1 right-1.5 text-xs leading-none text-muted-foreground"
+                        aria-hidden
+                      >
+                        {ABBREVIATIONS[column.key] ?? column.label}
+                      </span>
+                    )}
+                    <span className="sr-only">
+                      {row.label} {column.label}:{" "}
+                    </span>
+                    {words.length === 0 ? (
+                      <span className="text-muted-foreground">–</span>
+                    ) : (
+                      words.map((word) => (
+                        <div
+                          key={word}
+                          className="break-words"
+                        >
+                          {word}
+                        </div>
+                      ))
+                    )}
+                  </TableCell>
+                );
+              })}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }

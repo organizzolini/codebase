@@ -1,6 +1,10 @@
 import { Tabs, TabsList, TabsTrigger } from "@codebase/presentation";
 
 import { ABBREVIATIONS } from "../../lexeme/lexeme-identifiers/lexeme-identifiers.constants";
+import {
+  FORMS_TAB,
+  FORMS_TAB_LIST,
+} from "../forms-table/forms-table.constants";
 
 import { NON_FINITE_ABBREVIATION } from "./verb-forms.constants";
 
@@ -49,7 +53,10 @@ export function AxisTabs(properties: Readonly<AxisTabsProperties>): ReactNode {
         }}
         value={value}
       >
-        <TabsList className="w-full">
+        <TabsList
+          className={FORMS_TAB_LIST}
+          variant="line"
+        >
           {options.map((option) => {
             const name = option.replaceAll(/([A-Z])/gu, " $1").toLowerCase();
 
@@ -57,6 +64,7 @@ export function AxisTabs(properties: Readonly<AxisTabsProperties>): ReactNode {
               <TabsTrigger
                 key={option}
                 aria-label={name}
+                className={FORMS_TAB}
                 title={name}
                 value={option}
               >

@@ -1,13 +1,6 @@
-import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
-import {
-  Button,
-  cn,
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@codebase/presentation";
+import { LexemeSection } from "../lexeme-section/lexeme-section";
 
 import type { ReactNode } from "react";
 
@@ -51,27 +44,15 @@ export function LexemeEtymology(
       className={className}
       data-testid="lexeme-etymology"
     >
-      <Collapsible
-        onOpenChange={setIsOpen}
-        open={isOpen}
+      <LexemeSection
+        label="Etymology"
+        onToggle={() => {
+          setIsOpen(!isOpen);
+        }}
+        state={isOpen ? "open" : "closed"}
       >
-        <CollapsibleTrigger
-          render={
-            <Button
-              className="w-full justify-between"
-              variant="ghost"
-            />
-          }
-        >
-          Etymology
-          <ChevronDown
-            className={cn("transition-transform", isOpen && "rotate-180")}
-          />
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <p className="mt-2 text-sm text-muted-foreground">{etymology}</p>
-        </CollapsibleContent>
-      </Collapsible>
+        <p className="pb-1 text-sm text-muted-foreground">{etymology}</p>
+      </LexemeSection>
     </div>
   );
 }

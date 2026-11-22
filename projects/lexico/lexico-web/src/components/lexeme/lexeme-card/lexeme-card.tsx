@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@codebase/presentation";
+import { Card, CardContent, Separator } from "@codebase/presentation";
 
 import { LexemeEtymology } from "../lexeme-etymology/lexeme-etymology";
 import { LexemeForms } from "../lexeme-forms/lexeme-forms";
@@ -54,7 +54,10 @@ export function LexemeCard(
       className={className}
       data-testid="lexeme-card"
     >
-      <Card className="relative">
+      <Card
+        className="relative"
+        size="sm"
+      >
         <LexemeMatch
           className="absolute top-3 right-3"
           match={result.match}
@@ -66,7 +69,8 @@ export function LexemeCard(
           partOfSpeech={result.partOfSpeech}
           principalParts={result.principalParts}
         />
-        <CardContent className="space-y-3">
+        <Separator />
+        <CardContent>
           {matchedForm && (
             <LexemeIdentifiers
               enclitic={result.enclitic}
@@ -75,19 +79,12 @@ export function LexemeCard(
           )}
           <LexemeTranslations translations={result.translations} />
           <LexemeForms
-            className="border-t pt-3"
             lexemeId={result.id}
             loadForms={loadForms}
             partOfSpeech={result.partOfSpeech}
           />
-          <LexemePronunciations
-            className="border-t pt-3"
-            pronunciations={result.pronunciations}
-          />
-          <LexemeEtymology
-            className="border-t pt-3"
-            etymology={result.etymology}
-          />
+          <LexemePronunciations pronunciations={result.pronunciations} />
+          <LexemeEtymology etymology={result.etymology} />
         </CardContent>
       </Card>
     </div>
