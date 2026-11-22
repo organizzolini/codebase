@@ -134,7 +134,8 @@ describe(ChangesCommand, () => {
     const written = readFileSync(output, "utf8");
 
     expect(written).toContain("<!-- codometer-changes:start -->");
-    expect(written).toContain("`logger`");
+    // With no baseline, nothing is compared, and the section says so.
+    expect(written).toContain("No `main` baseline was found");
   });
 
   it("splices the section into a markdown file, keeping its prose", async () => {
