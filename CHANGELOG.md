@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.8.0](https://github.com/organizzolini/codebase/compare/v6.7.0...v6.8.0) (2026-11-22)
+
+### ✨ Features
+
+* **documentation,deployments:** ✨ make the documentation refresh rate-limit aware ([#2494](https://github.com/organizzolini/codebase/issues/2494)) ([5f2b2a9](https://github.com/organizzolini/codebase/commit/5f2b2a97a5e8d94a325e352372d07ece9f77c58a)), closes [#2492](https://github.com/organizzolini/codebase/issues/2492) [#2491](https://github.com/organizzolini/codebase/issues/2491)
+
 ## [6.7.0](https://github.com/organizzolini/codebase/compare/v6.6.3...v6.7.0) (2026-11-22)
 
 ### ✨ Features
