@@ -25,6 +25,33 @@ Reading or writing the board needs the `project` scope on the `gh` token (`gh au
 
 **Milestones are not used.** The spec, a root Feature or Bug issue, is the unit of planning; see [manage-project](../../.agents/skills/manage-project/SKILL.md#milestones).
 
+## Repo-scoped REST instead of GraphQL
+
+**Read and write GitHub through repo-scoped REST, `gh api repos/{owner}/{repo}/…`, rather than the `gh` subcommands that run GraphQL.** `gh pr view`, `gh pr list`, `gh pr create`, `gh pr edit`, `gh pr checks`, `gh issue view`, `gh issue list`, `gh issue create`, `gh issue edit`, `gh issue close`, `gh issue comment`, `gh label list`, `gh release list` and `gh project` all call GraphQL's single global endpoint. Claude Code sessions block it, so each fails there with `GitHub GraphQL is not available`. A repo-scoped REST endpoint reaches only this repository and works the same in CI, a devcontainer and a Claude Code session. `gh api` fills `{owner}` and `{repo}` from the checkout, in a query string too, so the command needs no editing.
+
+| Instead of | Use |
+| --- | --- |
+| `gh pr view <n> --json title,body,labels,assignees,isDraft,mergeable,mergeStateStatus` | `gh api repos/{owner}/{repo}/pulls/<n>` and read `.title`, `.body`, `.labels[].name`, `.assignees[].login`, `.draft`, `.mergeable` and `.mergeable_state` (`clean` is `CLEAN`) |
+| `gh pr view <n> --json commits` | `gh api --paginate repos/{owner}/{repo}/pulls/<n>/commits` |
+| `gh pr view <n> --json reviewDecision` | `gh api repos/{owner}/{repo}/pulls/<n>/reviews` |
+| `gh pr view`, for the current branch | `gh api "repos/{owner}/{repo}/pulls?head={owner}:$(git branch --show-current)&state=open"` |
+| `gh pr list` | `gh api "repos/{owner}/{repo}/pulls?state=open"` |
+| `gh pr view <n> --json closingIssuesReferences` | The closing keywords in the body (`Closes #N`), which is how `compliance pull-request` reads them |
+| `gh pr create` | `gh api repos/{owner}/{repo}/pulls -f title=… -f head=<branch> -f base=main -f body=…`, with `-F draft=true` for a draft |
+| `gh pr edit --title --body` | `gh api -X PATCH repos/{owner}/{repo}/pulls/<n> -f title=… -f body=…` |
+| `gh pr edit --add-label --add-assignee` | `gh api -X POST repos/{owner}/{repo}/issues/<n>/labels -f 'labels[]=…'` and `…/issues/<n>/assignees -f 'assignees[]=…'` |
+| `gh pr ready`, `gh pr merge --auto` | In a Claude Code session, `gh api -X POST repos/{owner}/{repo}/pulls/<n>/ccr/ready_for_review` and `gh api -X PUT repos/{owner}/{repo}/pulls/<n>/ccr/auto_merge -f merge_method=squash` (`DELETE` turns auto-merge off). Elsewhere the `gh pr` commands work. |
+| `gh pr checks` | `gh api repos/{owner}/{repo}/commits/<sha>/check-runs` |
+| `gh issue view <n> --json …` | `gh api repos/{owner}/{repo}/issues/<n>`, where `.type.name` is the Issue Type and `.parent_issue_url` the parent, and `…/issues/<n>/issue-field-values` for Priority and Effort |
+| `gh issue list --search` | `gh api -X GET search/issues -f q='repo:organizzolini/codebase is:issue <keywords>'` |
+| `gh issue create` | `gh api repos/{owner}/{repo}/issues -f title=… -f body=… -f type=<Feature\|Bug\|Task> -f 'labels[]=…'` |
+| `gh issue close <n> --comment` | `gh api -X POST repos/{owner}/{repo}/issues/<n>/comments -f body=…`, then `gh api -X PATCH repos/{owner}/{repo}/issues/<n> -f state=closed -f state_reason=completed` |
+| `gh label list` | `gh api --paginate repos/{owner}/{repo}/labels` |
+| `gh release list` | `gh api repos/{owner}/{repo}/releases`, or `…/releases/latest` for the newest |
+| `gh project …` | No REST equivalent. Where GraphQL is blocked, skip the board write and say so in the report. |
+
+`gh run`, `gh workflow` and `gh api` itself are already REST. `compliance pull-request` reads GitHub only through these REST endpoints, so it gives the same verdict in every environment.
+
 ## Planning shape: a spec, its pull requests, and their commits
 
 When planning work — publishing a spec, turning a `writing-plans` plan into
@@ -168,6 +195,8 @@ The 🦹 Continuous Compliance workflow reads only the `type:*`, `scope:*`, and 
 families, so a `status:*` label neither satisfies nor fails it.
 
 ## Conventions
+
+These `gh` subcommands run GraphQL. In a Claude Code session use the [REST equivalents](#repo-scoped-rest-instead-of-graphql) instead.
 
 - **Create an issue**: `gh issue create --type <Feature|Bug|Task> --title "..." --body "..."`. Use a heredoc for multi-line bodies. **Always pass `--type`**: a root issue (a spec or a standalone report) is a `Feature` or `Bug`, and an issue about to be linked as a sub-issue is a `Task`. The `github-issues` skill says `gh issue create` has no type flag; that is out of date, since `--type` and `gh issue edit --type` both exist.
 - **Change an issue's type**: `gh issue edit <number> --type <Feature|Bug|Task>`. Re-check the type whenever an issue is linked as a sub-issue (it becomes a `Task`) or unlinked from its parent (it becomes a `Feature` or `Bug`).

@@ -39,7 +39,7 @@ The skill examines one or more of these inputs — use whichever are available:
 | **Session log** | Read the Copilot session debug log at `{{VSCODE_TARGET_SESSION_LOG}}` (current session) |
 | **Local changes** | Run `git diff HEAD` or `git diff main` to see uncommitted/unmerged changes |
 | **Branch diff** | Run `git log main..HEAD --oneline` then `git diff main...HEAD` |
-| **Pull request** | Use `gh pr view <number> --json title,body,files` and `gh pr diff <number>` |
+| **Pull request** | Use `gh api repos/{owner}/{repo}/pulls/<number>` and `…/pulls/<number>/files`, and `gh api repos/{owner}/{repo}/pulls/<number> -H 'Accept: application/vnd.github.diff'` for the diff |
 | **Conversation history** | Review the current conversation for retries, corrections, and course changes |
 
 ## Step-by-Step Workflow

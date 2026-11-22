@@ -86,9 +86,10 @@ resource "openrouter_guardrail_key_assignment" "refresh_documentation" {
 }
 
 # The provider has no preset resource, so the preset is written through
-# OpenRouter's preset endpoint. The ranked list is `models`: OpenRouter tries
-# the first and falls down the list on rate limits, downtime, context-length
-# errors and moderation flags. A new version is saved whenever the list changes.
+# OpenRouter's preset endpoint, which accepts only a management key. OpenRouter
+# tries `models` in order, falling down the list on rate limits, downtime,
+# context-length errors and moderation flags. A new version is saved whenever
+# the list changes.
 resource "terraform_data" "refresh_documentation_preset" {
   triggers_replace = [var.models, var.preset_slug]
 
@@ -96,17 +97,18 @@ resource "terraform_data" "refresh_documentation_preset" {
     command = <<-EOT
       curl --fail-with-body --silent --show-error \
         --request POST "https://openrouter.ai/api/v1/presets/$PRESET_SLUG/chat/completions" \
-        --header "Authorization: Bearer $OPENROUTER_API_KEY" \
+        --header "Authorization: Bearer $OPENROUTER_MANAGEMENT_KEY" \
         --header "Content-Type: application/json" \
         --data "$PRESET_BODY"
     EOT
 
     environment = {
-      PRESET_SLUG        = var.preset_slug
-      OPENROUTER_API_KEY = var.openrouter_api_key
+      PRESET_SLUG               = var.preset_slug
+      OPENROUTER_MANAGEMENT_KEY = var.openrouter_management_key
       PRESET_BODY = jsonencode({
-        model  = var.models[0]
-        models = var.models
+        model        = var.models[0]
+        models       = var.models
+        workspace_id = openrouter_workspace.codebase.id
       })
     }
   }

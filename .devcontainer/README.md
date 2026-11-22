@@ -6,7 +6,7 @@ This directory contains the development container configuration for the codebase
 
 The dev container eliminates "works on my machine" issues by standardizing:
 
-- **Node.js 22.20.0** - Matching `engines.node` in root `package.json`
+- **Node.js 26** - The major pinned by `.nvmrc` and `engines.node` in root `package.json`
 - **pnpm 10.20.0** - Matching `packageManager` in root `package.json`
 - **kubectl & Helm** - For Kubernetes deployments
 - **Terraform** - For Linode LKE cluster provisioning
@@ -88,7 +88,7 @@ The container uses [Dev Container Features](https://containers.dev/features) for
 
 | Feature                    | Version | Purpose                                        | Config     |
 | -------------------------- | ------- | ---------------------------------------------- | ---------- |
-| `typescript-node:22`       | Base    | Node.js 22 with TypeScript support             | Both       |
+| `typescript-node:26`       | Base    | Node.js 26 with TypeScript support             | Both       |
 | `docker-in-docker`         | 2       | Isolated Docker daemon inside container (DinD) | Cloud only |
 | `docker-outside-of-docker` | 1       | Mounts host Docker socket (DooD)               | Local only |
 | `github-cli`               | 1       | `gh` command for GitHub operations             | Both       |
@@ -98,7 +98,7 @@ The container uses [Dev Container Features](https://containers.dev/features) for
 ### Custom Installations
 
 - **SQLite**: Installed via `apt-get` in `postCreateCommand` for database querying and management
-- **pnpm**: Activated via Corepack with exact version 10.20.0
+- **pnpm**: Installed by the `pnpm` dev container feature, which Node 26 needs because it no longer bundles Corepack
 
 ## VS Code Extensions
 
@@ -133,7 +133,7 @@ Ports are automatically forwarded to your host machine:
 
 | Hook                | Tasks                                                                         |
 | ------------------- | ----------------------------------------------------------------------------- |
-| `postCreateCommand` | Enable pnpm via Corepack, install dependencies, sync VS Code Machine settings |
+| `postCreateCommand` | Install dependencies, sync VS Code Machine settings                           |
 | `postAttachCommand` | Verify tool versions (node, pnpm, gh, helm)                         |
 
 ## Scripts
@@ -152,13 +152,13 @@ The `test-devcontainer.sh` script in `.devcontainer/scripts/` validates tool ins
 
 | Check                         | What it validates                                                                             |
 | ----------------------------- | --------------------------------------------------------------------------------------------- |
-| Node.js version               | `node --version` starts with `v22.` (matches `package.json` `engines`)                        |
+| Node.js version               | `node --version` starts with `v26.` (matches `package.json` `engines`)                        |
 | pnpm version                  | `pnpm --version` is exactly `10.20.0` (matches `package.json` `packageManager`)               |
 | Tool availability             | `nx`, `jq`, `yamllint`, `sqlite3` all respond                                     |
 | Container user                | Running as `root`, confirming `containerUser`/`remoteUser`                                    |
 | Environment variables         | `KUBECONFIG`, `NODE_OPTIONS`, `UV_THREADPOOL_SIZE` are set from `remoteEnv`                   |
 | Pinned feature versions       | `gh`, `terraform`, `tflint`, `helm`, `kubectl`, `python3` match `devcontainer.json` pins      |
-| Toolchain dependencies        | `corepack`, `tsx`, `git`, `npm`, `npx` are available                                          |
+| Toolchain dependencies        | `pnpm`, `tsx`, `git`, `npm`, `npx` are available                                              |
 | Post-create artifacts         | `node_modules/` and `.nx/graph.json` exist (validates `postCreateCommand` ran)                |
 | Script permissions            | All `.devcontainer/scripts/*.sh` files are executable                                         |
 | Extensions sync               | `extensions` and `recommendations` arrays in `devcontainer.json` match                        |
@@ -274,11 +274,10 @@ If you still encounter `Could not resolve host` errors:
 
 ### pnpm version mismatch
 
-Corepack should handle this automatically. If issues persist:
+The `pnpm` dev container feature installs the pinned version. If it has drifted, rebuild the container, or install the version `packageManager` names:
 
 ```bash
-corepack enable
-corepack prepare pnpm@10.20.0 --activate
+npm install --global pnpm@<version from package.json packageManager>
 ```
 
 ### Port already in use
@@ -301,7 +300,7 @@ After building the container, verify the following:
 
 ```bash
 # 1. Check tool versions
-node --version          # Should output v22.20.0
+node --version          # Should output the version in .nvmrc
 pnpm --version          # Should output 10.20.0
 gh --version            # Should output gh version X.Y.Z
 helm version --short    # Should output vX.Y.Z

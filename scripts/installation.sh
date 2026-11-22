@@ -46,7 +46,7 @@ if [[ "${operating_system}" == "Linux" ]]; then
     )
   fi
 
-  for tool in node npm npx corepack; do
+  for tool in node npm npx; do
     ln -sf "${node_home}/bin/${tool}" "${HOME}/.local/bin/${tool}"
   done
   ln -sf "${node_home}/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js" \

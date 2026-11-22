@@ -56,8 +56,5 @@ export const releaseConfigSchema = z.object({
   plugins: z.array(pluginEntrySchema),
 });
 
-/** The shape a `gh pr view --json title,commits` document is read as. */
-export const pullRequestDocumentSchema = z.object({
-  commits: z.array(z.unknown()).optional(),
-  title: z.string().optional(),
-});
+/** The shape a REST list of a pull request's commits reads as. */
+export const pullRequestCommitsSchema = z.array(z.unknown());

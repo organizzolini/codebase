@@ -2,12 +2,17 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { ISSUE_FIELD_NAMES_QUERY } from "../../../issue/modules/fields/issue-fields.constants";
 import { IssueFieldsService } from "../../../issue/modules/fields/issue-fields.service";
 import { IssueMetadataTypeService } from "../../../issue/modules/metadata/issue-metadata-type.service";
 import { IssueMetadataService } from "../../../issue/modules/metadata/issue-metadata.service";
+import { PullRequestBodyLinksService } from "../body/pull-request-body-links.service";
 import { PullRequestGithubService } from "../github/pull-request-github.service";
 
-import { NO_LINKED_ISSUE_MESSAGE } from "./pull-request-linked-issues.constants";
+import {
+  ISSUE_DOCUMENT_QUERY,
+  NO_LINKED_ISSUE_MESSAGE,
+} from "./pull-request-linked-issues.constants";
 import { PullRequestLinkedIssuesService } from "./pull-request-linked-issues.service";
 
 import type { PullRequestContext } from "../context/pull-request-context.types";
@@ -26,6 +31,10 @@ const context: PullRequestContext = {
 
 const COMPLIANT_LABELS = ["type:feat", "scope:compliance", "source:agent"];
 
+/** The repo-scoped REST endpoint one issue is read from. */
+const ISSUE_ENDPOINT_PATTERN =
+  /^repos\/\{owner\}\/\{repo\}\/issues\/(?<number>\d+)$/u;
+
 /** One issue as the stubbed `gh` serves it. */
 interface StubIssue {
   readonly body?: string;
@@ -39,6 +48,14 @@ function answer(standardOutput: string, succeeded = true): GithubCliResult {
   return { available: true, standardError: "", standardOutput, succeeded };
 }
 
+/** A pull request description that closes these issues with keywords. */
+function closing(...numbers: readonly number[]): PullRequestContext {
+  return {
+    ...context,
+    body: numbers.map((number) => `Closes #${String(number)}`).join("\n"),
+  };
+}
+
 /** What PullRequestLinkedIssuesService is built with. */
 const DEPENDENCIES = {
   mocks: [PullRequestGithubService],
@@ -46,6 +63,7 @@ const DEPENDENCIES = {
     IssueFieldsService,
     IssueMetadataService,
     IssueMetadataTypeService,
+    PullRequestBodyLinksService,
   ],
 } satisfies TestingModuleOptions;
 
@@ -68,29 +86,19 @@ describe(PullRequestLinkedIssuesService, () => {
     vi.mocked(github.describeFailure).mockReturnValue("HTTP 500");
   });
 
-  /** Answers `gh pr view` with the linked issues, and each issue by number. */
-  function stubGithub(
-    linked: string,
-    issues: Readonly<Record<number, StubIssue>>,
-  ): void {
+  /** Answers each issue's REST document and field names, by number. */
+  function stubGithub(issues: Readonly<Record<number, StubIssue>>): void {
     vi.mocked(github.run).mockImplementation((arguments_) => {
-      if (arguments_[0] === "pr") {
-        return answer(linked);
-      }
-
-      const number =
-        arguments_[0] === "issue"
-          ? arguments_[2]
-          : /issues\/(?<number>\d+)$/u.exec(arguments_[1] ?? "")?.groups?.[
-              "number"
-            ];
+      const number = ISSUE_ENDPOINT_PATTERN.exec(arguments_[1] ?? "")?.groups?.[
+        "number"
+      ];
       const issue = issues[Number(number)];
 
       if (issue === undefined) {
         return answer("", false);
       }
 
-      if (arguments_[0] === "api") {
+      if (arguments_[3] === ISSUE_FIELD_NAMES_QUERY) {
         return issue.fields === null
           ? answer("", false)
           : answer(JSON.stringify(issue.fields ?? ["Effort", "Priority"]));
@@ -117,7 +125,7 @@ describe(PullRequestLinkedIssuesService, () => {
   });
 
   it("passes a compliant root issue carrying Effort and Priority", () => {
-    stubGithub("[5]", { 5: {} });
+    stubGithub({ 5: {} });
 
     expect(service.check(context)).toMatchObject({
       failures: [],
@@ -126,29 +134,36 @@ describe(PullRequestLinkedIssuesService, () => {
   });
 
   it("fails when the pull request closes no issue", () => {
-    stubGithub("[]", {});
+    stubGithub({});
 
-    expect(service.check(context).failures).toStrictEqual([
-      NO_LINKED_ISSUE_MESSAGE,
+    expect(
+      service.check({ ...context, body: "no keyword here" }).failures,
+    ).toStrictEqual([NO_LINKED_ISSUE_MESSAGE]);
+  });
+
+  it("does not count an issue mentioned without a closing keyword", () => {
+    stubGithub({ 5: {} });
+
+    expect(
+      service.check({ ...context, body: "Related to #5" }).failures,
+    ).toStrictEqual([NO_LINKED_ISSUE_MESSAGE]);
+  });
+
+  it("reads each issue through the repo-scoped REST endpoint", () => {
+    stubGithub({ 5: {} });
+
+    service.check(context);
+
+    expect(github.run).toHaveBeenCalledWith([
+      "api",
+      "repos/{owner}/{repo}/issues/5",
+      "--jq",
+      ISSUE_DOCUMENT_QUERY,
     ]);
   });
 
-  it("fails when gh cannot read the closed issues", () => {
-    vi.mocked(github.run).mockReturnValue(answer("", false));
-
-    expect(service.check(context).failures[0]).toContain("HTTP 500");
-  });
-
-  it("fails on unparsable closed-issue output", () => {
-    vi.mocked(github.run).mockReturnValue(answer("nope"));
-
-    expect(service.check(context).failures[0]).toContain(
-      "Unable to parse the issues closed",
-    );
-  });
-
   it("names the issue in each audit failure and keeps its fixes", () => {
-    stubGithub("[5]", { 5: { issueType: "Epic", labels: ["type:feat"] } });
+    stubGithub({ 5: { issueType: "Epic", labels: ["type:feat"] } });
 
     const outcome = service.check(context);
 
@@ -163,13 +178,13 @@ describe(PullRequestLinkedIssuesService, () => {
   });
 
   it("wants Effort on the issue and Priority on its spec, once each", () => {
-    stubGithub("[5, 6]", {
+    stubGithub({
       1: { fields: ["Effort"] },
       5: { fields: [], issueType: "Task", parent: 1 },
       6: { fields: ["Effort"], issueType: "Task", parent: 1 },
     });
 
-    const outcome = service.check(context);
+    const outcome = service.check(closing(5, 6));
 
     expect(outcome.failures).toStrictEqual([
       "❌ Issue #5: No Effort issue field",
@@ -182,7 +197,7 @@ describe(PullRequestLinkedIssuesService, () => {
   });
 
   it("takes a body's parent line when the native parent is unset", () => {
-    stubGithub("[5]", {
+    stubGithub({
       1: { fields: [] },
       5: { body: "Part of #1", issueType: "Task" },
     });
@@ -193,16 +208,16 @@ describe(PullRequestLinkedIssuesService, () => {
   });
 
   it("exempts a commit sub-issue closed beside its parent from the fields", () => {
-    stubGithub("[5, 7]", {
+    stubGithub({
       5: {},
       7: { fields: [], issueType: "Task", parent: 5 },
     });
 
-    expect(service.check(context).failures).toStrictEqual([]);
+    expect(service.check(closing(5, 7)).failures).toStrictEqual([]);
   });
 
   it("reports an issue whose fields cannot be read", () => {
-    stubGithub("[5]", { 5: { fields: null } });
+    stubGithub({ 5: { fields: null } });
 
     expect(service.check(context).failures).toStrictEqual([
       "❌ Unable to read the issue fields of issue #5: HTTP 500",
@@ -210,7 +225,7 @@ describe(PullRequestLinkedIssuesService, () => {
   });
 
   it("reports a parent that cannot be read", () => {
-    stubGithub("[5]", { 5: { issueType: "Task", parent: 1 } });
+    stubGithub({ 5: { issueType: "Task", parent: 1 } });
 
     expect(service.check(context).failures).toStrictEqual([
       "❌ Unable to read issue #1: HTTP 500",
@@ -218,9 +233,7 @@ describe(PullRequestLinkedIssuesService, () => {
   });
 
   it("reports an issue view it cannot parse", () => {
-    vi.mocked(github.run).mockImplementation((arguments_) =>
-      answer(arguments_[0] === "pr" ? "[5]" : '{"body":1}'),
-    );
+    vi.mocked(github.run).mockReturnValue(answer('{"body":1}'));
 
     expect(service.check(context).failures[0]).toContain(
       "Unable to parse issue #5",

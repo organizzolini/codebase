@@ -36,10 +36,7 @@ export const STATIC_LABELS: ConventionalLabel[] = [
 /** Prefixes this reconciliation owns. Other labels are never reported. */
 export const TRACKED_LABEL_PREFIXES = ["scope:", "source:", "type:"];
 
-/** Page size for `gh label list`: one call fetches all. */
-export const LABEL_LIST_LIMIT = "500";
-
-/** The shape `gh label list --json name,color,description` returns. */
+/** The shape the REST list of the repository's labels is read as. */
 export const repositoryLabelsSchema = z.array(
   z.object({
     color: z.string(),

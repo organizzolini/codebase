@@ -9,13 +9,14 @@ import {
 import { IssueFieldsService } from "../../../issue/modules/fields/issue-fields.service";
 import { MAX_HIERARCHY_DEPTH } from "../../../issue/modules/metadata/issue-metadata.constants";
 import { IssueMetadataService } from "../../../issue/modules/metadata/issue-metadata.service";
-import {
-  issueAncestorSchema,
-  linkedIssueNumbersSchema,
-} from "../body/pull-request-body-links.constants";
+import { issueAncestorSchema } from "../body/pull-request-body-links.constants";
+import { PullRequestBodyLinksService } from "../body/pull-request-body-links.service";
 import { PullRequestGithubService } from "../github/pull-request-github.service";
 
-import { NO_LINKED_ISSUE_MESSAGE } from "./pull-request-linked-issues.constants";
+import {
+  ISSUE_DOCUMENT_QUERY,
+  NO_LINKED_ISSUE_MESSAGE,
+} from "./pull-request-linked-issues.constants";
 
 import type { IssueField } from "../../../issue/modules/fields/issue-fields.types";
 import type { CheckOutcome, PullRequestResult } from "../../pull-request.types";
@@ -37,6 +38,7 @@ export class PullRequestLinkedIssuesService {
   constructor(
     private readonly issueFieldsService: IssueFieldsService,
     private readonly issueMetadataService: IssueMetadataService,
+    private readonly pullRequestBodyLinksService: PullRequestBodyLinksService,
     private readonly pullRequestGithubService: PullRequestGithubService,
   ) {}
 
@@ -187,16 +189,15 @@ export class PullRequestLinkedIssuesService {
     }
   }
 
-  /** One issue's `gh issue view` document, parent, and filled issue fields. */
+  /** One issue's document, parent, and filled issue fields, all through REST. */
   private readIssue(issueNumber: number): PullRequestResult<LinkedIssue> {
     const name = `issue #${String(issueNumber)}`;
     const view = this.read(
       [
-        "issue",
-        "view",
-        String(issueNumber),
-        "--json",
-        "body,labels,issueType,parent",
+        "api",
+        `repos/{owner}/{repo}/issues/${String(issueNumber)}`,
+        "--jq",
+        ISSUE_DOCUMENT_QUERY,
       ],
       name,
       (document) => ({ ...issueAncestorSchema.parse(document), document }),
@@ -246,24 +247,13 @@ export class PullRequestLinkedIssuesService {
       heading: "❌ Pull request is not linked to a compliant issue",
       successMessage: "✅ Pull request closes compliant issues",
     };
-    const linked = this.read(
-      [
-        "pr",
-        "view",
-        String(context.number),
-        "--json",
-        "closingIssuesReferences",
-        "--jq",
-        "[.closingIssuesReferences[].number]",
-      ],
-      `the issues closed by pull request ${String(context.number)}`,
-      (document) => linkedIssueNumbersSchema.parse(document),
-    );
+    const linkedNumbers =
+      this.pullRequestBodyLinksService.extractClosingIssueNumbers(context.body);
 
-    if (!linked.ok || linked.value.length === 0) {
+    if (linkedNumbers.length === 0) {
       return {
         ...base,
-        failures: [linked.ok ? NO_LINKED_ISSUE_MESSAGE : linked.failure],
+        failures: [NO_LINKED_ISSUE_MESSAGE],
         remediationCommands: [],
       };
     }
@@ -272,7 +262,7 @@ export class PullRequestLinkedIssuesService {
     const remediationCommands = new Set<string>();
     const run: LinkedIssuesRun = {
       issues: new Map(),
-      linkedNumbers: linked.value,
+      linkedNumbers,
       record: (failure, ...commands) => {
         failures.add(failure);
         for (const command of commands) {
@@ -283,7 +273,7 @@ export class PullRequestLinkedIssuesService {
 
     this.readHierarchy(run);
 
-    for (const issue of linked.value.map((number) => run.issues.get(number))) {
+    for (const issue of linkedNumbers.map((number) => run.issues.get(number))) {
       if (issue !== undefined) {
         this.checkIssue(issue, run);
       }

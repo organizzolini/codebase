@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 
 import { PullRequestGithubService } from "../github/pull-request-github.service";
 
-import { LABEL_LIST_LIMIT } from "./pull-request-labels.constants";
 import { PullRequestLabelsService } from "./pull-request-labels.service";
 
 import type { WriteOutcome } from "../../pull-request.types";
@@ -71,17 +70,12 @@ export class PullRequestLabelVocabularyService {
 
   /** Compares the repository's labels with the configuration. */
   private plan(): LabelReconciliationPlan | string {
-    const listing = this.pullRequestGithubService.run([
-      "label",
-      "list",
-      "--limit",
-      LABEL_LIST_LIMIT,
-      "--json",
-      "name,color,description",
-    ]);
+    const listing = this.pullRequestGithubService.readList(
+      "repos/{owner}/{repo}/labels",
+    );
 
     if (!listing.succeeded) {
-      return `- ⚠️ Unable to reconcile labels: gh label list failed (${this.pullRequestGithubService.describeFailure(listing)})`;
+      return `- ⚠️ Unable to reconcile labels: listing the repository labels failed (${this.pullRequestGithubService.describeFailure(listing)})`;
     }
 
     try {

@@ -292,6 +292,7 @@ For naming conventions, abbreviations, formatting, and language-specific rules, 
 
 - **Follow the [Code of Conduct](.github/CODE_OF_CONDUCT.md)** in every commit, pull request, issue, and comment. It covers agents.
 - **Never bypass git hooks** with `--no-verify` — fix the underlying issue instead.
+- **Use repo-scoped REST, not GraphQL-backed `gh` commands.** Read and write GitHub with `gh api repos/{owner}/{repo}/…`, not `gh pr view`, `gh issue view`, `gh pr create`, `gh label list` or `gh project`, which call GraphQL and fail in a Claude Code session. The REST equivalents are in [`documentation/agents/issue-tracker.md`](documentation/agents/issue-tracker.md#repo-scoped-rest-instead-of-graphql).
 - **Do not run signing-check scripts manually**; Husky already runs these.
 - **Never run `git submodule update --init` for `projects/JimmyPaolini`.** That submodule is deliberately uninitialized everywhere. If `pnpm install` rewrites its `pnpm-lock.yaml` entry, **revert the lockfile** rather than reconciling it.
 - **Release Significance:** The PR title determines the semantic-release bump. Ensure the PR title's type is at least as significant as the highest commit on the branch.

@@ -57,7 +57,7 @@ Determine the current branch and locate its open PR:
 
 ```bash
 git rev-parse --abbrev-ref HEAD
-gh pr view --json number,title,body,baseRefName
+gh api "repos/{owner}/{repo}/pulls?head={owner}:$(git branch --show-current)&state=open" --jq '.[0] | {number, title, body, base: .base.ref}'
 ```
 
 If no PR exists, inform the user and suggest using the **create-pull-request** skill instead.
@@ -95,7 +95,7 @@ From the diff, determine:
 Every pull request closes an issue. Check what GitHub already records:
 
 ```bash
-gh pr view <PR_NUMBER> --json closingIssuesReferences --jq '.closingIssuesReferences[].number'
+gh api repos/{owner}/{repo}/pulls/<PR_NUMBER> --jq .body | grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?):? +#[0-9]+'
 ```
 
 - **A number comes back**: keep that link, and keep `Closes #N` as the first Related bullet so a rewrite does not drop it.
@@ -176,12 +176,12 @@ These shapes and limits are enforced by `compliance pull-request` — see the [c
 
 ### Step 7 — Update the Pull Request
 
-Use the `gh` CLI to apply the changes:
+Apply the changes through [repo-scoped REST](../../../documentation/agents/issue-tracker.md#repo-scoped-rest-instead-of-graphql), which works where `gh pr edit` cannot:
 
 ```bash
-gh pr edit <PR_NUMBER> \
-  --title "<type>(<scope>): <gitmoji> <subject>" \
-  --body "<generated description>"
+gh api -X PATCH repos/{owner}/{repo}/pulls/<PR_NUMBER> \
+  -f title="<type>(<scope>): <gitmoji> <subject>" \
+  -f body="<generated description>"
 ```
 
 ### Step 8 — Verify
@@ -189,8 +189,8 @@ gh pr edit <PR_NUMBER> \
 After updating, confirm the PR was updated successfully and still closes its issue:
 
 ```bash
-gh pr view <PR_NUMBER>
-gh pr view <PR_NUMBER> --json closingIssuesReferences --jq '.closingIssuesReferences[].number'
+gh api repos/{owner}/{repo}/pulls/<PR_NUMBER> --jq '.title, .body'
+gh api repos/{owner}/{repo}/pulls/<PR_NUMBER> --jq .body | grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?):? +#[0-9]+'
 ```
 
 If the second command prints nothing, the link was lost in the rewrite: restore `Closes #N`. Report the updated title and a brief confirmation to the user.
@@ -218,9 +218,9 @@ If the PR update fails:
 gh auth status
 
 # Retry the update
-gh pr edit <PR_NUMBER> \
-  --title "<type>(<scope>): <gitmoji> <subject>" \
-  --body "<generated description>"
+gh api -X PATCH repos/{owner}/{repo}/pulls/<PR_NUMBER> \
+  -f title="<type>(<scope>): <gitmoji> <subject>" \
+  -f body="<generated description>"
 ```
 
 ## Resources

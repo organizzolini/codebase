@@ -21,7 +21,7 @@ This skill teaches how to create and manage pull requests for this codebase. Fol
 Every pull request must close or reference a GitHub issue through GitHub's own link: a closing keyword in the body or the Development sidebar. Use the [link-issue skill](../link-issue/SKILL.md) to find the planned ticket, file one before starting ad-hoc work, or backfill one for work already done. Put `Closes #N` as the first bullet of 🔗 Related, then confirm GitHub recorded it:
 
 ```bash
-gh pr view <number> --json closingIssuesReferences --jq '.closingIssuesReferences[].number'
+gh api repos/{owner}/{repo}/pulls/<number> --jq .body | grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?):? +#[0-9]+'
 ```
 
 The issue holds the why, the acceptance criteria, and the discussion; the pull request holds what changed and how it was verified. Do not copy the issue's requirements into the description.
@@ -240,16 +240,21 @@ Adds a user profile page where users can view and edit their information.
 EOF
 ````
 
-#### Using GitHub CLI (preferred)
+#### Using repo-scoped REST (preferred)
+
+`gh pr create` runs GraphQL, which Claude Code sessions block, so create the pull request through [repo-scoped REST](../../../documentation/agents/issue-tracker.md#repo-scoped-rest-instead-of-graphql) instead. It works everywhere:
 
 ```bash
-gh pr create \
-  --title "feat(lexico): ✨ add user profile page" \
-  --assignee @me \
-  --body-file /tmp/pr_body.md \
-  --label type:feat \
-  --label scope:lexico \
-  --label source:agent
+pr_number="$(gh api repos/{owner}/{repo}/pulls \
+  -f title="feat(lexico): ✨ add user profile page" \
+  -F body=@/tmp/pr_body.md \
+  -f head=<branch> \
+  -f base=main \
+  --jq .number)"
+gh api -X POST "repos/{owner}/{repo}/issues/${pr_number}/labels" \
+  -f 'labels[]=type:feat' -f 'labels[]=scope:lexico' -f 'labels[]=source:agent'
+gh api -X POST "repos/{owner}/{repo}/issues/${pr_number}/assignees" \
+  -f "assignees[]=$(gh api user --jq .login)"
 rm /tmp/pr_body.md
 ```
 
@@ -313,10 +318,11 @@ Use draft PRs for work in progress:
 
 ```bash
 # Create draft PR
-gh pr create --draft --assignee @me --title "feat(lexico): ✨ [WIP] add user profile"
+gh api repos/{owner}/{repo}/pulls -F draft=true -f head=<branch> -f base=main \
+  -f title="feat(lexico): ✨ [WIP] add user profile" -f body="..."
 
-# Mark ready for review when complete
-gh pr ready
+# Mark ready for review when complete (Claude Code session; elsewhere `gh pr ready`)
+gh api -X POST repos/{owner}/{repo}/pulls/<number>/ccr/ready_for_review
 ```
 
 ## Linking Issues and Documentation
@@ -347,7 +353,7 @@ Include relevant links to help reviewers understand context:
 Always assign PRs to yourself:
 
 ```bash
-gh pr create --assignee @me
+gh api -X POST repos/{owner}/{repo}/issues/<number>/assignees -f "assignees[]=$(gh api user --jq .login)"
 ```
 
 ## Labels
@@ -355,7 +361,8 @@ gh pr create --assignee @me
 Validate Conventions checks that labels agree with the title: exactly one `type:*` label matching the title's type, one `scope:*` label per scope named in the title (no extras), exactly one `source:*` label (`source:agent` or `source:human`) declaring who opened the pull request, and no `do-not-merge` label. Set them at creation time rather than waiting for the reconciliation step to backfill them:
 
 ```bash
-gh pr create --label type:feat --label scope:lexico --label source:human
+gh api -X POST repos/{owner}/{repo}/issues/<number>/labels \
+  -f 'labels[]=type:feat' -f 'labels[]=scope:lexico' -f 'labels[]=source:human'
 ```
 
 See the [triage-integration skill](../triage-integration/SKILL.md) for the full label vocabulary, the reconciliation step that creates missing labels on `opened`/`reopened`, and how to fix each metadata failure.
@@ -365,7 +372,7 @@ See the [triage-integration skill](../triage-integration/SKILL.md) for the full 
 Request reviews from appropriate team members:
 
 ```bash
-gh pr create --reviewer JimmyPaolini
+gh api -X POST repos/{owner}/{repo}/pulls/<number>/requested_reviewers -f "reviewers[]=JimmyPaolini"
 ```
 
 ## Updating PR Branch
@@ -417,7 +424,7 @@ Before creating the PR, verify:
 - [ ] Subject uses imperative mood and lowercase after gitmoji
 - [ ] Description includes Summary (one paragraph, ≤ 48 words), Details (bullets only, one marker, ≤ 512 words), and Testing (an ordered list only) sections
 - [ ] An issue exists for the work ([link-issue](../link-issue/SKILL.md)), and Related opens with a `-` list whose first bullet is `Closes #N`
-- [ ] `gh pr view <number> --json closingIssuesReferences` lists that issue once the PR is open
+- [ ] The body's closing keyword names that issue once the PR is open: `gh api repos/{owner}/{repo}/pulls/<number> --jq .body | grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?):? +#[0-9]+'`
 - [ ] The title's type and scopes are at least as release-significant as every commit on the branch — see [Release Significance](../commit-code/SKILL.md#release-significance)
 - [ ] Local CI checks pass: `nx affected --target=lint-code --configuration=check --base=main && nx affected --target=vitest --configuration=coverage --base=main`
 
@@ -550,8 +557,8 @@ If a rebase or force-push update goes wrong, use [restore-code](../restore-code/
 # Create branch
 git checkout -b <type>/<scope>-<description>
 
-# Create PR with GitHub CLI
-gh pr create --title "<type>(<scope>): <gitmoji> <subject>" --assignee @me --body "..."
+# Create PR through repo-scoped REST (see "Using repo-scoped REST" above)
+gh api repos/{owner}/{repo}/pulls -f title="<type>(<scope>): <gitmoji> <subject>" -f head=<branch> -f base=main -f body="..."
 
 # Run CI checks locally
 nx affected --target=lint-code --configuration=check --base=main &&
