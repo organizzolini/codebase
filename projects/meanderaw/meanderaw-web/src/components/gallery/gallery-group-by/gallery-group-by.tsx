@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, Layers, Trash2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, ListTree, Trash2 } from "lucide-react";
 import { useMemo } from "react";
 
 import { Button, ButtonGroup } from "@codebase/presentation";
@@ -89,7 +89,7 @@ export function GalleryGroupBy(
               size="sm"
               variant="outline"
             >
-              <Layers aria-hidden="true" />
+              <ListTree aria-hidden="true" />
               {GROUP_TITLE}
             </Button>
           }

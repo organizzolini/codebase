@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Rows3 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Layers } from "lucide-react";
 
 import {
   Button,
@@ -87,7 +87,7 @@ export function GalleryPager(
               />
             }
           >
-            <Rows3 aria-hidden="true" />
+            <Layers aria-hidden="true" />
             Page
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
