@@ -11,6 +11,7 @@ import {
   FACETS_SQL,
   groupKeysSchema,
 } from "./events.constants";
+import { compareNaturalPaths } from "./events.utilities";
 import { EventFilterService } from "./modules/filtering/event-filter.service";
 import { EventGroupingService } from "./modules/grouping/event-grouping.service";
 import { PresetsService } from "./modules/presets/presets.service";
@@ -151,6 +152,12 @@ export class EventsService {
         name: row.name,
         path: row.path_below_root,
       });
+    }
+
+    for (const facet of facets.values()) {
+      facet.values.sort((left, right) =>
+        compareNaturalPaths(left.path, right.path),
+      );
     }
 
     return [...facets.values()];

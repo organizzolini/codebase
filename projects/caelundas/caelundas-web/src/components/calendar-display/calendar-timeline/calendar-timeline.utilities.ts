@@ -47,14 +47,15 @@ export function toCountColumns(
     {
       align: "end",
       id: "events",
-      render: (context) =>
-        createElement(
-          "span",
-          { className: COUNT_PILL_CLASS_NAME },
-          counts.get(context.resource.id),
-        ),
+      render: (context) => {
+        const count = counts.get(context.resource.id);
+
+        return count === undefined
+          ? undefined
+          : createElement("span", { className: COUNT_PILL_CLASS_NAME }, count);
+      },
       title: "Events",
-      width: 64,
+      width: 88,
     },
   ];
 }

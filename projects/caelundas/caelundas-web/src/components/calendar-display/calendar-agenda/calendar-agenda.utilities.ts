@@ -1,3 +1,4 @@
+import { compareNatural } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-order.utilities";
 import { buildEventGroups } from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.utilities";
 import { getEventKind } from "../events-calendar/components/calendar-colors/calendar-colors.utilities";
 import { AGENDA_DAY_COUNT } from "../events-calendar/components/calendar-views/calendar-views.constants";
@@ -272,7 +273,7 @@ function compareStarts(
 ): number {
   return (
     left.start.getTime() - right.start.getTime() ||
-    left.summary.localeCompare(right.summary)
+    compareNatural(left.summary, right.summary)
   );
 }
 

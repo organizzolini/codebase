@@ -1,5 +1,6 @@
 import { DURATION_BUCKETS } from "../../../calendar-filters/components/event-filter-model/event-filters.constants";
 import { formatDerivedKey } from "../event-group-model/event-group-labels.utilities";
+import { compareNatural } from "../event-group-model/event-group-order.utilities";
 import { DERIVED_GROUP_IDS } from "../event-group-model/event-groups.constants";
 
 import { NO_GROUP_ORDER, PATH_SEPARATOR } from "./event-group-tree.constants";
@@ -54,7 +55,7 @@ export function buildEventGroups(
       }
 
       const nodes = toGroupNodes(parent, { buckets, descriptions }, level)
-        .toSorted((left, right) => compareText(left.order, right.order))
+        .toSorted((left, right) => compareNatural(left.order, right.order))
         .map(({ node }) => node);
 
       parent.children.push(...nodes);
@@ -139,20 +140,13 @@ function compareBy(
   const sign = sort.direction === "asc" ? 1 : -1;
 
   if (sort.key === "name") {
-    return sign * left.label.localeCompare(right.label);
+    return sign * compareNatural(left.label, right.label);
   }
 
   const measure = (node: EventGroupNode): number =>
     sort.key === "count" ? node.count : (node.events[0]?.start.getTime() ?? 0);
 
   return sign * (measure(left) - measure(right));
-}
-
-/**
- * Orders text by code point, the way the API orders the facets' paths.
- */
-function compareText(left: string, right: string): number {
-  return left < right ? -1 : Number(left > right);
 }
 
 /**
