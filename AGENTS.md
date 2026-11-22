@@ -126,9 +126,10 @@ together. Prefer fewer, larger pull requests, and do not split for any of these:
 
 - **Size** — a long branch is fine. Keep it readable through commits, one per
   sub-issue, each scoped to one project or module.
-- **Several projects or scopes** — list them in the title
-  (`feat(lexico,lexico-db): …`), naming the fewest scopes that cover every
-  commit.
+- **Several projects or scopes** — list up to three in the title
+  (`feat(lexico,lexico-db): …`), the ones that carry most of the work. The
+  Comply check rejects a title naming more than three; the release-significance
+  check needs only one scope the commits use, never every scope.
 - **Mixed significance** — title it at the most significant commit (`feat`
   outranks `fix`); see
   [Release Significance](.github/CONTRIBUTING.md#release-significance). The
@@ -141,8 +142,6 @@ issue:
   merge: a Terraform change Continuous Deployment applies first, a database
   migration the following code relies on (expand before contract), or a package
   version that must be on a registry before something installs it from there.
-- **The title cannot hold it** — the scopes the commits need do not fit
-  commitlint's 128-character header even at their fewest.
 - **The user asked for separate pull requests.**
 
 #### When a spec does split
@@ -218,7 +217,7 @@ invented scope fails validation.
 - If a request spans multiple projects or scopes, complete the first project end-to-end before starting the next one — as commits on the same branch, not as separate pull requests (see [One Pull Request by Default](#one-pull-request-by-default)).
 - If the work is truly independent across projects, split it into separate subagents (using a Haiku/Luna-level model, or a Sonnet/Terra-level model only when really necessary) or separate passes so each agent stays project-scoped.
 - Avoid mixing unrelated project changes in one context unless the task is explicitly orchestrating them.
-- Keep each commit to one project or module even when its pull request spans several, so the title can name the fewest scopes that cover every commit and carry the type of the most significant one — see [Release Significance](.github/CONTRIBUTING.md#release-significance).
+- Keep each commit to one project or module even when its pull request spans several, so the title can name at most three scopes and carry the type of the most significant one — see [Release Significance](.github/CONTRIBUTING.md#release-significance).
 
 ## Code Quality & Conventions
 
