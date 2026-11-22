@@ -1,4 +1,4 @@
-import { globSync, readFileSync } from "node:fs";
+import { existsSync, globSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 import { Injectable } from "@nestjs/common";
@@ -196,6 +196,11 @@ export class ChangesService {
     workingDirectory: string,
     reportPath: string,
   ): ProjectReport {
+    // A project this run did not build has no report here, which is not a fault.
+    if (!existsSync(path.join(workingDirectory, reportPath))) {
+      return { failures: [], metrics: [] };
+    }
+
     const report = this.parseReport(workingDirectory, reportPath);
 
     if (report === undefined) {
