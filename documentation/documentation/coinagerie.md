@@ -6,6 +6,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 
 - **affirmation**: Generated phrase that the affirmations feature planning documents describe, produced by an LLM from tarot-card references.
 - **band**: Horizontal strip of a meander drawing bounded by two borders, which ADR 0004 and ADR 0006 adjust for crossings and branch families.
+- **bookkeeping**:
 - **border**: Edge of a meander band that ADR 0006 closes on both sides in the branch and parallel families through a MotifService hook.
 - **characteristic**: Named property of a meander, such as its letter counts, that ADR 0012 and ADR 0018 store together in one sparse JSON map.
 - **corpus**: Committed historical set of meander drawings that ADR 0006 and ADR 0013 read as a test set for regression checks.
@@ -17,6 +18,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **law**: Governing rule in ADR 0011, the universal path and naming law that every project type follows for its file layout.
 - **letter**: Glyph counted in each meander's letter-count map under ADR 0017, counted in all sixteen orientations for every meander.
 - **meander**: Greek key or fret border motif that the meanderaw project generates as SVG from composable motif and modifier definitions.
+- **patience**:
 - **pitch**: One grid unit on the lattice, which ADR 0004 uses to place the interrupted crossing break one pitch either side of the junction.
 - **rotation**: A cyclic column shift of a meander's Code; ADR 0014 picks one canonical rotation for each drawing by minimizing seam components.
 - **swiss**: Short for Swiss Ephemeris, the local astronomy library that the caelundas performance plan uses instead of NASA Horizons HTTP calls.

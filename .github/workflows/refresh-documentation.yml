@@ -52,7 +52,11 @@ jobs:
         with:
           nx-shas: "false"
 
+      # Retries a rate-limited OpenWiki run after the wait OpenRouter reports,
+      # writes every attempt to the job summary, and publishes `wiki-changed`:
+      # false when only `.last-update.json` and `.page-manifest.json` changed.
       - name: 🧑‍🏫 Refresh Documentation
+        id: refresh
         run: pnpm exec nx run documentation:refresh-documentation
 
       # The repository requires signed commits, and its pre-commit hook rejects
@@ -61,6 +65,7 @@ jobs:
       # job while the model's tools run.
       - name: 🔐 Import GPG Key
         id: import-gpg
+        if: steps.refresh.outputs.wiki-changed != 'false'
         uses: crazy-max/ghaction-import-gpg@v7
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -68,7 +73,10 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
 
+      # Skipped when only the wiki's bookkeeping changed, since a pull request
+      # for a re-stamped manifest says nothing and costs a review.
       - name: 🔀 Upsert Pull Request
+        if: steps.refresh.outputs.wiki-changed != 'false'
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
