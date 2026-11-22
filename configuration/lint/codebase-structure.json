@@ -1268,9 +1268,6 @@
         "name": "README.md"
       },
       {
-        "name": "release.config.cjs"
-      },
-      {
         "children": [
           {
             "ruleId": "kebab-case-folder"
