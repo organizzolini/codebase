@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-11-22T18:01:15.266Z",
+  "updatedAt": "2026-11-22T21:54:08.662Z",
   "command": "update",
-  "gitHead": "b7be8db9387ac7b13d32940a41192333bb3ad0a8",
+  "gitHead": "de6c6858ad4c48a00f2d9a47e375d90d9913ab3a",
   "model": "@preset/refresh-documentation",
   "status": "complete",
   "language": "en"
