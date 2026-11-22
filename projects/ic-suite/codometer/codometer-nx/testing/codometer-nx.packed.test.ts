@@ -74,20 +74,12 @@ describe("the codometer plugin installed from a registry", () => {
     writeProject("cramped", 1);
   });
 
-  it("passes the limit of a project within its limits, and leaves its own report", async () => {
+  it("passes the limit of a project within its limits", async () => {
     expect.hasAssertions();
 
     const result = await runTarget("roomy:codometer-limit");
 
     expect(result.exitCode).toBe(0);
-    expect(
-      fs.existsSync(
-        path.join(
-          workspace.directory,
-          "packages/roomy/codometer-limit-report.json",
-        ),
-      ),
-    ).toBe(true);
   }, 900_000);
 
   it("fails the limit of a project that breaches one", async () => {

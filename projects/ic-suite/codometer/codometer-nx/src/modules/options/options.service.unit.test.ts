@@ -29,6 +29,7 @@ describe(OptionsService, () => {
         service.resolvePluginOptions({
           command: "node codometer.mjs",
           inputs: ["{workspaceRoot}/a.json"],
+          limitConfigurationPath: "configuration/codometer.limit.config.ts",
           limitTargetName: "fast",
           projectConfigurationPath: "configuration/codometer.config.ts",
           weighTargetName: "heavy",
@@ -36,6 +37,7 @@ describe(OptionsService, () => {
       ).toStrictEqual({
         command: "node codometer.mjs",
         inputs: ["{workspaceRoot}/a.json"],
+        limitConfigurationPath: "configuration/codometer.limit.config.ts",
         limitTargetName: "fast",
         projectConfigurationPath: "configuration/codometer.config.ts",
         weighTargetName: "heavy",
@@ -82,6 +84,7 @@ describe(OptionsService, () => {
       ).toStrictEqual({
         command: "codometer",
         inputs: [],
+        limitConfigurationPath: undefined,
         limitTargetName: "codometer-limit",
         projectConfigurationPath: PATH,
         weighTargetName: "codometer-weigh",
@@ -99,6 +102,7 @@ describe(OptionsService, () => {
       ).toStrictEqual({
         command: "pnpm exec codometer",
         inputs: [],
+        limitConfigurationPath: undefined,
         limitTargetName: "codometer-limit",
         projectConfigurationPath: PATH,
         weighTargetName: "codometer-weigh",

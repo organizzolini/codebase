@@ -6,6 +6,7 @@ import path from "node:path";
 import { SILENT_LOG_LEVEL } from "./executor.constants";
 
 import type {
+  BatchedTask,
   MeasureBatchExecutorArguments,
   MeasureBatchTaskResult,
   MeasureExecutorOptions,
@@ -15,30 +16,24 @@ import type {
 } from "./executor.types";
 
 /**
- * The shell command of one measurement, ending in its directories.
- * `--only-inputs` precedes `--config`, which ends its list.
+ * The shell command of one measurement: its directories first, then the flags.
+ * The bare `--output-*` flags come last, since each would otherwise take a following directory as its path.
  */
 export function buildCommand(args: {
   directories: readonly string[];
   options: MeasureExecutorOptions;
 }): string {
-  const { check, command, config, onlyInputs, outputJson, outputMarkdown } =
-    args.options;
+  const { check, command, config, outputJson, outputMarkdown } = args.options;
 
   return [
     command,
-    "batch",
-    ...(onlyInputs === undefined
-      ? []
-      : ["--only-inputs", ...onlyInputs.map((name) => quote(name))]),
+    "measure",
+    ...args.directories.map((directory) => quote(directory)),
     "--config",
     quote(config),
-    ...(outputJson === undefined ? [] : ["--output-json", quote(outputJson)]),
     ...(check === true ? ["--check", "limits"] : []),
-    ...(outputMarkdown === undefined
-      ? []
-      : ["--output-markdown", quote(outputMarkdown)]),
-    ...args.directories.map((directory) => quote(directory)),
+    ...(outputJson === true ? ["--output-json"] : []),
+    ...(outputMarkdown === true ? ["--output-markdown"] : []),
   ].join(" ");
 }
 
@@ -48,9 +43,8 @@ export function describeOptions(options: MeasureExecutorOptions): string {
     options.command,
     options.config,
     options.check === true,
-    options.onlyInputs ?? null,
-    options.outputJson ?? null,
-    options.outputMarkdown ?? null,
+    options.outputJson === true,
+    options.outputMarkdown === true,
   ]);
 }
 
@@ -110,11 +104,17 @@ export async function runBatch(
 
 /**
  * Measures a group in one run, judging each project by its verdict and report;
- * one given none fails with what the run printed.
+ * one given none fails with what the run printed. A lone project is measured from its own root and judged by the exit code.
  */
 export async function runGroup(
   args: MeasurementGroup & { workspaceRoot: string },
 ): Promise<Record<string, MeasureBatchTaskResult>> {
+  const [only, ...rest] = args.tasks;
+
+  if (only !== undefined && rest.length === 0) {
+    return { [only.id]: await runAlone({ ...args, task: only }) };
+  }
+
   const batch = await runProcess({
     command: buildCommand({
       directories: args.tasks.map((task) =>
@@ -172,7 +172,7 @@ function isVerdictList(value: unknown): value is MeasureVerdict[] {
 }
 
 /**
- * Reads the verdicts `codometer batch` printed as its last line, or nothing when
+ * Reads the verdicts `codometer measure` printed for several directories as its last line, or nothing when
  * the run crashed before printing them.
  */
 function parseVerdicts(output: ProcessOutput): MeasureVerdict[] | undefined {
@@ -190,6 +190,24 @@ function parseVerdicts(output: ProcessOutput): MeasureVerdict[] | undefined {
 /** Quotes one argument for the shell the command line is started through. */
 function quote(argument: string): string {
   return `'${argument.replaceAll("'", String.raw`'\''`)}'`;
+}
+
+/** Measures one project from its own root, judged by the exit code alone. */
+async function runAlone(
+  args: MeasurementGroup & { task: BatchedTask; workspaceRoot: string },
+): Promise<MeasureBatchTaskResult> {
+  const alone = await runProcess({
+    command: buildCommand({ directories: [], options: args.options }),
+    cwd: path.join(args.workspaceRoot, args.task.root),
+    environment: { LOG_LEVEL: SILENT_LOG_LEVEL },
+    workspaceRoot: args.workspaceRoot,
+  });
+
+  return {
+    success: alone.status === 0,
+    terminalOutput:
+      alone.status === 0 ? "" : `${alone.stdout}${alone.stderr}`.trim(),
+  };
 }
 
 /**

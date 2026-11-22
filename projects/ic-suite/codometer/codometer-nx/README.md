@@ -35,25 +35,26 @@ and a file at `projectConfigurationPath`, relative to its root. Nothing else is
 searched for, and a registration without the option fails the graph with
 `projectConfigurationPath is required`.
 
-| Target            | Measures                         | Needs   | Writes                                                  |
-| ----------------- | -------------------------------- | ------- | ------------------------------------------------------- |
-| `codometer-limit` | the `codebase` input, the source | nothing | `codometer-limit-report.json`                           |
-| `codometer-weigh` | every input, compiled output too | `build` | `codometer-report.json`, and with `-c write` the badges |
+| Target            | Reads                                           | Needs   | Writes                                                  |
+| ----------------- | ----------------------------------------------- | ------- | ------------------------------------------------------- |
+| `codometer-limit` | the limit configuration, with no compiled input | nothing | nothing                                                 |
+| `codometer-weigh` | the project configuration, compiled output too  | `build` | `codometer-report.json`, and with `-c write` the badges |
 
 `codometer-limit` fails on a breached limit written against the source tree,
-such as comment budgets and folder ceilings. It runs first and fast, because
-a limit against `Compiled JavaScript` has no input without a build, so it leaves
-the compiled inputs and their limits out. `codometer-weigh` waits for the
-project's `build`, then gates every limit, packaged sizes included. The two
-reports are separate, so a source-only run never replaces the full one a pull
-request reads.
+such as comment budgets and folder ceilings. It runs first and fast, because a
+limit against `Compiled JavaScript` has no input without a build, so the run
+reads a configuration that leaves the compiled input out. That is the project's
+file at `limitConfigurationPath` when it has one, and its main configuration
+otherwise. `codometer-weigh` waits for the project's `build`, then gates every
+limit, packaged sizes included, and leaves the report a pull request reads.
 
 | Option                     | Default           | Meaning                                                   |
 | -------------------------- | ----------------- | --------------------------------------------------------- |
 | `projectConfigurationPath` | required          | Each project's configuration, relative to its root        |
+| `limitConfigurationPath`   | none              | A project's limit configuration, relative to its root     |
 | `limitTargetName`          | `codometer-limit` | Name of the source-only target                            |
 | `weighTargetName`          | `codometer-weigh` | Name of the packaged-size target                          |
-| `command`                  | `codometer`       | What runs; `batch` and its flags are appended             |
+| `command`                  | `codometer`       | What runs; `measure` and its flags are appended           |
 | `inputs`                   | none              | Extra cache inputs added to every inferred target (below) |
 
 Every project file is a cache input of `codometer-limit`, and `production` plus
@@ -68,8 +69,8 @@ measurement when the tool changes, declare it as an input, for example
 `{ "externalDependencies": ["@codometer/cli"] }`.
 
 The executor, `@codometer/nx:measure`, is batched: Nx hands it every project of a
-run, and it measures them from one `codometer batch` process, which reports a
-verdict and the failing lines for each project. A breach fails only its own
+run, and it measures them from one `codometer measure` process, which prints a verdict
+and the failing lines for each project. A breach fails only its own
 project, and nothing is measured twice.
 
 ## Test

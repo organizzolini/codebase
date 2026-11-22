@@ -8,8 +8,6 @@ import { OptionsService } from "../options/options.service";
 import {
   BUILD_TARGET_NAME,
   LIMIT_INPUT,
-  LIMIT_ONLY_INPUTS,
-  LIMIT_REPORT_PATH,
   PACKAGE_JSON_FILENAME,
   PROJECT_JSON_FILENAME,
   WEIGH_MARKDOWN_PATH,
@@ -43,27 +41,18 @@ export class PluginService {
   // 🔏 Private Methods
 
   /**
-   * The source-only gate: it measures the `codebase` input alone, so it needs no build.
+   * The source-only gate: it reads a configuration with no compiled input, so it needs no build, and writes nothing.
    */
   private buildLimitTarget(
     pluginOptions: CodometerPluginOptions,
+    config: string,
   ): InferredTarget {
     return {
       cache: true,
       executor: "@codometer/nx:measure",
-      inputs: [
-        LIMIT_INPUT,
-        `!{projectRoot}/${LIMIT_REPORT_PATH}`,
-        ...pluginOptions.inputs,
-      ],
-      options: {
-        check: true,
-        command: pluginOptions.command,
-        config: pluginOptions.projectConfigurationPath,
-        onlyInputs: [...LIMIT_ONLY_INPUTS],
-        outputJson: LIMIT_REPORT_PATH,
-      },
-      outputs: [`{projectRoot}/${LIMIT_REPORT_PATH}`],
+      inputs: [LIMIT_INPUT, ...pluginOptions.inputs],
+      options: { check: true, command: pluginOptions.command, config },
+      outputs: [],
     };
   }
 
@@ -77,7 +66,7 @@ export class PluginService {
       cache: true,
       configurations: {
         check: { check: true },
-        write: { outputMarkdown: WEIGH_MARKDOWN_PATH },
+        write: { outputMarkdown: true },
       },
       defaultConfiguration: "check",
       dependsOn: [BUILD_TARGET_NAME],
@@ -91,7 +80,7 @@ export class PluginService {
       options: {
         command: pluginOptions.command,
         config: pluginOptions.projectConfigurationPath,
-        outputJson: WEIGH_REPORT_PATH,
+        outputJson: true,
       },
       outputs: [
         `{projectRoot}/${WEIGH_REPORT_PATH}`,
@@ -132,6 +121,25 @@ export class PluginService {
     );
   }
 
+  /**
+   * The configuration a project's limit run reads: its own limit configuration when it has one, else its main one.
+   */
+  private resolveLimitConfiguration(args: {
+    pluginOptions: CodometerPluginOptions;
+    projectRoot: string;
+    workspaceRoot: string;
+  }): string {
+    const { limitConfigurationPath, projectConfigurationPath } =
+      args.pluginOptions;
+
+    return limitConfigurationPath !== undefined &&
+      existsSync(
+        path.join(args.workspaceRoot, args.projectRoot, limitConfigurationPath),
+      )
+      ? limitConfigurationPath
+      : projectConfigurationPath;
+  }
+
   // 🌎 Public Methods
 
   /**
@@ -161,7 +169,14 @@ export class PluginService {
         )
       ) {
         targetsByProjectRoot.set(projectRoot, {
-          [pluginOptions.limitTargetName]: this.buildLimitTarget(pluginOptions),
+          [pluginOptions.limitTargetName]: this.buildLimitTarget(
+            pluginOptions,
+            this.resolveLimitConfiguration({
+              pluginOptions,
+              projectRoot,
+              workspaceRoot: args.workspaceRoot,
+            }),
+          ),
           [pluginOptions.weighTargetName]: this.buildWeighTarget(pluginOptions),
         });
       }

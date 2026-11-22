@@ -94,25 +94,19 @@ describe("codometerPlugin", () => {
                 "codometer-limit": {
                   cache: true,
                   executor: "@codometer/nx:measure",
-                  inputs: [
-                    "default",
-                    "!{projectRoot}/codometer-limit-report.json",
-                    "{workspaceRoot}/a.json",
-                  ],
+                  inputs: ["default", "{workspaceRoot}/a.json"],
                   options: {
                     check: true,
                     command: "codometer",
                     config: "codometer.config.ts",
-                    onlyInputs: ["codebase"],
-                    outputJson: "codometer-limit-report.json",
                   },
-                  outputs: ["{projectRoot}/codometer-limit-report.json"],
+                  outputs: [],
                 },
                 "codometer-weigh": {
                   cache: true,
                   configurations: {
                     check: { check: true },
-                    write: { outputMarkdown: "documentation/codometer.md" },
+                    write: { outputMarkdown: true },
                   },
                   defaultConfiguration: "check",
                   dependsOn: ["build"],
@@ -126,7 +120,7 @@ describe("codometerPlugin", () => {
                   options: {
                     command: "codometer",
                     config: "codometer.config.ts",
-                    outputJson: "codometer-report.json",
+                    outputJson: true,
                   },
                   outputs: [
                     "{projectRoot}/codometer-report.json",

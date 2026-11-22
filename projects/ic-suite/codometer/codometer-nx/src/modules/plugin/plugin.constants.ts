@@ -12,12 +12,6 @@ export const PACKAGE_JSON_FILENAME = "package.json";
 /** The inputs a source-only limit run judges: every file of the project. */
 export const LIMIT_INPUT = "default";
 
-/** Where a limit run leaves its report, relative to the project root. */
-export const LIMIT_REPORT_PATH = "codometer-limit-report.json";
-
-/** The one input a limit run measures, so it needs no build. */
-export const LIMIT_ONLY_INPUTS = ["codebase"] as const;
-
 /** Where a weigh run leaves the report the pull request's section reads. */
 export const WEIGH_REPORT_PATH = "codometer-report.json";
 

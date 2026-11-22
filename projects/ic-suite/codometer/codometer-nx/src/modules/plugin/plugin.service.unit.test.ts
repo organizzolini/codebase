@@ -226,7 +226,7 @@ describe(PluginService, () => {
         .get("packages/alpha");
     }
 
-    it("infers a source-only limit target that measures the codebase input and needs no build", () => {
+    it("infers a source-only limit target that gates the main configuration, needs no build and writes nothing", () => {
       expect.hasAssertions();
 
       const target = inferAlpha()?.["codometer-limit"];
@@ -238,12 +238,39 @@ describe(PluginService, () => {
           check: true,
           command: "codometer",
           config: "codometer.config.ts",
-          onlyInputs: ["codebase"],
-          outputJson: "codometer-limit-report.json",
         },
-        outputs: ["{projectRoot}/codometer-limit-report.json"],
+        outputs: [],
       });
       expect(target?.dependsOn).toBeUndefined();
+    });
+
+    it("points the limit target at the project's limit configuration when it holds one", () => {
+      expect.hasAssertions();
+
+      const targets = inferAlpha({
+        ...OPTIONS,
+        limitConfigurationPath: "configuration/codometer.config.ts",
+      });
+
+      expect(targets?.["codometer-limit"]?.options["config"]).toBe(
+        "configuration/codometer.config.ts",
+      );
+      expect(targets?.["codometer-weigh"]?.options["config"]).toBe(
+        "codometer.config.ts",
+      );
+    });
+
+    it("falls back to the main configuration when the project holds no limit configuration", () => {
+      expect.hasAssertions();
+
+      const targets = inferAlpha({
+        ...OPTIONS,
+        limitConfigurationPath: "configuration/absent.config.ts",
+      });
+
+      expect(targets?.["codometer-limit"]?.options["config"]).toBe(
+        "codometer.config.ts",
+      );
     });
 
     it("infers a packaged-size weigh target that waits for the build and keeps the report", () => {
@@ -253,7 +280,7 @@ describe(PluginService, () => {
         cache: true,
         configurations: {
           check: { check: true },
-          write: { outputMarkdown: "documentation/codometer.md" },
+          write: { outputMarkdown: true },
         },
         defaultConfiguration: "check",
         dependsOn: ["build"],
@@ -266,7 +293,7 @@ describe(PluginService, () => {
         options: {
           command: "codometer",
           config: "codometer.config.ts",
-          outputJson: "codometer-report.json",
+          outputJson: true,
         },
         outputs: [
           "{projectRoot}/codometer-report.json",
@@ -275,12 +302,11 @@ describe(PluginService, () => {
       });
     });
 
-    it("judges every project file for the limit target, minus the report it writes", () => {
+    it("judges every project file for the limit target", () => {
       expect.hasAssertions();
 
       expect(inferAlpha()?.["codometer-limit"]?.inputs).toStrictEqual([
         "default",
-        "!{projectRoot}/codometer-limit-report.json",
       ]);
     });
 

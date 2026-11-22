@@ -15,8 +15,7 @@ const OPTIONS = {
   check: true,
   command: FAKE_COMMAND,
   config: "codometer.config.ts",
-  onlyInputs: ["codebase"],
-  outputJson: "report.json",
+  outputJson: true,
 };
 
 describe(measureExecutor, () => {

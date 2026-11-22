@@ -96,6 +96,10 @@ export class OptionsService {
       command:
         this.readString({ key: "command", options: record }) ?? DEFAULT_COMMAND,
       inputs: this.readInputs(record),
+      limitConfigurationPath: this.readString({
+        key: "limitConfigurationPath",
+        options: record,
+      }),
       limitTargetName:
         this.readString({ key: "limitTargetName", options: record }) ??
         DEFAULT_LIMIT_TARGET_NAME,

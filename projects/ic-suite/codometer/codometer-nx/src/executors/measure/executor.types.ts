@@ -50,16 +50,14 @@ export interface MeasureExecutorContext {
 export interface MeasureExecutorOptions {
   /** Fail the task when a limit it declares is breached. */
   readonly check?: boolean | undefined;
-  /** The shell command that starts the `codometer` command line, before `batch`. */
+  /** The shell command that starts the `codometer` command line, before `measure`. */
   readonly command: string;
   /** The configuration file, relative to the project root. */
   readonly config: string;
-  /** The only inputs to measure; the others, and their limits, are left out. */
-  readonly onlyInputs?: readonly string[] | undefined;
-  /** Where to write the JSON report, relative to the project root. */
-  readonly outputJson?: string | undefined;
-  /** Where to write the markdown badge block, relative to the project root. */
-  readonly outputMarkdown?: string | undefined;
+  /** Write the JSON report where the configuration says. */
+  readonly outputJson?: boolean | undefined;
+  /** Write the markdown badge block where the configuration says. */
+  readonly outputMarkdown?: boolean | undefined;
 }
 
 /** The tasks of a batch that ask for the same measurement. */
@@ -68,7 +66,7 @@ export interface MeasurementGroup {
   readonly tasks: readonly BatchedTask[];
 }
 
-/** One directory's verdict, as `codometer batch` prints it. */
+/** One directory's verdict, as `codometer measure` prints it for several. */
 export interface MeasureVerdict {
   readonly directory: string;
   readonly ok: boolean;
