@@ -145,6 +145,26 @@ describe(ReaderHistory, () => {
     ).toBeInstanceOf(HTMLElement);
   });
 
+  it("keeps the tabs under the title and scrolls only the entries", () => {
+    render(<ReaderHistory {...properties({ entries: [ENTRY] })} />);
+
+    const tabs = screen.getByRole("tablist");
+    const panel = screen.getByRole("tabpanel");
+
+    expect(
+      screen.getByText("History").compareDocumentPosition(tabs) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeGreaterThan(0);
+    expect(
+      tabs.compareDocumentPosition(panel) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeGreaterThan(0);
+    expect(tabs.className).toContain("w-full");
+    expect(panel.className).toContain("overflow-y-auto");
+    expect(screen.getByRole("complementary").className).not.toContain(
+      "overflow-y-auto",
+    );
+  });
+
   it("opens the entry the reader clicks", () => {
     const onOpenEntry = vi.fn<(entry: HistoryEntry) => void>();
     render(

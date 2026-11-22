@@ -90,7 +90,8 @@ export const Route = createFileRoute("/texts/$slug")({
 // 🧩 Component
 
 /**
- * One text laid out for reading: header, controls, lines, and adjacent texts.
+ * One text laid out for reading: header, controls, lines, and adjacent texts,
+ * as cells of the page's grid, beside the history sidebar.
  */
 function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
   const { text } = properties;
@@ -171,8 +172,8 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
 
   // 🎨 Markup
   return (
-    <div className="flex items-start">
-      <div className="mx-auto min-w-0 max-w-4xl flex-1 space-y-4">
+    <>
+      <div className="mx-auto w-full min-w-0 max-w-4xl space-y-4">
         <ReaderHeader text={text} />
         <div className="flex items-center justify-between gap-2">
           <FontSizeControl
@@ -205,7 +206,7 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
         />
       </div>
       <ReaderHistory
-        className="sticky top-4 h-[calc(100svh-2rem)] shrink-0"
+        className="sticky top-4 col-start-2 row-span-2 row-start-1 h-[calc(100svh-2rem)]"
         currentSlug={text.slug}
         entries={entries}
         isOpen={isHistoryOpen}
@@ -214,7 +215,7 @@ function Reader(properties: Readonly<{ text: ReaderText }>): ReactNode {
         onFocusEntry={handleFocusEntry}
         onOpenEntry={handleOpenEntry}
       />
-    </div>
+    </>
   );
 }
 
@@ -249,8 +250,8 @@ function TextsSlugPage(): ReactNode {
   return (
     // A warm paper surface in the light theme and the neutral near-black
     // background in the dark one, so the page follows the theme on <html>.
-    <section className="-m-4 min-h-svh space-y-4 bg-amber-50 p-4 text-foreground md:-ml-2 md:pl-2 dark:bg-background">
-      <h1 className="text-center text-3xl font-bold">
+    <section className="-m-4 grid min-h-svh grid-cols-[minmax(0,1fr)_auto] content-start items-start gap-y-4 bg-amber-50 p-4 text-foreground md:-ml-2 md:pl-2 dark:bg-background">
+      <h1 className="mx-auto w-full max-w-4xl text-center text-3xl font-bold">
         {text.title}
         <span className="sr-only"> by {text.author.name}</span>
       </h1>

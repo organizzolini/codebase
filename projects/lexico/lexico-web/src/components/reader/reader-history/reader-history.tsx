@@ -82,12 +82,12 @@ export function ReaderHistory(
     >
       <aside
         aria-label="History"
-        className={`h-full transition-[width,margin] duration-300 ease-in-out motion-reduce:transition-none ${isOpen ? "ml-4 w-96 max-w-[calc(100vw-2rem)] overflow-y-auto" : "ml-0 w-0"}`}
+        className={`h-full transition-[width,margin] duration-300 ease-in-out motion-reduce:transition-none ${isOpen ? "ml-4 w-96 max-w-[calc(100vw-2rem)]" : "ml-0 w-0"}`}
         data-state={isOpen ? "open" : "closed"}
         inert={!isOpen}
       >
         {isOpen ? (
-          <Card>
+          <Card className="h-full min-h-0">
             <CardHeader>
               <CardTitle>History</CardTitle>
               <CardAction>
@@ -103,13 +103,19 @@ export function ReaderHistory(
                 </Button>
               </CardAction>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <Tabs defaultValue="this-text">
-                <TabsList>
+            <CardContent className="flex min-h-0 flex-1 flex-col gap-4">
+              <Tabs
+                className="min-h-0 flex-1"
+                defaultValue="this-text"
+              >
+                <TabsList className="w-full shrink-0">
                   <TabsTrigger value="this-text">This text</TabsTrigger>
                   <TabsTrigger value="all">All</TabsTrigger>
                 </TabsList>
-                <TabsContent value="this-text">
+                <TabsContent
+                  className="min-h-0 overflow-y-auto"
+                  value="this-text"
+                >
                   <HistoryList
                     emptyMessage="No words looked up in this text yet."
                     entries={thisText}
@@ -118,7 +124,10 @@ export function ReaderHistory(
                     showLexemes
                   />
                 </TabsContent>
-                <TabsContent value="all">
+                <TabsContent
+                  className="min-h-0 overflow-y-auto"
+                  value="all"
+                >
                   <HistoryList
                     emptyMessage="No words looked up or searches yet."
                     entries={lookupsAndSearches}
@@ -129,6 +138,7 @@ export function ReaderHistory(
                 </TabsContent>
               </Tabs>
               <Button
+                className="shrink-0"
                 onClick={() => {
                   onClear();
                 }}
