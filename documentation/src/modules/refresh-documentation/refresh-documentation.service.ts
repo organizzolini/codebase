@@ -164,7 +164,7 @@ export class RefreshDocumentationService {
 
   /** Runs OpenWiki until it succeeds or the attempts run out, recording each. */
   private async runWithRetries(attempts: OpenWikiAttempt[]): Promise<boolean> {
-    for (let attempt = 1; attempt <= OPENWIKI_ATTEMPTS; attempt++) {
+    for (let attempt = 1; ; attempt++) {
       const result = await this.run();
 
       attempts.push(result);
@@ -181,8 +181,6 @@ export class RefreshDocumentationService {
 
       await setTimeout(delay);
     }
-
-    return false;
   }
 
   // 🌎 Public Methods

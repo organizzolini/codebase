@@ -140,6 +140,9 @@ describe(RefreshDocumentationService, () => {
   beforeEach(() => {
     vi.clearAllMocks();
     spawnMock.mockReset();
+    // GitHub Actions sets both, so a test that needs either states it.
+    vi.stubEnv("GITHUB_OUTPUT", "");
+    vi.stubEnv("GITHUB_STEP_SUMMARY", "");
     stageGitStatus("");
     standardOutput = vi.spyOn(process.stdout, "write").mockReturnValue(true);
     standardError = vi.spyOn(process.stderr, "write").mockReturnValue(true);
@@ -337,8 +340,7 @@ describe(RefreshDocumentationService, () => {
     it("writes nothing outside GitHub Actions", async () => {
       expect.hasAssertions();
 
-      vi.stubEnv("GITHUB_OUTPUT", "");
-      vi.stubEnv("GITHUB_STEP_SUMMARY", "");
+      vi.stubEnv("GITHUB_OUTPUT", undefined);
       stageRun();
 
       await service.refresh();

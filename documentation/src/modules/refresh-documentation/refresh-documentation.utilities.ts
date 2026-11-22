@@ -28,7 +28,7 @@ export function parseChangedPaths(status: string): string[] {
   return status
     .split("\n")
     .filter((line) => line.length > 3)
-    .map((line) => line.slice(3).split(" -> ").at(-1) ?? "");
+    .map((line) => line.slice(3).replace(/^.* -> /u, ""));
 }
 
 /** The job summary: one row per attempt, then what the run changed. */
