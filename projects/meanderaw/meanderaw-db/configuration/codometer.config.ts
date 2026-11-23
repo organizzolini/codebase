@@ -1,4 +1,4 @@
-import { codometerConfiguration } from "@codebase/configuration/codometer.config";
+import { codometerConfiguration } from "../../../../configuration/ic-suite/codometer.config.js";
 
 export default {
   ...codometerConfiguration,

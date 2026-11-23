@@ -208,6 +208,22 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           workspaceRelativePrefix: "../../../",
         },
       },
+      {
+        patterns: ["projects/meanderaw/meanderaw-db"],
+        substitutions: {
+          databaseEntitiesConstant: "MEANDERAW_DATABASE_ENTITIES",
+          databaseModuleName: "meanderaw-database",
+          databaseProject: "meanderaw",
+          databaseProjectExpression: "MEANDERAW_PROJECT",
+          moduleClassName: "MeanderawDatabaseModule",
+          name: "meanderaw-db",
+          persistenceModuleImport: "DatabaseModule",
+          persistenceModuleName: "DatabaseModule",
+          serviceClassName: "MeanderawDatabaseService",
+          type: "projects/meanderaw/",
+          workspaceRelativePrefix: "../../../",
+        },
+      },
     ],
     name: "nestjs-database-project",
     templatePath:

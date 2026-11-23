@@ -1,4 +1,4 @@
-import baseConfig from "@codebase/configuration/eslint.config";
+import baseConfig from "../../../../configuration/eslint.config";
 
 export default [
   // 🙈 Ignores
@@ -19,6 +19,7 @@ export default [
             "@codebase/testing",
             "@golevelup/ts-vitest",
             "pg",
+            "reflect-metadata",
             "vitest",
           ],
           ignoredFiles: ["{projectRoot}/configuration/**"],
