@@ -1,8 +1,21 @@
 import { useState } from "react";
 
-import { Tabs, TabsList, TabsTrigger } from "@codebase/presentation";
+import {
+  Frame,
+  FramePanel,
+  Tabs,
+  TabsList,
+  TabsTrigger,
+} from "@codebase/presentation";
 
 import { FormsTable } from "../forms-table/forms-table";
+import {
+  FLUSH_PANEL,
+  FORMS_FRAME,
+  FORMS_TAB,
+  FORMS_TAB_LIST,
+} from "../forms-table/forms-table.constants";
+import { InflectionTag } from "../inflection-tag/inflection-tag";
 
 import { CASES, GENDERS, NUMBERS } from "./adjective-forms.constants";
 
@@ -57,34 +70,51 @@ export function AdjectiveForms(
       className={className}
       data-testid="adjective-forms"
     >
-      <Tabs
-        className="-mx-4 gap-0"
-        onValueChange={(value: unknown) => {
-          setSelectedGender(String(value));
-        }}
-        value={gender}
+      <Frame
+        className={FORMS_FRAME}
+        variant="ghost"
+        dense
+        stacked
       >
-        <TabsList className="h-9 w-full gap-0 rounded-none border-t bg-muted p-0 group-data-horizontal/tabs:h-9">
-          {genders.map((tab) => (
-            <TabsTrigger
-              key={tab}
-              className="h-full flex-1 rounded-none px-1.5 text-xs capitalize"
-              value={tab}
+        <FramePanel className={FLUSH_PANEL}>
+          <Tabs
+            onValueChange={(value: unknown) => {
+              setSelectedGender(String(value));
+            }}
+            value={gender}
+          >
+            <TabsList
+              className={FORMS_TAB_LIST}
+              variant="line"
             >
-              {tab}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </Tabs>
-      <FormsTable
-        columns={NUMBERS.map((number) => ({ key: number, label: number }))}
-        lookup={(case_, number) =>
-          genderRows
-            .filter((row) => row.case === case_ && row.number === number)
-            .map((row) => row.word)
-        }
-        rows={cases.map((case_) => ({ key: case_, label: case_ }))}
-      />
+              {genders.map((tab) => (
+                <TabsTrigger
+                  key={tab}
+                  aria-label={tab}
+                  className={FORMS_TAB}
+                  value={tab}
+                >
+                  <InflectionTag
+                    selected={tab === gender}
+                    value={tab}
+                  />
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        </FramePanel>
+        <FramePanel className={FLUSH_PANEL}>
+          <FormsTable
+            columns={NUMBERS.map((number) => ({ key: number, label: number }))}
+            lookup={(case_, number) =>
+              genderRows
+                .filter((row) => row.case === case_ && row.number === number)
+                .map((row) => row.word)
+            }
+            rows={cases.map((case_) => ({ key: case_, label: case_ }))}
+          />
+        </FramePanel>
+      </Frame>
     </div>
   );
 }

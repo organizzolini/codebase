@@ -1,8 +1,8 @@
 /* cspell:words rosae rosarum */
 
-import { fireEvent, screen } from "@testing-library/react";
+import { act, fireEvent, screen, waitFor } from "@testing-library/react";
 import { HttpResponse } from "msw";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { graphqlMockServer } from "@codebase/interface/testing";
 import { renderRoute } from "@codebase/testing/react";
@@ -27,6 +27,7 @@ function answer(
   return {
     edges: found.map(([id, score]) => ({
       node: {
+        distance: null,
         enclitic: null,
         identifiers: [],
         lexeme: {
@@ -156,5 +157,42 @@ describe("search", () => {
     fireEvent.click(declension);
 
     await expect(screen.findByText("rosarum")).resolves.toBeDefined();
+  });
+
+  describe("history", () => {
+    const HISTORY_KEY = "lexico-lookup-history";
+
+    /** The searches the browser has stored, in order. */
+    function storedQueries(): unknown[] {
+      const stored = JSON.parse(
+        globalThis.localStorage.getItem(HISTORY_KEY) ?? "[]",
+      ) as { kind: string; query?: string }[];
+
+      return stored
+        .filter((item) => item.kind === "search")
+        .map((item) => item.query);
+    }
+
+    beforeEach(() => {
+      globalThis.localStorage.clear();
+      stubSearch([["amo", 2]], []);
+    });
+
+    it("records a search and moves a repeat to the top without duplicating it", async () => {
+      const router = getRouter();
+      await renderRoute(router, "/search?query=amo");
+      await screen.findAllByText("amo");
+
+      await act(async () => {
+        await router.navigate({ search: { query: "amor" }, to: "/search" });
+      });
+      await act(async () => {
+        await router.navigate({ search: { query: "AMO" }, to: "/search" });
+      });
+
+      await waitFor(() => {
+        expect(storedQueries()).toStrictEqual(["AMO", "amor"]);
+      });
+    });
   });
 });

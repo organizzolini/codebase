@@ -126,8 +126,12 @@ export function slicePage<Item>(
 export function toAuthorType(author: Author): AuthorType {
   return Object.assign(new AuthorType(), {
     ...toDeletableFields(author),
+    endYear: author.endYear,
+    era: author.era,
+    fullName: author.fullName,
     name: author.name,
     slug: author.slug,
+    startYear: author.startYear,
   } satisfies MappedFields<AuthorType>);
 }
 
@@ -148,10 +152,25 @@ export function toTextType(text: Text): TextType {
   return Object.assign(new TextType(), {
     ...toDeletableFields(text),
     author: mapRelation(text.author, toAuthorType),
+    collection: text.collection,
+    edition: text.edition,
+    editors: text.editors,
+    endYear: text.endYear,
+    findSpot: text.findSpot,
+    inscriptionType: text.inscriptionType,
+    lineCount: text.lineCount,
+    material: text.material,
     parentText: mapNullableRelation(text.parentText, toTextType),
+    printYear: text.printYear,
+    province: text.province,
+    publisher: text.publisher,
+    recognisedWordCount: text.recognisedWordCount,
     slug: text.slug,
+    startYear: text.startYear,
     title: text.title,
     type: text.type,
+    wordCount: text.wordCount,
+    workIdentifier: text.workIdentifier,
   } satisfies MappedFields<TextType, TextRelationField>);
 }
 

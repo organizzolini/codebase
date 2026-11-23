@@ -245,6 +245,70 @@ describe(LatinLibraryBuilderService, () => {
     expect(textEntity.slug).toBe("");
   });
 
+  it("should bound a very long link title and keep the full text in metadata", () => {
+    expect.hasAssertions();
+
+    const longTitle = "Liber ".repeat(60).trim();
+    const page = cheerio.load(`<a href="work.html">${longTitle}</a>`);
+    const anchorElement = page("a").first().get(0);
+
+    if (!anchorElement) {
+      throw new Error("Expected anchor element");
+    }
+
+    const textEntity = latinLibraryBuilder.buildTextEntityForLink(
+      anchorElement,
+      page,
+      "https://www.thelatinlibrary.com/work.html",
+    );
+
+    expect(textEntity.title.length).toBeLessThanOrEqual(128);
+    expect(textEntity.slug.length).toBeLessThanOrEqual(40);
+    expect(textEntity.metadata).toStrictEqual(
+      expect.objectContaining({
+        fullTitle: expect.stringContaining("Liber Liber") as string,
+      }),
+    );
+  });
+
+  it("should carry a cut title's full text into the frontmatter", () => {
+    expect.hasAssertions();
+
+    const author = new Author();
+    author.slug = "augustine";
+    const work = new Text();
+    work.title = "Liber…";
+    work.metadata = {
+      fullTitle: "Liber Primus Liber Secundus",
+      sourceUrl: "x.html",
+    };
+
+    const frontmatter = latinLibraryBuilder.buildWorkFrontmatter(
+      work,
+      author,
+      undefined,
+    );
+
+    expect(frontmatter["text_metadata"]).toStrictEqual({
+      full_title: "Liber Primus Liber Secundus",
+      source_url: "x.html",
+    });
+  });
+
+  it("should bound the stored slug of a work under a long book heading", () => {
+    expect.hasAssertions();
+
+    const author = new Author();
+    author.slug = "augustine";
+    const work = new Text();
+    work.title = "Liber ".repeat(60).trim();
+    work.metadata = { book: "Liber ".repeat(60).trim() };
+
+    const slug = latinLibraryBuilder.getTextSlug(work, author);
+
+    expect(slug.length).toBeLessThanOrEqual(128);
+  });
+
   it("should build frontmatter without author metadata when metadata is absent", () => {
     expect.hasAssertions();
 
@@ -270,6 +334,24 @@ describe(LatinLibraryBuilderService, () => {
       }),
     );
     expect(frontmatter).not.toHaveProperty("author_metadata");
+  });
+
+  it("should set The Latin Library collection on work frontmatter", () => {
+    expect.hasAssertions();
+
+    const author = new Author();
+    author.slug = "vergil";
+    author.metadata = null;
+
+    const work = new Text();
+    work.title = "Aeneid";
+    work.metadata = { sourceUrl: "aeneid.html" };
+
+    expect(
+      latinLibraryBuilder.buildWorkFrontmatter(work, author, undefined),
+    ).toStrictEqual(
+      expect.objectContaining({ collection: "The Latin Library" }),
+    );
   });
 
   it("should build markdown content and include scraper note for tiny pages", () => {

@@ -111,7 +111,7 @@ function RootDocument(
       <head>
         <HeadContent />
       </head>
-      <body className="min-h-screen bg-background text-foreground antialiased">
+      <body className="min-h-screen antialiased">
         {children}
         <TanStackRouterDevtools position="bottom-right" />
         <Scripts />

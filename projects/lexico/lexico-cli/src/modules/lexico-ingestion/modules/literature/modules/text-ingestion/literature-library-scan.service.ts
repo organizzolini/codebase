@@ -36,6 +36,29 @@ export class LiteratureLibraryScanService {
   }
 
   /**
+   * Qualifies the slug of every entry whose author, path and name another provider also
+   * supplies, so each collection keeps its own Text. The alphabetically first provider keeps
+   * the plain slug, which leaves slugs unique to one provider unchanged.
+   */
+  private qualifyDuplicateSlugs(texts: LibraryEntry[]): LibraryEntry[] {
+    const groups = _.groupBy(texts, (entry) =>
+      [entry.authorSlug, ...entry.pathParts, entry.textSlug].join("/"),
+    );
+    const plainProvider = _.mapValues(groups, (group) =>
+      _.min(group.map((entry) => entry.provider)),
+    );
+    return texts.map((entry) => {
+      const key = [entry.authorSlug, ...entry.pathParts, entry.textSlug].join(
+        "/",
+      );
+      const isDuplicate = (groups[key]?.length ?? 0) > 1;
+      return isDuplicate && entry.provider !== plainProvider[key]
+        ? { ...entry, textSlug: `${entry.textSlug}--${entry.provider}` }
+        : entry;
+    });
+  }
+
+  /**
    * Recursively walks one provider directory and collects markdown entries.
    */
   private async walkLibraryDirectory(args: {
@@ -126,6 +149,6 @@ export class LiteratureLibraryScanService {
       }
     }
 
-    return texts;
+    return this.qualifyDuplicateSlugs(texts);
   }
 }

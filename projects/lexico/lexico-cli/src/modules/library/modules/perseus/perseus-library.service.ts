@@ -6,8 +6,10 @@ import * as cheerio from "cheerio";
 import _ from "lodash";
 import YAML from "yaml";
 
-import { Author, Text } from "@codebase/lexico-db";
+import { Author, Text, textCollection } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
+
+import { splitTextAttributes } from "../../library.utilities";
 
 import { PerseusLibraryTextExtractionService } from "./perseus-library-text-extraction.service";
 
@@ -30,7 +32,7 @@ export class PerseusLibraryService {
    */
   private addPerseusTextEntity(args: {
     author: Author;
-    metadata: Record<string, unknown>;
+    metadata: Record<string, string | string[]>;
     rawTitle: string;
     relativeSourcePath: string;
     titleSlug: string;
@@ -80,8 +82,8 @@ export class PerseusLibraryService {
   private extractPerseusMetadata(
     $: cheerio.CheerioAPI,
     relativeSourcePath: string,
-  ): Record<string, unknown> {
-    const metadata: Record<string, unknown> = {};
+  ): Record<string, string | string[]> {
+    const metadata: Record<string, string | string[]> = {};
     const editors = $("titleStmt editor")
       .map((_index, element) => $(element).text().trim())
       .get();
@@ -263,7 +265,7 @@ export class PerseusLibraryService {
     $: cheerio.CheerioAPI;
     authorSlug: string;
     dataPath: string;
-    metadata: Record<string, unknown>;
+    metadata: Record<string, string | string[]>;
     rawTitle: string;
     relativeSourcePath: string;
     titleSlug: string;
@@ -277,12 +279,17 @@ export class PerseusLibraryService {
       relativeSourcePath,
       titleSlug,
     } = args;
+    const { attributes, remaining } = splitTextAttributes(
+      textCollection.perseus,
+      metadata,
+    );
     const frontmatterObject: Record<string, unknown> = {
       author: authorSlug,
+      ...attributes,
       type: "text",
     };
     const textMetadata = {
-      ...metadata,
+      ...remaining,
       source_url: `https://raw.githubusercontent.com/PerseusDL/canonical-latinLit/master/${relativeSourcePath}`,
     };
     if (Object.keys(textMetadata).length > 0) {
@@ -312,7 +319,7 @@ export class PerseusLibraryService {
     author: Author;
     authorSlug: string;
     dataPath: string;
-    metadata: Record<string, unknown>;
+    metadata: Record<string, string | string[]>;
     rawTitle: string;
     relativeSourcePath: string;
     titleSlug: string;

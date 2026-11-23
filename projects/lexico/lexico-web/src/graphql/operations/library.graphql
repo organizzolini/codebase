@@ -1,0 +1,64 @@
+fragment LibraryTextRow on LibraryText {
+  childCount
+  matches {
+    field
+    start
+    end
+  }
+  text {
+    id
+    slug
+    title
+    type
+    collection
+    edition
+    editors
+    findSpot
+    inscriptionType
+    material
+    province
+    lineCount
+    wordCount
+  }
+}
+
+query Library(
+  $search: String
+  $filters: LibraryFilters
+  $sort: [LibrarySort!]
+  $group: [LibraryGroupField!]
+  $page: Int
+  $pageSize: Int
+) {
+  library(
+    search: $search
+    filters: $filters
+    sort: $sort
+    group: $group
+    page: $page
+    pageSize: $pageSize
+  ) {
+    totalCount
+    pageCount
+    authors {
+      author {
+        id
+        slug
+        name
+        fullName
+        era
+        startYear
+        endYear
+      }
+      matches {
+        field
+        start
+        end
+      }
+      workCount
+      works {
+        ...LibraryTextRow
+      }
+    }
+  }
+}

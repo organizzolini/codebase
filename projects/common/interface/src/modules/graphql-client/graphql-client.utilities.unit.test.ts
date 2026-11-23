@@ -19,6 +19,20 @@ describe("graphql codegen configuration suite", () => {
     ]);
   });
 
+  it("leaves the validators out when a client opts out of them", () => {
+    expect.hasAssertions();
+
+    const config = createGraphqlCodegenConfig({
+      schema: "schema.gql",
+      validators: false,
+    });
+
+    expect(Object.keys(config.generates)).toStrictEqual([
+      "./src/graphql/generated/mocks.ts",
+      "./src/graphql/generated/operations.ts",
+    ]);
+  });
+
   it("types the scalars a client reads as strings", () => {
     expect.hasAssertions();
 
@@ -51,5 +65,20 @@ describe("graphql codegen configuration suite", () => {
       "./gen/operations.ts",
       "./gen/validation.ts",
     ]);
+  });
+
+  it("declares each schema enum once per file that also emits the schema", () => {
+    expect.hasAssertions();
+
+    const config = createGraphqlCodegenConfig({ schema: "schema.gql" });
+
+    expect(config.generates["./src/graphql/generated/mocks.ts"]).toMatchObject({
+      config: { importSchemaTypesFrom: "./src/graphql/generated/mocks" },
+    });
+    expect(
+      config.generates["./src/graphql/generated/operations.ts"],
+    ).toMatchObject({
+      config: { importSchemaTypesFrom: "./src/graphql/generated/operations" },
+    });
   });
 });

@@ -1,6 +1,7 @@
 import type { LoadLexemeForms } from "../lexeme-forms/lexeme-forms.types";
 import type { LexemeInflection } from "../lexeme-header/lexeme-header.types";
 import type { LexemeMatchInfo } from "../lexeme-match/lexeme-match.types";
+import type { MatchedForm } from "../lexeme-matched-forms/lexeme-matched-forms.types";
 import type { LexemePronunciation } from "../lexeme-pronunciations/lexeme-pronunciations.types";
 
 // 🏷️ Types
@@ -13,12 +14,12 @@ export interface LexemeResult {
   etymology?: null | string;
   forms?: Awaited<ReturnType<LoadLexemeForms>>;
   id: string;
-  /** What the matched form is, such as "first person singular present active indicative". */
-  identifiers: string[];
   inflection?: LexemeInflection | null;
   lemma: string;
   /** How the search matched this lexeme. */
   match: LexemeMatchInfo;
+  /** The written forms the search matched, each with its readings. */
+  matchedForms: MatchedForm[];
   partOfSpeech: string;
   principalParts: string[];
   pronunciations: LexemePronunciation[];

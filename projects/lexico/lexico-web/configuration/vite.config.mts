@@ -21,6 +21,13 @@ export default defineConfig({
     devSourcemap: true,
     postcss: path.dirname(import.meta.filename),
   },
+  environments: {
+    ssr: {
+      build: {
+        minify: true,
+      },
+    },
+  },
   plugins: [
     tailwindcss(),
     // The generated route tree lives under `src/`. Test files sit beside the

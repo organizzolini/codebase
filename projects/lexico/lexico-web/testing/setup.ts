@@ -22,6 +22,18 @@ vi.mock("@tanstack/react-start", async (importOriginal) => ({
 
 vi.stubGlobal("matchMedia", matchMediaStandIn);
 
+// jsdom has no layout, so the command list's size watcher and scroll-to-item
+// have nothing to do; stand-ins keep a searchable checklist mountable.
+vi.stubGlobal(
+  "ResizeObserver",
+  class {
+    public disconnect = vi.fn<() => void>();
+    public observe = vi.fn<() => void>();
+    public unobserve = vi.fn<() => void>();
+  },
+);
+Element.prototype.scrollIntoView = vi.fn<Element["scrollIntoView"]>();
+
 beforeAll(() => {
   startGraphqlMockServer();
 });

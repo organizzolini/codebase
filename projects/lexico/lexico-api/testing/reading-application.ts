@@ -14,6 +14,7 @@ import {
   FiniteVerbForm,
   GerundForm,
   InfinitiveForm,
+  Lexeme,
   LexicoDatabaseModule,
   Line,
   NominalForm,
@@ -23,9 +24,11 @@ import {
   SupineForm,
   Text,
   Token,
+  Translation,
   UninflectedInflection,
   VerbInflection,
   Word,
+  WordForm,
 } from "@codebase/lexico-db";
 
 import { environmentSchema } from "../src/lexico-api.constants";
@@ -33,6 +36,7 @@ import { LiteratureModule } from "../src/modules/literature/literature.module";
 
 import { startLexicoDatabaseTestingModule } from "./database";
 import { type ReadingPassage, seedReadingPassage } from "./reading-passage";
+import { seedWordCandidates } from "./word-candidates-passage";
 
 import type { DynamicModule, INestApplication } from "@nestjs/common";
 import type { Server } from "node:http";
@@ -68,12 +72,18 @@ export async function startReadingApplication(): Promise<ReadingApplication> {
   const database = await startLexicoDatabaseTestingModule([
     Author,
     Line,
+    Lexeme,
+    NominalForm,
+    FiniteVerbForm,
     Text,
     Token,
+    Translation,
     Word,
+    WordForm,
   ]);
   try {
     const passage = await seedReadingPassage(database.dataSource);
+    await seedWordCandidates(database.dataSource);
     const server = await NestFactory.create<INestApplication<Server>>(
       readingApplicationModule(),
       { logger: false },

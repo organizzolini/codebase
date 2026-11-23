@@ -8,10 +8,20 @@ import { Injectable } from "@nestjs/common";
 import _ from "lodash";
 import YAML from "yaml";
 
-import { Author, Text } from "@codebase/lexico-db";
+import { Author, Text, textCollection } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
-import type { EpigraphikDatenbankClaussSlabyRecord } from "../../providers.types";
+import {
+  epigraphikDatenbankRecordSchema,
+  MINIMUM_RECORDS_FOR_WARNING,
+  MISSING_SHARE_WARNING,
+} from "./epigraphik-datenbank-clauss-slaby.constants";
+import { buildEdcsAttributes } from "./epigraphik-datenbank-clauss-slaby.utilities";
+
+import type {
+  EdcsRun,
+  EpigraphikDatenbankRecord,
+} from "./epigraphik-datenbank-clauss-slaby.types";
 
 /**
  * Service for ingesting Epigraphik-Datenbank Clauss-Slaby inscriptions.
@@ -23,6 +33,19 @@ export class EpigraphikDatenbankClaussSlabyLibraryService {
   readonly name = "epigraphik-datenbank-clauss-slaby";
 
   // 🔏 Private Methods
+
+  /**
+   * Registers the province book on the author the first time a province appears.
+   */
+  private addBookText(run: EdcsRun, province: string, bookSlug: string): void {
+    const bookText = new Text();
+    bookText.type = "book";
+    bookText.title = province;
+    bookText.slug = bookSlug;
+    bookText.childTexts = [];
+    run.booksMap.set(province, bookText);
+    run.author.texts.push(bookText);
+  }
 
   /**
    * Builds structured data used during EDCS library ingestion.
@@ -37,38 +60,15 @@ export class EpigraphikDatenbankClaussSlabyLibraryService {
   }
 
   /**
-   * Resolves derived values needed by EDCS library ingestion.
+   * Writes one validated EDCS record straight to its markdown file, so no run holds more than one chunk.
    */
-  private getOrCreateBookText(args: {
-    author: Author;
-    bookSlug: string;
-    booksMap: Map<string, Text>;
-    province: string;
-  }): Text {
-    const { author, bookSlug, booksMap, province } = args;
-    let bookText = booksMap.get(province);
-    if (!bookText) {
-      bookText = new Text();
-      bookText.type = "book";
-      bookText.title = province;
-      bookText.slug = bookSlug;
-      bookText.childTexts = [];
-      booksMap.set(province, bookText);
-      author.texts.push(bookText);
-    }
-    return bookText;
-  }
-
-  /**
-   * Processes one workflow step for EDCS library ingestion.
-   */
-  private processEdcsRecord(
-    item: EpigraphikDatenbankClaussSlabyRecord,
-    provinceData: Map<string, string[]>,
-  ): void {
-    const object = item.obj;
-    const recordId = object["edcs-id"] || object.edcsId;
-    const provinz = object.provinz || "Unknown Province";
+  private async processEdcsRecord(
+    record: EpigraphikDatenbankRecord,
+    run: EdcsRun,
+  ): Promise<void> {
+    const object = record.obj;
+    const id = object["edcs-id"] || object.edcsId || "";
+    const province = object.provinz || "Unknown Province";
     const text = object.inschriften[0]?.[0];
     if (!text) return;
     let cleanedText = text;
@@ -77,31 +77,48 @@ export class EpigraphikDatenbankClaussSlabyLibraryService {
       previousText = cleanedText;
       cleanedText = cleanedText.replaceAll(/<[^>]*>?/gm, "");
     } while (cleanedText !== previousText);
-    const markdownLine = `**${recordId}** ${cleanedText}`;
-    const provArray = provinceData.get(provinz) || [];
-    provArray.push(markdownLine);
-    provinceData.set(provinz, provArray);
+    run.records++;
+    const attributes = buildEdcsAttributes(object, province);
+    for (const [key, value] of Object.entries(attributes)) {
+      if (value === undefined) run.missing[key] = (run.missing[key] ?? 0) + 1;
+    }
+    await this.saveEdcsInscription({
+      attributes,
+      id,
+      province,
+      run,
+      text: cleanedText,
+    });
   }
 
   /**
-   * Processes one workflow step for EDCS library ingestion.
+   * Parses one chunk file, skipping invalid records so one bad record never stops the run.
    */
   private async processSourceChunkFile(args: {
     file: string;
     index: number;
-    provinceData: Map<string, string[]>;
+    run: EdcsRun;
     sourceDataDirectory: string;
     total: number;
   }): Promise<void> {
-    const { file, index, provinceData, sourceDataDirectory, total } = args;
+    const { file, index, run, sourceDataDirectory, total } = args;
     this.logger.info("📜 Starting processing chunk", undefined, { file });
     try {
       const filePath = path.join(sourceDataDirectory, file);
       const fileContent = await fs.readFile(filePath, "utf8");
-      const data = JSON.parse(fileContent) as {
-        data: EpigraphikDatenbankClaussSlabyRecord[];
-      };
-      for (const item of data.data) this.processEdcsRecord(item, provinceData);
+      const data = JSON.parse(fileContent) as { data: unknown[] };
+      for (const [recordIndex, item] of data.data.entries()) {
+        const parsed = epigraphikDatenbankRecordSchema.safeParse(item);
+        if (parsed.success) {
+          await this.processEdcsRecord(parsed.data, run);
+          continue;
+        }
+        this.logger.warn("📄 Skipped invalid EDCS record", undefined, {
+          file,
+          index: recordIndex,
+          reason: parsed.error.issues.map((issue) => issue.message).join("; "),
+        });
+      }
       this.logger.info("📜 Completed processing chunk", undefined, {
         current: index + 1,
         file,
@@ -117,25 +134,22 @@ export class EpigraphikDatenbankClaussSlabyLibraryService {
   }
 
   /**
-   * Processes one workflow step for EDCS library ingestion.
+   * Processes the chunk files one at a time.
    */
   private async processSourceChunkStage(
     chunkFiles: string[],
+    run: EdcsRun,
     sourceDataDirectory: string,
-  ): Promise<Map<string, string[]>> {
-    const provinceData = new Map<string, string[]>();
-    for (let index = 0; index < chunkFiles.length; index++) {
-      const file = chunkFiles[index];
-      if (!file) continue;
+  ): Promise<void> {
+    for (const [index, file] of chunkFiles.entries()) {
       await this.processSourceChunkFile({
         file,
         index,
-        provinceData,
+        run,
         sourceDataDirectory,
         total: chunkFiles.length,
       });
     }
-    return provinceData;
   }
 
   /**
@@ -158,130 +172,70 @@ export class EpigraphikDatenbankClaussSlabyLibraryService {
   }
 
   /**
-   * Persists generated output for EDCS library ingestion.
+   * Logs how many records lacked each attribute, and warns when one is missing almost everywhere.
    */
-  private async saveEdcsChunkFile(args: {
-    authorSlug: string;
-    bookDirectory: string;
-    bookSlug: string;
-    bookText: Text;
-    chunk: string[];
-    title: string;
-    titleSlug: string;
-  }): Promise<void> {
-    const {
-      authorSlug,
-      bookDirectory,
-      bookSlug,
-      bookText,
-      chunk,
-      title,
-      titleSlug,
-    } = args;
-    const textEntity = new Text();
-    textEntity.type = "text";
-    textEntity.title = title;
-    textEntity.slug = titleSlug;
-    textEntity.metadata = { sourceUrl: `${bookSlug}/${titleSlug}.md` };
-    bookText.childTexts.push(textEntity);
-    const frontmatterObject = {
-      author: authorSlug,
-      text_metadata: { source_url: "https://db.edcs.eu" },
-      title,
-      type: "text",
-    };
-    let markdown = `---\n${YAML.stringify(frontmatterObject)}---\n\n`;
-    markdown += `# ${title}\n\n`;
-    markdown += `${chunk.join("\n\n")}\n`;
-    await fs.writeFile(
-      path.join(bookDirectory, `${titleSlug}.md`),
-      markdown,
-      "utf8",
+  private reportAttributeCoverage(run: EdcsRun): void {
+    this.logger.info("📊 Measured EDCS attribute coverage", undefined, {
+      missing: run.missing,
+      records: run.records,
+    });
+    if (run.records < MINIMUM_RECORDS_FOR_WARNING) return;
+    const affected = Object.entries(run.missing)
+      .filter(([, count]) => count / run.records >= MISSING_SHARE_WARNING)
+      .map(([key]) => key);
+    if (affected.length === 0) return;
+    this.logger.warn(
+      "⚠️ Found EDCS attributes missing on nearly every record; the API field names may be wrong",
+      undefined,
+      { affected, records: run.records },
     );
   }
 
   /**
-   * Persists generated output for EDCS library ingestion.
+   * Persists one inscription as a markdown file under its province book; a second record that
+   * lands on the same slug is logged and left out, never allowed to overwrite the first.
    */
-  private async saveEdcsProvince(args: {
-    author: Author;
-    authorDirectory: string;
-    authorSlug: string;
-    booksMap: Map<string, Text>;
-    inscriptions: string[];
-    options: undefined | { text?: string };
+  private async saveEdcsInscription(args: {
+    attributes: Record<string, number | string | undefined>;
+    id: string;
     province: string;
+    run: EdcsRun;
+    text: string;
   }): Promise<void> {
-    const {
-      author,
-      authorDirectory,
-      authorSlug,
-      booksMap,
-      inscriptions,
-      options,
-      province,
-    } = args;
-    this.logger.info("🌍 Starting province", undefined, { province });
+    const { attributes, id, province, run, text } = args;
+    const { authorDirectory, authorSlug, options } = run;
     const bookSlug = _.kebabCase(province);
+    const titleSlug = _.kebabCase(id);
+    const textSlug = `${authorSlug}/${bookSlug}/${titleSlug}`;
+    if (options?.text && textSlug !== options.text) return;
     const bookDirectory = path.join(authorDirectory, bookSlug);
-    await fs.mkdir(bookDirectory, { recursive: true });
-    const bookText = this.getOrCreateBookText({
-      author,
-      bookSlug,
-      booksMap,
-      province,
-    });
-    const chunkSize = 1000;
-    for (let index = 0; index < inscriptions.length; index += chunkSize) {
-      const chunk = inscriptions.slice(index, index + chunkSize);
-      const title = `${province} Part ${Math.floor(index / chunkSize) + 1}`;
-      const titleSlug = _.kebabCase(title);
-      const textSlug = `${authorSlug}/${bookSlug}/${titleSlug}`;
-      if (options?.text && textSlug !== options.text) continue;
-      await this.saveEdcsChunkFile({
-        authorSlug,
-        bookDirectory,
-        bookSlug,
-        bookText,
-        chunk,
-        title,
-        titleSlug,
-      });
+    if (!run.booksMap.has(province)) {
+      await fs.mkdir(bookDirectory, { recursive: true });
+      this.addBookText(run, province, bookSlug);
     }
-    this.logger.info("🌍 Completed province", undefined, { province });
-  }
-
-  /**
-   * Persists generated output for EDCS library ingestion.
-   */
-  private async saveEdcsProvinceStage(args: {
-    author: Author;
-    authorDirectory: string;
-    authorSlug: string;
-    options: undefined | { text?: string };
-    provinceData: Map<string, string[]>;
-  }): Promise<void> {
-    const { author, authorDirectory, authorSlug, options, provinceData } = args;
-    const booksMap = new Map<string, Text>();
-    const provinceEntries = [...provinceData.entries()];
-    const totalProvinces = provinceEntries.length;
-    let currentProvince = 0;
-    for (const [province, inscriptions] of provinceEntries) {
-      await this.saveEdcsProvince({
-        author,
-        authorDirectory,
-        authorSlug,
-        booksMap,
-        inscriptions,
-        options,
-        province,
-      });
-      currentProvince++;
-      this.logger.info("🌍 Completed province", undefined, {
-        current: currentProvince,
-        percent: Number(((currentProvince / totalProvinces) * 100).toFixed(2)),
-        province,
-        total: totalProvinces,
+    const frontmatterObject = {
+      author: authorSlug,
+      collection: textCollection.edcs,
+      ..._.omitBy(attributes, (value) => value === undefined),
+      text_metadata: { source_url: "https://db.edcs.eu" },
+      title: id,
+      type: "text",
+    };
+    const markdown = `---\n${YAML.stringify(frontmatterObject)}---\n\n# ${id}\n\n**${id}** ${text}\n`;
+    try {
+      await fs.writeFile(
+        path.join(bookDirectory, `${titleSlug}.md`),
+        markdown,
+        {
+          encoding: "utf8",
+          flag: options?.text ? "w" : "wx",
+        },
+      );
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
+      this.logger.warn("📄 Skipped duplicate EDCS id", undefined, {
+        id,
+        slug: textSlug,
       });
     }
   }
@@ -295,16 +249,15 @@ export class EpigraphikDatenbankClaussSlabyLibraryService {
     author?: string;
     text?: string;
   }): Promise<Author[]> {
-    const host = "https://edcs.hist.uzh.ch/api/query";
     this.logger.info(
       "🗂️ Ingesting Epigraphik-Datenbank Clauss-Slaby from local data",
     );
-    const dataPath = path.resolve("data", "library", this.name);
     const authorSlug = "epigraphik-datenbank-clauss-slaby";
     if (options?.author && authorSlug !== options.author) return [];
-    const authorDirectory = path.join(dataPath, authorSlug);
-    await fs.mkdir(authorDirectory, { recursive: true });
-    const author = this.createSourceAuthor(authorSlug, host);
+    const authorDirectory = path.join(
+      path.resolve("data", "library", this.name),
+      authorSlug,
+    );
     const sourceDataDirectory = path.resolve(
       "data",
       "epigraphik-datenbank-clauss-slaby-source",
@@ -316,17 +269,25 @@ export class EpigraphikDatenbankClaussSlabyLibraryService {
     );
     const chunkFiles = await this.readSourceChunkFiles(sourceDataDirectory);
     if (!chunkFiles) return [];
-    const provinceData = await this.processSourceChunkStage(
-      chunkFiles,
-      sourceDataDirectory,
+    if (!options?.text) {
+      await fs.rm(authorDirectory, { force: true, recursive: true });
+    }
+    await fs.mkdir(authorDirectory, { recursive: true });
+    const author = this.createSourceAuthor(
+      authorSlug,
+      "https://edcs.hist.uzh.ch/api/query",
     );
-    await this.saveEdcsProvinceStage({
+    const run: EdcsRun = {
       author,
       authorDirectory,
       authorSlug,
+      booksMap: new Map(),
+      missing: {},
       options,
-      provinceData,
-    });
+      records: 0,
+    };
+    await this.processSourceChunkStage(chunkFiles, run, sourceDataDirectory);
+    this.reportAttributeCoverage(run);
     return [author];
   }
 }

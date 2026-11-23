@@ -70,8 +70,8 @@ export function ApplicationSidebar(
                 size="lg"
                 tooltip="Lexico"
               >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                  <Logo width={18} />
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground [&_svg]:h-6! [&_svg]:w-[18px]!">
+                  <Logo />
                 </span>
                 <span className="grid min-w-0 flex-1 text-left leading-tight group-data-[collapsible=icon]:sr-only">
                   <span className="truncate text-sm font-medium">Lexico</span>
@@ -108,7 +108,7 @@ export function ApplicationSidebar(
                 onClick={toggleSidebar}
                 tooltip="Toggle sidebar"
               >
-                <PanelLeft className="h-5 w-5" />
+                <PanelLeft />
                 <span>{state === "expanded" ? "Collapse" : "Expand"}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>

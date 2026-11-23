@@ -9,10 +9,15 @@ import type { LexemeResult } from "./lexeme-card.types";
 const result: LexemeResult = {
   etymology: "From Proto-Italic.",
   id: "1",
-  identifiers: ["first person singular present active indicative"],
   inflection: { conjugation: "first" },
   lemma: "amo",
   match: { kind: "exact-lemma" },
+  matchedForms: [
+    {
+      groups: [["indicative", "active", "present", "singular", "first"]],
+      text: "amo",
+    },
+  ],
   partOfSpeech: "verb",
   principalParts: ["amō", "amāre"],
   pronunciations: [{ phonetic: "[ˈa.moː]", variant: "classical" }],
@@ -94,7 +99,7 @@ describe(LexemeCard, () => {
     expect(screen.getByLabelText("Latin match")).toBeDefined();
   });
 
-  it("says which form matched only when the search matched an inflected form", () => {
+  it("shows the matched form with its tags, and nothing when no form matched", () => {
     const { rerender } = render(
       <LexemeCard
         loadForms={loadForms}
@@ -102,16 +107,17 @@ describe(LexemeCard, () => {
       />,
     );
 
-    expect(screen.queryByTestId("lexeme-identifiers")).toBeNull();
+    expect(screen.getByText("IND")).toBeDefined();
+    expect(screen.getByText("1ST")).toBeDefined();
 
     rerender(
       <LexemeCard
         loadForms={loadForms}
-        result={{ ...result, source: "WORD_EXACT" }}
+        result={{ ...result, matchedForms: [] }}
       />,
     );
 
-    expect(screen.getByText("1ST SG PRES ACT IND")).toBeDefined();
+    expect(screen.queryByTestId("lexeme-matched-forms")).toBeNull();
   });
 
   it("leaves out the sections an entry has no data for", () => {
