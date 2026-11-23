@@ -4,14 +4,14 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { GraphMermaidService } from "../graph-mermaid/graph-mermaid.service";
 
-import { GraphRenderService } from "./graph-render.service";
+import { RenderService } from "./render.service";
 
-describe(GraphRenderService, () => {
+describe(RenderService, () => {
   it("resolves with its dependencies", async () => {
-    const { instance } = await buildTestingModule(GraphRenderService, {
+    const { instance } = await buildTestingModule(RenderService, {
       mocks: [GraphMermaidService],
     });
 
-    expect(instance).toBeInstanceOf(GraphRenderService);
+    expect(instance).toBeInstanceOf(RenderService);
   });
 });

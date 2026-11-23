@@ -12,21 +12,21 @@ import {
   it,
 } from "vitest";
 
-import { runCliCommandLine } from "../../../testing/command-line-runner";
+import { runCliCommandLine } from "../../../../../testing/command-line-runner";
 import {
   FIXTURE_DATABASE_TIMEOUT_MILLISECONDS,
   INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   startFixtureDatabase,
-} from "../../../testing/fixture-persistence";
-import { renderGraphMermaid } from "../graph-mermaid/graph-mermaid.utilities";
+} from "../../../../../testing/fixture-persistence";
+import { renderGraphMermaid } from "../../../graph-mermaid/graph-mermaid.utilities";
 
-import type { FixtureDatabase } from "../../../testing/fixture-persistence";
-import type { GraphModel } from "../graph-mermaid/graph-mermaid.types";
+import type { FixtureDatabase } from "../../../../../testing/fixture-persistence";
+import type { GraphModel } from "../../../graph-mermaid/graph-mermaid.types";
 
 /** The adjacency-list entity, which reads the `list_tags` table. */
 const LIST_GLOB = path.join(
   import.meta.dirname,
-  "../../../testing/fixtures/trees/list-tag.entity.ts",
+  "../../../../../testing/fixtures/trees/list-tag.entity.ts",
 );
 
 /** The fixture tree's diagram, without its final newline. */

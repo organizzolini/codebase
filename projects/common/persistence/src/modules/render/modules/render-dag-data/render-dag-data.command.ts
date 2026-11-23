@@ -3,56 +3,56 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { GraphEntitiesService } from "../graph-entities/graph-entities.service";
-import { graphOutputDryRunMessages } from "../graph-options/graph-options-outputs.utilities";
+import { GraphDagService } from "../../../graph-dag/graph-dag.service";
+import { GraphEntitiesService } from "../../../graph-entities/graph-entities.service";
+import { graphOutputDryRunMessages } from "../../../graph-options/graph-options-outputs.utilities";
 import {
   GRAPH_DRY_RUN_OPTION,
   GRAPH_ENTITIES_OPTION,
+  GRAPH_FILTER_OPTION,
+  GRAPH_MAX_BREADTH_OPTION,
+  GRAPH_MAX_DEPTH_OPTION,
   GRAPH_OUTPUT_JSON_OPTION,
   GRAPH_OUTPUT_MARKDOWN_OPTION,
   GRAPH_OVERWRITE_OPTION,
   GRAPH_SCHEMA_OPTION,
+  GRAPH_SORT_OPTION,
   GRAPH_SOURCE_URI_OPTION,
-} from "../graph-options/graph-options.constants";
-import { GraphOptionsService } from "../graph-options/graph-options.service";
-import { GraphRenderService } from "../graph-render/graph-render.service";
-import { GraphTreeService } from "../graph-tree/graph-tree.service";
+} from "../../../graph-options/graph-options.constants";
+import { GraphOptionsService } from "../../../graph-options/graph-options.service";
+import { graphDrawDryRunMessages } from "../../render.constants";
+import { RenderService } from "../../render.service";
 
 import {
-  RENDER_TREE_DATA_DESCRIPTION,
-  RENDER_TREE_DATA_DIRECTION,
-  renderTreeDataDryRunMessages,
-} from "./render-tree-data.constants";
+  RENDER_DAG_DATA_DESCRIPTION,
+  RENDER_DAG_DATA_DIRECTION,
+} from "./render-dag-data.constants";
 
-import type {
-  GraphCommandOptions,
-  GraphPlan,
-} from "../graph-options/graph-options.types";
-import type { RenderTreeDataTarget } from "./render-tree-data.types";
+import type { GraphCommandOptions } from "../../../graph-options/graph-options.types";
 
 /**
- * Reads a `@Tree` entity's rows from a database and prints them as a Mermaid
+ * Reads a `@Dag` entity's edges from a database and prints them as a Mermaid
  * flowchart on stdout, or writes them to the files named, with warnings on
  * stderr. Every option is validated before any entity file is imported or any
  * connection opens.
  */
 @Command({
-  description: RENDER_TREE_DATA_DESCRIPTION,
-  name: "render-tree-data",
+  description: RENDER_DAG_DATA_DESCRIPTION,
+  name: "render-dag-data",
 })
 @Injectable()
-export class RenderTreeDataCommand extends CommandRunner {
+export class RenderDagDataCommand extends CommandRunner {
   // 🏗 Dependency Injection
 
   constructor(
     private readonly logger: LoggerService,
+    private readonly graphDag: GraphDagService,
     private readonly graphEntities: GraphEntitiesService,
     private readonly graphOptions: GraphOptionsService,
-    private readonly graphRender: GraphRenderService,
-    private readonly graphTree: GraphTreeService,
+    private readonly graphRender: RenderService,
   ) {
     super();
-    this.logger.setContext(RenderTreeDataCommand.name);
+    this.logger.setContext(RenderDagDataCommand.name);
   }
 
   // 🔐 Private Fields
@@ -60,26 +60,6 @@ export class RenderTreeDataCommand extends CommandRunner {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
-
-  /**
-   * Imports the entities, picks the tree, and checks its columns, before any
-   * connection opens.
-   */
-  private async prepare(plan: GraphPlan): Promise<RenderTreeDataTarget> {
-    const entities = await this.graphEntities.load(plan.entities);
-    const dataSource = this.graphEntities.createDataSource(
-      plan.connection,
-      entities,
-    );
-    const picked = this.graphEntities.pickTree({
-      entities,
-      globs: plan.entities,
-      namingStrategy: dataSource.namingStrategy,
-      table: plan.table,
-    });
-    this.graphEntities.assertColumns(picked, plan.filters, plan.sorts);
-    return { dataSource, picked };
-  }
 
   // 🌎 Public Methods
 
@@ -96,11 +76,7 @@ export class RenderTreeDataCommand extends CommandRunner {
   }
 
   /** Collects each repeated `--filter` into one list, in the order given. */
-  @Option({
-    description:
-      "Keep rows matching column<op>value, e.g. --filter name~=Inbox; repeat and all must match. Operators: = (equal), != (not equal), ~= (contains, case-sensitive), < and > (numeric or date columns only). A matching row keeps its ancestors and its descendants",
-    flags: "--filter <expression>",
-  })
+  @Option(GRAPH_FILTER_OPTION)
   parseFilter(value: string, previous: string[] = []): string[] {
     return [...previous, value];
   }
@@ -108,7 +84,7 @@ export class RenderTreeDataCommand extends CommandRunner {
   /** Parses `--limit`, the number of root nodes a page holds. */
   @Option({
     description:
-      "Root nodes per page, each drawn with its descendants, in sort order; the first page unless --page. Positive integer",
+      "Root nodes per page, each drawn with every node reachable from it; roots are nodes no kept edge targets, in sort order; the first page unless --page. A component with no root is drawn only without --limit. Positive integer",
     flags: "--limit <n>",
   })
   parseLimit(value: string): string {
@@ -116,21 +92,13 @@ export class RenderTreeDataCommand extends CommandRunner {
   }
 
   /** Parses `--max-breadth`, the most children drawn under one node. */
-  @Option({
-    description:
-      "Most children drawn under any one node; the rest become one '… K more' node and a warning. Roots are never capped. Positive integer",
-    flags: "--max-breadth <n>",
-  })
+  @Option(GRAPH_MAX_BREADTH_OPTION)
   parseMaximumBreadth(value: string): string {
     return value;
   }
 
   /** Parses `--max-depth`, the deepest level drawn, roots being level 1. */
-  @Option({
-    description:
-      "Deepest level drawn, with roots at level 1; children below it become one '… K more' node and a warning. Positive integer",
-    flags: "--max-depth <n>",
-  })
+  @Option(GRAPH_MAX_DEPTH_OPTION)
   parseMaximumDepth(value: string): string {
     return value;
   }
@@ -170,11 +138,7 @@ export class RenderTreeDataCommand extends CommandRunner {
   }
 
   /** Collects each repeated `--sort` into one list of keys, applied in the order given. */
-  @Option({
-    description:
-      "Sort siblings by column[:asc|desc], e.g. --sort name:desc; repeat for several keys, applied in order. Applied before --max-depth and --max-breadth cut the tree",
-    flags: "--sort <expression>",
-  })
+  @Option(GRAPH_SORT_OPTION)
   parseSort(value: string, previous: string[] = []): string[] {
     return [...previous, value];
   }
@@ -185,10 +149,10 @@ export class RenderTreeDataCommand extends CommandRunner {
     return value;
   }
 
-  /** Parses `--table`, the table to draw when the entities hold several trees. */
+  /** Parses `--table`, the table to draw when the entities hold several DAGs. */
   @Option({
     description:
-      "Table of the tree to draw when --entities match several; unqualified or schema.table",
+      "Table of the @Dag entity to draw when --entities match several; unqualified or schema.table",
     flags: "--table <name>",
   })
   parseTable(value: string): string {
@@ -196,7 +160,7 @@ export class RenderTreeDataCommand extends CommandRunner {
   }
 
   /**
-   * Validates the options, then draws the picked tree. `--dry-run` stops after
+   * Validates the options, then draws the picked DAG. `--dry-run` stops after
    * the entity files resolve, before any connection opens.
    */
   async run(
@@ -207,7 +171,7 @@ export class RenderTreeDataCommand extends CommandRunner {
     if (options.dryRun === true) {
       const files = this.graphEntities.resolveFiles(plan.entities);
       const lines = [
-        ...renderTreeDataDryRunMessages(plan, files),
+        ...graphDrawDryRunMessages(plan, files, "@Dag"),
         ...graphOutputDryRunMessages(plan.outputs),
       ];
       for (const line of lines) {
@@ -215,12 +179,17 @@ export class RenderTreeDataCommand extends CommandRunner {
       }
       return;
     }
-    const { dataSource, picked } = await this.prepare(plan);
+    const { dataSource, picked } = await this.graphEntities.prepareEdge(plan, {
+      command: "render-dag-data",
+      kinds: ["dag"],
+    });
+    const edge = this.graphEntities.describeEdge(picked);
     const written = await this.graphRender.render(plan, {
       dataSource,
-      direction: RENDER_TREE_DATA_DIRECTION,
+      direction: RENDER_DAG_DATA_DIRECTION,
       read: async () =>
-        this.graphTree.load(dataSource, dataSource.getMetadata(picked), {
+        this.graphDag.load(dataSource, dataSource.getMetadata(picked), {
+          edge,
           filters: plan.filters,
           maximumBreadth: plan.maximumBreadth,
           maximumDepth: plan.maximumDepth,

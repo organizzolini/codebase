@@ -3,9 +3,8 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { GraphDagService } from "../graph-dag/graph-dag.service";
-import { GraphEntitiesService } from "../graph-entities/graph-entities.service";
-import { graphOutputDryRunMessages } from "../graph-options/graph-options-outputs.utilities";
+import { GraphEntitiesService } from "../../../graph-entities/graph-entities.service";
+import { graphOutputDryRunMessages } from "../../../graph-options/graph-options-outputs.utilities";
 import {
   GRAPH_DRY_RUN_OPTION,
   GRAPH_ENTITIES_OPTION,
@@ -14,45 +13,46 @@ import {
   GRAPH_OVERWRITE_OPTION,
   GRAPH_SCHEMA_OPTION,
   GRAPH_SOURCE_URI_OPTION,
-} from "../graph-options/graph-options.constants";
-import { GraphOptionsService } from "../graph-options/graph-options.service";
-import { GraphRenderService } from "../graph-render/graph-render.service";
+} from "../../../graph-options/graph-options.constants";
+import { GraphOptionsService } from "../../../graph-options/graph-options.service";
+import { GraphTreeService } from "../../../graph-tree/graph-tree.service";
+import { RenderService } from "../../render.service";
 
 import {
-  RENDER_DAG_DATA_DESCRIPTION,
-  RENDER_DAG_DATA_DIRECTION,
-  renderDagDataDryRunMessages,
-} from "./render-dag-data.constants";
+  RENDER_TREE_DATA_DESCRIPTION,
+  RENDER_TREE_DATA_DIRECTION,
+  renderTreeDataDryRunMessages,
+} from "./render-tree-data.constants";
 
 import type {
   GraphCommandOptions,
   GraphPlan,
-} from "../graph-options/graph-options.types";
-import type { RenderDagDataTarget } from "./render-dag-data.types";
+} from "../../../graph-options/graph-options.types";
+import type { RenderTreeDataTarget } from "./render-tree-data.types";
 
 /**
- * Reads a `@Dag` entity's edges from a database and prints them as a Mermaid
+ * Reads a `@Tree` entity's rows from a database and prints them as a Mermaid
  * flowchart on stdout, or writes them to the files named, with warnings on
  * stderr. Every option is validated before any entity file is imported or any
  * connection opens.
  */
 @Command({
-  description: RENDER_DAG_DATA_DESCRIPTION,
-  name: "render-dag-data",
+  description: RENDER_TREE_DATA_DESCRIPTION,
+  name: "render-tree-data",
 })
 @Injectable()
-export class RenderDagDataCommand extends CommandRunner {
+export class RenderTreeDataCommand extends CommandRunner {
   // 🏗 Dependency Injection
 
   constructor(
     private readonly logger: LoggerService,
-    private readonly graphDag: GraphDagService,
     private readonly graphEntities: GraphEntitiesService,
     private readonly graphOptions: GraphOptionsService,
-    private readonly graphRender: GraphRenderService,
+    private readonly graphRender: RenderService,
+    private readonly graphTree: GraphTreeService,
   ) {
     super();
-    this.logger.setContext(RenderDagDataCommand.name);
+    this.logger.setContext(RenderTreeDataCommand.name);
   }
 
   // 🔐 Private Fields
@@ -62,20 +62,18 @@ export class RenderDagDataCommand extends CommandRunner {
   // 🔏 Private Methods
 
   /**
-   * Imports the entities, picks the `@Dag` one, and checks its columns, before
-   * any connection opens.
+   * Imports the entities, picks the tree, and checks its columns, before any
+   * connection opens.
    */
-  private async prepare(plan: GraphPlan): Promise<RenderDagDataTarget> {
+  private async prepare(plan: GraphPlan): Promise<RenderTreeDataTarget> {
     const entities = await this.graphEntities.load(plan.entities);
     const dataSource = this.graphEntities.createDataSource(
       plan.connection,
       entities,
     );
-    const picked = this.graphEntities.pickEdge({
-      command: "render-dag-data",
+    const picked = this.graphEntities.pickTree({
       entities,
       globs: plan.entities,
-      kinds: ["dag"],
       namingStrategy: dataSource.namingStrategy,
       table: plan.table,
     });
@@ -100,7 +98,7 @@ export class RenderDagDataCommand extends CommandRunner {
   /** Collects each repeated `--filter` into one list, in the order given. */
   @Option({
     description:
-      "Keep edges whose row matches column<op>value, e.g. --filter weight>1; columns are the edge entity's, repeat and all must match. Operators: = (equal), != (not equal), ~= (contains, case-sensitive), < and > (numeric or date columns only). A node is drawn only if a kept edge touches it",
+      "Keep rows matching column<op>value, e.g. --filter name~=Inbox; repeat and all must match. Operators: = (equal), != (not equal), ~= (contains, case-sensitive), < and > (numeric or date columns only). A matching row keeps its ancestors and its descendants",
     flags: "--filter <expression>",
   })
   parseFilter(value: string, previous: string[] = []): string[] {
@@ -110,7 +108,7 @@ export class RenderDagDataCommand extends CommandRunner {
   /** Parses `--limit`, the number of root nodes a page holds. */
   @Option({
     description:
-      "Root nodes per page, each drawn with every node reachable from it; roots are nodes no kept edge targets, in sort order; the first page unless --page. A component with no root is drawn only without --limit. Positive integer",
+      "Root nodes per page, each drawn with its descendants, in sort order; the first page unless --page. Positive integer",
     flags: "--limit <n>",
   })
   parseLimit(value: string): string {
@@ -120,7 +118,7 @@ export class RenderDagDataCommand extends CommandRunner {
   /** Parses `--max-breadth`, the most children drawn under one node. */
   @Option({
     description:
-      "Most children drawn under any one node, in sort order; the rest become one '… K more' node and a warning. Roots are never capped. Positive integer",
+      "Most children drawn under any one node; the rest become one '… K more' node and a warning. Roots are never capped. Positive integer",
     flags: "--max-breadth <n>",
   })
   parseMaximumBreadth(value: string): string {
@@ -130,7 +128,7 @@ export class RenderDagDataCommand extends CommandRunner {
   /** Parses `--max-depth`, the deepest level drawn, roots being level 1. */
   @Option({
     description:
-      "Deepest level drawn, with roots at level 1; a node's level is its shortest distance from a root. Children below it become one '… K more' node and a warning. Positive integer",
+      "Deepest level drawn, with roots at level 1; children below it become one '… K more' node and a warning. Positive integer",
     flags: "--max-depth <n>",
   })
   parseMaximumDepth(value: string): string {
@@ -174,7 +172,7 @@ export class RenderDagDataCommand extends CommandRunner {
   /** Collects each repeated `--sort` into one list of keys, applied in the order given. */
   @Option({
     description:
-      "Sort edges by column[:asc|desc], e.g. --sort weight:desc; repeat for several keys, applied in order, then by source and target. Edge order sets the order of roots and of siblings, before --max-depth and --max-breadth cut the graph",
+      "Sort siblings by column[:asc|desc], e.g. --sort name:desc; repeat for several keys, applied in order. Applied before --max-depth and --max-breadth cut the tree",
     flags: "--sort <expression>",
   })
   parseSort(value: string, previous: string[] = []): string[] {
@@ -187,10 +185,10 @@ export class RenderDagDataCommand extends CommandRunner {
     return value;
   }
 
-  /** Parses `--table`, the table to draw when the entities hold several DAGs. */
+  /** Parses `--table`, the table to draw when the entities hold several trees. */
   @Option({
     description:
-      "Table of the @Dag entity to draw when --entities match several; unqualified or schema.table",
+      "Table of the tree to draw when --entities match several; unqualified or schema.table",
     flags: "--table <name>",
   })
   parseTable(value: string): string {
@@ -198,7 +196,7 @@ export class RenderDagDataCommand extends CommandRunner {
   }
 
   /**
-   * Validates the options, then draws the picked DAG. `--dry-run` stops after
+   * Validates the options, then draws the picked tree. `--dry-run` stops after
    * the entity files resolve, before any connection opens.
    */
   async run(
@@ -209,7 +207,7 @@ export class RenderDagDataCommand extends CommandRunner {
     if (options.dryRun === true) {
       const files = this.graphEntities.resolveFiles(plan.entities);
       const lines = [
-        ...renderDagDataDryRunMessages(plan, files),
+        ...renderTreeDataDryRunMessages(plan, files),
         ...graphOutputDryRunMessages(plan.outputs),
       ];
       for (const line of lines) {
@@ -218,13 +216,11 @@ export class RenderDagDataCommand extends CommandRunner {
       return;
     }
     const { dataSource, picked } = await this.prepare(plan);
-    const edge = this.graphEntities.describeEdge(picked);
     const written = await this.graphRender.render(plan, {
       dataSource,
-      direction: RENDER_DAG_DATA_DIRECTION,
+      direction: RENDER_TREE_DATA_DIRECTION,
       read: async () =>
-        this.graphDag.load(dataSource, dataSource.getMetadata(picked), {
-          edge,
+        this.graphTree.load(dataSource, dataSource.getMetadata(picked), {
           filters: plan.filters,
           maximumBreadth: plan.maximumBreadth,
           maximumDepth: plan.maximumDepth,

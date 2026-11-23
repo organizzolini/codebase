@@ -5,8 +5,9 @@ import { LoggerModule } from "@codebase/observability";
 
 import { PostgresqlExportModule } from "./modules/postgresql-export/postgresql-export.module";
 import { PostgresqlImportModule } from "./modules/postgresql-import/postgresql-import.module";
-import { RenderDagDataModule } from "./modules/render-dag-data/render-dag-data.module";
-import { RenderTreeDataModule } from "./modules/render-tree-data/render-tree-data.module";
+import { RenderDagDataModule } from "./modules/render/modules/render-dag-data/render-dag-data.module";
+import { RenderGraphDataModule } from "./modules/render/modules/render-graph-data/render-graph-data.module";
+import { RenderTreeDataModule } from "./modules/render/modules/render-tree-data/render-tree-data.module";
 
 /**
  * Root module of the database command line. Each command names its
@@ -21,6 +22,7 @@ import { RenderTreeDataModule } from "./modules/render-tree-data/render-tree-dat
     PostgresqlExportModule,
     PostgresqlImportModule,
     RenderDagDataModule,
+    RenderGraphDataModule,
     RenderTreeDataModule,
   ],
 })

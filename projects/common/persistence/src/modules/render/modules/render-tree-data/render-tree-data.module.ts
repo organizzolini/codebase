@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 
-import { GraphEntitiesModule } from "../graph-entities/graph-entities.module";
-import { GraphOptionsModule } from "../graph-options/graph-options.module";
-import { GraphRenderModule } from "../graph-render/graph-render.module";
-import { GraphTreeModule } from "../graph-tree/graph-tree.module";
+import { GraphEntitiesModule } from "../../../graph-entities/graph-entities.module";
+import { GraphOptionsModule } from "../../../graph-options/graph-options.module";
+import { GraphTreeModule } from "../../../graph-tree/graph-tree.module";
+import { RenderModule } from "../../render.module";
 
 import { RenderTreeDataCommand } from "./render-tree-data.command";
 
@@ -18,7 +18,7 @@ import { RenderTreeDataCommand } from "./render-tree-data.command";
   imports: [
     GraphEntitiesModule,
     GraphOptionsModule,
-    GraphRenderModule,
+    RenderModule,
     GraphTreeModule,
   ],
   providers: [RenderTreeDataCommand],

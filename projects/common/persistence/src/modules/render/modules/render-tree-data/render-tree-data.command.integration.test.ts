@@ -2,15 +2,15 @@ import path from "node:path";
 
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import { runCliCommandLine } from "../../../testing/command-line-runner";
+import { runCliCommandLine } from "../../../../../testing/command-line-runner";
 import {
   FIXTURE_DATABASE_TIMEOUT_MILLISECONDS,
   INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   postgresUri,
   startFixtureDatabase,
-} from "../../../testing/fixture-persistence";
+} from "../../../../../testing/fixture-persistence";
 
-import type { FixtureDatabase } from "../../../testing/fixture-persistence";
+import type { FixtureDatabase } from "../../../../../testing/fixture-persistence";
 
 /** The fixture tree every storage type holds, drawn with its nodes in id order. */
 const TREE_DIAGRAM = [
@@ -33,7 +33,7 @@ const TREE_DIAGRAM = [
 /** The entity files, one per storage type, each in its own glob. */
 const TREE_ENTITIES = path.join(
   import.meta.dirname,
-  "../../../testing/fixtures/trees",
+  "../../../../../testing/fixtures/trees",
 );
 const CLOSURE_GLOB = path.join(TREE_ENTITIES, "closure-tag.entity.ts");
 const PATH_GLOB = path.join(TREE_ENTITIES, "path-tag.entity.ts");

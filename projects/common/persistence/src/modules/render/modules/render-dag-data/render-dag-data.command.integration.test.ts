@@ -12,21 +12,21 @@ import {
   it,
 } from "vitest";
 
-import { runCliCommandLine } from "../../../testing/command-line-runner";
+import { runCliCommandLine } from "../../../../../testing/command-line-runner";
 import {
   FIXTURE_DATABASE_TIMEOUT_MILLISECONDS,
   INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   startFixtureDatabase,
-} from "../../../testing/fixture-persistence";
-import { renderGraphMermaid } from "../graph-mermaid/graph-mermaid.utilities";
+} from "../../../../../testing/fixture-persistence";
+import { renderGraphMermaid } from "../../../graph-mermaid/graph-mermaid.utilities";
 
-import type { FixtureDatabase } from "../../../testing/fixture-persistence";
-import type { GraphModel } from "../graph-mermaid/graph-mermaid.types";
+import type { FixtureDatabase } from "../../../../../testing/fixture-persistence";
+import type { GraphModel } from "../../../graph-mermaid/graph-mermaid.types";
 
 /** The edge entity files, one glob each, and all of them. */
 const GRAPHS = path.join(
   import.meta.dirname,
-  "../../../testing/fixtures/graphs",
+  "../../../../../testing/fixtures/graphs",
 );
 const TASK_GLOB = path.join(GRAPHS, "task-link.entity.ts");
 const GRAPH_LINK_GLOB = path.join(GRAPHS, "graph-link.entity.ts");
@@ -582,6 +582,32 @@ describe("render-dag-data", () => {
       INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
     );
   });
+
+  it(
+    "keeps a self-loop root's subtree under --limit, so its node is a root",
+    async () => {
+      await source.query(
+        "INSERT INTO task_links (id, source, target) VALUES (6, 'Audit', 'Audit')",
+      );
+
+      const result = await runRender(["--entities", TASK_GLOB, "--limit", "1"]);
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toBe(
+        drawnDiagram([
+          'n0["Audit"]',
+          'n1["Report"]',
+          "n0 --> n0",
+          "n0 --> n1",
+          "class n0 root",
+        ]),
+      );
+      expect(result.stderr).toContain(
+        "Node Audit has an edge to itself: a @Dag must have no cycle",
+      );
+    },
+    INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+  );
 
   describe("output files", () => {
     it(

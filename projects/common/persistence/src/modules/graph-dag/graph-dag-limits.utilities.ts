@@ -3,6 +3,7 @@
 import { truncationParts } from "../graph-tree/graph-tree.utilities";
 
 import { graphDagPageMessage } from "./graph-dag.constants";
+import { edgeKey, graphLinks, reachableFrom } from "./graph-dag.utilities";
 
 import type {
   GraphEdge,
@@ -12,7 +13,7 @@ import type {
   GraphLimits,
   GraphPaging,
 } from "../graph-options/graph-options.types";
-import type { GraphDagWalk } from "./graph-dag.types";
+import type { GraphDagWalk, GraphLinks } from "./graph-dag.types";
 
 /**
  * Caps depth and breadth, depth being a node's shortest distance from a root;
@@ -29,12 +30,12 @@ export function limitDagGraph(
     return graph;
   }
 
-  const children = distinctChildren(graph.edges);
+  const links = graphLinks(graph);
   const roots = rootIds(graph);
-  const reachable = reachableFrom(roots, children);
   return withoutHidden(graph, {
-    reachable,
-    walk: walkDag(roots, children, limits),
+    links,
+    reachable: reachableFrom(roots, links),
+    walk: walkDag(roots, links, limits),
   });
 }
 
@@ -59,7 +60,7 @@ export function pageDagGraph(
 
   const kept = reachableFrom(
     roots.slice(start, start + paging.limit),
-    distinctChildren(graph.edges),
+    graphLinks(graph),
   );
   return {
     directed: graph.directed,
@@ -71,57 +72,38 @@ export function pageDagGraph(
   };
 }
 
-/** Each node's distinct children, by its id, in edge order; a self-loop is no child. */
-function distinctChildren(
-  edges: readonly GraphEdge[],
-): ReadonlyMap<string, readonly string[]> {
-  const children = new Map<string, Set<string>>();
-  for (const { source, target } of edges) {
-    if (source === target) continue;
-    children.set(source, (children.get(source) ?? new Set()).add(target));
-  }
-  return new Map(
-    [...children].map(([source, targets]) => [source, [...targets]]),
-  );
-}
-
-/** A key naming the edge between two nodes. */
-function edgeKey(source: string, target: string): string {
-  return JSON.stringify([source, target]);
-}
-
 /** Whether a cap leaves `edge` drawn: removed ends drop it, and reachable ends keep it only if the walk drew it. */
 function keepEdge(
   { source, target }: GraphEdge,
   {
     kept,
+    links,
     reachable,
     removed,
   }: {
     readonly kept: ReadonlySet<string>;
+    readonly links: GraphLinks;
     readonly reachable: ReadonlySet<string>;
     readonly removed: ReadonlySet<string>;
   },
 ): boolean {
   if (removed.has(source) || removed.has(target)) return false;
   if (!reachable.has(source) || !reachable.has(target)) return true;
-  return source === target || kept.has(edgeKey(source, target));
+  return source === target || kept.has(edgeKey(links.directed, source, target));
 }
 
-/** Every id reachable from `roots`, the roots included. */
-function reachableFrom(
-  roots: readonly string[],
-  children: ReadonlyMap<string, readonly string[]>,
-): Set<string> {
-  const reached = new Set<string>();
-  const pending = [...roots];
-  for (let id = pending.pop(); id !== undefined; id = pending.pop()) {
-    if (!reached.has(id)) {
-      reached.add(id);
-      pending.push(...(children.get(id) ?? []));
-    }
+/** The children a walk from `parent` may draw: an undirected node's discovery parent is none of them. */
+function openChildren(
+  walk: GraphDagWalk,
+  links: GraphLinks,
+  parent: string,
+): string[] {
+  const from = links.directed ? undefined : walk.via.get(parent);
+  const open: string[] = [];
+  for (const child of links.children.get(parent) ?? []) {
+    if (child !== from) open.push(child);
   }
-  return reached;
+  return open;
 }
 
 /** The ids of the nodes marked as roots, in node order. */
@@ -134,13 +116,14 @@ function rootIds(graph: GraphModel): string[] {
 /** Walks down from `roots` a level at a time, drawing the edges `limits` keep and recording each node whose children they hid. */
 function walkDag(
   roots: readonly string[],
-  children: ReadonlyMap<string, readonly string[]>,
+  links: GraphLinks,
   { maximumBreadth = Infinity, maximumDepth = Infinity }: GraphLimits,
 ): GraphDagWalk {
   const walk: GraphDagWalk = {
     kept: new Set(),
     shown: new Set(roots),
     truncations: [],
+    via: new Map(),
   };
 
   let level = [...roots];
@@ -148,7 +131,7 @@ function walkDag(
     level = level.flatMap((parent) =>
       walkParent(
         walk,
-        { children: children.get(parent) ?? [], parent },
+        { links, parent },
         {
           atDepthLimit: depth >= maximumDepth,
           maximumBreadth,
@@ -166,27 +149,26 @@ function walkDag(
  */
 function walkParent(
   walk: GraphDagWalk,
-  {
-    children: all,
-    parent,
-  }: { readonly children: readonly string[]; readonly parent: string },
+  { links, parent }: { readonly links: GraphLinks; readonly parent: string },
   cap: {
     readonly atDepthLimit: boolean;
     readonly maximumBreadth: number;
     readonly maximumDepth: number;
   },
 ): string[] {
+  const all = openChildren(walk, links, parent);
   const drawn = cap.atDepthLimit ? all : all.slice(0, cap.maximumBreadth);
   const fresh: string[] = [];
   let hidden = all.length - drawn.length;
   for (const child of drawn) {
     if (walk.shown.has(child)) {
-      walk.kept.add(edgeKey(parent, child));
+      walk.kept.add(edgeKey(links.directed, parent, child));
     } else if (cap.atDepthLimit) {
       hidden += 1;
     } else {
       walk.shown.add(child);
-      walk.kept.add(edgeKey(parent, child));
+      walk.via.set(child, parent);
+      walk.kept.add(edgeKey(links.directed, parent, child));
       fresh.push(child);
     }
   }
@@ -206,9 +188,14 @@ function walkParent(
 function withoutHidden(
   graph: GraphModel,
   {
+    links,
     reachable,
     walk: { kept, shown, truncations },
-  }: { readonly reachable: ReadonlySet<string>; readonly walk: GraphDagWalk },
+  }: {
+    readonly links: GraphLinks;
+    readonly reachable: ReadonlySet<string>;
+    readonly walk: GraphDagWalk;
+  },
 ): GraphModel {
   const removed = new Set([...reachable].filter((id) => !shown.has(id)));
   const drawn = truncationParts(
@@ -220,7 +207,7 @@ function withoutHidden(
     directed: graph.directed,
     edges: [
       ...graph.edges.filter((edge) =>
-        keepEdge(edge, { kept, reachable, removed }),
+        keepEdge(edge, { kept, links, reachable, removed }),
       ),
       ...drawn.edges,
     ],

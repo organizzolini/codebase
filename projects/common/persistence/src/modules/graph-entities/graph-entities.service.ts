@@ -18,12 +18,15 @@ import {
 
 import type {
   GraphFilter,
+  GraphPlan,
   GraphSort,
 } from "../graph-options/graph-options.types";
 import type { PostgresConnection } from "../postgresql/postgresql.types";
 import type {
+  GraphEdgeKind,
   GraphEdgeMetadata,
   GraphEdgePick,
+  GraphEdgeTarget,
   GraphEntity,
   GraphTreePick,
 } from "./graph-entities.types";
@@ -115,6 +118,31 @@ export class GraphEntitiesService {
       table,
       globs,
     ).entity;
+  }
+
+  /**
+   * Imports the entities, picks the one edge entity of `kinds` to draw, and
+   * checks its columns, before any connection opens.
+   */
+  async prepareEdge(
+    plan: GraphPlan,
+    {
+      command,
+      kinds,
+    }: { readonly command: string; readonly kinds: readonly GraphEdgeKind[] },
+  ): Promise<GraphEdgeTarget> {
+    const entities = await this.load(plan.entities);
+    const dataSource = this.createDataSource(plan.connection, entities);
+    const picked = this.pickEdge({
+      command,
+      entities,
+      globs: plan.entities,
+      kinds,
+      namingStrategy: dataSource.namingStrategy,
+      table: plan.table,
+    });
+    this.assertColumns(picked, plan.filters, plan.sorts);
+    return { dataSource, picked };
   }
 
   /**

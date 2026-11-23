@@ -8,7 +8,7 @@ import {
 } from "../graph-options/graph-options-outputs.utilities";
 import { maskedError } from "../graph-options/graph-options.utilities";
 
-import { graphRenderWroteMessage } from "./graph-render.constants";
+import { graphRenderWroteMessage } from "./render.constants";
 
 import type {
   GraphMermaidRendering,
@@ -18,7 +18,7 @@ import type {
   GraphOutputFile,
   GraphPlan,
 } from "../graph-options/graph-options.types";
-import type { GraphDrawing } from "./graph-render.types";
+import type { GraphDrawing } from "./render.types";
 
 /**
  * Draws a graph a render command reads: connects, reads, renders it as Mermaid,
@@ -26,7 +26,7 @@ import type { GraphDrawing } from "./graph-render.types";
  * warnings on stderr.
  */
 @Injectable()
-export class GraphRenderService {
+export class RenderService {
   // 🏗 Dependency Injection
 
   constructor(private readonly graphMermaid: GraphMermaidService) {}

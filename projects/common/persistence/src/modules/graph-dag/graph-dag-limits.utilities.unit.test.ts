@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import { limitDagGraph, pageDagGraph } from "./graph-dag-limits.utilities";
-import { buildDagGraph } from "./graph-dag.utilities";
+import { buildEdgeGraph } from "./graph-dag.utilities";
 
+import type { GraphModel } from "../graph-mermaid/graph-mermaid.types";
 import type { GraphDagEdge } from "./graph-dag.types";
 
 /** An edge between two named nodes. */
@@ -10,6 +11,10 @@ const edge = (source: string, target: string): GraphDagEdge => ({
   source,
   target,
 });
+
+/** Builds a `@Dag` graph from edges. */
+const buildDag = (edges: readonly GraphDagEdge[]): GraphModel =>
+  buildEdgeGraph(edges, { directed: true, kind: "dag" });
 
 /** The ids of a model's nodes, in order. */
 const ids = (graph: { nodes: readonly { id: string }[] }): string[] =>
@@ -28,13 +33,13 @@ const SHORTCUT = [
 describe("graph dag limits utilities", () => {
   describe(limitDagGraph, () => {
     it("returns the graph itself when no cap is given", () => {
-      const graph = buildDagGraph(SHORTCUT);
+      const graph = buildDag(SHORTCUT);
 
       expect(limitDagGraph(graph, {})).toBe(graph);
     });
 
     it("measures depth as the shortest distance from a root", () => {
-      const graph = limitDagGraph(buildDagGraph(SHORTCUT), {
+      const graph = limitDagGraph(buildDag(SHORTCUT), {
         maximumDepth: 2,
       });
 
@@ -47,7 +52,7 @@ describe("graph dag limits utilities", () => {
     });
 
     it("draws a node reached by several paths once", () => {
-      const graph = limitDagGraph(buildDagGraph(SHORTCUT), {
+      const graph = limitDagGraph(buildDag(SHORTCUT), {
         maximumBreadth: 3,
       });
 
@@ -56,7 +61,7 @@ describe("graph dag limits utilities", () => {
     });
 
     it("hides children beyond the breadth under a truncation node", () => {
-      const graph = limitDagGraph(buildDagGraph(SHORTCUT), {
+      const graph = limitDagGraph(buildDag(SHORTCUT), {
         maximumBreadth: 2,
       });
 
@@ -74,7 +79,7 @@ describe("graph dag limits utilities", () => {
 
     it("stops at a cycle a root reaches, with only a breadth cap", () => {
       const graph = limitDagGraph(
-        buildDagGraph([edge("R", "A"), edge("A", "B"), edge("B", "A")]),
+        buildDag([edge("R", "A"), edge("A", "B"), edge("B", "A")]),
         { maximumBreadth: 1 },
       );
 
@@ -84,7 +89,7 @@ describe("graph dag limits utilities", () => {
 
     it("keeps a component no root reaches as it is", () => {
       const graph = limitDagGraph(
-        buildDagGraph([edge("R", "S"), edge("X", "Y"), edge("Y", "X")]),
+        buildDag([edge("R", "S"), edge("X", "Y"), edge("Y", "X")]),
         { maximumDepth: 1 },
       );
 
@@ -93,17 +98,16 @@ describe("graph dag limits utilities", () => {
     });
 
     it("keeps a self-loop on a node that stays", () => {
-      const graph = limitDagGraph(
-        buildDagGraph([edge("R", "A"), edge("A", "A")]),
-        { maximumDepth: 2 },
-      );
+      const graph = limitDagGraph(buildDag([edge("R", "A"), edge("A", "A")]), {
+        maximumDepth: 2,
+      });
 
       expect(graph.edges).toContainEqual(edge("A", "A"));
     });
   });
 
   describe(pageDagGraph, () => {
-    const forest = buildDagGraph([
+    const forest = buildDag([
       edge("A", "B"),
       edge("C", "D"),
       edge("E", "D"),
@@ -130,7 +134,7 @@ describe("graph dag limits utilities", () => {
     });
 
     it("says root in the singular when the graph has only one", () => {
-      const graph = pageDagGraph(buildDagGraph([edge("A", "B")]), {
+      const graph = pageDagGraph(buildDag([edge("A", "B")]), {
         limit: 1,
         page: 2,
       });
@@ -147,6 +151,80 @@ describe("graph dag limits utilities", () => {
       expect(graph.warnings).toStrictEqual([
         "Page 3 with --limit 2 is past the last root: the graph has 3 roots in total, so nothing is drawn",
       ]);
+    });
+  });
+
+  describe("self-loops and undirected graphs", () => {
+    it("keeps a self-loop root's subtree under a depth cap", () => {
+      const graph = limitDagGraph(
+        buildDag([
+          edge("R", "R"),
+          edge("R", "A"),
+          edge("A", "B"),
+          edge("B", "C"),
+        ]),
+        { maximumDepth: 2 },
+      );
+
+      expect(ids(graph)).toStrictEqual(["R", "A", "A/more"]);
+      expect(graph.warnings).toStrictEqual([
+        "Node R has an edge to itself: a @Dag must have no cycle",
+        "Node A hides 1 child beyond --max-depth 2",
+      ]);
+    });
+
+    it("pages a self-loop root with its subtree", () => {
+      const graph = pageDagGraph(buildDag([edge("R", "R"), edge("R", "X")]), {
+        limit: 1,
+        page: 1,
+      });
+
+      expect(ids(graph)).toStrictEqual(["R", "X"]);
+    });
+
+    it("walks an undirected graph both ways from its start node", () => {
+      const graph = limitDagGraph(
+        buildEdgeGraph([edge("A", "B"), edge("C", "B"), edge("C", "D")], {
+          directed: false,
+          kind: "graph",
+        }),
+        { maximumDepth: 2 },
+      );
+
+      expect(ids(graph)).toStrictEqual(["A", "B", "B/more"]);
+      expect(graph.edges).toContainEqual(edge("A", "B"));
+      expect(graph.directed).toBe(false);
+      expect(graph.warnings).toStrictEqual([
+        "Node B hides 1 child beyond --max-depth 2",
+      ]);
+    });
+
+    it("spends an undirected node's breadth on its children, not on the node it was reached from", () => {
+      const graph = limitDagGraph(
+        buildEdgeGraph([edge("A", "B"), edge("B", "C")], {
+          directed: false,
+          kind: "graph",
+        }),
+        { maximumBreadth: 1 },
+      );
+
+      expect(ids(graph)).toStrictEqual(["A", "B", "C"]);
+      expect(graph.edges).toStrictEqual([edge("A", "B"), edge("B", "C")]);
+      expect(graph.warnings).toStrictEqual([]);
+    });
+
+    it("pages an undirected graph by component, each started at its smallest node", () => {
+      const graph = pageDagGraph(
+        buildEdgeGraph([edge("B", "A"), edge("D", "C")], {
+          directed: false,
+          kind: "graph",
+        }),
+        { limit: 1, page: 2 },
+      );
+
+      expect(ids(graph)).toStrictEqual(["D", "C"]);
+      expect(graph.edges).toStrictEqual([edge("D", "C")]);
+      expect(graph.directed).toBe(false);
     });
   });
 });

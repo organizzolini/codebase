@@ -12,8 +12,8 @@ import type { GraphDagOptions } from "./graph-dag.types";
 import type { DataSource, EntityMetadata } from "typeorm";
 
 /**
- * Reads a `@Dag` entity's edges from a database as a graph model, for the
- * render commands to draw. Edges are read in batches, filtered and sorted by
+ * Reads a `@Dag` or `@Graph` entity's edges from a database as a graph model,
+ * for the render commands to draw. Edges are read in batches, filtered and sorted by
  * their own columns, then the root page is cut, then the caps cut the graph.
  */
 @Injectable()

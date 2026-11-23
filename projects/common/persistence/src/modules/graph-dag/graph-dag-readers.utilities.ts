@@ -15,7 +15,7 @@ import {
   graphDagColumnMessage,
   graphDagIgnoredMessage,
 } from "./graph-dag.constants";
-import { buildDagGraph } from "./graph-dag.utilities";
+import { buildEdgeGraph } from "./graph-dag.utilities";
 
 import type { GraphEdgeMetadata } from "../graph-entities/graph-entities.types";
 import type { GraphModel } from "../graph-mermaid/graph-mermaid.types";
@@ -97,7 +97,7 @@ export async function loadDagGraph(
   });
 
   const edges = rows.flatMap((row) => rowEdge(row));
-  const graph = buildDagGraph(edges);
+  const graph = buildEdgeGraph(edges, edge);
   const ignored = rows.length - edges.length;
   if (ignored === 0) return graph;
   return {

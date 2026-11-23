@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 
-import { GraphDagModule } from "../graph-dag/graph-dag.module";
-import { GraphEntitiesModule } from "../graph-entities/graph-entities.module";
-import { GraphOptionsModule } from "../graph-options/graph-options.module";
-import { GraphRenderModule } from "../graph-render/graph-render.module";
+import { GraphDagModule } from "../../../graph-dag/graph-dag.module";
+import { GraphEntitiesModule } from "../../../graph-entities/graph-entities.module";
+import { GraphOptionsModule } from "../../../graph-options/graph-options.module";
+import { RenderModule } from "../../render.module";
 
 import { RenderDagDataCommand } from "./render-dag-data.command";
 
@@ -19,7 +19,7 @@ import { RenderDagDataCommand } from "./render-dag-data.command";
     GraphDagModule,
     GraphEntitiesModule,
     GraphOptionsModule,
-    GraphRenderModule,
+    RenderModule,
   ],
   providers: [RenderDagDataCommand],
 })

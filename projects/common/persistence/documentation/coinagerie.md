@@ -21,5 +21,6 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **updatable**: The entity base layer that adds update tracking columns, third in the identifiable, creatable, updatable, deletable chain.
 - **verb**: The verb in a log message that the export log convention test expects after the subject emoji, such as exists.
 - **vertex**: A node in the cycle search of a DAG's edges, which holds its visit order and the nodes its edges reach.
+- **via**:
 
 <!-- coinagerie:end -->

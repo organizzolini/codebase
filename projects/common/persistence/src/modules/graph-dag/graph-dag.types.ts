@@ -98,4 +98,16 @@ export interface GraphDagWalk {
 
   /** Each node whose children a cap hid, in walk order. */
   readonly truncations: GraphTreeTruncation[];
+
+  /** The node each shown node was first reached from; roots have none. */
+  readonly via: Map<string, string>;
+}
+
+/** A walk's links: each node's children, and whether edges run one way. */
+export interface GraphLinks {
+  /** Each node's children by id; an undirected edge links both ways. */
+  readonly children: ReadonlyMap<string, readonly string[]>;
+
+  /** Whether edges run from source to target. */
+  readonly directed: boolean;
 }

@@ -409,8 +409,9 @@ pnpm exec nx run persistence:start --args="render-dag-data --source-uri postgres
 ```
 
 - **Nodes** are the distinct endpoint values, labelled by the value as text,
-  in the order the sorted edges first name them. A **root** is a node no kept
-  edge targets. A `@GraphLabel` and a `@GraphWeight` column draw on each edge.
+  in the order the sorted edges first name them. A **root** is a node no other
+  kept edge targets; a self-loop does not count. A `@GraphLabel` and a
+  `@GraphWeight` column draw on each edge.
   A row with a NULL endpoint is not drawn, and warns once.
 - **`--filter` and `--sort`** apply to the edge rows, by the edge entity's own
   columns. An edge is kept when it matches every filter, and a node is drawn
@@ -428,6 +429,34 @@ pnpm exec nx run persistence:start --args="render-dag-data --source-uri postgres
 - A `@Graph` entity fails, pointing to `render-graph-data`. `--table` picks one
   `@Dag` entity when the globs match several, and a declared column that is no
   column of the entity fails once the connection is open.
+
+## Drawing graph data
+
+`render-graph-data` reads a `@Graph` entity's edges the same way, from its
+`@GraphSource` column to its `@GraphTarget` column, and prints them as a Mermaid
+flowchart that reads left to right. It takes the same options as
+`render-dag-data`, with the differences below:
+
+```bash
+pnpm exec nx run persistence:start --args="render-graph-data --source-uri postgresql://user:password@localhost:5432/source --schema routes --entities '../<project>/src/**/route-link.entity.ts'"
+```
+
+- **Directed or undirected.** `@Graph()` edges run from source to target and
+  draw as arrows, `-->`. `@Graph({ directed: false })` edges are plain links,
+  `---`, and a link reaches its node from either end. A link read from both
+  ends is one link: the first row in sort order is drawn, with its label and
+  weight, and the other row is dropped.
+- **Roots.** A directed graph's roots are the nodes no other kept edge targets,
+  a self-loop not counting. Then every node still unreached takes a start in
+  sort order, the smallest first, so each component is reached. An undirected
+  graph has no direction, so each connected component starts at its smallest
+  node. `--limit` and `--page` page these roots, in node order.
+- **Cycles** are valid input: they draw with no warning.
+- **Labels and weights** draw on each edge, as `@GraphLabel` and `@GraphWeight`
+  do for a DAG. A NULL endpoint is not drawn and warns once.
+- **`--filter`, `--sort`, `--max-depth`, `--max-breadth`, and `--table`** behave as
+  in `render-dag-data`, with the `@Graph` entity named in its messages. A
+  `@Dag` entity fails, pointing to `render-dag-data`.
 
 ## Test
 

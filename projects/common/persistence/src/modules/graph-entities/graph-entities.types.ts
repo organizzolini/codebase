@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-import type { NamingStrategyInterface } from "typeorm";
+import type { DataSource, NamingStrategyInterface } from "typeorm";
 
 /** An edge entity a pick can choose: its class, kind, and table. */
 export interface GraphEdgeCandidate {
@@ -89,6 +89,15 @@ export type GraphEdgeRole =
   | "GraphSource"
   | "GraphTarget"
   | "GraphWeight";
+
+/** The connection and picked edge entity a graph run reads through. */
+export interface GraphEdgeTarget {
+  /** The connection the edges are read through, not yet open. */
+  readonly dataSource: DataSource;
+
+  /** The `@Dag` or `@Graph` entity class the run draws. */
+  readonly picked: GraphEntity;
+}
 
 /** An entity class a data source is built from; TypeORM reads its `@Entity`. */
 export type GraphEntity = new (...args: never[]) => object;

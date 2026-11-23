@@ -1,8 +1,15 @@
 import { describe, expect, it } from "vitest";
 
 import { findDagCycles } from "./graph-dag-cycles.utilities";
-import { buildDagGraph } from "./graph-dag.utilities";
+import {
+  buildEdgeGraph,
+  childrenOf,
+  edgeKey,
+  linksOf,
+  reachableFrom,
+} from "./graph-dag.utilities";
 
+import type { GraphEdgeMetadata } from "../graph-entities/graph-entities.types";
 import type { GraphDagEdge } from "./graph-dag.types";
 
 /** An edge between two named nodes, without a label or weight. */
@@ -10,6 +17,24 @@ const edge = (source: string, target: string): GraphDagEdge => ({
   source,
   target,
 });
+
+/** The shape of a `@Dag` entity's edges. */
+const DAG: Pick<GraphEdgeMetadata, "directed" | "kind"> = {
+  directed: true,
+  kind: "dag",
+};
+
+/** The shape of a directed `@Graph` entity's edges. */
+const DIRECTED_GRAPH: Pick<GraphEdgeMetadata, "directed" | "kind"> = {
+  directed: true,
+  kind: "graph",
+};
+
+/** The shape of an undirected `@Graph` entity's edges. */
+const UNDIRECTED_GRAPH: Pick<GraphEdgeMetadata, "directed" | "kind"> = {
+  directed: false,
+  kind: "graph",
+};
 
 /** The four edges of a diamond. */
 const DIAMOND = [
@@ -66,9 +91,9 @@ describe("graph dag utilities", () => {
     });
   });
 
-  describe(buildDagGraph, () => {
+  describe(buildEdgeGraph, () => {
     it("draws a diamond with its one root marked, nodes in first-seen order", () => {
-      expect(buildDagGraph(DIAMOND)).toStrictEqual({
+      expect(buildEdgeGraph(DIAMOND, DAG)).toStrictEqual({
         directed: true,
         edges: DIAMOND,
         nodes: [
@@ -82,9 +107,10 @@ describe("graph dag utilities", () => {
     });
 
     it("carries an edge's label and weight onto the model", () => {
-      const graph = buildDagGraph([
-        { label: "needs", source: "A", target: "B", weight: 2.5 },
-      ]);
+      const graph = buildEdgeGraph(
+        [{ label: "needs", source: "A", target: "B", weight: 2.5 }],
+        DAG,
+      );
 
       expect(graph.edges).toStrictEqual([
         { label: "needs", source: "A", target: "B", weight: 2.5 },
@@ -92,11 +118,10 @@ describe("graph dag utilities", () => {
     });
 
     it("warns once per cycle, naming its nodes", () => {
-      const graph = buildDagGraph([
-        edge("R", "A"),
-        edge("A", "B"),
-        edge("B", "A"),
-      ]);
+      const graph = buildEdgeGraph(
+        [edge("R", "A"), edge("A", "B"), edge("B", "A")],
+        DAG,
+      );
 
       expect(graph.warnings).toStrictEqual([
         "Cycle among nodes A, B: a @Dag must have no cycle",
@@ -106,29 +131,166 @@ describe("graph dag utilities", () => {
       ).toStrictEqual([{ id: "R", label: "R", marker: "root" }]);
     });
 
-    it("warns about a self-loop, which leaves its node without a root", () => {
-      const graph = buildDagGraph([edge("A", "A")]);
+    it("warns about a self-loop, and still roots its node when nothing else points at it", () => {
+      const graph = buildEdgeGraph([edge("A", "A")], DAG);
 
       expect(graph.warnings).toStrictEqual([
         "Node A has an edge to itself: a @Dag must have no cycle",
       ]);
-      expect(graph.nodes).toStrictEqual([{ id: "A", label: "A" }]);
+      expect(graph.nodes).toStrictEqual([
+        { id: "A", label: "A", marker: "root" },
+      ]);
     });
 
-    it("still draws a component with no root", () => {
-      const graph = buildDagGraph([edge("A", "B"), edge("B", "A")]);
+    it("does not count a self-loop as an incoming edge, so its node stays a root", () => {
+      const graph = buildEdgeGraph([edge("R", "R"), edge("R", "X")], DAG);
 
-      expect(graph.nodes).toHaveLength(2);
+      expect(graph.nodes).toStrictEqual([
+        { id: "R", label: "R", marker: "root" },
+        { id: "X", label: "X" },
+      ]);
+    });
+
+    it("still draws a @Dag component with no root, without a start node", () => {
+      const graph = buildEdgeGraph([edge("A", "B"), edge("B", "A")], DAG);
+
+      expect(graph.nodes).toStrictEqual([
+        { id: "A", label: "A" },
+        { id: "B", label: "B" },
+      ]);
       expect(graph.edges).toHaveLength(2);
     });
 
     it("draws no nodes for no edges", () => {
-      expect(buildDagGraph([])).toStrictEqual({
+      expect(buildEdgeGraph([], DAG)).toStrictEqual({
         directed: true,
         edges: [],
         nodes: [],
         warnings: [],
       });
+    });
+
+    it("warns about no cycle of a @Graph, though it draws the cycle", () => {
+      const graph = buildEdgeGraph(
+        [edge("A", "A"), edge("A", "B"), edge("B", "A")],
+        DIRECTED_GRAPH,
+      );
+
+      expect(graph.warnings).toStrictEqual([]);
+      expect(graph.edges).toHaveLength(3);
+    });
+  });
+
+  describe("self-loops and undirected rows", () => {
+    it("does not count a @Graph self-loop as an incoming edge, so the node it reaches is no root", () => {
+      const graph = buildEdgeGraph(
+        [edge("Z", "Z"), edge("Z", "A")],
+        DIRECTED_GRAPH,
+      );
+
+      expect(graph.nodes).toStrictEqual([
+        { id: "Z", label: "Z", marker: "root" },
+        { id: "A", label: "A" },
+      ]);
+    });
+
+    it("draws an undirected link once, from its first row in sort order", () => {
+      const graph = buildEdgeGraph(
+        [
+          { label: "first", source: "A", target: "B" },
+          { label: "second", source: "B", target: "A" },
+        ],
+        UNDIRECTED_GRAPH,
+      );
+
+      expect(graph.edges).toStrictEqual([
+        { label: "first", source: "A", target: "B" },
+      ]);
+    });
+  });
+
+  describe(linksOf, () => {
+    it("links a directed edge from its source only", () => {
+      const links = linksOf([edge("A", "B")], true);
+
+      expect(links.directed).toBe(true);
+      expect(childrenOf(links, "A")).toStrictEqual(["B"]);
+      expect(childrenOf(links, "B")).toStrictEqual([]);
+    });
+
+    it("links an undirected edge both ways, and a self-loop to nothing", () => {
+      const links = linksOf([edge("A", "B"), edge("A", "A")], false);
+
+      expect(childrenOf(links, "A")).toStrictEqual(["B"]);
+      expect(childrenOf(links, "B")).toStrictEqual(["A"]);
+    });
+  });
+
+  describe(edgeKey, () => {
+    it("names a directed edge by its ends in order", () => {
+      expect(edgeKey(true, "A", "B")).not.toBe(edgeKey(true, "B", "A"));
+    });
+
+    it("names an undirected edge the same from either end", () => {
+      expect(edgeKey(false, "A", "B")).toBe(edgeKey(false, "B", "A"));
+    });
+  });
+
+  describe(reachableFrom, () => {
+    it("reaches each node once, the roots included, and nothing behind them", () => {
+      const links = linksOf(
+        [edge("A", "B"), edge("B", "A"), edge("C", "A")],
+        true,
+      );
+
+      expect([...reachableFrom(["A"], links)].toSorted()).toStrictEqual([
+        "A",
+        "B",
+      ]);
+    });
+
+    it("draws a directed @Graph cycle with no warning, rooting the smallest node of a component with no root", () => {
+      const graph = buildEdgeGraph(
+        [edge("X", "Y"), edge("Y", "X")],
+        DIRECTED_GRAPH,
+      );
+
+      expect(graph.warnings).toStrictEqual([]);
+      expect(graph.nodes).toStrictEqual([
+        { id: "X", label: "X", marker: "root" },
+        { id: "Y", label: "Y" },
+      ]);
+    });
+
+    it("roots a directed @Graph at its unpointed-at nodes, then reaches every node from one", () => {
+      const graph = buildEdgeGraph(
+        [edge("R", "A"), edge("B", "C"), edge("C", "B"), edge("B", "A")],
+        DIRECTED_GRAPH,
+      );
+
+      expect(graph.nodes).toStrictEqual([
+        { id: "R", label: "R", marker: "root" },
+        { id: "A", label: "A" },
+        { id: "B", label: "B", marker: "root" },
+        { id: "C", label: "C" },
+      ]);
+    });
+
+    it("keeps an undirected @Graph undirected and roots each component at its smallest node", () => {
+      const graph = buildEdgeGraph(
+        [edge("B", "A"), edge("C", "D"), edge("D", "E")],
+        UNDIRECTED_GRAPH,
+      );
+
+      expect(graph.directed).toBe(false);
+      expect(graph.warnings).toStrictEqual([]);
+      expect(graph.nodes).toStrictEqual([
+        { id: "B", label: "B" },
+        { id: "A", label: "A", marker: "root" },
+        { id: "C", label: "C", marker: "root" },
+        { id: "D", label: "D" },
+        { id: "E", label: "E" },
+      ]);
     });
   });
 });

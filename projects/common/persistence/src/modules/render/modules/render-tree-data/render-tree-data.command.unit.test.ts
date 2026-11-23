@@ -3,17 +3,17 @@ import { describe, expect, it } from "vitest";
 import { expectLoggerContext } from "@codebase/observability/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { GraphEntitiesService } from "../graph-entities/graph-entities.service";
-import { GraphOptionsService } from "../graph-options/graph-options.service";
-import { GraphRenderService } from "../graph-render/graph-render.service";
-import { GraphTreeService } from "../graph-tree/graph-tree.service";
+import { GraphEntitiesService } from "../../../graph-entities/graph-entities.service";
+import { GraphOptionsService } from "../../../graph-options/graph-options.service";
+import { GraphTreeService } from "../../../graph-tree/graph-tree.service";
+import { RenderService } from "../../render.service";
 
 import { RenderTreeDataCommand } from "./render-tree-data.command";
 
 const MOCKS = [
   GraphEntitiesService,
   GraphOptionsService,
-  GraphRenderService,
+  RenderService,
   GraphTreeService,
 ];
 

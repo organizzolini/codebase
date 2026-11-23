@@ -2,16 +2,16 @@ import { Module } from "@nestjs/common";
 
 import { GraphMermaidModule } from "../graph-mermaid/graph-mermaid.module";
 
-import { GraphRenderService } from "./graph-render.service";
+import { RenderService } from "./render.service";
 
 /**
- * Registers the GraphRenderService, which connects, reads, and draws a graph
+ * Registers the RenderService, which connects, reads, and draws a graph
  * for the render commands, over the Mermaid renderer.
  */
 @Module({
   controllers: [],
-  exports: [GraphRenderService],
+  exports: [RenderService],
   imports: [GraphMermaidModule],
-  providers: [GraphRenderService],
+  providers: [RenderService],
 })
-export class GraphRenderModule {}
+export class RenderModule {}

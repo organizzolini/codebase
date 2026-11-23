@@ -19,6 +19,27 @@ export const GRAPH_ENTITIES_OPTION = {
   flags: "--entities <glob>",
 } as const;
 
+/** Flag and help text of `--filter`, for every graph render command. */
+export const GRAPH_FILTER_OPTION = {
+  description:
+    "Keep edges whose row matches column<op>value, e.g. --filter weight>1; columns are the edge entity's, repeat and all must match. Operators: = (equal), != (not equal), ~= (contains, case-sensitive), < and > (numeric or date columns only). A node is drawn only if a kept edge touches it",
+  flags: "--filter <expression>",
+} as const;
+
+/** Flag and help text of `--max-breadth`, for every graph render command. */
+export const GRAPH_MAX_BREADTH_OPTION = {
+  description:
+    "Most children drawn under any one node, in sort order; the rest become one '… K more' node and a warning. Roots are never capped. Positive integer",
+  flags: "--max-breadth <n>",
+} as const;
+
+/** Flag and help text of `--max-depth`, for every graph render command. */
+export const GRAPH_MAX_DEPTH_OPTION = {
+  description:
+    "Deepest level drawn, with roots at level 1; a node's level is its shortest distance from a root. Children below it become one '… K more' node and a warning. Positive integer",
+  flags: "--max-depth <n>",
+} as const;
+
 /** The flag and help text of `--output-json`. */
 export const GRAPH_OUTPUT_JSON_OPTION = {
   description:
@@ -44,6 +65,13 @@ export const GRAPH_OVERWRITE_OPTION = {
 export const GRAPH_SCHEMA_OPTION = {
   description: "Schema the entity tables live in; required",
   flags: "--schema <name>",
+} as const;
+
+/** Flag and help text of `--sort`, for every graph render command. */
+export const GRAPH_SORT_OPTION = {
+  description:
+    "Sort edges by column[:asc|desc], e.g. --sort weight:desc; repeat for several keys, applied in order, then by source and target. Edge order sets the order of roots and of siblings, before --max-depth and --max-breadth cut the graph",
+  flags: "--sort <expression>",
 } as const;
 
 /** The flag and help text of `--source-uri`. */
