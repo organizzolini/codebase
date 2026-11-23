@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { compareNaturalPaths } from "./events.utilities";
+import { compareNaturalPaths } from "./natural-order.utilities";
 
 describe(compareNaturalPaths, () => {
   it("counts digits as numbers", () => {

@@ -1,4 +1,4 @@
-import { NATURAL_COLLATOR, PATH_SEPARATOR } from "./events.constants";
+import { NATURAL_COLLATOR, PATH_SEPARATOR } from "../../events.constants";
 
 // 🌎 Public Functions
 
