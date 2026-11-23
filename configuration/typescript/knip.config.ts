@@ -400,27 +400,9 @@ const config: KnipConfig = {
       project: "src/**/*.ts",
     },
 
-    // synchronization: NestJS CLI tool for codebase config synchronization commands
-    synchronization: {
-      entry: ["src/synchronization.main.ts", "src/files.ts"], // Main CLI entry + public file-list constant exports
-      ignore: [
-        "testing/**", // Test fixtures and setup
-      ],
-      project: "src/**/*.ts",
-    },
-
     // installation: NestJS CLI tool for developer-machine setup after Node exists
     installation: {
       entry: ["src/installation.main.ts", "src/installation.repl.ts"], // Main CLI entry + the REPL its own target runs
-      ignore: [
-        "testing/**", // Test fixtures and setup
-      ],
-      project: "src/**/*.ts",
-    },
-
-    // validation: NestJS CLI tool for the repository's one-sided checks
-    validation: {
-      entry: ["src/validation.main.ts", "src/validation.repl.ts"], // Main CLI entry + the REPL its own target runs
       ignore: [
         "testing/**", // Test fixtures and setup
       ],

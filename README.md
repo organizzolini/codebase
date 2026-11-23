@@ -247,8 +247,6 @@ Symbols and logic shared across projects
 **🛠️ [installation](installation)** - NestJS CLI that sets up a developer machine once Node is installed: environment files, project dependencies, shell configuration, and the remaining tools\
 **🔁 [integration](integration)** - NestJS CLI for the Continuous Integration plumbing steps: the affected run, and the Nx task-cache database\
 **📤 [deployment](deployment)** - NestJS CLI for the Continuous Deployment release steps: versioning, tagging, publishing, and linking the ic-suite packages\
-**↔️ [synchronization](synchronization)** - Emptied NestJS CLI shell, awaiting removal; its derivations now run from integration\
-**✅ [validation](validation)** - NestJS CLI for the repository's one-sided checks, the ones with a check and no write, such as the pull request metadata gate
 
 **🧑‍💻 [JimmyPaolini](projects/JimmyPaolini)** - GitHub profile site
 

@@ -138,7 +138,7 @@ const config = {
   // glossary check is in `ANALYSIS_TARGETS`: it writes nothing, so `validate-code` repairs.
 
   // There is no aggregate `synchronize` target to name instead: each
-  // synchronization is its own Nx target on the `synchronization` project, run
+  // synchronization is its own Nx target on the `integration` project, run
   // directly the way `configuration:codometer` and `configuration:callidescope` are —
   // named by whichever caller wants it rather than through a shared process
   // that loops over all of them.
