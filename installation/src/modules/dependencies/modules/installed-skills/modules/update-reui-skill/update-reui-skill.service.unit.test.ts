@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { ReporterService } from "../reporter/reporter.service";
+import { ReporterService } from "../../../../../reporter/reporter.service";
 
 import { UpdateReuiSkillService } from "./update-reui-skill.service";
 

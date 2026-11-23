@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 
 import { LoggerModule } from "@codebase/observability";
 
-import { ReporterModule } from "../reporter/reporter.module";
+import { ReporterModule } from "../../../../../reporter/reporter.module";
 
 import { UpdateReuiSkillCommand } from "./update-reui-skill.command";
 import { UpdateReuiSkillService } from "./update-reui-skill.service";

@@ -7,16 +7,16 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { expectLoggerContext } from "@codebase/observability/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { enterWorkspace } from "../../../testing/environment";
-import { captureReport } from "../../../testing/report";
-import { createTemporaryWorkspace } from "../../../testing/temporary-workspace";
-import { ReporterService } from "../reporter/reporter.service";
+import { enterWorkspace } from "../../../../../../../testing/environment";
+import { captureReport } from "../../../../../../../testing/report";
+import { createTemporaryWorkspace } from "../../../../../../../testing/temporary-workspace";
+import { ReporterService } from "../../../../../reporter/reporter.service";
 
 import { UpdateReuiSkillCommand } from "./update-reui-skill.command";
 import { RETRY_HINT } from "./update-reui-skill.constants";
 import { UpdateReuiSkillService } from "./update-reui-skill.service";
 
-import type { TemporaryWorkspace } from "../../../testing/temporary-workspace";
+import type { TemporaryWorkspace } from "../../../../../../../testing/temporary-workspace";
 
 interface BundleFile {
   content: string;

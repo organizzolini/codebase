@@ -39,21 +39,23 @@ The commands run on Node, so whatever installs Node cannot be one of them. These
 
 Every command spawns processes only through `ProcessRunnerService` and prints only through `ReporterService`, so a test replaces the whole machine with `testing/fake-process-runner.ts` and runs against a real temporary workspace from `testing/temporary-workspace.ts`. That workspace lives under `node_modules`, never the operating system's temporary directory: a child spawned from there cannot resolve this project's loader on Linux.
 
-| Command                 | Module                                    |
-| ----------------------- | ----------------------------------------- |
-| `setup`                 | `modules/setup`                           |
-| `shell-configuration`   | `modules/shell-configuration`             |
-| `software`              | `modules/software` (one service per tool) |
-| `environment-files`     | `modules/environment-files`               |
-| `dependencies`          | `modules/dependencies`                    |
-| `local-services`        | `modules/local-services`                  |
-| `update-reui-skill`     | `modules/update-reui-skill`               |
-| `installed-skills`      | `modules/installed-skills`                |
-| `vscode-settings`       | `modules/vscode-settings`                 |
-| `session-branch-name`   | `modules/session-branch-name`             |
-| `session-worktree-name` | `modules/session-worktree-name`           |
-| `remote-cache`          | `modules/setup/modules/remote-cache`      |
-| `shared-nx-cache`       | `modules/setup/modules/shared-nx-cache`   |
+| Command                 | Module                                                                    |
+| ----------------------- | ------------------------------------------------------------------------- |
+| `setup`                 | `modules/setup`                                                           |
+| `shell-configuration`   | `modules/shell-configuration`                                             |
+| `software`              | `modules/software` (one service per tool)                                 |
+| `environment-files`     | `modules/environment-files`                                               |
+| `dependencies`          | `modules/dependencies`                                                    |
+| `local-services`        | `modules/local-services`                                                  |
+| `update-reui-skill`     | `modules/dependencies/modules/installed-skills/modules/update-reui-skill` |
+| `installed-skills`      | `modules/dependencies/modules/installed-skills`                           |
+| `vscode-settings`       | `modules/shell-configuration/modules/vscode-settings`                     |
+| `session-branch-name`   | `modules/session-branch-name`                                             |
+| `session-worktree-name` | `modules/session-worktree-name`                                           |
+| `remote-cache`          | `modules/setup/modules/remote-cache`                                      |
+| `shared-nx-cache`       | `modules/setup/modules/shared-nx-cache`                                   |
+
+Codometer caps a folder at 12 entries, and `src/modules/` holds exactly 12, so a command that belongs with another nests under that module's `modules/` folder: `installed-skills` under `dependencies`, `update-reui-skill` under `installed-skills`, and `vscode-settings` under `shell-configuration`. Never raise the limit; group further into `modules/` folders instead.
 
 `software` with names, such as `software gitleaks trivy postgres-client`, installs only those, through `modules/software/modules/tooling/software-named.service.ts`. The names are any tool installed from a release archive (`helm`, `kubectl`, `terraform`, `gitleaks`, `trivy`, `uv`), which only Linux uses, and `postgres-client` (PostgreSQL 18's `pg_dump` and `pg_restore`), which works on both. They are the same installs `software` makes with no names, so a laptop, a devcontainer, and a CI runner run one version of each; the `setup-codebase` composite action runs it this way after `pnpm install`, with the software its inputs ask for. Naming software changes two things: a tool that cannot be installed fails the run instead of warning, since it was asked for, and the apt steps go through `sudo` when this is not root, as on a runner. It puts `~/.local/bin` first on `PATH`, and in `GITHUB_PATH` when that is set. See [ADR 0030](../documentation/adr/0030-let-software-install-named-tools.md).
 

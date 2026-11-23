@@ -6,7 +6,7 @@ import { Injectable } from "@nestjs/common";
 
 import { LoggerService } from "@codebase/observability";
 
-import { ReporterService } from "../reporter/reporter.service";
+import { ReporterService } from "../../../../../reporter/reporter.service";
 
 import {
   bundleSchema,
