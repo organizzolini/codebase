@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.13.0](https://github.com/organizzolini/codebase/compare/v6.12.1...v6.13.0) (2026-11-23)
+
+### ✨ Features
+
+* **persistence,conformetry,deployment:** ✨ generate entity relationship diagrams for database projects ([#2547](https://github.com/organizzolini/codebase/issues/2547)) ([5a62524](https://github.com/organizzolini/codebase/commit/5a6252490b8fc5ff7e14e00a3beee440e5be7381)), closes [#2526](https://github.com/organizzolini/codebase/issues/2526)
+
+### 📝 Documentation
+
+* **documentation:** 🔥 remove the architecture decision records ([#2549](https://github.com/organizzolini/codebase/issues/2549)) ([f9e5d12](https://github.com/organizzolini/codebase/commit/f9e5d129fe8e207f12243f2557c08371a345bbe0)), closes [#2548](https://github.com/organizzolini/codebase/issues/2548)
+
 ## [6.12.1](https://github.com/organizzolini/codebase/compare/v6.12.0...v6.12.1) (2026-11-23)
 
 ### ♻️ Code Refactoring

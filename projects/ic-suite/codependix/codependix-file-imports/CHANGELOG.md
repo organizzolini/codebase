@@ -1,3 +1,7 @@
+## 0.0.93 (2026-11-23)
+
+This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
+
 ## 0.0.92 (2026-11-23)
 
 This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
