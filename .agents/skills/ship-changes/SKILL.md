@@ -66,7 +66,7 @@ Check `mergeable` after every push and whenever `main` moves. On `CONFLICTING`:
 
 Completion: the pull request's state is `MERGED`.
 
-Enqueue once step 1 holds, the Preflight review condition holds, no `do-not-merge` label is present, and review threads are resolved. Finish every fix first: any push after enqueueing ejects the pull request. A fix that turns up after enqueueing is still made on the same pull request: dequeue (`disable_pr_auto_merge`), push, and enqueue again, without asking.
+Enqueue once step 1 holds, the Preflight review condition holds, no `do-not-merge` label is present, and review threads are resolved. Finish every fix first: any push after enqueueing ejects the pull request. Once queued, the branch is locked: `disable_pr_auto_merge` does not dequeue, REST and MCP have no dequeue call, and a push is rejected (GH006). A fix that turns up after enqueueing therefore ships as a follow-up pull request once this one merges, without asking.
 
 ```bash
 gh api -X PUT repos/{owner}/{repo}/pulls/<n>/ccr/auto_merge -f merge_method=squash   # standalone pull request, Claude Code session
