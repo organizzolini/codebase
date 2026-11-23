@@ -2,13 +2,7 @@ import "reflect-metadata";
 
 import { createDataSource } from "@codebase/persistence";
 
-import { Migration1791160950069 } from "../../../migrations/1791160950069-migration";
-import { Migration1791414023001 } from "../../../migrations/1791414023001-migration";
-import { Migration1794630084904 } from "../../../migrations/1794630084904-migration";
-import { Migration1794700000000 } from "../../../migrations/1794700000000-migration";
-import { Migration1794800000000 } from "../../../migrations/1794800000000-migration";
-import { Migration1794900000000 } from "../../../migrations/1794900000000-migration";
-import { Migration1795000000000 } from "../../../migrations/1795000000000-migration";
+import { Migration1795470728582 } from "../../../migrations/1795470728582-migration";
 
 import { MEANDERAW_PROJECT } from "./meanderaw-database.constants";
 import { AggregateMarker } from "./modules/aggregate/aggregate-marker.entity";
@@ -33,15 +27,7 @@ export const MEANDERAW_DATABASE_ENTITIES = [
 ] as const;
 
 /** All migrations in order, for tests; the runtime runs none. */
-export const MEANDERAW_DATABASE_MIGRATIONS = [
-  Migration1791160950069,
-  Migration1791414023001,
-  Migration1794630084904,
-  Migration1794700000000,
-  Migration1794800000000,
-  Migration1794900000000,
-  Migration1795000000000,
-] as const;
+export const MEANDERAW_DATABASE_MIGRATIONS = [Migration1795470728582] as const;
 
 /** TypeORM CLI data source; reads only `MEANDERAW_POSTGRES_*`, never syncs. */
 export const meanderawDataSource = createDataSource({
