@@ -12,7 +12,7 @@ import {
 
 import type { FixtureDatabase } from "../../../../../testing/fixture-persistence";
 
-/** The fixture tree every storage type holds, drawn with its nodes in id order. */
+/** The fixture tree, drawn with its nodes in id order. */
 const TREE_DIAGRAM = [
   "flowchart LR",
   "    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px",
@@ -53,7 +53,7 @@ const TREE_DDL = [
   "CREATE TABLE list_tags (id integer PRIMARY KEY, name text NOT NULL, parent_id integer)",
 ];
 
-/** Work > Email > Inbox, Work > Meetings, and Errands alone, in every storage. */
+/** Rows per storage: Work > Email > Inbox, Work > Meetings, Errands. */
 const TREE_ROWS = [
   "INSERT INTO closure_tags (id, name, parent_id) VALUES (1, 'Work', NULL), (2, 'Email', 1), (3, 'Meetings', 1), (4, 'Inbox', 2), (5, 'Errands', NULL)",
   "INSERT INTO closure_tags_closure (ancestor_id, descendant_id) VALUES (1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (1, 2), (1, 3), (1, 4), (2, 4)",
@@ -63,7 +63,7 @@ const TREE_ROWS = [
   "INSERT INTO code_tags (code, note, parent_code) VALUES ('ops', NULL, NULL), ('ops-db', NULL, 'ops'), ('ops-web', NULL, 'ops')",
 ];
 
-/** The keyed tree: its labels are its codes, since it has no `name` column. */
+/** The keyed tree, labeled by code, since it has no `name` column. */
 const KEYED_DIAGRAM = [
   "flowchart LR",
   "    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px",
@@ -77,7 +77,7 @@ const KEYED_DIAGRAM = [
   "",
 ].join("\n");
 
-/** The diagram header every drawn tree opens with, before its nodes, edges, and classes. */
+/** The header every drawn tree opens with, before its nodes and edges. */
 const DIAGRAM_HEADER = [
   "flowchart LR",
   "    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px",

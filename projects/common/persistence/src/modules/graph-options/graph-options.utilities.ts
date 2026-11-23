@@ -116,8 +116,8 @@ export function parseGraphSource(
 }
 
 /**
- * The number a cap flag's text names, or `undefined` when the flag is absent.
- * @throws GraphOptionsError naming `flag` and the text when it is not a positive integer.
+ * The number a cap flag's text names, or `undefined` when absent.
+ * @throws GraphOptionsError when the text is not a positive integer.
  */
 export function positiveIntegerFlag(
   flag: string,

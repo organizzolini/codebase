@@ -69,7 +69,7 @@ export interface GraphTreeTable {
   readonly metadata: EntityMetadata;
 }
 
-/** A node whose children a cap hid: its id, the count hidden, and the cap. */
+/** A node whose children a cap hid. */
 export interface GraphTreeTruncation {
   /** The number of children the cap hid. */
   readonly hidden: number;
@@ -84,7 +84,7 @@ export interface GraphTreeTruncation {
   readonly parent: string;
 }
 
-/** The ids a walk shows, and the truncations it made to hide the rest. */
+/** The ids a walk shows, and the truncations it made. */
 export interface GraphTreeWalk {
   /** The ids shown, roots included. */
   readonly shown: ReadonlySet<string>;

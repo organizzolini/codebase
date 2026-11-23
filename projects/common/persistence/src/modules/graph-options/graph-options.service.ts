@@ -32,8 +32,8 @@ export class GraphOptionsService {
   // 🔏 Private Methods
 
   /**
-   * The table name `--table` names, with a schema qualifier reduced to the
-   * name when it is `schema`.
+   * The table `--table` names, its schema qualifier dropped when it is
+   * `schema`.
    * @throws GraphOptionsError when the qualifier names another schema.
    */
   private tableName(

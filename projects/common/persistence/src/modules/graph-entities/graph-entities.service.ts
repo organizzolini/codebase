@@ -51,9 +51,9 @@ export class GraphEntitiesService {
   // 🌎 Public Methods
 
   /**
-   * Passes when every filter and sort names a column `entity` declares, read
-   * before any connection opens.
-   * @throws GraphOptionsError naming the first column the entity lacks.
+   * Passes when every filter and sort names a column `entity` declares, before
+   * connecting.
+   * @throws GraphOptionsError naming the first missing column.
    */
   assertColumns(
     entity: GraphEntity,
@@ -102,9 +102,7 @@ export class GraphEntitiesService {
   }
 
   /**
-   * The `@Tree` entity among `entities` that the command reads; `table` picks
-   * among several. Picked from the decorators before any connection opens, so
-   * a bad pick never reaches the database.
+   * The `@Tree` entity the command reads; `table` picks among several.
    * @throws GraphEntitiesError when none, or several without `table`, match.
    */
   pickTree({

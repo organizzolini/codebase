@@ -38,9 +38,8 @@ export function renderGraphMarkdown({
 }
 
 /**
- * Draws `graph` as a Mermaid flowchart with short node ids, escaped labels,
- * and styled roots and truncation nodes, warning as it nears Mermaid's limits.
- * @throws Error when two nodes share an id, or an edge names no node.
+ * Draws `graph` as a Mermaid flowchart, warning near Mermaid's limits.
+ * @throws Error on a duplicate node id, or an edge naming no node.
  */
 export function renderGraphMermaid(
   graph: GraphModel,

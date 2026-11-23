@@ -32,9 +32,9 @@ export class GraphTreeService {
   // 🌎 Public Methods
 
   /**
-   * Reads the tree `metadata` describes from `dataSource` as a graph model,
-   * filtered and sorted by `options`, then capped by them; see `limitTreeGraph`.
-   * @throws GraphOptionsError when a filter or sort names no column, or compares unfit values.
+   * Reads the tree `metadata` describes, filtered, sorted, then capped.
+   * @throws GraphOptionsError when a filter or sort names no column, or
+   * compares unfit values.
    */
   async load(
     dataSource: DataSource,

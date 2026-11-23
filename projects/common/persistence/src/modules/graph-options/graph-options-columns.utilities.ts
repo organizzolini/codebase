@@ -23,9 +23,9 @@ import type {
 } from "./graph-options.types";
 
 /**
- * Passes when every column a `--filter` or `--sort` names is one of `names`,
- * before any connection opens.
- * @throws GraphOptionsError naming the unknown column and the columns there are.
+ * Passes when every `--filter` or `--sort` column is one of `names`, before
+ * connecting.
+ * @throws GraphOptionsError naming the unknown column and valid ones.
  */
 export function assertGraphColumnNames(
   names: readonly string[],
@@ -37,10 +37,8 @@ export function assertGraphColumnNames(
 }
 
 /**
- * The WHERE clause that keeps the rows every predicate matches, with each
- * value bound as a parameter. `=`, `!=`, and `~=` compare the column's text,
- * so a NULL matches only `!=`; `~=` binds the value wrapped in wildcards, with
- * its own wildcards escaped.
+ * The WHERE clause keeping rows every predicate matches, values bound as
+ * parameters. A NULL matches only `!=`; `~=` wraps its value in wildcards.
  */
 export function filterClause(predicates: readonly GraphPredicate[]): {
   readonly parameters: string[];
@@ -69,9 +67,9 @@ export function graphColumnKind(sqlType: string): GraphColumnKind {
 }
 
 /**
- * The filters and sort keys resolved to their columns, with each `<` or `>`
- * checked against its column's kind.
- * @throws GraphOptionsError naming the unknown column, the text-column comparison, or the value that is not a number or date.
+ * Resolves filters and sort keys to columns, checking `<` and `>` against
+ * column kinds.
+ * @throws GraphOptionsError on an unknown column or unfit value.
  */
 export function resolveGraphView(
   columns: readonly GraphColumn[],
@@ -101,9 +99,8 @@ export function sortClause(orders: readonly GraphOrder[]): string {
 }
 
 /**
- * Passes when a `<` or `>` filter compares a numeric or date column, with a
- * value of that kind.
- * @throws GraphOptionsError when the column is text, or the value is not a number or date.
+ * Passes when a `<` or `>` filter fits its column's kind.
+ * @throws GraphOptionsError on a text column or a misfit value.
  */
 function assertComparable(column: GraphColumn, filter: GraphFilter): void {
   if (column.kind === "text") {

@@ -104,7 +104,7 @@ export class GraphOptionsError extends Error {
   }
 }
 
-/** A cap flag whose value is not a positive integer, naming the value given. */
+/** A cap flag whose value is not a positive integer. */
 export const graphPositiveIntegerMessage = (
   flag: string,
   value: string,
@@ -126,7 +126,7 @@ export const graphFilterSyntaxMessage = (expression: string): string =>
 export const graphSortSyntaxMessage = (expression: string): string =>
   `--sort "${expression}" must be column, column:asc, or column:desc, e.g. --sort name:desc`;
 
-/** A `--filter` or `--sort` that names a column the entity does not have. */
+/** A `--filter` or `--sort` naming a column the entity lacks. */
 export const graphUnknownColumnMessage = ({
   column,
   columns,
@@ -140,7 +140,7 @@ export const graphUnknownColumnMessage = ({
 }): string =>
   `${flag} "${expression}" names no column "${column}"; columns are ${columns.join(", ")}`;
 
-/** `column<op>value`: a column name, the operator, then the value, which keeps any operator characters after it. */
+/** `column<op>value`, where the value keeps any operator characters. */
 export const GRAPH_FILTER_PATTERN =
   /^([A-Za-z_][A-Za-z0-9_]*)(!=|~=|=|<|>)([\s\S]*)$/u;
 
@@ -154,10 +154,12 @@ export const GRAPH_FILTER_OPERATORS = ["!=", "<", "=", ">", "~="] as const;
 export const GRAPH_NUMBER_TYPE =
   /^(?:(?:small|big)?int(?:eger)?\d?|numeric|decimal|real|float\d*|double precision|(?:small|big)?serial)(?:\(.*\))?$/u;
 
-/** SQL types a filter compares as dates or times, such as `timestamp with time zone`. */
+/** SQL types a filter compares as dates or times, such as `timestamp`. */
 export const GRAPH_DATE_TYPE = /^(?:date|time|timestamp)(?:\s|\(|$)/u;
 
-/** A `<` or `>` value a numeric column accepts: an optional sign, digits, and an optional fraction. */
+/**
+ * The numeric `<` or `>` value's shape: optional sign, digits, and fraction.
+ */
 export const GRAPH_NUMBER_VALUE = /^[+-]?(?:\d+\.?\d*|\.\d+)$/u;
 
 /** A `--filter` whose pattern matched: its column, its operator, and its value. */
@@ -167,26 +169,26 @@ export const GRAPH_FILTER_SCHEMA = z.object({
   value: z.string(),
 });
 
-/** A `--sort` whose pattern matched: its column, and its direction, ascending when none was given. */
+/** A parsed `--sort`: its column, and its direction, ascending by default. */
 export const GRAPH_SORT_SCHEMA = z.object({
   column: z.string(),
   direction: z.enum(["asc", "desc"]).default("asc"),
 });
 
-/** A `<` or `>` filter on a column that is not numeric or a date. */
+/** A `<` or `>` filter on a text column. */
 export const graphComparisonKindMessage = (
   expression: string,
   column: string,
 ): string =>
   `--filter "${expression}" compares with < or >, which needs a numeric or date column; "${column}" is a text column`;
 
-/** A `<` or `>` filter whose value is not a number, for a numeric column. */
+/** A `<` or `>` filter whose value is not a number. */
 export const graphNumberValueMessage = (
   expression: string,
   value: string,
 ): string => `--filter "${expression}": "${value}" is not a number`;
 
-/** A `<` or `>` filter whose value is not a date, for a date column. */
+/** A `<` or `>` filter whose value is not a date. */
 export const graphDateValueMessage = (
   expression: string,
   value: string,

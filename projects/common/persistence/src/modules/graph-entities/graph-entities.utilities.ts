@@ -59,10 +59,9 @@ export function Dag(): ClassDecorator {
 }
 
 /**
- * The property names of the columns `entity` declares or inherits from the
- * classes it extends, read from the decorator metadata before any connection
- * opens, so `--filter` and `--sort` can name them. TypeORM's `filterColumns`
- * matches one class exactly, so each class up the chain is asked in turn.
+ * The property names of the columns `entity` declares or inherits, read from
+ * decorator metadata before connecting, so `--filter` and `--sort` can name
+ * them.
  */
 export function entityColumnNames(entity: GraphEntity): string[] {
   const storage = getMetadataArgumentsStorage();
@@ -153,9 +152,8 @@ export function GraphWeight(): PropertyDecorator {
 }
 
 /**
- * The entity classes `files` define, found by importing each file through the
- * process's module loader, which runs the repository's swc hook for TypeScript.
- * A class counts when it carries `@Entity`.
+ * The entity classes `files` define, imported through the module loader, whose
+ * swc hook compiles TypeScript. A class counts when it carries `@Entity`.
  */
 export async function importEntityClasses(
   files: readonly string[],
@@ -185,8 +183,7 @@ export function listGraphEdgeEntities(
 }
 
 /**
- * The one tree entity the command reads. `table` picks among several by table
- * name; without it, the candidates must be exactly one.
+ * The one tree entity the command reads; `table` picks among several.
  * @throws GraphEntitiesError when none, or several without `table`, match.
  */
 export function pickTreeCandidate<Candidate extends GraphTreeCandidate>(

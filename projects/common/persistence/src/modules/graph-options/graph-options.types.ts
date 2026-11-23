@@ -14,7 +14,7 @@ export interface GraphColumn {
   readonly sqlName: string;
 }
 
-/** How a column's values compare: numbers, dates and times, or everything else as text. */
+/** How a column's values compare: as numbers, dates, or text. */
 export type GraphColumnKind = "date" | "number" | "text";
 
 /** Options a graph render command receives: the graph options, and `--dry-run`. */
@@ -23,7 +23,7 @@ export interface GraphCommandOptions extends GraphOptions {
   readonly dryRun?: boolean | undefined;
 }
 
-/** One parsed `--filter`: the column it names, its comparison, and the value compared with. */
+/** One parsed `--filter`: its column, comparison, and value. */
 export interface GraphFilter {
   /** The column's property name, as the entity names it. */
   readonly column: string;
@@ -218,7 +218,7 @@ export interface GraphSort {
 /** A sort's direction. */
 export type GraphSortDirection = "asc" | "desc";
 
-/** The row filters and sort keys a graph read applies, both resolved to columns. */
+/** The row filters and sort keys a graph read applies, resolved. */
 export interface GraphView {
   /** Every filter; a row must match all of them. */
   readonly filters: readonly GraphPredicate[];

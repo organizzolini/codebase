@@ -281,7 +281,7 @@ pnpm exec nx run persistence:start:postgresql-export --args="--source-uri postgr
 pnpm exec nx run persistence:start:postgresql-import --args="--target-uri postgresql://user:password@localhost:5432/target --schema fixture --table widgets --data --ddl --file sample.dump"
 ```
 
-### Options
+### Moving-data options
 
 | Option               | Command           | Does                                                                              |
 | -------------------- | ----------------- | --------------------------------------------------------------------------------- |
@@ -409,8 +409,9 @@ A `--table` qualified with a schema other than `--schema` is refused.
 
 ### Output and the streams
 
-- With no output file, the diagram is the only thing on stdout, followed by a
-  newline. Pipe stdout into a file only after checking the exit status.
+- On a successful run with no output file and no `--dry-run`, the diagram is the
+  only thing on stdout, followed by a newline. Pipe stdout into a file only after
+  checking the exit status.
 - Warnings go to stderr, one line each, prefixed `⚠️`, whichever output is
   chosen. With `--output-markdown` they are also quoted after the fence.
 - With an output file, stdout carries one `📝 Wrote <path>` log line per file.

@@ -16,9 +16,8 @@ import type {
 } from "./graph-tree.types";
 
 /**
- * Builds the directed graph a tree's rows describe: an edge from each parent
- * to each child, and a root marker on every row without a parent. A row whose
- * parent no row has is drawn as a root, and warned about.
+ * Builds the directed graph a tree's rows describe. A row whose parent no row
+ * has is drawn as a root and warned about.
  */
 export function buildTreeGraph(rows: readonly GraphTreeRow[]): GraphModel {
   const ids = new Set(rows.map(({ id }) => id));
@@ -56,11 +55,8 @@ export function keepRowsIn(
 }
 
 /**
- * Caps a tree graph at `limits`. Roots are level 1 and never capped by
- * breadth. A node past `maximumDepth` hides all its children, and a node with more
- * than `maximumBreadth` children keeps the first ones in row order and hides the
- * rest. Each hidden group is drawn as one "… K more" truncation node under its
- * parent, and warned about. Nodes no root reaches, such as a cycle, stay as drawn.
+ * Caps a tree graph at `limits`: depth hides a node's children, breadth keeps
+ * the first in row order. Roots are never breadth-capped.
  */
 export function limitTreeGraph(
   graph: GraphModel,
@@ -96,9 +92,8 @@ export function limitTreeGraph(
 }
 
 /**
- * The ids of each match and of every ancestor of a match, so a matched row
- * still shows where it sits. A parent no row has ends the walk up, and a cycle
- * ends it at a row already kept.
+ * The ids of each match and its ancestors, so matches show their place. Walks
+ * stop at unknown parents and cycles.
  */
 export function matchedAncestors(
   rows: readonly GraphTreeRow[],
@@ -119,9 +114,8 @@ export function matchedAncestors(
 }
 
 /**
- * The ids of each match and of every descendant of a match, so a matched row
- * draws its whole subtree. A row joins once its parent has joined, which
- * repeats over the rows until none joins; a cycle joins each row once.
+ * The ids of each match and its descendants, so matches draw their whole
+ * subtree. Passes repeat until no row joins.
  */
 export function matchedSubtrees(
   rows: readonly GraphTreeRow[],
@@ -142,8 +136,8 @@ export function matchedSubtrees(
 }
 
 /**
- * The rows sorted by their position in `rank`, which lists every row's id in
- * the order its sort keys place it. A row `rank` omits sorts after the rest.
+ * The rows in `rank` order, where `rank` lists row ids in sort order; omitted
+ * rows sort last.
  */
 export function orderRowsByRank(
   rows: readonly GraphTreeRow[],
@@ -261,8 +255,8 @@ function childrenByParent(
 }
 
 /**
- * The children a node shows under `depth`, and the truncation that hides the
- * rest. A node past `maximumDepth` shows none; one past `maximumBreadth` shows its first.
+ * The children a node shows at `depth`: none past `maximumDepth`, else its
+ * first `maximumBreadth`.
  */
 function childrenToShow(
   node: { readonly depth: number; readonly id: string },
