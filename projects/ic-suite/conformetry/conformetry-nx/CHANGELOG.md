@@ -1,3 +1,16 @@
+## 0.0.96 (2026-11-23)
+
+### 🚀 Features
+
+- **codometer,configuration,integration:** ✨ add a Codometer Limit job that needs no build ([#2473](https://github.com/organizzolini/codebase/pull/2473), [#2472](https://github.com/organizzolini/codebase/issues/2472))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.95
+- Updated conformetry-generation to 0.0.95
+- Updated conformetry-validation to 0.0.94
+- Updated conformetry-output to 0.0.94
+
 ## 0.0.95 (2026-11-23)
 
 ### 🧱 Updated Dependencies

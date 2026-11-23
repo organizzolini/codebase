@@ -1,3 +1,9 @@
+## 0.0.91 (2026-11-23)
+
+### 🚀 Features
+
+- **codometer,configuration,integration:** ✨ add a Codometer Limit job that needs no build ([#2473](https://github.com/organizzolini/codebase/pull/2473), [#2472](https://github.com/organizzolini/codebase/issues/2472))
+
 ## 0.0.90 (2026-11-23)
 
 This was a version bump only for codependix-nestjs-modules to align it with other projects, there were no code changes.

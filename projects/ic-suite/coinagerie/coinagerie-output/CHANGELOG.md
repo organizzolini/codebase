@@ -1,3 +1,14 @@
+## 0.0.31 (2026-11-23)
+
+### 🚀 Features
+
+- **codometer,configuration,integration:** ✨ add a Codometer Limit job that needs no build ([#2473](https://github.com/organizzolini/codebase/pull/2473), [#2472](https://github.com/organizzolini/codebase/issues/2472))
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.31
+- Updated coinagerie-core to 0.0.31
+
 ## 0.0.30 (2026-11-23)
 
 ### 🧱 Updated Dependencies

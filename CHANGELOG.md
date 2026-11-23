@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.11.0](https://github.com/organizzolini/codebase/compare/v6.10.0...v6.11.0) (2026-11-23)
+
+### ✨ Features
+
+* **codometer,configuration,integration:** ✨ add a Codometer Limit job that needs no build ([#2473](https://github.com/organizzolini/codebase/issues/2473)) ([497a90f](https://github.com/organizzolini/codebase/commit/497a90f5752a367df2bd6357a3772ac97c4fd5e8)), closes [#2472](https://github.com/organizzolini/codebase/issues/2472)
+
+### 📝 Documentation
+
+* **documentation:** 🐛 fix the ship-changes watcher and queue lock advice ([#2501](https://github.com/organizzolini/codebase/issues/2501)) ([c8f62a8](https://github.com/organizzolini/codebase/commit/c8f62a84eaf0f18d9fc956432c325a52543d1468)), closes [#2500](https://github.com/organizzolini/codebase/issues/2500)
+* **documentation:** 📝 make ship-changes wait, fix forward, and resolve conflicts on its own ([#2499](https://github.com/organizzolini/codebase/issues/2499)) ([a8fd70b](https://github.com/organizzolini/codebase/commit/a8fd70b0dc7255999e52c8558be4654b2382bd57)), closes [#2498](https://github.com/organizzolini/codebase/issues/2498)
+
 ## [6.10.0](https://github.com/organizzolini/codebase/compare/v6.9.0...v6.10.0) (2026-11-23)
 
 ### ✨ Features
