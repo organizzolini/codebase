@@ -1,0 +1,247 @@
+import { describe, expect, it } from "vitest";
+
+import { renderGraphMermaid } from "./graph-mermaid.utilities";
+
+import type { GraphEdge, GraphModel, GraphNode } from "./graph-mermaid.types";
+
+const CLASS_DEFINITIONS = [
+  "    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px",
+  "    classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5",
+];
+
+/** A model with `nodes` and `edges`, directed unless told otherwise. */
+function graph(
+  nodes: readonly GraphNode[],
+  edges: readonly GraphEdge[] = [],
+  overrides: Partial<GraphModel> = {},
+): GraphModel {
+  return { directed: true, edges, nodes, warnings: [], ...overrides };
+}
+
+/** A hub node `hub` with `count` edges to leaves. */
+function hubAndLeaves(count: number): GraphModel {
+  const leaves = Array.from({ length: count }, (_, index) => ({
+    id: `leaf-${index}`,
+    label: `Leaf ${index}`,
+  }));
+  const edges = leaves.map((leaf) => ({ source: "hub", target: leaf.id }));
+  return graph([{ id: "hub", label: "Hub" }, ...leaves], edges);
+}
+
+describe(renderGraphMermaid, () => {
+  it("draws a directed tree left to right with short ids and a root class", () => {
+    const { diagram, warnings } = renderGraphMermaid(
+      graph(
+        [
+          { id: "root", label: "Root", marker: "root" },
+          { id: "a", label: "Child A" },
+          { id: "b", label: "Child B" },
+        ],
+        [
+          { source: "root", target: "a" },
+          { source: "root", target: "b" },
+        ],
+      ),
+    );
+
+    expect(diagram).toBe(
+      [
+        "flowchart LR",
+        ...CLASS_DEFINITIONS,
+        '    n0["Root"]',
+        '    n1["Child A"]',
+        '    n2["Child B"]',
+        "    n0 --> n1",
+        "    n0 --> n2",
+        "    class n0 root",
+      ].join("\n"),
+    );
+    expect(warnings).toStrictEqual([]);
+  });
+
+  it("draws a shared target and a cyclic graph with both directions", () => {
+    const shared = renderGraphMermaid(
+      graph(
+        [
+          { id: "a", label: "A" },
+          { id: "b", label: "B" },
+          { id: "c", label: "C" },
+        ],
+        [
+          { source: "a", target: "c" },
+          { source: "b", target: "c" },
+        ],
+      ),
+    ).diagram;
+    const cycle = renderGraphMermaid(
+      graph(
+        [
+          { id: "a", label: "A" },
+          { id: "b", label: "B" },
+        ],
+        [
+          { source: "a", target: "b" },
+          { source: "b", target: "a" },
+        ],
+      ),
+    ).diagram;
+
+    expect(shared).toContain("    n0 --> n2\n    n1 --> n2");
+    expect(cycle).toContain("    n0 --> n1\n    n1 --> n0");
+  });
+
+  it("draws undirected edges with no arrowhead and no direction", () => {
+    const { diagram } = renderGraphMermaid(
+      graph(
+        [
+          { id: "a", label: "A" },
+          { id: "b", label: "B" },
+        ],
+        [{ label: "x", source: "a", target: "b", weight: 2 }],
+        { directed: false },
+      ),
+    );
+
+    expect(diagram).toContain('    n0 ---|"x (2)"| n1');
+    expect(diagram).not.toContain("-->");
+  });
+
+  it("shows a weight alone when an edge has no label", () => {
+    const { diagram } = renderGraphMermaid(
+      graph(
+        [
+          { id: "a", label: "A" },
+          { id: "b", label: "B" },
+        ],
+        [{ source: "a", target: "b", weight: 3 }],
+      ),
+    );
+
+    expect(diagram).toContain('    n0 -->|"3"| n1');
+  });
+
+  it("declares a node that no edge touches", () => {
+    const { diagram } = renderGraphMermaid(
+      graph([{ id: "alone", label: "Alone" }]),
+    );
+
+    expect(diagram).toContain('    n0["Alone"]');
+    expect(diagram).not.toContain("-->");
+  });
+
+  it("escapes quotes, hashes, angle brackets, pipes and line breaks in node labels", () => {
+    const { diagram } = renderGraphMermaid(
+      graph([{ id: "a", label: 'Say "hi" #1 <b>|x\ny' }]),
+    );
+
+    expect(diagram).toContain(
+      '    n0["Say #quot;hi#quot; #35;1 #lt;b#gt;#124;x y"]',
+    );
+  });
+
+  it("escapes edge labels the same way", () => {
+    const { diagram } = renderGraphMermaid(
+      graph(
+        [
+          { id: "a", label: "A" },
+          { id: "b", label: "B" },
+        ],
+        [{ label: 'a|"b"', source: "a", target: "b" }],
+      ),
+    );
+
+    expect(diagram).toContain('    n0 -->|"a#124;#quot;b#quot;"| n1');
+  });
+
+  it("draws truncation nodes with the truncation class", () => {
+    const { diagram } = renderGraphMermaid(
+      graph(
+        [
+          { id: "a", label: "A", marker: "root" },
+          { id: "more", label: "… 3 more", marker: "truncation" },
+        ],
+        [{ source: "a", target: "more" }],
+      ),
+    );
+
+    expect(diagram).toContain('    n1["… 3 more"]');
+    expect(diagram.endsWith("    class n0 root\n    class n1 truncation")).toBe(
+      true,
+    );
+  });
+
+  it("starts with LR by default and accepts another direction", () => {
+    const model = graph([{ id: "a", label: "A" }]);
+
+    expect(renderGraphMermaid(model).diagram.startsWith("flowchart LR\n")).toBe(
+      true,
+    );
+    expect(
+      renderGraphMermaid(model, { direction: "TB" }).diagram.startsWith(
+        "flowchart TB\n",
+      ),
+    ).toBe(true);
+  });
+
+  it("carries the model's own warnings ahead of limit warnings", () => {
+    const { warnings } = renderGraphMermaid(
+      graph([{ id: "a", label: "A" }], [], {
+        warnings: ["Input was truncated at 100 nodes"],
+      }),
+    );
+
+    expect(warnings).toStrictEqual(["Input was truncated at 100 nodes"]);
+  });
+
+  it("warns once 450 edges are reached, not before", () => {
+    expect(renderGraphMermaid(hubAndLeaves(449)).warnings).toStrictEqual([]);
+    expect(renderGraphMermaid(hubAndLeaves(450)).warnings).toStrictEqual([
+      "Diagram has 450 edges, nearing Mermaid's 500-edge limit",
+    ]);
+  });
+
+  it("warns that the diagram is over the 500-edge limit past 500 edges", () => {
+    expect(renderGraphMermaid(hubAndLeaves(501)).warnings).toStrictEqual([
+      "Diagram has 501 edges, over Mermaid's 500-edge limit",
+    ]);
+  });
+
+  it("warns when the diagram text nears the 50,000-character limit", () => {
+    const short = renderGraphMermaid(
+      graph([{ id: "a", label: "x".repeat(1_000) }]),
+    );
+    const near = renderGraphMermaid(
+      graph([{ id: "a", label: "x".repeat(46_000) }]),
+    );
+    const over = renderGraphMermaid(
+      graph([{ id: "a", label: "x".repeat(51_000) }]),
+    );
+
+    expect(short.warnings).toStrictEqual([]);
+    expect(near.warnings).toStrictEqual([
+      expect.stringContaining("nearing Mermaid's 50000-character limit"),
+    ]);
+    expect(over.warnings).toStrictEqual([
+      expect.stringContaining("over Mermaid's 50000-character limit"),
+    ]);
+  });
+
+  it("rejects an edge whose endpoint is not a node", () => {
+    expect(() =>
+      renderGraphMermaid(
+        graph([{ id: "a", label: "A" }], [{ source: "a", target: "missing" }]),
+      ),
+    ).toThrow('Edge target "missing" is not a node');
+  });
+
+  it("rejects two nodes sharing an id", () => {
+    expect(() =>
+      renderGraphMermaid(
+        graph([
+          { id: "a", label: "A" },
+          { id: "a", label: "B" },
+        ]),
+      ),
+    ).toThrow('Duplicate node id "a"');
+  });
+});

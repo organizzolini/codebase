@@ -1,3 +1,13 @@
+export { GraphMermaidModule } from "./modules/graph-mermaid/graph-mermaid.module";
+export { GraphMermaidService } from "./modules/graph-mermaid/graph-mermaid.service";
+export type {
+  GraphEdge,
+  GraphMermaidOptions,
+  GraphMermaidRendering,
+  GraphModel,
+  GraphNode,
+  GraphNodeMarker,
+} from "./modules/graph-mermaid/graph-mermaid.types";
 export { PostgresqlCreatableEntity } from "./modules/postgresql/modules/base-entities/creatable.entity";
 export { PostgresqlDeletableEntity } from "./modules/postgresql/modules/base-entities/deletable.entity";
 export { PostgresqlIdentifiableEntity } from "./modules/postgresql/modules/base-entities/identifiable.entity";
