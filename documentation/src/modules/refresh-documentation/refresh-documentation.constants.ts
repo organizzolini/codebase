@@ -27,10 +27,10 @@ export const OPENWIKI_ATTEMPTS = 4;
 /** Wait before attempt two; later waits each grow one step. */
 export const OPENWIKI_RETRY_DELAY_MS = 120_000;
 
-/** Longest wait for a rate limit to lift. */
+/** Longest wait for a rate limit; a later reset ends retries. */
 export const OPENWIKI_RATE_LIMIT_PATIENCE_MS = 900_000;
 
-/** Slack added to a reported reset, so the window has surely closed. */
+/** Slack added to a reported reset so the window has closed. */
 export const OPENWIKI_RATE_LIMIT_MARGIN_MS = 5000;
 
 /** The reset time, in epoch milliseconds, a 429 response reports. */

@@ -186,8 +186,8 @@ export class RefreshDocumentationService {
   // 🌎 Public Methods
 
   /**
-   * Runs OpenWiki, retrying past a reported rate limit, then restores the
-   * `openwiki` symlink and deletes the leftover instruction file.
+   * Runs OpenWiki with rate-limit-aware retries, restores the `openwiki`
+   * symlink, reports the outcome, and always deletes the leftover instruction file.
    */
   public async refresh(): Promise<boolean> {
     const exposed = this.exposeWiki();

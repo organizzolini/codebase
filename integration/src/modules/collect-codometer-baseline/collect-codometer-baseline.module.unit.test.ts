@@ -6,6 +6,8 @@ import {
   expectModuleProvides,
 } from "@codebase/testing/nestjs";
 
+import { ProcessRunnerModule } from "../process-runner/process-runner.module";
+
 import { CollectCodometerBaselineCommand } from "./collect-codometer-baseline.command";
 import { CollectCodometerBaselineModule } from "./collect-codometer-baseline.module";
 import { CollectCodometerBaselineService } from "./collect-codometer-baseline.service";
@@ -14,7 +16,11 @@ describe(CollectCodometerBaselineModule, () => {
   it("registers expected imports and providers", () => {
     expect.hasAssertions();
 
-    expectModuleImports(CollectCodometerBaselineModule, LoggerModule);
+    expectModuleImports(
+      CollectCodometerBaselineModule,
+      LoggerModule,
+      ProcessRunnerModule,
+    );
     expectModuleProvides(
       CollectCodometerBaselineModule,
       CollectCodometerBaselineCommand,
