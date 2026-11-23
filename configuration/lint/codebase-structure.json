@@ -534,17 +534,6 @@
               "ruleId": "any-file"
             }
           ],
-          "name": "adr"
-        },
-        {
-          "children": [
-            {
-              "ruleId": "kebab-case-folder"
-            },
-            {
-              "ruleId": "any-file"
-            }
-          ],
           "name": "agents"
         },
         {

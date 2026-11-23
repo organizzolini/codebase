@@ -237,8 +237,7 @@ the project.
 `spreadThreshold`, `directSpreadThreshold`, `minimumCallers`,
 `callerMajorityRatio` — is refused rather than silently stripped. Those four
 limits, the two findings they tuned, and the module-identity concept behind
-them are gone from the tool entirely — see the repository's ADR 0006, "Narrow
-callidescope to depth and breadth".
+them are gone from the tool entirely: callidescope judges depth and breadth only.
 
 **The implementation-candidate cap is a constant, not a configuration field.**
 It decides where structural interface resolution stops guessing, which is a
@@ -379,8 +378,7 @@ field set to the value it would have defaulted to look identical in a diff,
 and only one of them was a decision — `maximumBreadth` absent and
 `maximumBreadth: undefined` used to mean "somebody forgot" and "this project
 gates depth and not breadth" respectively, and per-field fallback could not
-tell them apart. See the repository's ADR 0007, "Require a complete
-configuration from every traced project".
+tell them apart.
 
 The file a run was pointed at is never also read as a project's — one file, one
 role per run. A package whose task names its own configuration and then traces

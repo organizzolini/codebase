@@ -22,8 +22,7 @@ every task in the workspace re-hashed on essentially every run and 🧑‍💻 L
 Codebase never recorded a single cache hit. Nothing failed; the work was simply
 repeated. **Nothing checks for this** — a run whose cache never hits is still a
 green run, so the only signal is the duration, and re-adding one glob here
-silently undoes the whole arrangement. See
-[ADR 0007](../../documentation/adr/0007-state-the-real-dependency-in-task-cache-inputs.md).
+silently undoes the whole arrangement.
 
 State the real dependency instead:
 

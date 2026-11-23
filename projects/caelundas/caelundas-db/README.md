@@ -95,7 +95,6 @@ There is one migration, with its `-up.sql` and `-down.sql` beside it, linted
 by `sqlfluff` and checked by `squawk`. It carries two hand edits after
 `generate`: it creates `typeorm_metadata` for the view's row, and its SQL
 files open with the lock and statement timeouts the other projects' carry.
-See [ADR 0031](../../../documentation/adr/0031-move-caelundas-from-sqlite-to-postgres.md).
 
 ## Test
 
