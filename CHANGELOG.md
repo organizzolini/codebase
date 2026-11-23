@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.13.1](https://github.com/organizzolini/codebase/compare/v6.13.0...v6.13.1) (2026-11-23)
+
+### 🐛 Bug Fixes
+
+* **compliance:** 🐛 retry a new issue's audit and page the assignment sweep ([#2551](https://github.com/organizzolini/codebase/issues/2551)) ([731c116](https://github.com/organizzolini/codebase/commit/731c11640d594006518035529519294a9eac9140)), closes [#2550](https://github.com/organizzolini/codebase/issues/2550)
+
 ## [6.13.0](https://github.com/organizzolini/codebase/compare/v6.12.1...v6.13.0) (2026-11-23)
 
 ### ✨ Features
