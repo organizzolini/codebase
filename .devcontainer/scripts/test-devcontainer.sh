@@ -16,7 +16,7 @@ CLOUD_DEVCONTAINER_JSON="${WORKSPACE_ROOT}/.devcontainer/cloud/devcontainer.json
 PACKAGE_JSON="${WORKSPACE_ROOT}/package.json"
 
 # 📌 Expected pinned versions (single sources of truth: package.json & devcontainer.json)
-# Version pins are read from the local config (source of truth); cloud is kept in sync by synchronization Nx targets
+# Version pins are read from the local config (source of truth); cloud is kept in sync by integration Nx targets
 NODE_MAJOR="$(jq -r '.features["ghcr.io/devcontainers/features/node:1"].version' "${LOCAL_DEVCONTAINER_JSON}")"
 PNPM_VERSION="$(jq -r '.packageManager | split("@")[1]' "${PACKAGE_JSON}")"
 EXPECTED_NX_VERSION="$(jq -r '.features["ghcr.io/devcontainers-extra/features/nx-npm:1"].version' "${LOCAL_DEVCONTAINER_JSON}")"
@@ -229,10 +229,10 @@ done
 # 🧩 Extensions list consistency
 echo ""
 echo "🧩 VS Code extensions / recommendations sync"
-if SYNC_OUTPUT=$(cd "${WORKSPACE_ROOT}" && pnpm exec nx run synchronization:vscode-extensions:check 2>&1); then
+if SYNC_OUTPUT=$(cd "${WORKSPACE_ROOT}" && pnpm exec nx run integration:vscode-extensions:check 2>&1); then
   pass "VS Code extensions are in sync"
 else
-  fail "VS Code extensions are out of sync — run: pnpm exec nx run synchronization:vscode-extensions:write"
+  fail "VS Code extensions are out of sync — run: pnpm exec nx run integration:vscode-extensions:write"
   printf '%s\n' "${SYNC_OUTPUT}" | sed 's/^/    /'
 fi
 
@@ -241,10 +241,10 @@ echo ""
 echo "⚙️  Devcontainer configuration structure (local ↔ cloud)"
 
 # Common fields: cloud must be in sync with local (source of truth)
-if SYNC_OUTPUT=$(cd "${WORKSPACE_ROOT}" && pnpm exec nx run synchronization:devcontainer-configuration:check 2>&1); then
+if SYNC_OUTPUT=$(cd "${WORKSPACE_ROOT}" && pnpm exec nx run integration:devcontainer-configuration:check 2>&1); then
   pass "cloud config common fields are in sync with local config"
 else
-  fail "cloud config is out of sync with local config — run: pnpm exec nx run synchronization:devcontainer-configuration:write"
+  fail "cloud config is out of sync with local config — run: pnpm exec nx run integration:devcontainer-configuration:write"
   printf '%s\n' "${SYNC_OUTPUT}" | sed 's/^/    /'
 fi
 

@@ -41,12 +41,21 @@ export class SynchronizationCommand extends CommandRunner {
 
   // 🔏 Private Methods
 
-  /** Logs a one-line-per-command summary of the run. */
+  /** Logs a one-line-per-command summary of the run; true when every command succeeded. */
   private reportResults(
     mode: SynchronizationMode,
     results: SynchronizationResult[],
-  ): void {
+  ): boolean {
     const failed = results.filter((result) => !result.succeeded);
+
+    for (const { failure, label } of failed) {
+      if (failure !== undefined) {
+        this.logger.error("💥 Failed to synchronize a command", undefined, {
+          label,
+          message: failure,
+        });
+      }
+    }
 
     this.logger.info("📋 Summarized the synchronization run", undefined, {
       failed: results.filter((result) => !result.succeeded).map((r) => r.label),
@@ -60,7 +69,7 @@ export class SynchronizationCommand extends CommandRunner {
       this.logger.info("🔗 Verified every synchronization", undefined, {
         count: results.length,
       });
-      return;
+      return true;
     }
 
     this.logger.info("🔗 Detected out-of-sync synchronizations", undefined, {
@@ -68,22 +77,7 @@ export class SynchronizationCommand extends CommandRunner {
       fixes: Object.fromEntries(failed.map((r) => [r.label, r.fix])),
       total: results.length,
     });
-  }
-
-  /** Runs one command, counting a throw as that command's failure. */
-  private async runCommand(
-    command: SynchronizableCommand,
-    mode: SynchronizationMode,
-  ): Promise<boolean> {
-    try {
-      return await command.synchronize(mode);
-    } catch (error) {
-      this.logger.error("💥 Failed to synchronize a command", undefined, {
-        label: command.synchronizationLabel,
-        message: error instanceof Error ? error.message : String(error),
-      });
-      return false;
-    }
+    return false;
   }
 
   // 🌎 Public Methods
@@ -115,17 +109,27 @@ export class SynchronizationCommand extends CommandRunner {
       this.logger.info("🔄 Synchronizing a command", undefined, {
         label: command.synchronizationLabel,
       });
+      let failure: string | undefined;
+      let succeeded: boolean;
+
+      // A throw counts as this command's failure, so the rest still run.
+      try {
+        succeeded = await command.synchronize(mode);
+      } catch (error) {
+        failure = error instanceof Error ? error.message : String(error);
+        succeeded = false;
+      }
+
       results.push({
+        failure,
         fix:
           command.fixCommand ??
           `pnpm exec nx run integration:${command.synchronizationLabel}`,
         label: command.synchronizationLabel,
-        succeeded: await this.runCommand(command, mode),
+        succeeded,
       });
     }
 
-    this.reportResults(mode, results);
-
-    return results.every((result) => result.succeeded);
+    return this.reportResults(mode, results);
   }
 }

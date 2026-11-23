@@ -247,7 +247,7 @@ Symbols and logic shared across projects
 **🛠️ [installation](installation)** - NestJS CLI that sets up a developer machine once Node is installed: environment files, project dependencies, shell configuration, and the remaining tools\
 **🔁 [integration](integration)** - NestJS CLI for the Continuous Integration plumbing steps: the affected run, and the Nx task-cache database\
 **📤 [deployment](deployment)** - NestJS CLI for the Continuous Deployment release steps: versioning, tagging, publishing, and linking the ic-suite packages\
-**↔️ [synchronization](synchronization)** - NestJS CLI that regenerates the workspace's derived configuration and documentation, and fails CI when they drift\
+**↔️ [synchronization](synchronization)** - Emptied NestJS CLI shell, awaiting removal; its derivations now run from integration\
 **✅ [validation](validation)** - NestJS CLI for the repository's one-sided checks, the ones with a check and no write, such as the pull request metadata gate
 
 **🧑‍💻 [JimmyPaolini](projects/JimmyPaolini)** - GitHub profile site
@@ -285,7 +285,7 @@ Other important files include [CHANGELOG.md](CHANGELOG.md), [SECURITY.md](.githu
 
 ## 👔 Conformetry
 
-Template-driven code generation and conformance validation, templates synced from [configuration/ic-suite/conformetry.config.ts](configuration/ic-suite/conformetry.config.ts) by `nx run synchronization:conformetry-generators:write`.
+Template-driven code generation and conformance validation, templates synced from [configuration/ic-suite/conformetry.config.ts](configuration/ic-suite/conformetry.config.ts) by `nx run integration:conformetry-generators:write`.
 
 <!-- conformetry:start -->
 | Template | Description |

@@ -17,15 +17,22 @@ const COMMAND_NAMES = [
   "bound-base-to-push",
   "cleanup-codebase",
   "collect-codometer-baseline",
+  "conformetry-generators",
+  "conventional-config",
+  "devcontainer-configuration",
   "import-pr-task-cache",
   "keep-task-database",
   "merge-task-cache",
+  "package-manifests",
+  "project-ports",
   "report-codometer-changes",
   "run-affected",
   "setup-codebase",
+  "skill-exclusions",
   "synchronization",
   "upgrade-dependencies",
   "verify-task-database",
+  "vscode-extensions",
 ];
 
 /** Runs the real command's help, with no inputs or repository. */

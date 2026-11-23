@@ -82,13 +82,13 @@ Everything after Node exists lives in [`installation`](../installation/AGENTS.md
 
 ### VS Code extensions and settings
 
-> Implemented in [synchronization](../synchronization), not as scripts.
+> Implemented in [integration](../integration) and [installation](../installation), not as scripts.
 
 **Purpose:** Keep `.vscode/extensions.json` and both devcontainer configurations' extension lists in step, and merge `.vscode/settings.json` into the VS Code Machine settings inside a devcontainer.
 
 ```bash
-nx run synchronization:vscode-extensions:check    # Validate both configs are in sync (default)
-nx run synchronization:vscode-extensions:write    # Update both devcontainer.json files
+nx run integration:vscode-extensions:check    # Validate both configs are in sync (default)
+nx run integration:vscode-extensions:write    # Update both devcontainer.json files
 nx run installation:vscode-settings:check      # Machine settings hold every workspace key
 nx run installation:vscode-settings:write      # Merge workspace settings into Machine settings
 ```

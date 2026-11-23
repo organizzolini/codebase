@@ -35,6 +35,7 @@ export type SynchronizationModeResolutionResult =
 
 /** Outcome of one command within a run of every synchronization. */
 export interface SynchronizationResult {
+  readonly failure?: string | undefined;
   readonly fix: string;
   readonly label: string;
   readonly succeeded: boolean;

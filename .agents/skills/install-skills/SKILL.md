@@ -44,7 +44,7 @@ Five things reach `.agents/` and so must skip the **vendored** skills while stil
 The exclusions are generated, not hand-maintained. Each file marks its block with `installed-skills-start` and `installed-skills-end` comments in its own syntax — `#` in `configuration/lint/.prettierignore`, `configuration/ic-suite/.codometerignore`, `configuration/lint/cspell.config.yaml`, and `.gitattributes`; `//` in `configuration/lint/markdownlint-cli2.config.jsonc` — and the `skill-exclusions` synchronizer rewrites what sits between them from the lockfile. It joins `lint-code` in the same `nx affected` invocation, so a stale list fails there rather than silently:
 
 ```bash
-pnpm exec nx run synchronization:skill-exclusions:write
+pnpm exec nx run integration:skill-exclusions:write
 ```
 
 Two details of that machinery matter before changing it:

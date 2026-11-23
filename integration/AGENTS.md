@@ -88,6 +88,13 @@ one class.
 | `collect-codometer-baseline` | `src/modules/collect-codometer-baseline` | the `report-integration` composite action, on a green `main` build |
 | `report-codometer-changes` | `src/modules/report-codometer-changes` | the `report-integration` composite action, on a pull request's build |
 | `upgrade-dependencies` | `src/modules/upgrade-dependencies` | the `upgrade-dependencies` workflow |
+| `conformetry-generators` | `src/modules/synchronization/modules/conformetry-generators` | the release workflow's `write` step; derives the generator table in `AGENTS.md`. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target |
+| `conventional-config` | `src/modules/synchronization/modules/conventional-config` | the release workflow's `write` step; derives commit types and scopes, commitlint, release configuration. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target |
+| `devcontainer-configuration` | `src/modules/synchronization/modules/devcontainer-configuration` | the release workflow's `write` step and `test-devcontainer.sh`; derives the cloud devcontainer's shared fields. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target |
+| `package-manifests` | `src/modules/synchronization/modules/package-manifests` | nothing in CI: run it by name; derives publishable package metadata. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target |
+| `project-ports` | `src/modules/synchronization/modules/project-ports` | `guard-code`; derives each `*-api` and `*-web` port. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target |
+| `skill-exclusions` | `src/modules/synchronization/modules/skill-exclusions` | the release workflow's `write` step; derives installed-skill exclusion lists. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target |
+| `vscode-extensions` | `src/modules/synchronization/modules/vscode-extensions` | `guard-code` and `test-devcontainer.sh`; derives both devcontainers' extension lists. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target |
 | `synchronization` (the `start` target) | `src/modules/synchronization` | a human at a terminal: `nx run integration:start` runs every registered check and derivation in one process, `check` by default, or `:write` |
 
 `setup-codebase` and `cleanup-codebase` run the services of the commands above

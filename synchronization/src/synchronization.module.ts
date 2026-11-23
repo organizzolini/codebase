@@ -4,7 +4,6 @@ import { DiscoveryModule } from "@nestjs/core";
 
 import { LoggerModule } from "@codebase/observability";
 
-import { SynchronizationModule } from "./modules/synchronization/synchronization.module";
 import { environmentSchema } from "./synchronization.constants";
 
 /**
@@ -20,7 +19,6 @@ import { environmentSchema } from "./synchronization.constants";
     }),
     DiscoveryModule,
     LoggerModule,
-    SynchronizationModule,
   ],
 })
 export class MainModule {}

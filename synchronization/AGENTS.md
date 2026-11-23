@@ -4,15 +4,14 @@
 
 **Type**: Node.js CLI application (NestJS + `nest-commander`)
 
-**Purpose**: Reconciles codebase files and generated repository configuration.
-GitHub issue and pull request metadata checks belong in
-[compliance](../compliance/AGENTS.md).
+**Purpose**: Emptied, awaiting removal. The derivations it ran live in
+[integration](../integration/AGENTS.md).
 
 ### Run Locally
 
 ```bash
 cp configuration/.env.default configuration/.env  # Fill in required environment variables
-nx run synchronization:start
+nx run synchronization:typecheck
 ```
 
 ## Architecture Overview

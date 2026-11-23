@@ -15,7 +15,7 @@ Two repository rules override the skill's generic defaults:
 - **Branch names are validated.** Use the `<type>/<scope>-<description>` format
   defined by `configuration/repository/conventional.config.cjs`. The authoritative type and
   scope tables live in the Conventional Naming section of `AGENTS.md`, which the
-  `conventional-config` synchronization target keeps in sync — read them there
+  `conventional-config` integration target keeps in sync — read them there
   rather than from a copy. Derive a compliant name with the
   [checkout-branch](../../.agents/skills/checkout-branch/SKILL.md) skill when the
   user gives only an intent.
