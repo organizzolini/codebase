@@ -67,10 +67,13 @@ export function resolveGraphOutputs({
 }
 
 /**
- * Writes each file through a partial file beside it, creating missing
- * folders, so a failed write leaves no partial file behind.
+ * Writes files through partials beside them, creating folders, so a failed
+ * write leaves none behind. Without `overwrite`, refuses a file that now exists.
  */
-export function writeGraphOutputs(files: readonly GraphOutputFile[]): void {
+export function writeGraphOutputs(
+  files: readonly GraphOutputFile[],
+  { overwrite }: { readonly overwrite: boolean },
+): void {
   const partials = files.map((file) => ({
     ...file,
     partial: `${file.path}.${randomUUID()}.partial`,
@@ -79,6 +82,13 @@ export function writeGraphOutputs(files: readonly GraphOutputFile[]): void {
     for (const { content, partial, path: file } of partials) {
       fs.mkdirSync(path.dirname(file), { recursive: true });
       fs.writeFileSync(partial, content, "utf8");
+    }
+    if (!overwrite) {
+      for (const { path: file } of partials) {
+        if (fs.existsSync(file)) {
+          throw new GraphOptionsError(graphOutputExistsMessage(file));
+        }
+      }
     }
     for (const { partial, path: file } of partials) {
       fs.renameSync(partial, file);

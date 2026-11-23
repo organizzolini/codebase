@@ -249,6 +249,17 @@ describe("graph dag utilities", () => {
       ]);
     });
 
+    it("reaches a hub's 200,000 children without overflowing the call stack", () => {
+      const links = linksOf(
+        Array.from({ length: 200_000 }, (_, index) =>
+          edge("hub", `c${String(index)}`),
+        ),
+        true,
+      );
+
+      expect(reachableFrom(["hub"], links).size).toBe(200_001);
+    });
+
     it("draws a directed @Graph cycle with no warning, rooting the smallest node of a component with no root", () => {
       const graph = buildEdgeGraph(
         [edge("X", "Y"), edge("Y", "X")],

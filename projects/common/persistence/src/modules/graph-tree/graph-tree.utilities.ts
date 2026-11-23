@@ -115,20 +115,27 @@ export function matchedAncestors(
 
 /**
  * The ids of each match and its descendants, so matches draw their whole
- * subtree. Passes repeat until no row joins.
+ * subtree. Each row joins once, so a cycle ends its walk.
  */
 export function matchedSubtrees(
   rows: readonly GraphTreeRow[],
   matches: ReadonlySet<string>,
 ): Set<string> {
+  const children = new Map<string, string[]>();
+  for (const { id, parentId } of rows) {
+    if (parentId === undefined) continue;
+    const ids = children.get(parentId);
+    if (ids === undefined) children.set(parentId, [id]);
+    else ids.push(id);
+  }
+
   const subtree = new Set(matches);
-  let grew = true;
-  while (grew) {
-    grew = false;
-    for (const { id, parentId } of rows) {
-      if (parentId !== undefined && subtree.has(parentId) && !subtree.has(id)) {
-        subtree.add(id);
-        grew = true;
+  const pending = [...matches];
+  for (let id = pending.pop(); id !== undefined; id = pending.pop()) {
+    for (const child of children.get(id) ?? []) {
+      if (!subtree.has(child)) {
+        subtree.add(child);
+        pending.push(child);
       }
     }
   }
@@ -249,7 +256,9 @@ function childrenByParent(
 ): ReadonlyMap<string, readonly string[]> {
   const children = new Map<string, string[]>();
   for (const { source, target } of edges) {
-    children.set(source, [...(children.get(source) ?? []), target]);
+    const targets = children.get(source);
+    if (targets === undefined) children.set(source, [target]);
+    else targets.push(target);
   }
   return children;
 }
@@ -316,7 +325,7 @@ function subtreeIds(
   for (let id = pending.pop(); id !== undefined; id = pending.pop()) {
     if (!kept.has(id)) {
       kept.add(id);
-      pending.push(...(children.get(id) ?? []));
+      for (const child of children.get(id) ?? []) pending.push(child);
     }
   }
   return kept;

@@ -117,7 +117,7 @@ class RedeclaredSourceEdge extends SourceBase {
 @Dag()
 class RedeclaringSourceEdge extends SourceBase {
   @GraphSource()
-  from!: string;
+  origin!: string;
 }
 
 @Graph()
@@ -196,14 +196,14 @@ class WeightedLabeledEdge {
   @GraphWeight()
   cost!: number;
 
-  @GraphSource()
-  from!: string;
-
   @GraphLabel()
   label!: string;
 
+  @GraphSource()
+  source!: string;
+
   @GraphTarget()
-  to!: string;
+  target!: string;
 }
 
 describe("graph entity utilities", () => {
@@ -345,8 +345,8 @@ describe("graph entity utilities", () => {
           directed: true,
           kind: "graph",
           labelColumn: "label",
-          sourceColumn: "from",
-          targetColumn: "to",
+          sourceColumn: "source",
+          targetColumn: "target",
           weightColumn: "cost",
         });
       });
@@ -444,7 +444,7 @@ describe("graph entity utilities", () => {
       it("rejects an endpoint redeclared under a new name beside the base's", () => {
         expect(() => getGraphEdgeMetadata(RedeclaringSourceEdge)).toThrow(
           new GraphEdgeError(
-            "RedeclaringSourceEdge declares several @GraphSource properties (from, source); keep one",
+            "RedeclaringSourceEdge declares several @GraphSource properties (origin, source); keep one",
           ),
         );
       });

@@ -70,8 +70,11 @@ export function linksOf(
   directed: boolean,
 ): GraphLinks {
   const children = new Map<string, Set<string>>();
-  const link = (from: string, to: string): void => {
-    children.set(from, (children.get(from) ?? new Set<string>()).add(to));
+  const link = (source: string, target: string): void => {
+    children.set(
+      source,
+      (children.get(source) ?? new Set<string>()).add(target),
+    );
   };
   for (const { source, target } of edges) {
     if (source === target) continue;
@@ -96,7 +99,7 @@ export function reachableFrom(
   for (let id = pending.pop(); id !== undefined; id = pending.pop()) {
     if (!reached.has(id)) {
       reached.add(id);
-      pending.push(...childrenOf(links, id));
+      for (const child of childrenOf(links, id)) pending.push(child);
     }
   }
   return reached;

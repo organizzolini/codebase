@@ -101,16 +101,18 @@ See [ADR 0031](../../../documentation/adr/0031-move-caelundas-from-sqlite-to-pos
 
 ```bash
 nx run caelundas-db:render-tag-tree
-nx run caelundas-db:render-tag-tree --args="--max-depth 2 --output-markdown tags.md"
+nx run caelundas-db:render-tag-tree --args="--max-depth 2 --output-markdown tags.md --overwrite"
 ```
 
 The `render-tag-tree` target runs the `persistence` `render-tree-data` command
 over `tag.entity.ts`. It prints a Mermaid flowchart, and `--args` takes the
-command's filter, sort, depth, breadth, paging, and output options.
+command's filter, sort, depth, breadth, paging, and output options. The
+`--overwrite` flag lets a rerun replace `tags.md`, because an existing output
+file is otherwise refused, as `postgresql-export` refuses an existing `--file`.
 
 The target loads no `.env` file, so export the connection variables in your
-shell first. For the local container, load them from
-`configuration/.env.default`:
+shell first. For the local container, run this from the workspace root to load
+them from `configuration/.env.default`:
 
 ```bash
 set -a; . projects/caelundas/caelundas-db/configuration/.env.default; set +a
@@ -121,8 +123,10 @@ set -a; . projects/caelundas/caelundas-db/configuration/.env.default; set +a
 `CAELUNDAS_POSTGRES_PORT`, and `CAELUNDAS_POSTGRES_SCHEMA` default to
 `localhost`, `5432`, and `caelundas`.
 
-The shell builds the connection URI from them, so a password containing `@`,
-`:`, `/`, or `%` must be percent-encoded. The URI is passed on the command
+The shell builds the connection URI from them, so a password containing any
+reserved URI character (`@`, `:`, `/`, `%`, `?`, or `#`) or whitespace must be
+percent-encoded; an unencoded `#` starts a fragment and truncates the password.
+The URI is passed on the command
 line as `--source-uri`, as it is for `postgresql-export` and
 `postgresql-import`, so other local users can read it, password included, with
 `ps`. The command masks it in everything it prints or logs.

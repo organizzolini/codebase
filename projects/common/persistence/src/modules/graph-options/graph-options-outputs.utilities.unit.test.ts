@@ -167,10 +167,13 @@ describe("graph options outputs utilities", () => {
       const json = path.join(directory, "deep", "tree.json");
       const markdown = path.join(directory, "tree.md");
 
-      writeGraphOutputs([
-        { content: "{}\n", path: json },
-        { content: "```mermaid\n```\n", path: markdown },
-      ]);
+      writeGraphOutputs(
+        [
+          { content: "{}\n", path: json },
+          { content: "```mermaid\n```\n", path: markdown },
+        ],
+        { overwrite: false },
+      );
 
       expect(fs.readFileSync(json, "utf8")).toBe("{}\n");
       expect(fs.readFileSync(markdown, "utf8")).toBe("```mermaid\n```\n");
@@ -181,6 +184,30 @@ describe("graph options outputs utilities", () => {
         "deep",
         "tree.md",
       ]);
+    });
+
+    it("refuses to replace a file that appeared after planning, without --overwrite", () => {
+      const file = path.join(directory, "tree.json");
+      fs.writeFileSync(file, "kept");
+
+      expect(() =>
+        writeGraphOutputs([{ content: "{}\n", path: file }], {
+          overwrite: false,
+        }),
+      ).toThrow(
+        `${file} already exists and was left unchanged: choose another path, or pass --overwrite to replace it`,
+      );
+      expect(fs.readFileSync(file, "utf8")).toBe("kept");
+      expect(fs.readdirSync(directory)).toStrictEqual(["tree.json"]);
+    });
+
+    it("replaces a file that appeared after planning when --overwrite is given", () => {
+      const file = path.join(directory, "tree.json");
+      fs.writeFileSync(file, "kept");
+
+      writeGraphOutputs([{ content: "{}\n", path: file }], { overwrite: true });
+
+      expect(fs.readFileSync(file, "utf8")).toBe("{}\n");
     });
   });
 });

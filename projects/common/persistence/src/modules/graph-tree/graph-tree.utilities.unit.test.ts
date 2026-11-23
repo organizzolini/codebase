@@ -200,6 +200,31 @@ describe("graph tree utilities", () => {
       ]);
     });
 
+    it("caps a root with 20,000 children at its first two, in row order", () => {
+      const rows: GraphTreeRow[] = [
+        { id: "1", label: "Work", parentId: undefined },
+        ...Array.from({ length: 20_000 }, (_, index) => ({
+          id: `c${String(index)}`,
+          label: `Child ${String(index)}`,
+          parentId: "1",
+        })),
+      ];
+
+      const graph = capped(rows, { maximumBreadth: 2 });
+
+      expect(graph.nodes.map(({ id }) => id)).toStrictEqual([
+        "1",
+        "c0",
+        "c1",
+        "1/more",
+      ]);
+      expect(graph.nodes.at(-1)).toStrictEqual({
+        id: "1/more",
+        label: "… 19998 more",
+        marker: "truncation",
+      });
+    });
+
     it("gives each truncation node an id no row already uses", () => {
       const graph = capped(
         [
@@ -399,6 +424,21 @@ describe("graph tree utilities", () => {
       const paged = pageTreeRows(rows, { limit: 1, page: 1 });
 
       expect(paged.rows.map(({ id }) => id)).toStrictEqual(["7", "8"]);
+    });
+
+    it("keeps a hub's 200,000 children without overflowing the call stack", () => {
+      const rows: GraphTreeRow[] = [
+        { id: "hub", label: "Hub", parentId: undefined },
+        ...Array.from({ length: 200_000 }, (_, index) => ({
+          id: `c${String(index)}`,
+          label: "Leaf",
+          parentId: "hub",
+        })),
+      ];
+
+      const paged = pageTreeRows(rows, { limit: 1, page: 1 });
+
+      expect(paged.rows).toHaveLength(200_001);
     });
 
     it("leaves out a cycle that no selected root reaches", () => {

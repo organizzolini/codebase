@@ -144,6 +144,18 @@ describe("graph dag limits utilities", () => {
       ]);
     });
 
+    it("pages a hub with 200,000 children without overflowing the call stack", () => {
+      const hub = buildDag(
+        Array.from({ length: 200_000 }, (_, index) =>
+          edge("hub", `c${String(index)}`),
+        ),
+      );
+
+      expect(pageDagGraph(hub, { limit: 1, page: 1 }).nodes).toHaveLength(
+        200_001,
+      );
+    });
+
     it("draws nothing and warns for a page past the last root", () => {
       const graph = pageDagGraph(forest, { limit: 2, page: 3 });
 

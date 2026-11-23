@@ -53,7 +53,7 @@ export class RenderService {
     }
 
     if (files.length === 0) process.stdout.write(`${rendering.diagram}\n`);
-    writeGraphOutputs(files);
+    writeGraphOutputs(files, { overwrite: plan.outputs.overwrite });
     for (const warning of rendering.warnings) {
       process.stderr.write(`⚠️ ${warning}\n`);
     }

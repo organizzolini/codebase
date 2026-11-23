@@ -98,10 +98,10 @@ function openChildren(
   links: GraphLinks,
   parent: string,
 ): string[] {
-  const from = links.directed ? undefined : walk.via.get(parent);
+  const source = links.directed ? undefined : walk.via.get(parent);
   const open: string[] = [];
   for (const child of links.children.get(parent) ?? []) {
-    if (child !== from) open.push(child);
+    if (child !== source) open.push(child);
   }
   return open;
 }
