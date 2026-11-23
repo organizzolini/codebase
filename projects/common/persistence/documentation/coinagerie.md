@@ -21,6 +21,6 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **updatable**: The entity base layer that adds update tracking columns, third in the identifiable, creatable, updatable, deletable chain.
 - **verb**: The verb in a log message that the export log convention test expects after the subject emoji, such as exists.
 - **vertex**: A node in the cycle search of a DAG's edges, which holds its visit order and the nodes its edges reach.
-- **via**:
+- **via**: The node a cap walk first reached another node from, kept as `GraphDagWalk.via` in `graph-dag.types.ts` and set by `walkDag` in `graph-dag-limits.utilities.ts`; roots have none. Everyday "via" means "by way of"; here it is the discovery parent, which an undirected walk uses so a node is not drawn back to where it came from.
 
 <!-- coinagerie:end -->

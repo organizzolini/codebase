@@ -3,15 +3,20 @@
 ## Quick Start
 
 **Type**: NestJS library package (`@codebase/persistence`) and nest-commander
-command line (`postgresql-export` and `postgresql-import`)
+command line (`postgresql-export`, `postgresql-import`, and the drawing
+commands `render-tree-data`, `render-dag-data`, and `render-graph-data`)
 
-**Purpose**: Two jobs. The library is the one way a database-backed project
+**Purpose**: Three jobs. The library is the one way a database-backed project
 connects to Postgres: the `<PROJECT>_POSTGRES_*` environment fragment, the
 TypeORM options factory, the NestJS module and command-line data source built
 from it, and the naming convention behind them. The command line moves
 selected tables between databases through `pg_dump` and `pg_restore`, each
 database named by a URI. See the [README](README.md) for the exports, the
-naming table, and every command-line option.
+naming table, and every command-line option. The third job is drawing: the
+drawing commands read a `@Tree` entity, or a `@Dag` or `@Graph` entity's edge
+rows, and print them as a Mermaid flowchart on stdout or write them to files.
+The README's [Drawing diagrams](README.md#drawing-diagrams) section documents
+their options, decorators, and output streams.
 
 This package may import one workspace package, `@codebase/observability`, for its
 command line's logger, and never any other, or every database-backed project
@@ -47,12 +52,22 @@ src/
     postgresql-export/              # The postgresql-export command: options, plan, dry run, atomic write
     postgresql-import/              # The postgresql-import command: options, plan, --clean (no prompt), dry run
     postgresql-utilities/           # pg_dump, pg_restore, and truncate behind one service
+    graph-entities/                 # @Dag, @Graph and the endpoint decorators; globs to entity classes; the @Tree pick
+    graph-options/                  # Options every drawing command shares: connection, filter, sort, paging, caps, outputs
+    graph-tree/                     # Reads a @Tree table in its storage, then filters, sorts, pages, and caps it
+    graph-dag/                      # Reads an edge table, finds roots and cycles, then pages and caps the edges
+    graph-mermaid/                  # Pure renderer: a graph model to Mermaid text, with its limit warnings
+    render/                         # RenderService: connects, reads, draws, and writes for every drawing command
+      modules/render-tree-data/     # The render-tree-data command: options, constants, module
+      modules/render-dag-data/      # The render-dag-data command: refuses a @Graph entity
+      modules/render-graph-data/    # The render-graph-data command: refuses a @Dag entity
 testing/
   index.ts                          # The @codebase/persistence/testing entry
   persistence-testing.*.ts          # startDatabaseTestingModule, the entry's Nest helper
   command-line-runner.ts            # runCliCommandLine: argv through the real nest-commander runner
   fixture-persistence.ts            # A migrated container for the command line's integration tests
   fixtures/                         # Entities, modules, and the widgets and parts migrations
+  fixtures/graphs/, fixtures/trees/ # @Dag and @Graph edge entities, and @Tree entities, for the drawing commands
   setup.ts, mocks.ts                # Vitest setup and mocks
 ```
 
@@ -81,6 +96,14 @@ testing/
   line or an error.
 - **Never import GraphQL into the base entities.** Meanderaw and caelundas
   must not depend on it; lexico layers its `@Field` decorators on top.
+- **Draw a diagram only through `RenderService`.** It writes the diagram to
+  stdout, or to the files named, and the warnings to stderr. Never send the
+  diagram through the logger.
+- **Give a shared drawing flag its help text once,** in
+  `graph-options.constants.ts`, so a flag reads the same in every drawing
+  command.
+- **Check a drawing command's entity kind before connecting.** A `@Dag` command
+  refuses a `@Graph` entity, and the reverse, naming the other command.
 
 ### Key Commands
 
@@ -90,6 +113,7 @@ nx run persistence:vitest:unit
 nx run persistence:type-coverage
 nx run persistence:start:postgresql-export --args="--source-uri <uri> --table <schema.table> --data --file <path>"
 nx run persistence:start:postgresql-import --args="--target-uri <uri> --table <schema.table> --data --file <path>"
+nx run persistence:start --args="render-tree-data --source-uri <uri> --schema <schema> --entities '<glob>'"
 ```
 
 `postgresql-import --clean` never prompts and has no `--yes`; the preview is
@@ -97,7 +121,8 @@ nx run persistence:start:postgresql-import --args="--target-uri <uri> --table <s
 first.
 
 The `start` configurations run the command line with the working directory at
-`projects/common/persistence`. Both commands need the PostgreSQL 18 client tools; see
+`projects/common/persistence`, so the drawing commands' `--entities` globs and
+output paths resolve from there. Both commands need the PostgreSQL 18 client tools; see
 the README's [Moving data between databases](README.md#moving-data-between-databases).
 
 See the [write-typescript skill](../../.agents/skills/write-typescript/SKILL.md)

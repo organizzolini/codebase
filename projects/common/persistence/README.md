@@ -1,6 +1,6 @@
 # 🐘 Persistence
 
-The shared package every database-backed project connects through, to Postgres, and a command line that moves tables between Postgres databases.
+The shared package every database-backed project connects through, to Postgres, a command line that moves tables between Postgres databases, and one that draws their trees and graphs as Mermaid flowcharts.
 
 ## Purpose
 
@@ -357,106 +357,313 @@ other connection option. The truncate for `--clean --data` connects through
 the `pg` driver with no `ssl` option at all. A server that requires TLS is
 therefore not reachable through these commands today.
 
-## Drawing tree data
+## Drawing diagrams
 
-`render-tree-data` reads a `@Tree` entity's rows and prints them as a Mermaid
-flowchart on stdout, or writes them to files, with warnings on stderr. It imports the entity files its
-`--entities` globs name through the repository's swc loader, builds a TypeORM
-data source over them, and reads the tree in whichever storage the entity uses:
-closure table, materialized path, nested set, or adjacency list.
+Three commands read a database table and draw it as a Mermaid flowchart. They
+print the diagram on stdout, or write it to files, and they share their
+options. Each reads one kind of entity, marked by a decorator:
+
+| Command             | Reads                         | Draws                                             | Direction |
+| ------------------- | ----------------------------- | ------------------------------------------------- | --------- |
+| `render-tree-data`  | a `@Tree` entity's rows       | the tree, from its roots down                     | `LR`      |
+| `render-dag-data`   | a `@Dag` entity's edge rows   | arrows from source to target                      | `TB`      |
+| `render-graph-data` | a `@Graph` entity's edge rows | arrows when directed, plain links when undirected | `LR`      |
 
 ```bash
 pnpm exec nx run persistence:start --args="render-tree-data --source-uri postgresql://user:password@localhost:5432/source --schema tags --entities '../<project>/src/**/tag.entity.ts'"
-```
-
-| Option                     | Does                                                                                                                                      |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `--source-uri <uri>`       | Required. The database to read from                                                                                                       |
-| `--schema <name>`          | Required. The schema the entity tables live in                                                                                            |
-| `--entities <glob>`        | Required, repeatable. The entity files to import                                                                                          |
-| `--table <name>`           | The tree to draw when the globs match several `@Tree` entities; unqualified, or `schema.table`                                            |
-| `--limit <n>`              | Root nodes per page, each drawn with its descendants, in sort order; the first page unless `--page`                                       |
-| `--page <n>`               | The page of `--limit` roots to draw, from 1; needs `--limit`; a page past the last root draws nothing and warns                           |
-| `--max-depth <n>`          | The deepest level drawn, roots at level 1; children below it become one `… K more` node                                                   |
-| `--max-breadth <n>`        | Most children drawn under one node; the rest become one `… K more` node; roots not capped                                                 |
-| `--output-markdown <path>` | Write the diagram as a fenced Mermaid block to this file, creating its folders; warnings follow the fence. Nothing prints to stdout       |
-| `--output-json <path>`     | Write the normalized graph as pretty JSON to this file, creating its folders; it parses back to the drawn model. Nothing prints to stdout |
-| `--overwrite`              | Replace an existing `--output-markdown` or `--output-json` file; without it an existing file is refused and left unchanged                |
-| `--dry-run`                | Check the options and list the entity files, without connecting to a database or drawing anything                                         |
-
-Output paths resolve against the working directory and are checked before any
-connection opens: a directory, a file that exists without `--overwrite`, a
-folder that cannot take a new file, or one path given to both flags is refused.
-Both output flags together write both files. Each file is written through a
-partial file beside it, so a failed write leaves no partial file behind.
-
-`--limit` and `--page` cut the tree after `--filter` and `--sort` and before the
-caps, so each page is the next roots of the filtered, sorted forest. Several
-`@Tree` entities without `--table` fail, naming each table, before any
-connection opens. A row whose parent is missing from the table is drawn as a
-root and warned about. Each cap that hides children warns with the parent's id
-and the count hidden. The password is masked in every error and dry-run line.
-
-## Drawing DAG data
-
-`render-dag-data` reads a `@Dag` entity's edges, one row per edge from its
-`@GraphSource` column to its `@GraphTarget` column, and prints them as a Mermaid
-flowchart that reads top to bottom. It takes the options `render-tree-data`
-takes, with these meanings:
-
-```bash
 pnpm exec nx run persistence:start --args="render-dag-data --source-uri postgresql://user:password@localhost:5432/source --schema tasks --entities '../<project>/src/**/task-link.entity.ts'"
-```
-
-- **Nodes** are the distinct endpoint values, labelled by the value as text,
-  in the order the sorted edges first name them. A **root** is a node no other
-  kept edge targets; a self-loop does not count. A `@GraphLabel` and a
-  `@GraphWeight` column draw on each edge.
-  A row with a NULL endpoint is not drawn, and warns once.
-- **`--filter` and `--sort`** apply to the edge rows, by the edge entity's own
-  columns. An edge is kept when it matches every filter, and a node is drawn
-  only if a kept edge touches it. Edges sort by `--sort`, then by source,
-  target, and primary key, so the same data always draws the same diagram, and
-  edge order sets the order of roots and of siblings.
-- **`--limit` and `--page`** page the roots, in that order, each drawn with every
-  node reachable from it. A component with no root, such as a cycle, is drawn
-  only without `--limit`.
-- **`--max-depth` and `--max-breadth`** cut from the roots. A node's level is
-  its shortest distance from a root, so a node reached by several paths is
-  drawn once. Hidden children collapse into one `… K more` node and a warning.
-- **A cycle** among the kept edges warns once, naming its nodes in sorted order,
-  and is drawn as it is. A self-loop warns too.
-- A `@Graph` entity fails, pointing to `render-graph-data`. `--table` picks one
-  `@Dag` entity when the globs match several, and a declared column that is no
-  column of the entity fails once the connection is open.
-
-## Drawing graph data
-
-`render-graph-data` reads a `@Graph` entity's edges the same way, from its
-`@GraphSource` column to its `@GraphTarget` column, and prints them as a Mermaid
-flowchart that reads left to right. It takes the same options as
-`render-dag-data`, with the differences below:
-
-```bash
 pnpm exec nx run persistence:start --args="render-graph-data --source-uri postgresql://user:password@localhost:5432/source --schema routes --entities '../<project>/src/**/route-link.entity.ts'"
 ```
 
-- **Directed or undirected.** `@Graph()` edges run from source to target and
-  draw as arrows, `-->`. `@Graph({ directed: false })` edges are plain links,
-  `---`, and a link reaches its node from either end. A link read from both
-  ends is one link: the first row in sort order is drawn, with its label and
-  weight, and the other row is dropped.
-- **Roots.** A directed graph's roots are the nodes no other kept edge targets,
-  a self-loop not counting. Then every node still unreached takes a start in
-  sort order, the smallest first, so each component is reached. An undirected
-  graph has no direction, so each connected component starts at its smallest
-  node. `--limit` and `--page` page these roots, in node order.
-- **Cycles** are valid input: they draw with no warning.
-- **Labels and weights** draw on each edge, as `@GraphLabel` and `@GraphWeight`
-  do for a DAG. A NULL endpoint is not drawn and warns once.
-- **`--filter`, `--sort`, `--max-depth`, `--max-breadth`, and `--table`** behave as
-  in `render-dag-data`, with the `@Graph` entity named in its messages. A
-  `@Dag` entity fails, pointing to `render-dag-data`.
+`start` runs with the working directory at `projects/common/persistence`, so
+relative `--entities` globs and output paths resolve from there.
+
+### Options
+
+Every option is shared by the three commands unless the table says otherwise.
+
+| Option                     | Does                                                                                                                                                                                                  |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--source-uri <uri>`       | Required. The database to read from, as `postgresql://user:password@host:port/database`. Passed in argv, so visible to `ps`; masked in every line it prints or logs                                   |
+| `--schema <name>`          | Required. The schema the entity tables live in                                                                                                                                                        |
+| `--entities <glob>`        | Required, repeatable. The entity files to import, through the repository's swc loader. Each glob must match at least one file                                                                         |
+| `--table <name>`           | The table to draw when the globs match several entities of the command's kind; unqualified, or `schema.table` with the schema equal to `--schema`                                                     |
+| `--filter <expression>`    | Keeps rows matching `column<op>value`, e.g. `name~=Inbox`; repeatable, and every filter must match. Operators: `=`, `!=`, `~=` (contains, case-sensitive), `<` and `>` (numeric or date columns only) |
+| `--sort <expression>`      | Sorts by `column[:asc\|desc]`; repeatable, applied in order. Applied before the caps cut the diagram                                                                                                  |
+| `--limit <n>`              | Roots per page, a positive integer. Each root is drawn with everything reachable from it                                                                                                              |
+| `--page <n>`               | The page of `--limit` roots to draw, from 1. Needs `--limit`; a page past the last root draws nothing and warns                                                                                       |
+| `--max-depth <n>`          | The deepest level drawn, a positive integer. Roots are level 1; the children below a cut level become one `… K more` node                                                                             |
+| `--max-breadth <n>`        | The most children drawn under one node, a positive integer, in sort order. The rest become one `… K more` node. Roots are never capped                                                                |
+| `--output-markdown <path>` | Writes the diagram as a fenced Mermaid block, creating its folders, with the warnings after the fence. The diagram is not printed                                                                     |
+| `--output-json <path>`     | Writes the drawn graph as pretty JSON, creating its folders. The diagram is not printed                                                                                                               |
+| `--overwrite`              | Replaces an existing `--output-markdown` or `--output-json` file. Without it an existing file is refused and left unchanged                                                                           |
+| `--dry-run`                | Checks the options and output paths and lists the entity files it would read. It connects to no database and imports no entity file                                                                   |
+
+Filters and sorts name columns of the entity, and fail before any connection
+opens when a name is unknown. A `<` or `>` on a text column, or a value that is
+not a number or a date for its column, fails once the connection is open, since
+only then are the column types known. Output paths are checked before the
+connection opens: a directory, an existing file without `--overwrite`, a folder
+that cannot take a new file, or one path given to both output flags is refused.
+A `--table` qualified with a schema other than `--schema` is refused.
+
+### Output and the streams
+
+- With no output file, the diagram is the only thing on stdout, followed by a
+  newline. Pipe stdout into a file only after checking the exit status.
+- Warnings go to stderr, one line each, prefixed `⚠️`, whichever output is
+  chosen. With `--output-markdown` they are also quoted after the fence.
+- With an output file, stdout carries one `📝 Wrote <path>` log line per file.
+- Log lines go to stdout, the same stream as the diagram: the dry-run plan, the
+  `📝 Wrote` lines, and a failed run's error. A failed run exits with status 1.
+
+### Declaring the entities
+
+#### Trees
+
+A tree is a TypeORM `@Tree` entity with one primary key column. Its node id is
+the primary key as text, and its label is the `name` column as text, or the
+primary key when the entity has no `name`. Its parents are read through the
+storage the `@Tree` names:
+
+| Storage             | Parent of a row is read from                                                                                               |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `closure-table`     | The `@TreeParent` join column. Requires `@TreeParent`                                                                      |
+| `adjacency-list`    | The `@TreeParent` join column. Requires `@TreeParent`                                                                      |
+| `materialized-path` | The segment before the last of the materialized path column, so `a.b.c` has parent `b`. Requires the path column           |
+| `nested-set`        | The nearest row whose left bound is below the row's and whose right bound is above it. Requires the left and right columns |
+
+The closure table itself is not read: a closure-table tree's parent comes
+from its `@TreeParent` column, as an adjacency list's does.
+
+#### Edges: `@Dag` and `@Graph`
+
+A `@Dag()` or `@Graph()` entity has one row per edge. Mark the class and its
+columns:
+
+- `@Dag()` marks a directed acyclic graph, whose edges run from source to target.
+- `@Graph()` marks a graph, directed unless `@Graph({ directed: false })`.
+- `@GraphSource()` and `@GraphTarget()` each mark exactly one column, the two
+  endpoints. Both are required.
+- `@GraphLabel()` and `@GraphWeight()` each optionally mark one column. A label
+  is drawn as text on its edge; a weight is drawn after the label.
+
+The decorators are exported from `@codebase/persistence`:
+
+```ts
+import { Column, Entity, PrimaryColumn } from "typeorm";
+
+import {
+  Dag,
+  GraphLabel,
+  GraphSource,
+  GraphTarget,
+  GraphWeight,
+} from "@codebase/persistence";
+
+/** Each row says its source task blocks its target task. */
+@Dag()
+@Entity({ name: "task_links" })
+export class TaskLink {
+  @PrimaryColumn({ type: "integer" })
+  id!: number;
+
+  @Column({ type: "text" })
+  @GraphSource()
+  source!: string;
+
+  @Column({ type: "text" })
+  @GraphTarget()
+  target!: string;
+
+  @Column({ nullable: true, type: "text" })
+  @GraphLabel()
+  label!: null | string;
+
+  @Column({ nullable: true, type: "double precision" })
+  @GraphWeight()
+  weight!: null | number;
+}
+```
+
+A class with neither `@Dag()` nor `@Graph()`, or with both, is refused, as is
+one with a missing or repeated endpoint or optional column. A subclass that
+redeclares a base class's endpoint under the same name counts once; under a
+new name it leaves two endpoints for one role, and is refused. The error names
+the class and the decorator.
+
+An endpoint is read as text, so node ids are the endpoint values as text. A
+declared column that is not a column of the entity fails once the connection
+is open.
+
+### Drawing trees
+
+`render-tree-data` reads the whole tree, then applies, in order: `--filter`,
+`--sort`, `--limit` and `--page`, then `--max-depth` and `--max-breadth`.
+
+- **Roots** are the rows whose parent is null or is not in the table. A row
+  whose parent is missing is drawn as a root and warned about, naming the
+  parent.
+- **`--filter`** keeps each matching row together with its ancestors and its
+  whole subtree, so a match shows where it sits.
+- **`--sort`** orders siblings and roots. Without it, rows follow the primary
+  key, which is a `uuidv7` in the caelundas tables and so roughly creation order.
+- **`--limit` and `--page`** page the roots, each with its descendants. Each
+  page is the next roots of the filtered, sorted forest.
+- **Caps** hide children beyond `--max-depth` or `--max-breadth`. Each capped
+  parent warns with its id and the count hidden.
+- Several `@Tree` entities without `--table` fail, naming each table, before
+  any connection opens.
+
+### Drawing DAGs and graphs
+
+`render-dag-data` and `render-graph-data` read the edge rows, one per edge from
+the source column to the target column, and apply the same options to them.
+The edge columns are read as text, and a row with a NULL endpoint is not drawn:
+it is counted in one warning per command run.
+
+- **Nodes** are the distinct endpoint values, labelled by the value, in the
+  order the sorted edges first name them.
+- **`--filter`** keeps edge rows. A node is drawn only if a kept edge touches it.
+- **`--sort`** orders edges. Edges then sort by source, target, and primary key,
+  so equal data always draws the same diagram. Edge order sets the order of
+  roots and of siblings.
+- **Roots** in a `@Dag` are the nodes no other kept edge targets; a self-loop
+  does not count. A `@Graph` then starts each node still unreached, smallest
+  first, so every component is reached. An undirected graph starts each
+  connected component at its smallest node.
+- **`--limit` and `--page`** page the roots in node order, each with every node
+  reachable from it. A `@Dag` component with no root, such as a cycle, is drawn
+  only without `--limit`.
+- **Cycles** in a `@Dag` warn once per cyclic component, naming its nodes in
+  sorted order, and are drawn as they are. A self-loop warns as well. A `@Graph`
+  may contain cycles, which draw with no warning.
+- **Undirected graphs** draw plain links, `---`. A link read from both ends is
+  one link: the first row in sort order is kept, with its label and weight, and
+  the other is dropped.
+- **Caps** count a node's level as its shortest distance from a root, so a node
+  reached by several paths is drawn once.
+- `render-dag-data` refuses a `@Graph` entity, and `render-graph-data` refuses a
+  `@Dag` one, each pointing to the other command.
+
+### Mermaid limits and truncation
+
+Mermaid draws at most 500 edges and 50,000 characters. The renderer warns when a
+diagram reaches 90% of either limit, and again when it passes one:
+
+| Count      | Warns "nearing" at | Warns "over" above |
+| ---------- | ------------------ | ------------------ |
+| Edges      | 450                | 500                |
+| Characters | 45,000             | 50,000             |
+
+The diagram is still drawn in full, and the warnings name the count and the
+limit. The edge count includes the truncation edges, and the character count is
+the length of the Mermaid text.
+
+A capped parent gets one truncation node, labelled `… K more` with a dashed grey
+box, under the parent with id `<parent>/more`. Each one warns with the parent's
+id, the number hidden, and the cap that hid them. Roots are drawn with a heavy
+blue border. Node ids in the diagram are short positional ids, and labels are
+escaped so a quote, pipe, angle bracket, or hash in a value cannot break the diagram.
+
+### Known limits
+
+- **Nested-set parents** are found with a correlated subquery per row, so the
+  cost grows with the square of the row count. Expect it to be slow beyond about
+  10,000 rows; this was not measured.
+- **The whole tree is read** before roots are paged. `--limit` reduces the
+  drawing, never the rows read. The rows are read level by level from the roots
+  in batches of 500, and then any row no level reached is read by id.
+- **A cycle in a tree** raises no warning. Under `--limit` its rows have no
+  root and are left out; without `--limit` they are drawn as they are.
+- **A weight that is not finite**, such as NaN or Infinity, is read as NULL and
+  drawn without a weight, with no warning.
+- **`<` and `>`** value and column-kind checks run after the connection opens.
+  Unknown column names, and `=`, `!=`, and `~=` on any column, are checked before.
+- **The `--source-uri`** is in argv, visible to `ps`, as it is for
+  `postgresql-export` and `postgresql-import`.
+- **Log lines share stdout** with the diagram, as described under output and
+  the streams above.
+
+### Example: the Caelundas tag tree
+
+The `render-tag-tree` target in `caelundas-db` runs `render-tree-data` over the
+`tags` table of `tag.entity.ts`, a closure-table tree, with the connection built
+from `CAELUNDAS_POSTGRES_*` in the shell:
+
+```bash
+nx run caelundas-db:render-tag-tree --args="--max-depth 2 --limit 3"
+```
+
+The target and its connection variables are described in the
+[caelundas-db README](../../caelundas/caelundas-db/README.md#drawing-the-tag-tree).
+The output below is a real run against the local container, with the target's
+`--max-depth 2 --limit 3`:
+
+```mermaid
+flowchart LR
+    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
+    classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5
+    n0["Aspect Harmonic"]
+    n1["Harmonic 4"]
+    n2["Aspect Nature"]
+    n3["Hard"]
+    n4["Body Class"]
+    n5["Asteroid"]
+    n6["Luminary"]
+    n7["Outer"]
+    n8["Personal"]
+    n9["Harmonic 3"]
+    n10["Soft"]
+    n11["Point"]
+    n12["Harmonic 6"]
+    n13["Harmonic 12"]
+    n14["Neutral"]
+    n15["Node"]
+    n16["Harmonic 1"]
+    n17["Harmonic 2"]
+    n18["Harmonic 10"]
+    n19["Social"]
+    n20["Harmonic 9"]
+    n21["Harmonic 5"]
+    n22["Harmonic 8"]
+    n23["Harmonic 7"]
+    n24["Harmonic 11"]
+    n0 --> n1
+    n2 --> n3
+    n4 --> n5
+    n4 --> n6
+    n4 --> n7
+    n4 --> n8
+    n0 --> n9
+    n2 --> n10
+    n4 --> n11
+    n0 --> n12
+    n0 --> n13
+    n2 --> n14
+    n4 --> n15
+    n0 --> n16
+    n0 --> n17
+    n0 --> n18
+    n4 --> n19
+    n0 --> n20
+    n0 --> n21
+    n0 --> n22
+    n0 --> n23
+    n0 --> n24
+    class n0 root
+    class n2 root
+    class n4 root
+```
+
+The three roots are the first three in primary-key order, and `--max-depth 2`
+draws their children without going deeper. A run with `--max-depth 2
+--max-breadth 2` and no `--limit` cuts each parent to two children, adds
+`… K more` nodes, and writes one warning per cut to stderr; that run was made
+too, and its warnings were read from stderr.
+
+The DAG and graph commands are shown with the illustrative entity above rather
+than a live run, since no local table holds edge rows.
 
 ## Test
 
