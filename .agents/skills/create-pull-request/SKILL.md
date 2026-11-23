@@ -110,8 +110,6 @@ not every one. Keep the labels in step: one `scope:*` label per scope named.
 | `reporting` | Pull request change report generation and the packages that diff and render it |
 | `scripts` | Shell and TypeScript scripts in scripts/ (sync, setup, utilities) |
 | `testing` | Vitest configuration, shared test utilities, and coverage setup |
-| `synchronization` | Commands that reconcile codebase files and generated repository configuration |
-| `validation` | Checks and gates for codebase and project invariants |
 
 <!-- scopes-end -->
 

@@ -225,16 +225,6 @@ const scopes = [
       "Vitest configuration, shared test utilities, and coverage setup",
     name: "testing",
   },
-  {
-    description:
-      "Commands that reconcile codebase files and generated repository configuration",
-    name: "synchronization",
-  },
-  {
-    description:
-      "Checks and gates for codebase and project invariants",
-    name: "validation",
-  },
 ];
 
 module.exports = { scopes, types };

@@ -46,7 +46,7 @@ printf '%s' "${CONTEXT}" | bash scripts/git/emit-session-hook-context.sh "<rerun
 
 An empty context is how the emitter learns the command could not run at all. With no finished install (`node_modules/.modules.yaml` absent) it directs the agent to run `pnpm install`; otherwise it directs the agent to the rerun command, whose error the shim discarded. Without `node` it stays silent, since nothing can be emitted.
 
-The command must therefore print nothing to standard output except the context, which is why the `synchronization` and `validation` command-line applications send their logs to standard error; a project hosting a new hook command must do the same. Which project a command belongs in follows each project's own rule: a `check` with a `write` belongs in `synchronization`, a one-sided check in `validation`.
+The command must therefore print nothing to standard output except the context, which is why the `integration` command-line application sends its logs to standard error; a new hook command must do the same. A check that has a `write` belongs beside the derivation it checks, and a one-sided check in `integration` as well.
 
 The signing and authentication hooks stay pure shell on purpose, since they must still work when `node_modules` is broken; see `installation/AGENTS.md`.
 

@@ -37,9 +37,8 @@ This project owns five commands, each backed by one service per concern:
   writes the pull request template into the skill files that embed it. It owns
   the template beside `pull-request`'s body check, and needs no token.
 
-Keep codebase-file reconciliation in `synchronization` (the pull request
-template is the exception, owned here) and codebase-only checks in
-`validation`.
+Codebase-file reconciliation and codebase-only checks live in `integration`,
+not here (the pull request template is the exception, owned here).
 
 ## Architecture Overview
 

@@ -84,8 +84,6 @@ This skill teaches how to name Git branches for this codebase. All branch names 
 | `reporting` | Pull request change report generation and the packages that diff and render it |
 | `scripts` | Shell and TypeScript scripts in scripts/ (sync, setup, utilities) |
 | `testing` | Vitest configuration, shared test utilities, and coverage setup |
-| `synchronization` | Commands that reconcile codebase files and generated repository configuration |
-| `validation` | Checks and gates for codebase and project invariants |
 
 <!-- scopes-end -->
 
