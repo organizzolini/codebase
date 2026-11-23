@@ -11,9 +11,11 @@ import {
 } from "@codebase/meanderaw-db";
 
 import { MeanderFilterPlanService } from "../filters/meander-filter-plan.service";
-import { MeanderFilterOperator } from "../filters/meander-filter-rule.entities";
 
-import { AGGREGATE_SHAPE_FIELDS } from "./meander-aggregate.constants";
+import {
+  AGGREGATE_SHAPE_FIELDS,
+  MAXIMUM_SHAPE_ROWS,
+} from "./meander-aggregate.constants";
 
 import type { MeanderFilterRule } from "../filters/meander-filter.types";
 import type {
@@ -128,15 +130,8 @@ export class MeanderAggregateService {
     };
   }
 
-  /** Whether a shape satisfies a rule; the lattice takes only eq or ne, so non-eq reads as ne. */
+  /** Whether a shape satisfies a rule on its rows or its columns. */
   private shapeHolds(rule: MeanderFilterRule, shape: AggregateShape): boolean {
-    if (rule.field === "lattice") {
-      return (
-        (rule.operator === MeanderFilterOperator.EQ) ===
-        (shape.lattice === rule.text)
-      );
-    }
-
     return this.planService.holds(
       rule,
       rule.field === "rows" ? shape.rows : shape.columns,
@@ -151,10 +146,10 @@ export class MeanderAggregateService {
     );
   }
 
-  /** The key a shape counts under for a shape field: a number, a lattice, or RxC. */
+  /** The key a shape counts under for a shape field: a number, or RxC. */
   private shapeKey(
     shape: AggregateShape,
-    field: "columns" | "lattice" | "rows" | "rowsColumns",
+    field: "columns" | "rows" | "rowsColumns",
   ): string {
     return field === "rowsColumns"
       ? `${shape.rows}x${shape.columns}`
@@ -187,7 +182,7 @@ export class MeanderAggregateService {
     };
   }
 
-  /** Runs `work` in one snapshot once the marker agrees with the shapes; else null. */
+  /** Runs `work` in one snapshot if the marker and a small shape table agree, checked before any shape is read; else null. */
   private async snapshot<T>(
     work: (
       manager: EntityManager,
@@ -196,13 +191,23 @@ export class MeanderAggregateService {
   ): Promise<null | T> {
     return this.dataSource.transaction("REPEATABLE READ", async (manager) => {
       const marker = await manager.findOneBy(AggregateMarker, { id: 1 });
-      const shapes = await manager.getRepository(ShapeCount).find();
 
-      return marker === null ||
-        shapes.length === 0 ||
-        marker.meanderCount !== this.sum(shapes)
-        ? null
-        : work(manager, shapes);
+      if (marker === null || marker.meanderCount === 0) {
+        return null;
+      }
+
+      const repository = manager.getRepository(ShapeCount);
+      const count = await repository.count();
+
+      if (count === 0 || count > MAXIMUM_SHAPE_ROWS) {
+        return null;
+      }
+
+      const shapes = await repository.find();
+
+      return marker.meanderCount === this.sum(shapes)
+        ? work(manager, shapes)
+        : null;
     });
   }
 
@@ -232,17 +237,18 @@ export class MeanderAggregateService {
 
   // 🌎 Public Methods
 
-  /**
-   * The count of each shape key (`rows`, `columns`, `rowsColumns` or `lattice`) among the
-   * meanders a filter keeps; null when no table covers it.
-   */
+  /** The count of each shape key among the meanders a filter keeps; null when no table covers it, as the lattice. */
   async shapeCounts(
     filter: AggregateFilter,
     field: "columns" | "lattice" | "rows" | "rowsColumns",
   ): Promise<Map<string, number> | null> {
     const scope = this.classify(filter);
 
-    if (scope === null || scope.kind === "characteristic") {
+    if (
+      field === "lattice" ||
+      scope === null ||
+      scope.kind === "characteristic"
+    ) {
       return null;
     }
 

@@ -21,8 +21,8 @@ type Tables = Map<unknown, readonly object[]>;
 
 /** Two shapes holding ten meanders in all. */
 const SHAPES = [
-  { columns: 1, lattice: "0", meanderCount: 4, rows: 1 },
-  { columns: 2, lattice: "1", meanderCount: 6, rows: 2 },
+  { columns: 1, meanderCount: 4, rows: 1 },
+  { columns: 2, meanderCount: 6, rows: 2 },
 ];
 
 const JUNCTION = { id: 1, valueType: "number" } as Characteristic;
@@ -50,7 +50,12 @@ async function buildService(
       await Promise.resolve(rows(entity)[0] ?? null),
     getRepository: (
       entity: unknown,
-    ): { find: () => Promise<readonly object[]> } => ({
+    ): {
+      count: () => Promise<number>;
+      find: () => Promise<readonly object[]>;
+    } => ({
+      count: async (): Promise<number> =>
+        await Promise.resolve(rows(entity).length),
       find: async (): Promise<readonly object[]> =>
         await Promise.resolve(rows(entity)),
     }),
@@ -287,5 +292,73 @@ describe(MeanderAggregateService, () => {
       ]),
     );
     await expect(service.valueCounts(absent, { id: 1 })).resolves.toBeNull();
+  });
+
+  it("answers nothing from a shape table too large to be a summary", async () => {
+    expect.hasAssertions();
+
+    const { service } = await buildService(
+      new Map<unknown, readonly object[]>([
+        [AggregateMarker, [{ id: 1, meanderCount: 10 }]],
+        [
+          ShapeCount,
+          Array.from({ length: 10_001 }, (_, rows) => ({
+            columns: 1,
+            meanderCount: 1,
+            rows,
+          })),
+        ],
+      ]),
+    );
+
+    await expect(service.total(null)).resolves.toBeNull();
+  });
+
+  it("answers shape counts by rows, columns and rows with columns, but never by lattice", async () => {
+    expect.hasAssertions();
+
+    const { service } = await buildService(built());
+
+    await expect(service.shapeCounts(null, "rows")).resolves.toStrictEqual(
+      new Map([
+        ["1", 4],
+        ["2", 6],
+      ]),
+    );
+    await expect(
+      service.shapeCounts(null, "rowsColumns"),
+    ).resolves.toStrictEqual(
+      new Map([
+        ["1x1", 4],
+        ["2x2", 6],
+      ]),
+    );
+    await expect(service.shapeCounts(null, "lattice")).resolves.toBeNull();
+  });
+
+  it("leaves a rule on the lattice to the live count", async () => {
+    expect.hasAssertions();
+
+    const { service, transaction } = await buildService(built());
+    const base = ruleFilter(JUNCTION, MeanderFilterOperator.EQ, [0]);
+
+    await expect(
+      service.total({
+        ...base,
+        tree: {
+          ...base.tree,
+          rules: [
+            {
+              field: "lattice",
+              flag: null,
+              numbers: [],
+              operator: MeanderFilterOperator.EQ,
+              text: "0",
+            },
+          ],
+        },
+      }),
+    ).resolves.toBeNull();
+    expect(transaction).not.toHaveBeenCalled();
   });
 });

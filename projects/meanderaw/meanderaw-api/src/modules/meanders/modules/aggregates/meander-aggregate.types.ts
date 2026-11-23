@@ -19,10 +19,9 @@ export type AggregateScope =
   | { readonly kind: "all" }
   | { readonly kind: "shape"; readonly rules: readonly MeanderFilterRule[] };
 
-/** The rows, columns and lattice that key a shape count. */
+/** The rows and columns that key a shape count. */
 export interface AggregateShape {
   readonly columns: number;
-  readonly lattice: string;
   readonly rows: number;
 }
 

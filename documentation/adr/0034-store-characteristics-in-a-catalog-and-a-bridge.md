@@ -43,8 +43,8 @@ Four tables hold the counts, each keyed by what it counts and holding only true 
 
 - **`characteristic_value_counts`** holds `(characteristicId, value, meanderCount)`.
 - **`characteristic_pair_counts`** holds a true boolean characteristic and its value (always 1), crossed with any characteristic and its value.
-- **`characteristic_shape_counts`** holds `(rows, columns, lattice)` crossed with a characteristic and its value.
-- **`shape_counts`** holds each shape's total.
+- **`characteristic_shape_counts`** holds `(rows, columns)` crossed with a characteristic and its value.
+- **`shape_counts`** holds each shape's total, a shape being its rows and columns. The lattice is nearly unique to each meander, so keying by it made these tables as large as the meanders; migration 1795000000000 keyed them by rows and columns.
 
 A reader derives the 0 or false bucket as the shape total minus the stored rows, so the missing-means-zero rule holds here too. The tables carry no foreign keys, since a rebuild replaces them whole.
 

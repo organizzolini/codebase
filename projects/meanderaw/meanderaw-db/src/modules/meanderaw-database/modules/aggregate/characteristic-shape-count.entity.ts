@@ -4,7 +4,7 @@ import { BIGINT_NUMBER_TRANSFORMER } from "../../meanderaw-database.constants";
 
 /**
  * One row of `characteristic_shape_counts`: how many meanders of one shape
- * (rows, columns, lattice) hold one characteristic at one value. The 0 or
+ * (rows, columns) hold one characteristic at one value. The 0 or
  * false bucket is the shape's total minus these. Rebuilt whole by the
  * aggregate step.
  */
@@ -22,12 +22,6 @@ export class CharacteristicShapeCount {
     type: "bigint",
   })
   columns!: number;
-
-  @PrimaryColumn({
-    primaryKeyConstraintName: "PK_characteristic_shape_counts",
-    type: "text",
-  })
-  lattice!: string;
 
   @Column({ transformer: BIGINT_NUMBER_TRANSFORMER, type: "bigint" })
   meanderCount!: number;

@@ -147,24 +147,39 @@ describe(MeanderawDatabaseAggregatesService, () => {
 
       await expect(
         dataSource.query<unknown[]>(
-          `SELECT rows::int, columns::int, lattice, meander_count::int AS count FROM meanderaw.shape_counts ORDER BY rows`,
+          `SELECT rows::int, columns::int, meander_count::int AS count FROM meanderaw.shape_counts ORDER BY rows`,
         ),
       ).resolves.toStrictEqual([
-        { columns: 1, count: 3, lattice: "0", rows: 2 },
-        { columns: 1, count: 2, lattice: "1", rows: 3 },
+        { columns: 1, count: 3, rows: 2 },
+        { columns: 1, count: 2, rows: 3 },
       ]);
       await expect(
         rowsOf(
           "characteristic_shape_counts",
-          "counts.rows || '|' || counts.lattice || '|' || first.key || '|' || counts.value || '|' || counts.meander_count",
+          "counts.rows || '|' || first.key || '|' || counts.value || '|' || counts.meander_count",
         ),
       ).resolves.toStrictEqual([
-        "2|0|cornerCount|2|2",
-        "2|0|cornerCount|3|1",
-        "2|0|isA|1|2",
-        "2|0|isB|1|1",
-        "3|1|density|0.5|1",
-        "3|1|isB|1|1",
+        "2|cornerCount|2|2",
+        "2|cornerCount|3|1",
+        "2|isA|1|2",
+        "2|isB|1|1",
+        "3|density|0.5|1",
+        "3|isB|1|1",
+      ]);
+    });
+
+    it("keeps one row per rows and columns, however many lattices the meanders have", async () => {
+      await service.save(meanderRecord({ code: "c7", lattice: "7", rows: 2 }));
+      await service.save(meanderRecord({ code: "c8", lattice: "8", rows: 2 }));
+      await aggregates.rebuild();
+
+      await expect(
+        dataSource.query<unknown[]>(
+          `SELECT rows::int, columns::int, meander_count::int AS count FROM meanderaw.shape_counts ORDER BY rows`,
+        ),
+      ).resolves.toStrictEqual([
+        { columns: 1, count: 5, rows: 2 },
+        { columns: 1, count: 2, rows: 3 },
       ]);
     });
 

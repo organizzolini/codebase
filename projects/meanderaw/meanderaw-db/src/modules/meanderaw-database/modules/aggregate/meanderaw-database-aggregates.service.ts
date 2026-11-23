@@ -104,15 +104,15 @@ export class MeanderawDatabaseAggregatesService {
       await this.swap(
         manager,
         CharacteristicShapeCount,
-        `SELECT bridge.characteristic_id, meander.columns, meander.lattice, COUNT(*) AS meander_count, meander.rows, bridge.value
+        `SELECT bridge.characteristic_id, meander.columns, COUNT(*) AS meander_count, meander.rows, bridge.value
          FROM ${bridge} bridge
          JOIN ${meanders} meander ON meander.id = bridge.meander_id
-         GROUP BY bridge.characteristic_id, meander.columns, meander.lattice, meander.rows, bridge.value`,
+         GROUP BY bridge.characteristic_id, meander.columns, meander.rows, bridge.value`,
       );
       await this.swap(
         manager,
         ShapeCount,
-        `SELECT columns, lattice, COUNT(*) AS meander_count, rows FROM ${meanders} GROUP BY columns, lattice, rows`,
+        `SELECT columns, COUNT(*) AS meander_count, rows FROM ${meanders} GROUP BY columns, rows`,
       );
       await manager.query(
         `UPDATE ${catalog} catalog SET meander_count = COALESCE(
