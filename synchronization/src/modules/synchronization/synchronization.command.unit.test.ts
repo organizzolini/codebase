@@ -12,7 +12,6 @@ import { InstalledSkillsCommand } from "../installed-skills/installed-skills.com
 import { PackageManifestsCommand } from "../package-manifests/package-manifests.command";
 import { PullRequestTemplateCommand } from "../pull-request-template/pull-request-template.command";
 import { SkillExclusionsCommand } from "../skill-exclusions/skill-exclusions.command";
-import { TypeormMigrationSqlCommand } from "../typeorm-migration-sql/typeorm-migration-sql.command";
 import { VscodeExtensionsCommand } from "../vscode-extensions/vscode-extensions.command";
 
 import { SynchronizationCommand } from "./synchronization.command";
@@ -67,12 +66,6 @@ const moduleOptions = {
       }),
     },
     {
-      provide: TypeormMigrationSqlCommand,
-      useValue: createMock<TypeormMigrationSqlCommand>({
-        synchronizationLabel: "typeorm-migration-sql",
-      }),
-    },
-    {
       provide: VscodeExtensionsCommand,
       useValue: createMock<VscodeExtensionsCommand>({
         synchronizationLabel: "vscode-extensions",
@@ -91,7 +84,6 @@ describe(SynchronizationCommand, () => {
   let packageManifests: PackageManifestsCommand;
   let pullRequestTemplate: PullRequestTemplateCommand;
   let skillExclusions: SkillExclusionsCommand;
-  let typeormMigrationSql: TypeormMigrationSqlCommand;
   let vscodeExtensions: VscodeExtensionsCommand;
 
   /** The delegates in the order the aggregate reports them. */
@@ -104,7 +96,6 @@ describe(SynchronizationCommand, () => {
       packageManifests,
       pullRequestTemplate,
       skillExclusions,
-      typeormMigrationSql,
       vscodeExtensions,
     ];
   }
@@ -137,9 +128,6 @@ describe(SynchronizationCommand, () => {
       PullRequestTemplateCommand,
     );
     skillExclusions = await built.module.resolve(SkillExclusionsCommand);
-    typeormMigrationSql = await built.module.resolve(
-      TypeormMigrationSqlCommand,
-    );
     vscodeExtensions = await built.module.resolve(VscodeExtensionsCommand);
   });
 
@@ -245,7 +233,6 @@ describe(SynchronizationCommand, () => {
 
     expect(installedSkills.synchronize).toHaveBeenCalledWith("check");
     expect(skillExclusions.synchronize).toHaveBeenCalledWith("check");
-    expect(typeormMigrationSql.synchronize).toHaveBeenCalledWith("check");
     expect(vscodeExtensions.synchronize).toHaveBeenCalledWith("check");
   });
 

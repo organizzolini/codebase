@@ -4,6 +4,4 @@
 
 The words this project uses, regenerated with this project's `coinagerie-check:write` Nx target.
 
-- **gamma**:
-
 <!-- coinagerie:end -->

@@ -10,13 +10,11 @@ import {
 } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { SynchronizationService } from "../synchronization/synchronization.service";
-
 import { TypeormMigrationSqlExtractorService } from "./typeorm-migration-sql-extractor.service";
 import { TypeormMigrationSqlCommand } from "./typeorm-migration-sql.command";
 
 const moduleOptions = {
-  providers: [SynchronizationService, TypeormMigrationSqlExtractorService],
+  providers: [TypeormMigrationSqlExtractorService],
 };
 
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";

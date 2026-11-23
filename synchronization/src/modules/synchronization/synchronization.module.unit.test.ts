@@ -13,7 +13,6 @@ import { InstalledSkillsModule } from "../installed-skills/installed-skills.modu
 import { ProjectPortsModule } from "../project-ports/project-ports.module";
 import { PullRequestTemplateModule } from "../pull-request-template/pull-request-template.module";
 import { SkillExclusionsModule } from "../skill-exclusions/skill-exclusions.module";
-import { TypeormMigrationSqlModule } from "../typeorm-migration-sql/typeorm-migration-sql.module";
 import { VscodeExtensionsModule } from "../vscode-extensions/vscode-extensions.module";
 import { VscodeSettingsModule } from "../vscode-settings/vscode-settings.module";
 
@@ -35,7 +34,6 @@ describe(SynchronizationModule, () => {
       ProjectPortsModule,
       PullRequestTemplateModule,
       SkillExclusionsModule,
-      TypeormMigrationSqlModule,
       VscodeExtensionsModule,
       VscodeSettingsModule,
     );

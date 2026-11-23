@@ -10,7 +10,6 @@ import { PackageManifestsModule } from "../package-manifests/package-manifests.m
 import { ProjectPortsModule } from "../project-ports/project-ports.module";
 import { PullRequestTemplateModule } from "../pull-request-template/pull-request-template.module";
 import { SkillExclusionsModule } from "../skill-exclusions/skill-exclusions.module";
-import { TypeormMigrationSqlModule } from "../typeorm-migration-sql/typeorm-migration-sql.module";
 import { VscodeExtensionsModule } from "../vscode-extensions/vscode-extensions.module";
 import { VscodeSettingsModule } from "../vscode-settings/vscode-settings.module";
 
@@ -39,7 +38,6 @@ import { SynchronizationService } from "./synchronization.service";
     ProjectPortsModule,
     PullRequestTemplateModule,
     SkillExclusionsModule,
-    TypeormMigrationSqlModule,
     VscodeExtensionsModule,
     VscodeSettingsModule,
   ],

@@ -5,6 +5,7 @@ import { LoggerModule } from "@codebase/observability";
 
 import { PostgresqlExportModule } from "./modules/postgresql-export/postgresql-export.module";
 import { PostgresqlImportModule } from "./modules/postgresql-import/postgresql-import.module";
+import { TypeormMigrationSqlModule } from "./modules/typeorm-migration-sql/typeorm-migration-sql.module";
 
 /**
  * Root module of the database command line. Each command names its
@@ -18,6 +19,7 @@ import { PostgresqlImportModule } from "./modules/postgresql-import/postgresql-i
     LoggerModule,
     PostgresqlExportModule,
     PostgresqlImportModule,
+    TypeormMigrationSqlModule,
   ],
 })
 export class MainModule {}

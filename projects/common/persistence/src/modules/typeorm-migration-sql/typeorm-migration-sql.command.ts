@@ -3,21 +3,17 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { SynchronizationService } from "../synchronization/synchronization.service";
-
 import { TypeormMigrationSqlExtractorService } from "./typeorm-migration-sql-extractor.service";
 
 import type {
-  SynchronizableCommand,
-  SynchronizationMode,
-} from "../synchronization/synchronization.types";
-import type {
+  TypeormMigrationMode,
   TypeormMigrationSelection,
   TypeormMigrationSqlCommandOptions,
 } from "./typeorm-migration-sql.types";
 
 /**
- * Synchronizes extracted SQL files from TypeORM migrations.
+ * Checks or writes the SQL extracted from TypeORM migrations, one `-up.sql` and
+ * `-down.sql` pair per migration.
  */
 @Command({
   aliases: ["extract-typeorm-migration-sql"],
@@ -25,15 +21,11 @@ import type {
   name: "typeorm-migration-sql",
 })
 @Injectable()
-export class TypeormMigrationSqlCommand
-  extends CommandRunner
-  implements SynchronizableCommand
-{
+export class TypeormMigrationSqlCommand extends CommandRunner {
   // 🏗 Dependency Injection
 
   constructor(
     private readonly logger: LoggerService,
-    private readonly synchronizationModeService: SynchronizationService,
     private readonly extractorService: TypeormMigrationSqlExtractorService,
   ) {
     super();
@@ -44,9 +36,21 @@ export class TypeormMigrationSqlCommand
 
   // 🔑 Public Fields
 
-  readonly synchronizationLabel = "typeorm-migration-sql";
-
   // 🔏 Private Methods
+
+  /** Resolves the `check` or `write` argument, exiting with status 1 on any other value. */
+  private resolveMode(passedParameters: string[]): TypeormMigrationMode {
+    const [modeValue = "check"] = passedParameters;
+    if (modeValue === "check" || modeValue === "write") return modeValue;
+
+    this.logger.error("🚦 Rejected an unusable mode", undefined, {
+      mode: modeValue,
+      reason: "Invalid mode",
+      usage:
+        "💡 Usage: nx run persistence:typeorm-migration-sql:check (or persistence:typeorm-migration-sql:write)",
+    });
+    return process.exit(1);
+  }
 
   // 🌎 Public Methods
 
@@ -105,23 +109,16 @@ export class TypeormMigrationSqlCommand
     passedParameters: string[],
     options: TypeormMigrationSqlCommandOptions = {},
   ): Promise<void> {
-    const mode =
-      this.synchronizationModeService.resolveSynchronizationModeOrExit({
-        invalidModeLabel: "Invalid mode",
-        loggerService: this.logger,
-        passedParameters,
-        usageMessage:
-          "💡 Usage: nx run synchronization:typeorm-migration-sql:check (or synchronization:typeorm-migration-sql:write)",
-      });
+    const mode = this.resolveMode(passedParameters);
 
     if (!(await this.synchronize(mode, options))) {
       process.exit(1);
     }
   }
 
-  /** Synchronizes extracted migration SQL and reports success without exiting. */
+  /** Checks or writes extracted migration SQL and reports success without exiting. */
   async synchronize(
-    mode: SynchronizationMode,
+    mode: TypeormMigrationMode,
     options: TypeormMigrationSqlCommandOptions = {},
   ): Promise<boolean> {
     return this.extractorService.synchronize({

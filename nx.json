@@ -603,11 +603,11 @@
       "cache": false,
       "configurations": {
         "extract-sql-all": {
-          "command": "node --import @swc-node/register/esm-register synchronization/src/synchronization.main.ts extract-typeorm-migration-sql write --project-root={projectRoot} --selection=all",
+          "command": "node --import @swc-node/register/esm-register projects/common/persistence/src/persistence.main.ts typeorm-migration-sql write --project-root={projectRoot} --selection=all",
           "cwd": "{workspaceRoot}"
         },
         "extract-sql-latest": {
-          "command": "node --import @swc-node/register/esm-register synchronization/src/synchronization.main.ts extract-typeorm-migration-sql write --project-root={projectRoot} --selection=latest",
+          "command": "node --import @swc-node/register/esm-register projects/common/persistence/src/persistence.main.ts typeorm-migration-sql write --project-root={projectRoot} --selection=latest",
           "cwd": "{workspaceRoot}"
         },
         "generate": {

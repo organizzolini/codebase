@@ -6,13 +6,13 @@ Call stacks traced through `synchronization`, deepest first. Each frame shows wh
 
 | Measure | Value |
 | --- | --- |
-| Callables | 306 |
-| Files | 69 |
-| Calls traced | 304 |
-| Call stacks | 18 |
-| Deepest stack | 10 |
+| Callables | 251 |
+| Files | 64 |
+| Calls traced | 262 |
+| Call stacks | 15 |
+| Deepest stack | 9 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 15 |
+| Unfollowable calls | 13 |
 
 ### Limits
 
@@ -25,29 +25,7 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Call stacks (depth)
 
-**1. `TypeormMigrationSqlCommand.run`** — depth 10 · decorated-method
-
-```text
-🚀 TypeormMigrationSqlCommand.run(…): Promise<void> [synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql.command.ts:104]
-   ↳ Runs the typeorm-migration-sql sync command in check or write mode.
-  └─> TypeormMigrationSqlCommand.synchronize(…): Promise<boolean> [synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql.command.ts:123]
-     ↳ Synchronizes extracted migration SQL and reports success without exiting.
-    └─> TypeormMigrationSqlExtractorService.synchronize(…): Promise<boolean> [synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:417]
-       ↳ Synchronizes extracted SQL in check or write mode.
-      └─> TypeormMigrationSqlExtractorService.targets(…): Promise<TypeormMigrationProjectTarget[]> [synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:472]
-         ↳ Every configured migration target in the workspace or one explicit target.
-        └─> TypeormMigrationSqlExtractorService.projectJsonPaths(): Promise<string[]> [synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:171]
-           ↳ Every project.json one or two levels under the workspace projects/ directory.
-          └─> TypeormMigrationSqlExtractorService.map(…)(entry: Dirent<string>): Promise<string[]> [synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:176]
-            └─> TypeormMigrationSqlExtractorService.projectJsonPathsForDirectory(directoryPath: string): Promise<string[]> [synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:184]
-               ↳ project.json paths found in one top-level projects/<name> directory.
-              └─> TypeormMigrationSqlExtractorService.map(…)(entry: Dirent<string>): Promise<string | undefined> [synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:196]
-                └─> TypeormMigrationSqlExtractorService.projectJsonPath(directoryPath: string): Promise<string | undefined> [synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:159]
-                   ↳ project.json path in one directory, or undefined when absent.
-                  └─> TypeormMigrationSqlExtractorService.some(…)(entry: Dirent<string>): boolean [synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:164]
-```
-
-**2. `ConventionalConfigCommand.run`** — depth 9 · decorated-method
+**1. `ConventionalConfigCommand.run`** — depth 9 · decorated-method
 
 ```text
 🚀 ConventionalConfigCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [synchronization/src/modules/conventional-config/conventional-config.command.ts:51]
@@ -70,7 +48,7 @@ What this project is judged against, as declared in its own `callidescope.config
                    ↳ Extracts text content between named HTML comment markers.
 ```
 
-**3. `InstalledSkillsCommand.run`** — depth 9 · decorated-method
+**2. `InstalledSkillsCommand.run`** — depth 9 · decorated-method
 
 ```text
 🚀 InstalledSkillsCommand.run(passedParameters: string[]): Promise<void> [synchronization/src/modules/installed-skills/installed-skills.command.ts:179]
@@ -92,10 +70,7 @@ What this project is judged against, as declared in its own `callidescope.config
                    ↳ Runs one process to completion in the current directory, returning whether it started and its exit status.
 ```
 
-<details>
-<summary>15 more call stacks</summary>
-
-**4. `ProjectPortsCommand.run`** — depth 8 · decorated-method
+**3. `ProjectPortsCommand.run`** — depth 8 · decorated-method
 
 ```text
 🚀 ProjectPortsCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [synchronization/src/modules/project-ports/project-ports.command.ts:248]
@@ -113,7 +88,10 @@ What this project is judged against, as declared in its own `callidescope.config
               └─> ProjectPortsService.map(…)(line: string): string [synchronization/src/modules/project-ports/project-ports.service.ts:39]
 ```
 
-**5. `ConformetryGeneratorsCommand.run`** — depth ≥ 7 · decorated-method
+<details>
+<summary>12 more call stacks</summary>
+
+**4. `ConformetryGeneratorsCommand.run`** — depth ≥ 7 · decorated-method
 
 ```text
 🚀 ConformetryGeneratorsCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:184]
@@ -131,7 +109,7 @@ What this project is judged against, as declared in its own `callidescope.config
                ↳ Drops the hooks a generator left unset, rather than carrying them as explicit `undefined`, so what a host forwards is…
 ```
 
-**6. `VscodeExtensionsCommand.run`** — depth 7 · decorated-method
+**5. `VscodeExtensionsCommand.run`** — depth 7 · decorated-method
 
 ```text
 🚀 VscodeExtensionsCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:187]
@@ -149,7 +127,7 @@ What this project is judged against, as declared in its own `callidescope.config
                ↳ Whether two lists hold the same entries, in any order.
 ```
 
-**7. `PackageManifestsCommand.run`** — depth 6 · decorated-method
+**6. `PackageManifestsCommand.run`** — depth 6 · decorated-method
 
 ```text
 🚀 PackageManifestsCommand.run(passedParameters: string[]): Promise<void> [synchronization/src/modules/package-manifests/package-manifests.command.ts:50]
@@ -165,7 +143,7 @@ What this project is judged against, as declared in its own `callidescope.config
           └─> PackageManifestsService.toSorted(…)(leftKey: string, rightKey: string): number [synchronization/src/modules/package-manifests/package-manifests.service.ts:85]
 ```
 
-**8. `PullRequestTemplateCommand.run`** — depth 6 · decorated-method
+**7. `PullRequestTemplateCommand.run`** — depth 6 · decorated-method
 
 ```text
 🚀 PullRequestTemplateCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [synchronization/src/modules/pull-request-template/pull-request-template.command.ts:202]
@@ -181,23 +159,23 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Extracts the content between start and end marker comments from a file.
 ```
 
-**9. `SkillExclusionsCommand.run`** — depth ≥ 6 · decorated-method
+**8. `SkillExclusionsCommand.run`** — depth ≥ 6 · decorated-method
 
 ```text
-🚀 SkillExclusionsCommand.run(passedParameters: string[]): Promise<void> [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:173]
+🚀 SkillExclusionsCommand.run(passedParameters: string[]): Promise<void> [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:158]
    ↳ Runs the skill-exclusions sync command in check or write mode.
-  └─> SkillExclusionsCommand.synchronize(mode: SynchronizationMode): Promise<boolean> [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:188]
+  └─> SkillExclusionsCommand.synchronize(mode: SynchronizationMode): Promise<boolean> [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:173]
      ↳ Synchronizes the exclusion lists and reports success without exiting.
-    └─> SkillExclusionsCommand.findStaleFiles(inputs: SkillExclusionInputs): string[] [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:63]
+    └─> SkillExclusionsCommand.findStaleFiles(inputs: SkillExclusionInputs): string[] [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:62]
        ↳ Every file whose generated block differs from what the lockfile implies.
-      └─> SkillExclusionsCommand.filter(…)(file: SkillExclusionFile): boolean [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:64]
-        └─> SkillExclusionsCommand.readExclusionFile(…): { afterMarker: string; beforeMarker: string; generatedContent: string; } [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:72]
+      └─> SkillExclusionsCommand.filter(…)(file: SkillExclusionFile): boolean [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:63]
+        └─> SkillExclusionsCommand.readExclusionFile(…): { afterMarker: string; beforeMarker: string; generatedContent: string; } [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:71]
            ↳ Splits one exclusion file around its generated block.
-          └─> SkillExclusionsCommand.renderStartMarker(file: SkillExclusionFile): string [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:146]
+          └─> SkillExclusionsCommand.renderStartMarker(file: SkillExclusionFile): string [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:132]
              ↳ The comment opening this file's generated block, in its own syntax.
 ```
 
-**10. `DevcontainerConfigurationCommand.run`** — depth 5 · decorated-method
+**9. `DevcontainerConfigurationCommand.run`** — depth 5 · decorated-method
 
 ```text
 🚀 DevcontainerConfigurationCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.command.ts:257]
@@ -212,7 +190,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Returns true if the feature key refers to a Docker-in-Docker or Docker-outside-of-Docker feature.
 ```
 
-**11. `VscodeSettingsCommand.run`** — depth 4 · decorated-method
+**10. `VscodeSettingsCommand.run`** — depth 4 · decorated-method
 
 ```text
 🚀 VscodeSettingsCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [synchronization/src/modules/vscode-settings/vscode-settings.command.ts:101]
@@ -225,10 +203,10 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Returns true when the provided value is a supported synchronization mode.
 ```
 
-**12. `SynchronizationCommand.run`** — depth ≥ 4 · decorated-method
+**11. `SynchronizationCommand.run`** — depth ≥ 4 · decorated-method
 
 ```text
-🚀 SynchronizationCommand.run(passedParameters: string[]): Promise<void> [synchronization/src/modules/synchronization/synchronization.command.ts:112]
+🚀 SynchronizationCommand.run(passedParameters: string[]): Promise<void> [synchronization/src/modules/synchronization/synchronization.command.ts:109]
    ↳ Runs every synchronization, exiting once if any reported drift.
   └─> SynchronizationService.resolveSynchronizationModeOrExit(options: SynchronizationModeResolutionOptions): SynchronizationMode [synchronization/src/modules/synchronization/synchronization.service.ts:59]
      ↳ Resolves synchronization mode or exits the process when the mode is invalid.
@@ -238,7 +216,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Returns true when the provided value is a supported synchronization mode.
 ```
 
-**13. `run`** — depth 4 · orphan-root
+**12. `run`** — depth 4 · orphan-root
 
 ```text
 🚀 run(command: ProcessCommand): ProcessResult [synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:65]
@@ -247,27 +225,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> isLockfileDirty(): boolean [synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:38]
 ```
 
-**14. `TypeormMigrationSqlExtractorService.visit`** — depth 3 · orphan-root
-
-```text
-🚀 TypeormMigrationSqlExtractorService.visit(node: ts.Node): void [synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:310]
-  └─> TypeormMigrationSqlExtractorService.sqlFromQueryCall(…): string | undefined [synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:237]
-     ↳ One migration SQL statement text extracted from a query call node.
-    └─> TypeormMigrationSqlExtractorService.sqlLiteral(…): string | undefined [synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:260]
-       ↳ SQL text from a query argument literal.
-```
-
-**15. `TypeormMigrationSqlExtractorService.visit`** — depth 3 · orphan-root
-
-```text
-🚀 TypeormMigrationSqlExtractorService.visit(node: ts.Node): void [synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:332]
-  └─> TypeormMigrationSqlExtractorService.statementsFromClass(…): MigrationSqlStatements | undefined [synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:279]
-     ↳ SQL statements extracted from a migration class declaration node.
-    └─> TypeormMigrationSqlExtractorService.statementsFromMethod(…): string[] [synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:304]
-       ↳ SQL statements extracted from one migration method body.
-```
-
-**16. `SynchronizationMarkersService.extractContent`** — depth 3 · orphan-root
+**13. `SynchronizationMarkersService.extractContent`** — depth 3 · orphan-root
 
 ```text
 🚀 SynchronizationMarkersService.extractContent(content: string, markerName: string): string | undefined [synchronization/src/modules/synchronization/synchronization-markers.service.ts:44]
@@ -278,7 +236,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Renders the opening marker comment for a marker name.
 ```
 
-**17. `SynchronizationMarkersService.replaceContent`** — depth 3 · orphan-root
+**14. `SynchronizationMarkersService.replaceContent`** — depth 3 · orphan-root
 
 ```text
 🚀 SynchronizationMarkersService.replaceContent(content: string, markerName: string, replacement: string): string [synchronization/src/modules/synchronization/synchronization-markers.service.ts:65]
@@ -289,7 +247,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Renders the opening marker comment for a marker name.
 ```
 
-**18. `lockSkills`** — depth 2 · orphan-root
+**15. `lockSkills`** — depth 2 · orphan-root
 
 ```text
 🚀 lockSkills(workspace: string, skillNames: string[]): void [synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:86]
@@ -308,7 +266,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `ConventionalConfigIoService.writeReleaseConfigSync` | 6 | `ConventionalConfigIoService.map(…)`, `ConventionalConfigIoService.filter(…)`, `ConventionalConfigIoService.getReleaseRulesTypes`, `ConventionalConfigIoService.getPresetConfigTypes`, `ConventionalConfigIoService.appendToReleaseRules`, `ConventionalConfigIoService.appendToPresetTypes` | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:290` |
 
 <details>
-<summary>133 more callables</summary>
+<summary>114 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
@@ -316,17 +274,12 @@ What this project is judged against, as declared in its own `callidescope.config
 | `InstalledSkillsService.restoreSkills` | 6 | `InstalledSkillsService.git`, `InstalledSkillsService.hasChanges`, `InstalledSkillsService.findCleanSkillFolders`, `InstalledSkillsService.runRestore`, `InstalledSkillsService.revertTrackedChanges`, `InstalledSkillsService.verifyRestoration` | `synchronization/src/modules/installed-skills/installed-skills.service.ts:188` |
 | `PackageManifestsService.checkPackageManifest` | 6 | `PackageManifestsService.readPackageManifest`, `PackageManifestsService.deriveMetadata`, `PackageManifestsService.compareStringField`, `PackageManifestsService.compareBugsField`, `PackageManifestsService.compareRepositoryField`, `PackageManifestsService.filter(…)` | `synchronization/src/modules/package-manifests/package-manifests.service.ts:125` |
 | `ConventionalConfigService.syncReleaseConfigIfNeeded` | 5 | `ConventionalConfigService.loadReleaseConfig`, `ConventionalConfigService.filter(…)`, `ConventionalConfigIoService.getReleaseRulesTypes`, `ConventionalConfigIoService.getPresetConfigTypes`, `ConventionalConfigIoService.writeReleaseConfigSync` | `synchronization/src/modules/conventional-config/conventional-config.service.ts:93` |
-| `TypeormMigrationSqlExtractorService.synchronize` | 5 | `TypeormMigrationSqlExtractorService.targets`, `TypeormMigrationSqlExtractorService.migrationFiles`, `TypeormMigrationSqlExtractorService.migrationOption`, `TypeormMigrationSqlExtractorService.synchronizeMigration`, `TypeormMigrationSqlExtractorService.migrationSqlPaths` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:417` |
-| `TypeormMigrationSqlExtractorService.targets` | 5 | `TypeormMigrationSqlExtractorService.explicitTarget`, `TypeormMigrationSqlExtractorService.projectJsonPaths`, `TypeormMigrationSqlExtractorService.map(…)`, `TypeormMigrationSqlExtractorService.filter(…)`, `TypeormMigrationSqlExtractorService.map(…)` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:472` |
-| `SynchronizationCommand.reportResults` | 5 | `SynchronizationCommand.filter(…)`, `SynchronizationCommand.map(…)`, `SynchronizationCommand.filter(…)`, `SynchronizationCommand.map(…)`, `SynchronizationCommand.filter(…)` | `synchronization/src/modules/synchronization/synchronization.command.ts:81` |
+| `SynchronizationCommand.reportResults` | 5 | `SynchronizationCommand.filter(…)`, `SynchronizationCommand.map(…)`, `SynchronizationCommand.filter(…)`, `SynchronizationCommand.map(…)`, `SynchronizationCommand.filter(…)` | `synchronization/src/modules/synchronization/synchronization.command.ts:78` |
 | `ConventionalConfigIoService.writeSkillSync` | 4 | `ConventionalConfigIoService.map(…)`, `ConventionalConfigIoService.map(…)`, `ConventionalConfigIoService.generateMarkdownTable`, `ConventionalConfigIoService.replaceMarkerContent` | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:353` |
 | `InstalledSkillsCommand.write` | 4 | `InstalledSkillsCommand.isSet`, `InstalledSkillsService.findMissingSkills`, `InstalledSkillsCommand.announceRestoration`, `InstalledSkillsService.restoreSkills` | `synchronization/src/modules/installed-skills/installed-skills.command.ts:139` |
 | `PackageManifestsService.checkAll` | 4 | `PackageManifestsService.readRootManifest`, `PackageManifestsService.map(…)`, `PackageManifestsService.filter(…)`, `PackageManifestsService.filter(…)` | `synchronization/src/modules/package-manifests/package-manifests.service.ts:100` |
 | `ProjectPortsCommand.findPortProjects` | 4 | `ProjectPortsCommand.filter(…)`, `ProjectPortsCommand.filter(…)`, `ProjectPortsCommand.map(…)`, `ProjectPortsCommand.flatMap(…)` | `synchronization/src/modules/project-ports/project-ports.command.ts:84` |
 | `PullRequestTemplateCommand.synchronize` | 4 | `PullRequestTemplateCommand.map(…)`, `PullRequestTemplateCommand.loadTemplate`, `PullRequestTemplateCommand.handleCheckMode`, `PullRequestTemplateCommand.handleWriteMode` | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:221` |
-| `TypeormMigrationSqlExtractorService.migrationFiles` | 4 | `TypeormMigrationSqlExtractorService.singleMigrationFile`, `TypeormMigrationSqlExtractorService.sortedMigrationEntries`, `TypeormMigrationSqlExtractorService.map(…)`, `TypeormMigrationSqlExtractorService.latestMigrationEntry` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:89` |
-| `TypeormMigrationSqlExtractorService.projectJsonPathsForDirectory` | 4 | `TypeormMigrationSqlExtractorService.some(…)`, `TypeormMigrationSqlExtractorService.map(…)`, `TypeormMigrationSqlExtractorService.filter(…)`, `TypeormMigrationSqlExtractorService.filter(…)` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:184` |
-| `TypeormMigrationSqlExtractorService.synchronizeMigration` | 4 | `TypeormMigrationSqlExtractorService.statementsFromMigrationFile`, `TypeormMigrationSqlExtractorService.renderSql`, `TypeormMigrationSqlExtractorService.writeExtractedSql`, `TypeormMigrationSqlExtractorService.checkExtractedSql` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:349` |
 | `VscodeExtensionsCommand.synchronizeDevcontainer` | 4 | `VscodeExtensionsCommand.readDevcontainer`, `VscodeExtensionsCommand.isCurrent`, `VscodeExtensionsCommand.reportDrift`, `VscodeExtensionsCommand.write` | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:139` |
 | `ConformetryGeneratorsCommand.synchronize` | 3 | `ConformetryGeneratorsCommand.readGenerators`, `ConformetryGeneratorsCommand.checkSync`, `ConformetryGeneratorsCommand.writeSync` | `synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:202` |
 | `ConventionalConfigIoService.writeIssueTemplateSync` | 3 | `ConventionalConfigIoService.writeIssueTemplateDropdown`, `ConventionalConfigIoService.map(…)`, `ConventionalConfigIoService.map(…)` | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:258` |
@@ -342,10 +295,10 @@ What this project is judged against, as declared in its own `callidescope.config
 | `ProjectPortsCommand.rewritePort` | 3 | `ProjectPortsCommand.filter(…)`, `ProjectPortsCommand.listFiles`, `ProjectPortsCommand.resolveScope` | `synchronization/src/modules/project-ports/project-ports.command.ts:157` |
 | `ProjectPortsCommand.synchronizeProject` | 3 | `ProjectPortsCommand.readCurrentPort`, `ProjectPortsCommand.map(…)`, `ProjectPortsCommand.rewritePort` | `synchronization/src/modules/project-ports/project-ports.command.ts:180` |
 | `ProjectPortsCommand.synchronize` | 3 | `ProjectPortsCommand.findPortProjects`, `ProjectPortsCommand.verifyDistinctPorts`, `ProjectPortsCommand.map(…)` | `synchronization/src/modules/project-ports/project-ports.command.ts:267` |
-| `SkillExclusionsCommand.writeSync` | 3 | `SkillExclusionsCommand.readExclusionFile`, `SkillExclusionsCommand.renderBlock`, `SkillExclusionsCommand.map(…)` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:151` |
-| `SkillExclusionsCommand.synchronize` | 3 | `SkillExclusionsCommand.readInputs`, `SkillExclusionsCommand.writeSync`, `SkillExclusionsCommand.findStaleFiles` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:188` |
+| `SkillExclusionsCommand.writeSync` | 3 | `SkillExclusionsCommand.readExclusionFile`, `SkillExclusionsCommand.renderBlock`, `SkillExclusionsCommand.map(…)` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:137` |
+| `SkillExclusionsCommand.synchronize` | 3 | `SkillExclusionsCommand.readInputs`, `SkillExclusionsCommand.writeSync`, `SkillExclusionsCommand.findStaleFiles` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:173` |
 | `VscodeSettingsCommand.synchronize` | 3 | `VscodeSettingsCommand.readMachineSettings`, `VscodeSettingsCommand.findDrift`, `VscodeSettingsCommand.write` | `synchronization/src/modules/vscode-settings/vscode-settings.command.ts:120` |
-| `SynchronizationCommand.synchronize` | 3 | `SynchronizationCommand.getCommands`, `SynchronizationCommand.reportResults`, `SynchronizationCommand.every(…)` | `synchronization/src/modules/synchronization/synchronization.command.ts:131` |
+| `SynchronizationCommand.synchronize` | 3 | `SynchronizationCommand.getCommands`, `SynchronizationCommand.reportResults`, `SynchronizationCommand.every(…)` | `synchronization/src/modules/synchronization/synchronization.command.ts:128` |
 | `SynchronizationService.resolveSynchronizationModeOrExit` | 2 | `SynchronizationService.resolveModeValue`, `SynchronizationService.exitInvalidMode` | `synchronization/src/modules/synchronization/synchronization.service.ts:59` |
 | `ConformetryGeneratorsCommand.checkSync` | 2 | `ConformetryGeneratorsCommand.generateGeneratorsTable`, `ConformetryGeneratorsCommand.filter(…)` | `synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:60` |
 | `ConformetryGeneratorsCommand.readGenerators` | 2 | `ConfigurationService.loadConformetryConfiguration`, `ConformetryGeneratorsCommand.map(…)` | `synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:107` |
@@ -372,17 +325,13 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PullRequestTemplateCommand.handleWriteMode` | 2 | `PullRequestTemplateCommand.filter(…)`, `PullRequestTemplateCommand.writeTargetSync` | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:129` |
 | `PullRequestTemplateCommand.writeTargetSync` | 2 | `PullRequestTemplateCommand.wrapInCodeBlock`, `PullRequestTemplateCommand.replaceMarkerContent` | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:176` |
 | `PullRequestTemplateCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `PullRequestTemplateCommand.synchronize` | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:202` |
-| `SkillExclusionsCommand.findStaleFiles` | 2 | `SkillExclusionsCommand.map(…)`, `SkillExclusionsCommand.filter(…)` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:63` |
-| `SkillExclusionsCommand.filter(…)` | 2 | `SkillExclusionsCommand.readExclusionFile`, `SkillExclusionsCommand.renderBlock` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:64` |
-| `SkillExclusionsCommand.readExclusionFile` | 2 | `SkillExclusionsCommand.renderStartMarker`, `SkillExclusionsCommand.renderEndMarker` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:72` |
-| `SkillExclusionsCommand.readInputs` | 2 | `SkillExclusionsCommand.toSorted(…)`, `SkillExclusionsCommand.flatMap(…)` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:105` |
-| `SkillExclusionsCommand.renderBlock` | 2 | `SkillExclusionsCommand.map(…)`, `SkillExclusionsCommand.map(…)` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:126` |
-| `SkillExclusionsCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `SkillExclusionsCommand.synchronize` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:173` |
-| `TypeormMigrationSqlExtractorService.projectJsonPaths` | 2 | `TypeormMigrationSqlExtractorService.filter(…)`, `TypeormMigrationSqlExtractorService.map(…)` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:171` |
-| `TypeormMigrationSqlCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `TypeormMigrationSqlCommand.synchronize` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql.command.ts:104` |
+| `SkillExclusionsCommand.findStaleFiles` | 2 | `SkillExclusionsCommand.map(…)`, `SkillExclusionsCommand.filter(…)` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:62` |
+| `SkillExclusionsCommand.filter(…)` | 2 | `SkillExclusionsCommand.readExclusionFile`, `SkillExclusionsCommand.renderBlock` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:63` |
+| `SkillExclusionsCommand.readExclusionFile` | 2 | `SkillExclusionsCommand.renderStartMarker`, `SkillExclusionsCommand.renderEndMarker` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:71` |
+| `SkillExclusionsCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `SkillExclusionsCommand.synchronize` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:158` |
 | `VscodeExtensionsCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `VscodeExtensionsCommand.synchronize` | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:187` |
 | `VscodeSettingsCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `VscodeSettingsCommand.synchronize` | `synchronization/src/modules/vscode-settings/vscode-settings.command.ts:101` |
-| `SynchronizationCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `SynchronizationCommand.synchronize` | `synchronization/src/modules/synchronization/synchronization.command.ts:112` |
+| `SynchronizationCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `SynchronizationCommand.synchronize` | `synchronization/src/modules/synchronization/synchronization.command.ts:109` |
 | `run` | 2 | `answerGit`, `restore` | `synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:65` |
 | `SynchronizationMarkersService.locateMarkers` | 2 | `SynchronizationMarkersService.getStartMarker`, `SynchronizationMarkersService.getEndMarker` | `synchronization/src/modules/synchronization/synchronization-markers.service.ts:24` |
 | `SynchronizationService.resolveModeValue` | 1 | `SynchronizationService.isSynchronizationMode` | `synchronization/src/modules/synchronization/synchronization.service.ts:40` |
@@ -422,18 +371,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `ProjectPortsCommand.map(…)` | 1 | `ProjectPortsCommand.synchronizeProject` | `synchronization/src/modules/project-ports/project-ports.command.ts:275` |
 | `PullRequestTemplateCommand.handleCheckMode` | 1 | `PullRequestTemplateCommand.checkTargetSync` | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:106` |
 | `PullRequestTemplateCommand.filter(…)` | 1 | `PullRequestTemplateCommand.checkTargetSync` | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:134` |
-| `TypeormMigrationSqlExtractorService.checkExtractedSql` | 1 | `TypeormMigrationSqlExtractorService.maybeFile` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:33` |
-| `TypeormMigrationSqlExtractorService.maybeFile` | 1 | `TypeormMigrationSqlExtractorService.catch(…)` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:84` |
-| `TypeormMigrationSqlExtractorService.projectJsonPath` | 1 | `TypeormMigrationSqlExtractorService.some(…)` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:159` |
-| `TypeormMigrationSqlExtractorService.map(…)` | 1 | `TypeormMigrationSqlExtractorService.projectJsonPathsForDirectory` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:176` |
-| `TypeormMigrationSqlExtractorService.map(…)` | 1 | `TypeormMigrationSqlExtractorService.projectJsonPath` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:196` |
-| `TypeormMigrationSqlExtractorService.sortedMigrationEntries` | 1 | `TypeormMigrationSqlExtractorService.filter(…)` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:225` |
-| `TypeormMigrationSqlExtractorService.sqlFromQueryCall` | 1 | `TypeormMigrationSqlExtractorService.sqlLiteral` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:237` |
-| `TypeormMigrationSqlExtractorService.statementsFromClass` | 1 | `TypeormMigrationSqlExtractorService.statementsFromMethod` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:279` |
-| `TypeormMigrationSqlExtractorService.visit` | 1 | `TypeormMigrationSqlExtractorService.sqlFromQueryCall` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:310` |
-| `TypeormMigrationSqlExtractorService.visit` | 1 | `TypeormMigrationSqlExtractorService.statementsFromClass` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:332` |
-| `TypeormMigrationSqlExtractorService.map(…)` | 1 | `TypeormMigrationSqlExtractorService.parsedProjectTarget` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:480` |
-| `TypeormMigrationSqlCommand.synchronize` | 1 | `TypeormMigrationSqlExtractorService.synchronize` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql.command.ts:123` |
+| `SkillExclusionsCommand.readInputs` | 1 | `SkillExclusionsCommand.toSorted(…)` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:104` |
+| `SkillExclusionsCommand.renderBlock` | 1 | `SkillExclusionsCommand.map(…)` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:117` |
 | `VscodeExtensionsCommand.isCurrent` | 1 | `VscodeExtensionsCommand.hasSameEntries` | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:67` |
 | `VscodeExtensionsCommand.reportDifferences` | 1 | `VscodeExtensionsCommand.hasSameEntries` | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:95` |
 | `VscodeExtensionsCommand.reportDrift` | 1 | `VscodeExtensionsCommand.reportDifferences` | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:109` |

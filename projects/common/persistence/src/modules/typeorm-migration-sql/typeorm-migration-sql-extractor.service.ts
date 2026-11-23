@@ -9,10 +9,10 @@ import {
   TYPEORM_MIGRATION_FILE_PATTERN,
 } from "./typeorm-migration-sql.constants";
 
-import type { SynchronizationMode } from "../synchronization/synchronization.types";
 import type {
   MigrationSqlPaths,
   MigrationSqlStatements,
+  TypeormMigrationMode,
   TypeormMigrationParsedProjectTarget,
   TypeormMigrationProjectTarget,
   TypeormMigrationSelection,
@@ -41,6 +41,14 @@ export class TypeormMigrationSqlExtractorService {
       downMatches: actualDown === options.expectedDown,
       upMatches: actualUp === options.expectedUp,
     };
+  }
+
+  /** Full paths of the directories directly inside one directory. */
+  private async childDirectories(directoryPath: string): Promise<string[]> {
+    const entries = await readdir(directoryPath, { withFileTypes: true });
+    return entries
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => path.join(directoryPath, entry.name));
   }
 
   /** One explicit target from `--directory` or `--project-root`. */
@@ -155,49 +163,22 @@ export class TypeormMigrationSqlExtractorService {
     };
   }
 
-  /** project.json path in one directory, or undefined when absent. */
-  private async projectJsonPath(
-    directoryPath: string,
-  ): Promise<string | undefined> {
-    const entries = await readdir(directoryPath, { withFileTypes: true });
-    return entries.some(
-      (entry) => entry.isFile() && entry.name === "project.json",
-    )
-      ? path.join(directoryPath, "project.json")
-      : undefined;
-  }
-
-  /** Every project.json one or two levels under the workspace projects/ directory. */
+  /**
+   * Every project.json one or two levels under the workspace projects/
+   * directory. Kept flat so the call stack stays within the depth limit.
+   */
   private async projectJsonPaths(): Promise<string[]> {
     const projectsRoot = path.join(process.cwd(), "projects");
-    const topLevel = await readdir(projectsRoot, { withFileTypes: true });
-    const directories = topLevel.filter((entry) => entry.isDirectory());
-    const pathsByDirectory = await Promise.all(
-      directories.map(async (entry) =>
-        this.projectJsonPathsForDirectory(path.join(projectsRoot, entry.name)),
-      ),
-    );
-    return pathsByDirectory.flat();
-  }
-
-  /** project.json paths found in one top-level projects/<name> directory. */
-  private async projectJsonPathsForDirectory(
-    directoryPath: string,
-  ): Promise<string[]> {
-    const entries = await readdir(directoryPath, { withFileTypes: true });
-    const direct = entries.some(
-      (entry) => entry.isFile() && entry.name === "project.json",
-    )
-      ? [path.join(directoryPath, "project.json")]
-      : [];
-    const nested = await Promise.all(
-      entries
-        .filter((entry) => entry.isDirectory())
-        .map(async (entry) =>
-          this.projectJsonPath(path.join(directoryPath, entry.name)),
-        ),
-    );
-    return [...direct, ...nested.filter((value) => value !== undefined)];
+    const found: string[] = [];
+    for (const group of await this.childDirectories(projectsRoot)) {
+      const candidates = [group, ...(await this.childDirectories(group))];
+      for (const candidate of candidates) {
+        const projectJson = path.join(candidate, "project.json");
+        const stats = await stat(projectJson).catch(() => {});
+        if (stats?.isFile()) found.push(projectJson);
+      }
+    }
+    return found;
   }
 
   /** SQL text rendered from extracted statements. */
@@ -349,7 +330,7 @@ export class TypeormMigrationSqlExtractorService {
   private async synchronizeMigration(options: {
     logger: LoggerService;
     migrationSqlPaths: MigrationSqlPaths;
-    mode: SynchronizationMode;
+    mode: TypeormMigrationMode;
     projectName: string;
   }): Promise<boolean> {
     const source = await readFile(
@@ -416,7 +397,7 @@ export class TypeormMigrationSqlExtractorService {
   /** Synchronizes extracted SQL in check or write mode. */
   async synchronize(options: {
     logger: LoggerService;
-    mode: SynchronizationMode;
+    mode: TypeormMigrationMode;
     options: TypeormMigrationSqlCommandOptions;
   }): Promise<boolean> {
     try {

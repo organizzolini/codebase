@@ -13,6 +13,9 @@ export interface MigrationSqlStatements {
   up: string[];
 }
 
+/** Whether extracted SQL is compared with the migrations or rewritten from them. */
+export type TypeormMigrationMode = "check" | "write";
+
 /** Parsed migration options from one project.json file. */
 export interface TypeormMigrationParsedProjectTarget {
   readonly projectName: string;
