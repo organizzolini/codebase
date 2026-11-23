@@ -193,14 +193,87 @@ describe(RenderService, () => {
       expect(section).toContain("📉");
     });
 
-    it("marks a brand-new metric as new", () => {
+    it("marks a brand-new metric of a project with a baseline as new", () => {
+      const section = service.renderSection({
+        baselineUrl: "https://example.test/actions/runs/1",
+        failures: [],
+        rows: [
+          buildRow({ baseValue: 1000, value: 1200 }),
+          buildRow({
+            baseValue: undefined,
+            label: "New Counter",
+            name: "codebase.new",
+            value: 500,
+          }),
+        ],
+      });
+
+      expect(section).toContain("🆕");
+    });
+
+    it("lists a project with no report on main once instead of tabling every metric as new", () => {
+      const section = service.renderSection({
+        baselineUrl: "https://example.test/actions/runs/1",
+        failures: [],
+        rows: [
+          buildRow({ baseValue: undefined, project: "fresh", value: 500 }),
+          buildRow({ baseValue: undefined, project: "fresh", value: 7 }),
+          buildRow({ baseValue: 10, project: "known", value: 12 }),
+        ],
+      });
+
+      expect(section).toContain("No `main` report yet for 1 project: `fresh`");
+      expect(section).not.toContain("🆕");
+      expect(section).toContain("`known` — 1 changed");
+    });
+
+    it("still shows a breach in a project with no report on main", () => {
+      const section = service.renderSection({
+        baselineUrl: "https://example.test/actions/runs/1",
+        failures: [],
+        rows: [
+          buildRow({
+            baseValue: undefined,
+            breach: "fail",
+            project: "fresh",
+            value: 500,
+          }),
+        ],
+      });
+
+      expect(section).toContain("`fresh` — 1 changed");
+      expect(section).toContain("❌");
+    });
+
+    it("names ten projects and counts the rest when many have no report on main", () => {
+      const rows = Array.from({ length: 13 }, (_, index) =>
+        buildRow({
+          baseValue: undefined,
+          project: `p${String(index).padStart(2, "0")}`,
+          value: 1,
+        }),
+      );
+
+      const section = service.renderSection({
+        baselineUrl: "https://example.test/actions/runs/1",
+        failures: [],
+        rows,
+      });
+
+      expect(section).toContain("`p09`");
+      expect(section).not.toContain("`p10`");
+      expect(section).toContain("and 3 more");
+    });
+
+    it("says plainly that no baseline was found", () => {
       const section = service.renderSection({
         baselineUrl: undefined,
         failures: [],
         rows: [buildRow({ baseValue: undefined, value: 500 })],
       });
 
-      expect(section).toContain("🆕");
+      expect(section).toContain("No `main` baseline was found");
+      expect(section).not.toContain("🆕");
     });
 
     it("groups more than one changed metric under the same project", () => {

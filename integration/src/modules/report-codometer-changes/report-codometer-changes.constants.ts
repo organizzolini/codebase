@@ -1,11 +1,5 @@
 // ♟️ Constants
 
-/** The workflow whose latest green run on `main` holds the baseline. */
-export const BASELINE_WORKFLOW = "continuous-integration.yml";
-
-/** The artifact `collect-codometer-baseline`'s output is uploaded as. */
-export const BASELINE_ARTIFACT = "codometer-reports-main";
-
 /** The pull request body, as a file `codometer changes` rewrites in place. */
 export const BODY_FILE_NAME = ".pull-request-body.md";
 
@@ -13,7 +7,7 @@ export const PULL_REQUEST_UNSET_MESSAGE =
   "❌ PULL_REQUEST is unset; name the pull request to report on";
 
 export const NO_BASELINE_MESSAGE =
-  "ℹ️ No successful main run to compare against yet.";
+  "ℹ️ No codometer baseline from main to compare against yet.";
 
 /** Reports a failed baseline fetch; the report goes on without. */
 export const baselineSkippedMessage = (reason: string): string =>

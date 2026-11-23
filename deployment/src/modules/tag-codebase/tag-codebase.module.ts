@@ -3,7 +3,7 @@ import { Module } from "@nestjs/common";
 import { LoggerModule } from "@codebase/observability";
 
 import { MainTipModule } from "../main-tip/main-tip.module";
-import { ProcessRunnerModule } from "../process-runner/process-runner.module";
+import { SemanticReleaseModule } from "../semantic-release/semantic-release.module";
 
 import { TagCodebaseCommand } from "./tag-codebase.command";
 import { TagCodebaseService } from "./tag-codebase.service";
@@ -12,7 +12,7 @@ import { TagCodebaseService } from "./tag-codebase.service";
 @Module({
   controllers: [],
   exports: [TagCodebaseCommand, TagCodebaseService],
-  imports: [LoggerModule, MainTipModule, ProcessRunnerModule],
+  imports: [LoggerModule, MainTipModule, SemanticReleaseModule],
   providers: [TagCodebaseCommand, TagCodebaseService],
 })
 export class TagCodebaseModule {}

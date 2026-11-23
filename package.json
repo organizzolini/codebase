@@ -62,7 +62,6 @@
     "oxlint": "catalog:",
     "pino-pretty": "catalog:",
     "prettier": "catalog:",
-    "semantic-release": "catalog:",
     "skills": "catalog:",
     "squawk-cli": "catalog:",
     "stylelint": "catalog:",
@@ -92,15 +91,11 @@
   "license": "MIT",
   "name": "codebase",
   "packageManager": "pnpm@12.21.0",
-  "release": {
-    "extends": "./configuration/repository/release.config.cjs"
-  },
   "repository": "organizzolini/codebase.git",
   "scripts": {
     "postinstall": "conformetry-nx-bootstrap-generators && (NODE_OPTIONS='' SWC_NODE_PROJECT=configuration/typescript/tsconfig.workspace.json node --import @swc-node/register/esm-register synchronization/src/synchronization.main.ts installed-skills write || echo \"⚠️  The installed-skills command could not run, so no skill was restored. Retry with 'pnpm exec nx run synchronization:installed-skills:write'\")",
     "prepare": "husky configuration/repository/.husky",
-    "semantic-release": "semantic-release",
-    "semantic-release:dry-run": "semantic-release --dry-run"
+    "semantic-release:dry-run": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts tag-codebase --dry-run"
   },
   "sherif": {
     "ignoreDependency": [],
@@ -114,5 +109,5 @@
     ]
   },
   "type": "module",
-  "version": "6.6.3"
+  "version": "6.8.2"
 }

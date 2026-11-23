@@ -1,3 +1,12 @@
+## 0.0.28 (2026-11-22)
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.28
+- Updated coinagerie-vocabulary to 0.0.28
+- Updated coinagerie-output to 0.0.28
+- Updated coinagerie-core to 0.0.28
+
 ## 0.0.27 (2026-11-21)
 
 ### 💅 Refactors
