@@ -1,3 +1,10 @@
+## 0.0.30 (2026-11-23)
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.30
+- Updated coinagerie-languages to 0.0.30
+
 ## 0.0.29 (2026-11-23)
 
 ### 🧱 Updated Dependencies
