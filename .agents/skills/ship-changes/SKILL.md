@@ -13,9 +13,13 @@ Work on one pull request at a time through steps 1–5. With several, order them
 
 ## Watching
 
-Wait on the host's PR monitor (`mcp__ccd_pr__bind_pr`, `get_status`) when it exists; otherwise `gh run watch <id> --exit-status` in the background. Never sleep-poll.
+Never end a turn on an unarmed wait. A wait is armed when something will wake this session: the host's PR monitor (`mcp__ccd_pr__bind_pr`, `get_status`) when it exists, `subscribe_pr_activity` on the pull request, or a background watcher from [waiting.md](references/waiting.md), which exits on merged, closed, conflicting, or failed. A scheduled check-in alone is not armed, because the session can be archived before it fires, and the closeout then never runs. Never poll in the foreground.
+
+When woken, resume at the step you were on, not at the top. When a step finishes, start the next in the same turn: a green run is a reason to enqueue, not to stop and report.
 
 Every wait is bounded. After **3 failed attempts at the same failure**, or when a step runs twice its workflow's `timeout-minutes`, stop and report.
+
+Where `gh` is unavailable, the GitHub MCP tools cover the same calls: `pull_request_read`, `update_pull_request`, `enable_pr_auto_merge`, `update_pull_request_branch`, and `get_job_logs`.
 
 ## Preflight
 
@@ -29,9 +33,9 @@ Completion: each item below holds, or is fixed and noted. Read the pull request 
 
 ## 1. Green CI
 
-Completion: `gh api repos/{owner}/{repo}/pulls/<n> --jq '[.mergeable, .mergeable_state]'` prints `[true,"clean"]`, and all 11 required contexts have passed (Format, Typecheck, Secure, Test, Test Meanderaw, Test IC Suite, Guard, Build, Lint, Deprecate, Comply).
+Completion: `gh api repos/{owner}/{repo}/pulls/<n> --jq '[.mergeable, .mergeable_state]'` prints `[true,"clean"]`, and every required context has passed. Read the list from the ruleset, because it grows and gets renamed (19 on 2026-11-23): `gh api repos/{owner}/{repo}/rules/branches/main --jq '.[] | select(.type=="required_status_checks") | .parameters.required_status_checks[].context'`.
 
-A check **count** proves nothing: a conflicting pull request runs no `pull_request` workflows, so a short green list means unvalidated. Confirm `MERGEABLE` first, then count the check **names**.
+A check **count** proves nothing: a conflicting pull request runs no `pull_request` workflows, so a short green list means unvalidated. Confirm `MERGEABLE` first, then match the check **names** against that list.
 
 For each red check, diagnose with [triage-integration](../triage-integration/SKILL.md), then choose a tier:
 
@@ -41,6 +45,7 @@ For each red check, diagnose with [triage-integration](../triage-integration/SKI
 | **Raise to the user** | moving, renaming, or adding modules; edits reaching a second project; dependency, lockfile, tsconfig, or limit changes; deleting or weakening a test; ADR-level or interface changes; a failure with no clear root cause             | Stop. Report the failing check, root cause, and a recommended fix                                                              |
 | **Re-run**            | a flaky cause listed in [known-failures.md](references/known-failures.md), or a runner timeout or cancellation with no code cause                                                                                                    | `gh run rerun <id> --failed`, once                                                                                             |
 
+- **Red that is not yours**: before choosing a tier, reproduce the failing check on `origin/main` (a scratch checkout, deleted after). If it fails there too, the pull request did not cause it: a project that was never gated, or a gate that just became required, is the usual source. When the fix is mechanical (shortening over-budget comments, splitting an over-full folder, regenerating a stale report) and stays inside one project, do not ask. Open a separate fix pull request from `main` with [submit-changes](../submit-changes/SKILL.md), ship it through this skill first, then merge `main` into the original and resume step 1. Raise it only when the fix needs a design choice, or touches limits, dependencies, or interfaces, and include the `origin/main` reproduction.
 - A failing metadata check (`Validate Conventions`, `Comply`) needs a fresh event, not a re-run, which replays the frozen payload.
 - Fix root causes only. Suppression comments, loosened compiler options, lint ignores, raised limits, and `--no-verify` are all off the table.
 - Every pushed fix gets a Conventional Commit and a signature. Mention each fix in the pull request thread so the reviewer sees what moved after approval; if a fix changes what the pull request does or its title's type, run [update-pull-request](../update-pull-request/SKILL.md).
@@ -52,15 +57,16 @@ Completion: `mergeable` is `MERGEABLE` after a push, and step 1's completion hol
 Check `mergeable` after every push and whenever `main` moves. On `CONFLICTING`:
 
 1. Merge `origin/main` into the branch (in a worktree session, the `mcp__ccd_host__sync_with_base_branch` tool), then run `pnpm exec nx sync`. Merge rather than rebase: a rebase flattens merge commits and breaks signatures. A stack is the exception: it needs linear history, so follow [stacked-pull-requests.md](references/stacked-pull-requests.md).
-2. Resolve by intent. Generated blocks (README codometer badges, callidescope and codependix reports) take either side, then regenerate with the matching `nx run <project>:<tool>:write`. Hand-written code that both sides changed is a **raise to the user** unless the two edits are independent lines.
+2. Resolve by intent. Generated blocks (README codometer badges, callidescope and codependix reports) take either side, then regenerate with the matching `nx run <project>:<tool>:write`. For hand-written text both sides changed, read both sides' commit messages and keep both intents; this covers prose, skills, docs, and configuration, and code whose two edits are independent lines or whose intents are both stated. Verify with [validate-code](../validate-code/SKILL.md) and the affected tests. It is a **raise to the user** only when the intents contradict, are not recoverable from the history, or the checks fail after resolving.
 3. `pnpm-lock.yaml`: never initialize the `projects/JimmyPaolini` submodule; revert its lockfile entry, then `pnpm install --frozen-lockfile`.
-4. Run [validate-code](../validate-code/SKILL.md), commit, push, return to step 1.
+4. Merges that apply cleanly can still contradict: search `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`, and the skills for statements about the rule the pull request changes, and align them in the same pull request.
+5. Run [validate-code](../validate-code/SKILL.md), commit, push, return to step 1.
 
 ## 3. Merge queue
 
 Completion: the pull request's state is `MERGED`.
 
-Enqueue once step 1 holds, the Preflight review condition holds, no `do-not-merge` label is present, and review threads are resolved:
+Enqueue once step 1 holds, the Preflight review condition holds, no `do-not-merge` label is present, and review threads are resolved. Finish every fix first: any push after enqueueing ejects the pull request. A fix that turns up after enqueueing is still made on the same pull request: dequeue (`disable_pr_auto_merge`), push, and enqueue again, without asking.
 
 ```bash
 gh api -X PUT repos/{owner}/{repo}/pulls/<n>/ccr/auto_merge -f merge_method=squash   # standalone pull request, Claude Code session
@@ -70,7 +76,7 @@ gh stack merge <top-pr> --yes --squash   # stack: gh pr merge cannot merge one
 
 A missing required review or an unresolved thread is a **raise to the user**; never route around it, and never pass `--admin`.
 
-The queue re-runs the check workflows on a merge commit built from `main` plus the queued pull requests (`merge_group` events; minimum wait 6 minutes, response timeout 32). Watch with `gh run list --event merge_group` and `gh api repos/{owner}/{repo}/pulls/<n> --jq '[.state, .merged]'`. A queued pull request reports no `auto_merge`, so judge it by that state and the queue run, not by `auto_merge`. A pull request ejected from the queue returns to step 1 with the failing run's logs; usually `main` moved, so step 2 applies. Re-enqueue after the fix.
+The queue re-runs the check workflows on a merge commit built from `main` plus the queued pull requests (`merge_group` events; minimum wait 6 minutes, response timeout 32). Watch with `gh run list --event merge_group` and `gh api repos/{owner}/{repo}/pulls/<n> --jq '[.state, .merged]'`. A queued pull request reports no `auto_merge`, so judge it by that state and the queue run, not by `auto_merge`. A pull request ejected from the queue returns to step 1 with the failing run's logs; usually `main` moved, so step 2 applies. If the failing project is one the pull request never touched, see "Red that is not yours" in step 1. Re-enqueue after the fix.
 
 ## 4. Deploy and release
 
