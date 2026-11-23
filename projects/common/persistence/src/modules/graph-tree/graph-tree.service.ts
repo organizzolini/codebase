@@ -1,9 +1,10 @@
 import { Injectable } from "@nestjs/common";
 
 import { resolveGraphView } from "../graph-options/graph-options-columns.utilities";
+import { graphColumns } from "../graph-options/graph-options-reads.utilities";
+import { GRAPH_BATCH_SIZE } from "../graph-options/graph-options.constants";
 
-import { graphColumns, loadTreeGraph } from "./graph-tree-readers.utilities";
-import { GRAPH_TREE_BATCH_SIZE } from "./graph-tree.constants";
+import { loadTreeGraph } from "./graph-tree-readers.utilities";
 import { limitTreeGraph } from "./graph-tree.utilities";
 
 import type { GraphModel } from "../graph-mermaid/graph-mermaid.types";
@@ -46,7 +47,7 @@ export class GraphTreeService {
       options.sorts,
     );
     const graph = await loadTreeGraph(dataSource, metadata, {
-      batchSize: options.batchSize ?? GRAPH_TREE_BATCH_SIZE,
+      batchSize: options.batchSize ?? GRAPH_BATCH_SIZE,
       paging: options.paging,
       view,
     });

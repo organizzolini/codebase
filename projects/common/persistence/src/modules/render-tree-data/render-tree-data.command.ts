@@ -4,15 +4,18 @@ import { Command, CommandRunner, Option } from "nest-commander";
 import { LoggerService } from "@codebase/observability";
 
 import { GraphEntitiesService } from "../graph-entities/graph-entities.service";
-import { GraphMermaidService } from "../graph-mermaid/graph-mermaid.service";
-import { renderGraphMarkdown } from "../graph-mermaid/graph-mermaid.utilities";
+import { graphOutputDryRunMessages } from "../graph-options/graph-options-outputs.utilities";
 import {
-  graphOutputDryRunMessages,
-  renderGraphJson,
-  writeGraphOutputs,
-} from "../graph-options/graph-options-outputs.utilities";
+  GRAPH_DRY_RUN_OPTION,
+  GRAPH_ENTITIES_OPTION,
+  GRAPH_OUTPUT_JSON_OPTION,
+  GRAPH_OUTPUT_MARKDOWN_OPTION,
+  GRAPH_OVERWRITE_OPTION,
+  GRAPH_SCHEMA_OPTION,
+  GRAPH_SOURCE_URI_OPTION,
+} from "../graph-options/graph-options.constants";
 import { GraphOptionsService } from "../graph-options/graph-options.service";
-import { maskedError } from "../graph-options/graph-options.utilities";
+import { GraphRenderService } from "../graph-render/graph-render.service";
 import { GraphTreeService } from "../graph-tree/graph-tree.service";
 
 import {
@@ -22,17 +25,10 @@ import {
 } from "./render-tree-data.constants";
 
 import type {
-  GraphMermaidRendering,
-  GraphModel,
-} from "../graph-mermaid/graph-mermaid.types";
-import type {
-  GraphOutputFile,
+  GraphCommandOptions,
   GraphPlan,
 } from "../graph-options/graph-options.types";
-import type {
-  RenderTreeDataCommandOptions,
-  RenderTreeDataTarget,
-} from "./render-tree-data.types";
+import type { RenderTreeDataTarget } from "./render-tree-data.types";
 
 /**
  * Reads a `@Tree` entity's rows from a database and prints them as a Mermaid
@@ -51,8 +47,8 @@ export class RenderTreeDataCommand extends CommandRunner {
   constructor(
     private readonly logger: LoggerService,
     private readonly graphEntities: GraphEntitiesService,
-    private readonly graphMermaid: GraphMermaidService,
     private readonly graphOptions: GraphOptionsService,
+    private readonly graphRender: GraphRenderService,
     private readonly graphTree: GraphTreeService,
   ) {
     super();
@@ -64,36 +60,6 @@ export class RenderTreeDataCommand extends CommandRunner {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
-
-  /**
-   * Writes the diagram to stdout, or to the files named when any is given,
-   * then the warnings to stderr.
-   */
-  private emit(
-    plan: GraphPlan,
-    graph: GraphModel,
-    rendering: GraphMermaidRendering,
-  ): void {
-    const { json, markdown } = plan.outputs;
-    if (json === undefined && markdown === undefined) {
-      process.stdout.write(`${rendering.diagram}\n`);
-    } else {
-      const files: GraphOutputFile[] = [];
-      if (markdown !== undefined) {
-        files.push({ content: renderGraphMarkdown(rendering), path: markdown });
-      }
-      if (json !== undefined) {
-        files.push({ content: renderGraphJson(graph), path: json });
-      }
-      writeGraphOutputs(files);
-      for (const file of files) {
-        this.logger.log(`📝 Wrote ${file.path}`);
-      }
-    }
-    for (const warning of rendering.warnings) {
-      process.stderr.write(`⚠️ ${warning}\n`);
-    }
-  }
 
   /**
    * Imports the entities, picks the tree, and checks its columns, before any
@@ -115,56 +81,16 @@ export class RenderTreeDataCommand extends CommandRunner {
     return { dataSource, picked };
   }
 
-  /**
-   * Connects, reads the picked tree, and writes its diagram and its warnings.
-   * @throws Error naming the failure, with the password masked.
-   */
-  private async render(
-    plan: GraphPlan,
-    { dataSource, picked }: RenderTreeDataTarget,
-  ): Promise<void> {
-    try {
-      await dataSource.initialize();
-      const graph = await this.graphTree.load(
-        dataSource,
-        dataSource.getMetadata(picked),
-        {
-          filters: plan.filters,
-          maximumBreadth: plan.maximumBreadth,
-          maximumDepth: plan.maximumDepth,
-          paging: plan.paging,
-          sorts: plan.sorts,
-        },
-      );
-      const rendering = this.graphMermaid.render(graph, {
-        direction: RENDER_TREE_DATA_DIRECTION,
-      });
-      this.emit(plan, graph, rendering);
-    } catch (error) {
-      throw maskedError(error, plan.connection.password);
-    } finally {
-      if (dataSource.isInitialized) await dataSource.destroy();
-    }
-  }
-
   // 🌎 Public Methods
 
   /** Parses `--dry-run`, which checks the options and connects to no database. */
-  @Option({
-    description:
-      "Check the options and list the entity files, without connecting to a database or drawing anything",
-    flags: "--dry-run",
-  })
+  @Option(GRAPH_DRY_RUN_OPTION)
   parseDryRun(): boolean {
     return true;
   }
 
   /** Collects each repeated `--entities` glob into one list. */
-  @Option({
-    description:
-      "Glob of the entity files to import, e.g. 'src/**/*.entity.ts'; repeat for several",
-    flags: "--entities <glob>",
-  })
+  @Option(GRAPH_ENTITIES_OPTION)
   parseEntities(value: string, previous: string[] = []): string[] {
     return [...previous, value];
   }
@@ -210,31 +136,19 @@ export class RenderTreeDataCommand extends CommandRunner {
   }
 
   /** Parses `--output-json`, the file the normalized graph is written to. */
-  @Option({
-    description:
-      "Write the graph as pretty JSON to this file, creating its folders; with any output file, the diagram is not printed. An existing file is refused unless --overwrite. Relative paths resolve from the working directory",
-    flags: "--output-json <path>",
-  })
+  @Option(GRAPH_OUTPUT_JSON_OPTION)
   parseOutputJson(value: string): string {
     return value;
   }
 
   /** Parses `--output-markdown`, the file the diagram is written to. */
-  @Option({
-    description:
-      "Write the diagram as a fenced Mermaid block to this file, creating its folders, with warnings after the fence; with any output file, the diagram is not printed. An existing file is refused unless --overwrite. Relative paths resolve from the working directory",
-    flags: "--output-markdown <path>",
-  })
+  @Option(GRAPH_OUTPUT_MARKDOWN_OPTION)
   parseOutputMarkdown(value: string): string {
     return value;
   }
 
   /** Parses `--overwrite`, which lets an output file that exists be replaced. */
-  @Option({
-    description:
-      "Replace an existing --output-markdown or --output-json file; without it, an existing file is refused and left unchanged",
-    flags: "--overwrite",
-  })
+  @Option(GRAPH_OVERWRITE_OPTION)
   parseOverwrite(): boolean {
     return true;
   }
@@ -250,10 +164,7 @@ export class RenderTreeDataCommand extends CommandRunner {
   }
 
   /** Parses `--schema`, the schema the entity tables live in. */
-  @Option({
-    description: "Schema the entity tables live in; required",
-    flags: "--schema <name>",
-  })
+  @Option(GRAPH_SCHEMA_OPTION)
   parseSchema(value: string): string {
     return value;
   }
@@ -269,11 +180,7 @@ export class RenderTreeDataCommand extends CommandRunner {
   }
 
   /** Parses `--source-uri`, the database to read from. */
-  @Option({
-    description:
-      "Connection URI of the database to read from, e.g. postgresql://user:password@host:5432/database",
-    flags: "--source-uri <uri>",
-  })
+  @Option(GRAPH_SOURCE_URI_OPTION)
   parseSourceUri(value: string): string {
     return value;
   }
@@ -294,7 +201,7 @@ export class RenderTreeDataCommand extends CommandRunner {
    */
   async run(
     _passedParameters: string[],
-    options: RenderTreeDataCommandOptions,
+    options: GraphCommandOptions,
   ): Promise<void> {
     const plan = this.graphOptions.plan(options);
     if (options.dryRun === true) {
@@ -308,7 +215,21 @@ export class RenderTreeDataCommand extends CommandRunner {
       }
       return;
     }
-    const target = await this.prepare(plan);
-    await this.render(plan, target);
+    const { dataSource, picked } = await this.prepare(plan);
+    const written = await this.graphRender.render(plan, {
+      dataSource,
+      direction: RENDER_TREE_DATA_DIRECTION,
+      read: async () =>
+        this.graphTree.load(dataSource, dataSource.getMetadata(picked), {
+          filters: plan.filters,
+          maximumBreadth: plan.maximumBreadth,
+          maximumDepth: plan.maximumDepth,
+          paging: plan.paging,
+          sorts: plan.sorts,
+        }),
+    });
+    for (const line of written) {
+      this.logger.log(line);
+    }
   }
 }

@@ -1,15 +1,12 @@
 // 🌎 Utilities
 
+import { escapeName } from "../graph-options/graph-options-reads.utilities";
+
 import { GRAPH_TREE_PATH_PARENT_PATTERN } from "./graph-tree.constants";
 import { requireTreeMetadata } from "./graph-tree.utilities";
 
 import type { GraphTreeSql, GraphTreeTable } from "./graph-tree.types";
 import type { DataSource, EntityMetadata } from "typeorm";
-
-/** Escapes a name for SQL, the way the connection's driver quotes it. */
-export function escapeName(dataSource: DataSource, name: string): string {
-  return dataSource.driver.escape(name);
-}
 
 /** The SQL that reads `table`'s rows by their parents, roots, and columns. */
 export function treeSql(

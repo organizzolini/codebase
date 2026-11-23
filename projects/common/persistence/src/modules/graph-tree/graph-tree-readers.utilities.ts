@@ -2,12 +2,12 @@
 
 import {
   filterClause,
-  graphColumnKind,
   sortClause,
 } from "../graph-options/graph-options-columns.utilities";
+import { selectPages } from "../graph-options/graph-options-reads.utilities";
 
-import { loadTreeRows, selectPages } from "./graph-tree-batches.utilities";
-import { escapeName, treeSql, treeTable } from "./graph-tree-sql.utilities";
+import { loadTreeRows } from "./graph-tree-batches.utilities";
+import { treeSql, treeTable } from "./graph-tree-sql.utilities";
 import { GRAPH_TREE_ID_ROW_SCHEMA } from "./graph-tree.constants";
 import {
   buildTreeGraph,
@@ -20,7 +20,6 @@ import {
 
 import type { GraphModel } from "../graph-mermaid/graph-mermaid.types";
 import type {
-  GraphColumn,
   GraphOrder,
   GraphPaging,
   GraphPredicate,
@@ -28,22 +27,6 @@ import type {
 } from "../graph-options/graph-options.types";
 import type { GraphTreeRow, GraphTreeTable } from "./graph-tree.types";
 import type { DataSource, EntityMetadata } from "typeorm";
-
-/** The columns of `metadata`, each with the kind its SQL type gives it. */
-export function graphColumns(
-  dataSource: DataSource,
-  metadata: EntityMetadata,
-): GraphColumn[] {
-  const columns: GraphColumn[] = [];
-  for (const column of metadata.columns) {
-    columns.push({
-      kind: graphColumnKind(dataSource.driver.normalizeType(column)),
-      name: column.propertyName,
-      sqlName: escapeName(dataSource, column.databaseName),
-    });
-  }
-  return columns;
-}
 
 /**
  * Reads `metadata`'s tree as a graph model: filtered, sorted, then cut to `paging`.

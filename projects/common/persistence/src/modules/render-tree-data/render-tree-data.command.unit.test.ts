@@ -4,16 +4,16 @@ import { expectLoggerContext } from "@codebase/observability/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { GraphEntitiesService } from "../graph-entities/graph-entities.service";
-import { GraphMermaidService } from "../graph-mermaid/graph-mermaid.service";
 import { GraphOptionsService } from "../graph-options/graph-options.service";
+import { GraphRenderService } from "../graph-render/graph-render.service";
 import { GraphTreeService } from "../graph-tree/graph-tree.service";
 
 import { RenderTreeDataCommand } from "./render-tree-data.command";
 
 const MOCKS = [
   GraphEntitiesService,
-  GraphMermaidService,
   GraphOptionsService,
+  GraphRenderService,
   GraphTreeService,
 ];
 

@@ -3,8 +3,13 @@ import { Injectable } from "@nestjs/common";
 import { assertGraphColumnNames } from "../graph-options/graph-options-columns.utilities";
 
 import {
+  edgeCandidates,
+  pickEdgeCandidate,
+} from "./graph-entities-edges.utilities";
+import {
   createGraphDataSource,
   entityColumnNames,
+  getGraphEdgeMetadata,
   importEntityClasses,
   pickTreeCandidate,
   resolveEntityFiles,
@@ -16,7 +21,12 @@ import type {
   GraphSort,
 } from "../graph-options/graph-options.types";
 import type { PostgresConnection } from "../postgresql/postgresql.types";
-import type { GraphEntity, GraphTreePick } from "./graph-entities.types";
+import type {
+  GraphEdgeMetadata,
+  GraphEdgePick,
+  GraphEntity,
+  GraphTreePick,
+} from "./graph-entities.types";
 import type { DataSource } from "typeorm";
 
 /**
@@ -58,9 +68,34 @@ export class GraphEntitiesService {
     return createGraphDataSource(connection, entities);
   }
 
+  /**
+   * How `entity` is described by its `@Dag` or `@Graph` decorators.
+   * @throws GraphEdgeError on a missing, conflicting, or repeated decorator.
+   */
+  describeEdge(entity: GraphEntity): GraphEdgeMetadata {
+    return getGraphEdgeMetadata(entity);
+  }
+
   /** Imports the files the globs name and returns the entity classes they define. */
   async load(globs: readonly string[]): Promise<GraphEntity[]> {
     return importEntityClasses(resolveEntityFiles(globs));
+  }
+
+  /** The `@Dag` or `@Graph` entity of one of `kinds` that the command draws; `table` picks among several. */
+  pickEdge({
+    command,
+    entities,
+    globs,
+    kinds,
+    namingStrategy,
+    table,
+  }: GraphEdgePick): GraphEntity {
+    return pickEdgeCandidate(edgeCandidates(entities, namingStrategy), {
+      command,
+      globs,
+      kinds,
+      table,
+    }).entity;
   }
 
   /**

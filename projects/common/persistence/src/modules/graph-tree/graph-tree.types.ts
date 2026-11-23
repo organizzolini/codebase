@@ -1,35 +1,16 @@
 // 🏷️ Types
 
 import type {
-  GraphFilter,
-  GraphPaging,
-  GraphSort,
+  GraphLimits,
+  GraphReadOptions,
 } from "../graph-options/graph-options.types";
 import type { DataSource, EntityMetadata } from "typeorm";
 
-/** Caps on the drawn tree; an absent cap draws every level or child. */
-export interface GraphTreeLimits {
-  /** The most children drawn under one node; `undefined` draws every child. */
-  readonly maximumBreadth?: number | undefined;
-
-  /** The deepest level drawn, with roots at level 1; `undefined` draws every level. */
-  readonly maximumDepth?: number | undefined;
-}
+/** Caps on the drawn tree, as for any graph. */
+export type GraphTreeLimits = GraphLimits;
 
 /** What a tree read draws: filters, sorts, paging, then caps. */
-export interface GraphTreeOptions extends GraphTreeLimits {
-  /** Rows read per query; a test seam, `undefined` for the default. */
-  readonly batchSize?: number | undefined;
-
-  /** The row filters, each by a column name; a row must match all of them. */
-  readonly filters: readonly GraphFilter[];
-
-  /** The page of root nodes to draw; `undefined` draws every root. */
-  readonly paging?: GraphPaging | undefined;
-
-  /** The sort keys, applied in order among siblings. */
-  readonly sorts: readonly GraphSort[];
-}
+export type GraphTreeOptions = GraphReadOptions;
 
 /** Inputs every batched read of one tree shares. */
 export interface GraphTreeRead {

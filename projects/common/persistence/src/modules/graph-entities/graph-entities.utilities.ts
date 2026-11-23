@@ -79,11 +79,22 @@ export function entityColumnNames(entity: GraphEntity): string[] {
   return [...names];
 }
 
+/** The unqualified table `entity` maps to under `namingStrategy`, read from its `@Entity`. */
+export function entityTableName(
+  entity: GraphEntity,
+  namingStrategy: NamingStrategyInterface,
+): string {
+  const [table] = getMetadataArgumentsStorage().filterTables(entity);
+  return namingStrategy.tableName(entity.name, table?.name);
+}
+
 /**
- * Describes `entity` from its decorators, up the class chain.
- * @throws GraphEdgeError on a missing, conflicting, or repeated decorator.
+ * The one `@Dag()` or `@Graph()` declaration `entity` carries, up the class chain.
+ * @throws GraphEdgeError when it carries none, or both.
  */
-export function getGraphEdgeMetadata(entity: GraphEntity): GraphEdgeMetadata {
+export function getGraphEdgeDeclaration(
+  entity: GraphEntity,
+): GraphEdgeDeclaration {
   const [declaration, ...others] = edgeDeclarationsOf(entity);
   if (declaration === undefined) {
     throw new GraphEdgeError(graphEdgeNoKindMessage(entity.name));
@@ -91,7 +102,15 @@ export function getGraphEdgeMetadata(entity: GraphEntity): GraphEdgeMetadata {
   if (others.length > 0) {
     throw new GraphEdgeError(graphEdgeKindsMessage(entity.name));
   }
+  return declaration;
+}
 
+/**
+ * Describes `entity` from its decorators, up the class chain.
+ * @throws GraphEdgeError on a missing, conflicting, or repeated decorator.
+ */
+export function getGraphEdgeMetadata(entity: GraphEntity): GraphEdgeMetadata {
+  const declaration = getGraphEdgeDeclaration(entity);
   const labelColumn = singleEdgeProperty(entity, "GraphLabel");
   const weightColumn = singleEdgeProperty(entity, "GraphWeight");
 
@@ -158,7 +177,11 @@ export async function importEntityClasses(
 export function listGraphEdgeEntities(
   entities: readonly GraphEntity[],
 ): GraphEntity[] {
-  return entities.filter((entity) => edgeDeclarationsOf(entity).length > 0);
+  const edges: GraphEntity[] = [];
+  for (const entity of entities) {
+    if (edgeDeclarationsOf(entity).length > 0) edges.push(entity);
+  }
+  return edges;
 }
 
 /**
@@ -220,17 +243,10 @@ export function treeCandidates(
   entities: readonly GraphEntity[],
   namingStrategy: NamingStrategyInterface,
 ): GraphTreeCandidate[] {
-  const storage = getMetadataArgumentsStorage();
-  return storage.trees.flatMap((tree) => {
+  return getMetadataArgumentsStorage().trees.flatMap((tree) => {
     const entity = entities.find((candidate) => candidate === tree.target);
     if (entity === undefined) return [];
-    const [table] = storage.filterTables(entity);
-    return [
-      {
-        entity,
-        tableName: namingStrategy.tableName(entity.name, table?.name),
-      },
-    ];
+    return [{ entity, tableName: entityTableName(entity, namingStrategy) }];
   });
 }
 
@@ -239,7 +255,7 @@ function classChain(entity: GraphEntity): object[] {
   const chain: object[] = [];
   for (
     let target: unknown = entity;
-    isClass(target);
+    typeof target === "function" && target !== Function.prototype;
     target = Object.getPrototypeOf(target)
   ) {
     chain.push(target);

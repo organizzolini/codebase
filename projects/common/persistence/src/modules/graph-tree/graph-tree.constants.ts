@@ -4,9 +4,6 @@ import { z } from "zod";
 
 import type { GraphPaging } from "../graph-options/graph-options.types";
 
-/** Rows read per query, and parent ids named per child query. */
-export const GRAPH_TREE_BATCH_SIZE = 500;
-
 /** A row's id as text. */
 export const GRAPH_TREE_ID_ROW_SCHEMA = z.object({
   id: z.string(),

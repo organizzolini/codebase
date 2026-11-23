@@ -2,6 +2,18 @@
 
 import type { NamingStrategyInterface } from "typeorm";
 
+/** An edge entity a pick can choose: its class, kind, and table. */
+export interface GraphEdgeCandidate {
+  /** The entity class, which the command reads its metadata by once connected. */
+  readonly entity: GraphEntity;
+
+  /** Whether the entity is a DAG or a graph. */
+  readonly kind: GraphEdgeKind;
+
+  /** The unqualified table name the entity maps to. */
+  readonly tableName: string;
+}
+
 /** A class-level declaration: `@Dag()`, or `@Graph()` with its direction. */
 export interface GraphEdgeDeclaration {
   /** Whether the declared edges are directed. */
@@ -39,6 +51,27 @@ export interface GraphEdgeMetadata {
 export interface GraphEdgeOptions {
   /** Whether edges run from source to target; defaults to true. */
   readonly directed?: boolean;
+}
+
+/** What the edge pick reads: entities, accepted kinds, and options. */
+export interface GraphEdgePick {
+  /** The command's name, which a wrong-kind error names. */
+  readonly command: string;
+
+  /** The entity classes the `--entities` globs imported. */
+  readonly entities: readonly GraphEntity[];
+
+  /** The `--entities` globs, named in the error when no edge entity matches. */
+  readonly globs: readonly string[];
+
+  /** The kinds of edge entity the command draws. */
+  readonly kinds: readonly GraphEdgeKind[];
+
+  /** The strategy that maps each entity's name to its table name. */
+  readonly namingStrategy: NamingStrategyInterface;
+
+  /** The table `--table` names, or `undefined` to pick the only edge entity. */
+  readonly table: string | undefined;
 }
 
 /** What the decorators recorded on one class. */

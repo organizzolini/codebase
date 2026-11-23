@@ -201,6 +201,34 @@ export function requireTreeMetadata<Value>(
 }
 
 /**
+ * The truncation nodes, edges, and warnings drawn for `truncations`, each node
+ * under its parent with an id unused in `taken`.
+ */
+export function truncationParts(
+  truncations: readonly GraphTreeTruncation[],
+  taken: Set<string>,
+): {
+  readonly edges: GraphEdge[];
+  readonly nodes: GraphNode[];
+  readonly warnings: string[];
+} {
+  const edges: GraphEdge[] = [];
+  const nodes: GraphNode[] = [];
+  const warnings: string[] = [];
+
+  for (const { hidden, limit, maximum, parent } of truncations) {
+    const id = truncationId(parent, taken);
+    nodes.push({ id, label: `… ${hidden} more`, marker: "truncation" });
+    edges.push({ source: parent, target: id });
+    warnings.push(
+      `Node ${parent} hides ${hidden} ${hidden === 1 ? "child" : "children"} beyond ${limit} ${maximum}`,
+    );
+  }
+
+  return { edges, nodes, warnings };
+}
+
+/**
  * The ids a cap removes: those reachable from a root that its walk does not
  * show. Also returns the truncations the walk made.
  */
@@ -308,34 +336,6 @@ function truncationId(parent: string, taken: Set<string>): string {
   }
   taken.add(id);
   return id;
-}
-
-/**
- * The truncation nodes, edges, and warnings drawn for `truncations`, each node
- * under its parent with an id unused in `taken`.
- */
-function truncationParts(
-  truncations: readonly GraphTreeTruncation[],
-  taken: Set<string>,
-): {
-  readonly edges: GraphEdge[];
-  readonly nodes: GraphNode[];
-  readonly warnings: string[];
-} {
-  const edges: GraphEdge[] = [];
-  const nodes: GraphNode[] = [];
-  const warnings: string[] = [];
-
-  for (const { hidden, limit, maximum, parent } of truncations) {
-    const id = truncationId(parent, taken);
-    nodes.push({ id, label: `… ${hidden} more`, marker: "truncation" });
-    edges.push({ source: parent, target: id });
-    warnings.push(
-      `Node ${parent} hides ${hidden} ${hidden === 1 ? "child" : "children"} beyond ${limit} ${maximum}`,
-    );
-  }
-
-  return { edges, nodes, warnings };
 }
 
 /**

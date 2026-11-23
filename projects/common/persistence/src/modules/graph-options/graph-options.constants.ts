@@ -2,6 +2,57 @@
 
 import { z } from "zod";
 
+/** Rows read per query, and ids named per follow-up query. */
+export const GRAPH_BATCH_SIZE = 500;
+
+/** The flag and help text of `--dry-run`, which every graph command takes. */
+export const GRAPH_DRY_RUN_OPTION = {
+  description:
+    "Check the options and list the entity files, without connecting to a database or drawing anything",
+  flags: "--dry-run",
+} as const;
+
+/** The flag and help text of `--entities`. */
+export const GRAPH_ENTITIES_OPTION = {
+  description:
+    "Glob of the entity files to import, e.g. 'src/**/*.entity.ts'; repeat for several",
+  flags: "--entities <glob>",
+} as const;
+
+/** The flag and help text of `--output-json`. */
+export const GRAPH_OUTPUT_JSON_OPTION = {
+  description:
+    "Write the graph as pretty JSON to this file, creating its folders; with any output file, the diagram is not printed. An existing file is refused unless --overwrite. Relative paths resolve from the working directory",
+  flags: "--output-json <path>",
+} as const;
+
+/** The flag and help text of `--output-markdown`. */
+export const GRAPH_OUTPUT_MARKDOWN_OPTION = {
+  description:
+    "Write the diagram as a fenced Mermaid block to this file, creating its folders, with warnings after the fence; with any output file, the diagram is not printed. An existing file is refused unless --overwrite. Relative paths resolve from the working directory",
+  flags: "--output-markdown <path>",
+} as const;
+
+/** The flag and help text of `--overwrite`. */
+export const GRAPH_OVERWRITE_OPTION = {
+  description:
+    "Replace an existing --output-markdown or --output-json file; without it, an existing file is refused and left unchanged",
+  flags: "--overwrite",
+} as const;
+
+/** The flag and help text of `--schema`. */
+export const GRAPH_SCHEMA_OPTION = {
+  description: "Schema the entity tables live in; required",
+  flags: "--schema <name>",
+} as const;
+
+/** The flag and help text of `--source-uri`. */
+export const GRAPH_SOURCE_URI_OPTION = {
+  description:
+    "Connection URI of the database to read from, e.g. postgresql://user:password@host:5432/database",
+  flags: "--source-uri <uri>",
+} as const;
+
 /** Missing-option messages, keyed by option, each showing its usage. */
 export const GRAPH_OPTION_MESSAGES = {
   entities:

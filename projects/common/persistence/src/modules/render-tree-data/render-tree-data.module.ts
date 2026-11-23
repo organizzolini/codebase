@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
 
 import { GraphEntitiesModule } from "../graph-entities/graph-entities.module";
-import { GraphMermaidModule } from "../graph-mermaid/graph-mermaid.module";
 import { GraphOptionsModule } from "../graph-options/graph-options.module";
+import { GraphRenderModule } from "../graph-render/graph-render.module";
 import { GraphTreeModule } from "../graph-tree/graph-tree.module";
 
 import { RenderTreeDataCommand } from "./render-tree-data.command";
@@ -17,8 +17,8 @@ import { RenderTreeDataCommand } from "./render-tree-data.command";
   exports: [RenderTreeDataCommand],
   imports: [
     GraphEntitiesModule,
-    GraphMermaidModule,
     GraphOptionsModule,
+    GraphRenderModule,
     GraphTreeModule,
   ],
   providers: [RenderTreeDataCommand],

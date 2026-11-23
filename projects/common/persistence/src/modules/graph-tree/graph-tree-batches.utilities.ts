@@ -1,5 +1,7 @@
 // 🌎 Utilities
 
+import { selectPages } from "../graph-options/graph-options-reads.utilities";
+
 import {
   GRAPH_TREE_ID_ROW_SCHEMA,
   GRAPH_TREE_ROW_SCHEMA,
@@ -50,36 +52,6 @@ export async function loadTreeRows(
   const order = await rankIds(read);
   const loaded = await readLevels(read, order);
   return orderRowsByRank([...loaded.values()], order);
-}
-
-/**
- * Reads every row `body` selects, a page of `batchSize` at a time.
- * `body` ends in its ORDER BY.
- */
-export async function selectPages<Schema extends z.ZodType>(
-  dataSource: DataSource,
-  {
-    batchSize,
-    body,
-    parameters,
-    schema,
-  }: {
-    readonly batchSize: number;
-    readonly body: string;
-    readonly parameters: readonly unknown[];
-    readonly schema: Schema;
-  },
-): Promise<z.infer<Schema>[]> {
-  const limit = parameters.length + 1;
-  const rows: z.infer<Schema>[] = [];
-  for (let offset = 0; ; offset += batchSize) {
-    const page: unknown[] = await dataSource.query(
-      `${body} LIMIT $${String(limit)} OFFSET $${String(limit + 1)}`,
-      [...parameters, batchSize, offset],
-    );
-    for (const row of page) rows.push(schema.parse(row));
-    if (page.length < batchSize) return rows;
-  }
 }
 
 /** Adds each row not yet loaded, returning the ids it added. */

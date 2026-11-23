@@ -5,6 +5,7 @@ import { LoggerModule } from "@codebase/observability";
 
 import { PostgresqlExportModule } from "./modules/postgresql-export/postgresql-export.module";
 import { PostgresqlImportModule } from "./modules/postgresql-import/postgresql-import.module";
+import { RenderDagDataModule } from "./modules/render-dag-data/render-dag-data.module";
 import { RenderTreeDataModule } from "./modules/render-tree-data/render-tree-data.module";
 
 /**
@@ -19,6 +20,7 @@ import { RenderTreeDataModule } from "./modules/render-tree-data/render-tree-dat
     LoggerModule,
     PostgresqlExportModule,
     PostgresqlImportModule,
+    RenderDagDataModule,
     RenderTreeDataModule,
   ],
 })

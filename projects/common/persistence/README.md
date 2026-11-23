@@ -397,6 +397,38 @@ connection opens. A row whose parent is missing from the table is drawn as a
 root and warned about. Each cap that hides children warns with the parent's id
 and the count hidden. The password is masked in every error and dry-run line.
 
+## Drawing DAG data
+
+`render-dag-data` reads a `@Dag` entity's edges, one row per edge from its
+`@GraphSource` column to its `@GraphTarget` column, and prints them as a Mermaid
+flowchart that reads top to bottom. It takes the options `render-tree-data`
+takes, with these meanings:
+
+```bash
+pnpm exec nx run persistence:start --args="render-dag-data --source-uri postgresql://user:password@localhost:5432/source --schema tasks --entities '../<project>/src/**/task-link.entity.ts'"
+```
+
+- **Nodes** are the distinct endpoint values, labelled by the value as text,
+  in the order the sorted edges first name them. A **root** is a node no kept
+  edge targets. A `@GraphLabel` and a `@GraphWeight` column draw on each edge.
+  A row with a NULL endpoint is not drawn, and warns once.
+- **`--filter` and `--sort`** apply to the edge rows, by the edge entity's own
+  columns. An edge is kept when it matches every filter, and a node is drawn
+  only if a kept edge touches it. Edges sort by `--sort`, then by source,
+  target, and primary key, so the same data always draws the same diagram, and
+  edge order sets the order of roots and of siblings.
+- **`--limit` and `--page`** page the roots, in that order, each drawn with every
+  node reachable from it. A component with no root, such as a cycle, is drawn
+  only without `--limit`.
+- **`--max-depth` and `--max-breadth`** cut from the roots. A node's level is
+  its shortest distance from a root, so a node reached by several paths is
+  drawn once. Hidden children collapse into one `… K more` node and a warning.
+- **A cycle** among the kept edges warns once, naming its nodes in sorted order,
+  and is drawn as it is. A self-loop warns too.
+- A `@Graph` entity fails, pointing to `render-graph-data`. `--table` picks one
+  `@Dag` entity when the globs match several, and a declared column that is no
+  column of the entity fails once the connection is open.
+
 ## Test
 
 ```bash

@@ -17,6 +17,12 @@ export interface GraphColumn {
 /** How a column's values compare: numbers, dates and times, or everything else as text. */
 export type GraphColumnKind = "date" | "number" | "text";
 
+/** Options a graph render command receives: the graph options, and `--dry-run`. */
+export interface GraphCommandOptions extends GraphOptions {
+  /** Check the options and list the entity files, without connecting to a database. */
+  readonly dryRun?: boolean | undefined;
+}
+
 /** One parsed `--filter`: the column it names, its comparison, and the value compared with. */
 export interface GraphFilter {
   /** The column's property name, as the entity names it. */
@@ -34,6 +40,15 @@ export interface GraphFilter {
 
 /** A filter's comparison: equal, not equal, contains, less than, or greater than. */
 export type GraphFilterOperator = "!=" | "<" | "=" | ">" | "~=";
+
+/** Caps on the drawn graph; an absent cap draws all. */
+export interface GraphLimits {
+  /** The most children drawn under one node; `undefined` draws every child. */
+  readonly maximumBreadth?: number | undefined;
+
+  /** The deepest level drawn, with roots at level 1; `undefined` draws every level. */
+  readonly maximumDepth?: number | undefined;
+}
 
 /** The options every graph command shares. The command validates them. */
 export interface GraphOptions {
@@ -171,6 +186,21 @@ export interface GraphPredicate {
 
   /** The value compared with, bound as a parameter. */
   readonly value: string;
+}
+
+/** What a graph read draws: filters, sorts, paging, then caps. */
+export interface GraphReadOptions extends GraphLimits {
+  /** Rows read per query; a test seam, `undefined` for the default. */
+  readonly batchSize?: number | undefined;
+
+  /** The row filters, each by a column name; a row must match all of them. */
+  readonly filters: readonly GraphFilter[];
+
+  /** The page of root nodes to draw; `undefined` draws every root. */
+  readonly paging?: GraphPaging | undefined;
+
+  /** The sort keys, applied in order. */
+  readonly sorts: readonly GraphSort[];
 }
 
 /** One parsed `--sort` key: the column it names and its direction. */
