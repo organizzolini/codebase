@@ -29,7 +29,7 @@ src/
     caelundas-database.utilities.ts      # Value transformers
     data-source.constants.ts             # Entities, migrations, caelundasDataSource
     modules/                             # One *.entity.ts per table or view, by domain
-migrations/                              # The one migration and its .sql pair
+migrations/                              # The migrations, each with its .sql pair
 ```
 
 ## Rules
@@ -43,7 +43,8 @@ migrations/                              # The one migration and its .sql pair
 - **The derived-times view needs no refresh;** the two derived tag tables are rebuilt by
   `refreshReadModel(manager)` in the caller's transaction. A view's name is not
   pluralized into sense: `calendar_event_derived_times` is already plural.
-- **One migration.** Regenerate it with `nx run caelundas-db:migration:generate` against
+- **The first migration is the baseline,** and the second replaces
+  `constellation_lines` with the generated `constellation_edges`. Regenerate the first with `nx run caelundas-db:migration:generate` against
   an empty local Postgres (schema-unqualified), then apply the two hand edits the README
   lists. Never edit the generated SQL otherwise.
 

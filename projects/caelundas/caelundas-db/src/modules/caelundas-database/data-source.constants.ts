@@ -3,6 +3,7 @@ import "reflect-metadata";
 import { createDataSource, withGeneratedEdges } from "@codebase/persistence";
 
 import { Migration1793990506900 } from "../../../migrations/1793990506900-migration";
+import { Migration1795466077000 } from "../../../migrations/1795466077000-migration";
 
 import { CAELUNDAS_PROJECT } from "./caelundas-database.constants";
 import { CalendarEventDerivedTime } from "./modules/calendar-events/calendar-event-derived-time.entity";
@@ -27,7 +28,10 @@ export const CAELUNDAS_DATABASE_ENTITIES = withGeneratedEdges([
 ]);
 
 /** All migrations in order, for tests; the runtime runs none. */
-export const CAELUNDAS_DATABASE_MIGRATIONS = [Migration1793990506900] as const;
+export const CAELUNDAS_DATABASE_MIGRATIONS = [
+  Migration1793990506900,
+  Migration1795466077000,
+] as const;
 
 /** TypeORM CLI data source; reads only `CAELUNDAS_POSTGRES_*`, never syncs. */
 export const caelundasDataSource = createDataSource({

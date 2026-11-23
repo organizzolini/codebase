@@ -91,9 +91,11 @@ nx run caelundas-db:migration:show               # List applied and pending
 The `migration` target is the shared one from the root `nx.json` target
 defaults, declared here as
 `"migration": { "options": { "module": "src/modules/caelundas-database" } }`.
-There is one migration, with its `-up.sql` and `-down.sql` beside it, linted
-by `sqlfluff` and checked by `squawk`. It carries two hand edits after
-`generate`: it creates `typeorm_metadata` for the view's row, and its SQL
+Each migration has its `-up.sql` and `-down.sql` beside it, linted by
+`sqlfluff` and checked by `squawk`. The second replaces `constellation_lines`
+with `constellation_edges`, the table `Constellation`'s `@Graph` generates,
+carrying its rows over, since `squawk` refuses a table rename. The first
+carries two hand edits after `generate`: it creates `typeorm_metadata` for the view's row, and its SQL
 files open with the lock and statement timeouts the other projects' carry.
 See [ADR 0031](../../../documentation/adr/0031-move-caelundas-from-sqlite-to-postgres.md).
 

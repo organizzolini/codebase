@@ -94,6 +94,30 @@ describe(CaelundasDatabaseModule, () => {
     ]);
   });
 
+  it("has replaced constellation_lines with constellation_edges, its constraints named as the entity names them", async () => {
+    expect.hasAssertions();
+
+    const tables = await database.dataSource.query<{ name: string }[]>(
+      String.raw`select table_name as name from information_schema.tables where table_schema = $1 and table_name like 'constellation\_%'`,
+      [database.container.connection.schema],
+    );
+    const constraints = await database.dataSource.query<{ name: string }[]>(
+      `select constraint_name as name from information_schema.table_constraints where table_schema = $1 and table_name = 'constellation_edges'`,
+      [database.container.connection.schema],
+    );
+
+    expect(tables).toStrictEqual([{ name: "constellation_edges" }]);
+    expect(constraints.map(({ name }) => name).toSorted()).toStrictEqual([
+      "FK_04d68e2ee86feb8798df9881158",
+      "FK_b82df4a773517d7ddf1b8b8df14",
+      "FK_d952356fc9daa4133c753105b3c",
+      "PK_a32e2be764ccbe09e19f10384f1",
+      "constellation_edges_constellation_designation_not_null",
+      "constellation_edges_from_hip_not_null",
+      "constellation_edges_to_hip_not_null",
+    ]);
+  });
+
   it("matches the entities exactly, so a later migration:generate has nothing to add", async () => {
     expect.hasAssertions();
 
