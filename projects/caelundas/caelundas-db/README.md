@@ -148,7 +148,7 @@ without the label. Constellations that share a star are one neighborhood
 and keep their labels on the lines. A single constellation is one neighborhood,
 so it draws with no subgraph.
 
-Mermaid draws at most 500 edges and all 599 lines exceed it, so page with
+Mermaid draws at most 500 edges and all constellation lines exceed it, so page with
 `--limit 8`, which draws the first 8 neighborhoods, or pick one constellation
 with `--filter constellationDesignation=UMa`.
 
