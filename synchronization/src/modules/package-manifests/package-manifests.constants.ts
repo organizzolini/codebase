@@ -45,7 +45,7 @@ export const PACKAGE_MANIFEST_SCHEMA = z.looseObject({
   version: z.string().min(1),
 });
 
-/** All 36 publishable package directories across the five IC suites. */
+/** All 37 publishable package directories across the five IC suites. */
 export const PUBLISHABLE_PACKAGE_PROJECTS = [
   // Conformetry (8)
   "projects/ic-suite/conformetry/conformetry-cli",
@@ -57,12 +57,13 @@ export const PUBLISHABLE_PACKAGE_PROJECTS = [
   "projects/ic-suite/conformetry/conformetry-output",
   "projects/ic-suite/conformetry/conformetry-validation",
 
-  // Codometer (6)
+  // Codometer (7)
   "projects/ic-suite/codometer/codometer-cli",
   "projects/ic-suite/codometer/codometer-configuration",
   "projects/ic-suite/codometer/codometer-core",
   "projects/ic-suite/codometer/codometer-languages",
   "projects/ic-suite/codometer/codometer-measurement",
+  "projects/ic-suite/codometer/codometer-nx",
   "projects/ic-suite/codometer/codometer-output",
 
   // Callidescope (6)

@@ -3,7 +3,7 @@
 import type { PaginationArguments } from "../search/modules/search-arguments/pagination-arguments.entities";
 import type { Repository, Text } from "@codebase/lexico-db";
 
-/** A text's ancestor link: the text it climbs from, the ancestor, and its distance. */
+/** A text's ancestor link: origin, ancestor, and distance. */
 export interface AncestorLink {
   readonly ancestorId: string;
   readonly depth: number;
@@ -165,7 +165,7 @@ export type TextRelationField = "author" | "parentText";
 /** The `Text` relations resolvers serve: child texts and lines. */
 export type TextResolvedField = "childTexts" | "lines";
 
-/** A text's previous and next siblings under its parent, null at either end. */
+/** A text's previous and next siblings, null at either end. */
 export interface TextSiblings {
   readonly next: null | Text;
   readonly previous: null | Text;

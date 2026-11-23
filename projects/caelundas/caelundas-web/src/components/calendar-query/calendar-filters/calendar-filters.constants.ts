@@ -31,8 +31,6 @@ export const FILTERS_BUTTON_CLASS_NAME =
 export const JOINED_BUTTON_CLASS_NAME =
   "in-data-[slot=button-group]:rounded-r-none";
 
-/**
- * Filter and its chips as one strip: flat chip ends, one border between.
- */
+/** Filter and its chips as one strip: flat ends, one border. */
 export const STRIP_CLASS_NAME =
   "flex min-w-0 flex-wrap items-start [&_[data-slot=filter-chip]>*]:rounded-none! [&_[data-slot=filter-chip]:not(:last-child)>[data-slot]:last-child]:rounded-r-none! [&_[data-slot=filter-chip]>*]:border-l-0 [&_[data-slot=filter-chip]:last-child>[data-slot]:last-child]:rounded-r-lg! [&_[aria-label=Navigate]>:first-child]:rounded-l-none! [&_[aria-label=Navigate]>:first-child]:border-l-0 [&_[aria-label=Navigate]>:last-child]:rounded-r-lg! data-joined:[&_[aria-label=Navigate]>:last-child]:rounded-r-none! [&_[aria-label=Filter]>[data-slot=popover-trigger][data-slot=popover-trigger]]:rounded-l-lg! [&_[aria-label=Filter]>[data-slot=popover-trigger][data-slot=popover-trigger]]:border-l! data-attached:[&_[aria-label=Filter]>[data-slot=popover-trigger][data-slot=popover-trigger]]:rounded-r-none!";

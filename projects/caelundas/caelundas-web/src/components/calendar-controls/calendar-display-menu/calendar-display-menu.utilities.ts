@@ -12,7 +12,7 @@ import {
   toConstellationsChange,
   toEclipticChange,
   toVisibilityChange,
-} from "../../../hooks/use-night-sky/night-sky-controls.utilities";
+} from "../../../hooks/use-night-sky/hooks/use-night-sky-controls/night-sky-controls.utilities";
 import {
   CALENDAR_VIEW_LABELS,
   CALENDAR_VIEWS,
@@ -40,7 +40,7 @@ import {
 } from "./components/display-radios/display-radios.constants";
 
 import type { UseCalendarDisplayResult } from "../../../hooks/use-calendar-display/use-calendar-display.types";
-import type { SkySearchChange } from "../../../hooks/use-night-sky/night-sky-controls.types";
+import type { SkySearchChange } from "../../../hooks/use-night-sky/hooks/use-night-sky-controls/night-sky-controls.types";
 import type { ConstellationListing } from "../../../hooks/use-night-sky/night-sky.types";
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
 import type { EventGroupField } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";

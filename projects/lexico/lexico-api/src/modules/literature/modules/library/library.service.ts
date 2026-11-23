@@ -8,7 +8,6 @@ import {
   Text,
 } from "@codebase/lexico-db";
 
-import { LibrarySortField } from "./library-sort.entities";
 import {
   LIBRARY_SORT_COLUMNS,
   LIBRARY_WORKS_PER_AUTHOR,
@@ -28,8 +27,12 @@ import {
   sqlClause,
   textOrderSql,
   textScopeClause,
-} from "./library.functions";
-import { matchRangesOf, searchPatternsOf } from "./library.utilities";
+} from "./modules/query/library.functions";
+import {
+  matchRangesOf,
+  searchPatternsOf,
+} from "./modules/query/library.utilities";
+import { LibrarySortField } from "./modules/sort/library-sort.entities";
 
 import type { QueryBuilder } from "../../literature.types";
 import type {
@@ -66,12 +69,7 @@ export class LibraryService {
 
   // 🔏 Private Methods
 
-  /**
-   * The value each card is ordered by. An author attribute is read directly;
-   * a Text attribute takes the card's first Text under the sort, which is the
-   * smallest value ascending and the largest descending. Nulls are ignored
-   * by the aggregate, so a card with no value sorts last.
-   */
+  /** The value each card is ordered by: an author attribute directly, or its first Text under the sort. Nulls sort last. */
   private authorOrderKey(
     sort: LibrarySort,
     query: ParsedLibraryArguments,
@@ -236,11 +234,7 @@ export class LibraryService {
     return records;
   }
 
-  /**
-   * Loads each author's top-level works that rank inside a window, in the
-   * sort's order. A single windowed statement picks the works, and then they
-   * are loaded by id with their author and child counts.
-   */
+  /** Loads each author's top-level works ranking inside a window, in sort order, then by id with their author and child counts. */
   private async loadWorks(
     authorIds: string[],
     query: ParsedLibraryArguments,
@@ -315,11 +309,7 @@ export class LibraryService {
 
   // 🌎 Public Methods
 
-  /**
-   * The top-level works of the given authors that the request keeps: a work
-   * is kept when it, or any child of it, is in scope. Each author's works are
-   * then counted or ranked from this base.
-   */
+  /** The top-level works of the given authors the request keeps: kept when it or a child is in scope. */
   private scopedTexts(
     authorIds: string[],
     pattern: null | string,
@@ -338,11 +328,7 @@ export class LibraryService {
       .setParameters(scope.parameters);
   }
 
-  /**
-   * One page of the child Texts of a Text, ordered by the number in the
-   * title and then the title, so "Book 2" comes before "Book 10". The
-   * search only marks matches; it never narrows the children.
-   */
+  /** One page of a Text's child Texts ordered by title number, so "Book 2" precedes "Book 10"; search only marks matches. */
   public async listLibraryChildren(
     query: ParsedLibraryChildrenArguments,
   ): Promise<LibraryTextsPageRecord> {
@@ -385,11 +371,7 @@ export class LibraryService {
     return { inscriptionTypes, materials, provinces };
   }
 
-  /**
-   * Pages the authors a request keeps, each with its first top-level works in
-   * scope. Authors are ordered by the sort, then by name; works by the sort,
-   * then by title.
-   */
+  /** Pages the authors a request keeps with their first in-scope works; authors by sort then name, works by sort then title. */
   public async listLibraryPage(
     query: ParsedLibraryArguments,
   ): Promise<LibraryPageRecord> {

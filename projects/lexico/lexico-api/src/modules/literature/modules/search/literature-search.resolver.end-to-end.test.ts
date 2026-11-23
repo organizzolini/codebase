@@ -12,7 +12,7 @@ import {
 import {
   type LiteratureSearchCorpus,
   seedLiteratureSearchCorpus,
-} from "../../../../../testing/literature-search-corpus";
+} from "../../../../../testing/fixtures/literature-search-corpus";
 import {
   expectLiteratureSearchPagination,
   type LiteratureSearchPage,

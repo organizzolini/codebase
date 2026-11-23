@@ -2,9 +2,7 @@ import type { LucideIcon } from "lucide-react";
 
 // 🏷️ Types
 
-/**
- * One choice: what it is called, what it is worth and the icon beside it.
- */
+/** A choice: its name, value and icon. */
 export interface DisplayRadioOption {
   icon: LucideIcon;
   label: string;

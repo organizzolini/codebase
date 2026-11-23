@@ -17,7 +17,6 @@
         "url": "http://localhost:${CAELUNDAS_API_PORT:-6173}/graphql"
       }
     },
-    "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
     "eslint": {},

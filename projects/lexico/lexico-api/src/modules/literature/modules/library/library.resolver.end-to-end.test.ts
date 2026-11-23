@@ -4,12 +4,12 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { Author } from "@codebase/lexico-db";
 
-import { DATABASE_TIMEOUT_MILLISECONDS } from "../../../../../testing/database";
 import {
   type LibraryApplication,
   startLibraryApplication,
-} from "../../../../../testing/library-application";
-import { LIBRARY_INSCRIPTION_COUNT } from "../../../../../testing/library-catalog";
+} from "../../../../../testing/applications/library-application";
+import { DATABASE_TIMEOUT_MILLISECONDS } from "../../../../../testing/database";
+import { LIBRARY_INSCRIPTION_COUNT } from "../../../../../testing/fixtures/library-catalog";
 
 /** A library page as the `LIBRARY` query selects one. */
 interface LibraryPageNode {

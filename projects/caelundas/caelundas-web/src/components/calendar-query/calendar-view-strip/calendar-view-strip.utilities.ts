@@ -11,9 +11,7 @@ import type { ViewChoice } from "./calendar-view-strip.types";
 
 // 🌎 Public Functions
 
-/**
- * The id of the choice the filter tree matches, or custom when it matches none; the input the API is sent says whether two trees filter alike, whatever their ids.
- */
+/** The id of the choice the filter tree matches, or custom; the API input, not ids, decides whether trees filter alike. */
 export function findActiveViewId(
   presets: readonly ResolvedPreset[],
   query: EventFilterQuery,

@@ -2,9 +2,7 @@
 
 // 🌎 Public Functions
 
-/**
- * The list with the item at an index moved by a step, one place left or right; the list as it was when the move would leave it.
- */
+/** The list with the item at an index moved one place left or right; unchanged when the move would leave it. */
 export function moveListItem<Item>(
   list: readonly Item[],
   index: number,

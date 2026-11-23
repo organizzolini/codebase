@@ -49,7 +49,6 @@
         "cwd": "{projectRoot}"
       }
     },
-    "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
     "eslint": {},

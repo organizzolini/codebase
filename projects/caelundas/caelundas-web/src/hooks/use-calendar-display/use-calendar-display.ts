@@ -10,9 +10,7 @@ import type { UseCalendarDisplayResult } from "./use-calendar-display.types";
 
 // 🧩 Hook
 
-/**
- * How the calendar looks as the link sets it, the night sky's settings, and the handlers that write a change back; controls and link never disagree.
- */
+/** How the calendar looks as the link sets it, the night sky's settings, and handlers writing changes back to the link. */
 export function useCalendarDisplay(timeZone: string): UseCalendarDisplayResult {
   // 🪝 Hooks
   const search = useRouterState({

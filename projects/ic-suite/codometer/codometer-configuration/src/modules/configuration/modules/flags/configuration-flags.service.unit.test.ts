@@ -101,6 +101,7 @@ describe(ConfigurationFlagsService, () => {
         {
           checksLimits: false,
           checksReports: false,
+          checksWeigh: false,
           writesJson: false,
           writesMarkdown: false,
         },
@@ -110,6 +111,7 @@ describe(ConfigurationFlagsService, () => {
         {
           checksLimits: true,
           checksReports: false,
+          checksWeigh: false,
           writesJson: false,
           writesMarkdown: false,
         },
@@ -119,6 +121,7 @@ describe(ConfigurationFlagsService, () => {
         {
           checksLimits: false,
           checksReports: false,
+          checksWeigh: false,
           writesJson: true,
           writesMarkdown: false,
         },
@@ -128,6 +131,7 @@ describe(ConfigurationFlagsService, () => {
         {
           checksLimits: false,
           checksReports: false,
+          checksWeigh: false,
           writesJson: false,
           writesMarkdown: true,
         },
@@ -139,12 +143,38 @@ describe(ConfigurationFlagsService, () => {
       expect(selection.mode).toStrictEqual(mode);
     });
 
+    it("reads --check weigh as its own check, apart from limits", () => {
+      expect(service.selectMode({ check: "weigh" }).mode).toStrictEqual({
+        checksLimits: false,
+        checksReports: false,
+        checksWeigh: true,
+        writesJson: false,
+        writesMarkdown: false,
+      });
+      expect(service.selectMode({ check: "limits,weigh" }).mode).toMatchObject({
+        checksLimits: true,
+        checksWeigh: true,
+      });
+    });
+
+    it.each(["limits", "weigh"])(
+      "refuses --inputs together with --check %s",
+      (check) => {
+        expect(
+          service.selectMode({ check, inputs: ["src/**"] }).errors,
+        ).toStrictEqual([
+          expect.stringContaining("--inputs cannot be combined") as string,
+        ]);
+      },
+    );
+
     it("tolerates spaces around the names in a --check set", () => {
       expect(
         service.selectMode({ check: " reports , limits " }).mode,
       ).toStrictEqual({
         checksLimits: true,
         checksReports: true,
+        checksWeigh: false,
         writesJson: false,
         writesMarkdown: false,
       });
@@ -176,11 +206,12 @@ describe(ConfigurationFlagsService, () => {
         const selection = service.selectMode({ check });
 
         expect(selection.errors).toStrictEqual([
-          '--check needs a value. It takes a comma-separated set drawn from "limits" and "reports", as in "--check limits,reports".',
+          '--check needs a value. It takes a comma-separated set drawn from "limits", "weigh" and "reports", as in "--check limits,weigh,reports".',
         ]);
         expect(selection.mode).toStrictEqual({
           checksLimits: false,
           checksReports: false,
+          checksWeigh: false,
           writesJson: false,
           writesMarkdown: false,
         });

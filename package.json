@@ -12,6 +12,7 @@
     "@codependix/configuration": "workspace:*",
     "@codependix/nx": "workspace:*",
     "@codometer/configuration": "workspace:*",
+    "@codometer/nx": "workspace:*",
     "@coinagerie/configuration": "workspace:*",
     "@coinagerie/languages": "workspace:*",
     "@coinagerie/nx": "workspace:*",
@@ -109,5 +110,5 @@
     ]
   },
   "type": "module",
-  "version": "6.10.0"
+  "version": "6.12.0"
 }

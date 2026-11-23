@@ -8,13 +8,13 @@ import {
   DATABASE_TIMEOUT_MILLISECONDS,
   startLexicoDatabaseTestingModule,
 } from "../../../../../testing/database";
-import { createLiteratureServices } from "../../../../../testing/literature-services";
 import {
   passageLineAt,
   passageTokensAt,
   type ReadingPassage,
   seedReadingPassage,
-} from "../../../../../testing/reading-passage";
+} from "../../../../../testing/fixtures/reading-passage";
+import { createLiteratureServices } from "../../../../../testing/literature-services";
 
 import { TokensResolver } from "./tokens.resolver";
 

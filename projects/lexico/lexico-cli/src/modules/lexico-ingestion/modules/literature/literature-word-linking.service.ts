@@ -168,10 +168,7 @@ export class LiteratureWordLinkingService {
 
   // 🌎 Public Methods
 
-  /**
-   * Links every unlinked literature word type the dictionary can now explain,
-   * a chunk of types at a time, and leaves already linked words as they are.
-   */
+  /** Links every unlinked literature word type the dictionary can now explain, a chunk at a time, leaving linked words alone. */
   public async relinkTokens(): Promise<RelinkSummary> {
     const table = this.tokenRepository.metadata.tablePath;
     const words = await this.loadWords();

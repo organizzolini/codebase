@@ -51,6 +51,7 @@ export {
   CHECK_NAMES,
   CHECK_REPORTS,
   CHECK_SEPARATOR,
+  CHECK_WEIGH,
   ConfigurationPathRequiredError,
   FORMAT_JSON,
   FORMAT_MARKDOWN,

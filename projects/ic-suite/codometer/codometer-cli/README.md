@@ -50,14 +50,14 @@ default one, and a run without the flag is refused with an error naming it:
 codometer --config configuration/ic-suite/codometer.config.ts --check limits
 ```
 
-| Flag | Purpose |
-| ---- | ------- |
-| `--check [set]` | Fail on a comma-separated set drawn from `reports` and `limits` |
-| `--config <path>` | **Required.** The configuration file to read |
-| `-f, --format <format>` | What to print to standard output, one of `json` and `markdown` |
-| `--inputs [globs...]` | Glob array measured in place of every configured input, with no configured input — not even the built-in `codebase` one — active |
-| `--output-json [path]` | Write the JSON report, at the given path or the configured one |
-| `--output-markdown [path]` | Write the markdown badge block, at the given path or the configured one |
+| Flag                       | Purpose                                                                                                                          |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `--check [set]`            | Fail on a comma-separated set drawn from `limits`, `weigh` and `reports`                                                         |
+| `--config <path>`          | **Required.** The configuration file to read                                                                                     |
+| `-f, --format <format>`    | What to print to standard output, one of `json` and `markdown`                                                                   |
+| `--inputs [globs...]`      | Glob array measured in place of every configured input, with no configured input — not even the built-in `codebase` one — active |
+| `--output-json [path]`     | Write the JSON report, at the given path or the configured one                                                                   |
+| `--output-markdown [path]` | Write the markdown badge block, at the given path or the configured one                                                          |
 
 There is no `--directory`: a run measures the process's working directory.
 `cd` into what you want measured, or narrow it with `--inputs`. Directories
@@ -72,14 +72,14 @@ their own destination, `--check limits` fails on a breached limit, `--check
 reports` fails on a stale one, `--format` prints, and none of them turns
 another on:
 
-| Invocation | Writes | Fails on staleness | Fails on a breach |
-| ---------- | ------ | ------------------ | ----------------- |
-| `codometer --config <path>` | no | no | no |
-| `codometer --config <path> --check limits` | no | no | yes |
-| `codometer --config <path> --check reports` | no | yes | no |
-| `codometer --config <path> --check limits,reports` | no | yes | yes |
-| `codometer --config <path> --output-json --output-markdown` | yes, both | no | no |
-| `codometer --config <path> --output-json --check limits` | yes | no | yes, after writing |
+| Invocation                                                  | Writes    | Fails on staleness | Fails on a breach  |
+| ----------------------------------------------------------- | --------- | ------------------ | ------------------ |
+| `codometer --config <path>`                                 | no        | no                 | no                 |
+| `codometer --config <path> --check limits`                  | no        | no                 | yes                |
+| `codometer --config <path> --check reports`                 | no        | yes                | no                 |
+| `codometer --config <path> --check limits,reports`          | no        | yes                | yes                |
+| `codometer --config <path> --output-json --output-markdown` | yes, both | no                 | no                 |
+| `codometer --config <path> --output-json --check limits`    | yes       | no                 | yes, after writing |
 
 `--output-json`/`--output-markdown` passed **bare** write to whatever the
 resolved configuration's own `json`/`markdown` output declares, and are
@@ -99,7 +99,15 @@ rather than one run at a time.
 
 A **breach** and **staleness** are different findings and are never reported as
 one. A `warn` breach is printed and leaves the exit code alone; a `fail` breach
-exits 1, but only where `--check limits` asked for a gate.
+exits 1, but only where `--check limits` or `--check weigh` asked for a gate.
+
+`--check limits` gates the limits written against the source tree, the built-in
+`codebase` input, and measures nothing else, so it needs no build. `--check
+weigh` gates the limits written against every other declared input, such as the
+size of a build's output, so it needs that output to exist. Together,
+`--check limits,weigh`, they gate every limit. `--inputs` replaces the
+configured inputs with raw globs that no limit is written against, so it is
+refused beside either.
 
 `--check reports` compares a committed report against a fresh measurement, so it
 is only as stable as the numbers it re-measures. Compressed sizes are
@@ -150,21 +158,21 @@ is.
 What is measured is the working tree rather than the index: a file that exists
 and is not ignored counts, whether or not it has been committed yet.
 
-| Group | Counts |
-| ----- | ------ |
-| Repository | Lines of code, repository size, folders, source files |
+| Group                   | Counts                                                                                                                                        |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Repository              | Lines of code, repository size, folders, source files                                                                                         |
 | TypeScript & JavaScript | Files, tests, classes, functions, methods, interfaces, generics, enums, constants, imports, decorators, exported symbols, doc comments, TODOs |
-| Python | Files, lines, classes, functions, protocols, constants, imports, decorators, docstrings |
-| Jupyter | Notebooks, cells by kind, executions, outputs, plus the code and prose inside them |
-| JSON | Files, objects, arrays, properties, scalars by type, node count, max depth |
-| YAML | Documents, mappings, sequences, keys, scalars, anchors, aliases, max depth |
-| Markdown | Headings by level, paragraphs, lists, tables, links, images, code blocks, block quotes |
-| SQL | Statements by kind — selects, inserts, updates, deletes, creates, joins, CTEs |
-| Shell | Functions, variables, exports, conditionals, loops, pipelines, shebangs |
-| TOML | Tables, array tables, keys, arrays |
-| HCL | Blocks, resources, variables, outputs, attributes, interpolations |
-| CSS | Rules, selectors, declarations, at-rules, media queries, custom properties |
-| Conventions | Whatever you declare — see below |
+| Python                  | Files, lines, classes, functions, protocols, constants, imports, decorators, docstrings                                                       |
+| Jupyter                 | Notebooks, cells by kind, executions, outputs, plus the code and prose inside them                                                            |
+| JSON                    | Files, objects, arrays, properties, scalars by type, node count, max depth                                                                    |
+| YAML                    | Documents, mappings, sequences, keys, scalars, anchors, aliases, max depth                                                                    |
+| Markdown                | Headings by level, paragraphs, lists, tables, links, images, code blocks, block quotes                                                        |
+| SQL                     | Statements by kind — selects, inserts, updates, deletes, creates, joins, CTEs                                                                 |
+| Shell                   | Functions, variables, exports, conditionals, loops, pipelines, shebangs                                                                       |
+| TOML                    | Tables, array tables, keys, arrays                                                                                                            |
+| HCL                     | Blocks, resources, variables, outputs, attributes, interpolations                                                                             |
+| CSS                     | Rules, selectors, declarations, at-rules, media queries, custom properties                                                                    |
+| Conventions             | Whatever you declare — see below                                                                                                              |
 
 Notebooks are measured by composition rather than by a fourth parser: the
 document is handed to the JSON analyzer, its code cells to the Python analyzer,
@@ -201,14 +209,14 @@ inputs: [
 ],
 ```
 
-| Field | Required | Default | Meaning |
-| ----- | -------- | ------- | ------- |
-| `name` | yes | — | What the input is called. Two inputs may not share one |
-| `include` | yes | — | Globs that add files. At least one must add rather than remove |
-| `exclude` | no | none | Globs that remove files |
-| `analyses` | yes | — | `language`, `size`, or both. At least one |
-| `compression` | no | `gzip` | `gzip`, `brotli`, or `none` for the bytes on disk |
-| `directory` | no | `.` | Where the input's globs start, relative to the process's working directory |
+| Field         | Required | Default | Meaning                                                                    |
+| ------------- | -------- | ------- | -------------------------------------------------------------------------- |
+| `name`        | yes      | —       | What the input is called. Two inputs may not share one                     |
+| `include`     | yes      | —       | Globs that add files. At least one must add rather than remove             |
+| `exclude`     | no       | none    | Globs that remove files                                                    |
+| `analyses`    | yes      | —       | `language`, `size`, or both. At least one                                  |
+| `compression` | no       | `gzip`  | `gzip`, `brotli`, or `none` for the bytes on disk                          |
+| `directory`   | no       | `.`     | Where the input's globs start, relative to the process's working directory |
 
 `language` runs the analyzers above over the input's files. `size` compresses
 each matched file on its own and sums the results — never all of them together
@@ -223,6 +231,32 @@ fails the run rather than counting as zero bytes.
 `--inputs [globs...]` on the command line replaces every configured input for
 that one run, running only `language` analysis over exactly the globs given —
 with no other input, not even the built-in `codebase` one, active.
+
+Measuring only part of what a project declares is a configuration choice, not a
+flag: a run that must not read compiled output points `--config` at a
+configuration that leaves that input out.
+
+## Many directories at once
+
+`codometer measure a b c` measures each directory as a run started inside it
+would be, from one process, so a runner pays the start-up once. When it names
+more than one directory it prints a JSON line after the runs, a verdict for
+each:
+
+```json
+[
+  { "directory": "/w/a", "ok": true, "report": "" },
+  {
+    "directory": "/w/b",
+    "ok": false,
+    "report": "Breached custom.Class JSDoc Budget: measured 2, limit 0"
+  }
+]
+```
+
+`report` says what failed a directory, in plain lines, and is empty when it
+passed. The exit code is 1 when any directory failed. With a single directory,
+standard output stays free for its report.
 
 ## Limits
 
@@ -240,12 +274,12 @@ limits: [
 ],
 ```
 
-| Field | Required | Default | Meaning |
-| ----- | -------- | ------- | ------- |
-| `metric` | yes | — | Dotted path of the metric this limits |
-| `value` | yes | — | How high the metric may go, as a number or a string with a unit |
-| `severity` | no | `fail` | `fail` stops the run on a breach; `warn` reports it |
-| `label` | no | the path | What to call the limit in a report |
+| Field      | Required | Default  | Meaning                                                         |
+| ---------- | -------- | -------- | --------------------------------------------------------------- |
+| `metric`   | yes      | —        | Dotted path of the metric this limits                           |
+| `value`    | yes      | —        | How high the metric may go, as a number or a string with a unit |
+| `severity` | no       | `fail`   | `fail` stops the run on a breach; `warn` reports it             |
+| `label`    | no       | the path | What to call the limit in a report                              |
 
 A metric is addressed by the input's name followed by its path within that
 input — `codebase.typescript.interfaces`, `codebase.markdown.files`,
@@ -357,8 +391,14 @@ rather than counting files or declarations at all:
 
 ```ts
 custom: [
-  { comment: { language: "yaml", maximumWords: 128 }, label: "YAML Comment Budget" },
-  { comment: { kind: "class", maximumLines: 24 }, label: "Class Comment Budget" },
+  {
+    comment: { language: "yaml", maximumWords: 128 },
+    label: "YAML Comment Budget",
+  },
+  {
+    comment: { kind: "class", maximumLines: 24 },
+    label: "Class Comment Budget",
+  },
 ];
 ```
 
@@ -392,11 +432,11 @@ counts — is in
 What a run prints and what it writes are asked for separately, and neither
 implies the other:
 
-| Sink | Flag | What lands there |
-| ---- | ---- | ---------------- |
-| Console | `-f, --format <format>` | The report as `json`, or the rendered badges as `markdown` |
-| Report | `--output-json [path]` | The structured report below |
-| Markdown | `--output-markdown [path]` | The badge block, in a markdown file |
+| Sink     | Flag                       | What lands there                                           |
+| -------- | -------------------------- | ---------------------------------------------------------- |
+| Console  | `-f, --format <format>`    | The report as `json`, or the rendered badges as `markdown` |
+| Report   | `--output-json [path]`     | The structured report below                                |
+| Markdown | `--output-markdown [path]` | The badge block, in a markdown file                        |
 
 **One markdown sink, not two.** `--output-markdown` splices the badge block
 between its markers when the file already carries them, appends it with them
@@ -508,8 +548,18 @@ not, so a consumer can render the headroom rather than only the failures.
         {
           "instances": null,
           "limits": [
-            { "breached": true, "label": null, "severity": "warn", "value": 900 },
-            { "breached": true, "label": "Bundle", "severity": "fail", "value": 1000 }
+            {
+              "breached": true,
+              "label": null,
+              "severity": "warn",
+              "value": 900
+            },
+            {
+              "breached": true,
+              "label": "Bundle",
+              "severity": "fail",
+              "value": 1000
+            }
           ],
           "name": "compiled.size",
           "path": "size",
@@ -518,7 +568,11 @@ not, so a consumer can render the headroom rather than only the failures.
         },
         {
           "instances": [
-            { "file": "src/modules/codometer/codometer.service.ts", "line": 32, "measured": 9 }
+            {
+              "file": "src/modules/codometer/codometer.service.ts",
+              "line": 32,
+              "measured": 9
+            }
           ],
           "limits": [
             { "breached": true, "label": null, "severity": "fail", "value": 0 }
@@ -535,15 +589,15 @@ not, so a consumer can render the headroom rather than only the failures.
 }
 ```
 
-| Field | Meaning |
-| ----- | ------- |
-| `name` | The metric's name across runs — its target, then its path. The join key a later run is compared on |
-| `path` | The metric's path within its target, with no target name on the front |
-| `unit` | `"bytes"` where the value counts bytes, `null` for a plain count |
-| `limits` | Every limit declared on the metric, in the order written. Empty where nothing limits it — never an absent key |
+| Field       | Meaning                                                                                                                                                                               |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`      | The metric's name across runs — its target, then its path. The join key a later run is compared on                                                                                    |
+| `path`      | The metric's path within its target, with no target name on the front                                                                                                                 |
+| `unit`      | `"bytes"` where the value counts bytes, `null` for a plain count                                                                                                                      |
+| `limits`    | Every limit declared on the metric, in the order written. Empty where nothing limits it — never an absent key                                                                         |
 | `instances` | Where each instance a per-instance selector produced was found — a `comment` selector's breaches today. `null` for a metric that only counts, never an empty array standing in for it |
-| `empty` | Said outright when a target's globs matched nothing |
-| `failures` | Whatever the run could not do: a target that would not measure, a limit that bound to nothing |
+| `empty`     | Said outright when a target's globs matched nothing                                                                                                                                   |
+| `failures`  | Whatever the run could not do: a target that would not measure, a limit that bound to nothing                                                                                         |
 
 **A `comment` selector's metric reports every breaching block, not the whole
 selector's activity.** `value` is the count of blocks that broke the
@@ -574,11 +628,11 @@ the flag table promises.
 
 ## Packages
 
-| Package | Role |
-| ------- | ---- |
-| [`@codometer/cli`](README.md) | Measures the repository and writes the reports. Knows nothing about any particular repository |
+| Package                                                            | Role                                                                                                                    |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| [`@codometer/cli`](README.md)                                      | Measures the repository and writes the reports. Knows nothing about any particular repository                           |
 | [`@codometer/configuration`](../codometer-configuration/README.md) | Reads `codometer.config.ts` and resolves exclusions, output destinations, custom statistics, and the Python interpreter |
-| [`@codometer/examples`](../codometer-examples/README.md) | A sample corpus with known contents and one runnable example per behavior above, each asserted by a test |
+| [`@codometer/examples`](../codometer-examples/README.md)           | A sample corpus with known contents and one runnable example per behavior above, each asserted by a test                |
 
 Which paths to skip, where the output goes, and how Python is reached are all
 configuration. That split is what lets the CLI be a general tool rather than
@@ -589,11 +643,11 @@ one repository's script.
 Agent skills for coding agents working with codometer are published in
 [`@codometer/agents`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codometer/codometer-agents):
 
-| Skill | Description |
-| ----- | ----------- |
-| [`codometer-measure`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codometer/codometer-agents/skills/codometer-measure) | Run code measurements and produce markdown or JSON reports |
+| Skill                                                                                                                                                | Description                                                                       |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| [`codometer-measure`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codometer/codometer-agents/skills/codometer-measure)     | Run code measurements and produce markdown or JSON reports                        |
 | [`codometer-configure`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codometer/codometer-agents/skills/codometer-configure) | Configure measurement inputs, custom metrics, and limits in `codometer.config.ts` |
-| [`codometer-triage`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codometer/codometer-agents/skills/codometer-triage) | Triage limit breaches and measurement failures |
+| [`codometer-triage`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codometer/codometer-agents/skills/codometer-triage)       | Triage limit breaches and measurement failures                                    |
 
 ## Examples
 

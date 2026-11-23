@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.12.0](https://github.com/organizzolini/codebase/compare/v6.11.0...v6.12.0) (2026-11-23)
+
+### ✨ Features
+
+* **meanderaw:** 💄 add favicon to meanderaw-web ([#2544](https://github.com/organizzolini/codebase/issues/2544)) ([d1b9f7b](https://github.com/organizzolini/codebase/commit/d1b9f7b01fe8dc3083bbaeb45479acd45a6f9d0e)), closes [#2543](https://github.com/organizzolini/codebase/issues/2543)
+
+### 📝 Documentation
+
+* **documentation:** 📝 group repository sections in readme ([#2538](https://github.com/organizzolini/codebase/issues/2538)) ([6e19d43](https://github.com/organizzolini/codebase/commit/6e19d43aeedbc8501d3dbf569a0a8ef0b5399dd4)), closes [#2537](https://github.com/organizzolini/codebase/issues/2537)
+* **documentation:** 📝 order projects by architectural layer ([#2542](https://github.com/organizzolini/codebase/issues/2542)) ([54ac10d](https://github.com/organizzolini/codebase/commit/54ac10d3ec516c17dc08d9102c28e08b3e379b74)), closes [#2541](https://github.com/organizzolini/codebase/issues/2541) [#2540](https://github.com/organizzolini/codebase/issues/2540)
+* **documentation:** 📝 show projects as a folder tree ([#2540](https://github.com/organizzolini/codebase/issues/2540)) ([d6e94f9](https://github.com/organizzolini/codebase/commit/d6e94f9ea6b3261e10317ddc7cf2f86a5fc93188)), closes [#2539](https://github.com/organizzolini/codebase/issues/2539)
+
+## [6.11.0](https://github.com/organizzolini/codebase/compare/v6.10.0...v6.11.0) (2026-11-23)
+
+### ✨ Features
+
+* **codometer,configuration,integration:** ✨ add a Codometer Limit job that needs no build ([#2473](https://github.com/organizzolini/codebase/issues/2473)) ([497a90f](https://github.com/organizzolini/codebase/commit/497a90f5752a367df2bd6357a3772ac97c4fd5e8)), closes [#2472](https://github.com/organizzolini/codebase/issues/2472)
+
+### 📝 Documentation
+
+* **documentation:** 🐛 fix the ship-changes watcher and queue lock advice ([#2501](https://github.com/organizzolini/codebase/issues/2501)) ([c8f62a8](https://github.com/organizzolini/codebase/commit/c8f62a84eaf0f18d9fc956432c325a52543d1468)), closes [#2500](https://github.com/organizzolini/codebase/issues/2500)
+* **documentation:** 📝 make ship-changes wait, fix forward, and resolve conflicts on its own ([#2499](https://github.com/organizzolini/codebase/issues/2499)) ([a8fd70b](https://github.com/organizzolini/codebase/commit/a8fd70b0dc7255999e52c8558be4654b2382bd57)), closes [#2498](https://github.com/organizzolini/codebase/issues/2498)
+
 ## [6.10.0](https://github.com/organizzolini/codebase/compare/v6.9.0...v6.10.0) (2026-11-23)
 
 ### ✨ Features

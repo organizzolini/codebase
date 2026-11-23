@@ -5,9 +5,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/**
- * What the group is called, its choices, the one picked and what to do when another is.
- */
+/** A radio group's name, choices, picked one and change handler. */
 export interface DisplayRadiosProperties {
   className?: string;
   label: string;

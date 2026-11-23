@@ -59,5 +59,5 @@ export const PRAENOMEN_ABBREVIATIONS: Readonly<
   vop: { feminine: "vopisca", masculine: "vopiscus" },
 };
 
-/** The words each manual form is written as, kept off the form as the forms service keeps parsed ones. */
+/** The words each manual form is written as, kept off the form. */
 export const MANUAL_FORM_WORDS = new WeakMap<Form, string[]>();

@@ -25,9 +25,7 @@ export const SORT_OPTIONS = [
   },
 ] as const;
 
-/**
- * The sort when none is chosen: the first group's names, A to Z.
- */
+/** The default sort: the first group's names, A to Z. */
 export const DEFAULT_SORTS: readonly GroupSort[] = [
   { direction: "asc", key: "name" },
 ];

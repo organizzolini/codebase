@@ -55,9 +55,7 @@ export function labelDefaultSort(
   return first === undefined ? "Name" : labelGroupLevel(first, fields);
 }
 
-/**
- * The sorts after a click in the list: the one ticked is added, replacing the other direction of its key, and the one cleared is taken out; none when none are left.
- */
+/** The sorts after a list click: a ticked one is added, replacing its key's other direction; a cleared one is removed. */
 export function toSorts(
   next: readonly string[],
   previous: readonly GroupSort[],

@@ -42,13 +42,7 @@ export class WordCandidatesService {
 
   // 🌎 Public Methods
 
-  /**
-   * Returns the word-form links of a token's word, each with its form's lexeme
-   * and that lexeme's translations. Links come in the order they were stored,
-   * and each lexeme's translations likewise, so the first translation is the
-   * earliest recorded. A missing token, a punctuation token, and a
-   * token with no word all return none.
-   */
+  /** Returns a token's word-form links with each form's lexeme and translations, in stored order; none for a missing, punctuation or wordless token. */
   public async findWordFormsForToken(tokenId: string): Promise<WordForm[]> {
     const word = await this.findWordForToken(tokenId);
     if (!word) return [];
@@ -60,11 +54,7 @@ export class WordCandidatesService {
     });
   }
 
-  /**
-   * Returns the lexemes a token's word is the headword of, each with its
-   * translations in the order they were stored. Words such as prepositions
-   * and conjunctions have no forms, so this is the only way to reach them.
-   */
+  /** Returns the lexemes a token's word is the headword of, with translations in stored order; function words have no forms. */
   public async findWordLexemesForToken(tokenId: string): Promise<WordLexeme[]> {
     const word = await this.findWordForToken(tokenId);
     if (!word) return [];

@@ -6,7 +6,6 @@
   "tags": ["language:typescript", "name:conformetry-agents", "type:package"],
   "targets": {
     "build-projects": {},
-    "codometer": {},
     "deprecate-code": {},
     "eslint": {},
     "format-code": {},

@@ -40,9 +40,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/**
- * What the events are colored by, the data's facets, the zone, and the view shown.
- */
+/** Props: color facets, zone, and the view shown. */
 export interface CalendarDisplayMenuProperties {
   className?: string;
   colorBy: EventGroupLevel | undefined;
@@ -53,9 +51,7 @@ export interface CalendarDisplayMenuProperties {
 
 // 🧩 Component
 
-/**
- * Renders the Display button, which opens a searchable Cascader of how the calendar looks, each branch replacing the list when opened: Calendar shows the views as a vertical radio group, and Color and Sky hold their options; the chip beside it names the view shown and opens the same list.
- */
+/** Renders the Display button, opening a searchable Cascader of how the calendar looks; the chip beside it names the view. */
 export function CalendarDisplayMenu(
   properties: Readonly<CalendarDisplayMenuProperties>,
 ): ReactNode {

@@ -1,8 +1,6 @@
 // ♟️ Constants
 
-/**
- * Compares text the way a person counts: digits as numbers, so "Harmonic 2" comes before "Harmonic 10".
- */
+/** Compares text counting digits as numbers: "Harmonic 2" precedes "Harmonic 10". */
 export const NATURAL_COLLATOR = new Intl.Collator("en-US", { numeric: true });
 
 /**

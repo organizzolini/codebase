@@ -41,9 +41,7 @@ export interface CalendarViewStripProperties {
 
 // 🧩 Component
 
-/**
- * Renders the View button, which opens a searchable list of the presets in the nested list the other menus use, joined to a chip naming the one the filter tree matches, else Custom.
- */
+/** Renders the View button, opening a searchable preset list, joined to a chip naming the matching preset, else Custom. */
 export function CalendarViewStrip(
   properties: Readonly<CalendarViewStripProperties>,
 ): ReactNode {

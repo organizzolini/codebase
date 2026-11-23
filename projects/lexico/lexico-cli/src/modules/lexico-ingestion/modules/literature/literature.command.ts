@@ -9,9 +9,9 @@ import {
   selectChoice,
 } from "../../lexico-ingestion.utilities";
 
-import { LiteratureAuthorEraService } from "./literature-author-era.service";
 import { LiteratureWordLinkingService } from "./literature-word-linking.service";
 import { LiteratureService } from "./literature.service";
+import { LiteratureAuthorEraService } from "./modules/author-era/literature-author-era.service";
 
 import type { CommandOptionChoice } from "../../lexico-ingestion.types";
 import type {

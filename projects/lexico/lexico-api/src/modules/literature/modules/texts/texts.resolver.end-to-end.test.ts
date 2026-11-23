@@ -6,12 +6,12 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import {
   type AuthorTextApplication,
   startAuthorTextApplication,
-} from "../../../../../testing/author-text-application";
+} from "../../../../../testing/applications/author-text-application";
+import { DATABASE_TIMEOUT_MILLISECONDS } from "../../../../../testing/database";
 import {
   PROEM_LINE_LABELS,
   TEXT_TITLES_IN_ORDER,
-} from "../../../../../testing/author-text-catalog";
-import { DATABASE_TIMEOUT_MILLISECONDS } from "../../../../../testing/database";
+} from "../../../../../testing/fixtures/author-text-catalog";
 import {
   type ConnectionPage,
   nodesOf,

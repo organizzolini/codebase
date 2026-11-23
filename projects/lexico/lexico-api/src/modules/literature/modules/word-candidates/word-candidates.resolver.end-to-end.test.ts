@@ -5,12 +5,12 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { Token } from "@codebase/lexico-db";
 
-import { DATABASE_TIMEOUT_MILLISECONDS } from "../../../../../testing/database";
 import {
   type ReadingApplication,
   startReadingApplication,
-} from "../../../../../testing/reading-application";
-import { passageLineAt } from "../../../../../testing/reading-passage";
+} from "../../../../../testing/applications/reading-application";
+import { DATABASE_TIMEOUT_MILLISECONDS } from "../../../../../testing/database";
+import { passageLineAt } from "../../../../../testing/fixtures/reading-passage";
 
 /** A word candidate as the card selects one. */
 interface Candidate {

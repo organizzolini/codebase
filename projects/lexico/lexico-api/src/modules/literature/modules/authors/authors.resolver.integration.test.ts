@@ -3,15 +3,15 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { Author, Line, Text, Token, Word } from "@codebase/lexico-db";
 
 import {
+  DATABASE_TIMEOUT_MILLISECONDS,
+  startLexicoDatabaseTestingModule,
+} from "../../../../../testing/database";
+import {
   AUTHOR_NAMES_IN_ORDER,
   type AuthorTextCatalog,
   seedAuthorTextCatalog,
   UNKNOWN_ENTITY_ID,
-} from "../../../../../testing/author-text-catalog";
-import {
-  DATABASE_TIMEOUT_MILLISECONDS,
-  startLexicoDatabaseTestingModule,
-} from "../../../../../testing/database";
+} from "../../../../../testing/fixtures/author-text-catalog";
 import { createLiteratureServices } from "../../../../../testing/literature-services";
 import {
   nodesOf,

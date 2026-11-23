@@ -1,0 +1,12 @@
+{
+  "$schema": "../../../../node_modules/nx/schemas/executors.json",
+  "executors": {
+    "measure": {
+      "batchImplementation": "@codometer/nx/src/executors/measure/batch-executor",
+      "description": "Measure a project with codometer and gate its limits, from one process for every project Nx batches.",
+      "implementation": "@codometer/nx/src/executors/measure/executor",
+      "preferBatch": true,
+      "schema": "./src/executors/measure/schema.json"
+    }
+  }
+}

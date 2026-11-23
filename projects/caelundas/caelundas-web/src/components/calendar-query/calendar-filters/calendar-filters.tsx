@@ -33,9 +33,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/**
- * The attributes to filter by, the link's filter tree, and the edit handler.
- */
+/** The filterable attributes, the filter tree, and its edit handler. */
 export interface CalendarFiltersProperties {
   className?: string;
   fields: readonly EventFilterField[];

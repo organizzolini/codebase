@@ -11,14 +11,14 @@ import {
   SKY_COLORS,
   SKY_SLIDERS,
   STAR_SLIDERS,
-} from "../../../hooks/use-night-sky/night-sky-controls.constants";
+} from "../../../hooks/use-night-sky/hooks/use-night-sky-controls/night-sky-controls.constants";
 import {
   listShownFigures,
   toConstellationsChange,
   toggleFigure,
   toResetChange,
   toSkyParameterChange,
-} from "../../../hooks/use-night-sky/night-sky-controls.utilities";
+} from "../../../hooks/use-night-sky/hooks/use-night-sky-controls/night-sky-controls.utilities";
 
 import {
   COLOR_SWATCHES,
@@ -30,7 +30,7 @@ import type {
   SkyColorControl,
   SkySearchChange,
   SkySliderControl,
-} from "../../../hooks/use-night-sky/night-sky-controls.types";
+} from "../../../hooks/use-night-sky/hooks/use-night-sky-controls/night-sky-controls.types";
 import type { ConstellationListing } from "../../../hooks/use-night-sky/night-sky.types";
 import type { NightSkyOverrides } from "../../../hooks/use-night-sky/use-night-sky.types";
 import type { CascaderNode } from "@codebase/presentation";

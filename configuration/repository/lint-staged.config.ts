@@ -116,7 +116,7 @@ const config = {
 
   // 🔬 Static analysis and conformetry validation
   // One `nx affected` run over the staged changes, on the same `lint-code`
-  // target the Lint Codebase workflow runs and selecting projects the same
+  // target the Static check runs and selecting projects the same
   // way it does, so what passes here passes there.
 
   // This replaces a per-path table mapping each changed file to its target. Nx already maps

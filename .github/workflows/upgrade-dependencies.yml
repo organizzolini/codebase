@@ -65,7 +65,7 @@ jobs:
           title: "chore(dependencies): ⬆️ upgrade"
           body-path: ${{ steps.upgrade.outputs.body_path }}
           # The type:, scope:, and source: labels and the assignee are what
-          # 🧑‍⚖️ Validate Conventions requires of every pull request, this
+          # 🧑‍⚖️ Comply requires of every pull request, this
           # one included. The type and scope mirror the title above.
           labels: |
             dependencies
