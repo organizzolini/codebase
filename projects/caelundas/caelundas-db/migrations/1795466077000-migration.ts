@@ -10,6 +10,8 @@ export class Migration1795466077000 implements MigrationInterface {
   name = "Migration1795466077000";
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`SET lock_timeout = '10s'`);
+    await queryRunner.query(`SET statement_timeout = '5min'`);
     await queryRunner.query(
       `CREATE TABLE "constellation_edges" ("constellation_designation" text NOT NULL, "from_hip" bigint NOT NULL, "to_hip" bigint NOT NULL, CONSTRAINT "PK_a32e2be764ccbe09e19f10384f1" PRIMARY KEY ("constellation_designation", "from_hip", "to_hip"))`,
     );
@@ -35,6 +37,8 @@ export class Migration1795466077000 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`SET lock_timeout = '10s'`);
+    await queryRunner.query(`SET statement_timeout = '5min'`);
     await queryRunner.query(
       `CREATE TABLE "constellation_lines" ("constellation_designation" text NOT NULL, "from_hip" bigint NOT NULL, "to_hip" bigint NOT NULL, CONSTRAINT "PK_8b17475143b26888ce18b2ebc51" PRIMARY KEY ("constellation_designation", "from_hip", "to_hip"))`,
     );
