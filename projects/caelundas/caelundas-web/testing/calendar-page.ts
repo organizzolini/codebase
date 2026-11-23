@@ -60,9 +60,19 @@ export async function findToolbar(): Promise<HTMLElement> {
 }
 
 /**
- * Picks a calendar view by its label from the Display menu's toggle group.
+ * Picks a calendar view by its label from the Display menu's radio group.
  */
 export async function pickCalendarView(label: string): Promise<void> {
+  await pickDisplayRadio("Calendar", label);
+}
+
+/**
+ * Picks a radio choice by its label from a Display branch that shows its choices as a radio group.
+ */
+export async function pickDisplayRadio(
+  branch: string,
+  label: string,
+): Promise<void> {
   await openDisplayMenu();
 
   const back = screen.queryByRole("button", { name: /^back$/iu });
@@ -72,11 +82,22 @@ export async function pickCalendarView(label: string): Promise<void> {
   }
 
   fireEvent.click(
-    await screen.findByRole("option", { name: /^Calendar,/u }, BUILDER_WAIT),
+    await screen.findByRole(
+      "option",
+      { name: new RegExp(`^${branch},`, "u") },
+      BUILDER_WAIT,
+    ),
   );
   fireEvent.click(
     await screen.findByRole("radio", { name: label }, BUILDER_WAIT),
   );
+}
+
+/**
+ * Picks a timeline scale by its label from the Display menu's radio group.
+ */
+export async function pickTimelineScale(label: string): Promise<void> {
+  await pickDisplayRadio("Scale", label);
 }
 
 /**

@@ -27,13 +27,17 @@ import {
   CONSTELLATION_CHOICES,
   DEFAULT_COLOR_BY,
   NO_COLOR,
+  SCALE_BRANCH,
 } from "./calendar-display-menu.constants";
 import {
   applySkyLeaf,
   createSkyItems,
   toSkyValue,
 } from "./calendar-display-sky.utilities";
-import { VIEW_ICONS } from "./components/display-view-radios/display-view-radios.constants";
+import {
+  SCALE_ICONS,
+  VIEW_ICONS,
+} from "./components/display-radios/display-radios.constants";
 
 import type { UseCalendarDisplayResult } from "../../../hooks/use-calendar-display/use-calendar-display.types";
 import type { SkySearchChange } from "../../../hooks/use-night-sky/night-sky-controls.types";
@@ -149,12 +153,13 @@ export function createDisplayItems(
       ? [
           {
             children: TIMELINE_SCALES.map((value) => ({
+              icon: toIcon(SCALE_ICONS[value]),
               label: TIMELINE_SCALE_LABELS[value],
               value: `scale:${value}`,
             })),
             icon: toIcon(Ruler),
             label: "Scale",
-            value: "branch:scale",
+            value: SCALE_BRANCH,
           },
         ]
       : [];

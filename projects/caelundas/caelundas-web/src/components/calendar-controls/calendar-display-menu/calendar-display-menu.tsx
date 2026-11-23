@@ -18,6 +18,7 @@ import { JOINED_STRIP_CLASS_NAME } from "../../calendar-query/query-cascader/que
 import {
   CALENDAR_BRANCH,
   CHIP_CLASS_NAME,
+  SCALE_BRANCH,
   TITLE,
 } from "./calendar-display-menu.constants";
 import {
@@ -26,7 +27,11 @@ import {
   findToggledLeaf,
   toDisplayValue,
 } from "./calendar-display-menu.utilities";
-import { DisplayViewRadios } from "./components/display-view-radios/display-view-radios";
+import { DisplayRadios } from "./components/display-radios/display-radios";
+import {
+  SCALE_OPTIONS,
+  VIEW_OPTIONS,
+} from "./components/display-radios/display-radios.constants";
 
 import type { EventFacet } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
@@ -68,16 +73,19 @@ export function CalendarDisplayMenu(
   const value = toDisplayValue(choices);
 
   // 💪 Handlers
+  const applyLeaf = (leaf: string): void => {
+    applyDisplayLeaf(leaf, {
+      choices,
+      fields,
+      handlers,
+      onSkyChange: change,
+    });
+  };
   const handleValueChange = (next: string[]): void => {
     const leaf = findToggledLeaf(value, next);
 
     if (leaf !== undefined) {
-      applyDisplayLeaf(leaf, {
-        choices,
-        fields,
-        handlers,
-        onSkyChange: change,
-      });
+      applyLeaf(leaf);
     }
   };
 
@@ -122,9 +130,23 @@ export function CalendarDisplayMenu(
               onValueChange={handleValueChange}
               panels={{
                 [CALENDAR_BRANCH]: (
-                  <DisplayViewRadios
-                    onViewChange={handlers.handleViewChange}
-                    view={view}
+                  <DisplayRadios
+                    label="Calendar"
+                    onValueChange={(next) => {
+                      applyLeaf(`calendar:${next}`);
+                    }}
+                    options={VIEW_OPTIONS}
+                    value={view}
+                  />
+                ),
+                [SCALE_BRANCH]: (
+                  <DisplayRadios
+                    label="Scale"
+                    onValueChange={(next) => {
+                      applyLeaf(`scale:${next}`);
+                    }}
+                    options={SCALE_OPTIONS}
+                    value={state.scale}
                   />
                 ),
               }}

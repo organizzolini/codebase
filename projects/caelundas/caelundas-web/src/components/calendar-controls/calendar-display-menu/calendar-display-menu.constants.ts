@@ -46,6 +46,11 @@ export const STEP_COUNT = 5;
 export const NO_COLOR = "none";
 
 /**
- * The branch whose content is the view toggle group, not a list.
+ * The branch whose content is the calendar view radio group, not a list.
  */
 export const CALENDAR_BRANCH = "branch:calendar";
+
+/**
+ * The branch whose content is the timeline scale radio group, not a list.
+ */
+export const SCALE_BRANCH = "branch:scale";
