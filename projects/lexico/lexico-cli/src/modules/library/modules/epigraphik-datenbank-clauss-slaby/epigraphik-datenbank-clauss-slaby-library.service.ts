@@ -191,10 +191,7 @@ export class EpigraphikDatenbankClaussSlabyLibraryService {
     );
   }
 
-  /**
-   * Persists one inscription as a markdown file under its province book; a second record that
-   * lands on the same slug is logged and left out, never allowed to overwrite the first.
-   */
+  /** Persists one inscription as a markdown file under its province book; a second record on the same slug is logged and left out. */
   private async saveEdcsInscription(args: {
     attributes: Record<string, number | string | undefined>;
     id: string;

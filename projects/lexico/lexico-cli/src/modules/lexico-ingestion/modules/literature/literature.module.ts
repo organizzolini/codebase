@@ -13,10 +13,10 @@ import { LoggerModule } from "@codebase/observability";
 
 import { NumeralsModule } from "../../../numerals/numerals.module";
 
-import { LiteratureAuthorEraService } from "./literature-author-era.service";
 import { LiteratureWordLinkingService } from "./literature-word-linking.service";
 import { LiteratureCommand } from "./literature.command";
 import { LiteratureService } from "./literature.service";
+import { LiteratureAuthorEraService } from "./modules/author-era/literature-author-era.service";
 import { LiteratureLibraryScanService } from "./modules/text-ingestion/literature-library-scan.service";
 import { LiteratureTextIngestionService } from "./modules/text-ingestion/literature-text-ingestion.service";
 import { LiteratureWordNormalizationService } from "./modules/text-ingestion/literature-word-normalization.service";

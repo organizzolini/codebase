@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Author, Text } from "@codebase/lexico-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { createRepositoryMock } from "../../../../../testing/mocks";
+import { createRepositoryMock } from "../../../../../../../testing/mocks";
 
 import { LiteratureAuthorEraService } from "./literature-author-era.service";
 

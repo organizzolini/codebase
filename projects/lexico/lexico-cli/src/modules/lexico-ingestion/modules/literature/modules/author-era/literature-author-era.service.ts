@@ -16,14 +16,14 @@ import {
   WIKIDATA_TIMEOUT_MILLISECONDS,
   WIKIDATA_USER_AGENT,
   wikidataResponseSchema,
-} from "./literature.constants";
+} from "../../literature.constants";
 import {
   backoffMilliseconds,
   deriveEra,
   pickWikidataYears,
-} from "./literature.utilities";
+} from "../../literature.utilities";
 
-import type { AuthorYears } from "./literature.types";
+import type { AuthorYears } from "../../literature.types";
 import type { Repository } from "typeorm";
 
 /** Dates each author from the source, Wikidata or a committed table, and derives its era. */

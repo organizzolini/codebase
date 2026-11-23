@@ -69,7 +69,7 @@ export interface ParsedLabelResult {
   lineNodes: PhrasingContent[];
 }
 
-/** What a relink did: word types that were unlinked, and how many of them it linked. */
+/** What a relink did: word types unlinked, and how many it linked. */
 export interface RelinkSummary {
   linkedTypes: number;
   unlinkedTypes: number;

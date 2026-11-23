@@ -35,11 +35,7 @@ export class LiteratureLibraryScanService {
     );
   }
 
-  /**
-   * Qualifies the slug of every entry whose author, path and name another provider also
-   * supplies, so each collection keeps its own Text. The alphabetically first provider keeps
-   * the plain slug, which leaves slugs unique to one provider unchanged.
-   */
+  /** Qualifies the slug of every entry another provider also supplies, so each collection keeps its Text; the first provider keeps the plain slug. */
   private qualifyDuplicateSlugs(texts: LibraryEntry[]): LibraryEntry[] {
     const groups = _.groupBy(texts, (entry) =>
       [entry.authorSlug, ...entry.pathParts, entry.textSlug].join("/"),

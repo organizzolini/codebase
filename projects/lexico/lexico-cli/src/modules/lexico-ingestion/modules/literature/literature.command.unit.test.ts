@@ -12,10 +12,10 @@ import {
 } from "../../../../../testing/command-harness";
 import { mockStandardInputTerminal } from "../../../../../testing/mocks";
 
-import { LiteratureAuthorEraService } from "./literature-author-era.service";
 import { LiteratureWordLinkingService } from "./literature-word-linking.service";
 import { LiteratureCommand } from "./literature.command";
 import { LiteratureService } from "./literature.service";
+import { LiteratureAuthorEraService } from "./modules/author-era/literature-author-era.service";
 
 import type { LibraryEntry, RelinkSummary } from "./literature.types";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
