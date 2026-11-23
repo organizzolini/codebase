@@ -4,15 +4,17 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { LexemeTranslations } from "./lexeme-translations";
 
 /**
- * Gives every element a layout, since the test DOM has none: the list is two
- * lines tall and each item one line, stacked.
+ * Gives every element a layout, since the test DOM has none: each item is one
+ * 20px line, stacked.
  */
 function stubLayout(): void {
-  vi.spyOn(HTMLElement.prototype, "clientHeight", "get").mockReturnValue(40);
-  vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockReturnValue(20);
-  vi.spyOn(HTMLElement.prototype, "offsetTop", "get").mockImplementation(
-    function offsetTop(this: HTMLElement) {
-      return [...(this.parentElement?.children ?? [])].indexOf(this) * 20;
+  vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(
+    function rect(this: HTMLElement) {
+      const index = [...(this.parentElement?.children ?? [])].indexOf(this);
+      const top = this.tagName === "LI" ? index * 20 : 0;
+      const height = this.tagName === "LI" ? 20 : 100;
+
+      return { bottom: top + height, top } as DOMRect;
     },
   );
 }
@@ -35,11 +37,27 @@ describe(LexemeTranslations, () => {
     );
   });
 
-  it("starts half open: clipped to two lines, with the divider's label", () => {
+  it("starts open, with no hint, when the list fits two lines", () => {
+    stubLayout();
     render(<LexemeTranslations translations={["one", "two"]} />);
 
     expect(screen.getByText("Translations")).toBeDefined();
-    expect(screen.getByRole("list").className).toContain("max-h-10");
+    expect(screen.getByRole("list").className).not.toContain("max-h-10");
+    expect(screen.queryByText(/more/u)).toBeNull();
+  });
+
+  it("toggles only open and closed when the list fits two lines", () => {
+    stubLayout();
+    render(<LexemeTranslations translations={["Amoeba"]} />);
+    const divider = screen.getByRole("button", { name: /Translations/u });
+
+    fireEvent.click(divider);
+
+    expect(screen.queryByRole("list")).toBeNull();
+
+    fireEvent.click(divider);
+
+    expect(screen.getByRole("list").className).not.toContain("max-h-10");
     expect(screen.queryByText(/more/u)).toBeNull();
   });
 

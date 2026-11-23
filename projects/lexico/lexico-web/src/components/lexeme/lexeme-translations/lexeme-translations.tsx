@@ -24,7 +24,7 @@ export interface LexemeTranslationsProperties {
 
 /**
  * A lexeme's English translations under a divider that cycles through three
- * states: a preview of the first two lines, the whole list, and closed.
+ * states (preview, whole list, closed), or two when it fits the preview.
  */
 export function LexemeTranslations(
   properties: Readonly<LexemeTranslationsProperties>,
@@ -36,10 +36,16 @@ export function LexemeTranslations(
   const [clipped, setClipped] = useState(0);
 
   // 🏗 Setup
+  const fits = clipped === 0;
+  const shown = fits && state === "half" ? "open" : state;
   const hint =
-    state === "half" && clipped > 0 ? `+${String(clipped)} more` : undefined;
+    shown === "half" && clipped > 0 ? `+${String(clipped)} more` : undefined;
 
   // 💪 Handlers
+  /** Skips the preview when the whole list already fits in it. */
+  const toggle = (): void => {
+    setState(fits ? (shown === "open" ? "closed" : "open") : NEXT_STATE[state]);
+  };
 
   // ♻️ Lifecycle
   /**
@@ -74,16 +80,14 @@ export function LexemeTranslations(
       <LexemeSection
         hint={hint}
         label="Translations"
-        onToggle={() => {
-          setState(NEXT_STATE[state]);
-        }}
-        state={state}
+        onToggle={toggle}
+        state={shown}
       >
         <ul
           ref={measure}
           className={cn(
             "list-disc pl-5 text-sm leading-5",
-            state === "half" && PREVIEW_CLASS,
+            shown === "half" && PREVIEW_CLASS,
           )}
         >
           {translations.map((translation) => (
