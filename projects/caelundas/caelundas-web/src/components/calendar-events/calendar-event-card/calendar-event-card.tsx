@@ -10,9 +10,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/**
- * The event, and what the card says in place of its own name and description, for a marker that stands for several events.
- */
+/** The event, and optional text replacing its name and description. */
 export interface CalendarEventCardProperties {
   className?: string;
   event: CalendarEventRecord;
@@ -21,9 +19,7 @@ export interface CalendarEventCardProperties {
 
 // 🧩 Component
 
-/**
- * Renders what a hover card says of an event: its symbols, its name in English and its tags as pills, laid out by the card it sits in.
- */
+/** Renders an event's hover card: its symbols, English name and tags as pills, laid out by the card it sits in. */
 export function CalendarEventCard(
   properties: Readonly<CalendarEventCardProperties>,
 ): ReactNode {

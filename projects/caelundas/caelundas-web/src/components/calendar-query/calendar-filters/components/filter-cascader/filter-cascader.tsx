@@ -29,9 +29,7 @@ export interface FilterCascaderProperties {
 
 // 🧩 Component
 
-/**
- * Renders a searchable Cascader of the attributes to filter by, each opening to the values it takes in columns to the right; every value ticked narrows the calendar, all of them together.
- */
+/** Renders a searchable Cascader of attributes to filter by, each opening to its values; every ticked value narrows the calendar. */
 export function FilterCascader(
   properties: Readonly<FilterCascaderProperties>,
 ): ReactNode {

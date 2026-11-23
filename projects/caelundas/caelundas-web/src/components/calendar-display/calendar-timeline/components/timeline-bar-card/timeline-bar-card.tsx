@@ -18,9 +18,7 @@ export interface TimelineBarCardProperties extends Pick<
 
 // 🧩 Component
 
-/**
- * Draws a bar's hover card, the one an event has everywhere: its symbols, name and tags; a count of several events says how many it stands for.
- */
+/** Draws a bar's hover card: its symbols, name and tags, plus how many events a count marker stands for. */
 export function TimelineBarCard(
   properties: Readonly<TimelineBarCardProperties>,
 ): ReactNode {

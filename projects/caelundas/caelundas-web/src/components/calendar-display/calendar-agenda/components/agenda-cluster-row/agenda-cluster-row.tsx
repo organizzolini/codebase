@@ -7,9 +7,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/**
- * The cluster to draw, and what opens or closes it by its id.
- */
+/** A cluster to draw and its open-close handler. */
 export interface AgendaClusterRowProperties {
   className?: string;
   onToggle?: ((id: string) => void) | undefined;

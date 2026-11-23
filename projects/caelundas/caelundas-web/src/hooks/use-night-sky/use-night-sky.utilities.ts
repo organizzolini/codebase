@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { normalizeHexadecimalColor } from "./night-sky-colors.utilities";
+import { normalizeHexadecimalColor } from "./hooks/use-night-sky-controls/night-sky-colors.utilities";
 import {
   COLOR_DIGITS_PATTERN,
   CONSTELLATION_WORDS,

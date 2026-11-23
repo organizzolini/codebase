@@ -31,9 +31,7 @@ export function createGroupItems(
 
 // 🌎 Public Functions
 
-/**
- * The name a level's chip shows: its field's label, or the field's id when the data no longer has it, then the first few tags it goes by when it goes by some.
- */
+/** The name a level's chip shows: its field's label, or id when the data lacks it, then its first few tags. */
 export function labelGroupLevel(
   level: EventGroupLevel,
   fields: readonly EventGroupField[],
@@ -55,9 +53,7 @@ export function labelGroupLevel(
   return `${label}: ${names.slice(0, NAMED_TAGS).join(", ")}${hidden > 0 ? ` +${String(hidden)}` : ""}`;
 }
 
-/**
- * The grouping a set of ticked values means: the levels already there stay in place, new ones follow in field order, up to the most there can be.
- */
+/** The grouping ticked values mean: existing levels keep their place, new ones follow in field order, up to the maximum. */
 export function toGrouping(
   value: readonly string[],
   grouping: readonly EventGroupLevel[],
@@ -90,9 +86,7 @@ export function toGrouping(
   return [...kept, ...added].slice(0, MAXIMUM_GROUP_LEVELS);
 }
 
-/**
- * The values ticked for a grouping: a field alone, or a tag root with the tags it goes by, every one when it goes by its first level.
- */
+/** The values ticked for a grouping: a field alone, or a tag root with its tags, every one at its first level. */
 export function toGroupValue(
   grouping: readonly EventGroupLevel[],
   fields: readonly EventGroupField[],

@@ -1,11 +1,12 @@
-import { RESET_SKY_KEYS, SKY_DEFAULTS } from "./night-sky-controls.constants";
-import { normalizeConstellationName } from "./use-night-sky.utilities";
+import { normalizeConstellationName } from "../../use-night-sky.utilities";
 
+import { RESET_SKY_KEYS, SKY_DEFAULTS } from "./night-sky-controls.constants";
+
+import type { ConstellationListing } from "../../night-sky.types";
 import type {
   SkyParameterKey,
   SkySearchChange,
 } from "./night-sky-controls.types";
-import type { ConstellationListing } from "./night-sky.types";
 
 // 🔏 Private Functions
 
@@ -68,10 +69,7 @@ export function toEclipticChange(visible: boolean): SkySearchChange {
   return { "sky.ecliptic": visible ? undefined : false };
 }
 
-/**
- * Shows or hides one constellation's figure among those chosen, naming the
- * choice again in its fewest words: `all`, the zodiac with any others, or each by name.
- */
+/** Shows or hides one constellation's figure among those chosen, renaming the choice tersely: `all`, the zodiac plus others, or each name. */
 export function toggleFigure(
   words: readonly string[],
   listing: readonly ConstellationListing[],

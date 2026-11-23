@@ -11,7 +11,7 @@ import {
   toVisibilityChange,
 } from "./night-sky-controls.utilities";
 
-import type { ConstellationListing } from "./night-sky.types";
+import type { ConstellationListing } from "../../night-sky.types";
 
 const LISTING: readonly ConstellationListing[] = [
   { name: "Aries", zodiac: true },

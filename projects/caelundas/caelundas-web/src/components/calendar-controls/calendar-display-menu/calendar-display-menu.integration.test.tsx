@@ -39,9 +39,7 @@ vi.mock(import("../../../router"), async (importOriginal) => {
   };
 });
 
-/**
- * Finds an option of the Display list by its label, whether it is a leaf or a branch that counts its items; a branch already opened is a button in the trail.
- */
+/** Finds a Display option by label, a leaf or a branch with its item count; an opened branch is a trail button. */
 async function findOption(label: string): Promise<HTMLElement> {
   const name = new RegExp(`^${label}(,|$)`, "u");
 

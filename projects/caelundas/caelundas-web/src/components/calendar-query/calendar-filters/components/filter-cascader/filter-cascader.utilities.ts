@@ -48,9 +48,7 @@ export function isValue(node: CascaderNode): boolean {
 
 // 🌎 Public Functions
 
-/**
- * The filter a set of ticked values means: one rule per field with some picked, all of which must hold, after the rules the list does not edit.
- */
+/** The filter ticked values mean: one rule per field with picks, all must hold, after the rules the list does not edit. */
 export function toFilterQuery(
   ticked: readonly string[],
   fields: readonly EventFilterField[],

@@ -1,4 +1,4 @@
-import { COLOR_DIGITS_PATTERN } from "./night-sky.constants";
+import { COLOR_DIGITS_PATTERN } from "../../night-sky.constants";
 
 // 🌎 Public Functions
 

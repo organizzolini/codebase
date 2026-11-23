@@ -9,9 +9,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/**
- * The level's name, the moves it can make, and the handler that removes it.
- */
+/** A level's name, its possible moves, and its remove handler. */
 export interface GroupLevelChipProperties {
   label: string;
   onMoveLeft?: (() => void) | undefined;

@@ -224,9 +224,7 @@ function clusterAgendaRows(
   return [...result, ...clusterDayRows(events, cluster, day)];
 }
 
-/**
- * Gathers a day's events of one kind, ongoing or not, into a cluster row when there are enough of them, listing the events beneath it only while it is open.
- */
+/** Gathers a day's events of one kind into a cluster row when enough exist, listing them beneath it only while open. */
 function clusterDayRows(
   rows: readonly AgendaEventRow[],
   cluster: AgendaClustering,

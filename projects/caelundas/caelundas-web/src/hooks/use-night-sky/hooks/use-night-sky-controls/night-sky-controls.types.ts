@@ -1,5 +1,5 @@
-import type { CalendarSearch } from "../use-calendar-search/calendar-search.types";
-import type { NightSkyOverrides } from "./use-night-sky.types";
+import type { CalendarSearch } from "../../../use-calendar-search/calendar-search.types";
+import type { NightSkyOverrides } from "../../use-night-sky.types";
 
 // 🏷️ Types
 

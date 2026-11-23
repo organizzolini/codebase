@@ -42,7 +42,5 @@ export const AGENDA_ROW_HEIGHTS: Readonly<Record<AgendaRow["kind"], number>> = {
   group: 40,
 };
 
-/**
- * The fewest similar events on one day that are gathered into a cluster.
- */
+/** The fewest similar same-day events gathered into a cluster. */
 export const AGENDA_CLUSTER_MINIMUM = 3;

@@ -4,7 +4,7 @@ import {
   LINE_OPACITY_RANGE,
   MINIMUM_BOTTOM_ALTITUDE_DEGREES,
   OPACITY_RANGE,
-} from "./night-sky.constants";
+} from "../../night-sky.constants";
 
 import type {
   SkyColorControl,

@@ -7,9 +7,7 @@ import { z } from "zod";
  */
 export const OPTION_DEPTH = z.object({ depth: z.number().int().min(0) });
 
-/**
- * Between a field's id and one of its values, in what the list ticks.
- */
+/** The separator between a field's id and a value. */
 export const VALUE_SEPARATOR = "|";
 
 /**

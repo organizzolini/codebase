@@ -26,9 +26,7 @@ export const VENDORED_SURFACE_CLASS_NAMES = {
   timeGridHeader: "bg-background",
 } as const;
 
-/**
- * Buttons and event chips drawn solid, so the sky shows only between them.
- */
+/** Buttons and event chips drawn solid over the sky. */
 export const OPAQUE_CLASS_NAMES = {
   buttons:
     "dark:[&_[class*='bg-input/30']]:bg-[color-mix(in_oklab,hsl(var(--input))_30%,hsl(var(--background)))] dark:[&_[class*='bg-input/50']:hover]:bg-[color-mix(in_oklab,hsl(var(--input))_50%,hsl(var(--background)))]",
