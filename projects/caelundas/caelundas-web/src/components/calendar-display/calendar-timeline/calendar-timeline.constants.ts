@@ -1,4 +1,12 @@
+import { createElement } from "react";
+
+import { TimelineBarCard } from "./components/timeline-bar-card/timeline-bar-card";
+import { TimelineBarContent } from "./components/timeline-bar-content/timeline-bar-content";
 import { TIMELINE_UNIT_WIDTHS } from "./components/timeline-clusters/calendar-timeline-clusters.constants";
+
+import type { TimelineBar } from "./calendar-timeline.types";
+import type { GanttRenderEventProps } from "@codebase/presentation";
+import type { ReactNode } from "react";
 
 // ♟️ Constants
 
@@ -44,3 +52,19 @@ export const ALL_EVENTS_ROW = { id: "all", title: "All events" } as const;
  */
 export const COUNT_PILL_CLASS_NAME =
   "bg-background rounded-md border px-2 py-0.5";
+
+/**
+ * Draws the content of a bar the Gantt hands over.
+ */
+export const renderBar = (
+  properties: GanttRenderEventProps<TimelineBar>,
+): ReactNode =>
+  createElement(TimelineBarContent, { occurrence: properties.occurrence });
+
+/**
+ * Draws the hover card of a bar the Gantt hands over.
+ */
+export const renderBarCard = (
+  properties: GanttRenderEventProps<TimelineBar>,
+): ReactNode =>
+  createElement(TimelineBarCard, { occurrence: properties.occurrence });

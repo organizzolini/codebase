@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Gantt, GanttView } from "@codebase/presentation";
 
@@ -13,6 +13,8 @@ import {
   INTERACTIONS,
   LANE_ROWS,
   QUIET_LABELS,
+  renderBar,
+  renderBarCard,
   TIMELINE_METRICS,
   TREE,
   ZOOM,
@@ -22,7 +24,6 @@ import {
   toTimelineRows,
   watchVisibleRows,
 } from "./calendar-timeline.utilities";
-import { TimelineBarContent } from "./components/timeline-bar-content/timeline-bar-content";
 import { TIMELINE_DAY_INTERVAL } from "./components/timeline-clusters/calendar-timeline-clusters.constants";
 import { createTimelineLayout } from "./components/timeline-lanes/calendar-timeline-lanes.utilities";
 import { TimelineNavigation } from "./components/timeline-navigation/timeline-navigation";
@@ -40,7 +41,7 @@ import type {
 } from "../events-calendar/components/calendar-loader/calendar-records.types";
 import type { TimelineBar } from "./calendar-timeline.types";
 import type { TimelineLayout } from "./components/timeline-lanes/calendar-timeline-lanes.types";
-import type { GanttRenderEventProps, GanttScale } from "@codebase/presentation";
+import type { GanttScale } from "@codebase/presentation";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -138,12 +139,6 @@ export function CalendarTimeline(
     () => windowTimelineBars(layout.bars, visibleRows),
     [layout, visibleRows],
   );
-  const renderEvent = useCallback(
-    (eventProperties: GanttRenderEventProps<TimelineBar>) => (
-      <TimelineBarContent occurrence={eventProperties.occurrence} />
-    ),
-    [],
-  );
   const columns = useMemo(() => toCountColumns(rows.counts), [rows]);
 
   // 🏗 Setup
@@ -193,7 +188,8 @@ export function CalendarTimeline(
         onZoomChange={(next: number) => {
           setZoomed({ scale, zoom: next });
         }}
-        renderEvent={renderEvent}
+        renderEvent={renderBar}
+        renderEventTooltip={renderBarCard}
         resources={layout.resources}
         rowCheckboxes={false}
         scale={scale}
