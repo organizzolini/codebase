@@ -50,7 +50,13 @@ export function renderGraphMermaid(
   const neighborhoods = titleNeighborhoods(findNeighborhoods(graph, shortIds));
   const body: string[] = [];
   for (const neighborhood of neighborhoods) {
-    body.push(...drawNeighborhood(neighborhood, graph.directed, shortIds));
+    for (const line of drawNeighborhood(
+      neighborhood,
+      graph.directed,
+      shortIds,
+    )) {
+      body.push(line);
+    }
   }
   const lines = [
     `flowchart ${options.direction ?? "LR"}`,
@@ -147,6 +153,7 @@ function escapeMermaidText(text: string): string {
   return text
     .replaceAll(/\r?\n/g, " ")
     .replaceAll("#", "#35;")
+    .replaceAll("`", "#96;")
     .replaceAll('"', "#quot;")
     .replaceAll("|", "#124;")
     .replaceAll("<", "#lt;")
@@ -233,8 +240,11 @@ function limitWarnings(edges: number, characters: number): string[] {
 
 /** A backtick fence one longer than the longest backtick run in `text`, and at least three. */
 function markdownFence(text: string): string {
-  const runs = [...text.matchAll(/`+/g)].map(([run]) => run.length);
-  return "`".repeat(Math.max(2, ...runs) + 1);
+  const longest = [...text.matchAll(/`+/g)].reduce(
+    (most, [run]) => Math.max(most, run.length),
+    2,
+  );
+  return "`".repeat(longest + 1);
 }
 
 /** One `class` line per root or truncation node, in node order. */
@@ -252,8 +262,8 @@ function markedNodeClasses(
 }
 
 /**
- * A neighborhood's title: the label all its edges share (then dropped from
- * them), else its first root's, else its first node's.
+ * The shared edge label (dropped from the edges), else the first root's or
+ * first node's label. Truncation edges are unlabelled, so they are skipped.
  */
 function neighborhoodTitle(
   edges: readonly GraphEdge[],
@@ -262,8 +272,12 @@ function neighborhoodTitle(
   hideLabels: boolean;
   title: string;
 } {
-  const shared = edges[0]?.label ?? "";
-  if (shared !== "" && edges.every((edge) => edge.label === shared)) {
+  const truncations = new Set(
+    nodes.filter(({ marker }) => marker === "truncation").map(({ id }) => id),
+  );
+  const labelled = edges.filter(({ target }) => !truncations.has(target));
+  const shared = labelled[0]?.label ?? "";
+  if (shared !== "" && labelled.every((edge) => edge.label === shared)) {
     return { hideLabels: true, title: shared };
   }
   const first = nodes.find((node) => node.marker === "root") ?? nodes[0];

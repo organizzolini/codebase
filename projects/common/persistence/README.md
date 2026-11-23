@@ -568,7 +568,7 @@ A capped parent gets one truncation node, labelled `… K more` with a dashed gr
 box, under the parent with id `<parent>/more`. Each one warns with the parent's
 id, the number hidden, and the cap that hid them. Roots are drawn with a heavy
 blue border. Node ids in the diagram are short positional ids, and labels are
-escaped so a quote, pipe, angle bracket, or hash in a value cannot break the diagram.
+escaped so a quote, pipe, angle bracket, hash, or backtick in a value cannot break the diagram.
 
 ### Neighborhoods
 
@@ -583,7 +583,8 @@ them.
 
 The title is the label every edge of the neighborhood shares; those edges are
 then drawn without it, since the title says it already, which keeps a
-constellation's lines uncluttered. Otherwise the title is the label of the
+constellation's lines uncluttered. A truncation node's edge has no label and is
+not counted. Otherwise the title is the label of the
 neighborhood's first root, or of its first node. Weights stay on their edges.
 
 ### Known limits

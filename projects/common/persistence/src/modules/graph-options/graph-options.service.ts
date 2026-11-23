@@ -69,8 +69,8 @@ export class GraphOptionsService {
     sort,
     sourceUri,
     table,
-    truncateBreadth: truncateBreadth,
-    truncateDepth: truncateDepth,
+    truncateBreadth,
+    truncateDepth,
   }: GraphOptions): GraphPlan {
     if (sourceUri === undefined) {
       throw new GraphOptionsError(GRAPH_OPTION_MESSAGES.sourceUri);

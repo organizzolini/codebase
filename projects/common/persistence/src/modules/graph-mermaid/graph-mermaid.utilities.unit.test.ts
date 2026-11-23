@@ -237,6 +237,19 @@ describe(renderGraphMermaid, () => {
     ).toThrow('Edge target "missing" is not a node');
   });
 
+  it("draws one neighborhood of 150,000 nodes without overflowing the call stack", () => {
+    const { diagram } = renderGraphMermaid(hubAndLeaves(150_000));
+    const lines = diagram.split("\n");
+
+    expect(lines.slice(0, 4)).toStrictEqual([
+      "flowchart LR",
+      ...CLASS_DEFINITIONS,
+      '    n0["Hub"]',
+    ]);
+    expect(lines.at(-2)).toBe("    n0 --> n149999");
+    expect(lines.at(-1)).toBe("    n0 --> n150000");
+  });
+
   it("rejects two nodes sharing an id", () => {
     expect(() =>
       renderGraphMermaid(
@@ -394,7 +407,7 @@ describe(renderGraphMermaid, () => {
       );
     });
 
-    it("escapes a title like a label and keeps backticks for the fence to handle", () => {
+    it("escapes a title like a label, backticks included", () => {
       const { diagram } = renderGraphMermaid(
         graph([
           { id: "a", label: 'Say "hi" #1' },
@@ -403,10 +416,68 @@ describe(renderGraphMermaid, () => {
       );
 
       expect(diagram).toContain('subgraph nb0["Say #quot;hi#quot; #35;1"]');
-      expect(diagram).toContain('subgraph nb1["run ``` here"]');
+      expect(diagram).toContain('subgraph nb1["run #96;#96;#96; here"]');
       expect(renderGraphMarkdown({ diagram, warnings: [] })).toMatch(
-        /^````mermaid\n/,
+        /^```mermaid\n/,
       );
+    });
+
+    it("titles by the labelled edges' shared label, ignoring the unlabelled edge to a truncation node", () => {
+      const { diagram } = renderGraphMermaid(
+        graph(
+          [
+            { id: "a", label: "A", marker: "root" },
+            { id: "b", label: "B" },
+            { id: "more", label: "… 2 more", marker: "truncation" },
+            { id: "alone", label: "Alone" },
+          ],
+          [
+            { label: "UMa", source: "a", target: "b" },
+            { source: "a", target: "more" },
+          ],
+        ),
+      );
+
+      expect(diagram).toContain(
+        '    subgraph nb0["UMa"]\n        n0["A"]\n        n1["B"]\n        n2["… 2 more"]\n        n0 --> n1\n        n0 --> n2\n    end\n    subgraph nb1["Alone"]\n        n3["Alone"]\n    end',
+      );
+    });
+
+    it("keeps mixed edge labels and an unlabelled truncation edge, titled by the first root", () => {
+      const { diagram } = renderGraphMermaid(
+        graph(
+          [
+            { id: "a", label: "A", marker: "root" },
+            { id: "b", label: "B" },
+            { id: "more", label: "… 2 more", marker: "truncation" },
+            { id: "alone", label: "Alone" },
+          ],
+          [
+            { label: "x", source: "a", target: "b" },
+            { label: "y", source: "b", target: "a" },
+            { source: "a", target: "more" },
+          ],
+        ),
+      );
+
+      expect(diagram).toContain(
+        '    subgraph nb0["A"]\n        n0["A"]\n        n1["B"]\n        n2["… 2 more"]\n        n0 -->|"x"| n1\n        n1 -->|"y"| n0\n        n0 --> n2\n    end',
+      );
+    });
+
+    it("escapes backticks in node and edge labels so Mermaid reads no markdown string", () => {
+      const { diagram } = renderGraphMermaid(
+        graph(
+          [
+            { id: "a", label: "`x` #96;" },
+            { id: "b", label: "B" },
+          ],
+          [{ label: "`y`", source: "a", target: "b" }],
+        ),
+      );
+
+      expect(diagram).toContain('    n0["#96;x#96; #35;96;"]');
+      expect(diagram).toContain('    n0 -->|"#96;y#96;"| n1');
     });
 
     it("counts edges over the whole model for limit warnings", () => {
