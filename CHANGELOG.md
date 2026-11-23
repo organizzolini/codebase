@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.12.0](https://github.com/organizzolini/codebase/compare/v6.11.0...v6.12.0) (2026-11-23)
+
+### ✨ Features
+
+* **meanderaw:** 💄 add favicon to meanderaw-web ([#2544](https://github.com/organizzolini/codebase/issues/2544)) ([d1b9f7b](https://github.com/organizzolini/codebase/commit/d1b9f7b01fe8dc3083bbaeb45479acd45a6f9d0e)), closes [#2543](https://github.com/organizzolini/codebase/issues/2543)
+
+### 📝 Documentation
+
+* **documentation:** 📝 group repository sections in readme ([#2538](https://github.com/organizzolini/codebase/issues/2538)) ([6e19d43](https://github.com/organizzolini/codebase/commit/6e19d43aeedbc8501d3dbf569a0a8ef0b5399dd4)), closes [#2537](https://github.com/organizzolini/codebase/issues/2537)
+* **documentation:** 📝 order projects by architectural layer ([#2542](https://github.com/organizzolini/codebase/issues/2542)) ([54ac10d](https://github.com/organizzolini/codebase/commit/54ac10d3ec516c17dc08d9102c28e08b3e379b74)), closes [#2541](https://github.com/organizzolini/codebase/issues/2541) [#2540](https://github.com/organizzolini/codebase/issues/2540)
+* **documentation:** 📝 show projects as a folder tree ([#2540](https://github.com/organizzolini/codebase/issues/2540)) ([d6e94f9](https://github.com/organizzolini/codebase/commit/d6e94f9ea6b3261e10317ddc7cf2f86a5fc93188)), closes [#2539](https://github.com/organizzolini/codebase/issues/2539)
+
 ## [6.11.0](https://github.com/organizzolini/codebase/compare/v6.10.0...v6.11.0) (2026-11-23)
 
 ### ✨ Features
