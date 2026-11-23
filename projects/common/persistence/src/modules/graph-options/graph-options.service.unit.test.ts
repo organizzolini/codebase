@@ -1,3 +1,6 @@
+import os from "node:os";
+import path from "node:path";
+
 import { describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
@@ -40,10 +43,31 @@ describe(GraphOptionsService, () => {
         filters: [],
         maximumBreadth: undefined,
         maximumDepth: undefined,
+        outputs: { json: undefined, markdown: undefined, overwrite: false },
         paging: undefined,
         sorts: [],
         source: "postgresql://fixture_user:****@localhost:5433/fixture_db",
         table: "closure_tags",
+      });
+    });
+
+    it("resolves the output flags into the plan's output files", async () => {
+      const { instance } = await buildTestingModule(GraphOptionsService);
+      const json = path.join(os.tmpdir(), "graph-options-plan.json");
+
+      const plan = instance.plan({
+        entities: ["a.ts"],
+        outputJson: json,
+        outputMarkdown: path.join(os.tmpdir(), "graph-options-plan.md"),
+        overwrite: true,
+        schema: "fixture",
+        sourceUri: SOURCE_URI,
+      });
+
+      expect(plan.outputs).toStrictEqual({
+        json,
+        markdown: path.join(os.tmpdir(), "graph-options-plan.md"),
+        overwrite: true,
       });
     });
 

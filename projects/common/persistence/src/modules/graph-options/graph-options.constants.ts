@@ -112,3 +112,27 @@ export const graphDateValueMessage = (
   expression: string,
   value: string,
 ): string => `--filter "${expression}": "${value}" is not a date`;
+
+/** An output path that names a directory, not a file. */
+export const graphOutputDirectoryMessage = (
+  flag: "--output-json" | "--output-markdown",
+  file: string,
+): string => {
+  const example = flag === "--output-json" ? "tree.json" : "tree.md";
+  return `${flag} ${file} is a directory: name a file path, e.g. ${flag} ${example}`;
+};
+
+/** An existing output file, left unchanged unless `--overwrite` allows replacing it. */
+export const graphOutputExistsMessage = (file: string): string =>
+  `${file} already exists and was left unchanged: choose another path, or pass --overwrite to replace it`;
+
+/** An output whose nearest existing folder cannot hold a new file. */
+export const graphOutputParentMessage = (
+  flag: "--output-json" | "--output-markdown",
+  parent: string,
+): string =>
+  `${flag} cannot write into ${parent}: it is not a writable directory`;
+
+/** Both output flags given one path, which cannot hold two files. */
+export const graphOutputSameFileMessage = (file: string): string =>
+  `--output-markdown and --output-json name the same file ${file}: name two files`;

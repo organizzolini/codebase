@@ -1,6 +1,9 @@
 // 🌎 Utilities
 
-import { maskPostgresCredentials } from "../postgresql-utilities/postgresql-utilities.utilities";
+import {
+  maskPostgresCredentials,
+  parsePostgresUri,
+} from "../postgresql-utilities/postgresql-utilities.utilities";
 
 import {
   GRAPH_FILTER_PATTERN,
@@ -17,6 +20,7 @@ import {
 import type {
   GraphFilter,
   GraphPaging,
+  GraphPlan,
   GraphSort,
 } from "./graph-options.types";
 
@@ -93,6 +97,22 @@ export function parseGraphSort(expression: string): GraphSort {
     throw new GraphOptionsError(graphSortSyntaxMessage(expression));
   }
   return { ...parsed.data, expression };
+}
+
+/**
+ * The connection `--source-uri` names, in `schema`, and that URI with its
+ * password masked for log lines.
+ * @throws Error when the URI cannot be parsed.
+ */
+export function parseGraphSource(
+  sourceUri: string,
+  schema: string,
+): Pick<GraphPlan, "connection" | "source"> {
+  const connection = parsePostgresUri(sourceUri, "--source-uri");
+  return {
+    connection: { ...connection, schema },
+    source: maskPostgresCredentials(sourceUri, connection.password),
+  };
 }
 
 /**

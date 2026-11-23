@@ -1,10 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import {
-  maskPostgresCredentials,
-  parsePostgresUri,
-} from "../postgresql-utilities/postgresql-utilities.utilities";
-
+import { resolveGraphOutputs } from "./graph-options-outputs.utilities";
 import {
   GRAPH_OPTION_MESSAGES,
   GraphOptionsError,
@@ -13,6 +9,7 @@ import {
 import {
   parseGraphPaging,
   parseGraphRows,
+  parseGraphSource,
   positiveIntegerFlag,
 } from "./graph-options.utilities";
 
@@ -66,6 +63,9 @@ export class GraphOptionsService {
     limit,
     maxBreadth: maximumBreadth,
     maxDepth: maximumDepth,
+    outputJson,
+    outputMarkdown,
+    overwrite,
     page,
     schema,
     sort,
@@ -82,18 +82,23 @@ export class GraphOptionsService {
       throw new GraphOptionsError(GRAPH_OPTION_MESSAGES.schema);
     }
 
-    const connection = parsePostgresUri(sourceUri, "--source-uri");
+    const { connection, source } = parseGraphSource(sourceUri, schema);
     const { filters, sorts } = parseGraphRows(filter, sort);
 
     return {
-      connection: { ...connection, schema },
+      connection,
       entities,
       filters,
       maximumBreadth: positiveIntegerFlag("--max-breadth", maximumBreadth),
       maximumDepth: positiveIntegerFlag("--max-depth", maximumDepth),
+      outputs: resolveGraphOutputs({
+        json: outputJson,
+        markdown: outputMarkdown,
+        overwrite,
+      }),
       paging: parseGraphPaging(page, limit),
       sorts,
-      source: maskPostgresCredentials(sourceUri, connection.password),
+      source,
       table: this.tableName(table, schema),
     };
   }

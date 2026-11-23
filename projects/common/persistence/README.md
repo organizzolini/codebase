@@ -360,7 +360,7 @@ therefore not reachable through these commands today.
 ## Drawing tree data
 
 `render-tree-data` reads a `@Tree` entity's rows and prints them as a Mermaid
-flowchart on stdout, with warnings on stderr. It imports the entity files its
+flowchart on stdout, or writes them to files, with warnings on stderr. It imports the entity files its
 `--entities` globs name through the repository's swc loader, builds a TypeORM
 data source over them, and reads the tree in whichever storage the entity uses:
 closure table, materialized path, nested set, or adjacency list.
@@ -369,17 +369,26 @@ closure table, materialized path, nested set, or adjacency list.
 pnpm exec nx run persistence:start --args="render-tree-data --source-uri postgresql://user:password@localhost:5432/source --schema tags --entities '../<project>/src/**/tag.entity.ts'"
 ```
 
-| Option               | Does                                                                                                            |
-| -------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `--source-uri <uri>` | Required. The database to read from                                                                             |
-| `--schema <name>`    | Required. The schema the entity tables live in                                                                  |
-| `--entities <glob>`  | Required, repeatable. The entity files to import                                                                |
-| `--table <name>`     | The tree to draw when the globs match several `@Tree` entities; unqualified, or `schema.table`                  |
-| `--limit <n>`        | Root nodes per page, each drawn with its descendants, in sort order; the first page unless `--page`             |
-| `--page <n>`         | The page of `--limit` roots to draw, from 1; needs `--limit`; a page past the last root draws nothing and warns |
-| `--max-depth <n>`    | The deepest level drawn, roots at level 1; children below it become one `… K more` node                         |
-| `--max-breadth <n>`  | Most children drawn under one node; the rest become one `… K more` node; roots not capped                       |
-| `--dry-run`          | Check the options and list the entity files, without connecting to a database or drawing anything               |
+| Option                     | Does                                                                                                                                      |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `--source-uri <uri>`       | Required. The database to read from                                                                                                       |
+| `--schema <name>`          | Required. The schema the entity tables live in                                                                                            |
+| `--entities <glob>`        | Required, repeatable. The entity files to import                                                                                          |
+| `--table <name>`           | The tree to draw when the globs match several `@Tree` entities; unqualified, or `schema.table`                                            |
+| `--limit <n>`              | Root nodes per page, each drawn with its descendants, in sort order; the first page unless `--page`                                       |
+| `--page <n>`               | The page of `--limit` roots to draw, from 1; needs `--limit`; a page past the last root draws nothing and warns                           |
+| `--max-depth <n>`          | The deepest level drawn, roots at level 1; children below it become one `… K more` node                                                   |
+| `--max-breadth <n>`        | Most children drawn under one node; the rest become one `… K more` node; roots not capped                                                 |
+| `--output-markdown <path>` | Write the diagram as a fenced Mermaid block to this file, creating its folders; warnings follow the fence. Nothing prints to stdout       |
+| `--output-json <path>`     | Write the normalized graph as pretty JSON to this file, creating its folders; it parses back to the drawn model. Nothing prints to stdout |
+| `--overwrite`              | Replace an existing `--output-markdown` or `--output-json` file; without it an existing file is refused and left unchanged                |
+| `--dry-run`                | Check the options and list the entity files, without connecting to a database or drawing anything                                         |
+
+Output paths resolve against the working directory and are checked before any
+connection opens: a directory, a file that exists without `--overwrite`, a
+folder that cannot take a new file, or one path given to both flags is refused.
+Both output flags together write both files. Each file is written through a
+partial file beside it, so a failed write leaves no partial file behind.
 
 `--limit` and `--page` cut the tree after `--filter` and `--sort` and before the
 caps, so each page is the next roots of the filtered, sorted forest. Several

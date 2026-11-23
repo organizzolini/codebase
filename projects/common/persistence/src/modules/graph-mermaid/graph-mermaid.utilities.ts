@@ -19,6 +19,25 @@ import type {
 } from "./graph-mermaid.types";
 
 /**
+ * Wraps a rendering's diagram in a Mermaid fence longer than any backtick run
+ * in it, with its warnings as blockquotes after the fence.
+ */
+export function renderGraphMarkdown({
+  diagram,
+  warnings,
+}: GraphMermaidRendering): string {
+  const fence = markdownFence(diagram);
+  const lines = [`${fence}mermaid`, diagram, fence];
+  if (warnings.length > 0) {
+    lines.push(
+      "",
+      ...warnings.map((warning) => `> ⚠️ ${warning.replaceAll(/\r?\n/g, " ")}`),
+    );
+  }
+  return `${lines.join("\n")}\n`;
+}
+
+/**
  * Draws `graph` as a Mermaid flowchart with short node ids, escaped labels,
  * and styled roots and truncation nodes, warning as it nears Mermaid's limits.
  * @throws Error when two nodes share an id, or an edge names no node.
@@ -134,6 +153,12 @@ function limitWarnings(edges: number, characters: number): string[] {
     limitWarning(characters, MERMAID_MAXIMUM_CHARACTERS, "character"),
   ];
   return warnings.filter((warning): warning is string => warning !== undefined);
+}
+
+/** A backtick fence one longer than the longest backtick run in `text`, and at least three. */
+function markdownFence(text: string): string {
+  const runs = [...text.matchAll(/`+/g)].map(([run]) => run.length);
+  return "`".repeat(Math.max(2, ...runs) + 1);
 }
 
 /** One `class` line per root or truncation node, in node order. */

@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { renderGraphMermaid } from "./graph-mermaid.utilities";
+import {
+  renderGraphMarkdown,
+  renderGraphMermaid,
+} from "./graph-mermaid.utilities";
 
 import type { GraphEdge, GraphModel, GraphNode } from "./graph-mermaid.types";
 
@@ -243,5 +246,55 @@ describe(renderGraphMermaid, () => {
         ]),
       ),
     ).toThrow('Duplicate node id "a"');
+  });
+
+  describe(renderGraphMarkdown, () => {
+    it("wraps the diagram in a mermaid fence, with no warnings after it when there are none", () => {
+      const rendering = renderGraphMermaid(
+        graph([{ id: "a", label: "A" }], []),
+      );
+
+      expect(renderGraphMarkdown(rendering)).toBe(
+        `\`\`\`mermaid\n${rendering.diagram}\n\`\`\`\n`,
+      );
+    });
+
+    it("keeps warnings after the fence as blockquotes, never inside it", () => {
+      const markdown = renderGraphMarkdown({
+        diagram: "flowchart LR",
+        warnings: ["Node 6 names parent 99", "Diagram is 9 characters"],
+      });
+
+      expect(markdown).toBe(
+        "```mermaid\nflowchart LR\n```\n\n> ⚠️ Node 6 names parent 99\n> ⚠️ Diagram is 9 characters\n",
+      );
+    });
+
+    it("flattens a warning's line breaks into one blockquote line", () => {
+      const markdown = renderGraphMarkdown({
+        diagram: "flowchart LR",
+        warnings: ["first line\r\nsecond line"],
+      });
+
+      expect(markdown.split("\n").at(-2)).toBe("> ⚠️ first line second line");
+    });
+
+    it("fences a diagram whose labels hold backticks with a longer fence", () => {
+      const diagram = 'flowchart LR\n    n0["run ``` here"]';
+
+      const markdown = renderGraphMarkdown({ diagram, warnings: [] });
+
+      expect(markdown).toBe(`\`\`\`\`mermaid\n${diagram}\n\`\`\`\`\n`);
+      expect(markdown.split("\n")).not.toContain("```");
+    });
+
+    it("fences a diagram with a longer backtick run one backtick longer than that run", () => {
+      const diagram = 'flowchart LR\n    n0["````"]';
+
+      const markdown = renderGraphMarkdown({ diagram, warnings: [] });
+
+      expect(markdown.startsWith("`````mermaid\n")).toBe(true);
+      expect(markdown.endsWith("\n`````\n")).toBe(true);
+    });
   });
 });

@@ -52,6 +52,15 @@ export interface GraphOptions {
   /** The deepest level drawn, roots being level 1, as text; a positive integer when given. */
   readonly maxDepth?: string | undefined;
 
+  /** Path of the JSON graph file to write, as text. */
+  readonly outputJson?: string | undefined;
+
+  /** Path of the Markdown diagram file to write, as text. */
+  readonly outputMarkdown?: string | undefined;
+
+  /** Whether an existing output file may be replaced. */
+  readonly overwrite?: boolean | undefined;
+
   /** Page of roots to draw, from 1, as text; needs `limit`. */
   readonly page?: string | undefined;
 
@@ -75,6 +84,39 @@ export interface GraphOrder {
 
   /** The key's direction. */
   readonly direction: GraphSortDirection;
+}
+
+/** A file to write, with its content and path. */
+export interface GraphOutputFile {
+  /** The text written to the file. */
+  readonly content: string;
+
+  /** The absolute path the file is written to. */
+  readonly path: string;
+}
+
+/** Output paths as the command line named them, relative or absolute. */
+export interface GraphOutputRequest {
+  /** The JSON graph file, as named. */
+  readonly json?: string | undefined;
+
+  /** The Markdown diagram file, as named. */
+  readonly markdown?: string | undefined;
+
+  /** Whether an existing output file may be replaced. */
+  readonly overwrite?: boolean | undefined;
+}
+
+/** Where a graph command writes its files, each absolute when given. */
+export interface GraphOutputs {
+  /** Absolute path of the JSON graph file, if one is written. */
+  readonly json: string | undefined;
+
+  /** Absolute path of the Markdown diagram file, if one is written. */
+  readonly markdown: string | undefined;
+
+  /** Whether an existing output file may be replaced. */
+  readonly overwrite: boolean;
 }
 
 /** One page of root nodes, numbered from 1. */
@@ -102,6 +144,9 @@ export interface GraphPlan {
 
   /** The deepest level drawn, or `undefined` for every level. */
   readonly maximumDepth: number | undefined;
+
+  /** The files to write; with none, the diagram goes to stdout. */
+  readonly outputs: GraphOutputs;
 
   /** The page of root nodes drawn, or `undefined` for every root. */
   readonly paging: GraphPaging | undefined;

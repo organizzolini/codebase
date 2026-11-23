@@ -5,6 +5,12 @@ import { LoggerService } from "@codebase/observability";
 
 import { GraphEntitiesService } from "../graph-entities/graph-entities.service";
 import { GraphMermaidService } from "../graph-mermaid/graph-mermaid.service";
+import { renderGraphMarkdown } from "../graph-mermaid/graph-mermaid.utilities";
+import {
+  graphOutputDryRunMessages,
+  renderGraphJson,
+  writeGraphOutputs,
+} from "../graph-options/graph-options-outputs.utilities";
 import { GraphOptionsService } from "../graph-options/graph-options.service";
 import { maskedError } from "../graph-options/graph-options.utilities";
 import { GraphTreeService } from "../graph-tree/graph-tree.service";
@@ -15,13 +21,24 @@ import {
   renderTreeDataDryRunMessages,
 } from "./render-tree-data.constants";
 
-import type { GraphPlan } from "../graph-options/graph-options.types";
-import type { RenderTreeDataCommandOptions } from "./render-tree-data.types";
+import type {
+  GraphMermaidRendering,
+  GraphModel,
+} from "../graph-mermaid/graph-mermaid.types";
+import type {
+  GraphOutputFile,
+  GraphPlan,
+} from "../graph-options/graph-options.types";
+import type {
+  RenderTreeDataCommandOptions,
+  RenderTreeDataTarget,
+} from "./render-tree-data.types";
 
 /**
  * Reads a `@Tree` entity's rows from a database and prints them as a Mermaid
- * flowchart on stdout, with warnings on stderr. Every option is validated
- * before any entity file is imported or any connection opens.
+ * flowchart on stdout, or writes them to the files named, with warnings on
+ * stderr. Every option is validated before any entity file is imported or any
+ * connection opens.
  */
 @Command({
   description: RENDER_TREE_DATA_DESCRIPTION,
@@ -49,11 +66,40 @@ export class RenderTreeDataCommand extends CommandRunner {
   // 🔏 Private Methods
 
   /**
-   * Imports the entities, connects, reads the picked tree, and writes its
-   * diagram to stdout and its warnings to stderr.
-   * @throws Error naming the failure, with the password masked.
+   * Writes the diagram to stdout, or to the files named when any is given,
+   * then the warnings to stderr.
    */
-  private async render(plan: GraphPlan): Promise<void> {
+  private emit(
+    plan: GraphPlan,
+    graph: GraphModel,
+    rendering: GraphMermaidRendering,
+  ): void {
+    const { json, markdown } = plan.outputs;
+    if (json === undefined && markdown === undefined) {
+      process.stdout.write(`${rendering.diagram}\n`);
+    } else {
+      const files: GraphOutputFile[] = [];
+      if (markdown !== undefined) {
+        files.push({ content: renderGraphMarkdown(rendering), path: markdown });
+      }
+      if (json !== undefined) {
+        files.push({ content: renderGraphJson(graph), path: json });
+      }
+      writeGraphOutputs(files);
+      for (const file of files) {
+        this.logger.log(`📝 Wrote ${file.path}`);
+      }
+    }
+    for (const warning of rendering.warnings) {
+      process.stderr.write(`⚠️ ${warning}\n`);
+    }
+  }
+
+  /**
+   * Imports the entities, picks the tree, and checks its columns, before any
+   * connection opens.
+   */
+  private async prepare(plan: GraphPlan): Promise<RenderTreeDataTarget> {
     const entities = await this.graphEntities.load(plan.entities);
     const dataSource = this.graphEntities.createDataSource(
       plan.connection,
@@ -66,6 +112,17 @@ export class RenderTreeDataCommand extends CommandRunner {
       table: plan.table,
     });
     this.graphEntities.assertColumns(picked, plan.filters, plan.sorts);
+    return { dataSource, picked };
+  }
+
+  /**
+   * Connects, reads the picked tree, and writes its diagram and its warnings.
+   * @throws Error naming the failure, with the password masked.
+   */
+  private async render(
+    plan: GraphPlan,
+    { dataSource, picked }: RenderTreeDataTarget,
+  ): Promise<void> {
     try {
       await dataSource.initialize();
       const graph = await this.graphTree.load(
@@ -82,11 +139,7 @@ export class RenderTreeDataCommand extends CommandRunner {
       const rendering = this.graphMermaid.render(graph, {
         direction: RENDER_TREE_DATA_DIRECTION,
       });
-
-      process.stdout.write(`${rendering.diagram}\n`);
-      for (const warning of rendering.warnings) {
-        process.stderr.write(`⚠️ ${warning}\n`);
-      }
+      this.emit(plan, graph, rendering);
     } catch (error) {
       throw maskedError(error, plan.connection.password);
     } finally {
@@ -156,6 +209,36 @@ export class RenderTreeDataCommand extends CommandRunner {
     return value;
   }
 
+  /** Parses `--output-json`, the file the normalized graph is written to. */
+  @Option({
+    description:
+      "Write the graph as pretty JSON to this file, creating its folders; with any output file, the diagram is not printed. An existing file is refused unless --overwrite. Relative paths resolve from the working directory",
+    flags: "--output-json <path>",
+  })
+  parseOutputJson(value: string): string {
+    return value;
+  }
+
+  /** Parses `--output-markdown`, the file the diagram is written to. */
+  @Option({
+    description:
+      "Write the diagram as a fenced Mermaid block to this file, creating its folders, with warnings after the fence; with any output file, the diagram is not printed. An existing file is refused unless --overwrite. Relative paths resolve from the working directory",
+    flags: "--output-markdown <path>",
+  })
+  parseOutputMarkdown(value: string): string {
+    return value;
+  }
+
+  /** Parses `--overwrite`, which lets an output file that exists be replaced. */
+  @Option({
+    description:
+      "Replace an existing --output-markdown or --output-json file; without it, an existing file is refused and left unchanged",
+    flags: "--overwrite",
+  })
+  parseOverwrite(): boolean {
+    return true;
+  }
+
   /** Parses `--page`, the page of `--limit` roots to draw, from 1. */
   @Option({
     description:
@@ -216,11 +299,16 @@ export class RenderTreeDataCommand extends CommandRunner {
     const plan = this.graphOptions.plan(options);
     if (options.dryRun === true) {
       const files = this.graphEntities.resolveFiles(plan.entities);
-      for (const line of renderTreeDataDryRunMessages(plan, files)) {
+      const lines = [
+        ...renderTreeDataDryRunMessages(plan, files),
+        ...graphOutputDryRunMessages(plan.outputs),
+      ];
+      for (const line of lines) {
         this.logger.log(line);
       }
       return;
     }
-    await this.render(plan);
+    const target = await this.prepare(plan);
+    await this.render(plan, target);
   }
 }
