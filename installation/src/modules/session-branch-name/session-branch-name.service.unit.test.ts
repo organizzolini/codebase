@@ -41,9 +41,11 @@ describe(SessionBranchNameService, () => {
 
     const rules = service.readBranchNameRules();
 
-    expect(rules.pattern.test("refactor/validation-session-checks")).toBe(true);
+    expect(rules.pattern.test("refactor/integration-session-checks")).toBe(
+      true,
+    );
     expect(rules.pattern.test("dependabot/npm/zod")).toBe(true);
-    expect(rules.pattern.test("Refactor/validation")).toBe(false);
+    expect(rules.pattern.test("Refactor/integration")).toBe(false);
   });
 
   // validate-branch-name compiles the pattern without the unicode flag, under

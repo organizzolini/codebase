@@ -1,4 +1,5 @@
 import { writeFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import path from "node:path";
 
 import { beforeEach, describe, expect, it } from "vitest";
@@ -20,6 +21,14 @@ import type { GitResult } from "./session-branch-name.types";
 
 /** The repository this suite runs in, whose branch rules are read. */
 const REPOSITORY_ROOT = path.resolve(import.meta.dirname, "../../../..");
+
+const requireFromRepository = createRequire(import.meta.url);
+
+/** The parts of the shared conventional configuration this suite reads. */
+interface ConventionalConfiguration {
+  readonly scopes: readonly { readonly name: string }[];
+  readonly types: readonly { readonly name: string }[];
+}
 
 const RENAME_DIRECTIVE =
   "🚨 Invoke the rename-branch skill to rename this branch before doing anything else.";
@@ -186,13 +195,23 @@ describe(SessionBranchNameCommand, () => {
 
   it("names every valid type and scope from the repository's own configuration", async () => {
     useWorkingDirectory(REPOSITORY_ROOT);
+    const { scopes, types } = requireFromRepository(
+      path.join(
+        REPOSITORY_ROOT,
+        "configuration/repository/conventional.config.cjs",
+      ),
+    ) as ConventionalConfiguration;
     const session = await createCommand(onBranch("Bad_Name"));
 
     await session.run();
 
     expect(printed()).toMatch(/^❌ Invalid branch name\n/u);
-    expect(printed()).toMatch(/\n🏷️ Valid types: feat, fix, docs, /u);
-    expect(printed()).toMatch(/\n🔭 Valid scopes: .*\bvalidation\b/u);
+    expect(printed()).toContain(
+      `\n🏷️ Valid types: ${types.map((type) => type.name).join(", ")}\n`,
+    );
+    expect(printed()).toContain(
+      `\n🔭 Valid scopes: ${scopes.map((scope) => scope.name).join(", ")}\n`,
+    );
     expect(printed().endsWith(`\n\n${RENAME_DIRECTIVE}`)).toBe(true);
     expect(exitCode()).toBe(1);
   });
