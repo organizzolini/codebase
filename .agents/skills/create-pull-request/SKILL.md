@@ -39,7 +39,6 @@ suffixes do not push the queued commit subject over the header limit.
 
 **Name at most 3 scopes.** Every scope adds its name plus a comma to the header,
 and a long list is what pushes a title over 128 characters: a six-scope title
-(`feat(codometer,synchronization,integration,configuration,infrastructure,documentation): …`)
 reached 135 characters and failed commitlint. The Comply check
 (`compliance pull-request`) rejects a fourth scope outright, even when the
 header would fit. When the commits span more, name the three that carry most of

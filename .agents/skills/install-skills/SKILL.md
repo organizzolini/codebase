@@ -49,7 +49,7 @@ pnpm exec nx run integration:skill-exclusions:write
 
 Two details of that machinery matter before changing it:
 
-- **A wholesale pattern defeats the whole arrangement**, and no check catches it. Re-adding `**/.agents/skills/**` outside a managed block leaves every per-skill entry in place while quietly taking this repository's own skills back out of scope, and the synchronizer reports nothing because its own block still matches the lockfile. **Exclude a vendored skill by name.**
+- **A wholesale pattern defeats the whole arrangement**, and no check catches it. Re-adding `**/.agents/skills/**` outside a managed block leaves every per-skill entry in place while quietly taking this repository's own skills back out of scope, and the `skill-exclusions` check reports nothing because its own block still matches the lockfile. **Exclude a vendored skill by name.**
 - **The `configuration` project's `project.json` mirrors the exclusions as cache negations.** Its `vendored-skills` named input drops them from the `spell-check` and `markdown-lint` `inputs`, because a tool that ignores a file has no reason to rehash on it. That is a cache optimization rather than a correctness gate.
 
 Every other tool scopes itself with explicit globs that never include `.agents/`.

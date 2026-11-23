@@ -4,7 +4,7 @@
 
 **Type**: Node.js CLI application (NestJS + `nest-commander`)
 
-**Purpose**: Continuous Integration plumbing: the steps that run around a CI job, as tested commands. The affected run, the Nx base and task-cache steps, codometer's baseline and pull-request report, and the weekly dependency upgrades. "Integration" in this project means Continuous Integration, never the `vitest:integration` test kind. Commands only compute and print and set an exit code; services hold the logic behind injected file-system and process wrappers.
+**Purpose**: Everything that guards a change on its way to `main`, as tested commands. That is the local branch into its remote branch at commit and push, and a pull request into `main`. It holds the checks (catalog pins, the lockfile, the README's project rows), the derivations that keep generated files in step with their sources, and the Continuous Integration plumbing: the affected run, the Nx base and task-cache steps, codometer's baseline and pull-request report, and the weekly dependency upgrades. "Integration" in this project means that path, never the `vitest:integration` test kind. Commands only compute and print and set an exit code; services hold the logic behind injected file-system and process wrappers.
 
 ### Run Locally
 
@@ -49,7 +49,7 @@ src/
 testing/                            # Shared test utilities
 ```
 
-### Synchronization contract and layout
+### Checks, derivations, and the aggregate
 
 `src/modules/synchronization` holds what every check and derivation shares:
 `SynchronizableCommand` (a `synchronizationLabel` and `synchronize(mode)`, which
@@ -98,7 +98,7 @@ one class.
 | `catalog-manifests` | `src/modules/synchronization/modules/catalog-manifests` | `guard-code`; a check, no `write`: every workspace manifest pins externals as `catalog:` and internals as `workspace:*`. Collects every violation; has no `fixCommand` |
 | `lockfile` | `src/modules/synchronization/modules/lockfile` | `guard-code` and lint-staged; a check, no `write`: runs `pnpm install --frozen-lockfile --lockfile-only`. Sets `fixCommand` to `pnpm install` |
 | `readme-projects` | `src/modules/synchronization/modules/readme-projects` | `guard-code`; a check, no `write`: the root README links every workspace project. Its `fixCommand` says to add a row for each missing project |
-| `synchronization` (the `start` target) | `src/modules/synchronization` | a human at a terminal: `nx run integration:start` runs every registered check and derivation in one process, `check` by default, or `:write` |
+| `synchronization` (the `start` target) | `src/modules/synchronization` | a human at a terminal: `nx run integration:start` runs the ten checks and derivations above in one process, `check` by default, or `:write`. The CLI name is internal: the conformetry template fixes it, and `conformetry-validate` requires it |
 
 `setup-codebase` and `cleanup-codebase` run the services of the commands above
 themselves, in a command of their own rather than a service: one more layer

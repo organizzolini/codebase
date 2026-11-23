@@ -96,7 +96,7 @@ hand-written mapping to drift. Anything the old table routed by hand
 (`vscode-extensions`, `markdown-lint`, `yaml-lint`, `spell-check`) is now
 reached through that `dependsOn` list.
 
-Each derivation synchronization target is named in the same invocation rather
+Each derivation target is named in the same invocation rather
 than reached through `dependsOn`, because each also publishes on the default
 branch, and Nx forwards an explicit configuration down `dependsOn` — so an
 edge there would let `lint-code --configuration=write` publish from a
@@ -111,7 +111,7 @@ fails that project's own task, which the workspace-wide runs these replaced
 never could name. `configuration:codependix` is write-only and is not reachable from
 `guard-code`.
 
-There is no aggregate `synchronize` target: each synchronization command is its
+There is no aggregate `synchronize` target: each derivation is its
 own Nx target on the `integration` project, named here directly. Naming
 them alongside keeps a commit gating call-stack depth and derivation drift
 without a second `nx affected` call and the extra project graph build it would
@@ -249,7 +249,7 @@ Config: [projects/affirmancy/project.json](../../../projects/affirmancy/project.
 
 #### Sync checks
 
-Every synchronization command is its own Nx target on the `integration` project — `conformetry-generators`, `conventional-config`, `devcontainer-configuration`, `skill-exclusions`, `vscode-extensions`, and `vscode-settings` — run directly rather than through a shared aggregate, the same way `configuration:codometer` and `configuration:callidescope` are run. The pull request template is the exception: `compliance` owns `pull-request-template` beside `pull-request-body`, and runs as `nx run compliance:pull-request-template`. There is no `sync-*` target, no `scripts/sync-*.ts` script, and no aggregate target other than `integration:start` — those were retired when the work moved into [integration](../../../integration). `lint-code`'s dependents name each derivation target directly.
+Every derivation in the `integration` project is its own Nx target — `conformetry-generators`, `conventional-config`, `devcontainer-configuration`, `package-manifests`, `project-ports`, `skill-exclusions`, and `vscode-extensions` — run directly rather than through a shared aggregate, the same way `configuration:codometer` and `configuration:callidescope` are run. `installation` owns `vscode-settings` and `installed-skills`. The pull request template is the exception again: `compliance` owns `pull-request-template` beside `pull-request-body`, and runs as `nx run compliance:pull-request-template`. There is no `sync-*` target, no `scripts/sync-*.ts` script, and no aggregate target other than `integration:start` — those were retired when the work moved into [integration](../../../integration). `lint-code`'s dependents name each derivation target directly.
 
 The `nestjs-module-graphs` and `nx-project-graphs` targets were retired too, per issue #296: [codependix](../../../projects/ic-suite/codependix/codependix-cli) now derives the same NestJS module graphs and Nx neighborhood graphs through its own anchor blocks, gated per project by `codependix-bound` and published by `nx run configuration:codependix:write` instead.
 

@@ -39,4 +39,4 @@ The Nx steps may move to run after the install once a merge-group measurement sh
 - A new script under `scripts/` still needs a reason from this table. Without one, it is a command.
 - Removing an entry from the floor needs a new ADR that supersedes this one.
 - The shellcheck gate covers `.agents/skills/sign-commits/scripts/*.sh` by name. The other installed skills stay out of it, since they are owned upstream.
-- The `validation` project's guidance and `scripts/README.md` link here instead of to ADR 0026.
+- The session-hook guidance in `installation` and `scripts/README.md` link here instead of to ADR 0026.

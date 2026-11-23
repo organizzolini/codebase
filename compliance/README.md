@@ -1,7 +1,9 @@
 ## Compliance CLI
 
 The Compliance CLI owns Continuous Compliance checks that read or update
-GitHub issues, pull requests, and repository governance metadata. It also owns
+GitHub issues, pull requests, and repository governance metadata. It is the
+pull request end of a change's way to `main`; the commit and push checks live in
+`integration`. It also owns
 the pull request template and the copies of it embedded in the pull request
 skill files. It has five commands:
 

@@ -4,7 +4,7 @@
 
 **Type**: Node.js CLI application (NestJS + `nest-commander`)
 
-**Purpose**: Set up a developer machine once Node and pnpm exist: shell configuration, the remaining software, `.env` files, and dependencies. A behavior-preserving port of what the `scripts/local/` shell used to do.
+**Purpose**: Set up a developer machine once Node and pnpm exist: shell configuration, the remaining software, `.env` files, and dependencies. It also holds the checks that guard a session and its skills: `installed-skills`, `vscode-settings`, `session-branch-name`, and `session-worktree-name`, described below. A behavior-preserving port of what the `scripts/local/` shell used to do.
 
 One command is maintenance rather than setup: `update-reui-skill` refreshes the vendored ReUI skill, and `upgrade-dependencies.yml` runs it after `skills update`. It is not part of `setup`, and an outage prints the retry command and exits 0.
 

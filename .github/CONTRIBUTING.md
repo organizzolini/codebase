@@ -506,7 +506,7 @@ A branch that spans several projects is fine: title it at its most significant c
 
 ## Issues and Planning
 
-Issues and specs live as GitHub issues in [Organizzolini/codebase](https://github.com/Organizzolini/codebase/issues). Blank issues are disabled, so a human-filed issue goes through the single template, whose Type and Scope dropdowns are kept in step with `configuration/repository/conventional.config.cjs` by a synchronization target:
+Issues and specs live as GitHub issues in [Organizzolini/codebase](https://github.com/Organizzolini/codebase/issues). Blank issues are disabled, so a human-filed issue goes through the single template, whose Type and Scope dropdowns are kept in step with `configuration/repository/conventional.config.cjs` by the `integration:conventional-config` target:
 
 ```bash
 gh issue create --template issue.yml
