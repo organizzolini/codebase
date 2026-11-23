@@ -391,7 +391,7 @@ export class FormsBuilderService {
       forms.push(...this.buildVerbNonFiniteForms(nonFinite, lexeme));
     }
 
-    const verbalNouns = rawForms["verbalNouns"];
+    const verbalNouns = rawForms["verbalNouns"] ?? rawForms["verbalNoun"];
     if (this.guards.isRecord(verbalNouns)) {
       forms.push(...this.buildVerbNounForms(verbalNouns, lexeme));
     }
@@ -415,6 +415,13 @@ export class FormsBuilderService {
     if (this.guards.isRecord(participle)) {
       forms.push(...this.buildParticipleFormsFromRaw(participle, lexeme));
     }
+
+    forms.push(
+      ...this.formsBuilderVerbProvider.buildInfinitiveFormsByTense(
+        nonFiniteData,
+        lexeme,
+      ),
+    );
 
     return forms;
   }
@@ -478,7 +485,11 @@ export class FormsBuilderService {
     }
 
     if (nominalPartOfSpeechSet.has(pos)) {
-      return this.buildNominalFormsFromRaw(rawForms, lexeme);
+      // A pronoun or determiner declined by gender, such as hic, reads as an adjective does.
+      const genderedForms = this.buildAdjectivalFormsFromRaw(rawForms, lexeme);
+      return genderedForms.length > 0
+        ? genderedForms
+        : this.buildNominalFormsFromRaw(rawForms, lexeme);
     }
 
     if (pos === "verb") {

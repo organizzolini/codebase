@@ -55,7 +55,7 @@ export function LexemeHeader(
       data-testid="lexeme-header"
     >
       <CardHeader>
-        <CardTitle className="text-2xl">{title}</CardTitle>
+        <CardTitle>{title}</CardTitle>
         <CardDescription>{details.join(", ")}</CardDescription>
       </CardHeader>
     </div>

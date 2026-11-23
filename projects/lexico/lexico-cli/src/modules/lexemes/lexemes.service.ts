@@ -205,7 +205,14 @@ export class LexemesService {
   ): Promise<void> {
     if (!lexeme.inflection) return;
     if (savedLexeme.inflection) {
-      lexeme.inflection.id = savedLexeme.inflection.id;
+      // A page that changes the kind of inflection cannot take over its id: that row is another subclass.
+      if (
+        savedLexeme.inflection.constructor === lexeme.inflection.constructor
+      ) {
+        lexeme.inflection.id = savedLexeme.inflection.id;
+      } else {
+        await savedLexeme.inflection.remove();
+      }
     }
     lexeme.inflection.lexeme = savedLexeme;
     await lexeme.inflection.save();
@@ -302,12 +309,19 @@ export class LexemesService {
 
   /**
    * Parses one Wiktionary page into lexemes by iterating `p:has(strong.Latn.headword)`
-   * sections and enriching each accepted part of speech.
+   * sections and enriching each accepted part of speech, numbering them from the offset.
    */
-  async parseLexemes(wiktionaryPage: WiktionaryPage): Promise<Lexeme[]> {
+  async parseLexemes(
+    wiktionaryPage: WiktionaryPage,
+    disambiguatorOffset = 0,
+  ): Promise<Lexeme[]> {
     if (!wiktionaryPage.html) return [];
 
     const $ = cheerio.load(wiktionaryPage.html);
+    // Wiktionary wraps the headword, gender and principal parts in a span, which hid them from every parser below.
+    $("span.headword-line").each((_, line) => {
+      $(line).replaceWith($(line).contents());
+    });
     const word = this.normalize(wiktionaryPage.word);
     const lexemes: Lexeme[] = [];
 
@@ -321,7 +335,12 @@ export class LexemesService {
     }
 
     for (const [index, elt] of lemmaElements.entries()) {
-      const lexeme = await this.parseLexemeFromElement({ $, elt, index, word });
+      const lexeme = await this.parseLexemeFromElement({
+        $,
+        elt,
+        index: index + disambiguatorOffset,
+        word,
+      });
       if (lexeme) lexemes.push(lexeme);
     }
 

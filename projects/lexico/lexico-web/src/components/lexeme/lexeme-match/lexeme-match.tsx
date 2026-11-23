@@ -1,4 +1,5 @@
 import {
+  Button,
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -52,22 +53,32 @@ export function LexemeMatch(
       data-testid="lexeme-match"
     >
       <TooltipProvider>
-        <div className="flex items-center gap-1 text-muted-foreground">
+        <div className="flex items-center gap-1">
           <Tooltip>
             <TooltipTrigger
               aria-label={LANGUAGES[language].label}
-              className="rounded-md p-1 hover:bg-muted hover:text-foreground"
+              render={
+                <Button
+                  size="icon-sm"
+                  variant="ghost"
+                />
+              }
             >
-              <LanguageIcon className="size-4" />
+              <LanguageIcon />
             </TooltipTrigger>
             <TooltipContent>{LANGUAGES[language].hint}</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger
               aria-label={TYPES[type].label}
-              className="rounded-md p-1 hover:bg-muted hover:text-foreground"
+              render={
+                <Button
+                  size="icon-sm"
+                  variant="ghost"
+                />
+              }
             >
-              <TypeIcon className="size-4" />
+              <TypeIcon />
             </TooltipTrigger>
             <TooltipContent>
               {TYPES[type].label}: {hint}

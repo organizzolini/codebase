@@ -16,6 +16,8 @@ import {
   selectChoice,
 } from "../../lexico-ingestion.utilities";
 
+import { CAPITALIZED_TWIN_DISAMBIGUATOR_OFFSET } from "./dictionary.constants";
+
 import type {
   CommandOptionChoice,
   CommandOptionValue,
@@ -77,15 +79,21 @@ export class DictionaryCommand extends CommandRunner {
     );
   }
 
-  /**
-   * Resolves derived values needed by dictionary ingestion.
-   */
+  /** A capitalized page shares its lemma with its lowercase twin, so its lexemes number above the twin's. */
+  private getDisambiguatorOffset(word: string): number {
+    const lowercase = this.normalize(word);
+    const hasTwin =
+      word !== lowercase &&
+      fs.existsSync(path.join(this.dataDirectory, `${lowercase}.json`));
+    return hasTwin ? CAPITALIZED_TWIN_DISAMBIGUATOR_OFFSET : 0;
+  }
+
+  /** Resolves derived values needed by dictionary ingestion. */
   private getLemmaChoices(): CommandOptionChoice[] {
-    const dataDirectory = path.join(process.cwd(), "./data/wiktionary");
-    if (!fs.existsSync(dataDirectory)) return [];
+    if (!fs.existsSync(this.dataDirectory)) return [];
 
     return fs
-      .readdirSync(dataDirectory)
+      .readdirSync(this.dataDirectory)
       .filter((file) => file.endsWith(".json"))
       .map((file) => {
         const title = file.replace(".json", "");
@@ -93,9 +101,7 @@ export class DictionaryCommand extends CommandRunner {
       });
   }
 
-  /**
-   * Resolves derived values needed by dictionary ingestion.
-   */
+  /** Resolves derived values needed by dictionary ingestion. */
   private getLemmaFileRange(
     files: string[],
     startLemma?: string,
@@ -116,9 +122,7 @@ export class DictionaryCommand extends CommandRunner {
     return files.slice(start, end + 1);
   }
 
-  /**
-   * Resolves derived values needed by dictionary ingestion.
-   */
+  /** Resolves derived values needed by dictionary ingestion. */
   private getPageForLexeme(
     word: string,
     wiktionaryPage?: WiktionaryPage,
@@ -132,9 +136,7 @@ export class DictionaryCommand extends CommandRunner {
     return page;
   }
 
-  /**
-   * Resolves derived values needed by dictionary ingestion.
-   */
+  /** Resolves derived values needed by dictionary ingestion. */
   private getWiktionaryFilePathForWord(word: string): null | string {
     const fileWord = word.normalize("NFD").replaceAll(/[\u0300-\u036F]/gu, "");
 
@@ -436,7 +438,10 @@ export class DictionaryCommand extends CommandRunner {
         word,
         ...progressData,
       });
-      const parsedLexemes = await this.lexemesService.parseLexemes(page);
+      const parsedLexemes = await this.lexemesService.parseLexemes(
+        page,
+        this.getDisambiguatorOffset(word),
+      );
       for (const lexeme of parsedLexemes) {
         const saved = await this.lexemesService.saveParsedLexeme(lexeme);
         if (!saved) continue;

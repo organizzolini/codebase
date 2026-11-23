@@ -63,7 +63,11 @@ export class PartOfSpeechFormsService {
   }): string[] {
     const { index, index_, lexeme, table_ } = args;
     const identifiers = this.collectTableIdentifiers(index, index_, table_);
+    const isGendered =
+      ["determiner", "pronoun"].includes(lexeme.partOfSpeech) &&
+      [...identifiers].some((id) => this.isGender(id));
     if (
+      isGendered ||
       ["adjective", "numeral", "participle", "suffix"].includes(
         lexeme.partOfSpeech,
       )
@@ -170,14 +174,17 @@ export class PartOfSpeechFormsService {
     $: cheerio.CheerioAPI,
     elt: AnyNode,
   ): null | string[][] {
-    const tableHtml = $(elt)
+    const divisions = $(elt)
       .nextAll("div")
       .filter(
         (_: number, element: AnyNode) => $(element).find("table").length > 0,
-      )
-      .first()
-      .find("table")
-      .first();
+      );
+    // A picture's label table can come before the inflection table, so prefer the latter.
+    const inflectionTable = divisions.find("table.inflection-table").first();
+    const tableHtml =
+      inflectionTable.length > 0
+        ? inflectionTable
+        : divisions.first().find("table").first();
     if (tableHtml.length <= 0) return null;
 
     const $table = cheerio.load($.html(tableHtml));

@@ -11,6 +11,8 @@ import {
   UninflectedInflection,
 } from "@codebase/lexico-db";
 
+import { MANUAL_FORM_WORDS } from "./manual.constants";
+
 /**
  * Builds adjectival forms for manual lexeme ingestion.
  */
@@ -24,13 +26,9 @@ export function buildAdjectivalForms(
           return [];
         }
 
-        return [
-          createAdjectivalForm({
-            caseName,
-            gender,
-            number,
-          }),
-        ];
+        const form = createAdjectivalForm({ caseName, gender, number });
+        MANUAL_FORM_WORDS.set(form, values);
+        return [form];
       });
     });
   });

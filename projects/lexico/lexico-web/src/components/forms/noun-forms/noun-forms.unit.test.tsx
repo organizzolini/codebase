@@ -1,7 +1,6 @@
 /* cspell:words rosarum */
 
 import { render, screen } from "@testing-library/react";
-import lodash from "lodash";
 import { describe, expect, it } from "vitest";
 
 import { NounForms } from "./noun-forms";
@@ -26,7 +25,14 @@ describe(NounForms, () => {
   });
 
   it("lists the declension by case and number, in grammar-book order", () => {
-    render(<NounForms rows={lodash.reverse([...rows])} />);
+    render(
+      <NounForms
+        rows={rows.reduceRight<(typeof rows)[number][]>(
+          (all, row) => [...all, row],
+          [],
+        )}
+      />,
+    );
 
     expect(screen.getByText("rosarum")).toBeDefined();
     expect(

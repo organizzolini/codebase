@@ -1,0 +1,10 @@
+query WordCandidates($tokenId: ID!) {
+  wordCandidates(tokenId: $tokenId) {
+    definition
+    description
+    lemma
+    lexemeId
+    partOfSpeech
+    translations
+  }
+}

@@ -156,6 +156,32 @@ describe(LiteratureLibraryScanService, () => {
       );
     });
 
+    it("qualifies the slug of a work present in two providers so each collection keeps its own Text", async () => {
+      readdirMock
+        .mockResolvedValueOnce([
+          createDirectoryEntry("perseus"),
+          createDirectoryEntry("latin-library"),
+        ])
+        .mockResolvedValueOnce([createDirectoryEntry("cicero")])
+        .mockResolvedValueOnce([
+          createFileEntry("aeneid.md"),
+          createFileEntry("unique.md"),
+        ])
+        .mockResolvedValueOnce([createDirectoryEntry("cicero")])
+        .mockResolvedValueOnce([createFileEntry("aeneid.md")]);
+
+      const entries = await service.scanLibrary();
+
+      const slugs = entries.map((entry) => [entry.provider, entry.textSlug]);
+
+      expect(slugs).toStrictEqual([
+        ["perseus", "aeneid--perseus"],
+        ["perseus", "unique"],
+        ["latin-library", "aeneid"],
+      ]);
+      expect(entries[0]?.title).toBe("Aeneid");
+    });
+
     it("ignores non-directory provider and author entries", async () => {
       readdirMock
         .mockResolvedValueOnce([

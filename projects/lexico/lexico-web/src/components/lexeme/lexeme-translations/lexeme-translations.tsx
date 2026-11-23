@@ -1,15 +1,13 @@
-import { ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
-import {
-  cn,
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@codebase/presentation";
+import { cn } from "@codebase/presentation";
 
-import { VISIBLE_TRANSLATION_COUNT } from "./lexeme-translations.constants";
+import { LexemeSection } from "../lexeme-section/lexeme-section";
 
+import { NEXT_STATE, PREVIEW_CLASS } from "./lexeme-translations.constants";
+import { countClipped } from "./lexeme-translations.utilities";
+
+import type { SectionState } from "../lexeme-section/lexeme-section.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -25,8 +23,8 @@ export interface LexemeTranslationsProperties {
 // 🧩 Component
 
 /**
- * A lexeme's English translations as a bulleted list under a heading. Folded,
- * it shows the first two; opened, all of them.
+ * A lexeme's English translations under a divider that cycles through three
+ * states (preview, whole list, closed), or two when it fits the preview.
  */
 export function LexemeTranslations(
   properties: Readonly<LexemeTranslationsProperties>,
@@ -34,15 +32,42 @@ export function LexemeTranslations(
   const { className, translations } = properties;
 
   // 🪝 Hooks
-  const [isOpen, setIsOpen] = useState(false);
+  const [state, setState] = useState<SectionState>("half");
+  const [clipped, setClipped] = useState(0);
 
   // 🏗 Setup
-  const shown = translations.slice(0, VISIBLE_TRANSLATION_COUNT);
-  const folded = translations.slice(VISIBLE_TRANSLATION_COUNT);
+  const fits = clipped === 0;
+  const shown = fits && state === "half" ? "open" : state;
+  const hint =
+    shown === "half" && clipped > 0 ? `+${String(clipped)} more` : undefined;
 
   // 💪 Handlers
+  /** Skips the preview when the whole list already fits in it. */
+  const toggle = (): void => {
+    setState(fits ? (shown === "open" ? "closed" : "open") : NEXT_STATE[state]);
+  };
 
   // ♻️ Lifecycle
+  /**
+   * Counts what the preview hides now and whenever the list changes size.
+   */
+  const measure = useCallback((node: HTMLUListElement | null) => {
+    const observer =
+      typeof ResizeObserver === "undefined"
+        ? undefined
+        : new ResizeObserver(() => {
+            setClipped(node === null ? 0 : countClipped(node));
+          });
+
+    if (node !== null) {
+      setClipped(countClipped(node));
+      observer?.observe(node);
+    }
+
+    return () => {
+      observer?.disconnect();
+    };
+  }, []);
 
   // 🏁 Early Returns
 
@@ -52,40 +77,24 @@ export function LexemeTranslations(
       className={className}
       data-testid="lexeme-translations"
     >
-      <Collapsible
-        onOpenChange={setIsOpen}
-        open={isOpen}
+      <LexemeSection
+        hint={hint}
+        label="Translations"
+        onToggle={toggle}
+        state={shown}
       >
-        <CollapsibleTrigger
-          className="flex w-full items-center justify-between text-sm font-medium"
-          disabled={folded.length === 0}
-        >
-          Translations
-          {folded.length > 0 && (
-            <span className="flex items-center gap-1 text-xs font-normal text-muted-foreground">
-              {!isOpen && `+${String(folded.length)} more`}
-              <ChevronDown
-                className={cn(
-                  "size-4 transition-transform",
-                  isOpen && "rotate-180",
-                )}
-              />
-            </span>
+        <ul
+          ref={measure}
+          className={cn(
+            "list-disc pl-5 text-sm leading-5",
+            shown === "half" && PREVIEW_CLASS,
           )}
-        </CollapsibleTrigger>
-        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
-          {shown.map((translation) => (
+        >
+          {translations.map((translation) => (
             <li key={translation}>{translation}</li>
           ))}
         </ul>
-        <CollapsibleContent>
-          <ul className="mt-1 list-disc space-y-1 pl-5 text-sm">
-            {folded.map((translation) => (
-              <li key={translation}>{translation}</li>
-            ))}
-          </ul>
-        </CollapsibleContent>
-      </Collapsible>
+      </LexemeSection>
     </div>
   );
 }

@@ -1,6 +1,9 @@
 import { useState } from "react";
 
+import { Frame, FramePanel } from "@codebase/presentation";
+
 import { FormsTable } from "../forms-table/forms-table";
+import { FLUSH_PANEL, FORMS_FRAME } from "../forms-table/forms-table.constants";
 
 import { AxisTabs } from "./axis-tabs";
 import { NonFiniteForms } from "./non-finite-forms";
@@ -59,32 +62,44 @@ export function VerbForms(
       className={className}
       data-testid="verb-forms"
     >
-      <div>
-        <AxisTabs
-          onChange={(next) => {
-            setSelection({ ...selection, voice: next });
-          }}
-          options={voices}
-          value={voice}
-        />
-        {voice === NON_FINITE_TAB ? (
-          <NonFiniteForms rows={rows} />
-        ) : (
-          <>
-            <AxisTabs
-              onChange={(next) => {
-                setSelection({ ...selection, mood: next });
-              }}
-              options={moods}
-              value={mood}
-            />
-            <AxisTabs
-              onChange={(next) => {
-                setSelection({ ...selection, tense: next });
-              }}
-              options={tenses}
-              value={tense}
-            />
+      <Frame
+        className={FORMS_FRAME}
+        spacing="xs"
+        variant="ghost"
+        dense
+        stacked
+      >
+        <FramePanel className={FLUSH_PANEL}>
+          <AxisTabs
+            onChange={(next) => {
+              setSelection({ ...selection, voice: next });
+            }}
+            options={voices}
+            value={voice}
+          />
+          {voice !== NON_FINITE_TAB && (
+            <>
+              <AxisTabs
+                onChange={(next) => {
+                  setSelection({ ...selection, mood: next });
+                }}
+                options={moods}
+                value={mood}
+              />
+              <AxisTabs
+                onChange={(next) => {
+                  setSelection({ ...selection, tense: next });
+                }}
+                options={tenses}
+                value={tense}
+              />
+            </>
+          )}
+        </FramePanel>
+        <FramePanel className={FLUSH_PANEL}>
+          {voice === NON_FINITE_TAB ? (
+            <NonFiniteForms rows={rows} />
+          ) : (
             <FormsTable
               columns={NUMBER_AXES}
               lookup={(person, number) =>
@@ -96,9 +111,9 @@ export function VerbForms(
               }
               rows={PERSON_AXES}
             />
-          </>
-        )}
-      </div>
+          )}
+        </FramePanel>
+      </Frame>
     </div>
   );
 }

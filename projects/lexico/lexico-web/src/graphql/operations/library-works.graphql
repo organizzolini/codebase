@@ -1,0 +1,23 @@
+query LibraryWorks(
+  $authorId: ID!
+  $search: String
+  $filters: LibraryFilters
+  $sort: [LibrarySort!]
+  $page: Int
+  $pageSize: Int
+) {
+  libraryWorks(
+    authorId: $authorId
+    search: $search
+    filters: $filters
+    sort: $sort
+    page: $page
+    pageSize: $pageSize
+  ) {
+    totalCount
+    pageCount
+    texts {
+      ...LibraryTextRow
+    }
+  }
+}

@@ -1,7 +1,13 @@
 import { Injectable } from "@nestjs/common";
 
 import { HEADING, TABLE_HEADER } from "./render.constants";
-import { formatDelta, formatValue, hasChanged } from "./render.utilities";
+import {
+  formatDelta,
+  formatValue,
+  hasChanged,
+  lacksBaseline,
+  listProjects,
+} from "./render.utilities";
 
 import type { MetricRow, ProjectFailure } from "../changes/changes.types";
 import type { RenderSectionArguments } from "./render.types";
@@ -55,6 +61,16 @@ export class RenderService {
     return [...projects].toSorted();
   }
 
+  /** The projects every one of whose rows has no value on `main`, in sorted order. */
+  private readProjectsLackingBaseline(args: RenderSectionArguments): string[] {
+    const rowsByProject = this.groupByProject(args.rows, (row) => row.project);
+
+    return [...rowsByProject]
+      .filter(([, rows]) => rows.every((row) => lacksBaseline(row)))
+      .map(([project]) => project)
+      .toSorted();
+  }
+
   /**
    * Picks the icon for one row: removed outranks empty, which outranks a breach, which outranks plain growth.
    */
@@ -66,10 +82,29 @@ export class RenderService {
     return row.value > row.baseValue ? "📈" : "📉";
   }
 
-  /** Names the run the baseline came from, when there was one to compare against. */
-  private renderComparison(baselineUrl: string | undefined): string[] {
-    if (baselineUrl === undefined) return [];
-    return [`_Compared against [\`main\`](${baselineUrl})._`, ""];
+  /**
+   * Names the run the baseline came from, or says plainly that there was none. Projects with no report on `main` yet are listed, not tabled: their every metric would read as new.
+   */
+  private renderComparison(args: RenderSectionArguments): string[] {
+    if (args.baselineUrl === undefined) {
+      return [
+        "_No `main` baseline was found, so nothing here is compared with `main`._",
+        "",
+      ];
+    }
+
+    const lacking = this.readProjectsLackingBaseline(args);
+
+    return [
+      `_Compared against [\`main\`](${args.baselineUrl})._`,
+      "",
+      ...(lacking.length === 0
+        ? []
+        : [
+            `_No \`main\` report yet for ${listProjects(lacking)}, so they are not compared._`,
+            "",
+          ]),
+    ];
   }
 
   /**
@@ -97,7 +132,11 @@ export class RenderService {
     rows: readonly MetricRow[],
     failures: readonly ProjectFailure[],
   ): string[] {
-    const changed = rows.filter((row) => hasChanged(row));
+    // A project with no report on `main` has nothing to compare, so its rows are listed once above, not tabled.
+    const absent = rows.every((row) => lacksBaseline(row));
+    const changed = rows.filter(
+      (row) => hasChanged(row) && !(absent && lacksBaseline(row)),
+    );
     if (changed.length === 0 && failures.length === 0) return [];
 
     const open = this.readIsOpen(changed, failures) ? " open" : "";
@@ -155,7 +194,7 @@ export class RenderService {
       ),
     );
 
-    const comparison = this.renderComparison(args.baselineUrl);
+    const comparison = this.renderComparison(args);
     const body =
       blocks.length === 0
         ? [

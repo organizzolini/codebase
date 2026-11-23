@@ -1,9 +1,7 @@
-import lodash from "lodash";
 import { Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import {
-  Card,
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
@@ -12,6 +10,7 @@ import {
 } from "@codebase/presentation";
 
 import { SEARCH_DEBOUNCE_MILLISECONDS } from "./search-bar.constants";
+import { debounce } from "./search-bar.utilities";
 
 import type { ReactNode, SyntheticEvent } from "react";
 
@@ -48,7 +47,7 @@ export function SearchBar(
 
   // 🏗 Setup
   const debouncedSearch = useMemo(
-    () => lodash.debounce(onSearch, SEARCH_DEBOUNCE_MILLISECONDS),
+    () => debounce(onSearch, SEARCH_DEBOUNCE_MILLISECONDS),
     [onSearch],
   );
 
@@ -83,33 +82,27 @@ export function SearchBar(
         onSubmit={handleSubmit}
         role="search"
       >
-        <Card className="overflow-visible p-1 shadow-lg">
-          <InputGroup className="h-12 bg-card shadow-none ring-0 dark:bg-card">
-            <InputGroupInput
-              aria-label="Search Lexico"
-              className="text-lg"
-              onChange={(event) => {
-                setQuery(event.currentTarget.value);
-                debouncedSearch(event.currentTarget.value);
-              }}
-              placeholder="Search Lexico"
-              type="search"
-              value={query}
-            />
-            <InputGroupAddon
-              align="inline-end"
-              className="has-[>button]:mr-0"
+        <InputGroup>
+          <InputGroupInput
+            aria-label="Search Lexico"
+            onChange={(event) => {
+              setQuery(event.currentTarget.value);
+              debouncedSearch(event.currentTarget.value);
+            }}
+            placeholder="Search Lexico"
+            type="search"
+            value={query}
+          />
+          <InputGroupAddon align="inline-end">
+            <InputGroupButton
+              aria-label="Search"
+              size="icon-sm"
+              type="submit"
             >
-              <InputGroupButton
-                aria-label="Search"
-                size="icon-sm"
-                type="submit"
-              >
-                {isLoading ? <Spinner /> : <Search />}
-              </InputGroupButton>
-            </InputGroupAddon>
-          </InputGroup>
-        </Card>
+              {isLoading ? <Spinner /> : <Search />}
+            </InputGroupButton>
+          </InputGroupAddon>
+        </InputGroup>
       </form>
     </div>
   );

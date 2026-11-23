@@ -141,6 +141,22 @@ describe(FormsBuilderService, () => {
     expect(forms[0]).toBeInstanceOf(AdjectivalForm);
   });
 
+  it.each(["pronoun", "determiner"] as const)(
+    "should build adjectival forms for a gendered %s table",
+    (partOfSpeech) => {
+      expect.hasAssertions();
+
+      const forms = service.buildFormsForPartOfSpeech(
+        partOfSpeech,
+        { masculine: { nominative: { singular: ["hic"] } } },
+        new Lexeme(),
+      );
+
+      expect(forms).toHaveLength(1);
+      expect(forms[0]).toBeInstanceOf(AdjectivalForm);
+    },
+  );
+
   it("should ignore invalid adjective gender maps", () => {
     expect.hasAssertions();
 
@@ -384,6 +400,62 @@ describe(FormsBuilderService, () => {
 
     expect(forms).toStrictEqual([]);
     expect(buildFinitePersonFormsSpy).not.toHaveBeenCalled();
+  });
+
+  it("should build infinitive, gerund and supine forms from a parsed verb table", () => {
+    expect.hasAssertions();
+
+    const forms = service.buildFormsForPartOfSpeech(
+      "verb",
+      {
+        nonFinite: {
+          perfect: {
+            infinitive: { active: ["solvisse"], passive: ["solutum esse"] },
+            participle: { passive: ["solutus"] },
+          },
+          present: { infinitive: { active: ["solvere"] } },
+        },
+        verbalNoun: {
+          gerund: { accusative: ["solvendum"] },
+          supine: { ablative: ["solutu"] },
+        },
+      },
+      new Lexeme(),
+    );
+
+    expect(forms.map((form) => form.constructor.name)).toStrictEqual([
+      "InfinitiveForm",
+      "InfinitiveForm",
+      "InfinitiveForm",
+      "GerundForm",
+      "SupineForm",
+    ]);
+    expect(forms[0]).toMatchObject({ tense: "perfect", voice: "active" });
+  });
+
+  it("should skip invalid tenses, voices, words and non-record entries in a parsed verb table", () => {
+    expect.hasAssertions();
+
+    const forms = service.buildFormsForPartOfSpeech(
+      "verb",
+      {
+        nonFinite: {
+          futurePerfect: { infinitive: { passive: ["solutum fore"] } },
+          perfect: "not-a-record",
+          present: {
+            infinitive: {
+              active: [],
+              invalidVoice: ["solvere"],
+              passive: "solvi",
+            },
+            participle: { active: ["solvens"] },
+          },
+        },
+      },
+      new Lexeme(),
+    );
+
+    expect(forms).toStrictEqual([]);
   });
 
   it("should build verb noun forms when gerund and supine maps are present", () => {

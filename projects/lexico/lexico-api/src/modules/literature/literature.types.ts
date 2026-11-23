@@ -1,12 +1,16 @@
 // 🏷️ Types
 
 import type { PaginationArguments } from "../search/modules/search-arguments/pagination-arguments.entities";
-import type { Repository } from "@codebase/lexico-db";
+import type { Repository, Text } from "@codebase/lexico-db";
 
-/**
- * The `Author` column the API does not expose: its unstructured ingestion
- * metadata.
- */
+/** A text's ancestor link: the text it climbs from, the ancestor, and its distance. */
+export interface AncestorLink {
+  readonly ancestorId: string;
+  readonly depth: number;
+  readonly origin: string;
+}
+
+/** The `Author` columns the API does not expose: its unstructured ingestion metadata. */
 export type AuthorDatabaseOnlyField = "metadata";
 
 /** The `Author` relation resolvers expose: texts, in title order. */
@@ -139,16 +143,20 @@ export type QueryBuilder<Entity extends IdentifiedEntity> = ReturnType<
   Repository<Entity>["createQueryBuilder"]
 >;
 
+/** A text's previous and next sibling ids, null at either end. */
+export interface SiblingNeighbors {
+  readonly id: string;
+  readonly nextId: null | string;
+  readonly previousId: null | string;
+}
+
 /** A SQL condition and the parameters it binds. */
 export interface SqlCondition {
   readonly parameters: Record<string, unknown>;
   readonly sql: string;
 }
 
-/**
- * The `Text` column the API does not expose: its unstructured ingestion
- * metadata.
- */
+/** The `Text` columns the API does not expose: its unstructured ingestion metadata. */
 export type TextDatabaseOnlyField = "metadata";
 
 /** The `Text` relations the API exposes, each as its own GraphQL type. */
@@ -156,6 +164,12 @@ export type TextRelationField = "author" | "parentText";
 
 /** The `Text` relations resolvers serve: child texts and lines. */
 export type TextResolvedField = "childTexts" | "lines";
+
+/** A text's previous and next siblings under its parent, null at either end. */
+export interface TextSiblings {
+  readonly next: null | Text;
+  readonly previous: null | Text;
+}
 
 /** The `Token` relations the API exposes, each as its own GraphQL type. */
 export type TokenRelationField = "author" | "line" | "text" | "word";

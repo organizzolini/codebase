@@ -1,3 +1,9 @@
+import { z } from "zod";
+
+import { authorEra, textCollections } from "@codebase/lexico-db";
+
+import type { AuthorEra, TextCollection } from "@codebase/lexico-db";
+
 // ♟️ Constants
 
 export const DEFAULT_TEXT_CHUNK_SIZE = 5;
@@ -73,4 +79,128 @@ export const TOKEN_SEGMENT_PATTERN = /[\p{L}]+|[^\p{L}\s]+/gu;
 
 export const WORD_TOKEN_PATTERN = /^[\p{L}]+$/u;
 
+export const DIPHTHONG_PATTERN = /ae|oe/g;
+
 export const COMBINING_MARKS_PATTERN = /[\u0300-\u036F]/gu;
+
+/** Name of the EDCS library provider. */
+export const EDCS_PROVIDER = "epigraphik-datenbank-clauss-slaby";
+
+const knownCollections: readonly unknown[] = textCollections;
+
+/** Source fields a provider writes into a text's frontmatter. */
+export const textFrontmatterSchema = z.object({
+  collection: z
+    .custom<TextCollection>((value) => knownCollections.includes(value))
+    .optional(),
+  edition: z.string().optional(),
+  editors: z.string().optional(),
+  end_year: z.number().int().optional(),
+  find_spot: z.string().optional(),
+  inscription_type: z.string().optional(),
+  material: z.string().optional(),
+  print_year: z.number().int().optional(),
+  province: z.string().optional(),
+  publisher: z.string().optional(),
+  start_year: z.number().int().optional(),
+  work_identifier: z.string().optional(),
+});
+
+/** Dates and full name an author's frontmatter carries. */
+export const authorMetadataSchema = z.object({
+  birth_year: z.number().int().optional(),
+  death_year: z.number().int().optional(),
+  full_name: z.string().optional(),
+});
+
+/** Where each era starts, by the midpoint of an author's years (negative for BCE). */
+export const ERA_BOUNDARIES: readonly { era: AuthorEra; from: number }[] = [
+  { era: authorEra.archaic, from: Number.NEGATIVE_INFINITY },
+  { era: authorEra.classical, from: -100 },
+  { era: authorEra.imperial, from: 14 },
+  { era: authorEra.late, from: 200 },
+  { era: authorEra.medieval, from: 600 },
+  { era: authorEra.neoLatin, from: 1300 },
+];
+
+export const WIKIDATA_QUERY_URL = "https://query.wikidata.org/sparql";
+
+/** A generic client identifier; Wikidata asks automated clients to send one. */
+export const WIKIDATA_USER_AGENT = "lexico-ingestion";
+
+export const WIKIDATA_REQUEST_DELAY_MILLISECONDS = 1000;
+
+export const WIKIDATA_TIMEOUT_MILLISECONDS = 15_000;
+
+/** Total tries a lookup makes while Wikidata answers 429. */
+export const WIKIDATA_MAX_ATTEMPTS = 4;
+
+/** Longest wait between tries, however long Wikidata asks. */
+export const WIKIDATA_MAXIMUM_BACKOFF_MILLISECONDS = 30_000;
+
+/** The catalogue folder in a source URL, such as `phi0959` or `stoa0054`. */
+export const CATALOGUE_IDENTIFIER_PATTERN =
+  /\/data\/((?:phi|stoa|tlg)\d+[a-z]?)\//;
+
+const wikidataValueSchema = z.object({ value: z.string() }).optional();
+
+/** One row of a Wikidata response; each field is absent when the match lacks it. */
+export const wikidataResponseSchema = z.object({
+  results: z.object({
+    bindings: z.array(
+      z.object({
+        birth: wikidataValueSchema,
+        birthPrecision: wikidataValueSchema,
+        death: wikidataValueSchema,
+        deathPrecision: wikidataValueSchema,
+        floruit: wikidataValueSchema,
+        floruitPrecision: wikidataValueSchema,
+      }),
+    ),
+  }),
+});
+
+/**
+ * Years for authors Wikidata cannot match: it indexes only PHI Latin author
+ * numbers, so authors catalogued under Stoa numbers need these. Keyed by author
+ * slug; BCE negative. Authors not listed stay undated and are reported.
+ */
+export const FALLBACK_AUTHOR_YEARS: Record<string, [number, number]> = {
+  adamnan: [624, 704],
+  ambrose: [339, 397],
+  "ammianus-marcellinus": [330, 395],
+  augustine: [354, 430],
+  "augustine-saint": [354, 430],
+  "ausonius-decimus-magnus": [310, 394],
+  "bede-the-venerable": [673, 735],
+  boethius: [480, 524],
+  "cato-marcus-porcius": [-234, -149],
+  claudian: [370, 404],
+  "claudianus-mamertus": [425, 474],
+  "cyprian-saint": [210, 258],
+  "eucherius-of-lyon": [380, 449],
+  eugippius: [460, 535],
+  "hilary-saint-bishop-of-poitiers": [310, 367],
+  "jerome-saint": [347, 420],
+  "john-cassian": [360, 435],
+  "orosius-paulus": [375, 420],
+  "paulinus-of-nola": [354, 431],
+  "paulinus-of-pella": [376, 459],
+  priscillian: [340, 385],
+  prudentius: [348, 413],
+  "remigius-of-auxerre": [841, 908],
+  "rufinus-of-aquileia": [344, 411],
+  "salvian-of-marseilles": [400, 480],
+  "severus-sulpicius": [363, 425],
+  "sidonius-apollinaris": [430, 489],
+  tertullian: [155, 220],
+};
+
+/** Enclitics that Latin writes onto the end of a word, as folded spellings. */
+export const ENCLITIC_SUFFIXES = ["que", "ue", "ne"] as const;
+
+/** The fewest letters a word may keep once an enclitic is taken off. */
+export const ENCLITIC_MINIMUM_BASE_LENGTH = 2;
+
+/** How many word types a relink writes at a time. */
+export const RELINK_CHUNK_SIZE = 2000;

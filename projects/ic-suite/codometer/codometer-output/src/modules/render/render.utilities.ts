@@ -39,3 +39,25 @@ export function hasChanged(row: MetricRow): boolean {
   if (row.baseValue === undefined) return row.value !== 0 || row.empty;
   return row.value !== row.baseValue;
 }
+
+/**
+ * Whether a row has nothing to compare with: no value on `main`, and nothing else that makes it worth showing. A breach, an empty target or a removal still shows.
+ */
+export function lacksBaseline(row: MetricRow): boolean {
+  return (
+    row.baseValue === undefined &&
+    row.breach === undefined &&
+    !row.empty &&
+    !row.removed
+  );
+}
+
+/** Names up to ten projects, then how many more there are. */
+export function listProjects(projects: readonly string[]): string {
+  const shown = projects.slice(0, 10).map((project) => `\`${project}\``);
+  const more = projects.length - shown.length;
+
+  return more > 0
+    ? `${shown.join(", ")} and ${more} more`
+    : `${projects.length} ${projects.length === 1 ? "project" : "projects"}: ${shown.join(", ")}`;
+}

@@ -23,7 +23,7 @@
     },
     "build-projects": {},
     "codegen": {
-      "description": "Generate typed GraphQL operations, runtime schemas, and test mocks",
+      "description": "Generate typed GraphQL operations and test mocks",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/configuration/codegen.ts",
@@ -36,8 +36,7 @@
       },
       "outputs": [
         "{projectRoot}/src/graphql/generated/mocks.ts",
-        "{projectRoot}/src/graphql/generated/operations.ts",
-        "{projectRoot}/src/graphql/generated/validation.ts"
+        "{projectRoot}/src/graphql/generated/operations.ts"
       ]
     },
     "codegen-watch": {

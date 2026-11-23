@@ -4,6 +4,7 @@ import type {
   ManualDeletionLexeme,
   ManualPraenomenAbbreviation,
 } from "./manual.types";
+import type { Form } from "@codebase/lexico-db";
 
 export const MANUAL_LEXEMES_TO_DELETE: readonly ManualDeletionLexeme[] = [
   { disambiguator: 0, lemma: "qui" },
@@ -57,3 +58,6 @@ export const PRAENOMEN_ABBREVIATIONS: Readonly<
   vol: { feminine: "volusa", masculine: "volesus" },
   vop: { feminine: "vopisca", masculine: "vopiscus" },
 };
+
+/** The words each manual form is written as, kept off the form as the forms service keeps parsed ones. */
+export const MANUAL_FORM_WORDS = new WeakMap<Form, string[]>();

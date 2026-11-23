@@ -5,6 +5,7 @@ import {
   type Form,
   type FormNonFiniteTense,
   type formPersonValues,
+  InfinitiveForm,
   type Lexeme,
   ParticipleForm,
 } from "@codebase/lexico-db";
@@ -140,6 +141,32 @@ export class FormsBuilderVerbService {
       );
     }
 
+    return forms;
+  }
+
+  /** Builds infinitives from a table read tense first, as Wiktionary lays out the non-finite rows. */
+  buildInfinitiveFormsByTense(
+    nonFiniteData: Record<string, unknown>,
+    lexeme: Lexeme,
+  ): Form[] {
+    const forms: Form[] = [];
+    for (const [tense, tenseData] of Object.entries(nonFiniteData)) {
+      if (!this.guards.isFormNonFiniteTense(tense)) continue;
+      const infinitive = this.guards.isRecord(tenseData)
+        ? tenseData["infinitive"]
+        : undefined;
+      if (!this.guards.isRecord(infinitive)) continue;
+      for (const [voice, words] of Object.entries(infinitive)) {
+        if (!this.guards.isFormVoice(voice)) continue;
+        if (!this.guards.isStringArray(words) || words.length === 0) continue;
+        const form = new InfinitiveForm();
+        form.lexeme = lexeme;
+        form.tense = tense;
+        form.voice = voice;
+        this.transientWordsService.setTransientWords(form, words);
+        forms.push(form);
+      }
+    }
     return forms;
   }
 
