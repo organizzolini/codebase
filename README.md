@@ -237,8 +237,10 @@ Symbols and logic shared across projects
 **🐘 [persistence](projects/common/persistence)** - Shared Postgres package and command line: the `<PROJECT>_POSTGRES_*` environment fragment, TypeORM options and module, base entities, a Testcontainers harness, the `migration` target, and `export` and `import` for moving tables between databases\
 **✉️ [interface](projects/common/interface)** - Shared GraphQL package: the Relay connection, edge, and page info types, offset cursor and relation-mapping helpers, the entity-to-GraphQL-object type contract, the client code generation configuration, and test helpers\
 **🎨 [presentation](projects/common/presentation)** - Shared React component library using shadcn/ui and Base UI primitives\
-**👀 [observability](projects/common/observability)** - Shared pino-backed NestJS `LoggerService` and `LoggerModule`
+**👀 [observability](projects/common/observability)** - Shared pino-backed NestJS `LoggerService` and `LoggerModule`\
 **🧪 [testing](projects/common/testing)** - Shared test code: the Vitest setup, temporary directories, capture and environment helpers, and the Nest, GraphQL, Postgres, and React adapters
+
+### 🗂️ Codebase
 
 **🛠️ [configuration](configuration)** - The workspace's tool configuration, git hooks, and the Nx targets that lint, format, scan, and measure the repository's own files\
 **🧭 [compliance](compliance)** - NestJS CLI for Continuous Compliance checks of GitHub issues, pull requests, and repository governance\
@@ -250,7 +252,9 @@ Symbols and logic shared across projects
 **↔️ [synchronization](synchronization)** - NestJS CLI that regenerates the workspace's derived configuration and documentation, and fails CI when they drift\
 **✅ [validation](validation)** - NestJS CLI for the repository's one-sided checks, the ones with a check and no write, such as the pull request metadata gate
 
-**🧑‍💻 [JimmyPaolini](projects/JimmyPaolini)** - GitHub profile site
+### 🧑 Personal
+
+**🧑 [JimmyPaolini](projects/JimmyPaolini)** - My GitHub profile site
 
 ## 📖 Documentation
 
