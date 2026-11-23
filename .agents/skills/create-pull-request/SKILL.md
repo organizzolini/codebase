@@ -146,7 +146,7 @@ Write clear, comprehensive descriptions that help reviewers understand changes. 
 ```markdown
 ## 🌰 Summary
 
-<!-- One plain paragraph of at most 48 words, readable at a glance: what this PR does and why. Title reminder: the title must name at least one scope its commits use, so release-significance passes. -->
+<!-- One plain paragraph of at most 48 words, readable at a glance: what this PR does and why. Title reminder: the title's scope list must share at least one scope with each commit, so release-significance passes. -->
 
 ## 📝 Details
 
