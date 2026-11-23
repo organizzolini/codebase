@@ -1,7 +1,7 @@
 export {
+  DATABASE_ENTITIES as CAELUNDAS_DATABASE_ENTITIES,
   CAELUNDAS_DATABASE_MIGRATIONS,
   DATABASE_ENTITIES,
-  DATABASE_ENTITIES as CAELUNDAS_DATABASE_ENTITIES,
 } from "./modules/database/data-source.constants";
 // 📤 Exports
 export { DATABASE_PROJECT as CAELUNDAS_PROJECT } from "./modules/database/database.constants";
