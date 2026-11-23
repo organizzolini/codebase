@@ -3,6 +3,7 @@ import { DiscoveryModule } from "@nestjs/core";
 
 import { LoggerModule } from "@codebase/observability";
 
+import { PostgresqlErdModule } from "./modules/postgresql-erd/postgresql-erd.module";
 import { PostgresqlExportModule } from "./modules/postgresql-export/postgresql-export.module";
 import { PostgresqlImportModule } from "./modules/postgresql-import/postgresql-import.module";
 
@@ -16,6 +17,7 @@ import { PostgresqlImportModule } from "./modules/postgresql-import/postgresql-i
   imports: [
     DiscoveryModule,
     LoggerModule,
+    PostgresqlErdModule,
     PostgresqlExportModule,
     PostgresqlImportModule,
   ],

@@ -2,6 +2,11 @@ import { z } from "zod";
 
 // ♟️ Constants
 
+export const POSTGRESQL_ERD_OPTION_MESSAGES = {
+  entities: "--entities is required: specify one or more entity file globs",
+  output:
+    "--output-json and/or --output-markdown is required: specify at least one output path",
+} as const;
 export const POSTGRESQL_ERD_END_ANCHOR = "<!-- postgresql-erd:end -->";
 export const POSTGRESQL_ERD_START_ANCHOR = "<!-- postgresql-erd:start -->";
 export const POSTGRESQL_ERD_RELATION_SYMBOLS: Record<
@@ -96,3 +101,19 @@ export const POSTGRESQL_ERD_MODEL_SCHEMA = z.object({
 export const POSTGRESQL_ERD_RELATION_RESOLVER_SCHEMA = z.custom<
   (...arguments_: never[]) => unknown
 >((value) => typeof value === "function");
+
+/** A checked ERD output differs from its generated content. */
+export class PostgresqlErdCheckError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = PostgresqlErdCheckError.name;
+  }
+}
+
+/** Typed failures raised when ERD CLI options are unusable. */
+export class PostgresqlErdOptionsError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = PostgresqlErdOptionsError.name;
+  }
+}

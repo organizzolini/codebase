@@ -4,6 +4,22 @@ import type { z } from "zod";
 
 // 🏷️ Types
 
+/** The options accepted by the `postgresql-erd` command. */
+export interface PostgresqlErdCommandOptions {
+  check?: boolean;
+  entities?: string[];
+  outputJson?: string;
+  outputMarkdown?: string;
+}
+
+/** Validated options, with entity globs and at least one output path. */
+export interface PostgresqlErdCommandPlan {
+  check: boolean;
+  entities: string[];
+  outputJson?: string;
+  outputMarkdown?: string;
+}
+
 /** A TypeORM entity class stored by its decorators. */
 export type PostgresqlErdEntityClass = (abstract new (
   ...arguments_: never[]
@@ -22,3 +38,9 @@ export type PostgresqlErdMetadataStorage = ReturnType<
 
 /** A Zod-validated model ready to serialize as JSON. */
 export type PostgresqlErdModel = z.infer<typeof POSTGRESQL_ERD_MODEL_SCHEMA>;
+
+/** A generated output file and the format used to check its contents. */
+export interface PostgresqlErdOutputFile {
+  contents: string;
+  path: string;
+}
