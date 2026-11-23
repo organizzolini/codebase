@@ -22,7 +22,7 @@ import type {
 } from "./graph-entities.types";
 import type { NamingStrategyInterface } from "typeorm";
 
-/** The `@Dag` and `@Graph` entities among `entities`, with their kind and table, in order. */
+/** The `@DirectedAcyclicGraph` and `@Graph` entities among `entities`, with their kind and table, in order. */
 export function edgeCandidates(
   entities: readonly GraphEntity[],
   namingStrategy: NamingStrategyInterface,

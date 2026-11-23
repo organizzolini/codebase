@@ -3,30 +3,35 @@ import { describe, expect, it } from "vitest";
 import { expectLoggerContext } from "@codebase/observability/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { GraphDagService } from "../../../graph-dag/graph-dag.service";
+import { GraphEdgesService } from "../../../graph-edges/graph-edges.service";
 import { GraphEntitiesService } from "../../../graph-entities/graph-entities.service";
 import { GraphOptionsService } from "../../../graph-options/graph-options.service";
 import { RenderService } from "../../render.service";
 
-import { RenderDagDataCommand } from "./render-dag-data.command";
+import { RenderDirectedAcyclicGraphDataCommand } from "./render-directed-acyclic-graph-data.command";
 
 const MOCKS = [
-  GraphDagService,
+  GraphEdgesService,
   GraphEntitiesService,
   GraphOptionsService,
   RenderService,
 ];
 
-describe(RenderDagDataCommand, () => {
+describe(RenderDirectedAcyclicGraphDataCommand, () => {
   it("resolves with its dependencies", async () => {
-    const { instance } = await buildTestingModule(RenderDagDataCommand, {
-      mocks: MOCKS,
-    });
+    const { instance } = await buildTestingModule(
+      RenderDirectedAcyclicGraphDataCommand,
+      {
+        mocks: MOCKS,
+      },
+    );
 
-    expect(instance).toBeInstanceOf(RenderDagDataCommand);
+    expect(instance).toBeInstanceOf(RenderDirectedAcyclicGraphDataCommand);
   });
 
   it("sets logger context", async () => {
-    await expectLoggerContext(RenderDagDataCommand, { mocks: MOCKS });
+    await expectLoggerContext(RenderDirectedAcyclicGraphDataCommand, {
+      mocks: MOCKS,
+    });
   });
 });

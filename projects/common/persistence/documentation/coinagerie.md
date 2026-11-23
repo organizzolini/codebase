@@ -4,8 +4,8 @@
 
 The words this project uses, regenerated with this project's `coinagerie-check:write` Nx target.
 
+- **acyclic**: The mark of a directed acyclic graph, an edge entity marked `@DirectedAcyclicGraph()`, whose edges run from source to target and form no cycle.
 - **creatable**: The entity base layer that adds create-time columns, sitting second in the identifiable, creatable, updatable, deletable chain.
-- **dag**: An edge entity marked `@Dag()`, whose edges run from source to target and form no cycle.
 - **db**: A stray fragment for database; this package's code and docs use the full word, so the headword carries no local role.
 - **deletable**: The entity base layer that adds soft-delete support, last in the identifiable, creatable, updatable, deletable chain.
 - **errand**: A root in the render tests' sample tree, the fixture label `--page` tests draw alone.
@@ -20,7 +20,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **unreached**: A row no root's walk reaches, such as one in a cycle, which the batched loader reads by id.
 - **updatable**: The entity base layer that adds update tracking columns, third in the identifiable, creatable, updatable, deletable chain.
 - **verb**: The verb in a log message that the export log convention test expects after the subject emoji, such as exists.
-- **vertex**: A node in the cycle search of a DAG's edges, which holds its visit order and the nodes its edges reach.
-- **via**: The node a cap walk first reached another node from, kept as `GraphDagWalk.via` in `graph-dag.types.ts` and set by `walkDag` in `graph-dag-limits.utilities.ts`; roots have none. Everyday "via" means "by way of"; here it is the discovery parent, which an undirected walk uses so a node is not drawn back to where it came from.
+- **vertex**: A node in the cycle search of a directed acyclic graph's edges, which holds its visit order and the nodes its edges reach.
+- **via**: The node a cap walk first reached another node from, kept as `GraphEdgesWalk.via` in `graph-edges.types.ts` and set by `walkEdges` in `graph-edges-limits.utilities.ts`; roots have none. Everyday "via" means "by way of"; here it is the discovery parent, which an undirected walk uses so a node is not drawn back to where it came from.
 
 <!-- coinagerie:end -->

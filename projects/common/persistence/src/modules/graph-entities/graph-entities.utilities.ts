@@ -54,8 +54,8 @@ export function createGraphDataSource(
 }
 
 /** Marks a class a directed acyclic graph, whose edges run from source to target. */
-export function Dag(): ClassDecorator {
-  return recordDeclaration({ directed: true, kind: "dag" });
+export function DirectedAcyclicGraph(): ClassDecorator {
+  return recordDeclaration({ directed: true, kind: "directed-acyclic-graph" });
 }
 
 /**
@@ -88,7 +88,7 @@ export function entityTableName(
 }
 
 /**
- * The one `@Dag()` or `@Graph()` declaration `entity` carries, up the class chain.
+ * The one `@DirectedAcyclicGraph()` or `@Graph()` declaration `entity` carries, up the class chain.
  * @throws GraphEdgeError when it carries none, or both.
  */
 export function getGraphEdgeDeclaration(
@@ -171,7 +171,7 @@ export async function importEntityClasses(
   return [...entities];
 }
 
-/** The classes among `entities` that carry `@Dag()` or `@Graph()`, inherited or declared. */
+/** The classes among `entities` that carry `@DirectedAcyclicGraph()` or `@Graph()`, inherited or declared. */
 export function listGraphEdgeEntities(
   entities: readonly GraphEntity[],
 ): GraphEntity[] {

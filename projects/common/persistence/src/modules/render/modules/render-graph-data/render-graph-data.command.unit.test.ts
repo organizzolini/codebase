@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { expectLoggerContext } from "@codebase/observability/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { GraphDagService } from "../../../graph-dag/graph-dag.service";
+import { GraphEdgesService } from "../../../graph-edges/graph-edges.service";
 import { GraphEntitiesService } from "../../../graph-entities/graph-entities.service";
 import { GraphOptionsService } from "../../../graph-options/graph-options.service";
 import { RenderService } from "../../render.service";
@@ -11,7 +11,7 @@ import { RenderService } from "../../render.service";
 import { RenderGraphDataCommand } from "./render-graph-data.command";
 
 const MOCKS = [
-  GraphDagService,
+  GraphEdgesService,
   GraphEntitiesService,
   GraphOptionsService,
   RenderService,

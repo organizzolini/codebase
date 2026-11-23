@@ -5,7 +5,7 @@ import { LoggerModule } from "@codebase/observability";
 
 import { PostgresqlExportModule } from "./modules/postgresql-export/postgresql-export.module";
 import { PostgresqlImportModule } from "./modules/postgresql-import/postgresql-import.module";
-import { RenderDagDataModule } from "./modules/render/modules/render-dag-data/render-dag-data.module";
+import { RenderDirectedAcyclicGraphDataModule } from "./modules/render/modules/render-directed-acyclic-graph-data/render-directed-acyclic-graph-data.module";
 import { RenderGraphDataModule } from "./modules/render/modules/render-graph-data/render-graph-data.module";
 import { RenderTreeDataModule } from "./modules/render/modules/render-tree-data/render-tree-data.module";
 
@@ -21,7 +21,7 @@ import { RenderTreeDataModule } from "./modules/render/modules/render-tree-data/
     LoggerModule,
     PostgresqlExportModule,
     PostgresqlImportModule,
-    RenderDagDataModule,
+    RenderDirectedAcyclicGraphDataModule,
     RenderGraphDataModule,
     RenderTreeDataModule,
   ],

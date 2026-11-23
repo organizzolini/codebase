@@ -3,7 +3,7 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { GraphDagService } from "../../../graph-dag/graph-dag.service";
+import { GraphEdgesService } from "../../../graph-edges/graph-edges.service";
 import { GraphEntitiesService } from "../../../graph-entities/graph-entities.service";
 import { graphOutputDryRunMessages } from "../../../graph-options/graph-options-outputs.utilities";
 import {
@@ -46,7 +46,7 @@ export class RenderGraphDataCommand extends CommandRunner {
 
   constructor(
     private readonly logger: LoggerService,
-    private readonly graphDag: GraphDagService,
+    private readonly graphEdges: GraphEdgesService,
     private readonly graphEntities: GraphEntitiesService,
     private readonly graphOptions: GraphOptionsService,
     private readonly graphRender: RenderService,
@@ -188,7 +188,7 @@ export class RenderGraphDataCommand extends CommandRunner {
       dataSource,
       direction: RENDER_GRAPH_DATA_DIRECTION,
       read: async () =>
-        this.graphDag.load(dataSource, dataSource.getMetadata(picked), {
+        this.graphEdges.load(dataSource, dataSource.getMetadata(picked), {
           edge,
           filters: plan.filters,
           paging: plan.paging,

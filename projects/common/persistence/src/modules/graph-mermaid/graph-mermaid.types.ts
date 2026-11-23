@@ -30,7 +30,7 @@ export interface GraphMermaidRendering {
   readonly warnings: readonly string[];
 }
 
-/** A tree, DAG, or graph, normalized for rendering and JSON output. */
+/** A tree or graph, normalized for rendering and JSON output. */
 export interface GraphModel {
   /** Whether edges have a direction; undirected edges draw without arrows. */
   readonly directed: boolean;

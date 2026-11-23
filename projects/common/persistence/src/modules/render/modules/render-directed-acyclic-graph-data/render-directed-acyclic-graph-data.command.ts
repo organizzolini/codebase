@@ -3,7 +3,7 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { GraphDagService } from "../../../graph-dag/graph-dag.service";
+import { GraphEdgesService } from "../../../graph-edges/graph-edges.service";
 import { GraphEntitiesService } from "../../../graph-entities/graph-entities.service";
 import { graphOutputDryRunMessages } from "../../../graph-options/graph-options-outputs.utilities";
 import {
@@ -24,35 +24,35 @@ import { graphDrawDryRunMessages } from "../../render.constants";
 import { RenderService } from "../../render.service";
 
 import {
-  RENDER_DAG_DATA_DESCRIPTION,
-  RENDER_DAG_DATA_DIRECTION,
-} from "./render-dag-data.constants";
+  RENDER_DIRECTED_ACYCLIC_GRAPH_DATA_DESCRIPTION,
+  RENDER_DIRECTED_ACYCLIC_GRAPH_DATA_DIRECTION,
+} from "./render-directed-acyclic-graph-data.constants";
 
 import type { GraphCommandOptions } from "../../../graph-options/graph-options.types";
 
 /**
- * Reads a `@Dag` entity's edges from a database and prints them as a Mermaid
+ * Reads a `@DirectedAcyclicGraph` entity's edges from a database and prints them as a Mermaid
  * flowchart on stdout, or writes them to the files named, with warnings on
  * stderr. Every option is validated before any entity file is imported or any
  * connection opens.
  */
 @Command({
-  description: RENDER_DAG_DATA_DESCRIPTION,
-  name: "render-dag-data",
+  description: RENDER_DIRECTED_ACYCLIC_GRAPH_DATA_DESCRIPTION,
+  name: "render-directed-acyclic-graph-data",
 })
 @Injectable()
-export class RenderDagDataCommand extends CommandRunner {
+export class RenderDirectedAcyclicGraphDataCommand extends CommandRunner {
   // 🏗 Dependency Injection
 
   constructor(
     private readonly logger: LoggerService,
-    private readonly graphDag: GraphDagService,
+    private readonly graphEdges: GraphEdgesService,
     private readonly graphEntities: GraphEntitiesService,
     private readonly graphOptions: GraphOptionsService,
     private readonly graphRender: RenderService,
   ) {
     super();
-    this.logger.setContext(RenderDagDataCommand.name);
+    this.logger.setContext(RenderDirectedAcyclicGraphDataCommand.name);
   }
 
   // 🔐 Private Fields
@@ -137,10 +137,10 @@ export class RenderDagDataCommand extends CommandRunner {
     return value;
   }
 
-  /** Parses `--table`, the table to draw when the entities hold several DAGs. */
+  /** Parses `--table`, the table to draw when the entities hold several directed acyclic graphs. */
   @Option({
     description:
-      "Table of the @Dag entity to draw when --entities match several; unqualified or schema.table",
+      "Table of the @DirectedAcyclicGraph entity to draw when --entities match several; unqualified or schema.table",
     flags: "--table <name>",
   })
   parseTable(value: string): string {
@@ -160,7 +160,7 @@ export class RenderDagDataCommand extends CommandRunner {
   }
 
   /**
-   * Validates the options, then draws the picked DAG. `--dry-run` stops after
+   * Validates the options, then draws the picked directed acyclic graph. `--dry-run` stops after
    * the entity files resolve, before any connection opens.
    */
   async run(
@@ -171,7 +171,7 @@ export class RenderDagDataCommand extends CommandRunner {
     if (options.dryRun === true) {
       const files = this.graphEntities.resolveFiles(plan.entities);
       const lines = [
-        ...graphDrawDryRunMessages(plan, files, "@Dag"),
+        ...graphDrawDryRunMessages(plan, files, "@DirectedAcyclicGraph"),
         ...graphOutputDryRunMessages(plan.outputs),
       ];
       for (const line of lines) {
@@ -180,15 +180,15 @@ export class RenderDagDataCommand extends CommandRunner {
       return;
     }
     const { dataSource, picked } = await this.graphEntities.prepareEdge(plan, {
-      command: "render-dag-data",
-      kinds: ["dag"],
+      command: "render-directed-acyclic-graph-data",
+      kinds: ["directed-acyclic-graph"],
     });
     const edge = this.graphEntities.describeEdge(picked);
     const written = await this.graphRender.render(plan, {
       dataSource,
-      direction: RENDER_DAG_DATA_DIRECTION,
+      direction: RENDER_DIRECTED_ACYCLIC_GRAPH_DATA_DIRECTION,
       read: async () =>
-        this.graphDag.load(dataSource, dataSource.getMetadata(picked), {
+        this.graphEdges.load(dataSource, dataSource.getMetadata(picked), {
           edge,
           filters: plan.filters,
           paging: plan.paging,

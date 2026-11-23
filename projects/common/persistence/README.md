@@ -363,15 +363,15 @@ Three commands read a database table and draw it as a Mermaid flowchart. They
 print the diagram on stdout, or write it to files, and they share their
 options. Each reads one kind of entity, marked by a decorator:
 
-| Command             | Reads                         | Draws                                             | Direction |
-| ------------------- | ----------------------------- | ------------------------------------------------- | --------- |
-| `render-tree-data`  | a `@Tree` entity's rows       | the tree, from its roots down                     | `LR`      |
-| `render-dag-data`   | a `@Dag` entity's edge rows   | arrows from source to target                      | `TB`      |
-| `render-graph-data` | a `@Graph` entity's edge rows | arrows when directed, plain links when undirected | `LR`      |
+| Command                              | Reads                                        | Draws                                             | Direction |
+| ------------------------------------ | -------------------------------------------- | ------------------------------------------------- | --------- |
+| `render-tree-data`                   | a `@Tree` entity's rows                      | the tree, from its roots down                     | `LR`      |
+| `render-directed-acyclic-graph-data` | a `@DirectedAcyclicGraph` entity's edge rows | arrows from source to target                      | `TB`      |
+| `render-graph-data`                  | a `@Graph` entity's edge rows                | arrows when directed, plain links when undirected | `LR`      |
 
 ```bash
 pnpm exec nx run persistence:start --args="render-tree-data --source-uri postgresql://user:password@localhost:5432/source --schema tags --entities '../<project>/src/**/tag.entity.ts'"
-pnpm exec nx run persistence:start --args="render-dag-data --source-uri postgresql://user:password@localhost:5432/source --schema tasks --entities '../<project>/src/**/task-link.entity.ts'"
+pnpm exec nx run persistence:start --args="render-directed-acyclic-graph-data --source-uri postgresql://user:password@localhost:5432/source --schema tasks --entities '../<project>/src/**/task-link.entity.ts'"
 pnpm exec nx run persistence:start --args="render-graph-data --source-uri postgresql://user:password@localhost:5432/source --schema routes --entities '../<project>/src/**/route-link.entity.ts'"
 ```
 
@@ -437,12 +437,12 @@ storage the `@Tree` names:
 The closure table itself is not read: a closure-table tree's parent comes
 from its `@TreeParent` column, as an adjacency list's does.
 
-#### Edges: `@Dag` and `@Graph`
+#### Edges: `@DirectedAcyclicGraph` and `@Graph`
 
-A `@Dag()` or `@Graph()` entity has one row per edge. Mark the class and its
+A `@DirectedAcyclicGraph()` or `@Graph()` entity has one row per edge. Mark the class and its
 columns:
 
-- `@Dag()` marks a directed acyclic graph, whose edges run from source to target.
+- `@DirectedAcyclicGraph()` marks a directed acyclic graph, whose edges run from source to target.
 - `@Graph()` marks a graph, directed unless `@Graph({ directed: false })`.
 - `@GraphSource()` and `@GraphTarget()` each mark exactly one column, the two
   endpoints. Both are required.
@@ -454,10 +454,16 @@ The decorators are exported from `@codebase/persistence`:
 ```ts
 import { Column, Entity, PrimaryColumn } from "typeorm";
 
-import { Dag, GraphLabel, GraphSource, GraphTarget, GraphWeight } from "@codebase/persistence";
+import {
+  DirectedAcyclicGraph,
+  GraphLabel,
+  GraphSource,
+  GraphTarget,
+  GraphWeight,
+} from "@codebase/persistence";
 
 /** Each row says its source task blocks its target task. */
-@Dag()
+@DirectedAcyclicGraph()
 @Entity({ name: "task_links" })
 export class TaskLink {
   @PrimaryColumn({ type: "integer" })
@@ -481,7 +487,7 @@ export class TaskLink {
 }
 ```
 
-A class with neither `@Dag()` nor `@Graph()`, or with both, is refused, as is
+A class with neither `@DirectedAcyclicGraph()` nor `@Graph()`, or with both, is refused, as is
 one with a missing or repeated endpoint or optional column. A subclass that
 redeclares a base class's endpoint under the same name counts once; under a
 new name it leaves two endpoints for one role, and is refused. The error names
@@ -510,9 +516,9 @@ is open.
 - Several `@Tree` entities without `--table` fail, naming each table, before
   any connection opens.
 
-### Drawing DAGs and graphs
+### Drawing directed acyclic graphs and graphs
 
-`render-dag-data` and `render-graph-data` read the edge rows, one per edge from
+`render-directed-acyclic-graph-data` and `render-graph-data` read the edge rows, one per edge from
 the source column to the target column, and apply the same options to them.
 The edge columns are read as text, and a row with a NULL endpoint is not drawn:
 it is counted in one warning per command run.
@@ -523,14 +529,14 @@ it is counted in one warning per command run.
 - **`--sort`** orders edges. Edges then sort by source, target, and primary key,
   so equal data always draws the same diagram. Edge order sets the order of
   roots and of siblings.
-- **Roots** in a `@Dag` are the nodes no other kept edge targets; a self-loop
+- **Roots** in a `@DirectedAcyclicGraph` are the nodes no other kept edge targets; a self-loop
   does not count. A `@Graph` then starts each node still unreached, smallest
   first, so every component is reached. An undirected graph starts each
   connected component at its smallest node.
 - **`--limit` and `--page`** page the roots in node order, each with every node
-  reachable from it. A `@Dag` component with no root, such as a cycle, is drawn
+  reachable from it. A `@DirectedAcyclicGraph` component with no root, such as a cycle, is drawn
   only without `--limit`.
-- **Cycles** in a `@Dag` warn once per cyclic component, naming its nodes in
+- **Cycles** in a `@DirectedAcyclicGraph` warn once per cyclic component, naming its nodes in
   sorted order, and are drawn as they are. A self-loop warns as well. A `@Graph`
   may contain cycles, which draw with no warning.
 - **Undirected graphs** draw plain links, `---`. A link read from both ends is
@@ -538,8 +544,8 @@ it is counted in one warning per command run.
   the other is dropped.
 - **Caps** count a node's level as its shortest distance from a root, so a node
   reached by several paths is drawn once.
-- `render-dag-data` refuses a `@Graph` entity, and `render-graph-data` refuses a
-  `@Dag` one, each pointing to the other command.
+- `render-directed-acyclic-graph-data` refuses a `@Graph` entity, and `render-graph-data` refuses a
+  `@DirectedAcyclicGraph` one, each pointing to the other command.
 
 ### Mermaid limits and truncation
 
@@ -657,7 +663,7 @@ draws their children without going deeper. A run with `--truncate-depth 2
 `… K more` nodes, and writes one warning per cut to stderr; that run was made
 too, and its warnings were read from stderr.
 
-The DAG and graph commands are shown with the illustrative entity above rather
+The directed acyclic graph and graph commands are shown with the illustrative entity above rather
 than a live run, since no local table holds edge rows.
 
 ## Test

@@ -72,7 +72,7 @@ export class GraphEntitiesService {
   }
 
   /**
-   * How `entity` is described by its `@Dag` or `@Graph` decorators.
+   * How `entity` is described by its `@DirectedAcyclicGraph` or `@Graph` decorators.
    * @throws GraphEdgeError on a missing, conflicting, or repeated decorator.
    */
   describeEdge(entity: GraphEntity): GraphEdgeMetadata {
@@ -84,7 +84,7 @@ export class GraphEntitiesService {
     return importEntityClasses(resolveEntityFiles(globs));
   }
 
-  /** The `@Dag` or `@Graph` entity of one of `kinds` that the command draws; `table` picks among several. */
+  /** The `@DirectedAcyclicGraph` or `@Graph` entity of one of `kinds` that the command draws; `table` picks among several. */
   pickEdge({
     command,
     entities,

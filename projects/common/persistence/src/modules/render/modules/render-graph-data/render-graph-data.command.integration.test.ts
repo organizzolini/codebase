@@ -535,14 +535,14 @@ describe("render-graph-data", () => {
 
   describe("picking the entity", () => {
     it(
-      "rejects a @Dag entity, pointing to render-dag-data",
+      "rejects a @DirectedAcyclicGraph entity, pointing to render-directed-acyclic-graph-data",
       async () => {
         const result = await runRender(["--entities", TASK_GLOB]);
 
         expect(result.exitCode).toBe(1);
         expect(result.stdout).toBe("");
         expect(result.stderr).toContain(
-          "task_links is not drawn by render-graph-data; use render-dag-data instead",
+          "task_links is not drawn by render-graph-data; use render-directed-acyclic-graph-data instead",
         );
       },
       INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
@@ -563,7 +563,7 @@ describe("render-graph-data", () => {
     );
 
     it(
-      "draws the @Graph table --table names beside a @Dag entity",
+      "draws the @Graph table --table names beside a @DirectedAcyclicGraph entity",
       async () => {
         const result = await runRender([
           "--entities",
@@ -590,7 +590,7 @@ describe("render-graph-data", () => {
 
         expect(result.exitCode).toBe(1);
         expect(result.stderr).toContain(
-          "No @Dag or @Graph entity has table gadgets",
+          "No @DirectedAcyclicGraph or @Graph entity has table gadgets",
         );
       },
       INTEGRATION_TEST_TIMEOUT_MILLISECONDS,

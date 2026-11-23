@@ -1,15 +1,15 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
 
 import {
-  Dag,
+  DirectedAcyclicGraph,
   GraphLabel,
   GraphSource,
   GraphTarget,
   GraphWeight,
 } from "../../../src/modules/graph-entities/graph-entities.utilities";
 
-/** A DAG of tasks: each row says its source task blocks its target task. */
-@Dag()
+/** A directed acyclic graph of tasks: each row says its source task blocks its target task. */
+@DirectedAcyclicGraph()
 @Entity({ name: "task_links" })
 export class TaskLink {
   @PrimaryColumn({ type: "integer" })

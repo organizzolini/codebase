@@ -1,20 +1,25 @@
 import { describe, expect, it } from "vitest";
 
-import { limitDagGraph, pageDagGraph } from "./graph-dag-limits.utilities";
-import { buildEdgeGraph } from "./graph-dag.utilities";
+import {
+  limitEdgesGraph,
+  pageEdgesGraph,
+} from "./graph-edges-limits.utilities";
+import { buildEdgeGraph } from "./graph-edges.utilities";
 
 import type { GraphModel } from "../graph-mermaid/graph-mermaid.types";
-import type { GraphDagEdge } from "./graph-dag.types";
+import type { GraphEdgesEdge } from "./graph-edges.types";
 
 /** An edge between two named nodes. */
-const edge = (source: string, target: string): GraphDagEdge => ({
+const edge = (source: string, target: string): GraphEdgesEdge => ({
   source,
   target,
 });
 
-/** Builds a `@Dag` graph from edges. */
-const buildDag = (edges: readonly GraphDagEdge[]): GraphModel =>
-  buildEdgeGraph(edges, { directed: true, kind: "dag" });
+/** Builds a `@DirectedAcyclicGraph` graph from edges. */
+const buildDirectedAcyclicGraph = (
+  edges: readonly GraphEdgesEdge[],
+): GraphModel =>
+  buildEdgeGraph(edges, { directed: true, kind: "directed-acyclic-graph" });
 
 /** The ids of a model's nodes, in order. */
 const ids = (graph: { nodes: readonly { id: string }[] }): string[] =>
@@ -30,16 +35,16 @@ const SHORTCUT = [
   edge("D", "E"),
 ];
 
-describe("graph dag limits utilities", () => {
-  describe(limitDagGraph, () => {
+describe("graph edges limits utilities", () => {
+  describe(limitEdgesGraph, () => {
     it("returns the graph itself when no cap is given", () => {
-      const graph = buildDag(SHORTCUT);
+      const graph = buildDirectedAcyclicGraph(SHORTCUT);
 
-      expect(limitDagGraph(graph, {})).toBe(graph);
+      expect(limitEdgesGraph(graph, {})).toBe(graph);
     });
 
     it("measures depth as the shortest distance from a root", () => {
-      const graph = limitDagGraph(buildDag(SHORTCUT), {
+      const graph = limitEdgesGraph(buildDirectedAcyclicGraph(SHORTCUT), {
         truncateDepth: 2,
       });
 
@@ -52,7 +57,7 @@ describe("graph dag limits utilities", () => {
     });
 
     it("draws a node reached by several paths once", () => {
-      const graph = limitDagGraph(buildDag(SHORTCUT), {
+      const graph = limitEdgesGraph(buildDirectedAcyclicGraph(SHORTCUT), {
         truncateBreadth: 3,
       });
 
@@ -61,7 +66,7 @@ describe("graph dag limits utilities", () => {
     });
 
     it("hides children beyond the breadth under a truncation node", () => {
-      const graph = limitDagGraph(buildDag(SHORTCUT), {
+      const graph = limitEdgesGraph(buildDirectedAcyclicGraph(SHORTCUT), {
         truncateBreadth: 2,
       });
 
@@ -78,8 +83,12 @@ describe("graph dag limits utilities", () => {
     });
 
     it("stops at a cycle a root reaches, with only a breadth cap", () => {
-      const graph = limitDagGraph(
-        buildDag([edge("R", "A"), edge("A", "B"), edge("B", "A")]),
+      const graph = limitEdgesGraph(
+        buildDirectedAcyclicGraph([
+          edge("R", "A"),
+          edge("A", "B"),
+          edge("B", "A"),
+        ]),
         { truncateBreadth: 1 },
       );
 
@@ -88,8 +97,12 @@ describe("graph dag limits utilities", () => {
     });
 
     it("keeps a component no root reaches as it is", () => {
-      const graph = limitDagGraph(
-        buildDag([edge("R", "S"), edge("X", "Y"), edge("Y", "X")]),
+      const graph = limitEdgesGraph(
+        buildDirectedAcyclicGraph([
+          edge("R", "S"),
+          edge("X", "Y"),
+          edge("Y", "X"),
+        ]),
         { truncateDepth: 1 },
       );
 
@@ -98,16 +111,19 @@ describe("graph dag limits utilities", () => {
     });
 
     it("keeps a self-loop on a node that stays", () => {
-      const graph = limitDagGraph(buildDag([edge("R", "A"), edge("A", "A")]), {
-        truncateDepth: 2,
-      });
+      const graph = limitEdgesGraph(
+        buildDirectedAcyclicGraph([edge("R", "A"), edge("A", "A")]),
+        {
+          truncateDepth: 2,
+        },
+      );
 
       expect(graph.edges).toContainEqual(edge("A", "A"));
     });
   });
 
-  describe(pageDagGraph, () => {
-    const forest = buildDag([
+  describe(pageEdgesGraph, () => {
+    const forest = buildDirectedAcyclicGraph([
       edge("A", "B"),
       edge("C", "D"),
       edge("E", "D"),
@@ -115,29 +131,32 @@ describe("graph dag limits utilities", () => {
     ]);
 
     it("keeps the page's roots and everything reachable from them", () => {
-      const graph = pageDagGraph(forest, { limit: 1, page: 3 });
+      const graph = pageEdgesGraph(forest, { limit: 1, page: 3 });
 
       expect(ids(graph)).toStrictEqual(["D", "E", "F"]);
       expect(graph.edges).toStrictEqual([edge("E", "D"), edge("E", "F")]);
     });
 
     it("pages roots, not nodes", () => {
-      const graph = pageDagGraph(forest, { limit: 2, page: 1 });
+      const graph = pageEdgesGraph(forest, { limit: 2, page: 1 });
 
       expect(ids(graph)).toStrictEqual(["A", "B", "C", "D"]);
     });
 
     it("draws a short last page", () => {
-      const graph = pageDagGraph(forest, { limit: 2, page: 2 });
+      const graph = pageEdgesGraph(forest, { limit: 2, page: 2 });
 
       expect(ids(graph)).toStrictEqual(["D", "E", "F"]);
     });
 
     it("says root in the singular when the graph has only one", () => {
-      const graph = pageDagGraph(buildDag([edge("A", "B")]), {
-        limit: 1,
-        page: 2,
-      });
+      const graph = pageEdgesGraph(
+        buildDirectedAcyclicGraph([edge("A", "B")]),
+        {
+          limit: 1,
+          page: 2,
+        },
+      );
 
       expect(graph.warnings).toStrictEqual([
         "Page 2 with --limit 1 is past the last root: the graph has 1 root in total, so nothing is drawn",
@@ -145,19 +164,19 @@ describe("graph dag limits utilities", () => {
     });
 
     it("pages a hub with 200,000 children without overflowing the call stack", () => {
-      const hub = buildDag(
+      const hub = buildDirectedAcyclicGraph(
         Array.from({ length: 200_000 }, (_, index) =>
           edge("hub", `c${String(index)}`),
         ),
       );
 
-      expect(pageDagGraph(hub, { limit: 1, page: 1 }).nodes).toHaveLength(
+      expect(pageEdgesGraph(hub, { limit: 1, page: 1 }).nodes).toHaveLength(
         200_001,
       );
     });
 
     it("draws nothing and warns for a page past the last root", () => {
-      const graph = pageDagGraph(forest, { limit: 2, page: 3 });
+      const graph = pageEdgesGraph(forest, { limit: 2, page: 3 });
 
       expect(graph.nodes).toStrictEqual([]);
       expect(graph.warnings).toStrictEqual([
@@ -168,8 +187,8 @@ describe("graph dag limits utilities", () => {
 
   describe("self-loops and undirected graphs", () => {
     it("keeps a self-loop root's subtree under a depth cap", () => {
-      const graph = limitDagGraph(
-        buildDag([
+      const graph = limitEdgesGraph(
+        buildDirectedAcyclicGraph([
           edge("R", "R"),
           edge("R", "A"),
           edge("A", "B"),
@@ -180,22 +199,25 @@ describe("graph dag limits utilities", () => {
 
       expect(ids(graph)).toStrictEqual(["R", "A", "A/more"]);
       expect(graph.warnings).toStrictEqual([
-        "Node R has an edge to itself: a @Dag must have no cycle",
+        "Node R has an edge to itself: a @DirectedAcyclicGraph must have no cycle",
         "Node A hides 1 child beyond --truncate-depth 2",
       ]);
     });
 
     it("pages a self-loop root with its subtree", () => {
-      const graph = pageDagGraph(buildDag([edge("R", "R"), edge("R", "X")]), {
-        limit: 1,
-        page: 1,
-      });
+      const graph = pageEdgesGraph(
+        buildDirectedAcyclicGraph([edge("R", "R"), edge("R", "X")]),
+        {
+          limit: 1,
+          page: 1,
+        },
+      );
 
       expect(ids(graph)).toStrictEqual(["R", "X"]);
     });
 
     it("walks an undirected graph both ways from its start node", () => {
-      const graph = limitDagGraph(
+      const graph = limitEdgesGraph(
         buildEdgeGraph([edge("A", "B"), edge("C", "B"), edge("C", "D")], {
           directed: false,
           kind: "graph",
@@ -212,7 +234,7 @@ describe("graph dag limits utilities", () => {
     });
 
     it("spends an undirected node's breadth on its children, not on the node it was reached from", () => {
-      const graph = limitDagGraph(
+      const graph = limitEdgesGraph(
         buildEdgeGraph([edge("A", "B"), edge("B", "C")], {
           directed: false,
           kind: "graph",
@@ -226,7 +248,7 @@ describe("graph dag limits utilities", () => {
     });
 
     it("pages an undirected graph by component, each started at its smallest node", () => {
-      const graph = pageDagGraph(
+      const graph = pageEdgesGraph(
         buildEdgeGraph([edge("B", "A"), edge("D", "C")], {
           directed: false,
           kind: "graph",

@@ -34,7 +34,7 @@ const ALL_GLOB = path.join(GRAPHS, "*.entity.ts");
 const BROKEN_GLOB = path.join(GRAPHS, "invalid", "*.entity.ts");
 
 /** The tables the edge fixtures read, created per test. */
-const DAG_DDL = [
+const DIRECTED_ACYCLIC_GRAPH_DDL = [
   "DROP TABLE IF EXISTS task_links, step_links, graph_links, broken_links",
   "CREATE TABLE task_links (id integer PRIMARY KEY, source text NOT NULL, target text NOT NULL, label text, weight double precision)",
   "CREATE TABLE step_links (id integer PRIMARY KEY, source integer NOT NULL, target integer NOT NULL)",
@@ -42,8 +42,8 @@ const DAG_DDL = [
   "CREATE TABLE broken_links (id integer PRIMARY KEY, target text NOT NULL)",
 ];
 
-/** A diamond DAG and a separate Audit edge. */
-const DAG_ROWS = [
+/** A diamond directed acyclic graph and a separate Audit edge. */
+const DIRECTED_ACYCLIC_GRAPH_ROWS = [
   "INSERT INTO task_links (id, source, target) VALUES (1, 'Plan', 'Design'), (2, 'Plan', 'Build'), (3, 'Design', 'Ship'), (4, 'Build', 'Ship'), (5, 'Audit', 'Report')",
   "INSERT INTO step_links (id, source, target) VALUES (1, 1, 2), (2, 2, 3)",
   "INSERT INTO graph_links (id, source, target) VALUES (1, 'A', 'B')",
@@ -81,12 +81,12 @@ const DIAMOND_LINES = [
   "class n5 root",
 ];
 
-describe("render-dag-data", () => {
+describe("render-directed-acyclic-graph-data", () => {
   let source: FixtureDatabase;
   let directory: string;
 
   /**
-   * Runs `render-dag-data` through the real command line against the fixture
+   * Runs `render-directed-acyclic-graph-data` through the real command line against the fixture
    * database, resolving unqualified names in the `fixture` schema.
    */
   async function runRender(
@@ -95,7 +95,7 @@ describe("render-dag-data", () => {
   ): ReturnType<typeof runCliCommandLine> {
     return runCliCommandLine({
       argv: [
-        "render-dag-data",
+        "render-directed-acyclic-graph-data",
         "--source-uri",
         sourceUri,
         "--schema",
@@ -110,8 +110,13 @@ describe("render-dag-data", () => {
   }, FIXTURE_DATABASE_TIMEOUT_MILLISECONDS);
 
   beforeEach(async () => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "render-dag-output-"));
-    for (const statement of [...DAG_DDL, ...DAG_ROWS]) {
+    directory = fs.mkdtempSync(
+      path.join(os.tmpdir(), "render-directed-acyclic-graph-output-"),
+    );
+    for (const statement of [
+      ...DIRECTED_ACYCLIC_GRAPH_DDL,
+      ...DIRECTED_ACYCLIC_GRAPH_ROWS,
+    ]) {
       await source.query(statement);
     }
   }, INTEGRATION_TEST_TIMEOUT_MILLISECONDS);
@@ -125,7 +130,7 @@ describe("render-dag-data", () => {
   }, INTEGRATION_TEST_TIMEOUT_MILLISECONDS);
 
   it(
-    "draws a diamond DAG as its expected diagram on stdout, with no warnings",
+    "draws a diamond directed acyclic graph as its expected diagram on stdout, with no warnings",
     async () => {
       const result = await runRender(["--entities", TASK_GLOB]);
 
@@ -178,14 +183,14 @@ describe("render-dag-data", () => {
   );
 
   it(
-    "fails naming every @Dag table when several match and --table is not given",
+    "fails naming every @DirectedAcyclicGraph table when several match and --table is not given",
     async () => {
       const result = await runRender(["--entities", ALL_GLOB]);
 
       expect(result.exitCode).toBe(1);
       expect(result.stdout).toBe("");
       expect(result.stderr).toContain(
-        "Several @Dag entities match --entities: step_links, task_links; name one with --table",
+        "Several @DirectedAcyclicGraph entities match --entities: step_links, task_links; name one with --table",
       );
     },
     INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
@@ -199,7 +204,7 @@ describe("render-dag-data", () => {
       expect(result.exitCode).toBe(1);
       expect(result.stdout).toBe("");
       expect(result.stderr).toContain(
-        "graph_links is not drawn by render-dag-data; use render-graph-data instead",
+        "graph_links is not drawn by render-directed-acyclic-graph-data; use render-graph-data instead",
       );
     },
     INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
@@ -217,7 +222,7 @@ describe("render-dag-data", () => {
 
       expect(result.exitCode).toBe(1);
       expect(result.stderr).toContain(
-        "graph_links is not drawn by render-dag-data; use render-graph-data instead",
+        "graph_links is not drawn by render-directed-acyclic-graph-data; use render-graph-data instead",
       );
     },
     INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
@@ -235,7 +240,7 @@ describe("render-dag-data", () => {
 
       expect(result.exitCode).toBe(1);
       expect(result.stderr).toContain(
-        "No @Dag or @Graph entity has table gadgets",
+        "No @DirectedAcyclicGraph or @Graph entity has table gadgets",
       );
     },
     INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
@@ -267,7 +272,7 @@ describe("render-dag-data", () => {
 
         expect(result.exitCode).toBe(0);
         expect(result.stderr).toBe(
-          "⚠️ Cycle among nodes Build, Design, Plan, Ship: a @Dag must have no cycle\n",
+          "⚠️ Cycle among nodes Build, Design, Plan, Ship: a @DirectedAcyclicGraph must have no cycle\n",
         );
         expect(result.stdout).toBe(
           drawnDiagram([
@@ -301,7 +306,7 @@ describe("render-dag-data", () => {
 
         expect(result.exitCode).toBe(0);
         expect(result.stderr).toBe(
-          "⚠️ Node Solo has an edge to itself: a @Dag must have no cycle\n",
+          "⚠️ Node Solo has an edge to itself: a @DirectedAcyclicGraph must have no cycle\n",
         );
         expect(result.stdout).toContain("n6 --> n6");
       },
@@ -324,7 +329,7 @@ describe("render-dag-data", () => {
 
         expect(result.exitCode).toBe(0);
         expect(result.stderr).toContain(
-          "⚠️ Cycle among nodes Loop a, Loop b: a @Dag must have no cycle",
+          "⚠️ Cycle among nodes Loop a, Loop b: a @DirectedAcyclicGraph must have no cycle",
         );
         expect(result.stdout).toContain('["Loop a"]');
         expect(result.stdout).toContain('["Loop b"]');
@@ -603,7 +608,7 @@ describe("render-dag-data", () => {
         ]),
       );
       expect(result.stderr).toContain(
-        "Node Audit has an edge to itself: a @Dag must have no cycle",
+        "Node Audit has an edge to itself: a @DirectedAcyclicGraph must have no cycle",
       );
     },
     INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
@@ -613,8 +618,12 @@ describe("render-dag-data", () => {
     it(
       "writes the Markdown diagram and the JSON graph, with nothing on stdout",
       async () => {
-        const markdown = path.join(directory, "reports", "dag.md");
-        const json = path.join(directory, "dag.json");
+        const markdown = path.join(
+          directory,
+          "reports",
+          "directed-acyclic-graph.md",
+        );
+        const json = path.join(directory, "directed-acyclic-graph.json");
 
         const result = await runRender([
           "--entities",
@@ -643,7 +652,7 @@ describe("render-dag-data", () => {
     it(
       "refuses an existing file without --overwrite, leaving it unchanged",
       async () => {
-        const file = path.join(directory, "dag.md");
+        const file = path.join(directory, "directed-acyclic-graph.md");
         fs.writeFileSync(file, "keep me");
 
         const result = await runRender([
@@ -662,7 +671,7 @@ describe("render-dag-data", () => {
     it(
       "replaces an existing file with --overwrite",
       async () => {
-        const file = path.join(directory, "dag.md");
+        const file = path.join(directory, "directed-acyclic-graph.md");
         fs.writeFileSync(file, "replace me");
 
         const result = await runRender([
@@ -685,7 +694,8 @@ describe("render-dag-data", () => {
       "never shows the password in a failed connection's output",
       async () => {
         const { connection } = source;
-        const wrongPassword = "wrong-dag-fixture-password-1c4e";
+        const wrongPassword =
+          "wrong-directed-acyclic-graph-fixture-password-1c4e";
         const sourceUri = `postgresql://${connection.username}:${wrongPassword}@${connection.host}:${String(connection.port)}/${connection.database}`;
 
         const result = await runRender(["--entities", TASK_GLOB], sourceUri);
@@ -701,7 +711,7 @@ describe("render-dag-data", () => {
     it(
       "plans with --dry-run without connecting, never naming the password",
       async () => {
-        const secret = "dag-dry-run-fixture-secret-52b7";
+        const secret = "directed acyclic graph-dry-run-fixture-secret-52b7";
         const unreachable = `postgresql://fixture_user:${secret}@127.0.0.1:1/fixture_db`;
 
         const result = await runRender(
@@ -712,7 +722,7 @@ describe("render-dag-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe("");
         expect(result.logs.join("\n")).toContain(
-          "Planning to draw the one @Dag",
+          "Planning to draw the one @DirectedAcyclicGraph",
         );
         expect(result.logs.join("\n")).toContain("task-link.entity.ts");
         expect(result.logs.join("\n")).not.toContain(secret);

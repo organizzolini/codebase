@@ -1,27 +1,27 @@
 import { describe, expect, it } from "vitest";
 
-import { findDagCycles } from "./graph-dag-cycles.utilities";
+import { findEdgesCycles } from "./graph-edges-cycles.utilities";
 import {
   buildEdgeGraph,
   childrenOf,
   edgeKey,
   linksOf,
   reachableFrom,
-} from "./graph-dag.utilities";
+} from "./graph-edges.utilities";
 
 import type { GraphEdgeMetadata } from "../graph-entities/graph-entities.types";
-import type { GraphDagEdge } from "./graph-dag.types";
+import type { GraphEdgesEdge } from "./graph-edges.types";
 
 /** An edge between two named nodes, without a label or weight. */
-const edge = (source: string, target: string): GraphDagEdge => ({
+const edge = (source: string, target: string): GraphEdgesEdge => ({
   source,
   target,
 });
 
-/** The shape of a `@Dag` entity's edges. */
-const DAG: Pick<GraphEdgeMetadata, "directed" | "kind"> = {
+/** The shape of a `@DirectedAcyclicGraph` entity's edges. */
+const DIRECTED_ACYCLIC_GRAPH: Pick<GraphEdgeMetadata, "directed" | "kind"> = {
   directed: true,
-  kind: "dag",
+  kind: "directed-acyclic-graph",
 };
 
 /** The shape of a directed `@Graph` entity's edges. */
@@ -44,20 +44,20 @@ const DIAMOND = [
   edge("C", "D"),
 ];
 
-describe("graph dag utilities", () => {
-  describe(findDagCycles, () => {
+describe("graph edges utilities", () => {
+  describe(findEdgesCycles, () => {
     it("finds no cycle in a diamond", () => {
-      expect(findDagCycles(DIAMOND)).toStrictEqual([]);
+      expect(findEdgesCycles(DIAMOND)).toStrictEqual([]);
     });
 
     it("finds a self-loop as a one-node cycle", () => {
-      expect(findDagCycles([edge("A", "A"), edge("A", "B")])).toStrictEqual([
+      expect(findEdgesCycles([edge("A", "A"), edge("A", "B")])).toStrictEqual([
         ["A"],
       ]);
     });
 
     it("names every node of a cycle, sorted", () => {
-      const cycles = findDagCycles([
+      const cycles = findEdgesCycles([
         edge("C", "A"),
         edge("A", "B"),
         edge("B", "C"),
@@ -68,7 +68,7 @@ describe("graph dag utilities", () => {
     });
 
     it("finds each separate cycle once, ordered by its first node", () => {
-      const cycles = findDagCycles([
+      const cycles = findEdgesCycles([
         edge("X", "Y"),
         edge("Y", "X"),
         edge("A", "B"),
@@ -87,13 +87,13 @@ describe("graph dag utilities", () => {
         edge(String(index), String(index + 1)),
       );
 
-      expect(findDagCycles(chain)).toStrictEqual([]);
+      expect(findEdgesCycles(chain)).toStrictEqual([]);
     });
   });
 
   describe(buildEdgeGraph, () => {
     it("draws a diamond with its one root marked, nodes in first-seen order", () => {
-      expect(buildEdgeGraph(DIAMOND, DAG)).toStrictEqual({
+      expect(buildEdgeGraph(DIAMOND, DIRECTED_ACYCLIC_GRAPH)).toStrictEqual({
         directed: true,
         edges: DIAMOND,
         nodes: [
@@ -109,7 +109,7 @@ describe("graph dag utilities", () => {
     it("carries an edge's label and weight onto the model", () => {
       const graph = buildEdgeGraph(
         [{ label: "needs", source: "A", target: "B", weight: 2.5 }],
-        DAG,
+        DIRECTED_ACYCLIC_GRAPH,
       );
 
       expect(graph.edges).toStrictEqual([
@@ -120,11 +120,11 @@ describe("graph dag utilities", () => {
     it("warns once per cycle, naming its nodes", () => {
       const graph = buildEdgeGraph(
         [edge("R", "A"), edge("A", "B"), edge("B", "A")],
-        DAG,
+        DIRECTED_ACYCLIC_GRAPH,
       );
 
       expect(graph.warnings).toStrictEqual([
-        "Cycle among nodes A, B: a @Dag must have no cycle",
+        "Cycle among nodes A, B: a @DirectedAcyclicGraph must have no cycle",
       ]);
       expect(
         graph.nodes.filter(({ marker }) => marker === "root"),
@@ -132,10 +132,10 @@ describe("graph dag utilities", () => {
     });
 
     it("warns about a self-loop, and still roots its node when nothing else points at it", () => {
-      const graph = buildEdgeGraph([edge("A", "A")], DAG);
+      const graph = buildEdgeGraph([edge("A", "A")], DIRECTED_ACYCLIC_GRAPH);
 
       expect(graph.warnings).toStrictEqual([
-        "Node A has an edge to itself: a @Dag must have no cycle",
+        "Node A has an edge to itself: a @DirectedAcyclicGraph must have no cycle",
       ]);
       expect(graph.nodes).toStrictEqual([
         { id: "A", label: "A", marker: "root" },
@@ -143,7 +143,10 @@ describe("graph dag utilities", () => {
     });
 
     it("does not count a self-loop as an incoming edge, so its node stays a root", () => {
-      const graph = buildEdgeGraph([edge("R", "R"), edge("R", "X")], DAG);
+      const graph = buildEdgeGraph(
+        [edge("R", "R"), edge("R", "X")],
+        DIRECTED_ACYCLIC_GRAPH,
+      );
 
       expect(graph.nodes).toStrictEqual([
         { id: "R", label: "R", marker: "root" },
@@ -151,8 +154,11 @@ describe("graph dag utilities", () => {
       ]);
     });
 
-    it("still draws a @Dag component with no root, without a start node", () => {
-      const graph = buildEdgeGraph([edge("A", "B"), edge("B", "A")], DAG);
+    it("still draws a @DirectedAcyclicGraph component with no root, without a start node", () => {
+      const graph = buildEdgeGraph(
+        [edge("A", "B"), edge("B", "A")],
+        DIRECTED_ACYCLIC_GRAPH,
+      );
 
       expect(graph.nodes).toStrictEqual([
         { id: "A", label: "A" },
@@ -162,7 +168,7 @@ describe("graph dag utilities", () => {
     });
 
     it("draws no nodes for no edges", () => {
-      expect(buildEdgeGraph([], DAG)).toStrictEqual({
+      expect(buildEdgeGraph([], DIRECTED_ACYCLIC_GRAPH)).toStrictEqual({
         directed: true,
         edges: [],
         nodes: [],

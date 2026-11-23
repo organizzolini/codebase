@@ -6,7 +6,7 @@ import {
   GraphTarget,
 } from "../../../src/modules/graph-entities/graph-entities.utilities";
 
-/** A general graph, which `render-dag-data` refuses to draw. */
+/** A general graph, which `render-directed-acyclic-graph-data` refuses to draw. */
 @Entity({ name: "graph_links" })
 @Graph({ directed: false })
 export class GraphLink {

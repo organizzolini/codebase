@@ -5,7 +5,7 @@ export type {
   GraphEdgeOptions,
 } from "./modules/graph-entities/graph-entities.types";
 export {
-  Dag,
+  DirectedAcyclicGraph,
   getGraphEdgeMetadata,
   Graph,
   GraphLabel,

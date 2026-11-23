@@ -1,7 +1,7 @@
 // 🌎 Utilities
 
-import { findDagCycles } from "./graph-dag-cycles.utilities";
-import { graphDagCycleMessage } from "./graph-dag.constants";
+import { findEdgesCycles } from "./graph-edges-cycles.utilities";
+import { graphEdgesCycleMessage } from "./graph-edges.constants";
 
 import type { GraphEdgeMetadata } from "../graph-entities/graph-entities.types";
 import type {
@@ -9,14 +9,14 @@ import type {
   GraphModel,
   GraphNode,
 } from "../graph-mermaid/graph-mermaid.types";
-import type { GraphDagEdge, GraphLinks } from "./graph-dag.types";
+import type { GraphEdgesEdge, GraphLinks } from "./graph-edges.types";
 
 /**
  * Builds nodes in first-seen order; a directed graph's roots are unpointed-at
- * nodes, a `@Graph` then roots unreached ones, and a `@Dag` warns per cycle.
+ * nodes, a `@Graph` then roots unreached ones, and a `@DirectedAcyclicGraph` warns per cycle.
  */
 export function buildEdgeGraph(
-  rows: readonly GraphDagEdge[],
+  rows: readonly GraphEdgesEdge[],
   { directed, kind }: Pick<GraphEdgeMetadata, "directed" | "kind">,
 ): GraphModel {
   const edges = directed ? rows : distinctLinks(rows);
@@ -31,8 +31,8 @@ export function buildEdgeGraph(
       starts.has(id) ? { id, label: id, marker: "root" } : { id, label: id },
     ),
     warnings:
-      kind === "dag"
-        ? findDagCycles(edges).map((cycle) => graphDagCycleMessage(cycle))
+      kind === "directed-acyclic-graph"
+        ? findEdgesCycles(edges).map((cycle) => graphEdgesCycleMessage(cycle))
         : [],
   };
 }
@@ -106,7 +106,7 @@ export function reachableFrom(
 }
 
 /** An undirected link's first row in sort order; a row naming the same link from its other end is dropped. */
-function distinctLinks(rows: readonly GraphDagEdge[]): GraphDagEdge[] {
+function distinctLinks(rows: readonly GraphEdgesEdge[]): GraphEdgesEdge[] {
   const seen = new Set<string>();
   return rows.filter(({ source, target }) => {
     const key = edgeKey(false, source, target);
@@ -117,7 +117,12 @@ function distinctLinks(rows: readonly GraphDagEdge[]): GraphDagEdge[] {
 }
 
 /** The model's edge for `edge`, carrying its label and weight when it has them. */
-function modelEdge({ label, source, target, weight }: GraphDagEdge): GraphEdge {
+function modelEdge({
+  label,
+  source,
+  target,
+  weight,
+}: GraphEdgesEdge): GraphEdge {
   return {
     ...(label === undefined ? {} : { label }),
     source,
@@ -132,7 +137,7 @@ function modelEdge({ label, source, target, weight }: GraphDagEdge): GraphEdge {
  */
 function startIds(
   ids: readonly string[],
-  edges: readonly GraphDagEdge[],
+  edges: readonly GraphEdgesEdge[],
   { directed, kind }: Pick<GraphEdgeMetadata, "directed" | "kind">,
 ): string[] {
   const pointedAt = new Set(
@@ -141,7 +146,7 @@ function startIds(
       .map(({ target }) => target),
   );
   const starts = directed ? ids.filter((id) => !pointedAt.has(id)) : [];
-  if (kind === "dag") return starts;
+  if (kind === "directed-acyclic-graph") return starts;
 
   const links = linksOf(edges, directed);
   const reached = reachableFrom(starts, links);

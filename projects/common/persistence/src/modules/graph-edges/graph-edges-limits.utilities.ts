@@ -2,8 +2,8 @@
 
 import { truncationParts } from "../graph-tree/graph-tree.utilities";
 
-import { graphDagPageMessage } from "./graph-dag.constants";
-import { edgeKey, graphLinks, reachableFrom } from "./graph-dag.utilities";
+import { graphEdgesPageMessage } from "./graph-edges.constants";
+import { edgeKey, graphLinks, reachableFrom } from "./graph-edges.utilities";
 
 import type {
   GraphEdge,
@@ -13,13 +13,13 @@ import type {
   GraphLimits,
   GraphPaging,
 } from "../graph-options/graph-options.types";
-import type { GraphDagWalk, GraphLinks } from "./graph-dag.types";
+import type { GraphEdgesWalk, GraphLinks } from "./graph-edges.types";
 
 /**
  * Caps depth and breadth, depth being a node's shortest distance from a root;
  * hidden children become '… K more' nodes with warnings.
  */
-export function limitDagGraph(
+export function limitEdgesGraph(
   graph: GraphModel,
   limits: GraphLimits,
 ): GraphModel {
@@ -35,7 +35,7 @@ export function limitDagGraph(
   return withoutHidden(graph, {
     links,
     reachable: reachableFrom(roots, links),
-    walk: walkDag(roots, links, limits),
+    walk: walkEdges(roots, links, limits),
   });
 }
 
@@ -43,7 +43,7 @@ export function limitDagGraph(
  * Keeps the roots `paging` selects, in node order, with every node reachable
  * from them. A page past the last root keeps nothing and warns.
  */
-export function pageDagGraph(
+export function pageEdgesGraph(
   graph: GraphModel,
   paging: GraphPaging,
 ): GraphModel {
@@ -54,7 +54,10 @@ export function pageDagGraph(
       directed: graph.directed,
       edges: [],
       nodes: [],
-      warnings: [...graph.warnings, graphDagPageMessage(paging, roots.length)],
+      warnings: [
+        ...graph.warnings,
+        graphEdgesPageMessage(paging, roots.length),
+      ],
     };
   }
 
@@ -94,7 +97,7 @@ function keepEdge(
 
 /** The children a walk from `parent` may draw: an undirected node's discovery parent is none of them. */
 function openChildren(
-  walk: GraphDagWalk,
+  walk: GraphEdgesWalk,
   links: GraphLinks,
   parent: string,
 ): string[] {
@@ -114,12 +117,12 @@ function rootIds(graph: GraphModel): string[] {
 }
 
 /** Walks down from `roots` a level at a time, drawing the edges `limits` keep and recording each node whose children they hid. */
-function walkDag(
+function walkEdges(
   roots: readonly string[],
   links: GraphLinks,
   { truncateBreadth = Infinity, truncateDepth = Infinity }: GraphLimits,
-): GraphDagWalk {
-  const walk: GraphDagWalk = {
+): GraphEdgesWalk {
+  const walk: GraphEdgesWalk = {
     kept: new Set(),
     shown: new Set(roots),
     truncations: [],
@@ -148,7 +151,7 @@ function walkDag(
  * hid, and returns the children it showed for the first time.
  */
 function walkParent(
-  walk: GraphDagWalk,
+  walk: GraphEdgesWalk,
   { links, parent }: { readonly links: GraphLinks; readonly parent: string },
   cap: {
     readonly atDepthLimit: boolean;
@@ -194,7 +197,7 @@ function withoutHidden(
   }: {
     readonly links: GraphLinks;
     readonly reachable: ReadonlySet<string>;
-    readonly walk: GraphDagWalk;
+    readonly walk: GraphEdgesWalk;
   },
 ): GraphModel {
   const removed = new Set([...reachable].filter((id) => !shown.has(id)));

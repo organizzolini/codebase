@@ -7,14 +7,14 @@ export interface GraphEdgeCandidate {
   /** The entity class, which the command reads its metadata by once connected. */
   readonly entity: GraphEntity;
 
-  /** Whether the entity is a DAG or a graph. */
+  /** Whether the entity is a directed acyclic graph or a graph. */
   readonly kind: GraphEdgeKind;
 
   /** The unqualified table name the entity maps to. */
   readonly tableName: string;
 }
 
-/** A class-level declaration: `@Dag()`, or `@Graph()` with its direction. */
+/** A class-level declaration: `@DirectedAcyclicGraph()`, or `@Graph()` with its direction. */
 export interface GraphEdgeDeclaration {
   /** Whether the declared edges are directed. */
   readonly directed: boolean;
@@ -24,14 +24,14 @@ export interface GraphEdgeDeclaration {
 }
 
 /** Whether an edge entity is a directed acyclic graph or a graph. */
-export type GraphEdgeKind = "dag" | "graph";
+export type GraphEdgeKind = "directed-acyclic-graph" | "graph";
 
 /** How an edge entity is described: its kind, direction, and columns. */
 export interface GraphEdgeMetadata {
   /** Whether edges run from source to target. */
   readonly directed: boolean;
 
-  /** Whether the entity is a DAG or a graph. */
+  /** Whether the entity is a directed acyclic graph or a graph. */
   readonly kind: GraphEdgeKind;
 
   /** The property name of the label, when one is declared. */
@@ -95,7 +95,7 @@ export interface GraphEdgeTarget {
   /** The connection the edges are read through, not yet open. */
   readonly dataSource: DataSource;
 
-  /** The `@Dag` or `@Graph` entity class the run draws. */
+  /** The `@DirectedAcyclicGraph` or `@Graph` entity class the run draws. */
   readonly picked: GraphEntity;
 }
 

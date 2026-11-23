@@ -1,24 +1,24 @@
 // 🌎 Utilities
 
 import type {
-  GraphDagCycleFrame,
-  GraphDagCycleSearch,
-  GraphDagEdge,
-  GraphDagVertex,
-} from "./graph-dag.types";
+  GraphEdgesCycleFrame,
+  GraphEdgesCycleSearch,
+  GraphEdgesEdge,
+  GraphEdgesVertex,
+} from "./graph-edges.types";
 
 /**
  * The cycles among `edges`, each as its sorted node names, ordered by first node.
  * Iterative, so long chains cannot overflow the stack.
  */
-export function findDagCycles(
-  edges: readonly Pick<GraphDagEdge, "source" | "target">[],
+export function findEdgesCycles(
+  edges: readonly Pick<GraphEdgesEdge, "source" | "target">[],
 ): string[][] {
-  const vertices = new Map<string, GraphDagVertex>();
-  const vertexOf = (name: string): GraphDagVertex => {
+  const vertices = new Map<string, GraphEdgesVertex>();
+  const vertexOf = (name: string): GraphEdgesVertex => {
     const existing = vertices.get(name);
     if (existing !== undefined) return existing;
-    const created: GraphDagVertex = {
+    const created: GraphEdgesVertex = {
       index: undefined,
       lowest: 0,
       name,
@@ -32,7 +32,7 @@ export function findDagCycles(
     vertexOf(source).targets.push(vertexOf(target));
   }
 
-  const search: GraphDagCycleSearch = {
+  const search: GraphEdgesCycleSearch = {
     count: 0,
     cycles: [],
     frames: [],
@@ -66,8 +66,8 @@ function compareText(first: string, second: string): number {
 
 /** Numbers `vertex` in visit order, stacks it, and opens a frame to walk its targets. */
 function enterVertex(
-  search: GraphDagCycleSearch,
-  vertex: GraphDagVertex,
+  search: GraphEdgesCycleSearch,
+  vertex: GraphEdgesVertex,
 ): void {
   vertex.index = search.count;
   vertex.lowest = search.count;
@@ -79,8 +79,8 @@ function enterVertex(
 
 /** Closes `frame`'s vertex, taking its component off the stack and keeping it when it is a cycle. */
 function leaveVertex(
-  search: GraphDagCycleSearch,
-  { vertex }: GraphDagCycleFrame,
+  search: GraphEdgesCycleSearch,
+  { vertex }: GraphEdgesCycleFrame,
 ): void {
   search.frames.pop();
   const parent = search.frames.at(-1);
@@ -102,8 +102,8 @@ function leaveVertex(
 
 /** Walks the next target of `frame`'s vertex, or closes the vertex when it has none left. */
 function stepFrame(
-  search: GraphDagCycleSearch,
-  frame: GraphDagCycleFrame,
+  search: GraphEdgesCycleSearch,
+  frame: GraphEdgesCycleFrame,
 ): void {
   const child = frame.vertex.targets[frame.next];
   if (child === undefined) {

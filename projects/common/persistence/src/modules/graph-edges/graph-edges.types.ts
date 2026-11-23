@@ -5,16 +5,16 @@ import type { GraphReadOptions } from "../graph-options/graph-options.types";
 import type { GraphTreeTruncation } from "../graph-tree/graph-tree.types";
 
 /** A frame of the cycle walk: a vertex and its next target. */
-export interface GraphDagCycleFrame {
+export interface GraphEdgesCycleFrame {
   /** The index of the next target to visit. */
   next: number;
 
   /** The vertex being walked. */
-  readonly vertex: GraphDagVertex;
+  readonly vertex: GraphEdgesVertex;
 }
 
 /** The cycle search's count, walk, and cycles found. */
-export interface GraphDagCycleSearch {
+export interface GraphEdgesCycleSearch {
   /** The vertices visited so far, which numbers the next. */
   count: number;
 
@@ -22,14 +22,14 @@ export interface GraphDagCycleSearch {
   readonly cycles: string[][];
 
   /** The walk's open frames, innermost last. */
-  readonly frames: GraphDagCycleFrame[];
+  readonly frames: GraphEdgesCycleFrame[];
 
   /** The vertices whose component is not yet complete, in visit order. */
-  readonly stack: GraphDagVertex[];
+  readonly stack: GraphEdgesVertex[];
 }
 
-/** One edge of a DAG, between two endpoints given as text. */
-export interface GraphDagEdge {
+/** One edge row, with endpoints given as text. */
+export interface GraphEdgesEdge {
   /** Text drawn on the edge, when the entity declares a label. */
   readonly label?: string;
 
@@ -43,14 +43,14 @@ export interface GraphDagEdge {
   readonly weight?: number;
 }
 
-/** What a DAG read draws: its edge columns, then the read options. */
-export interface GraphDagOptions extends GraphReadOptions {
+/** What an edge read draws: its edge columns, then read options. */
+export interface GraphEdgesOptions extends GraphReadOptions {
   /** How the entity's decorators describe its edge columns. */
   readonly edge: GraphEdgeMetadata;
 }
 
 /** The escaped SQL names an edge table is read by. */
-export interface GraphDagTable {
+export interface GraphEdgesTable {
   /** The primary key columns, which order edges that tie on every sort key. */
   readonly keys: readonly string[];
 
@@ -71,7 +71,7 @@ export interface GraphDagTable {
 }
 
 /** A node of the cycle search, with its targets and state. */
-export interface GraphDagVertex {
+export interface GraphEdgesVertex {
   /** The order it was first visited in; `undefined` until visited. */
   index: number | undefined;
 
@@ -85,11 +85,11 @@ export interface GraphDagVertex {
   onStack: boolean;
 
   /** The vertices its edges reach, in edge order. */
-  readonly targets: GraphDagVertex[];
+  readonly targets: GraphEdgesVertex[];
 }
 
 /** The edges, ids, and truncations a walk drew. */
-export interface GraphDagWalk {
+export interface GraphEdgesWalk {
   /** The edges drawn, each as a key of its two ends. */
   readonly kept: Set<string>;
 

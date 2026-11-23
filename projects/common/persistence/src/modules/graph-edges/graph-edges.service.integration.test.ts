@@ -10,10 +10,10 @@ import {
 import { GraphEntitiesService } from "../graph-entities/graph-entities.service";
 import { GraphOptionsService } from "../graph-options/graph-options.service";
 
-import { GraphDagService } from "./graph-dag.service";
+import { GraphEdgesService } from "./graph-edges.service";
 
 import type { FixtureDatabase } from "../../../testing/fixture-persistence";
-import type { GraphDagOptions } from "./graph-dag.types";
+import type { GraphEdgesOptions } from "./graph-edges.types";
 
 /** The task edge entity, which reads the `task_links` table. */
 const TASK_GLOB = path.join(
@@ -32,16 +32,16 @@ const ROWS = [
   "INSERT INTO task_links (id, source, target, label, weight) VALUES (1, 'Plan', 'Design', 'needs', 1.5), (2, 'Plan', 'Build', NULL, NULL), (3, 'Design', 'Ship', NULL, 2), (4, 'Build', 'Ship', NULL, NULL), (5, 'Audit', 'Report', NULL, NULL)",
 ];
 
-describe("graph dag service, read in batches", () => {
+describe("graph edges service, read in batches", () => {
   let source: FixtureDatabase;
   const graphEntities = new GraphEntitiesService();
   const graphOptions = new GraphOptionsService();
-  const graphDag = new GraphDagService();
+  const graphEdges = new GraphEdgesService();
 
-  /** Reads the DAG the task entity describes from the fixture database with `options`. */
-  async function loadDag(
-    options: Partial<Omit<GraphDagOptions, "edge">> = {},
-  ): ReturnType<GraphDagService["load"]> {
+  /** Reads the directed acyclic graph the task entity describes from the fixture database with `options`. */
+  async function loadEdges(
+    options: Partial<Omit<GraphEdgesOptions, "edge">> = {},
+  ): ReturnType<GraphEdgesService["load"]> {
     const { connection } = graphOptions.plan({
       entities: [TASK_GLOB],
       schema: "fixture",
@@ -52,14 +52,14 @@ describe("graph dag service, read in batches", () => {
     await dataSource.initialize();
     try {
       const picked = graphEntities.pickEdge({
-        command: "render-dag-data",
+        command: "render-directed-acyclic-graph-data",
         entities,
         globs: [TASK_GLOB],
-        kinds: ["dag"],
+        kinds: ["directed-acyclic-graph"],
         namingStrategy: dataSource.namingStrategy,
         table: undefined,
       });
-      return await graphDag.load(dataSource, dataSource.getMetadata(picked), {
+      return await graphEdges.load(dataSource, dataSource.getMetadata(picked), {
         edge: graphEntities.describeEdge(picked),
         filters: [],
         sorts: [],
@@ -87,8 +87,8 @@ describe("graph dag service, read in batches", () => {
   it(
     "reads the edges one row per batch exactly as one batch",
     async () => {
-      const batched = await loadDag({ batchSize: 1 });
-      const whole = await loadDag();
+      const batched = await loadEdges({ batchSize: 1 });
+      const whole = await loadEdges();
 
       expect(batched).toStrictEqual(whole);
       expect(whole.edges).toStrictEqual([
@@ -107,8 +107,8 @@ describe("graph dag service, read in batches", () => {
     async () => {
       const paging = { limit: 1, page: 2 };
 
-      const batched = await loadDag({ batchSize: 2, paging });
-      const whole = await loadDag({ paging });
+      const batched = await loadEdges({ batchSize: 2, paging });
+      const whole = await loadEdges({ paging });
 
       expect(batched).toStrictEqual(whole);
       expect(whole.nodes.map(({ label }) => label)).toStrictEqual([
@@ -129,8 +129,8 @@ describe("graph dag service, read in batches", () => {
         { column: "label", direction: "asc", expression: "label" },
       ] as const;
 
-      const batched = await loadDag({ batchSize: 1, sorts });
-      const whole = await loadDag({ sorts });
+      const batched = await loadEdges({ batchSize: 1, sorts });
+      const whole = await loadEdges({ sorts });
 
       expect(batched).toStrictEqual(whole);
       expect(whole.edges.map(({ source }) => source)).toStrictEqual([
@@ -151,7 +151,7 @@ describe("graph dag service, read in batches", () => {
         "INSERT INTO task_links (id, source, target) VALUES (6, NULL, 'Ship'), (7, 'Plan', NULL)",
       );
 
-      const graph = await loadDag();
+      const graph = await loadEdges();
 
       expect(graph.edges).toHaveLength(5);
       expect(graph.warnings).toStrictEqual([
@@ -168,7 +168,7 @@ describe("graph dag service, read in batches", () => {
         "INSERT INTO task_links (id, source, target) VALUES (6, 'Plan', NULL)",
       );
 
-      const graph = await loadDag();
+      const graph = await loadEdges();
 
       expect(graph.warnings).toStrictEqual([
         "1 edge has a NULL source or target, so it is not drawn",
@@ -185,7 +185,7 @@ describe("graph dag service, read in batches", () => {
         "UPDATE task_links SET weight = 'Infinity' WHERE id = 5",
       );
 
-      const graph = await loadDag();
+      const graph = await loadEdges();
 
       expect(
         graph.edges.filter(({ weight }) => weight !== undefined),

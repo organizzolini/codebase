@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { GraphDagModule } from "../../../graph-dag/graph-dag.module";
+import { GraphEdgesModule } from "../../../graph-edges/graph-edges.module";
 import { GraphEntitiesModule } from "../../../graph-entities/graph-entities.module";
 import { GraphOptionsModule } from "../../../graph-options/graph-options.module";
 import { RenderModule } from "../../render.module";
@@ -16,7 +16,7 @@ import { RenderGraphDataCommand } from "./render-graph-data.command";
   controllers: [],
   exports: [RenderGraphDataCommand],
   imports: [
-    GraphDagModule,
+    GraphEdgesModule,
     GraphEntitiesModule,
     GraphOptionsModule,
     RenderModule,

@@ -9,7 +9,7 @@ import { PluralSnakeNamingStrategy } from "../postgresql/postgresql.constants";
 
 import { GraphEdgeError } from "./graph-entities.constants";
 import {
-  Dag,
+  DirectedAcyclicGraph,
   entityColumnNames,
   getGraphEdgeMetadata,
   Graph,
@@ -36,7 +36,7 @@ const tree = (
   tableName: string,
 ): GraphTreeCandidate => ({ entity, tableName });
 
-@Dag()
+@DirectedAcyclicGraph()
 @Graph()
 class BothKindsEdge {
   @GraphSource()
@@ -46,8 +46,8 @@ class BothKindsEdge {
   target!: string;
 }
 
-@Dag()
-class DagEdge {
+@DirectedAcyclicGraph()
+class DirectedAcyclicGraphEdge {
   @GraphSource()
   source!: string;
 
@@ -83,7 +83,7 @@ class InheritingEdge extends EndpointBase {
 
 class InheritedKindEdge extends InheritingEdge {}
 
-@Dag()
+@DirectedAcyclicGraph()
 class MissingSourceEdge {
   @GraphTarget()
   target!: string;
@@ -108,13 +108,13 @@ abstract class SourceBase {
   target!: string;
 }
 
-@Dag()
+@DirectedAcyclicGraph()
 class RedeclaredSourceEdge extends SourceBase {
   @GraphSource()
   override source = "";
 }
 
-@Dag()
+@DirectedAcyclicGraph()
 class RedeclaringSourceEdge extends SourceBase {
   @GraphSource()
   origin!: string;
@@ -135,7 +135,7 @@ class TwoLabelsEdge {
   title!: string;
 }
 
-@Dag()
+@DirectedAcyclicGraph()
 class TwoSourcesEdge {
   @GraphSource()
   origin!: string;
@@ -147,7 +147,7 @@ class TwoSourcesEdge {
   target!: string;
 }
 
-@Dag()
+@DirectedAcyclicGraph()
 class TwoTargetsEdge {
   @GraphTarget()
   destination!: string;
@@ -313,10 +313,10 @@ describe("graph entity utilities", () => {
 
   describe("graph edge utilities", () => {
     describe(getGraphEdgeMetadata, () => {
-      it("records a DAG as directed with its source and target columns", () => {
-        expect(getGraphEdgeMetadata(DagEdge)).toStrictEqual({
+      it("records a directed acyclic graph as directed with its source and target columns", () => {
+        expect(getGraphEdgeMetadata(DirectedAcyclicGraphEdge)).toStrictEqual({
           directed: true,
-          kind: "dag",
+          kind: "directed-acyclic-graph",
           sourceColumn: "source",
           targetColumn: "target",
         });
@@ -371,24 +371,24 @@ describe("graph entity utilities", () => {
       it("accepts a redeclared endpoint that keeps the base property name", () => {
         expect(getGraphEdgeMetadata(RedeclaredSourceEdge)).toStrictEqual({
           directed: true,
-          kind: "dag",
+          kind: "directed-acyclic-graph",
           sourceColumn: "source",
           targetColumn: "target",
         });
       });
 
-      it("rejects a class that is not decorated with @Dag or @Graph", () => {
+      it("rejects a class that is not decorated with @DirectedAcyclicGraph or @Graph", () => {
         expect(() => getGraphEdgeMetadata(UndecoratedEdge)).toThrow(
           new GraphEdgeError(
-            "UndecoratedEdge is not a graph edge: mark it with @Dag() or @Graph()",
+            "UndecoratedEdge is not a graph edge: mark it with @DirectedAcyclicGraph() or @Graph()",
           ),
         );
       });
 
-      it("rejects a class marked with both @Dag and @Graph", () => {
+      it("rejects a class marked with both @DirectedAcyclicGraph and @Graph", () => {
         expect(() => getGraphEdgeMetadata(BothKindsEdge)).toThrow(
           new GraphEdgeError(
-            "BothKindsEdge declares more than one of @Dag and @Graph; keep exactly one",
+            "BothKindsEdge declares more than one of @DirectedAcyclicGraph and @Graph; keep exactly one",
           ),
         );
       });
@@ -396,7 +396,7 @@ describe("graph entity utilities", () => {
       it("rejects an edge with no @GraphSource property", () => {
         expect(() => getGraphEdgeMetadata(MissingSourceEdge)).toThrow(
           new GraphEdgeError(
-            "MissingSourceEdge has no @GraphSource property; a @Dag or @Graph entity needs one",
+            "MissingSourceEdge has no @GraphSource property; a @DirectedAcyclicGraph or @Graph entity needs one",
           ),
         );
       });
@@ -404,7 +404,7 @@ describe("graph entity utilities", () => {
       it("rejects an edge with no @GraphTarget property", () => {
         expect(() => getGraphEdgeMetadata(MissingTargetEdge)).toThrow(
           new GraphEdgeError(
-            "MissingTargetEdge has no @GraphTarget property; a @Dag or @Graph entity needs one",
+            "MissingTargetEdge has no @GraphTarget property; a @DirectedAcyclicGraph or @Graph entity needs one",
           ),
         );
       });
@@ -451,16 +451,20 @@ describe("graph entity utilities", () => {
     });
 
     describe(listGraphEdgeEntities, () => {
-      it("lists the classes decorated with @Dag or @Graph, inherited or not", () => {
+      it("lists the classes decorated with @DirectedAcyclicGraph or @Graph, inherited or not", () => {
         expect(
           listGraphEdgeEntities([
             PlainEntity,
-            DagEdge,
+            DirectedAcyclicGraphEdge,
             UndecoratedEdge,
             InheritedKindEdge,
             DirectedEdge,
           ]),
-        ).toStrictEqual([DagEdge, InheritedKindEdge, DirectedEdge]);
+        ).toStrictEqual([
+          DirectedAcyclicGraphEdge,
+          InheritedKindEdge,
+          DirectedEdge,
+        ]);
       });
 
       it("keeps a class marked with both kinds, so reading it names the conflict", () => {
