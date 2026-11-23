@@ -1,9 +1,8 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { DatabaseModule } from "@codebase/persistence";
+import { DatabaseModule as PersistenceDatabaseModule } from "@codebase/persistence";
 
-import { CAELUNDAS_PROJECT } from "./caelundas-database.constants";
 import { CaelundasDatabaseService } from "./caelundas-database.service";
 import { CAELUNDAS_DATABASE_ENTITIES } from "./data-source.constants";
 
@@ -16,9 +15,9 @@ import { CAELUNDAS_DATABASE_ENTITIES } from "./data-source.constants";
   controllers: [],
   exports: [CaelundasDatabaseService, TypeOrmModule],
   imports: [
-    DatabaseModule.forRoot({
+    PersistenceDatabaseModule.forRoot({
       entities: [...CAELUNDAS_DATABASE_ENTITIES],
-      project: CAELUNDAS_PROJECT,
+      project: "caelundas",
     }),
     TypeOrmModule.forFeature([...CAELUNDAS_DATABASE_ENTITIES]),
   ],

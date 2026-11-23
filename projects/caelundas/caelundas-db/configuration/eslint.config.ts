@@ -19,7 +19,13 @@ export default [
           // vitest: referenced via tsconfig "types" array; it's a devDependency and
           // the @nx/dependency-checks rule misidentifies it as a production dependency.
           // pg: the driver TypeORM loads by name for its Postgres connection.
-          ignoredDependencies: ["@golevelup/ts-vitest", "pg", "vitest"],
+          ignoredDependencies: [
+            "@codebase/testing",
+            "@golevelup/ts-vitest",
+            "pg",
+            "reflect-metadata",
+            "vitest",
+          ],
           ignoredFiles: ["{projectRoot}/configuration/**"],
         },
       ],

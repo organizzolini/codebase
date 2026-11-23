@@ -191,6 +191,23 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           workspaceRelativePrefix: "../../../",
         },
       },
+      {
+        patterns: ["projects/caelundas/caelundas-db"],
+        substitutions: {
+          databaseEntitiesConstant: "CAELUNDAS_DATABASE_ENTITIES",
+          databaseModuleName: "caelundas-database",
+          databaseProject: "caelundas",
+          databaseProjectExpression: '"caelundas"',
+          moduleClassName: "CaelundasDatabaseModule",
+          name: "caelundas-db",
+          persistenceModuleImport:
+            "DatabaseModule as PersistenceDatabaseModule",
+          persistenceModuleName: "PersistenceDatabaseModule",
+          serviceClassName: "CaelundasDatabaseService",
+          type: "projects/caelundas/",
+          workspaceRelativePrefix: "../../../",
+        },
+      },
     ],
     name: "nestjs-database-project",
     templatePath:

@@ -4,7 +4,6 @@ import { createDataSource } from "@codebase/persistence";
 
 import { Migration1793990506900 } from "../../../migrations/1793990506900-migration";
 
-import { CAELUNDAS_PROJECT } from "./caelundas-database.constants";
 import { CalendarEventDerivedTime } from "./modules/calendar-events/calendar-event-derived-time.entity";
 import { CalendarEventTagNode } from "./modules/calendar-events/calendar-event-tag-node.entity";
 import { CalendarEventTag } from "./modules/calendar-events/calendar-event-tag.entity";
@@ -35,5 +34,5 @@ export const CAELUNDAS_DATABASE_MIGRATIONS = [Migration1793990506900] as const;
 export const caelundasDataSource = createDataSource({
   entities: [...CAELUNDAS_DATABASE_ENTITIES],
   migrations: ["migrations/*.ts"],
-  project: CAELUNDAS_PROJECT,
+  project: "caelundas",
 });
