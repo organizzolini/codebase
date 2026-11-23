@@ -1,12 +1,6 @@
-import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
-import {
-  cn,
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@codebase/presentation";
+import { LexemeSection } from "../lexeme-section/lexeme-section";
 
 import type { LexemePronunciation } from "./lexeme-pronunciations.types";
 import type { ReactNode } from "react";
@@ -53,35 +47,27 @@ export function LexemePronunciations(
       className={className}
       data-testid="lexeme-pronunciations"
     >
-      <Collapsible
-        onOpenChange={setIsOpen}
-        open={isOpen}
+      <LexemeSection
+        label="Pronunciation"
+        onToggle={() => {
+          setIsOpen(!isOpen);
+        }}
+        state={isOpen ? "open" : "closed"}
       >
-        <CollapsibleTrigger className="flex w-full items-center justify-between text-sm font-medium">
-          Pronunciation
-          <ChevronDown
-            className={cn(
-              "size-4 transition-transform",
-              isOpen && "rotate-180",
-            )}
-          />
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <dl className="mt-2 space-y-1 text-sm">
-            {pronunciations.map(({ phonetic, variant }) => (
-              <div
-                key={variant}
-                className="flex items-baseline justify-between gap-4"
-              >
-                <dt className="text-xs text-muted-foreground capitalize">
-                  {variant}
-                </dt>
-                <dd>{phonetic}</dd>
-              </div>
-            ))}
-          </dl>
-        </CollapsibleContent>
-      </Collapsible>
+        <dl className="pb-1 text-sm">
+          {pronunciations.map(({ phonetic, variant }) => (
+            <div
+              key={variant}
+              className="flex items-baseline justify-between gap-4"
+            >
+              <dt className="text-xs text-muted-foreground capitalize">
+                {variant}
+              </dt>
+              <dd>{phonetic}</dd>
+            </div>
+          ))}
+        </dl>
+      </LexemeSection>
     </div>
   );
 }

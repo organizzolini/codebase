@@ -604,6 +604,66 @@ describe(PerseusLibraryService, () => {
     vi.useRealTimers();
   });
 
+  it("should write Perseus collection and typed edition fields to frontmatter", async () => {
+    const page = cheerio.load(
+      `<TEI><body><div><head>Section</head><p>Sample text</p></div></body></TEI>`,
+      { xml: true },
+    );
+    const writeTextFilesSpy = vi
+      .spyOn(
+        perseusLibraryProvider as unknown as {
+          writeTextFiles: (
+            filesToWrite: unknown[],
+            authorDirectory: string,
+            frontmatterObject: Record<string, unknown>,
+          ) => Promise<void>;
+        },
+        "writeTextFiles",
+      )
+      .mockResolvedValue(undefined);
+    vi.useFakeTimers();
+    vi.spyOn(perseusLibraryTextExtractionProvider, "extractTextNodes");
+
+    const writePromise = (
+      perseusLibraryProvider as unknown as {
+        writeSourceMarkdownFiles: (
+          args: Record<string, unknown>,
+        ) => Promise<void>;
+      }
+    ).writeSourceMarkdownFiles({
+      $: page,
+      authorSlug: "vergil",
+      dataPath: "/tmp/library/perseus",
+      metadata: {
+        cts_urn: "urn:cts:latinLit:phi0959.phi006.perseus-lat2",
+        editors: ["Editor One"],
+        print_publication_date: "1901",
+        publisher: "Publisher",
+      },
+      rawTitle: "Aeneid",
+      relativeSourcePath: "phi0959/source.xml",
+      titleSlug: "aeneid",
+    });
+    await vi.runAllTimersAsync();
+    await writePromise;
+
+    const frontmatter: unknown = writeTextFilesSpy.mock.calls[0]?.[2];
+
+    expect(frontmatter).toMatchObject({
+      collection: "Perseus",
+      editors: "Editor One",
+      print_year: 1901,
+      publisher: "Publisher",
+      text_metadata: {
+        source_url:
+          "https://raw.githubusercontent.com/PerseusDL/canonical-latinLit/master/phi0959/source.xml",
+      },
+      work_identifier: "urn:cts:latinLit:phi0959.phi006.perseus-lat2",
+    });
+
+    vi.useRealTimers();
+  });
+
   it("should add text entity and write markdown in source-text flow", async () => {
     const writeSourceMarkdownFilesSpy = vi
       .spyOn(

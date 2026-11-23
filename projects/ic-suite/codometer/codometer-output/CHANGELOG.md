@@ -1,3 +1,17 @@
+## 0.0.90 (2026-11-22)
+
+### 🩹 Fixes
+
+- **integration,codometer:** 🐛 keep a complete codometer baseline so pull request reports compare against main ([#2495](https://github.com/organizzolini/codebase/pull/2495), [#2493](https://github.com/organizzolini/codebase/issues/2493))
+
+## 0.0.89 (2026-11-22)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.89
+- Updated codometer-measurement to 0.0.89
+- Updated codometer-core to 0.0.89
+
 ## 0.0.88 (2026-11-21)
 
 ### 💅 Refactors

@@ -14,8 +14,8 @@ export interface SearchLandingProperties {
 // 🧩 Component
 
 /**
- * The empty state of the search page: the Lexico logo, centered below the
- * search bar, until there is a query to answer.
+ * The empty state of the search page: the Lexico logo, as wide as the
+ * search bar and centered below it, until there is a query to answer.
  */
 export function SearchLanding(
   properties: Readonly<SearchLandingProperties>,
@@ -38,9 +38,7 @@ export function SearchLanding(
       className={className}
       data-testid="search-landing"
     >
-      <div className="flex justify-center py-8">
-        <Logo />
-      </div>
+      <Logo className="w-full max-w-xl text-foreground" />
     </div>
   );
 }

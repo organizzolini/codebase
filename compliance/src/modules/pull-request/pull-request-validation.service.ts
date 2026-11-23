@@ -133,26 +133,22 @@ export class PullRequestValidationService {
       };
     }
 
-    const view = this.pullRequestGithubService.run([
-      "pr",
-      "view",
-      String(context.number),
-      "--json",
-      "title,commits",
-    ]);
+    const commits = this.pullRequestGithubService.readList(
+      `repos/{owner}/{repo}/pulls/${String(context.number)}/commits`,
+    );
 
-    if (!view.succeeded) {
+    if (!commits.succeeded) {
       return {
         ...base,
         failures: [
-          `❌ Unable to read pull request ${String(context.number)}: gh pr view failed (${this.pullRequestGithubService.describeFailure(view)})`,
+          `❌ Unable to read the commits of pull request ${String(context.number)}: ${this.pullRequestGithubService.describeFailure(commits)}`,
         ],
       };
     }
 
     const resolution =
-      this.pullRequestReleaseSignificanceService.resolveFromDocument(
-        view.standardOutput,
+      this.pullRequestReleaseSignificanceService.resolveFromCommits(
+        commits.standardOutput,
       );
 
     if (!resolution.resolved) {

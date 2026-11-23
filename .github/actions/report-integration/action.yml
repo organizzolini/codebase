@@ -25,13 +25,16 @@ runs:
   using: composite
   steps:
     # A green `main` build is the baseline the next pull request is measured
-    # against, so its reports are gathered here and uploaded below. See the
-    # `collect-codometer-baseline` command of the `integration` project.
+    # against. A push builds only what it affects, so its reports are laid over
+    # the earlier baseline, which keeps the baseline complete, and uploaded
+    # below. See the `collect-codometer-baseline` command of `integration`.
     - name: 🧺 Collect Codometer Baseline
       if: >-
         inputs.target == 'build-projects' &&
         inputs.is-main-branch == 'true' &&
         inputs.run-outcome == 'success'
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
       shell: bash
       run: |
         NODE_OPTIONS='' node --import @swc-node/register/esm-register \

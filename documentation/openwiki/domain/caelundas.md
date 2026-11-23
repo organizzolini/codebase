@@ -1,48 +1,50 @@
 ---
 type: "Reference"
 title: "Caelundas — Astronomical Calendar Generator"
-description: "Documents the Caelundas application: computes planetary positions minute-by-minute using Swiss Ephemeris (JPL DE431), detects astronomical events in two passes (perfective moments to progressive spans), stores in SQLite, and renders iCalendar (.ics) and JSON output. Covers the ephemeris data dependency, the timezone-from-coordinates convention, and the database schema convention."
-tags: ["domain", "astronomy", "calendar", "cli", "nestjs", "sqlite", "swiss-ephemeris"]
+description: "Documents the Caelundas application: computes planetary positions minute-by-minute using Swiss Ephemeris (JPL DE431), detects astronomical events in two passes (perfective moments to progressive spans), stores in Postgres, and renders iCalendar (.ics) and JSON output. Covers the ephemeris data dependency, the timezone-from-coordinates convention, and the database schema convention."
+tags: ["domain", "astronomy", "calendar", "cli", "nestjs", "postgres", "graphql", "swiss-ephemeris"]
 verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-29T03:39:46.432Z
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 sources:
-  - id: openwiki-source-ec9b349af05b637843a35799
-    resource: repo://projects/caelundas/caelundas-cli/AGENTS.md
+  - id: openwiki-source-0f4bfe3580ac4d155d52eb07
+    resource: repo://documentation/adr/0031-move-caelundas-from-sqlite-to-postgres.md
+  - id: openwiki-source-9cd849cde60fb96367315ae3
+    resource: repo://projects/caelundas/caelundas-api/AGENTS.md
+  - id: openwiki-source-1215badfe096ff2578655864
+    resource: repo://projects/caelundas/caelundas-api/README.md
   - id: openwiki-source-365913b525ddd217ee2335b6
     resource: repo://projects/caelundas/caelundas-cli/README.md
   - id: openwiki-source-545934920134a3de682ac74a
     resource: repo://projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.command.ts
   - id: openwiki-source-60fb0607238314cc882d1567
     resource: repo://projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.module.ts
-  - id: openwiki-source-3b6232ded1302c6a1b4ab533
-    resource: repo://projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts
-  - id: openwiki-source-39eab453106faf116aed8136
-    resource: repo://projects/caelundas/caelundas-cli/src/modules/database/database.module.ts
-  - id: openwiki-source-e3e75e1aafdd1cca78699b02
-    resource: repo://projects/caelundas/caelundas-cli/src/modules/database/entities/calendar-event.entity.ts
-  - id: openwiki-source-f1b6ed7a420bf27f9762675e
-    resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.constants.ts
-  - id: openwiki-source-a5d8f4d4980ee1192c31a360
-    resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.service.ts
+  - id: openwiki-source-a08e93f58297ffb23e94abed
+    resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/modules/ephemeris-download/ephemeris-download.constants.ts
+  - id: openwiki-source-aa829bf3352cd5a05754b2bb
+    resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/modules/ephemeris-download/ephemeris-download.service.ts
+  - id: openwiki-source-f30e054754ad448bc93e8c09
+    resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/modules/ephemeris-download/ephemeris-download.utilities.ts
   - id: openwiki-source-edceb0d5d036b656596819fc
     resource: repo://projects/caelundas/caelundas-cli/src/modules/input/input.constants.ts
   - id: openwiki-source-3776cc2094cc672d529729bb
     resource: repo://projects/caelundas/caelundas-cli/src/modules/perfective/perfective.service.ts
   - id: openwiki-source-da367e7de2a59570512e67ad
     resource: repo://projects/caelundas/caelundas-cli/src/modules/progressive/progressive.service.ts
-  - id: openwiki-source-6458d674490c1b53b5ebd931
-    resource: repo://projects/caelundas/caelundas-web/AGENTS.md
-  - id: openwiki-source-657b7d2411fdfbc3c292a710
-    resource: repo://projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts
+  - id: openwiki-source-3a9867dedac0acd2f55b360d
+    resource: repo://projects/caelundas/caelundas-db/README.md
+  - id: openwiki-source-2956a7015dc2fa051f7dad32
+    resource: repo://projects/caelundas/caelundas-db/src/modules/caelundas-database/modules/calendar-events/calendar-event.entity.ts
+  - id: openwiki-source-2760c04a4d54369a211adb1e
+    resource: repo://projects/caelundas/caelundas-web/README.md
   - id: openwiki-source-30303506efec7e81df9c1f23
     resource: repo://projects/caelundas/caelundas-web/src/routes/index.tsx
-generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
 ---
 
 # Caelundas — Astronomical Calendar Generator
 
-**Caelundas** turns the sky into a calendar. The CLI computes planetary positions minute-by-minute over a configurable date range using the Swiss Ephemeris (JPL DE431 data files), detects every astronomical event — aspects, phases, eclipses, retrogrades, ingresses, solstices, twilights, and more — stores them in SQLite, and renders an iCalendar (`.ics`) file and a companion JSON file. A TanStack Start web application reads the same SQLite database (bundled at build time) and provides a browsable interface.
+**Caelundas** turns the sky into a calendar. The CLI computes planetary positions minute-by-minute over a configurable date range using the Swiss Ephemeris (JPL DE431 data files), detects every astronomical event — aspects, phases, eclipses, retrogrades, ingresses, solstices, twilights, and more — stores them in Postgres, and renders an iCalendar (`.ics`) file and a companion JSON file. The domain is four projects: `caelundas-cli` (detection and ingest), `caelundas-db` (the shared Postgres schema), `caelundas-api` (a NestJS GraphQL API over that schema) and `caelundas-web` (a TanStack Start app that holds no data of its own and reads everything from the API).
 
 The name is a portmanteau of **caelum** (Latin: sky, heavens) and **calendar**.
 
@@ -58,7 +60,7 @@ sequenceDiagram
     participant PosCalc as Position Calculation
     participant Perfective as Perfective Detection
     participant Progressive as Progressive Spans
-    participant SQLite as SQLite (caelundas_development)
+    participant Postgres as Postgres (caelundas_development)
     participant Renderer as iCalendar/JSON Renderer
 
     Config->>EphemerisService: LATITUDE, LONGITUDE, START_DATE, END_DATE
@@ -69,22 +71,38 @@ sequenceDiagram
     Perfective->>Perfective: Scan minute-by-minute for exact moments
     Perfective-->>Progressive: Perfective events (instants)
     Progressive->>Progressive: Convert moments to spans (orb windows, retrograde periods)
-    Progressive-->>SQLite: Upsert all events (natural key: summary, start, lat, lon)
-    SQLite-->>Renderer: Query events for range & location
+    Progressive-->>Postgres: Upsert all events (natural key: summary, start, end, latitude, longitude)
+    Postgres-->>Renderer: Query events for range & location
     Renderer->>Renderer: Build VTIMEZONE from IANA rules + VEVENT components
     Renderer-->>Config: Write output/caelundas_<start>_<end>.ics + .json
 ```
 
-### NestJS Module Structure (40+ modules)
+### Project Layout
 
-The CLI is organized as a NestJS application with `nest-commander` for CLI handling. The root module (`caelundas-cli.module.ts`) imports all domain modules:
+| Project | Kind | Role |
+|---------|------|------|
+| `caelundas-cli` | NestJS CLI (nest-commander) | Detects events, upserts them into Postgres, renders `.ics` and JSON; also the `night-sky` and `download-ephemeris` commands |
+| `caelundas-db` | NestJS library (`@codebase/caelundas-db`) | The TypeORM entities, the one migration, and the service that rebuilds the read model; the single definition of what an event is |
+| `caelundas-api` | NestJS GraphQL application | Serves the stored events and the night sky to the web app over GraphQL, with Relay pagination and request-scoped dataloaders |
+| `caelundas-web` | TanStack Start application | Browsable calendar UI with a night-sky backdrop; calls the API from the browser |
 
-| Category | Modules |
-|----------|---------|
-| **Core** | `InputModule`, `MathModule`, `EphemerisModule`, `CalendarModule`, `DatabaseModule`, `CalendarEventsModule`, `DatetimeModule` |
-| **Event Families** | `AspectsModule`, `MajorAspectsModule`, `MinorAspectsModule`, `TripleAspectsModule`, `QuadrupleAspectsModule`, `QuintupleAspectsModule`, `SextupleAspectsModule`, `SpecialtyAspectsModule`, `StelliumModule`, `EclipsesModule`, `RetrogradesModule`, `IngressesModule`, `DailyCyclesModule`, `MonthlyLunarCycleModule`, `AnnualSolarCycleModule`, `TwilightsModule`, `PhasesModule` |
-| **Detection Pipeline** | `PerfectiveModule`, `ProgressiveModule` |
-| **Utilities** | `EphemerisDownloadModule` |
+### CLI Module Structure
+
+The CLI is a NestJS application using `nest-commander`. Modules live under `src/modules/`, nested where one belongs to another:
+
+```text
+src/modules/
+├── caelundas/        # Root command: the pipeline
+├── input/            # Coordinate and date validation, timezone lookup
+├── ephemeris/        # Swiss Ephemeris access; child modules include datetime/, math/, ephemeris-download/
+├── perfective/       # Exact-moment detection; children: eclipses/, phases/, retrogrades/, ingresses/, twilights/, daily-cycles/, annual-solar-cycle/, monthly-lunar-cycle/
+├── aspects/          # Aspect detection; a child module per aspect family, plus stellium/
+├── progressive/      # Spans derived from those moments
+├── night-sky/        # Stars and constellation figures for the web's night sky
+├── calendar-events/  # Upserting and range queries over stored events
+├── tags/             # Resolving raw tag strings to nodes of the tag tree
+└── calendar/         # iCalendar and JSON rendering and output
+```
 
 Each domain module follows the standard structure: `<domain>.module.ts`, `<domain>.service.ts`, `<domain>.constants.ts`, `<domain>.types.ts`, and tests.
 
@@ -92,11 +110,12 @@ Each domain module follows the standard structure: `<domain>.module.ts`, `<domai
 
 - **Framework**: NestJS (modules, DI, providers)
 - **CLI runner**: `nest-commander` (`CommandRunner` + `@Command()` decorator)
-- **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `input.constants.ts`)
-- **Logging**: `@codebase/observability` — `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
-- **Database**: SQLite via TypeORM and `@codebase/persistence`
+- **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `src/constants.ts`, with the observer input schema in `input.constants.ts`)
+- **Logging**: `@codebase/observability`, a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
+- **Database**: Postgres 18 through TypeORM, `@codebase/persistence` and `@codebase/caelundas-db` (see ADR 0031, which moved Caelundas off SQLite)
+- **API**: NestJS + Apollo GraphQL, code-first schema, Relay connections
 - **Ephemeris**: Swiss Ephemeris (`sweph` native bindings) from JPL DE431
-- **Web**: TanStack Start, TanStack Router, React 19, Tailwind CSS 4, Vite, sqlite-wasm
+- **Web**: TanStack Start, TanStack Router, React 19, Tailwind CSS 4, Vite, a generated GraphQL client
 
 ## Configuration
 
@@ -116,6 +135,8 @@ Every field is optional. Defaults:
 - Output directory: `./output`
 
 **Timezone is derived from coordinates** via `@photostructure/tz-lookup` rather than configured separately — a calendar whose location and timezone could disagree is a calendar with silently wrong sunrise times.
+
+The database is the `caelundas` schema of `caelundas_development`, read only through `CAELUNDAS_POSTGRES_*` variables (database, host, password, port, schema, username), each defaulting to the local Docker Postgres; the unprefixed `POSTGRES_*` admin login is never read.
 
 **Supported date range**: `1900-01-01` to `2100-12-31` (the span of the JPL DE431 ephemeris data; the underlying files cover 1800–2399).
 
@@ -205,7 +226,7 @@ await this.calendarEventsService.upsert(allEvents, observer);
 | Family | Events |
 | ------ | ------ |
 | **Aspects** | Major (conjunct 0°, opposite 180°, sextile 60°, square 90°, trine 120°), minor (semi-sextile 30°, semi-square 45°, sesquiquadrate 135°, quincunx 150°), and harmonic aspects between Sun, Moon, planets, Chiron, Lilith, four asteroids, north lunar node, lunar apogee; forming, exact, and dissolving moments, and the spans between them |
-| **Compound Aspects** | Triple (grand trine, hammer, T-square, yod), quadruple (boomerang, butterfly, cradle, grand cross, hourglass, kite, mystic rectangle), pentagram, hexagram, and stelliums of four or more bodies |
+| **Compound Aspects** | Triple (grand trine, hammer, T-square, yod), quadruple (boomerang, butterfly, cradle, grand cross, hourglass, kite, mystic rectangle), pentagram, hexagram, and stelliums of three or more bodies |
 | **Monthly Lunar Cycle** | Eight Moon phases, each as an instant and as the span until the next |
 | **Planetary Phases** | Mercury, Venus, Mars: conjunctions, Mars's opposition, greatest elongations, brightest, rise/set, and morning/evening star visibility spans |
 | **Eclipses** | Solar and lunar: begin, maximum, and end (geocentric and topocentric) |
@@ -223,7 +244,7 @@ Where astronomy and astrology have multiple accepted definitions, Caelundas pick
 - **Moon phases**: Timed by Moon's apparent geocentric ecliptic longitude minus Sun's (elongation E), normalized to [0°, 360°). Illumination is not used. Primary phases at 0°, 90°, 180°, 270°; intermediate phases at 45° octants. Each phase stamped at the nearest whole minute (matching US Naval Observatory rounding).
 - **Lunar nodes**: True (osculating) node, not mean node — wobbles up to ~1.5° around mean.
 - **Lilith vs. Lunar Apogee**: Both tracked separately — Lilith = mean apogee (smooth), lunar apogee = osculating (instantaneous, can stray tens of degrees).
-- **Stelliums**: Four or more bodies pairwise conjunct within 8° orb (maximal cliques, not chains).
+- **Stelliums**: Three or more bodies pairwise conjunct within 8° orb (maximal cliques, not chains).
 - **Decans**: Equal 10° thirds of a sign, numbered 1–3 from sign start. Decan 1 ingress only on retrograde re-entry from decan 2.
 - **Peak ingress**: Body reaches 15° within its sign (sign midpoint) in either direction.
 - **Zenith/nadir**: Local altitude extrema found minute-by-minute (not meridian transit).
@@ -231,67 +252,50 @@ Where astronomy and astrology have multiple accepted definitions, Caelundas pick
 - **Rise/set**: Topocentric with parallax; Sun upper limb -0.833°, Moon topocentric semidiameter.
 - **Twilights**: Sun's refracted altitude crosses -6° (civil), -12° (nautical), -18° (astronomical). Daylight = civil dawn → civil dusk. Night = astronomical dusk → astronomical dawn.
 
-## Database Schema (SQLite)
+## Database Schema (Postgres)
 
-The SQLite file lives at `CAELUNDAS_SQLITE_DATABASE` (default: `output/database.sqlite` in the CLI project, gitignored). The migration runs on startup; a run creates the file and tables when missing.
+The schema lives in the `caelundas-db` library: TypeORM entities, one migration (with `-up.sql` and `-down.sql` beside it, linted by sqlfluff and checked by squawk) and `CaelundasDatabaseService`. The CLI writes through these entities and the API reads through them, so neither carries its own idea of the schema. Apply the migration with `nx run caelundas-db:migration:run` before the first run; nothing synchronizes or migrates on start.
 
-### Core Tables
+| Entity | Table | Holds |
+|--------|-------|-------|
+| `CalendarEvent` | `calendar_events` | One detected event for one observer location |
+| `Tag` | `tags`, `tags_closure` | The tag tree and its closure table |
+| `CalendarEventTag` | `calendar_event_tags` | An event carrying a tag |
+| `Star`, `Constellation`, `ConstellationLine` | `stars`, `constellations`, `constellation_lines` | The night sky the web backdrop is drawn from |
+| `TagNode`, `CalendarEventTagNode` | `tag_nodes`, `calendar_event_tag_nodes` | Derived read-model tables |
+| `CalendarEventDerivedTime` | `calendar_event_derived_times` | Derived view: an event's UTC and local year, day, hour and so on |
 
-**`calendar_events`** — One row per detected event for an observer location.
+### Calendar events
 
-| Column | Type | Purpose |
-|--------|------|---------|
-| `id` | UUID (v7) | Primary key |
-| `summary` | TEXT | Event title |
-| `description` | TEXT | Event detail |
-| `start` | TEXT (ISO 8601 UTC) | Instant or span start |
-| `end` | TEXT (ISO 8601 UTC) | Instant or span end |
-| `color` | TEXT (nullable) | Display hint |
-| `location` | TEXT (nullable) | Display hint |
-| `latitude` | TEXT (6 decimals) | Observer latitude for natural key |
-| `longitude` | TEXT (6 decimals) | Observer longitude for natural key |
-| `timezone` | TEXT | IANA zone derived from coordinates |
-| `created_at`, `updated_at` | TEXT (ISO 8601 UTC) | Audit columns |
+`calendar_events` columns: `summary`, `description`, `start` and `end` (`timestamptz`, equal for an instant), nullable `color` and `location` display hints, `latitude` and `longitude` (`numeric(9,6)`, carried as exact text), `timezone` (the IANA zone derived from coordinates), plus a database-assigned `uuidv7()` id and audit columns.
 
-**Natural key**: `(summary, start, end, latitude, longitude)` — unique.
+**Natural key**: `(summary, start, end, latitude, longitude)`, unique.
 - Re-running a range updates rows in place (`updated_at` advances, `created_at` unchanged).
-- Overlapping ranges update overlap and add new events.
+- Overlapping ranges update the overlap and add new events.
 - A second location adds its own rows.
 - Edge-spanning events (e.g., a retrograde) are included in that range's files.
 
-**Times**: `start`/`end` are ISO 8601 UTC text (e.g., `2026-03-04T15:20:00.000Z`) stored via `createMomentTransformer` — they compare/sort as instants. `timezone` names the observer's IANA zone for local-time rendering.
+### Tag tables
 
-### Tag Tables
-
-Tags are not a column; they live in a tree with closure table for efficient ancestry queries.
+Tags are not a column; they live in a tree with a closure table.
 
 | Table | Purpose |
 |-------|---------|
-| `tags` | Tree of labels: `name` (unique among siblings), nullable `parent_id`. Roots = dimensions (Type, Planet, Sign, Element, Modality, Polarity, Decan, Aspect Nature, Aspect Harmonic, Phase, Lunar Phase, Synodic Stage, Motion, Temporality, Season, Domain, Dignity, Focal Body, Eclipse Frame, Time of Day). |
-| `tags_closure` | `(ancestor_id, descendant_id)` per pair, self-pairs included. Enables plain-join ancestor/descendant/depth queries. |
-| `calendar_event_tags` | Event–tag links keyed on `(calendar_event_id, tag_id)`, cascading both ways. Second index leads with tag. |
+| `tags` | Tree of labels: a `name` unique among siblings and a nullable `parent_id`; roots are independent dimensions (Type, Planet, Sign, Element, Modality, Polarity, Decan, Aspect Nature, Aspect Harmonic, Phase, Lunar Phase, Synodic Stage, Motion, Temporality, Season, Domain, Dignity, Focal Body, Eclipse Frame, Time of Day) |
+| `tags_closure` | `(ancestor_id, descendant_id)` per pair, self-pairs included, so ancestors, descendants and depth are plain joins |
+| `calendar_event_tags` | Event-tag links keyed on `(calendar_event_id, tag_id)`, with a second index leading with the tag |
 
-**Upsert classification**: `classifyEvent` (in `tags.utilities.ts`) turns each event's raw tags into root-to-node paths, inserting missing nodes via `TreeRepository`. Static maps in `tags/tag-map.constants.ts` and `tags/tag-dimensions.constants.ts` resolve raw tags → paths. Unknown raw tags fall back to a root of their own. Each event links only to the deepest node of each branch; ancestors carried through closure table.
+The upsert classifies each event's raw tags into paths of the tree using a static map in `src/modules/tags/`, inserting missing nodes; an unknown raw tag falls back to a root of its own. An event links only to the deepest node of each branch it is classified under and carries the nodes above through the closure table.
 
-### Read Model for Web App
+### Read model
 
-The same SQLite file is read by `caelundas-web`. The migration creates:
-- `tag_nodes` — each tag's depth, root, and path (materialized, not a view)
-- `calendar_event_tag_nodes` — one row per event and tag (ancestors included, `is_direct` marks given tags)
-- `calendar_events_derived` view — each event with duration, temporality, and UTC time parts
+The derived times are a plain view, computed from the event on every read. The two derived tag tables are rebuilt by `CaelundasDatabaseService.refreshReadModel`, one insert-select each, inside the same transaction that wrote the events, so a failed refresh stores nothing and a reader never sees the tables half rebuilt.
 
-These are stored tables (not views) because computing depth/root/path per tag via correlated subquery would repeat for every grouping. `CalendarEventsService.upsert` ends each transaction with `DatabaseService.refreshReadModel`, running `data/events-read-model.sql`, so the file is always web-ready.
+### Persistence details
 
-### Persistence Details
-
-- `CalendarEventsService.upsert` runs in one transaction
-- Batches rows under SQLite's 32,766-parameter limit
-- Uses `ON CONFLICT … DO UPDATE` on natural key
-- Replaces each event's `calendar_event_tags` links with newly classified nodes
-- Writes `created_at`/`updated_at` manually (TypeORM doesn't advance `updated_at` on conflict here)
-- Reads back IDs with one select per batch (SQLite has no `RETURNING` through TypeORM)
-- `TagsService.resolve` takes no lock; a second writer waits for the first's transaction
-- SQLite allows one writer at a time; a second waits 5 seconds then fails with `SQLITE_BUSY`
+- `CalendarEventsService.upsert` runs in one transaction, using `INSERT … ON CONFLICT (summary, start, end, latitude, longitude) DO UPDATE`
+- Rows go in batches sized by their columns to stay under Postgres's 65,535 bind parameters per statement
+- Postgres takes concurrent writers, but two runs that insert the same missing tag at once make the second fail on the tag's unique name; run it again
 
 ## CLI Commands
 
@@ -299,43 +303,46 @@ These are stored tables (not views) because computing depth/root/path per tag vi
 # One-time ephemeris download (~2 MB)
 nx run caelundas-cli:download-ephemeris
 
-# Generate calendar (creates output/database.sqlite and tables on first run)
+# Create the schema in the local Postgres
+nx run caelundas-db:migration:run
+
+# Generate the calendar and store its events
 nx run caelundas-cli:start
+
+# Fill the stars and constellation figures the web night sky is drawn from
+nx run caelundas-cli:start:night-sky --stars hygdata_v41.csv \
+  --constellations constellations.json --lines constellations.lines.json
 
 # REPL against the service graph
 nx run caelundas-cli:repl
 
-# Static checks
-nx run caelundas-cli:typecheck
-nx run caelundas-cli:lint-code --configuration=write
-
-# Testing (three tiers)
-nx run caelundas-cli:vitest:unit          # Fast (<100ms) — pure logic, mocked DI
-nx run caelundas-cli:vitest:integration   # Moderate (1-2s) — real database I/O
-nx run caelundas-cli:vitest:end-to-end    # Slow (30-60s) — full CLI execution
+# Testing (integration and end-to-end start a Testcontainers Postgres; Docker must be running)
+nx run caelundas-cli:vitest:unit
+nx run caelundas-cli:vitest:integration
+nx run caelundas-cli:vitest:end-to-end
 ```
+
+The `night-sky` command reads three files downloaded beforehand and never committed: the HYG star database v4.1 (CC BY-SA 4.0), and d3-celestial's constellation names and figures. It stores stars to magnitude 6.5 at declination -45 or north, the 88 IAU constellations, and each figure's segments between two stored stars, replacing what an earlier run wrote in one transaction. `caelundas-api` reads them once at startup, so run it before starting the API.
+
+## API (caelundas-api)
+
+A NestJS + Apollo GraphQL application that reads the Caelundas Postgres through `CaelundasDatabaseModule` and serves events and the night sky to `caelundas-web`. The schema is code-first, emitted to the gitignored `src/schema.gql`; pagination is Relay connections and lookups go through request-scoped dataloaders. Because the web app calls it from another origin, it answers cross-origin requests from the origins listed in `CAELUNDAS_API_CORS_ORIGINS` (none are allowed when unset). Start it with `nx run caelundas-api:start`.
 
 ## Companion Web Application (caelundas-web)
 
-**Type**: Server-rendered React 19 app (TanStack Start), fully static in single-page mode.
+**Type**: Server-rendered React 19 app (TanStack Start).
 
-**Data Pipeline**:
-1. `caelundas-cli` owns the database and leaves it web-ready (read-model tables rewritten each run)
-2. `scripts/build-events-database.ts` writes `output/events.sqlite`:
-   - With `ingested` config: copies `caelundas-cli/output/database.sqlite`
-   - Default (CI, `start`): creates from migration's `-up.sql`, seed `data/events-seed.sql`, and read-model SQL
-3. `nx run caelundas-web:build-database` writes `output/events.sqlite` (gitignored)
-4. Vite emits the database file, a Web Worker, and `sqlite-wasm` as fingerprinted assets
-5. In browser: `events-database.worker.ts` downloads the file, opens read-only in memory with sqlite-wasm, answers selects
+**Data**: The app holds no data of its own. Every event, facet, filter collection, calendar window and night-sky star comes from the `caelundas-api` GraphQL API, which reads the Caelundas Postgres. The API's address is `VITE_CAELUNDAS_API_URL` (default `http://localhost:6173/graphql`), read when the app is built or served, and the browser calls the API directly.
+
+**Setup order**: migrate the database (`caelundas-db:migration:run`), fill it with events and the night sky (`caelundas-cli`), start the API (`caelundas-api:start`), then the app (`caelundas-web:start`, port 8967).
 
 **Architecture**:
-- **Routing**: TanStack Router, file-based from `src/routes/` (`index.tsx` is the calendar page)
+- **Routing**: TanStack Router, file-based from `src/routes/`
 - **UI**: ReUI event calendar from `@codebase/presentation` (composed, never edited)
-- **Data**: `EventsDatabase` interface behind `SqlExecutor`; browser executor posts to worker, test executor uses `node:sqlite`
-- **Filters**: `compileEventFilter` turns ReUI filter tree JSON into SQL conditions
-- **Time handling**: Date, weekday, hour, duration computed in each event's own zone via `event_local_*` SQL functions registered in worker and tests
+- **API client**: `src/graphql/generated/` is committed output of GraphQL Code Generator from the documents in `src/graphql/operations/` and the schema `caelundas-api` writes on boot (`nx run caelundas-web:codegen`, with `codegen:check` failing on a stale file); the build reads the committed files and never needs the API
+- **Night sky**: the API returns an SVG from its `nightSky` query; the backdrop is tuned through `sky.*` link parameters (observer latitude and longitude, field of view, drift speed, magnitude limit, colors, constellation figures, the ecliptic)
 
-**Responsive**: Verified at 320/375px (phone), 768/800px (tablet), 1024/1280px (desktop). All views (Month, Week, Three-day, Day, Agenda, Timeline) work at all widths.
+**Responsive**: Verified at phone, tablet and desktop widths.
 
 ## Performance
 
@@ -375,8 +382,8 @@ Environment variables injected via Secret (`kubectl create secret generic caelun
 
 1. Implement root command logic in `caelundas.command.ts` `run()`, or delegate to injected services
 2. Add domain command modules under `src/modules/<domain>/` with NestJS module, command, service, types, constants
-3. Register in root module (`caelundas-cli.module.ts`)
-4. Extend `environmentSchema` in `caelundas-cli.constants.ts` (or `input.constants.ts`) for new env vars
+3. Register in the root module
+4. Extend `environmentSchema` in `src/constants.ts` (or `input.constants.ts`) for new env vars
 
 ### Logging
 

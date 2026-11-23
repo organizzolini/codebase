@@ -3,13 +3,14 @@ import { InjectRepository } from "@nestjs/typeorm";
 import numberToWords from "number-to-words";
 import { Repository } from "typeorm";
 
-import { Lexeme, Translation } from "@codebase/lexico-db";
+import { type Form, Lexeme, Translation } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
 import { WordsService } from "../lexemes/modules/words/words.service";
 import { NumeralsService } from "../numerals/numerals.service";
 
 import {
+  MANUAL_FORM_WORDS,
   MANUAL_LEXEMES_TO_DELETE,
   PRAENOMEN_ABBREVIATIONS,
 } from "./manual.constants";
@@ -141,6 +142,23 @@ export class ManualService {
     this.logger.info("🔢 Ingested Roman numerals");
   }
 
+  /** Links each manual form to the words it is written as, so literature can reach them. */
+  private async linkFormWords(
+    lexeme: Lexeme,
+    forms: Form[] | undefined,
+  ): Promise<void> {
+    const formsByWord = new Map<string, Set<Form>>();
+    for (const form of forms ?? []) {
+      for (const word of MANUAL_FORM_WORDS.get(form) ?? []) {
+        const plain = word.normalize("NFD").replaceAll(/[\u0300-\u036F]/gu, "");
+        formsByWord.set(plain, (formsByWord.get(plain) ?? new Set()).add(form));
+      }
+    }
+    if (formsByWord.size > 0) {
+      await this.wordsService.upsertWordsAndJunctions(formsByWord, lexeme);
+    }
+  }
+
   /**
    * Resolves praenomen gender for manual lexeme ingestion.
    */
@@ -164,6 +182,7 @@ export class ManualService {
     });
     const lexeme = await this.lexemesRepository.save(manual);
     await this.wordsService.ingestLexemeWords(lexeme);
+    await this.linkFormWords(lexeme, lexeme.forms);
     this.logger.info("✏️ Created lemma:disambiguator", undefined, {
       disambiguator: manual.disambiguator,
       lemma: manual.lemma,

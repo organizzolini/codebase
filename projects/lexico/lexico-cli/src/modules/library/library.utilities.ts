@@ -1,3 +1,15 @@
+import { createHash } from "node:crypto";
+
+import _ from "lodash";
+
+import {
+  MAXIMUM_SLUG_SEGMENT_LENGTH,
+  MAXIMUM_TITLE_LENGTH,
+  SLUG_HASH_LENGTH,
+} from "./library.constants";
+
+import type { TextCollection } from "@codebase/lexico-db";
+
 /**
  * Clean up common Latin Library boilerplate patterns.
  */
@@ -93,4 +105,67 @@ export function isEnglishBoilerplate(line: string): boolean {
     stopWordCount >= 3 ||
     (words.length > 5 && stopWordCount / words.length > 0.2)
   );
+}
+
+/**
+ * Pulls the typed Text attributes out of extracted source metadata, leaving the rest.
+ */
+export function splitTextAttributes(
+  collection: TextCollection,
+  metadata: Record<string, string | string[] | undefined>,
+): { attributes: Record<string, unknown>; remaining: Record<string, unknown> } {
+  const {
+    cts_urn: workIdentifier,
+    edition,
+    editors,
+    print_publication_date: printDate,
+    publisher,
+    ...remaining
+  } = metadata;
+  const printYear =
+    typeof printDate === "string" ? /\d{4}/.exec(printDate)?.[0] : undefined;
+  const attributes = _.omitBy(
+    {
+      collection,
+      edition,
+      editors: Array.isArray(editors) ? editors.join(", ") : editors,
+      print_year: printYear === undefined ? undefined : Number(printYear),
+      publisher,
+      work_identifier: workIdentifier,
+    },
+    (value) => value === undefined,
+  );
+  return { attributes, remaining };
+}
+
+/**
+ * Kebab-cases a name into one slug segment of at most 40 characters. A longer
+ * name is cut at a word boundary and given a short hash of the full name, so
+ * two long names with the same start still get different segments.
+ */
+export function toBoundedSlug(name: string): string {
+  const slug = _.kebabCase(name);
+  if (slug.length <= MAXIMUM_SLUG_SEGMENT_LENGTH) return slug;
+  const hash = createHash("sha1")
+    .update(slug)
+    .digest()
+    .readUInt32BE(0)
+    .toString(36)
+    .padStart(SLUG_HASH_LENGTH, "0")
+    .slice(-SLUG_HASH_LENGTH);
+  const length = MAXIMUM_SLUG_SEGMENT_LENGTH - SLUG_HASH_LENGTH - 1;
+  const boundary = slug.slice(0, length + 1).lastIndexOf("-");
+  const prefix = slug.slice(0, boundary > 0 ? boundary : length);
+  return `${prefix}-${hash}`;
+}
+
+/**
+ * Cuts a title to the 128 characters the text table stores, at a word
+ * boundary, marking the cut with an ellipsis.
+ */
+export function toBoundedTitle(title: string): string {
+  if (title.length <= MAXIMUM_TITLE_LENGTH) return title;
+  const length = MAXIMUM_TITLE_LENGTH - 1;
+  const boundary = title.slice(0, length + 1).lastIndexOf(" ");
+  return `${title.slice(0, boundary > 0 ? boundary : length).trimEnd()}…`;
 }

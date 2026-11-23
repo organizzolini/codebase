@@ -366,6 +366,18 @@ describe(ChangesService, () => {
     );
   });
 
+  it("says nothing of a project the baseline has and this run did not build", () => {
+    const workingDirectory = writeWorkspace({
+      ".baseline/packages/logging/codometer-report.json": buildReport([
+        buildMetricTarget({ value: 40 }),
+      ]),
+    });
+
+    service.collect({ baselineDirectory: ".baseline", workingDirectory });
+
+    expect(logger.warn).not.toHaveBeenCalled();
+  });
+
   it("leaves a metric nothing limits without a limit or a severity", () => {
     const workingDirectory = writeWorkspace({
       "packages/logging/codometer-report.json": buildReport([

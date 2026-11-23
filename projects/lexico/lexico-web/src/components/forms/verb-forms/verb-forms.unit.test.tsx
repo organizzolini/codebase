@@ -90,6 +90,7 @@ describe(VerbForms, () => {
     fireEvent.click(screen.getByRole("tab", { name: "non-finite" }));
 
     expect(screen.getByText("amare")).toBeDefined();
-    expect(screen.getByText("infinitive present active")).toBeDefined();
+    expect(screen.getByText("infinitives")).toBeDefined();
+    expect(screen.queryByRole("tab", { name: "indicative" })).toBeNull();
   });
 });

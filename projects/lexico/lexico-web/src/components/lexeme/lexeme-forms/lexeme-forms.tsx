@@ -1,13 +1,8 @@
-import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
-import {
-  Button,
-  cn,
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@codebase/presentation";
+import { Button } from "@codebase/presentation";
+
+import { LexemeSection } from "../lexeme-section/lexeme-section";
 
 import { FormsOfKind } from "./forms-of-kind";
 import { TABLE_KINDS } from "./lexeme-forms.constants";
@@ -66,10 +61,10 @@ export function LexemeForms(
   /**
    * Opens or closes the table, loading the forms on the way open.
    */
-  function handleOpenChange(open: boolean): void {
-    setIsOpen(open);
+  function handleToggle(): void {
+    setIsOpen(!isOpen);
 
-    if (open) {
+    if (!isOpen) {
       load();
     }
   }
@@ -87,47 +82,35 @@ export function LexemeForms(
       className={className}
       data-testid="lexeme-forms"
     >
-      <Collapsible
-        onOpenChange={handleOpenChange}
-        open={isOpen}
+      <LexemeSection
+        label={tableKind}
+        onToggle={handleToggle}
+        state={isOpen ? "open" : "closed"}
       >
-        <CollapsibleTrigger className="flex w-full items-center justify-between text-sm font-medium capitalize">
-          {tableKind}
-          <ChevronDown
-            className={cn(
-              "size-4 transition-transform",
-              isOpen && "rotate-180",
-            )}
-          />
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <div className="mt-2">
-            {state.status === "loading" && (
-              <p className="text-sm text-muted-foreground">Loading forms…</p>
-            )}
-            {state.status === "error" && (
-              <div className="space-y-2 text-sm">
-                <p className="text-muted-foreground">
-                  The forms could not be loaded.
-                </p>
-                <Button
-                  onClick={load}
-                  size="sm"
-                  variant="outline"
-                >
-                  Try again
-                </Button>
-              </div>
-            )}
-            {state.status === "loaded" && (
-              <FormsOfKind
-                partOfSpeech={partOfSpeech}
-                rows={state.rows}
-              />
-            )}
+        {state.status === "loading" && (
+          <p className="pb-1 text-sm text-muted-foreground">Loading forms…</p>
+        )}
+        {state.status === "error" && (
+          <div className="space-y-2 pb-1 text-sm">
+            <p className="text-muted-foreground">
+              The forms could not be loaded.
+            </p>
+            <Button
+              onClick={load}
+              size="sm"
+              variant="outline"
+            >
+              Try again
+            </Button>
           </div>
-        </CollapsibleContent>
-      </Collapsible>
+        )}
+        {state.status === "loaded" && (
+          <FormsOfKind
+            partOfSpeech={partOfSpeech}
+            rows={state.rows}
+          />
+        )}
+      </LexemeSection>
     </div>
   );
 }

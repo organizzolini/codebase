@@ -1,48 +1,48 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:6fa55fbe8788e578757cfcce3a1f531a70d18436e74f0eeeef187fcb487a0dae",
+  "pageVersion": "sha256:9903a97b16ff240da9b97a661900e6a7f80bf81ffac9bacbc872015436ef5515",
   "claims": [
     {
       "id": "claim_a1cc8f0d72204aa1b98d74d6cdb4f960",
       "statement": "The caelundas-cli test suite uses Vitest with a shared base configuration extended for CLI-specific coverage rules that exclude entity files and test files from coverage.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/vitest.config.ts",
-          "version": "repo-file-v1:sha256:9fb4e236c84cbe95596cfa4f08f059d7e9292ee1181e23713247a82513061e91"
+          "resource": "repo://projects/caelundas/caelundas-cli/configuration/vitest.config.ts",
+          "version": "repo-file-v1:sha256:7db09a3b66f548bb433f7c8a1e7d380fbd00b32160c1b1da3e5fe85e13b5e38d"
         }
       ]
     },
     {
       "id": "claim_46110818124d43e59a5bea98bcba8974",
-      "statement": "The CLI entry point CaelundasCommand is tested at unit level by mocking nest-commander's CommandFactory.run to verify bootstrap behavior without executing the command.",
+      "statement": "The CLI entry point is tested at unit level by mocking nest-commander's CommandFactory.run to verify bootstrap behavior without executing the command.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/caelundas-cli.main.unit.test.ts",
-          "version": "repo-file-v1:sha256:3b565283b66594944fccb9543744771fce0c9bdbf9bd008f6f84544284ed470f"
+          "resource": "repo://projects/caelundas/caelundas-cli/src/caelundas-cli.main.unit.test.ts#L1-L96",
+          "version": "repo-lines-v1:sha256:2170ae84d866e8f895903563ec220c4f905c459462b26b6a9a30934a06281aa6:eyJzZWxlY3RlZExpbmVDb3VudCI6OTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3MTVjYjI2OTk3MjM5YjZjYTc2NmEwYTdiNzhjMDFjYWE2MTdlNDQyNzNjN2FlOWRiNzU3NjAxMjQ2Y2ZiOGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_cc2b68f19db74994b8b95d331d577bc2",
-      "statement": "End-to-end CLI tests boot a real NestJS application context per run using runCalendarCommand utility, replacing only PerfectiveService and ProgressiveService with stand-in detectors while running real input parsing, ephemeris verification, calendar rendering, and SQLite persistence.",
+      "statement": "End-to-end CLI tests boot a real NestJS application context per run using the runCalendarCommand utility, replacing only PerfectiveService and ProgressiveService with stand-in detectors while running real input parsing, ephemeris verification, calendar rendering and Postgres persistence.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/caelundas-cli.main.end-to-end.test.ts",
-          "version": "repo-file-v1:sha256:9f086bcffbc7e7e941a8185a0e75e4d17d96104c89333d37648049e7b1e9a1bc"
+          "resource": "repo://projects/caelundas/caelundas-cli/src/caelundas-cli.main.end-to-end.test.ts#L1-L579",
+          "version": "repo-lines-v1:sha256:07ebb3f569c4d924e7d34ac2956a8264b3fcf0309ea4710c75400a47adde56ad:eyJzZWxlY3RlZExpbmVDb3VudCI6NTc5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1ZmI0ODUwN2E0YjljZDZhZTEwZDRkY2VjNTRiYWIyOTVlMjNlMDVlMDhmZjY5OWViMTljY2FjNzQ0ZDEwZTA5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/testing/calendar-command.utilities.ts",
-          "version": "repo-file-v1:sha256:870409641ed9b9db504ff2f1f63da1452f9fd666ea5518fbfbedb8ecae1fc75d"
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/support/calendar-command.utilities.ts#L1-L126",
+          "version": "repo-lines-v1:sha256:e0b2740a54e7653ce2619d3daf017164b664b5bab8c047a721caeaaadd419697:eyJzZWxlY3RlZExpbmVDb3VudCI6MTI2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1ZmI0ODUwN2E0YjljZDZhZTEwZDRkY2VjNTRiYWIyOTVlMjNlMDVlMDhmZjY5OWViMTljY2FjNzQ0ZDEwZTA5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_9ec5715763e944799905407783f7e466",
-      "statement": "Temporary SQLite databases are created per test suite in os.tmpdir() with migrations applied, and CAELUNDAS_SQLITE_DATABASE is pointed at the file for the test duration.",
+      "statement": "Persistence tests start a throwaway migrated Postgres through startCaelundasDatabase, which wraps startDatabaseTestingModule from @codebase/persistence/testing and sets CAELUNDAS_POSTGRES_* for the test; this replaces the earlier per-suite SQLite files.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/testing/temporary-database.utilities.ts",
-          "version": "repo-file-v1:sha256:cd141b30b01a6b1e0e274dd9968b30c3328caf4d2d8a6b89b053d8f982dab400"
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/support/database.ts#L1-L33",
+          "version": "repo-lines-v1:sha256:c33995538c66e97d03becae9dc63825f9c18b6814437cf279fa889949a271f3a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4MjAwOTY0YTk3ODYzNTUyMmIyYWIwOTBjNjUwNjVkOGVmOGU4NWM0NzMwYmIyZWIwNDYwZDM0YzY3N2RkYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -51,36 +51,36 @@
       "statement": "Event detection accuracy is verified against committed reference fixtures from USNO, JPL Horizons, and NASA, each containing source metadata, retrieval date, tolerance minutes, window parameters, expected events with summaries and times, absent events that must not appear, and exact count requirements.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/testing/reference-fixtures.constants.ts",
-          "version": "repo-file-v1:sha256:0731e0ce752f8603a9ef67d6cd45bca322640a0f14b883234a7a086201bc63e0"
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/reference/reference-fixtures.constants.ts#L1-L46",
+          "version": "repo-lines-v1:sha256:0731e0ce752f8603a9ef67d6cd45bca322640a0f14b883234a7a086201bc63e0:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3MGZmMzZkMjAwMTI2YjhjZTZmYzYwYmI2NzZhMWY3ZGJiNWQ3NDUyMTA2YWE4N2YzYjVmOTljMzE4NzBhMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/testing/reference-fixtures.utilities.ts",
-          "version": "repo-file-v1:sha256:5ce48bdbfc1be6c2ac1a1725a516e2743699c797fb81c9e2ec97e9f528a9448e"
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/reference/reference-fixtures.utilities.ts#L1-L198",
+          "version": "repo-lines-v1:sha256:0918e441fe8de119743a641d6cb4b56d53fe78f4fe28c46c97c06a47cf11a356:eyJzZWxlY3RlZExpbmVDb3VudCI6MTk4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1ZmI0ODUwN2E0YjljZDZhZTEwZDRkY2VjNTRiYWIyOTVlMjNlMDVlMDhmZjY5OWViMTljY2FjNzQ0ZDEwZTA5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_3d1245045d4a476c8970320a0ab3745a",
-      "statement": "The assertReferenceEvents utility pairs each reference event with the nearest detected event sharing its summary, computes start/end time deltas, passes if within tolerance, and fails with detailed messages citing fixture source, retrieval date, and per-event deltas; it also enforces absent and counts constraints.",
+      "statement": "The assertReferenceEvents utility pairs each reference event with the nearest detected event sharing its summary, computes start and end time deltas, passes if within tolerance, and fails with detailed messages citing the fixture source, retrieval date and per-event deltas; it also enforces absent and counts constraints.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/testing/reference-fixtures.utilities.ts",
-          "version": "repo-file-v1:sha256:5ce48bdbfc1be6c2ac1a1725a516e2743699c797fb81c9e2ec97e9f528a9448e"
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/reference/reference-fixtures.utilities.ts#L1-L198",
+          "version": "repo-lines-v1:sha256:0918e441fe8de119743a641d6cb4b56d53fe78f4fe28c46c97c06a47cf11a356:eyJzZWxlY3RlZExpbmVDb3VudCI6MTk4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1ZmI0ODUwN2E0YjljZDZhZTEwZDRkY2VjNTRiYWIyOTVlMjNlMDVlMDhmZjY5OWViMTljY2FjNzQ0ZDEwZTA5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/testing/reference-fixtures.utilities.unit.test.ts",
-          "version": "repo-file-v1:sha256:8d67e03c3f4a17d03cad8f438e119ebeef552c7baa49503cdac3065776efded0"
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/reference/reference-fixtures.utilities.unit.test.ts",
+          "version": "repo-file-v1:sha256:2e71f56dbf188551feeea70522bcb8856867085be41f47fa9d1cacb501b34126"
         }
       ]
     },
     {
       "id": "claim_748b3b1f5ae24cb1b904824af953d5be",
-      "statement": "Moon phase detection tests sweep ±30 minutes around each USNO 2026 published phase, computing Moon/Sun ephemeris via real EphemerisService and running MonthlyLunarCycleService.detect minute-by-minute.",
+      "statement": "Moon phase detection tests sweep around each USNO 2026 published phase, computing Moon and Sun ephemeris via the real EphemerisService and running MonthlyLunarCycleService.detect minute by minute.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/testing/moon-phases-reference.end-to-end.test.ts",
-          "version": "repo-file-v1:sha256:526c592febaba8f22bc6217de806d2577b9b4607ee0b9dacc8c4da7af3379f6b"
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/pipeline/moon-phases-reference.end-to-end.test.ts#L1-L107",
+          "version": "repo-lines-v1:sha256:05f50edde954e3982254a94c9a0459fdcec2fa2b495f6f074cc5dd2781b2b93f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0MDAwNmYyZDU3NjFjYTcwYTc2M2EwMWMwM2ExOWVhZGJlOGRkMGE2NjRkMjRhYzBkM2YxMDk2MDhmMDA2OGQwIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
@@ -89,8 +89,8 @@
       "statement": "Compound aspect tests run the full PipelineWindowModule (both perfective and progressive passes) over real time windows, verifying deduplication, T-square emission as one boundary pair plus one span, and dissolution alignment with leg endings.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/testing/compound-aspects.end-to-end.test.ts",
-          "version": "repo-file-v1:sha256:1a3a7f0265ee0f55a5161da1526127611361c0201f333eb444616c54e65ed719"
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/aspects/compound-aspects.end-to-end.test.ts#L1-L128",
+          "version": "repo-lines-v1:sha256:eba54978ea4f233164e5ba727dec1ef8c0755eac8b50e48a16350ec51307990c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTI4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJhYjk1MDZiMjFmNDgzZGM5NWRmMmYyYjM1ZjcwYzBhNDQzYjA1M2E3Yjk2NDlmNzc0NjdlNjg4YTMzMjAwNDA0IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0OTk2N2VjMWVkMzgzNmY4ZWIxN2FmZjE3MmI1YmZlZjdkZTYwNDg1YTQzOWM2Y2ExMWM1OTFlMTc1NTczOWFlIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
@@ -99,134 +99,142 @@
       "statement": "Compound aspect seeding tests verify that simple aspects forming at a window's first minute were out of orb one minute earlier using real ephemeris, not caelundas' own state.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/testing/compound-aspect-seeding.end-to-end.test.ts",
-          "version": "repo-file-v1:sha256:e43a21cde4b602778d0ac14577c065ab9886cfbfdba2b9c47a47eaf915e0a869"
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/aspects/compound-aspect-seeding.end-to-end.test.ts#L1-L117",
+          "version": "repo-lines-v1:sha256:dff4c0ba6e879979b01b867146566b9d45d3ac63a583840abd49396c62a5236c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0MDAwNmYyZDU3NjFjYTcwYTc2M2EwMWMwM2ExOWVhZGJlOGRkMGE2NjRkMjRhYzBkM2YxMDk2MDhmMDA2OGQwIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0OTk2N2VjMWVkMzgzNmY4ZWIxN2FmZjE3MmI1YmZlZjdkZTYwNDg1YTQzOWM2Y2ExMWM1OTFlMTc1NTczOWFlIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_442b20f69aa54d09b5d1324051b1338d",
-      "statement": "Retrograde station detection is tested at unit level by spying on private isRetrograde/isDirect predicates, and at integration level using 61-minute longitude windows (30 before/after) for all retrogradeBodies simultaneously, verifying event shape including tags, summary, and timestamp.",
+      "statement": "Retrograde station detection is tested at unit level by spying on private isRetrograde/isDirect predicates, and at integration level using 61-minute longitude windows (30 before and after) for all retrograde bodies simultaneously, verifying event shape including tags, summary, and timestamp.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.integration.test.ts",
-          "version": "repo-file-v1:sha256:3543947759de9236ab67d08aaa1bd33e3f71a62b6aa97fca884e06fad40ddd37"
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/perfective/modules/retrogrades/retrogrades.service.integration.test.ts",
+          "version": "repo-file-v1:sha256:67d54d9daa5d22260928e979d7e836d886acf3625149eabb6e59991a8e5bc281"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.unit.test.ts",
-          "version": "repo-file-v1:sha256:ff63ac22c3c62b0e959e12a44eec17ac77ac548f9d6a3ae3e3c0fc36f5080aae"
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/perfective/modules/retrogrades/retrogrades.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:6bf1575e5889e56107d93ae0fcc67b843a89164fc6ffb8ac62c515d0c112e557"
         }
       ]
     },
     {
       "id": "claim_b677df54aedb48808bf11f3ff8e92a80",
-      "statement": "Stellium detection tests use JPL Horizons longitude fixtures to build conjunction registries at boundary minutes, run StelliumService.detect/detectProgressive, and compare boundaries and spans against fixture expectations.",
+      "statement": "Stellium detection tests use JPL Horizons longitude fixtures to build conjunction registries at boundary minutes, run StelliumService.detect and detectProgressive, and compare boundaries and spans against fixture expectations.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/testing/stellium-reference.unit.test.ts",
-          "version": "repo-file-v1:sha256:a2500f1d5a55a734796c0058604134f3f151f4bf7373d98515cf610902121006"
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/aspects/stellium-reference.unit.test.ts#L1-L176",
+          "version": "repo-lines-v1:sha256:274407f508e67894a24ce12d9a9bb22b86b74fa6110ed19745c60fd666a9e479:eyJzZWxlY3RlZExpbmVDb3VudCI6MTc2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1ZmI0ODUwN2E0YjljZDZhZTEwZDRkY2VjNTRiYWIyOTVlMjNlMDVlMDhmZjY5OWViMTljY2FjNzQ0ZDEwZTA5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_ec3f39a6519d423c8ff09161d325b072",
-      "statement": "Pipeline window tests assemble a minimal Nest module with PerfectiveModule and ProgressiveModule, then run full detection sweeps day-by-day, minute-by-minute via runPipelineWindow, returning perfective, progressive, and combined events.",
+      "statement": "Pipeline window tests assemble a minimal Nest module with PerfectiveModule and ProgressiveModule, then run full detection sweeps day by day and minute by minute via runPipelineWindow, returning perfective, progressive and combined events.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/testing/pipeline-window.functions.ts",
-          "version": "repo-file-v1:sha256:5782d8d2afe3f0a68650b90be669c4c93c00ad00080afd5b034c1d67b156bce3"
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/pipeline/pipeline-window.functions.ts#L1-L73",
+          "version": "repo-lines-v1:sha256:df9f1505ade662bb60a2063b39d16eb96a925d395d90be7c718027649385cc9c:eyJzZWxlY3RlZExpbmVDb3VudCI6NzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwMDA2ZjJkNTc2MWNhNzBhNzYzYTAxYzAzYTE5ZWFkYmU4ZGQwYTY2NGQyNGFjMGQzZjEwOTYwOGYwMDY4ZDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/testing/pipeline-window.module.ts",
-          "version": "repo-file-v1:sha256:72c339e3579d172b640096149164541974fbbe8b3717ab1185d5f26e4dde65e9"
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/pipeline/pipeline-window.module.ts#L1-L20",
+          "version": "repo-lines-v1:sha256:04c13ecad8bf0248ce08056cb103d0d68b3c11b2ac36bd64ad0cacfb037a17fe:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3Y2MzNTVkYTFlM2Q2MGFmZWIyNjVlMGE5YTdiYWJkMDJkMDdmZGVkMzY4Y2RhZmRjMDI5NzliNmU5MjdmZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlOTU3YmU2MTE2YjM5N2M5YjM2YTk1YzlhM2IxNWVlZmJmN2NmOGU4MzIzMmRhZTVlNTNkNjNhYzBkZTAwZjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_d79fa6ce24324c2c95f11b98c9b5d5f6",
-      "statement": "The caelundas-web test suite uses Vitest with jsdom environment, excluding browser-only files, server functions, and router entry points from coverage, and uses a path alias @ for vendored components.",
+      "statement": "The caelundas-web test suite uses Vitest with a jsdom environment, excluding server functions, generated GraphQL code and router entry points from coverage, and uses a path alias @ for vendored presentation components.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-web/vitest.config.ts",
-          "version": "repo-file-v1:sha256:cc5fddd0998928d65e4b86d45df59ebf907d6871435cc20a7cc2126a76dbdb3a"
+          "resource": "repo://projects/caelundas/caelundas-web/configuration/vitest.config.ts#L1-L44",
+          "version": "repo-lines-v1:sha256:3f8111bf976188dfed99a41dcc1660a1ccc2d79b7b34385eb26d593aa8924591:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4ZjE2ZDJhMWMyYTVhNWE0YzU1NzkwYTMwZTQ0NTRjNTdiOGI1YjBlMGUxYTE4ZjI1N2UxNTY1OWI0NDQ2ODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5OTY3ZWMxZWQzODM2ZjhlYjE3YWZmMTcyYjViZmVmN2RlNjA0ODVhNDM5YzZjYTExYzU5MWUxNzU1NzM5YWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_e86f5723d1be4ce1a675f677b275ef66",
-      "statement": "Web global test setup polyfills jsdom's missing layout/scroll/animation/resize APIs: scrollTo no-op, getAnimations returns empty array, ResizeObserver fires immediately with getBoundingClientRect, and a viewport simulation is installed.",
+      "statement": "Web global test setup polyfills jsdom's missing layout, scroll, animation and resize APIs (scrollTo no-op, getAnimations returns an empty array, ResizeObserver fires immediately with getBoundingClientRect) and installs a viewport simulation, and it runs the mock GraphQL server lifecycle.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-web/testing/setup.ts",
-          "version": "repo-file-v1:sha256:59196332801b2ae868f3fee3f9d7bd093af577e6a84336db019d85be885b48fa"
+          "resource": "repo://projects/caelundas/caelundas-web/testing/setup.ts#L1-L62",
+          "version": "repo-lines-v1:sha256:d330ddabb5aca9811a929026c464370dd740387074b1d1f28a09d288b5b05270:eyJzZWxlY3RlZExpbmVDb3VudCI6NjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlMzJkMWE0ZDZjZGJjYzY5MzEwMmRhOThhMGYyNWJkNzY1NTZmYTM4MGJjMzExYzE5ZTY0N2EyZGZlNjg4ZTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-web/testing/viewport.ts",
-          "version": "repo-file-v1:sha256:dea27e7171d90d0ec18b697bc04b29642565d68a401212410db03110e128cda0"
+          "resource": "repo://projects/caelundas/caelundas-web/testing/viewport.ts#L1-L128",
+          "version": "repo-lines-v1:sha256:e1ca674be4858adc73316063b7927b35d5af077e453ec9f60eda34d20980a753:eyJzZWxlY3RlZExpbmVDb3VudCI6MTI4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlZDBlMThlMzMwMzUxOGQyNmU4NDUyZmY4ZGMyMDFhMjIyYTE0MzMxNWJmNWJiYWIzNjM1ZTY5MmZiNjFkNjYzIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_0d28bee64f2244159e79c591dcc880bd",
-      "statement": "Component unit tests use React Testing Library with Vitest, rendering components with props, querying by role/test-id/text, asserting structure and accessibility, and firing events for interactions.",
+      "statement": "Component unit tests use React Testing Library with Vitest, rendering components with props, querying by role, test-id or text, asserting structure and accessibility, and firing events for interactions.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-web/src/components/calendar-toolbar.unit.test.tsx",
-          "version": "repo-file-v1:sha256:ffa8d2b1f4d62072c96560339da26f6d06e22d5a7693191abe6fae7a3647b009"
+          "resource": "repo://projects/caelundas/caelundas-web/src/components/calendar-controls/calendar-toolbar/calendar-toolbar.unit.test.tsx",
+          "version": "repo-file-v1:sha256:4136d8a6bf7518e911b0f8da615a689062c053fae8f774b4c6feae5fdb276545"
         }
       ]
     },
     {
       "id": "claim_8bdf36c15c134acaad72ce76b9857f0b",
-      "statement": "Route integration tests render the full TanStack Start router at a given path using renderRoute, which mocks the __root route, injects a test eventsDatabase, runs the route loader, and uses createMemoryHistory for navigation simulation.",
+      "statement": "Route integration tests render the full TanStack Start router at a given path using renderRoute, which mocks the __root route with a bare root, serves the mocked calendar API, runs the route loader, and uses createMemoryHistory for navigation simulation.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-web/src/routes/index.integration.test.tsx",
-          "version": "repo-file-v1:sha256:8a107dd176d2d64e4314ea79165fa9deb4f5059a27ebd45499e3b9b4021beb31"
+          "resource": "repo://projects/caelundas/caelundas-web/src/routes/index.integration.test.tsx#L1-L100",
+          "version": "repo-lines-v1:sha256:bc9f244334c7e67e83a262a352bff26610ac9228aebda182725c7b29514eef0a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI3OGIxZDU1NDZhNmEwNWUzZWY5ZDY3MTFjMmI4YTU0ZDgwNTQ0MzNiMDk3NjYzYzhlNzg1ZTc0YjY0NmEyOTE1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmMmY4MmIwZGYzMGQ5NGYxMDYxZDBiMjEzMTIyOGMwMWI1ZmQwMGQwMjIxMzc5MGU1MGYwMmNjMTYwNTZlOTYzIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJmZWIzNmVjMjcxY2QxYTM2ZjBjMzUzMzg2ODQ1NDJlNjVlMmUwY2Q4ZDkxNmYwM2E3NzIwMzI0YzAyNDc5NjI0In0"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-web/testing/render-route.tsx",
-          "version": "repo-file-v1:sha256:c005f06654c4cf80e2ec07560f70477d78797a13a3ca3f3898b772f50a9ff09c"
+          "resource": "repo://projects/caelundas/caelundas-web/testing/render-route.tsx#L1-L70",
+          "version": "repo-lines-v1:sha256:a0aecb06eb5fba6a3baf12ecced51b3ae3a557e069ec9c617b165609868f1ff9:eyJzZWxlY3RlZExpbmVDb3VudCI6NzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljZjgyYWNjOTg3MTE3OGNiMzJhMjhhZTQ2N2FkZjViYjNkYzMzMjFlZjY2ZDE0MTg3YjkxYTI4YjQxOWRjYjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_c92bae3c14ad424d8229f829b8b48a93",
-      "statement": "The web events database is built in-memory from committed SQL: migration *-up.sql files in order, events-seed.sql for reference events, events-read-model.sql for derived tables, with local-time SQL functions registered, backed by node:sqlite synchronous executor.",
+      "statement": "The web tests hold no database: testing/calendar-fixture.ts defines a fixture calendar (a few weeks around March 2026, one New York observer, a tag tree) and testing/calendar-api.ts serves it through the typed GraphQL mock handlers GraphQL Code Generator emits.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-web/testing/events-database.ts",
-          "version": "repo-file-v1:sha256:d941af45ce67bdd71d59aa0eebdcf2c1315217cac556cd5ed7ec0ee6e0a92601"
+          "resource": "repo://projects/caelundas/caelundas-web/testing/calendar-api.ts#L1-L60",
+          "version": "repo-lines-v1:sha256:84e55820b73a56d89d3155c5d5e415ba98695c8ddef1a1033e83f069509828f7:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3NjI5Yjk5OTJjM2MwM2VkM2NmM2EwNGNjOTZkOTRlYmQxYjE0YWJkY2M2YmRjZTliNGE4NzZlYmFlZjc0ZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3MjZhZTljZmI2YzU1YmZiYTkzNmVmYWI4ZTZhNWJkMmQ2NDQ5YTI3ZjRmN2NiOWJjMjRmZTcyOTY3M2Y5NTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZmMTEzMjAzN2U3ODg3MjNlMTUyYWM5MzlmOTc0NzFhNzYyNjk2OTViZDBjY2E3M2NkM2QzZDI0ZTI3NzY1ZDIifQ"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-web/testing/calendar-fixture.ts#L1-L135",
+          "version": "repo-lines-v1:sha256:9badde705e11d6716fa592874b0cee9ad332b649865a035d0a5e11477a8f09bd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTM1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIzMjBiMjkxZDUwOGEyYjlhMGQ3MjE4NzVlZGMyNzQwMTBhNGM5ZGU1ZTgyNGNmNjI0ZmNhYWZjYjIxMDkzNjM2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_ac153e9f559d4a1d900476eab790747f",
-      "statement": "Test database variants include createFailingEventsDatabase (rejects all reads until recover), createRecordingEventsDatabase (records queries with optional delay), and createTestSqlExecutor (bare executor for direct SQL verification).",
+      "statement": "Web tests control the API they talk to with serveGraphqlApi, which registers typed generated handlers on the shared graphqlMockServer, so a test can override handlers to simulate failures and recovery.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-web/testing/events-database.ts",
-          "version": "repo-file-v1:sha256:d941af45ce67bdd71d59aa0eebdcf2c1315217cac556cd5ed7ec0ee6e0a92601"
+          "resource": "repo://projects/caelundas/caelundas-web/testing/graphql-api.ts#L1-L10",
+          "version": "repo-lines-v1:sha256:0921480b51bd9558de16203c522fcbefaff7dbf8827394500d6a7ba4e78c0cb9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0MmZjYzExOThmZmU0MTI1OGY3NDNjMmIwNzM3MTlkOTA2OGRhNmE5YzE2NjQ1YTgxMTM1MTYxYzg4YzU5YWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-web/testing/setup.ts#L1-L62",
+          "version": "repo-lines-v1:sha256:d330ddabb5aca9811a929026c464370dd740387074b1d1f28a09d288b5b05270:eyJzZWxlY3RlZExpbmVDb3VudCI6NjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlMzJkMWE0ZDZjZGJjYzY5MzEwMmRhOThhMGYyNWJkNzY1NTZmYTM4MGJjMzExYzE5ZTY0N2EyZGZlNjg4ZTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_b241ff7267e24d0eae4d1dae928ac5a6",
-      "statement": "The common persistence testing layer provides startDatabaseTestingModule which starts a throwaway PostgreSQL container via Testcontainers, sets PROJECT_POSTGRES_* env vars, compiles a Nest testing module with ConfigModule and PostgresqlModule (or project's own database module), runs migrations, and returns a DatabaseTestingModule with close, container, dataSource, module, and repository accessor.",
+      "statement": "The common persistence testing layer provides startDatabaseTestingModule, which starts a throwaway PostgreSQL container via Testcontainers, sets PROJECT_POSTGRES_* env vars, compiles a Nest testing module with ConfigModule and PostgresqlModule (or the project's own database module), runs migrations, and returns a DatabaseTestingModule with close, container, dataSource, module and a repository accessor.",
       "evidence": [
         {
-          "resource": "repo://projects/common/persistence/testing/persistence-testing.types.ts",
-          "version": "repo-file-v1:sha256:b3a51ee9b307e84400ccc21f318a30dd0dc3b49ed738799ba7465738e4b548e2"
+          "resource": "repo://projects/common/persistence/testing/database-testing/database-testing.types.ts#L1-L75",
+          "version": "repo-lines-v1:sha256:4a1efc64c62931a31ee4541272057975ea2028abd9f6ed57aa80f010f629cf9d:eyJzZWxlY3RlZExpbmVDb3VudCI6NzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwNWU0NGNmZTI5NWQ0YzU0NTQ5MjlkMDgwMWQ0ZDE1YzI5MTQ1OWUxYjVkM2ZlZWE0ZTkxYzI2MGMxNzVjZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/common/persistence/testing/persistence-testing.utilities.ts",
-          "version": "repo-file-v1:sha256:678c0f4fc556bfe0d446b8ca78a5f1f416b892bc5d3ab957d2daf48824f263aa"
+          "resource": "repo://projects/common/persistence/testing/database-testing/database-testing.utilities.ts#L1-L95",
+          "version": "repo-lines-v1:sha256:25196ff70be0376870638d1db24af6a62cf0fd9bac6b48ed7ff88696da66e315:eyJzZWxlY3RlZExpbmVDb3VudCI6OTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjMzgyYjVkMzhhYmRiODNmYTgwYTBiMGNiNjEyMzkxOThkMDk2MjVlODQyMGQ5YzNlNTkzODNmMmVmN2FiZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.0",
-    "at": "2026-10-29T03:39:46.432Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-22T00:18:20.862Z"
   }
 }

@@ -56,7 +56,8 @@ describe(DictionaryCommand, () => {
     existsByLemma: vi.fn<(lemma: string) => Promise<boolean>>(),
     findLexemesByLemmaWithTranslations:
       vi.fn<(lemma: string) => Promise<Lexeme[]>>(),
-    parseLexemes: vi.fn<(page: WiktionaryPage) => Promise<Lexeme[]>>(),
+    parseLexemes:
+      vi.fn<(page: WiktionaryPage, offset?: number) => Promise<Lexeme[]>>(),
     saveParsedLexeme: vi.fn<(lexeme: Lexeme) => Promise<Lexeme | null>>(),
   };
 
@@ -897,6 +898,33 @@ describe(DictionaryCommand, () => {
     expect(lexemesService.saveParsedLexeme).toHaveBeenCalledWith(savedLexeme);
     expect(processTranslationReferencesSpy).toHaveBeenCalledWith(savedLexeme);
   });
+
+  it.each([
+    [
+      "a capitalized title whose lowercase twin is cached",
+      "Ambrosius",
+      true,
+      10,
+    ],
+    ["a capitalized title with no lowercase twin", "Ambrosius", false, 0],
+    ["a lowercase title", "ambrosius", true, 0],
+  ])(
+    "should number the lexemes of %s from %i",
+    async (_, word, hasTwin, offset) => {
+      existsSyncMock.mockReturnValue(hasTwin);
+      lexemesService.parseLexemes.mockResolvedValueOnce([]);
+      const page = {
+        category: "Latin",
+        href: "/wiki/x",
+        html: "<html>x</html>",
+        word,
+      };
+
+      await command.ingestLexeme(word, page);
+
+      expect(lexemesService.parseLexemes).toHaveBeenCalledWith(page, offset);
+    },
+  );
 
   it("should skip translation-reference processing when parsed lexeme is not saved", async () => {
     const parsedLexeme = new Lexeme();

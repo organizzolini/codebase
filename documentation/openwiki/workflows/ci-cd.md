@@ -17,17 +17,20 @@ sources:
     resource: repo://.github/workflows/refresh-documentation.yml
   - id: openwiki-source-c2af95c435a3c7ffd53cfe73
     resource: repo://.github/workflows/upgrade-dependencies.yml
-  - id: openwiki-source-8b3afa19acb17914a58dded3
-    resource: repo://configuration/release.config.cjs
+  - id: openwiki-source-70c07817764b8e76381afb35
+    resource: repo://configuration/repository/release.config.cjs
   - id: openwiki-source-cbacafef122fab5636a5e673
     resource: repo://documentation/development/release-process.md
-generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+verified:
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 ---
 
 
 # CI/CD Pipelines
 
-This page documents the three GitHub Actions workflows that form the CI/CD pipeline, the `setup-codebase` composite action that prepares every job, and the fully automated release process that runs on merge to `main`.
+This page documents the GitHub Actions workflows that form the CI/CD pipeline, the `setup-codebase` composite action that prepares every job, and the fully automated release process that runs on merge to `main`.
 
 ## Overview
 
@@ -54,12 +57,12 @@ The `setup-codebase` action is a composite action that every CI job calls first.
 3. **Nx SHAs resolution** — Runs `nrwl/nx-set-shas@v5` to compute `NX_BASE` and `NX_HEAD` for `nx affected`. The `nx-base` input controls the base strategy:
    - `last-successful` (default): Uses the last commit whose whole workflow succeeded.
    - `push-before`: Uses the push's own previous tip (for CI runs).
-4. **Homebrew tools cache** — Weekly-rotating cache for `gitleaks` (secret scanning) and `trivy` (infrastructure scanning). Only the security gate enables this.
-5. **PostgreSQL 18 client** — Installs `pg_dump`/`pg_restore` from PGDG apt for database integration tests.
+4. **Tool binaries cache** — `gitleaks` (secret scanning) and `trivy` (infrastructure scanning) are single binaries the repository's `software` command downloads into `~/.local/bin`, cached by tool selection. Only the security gate enables them.
+5. **PostgreSQL 18 client** — Installs `pg_dump`/`pg_restore` through the same `software` command for the legs that run database integration tests (`postgres-client` input).
 6. **Nx graph cache** — Restores `.nx/workspace-data` (excluding task database) keyed by lockfile and project config hashes.
 7. **Nx task cache** — Restores `.nx/cache` and `.nx/workspace-data/*.db*` per `nx-cache-scope`. Exact-match key includes `github.sha`; restore-keys fall back to scope+OS and scope-only.
-8. **uv setup** — Installs uv with cache keyed by `configuration/uv.lock`.
-9. **Python dependencies** — Runs `uv sync --frozen --project configuration` into shared root `.venv` (used by `yaml-lint` and `sqlfluff` on every TypeScript project).
+8. **uv setup** — Installs uv with cache keyed by `configuration/python/uv.lock`.
+9. **Python dependencies** — Runs `uv sync --frozen --project configuration/python` into shared root `.venv` (used by `yaml-lint` and `sqlfluff` on every TypeScript project).
 10. **ESLint cache** — Restores `.eslintcache` for the lint job.
 11. **node-gyp permissions repair** — Fixes executable bit on bundled `gyp_main.py` to avoid intermittent `Permission denied` during native builds.
 12. **Node dependencies install** — Runs `pnpm install --frozen-lockfile` (skippable).
@@ -95,33 +98,37 @@ The `setup-codebase` action is a composite action that every CI job calls first.
 
 - `actions: read`, `contents: write`, `pull-requests: write`, `issues: write`
 
-### Job Matrix (11 legs)
+### Job Matrix (17 legs)
 
-| Target | Name | Emoji | Timeout | Notes |
-|--------|------|-------|---------|-------|
-| `typecheck-code` | Typecheck | 🧑‍🎓 | 12m | |
-| `format-code` | Format | 🧑‍🎨 | 12m | |
-| `lint-code` | Lint | 🧑‍🔧 | 12m | ESLint cache enabled |
-| `deprecate-code` | Deprecate | 🧟 | 12m | |
-| `guard-code` | Guard | 💂 | 20m | Includes conformetry templates when changed |
-| `test-code` | Test | 🧑‍🔬 | 12m | Excludes meanderaw-cli, caelundas, ic-suite |
-| `test-code` | Test Caelundas | 🧑‍🔬 | 12m | Only projects/caelundas/** |
-| `test-code` | Test Meanderaw | 🧑‍🔬 | 12m | Only meanderaw-cli |
-| `test-code` | Test IC Suite | 🧑‍🔬 | 12m | Only projects/ic-suite/** |
-| `secure-code` | Secure | 🕵️ | 12m | Gitleaks + Trivy scanning |
-| `build-projects` | Build | 👷 | 12m | Allows failure, reports on main |
-| `verify-publishable-packages` | Publishable Packages | 📦 | 15m | Packs & installs every publishable ic-suite package into an external consumer |
+| Target | Name | Emoji | Notes |
+|--------|------|-------|-------|
+| `static-code` | Static | 🧑‍⚕️ | `typecheck-code`, `format-code`, `lint-code` and `deprecate-code` in one `nx affected` call |
+| `guard-code` | Guard | 💂 | `catalog-manifests`, `coinagerie-check`, `lockfile`, `project-ports`, `readme-projects`, `vscode-extensions` (kept equal to `guard-code`'s `dependsOn` in `nx.json`, less the gates with legs below) |
+| `callidescope-restrict` | Callidescope Restrict | 🔭 | Call-stack depth and breadth gate |
+| `codependix-bound` | Codependix Bound | 🕸️ | Dependency boundary gate |
+| `conformetry-validate` | Conformetry Validate | 👔 | The one leg that also asks the affected run to include conformetry templates |
+| `test-code` | Test Codebase, Test Common, Test Affirmancy, Test Caelundas, Test IC Suite, Test Lexico, Test Meanderaw | 🧑‍🔬 | One leg per project group (see below); Caelundas has a 15-minute timeout |
+| `secure-code` | Secure | 🕵️ | Gitleaks and Trivy scanning |
+| `build-projects` | Build | 👷 | Build plus the codometer size gate |
+| `end-to-end` | End to End IC Suite | 🤵 | Packs the five CLIs and four Nx plugins and runs them as a consumer would |
+| `plan-terraform` | Infrastructure | 🧑‍🚀 | Plans the OpenRouter, GitHub and Linode roots when Terraform changed, and comments the plans |
+| `build-devcontainer` | Devcontainer | 🧑‍🏭 | Builds and tests the devcontainer image when its inputs changed (15-minute timeout) |
+
+Legs time out after 12 minutes unless they set `timeout-minutes`.
 
 ### Test Sharding Strategy
 
-The test suite is split into four parallel shards so no single leg waits for slow projects:
+The test suite is split into one parallel leg per project group so no single leg waits for slow projects:
 
-| Shard | Projects Included | Rationale |
-|-------|-------------------|-----------|
-| **General** (default) | All projects except `meanderaw-cli`, `caelundas/**`, `ic-suite/**` | Baseline shard that the branch protection has always required |
-| **Caelundas** | `projects/caelundas/**` | CLI cannot start until its ephemeris download finishes; runs alone |
-| **Meanderaw** | `meanderaw-cli` | Took over 7 minutes uncached beside the rest; ~3 minutes alone |
-| **IC Suite** | `projects/ic-suite/**` | 37 packages; was most of what remained after the above |
+| Leg | Projects included |
+|-----|-------------------|
+| **Test Codebase** | Everything not in another leg (new projects stay here until split out) |
+| **Test Common** | `projects/common/**` (installs the Postgres client) |
+| **Test Affirmancy** | `projects/affirmancy/**` |
+| **Test Caelundas** | `projects/caelundas/**` |
+| **Test IC Suite** | `projects/ic-suite/**` |
+| **Test Lexico** | `projects/lexico/**` (installs the Postgres client) |
+| **Test Meanderaw** | `projects/meanderaw/**` |
 
 A leg with nothing affected runs nothing.
 
@@ -157,12 +164,13 @@ A leg with nothing affected runs nothing.
 - `id-token: write` (for npm provenance attestations)
 - `attestations: write`, `artifact-metadata: write` (for build-provenance attestations and Linked artifacts)
 
-### Job Matrix (2 targets)
+### Job Matrix (3 targets)
 
 | ID | Name | Emoji | Timeout | Purpose |
 |----|------|-------|---------|---------|
 | `build-devcontainer` | Devcontainer | 🧑‍🏭 | 20m | Build and test the devcontainer image |
 | `push-releases` | Releases | 🦸 | 32m | Full release automation (version, tag, publish, attest) |
+| `apply-terraform` | Infrastructure | 🏗️ | 20m | Applies the Terraform roots (openrouter, linode, github) when a push to `main` changes `infrastructure/terraform/**` |
 
 ### Devcontainer Build (🧑‍🏭)
 
@@ -175,90 +183,25 @@ A leg with nothing affected runs nothing.
 
 ### Release Automation (🦸)
 
-The release runs entirely on merge to `main`. When `main` moves during a release run, the run steps aside (see **Supersession Handling** below).
+The release runs entirely on merge to `main`. When `main` moves during a release run, the run steps aside: later steps skip (`RELEASE_SUPERSEDED`) and the newer commit's run releases everything.
 
-#### Release Pipeline Stages
+#### Release Steps
 
-```mermaid
-sequenceDiagram
-    participant CI as Continuous Deployment Workflow
-    participant NxR as Nx Release (version-packages)
-    participant SR as semantic-release (tag-codebase)
-    participant NxT as Nx Release (tag-packages)
-    participant PNPM as pnpm publish --provenance
-    participant GHP as GitHub Packages Mirror
-    participant ATT as actions/attest
+1. **Setup Codebase**, **Import GPG Key** and **Check Commit Signing Configuration** — the release signs its commits.
+2. **🏷️ Version Packages** — `deployment version-packages` versions the ic-suite packages with Nx Release and writes their changelogs, uncommitted, before the build so npm gets the build of the published manifest.
+3. **👷 Build Projects** — `nx run-many --target=build`.
+4. **Regenerate committed output on the default branch** — 🔭 Trace Calls (`configuration:callidescope:write`), 🕸️ Graph Dependencies (`configuration:codependix:write`), 👔 Inventory Generators (`conformetry-generators` write), 🔗 Synchronize (conventional config, devcontainer configuration, pull request template, skill exclusions), 📊 Measure Code (codometer write for every project and the workspace), 🪙 Coin Vocabulary (`coinagerie-check` write).
+5. **🔖 Tag Codebase** — semantic-release versions and tags the codebase itself and creates the `v*` release the README badge shows (never an ic-suite package); its one `chore(release): 🔖 tag codebase` commit also carries the package versions and changelogs the version step wrote.
+6. **🔖 Tag Packages** — tags each newly versioned package `<project>@<version>` on the release commit and pushes the tags.
+7. **📦 Publish Packages** — publishes each released package to npm with provenance and to GitHub Packages under the owner's scope; a re-run completes a run that stopped partway.
+8. **🔗 Link Packages** and **🔏 Attest Packages** — lists each npm package on the organization's Linked artifacts page and attests builds with `actions/attest` for the tarballs this run published.
+9. **🧹 Cleanup Codebase** — saves the Nx cache.
 
-    CI->>NxR: 🏷️ Version Packages (--skip-publish)
-    NxR-->>CI: Writes versions & CHANGELOG.md (uncommitted)
-    CI->>SR: 🔖 Tag Codebase
-    SR-->>CI: Commits root + package versions/changelogs, tags v<version>, creates GitHub release
-    CI->>NxT: 🔖 Tag Packages
-    NxT-->>CI: Pushes <project>@<version> tags (6 at a time, retry 3x)
-    CI->>PNPM: 📦 Publish Packages
-    PNPM-->>CI: Publishes new versions to npm with provenance attestations
-    CI->>GHP: 🪞 Mirror to GitHub Packages
-    GHP-->>CI: Mirrors as @organizzolini/<package>
-    CI->>ATT: 🔗 Link & Attest Packages
-    ATT-->>CI: Creates storage records + build-provenance attestations on Linked artifacts
-```
+The `deployment` project's commands (`version-packages`, `tag-codebase`, `tag-packages`, `publish-packages`, `link-packages`) own the logic; the workflow only orders them.
 
-#### Detailed Steps
+#### Two Versioning Systems
 
-1. **🏷️ Version Packages** — Runs `nx release --skip-publish` (via `publication/src/publication.main.ts version-packages`). Reads conventional commits since each package's last tag, determines independent semver bump, writes version to `package.json`, prepends changelog entry. Uses `MainTipService` to detect if `main` moved; sets `RELEASE_SUPERSEDED=true` if so.
-
-2. **👷 Build Projects** — Runs `nx run-many --target=build` (all projects at the versions the release commit will carry).
-
-3. **🔭 Trace Calls** — Runs `nx run configuration:callidescope:write` to generate call trace artifacts.
-
-4. **🕸️ Graph Dependencies** — Runs `nx run configuration:codependix:write` to generate dependency graph artifacts.
-
-5. **👔 Inventory Generators** — Runs `nx run-many --target=conformetry-generators --configuration=write`.
-
-6. **🔗 Synchronize** — Runs conventional-config, devcontainer-configuration, pull-request-template, skill-exclusions with `--configuration=write`.
-
-7. **📊 Measure Code** — Runs `codometer` with `--configuration=write` (excludes `configuration`).
-
-8. **🔖 Tag Codebase** — Runs `semantic-release` (via `publication/src/publication.main.ts tag-codebase`):
-   - Bumps root `package.json` version
-   - Updates root `CHANGELOG.md`
-   - Commits root version, root changelog, **and** all package versions/changelogs from step 1 as single commit: `chore(release): 🔖 tag codebase <version>`
-   - Tags commit `v<version>` (e.g., `v2.34.0`), creates GitHub release (README badge points here)
-   - Uses explicit `assets` list to commit only intended files
-
-9. **🔖 Tag Packages** — Tags each newly versioned package `<project>@<version>` on the release commit:
-   - Pushes 6 tags at a time (GitHub rejects >6 ref updates per push)
-   - Retries rejected batches up to 3 times
-   - Missing tags pushed by next run before versioning
-   - If no codebase release (e.g., `no-release` commit), commits package versions/changelogs first as `chore(release): 🔖 tag packages`
-
-10. **📦 Publish Packages** — Runs `pnpm -r publish --provenance` (via `publication/src/publication.main.ts publish-packages`):
-    - Publishes every package in Nx release group whose version not on npm
-    - Each gets npm **provenance attestation** linking to commit and workflow run
-    - Uses pnpm (not `nx release publish`) because pnpm honors provenance only via `--provenance` flag
-    - Skips versions already on npm (re-run completes partial run, but cannot attest skipped packages)
-
-11. **🪞 Mirror to GitHub Packages** — Included in publish step:
-    - Mirrors each package to GitHub Packages under owner scope (`@organizzolini/...`)
-    - npm remains canonical registry for installation
-    - Mirrored packages can start private; visibility changed only in package settings
-
-12. **🔗 Link Packages** — Creates storage records on organization's **Linked artifacts** page for every npm version (npm registry, npmjs.com page, SHA-256, this repo). Tags versions published in this run for attestation.
-
-13. **🔏 Attest Packages** — Runs `actions/attest@v4` for each npm tarball this run published, creating GitHub **build-provenance attestations** shown beside records on Linked artifacts page.
-
-14. **🧹 Cleanup Codebase** — Saves Nx cache (covers whole graph at release commit versions).
-
-#### Supersession Handling
-
-A release run takes long enough that another PR often merges while it works. When `main` moves during the run:
-
-1. **Version Packages step** checks `MainTipService` before starting; if `main` moved, sets `RELEASE_SUPERSEDED=true` and skips.
-2. **Tag Codebase step** (semantic-release) checks before starting; if push rejected because `main` moved, sets `RELEASE_SUPERSEDED=true`.
-3. **All subsequent steps** check `env.RELEASE_SUPERSEDED != 'true'` and skip.
-4. **Newer commit's run** releases everything the superseded run would have.
-
-This avoids failed pushes and duplicate releases.
+Nx Release owns independent ic-suite package versions (tagged `<project>@<version>` with per-package `CHANGELOG.md`), while semantic-release owns the single codebase version (tagged `v<version>`, shown in the README badge).
 
 ---
 
@@ -272,7 +215,7 @@ This avoids failed pushes and duplicate releases.
 - Issues (opened, reopened, unassigned, edited, labeled, unlabeled)
 - Pull requests (opened, reopened, synchronize, edited, labeled, unlabeled, assigned, unassigned, ready_for_review)
 - Merge group (checks_requested)
-- Weekly schedule (Friday 8:18am UTC)
+- Weekly schedule (Friday 8:18am New York time: 12:18 UTC in summer, 13:18 UTC in winter)
 - Manual dispatch
 
 ### Concurrency
@@ -343,11 +286,9 @@ Runs on PR events, merge group, and non-draft PRs (includes dependabot; exempts 
 
 1. **Checkout** — Full history.
 2. **Setup Codebase** — With `nx-shas: false` (no Nx affected needed).
-3. **Restore OpenWiki Progress** — Caches `documentation/openwiki` keyed by SHA/run.
-4. **Refresh Documentation** — Runs `nx run documentation:refresh-documentation` (uses OpenRouter free Nemotron 3 Ultra model).
-5. **Save OpenWiki Progress** — Caches progress for resume on same commit or fallback to earlier.
-6. **Import GPG Key** — For signed commits.
-7. **Upsert Pull Request** — Creates/updates PR on `docs/codebase-refresh-documentation` branch with signed commits.
+3. **Refresh Documentation** — Runs `nx run documentation:refresh-documentation` with OpenWiki configured for OpenRouter (`OPENWIKI_PROVIDER=openrouter`, the model from the `OPENWIKI_MODEL_ID` variable that Terraform keeps at the OpenRouter preset, 12 provider retries for a free model's rate limits, and the `OPENROUTER_API_KEY` secret).
+4. **Import GPG Key** — For signed commits, after the model has finished so the key is not in the job while the model's tools run.
+5. **Upsert Pull Request** — Creates or updates a signed PR on the `docs/documentation-refresh` branch, adding only `documentation/openwiki/**`, `AGENTS.md` and the workflow file.
 
 ---
 

@@ -27,6 +27,7 @@ import { WordsService } from "./modules/words/words.service";
 import type { WiktionaryPage } from "../lexico-ingestion/lexico-ingestion.types";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { Provider } from "@nestjs/common";
+import type { AnyNode } from "domhandler";
 import type { Repository } from "typeorm";
 
 describe(LexemesService, () => {
@@ -297,6 +298,58 @@ describe(LexemesService, () => {
 
     expect(result).toStrictEqual([parsedLexeme]);
     expect(parseLexemeFromElementSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("should hand over the headword as a direct child when Wiktionary wraps it in a headword line", async () => {
+    const page: WiktionaryPage = {
+      category: "lemma",
+      href: "x",
+      html: '<p><span class="headword-line"><strong class="Latn headword">malaria</strong> (<i>genitive</i> <b class="Latn">malariae</b>)</span></p>',
+      word: "malaria",
+    };
+    const parseLexemeFromElementSpy = vi
+      .spyOn(
+        service as unknown as {
+          parseLexemeFromElement: (args: {
+            $: cheerio.CheerioAPI;
+            elt: AnyNode;
+          }) => Promise<Lexeme | null>;
+        },
+        "parseLexemeFromElement",
+      )
+      .mockResolvedValue(null);
+
+    await service.parseLexemes(page);
+
+    const call = parseLexemeFromElementSpy.mock.calls[0]?.[0];
+
+    expect([
+      call?.$(call.elt).children("strong.Latn.headword").length,
+      call?.$(call.elt).children("b").length,
+    ]).toStrictEqual([1, 1]);
+  });
+
+  it("should number the lexemes of a page from the given offset", async () => {
+    const page: WiktionaryPage = {
+      category: "lemma",
+      href: "x",
+      html: "<p><strong class='Latn headword'>amo</strong></p>",
+      word: "amo",
+    };
+    const parseLexemeFromElementSpy = vi
+      .spyOn(
+        service as unknown as {
+          parseLexemeFromElement: (args: { index: number }) => Promise<null>;
+        },
+        "parseLexemeFromElement",
+      )
+      .mockResolvedValue(null);
+
+    await service.parseLexemes(page, 10);
+
+    expect(parseLexemeFromElementSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ index: 10 }),
+    );
   });
 
   it("should skip null lexemes from parseLexemeFromElement", async () => {
@@ -602,6 +655,41 @@ describe(LexemesService, () => {
 
     expect(inflection.id).toBe("existing-id");
     expect(saveInflectionMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("should replace a saved inflection of another kind instead of reusing its id", async () => {
+    class NounKind {
+      public id = "";
+      public lexeme: unknown;
+      public save = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
+    }
+    class AdjectiveKind {
+      public id = "old-id";
+      public remove = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
+    }
+    const lexeme = new Lexeme();
+    const savedLexeme = new Lexeme();
+    const inflection = new NounKind();
+    const savedInflection = new AdjectiveKind();
+    lexeme.inflection = inflection as unknown as NonNullable<
+      Lexeme["inflection"]
+    >;
+    savedLexeme.inflection = savedInflection as unknown as NonNullable<
+      Lexeme["inflection"]
+    >;
+
+    await (
+      service as unknown as {
+        saveInflection: (
+          inputLexeme: Lexeme,
+          inputSavedLexeme: Lexeme,
+        ) => Promise<void>;
+      }
+    ).saveInflection(lexeme, savedLexeme);
+
+    expect(savedInflection.remove).toHaveBeenCalledTimes(1);
+    expect(inflection.id).toBe("");
+    expect(inflection.save).toHaveBeenCalledTimes(1);
   });
 
   it("should return early from saveInflection when no inflection exists", async () => {

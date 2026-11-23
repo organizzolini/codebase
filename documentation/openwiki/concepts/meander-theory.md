@@ -4,35 +4,40 @@ title: "Meander Theory"
 description: "Documents the mathematical/mechanical model behind meanderaw's pattern generation: the lattice address system (Code, rows, columns), the crossing/interlace mechanics, the band/parallel/branch structure, and how characteristics are computed from the Code."
 tags: ["meanderaw", "theory", "lattice", "characteristics", "code", "canonical-phase"]
 sources:
-  - id: openwiki-source-39c3295efc089133e87a9c80
-    resource: repo://CONTEXT.md
   - id: openwiki-source-621df1109a69de22d302b154
     resource: repo://documentation/adr/0004-draw-crossings-as-a-one-pitch-interlace-break.md
   - id: openwiki-source-289a207fba46f04c1857f68b
     resource: repo://documentation/adr/0006-close-both-band-borders-in-branch-and-parallel.md
   - id: openwiki-source-7878d6ae84c1692fb451e0db
     resource: repo://documentation/adr/0007-address-every-meander-by-its-lattice.md
-  - id: openwiki-source-f06ea58f0c5e89bd4694952c
-    resource: repo://documentation/adr/0014-give-every-meander-a-canonical-phase.md
+  - id: openwiki-source-f92b169b2e80254fdaaeb390
+    resource: repo://documentation/adr/0014-give-every-meander-a-canonical-rotation.md
   - id: openwiki-source-fab4198bacef6ed4faa83df5
     resource: repo://documentation/adr/0015-store-families-as-an-open-multi-label-set.md
   - id: openwiki-source-f24a774e35f681409d751e76
     resource: repo://documentation/adr/0023-filter-meanders-by-characteristics-alone.md
+  - id: openwiki-source-dcb52b26c445faa758e30156
+    resource: repo://projects/meanderaw/meanderaw-cli/AGENTS.md
   - id: openwiki-source-d8f4b3f15cd18fc729f7df07
     resource: repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/characteristics.constants.ts
   - id: openwiki-source-241f1898b527647f88d7490f
     resource: repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/characteristics.types.ts
-  - id: openwiki-source-680fe4c6e442413e1fa1bb49
-    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/compound/pattern/is-chain-characteristic.service.ts
-  - id: openwiki-source-9a879298f467b9d5afe12d1e
-    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/path/tile-crossing/tile-crossing-component-delta-count-characteristic.service.ts
-  - id: openwiki-source-690b47e95bf304afb3c612a0
-    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/path/tile-crossing/tile-crossing-count-characteristic.service.ts
-  - id: openwiki-source-ee25d9a7efc2a7aae7125bbe
-    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/path/tile-crossing/tile-crossing-cycle-count-characteristic.service.ts
+  - id: openwiki-source-a2efa5106b19ba69f8d9438e
+    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/modules/compound/modules/pattern/modules/windings/is-chain-characteristic.service.ts
+  - id: openwiki-source-786f57aeb4b42952faf79c46
+    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/modules/path/modules/tile-crossing/tile-crossing-component-delta-count-characteristic.service.ts
+  - id: openwiki-source-0eb182b23ae89be795a1c0c1
+    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/modules/path/modules/tile-crossing/tile-crossing-count-characteristic.service.ts
+  - id: openwiki-source-3ce7ff9fa5d9d6697b567032
+    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/modules/path/modules/tile-crossing/tile-crossing-cycle-count-characteristic.service.ts
+  - id: openwiki-source-909320347268acaa92881c47
+    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/code/code.constants.ts
   - id: openwiki-source-4c85eface01cd2a486ef3cd1
     resource: repo://projects/meanderaw/meanderaw-cli/src/modules/code/code.service.ts
-generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
+generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+verified:
+  - by: openwiki/0.9.0
+    at: 2026-11-22T00:18:20.862Z
 ---
 # Meander Theory
 
@@ -95,18 +100,15 @@ The channel invariant (invariant 2) is measured as `channelWidthCompliant` by th
 
 ---
 
-## Phase and Canonical Phase
+## Rotation and Canonical Rotation
 
-### Phase
+### Rotation
 
-> **Phase**: Which cyclic rotation of a Code's columns is the one stored and drawn. The same band cut at a different column is the same meander in a different phase, so a meander has exactly one canonical phase rather than one Code.
-> _Avoid_: Rotation, offset, cut
+A cyclic column rotation of a Code represents the same infinite band cut at a different column. The same band cut at a different column is the same meander in a different rotation, so a meander has exactly one canonical rotation rather than many Codes. For a Code with `C` columns there are `C` possible rotations. (Earlier versions of this vocabulary called this a "phase"; ADR 0014 and `CodeService` now say rotation.)
 
-A cyclic column rotation of a Code represents the same infinite band cut at a different column. For a Code with `C` columns, there are `C` possible phases.
+### Canonical Rotation Selection
 
-### Canonical Phase Selection
-
-**ADR 0014** defines the canonical phase as:
+**ADR 0014** defines the canonical rotation as:
 
 > The rotation (under the column-translation group) that minimizes `seamComponents`, breaking ties by choosing the lexicographically smallest Code.
 
@@ -114,13 +116,13 @@ A cyclic column rotation of a Code represents the same infinite band cut at a di
 
 The group of transformations defaults to cyclic column rotation but is parameterized, allowing future transformation sets (e.g., including horizontal flips) to change which meanders count as the same one.
 
-**Implementation**: `CodeService.canonicalPhase` evaluates every phase in the group, scores each via `TileCrossingComponentDeltaCountCharacteristicService`, and picks the minimum (tie-breaking lexicographically).
+**Implementation**: `CodeService.canonicalRotation` evaluates every rotation in the group with a caller-supplied tile-crossing score (`TileCrossingComponentDeltaCountCharacteristicService` in practice) and picks the minimum, tie-breaking by the lexicographically smallest digits.
 
 ---
 
 ## Tile Crossing
 
-> **Tile crossing**: The join where a tile's last column meets its first when a Code is read as a repeating band rather than as a finite drawing. What crosses it — a stranded end, a junction, a closed loop — is measured rather than assumed, and the measurement is what a canonical phase is chosen to minimize.
+> **Tile crossing**: The join where a tile's last column meets its first when a Code is read as a repeating band rather than as a finite drawing. What crosses it — a stranded end, a junction, a closed loop — is measured rather than assumed, and the measurement is what a canonical rotation is chosen to minimize.
 > _Avoid_: Seam (formerly this project's own term), wrap, edge, border
 
 When a tile repeats, edges leaving the last column wrap to the first column. The **tile crossing** is the set of these wrapping edges. What crosses this boundary is not assumed from the Code's digits — it is measured by comparing the graph of the cyclic band against the graph of the lone tile (with wrapping disabled).
@@ -223,13 +225,11 @@ A meander can satisfy multiple pattern characteristics simultaneously, or none. 
 
 ## Lattice Address System
 
-**ADR 0007** establishes that every meander carries a **lattice address** — `<rows>r<columns>c-` followed by one hexadecimal character per interior lattice point, worth `8` north, `4` south, `2` east and `1` west, spanning one true repeat — read off the rendered document rather than off the generator, with its canonical symmetry class reported beside it.
+**ADR 0007** established that every meander is addressed by its lattice: one hexadecimal character per interior lattice point, worth `8` north, `4` south, `2` east and `1` west, spanning one true repeat, read off the rendered document rather than off the generator.
 
-Key properties:
-- **9,877 committed drawings address**, enabling cross-family comparison: 149 combinations of row count, span, and canonical class are drawn by more than one family.
-- **Address at the true repeat**, not the family's pitch. The span is a whole number of pitches, declared per modifier in `MODIFIER_REPEAT_PITCHES`.
-- **67 expected address collisions** are documented where the address cannot distinguish drawings (e.g., two-row bands have no addressable vertical edges; dotting differences are not encoded).
-- **Sub-family naming**: `MosaicNamingService.rules` (pure structure over a tile) now answers for readings from any family — 85 of 1,118 swept combinations earn a name (10 in branch, 25 in negative, 50 in parallel).
+Today a meander is a row in the `meanders` table of the `meanderaw` Postgres schema, addressed by its **Code, its rows, and its columns** and nothing else. The formatted Code (`{columns}x{rows}y{lattice}r{repeats}`, `r` optional) spells out all three, so `code` alone is its identity; the row's `id` is a database-assigned uuidv7 that changes on every draw run and never reaches committed output. No row stores its drawing: the renderer draws each meander from its Code, rows, and columns.
+
+Generation is lattice-first: a budgeted enumeration produces every structurally distinct repeat within reach (bounded by one edge budget, not a column cap, since a repeat of `rows` by `columns` holds `columns * (2 * rows - 1)` edges), and one generic renderer draws each one from its decoded Code.
 
 ---
 
@@ -245,27 +245,26 @@ Historically, each meander was filed under exactly one architectural family (`wh
 
 ---
 
-## Mermaid Diagram: Code → Lattice → Tile → Crossings → Canonical Phase
+## Mermaid Diagram: Code → Lattice → Tile → Crossings → Canonical Rotation
 
-<!-- openwiki: mermaid parse failed and this diagram was converted to a text fence so it does not break rendering. Fix the diagram source and restore the mermaid fence. Parser error: Heuristic: an unescaped angle bracket inside a label breaks rendering; rephrase the label. -->
-```text
+```mermaid
 flowchart TD
-    A[Code String<br/>02x02y4488] -->|parse| B[CodeObject<br/>{columns, rows, digits, repeats}]
-    B -->|spellDigits| C[Tile / Matrix<br/>rows x columns of MatrixPoint]
-    C -->|connectivity<br/>unwrapped=false| D[Cyclic Band Graph<br/>edges wrap east]
-    C -->|connectivity<br/>unwrapped=true| E[Lone Tile Graph<br/>no east wrap]
-    D --> F[tileCrossingCount<br/>edges added by wrap]
-    D --> G[tileCrossingCycleCount<br/>loops added by wrap]
-    E --> H[tileCrossingComponentDeltaCount<br/>components merged by wrap]
-    F --> I[Canonical Phase Selection]
+    A["Code string 02x02y4488"] -->|parse| B["CodeObject: columns, rows, digits, repeats"]
+    B -->|spellDigits| C["Tile (Matrix of MatrixPoint, rows by columns)"]
+    C -->|connectivity, wrapped| D["Cyclic band graph (edges wrap east)"]
+    C -->|connectivity, unwrapped| E["Lone tile graph (no east wrap)"]
+    D --> F["tileCrossingCount: edges added by wrap"]
+    D --> G["tileCrossingCycleCount: loops added by wrap"]
+    E --> H["tileCrossingComponentDeltaCount: components merged by wrap"]
+    F --> I["Canonical rotation selection"]
     G --> I
     H --> I
-    I -->|minimize deltaCount<br/>tie-break lexicographically| J[Canonical CodeObject]
-    J -->|format| K[Canonical Code String]
-    K --> L[Stored in DB<br/>drawn as SVG]
+    I -->|"minimize delta count, tie-break lexicographically"| J["Canonical CodeObject"]
+    J -->|format| K["Canonical Code string"]
+    K --> L["Stored in Postgres, drawn as SVG"]
 ```
 
-**Caption**: From Code string through tile decoding, cyclic vs. lone-tile graph comparison, tile-crossing measurements, to canonical phase selection and storage.
+**Caption**: From Code string through tile decoding, cyclic vs. lone-tile graph comparison, tile-crossing measurements, to canonical rotation selection and storage.
 
 ---
 
@@ -273,10 +272,10 @@ flowchart TD
 
 | ADR | Title | Concept |
 |-----|-------|---------|
-| 0004 | Draw an interrupted crossing as a one-pitch interlace break | Channel invariant, tile crossing measurement, `cross` family |
+| 0004 | Draw crossings as a one-pitch interlace break | Channel invariant, tile crossing measurement, `cross` family |
 | 0006 | Close both band borders in branch and parallel | Band border rules, figure inset, branching condition |
 | 0007 | Address every meander by its lattice | Lattice address format, true repeat vs pitch, cross-family comparison |
-| 0014 | Give Every Meander a Canonical Phase | Canonical phase definition, `seamComponents` → `tileCrossingComponentDeltaCount` |
+| 0014 | Give Every Meander a Canonical Rotation | Canonical rotation definition, `seamComponents` → `tileCrossingComponentDeltaCount` |
 | 0015 | Store Families as an Open Multi-Label Set | Superseded by 0023; introduced open boolean characteristics |
 | 0018 | Store Every Characteristic in One Sparse JSON Map | Supersedes 0015's boolean array; single `characteristics` JSON column |
 | 0019 | Drop the Drift Check and the Drawing Hash | Supersedes 0015's `drawingHash`; drawing is a pure function of Code |

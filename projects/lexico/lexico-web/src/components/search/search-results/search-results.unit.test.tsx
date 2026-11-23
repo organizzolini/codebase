@@ -12,9 +12,9 @@ import type { LoadLexemeForms } from "../../lexeme/lexeme-forms/lexeme-forms.typ
 function result(id: string): LexemeResult {
   return {
     id,
-    identifiers: [],
     lemma: id,
     match: { kind: "exact-lemma" },
+    matchedForms: [],
     partOfSpeech: "noun",
     principalParts: [],
     pronunciations: [],

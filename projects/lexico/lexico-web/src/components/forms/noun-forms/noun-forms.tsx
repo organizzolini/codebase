@@ -1,4 +1,7 @@
+import { Frame, FramePanel } from "@codebase/presentation";
+
 import { FormsTable } from "../forms-table/forms-table";
+import { FLUSH_PANEL, FORMS_FRAME } from "../forms-table/forms-table.constants";
 
 import { CASES, NUMBERS } from "./noun-forms.constants";
 
@@ -43,15 +46,24 @@ export function NounForms(
       className={className}
       data-testid="noun-forms"
     >
-      <FormsTable
-        columns={NUMBERS.map((number) => ({ key: number, label: number }))}
-        lookup={(case_, number) =>
-          rows
-            .filter((row) => row.case === case_ && row.number === number)
-            .map((row) => row.word)
-        }
-        rows={cases.map((case_) => ({ key: case_, label: case_ }))}
-      />
+      <Frame
+        className={FORMS_FRAME}
+        variant="ghost"
+        dense
+        stacked
+      >
+        <FramePanel className={FLUSH_PANEL}>
+          <FormsTable
+            columns={NUMBERS.map((number) => ({ key: number, label: number }))}
+            lookup={(case_, number) =>
+              rows
+                .filter((row) => row.case === case_ && row.number === number)
+                .map((row) => row.word)
+            }
+            rows={cases.map((case_) => ({ key: case_, label: case_ }))}
+          />
+        </FramePanel>
+      </Frame>
     </div>
   );
 }

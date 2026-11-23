@@ -4,13 +4,15 @@ import { type AnyNode, isTag, isText } from "domhandler";
 import _ from "lodash";
 import YAML from "yaml";
 
-import { Author, Text } from "@codebase/lexico-db";
+import { Author, Text, textCollection } from "@codebase/lexico-db";
 
 import { authorIdToName } from "../../../lexico-ingestion/modules/literature/literature.constants";
 import {
   cleanBoilerplate,
   formatLineNumber,
   isEnglishBoilerplate,
+  toBoundedSlug,
+  toBoundedTitle,
 } from "../../library.utilities";
 
 /**
@@ -205,12 +207,16 @@ export class LatinLibraryBuilderService {
     absoluteUrl: string,
   ): Text {
     const rawTitle = $(anchor).text().trim().toLowerCase();
-    const title = rawTitle ? _.startCase(rawTitle) : "";
+    const fullTitle = rawTitle ? _.startCase(rawTitle) : "";
+    const title = toBoundedTitle(fullTitle);
     const textEntity = new Text();
     textEntity.type = "text";
     textEntity.title = title;
-    textEntity.slug = _.kebabCase(title);
-    textEntity.metadata = { sourceUrl: absoluteUrl };
+    textEntity.slug = toBoundedSlug(fullTitle);
+    textEntity.metadata =
+      title === fullTitle
+        ? { sourceUrl: absoluteUrl }
+        : { fullTitle, sourceUrl: absoluteUrl };
     return textEntity;
   }
 
@@ -224,7 +230,11 @@ export class LatinLibraryBuilderService {
   ): Record<string, unknown> {
     const frontmatter: Record<string, unknown> = {
       author: author.slug,
+      collection: textCollection.theLatinLibrary,
       text_metadata: {
+        ...(this.getMetadataString(work.metadata, "fullTitle")
+          ? { full_title: this.getMetadataString(work.metadata, "fullTitle") }
+          : {}),
         source_url: this.getMetadataString(work.metadata, "sourceUrl") ?? "",
       },
       title: work.title,
@@ -319,9 +329,9 @@ export class LatinLibraryBuilderService {
    */
   getTextSlug(work: Text, author: Author): string {
     const workBook = this.getMetadataString(work.metadata, "book");
-    const safeTitle = _.kebabCase(work.title);
+    const safeTitle = toBoundedSlug(work.title);
     return workBook
-      ? `${author.slug}/${_.kebabCase(workBook)}/${safeTitle}`
+      ? `${author.slug}/${toBoundedSlug(workBook)}/${safeTitle}`
       : `${author.slug}/${safeTitle}`;
   }
 

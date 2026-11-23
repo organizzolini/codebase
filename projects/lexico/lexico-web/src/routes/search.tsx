@@ -3,7 +3,7 @@ import {
   useRouter,
   useRouterState,
 } from "@tanstack/react-router";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 
 import { Button } from "@codebase/presentation";
 
@@ -14,6 +14,7 @@ import {
   getSearch,
   searchSchema,
 } from "../components/search/search-results/search.constants";
+import { useLookupHistory } from "../hooks/use-lookup-history/use-lookup-history";
 
 import type { LexemeFormRow } from "../components/lexeme/lexeme-forms/lexeme-forms.types";
 import type { SearchParameters } from "../components/search/search-results/search.types";
@@ -87,6 +88,7 @@ function SearchPage(): ReactNode {
   const navigate = Route.useNavigate();
   const { query = "" } = Route.useSearch();
   const results = Route.useLoaderData();
+  const { recordSearch } = useLookupHistory();
   const isLoading = useRouterState({
     select: (state: { isLoading: boolean }) => state.isLoading,
   });
@@ -117,12 +119,19 @@ function SearchPage(): ReactNode {
   );
 
   // ♻️ Lifecycle
+  useEffect(() => {
+    if (query !== "") {
+      recordSearch(query);
+    }
+  }, [query, recordSearch]);
 
   // 🏁 Early Returns
 
   // 🎨 Markup
   return (
-    <section className="space-y-4">
+    <section
+      className={`space-y-4 ${query === "" ? "flex min-h-[calc(100svh-2rem)] flex-col" : ""}`}
+    >
       <h1 className="sr-only">Search</h1>
       <SearchBar
         initialQuery={query}
@@ -130,7 +139,7 @@ function SearchPage(): ReactNode {
         onSearch={handleSearch}
       />
       {query === "" ? (
-        <SearchLanding />
+        <SearchLanding className="flex flex-1 items-center justify-center" />
       ) : (
         <SearchResults
           loadForms={handleLoadForms}

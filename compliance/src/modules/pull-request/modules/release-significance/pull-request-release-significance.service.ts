@@ -8,7 +8,7 @@ import {
   COMMIT_ANALYZER_PLUGIN_NAME,
   commitAnalyzerOptionsSchema,
   CONVENTIONAL_SUBJECT_PATTERN,
-  pullRequestDocumentSchema,
+  pullRequestCommitsSchema,
   RELEASE_CONFIG_PATH,
   RELEASE_LEVEL_RANK,
   releaseConfigSchema,
@@ -116,17 +116,16 @@ export class PullRequestReleaseSignificanceService {
     return release === false ? 0 : (RELEASE_LEVEL_RANK[release] ?? 0);
   }
 
-  /** Reads one raw `commits` array entry into a `PullRequestCommit`. */
+  /** Reads one REST commit into a `PullRequestCommit`. */
   private readRawCommit(entry: unknown): PullRequestCommit {
     const record = this.isRecord(entry) ? entry : {};
-    const subject =
-      typeof record["messageHeadline"] === "string"
-        ? record["messageHeadline"]
-        : "";
-    const body =
-      typeof record["messageBody"] === "string" ? record["messageBody"] : "";
+    const commit = this.isRecord(record["commit"]) ? record["commit"] : {};
+    const message =
+      typeof commit["message"] === "string" ? commit["message"] : "";
+    const [subject = "", ...bodyLines] = message.split("\n");
+    const body = bodyLines.join("\n").trim();
     const sha =
-      typeof record["oid"] === "string" ? record["oid"].slice(0, 7) : "";
+      typeof record["sha"] === "string" ? record["sha"].slice(0, 7) : "";
 
     return {
       convention: this.parseConventionalSubject(subject, body),
@@ -252,8 +251,8 @@ export class PullRequestReleaseSignificanceService {
       .releaseRules;
   }
 
-  /** Reads the title and commits out of a `gh pr view` document. */
-  public resolveFromDocument(
+  /** Reads the commits out of the REST list of a pull request's commits. */
+  public resolveFromCommits(
     documentText: string,
   ): PullRequestCommitsResolution {
     let parsed: unknown;
@@ -262,19 +261,17 @@ export class PullRequestReleaseSignificanceService {
       parsed = JSON.parse(documentText);
     } catch (error) {
       return {
-        failure: `❌ Unable to parse the gh pr view output: ${this.describeError(error)}`,
+        failure: `❌ Unable to parse the pull request commits: ${this.describeError(error)}`,
         resolved: false,
       };
     }
 
-    const result = pullRequestDocumentSchema.safeParse(parsed);
-    const document = result.success ? result.data : {};
-    const rawCommits = document.commits ?? [];
+    const result = pullRequestCommitsSchema.safeParse(parsed);
+    const rawCommits = result.success ? result.data : [];
 
     return {
       commits: rawCommits.map((entry) => this.readRawCommit(entry)),
       resolved: true,
-      title: document.title ?? "",
     };
   }
 

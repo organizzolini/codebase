@@ -1,28 +1,40 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:7c09bb389e54dbd30795dbccc467f424b10640cf462855527cefd81474b2e8ff",
+  "pageVersion": "sha256:335816cb603ff290e48f3a7dfcc94b71d00fb930131e9def7f77d88a1a2e3411",
   "claims": [
     {
       "id": "claim_1f71c14e89574734acd22c1f76c31751",
       "statement": "Conformetry is a template-driven code generation and conformance validation toolchain where generators render templates to instances, languages compare instances against templates structurally, and validation reports differences with conformance scores that gate CI.",
       "evidence": [
         {
-          "resource": "repo://CONTEXT.md#L6-L45",
-          "version": "repo-lines-v1:sha256:3d8e037dbb6c167595d1da70774e9805834652ecb704e4b40c9b969036886ace:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiZDcyYzUwMWE1OWUyZGY2MTliYzM1OWRkNzk5ZTQ1OGQ2YWEzZTE5ZGY5ZTdlOWYzZWIyNGE5N2NmYzk0ZWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2OTVlMTViNjZjOTA1MDFkY2UxMzkzODA0YzRlOGVjMDNkNWMzM2MxNjA1MGM4ZWYzNzRmYTBiODBmNTFmMTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjViMzU4OGQxNjFiNjg3NGE5ODQ3ZWNiYjc2NzNhMTA3YTMzZDZjOWVkM2ExMGNkYjZmOWZmMTYzMTQ2NTkxY2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlY2RmNWI1NDFmODBkMjU4MTUyZTgzZjM5OGFhNTM5NWJmM2Q5ODA1Yjc2MTk2MmM0N2Q1OWRkZjI4MjhiZmUifQ"
+          "resource": "repo://README.md#L198-L211",
+          "version": "repo-lines-v1:sha256:ae5a8381ae33b4077da1187d6d0ee889c06b66922c486eb1feaf180ebed6430b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyZjgwZWZmZDdlNGRjOWY5MWY0ZTIyOTc4MDA4NzEwZTc1MzVkNjkyMTI3MTk1ZTQwODkxMzhmZDIwNDEzZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2YjBhYmNlYzM0OGY0YTEwYTNhM2Q2ZjNlZmVlMDI5MDdmMjM1N2E2ZTE0OTQxYmQ1OGQ3Mjc3NzczNGJkMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhZDAzN2U4MzRiN2ZmNWY5ZjhlMzNhYTRlYzE2ZDg1NDYzYzhiMzk0ZTMyMzkyMTdhZWViOTQ3MWIxMDRkODIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmOTQ0YzdhYWQwOThjM2M3OTcwYmY1ZjFjMjc5ZDBjNzI1ZDM4ZDQyMjMwYmY2ODNhOWE0Yjk1OGQxOTNlZjEifQ"
         },
         {
-          "resource": "repo://README.md#L198-L211",
-          "version": "repo-lines-v1:sha256:ae5a8381ae33b4077da1187d6d0ee889c06b66922c486eb1feaf180ebed6430b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyZjgwZWZmZDdlNGRjOWY5MWY0ZTIyOTc4MDA4NzEwZTc1MzVkNjkyMTI3MTk1ZTQwODkxMzhmZDIwNDEzZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2YjBhYmNlYzM0OGY0YTEwYTNhM2Q2ZjNlZmVlMDI5MDdmMjM1N2E2ZTE0OTQxYmQ1OGQ3Mjc3NzczNGJkMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhZWJlODdlYWM3OTIzMjZmYjkzMjBiZDM1N2Q0MGI2MjE1Zjg5MWY1YjdlNDc3NWQ3Yzk2NzlmMWUxMGVlYWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmOTQ0YzdhYWQwOThjM2M3OTcwYmY1ZjFjMjc5ZDBjNzI1ZDM4ZDQyMjMwYmY2ODNhOWE0Yjk1OGQxOTNlZjEifQ"
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-core/README.md#L1-L40",
+          "version": "repo-lines-v1:sha256:ed1845385c3a388fd32ba316980f8321af81f5a528cd18bacdcfacc89391c745:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5M2FlNGM0MjFlYjM0YmVjZmU4MmUwYmNlNjkwZjc4MWVhN2Y4OTdhMzI2ZjczOGIwYTRhMGFjNGUxNzA4OTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyMjIyOGQwNTZkMTg2OTdlZWFjOTZjZTk5ZDgyYTYxOTNkYjljMjM2MWM4MjJhYmQ2NmFlOWVhMDFlMjllNzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzNmM4YjMwZWI4MDA3YTdkM2M2ZGY1NmVjNjFkM2JjMjJhZmFkN2QyMjZmNWE1Y2U0NDNhZDFlYTc1MzRlYWIifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-generation/README.md#L1-L12",
+          "version": "repo-lines-v1:sha256:f4300e64b8b303cf74a42c93c33225d7356afeff6bfc6d25a4a604fc01c9743a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmYmU2MzhhOGUxODg1OWQ2Y2JhNWZhMjFiOTIxZmQ2MDVkMjllZTE2ZTUzOWZhMDE3NmNkY2YxOGQyMGIyZGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc0YzU3ZWMxNTlkOTUxNTk0NjdmMTQ5NWQyOTgyZjRmNTBmNTYwNTBiODJlMjQ5OTBkOWFhMmQ1M2QzOTUyNTAifQ"
         }
       ]
     },
     {
       "id": "claim_d9c82eecae5d4452b544bbed944c8362",
-      "statement": "The toolchain defines eight core concepts with prescribed terminology: Generator (template+inputs), Template (folder of files with placeholders), Instance (generated code on disk), Language (comparison engine by extension), Fallback (line-by-line text for unclaimed extensions), Difference (template declares, instance lacks), Error (severe difference), Conformance (0-1 score).",
+      "statement": "The toolchain defines seven core concepts with prescribed terminology: Generator (template plus inputs), Template (folder of files with placeholders), Instance (generated code on disk), Language (comparison engine by extension), Fallback (line-by-line text for unclaimed extensions), Difference (template declares, instance lacks) and Conformance (a 0 to 1 score).",
       "evidence": [
         {
-          "resource": "repo://CONTEXT.md#L6-L45",
-          "version": "repo-lines-v1:sha256:3d8e037dbb6c167595d1da70774e9805834652ecb704e4b40c9b969036886ace:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiZDcyYzUwMWE1OWUyZGY2MTliYzM1OWRkNzk5ZTQ1OGQ2YWEzZTE5ZGY5ZTdlOWYzZWIyNGE5N2NmYzk0ZWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2OTVlMTViNjZjOTA1MDFkY2UxMzkzODA0YzRlOGVjMDNkNWMzM2MxNjA1MGM4ZWYzNzRmYTBiODBmNTFmMTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjViMzU4OGQxNjFiNjg3NGE5ODQ3ZWNiYjc2NzNhMTA3YTMzZDZjOWVkM2ExMGNkYjZmOWZmMTYzMTQ2NTkxY2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlY2RmNWI1NDFmODBkMjU4MTUyZTgzZjM5OGFhNTM5NWJmM2Q5ODA1Yjc2MTk2MmM0N2Q1OWRkZjI4MjhiZmUifQ"
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-configuration/README.md#L145-L175",
+          "version": "repo-lines-v1:sha256:c1a04fab714b23718f158e50f535fca0ce96762fd52e77f5342e2c4d4049d397:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0Mzc2NmFiMjhhZDUzMGJhMDM3OThiZjU5MDU1NDVlYjZhMmYyMTA2ZGMwZDY1MjIxZGNiMTgyNGRkYmUwZjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0OTNiNmQ1OTI4NGZjNmE0YzkyMTJjYzVjNjBlOWY5Y2Y0MDAxZWY4MWI4YmQyZTQyYzA1YTZjYjc0NzViNzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAyNzIwNTY2ODY4OGVjN2E0M2Q4MTk5MDZkMTNiMTU4NTIzZTk3ZDZhOGU0NDcwM2U0MjRjMzRiMmQ3NmUzZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA0ZDNiYzE5OWM2M2ZkMzE2NmE0OWIzNWZkYTQ4NjNkZmUzOTBlOTQyNDIzMTc2M2E5OTFiZjBiYjhkYTQyMTYifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-core/README.md#L1-L100",
+          "version": "repo-lines-v1:sha256:fa51686e6dcbdbcd448feadcf6149d23b6cf625f9863a2fda5621eca7e0ac5b3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1OTNhZTRjNDIxZWIzNGJlY2ZlODJlMGJjZTY5MGY3ODFlYTdmODk3YTMyNmY3MzhiMGE0YTBhYzRlMTcwODk4IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI4MjYxOWE2YTk2MzdhYmRkZjRmYTUwNjAzZjcwNzU5NTMyOTRkZjBiODY3ODJmZjFiYmQxMWViYTRiNTEzZjcyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0OTNlYWU0YTYzMWE5MzkyZjVhYzdjY2ExMDRlMTlhNGJiNjEwYjVjOWJiNTVjZjc2YmMyZGUzNzk0MWUzOWE1In0"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-languages/README.md#L1-L45",
+          "version": "repo-lines-v1:sha256:5d1901247bc2ee4e49baaa44fefddb39480e8a6fb44b52aed81abe1cffeb5f2c:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5YzRiNGZmNTEwZGRkNmQxMTVmOTAzNWMxZGExY2ZjMTlkZDEzYTIyOWQyMTE2ODQxZDJmYjlkOTZlNTU4NDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFkZWUwY2Y5ZmNjODZiODBlYjAxYzRkODBmODU1M2ZlNjc4NGJmYTg1MTk5NWQ1NDY4NjNkOWEzYTE1NjI1OGIifQ"
         }
       ]
     },
@@ -70,17 +82,17 @@
     },
     {
       "id": "claim_48c20a386f034524ab3fcd98c4b93a2e",
-      "statement": "ADR 0011 establishes a single-path-law principle: configuration/codebase-structure.json holds universal path/naming rules, while conformetry owns per-type shape via tags and validation (instance groups selected by tags in conformetry.config.ts).",
+      "statement": "ADR 0011 establishes a single-path-law principle: configuration/lint/codebase-structure.json holds the universal path and naming rules, while conformetry owns per-type shape, selecting instances by tag in configuration/ic-suite/conformetry.config.ts and gating them with conformetry-validate.",
       "evidence": [
         {
-          "resource": "repo://documentation/adr/0011-hold-one-path-law-for-every-project-type.md#L1-L15",
-          "version": "repo-lines-v1:sha256:b5cfc7882c39ba094f03cc3653a641075393b733e86572365ef41634791c3130:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyMjgxNzVmMWI2M2Q2ZmFmNDhmMmQ1YWU5NzNiZmUzMjk2MmFlNjc1NDVhOWUyNGUwMWIyYWYzODZmMWY0NGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkNGMyYWFkYTM1OGExMTRkNmVhZDg4ZTRjMmJhYmIzZmRlYjcxN2Y3N2E0ZGU2ZjQxYTE2M2Q5NmZiNjNlMWIifQ"
+          "resource": "repo://documentation/adr/0011-hold-one-path-law-for-every-project-type.md#L1-L16",
+          "version": "repo-lines-v1:sha256:9269f5c6cc230b4c2d2b027778ba75ab6df7db5b7a5ef059358e0d2f2448c5ff:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyMjgxNzVmMWI2M2Q2ZmFmNDhmMmQ1YWU5NzNiZmUzMjk2MmFlNjc1NDVhOWUyNGUwMWIyYWYzODZmMWY0NGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdjYTFlZTIzMjE0YzQxMWY0NGQyOGIzMDhjMDQwZWUwZWI5ZjU4ZjJlYzhkNjkyYThmZGMxMWIyM2NjY2FlM2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFmZGQ2MmUzMTVlMzcyNTMzOGIxYTE0MGIzYTAzOWE1YTAzMmFhYTE1ZjJjYTFiNTMzYjkxNGU0ODYxMzg4MmMifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-13T16:30:25.369Z"
+    "at": "2026-11-22T00:18:20.862Z"
   }
 }

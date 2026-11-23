@@ -3,14 +3,14 @@ import path from "node:path";
 
 import { Injectable } from "@nestjs/common";
 import * as cheerio from "cheerio";
-import { Command, CommandRunner } from "nest-commander";
+import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
 import { categories } from "./wiktionary.constants";
 
 import type { WiktionaryPage } from "../../lexico-ingestion.types";
-import type { Category } from "./wiktionary.types";
+import type { Category, WiktionaryCommandOptions } from "./wiktionary.types";
 import type { AnyNode, Element } from "domhandler";
 
 /**
@@ -150,6 +150,7 @@ export class WiktionaryCommand extends CommandRunner {
   private async ingestCategory(
     category: Category = "lemma",
     startPath?: string,
+    endLemma?: string,
   ): Promise<void> {
     this.logger.info("🗂️ Ingesting category", undefined, { category });
     let urlPath: string =
@@ -163,13 +164,20 @@ export class WiktionaryCommand extends CommandRunner {
         });
         const $ = await this.fetchCategoryPage(urlPath);
 
+        let isPastEnd = false;
         for (const a of $(
           "#mw-pages div.mw-category > div.mw-category-group > ul > li a",
         )) {
+          if (this.isPastEnd($(a).text(), endLemma)) {
+            isPastEnd = true;
+            break;
+          }
           await this.processWiktionaryCategoryLink(a, $, category);
         }
 
-        urlPath = $('a:contains("next page")').eq(0).attr("href") ?? "";
+        urlPath = isPastEnd
+          ? ""
+          : ($('a:contains("next page")').eq(0).attr("href") ?? "");
 
         this.logger.info("📄 Ingested page", undefined, {
           url: `${this.host}${urlPath}`,
@@ -217,6 +225,19 @@ export class WiktionaryCommand extends CommandRunner {
     }
 
     this.saveWiktionaryEntry(entry, parsed.section, parsed.$);
+  }
+
+  /**
+   * Whether a category entry sorts after the last lemma of a bounded scrape.
+   */
+  private isPastEnd(word: string, endLemma: string | undefined): boolean {
+    return (
+      endLemma !== undefined &&
+      /^[A-Za-z][A-Za-z .'-]*$/.test(word) &&
+      !word.includes("/") &&
+      !/(Reconstruction:)|(Appendix:)/i.test(word) &&
+      word.toLowerCase() > endLemma
+    );
   }
 
   /**
@@ -296,8 +317,11 @@ export class WiktionaryCommand extends CommandRunner {
 
   // 🌎 Public Methods
 
-  /** Scrapes every configured Latin category from Wiktionary, following pagination and storing each article's HTML as JSON under `./data/wiktionary`. */
-  async ingestWiktionary(): Promise<void> {
+  /** Scrapes every configured Latin category from Wiktionary, following pagination and storing each article's HTML as JSON under `./data/wiktionary`, from `startLemma` to `endLemma` when given. */
+  async ingestWiktionary(
+    startLemma?: string,
+    endLemma?: string,
+  ): Promise<void> {
     this.logger.info("🌐 Ingesting wiktionary");
     if (!fs.existsSync(this.directory)) {
       fs.mkdirSync(this.directory, { recursive: true });
@@ -306,13 +330,40 @@ export class WiktionaryCommand extends CommandRunner {
     for (const category of Object.keys(categories).filter(
       (key): key is Category => Object.hasOwn(categories, key),
     )) {
-      await this.ingestCategory(category);
+      await this.ingestCategory(
+        category,
+        startLemma
+          ? `/w/index.php?title=Category:${categories[category]}&pagefrom=${encodeURIComponent(startLemma)}`
+          : undefined,
+        endLemma?.toLowerCase(),
+      );
     }
     this.logger.info("🌐 Ingested wiktionary");
   }
 
+  /** Bounds the scrape above its last page, so ranges can be scraped side by side. */
+  @Option({
+    description: "The last lemma to scrape",
+    flags: "--endLemma [lemma]",
+  })
+  parseEndLemma(endLemma: string): string {
+    return endLemma;
+  }
+
+  /** Bounds the scrape below its first page, so a restart skips what is already cached. */
+  @Option({
+    description: "The first lemma to scrape",
+    flags: "--startLemma [lemma]",
+  })
+  parseStartLemma(startLemma: string): string {
+    return startLemma;
+  }
+
   /** Runs the Wiktionary ingestion pipeline. */
-  async run(): Promise<void> {
-    await this.ingestWiktionary();
+  async run(
+    _arguments: string[] = [],
+    options: WiktionaryCommandOptions = {},
+  ): Promise<void> {
+    await this.ingestWiktionary(options.startLemma, options.endLemma);
   }
 }

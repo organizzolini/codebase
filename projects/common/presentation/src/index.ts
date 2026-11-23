@@ -1,5 +1,9 @@
 // ReUI Components
 export {
+  Badge as PillBadge,
+  type BadgeProps as PillBadgeProps,
+} from "./components/reui/badge";
+export {
   Cascader,
   CascaderEmpty,
   CascaderList,
@@ -32,6 +36,7 @@ export * from "./components/reui/event-calendar/event-calendar";
 export * from "./components/reui/event-calendar/event-calendar-content";
 export type * from "./components/reui/event-calendar/event-calendar-types";
 export * from "./components/reui/filters/filters";
+export * from "./components/reui/frame";
 // The Gantt's own default view configuration would collide with the event
 // calendar's by name, so only what an application composes is exported.
 export {
@@ -43,6 +48,8 @@ export {
 } from "./components/reui/gantt/gantt";
 export type * from "./components/reui/gantt/gantt-types";
 export * from "./components/reui/gantt/gantt-view";
+export * from "./components/reui/marker";
+export * from "./components/reui/sortable";
 
 // UI Components
 export * from "./components/ui/accordion";

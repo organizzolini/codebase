@@ -1,0 +1,63 @@
+query TextReader($slug: String!, $first: Int!, $after: String) {
+  text(slug: $slug) {
+    id
+    slug
+    title
+    type
+    collection
+    edition
+    editors
+    endYear
+    findSpot
+    inscriptionType
+    lineCount
+    material
+    printYear
+    province
+    publisher
+    startYear
+    wordCount
+    author {
+      endYear
+      era
+      name
+      slug
+      startYear
+    }
+    nextText {
+      slug
+      title
+    }
+    parentText {
+      slug
+      title
+    }
+    previousText {
+      slug
+      title
+    }
+    lines(first: $first, after: $after) {
+      edges {
+        node {
+          id
+          index
+          label
+          tokens(first: 1000) {
+            edges {
+              node {
+                id
+                index
+                data
+                isPunctuation
+              }
+            }
+          }
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+}

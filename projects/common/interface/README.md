@@ -23,7 +23,8 @@ From `@codebase/interface`, for an API built on `@nestjs/graphql`:
 From `@codebase/interface/client`, for a web client of such an API:
 `createGraphqlCodegenConfig`, the GraphQL Code Generator configuration every
 client shares. A client's `codegen.ts` passes only the schema its API emits and
-gets typed operations, Zod validators, and MSW handlers.
+gets typed operations, Zod validators, and MSW handlers. Pass `validators: false`
+to skip the validators, as a client does whose nested inputs fail typecheck.
 
 ## Testing
 

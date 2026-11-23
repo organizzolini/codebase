@@ -105,11 +105,16 @@ describe(PullRequestValidationService, () => {
       standardOutput: "{}",
       succeeded: true,
     });
+    vi.mocked(github.readList).mockReturnValue({
+      available: true,
+      standardError: "",
+      standardOutput: "[]",
+      succeeded: true,
+    });
     vi.mocked(github.describeFailure).mockReturnValue("HTTP 500");
-    vi.mocked(significance.resolveFromDocument).mockReturnValue({
+    vi.mocked(significance.resolveFromCommits).mockReturnValue({
       commits: [],
       resolved: true,
-      title: "feat: add",
     });
     vi.mocked(significance.readReleaseRules).mockReturnValue([]);
     vi.mocked(significance.checkSignificance).mockReturnValue({
@@ -215,8 +220,8 @@ describe(PullRequestValidationService, () => {
     expect(significanceOutcome?.failures).toHaveLength(1);
   });
 
-  it("fails significance when gh cannot read the pull request", () => {
-    vi.mocked(github.run).mockReturnValue({
+  it("fails significance when gh cannot read the pull request's commits", () => {
+    vi.mocked(github.readList).mockReturnValue({
       available: true,
       standardError: "",
       standardOutput: "",
@@ -226,10 +231,19 @@ describe(PullRequestValidationService, () => {
     const outcomes = service.validate(context);
 
     expect(outcomes[3]?.failures[0]).toContain("HTTP 500");
+    expect(outcomes[3]?.failures[0]).toContain("commits");
+  });
+
+  it("reads the commits through the repo-scoped REST list", () => {
+    service.validate(context);
+
+    expect(github.readList).toHaveBeenCalledWith(
+      `repos/{owner}/{repo}/pulls/${String(context.number)}/commits`,
+    );
   });
 
   it("fails significance when the commits do not resolve", () => {
-    vi.mocked(significance.resolveFromDocument).mockReturnValue({
+    vi.mocked(significance.resolveFromCommits).mockReturnValue({
       failure: "❌ unreadable",
       resolved: false,
     });

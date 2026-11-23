@@ -172,8 +172,8 @@ done
 
 # 🔧 Toolchain dependencies
 echo ""
-echo "🔧 Corepack (pnpm activation)"
-assert_available "corepack" "corepack --version"
+echo "🔧 pnpm (package manager)"
+assert_available "pnpm" "pnpm --version"
 
 echo ""
 echo "⚙️  tsx (lifecycle scripts)"

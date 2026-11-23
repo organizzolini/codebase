@@ -1,40 +1,40 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:39cd86e71f41ff5e52781b6bf1d925e514bf067e5138a827e831321eac37ca71",
+  "pageVersion": "sha256:8925292ee26fccae2c22e755255f335b5f617069eec5a77163e39caa040dcd3a",
   "claims": [
     {
       "id": "claim_117cdbcba6644b8d84cbafddba0095cf",
-      "statement": "Coinagerie tests are organized by package with each having its own vitest configuration extending a shared base configuration from configuration/vitest.config.ts",
+      "statement": "Coinagerie tests are organized by package with each having its own configuration/vitest.config.ts extending a shared base configuration.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/vitest.config.ts",
-          "version": "repo-file-v1:sha256:818905bc3aca074f7732ca5429e4e2bee85773130482dd13fcafa17894b47001"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/configuration/vitest.config.ts",
+          "version": "repo-file-v1:sha256:c0d11556fb58f0d8bf777f514440146c6b2843d7f801ea3d50582cb9f375e331"
         },
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-examples/vitest.config.ts",
-          "version": "repo-file-v1:sha256:6747b348cbe7d84c6fb7c8ef75b8aaaa424ade58a824baa81fb09053ab441b4e"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-examples/configuration/vitest.config.ts",
+          "version": "repo-file-v1:sha256:5c57da930a104c4c931591b49b18165e200ea5f015b3dd67ed8ef104863fae66"
         },
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-languages/vitest.config.ts",
-          "version": "repo-file-v1:sha256:2ae08d6168b84e49627369b13577655ae79063357cf9d8e68a14050b0d976e7b"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-languages/configuration/vitest.config.ts",
+          "version": "repo-file-v1:sha256:0567387bdd8c39461c2906da8a5834519fcad83edc5afba0f193907d4537843a"
         },
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-output/vitest.config.ts",
-          "version": "repo-file-v1:sha256:2ae08d6168b84e49627369b13577655ae79063357cf9d8e68a14050b0d976e7b"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-output/configuration/vitest.config.ts",
+          "version": "repo-file-v1:sha256:0567387bdd8c39461c2906da8a5834519fcad83edc5afba0f193907d4537843a"
         },
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/vitest.config.ts",
-          "version": "repo-file-v1:sha256:2ae08d6168b84e49627369b13577655ae79063357cf9d8e68a14050b0d976e7b"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/configuration/vitest.config.ts",
+          "version": "repo-file-v1:sha256:0567387bdd8c39461c2906da8a5834519fcad83edc5afba0f193907d4537843a"
         }
       ]
     },
     {
       "id": "claim_25474968c04f48709585e54eb6ef22af",
-      "statement": "The vocabulary service unit tests exercise the complete pipeline: file discovery → language tokenization → word splitting → folding → exclusion → sorted headwords",
+      "statement": "The vocabulary service unit tests exercise the complete pipeline: file discovery, language tokenization, word splitting, folding, exclusion, and sorted headwords.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/vocabulary/vocabulary.service.unit.test.ts",
-          "version": "repo-file-v1:sha256:608050c265721e7cf0eb39dc44cabff4595b2eafb796c98403e7130ababed8c2"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/vocabulary/vocabulary.service.unit.test.ts#L1-L332",
+          "version": "repo-lines-v1:sha256:38b1b436da13f14dc43efc00c3331a50328d19c424953c00fcc36598aa50ecdc:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjNjUxNTkxNmZmOTMxYzIyMTNmMGI2ZGY1MmVhY2QyMmQxNjRmMDJmMTJjNzAwNjA4NWQ3NzNhZGE1ZWVlZmZmIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
@@ -60,11 +60,11 @@
     },
     {
       "id": "claim_0d57158c9ae84e89b6e1949100a94719",
-      "statement": "Folding tests verify English inflection folding (plurals, participles, irregulars) and configurable fold function that runs on the folded lemma",
+      "statement": "Folding tests verify English inflection folding (plurals, participles, irregulars) and a configurable fold function that runs on the folded lemma.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/folding/folding.service.unit.test.ts",
-          "version": "repo-file-v1:sha256:af2f7664dbf225673bfc5872d54584fcc03cbb0037fb39e35fbaecd3df825712"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/folding/folding.service.unit.test.ts#L1-L116",
+          "version": "repo-lines-v1:sha256:964896ce377747b9eb9fe878d792fb915551003aa2288c1aef64a256e2c32194:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI2YTcyZGEzMzhiNmIwNzQ1ZTIwYjAwMWRmYjJlNTk0YTNlYzc4OWY0ZTU2Y2ZjOTI4NDUzMDQ4NWI3YmE3MmRiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
@@ -73,7 +73,7 @@
       "statement": "Exclusion tests verify the full pipeline: exclude.words (exact strings, case-insensitive), exclude.patterns (RegExp tested against raw lowercase word AND folded headword), and exclude.paths (globs)",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/vocabulary/vocabulary.service.unit.test.ts#L100-L300",
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/vocabulary/vocabulary.service.unit.test.ts#L101-L301",
           "version": "repo-lines-v1:sha256:9d02eb8ce05ff5a8172d89efaa253076c78f58430d2eb4eb8da1ecdfc14d3dab:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI2ZmExZTRlMzM3MDg1ZmE3MTIyMDEwNjIxZDk2MWQyZDBhNzFkNDhhMWMyN2M1NjY3ZTIzNmY0Y2RhZTkyNjllIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIxNGFiNGY1ZTMxNzg0OTU5MTEwZWU5NzA3YTEwZWMzY2RjMzc4MTljYzdkZDIwNDQzNWMwZjdjY2ZlZTI2ZDM5IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJkMmE4YzE2ZTdkOGUwYjg0NTFjN2I1MDNmNTgxMGY5OTAxZDY2ZmRhMjZhMGM4OWM4ZWZjNzk0MWMyYTdkZGRiIn0"
         }
       ]
@@ -144,57 +144,57 @@
     },
     {
       "id": "claim_dc9046ef22874534a8ced4f7995eeff1",
-      "statement": "CLI packing test (coinagerie-cli.packed.test.ts) verifies the published @coinagerie/cli tarball by installing it into a temporary sandbox and running the binary",
+      "statement": "The CLI packing test (coinagerie-cli.packed.test.ts) verifies the published @coinagerie/cli tarball by installing it into a temporary sandbox and running the binary.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/testing/coinagerie-cli.packed.test.ts",
-          "version": "repo-file-v1:sha256:3319c07d380754dbecba6a3544f01cdf25a02215f42a078f4106bce8d1b72876"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/testing/coinagerie-cli.packed.test.ts#L1-L111",
+          "version": "repo-lines-v1:sha256:d8f361ed71e240d525c18024e3ac08d5b6a9989e2882a790ebc0e6852f7bf573:eyJzZWxlY3RlZExpbmVDb3VudCI6MTExLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1ZmI0ODUwN2E0YjljZDZhZTEwZDRkY2VjNTRiYWIyOTVlMjNlMDVlMDhmZjY5OWViMTljY2FjNzQ0ZDEwZTA5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_4176d8e3f5c240978110a4aee278c2b5",
-      "statement": "Example integration tests serve as a smoke gate over seven documented example projects with completeness checks for README, project folder, guide links, and documented runs",
+      "statement": "Example integration tests serve as a smoke gate over seven documented example projects with completeness checks for README, project folder, guide links, and documented runs.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-examples/testing/examples.integration.test.ts",
-          "version": "repo-file-v1:sha256:d452841a7dffecc0e4219eb178e315c1e87d485a509fa2fcd15e39f786ab5314"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-examples/testing/examples.integration.test.ts#L1-L403",
+          "version": "repo-lines-v1:sha256:ea76a7bf6bd1fc7ab4b297f8a17b5e5a8d0d475c3a6f3a38b01b5603ecfed68d:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAzLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1ZmI0ODUwN2E0YjljZDZhZTEwZDRkY2VjNTRiYWIyOTVlMjNlMDVlMDhmZjY5OWViMTljY2FjNzQ0ZDEwZTA5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         },
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-examples/testing/run-examples.ts",
-          "version": "repo-file-v1:sha256:69836d4bb5adf3e31dec1ad06401733c382eb4585a920556b59d31689e364561"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-examples/testing/run-examples.ts#L1-L142",
+          "version": "repo-lines-v1:sha256:f8b975f716b03a233550b9777151143f3b20980fa26d9ae11e1eacbabf75080b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1ZmI0ODUwN2E0YjljZDZhZTEwZDRkY2VjNTRiYWIyOTVlMjNlMDVlMDhmZjY5OWViMTljY2FjNzQ0ZDEwZTA5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI2ZDJlOWQ2NGNlODMzOTc4NDQzMmY0NGY1ZDRmMGIwYjk5MDczNDJkMzE1NGYyOWI0MGZmODY1MjM2Yjc0MDU0IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         },
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-examples/testing/runs.ts",
-          "version": "repo-file-v1:sha256:cb01ed21e98d2de4ea09bb3b1412ca2975111179c542d7c5989fcf25963fac75"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-examples/testing/runs.ts#L1-L78",
+          "version": "repo-lines-v1:sha256:93eb56e150b36772592b5967de06556c68ee4b18123b9c1f5538d87a498897e0:eyJzZWxlY3RlZExpbmVDb3VudCI6NzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_79fcb1d0d8d9422d98d19259e8b02a76",
-      "statement": "Test commands: nx run coinagerie-cli:vitest:unit, nx run coinagerie-vocabulary:vitest:unit, nx run coinagerie-output:vitest:unit, nx run coinagerie-languages:vitest:unit, nx run coinagerie-examples:examples",
+      "statement": "Test commands: nx run coinagerie-cli:vitest:unit, nx run coinagerie-vocabulary:vitest:unit, nx run coinagerie-output:vitest:unit, nx run coinagerie-languages:vitest:unit, nx run coinagerie-examples:examples.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/package.json",
-          "version": "repo-file-v1:sha256:2622e312de6dd857d3bdd0734b18791cfedb2083e2ffc8cb33c58aecd1a1e238"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/package.json#L1-L86",
+          "version": "repo-lines-v1:sha256:c40a4e448cca23189e0ee29a376e8b75594004683a6c3610c72d6be1b71cb0b3:eyJzZWxlY3RlZExpbmVDb3VudCI6ODYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZmIwOGZkYTFhY2I5NTdiNjExNmJkMzc4MTFhMWZlNDFhMDE2MTFjMDYzMWVkYmY3ODZkNjg4OWEyN2E1NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-examples/project.json",
-          "version": "repo-file-v1:sha256:17e0680c3d1ff1ab54e0ab3f2d5a521ba914fc5c1b0fc1af9cd4266199bf2cb4"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-examples/project.json#L1-L43",
+          "version": "repo-lines-v1:sha256:ff1a32f3fe28efe4919d7e46e14c64fd084e2e44862d50be3b8b4dcf93862757:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZmIwOGZkYTFhY2I5NTdiNjExNmJkMzc4MTFhMWZlNDFhMDE2MTFjMDYzMWVkYmY3ODZkNjg4OWEyN2E1NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-output/package.json",
-          "version": "repo-file-v1:sha256:3d51aa2ea9998419be81e221672a70696909a72eae9708eb37247c246d886076"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-output/package.json#L1-L68",
+          "version": "repo-lines-v1:sha256:76b526dac8cf50a61197db60684e9f143c1c129418b4ad837e8be67f7a4e69b0:eyJzZWxlY3RlZExpbmVDb3VudCI6NjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZmIwOGZkYTFhY2I5NTdiNjExNmJkMzc4MTFhMWZlNDFhMDE2MTFjMDYzMWVkYmY3ODZkNjg4OWEyN2E1NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/package.json",
-          "version": "repo-file-v1:sha256:417aba4dfb1c739ac911643fbdefea4cb332d0aa26827dab960f448e6213ecee"
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/package.json#L1-L72",
+          "version": "repo-lines-v1:sha256:7adf47451a0c5c2343493a32e39282fe9ee2d3587cc585374214881445c9da9d:eyJzZWxlY3RlZExpbmVDb3VudCI6NzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZmIwOGZkYTFhY2I5NTdiNjExNmJkMzc4MTFhMWZlNDFhMDE2MTFjMDYzMWVkYmY3ODZkNjg4OWEyN2E1NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-13T16:30:25.369Z"
+    "at": "2026-11-22T00:18:20.862Z"
   }
 }

@@ -1,186 +1,178 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:2d72bae979da06bbe4eac7ed8c6c8571ebe2351936dd9cb3cacd8f34876451fe",
+  "pageVersion": "sha256:8e09ef8863451d1a46b44450c109a0c370d441aa2fff871697f1d791af7f299d",
   "claims": [
     {
       "id": "claim_9a09258d3fb44abf96c5f76a578cedcc",
-      "statement": "Lexico organizes tests into four packages (lexico-api, lexico-cli, lexico-entities, lexico-web), each with a testing module providing harnesses, fixtures, and shared setup, all using vitest as the test runner.",
+      "statement": "Lexico organizes tests into four packages (lexico-api, lexico-cli, lexico-db, lexico-web), each with a testing module providing harnesses, fixtures or shared setup, all using vitest as the test runner.",
       "evidence": [
         {
-          "resource": "repo://projects/lexico/lexico-api/testing/graphql-application.ts",
-          "version": "repo-file-v1:sha256:73b811518a7dfada2c06541e97d7690c81b450eacee38150b42b2f2c8a32b9c5"
+          "resource": "repo://projects/lexico/lexico-api/testing/graphql-application.ts#L1-L96",
+          "version": "repo-lines-v1:sha256:f03ebf2c537354ef396cd81bcd3ae1078ec646bdb9a92b9a67a1cda4fcb3e433:eyJzZWxlY3RlZExpbmVDb3VudCI6OTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwZDU0ZTI5YTA0ZjlmMTA5MDc0ZWZmODZmMjNmN2ViNzExNjI0MGM4ODU5OTcwZmM3YjBkYTA3OTFiYThjZmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/lexico/lexico-cli/testing/command-harness.ts",
-          "version": "repo-file-v1:sha256:1713fdfe18f8030f93f1ec5b188a5a32f7c80f9d94fc50a531ee64887f501778"
+          "resource": "repo://projects/lexico/lexico-cli/testing/command-harness.ts#L1-L76",
+          "version": "repo-lines-v1:sha256:57faf8f9249501f394a3b39725ddde8d4b395509c7efe45907993cd99b134525:eyJzZWxlY3RlZExpbmVDb3VudCI6NzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3Y2MzNTVkYTFlM2Q2MGFmZWIyNjVlMGE5YTdiYWJkMDJkMDdmZGVkMzY4Y2RhZmRjMDI5NzliNmU5MjdmZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/lexico/lexico-entities/testing/entity-definition-assertions.ts",
-          "version": "repo-file-v1:sha256:08cd92442dfa349140bca79cc13f14bc709e7164bec7253ec8a939205df65abc"
+          "resource": "repo://projects/lexico/lexico-db/testing/entity-definition-assertions.ts#L1-L314",
+          "version": "repo-lines-v1:sha256:08cd92442dfa349140bca79cc13f14bc709e7164bec7253ec8a939205df65abc:eyJzZWxlY3RlZExpbmVDb3VudCI6MzE0LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJhZWU3YWEyM2E2MTZhZGUyZTc0NDI0OTFmZTYzNmMwOTE0YzNiNDAwZWNjMGVhYWZmN2YwMGRiOWE2NmUzNzBiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         },
         {
-          "resource": "repo://projects/lexico/lexico-web/testing/render-route.tsx",
-          "version": "repo-file-v1:sha256:6875fda2e1e7a6d846cd53d1bc8c47a769964236b4fcccf8eaf81279f253e3a5"
+          "resource": "repo://projects/lexico/lexico-web/testing/setup.ts#L1-L35",
+          "version": "repo-lines-v1:sha256:200a61132ccd1d80070ab0caca43387a8016b263b4064d7ae286c7d0305fc2ed:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlMzJkMWE0ZDZjZGJjYzY5MzEwMmRhOThhMGYyNWJkNzY1NTZmYTM4MGJjMzExYzE5ZTY0N2EyZGZlNjg4ZTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_b13982c01a534af782767ab19e741674",
-      "statement": "The API package provides three testing approaches: full end-to-end tests with startLexicoGraphqlApplication against real Postgres via testcontainers, specialized seeded applications (startAuthorTextApplication, startReadingApplication), and unit tests using graphqlMockServer from @codebase/interface/testing with MSW.",
+      "statement": "The API package provides three testing approaches: end-to-end tests with startLexicoGraphqlApplication against real Postgres via testcontainers, specialized seeded applications (startAuthorTextApplication, startReadingApplication), and unit tests using graphqlMockServer from @codebase/interface/testing with MSW.",
       "evidence": [
         {
-          "resource": "repo://projects/common/interface/testing/graphql-mock-server.ts",
-          "version": "repo-file-v1:sha256:df1743a43798ca8bea1fe75b0ac21c666cc2900c45e9582e99c048b6cfcd6e4f"
+          "resource": "repo://projects/common/interface/testing/graphql-mock-server/graphql-mock-server.utilities.ts#L1-L24",
+          "version": "repo-lines-v1:sha256:f43c8bb8d663ca998a22ae9c6c8e369ec83a04b2ca72ebde223b06fa503ef2aa:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4OWE0YWU3ZmRiYjg1MDU1YjIxZGQ2NWNhYTE4NDg4ZjM1M2Q4MGZmNTY3MDJkMjMxNzAyMmFlMWEzMmIxZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/lexico/lexico-api/testing/author-text-application.ts",
-          "version": "repo-file-v1:sha256:3d65ea710d8fe35f6ed8afaff99054e26f56a389dc1729b05580490acd07bcc0"
+          "resource": "repo://projects/lexico/lexico-api/testing/author-text-application.ts#L1-L77",
+          "version": "repo-lines-v1:sha256:d4f022cf98d6f7dad1b3b3ad7a58ae6b6d006a49e9578a344437bec8138a80c9:eyJzZWxlY3RlZExpbmVDb3VudCI6NzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwMDA2ZjJkNTc2MWNhNzBhNzYzYTAxYzAzYTE5ZWFkYmU4ZGQwYTY2NGQyNGFjMGQzZjEwOTYwOGYwMDY4ZDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/lexico/lexico-api/testing/graphql-application.ts",
-          "version": "repo-file-v1:sha256:73b811518a7dfada2c06541e97d7690c81b450eacee38150b42b2f2c8a32b9c5"
+          "resource": "repo://projects/lexico/lexico-api/testing/graphql-application.ts#L1-L96",
+          "version": "repo-lines-v1:sha256:f03ebf2c537354ef396cd81bcd3ae1078ec646bdb9a92b9a67a1cda4fcb3e433:eyJzZWxlY3RlZExpbmVDb3VudCI6OTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwZDU0ZTI5YTA0ZjlmMTA5MDc0ZWZmODZmMjNmN2ViNzExNjI0MGM4ODU5OTcwZmM3YjBkYTA3OTFiYThjZmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/lexico/lexico-api/testing/reading-application.ts",
-          "version": "repo-file-v1:sha256:e2325118bebe5e0bab4c68e758c1b8749f89c25aef9664782ad728eeaafded44"
+          "resource": "repo://projects/lexico/lexico-api/testing/reading-application.ts#L1-L147",
+          "version": "repo-lines-v1:sha256:576ae52d9c31fb5ee5647d16507636e620cf5f0f8d5be78b983bb8d519c6fb7e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQ3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI2MGQ1NGUyOWEwNGY5ZjEwOTA3NGVmZjg2ZjIzZjdlYjcxMTYyNDBjODg1OTk3MGZjN2IwZGEwNzkxYmE4Y2ZmIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_e43e53f844644346a47e70e52098d9eb",
-      "statement": "The API testing module includes rich seeding utilities: author-text-catalog.ts (three-level author/text/line hierarchy), word-lookups.ts (ambiguous word forms), reading-passage.ts (full literature passage), literature-services.ts (service/loader instances), and relay-connection-walk.ts (Relay connection traversal helpers).",
+      "statement": "The API testing module includes seeding utilities: author-text-catalog.ts (three-level author/text/line hierarchy), word-lookups.ts (ambiguous word forms), reading-passage.ts (a full literature passage), literature-services.ts (service and loader instances), and relay-connection-walk.ts (Relay connection traversal helpers).",
       "evidence": [
         {
-          "resource": "repo://projects/lexico/lexico-api/testing/author-text-catalog.ts",
-          "version": "repo-file-v1:sha256:64221e4b138492bd0e9ab2dbf54aa30712b784bf5af41bfd5a53a2ce1306cd9c"
+          "resource": "repo://projects/lexico/lexico-api/testing/author-text-catalog.ts#L1-L144",
+          "version": "repo-lines-v1:sha256:e8c26fa0002612d60335da32547c8369e212558f2df843dc006eacd5f911b7f9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQ0LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlMDU0YWIzZjliMjI4ZDQ3OTIxYWJkMDJhYmNlMjQ4MGU5NTFlZGExMDNiZDNlNjIxNWYzY2YxY2QwMGY4ZmMwIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         },
         {
-          "resource": "repo://projects/lexico/lexico-api/testing/literature-services.ts",
-          "version": "repo-file-v1:sha256:0ed9d803b8b751028373cb7b45cb55f81b71626ff2f0bac131ff8ad546deac01"
+          "resource": "repo://projects/lexico/lexico-api/testing/literature-services.ts#L1-L38",
+          "version": "repo-lines-v1:sha256:204e99d7bc3c21f4757ca98d54cbe7459c698c3695cda779d4570683f8389bd5:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1OTU0ZjlhM2Q3ZDI2ZDQwMTA1YjZlMTkyODE5YjI1N2ZiMGZiZmQxMDc1OTllMGFkZTQ0MzMzZjNhZTAzNzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/lexico/lexico-api/testing/reading-passage.ts",
-          "version": "repo-file-v1:sha256:06b9654a0dd7b3955f92645fb8108d934e521b19011e8389627260bff537e23e"
+          "resource": "repo://projects/lexico/lexico-api/testing/reading-passage.ts#L1-L158",
+          "version": "repo-lines-v1:sha256:f5c0456ddec8f20405ff427ab2d63810d189625b4232ed1ecb8b4fbca8ddedbb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTU4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1ZWY4YWE1YzgyOWUzNmU0MmRhOTc5MmJjZWU3ODE2OTliYjM3NzExNGUwNjdkZTVmMTUwNWYxMzM4NWFlZjAwIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         },
         {
-          "resource": "repo://projects/lexico/lexico-api/testing/relay-connection-walk.ts",
-          "version": "repo-file-v1:sha256:ad2a28e9614344893b6c8ef6e6a5cc45b5cc63184c85fa92de7c6a5669094c71"
+          "resource": "repo://projects/lexico/lexico-api/testing/relay-connection-walk.ts#L1-L66",
+          "version": "repo-lines-v1:sha256:4020e4b47171e2ab9d5fa4b2be762f4fa4c2eea993aff654d8a3265ea8512c0f:eyJzZWxlY3RlZExpbmVDb3VudCI6NjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjZjRlYWVmMDQ5NjYzNDMwNWQyYmFhNTNjZWQzNmM0ZWZmNDJhYmMwZmYyYjc5ZWE3MTFhMzRjZDJjNWM2YWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/lexico/lexico-api/testing/word-lookups.ts",
-          "version": "repo-file-v1:sha256:913586d5a20fbed84b9e528518795fce16c14a0277edda30ef37de8947bd7be5"
+          "resource": "repo://projects/lexico/lexico-api/testing/word-lookups.ts#L1-L167",
+          "version": "repo-lines-v1:sha256:da75dd1c88cbf0b807db29544be200fad034efe19ec61ccdd57960963f4b62e3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTY3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwMGFkNmI4MTg2ZDI4OGM4YTdiNWIyZmI3Mjc5OGRmNTcwOGZmNDljODBhMzQ1NjIwYzMwODhkYjg0NDdhZWExIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_2ee44114b93d4c1eb237554ea516de50",
-      "statement": "The API package verifies Relay cursor pagination correctness using literature-search-pagination.ts which walks forward/backward pages against an oracle (paginateArray) and validates invariants: same totalCount, no duplicates, every result visited exactly once in same order, correct hasNextPage/hasPreviousPage at boundaries.",
+      "statement": "The API package verifies Relay cursor pagination using literature-search-pagination.ts, which walks forward and backward pages against an oracle (paginateArray) and checks invariants: same totalCount, no duplicates, every result visited exactly once in the same order, and correct hasNextPage/hasPreviousPage at boundaries.",
       "evidence": [
         {
-          "resource": "repo://projects/lexico/lexico-api/testing/literature-search-pagination.ts",
-          "version": "repo-file-v1:sha256:7f4fb17e941712becccdc4cee53bafaa3579df9f3e695d5b69849c25c987aaf8"
+          "resource": "repo://projects/lexico/lexico-api/testing/literature-search-pagination.ts#L1-L117",
+          "version": "repo-lines-v1:sha256:e586dc221837487f4336c854495c49d0a3d1209596259823aa00ea9a9322dffc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIxNGFhYjNlMjgxYzMxZTExZTRiMDczMGI4MThjNjEyMGI0MWRkY2FjNGFmYjc4OGIwMjdlZTYzMmE1M2MyMjJkIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_9498f8161ce545fb9c23592df84613f2",
-      "statement": "The CLI package tests commands using NestJS Test.createTestingModule with mocked dependencies via createCommandTestHarness, provides runCommandLine for real nest-commander execution, and supplies extensive mocks: TypeORM Repository mocks with full createQueryBuilder chain, prompts mocking (mockDates, mockStandardInputTerminal, setPromptsMockResponse), and Cheerio helpers for HTML/XML parsing.",
+      "statement": "The CLI package tests commands using NestJS Test.createTestingModule with mocked dependencies via createCommandTestHarness, provides runCommandLine for real nest-commander execution, and supplies mocks for TypeORM repositories (including the createQueryBuilder chain), prompts, and Cheerio parsing helpers.",
       "evidence": [
         {
-          "resource": "repo://projects/lexico/lexico-cli/testing/command-harness.ts",
-          "version": "repo-file-v1:sha256:1713fdfe18f8030f93f1ec5b188a5a32f7c80f9d94fc50a531ee64887f501778"
+          "resource": "repo://projects/lexico/lexico-cli/testing/command-harness.ts#L1-L76",
+          "version": "repo-lines-v1:sha256:57faf8f9249501f394a3b39725ddde8d4b395509c7efe45907993cd99b134525:eyJzZWxlY3RlZExpbmVDb3VudCI6NzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3Y2MzNTVkYTFlM2Q2MGFmZWIyNjVlMGE5YTdiYWJkMDJkMDdmZGVkMzY4Y2RhZmRjMDI5NzliNmU5MjdmZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/lexico/lexico-cli/testing/mocks.ts",
-          "version": "repo-file-v1:sha256:526a21cfbb07d6f9659ee7b835dafd253aec1b25eb154246d3ed72f78d3b8ede"
+          "resource": "repo://projects/lexico/lexico-cli/testing/mocks.ts#L1-L161",
+          "version": "repo-lines-v1:sha256:bae4ae5fa9931b435d1eeede5cf5d8fc1da2d7197bde96c6eea2bfabbd565b1f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlYWYyMmNmMDczMjU5MmMyNDcxNDFjYmU2MWVmYTExMDEyNjEyZjVhMzEyMmI5YWY5YmJhZjUyZjU3MjRkMTk0IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_811ae71ed7074facb9e81f5a7d9efc40",
-      "statement": "The entities package validates TypeORM entity definitions via entity-definition-assertions.ts (assertEntityRegistryMatches, assertRelationOptions for cascade/eager/nullable/onDelete/onUpdate/orphanedRowAction) and runs integration tests with real Postgres via testcontainers through @codebase/persistence/testing.",
+      "statement": "The lexico-db package validates TypeORM entity definitions via entity-definition-assertions.ts (assertEntityRegistryMatches, assertRelationOptions for cascade, eager, nullable, onDelete, onUpdate and orphanedRowAction) and runs integration tests with real Postgres via testcontainers through @codebase/persistence/testing.",
       "evidence": [
         {
-          "resource": "repo://projects/lexico/lexico-entities/src/modules/entities/entities.module.integration.test.ts",
-          "version": "repo-file-v1:sha256:33e3806687e4865e6a05e42f76c482fa0a0501c84f525c053090ec504cab1e87"
+          "resource": "repo://projects/lexico/lexico-db/src/modules/database/database.entities.integration.test.ts#L1-L100",
+          "version": "repo-lines-v1:sha256:10017cee811e077609f17d1a0bc59ae26242ace3b8c7e900cc82288072137974:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIzZjNlY2Y4OWY4YzczMWY3ODhjZWYzNTJmZjYwNWI0Mzc3YTk2Y2JjM2IxNTU5ZGVlMDIyMGE0ZjNhZWZmMjZhIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0ZDVjZDJmYjRmM2RmODg0NTE1MjU1YjM5NTIzZjJmOGI1NDcyYmVlYTlmNTY2ZmZjYTIwNGRiODAyNTYxMDQxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI2NzIxZGUyZjI4NmM4NDdhZTliMjRjMjcxNzNiZDk0ODQ1YjdkZjU2NDlmNTljYWNkZTU4M2EwNDNiYjYxYTE0In0"
         },
         {
-          "resource": "repo://projects/lexico/lexico-entities/testing/entity-definition-assertions.ts",
-          "version": "repo-file-v1:sha256:08cd92442dfa349140bca79cc13f14bc709e7164bec7253ec8a939205df65abc"
+          "resource": "repo://projects/lexico/lexico-db/testing/entity-definition-assertions.ts#L1-L314",
+          "version": "repo-lines-v1:sha256:08cd92442dfa349140bca79cc13f14bc709e7164bec7253ec8a939205df65abc:eyJzZWxlY3RlZExpbmVDb3VudCI6MzE0LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJhZWU3YWEyM2E2MTZhZGUyZTc0NDI0OTFmZTYzNmMwOTE0YzNiNDAwZWNjMGVhYWZmN2YwMGRiOWE2NmUzNzBiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_8d79c4f627e54f05a9711df456636646",
-      "statement": "The entities integration test (entities.module.integration.test.ts) verifies module graph evaluation by importing each entity file in a fresh Node process with @swc-node/register to ensure decorator metadata emission (which vitest's transform doesn't provide), plus service integration and migration compatibility.",
+      "statement": "The lexico-db database module integration test runs entity files as entry points in a fresh process under the SWC loader, which emits decorator metadata unlike Vitest's transform, so an entity cycle throws there.",
       "evidence": [
         {
-          "resource": "repo://projects/lexico/lexico-entities/src/modules/entities/entities.module.integration.test.ts",
-          "version": "repo-file-v1:sha256:33e3806687e4865e6a05e42f76c482fa0a0501c84f525c053090ec504cab1e87"
+          "resource": "repo://projects/lexico/lexico-db/src/modules/database/database.module.integration.test.ts#L1-L62",
+          "version": "repo-lines-v1:sha256:aac2df37b1d40071bebd1abfa48ae10aa0254f6c8e8d2180f6ff8f7cebb09e2e:eyJzZWxlY3RlZExpbmVDb3VudCI6NjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzMDQ0ZWZlYWY5MDkzM2NhNDA2NDJiZTQ1ZjI4YTMyZTJhYmY5OTk0OGQ0NDQxNzU1NjcxYzI2MjcxYzZjMzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_a66e05b017d5415fb8c3a7be81c5f057",
-      "statement": "The web package uses renderRoute to test TanStack Start routes with in-memory history and React Testing Library, mocks createServerFn to call handlers directly, stubs window.matchMedia, and manages MSW GraphQL mock server lifecycle in setup.ts (startGraphqlMockServer beforeAll, resetGraphqlMockServer afterEach, stopGraphqlMockServer afterAll).",
+      "statement": "The web package tests routes with the shared renderRoute helper from @codebase/testing/react (in-memory history, React Testing Library), stands in for createServerFn so handlers are called directly, stubs window.matchMedia, and manages the MSW GraphQL mock server lifecycle in testing/setup.ts (start beforeAll, reset afterEach, stop afterAll).",
       "evidence": [
         {
-          "resource": "repo://projects/lexico/lexico-web/src/routes/search.integration.test.tsx",
-          "version": "repo-file-v1:sha256:7f1a807007ded7083eacb8ff2de1713a9418c43dce0e2da24403d8f99d9cea4c"
+          "resource": "repo://projects/lexico/lexico-web/src/routes/search.integration.test.tsx#L1-L160",
+          "version": "repo-lines-v1:sha256:1bd97909ba093000b9a3098afc468b7fe0cff143bc2201e200433904361bf9c6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwMGFkNmI4MTg2ZDI4OGM4YTdiNWIyZmI3Mjc5OGRmNTcwOGZmNDljODBhMzQ1NjIwYzMwODhkYjg0NDdhZWExIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         },
         {
-          "resource": "repo://projects/lexico/lexico-web/testing/render-route.tsx",
-          "version": "repo-file-v1:sha256:6875fda2e1e7a6d846cd53d1bc8c47a769964236b4fcccf8eaf81279f253e3a5"
-        },
-        {
-          "resource": "repo://projects/lexico/lexico-web/testing/setup.ts",
-          "version": "repo-file-v1:sha256:9154f3c901077ade06f9a2e23bad8a74122ba1a2c71bf8f826ee4d588b97f291"
+          "resource": "repo://projects/lexico/lexico-web/testing/setup.ts#L1-L35",
+          "version": "repo-lines-v1:sha256:200a61132ccd1d80070ab0caca43387a8016b263b4064d7ae286c7d0305fc2ed:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlMzJkMWE0ZDZjZGJjYzY5MzEwMmRhOThhMGYyNWJkNzY1NTZmYTM4MGJjMzExYzE5ZTY0N2EyZGZlNjg4ZTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_59e6b760ac884f639404ab285f14b39b",
-      "statement": "All packages share common patterns: 120s database timeout for container startup, console suppression in beforeEach, mock cleanup with vi.clearAllMocks(), environment variable stubbing in database setup, and entities package uses separate SWC process for decorator metadata.",
+      "statement": "Packages share common patterns: a 120-second database startup timeout in the database helpers, shared setup from @codebase/testing (and its react/setup entry for the web package), and environment variables set by the database testing module; lexico-db runs entity cycle checks in a separate SWC process.",
       "evidence": [
         {
-          "resource": "repo://projects/common/persistence/testing/persistence-testing.utilities.ts",
-          "version": "repo-file-v1:sha256:678c0f4fc556bfe0d446b8ca78a5f1f416b892bc5d3ab957d2daf48824f263aa"
+          "resource": "repo://projects/common/persistence/testing/database-testing/database-testing.utilities.ts#L1-L95",
+          "version": "repo-lines-v1:sha256:25196ff70be0376870638d1db24af6a62cf0fd9bac6b48ed7ff88696da66e315:eyJzZWxlY3RlZExpbmVDb3VudCI6OTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjMzgyYjVkMzhhYmRiODNmYTgwYTBiMGNiNjEyMzkxOThkMDk2MjVlODQyMGQ5YzNlNTkzODNmMmVmN2FiZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/lexico/lexico-api/testing/setup.ts",
-          "version": "repo-file-v1:sha256:af138c3238c25d187f80d3380ddba7771870f543ec46243b520b10da48add049"
+          "resource": "repo://projects/lexico/lexico-api/testing/database.ts#L1-L52",
+          "version": "repo-lines-v1:sha256:4fc3a42dde2d18d759dcdf07f8ec4aa5073d5aa6a061561b1ec4c4eb1ac7e742:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxNjE1OWVhZDA1NzFkMDQ5NDJjODYxM2Y0NTkyODcxYjIxNmVkMDdmYjgxN2Q5ZTUyOGZiMmQ4OTU4MTk1OGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://projects/lexico/lexico-cli/testing/setup.ts",
-          "version": "repo-file-v1:sha256:5713a431fa459bb4fef4dd47c6f2f69cccf8a82945d86940705628bc83c1d16b"
-        },
-        {
-          "resource": "repo://projects/lexico/lexico-entities/testing/setup.ts",
-          "version": "repo-file-v1:sha256:ac6649f3173774ef60ca5189067e288915113323ac5e27fb50cf742bc15804f3"
+          "resource": "repo://projects/lexico/lexico-web/testing/setup.ts#L1-L35",
+          "version": "repo-lines-v1:sha256:200a61132ccd1d80070ab0caca43387a8016b263b4064d7ae286c7d0305fc2ed:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlMzJkMWE0ZDZjZGJjYzY5MzEwMmRhOThhMGYyNWJkNzY1NTZmYTM4MGJjMzExYzE5ZTY0N2EyZGZlNjg4ZTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_cc58af513fff4294a33d142faf3320ad",
-      "statement": "Tests are run via Nx commands: nx run lexico-api:vitest, nx run lexico-cli:vitest, nx run lexico-entities:vitest, nx run lexico-web:vitest, nx run interface:vitest.",
+      "statement": "Tests are run via Nx commands: nx run lexico-api:vitest, nx run lexico-cli:vitest, nx run lexico-db:vitest, nx run lexico-web:vitest, nx run interface:vitest.",
       "evidence": [
         {
-          "resource": "repo://projects/lexico/lexico-api/vitest.config.ts",
-          "version": "repo-file-v1:sha256:1d77d277b36fe3e05901a8b68da63853dca4c7dfc42ffbef87a5c261525b54a2"
+          "resource": "repo://projects/lexico/lexico-api/configuration/vitest.config.ts",
+          "version": "repo-file-v1:sha256:e097524e9ba2b44ff6d55a0885296d28b3af727cf08be84a28659251e321efdd"
         },
         {
-          "resource": "repo://projects/lexico/lexico-cli/vitest.config.ts",
-          "version": "repo-file-v1:sha256:1d77d277b36fe3e05901a8b68da63853dca4c7dfc42ffbef87a5c261525b54a2"
+          "resource": "repo://projects/lexico/lexico-cli/configuration/vitest.config.ts",
+          "version": "repo-file-v1:sha256:07a8ec3892126ae180ac59f685166c33eac98e0e09189a3ef7790c45f7530ae5"
         },
         {
-          "resource": "repo://projects/lexico/lexico-web/vitest.config.ts",
-          "version": "repo-file-v1:sha256:2e76acd314151ab648d4a9b34c028e869d68d36f7709a8ca490be83a3413ff5e"
+          "resource": "repo://projects/lexico/lexico-web/configuration/vitest.config.ts",
+          "version": "repo-file-v1:sha256:3a5190c6ca72c1be88481dd098034fa3853b50cd988d220dec0013eb221d5d7b"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.0",
-    "at": "2026-10-29T03:39:46.432Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-22T00:18:20.862Z"
   }
 }

@@ -5,12 +5,14 @@ import path from "node:path";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
-import { BASELINE_DIRECTORY } from "../collect-codometer-baseline/collect-codometer-baseline.constants";
+import {
+  BASELINE_ARTIFACT,
+  BASELINE_DIRECTORY,
+} from "../collect-codometer-baseline/collect-codometer-baseline.constants";
+import { buildFindBaselineArguments } from "../collect-codometer-baseline/collect-codometer-baseline.utilities";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
 import {
-  BASELINE_ARTIFACT,
-  BASELINE_WORKFLOW,
   baselineFoundMessage,
   baselineSkippedMessage,
   BODY_FILE_NAME,
@@ -47,18 +49,15 @@ export class ReportCodometerChangesService {
 
   // 🔏 Private Methods
 
-  /** Downloads the baseline of the latest green `main` run, if there is one. */
+  /** Downloads the newest baseline artifact `main` uploaded, if there is one. */
   private fetchBaseline(): CodometerBaseline {
-    const listed = this.processRunner.capture("gh", [
-      "run",
-      "list",
-      `--workflow=${BASELINE_WORKFLOW}`,
-      "--branch=main",
-      "--status=success",
-      "--limit=1",
-      "--json=databaseId",
-      "--jq=.[0].databaseId",
-    ]);
+    const repository = this.configService.get("GITHUB_REPOSITORY", {
+      infer: true,
+    });
+    const listed = this.processRunner.capture(
+      "gh",
+      buildFindBaselineArguments(repository ?? ""),
+    );
 
     if (listed.status !== 0) {
       return {
@@ -91,9 +90,6 @@ export class ReportCodometerChangesService {
     const server =
       this.configService.get("GITHUB_SERVER_URL", { infer: true }) ??
       "https://github.com";
-    const repository = this.configService.get("GITHUB_REPOSITORY", {
-      infer: true,
-    });
 
     return {
       kind: "found",
