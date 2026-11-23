@@ -11,6 +11,8 @@ export class Migration1795000000000 implements MigrationInterface {
 
   /** Restores the lattice keys, empty, and clears the marker. */
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`SET lock_timeout = '10s'`);
+    await queryRunner.query(`SET statement_timeout = '5min'`);
     await queryRunner.query(`DELETE FROM "aggregate_markers"`);
     await queryRunner.query(`DROP TABLE "characteristic_shape_counts"`);
     await queryRunner.query(`DROP TABLE "shape_counts"`);
@@ -24,6 +26,8 @@ export class Migration1795000000000 implements MigrationInterface {
 
   /** Clears the marker and makes both tables again, keyed by rows and columns. */
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`SET lock_timeout = '10s'`);
+    await queryRunner.query(`SET statement_timeout = '5min'`);
     await queryRunner.query(`DELETE FROM "aggregate_markers"`);
     await queryRunner.query(`DROP TABLE "characteristic_shape_counts"`);
     await queryRunner.query(`DROP TABLE "shape_counts"`);

@@ -1,13 +1,14 @@
 set lock_timeout = '10s';
-set statement_timeout = '5m';
 
-delete from meanderaw.aggregate_markers;
+set statement_timeout = '5min';
 
-drop table meanderaw.characteristic_shape_counts;
+delete from aggregate_markers;
 
-drop table meanderaw.shape_counts;
+drop table characteristic_shape_counts;
 
-create table meanderaw.characteristic_shape_counts (
+drop table shape_counts;
+
+create table characteristic_shape_counts (
     characteristic_id smallint not null,
     "columns" bigint not null,
     meander_count bigint not null,
@@ -16,7 +17,7 @@ create table meanderaw.characteristic_shape_counts (
     constraint "PK_characteristic_shape_counts" primary key (characteristic_id, "columns", "rows", "value")
 );
 
-create table meanderaw.shape_counts (
+create table shape_counts (
     "columns" bigint not null,
     meander_count bigint not null,
     "rows" bigint not null,
