@@ -113,11 +113,52 @@ describe(SynchronizationCommand, () => {
       expect.objectContaining({
         fixes: {
           lockfile: "pnpm install",
-          "skill-exclusions":
-            "pnpm exec nx run integration:skill-exclusions:write",
+          "skill-exclusions": "pnpm exec nx run integration:skill-exclusions",
         },
       }),
     );
+  });
+
+  // A command that throws is a failure like any other: the aggregate must
+  // still run the rest and report it.
+  it("records a command that throws as a failure and keeps going", async () => {
+    expect.hasAssertions();
+
+    const { instance, logger } = await buildTestingModule(
+      SynchronizationCommand,
+      moduleOptions,
+    );
+    stubAllDelegates(true);
+    vi.mocked(derivation.synchronize).mockRejectedValue(new Error("boom"));
+
+    await expect(instance.synchronize("check")).resolves.toBe(false);
+
+    expect(check.synchronize).toHaveBeenCalledTimes(1);
+    expect(logger.error).toHaveBeenCalledWith(
+      "💥 Failed to synchronize a command",
+      undefined,
+      { label: "skill-exclusions", message: "boom" },
+    );
+    expect(logger.info).toHaveBeenCalledWith(
+      "🔗 Detected out-of-sync synchronizations",
+      undefined,
+      expect.objectContaining({ count: 1 }),
+    );
+  });
+
+  it("exits with code 1 when a command throws", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      SynchronizationCommand,
+      moduleOptions,
+    );
+    stubAllDelegates(true);
+    vi.mocked(check.synchronize).mockRejectedValue("not an error");
+
+    await expectProcessExitOne(async () => {
+      await instance.run(["check"]);
+    });
   });
 
   it("defaults to check mode when no mode is passed", async () => {

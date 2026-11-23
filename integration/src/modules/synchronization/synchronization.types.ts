@@ -4,7 +4,7 @@ import type { LoggerService } from "@codebase/observability";
 
 /** A command with its own Nx target; a check has no `write`. */
 export interface SynchronizableCommand {
-  /** What fixes a failure, when it is not the command's own `:write` target. */
+  /** What fixes a failure; absent, the report names the command's own Nx target. */
   readonly fixCommand?: string;
   readonly synchronizationLabel: string;
   synchronize(mode: SynchronizationMode): Promise<boolean>;

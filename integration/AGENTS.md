@@ -58,7 +58,7 @@ splices generated blocks between marker comments, and the `start` aggregate. A
 command with no `write` Nx configuration is just a check: `write` mode runs its
 check. The aggregate runs every command, collects every failure, and prints the
 command that fixes each: the command's own `fixCommand` (such as `pnpm install`),
-else `pnpm exec nx run integration:<label>:write`.
+else its own Nx target, `pnpm exec nx run integration:<label>`; a derivation sets `fixCommand` to its `:write` target.
 
 Codometer caps a folder at 12 entries and `src/modules/` is near it, so the
 checks and derivations moving in land under `src/modules/synchronization/modules/<command>/`,

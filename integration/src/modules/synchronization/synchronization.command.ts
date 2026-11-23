@@ -70,6 +70,22 @@ export class SynchronizationCommand extends CommandRunner {
     });
   }
 
+  /** Runs one command, counting a throw as that command's failure. */
+  private async runCommand(
+    command: SynchronizableCommand,
+    mode: SynchronizationMode,
+  ): Promise<boolean> {
+    try {
+      return await command.synchronize(mode);
+    } catch (error) {
+      this.logger.error("💥 Failed to synchronize a command", undefined, {
+        label: command.synchronizationLabel,
+        message: error instanceof Error ? error.message : String(error),
+      });
+      return false;
+    }
+  }
+
   // 🌎 Public Methods
 
   /** Runs every synchronization, exiting once if any reported drift. */
@@ -102,9 +118,9 @@ export class SynchronizationCommand extends CommandRunner {
       results.push({
         fix:
           command.fixCommand ??
-          `pnpm exec nx run integration:${command.synchronizationLabel}:write`,
+          `pnpm exec nx run integration:${command.synchronizationLabel}`,
         label: command.synchronizationLabel,
-        succeeded: await command.synchronize(mode),
+        succeeded: await this.runCommand(command, mode),
       });
     }
 
