@@ -54,18 +54,27 @@ export class RenderTreeDataCommand extends CommandRunner {
    * @throws Error naming the failure, with the password masked.
    */
   private async render(plan: GraphPlan): Promise<void> {
+    const entities = await this.graphEntities.load(plan.entities);
     const dataSource = this.graphEntities.createDataSource(
       plan.connection,
-      await this.graphEntities.load(plan.entities),
+      entities,
     );
+    const picked = this.graphEntities.pickTree({
+      entities,
+      globs: plan.entities,
+      namingStrategy: dataSource.namingStrategy,
+      table: plan.table,
+    });
     try {
       await dataSource.initialize();
-      const metadata = this.graphEntities.pickTree(
+      const graph = await this.graphTree.load(
         dataSource,
-        plan.table,
-        plan.entities,
+        dataSource.getMetadata(picked),
+        {
+          maximumBreadth: plan.maximumBreadth,
+          maximumDepth: plan.maximumDepth,
+        },
       );
-      const graph = await this.graphTree.load(dataSource, metadata);
       const rendering = this.graphMermaid.render(graph, {
         direction: RENDER_TREE_DATA_DIRECTION,
       });
@@ -101,6 +110,26 @@ export class RenderTreeDataCommand extends CommandRunner {
   })
   parseEntities(value: string, previous: string[] = []): string[] {
     return [...previous, value];
+  }
+
+  /** Parses `--max-breadth`, the most children drawn under one node. */
+  @Option({
+    description:
+      "Most children drawn under any one node; the rest become one '… K more' node and a warning. Roots are never capped. Positive integer",
+    flags: "--max-breadth <n>",
+  })
+  parseMaximumBreadth(value: string): string {
+    return value;
+  }
+
+  /** Parses `--max-depth`, the deepest level drawn, roots being level 1. */
+  @Option({
+    description:
+      "Deepest level drawn, with roots at level 1; children below it become one '… K more' node and a warning. Positive integer",
+    flags: "--max-depth <n>",
+  })
+  parseMaximumDepth(value: string): string {
+    return value;
   }
 
   /** Parses `--schema`, the schema the entity tables live in. */

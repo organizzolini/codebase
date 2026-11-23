@@ -3,7 +3,8 @@ import { Module } from "@nestjs/common";
 import { GraphTreeService } from "./graph-tree.service";
 
 /**
- * TODO: Document the graphTree module.
+ * Registers the GraphTreeService, which reads a `@Tree` entity's rows as a
+ * graph model, capped by depth and breadth, for the render commands to draw.
  */
 @Module({
   controllers: [],

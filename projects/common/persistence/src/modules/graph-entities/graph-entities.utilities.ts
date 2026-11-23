@@ -21,6 +21,7 @@ import {
 
 import type { PostgresConnection } from "../postgresql/postgresql.types";
 import type { GraphEntity, GraphTreeCandidate } from "./graph-entities.types";
+import type { NamingStrategyInterface } from "typeorm";
 
 /**
  * A data source over `entities`, with the connection's schema on its search
@@ -64,7 +65,7 @@ export async function importEntityClasses(
  * name; without it, the candidates must be exactly one.
  * @throws GraphEntitiesError when none, or several without `table`, match.
  */
-export function pickTreeMetadata<Candidate extends GraphTreeCandidate>(
+export function pickTreeCandidate<Candidate extends GraphTreeCandidate>(
   candidates: readonly Candidate[],
   table: string | undefined,
   globs: readonly string[],
@@ -107,6 +108,29 @@ export function resolveEntityFiles(globs: readonly string[]): string[] {
   }
 
   return [...files].toSorted();
+}
+
+/**
+ * The `@Tree` entities among `entities`, each with the table its name maps to
+ * under `namingStrategy`. Read from the decorator metadata, before any
+ * connection opens.
+ */
+export function treeCandidates(
+  entities: readonly GraphEntity[],
+  namingStrategy: NamingStrategyInterface,
+): GraphTreeCandidate[] {
+  const storage = getMetadataArgumentsStorage();
+  return storage.trees.flatMap((tree) => {
+    const entity = entities.find((candidate) => candidate === tree.target);
+    if (entity === undefined) return [];
+    const [table] = storage.filterTables(entity);
+    return [
+      {
+        entity,
+        tableName: namingStrategy.tableName(entity.name, table?.name),
+      },
+    ];
+  });
 }
 
 /** Whether `value` is a class carrying `@Entity`, which TypeORM registers. */

@@ -2,9 +2,15 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
+import { ClosureTag } from "../../../testing/fixtures/trees/closure-tag.entity";
+import { ListTag } from "../../../testing/fixtures/trees/list-tag.entity";
+import { Widget } from "../../../testing/fixtures/widget.entity";
+import { PluralSnakeNamingStrategy } from "../postgresql/postgresql.constants";
+
 import {
-  pickTreeMetadata,
+  pickTreeCandidate,
   resolveEntityFiles,
+  treeCandidates,
 } from "./graph-entities.utilities";
 
 import type { GraphTreeCandidate } from "./graph-entities.types";
@@ -14,50 +20,69 @@ const FIXTURE_TREES = path.join(
   "../../../testing/fixtures/trees",
 );
 
-/** The metadata fields a tree pick reads, for one tree entity. */
-const tree = (name: string, tableName: string): GraphTreeCandidate => ({
-  name,
-  tableName,
-  treeType: "closure-table",
-});
+/** A tree candidate for one entity class, mapped to `tableName`. */
+const tree = (
+  entity: GraphTreeCandidate["entity"],
+  tableName: string,
+): GraphTreeCandidate => ({ entity, tableName });
 
 describe("graph entity utilities", () => {
-  describe(pickTreeMetadata, () => {
-    it("picks the only tree entity when --table is not given", () => {
-      const only = tree("ClosureTag", "closure_tags");
+  describe(treeCandidates, () => {
+    it("lists each tree entity with the table its name maps to, skipping plain entities", () => {
+      const candidates = treeCandidates(
+        [ClosureTag, Widget, ListTag],
+        new PluralSnakeNamingStrategy(),
+      );
 
-      expect(pickTreeMetadata([only], undefined, ["a.ts"])).toBe(only);
+      expect(candidates).toStrictEqual([
+        { entity: ClosureTag, tableName: "closure_tags" },
+        { entity: ListTag, tableName: "list_tags" },
+      ]);
+    });
+
+    it("lists no candidates when no entity is a tree", () => {
+      expect(
+        treeCandidates([Widget], new PluralSnakeNamingStrategy()),
+      ).toStrictEqual([]);
+    });
+  });
+
+  describe(pickTreeCandidate, () => {
+    it("picks the only tree entity when --table is not given", () => {
+      const only = tree(ClosureTag, "closure_tags");
+
+      expect(pickTreeCandidate([only], undefined, ["a.ts"])).toBe(only);
     });
 
     it("picks the tree entity whose table --table names", () => {
-      const closure = tree("ClosureTag", "closure_tags");
-      const list = tree("ListTag", "list_tags");
+      const closure = tree(ClosureTag, "closure_tags");
+      const list = tree(ListTag, "list_tags");
 
-      expect(pickTreeMetadata([closure, list], "list_tags", ["a.ts"])).toBe(
+      expect(pickTreeCandidate([closure, list], "list_tags", ["a.ts"])).toBe(
         list,
       );
     });
 
     it("fails naming every tree table when several match and --table is not given", () => {
       const candidates = [
-        tree("ClosureTag", "closure_tags"),
-        tree("ListTag", "list_tags"),
+        tree(ClosureTag, "closure_tags"),
+        tree(ListTag, "list_tags"),
       ];
 
-      expect(() => pickTreeMetadata(candidates, undefined, ["a.ts"])).toThrow(
+      expect(() => pickTreeCandidate(candidates, undefined, ["a.ts"])).toThrow(
         "Several @Tree entities match --entities: closure_tags, list_tags; name one with --table",
       );
     });
 
     it("fails when no tree entity matched the globs", () => {
-      expect(() => pickTreeMetadata([], undefined, ["a.ts"])).toThrow(
+      expect(() => pickTreeCandidate([], undefined, ["a.ts"])).toThrow(
         "No @Tree entity matched --entities a.ts",
       );
     });
 
     it("fails naming the trees found when --table names none of them", () => {
       expect(() =>
-        pickTreeMetadata([tree("ClosureTag", "closure_tags")], "gadgets", [
+        pickTreeCandidate([tree(ClosureTag, "closure_tags")], "gadgets", [
           "a.ts",
         ]),
       ).toThrow(

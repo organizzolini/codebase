@@ -10,6 +10,7 @@ import {
   GraphOptionsError,
   graphTableSchemaMessage,
 } from "./graph-options.constants";
+import { positiveIntegerFlag } from "./graph-options.utilities";
 
 import type { GraphOptions, GraphPlan } from "./graph-options.types";
 
@@ -55,7 +56,14 @@ export class GraphOptionsService {
    * Validates every option and returns the plan a graph command runs.
    * @throws GraphOptionsError naming the first option that cannot be used.
    */
-  plan({ entities, schema, sourceUri, table }: GraphOptions): GraphPlan {
+  plan({
+    entities,
+    maxBreadth: maximumBreadth,
+    maxDepth: maximumDepth,
+    schema,
+    sourceUri,
+    table,
+  }: GraphOptions): GraphPlan {
     if (sourceUri === undefined) {
       throw new GraphOptionsError(GRAPH_OPTION_MESSAGES.sourceUri);
     }
@@ -71,6 +79,8 @@ export class GraphOptionsService {
     return {
       connection: { ...connection, schema },
       entities,
+      maximumBreadth: positiveIntegerFlag("--max-breadth", maximumBreadth),
+      maximumDepth: positiveIntegerFlag("--max-depth", maximumDepth),
       source: maskPostgresCredentials(sourceUri, connection.password),
       table: this.tableName(table, schema),
     };

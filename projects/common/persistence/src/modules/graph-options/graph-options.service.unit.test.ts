@@ -37,10 +37,50 @@ describe(GraphOptionsService, () => {
           username: "fixture_user",
         },
         entities: ["src/**/*.entity.ts"],
+        maximumBreadth: undefined,
+        maximumDepth: undefined,
         source: "postgresql://fixture_user:****@localhost:5433/fixture_db",
         table: "closure_tags",
       });
     });
+
+    it("reads --max-depth and --max-breadth as positive integers", async () => {
+      const { instance } = await buildTestingModule(GraphOptionsService);
+
+      const plan = instance.plan({
+        entities: ["a.ts"],
+        maxBreadth: "12",
+        maxDepth: "3",
+        schema: "fixture",
+        sourceUri: SOURCE_URI,
+      });
+
+      expect(plan.maximumBreadth).toBe(12);
+      expect(plan.maximumDepth).toBe(3);
+    });
+
+    it.each([
+      ["--max-depth", "maxDepth"],
+      ["--max-breadth", "maxBreadth"],
+    ])(
+      "rejects a %s that is not a positive integer, naming the value",
+      async (flag, key) => {
+        const { instance } = await buildTestingModule(GraphOptionsService);
+
+        for (const value of ["0", "-2", "1.5", "2x", "abc", ""]) {
+          expect(() =>
+            instance.plan({
+              entities: ["a.ts"],
+              [key]: value,
+              schema: "fixture",
+              sourceUri: SOURCE_URI,
+            }),
+          ).toThrow(
+            `${flag} must be a positive integer, e.g. ${flag} 3; got "${value}"`,
+          );
+        }
+      },
+    );
 
     it("leaves the table undefined when --table is not given", async () => {
       const { instance } = await buildTestingModule(GraphOptionsService);

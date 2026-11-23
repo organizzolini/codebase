@@ -1,8 +1,10 @@
 import { Injectable } from "@nestjs/common";
 
 import { loadTreeGraph } from "./graph-tree-readers.utilities";
+import { limitTreeGraph } from "./graph-tree.utilities";
 
 import type { GraphModel } from "../graph-mermaid/graph-mermaid.types";
+import type { GraphTreeLimits } from "./graph-tree.types";
 import type { DataSource, EntityMetadata } from "typeorm";
 
 /**
@@ -23,11 +25,15 @@ export class GraphTreeService {
 
   // 🌎 Public Methods
 
-  /** Reads the tree `metadata` describes from `dataSource` as a graph model. */
+  /**
+   * Reads the tree `metadata` describes from `dataSource` as a graph model,
+   * capped at `limits`; see `limitTreeGraph`.
+   */
   async load(
     dataSource: DataSource,
     metadata: EntityMetadata,
+    limits: GraphTreeLimits = {},
   ): Promise<GraphModel> {
-    return loadTreeGraph(dataSource, metadata);
+    return limitTreeGraph(await loadTreeGraph(dataSource, metadata), limits);
   }
 }

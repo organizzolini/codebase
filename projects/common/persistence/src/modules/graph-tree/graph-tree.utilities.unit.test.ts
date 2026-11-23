@@ -2,9 +2,19 @@ import { describe, expect, it } from "vitest";
 
 import {
   buildTreeGraph,
+  limitTreeGraph,
   nestedSetParents,
   requireTreeMetadata,
 } from "./graph-tree.utilities";
+
+import type { GraphModel } from "../graph-mermaid/graph-mermaid.types";
+import type { GraphTreeLimits, GraphTreeRow } from "./graph-tree.types";
+
+/** The graph a tree's rows draw once the limits cap it. */
+const capped = (
+  rows: readonly GraphTreeRow[],
+  limits: GraphTreeLimits,
+): GraphModel => limitTreeGraph(buildTreeGraph(rows), limits);
 
 describe("graph tree utilities", () => {
   describe(requireTreeMetadata, () => {
@@ -53,6 +63,157 @@ describe("graph tree utilities", () => {
       expect(graph.warnings).toStrictEqual([
         "Node 7 names parent 9, which no row has; drawn as a root",
       ]);
+    });
+  });
+
+  describe("buildTreeGraph with limits", () => {
+    const rows = [
+      { id: "1", label: "Work", parentId: undefined },
+      { id: "2", label: "Email", parentId: "1" },
+      { id: "3", label: "Meetings", parentId: "1" },
+      { id: "4", label: "Inbox", parentId: "2" },
+      { id: "5", label: "Errands", parentId: undefined },
+    ];
+
+    it("draws every level and child when no limit is given", () => {
+      expect(capped(rows, {})).toStrictEqual(buildTreeGraph(rows));
+    });
+
+    it("draws every level and child when each limit is above the tree", () => {
+      expect(
+        capped(rows, { maximumBreadth: 10, maximumDepth: 10 }),
+      ).toStrictEqual(buildTreeGraph(rows));
+    });
+
+    it("stops at --max-depth 1, leaving only the roots and one truncation under each with children", () => {
+      const graph = capped(rows, { maximumDepth: 1 });
+
+      expect(graph).toStrictEqual({
+        directed: true,
+        edges: [{ source: "1", target: "1/more" }],
+        nodes: [
+          { id: "1", label: "Work", marker: "root" },
+          { id: "5", label: "Errands", marker: "root" },
+          { id: "1/more", label: "… 2 more", marker: "truncation" },
+        ],
+        warnings: ["Node 1 hides 2 children beyond --max-depth 1"],
+      });
+    });
+
+    it("keeps the levels through --max-depth and truncates the children below", () => {
+      const graph = capped(rows, { maximumDepth: 2 });
+
+      expect(graph.nodes).toStrictEqual([
+        { id: "1", label: "Work", marker: "root" },
+        { id: "2", label: "Email" },
+        { id: "3", label: "Meetings" },
+        { id: "5", label: "Errands", marker: "root" },
+        { id: "2/more", label: "… 1 more", marker: "truncation" },
+      ]);
+      expect(graph.edges).toStrictEqual([
+        { source: "1", target: "2" },
+        { source: "1", target: "3" },
+        { source: "2", target: "2/more" },
+      ]);
+      expect(graph.warnings).toStrictEqual([
+        "Node 2 hides 1 child beyond --max-depth 2",
+      ]);
+    });
+
+    it("shows the first --max-breadth children under a node and truncates the rest", () => {
+      const graph = capped(rows, { maximumBreadth: 1 });
+
+      expect(graph.nodes).toStrictEqual([
+        { id: "1", label: "Work", marker: "root" },
+        { id: "2", label: "Email" },
+        { id: "4", label: "Inbox" },
+        { id: "5", label: "Errands", marker: "root" },
+        { id: "1/more", label: "… 1 more", marker: "truncation" },
+      ]);
+      expect(graph.edges).toStrictEqual([
+        { source: "1", target: "2" },
+        { source: "2", target: "4" },
+        { source: "1", target: "1/more" },
+      ]);
+      expect(graph.warnings).toStrictEqual([
+        "Node 1 hides 1 child beyond --max-breadth 1",
+      ]);
+    });
+
+    it("applies both limits together, truncating breadth above and depth below", () => {
+      const graph = capped(rows, { maximumBreadth: 1, maximumDepth: 2 });
+
+      expect(graph.nodes).toStrictEqual([
+        { id: "1", label: "Work", marker: "root" },
+        { id: "2", label: "Email" },
+        { id: "5", label: "Errands", marker: "root" },
+        { id: "1/more", label: "… 1 more", marker: "truncation" },
+        { id: "2/more", label: "… 1 more", marker: "truncation" },
+      ]);
+      expect(graph.edges).toStrictEqual([
+        { source: "1", target: "2" },
+        { source: "1", target: "1/more" },
+        { source: "2", target: "2/more" },
+      ]);
+      expect(graph.warnings).toStrictEqual([
+        "Node 1 hides 1 child beyond --max-breadth 1",
+        "Node 2 hides 1 child beyond --max-depth 2",
+      ]);
+    });
+
+    it("never caps the roots with --max-breadth", () => {
+      const graph = capped(
+        [
+          { id: "a", label: "A", parentId: undefined },
+          { id: "b", label: "B", parentId: undefined },
+          { id: "c", label: "C", parentId: undefined },
+        ],
+        { maximumBreadth: 1 },
+      );
+
+      expect(graph.nodes.map(({ id }) => id)).toStrictEqual(["a", "b", "c"]);
+      expect(graph.warnings).toStrictEqual([]);
+    });
+
+    it("keeps a cycle, which no root reaches, drawn as it was by any limit", () => {
+      const graph = capped(
+        [
+          { id: "7", label: "A", parentId: "8" },
+          { id: "8", label: "B", parentId: "7" },
+          { id: "9", label: "R", parentId: undefined },
+        ],
+        { maximumDepth: 1 },
+      );
+
+      expect(graph.nodes).toStrictEqual([
+        { id: "7", label: "A" },
+        { id: "8", label: "B" },
+        { id: "9", label: "R", marker: "root" },
+      ]);
+      expect(graph.edges).toStrictEqual([
+        { source: "8", target: "7" },
+        { source: "7", target: "8" },
+      ]);
+    });
+
+    it("gives each truncation node an id no row already uses", () => {
+      const graph = capped(
+        [
+          { id: "1", label: "Work", parentId: undefined },
+          { id: "2", label: "Email", parentId: "1" },
+          { id: "1/more", label: "Odd", parentId: "1" },
+        ],
+        { maximumBreadth: 1 },
+      );
+
+      const ids = graph.nodes.map(({ id }) => id);
+
+      expect(new Set(ids).size).toBe(ids.length);
+      expect(graph.nodes.at(-1)).toStrictEqual({
+        id: "1/more-2",
+        label: "… 1 more",
+        marker: "truncation",
+      });
     });
   });
 

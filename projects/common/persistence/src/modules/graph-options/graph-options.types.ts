@@ -7,6 +7,12 @@ export interface GraphOptions {
   /** Glob patterns of the entity files to import; repeatable. */
   readonly entities?: string[] | undefined;
 
+  /** The most children drawn under one node, as text; a positive integer when given. */
+  readonly maxBreadth?: string | undefined;
+
+  /** The deepest level drawn, roots being level 1, as text; a positive integer when given. */
+  readonly maxDepth?: string | undefined;
+
   /** The schema the entity tables live in; required. */
   readonly schema?: string | undefined;
 
@@ -24,6 +30,12 @@ export interface GraphPlan {
 
   /** The entity glob patterns, in the order given. */
   readonly entities: readonly string[];
+
+  /** The most children drawn under one node, or `undefined` for every child. */
+  readonly maximumBreadth: number | undefined;
+
+  /** The deepest level drawn, or `undefined` for every level. */
+  readonly maximumDepth: number | undefined;
 
   /** `--source-uri` with its password masked, for log lines. */
   readonly source: string;

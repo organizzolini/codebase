@@ -21,6 +21,13 @@ export class GraphOptionsError extends Error {
   }
 }
 
+/** A cap flag whose value is not a positive integer, naming the value given. */
+export const graphPositiveIntegerMessage = (
+  flag: string,
+  value: string,
+): string =>
+  `${flag} must be a positive integer, e.g. ${flag} 3; got "${value}"`;
+
 /** `--table` qualified with a schema other than `--schema`. */
 export const graphTableSchemaMessage = (
   table: string,

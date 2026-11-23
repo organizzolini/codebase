@@ -289,6 +289,163 @@ describe("render-tree-data", () => {
     );
   });
 
+  it.each([
+    [
+      "--max-depth 1 keeps the roots and hides every child beneath them",
+      ["--max-depth", "1"],
+      [
+        'n0["Work"]',
+        'n1["Errands"]',
+        'n2["… 2 more"]',
+        "n0 --> n2",
+        "class n0 root",
+        "class n1 root",
+        "class n2 truncation",
+      ],
+      ["Node 1 hides 2 children beyond --max-depth 1"],
+    ],
+    [
+      "--max-depth 2 keeps two levels and truncates the children of Email",
+      ["--max-depth", "2"],
+      [
+        'n0["Work"]',
+        'n1["Email"]',
+        'n2["Meetings"]',
+        'n3["Errands"]',
+        'n4["… 1 more"]',
+        "n0 --> n1",
+        "n0 --> n2",
+        "n1 --> n4",
+        "class n0 root",
+        "class n3 root",
+        "class n4 truncation",
+      ],
+      ["Node 2 hides 1 child beyond --max-depth 2"],
+    ],
+    [
+      "--max-breadth 1 shows the first child under Work and truncates the second",
+      ["--max-breadth", "1"],
+      [
+        'n0["Work"]',
+        'n1["Email"]',
+        'n2["Inbox"]',
+        'n3["Errands"]',
+        'n4["… 1 more"]',
+        "n0 --> n1",
+        "n1 --> n2",
+        "n0 --> n4",
+        "class n0 root",
+        "class n3 root",
+        "class n4 truncation",
+      ],
+      ["Node 1 hides 1 child beyond --max-breadth 1"],
+    ],
+    [
+      "--max-depth 2 with --max-breadth 1 applies both caps",
+      ["--max-depth", "2", "--max-breadth", "1"],
+      [
+        'n0["Work"]',
+        'n1["Email"]',
+        'n2["Errands"]',
+        'n3["… 1 more"]',
+        'n4["… 1 more"]',
+        "n0 --> n1",
+        "n0 --> n3",
+        "n1 --> n4",
+        "class n0 root",
+        "class n2 root",
+        "class n3 truncation",
+        "class n4 truncation",
+      ],
+      [
+        "Node 1 hides 1 child beyond --max-breadth 1",
+        "Node 2 hides 1 child beyond --max-depth 2",
+      ],
+    ],
+  ])(
+    "caps the drawing: %s",
+    async (_description, caps, lines, warnings) => {
+      const result = await runRender(["--entities", LIST_GLOB, ...caps]);
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toBe(
+        [
+          "flowchart LR",
+          "    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px",
+          "    classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5",
+          ...lines.map((line) => `    ${line}`),
+          "",
+        ].join("\n"),
+      );
+      expect(result.stderr).toBe(
+        warnings.map((warning) => `⚠️ ${warning}\n`).join(""),
+      );
+    },
+    INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+  );
+
+  it.each(["0", "-1", "1.5", "two"])(
+    "fails before connecting when --max-depth is %s, not a positive integer",
+    async (value) => {
+      const secret = "cap-fixture-secret-3d8e";
+      const unreachable = `postgresql://fixture_user:${secret}@127.0.0.1:1/fixture_db`;
+
+      const result = await runRender(
+        ["--entities", LIST_GLOB, "--max-depth", value],
+        unreachable,
+      );
+
+      expect(result.exitCode).toBe(1);
+      expect(result.stdout).toBe("");
+      expect(result.stderr).toContain(
+        `--max-depth must be a positive integer, e.g. --max-depth 3; got "${value}"`,
+      );
+      expect(result.stderr).not.toContain(secret);
+    },
+    INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+  );
+
+  it("fails with the --max-breadth message when it is not a positive integer", async () => {
+    const result = await runRender([
+      "--entities",
+      LIST_GLOB,
+      "--max-breadth",
+      "0",
+    ]);
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain(
+      '--max-breadth must be a positive integer, e.g. --max-breadth 3; got "0"',
+    );
+  });
+
+  it.each([
+    [
+      "several trees match and --table is not given",
+      ["--entities", ALL_GLOB],
+      "Several @Tree entities match --entities",
+    ],
+    [
+      "--table names no tree",
+      ["--entities", ALL_GLOB, "--table", "gadgets"],
+      "No @Tree entity has table gadgets",
+    ],
+  ])(
+    "reports the pick before connecting when %s",
+    async (_description, argv, message) => {
+      const secret = "pick-fixture-secret-5b1c";
+      const unreachable = `postgresql://fixture_user:${secret}@127.0.0.1:1/fixture_db`;
+
+      const result = await runRender(argv, unreachable);
+
+      expect(result.exitCode).toBe(1);
+      expect(result.stderr).toContain(message);
+      expect(result.stderr).not.toContain("ECONNREFUSED");
+      expect(result.stderr).not.toContain(secret);
+    },
+    INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+  );
+
   it("builds the same URI the fixture reports", () => {
     expect(postgresUri(source.connection)).toBe(source.uri);
   });

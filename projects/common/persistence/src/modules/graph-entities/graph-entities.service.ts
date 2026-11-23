@@ -3,13 +3,14 @@ import { Injectable } from "@nestjs/common";
 import {
   createGraphDataSource,
   importEntityClasses,
-  pickTreeMetadata,
+  pickTreeCandidate,
   resolveEntityFiles,
+  treeCandidates,
 } from "./graph-entities.utilities";
 
 import type { PostgresConnection } from "../postgresql/postgresql.types";
-import type { GraphEntity } from "./graph-entities.types";
-import type { DataSource, EntityMetadata } from "typeorm";
+import type { GraphEntity, GraphTreePick } from "./graph-entities.types";
+import type { DataSource } from "typeorm";
 
 /**
  * Finds the entity files a graph command's `--entities` globs name, imports
@@ -43,21 +44,22 @@ export class GraphEntitiesService {
   }
 
   /**
-   * The tree entity `dataSource` holds that the command reads; `table` picks
-   * among several. Call after the data source is initialized.
+   * The `@Tree` entity among `entities` that the command reads; `table` picks
+   * among several. Picked from the decorators before any connection opens, so
+   * a bad pick never reaches the database.
+   * @throws GraphEntitiesError when none, or several without `table`, match.
    */
-  pickTree(
-    dataSource: DataSource,
-    table: string | undefined,
-    globs: readonly string[],
-  ): EntityMetadata {
-    return pickTreeMetadata(
-      dataSource.entityMetadatas.filter(
-        (metadata) => metadata.treeType !== undefined,
-      ),
+  pickTree({
+    entities,
+    globs,
+    namingStrategy,
+    table,
+  }: GraphTreePick): GraphEntity {
+    return pickTreeCandidate(
+      treeCandidates(entities, namingStrategy),
       table,
       globs,
-    );
+    ).entity;
   }
 
   /**

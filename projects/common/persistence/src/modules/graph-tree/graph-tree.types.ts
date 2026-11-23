@@ -2,6 +2,15 @@
 
 import type { DataSource, EntityMetadata } from "typeorm";
 
+/** Caps on the drawn tree; an absent cap draws every level or child. */
+export interface GraphTreeLimits {
+  /** The most children drawn under one node; `undefined` draws every child. */
+  readonly maximumBreadth?: number | undefined;
+
+  /** The deepest level drawn, with roots at level 1; `undefined` draws every level. */
+  readonly maximumDepth?: number | undefined;
+}
+
 /** Reads one tree table's rows, whichever storage it uses. */
 export type GraphTreeReader = (
   dataSource: DataSource,
@@ -36,6 +45,30 @@ export interface GraphTreeTable {
 
   /** The entity's metadata, for its tree columns. */
   readonly metadata: EntityMetadata;
+}
+
+/** A node whose children a cap hid: its id, the count hidden, and the cap. */
+export interface GraphTreeTruncation {
+  /** The number of children the cap hid. */
+  readonly hidden: number;
+
+  /** The flag whose cap hid them. */
+  readonly limit: "--max-breadth" | "--max-depth";
+
+  /** The cap's value. */
+  readonly maximum: number;
+
+  /** The id of the node whose children were hidden. */
+  readonly parent: string;
+}
+
+/** The ids a walk shows, and the truncations it made to hide the rest. */
+export interface GraphTreeWalk {
+  /** The ids shown, roots included. */
+  readonly shown: ReadonlySet<string>;
+
+  /** Each node whose children a cap hid, in walk order. */
+  readonly truncations: readonly GraphTreeTruncation[];
 }
 
 /** A nested-set row's interval, which places it among its ancestors. */
