@@ -89,15 +89,22 @@ export class ConventionalConfigIoService {
     sourceTypes: Type[],
   ): string {
     if (missingTypes.length === 0) return content;
-    const newEntries = missingTypes
-      .map((t) => {
-        const entry = sourceTypes.find((s) => s.name === t);
-        const desc = entry
-          ? ` // ${entry.description}`
-          : " // ⚠️ Added by sync — add description";
-        return `            { type: "${t}", section: "⚠️ ${this.capitalize(t)}", hidden: true },${desc}`;
-      })
-      .join("\n");
+    const descriptions = new Map<string, string>();
+    for (const { description, name } of sourceTypes) {
+      if (!descriptions.has(name)) descriptions.set(name, description);
+    }
+    const entries: string[] = [];
+    for (const t of missingTypes) {
+      const description = descriptions.get(t);
+      const desc =
+        description === undefined
+          ? " // ⚠️ Added by sync — add description"
+          : ` // ${description}`;
+      entries.push(
+        `            { type: "${t}", section: "⚠️ ${this.capitalize(t)}", hidden: true },${desc}`,
+      );
+    }
+    const newEntries = entries.join("\n");
     return content.replace(
       /(presetConfig:\s*\{[\s\S]*?types:\s*\[[\s\S]*?)(\s*\],\s*\})/,
       `$1\n${newEntries}$2`,

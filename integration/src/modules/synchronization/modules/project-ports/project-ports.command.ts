@@ -155,29 +155,6 @@ export class ProjectPortsCommand
     return parent === PROJECTS_DIRECTORY ? project.directory : parent;
   }
 
-  /** Rewrites a project's old port across its scope and returns the files that changed. */
-  private rewritePort(
-    root: string,
-    project: PortProject,
-    currentPort: number,
-  ): string[] {
-    return this.listFiles(path.join(root, this.resolveScope(project))).filter(
-      (file) => {
-        const content = readFileSync(file, "utf8");
-        const rewritten = this.projectPortsService.replacePort(
-          content,
-          currentPort,
-          project.expectedPort,
-        );
-
-        if (rewritten === content) return false;
-
-        writeFileSync(file, rewritten, "utf8");
-        return true;
-      },
-    );
-  }
-
   /** Brings one project's port into line, or reports how it differs, and says whether it was current. */
   private synchronizeProject(
     mode: SynchronizationMode,
@@ -210,9 +187,21 @@ export class ProjectPortsCommand
       return false;
     }
 
-    const files = this.rewritePort(root, project, currentPort).map((file) =>
-      path.relative(root, file),
-    );
+    const files = this.listFiles(path.join(root, this.resolveScope(project)))
+      .filter((file) => {
+        const content = readFileSync(file, "utf8");
+        const rewritten = this.projectPortsService.replacePort(
+          content,
+          currentPort,
+          project.expectedPort,
+        );
+
+        if (rewritten === content) return false;
+
+        writeFileSync(file, rewritten, "utf8");
+        return true;
+      })
+      .map((file) => path.relative(root, file));
 
     this.logger.info("🔌 Updated a project's port", undefined, {
       currentPort,

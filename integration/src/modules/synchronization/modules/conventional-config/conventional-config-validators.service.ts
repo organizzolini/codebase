@@ -37,29 +37,6 @@ export class ConventionalConfigValidatorsService {
 
   // 🔏 Private Methods
 
-  /** Checks that a named marker block in a skill file matches the source config values. */
-  private checkMarkerSync(args: {
-    config: ConventionalConfig;
-    marker: "scopes" | "types";
-    skillContent: string;
-    skillName: string;
-  }): boolean {
-    const markerValues = this.readMarkerValues(args);
-    if (!markerValues) {
-      return false;
-    }
-    const { config, marker, skillName } = args;
-    const { skillValues } = markerValues;
-    const sourceValues = this.getSourceValuesForMarker({ config, marker });
-
-    return this.validateMarkerValues({
-      marker,
-      skillName,
-      skillValues,
-      sourceValues,
-    });
-  }
-
   /** Returns source type or scope names for the given marker kind from the config. */
   private getSourceValuesForMarker(args: {
     config: ConventionalConfig;
@@ -70,33 +47,6 @@ export class ConventionalConfigValidatorsService {
       return config.types.map((type) => type.name);
     }
     return config.scopes.map((scope) => scope.name);
-  }
-
-  /** Extracts and returns parsed table values from a named marker block, or undefined if missing. */
-  private readMarkerValues(args: {
-    marker: "scopes" | "types";
-    skillContent: string;
-    skillName: string;
-  }): undefined | { skillValues: string[] } {
-    const { marker, skillContent, skillName } = args;
-    const markerContent = this.conventionalConfigIoService.extractMarkerContent(
-      skillContent,
-      marker,
-    );
-    if (!markerContent) {
-      this.loggerService.info("📄 Missing markers", undefined, {
-        marker,
-        skillName,
-      });
-      return undefined;
-    }
-
-    return {
-      skillValues:
-        this.conventionalConfigIoService.parseMarkdownTableValues(
-          markerContent,
-        ),
-    };
   }
 
   /** Logs the items missing from and extra in the target compared to the source. */
@@ -295,9 +245,29 @@ export class ConventionalConfigValidatorsService {
     const skillContent = readFileSync(skillFile, "utf8");
     let inSync = true;
     for (const marker of ["types", "scopes"] as const) {
-      if (!this.checkMarkerSync({ config, marker, skillContent, skillName })) {
+      const markerContent =
+        this.conventionalConfigIoService.extractMarkerContent(
+          skillContent,
+          marker,
+        );
+      if (!markerContent) {
+        this.loggerService.info("📄 Missing markers", undefined, {
+          marker,
+          skillName,
+        });
         inSync = false;
+        continue;
       }
+      const synced = this.validateMarkerValues({
+        marker,
+        skillName,
+        skillValues:
+          this.conventionalConfigIoService.parseMarkdownTableValues(
+            markerContent,
+          ),
+        sourceValues: this.getSourceValuesForMarker({ config, marker }),
+      });
+      if (!synced) inSync = false;
     }
     return inSync;
   }
