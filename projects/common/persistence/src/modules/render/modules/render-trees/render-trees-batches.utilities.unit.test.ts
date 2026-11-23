@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { chunkIds } from "./render-tree-data-batches.utilities";
+import { chunkIds } from "./render-trees-batches.utilities";
 
 describe(chunkIds, () => {
   it("splits ids into batches of the given size, keeping their order", () => {

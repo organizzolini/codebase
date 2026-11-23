@@ -2,7 +2,7 @@
 
 import { truncationParts } from "../render-mermaid/render-mermaid-truncations.utilities";
 
-import { renderTreeDataPageMessage } from "./render-tree-data.constants";
+import { renderTreesPageMessage } from "./render-trees.constants";
 
 import type {
   GraphEdge,
@@ -15,7 +15,7 @@ import type {
   GraphTreeLimits,
   GraphTreeRow,
   GraphTreeWalk,
-} from "./render-tree-data.types";
+} from "./render-trees.types";
 
 /**
  * Builds the directed graph a tree's rows describe. A row whose parent no row
@@ -186,7 +186,7 @@ export function pageTreeRows(
   if (start >= roots.length) {
     return {
       rows: [],
-      warning: renderTreeDataPageMessage(paging, roots.length),
+      warning: renderTreesPageMessage(paging, roots.length),
     };
   }
 

@@ -3,17 +3,17 @@
 import { selectPages } from "../render-options/render-options-reads.utilities";
 
 import {
-  RENDER_TREE_DATA_ID_ROW_SCHEMA,
-  RENDER_TREE_DATA_ROW_SCHEMA,
-} from "./render-tree-data.constants";
-import { orderRowsByRank } from "./render-tree-data.utilities";
+  RENDER_TREES_ID_ROW_SCHEMA,
+  RENDER_TREES_ROW_SCHEMA,
+} from "./render-trees.constants";
+import { orderRowsByRank } from "./render-trees.utilities";
 
 import type {
   GraphTreeRead,
   GraphTreeRow,
   GraphTreeSql,
   GraphTreeTable,
-} from "./render-tree-data.types";
+} from "./render-trees.types";
 import type { DataSource } from "typeorm";
 import type { z } from "zod";
 
@@ -57,7 +57,7 @@ export async function loadTreeRows(
 /** Adds each row not yet loaded, returning the ids it added. */
 function admitRows(
   loaded: Map<string, GraphTreeRow>,
-  rows: readonly z.infer<typeof RENDER_TREE_DATA_ROW_SCHEMA>[],
+  rows: readonly z.infer<typeof RENDER_TREES_ROW_SCHEMA>[],
 ): string[] {
   const fresh: string[] = [];
   for (const { id, label, parentId } of rows) {
@@ -89,7 +89,7 @@ async function rankIds(read: GraphTreeRead): Promise<string[]> {
     batchSize,
     body: `SELECT t.${table.id}::text AS "id" FROM ${sql.from} ORDER BY t.${table.id}`,
     parameters: [],
-    schema: RENDER_TREE_DATA_ID_ROW_SCHEMA,
+    schema: RENDER_TREES_ID_ROW_SCHEMA,
   });
   return ranked.map(({ id }) => id);
 }
@@ -105,7 +105,7 @@ async function readLevels(
     batchSize,
     body: rowsSql(sql, table, sql.roots),
     parameters: [],
-    schema: RENDER_TREE_DATA_ROW_SCHEMA,
+    schema: RENDER_TREES_ROW_SCHEMA,
   });
   let level = admitRows(loaded, roots);
   while (level.length > 0) {
@@ -115,7 +115,7 @@ async function readLevels(
         batchSize,
         body: rowsSql(sql, table, sql.children),
         parameters: [batch],
-        schema: RENDER_TREE_DATA_ROW_SCHEMA,
+        schema: RENDER_TREES_ROW_SCHEMA,
       });
       for (const id of admitRows(loaded, children)) next.push(id);
     }
@@ -128,7 +128,7 @@ async function readLevels(
       batchSize,
       body: rowsSql(sql, table, `t.${table.id}::text = ANY($1::text[])`),
       parameters: [batch],
-      schema: RENDER_TREE_DATA_ROW_SCHEMA,
+      schema: RENDER_TREES_ROW_SCHEMA,
     });
     admitRows(loaded, found);
   }

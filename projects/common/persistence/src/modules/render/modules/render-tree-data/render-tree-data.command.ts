@@ -8,12 +8,12 @@ import { RenderCommand } from "../render-command/render-command.command";
 import { RenderEntitiesService } from "../render-entities/render-entities.service";
 import { RenderNodesService } from "../render-nodes/render-nodes.service";
 import { RenderOptionsService } from "../render-options/render-options.service";
+import { RenderTreesService } from "../render-trees/render-trees.service";
 
 import {
   RENDER_TREE_DATA_DESCRIPTION,
   RENDER_TREE_DATA_DIRECTION,
 } from "./render-tree-data.constants";
-import { RenderTreeDataService } from "./render-tree-data.service";
 
 import type { RenderCommandEntity } from "../render-command/render-command.types";
 
@@ -37,7 +37,7 @@ export class RenderTreeDataCommand extends RenderCommand {
     renderNodes: RenderNodesService,
     renderOptions: RenderOptionsService,
     renderService: RenderService,
-    protected readonly reader: RenderTreeDataService,
+    protected readonly reader: RenderTreesService,
   ) {
     super(logger, renderEntities, renderNodes, renderOptions, renderService);
   }

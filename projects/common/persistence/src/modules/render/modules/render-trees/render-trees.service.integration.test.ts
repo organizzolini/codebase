@@ -10,10 +10,10 @@ import {
 import { RenderEntitiesService } from "../render-entities/render-entities.service";
 import { RenderOptionsService } from "../render-options/render-options.service";
 
-import { RenderTreeDataService } from "./render-tree-data.service";
+import { RenderTreesService } from "./render-trees.service";
 
 import type { FixtureDatabase } from "../../../../../testing/fixture-persistence";
-import type { GraphTreeOptions } from "./render-tree-data.types";
+import type { GraphTreeOptions } from "./render-trees.types";
 
 /** The entity files, one per storage type, each in its own glob. */
 const TREE_ENTITIES = path.join(
@@ -50,13 +50,13 @@ describe("graph tree service, read in batches", () => {
   let source: FixtureDatabase;
   const renderEntities = new RenderEntitiesService();
   const renderOptions = new RenderOptionsService();
-  const renderTreeData = new RenderTreeDataService();
+  const renderTreeData = new RenderTreesService();
 
   /** Reads the tree `glob` picks from the fixture database with `options`. */
   async function loadTree(
     glob: string,
     options: Partial<GraphTreeOptions> = {},
-  ): ReturnType<RenderTreeDataService["load"]> {
+  ): ReturnType<RenderTreesService["load"]> {
     const { connection } = renderOptions.plan({
       entities: [glob],
       schema: "fixture",

@@ -2,10 +2,10 @@
 
 import { escapeName } from "../render-options/render-options-reads.utilities";
 
-import { RENDER_TREE_DATA_PATH_PARENT_PATTERN } from "./render-tree-data.constants";
-import { requireTreeMetadata } from "./render-tree-data.utilities";
+import { RENDER_TREES_PATH_PARENT_PATTERN } from "./render-trees.constants";
+import { requireTreeMetadata } from "./render-trees.utilities";
 
-import type { GraphTreeSql, GraphTreeTable } from "./render-tree-data.types";
+import type { GraphTreeSql, GraphTreeTable } from "./render-trees.types";
 import type { DataSource, EntityMetadata } from "typeorm";
 
 /** The SQL that reads `table`'s rows by their parents, roots, and columns. */
@@ -87,7 +87,7 @@ function parentKeySql(dataSource: DataSource, table: GraphTreeTable): string {
         `${metadata.name} is a materialized-path tree without a path column`,
       ).databaseName,
     );
-    return `substring(t.${path}::text from '${RENDER_TREE_DATA_PATH_PARENT_PATTERN}')`;
+    return `substring(t.${path}::text from '${RENDER_TREES_PATH_PARENT_PATTERN}')`;
   }
   const parent = requireTreeMetadata(
     metadata.treeParentRelation?.joinColumns[0],

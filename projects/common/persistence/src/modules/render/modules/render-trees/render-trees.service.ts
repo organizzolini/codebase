@@ -4,11 +4,11 @@ import { resolveGraphView } from "../render-options/render-options-columns.utili
 import { graphColumns } from "../render-options/render-options-reads.utilities";
 import { RENDER_BATCH_SIZE } from "../render-options/render-options.constants";
 
-import { loadTreeGraph } from "./render-tree-data-readers.utilities";
-import { limitTreeGraph } from "./render-tree-data.utilities";
+import { loadTreeGraph } from "./render-trees-readers.utilities";
+import { limitTreeGraph } from "./render-trees.utilities";
 
 import type { GraphModel } from "../render-mermaid/render-mermaid.types";
-import type { GraphTreeOptions } from "./render-tree-data.types";
+import type { GraphTreeOptions } from "./render-trees.types";
 import type { DataSource, EntityMetadata } from "typeorm";
 
 /**
@@ -18,7 +18,7 @@ import type { DataSource, EntityMetadata } from "typeorm";
  * caps cut the tree.
  */
 @Injectable()
-export class RenderTreeDataService {
+export class RenderTreesService {
   // 🏗 Dependency Injection
 
   constructor() {}

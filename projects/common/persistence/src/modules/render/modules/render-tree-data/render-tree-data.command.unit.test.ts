@@ -7,16 +7,16 @@ import { RenderService } from "../../render.service";
 import { RenderEntitiesService } from "../render-entities/render-entities.service";
 import { RenderNodesService } from "../render-nodes/render-nodes.service";
 import { RenderOptionsService } from "../render-options/render-options.service";
+import { RenderTreesService } from "../render-trees/render-trees.service";
 
 import { RenderTreeDataCommand } from "./render-tree-data.command";
-import { RenderTreeDataService } from "./render-tree-data.service";
 
 const MOCKS = [
   RenderEntitiesService,
   RenderNodesService,
   RenderOptionsService,
   RenderService,
-  RenderTreeDataService,
+  RenderTreesService,
 ];
 
 describe(RenderTreeDataCommand, () => {

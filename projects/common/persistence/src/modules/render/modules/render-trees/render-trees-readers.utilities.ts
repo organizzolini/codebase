@@ -6,9 +6,9 @@ import {
 } from "../render-options/render-options-columns.utilities";
 import { selectPages } from "../render-options/render-options-reads.utilities";
 
-import { loadTreeRows } from "./render-tree-data-batches.utilities";
-import { treeSql, treeTable } from "./render-tree-data-sql.utilities";
-import { RENDER_TREE_DATA_ID_ROW_SCHEMA } from "./render-tree-data.constants";
+import { loadTreeRows } from "./render-trees-batches.utilities";
+import { treeSql, treeTable } from "./render-trees-sql.utilities";
+import { RENDER_TREES_ID_ROW_SCHEMA } from "./render-trees.constants";
 import {
   buildTreeGraph,
   keepRowsIn,
@@ -16,7 +16,7 @@ import {
   matchedSubtrees,
   orderRowsByRank,
   pageTreeRows,
-} from "./render-tree-data.utilities";
+} from "./render-trees.utilities";
 
 import type { GraphModel } from "../render-mermaid/render-mermaid.types";
 import type {
@@ -25,7 +25,7 @@ import type {
   GraphPredicate,
   GraphView,
 } from "../render-options/render-options.types";
-import type { GraphTreeRow, GraphTreeTable } from "./render-tree-data.types";
+import type { GraphTreeRow, GraphTreeTable } from "./render-trees.types";
 import type { DataSource, EntityMetadata } from "typeorm";
 
 /**
@@ -93,7 +93,7 @@ async function keepMatchingRows(
     batchSize,
     body: `SELECT t.${table.id}::text AS "id" FROM ${table.from} t WHERE ${sql} ORDER BY t.${table.id}`,
     parameters,
-    schema: RENDER_TREE_DATA_ID_ROW_SCHEMA,
+    schema: RENDER_TREES_ID_ROW_SCHEMA,
   });
   const matched = new Set(matches.map(({ id }) => id));
   const kept = new Set([
@@ -121,7 +121,7 @@ async function orderByRank(
     batchSize,
     body: `SELECT t.${table.id}::text AS "id" FROM ${table.from} t ORDER BY ${sortClause(sorts)}, t.${table.id}`,
     parameters: [],
-    schema: RENDER_TREE_DATA_ID_ROW_SCHEMA,
+    schema: RENDER_TREES_ID_ROW_SCHEMA,
   });
   return orderRowsByRank(
     rows,

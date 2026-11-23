@@ -60,7 +60,8 @@ src/
       modules/render-edges/         # Reads an edge table, finds roots and cycles, then pages and caps the edges
       modules/render-nodes/         # Reads the labels of only the drawn nodes and graphs, and relabels a generated edge's graph
       modules/render-mermaid/       # Pure renderer: a graph model to Mermaid text, with its limit warnings
-      modules/render-tree-data/     # The render-tree-data command, and the service that reads a @Tree table in its storage, then filters, sorts, pages, and caps it
+      modules/render-trees/         # Reads a @Tree table in its storage, then filters, sorts, pages, and caps it
+      modules/render-tree-data/     # The render-tree-data command: draws a @Tree entity
       modules/render-directed-acyclic-graph-data/      # The render-directed-acyclic-graph-data command: refuses a @Graph entity
       modules/render-graph-data/    # The render-graph-data command: refuses a @DirectedAcyclicGraph entity
     typeorm-migration-sql/          # The typeorm-migration-sql command: check or write each migration's SQL
