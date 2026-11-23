@@ -4,7 +4,7 @@ import {
   DirectedAcyclicGraph,
   GraphSource,
   GraphTarget,
-} from "../../../src/modules/graph-entities/graph-entities.utilities";
+} from "../../../src/modules/render/modules/render-entities/render-entities.utilities";
 
 /** A second directed acyclic graph, of numeric step ids with no label or weight, in a named schema. */
 @DirectedAcyclicGraph()

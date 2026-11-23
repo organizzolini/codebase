@@ -3,32 +3,32 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { GraphEdgesService } from "../../../graph-edges/graph-edges.service";
-import { GraphEntitiesService } from "../../../graph-entities/graph-entities.service";
-import { graphOutputDryRunMessages } from "../../../graph-options/graph-options-outputs.utilities";
-import {
-  GRAPH_DRY_RUN_OPTION,
-  GRAPH_ENTITIES_OPTION,
-  GRAPH_FILTER_OPTION,
-  GRAPH_OUTPUT_JSON_OPTION,
-  GRAPH_OUTPUT_MARKDOWN_OPTION,
-  GRAPH_OVERWRITE_OPTION,
-  GRAPH_SCHEMA_OPTION,
-  GRAPH_SORT_OPTION,
-  GRAPH_SOURCE_URI_OPTION,
-  GRAPH_TRUNCATE_BREADTH_OPTION,
-  GRAPH_TRUNCATE_DEPTH_OPTION,
-} from "../../../graph-options/graph-options.constants";
-import { GraphOptionsService } from "../../../graph-options/graph-options.service";
 import { graphDrawDryRunMessages } from "../../render.constants";
 import { RenderService } from "../../render.service";
+import { RenderEdgesService } from "../render-edges/render-edges.service";
+import { RenderEntitiesService } from "../render-entities/render-entities.service";
+import { graphOutputDryRunMessages } from "../render-options/render-options-outputs.utilities";
+import {
+  RENDER_DRY_RUN_OPTION,
+  RENDER_ENTITIES_OPTION,
+  RENDER_FILTER_OPTION,
+  RENDER_OUTPUT_JSON_OPTION,
+  RENDER_OUTPUT_MARKDOWN_OPTION,
+  RENDER_OVERWRITE_OPTION,
+  RENDER_SCHEMA_OPTION,
+  RENDER_SORT_OPTION,
+  RENDER_SOURCE_URI_OPTION,
+  RENDER_TRUNCATE_BREADTH_OPTION,
+  RENDER_TRUNCATE_DEPTH_OPTION,
+} from "../render-options/render-options.constants";
+import { RenderOptionsService } from "../render-options/render-options.service";
 
 import {
   RENDER_GRAPH_DATA_DESCRIPTION,
   RENDER_GRAPH_DATA_DIRECTION,
 } from "./render-graph-data.constants";
 
-import type { GraphCommandOptions } from "../../../graph-options/graph-options.types";
+import type { GraphCommandOptions } from "../render-options/render-options.types";
 
 /**
  * Reads a `@Graph` entity's edges and prints them as a Mermaid flowchart on
@@ -46,10 +46,10 @@ export class RenderGraphDataCommand extends CommandRunner {
 
   constructor(
     private readonly logger: LoggerService,
-    private readonly graphEdges: GraphEdgesService,
-    private readonly graphEntities: GraphEntitiesService,
-    private readonly graphOptions: GraphOptionsService,
-    private readonly graphRender: RenderService,
+    private readonly renderEdges: RenderEdgesService,
+    private readonly renderEntities: RenderEntitiesService,
+    private readonly renderOptions: RenderOptionsService,
+    private readonly renderService: RenderService,
   ) {
     super();
     this.logger.setContext(RenderGraphDataCommand.name);
@@ -64,19 +64,19 @@ export class RenderGraphDataCommand extends CommandRunner {
   // 🌎 Public Methods
 
   /** Parses `--dry-run`, which checks the options and connects to no database. */
-  @Option(GRAPH_DRY_RUN_OPTION)
+  @Option(RENDER_DRY_RUN_OPTION)
   parseDryRun(): boolean {
     return true;
   }
 
   /** Collects each repeated `--entities` glob into one list. */
-  @Option(GRAPH_ENTITIES_OPTION)
+  @Option(RENDER_ENTITIES_OPTION)
   parseEntities(value: string, previous: string[] = []): string[] {
     return [...previous, value];
   }
 
   /** Collects each repeated `--filter` into one list, in the order given. */
-  @Option(GRAPH_FILTER_OPTION)
+  @Option(RENDER_FILTER_OPTION)
   parseFilter(value: string, previous: string[] = []): string[] {
     return [...previous, value];
   }
@@ -92,19 +92,19 @@ export class RenderGraphDataCommand extends CommandRunner {
   }
 
   /** Parses `--output-json`, the file the normalized graph is written to. */
-  @Option(GRAPH_OUTPUT_JSON_OPTION)
+  @Option(RENDER_OUTPUT_JSON_OPTION)
   parseOutputJson(value: string): string {
     return value;
   }
 
   /** Parses `--output-markdown`, the file the diagram is written to. */
-  @Option(GRAPH_OUTPUT_MARKDOWN_OPTION)
+  @Option(RENDER_OUTPUT_MARKDOWN_OPTION)
   parseOutputMarkdown(value: string): string {
     return value;
   }
 
   /** Parses `--overwrite`, which lets an output file that exists be replaced. */
-  @Option(GRAPH_OVERWRITE_OPTION)
+  @Option(RENDER_OVERWRITE_OPTION)
   parseOverwrite(): boolean {
     return true;
   }
@@ -120,19 +120,19 @@ export class RenderGraphDataCommand extends CommandRunner {
   }
 
   /** Parses `--schema`, the schema the entity tables live in. */
-  @Option(GRAPH_SCHEMA_OPTION)
+  @Option(RENDER_SCHEMA_OPTION)
   parseSchema(value: string): string {
     return value;
   }
 
   /** Collects each repeated `--sort` into one list of keys, applied in the order given. */
-  @Option(GRAPH_SORT_OPTION)
+  @Option(RENDER_SORT_OPTION)
   parseSort(value: string, previous: string[] = []): string[] {
     return [...previous, value];
   }
 
   /** Parses `--source-uri`, the database to read from. */
-  @Option(GRAPH_SOURCE_URI_OPTION)
+  @Option(RENDER_SOURCE_URI_OPTION)
   parseSourceUri(value: string): string {
     return value;
   }
@@ -148,13 +148,13 @@ export class RenderGraphDataCommand extends CommandRunner {
   }
 
   /** Parses `--truncate-breadth`, the most children drawn under one node. */
-  @Option(GRAPH_TRUNCATE_BREADTH_OPTION)
+  @Option(RENDER_TRUNCATE_BREADTH_OPTION)
   parseTruncateBreadth(value: string): string {
     return value;
   }
 
   /** Parses `--truncate-depth`, the deepest level drawn, roots being level 1. */
-  @Option(GRAPH_TRUNCATE_DEPTH_OPTION)
+  @Option(RENDER_TRUNCATE_DEPTH_OPTION)
   parseTruncateDepth(value: string): string {
     return value;
   }
@@ -167,9 +167,9 @@ export class RenderGraphDataCommand extends CommandRunner {
     _passedParameters: string[],
     options: GraphCommandOptions,
   ): Promise<void> {
-    const plan = this.graphOptions.plan(options);
+    const plan = this.renderOptions.plan(options);
     if (options.dryRun === true) {
-      const files = this.graphEntities.resolveFiles(plan.entities);
+      const files = this.renderEntities.resolveFiles(plan.entities);
       const lines = [
         ...graphDrawDryRunMessages(plan, files, "@Graph"),
         ...graphOutputDryRunMessages(plan.outputs),
@@ -179,16 +179,16 @@ export class RenderGraphDataCommand extends CommandRunner {
       }
       return;
     }
-    const { dataSource, picked } = await this.graphEntities.prepareEdge(plan, {
+    const { dataSource, picked } = await this.renderEntities.prepareEdge(plan, {
       command: "render-graph-data",
       kinds: ["graph"],
     });
-    const edge = this.graphEntities.describeEdge(picked);
-    const written = await this.graphRender.render(plan, {
+    const edge = this.renderEntities.describeEdge(picked);
+    const written = await this.renderService.render(plan, {
       dataSource,
       direction: RENDER_GRAPH_DATA_DIRECTION,
       read: async (paging) =>
-        this.graphEdges.load(dataSource, dataSource.getMetadata(picked), {
+        this.renderEdges.load(dataSource, dataSource.getMetadata(picked), {
           edge,
           filters: plan.filters,
           paging,

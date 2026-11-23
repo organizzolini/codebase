@@ -3,20 +3,20 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { GraphEntitiesService } from "../../../graph-entities/graph-entities.service";
-import { graphOutputDryRunMessages } from "../../../graph-options/graph-options-outputs.utilities";
-import {
-  GRAPH_DRY_RUN_OPTION,
-  GRAPH_ENTITIES_OPTION,
-  GRAPH_OUTPUT_JSON_OPTION,
-  GRAPH_OUTPUT_MARKDOWN_OPTION,
-  GRAPH_OVERWRITE_OPTION,
-  GRAPH_SCHEMA_OPTION,
-  GRAPH_SOURCE_URI_OPTION,
-} from "../../../graph-options/graph-options.constants";
-import { GraphOptionsService } from "../../../graph-options/graph-options.service";
 import { GraphTreeService } from "../../../graph-tree/graph-tree.service";
 import { RenderService } from "../../render.service";
+import { RenderEntitiesService } from "../render-entities/render-entities.service";
+import { graphOutputDryRunMessages } from "../render-options/render-options-outputs.utilities";
+import {
+  RENDER_DRY_RUN_OPTION,
+  RENDER_ENTITIES_OPTION,
+  RENDER_OUTPUT_JSON_OPTION,
+  RENDER_OUTPUT_MARKDOWN_OPTION,
+  RENDER_OVERWRITE_OPTION,
+  RENDER_SCHEMA_OPTION,
+  RENDER_SOURCE_URI_OPTION,
+} from "../render-options/render-options.constants";
+import { RenderOptionsService } from "../render-options/render-options.service";
 
 import {
   RENDER_TREE_DATA_DESCRIPTION,
@@ -27,7 +27,7 @@ import {
 import type {
   GraphCommandOptions,
   GraphPlan,
-} from "../../../graph-options/graph-options.types";
+} from "../render-options/render-options.types";
 import type { RenderTreeDataTarget } from "./render-tree-data.types";
 
 /**
@@ -46,9 +46,9 @@ export class RenderTreeDataCommand extends CommandRunner {
 
   constructor(
     private readonly logger: LoggerService,
-    private readonly graphEntities: GraphEntitiesService,
-    private readonly graphOptions: GraphOptionsService,
-    private readonly graphRender: RenderService,
+    private readonly renderEntities: RenderEntitiesService,
+    private readonly renderOptions: RenderOptionsService,
+    private readonly renderService: RenderService,
     private readonly graphTree: GraphTreeService,
   ) {
     super();
@@ -66,31 +66,31 @@ export class RenderTreeDataCommand extends CommandRunner {
    * connection opens.
    */
   private async prepare(plan: GraphPlan): Promise<RenderTreeDataTarget> {
-    const entities = await this.graphEntities.load(plan.entities);
-    const dataSource = this.graphEntities.createDataSource(
+    const entities = await this.renderEntities.load(plan.entities);
+    const dataSource = this.renderEntities.createDataSource(
       plan.connection,
       entities,
     );
-    const picked = this.graphEntities.pickTree({
+    const picked = this.renderEntities.pickTree({
       entities,
       globs: plan.entities,
       namingStrategy: dataSource.namingStrategy,
       table: plan.table,
     });
-    this.graphEntities.assertColumns(picked, plan.filters, plan.sorts);
+    this.renderEntities.assertColumns(picked, plan.filters, plan.sorts);
     return { dataSource, picked };
   }
 
   // 🌎 Public Methods
 
   /** Parses `--dry-run`, which checks the options and connects to no database. */
-  @Option(GRAPH_DRY_RUN_OPTION)
+  @Option(RENDER_DRY_RUN_OPTION)
   parseDryRun(): boolean {
     return true;
   }
 
   /** Collects each repeated `--entities` glob into one list. */
-  @Option(GRAPH_ENTITIES_OPTION)
+  @Option(RENDER_ENTITIES_OPTION)
   parseEntities(value: string, previous: string[] = []): string[] {
     return [...previous, value];
   }
@@ -116,19 +116,19 @@ export class RenderTreeDataCommand extends CommandRunner {
   }
 
   /** Parses `--output-json`, the file the normalized graph is written to. */
-  @Option(GRAPH_OUTPUT_JSON_OPTION)
+  @Option(RENDER_OUTPUT_JSON_OPTION)
   parseOutputJson(value: string): string {
     return value;
   }
 
   /** Parses `--output-markdown`, the file the diagram is written to. */
-  @Option(GRAPH_OUTPUT_MARKDOWN_OPTION)
+  @Option(RENDER_OUTPUT_MARKDOWN_OPTION)
   parseOutputMarkdown(value: string): string {
     return value;
   }
 
   /** Parses `--overwrite`, which lets an output file that exists be replaced. */
-  @Option(GRAPH_OVERWRITE_OPTION)
+  @Option(RENDER_OVERWRITE_OPTION)
   parseOverwrite(): boolean {
     return true;
   }
@@ -144,7 +144,7 @@ export class RenderTreeDataCommand extends CommandRunner {
   }
 
   /** Parses `--schema`, the schema the entity tables live in. */
-  @Option(GRAPH_SCHEMA_OPTION)
+  @Option(RENDER_SCHEMA_OPTION)
   parseSchema(value: string): string {
     return value;
   }
@@ -160,7 +160,7 @@ export class RenderTreeDataCommand extends CommandRunner {
   }
 
   /** Parses `--source-uri`, the database to read from. */
-  @Option(GRAPH_SOURCE_URI_OPTION)
+  @Option(RENDER_SOURCE_URI_OPTION)
   parseSourceUri(value: string): string {
     return value;
   }
@@ -203,9 +203,9 @@ export class RenderTreeDataCommand extends CommandRunner {
     _passedParameters: string[],
     options: GraphCommandOptions,
   ): Promise<void> {
-    const plan = this.graphOptions.plan(options);
+    const plan = this.renderOptions.plan(options);
     if (options.dryRun === true) {
-      const files = this.graphEntities.resolveFiles(plan.entities);
+      const files = this.renderEntities.resolveFiles(plan.entities);
       const lines = [
         ...renderTreeDataDryRunMessages(plan, files),
         ...graphOutputDryRunMessages(plan.outputs),
@@ -216,7 +216,7 @@ export class RenderTreeDataCommand extends CommandRunner {
       return;
     }
     const { dataSource, picked } = await this.prepare(plan);
-    const written = await this.graphRender.render(plan, {
+    const written = await this.renderService.render(plan, {
       dataSource,
       direction: RENDER_TREE_DATA_DIRECTION,
       read: async (paging) =>

@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 
-import type { GraphPaging } from "../graph-options/graph-options.types";
+import type { GraphPaging } from "../render/modules/render-options/render-options.types";
 
 /** A row's id as text. */
 export const GRAPH_TREE_ID_ROW_SCHEMA = z.object({

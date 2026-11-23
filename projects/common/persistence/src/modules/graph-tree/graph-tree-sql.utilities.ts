@@ -1,6 +1,6 @@
 // 🌎 Utilities
 
-import { escapeName } from "../graph-options/graph-options-reads.utilities";
+import { escapeName } from "../render/modules/render-options/render-options-reads.utilities";
 
 import { GRAPH_TREE_PATH_PARENT_PATTERN } from "./graph-tree.constants";
 import { requireTreeMetadata } from "./graph-tree.utilities";

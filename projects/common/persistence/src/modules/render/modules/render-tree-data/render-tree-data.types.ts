@@ -1,7 +1,7 @@
 // 🏷️ Types
 
-import type { GraphEntity } from "../../../graph-entities/graph-entities.types";
-import type { GraphPlan } from "../../../graph-options/graph-options.types";
+import type { GraphEntity } from "../render-entities/render-entities.types";
+import type { GraphPlan } from "../render-options/render-options.types";
 import type { DataSource } from "typeorm";
 
 /** The plan `render-tree-data` runs, which is a graph plan. */

@@ -3,8 +3,8 @@
 import type {
   GraphMermaidOptions,
   GraphModel,
-} from "../graph-mermaid/graph-mermaid.types";
-import type { GraphPaging } from "../graph-options/graph-options.types";
+} from "./modules/render-mermaid/render-mermaid.types";
+import type { GraphPaging } from "./modules/render-options/render-options.types";
 import type { DataSource } from "typeorm";
 
 /** What a command draws: its connection, direction, and read. */

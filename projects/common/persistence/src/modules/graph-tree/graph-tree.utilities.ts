@@ -6,8 +6,8 @@ import type {
   GraphEdge,
   GraphModel,
   GraphNode,
-} from "../graph-mermaid/graph-mermaid.types";
-import type { GraphPaging } from "../graph-options/graph-options.types";
+} from "../render/modules/render-mermaid/render-mermaid.types";
+import type { GraphPaging } from "../render/modules/render-options/render-options.types";
 import type {
   GraphTreeLimits,
   GraphTreeRow,

@@ -6,7 +6,7 @@ import {
   GraphSource,
   GraphTarget,
   GraphWeight,
-} from "../../../src/modules/graph-entities/graph-entities.utilities";
+} from "../../../src/modules/render/modules/render-entities/render-entities.utilities";
 
 /** A directed acyclic graph of tasks: each row says its source task blocks its target task. */
 @DirectedAcyclicGraph()

@@ -23,6 +23,6 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **updatable**: The entity base layer that adds update tracking columns, third in the identifiable, creatable, updatable, deletable chain.
 - **verb**: The verb in a log message that the export log convention test expects after the subject emoji, such as exists.
 - **vertex**: A node in the cycle search of a directed acyclic graph's edges, which holds its visit order and the nodes its edges reach.
-- **via**: The node a cap walk first reached another node from, kept as `GraphEdgesWalk.via` in `graph-edges.types.ts` and set by `walkEdges` in `graph-edges-limits.utilities.ts`; roots have none. Everyday "via" means "by way of"; here it is the discovery parent, which an undirected walk uses so a node is not drawn back to where it came from.
+- **via**: The node a cap walk first reached another node from, kept as `GraphEdgesWalk.via` in `render-edges.types.ts` and set by `walkEdges` in `render-edges-limits.utilities.ts`; roots have none. Everyday "via" means "by way of"; here it is the discovery parent, which an undirected walk uses so a node is not drawn back to where it came from.
 
 <!-- coinagerie:end -->

@@ -1,7 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { GraphMermaidModule } from "../graph-mermaid/graph-mermaid.module";
-
+import { RenderMermaidModule } from "./modules/render-mermaid/render-mermaid.module";
 import { RenderService } from "./render.service";
 
 /**
@@ -11,7 +10,7 @@ import { RenderService } from "./render.service";
 @Module({
   controllers: [],
   exports: [RenderService],
-  imports: [GraphMermaidModule],
+  imports: [RenderMermaidModule],
   providers: [RenderService],
 })
 export class RenderModule {}

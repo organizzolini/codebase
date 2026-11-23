@@ -3,8 +3,8 @@
 import {
   filterClause,
   sortClause,
-} from "../graph-options/graph-options-columns.utilities";
-import { selectPages } from "../graph-options/graph-options-reads.utilities";
+} from "../render/modules/render-options/render-options-columns.utilities";
+import { selectPages } from "../render/modules/render-options/render-options-reads.utilities";
 
 import { loadTreeRows } from "./graph-tree-batches.utilities";
 import { treeSql, treeTable } from "./graph-tree-sql.utilities";
@@ -18,13 +18,13 @@ import {
   pageTreeRows,
 } from "./graph-tree.utilities";
 
-import type { GraphModel } from "../graph-mermaid/graph-mermaid.types";
+import type { GraphModel } from "../render/modules/render-mermaid/render-mermaid.types";
 import type {
   GraphOrder,
   GraphPaging,
   GraphPredicate,
   GraphView,
-} from "../graph-options/graph-options.types";
+} from "../render/modules/render-options/render-options.types";
 import type { GraphTreeRow, GraphTreeTable } from "./graph-tree.types";
 import type { DataSource, EntityMetadata } from "typeorm";
 

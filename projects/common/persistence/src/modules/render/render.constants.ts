@@ -1,6 +1,6 @@
 // ♟️ Constants
 
-import type { GraphPlan } from "../graph-options/graph-options.types";
+import type { GraphPlan } from "./modules/render-options/render-options.types";
 
 /** The log line naming a file a render wrote. */
 export const graphRenderWroteMessage = (file: string): string =>

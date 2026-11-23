@@ -7,8 +7,8 @@ import {
   INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   startFixtureDatabase,
 } from "../../../testing/fixture-persistence";
-import { GraphEntitiesService } from "../graph-entities/graph-entities.service";
-import { GraphOptionsService } from "../graph-options/graph-options.service";
+import { RenderEntitiesService } from "../render/modules/render-entities/render-entities.service";
+import { RenderOptionsService } from "../render/modules/render-options/render-options.service";
 
 import { GraphTreeService } from "./graph-tree.service";
 
@@ -48,8 +48,8 @@ const TREE_ROWS = [
 
 describe("graph tree service, read in batches", () => {
   let source: FixtureDatabase;
-  const graphEntities = new GraphEntitiesService();
-  const graphOptions = new GraphOptionsService();
+  const renderEntities = new RenderEntitiesService();
+  const renderOptions = new RenderOptionsService();
   const graphTree = new GraphTreeService();
 
   /** Reads the tree `glob` picks from the fixture database with `options`. */
@@ -57,16 +57,16 @@ describe("graph tree service, read in batches", () => {
     glob: string,
     options: Partial<GraphTreeOptions> = {},
   ): ReturnType<GraphTreeService["load"]> {
-    const { connection } = graphOptions.plan({
+    const { connection } = renderOptions.plan({
       entities: [glob],
       schema: "fixture",
       sourceUri: source.uri,
     });
-    const entities = await graphEntities.load([glob]);
-    const dataSource = graphEntities.createDataSource(connection, entities);
+    const entities = await renderEntities.load([glob]);
+    const dataSource = renderEntities.createDataSource(connection, entities);
     await dataSource.initialize();
     try {
-      const picked = graphEntities.pickTree({
+      const picked = renderEntities.pickTree({
         entities,
         globs: [glob],
         namingStrategy: dataSource.namingStrategy,

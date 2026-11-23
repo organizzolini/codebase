@@ -1,24 +1,23 @@
 import { Injectable } from "@nestjs/common";
 
-import { GraphMermaidService } from "../graph-mermaid/graph-mermaid.service";
-import { renderGraphPagesMarkdown } from "../graph-mermaid/graph-mermaid.utilities";
+import { RenderMermaidService } from "./modules/render-mermaid/render-mermaid.service";
+import { renderGraphPagesMarkdown } from "./modules/render-mermaid/render-mermaid.utilities";
 import {
   renderGraphJson,
   writeGraphOutputs,
-} from "../graph-options/graph-options-outputs.utilities";
-import { maskedError } from "../graph-options/graph-options.utilities";
-
+} from "./modules/render-options/render-options-outputs.utilities";
+import { maskedError } from "./modules/render-options/render-options.utilities";
 import { graphRenderWroteMessage } from "./render.constants";
 
 import type {
   GraphMermaidRendering,
   GraphModel,
-} from "../graph-mermaid/graph-mermaid.types";
+} from "./modules/render-mermaid/render-mermaid.types";
 import type {
   GraphOutputFile,
   GraphPaging,
   GraphPlan,
-} from "../graph-options/graph-options.types";
+} from "./modules/render-options/render-options.types";
 import type { GraphDrawing, GraphPages } from "./render.types";
 
 /**
@@ -30,7 +29,7 @@ import type { GraphDrawing, GraphPages } from "./render.types";
 export class RenderService {
   // 🏗 Dependency Injection
 
-  constructor(private readonly graphMermaid: GraphMermaidService) {}
+  constructor(private readonly renderMermaid: RenderMermaidService) {}
 
   // 🔐 Private Fields
 
@@ -123,7 +122,7 @@ export class RenderService {
       const renderings: GraphMermaidRendering[] = [];
       for (const graph of pages.graphs) {
         renderings.push(
-          this.graphMermaid.render(graph, { direction: drawing.direction }),
+          this.renderMermaid.render(graph, { direction: drawing.direction }),
         );
       }
       return this.emit(plan, pages, renderings);

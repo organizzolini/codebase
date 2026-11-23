@@ -18,10 +18,10 @@ import {
   INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   startFixtureDatabase,
 } from "../../../../../testing/fixture-persistence";
-import { renderGraphMermaid } from "../../../graph-mermaid/graph-mermaid.utilities";
+import { renderGraphMermaid } from "../render-mermaid/render-mermaid.utilities";
 
 import type { FixtureDatabase } from "../../../../../testing/fixture-persistence";
-import type { GraphModel } from "../../../graph-mermaid/graph-mermaid.types";
+import type { GraphModel } from "../render-mermaid/render-mermaid.types";
 
 /** The edge entity files, one glob each, and all of them. */
 const GRAPHS = path.join(

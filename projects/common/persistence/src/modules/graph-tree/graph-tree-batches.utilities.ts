@@ -1,6 +1,6 @@
 // 🌎 Utilities
 
-import { selectPages } from "../graph-options/graph-options-reads.utilities";
+import { selectPages } from "../render/modules/render-options/render-options-reads.utilities";
 
 import {
   GRAPH_TREE_ID_ROW_SCHEMA,

@@ -4,7 +4,7 @@ import {
   Graph,
   GraphSource,
   GraphTarget,
-} from "../../../src/modules/graph-entities/graph-entities.utilities";
+} from "../../../src/modules/render/modules/render-entities/render-entities.utilities";
 
 /** A general graph, which `render-directed-acyclic-graph-data` refuses to draw. */
 @Entity({ name: "graph_links" })

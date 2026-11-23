@@ -6,7 +6,7 @@ import {
   GraphSource,
   GraphTarget,
   GraphWeight,
-} from "../../../src/modules/graph-entities/graph-entities.utilities";
+} from "../../../src/modules/render/modules/render-entities/render-entities.utilities";
 
 /** A directed graph of routes: each row says its source stop leads to its target stop. */
 @Entity({ name: "route_links" })

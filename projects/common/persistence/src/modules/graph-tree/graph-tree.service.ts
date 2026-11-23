@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
 
-import { resolveGraphView } from "../graph-options/graph-options-columns.utilities";
-import { graphColumns } from "../graph-options/graph-options-reads.utilities";
-import { GRAPH_BATCH_SIZE } from "../graph-options/graph-options.constants";
+import { resolveGraphView } from "../render/modules/render-options/render-options-columns.utilities";
+import { graphColumns } from "../render/modules/render-options/render-options-reads.utilities";
+import { RENDER_BATCH_SIZE } from "../render/modules/render-options/render-options.constants";
 
 import { loadTreeGraph } from "./graph-tree-readers.utilities";
 import { limitTreeGraph } from "./graph-tree.utilities";
 
-import type { GraphModel } from "../graph-mermaid/graph-mermaid.types";
+import type { GraphModel } from "../render/modules/render-mermaid/render-mermaid.types";
 import type { GraphTreeOptions } from "./graph-tree.types";
 import type { DataSource, EntityMetadata } from "typeorm";
 
@@ -33,7 +33,7 @@ export class GraphTreeService {
 
   /**
    * Reads the tree `metadata` describes, filtered, sorted, then capped.
-   * @throws GraphOptionsError when a filter or sort names no column, or
+   * @throws RenderOptionsError when a filter or sort names no column, or
    * compares unfit values.
    */
   async load(
@@ -47,7 +47,7 @@ export class GraphTreeService {
       options.sorts,
     );
     const graph = await loadTreeGraph(dataSource, metadata, {
-      batchSize: options.batchSize ?? GRAPH_BATCH_SIZE,
+      batchSize: options.batchSize ?? RENDER_BATCH_SIZE,
       paging: options.paging,
       view,
     });

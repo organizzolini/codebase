@@ -3,7 +3,7 @@
 import type {
   GraphLimits,
   GraphReadOptions,
-} from "../graph-options/graph-options.types";
+} from "../render/modules/render-options/render-options.types";
 import type { DataSource, EntityMetadata } from "typeorm";
 
 /** Caps on the drawn tree, as for any graph. */

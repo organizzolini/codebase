@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 
-import { GraphEdgesModule } from "../../../graph-edges/graph-edges.module";
-import { GraphEntitiesModule } from "../../../graph-entities/graph-entities.module";
-import { GraphOptionsModule } from "../../../graph-options/graph-options.module";
 import { RenderModule } from "../../render.module";
+import { RenderEdgesModule } from "../render-edges/render-edges.module";
+import { RenderEntitiesModule } from "../render-entities/render-entities.module";
+import { RenderOptionsModule } from "../render-options/render-options.module";
 
 import { RenderDirectedAcyclicGraphDataCommand } from "./render-directed-acyclic-graph-data.command";
 
@@ -16,9 +16,9 @@ import { RenderDirectedAcyclicGraphDataCommand } from "./render-directed-acyclic
   controllers: [],
   exports: [RenderDirectedAcyclicGraphDataCommand],
   imports: [
-    GraphEdgesModule,
-    GraphEntitiesModule,
-    GraphOptionsModule,
+    RenderEdgesModule,
+    RenderEntitiesModule,
+    RenderOptionsModule,
     RenderModule,
   ],
   providers: [RenderDirectedAcyclicGraphDataCommand],

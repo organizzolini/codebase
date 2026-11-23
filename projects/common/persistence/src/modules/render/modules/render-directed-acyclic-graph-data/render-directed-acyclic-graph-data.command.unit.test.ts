@@ -3,17 +3,17 @@ import { describe, expect, it } from "vitest";
 import { expectLoggerContext } from "@codebase/observability/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { GraphEdgesService } from "../../../graph-edges/graph-edges.service";
-import { GraphEntitiesService } from "../../../graph-entities/graph-entities.service";
-import { GraphOptionsService } from "../../../graph-options/graph-options.service";
 import { RenderService } from "../../render.service";
+import { RenderEdgesService } from "../render-edges/render-edges.service";
+import { RenderEntitiesService } from "../render-entities/render-entities.service";
+import { RenderOptionsService } from "../render-options/render-options.service";
 
 import { RenderDirectedAcyclicGraphDataCommand } from "./render-directed-acyclic-graph-data.command";
 
 const MOCKS = [
-  GraphEdgesService,
-  GraphEntitiesService,
-  GraphOptionsService,
+  RenderEdgesService,
+  RenderEntitiesService,
+  RenderOptionsService,
   RenderService,
 ];
 
