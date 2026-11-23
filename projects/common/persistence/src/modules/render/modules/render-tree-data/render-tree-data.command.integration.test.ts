@@ -759,11 +759,26 @@ describe("render-tree-data", () => {
       INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
     );
 
-    it("draws the first root's subtree with --limit 1, roots in id order", async () => {
-      const result = await runRender(["--entities", LIST_GLOB, "--limit", "1"]);
+    it("draws the first root's subtree with --limit 1 --page 1, roots in id order", async () => {
+      const result = await runRender([
+        "--entities",
+        LIST_GLOB,
+        "--limit",
+        "1",
+        "--page",
+        "1",
+      ]);
 
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toBe(WORK_DIAGRAM);
+    });
+
+    it("draws every page as its own diagram with --limit 1 and no --page", async () => {
+      const result = await runRender(["--entities", LIST_GLOB, "--limit", "1"]);
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout.startsWith(WORK_DIAGRAM.trimEnd())).toBe(true);
+      expect(result.stdout.match(/flowchart LR/g)).toHaveLength(2);
     });
 
     it("draws the same diagram as no paging when --limit covers every root", async () => {

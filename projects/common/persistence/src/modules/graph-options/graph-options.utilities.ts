@@ -66,7 +66,11 @@ export function parseGraphPaging(
     throw new GraphOptionsError(GRAPH_OPTION_MESSAGES.pageNeedsLimit);
   }
   if (rootLimit === undefined) return undefined;
-  return { limit: rootLimit, page: pageNumber ?? 1 };
+  return {
+    all: pageNumber === undefined,
+    limit: rootLimit,
+    page: pageNumber ?? 1,
+  };
 }
 
 /**

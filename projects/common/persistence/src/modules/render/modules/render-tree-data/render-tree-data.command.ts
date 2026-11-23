@@ -108,7 +108,7 @@ export class RenderTreeDataCommand extends CommandRunner {
   /** Parses `--limit`, the number of root nodes a page holds. */
   @Option({
     description:
-      "Root nodes per page, each drawn with its descendants, in sort order; the first page unless --page. Positive integer",
+      "Root nodes per page, each drawn with its descendants, in sort order; every page as its own diagram unless --page. Positive integer",
     flags: "--limit <n>",
   })
   parseLimit(value: string): string {
@@ -136,7 +136,7 @@ export class RenderTreeDataCommand extends CommandRunner {
   /** Parses `--page`, the page of `--limit` roots to draw, from 1. */
   @Option({
     description:
-      "Page of --limit roots to draw, from 1; needs --limit. A page past the last root draws nothing and warns. Positive integer",
+      "Page of --limit roots to draw, from 1; needs --limit. A page past the last root draws nothing and warns. Without it, every page is drawn, each as its own diagram. Positive integer",
     flags: "--page <n>",
   })
   parsePage(value: string): string {
@@ -219,10 +219,10 @@ export class RenderTreeDataCommand extends CommandRunner {
     const written = await this.graphRender.render(plan, {
       dataSource,
       direction: RENDER_TREE_DATA_DIRECTION,
-      read: async () =>
+      read: async (paging) =>
         this.graphTree.load(dataSource, dataSource.getMetadata(picked), {
           filters: plan.filters,
-          paging: plan.paging,
+          paging,
           sorts: plan.sorts,
           truncateBreadth: plan.truncateBreadth,
           truncateDepth: plan.truncateDepth,

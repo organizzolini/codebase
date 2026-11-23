@@ -75,6 +75,25 @@ export function renderGraphMermaid(
   };
 }
 
+/**
+ * Joins page renderings into one Markdown document, each under a `Page i of n`
+ * heading; a lone rendering is returned as `renderGraphMarkdown` writes it.
+ */
+export function renderGraphPagesMarkdown(
+  renderings: readonly GraphMermaidRendering[],
+): string {
+  const [only] = renderings;
+  if (renderings.length === 1 && only !== undefined) {
+    return renderGraphMarkdown(only);
+  }
+  const sections: string[] = [];
+  for (const [index, rendering] of renderings.entries()) {
+    const heading = `## Page ${index + 1} of ${renderings.length}`;
+    sections.push(`${heading}\n\n${renderGraphMarkdown(rendering)}`);
+  }
+  return sections.join("\n");
+}
+
 /** Maps each model node id to `n<position>`, rejecting a repeated id. */
 function assignShortIds(nodes: readonly GraphNode[]): Map<string, string> {
   const shortIds = new Map<string, string>();

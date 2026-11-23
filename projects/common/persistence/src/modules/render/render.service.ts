@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 
 import { GraphMermaidService } from "../graph-mermaid/graph-mermaid.service";
-import { renderGraphMarkdown } from "../graph-mermaid/graph-mermaid.utilities";
+import { renderGraphPagesMarkdown } from "../graph-mermaid/graph-mermaid.utilities";
 import {
   renderGraphJson,
   writeGraphOutputs,
@@ -40,24 +40,50 @@ export class RenderService {
   /** Writes the diagram to stdout, or to the named files, then warnings to stderr; returns a line per file. */
   private emit(
     plan: GraphPlan,
-    graph: GraphModel,
-    rendering: GraphMermaidRendering,
+    graphs: readonly GraphModel[],
+    renderings: readonly GraphMermaidRendering[],
   ): string[] {
     const { json, markdown } = plan.outputs;
     const files: GraphOutputFile[] = [];
     if (markdown !== undefined) {
-      files.push({ content: renderGraphMarkdown(rendering), path: markdown });
+      files.push({
+        content: renderGraphPagesMarkdown(renderings),
+        path: markdown,
+      });
     }
     if (json !== undefined) {
-      files.push({ content: renderGraphJson(graph), path: json });
+      const [only] = graphs;
+      const content =
+        graphs.length === 1 && only !== undefined
+          ? renderGraphJson(only)
+          : `${JSON.stringify(graphs, null, 2)}\n`;
+      files.push({ content, path: json });
     }
 
-    if (files.length === 0) process.stdout.write(`${rendering.diagram}\n`);
+    if (files.length === 0) {
+      const diagrams = renderings.map(({ diagram }) => diagram);
+      process.stdout.write(`${diagrams.join("\n\n")}\n`);
+    }
     writeGraphOutputs(files, { overwrite: plan.outputs.overwrite });
-    for (const warning of rendering.warnings) {
-      process.stderr.write(`⚠️ ${warning}\n`);
+    for (const { warnings } of renderings) {
+      for (const warning of warnings) process.stderr.write(`⚠️ ${warning}\n`);
     }
     return files.map((file) => graphRenderWroteMessage(file.path));
+  }
+
+  /** Reads the page `--page` names, or every page of `--limit` roots when it is left out. */
+  private async readPages(
+    plan: GraphPlan,
+    drawing: GraphDrawing,
+  ): Promise<GraphModel[]> {
+    const { paging } = plan;
+    if (!paging?.all) return [await drawing.read(paging)];
+    const graphs: GraphModel[] = [];
+    for (let page = 1; ; page += 1) {
+      const graph = await drawing.read({ ...paging, page });
+      if (page === 1 || graph.nodes.length > 0) graphs.push(graph);
+      if (graph.nodes.length === 0) return graphs;
+    }
   }
 
   // 🌎 Public Methods
@@ -70,11 +96,14 @@ export class RenderService {
     const { dataSource } = drawing;
     try {
       await dataSource.initialize();
-      const graph = await drawing.read();
-      const rendering = this.graphMermaid.render(graph, {
-        direction: drawing.direction,
-      });
-      return this.emit(plan, graph, rendering);
+      const graphs = await this.readPages(plan, drawing);
+      const renderings: GraphMermaidRendering[] = [];
+      for (const graph of graphs) {
+        renderings.push(
+          this.graphMermaid.render(graph, { direction: drawing.direction }),
+        );
+      }
+      return this.emit(plan, graphs, renderings);
     } catch (error) {
       throw maskedError(error, plan.connection.password);
     } finally {

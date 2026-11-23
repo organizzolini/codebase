@@ -136,6 +136,9 @@ export interface GraphOutputs {
 
 /** One page of root nodes, numbered from 1. */
 export interface GraphPaging {
+  /** Whether `--page` was left out, so every page is drawn, each as its own diagram. */
+  readonly all?: boolean | undefined;
+
   /** The roots a page holds. */
   readonly limit: number;
 

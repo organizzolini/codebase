@@ -136,7 +136,7 @@ describe(GraphOptionsService, () => {
       },
     );
 
-    it("reads --page and --limit as a paging of root nodes, --page defaulting to 1", async () => {
+    it("reads --page and --limit as a paging of root nodes, every page when --page is left out", async () => {
       const { instance } = await buildTestingModule(GraphOptionsService);
 
       const paged = instance.plan({
@@ -153,8 +153,8 @@ describe(GraphOptionsService, () => {
         sourceUri: SOURCE_URI,
       });
 
-      expect(paged.paging).toStrictEqual({ limit: 20, page: 3 });
-      expect(firstPage.paging).toStrictEqual({ limit: 5, page: 1 });
+      expect(paged.paging).toStrictEqual({ all: false, limit: 20, page: 3 });
+      expect(firstPage.paging).toStrictEqual({ all: true, limit: 5, page: 1 });
     });
 
     it("draws every root when neither --page nor --limit is given", async () => {

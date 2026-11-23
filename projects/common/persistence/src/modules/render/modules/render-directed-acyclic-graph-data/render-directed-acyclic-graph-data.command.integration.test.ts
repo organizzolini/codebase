@@ -622,7 +622,14 @@ describe("render-directed-acyclic-graph-data", () => {
         "INSERT INTO task_links (id, source, target) VALUES (6, 'Audit', 'Audit')",
       );
 
-      const result = await runRender(["--entities", TASK_GLOB, "--limit", "1"]);
+      const result = await runRender([
+        "--entities",
+        TASK_GLOB,
+        "--limit",
+        "1",
+        "--page",
+        "1",
+      ]);
 
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toBe(

@@ -84,7 +84,7 @@ export class RenderGraphDataCommand extends CommandRunner {
   /** Parses `--limit`, the number of roots a page holds. */
   @Option({
     description:
-      "Roots per page, each drawn with every node reachable from it. Directed roots are nodes no other kept edge targets, in sort order; then the smallest node still unreached, in turn, so every node has a root. An undirected component's root is its smallest node. The first page unless --page. Positive integer",
+      "Roots per page, each drawn with every node reachable from it. Directed roots are nodes no other kept edge targets, in sort order; then the smallest node still unreached, in turn, so every node has a root. An undirected component's root is its smallest node. Every page is drawn as its own diagram unless --page. Positive integer",
     flags: "--limit <n>",
   })
   parseLimit(value: string): string {
@@ -112,7 +112,7 @@ export class RenderGraphDataCommand extends CommandRunner {
   /** Parses `--page`, the page of `--limit` roots to draw, from 1. */
   @Option({
     description:
-      "Page of --limit roots to draw, from 1; needs --limit. A page past the last root draws nothing and warns. Positive integer",
+      "Page of --limit roots to draw, from 1; needs --limit. A page past the last root draws nothing and warns. Without it, every page is drawn, each as its own diagram. Positive integer",
     flags: "--page <n>",
   })
   parsePage(value: string): string {
@@ -187,11 +187,11 @@ export class RenderGraphDataCommand extends CommandRunner {
     const written = await this.graphRender.render(plan, {
       dataSource,
       direction: RENDER_GRAPH_DATA_DIRECTION,
-      read: async () =>
+      read: async (paging) =>
         this.graphEdges.load(dataSource, dataSource.getMetadata(picked), {
           edge,
           filters: plan.filters,
-          paging: plan.paging,
+          paging,
           sorts: plan.sorts,
           truncateBreadth: plan.truncateBreadth,
           truncateDepth: plan.truncateDepth,
