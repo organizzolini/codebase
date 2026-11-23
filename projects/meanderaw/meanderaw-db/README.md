@@ -4,7 +4,7 @@
 
 **Type**: Node.js database package (NestJS + TypeORM + PostgreSQL)
 
-**Purpose**: <!-- Briefly describe the database package and its entities -->
+**Purpose**: Defines the PostgreSQL schema for meander records and their characteristics.
 
 ## Development
 
