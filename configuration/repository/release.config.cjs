@@ -91,10 +91,13 @@ module.exports = {
           // also matches a gitignored `projects/<project>/dist/README.md`.
           "projects/caelundas/*/AGENTS.md",
           "projects/caelundas/*/README.md",
+          "projects/caelundas/*/documentation/erd.md",
           "projects/lexico/*/AGENTS.md",
           "projects/lexico/*/README.md",
+          "projects/lexico/*/documentation/erd.md",
           "projects/meanderaw/*/AGENTS.md",
           "projects/meanderaw/*/README.md",
+          "projects/meanderaw/*/documentation/erd.md",
           "projects/ic-suite/*/*/CHANGELOG.md",
           "projects/ic-suite/*/*/package.json",
         ],
