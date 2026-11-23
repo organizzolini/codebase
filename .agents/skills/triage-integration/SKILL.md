@@ -84,8 +84,8 @@ staged `package.json` matches all three, so all four commands run.
 
 | Staged file pattern                     | Commands lint-staged runs                                                                                                                                                                                      |
 | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `{**/package.json,pnpm-workspace.yaml}` | `integration lockfile`, run as the CLI directly rather than through its Nx target                                                                                                                               |
-| `**/package.json`                       | `nx run-many --projects=integration --targets=catalog-manifests`, then `nx run-many --projects=configuration --targets=sherif,syncpack`                                                                         |
+| `{**/package.json,pnpm-workspace.yaml}` | `integration lockfile`, run as the CLI directly rather than through its Nx target                                                                                                                              |
+| `**/package.json`                       | `nx run-many --projects=integration --targets=catalog-manifests`, then `nx run-many --projects=configuration --targets=sherif,syncpack`                                                                        |
 | `*` (every staged path)                 | `nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check --parallel=… --base=HEAD --head=<staged-commit>`, then `nx run-many --targets=conformetry-validate` |
 
 There is deliberately no per-file-type row any more. `lint-code` is an
@@ -249,19 +249,19 @@ Config: [projects/affirmancy/project.json](../../../projects/affirmancy/project.
 
 #### Sync checks
 
-Every synchronization command is its own Nx target on the `integration` project — `conformetry-generators`, `conventional-config`, `devcontainer-configuration`, `skill-exclusions`, `vscode-extensions`, and `vscode-settings` — run directly rather than through a shared aggregate, the same way `configuration:codometer` and `configuration:callidescope` are run. The pull request template is the exception: `compliance` owns `pull-request-template` beside `pull-request-body`, and runs as `nx run compliance:pull-request-template`. There is no `sync-*` target, no `scripts/sync-*.ts` script, and no `synchronization:synchronize` aggregate target — those were retired when the work moved into [integration](../../../integration). `lint-code`'s dependents name each derivation target directly.
+Every synchronization command is its own Nx target on the `integration` project — `conformetry-generators`, `conventional-config`, `devcontainer-configuration`, `skill-exclusions`, `vscode-extensions`, and `vscode-settings` — run directly rather than through a shared aggregate, the same way `configuration:codometer` and `configuration:callidescope` are run. The pull request template is the exception: `compliance` owns `pull-request-template` beside `pull-request-body`, and runs as `nx run compliance:pull-request-template`. There is no `sync-*` target, no `scripts/sync-*.ts` script, and no aggregate target other than `integration:start` — those were retired when the work moved into [integration](../../../integration). `lint-code`'s dependents name each derivation target directly.
 
 The `nestjs-module-graphs` and `nx-project-graphs` targets were retired too, per issue #296: [codependix](../../../projects/ic-suite/codependix/codependix-cli) now derives the same NestJS module graphs and Nx neighborhood graphs through its own anchor blocks, gated per project by `codependix-bound` and published by `nx run configuration:codependix:write` instead.
 
-| Check command                                             | Write command                           | What it validates                                                                                                                                                                 |
-| --------------------------------------------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Check command                                         | Write command                           | What it validates                                                                                                                                                                 |
+| ----------------------------------------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `nx run integration:conformetry-generators:check`     | `:write`                                | AGENTS.md generators table matches [configuration/ic-suite/conformetry.config.ts](../../../configuration/ic-suite/conformetry.config.ts)                                          |
 | `nx run integration:conventional-config:check`        | `:write`                                | Types/scopes consistent across [configuration/repository/conventional.config.cjs](../../../configuration/repository/conventional.config.cjs), `.vscode/settings.json`, skill docs |
 | `nx run integration:devcontainer-configuration:check` | `:write`                                | Cloud and local devcontainer configs share common fields                                                                                                                          |
-| `nx run compliance:pull-request-template:check`           | `:write`                                | [.github/PULL_REQUEST_TEMPLATE.md](../../../.github/PULL_REQUEST_TEMPLATE.md) in sync with skills and prompts                                                                     |
+| `nx run compliance:pull-request-template:check`       | `:write`                                | [.github/PULL_REQUEST_TEMPLATE.md](../../../.github/PULL_REQUEST_TEMPLATE.md) in sync with skills and prompts                                                                     |
 | `nx run integration:skill-exclusions:check`           | `:write`                                | Installed-skill exclusion lists match `skills-lock.json`                                                                                                                          |
 | `nx run integration:vscode-extensions:check`          | `:write`                                | `.vscode/extensions.json` matches devcontainer extension lists                                                                                                                    |
-| none on a branch (see below)                              | `nx run configuration:codependix:write` | Each project's README codependix blocks match its real Nx, NestJS, and import graphs                                                                                              |
+| none on a branch (see below)                          | `nx run configuration:codependix:write` | Each project's README codependix blocks match its real Nx, NestJS, and import graphs                                                                                              |
 
 A broken dependency boundary is not a sync check. `codependix-bound` is inferred per project and runs inside `guard-code`, so a boundary failure names the project it is charged to — run `pnpm exec nx run <project>:codependix-bound` to reproduce it, and read it with the [codependix-triage](../codependix-triage/SKILL.md) skill. The README blocks in the table are published from the default branch, so a branch has no check on them, and `configuration:codependix:write` is the only way to regenerate one by hand.
 
@@ -405,59 +405,59 @@ Read `configuration/repository/commitlint.config.ts` for the full rule set befor
 
 <!-- types-start -->
 
-| Type | Description |
-| ---- | ----------- |
-| `feat` | A new feature or capability that adds value for users |
-| `fix` | A bug fix that addresses a specific issue or problem |
-| `docs` | Documentation, AGENTS.md, SKILL.md, README, and planning files |
-| `test` | Adding or correcting unit, integration, or end-to-end tests |
-| `refactor` | Code restructuring that neither fixes a bug nor adds a feature |
-| `style` | Formatting, whitespace, or code structure changes with no semantic effect |
-| `perf` | A code change that improves performance (caching, query optimization, etc.) |
-| `chore` | Housekeeping that doesn't modify src or test files (gitignore, editor config, etc.) |
-| `ci` | GitHub Actions workflows, composite actions, and CI/CD scripts |
-| `build` | Build system, Vite/Docker/Helm config, or external dependency integration |
-| `revert` | Reverts a previous commit |
+| Type       | Description                                                                         |
+| ---------- | ----------------------------------------------------------------------------------- |
+| `feat`     | A new feature or capability that adds value for users                               |
+| `fix`      | A bug fix that addresses a specific issue or problem                                |
+| `docs`     | Documentation, AGENTS.md, SKILL.md, README, and planning files                      |
+| `test`     | Adding or correcting unit, integration, or end-to-end tests                         |
+| `refactor` | Code restructuring that neither fixes a bug nor adds a feature                      |
+| `style`    | Formatting, whitespace, or code structure changes with no semantic effect           |
+| `perf`     | A code change that improves performance (caching, query optimization, etc.)         |
+| `chore`    | Housekeeping that doesn't modify src or test files (gitignore, editor config, etc.) |
+| `ci`       | GitHub Actions workflows, composite actions, and CI/CD scripts                      |
+| `build`    | Build system, Vite/Docker/Helm config, or external dependency integration           |
+| `revert`   | Reverts a previous commit                                                           |
 
 <!-- types-end -->
 
 <!-- scopes-start -->
 
-| Scope | Description |
-| ----- | ----------- |
-| `ic-suite` | Code measurement and validation toolchains and their shared conventions |
-| `affirmancy` | Python Jupyter notebook application for LangGraph affirmation generation |
-| `caelundas` | Node.js CLI for astronomical calendar generation (NASA JPL ephemeris) |
-| `configuration` | Workspace root config files (tsconfig, eslint, vitest, nx.json, etc.) |
-| `compliance` | GitHub issue and pull request metadata, repository governance, and external resource policies |
-| `conformetry` | Code generator templates and validation tests for generated instances |
-| `persistence` | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations |
-| `interface` | Shared GraphQL package: Relay helpers, entity-to-object types, client codegen, and test helpers |
-| `dependencies` | Dependency version changes (upgrades, additions, removals via pnpm) |
-| `deployment` | Deployment CLI: the CI release steps |
-| `deployments` | GitHub Actions workflows and CI/CD pipeline configuration |
-| `documentation` | Markdown docs, skills, planning files, and AGENTS.md files |
-| `infrastructure` | Helm charts, Terraform configs, and Kubernetes resources |
-| `installation` | Developer-machine setup: environment files, dependencies, shell config, software |
-| `integration` | CI plumbing: steps around a CI job (affected run, Nx task-cache database) |
-| `JimmyPaolini` | Static GitHub profile README project (markdown and assets) |
-| `lexico` | TanStack Start SSR Latin dictionary web app |
-| `presentation` | Shared React/shadcn component library |
-| `lexico-db` | Shared TypeORM entities and GraphQL types |
-| `lexico-cli` | Data ingestion scripts for Lexico |
-| `meanderaw` | Greek meander (key/fret) SVG generator CLI and the composable motif/modifier library it reads |
-| `sempientor` | Lexical gap discovery CLI for English morphological and phonotactic gaps |
-| `callidescope` | Call stack tracing and linting CLI and its configuration and rendering packages |
-| `codependix` | Dependency graph export CLI and its configuration and boundary-checking packages |
-| `codometer` | Code statistics measurement CLI and its configuration, diff, and rendering packages |
-| `coinagerie` | Codebase vocabulary CLI that lists the words a codebase uses and keeps a glossary of them in step with the code |
-| `no-release` | Escape hatch: suppress semantic-release for any commit type |
-| `release` | Version bumps and release commits generated by semantic-release |
-| `reporting` | Pull request change report generation and the packages that diff and render it |
-| `scripts` | Shell and TypeScript scripts in scripts/ (sync, setup, utilities) |
-| `testing` | Vitest configuration, shared test utilities, and coverage setup |
-| `synchronization` | Commands that reconcile codebase files and generated repository configuration |
-| `validation` | Checks and gates for codebase and project invariants |
+| Scope             | Description                                                                                                     |
+| ----------------- | --------------------------------------------------------------------------------------------------------------- |
+| `ic-suite`        | Code measurement and validation toolchains and their shared conventions                                         |
+| `affirmancy`      | Python Jupyter notebook application for LangGraph affirmation generation                                        |
+| `caelundas`       | Node.js CLI for astronomical calendar generation (NASA JPL ephemeris)                                           |
+| `configuration`   | Workspace root config files (tsconfig, eslint, vitest, nx.json, etc.)                                           |
+| `compliance`      | GitHub issue and pull request metadata, repository governance, and external resource policies                   |
+| `conformetry`     | Code generator templates and validation tests for generated instances                                           |
+| `persistence`     | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations               |
+| `interface`       | Shared GraphQL package: Relay helpers, entity-to-object types, client codegen, and test helpers                 |
+| `dependencies`    | Dependency version changes (upgrades, additions, removals via pnpm)                                             |
+| `deployment`      | Deployment CLI: the CI release steps                                                                            |
+| `deployments`     | GitHub Actions workflows and CI/CD pipeline configuration                                                       |
+| `documentation`   | Markdown docs, skills, planning files, and AGENTS.md files                                                      |
+| `infrastructure`  | Helm charts, Terraform configs, and Kubernetes resources                                                        |
+| `installation`    | Developer-machine setup: environment files, dependencies, shell config, software                                |
+| `integration`     | CI plumbing: steps around a CI job (affected run, Nx task-cache database)                                       |
+| `JimmyPaolini`    | Static GitHub profile README project (markdown and assets)                                                      |
+| `lexico`          | TanStack Start SSR Latin dictionary web app                                                                     |
+| `presentation`    | Shared React/shadcn component library                                                                           |
+| `lexico-db`       | Shared TypeORM entities and GraphQL types                                                                       |
+| `lexico-cli`      | Data ingestion scripts for Lexico                                                                               |
+| `meanderaw`       | Greek meander (key/fret) SVG generator CLI and the composable motif/modifier library it reads                   |
+| `sempientor`      | Lexical gap discovery CLI for English morphological and phonotactic gaps                                        |
+| `callidescope`    | Call stack tracing and linting CLI and its configuration and rendering packages                                 |
+| `codependix`      | Dependency graph export CLI and its configuration and boundary-checking packages                                |
+| `codometer`       | Code statistics measurement CLI and its configuration, diff, and rendering packages                             |
+| `coinagerie`      | Codebase vocabulary CLI that lists the words a codebase uses and keeps a glossary of them in step with the code |
+| `no-release`      | Escape hatch: suppress semantic-release for any commit type                                                     |
+| `release`         | Version bumps and release commits generated by semantic-release                                                 |
+| `reporting`       | Pull request change report generation and the packages that diff and render it                                  |
+| `scripts`         | Shell and TypeScript scripts in scripts/ (sync, setup, utilities)                                               |
+| `testing`         | Vitest configuration, shared test utilities, and coverage setup                                                 |
+| `synchronization` | Commands that reconcile codebase files and generated repository configuration                                   |
+| `validation`      | Checks and gates for codebase and project invariants                                                            |
 
 <!-- scopes-end -->
 
@@ -543,7 +543,7 @@ Remaining Actions
 | commitlint                          | [configuration/repository/commitlint.config.ts](../../../configuration/repository/commitlint.config.ts)                                                                    |
 | validate-branch-name                | [validate-branch-name.config.cjs](../../../validate-branch-name.config.cjs)                                                                                                |
 | Conventional commits (types/scopes) | [configuration/repository/conventional.config.cjs](../../../configuration/repository/conventional.config.cjs)                                                              |
-| lockfile                            | [integration/src/modules/synchronization/modules/lockfile/lockfile.constants.ts](../../../integration/src/modules/synchronization/modules/lockfile/lockfile.constants.ts)                                                    |
+| lockfile                            | [integration/src/modules/synchronization/modules/lockfile/lockfile.constants.ts](../../../integration/src/modules/synchronization/modules/lockfile/lockfile.constants.ts)  |
 
 ### Git Conventions
 
