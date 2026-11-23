@@ -10,5 +10,5 @@ export interface OpenWikiAttempt {
   readonly succeeded: boolean;
 }
 
-/** How far a run moved the wiki: its pages, only its bookkeeping, or not at all. */
+/** How far a run moved the wiki: pages, bookkeeping only, or nothing. */
 export type WikiChange = "bookkeeping" | "content" | "none";
