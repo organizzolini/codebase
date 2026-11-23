@@ -97,6 +97,36 @@ by `sqlfluff` and checked by `squawk`. It carries two hand edits after
 files open with the lock and statement timeouts the other projects' carry.
 See [ADR 0031](../../../documentation/adr/0031-move-caelundas-from-sqlite-to-postgres.md).
 
+## Drawing the tag tree
+
+```bash
+nx run caelundas-db:render-tag-tree
+nx run caelundas-db:render-tag-tree --args="--max-depth 2 --output-markdown tags.md"
+```
+
+The `render-tag-tree` target runs the `persistence` `render-tree-data` command
+over `tag.entity.ts`. It prints a Mermaid flowchart, and `--args` takes the
+command's filter, sort, depth, breadth, paging, and output options.
+
+The target loads no `.env` file, so export the connection variables in your
+shell first. For the local container, load them from
+`configuration/.env.default`:
+
+```bash
+set -a; . projects/caelundas/caelundas-db/configuration/.env.default; set +a
+```
+
+`CAELUNDAS_POSTGRES_USERNAME`, `CAELUNDAS_POSTGRES_PASSWORD`, and
+`CAELUNDAS_POSTGRES_DATABASE` are required. `CAELUNDAS_POSTGRES_HOST`,
+`CAELUNDAS_POSTGRES_PORT`, and `CAELUNDAS_POSTGRES_SCHEMA` default to
+`localhost`, `5432`, and `caelundas`.
+
+The shell builds the connection URI from them, so a password containing `@`,
+`:`, `/`, or `%` must be percent-encoded. The URI is passed on the command
+line as `--source-uri`, as it is for `postgresql-export` and
+`postgresql-import`, so other local users can read it, password included, with
+`ps`. The command masks it in everything it prints or logs.
+
 ## Test
 
 ```bash
