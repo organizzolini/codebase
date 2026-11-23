@@ -9,6 +9,7 @@
     "!conformetry-configuration",
     "!conformetry-nx",
     "!observability",
+    "!persistence",
     "!testing"
   ],
   "name": "configuration",

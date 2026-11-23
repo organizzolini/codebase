@@ -12,6 +12,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **db**: A banned abbreviation for database, which the naming rule rewrites to database and cspell flags in prose.
 - **depth**: Callidescope metric for the longest call stack, gated per project by maximumDepth in callidescope configuration.
 - **dictionary**: A cspell word list that the spell checker loads by name, configured under dictionaries in cspell.config.yaml.
+- **erd**: A diagram of database tables and their relations, generated from project TypeORM entity files by `postgresql-erd` into `documentation/erd.md`.
 - **forbid**: A codependix boundary rule kind that disallows matching dependency edges outright, instead of allowing them under a selector.
 - **gap**: A missing lexical slot that the lexico gap discovery CLI searches English for, the subject of its gap-finding tooling.
 - **meander**: Greek key or fret border motif that the meanderaw project generates as SVG from composable motif and modifier definitions.

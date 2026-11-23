@@ -133,6 +133,52 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
   },
   {
     description:
+      "A standalone NestJS TypeORM package template for shared entities and migrations, with a generated ERD target",
+    inputs: defineInputs({
+      databaseEntitiesConstant: z
+        .string()
+        .describe(
+          "Exported constant containing the project's TypeORM entities",
+        ),
+      databaseModuleName: z
+        .string()
+        .describe("Database module directory and file stem in kebab-case"),
+      databaseProject: z
+        .string()
+        .describe(
+          "Project identifier used by the shared Postgres configuration",
+        ),
+      databaseProjectExpression: z
+        .string()
+        .describe(
+          "TypeScript expression for the shared Postgres project setting",
+        ),
+      moduleClassName: z.string().describe("Database module class name"),
+      name: z.string().describe("Project name (kebab-case)"),
+      persistenceModuleImport: z
+        .string()
+        .describe("Named import for the shared persistence DatabaseModule"),
+      persistenceModuleName: z
+        .string()
+        .describe("Local name of the shared persistence DatabaseModule"),
+      serviceClassName: z.string().describe("Database service class name"),
+      type: z
+        .string()
+        .describe(
+          "Directory the project nests under, with a trailing slash: empty at the workspace root, projects/, a domain folder such as projects/lexico/, or a deeper nesting such as projects/ic-suite/callidescope/",
+        ),
+      workspaceRelativePrefix: z
+        .string()
+        .describe(
+          "Relative climb from the project root back to the workspace root, e.g. ../.. two directories down or ../../../../ four directories down",
+        ),
+    }),
+    name: "nestjs-database-project",
+    templatePath:
+      "configuration/ic-suite/conformetry-templates/nestjs-database-project",
+  },
+  {
+    description:
       "A standalone NestJS library package template for internal workspace code shared across projects, with no CLI entry point or HTTP server",
     inputs: defineInputs({
       name: z.string().describe("Project name (kebab-case)"),

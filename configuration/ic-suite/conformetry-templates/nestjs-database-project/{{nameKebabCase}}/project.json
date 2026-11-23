@@ -1,0 +1,52 @@
+{
+  "$schema": "{{workspaceRelativePrefix}}node_modules/nx/schemas/project-schema.json",
+  "name": "{{nameKebabCase}}",
+  "projectType": "library",
+  "sourceRoot": "{{type}}{{nameKebabCase}}",
+  "tags": [
+    "framework:nestjs",
+    "framework:typeorm",
+    "generator:nestjs-database-project",
+    "language:typescript",
+    "name:{{nameKebabCase}}",
+    "type:package"
+  ],
+  "targets": {
+    "build": {},
+    "dependency-cruiser": {},
+    "deprecate-code": {},
+    "erd": {
+      "configurations": {
+        "check": {
+          "command": "SWC_NODE_PROJECT={{workspaceRelativePrefix}}projects/common/persistence/configuration/tsconfig.json node --import @swc-node/register/esm-register {{workspaceRelativePrefix}}projects/common/persistence/src/persistence.main.ts postgresql-erd --entities \"src/**/*.entity.ts\" --output-markdown documentation/erd.md --check"
+        },
+        "write": {
+          "command": "SWC_NODE_PROJECT={{workspaceRelativePrefix}}projects/common/persistence/configuration/tsconfig.json node --import @swc-node/register/esm-register {{workspaceRelativePrefix}}projects/common/persistence/src/persistence.main.ts postgresql-erd --entities \"src/**/*.entity.ts\" --output-markdown documentation/erd.md"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Check or write the project ERD from its TypeORM entity files",
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{projectRoot}/documentation/erd.md"]
+    },
+    "eslint": {},
+    "format-code": {},
+    "guard-code": {},
+    "knip": {},
+    "lint-code": {},
+    "markdown-lint": {},
+    "oxfmt": {},
+    "oxlint": {},
+    "prettier": {},
+    "spell-check": {},
+    "test-code": {},
+    "type-coverage": {},
+    "typecheck": {},
+    "typecheck-code": {},
+    "vitest": {},
+    "yaml-lint": {}
+  }
+}
