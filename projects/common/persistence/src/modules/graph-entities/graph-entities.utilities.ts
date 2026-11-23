@@ -12,6 +12,12 @@ import {
 import { postgresDataSourceOptions } from "../postgresql/postgresql.utilities";
 
 import {
+  GraphEdgeError,
+  graphEdgeKindsMessage,
+  graphEdgeMissingMessage,
+  graphEdgeNoKindMessage,
+  graphEdgeRecords,
+  graphEdgeSeveralMessage,
   GraphEntitiesError,
   graphGlobMessage,
   graphNoTableMessage,
@@ -20,7 +26,15 @@ import {
 } from "./graph-entities.constants";
 
 import type { PostgresConnection } from "../postgresql/postgresql.types";
-import type { GraphEntity, GraphTreeCandidate } from "./graph-entities.types";
+import type {
+  GraphEdgeDeclaration,
+  GraphEdgeMetadata,
+  GraphEdgeOptions,
+  GraphEdgeRecord,
+  GraphEdgeRole,
+  GraphEntity,
+  GraphTreeCandidate,
+} from "./graph-entities.types";
 import type { NamingStrategyInterface } from "typeorm";
 
 /**
@@ -37,6 +51,11 @@ export function createGraphDataSource(
       migrations: [],
     }),
   );
+}
+
+/** Marks a class a directed acyclic graph, whose edges run from source to target. */
+export function Dag(): ClassDecorator {
+  return recordDeclaration({ directed: true, kind: "dag" });
 }
 
 /**
@@ -61,6 +80,60 @@ export function entityColumnNames(entity: GraphEntity): string[] {
 }
 
 /**
+ * Describes `entity` from its decorators, up the class chain.
+ * @throws GraphEdgeError on a missing, conflicting, or repeated decorator.
+ */
+export function getGraphEdgeMetadata(entity: GraphEntity): GraphEdgeMetadata {
+  const [declaration, ...others] = edgeDeclarationsOf(entity);
+  if (declaration === undefined) {
+    throw new GraphEdgeError(graphEdgeNoKindMessage(entity.name));
+  }
+  if (others.length > 0) {
+    throw new GraphEdgeError(graphEdgeKindsMessage(entity.name));
+  }
+
+  const labelColumn = singleEdgeProperty(entity, "GraphLabel");
+  const weightColumn = singleEdgeProperty(entity, "GraphWeight");
+
+  return {
+    directed: declaration.directed,
+    kind: declaration.kind,
+    sourceColumn: requiredEdgeProperty(entity, "GraphSource"),
+    targetColumn: requiredEdgeProperty(entity, "GraphTarget"),
+    ...(labelColumn === undefined ? {} : { labelColumn }),
+    ...(weightColumn === undefined ? {} : { weightColumn }),
+  };
+}
+
+/** Marks a class a graph; it is directed unless `directed` is false. */
+export function Graph(options: GraphEdgeOptions = {}): ClassDecorator {
+  return recordDeclaration({
+    directed: options.directed ?? true,
+    kind: "graph",
+  });
+}
+
+/** Marks a property as the label of each edge, optionally. */
+export function GraphLabel(): PropertyDecorator {
+  return edgePropertyDecorator("GraphLabel");
+}
+
+/** Marks a property as the source endpoint of each edge. */
+export function GraphSource(): PropertyDecorator {
+  return edgePropertyDecorator("GraphSource");
+}
+
+/** Marks a property as the target endpoint of each edge. */
+export function GraphTarget(): PropertyDecorator {
+  return edgePropertyDecorator("GraphTarget");
+}
+
+/** Marks a property as the weight of each edge, optionally. */
+export function GraphWeight(): PropertyDecorator {
+  return edgePropertyDecorator("GraphWeight");
+}
+
+/**
  * The entity classes `files` define, found by importing each file through the
  * process's module loader, which runs the repository's swc hook for TypeScript.
  * A class counts when it carries `@Entity`.
@@ -79,6 +152,13 @@ export async function importEntityClasses(
   }
 
   return [...entities];
+}
+
+/** The classes among `entities` that carry `@Dag()` or `@Graph()`, inherited or declared. */
+export function listGraphEdgeEntities(
+  entities: readonly GraphEntity[],
+): GraphEntity[] {
+  return entities.filter((entity) => edgeDeclarationsOf(entity).length > 0);
 }
 
 /**
@@ -154,6 +234,67 @@ export function treeCandidates(
   });
 }
 
+/** `entity` and each class it extends, nearest first, up to the first class with no base. */
+function classChain(entity: GraphEntity): object[] {
+  const chain: object[] = [];
+  for (
+    let target: unknown = entity;
+    isClass(target);
+    target = Object.getPrototypeOf(target)
+  ) {
+    chain.push(target);
+  }
+  return chain;
+}
+
+/** The declarations of the nearest class up the chain that has any. */
+function edgeDeclarationsOf(entity: GraphEntity): GraphEdgeDeclaration[] {
+  for (const target of classChain(entity)) {
+    const declarations = graphEdgeRecords.get(target)?.declarations ?? [];
+    if (declarations.length > 0) return declarations;
+  }
+  return [];
+}
+
+/**
+ * The property names marked under `role` up the class chain, nearest class
+ * first and without repeats, so a redeclared property counts once.
+ */
+function edgePropertiesOf(entity: GraphEntity, role: GraphEdgeRole): string[] {
+  const names = new Set<string>();
+  for (const target of classChain(entity)) {
+    for (const name of graphEdgeRecords.get(target)?.properties[role] ?? []) {
+      names.add(name);
+    }
+  }
+  return [...names];
+}
+
+/** A property decorator that names the property under `role` on its class. */
+function edgePropertyDecorator(role: GraphEdgeRole): PropertyDecorator {
+  return (target: object, propertyKey: string | symbol): void => {
+    edgeRecordOf(target.constructor).properties[role].push(String(propertyKey));
+  };
+}
+
+/** The edge record for `target`, created empty on its first decorator. */
+function edgeRecordOf(target: object): GraphEdgeRecord {
+  const existing = graphEdgeRecords.get(target);
+  if (existing !== undefined) return existing;
+
+  const created: GraphEdgeRecord = {
+    declarations: [],
+    properties: {
+      GraphLabel: [],
+      GraphSource: [],
+      GraphTarget: [],
+      GraphWeight: [],
+    },
+  };
+  graphEdgeRecords.set(target, created);
+  return created;
+}
+
 /** Whether `value` is a class, not the `Function.prototype` that ends every class chain. */
 function isClass(value: unknown): value is GraphEntity {
   return typeof value === "function" && value !== Function.prototype;
@@ -169,4 +310,44 @@ function isEntityClass(value: unknown): value is GraphEntity {
 /** Whether `value` is an object, such as a module namespace, whose values can be read. */
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
+}
+
+/** A class decorator that records `declaration` on the decorated class. */
+function recordDeclaration(declaration: GraphEdgeDeclaration): ClassDecorator {
+  return (target: object): void => {
+    edgeRecordOf(target).declarations.push(declaration);
+  };
+}
+
+/**
+ * The one property under `role`, which an edge must have.
+ * @throws GraphEdgeError when none, or several, are marked.
+ */
+function requiredEdgeProperty(
+  entity: GraphEntity,
+  role: GraphEdgeRole,
+): string {
+  const only = singleEdgeProperty(entity, role);
+  if (only === undefined) {
+    throw new GraphEdgeError(graphEdgeMissingMessage(entity.name, role));
+  }
+  return only;
+}
+
+/**
+ * The one property under `role`, or `undefined` when none is marked.
+ * @throws GraphEdgeError when several are marked.
+ */
+function singleEdgeProperty(
+  entity: GraphEntity,
+  role: GraphEdgeRole,
+): string | undefined {
+  const names = edgePropertiesOf(entity, role);
+  const [only, ...others] = names;
+  if (others.length > 0) {
+    throw new GraphEdgeError(
+      graphEdgeSeveralMessage(entity.name, role, names.toSorted()),
+    );
+  }
+  return only;
 }

@@ -1,3 +1,19 @@
+export { GraphEdgeError } from "./modules/graph-entities/graph-entities.constants";
+export type {
+  GraphEdgeKind,
+  GraphEdgeMetadata,
+  GraphEdgeOptions,
+} from "./modules/graph-entities/graph-entities.types";
+export {
+  Dag,
+  getGraphEdgeMetadata,
+  Graph,
+  GraphLabel,
+  GraphSource,
+  GraphTarget,
+  GraphWeight,
+  listGraphEdgeEntities,
+} from "./modules/graph-entities/graph-entities.utilities";
 export { GraphMermaidModule } from "./modules/graph-mermaid/graph-mermaid.module";
 export { GraphMermaidService } from "./modules/graph-mermaid/graph-mermaid.service";
 export type {

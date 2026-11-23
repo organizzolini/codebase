@@ -2,6 +2,61 @@
 
 import type { NamingStrategyInterface } from "typeorm";
 
+/** A class-level declaration: `@Dag()`, or `@Graph()` with its direction. */
+export interface GraphEdgeDeclaration {
+  /** Whether the declared edges are directed. */
+  readonly directed: boolean;
+
+  /** The kind the declaration names. */
+  readonly kind: GraphEdgeKind;
+}
+
+/** Whether an edge entity is a directed acyclic graph or a graph. */
+export type GraphEdgeKind = "dag" | "graph";
+
+/** How an edge entity is described: its kind, direction, and columns. */
+export interface GraphEdgeMetadata {
+  /** Whether edges run from source to target. */
+  readonly directed: boolean;
+
+  /** Whether the entity is a DAG or a graph. */
+  readonly kind: GraphEdgeKind;
+
+  /** The property name of the label, when one is declared. */
+  readonly labelColumn?: string;
+
+  /** The property name of the source endpoint. */
+  readonly sourceColumn: string;
+
+  /** The property name of the target endpoint. */
+  readonly targetColumn: string;
+
+  /** The property name of the weight, when one is declared. */
+  readonly weightColumn?: string;
+}
+
+/** The options `@Graph()` takes; a graph is directed unless `directed` is false. */
+export interface GraphEdgeOptions {
+  /** Whether edges run from source to target; defaults to true. */
+  readonly directed?: boolean;
+}
+
+/** What the decorators recorded on one class. */
+export interface GraphEdgeRecord {
+  /** The class-level declarations on the class. */
+  readonly declarations: GraphEdgeDeclaration[];
+
+  /** The property names each role decorator marked on the class. */
+  readonly properties: Record<GraphEdgeRole, string[]>;
+}
+
+/** The decorators that name a property's role on an edge entity. */
+export type GraphEdgeRole =
+  | "GraphLabel"
+  | "GraphSource"
+  | "GraphTarget"
+  | "GraphWeight";
+
 /** An entity class a data source is built from; TypeORM reads its `@Entity`. */
 export type GraphEntity = new (...args: never[]) => object;
 
