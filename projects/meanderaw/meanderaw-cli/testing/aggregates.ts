@@ -16,10 +16,9 @@ interface HeldRow extends Shape {
   value: number;
 }
 
-/** The three fields that make a shape. */
+/** The two fields that make a shape. */
 interface Shape {
   columns: number;
-  lattice: string;
   rows: number;
 }
 
@@ -33,14 +32,14 @@ export async function bruteForceAggregates(
   dataSource: DataSource,
 ): Promise<AggregateLines & { absent: string[] }> {
   const held: HeldRow[] = await dataSource.query(
-    `SELECT meander.id AS "meanderId", meander.rows::int AS rows, meander.columns::int AS columns, meander.lattice,
+    `SELECT meander.id AS "meanderId", meander.rows::int AS rows, meander.columns::int AS columns,
             catalog.key, bridge.value, catalog.value_type = 'boolean' AS "isBoolean"
      FROM meanderaw.meander_characteristics bridge
      JOIN meanderaw.characteristics catalog ON catalog.id = bridge.characteristic_id
      JOIN meanderaw.meanders meander ON meander.id = bridge.meander_id`,
   );
   const meanders: Shape[] = await dataSource.query(
-    `SELECT rows::int AS rows, columns::int AS columns, lattice FROM meanderaw.meanders`,
+    `SELECT rows::int AS rows, columns::int AS columns FROM meanderaw.meanders`,
   );
   const catalog: { key: string }[] = await dataSource.query(
     `SELECT key FROM meanderaw.characteristics`,
@@ -55,8 +54,7 @@ export async function bruteForceAggregates(
       .map(([line, total]) => `${line.slice(prefix.length)}|${total}`)
       .toSorted();
   const byMeander = new Map<string, HeldRow[]>();
-  const shapeOf = ({ columns, lattice, rows }: Shape): string =>
-    `${rows}|${columns}|${lattice}`;
+  const shapeOf = ({ columns, rows }: Shape): string => `${rows}|${columns}`;
 
   for (const row of held) {
     byMeander.set(row.meanderId, [
@@ -75,8 +73,8 @@ export async function bruteForceAggregates(
     }
   }
 
-  for (const { columns, lattice, rows } of meanders) {
-    count(`totals:${rows}|${columns}|${lattice}`);
+  for (const { columns, rows } of meanders) {
+    count(`totals:${rows}|${columns}`);
   }
 
   const absent: string[] = [];
@@ -133,14 +131,14 @@ export async function derivedAbsent(dataSource: DataSource): Promise<string[]> {
   );
   const shapes: { absent: string; key: string; shape: string }[] =
     await dataSource.query(
-      `SELECT totals.rows || '|' || totals.columns || '|' || totals.lattice AS shape, catalog.key,
+      `SELECT totals.rows || '|' || totals.columns AS shape, catalog.key,
               totals.meander_count - COALESCE(SUM(counts.meander_count), 0) AS absent
        FROM meanderaw.shape_counts totals
        CROSS JOIN meanderaw.characteristics catalog
        LEFT JOIN meanderaw.characteristic_shape_counts counts
          ON counts.characteristic_id = catalog.id AND counts.rows = totals.rows
-        AND counts.columns = totals.columns AND counts.lattice = totals.lattice
-       GROUP BY totals.rows, totals.columns, totals.lattice, totals.meander_count, catalog.id, catalog.key`,
+        AND counts.columns = totals.columns
+       GROUP BY totals.rows, totals.columns, totals.meander_count, catalog.id, catalog.key`,
     );
 
   return [
@@ -169,12 +167,12 @@ export async function storedAggregates(
        JOIN meanderaw.characteristics other ON other.id = counts.other_characteristic_id`,
     ),
     shapes: await read(
-      `SELECT counts.rows || '|' || counts.columns || '|' || counts.lattice || '|' || catalog.key || '|' || counts.value || '|' || counts.meander_count AS line
+      `SELECT counts.rows || '|' || counts.columns || '|' || catalog.key || '|' || counts.value || '|' || counts.meander_count AS line
        FROM meanderaw.characteristic_shape_counts counts
        JOIN meanderaw.characteristics catalog ON catalog.id = counts.characteristic_id`,
     ),
     totals: await read(
-      `SELECT rows || '|' || columns || '|' || lattice || '|' || meander_count AS line FROM meanderaw.shape_counts`,
+      `SELECT rows || '|' || columns || '|' || meander_count AS line FROM meanderaw.shape_counts`,
     ),
     values: await read(
       `SELECT catalog.key || '|' || counts.value || '|' || counts.meander_count AS line
