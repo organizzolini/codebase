@@ -176,7 +176,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     instances: [
       {
         patterns: ["projects/lexico/lexico-db"],
-        threshold: 0.993,
         substitutions: {
           databaseEntitiesConstant: "LEXICO_DATABASE_ENTITIES",
           databaseModuleName: "database",
