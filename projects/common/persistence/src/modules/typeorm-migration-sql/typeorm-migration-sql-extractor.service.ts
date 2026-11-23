@@ -84,18 +84,6 @@ export class TypeormMigrationSqlExtractorService {
     return undefined;
   }
 
-  /** The latest migration entry from one sorted migration entry list. */
-  private latestMigrationEntry(
-    migrationEntries: string[],
-    directory: string,
-  ): string {
-    const latest = migrationEntries.at(-1);
-    if (latest === undefined) {
-      throw new Error(`No migration files found in ${directory}.`);
-    }
-    return latest;
-  }
-
   /** Existing file contents, or null when the file does not exist. */
   private async maybeFile(pathToFile: string): Promise<null | string> {
     return readFile(pathToFile, "utf8").catch(() => null);
@@ -114,18 +102,13 @@ export class TypeormMigrationSqlExtractorService {
     const migrationEntries = await this.sortedMigrationEntries(
       options.directory,
     );
-    if (options.selection === "all") {
-      return migrationEntries.map((entry) =>
-        path.join(options.directory, entry),
-      );
-    }
+    // The entries are sorted and never empty, so the last one is the latest.
+    const selectedEntries =
+      options.selection === "all"
+        ? migrationEntries
+        : migrationEntries.slice(-1);
 
-    return [
-      path.join(
-        options.directory,
-        this.latestMigrationEntry(migrationEntries, options.directory),
-      ),
-    ];
+    return selectedEntries.map((entry) => path.join(options.directory, entry));
   }
 
   /** Builds an optional migration argument without passing explicit undefined. */

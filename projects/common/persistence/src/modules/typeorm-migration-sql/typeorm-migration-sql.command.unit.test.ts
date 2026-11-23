@@ -152,6 +152,30 @@ describe(TypeormMigrationSqlCommand, () => {
     );
   });
 
+  it("rejects a mode other than check or write", async () => {
+    await expectProcessExitOne(async () => {
+      await command.run(["publish"]);
+    });
+
+    expect(logger.error).toHaveBeenCalledWith(
+      "🚦 Rejected an unusable mode",
+      undefined,
+      expect.objectContaining({ mode: "publish", reason: "Invalid mode" }),
+    );
+  });
+
+  it("checks when no mode is given", async () => {
+    vi.spyOn(extractorService, "synchronize").mockResolvedValueOnce(true);
+
+    await command.run([]);
+
+    expect(extractorService.synchronize).toHaveBeenCalledWith({
+      logger,
+      mode: "check",
+      options: {},
+    });
+  });
+
   it("delegates synchronize() to extractor service", async () => {
     vi.spyOn(extractorService, "synchronize").mockResolvedValueOnce(true);
 
