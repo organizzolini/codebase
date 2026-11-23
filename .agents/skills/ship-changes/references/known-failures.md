@@ -21,10 +21,12 @@ Read when a check, hook, or release run fails and the cause is not obvious. Each
 
 ## Merge and release
 
-| Symptom                                          | Cause                                                                  | Action                                                                        |
-| ------------------------------------------------ | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| Green `Releases` job, no tag                     | Superseded by a newer commit, or nothing was entitled to release       | Read the job's log lines; watch the tip's run instead                         |
-| `Releases` job `cancelled`                       | Job timeout (32 minutes); it leaves no tag, release, or version commit | Re-run once; a second timeout is a **raise to the user**                      |
-| Release commit `Unverified` on GitHub            | semantic-release forces its own committer email                        | Expected; not a defect                                                        |
-| Tag push rejected                                | GitHub refuses a push updating more than 6 refs                        | The release script batches 6 and retries; a later run pushes any missing tags |
-| Queue ejects a pull request that was green alone | `main` moved underneath it, or a gate sees the combined merge          | Merge `main` in (step 2), re-run checks locally, re-enqueue                   |
+| Symptom                                                     | Cause                                                                                    | Action                                                                        |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Green `Releases` job, no tag                                | Superseded by a newer commit, or nothing was entitled to release                         | Read the job's log lines; watch the tip's run instead                         |
+| `Releases` job `cancelled`                                  | Job timeout (32 minutes); it leaves no tag, release, or version commit                   | Re-run once; a second timeout is a **raise to the user**                      |
+| Release commit `Unverified` on GitHub                       | semantic-release forces its own committer email                                          | Expected; not a defect                                                        |
+| Tag push rejected                                           | GitHub refuses a push updating more than 6 refs                                          | The release script batches 6 and retries; a later run pushes any missing tags |
+| Queue ejects a pull request that was green alone            | `main` moved underneath it, or a gate sees the combined merge                            | Merge `main` in (step 2), re-run checks locally, re-enqueue                   |
+| Queue run fails on a project the pull request never touched | A project was never gated, or a gate just became required, so `main` already breaches it | Reproduce on `origin/main`; "Red that is not yours" in step 1                 |
+| A scheduled check-in never ran and closeout was skipped     | The session was archived before the trigger fired                                        | Arm a watcher from [waiting.md](waiting.md) before ending the turn            |
