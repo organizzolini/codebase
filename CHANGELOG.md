@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.8.2](https://github.com/organizzolini/codebase/compare/v6.8.1...v6.8.2) (2026-11-23)
+
+### 🐛 Bug Fixes
+
+* **documentation:** 🐛 shorten the refresh comments that breach codometer's budgets ([#2497](https://github.com/organizzolini/codebase/issues/2497)) ([a795a66](https://github.com/organizzolini/codebase/commit/a795a66f2bf763db0319f20f9cd3cffedd816172)), closes [#2496](https://github.com/organizzolini/codebase/issues/2496) [#2494](https://github.com/organizzolini/codebase/issues/2494)
+
 ## [6.8.1](https://github.com/organizzolini/codebase/compare/v6.8.0...v6.8.1) (2026-11-22)
 
 ### 🐛 Bug Fixes
