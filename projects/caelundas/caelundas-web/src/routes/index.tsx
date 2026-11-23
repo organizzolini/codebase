@@ -5,8 +5,7 @@ import {
 } from "@tanstack/react-router";
 import { type ReactNode, useMemo, useSyncExternalStore } from "react";
 
-import { CalendarMenus } from "../components/calendar-controls/calendar-menus/calendar-menus";
-import { CalendarViewOptions } from "../components/calendar-controls/calendar-view-options/calendar-view-options";
+import { CalendarDisplayMenu } from "../components/calendar-controls/calendar-display-menu/calendar-display-menu";
 import { CalendarEmpty } from "../components/calendar-display/calendar-empty/calendar-empty";
 import { CalendarError } from "../components/calendar-display/calendar-error/calendar-error";
 import { CalendarSkeleton } from "../components/calendar-display/calendar-skeleton/calendar-skeleton";
@@ -15,7 +14,6 @@ import { loadCalendar } from "../components/calendar-display/events-calendar/com
 import {
   AGENDA_DAY_COUNT,
   CALENDAR_VIEW_PERIODS,
-  DEFAULT_TIMELINE_SCALE,
 } from "../components/calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
 import { getDefaultCalendarView } from "../components/calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
 import {
@@ -29,9 +27,8 @@ import {
   CalendarSymbolsContext,
   DEFAULT_CALENDAR_SYMBOLS,
 } from "../components/calendar-events/event-glyphs/calendar-symbols.constants";
-import { CalendarFilters } from "../components/calendar-query/calendar-filters/calendar-filters";
-import { createEventFilterFields } from "../components/calendar-query/calendar-filters/components/event-filter-model/event-filter-fields.utilities";
 import { EMPTY_EVENT_FILTER } from "../components/calendar-query/calendar-filters/components/event-filter-model/event-filter-tree.constants";
+import { CalendarQueryControls } from "../components/calendar-query/calendar-query-controls/calendar-query-controls";
 import {
   getCalendarReloadKey,
   readCalendarSearch,
@@ -104,10 +101,8 @@ function IndexPage(): ReactNode {
     select: readCalendarSearch,
     structuralSharing: true,
   });
-  const fields = useMemo(() => createEventFilterFields(facets), [facets]);
   const isWide = useSyncExternalStore(subscribeToViewport, isWideViewport);
-  // While a reload runs, the notice of why the last window was empty would
-  // speak for days no longer shown, so it waits for the new answer.
+  // While a reload runs, the notice of why the window was empty waits for the new answer.
   const isReloading = Route.useMatch({
     select: (match) => match.isFetching !== false,
   });
@@ -119,22 +114,16 @@ function IndexPage(): ReactNode {
   );
 
   // 🏗 Setup
-  const { filter } = search;
   const view = search.view ?? getDefaultCalendarView(isWide);
   const timeZone = readTimeZone(dataset);
 
   // 💪 Handlers
   const {
     getShowLater,
-    handleClustersChange,
-    handleColorByChange,
-    handleColorsChange,
     handleDateChange,
     handleFilterChange,
     handleGroupingChange,
-    handleScaleChange,
-    handleSymbolsChange,
-    handleViewChange,
+    handleSortChange,
   } = useCalendarSearch(timeZone);
   // The agenda grows a month at a time, up to a year, in place: the link
   // is replaced rather than pushed, and the rows already listed stay put.
@@ -166,43 +155,33 @@ function IndexPage(): ReactNode {
           events={events}
           facets={facets}
           filters={
-            <CalendarFilters
+            <CalendarQueryControls
               className="contents"
-              fields={fields}
-              filter={filter}
-              onFilterChange={handleFilterChange}
-              presets={presets}
-            />
-          }
-          grouping={grouping}
-          menus={
-            <CalendarMenus
-              className="contents"
-              clusters={search.clusters !== false}
-              colorBy={colorBy}
-              colors={search.colors !== false}
-              facets={facets}
-              onClustersChange={handleClustersChange}
-              onColorByChange={handleColorByChange}
-              onColorsChange={handleColorsChange}
-              onSymbolsChange={handleSymbolsChange}
-              symbols={search.symbols}
-              viewOptions={
-                <CalendarViewOptions
+              display={
+                <CalendarDisplayMenu
+                  className="contents"
+                  colorBy={colorBy}
                   facets={facets}
-                  grouping={grouping}
-                  onGroupingChange={handleGroupingChange}
-                  onScaleChange={handleScaleChange}
-                  scale={search.scale ?? DEFAULT_TIMELINE_SCALE}
+                  timeZone={timeZone}
                   view={view}
                 />
               }
+              facets={facets}
+              filter={search.filter}
+              grouping={grouping}
+              onFilterChange={handleFilterChange}
+              onGroupingChange={handleGroupingChange}
+              onSortChange={handleSortChange}
+              presets={presets}
+              sort={search.sort}
+              view={view}
             />
           }
+          grouping={grouping}
           onDateChange={handleDateChange}
           onShowLater={handleShowLater}
-          onViewChange={handleViewChange}
           scale={search.scale}
+          sort={search.sort}
           timeZone={timeZone}
           view={view}
         />

@@ -12,7 +12,11 @@ import {
   createBusyEvents,
   FIXTURE_EVENTS,
 } from "../../../../../../testing/calendar-fixture";
-import { findToolbar } from "../../../../../../testing/calendar-page";
+import {
+  findToolbar,
+  pickCalendarView,
+  readCalendarView,
+} from "../../../../../../testing/calendar-page";
 import { renderCalendarRoute } from "../../../../../../testing/render-route";
 import { setViewportWidth } from "../../../../../../testing/viewport";
 
@@ -41,20 +45,13 @@ describe("calendar views", () => {
   it("switches to the week view from the toolbar", async () => {
     await renderCalendarRoute("/?date=2026-03-04");
 
-    fireEvent.click(
-      within(await findToolbar()).getByRole("button", { name: "Week" }),
-    );
+    await pickCalendarView("Week");
 
     await expect(
       screen.findByRole("button", { name: /^Mars Conjunct Venus, 10:20\sAM/u }),
     ).resolves.toBeDefined();
     expect(screen.queryByRole("grid", { name: "March 2026" })).toBeNull();
-    expect(
-      within(await findToolbar()).getByRole("button", {
-        name: "Week",
-        pressed: true,
-      }),
-    ).toBeDefined();
+    await expect(readCalendarView()).resolves.toBe("Week");
   });
 
   it.each([
@@ -99,9 +96,10 @@ describe("calendar views", () => {
   });
 
   it("renders only the agenda rows on screen", async () => {
-    await renderCalendarRoute(`/?view=agenda&date=2026-03-10${UNGROUPED}`, {
-      api: withBusyEvents("2026-03-10T14:00:00.000Z", 500),
-    });
+    await renderCalendarRoute(
+      `/?view=agenda&date=2026-03-10${UNGROUPED}&clusters=false`,
+      { api: withBusyEvents("2026-03-10T14:00:00.000Z", 500) },
+    );
 
     const agenda = await screen.findByRole("region", { name: "Agenda" });
     const shown = within(agenda).getAllByRole("article");
@@ -109,6 +107,27 @@ describe("calendar views", () => {
     expect(shown[1]?.getAttribute("aria-label")).toBe("Busy Event 1, 10:00 AM");
     expect(shown.length).toBeGreaterThan(5);
     expect(shown.length).toBeLessThan(50);
+  });
+
+  it("gathers similar agenda events under a row that opens", async () => {
+    await renderCalendarRoute(`/?view=agenda&date=2026-03-10${UNGROUPED}`, {
+      api: withBusyEvents("2026-03-10T14:00:00.000Z", 500),
+    });
+
+    const agenda = await screen.findByRole("region", { name: "Agenda" });
+    const toggle = await within(agenda).findByRole("button", {
+      expanded: false,
+    });
+
+    expect(within(agenda).getAllByRole("article").length).toBeLessThan(10);
+
+    fireEvent.click(toggle);
+
+    await waitFor(() => {
+      expect(
+        within(agenda).getAllByRole("button", { expanded: true }),
+      ).toContain(toggle);
+    });
   });
 
   it("opens a busy day's overflow as a windowed list", async () => {
@@ -165,14 +184,7 @@ describe("calendar views", () => {
     setViewportWidth(375);
     await renderCalendarRoute("/?date=2026-03-04");
 
-    fireEvent.click(
-      within(await findToolbar()).getByRole("button", {
-        name: "View: Agenda",
-      }),
-    );
-    fireEvent.click(
-      await screen.findByRole("menuitemradio", { name: "Month" }),
-    );
+    await pickCalendarView("Month");
 
     await expect(
       screen.findByRole("grid", { name: "March 2026" }),

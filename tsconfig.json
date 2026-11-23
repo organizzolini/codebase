@@ -200,7 +200,16 @@
       "path": "./projects/lexico/lexico-web/configuration/tsconfig.json"
     },
     {
+      "path": "./projects/meanderaw/meanderaw-api/configuration/tsconfig.json"
+    },
+    {
       "path": "./projects/meanderaw/meanderaw-cli/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/meanderaw/meanderaw-core/configuration/tsconfig.json"
+    },
+    {
+      "path": "./projects/meanderaw/meanderaw-db/configuration/tsconfig.json"
     },
     {
       "path": "./projects/meanderaw/meanderaw-web/configuration/tsconfig.json"

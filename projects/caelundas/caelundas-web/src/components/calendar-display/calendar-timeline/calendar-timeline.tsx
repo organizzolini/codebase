@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Gantt, GanttView } from "@codebase/presentation";
 
 import { useBarDialog } from "../../../hooks/use-bar-dialog/use-bar-dialog";
-import { createEventGroupFields } from "../../calendar-query/calendar-group-by/components/event-group-model/event-group-fields.utilities";
+import { createEventGroupFields } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
+import { DEFAULT_SORTS } from "../../calendar-query/calendar-sort-strip/calendar-sort-strip.constants";
 import { VENDORED_SURFACE_CLASS_NAMES } from "../events-calendar/components/calendar-views/calendar-surfaces.constants";
 
 import {
@@ -12,6 +13,8 @@ import {
   INTERACTIONS,
   LANE_ROWS,
   QUIET_LABELS,
+  renderBar,
+  renderBarCard,
   TIMELINE_METRICS,
   TREE,
   ZOOM,
@@ -21,7 +24,6 @@ import {
   toTimelineRows,
   watchVisibleRows,
 } from "./calendar-timeline.utilities";
-import { TimelineBarContent } from "./components/timeline-bar-content/timeline-bar-content";
 import { TIMELINE_DAY_INTERVAL } from "./components/timeline-clusters/calendar-timeline-clusters.constants";
 import { createTimelineLayout } from "./components/timeline-lanes/calendar-timeline-lanes.utilities";
 import { TimelineNavigation } from "./components/timeline-navigation/timeline-navigation";
@@ -31,14 +33,15 @@ import {
 } from "./components/timeline-window/calendar-timeline-window.utilities";
 
 import type { CalendarNavigation } from "../../calendar-controls/calendar-navigation-group/calendar-navigation-group.types";
-import type { EventGroupLevel } from "../../calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
+import type { EventGroupLevel } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
+import type { GroupSort } from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type {
   CalendarEventRecord,
   EventFacet,
 } from "../events-calendar/components/calendar-loader/calendar-records.types";
 import type { TimelineBar } from "./calendar-timeline.types";
 import type { TimelineLayout } from "./components/timeline-lanes/calendar-timeline-lanes.types";
-import type { GanttRenderEventProps, GanttScale } from "@codebase/presentation";
+import type { GanttScale } from "@codebase/presentation";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -76,6 +79,10 @@ export interface CalendarTimelineProperties {
    * to a year in months; a month when absent.
    */
   scale?: GanttScale;
+  /**
+   * How the rows are ordered, at every level; as built when absent.
+   */
+  sort?: readonly GroupSort[] | undefined;
   timeZone: string;
 }
 
@@ -97,6 +104,7 @@ export function CalendarTimeline(
     onDateChange,
     onNavigationChange,
     scale = "month",
+    sort,
     timeZone,
   } = properties;
 
@@ -115,8 +123,9 @@ export function CalendarTimeline(
   const zoom = zoomed.scale === scale ? zoomed.zoom : 1;
   const fields = useMemo(() => createEventGroupFields(facets), [facets]);
   const rows = useMemo(
-    () => toTimelineRows(events, grouping, fields),
-    [events, fields, grouping],
+    () =>
+      toTimelineRows(events, grouping, { fields, sort: sort ?? DEFAULT_SORTS }),
+    [events, fields, grouping, sort],
   );
   // Overlapping bars are moved into lanes, so nothing is drawn over anything.
   const layout = useMemo(
@@ -129,12 +138,6 @@ export function CalendarTimeline(
   const shownBars = useMemo(
     () => windowTimelineBars(layout.bars, visibleRows),
     [layout, visibleRows],
-  );
-  const renderEvent = useCallback(
-    (eventProperties: GanttRenderEventProps<TimelineBar>) => (
-      <TimelineBarContent occurrence={eventProperties.occurrence} />
-    ),
-    [],
   );
   const columns = useMemo(() => toCountColumns(rows.counts), [rows]);
 
@@ -171,7 +174,7 @@ export function CalendarTimeline(
     >
       <Gantt<TimelineBar>
         barLabel="auto"
-        className={`h-full ${LANE_ROWS} ${VENDORED_SURFACE_CLASS_NAMES.ganttHeaders} ${VENDORED_SURFACE_CLASS_NAMES.ganttScrollbars}`}
+        className={`h-full ${LANE_ROWS} ${VENDORED_SURFACE_CLASS_NAMES.ganttHeaders} ${VENDORED_SURFACE_CLASS_NAMES.ganttScrollbars} ${VENDORED_SURFACE_CLASS_NAMES.ganttTreePills}`}
         columns={columns}
         date={anchor}
         events={shownBars}
@@ -185,7 +188,8 @@ export function CalendarTimeline(
         onZoomChange={(next: number) => {
           setZoomed({ scale, zoom: next });
         }}
-        renderEvent={renderEvent}
+        renderEvent={renderBar}
+        renderEventTooltip={renderBarCard}
         resources={layout.resources}
         rowCheckboxes={false}
         scale={scale}

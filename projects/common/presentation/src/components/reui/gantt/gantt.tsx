@@ -1454,6 +1454,11 @@ interface GanttViewConfig<TData = unknown> {
    */
   renderEventMenu?: (props: GanttRenderEventProps<TData>) => ReactNode
   /**
+   * Hover card for a bar: return the content shown when the pointer rests on
+   * it, in place of the built-in title and time range. Omit for the default.
+   */
+  renderEventTooltip?: (props: GanttRenderEventProps<TData>) => ReactNode
+  /**
    * Tree-node label. Receives the resource with its tree position; return
    * any rich content (icons, badges). Default is the plain title.
    */
@@ -1587,6 +1592,7 @@ const VIEW_CONFIG_KEYS: Array<keyof GanttViewConfig> = [
   "classNames",
   "renderEvent",
   "renderEventMenu",
+  "renderEventTooltip",
   "renderResourceLabel",
   "renderResourceMenu",
   "renderNoResources",

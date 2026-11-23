@@ -4,8 +4,8 @@ import {
   createEventGroupFields,
   getDefaultGrouping,
   resolveEventGrouping,
-} from "../../../../calendar-query/calendar-group-by/components/event-group-model/event-group-fields.utilities";
-import { toEventGroupingInput } from "../../../../calendar-query/calendar-group-by/components/event-group-model/event-group-input.utilities";
+} from "../../../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
+import { toEventGroupingInput } from "../../../../calendar-query/calendar-group-strip/components/event-group-model/event-group-input.utilities";
 import { parseCalendarDate } from "../calendar-window/calendar-window.utilities";
 import {
   describeDataset,
@@ -25,7 +25,7 @@ import {
 import type { CalendarSearch } from "../../../../../hooks/use-calendar-search/calendar-search.types";
 import type { EventFilterQuery } from "../../../../calendar-query/calendar-filters/components/event-filter-model/event-filters.types";
 import type { ResolvedPreset } from "../../../../calendar-query/calendar-filters/components/presets/presets.types";
-import type { EventGroupLevel } from "../../../../calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
+import type { EventGroupLevel } from "../../../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type { CalendarData, CalendarEmptiness } from "./calendar-loader.types";
 import type {
   CalendarEventRecord,

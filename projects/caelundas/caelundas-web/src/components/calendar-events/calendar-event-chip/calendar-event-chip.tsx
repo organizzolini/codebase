@@ -20,6 +20,10 @@ export interface CalendarEventChipProperties {
    */
   description?: string | undefined;
   event: CalendarEventRecord;
+  /**
+   * Whether to draw the event with no tooltip of its own, for a parent that has one.
+   */
+  plain?: boolean;
 }
 
 // 🧩 Component
@@ -30,7 +34,7 @@ export interface CalendarEventChipProperties {
 export function CalendarEventChip(
   properties: Readonly<CalendarEventChipProperties>,
 ): ReactNode {
-  const { className = "min-w-0", description, event } = properties;
+  const { className = "min-w-0", description, event, plain } = properties;
 
   // 🪝 Hooks
   const symbols = useContext(CalendarSymbolsContext);
@@ -40,6 +44,26 @@ export function CalendarEventChip(
   // An event drawn by its name needs it said once.
   const spoken =
     glyphs === name ? description : `${name}. ${description ?? ""}`;
+
+  const symbolsNode =
+    glyphs === name ? (
+      glyphs
+    ) : (
+      // Symbols are drawn larger than the text of an event's name.
+      <span
+        className="py-0.5 text-[1.4em] leading-none"
+        data-testid="calendar-event-symbols"
+      >
+        {symbols === "glyphs" ? (
+          <EventGlyphs
+            glyphs={glyphs}
+            name={name}
+          />
+        ) : (
+          glyphs
+        )}
+      </span>
+    );
 
   // 💪 Handlers
 
@@ -53,26 +77,11 @@ export function CalendarEventChip(
       className={className}
       data-testid="calendar-event-chip"
     >
-      <CalendarEventTooltip event={event}>
-        {glyphs === name ? (
-          glyphs
-        ) : (
-          // Symbols are drawn larger than the text of an event's name.
-          <span
-            className="py-0.5 text-[1.4em] leading-none"
-            data-testid="calendar-event-symbols"
-          >
-            {symbols === "glyphs" ? (
-              <EventGlyphs
-                glyphs={glyphs}
-                name={name}
-              />
-            ) : (
-              glyphs
-            )}
-          </span>
-        )}
-      </CalendarEventTooltip>
+      {plain ? (
+        symbolsNode
+      ) : (
+        <CalendarEventTooltip event={event}>{symbolsNode}</CalendarEventTooltip>
+      )}
       {spoken === undefined ? null : <span className="sr-only">{spoken}</span>}
     </div>
   );

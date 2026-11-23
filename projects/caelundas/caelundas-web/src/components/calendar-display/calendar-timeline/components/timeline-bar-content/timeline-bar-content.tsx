@@ -1,5 +1,4 @@
 import { CalendarEventChip } from "../../../../calendar-events/calendar-event-chip/calendar-event-chip";
-import { CalendarEventTooltip } from "../../../../calendar-events/calendar-event-tooltip/calendar-event-tooltip";
 
 import type { TimelineBar } from "../../calendar-timeline.types";
 import type { GanttRenderEventProps } from "@codebase/presentation";
@@ -39,43 +38,32 @@ export function TimelineBarContent(
       <span className="truncate font-medium">{occurrence.event.title}</span>
     );
   } else if (records.length > 1) {
-    // A count says nothing of what is behind it, so it has a tooltip too.
+    // The bar's hover card says what the count stands for.
     content = (
-      <CalendarEventTooltip
-        className="flex w-full justify-center"
-        event={record}
-        label={{
-          details: "Click to list them.",
-          name: `${String(records.length)} events`,
-        }}
-      >
+      <span className="flex w-full justify-center">
         <span
           className="flex h-4 min-w-4 items-center justify-center rounded-full bg-(--gantt-event-color) px-1 text-[10px] leading-none font-semibold text-white tabular-nums"
           data-slot="timeline-cluster"
         >
           {records.length}
         </span>
-      </CalendarEventTooltip>
+      </span>
     );
   } else if (occurrence.start.getTime() === occurrence.end.getTime()) {
-    // The circle says nothing of what the event is, so it has the tooltip.
+    // The bar's hover card says what the circle is.
     content = (
-      <CalendarEventTooltip
-        className="flex"
-        event={record}
-      >
-        <span
-          className="block size-3.5 shrink-0 rounded-full border border-(--gantt-event-color) bg-(--gantt-event-color)/80"
-          data-slot="timeline-instant"
-          aria-hidden
-        />
-      </CalendarEventTooltip>
+      <span
+        className="block size-3.5 shrink-0 rounded-full border border-(--gantt-event-color) bg-(--gantt-event-color)/80"
+        data-slot="timeline-instant"
+        aria-hidden
+      />
     );
   } else {
     content = (
       <CalendarEventChip
-        className="min-w-0 font-medium"
+        className="sticky start-1.5 end-1.5 min-w-0 max-w-full font-medium"
         event={record}
+        plain
       />
     );
   }

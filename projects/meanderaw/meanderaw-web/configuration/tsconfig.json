@@ -2,10 +2,14 @@
   "compilerOptions": {
     "allowImportingTsExtensions": true,
     "jsx": "react-jsx",
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "lib": ["DOM", "DOM.Iterable", "ES2022", "ES2023.Array"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "noEmit": true,
+    "paths": {
+      "@/*": ["../../../common/presentation/src/*"],
+      "@codebase/presentation": ["../../../common/presentation/src/index.ts"]
+    },
     "target": "ES2022",
     "types": ["node", "vite/client"]
   },

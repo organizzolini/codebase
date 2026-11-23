@@ -4,12 +4,16 @@ import path from "node:path";
 import { Inject, Injectable } from "@nestjs/common";
 import { Command, CommandRunner, Option } from "nest-commander";
 
+import { CODE_FORMAT_PATTERN } from "@codebase/meanderaw-core";
+import {
+  MeanderawDatabaseAggregatesService,
+  MeanderawDatabaseService,
+} from "@codebase/meanderaw-db";
 import { LoggerService } from "@codebase/observability";
 
-import { CODE_FORMAT_PATTERN } from "../code/code.constants";
+import { CharacteristicsService } from "../characteristics/characteristics.service";
 import { CorpusService } from "../corpus/corpus.service";
 import { HISTORICAL_CORPUS } from "../corpus/modules/historical/historical-corpus.constants";
-import { DatabaseService } from "../database/database.service";
 
 import { IncompleteCodeDrawingError } from "./draw.constants";
 import { DrawCodeService } from "./modules/enumeration/draw-code.service";
@@ -21,7 +25,7 @@ import type { DrawCommandOptions } from "./draw.types";
 /**
  * Draws meanders into the Postgres database `MEANDERAW_POSTGRES_DATABASE` names.
  *
- * - **`draw`** draws every meander, then the corpus's hardcoded Codes beyond the budget.
+ * - **`draw`** draws every meander, then the corpus's hardcoded Codes beyond the budget, and ends by rebuilding the aggregate counts.
  * - **`draw --rows <n> --columns <n> --code <code>`** persists one meander.
  *
  * The hardcoded half runs first, so a hardcoded row keeps its Code.
@@ -44,10 +48,14 @@ export class DrawCommand extends CommandRunner {
     private readonly drawEnumerationService: DrawEnumerationService,
     @Inject(DrawIndexService)
     private readonly drawIndexService: DrawIndexService,
+    @Inject(CharacteristicsService)
+    private readonly characteristicsService: CharacteristicsService,
     @Inject(CorpusService)
     private readonly corpusService: CorpusService,
-    @Inject(DatabaseService)
-    private readonly databaseService: DatabaseService,
+    @Inject(MeanderawDatabaseService)
+    private readonly databaseService: MeanderawDatabaseService,
+    @Inject(MeanderawDatabaseAggregatesService)
+    private readonly aggregatesService: MeanderawDatabaseAggregatesService,
   ) {
     super();
     this.logger.setContext(DrawCommand.name);
@@ -84,6 +92,9 @@ export class DrawCommand extends CommandRunner {
     });
 
     await this.writePages();
+    await this.aggregatesService.rebuild();
+
+    this.logger.log("✨ Rebuilt the aggregate counts");
   }
 
   /**
@@ -159,11 +170,15 @@ export class DrawCommand extends CommandRunner {
     return Number.parseInt(value, 10);
   }
 
-  /** Draws every meander into the database when no Code is named, or draws the one `--code` names. */
+  /** Syncs the characteristic catalog, then draws every meander, or the one `--code` names. */
   async run(
     _passedParameters: string[],
     options: DrawCommandOptions,
   ): Promise<void> {
+    await this.databaseService.syncCharacteristics(
+      this.characteristicsService.catalog(),
+    );
+
     if (options.code === undefined) {
       await this.drawAll();
 

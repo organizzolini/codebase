@@ -1,20 +1,27 @@
+import { useContext } from "react";
+
 import {
-  Button,
   ButtonGroup,
   Filters,
-  FiltersAdvanced,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   useMediaQuery,
 } from "@codebase/presentation";
 
 import { useFilterQuery } from "../../../hooks/use-filter-query/use-filter-query";
-import { PresetPicker } from "../preset-picker/preset-picker";
+import { CalendarNavigationSlot } from "../../calendar-controls/calendar-navigation-group/calendar-navigation-slot.constants";
 
-import { EDITORS, TABLET_QUERY } from "./calendar-filters.constants";
+import {
+  EDITORS,
+  STRIP_CLASS_NAME,
+  TABLET_QUERY,
+  TITLE,
+} from "./calendar-filters.constants";
 import { renderFiltersButton } from "./calendar-filters.utilities";
-import { EMPTY_EVENT_FILTER } from "./components/event-filter-model/event-filter-tree.constants";
 import { countActiveEventFilterRules } from "./components/event-filter-model/event-filter-tree.utilities";
+import { FilterCascader } from "./components/filter-cascader/filter-cascader";
 import { FilterChipRow } from "./components/filter-chip-row/filter-chip-row";
-import { FilterSurface } from "./components/filter-surface/filter-surface";
 
 import type {
   EventFilterField,
@@ -27,7 +34,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The builder's fields, the link's filter tree, and the edit handler.
+ * The attributes to filter by, the link's filter tree, and the edit handler.
  */
 export interface CalendarFiltersProperties {
   className?: string;
@@ -63,7 +70,8 @@ export function CalendarFilters(
 
   // 🪝 Hooks
   const isTablet = useMediaQuery(TABLET_QUERY);
-  const { handlePresetSelect, handleQueryChange, query } = useFilterQuery(
+  const navigation = useContext(CalendarNavigationSlot);
+  const { handleQueryChange, query } = useFilterQuery(
     filter,
     presets,
     onFilterChange,
@@ -71,6 +79,7 @@ export function CalendarFilters(
   const activeCount = countActiveEventFilterRules(query);
 
   // 🏗 Setup
+  const isAttached = navigation !== null || (isTablet && activeCount > 0);
 
   // 💪 Handlers
 
@@ -84,50 +93,43 @@ export function CalendarFilters(
       className={className}
       data-testid="calendar-filters"
     >
-      <ButtonGroup aria-label="Filter">
-        <FilterSurface
-          isTablet={isTablet}
-          trigger={renderFiltersButton(activeCount)}
-        >
-          <div className="flex flex-col gap-3">
-            <PresetPicker
-              onSelect={handlePresetSelect}
-              presets={presets}
-              query={query}
+      <div
+        className={STRIP_CLASS_NAME}
+        data-attached={isAttached ? "" : undefined}
+        data-joined={isTablet && activeCount > 0 ? "" : undefined}
+      >
+        <ButtonGroup aria-label="Filter">
+          <Popover>
+            <PopoverTrigger
+              render={renderFiltersButton(activeCount, isAttached)}
             />
-            <Filters<EventFilterValue>
-              editors={EDITORS}
-              fields={[...fields]}
-              onQueryChange={handleQueryChange}
-              query={query}
-              variant="advanced"
+            <PopoverContent
+              align="start"
+              aria-label={TITLE}
+              className="w-auto max-w-[95vw] overflow-x-auto p-0"
+              sideOffset={8}
             >
-              <FiltersAdvanced mode="inline" />
-            </Filters>
-          </div>
-        </FilterSurface>
-        <Button
-          disabled={activeCount === 0}
-          onClick={() => {
-            handlePresetSelect(EMPTY_EVENT_FILTER);
-          }}
-          size="sm"
-          variant="outline"
-        >
-          Clear
-        </Button>
-      </ButtonGroup>
-      {isTablet ? (
-        <Filters<EventFilterValue>
-          editors={EDITORS}
-          fields={[...fields]}
-          onQueryChange={handleQueryChange}
-          query={query}
-          size="sm"
-        >
-          <FilterChipRow />
-        </Filters>
-      ) : null}
+              <FilterCascader
+                fields={fields}
+                onQueryChange={handleQueryChange}
+                query={query}
+              />
+            </PopoverContent>
+          </Popover>
+        </ButtonGroup>
+        {navigation}
+        {isTablet ? (
+          <Filters<EventFilterValue>
+            editors={EDITORS}
+            fields={[...fields]}
+            onQueryChange={handleQueryChange}
+            query={query}
+            size="sm"
+          >
+            <FilterChipRow />
+          </Filters>
+        ) : null}
+      </div>
     </div>
   );
 }

@@ -20,7 +20,19 @@ export const EDITORS: FilterEditorRegistry = {
 export const TABLET_QUERY = "(min-width: 768px)";
 
 /**
- * Joins Filters to Clear: square right, raised on focus.
+ * Joins Filter to its chips: square right, raised on focus.
  */
 export const FILTERS_BUTTON_CLASS_NAME =
-  "in-data-[slot=button-group]:rounded-r-none focus-visible:relative focus-visible:z-10";
+  "focus-visible:relative focus-visible:z-10";
+
+/**
+ * Square right edge for the Filter button when chips follow it.
+ */
+export const JOINED_BUTTON_CLASS_NAME =
+  "in-data-[slot=button-group]:rounded-r-none";
+
+/**
+ * Filter and its chips as one strip: flat chip ends, one border between.
+ */
+export const STRIP_CLASS_NAME =
+  "flex min-w-0 flex-wrap items-start [&_[data-slot=filter-chip]>*]:rounded-none! [&_[data-slot=filter-chip]:not(:last-child)>[data-slot]:last-child]:rounded-r-none! [&_[data-slot=filter-chip]>*]:border-l-0 [&_[data-slot=filter-chip]:last-child>[data-slot]:last-child]:rounded-r-lg! [&_[aria-label=Navigate]>:first-child]:rounded-l-none! [&_[aria-label=Navigate]>:first-child]:border-l-0 [&_[aria-label=Navigate]>:last-child]:rounded-r-lg! data-joined:[&_[aria-label=Navigate]>:last-child]:rounded-r-none! [&_[aria-label=Filter]>[data-slot=popover-trigger][data-slot=popover-trigger]]:rounded-l-lg! [&_[aria-label=Filter]>[data-slot=popover-trigger][data-slot=popover-trigger]]:border-l! data-attached:[&_[aria-label=Filter]>[data-slot=popover-trigger][data-slot=popover-trigger]]:rounded-r-none!";

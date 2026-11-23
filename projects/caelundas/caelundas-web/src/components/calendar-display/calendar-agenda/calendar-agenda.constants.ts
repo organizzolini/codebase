@@ -1,4 +1,4 @@
-import type { EventGroupLevel } from "../../calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
+import type { EventGroupLevel } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type { EventFacet } from "../events-calendar/components/calendar-loader/calendar-records.types";
 import type { AgendaListRow, AgendaRow } from "./calendar-agenda.types";
 
@@ -36,7 +36,13 @@ export const PILL_LINE_HEIGHT = 20;
  * Agenda row heights in pixels, so rows need no measuring.
  */
 export const AGENDA_ROW_HEIGHTS: Readonly<Record<AgendaRow["kind"], number>> = {
+  cluster: 36,
   day: 36,
   event: 56,
   group: 40,
 };
+
+/**
+ * The fewest similar events on one day that are gathered into a cluster.
+ */
+export const AGENDA_CLUSTER_MINIMUM = 3;

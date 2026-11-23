@@ -1,4 +1,4 @@
-import { fireEvent, screen, within } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 
 // Building a rule takes a dozen renders of the vendored builder and a reload
 // of the calendar, which a slow continuous integration runner needs time for.
@@ -14,6 +14,45 @@ export const BUILDER_TEST = { timeout: 30_000 };
 export const BUILDER_WAIT = { timeout: 10_000 };
 
 /**
+ * Finds a leaf of the Display menu under a branch, opening the menu and the branch as needed.
+ */
+export async function findDisplayOption(
+  branch: string,
+  leaf: string,
+): Promise<HTMLElement> {
+  await openDisplayMenu();
+
+  const leafName = new RegExp(`^${leaf}$`, "u");
+
+  if (screen.queryByRole("option", { name: leafName }) === null) {
+    const branchName = new RegExp(`^${branch},`, "u");
+    const back = screen.queryByRole("button", { name: /^back$/iu });
+
+    // Another branch is open in place of the list: step out of it first.
+    if (back !== null) {
+      fireEvent.click(back);
+    }
+
+    // A branch already opened is a button in the trail, not an option.
+    fireEvent.click(
+      await waitFor(() => {
+        const found =
+          screen.queryByRole("option", { name: branchName }) ??
+          screen.queryByRole("button", { name: branchName });
+
+        if (found === null) {
+          throw new Error(`No branch named ${branch}`);
+        }
+
+        return found;
+      }, BUILDER_WAIT),
+    );
+  }
+
+  return screen.findByRole("option", { name: leafName }, BUILDER_WAIT);
+}
+
+/**
  * Finds the calendar's one toolbar row.
  */
 export async function findToolbar(): Promise<HTMLElement> {
@@ -21,35 +60,66 @@ export async function findToolbar(): Promise<HTMLElement> {
 }
 
 /**
- * Picks an option from whichever list the builder has open.
+ * Picks a calendar view by its label from the Display menu's radio group.
  */
-export async function pickOption(name: RegExp | string): Promise<void> {
-  fireEvent.click(await screen.findByRole("option", { name }, BUILDER_WAIT));
+export async function pickCalendarView(label: string): Promise<void> {
+  await pickDisplayRadio("Calendar", label);
 }
 
 /**
- * Opens the filter builder from the toolbar and starts a new rule on the
- * field and operator named, leaving its value to the test.
+ * Picks a radio choice by its label from a Display branch that shows its choices as a radio group.
  */
-export async function startFilterRule(
-  field: RegExp,
-  operator: string,
-): Promise<HTMLElement> {
-  const toolbar = await findToolbar();
+export async function pickDisplayRadio(
+  branch: string,
+  label: string,
+): Promise<void> {
+  await openDisplayMenu();
+
+  const back = screen.queryByRole("button", { name: /^back$/iu });
+
+  if (back !== null) {
+    fireEvent.click(back);
+  }
 
   fireEvent.click(
-    within(toolbar).getByRole("button", { name: /^Filter(,|$)/u }),
+    await screen.findByRole(
+      "option",
+      { name: new RegExp(`^${branch},`, "u") },
+      BUILDER_WAIT,
+    ),
   );
-
-  const builder = await screen.findByRole(
-    "dialog",
-    { name: "Filter" },
-    BUILDER_WAIT,
+  fireEvent.click(
+    await screen.findByRole("radio", { name: label }, BUILDER_WAIT),
   );
+}
 
-  fireEvent.click(within(builder).getByRole("button", { name: "Add filter" }));
-  await pickOption(field);
-  await pickOption(operator);
+/**
+ * Picks a timeline scale by its label from the Display menu's radio group.
+ */
+export async function pickTimelineScale(label: string): Promise<void> {
+  await pickDisplayRadio("Scale", label);
+}
 
-  return builder;
+/**
+ * What the toolbar's Display chip says is shown, such as "Week".
+ */
+export async function readCalendarView(): Promise<string> {
+  const group = await within(await findToolbar()).findByRole("group", {
+    name: "Display",
+  });
+
+  return group.textContent.replace(/^Display/u, "");
+}
+
+/**
+ * Opens the toolbar's Display menu unless it is open already.
+ */
+async function openDisplayMenu(): Promise<void> {
+  if (screen.queryByTestId("query-cascader") === null) {
+    fireEvent.click(
+      within(await findToolbar()).getByRole("button", { name: "Display" }),
+    );
+  }
+
+  await screen.findByTestId("query-cascader", {}, BUILDER_WAIT);
 }

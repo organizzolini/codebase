@@ -11,19 +11,23 @@ import {
   vi,
 } from "vitest";
 
+import {
+  MeanderawDatabaseAggregatesService,
+  MeanderawDatabaseService,
+} from "@codebase/meanderaw-db";
 import { expectLoggerContext } from "@codebase/observability/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { CharacteristicsService } from "../characteristics/characteristics.service";
 import { CorpusService } from "../corpus/corpus.service";
-import { DatabaseService } from "../database/database.service";
 
 import { DrawCommand } from "./draw.command";
 import { DrawCodeService } from "./modules/enumeration/draw-code.service";
 import { DrawEnumerationService } from "./modules/enumeration/draw-enumeration.service";
 import { DrawIndexService } from "./modules/index/draw-index.service";
 
-import type { Meander } from "../database/meander.entity";
 import type { MeanderPageContent } from "./modules/index/draw-index.types";
+import type { CharacteristicRecord, Meander } from "@codebase/meanderaw-db";
 import type * as FileSystemHelpers from "@codebase/testing/file-system";
 import type {
   BuiltTestingModule,
@@ -59,10 +63,15 @@ const patternPage = ["<section></section>"];
 describe(DrawCommand, () => {
   let build: Mock<() => Promise<Record<string, MeanderPageContent>>>;
   let clear: Mock<() => Promise<void>>;
+  let catalog: readonly CharacteristicRecord[];
   let command: DrawCommand;
   let draw: Mock<() => Promise<Meander>>;
   let ingest: Mock<() => Promise<Meander[]>>;
   let drawAll: Mock<() => Promise<number>>;
+  let rebuild: Mock<() => Promise<void>>;
+  let syncCharacteristics: Mock<
+    (entries: readonly CharacteristicRecord[]) => Promise<void>
+  >;
   let logger: BuiltTestingModule<DrawCommand>["logger"];
 
   /** `DrawCommand` collaborators, answering with the mocks above. */
@@ -81,12 +90,25 @@ describe(DrawCommand, () => {
         useValue: createMock<DrawIndexService>({ build }),
       },
       {
+        provide: CharacteristicsService,
+        useValue: createMock<CharacteristicsService>({
+          catalog: () => catalog,
+        }),
+      },
+      {
         provide: CorpusService,
         useValue: createMock<CorpusService>({ ingest }),
       },
       {
-        provide: DatabaseService,
-        useValue: createMock<DatabaseService>({ clear }),
+        provide: MeanderawDatabaseAggregatesService,
+        useValue: createMock<MeanderawDatabaseAggregatesService>({ rebuild }),
+      },
+      {
+        provide: MeanderawDatabaseService,
+        useValue: createMock<MeanderawDatabaseService>({
+          clear,
+          syncCharacteristics,
+        }),
       },
     ],
   });
@@ -106,6 +128,22 @@ describe(DrawCommand, () => {
       );
     ingest = vi.fn<() => Promise<Meander[]>>().mockResolvedValue([]);
     drawAll = vi.fn<() => Promise<number>>().mockResolvedValue(30_279);
+    rebuild = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
+    syncCharacteristics = vi
+      .fn<(entries: readonly CharacteristicRecord[]) => Promise<void>>()
+      .mockResolvedValue(undefined);
+    catalog = [
+      {
+        category: "path",
+        description: "Counts forks.",
+        documentationUrl: null,
+        formula: null,
+        isPattern: false,
+        key: "forkCount",
+        name: "Fork Count",
+        valueType: "number",
+      },
+    ];
 
     const built = await buildTestingModule(DrawCommand, moduleOptions());
 
@@ -119,6 +157,8 @@ describe(DrawCommand, () => {
     draw.mockClear();
     ingest.mockClear();
     drawAll.mockClear();
+    rebuild.mockClear();
+    syncCharacteristics.mockClear();
     vi.mocked(writeFile).mockClear();
     vi.mocked(mkdir).mockClear();
   });
@@ -131,6 +171,19 @@ describe(DrawCommand, () => {
 
   it("sets logger context", async () => {
     await expectLoggerContext(DrawCommand, moduleOptions());
+  });
+
+  it("registers the evaluators' catalog before drawing a run or a single Code, so every value written has a row to point at", async () => {
+    await command.run([], {});
+    await command.run([], { code: "3c9a", columns: 2, rows: 3 });
+
+    expect(syncCharacteristics).toHaveBeenCalledTimes(2);
+    expect(syncCharacteristics).toHaveBeenCalledWith(catalog);
+
+    const [synced] = syncCharacteristics.mock.invocationCallOrder;
+    const [cleared] = clear.mock.invocationCallOrder;
+
+    expect(synced ?? Infinity).toBeLessThan(cleared ?? 0);
   });
 
   it("clears the existing rows before drawing, so a draw run regenerates rather than colliding with them", async () => {
@@ -200,6 +253,21 @@ describe(DrawCommand, () => {
     const [written] = vi.mocked(writeFile).mock.invocationCallOrder;
 
     expect(enumerated ?? 0).toBeLessThan(written ?? 0);
+  });
+
+  it("rebuilds the aggregate counts last, after the pages, and only on a draw run", async () => {
+    await command.run([], {});
+
+    const [written] = vi.mocked(writeFile).mock.invocationCallOrder;
+    const [aggregated] = rebuild.mock.invocationCallOrder;
+
+    expect(rebuild).toHaveBeenCalledTimes(1);
+    expect(written ?? 0).toBeLessThan(aggregated ?? 0);
+
+    rebuild.mockClear();
+    await command.run([], { code: "3c9a", columns: 2, rows: 3 });
+
+    expect(rebuild).not.toHaveBeenCalled();
   });
 
   it("draws the one meander a Code names, drawing nothing else and never rebuilding the index pages", async () => {

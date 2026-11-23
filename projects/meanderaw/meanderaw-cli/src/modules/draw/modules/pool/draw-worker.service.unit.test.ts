@@ -1,17 +1,16 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { CodeService, SymmetryService } from "@codebase/meanderaw-core";
+import { buildTile } from "@codebase/meanderaw-core/testing/tiles";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { buildTile } from "../../../../../testing/tiles";
-import { CodeService } from "../../../code/code.service";
 import { TileEnumerationService } from "../../../enumeration/tile-enumeration.service";
-import { SymmetryService } from "../../../geometry/modules/symmetry/symmetry.service";
 import { DrawRecordService } from "../enumeration/draw-record.service";
 
 import { DrawWorkerService } from "./draw-worker.service";
 
-import type { MeanderRecord } from "../../../database/database.types";
+import type { MeanderRecord } from "@codebase/meanderaw-db";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 /** What the class under test is built with. */

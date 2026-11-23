@@ -1,4 +1,4 @@
-import { COLOR_PALETTE } from "../../calendar-appearance/calendar-color-by/components/calendar-color-schemes/calendar-color-schemes.constants";
+import { COLOR_PALETTE } from "../../calendar-display/events-calendar/components/calendar-color-schemes/calendar-color-schemes.constants";
 
 import {
   PATH_SEPARATOR,

@@ -56,6 +56,7 @@ import type {
   GanttSegment,
 } from "@/components/reui/gantt/gantt-types"
 import { mergeProps } from "@base-ui/react/merge-props"
+import { observeElementRect, useVirtualizer } from "@tanstack/react-virtual"
 // Base UI's ScrollArea re-measures its thumb + overflow on mount, viewport
 // resize and scroll, but NOT on a content-size change unless the content sits
 // in a ScrollArea.Content (which carries the content ResizeObserver). ReUI's
@@ -372,6 +373,18 @@ interface GanttViewProps extends useRender.ComponentProps<"div"> {
   /** Day-scale unit interval in minutes; defaults to the interval view config. */
   interval?: number
 }
+
+/** The pixel size of 1rem, which row heights are measured in. */
+const ROOT_FONT_PX = 16
+
+/** The sticky header above the rows: 4rem plus its 1px border. */
+const HEADER_PX = 65
+
+/** How many rows are kept mounted past each edge of the viewport. */
+const ROW_OVERSCAN = 8
+
+/** The viewport height assumed before the pane has been measured. */
+const INITIAL_VIEWPORT_PX = 900
 
 /** The pane's scrollable viewport (custom ScrollArea or native host). */
 function getPaneViewport(pane: HTMLElement | null): HTMLElement | null {
@@ -1331,6 +1344,40 @@ function GanttView({
   const bodyRef = useRef<HTMLDivElement | null>(null)
   const treePaneRef = useRef<HTMLDivElement | null>(null)
   const timelinePaneRef = useRef<HTMLDivElement | null>(null)
+
+  // Only the rows near the viewport are mounted: a spacer stands in for the
+  // rows above and below, so a long list of groups stays cheap to render.
+  const rowVirtualizer = useVirtualizer({
+    count: rows.length,
+    estimateSize: (index) =>
+      (rowBars.get(rows[index]?.resource.id ?? "")?.heightRem ?? minRowRem) *
+      ROOT_FONT_PX,
+    getItemKey: (index) => rows[index]?.resource.id ?? index,
+    getScrollElement: () => getPaneViewport(timelinePaneRef.current),
+    initialRect: { height: INITIAL_VIEWPORT_PX, width: 0 },
+    // an unmeasured pane (no layout yet, or none at all) keeps the assumed
+    // height, so its first screenful of rows still mounts
+    observeElementRect: (instance, callback) =>
+      observeElementRect(instance, (rect) => {
+        callback(
+          rect.height === 0 ? { ...rect, height: INITIAL_VIEWPORT_PX } : rect
+        )
+      }),
+    overscan: ROW_OVERSCAN,
+    scrollMargin: HEADER_PX,
+  })
+  useEffect(() => {
+    rowVirtualizer.measure()
+  }, [rowVirtualizer, rowBars, rows, minRowRem])
+  const virtualRows = rowVirtualizer.getVirtualItems()
+  const firstVirtual = virtualRows[0]
+  const lastVirtual = virtualRows[virtualRows.length - 1]
+  const windowStart = firstVirtual?.index ?? 0
+  const windowEnd = lastVirtual ? lastVirtual.index + 1 : 0
+  const rowsBefore = firstVirtual ? firstVirtual.start - HEADER_PX : 0
+  const rowsAfter = lastVirtual
+    ? rowVirtualizer.getTotalSize() - (lastVirtual.end - HEADER_PX)
+    : 0
   const treeRowsRef = useRef<HTMLDivElement | null>(null)
 
   // Track the body width so the tree pane can yield on narrow containers.
@@ -2262,7 +2309,8 @@ function GanttView({
         </div>
       </div>
       <div ref={treeRowsRef} className="flex flex-col">
-        {rows.map((row) => (
+        <div aria-hidden style={{ height: rowsBefore }} />
+        {rows.slice(windowStart, windowEnd).map((row) => (
           <GanttTreeRow
             key={row.resource.id}
             row={row}
@@ -2277,6 +2325,7 @@ function GanttView({
             onToggle={onToggleRow}
           />
         ))}
+        <div aria-hidden style={{ height: rowsAfter }} />
         {showCreateTask && (
           <button
             type="button"
@@ -2515,11 +2564,12 @@ function GanttView({
             laneGapRem={laneGapRem}
           />
         )}
-        {rows.map((row, rowIndex) => (
+        <div aria-hidden style={{ height: rowsBefore }} />
+        {rows.slice(windowStart, windowEnd).map((row, windowIndex) => (
           <GanttTimelineRow
             key={row.resource.id}
             row={row}
-            rowIndex={rowIndex}
+            rowIndex={windowStart + windowIndex}
             bars={rowBars.get(row.resource.id)}
             rangeStartMs={rangeStartMs}
             rangeEndMs={rangeEndMs}
@@ -2536,6 +2586,7 @@ function GanttView({
             dependencySourceIds={dependencySourceIds}
           />
         ))}
+        <div aria-hidden style={{ height: rowsAfter }} />
         {rows.length === 0 && viewConfig.renderNoResources && (
           <div
             data-slot="gantt-no-resources"

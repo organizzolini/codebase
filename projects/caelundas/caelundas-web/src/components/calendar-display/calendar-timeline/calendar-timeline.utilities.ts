@@ -1,8 +1,14 @@
+import { createElement } from "react";
+
 import { getEventLabel } from "../../calendar-events/event-glyphs/components/calendar-glyphs/calendar-glyphs.utilities";
-import { buildEventGroups } from "../../calendar-query/calendar-group-by/components/event-group-tree/event-group-tree.utilities";
+import {
+  buildEventGroups,
+  sortEventGroups,
+} from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.utilities";
 
 import {
   ALL_EVENTS_ROW,
+  COUNT_PILL_CLASS_NAME,
   TIMELINE_VIEWPORT,
 } from "./calendar-timeline.constants";
 import { getVisibleTimelineRows } from "./components/timeline-window/calendar-timeline-window.utilities";
@@ -10,7 +16,8 @@ import { getVisibleTimelineRows } from "./components/timeline-window/calendar-ti
 import type {
   EventGroupField,
   EventGrouping,
-} from "../../calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
+} from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
+import type { GroupSort } from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type { CalendarEventRecord } from "../events-calendar/components/calendar-loader/calendar-records.types";
 import type {
   PendingGroup,
@@ -40,21 +47,32 @@ export function toCountColumns(
     {
       align: "end",
       id: "events",
-      render: (context) => counts.get(context.resource.id),
+      render: (context) => {
+        const count = counts.get(context.resource.id);
+
+        return count === undefined
+          ? undefined
+          : createElement("span", { className: COUNT_PILL_CLASS_NAME }, count);
+      },
       title: "Events",
-      width: 64,
+      width: 88,
     },
   ];
 }
 
 /**
- * Lays events out as Gantt rows by a grouping, each group nested under the one above, and counts each row's distinct events.
+ * Lays events out as Gantt rows by a grouping and a sort, each group nested under the one above, and counts each row's distinct events.
  */
 export function toTimelineRows(
   events: readonly CalendarEventRecord[],
   grouping: EventGrouping,
-  fields: readonly EventGroupField[],
+  options: Readonly<{
+    fields: readonly EventGroupField[];
+    sort?: readonly GroupSort[] | undefined;
+  }>,
 ): TimelineRows {
+  const { fields, sort } = options;
+
   if (grouping.length === 0) {
     return {
       counts: new Map([[ALL_EVENTS_ROW.id, events.length]]),
@@ -67,7 +85,10 @@ export function toTimelineRows(
   const layout: RowLayout = { children: new Map(), members: new Map() };
   const bars: GanttEvent<TimelineBar>[] = [];
   // Depth first without recursion, so the stack stays flat.
-  const pending: PendingGroup[] = buildEventGroups(events, grouping, fields)
+  const pending: PendingGroup[] = sortEventGroups(
+    buildEventGroups(events, grouping, fields),
+    sort,
+  )
     .toReversed()
     .map((node) => ({ node, parent: { children: resources, id: "" } }));
 

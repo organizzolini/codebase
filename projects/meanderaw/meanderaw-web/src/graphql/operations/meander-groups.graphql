@@ -1,0 +1,25 @@
+query MeanderGroups(
+  $filter: MeanderFilterGroupInput
+  $groupBy: [MeanderGroupLevelInput!]!
+) {
+  meanderGroups(filter: $filter, groupBy: $groupBy) {
+    count
+    field
+    value
+    groups {
+      count
+      field
+      value
+      groups {
+        count
+        field
+        value
+        groups {
+          count
+          field
+          value
+        }
+      }
+    }
+  }
+}

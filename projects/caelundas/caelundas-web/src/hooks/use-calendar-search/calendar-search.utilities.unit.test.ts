@@ -6,6 +6,16 @@ import {
 } from "./calendar-search.utilities";
 
 describe(validateCalendarSearch, () => {
+  it("reads the sorts as a list, or as the one an older link holds, and forgets the rest", () => {
+    const sort = { direction: "asc", key: "name" };
+
+    expect(validateCalendarSearch({ sort: [sort] }).sort).toStrictEqual([sort]);
+    expect(validateCalendarSearch({ sort }).sort).toStrictEqual([sort]);
+    expect(validateCalendarSearch({ sort: [] }).sort).toBeUndefined();
+    expect(validateCalendarSearch({ sort: "name" }).sort).toBeUndefined();
+    expect(validateCalendarSearch({}).sort).toBeUndefined();
+  });
+
   it("reads colors turned off", () => {
     expect(validateCalendarSearch({ colors: false }).colors).toBe(false);
     expect(validateCalendarSearch({ colors: "false" }).colors).toBe(false);

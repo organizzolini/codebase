@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { GraphModule } from "../../../geometry/modules/graph/graph.module";
+import { GraphModule } from "../../../graph/graph.module";
 
 import { ConnectivityService } from "./connectivity.service";
 

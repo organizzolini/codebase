@@ -32,11 +32,14 @@ function RootDocument(
   const { children } = properties;
 
   return (
-    <html lang="en">
+    <html
+      className="dark"
+      lang="en"
+    >
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="min-h-screen bg-background text-foreground antialiased">
         {children}
         <Scripts />
       </body>

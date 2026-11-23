@@ -251,7 +251,7 @@ function isHexadecimalColor(value: unknown): boolean {
 }
 
 /**
- * Reads `sky.constellations`: a comma list of names, `all`, `zodiac` or `none`; absent means the zodiac, `none` or empty no figure.
+ * Reads `sky.constellations`: a comma list of names, `all`, `zodiac` or `none`; absent means all of them, `none` or empty no figure.
  */
 function readConstellationNames(value: unknown): readonly string[] {
   if (typeof value !== "string") {
