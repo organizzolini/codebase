@@ -334,6 +334,10 @@ words:
   # A headword the coinagerie singularizer or lemmatizer makes of a word the
   # code wrote, which the shared coinagerie configuration folds back.
   - metadatum
+  # TypeORM's default nested-set column names, for the left and right bounds
+  # the render-tree-data integration fixtures create.
+  - nsleft
+  - nsright
   - nestj
   # Nx's project-discovery ignore file, read when listing a workspace's projects.
   - nxignore

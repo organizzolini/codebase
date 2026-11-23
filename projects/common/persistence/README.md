@@ -357,6 +357,30 @@ other connection option. The truncate for `--clean --data` connects through
 the `pg` driver with no `ssl` option at all. A server that requires TLS is
 therefore not reachable through these commands today.
 
+## Drawing tree data
+
+`render-tree-data` reads a `@Tree` entity's rows and prints them as a Mermaid
+flowchart on stdout, with warnings on stderr. It imports the entity files its
+`--entities` globs name through the repository's swc loader, builds a TypeORM
+data source over them, and reads the tree in whichever storage the entity uses:
+closure table, materialized path, nested set, or adjacency list.
+
+```bash
+pnpm exec nx run persistence:start --args="render-tree-data --source-uri postgresql://user:password@localhost:5432/source --schema tags --entities '../<project>/src/**/tag.entity.ts'"
+```
+
+| Option               | Does                                                                                              |
+| -------------------- | ------------------------------------------------------------------------------------------------- |
+| `--source-uri <uri>` | Required. The database to read from                                                               |
+| `--schema <name>`    | Required. The schema the entity tables live in                                                    |
+| `--entities <glob>`  | Required, repeatable. The entity files to import                                                  |
+| `--table <name>`     | The tree to draw when the globs match several `@Tree` entities; unqualified, or `schema.table`    |
+| `--dry-run`          | Check the options and list the entity files, without connecting to a database or drawing anything |
+
+Several `@Tree` entities without `--table` fail, naming each table. A row whose
+parent is missing from the table is drawn as a root and warned about. The
+password is masked in every error and dry-run line.
+
 ## Test
 
 ```bash
