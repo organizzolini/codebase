@@ -324,22 +324,31 @@ describe(IssueGithubService, () => {
       expect.hasAssertions();
 
       completeWith({
-        stdout: JSON.stringify([
-          { assignees: [], number: 17, pull_request: null },
-          {
-            assignees: [{ login: "JimmyPaolini" }],
-            number: 18,
-            pull_request: null,
-          },
-          { assignees: [], number: 20 },
-          { assignees: [], number: 19, pull_request: { url: "u" } },
-        ]),
+        stdout: [
+          JSON.stringify([
+            { assignees: [], number: 17, pull_request: null },
+            {
+              assignees: [{ login: "JimmyPaolini" }],
+              number: 18,
+              pull_request: null,
+            },
+          ]),
+          JSON.stringify([
+            { assignees: [], number: 20 },
+            { assignees: [], number: 19, pull_request: { url: "u" } },
+          ]),
+        ].join("\n"),
       });
 
       expect(service.listUnassignedOpenIssueNumbers()).toStrictEqual({
         issueNumbers: [17, 20],
         success: true,
       });
+      expect(spawnSync).toHaveBeenCalledWith(
+        GITHUB_CLI_BINARY,
+        expect.not.arrayContaining(["--slurp"]),
+        expect.anything(),
+      );
     });
 
     it("returns GitHub CLI failures to the caller", () => {

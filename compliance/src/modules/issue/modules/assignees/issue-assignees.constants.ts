@@ -8,7 +8,7 @@ export const DEFAULT_ISSUE_ASSIGNEE = "JimmyPaolini";
 /** The open issue pages with only fields needed by the assignment sweep. */
 export const OPEN_ISSUES_ENDPOINT =
   "repos/{owner}/{repo}/issues?state=open&per_page=100";
-export const OPEN_ISSUES_QUERY = "add | map({number, pull_request, assignees})";
+export const OPEN_ISSUES_QUERY = "map({number, pull_request, assignees})";
 
 /** The shape returned by the paginated, reduced issue query. */
 export const openIssueSummariesSchema = z.array(
