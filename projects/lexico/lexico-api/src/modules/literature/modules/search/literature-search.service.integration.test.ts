@@ -11,7 +11,7 @@ import {
 import {
   type LiteratureSearchCorpus,
   seedLiteratureSearchCorpus,
-} from "../../../../../testing/literature-search-corpus";
+} from "../../../../../testing/fixtures/literature-search-corpus";
 import { expectLiteratureSearchPagination } from "../../../../../testing/literature-search-pagination";
 import { LiteratureService } from "../../literature.service";
 

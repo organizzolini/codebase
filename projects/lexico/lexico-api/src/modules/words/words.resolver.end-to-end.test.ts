@@ -5,7 +5,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   type LexicoGraphqlApplication,
   startLexicoGraphqlApplication,
-} from "../../../testing/graphql-application";
+} from "../../../testing/applications/graphql-application";
 import { seedWordLookups } from "../../../testing/word-lookups";
 
 import { WordsModule } from "./words.module";

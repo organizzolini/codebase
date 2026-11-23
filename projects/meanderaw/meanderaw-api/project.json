@@ -17,7 +17,6 @@
         "url": "http://localhost:${MEANDERAW_API_PORT:-8367}/graphql"
       }
     },
-    "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
     "eslint": {},

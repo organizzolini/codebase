@@ -27,9 +27,7 @@ export interface CalendarToolbarProperties {
 
 // 🧩 Component
 
-/**
- * Renders the toolbar's controls on one line, wrapping when cramped, with the date selector joined to the Filter strip; a phone's date takes its own row.
- */
+/** Renders the toolbar's controls on one line, wrapping when cramped; a phone's date selector takes its own row. */
 export function CalendarToolbar(
   properties: Readonly<CalendarToolbarProperties>,
 ): ReactNode {

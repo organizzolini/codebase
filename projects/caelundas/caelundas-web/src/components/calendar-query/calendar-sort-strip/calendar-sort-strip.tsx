@@ -32,9 +32,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/**
- * The data's facets, the grouping, the sorts shown, the view, and the change handler.
- */
+/** Facets, grouping, shown sorts, view, and the change handler. */
 export interface CalendarSortStripProperties {
   className?: string;
   facets?: readonly EventFacet[] | undefined;
@@ -46,9 +44,7 @@ export interface CalendarSortStripProperties {
 
 // 🧩 Component
 
-/**
- * Renders, for the timeline, the Sort button, which opens a searchable list of what to order groups by, joined to one chip per sort in order, each with an ellipsis menu; with none chosen, a chip for the first group's names.
- */
+/** Renders the Sort button, opening a searchable list to order groups by, with one chip per sort and its ellipsis menu. */
 export function CalendarSortStrip(
   properties: Readonly<CalendarSortStripProperties>,
 ): ReactNode {

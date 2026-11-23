@@ -34,7 +34,6 @@
       },
       "outputs": ["{options.outputPath}"]
     },
-    "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
     "eslint": {},

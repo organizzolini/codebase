@@ -5,9 +5,7 @@ import {
 
 // 🌎 Public Functions
 
-/**
- * Orders text alphanumerically, a name at a time along a path, so a parent comes before the names beneath it and "Harmonic 2" before "Harmonic 10".
- */
+/** Orders text alphanumerically a name at a time along a path, so parents precede children and "Harmonic 2" precedes "Harmonic 10". */
 export function compareNatural(left: string, right: string): number {
   const rightNames = right.split(PATH_SEPARATOR);
 

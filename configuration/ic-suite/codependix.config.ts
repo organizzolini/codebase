@@ -564,6 +564,25 @@ const codependixConfiguration: CodependixConfiguration = {
           ],
         },
       },
+      {
+        from: { tags: ["name:codometer-nx"] },
+        kind: "allow",
+        message:
+          "The codometer Nx plugin sits on top of the spine `core <- configuration <- measurement <- output <- cli`, so `@nx/devkit` never reaches a package that measures a codebase. Nothing in the chain may depend back on it, and it reaches no other toolchain.",
+        name: "codometer-nx-layer",
+        to: {
+          tags: [
+            "name:configuration",
+            "name:codometer-cli",
+            "name:codometer-configuration",
+            "name:codometer-core",
+            "name:codometer-measurement",
+            "name:codometer-output",
+            "name:observability",
+            "name:testing",
+          ],
+        },
+      },
       // 🪙 Coinagerie
       {
         from: { tags: ["name:coinagerie-core"] },
@@ -907,6 +926,10 @@ const codependixConfiguration: CodependixConfiguration = {
       "codometer-cli": {
         export: "MainModule",
         file: "src/codometer-cli.module.ts",
+      },
+      "codometer-nx": {
+        export: "MainModule",
+        file: "src/codometer-nx.module.ts",
       },
       "coinagerie-cli": {
         export: "MainModule",

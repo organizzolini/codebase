@@ -18,9 +18,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/**
- * The data's facets, the view, the grouping and filter shown, their change handlers, and the presets.
- */
+/** Facets, view, grouping, filter, their change handlers, and presets. */
 export interface CalendarQueryControlsProperties {
   className?: string;
   /**
@@ -40,9 +38,7 @@ export interface CalendarQueryControlsProperties {
 
 // 🧩 Component
 
-/**
- * Renders what asks the calendar a question, in a row: which view, how the calendar looks, how to group, how to sort, then what to filter by.
- */
+/** Renders what asks the calendar a question, in a row: view, look, grouping, sorting, then filter. */
 export function CalendarQueryControls(
   properties: Readonly<CalendarQueryControlsProperties>,
 ): ReactNode {

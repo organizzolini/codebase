@@ -60,9 +60,7 @@ export function toCountColumns(
   ];
 }
 
-/**
- * Lays events out as Gantt rows by a grouping and a sort, each group nested under the one above, and counts each row's distinct events.
- */
+/** Lays events out as Gantt rows by a grouping and sort, nesting each group under the one above, counting distinct events per row. */
 export function toTimelineRows(
   events: readonly CalendarEventRecord[],
   grouping: EventGrouping,

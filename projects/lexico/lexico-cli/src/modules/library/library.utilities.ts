@@ -138,11 +138,7 @@ export function splitTextAttributes(
   return { attributes, remaining };
 }
 
-/**
- * Kebab-cases a name into one slug segment of at most 40 characters. A longer
- * name is cut at a word boundary and given a short hash of the full name, so
- * two long names with the same start still get different segments.
- */
+/** Kebab-cases a name into a slug segment of at most 40 characters, cutting at a word boundary and adding a short hash. */
 export function toBoundedSlug(name: string): string {
   const slug = _.kebabCase(name);
   if (slug.length <= MAXIMUM_SLUG_SEGMENT_LENGTH) return slug;

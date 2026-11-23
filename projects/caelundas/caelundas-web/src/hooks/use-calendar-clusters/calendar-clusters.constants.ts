@@ -5,9 +5,7 @@
  */
 export const CLUSTER_ID_PREFIX = "cluster:";
 
-/**
- * Kinds that merge, the aspects, the retrograde periods and the sign ingresses; other kinds never do.
- */
+/** Kinds that merge: aspects, retrograde periods, sign ingresses. */
 export const CLUSTERED_KIND_PATHS: ReadonlySet<string> = new Set([
   "Type / Aspect / Compound Aspect",
   "Type / Aspect / Simple Aspect / Major Aspect",

@@ -32,11 +32,7 @@ export class LiteratureWordNormalizationService {
     );
   }
 
-  /**
-   * Spells a word the way Latin spellings that differ in only u/v, i/j, or a
-   * ligature all agree on: normalized, with u for v, i for j, and ae and oe
-   * for the æ and œ ligatures.
-   */
+  /** Spells a word so u/v, i/j and æ/œ variants agree: u for v, i for j, ae and oe for the ligatures. */
   public fold(word: string): string {
     return this.normalize(word)
       .replaceAll("æ", "ae")

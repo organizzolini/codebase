@@ -12,9 +12,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/**
- * What the menu is for, and the moves it offers; a move that is not given is left out.
- */
+/** What the menu is for, and its optional moves. */
 export interface ChipMenuProperties {
   className?: string;
   label: string;

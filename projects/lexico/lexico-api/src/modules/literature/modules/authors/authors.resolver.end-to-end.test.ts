@@ -3,9 +3,9 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   type AuthorTextApplication,
   startAuthorTextApplication,
-} from "../../../../../testing/author-text-application";
-import { AUTHOR_NAMES_IN_ORDER } from "../../../../../testing/author-text-catalog";
+} from "../../../../../testing/applications/author-text-application";
 import { DATABASE_TIMEOUT_MILLISECONDS } from "../../../../../testing/database";
+import { AUTHOR_NAMES_IN_ORDER } from "../../../../../testing/fixtures/author-text-catalog";
 import {
   type ConnectionPage,
   nodesOf,

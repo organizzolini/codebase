@@ -12,7 +12,6 @@
   ],
   "targets": {
     "build": {},
-    "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
     "eslint": {},

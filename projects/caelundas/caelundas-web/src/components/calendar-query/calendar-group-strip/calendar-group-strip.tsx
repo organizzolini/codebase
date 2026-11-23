@@ -43,9 +43,7 @@ export interface CalendarGroupStripProperties {
 
 // 🧩 Component
 
-/**
- * Renders, for the agenda and timeline, the Group button, which opens a searchable, nested checklist of what to group by, with a tag root's tags beneath it, joined to one chip per level in order.
- */
+/** Renders the Group button, opening a searchable nested checklist of what to group by, joined to one chip per level in order. */
 export function CalendarGroupStrip(
   properties: Readonly<CalendarGroupStripProperties>,
 ): ReactNode {

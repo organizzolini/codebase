@@ -10,9 +10,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/**
- * The sort's name and direction, what flips it, and the menu's moves; no menu when none can remove it.
- */
+/** A sort's name, direction, flip handler, and optional menu moves. */
 export interface SortChipProperties {
   direction: GroupSort["direction"];
   label: string;
@@ -24,9 +22,7 @@ export interface SortChipProperties {
 
 // 🧩 Component
 
-/**
- * Renders one sort as its name and direction, which flip when pressed, with an ellipsis menu that moves it left or right, or removes it.
- */
+/** Renders one sort as its name and direction, which flip when pressed, with an ellipsis menu to move or remove it. */
 export function SortChip(properties: Readonly<SortChipProperties>): ReactNode {
   const { direction, label, onFlip, onMoveLeft, onMoveRight, onRemove } =
     properties;

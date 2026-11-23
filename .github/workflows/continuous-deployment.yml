@@ -304,7 +304,7 @@ jobs:
           matrix.target.id == 'push-releases' &&
           env.RELEASE_SUPERSEDED != 'true'
         run: |
-          pnpm exec nx run-many --target=codometer --configuration=write \
+          pnpm exec nx run-many --target=codometer-weigh --configuration=write \
             --exclude=configuration
           pnpm exec nx run configuration:codometer:write
 

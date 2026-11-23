@@ -6,7 +6,6 @@
   "sourceRoot": "projects/ic-suite/coinagerie/coinagerie-examples",
   "tags": ["language:typescript", "name:coinagerie-examples", "type:package"],
   "targets": {
-    "codometer": {},
     "deprecate-code": {},
     "eslint": {},
     "examples": {

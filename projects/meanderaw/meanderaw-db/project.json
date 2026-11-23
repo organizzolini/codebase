@@ -31,7 +31,6 @@
       "outputs": ["{options.outputPath}"]
     },
     "build-projects": {},
-    "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
     "eslint": {},

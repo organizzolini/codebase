@@ -113,7 +113,7 @@ export const authorMetadataSchema = z.object({
   full_name: z.string().optional(),
 });
 
-/** Where each era starts, by the midpoint of an author's years (negative for BCE). */
+/** Where each era starts, by an author's midpoint year (BCE negative). */
 export const ERA_BOUNDARIES: readonly { era: AuthorEra; from: number }[] = [
   { era: authorEra.archaic, from: Number.NEGATIVE_INFINITY },
   { era: authorEra.classical, from: -100 },
@@ -144,7 +144,7 @@ export const CATALOGUE_IDENTIFIER_PATTERN =
 
 const wikidataValueSchema = z.object({ value: z.string() }).optional();
 
-/** One row of a Wikidata response; each field is absent when the match lacks it. */
+/** One Wikidata response row; a field is absent when unmatched. */
 export const wikidataResponseSchema = z.object({
   results: z.object({
     bindings: z.array(
@@ -160,11 +160,7 @@ export const wikidataResponseSchema = z.object({
   }),
 });
 
-/**
- * Years for authors Wikidata cannot match: it indexes only PHI Latin author
- * numbers, so authors catalogued under Stoa numbers need these. Keyed by author
- * slug; BCE negative. Authors not listed stay undated and are reported.
- */
+/** Years for authors Wikidata cannot match, keyed by slug, BCE negative. */
 export const FALLBACK_AUTHOR_YEARS: Record<string, [number, number]> = {
   adamnan: [624, 704],
   ambrose: [339, 397],
@@ -196,10 +192,10 @@ export const FALLBACK_AUTHOR_YEARS: Record<string, [number, number]> = {
   tertullian: [155, 220],
 };
 
-/** Enclitics that Latin writes onto the end of a word, as folded spellings. */
+/** Latin enclitics written onto a word's end, as folded spellings. */
 export const ENCLITIC_SUFFIXES = ["que", "ue", "ne"] as const;
 
-/** The fewest letters a word may keep once an enclitic is taken off. */
+/** The fewest letters a word keeps once an enclitic comes off. */
 export const ENCLITIC_MINIMUM_BASE_LENGTH = 2;
 
 /** How many word types a relink writes at a time. */

@@ -86,10 +86,7 @@ export function mergeAuthor(
   return { ...attributes, metadata: _.merge({}, author.metadata, remaining) };
 }
 
-/**
- * Maps a text's frontmatter source fields onto its typed columns, field by field, and names
- * the fields that were present but invalid so one bad field never drops the rest.
- */
+/** Maps a text's frontmatter source fields onto typed columns, naming present-but-invalid fields so one bad field never drops the rest. */
 export function parseText(frontmatter: Record<string, unknown>): {
   attributes: TextAttributes;
   invalidFields: string[];
@@ -106,11 +103,7 @@ export function parseText(frontmatter: Record<string, unknown>): {
   return { attributes, invalidFields };
 }
 
-/**
- * Takes an author's earliest birth and death from the Wikidata rows, or the earliest floruit
- * when they are missing or contradict each other; nothing if neither is usable. The ticket
- * names no other fallback, so a lone birth or death is ignored.
- */
+/** Takes an author's earliest Wikidata birth and death, else the earliest floruit if they are missing or contradict; a lone one is ignored. */
 export function pickWikidataYears(
   rows: Partial<Record<WikidataField, undefined | { value: string }>>[],
 ): AuthorYears | undefined {
@@ -124,10 +117,7 @@ export function pickWikidataYears(
     : { endYear: floruit, startYear: floruit };
 }
 
-/**
- * Soft-deletes the numbered "Part" texts an earlier EDCS run stored per province, which the
- * per-inscription texts replace; only an author with EDCS entries is touched.
- */
+/** Soft-deletes the numbered "Part" texts an earlier EDCS run stored per province; only authors with EDCS entries are touched. */
 export async function removeReplacedTexts(
   repository: Repository<Text>,
   authorId: string,
@@ -160,11 +150,7 @@ function earliestYear(
   return years.length > 0 ? Math.min(...years) : undefined;
 }
 
-/**
- * Reads a Wikidata date as a year, negative for BCE; its calendar has a year 0. A date coarser
- * than a year names none. Wikidata gives a 1 to 3 January date as 31 December of the year
- * before once converted, as Cicero's birth shows, so 31 December counts toward the next year.
- */
+/** Reads a Wikidata date as a year, negative for BCE; coarser dates name none, and 31 December counts toward the next year. */
 function parseWikidataYear(
   value: string | undefined,
   precision: string | undefined,

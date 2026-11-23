@@ -22,7 +22,6 @@
       "outputs": ["{projectRoot}/dist"]
     },
     "build-projects": {},
-    "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
     "end-to-end": {},

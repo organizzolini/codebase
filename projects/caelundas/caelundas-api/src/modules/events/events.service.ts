@@ -11,9 +11,9 @@ import {
   FACETS_SQL,
   groupKeysSchema,
 } from "./events.constants";
-import { compareNaturalPaths } from "./events.utilities";
 import { EventFilterService } from "./modules/filtering/event-filter.service";
 import { EventGroupingService } from "./modules/grouping/event-grouping.service";
+import { compareNaturalPaths } from "./modules/natural-order/natural-order.utilities";
 import { PresetsService } from "./modules/presets/presets.service";
 import { WindowsService } from "./modules/windows/windows.service";
 

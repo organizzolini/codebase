@@ -29,9 +29,7 @@ export interface AgendaRange {
   timeZone: string;
 }
 
-/**
- * An agenda row: a group, a day, a cluster of similar events, or an event.
- */
+/** An agenda row: a group, day, event cluster, or event. */
 export type AgendaRow =
   | {
       /**

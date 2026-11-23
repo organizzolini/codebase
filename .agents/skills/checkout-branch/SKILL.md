@@ -164,7 +164,7 @@ Branch names are validated at multiple stages:
 | Stage | Mechanism                                       | Config File                       |
 | ----- | ----------------------------------------------- | --------------------------------- |
 | Local | `configuration/repository/.husky/pre-push` hook | `validate-branch-name.config.cjs` |
-| CI    | `.github/workflows/branch-validation.yml`       | Same config                       |
+| CI    | `.github/workflows/continuous-compliance.yml`   | Same config                       |
 
 The validation config imports types and scopes from [conventional.config.cjs](../../../configuration/repository/conventional.config.cjs) to ensure consistency with commit message rules.
 

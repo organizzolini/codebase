@@ -74,6 +74,11 @@ jobs:
           - target: codependix-bound
             name: Codependix Bound
             emoji: 🕸️
+          # The codometer limits that need no build: comment budgets and directory
+          # ceilings. Compiled sizes stay with Build, which measures after building.
+          - target: codometer-limit
+            name: Codometer Limit
+            emoji: ⏲️
           # A changed conformetry template selects no instance project, because
           # `.nxignore` hides it, so this is the one leg that asks the affected
           # run to add them. See `INCLUDE_TEMPLATES` below.

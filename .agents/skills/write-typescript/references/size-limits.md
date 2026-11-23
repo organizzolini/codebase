@@ -28,4 +28,4 @@ When a file nears 512 lines, split it along the module file suffixes (`*.types.t
 
 Lines include the `/**` and `*/` delimiters. Tags such as `@param` count as words, so keep the why and drop what a type already says. JSDoc on a `const`, type alias, property signature, or file header is not reached by a `kind` and is ungated. The `codometer-configure` skill covers how a block is delimited and which languages are measured how accurately; `codometer-triage` covers a breach.
 
-**Compiled size is gated per project** by each `codometer.config.ts`, and `configuration:codometer` gates the repository-wide limits. Both run through `make-projects` rather than 🧑‍💻 Lint Codebase, because a project has to compile before it can be measured.
+**Compiled size is gated per project** by each `codometer.config.ts`, and `configuration:codometer` gates the repository-wide limits. Both run through 👷 Build rather than 🧑‍⚕️ Static, because a project has to compile before its size can be measured. The limits that need no build, the comment budgets above and the directory breadth and depth ceilings, are gated sooner by ⏲️ Codometer Limit (`codometer-limit`).

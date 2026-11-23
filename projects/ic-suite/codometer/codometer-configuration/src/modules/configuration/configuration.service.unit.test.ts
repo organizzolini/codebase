@@ -1357,6 +1357,7 @@ describe(ConfigurationService, () => {
         mode: {
           checksLimits: true,
           checksReports: false,
+          checksWeigh: false,
           writesJson: false,
           writesMarkdown: false,
         },

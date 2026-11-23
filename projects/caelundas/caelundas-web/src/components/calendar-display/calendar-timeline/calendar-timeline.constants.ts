@@ -47,9 +47,7 @@ export const TIMELINE_VIEWPORT =
  */
 export const ALL_EVENTS_ROW = { id: "all", title: "All events" } as const;
 
-/**
- * A row's event count drawn as a solid pill, so the sky shows through the tree pane around it.
- */
+/** A row's event count as a solid pill over the sky. */
 export const COUNT_PILL_CLASS_NAME =
   "bg-background rounded-md border px-2 py-0.5";
 

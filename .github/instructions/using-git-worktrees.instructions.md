@@ -21,7 +21,7 @@ Two repository rules override the skill's generic defaults:
   user gives only an intent.
 - **Validate before creating anything:** run
   `pnpm exec validate-branch-name -t "<branch-name>"`. The pre-push hook and the
-  Validate Conventions workflow both reject a non-compliant branch.
+  🧑‍⚖️ Comply check both reject a non-compliant branch.
 
 If the branch already exists locally, attach a worktree to it instead of
 creating a replacement branch.

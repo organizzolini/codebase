@@ -5,6 +5,7 @@ import {
   CHECK_NAMES,
   CHECK_REPORTS,
   CHECK_SEPARATOR,
+  CHECK_WEIGH,
   ConfigurationPathRequiredError,
   FORMAT_MARKDOWN,
   FORMAT_NAMES,
@@ -35,7 +36,10 @@ export class ConfigurationFlagsService {
 
   /** States what `--check` accepts, in front of whatever went wrong. */
   private describeAcceptedCheckNames(problem: string): string {
-    return `${problem}. It takes a comma-separated set drawn from ${CHECK_NAMES.map((name) => `"${name}"`).join(" and ")}, as in "--check ${CHECK_NAMES.join(CHECK_SEPARATOR)}".`;
+    const quoted = CHECK_NAMES.map((name) => `"${name}"`);
+    const last = quoted.pop();
+
+    return `${problem}. It takes a comma-separated set drawn from ${quoted.join(", ")} and ${String(last)}, as in "--check ${CHECK_NAMES.join(CHECK_SEPARATOR)}".`;
   }
 
   /**
@@ -148,7 +152,7 @@ export class ConfigurationFlagsService {
   }
 
   /**
-   * Reads the flags into what the run writes and gates. `--check reports` is refused with `--output-*`, as a fresh report cannot be stale.
+   * Reads the flags into what the run writes and gates. `--check reports` is refused with `--output-*`, as a fresh report cannot be stale, and `--inputs` with a limit check.
    */
   public selectMode(options: MeasureCommandOptions): ModeSelection {
     const errors: string[] = [];
@@ -156,6 +160,7 @@ export class ConfigurationFlagsService {
     const mode: RunMode = {
       checksLimits: names.has(CHECK_LIMITS),
       checksReports: names.has(CHECK_REPORTS),
+      checksWeigh: names.has(CHECK_WEIGH),
       writesJson: options.outputJson !== undefined,
       writesMarkdown: options.outputMarkdown !== undefined,
     };
@@ -163,6 +168,15 @@ export class ConfigurationFlagsService {
     if (mode.checksReports && (mode.writesJson || mode.writesMarkdown)) {
       errors.push(
         `--output-json or --output-markdown cannot be combined with --check ${CHECK_REPORTS}: a report cannot be stale in the run that just wrote it. Drop --check ${CHECK_REPORTS}, or run it separately from the run that writes.`,
+      );
+    }
+
+    if (
+      options.inputs !== undefined &&
+      (mode.checksLimits || mode.checksWeigh)
+    ) {
+      errors.push(
+        `--inputs cannot be combined with --check ${CHECK_LIMITS} or --check ${CHECK_WEIGH}: it measures exactly the globs given, so no limit written against a configured input applies. Drop one, or write the inputs into the configuration.`,
       );
     }
 

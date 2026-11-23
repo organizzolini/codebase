@@ -2,28 +2,20 @@
 
 export const TITLE = "Display";
 
-/**
- * A chip looks like the buttons beside it, not shaded as set apart.
- */
+/** A chip styled like the buttons beside it. */
 export const CHIP_CLASS_NAME = "bg-background dark:bg-input/30";
 
-/**
- * The choices of figures the sky can draw, with the words that name each.
- */
+/** The figure choices the sky can draw, each named. */
 export const CONSTELLATION_CHOICES = [
   { label: "All", value: "all", words: ["all"] },
   { label: "Zodiac", value: "zodiac", words: ["zodiac"] },
   { label: "None", value: "none", words: [] },
 ] as const;
 
-/**
- * The choice that colors events by their kind, which colors them when none is named.
- */
+/** The choice coloring events by kind, the default. */
 export const DEFAULT_COLOR_BY = "default";
 
-/**
- * The colors a sky color can be set to from the list, each named.
- */
+/** The sky colors the list offers, each named. */
 export const COLOR_SWATCHES = [
   { label: "Midnight", value: "#04060f" },
   { label: "Navy", value: "#0d1533" },
@@ -35,9 +27,7 @@ export const COLOR_SWATCHES = [
   { label: "Amber", value: "#fbbf24" },
 ] as const;
 
-/**
- * How many values a numeric setting offers, from its least to its most.
- */
+/** How many values a numeric setting offers, least to most. */
 export const STEP_COUNT = 5;
 
 /**
@@ -45,12 +35,8 @@ export const STEP_COUNT = 5;
  */
 export const NO_COLOR = "none";
 
-/**
- * The branch whose content is the calendar view radio group, not a list.
- */
+/** The branch whose content is the view radio group. */
 export const CALENDAR_BRANCH = "branch:calendar";
 
-/**
- * The branch whose content is the timeline scale radio group, not a list.
- */
+/** The branch whose content is the timeline scale radio group. */
 export const SCALE_BRANCH = "branch:scale";

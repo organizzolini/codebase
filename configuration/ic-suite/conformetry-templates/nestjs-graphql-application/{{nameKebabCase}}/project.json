@@ -7,7 +7,6 @@
     "language:typescript"
   ],
   "targets": {
-    "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
     "eslint": {},

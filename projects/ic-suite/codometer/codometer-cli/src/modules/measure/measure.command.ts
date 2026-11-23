@@ -12,7 +12,20 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import type { ReportFindingsArguments, RunPlan } from "./measure.types";
+import {
+  applyInputsOverride,
+  describeFindings,
+  enforcedFailures,
+  scopeToMode,
+} from "./measure.utilities";
+
+import type {
+  MeasureOutcome,
+  MeasureVerdict,
+  ReportFindingsArguments,
+  RunPlan,
+  RunRejection,
+} from "./measure.types";
 import type {
   MeasureCommandOptions,
   ResolvedCodometerConfiguration,
@@ -66,43 +79,17 @@ export class MeasureCommand extends CommandRunner {
   }
 
   /**
-   * Replaces every configured input with the `--inputs` globs, measured as the `language` analysis with no other input active.
-   */
-  private applyInputsOverride(
-    configuration: ResolvedCodometerConfiguration,
-    globs: string[] | undefined,
-  ): ResolvedCodometerConfiguration {
-    if (globs === undefined) {
-      return configuration;
-    }
-
-    return {
-      ...configuration,
-      inputs: [
-        {
-          analyses: ["language"],
-          compression: "none",
-          directory: ".",
-          exclude: [],
-          include: globs,
-          name: "Command Line",
-        },
-      ],
-    };
-  }
-
-  /**
-   * Measure one directory and return whether the run failed. Sets no exit
-   * code, so `run` can measure many directories in one process.
+   * Measure one directory and say whether the run failed, and why. Sets no
+   * exit code, so many directories can be measured in one process.
    */
   private async measureDirectory(
     options: MeasureCommandOptions,
     workingDirectory: string,
-  ): Promise<boolean> {
+  ): Promise<MeasureOutcome> {
     const plan = await this.resolveRunPlan(options, workingDirectory);
 
-    if (plan === undefined) {
-      return true;
+    if ("rejected" in plan) {
+      return { failed: true, report: plan.rejected.join("\n") };
     }
 
     const { configuration, consoleMarkdown, destinations, format, mode } = plan;
@@ -129,16 +116,19 @@ export class MeasureCommand extends CommandRunner {
       scope: this.destinationsService.selectScope(workingDirectory),
     });
 
-    return this.reportFindings({ measurement, mode, stalePaths });
+    const findings = { measurement, mode, stalePaths };
+    const failed = this.reportFindings(findings);
+
+    return { failed, report: failed ? describeFindings(findings) : "" };
   }
 
   /**
-   * Read the configuration, or report why it could not be read and return
-   * `undefined`. `--config` is required; no file is searched for.
+   * Read the configuration, or report why it could not be read and say so.
+   * `--config` is required; no file is searched for.
    */
   private async readConfiguration(
     options: MeasureCommandOptions,
-  ): Promise<ResolvedCodometerConfiguration | undefined> {
+  ): Promise<ResolvedCodometerConfiguration | RunRejection> {
     try {
       const configurationPath =
         this.configurationService.requireConfigurationPath(
@@ -156,19 +146,22 @@ export class MeasureCommand extends CommandRunner {
 
       return configuration;
     } catch (error: unknown) {
-      this.logger.error(`📊 Rejected the configuration`, undefined, {
-        reason: error instanceof Error ? error.message : String(error),
-      });
-      return undefined;
+      const reason = error instanceof Error ? error.message : String(error);
+
+      this.logger.error(`📊 Rejected the configuration`, undefined, { reason });
+
+      return { rejected: [reason] };
     }
   }
 
-  /** Says the command line could not be made sense of. */
-  private rejectCommandLine(reasons: string[]): void {
+  /** Says the command line could not be made sense of, and why. */
+  private rejectCommandLine(reasons: string[]): RunRejection {
     this.logger.error(`📊 Rejected the command line`, undefined, { reasons });
+
+    return { rejected: reasons };
   }
 
-  /** Report every breached limit, and say whether one of them fails the run. */
+  /** Report every breached limit, and say whether one the run checks fails it. */
   private reportBreaches(args: ReportFindingsArguments): boolean {
     const breached = args.measurement.limits.filter((limit) => limit.breached);
     const failing = breached.filter((limit) => limit.severity === "fail");
@@ -186,7 +179,7 @@ export class MeasureCommand extends CommandRunner {
       });
     }
 
-    return args.mode.checksLimits && failing.length > 0;
+    return enforcedFailures(args).length > 0;
   }
 
   /**
@@ -203,6 +196,7 @@ export class MeasureCommand extends CommandRunner {
 
     return (
       args.mode.checksLimits ||
+      args.mode.checksWeigh ||
       args.mode.checksReports ||
       args.mode.writesJson ||
       args.mode.writesMarkdown
@@ -238,29 +232,28 @@ export class MeasureCommand extends CommandRunner {
   }
 
   /**
-   * Reads the flags into the mode, configuration, print format, and output destinations. Returns `undefined` after reporting a refusal, so callers stop there.
+   * Reads the flags into the mode, configuration, print format, and output destinations. Returns the reasons after reporting a refusal, so callers stop there.
    */
   private async resolveRunPlan(
     options: MeasureCommandOptions,
     workingDirectory: string,
-  ): Promise<RunPlan | undefined> {
+  ): Promise<RunPlan | RunRejection> {
     const { errors: modeErrors, mode } =
       this.configurationService.selectMode(options);
 
     if (modeErrors.length > 0) {
-      this.rejectCommandLine(modeErrors);
-      return undefined;
+      return this.rejectCommandLine(modeErrors);
     }
 
     const loadedConfiguration = await this.readConfiguration(options);
 
-    if (loadedConfiguration === undefined) {
-      return undefined;
+    if ("rejected" in loadedConfiguration) {
+      return loadedConfiguration;
     }
 
-    const configuration = this.applyInputsOverride(
-      loadedConfiguration,
-      options.inputs,
+    const configuration = scopeToMode(
+      applyInputsOverride(loadedConfiguration, options.inputs),
+      mode,
     );
     const formatErrors: string[] = [];
     const format = this.configurationService.resolveFormat(
@@ -276,8 +269,7 @@ export class MeasureCommand extends CommandRunner {
       });
 
     if (formatErrors.length > 0 || destinationErrors.length > 0) {
-      this.rejectCommandLine([...formatErrors, ...destinationErrors]);
-      return undefined;
+      return this.rejectCommandLine([...formatErrors, ...destinationErrors]);
     }
 
     const consoleMarkdown = this.destinationsService.resolveConsoleMarkdown({
@@ -302,11 +294,13 @@ export class MeasureCommand extends CommandRunner {
     return workingDirectory;
   }
 
+  // 🌎 Public Methods
+
   /**
    * Parses the set of checks to fail on. A `--check` with no value is refused later rather than silently becoming write mode.
    */
   @Option({
-    description: `Fail on a comma-separated set drawn from "reports" and "limits"`,
+    description: `Fail on a comma-separated set drawn from "limits" (the source tree), "weigh" (the declared builds) and "reports"`,
     flags: "--check [check]",
   })
   public parseCheck(value: string): string {
@@ -372,8 +366,6 @@ export class MeasureCommand extends CommandRunner {
     return value;
   }
 
-  // 🌎 Public Methods
-
   /**
    * Measure the working directory, or each named directory, and fail on any
    * failed run. Named directories avoid repeated start-up.
@@ -383,31 +375,42 @@ export class MeasureCommand extends CommandRunner {
     options: MeasureCommandOptions,
   ): Promise<void> {
     if (directories.length === 0) {
-      if (
-        await this.measureDirectory(options, this.resolveWorkingDirectory())
-      ) {
-        process.exitCode = 1;
-      }
+      const outcome = await this.measureDirectory(
+        options,
+        this.resolveWorkingDirectory(),
+      );
+
+      process.exitCode = outcome.failed ? 1 : process.exitCode;
 
       return;
     }
 
-    for (const directory of directories.map((named) => path.resolve(named))) {
-      try {
-        const failed = await this.measureDirectory(
-          options.config === undefined
-            ? options
-            : { ...options, config: path.resolve(directory, options.config) },
-          directory,
-        );
+    const verdicts: MeasureVerdict[] = [];
 
-        process.exitCode = failed ? 1 : process.exitCode;
-      } catch (error: unknown) {
+    for (const directory of directories.map((named) => path.resolve(named))) {
+      const outcome = await this.measureDirectory(
+        options.config === undefined
+          ? options
+          : { ...options, config: path.resolve(directory, options.config) },
+        directory,
+      ).catch((error: unknown) => {
+        const reason = error instanceof Error ? error.message : String(error);
+
         this.logger.error(`📊 Failed to measure ${directory}`, undefined, {
-          reason: error instanceof Error ? error.message : String(error),
+          reason,
         });
-        process.exitCode = 1;
-      }
+
+        return { failed: true, report: reason };
+      });
+
+      process.exitCode = outcome.failed ? 1 : process.exitCode;
+      verdicts.push({ directory, ok: !outcome.failed, report: outcome.report });
+    }
+
+    // One directory keeps standard output for its report; a caller measuring
+    // several has no single report to pipe, and needs to know who failed.
+    if (verdicts.length > 1) {
+      process.stdout.write(`${JSON.stringify(verdicts)}\n`);
     }
   }
 }

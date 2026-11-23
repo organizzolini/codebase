@@ -38,7 +38,5 @@ export interface GroupSort {
   key: GroupSortKey;
 }
 
-/**
- * What groups are ordered by: their name, how many events, or the first one's time.
- */
+/** What groups are ordered by: name, event count, or first time. */
 export type GroupSortKey = "count" | "first" | "name";

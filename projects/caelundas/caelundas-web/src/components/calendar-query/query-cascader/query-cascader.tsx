@@ -11,9 +11,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/**
- * The nested choices, the ones picked, the search prompt, and the change handler.
- */
+/** Nested choices, picked ones, search prompt, and change handler. */
 export interface QueryCascaderProperties {
   /**
    * Commands pinned below the list, such as opening a panel of settings.
@@ -39,9 +37,7 @@ export interface QueryCascaderProperties {
    */
   panels?: Readonly<Record<string, ReactNode>>;
   placeholder: string;
-  /**
-   * Which rows can be picked; a row that cannot opens its branch when pressed. Every row when several can be picked with a cascade, only leaves otherwise, when absent.
-   */
+  /** Which rows can be picked; others open their branch when pressed. */
   selectable?: ((node: CascaderNode) => boolean) | undefined;
   value: readonly string[];
 }

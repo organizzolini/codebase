@@ -5,16 +5,16 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { Author, Line, Text, Token, Word } from "@codebase/lexico-db";
 
 import {
+  DATABASE_TIMEOUT_MILLISECONDS,
+  startLexicoDatabaseTestingModule,
+} from "../../../../../testing/database";
+import {
   type AuthorTextCatalog,
   PROEM_LINE_LABELS,
   seedAuthorTextCatalog,
   TEXT_TITLES_IN_ORDER,
   UNKNOWN_ENTITY_ID,
-} from "../../../../../testing/author-text-catalog";
-import {
-  DATABASE_TIMEOUT_MILLISECONDS,
-  startLexicoDatabaseTestingModule,
-} from "../../../../../testing/database";
+} from "../../../../../testing/fixtures/author-text-catalog";
 import { createLiteratureServices } from "../../../../../testing/literature-services";
 import {
   nodesOf,

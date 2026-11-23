@@ -187,7 +187,7 @@ export const gateExample = async (
   ...segments: readonly string[]
 ): Promise<CodometerRun> =>
   runCodometer(
-    ["--config", exampleConfiguration(...segments), "--check", "limits"],
+    ["--config", exampleConfiguration(...segments), "--check", "limits,weigh"],
     corpusDirectory,
   );
 
@@ -206,7 +206,7 @@ export const gateAndMeasureExample = async (
       "--config",
       exampleConfiguration(...segments),
       "--check",
-      "limits",
+      "limits,weigh",
       "--format",
       "json",
     ],

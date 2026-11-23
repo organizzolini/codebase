@@ -358,7 +358,7 @@ gh api -X POST repos/{owner}/{repo}/issues/<number>/assignees -f "assignees[]=$(
 
 ## Labels
 
-Validate Conventions checks that labels agree with the title: exactly one `type:*` label matching the title's type, one `scope:*` label per scope named in the title (no extras), exactly one `source:*` label (`source:agent` or `source:human`) declaring who opened the pull request, and no `do-not-merge` label. Set them at creation time rather than waiting for the reconciliation step to backfill them:
+Comply checks that labels agree with the title: exactly one `type:*` label matching the title's type, one `scope:*` label per scope named in the title (no extras), exactly one `source:*` label (`source:agent` or `source:human`) declaring who opened the pull request, and no `do-not-merge` label. Set them at creation time rather than waiting for the reconciliation step to backfill them:
 
 ```bash
 gh api -X POST repos/{owner}/{repo}/issues/<number>/labels \

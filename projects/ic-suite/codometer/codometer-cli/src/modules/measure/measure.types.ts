@@ -11,6 +11,20 @@ import type {
   RunDestinations,
 } from "@codometer/output";
 
+/** How one directory's run went, and why it failed. */
+export interface MeasureOutcome {
+  failed: boolean;
+  report: string;
+}
+
+/** One directory's verdict, as printed after a run that named directories. */
+export interface MeasureVerdict {
+  directory: string;
+  ok: boolean;
+  /** What failed the directory, as plain lines; empty when it passed. */
+  report: string;
+}
+
 /** Arguments accepted when weighing what a run found. */
 export interface ReportFindingsArguments {
   measurement: MeasurementResult;
@@ -30,4 +44,9 @@ export interface RunPlan {
   destinations: RunDestinations;
   format: MeasureFormat | undefined;
   mode: RunMode;
+}
+
+/** A run stopped at its command line or configuration, with the reasons. */
+export interface RunRejection {
+  rejected: string[];
 }

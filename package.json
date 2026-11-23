@@ -12,6 +12,7 @@
     "@codependix/configuration": "workspace:*",
     "@codependix/nx": "workspace:*",
     "@codometer/configuration": "workspace:*",
+    "@codometer/nx": "workspace:*",
     "@coinagerie/configuration": "workspace:*",
     "@coinagerie/languages": "workspace:*",
     "@coinagerie/nx": "workspace:*",

@@ -11,7 +11,6 @@
     "type:package"
   ],
   "targets": {
-    "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
     "eslint": {},

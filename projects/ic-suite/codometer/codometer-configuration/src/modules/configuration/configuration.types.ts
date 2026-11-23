@@ -255,6 +255,7 @@ export interface ModeSelection {
 export interface RunMode {
   checksLimits: boolean;
   checksReports: boolean;
+  checksWeigh: boolean;
   writesJson: boolean;
   writesMarkdown: boolean;
 }

@@ -12,7 +12,6 @@
   ],
   "targets": {
     "build-projects": {},
-    "codometer": {},
     "deprecate-code": {},
     "eslint": {},
     "examples": {

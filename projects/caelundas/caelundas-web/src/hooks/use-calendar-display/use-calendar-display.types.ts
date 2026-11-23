@@ -6,9 +6,7 @@ import type { UseNightSkySettingsResult } from "../use-night-sky/hooks/use-night
 
 // 🏷️ Types
 
-/**
- * What the link says about how the calendar looks, with every default filled in.
- */
+/** The link's look settings, every default filled in. */
 export interface CalendarDisplayState {
   clusters: boolean;
   colors: boolean;
@@ -16,9 +14,7 @@ export interface CalendarDisplayState {
   symbols: CalendarSymbols;
 }
 
-/**
- * How the calendar looks, the night sky's settings, and the handlers that write each change to the link.
- */
+/** The look, night sky settings, and handlers writing changes to the link. */
 export interface UseCalendarDisplayResult {
   /**
    * Writes a change to the night sky's settings to the link.

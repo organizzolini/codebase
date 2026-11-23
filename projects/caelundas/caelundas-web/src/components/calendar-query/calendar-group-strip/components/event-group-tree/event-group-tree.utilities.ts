@@ -68,9 +68,7 @@ export function buildEventGroups(
   return roots;
 }
 
-/**
- * Orders every level of a group tree by sorts, the first sort first and each later one breaking its ties; the groups as built when there are none.
- */
+/** Orders every level of a group tree by sorts, the first first and later ones breaking ties; as built when none. */
 export function sortEventGroups(
   nodes: EventGroupNode[],
   sorts: readonly GroupSort[] | undefined,
