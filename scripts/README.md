@@ -10,11 +10,8 @@ This directory contains shell scripts for:
 - **Shell utilities** - Common terminal operations
 - **Nx** - The two helpers the Nx targets call, `await-health.sh` and `stop-port.sh` (in `nx/`)
 
-> **The shell floor.** Which scripts stay shell, and why, is decided in
-> [ADR 0027](../documentation/adr/0027-narrow-the-shell-floor-to-the-hooks-and-the-pre-install-ci-steps.md),
-> as amended by
-> [ADR 0028](../documentation/adr/0028-run-the-nx-ci-steps-after-the-install-as-commands.md).
-> A script that is not on that floor belongs in a NestJS command.
+> **The shell floor.** Only the Husky hooks and the CI steps that run before
+> `pnpm install` stay shell. A script that is not on that floor belongs in a NestJS command.
 
 ## Quick Start
 
@@ -174,8 +171,7 @@ echo "Timestamp: $timestamp"
 `scripts/nx/` holds only the two helpers the Nx targets call,
 `await-health.sh` and `stop-port.sh`. The CI steps around the Nx task cache
 and the affected base, which used to be shell here, are commands of the
-[deployment](../deployment) project since
-[ADR 0028](../documentation/adr/0028-run-the-nx-ci-steps-after-the-install-as-commands.md).
+[deployment](../deployment) project.
 
 ### Task-Result Database
 

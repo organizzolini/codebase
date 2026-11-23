@@ -40,7 +40,7 @@ migrations, and the service that persists and reads meander rows.
 ```text
 src/
   index.ts                               # Public exports
-  modules/database/                      # The database module, per ADR 0022
+  modules/database/                      # The database module
     database.module.ts                   # MeanderawDatabaseModule
     database.service.ts                  # Save, read, and count meander rows
     database.constants.ts                # Project, insert chunk size, bigint transformer

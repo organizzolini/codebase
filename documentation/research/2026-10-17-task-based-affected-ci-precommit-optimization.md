@@ -28,7 +28,6 @@ In this monorepo (55 projects), adopting task-based affected provides dramatic s
   - `.github/workflows/continuous-integration.yml`
   - `.github/actions/run-affected/action.yml`
   - `publication/src/modules/run-affected/run-affected.service.ts`
-  - `documentation/adr/0007-state-the-real-dependency-in-task-cache-inputs.md`
 
 ### 1.2 The Core Mechanism: Project-Based vs Task-Based Affected
 
@@ -117,7 +116,7 @@ To avoid running all jobs across all projects, the codebase built an entire cust
 
 ## 4. Key Considerations & Target Inputs Readiness
 
-Task-based affected relies on the exactness of task `inputs`. Fortunately, this codebase already implemented **ADR 0007 ("State the real dependency in task cache inputs")**, ensuring high-quality, granular inputs across `nx.json`:
+Task-based affected relies on the exactness of task `inputs`. Fortunately, this codebase already implemented **the real dependency in task cache inputs**, ensuring high-quality, granular inputs across `nx.json`:
 
 1. **Aggregator Targets (`nx:noop`)**:
    Aggregator targets like `test-code`, `lint-code`, `typecheck-code`, `format-code`, and `guard-code` delegate execution through `dependsOn`. Under task-based affected, Nx builds the task graph for the requested target and selects any required sub-tasks whose inputs were touched.

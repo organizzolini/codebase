@@ -41,7 +41,7 @@ the derived-times view, and the refresh service for the derived tag tables.
 ```text
 src/
   index.ts                               # Public exports
-  modules/database/                      # The database module, per ADR 0022
+  modules/database/                      # The database module
     database.module.ts                   # CaelundasDatabaseModule
     database.service.ts                  # isConnected, refreshReadModel
     database.constants.ts                # Project, coordinate scale, read model SQL

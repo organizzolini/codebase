@@ -165,8 +165,7 @@ readable in a diff — those files are linted by `sqlfluff` and checked by
 
 Lexico's tables used to live in the shared container's default `postgres`
 database under `public`. A Docker volume from before
-[ADR 0022](../../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md)
-still holds them there. Moving them into `lexico_development`.`lexico` is a
+each project got its own database still holds them there. Moving them into `lexico_development`.`lexico` is a
 one-time step, run from the workspace root against the running container,
 with `pg_dump`, `pg_restore`, and `psql` 18 on the path. It copies rows
 rather than moving them: `public` is left in place, and dropping it is the

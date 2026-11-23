@@ -75,9 +75,7 @@ docker exec -e POSTGRES_PROJECTS=caelundas postgres sh /docker-entrypoint-initdb
 
 The script stops at the first object that already exists, so name only the
 projects the volume lacks. Never use `infrastructure:postgres:recreate` for this:
-it deletes the volume and every row in it. See
-[ADR 0022](../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md)
-for meanderaw's one exception.
+it deletes the volume and every row in it.
 
 ### Provision Kubernetes Cluster
 

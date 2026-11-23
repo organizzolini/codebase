@@ -176,11 +176,10 @@ codebase/
 │   ├── configuration/  # Every shared tool config, the Husky hooks, and the targets that run them
 │   ├── <domain>/       # caelundas/, lexico/, meanderaw/ — group one domain's projects
 │   └── ic-suite/       # The five IC-suite toolchains, nested one level deeper
-├── documentation/      # Architecture decision records, agent configuration, guides, planning notes, and generated code documentation
-│   ├── adr/            # Architecture decision records
+├── documentation/      # Agent configuration, guides, planning notes, and generated code documentation
 │   ├── agents/         # Per-repository configuration the vendored skills read
 │   └── openwiki/       # Generated code documentation — do not hand-edit
-├── docs -> documentation          # Symlink: vendored skills hard-code docs/adr and docs/agents
+├── docs -> documentation          # Symlink: vendored skills hard-code docs/agents and docs/superpowers
 ├── openwiki -> documentation/openwiki   # Symlink: the OpenWiki CLI hard-codes its output directory
 ├── scripts/            # Setup, git, and utility scripts
 └── .agents/skills/     # Agent skills; every other agent entrypoint symlinks here
@@ -647,7 +646,6 @@ pnpm add -w <package>
 ## Additional Resources
 
 - [AGENTS.md](../AGENTS.md) — the full conventions reference, mirrored to `.claude/CLAUDE.md` and `.github/copilot-instructions.md`
-- [documentation/adr](../documentation/adr) — architecture decision records
 - [documentation/openwiki/quickstart.md](../documentation/openwiki/quickstart.md) — generated code documentation
 - [.agents/skills](../.agents/skills) — agent skills, the canonical source for every agent entrypoint
 - [Commit Messages Guide](../.agents/skills/commit-code/SKILL.md)

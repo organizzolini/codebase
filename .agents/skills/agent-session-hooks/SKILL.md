@@ -50,4 +50,4 @@ The command must therefore print nothing to standard output except the context, 
 
 The signing and authentication hooks stay pure shell on purpose, since they must still work when `node_modules` is broken; see `installation/AGENTS.md`.
 
-Why the credential checks resolve the session's own token and signing configuration rather than the hook shell's, and why a hook can fail but never hang, is in [ADR 0010](../../documentation/adr/0010-judge-the-credentials-a-session-really-uses.md).
+The credential checks resolve the session's own token and signing configuration rather than the hook shell's, and a hook can fail but never hang.

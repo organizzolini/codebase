@@ -220,7 +220,7 @@ Run `gh issue view <number> --comments`.
 
 Used by `/wayfinder`. The **map** is a single issue with **child** issues as tickets.
 
-This repository has no `domain-modeling` skill. Where wayfinder says to call it alongside `grilling`, call `grilling` alone, and record any decision worth keeping as an ADR in `documentation/adr/`.
+This repository has no `domain-modeling` skill. Where wayfinder says to call it alongside `grilling`, call `grilling` alone, and record any decision worth keeping in the README or `AGENTS.md` of the project it shapes.
 
 - **Map**: a single issue labelled `wayfinder:map`, holding the Notes / Decisions-so-far / Fog body. `gh issue create --type Feature --label wayfinder:map`.
 - **Child ticket**: an issue linked to the map as a GitHub sub-issue (`gh api` on the sub-issues endpoint). Where sub-issues aren't enabled, add the child to a task list in the map body and put `Part of #<map>` at the top of the child body. Issue Type: `Task`. Labels: `wayfinder:<type>` (`research`/`prototype`/`grilling`/`task`). Once claimed, the ticket is assigned to the driving dev.

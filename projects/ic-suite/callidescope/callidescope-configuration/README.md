@@ -77,7 +77,7 @@ widest. Every traced project now does: see
 The **implementation-candidate cap** is deliberately not here. It decides where
 structural interface resolution stops guessing rather than what a run judges, so
 it is a constant in [`@callidescope/graph`](../callidescope-graph/README.md)
-instead — see [the decision record](../../../../documentation/adr/0006-narrow-callidescope-to-depth-and-breadth.md).
+instead.
 
 ## Entry Points
 
@@ -290,8 +290,7 @@ cannot be: an absent field and a field set to the value it would have defaulted
 to look identical in a diff, and only one of them was a decision. Completeness
 costs one line rather than twenty, because a project spreads the workspace's
 `projectDefaults` and overrides what it means to — see
-[Spread the defaults, then override](#spread-the-defaults-then-override) and
-[ADR 0007](../../../../documentation/adr/0007-complete-project-configurations.md).
+[Spread the defaults, then override](#spread-the-defaults-then-override).
 
 One file, one role per run: the file a run was pointed at is never also read as
 a project's. A package whose task names its own configuration and then traces

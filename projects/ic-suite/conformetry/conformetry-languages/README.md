@@ -69,11 +69,9 @@ six.
 
 ## Why one package
 
-These six Languages were six packages until the consolidation recorded in
-[ADR 0006](../../../../documentation/adr/0006-hold-every-conformetry-language-in-one-package.md).
-That record is the place to read what installing this package costs a consumer
-who needs only one Language, why paying it won, and which three alternatives
-were weighed and rejected.
+These six Languages were six packages until they were consolidated. A consumer
+who needs only one Language now installs all six, a cost accepted because the
+validator's text fallback already makes every run need this package.
 
 ## Test
 
