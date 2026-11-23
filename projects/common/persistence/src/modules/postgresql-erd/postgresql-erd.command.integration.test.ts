@@ -29,6 +29,28 @@ describe("postgresql-erd", () => {
     fs.rmSync(markdownOutput, { force: true });
   });
 
+  it("writes only the JSON output when --output-markdown is omitted", async () => {
+    fs.rmSync(jsonOutput, { force: true });
+    fs.rmSync(markdownOutput, { force: true });
+
+    const result = await runErd(["--output-json", jsonOutput]);
+
+    expect(result.exitCode).toBe(0);
+    expect(fs.existsSync(jsonOutput)).toBe(true);
+    expect(fs.existsSync(markdownOutput)).toBe(false);
+  });
+
+  it("writes only the Markdown output when --output-json is omitted", async () => {
+    fs.rmSync(jsonOutput, { force: true });
+    fs.rmSync(markdownOutput, { force: true });
+
+    const result = await runErd(["--output-markdown", markdownOutput]);
+
+    expect(result.exitCode).toBe(0);
+    expect(fs.existsSync(markdownOutput)).toBe(true);
+    expect(fs.existsSync(jsonOutput)).toBe(false);
+  });
+
   it("writes JSON and Mermaid markdown and checks both outputs for drift", async () => {
     fs.rmSync(jsonOutput, { force: true });
     fs.rmSync(markdownOutput, { force: true });
