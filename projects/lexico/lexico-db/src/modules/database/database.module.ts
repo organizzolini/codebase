@@ -2,7 +2,8 @@ import { Module } from "@nestjs/common";
 
 import { DatabaseModule as PersistenceDatabaseModule } from "@codebase/persistence";
 
-import { LEXICO_DATABASE_ENTITIES } from "./data-source.constants";
+import { DATABASE_ENTITIES } from "./data-source.constants";
+import { DATABASE_PROJECT } from "./database.constants";
 import { DatabaseService } from "./database.service";
 
 /**
@@ -20,8 +21,8 @@ import { DatabaseService } from "./database.service";
   exports: [DatabaseService, PersistenceDatabaseModule],
   imports: [
     PersistenceDatabaseModule.forRoot({
-      entities: [...LEXICO_DATABASE_ENTITIES],
-      project: "lexico",
+      entities: [...DATABASE_ENTITIES],
+      project: DATABASE_PROJECT,
     }),
   ],
   providers: [DatabaseService],

@@ -1,4 +1,4 @@
-import type { CharacteristicRecord } from "../src/modules/meanderaw-database/meanderaw-database.types";
+import type { CharacteristicRecord } from "../src/modules/database/database.types";
 
 /** Builds a catalog row with defaults; a key starting with `is` is a boolean. */
 export function characteristicRecord(

@@ -1,4 +1,23 @@
-# CaelundasDatabase: Postgres Schema Library
+# CaelundasDb: NestJS Database Project
+
+## Database source
+
+- Keep one TypeORM entity per `*.entity.ts` file under `src/`.
+- Register entities in `DATABASE_ENTITIES` in
+  `src/modules/database/data-source.constants.ts`.
+- Keep project migrations under `migrations/`; the runtime never runs or
+  synchronizes them.
+- Preserve project-specific entities and migrations when updating shared
+  configuration.
+
+## Entity relationship diagram
+
+Run `nx run caelundas-db:erd:write` to update
+`documentation/entity-relationship-diagram.md`. Run
+`nx run caelundas-db:erd:check` to verify it. Do not edit the generated
+content between the PostgreSQL entity relationship diagram markers.
+
+## CaelundasDatabase: Postgres Schema Library
 
 ## Quick Start
 
@@ -22,11 +41,11 @@ the derived-times view, and the refresh service for the derived tag tables.
 ```text
 src/
   index.ts                               # Public exports
-  modules/caelundas-database/            # The database module
-    caelundas-database.module.ts         # CaelundasDatabaseModule
-    caelundas-database.service.ts        # isConnected, refreshReadModel
-    caelundas-database.constants.ts      # Project, coordinate scale, read model SQL
-    caelundas-database.utilities.ts      # Value transformers
+  modules/database/                      # The database module
+    database.module.ts                   # CaelundasDatabaseModule
+    database.service.ts                  # isConnected, refreshReadModel
+    database.constants.ts                # Project, coordinate scale, read model SQL
+    database.utilities.ts                # Value transformers
     data-source.constants.ts             # Entities, migrations, caelundasDataSource
     modules/                             # One *.entity.ts per table or view, by domain
 migrations/                              # The one migration and its .sql pair
@@ -39,7 +58,7 @@ migrations/                              # The one migration and its .sql pair
 - **`calendar_events` upserts on its natural key** `(summary, start, end, latitude,
   longitude)`; never insert an event without it.
 - **Instants are `timestamptz`, coordinates `numeric(9,6)`, whole numbers `bigint`.** Each
-  has a transformer in `caelundas-database.utilities.ts`; `squawk` rejects `integer`.
+  has a transformer in `database.utilities.ts`; `squawk` rejects `integer`.
 - **The derived-times view needs no refresh;** the two derived tag tables are rebuilt by
   `refreshReadModel(manager)` in the caller's transaction. A view's name is not
   pluralized into sense: `calendar_event_derived_times` is already plural.

@@ -1,4 +1,43 @@
-# 🌌 Caelundas Database
+# CaelundasDb: NestJS Database Project
+
+## Quick Start
+
+**Type**: Node.js database package (NestJS + TypeORM + PostgreSQL)
+
+**Purpose**: A Node.js package containing the CaelundasDb database schema and migrations.
+
+## Development
+
+### Entities and migrations
+
+Keep entity classes under `src/` with one `*.entity.ts` file per entity. Add
+each entity to `DATABASE_ENTITIES` in
+`src/modules/database/data-source.constants.ts`; the shared
+`createDataSource` helper reads this list for TypeORM's migration commands.
+Keep migrations under `migrations/`. They are never run or synchronized on
+application startup.
+
+### Entity relationship diagram
+
+The entity relationship diagram is generated from every TypeORM entity file
+under `src/`. Do not edit the diagram between its markers by hand.
+
+```bash
+nx run caelundas-db:erd:write
+nx run caelundas-db:erd:check
+```
+
+See [documentation/entity-relationship-diagram.md](documentation/entity-relationship-diagram.md) for the generated diagram.
+
+## Key Files
+
+- [project.json](project.json): Nx targets and project tags
+- [src/modules/database/data-source.constants.ts](src/modules/database/data-source.constants.ts): Entity list and CLI data source
+- [src/modules/database/database.module.ts](src/modules/database/database.module.ts): NestJS database module
+- [src/modules/database/database.service.ts](src/modules/database/database.service.ts): Database service
+- [documentation/entity-relationship-diagram.md](documentation/entity-relationship-diagram.md): Generated entity relationship diagram
+
+## 🌌 Caelundas Database
 
 **The calendar's shape.** The Postgres schema for
 [caelundas-cli](../caelundas-cli/README.md) and caelundas-api: the TypeORM
@@ -19,7 +58,7 @@ import { CaelundasDatabaseModule, CalendarEvent } from "@codebase/caelundas-db";
 `caelundas_username` through
 [`@codebase/persistence`](../../common/persistence/README.md)'s
 `DatabaseModule.forRoot`, with its shared plural snake-case naming strategy.
-`caelundasDataSource`, in `src/modules/caelundas-database/data-source.constants.ts`,
+`caelundasDataSource`, in `src/modules/database/data-source.constants.ts`,
 is the same configuration as a standalone `DataSource`, built with the shared
 `createDataSource`, which is what the migration command line runs against.
 Neither synchronizes nor runs migrations on start, so only the data source and
@@ -90,7 +129,7 @@ nx run caelundas-db:migration:show               # List applied and pending
 
 The `migration` target is the shared one from the root `nx.json` target
 defaults, declared here as
-`"migration": { "options": { "module": "src/modules/caelundas-database" } }`.
+`"migration": { "options": { "module": "src/modules/database" } }`.
 There is one migration, with its `-up.sql` and `-down.sql` beside it, linted
 by `sqlfluff` and checked by `squawk`. It carries two hand edits after
 `generate`: it creates `typeorm_metadata` for the view's row, and its SQL
@@ -106,6 +145,6 @@ nx run caelundas-db:vitest:integration   # needs Docker
 The integration suites start a throwaway Postgres 18, run the real migration,
 insert base rows, refresh, and assert the derived tables and the view.
 
-## 👔 Conformetry
+## Conformetry
 
-This project was generated from the [nestjs-service-project](../../../configuration/ic-suite/conformetry-templates/nestjs-service-project) conformetry template.
+This project was generated from the [nestjs-database-project](../../../configuration/ic-suite/conformetry-templates/nestjs-database-project) conformetry template.

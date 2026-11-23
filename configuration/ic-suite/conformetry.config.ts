@@ -133,6 +133,30 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
   },
   {
     description:
+      "A standalone NestJS TypeORM package template for shared entities and migrations, with a generated entity relationship diagram",
+    inputs: defineInputs({
+      name: z
+        .string()
+        .regex(/^[a-z0-9-]+-db$/u)
+        .describe("Database project name, ending in -db"),
+      directory: z
+        .string()
+        .describe(
+          "Parent directory of the database project, relative to the workspace root",
+        ),
+    }),
+    instances: [
+      {
+        exclude: ["projects/**/node_modules/**"],
+        patterns: ["projects/**/*-db"],
+      },
+    ],
+    name: "nestjs-database-project",
+    templatePath:
+      "configuration/ic-suite/conformetry-templates/nestjs-database-project",
+  },
+  {
+    description:
       "A standalone NestJS library package template for internal workspace code shared across projects, with no CLI entry point or HTTP server",
     inputs: defineInputs({
       name: z.string().describe("Project name (kebab-case)"),

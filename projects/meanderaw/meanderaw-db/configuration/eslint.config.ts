@@ -19,6 +19,7 @@ export default [
             "@codebase/testing",
             "@golevelup/ts-vitest",
             "pg",
+            "reflect-metadata",
             "vitest",
           ],
           ignoredFiles: ["{projectRoot}/configuration/**"],

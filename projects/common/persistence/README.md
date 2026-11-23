@@ -271,6 +271,25 @@ Docker must be running.
 A project name must be lowercase letters, digits, and underscores, starting
 with a letter, so it can prefix a variable and name a database unquoted.
 
+## Generating an entity relationship diagram
+
+`postgresql-erd` reads TypeORM entity files and writes the model as JSON,
+Mermaid ER diagram Markdown, or both. Each `--entities` glob is repeatable.
+Relative globs and output paths resolve from the persistence project directory:
+
+```bash
+pnpm exec nx run persistence:start:postgresql-erd --args="--entities 'src/**/*.entity.ts' --output-json erd.json --output-markdown README.md"
+```
+
+`--output-json` and `--output-markdown` are optional individually, but at least
+one is required. Markdown output replaces the existing ERD marker block or
+appends one after the document's prose. `--check` writes nothing and exits
+non-zero, naming every stale or missing output:
+
+```bash
+pnpm exec nx run persistence:start:postgresql-erd --args="--entities 'src/**/*.entity.ts' --output-markdown README.md --check"
+```
+
 ## Moving data between databases
 
 The package is also a command line, `database`, that copies selected tables

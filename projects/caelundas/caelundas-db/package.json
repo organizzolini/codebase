@@ -10,6 +10,7 @@
     "typeorm": "catalog:"
   },
   "devDependencies": {
+    "@codebase/configuration": "workspace:*",
     "@codebase/testing": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/testing": "catalog:",
@@ -33,26 +34,14 @@
     "LICENSE",
     "README.md"
   ],
-  "main": "./src/index.ts",
+  "main": "src/index.ts",
   "name": "@codebase/caelundas-db",
   "private": true,
-  "publishConfig": {
-    "exports": {
-      ".": {
-        "default": "./dist/src/index.js",
-        "import": "./dist/src/index.js",
-        "require": "./dist/src/index.js",
-        "types": "./dist/src/index.d.ts"
-      }
-    },
-    "main": "./dist/src/index.js",
-    "types": "./dist/src/index.d.ts"
-  },
   "type": "module",
   "typeCoverage": {
     "atLeast": 100,
     "strict": true
   },
-  "types": "./src/index.ts",
+  "types": "src/index.ts",
   "version": "0.0.1"
 }

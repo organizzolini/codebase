@@ -1,7 +1,7 @@
-import baseConfig from "../../../../configuration/eslint.config";
+import baseConfig from "@codebase/configuration/eslint.config";
 
 export default [
-  // �️ Base Config
+  // 🛠️ Base Config
   ...baseConfig,
 
   // 🙈 Ignores
@@ -16,7 +16,15 @@ export default [
         {
           // vitest: used only by tests and the configuration folder's Vitest
           // configuration, both outside the build dependency check's scope.
-          ignoredDependencies: ["typescript", "pg", "@nestjs/core", "vitest"],
+          ignoredDependencies: [
+            "@codebase/testing",
+            "@golevelup/ts-vitest",
+            "reflect-metadata",
+            "typescript",
+            "pg",
+            "@nestjs/core",
+            "vitest",
+          ],
           ignoredFiles: ["{projectRoot}/configuration/**"],
         },
       ],
