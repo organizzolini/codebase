@@ -44,10 +44,10 @@ export type GraphFilterOperator = "!=" | "<" | "=" | ">" | "~=";
 /** Caps on the drawn graph; an absent cap draws all. */
 export interface GraphLimits {
   /** The most children drawn under one node; `undefined` draws every child. */
-  readonly maximumBreadth?: number | undefined;
+  readonly truncateBreadth?: number | undefined;
 
   /** The deepest level drawn, with roots at level 1; `undefined` draws every level. */
-  readonly maximumDepth?: number | undefined;
+  readonly truncateDepth?: number | undefined;
 }
 
 /** The options every graph command shares. The command validates them. */
@@ -60,12 +60,6 @@ export interface GraphOptions {
 
   /** Roots per page, as text; a positive integer when given. */
   readonly limit?: string | undefined;
-
-  /** The most children drawn under one node, as text; a positive integer when given. */
-  readonly maxBreadth?: string | undefined;
-
-  /** The deepest level drawn, roots being level 1, as text; a positive integer when given. */
-  readonly maxDepth?: string | undefined;
 
   /** Path of the JSON graph file to write, as text. */
   readonly outputJson?: string | undefined;
@@ -90,6 +84,12 @@ export interface GraphOptions {
 
   /** The table to pick when the entities match several; unqualified. */
   readonly table?: string | undefined;
+
+  /** The most children drawn under one node, as text; a positive integer when given. */
+  readonly truncateBreadth?: string | undefined;
+
+  /** The deepest level drawn, roots being level 1, as text; a positive integer when given. */
+  readonly truncateDepth?: string | undefined;
 }
 
 /** A sort key resolved to its column, ready to become SQL. */
@@ -154,12 +154,6 @@ export interface GraphPlan {
   /** The row filters, in the order given; every one must match. */
   readonly filters: readonly GraphFilter[];
 
-  /** The most children drawn under one node, or `undefined` for every child. */
-  readonly maximumBreadth: number | undefined;
-
-  /** The deepest level drawn, or `undefined` for every level. */
-  readonly maximumDepth: number | undefined;
-
   /** The files to write; with none, the diagram goes to stdout. */
   readonly outputs: GraphOutputs;
 
@@ -174,6 +168,12 @@ export interface GraphPlan {
 
   /** The table name picked with `--table`, or `undefined` to pick the only one. */
   readonly table: string | undefined;
+
+  /** The most children drawn under one node, or `undefined` for every child. */
+  readonly truncateBreadth: number | undefined;
+
+  /** The deepest level drawn, or `undefined` for every level. */
+  readonly truncateDepth: number | undefined;
 }
 
 /** A filter resolved to its column, ready to become SQL. */

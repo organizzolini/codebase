@@ -302,8 +302,8 @@ describe("render-tree-data", () => {
 
   it.each([
     [
-      "--max-depth 1 keeps the roots and hides every child beneath them",
-      ["--max-depth", "1"],
+      "--truncate-depth 1 keeps the roots and hides every child beneath them",
+      ["--truncate-depth", "1"],
       [
         'n0["Work"]',
         'n1["Errands"]',
@@ -313,11 +313,11 @@ describe("render-tree-data", () => {
         "class n1 root",
         "class n2 truncation",
       ],
-      ["Node 1 hides 2 children beyond --max-depth 1"],
+      ["Node 1 hides 2 children beyond --truncate-depth 1"],
     ],
     [
-      "--max-depth 2 keeps two levels and truncates the children of Email",
-      ["--max-depth", "2"],
+      "--truncate-depth 2 keeps two levels and truncates the children of Email",
+      ["--truncate-depth", "2"],
       [
         'n0["Work"]',
         'n1["Email"]',
@@ -331,11 +331,11 @@ describe("render-tree-data", () => {
         "class n3 root",
         "class n4 truncation",
       ],
-      ["Node 2 hides 1 child beyond --max-depth 2"],
+      ["Node 2 hides 1 child beyond --truncate-depth 2"],
     ],
     [
-      "--max-breadth 1 shows the first child under Work and truncates the second",
-      ["--max-breadth", "1"],
+      "--truncate-breadth 1 shows the first child under Work and truncates the second",
+      ["--truncate-breadth", "1"],
       [
         'n0["Work"]',
         'n1["Email"]',
@@ -349,11 +349,11 @@ describe("render-tree-data", () => {
         "class n3 root",
         "class n4 truncation",
       ],
-      ["Node 1 hides 1 child beyond --max-breadth 1"],
+      ["Node 1 hides 1 child beyond --truncate-breadth 1"],
     ],
     [
-      "--max-depth 2 with --max-breadth 1 applies both caps",
-      ["--max-depth", "2", "--max-breadth", "1"],
+      "--truncate-depth 2 with --truncate-breadth 1 applies both caps",
+      ["--truncate-depth", "2", "--truncate-breadth", "1"],
       [
         'n0["Work"]',
         'n1["Email"]',
@@ -369,8 +369,8 @@ describe("render-tree-data", () => {
         "class n4 truncation",
       ],
       [
-        "Node 1 hides 1 child beyond --max-breadth 1",
-        "Node 2 hides 1 child beyond --max-depth 2",
+        "Node 1 hides 1 child beyond --truncate-breadth 1",
+        "Node 2 hides 1 child beyond --truncate-depth 2",
       ],
     ],
   ])(
@@ -469,8 +469,8 @@ describe("render-tree-data", () => {
       ['n0["Errands"]', "class n0 root"],
     ],
     [
-      "--max-depth applies to the filtered tree, truncating what the filter kept",
-      ["--filter", "name!=Errands", "--max-depth", "2"],
+      "--truncate-depth applies to the filtered tree, truncating what the filter kept",
+      ["--filter", "name!=Errands", "--truncate-depth", "2"],
       [
         'n0["Work"]',
         'n1["Email"]',
@@ -523,8 +523,8 @@ describe("render-tree-data", () => {
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toBe(drawnDiagram(lines));
       expect(result.stderr).toBe(
-        "⚠️ Node 2 hides 1 child beyond --max-depth 2\n".repeat(
-          argv.includes("--max-depth") ? 1 : 0,
+        "⚠️ Node 2 hides 1 child beyond --truncate-depth 2\n".repeat(
+          argv.includes("--truncate-depth") ? 1 : 0,
         ),
       );
     },
@@ -633,37 +633,37 @@ describe("render-tree-data", () => {
   );
 
   it.each(["0", "-1", "1.5", "two"])(
-    "fails before connecting when --max-depth is %s, not a positive integer",
+    "fails before connecting when --truncate-depth is %s, not a positive integer",
     async (value) => {
       const secret = "cap-fixture-secret-3d8e";
       const unreachable = `postgresql://fixture_user:${secret}@127.0.0.1:1/fixture_db`;
 
       const result = await runRender(
-        ["--entities", LIST_GLOB, "--max-depth", value],
+        ["--entities", LIST_GLOB, "--truncate-depth", value],
         unreachable,
       );
 
       expect(result.exitCode).toBe(1);
       expect(result.stdout).toBe("");
       expect(result.stderr).toContain(
-        `--max-depth must be a positive integer, e.g. --max-depth 3; got "${value}"`,
+        `--truncate-depth must be a positive integer, e.g. --truncate-depth 3; got "${value}"`,
       );
       expect(result.stderr).not.toContain(secret);
     },
     INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   );
 
-  it("fails with the --max-breadth message when it is not a positive integer", async () => {
+  it("fails with the --truncate-breadth message when it is not a positive integer", async () => {
     const result = await runRender([
       "--entities",
       LIST_GLOB,
-      "--max-breadth",
+      "--truncate-breadth",
       "0",
     ]);
 
     expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain(
-      '--max-breadth must be a positive integer, e.g. --max-breadth 3; got "0"',
+      '--truncate-breadth must be a positive integer, e.g. --truncate-breadth 3; got "0"',
     );
   });
 

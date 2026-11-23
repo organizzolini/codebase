@@ -265,7 +265,7 @@ describe("render-graph-data", () => {
     );
 
     it(
-      "spends an undirected node's --max-breadth on its children, not on the node it was reached from",
+      "spends an undirected node's --truncate-breadth on its children, not on the node it was reached from",
       async () => {
         await source.query(
           "INSERT INTO graph_links (id, source, target) VALUES (3, 'B', 'C')",
@@ -274,7 +274,7 @@ describe("render-graph-data", () => {
         const result = await runRender([
           "--entities",
           GRAPH_LINK_GLOB,
-          "--max-breadth",
+          "--truncate-breadth",
           "1",
         ]);
 
@@ -380,12 +380,12 @@ describe("render-graph-data", () => {
     );
 
     it(
-      "measures --max-depth from the nearest root and collapses the levels below it",
+      "measures --truncate-depth from the nearest root and collapses the levels below it",
       async () => {
         const result = await runRender([
           "--entities",
           ROUTE_GLOB,
-          "--max-depth",
+          "--truncate-depth",
           "2",
         ]);
 
@@ -407,19 +407,19 @@ describe("render-graph-data", () => {
           ]),
         );
         expect(result.stderr).toContain(
-          "Node North hides 1 child beyond --max-depth 2",
+          "Node North hides 1 child beyond --truncate-depth 2",
         );
       },
       INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
     );
 
     it(
-      "hides the children beyond --max-breadth under one truncation node",
+      "hides the children beyond --truncate-breadth under one truncation node",
       async () => {
         const result = await runRender([
           "--entities",
           ROUTE_GLOB,
-          "--max-breadth",
+          "--truncate-breadth",
           "1",
         ]);
 

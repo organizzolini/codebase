@@ -40,20 +40,20 @@ describe("graph dag limits utilities", () => {
 
     it("measures depth as the shortest distance from a root", () => {
       const graph = limitDagGraph(buildDag(SHORTCUT), {
-        maximumDepth: 2,
+        truncateDepth: 2,
       });
 
       expect(ids(graph)).toStrictEqual(["A", "B", "C", "D", "D/more"]);
       expect(graph.edges).toContainEqual(edge("A", "D"));
       expect(graph.edges).toContainEqual(edge("B", "D"));
       expect(graph.warnings).toStrictEqual([
-        "Node D hides 1 child beyond --max-depth 2",
+        "Node D hides 1 child beyond --truncate-depth 2",
       ]);
     });
 
     it("draws a node reached by several paths once", () => {
       const graph = limitDagGraph(buildDag(SHORTCUT), {
-        maximumBreadth: 3,
+        truncateBreadth: 3,
       });
 
       expect(ids(graph)).toStrictEqual(["A", "B", "C", "D", "E"]);
@@ -62,7 +62,7 @@ describe("graph dag limits utilities", () => {
 
     it("hides children beyond the breadth under a truncation node", () => {
       const graph = limitDagGraph(buildDag(SHORTCUT), {
-        maximumBreadth: 2,
+        truncateBreadth: 2,
       });
 
       expect(ids(graph)).toStrictEqual(["A", "B", "C", "D", "E", "A/more"]);
@@ -73,14 +73,14 @@ describe("graph dag limits utilities", () => {
       });
       expect(graph.edges).not.toContainEqual(edge("A", "D"));
       expect(graph.warnings).toStrictEqual([
-        "Node A hides 1 child beyond --max-breadth 2",
+        "Node A hides 1 child beyond --truncate-breadth 2",
       ]);
     });
 
     it("stops at a cycle a root reaches, with only a breadth cap", () => {
       const graph = limitDagGraph(
         buildDag([edge("R", "A"), edge("A", "B"), edge("B", "A")]),
-        { maximumBreadth: 1 },
+        { truncateBreadth: 1 },
       );
 
       expect(ids(graph)).toStrictEqual(["R", "A", "B"]);
@@ -90,7 +90,7 @@ describe("graph dag limits utilities", () => {
     it("keeps a component no root reaches as it is", () => {
       const graph = limitDagGraph(
         buildDag([edge("R", "S"), edge("X", "Y"), edge("Y", "X")]),
-        { maximumDepth: 1 },
+        { truncateDepth: 1 },
       );
 
       expect(ids(graph)).toStrictEqual(["R", "X", "Y", "R/more"]);
@@ -99,7 +99,7 @@ describe("graph dag limits utilities", () => {
 
     it("keeps a self-loop on a node that stays", () => {
       const graph = limitDagGraph(buildDag([edge("R", "A"), edge("A", "A")]), {
-        maximumDepth: 2,
+        truncateDepth: 2,
       });
 
       expect(graph.edges).toContainEqual(edge("A", "A"));
@@ -175,13 +175,13 @@ describe("graph dag limits utilities", () => {
           edge("A", "B"),
           edge("B", "C"),
         ]),
-        { maximumDepth: 2 },
+        { truncateDepth: 2 },
       );
 
       expect(ids(graph)).toStrictEqual(["R", "A", "A/more"]);
       expect(graph.warnings).toStrictEqual([
         "Node R has an edge to itself: a @Dag must have no cycle",
-        "Node A hides 1 child beyond --max-depth 2",
+        "Node A hides 1 child beyond --truncate-depth 2",
       ]);
     });
 
@@ -200,14 +200,14 @@ describe("graph dag limits utilities", () => {
           directed: false,
           kind: "graph",
         }),
-        { maximumDepth: 2 },
+        { truncateDepth: 2 },
       );
 
       expect(ids(graph)).toStrictEqual(["A", "B", "B/more"]);
       expect(graph.edges).toContainEqual(edge("A", "B"));
       expect(graph.directed).toBe(false);
       expect(graph.warnings).toStrictEqual([
-        "Node B hides 1 child beyond --max-depth 2",
+        "Node B hides 1 child beyond --truncate-depth 2",
       ]);
     });
 
@@ -217,7 +217,7 @@ describe("graph dag limits utilities", () => {
           directed: false,
           kind: "graph",
         }),
-        { maximumBreadth: 1 },
+        { truncateBreadth: 1 },
       );
 
       expect(ids(graph)).toStrictEqual(["A", "B", "C"]);

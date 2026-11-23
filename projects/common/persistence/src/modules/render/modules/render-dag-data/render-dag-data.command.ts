@@ -10,14 +10,14 @@ import {
   GRAPH_DRY_RUN_OPTION,
   GRAPH_ENTITIES_OPTION,
   GRAPH_FILTER_OPTION,
-  GRAPH_MAX_BREADTH_OPTION,
-  GRAPH_MAX_DEPTH_OPTION,
   GRAPH_OUTPUT_JSON_OPTION,
   GRAPH_OUTPUT_MARKDOWN_OPTION,
   GRAPH_OVERWRITE_OPTION,
   GRAPH_SCHEMA_OPTION,
   GRAPH_SORT_OPTION,
   GRAPH_SOURCE_URI_OPTION,
+  GRAPH_TRUNCATE_BREADTH_OPTION,
+  GRAPH_TRUNCATE_DEPTH_OPTION,
 } from "../../../graph-options/graph-options.constants";
 import { GraphOptionsService } from "../../../graph-options/graph-options.service";
 import { graphDrawDryRunMessages } from "../../render.constants";
@@ -91,18 +91,6 @@ export class RenderDagDataCommand extends CommandRunner {
     return value;
   }
 
-  /** Parses `--max-breadth`, the most children drawn under one node. */
-  @Option(GRAPH_MAX_BREADTH_OPTION)
-  parseMaximumBreadth(value: string): string {
-    return value;
-  }
-
-  /** Parses `--max-depth`, the deepest level drawn, roots being level 1. */
-  @Option(GRAPH_MAX_DEPTH_OPTION)
-  parseMaximumDepth(value: string): string {
-    return value;
-  }
-
   /** Parses `--output-json`, the file the normalized graph is written to. */
   @Option(GRAPH_OUTPUT_JSON_OPTION)
   parseOutputJson(value: string): string {
@@ -159,6 +147,18 @@ export class RenderDagDataCommand extends CommandRunner {
     return value;
   }
 
+  /** Parses `--truncate-breadth`, the most children drawn under one node. */
+  @Option(GRAPH_TRUNCATE_BREADTH_OPTION)
+  parseTruncateBreadth(value: string): string {
+    return value;
+  }
+
+  /** Parses `--truncate-depth`, the deepest level drawn, roots being level 1. */
+  @Option(GRAPH_TRUNCATE_DEPTH_OPTION)
+  parseTruncateDepth(value: string): string {
+    return value;
+  }
+
   /**
    * Validates the options, then draws the picked DAG. `--dry-run` stops after
    * the entity files resolve, before any connection opens.
@@ -191,10 +191,10 @@ export class RenderDagDataCommand extends CommandRunner {
         this.graphDag.load(dataSource, dataSource.getMetadata(picked), {
           edge,
           filters: plan.filters,
-          maximumBreadth: plan.maximumBreadth,
-          maximumDepth: plan.maximumDepth,
           paging: plan.paging,
           sorts: plan.sorts,
+          truncateBreadth: plan.truncateBreadth,
+          truncateDepth: plan.truncateDepth,
         }),
     });
     for (const line of written) {

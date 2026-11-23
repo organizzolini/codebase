@@ -24,8 +24,8 @@ export function limitDagGraph(
   limits: GraphLimits,
 ): GraphModel {
   if (
-    limits.maximumDepth === undefined &&
-    limits.maximumBreadth === undefined
+    limits.truncateDepth === undefined &&
+    limits.truncateBreadth === undefined
   ) {
     return graph;
   }
@@ -117,7 +117,7 @@ function rootIds(graph: GraphModel): string[] {
 function walkDag(
   roots: readonly string[],
   links: GraphLinks,
-  { maximumBreadth = Infinity, maximumDepth = Infinity }: GraphLimits,
+  { truncateBreadth = Infinity, truncateDepth = Infinity }: GraphLimits,
 ): GraphDagWalk {
   const walk: GraphDagWalk = {
     kept: new Set(),
@@ -133,9 +133,9 @@ function walkDag(
         walk,
         { links, parent },
         {
-          atDepthLimit: depth >= maximumDepth,
-          maximumBreadth,
-          maximumDepth,
+          atDepthLimit: depth >= truncateDepth,
+          truncateBreadth,
+          truncateDepth,
         },
       ),
     );
@@ -152,12 +152,12 @@ function walkParent(
   { links, parent }: { readonly links: GraphLinks; readonly parent: string },
   cap: {
     readonly atDepthLimit: boolean;
-    readonly maximumBreadth: number;
-    readonly maximumDepth: number;
+    readonly truncateBreadth: number;
+    readonly truncateDepth: number;
   },
 ): string[] {
   const all = openChildren(walk, links, parent);
-  const drawn = cap.atDepthLimit ? all : all.slice(0, cap.maximumBreadth);
+  const drawn = cap.atDepthLimit ? all : all.slice(0, cap.truncateBreadth);
   const fresh: string[] = [];
   let hidden = all.length - drawn.length;
   for (const child of drawn) {
@@ -176,8 +176,8 @@ function walkParent(
   if (hidden > 0) {
     walk.truncations.push({
       hidden,
-      limit: cap.atDepthLimit ? "--max-depth" : "--max-breadth",
-      maximum: cap.atDepthLimit ? cap.maximumDepth : cap.maximumBreadth,
+      limit: cap.atDepthLimit ? "--truncate-depth" : "--truncate-breadth",
+      maximum: cap.atDepthLimit ? cap.truncateDepth : cap.truncateBreadth,
       parent,
     });
   }

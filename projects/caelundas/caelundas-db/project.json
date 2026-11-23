@@ -48,7 +48,7 @@
     "prettier": {},
     "render-tag-tree": {
       "cache": false,
-      "description": "Draw the caelundas tag tree as a Mermaid flowchart from the local database; pass --args=\"--max-depth 2 --output-markdown tags.md\" for the filter, sort, depth, breadth, paging and output options",
+      "description": "Draw the caelundas tag tree as a Mermaid flowchart from the local database; pass --args=\"--truncate-depth 2 --output-markdown tags.md\" for the filter, sort, depth, breadth, paging and output options",
       "executor": "nx:run-commands",
       "options": {
         "command": "SWC_NODE_PROJECT=projects/common/persistence/configuration/tsconfig.json node --import @swc-node/register/esm-register projects/common/persistence/src/persistence.main.ts render-tree-data --source-uri \"postgresql://${CAELUNDAS_POSTGRES_USERNAME:?set CAELUNDAS_POSTGRES_USERNAME}:${CAELUNDAS_POSTGRES_PASSWORD:?set CAELUNDAS_POSTGRES_PASSWORD}@${CAELUNDAS_POSTGRES_HOST:-localhost}:${CAELUNDAS_POSTGRES_PORT:-5432}/${CAELUNDAS_POSTGRES_DATABASE:?set CAELUNDAS_POSTGRES_DATABASE}\" --schema \"${CAELUNDAS_POSTGRES_SCHEMA:-caelundas}\" --entities 'projects/caelundas/caelundas-db/src/**/tag.entity.ts' --table tags {args}",

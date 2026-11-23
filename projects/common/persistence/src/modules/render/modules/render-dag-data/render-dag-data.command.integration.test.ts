@@ -318,7 +318,7 @@ describe("render-dag-data", () => {
         const result = await runRender([
           "--entities",
           TASK_GLOB,
-          "--max-depth",
+          "--truncate-depth",
           "1",
         ]);
 
@@ -434,14 +434,14 @@ describe("render-dag-data", () => {
     );
   });
 
-  describe("--max-depth and --max-breadth", () => {
+  describe("--truncate-depth and --truncate-breadth", () => {
     it(
-      "collapses the levels below --max-depth into '… K more' nodes with warnings",
+      "collapses the levels below --truncate-depth into '… K more' nodes with warnings",
       async () => {
         const result = await runRender([
           "--entities",
           TASK_GLOB,
-          "--max-depth",
+          "--truncate-depth",
           "2",
         ]);
 
@@ -467,7 +467,7 @@ describe("render-dag-data", () => {
           ]),
         );
         expect(result.stderr).toBe(
-          "⚠️ Node Build hides 1 child beyond --max-depth 2\n⚠️ Node Design hides 1 child beyond --max-depth 2\n",
+          "⚠️ Node Build hides 1 child beyond --truncate-depth 2\n⚠️ Node Design hides 1 child beyond --truncate-depth 2\n",
         );
       },
       INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
@@ -483,7 +483,7 @@ describe("render-dag-data", () => {
         const result = await runRender([
           "--entities",
           TASK_GLOB,
-          "--max-depth",
+          "--truncate-depth",
           "2",
         ]);
 
@@ -495,12 +495,12 @@ describe("render-dag-data", () => {
     );
 
     it(
-      "hides the children beyond --max-breadth under one '… K more' node",
+      "hides the children beyond --truncate-breadth under one '… K more' node",
       async () => {
         const result = await runRender([
           "--entities",
           TASK_GLOB,
-          "--max-breadth",
+          "--truncate-breadth",
           "1",
         ]);
 
@@ -523,7 +523,7 @@ describe("render-dag-data", () => {
           ]),
         );
         expect(result.stderr).toBe(
-          "⚠️ Node Plan hides 1 child beyond --max-breadth 1\n",
+          "⚠️ Node Plan hides 1 child beyond --truncate-breadth 1\n",
         );
       },
       INTEGRATION_TEST_TIMEOUT_MILLISECONDS,

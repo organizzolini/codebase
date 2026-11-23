@@ -26,18 +26,18 @@ export const GRAPH_FILTER_OPTION = {
   flags: "--filter <expression>",
 } as const;
 
-/** Flag and help text of `--max-breadth`, for every graph render command. */
-export const GRAPH_MAX_BREADTH_OPTION = {
+/** Flag and help text of `--truncate-breadth`, for every graph render command. */
+export const GRAPH_TRUNCATE_BREADTH_OPTION = {
   description:
     "Most children drawn under any one node, in sort order; the rest become one '… K more' node and a warning. Roots are never capped. Positive integer",
-  flags: "--max-breadth <n>",
+  flags: "--truncate-breadth <n>",
 } as const;
 
-/** Flag and help text of `--max-depth`, for every graph render command. */
-export const GRAPH_MAX_DEPTH_OPTION = {
+/** Flag and help text of `--truncate-depth`, for every graph render command. */
+export const GRAPH_TRUNCATE_DEPTH_OPTION = {
   description:
     "Deepest level drawn, with roots at level 1; a node's level is its shortest distance from a root. Children below it become one '… K more' node and a warning. Positive integer",
-  flags: "--max-depth <n>",
+  flags: "--truncate-depth <n>",
 } as const;
 
 /** The flag and help text of `--output-json`. */
@@ -70,7 +70,7 @@ export const GRAPH_SCHEMA_OPTION = {
 /** Flag and help text of `--sort`, for every graph render command. */
 export const GRAPH_SORT_OPTION = {
   description:
-    "Sort edges by column[:asc|desc], e.g. --sort weight:desc; repeat for several keys, applied in order, then by source and target. Edge order sets the order of roots and of siblings, before --max-depth and --max-breadth cut the graph",
+    "Sort edges by column[:asc|desc], e.g. --sort weight:desc; repeat for several keys, applied in order, then by source and target. Edge order sets the order of roots and of siblings, before --truncate-depth and --truncate-breadth cut the graph",
   flags: "--sort <expression>",
 } as const;
 

@@ -392,8 +392,8 @@ Every option is shared by the three commands unless the table says otherwise.
 | `--sort <expression>`      | Sorts by `column[:asc\|desc]`; repeatable, applied in order. Applied before the caps cut the diagram                                                                                                  |
 | `--limit <n>`              | Roots per page, a positive integer. Each root is drawn with everything reachable from it                                                                                                              |
 | `--page <n>`               | The page of `--limit` roots to draw, from 1. Needs `--limit`; a page past the last root draws nothing and warns                                                                                       |
-| `--max-depth <n>`          | The deepest level drawn, a positive integer. Roots are level 1; the children below a cut level become one `… K more` node                                                                             |
-| `--max-breadth <n>`        | The most children drawn under one node, a positive integer, in sort order. The rest become one `… K more` node. Roots are never capped                                                                |
+| `--truncate-depth <n>`     | The deepest level drawn, a positive integer. Roots are level 1; the children below a cut level become one `… K more` node                                                                             |
+| `--truncate-breadth <n>`   | The most children drawn under one node, a positive integer, in sort order. The rest become one `… K more` node. Roots are never capped                                                                |
 | `--output-markdown <path>` | Writes the diagram as a fenced Mermaid block, creating its folders, with the warnings after the fence. The diagram is not printed                                                                     |
 | `--output-json <path>`     | Writes the drawn graph as pretty JSON, creating its folders. The diagram is not printed                                                                                                               |
 | `--overwrite`              | Replaces an existing `--output-markdown` or `--output-json` file. Without it an existing file is refused and left unchanged                                                                           |
@@ -454,13 +454,7 @@ The decorators are exported from `@codebase/persistence`:
 ```ts
 import { Column, Entity, PrimaryColumn } from "typeorm";
 
-import {
-  Dag,
-  GraphLabel,
-  GraphSource,
-  GraphTarget,
-  GraphWeight,
-} from "@codebase/persistence";
+import { Dag, GraphLabel, GraphSource, GraphTarget, GraphWeight } from "@codebase/persistence";
 
 /** Each row says its source task blocks its target task. */
 @Dag()
@@ -500,7 +494,7 @@ is open.
 ### Drawing trees
 
 `render-tree-data` reads the whole tree, then applies, in order: `--filter`,
-`--sort`, `--limit` and `--page`, then `--max-depth` and `--max-breadth`.
+`--sort`, `--limit` and `--page`, then `--truncate-depth` and `--truncate-breadth`.
 
 - **Roots** are the rows whose parent is null or is not in the table. A row
   whose parent is missing is drawn as a root and warned about, naming the
@@ -511,7 +505,7 @@ is open.
   key, which is a `uuidv7` in the caelundas tables and so roughly creation order.
 - **`--limit` and `--page`** page the roots, each with its descendants. Each
   page is the next roots of the filtered, sorted forest.
-- **Caps** hide children beyond `--max-depth` or `--max-breadth`. Each capped
+- **Caps** hide children beyond `--truncate-depth` or `--truncate-breadth`. Each capped
   parent warns with its id and the count hidden.
 - Several `@Tree` entities without `--table` fail, naming each table, before
   any connection opens.
@@ -593,13 +587,13 @@ The `render-tag-tree` target in `caelundas-db` runs `render-tree-data` over the
 from `CAELUNDAS_POSTGRES_*` in the shell:
 
 ```bash
-nx run caelundas-db:render-tag-tree --args="--max-depth 2 --limit 3"
+nx run caelundas-db:render-tag-tree --args="--truncate-depth 2 --limit 3"
 ```
 
 The target and its connection variables are described in the
 [caelundas-db README](../../caelundas/caelundas-db/README.md#drawing-the-tag-tree).
 The output below is a real run against the local container, with the target's
-`--max-depth 2 --limit 3`:
+`--truncate-depth 2 --limit 3`:
 
 ```mermaid
 flowchart LR
@@ -657,9 +651,9 @@ flowchart LR
     class n4 root
 ```
 
-The three roots are the first three in primary-key order, and `--max-depth 2`
-draws their children without going deeper. A run with `--max-depth 2
---max-breadth 2` and no `--limit` cuts each parent to two children, adds
+The three roots are the first three in primary-key order, and `--truncate-depth 2`
+draws their children without going deeper. A run with `--truncate-depth 2
+--truncate-breadth 2` and no `--limit` cuts each parent to two children, adds
 `… K more` nodes, and writes one warning per cut to stderr; that run was made
 too, and its warnings were read from stderr.
 

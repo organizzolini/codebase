@@ -115,26 +115,6 @@ export class RenderTreeDataCommand extends CommandRunner {
     return value;
   }
 
-  /** Parses `--max-breadth`, the most children drawn under one node. */
-  @Option({
-    description:
-      "Most children drawn under any one node; the rest become one '… K more' node and a warning. Roots are never capped. Positive integer",
-    flags: "--max-breadth <n>",
-  })
-  parseMaximumBreadth(value: string): string {
-    return value;
-  }
-
-  /** Parses `--max-depth`, the deepest level drawn, roots being level 1. */
-  @Option({
-    description:
-      "Deepest level drawn, with roots at level 1; children below it become one '… K more' node and a warning. Positive integer",
-    flags: "--max-depth <n>",
-  })
-  parseMaximumDepth(value: string): string {
-    return value;
-  }
-
   /** Parses `--output-json`, the file the normalized graph is written to. */
   @Option(GRAPH_OUTPUT_JSON_OPTION)
   parseOutputJson(value: string): string {
@@ -172,7 +152,7 @@ export class RenderTreeDataCommand extends CommandRunner {
   /** Collects each repeated `--sort` into one list of keys, applied in the order given. */
   @Option({
     description:
-      "Sort siblings by column[:asc|desc], e.g. --sort name:desc; repeat for several keys, applied in order. Applied before --max-depth and --max-breadth cut the tree",
+      "Sort siblings by column[:asc|desc], e.g. --sort name:desc; repeat for several keys, applied in order. Applied before --truncate-depth and --truncate-breadth cut the tree",
     flags: "--sort <expression>",
   })
   parseSort(value: string, previous: string[] = []): string[] {
@@ -192,6 +172,26 @@ export class RenderTreeDataCommand extends CommandRunner {
     flags: "--table <name>",
   })
   parseTable(value: string): string {
+    return value;
+  }
+
+  /** Parses `--truncate-breadth`, the most children drawn under one node. */
+  @Option({
+    description:
+      "Most children drawn under any one node; the rest become one '… K more' node and a warning. Roots are never capped. Positive integer",
+    flags: "--truncate-breadth <n>",
+  })
+  parseTruncateBreadth(value: string): string {
+    return value;
+  }
+
+  /** Parses `--truncate-depth`, the deepest level drawn, roots being level 1. */
+  @Option({
+    description:
+      "Deepest level drawn, with roots at level 1; children below it become one '… K more' node and a warning. Positive integer",
+    flags: "--truncate-depth <n>",
+  })
+  parseTruncateDepth(value: string): string {
     return value;
   }
 
@@ -222,10 +222,10 @@ export class RenderTreeDataCommand extends CommandRunner {
       read: async () =>
         this.graphTree.load(dataSource, dataSource.getMetadata(picked), {
           filters: plan.filters,
-          maximumBreadth: plan.maximumBreadth,
-          maximumDepth: plan.maximumDepth,
           paging: plan.paging,
           sorts: plan.sorts,
+          truncateBreadth: plan.truncateBreadth,
+          truncateDepth: plan.truncateDepth,
         }),
     });
     for (const line of written) {

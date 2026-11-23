@@ -63,8 +63,8 @@ export function limitTreeGraph(
   limits: GraphTreeLimits,
 ): GraphModel {
   if (
-    limits.maximumDepth === undefined &&
-    limits.maximumBreadth === undefined
+    limits.truncateDepth === undefined &&
+    limits.truncateBreadth === undefined
   ) {
     return graph;
   }
@@ -264,8 +264,8 @@ function childrenByParent(
 }
 
 /**
- * The children a node shows at `depth`: none past `maximumDepth`, else its
- * first `maximumBreadth`.
+ * The children a node shows at `depth`: none past `truncateDepth`, else its
+ * first `truncateBreadth`.
  */
 function childrenToShow(
   node: { readonly depth: number; readonly id: string },
@@ -278,27 +278,27 @@ function childrenToShow(
   if (childIds.length === 0) return { shown: [] };
 
   const parent = node.id;
-  const { maximumBreadth, maximumDepth } = limits;
-  if (maximumDepth !== undefined && node.depth >= maximumDepth) {
+  const { truncateBreadth, truncateDepth } = limits;
+  if (truncateDepth !== undefined && node.depth >= truncateDepth) {
     return {
       shown: [],
       truncation: {
         hidden: childIds.length,
-        limit: "--max-depth",
-        maximum: maximumDepth,
+        limit: "--truncate-depth",
+        maximum: truncateDepth,
         parent,
       },
     };
   }
-  if (maximumBreadth === undefined || childIds.length <= maximumBreadth) {
+  if (truncateBreadth === undefined || childIds.length <= truncateBreadth) {
     return { shown: childIds };
   }
   return {
-    shown: childIds.slice(0, maximumBreadth),
+    shown: childIds.slice(0, truncateBreadth),
     truncation: {
-      hidden: childIds.length - maximumBreadth,
-      limit: "--max-breadth",
-      maximum: maximumBreadth,
+      hidden: childIds.length - truncateBreadth,
+      limit: "--truncate-breadth",
+      maximum: truncateBreadth,
       parent,
     },
   };

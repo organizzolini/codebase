@@ -101,7 +101,7 @@ See [ADR 0031](../../../documentation/adr/0031-move-caelundas-from-sqlite-to-pos
 
 ```bash
 nx run caelundas-db:render-tag-tree
-nx run caelundas-db:render-tag-tree --args="--max-depth 2 --output-markdown tags.md --overwrite"
+nx run caelundas-db:render-tag-tree --args="--truncate-depth 2 --output-markdown tags.md --overwrite"
 ```
 
 The `render-tag-tree` target runs the `persistence` `render-tree-data` command

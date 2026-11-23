@@ -85,12 +85,12 @@ describe("graph tree utilities", () => {
 
     it("draws every level and child when each limit is above the tree", () => {
       expect(
-        capped(rows, { maximumBreadth: 10, maximumDepth: 10 }),
+        capped(rows, { truncateBreadth: 10, truncateDepth: 10 }),
       ).toStrictEqual(buildTreeGraph(rows));
     });
 
-    it("stops at --max-depth 1, leaving only the roots and one truncation under each with children", () => {
-      const graph = capped(rows, { maximumDepth: 1 });
+    it("stops at --truncate-depth 1, leaving only the roots and one truncation under each with children", () => {
+      const graph = capped(rows, { truncateDepth: 1 });
 
       expect(graph).toStrictEqual({
         directed: true,
@@ -100,12 +100,12 @@ describe("graph tree utilities", () => {
           { id: "5", label: "Errands", marker: "root" },
           { id: "1/more", label: "… 2 more", marker: "truncation" },
         ],
-        warnings: ["Node 1 hides 2 children beyond --max-depth 1"],
+        warnings: ["Node 1 hides 2 children beyond --truncate-depth 1"],
       });
     });
 
-    it("keeps the levels through --max-depth and truncates the children below", () => {
-      const graph = capped(rows, { maximumDepth: 2 });
+    it("keeps the levels through --truncate-depth and truncates the children below", () => {
+      const graph = capped(rows, { truncateDepth: 2 });
 
       expect(graph.nodes).toStrictEqual([
         { id: "1", label: "Work", marker: "root" },
@@ -120,12 +120,12 @@ describe("graph tree utilities", () => {
         { source: "2", target: "2/more" },
       ]);
       expect(graph.warnings).toStrictEqual([
-        "Node 2 hides 1 child beyond --max-depth 2",
+        "Node 2 hides 1 child beyond --truncate-depth 2",
       ]);
     });
 
-    it("shows the first --max-breadth children under a node and truncates the rest", () => {
-      const graph = capped(rows, { maximumBreadth: 1 });
+    it("shows the first --truncate-breadth children under a node and truncates the rest", () => {
+      const graph = capped(rows, { truncateBreadth: 1 });
 
       expect(graph.nodes).toStrictEqual([
         { id: "1", label: "Work", marker: "root" },
@@ -140,12 +140,12 @@ describe("graph tree utilities", () => {
         { source: "1", target: "1/more" },
       ]);
       expect(graph.warnings).toStrictEqual([
-        "Node 1 hides 1 child beyond --max-breadth 1",
+        "Node 1 hides 1 child beyond --truncate-breadth 1",
       ]);
     });
 
     it("applies both limits together, truncating breadth above and depth below", () => {
-      const graph = capped(rows, { maximumBreadth: 1, maximumDepth: 2 });
+      const graph = capped(rows, { truncateBreadth: 1, truncateDepth: 2 });
 
       expect(graph.nodes).toStrictEqual([
         { id: "1", label: "Work", marker: "root" },
@@ -160,19 +160,19 @@ describe("graph tree utilities", () => {
         { source: "2", target: "2/more" },
       ]);
       expect(graph.warnings).toStrictEqual([
-        "Node 1 hides 1 child beyond --max-breadth 1",
-        "Node 2 hides 1 child beyond --max-depth 2",
+        "Node 1 hides 1 child beyond --truncate-breadth 1",
+        "Node 2 hides 1 child beyond --truncate-depth 2",
       ]);
     });
 
-    it("never caps the roots with --max-breadth", () => {
+    it("never caps the roots with --truncate-breadth", () => {
       const graph = capped(
         [
           { id: "a", label: "A", parentId: undefined },
           { id: "b", label: "B", parentId: undefined },
           { id: "c", label: "C", parentId: undefined },
         ],
-        { maximumBreadth: 1 },
+        { truncateBreadth: 1 },
       );
 
       expect(graph.nodes.map(({ id }) => id)).toStrictEqual(["a", "b", "c"]);
@@ -186,7 +186,7 @@ describe("graph tree utilities", () => {
           { id: "8", label: "B", parentId: "7" },
           { id: "9", label: "R", parentId: undefined },
         ],
-        { maximumDepth: 1 },
+        { truncateDepth: 1 },
       );
 
       expect(graph.nodes).toStrictEqual([
@@ -210,7 +210,7 @@ describe("graph tree utilities", () => {
         })),
       ];
 
-      const graph = capped(rows, { maximumBreadth: 2 });
+      const graph = capped(rows, { truncateBreadth: 2 });
 
       expect(graph.nodes.map(({ id }) => id)).toStrictEqual([
         "1",
@@ -232,7 +232,7 @@ describe("graph tree utilities", () => {
           { id: "2", label: "Email", parentId: "1" },
           { id: "1/more", label: "Odd", parentId: "1" },
         ],
-        { maximumBreadth: 1 },
+        { truncateBreadth: 1 },
       );
 
       const ids = graph.nodes.map(({ id }) => id);

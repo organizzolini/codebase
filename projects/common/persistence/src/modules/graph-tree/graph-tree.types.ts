@@ -75,7 +75,7 @@ export interface GraphTreeTruncation {
   readonly hidden: number;
 
   /** The flag whose cap hid them. */
-  readonly limit: "--max-breadth" | "--max-depth";
+  readonly limit: "--truncate-breadth" | "--truncate-depth";
 
   /** The cap's value. */
   readonly maximum: number;

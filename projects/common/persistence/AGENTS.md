@@ -112,8 +112,8 @@ testing/
 - **Filters:** `=`, `!=`, and `~=` compare a column's text, so a NULL matches
   only `!=`. `~=` wraps its value in wildcards, with the value's own wildcards
   escaped.
-- **Tree caps:** a node past `--max-depth` hides all its children, and one past
-  `--max-breadth` keeps its first children in row order. Each hidden group is
+- **Tree caps:** a node past `--truncate-depth` hides all its children, and one past
+  `--truncate-breadth` keeps its first children in row order. Each hidden group is
   drawn as one "… K more" truncation node under its parent and warned about.
   Nodes no root reaches, such as a cycle, stay as drawn.
 - **Tree matches:** the ancestor and descendant walks each join a row once, so a

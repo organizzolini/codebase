@@ -61,8 +61,6 @@ export class GraphOptionsService {
     entities,
     filter,
     limit,
-    maxBreadth: maximumBreadth,
-    maxDepth: maximumDepth,
     outputJson,
     outputMarkdown,
     overwrite,
@@ -71,6 +69,8 @@ export class GraphOptionsService {
     sort,
     sourceUri,
     table,
+    truncateBreadth: truncateBreadth,
+    truncateDepth: truncateDepth,
   }: GraphOptions): GraphPlan {
     if (sourceUri === undefined) {
       throw new GraphOptionsError(GRAPH_OPTION_MESSAGES.sourceUri);
@@ -89,8 +89,6 @@ export class GraphOptionsService {
       connection,
       entities,
       filters,
-      maximumBreadth: positiveIntegerFlag("--max-breadth", maximumBreadth),
-      maximumDepth: positiveIntegerFlag("--max-depth", maximumDepth),
       outputs: resolveGraphOutputs({
         json: outputJson,
         markdown: outputMarkdown,
@@ -100,6 +98,11 @@ export class GraphOptionsService {
       sorts,
       source,
       table: this.tableName(table, schema),
+      truncateBreadth: positiveIntegerFlag(
+        "--truncate-breadth",
+        truncateBreadth,
+      ),
+      truncateDepth: positiveIntegerFlag("--truncate-depth", truncateDepth),
     };
   }
 }

@@ -41,13 +41,13 @@ describe(GraphOptionsService, () => {
         },
         entities: ["src/**/*.entity.ts"],
         filters: [],
-        maximumBreadth: undefined,
-        maximumDepth: undefined,
         outputs: { json: undefined, markdown: undefined, overwrite: false },
         paging: undefined,
         sorts: [],
         source: "postgresql://fixture_user:****@localhost:5433/fixture_db",
         table: "closure_tags",
+        truncateBreadth: undefined,
+        truncateDepth: undefined,
       });
     });
 
@@ -98,24 +98,24 @@ describe(GraphOptionsService, () => {
       ).toThrow('--sort "name:up" must be column, column:asc, or column:desc');
     });
 
-    it("reads --max-depth and --max-breadth as positive integers", async () => {
+    it("reads --truncate-depth and --truncate-breadth as positive integers", async () => {
       const { instance } = await buildTestingModule(GraphOptionsService);
 
       const plan = instance.plan({
         entities: ["a.ts"],
-        maxBreadth: "12",
-        maxDepth: "3",
         schema: "fixture",
         sourceUri: SOURCE_URI,
+        truncateBreadth: "12",
+        truncateDepth: "3",
       });
 
-      expect(plan.maximumBreadth).toBe(12);
-      expect(plan.maximumDepth).toBe(3);
+      expect(plan.truncateBreadth).toBe(12);
+      expect(plan.truncateDepth).toBe(3);
     });
 
     it.each([
-      ["--max-depth", "maxDepth"],
-      ["--max-breadth", "maxBreadth"],
+      ["--truncate-depth", "truncateDepth"],
+      ["--truncate-breadth", "truncateBreadth"],
     ])(
       "rejects a %s that is not a positive integer, naming the value",
       async (flag, key) => {
