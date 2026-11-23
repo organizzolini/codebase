@@ -14,6 +14,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **ephemeris**: Astronomical position data that the caelundas performance plan generates year by year with local computation instead of HTTP calls.
 - **family**: Meander classification group, such as the cross, branch, and parallel families whose drawing rules ADR 0004 and ADR 0006 adjust.
 - **interlace**: Woven over-and-under crossing pattern in meander drawings, which ADR 0004 breaks with a one-pitch gap at each crossing.
+- **keyset**: A way to page through sorted rows by asking for those past the last row's sort value and id, rather than skipping a count of rows, so a deep page costs the same as the first.
 - **lattice**: Grid on which every meander sits, which ADR 0007 uses to address each drawing and MeanderLatticeService validates against.
 - **law**: Governing rule in ADR 0011, the universal path and naming law that every project type follows for its file layout.
 - **letter**: Glyph counted in each meander's letter-count map under ADR 0017, counted in all sixteen orientations for every meander.

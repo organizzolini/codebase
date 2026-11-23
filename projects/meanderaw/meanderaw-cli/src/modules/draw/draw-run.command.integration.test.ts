@@ -1,13 +1,24 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
+import { MeanderawDatabaseAggregatesService } from "@codebase/meanderaw-db";
 import { LoggerService } from "@codebase/observability";
 
+import {
+  bruteForceAggregates,
+  derivedAbsent,
+  storedAggregates,
+} from "../../../testing/aggregates";
+import { bridgeRows, storedCharacteristics } from "../../../testing/bridge";
 import {
   DRAW_RUN_TIMEOUT_MILLISECONDS,
   type DrawRunFixture,
   startDrawRun,
 } from "../../../testing/draw-run";
+import {
+  CHARACTERISTIC_KEYS,
+  PATTERN_CHARACTERISTIC_KEYS,
+} from "../characteristics/characteristics.constants";
 import { HISTORICAL_CORPUS } from "../corpus/modules/historical/historical-corpus.constants";
 
 import { DrawCodeService } from "./modules/enumeration/draw-code.service";
@@ -86,10 +97,22 @@ describe("drawCommand draw run", () => {
    */
   describe("over an empty database", () => {
     let drawRun: DrawRunFixture;
+    let brute: Awaited<ReturnType<typeof bruteForceAggregates>>;
+    let derived: Awaited<ReturnType<typeof derivedAbsent>>;
+    let rebuilds = 0;
 
     beforeAll(async () => {
+      const rebuild = vi.spyOn(
+        MeanderawDatabaseAggregatesService.prototype,
+        "rebuild",
+      );
+
       drawRun = await startMockedDrawRun();
       await drawRun.command.run([], {});
+      rebuilds = rebuild.mock.calls.length;
+      // Counted once here, in memory, since it dwarfs the cases that read it.
+      brute = await bruteForceAggregates(drawRun.dataSource);
+      derived = await derivedAbsent(drawRun.dataSource);
     }, DRAW_RUN_TIMEOUT_MILLISECONDS);
 
     afterAll(async () => {
@@ -114,10 +137,13 @@ describe("drawCommand draw run", () => {
     });
 
     it("rebuilds output/index.html and a page per pattern from the draw run's own rows once both halves have committed", async () => {
-      const whirls = await drawRun.repository
-        .createQueryBuilder("meander")
-        .where("meander.characteristics ? 'isWhirl'")
-        .getCount();
+      const [{ count }]: [{ count: string }] = await drawRun.dataSource.query(
+        `SELECT COUNT(*) AS count
+         FROM meanderaw.meander_characteristics bridge
+         JOIN meanderaw.characteristics catalog ON catalog.id = bridge.characteristic_id
+         WHERE catalog.key = 'isWhirl'`,
+      );
+      const whirls = Number(count);
 
       expect(whirls).toBeGreaterThan(0);
       expect(writes.get("output/index.html")).toContain(
@@ -125,6 +151,9 @@ describe("drawCommand draw run", () => {
       );
       expect(writes.get("output/patterns/isWhirl.html")).toContain(
         '<section id="isWhirl">',
+      );
+      expect(writes.get("output/patterns/isWhirl.html")).toContain(
+        "04x03y6354c69c8a39",
       );
     });
 
@@ -140,7 +169,81 @@ describe("drawCommand draw run", () => {
       });
 
       expect(whirl.isHardcoded).toBe(true);
-      expect(whirl.characteristics.isWhirl).toBe(true);
+      await expect(
+        storedCharacteristics(drawRun.dataSource, whirl.code),
+      ).resolves.toMatchObject({ isWhirl: true });
+    });
+
+    it("ends with every count table equal to a brute-force count of what it drew, and rebuilt exactly once", async () => {
+      const { absent: _absent, ...counted } = brute;
+
+      expect(rebuilds).toBe(1);
+      expect(counted.values).not.toHaveLength(0);
+      expect(counted.pairs).not.toHaveLength(0);
+      expect(counted.shapes).not.toHaveLength(0);
+      await expect(storedAggregates(drawRun.dataSource)).resolves.toStrictEqual(
+        counted,
+      );
+    });
+
+    it("lets a reader derive every 0 or false bucket from the stored tables, as the shape total minus what is stored", () => {
+      expect(derived).toStrictEqual(brute.absent);
+    });
+
+    it("rebuilds the same tables when the aggregate command runs on its own", async () => {
+      const drawn = await storedAggregates(drawRun.dataSource);
+
+      await drawRun.aggregate.run();
+
+      await expect(storedAggregates(drawRun.dataSource)).resolves.toStrictEqual(
+        drawn,
+      );
+    });
+
+    it("registers exactly one catalog row per evaluator, and isReducible beside them, marking each pattern characteristic", async () => {
+      const catalog: { isPattern: boolean; key: string }[] =
+        await drawRun.dataSource.query(
+          `SELECT key, is_pattern AS "isPattern" FROM meanderaw.characteristics ORDER BY key`,
+        );
+
+      expect(catalog.map(({ key }) => key)).toStrictEqual(
+        [...CHARACTERISTIC_KEYS, "isReducible"].toSorted(),
+      );
+      expect(
+        catalog.filter(({ isPattern }) => isPattern).map(({ key }) => key),
+      ).toStrictEqual([...PATTERN_CHARACTERISTIC_KEYS].toSorted());
+    });
+
+    it("writes a bridge row only for a true boolean, as 1, and a number above 0, so a sample of meanders holds exactly what it measures", async () => {
+      const sample = await drawRun.repository.find({
+        order: { code: "ASC" },
+        take: 60,
+      });
+      const whirl = await drawRun.repository.findOneByOrFail({
+        code: "04x03y6354c69c8a39",
+      });
+
+      for (const { code } of [...sample, whirl]) {
+        await expect(
+          storedCharacteristics(drawRun.dataSource, code),
+        ).resolves.toStrictEqual(
+          drawRun.evaluators.stored(
+            drawRun.evaluators.compute(code),
+            drawRun.evaluators.isReducible(code),
+          ),
+        );
+      }
+
+      const [{ unwritten }]: [{ unwritten: string }] =
+        await drawRun.dataSource.query(
+          `SELECT COUNT(*) AS unwritten
+           FROM meanderaw.meander_characteristics bridge
+           JOIN meanderaw.characteristics catalog ON catalog.id = bridge.characteristic_id
+           WHERE bridge.value <= 0 OR (catalog.value_type = 'boolean' AND bridge.value <> 1)`,
+        );
+
+      expect(Number(unwritten)).toBe(0);
+      await expect(bridgeRows(drawRun.dataSource)).resolves.not.toHaveLength(0);
     });
   });
 });

@@ -9,12 +9,13 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **band**: The cyclic strip of a Code's repeating unit that characteristics read as a graph, and that drawing cuts at a width.
 - **border**: An edge of the unit's grid, which the top and bottom border touch-count characteristics check for ink touching it.
 - **br**: Bottom-right corner digit of the 2x2 window that EmbeddedUCountCharacteristicService reads when counting embedded U shapes.
+- **brute**:
 - **characteristic**: A measured property of a Code's repeating unit, computed by one evaluator service from a shared context and stored in the database.
 - **comb**: A pattern characteristic named for a comb-shaped ink layout, computed for each unit by IsCombCharacteristicService.
 - **coordinate**: A band or pixel position rounded and trimmed before drawing, as the draw index and drawing services format each path coordinate.
 - **corpus**: The historical set of meander Codes ingested from the retired file tree, split by CorpusService into preserved and enumerated halves.
+- **db**:
 - **degree**: The number of ink edges meeting a point, which path and end characteristics read to find degree-one ends and degree-two runs.
-- **family**: A group of related meanders, such as the waterfalls family in the historical corpus, which draw index pages gather together.
 - **fork**: A point with three branches of ink, which IsForkCharacteristicService and the fork submatrix count for each unit.
 - **hebrew**: The Hebrew script, whose letter shapes such as dalet get their own letter characteristics services with orientation evaluators.
 - **horizontal**: Adjective for left-to-right runs and rectangles, such as horizontal rectangle counts and the longest horizontal run length.
@@ -37,10 +38,10 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **strand**: A maximal run of ink through degree-two points, which StrandUtilitiesService cuts out of a repeat for the strand characteristics.
 - **submatrix**: A folder of characteristic evaluators that read one sub-window of a Code's unit, such as point, letter, corner, or rectangle.
 - **swirl**: A pattern characteristic for a unit whose strands wind one way, computed by IsSwirlCharacteristicService for each Code.
+- **tally**:
 - **tian**: Romanized name of a Hanzi glyph whose orientations get a letter characteristics service class with sixteen evaluators.
 - **tile**: A square cell of the lattice with its four direction bits, handled by TileService and TileCrossingCharacteristicsModule.
 - **tu**: Romanized name of a Hanzi glyph whose orientations get a letter characteristics service class with sixteen evaluators.
-- **updatable**: Stray fragment with no source hit, so the glossary lists it without any meanderaw concept behind it.
 - **waterfall**: A pattern characteristic named for a waterfall of stacked strands, computed by IsWaterfallsCharacteristicService for each unit.
 - **whirl**: A pattern characteristic for a unit whose strands wind in a whirl, computed by IsWhirlCharacteristicService for each Code.
 - **window**: The rectangle of cells of a letter's matrix that a characteristic reads, or the part of a Code an address names to draw.

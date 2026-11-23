@@ -1,5 +1,10 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
+import {
+  CodeModule,
+  CodeService,
+  MatrixModule,
+} from "@codebase/meanderaw-core";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
@@ -9,10 +14,7 @@ import {
   LEGACY_TILE_CROSSING_COMPONENT_DELTAS,
 } from "../../../testing/legacy-characteristics";
 import { tiled } from "../../../testing/meanders";
-import { CodeModule } from "../code/code.module";
-import { CodeService } from "../code/code.service";
 import { HISTORICAL_CORPUS } from "../corpus/modules/historical/historical-corpus.constants";
-import { MatrixModule } from "../geometry/modules/matrix/matrix.module";
 
 import { CharacteristicContextService } from "./characteristic-context.service";
 import { CHARACTERISTIC_KEYS } from "./characteristics.constants";
@@ -99,6 +101,18 @@ describe(CharacteristicsService, () => {
     expect(Object.keys(characteristics).toSorted()).toStrictEqual(
       [...CHARACTERISTIC_KEYS].toSorted(),
     );
+  });
+
+  it("computes no negative or NaN number for any historical corpus entry, so the bridge's above-0 cutoff drops nothing real", () => {
+    const unreadable = HISTORICAL_CORPUS.flatMap((entry) =>
+      Object.entries(
+        service.compute(
+          codeService.parse(entry.code, entry.rows, entry.columns),
+        ),
+      ).filter(([, value]) => typeof value === "number" && !(value >= 0)),
+    );
+
+    expect(unreadable).toStrictEqual([]);
   });
 
   it("names the three rotated tilings among its fixtures", () => {

@@ -327,20 +327,45 @@ const config: KnipConfig = {
       project: "src/**/*.ts",
     },
 
+    // meanderaw-db: Shared TypeORM entities, migrations, and data source
+    "projects/meanderaw/meanderaw-db": {
+      // The data source and the migrations are read by the TypeORM command
+      // line the `migration` target runs, by path rather than by import.
+      entry: [
+        "src/index.ts",
+        "src/modules/meanderaw-database/data-source.constants.ts",
+        "migrations/**/*.ts",
+      ],
+      project: ["src/**/*.ts", "migrations/**/*.ts"],
+    },
+
     // meanderaw: Greek meander (key/fret) SVG generator CLI
     "projects/meanderaw/meanderaw-cli": {
       // The CLI, the REPL its own target runs, and the sweep's worker
-      // thread — spawned by URL, so nothing imports it. The data source and
-      // the migrations are read by the TypeORM command line the `migration`
-      // target runs, by path rather than by import.
+      // thread — spawned by URL, so nothing imports it.
       entry: [
         "src/meanderaw-cli.main.ts",
         "src/meanderaw-cli.repl.ts",
         "src/worker.ts",
-        "src/modules/database/data-source.constants.ts",
-        "migrations/**/*.ts",
       ],
-      project: ["src/**/*.ts", "migrations/**/*.ts"],
+      project: "src/**/*.ts",
+    },
+
+    // meanderaw-api: NestJS GraphQL API
+    "projects/meanderaw/meanderaw-api": {
+      ignoreDependencies: [
+        // Apollo 5's Express integration, which @nestjs/apollo resolves by
+        // name at startup; without it GraphQLModule refuses to boot.
+        "@as-integrations/express5",
+      ],
+      project: "src/**/*.ts",
+    },
+
+    // meanderaw-core: Drawing stack library consumed by meanderaw-cli. Its
+    // testing/ folder holds the Vitest setup and tile fixtures, which Vitest and
+    // the package exports reach by path rather than by import, so only src/ is judged.
+    "projects/meanderaw/meanderaw-core": {
+      project: "src/**/*.ts",
     },
 
     // logger: Shared pino-backed NestJS LoggerService and LoggerModule

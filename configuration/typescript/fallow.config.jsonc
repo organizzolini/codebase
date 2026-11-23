@@ -89,7 +89,8 @@
     "projects/caelundas/caelundas-db/src/modules/caelundas-database/data-source.constants.ts",
     "projects/caelundas/caelundas-db/migrations/**/*.ts",
     "projects/lexico/lexico-db/migrations/**/*.ts",
-    "projects/meanderaw/meanderaw-cli/migrations/**/*.ts",
+    "projects/meanderaw/meanderaw-db/src/modules/meanderaw-database/data-source.constants.ts",
+    "projects/meanderaw/meanderaw-db/migrations/**/*.ts",
     "configuration/repository/release.config.cjs",
     "validate-branch-name.config.cjs",
   ],
@@ -281,6 +282,8 @@
     "**/projects/lexico/lexico-web/src/graphql/operations/**",
     "**/projects/caelundas/caelundas-web/src/graphql/generated/**",
     "**/projects/caelundas/caelundas-web/src/graphql/operations/**",
+    "**/projects/meanderaw/meanderaw-web/src/graphql/generated/**",
+    "**/projects/meanderaw/meanderaw-web/src/graphql/operations/**",
     "**/build/**",
     "**/conformetry-templates/**",
     // 🕸️ Codependix example subjects: input to be graphed, unreachable from any

@@ -1,9 +1,8 @@
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
+import { CodeModule, MatrixModule } from "@codebase/meanderaw-core";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { CodeModule } from "../../../../../../../code/code.module";
-import { MatrixModule } from "../../../../../../../geometry/modules/matrix/matrix.module";
 import { CharacteristicContextService } from "../../../../../../characteristic-context.service";
 import { InkPointCountCharacteristicService } from "../../../../../submatrix/modules/point/modules/ink-counts/ink-point-count-characteristic.service";
 import { PatternCharacteristicsModule } from "../../pattern-characteristics.module";

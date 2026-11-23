@@ -1,7 +1,5 @@
 // 🏷️ Types
 
-import type { CodeObject } from "../code/code.types";
-import type { Matrix } from "../geometry/modules/matrix/matrix.types";
 import type {
   BOOLEAN_CHARACTERISTIC_KEYS,
   CHARACTERISTIC_KEYS,
@@ -10,6 +8,7 @@ import type {
   PATTERN_CHARACTERISTIC_KEYS,
   STORED_BOOLEAN_KEYS,
 } from "./characteristics.constants";
+import type { CodeObject, Matrix } from "@codebase/meanderaw-core";
 
 /** The key of a boolean characteristic, see {@link BOOLEAN_CHARACTERISTIC_KEYS}. */
 export type BooleanCharacteristicKey =
@@ -113,7 +112,7 @@ export type PatternCharacteristicKey =
 /** A boolean key a stored row may hold `true` under. */
 export type StoredBooleanKey = (typeof STORED_BOOLEAN_KEYS)[number];
 
-/** A row's `characteristics` map; a missing key means zero or `false`. */
+/** A meander's stored characteristics, by key. */
 export type StoredCharacteristics = Readonly<
   Partial<Record<NumericCharacteristicKey, number>> &
     Partial<Record<StoredBooleanKey, true>>

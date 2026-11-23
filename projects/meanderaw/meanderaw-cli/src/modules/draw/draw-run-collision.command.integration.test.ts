@@ -66,7 +66,6 @@ describe("drawCommand draw run", () => {
 
         await drawRun.repository.save(
           meanderRecord({
-            characteristics: { bettiNumber0Count: 1, freeEndCount: 2 },
             code: `${String(duplicated.columns).padStart(2, "0")}x${String(duplicated.rows).padStart(2, "0")}y${duplicated.code}`,
             columns: duplicated.columns,
             isHardcoded: false,

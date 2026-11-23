@@ -100,15 +100,16 @@ measurements behind it, is in [README.md](./README.md), under "Meander Charter".
 **The property test that gated them is gone with the corpus it drawn.** It measured every
 drawing the procedural draw run produced, and that draw run no longer exists; the structural
 facts it asserted are now computed per row by `CharacteristicsService` and stored in the
-row's one sparse `characteristics` JSON map, so they are queryable rather than gated.
+bridge's rows (`meander_characteristics`), so they are queryable rather than gated.
 Rebuilding a gate over the database is open work, not something this project claims to
 have.
 
-**Every Characteristic lives in that one map, and a missing key means zero or `false`.**
-No Characteristic has a column of its own, so adding one needs no schema change — see
-[ADR 0018](../../../documentation/adr/0018-store-every-characteristic-in-one-sparse-json-map.md). Raw
-SQL reads one as `COALESCE((characteristics ->> 'key')::numeric, 0)`; a bare `->>` is
-NULL for a missing key and silently drops it from a zero filter.
+**Every Characteristic is a catalog row and, where it holds, a bridge row, and a missing row
+means zero or `false`.** No Characteristic has a column of its own, so adding one needs no
+schema change — see
+[ADR 0034](../../../documentation/adr/0034-store-characteristics-in-a-catalog-and-a-bridge.md).
+Raw SQL reads one by joining `meander_characteristics` to `characteristics` on its key; a
+meander with no row for it holds 0, so a zero filter needs an anti-join.
 
 The three invariants that most often catch a change:
 
@@ -209,7 +210,7 @@ Always prefer running tasks through Nx rather than calling the underlying tools 
 
 ```bash
 nx run infrastructure:postgres:up     # The local Postgres the database lives in
-nx run meanderaw-cli:migration:run            # Build or update the meanders table
+nx run meanderaw-db:migration:run             # Build or update the meanders table
 nx run meanderaw-cli:start                    # Clear the meander rows, then draw every meander back into them
 nx run meanderaw-cli:typecheck-code,lint-code,format-code,deprecate-code,guard-code   # Every static check, in one graph
 nx run meanderaw-cli:typecheck       # tsc --noEmit
@@ -240,11 +241,10 @@ meanderaw variable carries the `MEANDERAW_` prefix, so the unprefixed `POSTGRES_
 
 **The `meanders` table is built by migrations, never by synchronizing.** `Meander` extends
 `PostgresqlUpdatableEntity`, so its `uuidv7()` id and audit columns come from the shared package, and the
-migrations live in the project root's `migrations/`. After changing the entity run
-`nx run meanderaw-cli:migration:generate`, and `nx run meanderaw-cli:migration:run` to apply it; the
-`start` target never migrates, so run the migrations before the first draw run. The CLI reads the
-data source `src/modules/database/data-source.constants.ts` exports, and the
-`migration` target finds both through its `module` option, which names that folder.
+migrations live in `projects/meanderaw/meanderaw-db/migrations/`. After changing the entity run
+`nx run meanderaw-db:migration:generate`, and `nx run meanderaw-db:migration:run` to apply it; the
+`start` target never migrates, so run the migrations before the first draw run. The CLI reads its
+data source from `@codebase/meanderaw-db`, whose `migration` target finds it through the `module` option.
 
 A draw run commits nothing: the HTML pages it writes stay in the gitignored `output/` — see
 [ADR 0021](../../../documentation/adr/0021-stop-committing-the-meander-pages.md). Integration suites start

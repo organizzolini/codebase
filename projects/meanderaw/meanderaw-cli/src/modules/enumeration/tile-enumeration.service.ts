@@ -1,17 +1,12 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
-import { SymmetryService } from "../geometry/modules/symmetry/symmetry.service";
-import { TileService } from "../geometry/modules/tile/tile.service";
+import { SymmetryService, TileService } from "@codebase/meanderaw-core";
 
 import { EDGE_BUDGET, OversizedTileError } from "./enumeration.constants";
 
-import type {
-  EdgesDraft,
-  Tile,
-  TileShape,
-} from "../geometry/modules/tile/tile.types";
 import type { EdgeAddress, Environment } from "./enumeration.types";
+import type { EdgesDraft, Tile, TileShape } from "@codebase/meanderaw-core";
 
 /**
  * Enumerates every distinct tile of a shape: every subset of its edges.

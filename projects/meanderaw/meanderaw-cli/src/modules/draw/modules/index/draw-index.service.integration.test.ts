@@ -1,26 +1,29 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import {
+  CodeService,
+  DrawingService,
+  GeometryService,
+  SvgService,
+  SymmetryService,
+  TileService,
+} from "@codebase/meanderaw-core";
+import {
+  Meander,
+  MEANDERAW_DATABASE_MIGRATIONS,
+  MeanderawDatabaseModule,
+  MeanderawDatabaseService,
+} from "@codebase/meanderaw-db";
+import {
   type DatabaseTestingModule,
   startDatabaseTestingModule,
 } from "@codebase/persistence/testing";
 
-import { Migration1791160950069 } from "../../../../../migrations/1791160950069-migration";
-import { Migration1791414023001 } from "../../../../../migrations/1791414023001-migration";
 import { meanderRecord } from "../../../../../testing/meanders";
-import { CodeService } from "../../../code/code.service";
-import { DatabaseModule } from "../../../database/database.module";
-import { Meander } from "../../../database/meander.entity";
-import { DrawingService } from "../../../drawing/drawing.service";
-import { SvgService } from "../../../drawing/modules/svg/svg.service";
-import { GeometryService } from "../../../geometry/geometry.service";
-import { SymmetryService } from "../../../geometry/modules/symmetry/symmetry.service";
-import { TileService } from "../../../geometry/modules/tile/tile.service";
 
 import { DrawIndexService } from "./draw-index.service";
 
-import type { MeanderRecord } from "../../../database/database.types";
-import type { Repository } from "typeorm";
+import type { MeanderRecord } from "@codebase/meanderaw-db";
 
 /**
  * Drives `DrawIndexService.build` against a real TypeORM connection to a
@@ -28,20 +31,20 @@ import type { Repository } from "typeorm";
  * constructed set of rows, per spec #813's Testing Decisions for this seam.
  *
  * The module is booted by `startDatabaseTestingModule`, which points
- * `DatabaseModule` at a fresh, isolated database instead of the
+ * `MeanderawDatabaseModule` at a fresh, isolated database instead of the
  * local one, the same way `database.service.integration.test.ts`
  * does.
  */
 describe(DrawIndexService, () => {
   let database: DatabaseTestingModule;
-  let repository: Repository<Meander>;
+  let databaseService: MeanderawDatabaseService;
   let service: DrawIndexService;
 
   beforeAll(async () => {
     database = await startDatabaseTestingModule({
-      database: DatabaseModule,
+      database: MeanderawDatabaseModule,
       entities: [Meander],
-      migrations: [Migration1791160950069, Migration1791414023001],
+      migrations: [...MEANDERAW_DATABASE_MIGRATIONS],
       project: "meanderaw",
       providers: [
         DrawIndexService,
@@ -55,7 +58,19 @@ describe(DrawIndexService, () => {
     });
 
     service = await database.module.resolve(DrawIndexService);
-    repository = database.repository(Meander);
+    databaseService = database.module.get(MeanderawDatabaseService);
+    await databaseService.syncCharacteristics(
+      ["isDots", "isSnake", "isWhirl"].map((key) => ({
+        category: "compound",
+        description: `Whether ${key} holds.`,
+        documentationUrl: null,
+        formula: null,
+        isPattern: true,
+        key,
+        name: key,
+        valueType: "boolean",
+      })),
+    );
   });
 
   afterAll(async () => {
@@ -68,21 +83,21 @@ describe(DrawIndexService, () => {
   ): MeanderRecord => meanderRecord({ rows: 1, ...overrides });
 
   it("builds one page per held pattern from the committed rows, and an index linking them", async () => {
-    await repository.save(
+    await databaseService.save(
       record({
         characteristics: { isSnake: true },
         code: "01x01y0",
         lattice: "0",
       }),
     );
-    await repository.save(
+    await databaseService.save(
       record({
         characteristics: { isDots: true, isWhirl: true },
         code: "01x01y1",
         lattice: "1",
       }),
     );
-    await repository.save(record({ code: "01x01y2", lattice: "2" }));
+    await databaseService.save(record({ code: "01x01y2", lattice: "2" }));
 
     const built = await service.build();
     const pages: Record<string, string> = {};
@@ -121,6 +136,8 @@ describe(DrawIndexService, () => {
     expect(indexPage.indexOf("isSnake.html")).toBeLessThan(
       indexPage.indexOf("isWhirl.html"),
     );
-    expect(pages["patterns/isSnake.html"]).toContain('<path d="M7.5 37.5H7.5"');
+    expect(pages["patterns/isSnake.html"]).toContain(
+      '<path d="M0 30H15V45H0Z" fill="black" stroke="none"/>',
+    );
   });
 });
