@@ -1,3 +1,12 @@
+export { POSTGRESQL_ERD_MODEL_SCHEMA } from "./modules/postgresql-erd/postgresql-erd.constants";
+export { PostgresqlErdModule } from "./modules/postgresql-erd/postgresql-erd.module";
+export { PostgresqlErdService } from "./modules/postgresql-erd/postgresql-erd.service";
+export type {
+  PostgresqlErdEntityClass,
+  PostgresqlErdEntityDetails,
+  PostgresqlErdModel,
+} from "./modules/postgresql-erd/postgresql-erd.types";
+export { readPostgresqlErdModel } from "./modules/postgresql-erd/postgresql-erd.utilities";
 export { PostgresqlCreatableEntity } from "./modules/postgresql/modules/base-entities/creatable.entity";
 export { PostgresqlDeletableEntity } from "./modules/postgresql/modules/base-entities/deletable.entity";
 export { PostgresqlIdentifiableEntity } from "./modules/postgresql/modules/base-entities/identifiable.entity";
