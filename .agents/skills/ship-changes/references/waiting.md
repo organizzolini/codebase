@@ -15,14 +15,14 @@ Read when a step waits on Continuous Integration, the merge queue, or a release.
 ```bash
 pr=<n>
 for i in $(seq 1 180); do
-  read -r state merged mstate head < <(gh api "repos/{owner}/{repo}/pulls/$pr" --jq '"\(.state) \(.merged) \(.mergeable_state) \(.head.sha)"')
+  read -r state merged merge_state head < <(gh api "repos/{owner}/{repo}/pulls/$pr" --jq '"\(.state) \(.merged) \(.mergeable_state) \(.head.sha)"')
   if [ "$state" = closed ]; then [ "$merged" = true ] && echo MERGED || echo CLOSED; exit; fi
-  [ "$mstate" = dirty ] && { echo CONFLICTING; exit; }
+  [ "$merge_state" = dirty ] && { echo CONFLICTING; exit; }
   ejected=$(gh api "repos/{owner}/{repo}/actions/runs?event=merge_group&per_page=20" --jq "[.workflow_runs[] | select(.head_branch | test(\"pr-$pr-\")) | select(.conclusion == \"failure\")] | length")
   [ "${ejected:-0}" != 0 ] && { echo EJECTED; exit; }
   read -r failed pending < <(gh api "repos/{owner}/{repo}/commits/$head/check-runs?per_page=100" --jq '"\([.check_runs[] | select(.conclusion == "failure")] | length) \([.check_runs[] | select(.status != "completed")] | length)"')
   [ "${failed:-0}" != 0 ] && { echo FAILED; exit; }
-  [ "${WATCH_GREEN:-0}" = 1 ] && [ "${pending:-1}" = 0 ] && [ "$mstate" = clean ] && { echo GREEN; exit; }
+  [ "${WATCH_GREEN:-0}" = 1 ] && [ "${pending:-1}" = 0 ] && [ "$merge_state" = clean ] && { echo GREEN; exit; }
   sleep 20
 done
 echo TIMEOUT
