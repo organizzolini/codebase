@@ -2,11 +2,7 @@
 
 import type { RenderCommandHelpOption } from "./render-command.types";
 
-/**
- * Orders options in a command's help by long flag, with `--help` last. A
- * subclass's own options are registered before the ones it inherits, so
- * without it the help would list them first.
- */
+/** Orders help options by long flag, `--help` last, as a subclass's own options register before inherited ones. */
 export function compareRenderCommandHelpOptions(
   left: RenderCommandHelpOption,
   right: RenderCommandHelpOption,

@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 
 import { RenderModule } from "../../render.module";
 import { RenderEntitiesModule } from "../render-entities/render-entities.module";
+import { RenderNodesModule } from "../render-nodes/render-nodes.module";
 import { RenderOptionsModule } from "../render-options/render-options.module";
 
 import { RenderTreeDataCommand } from "./render-tree-data.command";
@@ -15,7 +16,12 @@ import { RenderTreeDataService } from "./render-tree-data.service";
 @Module({
   controllers: [],
   exports: [RenderTreeDataCommand],
-  imports: [RenderEntitiesModule, RenderOptionsModule, RenderModule],
+  imports: [
+    RenderEntitiesModule,
+    RenderNodesModule,
+    RenderOptionsModule,
+    RenderModule,
+  ],
   providers: [RenderTreeDataCommand, RenderTreeDataService],
 })
 export class RenderTreeDataModule {}

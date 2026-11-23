@@ -5,6 +5,7 @@ import { LoggerService } from "@codebase/observability";
 import { graphDrawDryRunMessages } from "../../render.constants";
 import { RenderService } from "../../render.service";
 import { RenderEntitiesService } from "../render-entities/render-entities.service";
+import { RenderNodesService } from "../render-nodes/render-nodes.service";
 import { graphOutputDryRunMessages } from "../render-options/render-options-outputs.utilities";
 import {
   RENDER_DRY_RUN_OPTION,
@@ -42,6 +43,7 @@ export abstract class RenderCommand extends CommandRunner {
   protected constructor(
     protected readonly logger: LoggerService,
     protected readonly renderEntities: RenderEntitiesService,
+    protected readonly renderNodes: RenderNodesService,
     protected readonly renderOptions: RenderOptionsService,
     protected readonly renderService: RenderService,
   ) {
@@ -53,7 +55,7 @@ export abstract class RenderCommand extends CommandRunner {
 
   // 🔑 Public Fields
 
-  /** The decorator of the entity the command draws, named in its dry run. */
+  /** The decorator of the drawn entity, named in its dry run. */
   protected abstract readonly decorator: string;
 
   /** The diagram's direction, which suits the shape of the command's data. */
@@ -154,15 +156,23 @@ export abstract class RenderCommand extends CommandRunner {
     const written = await this.renderService.render(plan, {
       dataSource,
       direction: this.direction,
-      read: async (paging) =>
-        this.reader.load(dataSource, dataSource.getMetadata(picked), {
-          edge,
-          filters: plan.filters,
-          paging,
-          sorts: plan.sorts,
-          truncateBreadth: plan.truncateBreadth,
-          truncateDepth: plan.truncateDepth,
-        }),
+      read: async (paging) => {
+        const graph = await this.reader.load(
+          dataSource,
+          dataSource.getMetadata(picked),
+          {
+            edge,
+            filters: plan.filters,
+            paging,
+            sorts: plan.sorts,
+            truncateBreadth: plan.truncateBreadth,
+            truncateDepth: plan.truncateDepth,
+          },
+        );
+        return edge?.generated === undefined
+          ? graph
+          : this.renderNodes.relabel(dataSource, graph, edge.generated);
+      },
     });
     for (const line of written) {
       this.logger.log(line);

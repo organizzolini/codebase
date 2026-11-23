@@ -1,12 +1,28 @@
 // ♟️ Constants
 
-import type { GraphEdgeKind, GraphEdgeRecord } from "./render-entities.types";
+import { PluralSnakeNamingStrategy } from "../../../postgresql/postgresql.constants";
+
+import type {
+  GraphEdgeKind,
+  GraphEdgeRecord,
+  GraphGeneratedEdge,
+} from "./render-entities.types";
+import type { NamingStrategyInterface } from "typeorm";
 
 /** The command that draws each kind of edge entity. */
 export const COMMAND_OF_KIND: Readonly<Record<GraphEdgeKind, string>> = {
   "directed-acyclic-graph": "render-directed-acyclic-graph-data",
   graph: "render-graph-data",
 };
+
+/** The property a generated edge class carries, naming its graph, shared across module reloads. */
+export const RENDER_ENTITIES_GENERATED_MARK = Symbol.for(
+  "@codebase/persistence/generated-edge-graph",
+);
+
+/** The naming strategy every database connection of this package uses. */
+export const RENDER_ENTITIES_NAMING: NamingStrategyInterface =
+  new PluralSnakeNamingStrategy();
 
 /** The decorator that marks each kind of edge entity. */
 export const DECORATOR_OF_KIND: Readonly<Record<GraphEdgeKind, string>> = {
@@ -85,6 +101,53 @@ export class RenderEntitiesEdgeError extends Error {
 
 /** Edge declarations and property names, keyed by class. */
 export const renderEntitiesEdgeRecords = new WeakMap<object, GraphEdgeRecord>();
+
+/** The generated edge of each graph or edge class. */
+export const renderEntitiesGeneratedEdges = new WeakMap<
+  object,
+  GraphGeneratedEdge
+>();
+
+/** The edge or nodes option given without the other. */
+export const renderEntitiesGeneratedPartialMessage = (
+  decorator: string,
+  given: "edge" | "nodes",
+  name: string | undefined,
+): string =>
+  given === "edge"
+    ? `${decorator} names edge ${name ?? ""} but no nodes; name both the edge and the nodes() entity, or neither`
+    : `${decorator} names nodes but no edge; name both the edge and the nodes() entity, or neither`;
+
+/** A graph or node without exactly one primary column. */
+export const renderEntitiesGeneratedKeyMessage = (
+  { decorator, edge }: { readonly decorator: string; readonly edge: string },
+  entity: string,
+  count: number,
+): string =>
+  `${entity} has ${String(count)} primary columns, so its ${decorator} edge ${edge} cannot reference it; give it exactly one`;
+
+/** A generated edge whose name or table an entity already has. */
+export const renderEntitiesGeneratedCollisionMessage = (
+  { decorator, edge }: { readonly decorator: string; readonly edge: string },
+  graph: string,
+): string =>
+  `${decorator} edge ${edge} of ${graph} collides with an entity or table that already exists; name the edge differently`;
+
+/** A graph that marks its own endpoints and generates its edge. */
+export const renderEntitiesGeneratedBothMessage = (
+  graph: string,
+  edge: string,
+  role: string,
+): string =>
+  `${graph} generates its edge ${edge}, so it cannot mark @${role} properties of its own; use one form`;
+
+/** A `nodes` option whose entity cannot be read when the decorator runs. */
+export const renderEntitiesGeneratedNodesMessage = (
+  { decorator, edge }: { readonly decorator: string; readonly edge: string },
+  graph: string,
+  reason: string,
+): string =>
+  `${decorator} edge ${edge} of ${graph} could not read its nodes() entity: ${reason}; import it before the graph, with no import cycle`;
 
 /** A class that carries no `@DirectedAcyclicGraph()` or `@Graph()`. */
 export const renderEntitiesEdgeNoKindMessage = (name: string): string =>

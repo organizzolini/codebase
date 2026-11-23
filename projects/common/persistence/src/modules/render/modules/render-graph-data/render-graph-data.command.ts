@@ -7,6 +7,7 @@ import { RenderService } from "../../render.service";
 import { RenderCommand } from "../render-command/render-command.command";
 import { RenderEdgesService } from "../render-edges/render-edges.service";
 import { RenderEntitiesService } from "../render-entities/render-entities.service";
+import { RenderNodesService } from "../render-nodes/render-nodes.service";
 import {
   RENDER_FILTER_OPTION,
   RENDER_SORT_OPTION,
@@ -40,10 +41,11 @@ export class RenderGraphDataCommand extends RenderCommand {
     logger: LoggerService,
     protected readonly reader: RenderEdgesService,
     renderEntities: RenderEntitiesService,
+    renderNodes: RenderNodesService,
     renderOptions: RenderOptionsService,
     renderService: RenderService,
   ) {
-    super(logger, renderEntities, renderOptions, renderService);
+    super(logger, renderEntities, renderNodes, renderOptions, renderService);
   }
 
   // 🔐 Private Fields

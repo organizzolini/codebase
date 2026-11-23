@@ -54,9 +54,10 @@ src/
     postgresql-utilities/           # pg_dump, pg_restore, and truncate behind one service
     render/                         # RenderService: connects, reads, draws, and writes for every drawing command
       modules/render-command/       # RenderCommand: the flags and run flow every drawing command shares
-      modules/render-entities/      # @DirectedAcyclicGraph, @Graph and the endpoint decorators; globs to entity classes; the @Tree pick
+      modules/render-entities/      # @DirectedAcyclicGraph, @Graph (two forms), the endpoint and reverse-relation decorators, the generated edge entity; globs to entity classes; the @Tree pick
       modules/render-options/       # Options every drawing command shares: connection, filter, sort, paging, caps, outputs
       modules/render-edges/         # Reads an edge table, finds roots and cycles, then pages and caps the edges
+      modules/render-nodes/         # Reads the labels of only the drawn nodes and graphs, and relabels a generated edge's graph
       modules/render-mermaid/       # Pure renderer: a graph model to Mermaid text, with its limit warnings
       modules/render-tree-data/     # The render-tree-data command, and the service that reads a @Tree table in its storage, then filters, sorts, pages, and caps it
       modules/render-directed-acyclic-graph-data/      # The render-directed-acyclic-graph-data command: refuses a @Graph entity
@@ -67,7 +68,7 @@ testing/
   command-line-runner.ts            # runCliCommandLine: argv through the real nest-commander runner
   fixture-persistence.ts            # A migrated container for the command line's integration tests
   fixtures/                         # Entities, modules, and the widgets and parts migrations
-  fixtures/graphs/, fixtures/trees/ # @DirectedAcyclicGraph and @Graph edge entities, and @Tree entities, for the drawing commands
+  fixtures/graphs/, fixtures/trees/ # @DirectedAcyclicGraph and @Graph edge entities (graphs/generated/ for the generated form), and @Tree entities, for the drawing commands
   setup.ts, mocks.ts                # Vitest setup and mocks
 ```
 
@@ -127,6 +128,22 @@ testing/
   `GraphModel` never carries them.
 - **Checks before connecting:** column names and the `@Tree` pick are read from
   decorators first, so a bad flag or pick never reaches the database.
+- **Two forms of one decorator:** `@Graph()` and `@DirectedAcyclicGraph()` mark
+  either a hand-written edge entity (with `@GraphSource` and `@GraphTarget`), or,
+  with `edge` and `nodes` options, the graph entity, which generates the edge
+  entity. `generateEdgeEntity` registers a nameless class, its table, key
+  columns, cascading relations and indexes with TypeORM's metadata storage when
+  the decorator runs; the class is reachable only through
+  `generatedEdgeOf` and `withGeneratedEdges`, which `createGraphDataSource` and a
+  project's own entity list must use. A graph entity is a pick candidate, but the
+  command reads the generated class, so `--filter` and `--sort` name its columns.
+- **Labels:** `RenderCommand` calls `RenderNodesService.relabel` after
+  `RenderEdgesService` has paged and capped the edges, so node labels and neighborhood titles are read for
+  only the nodes drawn. A generated edge carries its graph's key as its label,
+  which `relabel` replaces with the graph's `@GraphLabel`.
+- **Reverse relations** register by the generated entity's name, since its class
+  does not exist when a node entity is defined, so a data source that builds the
+  node entity must also build the graph entity.
 
 ### Key Commands
 

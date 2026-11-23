@@ -3,6 +3,7 @@ import { Module } from "@nestjs/common";
 import { RenderModule } from "../../render.module";
 import { RenderEdgesModule } from "../render-edges/render-edges.module";
 import { RenderEntitiesModule } from "../render-entities/render-entities.module";
+import { RenderNodesModule } from "../render-nodes/render-nodes.module";
 import { RenderOptionsModule } from "../render-options/render-options.module";
 
 import { RenderGraphDataCommand } from "./render-graph-data.command";
@@ -18,6 +19,7 @@ import { RenderGraphDataCommand } from "./render-graph-data.command";
   imports: [
     RenderEdgesModule,
     RenderEntitiesModule,
+    RenderNodesModule,
     RenderOptionsModule,
     RenderModule,
   ],

@@ -2,10 +2,7 @@
 
 import { compareRenderCommandHelpOptions } from "./render-command.utilities";
 
-/**
- * How a render command's help lists its options: sorted by flag. Commander
- * reads `compareOptions` at runtime, though its typings leave it out.
- */
+/** How a command's help sorts options: by flag. */
 export const RENDER_COMMAND_HELP_CONFIGURATION = {
   compareOptions: compareRenderCommandHelpOptions,
   sortOptions: true,

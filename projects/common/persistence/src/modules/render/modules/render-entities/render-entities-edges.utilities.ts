@@ -1,5 +1,6 @@
 // 🌎 Utilities
 
+import { generatedEdgeOf } from "./render-entities-generated.utilities";
 import {
   COMMAND_OF_KIND,
   DECORATOR_OF_KIND,
@@ -22,7 +23,7 @@ import type {
 } from "./render-entities.types";
 import type { NamingStrategyInterface } from "typeorm";
 
-/** The `@DirectedAcyclicGraph` and `@Graph` entities among `entities`, with their kind and table, in order. */
+/** The graph entities among `entities`, each with kind and table; a generated edge is listed under its graph's table. */
 export function edgeCandidates(
   entities: readonly GraphEntity[],
   namingStrategy: NamingStrategyInterface,
@@ -30,7 +31,7 @@ export function edgeCandidates(
   const candidates: GraphEdgeCandidate[] = [];
   for (const entity of listGraphEdgeEntities(entities)) {
     candidates.push({
-      entity,
+      entity: generatedEdgeOf(entity)?.edge ?? entity,
       kind: getGraphEdgeDeclaration(entity).kind,
       tableName: entityTableName(entity, namingStrategy),
     });

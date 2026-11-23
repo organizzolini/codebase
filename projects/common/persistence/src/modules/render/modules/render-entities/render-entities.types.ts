@@ -1,6 +1,16 @@
 // 🏷️ Types
 
-import type { DataSource, NamingStrategyInterface } from "typeorm";
+import type {
+  DataSource,
+  getMetadataArgsStorage as getMetadataArgumentsStorage,
+  NamingStrategyInterface,
+  Relation,
+} from "typeorm";
+
+/** A column's decorator arguments, as TypeORM stores them. */
+export type GraphColumnArguments = ReturnType<
+  typeof getMetadataArgumentsStorage
+>["columns"][number];
 
 /** An edge entity a pick can choose: its class, kind, and table. */
 export interface GraphEdgeCandidate {
@@ -30,6 +40,9 @@ export type GraphEdgeKind = "directed-acyclic-graph" | "graph";
 export interface GraphEdgeMetadata {
   /** Whether edges run from source to target. */
   readonly directed: boolean;
+
+  /** The graph and nodes, when `@Graph({ edge, nodes })` generated the edge entity. */
+  readonly generated?: GraphGeneratedEdge;
 
   /** Whether the entity is a directed acyclic graph or a graph. */
   readonly kind: GraphEdgeKind;
@@ -90,6 +103,22 @@ export type GraphEdgeRole =
   | "GraphTarget"
   | "GraphWeight";
 
+/** A generated edge row's relations, plus `Columns`. */
+export type GraphEdgeRow<
+  GraphRow extends object,
+  NodeRow extends object,
+  Columns extends object = object,
+> = Columns & {
+  /** The graph the edge belongs to. */
+  graph?: Relation<GraphRow>;
+
+  /** The node the edge starts at. */
+  source?: Relation<NodeRow>;
+
+  /** The node the edge ends at. */
+  target?: Relation<NodeRow>;
+};
+
 /** The connection and picked edge entity a graph run reads through. */
 export interface GraphEdgeTarget {
   /** The connection the edges are read through, not yet open. */
@@ -101,6 +130,77 @@ export interface GraphEdgeTarget {
 
 /** An entity class; TypeORM reads its `@Entity`. */
 export type GraphEntity = new (...args: never[]) => object;
+
+/** The decorator and edge name an error message names. */
+export interface GraphGeneratedContext {
+  /** The decorator that asked for the edge, such as `@Graph`. */
+  readonly decorator: string;
+
+  /** The generated entity's name. */
+  readonly edge: string;
+}
+
+/** The entity `@Graph({ edge, nodes })` generated, and the entities it joins. */
+export interface GraphGeneratedEdge {
+  /** The generated entity class, which has no source file. */
+  readonly edge: GraphEntity;
+
+  /** The class that declared it, whose rows the edges belong to. */
+  readonly graph: GraphEntity;
+
+  /** The entity whose rows the edges join. */
+  readonly nodes: GraphEntity;
+}
+
+/** A generated column: its property, name, and referenced entity. */
+export interface GraphGeneratedEndpoint {
+  /** The column's name in the table. */
+  readonly column: string;
+
+  /** The primary column the generated one copies its type from. */
+  readonly key: GraphColumnArguments;
+
+  /** The column's property, such as `fromHip`. */
+  readonly property: string;
+
+  /** The relation's property: `graph`, `source`, or `target`. */
+  readonly relation: string;
+
+  /** The entity the column references. */
+  readonly target: GraphEntity;
+}
+
+/** The names `@Graph()` takes to generate its edge entity. */
+export interface GraphGeneratedNames {
+  /** The generated entity's name, which maps to its table. */
+  readonly edge: string;
+
+  /** The entity whose rows the edges join. */
+  readonly nodes: () => GraphEntity;
+
+  /** The generated table's name, in place of the one `edge` maps to. */
+  readonly table?: string;
+}
+
+/** The options `@Graph()` takes to generate its edge entity. */
+export interface GraphGeneratedOptions
+  extends GraphEdgeOptions, GraphGeneratedNames {}
+
+/** What a generated edge needs registered: its three columns, and its table. */
+export interface GraphGeneratedPlan {
+  /** The graph's, source's, and target's columns, in that order. */
+  readonly endpoints: readonly [
+    GraphGeneratedEndpoint,
+    GraphGeneratedEndpoint,
+    GraphGeneratedEndpoint,
+  ];
+
+  /** The table the data source will map the edge to. */
+  readonly table: string;
+
+  /** The `table` option as given, or `undefined` when the edge's name picks it. */
+  readonly tableOption: string | undefined;
+}
 
 /** A `@Tree` entity a pick can choose. */
 export interface GraphTreeCandidate {

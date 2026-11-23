@@ -12,12 +12,21 @@ import {
 import { postgresDataSourceOptions } from "../../../postgresql/postgresql.utilities";
 
 import {
+  generatedEdgeOf,
+  generatedNamesOf,
+  generateEdgeEntity,
+  withGeneratedEdges,
+} from "./render-entities-generated.utilities";
+import {
+  edgeDeclarationsOf,
+  edgeRecordOf,
+  singleEdgeProperty,
+} from "./render-entities-records.utilities";
+import {
   RenderEntitiesEdgeError,
   renderEntitiesEdgeKindsMessage,
   renderEntitiesEdgeMissingMessage,
   renderEntitiesEdgeNoKindMessage,
-  renderEntitiesEdgeRecords,
-  renderEntitiesEdgeSeveralMessage,
   RenderEntitiesError,
   renderEntitiesGlobMessage,
   renderEntitiesNoTableMessage,
@@ -30,9 +39,10 @@ import type {
   GraphEdgeDeclaration,
   GraphEdgeMetadata,
   GraphEdgeOptions,
-  GraphEdgeRecord,
   GraphEdgeRole,
   GraphEntity,
+  GraphGeneratedNames,
+  GraphGeneratedOptions,
   GraphTreeCandidate,
 } from "./render-entities.types";
 import type { NamingStrategyInterface } from "typeorm";
@@ -47,15 +57,20 @@ export function createGraphDataSource(
 ): DataSource {
   return new DataSource(
     postgresDataSourceOptions(connection, {
-      entities: [...entities],
+      entities: withGeneratedEdges(entities),
       migrations: [],
     }),
   );
 }
 
-/** Marks a class a directed acyclic graph, whose edges run from source to target. */
-export function DirectedAcyclicGraph(): ClassDecorator {
-  return recordDeclaration({ directed: true, kind: "directed-acyclic-graph" });
+/** Marks a directed acyclic graph. With `edge` and `nodes`, it generates the edge entity. */
+export function DirectedAcyclicGraph(
+  names?: Partial<GraphGeneratedNames>,
+): ClassDecorator {
+  return declareGraph(
+    { directed: true, kind: "directed-acyclic-graph" },
+    generatedNamesOf(names ?? {}, "@DirectedAcyclicGraph"),
+  );
 }
 
 /**
@@ -109,16 +124,19 @@ export function getGraphEdgeDeclaration(
 }
 
 /**
- * Describes `entity` from its decorators, up the class chain.
- * @throws RenderEntitiesEdgeError on a missing, conflicting, or repeated decorator.
+ * Describes `source` by its decorators, or its generated edge's.
+ * @throws RenderEntitiesEdgeError on bad decorators.
  */
-export function getGraphEdgeMetadata(entity: GraphEntity): GraphEdgeMetadata {
+export function getGraphEdgeMetadata(source: GraphEntity): GraphEdgeMetadata {
+  const generated = generatedEdgeOf(source);
+  const entity = generated?.edge ?? source;
   const declaration = getGraphEdgeDeclaration(entity);
   const labelColumn = singleEdgeProperty(entity, "GraphLabel");
   const weightColumn = singleEdgeProperty(entity, "GraphWeight");
 
   return {
     directed: declaration.directed,
+    ...(generated === undefined ? {} : { generated }),
     kind: declaration.kind,
     sourceColumn: requiredEdgeProperty(entity, "GraphSource"),
     targetColumn: requiredEdgeProperty(entity, "GraphTarget"),
@@ -127,12 +145,14 @@ export function getGraphEdgeMetadata(entity: GraphEntity): GraphEdgeMetadata {
   };
 }
 
-/** Marks a class a graph; it is directed unless `directed` is false. */
-export function Graph(options: GraphEdgeOptions = {}): ClassDecorator {
-  return recordDeclaration({
-    directed: options.directed ?? true,
-    kind: "graph",
-  });
+/** Marks a graph, directed unless `directed` is false. With `edge` and `nodes`, it generates the edge entity. */
+export function Graph(
+  options: GraphEdgeOptions | GraphGeneratedOptions = {},
+): ClassDecorator {
+  return declareGraph(
+    { directed: options.directed ?? true, kind: "graph" },
+    generatedNamesOf(options, "@Graph"),
+  );
 }
 
 /** Marks a property as the label of each edge, optionally. */
@@ -175,12 +195,16 @@ export async function importEntityClasses(
   return [...entities];
 }
 
-/** The classes among `entities` that carry `@DirectedAcyclicGraph()` or `@Graph()`, inherited or declared. */
+/**
+ * The classes among `entities` that carry `@DirectedAcyclicGraph()` or
+ * `@Graph()`, inherited or declared, other than the edge entities they generated.
+ */
 export function listGraphEdgeEntities(
   entities: readonly GraphEntity[],
 ): GraphEntity[] {
   const edges: GraphEntity[] = [];
   for (const entity of entities) {
+    if (generatedEdgeOf(entity)?.edge === entity) continue;
     if (edgeDeclarationsOf(entity).length > 0) edges.push(entity);
   }
   return edges;
@@ -253,43 +277,20 @@ export function treeCandidates(
   });
 }
 
-/** `entity` and each class it extends, nearest first, up to the first class with no base. */
-function classChain(entity: GraphEntity): object[] {
-  const chain: object[] = [];
-  for (
-    let target: unknown = entity;
-    typeof target === "function" && target !== Function.prototype;
-    target = Object.getPrototypeOf(target)
-  ) {
-    chain.push(target);
-  }
-  return chain;
-}
-
-/** The declarations of the nearest class up the chain that has any. */
-function edgeDeclarationsOf(entity: GraphEntity): GraphEdgeDeclaration[] {
-  for (const target of classChain(entity)) {
-    const declarations =
-      renderEntitiesEdgeRecords.get(target)?.declarations ?? [];
-    if (declarations.length > 0) return declarations;
-  }
-  return [];
-}
-
 /**
- * The property names marked under `role` up the class chain, nearest class
- * first and without repeats, so a redeclared property counts once.
+ * A class decorator that records `declaration` on the decorated class, then
+ * generates its edge entity when `names` asks for one.
  */
-function edgePropertiesOf(entity: GraphEntity, role: GraphEdgeRole): string[] {
-  const names = new Set<string>();
-  for (const target of classChain(entity)) {
-    for (const name of renderEntitiesEdgeRecords.get(target)?.properties[
-      role
-    ] ?? []) {
-      names.add(name);
+function declareGraph(
+  declaration: GraphEdgeDeclaration,
+  names: GraphGeneratedNames | undefined,
+): ClassDecorator {
+  return (target: object): void => {
+    edgeRecordOf(target).declarations.push(declaration);
+    if (names !== undefined && isClass(target)) {
+      generateEdgeEntity(target, names, declaration);
     }
-  }
-  return [...names];
+  };
 }
 
 /** A property decorator that names the property under `role` on its class. */
@@ -297,24 +298,6 @@ function edgePropertyDecorator(role: GraphEdgeRole): PropertyDecorator {
   return (target: object, propertyKey: string | symbol): void => {
     edgeRecordOf(target.constructor).properties[role].push(String(propertyKey));
   };
-}
-
-/** The edge record for `target`, created empty on its first decorator. */
-function edgeRecordOf(target: object): GraphEdgeRecord {
-  const existing = renderEntitiesEdgeRecords.get(target);
-  if (existing !== undefined) return existing;
-
-  const created: GraphEdgeRecord = {
-    declarations: [],
-    properties: {
-      GraphLabel: [],
-      GraphSource: [],
-      GraphTarget: [],
-      GraphWeight: [],
-    },
-  };
-  renderEntitiesEdgeRecords.set(target, created);
-  return created;
 }
 
 /** Whether `value` is a class, not the `Function.prototype` that ends every class chain. */
@@ -334,13 +317,6 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
-/** A class decorator that records `declaration` on the decorated class. */
-function recordDeclaration(declaration: GraphEdgeDeclaration): ClassDecorator {
-  return (target: object): void => {
-    edgeRecordOf(target).declarations.push(declaration);
-  };
-}
-
 /**
  * The one property under `role`, which an edge must have.
  * @throws RenderEntitiesEdgeError when none, or several, are marked.
@@ -353,24 +329,6 @@ function requiredEdgeProperty(
   if (only === undefined) {
     throw new RenderEntitiesEdgeError(
       renderEntitiesEdgeMissingMessage(entity.name, role),
-    );
-  }
-  return only;
-}
-
-/**
- * The one property under `role`, or `undefined` when none is marked.
- * @throws RenderEntitiesEdgeError when several are marked.
- */
-function singleEdgeProperty(
-  entity: GraphEntity,
-  role: GraphEdgeRole,
-): string | undefined {
-  const names = edgePropertiesOf(entity, role);
-  const [only, ...others] = names;
-  if (others.length > 0) {
-    throw new RenderEntitiesEdgeError(
-      renderEntitiesEdgeSeveralMessage(entity.name, role, names.toSorted()),
     );
   }
   return only;

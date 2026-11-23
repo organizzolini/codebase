@@ -19,7 +19,7 @@ export interface GraphDrawing {
   readonly read: (paging: GraphPaging | undefined) => Promise<GraphModel>;
 }
 
-/** The graphs a render read, one per page drawn, with each one's heading. */
+/** The graphs one render read, with each page's heading. */
 export interface GraphPages {
   /** The graph of each page, in the order drawn. */
   readonly graphs: readonly GraphModel[];

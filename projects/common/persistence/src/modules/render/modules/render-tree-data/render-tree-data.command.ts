@@ -6,6 +6,7 @@ import { LoggerService } from "@codebase/observability";
 import { RenderService } from "../../render.service";
 import { RenderCommand } from "../render-command/render-command.command";
 import { RenderEntitiesService } from "../render-entities/render-entities.service";
+import { RenderNodesService } from "../render-nodes/render-nodes.service";
 import { RenderOptionsService } from "../render-options/render-options.service";
 
 import {
@@ -33,11 +34,12 @@ export class RenderTreeDataCommand extends RenderCommand {
   constructor(
     logger: LoggerService,
     renderEntities: RenderEntitiesService,
+    renderNodes: RenderNodesService,
     renderOptions: RenderOptionsService,
     renderService: RenderService,
     protected readonly reader: RenderTreeDataService,
   ) {
-    super(logger, renderEntities, renderOptions, renderService);
+    super(logger, renderEntities, renderNodes, renderOptions, renderService);
   }
 
   // 🔐 Private Fields

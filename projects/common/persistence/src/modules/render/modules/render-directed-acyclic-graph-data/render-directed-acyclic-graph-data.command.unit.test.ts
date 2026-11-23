@@ -6,6 +6,7 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 import { RenderService } from "../../render.service";
 import { RenderEdgesService } from "../render-edges/render-edges.service";
 import { RenderEntitiesService } from "../render-entities/render-entities.service";
+import { RenderNodesService } from "../render-nodes/render-nodes.service";
 import { RenderOptionsService } from "../render-options/render-options.service";
 
 import { RenderDirectedAcyclicGraphDataCommand } from "./render-directed-acyclic-graph-data.command";
@@ -13,6 +14,7 @@ import { RenderDirectedAcyclicGraphDataCommand } from "./render-directed-acyclic
 const MOCKS = [
   RenderEdgesService,
   RenderEntitiesService,
+  RenderNodesService,
   RenderOptionsService,
   RenderService,
 ];

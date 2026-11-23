@@ -12,7 +12,7 @@ import type { DataSource, EntityMetadata } from "typeorm";
 /** The commander command a runner is handed, whose help it configures. */
 export type RenderCommandCommander = Parameters<CommandRunner["setCommand"]>[0];
 
-/** The entity a command draws: a `@Tree`, or the edge kinds it accepts. */
+/** The entity a command draws: a tree, or edge kinds. */
 export type RenderCommandEntity =
   | {
       /** The command's name, which an entity of another kind is told to use. */
@@ -29,7 +29,7 @@ export interface RenderCommandHelpOption {
   readonly long?: string;
 }
 
-/** What reads the picked entity's table as a graph: the tree or the edge service. */
+/** Reads the picked entity's table as a graph. */
 export interface RenderCommandReader {
   /** Reads the table `metadata` describes, filtered, sorted, paged, then capped. */
   load(
