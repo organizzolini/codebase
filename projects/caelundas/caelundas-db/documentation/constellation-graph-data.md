@@ -35,38 +35,38 @@ flowchart LR
         n320["116805"]
         n321["116584"]
         n322["117221"]
-        n0 ---|"Peg"| n1
-        n1 ---|"Peg"| n2
-        n5 ---|"And"| n6
-        n7 ---|"And"| n8
-        n8 ---|"And"| n0
-        n8 ---|"And"| n5
-        n12 ---|"And"| n7
-        n13 ---|"And"| n14
-        n16 ---|"And"| n13
-        n17 ---|"And"| n12
-        n14 ---|"And"| n19
-        n20 ---|"And"| n8
-        n20 ---|"And"| n16
-        n29 ---|"And"| n20
-        n308 ---|"Peg"| n309
-        n310 ---|"Peg"| n311
-        n312 ---|"Peg"| n313
-        n314 ---|"Peg"| n312
-        n311 ---|"Peg"| n315
-        n316 ---|"Peg"| n308
-        n317 ---|"Peg"| n314
-        n318 ---|"Peg"| n316
-        n315 ---|"Peg"| n0
-        n315 ---|"Peg"| n318
-        n2 ---|"Peg"| n317
-        n2 ---|"Peg"| n315
-        n6 ---|"And"| n319
-        n6 ---|"And"| n320
-        n320 ---|"And"| n321
-        n320 ---|"And"| n322
+        n0 ---|"Pegasus"| n1
+        n1 ---|"Pegasus"| n2
+        n5 ---|"Andromeda"| n6
+        n7 ---|"Andromeda"| n8
+        n8 ---|"Andromeda"| n0
+        n8 ---|"Andromeda"| n5
+        n12 ---|"Andromeda"| n7
+        n13 ---|"Andromeda"| n14
+        n16 ---|"Andromeda"| n13
+        n17 ---|"Andromeda"| n12
+        n14 ---|"Andromeda"| n19
+        n20 ---|"Andromeda"| n8
+        n20 ---|"Andromeda"| n16
+        n29 ---|"Andromeda"| n20
+        n308 ---|"Pegasus"| n309
+        n310 ---|"Pegasus"| n311
+        n312 ---|"Pegasus"| n313
+        n314 ---|"Pegasus"| n312
+        n311 ---|"Pegasus"| n315
+        n316 ---|"Pegasus"| n308
+        n317 ---|"Pegasus"| n314
+        n318 ---|"Pegasus"| n316
+        n315 ---|"Pegasus"| n0
+        n315 ---|"Pegasus"| n318
+        n2 ---|"Pegasus"| n317
+        n2 ---|"Pegasus"| n315
+        n6 ---|"Andromeda"| n319
+        n6 ---|"Andromeda"| n320
+        n320 ---|"Andromeda"| n321
+        n320 ---|"Andromeda"| n322
     end
-    subgraph nb1["Cet"]
+    subgraph nb1["Cetus"]
         n3["1562"]
         n4["5364"]
         n11["3419"]
@@ -97,7 +97,7 @@ flowchart LR
         n42 --- n56
         n56 --- n37
     end
-    subgraph nb2["Cas"]
+    subgraph nb2["Cassiopeia"]
         n9["3179"]
         n10["746"]
         n15["4427"]
@@ -108,7 +108,7 @@ flowchart LR
         n22 --- n15
         n26 --- n22
     end
-    subgraph nb3["Tri"]
+    subgraph nb3["Triangulum"]
         n24["8796"]
         n25["10064"]
         n31["10670"]
@@ -116,7 +116,7 @@ flowchart LR
         n25 --- n31
         n31 --- n24
     end
-    subgraph nb4["Ari"]
+    subgraph nb4["Aries"]
         n27["8903"]
         n28["8832"]
         n30["9884"]
@@ -125,7 +125,7 @@ flowchart LR
         n30 --- n27
         n46 --- n30
     end
-    subgraph nb5["Eri"]
+    subgraph nb5["Eridanus"]
         n38["12770"]
         n39["12843"]
         n43["14146"]
@@ -172,7 +172,7 @@ flowchart LR
         n106 --- n103
         n126 --- n106
     end
-    subgraph nb6["Per"]
+    subgraph nb6["Perseus"]
         n40["12777"]
         n41["8068"]
         n47["13268"]
@@ -220,7 +220,7 @@ flowchart LR
         n91 --- n74
         n90 --- n91
     end
-    subgraph nb7["For"]
+    subgraph nb7["Fornax"]
         n44["13147"]
         n45["9677"]
         n62["14879"]
@@ -248,29 +248,29 @@ flowchart LR
         n141["26451"]
         n153["28358"]
         n154["28360"]
-        n66 ---|"Tau"| n67
-        n68 ---|"Tau"| n66
-        n68 ---|"Tau"| n69
-        n88 ---|"Tau"| n68
-        n94 ---|"Tau"| n88
-        n94 ---|"Tau"| n95
-        n95 ---|"Tau"| n96
-        n96 ---|"Tau"| n98
-        n99 ---|"Tau"| n94
-        n102 ---|"Tau"| n99
-        n116 ---|"Aur"| n98
-        n120 ---|"Aur"| n121
-        n125 ---|"Aur"| n116
-        n132 ---|"Aur"| n120
-        n132 ---|"Aur"| n125
-        n98 ---|"Aur"| n136
-        n141 ---|"Tau"| n102
-        n153 ---|"Aur"| n132
-        n154 ---|"Aur"| n132
-        n154 ---|"Aur"| n153
-        n136 ---|"Aur"| n154
+        n66 ---|"Taurus"| n67
+        n68 ---|"Taurus"| n66
+        n68 ---|"Taurus"| n69
+        n88 ---|"Taurus"| n68
+        n94 ---|"Taurus"| n88
+        n94 ---|"Taurus"| n95
+        n95 ---|"Taurus"| n96
+        n96 ---|"Taurus"| n98
+        n99 ---|"Taurus"| n94
+        n102 ---|"Taurus"| n99
+        n116 ---|"Auriga"| n98
+        n120 ---|"Auriga"| n121
+        n125 ---|"Auriga"| n116
+        n132 ---|"Auriga"| n120
+        n132 ---|"Auriga"| n125
+        n98 ---|"Auriga"| n136
+        n141 ---|"Taurus"| n102
+        n153 ---|"Auriga"| n132
+        n154 ---|"Auriga"| n132
+        n154 ---|"Auriga"| n153
+        n136 ---|"Auriga"| n154
     end
-    subgraph nb9["Cam"]
+    subgraph nb9["Camelopardalis"]
         n82["17884"]
         n83["16228"]
         n84["17959"]
@@ -287,7 +287,7 @@ flowchart LR
         n118 --- n111
         n112 --- n161
     end
-    subgraph nb10["Cae"]
+    subgraph nb10["Caelum"]
         n100["21060"]
         n101["21770"]
         n104["21861"]
@@ -296,7 +296,7 @@ flowchart LR
         n101 --- n104
         n104 --- n105
     end
-    subgraph nb11["Ori"]
+    subgraph nb11["Orion"]
         n107["22449"]
         n108["22509"]
         n109["22845"]
@@ -345,7 +345,7 @@ flowchart LR
         n158 --- n150
         n156 --- n155
     end
-    subgraph nb12["Lep"]
+    subgraph nb12["Lepus"]
         n123["23685"]
         n124["25606"]
         n127["24305"]
@@ -368,7 +368,7 @@ flowchart LR
         n152 --- n147
         n157 --- n152
     end
-    subgraph nb13["Col"]
+    subgraph nb13["Columba"]
         n142["26634"]
         n143["25859"]
         n148["27628"]
@@ -379,7 +379,7 @@ flowchart LR
         n148 --- n149
         n164 --- n148
     end
-    subgraph nb14["Gem"]
+    subgraph nb14["Gemini"]
         n159["29655"]
         n160["30343"]
         n167["32246"]
@@ -404,7 +404,7 @@ flowchart LR
         n198 --- n192
         n196 --- n198
     end
-    subgraph nb15["Lyn"]
+    subgraph nb15["Lynx"]
         n162["30060"]
         n163["33449"]
         n183["36145"]
@@ -419,7 +419,7 @@ flowchart LR
         n210 --- n227
         n227 --- n231
     end
-    subgraph nb16["CMa"]
+    subgraph nb16["Canis Major"]
         n165["30324"]
         n166["32349"]
         n178["33347"]
@@ -443,7 +443,7 @@ flowchart LR
         n187 --- n186
         n194 --- n187
     end
-    subgraph nb17["Mon"]
+    subgraph nb17["Monoceros"]
         n168["30419"]
         n169["31216"]
         n170["30867"]
@@ -476,26 +476,26 @@ flowchart LR
         n209["42515"]
         n216["42828"]
         n220["43409"]
-        n175 ---|"Pup"| n176
-        n176 ---|"Pup"| n191
-        n191 ---|"Pup"| n197
-        n197 ---|"Pup"| n199
-        n204 ---|"Pup"| n191
-        n205 ---|"Pup"| n204
-        n199 ---|"Pup"| n205
-        n199 ---|"Pup"| n206
-        n206 ---|"Pup"| n207
-        n208 ---|"Pyx"| n209
-        n207 ---|"Pup"| n208
-        n209 ---|"Pyx"| n216
-        n216 ---|"Pyx"| n220
+        n175 ---|"Puppis"| n176
+        n176 ---|"Puppis"| n191
+        n191 ---|"Puppis"| n197
+        n197 ---|"Puppis"| n199
+        n204 ---|"Puppis"| n191
+        n205 ---|"Puppis"| n204
+        n199 ---|"Puppis"| n205
+        n199 ---|"Puppis"| n206
+        n206 ---|"Puppis"| n207
+        n208 ---|"Pyxis"| n209
+        n207 ---|"Puppis"| n208
+        n209 ---|"Pyxis"| n216
+        n216 ---|"Pyxis"| n220
     end
-    subgraph nb19["CMi"]
+    subgraph nb19["Canis Minor"]
         n200["37279"]
         n201["36188"]
         n200 --- n201
     end
-    subgraph nb20["UMa"]
+    subgraph nb20["Ursa Major"]
         n211["41704"]
         n212["48319"]
         n228["44471"]
@@ -536,7 +536,7 @@ flowchart LR
         n291 --- n296
         n296 --- n302
     end
-    subgraph nb21["Hya"]
+    subgraph nb21["Hydra"]
         n213["42313"]
         n214["43109"]
         n215["42402"]
@@ -574,7 +574,7 @@ flowchart LR
         n286 --- n301
         n301 --- n306
     end
-    subgraph nb22["Cnc"]
+    subgraph nb22["Cancer"]
         n218["42806"]
         n219["43100"]
         n221["42911"]
@@ -585,21 +585,21 @@ flowchart LR
         n221 --- n218
         n226 --- n221
     end
-    subgraph nb23["Ant"]
+    subgraph nb23["Antlia"]
         n234["46515"]
         n235["51172"]
         n260["53502"]
         n234 --- n235
         n235 --- n260
     end
-    subgraph nb24["Vel"]
+    subgraph nb24["Vela"]
         n236["46651"]
         n237["44816"]
         n255["50191"]
         n236 --- n237
         n255 --- n236
     end
-    subgraph nb25["Sex"]
+    subgraph nb25["Sextans"]
         n243["48437"]
         n244["51362"]
         n252["49641"]
@@ -628,7 +628,7 @@ flowchart LR
         n273 --- n253
         n272 --- n273
     end
-    subgraph nb27["LMi"]
+    subgraph nb27["Leo Minor"]
         n249["49593"]
         n250["46952"]
         n251["51056"]
@@ -640,7 +640,7 @@ flowchart LR
         n261 --- n249
         n258 --- n261
     end
-    subgraph nb28["Crt"]
+    subgraph nb28["Crater"]
         n264["53740"]
         n265["54682"]
         n271["55598"]
@@ -660,7 +660,7 @@ flowchart LR
         n279 --- n276
         n277 --- n280
     end
-    subgraph nb29["Vir"]
+    subgraph nb29["Virgo"]
         n281["57380"]
         n282["57757"]
         n285["60129"]
@@ -687,7 +687,7 @@ flowchart LR
         n304 --- n305
         n303 --- n307
     end
-    subgraph nb30["Crv"]
+    subgraph nb30["Corvus"]
         n288["59199"]
         n289["59316"]
         n290["59803"]
@@ -738,7 +738,7 @@ flowchart LR
 flowchart LR
     classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
     classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5
-    subgraph nb0["Psc"]
+    subgraph nb0["Pisces"]
         n0["3786"]
         n1["118268"]
         n4["4906"]
@@ -785,7 +785,7 @@ flowchart LR
         n288 --- n287
         n1 --- n287
     end
-    subgraph nb1["Scl"]
+    subgraph nb1["Sculptor"]
         n2["4577"]
         n3["117452"]
         n281["115102"]
@@ -794,7 +794,7 @@ flowchart LR
         n281 --- n282
         n3 --- n281
     end
-    subgraph nb2["Dra"]
+    subgraph nb2["Draco"]
         n16["61281"]
         n17["56211"]
         n30["68756"]
@@ -826,19 +826,19 @@ flowchart LR
         n132 --- n140
         n132 --- n175
     end
-    subgraph nb3["CVn"]
+    subgraph nb3["Canes Venatici"]
         n18["63121"]
         n19["61317"]
         n18 --- n19
     end
-    subgraph nb4["Com"]
+    subgraph nb4["Coma Berenices"]
         n20["64241"]
         n21["64394"]
         n22["60742"]
         n20 --- n21
         n21 --- n22
     end
-    subgraph nb5["Boo"]
+    subgraph nb5["Boötes"]
         n23["67275"]
         n24["67927"]
         n29["69673"]
@@ -865,7 +865,7 @@ flowchart LR
         n38 --- n46
         n46 --- n40
     end
-    subgraph nb6["Cen"]
+    subgraph nb6["Centaurus"]
         n25["67464"]
         n26["65109"]
         n27["68933"]
@@ -878,7 +878,7 @@ flowchart LR
         n27 --- n31
         n31 --- n39
     end
-    subgraph nb7["UMi"]
+    subgraph nb7["Ursa Minor"]
         n41["72607"]
         n42["77055"]
         n48["75097"]
@@ -894,7 +894,7 @@ flowchart LR
         n69 --- n105
         n105 --- n121
     end
-    subgraph nb8["Lib"]
+    subgraph nb8["Libra"]
         n43["72622"]
         n44["74785"]
         n45["76333"]
@@ -908,7 +908,7 @@ flowchart LR
         n45 --- n62
         n62 --- n63
     end
-    subgraph nb9["Lup"]
+    subgraph nb9["Lupus"]
         n49["75141"]
         n50["73273"]
         n51["76297"]
@@ -927,7 +927,7 @@ flowchart LR
         n75 --- n64
         n61 --- n79
     end
-    subgraph nb10["CrB"]
+    subgraph nb10["Corona Borealis"]
         n55["75695"]
         n56["76267"]
         n57["76127"]
@@ -970,38 +970,38 @@ flowchart LR
         n135["88404"]
         n136["89962"]
         n144["92946"]
-        n59 ---|"Ser"| n60
-        n65 ---|"Ser"| n66
-        n60 ---|"Ser"| n70
-        n71 ---|"Ser"| n59
-        n71 ---|"Ser"| n65
-        n66 ---|"Ser"| n72
-        n70 ---|"Ser"| n74
-        n72 ---|"Ser"| n71
-        n74 ---|"Oph"| n85
-        n85 ---|"Oph"| n86
-        n92 ---|"Oph"| n93
-        n94 ---|"Oph"| n92
-        n97 ---|"Oph"| n74
-        n98 ---|"Oph"| n94
-        n86 ---|"Oph"| n98
-        n86 ---|"Oph"| n101
-        n109 ---|"Oph"| n97
-        n109 ---|"Oph"| n86
-        n101 ---|"Oph"| n112
-        n101 ---|"Ser"| n113
-        n112 ---|"Oph"| n117
-        n123 ---|"Oph"| n109
-        n113 ---|"Ser"| n125
-        n128 ---|"Oph"| n101
-        n128 ---|"Oph"| n123
-        n130 ---|"Oph"| n128
-        n125 ---|"Oph"| n130
-        n125 ---|"Ser"| n135
-        n135 ---|"Ser"| n136
-        n136 ---|"Ser"| n144
+        n59 ---|"Serpens"| n60
+        n65 ---|"Serpens"| n66
+        n60 ---|"Serpens"| n70
+        n71 ---|"Serpens"| n59
+        n71 ---|"Serpens"| n65
+        n66 ---|"Serpens"| n72
+        n70 ---|"Serpens"| n74
+        n72 ---|"Serpens"| n71
+        n74 ---|"Ophiuchus"| n85
+        n85 ---|"Ophiuchus"| n86
+        n92 ---|"Ophiuchus"| n93
+        n94 ---|"Ophiuchus"| n92
+        n97 ---|"Ophiuchus"| n74
+        n98 ---|"Ophiuchus"| n94
+        n86 ---|"Ophiuchus"| n98
+        n86 ---|"Ophiuchus"| n101
+        n109 ---|"Ophiuchus"| n97
+        n109 ---|"Ophiuchus"| n86
+        n101 ---|"Ophiuchus"| n112
+        n101 ---|"Serpens"| n113
+        n112 ---|"Ophiuchus"| n117
+        n123 ---|"Ophiuchus"| n109
+        n113 ---|"Serpens"| n125
+        n128 ---|"Ophiuchus"| n101
+        n128 ---|"Ophiuchus"| n123
+        n130 ---|"Ophiuchus"| n128
+        n125 ---|"Ophiuchus"| n130
+        n125 ---|"Serpens"| n135
+        n135 ---|"Serpens"| n136
+        n136 ---|"Serpens"| n144
     end
-    subgraph nb12["Sco"]
+    subgraph nb12["Scorpius"]
         n77["78265"]
         n78["78401"]
         n80["78820"]
@@ -1030,7 +1030,7 @@ flowchart LR
         n126 --- n127
         n124 --- n126
     end
-    subgraph nb13["Her"]
+    subgraph nb13["Hercules"]
         n83["79101"]
         n84["77760"]
         n87["79992"]
@@ -1066,7 +1066,7 @@ flowchart LR
         n133 --- n118
         n129 --- n134
     end
-    subgraph nb14["Sgr"]
+    subgraph nb14["Sagittarius"]
         n137["88635"]
         n138["90185"]
         n139["89642"]
@@ -1122,7 +1122,7 @@ flowchart LR
         n202 --- n189
         n200 --- n202
     end
-    subgraph nb15["Sct"]
+    subgraph nb15["Scutum"]
         n147["90595"]
         n148["91117"]
         n149["92175"]
@@ -1132,7 +1132,7 @@ flowchart LR
         n152 --- n147
         n149 --- n152
     end
-    subgraph nb16["Lyr"]
+    subgraph nb16["Lyra"]
         n150["91262"]
         n151["91971"]
         n153["91926"]
@@ -1147,7 +1147,7 @@ flowchart LR
         n154 --- n161
         n161 --- n158
     end
-    subgraph nb17["CrA"]
+    subgraph nb17["Corona Austrina"]
         n156["92382"]
         n157["90982"]
         n164["93174"]
@@ -1164,7 +1164,7 @@ flowchart LR
         n171 --- n173
         n173 --- n172
     end
-    subgraph nb18["Aql"]
+    subgraph nb18["Aquila"]
         n169["93747"]
         n170["97649"]
         n184["95501"]
@@ -1183,7 +1183,7 @@ flowchart LR
         n196 --- n201
         n201 --- n197
     end
-    subgraph nb19["Vul"]
+    subgraph nb19["Vulpecula"]
         n177["94703"]
         n178["95771"]
         n186["97886"]
@@ -1194,7 +1194,7 @@ flowchart LR
         n186 --- n198
         n198 --- n205
     end
-    subgraph nb20["Cyg"]
+    subgraph nb20["Cygnus"]
         n187["95853"]
         n188["94779"]
         n193["97165"]
@@ -1213,7 +1213,7 @@ flowchart LR
         n221 --- n209
         n231 --- n221
     end
-    subgraph nb21["Sge"]
+    subgraph nb21["Sagitta"]
         n190["96757"]
         n191["97365"]
         n192["96837"]
@@ -1222,7 +1222,7 @@ flowchart LR
         n192 --- n191
         n191 --- n195
     end
-    subgraph nb22["Cap"]
+    subgraph nb22["Capricornus"]
         n206["100027"]
         n207["100345"]
         n208["101027"]
@@ -1244,7 +1244,7 @@ flowchart LR
         n243 --- n237
         n238 --- n243
     end
-    subgraph nb23["Cep"]
+    subgraph nb23["Cepheus"]
         n211["101093"]
         n212["102422"]
         n219["105199"]
@@ -1267,7 +1267,7 @@ flowchart LR
         n240 --- n272
         n272 --- n239
     end
-    subgraph nb24["Del"]
+    subgraph nb24["Delphinus"]
         n213["101421"]
         n214["101769"]
         n215["101958"]
@@ -1279,7 +1279,7 @@ flowchart LR
         n218 --- n214
         n216 --- n218
     end
-    subgraph nb25["Aqr"]
+    subgraph nb25["Aquarius"]
         n222["102618"]
         n223["103045"]
         n228["106278"]
@@ -1310,7 +1310,7 @@ flowchart LR
         n274 --- n280
         n284 --- n274
     end
-    subgraph nb26["Mic"]
+    subgraph nb26["Microscopium"]
         n224["102693"]
         n225["105382"]
         n226["102831"]
@@ -1322,14 +1322,14 @@ flowchart LR
         n235 --- n229
         n225 --- n235
     end
-    subgraph nb27["Equ"]
+    subgraph nb27["Equuleus"]
         n232["104858"]
         n233["104521"]
         n234["104987"]
         n232 --- n233
         n234 --- n232
     end
-    subgraph nb28["PsA"]
+    subgraph nb28["Piscis Austrinus"]
         n245["107380"]
         n246["107608"]
         n247["109285"]
@@ -1348,7 +1348,7 @@ flowchart LR
         n275 --- n273
         n271 --- n275
     end
-    subgraph nb29["Gru"]
+    subgraph nb29["Grus"]
         n250["109111"]
         n251["108085"]
         n257["109908"]
@@ -1357,7 +1357,7 @@ flowchart LR
         n257 --- n250
         n266 --- n257
     end
-    subgraph nb30["Lac"]
+    subgraph nb30["Lacerta"]
         n255["109754"]
         n256["109937"]
         n258["110351"]
