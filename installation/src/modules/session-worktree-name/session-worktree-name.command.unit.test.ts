@@ -148,6 +148,20 @@ describe(SessionWorktreeNameCommand, () => {
     expect(exitCode()).toBeUndefined();
   });
 
+  it("prints nothing when the common git directory sits in the working directory, whatever that is named", async () => {
+    const checkoutDirectory = path.join(fixture, "Bad_Main");
+    mkdirSync(path.join(checkoutDirectory, ".git"), { recursive: true });
+    useWorkingDirectory(checkoutDirectory);
+    const session = await createCommand({
+      gitDirectories: { common: ".git", own: ".git/worktrees/linked" },
+    });
+
+    await session.run();
+
+    expect(printed()).toBe("");
+    expect(exitCode()).toBeUndefined();
+  });
+
   it("prints nothing for a compliant, ignored worktree inside the main checkout", async () => {
     const worktree = enterWorktree(
       path.join(mainCheckout, ".claude", "worktrees"),

@@ -7,8 +7,6 @@ import { LoggerModule } from "@codebase/observability";
 import { CatalogManifestsModule } from "./modules/catalog-manifests/catalog-manifests.module";
 import { LockfileModule } from "./modules/lockfile/lockfile.module";
 import { ReadmeProjectsModule } from "./modules/readme-projects/readme-projects.module";
-import { SessionBranchNameModule } from "./modules/session-branch-name/session-branch-name.module";
-import { SessionWorktreeNameModule } from "./modules/session-worktree-name/session-worktree-name.module";
 import { environmentSchema } from "./validation.constants";
 
 /**
@@ -27,8 +25,6 @@ import { environmentSchema } from "./validation.constants";
     LockfileModule,
     LoggerModule,
     ReadmeProjectsModule,
-    SessionBranchNameModule,
-    SessionWorktreeNameModule,
   ],
 })
 export class MainModule {}

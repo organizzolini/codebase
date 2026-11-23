@@ -16,8 +16,8 @@ Startup checks run at the start of every agent session and inject their failure 
 
 | Script                                  | Checks                                                                                                                          |
 | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `validate-session-branch-name.sh`       | Shim over `validation`'s `session-branch-name`: branch follows `<type>/<scope>-<description>`                                   |
-| `validate-session-worktree-name.sh`     | Shim over `validation`'s `session-worktree-name`: worktree is kebab-case and gitignored                                         |
+| `validate-session-branch-name.sh`       | Shim over `installation`'s `session-branch-name`: branch follows `<type>/<scope>-<description>`                                 |
+| `validate-session-worktree-name.sh`     | Shim over `installation`'s `session-worktree-name`: worktree is kebab-case and gitignored                                       |
 | `validate-session-commit-signing.sh`    | `commit.gpgsign`, `user.signingkey`, and a GPG signing smoke test                                                               |
 | `validate-session-gh-authentication.sh` | The active `gh` account plus Projects access                                                                                    |
 | `validate-session-skills.sh`            | Shim over `installation`'s `installed-skills check`: every skill in `skills-lock.json` is present                            |

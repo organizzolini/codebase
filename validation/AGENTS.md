@@ -51,11 +51,10 @@ as amended by
 [ADR 0028](../../documentation/adr/0028-run-the-nx-ci-steps-after-the-install-as-commands.md).
 
 The branch-name and worktree-name session hooks are the opposite case: they
-already needed Node, or are accepted as needing it, so their logic lives here as
-`session-branch-name` and `session-worktree-name`, with each hook reduced to a
-shim. Those commands print only the hook's context on standard output, which is
-why `validation.main.ts` sends every log line to standard error — keep it that way. See
-the [agent-session-hooks skill](../../.agents/skills/agent-session-hooks/SKILL.md).
+already needed Node, or are accepted as needing it, so their logic lives in
+[installation](../installation/AGENTS.md) as `session-branch-name` and
+`session-worktree-name`, with each hook reduced to a shim. See the
+[agent-session-hooks skill](../../.agents/skills/agent-session-hooks/SKILL.md).
 
 ## Architecture Overview
 

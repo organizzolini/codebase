@@ -85,6 +85,19 @@ describe("main bootstrap", () => {
     );
   });
 
+  // The session commands print their hooks' context, so a log line on
+  // standard output would become part of what an agent reads.
+  it("sends every log line to standard error before anything logs", async () => {
+    logToStandardError.mockClear();
+
+    await import("./installation.main");
+
+    expect(logToStandardError).toHaveBeenCalledTimes(1);
+    expect(logToStandardError.mock.invocationCallOrder[0]).toBeLessThan(
+      run.mock.invocationCallOrder[0] ?? 0,
+    );
+  });
+
   it("exits non-zero and logs when a command throws", async () => {
     expect.hasAssertions();
 

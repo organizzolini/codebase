@@ -9,5 +9,5 @@
 # It judges this script's own checkout.
 
 cd "$(dirname "${BASH_SOURCE[0]}")/../.." || exit 0
-CONTEXT="$(NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts session-worktree-name 2>/dev/null)" && exit 0
-printf '%s' "${CONTEXT}" | bash scripts/git/emit-session-hook-context.sh "pnpm exec nx run validation:start:session-worktree-name"
+CONTEXT="$(NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts session-worktree-name 2>/dev/null)" && exit 0
+printf '%s' "${CONTEXT}" | bash scripts/git/emit-session-hook-context.sh "pnpm exec nx run installation:start:session-worktree-name"

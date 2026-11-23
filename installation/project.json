@@ -56,6 +56,12 @@
         "remote-cache": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts remote-cache"
         },
+        "session-branch-name": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts session-branch-name"
+        },
+        "session-worktree-name": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts session-worktree-name"
+        },
         "setup": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts setup"
         },
@@ -72,7 +78,7 @@
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts update-reui-skill"
         }
       },
-      "description": "Run one setup command by name: setup, shell-configuration, software, environment-files, dependencies, remote-cache, update-reui-skill, or shared-nx-cache.",
+      "description": "Run one installation command by name: setup, shell-configuration, software, environment-files, dependencies, remote-cache, update-reui-skill, shared-nx-cache, session-branch-name, or session-worktree-name.",
       "executor": "nx:run-commands",
       "options": {
         "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts",

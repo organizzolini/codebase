@@ -6,8 +6,6 @@ import { captureExitCode } from "@codebase/testing";
 import type { CatalogManifestsModule } from "./modules/catalog-manifests/catalog-manifests.module";
 import type { LockfileModule } from "./modules/lockfile/lockfile.module";
 import type { ReadmeProjectsModule } from "./modules/readme-projects/readme-projects.module";
-import type { SessionBranchNameModule } from "./modules/session-branch-name/session-branch-name.module";
-import type { SessionWorktreeNameModule } from "./modules/session-worktree-name/session-worktree-name.module";
 import type { LoggerService } from "@codebase/observability";
 
 type CommandFactoryRun = (
@@ -25,8 +23,6 @@ const logToStandardError = vi.fn<() => void>();
 const catalogManifestsModuleMock = createMock<CatalogManifestsModule>();
 const lockfileModuleMock = createMock<LockfileModule>();
 const readmeProjectsModuleMock = createMock<ReadmeProjectsModule>();
-const sessionBranchNameModuleMock = createMock<SessionBranchNameModule>();
-const sessionWorktreeNameModuleMock = createMock<SessionWorktreeNameModule>();
 
 vi.mock("nest-commander", () => ({
   CommandFactory: {
@@ -80,18 +76,6 @@ vi.mock("./modules/readme-projects/readme-projects.module", () => ({
   },
 }));
 
-vi.mock("./modules/session-branch-name/session-branch-name.module", () => ({
-  SessionBranchNameModule: function SessionBranchNameModule() {
-    return sessionBranchNameModuleMock;
-  },
-}));
-
-vi.mock("./modules/session-worktree-name/session-worktree-name.module", () => ({
-  SessionWorktreeNameModule: function SessionWorktreeNameModule() {
-    return sessionWorktreeNameModuleMock;
-  },
-}));
-
 describe("main bootstrap", () => {
   let exitCode: ReturnType<typeof captureExitCode>;
 
@@ -119,8 +103,7 @@ describe("main bootstrap", () => {
     );
   });
 
-  // The session commands print their hooks' context, so a log line on
-  // standard output would become part of what an agent reads.
+  // Standard output is a command's result, so a log line there would be read as part of it.
   it("sends every log line to standard error before anything logs", async () => {
     logToStandardError.mockClear();
 
