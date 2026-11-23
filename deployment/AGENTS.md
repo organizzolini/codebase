@@ -88,8 +88,7 @@ variables it reads (`TARGET`, `NX_BASE`, `NX_HEAD`, and so on).
 
 A command needs the installed dependencies, so a step that must run before the
 install cannot live here. The Nx steps that run right after the install are the
-`integration` project's; see
-[ADR 0029](../documentation/adr/0029-keep-the-ci-steps-in-the-integration-project.md).
+`integration` project's.
 
 ### Directory Layout
 

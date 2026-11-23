@@ -4,7 +4,7 @@ import type { MigrationInterface, QueryRunner } from "typeorm";
  * Keys the shape count tables by rows and columns alone: the lattice they
  * were keyed by is nearly unique to each meander. They are derived data, so
  * they are made again and the marker cleared; the aggregate step refills
- * them. See ADR 0037.
+ * them.
  */
 export class Migration1795000000000 implements MigrationInterface {
   name = "Migration1795000000000";

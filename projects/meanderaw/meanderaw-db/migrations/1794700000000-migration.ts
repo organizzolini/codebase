@@ -3,7 +3,7 @@ import type { MigrationInterface, QueryRunner } from "typeorm";
 /**
  * Creates the four aggregate count tables the aggregate step rebuilds: value,
  * pair, and shape counts, plus the shape totals. No foreign keys, since the
- * rebuild swaps whole tables. See ADR 0034.
+ * rebuild swaps whole tables.
  */
 export class Migration1794700000000 implements MigrationInterface {
   name = "Migration1794700000000";

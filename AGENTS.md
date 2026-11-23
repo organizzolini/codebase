@@ -318,7 +318,7 @@ symlinks keep tools that hard-code the old paths working:
 
 | Symlink    | Target                   | Why it exists                                                                          |
 | ---------- | ------------------------ | -------------------------------------------------------------------------------------- |
-| `docs`     | `documentation`          | Vendored skills read and write `docs/adr/`, `docs/agents/`, and `docs/superpowers/`    |
+| `docs`     | `documentation`          | Vendored skills read and write `docs/agents/` and `docs/superpowers/`                  |
 | `openwiki` | `documentation/openwiki` | The OpenWiki CLI hard-codes its output directory, with no flag or setting to change it |
 
 Wherever a skill or tool says `docs/<path>`, it means `documentation/<path>`:
@@ -364,8 +364,8 @@ The vendored skills read their per-repository configuration from
 | Handoffs      | The `# Handoff` comment posted on a spec issue for multi-session work                                                                         | [`documentation/agents/handoffs.md`](documentation/agents/handoffs.md)           |
 | OpenWiki      | The generated evidence index agents read to discover the codebase                                                                             | [`documentation/agents/openwiki.md`](documentation/agents/openwiki.md)           |
 
-Architecture decision records live in `documentation/adr/`. Add one when a
-decision lands, rather than scaffolding ahead of the work.
+There are no architecture decision records. A decision worth keeping goes in the
+README or `AGENTS.md` of the project it shapes, and OpenWiki indexes it from there.
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->

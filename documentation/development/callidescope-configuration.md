@@ -26,8 +26,7 @@ shape every one of them takes. The spread and the explicit `limits` object
 are not doing the same job: the spread carries `entryPoints`, `exclude`,
 `write`, and whatever `limits` a project does not restate forward
 unchanged, and `limits` is what a project overrides. Leaving a field out of
-either is a refusal naming the project and the field — see
-`documentation/adr/0007-complete-project-configurations.md`.
+either is a refusal naming the project and the field.
 
 A project's file also carries no type annotation, and so no import of
 `CallidescopeConfiguration`. An `import type` is still an Nx dependency
@@ -44,8 +43,7 @@ depends on the configuration package for real.
 
 ### The projects that used to override nothing
 
-Every traced project holds a complete file now — see
-`documentation/adr/0007-complete-project-configurations.md`. There used to be a
+Every traced project holds a complete file now. There used to be a
 class of project that took the number below without a file of its own, and
 consolidating the conformetry Languages removed the last of it: six leaf
 analyzers — `conformetry-typescript`, `-json`, `-jupyter`, `-markdown`,

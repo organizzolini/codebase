@@ -10,7 +10,7 @@ Meanderaw follows the workspace's shared Postgres convention, from
 [`@codebase/persistence`](../../common/persistence/README.md): the `meanderaw_development`
 database holds a `meanderaw` schema, both owned by the `meanderaw_username` role. The local
 Postgres container creates all three the first time its volume starts empty; on a volume that
-predates that, [ADR 0022](../../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md)
+predates that, the [infrastructure README](../../../infrastructure/README.md)
 describes how to add them without discarding what the volume holds.
 
 The `meanders` table is built by a migration, never by synchronizing. Run the migrations
@@ -64,12 +64,10 @@ output/
   patterns/*.html   every meander one pattern characteristic holds for, drawn
 ```
 
-A draw run commits nothing. The rows live in Postgres rather than in the repository — see
-[ADR 0020](../../../documentation/adr/0020-store-meanders-in-postgres.md) — and the pages are written on
+A draw run commits nothing. The rows live in Postgres rather than in the repository, and the pages are written on
 every draw run but gitignored: at the default edge budget's millions of rows they are gigabytes
 of HTML, each page streamed to disk a batch of rows at a time because one pattern's page
-outgrows a JavaScript string — see
-[ADR 0021](../../../documentation/adr/0021-stop-committing-the-meander-pages.md).
+outgrows a JavaScript string.
 
 That is the whole of it, and the shrinking is the point of this design rather than a side
 effect of it. `output/` used to hold 9,877 committed SVG files under ten family
@@ -126,12 +124,10 @@ WHERE NOT EXISTS (
 ```
 
 A Characteristic added, renamed, or removed needs no schema change: the next draw run
-rewrites the catalog, and a removed one takes its bridge rows with it. See
-[ADR 0034](../../../documentation/adr/0034-store-characteristics-in-a-catalog-and-a-bridge.md).
+rewrites the catalog, and a removed one takes its bridge rows with it.
 
 **Nothing checks the database against a fresh draw run.** A drift check used to
-run on every commit, and a `drawingHash` column fed it; both are gone, for now — see
-[ADR 0019](../../../documentation/adr/0019-drop-the-drift-check-and-the-drawing-hash.md). The one
+run on every commit, and a `drawingHash` column fed it; both are gone, for now. The one
 property the schema enforces is that a Code is unique, so after changing the renderer, the
 enumerator, or a Characteristic, regenerate the database with `nx run meanderaw-cli:start`.
 
@@ -161,8 +157,7 @@ the directory alone.
 ## 🏛️ Meander Charter
 
 Every meander shares a set of properties that describe how it looks. The charter was
-measured over the ten generator families this project once drew, which are retired — see
-[ADR 0023](../../../documentation/adr/0023-filter-meanders-by-characteristics-alone.md) — so the
+measured over the ten generator families this project once drew, which are retired, so the
 family names below record where each measurement came from. Three of those properties — orthogonality, space-filling channels, and the band
 model — are **guaranteed by construction**: no assignment of direction bits to a lattice
 can violate them, so no family gates them and none ever could. The other two — branching
@@ -186,9 +181,7 @@ the rules stand a lattice row clear of the ink — meets each strand's rising en
 east, and south ink at one lattice point, so 642 of its 786 drawings fork. Not every
 drawing forks: the other 144 are the `serpentine` drawings whose first and last strips are
 each one lattice row deep, where the flat ribbon on such a strip _is_ the rule and nothing
-rises to meet it — a **structural condition** rather than a blanket count. See
-`documentation/adr/0006-close-both-band-borders-in-branch-and-parallel.md` for why both borders were
-closed and what it cost.
+rises to meet it — a **structural condition** rather than a blanket count.
 
 `mosaic` branches and crosses too, and only in its **enumerated half alone** — which is now
 the whole of it. Its unit space is every assignment of direction bits over a lattice, and
@@ -204,7 +197,7 @@ committed output rather than from a generated drawing.
 | 3 | **No branching** — ink contains no T-junctions | Demoted to characteristic `hasTJunctions` — present in `branch` in every mode, in `negative` in every mode but `ruled-closed`, in `parallel` wherever a border strip has depth, in `mosaic` across its enumerated half, and in `chain` and `snake` under `edge` and `edge-flip` |
 | 4 | **No crossing** — ink contains no X-junctions | Demoted to characteristic `hasXJunctions` — present in `cross` except under `interrupted`, in `mosaic` across its enumerated half, and in `negative` under `brick-straight`, `brick-upright`, and `grid` |
 | 5 | **Band, not field** — fixed canvas height, `rows` is density, tiling is horizontal | Guaranteed by construction |
-| 6 | **Flat path model** — unordered paths, no z-order, one stroke width per document | May be relaxed by ADR only |
+| 6 | **Flat path model** — unordered paths, no z-order, one stroke width per document | May be relaxed only by an explicit design decision |
 | 7 | Invariants hold within a band, not at its termination | See [#338](https://github.com/Organizzolini/codebase/issues/338) |
 
 What the measurements found. They were taken across the 114 named patterns and 3,179

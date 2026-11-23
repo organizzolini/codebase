@@ -2,7 +2,7 @@ import type { MigrationInterface, QueryRunner } from "typeorm";
 
 /**
  * Creates the marker that says the aggregate tables are current, so a reader
- * answers from them only while it exists. See ADR 0037.
+ * answers from them only while it exists.
  */
 export class Migration1794800000000 implements MigrationInterface {
   name = "Migration1794800000000";

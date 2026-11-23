@@ -184,8 +184,7 @@ it directly, and it declares only the fields of Nx's context it reads, so this
 project needs no dependency on `@nx/devkit`.
 
 Steps that run before `pnpm install` cannot live here, because a command needs
-the installed dependencies; see
-[ADR 0029](../documentation/adr/0029-keep-the-ci-steps-in-the-integration-project.md).
+the installed dependencies.
 
 ## Development
 

@@ -3,7 +3,7 @@ import type { MigrationInterface, QueryRunner } from "typeorm";
 /**
  * Replaces the `characteristics` jsonb column with the `characteristics`
  * catalog and the `meander_characteristics` bridge, and empties `meanders`: no
- * data migrates, since the draw run recomputes the corpus. See ADR 0034.
+ * data migrates, since the draw run recomputes the corpus.
  */
 export class Migration1794630084904 implements MigrationInterface {
   name = "Migration1794630084904";

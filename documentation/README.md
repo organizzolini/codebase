@@ -1,4 +1,4 @@
-NestJS CLI that refreshes the repository documentation from code. It also holds the documentation itself: `adr`, `agents`, `development`, `openwiki`, `planning`, and `research`.
+NestJS CLI that refreshes the repository documentation from code. It also holds the documentation itself: `agents`, `development`, `openwiki`, `planning`, and `research`.
 
 ## Start
 
