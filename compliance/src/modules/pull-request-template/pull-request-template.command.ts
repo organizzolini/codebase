@@ -6,17 +6,12 @@ import { Command, CommandRunner } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { SynchronizationService } from "../synchronization/synchronization.service";
-
 import {
   SYNC_PULL_REQUEST_TEMPLATE_MARKER,
   SYNC_PULL_REQUEST_TEMPLATE_TARGET_FILES,
 } from "./pull-request-template.constants";
 
-import type {
-  SynchronizableCommand,
-  SynchronizationMode,
-} from "../synchronization/synchronization.types";
+import type { PullRequestTemplateMode } from "./pull-request-template.types";
 
 /**
  * CLI command that syncs the PR template from .github/PULL_REQUEST_TEMPLATE.md
@@ -27,16 +22,10 @@ import type {
   name: "pull-request-template",
 })
 @Injectable()
-export class PullRequestTemplateCommand
-  extends CommandRunner
-  implements SynchronizableCommand
-{
+export class PullRequestTemplateCommand extends CommandRunner {
   // 🏗 Dependency Injection
 
-  constructor(
-    private readonly logger: LoggerService,
-    private readonly synchronizationModeService: SynchronizationService,
-  ) {
+  constructor(private readonly logger: LoggerService) {
     super();
     this.logger.setContext(PullRequestTemplateCommand.name);
   }
@@ -44,8 +33,6 @@ export class PullRequestTemplateCommand
   // 🔐 Private Fields
 
   // 🔑 Public Fields
-
-  readonly synchronizationLabel = "pull-request-template";
 
   // 🔏 Private Methods
 
@@ -99,9 +86,7 @@ export class PullRequestTemplateCommand
   }
 
   /**
-   * Checks all target files for sync and reports whether every one matched,
-   * rather than exiting, so the aggregate `synchronization` command can
-   * collect every result.
+   * Checks all target files for sync and reports whether every one matched.
    */
   private handleCheckMode(
     templateContent: string,
@@ -115,7 +100,7 @@ export class PullRequestTemplateCommand
     }
     if (!allInSync) {
       this.logger.info("💡 Suggested a fix", undefined, {
-        hint: "Run 'nx run synchronization:pull-request-template:write' to sync",
+        hint: "Run 'nx run compliance:pull-request-template:write' to sync",
       });
       return false;
     }
@@ -163,62 +148,25 @@ export class PullRequestTemplateCommand
     return content.replace(pattern, `$1\n${newContent}\n\n$2`);
   }
 
-  /**
-   * Wraps content in a markdown code block tagged as markdown.
-   */
-  private wrapInCodeBlock(content: string): string {
-    return `\`\`\`markdown\n${content}\n\`\`\``;
-  }
+  /** Resolves the mode argument, defaulting to check, or exits on an unknown one. */
+  private resolveMode(passedParameters: string[]): PullRequestTemplateMode {
+    const modeValue = passedParameters[0] ?? "check";
 
-  /**
-   * Writes the PR template code block into a target file between its marker comments.
-   */
-  private writeTargetSync(templateContent: string, targetFile: string): void {
-    const workspaceRoot = process.cwd();
-    const targetName = path.relative(workspaceRoot, targetFile);
-    this.logger.info("🔄 Syncing a PR template", undefined, {
-      target: targetName,
-    });
-
-    const fileContent = readFileSync(targetFile, "utf8");
-    const codeBlock = this.wrapInCodeBlock(templateContent);
-    const updatedContent = this.replaceMarkerContent(
-      fileContent,
-      SYNC_PULL_REQUEST_TEMPLATE_MARKER,
-      codeBlock,
-    );
-
-    writeFileSync(targetFile, updatedContent, "utf8");
-    this.logger.info("📄 Synced the PR template", undefined, {
-      target: targetName,
-    });
-  }
-
-  // 🌎 Public Methods
-
-  /**
-   * Runs the pull-request-template sync command in check or write mode.
-   */
-  async run(
-    passedParameters: string[],
-    _options?: Record<string, unknown>,
-  ): Promise<void> {
-    const mode =
-      this.synchronizationModeService.resolveSynchronizationModeOrExit({
-        invalidModeLabel: "Invalid mode",
-        loggerService: this.logger,
-        passedParameters,
-        usageMessage:
-          "💡 Usage: nx run synchronization:pull-request-template:check (or synchronization:pull-request-template:write)",
-      });
-
-    if (!(await this.synchronize(mode))) {
-      process.exit(1);
+    if (modeValue === "check" || modeValue === "write") {
+      return modeValue;
     }
+
+    this.logger.error("🚦 Rejected an unusable mode", undefined, {
+      mode: modeValue,
+      reason: "Invalid mode",
+      usage:
+        "💡 Usage: nx run compliance:pull-request-template:check (or compliance:pull-request-template:write)",
+    });
+    return process.exit(1);
   }
 
   /** Synchronizes the PR template and reports success without exiting. */
-  async synchronize(mode: SynchronizationMode): Promise<boolean> {
+  private async synchronize(mode: PullRequestTemplateMode): Promise<boolean> {
     try {
       await Promise.resolve();
       const workspaceRoot = process.cwd();
@@ -244,6 +192,53 @@ export class PullRequestTemplateCommand
         error instanceof Error ? error.stack : String(error),
       );
       return false;
+    }
+  }
+
+  /**
+   * Wraps content in a markdown code block tagged as markdown.
+   */
+  private wrapInCodeBlock(content: string): string {
+    return `\`\`\`markdown\n${content}\n\`\`\``;
+  }
+
+  // 🌎 Public Methods
+
+  /**
+   * Writes the PR template code block into a target file between its marker comments.
+   */
+  private writeTargetSync(templateContent: string, targetFile: string): void {
+    const workspaceRoot = process.cwd();
+    const targetName = path.relative(workspaceRoot, targetFile);
+    this.logger.info("🔄 Syncing a PR template", undefined, {
+      target: targetName,
+    });
+
+    const fileContent = readFileSync(targetFile, "utf8");
+    const codeBlock = this.wrapInCodeBlock(templateContent);
+    const updatedContent = this.replaceMarkerContent(
+      fileContent,
+      SYNC_PULL_REQUEST_TEMPLATE_MARKER,
+      codeBlock,
+    );
+
+    writeFileSync(targetFile, updatedContent, "utf8");
+    this.logger.info("📄 Synced the PR template", undefined, {
+      target: targetName,
+    });
+  }
+
+  /**
+   * Runs the pull-request-template sync command in check or write mode.
+   */
+  async run(
+    passedParameters: string[],
+    _options?: Record<string, unknown>,
+  ): Promise<void> {
+    const mode = this.resolveMode(passedParameters);
+
+    if (!(await this.synchronize(mode))) {
+      process.exit(1);
     }
   }
 }

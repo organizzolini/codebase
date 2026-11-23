@@ -6,13 +6,13 @@ Call stacks traced through `synchronization`, deepest first. Each frame shows wh
 
 | Measure | Value |
 | --- | --- |
-| Callables | 251 |
-| Files | 64 |
-| Calls traced | 262 |
-| Call stacks | 15 |
+| Callables | 238 |
+| Files | 60 |
+| Calls traced | 248 |
+| Call stacks | 14 |
 | Deepest stack | 9 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 13 |
+| Unfollowable calls | 12 |
 
 ### Limits
 
@@ -89,7 +89,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ```
 
 <details>
-<summary>12 more call stacks</summary>
+<summary>11 more call stacks</summary>
 
 **4. `ConformetryGeneratorsCommand.run`** — depth ≥ 7 · decorated-method
 
@@ -143,23 +143,7 @@ What this project is judged against, as declared in its own `callidescope.config
           └─> PackageManifestsService.toSorted(…)(leftKey: string, rightKey: string): number [synchronization/src/modules/package-manifests/package-manifests.service.ts:85]
 ```
 
-**7. `PullRequestTemplateCommand.run`** — depth 6 · decorated-method
-
-```text
-🚀 PullRequestTemplateCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [synchronization/src/modules/pull-request-template/pull-request-template.command.ts:202]
-   ↳ Runs the pull-request-template sync command in check or write mode.
-  └─> PullRequestTemplateCommand.synchronize(mode: SynchronizationMode): Promise<boolean> [synchronization/src/modules/pull-request-template/pull-request-template.command.ts:221]
-     ↳ Synchronizes the PR template and reports success without exiting.
-    └─> PullRequestTemplateCommand.handleWriteMode(templateContent: string, targetFiles: string[]): void [synchronization/src/modules/pull-request-template/pull-request-template.command.ts:129]
-       ↳ Writes the current PR template into any target files that are out of sync.
-      └─> PullRequestTemplateCommand.filter(…)(targetFile: string): boolean [synchronization/src/modules/pull-request-template/pull-request-template.command.ts:134]
-        └─> PullRequestTemplateCommand.checkTargetSync(templateContent: string, targetFile: string): boolean [synchronization/src/modules/pull-request-template/pull-request-template.command.ts:55]
-           ↳ Checks whether the target file's marker block matches the current PR template.
-          └─> PullRequestTemplateCommand.extractMarkerContent(content: string, markerName: string): string | undefined [synchronization/src/modules/pull-request-template/pull-request-template.command.ts:90]
-             ↳ Extracts the content between start and end marker comments from a file.
-```
-
-**8. `SkillExclusionsCommand.run`** — depth ≥ 6 · decorated-method
+**7. `SkillExclusionsCommand.run`** — depth ≥ 6 · decorated-method
 
 ```text
 🚀 SkillExclusionsCommand.run(passedParameters: string[]): Promise<void> [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:158]
@@ -175,7 +159,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ The comment opening this file's generated block, in its own syntax.
 ```
 
-**9. `DevcontainerConfigurationCommand.run`** — depth 5 · decorated-method
+**8. `DevcontainerConfigurationCommand.run`** — depth 5 · decorated-method
 
 ```text
 🚀 DevcontainerConfigurationCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.command.ts:257]
@@ -190,7 +174,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Returns true if the feature key refers to a Docker-in-Docker or Docker-outside-of-Docker feature.
 ```
 
-**10. `VscodeSettingsCommand.run`** — depth 4 · decorated-method
+**9. `VscodeSettingsCommand.run`** — depth 4 · decorated-method
 
 ```text
 🚀 VscodeSettingsCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [synchronization/src/modules/vscode-settings/vscode-settings.command.ts:101]
@@ -203,10 +187,10 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Returns true when the provided value is a supported synchronization mode.
 ```
 
-**11. `SynchronizationCommand.run`** — depth ≥ 4 · decorated-method
+**10. `SynchronizationCommand.run`** — depth ≥ 4 · decorated-method
 
 ```text
-🚀 SynchronizationCommand.run(passedParameters: string[]): Promise<void> [synchronization/src/modules/synchronization/synchronization.command.ts:109]
+🚀 SynchronizationCommand.run(passedParameters: string[]): Promise<void> [synchronization/src/modules/synchronization/synchronization.command.ts:106]
    ↳ Runs every synchronization, exiting once if any reported drift.
   └─> SynchronizationService.resolveSynchronizationModeOrExit(options: SynchronizationModeResolutionOptions): SynchronizationMode [synchronization/src/modules/synchronization/synchronization.service.ts:59]
      ↳ Resolves synchronization mode or exits the process when the mode is invalid.
@@ -216,7 +200,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Returns true when the provided value is a supported synchronization mode.
 ```
 
-**12. `run`** — depth 4 · orphan-root
+**11. `run`** — depth 4 · orphan-root
 
 ```text
 🚀 run(command: ProcessCommand): ProcessResult [synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:65]
@@ -225,7 +209,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> isLockfileDirty(): boolean [synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:38]
 ```
 
-**13. `SynchronizationMarkersService.extractContent`** — depth 3 · orphan-root
+**12. `SynchronizationMarkersService.extractContent`** — depth 3 · orphan-root
 
 ```text
 🚀 SynchronizationMarkersService.extractContent(content: string, markerName: string): string | undefined [synchronization/src/modules/synchronization/synchronization-markers.service.ts:44]
@@ -236,7 +220,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Renders the opening marker comment for a marker name.
 ```
 
-**14. `SynchronizationMarkersService.replaceContent`** — depth 3 · orphan-root
+**13. `SynchronizationMarkersService.replaceContent`** — depth 3 · orphan-root
 
 ```text
 🚀 SynchronizationMarkersService.replaceContent(content: string, markerName: string, replacement: string): string [synchronization/src/modules/synchronization/synchronization-markers.service.ts:65]
@@ -247,7 +231,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Renders the opening marker comment for a marker name.
 ```
 
-**15. `lockSkills`** — depth 2 · orphan-root
+**14. `lockSkills`** — depth 2 · orphan-root
 
 ```text
 🚀 lockSkills(workspace: string, skillNames: string[]): void [synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:86]
@@ -266,7 +250,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `ConventionalConfigIoService.writeReleaseConfigSync` | 6 | `ConventionalConfigIoService.map(…)`, `ConventionalConfigIoService.filter(…)`, `ConventionalConfigIoService.getReleaseRulesTypes`, `ConventionalConfigIoService.getPresetConfigTypes`, `ConventionalConfigIoService.appendToReleaseRules`, `ConventionalConfigIoService.appendToPresetTypes` | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:290` |
 
 <details>
-<summary>114 more callables</summary>
+<summary>107 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
@@ -274,12 +258,11 @@ What this project is judged against, as declared in its own `callidescope.config
 | `InstalledSkillsService.restoreSkills` | 6 | `InstalledSkillsService.git`, `InstalledSkillsService.hasChanges`, `InstalledSkillsService.findCleanSkillFolders`, `InstalledSkillsService.runRestore`, `InstalledSkillsService.revertTrackedChanges`, `InstalledSkillsService.verifyRestoration` | `synchronization/src/modules/installed-skills/installed-skills.service.ts:188` |
 | `PackageManifestsService.checkPackageManifest` | 6 | `PackageManifestsService.readPackageManifest`, `PackageManifestsService.deriveMetadata`, `PackageManifestsService.compareStringField`, `PackageManifestsService.compareBugsField`, `PackageManifestsService.compareRepositoryField`, `PackageManifestsService.filter(…)` | `synchronization/src/modules/package-manifests/package-manifests.service.ts:125` |
 | `ConventionalConfigService.syncReleaseConfigIfNeeded` | 5 | `ConventionalConfigService.loadReleaseConfig`, `ConventionalConfigService.filter(…)`, `ConventionalConfigIoService.getReleaseRulesTypes`, `ConventionalConfigIoService.getPresetConfigTypes`, `ConventionalConfigIoService.writeReleaseConfigSync` | `synchronization/src/modules/conventional-config/conventional-config.service.ts:93` |
-| `SynchronizationCommand.reportResults` | 5 | `SynchronizationCommand.filter(…)`, `SynchronizationCommand.map(…)`, `SynchronizationCommand.filter(…)`, `SynchronizationCommand.map(…)`, `SynchronizationCommand.filter(…)` | `synchronization/src/modules/synchronization/synchronization.command.ts:78` |
+| `SynchronizationCommand.reportResults` | 5 | `SynchronizationCommand.filter(…)`, `SynchronizationCommand.map(…)`, `SynchronizationCommand.filter(…)`, `SynchronizationCommand.map(…)`, `SynchronizationCommand.filter(…)` | `synchronization/src/modules/synchronization/synchronization.command.ts:75` |
 | `ConventionalConfigIoService.writeSkillSync` | 4 | `ConventionalConfigIoService.map(…)`, `ConventionalConfigIoService.map(…)`, `ConventionalConfigIoService.generateMarkdownTable`, `ConventionalConfigIoService.replaceMarkerContent` | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:353` |
 | `InstalledSkillsCommand.write` | 4 | `InstalledSkillsCommand.isSet`, `InstalledSkillsService.findMissingSkills`, `InstalledSkillsCommand.announceRestoration`, `InstalledSkillsService.restoreSkills` | `synchronization/src/modules/installed-skills/installed-skills.command.ts:139` |
 | `PackageManifestsService.checkAll` | 4 | `PackageManifestsService.readRootManifest`, `PackageManifestsService.map(…)`, `PackageManifestsService.filter(…)`, `PackageManifestsService.filter(…)` | `synchronization/src/modules/package-manifests/package-manifests.service.ts:100` |
 | `ProjectPortsCommand.findPortProjects` | 4 | `ProjectPortsCommand.filter(…)`, `ProjectPortsCommand.filter(…)`, `ProjectPortsCommand.map(…)`, `ProjectPortsCommand.flatMap(…)` | `synchronization/src/modules/project-ports/project-ports.command.ts:84` |
-| `PullRequestTemplateCommand.synchronize` | 4 | `PullRequestTemplateCommand.map(…)`, `PullRequestTemplateCommand.loadTemplate`, `PullRequestTemplateCommand.handleCheckMode`, `PullRequestTemplateCommand.handleWriteMode` | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:221` |
 | `VscodeExtensionsCommand.synchronizeDevcontainer` | 4 | `VscodeExtensionsCommand.readDevcontainer`, `VscodeExtensionsCommand.isCurrent`, `VscodeExtensionsCommand.reportDrift`, `VscodeExtensionsCommand.write` | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:139` |
 | `ConformetryGeneratorsCommand.synchronize` | 3 | `ConformetryGeneratorsCommand.readGenerators`, `ConformetryGeneratorsCommand.checkSync`, `ConformetryGeneratorsCommand.writeSync` | `synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:202` |
 | `ConventionalConfigIoService.writeIssueTemplateSync` | 3 | `ConventionalConfigIoService.writeIssueTemplateDropdown`, `ConventionalConfigIoService.map(…)`, `ConventionalConfigIoService.map(…)` | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:258` |
@@ -298,7 +281,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `SkillExclusionsCommand.writeSync` | 3 | `SkillExclusionsCommand.readExclusionFile`, `SkillExclusionsCommand.renderBlock`, `SkillExclusionsCommand.map(…)` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:137` |
 | `SkillExclusionsCommand.synchronize` | 3 | `SkillExclusionsCommand.readInputs`, `SkillExclusionsCommand.writeSync`, `SkillExclusionsCommand.findStaleFiles` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:173` |
 | `VscodeSettingsCommand.synchronize` | 3 | `VscodeSettingsCommand.readMachineSettings`, `VscodeSettingsCommand.findDrift`, `VscodeSettingsCommand.write` | `synchronization/src/modules/vscode-settings/vscode-settings.command.ts:120` |
-| `SynchronizationCommand.synchronize` | 3 | `SynchronizationCommand.getCommands`, `SynchronizationCommand.reportResults`, `SynchronizationCommand.every(…)` | `synchronization/src/modules/synchronization/synchronization.command.ts:128` |
+| `SynchronizationCommand.synchronize` | 3 | `SynchronizationCommand.getCommands`, `SynchronizationCommand.reportResults`, `SynchronizationCommand.every(…)` | `synchronization/src/modules/synchronization/synchronization.command.ts:125` |
 | `SynchronizationService.resolveSynchronizationModeOrExit` | 2 | `SynchronizationService.resolveModeValue`, `SynchronizationService.exitInvalidMode` | `synchronization/src/modules/synchronization/synchronization.service.ts:59` |
 | `ConformetryGeneratorsCommand.checkSync` | 2 | `ConformetryGeneratorsCommand.generateGeneratorsTable`, `ConformetryGeneratorsCommand.filter(…)` | `synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:60` |
 | `ConformetryGeneratorsCommand.readGenerators` | 2 | `ConfigurationService.loadConformetryConfiguration`, `ConformetryGeneratorsCommand.map(…)` | `synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:107` |
@@ -321,17 +304,13 @@ What this project is judged against, as declared in its own `callidescope.config
 | `ProjectPortsCommand.describeProject` | 2 | `ProjectPortsCommand.find(…)`, `ProjectPortsService.textToPort` | `synchronization/src/modules/project-ports/project-ports.command.ts:61` |
 | `ProjectPortsCommand.flatMap(…)` | 2 | `ProjectPortsCommand.isProject`, `ProjectPortsCommand.findProjectDirectories` | `synchronization/src/modules/project-ports/project-ports.command.ts:90` |
 | `ProjectPortsCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `ProjectPortsCommand.synchronize` | `synchronization/src/modules/project-ports/project-ports.command.ts:248` |
-| `PullRequestTemplateCommand.checkTargetSync` | 2 | `PullRequestTemplateCommand.extractMarkerContent`, `PullRequestTemplateCommand.wrapInCodeBlock` | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:55` |
-| `PullRequestTemplateCommand.handleWriteMode` | 2 | `PullRequestTemplateCommand.filter(…)`, `PullRequestTemplateCommand.writeTargetSync` | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:129` |
-| `PullRequestTemplateCommand.writeTargetSync` | 2 | `PullRequestTemplateCommand.wrapInCodeBlock`, `PullRequestTemplateCommand.replaceMarkerContent` | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:176` |
-| `PullRequestTemplateCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `PullRequestTemplateCommand.synchronize` | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:202` |
 | `SkillExclusionsCommand.findStaleFiles` | 2 | `SkillExclusionsCommand.map(…)`, `SkillExclusionsCommand.filter(…)` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:62` |
 | `SkillExclusionsCommand.filter(…)` | 2 | `SkillExclusionsCommand.readExclusionFile`, `SkillExclusionsCommand.renderBlock` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:63` |
 | `SkillExclusionsCommand.readExclusionFile` | 2 | `SkillExclusionsCommand.renderStartMarker`, `SkillExclusionsCommand.renderEndMarker` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:71` |
 | `SkillExclusionsCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `SkillExclusionsCommand.synchronize` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:158` |
 | `VscodeExtensionsCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `VscodeExtensionsCommand.synchronize` | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:187` |
 | `VscodeSettingsCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `VscodeSettingsCommand.synchronize` | `synchronization/src/modules/vscode-settings/vscode-settings.command.ts:101` |
-| `SynchronizationCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `SynchronizationCommand.synchronize` | `synchronization/src/modules/synchronization/synchronization.command.ts:109` |
+| `SynchronizationCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `SynchronizationCommand.synchronize` | `synchronization/src/modules/synchronization/synchronization.command.ts:106` |
 | `run` | 2 | `answerGit`, `restore` | `synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:65` |
 | `SynchronizationMarkersService.locateMarkers` | 2 | `SynchronizationMarkersService.getStartMarker`, `SynchronizationMarkersService.getEndMarker` | `synchronization/src/modules/synchronization/synchronization-markers.service.ts:24` |
 | `SynchronizationService.resolveModeValue` | 1 | `SynchronizationService.isSynchronizationMode` | `synchronization/src/modules/synchronization/synchronization.service.ts:40` |
@@ -369,8 +348,6 @@ What this project is judged against, as declared in its own `callidescope.config
 | `ProjectPortsCommand.filter(…)` | 1 | `ProjectPortsService.replacePort` | `synchronization/src/modules/project-ports/project-ports.command.ts:163` |
 | `ProjectPortsCommand.verifyDistinctPorts` | 1 | `ProjectPortsCommand.filter(…)` | `synchronization/src/modules/project-ports/project-ports.command.ts:225` |
 | `ProjectPortsCommand.map(…)` | 1 | `ProjectPortsCommand.synchronizeProject` | `synchronization/src/modules/project-ports/project-ports.command.ts:275` |
-| `PullRequestTemplateCommand.handleCheckMode` | 1 | `PullRequestTemplateCommand.checkTargetSync` | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:106` |
-| `PullRequestTemplateCommand.filter(…)` | 1 | `PullRequestTemplateCommand.checkTargetSync` | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:134` |
 | `SkillExclusionsCommand.readInputs` | 1 | `SkillExclusionsCommand.toSorted(…)` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:104` |
 | `SkillExclusionsCommand.renderBlock` | 1 | `SkillExclusionsCommand.map(…)` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:117` |
 | `VscodeExtensionsCommand.isCurrent` | 1 | `VscodeExtensionsCommand.hasSameEntries` | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:67` |

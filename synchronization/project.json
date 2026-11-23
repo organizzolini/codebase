@@ -168,29 +168,6 @@
         "cwd": "{workspaceRoot}"
       }
     },
-    "pull-request-template": {
-      "cache": true,
-      "configurations": {
-        "check": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register synchronization/src/synchronization.main.ts pull-request-template check"
-        },
-        "write": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register synchronization/src/synchronization.main.ts pull-request-template write"
-        }
-      },
-      "defaultConfiguration": "check",
-      "description": "Reconciles derived pull request template content. `check` runs on a pull request; `write` runs on the default branch's release.",
-      "executor": "nx:run-commands",
-      "inputs": [
-        "{projectRoot}/**/*.ts",
-        "{workspaceRoot}/.github/PULL_REQUEST_TEMPLATE.md",
-        "{workspaceRoot}/configuration/repository/conventional.config.cjs",
-        "shared-globals"
-      ],
-      "options": {
-        "cwd": "{workspaceRoot}"
-      }
-    },
     "repl": {},
     "skill-exclusions": {
       "cache": true,

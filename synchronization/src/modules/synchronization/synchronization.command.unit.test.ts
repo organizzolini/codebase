@@ -10,7 +10,6 @@ import { ConventionalConfigCommand } from "../conventional-config/conventional-c
 import { DevcontainerConfigurationCommand } from "../devcontainer-configuration/devcontainer-configuration.command";
 import { InstalledSkillsCommand } from "../installed-skills/installed-skills.command";
 import { PackageManifestsCommand } from "../package-manifests/package-manifests.command";
-import { PullRequestTemplateCommand } from "../pull-request-template/pull-request-template.command";
 import { SkillExclusionsCommand } from "../skill-exclusions/skill-exclusions.command";
 import { VscodeExtensionsCommand } from "../vscode-extensions/vscode-extensions.command";
 
@@ -54,12 +53,6 @@ const moduleOptions = {
       }),
     },
     {
-      provide: PullRequestTemplateCommand,
-      useValue: createMock<PullRequestTemplateCommand>({
-        synchronizationLabel: "pull-request-template",
-      }),
-    },
-    {
       provide: SkillExclusionsCommand,
       useValue: createMock<SkillExclusionsCommand>({
         synchronizationLabel: "skill-exclusions",
@@ -82,7 +75,6 @@ describe(SynchronizationCommand, () => {
   let installedSkills: InstalledSkillsCommand;
   let logger: BuiltTestingModule<unknown>["logger"];
   let packageManifests: PackageManifestsCommand;
-  let pullRequestTemplate: PullRequestTemplateCommand;
   let skillExclusions: SkillExclusionsCommand;
   let vscodeExtensions: VscodeExtensionsCommand;
 
@@ -94,7 +86,6 @@ describe(SynchronizationCommand, () => {
       devcontainerConfiguration,
       installedSkills,
       packageManifests,
-      pullRequestTemplate,
       skillExclusions,
       vscodeExtensions,
     ];
@@ -124,9 +115,6 @@ describe(SynchronizationCommand, () => {
     installedSkills = await built.module.resolve(InstalledSkillsCommand);
     logger = built.logger;
     packageManifests = await built.module.resolve(PackageManifestsCommand);
-    pullRequestTemplate = await built.module.resolve(
-      PullRequestTemplateCommand,
-    );
     skillExclusions = await built.module.resolve(SkillExclusionsCommand);
     vscodeExtensions = await built.module.resolve(VscodeExtensionsCommand);
   });
@@ -238,7 +226,7 @@ describe(SynchronizationCommand, () => {
 
   it("exits with code 1 when any command reports drift", async () => {
     stubAllDelegates(true);
-    vi.mocked(pullRequestTemplate.synchronize).mockResolvedValue(false);
+    vi.mocked(skillExclusions.synchronize).mockResolvedValue(false);
 
     await expectProcessExitOne(async () => {
       await command.run(["check"]);

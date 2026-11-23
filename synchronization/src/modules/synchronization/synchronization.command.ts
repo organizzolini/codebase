@@ -8,7 +8,6 @@ import { ConventionalConfigCommand } from "../conventional-config/conventional-c
 import { DevcontainerConfigurationCommand } from "../devcontainer-configuration/devcontainer-configuration.command";
 import { InstalledSkillsCommand } from "../installed-skills/installed-skills.command";
 import { PackageManifestsCommand } from "../package-manifests/package-manifests.command";
-import { PullRequestTemplateCommand } from "../pull-request-template/pull-request-template.command";
 import { SkillExclusionsCommand } from "../skill-exclusions/skill-exclusions.command";
 import { VscodeExtensionsCommand } from "../vscode-extensions/vscode-extensions.command";
 
@@ -41,7 +40,6 @@ export class SynchronizationCommand extends CommandRunner {
     private readonly installedSkillsCommand: InstalledSkillsCommand,
     private readonly logger: LoggerService,
     private readonly packageManifestsCommand: PackageManifestsCommand,
-    private readonly pullRequestTemplateCommand: PullRequestTemplateCommand,
     private readonly skillExclusionsCommand: SkillExclusionsCommand,
     private readonly synchronizationModeService: SynchronizationService,
     private readonly vscodeExtensionsCommand: VscodeExtensionsCommand,
@@ -68,7 +66,6 @@ export class SynchronizationCommand extends CommandRunner {
       this.devcontainerConfigurationCommand,
       this.installedSkillsCommand,
       this.packageManifestsCommand,
-      this.pullRequestTemplateCommand,
       this.skillExclusionsCommand,
       this.vscodeExtensionsCommand,
     ];

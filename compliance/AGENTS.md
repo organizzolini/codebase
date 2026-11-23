@@ -7,7 +7,8 @@
 **Purpose**: <!-- Briefly describe the specific purpose of this CLI application -->
 
 Owns Continuous Compliance commands that read or update GitHub issue and pull
-request metadata, and enforce repository governance.
+request metadata, enforce repository governance, and own the pull request
+template and its derived copies.
 
 ### Run Locally
 
@@ -18,7 +19,7 @@ nx run compliance:start
 
 ### Command Ownership
 
-This project owns four commands, each backed by one service per concern:
+This project owns five commands, each backed by one service per concern:
 
 - `pull-request` (`src/modules/pull-request/`): merge-group context
   resolution, non-closing parent references and label reconciliation (pull
@@ -32,9 +33,13 @@ This project owns four commands, each backed by one service per concern:
 - `audit-files`: repository governance checks.
 - `organization-project`: manual synchronization of repository issues and pull
   requests into the organization project.
+- `pull-request-template` (`src/modules/pull-request-template/`): checks or
+  writes the pull request template into the skill files that embed it. It owns
+  the template beside `pull-request`'s body check, and needs no token.
 
-Keep codebase-file reconciliation in `synchronization` and codebase-only checks
-in `validation`.
+Keep codebase-file reconciliation in `synchronization` (the pull request
+template is the exception, owned here) and codebase-only checks in
+`validation`.
 
 ## Architecture Overview
 

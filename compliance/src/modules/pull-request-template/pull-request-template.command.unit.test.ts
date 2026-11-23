@@ -7,8 +7,6 @@ import { expectLoggerContext } from "@codebase/observability/testing";
 import { expectProcessExitOne, mockProcessExit } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { SynchronizationService } from "../synchronization/synchronization.service";
-
 import { PullRequestTemplateCommand } from "./pull-request-template.command";
 import {
   SYNC_PULL_REQUEST_TEMPLATE_MARKER,
@@ -33,8 +31,6 @@ vi.mock("node:fs", () => {
     ),
   };
 });
-
-const moduleOptions = { providers: [SynchronizationService] };
 
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
@@ -70,10 +66,7 @@ describe(PullRequestTemplateCommand, () => {
   };
 
   beforeAll(async () => {
-    const built = await buildTestingModule(
-      PullRequestTemplateCommand,
-      moduleOptions,
-    );
+    const built = await buildTestingModule(PullRequestTemplateCommand);
 
     command = built.instance;
     logger = built.logger;
@@ -105,10 +98,7 @@ describe(PullRequestTemplateCommand, () => {
   it("resolves with its dependencies", async () => {
     expect.hasAssertions();
 
-    const { instance } = await buildTestingModule(
-      PullRequestTemplateCommand,
-      moduleOptions,
-    );
+    const { instance } = await buildTestingModule(PullRequestTemplateCommand);
 
     expect(instance).toBeInstanceOf(PullRequestTemplateCommand);
   });
@@ -116,7 +106,7 @@ describe(PullRequestTemplateCommand, () => {
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    await expectLoggerContext(PullRequestTemplateCommand, moduleOptions);
+    await expectLoggerContext(PullRequestTemplateCommand);
   });
 
   it("writes only out-of-sync target files in write mode", async () => {
@@ -214,11 +204,9 @@ describe(PullRequestTemplateCommand, () => {
       undefined,
       expect.objectContaining({ marker: SYNC_PULL_REQUEST_TEMPLATE_MARKER }),
     );
-    expect(logger.info).toHaveBeenCalledWith(
-      "💡 Suggested a fix",
-      undefined,
-      expect.any(Object),
-    );
+    expect(logger.info).toHaveBeenCalledWith("💡 Suggested a fix", undefined, {
+      hint: "Run 'nx run compliance:pull-request-template:write' to sync",
+    });
 
     processExitSpy.mockRestore();
   });
@@ -247,7 +235,10 @@ describe(PullRequestTemplateCommand, () => {
     expect(logger.error).toHaveBeenCalledWith(
       "🚦 Rejected an unusable mode",
       undefined,
-      expect.any(Object),
+      expect.objectContaining({
+        usage:
+          "💡 Usage: nx run compliance:pull-request-template:check (or compliance:pull-request-template:write)",
+      }),
     );
   });
 });
